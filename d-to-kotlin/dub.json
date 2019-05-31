@@ -2,6 +2,7 @@
 	"authors": [
 		"Dmitry Olshansky"
 	],
+	"targetType": "executable",
 	"copyright": "Copyright © 2019, Dmitry Olshansky",
 	"description": "D to Kotlin compiler",
 	"license": "BSL-1.0",
@@ -9,4 +10,4 @@
 	"dependencies": {
 		"dmd" : "~master"
 	}
-}Boost
+}
