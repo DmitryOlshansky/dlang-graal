@@ -1,0 +1,12 @@
+{
+	"authors": [
+		"Dmitry Olshansky"
+	],
+	"copyright": "Copyright © 2019, Dmitry Olshansky",
+	"description": "D to Kotlin compiler",
+	"license": "BSL-1.0",
+	"name": "d-to-kotlin",
+	"dependencies": {
+		"dmd" : "~master"
+	}
+}Boost

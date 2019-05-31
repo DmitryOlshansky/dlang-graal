@@ -1,0 +1,14 @@
+build
+.idea
+.gradle
+
+dmd/.dub
+dmd/docs.json
+dmd/__dummy.html
+dmd/docs/
+dmd/d-to-kotlin
+d-to-kotlin-test-*
+*.exe
+*.o
+*.obj
+*.lst
