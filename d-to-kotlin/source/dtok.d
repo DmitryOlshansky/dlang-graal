@@ -8,7 +8,7 @@ import dmd.globals : Global;
 import std.file : readFile = read;
 import std.getopt, std.path, std.stdio;
 
-import to_kotlin;
+import visitors.declaration;
 
 class DiagnosticsException : Exception
 {
@@ -111,9 +111,9 @@ void main(string[] args) {
 	foreach (target; args[1..$]) {
 		const content = cast(string)readFile(target);
 		auto m = runFullFrontend(baseName(target), content, [], importPaths, stringImportPaths);
-		scope v = new ToKotlinVisitor();
+		scope v = new ToKotlinDeclarationVisitor();
 		m.accept(v);
-		writeln(v.result);
+		writeln(m.toKotlin);
 	}
 	
 }
