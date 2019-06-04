@@ -111,8 +111,6 @@ void main(string[] args) {
 	foreach (target; args[1..$]) {
 		const content = cast(string)readFile(target);
 		auto m = runFullFrontend(baseName(target), content, [], importPaths, stringImportPaths);
-		scope v = new ToKotlinDeclarationVisitor();
-		m.accept(v);
 		writeln(m.toKotlin);
 	}
 	

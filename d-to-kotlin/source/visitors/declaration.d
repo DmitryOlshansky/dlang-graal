@@ -10,28 +10,29 @@ import dmd.mtype;
 import dmd.tokens;
 import dmd.visitor : SemanticTimeTransitiveVisitor;
 
-import std.array, std.format, std.range, std.regex;
+import std.array, std.format, std.range;
 
-import visitors.expression : toKotlin;
+import visitors.expression : ExprOpts, toKotlin;
 
 alias fmt = formattedWrite;
 
-extern (C++) class ToKotlinDeclarationVisitor : SemanticTimeTransitiveVisitor {
+///
+string toKotlin(Module mod) {
+    scope v = new ToKotlinModuleVisitor();
+    v.moduleName = mod.ident.toString.idup;
+    mod.accept(v);
+    v.onModuleEnd();
+    return v.result;
+}
+
+extern (C++) class ToKotlinModuleVisitor : SemanticTimeTransitiveVisitor {
     alias visit = typeof(super).visit;
     Appender!(char[]) buf;
     int indent = 0;
-    auto re = regex(`immutable\((.+?)\)`);
+    FuncDeclaration[] stack;
+    string moduleName;
+    string[] constants;
     
-    const(char)[] typeConverter(Type dType) {
-        const(char)[] type = dType.toString.replaceAll(re, "$1");
-        switch(type) {
-            case "char*": return "BytePtr";
-            case "uint": return "Int";
-            default: return type;
-        }
-    }
-    
-
     const(char)[] padding() { 
         auto pad = new char[](indent);
         pad[] = ' ';
@@ -44,39 +45,67 @@ extern (C++) class ToKotlinDeclarationVisitor : SemanticTimeTransitiveVisitor {
         buf = appender!(char[])();
     }
 
+    ///
+    void onModuleEnd() {
+        if (constants.length)  {
+            buf.fmt("object %sConstants {\n", moduleName);
+            foreach(var; constants) 
+                buf.fmt("%s%s", padding, var);
+            buf.fmt("}\n");
+        }
+    }
+
     override void visit(VarDeclaration var) {
-        super.visit(var);
-        buf.fmt("%svar %s: %s", padding, var.ident.toString, typeConverter(var.type));
-        buf.fmt(" = ");
-        ExpInitializer ie = var._init.isExpInitializer();
-        if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit))
-            buf.put((cast(AssignExp)ie.exp).e2.toKotlin());
-        else
-            var._init.initializerToBuffer(buf);
+        void printVar(VarDeclaration var, string kind, const(char)[] ident, ref Appender!(char[]) buf) {
+            buf.fmt("%s %s: %s", kind, ident, toKotlin(var.type));
+            buf.fmt(" = ");
+            ExpInitializer ie = var._init.isExpInitializer();
+            if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit))
+                buf.put((cast(AssignExp)ie.exp).e2.toKotlin());
+            else {
+                var._init.initializerToBuffer(buf, var.type.ty == Tpointer && var.type.nextOf().ty == Tchar);
+            }
+            buf.fmt("\n");
+        }
+        if (var.type.isImmutable() && (var.storage_class & STC.static_)) {
+            auto id = stack[$-1].ident.toString ~ var.ident.toString;
+            auto temp = appender!(char[]);
+            temp.fmt("    ");
+            printVar(var, "val", id, temp);
+            constants ~= temp.data.idup;
+            buf.fmt("%sval %s: %s = %sConstants.%s\n", padding, var.ident.toString, toKotlin(var.type), moduleName, id);            
+        }
+        else {
+            buf.fmt(padding);
+            printVar(var, "var", var.ident.toString, buf);
+        }
     }
 
     override void visit(FuncDeclaration func)  {
-        buf.fmt("fun %s(", func.ident.toString);
+        stack ~= func;
+        buf.fmt("%sfun %s(", padding, func.ident.toString);
         if (func.parameters)
             foreach(i, p; (*func.parameters)[]) {
                 if (i != 0) buf.fmt(", ");
-                buf.fmt("%s: %s", p.ident.toString, typeConverter(p.type));
+                buf.fmt("%s: %s", p.ident.toString, toKotlin(p.type));
             }
         buf.fmt(")");
-        if (!func.inferRetType) buf.fmt(": %s {\n", typeConverter(func.type.nextOf()));
+        if (!func.inferRetType) buf.fmt(": %s {\n", toKotlin(func.type.nextOf()));
         else buf.fmt("\n");
         indent += 4;
         super.visit(func);
         indent -= 4;
-        buf.fmt("}\n");
+        buf.fmt("%s}\n", padding);
+        stack = stack[0..$-1];
     }
 
     string result() { return cast(string)buf.data; }
 }
 
 
-private void initializerToBuffer(Initializer inx, ref Appender!(char[]) buf)
+private void initializerToBuffer(Initializer inx, ref Appender!(char[]) buf, bool wantCharPtr)
 {
+    auto opts = ExprOpts(wantCharPtr, null);
     void visitError(ErrorInitializer iz)
     {
         buf.fmt("__error__");
@@ -101,14 +130,14 @@ private void initializerToBuffer(Initializer inx, ref Appender!(char[]) buf)
                 buf.put(':');
             }
             if (auto iz = si.value[i])
-                initializerToBuffer(iz, buf);
+                initializerToBuffer(iz, buf, false);
         }
         buf.put('}');
     }
 
     void visitArray(ArrayInitializer ai)
     {
-        buf.put('arrayOf(');
+        buf.fmt("arrayOf<%s>(", toKotlin(ai.type.nextOf()));
         foreach (i, ex; ai.index)
         {
             if (i)
@@ -119,14 +148,14 @@ private void initializerToBuffer(Initializer inx, ref Appender!(char[]) buf)
                 buf.put(':');
             }
             if (auto iz = ai.value[i])
-                initializerToBuffer(iz, buf);
+                initializerToBuffer(iz, buf, false);
         }
         buf.put(')');
     }
 
     void visitExp(ExpInitializer ei)
     {
-        buf.put(ei.exp.toKotlin());
+        buf.put(ei.exp.toKotlin(opts));
     }
 
     final switch (inx.kind)
@@ -137,11 +166,4 @@ private void initializerToBuffer(Initializer inx, ref Appender!(char[]) buf)
         case InitKind.array:   return visitArray (inx.isArrayInitializer ());
         case InitKind.exp:     return visitExp   (inx.isExpInitializer   ());
     }
-}
-
-///
-string toKotlin(Module mod) {
-    scope v = new ToKotlinDeclarationVisitor();
-    mod.accept(v);
-    return v.result;
 }
