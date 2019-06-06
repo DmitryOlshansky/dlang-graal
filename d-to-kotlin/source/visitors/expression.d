@@ -41,9 +41,9 @@ struct ExprOpts {
 }
 
 ///
-string toKotlin(Type t) {
+string toKotlin(Type t, Identifier id = null) {
     scope OutBuffer* buf = new OutBuffer();
-    typeToBuffer(t, null, buf);
+    typeToBuffer(t, id, buf);
     char* p = buf.extractChars;
     return cast(string)p[0..strlen(p)];
 }
@@ -467,7 +467,14 @@ public:
     {
         expToBuffer(e.e1, precedence[e.op], buf, opts);
         buf.writeByte(' ');
-        buf.writestring(Token.toString(e.op));
+        if (e.op == TOK.identity) buf.writestring("===");
+        else if (e.op == TOK.notIdentity)  buf.writestring("!==");
+        else if(e.op == TOK.leftShift) buf.writestring("shl");
+        else if(e.op == TOK.rightShift) buf.writestring("shr");
+        else if(e.op == TOK.or) buf.writestring("or");
+        else if(e.op == TOK.xor) buf.writestring("xor");
+        else if(e.op == TOK.and) buf.writestring("and");
+        else buf.writestring(Token.toString(e.op));
         buf.writeByte(' ');
         expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
     }
@@ -575,29 +582,26 @@ public:
 
     override void visit(CastExp e)
     {
-        buf.writestring("cast(");
-        if (e.to)
-            typeToBuffer(e.to, null, buf);
-        else
-        {
-            MODtoBuffer(buf, e.mod);
+        //if (!e.to) {
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
+        /*    return;    
         }
-        buf.writeByte(')');
+        buf.writestring("(");
         expToBuffer(e.e1, precedence[e.op], buf, opts);
+        buf.writestring(").to");
+        if (e.to) {
+            typeToBuffer(e.to, null, buf);
+        }*/
     }
 
     override void visit(VectorExp e)
     {
-        buf.writestring("cast(");
-        typeToBuffer(e.to, null, buf);
-        buf.writeByte(')');
-        expToBuffer(e.e1, precedence[e.op], buf, opts);
+        assert(false);
     }
 
     override void visit(VectorArrayExp e)
     {
-        expToBuffer(e.e1, PREC.primary, buf, opts);
-        buf.writestring(".array");
+        assert(false);
     }
 
     override void visit(SliceExp e)
