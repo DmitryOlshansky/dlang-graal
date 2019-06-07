@@ -99,13 +99,12 @@ extern (C++) class ToKotlinModuleVisitor : SemanticTimeTransitiveVisitor {
         if (s.exp && s.exp.op == TOK.declaration &&
             (cast(DeclarationExp)s.exp).declaration)
         {
-            // bypass visit(DeclarationExp)
-            return super.visit((cast(DeclarationExp)s.exp).declaration);
-            
+            (cast(DeclarationExp)s.exp).declaration.accept(this);
         }
-        if (s.exp)
+        else if (s.exp) {
             buf.put(s.exp.toKotlin);
-        buf.put(";\n");
+            buf.put(";\n");
+        }
     }
 
     override void visit(ScopeStatement s)
@@ -113,10 +112,8 @@ extern (C++) class ToKotlinModuleVisitor : SemanticTimeTransitiveVisitor {
         if (needDecorateScope[$-1]) buf.put("run ");
         pushDecorateScope(true);
         buf.put("{\n");
-        if (s.statement) {
-            super.visit(s);
+        if (s.statement) 
             s.statement.accept(this);
-        }
         buf.put("}\n");
         popDecorateScope();
     }
