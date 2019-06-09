@@ -89,6 +89,94 @@ class ByteSlice(val data: ByteArray, var beg: Int, var end: Int) {
     }
 }
 
+class CharSlice(val data: CharArray, var beg: Int, var end: Int) {
+
+    constructor(s: String) : this(s.toCharArray())
+
+    constructor(arr: CharArray) : this(arr, 0, arr.size)
+
+    operator fun set(idx: Int, value: Char) {
+        data[beg+idx] = value
+    }
+
+    operator fun get(idx: Int): Char = data[beg+idx]
+
+    fun ptr() = CharPtr(data, beg)
+
+    fun slice(from:Int, to:Int): CharSlice {
+        return CharSlice(data, from+beg, to+beg)
+    }
+
+    fun slice(from:Int): CharSlice {
+        return CharSlice(data, from+beg, end)
+    }
+
+    val length: Int
+        get() = end - beg
+
+    private fun isEqualTo(other: CharSlice): Boolean {
+        if (length != other.length) return false
+        for (i in 0 until length) {
+            if (this[i] != other[i]) return false
+        }
+        return true
+    }
+
+    override fun equals(other: Any?): Boolean =
+        when(other) {
+            is CharSlice -> isEqualTo(other)
+            else -> false
+        }
+
+    override fun hashCode(): Int {
+        return data.hashCode() + 17 * beg + 31 * end
+    }
+}
+
+class IntSlice(val data: IntArray, var beg: Int, var end: Int) {
+
+    constructor(arr: IntArray) : this(arr, 0, arr.size)
+
+    operator fun set(idx: Int, value: Int) {
+        data[beg+idx] = value
+    }
+
+    operator fun get(idx: Int): Int = data[beg+idx]
+
+    fun ptr() = IntPtr(data, beg)
+
+    fun slice(from:Int, to:Int): IntSlice {
+        return IntSlice(data, from+beg, to+beg)
+    }
+
+    fun slice(from:Int): IntSlice {
+        return IntSlice(data, from+beg, end)
+    }
+
+    val length: Int
+        get() = end - beg
+
+    private fun isEqualTo(other: IntSlice): Boolean {
+        if (length != other.length) return false
+        for (i in 0 until length) {
+            if (this[i] != other[i]) return false
+        }
+        return true
+    }
+
+    override fun equals(other: Any?): Boolean =
+        when(other) {
+            is IntSlice -> isEqualTo(other)
+            else -> false
+        }
+
+    override fun hashCode(): Int {
+        return data.hashCode() + 17 * beg + 31 * end
+    }
+}
+
+
+
 /**
  * Strips one leading line terminator of the given string.
  *

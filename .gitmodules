@@ -1,0 +1,3 @@
+[submodule "d-to-java/dmd"]
+	path = d-to-java/dmd
+	url = git@github.com:dlang/dmd.git

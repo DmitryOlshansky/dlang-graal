@@ -1,4 +1,4 @@
-module dtok;
+module dtoj;
 
 import dmd.astcodegen : ASTCodegen;
 import dmd.dmodule : Module;
@@ -68,7 +68,7 @@ Module runParser(Ast = ASTCodegen)(
     import dmd.globals : global;
 
     global.params.mscoff = global.params.is64bit;
-    initDMD(versionIdentifiers);
+    initDMD(/*versionIdentifiers*/);
 
     findImportPaths
         .chain(importPaths)
@@ -86,9 +86,9 @@ Module runSemanticAnalyzer(Module module_, const string[] stringImportPaths)
 {
     import std.algorithm : each;
 
-    import dmd.frontend : addStringImport, fullSemantic;
+    import dmd.frontend : fullSemantic;
 
-    stringImportPaths.each!addStringImport;
+    //stringImportPaths.each!addStringImport;
 
     fullSemantic(module_);
     handleDiagnosticErrors();
@@ -111,7 +111,7 @@ void main(string[] args) {
 	foreach (target; args[1..$]) {
 		const content = cast(string)readFile(target);
 		auto m = runFullFrontend(baseName(target), content, [], importPaths, stringImportPaths);
-		writeln(m.toKotlin);
+		writeln(m.toJava);
 	}
 	
 }

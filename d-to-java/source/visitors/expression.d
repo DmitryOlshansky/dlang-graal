@@ -41,24 +41,26 @@ struct ExprOpts {
 }
 
 ///
-string toKotlin(Type t, Identifier id = null) {
+string toJava(Type t, Identifier id = null) {
     scope OutBuffer* buf = new OutBuffer();
     typeToBuffer(t, id, buf);
-    char* p = buf.extractChars;
+    buf.writeByte(0);
+    char* p = buf.extractData;
     return cast(string)p[0..strlen(p)];
 }
 
 ///
-string toKotlin(Expression e, ExprOpts opts = ExprOpts.init) {
+string toJava(Expression e, ExprOpts opts = ExprOpts.init) {
     scope OutBuffer* buf = new OutBuffer();
-    scope v = new ToKotlinExpressionVisitor(buf, opts);
+    scope v = new toJavaExpressionVisitor(buf, opts);
     e.accept(v);
-    char* p = v.buf.extractChars;
+    buf.writeByte(0);
+    char* p = v.buf.extractData;
     return cast(string)p[0..strlen(p)];
 }
 
 ///
-extern (C++) final class ToKotlinExpressionVisitor : Visitor
+extern (C++) final class toJavaExpressionVisitor : Visitor
 {
     alias visit = Visitor.visit;
     
@@ -113,7 +115,7 @@ public:
                 // BUG: need to cast(dchar)
                 if (cast(uinteger_t)v > 0xFF)
                 {
-                    buf.printf("'\\U%08x'", v);
+                    buf.printf("'\\u%04x'", v);
                     break;
                 }
                 goto case;
@@ -128,24 +130,24 @@ public:
                     break;
                 }
             case Tint8:
-                castTarget = "Byte";
+                castTarget = "byte";
                 goto L2;
             case Tint16:
-                castTarget = "Short";
+                castTarget = "short";
                 goto L2;
             case Tuns8:
-                castTarget = "Byte";
+                castTarget = "byte";
                 goto L2;
             case Tuns16:
-                castTarget = "Short";
+                castTarget = "short";
                 goto L2;
             case Tint32:
             case Tuns32:
             L2:
                 if (castTarget.length)
-                    buf.printf("(%d).to%.*s", cast(int)v, castTarget.length, castTarget.ptr);
+                    buf.printf("(%.*s)%d", cast(int)v, castTarget.length, castTarget.ptr);
                 else
-                    buf.printf("%d", cast(int)v, castTarget.length, castTarget.ptr);
+                    buf.printf("%d", cast(int)v);
                 break;
             case Tint64:
             case Tuns64:
@@ -155,7 +157,9 @@ public:
                 buf.writestring(v ? "true" : "false");
                 break;
             case Tpointer:
-                assert(false);
+                if (v == 0) buf.writestring("null");
+                else assert(false);
+                break;
             default:
                 /* This can happen if errors, such as
                  * the type is painted on like in fromConstInitializer().
@@ -205,8 +209,8 @@ public:
 
     override void visit(StringExp e)
     {
-        if (opts.wantCharPtr) buf.writestring("BytePtr(");
-        else buf.writestring("ByteSlice(");
+        if (opts.wantCharPtr) buf.writestring("new BytePtr(");
+        else buf.writestring(" new ByteSlice(");
         buf.writeByte('"');
         const o = buf.offset;
         for (size_t i = 0; i < e.len; i++)
@@ -239,9 +243,9 @@ public:
 
     override void visit(ArrayLiteralExp e)
     {
-        buf.writeByte('[');
+        buf.writeByte('{');
         argsToBuffer(e.elements, buf, opts, e.basis);
-        buf.writeByte(']');
+        buf.writeByte('}');
     }
 
     override void visit(AssocArrayLiteralExp e)
@@ -261,6 +265,7 @@ public:
 
     override void visit(StructLiteralExp e)
     {
+        buf.writestring("new");
         buf.writestring(e.sd.toChars());
         buf.writeByte('(');
         // CTFE can generate struct literals that contain an AddrExp pointing
@@ -465,15 +470,16 @@ public:
 
     override void visit(BinExp e)
     {
+        if ((e.op == TOK.equal || e.op == TOK.notEqual) && !e.e1.type.isTypeBasic) {
+            buf.writestring(".equals(");
+            expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
+            buf.writestring(")");
+            return;
+        }
         expToBuffer(e.e1, precedence[e.op], buf, opts);
         buf.writeByte(' ');
-        if (e.op == TOK.identity) buf.writestring("===");
-        else if (e.op == TOK.notIdentity)  buf.writestring("!==");
-        else if(e.op == TOK.leftShift) buf.writestring("shl");
-        else if(e.op == TOK.rightShift) buf.writestring("shr");
-        else if(e.op == TOK.or) buf.writestring("or");
-        else if(e.op == TOK.xor) buf.writestring("xor");
-        else if(e.op == TOK.and) buf.writestring("and");
+        if (e.op == TOK.identity) buf.writestring("==");
+        else if (e.op == TOK.notIdentity)  buf.writestring("!=");
         else buf.writestring(Token.toString(e.op));
         buf.writeByte(' ');
         expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
@@ -497,9 +503,10 @@ public:
     {
         buf.writestring("assert(");
         expToBuffer(e.e1, PREC.assign, buf, opts);
+        if (e.e1.type.ty == Tint32) buf.writestring(" != 0");
         if (e.msg)
         {
-            buf.writestring(", ");
+            buf.writestring(", "); 
             expToBuffer(e.msg, PREC.assign, buf, opts);
         }
         buf.writeByte(')');
@@ -571,7 +578,7 @@ public:
     override void visit(PtrExp e)
     {
         expToBuffer(e.e1, precedence[e.op], buf, opts);
-        buf.writestring(".deref()");
+        buf.writestring("[0]");
     }
 
     override void visit(DeleteExp e)
@@ -581,16 +588,17 @@ public:
 
     override void visit(CastExp e)
     {
-        //if (!e.to) {
+        if (!e.to) {
             expToBuffer(e.e1, precedence[e.op], buf, opts);
-        /*    return;    
+            return;    
         }
-        buf.writestring("(");
-        expToBuffer(e.e1, precedence[e.op], buf, opts);
-        buf.writestring(").to");
-        if (e.to) {
+        if (e.to != e.e1.type) {
+            buf.writestring("(");
             typeToBuffer(e.to, null, buf);
-        }*/
+            buf.writestring(")");
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
+        }
+        else expToBuffer(e.e1, precedence[e.op], buf, opts);
     }
 
     override void visit(VectorExp e)
@@ -649,12 +657,12 @@ public:
 
     override void visit(ArrayExp e)
     {
-        expToBuffer(e.e1, PREC.primary, buf, opts);
-        buf.writestring("arrayOf<");
+        buf.writestring("new ");
         typeToBuffer(e.type, null, buf);
-        buf.writeByte('>');
+        expToBuffer(e.e1, PREC.primary, buf, opts);
+        buf.writeByte('{');
         argsToBuffer(e.arguments, buf, opts);
-        buf.writeByte(')');
+        buf.writeByte('}');
     }
 
     override void visit(DotExp e)
@@ -664,12 +672,25 @@ public:
         expToBuffer(e.e2, PREC.primary, buf, opts);
     }
 
+    override void visit(AssignExp e)
+    {
+        if (auto assign = e.e1.isIndexExp()) {
+            expToBuffer(assign.e1, PREC.primary, buf, opts);
+            buf.writestring(".set(");
+            expToBuffer(assign.e2, PREC.primary, buf, opts);
+            buf.writestring(", ");
+            sizeToBuffer(e.e2, buf, opts);
+            buf.writeByte(')');
+        }
+        else visit(cast(BinExp)e);
+    }
+
     override void visit(IndexExp e)
     {
         expToBuffer(e.e1, PREC.primary, buf, opts);
-        buf.writeByte('[');
+        buf.writestring(".get(");
         sizeToBuffer(e.e2, buf, opts);
-        buf.writeByte(']');
+        buf.writeByte(')');
     }
 
     override void visit(PostExp e)
@@ -694,11 +715,10 @@ public:
 
     override void visit(CondExp e)
     {
-        buf.writestring("if (");
         expToBuffer(e.econd, PREC.oror, buf, opts);
-        buf.writestring(")");
+        buf.writestring(" ? ");
         expToBuffer(e.e1, PREC.expr, buf, opts);
-        buf.writestring(" else ");
+        buf.writestring(" : ");
         expToBuffer(e.e2, PREC.cond, buf, opts);
     }
 
@@ -716,7 +736,7 @@ public:
 
 private void expressionToBuffer(Expression e, OutBuffer* buf, ExprOpts opts)
 {
-    scope v = new ToKotlinExpressionVisitor(buf, opts);
+    scope v = new toJavaExpressionVisitor(buf, opts);
     e.accept(v);
 }
 
@@ -811,7 +831,12 @@ private void typeToBuffer(Type t, const Identifier ident, OutBuffer* buf)
     }
 }
 
-private void typeToBufferx(Type t, OutBuffer* buf)
+enum Boxing {
+    no = 0,
+    yes
+}
+
+private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
 {
     void visitType(Type t)
     {
@@ -827,66 +852,61 @@ private void typeToBufferx(Type t, OutBuffer* buf)
     void visitBasic(TypeBasic t)
     {
         //printf("TypeBasic::toCBuffer2(t.mod = %d)\n", t.mod);
-        switch (t.ty)
+        switch (t.ty) with(Boxing)
         {
         case Tvoid:
-            buf.writestring("Unit");
+            buf.writestring("void");
             break;
 
         case Tint8:
-            buf.writestring("Byte");
-            break;
-
         case Tuns8:
-            buf.writestring("UByte");
+            if (boxing == yes) buf.writestring("Byte");
+            else buf.writestring("byte");
             break;
 
         case Tint16:
-            buf.writestring("Short");
-            break;
-
         case Tuns16:
-            buf.writestring("UShort");
+            if (boxing == yes) buf.writestring("Short");
+            else buf.writestring("short");
             break;
 
         case Tint32:
-            buf.writestring("Int");
-            break;
-
         case Tuns32:
-            buf.writestring("UInt");
+            if (boxing == yes) buf.writestring("Integer");
+            else buf.writestring("int");
             break;
 
         case Tfloat32:
-            buf.writestring("Float");
-            break;
-
-        case Tint64:
-            buf.writestring("Long");
-            break;
-
-        case Tuns64:
-            buf.writestring("ULong");
+            if (boxing == yes) buf.writestring("Float");
+            else buf.writestring("float");
             break;
 
         case Tfloat64:
-            buf.writestring("Double");
+            if (boxing == yes) buf.writestring("Double");
+            else  buf.writestring("double");
             break;
 
+        case Tint64:
+        case Tuns64:
+            if (boxing == yes) buf.writestring("Long");
+            else buf.writestring("long");
+            break;
+
+
         case Tbool:
-            buf.writestring("Boolean");
+            buf.writestring("boolean");
             break;
 
         case Tchar:
-            buf.writestring("Byte");
+            buf.writestring("byte");
             break;
 
         case Twchar:
-            buf.writestring("Char");
+            buf.writestring("char");
             break;
 
         case Tdchar:
-            buf.writestring("DChar");
+            buf.writestring("int");
             break;
 
         default:
@@ -913,9 +933,19 @@ private void typeToBufferx(Type t, OutBuffer* buf)
 
     void visitSArray(TypeSArray t)
     {
-        buf.writestring("Array<");
-        typeToBufferx(t.next, buf);
-        buf.writestring(">");
+        if (t.next.ty == Tchar)
+            buf.writestring("ByteSlice");
+        else if (t.next.ty == Twchar)
+            buf.writestring("CharSlice");
+        else if (t.next.ty == Tdchar)
+            buf.writestring("IntSlice");
+        else if(t.next.ty == Tint32 || t.next.ty == Tuns32)
+            buf.writestring("IntSlice");
+        else {
+            buf.writestring("Slice<");
+            typeToBufferx(t.next, buf, Boxing.yes);
+            buf.writestring(">");
+        }
     }
 
     void visitDArray(TypeDArray t)
@@ -923,17 +953,19 @@ private void typeToBufferx(Type t, OutBuffer* buf)
         Type ut = t.castMod(0);
         if (ut.equals(Type.tstring))
             buf.writestring("ByteSlice");
-        else if (t.ty == Tpointer && t.next.ty == Tchar)
-            buf.writestring("BytePtr");
-        else if (ut.equals(Type.twstring))
-            assert(0);
-        else if (ut.equals(Type.tdstring))
-            assert(0);
+        //else if (t.ty == Tpointer && t.next.ty == Tchar)
+        //    buf.writestring("BytePtr");
+        else if (ut.ty == Tarray && t.next.ty == Twchar)
+            buf.writestring("CharSlice");
+        else if (ut.ty == Tarray && t.next.ty == Tdchar)
+            buf.writestring("IntSlice");
+        else if(t.next.ty == Tint32 || t.next.ty == Tuns32)
+            buf.writestring("IntSlice");
         else
         {
         L1:
-            buf.writestring("Array<");
-            typeToBufferx(t.next, buf);
+            buf.writestring("Slice<");
+            typeToBufferx(t.next, buf, Boxing.yes);
             buf.writestring(">");
         }
     }
@@ -941,9 +973,9 @@ private void typeToBufferx(Type t, OutBuffer* buf)
     void visitAArray(TypeAArray t)
     {
         buf.writestring("AA<");
-        typeToBufferx(t.next, buf);
+        typeToBufferx(t.next, buf, Boxing.yes);
         buf.writeByte(',');
-        typeToBufferx(t.index, buf);
+        typeToBufferx(t.index, buf, Boxing.yes);
         buf.writeByte('>');
     }
 
@@ -954,13 +986,18 @@ private void typeToBufferx(Type t, OutBuffer* buf)
             visitFuncIdentWithPostfix(cast(TypeFunction)t.next, "function", buf);
         else
         {
-            if (t.next.ty == Tchar) {
+            if (t.next.ty == Tchar || t.next.ty == Tvoid)
                 buf.writestring("BytePtr");
-            }
+            else if (t.next.ty == Twchar)
+                buf.writestring("CharPtr");
+            else if (t.next.ty == Tdchar) 
+                buf.writestring("IntPtr");
+            else if (t.next.ty == Tint32 || t.next.ty == Tuns32)
+                buf.writestring("IntPtr");
             else {
                 buf.writestring("Ptr<");
-                typeToBufferx(t.next, buf);
-                buf.writestring(">?");
+                typeToBufferx(t.next, buf, Boxing.yes);
+                buf.writestring(">");
             }
         }
     }

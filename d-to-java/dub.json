@@ -6,8 +6,8 @@
 	"copyright": "Copyright © 2019, Dmitry Olshansky",
 	"description": "D to Kotlin compiler",
 	"license": "BSL-1.0",
-	"name": "d-to-kotlin",
+	"name": "d-to-java",
 	"dependencies": {
-		"dmd" : "~master"
+		"dmd" : { "path" : "./dmd" } 
 	}
 }

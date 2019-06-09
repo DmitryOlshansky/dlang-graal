@@ -15,3 +15,16 @@ fun strchr(ptr: BytePtr, c: Byte): BytePtr? {
     return null
 }
 
+
+fun<T> slice(arr: Array<Array<T>>): Slice<Slice<T>> {
+    return Slice(arr.map { Slice(it) }.toTypedArray())
+}
+
+fun slice(arr: Array<CharArray>): Slice<CharSlice> {
+    return Slice(arr.map { CharSlice(it) }.toTypedArray())
+}
+
+fun slice(arr: CharArray) = CharSlice(arr)
+
+
+fun slice(arr: IntArray) = IntSlice(arr)
