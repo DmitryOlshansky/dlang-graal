@@ -1,5 +1,7 @@
 package org.dlang.dmd.root
 
+import org.dlang.dmd.Ref
+
 fun strlen(ptr: BytePtr): Int {
     if (ptr.data[ptr.data.size-1] != 0.toByte())
         return ptr.data.size - ptr.offset
@@ -26,5 +28,11 @@ fun slice(arr: Array<CharArray>): Slice<CharSlice> {
 
 fun slice(arr: CharArray) = CharSlice(arr)
 
-
 fun slice(arr: IntArray) = IntSlice(arr)
+
+fun ref(v: Int) = IntRef(v)
+
+fun<T> ref(v: T) = Ref(v)
+
+fun<T> ref(v: Ref<T>) = v
+

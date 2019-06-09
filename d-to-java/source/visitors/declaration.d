@@ -14,7 +14,14 @@ import dmd.visitor : SemanticTimeTransitiveVisitor;
 
 import std.array, std.format, std.string, std.range;
 
-import visitors.expression : ExprOpts, toJava;
+import visitors.expression : Boxing, ExprOpts, toJava;
+
+string refType(Type t) {
+    if(t.ty == Tint32 || t.ty == Tuns32 || t.ty == Tdchar) {
+        return "IntRef";
+    }
+    else return toJava(t, null, Boxing.yes);
+}
 
 ///
 string toJava(Module mod) {
@@ -31,9 +38,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     alias visit = typeof(super).visit;
     TextBuffer buf;
     FuncDeclaration[] stack;
-    Expression[] increments; // used in for loops to augment `continue`
     string moduleName;
-    string[] constants;
+    string[] constants; // all local static vars are collected here
+    ExprOpts opts;
 
     int inInitializer; // to avoid recursive decomposition of arrays
     string[] arrayInitializers;
@@ -73,7 +80,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 ExpInitializer ie = var._init.isExpInitializer();
                 if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit)) {
                     buf.fmt(" = ");
-                    buf.put((cast(AssignExp)ie.exp).e2.toJava());
+                    buf.put((cast(AssignExp)ie.exp).e2.toJava(opts));
                 }
                 else {
                     buf.fmt(" = ");
@@ -102,25 +109,26 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             (cast(DeclarationExp)s.exp).declaration.accept(this);
         }
         else if (s.exp) {
-            buf.put(s.exp.toJava);
+            buf.put(s.exp.toJava(opts));
             buf.put(";\n");
         }
     }
 
     override void visit(ScopeStatement s)
     {
-        buf.put("{\n");
-        buf.indent;
-        if (s.statement) 
-            s.statement.accept(this);
-        buf.outdent;
-        buf.put("}\n");
+        if (s.statement)  {
+            buf.put("{\n");
+            buf.indent;
+                s.statement.accept(this);
+            buf.outdent;
+            buf.put("}\n");
+        }
     }
 
     override void visit(WhileStatement s)
     {
         buf.put("while (");
-        buf.put(s.condition.toJava);
+        buf.put(s.condition.toJava(opts));
         buf.put(")\n");
         if (s._body)
             s._body.accept(this);
@@ -132,47 +140,55 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (s._body)
             s._body.accept(this);
         buf.put("while (");
-        buf.put(s.condition.toJava);
+        buf.put(s.condition.toJava(opts));
         buf.put(");\n");
     }
 
     override void visit(ForStatement s)
     {
+        buf.put("for (");
         if (s._init)
         {
             s._init.accept(this);
         }
-        buf.put("while (");
+        buf.put("; ");
         if (s.condition)
         {
-            buf.put(s.condition.toJava);
+            buf.put(s.condition.toJava(opts));
         }
-        increments ~= s.increment;
+        buf.put(";");
+        if (s.increment)
+        {
+            buf.put(s.increment.toJava(opts));
+        }
         buf.put(')');
-        //buf.indent;
         if (s._body) {
             s._body.accept(this);
-            if (s.increment)
-            {
-                buf.put(s.increment.toJava);
-                buf.put(";")
-            }
         }
-        increments = increments[0..$-1];
-        //buf.outdent;
     }
 
     override void visit(ForeachStatement s)
-    {/*
-        foreachWithoutBody(s);
-        buf.writeByte('{');
-        buf.writenl();
-        buf.level++;
+    {
+        foreach (i, p; *s.parameters)
+        {
+            if (i)
+                buf.put(", ");
+            if (p.type)
+                buf.put(p.type.toJava(p.ident));
+            else
+                buf.put(p.ident.toString());
+        }
+        buf.put("; ");
+        buf.put(s.aggr.toJava(opts));
+        buf.put(')');
+        buf.put('\n');
+
+        buf.put("{\n");
+        buf.indent;
         if (s._body)
             s._body.accept(this);
-        buf.level--;
-        buf.writeByte('}');
-        buf.writenl();*/
+        buf.outdent;
+        buf.put("}\n");
     }
 
     override void visit(IfStatement s)
@@ -186,7 +202,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 buf.put(p.ident.toString());
             buf.put(" = ");
         }
-        buf.put(s.condition.toJava);
+        buf.put(s.condition.toJava(opts));
         buf.put(")\n");
         if (s.ifbody.isScopeStatement())
         {
@@ -222,6 +238,129 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
     }
 
+    override void visit(StaticAssertStatement s)
+    {
+        // ignore and do not recurse into
+    }
+
+    override void visit(SwitchStatement s)
+    {
+        buf.put("switch (");
+        buf.put(s.condition.toJava(opts));
+        buf.put(')');
+        buf.put('\n');
+        if (s._body)
+        {
+            if (!s._body.isScopeStatement())
+            {
+                buf.put('{');
+                buf.put('\n');
+                buf.indent;
+                s._body.accept(this);
+                buf.outdent;
+                buf.put('}');
+                buf.put('\n');
+            }
+            else
+            {
+                s._body.accept(this);
+            }
+        }
+    }
+
+    override void visit(CaseStatement s)
+    {
+        buf.put("case ");
+        buf.put(s.exp.toJava(opts));
+        buf.put(':');
+        buf.put('\n');
+        s.statement.accept(this);
+    }
+
+    override void visit(CaseRangeStatement s)
+    {
+        buf.put("case ");
+        buf.put(s.first.toJava(opts));
+        buf.put(": .. case ");
+        buf.put(s.last.toJava(opts));
+        buf.put(':');
+        buf.put('\n');
+        s.statement.accept(this);
+    }
+
+    override void visit(DefaultStatement s)
+    {
+        buf.put("default:\n");
+        s.statement.accept(this);
+    }
+
+    override void visit(GotoDefaultStatement s)
+    {
+        buf.put("goto default;\n");
+    }
+
+    override void visit(GotoCaseStatement s)
+    {
+        if (!s.exp) {
+            // fallthrough
+        }
+        else {
+            buf.put("goto case");
+            if (s.exp)
+            {
+                buf.put(' ');
+                buf.put(s.exp.toJava(opts));
+            }
+            buf.put(';');
+            buf.put('\n');
+        }
+    }
+
+    override void visit(SwitchErrorStatement s)
+    {
+        assert(false);
+    }
+    
+    override void visit(BreakStatement s)
+    {
+        buf.put("break");
+        if (s.ident)
+        {
+            buf.put(' ');
+            buf.put(s.ident.toString());
+        }
+        buf.put(';');
+        buf.put('\n');
+    }
+
+    override void visit(ContinueStatement s)
+    {
+        buf.put("continue");
+        if (s.ident)
+        {
+            buf.put(' ');
+            buf.put(s.ident.toString());
+        }
+        buf.put(';');
+        buf.put('\n');
+    }
+
+    override void visit(SynchronizedStatement s)
+    {
+        buf.put("synchronized");
+        if (s.exp)
+        {
+            buf.put('(');
+            buf.put(s.exp.toJava(opts));
+            buf.put(')');
+        }
+        if (s._body)
+        {
+            buf.put(' ');
+            s._body.accept(this);
+        }
+    }
+
     override void visit(ReturnStatement s)
     {
         buf.put("return ");
@@ -237,18 +376,24 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(FuncDeclaration func)  {
         stack ~= func;
+        opts.refParams = null;
         buf.fmt("%s %s(", toJava(func.type.nextOf()), func.ident.toString);
         if (func.parameters)
             foreach(i, p; (*func.parameters)[]) {
                 if (i != 0) buf.fmt(", ");
-                buf.fmt("%s %s", toJava(p.type), p.ident.toString);
+                auto box = p.isRef || p.isOut;
+                if (box) {
+                    opts.refParams[p.ident.toString] = true;
+                    buf.fmt("%s %s", refType(p.type), p.ident.toString);
+                }
+                else buf.fmt("%s %s", toJava(p.type), p.ident.toString);
             }
         buf.fmt(") {\n");
         buf.indent;
         super.visit(func);
         buf.outdent;
         buf.put('}');
-        buf.put('\n');
+        buf.put("\n\n");
         stack = stack[0..$-1];
     }
 
@@ -305,7 +450,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     tmp.put(", ");
                 if (ex)
                 {
-                    tmp.put(ex.toJava);
+                    tmp.put(ex.toJava(opts));
                     tmp.put(':');
                 }
                 if (auto iz = ai.value[i])

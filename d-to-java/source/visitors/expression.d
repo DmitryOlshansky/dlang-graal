@@ -38,19 +38,20 @@ import dmd.visitor;
 struct ExprOpts {
     bool wantCharPtr = false;
     EnumDeclaration inEnumDecl = null;
+    bool[string] refParams; //out and ref params, they must be boxed
 }
 
 ///
-string toJava(Type t, Identifier id = null) {
+string toJava(Type t, Identifier id = null, Boxing boxing = Boxing.no) {
     scope OutBuffer* buf = new OutBuffer();
-    typeToBuffer(t, id, buf);
+    typeToBuffer(t, id, buf, boxing);
     buf.writeByte(0);
     char* p = buf.extractData;
     return cast(string)p[0..strlen(p)];
 }
 
 ///
-string toJava(Expression e, ExprOpts opts = ExprOpts.init) {
+string toJava(Expression e, ExprOpts opts) {
     scope OutBuffer* buf = new OutBuffer();
     scope v = new toJavaExpressionVisitor(buf, opts);
     e.accept(v);
@@ -362,6 +363,8 @@ public:
     override void visit(VarExp e)
     {
         buf.writestring(e.var.toChars());
+        if (e.var.ident.toString in opts.refParams) 
+            buf.writestring(".value");
     }
 
     override void visit(OverExp e)
@@ -614,20 +617,20 @@ public:
     override void visit(SliceExp e)
     {
         expToBuffer(e.e1, precedence[e.op], buf, opts);
-        buf.writeByte('[');
+        buf.writestring(".slice(");
         if (e.upr || e.lwr)
         {
             if (e.lwr)
                 sizeToBuffer(e.lwr, buf, opts);
             else
                 buf.writeByte('0');
-            buf.writestring("..");
-            if (e.upr)
+            
+            if (e.upr) {
+                buf.writestring(",");
                 sizeToBuffer(e.upr, buf, opts);
-            else
-                buf.writeByte('$');
+            }
         }
-        buf.writeByte(']');
+        buf.writeByte(')');
     }
 
     override void visit(ArrayLengthExp e)
@@ -816,14 +819,14 @@ private void sizeToBuffer(Expression e, OutBuffer* buf, ExprOpts opts)
 /**************************************************
  * An entry point to pretty-print type.
  */
-private void typeToBuffer(Type t, const Identifier ident, OutBuffer* buf)
+private void typeToBuffer(Type t, const Identifier ident, OutBuffer* buf, Boxing boxing = Boxing.no)
 {
     if (auto tf = t.isTypeFunction())
     {
         visitFuncIdentWithPrefix(tf, ident, null, buf);
         return;
     }
-    typeToBufferx(t, buf);
+    typeToBufferx(t, buf, boxing);
     if (ident)
     {
         buf.writeByte(' ');
@@ -892,7 +895,6 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
             else buf.writestring("long");
             break;
 
-
         case Tbool:
             buf.writestring("boolean");
             break;
@@ -906,7 +908,8 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
             break;
 
         case Tdchar:
-            buf.writestring("int");
+            if (boxing == yes) buf.writestring("Integer");
+            else buf.writestring("int");
             break;
 
         default:
