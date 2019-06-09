@@ -57,6 +57,8 @@ class ByteSlice(val data: ByteArray, var beg: Int, var end: Int) {
 
     operator fun get(idx: Int): Byte = data[beg+idx]
 
+    fun set(value: Byte) = data.fill(value, beg, end)
+
     fun ptr() = BytePtr(data, beg)
 
     fun slice(from:Int, to:Int): ByteSlice {

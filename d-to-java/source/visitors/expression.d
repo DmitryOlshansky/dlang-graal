@@ -88,6 +88,7 @@ public:
         if (e.type)
         {
             Type t = e.type;
+            string tail = "";
             string castTarget = "";
         L1:
             switch (t.ty)
@@ -96,22 +97,17 @@ public:
                 {
                     TypeEnum te = cast(TypeEnum)t;
                     auto sym = te.sym;
-                    if (opts.inEnumDecl != sym)  foreach(i;0 .. sym.members.dim)
+                    if (opts.inEnumDecl != sym)
                     {
-                        EnumMember em = cast(EnumMember) (*sym.members)[i];
-                        if (em.value.toInteger == v)
-                        {
-                            buf.printf("%s.%s", sym.toChars(), em.ident.toChars());
-                            return ;
-                        }
+                        buf.printf("%s(", te.sym.toChars());
+                        tail = ")";
                     }
-                    //assert(0, "We could not find the EmumMember");// for some reason it won't append char* ~ e.toChars() ~ " in " ~ sym.toChars() );
-                    buf.printf("cast(%s)", te.sym.toChars());
-                    t = te.sym.memtype;
+                    t = sym.memtype;
                     goto L1;
                 }
             case Twchar:
                 // BUG: need to cast(wchar)
+                goto case;
             case Tdchar:
                 // BUG: need to cast(dchar)
                 if (cast(uinteger_t)v > 0xFF)
@@ -146,7 +142,7 @@ public:
             case Tuns32:
             L2:
                 if (castTarget.length)
-                    buf.printf("(%.*s)%d", cast(int)v, castTarget.length, castTarget.ptr);
+                    buf.printf("(%.*s)%d", castTarget.length, castTarget.ptr, cast(int)v);
                 else
                     buf.printf("%d", cast(int)v);
                 break;
@@ -171,6 +167,7 @@ public:
                 }
                 break;
             }
+            buf.writestring(tail);
         }
         else if (v & 0x8000000000000000L)
             buf.printf("0x%llx", v);
@@ -353,11 +350,11 @@ public:
     override void visit(SymOffExp e)
     {
         if (e.offset)
-            buf.printf("(& %s+%u)", e.var.toChars(), e.offset);
+            buf.printf("(%s.ptr().plus(%u))", e.var.toChars(), e.offset);
         else if (e.var.isTypeInfoDeclaration())
             buf.writestring(e.var.toChars());
         else
-            buf.printf("& %s", e.var.toChars());
+            buf.printf("%s.ptr()", e.var.toChars());
     }
 
     override void visit(VarExp e)
@@ -597,6 +594,7 @@ public:
         }
         bool intTo, wasInt;
         bool complexTarget = false;
+        bool fromEnum = false;
         switch(e.to.ty) {
             case Tpointer:
             case Tarray:
@@ -615,9 +613,16 @@ public:
             case Tdchar:
                 wasInt = true;
                 break;
+            case Tenum:
+                fromEnum = true;
+                break;
             default:
         }
         if (wasInt && intTo) expToBuffer(e.e1, precedence[e.op], buf, opts);
+        else if(fromEnum) {
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
+            buf.writestring(".value");
+        }
         else if (complexTarget) { // rely on .toTypeName
             expToBuffer(e.e1, precedence[e.op], buf, opts);
             buf.writestring(".to");
@@ -914,6 +919,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
             break;
 
         case Tfloat64:
+        case Tfloat80:
             if (boxing == yes) buf.writestring("Double");
             else  buf.writestring("double");
             break;
@@ -942,7 +948,9 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
             break;
 
         default:
-            assert(0, "Unexpected type in type-conversion");
+            import core.stdc.stdio;
+            fprintf(stderr, "%s\n", t.toChars());
+            assert(0, "Unexpected type in type-conversion ");
         }
     }
 
@@ -1026,6 +1034,8 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
                 buf.writestring("IntPtr");
             else if (t.next.ty == Tint32 || t.next.ty == Tuns32)
                 buf.writestring("IntPtr");
+            else if (t.next.ty == Tstruct || t.next.ty == Tclass)
+                typeToBufferx(t.next, buf, Boxing.yes);
             else {
                 buf.writestring("Ptr<");
                 typeToBufferx(t.next, buf, Boxing.yes);
@@ -1115,7 +1125,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
 
     void visitEnum(TypeEnum t)
     {
-        buf.writestring(t.sym.toPrettyChars());
+        buf.writestring(t.sym.toChars());
     }
 
     void visitStruct(TypeStruct t)
@@ -1125,9 +1135,9 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
         // while printing messages.
         TemplateInstance ti = t.sym.parent ? t.sym.parent.isTemplateInstance() : null;
         if (ti && ti.aliasdecl == t.sym)
-            buf.writestring(ti.toPrettyChars());
+            buf.writestring(ti.toChars());
         else
-            buf.writestring(t.sym.toPrettyChars());
+            buf.writestring(t.sym.toChars());
     }
 
     void visitClass(TypeClass t)
@@ -1137,9 +1147,9 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
         // while printing messages.
         TemplateInstance ti = t.sym.parent.isTemplateInstance();
         if (ti && ti.aliasdecl == t.sym)
-            buf.writestring(ti.toPrettyChars());
+            buf.writestring(ti.toChars());
         else
-            buf.writestring(t.sym.toPrettyChars());
+            buf.writestring(t.sym.toChars());
     }
 
     void visitTuple(TypeTuple t)

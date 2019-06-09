@@ -17,6 +17,17 @@ fun strchr(ptr: BytePtr, c: Byte): BytePtr? {
 }
 
 
+fun realloc(ptr: BytePtr, size: Int): BytePtr  {
+    require(ptr.offset == 0)
+    return BytePtr(ptr.data.copyOf(size))
+}
+
+fun memcpy(dest: BytePtr, from: BytePtr, size: Int) = memmove(dest, from, size)
+
+fun memmove(dest: BytePtr, from: BytePtr, size: Int)  {
+    from.data.copyInto(dest.data, dest.offset, from.offset, from.offset + size)
+}
+
 fun<T> slice(arr: Array<Array<T>>): Slice<Slice<T>> {
     return Slice(arr.map { Slice(it) }.toTypedArray())
 }

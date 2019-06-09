@@ -33,6 +33,8 @@ class BytePtr(val data: ByteArray, var offset: Int) {
 
     constructor(s: String) : this(s.toByteArray(), 0)
 
+    constructor(n: Int): this(ByteArray(n))
+
     operator fun plus(delta: Int) = BytePtr(data, offset+delta)
 
     operator fun minus(delta: Int) = BytePtr(data, offset-delta)
@@ -50,6 +52,8 @@ class BytePtr(val data: ByteArray, var offset: Int) {
     }
 
     operator fun get(idx: Int): Byte = data[offset+idx]
+
+    fun slice(start: Int, end: Int) = ByteSlice(data, start + offset, end + offset)
 
     fun toBytePtr(): BytePtr = this
 

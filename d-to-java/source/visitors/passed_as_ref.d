@@ -2,10 +2,11 @@ module visitors.passed_as_ref;
 
 import dmd.expression;
 import dmd.declaration;
+import dmd.func;
 import dmd.visitor : SemanticTimeTransitiveVisitor;
 
 ///
-bool passedAsRef(VarDeclaration var, FuncDecl func) {
+bool passedAsRef(VarDeclaration var, FuncDeclaration func) {
     scope v = new PassedAsRef(var);
     func.accept(v);
     return v.passed;
