@@ -1,6 +1,5 @@
 package org.dlang.dmd.root
 
-import org.dlang.dmd.Ref
 
 fun strlen(ptr: BytePtr): Int {
     if (ptr.data[ptr.data.size-1] != 0.toByte())

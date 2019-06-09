@@ -45,63 +45,139 @@ class BytePtr(val data: ByteArray, var offset: Int) {
         offset -= delta
     }
 
-    fun deref(): Byte = data[offset]
-
     operator fun set(idx: Int, value: Byte) {
         data[offset+idx] = value
     }
 
     operator fun get(idx: Int): Byte = data[offset+idx]
+
+    fun toBytePtr(): BytePtr = this
+
+    fun toCharPtr(): CharPtr = ProxyCharPtr(this.data, offset)
+
+    fun toIntPtr(): IntPtr = ProxyIntPtr(this.data, offset)
 }
 
-class CharPtr(val data: CharArray, var offset: Int) {
+interface CharPtr {
+    operator fun plus(delta: Int): CharPtr
+
+    operator fun minus(delta: Int): CharPtr
+
+    operator fun plusAssign(delta: Int): Unit
+
+    operator fun minusAssign(delta: Int): Unit
+
+    operator fun set(idx: Int, value: Char): Unit
+
+    operator fun get(idx: Int): Char
+}
+
+class WCharPtr(val data: CharArray, var offset: Int) : CharPtr{
 
     constructor(arr: CharArray) : this(arr, 0)
 
     constructor(s: String) : this(s.toCharArray(), 0)
 
-    operator fun plus(delta: Int) = CharPtr(data, offset+delta)
+    override operator fun plus(delta: Int) = WCharPtr(data, offset+delta)
 
-    operator fun minus(delta: Int) = CharPtr(data, offset-delta)
+    override operator fun minus(delta: Int) = WCharPtr(data, offset-delta)
 
-    operator fun plusAssign(delta: Int) {
+    override operator fun plusAssign(delta: Int) {
         offset += delta
     }
 
-    operator fun minusAssign(delta: Int) {
+    override operator fun minusAssign(delta: Int) {
         offset -= delta
     }
 
-    fun deref(): Char = data[offset]
-
-    operator fun set(idx: Int, value: Char) {
+    override operator fun set(idx: Int, value: Char) {
         data[offset+idx] = value
     }
 
-    operator fun get(idx: Int): Char = data[offset+idx]
+    override operator fun get(idx: Int): Char = data[offset+idx]
 }
 
-class IntPtr(val data: IntArray, var offset: Int) {
+class ProxyCharPtr(val data: ByteArray, var offset: Int): CharPtr {
+    override operator fun plus(delta: Int) = ProxyCharPtr(data, offset + 2*delta)
+
+    override operator fun minus(delta: Int) = ProxyCharPtr(data, offset - 2*delta)
+
+    override operator fun plusAssign(delta: Int) {
+        offset += 2*delta
+    }
+
+    override operator fun minusAssign(delta: Int) {
+        offset -= 2*delta
+    }
+
+    override operator fun set(idx: Int, value: Char) {
+        data[offset + 2*idx] = (value.toInt() and 0xFF).toByte()
+        data[offset + 2*idx + 1] = (value.toInt() shr 8).toByte()
+    }
+
+    override operator fun get(idx: Int): Char = (data[offset + 2*idx] + (data[offset + 2*idx + 1].toInt() shl 8)).toChar()
+}
+
+interface IntPtr {
+    operator fun plus(delta: Int): IntPtr
+
+    operator fun minus(delta: Int): IntPtr
+
+    operator fun plusAssign(delta: Int): Unit
+
+    operator fun minusAssign(delta: Int): Unit
+
+    operator fun set(idx: Int, value: Int): Unit
+
+    operator fun get(idx: Int): Int
+}
+
+class IntPtrReal(val data: IntArray, var offset: Int) : IntPtr {
 
     constructor(arr: IntArray) : this(arr, 0)
 
-    operator fun plus(delta: Int) = IntPtr(data, offset+delta)
+    override operator fun plus(delta: Int) = IntPtrReal(data, offset+delta)
 
-    operator fun minus(delta: Int) = IntPtr(data, offset-delta)
+    override operator fun minus(delta: Int) = IntPtrReal(data, offset-delta)
 
-    operator fun plusAssign(delta: Int) {
+    override operator fun plusAssign(delta: Int) {
         offset += delta
     }
 
-    operator fun minusAssign(delta: Int) {
+    override operator fun minusAssign(delta: Int) {
         offset -= delta
     }
 
-    fun deref(): Int = data[offset]
-
-    operator fun set(idx: Int, value: Int) {
+    override operator fun set(idx: Int, value: Int) {
         data[offset+idx] = value
     }
 
-    operator fun get(idx: Int): Int = data[offset+idx]
+    override operator fun get(idx: Int): Int = data[offset+idx]
+}
+
+class ProxyIntPtr(val data: ByteArray, var offset: Int): IntPtr {
+    override operator fun plus(delta: Int) = ProxyIntPtr(data, offset + 4*delta)
+
+    override operator fun minus(delta: Int) = ProxyIntPtr(data, offset - 4*delta)
+
+    override operator fun plusAssign(delta: Int) {
+        offset += 4*delta
+    }
+
+    override operator fun minusAssign(delta: Int) {
+        offset -= 4*delta
+    }
+
+    override operator fun set(idx: Int, value: Int) {
+        data[offset + 4*idx] = (value.toInt() and 0xFF).toByte()
+        data[offset + 4*idx + 1] = ((value.toInt() shr 8) and 0xFF).toByte()
+        data[offset + 4*idx + 1] = ((value.toInt() shr 16) and 0xFF).toByte()
+        data[offset + 4*idx + 1] = (value.toInt() shr 24).toByte()
+    }
+
+    override operator fun get(idx: Int): Int {
+        val r = data[offset + 4*idx] + (data[offset + 4*idx + 1].toInt() shl 8) +
+            (data[offset + 4*idx + 2].toInt() shl 16) + (data[offset + 4*idx + 3].toInt() shl 24)
+        return r
+    }
 }

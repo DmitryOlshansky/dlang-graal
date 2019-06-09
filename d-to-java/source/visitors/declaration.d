@@ -68,9 +68,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 buf.put("static ");
                 buf.put(var);
             }
-            buf.outdent;
-            buf.fmt("}\n");
         }
+        buf.outdent;
+        buf.fmt("}\n");
     }
 
     override void visit(VarDeclaration var) {
@@ -162,33 +162,24 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             buf.put(s.increment.toJava(opts));
         }
         buf.put(')');
-        if (s._body) {
+        if (s._body && !s._body.isScopeStatement())
+        {
+            buf.put(" {\n");
+            buf.indent;
+            if (s._body) {
+                s._body.accept(this);
+            }
+            buf.outdent;
+            buf.put("}\n");
+        }
+        else if (s._body) {
             s._body.accept(this);
         }
     }
 
     override void visit(ForeachStatement s)
     {
-        foreach (i, p; *s.parameters)
-        {
-            if (i)
-                buf.put(", ");
-            if (p.type)
-                buf.put(p.type.toJava(p.ident));
-            else
-                buf.put(p.ident.toString());
-        }
-        buf.put("; ");
-        buf.put(s.aggr.toJava(opts));
-        buf.put(')');
-        buf.put('\n');
-
-        buf.put("{\n");
-        buf.indent;
-        if (s._body)
-            s._body.accept(this);
-        buf.outdent;
-        buf.put("}\n");
+        assert(false); // has been lowered
     }
 
     override void visit(IfStatement s)

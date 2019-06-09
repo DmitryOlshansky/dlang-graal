@@ -581,7 +581,7 @@ public:
     override void visit(PtrExp e)
     {
         expToBuffer(e.e1, precedence[e.op], buf, opts);
-        buf.writestring("[0]");
+        buf.writestring(".get(0)");
     }
 
     override void visit(DeleteExp e)
@@ -593,15 +593,44 @@ public:
     {
         if (!e.to) {
             expToBuffer(e.e1, precedence[e.op], buf, opts);
-            return;    
+            return; 
         }
-        if (e.to != e.e1.type) {
+        bool intTo, wasInt;
+        bool complexTarget = false;
+        switch(e.to.ty) {
+            case Tpointer:
+            case Tarray:
+                complexTarget = true;
+                break;
+            case Tint32:
+            case Tuns32:
+            case Tdchar:
+                intTo = true;
+                break;
+            default:
+        }
+        switch(e.e1.type.ty) {
+            case Tint32:
+            case Tuns32:
+            case Tdchar:
+                wasInt = true;
+                break;
+            default:
+        }
+        if (wasInt && intTo) expToBuffer(e.e1, precedence[e.op], buf, opts);
+        else if (complexTarget) { // rely on .toTypeName
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
+            buf.writestring(".to");
+            typeToBuffer(e.to, null, buf);
+            buf.writestring("()");
+        }
+        else { // simple casts
             buf.writestring("(");
             typeToBuffer(e.to, null, buf);
             buf.writestring(")");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
         }
-        else expToBuffer(e.e1, precedence[e.op], buf, opts);
+        
     }
 
     override void visit(VectorExp e)

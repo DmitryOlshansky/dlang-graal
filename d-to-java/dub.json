@@ -8,6 +8,6 @@
 	"license": "BSL-1.0",
 	"name": "d-to-java",
 	"dependencies": {
-		"dmd" : { "path" : "./dmd" } 
+		"dmd" : { "path" : "./vendor/dmd" } 
 	}
 }

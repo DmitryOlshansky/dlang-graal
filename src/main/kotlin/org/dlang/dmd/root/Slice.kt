@@ -101,7 +101,7 @@ class CharSlice(val data: CharArray, var beg: Int, var end: Int) {
 
     operator fun get(idx: Int): Char = data[beg+idx]
 
-    fun ptr() = CharPtr(data, beg)
+    fun ptr() = WCharPtr(data, beg)
 
     fun slice(from:Int, to:Int): CharSlice {
         return CharSlice(data, from+beg, to+beg)
@@ -143,7 +143,7 @@ class IntSlice(val data: IntArray, var beg: Int, var end: Int) {
 
     operator fun get(idx: Int): Int = data[beg+idx]
 
-    fun ptr() = IntPtr(data, beg)
+    fun ptr() = IntPtrReal(data, beg)
 
     fun slice(from:Int, to:Int): IntSlice {
         return IntSlice(data, from+beg, to+beg)

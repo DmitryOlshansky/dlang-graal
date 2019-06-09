@@ -4,8 +4,15 @@ import dmd.expression;
 import dmd.declaration;
 import dmd.visitor : SemanticTimeTransitiveVisitor;
 
+///
+bool passedAsRef(VarDeclaration var, FuncDecl func) {
+    scope v = new PassedAsRef(var);
+    func.accept(v);
+    return v.passed;
+}
+
 // TODO: for a given var decl find if it's ever passed by ref
-extern(C++) class PassedAsRef : SemanticTimeTransitiveVisitor {
+private extern(C++) class PassedAsRef : SemanticTimeTransitiveVisitor {
     bool passed = false;
     private int inCall = 0;
     private VarDeclaration decl;
