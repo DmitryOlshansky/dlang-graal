@@ -14,4 +14,5 @@ class TestSlice : TestCase() {
         assertEquals(stripLeadingLineTerminator(ByteSlice("\u2029foo")), ByteSlice("foo"))
         assertEquals(stripLeadingLineTerminator(ByteSlice("\n\rfoo")), ByteSlice("foo"))
     }
+
 }

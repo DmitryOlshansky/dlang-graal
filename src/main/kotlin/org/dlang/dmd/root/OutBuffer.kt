@@ -8,9 +8,7 @@ class OutBuffer {
     var doindent: Boolean = false
     private var notlinehead: Boolean = false
 
-
-
-    fun extractdata() : BytePtr {
+    fun extractData() : BytePtr {
         val p = data_
         data_ = BytePtr(16)
         offset = 0
@@ -83,14 +81,14 @@ class OutBuffer {
     // write newline
     fun writenl()
     {
-        writeByte('\n')
+        writeByte('\n'.toInt())
         if (doindent)
             notlinehead = false
     }
 
-    fun writeByte(b: Char)
+    fun writeByte(b: Int)
     {
-        if (doindent && !notlinehead && b != '\n')
+        if (doindent && !notlinehead && b != '\n'.toInt())
             indent()
         reserve(1)
         this.data_[offset] = b.toByte()
@@ -159,7 +157,7 @@ class OutBuffer {
 
     fun writewchar(w: Char)
     {
-        write4(w)
+        write4(w.toInt())
     }
 
     fun writeword(w: Char)
@@ -210,73 +208,24 @@ class OutBuffer {
         }
     }
 
-    extern (C++) void write(RootObject obj) /*nothrow*/
+    fun write(obj: RootObject?)
     {
-        if (obj)
+        if (obj !== null)
         {
             writestring(obj.toChars())
         }
     }
 
-    extern (C++) void fill0(size_t nbytes) pure nothrow
+    fun fill0(nbytes : Int)
     {
         reserve(nbytes)
         memset(data_ + offset, 0, nbytes)
         offset += nbytes
     }
 
-    extern (C++) void vprintf(const(char)* format, va_list args) nothrow
+    fun printf(format: ByteSlice, vararg args: Any?)
     {
-        int count
-        if (doindent)
-            write(null, 0) // perform indent
-        uint psize = 128
-        for ()
-        {
-            reserve(psize)
-            version (Windows)
-            {
-                count = _vsnprintf(cast(char*)data_ + offset, psize, format, args)
-                if (count != -1)
-                    break
-                psize *= 2
-            }
-            else version (Posix)
-        {
-            va_list va
-            va_copy(va, args)
-            /*
-             The functions vprintf(), vfprintf(), vsprintf(), vsnprintf()
-             are equivalent to the functions printf(), fprintf(), sprintf(),
-             snprintf(), respectively, except that they are called with a
-             va_list instead of a variable number of arguments. These
-             functions do not call the va_end macro. Consequently, the value
-             of ap is undefined after the call. The application should call
-             va_end(ap) itself afterwards.
-             */
-            count = vsnprintf(cast(char*)data_ + offset, psize, format, va)
-            va_end(va)
-            if (count == -1)
-                psize *= 2
-            else if (count >= psize)
-                psize = count + 1
-            else
-                break
-        }
-            else
-            {
-                assert(0)
-            }
-        }
-        offset += count
-    }
-
-    extern (C++) void printf(const(char)* format, ...) nothrow
-    {
-        va_list ap
-        va_start(ap, format)
-        vprintf(format, ap)
-        va_end(ap)
+       writestring(ByteSlice(String.format(format.toString(), args)))
     }
 
     /**************************************
@@ -284,14 +233,13 @@ class OutBuffer {
      * Params:
      *  u = integral value to append
      */
-    extern (C++) void print(ulong u) pure nothrow
+    fun print(u: Long)
     {
         //import core.internal.string  // not available
-        UnsignedStringBuf buf = void
-        writestring(unsignedToTempString(u, buf))
+        writestring(ByteSlice(u.toString()))
     }
 
-    extern (C++) void bracket(char left, char right) pure nothrow
+    fun bracket(left: Byte, right: Byte)
     {
         reserve(2)
         memmove(data_ + 1, data_, offset)
@@ -304,17 +252,17 @@ class OutBuffer {
      * Insert left at i, and right at j.
      * Return index just past right.
      */
-    extern (C++) size_t bracket(size_t i, const(char)* left, size_t j, const(char)* right) pure nothrow
+    fun bracket(i: Int, left: BytePtr, j: Int, right: BytePtr): Int
     {
-        size_t leftlen = strlen(left)
-        size_t rightlen = strlen(right)
+        val leftlen = strlen(left)
+        val rightlen = strlen(right)
         reserve(leftlen + rightlen)
         insert(i, left, leftlen)
         insert(j + leftlen, right, rightlen)
         return j + leftlen + rightlen
     }
 
-    extern (C++) void spread(size_t offset, size_t nbytes) pure nothrow
+    fun spread(offset: Int, nbytes: Int)
     {
         reserve(nbytes)
         memmove(data_ + offset + nbytes, data_ + offset, this.offset - offset)
@@ -324,56 +272,55 @@ class OutBuffer {
     /****************************************
      * Returns: offset + nbytes
      */
-    extern (C++) size_t insert(size_t offset, const(void)* p, size_t nbytes) pure nothrow
+    fun insert(offset: Int, p: BytePtr, nbytes: Int): Int
     {
         spread(offset, nbytes)
         memmove(data_ + offset, p, nbytes)
         return offset + nbytes
     }
 
-    size_t insert(size_t offset, const(char)[] s) pure nothrow
+    fun insert(offset: Int,  s: ByteSlice): Int
     {
-        return insert(offset, s.ptr, s.length)
+        return insert(offset, s.ptr(), s.length)
     }
 
-    extern (C++) void remove(size_t offset, size_t nbytes) pure nothrow @nogc
+    fun remove(offset: Int, nbytes: Int)
     {
         memmove(data_ + offset, data_ + offset + nbytes, this.offset - (offset + nbytes))
         this.offset -= nbytes
     }
 
-    extern (D) const(char)[] peekSlice() pure nothrow @nogc
+    fun peekSlice(): ByteSlice
     {
-        return (cast(const char*)data_)[0 .. offset]
+        return data_.slice(0, offset)
     }
 
     /***********************************
      * Extract the data_ as a slice and take ownership of it.
      */
-    extern (D) char[] extractSlice() pure nothrow @nogc
+    fun extractSlice(): ByteSlice
     {
-        auto length = offset
-        auto p = extractdata_()
-        return p[0 .. length]
+        val length = offset
+        val p = extractData()
+        return p.slice(0, length)
     }
 
     // Append terminating null if necessary and get view of internal buffer
-    extern (C++) char* peekChars() pure nothrow
+    fun peekChars(): BytePtr
     {
-        if (!offset || data_[offset - 1] != '\0')
+        if (offset == 0 || data_[offset - 1] != 0.toByte())
         {
             writeByte(0)
             offset-- // allow appending more
         }
-        return cast(char*)data_
+        return data_
     }
 
     // Append terminating null if necessary and take ownership of data_
-    extern (C++) char* extractChars() pure nothrow
+    fun extractChars(): BytePtr
     {
-        if (!offset || data_[offset - 1] != '\0')
+        if (offset == 0 || data_[offset - 1] != 0.toByte())
             writeByte(0)
-        return extractdata_()
+        return extractData()
     }
-
 }

@@ -1,5 +1,7 @@
 package org.dlang.dmd.root
 
+import java.util.*
+
 class Slice<T> (val data: Array<T>, var beg: Int, var end: Int) {
 
     constructor(arr: Array<T>) : this(arr, 0, arr.size)
@@ -20,6 +22,7 @@ class Slice<T> (val data: Array<T>, var beg: Int, var end: Int) {
         return Slice(data, from+beg, end)
     }
 
+    fun slice(): Slice<T>  = Slice(data, beg, end)
 
     val length: Int
         get() = end - beg
@@ -47,6 +50,8 @@ class Slice<T> (val data: Array<T>, var beg: Int, var end: Int) {
 
 class ByteSlice(val data: ByteArray, var beg: Int, var end: Int) {
 
+    constructor(): this(ByteArray(0))
+
     constructor(s: String) : this(s.toByteArray())
 
     constructor(arr: ByteArray) : this(arr, 0, arr.size)
@@ -60,6 +65,8 @@ class ByteSlice(val data: ByteArray, var beg: Int, var end: Int) {
     fun set(value: Byte) = data.fill(value, beg, end)
 
     fun ptr() = BytePtr(data, beg)
+
+    fun toBytePtr() = ptr()
 
     fun slice(from:Int, to:Int): ByteSlice {
         return ByteSlice(data, from+beg, to+beg)
@@ -89,6 +96,8 @@ class ByteSlice(val data: ByteArray, var beg: Int, var end: Int) {
     override fun hashCode(): Int {
         return data.hashCode() + 17 * beg + 31 * end
     }
+
+    override fun toString(): String = String(data, beg, end - beg)
 }
 
 class CharSlice(val data: CharArray, var beg: Int, var end: Int) {

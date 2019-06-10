@@ -4,8 +4,6 @@ import junit.framework.TestCase
 
 
 data class int(val v: Int) : RootObject() {
-    override fun toBuffer(buf: OutBuffer) { }
-
     override fun toChars() = BytePtr("$v".toByteArray(), 0)
 }
 

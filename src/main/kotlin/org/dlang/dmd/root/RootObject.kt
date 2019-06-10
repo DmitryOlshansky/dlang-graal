@@ -26,7 +26,9 @@ abstract class RootObject {
         return String(slice.data, slice.beg, slice.length)
     }
 
-    abstract fun toBuffer(buf: OutBuffer):Unit
+    fun toBuffer(buf: OutBuffer) = {
+        buf.writestring(toChars())
+    }
 
     open fun dyncast() = DYNCAST._object
 }

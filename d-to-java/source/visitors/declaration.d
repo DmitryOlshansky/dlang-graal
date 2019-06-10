@@ -4,6 +4,8 @@ import core.stdc.stdio;
 
 import ds.buffer;
 
+import dmd.aggregate;
+import dmd.attrib;
 import dmd.dclass;
 import dmd.denum;
 import dmd.dimport;
@@ -17,6 +19,7 @@ import dmd.identifier;
 import dmd.init;
 import dmd.mtype;
 import dmd.statement;
+import dmd.staticassert;
 import dmd.tokens;
 import dmd.visitor : SemanticTimeTransitiveVisitor;
 
@@ -49,6 +52,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     TextBuffer buf;
     TextBuffer header;
     FuncDeclaration[] stack;
+    AggregateDeclaration[] aggregates;
     string moduleName;
     string[] constants; // all local static vars are collected here
     ExprOpts opts;
@@ -60,6 +64,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf = new TextBuffer();
         header = new TextBuffer();
         header.put("package org.dlang.dmd;\n");
+        header.put("\nimport kotlin.jvm.functions.*;\n");
         header.put("\nimport org.dlang.dmd.root.*;\n");
         header.put("\nimport static org.dlang.dmd.root.UtilsKt.*;\n");
         header.put("import static org.dlang.dmd.root.SliceKt.*;\n");
@@ -86,38 +91,54 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     }
 
     override void visit(VarDeclaration var) {
-        bool pushToGlobal = var.isStatic() || (var.storage_class & STC.gshared);
-        void printVar(VarDeclaration var, string kind, const(char)[] ident, TextBuffer buf) {
+        bool pushToGlobal = var.isStatic() || (var.storage_class & STC.gshared) || (stack.empty && aggregates.empty);
+        bool printVar(VarDeclaration var, const(char)[] ident, TextBuffer buf) {
             string storage;
+            bool hadInitializer = false;
             if (pushToGlobal) storage = "static ";
-            buf.fmt("%s%s%s %s",  storage, kind, toJava(var.type), ident);
+            buf.fmt("%s%s %s",  storage, toJava(var.type), ident);
             if (var._init) {
                 ExpInitializer ie = var._init.isExpInitializer();
                 if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit)) {
                     buf.fmt(" = ");
                     buf.put((cast(AssignExp)ie.exp).e2.toJava(opts));
                 }
-                else if(!ie && var.type.ty == Tsarray && pushToGlobal) {
-                    auto st = cast(TypeSArray)var.type;
-                    if (pushToGlobal) buf.fmt(" = new %s(%s)", var.type.toJava, st.dim.toJava(opts));
-                }
                 else {
                     buf.fmt(" = ");
                     initializerToBuffer(var._init, buf, var.type.ty == Tpointer && var.type.nextOf().ty == Tchar);
                 }
+                hadInitializer = true;
+            }
+            else if(var.type.ty == Tsarray && pushToGlobal) {
+                auto st = cast(TypeSArray)var.type;
+                if (pushToGlobal) buf.fmt(" = new %s(new %s[%s])", var.type.toJava, var.type.nextOf.toJava, st.dim.toJava(opts));
+                hadInitializer = true;
             }
             buf.fmt(";\n");
+            return hadInitializer;
         }
-        if (var.type.toJava == "TypeInfo_Const") return;
-        if (var.isStatic() || (var.storage_class & STC.gshared)) {
-            auto id = stack.length ? stack[$-1].ident.toString ~ var.ident.toString : var.ident.toString;
+        if (var.type.toJava.startsWith("TypeInfo_")) return;
+        if (pushToGlobal) {
             auto temp = new TextBuffer();
-            printVar(var, "final ", id, temp);
+            bool forwardVar = true;
+            const(char)[] id;
+            if (stack.length)
+                id = stack[$-1].ident.toString ~ var.ident.toString;
+            else if(aggregates.length)
+                id = aggregates[$-1].ident.toString ~ var.ident.toString;
+            else {
+                id = var.ident.toString;
+                forwardVar = false;
+            }
+            forwardVar &= printVar(var, id, temp);
             constants ~= temp.data.idup;
-            buf.fmt("%s %s = %s.%s;\n",  toJava(var.type), var.ident.toString, moduleName, id);
+            if (forwardVar) {
+                string storage = stack.empty && (var.isStatic() || (var.storage_class & STC.gshared)) ? "static " : "";
+                buf.fmt("%s%s %s = %s.%s;\n", storage, toJava(var.type), var.ident.toString, moduleName, id);
+            }
         }
         else {
-            printVar(var, "", var.ident.toString, buf);
+            printVar(var, var.ident.toString, buf);
         }
     }
 
@@ -249,10 +270,30 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
     }
 
-    override void visit(StaticAssertStatement s)
+    override void visit(StaticAssert s)
     {
         fprintf(stderr, "%s\n", s.toChars());
         // ignore and do not recurse into
+    }
+
+    override void visit(StaticCtorDeclaration ctor)
+    {
+        buf.put("{\n");
+        buf.indent;
+        if (ctor.fbody)
+            ctor.fbody.accept(this);
+        buf.outdent;
+        buf.put("}\n");
+    }
+
+    override void visit(SharedStaticCtorDeclaration ctor)
+    {
+        buf.put("{\n");
+        buf.indent;
+        if (ctor.fbody)
+            ctor.fbody.accept(this);
+        buf.outdent;
+        buf.put("}\n");
     }
 
     override void visit(Import imp)
@@ -272,6 +313,15 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 header.fmt("%s.", pid.toString());
             }
             header.fmt("%s.*;\n", imp.id.toString(), imp.id.toString());
+        }
+    }
+
+    override void visit(CompileDeclaration compile)
+    {
+        foreach (e; *compile.exps) {
+            auto s = cast(StringExp)e.ctfeInterpret();
+            buf.put(s.string[0..s.len]);
+            buf.put("\n");
         }
     }
 
@@ -457,6 +507,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(StructDeclaration d)
     {
+        aggregates ~= d;
         buf.put("static class ");
         if (!d.isAnonymous())
             buf.put(d.toString());
@@ -475,10 +526,12 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.outdent;
         buf.put('}');
         buf.put('\n');
+        aggregates = aggregates[0..$-1];
     }
 
     override void visit(ClassDeclaration d)
     {
+        aggregates ~= d;
         if (!d.isAnonymous())
         {
             buf.fmt("static class %s", d.ident.toString());
@@ -496,6 +549,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         else
             buf.put(';');
         buf.put('\n');
+        aggregates = aggregates[0..$-1];
     }
 
     private void visitBase(ClassDeclaration d)
@@ -575,7 +629,8 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 tmp = new TextBuffer();
                 auto t = ai.type;
                 string suffix = "";
-                while(t.ty == Tarray || t.ty == Tsarray) {
+                // string literals are byte arrays, exclude them
+                while((t.ty == Tarray || t.ty == Tsarray) && t.nextOf.ty != Tchar) {
                     suffix ~= "[]";
                     t = t.nextOf();
                 }
@@ -583,22 +638,29 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 tmp.fmt("private static final %s%s initializer_%d = ", t.toJava, suffix, arrayInitializers.length);
             }
             tmp.fmt("{", ai.type.nextOf());
-            foreach (i, ex; ai.index)
+            Initializer[] arr = new Initializer[ai.index.length];
+            foreach (i, ex; ai.index) // assume dense packing
+            {
+                if (ex)
+                {
+                    auto ie = ex.isIntegerExp();
+                    if (arr.length < ie.toInteger) arr.length = ie.toInteger + 1;
+                    arr[ie.toInteger] = ai.value[i];
+                }
+                else
+                    arr[i] = ai.value[i];
+            }
+            foreach (i, iz; arr[])
             {
                 if (i)
                     tmp.put(", ");
-                if (ex)
-                {
-                    tmp.put(ex.toJava(opts));
-                    tmp.put(':');
-                }
-                if (auto iz = ai.value[i])
-                    initializerToBuffer(iz, tmp, false);
+                if (iz) initializerToBuffer(iz, tmp, false);
+                else tmp.put("null");
             }
             tmp.put("}");
             if (inInitializer == 1) {
+                fprintf(stderr, "Array init end %lld\n", arrayInitializers.length);
                 arrayInitializers ~= tmp.data.idup;
-                fprintf(stderr, "Array init %lld\n", arrayInitializers.length);
                 buf.fmt("slice(initializer_%d)", arrayInitializers.length-1);
             }
             inInitializer--;

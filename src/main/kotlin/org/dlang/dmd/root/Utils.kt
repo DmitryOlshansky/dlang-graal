@@ -28,6 +28,19 @@ fun memmove(dest: BytePtr, from: BytePtr, size: Int)  {
     from.data.copyInto(dest.data, dest.offset, from.offset, from.offset + size)
 }
 
+fun memset(data: BytePtr, value: Int, nbytes: Int) {
+    data.data.fill(value.toByte(), data.offset, data.offset + nbytes)
+}
+
+fun xmalloc(size: Int) = BytePtr(size)
+
+// compatibility shim
+object mem {
+    fun malloc(size: Int) = BytePtr(size)
+}
+
+fun<T> slice(arr: Array<T>): Slice<T>  = Slice(arr)
+
 fun<T> slice(arr: Array<Array<T>>): Slice<Slice<T>> {
     return Slice(arr.map { Slice(it) }.toTypedArray())
 }
@@ -35,6 +48,11 @@ fun<T> slice(arr: Array<Array<T>>): Slice<Slice<T>> {
 fun slice(arr: Array<CharArray>): Slice<CharSlice> {
     return Slice(arr.map { CharSlice(it) }.toTypedArray())
 }
+
+fun slice(arr: Array<ByteArray>): Slice<ByteSlice> {
+    return Slice(arr.map { ByteSlice(it) }.toTypedArray())
+}
+
 
 fun slice(arr: CharArray) = CharSlice(arr)
 

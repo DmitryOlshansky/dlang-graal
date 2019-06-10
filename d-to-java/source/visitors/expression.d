@@ -88,7 +88,6 @@ public:
         if (e.type)
         {
             Type t = e.type;
-            string tail = "";
             string castTarget = "";
         L1:
             switch (t.ty)
@@ -98,10 +97,15 @@ public:
                     TypeEnum te = cast(TypeEnum)t;
                     auto sym = te.sym;
                     if (opts.inEnumDecl != sym)
-                    {
-                        buf.printf("%s(", te.sym.toChars());
-                        tail = ")";
-                    }
+                        foreach(i;0 .. sym.members.dim)
+                        {
+                            EnumMember em = cast(EnumMember) (*sym.members)[i];
+                            if (em.value.toInteger == v)
+                            {
+                                buf.printf("%s.%s", sym.toChars(), em.ident.toChars());
+                                return ;
+                            }
+                        }
                     t = sym.memtype;
                     goto L1;
                 }
@@ -118,12 +122,7 @@ public:
                 goto case;
             case Tchar:
                 {
-                    if (v == '\'')
-                        buf.writestring("'\\''");
-                    else if (isprint(cast(int)v) && v != '\\')
-                        buf.printf("'%c'", cast(int)v);
-                    else
-                        buf.printf("'\\u%04x'", cast(int)v);
+                    buf.printf("(byte)%d", cast(int)v);
                     break;
                 }
             case Tint8:
@@ -167,7 +166,6 @@ public:
                 }
                 break;
             }
-            buf.writestring(tail);
         }
         else if (v & 0x8000000000000000L)
             buf.printf("0x%llx", v);
@@ -182,7 +180,10 @@ public:
 
     override void visit(IdentifierExp e)
     {
-        buf.writestring(e.ident.toString());
+        if (e.ident.toString == "toString") // avoid Java's toString
+            buf.writestring("asString");
+        else
+            buf.writestring(e.ident.toString());
     }
 
     override void visit(DsymbolExp e)
@@ -399,7 +400,8 @@ public:
          * are handled in visit(ExpStatement), so here would be used only when
          * we'll directly call Expression.toChars() for debugging.
          */
-        assert(0);
+        //TODO:  Comma expression gets us here, fix it
+        // assert(0);
     }
 
     override void visit(TypeidExp e)
@@ -670,7 +672,7 @@ public:
     override void visit(ArrayLengthExp e)
     {
         expToBuffer(e.e1, PREC.primary, buf, opts);
-        buf.writestring(".length");
+        buf.writestring(".getLength()");
     }
 
     override void visit(IntervalExp e)
