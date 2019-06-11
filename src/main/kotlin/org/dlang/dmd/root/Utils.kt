@@ -16,6 +16,16 @@ fun strchr(ptr: BytePtr, c: Byte): BytePtr? {
     return null
 }
 
+fun sprintf(ptr: BytePtr, fmt: ByteSlice, vararg args: Any?) {
+    val s = String.format(fmt.toString(), args)
+    var i = 0
+    for (c in s) {
+        ptr[i++] = c.toByte()
+    }
+}
+
+fun isprint(c: Int) = !Character.isISOControl(c)
+
 
 fun realloc(ptr: BytePtr, size: Int): BytePtr  {
     require(ptr.offset == 0)
@@ -32,11 +42,9 @@ fun memset(data: BytePtr, value: Int, nbytes: Int) {
     data.data.fill(value.toByte(), data.offset, data.offset + nbytes)
 }
 
-fun xmalloc(size: Int) = BytePtr(size)
-
 // compatibility shim
-object mem {
-    fun malloc(size: Int) = BytePtr(size)
+object Mem {
+    fun xmalloc(size: Int) = BytePtr(size)
 }
 
 fun<T> slice(arr: Array<T>): Slice<T>  = Slice(arr)
@@ -53,7 +61,6 @@ fun slice(arr: Array<ByteArray>): Slice<ByteSlice> {
     return Slice(arr.map { ByteSlice(it) }.toTypedArray())
 }
 
-
 fun slice(arr: CharArray) = CharSlice(arr)
 
 fun slice(arr: IntArray) = IntSlice(arr)
@@ -64,3 +71,5 @@ fun<T> ref(v: T) = Ref(v)
 
 fun<T> ref(v: Ref<T>) = v
 
+// stub out speller
+fun<T> speller(fn: (ByteSlice, IntRef) -> T) = null

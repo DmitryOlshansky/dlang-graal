@@ -5,7 +5,7 @@ import dmd.dmodule : Module;
 import dmd.dsymbol : Dsymbol;
 import dmd.globals : Global;
 
-import std.file : readFile = read;
+import std.file : readFile = read, writeFile = write;
 import std.getopt, std.path, std.stdio;
 
 import visitors.declaration;
@@ -99,19 +99,25 @@ Module runSemanticAnalyzer(Module module_, const string[] stringImportPaths)
 void main(string[] args) {
 	string[] importPaths;
 	string[] stringImportPaths;
+    string outputDir = ".";
 	auto resp = getopt(args,
 		"I", &importPaths,
-		"J", &stringImportPaths
+		"J", &stringImportPaths,
+        "out", &outputDir
 	);
 
 	if (resp.helpWanted) {
 		defaultGetoptPrinter("Some information about the program.", resp.options);
 		return;
 	}
-	foreach (target; args[1..$]) {
-		const content = cast(string)readFile(target);
-		auto m = runFullFrontend(baseName(target), content, ["NoBackend", "NoMain", "MARS"], importPaths, stringImportPaths);
-		writeln(m.toJava);
+	foreach (source; args[1..$]) {
+		const content = cast(string)readFile(source);
+        const mod = baseName(source);
+        const java = mod[0..$-2] ~ ".java";
+        stderr,.writefln("\nConverting %s -> %s", mod, java);
+        const target = outputDir ~ "/" ~ java;
+		auto m = runFullFrontend(mod, content, ["NoBackend", "NoMain", "MARS"], importPaths, stringImportPaths);
+		writeFile(target, m.toJava);
 	}
 	
 }

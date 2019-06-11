@@ -38,6 +38,7 @@ import dmd.visitor;
 struct ExprOpts {
     bool wantCharPtr = false;
     EnumDeclaration inEnumDecl = null;
+    FuncDeclaration inFuncDecl = null;
     bool[string] refParams; //out and ref params, they must be boxed
 }
 
@@ -110,16 +111,9 @@ public:
                     goto L1;
                 }
             case Twchar:
-                // BUG: need to cast(wchar)
-                goto case;
             case Tdchar:
-                // BUG: need to cast(dchar)
-                if (cast(uinteger_t)v > 0xFF)
-                {
-                    buf.printf("'\\u%04x'", v);
-                    break;
-                }
-                goto case;
+                buf.printf("'\\u%04x'", v);
+                break;
             case Tchar:
                 {
                     buf.printf("(byte)%d", cast(int)v);
@@ -360,6 +354,8 @@ public:
 
     override void visit(VarExp e)
     {
+        if (e.var.isMember() && e.var.isStatic())
+            buf.printf("%s.", e.var.parent.ident.toChars());
         buf.writestring(e.var.toChars());
         if (e.var.ident.toString in opts.refParams) 
             buf.writestring(".value");
@@ -472,11 +468,55 @@ public:
 
     override void visit(BinExp e)
     {
+        static class ByteSizedVisitor : StoppableVisitor {
+            bool isByteSized = false;
+            void visit(CastExp e) {
+                auto t = c.e1.type.ty;
+                if (t == Tchar || t == Tint8 || t == Tuns8) {
+                    isByteSized = true;
+                    stop = true;
+                }
+            }
+        }
+        static bool isByteSized(Expression e) {
+            scope v = new ByteSizedVisitor();
+            walkPostorder(e, v);
+            if (auto b = e.isBinExp()) {
+                return isByteSized(b.e1) || isByteSized(b.e2);
+            }
+            if (auto c = e.isCastExp()) {
+                
+            }
+            return false;
+        }
+        void toByteRight() {
+            expToBuffer(e.e1.isCastExp().e1, precedence[e.op], buf, opts);
+            buf.writeByte(' ');
+            buf.writestring(Token.toString(e.op));
+            buf.writeByte(' ');
+            buf.writestring("(byte)");
+            expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
+        }
+        void toByteLeft() {
+            buf.writestring("(byte)");
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
+            buf.writeByte(' ');
+            buf.writestring(Token.toString(e.op));
+            buf.writeByte(' ');
+            expToBuffer(e.e2.isCastExp().e1, cast(PREC)(precedence[e.op] + 1), buf, opts);
+        }
         if ((e.op == TOK.equal || e.op == TOK.notEqual) && !e.e1.type.isTypeBasic) {
+            expToBuffer(e.e1, cast(PREC)(precedence[e.op] + 1), buf, opts);
             buf.writestring(".equals(");
             expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
             buf.writestring(")");
             return;
+        }
+        else if (isByteSized(e.e1) && !isByteSized(e.e2)) {
+            return toByteRight();
+        }
+        else if(!isByteSized(e.e1) && isByteSized(e.e2)){
+            return toByteLeft();
         }
         expToBuffer(e.e1, precedence[e.op], buf, opts);
         buf.writeByte(' ');
@@ -503,6 +543,13 @@ public:
 
     override void visit(AssertExp e)
     {
+        if (e.e1.isIntegerExp()) {
+            auto i = e.e1.isIntegerExp();
+            if (i.toInteger() == 0) {
+                buf.writestring("throw new AssertionError(\"Unreachable code!\")");
+                return;
+            }
+        }
         buf.writestring("assert(");
         expToBuffer(e.e1, PREC.assign, buf, opts);
         if (e.e1.type.ty == Tint32) buf.writestring(" != 0");
@@ -561,6 +608,7 @@ public:
 
     override void visit(CallExp e)
     {
+        //fprintf(stderr, "call exp %s\n", e.e1.toChars());
         if (e.e1.op == TOK.type)
         {
             /* Avoid parens around type to prevent forbidden cast syntax:
@@ -721,7 +769,20 @@ public:
             sizeToBuffer(e.e2, buf, opts);
             buf.writeByte(')');
         }
-        else visit(cast(BinExp)e);
+        else if(auto pt = e.e1.isPtrExp()) {
+            expToBuffer(pt.e1, PREC.primary, buf, opts);
+            buf.writestring(".set(0, ");
+            expToBuffer(e.e2, PREC.primary, buf, opts);
+            buf.writeByte(')');
+        }
+        else if(e.e1.type.ty == Tpointer && e.e1.type.nextOf.ty == Tchar) {
+            auto old = opts.wantCharPtr;
+            opts.wantCharPtr = true;
+            scope(exit) opts.wantCharPtr = old;
+            visit(cast(BinExp)e);
+        }
+        else
+            visit(cast(BinExp)e);
     }
 
     override void visit(IndexExp e)
@@ -1014,7 +1075,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
 
     void visitAArray(TypeAArray t)
     {
-        buf.writestring("AA<");
+        buf.writestring("AssocArray<");
         typeToBufferx(t.next, buf, Boxing.yes);
         buf.writeByte(',');
         typeToBufferx(t.index, buf, Boxing.yes);

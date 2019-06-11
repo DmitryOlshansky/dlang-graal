@@ -567,9 +567,18 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(FuncDeclaration func)  {
         stack ~= func;
+
+        auto oldFunc = opts.inFuncDecl;
+        scope(exit) opts.inFuncDecl = oldFunc;
+        opts.inFuncDecl = func;
+
+        auto oldRefParams = opts.refParams;
+        scope(exit) opts.refParams = oldRefParams;
         opts.refParams = null;
+
         fprintf(stderr, "%s\n", func.ident.toChars());
-        buf.fmt("public %s %s(", toJava(func.type.nextOf()), func.ident.toString);
+        auto storage = func.isStatic() ? "static" : "";
+        buf.fmt("public %s %s %s(", storage, toJava(func.type.nextOf()), func.ident.toString);
         if (func.parameters)
             foreach(i, p; (*func.parameters)[]) {
                 if (i != 0) buf.fmt(", ");
