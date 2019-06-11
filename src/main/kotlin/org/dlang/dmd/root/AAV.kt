@@ -1,7 +1,7 @@
 package org.dlang.dmd.root
 
 class AssocArray<K,V> {
-    val table = HashMap<K, Ref<V?>>()
+    val table = HashMap<K, Ptr<Any?>>()
 
     /**
     Returns: The number of key/value pairs.
@@ -18,13 +18,13 @@ class AssocArray<K,V> {
     Returns: the address to the value associated with `key`. If `key` does not exist, it
     is added and the address to the new value is returned.
      */
-    fun getLvalue(key: K): Ref<V?> {
+    fun getLvalue(key: K): Ptr<V?> {
         val v = table[key]
-        if (v !== null) return v
+        if (v !== null) return v as Ptr<V?>
         else {
-            val newValue = ref(null as V?)
+            val newValue = Ptr<Any?>(arrayOfNulls(1))
             table[key] = newValue
-            return newValue
+            return newValue as Ptr<V?>
         }
     }
 
@@ -37,5 +37,5 @@ class AssocArray<K,V> {
 
     Returns: the value associated with `key` if present, otherwise, null.
      */
-    fun opIndex(key: K): Ref<V?>?  = table[key]
+    fun opIndex(key: K): Ptr<V?>?  = table[key] as Ptr<V?>?
 }

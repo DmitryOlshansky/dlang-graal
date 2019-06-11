@@ -16,12 +16,18 @@ fun strchr(ptr: BytePtr, c: Byte): BytePtr? {
     return null
 }
 
+fun strcat(dest: BytePtr, src: ByteSlice) {
+    val len = strlen(dest)
+    src.data.copyInto(dest.data, dest.offset + len, src.beg, src.end)
+}
+
 fun sprintf(ptr: BytePtr, fmt: ByteSlice, vararg args: Any?) {
     val s = String.format(fmt.toString(), args)
     var i = 0
     for (c in s) {
         ptr[i++] = c.toByte()
     }
+    ptr[i] = 0.toByte()
 }
 
 fun isprint(c: Int) = !Character.isISOControl(c)
@@ -40,11 +46,6 @@ fun memmove(dest: BytePtr, from: BytePtr, size: Int)  {
 
 fun memset(data: BytePtr, value: Int, nbytes: Int) {
     data.data.fill(value.toByte(), data.offset, data.offset + nbytes)
-}
-
-// compatibility shim
-object Mem {
-    fun xmalloc(size: Int) = BytePtr(size)
 }
 
 fun<T> slice(arr: Array<T>): Slice<T>  = Slice(arr)

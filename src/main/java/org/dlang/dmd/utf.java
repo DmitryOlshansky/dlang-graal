@@ -128,7 +128,7 @@ public class utf {
         int i = ridx.value++;
         assert(i < len);
         byte u = s.get(i);
-        (byte)rresult.value = u;
+        rresult.value = u;
         int n = UTF8_STRIDE.get((int)u);
         switch (n)
         {
@@ -153,15 +153,15 @@ public class utf {
         }
         if (len < i + n)
             return new BytePtr("Truncated UTF-8 sequence");
-        int c = (u & (byte)(1 << (7 - n)) - 1);
+        int c = (u & ((byte)1 << ((byte)7 - n)) - (byte)1);
         byte u2 = s.get(i += 1);
-        if ((u & (byte)254) == (byte)192 || u == (byte)224 && ((u2 & (byte)224) == 128) || u == (byte)240 && ((u2 & (byte)240) == 128) || u == (byte)248 && ((u2 & (byte)248) == 128) || u == (byte)252 && ((u2 & (byte)252) == 128))
+        if ((u & (byte)254) == (byte)192 || u == (byte)224 && ((u2 & (byte)224) == (byte)128) || u == (byte)240 && ((u2 & (byte)240) == (byte)128) || u == (byte)248 && ((u2 & (byte)248) == (byte)128) || u == (byte)252 && ((u2 & (byte)252) == (byte)128))
             return new BytePtr("Overlong UTF-8 sequence");
         {
             n += i - 1;
             for (; i != n;i += 1){
                 u = s.get(i);
-                if ((u & (byte)192) != 128)
+                if ((u & (byte)192) != (byte)128)
                     return new BytePtr("Invalid trailing code unit");
                 c = (c << 6 | (u & (byte)63));
             }

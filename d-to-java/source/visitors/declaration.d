@@ -600,7 +600,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     private void initializerToBuffer(Initializer inx, TextBuffer buf, bool wantCharPtr)
     {
-        auto opts = ExprOpts(wantCharPtr, null);
+        auto opts = ExprOpts(wantCharPtr, false, null);
         void visitError(ErrorInitializer iz)
         {
             buf.fmt("__error__");
