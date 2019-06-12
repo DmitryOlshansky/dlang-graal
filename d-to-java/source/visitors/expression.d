@@ -4,6 +4,8 @@ import core.stdc.ctype;
 import core.stdc.stdio;
 import core.stdc.string;
 
+import std.string;
+
 import dmd.aggregate;
 import dmd.apply;
 import dmd.aliasthis;
@@ -50,7 +52,9 @@ string toJava(Type t, Identifier id = null, Boxing boxing = Boxing.no) {
     typeToBuffer(t, id, buf, boxing);
     buf.writeByte(0);
     char* p = buf.extractData;
-    return cast(string)p[0..strlen(p)];
+    auto type = cast(string)p[0..strlen(p)];
+    type = type.replace("Array", "DArray");
+    return type;
 }
 
 ///
@@ -61,6 +65,43 @@ string toJava(Expression e, ExprOpts opts) {
     buf.writeByte(0);
     char* p = v.buf.extractData;
     return cast(string)p[0..strlen(p)];
+}
+
+private bool isJavaByte(Type t) {
+    return t.ty == Tchar || t.ty == Tint8 || t.ty == Tuns8;
+}
+
+
+private extern(C++) class ByteSizedVisitor : Visitor {
+    bool isByteSized = false;
+    alias visit = typeof(super).visit;
+    
+    override void visit(Expression ) {}
+
+    override void visit(UnaExp u) {
+        u.e1.accept(this);
+    }
+
+    override void visit(BinExp b) {
+        b.e1.accept(this);
+        b.e2.accept(this);
+    }
+
+    override void visit(CastExp e) {
+        auto t = e.e1.type;
+        if (isJavaByte(t)) {
+            isByteSized = true;
+        }
+        else if(auto et = t.isTypeEnum()) {
+            isByteSized = isJavaByte(et.memType);
+        }
+    }
+}
+
+public bool isByteSized(Expression e) {
+    scope v = new ByteSizedVisitor();
+    e.accept(v);
+    return v.isByteSized;
 }
 
 ///
@@ -472,29 +513,6 @@ public:
 
     override void visit(BinExp e)
     {
-        static extern(C++) class ByteSizedVisitor : Visitor {
-            bool isByteSized = false;
-            alias visit = typeof(super).visit;
-            
-            override void visit(Expression ) {}
-
-            override void visit(BinExp b) {
-                b.e1.accept(this);
-                b.e2.accept(this);
-            }
-
-            override void visit(CastExp e) {
-                auto t = e.e1.type.ty;
-                if (t == Tchar || t == Tint8 || t == Tuns8) {
-                    isByteSized = true;
-                }
-            }
-        }
-        static bool isByteSized(Expression e) {
-            scope v = new ByteSizedVisitor();
-            e.accept(v);
-            return v.isByteSized;
-        }
         bool oldIntPromotion = opts.reverseIntPromotion;
         if ((e.op == TOK.equal || e.op == TOK.notEqual) && !e.e1.type.isTypeBasic) {
             expToBuffer(e.e1, cast(PREC)(precedence[e.op] + 1), buf, opts);
@@ -1050,10 +1068,8 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
     void visitDArray(TypeDArray t)
     {
         Type ut = t.castMod(0);
-        if (ut.equals(Type.tstring))
+        if (ut.ty == Tarray && t.next.ty == Tchar)
             buf.writestring("ByteSlice");
-        //else if (t.ty == Tpointer && t.next.ty == Tchar)
-        //    buf.writestring("BytePtr");
         else if (ut.ty == Tarray && t.next.ty == Twchar)
             buf.writestring("CharSlice");
         else if (ut.ty == Tarray && t.next.ty == Tdchar)
@@ -1193,8 +1209,16 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
         // Don't use ti.toAlias() to avoid forward reference error
         // while printing messages.
         TemplateInstance ti = t.sym.parent ? t.sym.parent.isTemplateInstance() : null;
-        if (ti && ti.aliasdecl == t.sym)
-            buf.writestring(ti.toChars());
+        if (ti && ti.aliasdecl == t.sym) {
+            buf.writestring(ti.name.toChars());
+            buf.writestring("<");
+            foreach(i, arg; (*ti.tiargs)[]) {
+                if(i) buf.writestring(",");
+                if (auto atype = isType(arg)) buf.writestring(atype.toJava);
+                else buf.writestring(arg.toChars());
+            }
+            buf.writestring(">");
+        }
         else
             buf.writestring(t.sym.toChars());
     }

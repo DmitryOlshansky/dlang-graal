@@ -25,7 +25,7 @@ import dmd.visitor : SemanticTimeTransitiveVisitor;
 
 import std.array, std.format, std.string, std.range;
 
-import visitors.expression : Boxing, ExprOpts, toJava;
+import visitors.expression : Boxing, ExprOpts, toJava, isByteSized;
 
 string refType(Type t) {
     if(t.ty == Tint32 || t.ty == Tuns32 || t.ty == Tdchar) {
@@ -51,12 +51,13 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     alias visit = typeof(super).visit;
     TextBuffer buf;
     TextBuffer header;
+    bool bytesInSwitch = false;
     FuncDeclaration[] stack;
     AggregateDeclaration[] aggregates;
     string moduleName;
     string[] constants; // all local static vars are collected here
     ExprOpts opts;
-
+    
     int inInitializer; // to avoid recursive decomposition of arrays
     string[] arrayInitializers;
     
@@ -71,71 +72,59 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     }
 
     void onModuleStart(Module mod){
-        buf.fmt("\npublic class %s {\n", moduleName);
         buf.indent;
     }
 
     ///
     void onModuleEnd() {
+        header.fmt("\npublic class %s {\n", moduleName);
+        header.indent;
+        fprintf(stderr, "Arrays on module end %lld\n", arrayInitializers.length);
+        foreach (i, v; arrayInitializers) {
+            header.fmt("%s;\n", v);
+        }
         if (constants.length)  {
-            fprintf(stderr, "Arrays on module end %lld\n", arrayInitializers.length);
-            foreach (i, v; arrayInitializers) {
-                buf.fmt("%s;\n", v);
-            }
             foreach(var; constants) {
                 buf.put(var);
             }
         }
+        header.outdent;
         buf.outdent;
         buf.fmt("}\n");
     }
 
-    override void visit(VarDeclaration var) {
-        bool pushToGlobal = var.isStatic() || (var.storage_class & STC.gshared) || (stack.empty && aggregates.empty);
-        bool printVar(VarDeclaration var, const(char)[] ident, TextBuffer buf) {
-            string storage;
-            bool hadInitializer = false;
-            if (pushToGlobal) storage = "static ";
-            buf.fmt("%s%s %s",  storage, toJava(var.type), ident);
-            if (var._init) {
-                ExpInitializer ie = var._init.isExpInitializer();
-                if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit)) {
-                    buf.fmt(" = ");
-                    buf.put((cast(AssignExp)ie.exp).e2.toJava(opts));
-                }
-                else {
-                    buf.fmt(" = ");
-                    initializerToBuffer(var._init, buf, var.type.ty == Tpointer && var.type.nextOf().ty == Tchar);
-                }
-                hadInitializer = true;
+    extern(D) private void printVar(VarDeclaration var, const(char)[] ident, TextBuffer sink) {
+        bool staticInit = var.isStatic() || (var.storage_class & STC.gshared) || (stack.empty && aggregates.empty);
+        sink.fmt("%s%s %s",  staticInit ? "static " : "", toJava(var.type), ident);
+        if (var._init) {
+            ExpInitializer ie = var._init.isExpInitializer();
+            if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit)) {
+                sink.fmt(" = ");
+                sink.put((cast(AssignExp)ie.exp).e2.toJava(opts));
             }
-            else if(var.type.ty == Tsarray && pushToGlobal) {
-                auto st = cast(TypeSArray)var.type;
-                if (pushToGlobal) buf.fmt(" = new %s(new %s[%s])", var.type.toJava, var.type.nextOf.toJava, st.dim.toJava(opts));
-                hadInitializer = true;
+            else {
+                sink.fmt(" = ");
+                initializerToBuffer(var._init, sink, var.type.ty == Tpointer && var.type.nextOf().ty == Tchar);
             }
-            buf.fmt(";\n");
-            return hadInitializer;
         }
+        else if(var.type.ty == Tsarray) {
+            auto st = cast(TypeSArray)var.type;
+            sink.fmt(" = new %s(new %s[%s])", var.type.toJava, var.type.nextOf.toJava, st.dim.toJava(opts));
+        }
+        sink.fmt(";\n");
+    }
+
+
+    override void visit(VarDeclaration var) {
         if (var.type.toJava.startsWith("TypeInfo_")) return;
+        bool pushToGlobal = (var.isStatic() || (var.storage_class & STC.gshared)) && !stack.empty;
         if (pushToGlobal) {
             auto temp = new TextBuffer();
             bool forwardVar = true;
-            const(char)[] id;
-            if (stack.length)
-                id = stack[$-1].ident.toString ~ var.ident.toString;
-            else if(aggregates.length)
-                id = aggregates[$-1].ident.toString ~ var.ident.toString;
-            else {
-                id = var.ident.toString;
-                forwardVar = false;
-            }
-            forwardVar &= printVar(var, id, temp);
+            const(char)[] id = stack[$-1].ident.toString ~ var.ident.toString;
+            printVar(var, id, temp);
             constants ~= temp.data.idup;
-            if (forwardVar) {
-                string storage = stack.empty && (var.isStatic() || (var.storage_class & STC.gshared)) ? "static " : "";
-                buf.fmt("%s%s %s = %s.%s;\n", storage, toJava(var.type), var.ident.toString, moduleName, id);
-            }
+            buf.fmt("%s %s = %s.%s;\n", toJava(var.type), var.ident.toString, moduleName, id);
         }
         else {
             printVar(var, var.ident.toString, buf);
@@ -377,6 +366,11 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(SwitchStatement s)
     {
+        bool oldBytesInSwitch = bytesInSwitch;
+        if (isByteSized(s.condition))
+            bytesInSwitch = true;
+        else 
+            bytesInSwitch = false;
         buf.put("switch (");
         buf.put(s.condition.toJava(opts));
         buf.put(')');
@@ -398,11 +392,13 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 s._body.accept(this);
             }
         }
+        bytesInSwitch = oldBytesInSwitch;
     }
 
     override void visit(CaseStatement s)
     {
         buf.put("case ");
+        if (bytesInSwitch) buf.put("(byte)");
         buf.put(s.exp.toJava(opts));
         buf.put(':');
         buf.put('\n');
