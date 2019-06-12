@@ -21,7 +21,7 @@ import dmd.mtype;
 import dmd.statement;
 import dmd.staticassert;
 import dmd.tokens;
-import dmd.visitor : SemanticTimeTransitiveVisitor;
+import dmd.visitor : Visitor, SemanticTimeTransitiveVisitor;
 
 import std.array, std.format, std.string, std.range;
 
@@ -46,6 +46,32 @@ string toJava(Module mod) {
     mod.accept(v);
     v.onModuleEnd();
     return v.result;
+}
+
+extern(C++) class TerminatesVisitor : Visitor {
+    alias visit = typeof(super).visit;
+    bool terminates = false;
+
+    override void visit(CompoundStatement) {} // do shallow visit
+    override void visit(ScopeStatement) {} // do shallow visit
+
+    override void visit(ContinueStatement ){
+        terminates = true;
+    }
+
+    override void visit(BreakStatement ) {
+        terminates = true;
+    }
+
+    override void visit(ReturnStatement) {
+        terminates = true;
+    }
+}
+
+bool terminates(Statement s) {
+    scope v = new TerminatesVisitor();
+    s.accept(v);
+    return v.terminates;
 }
 
 extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
@@ -152,8 +178,11 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             (cast(DeclarationExp)s.exp).declaration.accept(this);
         }
         else if (s.exp) {
-            buf.put(s.exp.toJava(opts));
-            buf.put(";\n");
+            auto text = s.exp.toJava(opts);
+            if (text.length) {
+                buf.put(text);
+                buf.put(";\n");
+            }
         }
     }
 
@@ -439,7 +468,23 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(GotoDefaultStatement s)
     {
-        buf.put("goto default;\n");
+        buf.put("//goto default;\n");
+        auto sc = s.sw._body.isScopeStatement();
+        auto stmts = sc.statement.isCompoundStatement().statements;
+        bool needBreak = true;
+        if (stmts) {
+            foreach (i, st; *stmts) {
+                if (auto case_ = st.isDefaultStatement()) {
+                    auto toExpand = case_.statement.isScopeStatement().statement.isCompoundStatement();
+                    if(toExpand.statements) {
+                        auto last = (*toExpand.statements)[$-1];
+                        needBreak = !terminates(last);
+                    }
+                    case_.statement.accept(this); // expand default's code here
+                }
+            }
+        }
+        if (needBreak) buf.put("break;\n");
     }
 
     override void visit(GotoCaseStatement s)
