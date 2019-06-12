@@ -1,7 +1,7 @@
 package org.dlang.dmd.root
 
-class AssocArray<K,V : RootObject?> {
-    val table = HashMap<K, Ptr<RootObject?>>()
+class AA<K,V> {
+    val table = HashMap<K, Ptr<Any?>>()
 
     /**
     Returns: The number of key/value pairs.
@@ -22,7 +22,7 @@ class AssocArray<K,V : RootObject?> {
         val v = table[key]
         if (v !== null) return v as Ptr<V?>
         else {
-            val newValue = Ptr<RootObject?>(arrayOfNulls(1))
+            val newValue = Ptr<Any?>(arrayOfNulls(1))
             table[key] = newValue
             return newValue as Ptr<V?>
         }

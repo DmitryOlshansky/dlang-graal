@@ -43,7 +43,7 @@ struct ExprOpts {
     bool reverseIntPromotion = false;
     EnumDeclaration inEnumDecl = null;
     FuncDeclaration inFuncDecl = null;
-    bool[string] refParams; //out and ref params, they must be boxed
+    bool[void*] refParams; //out and ref params, they must be boxed
 }
 
 ///
@@ -238,10 +238,7 @@ public:
 
     override void visit(IdentifierExp e)
     {
-        if (e.ident.toString == "toString") // avoid Java's toString
-            buf.writestring("asString");
-        else
-            buf.writestring(e.ident.toString());
+        buf.writestring(e.ident.toString());
     }
 
     override void visit(DsymbolExp e)
@@ -421,7 +418,7 @@ public:
         if (e.var.isMember() && e.var.isStatic())
             buf.printf("%s.", e.var.parent.ident.toChars());
         buf.writestring(e.var.toChars());
-        if (e.var.ident.toString in opts.refParams) 
+        if (cast(void*)e.var in opts.refParams) 
             buf.writestring(".value");
     }
 
@@ -470,7 +467,9 @@ public:
 
     override void visit(TypeidExp e)
     {
-        assert(false);
+        //TODO: 
+        buf.writestring("?TypeID?");
+        //assert(false);
         // not used in DMD sources
     }
 
@@ -673,7 +672,8 @@ public:
     override void visit(PtrExp e)
     {
         expToBuffer(e.e1, precedence[e.op], buf, opts);
-        buf.writestring(".get(0)");
+        if (e.e1.type.nextOf.ty != Tstruct) 
+            buf.writestring(".get(0)");
     }
 
     override void visit(DeleteExp e)
@@ -929,8 +929,14 @@ private void argsToBuffer(Expressions* expressions, OutBuffer* buf, ExprOpts opt
             buf.writestring(", ");
         if (!el)
             el = basis;
-        if (el)
-            expToBuffer(el, PREC.assign, buf, opts);
+        if (el) {
+            auto var = el.isVarExp();
+            if (var && (cast(void*)var.var in opts.refParams)) {
+                buf.writestring(var.var.ident.toString);
+            }
+            else
+                expToBuffer(el, PREC.assign, buf, opts);
+        }
     }
 }
 
@@ -1120,7 +1126,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
 
     void visitAArray(TypeAArray t)
     {
-        buf.writestring("AssocArray<");
+        buf.writestring("AA<");
         typeToBufferx(t.next, buf, Boxing.yes);
         buf.writeByte(',');
         typeToBufferx(t.index, buf, Boxing.yes);

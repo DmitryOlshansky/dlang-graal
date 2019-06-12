@@ -45,19 +45,17 @@ void handleDiagnosticErrors()
 Module runFullFrontend(Ast = ASTCodegen)(
     const string filename,
     const string content,
-    const string[] versionIdentifiers,
     const string[] importPaths,
     const string[] stringImportPaths)
 {
 
-    return runParser!Ast(filename, content, versionIdentifiers, importPaths)
+    return runParser!Ast(filename, content, importPaths)
         .runSemanticAnalyzer(stringImportPaths);
 }
 
 Module runParser(Ast = ASTCodegen)(
     const string filename,
     const string content,
-    const string[] versionIdentifiers,
     const string[] importPaths)
 {
     import std.algorithm : each;
@@ -68,7 +66,6 @@ Module runParser(Ast = ASTCodegen)(
     import dmd.globals : global;
 
     global.params.mscoff = global.params.is64bit;
-    initDMD(versionIdentifiers);
 
     findImportPaths
         .chain(importPaths)
@@ -97,6 +94,7 @@ Module runSemanticAnalyzer(Module module_, const string[] stringImportPaths)
 }
 
 void main(string[] args) {
+    import dmd.frontend : initDMD;
 	string[] importPaths;
 	string[] stringImportPaths;
     string outputDir = ".";
@@ -110,14 +108,23 @@ void main(string[] args) {
 		defaultGetoptPrinter("Some information about the program.", resp.options);
 		return;
 	}
+    Module[] mods = [];
+    initDMD(["NoBackend", "NoMain", "MARS"]);
 	foreach (source; args[1..$]) {
+        stderr.writefln("Parsing %s", baseName(source));
 		const content = cast(string)readFile(source);
-        const mod = baseName(source);
-        const java = mod[0..$-2] ~ ".java";
-        stderr,.writefln("\nConverting %s -> %s", mod, java);
+        mods ~= runParser(source, content, importPaths);
+    }
+    foreach (ref m; mods) {
+        stderr.writefln("Semantics run %s", m.toString);
+        runSemanticAnalyzer(m, stringImportPaths);
+    }
+    foreach(i, source; args[1..$]) {
+        const modName = baseName(source);
+        const java = modName[0..$-2] ~ ".java";
+        stderr.writefln("\nConverting %s -> %s", modName, java);
         const target = outputDir ~ "/" ~ java;
-		auto m = runFullFrontend(mod, content, ["NoBackend", "NoMain", "MARS"], importPaths, stringImportPaths);
-		writeFile(target, m.toJava);
+		writeFile(target, mods[i].toJava);
 	}
 	
 }

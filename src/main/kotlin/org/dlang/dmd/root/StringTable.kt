@@ -1,6 +1,6 @@
 package org.dlang.dmd.root
 
-data class StringValue(var hash: Int, var vptr: Any?)
+data class StringValue(@JvmField var hash: Int, @JvmField var ptrvalue: Any?)
 
 class StringTable {
     private val table = HashMap<ByteSlice, StringValue?>()
@@ -75,7 +75,7 @@ class StringTable {
     {
         for (se in table.values)
         {
-            if (se?.vptr === null)  continue
+            if (se?.ptrvalue === null)  continue
             val r = func(se)
             if (r != 0) return r
         }

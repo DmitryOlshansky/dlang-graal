@@ -26,6 +26,7 @@ import dmd.visitor : SemanticTimeTransitiveVisitor;
 import std.array, std.format, std.string, std.range;
 
 import visitors.expression : Boxing, ExprOpts, toJava, toJavaBool, isByteSized;
+import visitors.passed_by_ref;
 
 string refType(Type t) {
     if(t.ty == Tint32 || t.ty == Tuns32 || t.ty == Tdchar) {
@@ -96,7 +97,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     extern(D) private void printVar(VarDeclaration var, const(char)[] ident, TextBuffer sink) {
         bool staticInit = var.isStatic() || (var.storage_class & STC.gshared) || (stack.empty && aggregates.empty);
-        sink.fmt("%s%s %s",  staticInit ? "static " : "", toJava(var.type), ident);
+        bool refVar = stack.length && passedByRef(var, stack[$-1]);
+        if (refVar) opts.refParams[cast(void*)var] = true;
+        auto type = refVar ? refType(var.type) : toJava(var.type);
+        sink.fmt("%s%s %s",  staticInit ? "static " : "", type, ident);
         if (var._init) {
             ExpInitializer ie = var._init.isExpInitializer();
             if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit)) {
@@ -106,8 +110,11 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 if (integer && integer.toInteger() == 0 && var.type.ty == Tstruct){
                     sink.fmt("new %s()", var.type.toJava);
                 }
-                else 
+                else {
+                    if (refVar) sink.fmt("ref(");
                     sink.put(assign.e2.toJava(opts));
+                    if (refVar) sink.fmt(")");
+                }
             }
             else {
                 sink.fmt(" = ");
@@ -127,7 +134,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         bool pushToGlobal = (var.isStatic() || (var.storage_class & STC.gshared)) && !stack.empty;
         if (pushToGlobal) {
             auto temp = new TextBuffer();
-            bool forwardVar = true;
             const(char)[] id = stack[$-1].ident.toString ~ var.ident.toString;
             printVar(var, id, temp);
             constants ~= temp.data.idup;
@@ -583,14 +589,14 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         opts.refParams = null;
 
         fprintf(stderr, "%s\n", func.ident.toChars());
-        auto storage = func.isStatic() ? "static" : "";
+        auto storage = (func.isStatic()  || aggregates.length == 0) ? "static" : "";
         buf.fmt("public %s %s %s(", storage, toJava(func.type.nextOf()), func.ident.toString);
         if (func.parameters)
             foreach(i, p; (*func.parameters)[]) {
                 if (i != 0) buf.fmt(", ");
                 auto box = p.isRef || p.isOut;
                 if (box && !isAggregate(p.type)) {
-                    opts.refParams[p.ident.toString] = true;
+                    opts.refParams[cast(void*)p] = true;
                     buf.fmt("%s %s", refType(p.type), p.ident.toString);
                 }
                 else buf.fmt("%s %s", toJava(p.type), p.ident.toString);

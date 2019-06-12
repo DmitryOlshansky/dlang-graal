@@ -25,7 +25,7 @@ public class utf {
     static BytePtr utf_decodeWcharUTF16_DECODE_UNPAIRED_SURROGATE = new BytePtr("Unpaired surrogate");
     static BytePtr utf_decodeWcharUTF16_DECODE_INVALID_CODE_POINT = new BytePtr("Invalid code point decoded");
 
-    public  boolean utf_isValidDchar(int c) {
+    public static boolean utf_isValidDchar(int c) {
         if (c < 55296)
             return true;
         if (c > 57343 && c <= 1114111)
@@ -33,7 +33,7 @@ public class utf {
         return false;
     }
 
-    public  boolean isUniAlpha(int c) {
+    public static boolean isUniAlpha(int c) {
         Slice<CharSlice> ALPHA_TABLE = utf.isUniAlphaALPHA_TABLE;
         int high = 244;
         int low = c < (int)ALPHA_TABLE.get(0).get(0) || (int)ALPHA_TABLE.get(high).get(1) < c ? high + 1 : 0;
@@ -52,7 +52,7 @@ public class utf {
         return false;
     }
 
-    public  int utf_codeLengthChar(int c) {
+    public static int utf_codeLengthChar(int c) {
         if (c <= 127)
             return 1;
         if (c <= 2047)
@@ -64,11 +64,11 @@ public class utf {
         throw new AssertionError("Unreachable code!");
     }
 
-    public  int utf_codeLengthWchar(int c) {
+    public static int utf_codeLengthWchar(int c) {
         return c <= 65535 ? 1 : 2;
     }
 
-    public  int utf_codeLength(int sz, int c) {
+    public static int utf_codeLength(int sz, int c) {
         if (sz == 1)
             return utf_codeLengthChar(c);
         if (sz == 2)
@@ -77,7 +77,7 @@ public class utf {
         return 1;
     }
 
-    public  void utf_encodeChar(BytePtr s, int c) {
+    public static void utf_encodeChar(BytePtr s, int c) {
         assert(s != null);
         assert(utf_isValidDchar(c));
         if (c <= 127)
@@ -106,7 +106,7 @@ public class utf {
             throw new AssertionError("Unreachable code!");
     }
 
-    public  void utf_encodeWchar(CharPtr s, int c) {
+    public static void utf_encodeWchar(CharPtr s, int c) {
         assert(s != null);
         assert(utf_isValidDchar(c));
         if (c <= 65535)
@@ -120,7 +120,7 @@ public class utf {
         }
     }
 
-    public  void utf_encode(int sz, BytePtr s, int c) {
+    public static void utf_encode(int sz, BytePtr s, int c) {
         if (sz == 1)
             utf_encodeChar(s.toBytePtr(), c);
         else if (sz == 2)
@@ -132,7 +132,7 @@ public class utf {
         }
     }
 
-    public  BytePtr utf_decodeChar(BytePtr s, int len, IntRef ridx, IntRef rresult) {
+    public static BytePtr utf_decodeChar(BytePtr s, int len, IntRef ridx, IntRef rresult) {
         rresult.value = '\uffff';
         BytePtr UTF8_DECODE_OK = utf.utf_decodeCharUTF8_DECODE_OK;
         BytePtr UTF8_DECODE_OUTSIDE_CODE_SPACE = utf.utf_decodeCharUTF8_DECODE_OUTSIDE_CODE_SPACE;
@@ -190,7 +190,7 @@ public class utf {
         return UTF8_DECODE_OK;
     }
 
-    public  BytePtr utf_decodeWchar(CharPtr s, int len, IntRef ridx, IntRef rresult) {
+    public static BytePtr utf_decodeWchar(CharPtr s, int len, IntRef ridx, IntRef rresult) {
         rresult.value = '\uffff';
         BytePtr UTF16_DECODE_OK = utf.utf_decodeWcharUTF16_DECODE_OK;
         BytePtr UTF16_DECODE_TRUNCATED_SEQUENCE = utf.utf_decodeWcharUTF16_DECODE_TRUNCATED_SEQUENCE;
