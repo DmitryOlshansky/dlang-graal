@@ -1,8 +1,9 @@
 package org.dlang.dmd.root
 
+import java.lang.StringBuilder
 import java.util.*
 
-class Slice<T> (val data: Array<T>, var beg: Int, var end: Int) {
+class Slice<T> (val data: Array<T>, var beg: Int, var end: Int) : RootObject() {
 
     constructor(arr: Array<T>) : this(arr, 0, arr.size)
 
@@ -46,9 +47,21 @@ class Slice<T> (val data: Array<T>, var beg: Int, var end: Int) {
     override fun hashCode(): Int {
         return data.hashCode() + 17*beg + 31*end
     }
+
+    override fun toChars(): BytePtr  {
+        val s = StringBuilder()
+        s.append("[")
+        for (i in beg until end) {
+            if (i != 0)
+                s.append(", ")
+            s.append(data[i].toString())
+        }
+        s.append("]")
+        return BytePtr(s.toString())
+    }
 }
 
-class ByteSlice(val data: ByteArray, var beg: Int, var end: Int) {
+class ByteSlice(val data: ByteArray, var beg: Int, var end: Int): RootObject() {
 
     constructor(): this(ByteArray(0))
 
@@ -98,10 +111,11 @@ class ByteSlice(val data: ByteArray, var beg: Int, var end: Int) {
     }
 
     override fun toString(): String = String(data, beg, end - beg)
+
+    override fun toChars(): BytePtr = ptr()
 }
 
-class CharSlice(val data: CharArray, var beg: Int, var end: Int) {
-
+class CharSlice(val data: CharArray, var beg: Int, var end: Int) : RootObject() {
     constructor(s: String) : this(s.toCharArray())
 
     constructor(arr: CharArray) : this(arr, 0, arr.size)
@@ -142,9 +156,22 @@ class CharSlice(val data: CharArray, var beg: Int, var end: Int) {
     override fun hashCode(): Int {
         return data.hashCode() + 17 * beg + 31 * end
     }
+
+    override fun toChars(): BytePtr  {
+        val s = StringBuilder()
+        s.append("[")
+        for (i in beg until end) {
+            if (i != 0)
+                s.append(", ")
+            s.append(data[i])
+        }
+        s.append("]")
+        return BytePtr(s.toString())
+    }
+
 }
 
-class IntSlice(val data: IntArray, var beg: Int, var end: Int) {
+class IntSlice(val data: IntArray, var beg: Int, var end: Int) : RootObject() {
 
     constructor(arr: IntArray) : this(arr, 0, arr.size)
 
@@ -183,6 +210,18 @@ class IntSlice(val data: IntArray, var beg: Int, var end: Int) {
 
     override fun hashCode(): Int {
         return data.hashCode() + 17 * beg + 31 * end
+    }
+
+    override fun toChars(): BytePtr  {
+        val s = StringBuilder()
+        s.append("[")
+        for (i in beg until end) {
+            if (i != 0)
+                s.append(", ")
+            s.append(data[i].toString())
+        }
+        s.append("]")
+        return BytePtr(s.toString())
     }
 }
 

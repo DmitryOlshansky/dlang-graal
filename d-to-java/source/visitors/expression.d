@@ -67,6 +67,24 @@ string toJava(Expression e, ExprOpts opts) {
     return cast(string)p[0..strlen(p)];
 }
 
+///
+string toJavaBool(Expression e, ExprOpts opts) {
+    scope OutBuffer* buf = new OutBuffer();
+    scope v = new toJavaExpressionVisitor(buf, opts);
+    e.accept(v);
+    if (e.type.ty != Tbool) switch(e.type.ty){
+        case Tpointer:
+        case Tclass:
+            buf.writestring(" != null");
+            break;
+        default:
+            buf.writestring(" != 0");
+    }
+    buf.writeByte(0);
+    char* p = v.buf.extractData;
+    return cast(string)p[0..strlen(p)];
+}
+
 private bool isJavaByte(Type t) {
     return t.ty == Tchar || t.ty == Tint8 || t.ty == Tuns8;
 }
@@ -191,6 +209,7 @@ public:
             case Tbool:
                 buf.writestring(v ? "true" : "false");
                 break;
+            case Tclass:
             case Tpointer:
                 if (v == 0) buf.writestring("null");
                 else assert(false);
@@ -303,7 +322,7 @@ public:
 
     override void visit(StructLiteralExp e)
     {
-        buf.writestring("new");
+        buf.writestring("new ");
         buf.writestring(e.sd.toChars());
         buf.writeByte('(');
         // CTFE can generate struct literals that contain an AddrExp pointing
@@ -434,6 +453,11 @@ public:
         e.fd.dsymbolToBuffer(buf);
         //buf.writestring(e.fd.toChars());
     }
+    
+    override void visit(CommaExp c)
+    {
+        return;
+    }
 
     override void visit(DeclarationExp e)
     {
@@ -441,8 +465,7 @@ public:
          * are handled in visit(ExpStatement), so here would be used only when
          * we'll directly call Expression.toChars() for debugging.
          */
-        //TODO:  Comma expression gets us here, fix it
-        // assert(0);
+        assert(0);
     }
 
     override void visit(TypeidExp e)
@@ -519,6 +542,14 @@ public:
             buf.writestring(".equals(");
             expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
             buf.writestring(")");
+            return;
+        }
+        else if(e.op == TOK.andAnd || e.op == TOK.orOr) {
+            buf.writestring(e.e1.toJavaBool(opts));
+            buf.writeByte(' ');
+            buf.writestring(Token.toString(e.op));
+            buf.writeByte(' ');
+            buf.writestring(e.e2.toJavaBool(opts));
             return;
         }
         else if (isByteSized(e.e1) && !isByteSized(e.e2)) {
@@ -630,8 +661,10 @@ public:
              */
             e.e1.accept(this);
         }
-        else
+        else {
+            if (e.f && e.f.isDtorDeclaration()) return;
             expToBuffer(e.e1, precedence[e.op], buf, opts);
+        }
         buf.writeByte('(');
         argsToBuffer(e.arguments, buf, opts);
         buf.writeByte(')');

@@ -1,7 +1,9 @@
 package org.dlang.dmd.root
 
 class OutBuffer {
-    var data_ : BytePtr = BytePtr(16)
+    @JvmField
+    var data : BytePtr = BytePtr(16)
+    @JvmField
     var offset: Int = 0
     var size: Int = 0
     var level: Int = 0
@@ -9,8 +11,8 @@ class OutBuffer {
     private var notlinehead: Boolean = false
 
     fun extractData() : BytePtr {
-        val p = data_
-        data_ = BytePtr(16)
+        val p = data
+        data = BytePtr(16)
         offset = 0
         size = 0
         return p
@@ -25,7 +27,7 @@ class OutBuffer {
              * The odd formulation is so it will map onto single x86 LEA instruction.
              */
             size = (((offset + nbytes) * 3 + 30) / 2) and 15.inv()
-            data_ = realloc(data_, size)
+            data = realloc(data, size)
         }
     }
 
@@ -44,18 +46,18 @@ class OutBuffer {
         if (level != 0)
         {
             reserve(level)
-            data_.slice(offset, offset + level).set('\t'.toByte())
+            data.slice(offset, offset + level).set('\t'.toByte())
             offset += level
         }
         notlinehead = true
     }
 
-    fun write(data_: BytePtr, nbytes: Int)
+    fun write(data: BytePtr, nbytes: Int)
     {
         if (doindent && !notlinehead)
             indent()
         reserve(nbytes)
-        memcpy(this.data_ + offset, data_, nbytes)
+        memcpy(this.data + offset, data, nbytes)
         offset += nbytes
     }
 
@@ -73,8 +75,8 @@ class OutBuffer {
     {
         val len = strlen(string)
         reserve(len)
-        memmove(data_ + len, data_, offset)
-        memcpy(data_, string, len)
+        memmove(data + len, data, offset)
+        memcpy(data, string, len)
         offset += len
     }
 
@@ -91,7 +93,7 @@ class OutBuffer {
         if (doindent && !notlinehead && b != '\n'.toInt())
             indent()
         reserve(1)
-        this.data_[offset] = b.toByte()
+        this.data[offset] = b.toByte()
         offset++
     }
 
@@ -100,47 +102,47 @@ class OutBuffer {
         reserve(6)
         if (b <= 0x7F)
         {
-            this.data_[offset] = b.toByte()
+            this.data[offset] = b.toByte()
             offset++
         }
         else if (b <= 0x7FF)
         {
-            this.data_[offset + 0] = ((b shr 6) or 0xC0).toByte()
-            this.data_[offset + 1] = ((b and 0x3F) or 0x80).toByte()
+            this.data[offset + 0] = ((b shr 6) or 0xC0).toByte()
+            this.data[offset + 1] = ((b and 0x3F) or 0x80).toByte()
             offset += 2
         }
         else if (b <= 0xFFFF)
         {
-            this.data_[offset + 0] = ((b shr 12) or 0xE0).toByte()
-            this.data_[offset + 1] = (((b shr 6) and 0x3F) or 0x80).toByte()
-            this.data_[offset + 2] = ((b and 0x3F) or 0x80).toByte()
+            this.data[offset + 0] = ((b shr 12) or 0xE0).toByte()
+            this.data[offset + 1] = (((b shr 6) and 0x3F) or 0x80).toByte()
+            this.data[offset + 2] = ((b and 0x3F) or 0x80).toByte()
             offset += 3
         }
         else if (b <= 0x1FFFFF)
         {
-            this.data_[offset + 0] = ((b shr 18) or 0xF0).toByte()
-            this.data_[offset + 1] = (((b shr 12) and 0x3F) or 0x80).toByte()
-            this.data_[offset + 2] = (((b shr 6) and 0x3F) or 0x80).toByte()
-            this.data_[offset + 3] = ((b and 0x3F) or 0x80).toByte()
+            this.data[offset + 0] = ((b shr 18) or 0xF0).toByte()
+            this.data[offset + 1] = (((b shr 12) and 0x3F) or 0x80).toByte()
+            this.data[offset + 2] = (((b shr 6) and 0x3F) or 0x80).toByte()
+            this.data[offset + 3] = ((b and 0x3F) or 0x80).toByte()
             offset += 4
         }
         else if (b <= 0x3FFFFFF)
         {
-            this.data_[offset + 0] = ((b shr 24) or 0xF8).toByte()
-            this.data_[offset + 1] = (((b shr 18) and 0x3F) or 0x80).toByte()
-            this.data_[offset + 2] = (((b shr 12) and 0x3F) or 0x80).toByte()
-            this.data_[offset + 3] = (((b shr 6) and 0x3F) or 0x80).toByte()
-            this.data_[offset + 4] = ((b and 0x3F) or 0x80).toByte()
+            this.data[offset + 0] = ((b shr 24) or 0xF8).toByte()
+            this.data[offset + 1] = (((b shr 18) and 0x3F) or 0x80).toByte()
+            this.data[offset + 2] = (((b shr 12) and 0x3F) or 0x80).toByte()
+            this.data[offset + 3] = (((b shr 6) and 0x3F) or 0x80).toByte()
+            this.data[offset + 4] = ((b and 0x3F) or 0x80).toByte()
             offset += 5
         }
         else if (b <= 0x7FFFFFFF)
         {
-            this.data_[offset + 0] = ((b shr 30) or 0xFC).toByte()
-            this.data_[offset + 1] = (((b shr 24) and 0x3F) or 0x80).toByte()
-            this.data_[offset + 2] = (((b shr 18) and 0x3F) or 0x80).toByte()
-            this.data_[offset + 3] = (((b shr 12) and 0x3F) or 0x80).toByte()
-            this.data_[offset + 4] = (((b shr 6) and 0x3F) or 0x80).toByte()
-            this.data_[offset + 5] = ((b and 0x3F) or 0x80).toByte()
+            this.data[offset + 0] = ((b shr 30) or 0xFC).toByte()
+            this.data[offset + 1] = (((b shr 24) and 0x3F) or 0x80).toByte()
+            this.data[offset + 2] = (((b shr 18) and 0x3F) or 0x80).toByte()
+            this.data[offset + 3] = (((b shr 12) and 0x3F) or 0x80).toByte()
+            this.data[offset + 4] = (((b shr 6) and 0x3F) or 0x80).toByte()
+            this.data[offset + 5] = ((b and 0x3F) or 0x80).toByte()
             offset += 6
         }
         else
@@ -150,8 +152,8 @@ class OutBuffer {
     fun prependbyte(b: Int)
     {
         reserve(1)
-        memmove(data_ + 1, data_, offset)
-        data_[0] = b.toByte()
+        memmove(data + 1, data, offset)
+        data[0] = b.toByte()
         offset++
     }
 
@@ -167,7 +169,7 @@ class OutBuffer {
             indent()
 
         reserve(2)
-        (this.data_ + offset).toCharPtr()[0] = w
+        (this.data + offset).toCharPtr()[0] = w
         offset += 2
     }
 
@@ -176,13 +178,13 @@ class OutBuffer {
         reserve(4)
         if (w <= 0xFFFF)
         {
-            (this.data_ + offset).toCharPtr()[0] = w.toChar()
+            (this.data + offset).toCharPtr()[0] = w.toChar()
             offset += 2
         }
         else if (w <= 0x10FFFF)
         {
-            (this.data_ + offset).toCharPtr()[0] = ((w shr 10) + 0xD7C0).toChar()
-            (this.data_ + offset + 2) .toCharPtr()[0]= ((w and 0x3FF) or 0xDC00).toChar()
+            (this.data + offset).toCharPtr()[0] = ((w shr 10) + 0xD7C0).toChar()
+            (this.data + offset + 2) .toCharPtr()[0]= ((w and 0x3FF) or 0xDC00).toChar()
             offset += 4
         }
         else
@@ -194,7 +196,7 @@ class OutBuffer {
         if (doindent && !notlinehead)
             indent()
         reserve(4)
-        (this.data_ + offset).toIntPtr()[0] = w
+        (this.data + offset).toIntPtr()[0] = w
         offset += 4
     }
 
@@ -203,7 +205,7 @@ class OutBuffer {
         if (buf !== null)
         {
             reserve(buf.offset)
-            memcpy(data_ + offset, buf.data_, buf.offset)
+            memcpy(data + offset, buf.data, buf.offset)
             offset += buf.offset
         }
     }
@@ -219,7 +221,7 @@ class OutBuffer {
     fun fill0(nbytes : Int)
     {
         reserve(nbytes)
-        memset(data_ + offset, 0, nbytes)
+        memset(data + offset, 0, nbytes)
         offset += nbytes
     }
 
@@ -242,9 +244,9 @@ class OutBuffer {
     fun bracket(left: Byte, right: Byte)
     {
         reserve(2)
-        memmove(data_ + 1, data_, offset)
-        data_[0] = left
-        data_[offset + 1] = right
+        memmove(data + 1, data, offset)
+        data[0] = left
+        data[offset + 1] = right
         offset += 2
     }
 
@@ -265,7 +267,7 @@ class OutBuffer {
     fun spread(offset: Int, nbytes: Int)
     {
         reserve(nbytes)
-        memmove(data_ + offset + nbytes, data_ + offset, this.offset - offset)
+        memmove(data + offset + nbytes, data + offset, this.offset - offset)
         this.offset += nbytes
     }
 
@@ -275,7 +277,7 @@ class OutBuffer {
     fun insert(offset: Int, p: BytePtr, nbytes: Int): Int
     {
         spread(offset, nbytes)
-        memmove(data_ + offset, p, nbytes)
+        memmove(data + offset, p, nbytes)
         return offset + nbytes
     }
 
@@ -286,17 +288,17 @@ class OutBuffer {
 
     fun remove(offset: Int, nbytes: Int)
     {
-        memmove(data_ + offset, data_ + offset + nbytes, this.offset - (offset + nbytes))
+        memmove(data + offset, data + offset + nbytes, this.offset - (offset + nbytes))
         this.offset -= nbytes
     }
 
     fun peekSlice(): ByteSlice
     {
-        return data_.slice(0, offset)
+        return data.slice(0, offset)
     }
 
     /***********************************
-     * Extract the data_ as a slice and take ownership of it.
+     * Extract the data as a slice and take ownership of it.
      */
     fun extractSlice(): ByteSlice
     {
@@ -308,18 +310,18 @@ class OutBuffer {
     // Append terminating null if necessary and get view of internal buffer
     fun peekChars(): BytePtr
     {
-        if (offset == 0 || data_[offset - 1] != 0.toByte())
+        if (offset == 0 || data[offset - 1] != 0.toByte())
         {
             writeByte(0)
             offset-- // allow appending more
         }
-        return data_
+        return data
     }
 
-    // Append terminating null if necessary and take ownership of data_
+    // Append terminating null if necessary and take ownership of data
     fun extractChars(): BytePtr
     {
-        if (offset == 0 || data_[offset - 1] != 0.toByte())
+        if (offset == 0 || data[offset - 1] != 0.toByte())
             writeByte(0)
         return extractData()
     }

@@ -1,10 +1,10 @@
 package org.dlang.dmd.root
 
-class DArray<T : RootObject>(storage: Array<T?>, len: Int) {
-    var data: Array<T?> = storage
+class DArray<T : RootObject>(storage: Array<RootObject?>, len: Int) {
+    var data: Array<RootObject?> = storage
     var length: Int = len
 
-    constructor(arr: Array<T?>): this(arr, arr.size)
+    constructor(arr: Array<RootObject?>): this(arr, 0)
 
     fun toChars() = asString().ptr()
 
@@ -33,7 +33,7 @@ class DArray<T : RootObject>(storage: Array<T?>, len: Int) {
 
     operator fun get(i: Int): T? {
         assert(i < length)
-        return data[i]
+        return data[i] as T?
     }
 
     operator fun set(i: Int, v: T?) {
@@ -106,13 +106,13 @@ class DArray<T : RootObject>(storage: Array<T?>, len: Int) {
 
     fun zero() = data.fill(null, 0, length)
 
-    fun pop(): T? = data[--length]
+    fun pop(): T? = data[--length] as T?
 
-    fun slice() =  Slice(data, 0, length)
+    fun slice() =  Slice(data as Array<T?>, 0, length)
 
     fun slice(a: Int, b: Int): Slice<T?> {
         assert(b in a..length)
-        return Slice(data, a, b)
+        return Slice(data as Array<T?>, a, b)
     }
 
     override fun equals(other: Any?): Boolean =
@@ -151,18 +151,18 @@ class BitArray {
 }
 
 
-inline fun<reified T : RootObject> darray(size: Int = 16): DArray<T> {
-    return DArray(Array<T?>(size) { null }, 0)
-}
+fun<T : RootObject> darray(size: Int): DArray<T> = DArray(arrayOfNulls<RootObject?>(size))
 
-inline fun <reified T: RootObject> darrayOf(vararg elements: T?): DArray<T> {
-    val array = Array<T?>(elements.size){ null }
+fun<T : RootObject> darray(): DArray<T> = darray(16)
+
+
+fun <T: RootObject> darrayOf(vararg elements: RootObject?): DArray<T> {
+    val array = Array<RootObject?>(elements.size){ null }
     elements.copyInto(array)
-    return DArray(array)
+    return DArray(array, array.size)
 }
 
-inline fun<reified T: RootObject> peekSlice(array: DArray<T>?): Slice<T?>? =
-    array?.slice()
+fun<T: RootObject> peekSlice(array: DArray<T>?): Slice<T?>? = array?.slice()
 
 /**
  * Reverse an array in-place.

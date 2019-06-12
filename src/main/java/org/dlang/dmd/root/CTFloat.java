@@ -2,7 +2,7 @@ package org.dlang.dmd.root;
 
 public class CTFloat {
 
-    static public void sprint(BytePtr s, byte _, double value) {
+    static public void sprint(BytePtr s, byte k, double value) {
         String str = Double.toString(value);
         int i = 0;
         for (char c : str.toCharArray()) {

@@ -25,7 +25,7 @@ import dmd.visitor : SemanticTimeTransitiveVisitor;
 
 import std.array, std.format, std.string, std.range;
 
-import visitors.expression : Boxing, ExprOpts, toJava, isByteSized;
+import visitors.expression : Boxing, ExprOpts, toJava, toJavaBool, isByteSized;
 
 string refType(Type t) {
     if(t.ty == Tint32 || t.ty == Tuns32 || t.ty == Tdchar) {
@@ -69,23 +69,24 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         header.put("\nimport org.dlang.dmd.root.*;\n");
         header.put("\nimport static org.dlang.dmd.root.UtilsKt.*;\n");
         header.put("import static org.dlang.dmd.root.SliceKt.*;\n");
+        header.put("import static org.dlang.dmd.root.DArrayKt.*;\n");
     }
 
     void onModuleStart(Module mod){
         buf.indent;
+        buf.put("\n");
     }
 
     ///
     void onModuleEnd() {
         header.fmt("\npublic class %s {\n", moduleName);
         header.indent;
-        fprintf(stderr, "Arrays on module end %lld\n", arrayInitializers.length);
         foreach (i, v; arrayInitializers) {
             header.fmt("%s;\n", v);
         }
         if (constants.length)  {
             foreach(var; constants) {
-                buf.put(var);
+                header.put(var);
             }
         }
         header.outdent;
@@ -100,7 +101,13 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             ExpInitializer ie = var._init.isExpInitializer();
             if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit)) {
                 sink.fmt(" = ");
-                sink.put((cast(AssignExp)ie.exp).e2.toJava(opts));
+                auto assign = (cast(AssignExp)ie.exp);
+                auto integer = assign.e2.isIntegerExp();
+                if (integer && integer.toInteger() == 0 && var.type.ty == Tstruct){
+                    sink.fmt("new %s()", var.type.toJava);
+                }
+                else 
+                    sink.put(assign.e2.toJava(opts));
             }
             else {
                 sink.fmt(" = ");
@@ -223,7 +230,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 buf.put(p.ident.toString());
             buf.put(" = ");
         }
-        buf.put(s.condition.toJava(opts));
+        buf.put(s.condition.toJavaBool(opts));
         buf.put(")\n");
         if (s.ifbody.isScopeStatement())
         {
@@ -308,8 +315,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     override void visit(CompileDeclaration compile)
     {
         foreach (e; *compile.exps) {
-            auto s = cast(StringExp)e.ctfeInterpret();
-            buf.put(s.string[0..s.len]);
+            auto se = cast(StringExp)e.ctfeInterpret();
+            auto s = se.string[0..se.len];
+            s = s.replace("Identifier", "static Identifier"); //hack
+            buf.put(s);
             buf.put("\n");
         }
     }
@@ -562,6 +571,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     }
 
     override void visit(FuncDeclaration func)  {
+        if (func.ident.toString == "opAssign") return;
         stack ~= func;
 
         auto oldFunc = opts.inFuncDecl;
@@ -639,7 +649,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     suffix ~= "[]";
                     t = t.nextOf();
                 }
-                fprintf(stderr, "Array init %lld\n", arrayInitializers.length);
                 tmp.fmt("private static final %s%s initializer_%d = ", t.toJava, suffix, arrayInitializers.length);
             }
             tmp.fmt("{", ai.type.nextOf());
@@ -664,7 +673,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             }
             tmp.put("}");
             if (inInitializer == 1) {
-                fprintf(stderr, "Array init end %lld\n", arrayInitializers.length);
                 arrayInitializers ~= tmp.data.idup;
                 buf.fmt("slice(initializer_%d)", arrayInitializers.length-1);
             }
@@ -673,6 +681,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
         void visitExp(ExpInitializer ei)
         {
+            //fprintf(stderr, "Initializer is %s %s\n", ei.exp.toChars(), ei.exp.type.toChars());
             buf.put(ei.exp.toJava(opts));
         }
 

@@ -1,6 +1,8 @@
 package org.dlang.dmd.root
 
-class Ptr<T>(val data: Array<T>, var offset: Int) {
+import java.lang.StringBuilder
+
+class Ptr<T>(val data: Array<T>, var offset: Int) : RootObject() {
 
     constructor(arr: Array<T>): this(arr, 0)
 
@@ -24,16 +26,29 @@ class Ptr<T>(val data: Array<T>, var offset: Int) {
 
     operator fun get(idx: Int): T = data[offset+idx]
 
+    override fun toChars(): BytePtr  {
+        val s = StringBuilder()
+        s.append("[")
+        for (i in offset until data.size) {
+            if (i != 0)
+                s.append(", ")
+            s.append(data[i].toString())
+        }
+        s.append("]")
+        return BytePtr(s.toString())
+    }
 }
 
 // ~C-string
-class BytePtr(val data: ByteArray, var offset: Int) {
+class BytePtr(val data: ByteArray, var offset: Int) : RootObject() {
 
     constructor(arr: ByteArray) : this(arr, 0)
 
     constructor(s: String) : this(s.toByteArray(), 0)
 
     constructor(n: Int): this(ByteArray(n))
+
+    constructor(): this(ByteArray(0))
 
     operator fun plus(delta: Int) = BytePtr(data, offset+delta)
 
@@ -60,6 +75,8 @@ class BytePtr(val data: ByteArray, var offset: Int) {
     fun toCharPtr(): CharPtr = ProxyCharPtr(this.data, offset)
 
     fun toIntPtr(): IntPtr = ProxyIntPtr(this.data, offset)
+
+    override fun toChars(): BytePtr = this
 }
 
 interface CharPtr {

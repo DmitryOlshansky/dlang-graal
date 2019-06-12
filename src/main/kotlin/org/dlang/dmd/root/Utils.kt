@@ -30,7 +30,9 @@ fun sprintf(ptr: BytePtr, fmt: ByteSlice, vararg args: Any?) {
     ptr[i] = 0.toByte()
 }
 
-fun isprint(c: Int) = !Character.isISOControl(c)
+fun isprint(c: Int): Int = if(Character.isISOControl(c)) 0 else 1
+
+fun isdigit(c: Int): Int = if(Character.isDigit(c)) 1 else 0
 
 
 fun realloc(ptr: BytePtr, size: Int): BytePtr  {
