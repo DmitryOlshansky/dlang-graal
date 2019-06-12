@@ -77,8 +77,12 @@ string toJavaBool(Expression e, ExprOpts opts) {
         case Tclass:
             buf.writestring(" != null");
             break;
+        case Tarray:
+            buf.writestring(".getLength() != 0");
+            break;
         default:
-            buf.writestring(" != 0");
+            buf.prependbyte('(');
+            buf.writestring(") != 0");
     }
     buf.writeByte(0);
     char* p = v.buf.extractData;
@@ -447,6 +451,7 @@ public:
 
     override void visit(FuncExp e)
     {
+        //fprintf(stderr, "Func exp %s\n", e.toChars());
         e.fd.dsymbolToBuffer(buf);
         //buf.writestring(e.fd.toChars());
     }
@@ -551,6 +556,20 @@ public:
             buf.writestring(e.e2.toJavaBool(opts));
             return;
         }
+        else if(e.op == TOK.concatenate) {
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
+            buf.writestring(".concat(");
+            expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
+            buf.writestring(")");
+            return;
+        }
+        else if(e.op == TOK.concatenateAssign || e.op == TOK.concatenateElemAssign) {
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
+            buf.writestring(".append(");
+            expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
+            buf.writestring(")");
+            return;
+        }
         else if (isByteSized(e.e1) && !isByteSized(e.e2)) {
             oldIntPromotion = opts.reverseIntPromotion;
             opts.reverseIntPromotion = true;
@@ -633,6 +652,7 @@ public:
 
     override void visit(DelegateExp e)
     {
+        //fprintf(stderr, "Delegate exp %s\n", e.toChars());
         if (!e.func.isNested() || e.func.needThis())
         {
             expToBuffer(e.e1, PREC.primary, buf, opts);
@@ -663,6 +683,9 @@ public:
         else {
             if (e.f && e.f.isDtorDeclaration()) return;
             expToBuffer(e.e1, precedence[e.op], buf, opts);
+            if (auto pt = e.e1.isPtrExp()) {
+                buf.writestring(".invoke");
+            }
         }
         buf.writeByte('(');
         argsToBuffer(e.arguments, buf, opts);
@@ -672,7 +695,7 @@ public:
     override void visit(PtrExp e)
     {
         expToBuffer(e.e1, precedence[e.op], buf, opts);
-        if (e.e1.type.nextOf.ty != Tstruct) 
+        if (e.e1.type.nextOf.ty != Tstruct && e.e1.type.nextOf.ty != Tfunction) 
             buf.writestring(".get(0)");
     }
 
@@ -862,7 +885,7 @@ public:
 
     override void visit(CondExp e)
     {
-        expToBuffer(e.econd, PREC.oror, buf, opts);
+        buf.writestring(e.econd.toJavaBool(opts));
         buf.writestring(" ? ");
         expToBuffer(e.e1, PREC.expr, buf, opts);
         buf.writestring(" : ");
@@ -931,8 +954,14 @@ private void argsToBuffer(Expressions* expressions, OutBuffer* buf, ExprOpts opt
             el = basis;
         if (el) {
             auto var = el.isVarExp();
+            auto n = el.isNullExp();
             if (var && (cast(void*)var.var in opts.refParams)) {
                 buf.writestring(var.var.ident.toString);
+            }
+            else if(n && n.type.ty == Tarray) {
+                buf.writestring("new ");
+                buf.writestring(n.type.toJava);
+                buf.writestring("()");
             }
             else
                 expToBuffer(el, PREC.assign, buf, opts);
@@ -1320,7 +1349,6 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
 
 private void parametersToBuffer(ParameterList pl, OutBuffer* buf)
 {
-    buf.writeByte('(');
     foreach (i; 0 .. pl.length)
     {
         if (i)
@@ -1342,7 +1370,6 @@ private void parametersToBuffer(ParameterList pl, OutBuffer* buf)
             buf.writestring("...");
             break;
     }
-    buf.writeByte(')');
 }
 
 private void visitFuncIdentWithPostfix(TypeFunction t, const char[] ident, OutBuffer* buf)
@@ -1353,16 +1380,16 @@ private void visitFuncIdentWithPostfix(TypeFunction t, const char[] ident, OutBu
         return;
     }
     t.inuse++;
-    if (ident)
-        buf.writestring(ident);
+    buf.printf("Function%d<", t.parameterList.length);
+    parametersToBuffer(t.parameterList, buf);
+    buf.writestring(",");
     if (t.next)
     {
-        if (ident)
-            buf.writestring(": ");
         typeToBuffer(t.next, null, buf);
     }
-    parametersToBuffer(t.parameterList, buf);
-
+    else 
+        buf.writestring("Void");
+    buf.writestring(">");
     t.inuse--;
 }
 

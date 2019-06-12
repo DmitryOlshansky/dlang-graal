@@ -23,7 +23,7 @@ import dmd.staticassert;
 import dmd.tokens;
 import dmd.visitor : Visitor, SemanticTimeTransitiveVisitor;
 
-import std.array, std.format, std.string, std.range;
+import std.array, std.algorithm, std.format, std.string, std.range;
 
 import visitors.expression : Boxing, ExprOpts, toJava, toJavaBool, isByteSized;
 import visitors.passed_by_ref;
@@ -48,30 +48,48 @@ string toJava(Module mod) {
     return v.result;
 }
 
-extern(C++) class TerminatesVisitor : Visitor {
-    alias visit = typeof(super).visit;
-    bool terminates = false;
-
-    override void visit(CompoundStatement) {} // do shallow visit
-    override void visit(ScopeStatement) {} // do shallow visit
-
-    override void visit(ContinueStatement ){
-        terminates = true;
-    }
-
-    override void visit(BreakStatement ) {
-        terminates = true;
-    }
-
-    override void visit(ReturnStatement) {
-        terminates = true;
-    }
-}
-
 bool terminates(Statement s) {
+    extern(C++) static class TerminatesVisitor : Visitor {
+        alias visit = typeof(super).visit;
+        bool terminates = false;
+
+        override void visit(CompoundStatement) {} // do shallow visit
+        override void visit(ScopeStatement) {} // do shallow visit
+
+        override void visit(ContinueStatement ){
+            terminates = true;
+        }
+
+        override void visit(BreakStatement ) {
+            terminates = true;
+        }
+
+        override void visit(ReturnStatement) {
+            terminates = true;
+        }
+    }
     scope v = new TerminatesVisitor();
     s.accept(v);
     return v.terminates;
+}
+
+VarDeclaration[] collectMembers(AggregateDeclaration agg) {
+    extern(C++) static class Collector : SemanticTimeTransitiveVisitor {
+        alias visit = typeof(super).visit;
+        VarDeclaration[] decls = [];
+
+        override void visit(FuncDeclaration ){}
+        override void visit(StaticCtorDeclaration){}
+        override void visit(SharedStaticCtorDeclaration){}
+        override void visit(StaticAssert ) {}
+        override void visit(VarDeclaration v) {
+            if (!v.isStatic && !(v.storage_class & STC.gshared) && !v.ident.toString.startsWith("__"))
+                decls ~= v;
+        }
+    }
+    scope v = new Collector();
+    agg.accept(v);
+    return v.decls;
 }
 
 extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
@@ -133,7 +151,12 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 sink.fmt(" = ");
                 auto assign = (cast(AssignExp)ie.exp);
                 auto integer = assign.e2.isIntegerExp();
+                auto isNull = assign.e2.isNullExp();
+                //fprintf(stderr, "Init1 %s\n", var.toChars());
                 if (integer && integer.toInteger() == 0 && var.type.ty == Tstruct){
+                    sink.fmt("new %s()", var.type.toJava);
+                }
+                else if(var.type.ty == Tarray && isNull) {
                     sink.fmt("new %s()", var.type.toJava);
                 }
                 else {
@@ -143,6 +166,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 }
             }
             else {
+                //fprintf(stderr, "Init2 %s\n", var.toChars());
                 sink.fmt(" = ");
                 initializerToBuffer(var._init, sink, var.type.ty == Tpointer && var.type.nextOf().ty == Tchar);
             }
@@ -156,6 +180,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
 
     override void visit(VarDeclaration var) {
+        if (var.type is null) {
+            fprintf(stderr, "VAR: %s\n", var.ident.toChars());
+            return;
+        }
         if (var.type.toJava.startsWith("TypeInfo_")) return;
         bool pushToGlobal = (var.isStatic() || (var.storage_class & STC.gshared)) && !stack.empty;
         if (pushToGlobal) {
@@ -579,6 +607,28 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.indent;
         foreach (s; *d.members)
             s.accept(this);
+        bool hasCtor = (*d.members)[].any!(x => x.isCtorDeclaration());
+        if (!hasCtor) {
+            auto members = collectMembers(d);
+            if (members.length) {
+                //Generate ctors
+                // empty ctor
+                buf.fmt("public %s(){}\n", d.ident.toString);
+                // all fields ctor
+                buf.fmt("public %s(", d.ident.toString);
+                foreach(i, m; members) {
+                    if(i) buf.put(", ");
+                    buf.fmt("%s %s", m.type.toJava, m.ident.toString);
+                }
+                buf.put(") {\n");
+                buf.indent;
+                foreach(i,m; members){
+                    buf.fmt("this.%s = %s;\n", m.ident.toString, m.ident.toString);
+                }
+                buf.outdent;
+                buf.put("}\n");
+            }
+        }
         buf.outdent;
         buf.put('}');
         buf.put('\n');

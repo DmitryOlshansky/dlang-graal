@@ -61,7 +61,7 @@ class Slice<T> (val data: Array<T>, var beg: Int, var end: Int) : RootObject() {
     }
 }
 
-class ByteSlice(val data: ByteArray, var beg: Int, var end: Int): RootObject() {
+class ByteSlice(var data: ByteArray, var beg: Int, var end: Int): RootObject() {
 
     constructor(): this(ByteArray(0))
 
@@ -89,6 +89,28 @@ class ByteSlice(val data: ByteArray, var beg: Int, var end: Int): RootObject() {
         return ByteSlice(data, from+beg, end)
     }
 
+    fun append(next: ByteSlice): ByteSlice {
+        val arr = ByteArray(length + next.length)
+        data.copyInto(arr, 0, beg, end)
+        next.data.copyInto(arr, length, next.beg, next.end)
+        data = arr
+        return this
+    }
+
+    fun append(next: Byte): ByteSlice {
+        // TODO: assumes full slice and realloc on every append
+        data = data.copyOf(data.size + 1)
+        data[data.size - 1] = next
+        return this
+    }
+
+    fun concat(next: ByteSlice): ByteSlice {
+        val arr = ByteArray(length + next.length)
+        data.copyInto(arr, 0, beg, end)
+        next.data.copyInto(arr, length, next.beg, next.end)
+        return ByteSlice(arr)
+    }
+
     val length: Int
     get() = end - beg
 
@@ -113,6 +135,8 @@ class ByteSlice(val data: ByteArray, var beg: Int, var end: Int): RootObject() {
     override fun toString(): String = String(data, beg, end - beg)
 
     override fun toChars(): BytePtr = ptr()
+
+    fun toByteSlice() = this
 }
 
 class CharSlice(val data: CharArray, var beg: Int, var end: Int) : RootObject() {

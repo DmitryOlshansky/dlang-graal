@@ -34,6 +34,8 @@ fun isprint(c: Int): Int = if(Character.isISOControl(c)) 0 else 1
 
 fun isdigit(c: Int): Int = if(Character.isDigit(c)) 1 else 0
 
+fun tolower(c: Int) = Character.toLowerCase(c)
+
 
 fun realloc(ptr: BytePtr, size: Int): BytePtr  {
     require(ptr.offset == 0)
@@ -49,6 +51,12 @@ fun memmove(dest: BytePtr, from: BytePtr, size: Int)  {
 fun memset(data: BytePtr, value: Int, nbytes: Int) {
     data.data.fill(value.toByte(), data.offset, data.offset + nbytes)
 }
+
+fun __equals(a: Any, b: Any) = a == b
+
+fun hashOf(any: Any) = any.hashCode()
+
+fun hashOf(any: Any, seed: Int) = any.hashCode() + seed * 31
 
 fun<T> slice(arr: Array<T>): Slice<T>  = Slice(arr)
 

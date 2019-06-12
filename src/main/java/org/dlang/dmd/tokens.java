@@ -282,20 +282,20 @@ public class tokens {
         {
             Identifier.initTable();
             {
-                Slice<TOK> __r41 = keywords.slice();
-                int __key42 = 0;
-                for (; __key42 < __r41.getLength();__key42 += 1) {
-                    TOK kw = __r41.get(__key42);
+                Slice<TOK> __r46 = keywords.slice();
+                int __key47 = 0;
+                for (; __key47 < __r46.getLength();__key47 += 1) {
+                    TOK kw = __r46.get(__key47);
                     Identifier.idPool(tochars.get(kw.value).toBytePtr(), tochars.get(kw.value).getLength(), kw.value);
                 }
             }
         }
         public  int isKeyword() {
             {
-                Slice<TOK> __r43 = keywords.slice();
-                int __key44 = 0;
-                for (; __key44 < __r43.getLength();__key44 += 1) {
-                    TOK kw = __r43.get(__key44);
+                Slice<TOK> __r48 = keywords.slice();
+                int __key49 = 0;
+                for (; __key49 < __r48.getLength();__key49 += 1) {
+                    TOK kw = __r48.get(__key49);
                     if (kw.value == this.value.value)
                         return 1;
                 }
@@ -417,7 +417,7 @@ public class tokens {
                                         {
                                             if (c.value <= 127)
                                             {
-                                                if (isprint(c.value) != 0)
+                                                if ((isprint(c.value)) != 0)
                                                     buf.writeByte(c.value);
                                                 else
                                                     buf.printf( new ByteSlice("\\x%02x"), c.value);
@@ -433,7 +433,7 @@ public class tokens {
                                     {
                                         if (c.value <= 127)
                                         {
-                                            if (isprint(c.value) != 0)
+                                            if ((isprint(c.value)) != 0)
                                                 buf.writeByte(c.value);
                                             else
                                                 buf.printf( new ByteSlice("\\x%02x"), c.value);
@@ -449,7 +449,7 @@ public class tokens {
                             }
                         }
                         buf.writeByte(34);
-                        if (this.postfix != 0)
+                        if ((this.postfix) != 0)
                             buf.writeByte((int)this.postfix);
                         p = buf.extractChars();
                     }
@@ -462,17 +462,17 @@ public class tokens {
                         buf.writeByte(120);
                         buf.writeByte(34);
                         {
-                            int __key45 = 0;
-                            int __limit46 = this.len;
-                            for (; __key45 < __limit46;__key45 += 1) {
-                                IntRef i = ref(__key45);
-                                if (i.value != 0)
+                            int __key50 = 0;
+                            int __limit51 = this.len;
+                            for (; __key50 < __limit51;__key50 += 1) {
+                                IntRef i = ref(__key50);
+                                if ((i.value) != 0)
                                     buf.writeByte(32);
                                 buf.printf( new ByteSlice("%02x"), (int)this.ustring.get(i.value));
                             }
                         }
                         buf.writeByte(34);
-                        if (this.postfix != 0)
+                        if ((this.postfix) != 0)
                             buf.writeByte((int)this.postfix);
                         buf.writeByte(0);
                         p = buf.extractData();
@@ -582,5 +582,21 @@ public class tokens {
             return tochars.get(value.value);
         }
 
+        public Token(){}
+        public Token(Token next, Loc loc, BytePtr ptr, TOK value, BytePtr blockComment, BytePtr lineComment, long intvalue, long unsvalue, double floatvalue, BytePtr ustring, int len, byte postfix, Identifier ident) {
+            this.next = next;
+            this.loc = loc;
+            this.ptr = ptr;
+            this.value = value;
+            this.blockComment = blockComment;
+            this.lineComment = lineComment;
+            this.intvalue = intvalue;
+            this.unsvalue = unsvalue;
+            this.floatvalue = floatvalue;
+            this.ustring = ustring;
+            this.len = len;
+            this.postfix = postfix;
+            this.ident = ident;
+        }
     }
 }
