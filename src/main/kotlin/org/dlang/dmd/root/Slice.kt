@@ -1,7 +1,6 @@
 package org.dlang.dmd.root
 
 import java.lang.StringBuilder
-import java.util.*
 
 class Slice<T> (val data: Array<T>, var beg: Int, var end: Int) : RootObject() {
 
@@ -311,3 +310,5 @@ fun stripLeadingLineTerminator(str: ByteSlice): ByteSlice {
         else -> return str
     }
 }
+
+typealias Strings = DArray<BytePtr>

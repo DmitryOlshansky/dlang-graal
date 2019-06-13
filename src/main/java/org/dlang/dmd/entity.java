@@ -4,7 +4,9 @@ import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
 
-import static org.dlang.dmd.root.UtilsKt.*;
+import org.dlang.dmd.root.filename.*;
+
+import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 
@@ -42,10 +44,10 @@ public class entity {
         if (tableIndex >= 0 && tableIndex < 26)
         {
             {
-                Slice<NameId> __r39 = namesTable.get(tableIndex).slice();
-                int __key40 = 0;
-                for (; __key40 < __r39.getLength();__key40 += 1) {
-                    NameId entity = __r39.get(__key40);
+                Slice<NameId> __r53 = namesTable.get(tableIndex).slice();
+                int __key54 = 0;
+                for (; __key54 < __r53.getLength();__key54 += 1) {
+                    NameId entity = __r53.get(__key54);
                     if (__equals(entity.name.toByteSlice(), p.slice(0,length)))
                         return entity.value;
                 }
@@ -54,10 +56,10 @@ public class entity {
         return -1;
     }
 
-    static class NameId
+    public static class NameId
     {
-        ByteSlice name;
-        int value;
+        public ByteSlice name;
+        public int value;
         public NameId(){}
         public NameId(ByteSlice name, int value) {
             this.name = name;

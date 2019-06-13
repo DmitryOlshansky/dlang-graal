@@ -4,7 +4,9 @@ import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
 
-import static org.dlang.dmd.root.UtilsKt.*;
+import org.dlang.dmd.root.filename.*;
+
+import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.globals.*;
@@ -263,39 +265,39 @@ public class tokens {
     }
 
     static Slice<TOK> keywords = slice(initializer_0);
-    static class Token
+    public static class Token
     {
-        Token next;
-        Loc loc;
-        BytePtr ptr;
-        TOK value;
-        BytePtr blockComment;
-        BytePtr lineComment;
-        long intvalue;
-        long unsvalue;
-        double floatvalue;
-        BytePtr ustring;
-        int len;
-        byte postfix;
-        Identifier ident;
-        static Slice<ByteSlice> tochars = slice(initializer_1);
+        public Token next;
+        public Loc loc;
+        public BytePtr ptr;
+        public TOK value;
+        public BytePtr blockComment;
+        public BytePtr lineComment;
+        public long intvalue;
+        public long unsvalue;
+        public double floatvalue;
+        public BytePtr ustring;
+        public int len;
+        public byte postfix;
+        public Identifier ident;
+        public static Slice<ByteSlice> tochars = slice(initializer_1);
         {
             Identifier.initTable();
             {
-                Slice<TOK> __r46 = keywords.slice();
-                int __key47 = 0;
-                for (; __key47 < __r46.getLength();__key47 += 1) {
-                    TOK kw = __r46.get(__key47);
+                public Slice<TOK> __r59 = keywords.slice();
+                public int __key60 = 0;
+                for (; __key60 < __r59.getLength();__key60 += 1) {
+                    public TOK kw = __r59.get(__key60);
                     Identifier.idPool(tochars.get(kw.value).toBytePtr(), tochars.get(kw.value).getLength(), kw.value);
                 }
             }
         }
         public  int isKeyword() {
             {
-                Slice<TOK> __r48 = keywords.slice();
-                int __key49 = 0;
-                for (; __key49 < __r48.getLength();__key49 += 1) {
-                    TOK kw = __r48.get(__key49);
+                Slice<TOK> __r61 = keywords.slice();
+                int __key62 = 0;
+                for (; __key62 < __r61.getLength();__key62 += 1) {
+                    TOK kw = __r61.get(__key62);
                     if (kw.value == this.value.value)
                         return 1;
                 }
@@ -462,10 +464,10 @@ public class tokens {
                         buf.writeByte(120);
                         buf.writeByte(34);
                         {
-                            int __key50 = 0;
-                            int __limit51 = this.len;
-                            for (; __key50 < __limit51;__key50 += 1) {
-                                IntRef i = ref(__key50);
+                            int __key63 = 0;
+                            int __limit64 = this.len;
+                            for (; __key63 < __limit64;__key63 += 1) {
+                                IntRef i = ref(__key63);
                                 if ((i.value) != 0)
                                     buf.writeByte(32);
                                 buf.printf( new ByteSlice("%02x"), (int)this.ustring.get(i.value));

@@ -47,6 +47,22 @@ struct ExprOpts {
 }
 
 ///
+const(char)[] symbol(const(char)[] s) {
+    if (s == "native") return "native_";
+    else return s;
+}
+
+///
+const(char)[] symbol(const(char)* s) {
+    return symbol(s[0..strlen(s)]);
+}
+
+///
+const(char)[] symbol(Identifier s) {
+    return symbol(s.toString);
+}
+
+///
 string toJava(Type t, Identifier id = null, Boxing boxing = Boxing.no) {
     scope OutBuffer* buf = new OutBuffer();
     typeToBuffer(t, id, buf, boxing);
@@ -72,7 +88,7 @@ string toJavaBool(Expression e, ExprOpts opts) {
     scope OutBuffer* buf = new OutBuffer();
     scope v = new toJavaExpressionVisitor(buf, opts);
     e.accept(v);
-    if (e.type.ty != Tbool) switch(e.type.ty){
+    if (e.type && e.type.ty != Tbool) switch(e.type.ty){
         case Tpointer:
         case Tclass:
             buf.writestring(" != null");
@@ -168,7 +184,8 @@ public:
                             EnumMember em = cast(EnumMember) (*sym.members)[i];
                             if (em.value.toInteger == v)
                             {
-                                buf.printf("%s.%s", sym.toChars(), em.ident.toChars());
+                                auto s = symbol(sym.ident);
+                                buf.printf("%.*s.%s", s.length, s.ptr, em.ident.toChars());
                                 return ;
                             }
                         }
@@ -281,17 +298,14 @@ public:
                 buf.writeByte('\\');
                 goto default;
             default:
-                if (c <= 0xFF)
-                {
-                    if (c <= 0x7F && isprint(c))
-                        buf.writeByte(c);
-                    else
-                        buf.printf("\\x%02x", c);
-                }
-                else if (c <= 0xFFFF)
-                    buf.printf("\\x%02x\\x%02x", c & 0xFF, c >> 8);
+                if (c <= 0x7F && isprint(c))
+                    buf.writeByte(c);
+                else if(c == '\n')
+                    buf.writestring("\\n");
+                else if(c == '\r')
+                    buf.writestring("\\r");
                 else
-                    buf.printf("\\x%02x\\x%02x\\x%02x\\x%02x", c & 0xFF, (c >> 8) & 0xFF, (c >> 16) & 0xFF, c >> 24);
+                    buf.printf("\\u%04x", c);
                 break;
             }
         }
@@ -421,7 +435,7 @@ public:
     {
         if (e.var.isMember() && e.var.isStatic())
             buf.printf("%s.", e.var.parent.ident.toChars());
-        buf.writestring(e.var.toChars());
+        buf.writestring(symbol(e.var.toChars()));
         if (cast(void*)e.var in opts.refParams) 
             buf.writestring(".value");
     }
@@ -473,7 +487,7 @@ public:
     override void visit(TypeidExp e)
     {
         //TODO: 
-        buf.writestring("?TypeID?");
+        buf.writestring(e.toChars);
         //assert(false);
         // not used in DMD sources
     }
@@ -541,7 +555,7 @@ public:
     override void visit(BinExp e)
     {
         bool oldIntPromotion = opts.reverseIntPromotion;
-        if ((e.op == TOK.equal || e.op == TOK.notEqual) && !e.e1.type.isTypeBasic) {
+        if (e.e1.type && (e.op == TOK.equal || e.op == TOK.notEqual) && !e.e1.type.isTypeBasic) {
             expToBuffer(e.e1, cast(PREC)(precedence[e.op] + 1), buf, opts);
             buf.writestring(".equals(");
             expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
@@ -713,7 +727,7 @@ public:
         bool intTo, wasInt;
         bool complexTarget = false;
         bool fromEnum = false;
-        switch(e.to.ty) {
+        if (e.to) switch(e.to.ty) {
             case Tpointer:
             case Tarray:
                 complexTarget = true;
@@ -725,7 +739,7 @@ public:
                 break;
             default:
         }
-        switch(e.e1.type.ty) {
+        if (e.e1.type) switch(e.e1.type.ty) {
             case Tint32:
             case Tuns32:
             case Tdchar:
@@ -1000,6 +1014,10 @@ private void sizeToBuffer(Expression e, OutBuffer* buf, ExprOpts opts)
  */
 private void typeToBuffer(Type t, const Identifier ident, OutBuffer* buf, Boxing boxing = Boxing.no)
 {
+    if (t is null) {
+        buf.writestring("nothing");
+        return;
+    }
     if (auto tf = t.isTypeFunction())
     {
         visitFuncIdentWithPrefix(tf, ident, null, buf);

@@ -23,28 +23,6 @@ import dmd.root.rmem;
 import dmd.root.rootobject;
 import dmd.utils;
 
-version (Posix)
-{
-    import core.sys.posix.stdlib;
-    import core.sys.posix.sys.stat;
-    import core.sys.posix.unistd : getcwd;
-}
-
-version (Windows)
-{
-    import core.sys.windows.winbase;
-    import core.sys.windows.windef;
-    import core.sys.windows.winnls;
-
-    extern (Windows) DWORD GetFullPathNameW(LPCWSTR, DWORD, LPWSTR, LPWSTR*) nothrow @nogc;
-    extern (Windows) void SetLastError(DWORD) nothrow @nogc;
-    extern (C) char* getcwd(char* buffer, size_t maxlen) nothrow;
-}
-
-version (CRuntime_Glibc)
-{
-    extern (C) char* canonicalize_file_name(const char*) nothrow;
-}
 
 alias Strings = Array!(const(char)*);
 

@@ -66,6 +66,7 @@ Module runParser(Ast = ASTCodegen)(
     import dmd.globals : global;
 
     global.params.mscoff = global.params.is64bit;
+    global.params.useUnitTests = true;
 
     findImportPaths
         .chain(importPaths)

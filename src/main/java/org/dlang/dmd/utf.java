@@ -4,7 +4,9 @@ import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
 
-import static org.dlang.dmd.root.UtilsKt.*;
+import org.dlang.dmd.root.filename.*;
+
+import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 

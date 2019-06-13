@@ -77,6 +77,8 @@ class BytePtr(val data: ByteArray, var offset: Int) : RootObject() {
     fun toIntPtr(): IntPtr = ProxyIntPtr(this.data, offset)
 
     override fun toChars(): BytePtr = this
+
+    override fun toString(): String = String(data, offset, data.size - offset)
 }
 
 interface CharPtr {

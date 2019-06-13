@@ -6,6 +6,7 @@ import ds.buffer;
 
 import dmd.aggregate;
 import dmd.attrib;
+import dmd.cond;
 import dmd.dclass;
 import dmd.denum;
 import dmd.dimport;
@@ -25,7 +26,7 @@ import dmd.visitor : Visitor, SemanticTimeTransitiveVisitor;
 
 import std.array, std.algorithm, std.format, std.string, std.range;
 
-import visitors.expression : Boxing, ExprOpts, toJava, toJavaBool, isByteSized;
+import visitors.expression : Boxing, ExprOpts, toJava, toJavaBool, isByteSized, symbol;
 import visitors.passed_by_ref;
 
 string refType(Type t) {
@@ -78,6 +79,20 @@ VarDeclaration[] collectMembers(AggregateDeclaration agg) {
         alias visit = typeof(super).visit;
         VarDeclaration[] decls = [];
 
+        override void visit(ConditionalDeclaration ver) {
+            if (ver.condition.inc == Include.yes) {
+                if (ver.decl) {
+                    foreach(d; *ver.decl){
+                        d.accept(this);
+                    }
+                }
+            }
+            else if(ver.elsedecl) {
+                foreach(d; *ver.elsedecl){
+                    d.accept(this);
+                }
+            }
+        }
         override void visit(FuncDeclaration ){}
         override void visit(StaticCtorDeclaration){}
         override void visit(SharedStaticCtorDeclaration){}
@@ -102,6 +117,8 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     string moduleName;
     string[] constants; // all local static vars are collected here
     ExprOpts opts;
+
+    int testCounter;
     
     int inInitializer; // to avoid recursive decomposition of arrays
     string[] arrayInitializers;
@@ -112,7 +129,8 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         header.put("package org.dlang.dmd;\n");
         header.put("\nimport kotlin.jvm.functions.*;\n");
         header.put("\nimport org.dlang.dmd.root.*;\n");
-        header.put("\nimport static org.dlang.dmd.root.UtilsKt.*;\n");
+        header.put("\nimport org.dlang.dmd.root.filename.*;\n");
+        header.put("\nimport static org.dlang.dmd.root.ShimsKt.*;\n");
         header.put("import static org.dlang.dmd.root.SliceKt.*;\n");
         header.put("import static org.dlang.dmd.root.DArrayKt.*;\n");
     }
@@ -139,12 +157,29 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.fmt("}\n");
     }
 
+    override void visit(ConditionalDeclaration ver) {
+        if (ver.condition.inc == Include.yes) {
+            if (ver.decl) {
+                foreach(d; *ver.decl){
+                    d.accept(this);
+                }
+            }
+        }
+        else if(ver.elsedecl) {
+            foreach(d; *ver.elsedecl){
+                d.accept(this);
+            }
+        }
+    }
+
     extern(D) private void printVar(VarDeclaration var, const(char)[] ident, TextBuffer sink) {
         bool staticInit = var.isStatic() || (var.storage_class & STC.gshared) || (stack.empty && aggregates.empty);
         bool refVar = stack.length && passedByRef(var, stack[$-1]);
         if (refVar) opts.refParams[cast(void*)var] = true;
         auto type = refVar ? refType(var.type) : toJava(var.type);
-        sink.fmt("%s%s %s",  staticInit ? "static " : "", type, ident);
+        auto access = "";
+        if (aggregates.length && !stack.length) access = "public ";
+        sink.fmt("%s%s%s %s",  access, staticInit ? "static " : "", type, ident);
         if (var._init) {
             ExpInitializer ie = var._init.isExpInitializer();
             if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit)) {
@@ -181,7 +216,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(VarDeclaration var) {
         if (var.type is null) {
-            fprintf(stderr, "VAR: %s\n", var.ident.toChars());
+            fprintf(stderr, "NULL TYPE VAR: %s\n", var.ident.toChars());
             return;
         }
         if (var.type.toJava.startsWith("TypeInfo_")) return;
@@ -394,7 +429,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put("\npublic enum ");
         if (d.ident)
         {
-            buf.put(d.ident.toString());
+            buf.put(symbol(d.ident));
             buf.put(' ');
         }
         if (!d.members)
@@ -427,7 +462,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(EnumMember em)
     {
-        buf.put(em.ident.toString());
+        buf.put(symbol(em.ident));
         if (em.value)
         {
             buf.put("(");
@@ -579,20 +614,22 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(ReturnStatement s)
     {
-        buf.put("return ");
-        if (s.exp) {
-            auto retType = stack[$-1].type.nextOf();
-            ExprOpts opts;
-            opts.wantCharPtr = retType.ty == Tpointer && retType.nextOf().ty == Tchar;
-            buf.put(s.exp.toJava(opts));
+        if (stack.length) {
+            buf.put("return ");
+            if (s.exp) {
+                auto retType = stack[$-1].type.nextOf();
+                ExprOpts opts;
+                opts.wantCharPtr = retType.ty == Tpointer && retType.nextOf().ty == Tchar;
+                buf.put(s.exp.toJava(opts));
+            }
+            buf.put(";\n");
         }
-        buf.put(";\n");
     }
 
     override void visit(StructDeclaration d)
     {
         aggregates ~= d;
-        buf.put("static class ");
+        buf.put("public static class ");
         if (!d.isAnonymous())
             buf.put(d.toString());
         if (!d.members)
@@ -671,7 +708,19 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
     }
 
+    override void visit(UnitTestDeclaration func)  {
+        stack ~= func;
+        buf.fmt("public static void test_%d() {\n", testCounter++);
+        buf.indent;
+        if (func.fbody)
+            func.fbody.accept(this);
+        buf.outdent;
+        buf.put("}\n");
+        stack = stack[0..$-1];
+    }
+
     override void visit(FuncDeclaration func)  {
+        if (func.fbody is null) return;
         if (func.ident.toString == "opAssign") return;
         stack ~= func;
 
