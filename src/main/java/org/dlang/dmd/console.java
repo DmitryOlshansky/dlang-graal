@@ -57,7 +57,7 @@ public class console {
         }
 
         public  void setColorBright(boolean bright) {
-            fprintf(this._fp,  new ByteSlice("\u001b[%dm"), (int)bright);
+            fprintf(this._fp,  new ByteSlice("\u001b[%dm"), (bright ? 1 : 0));
         }
 
         public  void setColor(Color color) {

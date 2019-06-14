@@ -112,10 +112,14 @@ class DArray<T : RootObject>(storage: Array<RootObject?>, len: Int) {
 
     fun slice() =  Slice(data as Array<T?>, 0, length)
 
+    fun opSlice() = slice()
+
     fun slice(a: Int, b: Int): Slice<T?> {
         assert(b in a..length)
         return Slice(data as Array<T?>, a, b)
     }
+
+    fun opSlice(a: Int, b: Int) = slice(a, b)
 
     override fun equals(other: Any?): Boolean =
         when(other) {

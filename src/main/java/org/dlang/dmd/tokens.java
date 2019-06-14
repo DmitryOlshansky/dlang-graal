@@ -284,7 +284,7 @@ public class tokens {
         {
             Identifier.initTable();
             {
-                Slice<TOK> __r59 = keywords.slice();
+                Slice<TOK> __r59 = keywords;
                 int __key60 = 0;
                 for (; __key60 < __r59.getLength();__key60 += 1) {
                     TOK kw = __r59.get(__key60);
@@ -294,7 +294,7 @@ public class tokens {
         }
         public  int isKeyword() {
             {
-                Slice<TOK> __r61 = keywords.slice();
+                Slice<TOK> __r61 = keywords;
                 int __key62 = 0;
                 for (; __key62 < __r61.getLength();__key62 += 1) {
                     TOK kw = __r61.get(__key62);

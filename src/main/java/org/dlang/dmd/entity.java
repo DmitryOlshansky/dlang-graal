@@ -44,7 +44,7 @@ public class entity {
         if (tableIndex >= 0 && tableIndex < 26)
         {
             {
-                Slice<NameId> __r53 = namesTable.get(tableIndex).slice();
+                Slice<NameId> __r53 = namesTable.get(tableIndex);
                 int __key54 = 0;
                 for (; __key54 < __r53.getLength();__key54 += 1) {
                     NameId entity = __r53.get(__key54);

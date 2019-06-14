@@ -792,6 +792,7 @@ public:
         }
         bool intTo, wasInt;
         bool complexTarget = false;
+        bool fromBool = false;
         bool fromEnum = false;
         bool fromClass = false;
         bool toVoidPtr = false;
@@ -811,6 +812,9 @@ public:
             default:
         }
         if (e.e1.type) switch(e.e1.type.ty) {
+            case Tbool:
+                fromBool = true;
+                break;
             case Tclass:
                 fromClass = true;
                 break;
@@ -825,6 +829,11 @@ public:
             default:
         }
         if (toVoidPtr || fromClass) expToBuffer(e.e1, precedence[e.op], buf, opts);
+        else if(fromBool && intTo) {
+            buf.writestring("(");
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
+            buf.writestring(" ? 1 : 0)");
+        }
         else if (wasInt && intTo) expToBuffer(e.e1, precedence[e.op], buf, opts);
         else if(opts.reverseIntPromotion && intTo)
             expToBuffer(e.e1, precedence[e.op], buf, opts);
@@ -844,7 +853,6 @@ public:
             buf.writestring(")");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
         }
-        
     }
 
     override void visit(VectorExp e)
@@ -860,9 +868,9 @@ public:
     override void visit(SliceExp e)
     {
         expToBuffer(e.e1, precedence[e.op], buf, opts);
-        buf.writestring(".slice(");
         if (e.upr || e.lwr)
         {
+            buf.writestring(".slice(");
             if (e.lwr)
                 sizeToBuffer(e.lwr, buf, opts);
             else
@@ -872,8 +880,8 @@ public:
                 buf.writestring(",");
                 sizeToBuffer(e.upr, buf, opts);
             }
+            buf.writeByte(')');
         }
-        buf.writeByte(')');
     }
 
     override void visit(ArrayLengthExp e)
