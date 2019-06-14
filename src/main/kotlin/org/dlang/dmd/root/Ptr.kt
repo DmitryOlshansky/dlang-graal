@@ -48,6 +48,8 @@ class Ptr<T>(val data: Array<T>, var offset: Int) : RootObject() {
 
     operator fun get(idx: Int): T = data[offset+idx]
 
+    fun slice(start: Int, end: Int) = Slice(data, start + offset, end + offset)
+
     override fun toChars(): BytePtr  {
         val s = StringBuilder()
         s.append("[")

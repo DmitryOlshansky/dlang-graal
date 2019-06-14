@@ -129,7 +129,8 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         header.put("package org.dlang.dmd;\n");
         header.put("\nimport kotlin.jvm.functions.*;\n");
         header.put("\nimport org.dlang.dmd.root.*;\n");
-        header.put("\nimport org.dlang.dmd.root.filename.*;\n");
+        header.put("\nimport static org.dlang.dmd.root.filename.*;\n");
+        header.put("\nimport static org.dlang.dmd.root.File.*;\n");
         header.put("\nimport static org.dlang.dmd.root.ShimsKt.*;\n");
         header.put("import static org.dlang.dmd.root.SliceKt.*;\n");
         header.put("import static org.dlang.dmd.root.DArrayKt.*;\n");

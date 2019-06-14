@@ -36,8 +36,8 @@ private extern(C++) class PassedByRef : SemanticTimeTransitiveVisitor {
     }
 
     override void visit(VarExp var) {
-        if (depth == 1) stderr.writefln("Deep reference %s\n", var.var.ident.toString);
         if (var.var == decl && depth == 1) {
+            stderr.writefln("Deep reference %s\n", var.var.ident.toString);
             passed = true;
         }
     }

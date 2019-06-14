@@ -270,6 +270,7 @@ public:
 
     override void visit(IdentifierExp e)
     {
+        fprintf(stderr, "ID ::: %s\n", e.toChars());
         buf.writestring(e.ident.toString());
     }
 
@@ -486,7 +487,11 @@ public:
     
     override void visit(CommaExp c)
     {
-        return;
+        buf.writestring("comma(");
+        buf.writestring(c.e1.toJava(opts));
+        buf.writestring(", ");
+        buf.writestring(c.e2.toJava(opts));
+        buf.writestring(")");
     }
 
     override void visit(DeclarationExp e)
@@ -495,7 +500,13 @@ public:
          * are handled in visit(ExpStatement), so here would be used only when
          * we'll directly call Expression.toChars() for debugging.
          */
-        assert(0);
+        //TODO: pull declarations out into upper scope 
+        auto decl = e.declaration.isVarDeclaration();
+        buf.writestring(decl.type.toJava);
+        buf.writeByte(' ');
+        buf.writestring(decl.ident.symbol);
+        if (decl._init)
+            buf.printf(" = %s", decl._init.toChars());
     }
 
     override void visit(TypeidExp e)
@@ -877,8 +888,14 @@ public:
                 buf.writeByte('0');
             
             if (e.upr) {
-                buf.writestring(",");
-                sizeToBuffer(e.upr, buf, opts);
+                /*if (auto dollar = e.upr.isDollarExp()) {
+                    expToBuffer(e.e1, precedence[e.op], buf, opts);
+                    buf.writestring(".getLength()");
+                }
+                else*/ {
+                    buf.writestring(",");
+                    sizeToBuffer(e.upr, buf, opts);
+                }
             }
             buf.writeByte(')');
         }
