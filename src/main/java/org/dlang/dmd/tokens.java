@@ -284,10 +284,10 @@ public class tokens {
         {
             Identifier.initTable();
             {
-                public Slice<TOK> __r59 = keywords.slice();
-                public int __key60 = 0;
+                Slice<TOK> __r59 = keywords.slice();
+                int __key60 = 0;
                 for (; __key60 < __r59.getLength();__key60 += 1) {
-                    public TOK kw = __r59.get(__key60);
+                    TOK kw = __r59.get(__key60);
                     Identifier.idPool(tochars.get(kw.value).toBytePtr(), tochars.get(kw.value).getLength(), kw.value);
                 }
             }
@@ -485,10 +485,10 @@ public class tokens {
         }
 
         public static BytePtr toChars(TOK value) {
-            return Token.toString(value).toBytePtr();
+            return Token.asString(value).toBytePtr();
         }
 
-        public static ByteSlice toString(TOK value) {
+        public static ByteSlice asString(TOK value) {
             return tochars.get(value.value);
         }
 

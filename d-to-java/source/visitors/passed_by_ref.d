@@ -16,9 +16,10 @@ bool passedByRef(VarDeclaration var, FuncDeclaration func) {
     return v.passed;
 }
 
-// For a given var decl find if it's ever passed by ref
+// For a given var decl find if it's ever passed by ref or used in nested functions
 private extern(C++) class PassedByRef : SemanticTimeTransitiveVisitor {
     bool passed;
+    int depth;
     private VarDeclaration decl;
 
     this(VarDeclaration decl) {
@@ -27,6 +28,19 @@ private extern(C++) class PassedByRef : SemanticTimeTransitiveVisitor {
     }
 
     alias visit = typeof(super).visit;
+
+    override void visit(FuncDeclaration func) {
+        depth++;
+        super.visit(func);
+        depth--;
+    }
+
+    override void visit(VarExp var) {
+        if (depth == 1) stderr.writefln("Deep reference %s\n", var.var.ident.toString);
+        if (var.var == decl && depth == 1) {
+            passed = true;
+        }
+    }
 
     override void visit(CallExp call) {
         if (call.f && call.f.parameters) {

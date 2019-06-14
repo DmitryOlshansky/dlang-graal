@@ -1087,7 +1087,7 @@ public class id {
                 int i = __key28;
                 if (i != 0)
                     code.append((byte)10);
-                code.append((dg).invoke(m));
+                code.append((dg)(m));
             }
         }
         return code;

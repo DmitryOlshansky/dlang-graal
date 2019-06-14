@@ -49,6 +49,7 @@ struct ExprOpts {
 ///
 const(char)[] symbol(const(char)[] s) {
     if (s == "native") return "native_";
+    else if(s == "toString") return "asString";
     else return s;
 }
 
@@ -60,6 +61,16 @@ const(char)[] symbol(const(char)* s) {
 ///
 const(char)[] symbol(Identifier s) {
     return symbol(s.toString);
+}
+
+///
+string toJavaFunc(TypeFunction t)
+{
+    scope OutBuffer* buf = new OutBuffer();
+    visitFuncIdentWithPostfix(t, null, buf);
+    buf.writeByte(0);
+    char* p = buf.extractData;
+    return cast(string)p[0..strlen(p)];
 }
 
 ///
@@ -264,6 +275,7 @@ public:
 
     override void visit(DsymbolExp e)
     {
+        fprintf(stderr, "DSymbol %s\n", e.toChars());
         buf.writestring(e.s.toChars());
     }
 
@@ -697,7 +709,7 @@ public:
     {
         expToBuffer(e.e1, PREC.primary, buf, opts);
         buf.writeByte('.');
-        buf.writestring(e.var.toChars());
+        buf.writestring(e.var.ident.symbol);
     }
 
     override void visit(DotTemplateInstanceExp e)
@@ -715,14 +727,7 @@ public:
             expToBuffer(e.e1, PREC.primary, buf, opts);
             buf.writeByte('.');
         }
-        if (e.func.toString == "opIndex") {
-            if (e.func.parameters.length == 1)
-                buf.writestring("get");
-            else
-                buf.writestring("set");
-        }
-        else
-            buf.writestring(e.func.toChars());
+        buf.writestring(e.func.toChars());
     }
 
     override void visit(DotTypeExp e)
@@ -746,15 +751,20 @@ public:
         }
         else {
             if (e.f && e.f.isDtorDeclaration()) return;
-            /*if (e.f && e.f.ident.toString == "opIndex"){
-                auto tf = e.e1.type.toTypeFunction();
-                fprintf(stderr, "opIndex type %s\n", f.parent.toChars());
+            if (e.f && e.f.ident.symbol == "opIndex") {
+                auto var = e.e1.isDotVarExp();
+                // fprintf(stderr, "DOT VAR: %x\n", var);
+                if (var) expToBuffer(var.e1, PREC.primary, buf, opts);
+                else expToBuffer(e.e1, PREC.primary, buf, opts);
+                if (e.f.parameters.length == 1)
+                    buf.writestring(".get");
+                else
+                    buf.writestring(".set");
             }
-            else*/ {
+            else 
                 expToBuffer(e.e1, precedence[e.op], buf, opts);
-                if (auto pt = e.e1.isPtrExp()) {
-                    buf.writestring(".invoke");
-                }
+            if (e.e1.type.ty == Tpointer) {
+                buf.writestring(".invoke");
             }
         }
         buf.writeByte('(');
@@ -803,6 +813,7 @@ public:
         if (e.e1.type) switch(e.e1.type.ty) {
             case Tclass:
                 fromClass = true;
+                break;
             case Tint32:
             case Tuns32:
             case Tdchar:
@@ -1478,6 +1489,7 @@ private void parametersToBuffer(ParameterList pl, OutBuffer* buf, Boxing boxing 
     }
 }
 
+
 private void visitFuncIdentWithPostfix(TypeFunction t, const char[] ident, OutBuffer* buf)
 {
     if (t.inuse)
@@ -1486,8 +1498,14 @@ private void visitFuncIdentWithPostfix(TypeFunction t, const char[] ident, OutBu
         return;
     }
     t.inuse++;
-    buf.printf("Function%d<", t.parameterList.length);
-    parametersToBuffer(t.parameterList, buf, Boxing.yes);
+    if (t.parameterList.length > 0)
+        buf.printf("Function%d<", t.parameterList.length);
+    else
+        buf.writestring("Function<");
+    foreach(i, p; *t.parameterList) {
+        if (i) buf.writestring(",");
+        typeToBuffer(p.type, null, buf, Boxing.yes);
+    }
     buf.writestring(",");
     if (t.next)
     {

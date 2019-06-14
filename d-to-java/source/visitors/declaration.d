@@ -26,7 +26,7 @@ import dmd.visitor : Visitor, SemanticTimeTransitiveVisitor;
 
 import std.array, std.algorithm, std.format, std.string, std.range;
 
-import visitors.expression : Boxing, ExprOpts, toJava, toJavaBool, isByteSized, symbol;
+import visitors.expression : Boxing, ExprOpts, toJava, toJavaBool, toJavaFunc, isByteSized, symbol;
 import visitors.passed_by_ref;
 
 string refType(Type t) {
@@ -193,7 +193,8 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     sink.fmt("new %s()", var.type.toJava);
                 }
                 else if(var.type.ty == Tarray && isNull) {
-                    sink.fmt("new %s()", var.type.toJava);
+                    if (refVar) sink.fmt("ref(new %s())", var.type.toJava);
+                    else sink.fmt("new %s()", var.type.toJava);
                 }
                 else {
                     if (refVar) sink.fmt("ref(");
@@ -390,7 +391,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             ctor.fbody.accept(this);
         buf.outdent;
         buf.put("}\n");
-        stack = stack[$-1];
+        stack = stack[0..$-1];
     }
 
     override void visit(Import imp)
@@ -627,7 +628,8 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             buf.put("return ");
             if (s.exp) {
                 auto retType = stack[$-1].type.nextOf();
-                ExprOpts opts;
+                auto oldOpts = opts;
+                scope(exit) opts = oldOpts;
                 opts.wantCharPtr = retType.ty == Tpointer && retType.nextOf().ty == Tchar;
                 buf.put(s.exp.toJava(opts));
             }
@@ -738,23 +740,37 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         stack = stack[0..$-1];
     }
 
-    override void visit(FuncDeclaration func)  {
-        if (func.fbody is null) return;
-        if (func.ident.toString == "opAssign") return;
-        stack ~= func;
+    void printLocalFunction(FuncDeclaration func) {
+        auto t = func.type.isTypeFunction();
+        fprintf(stderr, "Local function %s\n", func.ident.toChars);
+        buf.fmt("%s %s = new %s(){\n", t.toJavaFunc, func.ident.symbol, t.toJavaFunc);
+        buf.indent;
+        buf.fmt("public %s invoke(", t.nextOf.toJava(null, Boxing.yes));
+        if (func.parameters) {
+            foreach(i, p; (*func.parameters)[]) {
+                if (i != 0) buf.fmt(", ");
+                auto box = p.isRef || p.isOut;
+                if (box && !isAggregate(p.type)) {
+                    opts.refParams[cast(void*)p] = true;
+                    buf.fmt("%s %s", refType(p.type), p.ident.toString);
+                }
+                else buf.fmt("%s %s", toJava(p.type, null, Boxing.yes), p.ident.toString);
+            }
+        }
+        buf.put("){\n");
+        buf.indent;
+        super.visit(func);
+        buf.outdent;
+        buf.fmt("}\n");
+        buf.outdent;
+        buf.fmt("};\n");
+    }
 
-        auto oldFunc = opts.inFuncDecl;
-        scope(exit) opts.inFuncDecl = oldFunc;
-        opts.inFuncDecl = func;
-
-        auto oldRefParams = opts.refParams;
-        scope(exit) opts.refParams = oldRefParams;
-        opts.refParams = null;
-
+    void printGlobalFunction(FuncDeclaration func) {
         fprintf(stderr, "%s\n", func.ident.toChars());
         auto storage = (func.isStatic()  || aggregates.length == 0) ? "static" : "";
-        buf.fmt("public %s %s %s(", storage, toJava(func.type.nextOf()), func.ident.toString);
-        if (func.parameters)
+        buf.fmt("public %s %s %s(", storage, toJava(func.type.nextOf()), func.ident.symbol);
+        if (func.parameters) {
             foreach(i, p; (*func.parameters)[]) {
                 if (i != 0) buf.fmt(", ");
                 auto box = p.isRef || p.isOut;
@@ -764,12 +780,30 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 }
                 else buf.fmt("%s %s", toJava(p.type), p.ident.toString);
             }
+        }
         buf.fmt(") {\n");
         buf.indent;
         super.visit(func);
         buf.outdent;
         buf.put('}');
         buf.put("\n\n");
+    }
+
+    override void visit(FuncDeclaration func)  {
+        if (func.fbody is null) return;
+        if (func.ident.toString == "opAssign") return;
+        stack ~= func;
+        auto oldFunc = opts.inFuncDecl;
+        scope(exit) opts.inFuncDecl = oldFunc;
+        opts.inFuncDecl = func;
+
+        auto oldRefParams = opts.refParams.dup;
+        scope(exit) opts.refParams = oldRefParams;
+
+        if (stack.length > 1)
+            printLocalFunction(func);
+        else 
+            printGlobalFunction(func);
         stack = stack[0..$-1];
     }
 
