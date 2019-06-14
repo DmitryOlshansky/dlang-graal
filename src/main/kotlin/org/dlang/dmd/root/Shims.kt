@@ -1,5 +1,7 @@
 package org.dlang.dmd.root
 
+import org.dlang.dmd.utils
+
 import java.io.PrintStream
 import java.nio.file.Paths
 
@@ -43,12 +45,41 @@ fun strcmp(ptr: BytePtr, s2: ByteSlice): Int {
     else return 1
 }
 
+fun strncmp(ptr: BytePtr, ptr2: BytePtr, n: Int): Int {
+    var i = ptr.offset
+    var j = ptr2.offset
+    var k = 0
+    while (i < ptr.data.size && j < ptr2.data.size && k++ < n) {
+        val delta = ptr.data[i++] - ptr2.data[j++]
+        if (delta != 0) return delta.toInt()
+    }
+    if (i - ptr.offset == j - ptr2.offset) return 0
+    else if(i - ptr.offset < j - ptr2.offset) return -1
+    else return 1
+}
+
+fun strncmp(ptr: BytePtr, s2: ByteSlice, n: Int): Int {
+    var i = ptr.offset
+    var j = s2.beg
+    var k = 0
+    while (i < ptr.data.size && j < s2.end && k++ < n) {
+        val delta = ptr.data[i++] - s2.data[j++]
+        if (delta != 0) return delta.toInt()
+    }
+    if (i - ptr.offset == j - s2.beg) return 0
+    else if(i - ptr.offset < j - s2.beg) return -1
+    else return 1
+}
+
+
 fun strcat(dest: BytePtr, src: ByteSlice) {
     val len = strlen(dest)
     src.data.copyInto(dest.data, dest.offset + len, src.beg, src.end)
 }
 
 fun strdup(src: BytePtr) = BytePtr(src.data.copyOf(), src.offset)
+
+fun xarraydup(src: ByteSlice) = ByteSlice(src.data.copyOfRange(src.beg, src.end))
 
 fun sprintf(ptr: BytePtr, fmt: ByteSlice, vararg args: Any?) {
     val s = String.format(fmt.toString(), args)
@@ -63,9 +94,13 @@ fun isprint(c: Int): Int = if(Character.isISOControl(c)) 0 else 1
 
 fun isdigit(c: Int): Int = if(Character.isDigit(c)) 1 else 0
 
-fun tolower(c: Int) = Character.toLowerCase(c)
+fun isalnum(c: Int): Int = if(Character.isAlphabetic(c) || Character.isDigit(c)) 1 else 0
 
-fun toupper(c: Int) = Character.toUpperCase(c)
+fun tolower(c: Int): Int = Character.toLowerCase(c)
+
+fun toupper(c: Int): Int = Character.toUpperCase(c)
+
+fun isspace(c: Int):Int = if (Character.isSpaceChar(c)) 1 else 0
 
 fun realloc(ptr: BytePtr, size: Int): BytePtr  {
     require(ptr.offset == 0)
@@ -120,19 +155,14 @@ fun<T> speller(fn: (ByteSlice, IntRef) -> T) = null
 
 typealias StdIo = _IO_FILE
 
-class _IO_FILE(val handle: PrintStream) {
-
-    companion object{
-        val stdout = _IO_FILE(System.out)
-        val stderr = _IO_FILE(System.err)
-    }
-}
+class _IO_FILE(val handle: PrintStream)
 
 fun getenv(s: ByteSlice): BytePtr = BytePtr(System.getenv(s.toString()))
+fun getenv(s: BytePtr): BytePtr = BytePtr(System.getenv(s.toString()))
 
 fun isatty(n: Int):Int = if(System.console() != null) 1 else 0
 
-fun printf(io: StdIo, fmt: ByteSlice, vararg args: Any?) = fprintf(StdIo.stdout, fmt, args)
+fun printf(io: StdIo, fmt: ByteSlice, vararg args: Any?) = fprintf(utils.stdout, fmt, args)
 
 fun fprintf(io: StdIo, fmt: ByteSlice, vararg args: Any?) {
     val result = String.format(fmt.toString(), args)

@@ -338,20 +338,22 @@ public:
     override void visit(StructLiteralExp e)
     {
         buf.writestring("new ");
-        buf.writestring(e.sd.toChars());
+        buf.writestring(e.type.toJava);
         buf.writeByte('(');
-        // CTFE can generate struct literals that contain an AddrExp pointing
-        // to themselves, need to avoid infinite recursion:
-        // struct S { this(int){ this.s = &this; } S* s; }
-        // const foo = new S(0);
-        if (e.stageflags & stageToCBuffer)
-            buf.writestring("<recursion>");
-        else
-        {
-            const old = e.stageflags;
-            e.stageflags |= stageToCBuffer;
-            argsToBuffer(e.elements, buf, opts);
-            e.stageflags = old;
+        if (e.type.toString.indexOf("Array!") < 0) {
+            // CTFE can generate struct literals that contain an AddrExp pointing
+            // to themselves, need to avoid infinite recursion:
+            // struct S { this(int){ this.s = &this; } S* s; }
+            // const foo = new S(0);
+            if (e.stageflags & stageToCBuffer)
+                buf.writestring("<recursion>");
+            else
+            {
+                const old = e.stageflags;
+                e.stageflags |= stageToCBuffer;
+                argsToBuffer(e.elements, buf, opts);
+                e.stageflags = old;
+            }
         }
         buf.writeByte(')');
     }
@@ -465,7 +467,7 @@ public:
 
     override void visit(FuncExp e)
     {
-        //fprintf(stderr, "Func exp %s\n", e.toChars());
+        fprintf(stderr, "Func exp %s\n", e.toChars());
         e.fd.dsymbolToBuffer(buf);
         //buf.writestring(e.fd.toChars());
     }
@@ -548,8 +550,25 @@ public:
 
     override void visit(UnaExp e)
     {
-        buf.writestring(Token.toString(e.op));
-        expToBuffer(e.e1, precedence[e.op], buf, opts);
+        if (e.e1.type.ty == Tpointer) {
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
+            if(e.op == TOK.not) {
+                buf.writestring(" == null");
+            }
+            else {    
+                assert(0, "Unsupported unary pointer arithmetic");
+            }
+        }
+        else if(e.op == TOK.not) {
+            buf.writestring(Token.toString(e.op));
+            buf.writeByte('(');
+            buf.writestring(e.e1.toJavaBool(opts));
+            buf.writeByte(')');
+        }
+        else {
+            buf.writestring(Token.toString(e.op));
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
+        }
     }
 
     override void visit(BinExp e)
@@ -591,6 +610,30 @@ public:
         else if(!isByteSized(e.e1) && isByteSized(e.e2)){
             oldIntPromotion = opts.reverseIntPromotion;
             opts.reverseIntPromotion = true;
+        }
+        else if(e.e1.type.ty == Tpointer && e.e2.type.isTypeBasic()) {
+            string opName = "";
+            switch(e.op) {
+                case TOK.add:
+                    opName = "plus";
+                    break;
+                case TOK.addAssign: 
+                    opName = "plusAssign";
+                    break;
+                case TOK.min:
+                    opName = "minus";
+                    break;
+                case TOK.minAssign:
+                    opName = "minusAssign";
+                    break;
+                default:
+                    assert(0, "Unexpected operator in pointer arithmetic");
+            } 
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
+            buf.printf(".%.*s(", opName.length, opName.ptr);
+            expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
+            buf.writestring(")");
+            return;
         }
         expToBuffer(e.e1, precedence[e.op], buf, opts);
         buf.writeByte(' ');
@@ -672,7 +715,14 @@ public:
             expToBuffer(e.e1, PREC.primary, buf, opts);
             buf.writeByte('.');
         }
-        buf.writestring(e.func.toChars());
+        if (e.func.toString == "opIndex") {
+            if (e.func.parameters.length == 1)
+                buf.writestring("get");
+            else
+                buf.writestring("set");
+        }
+        else
+            buf.writestring(e.func.toChars());
     }
 
     override void visit(DotTypeExp e)
@@ -696,9 +746,15 @@ public:
         }
         else {
             if (e.f && e.f.isDtorDeclaration()) return;
-            expToBuffer(e.e1, precedence[e.op], buf, opts);
-            if (auto pt = e.e1.isPtrExp()) {
-                buf.writestring(".invoke");
+            /*if (e.f && e.f.ident.toString == "opIndex"){
+                auto tf = e.e1.type.toTypeFunction();
+                fprintf(stderr, "opIndex type %s\n", f.parent.toChars());
+            }
+            else*/ {
+                expToBuffer(e.e1, precedence[e.op], buf, opts);
+                if (auto pt = e.e1.isPtrExp()) {
+                    buf.writestring(".invoke");
+                }
             }
         }
         buf.writeByte('(');
@@ -727,8 +783,13 @@ public:
         bool intTo, wasInt;
         bool complexTarget = false;
         bool fromEnum = false;
+        bool fromClass = false;
+        bool toVoidPtr = false;
         if (e.to) switch(e.to.ty) {
             case Tpointer:
+                if (e.to.nextOf.ty == Tvoid)
+                    toVoidPtr = true;
+                goto case;
             case Tarray:
                 complexTarget = true;
                 break;
@@ -740,6 +801,8 @@ public:
             default:
         }
         if (e.e1.type) switch(e.e1.type.ty) {
+            case Tclass:
+                fromClass = true;
             case Tint32:
             case Tuns32:
             case Tdchar:
@@ -750,7 +813,8 @@ public:
                 break;
             default:
         }
-        if (wasInt && intTo) expToBuffer(e.e1, precedence[e.op], buf, opts);
+        if (toVoidPtr || fromClass) expToBuffer(e.e1, precedence[e.op], buf, opts);
+        else if (wasInt && intTo) expToBuffer(e.e1, precedence[e.op], buf, opts);
         else if(opts.reverseIntPromotion && intTo)
             expToBuffer(e.e1, precedence[e.op], buf, opts);
         else if(fromEnum) {
@@ -880,13 +944,37 @@ public:
     override void visit(PostExp e)
     {
         expToBuffer(e.e1, precedence[e.op], buf, opts);
-        buf.writestring(Token.toString(e.op));
+        if (e.e1.type.ty == Tpointer) {
+            if(e.op == TOK.plusPlus) {
+                buf.writestring(".postInc()");
+            }
+            else if(e.op == TOK.minusMinus) {
+                buf.writestring(".postDec()");
+            }
+            else 
+                fprintf(stderr, "Pointer arithmetic: %s\n", e.toChars());
+        }
+        else 
+            buf.writestring(Token.toString(e.op));
     }
 
     override void visit(PreExp e)
     {
-        buf.writestring(Token.toString(e.op));
-        expToBuffer(e.e1, precedence[e.op], buf, opts);
+        if (e.e1.type.ty == Tpointer) {
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
+            if(e.op == TOK.prePlusPlus) {
+                buf.writestring(".inc()");
+            }
+            else if(e.op == TOK.preMinusMinus) {
+                buf.writestring(".dec()");
+            }
+            else 
+                fprintf(stderr, "Pointer arithmetic: %s\n", e.toChars());
+        }
+        else {
+            buf.writestring(Token.toString(e.op));
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
+        }
     }
 
     override void visit(RemoveExp e)
@@ -1365,13 +1453,13 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
     }
 }
 
-private void parametersToBuffer(ParameterList pl, OutBuffer* buf)
+private void parametersToBuffer(ParameterList pl, OutBuffer* buf, Boxing boxing = Boxing.no)
 {
     foreach (i; 0 .. pl.length)
     {
         if (i)
             buf.writestring(", ");
-        pl[i].parameterToBuffer(buf);
+        pl[i].parameterToBuffer(buf, boxing);
     }
     final switch (pl.varargs)
     {
@@ -1399,11 +1487,11 @@ private void visitFuncIdentWithPostfix(TypeFunction t, const char[] ident, OutBu
     }
     t.inuse++;
     buf.printf("Function%d<", t.parameterList.length);
-    parametersToBuffer(t.parameterList, buf);
+    parametersToBuffer(t.parameterList, buf, Boxing.yes);
     buf.writestring(",");
     if (t.next)
     {
-        typeToBuffer(t.next, null, buf);
+        typeToBuffer(t.next, null, buf, Boxing.yes);
     }
     else 
         buf.writestring("Void");
@@ -1463,7 +1551,7 @@ private void dsymbolToBuffer(Dsymbol s, OutBuffer* buf) {
  *      buf = buffer to write it to
  *      hgs = context
  */
-private void parameterToBuffer(Parameter p, OutBuffer* buf)
+private void parameterToBuffer(Parameter p, OutBuffer* buf, Boxing boxing = Boxing.no)
 {
     if (p.type.ty == Tident &&
              (cast(TypeIdentifier)p.type).ident.toString().length > 3 &&
@@ -1474,7 +1562,7 @@ private void parameterToBuffer(Parameter p, OutBuffer* buf)
     }
     else
     {
-        typeToBuffer(p.type, p.ident, buf);
+        typeToBuffer(p.type, p.ident, buf, boxing);
     }
     auto opts = ExprOpts(p.type.ty == Tpointer && p.type.nextOf().ty == Tchar);
 

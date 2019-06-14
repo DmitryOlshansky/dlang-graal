@@ -152,19 +152,11 @@ public class utf {
         switch (n)
         {
             case 1:
-            {
                 return UTF8_DECODE_OK;
-            }
             case 2:
-            {
-            }
             case 3:
-            {
-            }
             case 4:
-            {
                 break;
-            }
             default:
             {
                 return new BytePtr("Outside Unicode code space");
@@ -185,7 +177,7 @@ public class utf {
                 c = (c << 6 | (u & (byte)63));
             }
         }
-        if (!utf_isValidDchar(c))
+        if (!(utf_isValidDchar(c)))
             return new BytePtr("Invalid code point decoded");
         ridx.value = i;
         rresult.value = c;
@@ -217,7 +209,7 @@ public class utf {
         }
         else if (56320 <= u && u <= 57343)
             return new BytePtr("Unpaired surrogate");
-        if (!utf_isValidDchar(u))
+        if (!(utf_isValidDchar(u)))
             return new BytePtr("Invalid code point decoded");
         rresult.value = u;
         return UTF16_DECODE_OK;

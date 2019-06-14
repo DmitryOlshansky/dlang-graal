@@ -39,6 +39,7 @@ public class console {
 
     public static class Console
     {
+
         public _IO_FILE _fp;
         public  _IO_FILE fp() {
             return this._fp;

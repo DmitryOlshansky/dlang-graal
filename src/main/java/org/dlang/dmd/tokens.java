@@ -307,7 +307,7 @@ public class tokens {
 
         public  void setString(BytePtr ptr, int length) {
             BytePtr s = Mem.xmalloc(length + 1).toBytePtr();
-            memcpy(s.toBytePtr(), ptr.toBytePtr(), length);
+            memcpy(s, ptr, length);
             s.set(length, (byte)0);
             this.ustring = s;
             this.len = length;
@@ -330,71 +330,44 @@ public class tokens {
             switch (this.value.value)
             {
                 case (byte)105:
-                {
                     sprintf(buffer.ptr(),  new ByteSlice("%d"), (int)this.intvalue);
                     break;
-                }
                 case (byte)106:
-                {
-                }
                 case (byte)117:
-                {
-                }
                 case (byte)118:
-                {
-                }
                 case (byte)119:
-                {
                     sprintf(buffer.ptr(),  new ByteSlice("%uU"), (int)this.unsvalue);
                     break;
-                }
                 case (byte)107:
-                {
                     sprintf(buffer.ptr(),  new ByteSlice("%lldL"), this.intvalue);
                     break;
-                }
                 case (byte)108:
-                {
                     sprintf(buffer.ptr(),  new ByteSlice("%lluUL"), this.unsvalue);
                     break;
-                }
                 case (byte)111:
-                {
                     CTFloat.sprint(buffer.ptr(), (byte)103, this.floatvalue);
                     strcat(buffer.ptr(),  new ByteSlice("f"));
                     break;
-                }
                 case (byte)112:
-                {
                     CTFloat.sprint(buffer.ptr(), (byte)103, this.floatvalue);
                     break;
-                }
                 case (byte)113:
-                {
                     CTFloat.sprint(buffer.ptr(), (byte)103, this.floatvalue);
                     strcat(buffer.ptr(),  new ByteSlice("L"));
                     break;
-                }
                 case (byte)114:
-                {
                     CTFloat.sprint(buffer.ptr(), (byte)103, this.floatvalue);
                     strcat(buffer.ptr(),  new ByteSlice("fi"));
                     break;
-                }
                 case (byte)115:
-                {
                     CTFloat.sprint(buffer.ptr(), (byte)103, this.floatvalue);
                     strcat(buffer.ptr(),  new ByteSlice("i"));
                     break;
-                }
                 case (byte)116:
-                {
                     CTFloat.sprint(buffer.ptr(), (byte)103, this.floatvalue);
                     strcat(buffer.ptr(),  new ByteSlice("Li"));
                     break;
-                }
                 case (byte)121:
-                {
                     {
                         OutBuffer buf = new OutBuffer();
                         buf.writeByte(34);
@@ -406,14 +379,9 @@ public class tokens {
                                 switch (c.value)
                                 {
                                     case 0:
-                                    {
                                         break;
-                                    }
                                     case 34:
-                                    {
-                                    }
                                     case 92:
-                                    {
                                         buf.writeByte(92);
                                         //goto default;
                                         {
@@ -430,7 +398,6 @@ public class tokens {
                                                 buf.printf( new ByteSlice("\\U%08x"), c.value);
                                             continue;
                                         }
-                                    }
                                     default:
                                     {
                                         if (c.value <= 127)
@@ -456,9 +423,7 @@ public class tokens {
                         p = buf.extractChars();
                     }
                     break;
-                }
                 case (byte)122:
-                {
                     {
                         OutBuffer buf = new OutBuffer();
                         buf.writeByte(120);
@@ -480,93 +445,36 @@ public class tokens {
                         p = buf.extractData();
                         break;
                     }
-                }
                 case (byte)120:
-                {
-                }
                 case (byte)156:
-                {
-                }
                 case (byte)152:
-                {
-                }
                 case (byte)157:
-                {
-                }
                 case (byte)149:
-                {
-                }
                 case (byte)150:
-                {
-                }
                 case (byte)151:
-                {
-                }
                 case (byte)148:
-                {
-                }
                 case (byte)129:
-                {
-                }
                 case (byte)130:
-                {
-                }
                 case (byte)131:
-                {
-                }
                 case (byte)132:
-                {
-                }
                 case (byte)133:
-                {
-                }
                 case (byte)134:
-                {
-                }
                 case (byte)135:
-                {
-                }
                 case (byte)136:
-                {
-                }
                 case (byte)137:
-                {
-                }
                 case (byte)138:
-                {
-                }
                 case (byte)139:
-                {
-                }
                 case (byte)140:
-                {
-                }
                 case (byte)141:
-                {
-                }
                 case (byte)142:
-                {
-                }
                 case (byte)143:
-                {
-                }
                 case (byte)144:
-                {
-                }
                 case (byte)145:
-                {
-                }
                 case (byte)146:
-                {
-                }
                 case (byte)147:
-                {
-                }
                 case (byte)128:
-                {
                     p = this.ident.toChars();
                     break;
-                }
                 default:
                 {
                     p = Token.toChars(this.value);

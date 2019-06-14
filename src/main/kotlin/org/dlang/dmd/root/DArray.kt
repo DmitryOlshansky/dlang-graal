@@ -2,7 +2,9 @@ package org.dlang.dmd.root
 
 class DArray<T : RootObject>(storage: Array<RootObject?>, len: Int) {
     var data: Array<RootObject?> = storage
-    var length: Int = len
+    @JvmField var length: Int = len
+
+    constructor(): this(arrayOf())
 
     constructor(arr: Array<RootObject?>): this(arr, 0)
 

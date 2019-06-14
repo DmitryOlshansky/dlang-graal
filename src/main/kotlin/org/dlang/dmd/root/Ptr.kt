@@ -6,6 +6,28 @@ class Ptr<T>(val data: Array<T>, var offset: Int) : RootObject() {
 
     constructor(arr: Array<T>): this(arr, 0)
 
+    operator fun inc(): Ptr<T> {
+        offset ++
+        return this
+    }
+
+    fun postInc(): Ptr<T> {
+        val r = Ptr(data, offset)
+        offset++
+        return r
+    }
+
+    operator fun dec(): Ptr<T> {
+        offset--
+        return this
+    }
+
+    fun postDec(): Ptr<T> {
+        val r = Ptr(data, offset)
+        offset--
+        return r
+    }
+
     operator fun plus(delta: Int) = Ptr(data, offset+delta)
 
     operator fun minus(delta: Int) = Ptr(data, offset-delta)
@@ -50,6 +72,28 @@ class BytePtr(val data: ByteArray, var offset: Int) : RootObject() {
 
     constructor(): this(ByteArray(0))
 
+    operator fun inc():  BytePtr {
+        offset ++
+        return this
+    }
+
+    fun postInc(): BytePtr {
+        val r = BytePtr(data, offset)
+        offset++
+        return r
+    }
+
+    operator fun dec(): BytePtr {
+        offset--
+        return this
+    }
+
+    fun postDec(): BytePtr {
+        val r = BytePtr(data, offset)
+        offset--
+        return r
+    }
+
     operator fun plus(delta: Int) = BytePtr(data, offset+delta)
 
     operator fun minus(delta: Int) = BytePtr(data, offset-delta)
@@ -82,6 +126,7 @@ class BytePtr(val data: ByteArray, var offset: Int) : RootObject() {
 }
 
 interface CharPtr {
+
     operator fun plus(delta: Int): CharPtr
 
     operator fun minus(delta: Int): CharPtr

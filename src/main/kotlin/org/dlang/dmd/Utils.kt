@@ -84,7 +84,7 @@ object utils {
         val pt = FileName.path(name)
         if (pt.length != 0) {
             if (!FileName.ensurePathExists(pt)) {
-                error(loc, ByteSlice("cannot create directory %*.s"), pt.length, pt.ptr());
+                error(loc, BytePtr("cannot create directory %*.s"), pt.length, pt.ptr());
                 fatal();
             }
         }
@@ -177,4 +177,9 @@ object utils {
         return dg(BytePtr(bytes, src.beg))
     }
 
+    @JvmStatic
+    val stdout = _IO_FILE(System.out)
+
+    @JvmStatic
+    val stderr = _IO_FILE(System.err)
 }

@@ -160,6 +160,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     override void visit(ConditionalDeclaration ver) {
         if (ver.condition.inc == Include.yes) {
             if (ver.decl) {
+                buf.put("\n");
                 foreach(d; *ver.decl){
                     d.accept(this);
                 }
@@ -263,7 +264,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     override void visit(WhileStatement s)
     {
         buf.put("while (");
-        buf.put(s.condition.toJava(opts));
+        buf.put(s.condition.toJavaBool(opts));
         buf.put(")\n");
         if (s._body)
             s._body.accept(this);
@@ -275,7 +276,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (s._body)
             s._body.accept(this);
         buf.put("while (");
-        buf.put(s.condition.toJava(opts));
+        buf.put(s.condition.toJavaBool(opts));
         buf.put(");\n");
     }
 
@@ -289,7 +290,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put("; ");
         if (s.condition)
         {
-            buf.put(s.condition.toJava(opts));
+            buf.put(s.condition.toJavaBool(opts));
         }
         buf.put(";");
         if (s.increment)
@@ -382,12 +383,14 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(SharedStaticCtorDeclaration ctor)
     {
+        stack ~= ctor;
         buf.put("{\n");
         buf.indent;
         if (ctor.fbody)
             ctor.fbody.accept(this);
         buf.outdent;
         buf.put("}\n");
+        stack = stack[$-1];
     }
 
     override void visit(Import imp)
@@ -509,7 +512,13 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put(s.exp.toJava(opts));
         buf.put(':');
         buf.put('\n');
-        s.statement.accept(this);
+        buf.indent;
+        if (auto ss = s.statement.isScopeStatement()){
+            ss.statement.accept(this);
+        }
+        else
+            s.statement.accept(this);
+        buf.outdent;
     }
 
     override void visit(CaseRangeStatement s)
