@@ -1070,6 +1070,12 @@ public class id {
             this.ident = ident;
             this.name_ = name_;
         }
+
+        public Msgtable opAssign(Msgtable that) {
+            this.ident = that.ident;
+            this.name_ = that.name_;
+            return this;
+        }
     }
     public static ByteSlice generate(Slice<Msgtable> msgtable, Function1<Msgtable,ByteSlice> dg) {
         ByteSlice code = new ByteSlice();

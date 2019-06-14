@@ -65,6 +65,12 @@ public class entity {
             this.name = name;
             this.value = value;
         }
+
+        public NameId opAssign(NameId that) {
+            this.name = that.name;
+            this.value = that.value;
+            return this;
+        }
     }
     static Slice<Slice<NameId>> namesTable = slice(initializer_0);
     static Slice<NameId> namesA = slice(initializer_1);

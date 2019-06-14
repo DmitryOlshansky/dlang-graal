@@ -663,7 +663,17 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     buf.fmt("this.%s = %s;\n", m.ident.toString, m.ident.toString);
                 }
                 buf.outdent;
+                buf.put("}\n\n");
+                // generate opAssign
+                buf.fmt("public %s opAssign(%s that) {\n", d.ident.toString, d.ident.toString);
+                buf.indent;
+                foreach(i,m; members){
+                    buf.fmt("this.%s = that.%s;\n", m.ident.toString, m.ident.toString);
+                }
+                buf.put("return this;\n");
+                buf.outdent;
                 buf.put("}\n");
+                
             }
         }
         buf.outdent;

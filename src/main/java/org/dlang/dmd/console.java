@@ -71,5 +71,10 @@ public class console {
         public Console(_IO_FILE _fp) {
             this._fp = _fp;
         }
+
+        public Console opAssign(Console that) {
+            this._fp = that._fp;
+            return this;
+        }
     }
 }
