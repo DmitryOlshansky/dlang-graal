@@ -292,7 +292,9 @@ public:
 
     override void visit(NullExp e)
     {
-        buf.writestring("null");
+        auto t = e.type.toJava();
+        if (e.type.ty == Tarray) buf.printf("new %.*s()", t.length, t.ptr);
+        else buf.writestring("null");
     }
 
     override void visit(StringExp e)
@@ -487,11 +489,11 @@ public:
     
     override void visit(CommaExp c)
     {
-        buf.writestring("comma(");
+        /*buf.writestring("comma(");
         buf.writestring(c.e1.toJava(opts));
         buf.writestring(", ");
         buf.writestring(c.e2.toJava(opts));
-        buf.writestring(")");
+        buf.writestring(")");*/
     }
 
     override void visit(DeclarationExp e)

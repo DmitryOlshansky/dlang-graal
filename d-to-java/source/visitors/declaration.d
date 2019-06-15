@@ -263,6 +263,21 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
     }
 
+    override void visit(CompoundStatement s)
+    {
+        if (s.statements)
+            foreach (st; *s.statements) if (st) {
+                if (auto ifs = st.isIfStatement()) {
+                    if (auto c = ifs.condition.isCommaExp()) {
+                        auto var = c.e1.isDeclarationExp().declaration.isVarDeclaration();
+                        var.accept(this);
+                    }
+                }
+                st.accept(this);
+                //TODO: for?
+            }
+    }
+
     override void visit(WhileStatement s)
     {
         buf.put("while (");
@@ -323,13 +338,8 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     override void visit(IfStatement s)
     {
         buf.put("if (");
-        if (Parameter p = s.prm)
-        {
-            if (p.type)
-                buf.put(toJava(p.type, p.ident));
-            else
-                buf.put(p.ident.toString());
-            buf.put(" = ");
+        if (s.prm) {
+            buf.put(s.prm.ident.symbol);
         }
         buf.put(s.condition.toJavaBool(opts));
         buf.put(")\n");
@@ -818,7 +828,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
         void visitVoid(VoidInitializer iz)
         {
-            buf.fmt("void");
+            buf.fmt("null");
         }
 
         void visitStruct(StructInitializer si)

@@ -247,8 +247,6 @@ public class globals {
         public ByteSlice resfile;
         public ByteSlice exefile;
         public ByteSlice mapfile;
-        comma(, comma(, comma(, comma(, comma(, comma(, ))))));
-        comma(, comma(, comma(, comma(, comma(, comma(, ))))));
         public Param(){}
         public Param(boolean obj, boolean link, boolean dll, boolean lib, boolean multiobj, boolean oneobj, boolean trace, boolean tracegc, boolean verbose, boolean vcg_ast, boolean showColumns, boolean vtls, boolean vgc, boolean vfield, boolean vcomplex, byte symdebug, boolean symdebugref, boolean alwaysframe, boolean optimize, boolean map, boolean is64bit, boolean isLP64, boolean isLinux, boolean isOSX, boolean isWindows, boolean isFreeBSD, boolean isOpenBSD, boolean isDragonFlyBSD, boolean isSolaris, boolean hasObjectiveC, boolean mscoff, DiagnosticReporting useDeprecated, boolean stackstomp, boolean useUnitTests, boolean useInline, boolean useDIP25, boolean noDIP25, boolean release, boolean preservePaths, DiagnosticReporting warnings, boolean pic, boolean color, boolean cov, byte covPercent, boolean nofloat, boolean ignoreUnsupportedPragmas, boolean useModuleInfo, boolean useTypeInfo, boolean useExceptions, boolean betterC, boolean addMain, boolean allInst, boolean check10378, boolean bug10378, boolean fix16997, boolean fixAliasThis, boolean vsafe, boolean ehnogc, boolean dtorFields, boolean fieldwise, CppStdRevision cplusplus, boolean markdown, boolean vmarkdown, boolean showGaggedErrors, boolean printErrorContext, boolean manual, boolean usage, boolean mcpuUsage, boolean transitionUsage, boolean checkUsage, boolean checkActionUsage, boolean revertUsage, boolean previewUsage, boolean externStdUsage, boolean logo, CPU cpu, CHECKENABLE useInvariants, CHECKENABLE useIn, CHECKENABLE useOut, CHECKENABLE useArrayBounds, CHECKENABLE useAssert, CHECKENABLE useSwitchError, CHECKENABLE boundscheck, CHECKACTION checkAction, int errorLimit, ByteSlice argv0, DArray<BytePtr> modFileAliasStrings, DArray<BytePtr> imppath, DArray<BytePtr> fileImppath, ByteSlice objdir, ByteSlice objname, ByteSlice libname, boolean doDocComments, BytePtr docdir, BytePtr docname, DArray<BytePtr> ddocfiles, boolean doHdrGeneration, ByteSlice hdrdir, ByteSlice hdrname, boolean hdrStripPlainFunctions, boolean doJsonGeneration, ByteSlice jsonfilename, JsonFieldFlags jsonFieldFlags, OutBuffer mixinOut, BytePtr mixinFile, int mixinLines, int debuglevel, DArray<BytePtr> debugids, int versionlevel, DArray<BytePtr> versionids, ByteSlice defaultlibname, ByteSlice debuglibname, ByteSlice mscrtlib, ByteSlice moduleDepsFile, OutBuffer moduleDeps, boolean debugb, boolean debugc, boolean debugf, boolean debugr, boolean debugx, boolean debugy, boolean run, DArray<BytePtr> runargs, DArray<BytePtr> objfiles, DArray<BytePtr> linkswitches, DArray<BytePtr> libfiles, DArray<BytePtr> dllfiles, ByteSlice deffile, ByteSlice resfile, ByteSlice exefile, ByteSlice mapfile) {
             this.obj = obj;
@@ -615,7 +613,7 @@ public class globals {
         }
 
         public  ByteSlice finalDefaultlibname() {
-            return this.params.betterC ? null : (this.params.symdebug) != 0 ? this.params.debuglibname : this.params.defaultlibname;
+            return this.params.betterC ? new ByteSlice() : (this.params.symdebug) != 0 ? this.params.debuglibname : this.params.defaultlibname;
         }
 
         public Global(){}
