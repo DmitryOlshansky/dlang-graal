@@ -2,15 +2,17 @@ package org.dlang.dmd.root
 
 import java.lang.StringBuilder
 
-class Slice<T> (val data: Array<T>, var beg: Int, var end: Int) : RootObject() {
+class Slice<T> (var data: Array<T?>, var beg: Int, var end: Int) : RootObject() {
 
-    constructor(arr: Array<T>) : this(arr, 0, arr.size)
+    constructor(arr: Array<T?>) : this(arr, 0, arr.size)
 
-    operator fun set(idx: Int, value: T) {
+    constructor() : this(emptyArray<Any>() as Array<T?>, 0, 0)
+
+    operator fun set(idx: Int, value: T?) {
         data[beg+idx] = value
     }
 
-    operator fun get(idx: Int): T = data[beg+idx]
+    operator fun get(idx: Int): T? = data[beg+idx]
 
     fun ptr() = Ptr(data, beg)
 
@@ -23,6 +25,18 @@ class Slice<T> (val data: Array<T>, var beg: Int, var end: Int) : RootObject() {
     }
 
     fun slice(): Slice<T>  = Slice(data, beg, end)
+
+    fun copyTo(dest: Slice<T>) {
+        require(dest.length == length)
+        data.copyInto(dest.data, dest.beg, beg, end)
+    }
+
+    fun append(next: T): Slice<T> {
+        // TODO: assumes full slice and realloc on every append
+        data = data.copyOf(data.size + 1)
+        data[data.size - 1] = next
+        return this
+    }
 
     val length: Int
         get() = end - beg
@@ -86,6 +100,11 @@ class ByteSlice(var data: ByteArray, var beg: Int, var end: Int): RootObject() {
 
     fun slice(from:Int): ByteSlice {
         return ByteSlice(data, from+beg, end)
+    }
+
+    fun copyTo(dest: ByteSlice) {
+        require(dest.length == length)
+        data.copyInto(dest.data, dest.beg, beg, end)
     }
 
     fun append(next: ByteSlice): ByteSlice {

@@ -53,7 +53,7 @@ public class console {
         }
 
         public static Console create(_IO_FILE fp) {
-            Console c = Console(null);
+            Console c = new Console(null);
             (c)._fp = fp;
             return c;
         }

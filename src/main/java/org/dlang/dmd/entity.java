@@ -46,10 +46,10 @@ public class entity {
         if (tableIndex >= 0 && tableIndex < 26)
         {
             {
-                Slice<NameId> __r53 = namesTable.get(tableIndex);
-                int __key54 = 0;
-                for (; __key54 < __r53.getLength();__key54 += 1) {
-                    NameId entity = __r53.get(__key54);
+                Slice<NameId> __r45 = namesTable.get(tableIndex);
+                int __key46 = 0;
+                for (; __key46 < __r45.getLength();__key46 += 1) {
+                    NameId entity = __r45.get(__key46);
                     if (__equals(entity.name.toByteSlice(), p.slice(0,length)))
                         return entity.value;
                 }

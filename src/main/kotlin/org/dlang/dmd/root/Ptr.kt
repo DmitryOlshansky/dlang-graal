@@ -2,9 +2,9 @@ package org.dlang.dmd.root
 
 import java.lang.StringBuilder
 
-class Ptr<T>(val data: Array<T>, var offset: Int) : RootObject() {
+class Ptr<T>(val data: Array<T?>, var offset: Int) : RootObject() {
 
-    constructor(arr: Array<T>): this(arr, 0)
+    constructor(arr: Array<T?>): this(arr, 0)
 
     operator fun inc(): Ptr<T> {
         offset ++
@@ -32,6 +32,11 @@ class Ptr<T>(val data: Array<T>, var offset: Int) : RootObject() {
 
     operator fun minus(delta: Int) = Ptr(data, offset-delta)
 
+    operator fun minus(rhs: Ptr<T>): Int {
+        require(rhs.data === data)
+        return offset - rhs.offset
+    }
+
     operator fun plusAssign(delta: Int) {
         offset += delta
     }
@@ -40,13 +45,11 @@ class Ptr<T>(val data: Array<T>, var offset: Int) : RootObject() {
         offset -= delta
     }
 
-    fun deref(): T = data[offset]
-
     operator fun set(idx: Int, value: T) {
         data[offset+idx] = value
     }
 
-    operator fun get(idx: Int): T = data[offset+idx]
+    operator fun get(idx: Int): T? = data[offset+idx]
 
     fun slice(start: Int, end: Int) = Slice(data, start + offset, end + offset)
 
@@ -99,6 +102,11 @@ class BytePtr(val data: ByteArray, var offset: Int) : RootObject() {
     operator fun plus(delta: Int) = BytePtr(data, offset+delta)
 
     operator fun minus(delta: Int) = BytePtr(data, offset-delta)
+
+    operator fun minus(rhs: BytePtr): Int {
+        require(rhs.data === data)
+        return offset - rhs.offset
+    }
 
     operator fun plusAssign(delta: Int) {
         offset += delta

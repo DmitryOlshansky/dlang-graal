@@ -5,6 +5,11 @@ data class StringValue(@JvmField var hash: Int, @JvmField var ptrvalue: Any?)
 class StringTable {
     private val table = HashMap<ByteSlice, StringValue?>()
 
+    constructor(){ }
+
+    // shim
+    constructor(any: Any?, n: Int, any2: Any?, n1: Int, n2: Int, n3: Int, n4: Int) {}
+
     fun _init(size: Int) {}
 
     fun reset(size: Int) {

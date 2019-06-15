@@ -168,7 +168,7 @@ fun <T: RootObject> darrayOf(vararg elements: RootObject?): DArray<T> {
     return DArray(array, array.size)
 }
 
-fun<T: RootObject> peekSlice(array: DArray<T>?): Slice<T?>? = array?.slice()
+fun<T: RootObject> peekSlice(array: DArray<T>?): Slice<T>? = array?.slice()
 
 /**
  * Reverse an array in-place.

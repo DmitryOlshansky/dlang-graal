@@ -286,20 +286,20 @@ public class tokens {
         {
             Identifier.initTable();
             {
-                Slice<TOK> __r59 = keywords;
-                int __key60 = 0;
-                for (; __key60 < __r59.getLength();__key60 += 1) {
-                    TOK kw = __r59.get(__key60);
+                Slice<TOK> __r51 = keywords;
+                int __key52 = 0;
+                for (; __key52 < __r51.getLength();__key52 += 1) {
+                    TOK kw = __r51.get(__key52);
                     Identifier.idPool(tochars.get(kw.value).toBytePtr(), tochars.get(kw.value).getLength(), kw.value);
                 }
             }
         }
         public  int isKeyword() {
             {
-                Slice<TOK> __r61 = keywords;
-                int __key62 = 0;
-                for (; __key62 < __r61.getLength();__key62 += 1) {
-                    TOK kw = __r61.get(__key62);
+                Slice<TOK> __r53 = keywords;
+                int __key54 = 0;
+                for (; __key54 < __r53.getLength();__key54 += 1) {
+                    TOK kw = __r53.get(__key54);
                     if (kw.value == this.value.value)
                         return 1;
                 }
@@ -431,10 +431,10 @@ public class tokens {
                         buf.writeByte(120);
                         buf.writeByte(34);
                         {
-                            int __key63 = 0;
-                            int __limit64 = this.len;
-                            for (; __key63 < __limit64;__key63 += 1) {
-                                IntRef i = ref(__key63);
+                            int __key55 = 0;
+                            int __limit56 = this.len;
+                            for (; __key55 < __limit56;__key55 += 1) {
+                                IntRef i = ref(__key55);
                                 if ((i.value) != 0)
                                     buf.writeByte(32);
                                 buf.printf( new ByteSlice("%02x"), (int)this.ustring.get(i.value));

@@ -3,10 +3,10 @@ package org.dlang.dmd.root;
 public class FileBuffer {
 
     /// Owns a file buffer
-    ByteSlice data;
+    public ByteSlice data;
 
     /// Transfers ownership of the buffer to the caller.
-    ByteSlice extractData()
+    public ByteSlice extractData()
     {
         ByteSlice result = data;
         data = null;
@@ -17,7 +17,7 @@ public class FileBuffer {
         this.data = data;
     }
 
-    static FileBuffer create()
+    public static FileBuffer create()
     {
         return new FileBuffer(null);
     }

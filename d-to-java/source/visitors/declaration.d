@@ -74,6 +74,22 @@ bool terminates(Statement s) {
     return v.terminates;
 }
 
+bool hasCtor(AggregateDeclaration agg) {
+    extern(C++) static class HasCtorVisitor : SemanticTimeTransitiveVisitor {
+        alias visit = typeof(super).visit;
+        bool hasCtor = false;
+
+        override void visit(CtorDeclaration) {
+            hasCtor = true;
+        }
+
+        override void visit(Statement) {} // do shallow visit
+    }
+    scope v = new HasCtorVisitor();
+    agg.accept(v);
+    return v.hasCtor;
+}
+
 VarDeclaration[] collectMembers(AggregateDeclaration agg) {
     extern(C++) static class Collector : SemanticTimeTransitiveVisitor {
         alias visit = typeof(super).visit;
@@ -635,7 +651,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(ReturnStatement s)
     {
-        if (stack.length) {
+        if (stack.length && !stack[$-1].isCtorDeclaration()) {
             buf.put("return ");
             if (s.exp) {
                 auto retType = stack[$-1].type.nextOf();
@@ -666,7 +682,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.indent;
         foreach (s; *d.members)
             s.accept(this);
-        bool hasCtor = (*d.members)[].any!(x => x.isCtorDeclaration());
+        bool hasCtor = hasCtor(d);
         if (!hasCtor) {
             auto members = collectMembers(d);
             if (members.length) {
@@ -778,9 +794,12 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     }
 
     void printGlobalFunction(FuncDeclaration func) {
-        fprintf(stderr, "%s\n", func.ident.toChars());
+        //fprintf(stderr, "%s\n", func.ident.toChars());
         auto storage = (func.isStatic()  || aggregates.length == 0) ? "static" : "";
-        buf.fmt("public %s %s %s(", storage, toJava(func.type.nextOf()), func.ident.symbol);
+        if (func.isCtorDeclaration())
+            buf.fmt("public %s %s(", storage, toJava(func.type.nextOf()));
+        else
+            buf.fmt("public %s %s %s(", storage, toJava(func.type.nextOf()), func.ident.symbol);
         if (func.parameters) {
             foreach(i, p; (*func.parameters)[]) {
                 if (i != 0) buf.fmt(", ");
@@ -802,6 +821,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(FuncDeclaration func)  {
         if (func.fbody is null) return;
+        if (func.isDtorDeclaration() || func.ident.symbol == "destroy") return;
         if (func.ident.toString == "opAssign") return;
         stack ~= func;
         auto oldFunc = opts.inFuncDecl;
@@ -867,7 +887,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             }
             tmp.fmt("{", ai.type.nextOf());
             Initializer[] arr = new Initializer[ai.index.length];
-            foreach (i, ex; ai.index) // assume dense packing
+            foreach (i, ex; ai.index)
             {
                 if (ex)
                 {

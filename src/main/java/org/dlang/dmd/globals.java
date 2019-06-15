@@ -682,11 +682,10 @@ public class globals {
         public int linnum;
         public int charnum;
         public static Loc initial;
-        public  Loc __ctor(BytePtr filename, int linnum, int charnum) {
+        public  Loc(BytePtr filename, int linnum, int charnum) {
             this.linnum = linnum;
             this.charnum = charnum;
             this.filename = filename;
-            return this;
         }
 
         public  BytePtr toChars(boolean showColumns) {
@@ -728,19 +727,6 @@ public class globals {
             return this.filename != null;
         }
 
-        public Loc(){}
-        public Loc(BytePtr filename, int linnum, int charnum) {
-            this.filename = filename;
-            this.linnum = linnum;
-            this.charnum = charnum;
-        }
-
-        public Loc opAssign(Loc that) {
-            this.filename = that.filename;
-            this.linnum = that.linnum;
-            this.charnum = that.charnum;
-            return this;
-        }
     }
 
     public enum LINK 

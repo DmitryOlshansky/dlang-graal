@@ -81,6 +81,8 @@ fun strdup(src: BytePtr) = BytePtr(src.data.copyOf(), src.offset)
 
 fun xarraydup(src: ByteSlice) = ByteSlice(src.data.copyOfRange(src.beg, src.end))
 
+fun xstrdup(src: ByteSlice) = Mem.xstrdup(src)
+
 fun sprintf(ptr: BytePtr, fmt: ByteSlice, vararg args: Any?) {
     val s = String.format(fmt.toString(), args)
     var i = 0
@@ -107,7 +109,7 @@ fun realloc(ptr: BytePtr, size: Int): BytePtr  {
     return BytePtr(ptr.data.copyOf(size))
 }
 
-fun getcwd(s: BytePtr, i: Int) = BytePtr(Paths.get(".").toAbsolutePath().normalize().toString())
+fun getcwd(s: BytePtr?, i: Int) = BytePtr(Paths.get(".").toAbsolutePath().normalize().toString())
 
 
 fun memcpy(dest: BytePtr, from: BytePtr, size: Int) = memmove(dest, from, size)
@@ -122,22 +124,24 @@ fun memset(data: BytePtr, value: Int, nbytes: Int) {
 
 fun __equals(a: Any, b: Any) = a == b
 
+fun destroy(a: Any)  {}
+
 fun hashOf(any: Any) = any.hashCode()
 
 fun hashOf(any: Any, seed: Int) = any.hashCode() + seed * 31
 
-fun<T> slice(arr: Array<T>): Slice<T>  = Slice(arr)
+fun<T> slice(arr: Array<T?>): Slice<T>  = Slice(arr)
 
-fun<T> slice(arr: Array<Array<T>>): Slice<Slice<T>> {
-    return Slice(arr.map { Slice(it) }.toTypedArray())
+fun<T> slice(arr: Array<Array<T?>>): Slice<Slice<T>> {
+    return Slice<Slice<T>>(arr.map { Slice(it) }.toTypedArray())
 }
 
 fun slice(arr: Array<CharArray>): Slice<CharSlice> {
-    return Slice(arr.map { CharSlice(it) }.toTypedArray())
+    return Slice<CharSlice>(arr.map { CharSlice(it) }.toTypedArray())
 }
 
 fun slice(arr: Array<ByteArray>): Slice<ByteSlice> {
-    return Slice(arr.map { ByteSlice(it) }.toTypedArray())
+    return Slice<ByteSlice>(arr.map { ByteSlice(it) }.toTypedArray())
 }
 
 fun slice(arr: CharArray) = CharSlice(arr)

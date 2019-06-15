@@ -2,23 +2,23 @@ package org.dlang.dmd.root;
 
 import kotlin.jvm.functions.*;
 
-import org.dlang.dmd.root.*;
-
-import org.dlang.dmd.root.filename.*;
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static org.dlang.dmd.root.ShimsKt.*;
-import static org.dlang.dmd.root.SliceKt.*;
-import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.utils.*;
 
 public class filename {
 
+
+
     public static class FileName
     {
         public ByteSlice str;
-        public  FileName __ctor(ByteSlice str) {
+        public  FileName(ByteSlice str) {
             this.str = xarraydup(str);
-            return this;
         }
 
         public static boolean equals(BytePtr name1, BytePtr name2) {
@@ -36,14 +36,14 @@ public class filename {
         }
 
         public static boolean absolute(ByteSlice name) {
-            if (!name.getLength())
+            if ((name.getLength()) == 0)
                 return false;
             return name.get(0) == (byte)47;
         }
 
         public static void test_0() {
-            assert((int)FileName.absolute( new ByteSlice("/").slice()) == 1);
-            assert((int)FileName.absolute( new ByteSlice("").slice()) == 0);
+            assert((FileName.absolute( new ByteSlice("/")) ? 1 : 0) == 1);
+            assert((FileName.absolute( new ByteSlice("")) ? 1 : 0) == 0);
         }
         public static BytePtr toAbsolute(BytePtr name, BytePtr base) {
             ByteSlice name_ = toDString(name);
@@ -57,21 +57,17 @@ public class filename {
 
         public static ByteSlice ext(ByteSlice str) {
             {
-                ByteSlice __r46 = str.slice();
+                ByteSlice __r46 = str;
                 int __key45 = __r46.getLength();
-                for (; __key45--;) {
+                for (; (__key45--) != 0;) {
                     byte e = __r46.get(__key45);
                     int idx = __key45;
                     switch ((int)e)
                     {
                         case (byte)46:
-                        {
-                            return str.slice(idx + 1,__dollar);
+                            return str.slice(idx + 1,str.getLength());
                             case (byte)47:
-                            {
-                                return null;
-                            }
-                        }
+                                return new ByteSlice();
                         default:
                         {
                             continue;
@@ -79,16 +75,10 @@ public class filename {
                     }
                 }
             }
-            return null;
+            return new ByteSlice();
         }
 
-        public static void test_1() {
-            assert(__equals(FileName.ext( new ByteSlice("/foo/bar/dmd.conf").slice()),  new ByteSlice("conf")));
-            assert(__equals(FileName.ext( new ByteSlice("object.o").slice()),  new ByteSlice("o")));
-            assert(FileName.ext( new ByteSlice("/foo/bar/dmd").slice()).equals(null));
-            assert(FileName.ext( new ByteSlice(".objdir.o/object").slice()).equals(null));
-            assert(FileName.ext({}).equals(null));
-        }
+
         public  BytePtr ext() {
             return FileName.ext(this.str).toBytePtr();
         }
@@ -103,34 +93,28 @@ public class filename {
             {
                 int len = str.getLength() - e.getLength() - 1;
                 BytePtr n = Mem.xmalloc(len + 1).toBytePtr();
-                memcpy(n.toBytePtr(), str.toBytePtr().toBytePtr(), len);
+                memcpy(n, str.toBytePtr(), len);
                 n.set(len, (byte)0);
                 return n.slice(0,len);
             }
             return Mem.xstrdup(str.toBytePtr()).slice(0,str.getLength());
         }
 
-        public static void test_2() {
-            assert(__equals(FileName.removeExt( new ByteSlice("/foo/bar/object.d").slice()),  new ByteSlice("/foo/bar/object")));
-            assert(__equals(FileName.removeExt( new ByteSlice("/foo/bar/frontend.di").slice()),  new ByteSlice("/foo/bar/frontend")));
-        }
         public static BytePtr name(BytePtr str) {
             return FileName.name(toDString(str)).toBytePtr();
         }
 
         public static ByteSlice name(ByteSlice str) {
             {
-                ByteSlice __r48 = str.slice();
+                ByteSlice __r48 = str;
                 int __key47 = __r48.getLength();
-                for (; __key47--;) {
+                for (; (__key47--) != 0;) {
                     byte e = __r48.get(__key47);
                     int idx = __key47;
                     switch ((int)e)
                     {
                         case (byte)47:
-                        {
-                            return str.slice(idx + 1,__dollar);
-                        }
+                            return str.slice(idx + 1,str.getLength());
                         default:
                         {
                             break;
@@ -145,10 +129,6 @@ public class filename {
             return FileName.name(this.str).toBytePtr();
         }
 
-        public static void test_3() {
-            assert(__equals(FileName.name( new ByteSlice("/foo/bar/object.d").slice()),  new ByteSlice("object.d")));
-            assert(__equals(FileName.name( new ByteSlice("/foo/bar/frontend.di").slice()),  new ByteSlice("frontend.di")));
-        }
         public static BytePtr path(BytePtr str) {
             return FileName.path(toDString(str)).toBytePtr();
         }
@@ -158,59 +138,52 @@ public class filename {
             boolean hasTrailingSlash = false;
             if (n.getLength() < str.getLength())
             {
-                if (str.get(__dollar - n.getLength() - (byte)1) == (byte)47)
+                if (str.get(str.getLength() - n.getLength() - (byte)1) == (byte)47)
                     hasTrailingSlash = true;
             }
             int pathlen = str.getLength() - n.getLength() - (hasTrailingSlash ? 1 : 0);
             BytePtr path = Mem.xmalloc(pathlen + 1).toBytePtr();
-            memcpy(path.toBytePtr(), str.toBytePtr().toBytePtr(), pathlen);
+            memcpy(path, str.toBytePtr(), pathlen);
             path.set(pathlen, (byte)0);
             return path.slice(0,pathlen);
         }
 
-        public static void test_4() {
-            assert(__equals(FileName.path( new ByteSlice("/foo/bar").slice()),  new ByteSlice("/foo")));
-            assert(__equals(FileName.path( new ByteSlice("foo").slice()),  new ByteSlice("")));
-        }
         public static ByteSlice replaceName(ByteSlice path, ByteSlice name) {
             if (FileName.absolute(name))
                 return name;
             ByteSlice n = FileName.name(path);
             if (__equals(n, path))
                 return name;
-            return FileName.combine(path.slice(0,__dollar - n.getLength()), name);
+            return FileName.combine(path.slice(0,path.getLength() - n.getLength()), name);
         }
 
         public static BytePtr combine(BytePtr path, BytePtr name) {
-            if (!path)
+            if (path == null)
                 return name;
             return FileName.combine(toDString(path), toDString(name)).toBytePtr();
         }
 
         public static ByteSlice combine(ByteSlice path, ByteSlice name) {
-            if (!path.getLength())
+            if ((path.getLength()) == 0)
                 return name;
             BytePtr f = Mem.xmalloc(path.getLength() + 1 + name.getLength() + 1).toBytePtr();
-            memcpy(f.toBytePtr(), path.toBytePtr().toBytePtr(), path.getLength());
+            memcpy(f, path.toBytePtr(), path.getLength());
             boolean trailingSlash = false;
-            if (path.get(__dollar - (byte)1) != (byte)47)
+            if (path.get(path.getLength() - (byte)1) != (byte)47)
             {
                 f.set(path.getLength(), (byte)47);
                 trailingSlash = true;
             }
-            int len = path.getLength() + (int)trailingSlash;
-            memcpy((f + len * 1).toBytePtr(), name.toBytePtr().toBytePtr(), name.getLength());
+            int len = path.getLength() + (trailingSlash ? 1 : 0);
+            memcpy((f.plus(len)), name.toBytePtr(), name.getLength());
             f.set((len + name.getLength()), (byte)0);
             return f.slice(0,len + name.getLength());
         }
 
-        public static void test_5() {
-            assert(__equals(FileName.combine( new ByteSlice("foo").slice(),  new ByteSlice("bar").slice()),  new ByteSlice("foo/bar")));
-            assert(__equals(FileName.combine( new ByteSlice("foo/").slice(),  new ByteSlice("bar").slice()),  new ByteSlice("foo/bar")));
-        }
+
         public static BytePtr buildPath(BytePtr path, Slice<BytePtr> names) {
             {
-                Slice<BytePtr> __r49 = names.slice();
+                Slice<BytePtr> __r49 = names;
                 int __key50 = 0;
                 for (; __key50 < __r49.getLength();__key50 += 1) {
                     BytePtr name = __r49.get(__key50);
@@ -221,17 +194,18 @@ public class filename {
         }
 
         public static DArray<BytePtr> splitPath(BytePtr path) {
-            DArray<BytePtr> array = Array<BytePtr>(0, null, 0, null);
-            public  int sink(BytePtr p) {
-                (array).push(p);
-                return 0;
-            }
-
+            DArray<BytePtr> array = new DArray<BytePtr>();
+            Function1<BytePtr,Integer> sink = new Function1<BytePtr,Integer>(){
+                public Integer invoke(BytePtr p){
+                    (array).push(p);
+                    return 0;
+                }
+            };
             FileName.splitPath(sink, path);
             return array;
         }
 
-        public static void splitPath(Function1<BytePtr,int> sink, BytePtr path) {
+        public static void splitPath(Function1<BytePtr,Integer> sink, BytePtr path) {
             if (path != null)
             {
                 BytePtr p = path;
@@ -241,45 +215,33 @@ public class filename {
                 {
                     BytePtr home = null;
                     boolean instring = false;
-                    for (; isspace((int)p.get(0));) {
-                        p += 1;
+                    for (; (isspace((int)p.get(0))) != 0;) {
+                        p.plusAssign(1);
                     }
                     buf.reserve(8);
-                    for (; ;p += 1){
+                    for (; ;p.plusAssign(1)){
                         c = p.get(0);
                         switch ((int)c)
                         {
                             case (byte)34:
-                            {
-                                (int)instring ^= 0;
+                                instring  = !instring;
                                 continue;
                                 case (byte)58:
-                                {
-                                }
-                                p++;
+                                p.postInc();
                                 break;
-                            }
                             case (byte)26:
-                            {
-                            }
                             case (byte)0:
-                            {
                                 break;
-                            }
                             case (byte)13:
-                            {
                                 continue;
-                                case (byte)126:
-                                {
-                                    if (!home)
-                                        home = getenv(new BytePtr("HOME"));
-                                    if (home != null)
-                                        buf.writestring(home);
-                                    else
-                                        buf.writeByte(126);
-                                    continue;
-                                }
-                            }
+                            case (byte)126:
+                                if (home == null)
+                                    home = getenv(new BytePtr("HOME"));
+                                if (home != null)
+                                    buf.writestring(home);
+                                else
+                                    buf.writeByte(126);
+                                continue;
                             default:
                             {
                                 buf.writeByte((int)c);
@@ -290,20 +252,20 @@ public class filename {
                     }
                     if ((buf.offset) != 0)
                     {
-                        if ((sink(buf.extractChars())) != 0)
+                        if ((sink.invoke(buf.extractChars())) != 0)
                             break;
                     }
                 }
-                while (c);
+                while ((c) != 0);
             }
         }
 
         public static ByteSlice addExt(ByteSlice name, ByteSlice ext) {
             int len = name.getLength() + ext.getLength() + 2;
             BytePtr s = Mem.xmalloc(len).toBytePtr();
-            s.slice(0,name.getLength()) = name.slice();
+            name.copyTo(s.slice(0,name.getLength()));
             s.set(name.getLength(), (byte)46);
-            s.slice(name.getLength() + 1,len - 1) = ext.slice();
+            ext.copyTo(s.slice(name.getLength() + 1,len - 1));
             s.set((len - 1), (byte)0);
             return s.slice(0,len - 1);
         }
@@ -319,45 +281,31 @@ public class filename {
             return FileName.addExt(name, ext);
         }
 
-        public static void test_6() {
-            assert(__equals(FileName.defaultExt( new ByteSlice("/foo/object.d").slice(),  new ByteSlice("d")),  new ByteSlice("/foo/object.d")));
-            assert(__equals(FileName.defaultExt( new ByteSlice("/foo/object").slice(),  new ByteSlice("d")),  new ByteSlice("/foo/object.d")));
-            assert(__equals(FileName.defaultExt( new ByteSlice("/foo/bar.d").slice(),  new ByteSlice("o")),  new ByteSlice("/foo/bar.d")));
-        }
         public static BytePtr forceExt(BytePtr name, BytePtr ext) {
             return FileName.forceExt(toDString(name), toDString(ext)).toBytePtr();
         }
 
         public static ByteSlice forceExt(ByteSlice name, ByteSlice ext) {
-            if (e = .getLength() != 0)
-                return FileName.addExt(name.slice(0,__dollar - e.getLength() - 1), ext);
+            ByteSlice e = FileName.ext(name);
+            if (e.getLength() != 0)
+                return FileName.addExt(name.slice(0,name.getLength() - e.getLength() - 1), ext);
             return FileName.defaultExt(name, ext);
         }
 
-        public static void test_7() {
-            assert(__equals(FileName.forceExt( new ByteSlice("/foo/object.d").slice(),  new ByteSlice("d")),  new ByteSlice("/foo/object.d")));
-            assert(__equals(FileName.forceExt( new ByteSlice("/foo/object").slice(),  new ByteSlice("d")),  new ByteSlice("/foo/object.d")));
-            assert(__equals(FileName.forceExt( new ByteSlice("/foo/bar.d").slice(),  new ByteSlice("o")),  new ByteSlice("/foo/bar.o")));
-        }
         public static boolean equalsExt(BytePtr name, BytePtr ext) {
             return FileName.equalsExt(toDString(name), toDString(ext));
         }
 
         public static boolean equalsExt(ByteSlice name, ByteSlice ext) {
             ByteSlice e = FileName.ext(name);
-            if (!e.getLength() && !ext.getLength())
+            if ((e.getLength()) == 0 && (ext.getLength()) == 0)
                 return true;
-            if (!e.getLength() || !ext.getLength())
+            if ((e.getLength()) == 0 || (ext.getLength()) == 0)
                 return false;
             return FileName.equals(e, ext);
         }
 
-        public static void test_8() {
-            assert(!FileName.equalsExt( new ByteSlice("foo.bar").slice(),  new ByteSlice("d")));
-            assert(FileName.equalsExt( new ByteSlice("foo.bar").slice(),  new ByteSlice("bar")));
-            assert(FileName.equalsExt( new ByteSlice("object.d").slice(),  new ByteSlice("d")));
-            assert(!FileName.equalsExt( new ByteSlice("object").slice(),  new ByteSlice("d")));
-        }
+
         public  boolean equalsExt(BytePtr ext) {
             return FileName.equalsExt(this.str, toDString(ext));
         }
@@ -369,7 +317,7 @@ public class filename {
         public static ByteSlice searchPath(DArray<BytePtr> path, ByteSlice name, boolean cwd) {
             if (FileName.absolute(name))
             {
-                return (FileName.exists(name)) != 0 ? name : null;
+                return (FileName.exists(name)) != 0 ? name : new ByteSlice();
             }
             if (cwd)
             {
@@ -379,7 +327,7 @@ public class filename {
             if (path != null)
             {
                 {
-                    Slice<BytePtr> __r51 = (path).opSlice().slice();
+                    Slice<BytePtr> __r51 = (path).opSlice();
                     int __key52 = 0;
                     for (; __key52 < __r51.getLength();__key52 += 1) {
                         BytePtr p = __r51.get(__key52);
@@ -388,18 +336,18 @@ public class filename {
                             return n;
                         if (n.toBytePtr() != name.toBytePtr())
                         {
-                            Mem.xfree(n.toBytePtr().toBytePtr());
+                            Mem.xfree(n.toBytePtr());
                         }
                     }
                 }
             }
-            return null;
+            return new ByteSlice();
         }
 
         public static ByteSlice searchPath(BytePtr path, ByteSlice name, boolean cwd) {
             if (FileName.absolute(name))
             {
-                return (FileName.exists(name)) != 0 ? name : null;
+                return (FileName.exists(name)) != 0 ? name : new ByteSlice();
             }
             if (cwd)
             {
@@ -408,28 +356,29 @@ public class filename {
             }
             if (path != null && (path.get(0)) != 0)
             {
-                ByteSlice result = new ByteSlice();
-                public  int sink(BytePtr p) {
-                    ByteSlice n = FileName.combine(toDString(p), name);
-                    Mem.xfree(p.toBytePtr());
-                    if ((FileName.exists(n)) != 0)
-                    {
-                        result = n;
-                        return 1;
+                Ref<ByteSlice> result = ref(new ByteSlice());
+                Function1<BytePtr,Integer> sink = new Function1<BytePtr,Integer>(){
+                    public Integer invoke(BytePtr p){
+                        ByteSlice n = FileName.combine(toDString(p), name);
+                        Mem.xfree(p);
+                        if ((FileName.exists(n)) != 0)
+                        {
+                            result.value = n;
+                            return 1;
+                        }
+                        return 0;
                     }
-                    return 0;
-                }
-
+                };
                 FileName.splitPath(sink, path);
-                return result;
+                return result.value;
             }
-            return null;
+            return new ByteSlice();
         }
 
         public static BytePtr safeSearchPath(DArray<BytePtr> path, BytePtr name) {
             {
                 BytePtr p = name;
-                for (; p.get(0);p++){
+                for (; (p.get(0)) != 0;p.postInc()){
                     byte c = p.get(0);
                     if (c == (byte)47 && p.get(1) == (byte)47)
                     {
@@ -443,21 +392,21 @@ public class filename {
                     int i = 0;
                     for (; i < (path).length;i++){
                         BytePtr cname = null;
-                        BytePtr cpath = FileName.canonicalName((path).opIndex(i));
+                        BytePtr cpath = FileName.canonicalName((path).get(i));
                         if (cpath == null)
                         cname = FileName.canonicalName(FileName.combine(cpath, name));
                         if (cname == null)
                         if ((FileName.exists(cname)) != 0 && strncmp(cpath, cname, strlen(cpath)) == 0)
                         {
-                            Mem.xfree(cpath.toBytePtr());
+                            Mem.xfree(cpath);
                             BytePtr p = Mem.xstrdup(cname);
-                            Mem.xfree(cname.toBytePtr());
+                            Mem.xfree(cname);
                             return p;
                         }
                         if (cpath != null)
-                            Mem.xfree(cpath.toBytePtr());
+                            Mem.xfree(cpath);
                         if (cname != null)
-                            Mem.xfree(cname.toBytePtr());
+                            Mem.xfree(cname);
                     }
                 }
             }
@@ -469,18 +418,16 @@ public class filename {
         }
 
         public static int exists(ByteSlice name) {
-            if (!name.getLength())
+            if ((name.getLength()) == 0)
                 return 0;
-            stat_t st = new stat_t();
-            if (toCStringThen(name) < 0)
-                return 0;
-            if (S_ISDIR(st.st_mode))
-                return 2;
-            return 1;
+            java.io.File f = new java.io.File(name.toString());
+            if (f.exists() && f.isDirectory()) return 2;
+            else if (f.exists()) return 1;
+            else return 0;
         }
 
         public static boolean ensurePathExists(ByteSlice path) {
-            if (!path.getLength())
+            if ((path.getLength()) == 0)
                 return true;
             if ((FileName.exists(path)) != 0)
                 return true;
@@ -488,17 +435,21 @@ public class filename {
             if ((p.getLength()) != 0)
             {
                 boolean r = FileName.ensurePathExists(p);
-                Mem.xfree(p.toBytePtr());
-                if (!r)
+                Mem.xfree(p);
+                if (!(r))
                     return r;
             }
-            __errno_location() = 0;
-            int r = toCStringThen(path);
-            if (r == 0)
+            try {
+                Files.createDirectory(Paths.get(p.toString()));
                 return true;
-            if (__errno_location() == 17)
+            }
+            catch(FileAlreadyExistsException exists) {
                 return true;
-            return false;
+            }
+            catch (IOException io) {
+                return false;
+            }
+
         }
 
         public static boolean ensurePathExists(BytePtr path) {
@@ -510,35 +461,31 @@ public class filename {
         }
 
         public static ByteSlice canonicalName(ByteSlice name) {
-            ByteSlice buf = void;
-            BytePtr path = toCStringThen(name);
-            if (path != null)
-                return toDString(Mem.xstrdup(path));
-            if (!name.getLength())
-                return null;
-            return Mem.xstrdup(name.toBytePtr()).slice(0,name.getLength());
+            try{
+                ByteSlice path = new ByteSlice(Paths.get(name.toString()).toRealPath().toString());
+                return path;
+            }
+            catch (IOException e) {
+                return xstrdup(name);
+            }
         }
 
         public static void free(BytePtr str) {
             if (str != null)
             {
                 assert(str.get(0) != (byte)171);
-                memset(str.toBytePtr(), 171, strlen(str) + 1);
+                memset(str, 171, strlen(str) + 1);
             }
-            Mem.xfree(str.toBytePtr());
+            Mem.xfree(str);
         }
 
         public  BytePtr toChars() {
             return this.str.toBytePtr();
         }
 
-        public  ByteSlice toString() {
+        public  ByteSlice asString() {
             return this.str;
         }
 
-        public FileName(){}
-        public FileName(ByteSlice str) {
-            this.str = str;
-        }
     }
 }
