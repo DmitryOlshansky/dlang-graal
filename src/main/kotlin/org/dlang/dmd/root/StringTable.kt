@@ -1,6 +1,9 @@
 package org.dlang.dmd.root
 
-data class StringValue(@JvmField var hash: Int, @JvmField var ptrvalue: Any?)
+data class StringValue(@JvmField var hash: Int, @JvmField var ptrvalue: Any?) : RootObject() {
+    override fun toChars(): BytePtr =
+        BytePtr(String.format("StringValue(%d,%s)", hash, ptrvalue))
+}
 
 class StringTable {
     private val table = HashMap<ByteSlice, StringValue?>()

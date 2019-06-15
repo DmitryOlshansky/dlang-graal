@@ -63,7 +63,7 @@ public class console {
         }
 
         public  void setColor(Color color) {
-            fprintf(this._fp,  new ByteSlice("\u001b[%d;%dm"), (color & Color.bright) != 0 ? 1 : 0, 30 + (color & -9));
+            fprintf(this._fp,  new ByteSlice("\u001b[%d;%dm"), (color.value & Color.bright.value) != 0 ? 1 : 0, 30 + (color.value & -9));
         }
 
         public  void resetColor() {

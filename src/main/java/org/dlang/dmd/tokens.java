@@ -434,10 +434,10 @@ public class tokens {
                             int __key55 = 0;
                             int __limit56 = this.len;
                             for (; __key55 < __limit56;__key55 += 1) {
-                                IntRef i = ref(__key55);
-                                if ((i.value) != 0)
+                                int i = __key55;
+                                if ((i) != 0)
                                     buf.writeByte(32);
-                                buf.printf( new ByteSlice("%02x"), (int)this.ustring.get(i.value));
+                                buf.printf( new ByteSlice("%02x"), (int)this.ustring.get(i));
                             }
                         }
                         buf.writeByte(34);

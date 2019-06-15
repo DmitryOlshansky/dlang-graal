@@ -157,6 +157,8 @@ fun<T> ref(v: Ref<T>) = v
 // stub out speller
 fun<T> speller(fn: (ByteSlice, IntRef) -> T) = null
 
+// ======== STDIO ===========
+
 typealias StdIo = _IO_FILE
 
 class _IO_FILE(val handle: PrintStream)
@@ -175,4 +177,12 @@ fun fprintf(io: StdIo, fmt: ByteSlice, vararg args: Any?) {
 
 fun fputs(s: ByteSlice, io: StdIo) {
     io.handle.print(s.toString())
+}
+
+// ========== AA ============
+fun<K,V> update(aa: AA<K,V>, key: K, ins:() -> V, upd:(V) -> V) {
+    val s = aa.getLvalue(key)
+    val v = s.get(0)
+    if (v == null) s.set(0, ins())
+    else s.set(0, upd(v))
 }

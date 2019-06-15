@@ -41,6 +41,7 @@ import dmd.visitor;
 struct ExprOpts {
     bool wantCharPtr = false;
     bool reverseIntPromotion = false;
+    bool wantEnumValue = false;
     EnumDeclaration inEnumDecl = null;
     FuncDeclaration inFuncDecl = null;
     Expression dollarValue = null;
@@ -115,6 +116,16 @@ string toJavaBool(Expression e, ExprOpts opts) {
     buf.writeByte(0);
     char* p = v.buf.extractData;
     return cast(string)p[0..strlen(p)];
+}
+
+
+string refType(Type t) {
+    if(t.ty == Tint32 || t.ty == Tuns32 || t.ty == Tdchar) {
+        return "IntRef";
+    }
+    else {
+        return "Ref<" ~ toJava(t, null, Boxing.yes) ~ ">";
+    }
 }
 
 private bool isJavaByte(Type t) {
@@ -198,6 +209,7 @@ public:
                             {
                                 auto s = symbol(sym.ident);
                                 buf.printf("%.*s.%s", s.length, s.ptr, em.ident.toChars());
+                                if (opts.wantEnumValue) buf.writestring(".value");
                                 return ;
                             }
                         }
@@ -338,7 +350,7 @@ public:
     override void visit(ArrayLiteralExp e)
     {
         buf.writeByte('{');
-        argsToBuffer(e.elements, buf, opts, e.basis);
+        argsToBuffer(e.elements, buf, opts, null, e.basis);
         buf.writeByte('}');
     }
 
@@ -373,7 +385,7 @@ public:
             {
                 const old = e.stageflags;
                 e.stageflags |= stageToCBuffer;
-                argsToBuffer(e.elements, buf, opts);
+                argsToBuffer(e.elements, buf, opts, null);
                 e.stageflags = old;
             }
         }
@@ -417,7 +429,7 @@ public:
         if (e.type.toString.indexOf("Array!") < 0) { 
             if (e.arguments && e.arguments.dim)
             {
-                argsToBuffer(e.arguments, buf, opts);
+                argsToBuffer(e.arguments, buf, opts, null);
             }
         }
         buf.writeByte(')');
@@ -434,14 +446,14 @@ public:
         if (e.newargs && e.newargs.dim)
         {
             buf.writeByte('(');
-            argsToBuffer(e.newargs, buf, opts);
+            argsToBuffer(e.newargs, buf, opts, null);
             buf.writeByte(')');
         }
         buf.writestring(" class ");
         if (e.arguments && e.arguments.dim)
         {
             buf.writeByte('(');
-            argsToBuffer(e.arguments, buf, opts);
+            argsToBuffer(e.arguments, buf, opts, null);
             buf.writeByte(')');
         }
         if (e.cd)
@@ -465,10 +477,13 @@ public:
             buf.writestring(".getLength()");
         }
         else {
+            if (opts.wantEnumValue) {
+                fprintf(stderr, "MixedEnum e = %s\n", e.toChars());
+            }
             if (e.var.isMember() && e.var.isStatic())
                 buf.printf("%s.", e.var.parent.ident.toChars());
-            buf.writestring(symbol(e.var.toChars()));
-            if (cast(void*)e.var in opts.refParams) 
+            buf.writestring(symbol(e.var.ident.symbol));
+            if (cast(void*)e.var in opts.refParams || opts.wantEnumValue && e.type.isintegral())
                 buf.writestring(".value");
         }
     }
@@ -485,13 +500,13 @@ public:
             buf.writeByte('(');
             e.e0.accept(this);
             buf.writestring(", tuple(");
-            argsToBuffer(e.exps, buf, opts);
+            argsToBuffer(e.exps, buf, opts, null);
             buf.writestring("))");
         }
         else
         {
             buf.writestring("tuple(");
-            argsToBuffer(e.exps, buf, opts);
+            argsToBuffer(e.exps, buf, opts, null);
             buf.writeByte(')');
         }
     }
@@ -671,6 +686,11 @@ public:
                 return;
             }
         }
+        bool mixedEnum = (e.e1.type.ty == Tenum || e.e2.type.ty == Tenum);
+        if (mixedEnum) fprintf(stderr, "Mixed enum expr: %s\n", e.toChars());
+        auto oldWantEnum = opts.wantEnumValue;
+        scope(exit) opts.wantEnumValue = oldWantEnum;
+        opts.wantEnumValue = mixedEnum || opts.wantEnumValue;
         expToBuffer(e.e1, precedence[e.op], buf, opts);
         buf.writeByte(' ');
         if (e.op == TOK.identity) buf.writestring("==");
@@ -707,6 +727,8 @@ public:
         buf.writestring("assert(");
         expToBuffer(e.e1, PREC.assign, buf, opts);
         if (e.e1.type.ty == Tint32) buf.writestring(" != 0");
+        if (e.e1.type.ty == Tpointer || e.e1.type.ty == Tclass)
+            buf.writestring(" != null");
         if (e.msg)
         {
             buf.writestring(", "); 
@@ -776,11 +798,11 @@ public:
         else {
             if (e.f && e.f.isDtorDeclaration()) return;
             if (e.f && e.f.isCtorDeclaration()) {
+                fprintf(stderr, "DOT VAR: %x\n", e.e1.isDotVarExp());
                 fprintf(stderr, "CTOR: %s\n", e.toChars());
             }
             if (e.f && e.f.ident.symbol == "opIndex") {
                 auto var = e.e1.isDotVarExp();
-                // fprintf(stderr, "DOT VAR: %x\n", var);
                 if (var) expToBuffer(var.e1, PREC.primary, buf, opts);
                 else expToBuffer(e.e1, PREC.primary, buf, opts);
                 if (e.f.parameters.length == 1)
@@ -790,12 +812,12 @@ public:
             }
             else 
                 expToBuffer(e.e1, precedence[e.op], buf, opts);
-            if (e.e1.type.ty == Tpointer) {
+            if (e.e1.type.ty == Tpointer || e.e1.type.ty == Tdelegate) {
                 buf.writestring(".invoke");
             }
         }
         buf.writeByte('(');
-        argsToBuffer(e.arguments, buf, opts);
+        argsToBuffer(e.arguments, buf, opts, e.f);
         buf.writeByte(')');
     }
 
@@ -949,7 +971,7 @@ public:
         typeToBuffer(e.type, null, buf);
         expToBuffer(e.e1, PREC.primary, buf, opts);
         buf.writeByte('{');
-        argsToBuffer(e.arguments, buf, opts);
+        argsToBuffer(e.arguments, buf, opts, null);
         buf.writeByte('}');
     }
 
@@ -1103,7 +1125,7 @@ private void expToBuffer(Expression e, PREC pr, OutBuffer* buf, ExprOpts opts)
 /**************************************************
  * Write out argument list to buf.
  */
-private void argsToBuffer(Expressions* expressions, OutBuffer* buf, ExprOpts opts, Expression basis = null)
+private void argsToBuffer(Expressions* expressions, OutBuffer* buf, ExprOpts opts, FuncDeclaration fd, Expression basis = null)
 {
     if (!expressions || !expressions.dim)
         return;
@@ -1116,7 +1138,9 @@ private void argsToBuffer(Expressions* expressions, OutBuffer* buf, ExprOpts opt
         if (el) {
             auto var = el.isVarExp();
             auto n = el.isNullExp();
-            if (var && (cast(void*)var.var in opts.refParams)) {
+            auto refParam = fd && fd.parameters 
+                && ((*fd.parameters)[i].isRef() || (*fd.parameters)[i].isOut());
+            if (var && (cast(void*)var.var in opts.refParams) && refParam) {
                 buf.writestring(var.var.ident.toString);
             }
             else if(n && n.type.ty == Tarray) {
@@ -1321,9 +1345,9 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
     void visitAArray(TypeAArray t)
     {
         buf.writestring("AA<");
-        typeToBufferx(t.next, buf, Boxing.yes);
-        buf.writeByte(',');
         typeToBufferx(t.index, buf, Boxing.yes);
+        buf.writeByte(',');
+        typeToBufferx(t.next, buf, Boxing.yes);
         buf.writeByte('>');
     }
 
@@ -1546,15 +1570,13 @@ private void visitFuncIdentWithPostfix(TypeFunction t, const char[] ident, OutBu
         return;
     }
     t.inuse++;
-    if (t.parameterList.length > 0)
-        buf.printf("Function%d<", t.parameterList.length);
-    else
-        buf.writestring("Function<");
+
+    buf.printf("Function%d<", t.parameterList.length);
     foreach(i, p; *t.parameterList) {
         if (i) buf.writestring(",");
         typeToBuffer(p.type, null, buf, Boxing.yes);
     }
-    buf.writestring(",");
+    if (t.parameterList && t.parameterList.length > 0) buf.writestring(",");
     if (t.next)
     {
         typeToBuffer(t.next, null, buf, Boxing.yes);

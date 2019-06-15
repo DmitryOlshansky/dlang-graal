@@ -26,17 +26,8 @@ import dmd.visitor : Visitor, SemanticTimeTransitiveVisitor;
 
 import std.array, std.algorithm, std.format, std.string, std.range;
 
-import visitors.expression : Boxing, ExprOpts, toJava, toJavaBool, toJavaFunc, isByteSized, symbol;
+import visitors.expression : Boxing, ExprOpts, refType, toJava, toJavaBool, toJavaFunc, isByteSized, symbol;
 import visitors.passed_by_ref;
-
-string refType(Type t) {
-    if(t.ty == Tint32 || t.ty == Tuns32 || t.ty == Tdchar) {
-        return "IntRef";
-    }
-    else {
-        return "Ref<" ~ toJava(t, null, Boxing.yes) ~ ">";
-    }
-}
 
 ///
 string toJava(Module mod) {
@@ -90,6 +81,38 @@ bool hasCtor(AggregateDeclaration agg) {
     return v.hasCtor;
 }
 
+FuncExp[] collectLambdas(Statement s) {
+    extern(C++) static class Lambdas : SemanticTimeTransitiveVisitor {
+        alias visit = typeof(super).visit;
+        bool[void*] exps;
+
+        override void visit(FuncExp e) {
+            exps[cast(void*)e] = true;
+        }
+    }
+    scope v = new Lambdas();
+    s.accept(v);
+    return cast(FuncExp[])v.exps.keys();
+}
+
+AggregateDeclaration[] collectNestedAggregates(FuncDeclaration f) {
+    extern(C++) static class Aggregates : SemanticTimeTransitiveVisitor {
+        alias visit = typeof(super).visit;
+        AggregateDeclaration[] decls;
+
+        override void visit(ClassDeclaration cd) {
+            decls ~= cd;
+        }
+
+        override void visit(StructDeclaration sd) {
+            decls ~= sd;
+        }
+    }
+    scope v = new Aggregates();
+    f.accept(v);
+    return v.decls;
+}
+
 VarDeclaration[] collectMembers(AggregateDeclaration agg) {
     extern(C++) static class Collector : SemanticTimeTransitiveVisitor {
         alias visit = typeof(super).visit;
@@ -128,7 +151,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     TextBuffer buf;
     TextBuffer header;
     bool bytesInSwitch = false;
+    string defAccess = "public";
     FuncDeclaration[] stack;
+    bool[string] generatedLambdas;
     AggregateDeclaration[] aggregates;
     string moduleName;
     string[] constants; // all local static vars are collected here
@@ -196,7 +221,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (refVar) opts.refParams[cast(void*)var] = true;
         auto type = refVar ? refType(var.type) : toJava(var.type);
         auto access = "";
-        if (aggregates.length && !stack.length) access = "public ";
+        if (aggregates.length && !stack.length) access = defAccess ~ " ";
         sink.fmt("%s%s%s %s",  access, staticInit ? "static " : "", type, ident);
         if (var._init) {
             ExpInitializer ie = var._init.isExpInitializer();
@@ -287,6 +312,16 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     if (auto c = ifs.condition.isCommaExp()) {
                         auto var = c.e1.isDeclarationExp().declaration.isVarDeclaration();
                         var.accept(this);
+                    }
+                }
+                if (!st.isCompoundStatement() && !st.isScopeStatement()) {
+                    auto lambdas = collectLambdas(st);
+                    foreach (i, v; lambdas)  {
+                        fprintf(stderr, "lambda: %d\n", i);
+                        if (v.fd.ident.symbol !in generatedLambdas) {
+                            printLocalFunction(v.fd, true);
+                            generatedLambdas[v.fd.ident.symbol] = true;
+                        }
                     }
                 }
                 st.accept(this);
@@ -457,7 +492,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         auto oldInEnumDecl = opts.inEnumDecl;
         scope(exit) opts.inEnumDecl = oldInEnumDecl;
         opts.inEnumDecl = d;
-        buf.put("\npublic enum ");
+        buf.fmt("\n%s enum ", defAccess);
         if (d.ident)
         {
             buf.put(symbol(d.ident));
@@ -666,8 +701,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(StructDeclaration d)
     {
+        if (stack.length) return; // inner structs are done separa
         aggregates ~= d;
-        buf.put("public static class ");
+        buf.fmt("%s static class ", defAccess);
         if (!d.isAnonymous())
             buf.put(d.toString());
         if (!d.members)
@@ -722,10 +758,11 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(ClassDeclaration d)
     {
+        if (stack.length) return; // inner classes are done separately
         aggregates ~= d;
         if (!d.isAnonymous())
         {
-            buf.fmt("static class %s", d.ident.toString());
+            buf.fmt("%s static class %s", defAccess, d.ident.toString());
         }
         visitBase(d);
         if (d.members)
@@ -767,7 +804,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         stack = stack[0..$-1];
     }
 
-    void printLocalFunction(FuncDeclaration func) {
+    void printLocalFunction(FuncDeclaration func, bool isLambda = false) {
         auto t = func.type.isTypeFunction();
         fprintf(stderr, "Local function %s\n", func.ident.toChars);
         buf.fmt("%s %s = new %s(){\n", t.toJavaFunc, func.ident.symbol, t.toJavaFunc);
@@ -777,7 +814,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             foreach(i, p; (*func.parameters)[]) {
                 if (i != 0) buf.fmt(", ");
                 auto box = p.isRef || p.isOut;
-                if (box && !isAggregate(p.type)) {
+                if (box && !isLambda && !isAggregate(p.type)) {
                     opts.refParams[cast(void*)p] = true;
                     buf.fmt("%s %s", refType(p.type), p.ident.toString);
                 }
@@ -794,7 +831,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     }
 
     void printGlobalFunction(FuncDeclaration func) {
-        //fprintf(stderr, "%s\n", func.ident.toChars());
+        fprintf(stderr, "%s\n", func.ident.toChars());
         auto storage = (func.isStatic()  || aggregates.length == 0) ? "static" : "";
         if (func.isCtorDeclaration())
             buf.fmt("public %s %s(", storage, toJava(func.type.nextOf()));
@@ -819,10 +856,24 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put("\n\n");
     }
 
+    override void visit(DtorDeclaration ) { }
+
     override void visit(FuncDeclaration func)  {
         if (func.fbody is null) return;
-        if (func.isDtorDeclaration() || func.ident.symbol == "destroy") return;
+        if (func.ident.symbol == "destroy") return;
         if (func.ident.toString == "opAssign") return;
+        // hoist nested structs/classes to top level, mark them private
+        if (stack.length == 0) {
+            auto nested = collectNestedAggregates(func);
+            auto save = buf;
+            buf = new TextBuffer();
+            auto oldDefAccess = defAccess;
+            defAccess = "private";
+            scope(exit) defAccess = oldDefAccess;
+            foreach(agg; nested) agg.accept(this);
+            constants ~= buf.data.dup;
+            buf = save;
+        }
         stack ~= func;
         auto oldFunc = opts.inFuncDecl;
         scope(exit) opts.inFuncDecl = oldFunc;
@@ -833,14 +884,24 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
         if (stack.length > 1)
             printLocalFunction(func);
-        else 
+        else {
+            auto nested = collectNestedAggregates(func);
+            auto save = buf;
+            buf = new TextBuffer();
+            auto oldDefAccess = defAccess;
+            defAccess = "private";
+            scope(exit) defAccess = oldDefAccess;
+            foreach(agg; nested) agg.accept(this);
+            constants ~= buf.data.dup;
+            buf = save;
             printGlobalFunction(func);
+        }
         stack = stack[0..$-1];
     }
 
     private void initializerToBuffer(Initializer inx, TextBuffer buf, bool wantCharPtr)
     {
-        auto opts = ExprOpts(wantCharPtr, false, null);
+        auto opts = ExprOpts(wantCharPtr);
         void visitError(ErrorInitializer iz)
         {
             buf.fmt("__error__");
