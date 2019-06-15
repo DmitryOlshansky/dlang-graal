@@ -108,12 +108,14 @@ class BytePtr(val data: ByteArray, var offset: Int) : RootObject() {
         return offset - rhs.offset
     }
 
-    operator fun plusAssign(delta: Int) {
+    fun plusAssign(delta: Int): BytePtr {
         offset += delta
+        return this
     }
 
-    operator fun minusAssign(delta: Int) {
+    fun minusAssign(delta: Int): BytePtr {
         offset -= delta
+        return this
     }
 
     operator fun set(idx: Int, value: Byte) {

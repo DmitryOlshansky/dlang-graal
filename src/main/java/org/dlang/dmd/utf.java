@@ -9,6 +9,8 @@ import static org.dlang.dmd.root.filename.*;
 import static org.dlang.dmd.root.File.*;
 
 import static org.dlang.dmd.root.ShimsKt.*;
+
+import static org.dlang.dmd.utils.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 
@@ -124,7 +126,7 @@ public class utf {
         }
     }
 
-    public static void utf_encode(int sz, BytePtr s, int c) {
+    public static void utf_encode(int sz, Object s, int c) {
         if (sz == 1)
             utf_encodeChar(s.toBytePtr(), c);
         else if (sz == 2)

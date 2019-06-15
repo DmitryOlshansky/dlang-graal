@@ -605,8 +605,14 @@ public:
             if(e.op == TOK.not) {
                 buf.writestring(" == null");
             }
+            else if (e.op == TOK.address) {
+                buf.writestring("ptr(");
+                expToBuffer(e.e1, precedence[e.op], buf, opts);
+                buf.writestring(")");
+            }
             else {    
-                assert(0, "Unsupported unary pointer arithmetic");
+                fprintf(stderr,"Unsupported unary pointer arithmetic: %s", e.toChars());
+                assert(0);
             }
         }
         else if(e.op == TOK.not) {
@@ -686,7 +692,7 @@ public:
                 return;
             }
         }
-        bool mixedEnum = (e.e1.type.ty == Tenum || e.e2.type.ty == Tenum);
+        bool mixedEnum = (e.e1.type.ty == Tenum || e.e2.type.ty == Tenum) && e.op != TOK.assign;
         if (mixedEnum) fprintf(stderr, "Mixed enum expr: %s\n", e.toChars());
         auto oldWantEnum = opts.wantEnumValue;
         scope(exit) opts.wantEnumValue = oldWantEnum;
@@ -798,10 +804,10 @@ public:
         else {
             if (e.f && e.f.isDtorDeclaration()) return;
             if (e.f && e.f.isCtorDeclaration()) {
-                fprintf(stderr, "DOT VAR: %x\n", e.e1.isDotVarExp());
-                fprintf(stderr, "CTOR: %s\n", e.toChars());
+                auto ctorCall = e.e1.isDotVarExp();
+                expToBuffer(ctorCall.e1, precedence[e.op], buf, opts);
             }
-            if (e.f && e.f.ident.symbol == "opIndex") {
+            else if (e.f && e.f.ident.symbol == "opIndex") {
                 auto var = e.e1.isDotVarExp();
                 if (var) expToBuffer(var.e1, PREC.primary, buf, opts);
                 else expToBuffer(e.e1, PREC.primary, buf, opts);
@@ -812,7 +818,8 @@ public:
             }
             else 
                 expToBuffer(e.e1, precedence[e.op], buf, opts);
-            if (e.e1.type.ty == Tpointer || e.e1.type.ty == Tdelegate) {
+            //fprintf(stderr, "Calling %x %s type %s\n", e.f, e.e1.toChars(), e.e1.type.toChars());
+            if (!e.f) {
                 buf.writestring(".invoke");
             }
         }
@@ -851,8 +858,10 @@ public:
                 toVoid = true;
                 break;
             case Tpointer:
-                if (e.to.nextOf.ty == Tvoid)
+                if (e.to.nextOf.ty == Tvoid) 
                     toVoidPtr = true;
+                if (e.to.nextOf.ty == Tstruct)
+                    break;
                 goto case;
             case Tarray:
                 complexTarget = true;
@@ -1138,7 +1147,7 @@ private void argsToBuffer(Expressions* expressions, OutBuffer* buf, ExprOpts opt
         if (el) {
             auto var = el.isVarExp();
             auto n = el.isNullExp();
-            auto refParam = fd && fd.parameters 
+            auto refParam = fd && fd.parameters && i < fd.parameters.length
                 && ((*fd.parameters)[i].isRef() || (*fd.parameters)[i].isOut());
             if (var && (cast(void*)var.var in opts.refParams) && refParam) {
                 buf.writestring(var.var.ident.toString);
@@ -1358,7 +1367,9 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
             visitFuncIdentWithPostfix(cast(TypeFunction)t.next, "function", buf);
         else
         {
-            if (t.next.ty == Tchar || t.next.ty == Tvoid || t.next.ty == Tuns8 || t.next.ty == Tint8)
+            if (t.next.ty == Tvoid) 
+                buf.writestring("Object");
+            else if (t.next.ty == Tchar || t.next.ty == Tuns8 || t.next.ty == Tint8)
                 buf.writestring("BytePtr");
             else if (t.next.ty == Twchar)
                 buf.writestring("CharPtr");
@@ -1476,6 +1487,8 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
             }
             buf.writestring(">");
         }
+        else if(t.sym.ident.symbol == "__va_list_tag")
+            buf.writestring("Object[]");
         else
             buf.writestring(t.sym.ident.symbol);
     }

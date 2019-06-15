@@ -9,6 +9,8 @@ import static org.dlang.dmd.root.filename.*;
 import static org.dlang.dmd.root.File.*;
 
 import static org.dlang.dmd.root.ShimsKt.*;
+
+import static org.dlang.dmd.utils.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.identifier.*;
@@ -1089,7 +1091,7 @@ public class id {
                 int i = __key28;
                 if (i != 0)
                     code.append((byte)10);
-                code.append((dg)(m));
+                code.append((dg).invoke(m));
             }
         }
         return code;

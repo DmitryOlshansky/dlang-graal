@@ -9,6 +9,8 @@ import static org.dlang.dmd.root.filename.*;
 import static org.dlang.dmd.root.File.*;
 
 import static org.dlang.dmd.root.ShimsKt.*;
+
+import static org.dlang.dmd.utils.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.globals.*;
@@ -262,7 +264,7 @@ public class tokens {
         vectorArray((byte)236),
         max_((byte)237),
         ;
-        public byte value;
+        public final byte value;
         TOK(byte value){ this.value = value; }
     }
 
@@ -286,20 +288,20 @@ public class tokens {
         {
             Identifier.initTable();
             {
-                Slice<TOK> __r51 = keywords;
-                int __key52 = 0;
-                for (; __key52 < __r51.getLength();__key52 += 1) {
-                    TOK kw = __r51.get(__key52);
+                Slice<TOK> __r55 = keywords;
+                int __key56 = 0;
+                for (; __key56 < __r55.getLength();__key56 += 1) {
+                    TOK kw = __r55.get(__key56);
                     Identifier.idPool(tochars.get(kw.value).toBytePtr(), tochars.get(kw.value).getLength(), kw.value);
                 }
             }
         }
         public  int isKeyword() {
             {
-                Slice<TOK> __r53 = keywords;
-                int __key54 = 0;
-                for (; __key54 < __r53.getLength();__key54 += 1) {
-                    TOK kw = __r53.get(__key54);
+                Slice<TOK> __r57 = keywords;
+                int __key58 = 0;
+                for (; __key58 < __r57.getLength();__key58 += 1) {
+                    TOK kw = __r57.get(__key58);
                     if (kw.value == this.value.value)
                         return 1;
                 }
@@ -431,10 +433,10 @@ public class tokens {
                         buf.writeByte(120);
                         buf.writeByte(34);
                         {
-                            int __key55 = 0;
-                            int __limit56 = this.len;
-                            for (; __key55 < __limit56;__key55 += 1) {
-                                int i = __key55;
+                            int __key59 = 0;
+                            int __limit60 = this.len;
+                            for (; __key59 < __limit60;__key59 += 1) {
+                                int i = __key59;
                                 if ((i) != 0)
                                     buf.writeByte(32);
                                 buf.printf( new ByteSlice("%02x"), (int)this.ustring.get(i));

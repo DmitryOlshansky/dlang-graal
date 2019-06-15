@@ -154,6 +154,8 @@ fun<T> ref(v: T) = Ref(v)
 
 fun<T> ref(v: Ref<T>) = v
 
+fun exit(code: Int) = System.exit(code)
+
 // stub out speller
 fun<T> speller(fn: (ByteSlice, IntRef) -> T) = null
 
@@ -178,6 +180,16 @@ fun fprintf(io: StdIo, fmt: ByteSlice, vararg args: Any?) {
 fun fputs(s: ByteSlice, io: StdIo) {
     io.handle.print(s.toString())
 }
+
+fun fputs(s: BytePtr, io: StdIo) {
+    io.handle.print(s.toString())
+}
+
+fun fputc(c: Int, io: StdIo) {
+    io.handle.print(c.toChar())
+}
+
+fun fflush(io: StdIo) = io.handle.flush()
 
 // ========== AA ============
 fun<K,V> update(aa: AA<K,V>, key: K, ins:() -> V, upd:(V) -> V) {

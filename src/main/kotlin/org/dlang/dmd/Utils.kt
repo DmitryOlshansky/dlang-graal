@@ -177,9 +177,9 @@ object utils {
         return dg(BytePtr(bytes, src.beg))
     }
 
-    @JvmStatic
+    @JvmField
     val stdout = _IO_FILE(System.out)
 
-    @JvmStatic
+    @JvmField
     val stderr = _IO_FILE(System.err)
 }

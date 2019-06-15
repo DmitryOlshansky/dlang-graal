@@ -12,6 +12,7 @@ import dmd.denum;
 import dmd.dimport;
 import dmd.dmodule;
 import dmd.dstruct;
+import dmd.dtemplate;
 import dmd.expression;
 import dmd.declaration;
 import dmd.func;
@@ -173,6 +174,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         header.put("\nimport static org.dlang.dmd.root.filename.*;\n");
         header.put("\nimport static org.dlang.dmd.root.File.*;\n");
         header.put("\nimport static org.dlang.dmd.root.ShimsKt.*;\n");
+        header.put("\nimport static org.dlang.dmd.utils.*;\n");
         header.put("import static org.dlang.dmd.root.SliceKt.*;\n");
         header.put("import static org.dlang.dmd.root.DArrayKt.*;\n");
     }
@@ -428,6 +430,26 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
     }
 
+    override void visit(TemplateDeclaration td) {
+        foreach(inst; td.instances.values) {
+            inst.accept(this);
+        }
+    }
+
+    override void visit(TemplateInstance ti) {
+        /*buf.fmt("template %s(", ti.name);
+        if (ti.tiargs) {
+            foreach(i, arg; (*ti.tiargs)[]) {
+                if (i) buf.put(",");
+                auto t = arg.isType();
+                auto e = arg.isExpression();
+                if (t) buf.put(t.toJava);
+                if (e) buf.put(e.toJava(opts));
+            }
+        }
+        buf.fmt(")");*/
+    }
+
     override void visit(StaticAssert s)
     {
         fprintf(stderr, "%s\n", s.toChars());
@@ -519,7 +541,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put(";\n");
         if (d.memtype)
         {
-            buf.fmt("public %s value;",  d.memtype.toJava);
+            buf.fmt("public final %s value;",  d.memtype.toJava);
             buf.fmt("\n%s(%s value){ this.value = value; }\n", d.ident.toString, d.memtype.toJava);
         }
         buf.outdent;

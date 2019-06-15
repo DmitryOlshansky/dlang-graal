@@ -9,6 +9,8 @@ import static org.dlang.dmd.root.filename.*;
 import static org.dlang.dmd.root.File.*;
 
 import static org.dlang.dmd.root.ShimsKt.*;
+
+import static org.dlang.dmd.utils.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.identifier.*;
@@ -29,7 +31,7 @@ public class globals {
         Windows(false),
         DragonFlyBSD(false),
         ;
-        public boolean value;
+        public final boolean value;
         TARGET(boolean value){ this.value = value; }
     }
 
@@ -40,7 +42,7 @@ public class globals {
         inform((byte)1),
         off((byte)2),
         ;
-        public byte value;
+        public final byte value;
         DiagnosticReporting(byte value){ this.value = value; }
     }
 
@@ -52,7 +54,7 @@ public class globals {
         on((byte)2),
         safeonly((byte)3),
         ;
-        public byte value;
+        public final byte value;
         CHECKENABLE(byte value){ this.value = value; }
     }
 
@@ -64,7 +66,7 @@ public class globals {
         halt((byte)2),
         context((byte)3),
         ;
-        public byte value;
+        public final byte value;
         CHECKACTION(byte value){ this.value = value; }
     }
 
@@ -85,7 +87,7 @@ public class globals {
         baseline(11),
         native_(12),
         ;
-        public int value;
+        public final int value;
         CPU(int value){ this.value = value; }
     }
 
@@ -98,7 +100,7 @@ public class globals {
         modules(4),
         semantics(8),
         ;
-        public int value;
+        public final int value;
         JsonFieldFlags(int value){ this.value = value; }
     }
 
@@ -110,7 +112,7 @@ public class globals {
         cpp14(201402),
         cpp17(201703),
         ;
-        public int value;
+        public final int value;
         CppStdRevision(int value){ this.value = value; }
     }
 
@@ -543,7 +545,7 @@ public class globals {
         public int gag;
         public int gaggedErrors;
         public int gaggedWarnings;
-        public BytePtr console;
+        public Object console;
         public DArray<Identifier> versionids;
         public DArray<Identifier> debugids;
         public  int startGagging() {
@@ -617,7 +619,7 @@ public class globals {
         }
 
         public Global(){}
-        public Global(ByteSlice inifilename, ByteSlice mars_ext, ByteSlice obj_ext, ByteSlice lib_ext, ByteSlice dll_ext, ByteSlice doc_ext, ByteSlice ddoc_ext, ByteSlice hdr_ext, ByteSlice json_ext, ByteSlice map_ext, boolean run_noext, ByteSlice copyright, ByteSlice written, DArray<BytePtr> path, DArray<BytePtr> filePath, ByteSlice _version, ByteSlice vendor, Param params, int errors, int warnings, int gag, int gaggedErrors, int gaggedWarnings, BytePtr console, DArray<Identifier> versionids, DArray<Identifier> debugids) {
+        public Global(ByteSlice inifilename, ByteSlice mars_ext, ByteSlice obj_ext, ByteSlice lib_ext, ByteSlice dll_ext, ByteSlice doc_ext, ByteSlice ddoc_ext, ByteSlice hdr_ext, ByteSlice json_ext, ByteSlice map_ext, boolean run_noext, ByteSlice copyright, ByteSlice written, DArray<BytePtr> path, DArray<BytePtr> filePath, ByteSlice _version, ByteSlice vendor, Param params, int errors, int warnings, int gag, int gaggedErrors, int gaggedWarnings, Object console, DArray<Identifier> versionids, DArray<Identifier> debugids) {
             this.inifilename = inifilename;
             this.mars_ext = mars_ext;
             this.obj_ext = obj_ext;
@@ -740,7 +742,7 @@ public class globals {
         objc(6),
         system(7),
         ;
-        public int value;
+        public final int value;
         LINK(int value){ this.value = value; }
     }
 
@@ -751,7 +753,7 @@ public class globals {
         asStruct(1),
         asClass(2),
         ;
-        public int value;
+        public final int value;
         CPPMANGLE(int value){ this.value = value; }
     }
 
@@ -763,7 +765,7 @@ public class globals {
         constant(2),
         exact(3),
         ;
-        public int value;
+        public final int value;
         MATCH(int value){ this.value = value; }
     }
 
@@ -774,7 +776,7 @@ public class globals {
         never(1),
         always(2),
         ;
-        public int value;
+        public final int value;
         PINLINE(int value){ this.value = value; }
     }
 

@@ -9,6 +9,8 @@ import static org.dlang.dmd.root.filename.*;
 import static org.dlang.dmd.root.File.*;
 
 import static org.dlang.dmd.root.ShimsKt.*;
+
+import static org.dlang.dmd.utils.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 
