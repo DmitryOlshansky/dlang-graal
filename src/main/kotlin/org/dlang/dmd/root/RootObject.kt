@@ -1,16 +1,16 @@
 package org.dlang.dmd.root
 
-enum class DYNCAST {
-    _object,
-    expression,
-    dsymbol,
-    type,
-    identifier,
-    tuple,
-    parameter,
-    statement,
-    condition,
-    templateparameter
+object DYNCAST {
+    @JvmField val _object = 0
+    @JvmField val expression = 1
+    @JvmField val dsymbol = 2
+    @JvmField val type = 3
+    @JvmField val identifier = 4
+    @JvmField val tuple = 5
+    @JvmField val parameter = 6
+    @JvmField val statement = 7
+    @JvmField val condition = 8
+    @JvmField val templateparameter = 9
 }
 
 abstract class RootObject {

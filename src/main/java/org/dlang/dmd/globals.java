@@ -21,99 +21,78 @@ public class globals {
     static int versionNumbercached = 0;
 
 
-    public enum TARGET 
+    public static class TARGET 
     {
-        Linux(true),
-        OSX(false),
-        FreeBSD(false),
-        OpenBSD(false),
-        Solaris(false),
-        Windows(false),
-        DragonFlyBSD(false),
-        ;
-        public final boolean value;
-        TARGET(boolean value){ this.value = value; }
+        public static final boolean Linux = true;
+        public static final boolean OSX = false;
+        public static final boolean FreeBSD = false;
+        public static final boolean OpenBSD = false;
+        public static final boolean Solaris = false;
+        public static final boolean Windows = false;
+        public static final boolean DragonFlyBSD = false;
     }
 
 
-    public enum DiagnosticReporting 
+    public static class DiagnosticReporting 
     {
-        error((byte)0),
-        inform((byte)1),
-        off((byte)2),
-        ;
-        public final byte value;
-        DiagnosticReporting(byte value){ this.value = value; }
+        public static final byte error = (byte)0;
+        public static final byte inform = (byte)1;
+        public static final byte off = (byte)2;
     }
 
 
-    public enum CHECKENABLE 
+    public static class CHECKENABLE 
     {
-        _default((byte)0),
-        off((byte)1),
-        on((byte)2),
-        safeonly((byte)3),
-        ;
-        public final byte value;
-        CHECKENABLE(byte value){ this.value = value; }
+        public static final byte _default = (byte)0;
+        public static final byte off = (byte)1;
+        public static final byte on = (byte)2;
+        public static final byte safeonly = (byte)3;
     }
 
 
-    public enum CHECKACTION 
+    public static class CHECKACTION 
     {
-        D((byte)0),
-        C((byte)1),
-        halt((byte)2),
-        context((byte)3),
-        ;
-        public final byte value;
-        CHECKACTION(byte value){ this.value = value; }
+        public static final byte D = (byte)0;
+        public static final byte C = (byte)1;
+        public static final byte halt = (byte)2;
+        public static final byte context = (byte)3;
     }
 
 
-    public enum CPU 
+    public static class CPU 
     {
-        x87(0),
-        mmx(1),
-        sse(2),
-        sse2(3),
-        sse3(4),
-        ssse3(5),
-        sse4_1(6),
-        sse4_2(7),
-        avx(8),
-        avx2(9),
-        avx512(10),
-        baseline(11),
-        native_(12),
-        ;
-        public final int value;
-        CPU(int value){ this.value = value; }
+        public static final int x87 = 0;
+        public static final int mmx = 1;
+        public static final int sse = 2;
+        public static final int sse2 = 3;
+        public static final int sse3 = 4;
+        public static final int ssse3 = 5;
+        public static final int sse4_1 = 6;
+        public static final int sse4_2 = 7;
+        public static final int avx = 8;
+        public static final int avx2 = 9;
+        public static final int avx512 = 10;
+        public static final int baseline = 11;
+        public static final int native_ = 12;
     }
 
 
-    public enum JsonFieldFlags 
+    public static class JsonFieldFlags 
     {
-        none(0),
-        compilerInfo(1),
-        buildInfo(2),
-        modules(4),
-        semantics(8),
-        ;
-        public final int value;
-        JsonFieldFlags(int value){ this.value = value; }
+        public static final int none = 0;
+        public static final int compilerInfo = 1;
+        public static final int buildInfo = 2;
+        public static final int modules = 4;
+        public static final int semantics = 8;
     }
 
 
-    public enum CppStdRevision 
+    public static class CppStdRevision 
     {
-        cpp98(199711),
-        cpp11(201103),
-        cpp14(201402),
-        cpp17(201703),
-        ;
-        public final int value;
-        CppStdRevision(int value){ this.value = value; }
+        public static final int cpp98 = 199711;
+        public static final int cpp11 = 201103;
+        public static final int cpp14 = 201402;
+        public static final int cpp17 = 201703;
     }
 
     public static class Param
@@ -149,7 +128,7 @@ public class globals {
         public boolean isSolaris;
         public boolean hasObjectiveC;
         public boolean mscoff = false;
-        public DiagnosticReporting useDeprecated = DiagnosticReporting.inform;
+        public byte useDeprecated = DiagnosticReporting.inform;
         public boolean stackstomp;
         public boolean useUnitTests;
         public boolean useInline = false;
@@ -157,7 +136,7 @@ public class globals {
         public boolean noDIP25;
         public boolean release;
         public boolean preservePaths;
-        public DiagnosticReporting warnings = DiagnosticReporting.off;
+        public byte warnings = DiagnosticReporting.off;
         public boolean pic;
         public boolean color;
         public boolean cov;
@@ -178,7 +157,7 @@ public class globals {
         public boolean ehnogc;
         public boolean dtorFields;
         public boolean fieldwise;
-        public CppStdRevision cplusplus = CppStdRevision.cpp98;
+        public int cplusplus = CppStdRevision.cpp98;
         public boolean markdown;
         public boolean vmarkdown;
         public boolean showGaggedErrors;
@@ -193,15 +172,15 @@ public class globals {
         public boolean previewUsage;
         public boolean externStdUsage;
         public boolean logo;
-        public CPU cpu = CPU.baseline;
-        public CHECKENABLE useInvariants = CHECKENABLE._default;
-        public CHECKENABLE useIn = CHECKENABLE._default;
-        public CHECKENABLE useOut = CHECKENABLE._default;
-        public CHECKENABLE useArrayBounds = CHECKENABLE._default;
-        public CHECKENABLE useAssert = CHECKENABLE._default;
-        public CHECKENABLE useSwitchError = CHECKENABLE._default;
-        public CHECKENABLE boundscheck = CHECKENABLE._default;
-        public CHECKACTION checkAction = CHECKACTION.D;
+        public int cpu = CPU.baseline;
+        public byte useInvariants = CHECKENABLE._default;
+        public byte useIn = CHECKENABLE._default;
+        public byte useOut = CHECKENABLE._default;
+        public byte useArrayBounds = CHECKENABLE._default;
+        public byte useAssert = CHECKENABLE._default;
+        public byte useSwitchError = CHECKENABLE._default;
+        public byte boundscheck = CHECKENABLE._default;
+        public byte checkAction = CHECKACTION.D;
         public int errorLimit = 20;
         public ByteSlice argv0;
         public DArray<BytePtr> modFileAliasStrings;
@@ -220,7 +199,7 @@ public class globals {
         public boolean hdrStripPlainFunctions = true;
         public boolean doJsonGeneration;
         public ByteSlice jsonfilename;
-        public JsonFieldFlags jsonFieldFlags;
+        public int jsonFieldFlags;
         public OutBuffer mixinOut;
         public BytePtr mixinFile;
         public int mixinLines;
@@ -250,7 +229,7 @@ public class globals {
         public ByteSlice exefile;
         public ByteSlice mapfile;
         public Param(){}
-        public Param(boolean obj, boolean link, boolean dll, boolean lib, boolean multiobj, boolean oneobj, boolean trace, boolean tracegc, boolean verbose, boolean vcg_ast, boolean showColumns, boolean vtls, boolean vgc, boolean vfield, boolean vcomplex, byte symdebug, boolean symdebugref, boolean alwaysframe, boolean optimize, boolean map, boolean is64bit, boolean isLP64, boolean isLinux, boolean isOSX, boolean isWindows, boolean isFreeBSD, boolean isOpenBSD, boolean isDragonFlyBSD, boolean isSolaris, boolean hasObjectiveC, boolean mscoff, DiagnosticReporting useDeprecated, boolean stackstomp, boolean useUnitTests, boolean useInline, boolean useDIP25, boolean noDIP25, boolean release, boolean preservePaths, DiagnosticReporting warnings, boolean pic, boolean color, boolean cov, byte covPercent, boolean nofloat, boolean ignoreUnsupportedPragmas, boolean useModuleInfo, boolean useTypeInfo, boolean useExceptions, boolean betterC, boolean addMain, boolean allInst, boolean check10378, boolean bug10378, boolean fix16997, boolean fixAliasThis, boolean vsafe, boolean ehnogc, boolean dtorFields, boolean fieldwise, CppStdRevision cplusplus, boolean markdown, boolean vmarkdown, boolean showGaggedErrors, boolean printErrorContext, boolean manual, boolean usage, boolean mcpuUsage, boolean transitionUsage, boolean checkUsage, boolean checkActionUsage, boolean revertUsage, boolean previewUsage, boolean externStdUsage, boolean logo, CPU cpu, CHECKENABLE useInvariants, CHECKENABLE useIn, CHECKENABLE useOut, CHECKENABLE useArrayBounds, CHECKENABLE useAssert, CHECKENABLE useSwitchError, CHECKENABLE boundscheck, CHECKACTION checkAction, int errorLimit, ByteSlice argv0, DArray<BytePtr> modFileAliasStrings, DArray<BytePtr> imppath, DArray<BytePtr> fileImppath, ByteSlice objdir, ByteSlice objname, ByteSlice libname, boolean doDocComments, BytePtr docdir, BytePtr docname, DArray<BytePtr> ddocfiles, boolean doHdrGeneration, ByteSlice hdrdir, ByteSlice hdrname, boolean hdrStripPlainFunctions, boolean doJsonGeneration, ByteSlice jsonfilename, JsonFieldFlags jsonFieldFlags, OutBuffer mixinOut, BytePtr mixinFile, int mixinLines, int debuglevel, DArray<BytePtr> debugids, int versionlevel, DArray<BytePtr> versionids, ByteSlice defaultlibname, ByteSlice debuglibname, ByteSlice mscrtlib, ByteSlice moduleDepsFile, OutBuffer moduleDeps, boolean debugb, boolean debugc, boolean debugf, boolean debugr, boolean debugx, boolean debugy, boolean run, DArray<BytePtr> runargs, DArray<BytePtr> objfiles, DArray<BytePtr> linkswitches, DArray<BytePtr> libfiles, DArray<BytePtr> dllfiles, ByteSlice deffile, ByteSlice resfile, ByteSlice exefile, ByteSlice mapfile) {
+        public Param(boolean obj, boolean link, boolean dll, boolean lib, boolean multiobj, boolean oneobj, boolean trace, boolean tracegc, boolean verbose, boolean vcg_ast, boolean showColumns, boolean vtls, boolean vgc, boolean vfield, boolean vcomplex, byte symdebug, boolean symdebugref, boolean alwaysframe, boolean optimize, boolean map, boolean is64bit, boolean isLP64, boolean isLinux, boolean isOSX, boolean isWindows, boolean isFreeBSD, boolean isOpenBSD, boolean isDragonFlyBSD, boolean isSolaris, boolean hasObjectiveC, boolean mscoff, byte useDeprecated, boolean stackstomp, boolean useUnitTests, boolean useInline, boolean useDIP25, boolean noDIP25, boolean release, boolean preservePaths, byte warnings, boolean pic, boolean color, boolean cov, byte covPercent, boolean nofloat, boolean ignoreUnsupportedPragmas, boolean useModuleInfo, boolean useTypeInfo, boolean useExceptions, boolean betterC, boolean addMain, boolean allInst, boolean check10378, boolean bug10378, boolean fix16997, boolean fixAliasThis, boolean vsafe, boolean ehnogc, boolean dtorFields, boolean fieldwise, int cplusplus, boolean markdown, boolean vmarkdown, boolean showGaggedErrors, boolean printErrorContext, boolean manual, boolean usage, boolean mcpuUsage, boolean transitionUsage, boolean checkUsage, boolean checkActionUsage, boolean revertUsage, boolean previewUsage, boolean externStdUsage, boolean logo, int cpu, byte useInvariants, byte useIn, byte useOut, byte useArrayBounds, byte useAssert, byte useSwitchError, byte boundscheck, byte checkAction, int errorLimit, ByteSlice argv0, DArray<BytePtr> modFileAliasStrings, DArray<BytePtr> imppath, DArray<BytePtr> fileImppath, ByteSlice objdir, ByteSlice objname, ByteSlice libname, boolean doDocComments, BytePtr docdir, BytePtr docname, DArray<BytePtr> ddocfiles, boolean doHdrGeneration, ByteSlice hdrdir, ByteSlice hdrname, boolean hdrStripPlainFunctions, boolean doJsonGeneration, ByteSlice jsonfilename, int jsonFieldFlags, OutBuffer mixinOut, BytePtr mixinFile, int mixinLines, int debuglevel, DArray<BytePtr> debugids, int versionlevel, DArray<BytePtr> versionids, ByteSlice defaultlibname, ByteSlice debuglibname, ByteSlice mscrtlib, ByteSlice moduleDepsFile, OutBuffer moduleDeps, boolean debugb, boolean debugc, boolean debugf, boolean debugr, boolean debugx, boolean debugy, boolean run, DArray<BytePtr> runargs, DArray<BytePtr> objfiles, DArray<BytePtr> linkswitches, DArray<BytePtr> libfiles, DArray<BytePtr> dllfiles, ByteSlice deffile, ByteSlice resfile, ByteSlice exefile, ByteSlice mapfile) {
             this.obj = obj;
             this.link = link;
             this.dll = dll;
@@ -731,53 +710,41 @@ public class globals {
 
     }
 
-    public enum LINK 
+    public static class LINK 
     {
-        default_(0),
-        d(1),
-        c(2),
-        cpp(3),
-        windows(4),
-        pascal(5),
-        objc(6),
-        system(7),
-        ;
-        public final int value;
-        LINK(int value){ this.value = value; }
+        public static final int default_ = 0;
+        public static final int d = 1;
+        public static final int c = 2;
+        public static final int cpp = 3;
+        public static final int windows = 4;
+        public static final int pascal = 5;
+        public static final int objc = 6;
+        public static final int system = 7;
     }
 
 
-    public enum CPPMANGLE 
+    public static class CPPMANGLE 
     {
-        def(0),
-        asStruct(1),
-        asClass(2),
-        ;
-        public final int value;
-        CPPMANGLE(int value){ this.value = value; }
+        public static final int def = 0;
+        public static final int asStruct = 1;
+        public static final int asClass = 2;
     }
 
 
-    public enum MATCH 
+    public static class MATCH 
     {
-        nomatch(0),
-        convert(1),
-        constant(2),
-        exact(3),
-        ;
-        public final int value;
-        MATCH(int value){ this.value = value; }
+        public static final int nomatch = 0;
+        public static final int convert = 1;
+        public static final int constant = 2;
+        public static final int exact = 3;
     }
 
 
-    public enum PINLINE 
+    public static class PINLINE 
     {
-        default_(0),
-        never(1),
-        always(2),
-        ;
-        public final int value;
-        PINLINE(int value){ this.value = value; }
+        public static final int default_ = 0;
+        public static final int never = 1;
+        public static final int always = 2;
     }
 
     static Global global;

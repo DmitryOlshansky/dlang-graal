@@ -14,9 +14,9 @@ fun strlen(ptr: BytePtr): Int {
     return i - ptr.offset
 }
 
-fun strchr(ptr: BytePtr, c: Byte): BytePtr? {
+fun strchr(ptr: BytePtr, c: Int): BytePtr? {
     for (i in ptr.offset .. ptr.data.size) {
-        if (ptr.data[i] == c) return BytePtr(ptr.data, i)
+        if (ptr.data[i] == c.toByte()) return BytePtr(ptr.data, i)
     }
     return null
 }
@@ -131,6 +131,8 @@ fun hashOf(any: Any) = any.hashCode()
 fun hashOf(any: Any, seed: Int) = any.hashCode() + seed * 31
 
 fun<T> slice(arr: Array<T?>): Slice<T>  = Slice(arr)
+
+fun slice(vararg byte: Byte) = ByteSlice(byte)
 
 fun<T> slice(arr: Array<Array<T?>>): Slice<Slice<T>> {
     return Slice<Slice<T>>(arr.map { Slice(it) }.toTypedArray())

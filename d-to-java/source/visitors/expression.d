@@ -38,14 +38,24 @@ import dmd.tokens;
 import dmd.utils;
 import dmd.visitor;
 
+import std.format;
+
 struct ExprOpts {
     bool wantCharPtr = false;
     bool reverseIntPromotion = false;
-    bool wantEnumValue = false;
     EnumDeclaration inEnumDecl = null;
     FuncDeclaration inFuncDecl = null;
     Expression dollarValue = null;
+    VarDeclaration vararg = null;
     bool[void*] refParams; //out and ref params, they must be boxed
+}
+
+///
+const(char)[] funcName(FuncDeclaration f) {
+    if (f.v_arguments) {
+        return format("%s%d", f.ident.symbol, f.parameters ? f.parameters.length : 0);
+    }
+    else return f.ident.symbol;
 }
 
 ///
@@ -209,7 +219,6 @@ public:
                             {
                                 auto s = symbol(sym.ident);
                                 buf.printf("%.*s.%s", s.length, s.ptr, em.ident.toChars());
-                                if (opts.wantEnumValue) buf.writestring(".value");
                                 return ;
                             }
                         }
@@ -318,6 +327,7 @@ public:
 
     override void visit(StringExp e)
     {
+        //fprintf(stderr, "WantChar = %d\n", opts.wantCharPtr ? 1 : 0);
         if (opts.wantCharPtr) buf.writestring("new BytePtr(");
         else buf.writestring(" new ByteSlice(");
         buf.writeByte('"');
@@ -349,7 +359,7 @@ public:
 
     override void visit(ArrayLiteralExp e)
     {
-        buf.writeByte('{');
+        buf.writestring("{");
         argsToBuffer(e.elements, buf, opts, null, e.basis);
         buf.writeByte('}');
     }
@@ -466,6 +476,8 @@ public:
             buf.printf("(%s.ptr().plus(%u))", e.var.toChars(), e.offset);
         else if (e.var.isTypeInfoDeclaration())
             buf.writestring(e.var.toChars());
+        else if(e.var.type.ty == Tstruct)
+            buf.printf("%s", e.var.toChars());
         else
             buf.printf("%s.ptr()", e.var.toChars());
     }
@@ -476,14 +488,16 @@ public:
             opts.dollarValue.accept(this);
             buf.writestring(".getLength()");
         }
+        else if(e.var is opts.vararg) {
+            buf.writestring("new Slice<>(");
+            buf.writestring(e.var.ident.symbol);
+            buf.writestring(")");
+        }
         else {
-            if (opts.wantEnumValue) {
-                fprintf(stderr, "MixedEnum e = %s\n", e.toChars());
-            }
             if (e.var.isMember() && e.var.isStatic())
                 buf.printf("%s.", e.var.parent.ident.toChars());
-            buf.writestring(symbol(e.var.ident.symbol));
-            if (cast(void*)e.var in opts.refParams || opts.wantEnumValue && e.type.isintegral())
+            buf.writestring(e.var.ident.symbol);
+            if (cast(void*)e.var in opts.refParams)
                 buf.writestring(".value");
         }
     }
@@ -514,7 +528,7 @@ public:
     override void visit(FuncExp e)
     {
         fprintf(stderr, "Func exp %s\n", e.toChars());
-        e.fd.dsymbolToBuffer(buf);
+        buf.writestring(e.fd.funcName);
         //buf.writestring(e.fd.toChars());
     }
     
@@ -538,10 +552,9 @@ public:
 
     override void visit(TypeidExp e)
     {
-        //TODO: 
-        buf.writestring(e.toChars);
-        //assert(false);
-        // not used in DMD sources
+        //TODO: do we even need it?
+        // buf.writestring(e.toChars);
+        // assert(false);
     }
 
     override void visit(TraitsExp e)
@@ -614,6 +627,9 @@ public:
                 fprintf(stderr,"Unsupported unary pointer arithmetic: %s", e.toChars());
                 assert(0);
             }
+        }
+        else if(e.op == TOK.address && e.type.ty == Tstruct) {
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
         }
         else if(e.op == TOK.not) {
             buf.writestring(Token.toString(e.op));
@@ -692,11 +708,6 @@ public:
                 return;
             }
         }
-        bool mixedEnum = (e.e1.type.ty == Tenum || e.e2.type.ty == Tenum) && e.op != TOK.assign;
-        if (mixedEnum) fprintf(stderr, "Mixed enum expr: %s\n", e.toChars());
-        auto oldWantEnum = opts.wantEnumValue;
-        scope(exit) opts.wantEnumValue = oldWantEnum;
-        opts.wantEnumValue = mixedEnum || opts.wantEnumValue;
         expToBuffer(e.e1, precedence[e.op], buf, opts);
         buf.writeByte(' ');
         if (e.op == TOK.identity) buf.writestring("==");
@@ -779,7 +790,7 @@ public:
             expToBuffer(e.e1, PREC.primary, buf, opts);
             buf.writeByte('.');
         }
-        buf.writestring(e.func.toChars());
+        buf.writestring(e.func.funcName);
     }
 
     override void visit(DotTypeExp e)
@@ -802,7 +813,10 @@ public:
             e.e1.accept(this);
         }
         else {
-            if (e.f && e.f.isDtorDeclaration()) return;
+            if (e.f && e.f.isDtorDeclaration())
+                return;
+            if (e.f && (e.f.ident.symbol == "va_start" || e.f.ident.symbol == "va_end"))
+                return;
             if (e.f && e.f.isCtorDeclaration()) {
                 auto ctorCall = e.e1.isDotVarExp();
                 expToBuffer(ctorCall.e1, precedence[e.op], buf, opts);
@@ -816,7 +830,17 @@ public:
                 else
                     buf.writestring(".set");
             }
-            else 
+            else if(e.f) {
+                auto var = e.e1.isDotVarExp();
+                if (var) {
+                    expToBuffer(var.e1, PREC.primary, buf, opts);
+                    buf.writeByte('.');
+                    buf.writestring(e.f.funcName);
+                }
+                else 
+                    expToBuffer(e.e1, precedence[e.op], buf, opts);
+            }
+            else
                 expToBuffer(e.e1, precedence[e.op], buf, opts);
             //fprintf(stderr, "Calling %x %s type %s\n", e.f, e.e1.toChars(), e.e1.type.toChars());
             if (!e.f) {
@@ -901,7 +925,6 @@ public:
             expToBuffer(e.e1, precedence[e.op], buf, opts);
         else if(fromEnum) {
             expToBuffer(e.e1, precedence[e.op], buf, opts);
-            buf.writestring(".value");
         }
         else if (complexTarget) { // rely on .toTypeName
             expToBuffer(e.e1, precedence[e.op], buf, opts);
@@ -1138,17 +1161,25 @@ private void argsToBuffer(Expressions* expressions, OutBuffer* buf, ExprOpts opt
 {
     if (!expressions || !expressions.dim)
         return;
+    size_t pos = buf.offset;
     foreach (i, el; *expressions)
     {
-        if (i)
+        if (i && buf.offset != pos)
             buf.writestring(", ");
+        pos = buf.offset;
         if (!el)
             el = basis;
         if (el) {
             auto var = el.isVarExp();
             auto n = el.isNullExp();
+
             auto refParam = fd && fd.parameters && i < fd.parameters.length
                 && ((*fd.parameters)[i].isRef() || (*fd.parameters)[i].isOut());
+
+            auto wantChar = fd && fd.parameters && i < fd.parameters.length
+                && (*fd.parameters)[i].type.ty == Tpointer
+                && (*fd.parameters)[i].type.nextOf.ty == Tchar;
+            
             if (var && (cast(void*)var.var in opts.refParams) && refParam) {
                 buf.writestring(var.var.ident.toString);
             }
@@ -1157,10 +1188,17 @@ private void argsToBuffer(Expressions* expressions, OutBuffer* buf, ExprOpts opt
                 buf.writestring(n.type.toJava);
                 buf.writestring("()");
             }
-            else
+            else if(wantChar) {
+                // fprintf(stderr, "WantChar func = %s args=%d\n", fd.ident.toChars, i);
+                opts.wantCharPtr = true;
                 expToBuffer(el, PREC.assign, buf, opts);
+            }
+            else {
+                expToBuffer(el, PREC.assign, buf, opts);
+            }
         }
     }
+    if (expressions && buf.offset == pos) buf.offset -= 2;
 }
 
 private void sizeToBuffer(Expression e, OutBuffer* buf, ExprOpts opts)
@@ -1316,37 +1354,38 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
 
     void visitSArray(TypeSArray t)
     {
-        if (t.next.ty == Tchar)
+        auto et = t.next;
+        if (et.ty == Tchar || et.ty == Tvoid || et.ty == Tuns8 || et.ty == Tint8)
             buf.writestring("ByteSlice");
-        else if (t.next.ty == Twchar)
+        else if (et.ty == Twchar)
             buf.writestring("CharSlice");
-        else if (t.next.ty == Tdchar)
+        else if (et.ty == Tdchar)
             buf.writestring("IntSlice");
-        else if(t.next.ty == Tint32 || t.next.ty == Tuns32)
+        else if(et.ty == Tint32 || t.next.ty == Tuns32)
             buf.writestring("IntSlice");
         else {
             buf.writestring("Slice<");
-            typeToBufferx(t.next, buf, Boxing.yes);
+            typeToBufferx(et, buf, Boxing.yes);
             buf.writestring(">");
         }
     }
 
     void visitDArray(TypeDArray t)
     {
-        Type ut = t.castMod(0);
-        if (ut.ty == Tarray && t.next.ty == Tchar || t.next.ty == Tvoid || t.next.ty == Tuns8 || t.next.ty == Tint8)
+        auto et = t.next;
+        if (auto e = et.isTypeEnum()) et = e.memType;
+        if (et.ty == Tchar || et.ty == Tvoid || et.ty == Tuns8 || et.ty == Tint8)
             buf.writestring("ByteSlice");
-        else if (ut.ty == Tarray && t.next.ty == Twchar)
+        else if (et.ty == Twchar)
             buf.writestring("CharSlice");
-        else if (ut.ty == Tarray && t.next.ty == Tdchar)
+        else if (et.ty == Tdchar)
             buf.writestring("IntSlice");
-        else if(t.next.ty == Tint32 || t.next.ty == Tuns32)
+        else if(et.ty == Tint32 || et.ty == Tuns32)
             buf.writestring("IntSlice");
         else
         {
-        L1:
             buf.writestring("Slice<");
-            typeToBufferx(t.next, buf, Boxing.yes);
+            typeToBufferx(et, buf, Boxing.yes);
             buf.writestring(">");
         }
     }
@@ -1468,7 +1507,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
 
     void visitEnum(TypeEnum t)
     {
-        buf.writestring(t.sym.toChars());
+        buf.writestring(t.memType.toJava());
     }
 
     void visitStruct(TypeStruct t)
@@ -1488,7 +1527,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
             buf.writestring(">");
         }
         else if(t.sym.ident.symbol == "__va_list_tag")
-            buf.writestring("Object[]");
+            buf.writestring("Slice<Object>");
         else
             buf.writestring(t.sym.ident.symbol);
     }

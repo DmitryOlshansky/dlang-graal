@@ -17,28 +17,25 @@ import static org.dlang.dmd.root.DArrayKt.*;
 public class console {
 
 
-    public enum Color 
+    public static class Color 
     {
-        black(0),
-        red(1),
-        green(2),
-        blue(4),
-        yellow(3),
-        magenta(5),
-        cyan(6),
-        lightGray(7),
-        bright(8),
-        darkGray(8),
-        brightRed(9),
-        brightGreen(10),
-        brightBlue(12),
-        brightYellow(11),
-        brightMagenta(13),
-        brightCyan(14),
-        white(15),
-        ;
-        public final int value;
-        Color(int value){ this.value = value; }
+        public static final int black = 0;
+        public static final int red = 1;
+        public static final int green = 2;
+        public static final int blue = 4;
+        public static final int yellow = 3;
+        public static final int magenta = 5;
+        public static final int cyan = 6;
+        public static final int lightGray = 7;
+        public static final int bright = 8;
+        public static final int darkGray = 8;
+        public static final int brightRed = 9;
+        public static final int brightGreen = 10;
+        public static final int brightBlue = 12;
+        public static final int brightYellow = 11;
+        public static final int brightMagenta = 13;
+        public static final int brightCyan = 14;
+        public static final int white = 15;
     }
 
     public static class Console
@@ -64,8 +61,8 @@ public class console {
             fprintf(this._fp,  new ByteSlice("\u001b[%dm"), (bright ? 1 : 0));
         }
 
-        public  void setColor(Color color) {
-            fprintf(this._fp,  new ByteSlice("\u001b[%d;%dm"), (color.value & Color.bright.value) != 0 ? 1 : 0, 30 + (color.value & -9));
+        public  void setColor(int color) {
+            fprintf(this._fp,  new ByteSlice("\u001b[%d;%dm"), (color & Color.bright) != 0 ? 1 : 0, 30 + (color & -9));
         }
 
         public  void resetColor() {

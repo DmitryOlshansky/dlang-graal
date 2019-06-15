@@ -225,11 +225,15 @@ class OutBuffer {
         offset += nbytes
     }
 
-    fun printf(format: ByteSlice, vararg args: Any?)
-    {
-       writestring(ByteSlice(String.format(format.toString(), args)))
+    fun printf(format: ByteSlice, vararg args: Any?)= vprintf(format, slice(args))
+
+    fun vprintf(format: ByteSlice, args: Slice<out Any?>) {
+        writestring(ByteSlice(String.format(format.toString(), args)))
     }
 
+    fun vprintf(format: BytePtr, args: Slice<out Any?>) {
+        writestring(ByteSlice(String.format(format.toString(), args)))
+    }
     /**************************************
      * Convert `u` to a string and append it to the buffer.
      * Params:

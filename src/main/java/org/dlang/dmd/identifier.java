@@ -115,7 +115,7 @@ public class identifier {
             return p;
         }
 
-        public  DYNCAST dyncast() {
+        public  int dyncast() {
             return DYNCAST.identifier;
         }
 
