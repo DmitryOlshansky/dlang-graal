@@ -114,6 +114,8 @@ AggregateDeclaration[] collectNestedAggregates(FuncDeclaration f) {
     return v.decls;
 }
 
+extern(C) void foobar(int) {}
+
 VarDeclaration[] collectMembers(AggregateDeclaration agg) {
     extern(C++) static class Collector : SemanticTimeTransitiveVisitor {
         alias visit = typeof(super).visit;
@@ -233,6 +235,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             }
         }
     }
+   
 
     extern(D) private void printVar(VarDeclaration var, const(char)[] ident, TextBuffer sink) {
         // remove var-args decls
@@ -247,6 +250,11 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         auto access = "";
         if (aggregates.length && !stack.length) access = defAccess ~ " ";
         sink.fmt("%s%s%s %s",  access, staticInit ? "static " : "", type, ident);
+        bool oldWantChar = opts.wantCharPtr;
+        scope(exit) opts.wantCharPtr = oldWantChar;
+        if (var.type.ty == Tpointer && var.type.nextOf.ty == Tchar) {
+            opts.wantCharPtr = true;
+        }
         if (var._init) {
             ExpInitializer ie = var._init.isExpInitializer();
             if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit)) {
@@ -254,7 +262,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 auto assign = (cast(AssignExp)ie.exp);
                 auto integer = assign.e2.isIntegerExp();
                 auto isNull = assign.e2.isNullExp();
-                //fprintf(stderr, "Init1 %s\n", var.toChars());
+                fprintf(stderr, "Init1 %s\n", var.toChars());
                 if (integer && integer.toInteger() == 0 && var.type.ty == Tstruct){
                     sink.fmt("new %s()", var.type.toJava);
                 }
@@ -263,13 +271,14 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     else sink.fmt("new %s()", var.type.toJava);
                 }
                 else {
+                    //fprintf(stderr, "init %s with %s\n", var.toChars, assign.e2.toChars);
                     if (refVar) sink.fmt("ref(");
                     sink.put(assign.e2.toJava(opts));
                     if (refVar) sink.fmt(")");
                 }
             }
             else {
-                //fprintf(stderr, "Init2 %s\n", var.toChars());
+                fprintf(stderr, "Init2 %s\n", var.toChars());
                 sink.fmt(" = ");
                 initializerToBuffer(var._init, sink, var.type.ty == Tpointer && var.type.nextOf().ty == Tchar);
             }
@@ -635,6 +644,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         s.statement.accept(this);
     }
 
+    override void visit(GotoStatement g) {
+        buf.fmt("goto %s;\n", g.label.toString);
+    }
+
     override void visit(GotoDefaultStatement s)
     {
         buf.put("//goto default;\n");
@@ -887,7 +900,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             }
             if (auto var = varargVarDecl(func)) {
                 opts.vararg = var;
-                buf.fmt(", Object[]... %s", var.ident.symbol);
+                buf.fmt(", Object... %s", var.ident.symbol);
             }
         }
         else if (auto ft = func.type.isTypeFunction()){

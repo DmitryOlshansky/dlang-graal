@@ -49,7 +49,7 @@ public class filecache {
         public StringTable files;
         public  FileAndLines addOrGetFile(ByteSlice file) {
             StringValue payload = this.files.lookup(file);
-            if (payload != null)
+            if (payloadcomma(, payload) != null)
             {
                 if (payload != null)
                     return (FileAndLines)(payload).ptrvalue;

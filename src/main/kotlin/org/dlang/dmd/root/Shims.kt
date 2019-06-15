@@ -71,6 +71,9 @@ fun strncmp(ptr: BytePtr, s2: ByteSlice, n: Int): Int {
     else return 1
 }
 
+fun strstr(ptr: BytePtr, needle: BytePtr) : BytePtr? = null //TODO: stub!
+
+fun strstr(ptr: BytePtr, needle: ByteSlice): BytePtr? = null //TODO: stub!
 
 fun strcat(dest: BytePtr, src: ByteSlice) {
     val len = strlen(dest)
@@ -112,6 +115,8 @@ fun realloc(ptr: BytePtr, size: Int): BytePtr  {
 fun getcwd(s: BytePtr?, i: Int) = BytePtr(Paths.get(".").toAbsolutePath().normalize().toString())
 
 
+fun memcmp(a: BytePtr, b: BytePtr, size: Int) = 0 //TODO: stub
+
 fun memcpy(dest: BytePtr, from: BytePtr, size: Int) = memmove(dest, from, size)
 
 fun memmove(dest: BytePtr, from: BytePtr, size: Int)  {
@@ -129,6 +134,8 @@ fun destroy(a: Any)  {}
 fun hashOf(any: Any) = any.hashCode()
 
 fun hashOf(any: Any, seed: Int) = any.hashCode() + seed * 31
+
+fun<A,B> comma(a: A?, b: B?) = b
 
 fun<T> slice(arr: Array<T?>): Slice<T>  = Slice(arr)
 

@@ -52,10 +52,10 @@ struct ExprOpts {
 
 ///
 const(char)[] funcName(FuncDeclaration f) {
-    if (f.v_arguments) {
+    /*if (f.v_arguments) {
         return format("%s%d", f.ident.symbol, f.parameters ? f.parameters.length : 0);
     }
-    else return f.ident.symbol;
+    else*/ return f.ident.symbol;
 }
 
 ///
@@ -111,17 +111,18 @@ string toJavaBool(Expression e, ExprOpts opts) {
     scope OutBuffer* buf = new OutBuffer();
     scope v = new toJavaExpressionVisitor(buf, opts);
     e.accept(v);
+    const(char)* op = "!=";
     if (e.type && e.type.ty != Tbool) switch(e.type.ty){
         case Tpointer:
         case Tclass:
-            buf.writestring(" != null");
+            buf.printf(" %s null", op);
             break;
         case Tarray:
-            buf.writestring(".getLength() != 0");
+            buf.printf(".getLength() %s 0", op);
             break;
         default:
             buf.prependbyte('(');
-            buf.writestring(") != 0");
+            buf.printf(") %s 0", op);
     }
     buf.writeByte(0);
     char* p = v.buf.extractData;
@@ -488,6 +489,9 @@ public:
             opts.dollarValue.accept(this);
             buf.writestring(".getLength()");
         }
+        else if(e.var.ident.symbol == e.type.toJava) {
+            buf.printf("new %.*s()", e.var.ident.symbol.length, e.var.ident.symbol.ptr);
+        }
         else if(e.var is opts.vararg) {
             buf.writestring("new Slice<>(");
             buf.writestring(e.var.ident.symbol);
@@ -534,11 +538,11 @@ public:
     
     override void visit(CommaExp c)
     {
-        /*buf.writestring("comma(");
+        buf.writestring("comma(");
         buf.writestring(c.e1.toJava(opts));
         buf.writestring(", ");
         buf.writestring(c.e2.toJava(opts));
-        buf.writestring(")");*/
+        buf.writestring(")");
     }
 
     override void visit(DeclarationExp e)
@@ -547,7 +551,7 @@ public:
          * are handled in visit(ExpStatement), so here would be used only when
          * we'll directly call Expression.toChars() for debugging.
          */
-        assert(0, "DeclarationExp");
+        fprintf(stderr, "DeclarationExp");
     }
 
     override void visit(TypeidExp e)
@@ -819,7 +823,12 @@ public:
                 return;
             if (e.f && e.f.isCtorDeclaration()) {
                 auto ctorCall = e.e1.isDotVarExp();
-                expToBuffer(ctorCall.e1, precedence[e.op], buf, opts);
+                if (opts.inFuncDecl && opts.inFuncDecl.isCtorDeclaration)
+                    expToBuffer(ctorCall.e1, precedence[e.op], buf, opts);
+                else {
+                    buf.writestring("new ");
+                    buf.writestring(e.type.toJava);
+                }
             }
             else if (e.f && e.f.ident.symbol == "opIndex") {
                 auto var = e.e1.isDotVarExp();
@@ -1038,6 +1047,9 @@ public:
             opts.wantCharPtr = true;
             scope(exit) opts.wantCharPtr = old;
             visit(cast(BinExp)e);
+        }
+        else if(e.e1.type.ty == Tstruct && e.e2.type.ty == Tint32) {
+            buf.writestring("null");
         }
         else
             visit(cast(BinExp)e);
