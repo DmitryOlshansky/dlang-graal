@@ -1,38 +1,46 @@
 package org.dlang.dmd.root
 
+import com.sun.org.apache.xpath.internal.operations.Bool
+import java.lang.Exception
 import java.lang.StringBuilder
 
-class Ptr<T>(val data: Array<T?>, var offset: Int) : RootObject() {
+abstract class Ptr<T> : RootObject() {
+    abstract operator fun set(idx: Int, value: T)
+
+    abstract operator fun get(idx: Int): T?
+}
+
+class RawPtr<T>(val data: Array<T?>, var offset: Int) : Ptr<T>() {
 
     constructor(arr: Array<T?>): this(arr, 0)
 
-    operator fun inc(): Ptr<T> {
+    operator fun inc(): RawPtr<T> {
         offset ++
         return this
     }
 
-    fun postInc(): Ptr<T> {
-        val r = Ptr(data, offset)
+    fun postInc(): RawPtr<T> {
+        val r = RawPtr(data, offset)
         offset++
         return r
     }
 
-    operator fun dec(): Ptr<T> {
+    operator fun dec(): RawPtr<T> {
         offset--
         return this
     }
 
-    fun postDec(): Ptr<T> {
-        val r = Ptr(data, offset)
+    fun postDec(): RawPtr<T> {
+        val r = RawPtr(data, offset)
         offset--
         return r
     }
 
-    operator fun plus(delta: Int) = Ptr(data, offset+delta)
+    operator fun plus(delta: Int) = RawPtr(data, offset+delta)
 
-    operator fun minus(delta: Int) = Ptr(data, offset-delta)
+    operator fun minus(delta: Int) = RawPtr(data, offset-delta)
 
-    operator fun minus(rhs: Ptr<T>): Int {
+    operator fun minus(rhs: RawPtr<T>): Int {
         require(rhs.data === data)
         return offset - rhs.offset
     }
@@ -45,11 +53,11 @@ class Ptr<T>(val data: Array<T?>, var offset: Int) : RootObject() {
         offset -= delta
     }
 
-    operator fun set(idx: Int, value: T) {
+    override operator fun set(idx: Int, value: T) {
         data[offset+idx] = value
     }
 
-    operator fun get(idx: Int): T? = data[offset+idx]
+    override operator fun get(idx: Int): T? = data[offset+idx]
 
     fun slice(start: Int, end: Int) = Slice(data, start + offset, end + offset)
 
@@ -64,6 +72,21 @@ class Ptr<T>(val data: Array<T?>, var offset: Int) : RootObject() {
         s.append("]")
         return BytePtr(s.toString())
     }
+}
+
+class RefPtr<T>(val ref: Ref<T>) : Ptr<T>() {
+
+    override operator fun get(idx: Int): T {
+        require(idx == 0)
+        return ref.value
+    }
+
+    override fun set(idx: Int, value: T) {
+        require(idx == 0)
+        ref.value = value
+    }
+
+    override fun toChars(): BytePtr = BytePtr(ref.value.toString())
 }
 
 // ~C-string
@@ -116,6 +139,26 @@ class BytePtr(val data: ByteArray, var offset: Int) : RootObject() {
     fun minusAssign(delta: Int): BytePtr {
         offset -= delta
         return this
+    }
+
+    fun lessThan(ptr: BytePtr): Boolean {
+        require(data === ptr.data)
+        return offset < ptr.offset
+    }
+
+    fun lessOrEqual(ptr: BytePtr): Boolean {
+        require(data === ptr.data)
+        return offset <= ptr.offset
+    }
+
+    fun greaterThan(ptr: BytePtr): Boolean {
+        require(data === ptr.data)
+        return offset > ptr.offset
+    }
+
+    fun greaterOrEqual(ptr: BytePtr): Boolean {
+        require(data === ptr.data)
+        return offset >= ptr.offset
     }
 
     operator fun set(idx: Int, value: Byte) {
@@ -233,6 +276,32 @@ class IntPtrReal(val data: IntArray, var offset: Int) : IntPtr {
     }
 
     override operator fun get(idx: Int): Int = data[offset+idx]
+}
+
+
+class BadPointerArithmetic(message: String) : Exception(message)
+
+class IntRefPtr(val ref: IntRef) : IntPtr {
+    private fun fail(): IntPtr = throw BadPointerArithmetic("not allowed on int ref ptr")
+
+    override fun plus(delta: Int): IntPtr = fail()
+
+    override fun minus(delta: Int): IntPtr = fail()
+
+    override fun plusAssign(delta: Int) { fail() }
+
+    override fun minusAssign(delta: Int) {  fail() }
+
+    override fun set(idx: Int, value: Int) {
+        require(idx == 0)
+        ref.value = value
+    }
+
+    override fun get(idx: Int): Int {
+        require(idx == 0)
+        return ref.value
+    }
+
 }
 
 class ProxyIntPtr(val data: ByteArray, var offset: Int): IntPtr {

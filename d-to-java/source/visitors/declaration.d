@@ -28,6 +28,7 @@ import dmd.visitor : Visitor, SemanticTimeTransitiveVisitor;
 import std.array, std.algorithm, std.format, std.string, std.range;
 
 import visitors.expression : Boxing, ExprOpts, funcName, refType, toJava, toJavaBool, toJavaFunc, isByteSized, symbol;
+import visitors.members;
 import visitors.passed_by_ref;
 
 ///
@@ -116,39 +117,6 @@ AggregateDeclaration[] collectNestedAggregates(FuncDeclaration f) {
 
 extern(C) void foobar(int) {}
 
-VarDeclaration[] collectMembers(AggregateDeclaration agg) {
-    extern(C++) static class Collector : SemanticTimeTransitiveVisitor {
-        alias visit = typeof(super).visit;
-        VarDeclaration[] decls = [];
-
-        override void visit(ConditionalDeclaration ver) {
-            if (ver.condition.inc == Include.yes) {
-                if (ver.decl) {
-                    foreach(d; *ver.decl){
-                        d.accept(this);
-                    }
-                }
-            }
-            else if(ver.elsedecl) {
-                foreach(d; *ver.elsedecl){
-                    d.accept(this);
-                }
-            }
-        }
-        override void visit(FuncDeclaration ){}
-        override void visit(StaticCtorDeclaration){}
-        override void visit(SharedStaticCtorDeclaration){}
-        override void visit(StaticAssert ) {}
-        override void visit(VarDeclaration v) {
-            if (!v.isStatic && !(v.storage_class & STC.gshared) && !v.ident.toString.startsWith("__"))
-                decls ~= v;
-        }
-    }
-    scope v = new Collector();
-    agg.accept(v);
-    return v.decls;
-}
-
 VarDeclaration varargVarDecl(FuncDeclaration decl) {
     extern(C++) static class VarArg : SemanticTimeTransitiveVisitor {
         alias visit = typeof(super).visit;
@@ -174,6 +142,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     string defAccess = "public";
     FuncDeclaration[] stack;
     bool[string] generatedLambdas;
+    bool[string] generatedFunctions;
     AggregateDeclaration[] aggregates;
     string moduleName;
     string[] constants; // all local static vars are collected here
@@ -183,6 +152,24 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     
     int inInitializer; // to avoid recursive decomposition of arrays
     string[] arrayInitializers;
+
+    string funcSig(FuncDeclaration func) {
+        auto b = new TextBuffer();
+        b.put(func.type.nextOf.toJava);
+        b.put(" ");
+        b.put(func.ident.symbol);
+        auto tf = func.type.isTypeFunction();
+        if(tf.parameterList)
+            foreach(i, p; *tf.parameterList){
+                if (i) b.put(", ");
+                auto box = p.storageClass & (STC.ref_ | STC.out_);
+                if (box && !p.type.isAggregate) {
+                    b.fmt("%s", refType(p.type));
+                }
+                else b.fmt("%s", toJava(p.type));
+            }
+        return b.data.dup;
+    }
     
     this() {
         buf = new TextBuffer();
@@ -255,6 +242,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (var.type.ty == Tpointer && var.type.nextOf.ty == Tchar) {
             opts.wantCharPtr = true;
         }
+        if (var.ident.symbol == "fllines") {
+            foobar(0);
+        }
         if (var._init) {
             ExpInitializer ie = var._init.isExpInitializer();
             if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit)) {
@@ -262,7 +252,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 auto assign = (cast(AssignExp)ie.exp);
                 auto integer = assign.e2.isIntegerExp();
                 auto isNull = assign.e2.isNullExp();
-                fprintf(stderr, "Init1 %s\n", var.toChars());
+                //fprintf(stderr, "Init1 %s\n", var.toChars());
                 if (integer && integer.toInteger() == 0 && var.type.ty == Tstruct){
                     sink.fmt("new %s()", var.type.toJava);
                 }
@@ -278,7 +268,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 }
             }
             else {
-                fprintf(stderr, "Init2 %s\n", var.toChars());
+                //fprintf(stderr, "Init2 %s\n", var.toChars());
                 sink.fmt(" = ");
                 initializerToBuffer(var._init, sink, var.type.ty == Tpointer && var.type.nextOf().ty == Tchar);
             }
@@ -422,9 +412,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     override void visit(IfStatement s)
     {
         buf.put("if (");
-        if (s.prm) {
+        /*if (s.prm) {
             buf.put(s.prm.ident.symbol);
-        }
+        }*/
         buf.put(s.condition.toJavaBool(opts));
         buf.put(")\n");
         if (s.ifbody.isScopeStatement())
@@ -542,6 +532,12 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(EnumDeclaration d)
     {
+        auto old = buf;
+        auto oldAccess = defAccess;
+        if (stack.length) {
+            buf = new TextBuffer();
+            defAccess = "private";
+        }
         auto oldInEnumDecl = opts.inEnumDecl;
         scope(exit) opts.inEnumDecl = oldInEnumDecl;
         opts.inEnumDecl = d;
@@ -569,6 +565,11 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
         buf.outdent;
         buf.put("}\n\n");
+        if (stack.length) {
+            constants ~= buf.data.dup;
+            buf = old;
+            defAccess = oldAccess;
+        }
     }
 
     override void visit(EnumMember em)
@@ -748,6 +749,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(StructDeclaration d)
     {
+        auto old = generatedFunctions;
+        scope(exit) generatedFunctions = old;
+        generatedFunctions = null;
         if (stack.length) return; // inner structs are done separa
         aggregates ~= d;
         buf.fmt("%s static class ", defAccess);
@@ -768,27 +772,29 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         bool hasCtor = hasCtor(d);
         if (!hasCtor) {
             auto members = collectMembers(d);
-            if (members.length) {
+            if (members.all.length) {
                 //Generate ctors
                 // empty ctor
                 buf.fmt("public %s(){}\n", d.ident.toString);
                 // all fields ctor
-                buf.fmt("public %s(", d.ident.toString);
-                foreach(i, m; members) {
-                    if(i) buf.put(", ");
-                    buf.fmt("%s %s", m.type.toJava, m.ident.toString);
+                if (!members.hasUnion) {
+                    buf.fmt("public %s(", d.ident.toString);
+                    foreach(i, m; members.all) {
+                        if(i) buf.put(", ");
+                        buf.fmt("%s %s", m.type.toJava, m.ident.toString);
+                    }
+                    buf.put(") {\n");
+                    buf.indent;
+                    foreach(i,m; members.all){
+                        buf.fmt("this.%s = %s;\n", m.ident.toString, m.ident.toString);
+                    }
+                    buf.outdent;
+                    buf.put("}\n\n");
                 }
-                buf.put(") {\n");
-                buf.indent;
-                foreach(i,m; members){
-                    buf.fmt("this.%s = %s;\n", m.ident.toString, m.ident.toString);
-                }
-                buf.outdent;
-                buf.put("}\n\n");
                 // generate opAssign
                 buf.fmt("public %s opAssign(%s that) {\n", d.ident.toString, d.ident.toString);
                 buf.indent;
-                foreach(i,m; members){
+                foreach(i,m; members.all){
                     buf.fmt("this.%s = that.%s;\n", m.ident.toString, m.ident.toString);
                 }
                 buf.put("return this;\n");
@@ -805,6 +811,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(ClassDeclaration d)
     {
+        auto old = generatedFunctions;
+        scope(exit) generatedFunctions = old;
+        generatedFunctions = null;
         if (stack.length) return; // inner classes are done separately
         aggregates ~= d;
         if (!d.isAnonymous())
@@ -934,6 +943,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     override void visit(FuncDeclaration func)  {
         if (func.funcName == "destroy") return;
         if (func.ident.toString == "opAssign") return;
+        auto sig = funcSig(func);
+        if (sig in generatedFunctions) return;
+        generatedFunctions[sig] = true;
         // hoist nested structs/classes to top level, mark them private
         if (stack.length == 0) {
             auto nested = collectNestedAggregates(func);

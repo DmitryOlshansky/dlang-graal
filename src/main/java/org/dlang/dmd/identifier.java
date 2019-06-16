@@ -161,7 +161,7 @@ public class identifier {
         }
 
         public static Identifier idPool(ByteSlice s) {
-            StringValue sv = stringtable.update(s);
+            StringValue sv = Identifier.stringtable.update(s);
             Identifier id = (Identifier)(sv).ptrvalue;
             if (!(id != null))
             {
@@ -176,7 +176,7 @@ public class identifier {
         }
 
         public static Identifier idPool(ByteSlice s, int value) {
-            StringValue sv = stringtable.insert(s, null);
+            StringValue sv = Identifier.stringtable.insert(s, null);
             assert(sv != null);
             Identifier id = new Identifier((sv).asString(), value);
             (sv).ptrvalue = id;
@@ -209,14 +209,14 @@ public class identifier {
         }
 
         public static Identifier lookup(ByteSlice s) {
-            StringValue sv = stringtable.lookup(s);
+            StringValue sv = Identifier.stringtable.lookup(s);
             if (sv == null)
                 return null;
             return (Identifier)(sv).ptrvalue;
         }
 
         public static void initTable() {
-            stringtable._init(28000);
+            Identifier.stringtable._init(28000);
         }
 
     }

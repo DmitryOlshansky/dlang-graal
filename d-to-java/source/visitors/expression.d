@@ -40,6 +40,8 @@ import dmd.visitor;
 
 import std.format;
 
+import visitors.members;
+
 struct ExprOpts {
     bool wantCharPtr = false;
     bool reverseIntPromotion = false;
@@ -192,6 +194,12 @@ public:
         this.opts  = opts;
     }
 
+    void printParent(Declaration var)
+    {
+        if (var.isMember() && (var.isStatic() || (var.storage_class & STC.gshared)))
+            buf.printf("%s.", var.parent.ident.toChars());
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     override void visit(Expression e)
     {
@@ -228,7 +236,10 @@ public:
                 }
             case Twchar:
             case Tdchar:
-                buf.printf("'\\u%04x'", v);
+                if(v == '\n')
+                    buf.printf("'\\n'");
+                else
+                    buf.printf("'\\u%04x'", v);
                 break;
             case Tchar:
                 {
@@ -282,8 +293,10 @@ public:
         }
         else if (v & 0x8000000000000000L)
             buf.printf("0x%llx", v);
-        else
+        else {
+            fprintf(stderr, "No type for %d\n", cast(int)v);
             buf.print(v);
+        }
     }
 
     override void visit(ErrorExp e)
@@ -360,9 +373,10 @@ public:
 
     override void visit(ArrayLiteralExp e)
     {
-        buf.writestring("{");
+        auto type = e.type.nextOf.toJava;
+        buf.printf("slice(new %.*s[]{", type.length, type.ptr);
         argsToBuffer(e.elements, buf, opts, null, e.basis);
-        buf.writeByte('}');
+        buf.writestring("})");
     }
 
     override void visit(AssocArrayLiteralExp e)
@@ -385,7 +399,9 @@ public:
         buf.writestring("new ");
         buf.writestring(e.type.toJava);
         buf.writeByte('(');
-        if (e.type.toString.indexOf("Array!") < 0) {
+        fprintf(stderr, "hasEnum = %d for %s\n", 
+            collectMembers(e.sd).hasUnion ? 1 : 0, e.type.toChars);
+        if (e.type.toString.indexOf("Array!") < 0 && !collectMembers(e.sd).hasUnion) {
             // CTFE can generate struct literals that contain an AddrExp pointing
             // to themselves, need to avoid infinite recursion:
             // struct S { this(int){ this.s = &this; } S* s; }
@@ -437,7 +453,8 @@ public:
         buf.writestring("new ");
         typeToBuffer(e.newtype, null, buf);
         buf.writeByte('(');
-        if (e.type.toString.indexOf("Array!") < 0) { 
+        auto struc = e.newtype.isTypeStruct();
+        if (e.type.toString.indexOf("Array!") < 0 && (!struc || !collectMembers(struc.sym).hasUnion)) { 
             if (e.arguments && e.arguments.dim)
             {
                 argsToBuffer(e.arguments, buf, opts, null);
@@ -480,7 +497,7 @@ public:
         else if(e.var.type.ty == Tstruct)
             buf.printf("%s", e.var.toChars());
         else
-            buf.printf("%s.ptr()", e.var.toChars());
+            buf.printf("ptr(%s)", e.var.toChars());
     }
 
     override void visit(VarExp e)
@@ -498,8 +515,7 @@ public:
             buf.writestring(")");
         }
         else {
-            if (e.var.isMember() && e.var.isStatic())
-                buf.printf("%s.", e.var.parent.ident.toChars());
+            printParent(e.var);
             buf.writestring(e.var.ident.symbol);
             if (cast(void*)e.var in opts.refParams)
                 buf.writestring(".value");
@@ -538,11 +554,16 @@ public:
     
     override void visit(CommaExp c)
     {
-        buf.writestring("comma(");
-        buf.writestring(c.e1.toJava(opts));
-        buf.writestring(", ");
-        buf.writestring(c.e2.toJava(opts));
-        buf.writestring(")");
+        auto left = c.e1.toJava(opts);
+        auto right = c.e2.toJava(opts);
+        if(left == "") buf.writestring(right);
+        else {
+            buf.writestring("comma(");
+            buf.writestring(left);
+            buf.writestring(", ");
+            buf.writestring(right);
+            buf.writestring(")");
+        }
     }
 
     override void visit(DeclarationExp e)
@@ -618,8 +639,8 @@ public:
     override void visit(UnaExp e)
     {
         if (e.e1.type.ty == Tpointer) {
-            expToBuffer(e.e1, precedence[e.op], buf, opts);
             if(e.op == TOK.not) {
+                expToBuffer(e.e1, precedence[e.op], buf, opts);
                 buf.writestring(" == null");
             }
             else if (e.op == TOK.address) {
@@ -627,12 +648,12 @@ public:
                 expToBuffer(e.e1, precedence[e.op], buf, opts);
                 buf.writestring(")");
             }
-            else {    
+            else {
                 fprintf(stderr,"Unsupported unary pointer arithmetic: %s", e.toChars());
                 assert(0);
             }
         }
-        else if(e.op == TOK.address && e.type.ty == Tstruct) {
+        else if(e.op == TOK.address) {
             expToBuffer(e.e1, precedence[e.op], buf, opts);
         }
         else if(e.op == TOK.not) {
@@ -702,6 +723,18 @@ public:
                 case TOK.minAssign:
                     opName = "minusAssign";
                     break;
+                case TOK.greaterThan:
+                    opName = "greaterThan";
+                    break;
+                case TOK.greaterOrEqual:
+                    opName = "greaterOrEqual";
+                    break;
+                case TOK.lessThan:
+                    opName = "lessThan";
+                    break;
+                case TOK.lessOrEqual:
+                    opName = "lessOrEqual";
+                    break;
                 default:
             } 
             if (opName != "") {
@@ -746,10 +779,7 @@ public:
             }
         }
         buf.writestring("assert(");
-        expToBuffer(e.e1, PREC.assign, buf, opts);
-        if (e.e1.type.ty == Tint32) buf.writestring(" != 0");
-        if (e.e1.type.ty == Tpointer || e.e1.type.ty == Tclass)
-            buf.writestring(" != null");
+        buf.writestring(e.e1.toJavaBool(opts));
         if (e.msg)
         {
             buf.writestring(", "); 
@@ -774,6 +804,7 @@ public:
 
     override void visit(DotVarExp e)
     {
+        printParent(e.var);
         expToBuffer(e.e1, PREC.primary, buf, opts);
         buf.writeByte('.');
         buf.writestring(e.var.ident.symbol);
@@ -852,7 +883,7 @@ public:
             else
                 expToBuffer(e.e1, precedence[e.op], buf, opts);
             //fprintf(stderr, "Calling %x %s type %s\n", e.f, e.e1.toChars(), e.e1.type.toChars());
-            if (!e.f) {
+            if (!e.f || e.f.isNested()) {
                 buf.writestring(".invoke");
             }
         }
@@ -1219,6 +1250,7 @@ private void sizeToBuffer(Expression e, OutBuffer* buf, ExprOpts opts)
     {
         Expression ex = (e.op == TOK.cast_ ? (cast(CastExp)e).e1 : e);
         ex = ex.optimize(WANTvalue);
+        //fprintf(stderr, "SIZE TO BUF %s \n", ex.toChars());
         const dinteger_t uval = ex.op == TOK.int64 ? ex.toInteger() : cast(dinteger_t)-1;
         if (cast(sinteger_t)uval >= 0)
         {
@@ -1231,7 +1263,7 @@ private void sizeToBuffer(Expression e, OutBuffer* buf, ExprOpts opts)
                 assert(0);
             if (uval <= sizemax && uval <= 0x7FFFFFFFFFFFFFFFUL)
             {
-                buf.print(uval);
+                buf.printf("%d", cast(int)uval); // Java's size_t is int
                 return;
             }
         }
@@ -1285,7 +1317,8 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
         switch (t.ty) with(Boxing)
         {
         case Tvoid:
-            buf.writestring("void");
+            if (boxing == yes) buf.writestring("Void");
+            else buf.writestring("void");
             break;
 
         case Tint8:

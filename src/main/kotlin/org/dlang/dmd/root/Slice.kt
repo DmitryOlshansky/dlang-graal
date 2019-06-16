@@ -14,7 +14,7 @@ class Slice<T> (var data: Array<T?>, var beg: Int, var end: Int) : RootObject() 
 
     operator fun get(idx: Int): T? = data[beg+idx]
 
-    fun ptr() = Ptr(data, beg)
+    fun ptr() = RawPtr(data, beg)
 
     fun slice(from:Int, to:Int): Slice<T> {
         return Slice(data, from+beg, to+beg)

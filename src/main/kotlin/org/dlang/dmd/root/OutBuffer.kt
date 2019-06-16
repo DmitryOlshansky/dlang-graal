@@ -1,14 +1,13 @@
 package org.dlang.dmd.root
 
-class OutBuffer {
-    @JvmField
-    var data : BytePtr = BytePtr(16)
-    @JvmField
-    var offset: Int = 0
-    var size: Int = 0
-    var level: Int = 0
-    var doindent: Boolean = false
+class OutBuffer(
+    @JvmField var data: BytePtr = BytePtr(16),
+    @JvmField var offset: Int = 0,
+    var size: Int = 0,
+    var level: Int = 0,
+    var doindent: Boolean = false,
     private var notlinehead: Boolean = false
+) {
 
     fun extractData() : BytePtr {
         val p = data

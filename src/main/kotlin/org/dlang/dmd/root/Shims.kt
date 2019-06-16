@@ -4,6 +4,8 @@ import org.dlang.dmd.utils
 
 import java.io.PrintStream
 import java.nio.file.Paths
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 fun strlen(ptr: BytePtr): Int {
@@ -95,11 +97,20 @@ fun sprintf(ptr: BytePtr, fmt: ByteSlice, vararg args: Any?) {
     ptr[i] = 0.toByte()
 }
 
+fun isalpha(c: Int): Int = if(Character.isAlphabetic(c) || c == '_'.toInt()) 1 else 0
+
 fun isprint(c: Int): Int = if(Character.isISOControl(c)) 0 else 1
 
 fun isdigit(c: Int): Int = if(Character.isDigit(c)) 1 else 0
 
+fun isxdigit(c: Int): Int =
+    if(Character.isDigit(c) || (c >= 'a'.toInt() && c <= 'f'.toInt() || (c >= 'A'.toInt() && c <= 'F'.toInt()))) 1 else 0
+
 fun isalnum(c: Int): Int = if(Character.isAlphabetic(c) || Character.isDigit(c)) 1 else 0
+
+fun islower(c: Int): Int = if(Character.isLowerCase(c)) 1 else 0
+
+fun isupper(c: Int): Int = if(Character.isUpperCase(c)) 1 else 0
 
 fun tolower(c: Int): Int = Character.toLowerCase(c)
 
@@ -114,6 +125,17 @@ fun realloc(ptr: BytePtr, size: Int): BytePtr  {
 
 fun getcwd(s: BytePtr?, i: Int) = BytePtr(Paths.get(".").toAbsolutePath().normalize().toString())
 
+fun time(s: IntPtr): Int {
+    val unixTime = System.currentTimeMillis() / 1000
+    s.set(0, unixTime.toInt())
+    return unixTime.toInt()
+}
+// "Wed Jun 30 21:49:08 1993\n"
+fun ctime(s: IntPtr): BytePtr {
+    val df = SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy\n")
+    val unix = Date(s.get(0)*1000L)
+    return BytePtr(df.format(unix))
+}
 
 fun memcmp(a: BytePtr, b: BytePtr, size: Int) = 0 //TODO: stub
 
@@ -139,7 +161,7 @@ fun<A,B> comma(a: A?, b: B?) = b
 
 fun<T> slice(arr: Array<T?>): Slice<T>  = Slice(arr)
 
-fun slice(vararg byte: Byte) = ByteSlice(byte)
+fun slice(bytes: ByteArray) = ByteSlice(bytes)
 
 fun<T> slice(arr: Array<Array<T?>>): Slice<Slice<T>> {
     return Slice<Slice<T>>(arr.map { Slice(it) }.toTypedArray())
@@ -162,6 +184,14 @@ fun ref(v: Int) = IntRef(v)
 fun<T> ref(v: T) = Ref(v)
 
 fun<T> ref(v: Ref<T>) = v
+
+fun<T> ptr(v: Ref<T>) = RefPtr(v)
+
+fun ptr(v: IntRef) = IntRefPtr(v)
+
+fun ptr(v: ByteSlice) = v.ptr()
+
+fun<T> ptr(v: Slice<T>) = v.ptr()
 
 fun exit(code: Int) = System.exit(code)
 

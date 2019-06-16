@@ -49,7 +49,7 @@ public class filecache {
         public StringTable files;
         public  FileAndLines addOrGetFile(ByteSlice file) {
             StringValue payload = this.files.lookup(file);
-            if (payloadcomma(, payload) != null)
+            if (payload != null)
             {
                 if (payload != null)
                     return (FileAndLines)(payload).ptrvalue;
@@ -61,7 +61,7 @@ public class filecache {
 
         public static FileCache fileCache = new FileCache(new StringTable(null, 0, null, 0, 0, 0, 0));
         public static void _init() {
-            fileCache.initialize();
+            FileCache.fileCache.initialize();
         }
 
         public  void initialize() {

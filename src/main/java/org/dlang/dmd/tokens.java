@@ -289,7 +289,7 @@ public class tokens {
                 int __key56 = 0;
                 for (; __key56 < __r55.getLength();__key56 += 1) {
                     byte kw = __r55.get(__key56);
-                    Identifier.idPool(tochars.get(kw).toBytePtr(), tochars.get(kw).getLength(), kw);
+                    Identifier.idPool(Token.tochars.get(kw).toBytePtr(), Token.tochars.get(kw).getLength(), kw);
                 }
             }
         }
@@ -327,46 +327,46 @@ public class tokens {
 
         public  BytePtr toChars() {
             ByteSlice buffer = tokens.toCharsbuffer;
-            BytePtr p = buffer.ptr();
+            BytePtr p = ptr(buffer);
             switch (this.value)
             {
                 case (byte)105:
-                    sprintf(buffer.ptr(),  new ByteSlice("%d"), (int)this.intvalue);
+                    sprintf(ptr(buffer),  new ByteSlice("%d"), (int)this.intvalue);
                     break;
                 case (byte)106:
                 case (byte)117:
                 case (byte)118:
                 case (byte)119:
-                    sprintf(buffer.ptr(),  new ByteSlice("%uU"), (int)this.unsvalue);
+                    sprintf(ptr(buffer),  new ByteSlice("%uU"), (int)this.unsvalue);
                     break;
                 case (byte)107:
-                    sprintf(buffer.ptr(),  new ByteSlice("%lldL"), this.intvalue);
+                    sprintf(ptr(buffer),  new ByteSlice("%lldL"), this.intvalue);
                     break;
                 case (byte)108:
-                    sprintf(buffer.ptr(),  new ByteSlice("%lluUL"), this.unsvalue);
+                    sprintf(ptr(buffer),  new ByteSlice("%lluUL"), this.unsvalue);
                     break;
                 case (byte)111:
-                    CTFloat.sprint(buffer.ptr(), (byte)103, this.floatvalue);
-                    strcat(buffer.ptr(),  new ByteSlice("f"));
+                    CTFloat.sprint(ptr(buffer), (byte)103, this.floatvalue);
+                    strcat(ptr(buffer),  new ByteSlice("f"));
                     break;
                 case (byte)112:
-                    CTFloat.sprint(buffer.ptr(), (byte)103, this.floatvalue);
+                    CTFloat.sprint(ptr(buffer), (byte)103, this.floatvalue);
                     break;
                 case (byte)113:
-                    CTFloat.sprint(buffer.ptr(), (byte)103, this.floatvalue);
-                    strcat(buffer.ptr(),  new ByteSlice("L"));
+                    CTFloat.sprint(ptr(buffer), (byte)103, this.floatvalue);
+                    strcat(ptr(buffer),  new ByteSlice("L"));
                     break;
                 case (byte)114:
-                    CTFloat.sprint(buffer.ptr(), (byte)103, this.floatvalue);
-                    strcat(buffer.ptr(),  new ByteSlice("fi"));
+                    CTFloat.sprint(ptr(buffer), (byte)103, this.floatvalue);
+                    strcat(ptr(buffer),  new ByteSlice("fi"));
                     break;
                 case (byte)115:
-                    CTFloat.sprint(buffer.ptr(), (byte)103, this.floatvalue);
-                    strcat(buffer.ptr(),  new ByteSlice("i"));
+                    CTFloat.sprint(ptr(buffer), (byte)103, this.floatvalue);
+                    strcat(ptr(buffer),  new ByteSlice("i"));
                     break;
                 case (byte)116:
-                    CTFloat.sprint(buffer.ptr(), (byte)103, this.floatvalue);
-                    strcat(buffer.ptr(),  new ByteSlice("Li"));
+                    CTFloat.sprint(ptr(buffer), (byte)103, this.floatvalue);
+                    strcat(ptr(buffer),  new ByteSlice("Li"));
                     break;
                 case (byte)121:
                     {
@@ -490,26 +490,10 @@ public class tokens {
         }
 
         public static ByteSlice asString(byte value) {
-            return tochars.get(value);
+            return Token.tochars.get(value);
         }
 
         public Token(){}
-        public Token(Token next, Loc loc, BytePtr ptr, byte value, BytePtr blockComment, BytePtr lineComment, long intvalue, long unsvalue, double floatvalue, BytePtr ustring, int len, byte postfix, Identifier ident) {
-            this.next = next;
-            this.loc = loc;
-            this.ptr = ptr;
-            this.value = value;
-            this.blockComment = blockComment;
-            this.lineComment = lineComment;
-            this.intvalue = intvalue;
-            this.unsvalue = unsvalue;
-            this.floatvalue = floatvalue;
-            this.ustring = ustring;
-            this.len = len;
-            this.postfix = postfix;
-            this.ident = ident;
-        }
-
         public Token opAssign(Token that) {
             this.next = that.next;
             this.loc = that.loc;
