@@ -399,8 +399,6 @@ public:
         buf.writestring("new ");
         buf.writestring(e.type.toJava);
         buf.writeByte('(');
-        fprintf(stderr, "hasEnum = %d for %s\n", 
-            collectMembers(e.sd).hasUnion ? 1 : 0, e.type.toChars);
         if (e.type.toString.indexOf("Array!") < 0 && !collectMembers(e.sd).hasUnion) {
             // CTFE can generate struct literals that contain an AddrExp pointing
             // to themselves, need to avoid infinite recursion:

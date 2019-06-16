@@ -237,3 +237,5 @@ fun<K,V> update(aa: AA<K,V>, key: K, ins:() -> V, upd:(V) -> V) {
     if (v == null) s.set(0, ins())
     else s.set(0, upd(v))
 }
+
+object Dispatch : Exception()

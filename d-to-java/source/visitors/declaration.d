@@ -1,7 +1,5 @@
 module visitors.declaration;
 
-import core.stdc.stdio;
-
 import ds.buffer;
 
 import dmd.aggregate;
@@ -25,7 +23,7 @@ import dmd.staticassert;
 import dmd.tokens;
 import dmd.visitor : Visitor, SemanticTimeTransitiveVisitor;
 
-import std.array, std.algorithm, std.format, std.string, std.range;
+import std.array, std.algorithm, std.format, std.string, std.range, std.stdio;
 
 import visitors.expression : Boxing, ExprOpts, funcName, refType, toJava, toJavaBool, toJavaFunc, isByteSized, symbol;
 import visitors.members;
@@ -42,29 +40,69 @@ string toJava(Module mod) {
     return v.result;
 }
 
-bool terminates(Statement s) {
-    extern(C++) static class TerminatesVisitor : Visitor {
+struct Goto {
+    Expression case_;
+    bool default_;
+    LabelDsymbol label;
+    bool local;
+}
+
+Goto[] collectGotos(Statement s) {
+    extern(C++) static class Collector : SemanticTimeTransitiveVisitor {
         alias visit = typeof(super).visit;
-        bool terminates = false;
+        Goto[] gotos;
 
-        override void visit(CompoundStatement) {} // do shallow visit
-        override void visit(ScopeStatement) {} // do shallow visit
-
-        override void visit(ContinueStatement ){
-            terminates = true;
+        override void visit(ConditionalDeclaration ver) {
+            if (ver.condition.inc == Include.yes) {
+                if (ver.decl) {
+                    foreach(d; *ver.decl){
+                        d.accept(this);
+                    }
+                }
+            }
+            else if(ver.elsedecl) {
+                foreach(d; *ver.elsedecl){
+                    d.accept(this);
+                }
+            }
         }
 
-        override void visit(BreakStatement ) {
-            terminates = true;
+        override void visit(GotoDefaultStatement ){
+            gotos ~= Goto(null, true, null);
         }
 
-        override void visit(ReturnStatement) {
-            terminates = true;
+        override void visit(GotoCaseStatement case_) {
+            if (case_.exp && !gotos.canFind!(c => c.case_ is case_.exp)) {
+                gotos ~= Goto(case_.exp, false, null);
+            }
+        }
+
+        override void visit(ExpStatement e){}
+
+        override void visit(GotoStatement goto_) {
+            if (!gotos.canFind!(g => g.label is goto_.label))
+                gotos ~= Goto(null,false,goto_.label);
         }
     }
-    scope v = new TerminatesVisitor();
+    extern(C++) class MarkLocals : SemanticTimeTransitiveVisitor {
+        alias visit = typeof(super).visit;
+        Goto[] gotos;
+        override void visit(LabelStatement label){
+            foreach(ref g; gotos) {
+                if (g.label  && g.label.ident == label.ident)
+                    g.local = true;
+            }
+            //stderr.writefln("%s %s", label.ident.toString, r);
+            //if (!r.empty) r[0].local = true;
+        }
+    }
+    scope v = new Collector();
     s.accept(v);
-    return v.terminates;
+    scope v2 = new MarkLocals();
+    v2.gotos = v.gotos;
+    s.accept(v2);
+    v2.gotos.sort!((a,b) => cast(int)a.local > cast(int)b.local);
+    return v2.gotos;
 }
 
 bool hasCtor(AggregateDeclaration agg) {
@@ -134,6 +172,7 @@ VarDeclaration varargVarDecl(FuncDeclaration decl) {
     return v.var;
 }
 
+
 extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     alias visit = typeof(super).visit;
     TextBuffer buf;
@@ -149,6 +188,8 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     ExprOpts opts;
 
     int testCounter;
+    int dispatchCount;
+    Goto[] gotos;
     
     int inInitializer; // to avoid recursive decomposition of arrays
     string[] arrayInitializers;
@@ -283,7 +324,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(VarDeclaration var) {
         if (var.type is null) {
-            fprintf(stderr, "NULL TYPE VAR: %s\n", var.ident.toChars());
+            stderr.writefln("NULL TYPE VAR: %s", var.ident.toString);
             return;
         }
         if (var.type.toJava.startsWith("TypeInfo_")) return;
@@ -329,8 +370,35 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(CompoundStatement s)
     {
+        auto labels = s.statements ? 
+            (*s.statements)[]
+                .map!(s => s ? s.isLabelStatement() : null)
+                .filter!(x => x).array 
+            : null;
+        long first = int.max, last = int.min;
         if (s.statements)
-            foreach (st; *s.statements) if (st) {
+            foreach (i, st; *s.statements) if (st) {
+                auto gs = collectGotos(st);
+                auto nonLocalGotos = gs.filter!(g => !g.local);
+                auto label = labels.find!(lbl => nonLocalGotos.canFind!(g => g.label.ident == lbl.ident));
+                if (!label.empty) {
+                    auto target = (*s.statements)[].countUntil!(x => x is label.front);
+                    if (first > i) first = i;
+                    if (last < target) last = target;
+                }
+
+            }
+        if (labels.length) {
+            stderr.writefln("In the scope of %d labels, first = %d last = %d", labels.length, first, last);
+        }
+        if (s.statements)
+            foreach (idx, st; *s.statements) if (st) {
+                if (idx == first) {
+                    buf.put("try {\n");
+                    buf.indent;
+                }
+                // try to find target on this level, if fails we are too deep
+                // some other (upper) check will eventually succeed
                 if (auto ifs = st.isIfStatement()) {
                     if (auto c = ifs.condition.isCommaExp()) {
                         auto var = c.e1.isDeclarationExp().declaration.isVarDeclaration();
@@ -340,12 +408,16 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 if (!st.isCompoundStatement() && !st.isScopeStatement()) {
                     auto lambdas = collectLambdas(st);
                     foreach (i, v; lambdas)  {
-                        fprintf(stderr, "lambda: %d\n", i);
+                        stderr.writefln("lambda: %d", i);
                         if (v.fd.ident.symbol !in generatedLambdas) {
                             printLocalFunction(v.fd, true);
                             generatedLambdas[v.fd.ident.symbol] = true;
                         }
                     }
+                }
+                if (idx == last) {
+                    buf.outdent;
+                    buf.put("}\ncatch(Dispatch d){}\n");
                 }
                 st.accept(this);
                 //TODO: for?
@@ -473,7 +545,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(StaticAssert s)
     {
-        fprintf(stderr, "%s\n", s.toChars());
+        // stderr.writefln("StaticAssert: %s\n", s.toString());
         // ignore and do not recurse into
     }
 
@@ -583,13 +655,31 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(SwitchStatement s)
     {
+        auto oldGotos = gotos;
+        gotos = collectGotos(s);
+        scope(exit) gotos = oldGotos;
+        //if (gotos.length) stderr.writefln("GOTOS: %s", gotos);
+        auto oldDispatchCount = dispatchCount;
+        scope(exit) dispatchCount = oldDispatchCount;
+        dispatchCount++;
         bool oldBytesInSwitch = bytesInSwitch;
         if (isByteSized(s.condition))
             bytesInSwitch = true;
         else 
             bytesInSwitch = false;
+        if (gotos) {
+            buf.fmt("dispatched_%d:\n", dispatchCount);
+            buf.put("do {\n");
+            buf.indent;
+            buf.fmt("int __dispatch%d = 0;\n", dispatchCount);
+        }
         buf.put("switch (");
-        buf.put(s.condition.toJava(opts));
+        if (gotos) {
+            buf.fmt("__dispatch%d != 0 ? __dispatch%d : %s", 
+                dispatchCount, dispatchCount, s.condition.toJava(opts));
+        }
+        else
+            buf.put(s.condition.toJava(opts));
         buf.put(')');
         buf.put('\n');
         if (s._body)
@@ -608,6 +698,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             {
                 s._body.accept(this);
             }
+        }
+        if (gotos) {
+            buf.outdent;
+            buf.put("} while(false);\n");
         }
         bytesInSwitch = oldBytesInSwitch;
     }
@@ -645,29 +739,40 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         s.statement.accept(this);
     }
 
+    override void visit(LabelStatement label) {
+        buf.outdent;
+        buf.fmt("/*%s:*/\n", label.ident.symbol);
+        long myIndex = gotos.countUntil!(c => c.label && c.label.ident == label.ident);
+        if (myIndex >= 0 && gotos[myIndex].local && dispatchCount > 0) {
+            buf.fmt("case %d:\n", -1-myIndex);
+        }
+        buf.indent;
+        super.visit(label);
+    }
+
     override void visit(GotoStatement g) {
-        buf.fmt("goto %s;\n", g.label.toString);
+        long myIndex = gotos.countUntil!(c => c.label is g.label);
+        buf.fmt("/*goto %s*/", g.label.toString);
+        if (myIndex >= 0 && gotos[myIndex].local) {
+            buf.fmt("{ __dispatch%d = %d; continue dispatched_%d; }\n",
+                dispatchCount, -1-myIndex, dispatchCount);
+        }
+        else {
+            buf.put("throw Dispatch.INSTANCE;\n");
+        }
     }
 
     override void visit(GotoDefaultStatement s)
     {
-        buf.put("//goto default;\n");
-        auto sc = s.sw._body.isScopeStatement();
-        auto stmts = sc.statement.isCompoundStatement().statements;
-        bool needBreak = true;
-        if (stmts) {
-            foreach (i, st; *stmts) {
-                if (auto case_ = st.isDefaultStatement()) {
-                    auto toExpand = case_.statement.isScopeStatement().statement.isCompoundStatement();
-                    if(toExpand.statements) {
-                        auto last = (*toExpand.statements)[$-1];
-                        needBreak = !terminates(last);
-                    }
-                    case_.statement.accept(this); // expand default's code here
-                }
-            }
+        long myIndex = gotos.countUntil!(c => c.default_);
+        buf.put("/*goto default*/ ");
+        if (myIndex >= 0) {
+            buf.fmt("{ __dispatch%d = %d; continue dispatched_%d; }\n", 
+                dispatchCount, -1-myIndex, dispatchCount);
         }
-        if (needBreak) buf.put("break;\n");
+        else {
+            buf.put("throw Dispatch.INSTANCE;\n");
+        }
     }
 
     override void visit(GotoCaseStatement s)
@@ -676,14 +781,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             // fallthrough
         }
         else {
-            buf.put("goto case");
-            if (s.exp)
-            {
-                buf.put(' ');
-                buf.put(s.exp.toJava(opts));
-            }
-            buf.put(';');
-            buf.put('\n');
+            buf.put("/*goto case*/");
+            buf.fmt("{ __dispatch%d = %s; continue dispatched_%d; }\n",
+                dispatchCount, s.exp.toJava(opts), dispatchCount);
         }
     }
 
@@ -863,7 +963,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     void printLocalFunction(FuncDeclaration func, bool isLambda = false) {
         auto t = func.type.isTypeFunction();
-        fprintf(stderr, "Local function %s\n", func.ident.toChars);
+        stderr.writefln("Local function %s", func.ident.toString);
         buf.fmt("%s %s = new %s(){\n", t.toJavaFunc, func.funcName, t.toJavaFunc);
         buf.indent;
         buf.fmt("public %s invoke(", t.nextOf.toJava(null, Boxing.yes));
@@ -890,7 +990,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     void printGlobalFunction(FuncDeclaration func) {
         opts.vararg = null;
         if (func.fbody is null && !func.isAbstract) return;
-        fprintf(stderr, "%s vararg:%x\n", func.ident.toChars(), func.v_arguments);
+        stderr.writefln("%s", func.ident.toString);
         auto storage = (func.isStatic()  || aggregates.length == 0) ? "static" : "";
         if (func.isAbstract) storage = "abstract";
         if (func.isCtorDeclaration())
