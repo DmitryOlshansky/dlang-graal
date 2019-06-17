@@ -267,25 +267,6 @@ class IntSlice(val data: IntArray, var beg: Int, var end: Int) : RootObject() {
     }
 }
 
-
-
-/**
- * Strips one leading line terminator of the given string.
- *
- * The following are what the Unicode standard considers as line terminators:
- *
- * | Name                | D Escape Sequence | Unicode Code Point |
- * |---------------------|-------------------|--------------------|
- * | Line feed           | `\n`              | `U+000A`           |
- * | Line tabulation     | `\v`              | `U+000B`           |
- * | Form feed           | `\f`              | `U+000C`           |
- * | Carriage return     | `\r`              | `U+000D`           |
- * | Next line           |                   | `U+0085`           |
- * | Line separator      |                   | `U+2028`           |
- * | Paragraph separator |                   | `U+2029`           |
- *
- * This function will also strip `\n\r`.
- */
 fun stripLeadingLineTerminator(str: ByteSlice): ByteSlice {
     val nextLine = ByteSlice(byteArrayOf(0xC2.toByte(), 0x85.toByte()))
     val lineSeparator = ByteSlice(byteArrayOf(0xE2.toByte(), 0x80.toByte(), 0xA8.toByte()))

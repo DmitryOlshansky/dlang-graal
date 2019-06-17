@@ -45,6 +45,7 @@ import visitors.members;
 struct ExprOpts {
     bool wantCharPtr = false;
     bool reverseIntPromotion = false;
+    bool rawArrayLiterals = false;
     EnumDeclaration inEnumDecl = null;
     FuncDeclaration inFuncDecl = null;
     Expression dollarValue = null;
@@ -375,9 +376,11 @@ public:
     override void visit(ArrayLiteralExp e)
     {
         auto type = e.type.nextOf.toJava;
-        buf.printf("slice(new %.*s[]{", type.length, type.ptr);
+        if (!opts.rawArrayLiterals) buf.writestring("slice(");
+        buf.printf("new %.*s[]{", type.length, type.ptr);
         argsToBuffer(e.elements, buf, opts, null, e.basis);
-        buf.writestring("})");
+        buf.writestring("}");
+        if (!opts.rawArrayLiterals) buf.writestring(")");
     }
 
     override void visit(AssocArrayLiteralExp e)

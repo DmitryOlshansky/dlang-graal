@@ -130,7 +130,8 @@ fun time(s: IntPtr): Int {
     s.set(0, unixTime.toInt())
     return unixTime.toInt()
 }
-// "Wed Jun 30 21:49:08 1993\n"
+
+
 fun ctime(s: IntPtr): BytePtr {
     val df = SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy\n")
     val unix = Date(s.get(0)*1000L)
@@ -208,6 +209,8 @@ fun slice(arr: Array<ByteArray>): Slice<ByteSlice> {
 fun slice(arr: CharArray) = CharSlice(arr)
 
 fun slice(arr: IntArray) = IntSlice(arr)
+
+fun toByteSlice(slice: ByteSlice) = slice
 
 fun toBytePtr(any: Any): BytePtr =
     when(any) {

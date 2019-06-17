@@ -311,7 +311,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             else {
                 //fprintf(stderr, "Init2 %s\n", var.toChars());
                 sink.fmt(" = ");
-                initializerToBuffer(var._init, sink, var.type.ty == Tpointer && var.type.nextOf().ty == Tchar);
+                auto old = opts.wantCharPtr;
+                scope(exit) opts.wantCharPtr = old;
+                opts.wantCharPtr = var.type.ty == Tpointer && var.type.nextOf().ty == Tchar;
+                initializerToBuffer(var._init, sink, opts);
             }
         }
         else if(var.type.ty == Tsarray) {
@@ -1103,9 +1106,8 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         stack = stack[0..$-1];
     }
 
-    private void initializerToBuffer(Initializer inx, TextBuffer buf, bool wantCharPtr)
+    private void initializerToBuffer(Initializer inx, TextBuffer buf, ExprOpts opts)
     {
-        auto opts = ExprOpts(wantCharPtr);
         void visitError(ErrorInitializer iz)
         {
             buf.fmt("__error__");
@@ -1130,7 +1132,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     buf.put(':');
                 }
                 if (auto iz = si.value[i])
-                    initializerToBuffer(iz, buf, false);
+                    initializerToBuffer(iz, buf, opts);
             }
             buf.put('}');
         }
@@ -1160,6 +1162,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 tmp = new TextBuffer();
                 auto t = ai.type;
                 string suffix = "";
+                opts.rawArrayLiterals = true;
                 // string literals are byte arrays, exclude them
                 while((t.ty == Tarray || t.ty == Tsarray) && (t.nextOf.ty != Tchar || !strings)) {
                     suffix ~= "[]";
@@ -1173,11 +1176,12 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             {
                 if (i)
                     tmp.put(", ");
-                if (iz) initializerToBuffer(iz, tmp, false);
+                if (iz) initializerToBuffer(iz, tmp, opts);
                 else tmp.put("null");
             }
             tmp.put("}");
             if (inInitializer == 1) {
+                opts.rawArrayLiterals = false;
                 arrayInitializers ~= tmp.data.idup;
                 buf.fmt("slice(initializer_%d)", arrayInitializers.length-1);
             }

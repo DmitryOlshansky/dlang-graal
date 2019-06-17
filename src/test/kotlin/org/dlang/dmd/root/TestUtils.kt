@@ -1,8 +1,7 @@
 package org.dlang.dmd.root
 
 import junit.framework.TestCase
-import org.dlang.dmd.*
-import org.junit.Assert
+import org.dlang.dmd.utils.toCStringThen
 
 class TestUtils : TestCase() {
 
@@ -13,8 +12,8 @@ class TestUtils : TestCase() {
     }
 
     fun testToCStringThen(){
-        assertTrue(toCStringThen({ it == BytePtr("Hello world\u0000") }, ByteSlice("Hello world"))
-        assertTrue(toCStringThen({ it ==  BytePtr("Hello world\u0000\u0000"), ByteSlice("Hello world\u0000"))
-        //assertTrue(null.toCStringThen!((v) => v == "\0"));
+        assertTrue(toCStringThen({ memcmp(it, BytePtr("Hello world\u0000"), 12) == 0 }, ByteSlice("Hello world")))
+        assertTrue(toCStringThen({ memcmp(it,  BytePtr("Hello world\u0000\u0000"), 13) == 0 }, ByteSlice("Hello world\u0000")))
+        assertTrue(toCStringThen({ v -> memcmp(v, BytePtr("\u0000"), 1) == 0 }, ByteSlice()))
     }
 }

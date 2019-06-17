@@ -51,7 +51,7 @@ class DArray<T : RootObject>(storage: Array<RootObject?>, len: Int) {
         length = size
     }
 
-    fun pushSlice(a: Slice<T?>): DArray<T> {
+    fun pushSlice(a: Slice<T>): DArray<T> {
         val oldLength = length
         setDim(oldLength + a.length)
         a.data.copyInto(data, oldLength, a.beg, a.length)
