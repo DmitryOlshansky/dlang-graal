@@ -7,7 +7,8 @@ dub build -b debug && ./d-to-java -I ~/dmd2/src/druntime/import \
     $LIST
 echo
 echo "==== APPLYING PATCHES ===="
-for p in *.patch ; do
+cd ..
+for p in d-to-java/*.patch ; do
     echo "Applying patch $p"
     git apply $p
 done
