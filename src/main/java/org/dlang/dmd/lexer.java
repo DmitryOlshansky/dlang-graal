@@ -416,26 +416,17 @@ public class lexer {
                                     if (id.equals(Id.DATE))
                                     {
                                         (t).ustring = ptr(date);
-                                        /*goto Lstr*/
-                                        (t).value = TOK.string_;
-                                        (t).postfix = (byte)0;
-                                        (t).len = strlen((t).ustring);
+                                        /*goto Lstr*/throw Dispatch.INSTANCE;
                                     }
                                     else if (id.equals(Id.TIME))
                                     {
                                         (t).ustring = ptr(time);
-                                        /*goto Lstr*/
-                                        (t).value = TOK.string_;
-                                        (t).postfix = (byte)0;
-                                        (t).len = strlen((t).ustring);
+                                        /*goto Lstr*/throw Dispatch.INSTANCE;
                                     }
                                     else if (id.equals(Id.VENDOR))
                                     {
                                         (t).ustring = xarraydup(global.vendor).toBytePtr();
-                                        /*goto Lstr*/
-                                        (t).value = TOK.string_;
-                                        (t).postfix = (byte)0;
-                                        (t).len = strlen((t).ustring);
+                                        /*goto Lstr*/throw Dispatch.INSTANCE;
                                     }
                                     else if (id.equals(Id.TIMESTAMP))
                                     {
@@ -1310,6 +1301,7 @@ public class lexer {
                     }
                 } while(false);
             }
+            throw new AssertionError("Unreachable code!");
         }
 
         public  void delimitedStringConstant(Token result) {
@@ -2280,7 +2272,6 @@ public class lexer {
                             len -= 1;
                         }
                         buf.setsize(len);
-                        return null;
                     }
                 };
                 for (; q.lessThan(qend);q.postInc()){
@@ -2307,7 +2298,7 @@ public class lexer {
                                     continue;
                                 /*goto Lnewline*/{ __dispatch1 = -1; continue dispatched_1; }
                             default:
-
+                            {
                                 if (c == (byte)226)
                                 {
                                     if (q.get(1) == (byte)128 && q.get(2) == (byte)168 || q.get(2) == (byte)169)
@@ -2321,7 +2312,7 @@ public class lexer {
                             /*Lnewline:*/
                             case -1:
                                 c = (byte)10;
-
+                            }
                             case (byte)10:
                                 linestart = 1;
                                 trimTrailingWhitespace.invoke();
@@ -2379,7 +2370,7 @@ public class lexer {
             this.line = this.p;
         }
 
-    }/*
+    }
     public static void test_2() {
         test( new ByteSlice("'"), (byte)39);
         test( new ByteSlice("\""), (byte)34);
@@ -2443,5 +2434,5 @@ public class lexer {
         test( new ByteSlice("&BAD;"),  new ByteSlice("unnamed character entity &BAD;"), '\u003f', 5);
         test( new ByteSlice("&quot"),  new ByteSlice("unterminated named entity &quot;"), '\u003f', 5);
         test( new ByteSlice("400"),  new ByteSlice("escape octal sequence \\400 is larger than \\377"), '\u0100', 3);
-    }*/
+    }
 }
