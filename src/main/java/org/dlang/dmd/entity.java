@@ -52,7 +52,7 @@ public class entity {
                 int __key46 = 0;
                 for (; __key46 < __r45.getLength();__key46 += 1) {
                     NameId entity = __r45.get(__key46);
-                    if (__equals(entity.name.toByteSlice(), p.slice(0,length)))
+                    if (__equals(toByteSlice(entity.name), p.slice(0,length)))
                         return entity.value;
                 }
             }

@@ -71,7 +71,7 @@ public class identifier {
         }
 
         public  BytePtr toChars() {
-            return this.name.toBytePtr();
+            return toBytePtr(this.name);
         }
 
         public  ByteSlice asString() {
@@ -200,7 +200,7 @@ public class identifier {
             IntRef idx = ref(0);
             for (; idx.value < str.getLength();){
                 IntRef dc = ref('\uffff');
-                BytePtr q = utf_decodeChar(str.toBytePtr(), str.getLength(), idx, dc);
+                BytePtr q = utf_decodeChar(toBytePtr(str), str.getLength(), idx, dc);
                 if (q != null || !(dc.value >= 128 && isUniAlpha(dc.value) || (isalnum(dc.value)) != 0 || dc.value == 95))
                 {
                     return false;

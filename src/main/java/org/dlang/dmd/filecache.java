@@ -29,7 +29,7 @@ public class filecache {
         public  void readAndSplit() {
             ReadResult readResult = File.read((this.file).toChars());
             this.buffer = new FileBuffer(readResult.extractData());
-            BytePtr buf = (this.buffer).data.toBytePtr();
+            BytePtr buf = toBytePtr((this.buffer).data);
             for (; (buf.get(0)) != 0;){
                 BytePtr prevBuf = buf;
                 for (; buf.get(0) != (byte)10 && buf.get(0) != (byte)13;buf.postInc()){
@@ -38,7 +38,7 @@ public class filecache {
                 }
                 if (buf.get(0) == (byte)13 && (buf.plus((byte)1)).get(0) == (byte)10)
                     buf.postInc();
-                this.lines.append(prevBuf.slice(0,((buf.minus(prevBuf)) / 1)).toByteSlice());
+                this.lines.append(toByteSlice(prevBuf.slice(0,((buf.minus(prevBuf)) / 1))));
                 buf.postInc();
             }
         }

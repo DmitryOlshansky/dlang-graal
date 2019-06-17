@@ -82,7 +82,7 @@ public class lexer {
     public static void test_0() {
         ByteSlice text =  new ByteSlice("int");
         StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
-        Lexer lex1 = new Lexer(null, text.toBytePtr(), 0, text.getLength(), false, false, diagnosticReporter);
+        Lexer lex1 = new Lexer(null, toBytePtr(text), 0, text.getLength(), false, false, diagnosticReporter);
         byte tok = TOK.reserved;
         tok = lex1.nextToken();
         assert(tok == (byte)133);
@@ -101,7 +101,7 @@ public class lexer {
             for (; __key52 < __r51.getLength();__key52 += 1) {
                 ByteSlice testcase = __r51.get(__key52);
                 StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
-                Lexer lex2 = new Lexer(null, testcase.toBytePtr(), 0, testcase.getLength() - 1, false, false, diagnosticReporter);
+                Lexer lex2 = new Lexer(null, toBytePtr(testcase), 0, testcase.getLength() - 1, false, false, diagnosticReporter);
                 byte tok = lex2.nextToken();
                 int iterations = 1;
                 for (; tok != (byte)11 && iterations++ < testcase.getLength();){
@@ -411,7 +411,7 @@ public class lexer {
                                     if (id.equals(Id.DATE))
                                     {
                                         (t).ustring = ptr(lexer.scandate);
-                                        /*goto Lstr*/
+                                        /*Lstr:*/
                                         (t).value = TOK.string_;
                                         (t).postfix = (byte)0;
                                         (t).len = strlen((t).ustring);
@@ -419,15 +419,15 @@ public class lexer {
                                     else if (id.equals(Id.TIME))
                                     {
                                         (t).ustring = ptr(lexer.scantime);
-                                        /*goto Lstr*/
+                                        /*Lstr:*/
                                         (t).value = TOK.string_;
                                         (t).postfix = (byte)0;
                                         (t).len = strlen((t).ustring);
                                     }
                                     else if (id.equals(Id.VENDOR))
                                     {
-                                        (t).ustring = xarraydup(global.vendor).toBytePtr();
-                                        /*goto Lstr*/
+                                        (t).ustring = toBytePtr(xarraydup(global.vendor));
+                                        /*Lstr:*/
                                         (t).value = TOK.string_;
                                         (t).postfix = (byte)0;
                                         (t).len = strlen((t).ustring);
@@ -1980,7 +1980,7 @@ public class lexer {
                 pstart.plusAssign(1);
             }
             Lexer.stringbuffer.writeByte(0);
-            BytePtr sbufptr = Lexer.stringbuffer.data.toBytePtr();
+            BytePtr sbufptr = toBytePtr(Lexer.stringbuffer.data);
             byte result = TOK.reserved;
             Ref<Boolean> isOutOfRange = ref(false);
             (t).floatvalue = isWellformedString ? CTFloat.parse(sbufptr, ptr(isOutOfRange)) : CTFloat.zero;
@@ -2157,7 +2157,7 @@ public class lexer {
                                                 /*goto Lerr*/throw Dispatch.INSTANCE;
                                             case 34:
                                                 Lexer.stringbuffer.writeByte(0);
-                                                filespec = Mem.xstrdup(Lexer.stringbuffer.data.toBytePtr());
+                                                filespec = Mem.xstrdup(toBytePtr(Lexer.stringbuffer.data));
                                                 this.p.postInc();
                                                 break;
                                             default:
@@ -2352,7 +2352,7 @@ public class lexer {
                         len1 += 1;
                         insertNewLine = 1;
                     }
-                    BytePtr p = Mem.xmalloc(len1 + newParagraphSize + len2 + 1).toBytePtr();
+                    BytePtr p = toBytePtr(Mem.xmalloc(len1 + newParagraphSize + len2 + 1));
                     memcpy(p, c1, len1 - insertNewLine);
                     if ((insertNewLine) != 0)
                         p.set((len1 - 1), (byte)10);
@@ -2405,11 +2405,11 @@ public class lexer {
         Function4<ByteSlice,ByteSlice,Integer,Integer,Void> test = new Function4<ByteSlice,ByteSlice,Integer,Integer,Void>(){
             public Void invoke(ByteSlice sequence, ByteSlice expectedError, Integer expectedReturnValue, Integer expectedScanLength){
                 ExpectDiagnosticReporter handler = new ExpectDiagnosticReporter(expectedError);
-                BytePtr p = sequence.toBytePtr().toBytePtr();
+                BytePtr p = toBytePtr(toBytePtr(sequence));
                 int actualReturnValue = Lexer.escapeSequence(Loc.initial, handler, p);
                 assert(handler.gotError);
                 assert(expectedReturnValue == actualReturnValue);
-                int actualScanLength = (p.minus(sequence.toBytePtr().toBytePtr())) / 1;
+                int actualScanLength = (p.minus(toBytePtr(toBytePtr(sequence)))) / 1;
                 assert(expectedScanLength == actualScanLength);
             }
         };

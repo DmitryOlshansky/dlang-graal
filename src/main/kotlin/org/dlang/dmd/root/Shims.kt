@@ -209,6 +209,29 @@ fun slice(arr: CharArray) = CharSlice(arr)
 
 fun slice(arr: IntArray) = IntSlice(arr)
 
+fun toBytePtr(any: Any): BytePtr =
+    when(any) {
+        is BytePtr -> any
+        is ByteSlice -> any.ptr()
+        else -> throw Exception("Not implemented toCharPtr for $any")
+    }
+
+fun toCharPtr(any: Any): CharPtr =
+    when (any) {
+        is BytePtr -> any.toCharPtr()
+        is CharPtr -> any
+        else -> throw Exception("Not implemented toCharPtr for $any")
+    }
+
+fun toIntPtr(any: Any): IntPtr =
+    when (any) {
+        is BytePtr -> any.toIntPtr()
+        is IntPtr -> any
+        else -> throw Exception("Not implemented toCharPtr for $any")
+    }
+
+
+
 fun ref(v: Int) = IntRef(v)
 
 fun<T> ref(v: T) = Ref(v)

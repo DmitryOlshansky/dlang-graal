@@ -1,6 +1,5 @@
 package org.dlang.dmd.root
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import java.lang.Exception
 import java.lang.StringBuilder
 

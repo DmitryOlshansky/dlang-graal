@@ -22,7 +22,7 @@ class AA<K,V> {
         val v = table[key]
         if (v !== null) return v as Ptr<V?>
         else {
-            val newValue = Ptr<Any?>(arrayOfNulls(1))
+            val newValue = RawPtr<Any?>(arrayOfNulls(1))
             table[key] = newValue
             return newValue as Ptr<V?>
         }

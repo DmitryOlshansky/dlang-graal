@@ -40,7 +40,7 @@ object utils {
         val result = File.read(filename)
 
         if (result.success) {
-            error(loc, "Error reading file '%s'", filename)
+            error(loc, BytePtr("Error reading file '%s'"), filename)
             fatal()
         }
         return FileBuffer(result.extractData())
@@ -59,7 +59,7 @@ object utils {
     fun writeFile(loc: Loc, filename: ByteSlice, data: ByteSlice) {
         ensurePathToNameExists(Loc.initial, filename);
         if (!File.write(filename, data)) {
-            error(loc, ByteSlice("Error writing file '%*.s'"), filename.length, filename.ptr())
+            error(loc, BytePtr("Error writing file '%*.s'"), filename.length, filename.ptr())
             fatal()
         }
     }

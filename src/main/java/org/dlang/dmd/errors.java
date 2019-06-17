@@ -195,7 +195,7 @@ public class errors {
                 ByteSlice line = fllines.lines.get(loc.linnum - 1);
                 if (loc.charnum < line.getLength())
                 {
-                    fprintf(stderr,  new ByteSlice("%.*s\n"), line.getLength(), line.toBytePtr());
+                    fprintf(stderr,  new ByteSlice("%.*s\n"), line.getLength(), toBytePtr(line));
                     {
                         int __key47 = 1;
                         int __limit48 = loc.charnum;
@@ -326,12 +326,12 @@ public class errors {
                             inBacktick = false;
                             OutBuffer codebuf = new OutBuffer();
                             try {
-                                codebuf.write(((buf).peekSlice().toBytePtr().plus(iCodeStart * 1).plus(1)), i - (iCodeStart + 1));
+                                codebuf.write((toBytePtr((buf).peekSlice()).plus(iCodeStart * 1).plus(1)), i - (iCodeStart + 1));
                                 codebuf.writeByte(0);
                                 colorHighlightCode(codebuf);
                                 (buf).remove(iCodeStart, i - iCodeStart + 1);
                                 ByteSlice pre =  new ByteSlice("");
-                                i = (buf).insert(iCodeStart, pre.toByteSlice());
+                                i = (buf).insert(iCodeStart, toByteSlice(pre));
                                 i = (buf).insert(i, codebuf.peekSlice());
                                 i--;
                                 break;
@@ -372,9 +372,9 @@ public class errors {
         errors.colorHighlightCodenested += 1;
         int gaggedErrorsSave = global.startGagging();
         StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
-        Lexer lex = new Lexer(null, (buf).data.toBytePtr(), 0, (buf).offset - 1, false, true, diagnosticReporter);
+        Lexer lex = new Lexer(null, toBytePtr((buf).data), 0, (buf).offset - 1, false, true, diagnosticReporter);
         OutBuffer res = new OutBuffer();
-        BytePtr lastp = (buf).data.toBytePtr();
+        BytePtr lastp = toBytePtr((buf).data);
         res.reserve((buf).offset);
         res.writeByte(255);
         res.writeByte(6);

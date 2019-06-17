@@ -289,7 +289,7 @@ public class tokens {
                 int __key56 = 0;
                 for (; __key56 < __r55.getLength();__key56 += 1) {
                     byte kw = __r55.get(__key56);
-                    Identifier.idPool(Token.tochars.get(kw).toBytePtr(), Token.tochars.get(kw).getLength(), kw);
+                    Identifier.idPool(toBytePtr(Token.tochars.get(kw)), Token.tochars.get(kw).getLength(), kw);
                 }
             }
         }
@@ -307,7 +307,7 @@ public class tokens {
         }
 
         public  void setString(BytePtr ptr, int length) {
-            BytePtr s = Mem.xmalloc(length + 1).toBytePtr();
+            BytePtr s = toBytePtr(Mem.xmalloc(length + 1));
             memcpy(s, ptr, length);
             s.set(length, (byte)0);
             this.ustring = s;
@@ -316,7 +316,7 @@ public class tokens {
         }
 
         public  void setString(OutBuffer buf) {
-            this.setString(buf.data.toBytePtr(), buf.offset);
+            this.setString(toBytePtr(buf.data), buf.offset);
         }
 
         public  void setString() {
@@ -487,7 +487,7 @@ public class tokens {
         }
 
         public static BytePtr toChars(byte value) {
-            return Token.asString(value).toBytePtr();
+            return toBytePtr(Token.asString(value));
         }
 
         public static ByteSlice asString(byte value) {

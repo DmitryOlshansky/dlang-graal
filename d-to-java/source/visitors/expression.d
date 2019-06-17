@@ -990,10 +990,11 @@ public:
             expToBuffer(e.e1, precedence[e.op], buf, opts);
         }
         else if (complexTarget) { // rely on .toTypeName
-            expToBuffer(e.e1, precedence[e.op], buf, opts);
-            buf.writestring(".to");
+            buf.writestring("to");
             typeToBuffer(e.to, null, buf);
-            buf.writestring("()");
+            buf.writestring("(");
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
+            buf.writestring(")");
         }
         else { // simple casts
             buf.writestring("(");
