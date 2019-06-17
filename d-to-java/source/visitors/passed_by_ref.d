@@ -6,6 +6,7 @@ import dmd.func;
 import dmd.mtype;
 import dmd.visitor : SemanticTimeTransitiveVisitor;
 import dmd.statement;
+import dmd.tokens;
 
 import std.stdio;
 
@@ -39,6 +40,17 @@ private extern(C++) class PassedByRef : SemanticTimeTransitiveVisitor {
         depth--;
     }
 
+    override void visit(UnaExp una) {
+        super.visit(una);
+        if(una.op == TOK.address && una.e1.isVarExp() && una.e1.isVarExp().var is decl)
+            passed = true;
+    }
+
+    override void visit(SymOffExp symoff) {
+        super.visit(symoff);
+        if (symoff.var is decl && allowed(symoff.var.type)) passed = true;
+    }
+
     override void visit(VarExp var) {
         if (var.var is decl && allowed(var.type) && depth == 1) {
             //stderr.writefln("Deep reference %s\n", var.var.ident.toString);
@@ -47,6 +59,7 @@ private extern(C++) class PassedByRef : SemanticTimeTransitiveVisitor {
     }
 
     override void visit(CallExp call) {
+        super.visit(call);
         if (call.f && call.f.parameters) {
             foreach (i, param; (*call.f.parameters)[]) {
                 bool refParam = param.isRef() || param.isOut();

@@ -50,6 +50,7 @@ struct ExprOpts {
     Expression dollarValue = null;
     VarDeclaration vararg = null;
     bool[void*] refParams; //out and ref params, they must be boxed
+    string[void*] globals; // basic type static vars pushed to global scope
 }
 
 ///
@@ -494,8 +495,12 @@ public:
             buf.writestring(e.var.toChars());
         else if(e.var.type.ty == Tstruct)
             buf.printf("%s", e.var.toChars());
-        else
-            buf.printf("ptr(%s)", e.var.toChars());
+        else {
+            if (auto name = cast(void*)e.var in opts.globals)
+                buf.printf("ptr(%.*s)", name.length, name.ptr);
+            else
+                buf.printf("ptr(%s)", e.var.toChars());
+        }
     }
 
     override void visit(VarExp e)
@@ -514,7 +519,10 @@ public:
         }
         else {
             printParent(e.var);
-            buf.writestring(e.var.ident.symbol);
+            if (auto name = cast(void*)e.var in opts.globals)
+                buf.writestring(*name);
+            else
+                buf.writestring(e.var.ident.symbol);
             if (cast(void*)e.var in opts.refParams)
                 buf.writestring(".value");
         }
@@ -851,6 +859,18 @@ public:
                 return;
             if (e.f && (e.f.ident.symbol == "va_start" || e.f.ident.symbol == "va_end"))
                 return;
+            if (e.f && e.f.ident.symbol == "memcpy" ) {
+                auto c1 = e.arguments[0][0].isCastExp();
+                auto c2 = e.arguments[0][0].isCastExp();
+                if (c1.e1.type.nextOf.ty == Tstruct && c2.e1.type.nextOf.ty == Tstruct) {
+                    //fprintf(stderr, "MEMCPY TYPES: %s %s\n", c1.e1.type.toChars, c2.e1.type.toChars);
+                    expToBuffer(e.arguments[0][0], precedence[e.op], buf, opts);
+                    buf.writestring(".opAssign(");
+                    expToBuffer(e.arguments[0][1], precedence[e.op], buf, opts);
+                    buf.writestring(")");
+                    return;
+                }
+            }
             if (e.f && e.f.isCtorDeclaration()) {
                 auto ctorCall = e.e1.isDotVarExp();
                 auto isThis = ctorCall.e1.isThisExp();

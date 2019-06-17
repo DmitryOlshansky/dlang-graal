@@ -272,7 +272,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             if (var is opts.vararg) return;
         }
         bool staticInit = var.isStatic() || (var.storage_class & STC.gshared) || (stack.empty && aggregates.empty);
-        bool refVar = stack.length && passedByRef(var, stack[$-1]);
+        bool refVar = stack.length && passedByRef(var, stack[$-1]) && !staticInit;
         if (refVar) opts.refParams[cast(void*)var] = true;
         auto type = refVar ? refType(var.type) : toJava(var.type);
         auto access = "";
@@ -334,7 +334,11 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             const(char)[] id = stack[$-1].ident.toString ~ var.ident.toString;
             printVar(var, id, temp);
             constants ~= temp.data.idup;
-            buf.fmt("%s %s = %s.%s;\n", toJava(var.type), var.ident.toString, moduleName, id);
+            //bool isBasic = var.type.isTypeBasic() !is null || var.type.isString();
+            //if (isBasic) 
+            opts.globals[cast(void*)var] = format("%s.%s", moduleName, id);
+            /*else 
+                buf.fmt("%s %s = %s.%s;\n", var.type.toJava, var.ident.symbol, moduleName, id);*/
         }
         else {
             printVar(var, var.ident.toString, buf);
