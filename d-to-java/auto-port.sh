@@ -10,5 +10,5 @@ echo "==== APPLYING PATCHES ===="
 cd ..
 for p in d-to-java/*.patch ; do
     echo "Applying patch $p"
-    git apply $p
+    patch -u -l -p 1 < $p
 done

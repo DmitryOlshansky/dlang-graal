@@ -95,9 +95,8 @@ public class lexer {
     }
     public static void test_1() {
         int errors = global.startGagging();
-        Slice<ByteSlice> testcases = lexer.__unittest_L168_C1testcases;
         {
-            Slice<ByteSlice> __r51 = testcases;
+            Slice<ByteSlice> __r51 = lexer.__unittest_L168_C1testcases;
             int __key52 = 0;
             for (; __key52 < __r51.getLength();__key52 += 1) {
                 ByteSlice testcase = __r51.get(__key52);
@@ -198,7 +197,7 @@ public class lexer {
             if (this.token.next != null)
             {
                 Token t = this.token.next;
-                memcpy(this.token, t, 48);
+                (this.token).opAssign((t));
                 this.releaseToken(t);
             }
             else
@@ -398,24 +397,20 @@ public class lexer {
                                 this.anyToken = true;
                                 if ((t).ptr.get(0) == (byte)95)
                                 {
-                                    boolean initdone = lexer.scaninitdone;
-                                    ByteSlice date = lexer.scandate;
-                                    ByteSlice time = lexer.scantime;
-                                    ByteSlice timestamp = lexer.scantimestamp;
-                                    if (!(initdone))
+                                    if (!(lexer.scaninitdone))
                                     {
-                                        initdone = true;
-                                        int ct = 0;
+                                        lexer.scaninitdone = true;
+                                        IntRef ct = ref(0);
                                         time(ptr(ct));
                                         BytePtr p = ctime(ptr(ct));
                                         assert(p != null);
-                                        sprintf(ptr(date),  new ByteSlice("%.6s %.4s"), p.plus(4), p.plus(20));
-                                        sprintf(ptr(time),  new ByteSlice("%.8s"), p.plus(11));
-                                        sprintf(ptr(timestamp),  new ByteSlice("%.24s"), p);
+                                        sprintf(ptr(lexer.scandate),  new ByteSlice("%.6s %.4s"), p.plus(4), p.plus(20));
+                                        sprintf(ptr(lexer.scantime),  new ByteSlice("%.8s"), p.plus(11));
+                                        sprintf(ptr(lexer.scantimestamp),  new ByteSlice("%.24s"), p);
                                     }
                                     if (id.equals(Id.DATE))
                                     {
-                                        (t).ustring = ptr(date);
+                                        (t).ustring = ptr(lexer.scandate);
                                         /*goto Lstr*/
                                         (t).value = TOK.string_;
                                         (t).postfix = (byte)0;
@@ -423,7 +418,7 @@ public class lexer {
                                     }
                                     else if (id.equals(Id.TIME))
                                     {
-                                        (t).ustring = ptr(time);
+                                        (t).ustring = ptr(lexer.scantime);
                                         /*goto Lstr*/
                                         (t).value = TOK.string_;
                                         (t).postfix = (byte)0;
@@ -439,7 +434,7 @@ public class lexer {
                                     }
                                     else if (id.equals(Id.TIMESTAMP))
                                     {
-                                        (t).ustring = ptr(timestamp);
+                                        (t).ustring = ptr(lexer.scantimestamp);
                                     /*Lstr:*/
                                         (t).value = TOK.string_;
                                         (t).postfix = (byte)0;
@@ -1026,19 +1021,10 @@ public class lexer {
         }
 
         public  int escapeSequence() {
-            return Lexer.escapeSequence(this.token.loc, this.diagnosticReporter, this.p);
+            return escapeSequence(this.token.loc, this.diagnosticReporter, this.p);
         }
 
-        public static int escapeSequence(Loc loc, DiagnosticReporter handler, Ref<BytePtr> sequence) {
-            {
-                assert(handler != null);
-            }
-            {
-                {
-                    assert(handler != null);
-                }
-            }
-            BytePtr p = sequence.value;
+        public int escapeSequence(Loc loc, DiagnosticReporter handler, BytePtr q) {
             try {
                 int c = (int)p.get(0);
                 int ndigits = 0;
@@ -1118,7 +1104,7 @@ public class lexer {
                             }
                             else
                             {
-                                handler.error(loc, new BytePtr("undefined escape hex sequence \\%c%c"), sequence.value.get(0), c);
+                                handler.error(loc, new BytePtr("undefined escape hex sequence \\%c%c"), q.get(0), c);
                                 p.postInc();
                             }
                             break;
@@ -1182,7 +1168,6 @@ public class lexer {
                 return c;
             }
             finally {
-                sequence.value = p;
             }
         }
 
@@ -1997,7 +1982,7 @@ public class lexer {
             Lexer.stringbuffer.writeByte(0);
             BytePtr sbufptr = Lexer.stringbuffer.data.toBytePtr();
             byte result = TOK.reserved;
-            boolean isOutOfRange = false;
+            Ref<Boolean> isOutOfRange = ref(false);
             (t).floatvalue = isWellformedString ? CTFloat.parse(sbufptr, ptr(isOutOfRange)) : CTFloat.zero;
             dispatched_1:
             do {
@@ -2006,15 +1991,15 @@ public class lexer {
                 {
                     case (byte)70:
                     case (byte)102:
-                        if (isWellformedString && !(isOutOfRange))
-                            isOutOfRange = Port.isFloat32LiteralOutOfRange(sbufptr);
+                        if (isWellformedString && !(isOutOfRange.value))
+                            isOutOfRange.value = Port.isFloat32LiteralOutOfRange(sbufptr);
                         result = TOK.float32Literal;
                         this.p.postInc();
                         break;
                     default:
                     {
-                        if (isWellformedString && !(isOutOfRange))
-                            isOutOfRange = Port.isFloat64LiteralOutOfRange(sbufptr);
+                        if (isWellformedString && !(isOutOfRange.value))
+                            isOutOfRange.value = Port.isFloat64LiteralOutOfRange(sbufptr);
                         result = TOK.float64Literal;
                         break;
                     }
@@ -2050,7 +2035,7 @@ public class lexer {
                 }
             }
             boolean isLong = result == (byte)113 || result == (byte)116;
-            if (isOutOfRange && !(isLong))
+            if (isOutOfRange.value && !(isLong))
             {
                 BytePtr suffix = result == (byte)111 || result == (byte)114 ? new BytePtr("f") : new BytePtr("");
                 this.error(this.scanloc, new BytePtr("number `%s%s` is not representable"), sbufptr, suffix);
@@ -2334,11 +2319,18 @@ public class lexer {
                 ByteSlice s = buf.peekSlice();
                 if (s.getLength() == 0 || s.get(s.getLength() - (byte)1) != (byte)10)
                     buf.writeByte(10);
-                Ptr<BytePtr> dc = (lineComment) != 0 && this.anyToken ? ptr((t).lineComment) : ptr((t).blockComment);
-                if (dc.get(0) != null)
-                    dc.set(0, Lexer.combineComments(dc.get(0), buf.peekChars(), newParagraph));
-                else
-                    dc.set(0, buf.extractChars());
+                if ((lineComment) != 0 && this.anyToken) {
+                    if(t.lineComment != null)
+                        t.lineComment = Lexer.combineComments(t.lineComment, buf.peekChars(), newParagraph);
+                    else
+                        t.lineComment = buf.extractChars();
+                }
+                else {
+                    if(t.blockComment != null)
+                        t.blockComment = Lexer.combineComments(t.blockComment, buf.peekChars(), newParagraph);
+                    else
+                        t.blockComment = buf.extractChars();
+                }
             }
             finally {
             }
