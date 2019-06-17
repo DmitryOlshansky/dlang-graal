@@ -376,20 +376,22 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 .filter!(x => x).array 
             : null;
         long first = int.max, last = int.min;
-        if (s.statements)
-            foreach (i, st; *s.statements) if (st) {
-                auto gs = collectGotos(st);
-                auto nonLocalGotos = gs.filter!(g => !g.local);
-                auto label = labels.find!(lbl => nonLocalGotos.canFind!(g => g.label.ident == lbl.ident));
-                if (!label.empty) {
-                    auto target = (*s.statements)[].countUntil!(x => x is label.front);
-                    if (first > i) first = i;
-                    if (last < target) last = target;
-                }
+        if (gotos.length == 0) { // do not use try/catch mechanism inside of switches
+            if (s.statements)
+                foreach (i, st; *s.statements) if (st) {
+                    auto gs = collectGotos(st);
+                    auto nonLocalGotos = gs.filter!(g => !g.local);
+                    auto label = labels.find!(lbl => nonLocalGotos.canFind!(g => g.label.ident == lbl.ident));
+                    if (!label.empty) {
+                        auto target = (*s.statements)[].countUntil!(x => x is label.front);
+                        if (first > i) first = i;
+                        if (last < target) last = target;
+                    }
 
+                }
+            if (labels.length) {
+                stderr.writefln("In the scope of %d labels, first = %d last = %d", labels.length, first, last);
             }
-        if (labels.length) {
-            stderr.writefln("In the scope of %d labels, first = %d last = %d", labels.length, first, last);
         }
         if (s.statements)
             foreach (idx, st; *s.statements) if (st) {
@@ -417,7 +419,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 }
                 if (idx == last) {
                     buf.outdent;
-                    buf.put("}\ncatch(Dispatch d){}\n");
+                    buf.put("}\ncatch(Dispatch __d){}\n");
                 }
                 st.accept(this);
                 //TODO: for?
@@ -869,13 +871,12 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.indent;
         foreach (s; *d.members)
             s.accept(this);
+        buf.fmt("public %s(){}\n", d.ident.toString);
         bool hasCtor = hasCtor(d);
         if (!hasCtor) {
             auto members = collectMembers(d);
             if (members.all.length) {
                 //Generate ctors
-                // empty ctor
-                buf.fmt("public %s(){}\n", d.ident.toString);
                 // all fields ctor
                 if (!members.hasUnion) {
                     buf.fmt("public %s(", d.ident.toString);
@@ -1035,6 +1036,21 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             buf.outdent;
             buf.put('}');
             buf.put("\n\n");
+        }
+    }
+
+    override void visit(TryFinallyStatement statement) {
+        buf.put("try {\n");
+        buf.indent;
+        if (statement._body) statement._body.accept(this);
+        buf.outdent;
+        buf.put("}\n");
+        if (statement.finalbody) {
+            buf.put("finally {\n");
+            buf.indent;
+            statement.finalbody.accept(this);
+            buf.outdent;
+            buf.put("}\n");
         }
     }
 

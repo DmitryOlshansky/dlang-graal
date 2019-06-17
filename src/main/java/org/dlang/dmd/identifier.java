@@ -127,18 +127,17 @@ public class identifier {
 
         public static Identifier generateId(BytePtr prefix, int i) {
             OutBuffer buf = new OutBuffer();
-            buf.writestring(prefix);
-            buf.print((long)i);
-            return Identifier.idPool(buf.peekSlice());
+            try {
+                buf.writestring(prefix);
+                buf.print((long)i);
+                return Identifier.idPool(buf.peekSlice());
+            }
+            finally {
+            }
         }
 
         public static Identifier generateIdWithLoc(ByteSlice prefix, Loc loc) {
             OutBuffer idBuf = new OutBuffer();
-            Function0<Integer> __lambda7 = new Function0<Integer>(){
-                public Integer invoke(){
-                    return 1;
-                }
-            };
             Function1<Integer,Integer> __lambda8 = new Function1<Integer,Integer>(){
                 public Integer invoke(Integer counter){
                     idBuf.writestring( new ByteSlice("_"));
@@ -146,14 +145,23 @@ public class identifier {
                     return counter + 1;
                 }
             };
-            idBuf.writestring(prefix);
-            idBuf.writestring( new ByteSlice("_L"));
-            idBuf.print((long)loc.linnum);
-            idBuf.writestring( new ByteSlice("_C"));
-            idBuf.print((long)loc.charnum);
-            AA<Key,Integer> counters = identifier.generateIdWithLoccounters;
-            update(counters, new Key(loc, prefix), __lambda7, __lambda8);
-            return Identifier.idPool(idBuf.peekSlice());
+            Function0<Integer> __lambda7 = new Function0<Integer>(){
+                public Integer invoke(){
+                    return 1;
+                }
+            };
+            try {
+                idBuf.writestring(prefix);
+                idBuf.writestring( new ByteSlice("_L"));
+                idBuf.print((long)loc.linnum);
+                idBuf.writestring( new ByteSlice("_C"));
+                idBuf.print((long)loc.charnum);
+                AA<Key,Integer> counters = identifier.generateIdWithLoccounters;
+                update(counters, new Key(loc, prefix), __lambda7, __lambda8);
+                return Identifier.idPool(idBuf.peekSlice());
+            }
+            finally {
+            }
         }
 
         public static Identifier idPool(BytePtr s, int len) {

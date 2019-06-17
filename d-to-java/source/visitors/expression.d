@@ -553,6 +553,7 @@ public:
     override void visit(CommaExp c)
     {
         auto left = c.e1.toJava(opts);
+        //fprintf(stderr, "comma e2 = %s\n", c.e2.toChars());
         auto right = c.e2.toJava(opts);
         if(left == "") buf.writestring(right);
         else {
@@ -852,8 +853,12 @@ public:
                 return;
             if (e.f && e.f.isCtorDeclaration()) {
                 auto ctorCall = e.e1.isDotVarExp();
-                if (opts.inFuncDecl && opts.inFuncDecl.isCtorDeclaration)
+                auto isThis = ctorCall.e1.isThisExp();
+                auto isSuper = ctorCall.e1.isSuperExp();
+                //fprintf(stderr, "CTOR %s this = %d super = %d\n", e.f.toChars(), isThis ? 1:0, isSuper ? 1:0);
+                if (isThis || isSuper) {
                     expToBuffer(ctorCall.e1, precedence[e.op], buf, opts);
+                }
                 else {
                     buf.writestring("new ");
                     buf.writestring(e.type.toJava);
@@ -1355,7 +1360,8 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
             break;
 
         case Tbool:
-            buf.writestring("boolean");
+            if (boxing == yes) buf.writestring("Boolean");
+            else buf.writestring("boolean");
             break;
 
         case Tchar:

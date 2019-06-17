@@ -1059,6 +1059,7 @@ public class id {
             Id.wchar_t = null;
         }
 
+        public Id(){}
     }
     static Slice<Msgtable> msgtable = slice(initializer_0);
     public static class Msgtable

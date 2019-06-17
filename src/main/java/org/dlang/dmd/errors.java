@@ -326,15 +326,19 @@ public class errors {
                         {
                             inBacktick = false;
                             OutBuffer codebuf = new OutBuffer();
-                            codebuf.write(((buf).peekSlice().toBytePtr().plus(iCodeStart * 1).plus(1)), i - (iCodeStart + 1));
-                            codebuf.writeByte(0);
-                            colorHighlightCode(codebuf);
-                            (buf).remove(iCodeStart, i - iCodeStart + 1);
-                            ByteSlice pre =  new ByteSlice("");
-                            i = (buf).insert(iCodeStart, pre.toByteSlice());
-                            i = (buf).insert(i, codebuf.peekSlice());
-                            i--;
-                            break;
+                            try {
+                                codebuf.write(((buf).peekSlice().toBytePtr().plus(iCodeStart * 1).plus(1)), i - (iCodeStart + 1));
+                                codebuf.writeByte(0);
+                                colorHighlightCode(codebuf);
+                                (buf).remove(iCodeStart, i - iCodeStart + 1);
+                                ByteSlice pre =  new ByteSlice("");
+                                i = (buf).insert(iCodeStart, pre.toByteSlice());
+                                i = (buf).insert(i, codebuf.peekSlice());
+                                i--;
+                                break;
+                            }
+                            finally {
+                            }
                         }
                         inBacktick = true;
                         iCodeStart = i;

@@ -671,22 +671,26 @@ public class globals {
 
         public  BytePtr toChars(boolean showColumns) {
             OutBuffer buf = new OutBuffer();
-            if (this.filename != null)
-            {
-                buf.writestring(this.filename);
-            }
-            if ((this.linnum) != 0)
-            {
-                buf.writeByte(40);
-                buf.print((long)this.linnum);
-                if (showColumns && (this.charnum) != 0)
+            try {
+                if (this.filename != null)
                 {
-                    buf.writeByte(44);
-                    buf.print((long)this.charnum);
+                    buf.writestring(this.filename);
                 }
-                buf.writeByte(41);
+                if ((this.linnum) != 0)
+                {
+                    buf.writeByte(40);
+                    buf.print((long)this.linnum);
+                    if (showColumns && (this.charnum) != 0)
+                    {
+                        buf.writeByte(44);
+                        buf.print((long)this.charnum);
+                    }
+                    buf.writeByte(41);
+                }
+                return buf.extractChars();
             }
-            return buf.extractChars();
+            finally {
+            }
         }
 
         public  boolean equals(Loc loc) {
@@ -708,6 +712,7 @@ public class globals {
             return this.filename != null;
         }
 
+        public Loc(){}
     }
 
     public static class LINK 

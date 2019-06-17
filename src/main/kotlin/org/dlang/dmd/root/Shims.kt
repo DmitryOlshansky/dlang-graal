@@ -151,6 +151,28 @@ fun memset(data: BytePtr, value: Int, nbytes: Int) {
 
 fun __equals(a: Any, b: Any) = a == b
 
+fun addu(a: Long, b: Long, overflow: Ref<Boolean>): Long {
+    try {
+        overflow.value = false
+        return Math.addExact(a, b)
+    }
+    catch (e:ArithmeticException) {
+        overflow.value = true
+        return 0
+    }
+}
+
+fun mulu(a: Long, b: Long, overflow: Ref<Boolean>): Long {
+    try {
+        overflow.value = false
+        return Math.multiplyExact(a, b)
+    }
+    catch (e:ArithmeticException) {
+        overflow.value = true
+        return 0
+    }
+}
+
 fun destroy(a: Any)  {}
 
 fun hashOf(any: Any) = any.hashCode()

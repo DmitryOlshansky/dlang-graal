@@ -374,70 +374,78 @@ public class tokens {
                     case (byte)121:
                         {
                             OutBuffer buf = new OutBuffer();
-                            buf.writeByte(34);
-                            {
-                                IntRef i = ref(0);
-                                for (; i.value < this.len;){
-                                    IntRef c = ref('\uffff');
-                                    utf_decodeChar(this.ustring, this.len, i, c);
-                                    dispatched_2:
-                                    do {
-                                        int __dispatch2 = 0;
-                                        switch (__dispatch2 != 0 ? __dispatch2 : c.value)
-                                        {
-                                            case 0:
-                                                break;
-                                            case 34:
-                                            case 92:
-                                                buf.writeByte(92);
-                                                /*goto default*/ { __dispatch2 = -1; continue dispatched_2; }
-                                            default:
+                            try {
+                                buf.writeByte(34);
+                                {
+                                    IntRef i = ref(0);
+                                    for (; i.value < this.len;){
+                                        IntRef c = ref('\uffff');
+                                        utf_decodeChar(this.ustring, this.len, i, c);
+                                        dispatched_2:
+                                        do {
+                                            int __dispatch2 = 0;
+                                            switch (__dispatch2 != 0 ? __dispatch2 : c.value)
                                             {
-                                                if (c.value <= 127)
+                                                case 0:
+                                                    break;
+                                                case 34:
+                                                case 92:
+                                                    buf.writeByte(92);
+                                                    /*goto default*/ { __dispatch2 = -1; continue dispatched_2; }
+                                                default:
                                                 {
-                                                    if ((isprint(c.value)) != 0)
-                                                        buf.writeByte(c.value);
+                                                    if (c.value <= 127)
+                                                    {
+                                                        if ((isprint(c.value)) != 0)
+                                                            buf.writeByte(c.value);
+                                                        else
+                                                            buf.printf( new ByteSlice("\\x%02x"), c.value);
+                                                    }
+                                                    else if (c.value <= 65535)
+                                                        buf.printf( new ByteSlice("\\u%04x"), c.value);
                                                     else
-                                                        buf.printf( new ByteSlice("\\x%02x"), c.value);
+                                                        buf.printf( new ByteSlice("\\U%08x"), c.value);
+                                                    continue;
                                                 }
-                                                else if (c.value <= 65535)
-                                                    buf.printf( new ByteSlice("\\u%04x"), c.value);
-                                                else
-                                                    buf.printf( new ByteSlice("\\U%08x"), c.value);
-                                                continue;
                                             }
-                                        }
-                                    } while(false);
-                                    break;
+                                        } while(false);
+                                        break;
+                                    }
                                 }
+                                buf.writeByte(34);
+                                if ((this.postfix) != 0)
+                                    buf.writeByte((int)this.postfix);
+                                p = buf.extractChars();
                             }
-                            buf.writeByte(34);
-                            if ((this.postfix) != 0)
-                                buf.writeByte((int)this.postfix);
-                            p = buf.extractChars();
+                            finally {
+                            }
                         }
                         break;
                     case (byte)122:
                         {
                             OutBuffer buf = new OutBuffer();
-                            buf.writeByte(120);
-                            buf.writeByte(34);
-                            {
-                                int __key59 = 0;
-                                int __limit60 = this.len;
-                                for (; __key59 < __limit60;__key59 += 1) {
-                                    int i = __key59;
-                                    if ((i) != 0)
-                                        buf.writeByte(32);
-                                    buf.printf( new ByteSlice("%02x"), (int)this.ustring.get(i));
+                            try {
+                                buf.writeByte(120);
+                                buf.writeByte(34);
+                                {
+                                    int __key59 = 0;
+                                    int __limit60 = this.len;
+                                    for (; __key59 < __limit60;__key59 += 1) {
+                                        int i = __key59;
+                                        if ((i) != 0)
+                                            buf.writeByte(32);
+                                        buf.printf( new ByteSlice("%02x"), (int)this.ustring.get(i));
+                                    }
                                 }
+                                buf.writeByte(34);
+                                if ((this.postfix) != 0)
+                                    buf.writeByte((int)this.postfix);
+                                buf.writeByte(0);
+                                p = buf.extractData();
+                                break;
                             }
-                            buf.writeByte(34);
-                            if ((this.postfix) != 0)
-                                buf.writeByte((int)this.postfix);
-                            buf.writeByte(0);
-                            p = buf.extractData();
-                            break;
+                            finally {
+                            }
                         }
                     case (byte)120:
                     case (byte)156:
