@@ -326,50 +326,49 @@ public class tokens {
         }
 
         public  BytePtr toChars() {
-            ByteSlice buffer = tokens.toCharsbuffer;
-            BytePtr p = ptr(buffer);
+            BytePtr p = ptr(tokens.toCharsbuffer);
             dispatched_1:
             do {
                 int __dispatch1 = 0;
                 switch (__dispatch1 != 0 ? __dispatch1 : this.value)
                 {
                     case (byte)105:
-                        sprintf(ptr(buffer),  new ByteSlice("%d"), (int)this.intvalue);
+                        sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%d"), (int)this.intvalue);
                         break;
                     case (byte)106:
                     case (byte)117:
                     case (byte)118:
                     case (byte)119:
-                        sprintf(ptr(buffer),  new ByteSlice("%uU"), (int)this.unsvalue);
+                        sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%uU"), (int)this.unsvalue);
                         break;
                     case (byte)107:
-                        sprintf(ptr(buffer),  new ByteSlice("%lldL"), this.intvalue);
+                        sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%lldL"), this.intvalue);
                         break;
                     case (byte)108:
-                        sprintf(ptr(buffer),  new ByteSlice("%lluUL"), this.unsvalue);
+                        sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%lluUL"), this.unsvalue);
                         break;
                     case (byte)111:
-                        CTFloat.sprint(ptr(buffer), (byte)103, this.floatvalue);
-                        strcat(ptr(buffer),  new ByteSlice("f"));
+                        CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
+                        strcat(ptr(tokens.toCharsbuffer),  new ByteSlice("f"));
                         break;
                     case (byte)112:
-                        CTFloat.sprint(ptr(buffer), (byte)103, this.floatvalue);
+                        CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
                         break;
                     case (byte)113:
-                        CTFloat.sprint(ptr(buffer), (byte)103, this.floatvalue);
-                        strcat(ptr(buffer),  new ByteSlice("L"));
+                        CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
+                        strcat(ptr(tokens.toCharsbuffer),  new ByteSlice("L"));
                         break;
                     case (byte)114:
-                        CTFloat.sprint(ptr(buffer), (byte)103, this.floatvalue);
-                        strcat(ptr(buffer),  new ByteSlice("fi"));
+                        CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
+                        strcat(ptr(tokens.toCharsbuffer),  new ByteSlice("fi"));
                         break;
                     case (byte)115:
-                        CTFloat.sprint(ptr(buffer), (byte)103, this.floatvalue);
-                        strcat(ptr(buffer),  new ByteSlice("i"));
+                        CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
+                        strcat(ptr(tokens.toCharsbuffer),  new ByteSlice("i"));
                         break;
                     case (byte)116:
-                        CTFloat.sprint(ptr(buffer), (byte)103, this.floatvalue);
-                        strcat(ptr(buffer),  new ByteSlice("Li"));
+                        CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
+                        strcat(ptr(tokens.toCharsbuffer),  new ByteSlice("Li"));
                         break;
                     case (byte)121:
                         {

@@ -40,18 +40,17 @@ public class utf {
     }
 
     public static boolean isUniAlpha(int c) {
-        Slice<CharSlice> ALPHA_TABLE = utf.isUniAlphaALPHA_TABLE;
         int high = 244;
-        int low = c < (int)ALPHA_TABLE.get(0).get(0) || (int)ALPHA_TABLE.get(high).get(1) < c ? high + 1 : 0;
+        int low = c < (int)utf.isUniAlphaALPHA_TABLE.get(0).get(0) || (int)utf.isUniAlphaALPHA_TABLE.get(high).get(1) < c ? high + 1 : 0;
         for (; low <= high;){
             int mid = low + high >> 1;
-            if (c < (int)ALPHA_TABLE.get(mid).get(0))
+            if (c < (int)utf.isUniAlphaALPHA_TABLE.get(mid).get(0))
                 high = mid - 1;
-            else if ((int)ALPHA_TABLE.get(mid).get(1) < c)
+            else if ((int)utf.isUniAlphaALPHA_TABLE.get(mid).get(1) < c)
                 low = mid + 1;
             else
             {
-                assert((int)ALPHA_TABLE.get(mid).get(0) <= c && c <= (int)ALPHA_TABLE.get(mid).get(1));
+                assert((int)utf.isUniAlphaALPHA_TABLE.get(mid).get(0) <= c && c <= (int)utf.isUniAlphaALPHA_TABLE.get(mid).get(1));
                 return true;
             }
         }
@@ -140,23 +139,16 @@ public class utf {
 
     public static BytePtr utf_decodeChar(BytePtr s, int len, IntRef ridx, IntRef rresult) {
         rresult.value = '\uffff';
-        BytePtr UTF8_DECODE_OK = utf.utf_decodeCharUTF8_DECODE_OK;
-        BytePtr UTF8_DECODE_OUTSIDE_CODE_SPACE = utf.utf_decodeCharUTF8_DECODE_OUTSIDE_CODE_SPACE;
-        BytePtr UTF8_DECODE_TRUNCATED_SEQUENCE = utf.utf_decodeCharUTF8_DECODE_TRUNCATED_SEQUENCE;
-        BytePtr UTF8_DECODE_OVERLONG = utf.utf_decodeCharUTF8_DECODE_OVERLONG;
-        BytePtr UTF8_DECODE_INVALID_TRAILER = utf.utf_decodeCharUTF8_DECODE_INVALID_TRAILER;
-        BytePtr UTF8_DECODE_INVALID_CODE_POINT = utf.utf_decodeCharUTF8_DECODE_INVALID_CODE_POINT;
-        IntSlice UTF8_STRIDE = utf.utf_decodeCharUTF8_STRIDE;
         assert(s != null);
         int i = ridx.value++;
         assert(i < len);
         byte u = s.get(i);
         rresult.value = u;
-        int n = UTF8_STRIDE.get((int)u);
+        int n = utf.utf_decodeCharUTF8_STRIDE.get((int)u);
         switch (n)
         {
             case 1:
-                return UTF8_DECODE_OK;
+                return utf.utf_decodeCharUTF8_DECODE_OK;
             case 2:
             case 3:
             case 4:
@@ -185,22 +177,17 @@ public class utf {
             return new BytePtr("Invalid code point decoded");
         ridx.value = i;
         rresult.value = c;
-        return UTF8_DECODE_OK;
+        return utf.utf_decodeCharUTF8_DECODE_OK;
     }
 
     public static BytePtr utf_decodeWchar(CharPtr s, int len, IntRef ridx, IntRef rresult) {
         rresult.value = '\uffff';
-        BytePtr UTF16_DECODE_OK = utf.utf_decodeWcharUTF16_DECODE_OK;
-        BytePtr UTF16_DECODE_TRUNCATED_SEQUENCE = utf.utf_decodeWcharUTF16_DECODE_TRUNCATED_SEQUENCE;
-        BytePtr UTF16_DECODE_INVALID_SURROGATE = utf.utf_decodeWcharUTF16_DECODE_INVALID_SURROGATE;
-        BytePtr UTF16_DECODE_UNPAIRED_SURROGATE = utf.utf_decodeWcharUTF16_DECODE_UNPAIRED_SURROGATE;
-        BytePtr UTF16_DECODE_INVALID_CODE_POINT = utf.utf_decodeWcharUTF16_DECODE_INVALID_CODE_POINT;
         assert(s != null);
         int i = ridx.value++;
         assert(i < len);
         int u = rresult.value = (int)s.get(i);
         if (u < 55296)
-            return UTF16_DECODE_OK;
+            return utf.utf_decodeWcharUTF16_DECODE_OK;
         if (55296 <= u && u <= 56319)
         {
             if (len <= i + 1)
@@ -216,7 +203,7 @@ public class utf {
         if (!(utf_isValidDchar(u)))
             return new BytePtr("Invalid code point decoded");
         rresult.value = u;
-        return UTF16_DECODE_OK;
+        return utf.utf_decodeWcharUTF16_DECODE_OK;
     }
 
 }

@@ -137,7 +137,15 @@ fun ctime(s: IntPtr): BytePtr {
     return BytePtr(df.format(unix))
 }
 
-fun memcmp(a: BytePtr, b: BytePtr, size: Int) = 0 //TODO: stub
+fun memcmp(a: BytePtr, b: BytePtr, size: Int): Int {
+    for (i in 0 until size) {
+        val delta = a[i] - b[i]
+        if (delta != 0) return if(delta > 0) 1 else -1
+    }
+    return 0
+}
+
+fun memcmp(a: BytePtr, b: ByteSlice, size: Int): Int = memcmp(a, b.ptr(), size)
 
 fun memcpy(dest: BytePtr, from: BytePtr, size: Int) = memmove(dest, from, size)
 

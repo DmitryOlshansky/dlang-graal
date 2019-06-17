@@ -562,8 +562,7 @@ public class globals {
         }
 
         public  int versionNumber() {
-            int cached = globals.versionNumbercached;
-            if (cached == 0)
+            if (globals.versionNumbercached == 0)
             {
                 int major = 0;
                 int minor = 0;
@@ -588,9 +587,9 @@ public class globals {
                             break;
                     }
                 }
-                cached = major * 1000 + minor;
+                globals.versionNumbercached = major * 1000 + minor;
             }
-            return cached;
+            return globals.versionNumbercached;
         }
 
         public  ByteSlice finalDefaultlibname() {

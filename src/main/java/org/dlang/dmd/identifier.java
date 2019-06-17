@@ -61,10 +61,9 @@ public class identifier {
         }
 
         public static Identifier anonymous() {
-            Identifier anonymous = identifier.anonymousanonymous;
-            if (anonymous != null)
-                return anonymous;
-            return anonymous = new Identifier( new ByteSlice("__anonymous"), 120);
+            if (identifier.anonymousanonymous != null)
+                return identifier.anonymousanonymous;
+            return identifier.anonymousanonymous = new Identifier( new ByteSlice("__anonymous"), 120);
         }
 
         public static Identifier create(BytePtr name) {
@@ -121,8 +120,7 @@ public class identifier {
 
         public static StringTable stringtable;
         public static Identifier generateId(BytePtr prefix) {
-            int i = identifier.generateIdi;
-            return Identifier.generateId(prefix, i += 1);
+            return Identifier.generateId(prefix, identifier.generateIdi += 1);
         }
 
         public static Identifier generateId(BytePtr prefix, int i) {
@@ -156,8 +154,7 @@ public class identifier {
                 idBuf.print((long)loc.linnum);
                 idBuf.writestring( new ByteSlice("_C"));
                 idBuf.print((long)loc.charnum);
-                AA<Key,Integer> counters = identifier.generateIdWithLoccounters;
-                update(counters, new Key(loc, prefix), __lambda7, __lambda8);
+                update(identifier.generateIdWithLoccounters, new Key(loc, prefix), __lambda7, __lambda8);
                 return Identifier.idPool(idBuf.peekSlice());
             }
             finally {

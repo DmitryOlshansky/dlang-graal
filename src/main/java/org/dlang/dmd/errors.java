@@ -266,14 +266,13 @@ public class errors {
     }
 
     public static void vdeprecation(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2) {
-        BytePtr header = errors.vdeprecationheader;
         if (global.params.useDeprecated == (byte)0)
-            verror(loc, format, ap, p1, p2, header);
+            verror(loc, format, ap, p1, p2, errors.vdeprecationheader);
         else if (global.params.useDeprecated == (byte)1)
         {
             if (!((global.gag) != 0))
             {
-                verrorPrint(loc, Color.brightCyan, header, format, ap, p1, p2);
+                verrorPrint(loc, Color.brightCyan, errors.vdeprecationheader, format, ap, p1, p2);
             }
             else
             {
@@ -365,13 +364,12 @@ public class errors {
     }
 
     public static void colorHighlightCode(OutBuffer buf) {
-        int nested = errors.colorHighlightCodenested;
-        if ((nested) != 0)
+        if ((errors.colorHighlightCodenested) != 0)
         {
-            nested -= 1;
+            errors.colorHighlightCodenested -= 1;
             return ;
         }
-        nested += 1;
+        errors.colorHighlightCodenested += 1;
         int gaggedErrorsSave = global.startGagging();
         StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
         Lexer lex = new Lexer(null, (buf).data.toBytePtr(), 0, (buf).offset - 1, false, true, diagnosticReporter);
@@ -437,7 +435,7 @@ public class errors {
         (buf).setsize(0);
         (buf).write(res);
         global.endGagging(gaggedErrorsSave);
-        nested -= 1;
+        errors.colorHighlightCodenested -= 1;
     }
 
     public static void writeHighlights(Console con, OutBuffer buf) {
