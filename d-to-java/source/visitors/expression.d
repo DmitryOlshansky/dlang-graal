@@ -44,7 +44,6 @@ import visitors.members;
 
 struct ExprOpts {
     bool wantCharPtr = false;
-    bool reverseIntPromotion = false;
     bool rawArrayLiterals = false;
     EnumDeclaration inEnumDecl = null;
     FuncDeclaration inFuncDecl = null;
@@ -148,38 +147,6 @@ private bool isJavaByte(Type t) {
 }
 
 
-private extern(C++) class ByteSizedVisitor : Visitor {
-    bool isByteSized = false;
-    alias visit = typeof(super).visit;
-    
-    override void visit(Expression ) {}
-
-    override void visit(UnaExp u) {
-        u.e1.accept(this);
-    }
-
-    override void visit(BinExp b) {
-        b.e1.accept(this);
-        b.e2.accept(this);
-    }
-
-    override void visit(CastExp e) {
-        auto t = e.e1.type;
-        if (isJavaByte(t)) {
-            isByteSized = true;
-        }
-        else if(auto et = t.isTypeEnum()) {
-            isByteSized = isJavaByte(et.memType);
-        }
-    }
-}
-
-public bool isByteSized(Expression e) {
-    scope v = new ByteSizedVisitor();
-    e.accept(v);
-    return v.isByteSized;
-}
-
 ///
 extern (C++) final class toJavaExpressionVisitor : Visitor
 {
@@ -265,8 +232,6 @@ public:
             L2:
                 if (castTarget.length)
                     buf.printf("(%.*s)%d", castTarget.length, castTarget.ptr, cast(int)v);
-                else if(opts.reverseIntPromotion)
-                    buf.printf("(byte)%d", cast(int)v);
                 else
                     buf.printf("%d", cast(int)v);
                 break;
@@ -680,7 +645,6 @@ public:
 
     override void visit(BinExp e)
     {
-        bool oldIntPromotion = opts.reverseIntPromotion;
         if (e.e1.type && (e.op == TOK.equal || e.op == TOK.notEqual) && !e.e1.type.isTypeBasic) {
             expToBuffer(e.e1, cast(PREC)(precedence[e.op] + 1), buf, opts);
             buf.writestring(".equals(");
@@ -709,14 +673,6 @@ public:
             expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
             buf.writestring(")");
             return;
-        }
-        else if (isByteSized(e.e1) && !isByteSized(e.e2)) {
-            oldIntPromotion = opts.reverseIntPromotion;
-            //opts.reverseIntPromotion = true;
-        }
-        else if(!isByteSized(e.e1) && isByteSized(e.e2)){
-            oldIntPromotion = opts.reverseIntPromotion;
-            //opts.reverseIntPromotion = true;
         }
         else if(e.e1.type.ty == Tpointer && (e.e2.type.isTypeBasic() || e.e2.type.ty == Tpointer)) {
             string opName = "";
@@ -762,7 +718,6 @@ public:
         else buf.writestring(Token.toString(e.op));
         buf.writeByte(' ');
         expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
-        opts.reverseIntPromotion = oldIntPromotion;
     }
 
     override void visit(CompileExp e)
@@ -936,7 +891,7 @@ public:
             expToBuffer(e.e1, precedence[e.op], buf, opts);
             return; 
         }
-        bool intTo, wasInt;
+        bool toInt, fromInt;
         bool complexTarget = false;
         bool fromBool = false;
         bool fromEnum = false;
@@ -960,7 +915,7 @@ public:
             case Tint32:
             case Tuns32:
             case Tdchar:
-                intTo = true;
+                toInt = true;
                 break;
             default:
         }
@@ -979,7 +934,7 @@ public:
             case Tint32:
             case Tuns32:
             case Tdchar:
-                wasInt = true;
+                fromInt = true;
                 break;
             case Tenum:
                 fromEnum = true;
@@ -987,23 +942,21 @@ public:
             default:
         }
         if (toVoid || toVoidPtr || fromClass) expToBuffer(e.e1, precedence[e.op], buf, opts);
-        else if(fromBool && intTo) {
+        else if(fromBool && toInt) {
             buf.writestring("(");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
             buf.writestring(" ? 1 : 0)");
         }
-        else if(fromByte && intTo) {
+        else if(fromByte && toInt) {
             buf.writestring("(");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
             buf.writestring(" & 0xFF)");
         }
-        else if (wasInt && intTo) expToBuffer(e.e1, precedence[e.op], buf, opts);
-        else if(opts.reverseIntPromotion && intTo)
-            expToBuffer(e.e1, precedence[e.op], buf, opts);
+        else if (fromInt && toInt) expToBuffer(e.e1, precedence[e.op], buf, opts);
         else if(fromEnum) {
             expToBuffer(e.e1, precedence[e.op], buf, opts);
         }
-        else if (complexTarget) { // rely on .toTypeName
+        else if (complexTarget) { // rely on toTypeName(x)
             buf.writestring("to");
             typeToBuffer(e.to, null, buf);
             buf.writestring("(");

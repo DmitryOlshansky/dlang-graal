@@ -1,12 +1,15 @@
-package org.dlang.dmd.root
+package org.dlang.dmd
 
+import org.dlang.dmd.root.BytePtr
+import org.dlang.dmd.root.IntRef
+import org.dlang.dmd.utf.isUniAlpha
 import org.dlang.dmd.utf.utf_decodeChar
 import org.junit.Assert.*
 import org.junit.Test
 
 class TestUtf {
     @Test
-    fun testUtfDecode() {
+    fun utfDecode() {
         val text = BytePtr("Вышел зайчик погулять")
         val idx = IntRef(0)
         val dchar = IntRef(0)
@@ -24,5 +27,10 @@ class TestUtf {
         assert(idx.value == text.data.size)
     }
 
+    @Test
+    fun uniAlpha() {
+        assertTrue(isUniAlpha('Ю'.toInt()))
+        assertFalse(isUniAlpha('1'.toInt()))
+    }
 
 }

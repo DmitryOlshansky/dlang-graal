@@ -320,7 +320,7 @@ public class errors {
                 byte c = (byte)(buf).data.get(i);
                 switch ((c & 0xFF))
                 {
-                    case (byte)96:
+                    case 96:
                         if (inBacktick)
                         {
                             inBacktick = false;
@@ -385,28 +385,28 @@ public class errors {
             byte highlight = HIGHLIGHT.Default;
             switch (tok.value)
             {
-                case (byte)120:
+                case 120:
                     highlight = HIGHLIGHT.Identifier;
                     break;
-                case (byte)46:
+                case 46:
                     highlight = HIGHLIGHT.Comment;
                     break;
-                case (byte)105:
-                case (byte)106:
-                case (byte)107:
-                case (byte)108:
-                case (byte)109:
-                case (byte)110:
-                case (byte)111:
-                case (byte)112:
-                case (byte)113:
-                case (byte)114:
-                case (byte)115:
-                case (byte)116:
-                case (byte)117:
-                case (byte)118:
-                case (byte)119:
-                case (byte)121:
+                case 105:
+                case 106:
+                case 107:
+                case 108:
+                case 109:
+                case 110:
+                case 111:
+                case 112:
+                case 113:
+                case 114:
+                case 115:
+                case 116:
+                case 117:
+                case 118:
+                case 119:
+                case 121:
                     highlight = HIGHLIGHT.Identifier;
                     break;
                 default:

@@ -25,7 +25,7 @@ import dmd.visitor : Visitor, SemanticTimeTransitiveVisitor;
 
 import std.array, std.algorithm, std.format, std.string, std.range, std.stdio;
 
-import visitors.expression : Boxing, ExprOpts, funcName, refType, toJava, toJavaBool, toJavaFunc, isByteSized, symbol;
+import visitors.expression : Boxing, ExprOpts, funcName, refType, toJava, toJavaBool, toJavaFunc, symbol;
 import visitors.members;
 import visitors.passed_by_ref;
 
@@ -177,7 +177,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     alias visit = typeof(super).visit;
     TextBuffer buf;
     TextBuffer header;
-    bool bytesInSwitch = false;
     string defAccess = "public";
     FuncDeclaration[] stack;
     bool[string] generatedLambdas;
@@ -671,11 +670,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         auto oldDispatchCount = dispatchCount;
         scope(exit) dispatchCount = oldDispatchCount;
         dispatchCount++;
-        bool oldBytesInSwitch = bytesInSwitch;
-        if (isByteSized(s.condition))
-            bytesInSwitch = true;
-        else 
-            bytesInSwitch = false;
         if (gotos) {
             buf.fmt("dispatched_%d:\n", dispatchCount);
             buf.put("do {\n");
@@ -712,13 +706,11 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             buf.outdent;
             buf.put("} while(false);\n");
         }
-        bytesInSwitch = oldBytesInSwitch;
     }
 
     override void visit(CaseStatement s)
     {
         buf.put("case ");
-        if (bytesInSwitch) buf.put("(byte)");
         buf.put(s.exp.toJava(opts));
         buf.put(':');
         buf.put('\n');

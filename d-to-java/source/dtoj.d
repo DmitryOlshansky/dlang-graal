@@ -41,22 +41,11 @@ void handleDiagnosticErrors()
     throw new DiagnosticsException(diagnostics);
 }
 
-
-Module runFullFrontend(Ast = ASTCodegen)(
-    const string filename,
-    const string content,
-    const string[] importPaths,
-    const string[] stringImportPaths)
-{
-
-    return runParser!Ast(filename, content, importPaths)
-        .runSemanticAnalyzer(stringImportPaths);
-}
-
 Module runParser(Ast = ASTCodegen)(
     const string filename,
     const string content,
-    const string[] importPaths)
+    const string[] importPaths,
+    bool unittests)
 {
     import std.algorithm : each;
     import std.range : chain;
@@ -66,7 +55,7 @@ Module runParser(Ast = ASTCodegen)(
     import dmd.globals : global;
 
     global.params.mscoff = global.params.is64bit;
-    global.params.useUnitTests = true;
+    global.params.useUnitTests = unittests;
 
     findImportPaths
         .chain(importPaths)
@@ -99,9 +88,11 @@ void main(string[] args) {
 	string[] importPaths;
 	string[] stringImportPaths;
     string outputDir = ".";
+    bool unittests;
 	auto resp = getopt(args,
 		"I", &importPaths,
 		"J", &stringImportPaths,
+        "u|unittest", &unittests,
         "out", &outputDir
 	);
 
@@ -114,7 +105,7 @@ void main(string[] args) {
 	foreach (source; args[1..$]) {
         stderr.writefln("Parsing %s", baseName(source));
 		const content = cast(string)readFile(source);
-        mods ~= runParser(source, content, importPaths);
+        mods ~= runParser(source, content, importPaths, unittests);
     }
     foreach (ref m; mods) {
         stderr.writefln("Semantics run %s", m.toString);
