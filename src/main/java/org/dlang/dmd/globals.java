@@ -751,5 +751,5 @@ public class globals {
         public static final int always = 2;
     }
 
-    static Global global = new Global();
+    static Global global;
 }

@@ -285,20 +285,20 @@ public class tokens {
         {
             Identifier.initTable();
             {
-                ByteSlice __r55 = keywords;
-                int __key56 = 0;
-                for (; __key56 < __r55.getLength();__key56 += 1) {
-                    byte kw = __r55.get(__key56);
+                ByteSlice __r48 = keywords;
+                int __key49 = 0;
+                for (; __key49 < __r48.getLength();__key49 += 1) {
+                    byte kw = __r48.get(__key49);
                     Identifier.idPool(toBytePtr(Token.tochars.get(kw)), Token.tochars.get(kw).getLength(), kw);
                 }
             }
         }
         public  int isKeyword() {
             {
-                ByteSlice __r57 = keywords;
-                int __key58 = 0;
-                for (; __key58 < __r57.getLength();__key58 += 1) {
-                    byte kw = __r57.get(__key58);
+                ByteSlice __r50 = keywords;
+                int __key51 = 0;
+                for (; __key51 < __r50.getLength();__key51 += 1) {
+                    byte kw = __r50.get(__key51);
                     if (kw == this.value)
                         return 1;
                 }
@@ -327,162 +327,166 @@ public class tokens {
 
         public  BytePtr toChars() {
             BytePtr p = ptr(tokens.toCharsbuffer);
-            dispatched_1:
-            do {
-                int __dispatch1 = 0;
-                switch (__dispatch1 != 0 ? __dispatch1 : this.value)
-                {
-                    case 105:
-                        sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%d"), (int)this.intvalue);
-                        break;
-                    case 106:
-                    case 117:
-                    case 118:
-                    case 119:
-                        sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%uU"), (int)this.unsvalue);
-                        break;
-                    case 107:
-                        sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%lldL"), this.intvalue);
-                        break;
-                    case 108:
-                        sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%lluUL"), this.unsvalue);
-                        break;
-                    case 111:
-                        CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
-                        strcat(ptr(tokens.toCharsbuffer),  new ByteSlice("f"));
-                        break;
-                    case 112:
-                        CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
-                        break;
-                    case 113:
-                        CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
-                        strcat(ptr(tokens.toCharsbuffer),  new ByteSlice("L"));
-                        break;
-                    case 114:
-                        CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
-                        strcat(ptr(tokens.toCharsbuffer),  new ByteSlice("fi"));
-                        break;
-                    case 115:
-                        CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
-                        strcat(ptr(tokens.toCharsbuffer),  new ByteSlice("i"));
-                        break;
-                    case 116:
-                        CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
-                        strcat(ptr(tokens.toCharsbuffer),  new ByteSlice("Li"));
-                        break;
-                    case 121:
-                        {
-                            OutBuffer buf = new OutBuffer();
-                            try {
-                                buf.writeByte(34);
-                                {
-                                    IntRef i = ref(0);
-                                    for (; i.value < this.len;){
-                                        IntRef c = ref('\uffff');
-                                        utf_decodeChar(this.ustring, this.len, i, c);
-                                        dispatched_2:
-                                        do {
-                                            int __dispatch2 = 0;
-                                            switch (__dispatch2 != 0 ? __dispatch2 : c.value)
-                                            {
-                                                case 0:
-                                                    break;
-                                                case 34:
-                                                case 92:
-                                                    buf.writeByte(92);
-                                                    /*goto default*/ { __dispatch2 = -1; continue dispatched_2; }
-                                                default:
-                                                {
-                                                    if (c.value <= 127)
-                                                    {
-                                                        if ((isprint(c.value)) != 0)
-                                                            buf.writeByte(c.value);
-                                                        else
-                                                            buf.printf( new ByteSlice("\\x%02x"), c.value);
-                                                    }
-                                                    else if (c.value <= 65535)
-                                                        buf.printf( new ByteSlice("\\u%04x"), c.value);
-                                                    else
-                                                        buf.printf( new ByteSlice("\\U%08x"), c.value);
-                                                    continue;
-                                                }
-                                            }
-                                        } while(false);
-                                        break;
-                                    }
-                                }
-                                buf.writeByte(34);
-                                if ((this.postfix) != 0)
-                                    buf.writeByte((this.postfix & 0xFF));
-                                p = buf.extractChars();
-                            }
-                            finally {
-                            }
-                        }
-                        break;
-                    case 122:
-                        {
-                            OutBuffer buf = new OutBuffer();
-                            try {
-                                buf.writeByte(120);
-                                buf.writeByte(34);
-                                {
-                                    int __key59 = 0;
-                                    int __limit60 = this.len;
-                                    for (; __key59 < __limit60;__key59 += 1) {
-                                        int i = __key59;
-                                        if ((i) != 0)
-                                            buf.writeByte(32);
-                                        buf.printf( new ByteSlice("%02x"), (this.ustring.get(i) & 0xFF));
-                                    }
-                                }
-                                buf.writeByte(34);
-                                if ((this.postfix) != 0)
-                                    buf.writeByte((this.postfix & 0xFF));
-                                buf.writeByte(0);
-                                p = buf.extractData();
-                                break;
-                            }
-                            finally {
-                            }
-                        }
-                    case 120:
-                    case 156:
-                    case 152:
-                    case 157:
-                    case 149:
-                    case 150:
-                    case 151:
-                    case 148:
-                    case 129:
-                    case 130:
-                    case 131:
-                    case 132:
-                    case 133:
-                    case 134:
-                    case 135:
-                    case 136:
-                    case 137:
-                    case 138:
-                    case 139:
-                    case 140:
-                    case 141:
-                    case 142:
-                    case 143:
-                    case 144:
-                    case 145:
-                    case 146:
-                    case 147:
-                    case 128:
-                        p = this.ident.toChars();
-                        break;
-                    default:
+            {
+                int __dispatch0 = 0;
+                dispatched_0:
+                do {
+                    switch (__dispatch0 != 0 ? __dispatch0 : this.value)
                     {
-                        p = Token.toChars(this.value);
-                        break;
+                        case 105:
+                            sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%d"), (int)this.intvalue);
+                            break;
+                        case 106:
+                        case 117:
+                        case 118:
+                        case 119:
+                            sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%uU"), (int)this.unsvalue);
+                            break;
+                        case 107:
+                            sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%lldL"), this.intvalue);
+                            break;
+                        case 108:
+                            sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%lluUL"), this.unsvalue);
+                            break;
+                        case 111:
+                            CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
+                            strcat(ptr(tokens.toCharsbuffer),  new ByteSlice("f"));
+                            break;
+                        case 112:
+                            CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
+                            break;
+                        case 113:
+                            CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
+                            strcat(ptr(tokens.toCharsbuffer),  new ByteSlice("L"));
+                            break;
+                        case 114:
+                            CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
+                            strcat(ptr(tokens.toCharsbuffer),  new ByteSlice("fi"));
+                            break;
+                        case 115:
+                            CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
+                            strcat(ptr(tokens.toCharsbuffer),  new ByteSlice("i"));
+                            break;
+                        case 116:
+                            CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
+                            strcat(ptr(tokens.toCharsbuffer),  new ByteSlice("Li"));
+                            break;
+                        case 121:
+                            {
+                                OutBuffer buf = new OutBuffer();
+                                try {
+                                    buf.writeByte(34);
+                                    {
+                                        IntRef i = ref(0);
+                                        for (; i.value < this.len;){
+                                            IntRef c = ref('\uffff');
+                                            utf_decodeChar(this.ustring, this.len, i, c);
+                                            {
+                                                int __dispatch1 = 0;
+                                                dispatched_1:
+                                                do {
+                                                    switch (__dispatch1 != 0 ? __dispatch1 : c.value)
+                                                    {
+                                                        case 0:
+                                                            break;
+                                                        case 34:
+                                                        case 92:
+                                                            buf.writeByte(92);
+                                                            /*goto default*/ { __dispatch1 = -1; continue dispatched_1; }
+                                                        default:
+                                                        {
+                                                            if (c.value <= 127)
+                                                            {
+                                                                if ((isprint(c.value)) != 0)
+                                                                    buf.writeByte(c.value);
+                                                                else
+                                                                    buf.printf( new ByteSlice("\\x%02x"), c.value);
+                                                            }
+                                                            else if (c.value <= 65535)
+                                                                buf.printf( new ByteSlice("\\u%04x"), c.value);
+                                                            else
+                                                                buf.printf( new ByteSlice("\\U%08x"), c.value);
+                                                            continue;
+                                                        }
+                                                    }
+                                                } while(false);
+                                            }
+                                            break;
+                                        }
+                                    }
+                                    buf.writeByte(34);
+                                    if ((this.postfix) != 0)
+                                        buf.writeByte((this.postfix & 0xFF));
+                                    p = buf.extractChars();
+                                }
+                                finally {
+                                }
+                            }
+                            break;
+                        case 122:
+                            {
+                                OutBuffer buf = new OutBuffer();
+                                try {
+                                    buf.writeByte(120);
+                                    buf.writeByte(34);
+                                    {
+                                        int __key52 = 0;
+                                        int __limit53 = this.len;
+                                        for (; __key52 < __limit53;__key52 += 1) {
+                                            int i = __key52;
+                                            if ((i) != 0)
+                                                buf.writeByte(32);
+                                            buf.printf( new ByteSlice("%02x"), (this.ustring.get(i) & 0xFF));
+                                        }
+                                    }
+                                    buf.writeByte(34);
+                                    if ((this.postfix) != 0)
+                                        buf.writeByte((this.postfix & 0xFF));
+                                    buf.writeByte(0);
+                                    p = buf.extractData();
+                                    break;
+                                }
+                                finally {
+                                }
+                            }
+                        case 120:
+                        case 156:
+                        case 152:
+                        case 157:
+                        case 149:
+                        case 150:
+                        case 151:
+                        case 148:
+                        case 129:
+                        case 130:
+                        case 131:
+                        case 132:
+                        case 133:
+                        case 134:
+                        case 135:
+                        case 136:
+                        case 137:
+                        case 138:
+                        case 139:
+                        case 140:
+                        case 141:
+                        case 142:
+                        case 143:
+                        case 144:
+                        case 145:
+                        case 146:
+                        case 147:
+                        case 128:
+                            p = this.ident.toChars();
+                            break;
+                        default:
+                        {
+                            p = Token.toChars(this.value);
+                            break;
+                        }
                     }
-                }
-            } while(false);
+                } while(false);
+            }
             return p;
         }
 

@@ -672,10 +672,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         scope(exit) currentDispatch = oldDispatchCount;
         currentDispatch = dispatchCount++;
         if (gotos) {
-            buf.fmt("dispatched_%d:\n", currentDispatch);
             buf.put("{\n");
             buf.indent;
             buf.fmt("int __dispatch%d = 0;\n", currentDispatch);
+            buf.fmt("dispatched_%d:\n", currentDispatch);
             buf.put("do {\n");
             buf.indent;
         }
