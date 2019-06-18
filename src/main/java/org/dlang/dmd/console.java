@@ -69,7 +69,13 @@ public class console {
             fputs( new ByteSlice("\u001b[m"), this._fp);
         }
 
-        public Console(){}
+        public Console(){
+        }
+        public Console copy(){
+            Console r = new Console();
+            r._fp = _fp;
+            return r;
+        }
         public Console(_IO_FILE _fp) {
             this._fp = _fp;
         }

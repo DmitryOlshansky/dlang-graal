@@ -10,6 +10,9 @@ class DArray<T : RootObject>(storage: Array<RootObject?>, len: Int) {
 
     fun toChars() = asString().ptr()
 
+    // shallow copy
+    fun copy() = DArray<T>(data, length)
+
     fun asString(): ByteSlice {
         val accum = mutableListOf<Byte>()
         accum.add('['.toByte())

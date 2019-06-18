@@ -64,7 +64,14 @@ public class entity {
     {
         public ByteSlice name;
         public int value;
-        public NameId(){}
+        public NameId(){
+        }
+        public NameId copy(){
+            NameId r = new NameId();
+            r.name = name.copy();
+            r.value = value;
+            return r;
+        }
         public NameId(ByteSlice name, int value) {
             this.name = name;
             this.value = value;

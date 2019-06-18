@@ -858,7 +858,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         auto old = generatedFunctions;
         scope(exit) generatedFunctions = old;
         generatedFunctions = null;
-        if (stack.length) return; // inner structs are done separa
+        if (stack.length) return; // inner structs are done separately
         aggregates ~= d;
         buf.fmt("%s static class ", defAccess);
         if (!d.isAnonymous())
@@ -875,10 +875,33 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.indent;
         foreach (s; *d.members)
             s.accept(this);
-        buf.fmt("public %s(){}\n", d.ident.toString);
+        auto members = collectMembers(d);
+        // .init ctor
+        buf.fmt("public %s(){\n", d.ident.symbol);
+        buf.indent;
+        foreach(m; members.all) {
+            if (m.type.ty == Tstruct) {
+                buf.fmt("%s = new %s();\n", m.ident.symbol, m.type.toJava());
+            }
+        }
+        buf.outdent;
+        buf.put("}\n");
+        // default shallow copy for structs
+        buf.fmt("public %s copy(){\n", d.ident.symbol);
+        buf.indent;
+        buf.fmt("%s r = new %s();\n", d.ident.symbol, d.ident.symbol);
+        foreach(m; members.all) {
+            if (m.type.ty == Tstruct || m.type.ty == Tarray) {
+                buf.fmt("r.%s = %s.copy();\n", m.ident.symbol, m.ident.symbol);
+            }
+            else
+                buf.fmt("r.%s = %s;\n", m.ident.symbol, m.ident.symbol);
+        }
+        buf.put("return r;\n");
+        buf.outdent;
+        buf.put("}\n");
         bool hasCtor = hasCtor(d);
         if (!hasCtor) {
-            auto members = collectMembers(d);
             if (members.all.length) {
                 //Generate ctors
                 // all fields ctor

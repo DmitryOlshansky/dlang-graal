@@ -498,7 +498,26 @@ public class tokens {
             return Token.tochars.get(value);
         }
 
-        public Token(){}
+        public Token(){
+            loc = new Loc();
+        }
+        public Token copy(){
+            Token r = new Token();
+            r.next = next;
+            r.loc = loc.copy();
+            r.ptr = ptr;
+            r.value = value;
+            r.blockComment = blockComment;
+            r.lineComment = lineComment;
+            r.intvalue = intvalue;
+            r.unsvalue = unsvalue;
+            r.floatvalue = floatvalue;
+            r.ustring = ustring;
+            r.len = len;
+            r.postfix = postfix;
+            r.ident = ident;
+            return r;
+        }
         public Token opAssign(Token that) {
             this.next = that.next;
             this.loc = that.loc;

@@ -26,7 +26,15 @@ public class identifier {
     {
         private Loc loc;
         private ByteSlice prefix;
-        public Key(){}
+        public Key(){
+            loc = new Loc();
+        }
+        public Key copy(){
+            Key r = new Key();
+            r.loc = loc.copy();
+            r.prefix = prefix.copy();
+            return r;
+        }
         public Key(Loc loc, ByteSlice prefix) {
             this.loc = loc;
             this.prefix = prefix;
@@ -46,13 +54,13 @@ public class identifier {
         public ByteSlice name;
         public  Identifier(BytePtr name, int length, int value) {
             super();
-            this.name = name.slice(0,length);
+            this.name = name.slice(0,length).copy();
             this.value = value;
         }
 
         public  Identifier(ByteSlice name, int value) {
             super();
-            this.name = name;
+            this.name = name.copy();
             this.value = value;
         }
 

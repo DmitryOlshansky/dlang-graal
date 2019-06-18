@@ -108,7 +108,7 @@ public class lexer {
             }
             this.diagnosticReporter = diagnosticReporter;
             comma(null, new Loc(filename, 1, 1));
-            this.token = new Token();
+            this.token = new Token().copy();
             this.base = base;
             this.end = base.plus(endoffset * 1);
             this.p = base.plus(begoffset * 1);
@@ -160,7 +160,7 @@ public class lexer {
         }
 
         public  byte nextToken() {
-            this.prevloc = this.token.loc;
+            this.prevloc = this.token.loc.copy();
             if (this.token.next != null)
             {
                 Token t = this.token.next;
@@ -190,7 +190,7 @@ public class lexer {
             (t).lineComment = null;
             for (; (1) != 0;){
                 (t).ptr = this.p;
-                (t).loc = this.loc();
+                (t).loc = this.loc().copy();
                 {
                     int __dispatch1 = 0;
                     dispatched_1:
@@ -433,7 +433,7 @@ public class lexer {
                                         return ;
                                     case 42:
                                         this.p.postInc();
-                                        startLoc = this.loc();
+                                        startLoc = this.loc().copy();
                                         for (; (1) != 0;){
                                             for (; (1) != 0;){
                                                 byte c = this.p.get(0);
@@ -454,7 +454,7 @@ public class lexer {
                                                     case 26:
                                                         this.error(new BytePtr("unterminated /* */ comment"));
                                                         this.p = this.end;
-                                                        (t).loc = this.loc();
+                                                        (t).loc = this.loc().copy();
                                                         (t).value = TOK.endOfFile;
                                                         return ;
                                                     default:
@@ -477,7 +477,7 @@ public class lexer {
                                         }
                                         if (this.commentToken)
                                         {
-                                            (t).loc = startLoc;
+                                            (t).loc = startLoc.copy();
                                             (t).value = TOK.comment;
                                             return ;
                                         }
@@ -488,7 +488,7 @@ public class lexer {
                                         }
                                         continue;
                                     case 47:
-                                        startLoc = this.loc();
+                                        startLoc = this.loc().copy();
                                         for (; (1) != 0;){
                                             byte c = (this.p.plusAssign(1)).get(0);
                                             switch ((c & 0xFF))
@@ -504,7 +504,7 @@ public class lexer {
                                                     if (this.commentToken)
                                                     {
                                                         this.p = this.end;
-                                                        (t).loc = startLoc;
+                                                        (t).loc = startLoc.copy();
                                                         (t).value = TOK.comment;
                                                         return ;
                                                     }
@@ -514,7 +514,7 @@ public class lexer {
                                                         this.lastDocLine = this.scanloc.linnum;
                                                     }
                                                     this.p = this.end;
-                                                    (t).loc = this.loc();
+                                                    (t).loc = this.loc().copy();
                                                     (t).value = TOK.endOfFile;
                                                     return ;
                                                 default:
@@ -534,7 +534,7 @@ public class lexer {
                                         {
                                             this.p.postInc();
                                             this.endOfLine();
-                                            (t).loc = startLoc;
+                                            (t).loc = startLoc.copy();
                                             (t).value = TOK.comment;
                                             return ;
                                         }
@@ -549,7 +549,7 @@ public class lexer {
                                     case 43:
                                         {
                                             int nest = 0;
-                                            startLoc = this.loc();
+                                            startLoc = this.loc().copy();
                                             this.p.postInc();
                                             nest = 1;
                                             for (; (1) != 0;){
@@ -586,7 +586,7 @@ public class lexer {
                                                     case 26:
                                                         this.error(new BytePtr("unterminated /+ +/ comment"));
                                                         this.p = this.end;
-                                                        (t).loc = this.loc();
+                                                        (t).loc = this.loc().copy();
                                                         (t).value = TOK.endOfFile;
                                                         return ;
                                                     default:
@@ -605,7 +605,7 @@ public class lexer {
                                             }
                                             if (this.commentToken)
                                             {
-                                                (t).loc = startLoc;
+                                                (t).loc = startLoc.copy();
                                                 (t).value = TOK.comment;
                                                 return ;
                                             }
@@ -2296,6 +2296,7 @@ public class lexer {
                                 /*Lnewline:*/
                                 case -1:
                                     c = (byte)10;
+
                                 case 10:
                                     linestart = 1;
                                     trimTrailingWhitespace.invoke();

@@ -228,7 +228,150 @@ public class globals {
         public ByteSlice resfile;
         public ByteSlice exefile;
         public ByteSlice mapfile;
-        public Param(){}
+        public Param(){
+            modFileAliasStrings = new DArray<BytePtr>();
+            ddocfiles = new DArray<BytePtr>();
+            runargs = new DArray<BytePtr>();
+            objfiles = new DArray<BytePtr>();
+            linkswitches = new DArray<BytePtr>();
+            libfiles = new DArray<BytePtr>();
+            dllfiles = new DArray<BytePtr>();
+        }
+        public Param copy(){
+            Param r = new Param();
+            r.obj = obj;
+            r.link = link;
+            r.dll = dll;
+            r.lib = lib;
+            r.multiobj = multiobj;
+            r.oneobj = oneobj;
+            r.trace = trace;
+            r.tracegc = tracegc;
+            r.verbose = verbose;
+            r.vcg_ast = vcg_ast;
+            r.showColumns = showColumns;
+            r.vtls = vtls;
+            r.vgc = vgc;
+            r.vfield = vfield;
+            r.vcomplex = vcomplex;
+            r.symdebug = symdebug;
+            r.symdebugref = symdebugref;
+            r.alwaysframe = alwaysframe;
+            r.optimize = optimize;
+            r.map = map;
+            r.is64bit = is64bit;
+            r.isLP64 = isLP64;
+            r.isLinux = isLinux;
+            r.isOSX = isOSX;
+            r.isWindows = isWindows;
+            r.isFreeBSD = isFreeBSD;
+            r.isOpenBSD = isOpenBSD;
+            r.isDragonFlyBSD = isDragonFlyBSD;
+            r.isSolaris = isSolaris;
+            r.hasObjectiveC = hasObjectiveC;
+            r.mscoff = mscoff;
+            r.useDeprecated = useDeprecated;
+            r.stackstomp = stackstomp;
+            r.useUnitTests = useUnitTests;
+            r.useInline = useInline;
+            r.useDIP25 = useDIP25;
+            r.noDIP25 = noDIP25;
+            r.release = release;
+            r.preservePaths = preservePaths;
+            r.warnings = warnings;
+            r.pic = pic;
+            r.color = color;
+            r.cov = cov;
+            r.covPercent = covPercent;
+            r.nofloat = nofloat;
+            r.ignoreUnsupportedPragmas = ignoreUnsupportedPragmas;
+            r.useModuleInfo = useModuleInfo;
+            r.useTypeInfo = useTypeInfo;
+            r.useExceptions = useExceptions;
+            r.betterC = betterC;
+            r.addMain = addMain;
+            r.allInst = allInst;
+            r.check10378 = check10378;
+            r.bug10378 = bug10378;
+            r.fix16997 = fix16997;
+            r.fixAliasThis = fixAliasThis;
+            r.vsafe = vsafe;
+            r.ehnogc = ehnogc;
+            r.dtorFields = dtorFields;
+            r.fieldwise = fieldwise;
+            r.cplusplus = cplusplus;
+            r.markdown = markdown;
+            r.vmarkdown = vmarkdown;
+            r.showGaggedErrors = showGaggedErrors;
+            r.printErrorContext = printErrorContext;
+            r.manual = manual;
+            r.usage = usage;
+            r.mcpuUsage = mcpuUsage;
+            r.transitionUsage = transitionUsage;
+            r.checkUsage = checkUsage;
+            r.checkActionUsage = checkActionUsage;
+            r.revertUsage = revertUsage;
+            r.previewUsage = previewUsage;
+            r.externStdUsage = externStdUsage;
+            r.logo = logo;
+            r.cpu = cpu;
+            r.useInvariants = useInvariants;
+            r.useIn = useIn;
+            r.useOut = useOut;
+            r.useArrayBounds = useArrayBounds;
+            r.useAssert = useAssert;
+            r.useSwitchError = useSwitchError;
+            r.boundscheck = boundscheck;
+            r.checkAction = checkAction;
+            r.errorLimit = errorLimit;
+            r.argv0 = argv0.copy();
+            r.modFileAliasStrings = modFileAliasStrings.copy();
+            r.imppath = imppath;
+            r.fileImppath = fileImppath;
+            r.objdir = objdir.copy();
+            r.objname = objname.copy();
+            r.libname = libname.copy();
+            r.doDocComments = doDocComments;
+            r.docdir = docdir;
+            r.docname = docname;
+            r.ddocfiles = ddocfiles.copy();
+            r.doHdrGeneration = doHdrGeneration;
+            r.hdrdir = hdrdir.copy();
+            r.hdrname = hdrname.copy();
+            r.hdrStripPlainFunctions = hdrStripPlainFunctions;
+            r.doJsonGeneration = doJsonGeneration;
+            r.jsonfilename = jsonfilename.copy();
+            r.jsonFieldFlags = jsonFieldFlags;
+            r.mixinOut = mixinOut;
+            r.mixinFile = mixinFile;
+            r.mixinLines = mixinLines;
+            r.debuglevel = debuglevel;
+            r.debugids = debugids;
+            r.versionlevel = versionlevel;
+            r.versionids = versionids;
+            r.defaultlibname = defaultlibname.copy();
+            r.debuglibname = debuglibname.copy();
+            r.mscrtlib = mscrtlib.copy();
+            r.moduleDepsFile = moduleDepsFile.copy();
+            r.moduleDeps = moduleDeps;
+            r.debugb = debugb;
+            r.debugc = debugc;
+            r.debugf = debugf;
+            r.debugr = debugr;
+            r.debugx = debugx;
+            r.debugy = debugy;
+            r.run = run;
+            r.runargs = runargs.copy();
+            r.objfiles = objfiles.copy();
+            r.linkswitches = linkswitches.copy();
+            r.libfiles = libfiles.copy();
+            r.dllfiles = dllfiles.copy();
+            r.deffile = deffile.copy();
+            r.resfile = resfile.copy();
+            r.exefile = exefile.copy();
+            r.mapfile = mapfile.copy();
+            return r;
+        }
         public Param(boolean obj, boolean link, boolean dll, boolean lib, boolean multiobj, boolean oneobj, boolean trace, boolean tracegc, boolean verbose, boolean vcg_ast, boolean showColumns, boolean vtls, boolean vgc, boolean vfield, boolean vcomplex, byte symdebug, boolean symdebugref, boolean alwaysframe, boolean optimize, boolean map, boolean is64bit, boolean isLP64, boolean isLinux, boolean isOSX, boolean isWindows, boolean isFreeBSD, boolean isOpenBSD, boolean isDragonFlyBSD, boolean isSolaris, boolean hasObjectiveC, boolean mscoff, byte useDeprecated, boolean stackstomp, boolean useUnitTests, boolean useInline, boolean useDIP25, boolean noDIP25, boolean release, boolean preservePaths, byte warnings, boolean pic, boolean color, boolean cov, byte covPercent, boolean nofloat, boolean ignoreUnsupportedPragmas, boolean useModuleInfo, boolean useTypeInfo, boolean useExceptions, boolean betterC, boolean addMain, boolean allInst, boolean check10378, boolean bug10378, boolean fix16997, boolean fixAliasThis, boolean vsafe, boolean ehnogc, boolean dtorFields, boolean fieldwise, int cplusplus, boolean markdown, boolean vmarkdown, boolean showGaggedErrors, boolean printErrorContext, boolean manual, boolean usage, boolean mcpuUsage, boolean transitionUsage, boolean checkUsage, boolean checkActionUsage, boolean revertUsage, boolean previewUsage, boolean externStdUsage, boolean logo, int cpu, byte useInvariants, byte useIn, byte useOut, byte useArrayBounds, byte useAssert, byte useSwitchError, byte boundscheck, byte checkAction, int errorLimit, ByteSlice argv0, DArray<BytePtr> modFileAliasStrings, DArray<BytePtr> imppath, DArray<BytePtr> fileImppath, ByteSlice objdir, ByteSlice objname, ByteSlice libname, boolean doDocComments, BytePtr docdir, BytePtr docname, DArray<BytePtr> ddocfiles, boolean doHdrGeneration, ByteSlice hdrdir, ByteSlice hdrname, boolean hdrStripPlainFunctions, boolean doJsonGeneration, ByteSlice jsonfilename, int jsonFieldFlags, OutBuffer mixinOut, BytePtr mixinFile, int mixinLines, int debuglevel, DArray<BytePtr> debugids, int versionlevel, DArray<BytePtr> versionids, ByteSlice defaultlibname, ByteSlice debuglibname, ByteSlice mscrtlib, ByteSlice moduleDepsFile, OutBuffer moduleDeps, boolean debugb, boolean debugc, boolean debugf, boolean debugr, boolean debugx, boolean debugy, boolean run, DArray<BytePtr> runargs, DArray<BytePtr> objfiles, DArray<BytePtr> linkswitches, DArray<BytePtr> libfiles, DArray<BytePtr> dllfiles, ByteSlice deffile, ByteSlice resfile, ByteSlice exefile, ByteSlice mapfile) {
             this.obj = obj;
             this.link = link;
@@ -548,12 +691,12 @@ public class globals {
         }
 
         public  void _init() {
-            this.obj_ext =  new ByteSlice("o");
-            this.lib_ext =  new ByteSlice("a");
-            this.dll_ext =  new ByteSlice("so");
+            this.obj_ext =  new ByteSlice("o").copy();
+            this.lib_ext =  new ByteSlice("a").copy();
+            this.dll_ext =  new ByteSlice("so").copy();
             this.run_noext = true;
-            this._version =  new ByteSlice("v2.086.0\n\u0000");
-            this.vendor =  new ByteSlice("Digital Mars D");
+            this._version =  new ByteSlice("v2.086.0\n\u0000").copy();
+            this.vendor =  new ByteSlice("Digital Mars D").copy();
             this.params.color = Console.detectTerminal();
         }
 
@@ -596,7 +739,39 @@ public class globals {
             return this.params.betterC ? new ByteSlice() : (this.params.symdebug) != 0 ? this.params.debuglibname : this.params.defaultlibname;
         }
 
-        public Global(){}
+        public Global(){
+            params = new Param();
+        }
+        public Global copy(){
+            Global r = new Global();
+            r.inifilename = inifilename.copy();
+            r.mars_ext = mars_ext.copy();
+            r.obj_ext = obj_ext.copy();
+            r.lib_ext = lib_ext.copy();
+            r.dll_ext = dll_ext.copy();
+            r.doc_ext = doc_ext.copy();
+            r.ddoc_ext = ddoc_ext.copy();
+            r.hdr_ext = hdr_ext.copy();
+            r.json_ext = json_ext.copy();
+            r.map_ext = map_ext.copy();
+            r.run_noext = run_noext;
+            r.copyright = copyright.copy();
+            r.written = written.copy();
+            r.path = path;
+            r.filePath = filePath;
+            r._version = _version.copy();
+            r.vendor = vendor.copy();
+            r.params = params.copy();
+            r.errors = errors;
+            r.warnings = warnings;
+            r.gag = gag;
+            r.gaggedErrors = gaggedErrors;
+            r.gaggedWarnings = gaggedWarnings;
+            r.console = console;
+            r.versionids = versionids;
+            r.debugids = debugids;
+            return r;
+        }
         public Global(ByteSlice inifilename, ByteSlice mars_ext, ByteSlice obj_ext, ByteSlice lib_ext, ByteSlice dll_ext, ByteSlice doc_ext, ByteSlice ddoc_ext, ByteSlice hdr_ext, ByteSlice json_ext, ByteSlice map_ext, boolean run_noext, ByteSlice copyright, ByteSlice written, DArray<BytePtr> path, DArray<BytePtr> filePath, ByteSlice _version, ByteSlice vendor, Param params, int errors, int warnings, int gag, int gaggedErrors, int gaggedWarnings, Object console, DArray<Identifier> versionids, DArray<Identifier> debugids) {
             this.inifilename = inifilename;
             this.mars_ext = mars_ext;
@@ -711,7 +886,15 @@ public class globals {
             return this.filename != null;
         }
 
-        public Loc(){}
+        public Loc(){
+        }
+        public Loc copy(){
+            Loc r = new Loc();
+            r.filename = filename;
+            r.linnum = linnum;
+            r.charnum = charnum;
+            return r;
+        }
     }
 
     public static class LINK 

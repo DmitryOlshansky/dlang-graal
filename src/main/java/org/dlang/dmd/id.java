@@ -1059,7 +1059,12 @@ public class id {
             Id.wchar_t = null;
         }
 
-        public Id(){}
+        public Id(){
+        }
+        public Id copy(){
+            Id r = new Id();
+            return r;
+        }
     }
     static Slice<Msgtable> msgtable = slice(initializer_0);
     public static class Msgtable
@@ -1070,7 +1075,14 @@ public class id {
             return this.name_.getLength() != 0 ? this.name_ : this.ident;
         }
 
-        public Msgtable(){}
+        public Msgtable(){
+        }
+        public Msgtable copy(){
+            Msgtable r = new Msgtable();
+            r.ident = ident.copy();
+            r.name_ = name_.copy();
+            return r;
+        }
         public Msgtable(ByteSlice ident, ByteSlice name_) {
             this.ident = ident;
             this.name_ = name_;

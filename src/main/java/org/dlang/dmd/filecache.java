@@ -79,7 +79,14 @@ public class filecache {
             this.files.reset(0);
         }
 
-        public FileCache(){}
+        public FileCache(){
+            files = new StringTable();
+        }
+        public FileCache copy(){
+            FileCache r = new FileCache();
+            r.files = files.copy();
+            return r;
+        }
         public FileCache(StringTable files) {
             this.files = files;
         }

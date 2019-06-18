@@ -8,6 +8,8 @@ class Slice<T> (var data: Array<T?>, var beg: Int, var end: Int) : RootObject() 
 
     constructor() : this(emptyArray<Any>() as Array<T?>, 0, 0)
 
+    fun copy() = Slice(data, beg, end)
+
     operator fun set(idx: Int, value: T?) {
         data[beg+idx] = value
     }
@@ -81,6 +83,8 @@ class ByteSlice(var data: ByteArray, var beg: Int, var end: Int): RootObject() {
     constructor(s: String) : this(s.toByteArray())
 
     constructor(arr: ByteArray) : this(arr, 0, arr.size)
+
+    fun copy() = ByteSlice(data, beg, end)
 
     operator fun set(idx: Int, value: Byte) {
         data[beg+idx] = value
@@ -162,6 +166,8 @@ class CharSlice(val data: CharArray, var beg: Int, var end: Int) : RootObject() 
 
     constructor(arr: CharArray) : this(arr, 0, arr.size)
 
+    fun copy() = CharSlice(data, beg, end)
+
     operator fun set(idx: Int, value: Char) {
         data[beg+idx] = value
     }
@@ -216,6 +222,8 @@ class CharSlice(val data: CharArray, var beg: Int, var end: Int) : RootObject() 
 class IntSlice(val data: IntArray, var beg: Int, var end: Int) : RootObject() {
 
     constructor(arr: IntArray) : this(arr, 0, arr.size)
+
+    fun copy() = IntSlice(data, beg, end)
 
     operator fun set(idx: Int, value: Int) {
         data[beg+idx] = value

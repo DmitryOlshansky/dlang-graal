@@ -1073,6 +1073,13 @@ public:
         else if(e.e1.type.ty == Tstruct && e.e2.type.ty == Tint32) {
             buf.writestring("null");
         }
+        else if ((e.e1.type.ty == Tstruct || e.e1.type.ty == Tarray) 
+        && (e.e2.type.ty == Tstruct || e.e2.type.ty == Tarray)) {
+            expToBuffer(e.e1, PREC.primary, buf, opts);
+            buf.writestring(" = ");
+            expToBuffer(e.e2, PREC.primary, buf, opts);
+            buf.writestring(".copy()");
+        }
         else
             visit(cast(BinExp)e);
     }
