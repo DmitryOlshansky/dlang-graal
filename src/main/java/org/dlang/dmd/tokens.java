@@ -413,7 +413,7 @@ public class tokens {
                                 }
                                 buf.writeByte(34);
                                 if ((this.postfix) != 0)
-                                    buf.writeByte((int)this.postfix);
+                                    buf.writeByte((this.postfix & 0xFF));
                                 p = buf.extractChars();
                             }
                             finally {
@@ -433,12 +433,12 @@ public class tokens {
                                         int i = __key59;
                                         if ((i) != 0)
                                             buf.writeByte(32);
-                                        buf.printf( new ByteSlice("%02x"), (int)this.ustring.get(i));
+                                        buf.printf( new ByteSlice("%02x"), (this.ustring.get(i) & 0xFF));
                                     }
                                 }
                                 buf.writeByte(34);
                                 if ((this.postfix) != 0)
-                                    buf.writeByte((int)this.postfix);
+                                    buf.writeByte((this.postfix & 0xFF));
                                 buf.writeByte(0);
                                 p = buf.extractData();
                                 break;

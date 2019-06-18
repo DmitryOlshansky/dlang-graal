@@ -571,11 +571,11 @@ public class globals {
                     BytePtr p = toBytePtr(this._version).plus(1);
                     for (; ;p.postInc()){
                         byte c = p.get(0);
-                        if ((isdigit((int)c)) != 0)
+                        if ((isdigit((c & 0xFF))) != 0)
                         {
-                            minor = minor * 10 + (int)c - 48;
+                            minor = minor * 10 + (c & 0xFF) - 48;
                         }
-                        else if (c == (byte)46)
+                        else if ((c & 0xFF) == 46)
                         {
                             if (point)
                                 break;

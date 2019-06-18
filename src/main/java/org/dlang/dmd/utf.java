@@ -143,8 +143,8 @@ public class utf {
         int i = ridx.value++;
         assert(i < len);
         byte u = s.get(i);
-        rresult.value = u;
-        int n = utf.utf_decodeCharUTF8_STRIDE.get((int)u);
+        rresult.value = (u & 0xFF);
+        int n = utf.utf_decodeCharUTF8_STRIDE.get((u & 0xFF));
         switch (n)
         {
             case 1:
@@ -160,17 +160,17 @@ public class utf {
         }
         if (len < i + n)
             return new BytePtr("Truncated UTF-8 sequence");
-        int c = (u & ((byte)1 << ((byte)7 - n)) - (byte)1);
+        int c = ((u & 0xFF) & (1 << (7 - n)) - 1);
         byte u2 = s.get(i += 1);
-        if ((u & (byte)254) == (byte)192 || u == (byte)224 && (u2 & (byte)224) == (byte)128 || u == (byte)240 && (u2 & (byte)240) == (byte)128 || u == (byte)248 && (u2 & (byte)248) == (byte)128 || u == (byte)252 && (u2 & (byte)252) == (byte)128)
+        if (((u & 0xFF) & 254) == 192 || (u & 0xFF) == 224 && ((u2 & 0xFF) & 224) == 128 || (u & 0xFF) == 240 && ((u2 & 0xFF) & 240) == 128 || (u & 0xFF) == 248 && ((u2 & 0xFF) & 248) == 128 || (u & 0xFF) == 252 && ((u2 & 0xFF) & 252) == 128)
             return new BytePtr("Overlong UTF-8 sequence");
         {
             n += i - 1;
             for (; i != n;i += 1){
                 u = s.get(i);
-                if ((u & (byte)192) != (byte)128)
+                if (((u & 0xFF) & 192) != 128)
                     return new BytePtr("Invalid trailing code unit");
-                c = (c << 6 | (u & (byte)63));
+                c = (c << 6 | ((u & 0xFF) & 63));
             }
         }
         if (!(utf_isValidDchar(c)))

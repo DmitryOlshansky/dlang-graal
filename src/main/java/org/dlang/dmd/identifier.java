@@ -101,7 +101,7 @@ public class identifier {
             else
             {
                 p = this.toChars();
-                if (p.get(0) == (byte)95)
+                if ((p.get(0) & 0xFF) == 95)
                 {
                     if (strncmp(p,  new ByteSlice("_staticCtor"), 11) == 0)
                         p = new BytePtr("static this");
@@ -193,7 +193,7 @@ public class identifier {
         }
 
         public static boolean isValidIdentifier(ByteSlice str) {
-            if (str.getLength() == 0 || str.get(0) >= (byte)48 && str.get(0) <= (byte)57)
+            if (str.getLength() == 0 || (str.get(0) & 0xFF) >= 48 && (str.get(0) & 0xFF) <= 57)
             {
                 return false;
             }

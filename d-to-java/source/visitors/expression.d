@@ -712,11 +712,11 @@ public:
         }
         else if (isByteSized(e.e1) && !isByteSized(e.e2)) {
             oldIntPromotion = opts.reverseIntPromotion;
-            opts.reverseIntPromotion = true;
+            //opts.reverseIntPromotion = true;
         }
         else if(!isByteSized(e.e1) && isByteSized(e.e2)){
             oldIntPromotion = opts.reverseIntPromotion;
-            opts.reverseIntPromotion = true;
+            //opts.reverseIntPromotion = true;
         }
         else if(e.e1.type.ty == Tpointer && (e.e2.type.isTypeBasic() || e.e2.type.ty == Tpointer)) {
             string opName = "";
@@ -943,6 +943,7 @@ public:
         bool fromClass = false;
         bool toVoidPtr = false;
         bool toVoid = false;
+        bool fromByte = false;
         if (e.to) switch(e.to.ty) {
             case Tvoid:
                 toVoid = true;
@@ -964,6 +965,11 @@ public:
             default:
         }
         if (e.e1.type) switch(e.e1.type.ty) {
+            case Tchar:
+            case Tint8:
+            case Tuns8:
+                fromByte = true;
+                break;
             case Tbool:
                 fromBool = true;
                 break;
@@ -985,6 +991,11 @@ public:
             buf.writestring("(");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
             buf.writestring(" ? 1 : 0)");
+        }
+        else if(fromByte && intTo) {
+            buf.writestring("(");
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
+            buf.writestring(" & 0xFF)");
         }
         else if (wasInt && intTo) expToBuffer(e.e1, precedence[e.op], buf, opts);
         else if(opts.reverseIntPromotion && intTo)

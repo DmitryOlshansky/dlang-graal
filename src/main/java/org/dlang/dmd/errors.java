@@ -101,7 +101,7 @@ public class errors {
 
         public  void deprecation(Loc loc, BytePtr format, Slice<Object> args) {
             vdeprecation(loc, format, args, null, null);
-            if (this.useDeprecated == (byte)0)
+            if (this.useDeprecated == 0)
                 this.errorCount_++;
             else
                 this.deprecationCount_++;
@@ -245,12 +245,12 @@ public class errors {
     }
 
     public static void vwarning(Loc loc, BytePtr format, Slice<Object> ap) {
-        if (global.params.warnings != (byte)2)
+        if (global.params.warnings != 2)
         {
             if (!((global.gag) != 0))
             {
                 verrorPrint(loc, Color.brightYellow, new BytePtr("Warning: "), format, ap, null, null);
-                if (global.params.warnings == (byte)0)
+                if (global.params.warnings == 0)
                     global.warnings++;
             }
             else
@@ -261,14 +261,14 @@ public class errors {
     }
 
     public static void vwarningSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
-        if (global.params.warnings != (byte)2 && !((global.gag) != 0))
+        if (global.params.warnings != 2 && !((global.gag) != 0))
             verrorPrint(loc, Color.brightYellow, new BytePtr("       "), format, ap, null, null);
     }
 
     public static void vdeprecation(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2) {
-        if (global.params.useDeprecated == (byte)0)
+        if (global.params.useDeprecated == 0)
             verror(loc, format, ap, p1, p2, errors.vdeprecationheader);
-        else if (global.params.useDeprecated == (byte)1)
+        else if (global.params.useDeprecated == 1)
         {
             if (!((global.gag) != 0))
             {
@@ -296,9 +296,9 @@ public class errors {
     }
 
     public static void vdeprecationSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
-        if (global.params.useDeprecated == (byte)0)
+        if (global.params.useDeprecated == 0)
             verrorSupplemental(loc, format, ap);
-        else if (global.params.useDeprecated == (byte)1 && !((global.gag) != 0))
+        else if (global.params.useDeprecated == 1 && !((global.gag) != 0))
             verrorPrint(loc, Color.brightCyan, new BytePtr("       "), format, ap, null, null);
     }
 
@@ -318,7 +318,7 @@ public class errors {
             int i = offset;
             for (; i < (buf).offset;i += 1){
                 byte c = (byte)(buf).data.get(i);
-                switch ((int)c)
+                switch ((c & 0xFF))
                 {
                     case (byte)96:
                         if (inBacktick)
@@ -416,7 +416,7 @@ public class errors {
                     break;
                 }
             }
-            if (highlight != (byte)0)
+            if (highlight != 0)
             {
                 res.writeByte(255);
                 res.writeByte(highlight);
@@ -426,7 +426,7 @@ public class errors {
             }
             else
                 res.writestring(tok.ptr.slice(0,((lex.p.minus(tok.ptr)) / 1)));
-            if (tok.value == (byte)11)
+            if (tok.value == 11)
                 break;
             lastp = lex.p;
         }
@@ -444,15 +444,15 @@ public class errors {
             int i = 0;
             for (; i < (buf).offset;i += 1){
                 byte c = (buf).data.get(i);
-                if (c == (byte)255)
+                if ((c & 0xFF) == 255)
                 {
                     byte color = (buf).data.get(i += 1);
-                    if (color == (byte)0)
+                    if ((color & 0xFF) == 0)
                     {
                         (con).resetColor();
                         colors = false;
                     }
-                    else if (color == Color.white)
+                    else if ((color & 0xFF) == Color.white)
                     {
                         (con).resetColor();
                         (con).setColorBright(true);
@@ -465,7 +465,7 @@ public class errors {
                     }
                 }
                 else
-                    fputc((int)c, (con).fp());
+                    fputc((c & 0xFF), (con).fp());
             }
         }
         {

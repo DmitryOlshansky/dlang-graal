@@ -32,11 +32,11 @@ public class filecache {
             BytePtr buf = toBytePtr((this.buffer).data);
             for (; (buf.get(0)) != 0;){
                 BytePtr prevBuf = buf;
-                for (; buf.get(0) != (byte)10 && buf.get(0) != (byte)13;buf.postInc()){
+                for (; (buf.get(0) & 0xFF) != 10 && (buf.get(0) & 0xFF) != 13;buf.postInc()){
                     if (!((buf.get(0)) != 0))
                         break;
                 }
-                if (buf.get(0) == (byte)13 && (buf.plus((byte)1)).get(0) == (byte)10)
+                if ((buf.get(0) & 0xFF) == 13 && ((buf.plus(1)).get(0) & 0xFF) == 10)
                     buf.postInc();
                 this.lines.append(toByteSlice(prevBuf.slice(0,((buf.minus(prevBuf)) / 1))));
                 buf.postInc();

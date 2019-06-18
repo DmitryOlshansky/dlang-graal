@@ -44,7 +44,7 @@ public class entity {
     private static final NameId[] initializer_26 = {new NameId( new ByteSlice("Zacute"), 377), new NameId( new ByteSlice("zacute"), 378), new NameId( new ByteSlice("Zcaron"), 381), new NameId( new ByteSlice("zcaron"), 382), new NameId( new ByteSlice("Zcy"), 1047), new NameId( new ByteSlice("zcy"), 1079), new NameId( new ByteSlice("Zdot"), 379), new NameId( new ByteSlice("zdot"), 380), new NameId( new ByteSlice("zeetrf"), 8488), new NameId( new ByteSlice("ZeroWidthSpace"), 8203), new NameId( new ByteSlice("Zeta"), 918), new NameId( new ByteSlice("zeta"), 950), new NameId( new ByteSlice("Zfr"), 8488), new NameId( new ByteSlice("zfr"), 120119), new NameId( new ByteSlice("Zgr"), 918), new NameId( new ByteSlice("zgr"), 950), new NameId( new ByteSlice("ZHcy"), 1046), new NameId( new ByteSlice("zhcy"), 1078), new NameId( new ByteSlice("zigrarr"), 8669), new NameId( new ByteSlice("Zopf"), 8484), new NameId( new ByteSlice("zopf"), 120171), new NameId( new ByteSlice("Zscr"), 119989), new NameId( new ByteSlice("zscr"), 120015), new NameId( new ByteSlice("zwj"), 8205), new NameId( new ByteSlice("zwnj"), 8204)};
 
     public static int HtmlNamedEntity(BytePtr p, int length) {
-        int tableIndex = tolower((int)p.get(0)) - 97;
+        int tableIndex = tolower((p.get(0) & 0xFF)) - 97;
         if (tableIndex >= 0 && tableIndex < 26)
         {
             {
