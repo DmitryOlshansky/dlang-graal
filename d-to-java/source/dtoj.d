@@ -54,6 +54,7 @@ Module runParser(Ast = ASTCodegen)(
         parseModule, parseImportPathsFromConfig;
     import dmd.globals : global;
 
+    global.params.is64bit = false;
     global.params.mscoff = global.params.is64bit;
     global.params.useUnitTests = unittests;
 

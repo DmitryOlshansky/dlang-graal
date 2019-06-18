@@ -840,7 +840,7 @@ public class globals {
         public  Loc(BytePtr filename, int linnum, int charnum) {
             this.linnum = linnum;
             this.charnum = charnum;
-            this.filename = filename;
+            this.filename = pcopy(filename);
         }
 
         public  BytePtr toChars(boolean showColumns) {

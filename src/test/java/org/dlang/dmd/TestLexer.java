@@ -9,22 +9,22 @@ import static org.dlang.dmd.root.ShimsKt.toBytePtr;
 
 public class TestLexer extends TestCase {
 
-    public static void test_0() {
-        ByteSlice text =  new ByteSlice("int");
+    public void test_0() {
+        ByteSlice text =  new ByteSlice("int\u0000");
         errors.StderrDiagnosticReporter diagnosticReporter = new errors.StderrDiagnosticReporter(global.params.useDeprecated);
         lexer.Lexer lex1 = new lexer.Lexer(null, toBytePtr(text), 0, text.getLength(), false, false, diagnosticReporter);
         byte tok = tokens.TOK.reserved;
         tok = lex1.nextToken();
-        assert((tok & 0xFF) == 133);
+        assertEquals(133, (tok & 0xFF));
         tok = lex1.nextToken();
-        assert(tok == 11);
+        assertTrue(tok == 11);
         tok = lex1.nextToken();
-        assert(tok == 11);
+        assertTrue(tok == 11);
         tok = lex1.nextToken();
-        assert(tok == 11);
+        assertTrue(tok == 11);
     }
 
-    public static void test_1() {
+    public void test_1() {
         int errors = global.startGagging();
         {
             Slice<ByteSlice> __r51 = lexer.__unittest_L168_C1testcases;

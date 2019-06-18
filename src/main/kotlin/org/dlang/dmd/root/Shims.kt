@@ -210,6 +210,14 @@ fun slice(arr: CharArray) = CharSlice(arr)
 
 fun slice(arr: IntArray) = IntSlice(arr)
 
+fun<T> pcopy(ptr: Ptr<T>?) = ptr?.copy()
+
+fun pcopy(ptr: BytePtr?) = ptr?.copy()
+
+fun pcopy(ptr: IntPtr?) = ptr?.copy()
+
+fun pcopy(any: Any?) = any
+
 fun toByteSlice(slice: ByteSlice) = slice
 
 fun toBytePtr(any: Any): BytePtr =

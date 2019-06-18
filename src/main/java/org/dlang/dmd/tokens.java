@@ -282,14 +282,14 @@ public class tokens {
         public byte postfix;
         public Identifier ident;
         public static Slice<ByteSlice> tochars = slice(initializer_1);
-        {
+        static {
             Identifier.initTable();
             {
                 ByteSlice __r55 = keywords;
                 int __key56 = 0;
                 for (; __key56 < __r55.getLength();__key56 += 1) {
                     byte kw = __r55.get(__key56);
-                    Identifier.idPool(toBytePtr(Token.tochars.get(kw)), Token.tochars.get(kw).getLength(), kw);
+                    Identifier.idPool(toBytePtr(Token.tochars.get((kw & 0xFF))), Token.tochars.get((kw & 0xFF)).getLength(), (kw & 0xFF));
                 }
             }
         }
@@ -299,7 +299,7 @@ public class tokens {
                 int __key58 = 0;
                 for (; __key58 < __r57.getLength();__key58 += 1) {
                     byte kw = __r57.get(__key58);
-                    if (kw == this.value)
+                    if ((kw & 0xFF) == (this.value & 0xFF))
                         return 1;
                 }
             }
@@ -310,7 +310,7 @@ public class tokens {
             BytePtr s = toBytePtr(Mem.xmalloc(length + 1));
             memcpy(s, ptr, length);
             s.set(length, (byte)0);
-            this.ustring = s;
+            this.ustring = pcopy(s);
             this.len = length;
             this.postfix = (byte)0;
         }
@@ -320,7 +320,7 @@ public class tokens {
         }
 
         public  void setString() {
-            this.ustring = new BytePtr("");
+            this.ustring = pcopy(new BytePtr(""));
             this.len = 0;
             this.postfix = (byte)0;
         }
@@ -331,7 +331,7 @@ public class tokens {
                 int __dispatch0 = 0;
                 dispatched_0:
                 do {
-                    switch (__dispatch0 != 0 ? __dispatch0 : this.value)
+                    switch (__dispatch0 != 0 ? __dispatch0 : (this.value & 0xFF))
                     {
                         case 105:
                             sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%d"), (int)this.intvalue);
@@ -417,7 +417,7 @@ public class tokens {
                                     buf.writeByte(34);
                                     if ((this.postfix) != 0)
                                         buf.writeByte((this.postfix & 0xFF));
-                                    p = buf.extractChars();
+                                    p = pcopy(buf.extractChars());
                                 }
                                 finally {
                                 }
@@ -443,7 +443,7 @@ public class tokens {
                                     if ((this.postfix) != 0)
                                         buf.writeByte((this.postfix & 0xFF));
                                     buf.writeByte(0);
-                                    p = buf.extractData();
+                                    p = pcopy(buf.extractData());
                                     break;
                                 }
                                 finally {
@@ -477,11 +477,11 @@ public class tokens {
                         case 146:
                         case 147:
                         case 128:
-                            p = this.ident.toChars();
+                            p = pcopy(this.ident.toChars());
                             break;
                         default:
                         {
-                            p = Token.toChars(this.value);
+                            p = pcopy(Token.toChars(this.value));
                             break;
                         }
                     }
@@ -495,7 +495,7 @@ public class tokens {
         }
 
         public static ByteSlice asString(byte value) {
-            return Token.tochars.get(value);
+            return Token.tochars.get((value & 0xFF));
         }
 
         public Token(){

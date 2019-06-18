@@ -93,30 +93,30 @@ public class identifier {
         public  BytePtr toHChars2() {
             BytePtr p = null;
             if (this.equals(Id.ctor))
-                p = new BytePtr("this");
+                p = pcopy(new BytePtr("this"));
             else if (this.equals(Id.dtor))
-                p = new BytePtr("~this");
+                p = pcopy(new BytePtr("~this"));
             else if (this.equals(Id.unitTest))
-                p = new BytePtr("unittest");
+                p = pcopy(new BytePtr("unittest"));
             else if (this.equals(Id.dollar))
-                p = new BytePtr("$");
+                p = pcopy(new BytePtr("$"));
             else if (this.equals(Id.withSym))
-                p = new BytePtr("with");
+                p = pcopy(new BytePtr("with"));
             else if (this.equals(Id.result))
-                p = new BytePtr("result");
+                p = pcopy(new BytePtr("result"));
             else if (this.equals(Id.returnLabel))
-                p = new BytePtr("return");
+                p = pcopy(new BytePtr("return"));
             else
             {
-                p = this.toChars();
+                p = pcopy(this.toChars());
                 if ((p.get(0) & 0xFF) == 95)
                 {
                     if (strncmp(p,  new ByteSlice("_staticCtor"), 11) == 0)
-                        p = new BytePtr("static this");
+                        p = pcopy(new BytePtr("static this"));
                     else if (strncmp(p,  new ByteSlice("_staticDtor"), 11) == 0)
-                        p = new BytePtr("static ~this");
+                        p = pcopy(new BytePtr("static ~this"));
                     else if (strncmp(p,  new ByteSlice("__invariant"), 11) == 0)
-                        p = new BytePtr("invariant");
+                        p = pcopy(new BytePtr("invariant"));
                 }
             }
             return p;
@@ -144,16 +144,16 @@ public class identifier {
 
         public static Identifier generateIdWithLoc(ByteSlice prefix, Loc loc) {
             OutBuffer idBuf = new OutBuffer();
+            Function0<Integer> __lambda7 = new Function0<Integer>(){
+                public Integer invoke(){
+                    return 1;
+                }
+            };
             Function1<Integer,Integer> __lambda8 = new Function1<Integer,Integer>(){
                 public Integer invoke(Integer counter){
                     idBuf.writestring( new ByteSlice("_"));
                     idBuf.print((long)counter);
                     return counter + 1;
-                }
-            };
-            Function0<Integer> __lambda7 = new Function0<Integer>(){
-                public Integer invoke(){
-                    return 1;
                 }
             };
             try {
@@ -179,7 +179,7 @@ public class identifier {
             if (!(id != null))
             {
                 id = new Identifier((sv).asString(), 120);
-                (sv).ptrvalue = id;
+                (sv).ptrvalue = pcopy((id));
             }
             return id;
         }
@@ -192,7 +192,7 @@ public class identifier {
             StringValue sv = Identifier.stringtable.insert(s, null);
             assert(sv != null);
             Identifier id = new Identifier((sv).asString(), value);
-            (sv).ptrvalue = id;
+            (sv).ptrvalue = pcopy((id));
             return id;
         }
 

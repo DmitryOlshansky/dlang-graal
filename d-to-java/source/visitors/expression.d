@@ -938,6 +938,8 @@ public:
                 break;
             case Tenum:
                 fromEnum = true;
+                if (e.e1.type.isTypeEnum().memType.isJavaByte)
+                    fromByte = true;
                 break;
             default:
         }
@@ -1064,11 +1066,20 @@ public:
             expToBuffer(e.e2, PREC.primary, buf, opts);
             buf.writeByte(')');
         }
-        else if(e.e1.type.ty == Tpointer && e.e1.type.nextOf.ty == Tchar) {
-            auto old = opts.wantCharPtr;
-            opts.wantCharPtr = true;
-            scope(exit) opts.wantCharPtr = old;
-            visit(cast(BinExp)e);
+        else if ((e.e1.type.ty == Tpointer && e.e1.type.nextOf.ty != Tstruct) && e.e2.type.ty == Tpointer) {
+            expToBuffer(e.e1, PREC.primary, buf, opts);
+            buf.writestring(" = ");
+            if (e.e2.isNullExp()) expToBuffer(e.e2, PREC.primary, buf, opts);
+            else {
+                buf.writestring("pcopy(");
+                auto old = opts.wantCharPtr;
+                scope(exit) opts.wantCharPtr = old;
+                if (e.e1.type.nextOf.ty == Tchar) {
+                    opts.wantCharPtr = true;
+                }
+                expToBuffer(e.e2, PREC.primary, buf, opts);
+                buf.writestring(")");
+            }
         }
         else if(e.e1.type.ty == Tstruct && e.e2.type.ty == Tint32) {
             buf.writestring("null");

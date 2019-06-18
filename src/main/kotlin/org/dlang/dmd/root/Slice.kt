@@ -151,7 +151,9 @@ class ByteSlice(var data: ByteArray, var beg: Int, var end: Int): RootObject() {
         }
 
     override fun hashCode(): Int {
-        return data.hashCode() + 17 * beg + 31 * end
+        var h = 0
+        data.forEach { h = h*31 + it }
+        return h + 17 * beg + 31 * end
     }
 
     override fun toString(): String = String(data, beg, end - beg)
@@ -231,7 +233,7 @@ class IntSlice(val data: IntArray, var beg: Int, var end: Int) : RootObject() {
 
     operator fun get(idx: Int): Int = data[beg+idx]
 
-    fun ptr() = IntPtrReal(data, beg)
+    fun ptr() = RawIntPtr(data, beg)
 
     fun slice(from:Int, to:Int): IntSlice {
         return IntSlice(data, from+beg, to+beg)

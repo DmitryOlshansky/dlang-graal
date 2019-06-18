@@ -559,7 +559,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(StaticCtorDeclaration ctor)
     {
-        buf.put("{\n");
+        buf.put("static {\n");
         buf.indent;
         if (ctor.fbody)
             ctor.fbody.accept(this);
@@ -570,7 +570,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     override void visit(SharedStaticCtorDeclaration ctor)
     {
         stack ~= ctor;
-        buf.put("{\n");
+        buf.put("static {\n");
         buf.indent;
         if (ctor.fbody)
             ctor.fbody.accept(this);
@@ -678,13 +678,18 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             buf.put("do {\n");
             buf.indent;
         }
+        auto cond = s.condition.toJava(opts);
+        stderr.writefln("Cond type: %s is cast %s", s.condition.type.toJava, s.condition.isCastExp() ? 1:0);
+        if (s.condition.type.toJava == "byte") {
+            cond = "(" ~ cond ~" & 0xFF)";
+        }
         buf.put("switch (");
         if (gotos) {
             buf.fmt("__dispatch%d != 0 ? __dispatch%d : %s", 
-                currentDispatch, currentDispatch, s.condition.toJava(opts));
+                currentDispatch, currentDispatch, cond);
         }
         else
-            buf.put(s.condition.toJava(opts));
+            buf.put(cond);
         buf.put(')');
         buf.put('\n');
         if (s._body)

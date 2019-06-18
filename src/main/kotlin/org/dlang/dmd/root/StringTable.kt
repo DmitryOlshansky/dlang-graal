@@ -64,10 +64,14 @@ class StringTable(private val table : HashMap<ByteSlice, StringValue?>) {
     fun insert(s: BytePtr, length: Int, value: Any?) = insert(s.slice(0, length), value)
 
     fun update(str: ByteSlice): StringValue {
-        val value = StringValue(str.hashCode(), null)
-        table[str] = value
-        // printf("update %.*s %p\n", cast(int)str.length, str.ptr, table[i].value ?: NULL);
-        return value
+        val v = table[str]
+        if (v !== null) return v
+        else {
+            val value = StringValue(str.hashCode(), null)
+            table[str] = value
+            // printf("update %.*s %p\n", cast(int)str.length, str.ptr, table[i].value ?: NULL);
+            return value
+        }
     }
 
     fun update(s: BytePtr, length: Int) = update(s.slice(0, length))

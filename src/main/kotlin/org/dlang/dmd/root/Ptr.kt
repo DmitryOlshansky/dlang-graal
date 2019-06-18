@@ -4,6 +4,8 @@ import java.lang.Exception
 import java.lang.StringBuilder
 
 abstract class Ptr<T> : RootObject() {
+    abstract fun copy(): Ptr<T>
+
     abstract operator fun set(idx: Int, value: T)
 
     abstract operator fun get(idx: Int): T?
@@ -12,6 +14,8 @@ abstract class Ptr<T> : RootObject() {
 class RawPtr<T>(val data: Array<T?>, var offset: Int) : Ptr<T>() {
 
     constructor(arr: Array<T?>): this(arr, 0)
+
+    override fun copy() = RawPtr(data, offset)
 
     operator fun inc(): RawPtr<T> {
         offset ++
@@ -75,6 +79,8 @@ class RawPtr<T>(val data: Array<T?>, var offset: Int) : Ptr<T>() {
 
 class RefPtr<T>(val ref: Ref<T>) : Ptr<T>() {
 
+    override fun copy() = RefPtr(ref)
+
     override operator fun get(idx: Int): T {
         require(idx == 0)
         return ref.value
@@ -98,6 +104,8 @@ class BytePtr(val data: ByteArray, var offset: Int) : RootObject() {
     constructor(n: Int): this(ByteArray(n))
 
     constructor(): this(ByteArray(0))
+
+    fun copy() = BytePtr(data, offset)
 
     operator fun inc():  BytePtr {
         offset ++
@@ -241,6 +249,8 @@ class ProxyCharPtr(val data: ByteArray, var offset: Int): CharPtr {
 }
 
 interface IntPtr {
+    fun copy(): IntPtr
+
     operator fun plus(delta: Int): IntPtr
 
     operator fun minus(delta: Int): IntPtr
@@ -254,13 +264,15 @@ interface IntPtr {
     operator fun get(idx: Int): Int
 }
 
-class IntPtrReal(val data: IntArray, var offset: Int) : IntPtr {
+class RawIntPtr(val data: IntArray, var offset: Int) : IntPtr {
 
     constructor(arr: IntArray) : this(arr, 0)
 
-    override operator fun plus(delta: Int) = IntPtrReal(data, offset+delta)
+    override fun copy(): RawIntPtr = RawIntPtr(data, offset)
 
-    override operator fun minus(delta: Int) = IntPtrReal(data, offset-delta)
+    override operator fun plus(delta: Int) = RawIntPtr(data, offset+delta)
+
+    override operator fun minus(delta: Int) = RawIntPtr(data, offset-delta)
 
     override operator fun plusAssign(delta: Int) {
         offset += delta
@@ -281,6 +293,9 @@ class IntPtrReal(val data: IntArray, var offset: Int) : IntPtr {
 class BadPointerArithmetic(message: String) : Exception(message)
 
 class IntRefPtr(val ref: IntRef) : IntPtr {
+
+    override fun copy(): IntPtr = IntRefPtr(ref)
+
     private fun fail(): IntPtr = throw BadPointerArithmetic("not allowed on int ref ptr")
 
     override fun plus(delta: Int): IntPtr = fail()
@@ -304,6 +319,9 @@ class IntRefPtr(val ref: IntRef) : IntPtr {
 }
 
 class ProxyIntPtr(val data: ByteArray, var offset: Int): IntPtr {
+
+    override fun copy(): IntPtr = ProxyIntPtr(data, offset)
+
     override operator fun plus(delta: Int) = ProxyIntPtr(data, offset + 4*delta)
 
     override operator fun minus(delta: Int) = ProxyIntPtr(data, offset - 4*delta)

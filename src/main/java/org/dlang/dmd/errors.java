@@ -101,7 +101,7 @@ public class errors {
 
         public  void deprecation(Loc loc, BytePtr format, Slice<Object> args) {
             vdeprecation(loc, format, args, null, null);
-            if (this.useDeprecated == 0)
+            if ((this.useDeprecated & 0xFF) == 0)
                 this.errorCount_++;
             else
                 this.deprecationCount_++;
@@ -245,12 +245,12 @@ public class errors {
     }
 
     public static void vwarning(Loc loc, BytePtr format, Slice<Object> ap) {
-        if (global.params.warnings != 2)
+        if ((global.params.warnings & 0xFF) != 2)
         {
             if (!((global.gag) != 0))
             {
                 verrorPrint(loc, Color.brightYellow, new BytePtr("Warning: "), format, ap, null, null);
-                if (global.params.warnings == 0)
+                if ((global.params.warnings & 0xFF) == 0)
                     global.warnings++;
             }
             else
@@ -261,14 +261,14 @@ public class errors {
     }
 
     public static void vwarningSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
-        if (global.params.warnings != 2 && !((global.gag) != 0))
+        if ((global.params.warnings & 0xFF) != 2 && !((global.gag) != 0))
             verrorPrint(loc, Color.brightYellow, new BytePtr("       "), format, ap, null, null);
     }
 
     public static void vdeprecation(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2) {
-        if (global.params.useDeprecated == 0)
+        if ((global.params.useDeprecated & 0xFF) == 0)
             verror(loc, format, ap, p1, p2, errors.vdeprecationheader);
-        else if (global.params.useDeprecated == 1)
+        else if ((global.params.useDeprecated & 0xFF) == 1)
         {
             if (!((global.gag) != 0))
             {
@@ -296,9 +296,9 @@ public class errors {
     }
 
     public static void vdeprecationSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
-        if (global.params.useDeprecated == 0)
+        if ((global.params.useDeprecated & 0xFF) == 0)
             verrorSupplemental(loc, format, ap);
-        else if (global.params.useDeprecated == 1 && !((global.gag) != 0))
+        else if ((global.params.useDeprecated & 0xFF) == 1 && !((global.gag) != 0))
             verrorPrint(loc, Color.brightCyan, new BytePtr("       "), format, ap, null, null);
     }
 
@@ -383,7 +383,7 @@ public class errors {
             lex.scan(tok);
             res.writestring(lastp.slice(0,((tok.ptr.minus(lastp)) / 1)));
             byte highlight = HIGHLIGHT.Default;
-            switch (tok.value)
+            switch ((tok.value & 0xFF))
             {
                 case 120:
                     highlight = HIGHLIGHT.Identifier;
@@ -416,19 +416,19 @@ public class errors {
                     break;
                 }
             }
-            if (highlight != 0)
+            if ((highlight & 0xFF) != 0)
             {
                 res.writeByte(255);
-                res.writeByte(highlight);
+                res.writeByte((highlight & 0xFF));
                 res.writestring(tok.ptr.slice(0,((lex.p.minus(tok.ptr)) / 1)));
                 res.writeByte(255);
                 res.writeByte(6);
             }
             else
                 res.writestring(tok.ptr.slice(0,((lex.p.minus(tok.ptr)) / 1)));
-            if (tok.value == 11)
+            if ((tok.value & 0xFF) == 11)
                 break;
-            lastp = lex.p;
+            lastp = pcopy(lex.p);
         }
         res.writeByte(255);
         res.writeByte(0);
