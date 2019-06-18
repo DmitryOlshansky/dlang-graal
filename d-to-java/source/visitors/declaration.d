@@ -321,6 +321,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             auto st = cast(TypeSArray)var.type;
             sink.fmt(" = new %s(new %s[%s])", var.type.toJava, var.type.nextOf.toJava, st.dim.toJava(opts));
         }
+        else if (var.type.ty == Tstruct) {
+            sink.fmt(" = new %s()", var.type.toJava);
+        }
         sink.fmt(";\n");
     }
 
@@ -337,11 +340,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             const(char)[] id = stack[$-1].ident.toString ~ var.ident.toString;
             printVar(var, id, temp);
             constants ~= temp.data.idup;
-            //bool isBasic = var.type.isTypeBasic() !is null || var.type.isString();
-            //if (isBasic) 
             opts.globals[cast(void*)var] = format("%s.%s", moduleName, id);
-            /*else 
-                buf.fmt("%s %s = %s.%s;\n", var.type.toJava, var.ident.symbol, moduleName, id);*/
         }
         else {
             printVar(var, var.ident.toString, buf);
