@@ -187,6 +187,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     ExprOpts opts;
 
     int testCounter;
+    int currentDispatch;
     int dispatchCount;
     Goto[] gotos;
     
@@ -667,19 +668,21 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         gotos = collectGotos(s);
         scope(exit) gotos = oldGotos;
         //if (gotos.length) stderr.writefln("GOTOS: %s", gotos);
-        auto oldDispatchCount = dispatchCount;
-        scope(exit) dispatchCount = oldDispatchCount;
-        dispatchCount++;
+        auto oldDispatchCount = currentDispatch;
+        scope(exit) currentDispatch = oldDispatchCount;
+        currentDispatch = dispatchCount++;
         if (gotos) {
-            buf.fmt("dispatched_%d:\n", dispatchCount);
+            buf.fmt("dispatched_%d:\n", currentDispatch);
+            buf.put("{\n");
+            buf.indent;
+            buf.fmt("int __dispatch%d = 0;\n", currentDispatch);
             buf.put("do {\n");
             buf.indent;
-            buf.fmt("int __dispatch%d = 0;\n", dispatchCount);
         }
         buf.put("switch (");
         if (gotos) {
             buf.fmt("__dispatch%d != 0 ? __dispatch%d : %s", 
-                dispatchCount, dispatchCount, s.condition.toJava(opts));
+                currentDispatch, currentDispatch, s.condition.toJava(opts));
         }
         else
             buf.put(s.condition.toJava(opts));
@@ -705,6 +708,8 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (gotos) {
             buf.outdent;
             buf.put("} while(false);\n");
+            buf.outdent;
+            buf.put("}\n");
         }
     }
 
@@ -744,7 +749,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.outdent;
         buf.fmt("/*%s:*/\n", label.ident.symbol);
         long myIndex = gotos.countUntil!(c => c.label && c.label.ident == label.ident);
-        if (myIndex >= 0 && gotos[myIndex].local && dispatchCount > 0) {
+        if (myIndex >= 0 && gotos[myIndex].local && currentDispatch > 0) {
             buf.fmt("case %d:\n", -1-myIndex);
         }
         buf.indent;
@@ -756,7 +761,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.fmt("/*goto %s*/", g.label.toString);
         if (myIndex >= 0 && gotos[myIndex].local) {
             buf.fmt("{ __dispatch%d = %d; continue dispatched_%d; }\n",
-                dispatchCount, -1-myIndex, dispatchCount);
+                currentDispatch, -1-myIndex, currentDispatch);
         }
         else {
             buf.put("throw Dispatch.INSTANCE;\n");
@@ -769,7 +774,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put("/*goto default*/ ");
         if (myIndex >= 0) {
             buf.fmt("{ __dispatch%d = %d; continue dispatched_%d; }\n", 
-                dispatchCount, -1-myIndex, dispatchCount);
+                currentDispatch, -1-myIndex, currentDispatch);
         }
         else {
             buf.put("throw Dispatch.INSTANCE;\n");
@@ -784,7 +789,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         else {
             buf.put("/*goto case*/");
             buf.fmt("{ __dispatch%d = %s; continue dispatched_%d; }\n",
-                dispatchCount, s.exp.toJava(opts), dispatchCount);
+                currentDispatch, s.exp.toJava(opts), currentDispatch);
         }
     }
 
