@@ -183,7 +183,7 @@ public class globals {
         public byte checkAction = CHECKACTION.D;
         public int errorLimit = 20;
         public ByteSlice argv0;
-        public DArray<BytePtr> modFileAliasStrings;
+        public DArray<BytePtr> modFileAliasStrings = new DArray<BytePtr>();
         public DArray<BytePtr> imppath;
         public DArray<BytePtr> fileImppath;
         public ByteSlice objdir;
@@ -192,7 +192,7 @@ public class globals {
         public boolean doDocComments;
         public BytePtr docdir;
         public BytePtr docname;
-        public DArray<BytePtr> ddocfiles;
+        public DArray<BytePtr> ddocfiles = new DArray<BytePtr>();
         public boolean doHdrGeneration;
         public ByteSlice hdrdir;
         public ByteSlice hdrname;
@@ -219,11 +219,11 @@ public class globals {
         public boolean debugx;
         public boolean debugy;
         public boolean run;
-        public DArray<BytePtr> runargs;
-        public DArray<BytePtr> objfiles;
-        public DArray<BytePtr> linkswitches;
-        public DArray<BytePtr> libfiles;
-        public DArray<BytePtr> dllfiles;
+        public DArray<BytePtr> runargs = new DArray<BytePtr>();
+        public DArray<BytePtr> objfiles = new DArray<BytePtr>();
+        public DArray<BytePtr> linkswitches = new DArray<BytePtr>();
+        public DArray<BytePtr> libfiles = new DArray<BytePtr>();
+        public DArray<BytePtr> dllfiles = new DArray<BytePtr>();
         public ByteSlice deffile;
         public ByteSlice resfile;
         public ByteSlice exefile;
@@ -661,7 +661,7 @@ public class globals {
         public DArray<BytePtr> filePath;
         public ByteSlice _version;
         public ByteSlice vendor;
-        public Param params;
+        public Param params = new Param();
         public int errors;
         public int warnings;
         public int gag;
@@ -836,7 +836,7 @@ public class globals {
         public BytePtr filename;
         public int linnum;
         public int charnum;
-        public static Loc initial;
+        public static Loc initial = new Loc();
         public  Loc(BytePtr filename, int linnum, int charnum) {
             this.linnum = linnum;
             this.charnum = charnum;
@@ -934,5 +934,5 @@ public class globals {
         public static final int always = 2;
     }
 
-    static Global global;
+    static Global global = new Global();
 }

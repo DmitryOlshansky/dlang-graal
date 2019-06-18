@@ -5,13 +5,14 @@ data class StringValue(@JvmField var hash: Int, @JvmField var ptrvalue: Any?) : 
         BytePtr(String.format("StringValue(%d,%s)", hash, ptrvalue))
 }
 
-class StringTable {
-    private val table = HashMap<ByteSlice, StringValue?>()
+class StringTable(private val table : HashMap<ByteSlice, StringValue?>) {
 
-    constructor(){ }
+    constructor(): this(HashMap<ByteSlice, StringValue?>()) {}
 
     // shim
-    constructor(any: Any?, n: Int, any2: Any?, n1: Int, n2: Int, n3: Int, n4: Int) {}
+    constructor(any: Any?, n: Int, any2: Any?, n1: Int, n2: Int, n3: Int, n4: Int) : this()
+
+    fun copy(): StringTable = StringTable(table)
 
     fun _init(size: Int) {}
 

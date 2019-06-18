@@ -22,6 +22,8 @@ import static org.dlang.dmd.tokens.*;
 import static org.dlang.dmd.utf.*;
 
 public class lexer {
+    private static final byte[][] initializer_0 = {{(byte)0}, {(byte)39, (byte)0}, {(byte)39, (byte)26}, {(byte)123, (byte)123, (byte)113, (byte)123, (byte)0}, {(byte)255, (byte)0}, {(byte)255, (byte)128, (byte)0}, {(byte)255, (byte)255, (byte)0}, {(byte)255, (byte)255, (byte)0}, {(byte)120, (byte)34, (byte)26}};
+    static Slice<ByteSlice> __unittest_L168_C1testcases = slice(initializer_0);
     static boolean scaninitdone = false;
     static ByteSlice scandate = new ByteSlice(new byte[12]);
     static ByteSlice scantime = new ByteSlice(new byte[9]);
@@ -78,16 +80,47 @@ public class lexer {
     }
 
     public static void test_0() {
+        ByteSlice text =  new ByteSlice("int");
+        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
+        Lexer lex1 = new Lexer(null, toBytePtr(text), 0, text.getLength(), false, false, diagnosticReporter);
+        byte tok = TOK.reserved;
+        tok = lex1.nextToken();
+        assert(tok == 133);
+        tok = lex1.nextToken();
+        assert(tok == 11);
+        tok = lex1.nextToken();
+        assert(tok == 11);
+        tok = lex1.nextToken();
+        assert(tok == 11);
     }
     public static void test_1() {
+        int errors = global.startGagging();
+        {
+            Slice<ByteSlice> __r51 = lexer.__unittest_L168_C1testcases;
+            int __key52 = 0;
+            for (; __key52 < __r51.getLength();__key52 += 1) {
+                ByteSlice testcase = __r51.get(__key52);
+                StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
+                Lexer lex2 = new Lexer(null, toBytePtr(testcase), 0, testcase.getLength() - 1, false, false, diagnosticReporter);
+                byte tok = lex2.nextToken();
+                int iterations = 1;
+                for (; tok != 11 && iterations++ < testcase.getLength();){
+                    tok = lex2.nextToken();
+                }
+                assert(tok == 11);
+                tok = lex2.nextToken();
+                assert(tok == 11);
+            }
+        }
+        global.endGagging(errors);
     }
     public static class Lexer extends Object
     {
-        public static OutBuffer stringbuffer;
-        public Loc scanloc;
-        public Loc prevloc;
+        public static OutBuffer stringbuffer = new OutBuffer();
+        public Loc scanloc = new Loc();
+        public Loc prevloc = new Loc();
         public BytePtr p;
-        public Token token;
+        public Token token = new Token();
         public BytePtr base;
         public BytePtr end;
         public BytePtr line;
@@ -2363,4 +2396,68 @@ public class lexer {
         }
 
     }
+    /*public static void test_2() {
+        test( new ByteSlice("'"), (byte)39);
+        test( new ByteSlice("\""), (byte)34);
+        test( new ByteSlice("?"), (byte)63);
+        test( new ByteSlice("\\"), (byte)92);
+        test( new ByteSlice("0"), (byte)0);
+        test( new ByteSlice("a"), (byte)7);
+        test( new ByteSlice("b"), (byte)8);
+        test( new ByteSlice("f"), (byte)12);
+        test( new ByteSlice("n"), (byte)10);
+        test( new ByteSlice("r"), (byte)13);
+        test( new ByteSlice("t"), (byte)9);
+        test( new ByteSlice("v"), (byte)11);
+        test( new ByteSlice("x00"), 0);
+        test( new ByteSlice("xff"), 255);
+        test( new ByteSlice("xFF"), 255);
+        test( new ByteSlice("xa7"), 167);
+        test( new ByteSlice("x3c"), 60);
+        test( new ByteSlice("xe2"), 226);
+        test( new ByteSlice("1"), (byte)1);
+        test( new ByteSlice("42"), (byte)34);
+        test( new ByteSlice("357"), (byte)239);
+        test( new ByteSlice("u1234"), '\u1234');
+        test( new ByteSlice("uf0e4"), '\uf0e4');
+        test( new ByteSlice("U0001f603"), '\u1f603');
+        test( new ByteSlice("&quot;"), (byte)34);
+        test( new ByteSlice("&lt;"), (byte)60);
+        test( new ByteSlice("&gt;"), (byte)62);
+    }
+    public static void test_3() {
+        Function4<ByteSlice,ByteSlice,Integer,Integer,Void> test = new Function4<ByteSlice,ByteSlice,Integer,Integer,Void>(){
+            public Void invoke(ByteSlice sequence, ByteSlice expectedError, Integer expectedReturnValue, Integer expectedScanLength){
+                ExpectDiagnosticReporter handler = new ExpectDiagnosticReporter(expectedError);
+                BytePtr p = toBytePtr(toBytePtr(sequence));
+                int actualReturnValue = Lexer.escapeSequence(Loc.initial, handler, p);
+                assert(handler.gotError);
+                assert(expectedReturnValue == actualReturnValue);
+                int actualScanLength = (p.minus(toBytePtr(toBytePtr(sequence)))) / 1;
+                assert(expectedScanLength == actualScanLength);
+            }
+        };
+        test( new ByteSlice("c"),  new ByteSlice("undefined escape sequence \\c"), '\u0063', 1);
+        test( new ByteSlice("!"),  new ByteSlice("undefined escape sequence \\!"), '\u0021', 1);
+        test( new ByteSlice("x1"),  new ByteSlice("escape hex sequence has 1 hex digits instead of 2"), '\u0001', 2);
+        test( new ByteSlice("u1"),  new ByteSlice("escape hex sequence has 1 hex digits instead of 4"), '\u0001', 2);
+        test( new ByteSlice("u12"),  new ByteSlice("escape hex sequence has 2 hex digits instead of 4"), '\u0012', 3);
+        test( new ByteSlice("u123"),  new ByteSlice("escape hex sequence has 3 hex digits instead of 4"), '\u0123', 4);
+        test( new ByteSlice("U0"),  new ByteSlice("escape hex sequence has 1 hex digits instead of 8"), '\u0000', 2);
+        test( new ByteSlice("U00"),  new ByteSlice("escape hex sequence has 2 hex digits instead of 8"), '\u0000', 3);
+        test( new ByteSlice("U000"),  new ByteSlice("escape hex sequence has 3 hex digits instead of 8"), '\u0000', 4);
+        test( new ByteSlice("U0000"),  new ByteSlice("escape hex sequence has 4 hex digits instead of 8"), '\u0000', 5);
+        test( new ByteSlice("U0001f"),  new ByteSlice("escape hex sequence has 5 hex digits instead of 8"), '\u001f', 6);
+        test( new ByteSlice("U0001f6"),  new ByteSlice("escape hex sequence has 6 hex digits instead of 8"), '\u01f6', 7);
+        test( new ByteSlice("U0001f60"),  new ByteSlice("escape hex sequence has 7 hex digits instead of 8"), '\u1f60', 8);
+        test( new ByteSlice("ud800"),  new ByteSlice("invalid UTF character \\U0000d800"), '\u003f', 5);
+        test( new ByteSlice("udfff"),  new ByteSlice("invalid UTF character \\U0000dfff"), '\u003f', 5);
+        test( new ByteSlice("U00110000"),  new ByteSlice("invalid UTF character \\U00110000"), '\u003f', 9);
+        test( new ByteSlice("xg0"),  new ByteSlice("undefined escape hex sequence \\xg"), '\u0067', 2);
+        test( new ByteSlice("ug000"),  new ByteSlice("undefined escape hex sequence \\ug"), '\u0067', 2);
+        test( new ByteSlice("Ug0000000"),  new ByteSlice("undefined escape hex sequence \\Ug"), '\u0067', 2);
+        test( new ByteSlice("&BAD;"),  new ByteSlice("unnamed character entity &BAD;"), '\u003f', 5);
+        test( new ByteSlice("&quot"),  new ByteSlice("unterminated named entity &quot;"), '\u003f', 5);
+        test( new ByteSlice("400"),  new ByteSlice("escape octal sequence \\400 is larger than \\377"), '\u0100', 3);
+    }*/
 }

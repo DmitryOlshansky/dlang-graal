@@ -24,7 +24,7 @@ public class identifier {
     static int generateIdi;
     private static class Key
     {
-        private Loc loc;
+        private Loc loc = new Loc();
         private ByteSlice prefix;
         public Key(){
             loc = new Loc();
@@ -126,7 +126,7 @@ public class identifier {
             return DYNCAST.identifier;
         }
 
-        public static StringTable stringtable;
+        public static StringTable stringtable = new StringTable();
         public static Identifier generateId(BytePtr prefix) {
             return Identifier.generateId(prefix, identifier.generateIdi += 1);
         }

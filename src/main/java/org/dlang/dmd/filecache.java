@@ -46,7 +46,7 @@ public class filecache {
     }
     public static class FileCache
     {
-        public StringTable files;
+        public StringTable files = new StringTable();
         public  FileAndLines addOrGetFile(ByteSlice file) {
             StringValue payload = this.files.lookup(file);
             if (payload != null)
