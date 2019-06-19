@@ -18,7 +18,28 @@ import static org.dlang.dmd.console.*;
 import static org.dlang.dmd.utils.*;
 
 public class globals {
-    static int versionNumbercached = 0;
+    static int versionNumbercached_linux = 0;
+
+        // from template xversion!("OSX")
+        static boolean xversion_OSX = false;
+
+        // from template xversion!("FreeBSD")
+        static boolean xversion_FreeBSD = false;
+
+        // from template xversion!("DragonFlyBSD")
+        static boolean xversion_DragonFlyBSD = false;
+
+        // from template xversion!("OpenBSD")
+        static boolean xversion_OpenBSD = false;
+
+        // from template xversion!("Windows")
+        static boolean xversion_Windows = false;
+
+        // from template xversion!("Solaris")
+        static boolean xversion_Solaris = false;
+
+        // from template xversion!("linux")
+        static boolean xversion_linux = true;
 
 
     public static class TARGET 
@@ -97,137 +118,137 @@ public class globals {
 
     public static class Param
     {
-        public boolean obj = true;
-        public boolean link = true;
-        public boolean dll;
-        public boolean lib;
-        public boolean multiobj;
-        public boolean oneobj;
-        public boolean trace;
-        public boolean tracegc;
-        public boolean verbose;
-        public boolean vcg_ast;
-        public boolean showColumns;
-        public boolean vtls;
-        public boolean vgc;
-        public boolean vfield;
-        public boolean vcomplex;
-        public byte symdebug;
-        public boolean symdebugref;
-        public boolean alwaysframe;
-        public boolean optimize;
-        public boolean map;
-        public boolean is64bit = false;
-        public boolean isLP64;
-        public boolean isLinux;
-        public boolean isOSX;
-        public boolean isWindows;
-        public boolean isFreeBSD;
-        public boolean isOpenBSD;
-        public boolean isDragonFlyBSD;
-        public boolean isSolaris;
-        public boolean hasObjectiveC;
-        public boolean mscoff = false;
-        public byte useDeprecated = DiagnosticReporting.inform;
-        public boolean stackstomp;
-        public boolean useUnitTests;
-        public boolean useInline = false;
-        public boolean useDIP25;
-        public boolean noDIP25;
-        public boolean release;
-        public boolean preservePaths;
-        public byte warnings = DiagnosticReporting.off;
-        public boolean pic;
-        public boolean color;
-        public boolean cov;
-        public byte covPercent;
-        public boolean nofloat;
-        public boolean ignoreUnsupportedPragmas;
-        public boolean useModuleInfo = true;
-        public boolean useTypeInfo = true;
-        public boolean useExceptions = true;
-        public boolean betterC;
-        public boolean addMain;
-        public boolean allInst;
-        public boolean check10378;
-        public boolean bug10378;
-        public boolean fix16997;
-        public boolean fixAliasThis;
-        public boolean vsafe;
-        public boolean ehnogc;
-        public boolean dtorFields;
-        public boolean fieldwise;
-        public int cplusplus = CppStdRevision.cpp98;
-        public boolean markdown;
-        public boolean vmarkdown;
-        public boolean showGaggedErrors;
-        public boolean printErrorContext;
-        public boolean manual;
-        public boolean usage;
-        public boolean mcpuUsage;
-        public boolean transitionUsage;
-        public boolean checkUsage;
-        public boolean checkActionUsage;
-        public boolean revertUsage;
-        public boolean previewUsage;
-        public boolean externStdUsage;
-        public boolean logo;
-        public int cpu = CPU.baseline;
-        public byte useInvariants = CHECKENABLE._default;
-        public byte useIn = CHECKENABLE._default;
-        public byte useOut = CHECKENABLE._default;
-        public byte useArrayBounds = CHECKENABLE._default;
-        public byte useAssert = CHECKENABLE._default;
-        public byte useSwitchError = CHECKENABLE._default;
-        public byte boundscheck = CHECKENABLE._default;
-        public byte checkAction = CHECKACTION.D;
-        public int errorLimit = 20;
-        public ByteSlice argv0;
-        public DArray<BytePtr> modFileAliasStrings = new DArray<BytePtr>();
-        public DArray<BytePtr> imppath;
-        public DArray<BytePtr> fileImppath;
-        public ByteSlice objdir;
-        public ByteSlice objname;
-        public ByteSlice libname;
-        public boolean doDocComments;
-        public BytePtr docdir;
-        public BytePtr docname;
-        public DArray<BytePtr> ddocfiles = new DArray<BytePtr>();
-        public boolean doHdrGeneration;
-        public ByteSlice hdrdir;
-        public ByteSlice hdrname;
-        public boolean hdrStripPlainFunctions = true;
-        public boolean doJsonGeneration;
-        public ByteSlice jsonfilename;
-        public int jsonFieldFlags;
-        public OutBuffer mixinOut;
-        public BytePtr mixinFile;
-        public int mixinLines;
-        public int debuglevel;
-        public DArray<BytePtr> debugids;
-        public int versionlevel;
-        public DArray<BytePtr> versionids;
-        public ByteSlice defaultlibname;
-        public ByteSlice debuglibname;
-        public ByteSlice mscrtlib;
-        public ByteSlice moduleDepsFile;
-        public OutBuffer moduleDeps;
-        public boolean debugb;
-        public boolean debugc;
-        public boolean debugf;
-        public boolean debugr;
-        public boolean debugx;
-        public boolean debugy;
-        public boolean run;
-        public DArray<BytePtr> runargs = new DArray<BytePtr>();
-        public DArray<BytePtr> objfiles = new DArray<BytePtr>();
-        public DArray<BytePtr> linkswitches = new DArray<BytePtr>();
-        public DArray<BytePtr> libfiles = new DArray<BytePtr>();
-        public DArray<BytePtr> dllfiles = new DArray<BytePtr>();
-        public ByteSlice deffile;
-        public ByteSlice resfile;
-        public ByteSlice exefile;
-        public ByteSlice mapfile;
+        public boolean obj_linux = true;
+        public boolean link_linux = true;
+        public boolean dll_linux;
+        public boolean lib_linux;
+        public boolean multiobj_linux;
+        public boolean oneobj_linux;
+        public boolean trace_linux;
+        public boolean tracegc_linux;
+        public boolean verbose_linux;
+        public boolean vcg_ast_linux;
+        public boolean showColumns_linux;
+        public boolean vtls_linux;
+        public boolean vgc_linux;
+        public boolean vfield_linux;
+        public boolean vcomplex_linux;
+        public byte symdebug_linux;
+        public boolean symdebugref_linux;
+        public boolean alwaysframe_linux;
+        public boolean optimize_linux;
+        public boolean map_linux;
+        public boolean is64bit_linux = false;
+        public boolean isLP64_linux;
+        public boolean isLinux_linux;
+        public boolean isOSX_linux;
+        public boolean isWindows_linux;
+        public boolean isFreeBSD_linux;
+        public boolean isOpenBSD_linux;
+        public boolean isDragonFlyBSD_linux;
+        public boolean isSolaris_linux;
+        public boolean hasObjectiveC_linux;
+        public boolean mscoff_linux = false;
+        public byte useDeprecated_linux = DiagnosticReporting.inform;
+        public boolean stackstomp_linux;
+        public boolean useUnitTests_linux;
+        public boolean useInline_linux = false;
+        public boolean useDIP25_linux;
+        public boolean noDIP25_linux;
+        public boolean release_linux;
+        public boolean preservePaths_linux;
+        public byte warnings_linux = DiagnosticReporting.off;
+        public boolean pic_linux;
+        public boolean color_linux;
+        public boolean cov_linux;
+        public byte covPercent_linux;
+        public boolean nofloat_linux;
+        public boolean ignoreUnsupportedPragmas_linux;
+        public boolean useModuleInfo_linux = true;
+        public boolean useTypeInfo_linux = true;
+        public boolean useExceptions_linux = true;
+        public boolean betterC_linux;
+        public boolean addMain_linux;
+        public boolean allInst_linux;
+        public boolean check10378_linux;
+        public boolean bug10378_linux;
+        public boolean fix16997_linux;
+        public boolean fixAliasThis_linux;
+        public boolean vsafe_linux;
+        public boolean ehnogc_linux;
+        public boolean dtorFields_linux;
+        public boolean fieldwise_linux;
+        public int cplusplus_linux = CppStdRevision.cpp98;
+        public boolean markdown_linux;
+        public boolean vmarkdown_linux;
+        public boolean showGaggedErrors_linux;
+        public boolean printErrorContext_linux;
+        public boolean manual_linux;
+        public boolean usage_linux;
+        public boolean mcpuUsage_linux;
+        public boolean transitionUsage_linux;
+        public boolean checkUsage_linux;
+        public boolean checkActionUsage_linux;
+        public boolean revertUsage_linux;
+        public boolean previewUsage_linux;
+        public boolean externStdUsage_linux;
+        public boolean logo_linux;
+        public int cpu_linux = CPU.baseline;
+        public byte useInvariants_linux = CHECKENABLE._default;
+        public byte useIn_linux = CHECKENABLE._default;
+        public byte useOut_linux = CHECKENABLE._default;
+        public byte useArrayBounds_linux = CHECKENABLE._default;
+        public byte useAssert_linux = CHECKENABLE._default;
+        public byte useSwitchError_linux = CHECKENABLE._default;
+        public byte boundscheck_linux = CHECKENABLE._default;
+        public byte checkAction_linux = CHECKACTION.D;
+        public int errorLimit_linux = 20;
+        public ByteSlice argv0_linux;
+        public DArray<BytePtr> modFileAliasStrings_linux = new DArray<BytePtr>();
+        public DArray<BytePtr> imppath_linux;
+        public DArray<BytePtr> fileImppath_linux;
+        public ByteSlice objdir_linux;
+        public ByteSlice objname_linux;
+        public ByteSlice libname_linux;
+        public boolean doDocComments_linux;
+        public BytePtr docdir_linux;
+        public BytePtr docname_linux;
+        public DArray<BytePtr> ddocfiles_linux = new DArray<BytePtr>();
+        public boolean doHdrGeneration_linux;
+        public ByteSlice hdrdir_linux;
+        public ByteSlice hdrname_linux;
+        public boolean hdrStripPlainFunctions_linux = true;
+        public boolean doJsonGeneration_linux;
+        public ByteSlice jsonfilename_linux;
+        public int jsonFieldFlags_linux;
+        public OutBuffer mixinOut_linux;
+        public BytePtr mixinFile_linux;
+        public int mixinLines_linux;
+        public int debuglevel_linux;
+        public DArray<BytePtr> debugids_linux;
+        public int versionlevel_linux;
+        public DArray<BytePtr> versionids_linux;
+        public ByteSlice defaultlibname_linux;
+        public ByteSlice debuglibname_linux;
+        public ByteSlice mscrtlib_linux;
+        public ByteSlice moduleDepsFile_linux;
+        public OutBuffer moduleDeps_linux;
+        public boolean debugb_linux;
+        public boolean debugc_linux;
+        public boolean debugf_linux;
+        public boolean debugr_linux;
+        public boolean debugx_linux;
+        public boolean debugy_linux;
+        public boolean run_linux;
+        public DArray<BytePtr> runargs_linux = new DArray<BytePtr>();
+        public DArray<BytePtr> objfiles_linux = new DArray<BytePtr>();
+        public DArray<BytePtr> linkswitches_linux = new DArray<BytePtr>();
+        public DArray<BytePtr> libfiles_linux = new DArray<BytePtr>();
+        public DArray<BytePtr> dllfiles_linux = new DArray<BytePtr>();
+        public ByteSlice deffile_linux;
+        public ByteSlice resfile_linux;
+        public ByteSlice exefile_linux;
+        public ByteSlice mapfile_linux;
         public Param(){
             modFileAliasStrings = new DArray<BytePtr>();
             ddocfiles = new DArray<BytePtr>();
@@ -641,56 +662,56 @@ public class globals {
             return this;
         }
     }
-    static int STRUCTALIGN_DEFAULT = -1;
+    static int STRUCTALIGN_DEFAULT_linux = -1;
     public static class Global
     {
-        public ByteSlice inifilename;
-        public ByteSlice mars_ext =  new ByteSlice("d");
-        public ByteSlice obj_ext;
-        public ByteSlice lib_ext;
-        public ByteSlice dll_ext;
-        public ByteSlice doc_ext =  new ByteSlice("html");
-        public ByteSlice ddoc_ext =  new ByteSlice("ddoc");
-        public ByteSlice hdr_ext =  new ByteSlice("di");
-        public ByteSlice json_ext =  new ByteSlice("json");
-        public ByteSlice map_ext =  new ByteSlice("map");
-        public boolean run_noext;
-        public ByteSlice copyright =  new ByteSlice("Copyright (C) 1999-2019 by The D Language Foundation, All Rights Reserved");
-        public ByteSlice written =  new ByteSlice("written by Walter Bright");
-        public DArray<BytePtr> path;
-        public DArray<BytePtr> filePath;
-        public ByteSlice _version;
-        public ByteSlice vendor;
-        public Param params = new Param();
-        public int errors;
-        public int warnings;
-        public int gag;
-        public int gaggedErrors;
-        public int gaggedWarnings;
-        public Object console;
-        public DArray<Identifier> versionids;
-        public DArray<Identifier> debugids;
-        public  int startGagging() {
+        public ByteSlice inifilename_linux;
+        public ByteSlice mars_ext_linux =  new ByteSlice("d");
+        public ByteSlice obj_ext_linux;
+        public ByteSlice lib_ext_linux;
+        public ByteSlice dll_ext_linux;
+        public ByteSlice doc_ext_linux =  new ByteSlice("html");
+        public ByteSlice ddoc_ext_linux =  new ByteSlice("ddoc");
+        public ByteSlice hdr_ext_linux =  new ByteSlice("di");
+        public ByteSlice json_ext_linux =  new ByteSlice("json");
+        public ByteSlice map_ext_linux =  new ByteSlice("map");
+        public boolean run_noext_linux;
+        public ByteSlice copyright_linux =  new ByteSlice("Copyright (C) 1999-2019 by The D Language Foundation, All Rights Reserved");
+        public ByteSlice written_linux =  new ByteSlice("written by Walter Bright");
+        public DArray<BytePtr> path_linux;
+        public DArray<BytePtr> filePath_linux;
+        public ByteSlice _version_linux;
+        public ByteSlice vendor_linux;
+        public Param params_linux = new Param();
+        public int errors_linux;
+        public int warnings_linux;
+        public int gag_linux;
+        public int gaggedErrors_linux;
+        public int gaggedWarnings_linux;
+        public Object console_linux;
+        public DArray<Identifier> versionids_linux;
+        public DArray<Identifier> debugids_linux;
+        public  int startGagging_linux() {
             this.gag += 1;
             this.gaggedWarnings = 0;
             return this.gaggedErrors;
         }
 
-        public  boolean endGagging(int oldGagged) {
-            boolean anyErrs = this.gaggedErrors != oldGagged;
+        public  boolean endGagging_linux(int oldGagged) {
+            boolean anyErrs_linux = this.gaggedErrors != oldGagged;
             this.gag -= 1;
             this.errors -= this.gaggedErrors - oldGagged;
             this.gaggedErrors = oldGagged;
             return anyErrs;
         }
 
-        public  void increaseErrorCount() {
+        public  void increaseErrorCount_linux() {
             if ((this.gag) != 0)
                 this.gaggedErrors += 1;
             this.errors += 1;
         }
 
-        public  void _init() {
+        public  void _init_linux() {
             this.obj_ext =  new ByteSlice("o").copy();
             this.lib_ext =  new ByteSlice("a").copy();
             this.dll_ext =  new ByteSlice("so").copy();
@@ -700,20 +721,20 @@ public class globals {
             this.params.color = Console.detectTerminal();
         }
 
-        public  void deinitialize() {
+        public  void deinitialize_linux() {
             this.opAssign(new Global(new ByteSlice(),  new ByteSlice("d"), new ByteSlice(), new ByteSlice(), new ByteSlice(),  new ByteSlice("html"),  new ByteSlice("ddoc"),  new ByteSlice("di"),  new ByteSlice("json"),  new ByteSlice("map"), false,  new ByteSlice("Copyright (C) 1999-2019 by The D Language Foundation, All Rights Reserved"),  new ByteSlice("written by Walter Bright"), null, null, new ByteSlice(), new ByteSlice(), new Param(true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, (byte)0, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, DiagnosticReporting.inform, false, false, false, false, false, false, false, DiagnosticReporting.off, false, false, false, (byte)0, false, false, true, true, true, false, false, false, false, false, false, false, false, false, false, false, CppStdRevision.cpp98, false, false, false, false, false, false, false, false, false, false, false, false, false, false, CPU.baseline, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKACTION.D, 20, new ByteSlice(), new DArray<BytePtr>(), null, null, new ByteSlice(), new ByteSlice(), new ByteSlice(), false, null, null, new DArray<BytePtr>(), false, new ByteSlice(), new ByteSlice(), true, false, new ByteSlice(), JsonFieldFlags.none, null, null, 0, 0, null, 0, null, new ByteSlice(), new ByteSlice(), new ByteSlice(), new ByteSlice(), null, false, false, false, false, false, false, false, new DArray<BytePtr>(), new DArray<BytePtr>(), new DArray<BytePtr>(), new DArray<BytePtr>(), new DArray<BytePtr>(), new ByteSlice(), new ByteSlice(), new ByteSlice(), new ByteSlice()), 0, 0, 0, 0, 0, null, null, null));
         }
 
-        public  int versionNumber() {
+        public  int versionNumber_linux() {
             if (globals.versionNumbercached == 0)
             {
-                int major = 0;
-                int minor = 0;
-                boolean point = false;
+                int major_linux = 0;
+                int minor_linux = 0;
+                boolean point_linux = false;
                 {
-                    BytePtr p = pcopy(toBytePtr(this._version).plus(1));
+                    BytePtr p_linux = pcopy(toBytePtr(this._version).plus(1));
                     for (; ;p.postInc()){
-                        byte c = p.get(0);
+                        byte c_linux = p.get(0);
                         if ((isdigit((c & 0xFF))) != 0)
                         {
                             minor = minor * 10 + (c & 0xFF) - 48;
@@ -735,7 +756,7 @@ public class globals {
             return globals.versionNumbercached;
         }
 
-        public  ByteSlice finalDefaultlibname() {
+        public  ByteSlice finalDefaultlibname_linux() {
             return this.params.betterC ? new ByteSlice() : (this.params.symdebug) != 0 ? this.params.debuglibname : this.params.defaultlibname;
         }
 
@@ -833,18 +854,18 @@ public class globals {
     }
     public static class Loc
     {
-        public BytePtr filename;
-        public int linnum;
-        public int charnum;
-        public static Loc initial = new Loc();
-        public  Loc(BytePtr filename, int linnum, int charnum) {
+        public BytePtr filename_linux;
+        public int linnum_linux;
+        public int charnum_linux;
+        public static Loc initial_linux = new Loc();
+        public  Loc_linux(BytePtr filename, int linnum, int charnum) {
             this.linnum = linnum;
             this.charnum = charnum;
             this.filename = pcopy(filename);
         }
 
-        public  BytePtr toChars(boolean showColumns) {
-            OutBuffer buf = new OutBuffer();
+        public  BytePtr toChars_linux(boolean showColumns) {
+            OutBuffer buf_linux = new OutBuffer();
             try {
                 if (this.filename != null)
                 {
@@ -867,22 +888,22 @@ public class globals {
             }
         }
 
-        public  boolean equals(Loc loc) {
+        public  boolean equals_linux(Loc loc) {
             return !(global.params.showColumns) || this.charnum == loc.charnum && this.linnum == loc.linnum && FileName.equals(this.filename, loc.filename);
         }
 
-        public  boolean opEquals(Loc loc) {
+        public  boolean opEquals_linux(Loc loc) {
             return this.charnum == loc.charnum && this.linnum == loc.linnum && this.filename == loc.filename || this.filename != null && loc.filename != null && strcmp(this.filename, loc.filename) == 0;
         }
 
-        public  int toHash() {
-            int hash = hashOf(this.linnum);
+        public  int toHash_linux() {
+            int hash_linux = hashOf(this.linnum);
             hash = hashOf(this.charnum, hash);
             hash = hashOf(toDString(this.filename), hash);
             return hash;
         }
 
-        public  boolean isValid() {
+        public  boolean isValid_linux() {
             return this.filename != null;
         }
 
@@ -934,5 +955,5 @@ public class globals {
         public static final int always = 2;
     }
 
-    static Global global = new Global();
+    static Global global_linux = new Global();
 }
