@@ -51,6 +51,12 @@ struct ExprOpts {
     VarDeclaration vararg = null;
     bool[void*] refParams; //out and ref params, they must be boxed
     string[void*] globals; // basic type static vars pushed to global scope
+    Template[void*] templates; // tiArg strings of template vars and funcs
+}
+
+struct Template {
+    string tiArgs;
+    bool local; // = true for nested function
 }
 
 ///
@@ -407,6 +413,7 @@ public:
 
     override void visit(TemplateExp e)
     {
+        fprintf(stderr, "TEMPLATE EXP %s\n", e.toChars);
         buf.writestring(e.td.toChars());
     }
 
@@ -780,6 +787,12 @@ public:
         expToBuffer(e.e1, PREC.primary, buf, opts);
         buf.writeByte('.');
         e.ti.dsymbolToBuffer(buf);
+        if (e.ti.tiargs)
+            foreach(arg; *e.ti.tiargs) {
+                auto t = arg.isType();
+                if (t is null) fprintf(stderr, "NON-TYPE Template parameter!\n");
+                buf.writestring(t.toJava(null, Boxing.yes));
+            }
     }
 
     override void visit(DelegateExp e)
@@ -860,6 +873,11 @@ public:
                 }
                 else 
                     expToBuffer(e.e1, precedence[e.op], buf, opts);
+                if (auto tmpl = cast(void*)e.f in opts.templates) {
+                    buf.writestring(tmpl.tiArgs);
+                    if (tmpl.local)
+                        buf.writestring(".invoke");
+                }
             }
             else
                 expToBuffer(e.e1, precedence[e.op], buf, opts);
@@ -1371,11 +1389,13 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
             break;
 
         case Tchar:
-            buf.writestring("byte");
+            if (boxing == yes) buf.writestring("Byte");
+            else buf.writestring("byte");
             break;
 
         case Twchar:
-            buf.writestring("char");
+            if (boxing == yes) buf.writestring("Character");
+            else buf.writestring("char");
             break;
 
         case Tdchar:
@@ -1718,7 +1738,6 @@ private void visitFuncIdentWithPrefix(TypeFunction t, const Identifier ident, Te
     }
     if (td)
     {
-        assert(false);
         version(none) {
             buf.writeByte('(');
             foreach (i, p; *td.origParameters)
