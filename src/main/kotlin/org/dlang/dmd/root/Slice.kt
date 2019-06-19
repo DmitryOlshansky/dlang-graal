@@ -1,5 +1,6 @@
 package org.dlang.dmd.root
 
+import com.google.common.hash.Hashing
 import java.lang.StringBuilder
 
 class Slice<T> (var data: Array<T?>, var beg: Int, var end: Int) : RootObject() {
@@ -151,9 +152,8 @@ class ByteSlice(var data: ByteArray, var beg: Int, var end: Int): RootObject() {
         }
 
     override fun hashCode(): Int {
-        var h = 0
-        data.forEach { h = h*31 + it }
-        return h + 17 * beg + 31 * end
+        val hasher = Hashing.goodFastHash(32)
+        return hasher.hashBytes(data, beg, end - beg).asInt()
     }
 
     override fun toString(): String = String(data, beg, end - beg)
@@ -163,7 +163,8 @@ class ByteSlice(var data: ByteArray, var beg: Int, var end: Int): RootObject() {
     fun toByteSlice() = this
 }
 
-class CharSlice(val data: CharArray, var beg: Int, var end: Int) : RootObject() {
+class CharSlice(val data: CharArray, var beg: Int, var end: Int) : RootObject(), CharSequence {
+
     constructor(s: String) : this(s.toCharArray())
 
     constructor(arr: CharArray) : this(arr, 0, arr.size)
@@ -174,7 +175,7 @@ class CharSlice(val data: CharArray, var beg: Int, var end: Int) : RootObject() 
         data[beg+idx] = value
     }
 
-    operator fun get(idx: Int): Char = data[beg+idx]
+    override operator fun get(idx: Int): Char = data[beg+idx]
 
     fun ptr() = WCharPtr(data, beg)
 
@@ -186,8 +187,10 @@ class CharSlice(val data: CharArray, var beg: Int, var end: Int) : RootObject() 
         return CharSlice(data, from+beg, end)
     }
 
-    val length: Int
+    override val length: Int
         get() = end - beg
+
+    override fun subSequence(startIndex: Int, endIndex: Int): CharSequence = slice(startIndex, endIndex)
 
     private fun isEqualTo(other: CharSlice): Boolean {
         if (length != other.length) return false
@@ -204,7 +207,8 @@ class CharSlice(val data: CharArray, var beg: Int, var end: Int) : RootObject() 
         }
 
     override fun hashCode(): Int {
-        return data.hashCode() + 17 * beg + 31 * end
+        val hasher = Hashing.goodFastHash(32)
+        return hasher.hashUnencodedChars(this).asInt()
     }
 
     override fun toChars(): BytePtr  {
@@ -261,7 +265,11 @@ class IntSlice(val data: IntArray, var beg: Int, var end: Int) : RootObject() {
         }
 
     override fun hashCode(): Int {
-        return data.hashCode() + 17 * beg + 31 * end
+        val hasher = Hashing.goodFastHash(32).newHasher()
+        for (i in beg until  end) {
+            hasher.putInt(data[i])
+        }
+        return hasher.hashCode()
     }
 
     override fun toChars(): BytePtr  {

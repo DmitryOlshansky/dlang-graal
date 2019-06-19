@@ -160,7 +160,7 @@ public class errors {
 
     public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2) {
         Console con = (Console)global.console;
-        BytePtr p = loc.toChars(global.params.showColumns);
+        BytePtr p = pcopy(loc.toChars(global.params.showColumns));
         if (con != null)
             (con).setColorBright(true);
         if ((p.get(0)) != 0)
@@ -192,7 +192,7 @@ public class errors {
             FileAndLines fllines = FileCache.fileCache.addOrGetFile(loc.filename.slice(0,strlen(loc.filename)));
             if (loc.linnum - 1 < fllines.lines.getLength())
             {
-                ByteSlice line = fllines.lines.get(loc.linnum - 1);
+                ByteSlice line = fllines.lines.get(loc.linnum - 1).copy();
                 if (loc.charnum < line.getLength())
                 {
                     fprintf(stderr,  new ByteSlice("%.*s\n"), line.getLength(), toBytePtr(line));
@@ -282,7 +282,7 @@ public class errors {
     }
 
     public static void vmessage(Loc loc, BytePtr format, Slice<Object> ap) {
-        BytePtr p = loc.toChars(global.params.showColumns);
+        BytePtr p = pcopy(loc.toChars(global.params.showColumns));
         if ((p.get(0)) != 0)
         {
             fprintf(stdout,  new ByteSlice("%s: "), p);
@@ -330,7 +330,7 @@ public class errors {
                                 codebuf.writeByte(0);
                                 colorHighlightCode(codebuf);
                                 (buf).remove(iCodeStart, i - iCodeStart + 1);
-                                ByteSlice pre =  new ByteSlice("");
+                                ByteSlice pre =  new ByteSlice("").copy();
                                 i = (buf).insert(iCodeStart, toByteSlice(pre));
                                 i = (buf).insert(i, codebuf.peekSlice());
                                 i--;
@@ -374,12 +374,12 @@ public class errors {
         StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
         Lexer lex = new Lexer(null, toBytePtr((buf).data), 0, (buf).offset - 1, false, true, diagnosticReporter);
         OutBuffer res = new OutBuffer();
-        BytePtr lastp = toBytePtr((buf).data);
+        BytePtr lastp = pcopy(toBytePtr((buf).data));
         res.reserve((buf).offset);
         res.writeByte(255);
         res.writeByte(6);
         for (; (1) != 0;){
-            Token tok = new Token();
+            Token tok = new Token().copy();
             lex.scan(tok);
             res.writestring(lastp.slice(0,((tok.ptr.minus(lastp)) / 1)));
             byte highlight = HIGHLIGHT.Default;

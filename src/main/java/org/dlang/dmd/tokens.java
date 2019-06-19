@@ -285,7 +285,7 @@ public class tokens {
         static {
             Identifier.initTable();
             {
-                ByteSlice __r55 = keywords;
+                ByteSlice __r55 = keywords.copy();
                 int __key56 = 0;
                 for (; __key56 < __r55.getLength();__key56 += 1) {
                     byte kw = __r55.get(__key56);
@@ -295,7 +295,7 @@ public class tokens {
         }
         public  int isKeyword() {
             {
-                ByteSlice __r57 = keywords;
+                ByteSlice __r57 = keywords.copy();
                 int __key58 = 0;
                 for (; __key58 < __r57.getLength();__key58 += 1) {
                     byte kw = __r57.get(__key58);
@@ -307,7 +307,7 @@ public class tokens {
         }
 
         public  void setString(BytePtr ptr, int length) {
-            BytePtr s = toBytePtr(Mem.xmalloc(length + 1));
+            BytePtr s = pcopy(toBytePtr(Mem.xmalloc(length + 1)));
             memcpy(s, ptr, length);
             s.set(length, (byte)0);
             this.ustring = pcopy(s);
@@ -326,7 +326,7 @@ public class tokens {
         }
 
         public  BytePtr toChars() {
-            BytePtr p = ptr(tokens.toCharsbuffer);
+            BytePtr p = pcopy(ptr(tokens.toCharsbuffer));
             {
                 int __dispatch0 = 0;
                 dispatched_0:

@@ -27,10 +27,10 @@ public class TestLexer extends TestCase {
     public void test_1() {
         int errors = global.startGagging();
         {
-            Slice<ByteSlice> __r51 = lexer.__unittest_L168_C1testcases;
-            int __key52 = 0;
-            for (; __key52 < __r51.getLength();__key52 += 1) {
-                ByteSlice testcase = __r51.get(__key52);
+            Slice<ByteSlice> list = lexer.__unittest_L168_C1testcases;
+            for (int i = 4; i < list.getLength();i += 1) {
+                System.out.printf("Testcase %d: %s\n", i, list.get(i).toString());
+                ByteSlice testcase = list.get(i);
                 errors.StderrDiagnosticReporter diagnosticReporter = new errors.StderrDiagnosticReporter(global.params.useDeprecated);
                 lexer.Lexer lex2 = new lexer.Lexer(null, toBytePtr(testcase), 0, testcase.getLength() - 1, false, false, diagnosticReporter);
                 byte tok = lex2.nextToken();
@@ -38,9 +38,9 @@ public class TestLexer extends TestCase {
                 for (; tok != 11 && iterations++ < testcase.getLength();){
                     tok = lex2.nextToken();
                 }
-                assert(tok == 11);
+                assertEquals(11, tok);
                 tok = lex2.nextToken();
-                assert(tok == 11);
+                assertEquals(11, tok);
             }
         }
         global.endGagging(errors);

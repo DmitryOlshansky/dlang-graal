@@ -711,7 +711,7 @@ public class globals {
                 int minor = 0;
                 boolean point = false;
                 {
-                    BytePtr p = toBytePtr(this._version).plus(1);
+                    BytePtr p = pcopy(toBytePtr(this._version).plus(1));
                     for (; ;p.postInc()){
                         byte c = p.get(0);
                         if ((isdigit((c & 0xFF))) != 0)

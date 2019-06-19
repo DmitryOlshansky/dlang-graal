@@ -1097,10 +1097,10 @@ public class id {
     public static ByteSlice generate(Slice<Msgtable> msgtable, Function1<Msgtable,ByteSlice> dg) {
         ByteSlice code = new ByteSlice();
         {
-            Slice<Msgtable> __r29 = msgtable;
+            Slice<Msgtable> __r29 = msgtable.copy();
             int __key28 = 0;
             for (; __key28 < __r29.getLength();__key28 += 1) {
-                Msgtable m = __r29.get(__key28);
+                Msgtable m = __r29.get(__key28).copy();
                 int i = __key28;
                 if (i != 0)
                     code.append((byte)10);

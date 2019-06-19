@@ -14,6 +14,13 @@ public class  File {
         public boolean success;
         public FileBuffer buffer;
 
+        public ReadResult copy() {
+            ReadResult r = new ReadResult();
+            r.success = success;
+            r.buffer = buffer;
+            return r;
+        }
+
         /// Transfers ownership of the buffer to the caller.
         public ByteSlice extractData() {
             return buffer.extractData();

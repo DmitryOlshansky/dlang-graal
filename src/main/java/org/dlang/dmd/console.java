@@ -47,7 +47,7 @@ public class console {
         }
 
         public static boolean detectTerminal() {
-            BytePtr term = getenv(new BytePtr("TERM"));
+            BytePtr term = pcopy(getenv(new BytePtr("TERM")));
             return (isatty(2)) != 0 && term != null && (term.get(0)) != 0 && strcmp(term,  new ByteSlice("dumb")) != 0;
         }
 

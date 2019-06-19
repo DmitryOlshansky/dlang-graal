@@ -144,16 +144,16 @@ public class identifier {
 
         public static Identifier generateIdWithLoc(ByteSlice prefix, Loc loc) {
             OutBuffer idBuf = new OutBuffer();
-            Function0<Integer> __lambda7 = new Function0<Integer>(){
-                public Integer invoke(){
-                    return 1;
-                }
-            };
             Function1<Integer,Integer> __lambda8 = new Function1<Integer,Integer>(){
                 public Integer invoke(Integer counter){
                     idBuf.writestring( new ByteSlice("_"));
                     idBuf.print((long)counter);
                     return counter + 1;
+                }
+            };
+            Function0<Integer> __lambda7 = new Function0<Integer>(){
+                public Integer invoke(){
+                    return 1;
                 }
             };
             try {
@@ -208,7 +208,7 @@ public class identifier {
             IntRef idx = ref(0);
             for (; idx.value < str.getLength();){
                 IntRef dc = ref('\uffff');
-                BytePtr q = utf_decodeChar(toBytePtr(str), str.getLength(), idx, dc);
+                BytePtr q = pcopy(utf_decodeChar(toBytePtr(str), str.getLength(), idx, dc));
                 if (q != null || !(dc.value >= 128 && isUniAlpha(dc.value) || (isalnum(dc.value)) != 0 || dc.value == 95))
                 {
                     return false;

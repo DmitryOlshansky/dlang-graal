@@ -80,7 +80,7 @@ public class lexer {
     }
 
     public static void test_0() {
-        ByteSlice text =  new ByteSlice("int");
+        ByteSlice text =  new ByteSlice("int").copy();
         StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
         Lexer lex1 = new Lexer(null, toBytePtr(text), 0, text.getLength(), false, false, diagnosticReporter);
         byte tok = TOK.reserved;
@@ -96,10 +96,10 @@ public class lexer {
     public static void test_1() {
         int errors = global.startGagging();
         {
-            Slice<ByteSlice> __r51 = lexer.__unittest_L168_C1testcases;
+            Slice<ByteSlice> __r51 = lexer.__unittest_L168_C1testcases.copy();
             int __key52 = 0;
             for (; __key52 < __r51.getLength();__key52 += 1) {
-                ByteSlice testcase = __r51.get(__key52);
+                ByteSlice testcase = __r51.get(__key52).copy();
                 StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
                 Lexer lex2 = new Lexer(null, toBytePtr(testcase), 0, testcase.getLength() - 1, false, false, diagnosticReporter);
                 byte tok = lex2.nextToken();
@@ -300,7 +300,7 @@ public class lexer {
                                 if ((this.p.get(1) & 0xFF) != 34)
                                     /*goto case_ident*/{ __dispatch1 = -2; continue dispatched_1; }
                                 this.p.postInc();
-                                BytePtr start = this.p;
+                                BytePtr start = pcopy(this.p);
                                 OutBuffer hexString = new OutBuffer(null, 0, 0, 0, false, false);
                                 (t).value = this.hexStringConstant(t);
                                 (hexString).write(start, ((this.p.minus(start)) / 1));
@@ -383,7 +383,7 @@ public class lexer {
                                             continue;
                                         else if (((c & 0xFF) & 128) != 0)
                                         {
-                                            BytePtr s = this.p;
+                                            BytePtr s = pcopy(this.p);
                                             int u = this.decodeUTF();
                                             if (isUniAlpha(u))
                                                 continue;
@@ -403,7 +403,7 @@ public class lexer {
                                             lexer.scaninitdone = true;
                                             IntRef ct = ref(0);
                                             time(ptr(ct));
-                                            BytePtr p = ctime(ptr(ct));
+                                            BytePtr p = pcopy(ctime(ptr(ct)));
                                             assert(p != null);
                                             sprintf(ptr(lexer.scandate),  new ByteSlice("%.6s %.4s"), p.plus(4), p.plus(20));
                                             sprintf(ptr(lexer.scantime),  new ByteSlice("%.8s"), p.plus(11));
@@ -919,7 +919,7 @@ public class lexer {
                             case 35:
                                 {
                                     this.p.postInc();
-                                    Token n = new Token();
+                                    Token n = new Token().copy();
                                     this.scan(n);
                                     if ((n.value & 0xFF) == 120)
                                     {
@@ -930,7 +930,7 @@ public class lexer {
                                         }
                                         else
                                         {
-                                            Loc locx = this.loc();
+                                            Loc locx = this.loc().copy();
                                             this.warning(locx, new BytePtr("C preprocessor directive `#%s` is not supported"), n.ident.toChars());
                                         }
                                     }
@@ -966,7 +966,7 @@ public class lexer {
                                 }
                             }
                         }
-                    } while(false);
+                    } while(__dispatch1 != 0);
                 }
             }
         }
@@ -1027,6 +1027,14 @@ public class lexer {
         }
 
         public int escapeSequence(Loc loc, DiagnosticReporter handler, BytePtr q) {
+            {
+                assert(handler != null);
+            }
+            {
+                {
+                    assert(handler != null);
+                }
+            }
             try {
                 int c = (p.get(0) & 0xFF);
                 int ndigits = 0;
@@ -1113,7 +1121,7 @@ public class lexer {
                                 break;
                             case 38:
                                 {
-                                    BytePtr idstart = p.plusAssign(1);
+                                    BytePtr idstart = pcopy(p.plusAssign(1));
                                     for (; (1) != 0;p.postInc()){
                                         switch ((p.get(0) & 0xFF))
                                         {
@@ -1177,7 +1185,7 @@ public class lexer {
 
         public  void wysiwygStringConstant(Token result) {
             (result).value = TOK.string_;
-            Loc start = this.loc();
+            Loc start = this.loc().copy();
             byte terminator = this.p.get(0);
             this.p.postInc();
             Lexer.stringbuffer.reset();
@@ -1227,7 +1235,7 @@ public class lexer {
         }
 
         public  byte hexStringConstant(Token t) {
-            Loc start = this.loc();
+            Loc start = this.loc().copy();
             int n = 0;
             int v = -1;
             this.p.postInc();
@@ -1305,7 +1313,7 @@ public class lexer {
 
         public  void delimitedStringConstant(Token result) {
             (result).value = TOK.string_;
-            Loc start = this.loc();
+            Loc start = this.loc().copy();
             int delimleft = '\u0000';
             int delimright = '\u0000';
             int nest = 1;
@@ -1381,7 +1389,7 @@ public class lexer {
                             delimright = '\u003e';
                         else if ((isalpha(c)) != 0 || c == 95 || c >= 128 && isUniAlpha(c))
                         {
-                            Token tok = new Token();
+                            Token tok = new Token().copy();
                             this.p.postDec();
                             this.scan(tok);
                             if ((tok.value & 0xFF) != 120)
@@ -1427,8 +1435,8 @@ public class lexer {
                             /*goto Ldone*/throw Dispatch.INSTANCE;
                         if ((startline) != 0 && (isalpha(c)) != 0 || c == 95 || c >= 128 && isUniAlpha(c) && hereid != null)
                         {
-                            Token tok = new Token();
-                            BytePtr psave = this.p;
+                            Token tok = new Token().copy();
+                            BytePtr psave = pcopy(this.p);
                             this.p.postDec();
                             this.scan(tok);
                             if ((tok.value & 0xFF) == 120 && tok.ident == hereid)
@@ -1457,10 +1465,10 @@ public class lexer {
         public  void tokenStringConstant(Token result) {
             (result).value = TOK.string_;
             int nest = 1;
-            Loc start = this.loc();
-            BytePtr pstart = this.p.plusAssign(1);
+            Loc start = this.loc().copy();
+            BytePtr pstart = pcopy(this.p.plusAssign(1));
             for (; (1) != 0;){
-                Token tok = new Token();
+                Token tok = new Token().copy();
                 this.scan(tok);
                 switch ((tok.value & 0xFF))
                 {
@@ -1489,7 +1497,7 @@ public class lexer {
 
         public  void escapeStringConstant(Token t) {
             (t).value = TOK.string_;
-            Loc start = this.loc();
+            Loc start = this.loc().copy();
             this.p.postInc();
             Lexer.stringbuffer.reset();
             for (; (1) != 0;){
@@ -1644,7 +1652,7 @@ public class lexer {
 
         public  byte number(Token t) {
             int base = 10;
-            BytePtr start = this.p;
+            BytePtr start = pcopy(this.p);
             long n = 0L;
             int d = 0;
             boolean err = false;
@@ -1808,7 +1816,7 @@ public class lexer {
             if (base == 2 && !(anyBinaryDigitsNoSingleUS) || base == 16 && !(anyHexDigitsNoSingleUS))
                 this.error(new BytePtr("`%.*s` isn't a valid integer literal, use `%.*s0` instead"), (this.p.minus(start)) / 1, start, 2, start);
             int flags = base == 10 ? FLAGS.decimal : FLAGS.none;
-            BytePtr psuffix = this.p;
+            BytePtr psuffix = pcopy(this.p);
             for (; (1) != 0;){
                 int f = FLAGS.none;
                 {
@@ -1923,7 +1931,7 @@ public class lexer {
         public  byte inreal(Token t) {
             boolean isWellformedString = true;
             Lexer.stringbuffer.reset();
-            BytePtr pstart = this.p;
+            BytePtr pstart = pcopy(this.p);
             boolean hex = false;
             int c = (this.p.postInc().get(0) & 0xFF);
             if (c == 48)
@@ -1996,7 +2004,7 @@ public class lexer {
                 pstart.plusAssign(1);
             }
             Lexer.stringbuffer.writeByte(0);
-            BytePtr sbufptr = toBytePtr(Lexer.stringbuffer.data);
+            BytePtr sbufptr = pcopy(toBytePtr(Lexer.stringbuffer.data));
             byte result = TOK.reserved;
             Ref<Boolean> isOutOfRange = ref(false);
             (t).floatvalue = isWellformedString ? CTFloat.parse(sbufptr, ptr(isOutOfRange)) : CTFloat.zero;
@@ -2055,7 +2063,7 @@ public class lexer {
             boolean isLong = (result & 0xFF) == 113 || (result & 0xFF) == 116;
             if (isOutOfRange.value && !(isLong))
             {
-                BytePtr suffix = (result & 0xFF) == 111 || (result & 0xFF) == 114 ? new BytePtr("f") : new BytePtr("");
+                BytePtr suffix = pcopy((result & 0xFF) == 111 || (result & 0xFF) == 114 ? new BytePtr("f") : new BytePtr(""));
                 this.error(this.scanloc, new BytePtr("number `%s%s` is not representable"), sbufptr, suffix);
             }
             return result;
@@ -2101,8 +2109,8 @@ public class lexer {
         public  void poundLine() {
             int linnum = this.scanloc.linnum;
             BytePtr filespec = null;
-            Loc loc = this.loc();
-            Token tok = new Token();
+            Loc loc = this.loc().copy();
+            Token tok = new Token().copy();
             this.scan(tok);
             try {
                 if ((tok.value & 0xFF) == 105 || (tok.value & 0xFF) == 107)
@@ -2219,7 +2227,7 @@ public class lexer {
         }
 
         public  int decodeUTF() {
-            BytePtr s = this.p;
+            BytePtr s = pcopy(this.p);
             assert(((s.get(0) & 0xFF) & 128) != 0);
             int len = 0;
             {
@@ -2229,7 +2237,7 @@ public class lexer {
             }
             IntRef idx = ref(0);
             IntRef u = ref('\uffff');
-            BytePtr msg = utf_decodeChar(s, len, idx, u);
+            BytePtr msg = pcopy(utf_decodeChar(s, len, idx, u));
             this.p.plusAssign((idx.value - 1) * 1);
             if (msg != null)
             {
@@ -2240,8 +2248,8 @@ public class lexer {
 
         public  void getDocComment(Token t, int lineComment, boolean newParagraph) {
             byte ct = (t).ptr.get(2);
-            BytePtr q = (t).ptr.plus(3);
-            BytePtr qend = this.p;
+            BytePtr q = pcopy((t).ptr.plus(3));
+            BytePtr qend = pcopy(this.p);
             if ((ct & 0xFF) == 42 || (ct & 0xFF) == 43)
                 qend.minusAssign(2);
             for (; q.lessThan(qend);q.postInc()){
@@ -2281,7 +2289,7 @@ public class lexer {
             try {
                 Function0<Void> trimTrailingWhitespace = new Function0<Void>(){
                     public Void invoke(){
-                        ByteSlice s = buf.peekSlice();
+                        ByteSlice s = buf.peekSlice().copy();
                         int len = s.getLength();
                         for (; (len) != 0 && (s.get(len - 1) & 0xFF) == 32 || (s.get(len - 1) & 0xFF) == 9;) {
                             len -= 1;
@@ -2340,28 +2348,28 @@ public class lexer {
                     buf.writeByte((c & 0xFF));
                 }
                 trimTrailingWhitespace.invoke();
-                ByteSlice s = buf.peekSlice();
+                ByteSlice s = buf.peekSlice().copy();
                 if (s.getLength() == 0 || (s.get(s.getLength() - 1) & 0xFF) != 10)
                     buf.writeByte(10);
                 if ((lineComment) != 0 && this.anyToken) {
                     if(t.lineComment != null)
-                        t.lineComment = Lexer.combineComments(t.lineComment, buf.peekChars(), newParagraph);
+                            t.lineComment = Lexer.combineComments(t.lineComment, buf.peekChars(), newParagraph);
                     else
                         t.lineComment = buf.extractChars();
                 }
                 else {
                     if(t.blockComment != null)
-                        t.blockComment = Lexer.combineComments(t.blockComment, buf.peekChars(), newParagraph);
+                            t.blockComment = Lexer.combineComments(t.blockComment, buf.peekChars(), newParagraph);
                     else
                         t.blockComment = buf.extractChars();
-                }
+                 }
             }
             finally {
             }
         }
 
         public static BytePtr combineComments(BytePtr c1, BytePtr c2, boolean newParagraph) {
-            BytePtr c = c2;
+            BytePtr c = pcopy(c2);
             int newParagraphSize = newParagraph ? 1 : 0;
             if (c1 != null)
             {
@@ -2376,7 +2384,7 @@ public class lexer {
                         len1 += 1;
                         insertNewLine = 1;
                     }
-                    BytePtr p = toBytePtr(Mem.xmalloc(len1 + newParagraphSize + len2 + 1));
+                    BytePtr p = pcopy(toBytePtr(Mem.xmalloc(len1 + newParagraphSize + len2 + 1)));
                     memcpy(p, c1, len1 - insertNewLine);
                     if ((insertNewLine) != 0)
                         p.set((len1 - 1), (byte)10);
@@ -2429,7 +2437,7 @@ public class lexer {
         Function4<ByteSlice,ByteSlice,Integer,Integer,Void> test = new Function4<ByteSlice,ByteSlice,Integer,Integer,Void>(){
             public Void invoke(ByteSlice sequence, ByteSlice expectedError, Integer expectedReturnValue, Integer expectedScanLength){
                 ExpectDiagnosticReporter handler = new ExpectDiagnosticReporter(expectedError);
-                BytePtr p = toBytePtr(toBytePtr(sequence));
+                BytePtr p = pcopy(toBytePtr(toBytePtr(sequence)));
                 int actualReturnValue = Lexer.escapeSequence(Loc.initial, handler, p);
                 assert(handler.gotError);
                 assert(expectedReturnValue == actualReturnValue);
