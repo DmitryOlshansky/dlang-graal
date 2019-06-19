@@ -9,7 +9,7 @@ class Slice<T> (var data: Array<T?>, var beg: Int, var end: Int) : RootObject() 
 
     constructor() : this(emptyArray<Any>() as Array<T?>, 0, 0)
 
-    fun copy() = Slice(data, beg, end)
+    fun copy() = Slice<T>(data, beg, end)
 
     operator fun set(idx: Int, value: T?) {
         data[beg+idx] = value

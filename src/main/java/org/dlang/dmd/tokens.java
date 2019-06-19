@@ -409,7 +409,7 @@ public class tokens {
                                                             continue;
                                                         }
                                                     }
-                                                } while(false);
+                                                } while(__dispatch1 != 0);
                                             }
                                             break;
                                         }
@@ -485,7 +485,7 @@ public class tokens {
                             break;
                         }
                     }
-                } while(false);
+                } while(__dispatch0 != 0);
             }
             return p;
         }

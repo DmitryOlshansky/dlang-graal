@@ -720,7 +720,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
         if (gotos) {
             buf.outdent;
-            buf.put("} while(false);\n");
+            buf.fmt("} while(__dispatch%d != 0);\n", currentDispatch);
             buf.outdent;
             buf.put("}\n");
         }

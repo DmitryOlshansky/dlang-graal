@@ -28,7 +28,7 @@ public class TestLexer extends TestCase {
         int errors = global.startGagging();
         {
             Slice<ByteSlice> list = lexer.__unittest_L168_C1testcases;
-            for (int i = 4; i < list.getLength();i += 1) {
+            for (int i = 0; i < list.getLength();i += 1) {
                 System.out.printf("Testcase %d: %s\n", i, list.get(i).toString());
                 ByteSlice testcase = list.get(i);
                 errors.StderrDiagnosticReporter diagnosticReporter = new errors.StderrDiagnosticReporter(global.params.useDeprecated);

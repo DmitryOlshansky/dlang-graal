@@ -118,9 +118,10 @@ fun toupper(c: Int): Int = Character.toUpperCase(c)
 
 fun isspace(c: Int):Int = if (Character.isSpaceChar(c)) 1 else 0
 
-fun realloc(ptr: BytePtr, size: Int): BytePtr  {
-    require(ptr.offset == 0)
-    return BytePtr(ptr.data.copyOf(size))
+fun realloc(ptr: BytePtr?, size: Int): BytePtr  {
+    require(ptr === null || ptr.offset == 0)
+    return if (ptr === null) BytePtr(ByteArray(size))
+    else BytePtr(ptr.data.copyOf(size))
 }
 
 fun getcwd(s: BytePtr?, i: Int) = BytePtr(Paths.get(".").toAbsolutePath().normalize().toString())

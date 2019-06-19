@@ -1175,7 +1175,7 @@ public class lexer {
                                 break;
                             }
                         }
-                    } while(false);
+                    } while(__dispatch7 != 0);
                 }
                 return c;
             }
@@ -1306,7 +1306,7 @@ public class lexer {
                                 break;
                             }
                         }
-                    } while(false);
+                    } while(__dispatch10 != 0);
                 }
             }
         }
@@ -1372,7 +1372,7 @@ public class lexer {
                                     break;
                                 }
                             }
-                        } while(false);
+                        } while(__dispatch11 != 0);
                     }
                     if (delimleft == 0)
                     {
@@ -1621,7 +1621,7 @@ public class lexer {
                             break;
                         }
                     }
-                } while(false);
+                } while(__dispatch15 != 0);
             }
             if ((this.p.get(0) & 0xFF) != 39)
             {
@@ -1716,7 +1716,7 @@ public class lexer {
                                     break;
                                 }
                             }
-                        } while(false);
+                        } while(__dispatch18 != 0);
                     }
                 }
                 for (; (1) != 0;){
@@ -1788,7 +1788,7 @@ public class lexer {
                                     /*goto Ldone*/throw Dispatch.INSTANCE;
                                 }
                             }
-                        } while(false);
+                        } while(__dispatch19 != 0);
                     }
                     anyHexDigitsNoSingleUS = true;
                     anyBinaryDigitsNoSingleUS = true;
@@ -1850,7 +1850,7 @@ public class lexer {
                                 break;
                             }
                         }
-                    } while(false);
+                    } while(__dispatch20 != 0);
                 }
                 break;
             }
@@ -2036,7 +2036,7 @@ public class lexer {
                             this.p.postInc();
                             break;
                     }
-                } while(false);
+                } while(__dispatch22 != 0);
             }
             if ((this.p.get(0) & 0xFF) == 105 || (this.p.get(0) & 0xFF) == 73)
             {
@@ -2201,7 +2201,7 @@ public class lexer {
                                                         continue;
                                                     }
                                                 }
-                                            } while(false);
+                                            } while(__dispatch25 != 0);
                                         }
                                         break;
                                     }
@@ -2217,7 +2217,7 @@ public class lexer {
                                     /*goto Lerr*/throw Dispatch.INSTANCE;
                                 }
                             }
-                        } while(false);
+                        } while(__dispatch24 != 0);
                     }
                 }
             }
@@ -2343,7 +2343,7 @@ public class lexer {
                                     trimTrailingWhitespace.invoke();
                                     break;
                             }
-                        } while(false);
+                        } while(__dispatch26 != 0);
                     }
                     buf.writeByte((c & 0xFF));
                 }

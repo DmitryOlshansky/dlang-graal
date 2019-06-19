@@ -1,13 +1,24 @@
 package org.dlang.dmd.root
 
-class OutBuffer(
-    @JvmField var data: BytePtr = BytePtr(16),
-    @JvmField var offset: Int = 0,
-    var size: Int = 0,
-    var level: Int = 0,
-    var doindent: Boolean = false,
-    private var notlinehead: Boolean = false
-) {
+class OutBuffer {
+    @JvmField var data: BytePtr
+    @JvmField var offset: Int
+    var size: Int
+    var level: Int
+    var doindent: Boolean
+    private var notlinehead: Boolean
+
+    constructor(): this(null) {}
+
+    constructor(data: BytePtr? = null, offset: Int = 0, size: Int = 0, level: Int = 0, doindent: Boolean = false,
+                notlinehead: Boolean = false) {
+        this.data = if (data === null) BytePtr(size) else data
+        this.offset = offset
+        this.size = size
+        this.level = level
+        this.doindent = doindent
+        this.notlinehead = notlinehead
+    }
 
     fun extractData() : BytePtr {
         val p = data
