@@ -302,9 +302,18 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     else sink.fmt("new %s()", var.type.toJava);
                 }
                 else {
+                    bool needPCopy(Expression e) {
+                        return e.type.ty == Tpointer && !e.isNullExp && e.type.nextOf.ty != Tstruct;
+                    }
+                    bool needCopy(Expression e) {
+                        return e.type.ty == Tstruct || e.type.ty == Tarray;
+                    }
                     //fprintf(stderr, "init %s with %s\n", var.toChars, assign.e2.toChars);
                     if (refVar) sink.fmt("ref(");
+                    if (needPCopy(assign.e2)) sink.put("pcopy(");
                     sink.put(assign.e2.toJava(opts));
+                    if (needCopy(assign.e2))  sink.put(".copy()");
+                    if (needPCopy(assign.e2)) sink.put(")");
                     if (refVar) sink.fmt(")");
                 }
             }
