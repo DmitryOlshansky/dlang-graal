@@ -51,6 +51,7 @@ struct ExprOpts {
     VarDeclaration vararg = null;
     bool[void*] refParams; //out and ref params, they must be boxed
     string[void*] globals; // basic type static vars pushed to global scope
+    bool[void*] localFuncs; // functions that are local to current scope
     Template[void*] templates; // tiArg strings of template vars and funcs
 }
 
@@ -209,8 +210,10 @@ public:
                     t = sym.memtype;
                     goto L1;
                 }
-            case Twchar:
             case Tdchar:
+                buf.printf("0x%05x", v);
+                break;
+            case Twchar:
                 if(v == '\n')
                     buf.printf("'\\n'");
                 else
@@ -875,14 +878,12 @@ public:
                     expToBuffer(e.e1, precedence[e.op], buf, opts);
                 if (auto tmpl = cast(void*)e.f in opts.templates) {
                     buf.writestring(tmpl.tiArgs);
-                    if (tmpl.local)
-                        buf.writestring(".invoke");
                 }
             }
             else
                 expToBuffer(e.e1, precedence[e.op], buf, opts);
             //fprintf(stderr, "Calling %x %s type %s\n", e.f, e.e1.toChars(), e.e1.type.toChars());
-            if (!e.f || e.f.isNested()) {
+            if (!e.f || e.f.isNested() || cast(void*)e.f in opts.localFuncs) {
                 buf.writestring(".invoke");
             }
         }

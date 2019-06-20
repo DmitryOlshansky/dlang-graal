@@ -243,6 +243,7 @@ public class lexer {
                                 }
                             /*Lnumber:*/
                             case -1:
+                            __dispatch1 = 0;
                                 (t).value = this.number(t);
                                 return ;
                             case 39:
@@ -343,6 +344,7 @@ public class lexer {
                             case 95:
                             /*case_ident:*/
                             case -2:
+                            __dispatch1 = 0;
                                 {
                                     for (; (1) != 0;){
                                         byte c = (this.p.plusAssign(1)).get(0);
@@ -1018,6 +1020,7 @@ public class lexer {
                             case 92:
                             /*Lconsume:*/
                             case -1:
+                            __dispatch7 = 0;
                                 p.postInc();
                                 break;
                             case 97:
@@ -1051,6 +1054,7 @@ public class lexer {
                                 ndigits = 2;
                             /*Lhex:*/
                             case -2:
+                            __dispatch7 = 0;
                                 p.postInc();
                                 c = (p.get(0) & 0xFF);
                                 if (ishex((byte)c))
@@ -1303,6 +1307,7 @@ public class lexer {
                                 case 10:
                                 /*Lnextline:*/
                                 case -1:
+                                __dispatch11 = 0;
                                     this.endOfLine();
                                     startline = 1;
                                     if ((blankrol) != 0)
@@ -1561,6 +1566,7 @@ public class lexer {
                         case 10:
                         /*L1:*/
                         case -1:
+                        __dispatch15 = 0;
                             this.endOfLine();
                         case 13:
                             /*goto case*/{ __dispatch15 = 39; continue dispatched_15; }
@@ -1746,6 +1752,7 @@ public class lexer {
                                 case 105:
                                 /*Lreal:*/
                                 case -1:
+                                __dispatch19 = 0;
                                     this.p = pcopy(start);
                                     return this.inreal(t);
                                 case 95:
@@ -1805,6 +1812,7 @@ public class lexer {
                                 f = FLAGS.long_;
                             /*L1:*/
                             case -1:
+                            __dispatch20 = 0;
                                 this.p.postInc();
                                 if ((flags & f) != 0 && !(err))
                                 {
@@ -2106,6 +2114,7 @@ public class lexer {
                                 case 10:
                                 /*Lnewline:*/
                                 case -1:
+                                __dispatch24 = 0;
                                     this.scanloc.linnum = linnum;
                                     if (filespec != null)
                                         this.scanloc.filename = pcopy(filespec);
@@ -2303,6 +2312,7 @@ public class lexer {
                                     break;
                                 /*Lnewline:*/
                                 case -1:
+                                __dispatch26 = 0;
                                     c = (byte)10;
                                 case 10:
                                     linestart = 1;

@@ -278,8 +278,8 @@ fun isatty(n: Int):Int = if(System.console() != null) 1 else 0
 
 fun printf(fmt: ByteSlice, vararg args: Any?) = fprintf(utils.stdout, fmt, args)
 
-fun vsprintf(dest: BytePtr, fmt: BytePtr, vararg args: Any?): Int {
-    val result = String.format(fmt.toString(), args)
+fun vsprintf(dest: BytePtr, fmt: BytePtr, args: Slice<Any?>): Int {
+    val result = String.format(fmt.toString(), *args.data.copyOfRange(args.beg, args.end))
     for (i in result.indices) {
         dest[i] = result[i].toByte()
     }
