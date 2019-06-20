@@ -22,8 +22,6 @@ import static org.dlang.dmd.tokens.*;
 import static org.dlang.dmd.utf.*;
 
 public class lexer {
-    private static final byte[][] initializer_0 = {{(byte)0}, {(byte)39, (byte)0}, {(byte)39, (byte)26}, {(byte)123, (byte)123, (byte)113, (byte)123, (byte)0}, {(byte)255, (byte)0}, {(byte)255, (byte)128, (byte)0}, {(byte)255, (byte)255, (byte)0}, {(byte)255, (byte)255, (byte)0}, {(byte)120, (byte)34, (byte)26}};
-    static Slice<ByteSlice> __unittest_L168_C1testcases = slice(initializer_0);
     static boolean scaninitdone = false;
     static ByteSlice scandate = new ByteSlice(new byte[12]);
     static ByteSlice scantime = new ByteSlice(new byte[9]);
@@ -80,39 +78,8 @@ public class lexer {
     }
 
     public static void test_0() {
-        ByteSlice text =  new ByteSlice("int").copy();
-        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
-        Lexer lex1 = new Lexer(null, toBytePtr(text), 0, text.getLength(), false, false, diagnosticReporter);
-        byte tok = TOK.reserved;
-        tok = lex1.nextToken();
-        assert((tok & 0xFF) == 133);
-        tok = lex1.nextToken();
-        assert((tok & 0xFF) == 11);
-        tok = lex1.nextToken();
-        assert((tok & 0xFF) == 11);
-        tok = lex1.nextToken();
-        assert((tok & 0xFF) == 11);
     }
     public static void test_1() {
-        int errors = global.startGagging();
-        {
-            Slice<ByteSlice> __r51 = lexer.__unittest_L168_C1testcases.copy();
-            int __key52 = 0;
-            for (; __key52 < __r51.getLength();__key52 += 1) {
-                ByteSlice testcase = __r51.get(__key52).copy();
-                StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
-                Lexer lex2 = new Lexer(null, toBytePtr(testcase), 0, testcase.getLength() - 1, false, false, diagnosticReporter);
-                byte tok = lex2.nextToken();
-                int iterations = 1;
-                for (; (tok & 0xFF) != 11 && iterations++ < testcase.getLength();){
-                    tok = lex2.nextToken();
-                }
-                assert((tok & 0xFF) == 11);
-                tok = lex2.nextToken();
-                assert((tok & 0xFF) == 11);
-            }
-        }
-        global.endGagging(errors);
     }
     public static class Lexer extends Object
     {
@@ -1026,7 +993,7 @@ public class lexer {
             return escapeSequence(this.token.loc, this.diagnosticReporter, this.p);
         }
 
-        public int escapeSequence(Loc loc, DiagnosticReporter handler, BytePtr q) {
+        public int escapeSequence(Loc loc, DiagnosticReporter handler, BytePtr sequence) {
             {
                 assert(handler != null);
             }
@@ -1035,6 +1002,7 @@ public class lexer {
                     assert(handler != null);
                 }
             }
+            p = pcopy(sequence);
             try {
                 int c = (p.get(0) & 0xFF);
                 int ndigits = 0;
@@ -1115,7 +1083,7 @@ public class lexer {
                                 }
                                 else
                                 {
-                                handler.error(loc, new BytePtr("undefined escape hex sequence \\%c%c"), q.get(0), c);
+                                    handler.error(loc, new BytePtr("undefined escape hex sequence \\%c%c"), sequence.get(0), c);
                                     p.postInc();
                                 }
                                 break;
@@ -1200,7 +1168,7 @@ public class lexer {
                     case 13:
                         if ((this.p.get(0) & 0xFF) == 10)
                             continue;
-                        c = '\n';
+                        c = 0x0000a;
                         this.endOfLine();
                         break;
                     case 0:
@@ -1314,8 +1282,8 @@ public class lexer {
         public  void delimitedStringConstant(Token result) {
             (result).value = TOK.string_;
             Loc start = this.loc().copy();
-            int delimleft = '\u0000';
-            int delimright = '\u0000';
+            int delimleft = 0x00000;
+            int delimright = 0x00000;
             int nest = 1;
             int nestcount = -1;
             Identifier hereid = null;
@@ -1351,7 +1319,7 @@ public class lexer {
                                 case 13:
                                     if ((this.p.get(0) & 0xFF) == 10)
                                         continue;
-                                    c = '\n';
+                                    c = 0x0000a;
                                     /*goto Lnextline*/{ __dispatch11 = -1; continue dispatched_11; }
                                 case 0:
                                 case 26:
@@ -1380,13 +1348,13 @@ public class lexer {
                         nest = 1;
                         nestcount = 1;
                         if (c == 40)
-                            delimright = '\u0029';
+                            delimright = 0x00029;
                         else if (c == 123)
-                            delimright = '\u007d';
+                            delimright = 0x0007d;
                         else if (c == 91)
-                            delimright = '\u005d';
+                            delimright = 0x0005d;
                         else if (c == 60)
-                            delimright = '\u003e';
+                            delimright = 0x0003e;
                         else if ((isalpha(c)) != 0 || c == 95 || c >= 128 && isUniAlpha(c))
                         {
                             Token tok = new Token().copy();
@@ -1526,7 +1494,7 @@ public class lexer {
                     case 13:
                         if ((this.p.get(0) & 0xFF) == 10)
                             continue;
-                        c = '\n';
+                        c = 0x0000a;
                         this.endOfLine();
                         break;
                     case 34:
@@ -1547,7 +1515,7 @@ public class lexer {
                             c = this.decodeUTF();
                             if (c == 8232 || c == 8233)
                             {
-                                c = '\n';
+                                c = 0x0000a;
                                 this.endOfLine();
                             }
                             this.p.postInc();
@@ -2236,7 +2204,7 @@ public class lexer {
                 }
             }
             IntRef idx = ref(0);
-            IntRef u = ref('\uffff');
+            IntRef u = ref(0x0ffff);
             BytePtr msg = pcopy(utf_decodeChar(s, len, idx, u));
             this.p.plusAssign((idx.value - 1) * 1);
             if (msg != null)
@@ -2323,7 +2291,6 @@ public class lexer {
                                         continue;
                                     /*goto Lnewline*/{ __dispatch26 = -1; continue dispatched_26; }
                                 default:
-
                                     if ((c & 0xFF) == 226)
                                     {
                                         if ((q.get(1) & 0xFF) == 128 && (q.get(2) & 0xFF) == 168 || (q.get(2) & 0xFF) == 169)
@@ -2337,7 +2304,6 @@ public class lexer {
                                 /*Lnewline:*/
                                 case -1:
                                     c = (byte)10;
-
                                 case 10:
                                     linestart = 1;
                                     trimTrailingWhitespace.invoke();
@@ -2351,18 +2317,11 @@ public class lexer {
                 ByteSlice s = buf.peekSlice().copy();
                 if (s.getLength() == 0 || (s.get(s.getLength() - 1) & 0xFF) != 10)
                     buf.writeByte(10);
-                if ((lineComment) != 0 && this.anyToken) {
-                    if(t.lineComment != null)
-                            t.lineComment = Lexer.combineComments(t.lineComment, buf.peekChars(), newParagraph);
-                    else
-                        t.lineComment = buf.extractChars();
-                }
-                else {
-                    if(t.blockComment != null)
-                            t.blockComment = Lexer.combineComments(t.blockComment, buf.peekChars(), newParagraph);
-                    else
-                        t.blockComment = buf.extractChars();
-                 }
+                Ptr<BytePtr> dc = pcopy((lineComment) != 0 && this.anyToken ? ptr((t).lineComment) : ptr((t).blockComment));
+                if (dc.get(0) != null)
+                    dc.set(0, Lexer.combineComments(dc.get(0), buf.peekChars(), newParagraph));
+                else
+                    dc.set(0, buf.extractChars());
             }
             finally {
             }
@@ -2405,125 +2364,7 @@ public class lexer {
 
     }
     public static void test_2() {
-            // from template test!(Character)
-            Function2<ByteSlice,Character,Void> testCharacter = new Function2<ByteSlice,Character,Void>(){
-                public Void invoke(ByteSlice sequence, Character expected){
-                    AssertDiagnosticReporter assertOnErrorCharacter = new AssertDiagnosticReporter();
-                    BytePtr pCharacter = pcopy(toBytePtr(toBytePtr(sequence)));
-                    assert((int)expected == Lexer.escapeSequence(Loc.initial, assertOnError, p));
-                    assert(p == toBytePtr((toBytePtr(sequence).plus(sequence.getLength() * 1))));
-                }
-            };
-
-            // from template test!(Integer)
-            Function2<ByteSlice,Integer,Void> testInteger = new Function2<ByteSlice,Integer,Void>(){
-                public Void invoke(ByteSlice sequence, Integer expected){
-                    AssertDiagnosticReporter assertOnErrorInteger = new AssertDiagnosticReporter();
-                    BytePtr pInteger = pcopy(toBytePtr(toBytePtr(sequence)));
-                    assert(expected == Lexer.escapeSequence(Loc.initial, assertOnError, p));
-                    assert(p == toBytePtr((toBytePtr(sequence).plus(sequence.getLength() * 1))));
-                }
-            };
-
-            // from template test!(Integer)
-
-            // from template test!(Byte)
-            Function2<ByteSlice,Byte,Void> testByte = new Function2<ByteSlice,Byte,Void>(){
-                public Void invoke(ByteSlice sequence, Byte expected){
-                    AssertDiagnosticReporter assertOnErrorByte = new AssertDiagnosticReporter();
-                    BytePtr pByte = pcopy(toBytePtr(toBytePtr(sequence)));
-                    assert((expected & 0xFF) == Lexer.escapeSequence(Loc.initial, assertOnError, p));
-                    assert(p == toBytePtr((toBytePtr(sequence).plus(sequence.getLength() * 1))));
-                }
-            };
-
-        testByte.invoke( new ByteSlice("'"), (byte)39);
-        testByte.invoke( new ByteSlice("\""), (byte)34);
-        testByte.invoke( new ByteSlice("?"), (byte)63);
-        testByte.invoke( new ByteSlice("\\"), (byte)92);
-        testByte.invoke( new ByteSlice("0"), (byte)0);
-        testByte.invoke( new ByteSlice("a"), (byte)7);
-        testByte.invoke( new ByteSlice("b"), (byte)8);
-        testByte.invoke( new ByteSlice("f"), (byte)12);
-        testByte.invoke( new ByteSlice("n"), (byte)10);
-        testByte.invoke( new ByteSlice("r"), (byte)13);
-        testByte.invoke( new ByteSlice("t"), (byte)9);
-        testByte.invoke( new ByteSlice("v"), (byte)11);
-        testInteger.invoke( new ByteSlice("x00"), 0);
-        testInteger.invoke( new ByteSlice("xff"), 255);
-        testInteger.invoke( new ByteSlice("xFF"), 255);
-        testInteger.invoke( new ByteSlice("xa7"), 167);
-        testInteger.invoke( new ByteSlice("x3c"), 60);
-        testInteger.invoke( new ByteSlice("xe2"), 226);
-        testByte.invoke( new ByteSlice("1"), (byte)1);
-        testByte.invoke( new ByteSlice("42"), (byte)34);
-        testByte.invoke( new ByteSlice("357"), (byte)239);
-        testCharacter.invoke( new ByteSlice("u1234"), '\u1234');
-        testCharacter.invoke( new ByteSlice("uf0e4"), '\uf0e4');
-        test( new ByteSlice("U0001f603"), '\u1f603');
-        testByte.invoke( new ByteSlice("&quot;"), (byte)34);
-        testByte.invoke( new ByteSlice("&lt;"), (byte)60);
-        testByte.invoke( new ByteSlice("&gt;"), (byte)62);
     }
     public static void test_3() {
-        Function4<ByteSlice,ByteSlice,Integer,Integer,Void> testByte = new Function4<ByteSlice,ByteSlice,Integer,Integer,Void>(){
-            public Void invoke(ByteSlice sequence, ByteSlice expectedError, Integer expectedReturnValue, Integer expectedScanLength){
-                ExpectDiagnosticReporter handlerByte = new ExpectDiagnosticReporter(expectedError);
-                BytePtr pByte = pcopy(toBytePtr(toBytePtr(sequence)));
-                int actualReturnValueByte = Lexer.escapeSequence(Loc.initial, handler, p);
-                assert(handler.gotError);
-                assert(expectedReturnValue == actualReturnValue);
-                int actualScanLengthByte = (p.minus(toBytePtr(toBytePtr(sequence)))) / 1;
-                assert(expectedScanLength == actualScanLength);
-            }
-        };
-        testByte.invoke( new ByteSlice("c"),  new ByteSlice("undefined escape sequence \\c"), '\u0063', 1);
-        testByte.invoke( new ByteSlice("!"),  new ByteSlice("undefined escape sequence \\!"), '\u0021', 1);
-        testByte.invoke( new ByteSlice("x1"),  new ByteSlice("escape hex sequence has 1 hex digits instead of 2"), '\u0001', 2);
-        testByte.invoke( new ByteSlice("u1"),  new ByteSlice("escape hex sequence has 1 hex digits instead of 4"), '\u0001', 2);
-        testByte.invoke( new ByteSlice("u12"),  new ByteSlice("escape hex sequence has 2 hex digits instead of 4"), '\u0012', 3);
-        testByte.invoke( new ByteSlice("u123"),  new ByteSlice("escape hex sequence has 3 hex digits instead of 4"), '\u0123', 4);
-        testByte.invoke( new ByteSlice("U0"),  new ByteSlice("escape hex sequence has 1 hex digits instead of 8"), '\u0000', 2);
-        testByte.invoke( new ByteSlice("U00"),  new ByteSlice("escape hex sequence has 2 hex digits instead of 8"), '\u0000', 3);
-        testByte.invoke( new ByteSlice("U000"),  new ByteSlice("escape hex sequence has 3 hex digits instead of 8"), '\u0000', 4);
-        testByte.invoke( new ByteSlice("U0000"),  new ByteSlice("escape hex sequence has 4 hex digits instead of 8"), '\u0000', 5);
-        testByte.invoke( new ByteSlice("U0001f"),  new ByteSlice("escape hex sequence has 5 hex digits instead of 8"), '\u001f', 6);
-        testByte.invoke( new ByteSlice("U0001f6"),  new ByteSlice("escape hex sequence has 6 hex digits instead of 8"), '\u01f6', 7);
-        testByte.invoke( new ByteSlice("U0001f60"),  new ByteSlice("escape hex sequence has 7 hex digits instead of 8"), '\u1f60', 8);
-        testByte.invoke( new ByteSlice("ud800"),  new ByteSlice("invalid UTF character \\U0000d800"), '\u003f', 5);
-        testByte.invoke( new ByteSlice("udfff"),  new ByteSlice("invalid UTF character \\U0000dfff"), '\u003f', 5);
-        testByte.invoke( new ByteSlice("U00110000"),  new ByteSlice("invalid UTF character \\U00110000"), '\u003f', 9);
-        testByte.invoke( new ByteSlice("xg0"),  new ByteSlice("undefined escape hex sequence \\xg"), '\u0067', 2);
-        testByte.invoke( new ByteSlice("ug000"),  new ByteSlice("undefined escape hex sequence \\ug"), '\u0067', 2);
-        testByte.invoke( new ByteSlice("Ug0000000"),  new ByteSlice("undefined escape hex sequence \\Ug"), '\u0067', 2);
-        testByte.invoke( new ByteSlice("&BAD;"),  new ByteSlice("unnamed character entity &BAD;"), '\u003f', 5);
-        testByte.invoke( new ByteSlice("&quot"),  new ByteSlice("unterminated named entity &quot;"), '\u003f', 5);
-        testByte.invoke( new ByteSlice("400"),  new ByteSlice("escape octal sequence \\400 is larger than \\377"), '\u0100', 3);
     }
-        // from template mulu!()
-        public static long mulu(long x, int y, Ref<Boolean> overflow) {
-            long r = x * (long)y;
-            if ((x >> 32) != 0 && r / x != (long)y)
-                overflow.value = true;
-            return r;
-        }
-
-
-        // from template addu!()
-        public static long addu(long x, long y, Ref<Boolean> overflow) {
-            long r = x + y;
-            if (r < x || r < y)
-                overflow.value = true;
-            return r;
-        }
-
-
-        // from template test!(Byte)
-
-        // from template test!(Integer)
-
-        // from template test!(Character)
-
-        // from template test!(Integer)
-
 }

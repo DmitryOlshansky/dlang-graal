@@ -138,7 +138,7 @@ public class utf {
     }
 
     public static BytePtr utf_decodeChar(BytePtr s, int len, IntRef ridx, IntRef rresult) {
-        rresult.value = '\uffff';
+        rresult.value = 0x0ffff;
         assert(s != null);
         int i = ridx.value++;
         assert(i < len);
@@ -181,7 +181,7 @@ public class utf {
     }
 
     public static BytePtr utf_decodeWchar(CharPtr s, int len, IntRef ridx, IntRef rresult) {
-        rresult.value = '\uffff';
+        rresult.value = 0x0ffff;
         assert(s != null);
         int i = ridx.value++;
         assert(i < len);

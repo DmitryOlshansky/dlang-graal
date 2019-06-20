@@ -285,20 +285,20 @@ public class tokens {
         static {
             Identifier.initTable();
             {
-                ByteSlice __r55 = keywords.copy();
-                int __key56 = 0;
-                for (; __key56 < __r55.getLength();__key56 += 1) {
-                    byte kw = __r55.get(__key56);
+                ByteSlice __r48 = keywords.copy();
+                int __key49 = 0;
+                for (; __key49 < __r48.getLength();__key49 += 1) {
+                    byte kw = __r48.get(__key49);
                     Identifier.idPool(toBytePtr(Token.tochars.get((kw & 0xFF))), Token.tochars.get((kw & 0xFF)).getLength(), (kw & 0xFF));
                 }
             }
         }
         public  int isKeyword() {
             {
-                ByteSlice __r57 = keywords.copy();
-                int __key58 = 0;
-                for (; __key58 < __r57.getLength();__key58 += 1) {
-                    byte kw = __r57.get(__key58);
+                ByteSlice __r50 = keywords.copy();
+                int __key51 = 0;
+                for (; __key51 < __r50.getLength();__key51 += 1) {
+                    byte kw = __r50.get(__key51);
                     if ((kw & 0xFF) == (this.value & 0xFF))
                         return 1;
                 }
@@ -379,7 +379,7 @@ public class tokens {
                                     {
                                         IntRef i = ref(0);
                                         for (; i.value < this.len;){
-                                            IntRef c = ref('\uffff');
+                                            IntRef c = ref(0x0ffff);
                                             utf_decodeChar(this.ustring, this.len, i, c);
                                             {
                                                 int __dispatch1 = 0;
@@ -430,10 +430,10 @@ public class tokens {
                                     buf.writeByte(120);
                                     buf.writeByte(34);
                                     {
-                                        int __key59 = 0;
-                                        int __limit60 = this.len;
-                                        for (; __key59 < __limit60;__key59 += 1) {
-                                            int i = __key59;
+                                        int __key52 = 0;
+                                        int __limit53 = this.len;
+                                        for (; __key52 < __limit53;__key52 += 1) {
+                                            int i = __key52;
                                             if ((i) != 0)
                                                 buf.writeByte(32);
                                             buf.printf( new ByteSlice("%02x"), (this.ustring.get(i) & 0xFF));

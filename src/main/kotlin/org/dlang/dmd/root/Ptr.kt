@@ -15,7 +15,7 @@ class RawPtr<T>(val data: Array<T?>, var offset: Int) : Ptr<T>() {
 
     constructor(arr: Array<T?>): this(arr, 0)
 
-    override fun copy() = RawPtr(data, offset)
+    override fun copy() = RawPtr<T>(data, offset)
 
     operator fun inc(): RawPtr<T> {
         offset ++
@@ -23,7 +23,7 @@ class RawPtr<T>(val data: Array<T?>, var offset: Int) : Ptr<T>() {
     }
 
     fun postInc(): RawPtr<T> {
-        val r = RawPtr(data, offset)
+        val r = RawPtr<T>(data, offset)
         offset++
         return r
     }
@@ -34,7 +34,7 @@ class RawPtr<T>(val data: Array<T?>, var offset: Int) : Ptr<T>() {
     }
 
     fun postDec(): RawPtr<T> {
-        val r = RawPtr(data, offset)
+        val r = RawPtr<T>(data, offset)
         offset--
         return r
     }
@@ -63,6 +63,16 @@ class RawPtr<T>(val data: Array<T?>, var offset: Int) : Ptr<T>() {
     override operator fun get(idx: Int): T? = data[offset+idx]
 
     fun slice(start: Int, end: Int) = Slice(data, start + offset, end + offset)
+
+    override fun equals(other: Any?): Boolean =
+        when (other) {
+            is RawPtr<*> -> data === (other as RawPtr<T>).data && offset == other.offset
+            else -> false
+        }
+
+    override fun hashCode(): Int {
+        return data.hashCode() + 31 * offset
+    }
 
     override fun toChars(): BytePtr  {
         val s = StringBuilder()
@@ -94,8 +104,37 @@ class RefPtr<T>(val ref: Ref<T>) : Ptr<T>() {
     override fun toChars(): BytePtr = BytePtr(ref.value.toString())
 }
 
+class BytePtrPtr(val ref: BytePtr) : Ptr<BytePtr>() {
+
+    override fun copy() = BytePtrPtr(ref)
+
+    override operator fun get(idx: Int): BytePtr {
+        require(idx == 0)
+        return ref
+    }
+
+    override fun set(idx: Int, value: BytePtr) {
+        require(idx == 0)
+        ref.data = value.data
+        ref.offset = value.offset
+    }
+
+    override fun toChars(): BytePtr = BytePtr(ref.toString())
+
+    override fun equals(other: Any?): Boolean =
+        when (other) {
+            is BytePtrPtr -> ref === other.ref
+            else -> false
+        }
+
+    override fun hashCode(): Int {
+        return ref.hashCode()
+    }
+}
+
+
 // ~C-string
-class BytePtr(val data: ByteArray, var offset: Int) : RootObject() {
+class BytePtr(var data: ByteArray, var offset: Int) : RootObject() {
 
     constructor(arr: ByteArray) : this(arr, 0)
 
@@ -185,6 +224,16 @@ class BytePtr(val data: ByteArray, var offset: Int) : RootObject() {
     override fun toChars(): BytePtr = this
 
     override fun toString(): String = String(data, offset, data.size - offset)
+
+    override fun equals(other: Any?): Boolean =
+        when (other) {
+            is BytePtr -> data === other.data && offset == other.offset
+            else -> false
+        }
+
+    override fun hashCode(): Int {
+        return data.hashCode() + 31 * offset
+    }
 }
 
 interface CharPtr {

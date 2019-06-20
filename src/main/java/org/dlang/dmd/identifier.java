@@ -207,7 +207,7 @@ public class identifier {
             }
             IntRef idx = ref(0);
             for (; idx.value < str.getLength();){
-                IntRef dc = ref('\uffff');
+                IntRef dc = ref(0x0ffff);
                 BytePtr q = pcopy(utf_decodeChar(toBytePtr(str), str.getLength(), idx, dc));
                 if (q != null || !(dc.value >= 128 && isUniAlpha(dc.value) || (isalnum(dc.value)) != 0 || dc.value == 95))
                 {

@@ -124,6 +124,8 @@ class ByteSlice(var data: ByteArray, var beg: Int, var end: Int): RootObject() {
         // TODO: assumes full slice and realloc on every append
         data = data.copyOf(data.size + 1)
         data[data.size - 1] = next
+        beg = beg
+        end = end + 1
         return this
     }
 
