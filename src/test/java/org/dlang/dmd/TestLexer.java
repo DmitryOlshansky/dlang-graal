@@ -251,4 +251,8 @@ public class TestLexer extends TestCase {
         //test.invoke( new ByteSlice("&quot"),  new ByteSlice("unterminated named entity &quot;"), 0x0003f, 5);
         test.invoke( new ByteSlice("400"),  new ByteSlice("escape octal sequence \\400 is larger than \\377"), 0x00100, 3);
     }
+
+    public void testNumbers(){
+
+    }
 }

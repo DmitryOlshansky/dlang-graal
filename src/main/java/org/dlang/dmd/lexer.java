@@ -1672,18 +1672,25 @@ public class lexer {
                                         /*goto Ldone*/throw Dispatch.INSTANCE;
                                     if ((isalpha((this.p.get(1) & 0xFF))) != 0 || (this.p.get(1) & 0xFF) == 95 || ((this.p.get(1) & 0xFF) & 128) != 0)
                                         /*goto Ldone*/throw Dispatch.INSTANCE;
-                                    /*goto Lreal*/throw Dispatch.INSTANCE;
+                                    /*goto Lreal*/
+                                    this.p = pcopy(start);
+                                    return this.inreal(t);
                                 case 105:
                                 case 102:
                                 case 70:
-                                    /*goto Lreal*/throw Dispatch.INSTANCE;
+                                    /*goto Lreal*/
+                                    this.p = pcopy(start);
+                                    return this.inreal(t);
                                 case 95:
                                     this.p.plusAssign(1);
                                     base = 8;
                                     break;
                                 case 76:
-                                    if ((this.p.get(1) & 0xFF) == 105)
-                                        /*goto Lreal*/throw Dispatch.INSTANCE;
+                                    if ((this.p.get(1) & 0xFF) == 105) {
+                                        /*goto Lreal*/
+                                        this.p = pcopy(start);
+                                        return this.inreal(t);
+                                    }
                                     break;
                                 default:
                                 {
