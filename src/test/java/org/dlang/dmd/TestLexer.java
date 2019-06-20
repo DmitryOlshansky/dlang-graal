@@ -8,9 +8,11 @@ import org.dlang.dmd.root.ByteSlice;
 import org.dlang.dmd.root.Slice;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static junit.framework.TestCase.*;
 import static org.dlang.dmd.globals.global;
+import static org.dlang.dmd.tokens.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 
 public class TestLexer extends TestCase {
@@ -252,7 +254,24 @@ public class TestLexer extends TestCase {
         test.invoke( new ByteSlice("400"),  new ByteSlice("escape octal sequence \\400 is larger than \\377"), 0x00100, 3);
     }
 
-    public void testNumbers(){
+    static void testCase(String data, byte[] toks, Object[] values) {
+        ByteSlice slice = new ByteSlice(data).append((byte)0);
+        AssertDiagnosticReporter assertOnError = new AssertDiagnosticReporter();
+        lexer.Lexer lex = new lexer.Lexer(null, slice.ptr(), 0, slice.getLength(), false, false, assertOnError);
+        int i = 0;
+        while (lex.nextToken() != 11) {
+            assertEquals(toks[i], lex.token.value);
+            if (lex.token.value == TOK.int32Literal)
+                assertEquals(values[i], lex.token.unsvalue);
+            if (lex.token.value == TOK.identifier)
+                assertEquals(values[i], lex.token.ident.name.toString());
+            i++;
 
+        }
+    }
+
+    public void testNumbers(){
+        testCase("42", new byte[]{TOK.int32Literal}, new Object[]{ 42L });
+        testCase("1 + a", new byte[]{TOK.int32Literal, TOK.add, TOK.identifier}, new Object[]{ 1L, null, "a" });
     }
 }

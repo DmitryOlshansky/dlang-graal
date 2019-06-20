@@ -178,7 +178,7 @@ public class identifier {
             Identifier id = (Identifier)(sv).ptrvalue;
             if (!(id != null))
             {
-                id = new Identifier((sv).asString(), 120);
+                id = new Identifier(s.copy(), 120);
                 (sv).ptrvalue = pcopy((id));
             }
             return id;
@@ -191,7 +191,7 @@ public class identifier {
         public static Identifier idPool(ByteSlice s, int value) {
             StringValue sv = Identifier.stringtable.insert(s, null);
             assert(sv != null);
-            Identifier id = new Identifier((sv).asString(), value);
+            Identifier id = new Identifier(s.copy(), value);
             (sv).ptrvalue = pcopy((id));
             return id;
         }
