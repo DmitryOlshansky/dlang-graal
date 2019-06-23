@@ -13,6 +13,11 @@ public class FileBuffer {
         return result;
     }
 
+    public FileBuffer()
+    {
+        this.data = new ByteSlice();
+    }
+
     public FileBuffer(ByteSlice data) {
         this.data = data;
     }

@@ -223,7 +223,7 @@ class BytePtr(var data: ByteArray, var offset: Int) : RootObject() {
 
     override fun toChars(): BytePtr = this
 
-    override fun toString(): String = String(data, offset, data.size - offset)
+    override fun toString(): String = String(data, offset, strlen(this))
 
     override fun equals(other: Any?): Boolean =
         when (other) {

@@ -235,14 +235,18 @@ class OutBuffer {
         offset += nbytes
     }
 
-    fun printf(format: ByteSlice, vararg args: Any?)= vprintf(format, slice(args))
-
-    fun vprintf(format: ByteSlice, args: Slice<out Any?>) {
-        writestring(ByteSlice(String.format(format.toString(), args)))
+    fun printf(format: ByteSlice, vararg args: Any?) {
+        val temp = Array<Any?>(args.size) { null }
+        args.copyInto(temp)
+        vprintf(format, slice(temp))
     }
 
-    fun vprintf(format: BytePtr, args: Slice<out Any?>) {
-        writestring(ByteSlice(String.format(format.toString(), args)))
+    fun vprintf(format: ByteSlice, args: Slice<Any>) {
+        writestring(ByteSlice(String.format(format.toString(), *args.data)))
+    }
+
+    fun vprintf(format: BytePtr, args: Slice<Any>) {
+        writestring(ByteSlice(String.format(format.toString(), *args.data)))
     }
     /**************************************
      * Convert `u` to a string and append it to the buffer.

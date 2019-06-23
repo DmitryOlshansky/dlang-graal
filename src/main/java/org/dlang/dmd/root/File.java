@@ -7,12 +7,19 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static org.dlang.dmd.root.ShimsKt.strlen;
+
 ///
 public class  File {
     ///
     public static class ReadResult {
         public boolean success;
         public FileBuffer buffer;
+
+        ReadResult()
+        {
+            buffer = new FileBuffer();
+        }
 
         public ReadResult copy() {
             ReadResult r = new ReadResult();

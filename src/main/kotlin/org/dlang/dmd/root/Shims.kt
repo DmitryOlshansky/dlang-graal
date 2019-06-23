@@ -9,11 +9,12 @@ import java.util.*
 
 
 fun strlen(ptr: BytePtr): Int {
-    if (ptr.data[ptr.data.size-1] != 0.toByte())
-        return ptr.data.size - ptr.offset
     var i = ptr.data.size - 1
-    while (ptr.data[i] == 0.toByte()) i--
-    return i - ptr.offset
+    while (i > ptr.offset) {
+        if (ptr.data[i] != 0.toByte()) return i + 1 - ptr.offset
+        i--
+    }
+    return 0
 }
 
 fun strchr(ptr: BytePtr, c: Int): BytePtr? {
@@ -89,7 +90,7 @@ fun xarraydup(src: ByteSlice) = ByteSlice(src.data.copyOfRange(src.beg, src.end)
 fun xstrdup(src: ByteSlice) = Mem.xstrdup(src)
 
 fun sprintf(ptr: BytePtr, fmt: ByteSlice, vararg args: Any?) {
-    val s = String.format(fmt.toString(), args)
+    val s = String.format(fmt.toString(), *args)
     var i = 0
     for (c in s) {
         ptr[i++] = c.toByte()
