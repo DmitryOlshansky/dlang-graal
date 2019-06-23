@@ -1,6 +1,6 @@
 module dlex;
 
-import core.stdc.stdio;
+import core.stdc.stdio, core.stdc.string;
 
 import std.string;
 import std.getopt;
@@ -35,6 +35,7 @@ int main(string[] args)
         auto buf = buffer.extractData();
         scope lex = new Lexer(argz, cast(char*)buf.ptr, 0, buf.length, true, true, new StderrDiagnosticReporter(DiagnosticReporting.error));
         auto dest = FileName.forceExt(FileName.name(argz), "tk");
+        auto filePath = outdir ~ "/" ~ dest[0..strlen(dest)];
         scope output = new OutBuffer();
         int i = 0;
         while (lex.nextToken() != TOK.endOfFile) {
@@ -44,8 +45,9 @@ int main(string[] args)
                 i  = 0;
             }
         }
-        if (!File.write(dest, output.extractSlice()))
-            fprintf(stderr, "Failed to write file: %s", dest);
+        if (i != 0) output.printf(" | Line %5d |\n", lex.token.loc.linnum);
+        if (!File.write(filePath.toStringz, output.extractSlice()))
+            fprintf(stderr, "Failed to write file: %s\n", dest);
 	}
 	return 0;
 }

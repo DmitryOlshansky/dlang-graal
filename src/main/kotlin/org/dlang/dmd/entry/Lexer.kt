@@ -9,15 +9,17 @@ import org.dlang.dmd.utils.stderr
 
 
 fun main(args: Array<String>) {
-    for (i in args.indices) {
-        val buffer = File.read(BytePtr(args[i]))
+    val outdir = System.getProperty("outdir", ".")
+    for (arg in args) {
+        val argz = BytePtr(arg)
+        val buffer = File.read(argz)
         if (!buffer.success) {
-            fprintf(stderr, ByteSlice("Failed to read from file: %s"), args[i])
+            fprintf(stderr, ByteSlice("Failed to read from file: %s"), argz)
             exit(1)
         }
         val buf = buffer.extractData()
-        val lex = lexer.Lexer(BytePtr(args[i]), buf.ptr(), 0, buf.length, true, true, StderrDiagnosticReporter(0))
-        val dest = FileName.forceExt(FileName.name(BytePtr(args[i])), BytePtr("tk"))
+        val lex = lexer.Lexer(argz, buf.ptr(), 0, buf.length, true, true, StderrDiagnosticReporter(0))
+        val dest = FileName.forceExt(FileName.name(argz), BytePtr("tk"))
         val out = OutBuffer()
         var i = 0
         while (lex.nextToken() != tokens.TOK.endOfFile) {
@@ -27,7 +29,9 @@ fun main(args: Array<String>) {
                 i  = 0
             }
         }
-        if (!File.write(dest, out.extractSlice()))
+        if (i != 0) out.printf(ByteSlice(" | Line %5d |\n"), lex.token.loc.linnum)
+        val path = ByteSlice("$outdir/$dest")
+        if (!File.write(path, out.extractSlice()))
             fprintf(stderr, ByteSlice("Failed to write file: %s"), dest.toString())
     }
 }

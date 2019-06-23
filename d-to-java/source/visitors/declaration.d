@@ -187,8 +187,13 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     ExprOpts opts;
 
     int testCounter;
+    
     int currentDispatch;
     int dispatchCount;
+
+    int currentFor;
+    int forCount;
+
     Goto[] gotos;
     
     int inInitializer; // to avoid recursive decomposition of arrays
@@ -473,6 +478,15 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(ForStatement s)
     {
+        auto oldFor = currentFor;
+        if (collectGotos(s._body).length > 0) {
+            buf.outdent;
+            currentFor = ++forCount; // start with 1, so that 0 is no for
+            buf.fmt("L_outer%d:\n", forCount);
+            buf.indent;
+        }
+        else 
+            currentFor = 0; // no gotos, let it continue this inner for
         buf.put("for (");
         if (s._init)
         {
@@ -502,6 +516,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         else if (s._body) {
             s._body.accept(this);
         }
+        currentFor = oldFor;
     }
 
     override void visit(ForeachStatement s)
@@ -853,6 +868,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         {
             buf.put(' ');
             buf.put(s.ident.toString());
+        }
+        else if(currentFor != 0) {
+            buf.put(' ');
+            buf.fmt("L_outer%d", currentFor);
         }
         buf.put(';');
         buf.put('\n');

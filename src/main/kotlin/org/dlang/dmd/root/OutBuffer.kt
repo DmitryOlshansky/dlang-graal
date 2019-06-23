@@ -275,16 +275,13 @@ class OutBuffer {
                 is BytePtr -> {
                     val len = strlen(arg)
                     if (w <= len) writestring(arg.slice(0, w))
-                    else {
-                        for (k in len until w) writeByte(padChar.toInt())
-                        writestring(arg)
-                    }
+                    else writestring(arg)
                 }
                 else -> writestring(ByteSlice(arg.toString().padStart(w, padChar)))
             }
             else when (arg) {
                 is ByteSlice -> writestring(arg)
-                is ByteSlice -> writestring(arg)
+                is BytePtr -> writestring(arg)
                 else -> writestring(ByteSlice(arg.toString()))
             }
             args.beg += 1
@@ -317,7 +314,6 @@ class OutBuffer {
                 write()
             }
             'p' -> { // print pointer as values... but handle nulls
-                val w = extent()
                 val arg = args[0]
                 args[0] = if (arg === null) "null" else "Ptr<${arg}>"
                 write()

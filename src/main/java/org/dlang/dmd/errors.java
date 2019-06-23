@@ -126,7 +126,7 @@ public class errors {
     }
 
     public static void error(BytePtr filename, int linnum, int charnum, BytePtr format, Object... ap) {
-        Loc loc = comma(null, new Loc(filename, linnum, charnum));
+        Loc loc = loc = new Loc(filename, linnum, charnum);
         verror(loc, format, new Slice<>(ap), null, null, new BytePtr("Error: "));
     }
 
@@ -197,10 +197,10 @@ public class errors {
                 {
                     fprintf(stderr,  new ByteSlice("%.*s\n"), line.getLength(), toBytePtr(line));
                     {
-                        int __key44 = 1;
-                        int __limit45 = loc.charnum;
-                        for (; __key44 < __limit45;__key44 += 1) {
-                            int _ = __key44;
+                        int __key42 = 1;
+                        int __limit43 = loc.charnum;
+                        for (; __key42 < __limit43;__key42 += 1) {
+                            int _ = __key42;
                             fputc(32, stderr);
                         }
                     }

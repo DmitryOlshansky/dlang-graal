@@ -1,9 +1,4 @@
-[submodule "d-to-java/dmd"]
-	path = d-to-java/dmd
-	url = git@github.com:dlang/dmd.git
 [submodule "dmd"]
-	path = dmd
-	url = ./d-to-java/vendor/dmd
-[submodule "d-to-java/vendor/dmd"]
-	path = vendor/dmd
-	url = git@github.com:dlang/dmd.git
+path = vendor/dmd
+url = git@github.com:dlang/dmd.git
+

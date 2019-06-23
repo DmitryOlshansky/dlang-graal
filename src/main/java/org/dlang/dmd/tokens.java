@@ -285,20 +285,20 @@ public class tokens {
         static {
             Identifier.initTable();
             {
-                ByteSlice __r48 = keywords.copy();
-                int __key49 = 0;
-                for (; __key49 < __r48.getLength();__key49 += 1) {
-                    byte kw = __r48.get(__key49);
+                ByteSlice __r46 = keywords.copy();
+                int __key47 = 0;
+                for (; __key47 < __r46.getLength();__key47 += 1) {
+                    byte kw = __r46.get(__key47);
                     Identifier.idPool(toBytePtr(Token.tochars.get((kw & 0xFF))), Token.tochars.get((kw & 0xFF)).getLength(), (kw & 0xFF));
                 }
             }
         }
         public  int isKeyword() {
             {
-                ByteSlice __r50 = keywords.copy();
-                int __key51 = 0;
-                for (; __key51 < __r50.getLength();__key51 += 1) {
-                    byte kw = __r50.get(__key51);
+                ByteSlice __r48 = keywords.copy();
+                int __key49 = 0;
+                for (; __key49 < __r48.getLength();__key49 += 1) {
+                    byte kw = __r48.get(__key49);
                     if ((kw & 0xFF) == (this.value & 0xFF))
                         return 1;
                 }
@@ -378,6 +378,7 @@ public class tokens {
                                     buf.writeByte(34);
                                     {
                                         IntRef i = ref(0);
+                                    L_outer1:
                                         for (; i.value < this.len;){
                                             IntRef c = ref(0x0ffff);
                                             utf_decodeChar(this.ustring, this.len, i, c);
@@ -406,7 +407,7 @@ public class tokens {
                                                                 buf.printf( new ByteSlice("\\u%04x"), c.value);
                                                             else
                                                                 buf.printf( new ByteSlice("\\U%08x"), c.value);
-                                                            continue;
+                                                            continue L_outer1;
                                                         }
                                                     }
                                                 } while(__dispatch1 != 0);
@@ -430,10 +431,10 @@ public class tokens {
                                     buf.writeByte(120);
                                     buf.writeByte(34);
                                     {
-                                        int __key52 = 0;
-                                        int __limit53 = this.len;
-                                        for (; __key52 < __limit53;__key52 += 1) {
-                                            int i = __key52;
+                                        int __key50 = 0;
+                                        int __limit51 = this.len;
+                                        for (; __key50 < __limit51;__key50 += 1) {
+                                            int i = __key50;
                                             if ((i) != 0)
                                                 buf.writeByte(32);
                                             buf.printf( new ByteSlice("%02x"), (this.ustring.get(i) & 0xFF));

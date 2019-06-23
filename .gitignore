@@ -14,3 +14,5 @@ d-to-kotlin/d-to-kotlin-test-*
 *.o
 *.obj
 *.lst
+*.orig
+*.rej

@@ -542,6 +542,11 @@ public:
         //fprintf(stderr, "comma e2 = %s\n", c.e2.toChars());
         auto right = c.e2.toJava(opts);
         if(left == "") buf.writestring(right);
+        else if (auto blit = c.e1.isBlitExp()) {
+            buf.writestring(blit.e1.toJava(opts));
+            buf.writestring(" = ");
+            buf.writestring(right);
+        }
         else {
             buf.writestring("comma(");
             buf.writestring(left);
