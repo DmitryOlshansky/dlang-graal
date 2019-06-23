@@ -1,0 +1,13 @@
+{
+	"authors": [
+		"Dmitry Olshansky"
+	],
+	"copyright": "Copyright © 2019, Dmitry Olshansky",
+	"description": "A tool to lex d files",
+	"license": "MIT",
+	"targetType": "executable",
+	"name": "dlex",
+	"dependencies": {
+		"dmd:frontend" : { "path" : "../vendor/dmd" } 
+	}
+}

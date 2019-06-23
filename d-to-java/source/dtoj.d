@@ -98,7 +98,7 @@ void main(string[] args) {
 	);
 
 	if (resp.helpWanted) {
-		defaultGetoptPrinter("Some information about the program.", resp.options);
+		defaultGetoptPrinter("A (subset of) D to Java compiler.", resp.options);
 		return;
 	}
     Module[] mods = [];

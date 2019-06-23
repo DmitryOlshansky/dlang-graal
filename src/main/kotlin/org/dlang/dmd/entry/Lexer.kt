@@ -23,7 +23,7 @@ fun main(args: Array<String>) {
         while (lex.nextToken() != tokens.TOK.endOfFile) {
             out.printf(ByteSlice("%4d"), lex.token.value.toUByte().toInt())
             if (++i == 20) {
-                out.writeByte('\n'.toInt())
+                out.printf(ByteSlice(" | Line %5d |\n"), lex.token.loc.linnum)
                 i  = 0
             }
         }

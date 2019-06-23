@@ -1,6 +1,5 @@
 {
 	"fileVersion": 1,
 	"versions": {
-		"dmd": {"path":"vendor/dmd"}
 	}
 }
