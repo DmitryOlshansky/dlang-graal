@@ -82,7 +82,7 @@ public class TestLexer extends TestCase {
             this.gotError = true;
             ByteSlice buffer = new ByteSlice(new byte[100]);
             ByteSlice actual = buffer.slice(0,vsprintf(ptr(buffer), format, args)).copy();
-            assert(__equals(this.expected, actual));
+            assertEquals(this.expected, actual);
         }
 
         public  void errorSupplemental(globals.Loc _param_0, BytePtr _param_1, Slice<Object> _param_2) {
@@ -210,9 +210,9 @@ public class TestLexer extends TestCase {
         testCharacter.invoke( new ByteSlice("u1234"), '\u1234');
         testCharacter.invoke( new ByteSlice("uf0e4"), '\uf0e4');
         testInteger.invoke( new ByteSlice("U0001f603"), 0x1f603);
-        //testByte.invoke( new ByteSlice("&quot;"), (byte)34);
-        //testByte.invoke( new ByteSlice("&lt;"), (byte)60);
-       // testByte.invoke( new ByteSlice("&gt;"), (byte)62);
+        testByte.invoke( new ByteSlice("&quot;"), (byte)34);
+        testByte.invoke( new ByteSlice("&lt;"), (byte)60);
+        testByte.invoke( new ByteSlice("&gt;"), (byte)62);
     }
 
     public void test_3() {
@@ -249,8 +249,8 @@ public class TestLexer extends TestCase {
         test.invoke( new ByteSlice("xg0"),  new ByteSlice("undefined escape hex sequence \\xg"), 0x00067, 2);
         test.invoke( new ByteSlice("ug000"),  new ByteSlice("undefined escape hex sequence \\ug"), 0x00067, 2);
         test.invoke( new ByteSlice("Ug0000000"),  new ByteSlice("undefined escape hex sequence \\Ug"), 0x00067, 2);
-        //test.invoke( new ByteSlice("&BAD;"),  new ByteSlice("unnamed character entity &BAD;"), 0x0003f, 5);
-        //test.invoke( new ByteSlice("&quot"),  new ByteSlice("unterminated named entity &quot;"), 0x0003f, 5);
+        test.invoke( new ByteSlice("&BAD;"),  new ByteSlice("unnamed character entity &BAD;"), 0x0003f, 5);
+        test.invoke( new ByteSlice("&quot"),  new ByteSlice("unterminated named entity &quot;"), 0x0003f, 5);
         test.invoke( new ByteSlice("400"),  new ByteSlice("escape octal sequence \\400 is larger than \\377"), 0x00100, 3);
     }
 

@@ -1,8 +1,8 @@
 vendor/dmd/src/dmd/console.d
 vendor/dmd/src/dmd/filecache.d
 vendor/dmd/src/dmd/globals.d
-# vendor/dmd/src/dmd/root/filename.d
-vendor/dmd/src/dmd/entity.d
+# vendor/dmd/src/dmd/root/filename.d # unlikely to change, plus needs cleanup
+# vendor/dmd/src/dmd/entity.d # it's mostly a huge table, not expected to change
 vendor/dmd/src/dmd/errors.d
 vendor/dmd/src/dmd/id.d
 vendor/dmd/src/dmd/identifier.d

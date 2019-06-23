@@ -1101,7 +1101,7 @@ public class lexer {
                                                 c = HtmlNamedEntity(idstart, ((p.minus(idstart)) / 1));
                                                 if (c == -1)
                                                 {
-                                                    handler.error(loc, new BytePtr("unnamed character entity &%.*s;"), (p.minus(idstart)) / 1, idstart);
+                                                    handler.error(loc, new BytePtr("unnamed character entity &%s;"), idstart.slice(0, p.minus(idstart)));
                                                     c = 63;
                                                 }
                                                 p.postInc();
@@ -1110,7 +1110,7 @@ public class lexer {
                                             {
                                                 if ((isalpha((p.get(0) & 0xFF))) != 0 || p != idstart && (isdigit((p.get(0) & 0xFF))) != 0)
                                                     continue;
-                                                handler.error(loc, new BytePtr("unterminated named entity &%.*s;"), (p.minus(idstart)) / 1 + 1, idstart);
+                                                handler.error(loc, new BytePtr("unterminated named entity &%s;"), idstart.slice(0, p.minus(idstart)));
                                                 c = 63;
                                                 break;
                                             }
