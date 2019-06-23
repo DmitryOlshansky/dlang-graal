@@ -127,7 +127,6 @@ public class TestLexer extends TestCase {
         {
             Slice<ByteSlice> list = __unittest_L168_C1testcases;
             for (int i = 0; i < list.getLength();i += 1) {
-                System.out.printf("Testcase %d: %s\n", i, list.get(i).toString());
                 ByteSlice testcase = list.get(i);
                 errors.StderrDiagnosticReporter diagnosticReporter = new errors.StderrDiagnosticReporter(global.params.useDeprecated);
                 lexer.Lexer lex2 = new lexer.Lexer(null, toBytePtr(testcase), 0, testcase.getLength() - 1, false, false, diagnosticReporter);
@@ -270,8 +269,15 @@ public class TestLexer extends TestCase {
         }
     }
 
-    public void testNumbers(){
+    public void testNumbers() {
         testCase("42", new byte[]{TOK.int32Literal}, new Object[]{ 42L });
         testCase("1 + a", new byte[]{TOK.int32Literal, TOK.add, TOK.identifier}, new Object[]{ 1L, null, "a" });
+    }
+
+    public void testRegression1() {
+        testCase("0x0FFF_FFFF_FFFF_FFFFUL",
+                new byte[]{ TOK.uns64Literal},
+                new Object[]{0xFFF_FFFF_FFFFL}
+        );
     }
 }

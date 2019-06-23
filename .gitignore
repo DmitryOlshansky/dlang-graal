@@ -1,6 +1,7 @@
 bin
 build
 .idea
+*.iml
 .gradle
 
 d-to-kotlin/.dub

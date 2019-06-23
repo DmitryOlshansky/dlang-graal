@@ -2,30 +2,6 @@ diff --git a/src/main/java/org/dlang/dmd/identifier.java b/src/main/java/org/dla
 index fbd44e5..a6b34e4 100644
 --- a/src/main/java/org/dlang/dmd/identifier.java
 +++ b/src/main/java/org/dlang/dmd/identifier.java
-@@ -144,6 +144,11 @@ public class identifier {
- 
-         public static Identifier generateIdWithLoc(ByteSlice prefix, Loc loc) {
-             OutBuffer idBuf = new OutBuffer();
-+            Function0<Integer> __lambda7 = new Function0<Integer>(){
-+                public Integer invoke(){
-+                    return 1;
-+                }
-+            };
-             Function1<Integer,Integer> __lambda8 = new Function1<Integer,Integer>(){
-                 public Integer invoke(Integer counter){
-                     idBuf.writestring( new ByteSlice("_"));
-@@ -151,11 +156,6 @@ public class identifier {
-                     return counter + 1;
-                 }
-             };
--            Function0<Integer> __lambda7 = new Function0<Integer>(){
--                public Integer invoke(){
--                    return 1;
--                }
--            };
-             try {
-                 idBuf.writestring(prefix);
-                 idBuf.writestring( new ByteSlice("_L"));
 @@ -178,7 +178,7 @@ public class identifier {
              Identifier id = (Identifier)(sv).ptrvalue;
              if (!(id != null))
@@ -100,24 +76,6 @@ index 296bc8e..2796fdd 100644
              try {
                  int c = (p.get(0) & 0xFF);
                  int ndigits = 0;
-@@ -1101,7 +1092,7 @@ public class lexer {
-                                                 c = HtmlNamedEntity(idstart, ((p.minus(idstart)) / 1));
-                                                 if (c == -1)
-                                                 {
--                                                    handler.error(loc, new BytePtr("unnamed character entity &%s;"), idstart.slice(0, p.minus(idstart)));
-+                                                    handler.error(loc, new BytePtr("unnamed character entity &%.*s;"), (p.minus(idstart)) / 1, idstart);
-                                                     c = 63;
-                                                 }
-                                                 p.postInc();
-@@ -1110,7 +1101,7 @@ public class lexer {
-                                             {
-                                                 if ((isalpha((p.get(0) & 0xFF))) != 0 || p != idstart && (isdigit((p.get(0) & 0xFF))) != 0)
-                                                     continue;
--                                                handler.error(loc, new BytePtr("unterminated named entity &%s;"), idstart.slice(0, p.minus(idstart)));
-+                                                handler.error(loc, new BytePtr("unterminated named entity &%.*s;"), (p.minus(idstart)) / 1 + 1, idstart);
-                                                 c = 63;
-                                                 break;
-                                             }
 @@ -1152,6 +1143,7 @@ public class lexer {
                  return c;
              }

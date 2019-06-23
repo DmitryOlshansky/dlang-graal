@@ -279,17 +279,22 @@ fun isatty(n: Int):Int = if(System.console() != null) 1 else 0
 
 fun printf(fmt: ByteSlice, vararg args: Any?) = fprintf(utils.stdout, fmt, args)
 
-fun vsprintf(dest: BytePtr, fmt: BytePtr, args: Slice<Any?>): Int {
-    val result = String.format(fmt.toString(), *args.data.copyOfRange(args.beg, args.end))
-    for (i in result.indices) {
-        dest[i] = result[i].toByte()
+fun vsprintf(dest: BytePtr, fmt: BytePtr, args: Slice<Any>): Int {
+    val outbuf = OutBuffer()
+    outbuf.vprintf(fmt, args)
+    val result = outbuf.extractSlice()
+    for (i in 0 until result.length) {
+        dest[i] = result[i]
     }
     return result.length
 }
 
 fun fprintf(io: StdIo, fmt: ByteSlice, vararg args: Any?) {
-    val result = String.format(fmt.toString(), args)
-    io.handle.print(result)
+    val outbuf = OutBuffer()
+    val arr = arrayOfNulls<Any?>(args.size)
+    args.copyInto(arr)
+    outbuf.vprintf(fmt, slice(arr))
+    io.handle.print(outbuf.extractSlice().toString())
 }
 
 fun fputs(s: ByteSlice, io: StdIo) {

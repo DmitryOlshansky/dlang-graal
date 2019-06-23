@@ -1,5 +1,15 @@
 package org.dlang.dmd.root
 
+import java.lang.IllegalArgumentException
+
+enum class FormatState {
+    start, // normal symbols
+    percent, // after %
+    percentDigit, // %[0-9]*
+    percentDot, // %. or %[0-9].
+    percentDotStar, // %.*
+}
+
 class OutBuffer {
     @JvmField var data: BytePtr
     @JvmField var offset: Int
@@ -241,12 +251,182 @@ class OutBuffer {
         vprintf(format, slice(temp))
     }
 
+    private fun fmtOne(format: ByteSlice, j: Int, width: Int, padChar: Char, args: Slice<Any>, longPrefix: Boolean = false): Int {
+        fun extent(): Int {
+            var w = width
+            if (w < 0) {
+                w = (args[0] as Number).toInt()
+                require(w >= 0) { "Negative width passed as variable format specifier"}
+                args.beg++
+            }
+            return w
+        }
+        fun write(){
+            val w = extent()
+            var arg = args[0]
+            if (w != 0) when (arg) {
+                is ByteSlice -> {
+                    if (w <= arg.length) writestring(arg.slice(0, w))
+                    else {
+                        for (k in arg.length until w) writeByte(padChar.toInt())
+                        writestring(arg)
+                    }
+                }
+                is BytePtr -> {
+                    val len = strlen(arg)
+                    if (w <= len) writestring(arg.slice(0, w))
+                    else {
+                        for (k in len until w) writeByte(padChar.toInt())
+                        writestring(arg)
+                    }
+                }
+                else -> writestring(ByteSlice(arg.toString().padStart(w, padChar)))
+            }
+            else when (arg) {
+                is ByteSlice -> writestring(arg)
+                is ByteSlice -> writestring(arg)
+                else -> writestring(ByteSlice(arg.toString()))
+            }
+            args.beg += 1
+        }
+        fun writeRadix(r: Int) {
+            val w = extent()
+            val arg = args[0]
+            val str = when (arg) {
+                is Byte -> arg.toString(r)
+                is Short -> arg.toString(r)
+                is Int -> arg.toString(r)
+                is Long ->  arg.toString(r)
+                else -> throw IllegalArgumentException("Expected integer for %x specifier, got ${arg}")
+            }
+            if (w != 0) writestring(ByteSlice(str.padStart(w, padChar)))
+            else writestring(ByteSlice(str))
+        }
+        if (j == format.length && longPrefix) {
+            write()
+            return j
+        }
+        else
+            require(j < format.length) {  "Unexpected end of format string" }
+
+        when (format[j].toChar()) {
+            'l' -> {
+                return fmtOne(format, j + 1, width,  padChar, args, true)
+            }
+            's', 'i', 'd', 'f' -> {
+                write()
+            }
+            'p' -> { // print pointer as values... but handle nulls
+                val w = extent()
+                val arg = args[0]
+                args[0] = if (arg === null) "null" else "Ptr<${arg}>"
+                write()
+            }
+            'o' -> {
+                writeRadix(8)
+            }
+            'x' -> {
+                writeRadix(16)
+            }
+            'c' -> {
+                val arg = args[0]
+                when (arg){
+                    is Number -> writeByte(arg.toInt())
+                    is Char -> writeByte(arg.toInt())
+                    else -> throw IllegalArgumentException("Expected number for %c specifier")
+                }
+                args.beg += 1
+            }
+            else -> throw IllegalArgumentException("Expected %s, %c, %d, %i, %f but got %${format[j].toChar()}")
+        }
+        return j + 1
+    }
+
+    // this is very limited but sensible subset of printf
     fun vprintf(format: ByteSlice, args: Slice<Any>) {
-        writestring(ByteSlice(String.format(format.toString(), *args.data)))
+        val values = args.copy()
+        var state = FormatState.start
+        var width = 0 // 0 - any, -1 - star,
+        var pad = ' '
+        var i = 0
+        val len = format.length
+        while (i < len) {
+            when (state) {
+                FormatState.start -> {
+                    if (format[i] == '%'.toByte()) state = FormatState.percent
+                    else
+                        writeByte(format[i].toInt())
+                    i++
+                }
+                FormatState.percent -> {
+                    if (format[i] == '%'.toByte()) {
+                        state = FormatState.start
+                        writeByte('%'.toInt())
+                        i++
+                    }
+                    else if (format[i] == '.'.toByte()) {
+                        state = FormatState.percentDot
+                        i++
+                    }
+                    else if(format[i] == '0'.toByte()) {
+                        pad = '0'
+                        i++
+                    }
+                    else if (isdigit(format[i].toInt()) != 0) {
+                        state = FormatState.percentDigit
+                        width = format[i] - '0'.toInt()
+                        i++
+                    }
+                    else {
+                        i = fmtOne(format, i, width, pad, values)
+                        state = FormatState.start
+                        pad = ' '
+                        width = 0
+                    }
+                }
+                FormatState.percentDigit -> {
+                    if (isdigit(format[i].toInt()) != 0) {
+                        width = 10 * width + (format[i] - '0'.toInt())
+                        i++
+                    }
+                    else {
+                        i = fmtOne(format, i, width, pad, values)
+                        state = FormatState.start
+                        pad = ' '
+                        width = 0
+                    }
+                }
+                FormatState.percentDot -> {
+                    if (isdigit(format[i].toInt()) != 0) {
+                        state = FormatState.percentDigit
+                        width = 10 * width + (format[i] - '0'.toInt())
+                        i++
+                    }
+                    else if(format[i].toByte() == '*'.toByte()) {
+                        state = FormatState.percentDotStar
+                        width = -1
+                        i++
+                    }
+                    else {
+                        i = fmtOne(format, i, width, pad, values)
+                        state = FormatState.start
+                        pad = ' '
+                        width = 0
+
+                    }
+                }
+                FormatState.percentDotStar -> {
+                    i = fmtOne(format, i, width, pad, values)
+                    state = FormatState.start
+                    pad = ' '
+                    width = 0
+                }
+            }
+        }
     }
 
     fun vprintf(format: BytePtr, args: Slice<Any>) {
-        writestring(ByteSlice(String.format(format.toString(), *args.data)))
+        vprintf(format.slice(0, strlen(format)), args)
     }
     /**************************************
      * Convert `u` to a string and append it to the buffer.
