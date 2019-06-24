@@ -1,3 +1,4 @@
+# Lexer
 vendor/dmd/src/dmd/console.d
 vendor/dmd/src/dmd/filecache.d
 vendor/dmd/src/dmd/globals.d
@@ -9,3 +10,10 @@ vendor/dmd/src/dmd/identifier.d
 vendor/dmd/src/dmd/lexer.d
 vendor/dmd/src/dmd/tokens.d
 vendor/dmd/src/dmd/utf.d
+# Parser
+vendor/dmd/src/dmd/astbase.d
+vendor/dmd/src/dmd/parse.d
+vendor/dmd/src/dmd/transitivevisitor.d
+vendor/dmd/src/dmd/permissivevisitor.d
+vendor/dmd/src/dmd/parsetimevisitor.d
+vendor/dmd/src/dmd/strictvisitor.d

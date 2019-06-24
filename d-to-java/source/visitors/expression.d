@@ -841,7 +841,8 @@ public:
             if (e.f && e.f.ident.symbol == "memcpy" ) {
                 auto c1 = e.arguments[0][0].isCastExp();
                 auto c2 = e.arguments[0][0].isCastExp();
-                if (c1.e1.type.nextOf.ty == Tstruct && c2.e1.type.nextOf.ty == Tstruct) {
+                if (c1 && c2 && c1.e1.type.ty == Tpointer && c2.e1.type.ty == Tpointer
+                && c1.e1.type.nextOf.ty == Tstruct && c2.e1.type.nextOf.ty == Tstruct) {
                     //fprintf(stderr, "MEMCPY TYPES: %s %s\n", c1.e1.type.toChars, c2.e1.type.toChars);
                     expToBuffer(e.arguments[0][0], precedence[e.op], buf, opts);
                     buf.writestring(".opAssign(");

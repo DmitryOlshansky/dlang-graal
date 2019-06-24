@@ -854,7 +854,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(SwitchErrorStatement s)
     {
-        assert(false);
+        buf.fmt("throw SwitchError.INSTANCE;\n");
     }
     
     override void visit(BreakStatement s)
@@ -1254,7 +1254,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 if (ex)
                 {
                     auto ie = ex.isIntegerExp();
-                    if (arr.length < ie.toInteger) arr.length = ie.toInteger + 1;
+                    if (arr.length <= ie.toInteger) arr.length = ie.toInteger + 1;
                     arr[ie.toInteger] = ai.value[i];
                 }
                 else {

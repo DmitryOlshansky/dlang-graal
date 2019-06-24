@@ -144,16 +144,16 @@ public class identifier {
 
         public static Identifier generateIdWithLoc(ByteSlice prefix, Loc loc) {
             OutBuffer idBuf = new OutBuffer();
+            Function0<Integer> __lambda7 = new Function0<Integer>(){
+                public Integer invoke(){
+                    return 1;
+                }
+            };
             Function1<Integer,Integer> __lambda8 = new Function1<Integer,Integer>(){
                 public Integer invoke(Integer counter){
                     idBuf.writestring( new ByteSlice("_"));
                     idBuf.print((long)counter);
                     return counter + 1;
-                }
-            };
-            Function0<Integer> __lambda7 = new Function0<Integer>(){
-                public Integer invoke(){
-                    return 1;
                 }
             };
             try {
@@ -178,7 +178,7 @@ public class identifier {
             Identifier id = (Identifier)(sv).ptrvalue;
             if (!(id != null))
             {
-                id = new Identifier(s.copy(), 120);
+                id = new Identifier((sv).asString(), 120);
                 (sv).ptrvalue = pcopy((id));
             }
             return id;
@@ -191,7 +191,7 @@ public class identifier {
         public static Identifier idPool(ByteSlice s, int value) {
             StringValue sv = Identifier.stringtable.insert(s, null);
             assert(sv != null);
-            Identifier id = new Identifier(s.copy(), value);
+            Identifier id = new Identifier((sv).asString(), value);
             (sv).ptrvalue = pcopy((id));
             return id;
         }
