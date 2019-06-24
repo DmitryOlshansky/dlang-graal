@@ -9,6 +9,8 @@ abstract class Ptr<T> : RootObject() {
     abstract operator fun set(idx: Int, value: T)
 
     abstract operator fun get(idx: Int): T?
+
+    abstract fun get(): T?
 }
 
 class RawPtr<T>(val data: Array<T?>, var offset: Int) : Ptr<T>() {
@@ -62,6 +64,8 @@ class RawPtr<T>(val data: Array<T?>, var offset: Int) : Ptr<T>() {
 
     override operator fun get(idx: Int): T? = data[offset+idx]
 
+    override fun get(): T? = data[offset]
+
     fun slice(start: Int, end: Int) = Slice(data, start + offset, end + offset)
 
     override fun equals(other: Any?): Boolean =
@@ -96,6 +100,8 @@ class RefPtr<T>(val ref: Ref<T>) : Ptr<T>() {
         return ref.value
     }
 
+    override fun get() = ref.value
+
     override fun set(idx: Int, value: T) {
         require(idx == 0)
         ref.value = value
@@ -113,13 +119,15 @@ class BytePtrPtr(val ref: BytePtr) : Ptr<BytePtr>() {
         return ref
     }
 
+    override fun get() = ref.copy()
+
     override fun set(idx: Int, value: BytePtr) {
         require(idx == 0)
         ref.data = value.data
         ref.offset = value.offset
     }
 
-    override fun toChars(): BytePtr = BytePtr(ref.toString())
+    override fun toChars(): BytePtr = ref.toChars()
 
     override fun equals(other: Any?): Boolean =
         when (other) {
@@ -212,6 +220,8 @@ class BytePtr(var data: ByteArray, var offset: Int) : RootObject() {
     }
 
     operator fun get(idx: Int): Byte = data[offset+idx]
+
+    fun get() = data[offset]
 
     fun slice(start: Int, end: Int) = ByteSlice(data, start + offset, end + offset)
 

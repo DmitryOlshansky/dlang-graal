@@ -901,7 +901,7 @@ public:
     {
         expToBuffer(e.e1, precedence[e.op], buf, opts);
         if (e.e1.type.nextOf.ty != Tstruct && e.e1.type.nextOf.ty != Tfunction) 
-            buf.writestring(".get(0)");
+            buf.writestring(".get()");
     }
 
     override void visit(DeleteExp e)

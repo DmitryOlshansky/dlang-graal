@@ -6,15 +6,15 @@ import java.io.PrintStream
 import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.system.exitProcess
 
 
 fun strlen(ptr: BytePtr): Int {
-    var i = ptr.data.size - 1
-    while (i > ptr.offset) {
-        if (ptr.data[i] != 0.toByte()) return i + 1 - ptr.offset
-        i--
+    var i = ptr.offset
+    while (i < ptr.data.size && ptr.data[i] != 0.toByte()) {
+        i++
     }
-    return 0
+    return i - ptr.offset
 }
 
 fun strchr(ptr: BytePtr, c: Int): BytePtr? {
@@ -261,7 +261,7 @@ fun ptr(v: ByteSlice) = v.ptr()
 
 fun<T> ptr(v: Slice<T>) = v.ptr()
 
-fun exit(code: Int) = System.exit(code)
+fun exit(code: Int): Nothing = exitProcess(code)
 
 // stub out speller
 fun<T> speller(fn: (ByteSlice, IntRef) -> T) = null
@@ -277,7 +277,7 @@ fun getenv(s: BytePtr): BytePtr = BytePtr(System.getenv(s.toString()))
 
 fun isatty(n: Int):Int = if(System.console() != null) 1 else 0
 
-fun printf(fmt: ByteSlice, vararg args: Any?) = fprintf(utils.stdout, fmt, args)
+fun printf(fmt: ByteSlice, vararg args: Any?) = fprintf(utils.stdout, fmt, *args)
 
 fun vsprintf(dest: BytePtr, fmt: BytePtr, args: Slice<Any>): Int {
     val outbuf = OutBuffer()

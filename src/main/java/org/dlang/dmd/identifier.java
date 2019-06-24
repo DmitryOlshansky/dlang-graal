@@ -109,7 +109,7 @@ public class identifier {
             else
             {
                 p = pcopy(this.toChars());
-                if ((p.get(0) & 0xFF) == 95)
+                if ((p.get() & 0xFF) == 95)
                 {
                     if (strncmp(p,  new ByteSlice("_staticCtor"), 11) == 0)
                         p = pcopy(new BytePtr("static this"));

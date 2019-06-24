@@ -163,7 +163,7 @@ public class errors {
         BytePtr p = pcopy(loc.toChars(global.params.showColumns));
         if (con != null)
             (con).setColorBright(true);
-        if ((p.get(0)) != 0)
+        if ((p.get()) != 0)
         {
             fprintf(stderr,  new ByteSlice("%s: "), p);
             Mem.xfree(p);
@@ -283,7 +283,7 @@ public class errors {
 
     public static void vmessage(Loc loc, BytePtr format, Slice<Object> ap) {
         BytePtr p = pcopy(loc.toChars(global.params.showColumns));
-        if ((p.get(0)) != 0)
+        if ((p.get()) != 0)
         {
             fprintf(stdout,  new ByteSlice("%s: "), p);
             Mem.xfree(p);

@@ -734,7 +734,7 @@ public class globals {
                 {
                     BytePtr p = pcopy(toBytePtr(this._version).plus(1));
                     for (; ;p.postInc()){
-                        byte c = p.get(0);
+                        byte c = p.get();
                         if ((isdigit((c & 0xFF))) != 0)
                         {
                             minor = minor * 10 + (c & 0xFF) - 48;
