@@ -195,6 +195,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     int forCount;
 
     Goto[] gotos;
+    int[void*] labelGotoNums;
     
     int inInitializer; // to avoid recursive decomposition of arrays
     string[] arrayInitializers;
@@ -399,32 +400,36 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(CompoundStatement s)
     {
+        static struct Range {
+            long first = int.max;
+            long last = int.min;
+        }
         auto labels = s.statements ? 
             (*s.statements)[]
                 .map!(s => s ? s.isLabelStatement() : null)
                 .filter!(x => x).array 
             : null;
-        long first = int.max, last = int.min;
+        auto range = new Range[labels.length];
         if (gotos.length == 0) { // do not use try/catch mechanism inside of switches
             if (s.statements)
-                foreach (i, st; *s.statements) if (st) {
-                    auto gs = collectGotos(st);
-                    auto nonLocalGotos = gs.filter!(g => !g.local);
-                    auto label = labels.find!(lbl => nonLocalGotos.canFind!(g => g.label.ident == lbl.ident));
-                    if (!label.empty) {
-                        auto target = (*s.statements)[].countUntil!(x => x is label.front);
-                        if (first > i) first = i;
-                        if (last < target) last = target;
-                    }
+                foreach(k, lbl; labels) {
+                    labelGotoNums[cast(void*)lbl.ident] = cast(int)k;
+                    foreach (i, st; *s.statements) if (st) {
+                        auto gs = collectGotos(st);
+                        auto nonLocalGotos = gs.filter!(g => !g.local);
+                        if (nonLocalGotos.canFind!(g => g.label.ident == lbl.ident)) {
+                            auto target = (*s.statements)[].countUntil!(x => x is lbl);
+                            if (range[k].first > i) range[k].first = i;
+                            if (range[k].last < target) range[k].last = target;
+                        }
 
+                    }
                 }
-            if (labels.length) {
-                stderr.writefln("In the scope of %d labels, first = %d last = %d", labels.length, first, last);
-            }
         }
         if (s.statements)
             foreach (idx, st; *s.statements) if (st) {
-                if (idx == first) {
+                auto start = range.countUntil!(x => x.first == idx);
+                if (start >= 0) {
                     buf.put("try {\n");
                     buf.indent;
                 }
@@ -448,9 +453,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                         }
                     }
                 }
-                if (idx == last) {
+                auto end = range.countUntil!(x => x.last == idx);
+                if (end >= 0) {
                     buf.outdent;
-                    buf.put("}\ncatch(Dispatch __d){}\n");
+                    buf.fmt("}\ncatch(Dispatch%d __d){}\n", end);
                 }
                 st.accept(this);
                 //TODO: for?
@@ -814,9 +820,11 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             buf.fmt("{ __dispatch%d = %d; continue dispatched_%d; }\n",
                 currentDispatch, -1-myIndex, currentDispatch);
         }
-        else {
-            buf.put("throw Dispatch.INSTANCE;\n");
+        else if (auto count = cast(void*)g.label.ident in labelGotoNums){
+            buf.fmt("throw Dispatch%d.INSTANCE;\n", *count);
         }
+        else
+            buf.put("throw Dispatch.INSTANCE;\n");
     }
 
     override void visit(GotoDefaultStatement s)

@@ -307,4 +307,11 @@ fun<K,V> update(aa: AA<K,V>, key: K, ins:() -> V, upd:(V) -> V) {
     else s.set(0, upd(v))
 }
 
-object Dispatch : Exception()
+// Goto exception singletons
+object Dispatch0 : Exception()
+object Dispatch1 : Exception()
+object Dispatch2 : Exception()
+object Dispatch3 : Exception()
+object Dispatch4 : Exception()
+object Dispatch5 : Exception()
+

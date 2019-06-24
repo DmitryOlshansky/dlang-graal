@@ -1404,11 +1404,11 @@ public class lexer {
                             {
                                 nestcount--;
                                 if (nestcount == 0)
-                                    /*goto Ldone*/throw Dispatch.INSTANCE;
+                                    /*goto Ldone*/throw Dispatch0.INSTANCE;
                             }
                         }
                         else if (c == delimright)
-                            /*goto Ldone*/throw Dispatch.INSTANCE;
+                            /*goto Ldone*/throw Dispatch0.INSTANCE;
                         if ((startline) != 0 && (isalpha(c)) != 0 || c == 95 || c >= 128 && isUniAlpha(c) && hereid != null)
                         {
                             Token tok = new Token().copy();
@@ -1417,7 +1417,7 @@ public class lexer {
                             this.scan(tok);
                             if ((tok.value & 0xFF) == 120 && tok.ident == hereid)
                             {
-                                /*goto Ldone*/throw Dispatch.INSTANCE;
+                                /*goto Ldone*/throw Dispatch0.INSTANCE;
                             }
                             this.p = pcopy(psave);
                         }
@@ -1426,7 +1426,7 @@ public class lexer {
                     }
                 }
             }
-            catch(Dispatch __d){}
+            catch(Dispatch0 __d){}
         /*Ldone:*/
             if ((this.p.get() & 0xFF) == 34)
                 this.p.postInc();
@@ -1672,9 +1672,9 @@ public class lexer {
                                     break;
                                 case 46:
                                     if ((this.p.get(1) & 0xFF) == 46)
-                                        /*goto Ldone*/throw Dispatch.INSTANCE;
+                                        /*goto Ldone*/throw Dispatch0.INSTANCE;
                                     if ((isalpha((this.p.get(1) & 0xFF))) != 0 || (this.p.get(1) & 0xFF) == 95 || ((this.p.get(1) & 0xFF) & 128) != 0)
-                                        /*goto Ldone*/throw Dispatch.INSTANCE;
+                                        /*goto Ldone*/throw Dispatch0.INSTANCE;
                                     /*goto Lreal*/
                                     this.p = pcopy(start);
                                     return this.inreal(t);
@@ -1751,12 +1751,12 @@ public class lexer {
                                 case 76:
                                     if ((this.p.get(1) & 0xFF) == 105)
                                         /*goto Lreal*/{ __dispatch19 = -1; continue dispatched_19; }
-                                    /*goto Ldone*/throw Dispatch.INSTANCE;
+                                    /*goto Ldone*/throw Dispatch0.INSTANCE;
                                 case 46:
                                     if ((this.p.get(1) & 0xFF) == 46)
-                                        /*goto Ldone*/throw Dispatch.INSTANCE;
+                                        /*goto Ldone*/throw Dispatch0.INSTANCE;
                                     if (base == 10 && (isalpha((this.p.get(1) & 0xFF))) != 0 || (this.p.get(1) & 0xFF) == 95 || ((this.p.get(1) & 0xFF) & 128) != 0)
-                                        /*goto Ldone*/throw Dispatch.INSTANCE;
+                                        /*goto Ldone*/throw Dispatch0.INSTANCE;
                                     /*goto Lreal*/{ __dispatch19 = -1; continue dispatched_19; }
                                 case 112:
                                 case 80:
@@ -1771,7 +1771,7 @@ public class lexer {
                                     continue L_outer4;
                                 default:
                                 {
-                                    /*goto Ldone*/throw Dispatch.INSTANCE;
+                                    /*goto Ldone*/throw Dispatch0.INSTANCE;
                                 }
                             }
                         } while(__dispatch19 != 0);
@@ -1792,7 +1792,7 @@ public class lexer {
                     }
                 }
             }
-            catch(Dispatch __d){}
+            catch(Dispatch0 __d){}
         /*Ldone:*/
             if (overflow.value && !(err))
             {
@@ -2113,7 +2113,7 @@ public class lexer {
                 {
                 }
                 else
-                    /*goto Lerr*/throw Dispatch.INSTANCE;
+                    /*goto Lerr*/throw Dispatch0.INSTANCE;
             L_outer6:
                 for (; (1) != 0;){
                     {
@@ -2153,10 +2153,10 @@ public class lexer {
                                         filespec = pcopy(Mem.xstrdup(this.scanloc.filename));
                                         continue L_outer6;
                                     }
-                                    /*goto Lerr*/throw Dispatch.INSTANCE;
+                                    /*goto Lerr*/throw Dispatch0.INSTANCE;
                                 case 34:
                                     if (filespec != null)
-                                        /*goto Lerr*/throw Dispatch.INSTANCE;
+                                        /*goto Lerr*/throw Dispatch0.INSTANCE;
                                     Lexer.stringbuffer.reset();
                                     this.p.postInc();
                                 L_outer7:
@@ -2173,7 +2173,7 @@ public class lexer {
                                                     case 13:
                                                     case 0:
                                                     case 26:
-                                                        /*goto Lerr*/throw Dispatch.INSTANCE;
+                                                        /*goto Lerr*/throw Dispatch0.INSTANCE;
                                                     case 34:
                                                         Lexer.stringbuffer.writeByte(0);
                                                         filespec = pcopy(Mem.xstrdup(toBytePtr(Lexer.stringbuffer.data)));
@@ -2185,7 +2185,7 @@ public class lexer {
                                                         {
                                                             int u = this.decodeUTF();
                                                             if (u == 8233 || u == 8232)
-                                                                /*goto Lerr*/throw Dispatch.INSTANCE;
+                                                                /*goto Lerr*/throw Dispatch0.INSTANCE;
                                                         }
                                                         Lexer.stringbuffer.writeByte(c);
                                                         this.p.postInc();
@@ -2205,14 +2205,14 @@ public class lexer {
                                         if (u == 8233 || u == 8232)
                                             /*goto Lnewline*/{ __dispatch24 = -1; continue dispatched_24; }
                                     }
-                                    /*goto Lerr*/throw Dispatch.INSTANCE;
+                                    /*goto Lerr*/throw Dispatch0.INSTANCE;
                                 }
                             }
                         } while(__dispatch24 != 0);
                     }
                 }
             }
-            catch(Dispatch __d){}
+            catch(Dispatch0 __d){}
         /*Lerr:*/
             this.error(loc, new BytePtr("#line integer [\"filespec\"]\\n expected"));
         }

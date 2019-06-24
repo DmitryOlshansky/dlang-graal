@@ -18,6 +18,6 @@ time dlex/dlex --outdir=tests/d $FILES
 for f in tests/d/*.tk ; do
     name=${f#tests/d/}
     f2=tests/graal/$name
-    echo $name
+    # echo $name
     diff $f $f2
 done
