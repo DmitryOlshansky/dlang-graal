@@ -163,25 +163,13 @@ fun memset(data: BytePtr, value: Int, nbytes: Int) {
 fun __equals(a: Any, b: Any) = a == b
 
 fun addu(a: Long, b: Long, overflow: Ref<Boolean>): Long {
-    try {
-        overflow.value = false
-        return Math.addExact(a, b)
-    }
-    catch (e:ArithmeticException) {
-        overflow.value = true
-        return 0
-    }
+    overflow.value = false
+    return a + b
 }
 
 fun mulu(a: Long, b: Long, overflow: Ref<Boolean>): Long {
-    try {
-        overflow.value = false
-        return Math.multiplyExact(a, b)
-    }
-    catch (e:ArithmeticException) {
-        overflow.value = true
-        return 0
-    }
+    overflow.value = false
+    return a * b
 }
 
 fun destroy(a: Any)  {}

@@ -229,7 +229,7 @@ public class TestLexer extends TestCase {
                 return null;
             }
         };
-        /*test.invoke( new ByteSlice("c"),  new ByteSlice("undefined escape sequence \\c"), 0x00063, 1);
+        test.invoke( new ByteSlice("c"),  new ByteSlice("undefined escape sequence \\c"), 0x00063, 1);
         test.invoke( new ByteSlice("!"),  new ByteSlice("undefined escape sequence \\!"), 0x00021, 1);
         test.invoke( new ByteSlice("x1"),  new ByteSlice("escape hex sequence has 1 hex digits instead of 2"), 0x00001, 2);
         test.invoke( new ByteSlice("u1"),  new ByteSlice("escape hex sequence has 1 hex digits instead of 4"), 0x00001, 2);
@@ -248,7 +248,7 @@ public class TestLexer extends TestCase {
         test.invoke( new ByteSlice("xg0"),  new ByteSlice("undefined escape hex sequence \\xg"), 0x00067, 2);
         test.invoke( new ByteSlice("ug000"),  new ByteSlice("undefined escape hex sequence \\ug"), 0x00067, 2);
         test.invoke( new ByteSlice("Ug0000000"),  new ByteSlice("undefined escape hex sequence \\Ug"), 0x00067, 2);
-        test.invoke( new ByteSlice("&BAD;"),  new ByteSlice("unnamed character entity &BAD;"), 0x0003f, 5);*/
+        test.invoke( new ByteSlice("&BAD;"),  new ByteSlice("unnamed character entity &BAD;"), 0x0003f, 5);
         test.invoke( new ByteSlice("&quot"),  new ByteSlice("unterminated named entity &quot;"), 0x0003f, 5);
         test.invoke( new ByteSlice("400"),  new ByteSlice("escape octal sequence \\400 is larger than \\377"), 0x00100, 3);
     }
@@ -280,4 +280,12 @@ public class TestLexer extends TestCase {
                 new Object[]{0xFFF_FFFF_FFFFL}
         );
     }
+
+    public void testRegression2() {
+        testCase("18446744073709551615u",
+                new byte[]{ TOK.uns64Literal},
+                new Object[]{ -1L }
+        );
+    }
+
 }

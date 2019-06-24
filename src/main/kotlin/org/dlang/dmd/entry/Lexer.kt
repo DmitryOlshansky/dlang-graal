@@ -10,12 +10,11 @@ import org.dlang.dmd.utils.stderr
 
 fun main(args: Array<String>) {
     val outdir = System.getProperty("outdir", ".")
-    for (i in 0 until 10)
-        timeit {
-            for (arg in args) {
-                lex(arg, outdir)
-            }
+    timeit {
+        for (arg in args) {
+            lex(arg, outdir)
         }
+    }
 }
 
 fun timeit(fn: () -> Unit) {
