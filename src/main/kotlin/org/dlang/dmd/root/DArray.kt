@@ -1,12 +1,12 @@
 package org.dlang.dmd.root
 
-class DArray<T : RootObject>(storage: Array<RootObject?>, len: Int) {
-    var data: Array<RootObject?> = storage
+class DArray<T>(storage: Array<Any?>, len: Int) {
+    var data: Array<Any?> = storage
     @JvmField var length: Int = len
 
     constructor(): this(arrayOf())
 
-    constructor(arr: Array<RootObject?>): this(arr, 0)
+    constructor(arr: Array<Any?>): this(arr, 0)
 
     fun toChars() = asString().ptr()
 
@@ -22,7 +22,7 @@ class DArray<T : RootObject>(storage: Array<RootObject?>, len: Int) {
                 accum.add(' '.toByte())
             }
             val src = if (data[i] != null)
-                data[i]!!.asString().data
+                data[i]!!.toString().toByteArray()
             else
                 "null".toByteArray()
             for (v in src) accum.add(v)
@@ -113,7 +113,7 @@ class DArray<T : RootObject>(storage: Array<RootObject?>, len: Int) {
 
     fun pop(): T? = data[--length] as T?
 
-    fun slice() =  Slice(data as Array<T?>, 0, length)
+    fun slice(): Slice<T> =  Slice(data as Array<T?>, 0, length)
 
     fun opSlice() = slice()
 
@@ -160,18 +160,18 @@ class BitArray {
 }
 
 
-fun<T : RootObject> darray(size: Int): DArray<T> = DArray(arrayOfNulls<RootObject?>(size))
+fun<T> darray(size: Int): DArray<T> = DArray(arrayOfNulls<Any?>(size))
 
-fun<T : RootObject> darray(): DArray<T> = darray(16)
+fun<T > darray(): DArray<T> = darray(16)
 
 
-fun <T: RootObject> darrayOf(vararg elements: RootObject?): DArray<T> {
-    val array = Array<RootObject?>(elements.size){ null }
+fun <T> darrayOf(vararg elements: T?): DArray<T> {
+    val array = Array<Any?>(elements.size){ null }
     elements.copyInto(array)
     return DArray(array, array.size)
 }
 
-fun<T: RootObject> peekSlice(array: DArray<T>?): Slice<T>? = array?.slice()
+fun<T> peekSlice(array: DArray<T>?): Slice<T>? = array?.slice()
 
 /**
  * Reverse an array in-place.

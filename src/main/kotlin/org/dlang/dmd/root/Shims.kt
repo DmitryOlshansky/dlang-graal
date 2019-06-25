@@ -299,6 +299,12 @@ fun fputc(c: Int, io: StdIo) {
 
 fun fflush(io: StdIo) = io.handle.flush()
 
+@JvmField
+val stdout = _IO_FILE(System.out)
+
+@JvmField
+val stderr = _IO_FILE(System.err)
+
 // ========== AA ============
 fun<K,V> update(aa: AA<K,V>, key: K, ins:() -> V, upd:(V) -> V) {
     val s = aa.getLvalue(key)
@@ -315,3 +321,5 @@ object Dispatch3 : Exception()
 object Dispatch4 : Exception()
 object Dispatch5 : Exception()
 
+// Assert false at the end of final switch
+object SwitchError: RuntimeException()

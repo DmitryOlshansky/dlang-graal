@@ -4,8 +4,6 @@ import core.stdc.ctype;
 import core.stdc.stdio;
 import core.stdc.string;
 
-import std.string;
-
 import dmd.aggregate;
 import dmd.apply;
 import dmd.aliasthis;
@@ -38,7 +36,7 @@ import dmd.tokens;
 import dmd.utils;
 import dmd.visitor;
 
-import std.format;
+import std.algorithm, std.format, std.string;
 
 import visitors.members;
 
@@ -47,6 +45,7 @@ struct ExprOpts {
     bool rawArrayLiterals = false;
     EnumDeclaration inEnumDecl = null;
     FuncDeclaration inFuncDecl = null;
+    AggregateDeclaration[] inAggregate = null;
     Expression dollarValue = null;
     VarDeclaration vararg = null;
     bool[void*] refParams; //out and ref params, they must be boxed
@@ -87,19 +86,19 @@ const(char)[] symbol(Identifier s) {
 }
 
 ///
-string toJavaFunc(TypeFunction t)
+string toJavaFunc(TypeFunction t, ExprOpts opts)
 {
     scope OutBuffer* buf = new OutBuffer();
-    visitFuncIdentWithPostfix(t, null, buf);
+    visitFuncIdentWithPostfix(t, buf, opts);
     buf.writeByte(0);
     char* p = buf.extractData;
     return cast(string)p[0..strlen(p)];
 }
 
 ///
-string toJava(Type t, Identifier id = null, Boxing boxing = Boxing.no) {
+string toJava(Type t, ExprOpts opts, Boxing boxing = Boxing.no) {
     scope OutBuffer* buf = new OutBuffer();
-    typeToBuffer(t, id, buf, boxing);
+    typeToBuffer(t, buf, opts, boxing);
     buf.writeByte(0);
     char* p = buf.extractData;
     auto type = cast(string)p[0..strlen(p)];
@@ -140,12 +139,12 @@ string toJavaBool(Expression e, ExprOpts opts) {
 }
 
 
-string refType(Type t) {
+string refType(Type t, ExprOpts opts) {
     if(t.ty == Tint32 || t.ty == Tuns32 || t.ty == Tdchar) {
         return "IntRef";
     }
     else {
-        return "Ref<" ~ toJava(t, null, Boxing.yes) ~ ">";
+        return "Ref<" ~ toJava(t, opts, Boxing.yes) ~ ">";
     }
 }
 
@@ -203,6 +202,8 @@ public:
                             if (em.value.toInteger == v)
                             {
                                 auto s = symbol(sym.ident);
+                                if (auto agg = sym.parent.isAggregateDeclaration())
+                                    buf.printf("%s.", agg.ident.toChars);
                                 buf.printf("%.*s.%s", s.length, s.ptr, em.ident.toChars());
                                 return ;
                             }
@@ -310,7 +311,7 @@ public:
 
     override void visit(NullExp e)
     {
-        auto t = e.type.toJava();
+        auto t = e.type.toJava(opts);
         if (e.type.ty == Tarray) buf.printf("new %.*s()", t.length, t.ptr);
         else buf.writestring("null");
     }
@@ -349,7 +350,7 @@ public:
 
     override void visit(ArrayLiteralExp e)
     {
-        auto type = e.type.nextOf.toJava;
+        auto type = e.type.nextOf.toJava(opts);
         if (!opts.rawArrayLiterals) buf.writestring("slice(");
         buf.printf("new %.*s[]{", type.length, type.ptr);
         argsToBuffer(e.elements, buf, opts, null, e.basis);
@@ -375,7 +376,7 @@ public:
     override void visit(StructLiteralExp e)
     {
         buf.writestring("new ");
-        buf.writestring(e.type.toJava);
+        buf.writestring(e.type.toJava(opts));
         buf.writeByte('(');
         if (e.type.toString.indexOf("Array!") < 0 && !collectMembers(e.sd).hasUnion) {
             // CTFE can generate struct literals that contain an AddrExp pointing
@@ -397,7 +398,7 @@ public:
 
     override void visit(TypeExp e)
     {
-        typeToBuffer(e.type, null, buf);
+        typeToBuffer(e.type, buf, opts);
     }
 
     override void visit(ScopeExp e)
@@ -428,7 +429,7 @@ public:
             buf.writeByte('.');
         }
         buf.writestring("new ");
-        typeToBuffer(e.newtype, null, buf);
+        typeToBuffer(e.newtype, buf, opts);
         buf.writeByte('(');
         auto struc = e.newtype.isTypeStruct();
         if (e.type.toString.indexOf("Array!") < 0 && (!struc || !collectMembers(struc.sym).hasUnion)) { 
@@ -487,7 +488,7 @@ public:
             opts.dollarValue.accept(this);
             buf.writestring(".getLength()");
         }
-        else if(e.var.ident.symbol == e.type.toJava) {
+        else if(e.var.ident.symbol == e.type.toJava(opts)) {
             buf.printf("new %.*s()", e.var.ident.symbol.length, e.var.ident.symbol.ptr);
         }
         else if(e.var is opts.vararg) {
@@ -780,6 +781,7 @@ public:
         expToBuffer(e.e1, PREC.primary, buf, opts);
         buf.writeByte('.');
         buf.writestring(e.td.toChars());
+        fprintf(stderr, "DOT TEMPLATE %s\n", e.td.toChars());
     }
 
     override void visit(DotVarExp e)
@@ -795,12 +797,7 @@ public:
         expToBuffer(e.e1, PREC.primary, buf, opts);
         buf.writeByte('.');
         e.ti.dsymbolToBuffer(buf);
-        if (e.ti.tiargs)
-            foreach(arg; *e.ti.tiargs) {
-                auto t = arg.isType();
-                if (t is null) fprintf(stderr, "NON-TYPE Template parameter!\n");
-                buf.writestring(t.toJava(null, Boxing.yes));
-            }
+        printTiArgs(e.ti, buf, opts);
     }
 
     override void visit(DelegateExp e)
@@ -861,7 +858,7 @@ public:
                 }
                 else {
                     buf.writestring("new ");
-                    buf.writestring(e.type.toJava);
+                    buf.writestring(e.type.toJava(opts));
                 }
             }
             else if (e.f && e.f.ident.symbol == "opIndex") {
@@ -985,14 +982,14 @@ public:
         }
         else if (complexTarget) { // rely on toTypeName(x)
             buf.writestring("to");
-            typeToBuffer(e.to, null, buf);
+            typeToBuffer(e.to, buf, opts);
             buf.writestring("(");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
             buf.writestring(")");
         }
         else { // simple casts
             buf.writestring("(");
-            typeToBuffer(e.to, null, buf);
+            typeToBuffer(e.to, buf, opts);
             buf.writestring(")");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
         }
@@ -1058,7 +1055,7 @@ public:
     override void visit(ArrayExp e)
     {
         buf.writestring("new ");
-        typeToBuffer(e.type, null, buf);
+        typeToBuffer(e.type, buf, opts);
         expToBuffer(e.e1, PREC.primary, buf, opts);
         buf.writeByte('{');
         argsToBuffer(e.arguments, buf, opts, null);
@@ -1262,7 +1259,7 @@ private void argsToBuffer(Expressions* expressions, OutBuffer* buf, ExprOpts opt
             }
             else if(n && n.type.ty == Tarray) {
                 buf.writestring("new ");
-                buf.writestring(n.type.toJava);
+                buf.writestring(n.type.toJava(opts));
                 buf.writestring("()");
             }
             else if(wantChar) {
@@ -1308,7 +1305,7 @@ private void sizeToBuffer(Expression e, OutBuffer* buf, ExprOpts opts)
 /**************************************************
  * An entry point to pretty-print type.
  */
-private void typeToBuffer(Type t, const Identifier ident, OutBuffer* buf, Boxing boxing = Boxing.no)
+private void typeToBuffer(Type t, OutBuffer* buf, ExprOpts opts, Boxing boxing = Boxing.no)
 {
     if (t is null) {
         buf.writestring("nothing");
@@ -1316,15 +1313,10 @@ private void typeToBuffer(Type t, const Identifier ident, OutBuffer* buf, Boxing
     }
     if (auto tf = t.isTypeFunction())
     {
-        visitFuncIdentWithPrefix(tf, ident, null, buf);
+        visitFuncIdentWithPrefix(tf, null, buf, opts);
         return;
     }
-    typeToBufferx(t, buf, boxing);
-    if (ident)
-    {
-        buf.writeByte(' ');
-        buf.writestring(ident.toString());
-    }
+    typeToBufferx(t, buf, opts, boxing);
 }
 
 enum Boxing {
@@ -1332,7 +1324,7 @@ enum Boxing {
     yes
 }
 
-private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
+private void typeToBufferx(Type t, OutBuffer* buf, ExprOpts opts, Boxing boxing = Boxing.no)
 {
     void visitType(Type t)
     {
@@ -1429,7 +1421,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
         assert(0);
         version(none) {
             buf.writestring("__vector(");
-            typeToBufferx(t.basetype, buf);
+            typeToBufferx(t.basetype, buf, opts);
             buf.writestring(")");
         }
     }
@@ -1437,6 +1429,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
     void visitSArray(TypeSArray t)
     {
         auto et = t.next;
+        if (auto e = et.isTypeEnum()) et = e.memType;
         if (et.ty == Tchar || et.ty == Tvoid || et.ty == Tuns8 || et.ty == Tint8)
             buf.writestring("ByteSlice");
         else if (et.ty == Twchar)
@@ -1447,7 +1440,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
             buf.writestring("IntSlice");
         else {
             buf.writestring("Slice<");
-            typeToBufferx(et, buf, Boxing.yes);
+            typeToBufferx(et, buf, opts, Boxing.yes);
             buf.writestring(">");
         }
     }
@@ -1467,7 +1460,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
         else
         {
             buf.writestring("Slice<");
-            typeToBufferx(et, buf, Boxing.yes);
+            typeToBufferx(et, buf, opts, Boxing.yes);
             buf.writestring(">");
         }
     }
@@ -1475,9 +1468,9 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
     void visitAArray(TypeAArray t)
     {
         buf.writestring("AA<");
-        typeToBufferx(t.index, buf, Boxing.yes);
+        typeToBufferx(t.index, buf, opts, Boxing.yes);
         buf.writeByte(',');
-        typeToBufferx(t.next, buf, Boxing.yes);
+        typeToBufferx(t.next, buf, opts, Boxing.yes);
         buf.writeByte('>');
     }
 
@@ -1485,7 +1478,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
     {
         //printf("TypePointer::toCBuffer2() next = %d\n", t.next.ty);
         if (t.next.ty == Tfunction)
-            visitFuncIdentWithPostfix(cast(TypeFunction)t.next, "function", buf);
+            visitFuncIdentWithPostfix(cast(TypeFunction)t.next, buf, opts);
         else
         {
             if (t.next.ty == Tvoid) 
@@ -1498,11 +1491,11 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
                 buf.writestring("IntPtr");
             else if (t.next.ty == Tint32 || t.next.ty == Tuns32)
                 buf.writestring("IntPtr");
-            else if (t.next.ty == Tstruct || t.next.ty == Tclass)
-                typeToBufferx(t.next, buf, Boxing.yes);
+            else if (t.next.ty == Tstruct)
+                typeToBufferx(t.next, buf, opts, Boxing.yes);
             else {
                 buf.writestring("Ptr<");
-                typeToBufferx(t.next, buf, Boxing.yes);
+                typeToBufferx(t.next, buf, opts, Boxing.yes);
                 buf.writestring(">");
             }
         }
@@ -1520,12 +1513,12 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
     void visitFunction(TypeFunction t)
     {
         //printf("TypeFunction::toCBuffer2() t = %p, ref = %d\n", t, t.isref);
-        visitFuncIdentWithPostfix(t, null, buf);
+        visitFuncIdentWithPostfix(t, buf, opts);
     }
 
     void visitDelegate(TypeDelegate t)
     {
-        visitFuncIdentWithPostfix(cast(TypeFunction)t.next, "delegate", buf);
+        visitFuncIdentWithPostfix(cast(TypeFunction)t.next, buf, opts);
     }
 
     void visitTypeQualifiedHelper(TypeQualified t)
@@ -1544,13 +1537,13 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
             else if (id.dyncast() == DYNCAST.expression)
             {
                 buf.writeByte('[');
-                (cast(Expression)id).expressionToBuffer(buf, ExprOpts.init);
+                (cast(Expression)id).expressionToBuffer(buf, opts);
                 buf.writeByte(']');
             }
             else if (id.dyncast() == DYNCAST.type)
             {
                 buf.writeByte('[');
-                typeToBufferx(cast(Type)id, buf);
+                typeToBufferx(cast(Type)id, buf, opts);
                 buf.writeByte(']');
             }
             else
@@ -1576,7 +1569,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
     void visitTypeof(TypeTypeof t)
     {
         buf.writestring("typeof(");
-        t.exp.expressionToBuffer(buf, ExprOpts.init);
+        t.exp.expressionToBuffer(buf, opts);
         buf.writeByte(')');
         visitTypeQualifiedHelper(t);
     }
@@ -1589,7 +1582,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
 
     void visitEnum(TypeEnum t)
     {
-        buf.writestring(t.memType.toJava());
+        buf.writestring(t.memType.toJava(opts, boxing));
     }
 
     void visitStruct(TypeStruct t)
@@ -1603,7 +1596,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
             buf.writestring("<");
             foreach(i, arg; (*ti.tiargs)[]) {
                 if(i) buf.writestring(",");
-                if (auto atype = isType(arg)) buf.writestring(atype.toJava);
+                if (auto atype = isType(arg)) buf.writestring(atype.toJava(opts));
                 else buf.writestring(arg.toChars());
             }
             buf.writestring(">");
@@ -1620,15 +1613,24 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
         // Don't use ti.toAlias() to avoid forward reference error
         // while printing messages.
         TemplateInstance ti = t.sym.parent.isTemplateInstance();
-        if (ti && ti.aliasdecl == t.sym)
-            buf.writestring(ti.toChars());
-        else
-            buf.writestring(t.sym.toChars());
+        if (ti && ti.aliasdecl == t.sym) {
+            buf.writestring(t.sym.ident.symbol);
+            printTiArgs(ti, buf, opts);
+            return;
+        }
+        auto ds = t.sym.parent.isAggregateDeclaration();
+        if (ds && !opts.inAggregate.canFind!(agg => agg is ds))  {
+            buf.writestring(ds.ident.symbol);
+            buf.writestring(".");
+            buf.writestring(t.sym.ident.symbol);
+            return;
+        }
+        buf.writestring(t.sym.ident.symbol);
     }
 
     void visitTuple(TypeTuple t)
     {
-        parametersToBuffer(ParameterList(t.arguments, VarArg.none), buf);
+        parametersToBuffer(ParameterList(t.arguments, VarArg.none), buf, opts);
     }
 
     void visitSlice(TypeSlice t)
@@ -1638,7 +1640,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
 
     void visitNull(TypeNull t)
     {
-        buf.writestring("Any");
+        buf.writestring("Object");
     }
 
     switch (t.ty)
@@ -1670,13 +1672,13 @@ private void typeToBufferx(Type t, OutBuffer* buf, Boxing boxing = Boxing.no)
     }
 }
 
-private void parametersToBuffer(ParameterList pl, OutBuffer* buf, Boxing boxing = Boxing.no)
+private void parametersToBuffer(ParameterList pl, OutBuffer* buf, ExprOpts opts, Boxing boxing = Boxing.no)
 {
     foreach (i; 0 .. pl.length)
     {
         if (i)
             buf.writestring(", ");
-        pl[i].parameterToBuffer(buf, boxing);
+        pl[i].parameterToBuffer(buf, opts, boxing);
     }
     final switch (pl.varargs)
     {
@@ -1696,7 +1698,7 @@ private void parametersToBuffer(ParameterList pl, OutBuffer* buf, Boxing boxing 
 }
 
 
-private void visitFuncIdentWithPostfix(TypeFunction t, const char[] ident, OutBuffer* buf)
+private void visitFuncIdentWithPostfix(TypeFunction t, OutBuffer* buf, ExprOpts opts)
 {
     if (t.inuse)
     {
@@ -1704,16 +1706,15 @@ private void visitFuncIdentWithPostfix(TypeFunction t, const char[] ident, OutBu
         return;
     }
     t.inuse++;
-
     buf.printf("Function%d<", t.parameterList.length);
     foreach(i, p; *t.parameterList) {
         if (i) buf.writestring(",");
-        typeToBuffer(p.type, null, buf, Boxing.yes);
+        typeToBuffer(p.type, buf, opts, Boxing.yes);
     }
     if (t.parameterList && t.parameterList.length > 0) buf.writestring(",");
     if (t.next)
     {
-        typeToBuffer(t.next, null, buf, Boxing.yes);
+        typeToBuffer(t.next, buf, opts, Boxing.yes);
     }
     else 
         buf.writestring("Void");
@@ -1722,7 +1723,7 @@ private void visitFuncIdentWithPostfix(TypeFunction t, const char[] ident, OutBu
 }
 
 
-private void visitFuncIdentWithPrefix(TypeFunction t, const Identifier ident, TemplateDeclaration td, OutBuffer* buf)
+private void visitFuncIdentWithPrefix(TypeFunction t, TemplateDeclaration td, OutBuffer* buf, ExprOpts opts)
 {
     if (t.inuse)
     {
@@ -1731,17 +1732,9 @@ private void visitFuncIdentWithPrefix(TypeFunction t, const Identifier ident, Te
     }
     t.inuse++;
 
-    if (ident)
-        buf.writestring(ident.toHChars2());
-    if (ident && ident.toHChars2() != ident.toChars())
+    if (t.next)
     {
-        // Don't print return type for ctor, dtor, unittest, etc
-    }
-    else if (t.next)
-    {
-        if (ident)
-            buf.writestring(": ");
-        typeToBuffer(t.next, null, buf);
+        typeToBuffer(t.next, buf, opts);
     }
     if (td)
     {
@@ -1756,7 +1749,7 @@ private void visitFuncIdentWithPrefix(TypeFunction t, const Identifier ident, Te
             buf.writeByte(')');
         }
     }
-    parametersToBuffer(t.parameterList, buf);
+    parametersToBuffer(t.parameterList, buf, opts);
     t.inuse--;
 }
 
@@ -1764,6 +1757,15 @@ private void dsymbolToBuffer(Dsymbol s, OutBuffer* buf) {
     buf.writestring(s.toChars());
 }
 
+private void printTiArgs(TemplateInstance ti, OutBuffer* buf, ExprOpts opts)
+{
+    if (ti.tiargs)
+        foreach(arg; *ti.tiargs) {
+            auto t = arg.isType();
+            if (t is null) fprintf(stderr, "NON-TYPE Template parameter!\n");
+            buf.writestring(t.toJava(opts, Boxing.yes));
+        }
+}
 
 /***********************************************************
  * Write parameter `p` to buffer `buf`.
@@ -1772,7 +1774,7 @@ private void dsymbolToBuffer(Dsymbol s, OutBuffer* buf) {
  *      buf = buffer to write it to
  *      hgs = context
  */
-private void parameterToBuffer(Parameter p, OutBuffer* buf, Boxing boxing = Boxing.no)
+private void parameterToBuffer(Parameter p, OutBuffer* buf, ExprOpts opts, Boxing boxing = Boxing.no)
 {
     if (p.type.ty == Tident &&
              (cast(TypeIdentifier)p.type).ident.toString().length > 3 &&
@@ -1783,9 +1785,13 @@ private void parameterToBuffer(Parameter p, OutBuffer* buf, Boxing boxing = Boxi
     }
     else
     {
-        typeToBuffer(p.type, p.ident, buf, boxing);
+        typeToBuffer(p.type, buf, opts, boxing);
+        if (p.ident) {
+            buf.writestring(" ");
+            buf.writestring(p.ident.symbol);
+        }
     }
-    auto opts = ExprOpts(p.type.ty == Tpointer && p.type.nextOf().ty == Tchar);
+    opts.wantCharPtr = p.type.ty == Tpointer && p.type.nextOf().ty == Tchar;
 
     if (p.defaultArg)
     {

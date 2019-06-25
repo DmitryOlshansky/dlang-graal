@@ -1,5 +1,7 @@
 package org.dlang.dmd.root
 
+import java.lang.AssertionError
+
 object DYNCAST {
     @JvmField val _object = 0
     @JvmField val expression = 1
@@ -14,7 +16,7 @@ object DYNCAST {
 }
 
 abstract class RootObject {
-    abstract fun toChars(): BytePtr
+    open fun toChars(): BytePtr { throw AssertionError("unimplemented toChars") }
 
     open fun asString(): ByteSlice {
         val ptr = toChars()
@@ -26,7 +28,7 @@ abstract class RootObject {
         return String(slice.data, slice.beg, slice.length)
     }
 
-    fun toBuffer(buf: OutBuffer) = {
+    fun toBuffer(buf: OutBuffer) {
         buf.writestring(toChars())
     }
 

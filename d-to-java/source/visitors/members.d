@@ -25,6 +25,7 @@ Members collectMembers(AggregateDeclaration agg) {
         alias visit = typeof(super).visit;
         VarDeclaration[] decls = [];
         bool hasUnion = false;
+        int aggCount = 0;
 
         override void visit(ConditionalDeclaration ver) {
             if (ver.condition.inc == Include.yes) {
@@ -51,6 +52,12 @@ Members collectMembers(AggregateDeclaration agg) {
             super.visit(un);
         }
 
+        override void visit(StructDeclaration d) {
+            if (aggCount++ == 0) super.visit(d);
+        }
+        override void visit(ClassDeclaration d) {
+            if (aggCount++ == 0) super.visit(d);
+        }
         override void visit(FuncDeclaration ){}
         override void visit(StaticCtorDeclaration){}
         override void visit(SharedStaticCtorDeclaration){}
