@@ -179,7 +179,7 @@ public class identifier {
             if (!(id != null))
             {
                 id = new Identifier((sv).asString(), 120);
-                (sv).ptrvalue = pcopy((id));
+                (sv).ptrvalue = pcopy((toBytePtr(id)));
             }
             return id;
         }
@@ -192,7 +192,7 @@ public class identifier {
             StringValue sv = Identifier.stringtable.insert(s, null);
             assert(sv != null);
             Identifier id = new Identifier((sv).asString(), value);
-            (sv).ptrvalue = pcopy((id));
+            (sv).ptrvalue = pcopy((toBytePtr(id)));
             return id;
         }
 

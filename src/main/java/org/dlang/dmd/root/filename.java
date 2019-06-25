@@ -17,6 +17,9 @@ public class filename {
     public static class FileName
     {
         public ByteSlice str;
+
+        public  FileName() {}
+
         public  FileName(ByteSlice str) {
             this.str = xarraydup(str);
         }

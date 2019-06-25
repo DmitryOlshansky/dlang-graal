@@ -965,7 +965,7 @@ public:
                 break;
             default:
         }
-        if (toVoid || toVoidPtr || fromClass) expToBuffer(e.e1, precedence[e.op], buf, opts);
+        if (toVoid || toVoidPtr) expToBuffer(e.e1, precedence[e.op], buf, opts);
         else if(fromBool && toInt) {
             buf.writestring("(");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
@@ -1071,6 +1071,23 @@ public:
 
     override void visit(AssignExp e)
     {
+        if(auto call = e.e1.isCallExp()) {
+            if (call.f && call.f.ident && call.f.ident.symbol == "opIndex") {
+                auto una = call.e1.isPtrExp();
+                auto dotVar = una ? una : call.e1.isDotVarExp();
+                if (dotVar) {
+                    expToBuffer(dotVar.e1, precedence[e.op], buf, opts);
+                    buf.writestring(".set(");
+                    argsToBuffer(call.arguments, buf, opts, call.f);
+                    if (call.arguments.length != 2) {
+                        buf.writestring(", ");
+                        expToBuffer(e.e2, precedence[e.op], buf, opts);
+                    }
+                    buf.writestring(")");
+                    return;
+                }
+            }
+        }
         if (auto assign = e.e1.isIndexExp()) {
             auto oldDollar = opts.dollarValue;
             scope(exit) opts.dollarValue = oldDollar;
