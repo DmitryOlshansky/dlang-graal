@@ -20,11 +20,12 @@ struct Members {
     VarDeclaration[] all;
 }
 
-Members collectMembers(AggregateDeclaration agg) {
+Members collectMembers(AggregateDeclaration agg, bool recurseBase = false) {
     extern(C++) static class Collector : SemanticTimeTransitiveVisitor {
         alias visit = typeof(super).visit;
         VarDeclaration[] decls = [];
         bool hasUnion = false;
+        bool recursive = false;
         int aggCount = 0;
 
         override void visit(ConditionalDeclaration ver) {
@@ -57,6 +58,9 @@ Members collectMembers(AggregateDeclaration agg) {
         }
         override void visit(ClassDeclaration d) {
             if (aggCount++ == 0) super.visit(d);
+            if (recursive && d.baseClass) {
+                decls ~= collectMembers(d.baseClass).all;
+            }
         }
         override void visit(FuncDeclaration ){}
         override void visit(StaticCtorDeclaration){}
@@ -69,6 +73,7 @@ Members collectMembers(AggregateDeclaration agg) {
         }
     }
     scope v = new Collector();
+    v.recursive = recurseBase;
     agg.accept(v);
     return Members(v.hasUnion, v.decls);
 }

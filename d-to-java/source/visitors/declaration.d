@@ -198,6 +198,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     int currentFor;
     int forCount;
 
+    bool hasEmptyCtor;
+    bool hasCopy;
+
     Goto[] gotos;
     int[void*] labelGotoNums;
     
@@ -1053,15 +1056,38 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (!d.isAnonymous())
         {
             auto abs =  d.isAbstract ? "abstract " : "";
-            buf.fmt("%s static %sclass %s%s", defAccess, abs, d.ident.toString(), tiargs);
+            buf.fmt("%s static %sclass %s%s", defAccess, abs, d.ident.symbol, tiargs);
         }
         visitBase(d);
         if (d.members)
         {
             buf.put("\n{\n");
             buf.indent;
-            foreach (s; *d.members)
+
+            auto oldHasEmptyCtor = hasEmptyCtor;
+            scope(exit) hasEmptyCtor = oldHasEmptyCtor;
+            hasEmptyCtor = false;
+            
+            foreach (s; *d.members) {
                 s.accept(this);
+            }
+            if (!hasEmptyCtor) buf.fmt("\nprotected %s() {}\n", d.ident.symbol);
+            // generate copy
+            stderr.writefln("COPY %s\n", d.ident.symbol);
+            auto members = collectMembers(d, true);
+            buf.fmt("\npublic %s%s copy()", d.isAbstract ? "abstract " : "", d.ident.symbol);
+            if (d.isAbstract) buf.put(";\n");
+            else {
+                buf.put(" {\n");
+                buf.indent;
+                buf.fmt("%s that = new %s();\n", d.ident.symbol, d.ident.symbol);
+                foreach(m; members.all) {
+                    buf.fmt("that.%s = this.%s;\n", m.ident.symbol, m.ident.symbol);
+                }
+                buf.put("return that;\n")
+                buf.outdent;
+                buf.fmt("}\n");
+            }
             buf.outdent;
             buf.put('}');
         }
@@ -1223,7 +1249,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(FuncDeclaration func)  {
         if (func.funcName == "destroy") return;
-        if (func.ident.toString == "opAssign") return;
+        if (func.funcName == "opAssign") return;
+        if (func.funcName == "copy" && aggregates.length > 0) return;
+        if (func.isCtorDeclaration() && !func.parameters) hasEmptyCtor = true;
         // save tiargs before checking duplicates
         if (tiArgs.length) opts.templates[cast(void*)func] = Template(tiArgs, stack.length != 0);
         if (stack.length > 0) opts.localFuncs[cast(void*)func] = true;

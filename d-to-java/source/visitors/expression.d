@@ -661,7 +661,7 @@ public:
 
     override void visit(BinExp e)
     {
-        if (e.e1.type && (e.op == TOK.equal || e.op == TOK.notEqual) && !e.e1.type.isTypeBasic) {
+        if (e.e1.type && (e.op == TOK.equal || e.op == TOK.notEqual) && !e.e1.type.isTypeBasic && !e.e1.type.isTypeEnum) {
             expToBuffer(e.e1, cast(PREC)(precedence[e.op] + 1), buf, opts);
             buf.writestring(".equals(");
             expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);

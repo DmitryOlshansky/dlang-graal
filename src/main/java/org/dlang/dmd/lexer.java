@@ -2387,6 +2387,26 @@ public class lexer {
             this.line = pcopy(this.p);
         }
 
+
+        protected Lexer() {}
+
+        public Lexer copy() {
+            Lexer that = new Lexer();
+            that.scanloc = this.scanloc;
+            that.prevloc = this.prevloc;
+            that.p = this.p;
+            that.token = this.token;
+            that.base = this.base;
+            that.end = this.end;
+            that.line = this.line;
+            that.doDocComment = this.doDocComment;
+            that.anyToken = this.anyToken;
+            that.commentToken = this.commentToken;
+            that.lastDocLine = this.lastDocLine;
+            that.diagnosticReporter = this.diagnosticReporter;
+            that.tokenFreelist = this.tokenFreelist;
+            return that;
+        }
     }
     public static void test_2() {
     }

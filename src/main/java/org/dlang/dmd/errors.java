@@ -58,6 +58,10 @@ public class errors {
         }
 
         public abstract void deprecationSupplemental(Loc loc, BytePtr format, Slice<Object> arg2);
+
+        protected DiagnosticReporter() {}
+
+        public abstract DiagnosticReporter copy();
     }
     public static class StderrDiagnosticReporter extends DiagnosticReporter
     {
@@ -111,6 +115,17 @@ public class errors {
             vdeprecationSupplemental(loc, format, args);
         }
 
+
+        protected StderrDiagnosticReporter() {}
+
+        public StderrDiagnosticReporter copy() {
+            StderrDiagnosticReporter that = new StderrDiagnosticReporter();
+            that.useDeprecated = this.useDeprecated;
+            that.errorCount_ = this.errorCount_;
+            that.warningCount_ = this.warningCount_;
+            that.deprecationCount_ = this.deprecationCount_;
+            return that;
+        }
     }
 
     public static class Classification 

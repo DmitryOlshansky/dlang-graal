@@ -43,6 +43,16 @@ public class filecache {
             }
         }
 
+
+        protected FileAndLines() {}
+
+        public FileAndLines copy() {
+            FileAndLines that = new FileAndLines();
+            that.file = this.file;
+            that.buffer = this.buffer;
+            that.lines = this.lines;
+            return that;
+        }
     }
     public static class FileCache
     {
