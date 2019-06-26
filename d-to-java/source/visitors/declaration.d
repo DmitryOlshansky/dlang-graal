@@ -257,7 +257,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         header.put("\nimport static org.dlang.dmd.root.filename.*;\n");
         header.put("\nimport static org.dlang.dmd.root.File.*;\n");
         header.put("\nimport static org.dlang.dmd.root.ShimsKt.*;\n");
-        header.put("\nimport static org.dlang.dmd.utils.*;\n");
         header.put("import static org.dlang.dmd.root.SliceKt.*;\n");
         header.put("import static org.dlang.dmd.root.DArrayKt.*;\n");
     }
@@ -765,16 +764,25 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         {
             if (!s._body.isScopeStatement())
             {
+                stderr.writefln("SWITCH2 %s \n", cond);
                 buf.put('{');
                 buf.put('\n');
                 buf.indent;
-                s._body.accept(this);
+                if (auto comp = s._body.isCompoundStatement()) {
+                    foreach(st; *comp.statements) {
+                        if (auto scst = st.isScopeStatement()) scst.statement.accept(this);
+                        else st.accept(this);
+                    }
+                }
+                else
+                    s._body.accept(this);
                 buf.outdent;
                 buf.put('}');
                 buf.put('\n');
             }
             else
             {
+                stderr.writefln("SWITCH %s \n", cond);
                 s._body.accept(this);
             }
         }
@@ -1073,7 +1081,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             }
             if (!hasEmptyCtor) buf.fmt("\nprotected %s() {}\n", d.ident.symbol);
             // generate copy
-            stderr.writefln("COPY %s\n", d.ident.symbol);
             auto members = collectMembers(d, true);
             buf.fmt("\npublic %s%s copy()", d.isAbstract ? "abstract " : "", d.ident.symbol);
             if (d.isAbstract) buf.put(";\n");
@@ -1084,7 +1091,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 foreach(m; members.all) {
                     buf.fmt("that.%s = this.%s;\n", m.ident.symbol, m.ident.symbol);
                 }
-                buf.put("return that;\n")
+                buf.put("return that;\n");
                 buf.outdent;
                 buf.fmt("}\n");
             }
