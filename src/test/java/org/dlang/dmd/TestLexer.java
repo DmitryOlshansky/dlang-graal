@@ -56,6 +56,12 @@ public class TestLexer extends TestCase {
         public  void deprecationSupplemental(globals.Loc _param_0, BytePtr _param_1, Slice<Object> _param_2) {
             throw new AssertionError("Unreachable code!");
         }
+
+        @Override
+        public errors.DiagnosticReporter copy() {
+            return this;
+        }
+
     }
     
     private static class ExpectDiagnosticReporter extends errors.DiagnosticReporter
@@ -103,6 +109,11 @@ public class TestLexer extends TestCase {
 
         public  void deprecationSupplemental(globals.Loc _param_0, BytePtr _param_1, Slice<Object> _param_2) {
             throw new AssertionError("Unreachable code!");
+        }
+
+        @Override
+        public errors.DiagnosticReporter copy() {
+            return this;
         }
 
     }

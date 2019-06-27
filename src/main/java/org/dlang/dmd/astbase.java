@@ -1977,10 +1977,7 @@ public class astbase {
             public DArray<BaseClass> baseclasses;
             public int baseok;
             public  ClassDeclaration(Loc loc, Identifier id, DArray<BaseClass> baseclasses, DArray<Dsymbol> members, boolean inObject) {
-                if (!(id != null))
-                    id = Identifier.generateId(new BytePtr("__anonclass"));
-                assert(id != null);
-                super(loc, id);
+                super(loc, id == null ? Identifier.generateId(new BytePtr("__anonclass")) : id);
                 if (baseclasses != null)
                 {
                     this.baseclasses = baseclasses;
@@ -4314,7 +4311,7 @@ public class astbase {
                 this.arguments = arguments;
             }
 
-            public  TypeTuple(DArray<Expression> exps) {
+            public  TypeTuple(DArray<Expression> exps, int tag) {
                 super((byte)37);
                 DArray<Parameter> arguments = new DArray<Parameter>();
                 if (exps != null)
@@ -5464,7 +5461,7 @@ public class astbase {
                 }
                 if ((this.sz & 0xFF) == encSize)
                 {
-                    memcpy((BytePtr)dest, this.string, this.len * (this.sz & 0xFF));
+                    memcpy((BytePtr)dest, (this.string), (this.len * (this.sz & 0xFF)));
                     if (zero)
                         memset(((BytePtr)dest).plus((this.len * (this.sz & 0xFF)) * 1), 0, (this.sz & 0xFF));
                 }
@@ -5914,9 +5911,7 @@ public class astbase {
         public static class VarExp extends SymbolExp
         {
             public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
-                if (var.isVarDeclaration() != null)
-                    hasOverloads = false;
-                super(loc, TOK.variable, 29, var, hasOverloads);
+                super(loc, TOK.variable, 29, var, var.isVarDeclaration() == null && hasOverloads);
                 this.type = var.type;
             }
 
@@ -7456,14 +7451,6 @@ public class astbase {
             public ForeachStatement aggrfe;
             public ForeachRangeStatement rangefe;
             public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
-                {
-                    assert(!(!(aggrfe != null)) ^ !(!(rangefe != null)));
-                }
-                {
-                    {
-                        assert(!(!(aggrfe != null)) ^ !(!(rangefe != null)));
-                    }
-                }
                 super();
                 this.loc = loc.copy();
                 this.aggrfe = aggrfe;
@@ -7905,8 +7892,9 @@ public class astbase {
             boolean result = false;
             if ((stc & 17592186568704L) == 17592186568704L)
                 stc &= -524289L;
+            Ref<Long> stc_ref = ref(stc);
             for (; (stc) != 0;){
-                BytePtr p = pcopy(ASTBase.stcToChars(stc));
+                BytePtr p = pcopy(ASTBase.stcToChars(stc_ref));
                 if (p == null)
                     break;
                 if (!(result))

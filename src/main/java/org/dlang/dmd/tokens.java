@@ -306,7 +306,7 @@ public class tokens {
 
         public  void setString(BytePtr ptr, int length) {
             BytePtr s = pcopy(toBytePtr(Mem.xmalloc(length + 1)));
-            memcpy(s, ptr, length);
+            memcpy((BytePtr)(s), (ptr), length);
             s.set(length, (byte)0);
             this.ustring = pcopy(s);
             this.len = length;

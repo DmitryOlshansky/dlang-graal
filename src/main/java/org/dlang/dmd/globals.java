@@ -257,20 +257,7 @@ public class globals {
         public ByteSlice exefile;
         public ByteSlice mapfile;
         public  boolean isPOSIX() {
-            boolean __result = false;
-            try {
-                __result = this.isLinux || this.isOSX || this.isFreeBSD || this.isOpenBSD || this.isDragonFlyBSD || this.isSolaris;
-                /*goto __returnLabel*/throw Dispatch0.INSTANCE;
-            }
-            catch(Dispatch0 __d){}
-        /*__returnLabel:*/
-            {
-                boolean result = __result;
-                {
-                    assert(result || this.isWindows);
-                }
-            }
-            return __result;
+            return this.isLinux || this.isOSX || this.isFreeBSD || this.isOpenBSD || this.isDragonFlyBSD || this.isSolaris;
         }
 
         public Param(){

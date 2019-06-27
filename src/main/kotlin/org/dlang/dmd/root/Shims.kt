@@ -214,7 +214,7 @@ fun toBytePtr(any: Any): BytePtr =
     when(any) {
         is BytePtr -> any
         is ByteSlice -> any.ptr()
-        else -> throw Exception("Not implemented toCharPtr for $any")
+        else -> throw Exception("Not implemented toBytePtr for $any")
     }
 
 fun toCharPtr(any: Any): CharPtr =

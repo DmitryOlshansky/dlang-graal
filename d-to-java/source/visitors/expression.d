@@ -721,7 +721,11 @@ public:
                 default:
             } 
             if (opName != "") {
+                if (e.e1.type.nextOf.ty == Tvoid)
+                    buf.writestring("((BytePtr)");
                 expToBuffer(e.e1, precedence[e.op], buf, opts);
+                if (e.e1.type.nextOf.ty == Tvoid)
+                    buf.writestring(")");
                 buf.printf(".%.*s(", opName.length, opName.ptr);
                 expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
                 buf.writestring(")");
@@ -853,6 +857,16 @@ public:
                     buf.writestring(" = ");
                     expToBuffer(e.arguments[0][1], precedence[e.op], buf, opts);
                     buf.writestring(".copy()");
+                    return;
+                }
+                else if (c2 && e.arguments[0][0].type.ty == Tpointer && e.arguments[0][0].type.nextOf.ty == Tvoid) {
+                    buf.writestring("memcpy((BytePtr)");
+                    expToBuffer(e.arguments[0][0], precedence[e.op], buf, opts);
+                    buf.writestring(", ");
+                    expToBuffer(e.arguments[0][1], precedence[e.op], buf, opts);
+                    buf.writestring(", ");
+                    expToBuffer(e.arguments[0][2], precedence[e.op], buf, opts);
+                    buf.writestring(")");
                     return;
                 }
             }
