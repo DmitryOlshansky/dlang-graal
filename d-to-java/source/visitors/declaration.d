@@ -1017,7 +1017,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.outdent;
         buf.put("}\n");
         bool hasCtor = hasCtor(d);
-        buf.indent;
         if (!hasCtor) {
             if (members.all.length) {
                 //Generate ctors

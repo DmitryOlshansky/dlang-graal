@@ -5881,9 +5881,7 @@ public class astbase {
                 public static class VarExp extends SymbolExp
                 {
                     public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
-                        if (var.isVarDeclaration() != null)
-                            hasOverloads = false;
-                        super(loc, TOK.variable, 29, var, hasOverloads);
+                        super(loc, TOK.variable, 29, var, var.isVarDeclaration() == null && hasOverloads);
                         this.type = var.type;
                     }
 
@@ -7244,7 +7242,7 @@ public class astbase {
                         return that;
                     }
                 }
-                public static abstract class TemplateParameter
+                public static abstract class TemplateParameter extends ASTNode
                 {
                     public Loc loc = new Loc();
                     public Identifier ident;
@@ -7417,14 +7415,6 @@ public class astbase {
                     public ForeachStatement aggrfe;
                     public ForeachRangeStatement rangefe;
                     public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
-                        {
-                            assert(!(!(aggrfe != null)) ^ !(!(rangefe != null)));
-                        }
-                        {
-                            {
-                                assert(!(!(aggrfe != null)) ^ !(!(rangefe != null)));
-                            }
-                        }
                         super();
                         this.loc = loc.copy();
                         this.aggrfe = aggrfe;
@@ -7866,8 +7856,9 @@ public class astbase {
                                     boolean result = false;
                                     if ((stc & 17592186568704L) == 17592186568704L)
                                         stc &= -524289L;
-                                    for (; (stc) != 0;){
-                                        BytePtr p = pcopy(ASTBase.stcToChars(stc));
+                                    Ref<Long> stc_ref = ref(stc);
+                                    for (; (stc_ref.value) != 0;){
+                                        BytePtr p = pcopy(ASTBase.stcToChars(stc_ref));
                                         if (p == null)
                                             break;
                                         if (!(result))
