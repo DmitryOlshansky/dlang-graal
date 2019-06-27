@@ -124,6 +124,7 @@ string toJavaBool(Expression e, ExprOpts opts) {
     if (e.type && e.type.ty != Tbool) switch(e.type.ty){
         case Tpointer:
         case Tclass:
+        case Tdelegate:
             buf.printf(" %s null", op);
             break;
         case Tarray:
@@ -389,7 +390,7 @@ public:
             {
                 const old = e.stageflags;
                 e.stageflags |= stageToCBuffer;
-                argsToBuffer(e.elements, buf, opts, null);
+                structLiteralArgs(e.elements, buf, opts, e.sd);
                 e.stageflags = old;
             }
         }
@@ -837,7 +838,7 @@ public:
                 return;
             if (e.f && e.f.ident.symbol == "memcpy" ) {
                 auto c1 = e.arguments[0][0].isCastExp();
-                auto c2 = e.arguments[0][0].isCastExp();
+                auto c2 = e.arguments[0][1].isCastExp();
                 if (c1 && c2 && c1.e1.type.ty == Tpointer && c2.e1.type.ty == Tpointer
                 && c1.e1.type.nextOf.ty == Tstruct && c2.e1.type.nextOf.ty == Tstruct) {
                     //fprintf(stderr, "MEMCPY TYPES: %s %s\n", c1.e1.type.toChars, c2.e1.type.toChars);
@@ -846,6 +847,12 @@ public:
                     expToBuffer(e.arguments[0][1], precedence[e.op], buf, opts);
                     buf.writestring(")");
                     return;
+                }
+                else if (e.arguments[0][0].type.ty == Tclass && e.arguments[0][1].type.ty == Tclass) {
+                    expToBuffer(e.arguments[0][1], precedence[e.op], buf, opts);
+                    buf.writestring(" = ");
+                    expToBuffer(e.arguments[0][0], precedence[e.op], buf, opts);
+                    buf.writestring(".copy()");
                 }
             }
             if (e.f && e.f.isCtorDeclaration()) {
@@ -1245,6 +1252,41 @@ private void expToBuffer(Expression e, PREC pr, OutBuffer* buf, ExprOpts opts)
     }
 }
 
+private void structLiteralArgs(Expressions* expressions, OutBuffer* buf, ExprOpts opts, StructDeclaration sd)
+{
+    if (!expressions || !expressions.dim)
+        return;
+    size_t pos = buf.offset;
+    foreach (i, el; *expressions)
+    {
+        if (i && buf.offset != pos)
+            buf.writestring(", ");
+        pos = buf.offset;
+        if (el) {
+            auto n = el.isNullExp();
+            auto members = collectMembers(sd);
+
+            const wantChar = members.all[i].type.ty == Tpointer
+                && members.all[i].type.nextOf.ty == Tchar;
+            
+            if(n && n.type.ty == Tarray) {
+                buf.writestring("new ");
+                buf.writestring(n.type.toJava(opts));
+                buf.writestring("()");
+            }
+            else if(wantChar) {
+                // fprintf(stderr, "WantChar func = %s args=%d\n", fd.ident.toChars, i);
+                opts.wantCharPtr = true;
+                expToBuffer(el, PREC.assign, buf, opts);
+            }
+            else {
+                expToBuffer(el, PREC.assign, buf, opts);
+            }
+        }
+    }
+    if (expressions && buf.offset == pos) buf.offset -= 2;
+}
+
 /**************************************************
  * Write out argument list to buf.
  */
@@ -1608,7 +1650,7 @@ private void typeToBufferx(Type t, OutBuffer* buf, ExprOpts opts, Boxing boxing 
         // Don't use ti.toAlias() to avoid forward reference error
         // while printing messages.
         TemplateInstance ti = t.sym.parent ? t.sym.parent.isTemplateInstance() : null;
-        if (ti && ti.aliasdecl == t.sym) {
+        if (ti && ti.aliasdecl == t.sym && t.sym.ident.symbol == "DArray") {
             buf.writestring(ti.name.symbol);
             buf.writestring("<");
             foreach(i, arg; (*ti.tiargs)[]) {
@@ -1620,8 +1662,21 @@ private void typeToBufferx(Type t, OutBuffer* buf, ExprOpts opts, Boxing boxing 
         }
         else if(t.sym.ident.symbol == "__va_list_tag")
             buf.writestring("Slice<Object>");
-        else
+        else {
+            if (ti && ti.aliasdecl == t.sym) {
+                buf.writestring(t.sym.ident.symbol);
+                printTiArgs(ti, buf, opts);
+                return;
+            }
+            auto ds = t.sym.parent.isAggregateDeclaration();
+            if (ds && !opts.inAggregate.canFind!(agg => agg is ds))  {
+                buf.writestring(ds.ident.symbol);
+                buf.writestring(".");
+                buf.writestring(t.sym.ident.symbol);
+                return;
+            }
             buf.writestring(t.sym.ident.symbol);
+        }
     }
 
     void visitClass(TypeClass t)

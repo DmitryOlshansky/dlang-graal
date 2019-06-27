@@ -517,21 +517,21 @@ public class tokens {
             r.ident = ident;
             return r;
         }
-        public Token opAssign(Token that) {
-            this.next = that.next;
-            this.loc = that.loc;
-            this.ptr = that.ptr;
-            this.value = that.value;
-            this.blockComment = that.blockComment;
-            this.lineComment = that.lineComment;
-            this.intvalue = that.intvalue;
-            this.unsvalue = that.unsvalue;
-            this.floatvalue = that.floatvalue;
-            this.ustring = that.ustring;
-            this.len = that.len;
-            this.postfix = that.postfix;
-            this.ident = that.ident;
-            return this;
+            public Token opAssign(Token that) {
+                this.next = that.next;
+                this.loc = that.loc;
+                this.ptr = that.ptr;
+                this.value = that.value;
+                this.blockComment = that.blockComment;
+                this.lineComment = that.lineComment;
+                this.intvalue = that.intvalue;
+                this.unsvalue = that.unsvalue;
+                this.floatvalue = that.floatvalue;
+                this.ustring = that.ustring;
+                this.len = that.len;
+                this.postfix = that.postfix;
+                this.ident = that.ident;
+                return this;
+            }
         }
     }
-}

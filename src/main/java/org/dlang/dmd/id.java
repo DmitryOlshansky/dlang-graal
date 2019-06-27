@@ -1063,61 +1063,61 @@ public class id {
             Id r = new Id();
             return r;
         }
-    }
-    static Slice<Msgtable> msgtable = slice(initializer_0);
-    public static class Msgtable
-    {
-        public ByteSlice ident;
-        public ByteSlice name_;
-        public  ByteSlice name() {
-            return this.name_.getLength() != 0 ? this.name_ : this.ident;
         }
-
-        public Msgtable(){
-        }
-        public Msgtable copy(){
-            Msgtable r = new Msgtable();
-            r.ident = ident.copy();
-            r.name_ = name_.copy();
-            return r;
-        }
-        public Msgtable(ByteSlice ident, ByteSlice name_) {
-            this.ident = ident;
-            this.name_ = name_;
-        }
-
-        public Msgtable opAssign(Msgtable that) {
-            this.ident = that.ident;
-            this.name_ = that.name_;
-            return this;
-        }
-    }
-    public static ByteSlice generate(Slice<Msgtable> msgtable, Function1<Msgtable,ByteSlice> dg) {
-        ByteSlice code = new ByteSlice();
+        static Slice<Msgtable> msgtable = slice(initializer_0);
+        public static class Msgtable
         {
-            Slice<Msgtable> __r26 = msgtable.copy();
-            int __key25 = 0;
-            for (; __key25 < __r26.getLength();__key25 += 1) {
-                Msgtable m = __r26.get(__key25).copy();
-                int i = __key25;
-                if (i != 0)
-                    code.append((byte)10);
-                code.append((dg).invoke(m));
+            public ByteSlice ident;
+            public ByteSlice name_;
+            public  ByteSlice name() {
+                return this.name_.getLength() != 0 ? this.name_ : this.ident;
             }
+
+            public Msgtable(){
+            }
+            public Msgtable copy(){
+                Msgtable r = new Msgtable();
+                r.ident = ident.copy();
+                r.name_ = name_.copy();
+                return r;
+            }
+                public Msgtable(ByteSlice ident, ByteSlice name_) {
+                    this.ident = ident;
+                    this.name_ = name_;
+                }
+
+                public Msgtable opAssign(Msgtable that) {
+                    this.ident = that.ident;
+                    this.name_ = that.name_;
+                    return this;
+                }
+            }
+            public static ByteSlice generate(Slice<Msgtable> msgtable, Function1<Msgtable,ByteSlice> dg) {
+                ByteSlice code = new ByteSlice();
+                {
+                    Slice<Msgtable> __r26 = msgtable.copy();
+                    int __key25 = 0;
+                    for (; __key25 < __r26.getLength();__key25 += 1) {
+                        Msgtable m = __r26.get(__key25).copy();
+                        int i = __key25;
+                        if (i != 0)
+                            code.append((byte)10);
+                        code.append((dg).invoke(m));
+                    }
+                }
+                return code;
+            }
+
+            public static ByteSlice identifier(Msgtable m) {
+                return  new ByteSlice("Identifier ").concat(m.ident).concat( new ByteSlice(";"));
+            }
+
+            public static ByteSlice initializer(Msgtable m) {
+                return m.ident.concat( new ByteSlice(" = Identifier.idPool(\"")).concat(m.name()).concat( new ByteSlice("\");"));
+            }
+
+            public static ByteSlice deinitializer(Msgtable m) {
+                return m.ident.concat( new ByteSlice(" = Identifier.init;"));
+            }
+
         }
-        return code;
-    }
-
-    public static ByteSlice identifier(Msgtable m) {
-        return  new ByteSlice("Identifier ").concat(m.ident).concat( new ByteSlice(";"));
-    }
-
-    public static ByteSlice initializer(Msgtable m) {
-        return m.ident.concat( new ByteSlice(" = Identifier.idPool(\"")).concat(m.name()).concat( new ByteSlice("\");"));
-    }
-
-    public static ByteSlice deinitializer(Msgtable m) {
-        return m.ident.concat( new ByteSlice(" = Identifier.init;"));
-    }
-
-}

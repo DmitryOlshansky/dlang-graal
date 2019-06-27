@@ -5,7 +5,6 @@ import org.dlang.dmd.lexer
 import org.dlang.dmd.root.*
 import org.dlang.dmd.tokens
 import org.dlang.dmd.root.filename.*
-import org.dlang.dmd.utils.stderr
 
 
 fun main(args: Array<String>) {

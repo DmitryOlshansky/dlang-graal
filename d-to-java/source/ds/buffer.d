@@ -1,6 +1,6 @@
 module ds.buffer;
 
-import std.range, std.format;
+import std.range, std.format, std.stdio;
 
 /// auto-indenting text buffer output range
 class TextBuffer {
@@ -21,7 +21,10 @@ public:
 
     void indent(){ indentSize += 4; }
 
-    void outdent(){ indentSize -= 4; }
+    void outdent(){ 
+        if (indentSize == 0) stderr.writefln("OUTDENTING BEYOND 0");
+        else indentSize -= 4; 
+    }
 
     void put(dchar ch) {
         if (ch != '\n' && indentNext) {

@@ -25,7 +25,7 @@ public class filecache {
         }
 
         public  void readAndSplit() {
-            ReadResult readResult = File.read((this.file).toChars()).copy();
+            File.ReadResult readResult = File.read((this.file).toChars()).copy();
             this.buffer = new FileBuffer(readResult.extractData());
             BytePtr buf = pcopy(toBytePtr((this.buffer).data));
             for (; (buf.get()) != 0;){
@@ -95,13 +95,13 @@ public class filecache {
             r.files = files.copy();
             return r;
         }
-        public FileCache(StringTable files) {
-            this.files = files;
-        }
+            public FileCache(StringTable files) {
+                this.files = files;
+            }
 
-        public FileCache opAssign(FileCache that) {
-            this.files = that.files;
-            return this;
+            public FileCache opAssign(FileCache that) {
+                this.files = that.files;
+                return this;
+            }
         }
     }
-}

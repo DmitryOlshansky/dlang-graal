@@ -886,13 +886,6 @@ public class parsetimevisitor {
                 this.visit(i);
             }
 
-
-            protected ParseTimeVisitor() {}
-
-            public ParseTimeVisitor copy() {
-                ParseTimeVisitor that = new ParseTimeVisitor();
-                return that;
-            }
         }
 
 }

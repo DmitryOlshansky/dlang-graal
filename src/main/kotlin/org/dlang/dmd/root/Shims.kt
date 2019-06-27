@@ -265,7 +265,7 @@ fun getenv(s: BytePtr): BytePtr = BytePtr(System.getenv(s.toString()))
 
 fun isatty(n: Int):Int = if(System.console() != null) 1 else 0
 
-fun printf(fmt: ByteSlice, vararg args: Any?) = fprintf(utils.stdout, fmt, *args)
+fun printf(fmt: ByteSlice, vararg args: Any?) = fprintf(stdout, fmt, *args)
 
 fun vsprintf(dest: BytePtr, fmt: BytePtr, args: Slice<Any>): Int {
     val outbuf = OutBuffer()

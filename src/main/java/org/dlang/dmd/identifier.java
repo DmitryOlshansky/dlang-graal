@@ -33,17 +33,17 @@ public class identifier {
             r.prefix = prefix.copy();
             return r;
         }
-        public Key(Loc loc, ByteSlice prefix) {
-            this.loc = loc;
-            this.prefix = prefix;
-        }
+            public Key(Loc loc, ByteSlice prefix) {
+                this.loc = loc;
+                this.prefix = prefix;
+            }
 
-        public Key opAssign(Key that) {
-            this.loc = that.loc;
-            this.prefix = that.prefix;
-            return this;
+            public Key opAssign(Key that) {
+                this.loc = that.loc;
+                this.prefix = that.prefix;
+                return this;
+            }
         }
-    }
     static AA<Key,Integer> generateIdWithLoccounters;
 
     public static class Identifier extends RootObject

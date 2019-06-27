@@ -199,7 +199,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     int forCount;
 
     bool hasEmptyCtor;
-    bool hasCopy;
 
     Goto[] gotos;
     int[void*] labelGotoNums;
@@ -319,7 +318,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         bool staticInit = var.isStatic() || (var.storage_class & STC.gshared) || (stack.empty && aggregates.empty);
         bool refVar = stack.length && passedByRef(var, stack[$-1]) && !staticInit;
         if (refVar) opts.refParams[cast(void*)var] = true;
-        auto type = refVar ? refType(var.type, opts) : toJava(var.type, opts);
+        Type t = var.type;
+        if(var._init && var._init.kind == InitKind.array && var.type.ty == Tpointer)
+            t = var.type.nextOf.arrayOf;
+        auto type = refVar ? refType(var.type, opts) : toJava(t, opts);
         auto access = "";
         if (aggregates.length && !stack.length) access = defAccess ~ " ";
         auto ti = stack.length ? "" : tiArgs;
@@ -450,7 +452,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     foreach (i, st; *s.statements) if (st) {
                         auto gs = collectGotos(st);
                         auto nonLocalGotos = gs.filter!(g => !g.local);
-                        if (nonLocalGotos.canFind!(g => g.label.ident == lbl.ident)) {
+                        if (nonLocalGotos.canFind!(g => g.label && g.label.ident == lbl.ident)) {
                             auto target = (*s.statements)[].countUntil!(x => x is lbl);
                             if (range[k].first > i) range[k].first = i;
                             if (range[k].last < target) range[k].last = target;
@@ -802,10 +804,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put('\n');
         buf.indent;
         if (auto ss = s.statement.isScopeStatement()){
-            ss.statement.accept(this);
+            if (ss.statement) ss.statement.accept(this);
         }
         else
-            s.statement.accept(this);
+            if (s.statement) s.statement.accept(this);
         buf.outdent;
     }
 
@@ -947,10 +949,35 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         auto oldInAggregate = opts.inAggregate;
         scope(exit) opts.inAggregate = oldInAggregate;
         opts.inAggregate = aggregates;
+        auto oldInst = currentInst;
+        scope(exit) currentInst = oldInst; 
+        auto tiargs = currentInst ? tiArgs() : "";
+        if (currentInst) {
+            if (currentInst.tiargs)
+                foreach (arg; *currentInst.tiargs) {
+                    if (auto t = arg.isType()) {
+                        stderr.writefln("tiarg %s %s\n", t.toString, t.kind[0..strlen(t.kind)]);
+                        auto tc = t.isTypeClass();
+                        // if (tc) 
+                        if (tc && tc.sym.getModule() !is d.getModule()) {
+                            addImport(tc.sym.getModule.md.packages, tc.sym.getModule.ident);
+                        }
+                        auto ts = t.isTypeStruct();
+                        if (ts && ts.sym.getModule() !is d.getModule()) {
+                            addImport(ts.sym.getModule.md.packages, ts.sym.getModule.ident);
+                        }
+                    }
+                }
+        }
+        currentInst = null;
+        if (tiargs.length) opts.templates[cast(void*)d] = Template(tiargs, false);
+
         stderr.writefln("Struct %s", d);
         buf.fmt("%s static class ", defAccess);
-        if (!d.isAnonymous())
+        if (!d.isAnonymous()) {
             buf.put(d.ident.symbol);
+            buf.put(tiargs);
+        }
         if (!d.members)
         {
             buf.put(';');
@@ -968,8 +995,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.fmt("public %s(){\n", d.ident.symbol);
         buf.indent;
         foreach(m; members.all) {
-            if (m.type.ty == Tstruct) {
-                buf.fmt("%s = new %s();\n", m.ident.symbol, m.type.toJava(opts));
+            if (auto ts = m.type.isTypeStruct()) {
+                auto tmpl = cast(void*)ts.sym in opts.templates;
+                buf.fmt("%s = new %s%s();\n", m.ident.symbol, m.type.toJava(opts), tmpl ? tmpl.tiArgs : "");
             }
         }
         buf.outdent;
@@ -989,6 +1017,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.outdent;
         buf.put("}\n");
         bool hasCtor = hasCtor(d);
+        buf.indent;
         if (!hasCtor) {
             if (members.all.length) {
                 //Generate ctors
@@ -1024,7 +1053,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put('\n');
         aggregates = aggregates[0..$-1];
     }
-
+    
     override void visit(ClassDeclaration d)
     {
         auto old = generatedFunctions;
@@ -1032,6 +1061,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         generatedFunctions = null;
         if (stack.length) return; // inner classes are done separately
         aggregates ~= d;
+        
         auto oldInAggregate = opts.inAggregate;
         scope(exit) opts.inAggregate = oldInAggregate;
         opts.inAggregate = aggregates;
@@ -1057,8 +1087,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
         currentInst = null;
         if (tiargs.length) opts.templates[cast(void*)d] = Template(tiargs, false);
-        
-        
 
         stderr.writefln("Class %s", d);
         if (!d.isAnonymous())
@@ -1352,7 +1380,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 string suffix = "";
                 opts.rawArrayLiterals = true;
                 // string literals are byte arrays, exclude them
-                while((t.ty == Tarray || t.ty == Tsarray) && (t.nextOf.ty != Tchar || !strings)) {
+                while((t.ty == Tarray || t.ty == Tsarray || t.ty == Tpointer) && (t.nextOf.ty != Tchar || !strings)) {
                     suffix ~= "[]";
                     t = t.nextOf();
                 }
