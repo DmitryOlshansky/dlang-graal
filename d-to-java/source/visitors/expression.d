@@ -839,20 +839,21 @@ public:
             if (e.f && e.f.ident.symbol == "memcpy" ) {
                 auto c1 = e.arguments[0][0].isCastExp();
                 auto c2 = e.arguments[0][1].isCastExp();
+                // fprintf(stderr, "MEMCPY %s %s\n", e.arguments[0][0].toChars, e.arguments[0][1].toChars);
                 if (c1 && c2 && c1.e1.type.ty == Tpointer && c2.e1.type.ty == Tpointer
                 && c1.e1.type.nextOf.ty == Tstruct && c2.e1.type.nextOf.ty == Tstruct) {
-                    //fprintf(stderr, "MEMCPY TYPES: %s %s\n", c1.e1.type.toChars, c2.e1.type.toChars);
                     expToBuffer(e.arguments[0][0], precedence[e.op], buf, opts);
                     buf.writestring(".opAssign(");
                     expToBuffer(e.arguments[0][1], precedence[e.op], buf, opts);
                     buf.writestring(")");
                     return;
                 }
-                else if (e.arguments[0][0].type.ty == Tclass && e.arguments[0][1].type.ty == Tclass) {
-                    expToBuffer(e.arguments[0][1], precedence[e.op], buf, opts);
-                    buf.writestring(" = ");
+                else if (c1 && c2 && c1.e1.type.ty == Tclass && c2.e1.type.ty == Tclass) {
                     expToBuffer(e.arguments[0][0], precedence[e.op], buf, opts);
+                    buf.writestring(" = ");
+                    expToBuffer(e.arguments[0][1], precedence[e.op], buf, opts);
                     buf.writestring(".copy()");
+                    return;
                 }
             }
             if (e.f && e.f.isCtorDeclaration()) {
@@ -920,13 +921,16 @@ public:
             expToBuffer(e.e1, precedence[e.op], buf, opts);
             return; 
         }
-        bool toInt, fromInt;
+        bool toInt, toLong;
+        bool fromInt;
         bool complexTarget = false;
         bool fromBool = false;
         bool fromEnum = false;
         bool fromClass = false;
+        bool fromVoidPtr = false;
         bool toVoidPtr = false;
         bool toVoid = false;
+        bool toClass = false;
         bool fromByte = false;
         if (e.to) switch(e.to.ty) {
             case Tvoid:
@@ -946,9 +950,20 @@ public:
             case Tdchar:
                 toInt = true;
                 break;
+            case Tint64:
+            case Tuns64:
+                toLong = true;
+                break;
+            case Tclass:
+                toClass = true;
+                break;
             default:
         }
         if (e.e1.type) switch(e.e1.type.ty) {
+            case Tpointer:
+                if (e.e1.type.nextOf.ty == Tvoid)
+                    fromVoidPtr = true;
+                break;
             case Tchar:
             case Tint8:
             case Tuns8:
@@ -973,7 +988,7 @@ public:
             default:
         }
         if (toVoid || toVoidPtr) expToBuffer(e.e1, precedence[e.op], buf, opts);
-        else if(fromBool && toInt) {
+        else if(fromBool && (toInt || toLong)) {
             buf.writestring("(");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
             buf.writestring(" ? 1 : 0)");
@@ -986,6 +1001,9 @@ public:
         else if (fromInt && toInt) expToBuffer(e.e1, precedence[e.op], buf, opts);
         else if(fromEnum) {
             expToBuffer(e.e1, precedence[e.op], buf, opts);
+        }
+        else if(fromVoidPtr && toClass) {
+            buf.writestring("null"); // impossible, likely Mem.xmalloc
         }
         else if (complexTarget) { // rely on toTypeName(x)
             buf.writestring("to");

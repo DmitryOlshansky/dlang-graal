@@ -74,13 +74,13 @@ public class console {
             r._fp = _fp;
             return r;
         }
-            public Console(_IO_FILE _fp) {
-                this._fp = _fp;
-            }
+        public Console(_IO_FILE _fp) {
+            this._fp = _fp;
+        }
 
-            public Console opAssign(Console that) {
-                this._fp = that._fp;
-                return this;
-            }
+        public Console opAssign(Console that) {
+            this._fp = that._fp;
+            return this;
         }
     }
+}

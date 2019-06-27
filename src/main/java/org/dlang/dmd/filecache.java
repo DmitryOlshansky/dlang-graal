@@ -60,7 +60,7 @@ public class filecache {
             if (payload != null)
             {
                 if (payload != null)
-                    return (FileAndLines)(payload).ptrvalue;
+                    return null;
             }
             FileAndLines lines = new FileAndLines(file);
             this.files.insert(file, lines);
@@ -95,13 +95,13 @@ public class filecache {
             r.files = files.copy();
             return r;
         }
-            public FileCache(StringTable files) {
-                this.files = files;
-            }
+        public FileCache(StringTable files) {
+            this.files = files;
+        }
 
-            public FileCache opAssign(FileCache that) {
-                this.files = that.files;
-                return this;
-            }
+        public FileCache opAssign(FileCache that) {
+            this.files = that.files;
+            return this;
         }
     }
+}

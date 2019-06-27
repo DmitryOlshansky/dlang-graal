@@ -208,6 +208,11 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     TemplateInstance currentInst;
 
+    string nameOf(AggregateDeclaration agg) {
+        auto tmpl = cast(void*)agg in opts.templates;
+        return format("%s%s", agg.ident.symbol, tmpl ? tmpl.tiArgs : "");
+    }
+
     void addImport(Array!Identifier* packages, Identifier id) {
         if (id == Id.object)
             return; // object is imported by default
@@ -766,7 +771,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         {
             if (!s._body.isScopeStatement())
             {
-                stderr.writefln("SWITCH2 %s \n", cond);
+                //stderr.writefln("SWITCH2 %s \n", cond);
                 buf.put('{');
                 buf.put('\n');
                 buf.indent;
@@ -784,7 +789,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             }
             else
             {
-                stderr.writefln("SWITCH %s \n", cond);
+                //stderr.writefln("SWITCH %s \n", cond);
                 s._body.accept(this);
             }
         }
@@ -996,16 +1001,15 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.indent;
         foreach(m; members.all) {
             if (auto ts = m.type.isTypeStruct()) {
-                auto tmpl = cast(void*)ts.sym in opts.templates;
-                buf.fmt("%s = new %s%s();\n", m.ident.symbol, m.type.toJava(opts), tmpl ? tmpl.tiArgs : "");
+                buf.fmt("%s = new %s();\n", m.ident.symbol, nameOf(ts.sym));
             }
         }
         buf.outdent;
         buf.put("}\n");
         // default shallow copy for structs
-        buf.fmt("public %s copy(){\n", d.ident.symbol);
+        buf.fmt("public %s copy(){\n", nameOf(d));
         buf.indent;
-        buf.fmt("%s r = new %s();\n", d.ident.symbol, d.ident.symbol);
+        buf.fmt("%s r = new %s();\n", nameOf(d), nameOf(d));
         foreach(m; members.all) {
             if (m.type.ty == Tstruct || m.type.ty == Tarray) {
                 buf.fmt("r.%s = %s.copy();\n", m.ident.symbol, m.ident.symbol);
@@ -1022,7 +1026,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 //Generate ctors
                 // all fields ctor
                 if (!members.hasUnion) {
-                    buf.fmt("public %s(", d.ident.toString);
+                    buf.fmt("public %s(", nameOf(d));
                     foreach(i, m; members.all) {
                         if(i) buf.put(", ");
                         buf.fmt("%s %s", m.type.toJava(opts), m.ident.toString);
@@ -1036,7 +1040,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     buf.put("}\n\n");
                 }
                 // generate opAssign
-                buf.fmt("public %s opAssign(%s that) {\n", d.ident.toString, d.ident.toString);
+                buf.fmt("public %s opAssign(%s that) {\n", nameOf(d), nameOf(d));
                 buf.indent;
                 foreach(i,m; members.all){
                     buf.fmt("this.%s = that.%s;\n", m.ident.toString, m.ident.toString);
@@ -1091,7 +1095,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (!d.isAnonymous())
         {
             auto abs =  d.isAbstract ? "abstract " : "";
-            buf.fmt("%s static %sclass %s%s", defAccess, abs, d.ident.symbol, tiargs);
+            buf.fmt("%s static %sclass %s", defAccess, abs, nameOf(d));
         }
         visitBase(d);
         if (d.members)
@@ -1106,15 +1110,15 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             foreach (s; *d.members) {
                 s.accept(this);
             }
-            if (!hasEmptyCtor) buf.fmt("\nprotected %s() {}\n", d.ident.symbol);
+            if (!hasEmptyCtor) buf.fmt("\nprotected %s() {}\n", nameOf(d));
             // generate copy
             auto members = collectMembers(d, true);
-            buf.fmt("\npublic %s%s copy()", d.isAbstract ? "abstract " : "", d.ident.symbol);
+            buf.fmt("\npublic %s%s copy()", d.isAbstract ? "abstract " : "", nameOf(d));
             if (d.isAbstract) buf.put(";\n");
             else {
                 buf.put(" {\n");
                 buf.indent;
-                buf.fmt("%s that = new %s();\n", d.ident.symbol, d.ident.symbol);
+                buf.fmt("%s that = new %s();\n", nameOf(d), nameOf(d));
                 foreach(m; members.all) {
                     buf.fmt("that.%s = this.%s;\n", m.ident.symbol, m.ident.symbol);
                 }
@@ -1176,7 +1180,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     void printLocalFunction(FuncDeclaration func, bool isLambda = false) {
         auto t = func.type.isTypeFunction();
-        stderr.writefln("\tLocal function %s", func.ident.toString);
+        //stderr.writefln("\tLocal function %s", func.ident.toString);
         buf.fmt("%s %s%s = new %s(){\n", t.toJavaFunc(opts), func.funcName, tiArgs, t.toJavaFunc(opts));
         buf.indent;
         buf.fmt("public %s invoke(", t.nextOf.toJava(opts, Boxing.yes));
@@ -1204,7 +1208,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     void printGlobalFunction(FuncDeclaration func) {
         opts.vararg = null;
         if (func.fbody is null && !func.isAbstract) return;
-        stderr.writefln("\tFunction %s", func.ident.toString);
+        //stderr.writefln("\tFunction %s", func.ident.toString);
         auto storage = (func.isStatic()  || aggregates.length == 0) ? "static" : "";
         if (func.isAbstract && func.fbody is null) storage = "abstract";
         if (func.isCtorDeclaration())

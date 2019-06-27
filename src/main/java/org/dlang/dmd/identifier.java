@@ -33,17 +33,17 @@ public class identifier {
             r.prefix = prefix.copy();
             return r;
         }
-            public Key(Loc loc, ByteSlice prefix) {
-                this.loc = loc;
-                this.prefix = prefix;
-            }
-
-            public Key opAssign(Key that) {
-                this.loc = that.loc;
-                this.prefix = that.prefix;
-                return this;
-            }
+        public Key(Loc loc, ByteSlice prefix) {
+            this.loc = loc;
+            this.prefix = prefix;
         }
+
+        public Key opAssign(Key that) {
+            this.loc = that.loc;
+            this.prefix = that.prefix;
+            return this;
+        }
+    }
     static AA<Key,Integer> generateIdWithLoccounters;
 
     public static class Identifier extends RootObject
@@ -173,7 +173,7 @@ public class identifier {
 
         public static Identifier idPool(ByteSlice s) {
             StringValue sv = Identifier.stringtable.update(s);
-            Identifier id = (Identifier)(sv).ptrvalue;
+            Identifier id = null;
             if (!(id != null))
             {
                 id = new Identifier((sv).asString(), 120);
@@ -223,7 +223,7 @@ public class identifier {
             StringValue sv = Identifier.stringtable.lookup(s);
             if (sv == null)
                 return null;
-            return (Identifier)(sv).ptrvalue;
+            return null;
         }
 
         public static void initTable() {

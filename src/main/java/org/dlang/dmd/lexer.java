@@ -92,6 +92,7 @@ public class lexer {
         public boolean doDocComment;
         public boolean anyToken;
         public boolean commentToken;
+        public int inTokenStringConstant;
         public int lastDocLine;
         public DiagnosticReporter diagnosticReporter;
         public Token tokenFreelist;
@@ -113,6 +114,7 @@ public class lexer {
             this.line = pcopy(this.p);
             this.doDocComment = doDocComment;
             this.commentToken = commentToken;
+            this.inTokenStringConstant = 0;
             this.lastDocLine = 0;
             if (this.p != null && (this.p.get(0) & 0xFF) == 35 && (this.p.get(1) & 0xFF) == 33)
             {
@@ -1441,31 +1443,37 @@ public class lexer {
             int nest = 1;
             Loc start = this.loc().copy();
             BytePtr pstart = pcopy(this.p.plusAssign(1));
-            for (; (1) != 0;){
-                Token tok = new Token().copy();
-                this.scan(tok);
-                switch ((tok.value & 0xFF))
-                {
-                    case 5:
-                        nest++;
-                        continue;
-                    case 6:
-                        if ((nest -= 1) == 0)
-                        {
-                            (result).setString(pstart, ((this.p.minus(1).minus(pstart)) / 1));
-                            this.stringPostfix(result);
-                            return ;
-                        }
-                        continue;
-                    case 11:
-                        this.error(new BytePtr("unterminated token string constant starting at %s"), start.toChars(global.params.showColumns));
-                        (result).setString();
-                        return ;
-                    default:
+            this.inTokenStringConstant++;
+            try {
+                for (; (1) != 0;){
+                    Token tok = new Token().copy();
+                    this.scan(tok);
+                    switch ((tok.value & 0xFF))
                     {
-                        continue;
+                        case 5:
+                            nest++;
+                            continue;
+                        case 6:
+                            if ((nest -= 1) == 0)
+                            {
+                                (result).setString(pstart, ((this.p.minus(1).minus(pstart)) / 1));
+                                this.stringPostfix(result);
+                                return ;
+                            }
+                            continue;
+                        case 11:
+                            this.error(new BytePtr("unterminated token string constant starting at %s"), start.toChars(global.params.showColumns));
+                            (result).setString();
+                            return ;
+                        default:
+                        {
+                            continue;
+                        }
                     }
                 }
+            }
+            finally {
+                this.inTokenStringConstant--;
             }
         }
 
@@ -1754,6 +1762,10 @@ public class lexer {
                                     if ((this.p.get(1) & 0xFF) == 46)
                                         /*goto Ldone*/throw Dispatch0.INSTANCE;
                                     if (base == 10 && (isalpha((this.p.get(1) & 0xFF))) != 0 || (this.p.get(1) & 0xFF) == 95 || ((this.p.get(1) & 0xFF) & 128) != 0)
+                                        /*goto Ldone*/throw Dispatch0.INSTANCE;
+                                    if (base == 16 && !(ishex(this.p.get(1))) || (this.p.get(1) & 0xFF) == 95 || ((this.p.get(1) & 0xFF) & 128) != 0)
+                                        /*goto Ldone*/throw Dispatch0.INSTANCE;
+                                    if (base == 2)
                                         /*goto Ldone*/throw Dispatch0.INSTANCE;
                                     /*goto Lreal*/{ __dispatch19 = -1; continue dispatched_19; }
                                 case 112:
@@ -2126,9 +2138,12 @@ public class lexer {
                                 /*Lnewline:*/
                                 case -1:
                                 __dispatch24 = 0;
-                                    this.scanloc.linnum = linnum;
-                                    if (filespec != null)
-                                        this.scanloc.filename = pcopy(filespec);
+                                    if (!((this.inTokenStringConstant) != 0))
+                                    {
+                                        this.scanloc.linnum = linnum;
+                                        if (filespec != null)
+                                            this.scanloc.filename = pcopy(filespec);
+                                    }
                                     return ;
                                 case 13:
                                     this.p.postInc();
@@ -2400,6 +2415,7 @@ public class lexer {
             that.doDocComment = this.doDocComment;
             that.anyToken = this.anyToken;
             that.commentToken = this.commentToken;
+            that.inTokenStringConstant = this.inTokenStringConstant;
             that.lastDocLine = this.lastDocLine;
             that.diagnosticReporter = this.diagnosticReporter;
             that.tokenFreelist = this.tokenFreelist;

@@ -194,6 +194,10 @@ public class parsetimevisitor {
                 this.visit(s);
             }
 
+            public  void visit(ASTBase.CPPNamespaceDeclaration s) {
+                this.visit(s);
+            }
+
             public  void visit(ASTBase.ProtDeclaration s) {
                 this.visit(s);
             }
@@ -886,6 +890,13 @@ public class parsetimevisitor {
                 this.visit(i);
             }
 
+
+            protected ParseTimeVisitorASTBase() {}
+
+            public ParseTimeVisitorASTBase copy() {
+                ParseTimeVisitorASTBase that = new ParseTimeVisitorASTBase();
+                return that;
+            }
         }
 
 }
