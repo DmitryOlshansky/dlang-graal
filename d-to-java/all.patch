@@ -1,5 +1,149 @@
+diff --git a/src/main/java/org/dlang/dmd/astbase.java b/src/main/java/org/dlang/dmd/astbase.java
+index 34041a9..4156957 100644
+--- a/src/main/java/org/dlang/dmd/astbase.java
++++ b/src/main/java/org/dlang/dmd/astbase.java
+@@ -1977,7 +1977,10 @@ public class astbase {
+             public DArray<BaseClass> baseclasses;
+             public int baseok;
+             public  ClassDeclaration(Loc loc, Identifier id, DArray<BaseClass> baseclasses, DArray<Dsymbol> members, boolean inObject) {
+-                super(loc, id == null ? Identifier.generateId(new BytePtr("__anonclass")) : id);
++                if (!(id != null))
++                    id = Identifier.generateId(new BytePtr("__anonclass"));
++                assert(id != null);
++                super(loc, id);
+                 if (baseclasses != null)
+                 {
+                     this.baseclasses = baseclasses;
+@@ -4311,7 +4314,7 @@ public class astbase {
+                 this.arguments = arguments;
+             }
+ 
+-            public  TypeTuple(DArray<Expression> exps, int tag) {
++            public  TypeTuple(DArray<Expression> exps) {
+                 super((byte)37);
+                 DArray<Parameter> arguments = new DArray<Parameter>();
+                 if (exps != null)
+@@ -5911,7 +5914,9 @@ public class astbase {
+         public static class VarExp extends SymbolExp
+         {
+             public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
+-                super(loc, TOK.variable, 29, var, var.isVarDeclaration() == null && hasOverloads);
++                if (var.isVarDeclaration() != null)
++                    hasOverloads = false;
++                super(loc, TOK.variable, 29, var, hasOverloads);
+                 this.type = var.type;
+             }
+ 
+@@ -7451,6 +7456,14 @@ public class astbase {
+             public ForeachStatement aggrfe;
+             public ForeachRangeStatement rangefe;
+             public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
++                {
++                    assert(!(!(aggrfe != null)) ^ !(!(rangefe != null)));
++                }
++                {
++                    {
++                        assert(!(!(aggrfe != null)) ^ !(!(rangefe != null)));
++                    }
++                }
+                 super();
+                 this.loc = loc.copy();
+                 this.aggrfe = aggrfe;
+@@ -7892,9 +7905,8 @@ public class astbase {
+             boolean result = false;
+             if ((stc & 17592186568704L) == 17592186568704L)
+                 stc &= -524289L;
+-            Ref<Long> stc_ref = ref(stc);
+             for (; (stc) != 0;){
+-                BytePtr p = pcopy(ASTBase.stcToChars(stc_ref));
++                BytePtr p = pcopy(ASTBase.stcToChars(stc));
+                 if (p == null)
+                     break;
+                 if (!(result))
+diff --git a/src/main/java/org/dlang/dmd/globals.java b/src/main/java/org/dlang/dmd/globals.java
+index 211e7df..1fda47d 100644
+--- a/src/main/java/org/dlang/dmd/globals.java
++++ b/src/main/java/org/dlang/dmd/globals.java
+@@ -257,7 +257,22 @@ public class globals {
+         public ByteSlice exefile;
+         public ByteSlice mapfile;
+         public  boolean isPOSIX() {
+-            return this.isLinux || this.isOSX || this.isFreeBSD || this.isOpenBSD || this.isDragonFlyBSD || this.isSolaris;
++            {
++                assert(result || this.isWindows);
++            }
++            try {
++                __result = this.isLinux || this.isOSX || this.isFreeBSD || this.isOpenBSD || this.isDragonFlyBSD || this.isSolaris;
++                /*goto __returnLabel*/throw Dispatch0.INSTANCE;
++            }
++            catch(Dispatch0 __d){}
++        /*__returnLabel:*/
++            {
++                boolean result = __result;
++                {
++                    assert(result || this.isWindows);
++                }
++            }
++            return __result;
+         }
+ 
+         public Param(){
+diff --git a/src/main/java/org/dlang/dmd/identifier.java b/src/main/java/org/dlang/dmd/identifier.java
+index e80faa0..3911eb6 100644
+--- a/src/main/java/org/dlang/dmd/identifier.java
++++ b/src/main/java/org/dlang/dmd/identifier.java
+@@ -142,6 +142,11 @@ public class identifier {
+ 
+         public static Identifier generateIdWithLoc(ByteSlice prefix, Loc loc) {
+             OutBuffer idBuf = new OutBuffer();
++            Function0<Integer> __lambda7 = new Function0<Integer>(){
++                public Integer invoke(){
++                    return 1;
++                }
++            };
+             Function1<Integer,Integer> __lambda8 = new Function1<Integer,Integer>(){
+                 public Integer invoke(Integer counter){
+                     idBuf.writestring( new ByteSlice("_"));
+@@ -149,11 +154,6 @@ public class identifier {
+                     return counter + 1;
+                 }
+             };
+-            Function0<Integer> __lambda7 = new Function0<Integer>(){
+-                public Integer invoke(){
+-                    return 1;
+-                }
+-            };
+             try {
+                 idBuf.writestring(prefix);
+                 idBuf.writestring( new ByteSlice("_L"));
+@@ -173,11 +173,11 @@ public class identifier {
+ 
+         public static Identifier idPool(ByteSlice s) {
+             StringValue sv = Identifier.stringtable.update(s);
+-            Identifier id = (Identifier)(sv).ptrvalue;
++            Identifier id = null;
+             if (!(id != null))
+             {
+-                id = new Identifier(s.copy(), 120);
+-                (sv).ptrvalue = pcopy((id));
++                id = new Identifier((sv).asString(), 120);
++                (sv).ptrvalue = pcopy((toBytePtr(id)));
+             }
+             return id;
+         }
+@@ -189,8 +189,8 @@ public class identifier {
+         public static Identifier idPool(ByteSlice s, int value) {
+             StringValue sv = Identifier.stringtable.insert(s, null);
+             assert(sv != null);
+-            Identifier id = new Identifier(s.copy(), value);
+-            (sv).ptrvalue = pcopy((id));
++            Identifier id = new Identifier((sv).asString(), value);
++            (sv).ptrvalue = pcopy((toBytePtr(id)));
+             return id;
+         }
+ 
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
-index a4897cc..40e450a 100644
+index 728d011..8a517f6 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java
 +++ b/src/main/java/org/dlang/dmd/lexer.java
 @@ -382,26 +382,17 @@ public class lexer {
@@ -70,7 +214,7 @@ index a4897cc..40e450a 100644
          }
  
          public  void delimitedStringConstant(Token result) {
-@@ -1675,25 +1668,18 @@ public class lexer {
+@@ -1681,25 +1674,18 @@ public class lexer {
                                          /*goto Ldone*/throw Dispatch0.INSTANCE;
                                      if ((isalpha((this.p.get(1) & 0xFF))) != 0 || (this.p.get(1) & 0xFF) == 95 || ((this.p.get(1) & 0xFF) & 128) != 0)
                                          /*goto Ldone*/throw Dispatch0.INSTANCE;
@@ -100,7 +244,7 @@ index a4897cc..40e450a 100644
                                      break;
                                  default:
                                  {
-@@ -2315,6 +2301,7 @@ public class lexer {
+@@ -2328,6 +2314,7 @@ public class lexer {
                                          continue L_outer8;
                                      /*goto Lnewline*/{ __dispatch26 = -1; continue dispatched_26; }
                                  default:
@@ -108,7 +252,7 @@ index a4897cc..40e450a 100644
                                      if ((c & 0xFF) == 226)
                                      {
                                          if ((q.get(1) & 0xFF) == 128 && (q.get(2) & 0xFF) == 168 || (q.get(2) & 0xFF) == 169)
-@@ -2329,6 +2316,7 @@ public class lexer {
+@@ -2342,6 +2329,7 @@ public class lexer {
                                  case -1:
                                  __dispatch26 = 0;
                                      c = (byte)10;
