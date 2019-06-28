@@ -1,8 +1,8 @@
 diff --git a/src/main/java/org/dlang/dmd/astbase.java b/src/main/java/org/dlang/dmd/astbase.java
-index 2085fb4..fd28dd8 100644
+index ed047d6..64d11ea 100644
 --- a/src/main/java/org/dlang/dmd/astbase.java
 +++ b/src/main/java/org/dlang/dmd/astbase.java
-@@ -1977,7 +1977,10 @@ public class astbase {
+@@ -1983,7 +1983,10 @@ public class astbase {
              public DArray<BaseClass> baseclasses;
              public int baseok;
              public  ClassDeclaration(Loc loc, Identifier id, DArray<BaseClass> baseclasses, DArray<Dsymbol> members, boolean inObject) {
@@ -14,7 +14,7 @@ index 2085fb4..fd28dd8 100644
                  if (baseclasses != null)
                  {
                      this.baseclasses = baseclasses;
-@@ -4311,7 +4314,7 @@ public class astbase {
+@@ -4309,7 +4312,7 @@ public class astbase {
                  this.arguments = arguments;
              }
  
@@ -23,7 +23,7 @@ index 2085fb4..fd28dd8 100644
                  super((byte)37);
                  DArray<Parameter> arguments = new DArray<Parameter>();
                  if (exps != null)
-@@ -5911,7 +5914,9 @@ public class astbase {
+@@ -5903,7 +5906,9 @@ public class astbase {
          public static class VarExp extends SymbolExp
          {
              public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
@@ -34,13 +34,10 @@ index 2085fb4..fd28dd8 100644
                  this.type = var.type;
              }
  
-@@ -7451,6 +7456,14 @@ public class astbase {
+@@ -7443,6 +7448,11 @@ public class astbase {
              public ForeachStatement aggrfe;
              public ForeachRangeStatement rangefe;
              public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
-+                {
-+                    assert(!(!(aggrfe != null)) ^ !(!(rangefe != null)));
-+                }
 +                {
 +                    {
 +                        assert(!(!(aggrfe != null)) ^ !(!(rangefe != null)));
@@ -49,29 +46,27 @@ index 2085fb4..fd28dd8 100644
                  super();
                  this.loc = loc.copy();
                  this.aggrfe = aggrfe;
-@@ -7892,9 +7905,8 @@ public class astbase {
+@@ -7884,9 +7894,8 @@ public class astbase {
              boolean result = false;
              if ((stc & 17592186568704L) == 17592186568704L)
                  stc &= -524289L;
 -            Ref<Long> stc_ref = ref(stc);
-             for (; (stc) != 0;){
--                BytePtr p = pcopy(ASTBase.stcToChars(stc_ref));
-+                BytePtr p = pcopy(ASTBase.stcToChars(stc));
+-            for (; (stc_ref.value) != 0;){
+-                BytePtr p = pcopy(stcToChars(stc_ref));
++            for (; (stc) != 0;){
++                BytePtr p = pcopy(stcToChars(stc));
                  if (p == null)
                      break;
                  if (!(result))
 diff --git a/src/main/java/org/dlang/dmd/globals.java b/src/main/java/org/dlang/dmd/globals.java
-index 211e7df..1fda47d 100644
+index 8e6cb70..97f7c0d 100644
 --- a/src/main/java/org/dlang/dmd/globals.java
 +++ b/src/main/java/org/dlang/dmd/globals.java
-@@ -257,7 +257,22 @@ public class globals {
+@@ -257,7 +257,19 @@ public class globals {
          public ByteSlice exefile;
          public ByteSlice mapfile;
          public  boolean isPOSIX() {
 -            return this.isLinux || this.isOSX || this.isFreeBSD || this.isOpenBSD || this.isDragonFlyBSD || this.isSolaris;
-+            {
-+                assert(result || this.isWindows);
-+            }
 +            try {
 +                __result = this.isLinux || this.isOSX || this.isFreeBSD || this.isOpenBSD || this.isDragonFlyBSD || this.isSolaris;
 +                /*goto __returnLabel*/throw Dispatch0.INSTANCE;
@@ -89,10 +84,10 @@ index 211e7df..1fda47d 100644
  
          public Param(){
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
-index d81da24..065ae9c 100644
+index 4bc0bc1..1919e06 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java
 +++ b/src/main/java/org/dlang/dmd/lexer.java
-@@ -378,26 +378,17 @@ public class lexer {
+@@ -373,26 +373,17 @@ public class lexer {
                                          if (id.equals(Id.DATE))
                                          {
                                              (t).ustring = pcopy(ptr(lexer.scandate));
@@ -122,20 +117,14 @@ index d81da24..065ae9c 100644
                                          }
                                          else if (id.equals(Id.TIMESTAMP))
                                          {
-@@ -989,10 +980,10 @@ public class lexer {
-         }
- 
-         public  int escapeSequence() {
--            return escapeSequence(this.token.loc, this.diagnosticReporter, this.p);
-+            return Lexer.escapeSequence(this.token.loc, this.diagnosticReporter, this.p);
+@@ -975,13 +966,13 @@ public class lexer {
+             return escapeSequence(this.token.loc, this.diagnosticReporter, this.p);
          }
  
 -        public int escapeSequence(Loc loc, DiagnosticReporter handler, BytePtr sequence) {
 +        public static int escapeSequence(Loc loc, DiagnosticReporter handler, BytePtr sequence) {
              {
-                 assert(handler != null);
-             }
-@@ -1001,7 +992,7 @@ public class lexer {
+                 {
                      assert(handler != null);
                  }
              }
@@ -144,7 +133,7 @@ index d81da24..065ae9c 100644
              try {
                  int c = (p.get() & 0xFF);
                  int ndigits = 0;
-@@ -1149,6 +1140,7 @@ public class lexer {
+@@ -1125,6 +1116,7 @@ public class lexer {
                  return c;
              }
              finally {
@@ -152,7 +141,7 @@ index d81da24..065ae9c 100644
              }
          }
  
-@@ -1279,6 +1271,7 @@ public class lexer {
+@@ -1251,6 +1243,7 @@ public class lexer {
                      } while(__dispatch10 != 0);
                  }
              }
@@ -160,7 +149,7 @@ index d81da24..065ae9c 100644
          }
  
          public  void delimitedStringConstant(Token result) {
-@@ -1677,25 +1670,18 @@ public class lexer {
+@@ -1635,25 +1628,18 @@ public class lexer {
                                          /*goto Ldone*/throw Dispatch0.INSTANCE;
                                      if ((isalpha((this.p.get(1) & 0xFF))) != 0 || (this.p.get(1) & 0xFF) == 95 || ((this.p.get(1) & 0xFF) & 128) != 0)
                                          /*goto Ldone*/throw Dispatch0.INSTANCE;
@@ -189,20 +178,4 @@ index d81da24..065ae9c 100644
 +                                        /*goto Lreal*/throw Dispatch.INSTANCE;
                                      break;
                                  default:
-                                 {
-@@ -2324,6 +2310,7 @@ public class lexer {
-                                         continue L_outer8;
-                                     /*goto Lnewline*/{ __dispatch26 = -1; continue dispatched_26; }
-                                 default:
-+                                {
-                                     if ((c & 0xFF) == 226)
-                                     {
-                                         if ((q.get(1) & 0xFF) == 128 && (q.get(2) & 0xFF) == 168 || (q.get(2) & 0xFF) == 169)
-@@ -2338,6 +2325,7 @@ public class lexer {
-                                 case -1:
-                                 __dispatch26 = 0;
-                                     c = (byte)10;
-+                                }
-                                 case 10:
-                                     linestart = 1;
-                                     trimTrailingWhitespace.invoke();
+                                 break;
