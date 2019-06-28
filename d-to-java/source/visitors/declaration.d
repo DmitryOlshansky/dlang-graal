@@ -181,10 +181,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     TextBuffer buf;
     TextBuffer header;
     string defAccess = "public";
-    Stack!FuncDeclaration stack;
+    Stack!FuncDeclaration funcs;
     Stack!AggregateDeclaration aggregates;
     bool[string] generatedLambdas;
-    bool[string] generatedFunctions;
+    Stack!(bool[string]) generatedFunctions;
     string moduleName;
     string[] constants; // all local static vars are collected here
     string[] imports; // all imports for deduplication
@@ -263,6 +263,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         header.put("\nimport static org.dlang.dmd.root.ShimsKt.*;\n");
         header.put("import static org.dlang.dmd.root.SliceKt.*;\n");
         header.put("import static org.dlang.dmd.root.DArrayKt.*;\n");
+        generatedFunctions.push(null);
     }
 
     void onModuleStart(Module mod){
@@ -316,20 +317,20 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
    
     extern(D) private void printVar(VarDeclaration var, const(char)[] ident, TextBuffer sink) {
         // remove var-args decls
-        if (stack.length && opts.vararg) {
+        if (funcs.length && opts.vararg) {
             if (var.ident.symbol == "_arguments") return;
             if (var is opts.vararg) return;
         }
-        bool staticInit = var.isStatic() || (var.storage_class & STC.gshared) || (stack.empty && aggregates.empty);
-        bool refVar = stack.length && passedByRef(var, stack.top) && !staticInit;
+        bool staticInit = var.isStatic() || (var.storage_class & STC.gshared) || (funcs.empty && aggregates.empty);
+        bool refVar = funcs.length && passedByRef(var, funcs.top) && !staticInit;
         if (refVar) opts.refParams[cast(void*)var] = true;
         Type t = var.type;
         if(var._init && var._init.kind == InitKind.array && var.type.ty == Tpointer)
             t = var.type.nextOf.arrayOf;
         auto type = refVar ? refType(var.type, opts) : toJava(t, opts);
         auto access = "";
-        if (aggregates.length && !stack.length) access = defAccess ~ " ";
-        auto ti = stack.length ? "" : tiArgs;
+        if (aggregates.length && !funcs.length) access = defAccess ~ " ";
+        auto ti = funcs.length ? "" : tiArgs;
         sink.fmt("%s%s%s %s%s",  access, staticInit ? "static " : "", type, ident, ti);
         bool oldWantChar = opts.wantCharPtr;
         scope(exit) opts.wantCharPtr = oldWantChar;
@@ -396,12 +397,12 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             stderr.writefln("NULL TYPE VAR: %s", var.ident.symbol);
             return;
         }
-        if (tiArgs && stack.length == 0) opts.templates[cast(void*)var] = Template(tiArgs, false);
+        if (tiArgs && funcs.length == 0) opts.templates[cast(void*)var] = Template(tiArgs, false);
         if (var.type.toJava(opts).startsWith("TypeInfo_")) return;
-        bool pushToGlobal = (var.isStatic() || (var.storage_class & STC.gshared)) && !stack.empty;
+        bool pushToGlobal = (var.isStatic() || (var.storage_class & STC.gshared)) && !funcs.empty;
         if (pushToGlobal) {
             auto temp = new TextBuffer();
-            const(char)[] id = stack.top.funcName ~ var.ident.symbol;
+            const(char)[] id = funcs.top.funcName ~ var.ident.symbol;
             printVar(var, id, temp);
             constants ~= temp.data.idup;
             opts.globals[cast(void*)var] = format("%s.%s", moduleName, id);
@@ -485,7 +486,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     foreach (i, v; lambdas)  {
                         stderr.writefln("lambda: %d", i);
                         if (v.fd.ident.symbol !in generatedLambdas) {
-                            auto _ = pushed(stack, v.fd);
+                            auto _ = pushed(funcs, v.fd);
                             printLocalFunction(v.fd, true);
                             generatedLambdas[v.fd.ident.symbol] = true;
                         }
@@ -655,7 +656,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(SharedStaticCtorDeclaration ctor)
     {
-        auto _ = pushed(stack, ctor);
+        auto _ = pushed(funcs, ctor);
         buf.put("static {\n");
         buf.indent;
         if (ctor.fbody)
@@ -684,7 +685,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     {
         auto old = buf;
         auto oldAccess = defAccess;
-        if (stack.length) {
+        if (funcs.length) {
             buf = new TextBuffer();
             defAccess = "private";
         }
@@ -715,7 +716,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
         buf.outdent;
         buf.put("}\n\n");
-        if (stack.length) {
+        if (funcs.length) {
             constants ~= buf.data.dup;
             buf = old;
             defAccess = oldAccess;
@@ -926,10 +927,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(ReturnStatement s)
     {
-        if (stack.length && !stack.top.isCtorDeclaration()) {
+        if (funcs.length && !funcs.top.isCtorDeclaration()) {
             buf.put("return ");
             if (s.exp) {
-                auto retType = stack.top.type.nextOf();
+                auto retType = funcs.top.type.nextOf();
                 auto oldOpts = opts;
                 scope(exit) opts = oldOpts;
                 opts.wantCharPtr = retType.ty == Tpointer && retType.nextOf().ty == Tchar;
@@ -966,8 +967,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(StructDeclaration d)
     {
-        if (stack.length) return; // inner structs are done separately
+        if (funcs.length) return; // inner structs are done separately
         auto _ = pushed(aggregates, d);
+        auto gf = pushed(generatedFunctions, null);
         auto oldInAggregate = opts.inAggregate;
         scope(exit) opts.inAggregate = oldInAggregate;
         opts.inAggregate = aggregates[];
@@ -1054,12 +1056,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     
     override void visit(ClassDeclaration d)
     {
-        auto old = generatedFunctions;
-        scope(exit) generatedFunctions = old;
-        generatedFunctions = null;
-        if (stack.length) return; // inner classes are done separately
-        auto _ = pushed(aggregates, d);
-        
+        if (funcs.length) return; // inner classes are done separately
+        auto gf = pushed(generatedFunctions, null);
+        auto agg = pushed(aggregates, d);
+
         auto oldInAggregate = opts.inAggregate;
         scope(exit) opts.inAggregate = oldInAggregate;
         opts.inAggregate = aggregates[];
@@ -1124,7 +1124,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(UnitTestDeclaration func)  {
         hoistLocalAggregates(func);
-        auto _ = pushed(stack, func);
+        auto _ = pushed(funcs, func);
         if (func.fbody) {
             buf.fmt("public static void test_%d() {\n", testCounter++);
             buf.indent;    
@@ -1262,28 +1262,26 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (func.funcName == "copy" && aggregates.length > 0) return;
         if (func.isCtorDeclaration() && !func.parameters) hasEmptyCtor = true;
         // save tiargs before checking duplicates
-        if (tiArgs.length) opts.templates[cast(void*)func] = Template(tiArgs, stack.length != 0);
-        if (stack.length > 0) opts.localFuncs[cast(void*)func] = true;
+        if (tiArgs.length) opts.templates[cast(void*)func] = Template(tiArgs, funcs.length != 0);
+        if (funcs.length > 0) opts.localFuncs[cast(void*)func] = true;
         // check for duplicates
         auto sig = funcSig(func);
-        if (sig in generatedFunctions) return;
-        generatedFunctions[sig] = true;
+        if (sig in generatedFunctions.top) return;
+        generatedFunctions.top[sig] = true;
 
         // hoist nested structs/classes to top level, mark them private
-        if (stack.length == 0) {
+        if (funcs.length == 0) {
             hoistLocalAggregates(func);
         }
-        auto _ = pushed(stack, func);
+        auto _ = pushed(funcs, func);
 
         auto oldRefParams = opts.refParams.dup;
         scope(exit) opts.refParams = oldRefParams;
 
-        if (stack.length > 1)
+        if (funcs.length > 1)
             printLocalFunction(func);
         else {
-            auto old = generatedFunctions;
-            scope(exit) generatedFunctions = old;
-            generatedFunctions = null;
+            auto gf = pushed(generatedFunctions, null);
             printGlobalFunction(func);
         }
     }
