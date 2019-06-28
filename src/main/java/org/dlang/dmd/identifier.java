@@ -126,7 +126,7 @@ public class identifier {
 
         public static StringTable stringtable = new StringTable();
         public static Identifier generateId(BytePtr prefix) {
-            return Identifier.generateId(prefix, identifier.generateIdi += 1);
+            return generateId(prefix, identifier.generateIdi += 1);
         }
 
         public static Identifier generateId(BytePtr prefix, int i) {
@@ -134,7 +134,7 @@ public class identifier {
             try {
                 buf.writestring(prefix);
                 buf.print((long)i);
-                return Identifier.idPool(buf.peekSlice());
+                return idPool(buf.peekSlice());
             }
             finally {
             }
@@ -161,18 +161,18 @@ public class identifier {
                 idBuf.writestring( new ByteSlice("_C"));
                 idBuf.print((long)loc.charnum);
                 update(identifier.generateIdWithLoccounters, new Key(loc, prefix), __lambda7, __lambda8);
-                return Identifier.idPool(idBuf.peekSlice());
+                return idPool(idBuf.peekSlice());
             }
             finally {
             }
         }
 
         public static Identifier idPool(BytePtr s, int len) {
-            return Identifier.idPool(s.slice(0,len));
+            return idPool(s.slice(0,len));
         }
 
         public static Identifier idPool(ByteSlice s) {
-            StringValue sv = Identifier.stringtable.update(s);
+            StringValue sv = stringtable.update(s);
             Identifier id = (Identifier)(sv).ptrvalue;
             if (!(id != null))
             {
@@ -183,11 +183,11 @@ public class identifier {
         }
 
         public static Identifier idPool(BytePtr s, int len, int value) {
-            return Identifier.idPool(s.slice(0,len), value);
+            return idPool(s.slice(0,len), value);
         }
 
         public static Identifier idPool(ByteSlice s, int value) {
-            StringValue sv = Identifier.stringtable.insert(s, null);
+            StringValue sv = stringtable.insert(s, null);
             assert(sv != null);
             Identifier id = new Identifier((sv).asString(), value);
             (sv).ptrvalue = pcopy(((Object)id));
@@ -195,7 +195,7 @@ public class identifier {
         }
 
         public static boolean isValidIdentifier(BytePtr str) {
-            return str != null && Identifier.isValidIdentifier(toDString(str));
+            return str != null && isValidIdentifier(toDString(str));
         }
 
         public static boolean isValidIdentifier(ByteSlice str) {
@@ -216,18 +216,18 @@ public class identifier {
         }
 
         public static Identifier lookup(BytePtr s, int len) {
-            return Identifier.lookup(s.slice(0,len));
+            return lookup(s.slice(0,len));
         }
 
         public static Identifier lookup(ByteSlice s) {
-            StringValue sv = Identifier.stringtable.lookup(s);
+            StringValue sv = stringtable.lookup(s);
             if (sv == null)
                 return null;
             return (Identifier)(sv).ptrvalue;
         }
 
         public static void initTable() {
-            Identifier.stringtable._init(28000);
+            stringtable._init(28000);
         }
 
 

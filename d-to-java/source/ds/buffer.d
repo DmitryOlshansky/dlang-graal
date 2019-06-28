@@ -4,6 +4,8 @@ import core.stdc.string;
 
 import std.range, std.format, std.stdio;
 
+extern(C) void foobar();
+
 /// auto-indenting text buffer output range
 final class TextBuffer {
 private:
@@ -23,7 +25,11 @@ final:
     void indent(){ indentSize += 4; }
 
     void outdent(){ 
-        assert (indentSize != 0, "OUTDENTING BEYOND 0");
+        /*if (indentSize == 0) {
+            stderr.writefln("OUTDENTING BEYOND 0");
+            return;
+        }*/
+        assert(indentSize != 0, "OUTDENTING BEYOND 0");
         indentSize -= 4; 
     }
 

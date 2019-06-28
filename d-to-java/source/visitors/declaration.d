@@ -28,9 +28,10 @@ import dmd.root.array;
 
 import std.array, std.algorithm, std.format, std.string, std.range, std.stdio;
 
-import visitors.expression : Boxing, ExprOpts, funcName, refType, Template, toJava, toJavaBool, toJavaFunc, symbol;
-import visitors.members;
-import visitors.passed_by_ref;
+import visitors.expression;
+import visitors.members, visitors.passed_by_ref;
+
+alias toJava = visitors.expression.toJava; 
 
 ///
 string toJava(Module mod) {
@@ -469,8 +470,8 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
         if (s.statements)
             foreach (idx, st; *s.statements) if (st) {
-                auto start = range.countUntil!(x => x.first == idx);
-                if (start >= 0) {
+                auto starts = range.count!(x => x.first == idx);
+                foreach (_ ; 0.. starts) {
                     buf.put("try {\n");
                     buf.indent;
                 }
@@ -505,18 +506,29 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(WhileStatement s)
     {
-        buf.put("while (");
+        assert(0);
+        /*buf.put("while (");
         buf.put(s.condition.toJavaBool(opts));
         buf.put(")\n");
         if (s._body)
-            s._body.accept(this);
+            s._body.accept(this);*/
     }
 
     override void visit(DoStatement s)
     {
+        if (collectGotos(s._body).length > 0) {
+            buf.outdent;
+            forLoop.push(++forCount);
+            buf.fmt("L_outer%d:\n", forCount);
+            buf.indent;
+        }
+        else 
+            forLoop.push(0); // no gotos, let it continue this inner for
         buf.put("do\n");
+        buf.indent;
         if (s._body)
             s._body.accept(this);
+        buf.outdent;
         buf.put("while (");
         buf.put(s.condition.toJavaBool(opts));
         buf.put(");\n");
@@ -620,7 +632,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (currentInst.empty || !currentInst.top) return;
         if (ti.tiargs) {
             auto decl = ti.tempdecl.isTemplateDeclaration();
-            buf.indent;
             foreach(m; *ti.members) {
                 buf.fmt("// from template %s!(", ti.name.symbol);
                 foreach(i, arg; (*ti.tiargs)[]) {
@@ -634,8 +645,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 m.accept(this);
                 buf.put("\n");
             }
-            buf.outdent;
-
         }
     }
 
@@ -822,7 +831,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     override void visit(DefaultStatement s)
     {
         buf.put("default:\n");
-        s.statement.accept(this);
+        if (auto ss = s.statement.isScopeStatement())
+            ss.statement.accept(this);
+        else
+            s.statement.accept(this);
     }
 
     override void visit(LabelStatement label) {
@@ -927,15 +939,24 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     override void visit(ReturnStatement s)
     {
         if (funcs.length && !funcs.top.isCtorDeclaration()) {
-            buf.put("return ");
-            if (s.exp) {
-                auto retType = funcs.top.type.nextOf();
-                auto oldOpts = opts;
-                scope(exit) opts = oldOpts;
-                opts.wantCharPtr = retType.ty == Tpointer && retType.nextOf().ty == Tchar;
-                buf.put(s.exp.toJava(opts));
+            if(funcs.top.ident.symbol == "main" && aggregates.empty) {
+                buf.put("exit(");
+                if (s.exp) {
+                    buf.put(s.exp.toJava(opts));
+                }
+                buf.put(");\n");
             }
-            buf.put(";\n");
+            else {
+                buf.put("return ");
+                if (s.exp) {
+                    auto retType = funcs.top.type.nextOf();
+                    auto oldOpts = opts;
+                    scope(exit) opts = oldOpts;
+                    opts.wantCharPtr = retType.ty == Tpointer && retType.nextOf().ty == Tchar;
+                    buf.put(s.exp.toJava(opts));
+                }
+                buf.put(";\n");
+            }
         }
     }
 
@@ -994,11 +1015,11 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             s.accept(this);
         auto members = collectMembers(d);
         // .init ctor
-        buf.fmt("public %s(){\n", d.ident.symbol);
+        buf.fmt("public %s(){\n", nameOf(d));
         buf.indent;
         foreach(m; members.all) {
             if (auto ts = m.type.isTypeStruct()) {
-                buf.fmt("%s = new %s();\n", m.ident.symbol, nameOf(ts.sym));
+                buf.fmt("%s = new %s();\n", m.ident.symbol, toJava(ts, opts));
             }
         }
         buf.outdent;
@@ -1219,7 +1240,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         else {
             buf.put(" {\n");
             buf.indent;
-            super.visit(func);
+            func.fbody.accept(this);
             buf.outdent;
             buf.put('}');
             buf.put("\n\n");

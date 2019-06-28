@@ -31,7 +31,7 @@ private extern(C++) class PassedByRef : SemanticTimeTransitiveVisitor {
     alias visit = typeof(super).visit;
 
     private bool allowed(Type type) {
-        return type.ty != Tpointer && type.ty != Taarray && type.ty != Tstruct && type.ty != Tsarray;
+        return type.ty != Taarray && type.ty != Tstruct && type.ty != Tsarray;
     }
 
     override void visit(FuncDeclaration func) {

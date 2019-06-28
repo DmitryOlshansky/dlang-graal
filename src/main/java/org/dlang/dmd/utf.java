@@ -152,9 +152,7 @@ public class utf {
             case 4:
                 break;
             default:
-            {
-                return new BytePtr("Outside Unicode code space");
-            }
+            return new BytePtr("Outside Unicode code space");
         }
         if (len < i + n)
             return new BytePtr("Truncated UTF-8 sequence");

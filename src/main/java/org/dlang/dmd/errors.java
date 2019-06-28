@@ -356,9 +356,7 @@ public class errors {
                         iCodeStart = i;
                         break;
                     default:
-                    {
-                        break;
-                    }
+                    break;
                 }
             }
         }
@@ -423,11 +421,9 @@ public class errors {
                     highlight = HIGHLIGHT.Identifier;
                     break;
                 default:
-                {
-                    if ((tok.isKeyword()) != 0)
-                        highlight = HIGHLIGHT.Identifier;
-                    break;
-                }
+                if ((tok.isKeyword()) != 0)
+                    highlight = HIGHLIGHT.Identifier;
+                break;
             }
             if ((highlight & 0xFF) != 0)
             {

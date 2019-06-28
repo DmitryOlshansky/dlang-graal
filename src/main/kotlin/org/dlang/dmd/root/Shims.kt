@@ -326,6 +326,7 @@ fun<K,V> update(aa: AA<K,V>, key: K, ins:() -> V, upd:(V) -> V) {
 }
 
 // Goto exception singletons
+object Dispatch : Exception() // unhandled dispatch!
 object Dispatch0 : Exception()
 object Dispatch1 : Exception()
 object Dispatch2 : Exception()

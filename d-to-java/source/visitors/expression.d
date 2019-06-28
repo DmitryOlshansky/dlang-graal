@@ -126,7 +126,11 @@ string toJavaBool(Expression e, ExprOpts opts) {
     return buf.data.dup;
 }
 
-string refType(Type t, ExprOpts opts) {
+string refType(Type at, ExprOpts opts) {
+    auto t = at;
+    if (auto et = at.isTypeEnum) {
+        t = et.memType;
+    }
     if(t.ty == Tint32 || t.ty == Tuns32 || t.ty == Tdchar) {
         return "IntRef";
     }
@@ -138,7 +142,6 @@ string refType(Type t, ExprOpts opts) {
 private bool isJavaByte(Type t) {
     return t.ty == Tchar || t.ty == Tint8 || t.ty == Tuns8;
 }
-
 
 ///
 extern (C++) final class toJavaExpressionVisitor : Visitor
@@ -156,10 +159,22 @@ public:
         this.opts  = opts;
     }
 
-    void printParent(Declaration var)
+    string printParent(Dsymbol var)
     {
-        if (var.isMember() && (var.isStatic() || (var.storage_class & STC.gshared)))
-            buf.fmt("%s.", var.parent.ident.symbol);
+        TextBuffer buf = new TextBuffer;
+        AggregateDeclaration[] chain;
+        if (var.isThis) return "";
+        while(var) {
+            auto ds = var.parent.isAggregateDeclaration();
+            if (ds && !opts.inAggregate.canFind!(agg => agg is ds)) 
+                chain ~= ds;
+            else
+                break;
+            var = var.parent;
+        }
+        foreach_reverse (p; chain)
+            buf.fmt("%s.", p.ident.symbol);
+        return buf.data.dup;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -189,8 +204,9 @@ public:
                             if (em.value.toInteger == v)
                             {
                                 auto s = symbol(sym.ident);
-                                if (auto agg = sym.parent.isAggregateDeclaration())
-                                    buf.fmt("%s.", agg.ident.symbol);
+                                buf.put(printParent(sym));
+                                //if (auto agg = sym.parent.isAggregateDeclaration())
+                                //    buf.fmt("%s.", agg.ident.symbol);
                                 buf.fmt("%s.%s", s, em.ident.symbol);
                                 return ;
                             }
@@ -483,7 +499,7 @@ public:
             buf.put(")");
         }
         else {
-            printParent(e.var);
+            buf.put(printParent(e.var));
             if (auto name = e.var in opts.globals)
                 buf.put(*name);
             else
@@ -548,7 +564,7 @@ public:
          * are handled in visit(ExpStatement), so here would be used only when
          * we'll directly call Expression.toString() for debugging.
          */
-        stderr.writefln("DeclarationExp");
+        stderr.writefln("DeclarationExp %s:%d", e.loc.filename[0..strlen(e.loc.filename)], e.loc.linnum);
     }
 
     override void visit(TypeidExp e)
@@ -784,7 +800,7 @@ public:
 
     override void visit(DotVarExp e)
     {
-        printParent(e.var);
+        buf.put(printParent(e.var));
         expToBuffer(e.e1, PREC.primary, buf, opts);
         buf.put('.');
         buf.put(e.var.ident.symbol);

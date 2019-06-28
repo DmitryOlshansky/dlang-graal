@@ -69,7 +69,7 @@ public class filecache {
 
         public static FileCache fileCache = new FileCache(new StringTable(null, 0, null, 0, 0, 0, 0));
         public static void _init() {
-            FileCache.fileCache.initialize();
+            fileCache.initialize();
         }
 
         public  void initialize() {

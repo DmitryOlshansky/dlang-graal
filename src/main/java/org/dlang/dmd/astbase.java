@@ -196,51 +196,51 @@ public class astbase {
             public static final int TMAX = 44;
         }
 
-        public static final int Tarray = ASTBase.ENUMTY.Tarray;
-        public static final int Tsarray = ASTBase.ENUMTY.Tsarray;
-        public static final int Taarray = ASTBase.ENUMTY.Taarray;
-        public static final int Tpointer = ASTBase.ENUMTY.Tpointer;
-        public static final int Treference = ASTBase.ENUMTY.Treference;
-        public static final int Tfunction = ASTBase.ENUMTY.Tfunction;
-        public static final int Tident = ASTBase.ENUMTY.Tident;
-        public static final int Tclass = ASTBase.ENUMTY.Tclass;
-        public static final int Tstruct = ASTBase.ENUMTY.Tstruct;
-        public static final int Tenum = ASTBase.ENUMTY.Tenum;
-        public static final int Tdelegate = ASTBase.ENUMTY.Tdelegate;
-        public static final int Tnone = ASTBase.ENUMTY.Tnone;
-        public static final int Tvoid = ASTBase.ENUMTY.Tvoid;
-        public static final int Tint8 = ASTBase.ENUMTY.Tint8;
-        public static final int Tuns8 = ASTBase.ENUMTY.Tuns8;
-        public static final int Tint16 = ASTBase.ENUMTY.Tint16;
-        public static final int Tuns16 = ASTBase.ENUMTY.Tuns16;
-        public static final int Tint32 = ASTBase.ENUMTY.Tint32;
-        public static final int Tuns32 = ASTBase.ENUMTY.Tuns32;
-        public static final int Tint64 = ASTBase.ENUMTY.Tint64;
-        public static final int Tuns64 = ASTBase.ENUMTY.Tuns64;
-        public static final int Tfloat32 = ASTBase.ENUMTY.Tfloat32;
-        public static final int Tfloat64 = ASTBase.ENUMTY.Tfloat64;
-        public static final int Tfloat80 = ASTBase.ENUMTY.Tfloat80;
-        public static final int Timaginary32 = ASTBase.ENUMTY.Timaginary32;
-        public static final int Timaginary64 = ASTBase.ENUMTY.Timaginary64;
-        public static final int Timaginary80 = ASTBase.ENUMTY.Timaginary80;
-        public static final int Tcomplex32 = ASTBase.ENUMTY.Tcomplex32;
-        public static final int Tcomplex64 = ASTBase.ENUMTY.Tcomplex64;
-        public static final int Tcomplex80 = ASTBase.ENUMTY.Tcomplex80;
-        public static final int Tbool = ASTBase.ENUMTY.Tbool;
-        public static final int Tchar = ASTBase.ENUMTY.Tchar;
-        public static final int Twchar = ASTBase.ENUMTY.Twchar;
-        public static final int Tdchar = ASTBase.ENUMTY.Tdchar;
-        public static final int Terror = ASTBase.ENUMTY.Terror;
-        public static final int Tinstance = ASTBase.ENUMTY.Tinstance;
-        public static final int Ttypeof = ASTBase.ENUMTY.Ttypeof;
-        public static final int Ttuple = ASTBase.ENUMTY.Ttuple;
-        public static final int Tslice = ASTBase.ENUMTY.Tslice;
-        public static final int Treturn = ASTBase.ENUMTY.Treturn;
-        public static final int Tnull = ASTBase.ENUMTY.Tnull;
-        public static final int Tvector = ASTBase.ENUMTY.Tvector;
-        public static final int Tint128 = ASTBase.ENUMTY.Tint128;
-        public static final int Tuns128 = ASTBase.ENUMTY.Tuns128;
-        public static final int TMAX = ASTBase.ENUMTY.TMAX;
+        public static final int Tarray = ENUMTY.Tarray;
+        public static final int Tsarray = ENUMTY.Tsarray;
+        public static final int Taarray = ENUMTY.Taarray;
+        public static final int Tpointer = ENUMTY.Tpointer;
+        public static final int Treference = ENUMTY.Treference;
+        public static final int Tfunction = ENUMTY.Tfunction;
+        public static final int Tident = ENUMTY.Tident;
+        public static final int Tclass = ENUMTY.Tclass;
+        public static final int Tstruct = ENUMTY.Tstruct;
+        public static final int Tenum = ENUMTY.Tenum;
+        public static final int Tdelegate = ENUMTY.Tdelegate;
+        public static final int Tnone = ENUMTY.Tnone;
+        public static final int Tvoid = ENUMTY.Tvoid;
+        public static final int Tint8 = ENUMTY.Tint8;
+        public static final int Tuns8 = ENUMTY.Tuns8;
+        public static final int Tint16 = ENUMTY.Tint16;
+        public static final int Tuns16 = ENUMTY.Tuns16;
+        public static final int Tint32 = ENUMTY.Tint32;
+        public static final int Tuns32 = ENUMTY.Tuns32;
+        public static final int Tint64 = ENUMTY.Tint64;
+        public static final int Tuns64 = ENUMTY.Tuns64;
+        public static final int Tfloat32 = ENUMTY.Tfloat32;
+        public static final int Tfloat64 = ENUMTY.Tfloat64;
+        public static final int Tfloat80 = ENUMTY.Tfloat80;
+        public static final int Timaginary32 = ENUMTY.Timaginary32;
+        public static final int Timaginary64 = ENUMTY.Timaginary64;
+        public static final int Timaginary80 = ENUMTY.Timaginary80;
+        public static final int Tcomplex32 = ENUMTY.Tcomplex32;
+        public static final int Tcomplex64 = ENUMTY.Tcomplex64;
+        public static final int Tcomplex80 = ENUMTY.Tcomplex80;
+        public static final int Tbool = ENUMTY.Tbool;
+        public static final int Tchar = ENUMTY.Tchar;
+        public static final int Twchar = ENUMTY.Twchar;
+        public static final int Tdchar = ENUMTY.Tdchar;
+        public static final int Terror = ENUMTY.Terror;
+        public static final int Tinstance = ENUMTY.Tinstance;
+        public static final int Ttypeof = ENUMTY.Ttypeof;
+        public static final int Ttuple = ENUMTY.Ttuple;
+        public static final int Tslice = ENUMTY.Tslice;
+        public static final int Treturn = ENUMTY.Treturn;
+        public static final int Tnull = ENUMTY.Tnull;
+        public static final int Tvector = ENUMTY.Tvector;
+        public static final int Tint128 = ENUMTY.Tint128;
+        public static final int Tuns128 = ENUMTY.Tuns128;
+        public static final int TMAX = ENUMTY.TMAX;
 
         public static class TFlags 
         {
@@ -743,7 +743,7 @@ public class astbase {
                 this._init = _init;
                 this.loc = loc.copy();
                 this.storage_class = st;
-                this.sequenceNumber = (VarDeclaration.nextSequenceNumber += 1);
+                this.sequenceNumber = (nextSequenceNumber += 1);
                 this.ctfeAdrOnStack = -1;
             }
 
@@ -1193,6 +1193,12 @@ public class astbase {
         }
         public static class StaticDtorDeclaration extends FuncDeclaration
         {
+            // from template __ctor!()
+            public  StaticDtorDeclaration(Loc loc, Loc endloc, long stc) {
+                super(loc, endloc, Identifier.generateIdWithLoc( new ByteSlice("__staticDtor"), loc), 1L | stc, null);
+            }
+
+
             public  StaticDtorDeclaration(Loc loc, Loc endloc, ByteSlice name, long stc) {
                 super(loc, endloc, Identifier.generateIdWithLoc(name, loc), 1L | stc, null);
             }
@@ -1260,7 +1266,7 @@ public class astbase {
             public int tag;
             public  Package(Identifier ident) {
                 super(ident);
-                this.isPkgMod = ASTBase.PKG.unknown;
+                this.isPkgMod = PKG.unknown;
                 this.tag = astbase.__ctorpackageTag++;
             }
 
@@ -1317,7 +1323,7 @@ public class astbase {
                 super(id);
                 this.loc = loc.copy();
                 this.protection = new Prot(Prot.Kind.public_, null).copy();
-                this.sizeok = ASTBase.Sizeok.none;
+                this.sizeok = Sizeok.none;
             }
 
             public  AggregateDeclaration isAggregateDeclaration() {
@@ -1440,10 +1446,10 @@ public class astbase {
             public  RootObject objectSyntaxCopy(RootObject o) {
                 if (!(o != null))
                     return null;
-                Type t = ASTBase.isType(o);
+                Type t = isType(o);
                 if (t != null)
                     return t.syntaxCopy();
-                Expression e = ASTBase.isExpression(o);
+                Expression e = isExpression(o);
                 if (e != null)
                     return e.syntaxCopy();
                 return o;
@@ -1921,7 +1927,7 @@ public class astbase {
             public  StructDeclaration(Loc loc, Identifier id, boolean inObject) {
                 super(loc, id);
                 this.zeroInit = 0;
-                this.ispod = ASTBase.StructPOD.fwd;
+                this.ispod = StructPOD.fwd;
                 this.type = new TypeStruct(this);
                 if (inObject)
                 {
@@ -2097,34 +2103,34 @@ public class astbase {
                     {
                         if (!(inObject))
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
-                        ClassDeclaration.object = this;
+                        object = this;
                     }
                     if (id.equals(Id.Throwable))
                     {
                         if (!(inObject))
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
-                        ClassDeclaration.throwable = this;
+                        throwable = this;
                     }
                     if (id.equals(Id.Exception))
                     {
                         if (!(inObject))
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
-                        ClassDeclaration.exception = this;
+                        exception = this;
                     }
                     if (id.equals(Id.Error))
                     {
                         if (!(inObject))
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
-                        ClassDeclaration.errorException = this;
+                        errorException = this;
                     }
                     if (id.equals(Id.cpp_type_info_ptr))
                     {
                         if (!(inObject))
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
-                        ClassDeclaration.cpp_type_info_ptr = this;
+                        cpp_type_info_ptr = this;
                     }
                 }
-                this.baseok = ASTBase.Baseok.none;
+                this.baseok = Baseok.none;
             }
 
             public  ClassDeclaration isClassDeclaration() {
@@ -2199,7 +2205,7 @@ public class astbase {
         public static class ParameterList
         {
             public DArray<Parameter> parameters;
-            public int varargs = ASTBase.VarArg.none;
+            public int varargs = VarArg.none;
             public ParameterList(){
             }
             public ParameterList copy(){
@@ -2243,7 +2249,7 @@ public class astbase {
                         return 0;
                     }
                 };
-                Parameter._foreach(parameters, dimDg, null);
+                _foreach(parameters, dimDg, null);
                 return nargs.value;
             }
 
@@ -2259,7 +2265,7 @@ public class astbase {
                         return 0;
                     }
                 };
-                int res = Parameter._foreach(parameters, getNthParamDg, null);
+                int res = _foreach(parameters, getNthParamDg, null);
                 return (res) != 0 ? param.value : null;
             }
 
@@ -2276,10 +2282,10 @@ public class astbase {
                         int i = __key62;
                         Parameter p = (parameters).get(i);
                         Type t = p.type.toBasetype();
-                        if ((t.ty & 0xFF) == ASTBase.ENUMTY.Ttuple)
+                        if ((t.ty & 0xFF) == ENUMTY.Ttuple)
                         {
                             TypeTuple tu = (TypeTuple)t;
-                            result = Parameter._foreach(tu.arguments, dg, ptr(n));
+                            result = _foreach(tu.arguments, dg, ptr(n));
                         }
                         else
                             result = dg.invoke(n.value++, p);
@@ -3414,63 +3420,63 @@ public class astbase {
             }
 
             public static void _init() {
-                Type.stringtable._init(14000);
+                stringtable._init(14000);
                 {
                     int i = 0;
-                    for (; (astbase._initbasetab.get(i) & 0xFF) != ASTBase.ENUMTY.Terror;i++){
+                    for (; (astbase._initbasetab.get(i) & 0xFF) != ENUMTY.Terror;i++){
                         Type t = new TypeBasic(astbase._initbasetab.get(i));
                         t = t.merge();
-                        Type.basic.set(((astbase._initbasetab.get(i) & 0xFF)), t);
+                        basic.set(((astbase._initbasetab.get(i) & 0xFF)), t);
                     }
                 }
-                Type.basic.set(34, new TypeError());
-                Type.tvoid = Type.basic.get(12);
-                Type.tint8 = Type.basic.get(13);
-                Type.tuns8 = Type.basic.get(14);
-                Type.tint16 = Type.basic.get(15);
-                Type.tuns16 = Type.basic.get(16);
-                Type.tint32 = Type.basic.get(17);
-                Type.tuns32 = Type.basic.get(18);
-                Type.tint64 = Type.basic.get(19);
-                Type.tuns64 = Type.basic.get(20);
-                Type.tint128 = Type.basic.get(42);
-                Type.tuns128 = Type.basic.get(43);
-                Type.tfloat32 = Type.basic.get(21);
-                Type.tfloat64 = Type.basic.get(22);
-                Type.tfloat80 = Type.basic.get(23);
-                Type.timaginary32 = Type.basic.get(24);
-                Type.timaginary64 = Type.basic.get(25);
-                Type.timaginary80 = Type.basic.get(26);
-                Type.tcomplex32 = Type.basic.get(27);
-                Type.tcomplex64 = Type.basic.get(28);
-                Type.tcomplex80 = Type.basic.get(29);
-                Type.tbool = Type.basic.get(30);
-                Type.tchar = Type.basic.get(31);
-                Type.twchar = Type.basic.get(32);
-                Type.tdchar = Type.basic.get(33);
-                Type.tshiftcnt = Type.tint32;
-                Type.terror = Type.basic.get(34);
-                Type.tnull = Type.basic.get(40);
-                Type.tnull = new TypeNull();
-                Type.tnull.deco = pcopy(Type.tnull.merge().deco);
-                Type.tvoidptr = Type.tvoid.pointerTo();
-                Type.tstring = Type.tchar.immutableOf().arrayOf();
-                Type.twstring = Type.twchar.immutableOf().arrayOf();
-                Type.tdstring = Type.tdchar.immutableOf().arrayOf();
-                Type.tvalist = Target.va_listType();
+                basic.set(34, new TypeError());
+                tvoid = basic.get(12);
+                tint8 = basic.get(13);
+                tuns8 = basic.get(14);
+                tint16 = basic.get(15);
+                tuns16 = basic.get(16);
+                tint32 = basic.get(17);
+                tuns32 = basic.get(18);
+                tint64 = basic.get(19);
+                tuns64 = basic.get(20);
+                tint128 = basic.get(42);
+                tuns128 = basic.get(43);
+                tfloat32 = basic.get(21);
+                tfloat64 = basic.get(22);
+                tfloat80 = basic.get(23);
+                timaginary32 = basic.get(24);
+                timaginary64 = basic.get(25);
+                timaginary80 = basic.get(26);
+                tcomplex32 = basic.get(27);
+                tcomplex64 = basic.get(28);
+                tcomplex80 = basic.get(29);
+                tbool = basic.get(30);
+                tchar = basic.get(31);
+                twchar = basic.get(32);
+                tdchar = basic.get(33);
+                tshiftcnt = tint32;
+                terror = basic.get(34);
+                tnull = basic.get(40);
+                tnull = new TypeNull();
+                tnull.deco = pcopy(tnull.merge().deco);
+                tvoidptr = tvoid.pointerTo();
+                tstring = tchar.immutableOf().arrayOf();
+                twstring = twchar.immutableOf().arrayOf();
+                tdstring = tdchar.immutableOf().arrayOf();
+                tvalist = Target.va_listType();
                 boolean isLP64 = global.params.isLP64;
-                Type.tsize_t = Type.basic.get(isLP64 ? 20 : 18);
-                Type.tptrdiff_t = Type.basic.get(isLP64 ? 19 : 17);
-                Type.thash_t = Type.tsize_t;
+                tsize_t = basic.get(isLP64 ? 20 : 18);
+                tptrdiff_t = basic.get(isLP64 ? 19 : 17);
+                thash_t = tsize_t;
             }
 
             public  Type pointerTo() {
-                if ((this.ty & 0xFF) == ASTBase.ENUMTY.Terror)
+                if ((this.ty & 0xFF) == ENUMTY.Terror)
                     return this;
                 if (!(this.pto != null))
                 {
                     Type t = new TypePointer(this);
-                    if ((this.ty & 0xFF) == ASTBase.ENUMTY.Tfunction)
+                    if ((this.ty & 0xFF) == ENUMTY.Tfunction)
                     {
                         t.deco = pcopy(t.merge().deco);
                         this.pto = t;
@@ -3482,7 +3488,7 @@ public class astbase {
             }
 
             public  Type arrayOf() {
-                if ((this.ty & 0xFF) == ASTBase.ENUMTY.Terror)
+                if ((this.ty & 0xFF) == ENUMTY.Terror)
                     return this;
                 if (!(this.arrayof != null))
                 {
@@ -3493,11 +3499,11 @@ public class astbase {
             }
 
             public  boolean isImmutable() {
-                return ((this.mod & 0xFF) & ASTBase.MODFlags.immutable_) != 0;
+                return ((this.mod & 0xFF) & MODFlags.immutable_) != 0;
             }
 
             public  Type nullAttributes() {
-                int sz = (Type.sizeTy.get((this.ty & 0xFF)) & 0xFF);
+                int sz = (sizeTy.get((this.ty & 0xFF)) & 0xFF);
                 Type t = null;
                 (t) = (this).copy();
                 t.deco = null;
@@ -3512,10 +3518,10 @@ public class astbase {
                 t.wcto = null;
                 t.swto = null;
                 t.swcto = null;
-                if ((t.ty & 0xFF) == ASTBase.ENUMTY.Tstruct)
-                    ((TypeStruct)t).att = ASTBase.AliasThisRec.fwdref;
-                if ((t.ty & 0xFF) == ASTBase.ENUMTY.Tclass)
-                    ((TypeClass)t).att = ASTBase.AliasThisRec.fwdref;
+                if ((t.ty & 0xFF) == ENUMTY.Tstruct)
+                    ((TypeStruct)t).att = AliasThisRec.fwdref;
+                if ((t.ty & 0xFF) == ENUMTY.Tclass)
+                    ((TypeClass)t).att = AliasThisRec.fwdref;
                 return t;
             }
 
@@ -3584,17 +3590,17 @@ public class astbase {
             }
 
             public  Type merge() {
-                if ((this.ty & 0xFF) == ASTBase.ENUMTY.Terror)
+                if ((this.ty & 0xFF) == ENUMTY.Terror)
                     return this;
-                if ((this.ty & 0xFF) == ASTBase.ENUMTY.Ttypeof)
+                if ((this.ty & 0xFF) == ENUMTY.Ttypeof)
                     return this;
-                if ((this.ty & 0xFF) == ASTBase.ENUMTY.Tident)
+                if ((this.ty & 0xFF) == ENUMTY.Tident)
                     return this;
-                if ((this.ty & 0xFF) == ASTBase.ENUMTY.Tinstance)
+                if ((this.ty & 0xFF) == ENUMTY.Tinstance)
                     return this;
-                if ((this.ty & 0xFF) == ASTBase.ENUMTY.Taarray && ((TypeAArray)this).index.merge().deco == null)
+                if ((this.ty & 0xFF) == ENUMTY.Taarray && ((TypeAArray)this).index.merge().deco == null)
                     return this;
-                if ((this.ty & 0xFF) != ASTBase.ENUMTY.Tenum && this.nextOf() != null && this.nextOf().deco == null)
+                if ((this.ty & 0xFF) != ENUMTY.Tenum && this.nextOf() != null && this.nextOf().deco == null)
                     return this;
                 Type t = this;
                 assert(t != null);
@@ -3704,11 +3710,11 @@ public class astbase {
             }
 
             public  Type wildConstOf() {
-                if ((this.mod & 0xFF) == ASTBase.MODFlags.wildconst)
+                if ((this.mod & 0xFF) == MODFlags.wildconst)
                     return this;
                 if (this.wcto != null)
                 {
-                    assert((this.wcto.mod & 0xFF) == ASTBase.MODFlags.wildconst);
+                    assert((this.wcto.mod & 0xFF) == MODFlags.wildconst);
                     return this.wcto;
                 }
                 Type t = this.makeWildConst();
@@ -3718,11 +3724,11 @@ public class astbase {
             }
 
             public  Type constOf() {
-                if ((this.mod & 0xFF) == ASTBase.MODFlags.const_)
+                if ((this.mod & 0xFF) == MODFlags.const_)
                     return this;
                 if (this.cto != null)
                 {
-                    assert((this.cto.mod & 0xFF) == ASTBase.MODFlags.const_);
+                    assert((this.cto.mod & 0xFF) == MODFlags.const_);
                     return this.cto;
                 }
                 Type t = this.makeConst();
@@ -3746,11 +3752,11 @@ public class astbase {
             }
 
             public  Type wildOf() {
-                if ((this.mod & 0xFF) == ASTBase.MODFlags.wild)
+                if ((this.mod & 0xFF) == MODFlags.wild)
                     return this;
                 if (this.wto != null)
                 {
-                    assert((this.wto.mod & 0xFF) == ASTBase.MODFlags.wild);
+                    assert((this.wto.mod & 0xFF) == MODFlags.wild);
                     return this.wto;
                 }
                 Type t = this.makeWild();
@@ -3760,11 +3766,11 @@ public class astbase {
             }
 
             public  Type sharedOf() {
-                if ((this.mod & 0xFF) == ASTBase.MODFlags.shared_)
+                if ((this.mod & 0xFF) == MODFlags.shared_)
                     return this;
                 if (this.sto != null)
                 {
-                    assert((this.sto.mod & 0xFF) == ASTBase.MODFlags.shared_);
+                    assert((this.sto.mod & 0xFF) == MODFlags.shared_);
                     return this.sto;
                 }
                 Type t = this.makeShared();
@@ -3790,7 +3796,7 @@ public class astbase {
             public  void fixTo(Type t) {
                 Type mto = null;
                 Type tn = this.nextOf();
-                if (!(tn != null) || (this.ty & 0xFF) != ASTBase.ENUMTY.Tsarray && (tn.mod & 0xFF) == (t.nextOf().mod & 0xFF))
+                if (!(tn != null) || (this.ty & 0xFF) != ENUMTY.Tsarray && (tn.mod & 0xFF) == (t.nextOf().mod & 0xFF))
                 {
                     switch ((t.mod & 0xFF))
                     {
@@ -3822,9 +3828,7 @@ public class astbase {
                             this.ito = t;
                             break;
                         default:
-                        {
-                            break;
-                        }
+                        break;
                     }
                 }
                 assert((this.mod & 0xFF) != (t.mod & 0xFF));
@@ -3878,9 +3882,7 @@ public class astbase {
                             t.swcto.ito = this;
                         break;
                     default:
-                    {
-                        throw new AssertionError("Unreachable code!");
-                    }
+                    throw new AssertionError("Unreachable code!");
                 }
             }
 
@@ -3965,9 +3967,7 @@ public class astbase {
                             t = this.immutableOf();
                             break;
                         default:
-                        {
-                            throw new AssertionError("Unreachable code!");
-                        }
+                        throw new AssertionError("Unreachable code!");
                     }
                 }
                 return t;
@@ -3982,15 +3982,15 @@ public class astbase {
             }
 
             public  boolean isConst() {
-                return ((this.mod & 0xFF) & ASTBase.MODFlags.const_) != 0;
+                return ((this.mod & 0xFF) & MODFlags.const_) != 0;
             }
 
             public  boolean isWild() {
-                return ((this.mod & 0xFF) & ASTBase.MODFlags.wild) != 0;
+                return ((this.mod & 0xFF) & MODFlags.wild) != 0;
             }
 
             public  boolean isShared() {
-                return ((this.mod & 0xFF) & ASTBase.MODFlags.shared_) != 0;
+                return ((this.mod & 0xFF) & MODFlags.shared_) != 0;
             }
 
             public  Type toBasetype() {
@@ -4116,9 +4116,7 @@ public class astbase {
                         flags |= 69;
                         break;
                     default:
-                    {
-                        throw new AssertionError("Unreachable code!");
-                    }
+                    throw new AssertionError("Unreachable code!");
                 }
                 this.dstring = pcopy(d);
                 this.flags = flags;
@@ -4321,7 +4319,7 @@ public class astbase {
                         int i = 0;
                         for (; i < (exps).length;i++){
                             Expression e = (exps).get(i);
-                            if ((e.type.ty & 0xFF) == ASTBase.ENUMTY.Ttuple)
+                            if ((e.type.ty & 0xFF) == ENUMTY.Ttuple)
                                 e.error(new BytePtr("cannot form tuple of tuples"));
                             Parameter arg = new Parameter(0L, e.type, null, null, null);
                             arguments.set(i, arg);
@@ -4368,7 +4366,7 @@ public class astbase {
         public static class TypeClass extends Type
         {
             public ClassDeclaration sym;
-            public int att = ASTBase.AliasThisRec.fwdref;
+            public int att = AliasThisRec.fwdref;
             public  TypeClass(ClassDeclaration sym) {
                 super((byte)7);
                 this.sym = sym;
@@ -4409,7 +4407,7 @@ public class astbase {
         public static class TypeStruct extends Type
         {
             public StructDeclaration sym;
-            public int att = ASTBase.AliasThisRec.fwdref;
+            public int att = AliasThisRec.fwdref;
             public  TypeStruct(StructDeclaration sym) {
                 super((byte)8);
                 this.sym = sym;
@@ -4604,16 +4602,16 @@ public class astbase {
             public boolean isscope;
             public int linkage;
             public int trust;
-            public int purity = ASTBase.PURE.impure;
+            public int purity = PURE.impure;
             public byte iswild;
             public DArray<Expression> fargs;
             public  TypeFunction(ParameterList pl, Type treturn, int linkage, long stc) {
                 super((byte)5, treturn);
-                assert(ASTBase.VarArg.none <= pl.varargs && pl.varargs <= ASTBase.VarArg.typesafe);
+                assert(VarArg.none <= pl.varargs && pl.varargs <= VarArg.typesafe);
                 this.parameterList = pl.copy();
                 this.linkage = linkage;
                 if ((stc & 67108864L) != 0)
-                    this.purity = ASTBase.PURE.fwdref;
+                    this.purity = PURE.fwdref;
                 if ((stc & 33554432L) != 0)
                     this.isnothrow = true;
                 if ((stc & 4398046511104L) != 0)
@@ -4626,13 +4624,13 @@ public class astbase {
                     this.isreturn = true;
                 if ((stc & 524288L) != 0)
                     this.isscope = true;
-                this.trust = ASTBase.TRUST.default_;
+                this.trust = TRUST.default_;
                 if ((stc & 8589934592L) != 0)
-                    this.trust = ASTBase.TRUST.safe;
+                    this.trust = TRUST.safe;
                 if ((stc & 34359738368L) != 0)
-                    this.trust = ASTBase.TRUST.system;
+                    this.trust = TRUST.system;
                 if ((stc & 17179869184L) != 0)
-                    this.trust = ASTBase.TRUST.trusted;
+                    this.trust = TRUST.trusted;
             }
 
             public  Type syntaxCopy() {
@@ -4880,9 +4878,7 @@ public class astbase {
                             e = new ArrayExp(this.loc, e, (Expression)id);
                             break;
                         default:
-                        {
-                            throw new AssertionError("Unreachable code!");
-                        }
+                        throw new AssertionError("Unreachable code!");
                     }
                 }
                 return e;
@@ -5141,7 +5137,7 @@ public class astbase {
                 assert(type != null);
                 if (!(type.isscalar()))
                 {
-                    if ((type.ty & 0xFF) != ASTBase.ENUMTY.Terror)
+                    if ((type.ty & 0xFF) != ENUMTY.Terror)
                         this.error(new BytePtr("integral constant must be scalar type, not %s"), type.toChars());
                     type = Type.terror;
                 }
@@ -5200,9 +5196,7 @@ public class astbase {
                                     /*goto case*/{ __dispatch5 = 16; continue dispatched_5; }
                                 throw new AssertionError("Unreachable code!");
                             default:
-                            {
-                                break;
-                            }
+                            break;
                         }
                     } while(__dispatch5 != 0);
                 }
@@ -5455,9 +5449,7 @@ public class astbase {
                         encSize = 4;
                         break;
                     default:
-                    {
-                        throw new AssertionError("Unreachable code!");
-                    }
+                    throw new AssertionError("Unreachable code!");
                 }
                 if ((this.sz & 0xFF) == encSize)
                 {
@@ -5986,7 +5978,7 @@ public class astbase {
 
             public  Dsymbol getDsymbol(RootObject oarg) {
                 Dsymbol sa = null;
-                Expression ea = ASTBase.isExpression(oarg);
+                Expression ea = isExpression(oarg);
                 if (ea != null)
                 {
                     if ((ea.op & 0xFF) == 26)
@@ -6005,7 +5997,7 @@ public class astbase {
                 }
                 else
                 {
-                    Type ta = ASTBase.isType(oarg);
+                    Type ta = isType(oarg);
                     if (ta != null)
                         sa = ta.toDsymbol(null);
                     else
@@ -7605,7 +7597,7 @@ public class astbase {
         {
             public Expression exp;
             public  ExpInitializer(Loc loc, Expression exp) {
-                super(loc, ASTBase.InitKind.exp);
+                super(loc, InitKind.exp);
                 this.exp = exp;
             }
 
@@ -7629,7 +7621,7 @@ public class astbase {
             public DArray<Identifier> field = new DArray<Identifier>();
             public DArray<Initializer> value = new DArray<Initializer>();
             public  StructInitializer(Loc loc) {
-                super(loc, ASTBase.InitKind.struct_);
+                super(loc, InitKind.struct_);
             }
 
             public  void addInit(Identifier field, Initializer value) {
@@ -7660,7 +7652,7 @@ public class astbase {
             public int dim;
             public Type type;
             public  ArrayInitializer(Loc loc) {
-                super(loc, ASTBase.InitKind.array);
+                super(loc, InitKind.array);
             }
 
             public  void addInit(Expression index, Initializer value) {
@@ -7691,7 +7683,7 @@ public class astbase {
         public static class VoidInitializer extends Initializer
         {
             public  VoidInitializer(Loc loc) {
-                super(loc, ASTBase.InitKind.void_);
+                super(loc, InitKind.void_);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -7893,8 +7885,8 @@ public class astbase {
             if ((stc & 17592186568704L) == 17592186568704L)
                 stc &= -524289L;
             Ref<Long> stc_ref = ref(stc);
-            for (; (stc) != 0;){
-                BytePtr p = pcopy(ASTBase.stcToChars(stc_ref));
+            for (; (stc_ref.value) != 0;){
+                BytePtr p = pcopy(stcToChars(stc_ref));
                 if (p == null)
                     break;
                 if (!(result))

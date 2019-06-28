@@ -18,26 +18,26 @@ import static org.dlang.dmd.utils.*;
 public class globals {
     static int versionNumbercached = 0;
 
-        // from template xversion!("OSX")
-        static boolean xversion_OSX = false;
+    // from template xversion!("OSX")
+    static boolean xversion_OSX = false;
 
-        // from template xversion!("FreeBSD")
-        static boolean xversion_FreeBSD = false;
+    // from template xversion!("FreeBSD")
+    static boolean xversion_FreeBSD = false;
 
-        // from template xversion!("DragonFlyBSD")
-        static boolean xversion_DragonFlyBSD = false;
+    // from template xversion!("DragonFlyBSD")
+    static boolean xversion_DragonFlyBSD = false;
 
-        // from template xversion!("OpenBSD")
-        static boolean xversion_OpenBSD = false;
+    // from template xversion!("OpenBSD")
+    static boolean xversion_OpenBSD = false;
 
-        // from template xversion!("Windows")
-        static boolean xversion_Windows = false;
+    // from template xversion!("Windows")
+    static boolean xversion_Windows = false;
 
-        // from template xversion!("Solaris")
-        static boolean xversion_Solaris = false;
+    // from template xversion!("Solaris")
+    static boolean xversion_Solaris = false;
 
-        // from template xversion!("linux")
-        static boolean xversion_linux = true;
+    // from template xversion!("linux")
+    static boolean xversion_linux = true;
 
 
     public static class TARGET 
@@ -261,13 +261,13 @@ public class globals {
         }
 
         public Param(){
-            modFileAliasStrings = new DArray();
-            ddocfiles = new DArray();
-            runargs = new DArray();
-            objfiles = new DArray();
-            linkswitches = new DArray();
-            libfiles = new DArray();
-            dllfiles = new DArray();
+            modFileAliasStrings = new DArray<BytePtr>();
+            ddocfiles = new DArray<BytePtr>();
+            runargs = new DArray<BytePtr>();
+            objfiles = new DArray<BytePtr>();
+            linkswitches = new DArray<BytePtr>();
+            libfiles = new DArray<BytePtr>();
+            dllfiles = new DArray<BytePtr>();
         }
         public Param copy(){
             Param r = new Param();

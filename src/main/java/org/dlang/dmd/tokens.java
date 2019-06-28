@@ -287,7 +287,7 @@ public class tokens {
                 int __key47 = 0;
                 for (; __key47 < __r46.getLength();__key47 += 1) {
                     byte kw = __r46.get(__key47);
-                    Identifier.idPool(toBytePtr(Token.tochars.get((kw & 0xFF))), Token.tochars.get((kw & 0xFF)).getLength(), (kw & 0xFF));
+                    Identifier.idPool(toBytePtr(tochars.get((kw & 0xFF))), tochars.get((kw & 0xFF)).getLength(), (kw & 0xFF));
                 }
             }
         }
@@ -393,20 +393,18 @@ public class tokens {
                                                             buf.writeByte(92);
                                                             /*goto default*/ { __dispatch1 = -1; continue dispatched_1; }
                                                         default:
+                                                        if (c.value <= 127)
                                                         {
-                                                            if (c.value <= 127)
-                                                            {
-                                                                if ((isprint(c.value)) != 0)
-                                                                    buf.writeByte(c.value);
-                                                                else
-                                                                    buf.printf( new ByteSlice("\\x%02x"), c.value);
-                                                            }
-                                                            else if (c.value <= 65535)
-                                                                buf.printf( new ByteSlice("\\u%04x"), c.value);
+                                                            if ((isprint(c.value)) != 0)
+                                                                buf.writeByte(c.value);
                                                             else
-                                                                buf.printf( new ByteSlice("\\U%08x"), c.value);
-                                                            continue L_outer1;
+                                                                buf.printf( new ByteSlice("\\x%02x"), c.value);
                                                         }
+                                                        else if (c.value <= 65535)
+                                                            buf.printf( new ByteSlice("\\u%04x"), c.value);
+                                                        else
+                                                            buf.printf( new ByteSlice("\\U%08x"), c.value);
+                                                        continue L_outer1;
                                                     }
                                                 } while(__dispatch1 != 0);
                                             }
@@ -479,10 +477,8 @@ public class tokens {
                             p = pcopy(this.ident.toChars());
                             break;
                         default:
-                        {
-                            p = pcopy(Token.toChars(this.value));
-                            break;
-                        }
+                        p = pcopy(toChars(this.value));
+                        break;
                     }
                 } while(__dispatch0 != 0);
             }
@@ -490,11 +486,11 @@ public class tokens {
         }
 
         public static BytePtr toChars(byte value) {
-            return toBytePtr(Token.asString(value));
+            return toBytePtr(asString(value));
         }
 
         public static ByteSlice asString(byte value) {
-            return Token.tochars.get((value & 0xFF));
+            return tochars.get((value & 0xFF));
         }
 
         public Token(){
