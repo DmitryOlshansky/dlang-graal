@@ -18,7 +18,7 @@ fun strlen(ptr: BytePtr): Int {
 }
 
 fun strchr(ptr: BytePtr, c: Int): BytePtr? {
-    for (i in ptr.offset .. ptr.data.size) {
+    for (i in ptr.offset until ptr.data.size) {
         if (ptr.data[i] == c.toByte()) return BytePtr(ptr.data, i)
     }
     return null
@@ -81,12 +81,13 @@ fun strstr(ptr: BytePtr, needle: ByteSlice): BytePtr? {
     var ch = needle[0]
     if (ch == 0.toByte()) return null
     var p: BytePtr? = ptr
-    while (true) {
-        p = strchr(p!!, ch.toInt())
+    while (p!!.get() != 0.toByte() && p.offset != p.data.size) {
+        p = strchr(p, ch.toInt())
         if (p === null) return null
-        if (strcmp(p, needle) == 0) return p
+        if (strncmp(p, needle, needle.length) == 0) return p
         p.plusAssign(1)
     }
+    return null
 }
 
 fun strcat(dest: BytePtr, src: ByteSlice) {
