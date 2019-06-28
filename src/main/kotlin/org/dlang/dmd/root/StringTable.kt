@@ -1,7 +1,7 @@
 package org.dlang.dmd.root
 
-data class StringValue(@JvmField var hash: Int, @JvmField var ptrvalue: Any?) : RootObject() {
-    override fun toChars(): BytePtr = BytePtr(ptrvalue.toString())
+data class StringValue(@JvmField var str: ByteSlice, @JvmField var hash: Int, @JvmField var ptrvalue: Any?) : RootObject() {
+    override fun toChars(): BytePtr = str.ptr()
 }
 
 class StringTable(private val table : HashMap<ByteSlice, StringValue?>) {
@@ -53,7 +53,7 @@ class StringTable(private val table : HashMap<ByteSlice, StringValue?>) {
     fun insert(str: ByteSlice, ptrvalue: Any?): StringValue? {
         if (table[str] !== null) return null
         else {
-            val value = StringValue(str.hashCode(), ptrvalue)
+            val value = StringValue(str, str.hashCode(), ptrvalue)
             table[str] = value
             return value
         }
@@ -66,7 +66,7 @@ class StringTable(private val table : HashMap<ByteSlice, StringValue?>) {
         val v = table[str]
         if (v !== null) return v
         else {
-            val value = StringValue(str.hashCode(), null)
+            val value = StringValue(str, str.hashCode(), null)
             table[str] = value
             // printf("update %.*s %p\n", cast(int)str.length, str.ptr, table[i].value ?: NULL);
             return value

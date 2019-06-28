@@ -36,7 +36,7 @@ public class filecache {
                 }
                 if ((buf.get() & 0xFF) == 13 && ((buf.plus(1)).get() & 0xFF) == 10)
                     buf.postInc();
-                this.lines.append(toByteSlice(prevBuf.slice(0,((buf.minus(prevBuf)) / 1))));
+                this.lines.append(toByteSlice(prevBuf.slice(0,((buf.minus(prevBuf))))));
                 buf.postInc();
             }
         }
@@ -60,7 +60,7 @@ public class filecache {
             if (payload != null)
             {
                 if (payload != null)
-                    return null;
+                    return (FileAndLines)(payload).ptrvalue;
             }
             FileAndLines lines = new FileAndLines(file);
             this.files.insert(file, lines);

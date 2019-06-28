@@ -691,6 +691,15 @@ public:
             buf.writestring(")");
             return;
         }
+        // optimize away * 1 and / 1
+        else if (e.op == TOK.div || e.op == TOK.mul) {
+            if (auto integer = e.e2.isIntegerExp()) {
+                if (integer.toInteger() == 1) {
+                     expToBuffer(e.e1, precedence[e.op], buf, opts);
+                    return;
+                }
+            }
+        }
         else if(e.e1.type.ty == Tpointer && (e.e2.type.isTypeBasic() || e.e2.type.ty == Tpointer)) {
             string opName = "";
             switch(e.op) {
@@ -951,8 +960,10 @@ public:
                 toVoid = true;
                 break;
             case Tpointer:
-                if (e.to.nextOf.ty == Tvoid) 
+                if (e.to.nextOf.ty == Tvoid)  {
                     toVoidPtr = true;
+                    break;
+                }
                 if (e.to.nextOf.ty == Tstruct)
                     break;
                 goto case;
@@ -1017,7 +1028,20 @@ public:
             expToBuffer(e.e1, precedence[e.op], buf, opts);
         }
         else if(fromVoidPtr && toClass) {
-            buf.writestring("null"); // impossible, likely Mem.xmalloc
+            if (auto call = e.e1.isCallExp) {
+                if (call.f && call.f.funcName == "xmalloc")
+                    buf.writestring("null");
+            }
+            else { // simple casts
+                buf.writestring("(");
+                typeToBuffer(e.to, buf, opts);
+                buf.writestring(")");
+                expToBuffer(e.e1, precedence[e.op], buf, opts);
+            }
+        }
+        else if(complexTarget && fromClass) {
+            buf.writestring("(Object)");
+            expToBuffer(e.e1, precedence[e.op], buf, opts);
         }
         else if (complexTarget) { // rely on toTypeName(x)
             buf.writestring("to");
@@ -1344,8 +1368,15 @@ private void argsToBuffer(Expressions* expressions, OutBuffer* buf, ExprOpts opt
             auto wantChar = fd && fd.parameters && i < fd.parameters.length
                 && (*fd.parameters)[i].type.ty == Tpointer
                 && (*fd.parameters)[i].type.nextOf.ty == Tchar;
-            
-            if (var && (cast(void*)var.var in opts.refParams) && refParam) {
+
+            if (fd && var && var.type.isTypeClass() && fd.parameters && i < fd.parameters.length
+            && (*fd.parameters)[i].type != var.var.type) {
+                buf.writestring("(");
+                buf.writestring((*fd.parameters)[i].type.toJava(opts));
+                buf.writestring(")");
+                buf.writestring(var.var.ident.symbol);
+            }
+            else if (var && (cast(void*)var.var in opts.refParams) && refParam) {
                 buf.writestring(var.var.ident.toString);
             }
             else if(n && n.type.ty == Tarray) {

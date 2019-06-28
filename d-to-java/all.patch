@@ -87,61 +87,7 @@ index 211e7df..1fda47d 100644
 +            return __result;
          }
  
-         public Param(){
-diff --git a/src/main/java/org/dlang/dmd/identifier.java b/src/main/java/org/dlang/dmd/identifier.java
-index e80faa0..3911eb6 100644
---- a/src/main/java/org/dlang/dmd/identifier.java
-+++ b/src/main/java/org/dlang/dmd/identifier.java
-@@ -142,6 +142,11 @@ public class identifier {
- 
-         public static Identifier generateIdWithLoc(ByteSlice prefix, Loc loc) {
-             OutBuffer idBuf = new OutBuffer();
-+            Function0<Integer> __lambda7 = new Function0<Integer>(){
-+                public Integer invoke(){
-+                    return 1;
-+                }
-+            };
-             Function1<Integer,Integer> __lambda8 = new Function1<Integer,Integer>(){
-                 public Integer invoke(Integer counter){
-                     idBuf.writestring( new ByteSlice("_"));
-@@ -149,11 +154,6 @@ public class identifier {
-                     return counter + 1;
-                 }
-             };
--            Function0<Integer> __lambda7 = new Function0<Integer>(){
--                public Integer invoke(){
--                    return 1;
--                }
--            };
-             try {
-                 idBuf.writestring(prefix);
-                 idBuf.writestring( new ByteSlice("_L"));
-@@ -173,11 +173,11 @@ public class identifier {
- 
-         public static Identifier idPool(ByteSlice s) {
-             StringValue sv = Identifier.stringtable.update(s);
--            Identifier id = (Identifier)(sv).ptrvalue;
-+            Identifier id = null;
-             if (!(id != null))
-             {
--                id = new Identifier(s.copy(), 120);
--                (sv).ptrvalue = pcopy((id));
-+                id = new Identifier((sv).asString(), 120);
-+                (sv).ptrvalue = pcopy((toBytePtr(id)));
-             }
-             return id;
-         }
-@@ -189,8 +189,8 @@ public class identifier {
-         public static Identifier idPool(ByteSlice s, int value) {
-             StringValue sv = Identifier.stringtable.insert(s, null);
-             assert(sv != null);
--            Identifier id = new Identifier(s.copy(), value);
--            (sv).ptrvalue = pcopy((id));
-+            Identifier id = new Identifier((sv).asString(), value);
-+            (sv).ptrvalue = pcopy((toBytePtr(id)));
-             return id;
-         }
- 
+         public Param(){ 
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
 index 728d011..8a517f6 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java

@@ -20,7 +20,7 @@ abstract class RootObject {
 
     open fun asString(): ByteSlice {
         val ptr = toChars()
-        return ByteSlice(ptr.data, ptr.offset, strlen(ptr))
+        return ptr.slice(0, strlen(ptr))
     }
 
     override fun toString(): String {

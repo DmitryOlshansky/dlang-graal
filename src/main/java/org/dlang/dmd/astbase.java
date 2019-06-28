@@ -1454,9 +1454,9 @@ public class astbase {
                 ti.tiargs = this.arraySyntaxCopy(this.tiargs);
                 TemplateDeclaration td = null;
                 if (this.inst != null && this.tempdecl != null && (td = this.tempdecl.isTemplateDeclaration()) != null)
-                    td.syntaxCopy(ti);
+                    td.syntaxCopy((Dsymbol)ti);
                 else
-                    this.syntaxCopy(ti);
+                    this.syntaxCopy((Dsymbol)ti);
                 return ti;
             }
 
@@ -4820,11 +4820,11 @@ public class astbase {
             }
 
             public  void addIdent(Identifier id) {
-                this.idents.push(id);
+                this.idents.push((RootObject)id);
             }
 
             public  void addInst(TemplateInstance ti) {
-                this.idents.push(ti);
+                this.idents.push((RootObject)ti);
             }
 
             public  void addIndex(RootObject e) {
@@ -5463,7 +5463,7 @@ public class astbase {
                 {
                     memcpy((BytePtr)dest, (this.string), (this.len * (this.sz & 0xFF)));
                     if (zero)
-                        memset(((BytePtr)dest).plus((this.len * (this.sz & 0xFF)) * 1), 0, (this.sz & 0xFF));
+                        memset(((BytePtr)dest).plus((this.len * (this.sz & 0xFF))), 0, (this.sz & 0xFF));
                 }
                 else
                     throw new AssertionError("Unreachable code!");
@@ -7584,7 +7584,7 @@ public class astbase {
             }
 
             public  ExpInitializer isExpInitializer() {
-                return (this.kind & 0xFF) == 4 ? null : null;
+                return (this.kind & 0xFF) == 4 ? (ExpInitializer)this : null;
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {

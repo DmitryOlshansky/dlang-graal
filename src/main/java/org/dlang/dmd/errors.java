@@ -339,7 +339,7 @@ public class errors {
                             inBacktick = false;
                             OutBuffer codebuf = new OutBuffer();
                             try {
-                                codebuf.write((toBytePtr((buf).peekSlice()).plus(iCodeStart * 1).plus(1)), i - (iCodeStart + 1));
+                                codebuf.write((toBytePtr((buf).peekSlice()).plus(iCodeStart).plus(1)), i - (iCodeStart + 1));
                                 codebuf.writeByte(0);
                                 colorHighlightCode(codebuf);
                                 (buf).remove(iCodeStart, i - iCodeStart + 1);
@@ -394,7 +394,7 @@ public class errors {
         for (; (1) != 0;){
             Token tok = new Token().copy();
             lex.scan(tok);
-            res.writestring(lastp.slice(0,((tok.ptr.minus(lastp)) / 1)));
+            res.writestring(lastp.slice(0,((tok.ptr.minus(lastp)))));
             byte highlight = HIGHLIGHT.Default;
             switch ((tok.value & 0xFF))
             {
@@ -433,12 +433,12 @@ public class errors {
             {
                 res.writeByte(255);
                 res.writeByte((highlight & 0xFF));
-                res.writestring(tok.ptr.slice(0,((lex.p.minus(tok.ptr)) / 1)));
+                res.writestring(tok.ptr.slice(0,((lex.p.minus(tok.ptr)))));
                 res.writeByte(255);
                 res.writeByte(6);
             }
             else
-                res.writestring(tok.ptr.slice(0,((lex.p.minus(tok.ptr)) / 1)));
+                res.writestring(tok.ptr.slice(0,((lex.p.minus(tok.ptr)))));
             if ((tok.value & 0xFF) == 11)
                 break;
             lastp = pcopy(lex.p);

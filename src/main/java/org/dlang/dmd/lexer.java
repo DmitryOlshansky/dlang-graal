@@ -109,8 +109,8 @@ public class lexer {
             this.scanloc = new Loc(filename, 1, 1);
             this.token = new Token().copy();
             this.base = pcopy(base);
-            this.end = pcopy((base.plus(endoffset * 1)));
-            this.p = pcopy((base.plus(begoffset * 1)));
+            this.end = pcopy((base.plus(endoffset)));
+            this.p = pcopy((base.plus(begoffset)));
             this.line = pcopy(this.p);
             this.doDocComment = doDocComment;
             this.commentToken = commentToken;
@@ -272,7 +272,7 @@ public class lexer {
                                 BytePtr start = pcopy(this.p);
                                 OutBuffer hexString = new OutBuffer(null, 0, 0, 0, false, false);
                                 (t).value = this.hexStringConstant(t);
-                                (hexString).write(start, ((this.p.minus(start)) / 1));
+                                (hexString).write(start, ((this.p.minus(start))));
                                 this.error(new BytePtr("Built-in hex string literals are obsolete, use `std.conv.hexString!%s` instead."), (hexString).extractChars());
                                 return ;
                             case 113:
@@ -362,7 +362,7 @@ public class lexer {
                                         }
                                         break;
                                     }
-                                    Identifier id = Identifier.idPool((t).ptr, ((this.p.minus((t).ptr)) / 1));
+                                    Identifier id = Identifier.idPool((t).ptr, ((this.p.minus((t).ptr))));
                                     (t).ident = id;
                                     (t).value = (byte)id.getValue();
                                     this.anyToken = true;
@@ -1099,10 +1099,10 @@ public class lexer {
                                         switch ((p.get() & 0xFF))
                                         {
                                             case 59:
-                                                c = HtmlNamedEntity(idstart, ((p.minus(idstart)) / 1));
+                                                c = HtmlNamedEntity(idstart, ((p.minus(idstart))));
                                                 if (c == -1)
                                                 {
-                                                    handler.error(loc, new BytePtr("unnamed character entity &%.*s;"), (p.minus(idstart)) / 1, idstart);
+                                                    handler.error(loc, new BytePtr("unnamed character entity &%.*s;"), (p.minus(idstart)), idstart);
                                                     c = 63;
                                                 }
                                                 p.postInc();
@@ -1111,7 +1111,7 @@ public class lexer {
                                             {
                                                 if ((isalpha((p.get() & 0xFF))) != 0 || p != idstart && (isdigit((p.get() & 0xFF))) != 0)
                                                     continue;
-                                                handler.error(loc, new BytePtr("unterminated named entity &%.*s;"), (p.minus(idstart)) / 1 + 1, idstart);
+                                                handler.error(loc, new BytePtr("unterminated named entity &%.*s;"), (p.minus(idstart)) + 1, idstart);
                                                 c = 63;
                                                 break;
                                             }
@@ -1456,7 +1456,7 @@ public class lexer {
                         case 6:
                             if ((nest -= 1) == 0)
                             {
-                                (result).setString(pstart, ((this.p.minus(1).minus(pstart)) / 1));
+                                (result).setString(pstart, ((this.p.minus(1).minus(pstart))));
                                 this.stringPostfix(result);
                                 return ;
                             }
@@ -1810,7 +1810,7 @@ public class lexer {
                 err = true;
             }
             if (base == 2 && !(anyBinaryDigitsNoSingleUS) || base == 16 && !(anyHexDigitsNoSingleUS))
-                this.error(new BytePtr("`%.*s` isn't a valid integer literal, use `%.*s0` instead"), (this.p.minus(start)) / 1, start, 2, start);
+                this.error(new BytePtr("`%.*s` isn't a valid integer literal, use `%.*s0` instead"), (this.p.minus(start)), start, 2, start);
             int flags = base == 10 ? FLAGS.decimal : FLAGS.none;
             BytePtr psuffix = pcopy(this.p);
         L_outer5:
@@ -1857,7 +1857,7 @@ public class lexer {
                 if (err)
                     this.error(new BytePtr("octal literals larger than 7 are no longer supported"));
                 else
-                    this.error(new BytePtr("octal literals `0%llo%.*s` are no longer supported, use `std.conv.octal!%llo%.*s` instead"), n, (this.p.minus(psuffix)) / 1, psuffix, n, (this.p.minus(psuffix)) / 1, psuffix);
+                    this.error(new BytePtr("octal literals `0%llo%.*s` are no longer supported, use `std.conv.octal!%llo%.*s` instead"), n, (this.p.minus(psuffix)), psuffix, n, (this.p.minus(psuffix)), psuffix);
             }
             byte result = TOK.reserved;
             switch (flags)
@@ -2068,7 +2068,7 @@ public class lexer {
         }
 
         public  Loc loc() {
-            this.scanloc.charnum = ((this.p.plus(1).minus(this.line)) / 1);
+            this.scanloc.charnum = ((this.p.plus(1).minus(this.line)));
             return this.scanloc;
         }
 
@@ -2242,7 +2242,7 @@ public class lexer {
             IntRef idx = ref(0);
             IntRef u = ref(0x0ffff);
             BytePtr msg = pcopy(utf_decodeChar(s, len, idx, u));
-            this.p.plusAssign((idx.value - 1) * 1);
+            this.p.plusAssign((idx.value - 1));
             if (msg != null)
             {
                 this.error(new BytePtr("%s"), msg);
@@ -2387,7 +2387,7 @@ public class lexer {
                         p.set((len1 - 1), (byte)10);
                     if (newParagraph)
                         p.set(len1, (byte)10);
-                    memcpy((BytePtr)((p.plus(len1 * 1).plus(newParagraphSize * 1))), (c2), len2);
+                    memcpy((BytePtr)((p.plus(len1).plus(newParagraphSize))), (c2), len2);
                     p.set((len1 + newParagraphSize + len2), (byte)0);
                     c = pcopy(p);
                 }
