@@ -60,10 +60,7 @@ struct Template {
 
 ///
 const(char)[] funcName(FuncDeclaration f) {
-    /*if (f.v_arguments) {
-        return format("%s%d", f.ident.symbol, f.parameters ? f.parameters.length : 0);
-    }
-    else*/ return f.ident.symbol;
+    return f.ident.symbol;
 }
 
 ///
@@ -71,6 +68,7 @@ const(char)[] symbol(const(char)[] s) {
     if (s == "native") return "native_";
     else if(s == "toString") return "asString";
     else if (s == "Array") return "DArray";
+    else if (s == "_") return "__";
     else return s;
 }
 

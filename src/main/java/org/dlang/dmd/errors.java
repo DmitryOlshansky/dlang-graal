@@ -213,7 +213,7 @@ public class errors {
                         int __key42 = 1;
                         int __limit43 = loc.charnum;
                         for (; __key42 < __limit43;__key42 += 1) {
-                            int _ = __key42;
+                            int __ = __key42;
                             fputc(32, stderr);
                         }
                     }
