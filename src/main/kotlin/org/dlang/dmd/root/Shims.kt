@@ -74,9 +74,20 @@ fun strncmp(ptr: BytePtr, s2: ByteSlice, n: Int): Int {
     else return 1
 }
 
-fun strstr(ptr: BytePtr, needle: BytePtr) : BytePtr? = null //TODO: stub!
+fun strstr(ptr: BytePtr, needle: BytePtr) : BytePtr? = strstr(ptr, needle.slice(0, strlen(needle)))
 
-fun strstr(ptr: BytePtr, needle: ByteSlice): BytePtr? = null //TODO: stub!
+fun strstr(ptr: BytePtr, needle: ByteSlice): BytePtr? {
+    var i = 0
+    var ch = needle[0]
+    if (ch == 0.toByte()) return null
+    var p: BytePtr? = ptr
+    while (true) {
+        p = strchr(p!!, ch.toInt())
+        if (p === null) return null
+        if (strcmp(p, needle) == 0) return p
+        p.plusAssign(1)
+    }
+}
 
 fun strcat(dest: BytePtr, src: ByteSlice) {
     val len = strlen(dest)

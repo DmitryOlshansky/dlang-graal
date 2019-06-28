@@ -44,7 +44,6 @@ struct ExprOpts {
     bool wantCharPtr = false;
     bool rawArrayLiterals = false;
     EnumDeclaration inEnumDecl = null;
-    FuncDeclaration inFuncDecl = null;
     AggregateDeclaration[] inAggregate = null;
     Expression dollarValue = null;
     VarDeclaration vararg = null;

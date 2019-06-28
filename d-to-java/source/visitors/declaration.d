@@ -1149,9 +1149,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     }
 
     override void visit(UnitTestDeclaration func)  {
-        auto oldFunc = opts.inFuncDecl;
-        scope(exit) opts.inFuncDecl = oldFunc;
-        opts.inFuncDecl = func;
         hoistLocalAggregates(func);
         stack ~= func;
         if (func.fbody) {
@@ -1304,9 +1301,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             hoistLocalAggregates(func);
         }
         stack ~= func;
-        auto oldFunc = opts.inFuncDecl;
-        scope(exit) opts.inFuncDecl = oldFunc;
-        opts.inFuncDecl = func;
 
         auto oldRefParams = opts.refParams.dup;
         scope(exit) opts.refParams = oldRefParams;

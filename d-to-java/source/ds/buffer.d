@@ -3,12 +3,13 @@ module ds.buffer;
 import std.range, std.format, std.stdio;
 
 /// auto-indenting text buffer output range
-class TextBuffer {
+final class TextBuffer {
 private:
     Appender!(char[]) buf;
     int indentSize = 0;
     bool indentNext = false;
 public:
+final:
     this() {
         buf = appender!(char[]);
     }
