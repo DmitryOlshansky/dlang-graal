@@ -1,5 +1,7 @@
 module ds.buffer;
 
+import core.stdc.string;
+
 import std.range, std.format, std.stdio;
 
 /// auto-indenting text buffer output range
