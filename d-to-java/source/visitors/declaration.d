@@ -200,7 +200,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     bool hasEmptyCtor;
 
-    Goto[] gotos;
+    Stack!(Goto[]) gotos;
     int[void*] labelGotoNums;
     
     int inInitializer; // to avoid recursive decomposition of arrays
@@ -264,6 +264,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         header.put("import static org.dlang.dmd.root.SliceKt.*;\n");
         header.put("import static org.dlang.dmd.root.DArrayKt.*;\n");
         generatedFunctions.push(null);
+        gotos.push(null);
     }
 
     void onModuleStart(Module mod){
@@ -451,7 +452,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 .filter!(x => x).array 
             : null;
         auto range = new Range[labels.length];
-        if (gotos.length == 0) { // do not use try/catch mechanism inside of switches
+        if (gotos.top.length == 0) { // do not use try/catch mechanism inside of switches
             if (s.statements)
                 foreach(k, lbl; labels) {
                     labelGotoNums[cast(void*)lbl.ident] = cast(int)k;
@@ -734,12 +735,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(SwitchStatement s)
     {
-        auto oldGotos = gotos;
-        gotos = collectGotos(s);
-        scope(exit) gotos = oldGotos;
+        auto gt = pushed(gotos, collectGotos(s));
         //if (gotos.length) stderr.writefln("GOTOS: %s", gotos);
         auto _d = pushed(dispatch, dispatchCount++);
-        if (gotos) {
+        if (gotos.top.length) {
             buf.put("{\n");
             buf.indent;
             buf.fmt("int __dispatch%d = 0;\n", dispatch.top);
@@ -752,7 +751,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             cond = "(" ~ cond ~" & 0xFF)";
         }
         buf.put("switch (");
-        if (gotos) {
+        if (gotos.top.length) {
             buf.fmt("__dispatch%d != 0 ? __dispatch%d : %s", 
                 dispatch.top, dispatch.top, cond);
         }
@@ -786,7 +785,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 s._body.accept(this);
             }
         }
-        if (gotos) {
+        if (gotos.top.length) {
             buf.outdent;
             buf.fmt("} while(__dispatch%d != 0);\n", dispatch.top);
             buf.outdent;
@@ -829,8 +828,8 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     override void visit(LabelStatement label) {
         buf.outdent;
         buf.fmt("/*%s:*/\n", label.ident.symbol);
-        long myIndex = gotos.countUntil!(c => c.label && c.label.ident == label.ident);
-        if (myIndex >= 0 && gotos[myIndex].local && dispatch.top > 0) {
+        long myIndex = gotos.top.countUntil!(c => c.label && c.label.ident == label.ident);
+        if (myIndex >= 0 && gotos.top[myIndex].local && dispatch.top > 0) {
             buf.fmt("case %d:\n__dispatch%d = 0;\n", -1-myIndex, dispatch.top);
         }
         buf.indent;
@@ -838,9 +837,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     }
 
     override void visit(GotoStatement g) {
-        long myIndex = gotos.countUntil!(c => c.label is g.label);
+        long myIndex = gotos.top.countUntil!(c => c.label is g.label);
         buf.fmt("/*goto %s*/", g.label.toString);
-        if (myIndex >= 0 && gotos[myIndex].local) {
+        if (myIndex >= 0 && gotos.top[myIndex].local) {
             buf.fmt("{ __dispatch%d = %d; continue dispatched_%d; }\n",
                 dispatch.top, -1-myIndex, dispatch.top);
         }
@@ -853,7 +852,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(GotoDefaultStatement s)
     {
-        long myIndex = gotos.countUntil!(c => c.default_);
+        long myIndex = gotos.top.countUntil!(c => c.default_);
         buf.put("/*goto default*/ ");
         if (myIndex >= 0) {
             buf.fmt("{ __dispatch%d = %d; continue dispatched_%d; }\n", 
