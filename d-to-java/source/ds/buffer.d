@@ -13,22 +13,20 @@ public:
         buf = appender!(char[]);
     }
 
-    private const(char)[] padding() { 
-        auto pad = new char[indentSize];
-        pad[] = ' ';
-        return pad;
+    private void pad() { 
+        foreach (_; 0..indentSize) buf.put(' ');
     }
 
     void indent(){ indentSize += 4; }
 
     void outdent(){ 
-        if (indentSize == 0) stderr.writefln("OUTDENTING BEYOND 0");
-        else indentSize -= 4; 
+        assert (indentSize != 0, "OUTDENTING BEYOND 0");
+        indentSize -= 4; 
     }
 
     void put(dchar ch) {
         if (ch != '\n' && indentNext) {
-            buf.put(padding);
+            pad();
             indentNext = false;
         }
         if (ch == '\n') {

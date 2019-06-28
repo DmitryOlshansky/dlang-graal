@@ -75,10 +75,6 @@ public class lexer {
         return c >= 48 && c <= 57 || c >= 97 && c <= 122 || c >= 65 && c <= 90;
     }
 
-    public static void test_0() {
-    }
-    public static void test_1() {
-    }
     public static class Lexer extends Object
     {
         public static OutBuffer stringbuffer = new OutBuffer();
@@ -2421,9 +2417,5 @@ public class lexer {
             that.tokenFreelist = this.tokenFreelist;
             return that;
         }
-    }
-    public static void test_2() {
-    }
-    public static void test_3() {
     }
 }

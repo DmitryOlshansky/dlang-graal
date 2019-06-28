@@ -1154,12 +1154,13 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         opts.inFuncDecl = func;
         hoistLocalAggregates(func);
         stack ~= func;
-        buf.fmt("public static void test_%d() {\n", testCounter++);
-        buf.indent;
-        if (func.fbody)
+        if (func.fbody) {
+            buf.fmt("public static void test_%d() {\n", testCounter++);
+            buf.indent;    
             func.fbody.accept(this);
-        buf.outdent;
-        buf.put("}\n");
+            buf.outdent;
+            buf.put("}\n");
+        }
         stack = stack[0..$-1];
     }
 
