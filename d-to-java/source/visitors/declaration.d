@@ -127,10 +127,10 @@ bool hasCtor(AggregateDeclaration agg) {
 FuncExp[] collectLambdas(Statement s) {
     extern(C++) static class Lambdas : SemanticTimeTransitiveVisitor {
         alias visit = typeof(super).visit;
-        bool[void*] exps;
+        IdentityMap!bool exps;
 
         override void visit(FuncExp e) {
-            exps[cast(void*)e] = true;
+            exps[e] = true;
         }
     }
     scope v = new Lambdas();
@@ -209,7 +209,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     Stack!TemplateInstance currentInst;
 
     string nameOf(AggregateDeclaration agg) {
-        auto tmpl = cast(void*)agg in opts.templates;
+        auto tmpl = agg in opts.templates;
         return format("%s%s", agg.ident.symbol, tmpl ? tmpl.tiArgs : "");
     }
 
@@ -324,7 +324,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
         bool staticInit = var.isStatic() || (var.storage_class & STC.gshared) || (funcs.empty && aggregates.empty);
         bool refVar = funcs.length && passedByRef(var, funcs.top) && !staticInit;
-        if (refVar) opts.refParams[cast(void*)var] = true;
+        if (refVar) opts.refParams[var] = true;
         Type t = var.type;
         if(var._init && var._init.kind == InitKind.array && var.type.ty == Tpointer)
             t = var.type.nextOf.arrayOf;
@@ -398,7 +398,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             stderr.writefln("NULL TYPE VAR: %s", var.ident.symbol);
             return;
         }
-        if (tiArgs && funcs.length == 0) opts.templates[cast(void*)var] = Template(tiArgs, false);
+        if (tiArgs && funcs.length == 0) opts.templates[var] = Template(tiArgs, false);
         if (var.type.toJava(opts).startsWith("TypeInfo_")) return;
         bool pushToGlobal = (var.isStatic() || (var.storage_class & STC.gshared)) && !funcs.empty;
         if (pushToGlobal) {
@@ -406,7 +406,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             const(char)[] id = funcs.top.funcName ~ var.ident.symbol;
             printVar(var, id, temp);
             constants ~= temp.data.idup;
-            opts.globals[cast(void*)var] = format("%s.%s", moduleName, id);
+            opts.globals[var] = format("%s.%s", moduleName, id);
         }
         else {
             printVar(var, var.ident.symbol, buf);
@@ -959,7 +959,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                         }
                     }
             }
-            if (tiargs.length) opts.templates[cast(void*)d] = Template(tiargs, false);
+            if (tiargs.length) opts.templates[d] = Template(tiargs, false);
         }
         return pushed(currentInst, null);
     }
@@ -1159,7 +1159,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 if (i != 0) buf.fmt(", ");
                 auto box = p.isRef || p.isOut;
                 if (box && !isLambda && !isAggregate(p.type) && p.type.ty != Tpointer && p.type.ty != Tarray) {
-                    opts.refParams[cast(void*)p] = true;
+                    opts.refParams[p] = true;
                     buf.fmt("%s %s", refType(p.type, opts), p.ident.toString);
                 }
                 else buf.fmt("%s %s", toJava(p.type, opts, Boxing.yes), p.ident.toString);
@@ -1190,7 +1190,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 if (i != 0) buf.fmt(", ");
                 auto box = p.isRef || p.isOut;
                 if (box && !p.type.isAggregate && p.type.ty != Tpointer && p.type.ty != Tarray) {
-                    opts.refParams[cast(void*)p] = true;
+                    opts.refParams[p] = true;
                     buf.fmt("%s %s", refType(p.type, opts), p.ident.toString);
                 }
                 else buf.fmt("%s %s", toJava(p.type, opts), p.ident.toString);
@@ -1207,7 +1207,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     auto box = p.storageClass & (STC.ref_ | STC.out_);
                     auto name = p.ident ? p.ident.toString : format("arg%d",i);
                     if (box && !p.type.isAggregate && p.type.ty != Tpointer && p.type.ty != Tarray) {
-                        opts.refParams[cast(void*)p] = true;
+                        opts.refParams[p] = true;
                         buf.fmt("%s %s", refType(p.type, opts), name);
                     }
                     else buf.fmt("%s %s", toJava(p.type, opts), name);
@@ -1261,8 +1261,8 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (func.funcName == "copy" && aggregates.length > 0) return;
         if (func.isCtorDeclaration() && !func.parameters) hasEmptyCtor = true;
         // save tiargs before checking duplicates
-        if (tiArgs.length) opts.templates[cast(void*)func] = Template(tiArgs, funcs.length != 0);
-        if (funcs.length > 0) opts.localFuncs[cast(void*)func] = true;
+        if (tiArgs.length) opts.templates[func] = Template(tiArgs, funcs.length != 0);
+        if (funcs.length > 0) opts.localFuncs[func] = true;
         // check for duplicates
         auto sig = funcSig(func);
         if (sig in generatedFunctions.top) return;

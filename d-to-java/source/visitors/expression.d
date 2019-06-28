@@ -4,6 +4,8 @@ import core.stdc.ctype;
 import core.stdc.stdio;
 import core.stdc.string;
 
+import ds.identity_map;
+
 import dmd.aggregate;
 import dmd.apply;
 import dmd.aliasthis;
@@ -44,13 +46,13 @@ struct ExprOpts {
     bool wantCharPtr = false;
     bool rawArrayLiterals = false;
     EnumDeclaration inEnumDecl = null;
-    AggregateDeclaration[] inAggregate = null;
-    Expression dollarValue = null;
-    VarDeclaration vararg = null;
-    bool[void*] refParams; //out and ref params, they must be boxed
-    string[void*] globals; // basic type static vars pushed to global scope
-    bool[void*] localFuncs; // functions that are local to current scope
-    Template[void*] templates; // tiArg strings of template vars and funcs
+    AggregateDeclaration[] inAggregate = null; // chain of aggregates for current scope
+    Expression dollarValue = null; // expression that is referenced by dollar
+    VarDeclaration vararg = null; // var decl of vararg parameter
+    IdentityMap!bool refParams; //out and ref params, they must be boxed
+    IdentityMap!string globals; // basic type static vars pushed to global scope
+    IdentityMap!bool localFuncs; // functions that are local to current scope
+    IdentityMap!Template templates; // tiArg strings of template vars and funcs
 }
 
 struct Template {
@@ -473,7 +475,7 @@ public:
         else if(e.var.type.ty == Tstruct)
             buf.printf("%s", e.var.toChars());
         else {
-            if (auto name = cast(void*)e.var in opts.globals)
+            if (auto name = e.var in opts.globals)
                 buf.printf("ptr(%.*s)", name.length, name.ptr);
             else
                 buf.printf("ptr(%s)", e.var.toChars());
@@ -496,11 +498,11 @@ public:
         }
         else {
             printParent(e.var);
-            if (auto name = cast(void*)e.var in opts.globals)
+            if (auto name = e.var in opts.globals)
                 buf.writestring(*name);
             else
                 buf.writestring(e.var.ident.symbol);
-            if (cast(void*)e.var in opts.refParams)
+            if (e.var in opts.refParams)
                 buf.writestring(".value");
         }
     }
@@ -907,14 +909,14 @@ public:
                 }
                 else 
                     expToBuffer(e.e1, precedence[e.op], buf, opts);
-                if (auto tmpl = cast(void*)e.f in opts.templates) {
+                if (auto tmpl = e.f in opts.templates) {
                     buf.writestring(tmpl.tiArgs);
                 }
             }
             else
                 expToBuffer(e.e1, precedence[e.op], buf, opts);
             //fprintf(stderr, "Calling %x %s type %s\n", e.f, e.e1.toChars(), e.e1.type.toChars());
-            if (!e.f || e.f.isNested() || cast(void*)e.f in opts.localFuncs) {
+            if (!e.f || e.f.isNested() || e.f in opts.localFuncs) {
                 buf.writestring(".invoke");
             }
         }
@@ -1373,7 +1375,7 @@ private void argsToBuffer(Expressions* expressions, OutBuffer* buf, ExprOpts opt
                 buf.writestring(")");
                 buf.writestring(var.var.ident.symbol);
             }
-            else if (var && (cast(void*)var.var in opts.refParams) && refParam) {
+            else if (var && var.var in opts.refParams && refParam) {
                 buf.writestring(var.var.ident.toString);
             }
             else if(n && n.type.ty == Tarray) {

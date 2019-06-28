@@ -12,4 +12,8 @@ struct IdentityMap(V) {
     V* opBinaryRight(string op:"in")(RootObject key) {
         return cast(void*)key in map;
     }
+
+    auto keys(){ return map.keys; }
+
+    auto dup(){ return IdentityMap(map.dup); }
 }
