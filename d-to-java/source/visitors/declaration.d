@@ -2,7 +2,7 @@ module visitors.declaration;
 
 import core.stdc.string;
 
-import ds.buffer, ds.stack;
+import ds.buffer, ds.stack, ds.identity_map;
 
 import dmd.aggregate;
 import dmd.attrib;
@@ -201,7 +201,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     bool hasEmptyCtor;
 
     Stack!(Goto[]) gotos;
-    int[void*] labelGotoNums;
+    Stack!(IdentityMap!int) labelGotoNums;
     
     int inInitializer; // to avoid recursive decomposition of arrays
     string[] arrayInitializers;
@@ -455,7 +455,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (gotos.top.length == 0) { // do not use try/catch mechanism inside of switches
             if (s.statements)
                 foreach(k, lbl; labels) {
-                    labelGotoNums[cast(void*)lbl.ident] = cast(int)k;
+                    labelGotoNums.top[lbl.ident] = cast(int)k;
                     foreach (i, st; *s.statements) if (st) {
                         auto gs = collectGotos(st);
                         auto nonLocalGotos = gs.filter!(g => !g.local);
@@ -843,7 +843,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             buf.fmt("{ __dispatch%d = %d; continue dispatched_%d; }\n",
                 dispatch.top, -1-myIndex, dispatch.top);
         }
-        else if (auto count = cast(void*)g.label.ident in labelGotoNums){
+        else if (auto count = g.label.ident in labelGotoNums.top){
             buf.fmt("throw Dispatch%d.INSTANCE;\n", *count);
         }
         else
@@ -1267,7 +1267,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         auto sig = funcSig(func);
         if (sig in generatedFunctions.top) return;
         generatedFunctions.top[sig] = true;
-
+        auto lgn = pushed(labelGotoNums);
         // hoist nested structs/classes to top level, mark them private
         if (funcs.length == 0) {
             hoistLocalAggregates(func);
@@ -1280,7 +1280,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (funcs.length > 1)
             printLocalFunction(func);
         else {
-            auto gf = pushed(generatedFunctions, null);
+            auto gf = pushed(generatedFunctions);
             printGlobalFunction(func);
         }
     }

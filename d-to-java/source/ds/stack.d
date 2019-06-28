@@ -51,3 +51,7 @@ struct Guard(T) {
 auto pushed(T)(ref Stack!T stack, T value) {
     return Guard!T(stack, value);
 }
+
+auto pushed(T)(ref Stack!T stack) {
+    return Guard!T(stack, T.init);
+}
