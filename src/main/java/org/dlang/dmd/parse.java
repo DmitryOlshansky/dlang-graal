@@ -3307,8 +3307,7 @@ public class parse {
             return ts.value;
         }
 
-        public  void parseStorageClasses(Ref<Long> storage_class, IntRef link, Ref<Boolean> setAlignment, Ref<ASTBase.Expression> ealign, DArray<ASTBase.Expression> udas) {
-            Ref<DArray<ASTBase.Expression>> udas_ref = ref(udas);
+        public  void parseStorageClasses(Ref<Long> storage_class, IntRef link, Ref<Boolean> setAlignment, Ref<ASTBase.Expression> ealign, Ref<DArray<ASTBase.Expression>> udas) {
             long stc = 0L;
             boolean sawLinkage = false;
         L_outer11:
@@ -3389,7 +3388,7 @@ public class parse {
                                 /*goto L1*/{ __dispatch18 = -1; continue dispatched_18; }
                             case 225:
                                 {
-                                    stc = this.parseAttribute(ptr(udas_ref));
+                                    stc = this.parseAttribute(ptr(udas));
                                     if ((stc) != 0)
                                         /*goto L1*/{ __dispatch18 = -1; continue dispatched_18; }
                                     continue L_outer11;

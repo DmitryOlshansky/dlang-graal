@@ -243,7 +243,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             foreach(i, p; *tf.parameterList){
                 if (i) b.put(", ");
                 auto box = p.storageClass & (STC.ref_ | STC.out_);
-                if (box && !p.type.isAggregate) {
+                if (box && !p.type.isTypeStruct) {
                     b.fmt("%s", refType(p.type, opts));
                 }
                 else b.fmt("%s", toJava(p.type, opts));
@@ -1214,7 +1214,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             foreach(i, p; (*func.parameters)[]) {
                 if (i != 0) buf.fmt(", ");
                 auto box = p.isRef || p.isOut;
-                if (box && !isLambda && !p.type.isTypeStruct && p.type.ty != Tpointer && p.type.ty != Tarray) {
+                if (box && !isLambda && !p.type.isTypeStruct && p.type.ty != Tarray) {
                     opts.refParams[p] = true;
                     buf.fmt("%s %s", refType(p.type, opts), p.ident.symbol);
                 }
@@ -1256,7 +1256,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             foreach(i, p; (*func.parameters)[]) {
                 if (i != 0) buf.fmt(", ");
                 auto box = p.isRef || p.isOut;
-                if (box && !p.type.isTypeStruct && p.type.ty != Tpointer && p.type.ty != Tarray) {
+                if (box && !p.type.isTypeStruct && p.type.ty != Tarray) {
                     opts.refParams[p] = true;
                     buf.fmt("%s %s", refType(p.type, opts), p.ident.toString);
                 }
@@ -1280,7 +1280,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                    if (i != 0) buf.fmt(", ");
                     auto box = p.storageClass & (STC.ref_ | STC.out_);
                     auto name = p.ident ? p.ident.toString : format("arg%d",i);
-                    if (box && !p.type.isTypeStruct && p.type.ty != Tpointer && p.type.ty != Tarray) {
+                    if (box && !p.type.isTypeStruct && p.type.ty != Tarray) {
                         opts.refParams[p] = true;
                         buf.fmt("%s %s", refType(p.type, opts), name);
                     }
