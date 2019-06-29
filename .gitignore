@@ -1,15 +1,14 @@
 bin
-build
+target
 .idea
 *.iml
-.gradle
 
-d-to-kotlin/.dub
-d-to-kotlin/docs.json
-d-to-kotlin/dummy.html
-d-to-kotlin/docs/
-d-to-kotlin/d-to-kotlin
-d-to-kotlin/d-to-kotlin-test-*
+d-to-java/.dub
+d-to-java/docs.json
+d-to-java/dummy.html
+d-to-java/docs/
+d-to-java/d-to-java
+d-to-java/d-to-java-test-*
 *.exe
 *.o
 *.obj

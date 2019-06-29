@@ -252,6 +252,16 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             }
         return b.data.dup;
     }
+
+    VarDeclaration hoistVarFromIf(Statement st) {
+        if (auto ifs = st.isIfStatement()) {
+            if (auto c = ifs.condition.isCommaExp()) {
+                auto var = c.e1.isDeclarationExp().declaration.isVarDeclaration();
+                return var;
+            }
+        }
+        return null;
+    }
     
     this() {
         buf = new TextBuffer();
@@ -477,16 +487,8 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 }
                 // try to find target on this level, if fails we are too deep
                 // some other (upper) check will eventually succeed
-                if (auto ifs = st.isIfStatement()) {
-                    if (auto c = ifs.condition.isCommaExp()) {
-                        auto var = c.e1.isDeclarationExp().declaration.isVarDeclaration();
-                        var.accept(this);
-                    }
-                    else if (auto c  = ifs.condition.isDeclarationExp()) {
-                        auto var = c.declaration.isVarDeclaration();
-                        var.accept(this);
-                    }
-                }
+                auto var = hoistVarFromIf(st);
+                if (var) var.accept(this);
                 if (!st.isCompoundStatement() && !st.isScopeStatement()) {
                     auto lambdas = collectLambdas(st);
                     foreach (i, v; lambdas)  {
@@ -614,7 +616,17 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             }
             if (s.elsebody.isScopeStatement() || s.elsebody.isIfStatement())
             {
-                s.elsebody.accept(this);
+                auto var = hoistVarFromIf(s.elsebody);
+                if (var) {
+                    buf.put("{\n");
+                    buf.indent;
+                    var.accept(this);
+                    s.elsebody.accept(this);
+                    buf.outdent;
+                    buf.put("}\n");
+                }
+                else
+                    s.elsebody.accept(this);
             }
             else
             {
