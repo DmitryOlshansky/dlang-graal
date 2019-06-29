@@ -7796,6 +7796,14 @@ public class astbase {
                 r.msg = msg;
                 return r;
             }
+            public ModuleDeclaration opAssign(ModuleDeclaration that) {
+                this.loc = that.loc;
+                this.id = that.id;
+                this.packages = that.packages;
+                this.isdeprecated = that.isdeprecated;
+                this.msg = that.msg;
+                return this;
+            }
         }
         public static class Prot
         {
@@ -7839,6 +7847,9 @@ public class astbase {
             public Scope copy(){
                 Scope r = new Scope();
                 return r;
+            }
+            public Scope opAssign(Scope that) {
+                return this;
             }
         }
         public static Tuple isTuple(RootObject o) {
@@ -7985,12 +7996,18 @@ public class astbase {
                 Target r = new Target();
                 return r;
             }
+            public Target opAssign(Target that) {
+                return this;
+            }
         }
         public ASTBase(){
         }
         public ASTBase copy(){
             ASTBase r = new ASTBase();
             return r;
+        }
+        public ASTBase opAssign(ASTBase that) {
+            return this;
         }
     }
 }

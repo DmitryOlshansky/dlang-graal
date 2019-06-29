@@ -71,34 +71,6 @@ index 8e6cb70..97f7c0d 100644
          }
  
          public Param(){
-diff --git a/src/main/java/org/dlang/dmd/identifier.java b/src/main/java/org/dlang/dmd/identifier.java
-index b402f81..6a55b5b 100644
---- a/src/main/java/org/dlang/dmd/identifier.java
-+++ b/src/main/java/org/dlang/dmd/identifier.java
-@@ -142,6 +142,11 @@ public class identifier {
- 
-         public static Identifier generateIdWithLoc(ByteSlice prefix, Loc loc) {
-             OutBuffer idBuf = new OutBuffer();
-+            Function0<Integer> __lambda7 = new Function0<Integer>(){
-+                public Integer invoke(){
-+                    return 1;
-+                }
-+            };
-             Function1<Integer,Integer> __lambda8 = new Function1<Integer,Integer>(){
-                 public Integer invoke(Integer counter){
-                     idBuf.writestring( new ByteSlice("_"));
-@@ -149,11 +154,6 @@ public class identifier {
-                     return counter + 1;
-                 }
-             };
--            Function0<Integer> __lambda7 = new Function0<Integer>(){
--                public Integer invoke(){
--                    return 1;
--                }
--            };
-             try {
-                 idBuf.writestring(prefix);
-                 idBuf.writestring( new ByteSlice("_L"));
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
 index 760fe2e..0c92a84 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java

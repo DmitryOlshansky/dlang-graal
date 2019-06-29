@@ -498,7 +498,7 @@ public class parse {
                                     }
                                     else if ((next & 0xFF) == 201 || (next & 0xFF) == 202)
                                     {
-                                        s = this.parseForeach(this.loc(), pLastDecl);
+                                        s = this.parseForeach11(this.loc(), pLastDecl);
                                     }
                                     else
                                     {
@@ -4090,34 +4090,34 @@ public class parse {
             this.error(loc, new BytePtr("instead of C-style syntax, use D-style `%s%s%s`"), t.toChars(), sp, s);
         }
 
-        // from template ParseForeachArgs!(,)
+        // from template ParseForeachArgs!(11)
         // from template Seq!(Ptr<ASTBase.Dsymbol>)
 
 
-        // from template ParseForeachArgs!(,)
+        // from template ParseForeachArgs!(11)
 
 
-        // from template ParseForeachArgs!(,)
+        // from template ParseForeachArgs!(00)
         // from template Seq!()
 
 
-        // from template ParseForeachArgs!(,)
+        // from template ParseForeachArgs!(00)
 
-        // from template ParseForeachArgs!(,)
+        // from template ParseForeachArgs!(10)
         // from template Seq!()
 
 
-        // from template ParseForeachArgs!(,)
+        // from template ParseForeachArgs!(10)
 
-        // from template ParseForeachRet!(,)
-
-
-        // from template ParseForeachRet!(,)
+        // from template ParseForeachRet!(11)
 
 
-        // from template ParseForeachRet!(,)
+        // from template ParseForeachRet!(00)
 
-        // from template parseForeach!(,)
+
+        // from template ParseForeachRet!(10)
+
+        // from template parseForeach!(11)
         public  ASTBase.StaticForeachDeclaration parseForeach11(Loc loc, Ptr<ASTBase.Dsymbol> _param_1) {
             this.nextToken();
             Ptr<ASTBase.Dsymbol> pLastDecl = pcopy(_param_1);
@@ -4240,7 +4240,7 @@ public class parse {
         }
 
 
-        // from template parseForeach!(,)
+        // from template parseForeach!(00)
         public  ASTBase.Statement parseForeach00(Loc loc) {
             byte op = this.token.value;
             this.nextToken();
@@ -4361,7 +4361,7 @@ public class parse {
         }
 
 
-        // from template parseForeach!(,)
+        // from template parseForeach!(10)
         public  ASTBase.StaticForeachStatement parseForeach10(Loc loc) {
             this.nextToken();
             byte op = this.token.value;

@@ -1066,6 +1066,9 @@ public class id {
             Id r = new Id();
             return r;
         }
+        public Id opAssign(Id that) {
+            return this;
+        }
     }
     static Slice<Msgtable> msgtable = slice(initializer_0);
     public static class Msgtable

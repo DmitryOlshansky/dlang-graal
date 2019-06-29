@@ -38,7 +38,7 @@ import dmd.root.rootobject;
 
 import std.algorithm, std.format, std.stdio, std.string;
 
-import visitors.members;
+import visitors.members, visitors.templates;
 
 struct ExprOpts {
     bool wantCharPtr = false;
@@ -54,10 +54,6 @@ struct ExprOpts {
     IdentityMap!Template templates; // tiArg strings of template vars and funcs
 }
 
-struct Template {
-    string tiArgs;
-    bool local; // = true for nested function
-}
 
 ///
 const(char)[] funcName(FuncDeclaration f) {

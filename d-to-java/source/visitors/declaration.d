@@ -15,6 +15,7 @@ import dmd.dstruct;
 import dmd.dtemplate;
 import dmd.expression;
 import dmd.declaration;
+import dmd.dsymbol;
 import dmd.func;
 import dmd.id;
 import dmd.identifier;
@@ -28,14 +29,13 @@ import dmd.root.array;
 
 import std.array, std.algorithm, std.format, std.string, std.range, std.stdio;
 
-import visitors.expression;
-import visitors.members, visitors.passed_by_ref;
+import visitors.expression, visitors.members, visitors.passed_by_ref, visitors.templates;
 
 alias toJava = visitors.expression.toJava; 
 
 ///
 string toJava(Module mod) {
-    scope v = new toJavaModuleVisitor();
+    scope v = new ToJavaModuleVisitor();
     auto id = mod.ident.toString.idup;
     v.moduleName = id.endsWith(".d") ? id[0..$-2] : id;
     v.onModuleStart(mod);
@@ -176,8 +176,7 @@ VarDeclaration varargVarDecl(FuncDeclaration decl) {
     return v.var;
 }
 
-
-extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
+extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     alias visit = typeof(super).visit;
     TextBuffer buf;
     TextBuffer header;
@@ -207,9 +206,15 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     Stack!TemplateInstance currentInst;
 
+    Stack!bool hasOpAssign;
+
     string nameOf(AggregateDeclaration agg) {
         auto tmpl = agg in opts.templates;
         return format("%s%s", agg.ident.symbol, tmpl ? tmpl.tiArgs : "");
+    }
+
+    string tiArgs() {
+        return currentInst.length ? .tiArgs(currentInst.top, opts) : "";
     }
 
     void addImport(Array!Identifier* packages, Identifier id) {
@@ -279,6 +284,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     void onModuleStart(Module mod){
         buf.indent;
         buf.put("\n");
+        opts.templates = registerTemplates(mod, opts);
     }
 
     ///
@@ -406,7 +412,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             stderr.writefln("NULL TYPE VAR: %s", var.ident.symbol);
             return;
         }
-        if (tiArgs && opts.funcs.length == 0) opts.templates[var] = Template(tiArgs, false);
         if (var.type.toJava(opts).startsWith("TypeInfo_")) return;
         bool pushToGlobal = (var.isStatic() || (var.storage_class & STC.gshared)) && !opts.funcs.empty;
         if (pushToGlobal) {
@@ -664,15 +669,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (ti.tiargs) {
             auto decl = ti.tempdecl.isTemplateDeclaration();
             foreach(m; *ti.members) {
-                buf.fmt("// from template %s!(", ti.name.symbol);
-                foreach(i, arg; (*ti.tiargs)[]) {
-                    if (i) buf.put(",");
-                    auto t = arg.isType();
-                    auto e = arg.isExpression();
-                    if (t) buf.put(t.toJava(opts, Boxing.yes));
-                    if (e && e.type.ty == Tarray && e.type.nextOf.ty == Tchar) buf.put(e.toString);
-                }
-                buf.put(")\n");
+                buf.fmt("// from template %s!(%s)\n", ti.name.symbol, .tiArgs(ti, opts));
                 m.accept(this);
                 buf.put("\n");
             }
@@ -1022,7 +1019,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                         }
                     }
             }
-            if (tiargs.length) opts.templates[d] = Template(tiargs, false);
         }
         return pushed(currentInst, null);
     }
@@ -1049,6 +1045,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put('{');
         buf.put('\n');
         buf.indent;
+        auto opAssign = pushed(hasOpAssign);
         foreach (s; *d.members)
             s.accept(this);
         auto members = collectMembers(d);
@@ -1095,17 +1092,18 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     buf.outdent;
                     buf.put("}\n\n");
                 }
-                // generate opAssign
-                buf.fmt("public %s opAssign(%s that) {\n", nameOf(d), nameOf(d));
-                buf.indent;
-                foreach(i,m; members.all){
-                    buf.fmt("this.%s = that.%s;\n", m.ident.toString, m.ident.toString);
-                }
-                buf.put("return this;\n");
-                buf.outdent;
-                buf.put("}\n");
-                
             }
+        }
+        if (!hasOpAssign.top) {
+            // generate opAssign
+            buf.fmt("public %s opAssign(%s that) {\n", nameOf(d), nameOf(d));
+            buf.indent;
+            foreach(i,m; members.all){
+                buf.fmt("this.%s = that.%s;\n", m.ident.toString, m.ident.toString);
+            }
+            buf.put("return this;\n");
+            buf.outdent;
+            buf.put("}\n");
         }
         buf.outdent;
         buf.put('}');
@@ -1185,21 +1183,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             func.fbody.accept(this);
             buf.outdent;
             buf.put("}\n");
-        }
-    }
-
-    string tiArgs() {
-        if (currentInst.empty || currentInst.top is null || currentInst.top.tiargs is null) return "";
-        else {
-            auto temp = new TextBuffer();
-            foreach (arg; *currentInst.top.tiargs) {
-                auto t = arg.isType();
-                auto e = arg.isExpression();
-                if (e && e.type.toJava(opts) == "ByteSlice") temp.fmt("_%s", e.toString[1..$-1]);
-                else if(e && e.type.toJava(opts) == "boolean") temp.fmt("%d", e.toInteger());
-                if (t) temp.put(t.toJava(opts, Boxing.yes));
-            }
-            return temp.data.dup;
         }
     }
 
@@ -1334,11 +1317,12 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(FuncDeclaration func)  {
         if (func.funcName == "destroy") return;
-        if (func.funcName == "opAssign") return;
+        if (func.funcName == "opAssign") {
+            hasOpAssign.top = true;
+            return;
+        }
         if (func.funcName == "copy" && opts.aggregates.length > 0) return;
         if (func.isCtorDeclaration() && !func.parameters) hasEmptyCtor = true;
-        // save tiargs before checking duplicates
-        if (tiArgs.length) opts.templates[func] = Template(tiArgs, opts.funcs.length != 0);
         if (opts.funcs.length > 0) opts.localFuncs[func] = true;
         // check for duplicates
         auto sig = funcSig(func);

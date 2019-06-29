@@ -200,7 +200,7 @@ fun<T> slice(arr: Array<T?>): Slice<T>  = Slice(arr)
 fun slice(bytes: ByteArray) = ByteSlice(bytes)
 
 fun<T> slice(arr: Array<Array<T?>>): Slice<Slice<T>> {
-    return Slice<Slice<T>>(arr.map { Slice(it) }.toTypedArray())
+    return Slice<Slice<T>>(arr.map { Slice<T>(it) }.toTypedArray())
 }
 
 fun slice(arr: Array<CharArray>): Slice<CharSlice> {
