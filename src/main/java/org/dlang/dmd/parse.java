@@ -6973,25 +6973,25 @@ public class parse {
                             case 171:
                                 if ((this.peekNext() & 0xFF) == 1)
                                     break;
-                                (m & 0xFF) |= ASTBase.MODFlags.const_;
+                                m |= ASTBase.MODFlags.const_;
                                 this.nextToken();
                                 continue;
                             case 182:
                                 if ((this.peekNext() & 0xFF) == 1)
                                     break;
-                                (m & 0xFF) |= ASTBase.MODFlags.immutable_;
+                                m |= ASTBase.MODFlags.immutable_;
                                 this.nextToken();
                                 continue;
                             case 224:
                                 if ((this.peekNext() & 0xFF) == 1)
                                     break;
-                                (m & 0xFF) |= ASTBase.MODFlags.shared_;
+                                m |= ASTBase.MODFlags.shared_;
                                 this.nextToken();
                                 continue;
                             case 177:
                                 if ((this.peekNext() & 0xFF) == 1)
                                     break;
-                                (m & 0xFF) |= ASTBase.MODFlags.wild;
+                                m |= ASTBase.MODFlags.wild;
                                 this.nextToken();
                                 continue;
                             default:

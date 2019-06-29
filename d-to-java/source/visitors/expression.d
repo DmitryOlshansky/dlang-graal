@@ -565,7 +565,7 @@ public:
          * are handled in visit(ExpStatement), so here would be used only when
          * we'll directly call Expression.toString() for debugging.
          */
-        stderr.writefln("DeclarationExp %s:%d", e.loc.filename[0..strlen(e.loc.filename)], e.loc.linnum);
+        //stderr.writefln("DeclarationExp %s:%d", e.loc.filename[0..strlen(e.loc.filename)], e.loc.linnum);
     }
 
     override void visit(TypeidExp e)
@@ -768,6 +768,26 @@ public:
                 expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
                 buf.put(")");
                 return;
+            }
+        }
+        else if (auto c = e.e1.isCastExp) {    
+            auto var = c.e1.isVarExp();        
+            if (var && var.type.isJavaByte && e.e2.type.toJava(opts) == "int") {
+                //stderr.writefln("%s %s %s", e.e1.toString, Token.toString(e.op), e.e2.toString);
+                switch(e.op) {
+                    case TOK.orAssign:
+                    case TOK.andAssign:
+                        if (auto name = var.var in opts.renamed)
+                            buf.put(*name);
+                        else
+                            buf.put(var.var.ident.symbol);
+                        if (var.var in opts.refParams)
+                            buf.put(".value");
+                        buf.fmt(" %s ", Token.toString(e.op));
+                        expToBuffer(e.e2, precedence[e.e2.op], buf, opts);
+                        return;
+                    default:
+                }
             }
         }
         expToBuffer(e.e1, precedence[e.op], buf, opts);
