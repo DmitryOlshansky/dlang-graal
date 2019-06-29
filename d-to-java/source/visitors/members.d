@@ -11,6 +11,7 @@ import dmd.declaration;
 import dmd.dclass;
 import dmd.dmodule;
 import dmd.dstruct;
+import dmd.expression;
 import dmd.statement;
 import dmd.func;
 import dmd.init;
@@ -18,6 +19,8 @@ import dmd.identifier;
 import dmd.staticassert;
 
 import std.algorithm, std.range, std.conv;
+
+extern(C) void foobar();
 
 struct Members {
     bool hasUnion;
@@ -62,9 +65,12 @@ Members collectMembers(AggregateDeclaration agg, bool recurseBase = false) {
         }
         
         override void visit(ClassDeclaration d) {
+            import std.stdio;
             if (aggCount++ == 0) super.visit(d);
             if (recursive && d.baseClass) {
+                stderr.writefln("Before recursive call %s", decls);
                 decls ~= collectMembers(d.baseClass).all;
+                stderr.writefln("After recursive call %s", decls);
             }
         }
         override void visit(FuncDeclaration ){}
@@ -73,9 +79,11 @@ Members collectMembers(AggregateDeclaration agg, bool recurseBase = false) {
         override void visit(StaticAssert ) {}
         override void visit(VarDeclaration v) {
             if (!v.isStatic && !(v.storage_class & STC.gshared) && !v.ident.toString.startsWith("__")){
+                if (v.ident.toString == "_body") foobar();
                 decls ~= v;
             }
         }
+        override void visit(ExpStatement ) {}
     }
     scope v = new Collector();
     v.recursive = recurseBase;
