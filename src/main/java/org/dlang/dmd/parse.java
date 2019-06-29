@@ -3481,14 +3481,14 @@ public class parse {
                         Function0<Void> parseAttributes = new Function0<Void>(){
                             public Void invoke(){
                                 if (hasParsedAttributes.value)
-                                    return ;
+                                    return null;
                                 hasParsedAttributes.value = true;
                                 udas.value = null;
                                 storage_class.value = 0L;
-                                link.value = this.linkage;
+                                link.value = linkage;
                                 setAlignment.value = false;
                                 ealign.value = null;
-                                this.parseStorageClasses(storage_class, link, setAlignment, ealign, udas);
+                                parseStorageClasses(storage_class, link, setAlignment, ealign, udas);
                                 return null;
                             }
                         };

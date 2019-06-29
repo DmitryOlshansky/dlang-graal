@@ -3,7 +3,7 @@ module visitors.expression;
 import core.stdc.ctype;
 import core.stdc.string;
 
-import ds.buffer, ds.identity_map;
+import ds.buffer, ds.stack, ds.identity_map;
 
 import dmd.aggregate;
 import dmd.apply;
@@ -44,7 +44,8 @@ struct ExprOpts {
     bool wantCharPtr = false;
     bool rawArrayLiterals = false;
     EnumDeclaration inEnumDecl = null;
-    AggregateDeclaration[] inAggregate = null; // chain of aggregates for current scope
+    Stack!FuncDeclaration funcs; // chain of nested functions for current scope
+    Stack!AggregateDeclaration aggregates; // chain of aggregates for current scope
     Expression dollarValue = null; // expression that is referenced by dollar
     VarDeclaration vararg = null; // var decl of vararg parameter
     IdentityMap!bool refParams; //out and ref params, they must be boxed
@@ -166,7 +167,7 @@ public:
         if (var.isThis) return "";
         while(var) {
             auto ds = var.parent.isAggregateDeclaration();
-            if (ds && !opts.inAggregate.canFind!(agg => agg is ds)) 
+            if (ds && !opts.aggregates[].canFind!(agg => agg is ds)) 
                 chain ~= ds;
             else
                 break;
@@ -801,8 +802,10 @@ public:
     override void visit(DotVarExp e)
     {
         buf.put(printParent(e.var));
-        expToBuffer(e.e1, PREC.primary, buf, opts);
-        buf.put('.');
+        if (!(e.e1.isThisExp && opts.funcs.length > 1)) {
+            expToBuffer(e.e1, PREC.primary, buf, opts);
+            buf.put('.');
+        }
         buf.put(e.var.ident.symbol);
     }
 
@@ -904,8 +907,10 @@ public:
             else if(e.f) {
                 auto var = e.e1.isDotVarExp();
                 if (var) {
-                    expToBuffer(var.e1, PREC.primary, buf, opts);
-                    buf.put('.');
+                    if (!(var.e1.isThisExp && opts.funcs.length > 1)) {
+                        expToBuffer(var.e1, PREC.primary, buf, opts);
+                        buf.put('.');
+                    }
                     buf.put(e.f.funcName);
                 }
                 else 
@@ -1738,7 +1743,7 @@ private void typeToBufferx(Type t, TextBuffer buf, ExprOpts opts, Boxing boxing 
                 return;
             }
             auto ds = t.sym.parent.isAggregateDeclaration();
-            if (ds && !opts.inAggregate.canFind!(agg => agg is ds))  {
+            if (ds && !opts.aggregates[].canFind!(agg => agg is ds))  {
                 buf.put(ds.ident.symbol);
                 buf.put(".");
                 buf.put(t.sym.ident.symbol);
@@ -1760,7 +1765,7 @@ private void typeToBufferx(Type t, TextBuffer buf, ExprOpts opts, Boxing boxing 
             return;
         }
         auto ds = t.sym.parent.isAggregateDeclaration();
-        if (ds && !opts.inAggregate.canFind!(agg => agg is ds))  {
+        if (ds && !opts.aggregates[].canFind!(agg => agg is ds))  {
             buf.put(ds.ident.symbol);
             buf.put(".");
             buf.put(t.sym.ident.symbol);
