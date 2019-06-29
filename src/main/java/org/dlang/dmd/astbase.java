@@ -4865,13 +4865,14 @@ public class astbase {
             public  Expression toExpressionHelper(Expression e, int i) {
                 for (; i < this.idents.length;i++){
                     RootObject id = this.idents.get(i);
+                    TemplateInstance ti;
                     switch (id.dyncast())
                     {
                         case DYNCAST.identifier:
                             e = new DotIdExp(e.loc, e, (Identifier)id);
                             break;
                         case DYNCAST.dsymbol:
-                            TemplateInstance ti = ((Dsymbol)id).isTemplateInstance();
+                            ti = ((Dsymbol)id).isTemplateInstance();
                             assert(ti != null);
                             e = new DotTemplateInstanceExp(e.loc, e, ti.name, ti.tiargs);
                             break;

@@ -331,19 +331,21 @@ public class errors {
             int i = offset;
             for (; i < (buf).offset;i += 1){
                 byte c = (byte)(buf).data.get(i);
+                ByteSlice pre;
+                OutBuffer codebuf;
                 switch ((c & 0xFF))
                 {
                     case 96:
                         if (inBacktick)
                         {
                             inBacktick = false;
-                            OutBuffer codebuf = new OutBuffer();
+                            codebuf = new OutBuffer();
                             try {
                                 codebuf.write((toBytePtr((buf).peekSlice()).plus(iCodeStart).plus(1)), i - (iCodeStart + 1));
                                 codebuf.writeByte(0);
                                 colorHighlightCode(codebuf);
                                 (buf).remove(iCodeStart, i - iCodeStart + 1);
-                                ByteSlice pre =  new ByteSlice("").copy();
+                                pre =  new ByteSlice("").copy();
                                 i = (buf).insert(iCodeStart, toByteSlice(pre));
                                 i = (buf).insert(i, codebuf.peekSlice());
                                 i--;

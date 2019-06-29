@@ -329,6 +329,9 @@ public class tokens {
                 int __dispatch0 = 0;
                 dispatched_0:
                 do {
+                    IntRef i;
+                    IntRef c;
+                    OutBuffer buf;
                     switch (__dispatch0 != 0 ? __dispatch0 : (this.value & 0xFF))
                     {
                         case 105:
@@ -371,14 +374,14 @@ public class tokens {
                             break;
                         case 121:
                             {
-                                OutBuffer buf = new OutBuffer();
+                                buf = new OutBuffer();
                                 try {
                                     buf.writeByte(34);
                                     {
-                                        IntRef i = ref(0);
+                                        i = ref(0);
                                     L_outer1:
                                         for (; i.value < this.len;){
-                                            IntRef c = ref(0x0ffff);
+                                            c = ref(0x0ffff);
                                             utf_decodeChar(this.ustring, this.len, i, c);
                                             {
                                                 int __dispatch1 = 0;
@@ -421,7 +424,7 @@ public class tokens {
                             }
                             break;
                         case 122:
-                            OutBuffer buf = new OutBuffer();
+                            buf = new OutBuffer();
                             try {
                                 buf.writeByte(120);
                                 buf.writeByte(34);
@@ -429,7 +432,7 @@ public class tokens {
                                     int __key50 = 0;
                                     int __limit51 = this.len;
                                     for (; __key50 < __limit51;__key50 += 1) {
-                                        int i = __key50;
+                                        i = __key50;
                                         if ((i) != 0)
                                             buf.writeByte(32);
                                         buf.printf( new ByteSlice("%02x"), (this.ustring.get(i) & 0xFF));

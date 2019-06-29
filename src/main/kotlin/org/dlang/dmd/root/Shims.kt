@@ -1,6 +1,5 @@
 package org.dlang.dmd.root
 
-import org.dlang.dmd.utils
 
 import java.io.PrintStream
 import java.nio.file.Paths
@@ -191,6 +190,10 @@ fun hashOf(any: Any) = any.hashCode()
 fun hashOf(any: Any, seed: Int) = any.hashCode() + seed * 31
 
 fun<A,B> comma(a: A?, b: B?) = b
+
+fun assertMsg(cond: Boolean, msg: ByteSlice) {
+    require(cond){ msg }
+}
 
 fun<T> slice(arr: Array<T?>): Slice<T>  = Slice(arr)
 

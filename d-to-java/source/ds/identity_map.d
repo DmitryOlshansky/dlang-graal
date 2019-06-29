@@ -13,7 +13,17 @@ struct IdentityMap(V) {
         return cast(void*)key in map;
     }
 
+    void remove(RootObject key) { 
+        map.remove(cast(void*)key);
+    }
+
+    void remove(const(void)* key) { 
+        map.remove(key);
+    }
+
     auto keys(){ return map.keys; }
+
+    auto values(){ return map.values; }
 
     auto dup(){ return IdentityMap(map.dup); }
 }

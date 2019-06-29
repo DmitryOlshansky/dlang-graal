@@ -175,6 +175,8 @@ public class parse {
             if (this.skipAttributes(this.token, ptr(tk)) && ((tk.value).value & 0xFF) == 34)
             {
                 for (; (this.token.value & 0xFF) != 34;){
+                    long stc;
+                    Ref<DArray<ASTBase.Expression>> exps;
                     switch ((this.token.value & 0xFF))
                     {
                         case 174:
@@ -190,8 +192,8 @@ public class parse {
                             }
                             break;
                         case 225:
-                            Ref<DArray<ASTBase.Expression>> exps = ref(null);
-                            long stc = this.parseAttribute(ptr(exps));
+                            exps = ref(null);
+                            stc = this.parseAttribute(ptr(exps));
                             if (stc == 4294967296L || stc == 4398046511104L || stc == 137438953472L || stc == 8589934592L || stc == 17179869184L || stc == 34359738368L)
                             {
                                 this.error(new BytePtr("`@%s` attribute for module declaration is not supported"), this.token.toChars());
@@ -204,11 +206,9 @@ public class parse {
                                 this.nextToken();
                             break;
                         default:
-                        {
-                            this.error(new BytePtr("`module` expected instead of `%s`"), this.token.toChars());
-                            this.nextToken();
-                            break;
-                        }
+                        this.error(new BytePtr("`module` expected instead of `%s`"), this.token.toChars());
+                        this.nextToken();
+                        break;
                     }
                 }
             }
@@ -306,10 +306,37 @@ public class parse {
                         int __dispatch1 = 0;
                         dispatched_1:
                         do {
+                            DArray<Identifier> pkg_prot_idents;
+                            long stc2;
+                            DArray<ASTBase.Expression> args;
+                            int braces;
+                            Ref<Token> tk;
+                            Loc lookingForElseSave;
+                            DArray<ASTBase.Expression> exps;
+                            Identifier ident;
+                            IntRef cppmangle;
+                            DArray<ASTBase.Dsymbol> a2;
+                            int i;
+                            Ref<DArray<ASTBase.Expression>> identExps;
+                            ASTBase.Expression e;
+                            byte next;
+                            byte next2;
+                            Loc linkLoc;
+                            ASTBase.Expression exp;
+                            int link;
+                            Ref<Boolean> cppMangleOnly;
+                            Token t;
+                            Ref<DArray<Identifier>> idents;
+                            DArray<ASTBase.Dsymbol> athen;
+                            Identifier id;
+                            DArray<ASTBase.Dsymbol> aelse;
+                            Loc attrLoc;
+                            Loc attrloc;
+                            Loc elseloc;
                             switch (__dispatch1 != 0 ? __dispatch1 : (this.token.value & 0xFF))
                             {
                                 case 156:
-                                    Token t = this.peek(this.token);
+                                    t = this.peek(this.token);
                                     if (((t).value & 0xFF) == 5 || ((t).value & 0xFF) == 7)
                                         s = this.parseEnum();
                                     else if (((t).value & 0xFF) != 120)
@@ -335,7 +362,7 @@ public class parse {
                                     {
                                         case 1:
                                             this.nextToken();
-                                            DArray<ASTBase.Expression> exps = this.parseArguments();
+                                            exps = this.parseArguments();
                                             this.check(TOK.semicolon);
                                             s = new ASTBase.CompileDeclaration(loc, exps);
                                             break;
@@ -399,7 +426,7 @@ public class parse {
                                     s = this.parseDtor(pAttrs);
                                     break;
                                 case 207:
-                                    Token t = this.peek(this.token);
+                                    t = this.peek(this.token);
                                     if (((t).value & 0xFF) == 1 || ((t).value & 0xFF) == 5)
                                     {
                                         s = this.parseInvariant(pAttrs);
@@ -417,7 +444,7 @@ public class parse {
                                     else
                                     {
                                         Loc loc = this.token.loc.copy();
-                                        int braces = 0;
+                                        braces = 0;
                                     L_outer3:
                                         for (; (1) != 0;){
                                             this.nextToken();
@@ -464,7 +491,7 @@ public class parse {
                                         this.error(new BytePtr("declaration expected, not `%s`"), this.token.toChars());
                                     return decldefs;
                                 case 169:
-                                    byte next = this.peekNext();
+                                    next = this.peekNext();
                                     if ((next & 0xFF) == 123)
                                         s = this.parseStaticCtor(pAttrs);
                                     else if ((next & 0xFF) == 92)
@@ -474,20 +501,20 @@ public class parse {
                                     else if ((next & 0xFF) == 183)
                                     {
                                         condition = this.parseStaticIfCondition();
-                                        DArray<ASTBase.Dsymbol> athen = null;
+                                        athen = null;
                                         if ((this.token.value & 0xFF) == 7)
                                             athen = this.parseBlock(pLastDecl, null);
                                         else
                                         {
-                                            Loc lookingForElseSave = this.lookingForElse.copy();
+                                            lookingForElseSave = this.lookingForElse.copy();
                                             this.lookingForElse = this.token.loc.copy();
                                             athen = this.parseBlock(pLastDecl, null);
                                             this.lookingForElse = lookingForElseSave.copy();
                                         }
-                                        DArray<ASTBase.Dsymbol> aelse = null;
+                                        aelse = null;
                                         if ((this.token.value & 0xFF) == 184)
                                         {
-                                            Loc elseloc = this.token.loc.copy();
+                                            elseloc = this.token.loc.copy();
                                             this.nextToken();
                                             aelse = this.parseBlock(pLastDecl, null);
                                             this.checkDanglingElse(elseloc);
@@ -519,12 +546,12 @@ public class parse {
                                     stc = 1048576L;
                                     /*goto Lstc*/{ __dispatch1 = -3; continue dispatched_1; }
                                 case 224:
-                                    byte next = this.peekNext();
+                                    next = this.peekNext();
                                     if ((next & 0xFF) == 1)
                                         /*goto Ldeclaration*/{ __dispatch1 = -1; continue dispatched_1; }
                                     if ((next & 0xFF) == 169)
                                     {
-                                        byte next2 = this.peekNext2();
+                                        next2 = this.peekNext2();
                                         if ((next2 & 0xFF) == 123)
                                         {
                                             s = this.parseSharedStaticCtor(pAttrs);
@@ -575,7 +602,7 @@ public class parse {
                                     /*goto Lstc*/{ __dispatch1 = -3; continue dispatched_1; }
                                 case 225:
                                     {
-                                        Ref<DArray<ASTBase.Expression>> exps = ref(null);
+                                        exps = ref(null);
                                         stc = this.parseAttribute(ptr(exps));
                                         if ((stc) != 0)
                                             /*goto Lstc*/{ __dispatch1 = -3; continue dispatched_1; }
@@ -602,7 +629,7 @@ public class parse {
                                         }
                                         break;
                                     }
-                                    Ref<Token> tk = ref(null);
+                                    tk = ref(null);
                                     if ((this.token.value & 0xFF) == 120 && this.skipParens(this.peek(this.token), ptr(tk)) && this.skipAttributes(tk.value, ptr(tk)) && ((tk.value).value & 0xFF) == 1 || ((tk.value).value & 0xFF) == 5 || ((tk.value).value & 0xFF) == 175 || ((tk.value).value & 0xFF) == 176 || ((tk.value).value & 0xFF) == 187 || ((tk.value).value & 0xFF) == 120 && (tk.value).ident.equals(Id._body))
                                     {
                                         a = this.parseDeclarations(true, pAttrs, (pAttrs).comment);
@@ -616,7 +643,7 @@ public class parse {
                                         break;
                                     }
                                     a = this.parseBlock(pLastDecl, pAttrs);
-                                    long stc2 = getStorageClassASTBase(pAttrs);
+                                    stc2 = getStorageClassASTBase(pAttrs);
                                     if (stc2 != 0L)
                                     {
                                         s = new ASTBase.StorageClassDeclaration(stc2, a);
@@ -633,7 +660,7 @@ public class parse {
                                     }
                                     break;
                                 case 174:
-                                    ASTBase.Expression e = null;
+                                    e = null;
                                     {
                                         long _stc = this.parseDeprecatedAttribute((pAttrs).depmsg);
                                         if ((_stc) != 0)
@@ -653,7 +680,7 @@ public class parse {
                                     if ((this.peekNext() & 0xFF) == 4)
                                         this.error(new BytePtr("empty attribute list is not allowed"));
                                     this.error(new BytePtr("use `@(attributes)` instead of `[attributes]`"));
-                                    DArray<ASTBase.Expression> exps = this.parseArguments();
+                                    exps = this.parseArguments();
                                     (pAttrs).udas = ASTBase.UserAttributeDeclaration.concat((pAttrs).udas, exps);
                                     a = this.parseBlock(pLastDecl, pAttrs);
                                     if ((pAttrs).udas != null)
@@ -668,12 +695,12 @@ public class parse {
                                         stc = 2L;
                                         /*goto Lstc*/{ __dispatch1 = -3; continue dispatched_1; }
                                     }
-                                    Loc linkLoc = this.token.loc.copy();
-                                    Ref<DArray<Identifier>> idents = ref(null);
-                                    Ref<DArray<ASTBase.Expression>> identExps = ref(null);
-                                    IntRef cppmangle = ref(CPPMANGLE.def);
-                                    Ref<Boolean> cppMangleOnly = ref(false);
-                                    int link = this.parseLinkage(ptr(idents), ptr(identExps), cppmangle, cppMangleOnly);
+                                    linkLoc = this.token.loc.copy();
+                                    idents = ref(null);
+                                    identExps = ref(null);
+                                    cppmangle = ref(CPPMANGLE.def);
+                                    cppMangleOnly = ref(false);
+                                    link = this.parseLinkage(ptr(idents), ptr(identExps), cppmangle, cppMangleOnly);
                                     if ((pAttrs).link != LINK.default_)
                                     {
                                         if ((pAttrs).link != link)
@@ -694,9 +721,9 @@ public class parse {
                                         assert(link == LINK.cpp);
                                         assert(((idents.value).length) != 0);
                                         {
-                                            int i = (idents.value).length;
+                                            i = (idents.value).length;
                                             for (; (i) != 0;){
-                                                Identifier id = (idents.value).get(i -= 1);
+                                                id = (idents.value).get(i -= 1);
                                                 if (s != null)
                                                 {
                                                     a = new DArray<ASTBase.Dsymbol>();
@@ -715,9 +742,9 @@ public class parse {
                                         assert(link == LINK.cpp);
                                         assert(((identExps.value).length) != 0);
                                         {
-                                            int i = (identExps.value).length;
+                                            i = (identExps.value).length;
                                             for (; (i) != 0;){
-                                                ASTBase.Expression exp = (identExps.value).get(i -= 1);
+                                                exp = (identExps.value).get(i -= 1);
                                                 if (s != null)
                                                 {
                                                     a = new DArray<ASTBase.Dsymbol>();
@@ -770,7 +797,7 @@ public class parse {
                                         }
                                         (pAttrs).protection.kind = prot;
                                         this.nextToken();
-                                        DArray<Identifier> pkg_prot_idents = null;
+                                        pkg_prot_idents = null;
                                         if ((pAttrs).protection.kind == ASTBase.Prot.Kind.package_ && (this.token.value & 0xFF) == 1)
                                         {
                                             pkg_prot_idents = this.parseQualifiedIdentifier(new BytePtr("protection package"));
@@ -785,7 +812,7 @@ public class parse {
                                                 break;
                                             }
                                         }
-                                        Loc attrloc = this.token.loc.copy();
+                                        attrloc = this.token.loc.copy();
                                         a = this.parseBlock(pLastDecl, pAttrs);
                                         if ((pAttrs).protection.kind != ASTBase.Prot.Kind.undefined)
                                         {
@@ -798,9 +825,9 @@ public class parse {
                                         break;
                                     }
                                 case 163:
-                                    Loc attrLoc = this.token.loc.copy();
+                                    attrLoc = this.token.loc.copy();
                                     this.nextToken();
-                                    ASTBase.Expression e = null;
+                                    e = null;
                                     if ((this.token.value & 0xFF) == 1)
                                     {
                                         this.nextToken();
@@ -825,7 +852,7 @@ public class parse {
                                     }
                                     break;
                                 case 40:
-                                    DArray<ASTBase.Expression> args = null;
+                                    args = null;
                                     Loc loc = this.token.loc.copy();
                                     this.nextToken();
                                     this.check(TOK.leftParentheses);
@@ -834,13 +861,13 @@ public class parse {
                                         this.error(new BytePtr("`pragma(identifier)` expected"));
                                         /*goto Lerror*/{ __dispatch1 = -2; continue dispatched_1; }
                                     }
-                                    Identifier ident = this.token.ident;
+                                    ident = this.token.ident;
                                     this.nextToken();
                                     if ((this.token.value & 0xFF) == 99 && (this.peekNext() & 0xFF) != 2)
                                         args = this.parseArguments();
                                     else
                                         this.check(TOK.rightParentheses);
-                                    DArray<ASTBase.Dsymbol> a2 = null;
+                                    a2 = null;
                                     if ((this.token.value & 0xFF) == 9)
                                     {
                                         this.nextToken();
@@ -897,20 +924,20 @@ public class parse {
                                 case -6:
                                 __dispatch1 = 0;
                                     {
-                                        DArray<ASTBase.Dsymbol> athen = null;
+                                        athen = null;
                                         if ((this.token.value & 0xFF) == 7)
                                             athen = this.parseBlock(pLastDecl, null);
                                         else
                                         {
-                                            Loc lookingForElseSave = this.lookingForElse.copy();
+                                            lookingForElseSave = this.lookingForElse.copy();
                                             this.lookingForElse = this.token.loc.copy();
                                             athen = this.parseBlock(pLastDecl, null);
                                             this.lookingForElse = lookingForElseSave.copy();
                                         }
-                                        DArray<ASTBase.Dsymbol> aelse = null;
+                                        aelse = null;
                                         if ((this.token.value & 0xFF) == 184)
                                         {
-                                            Loc elseloc = this.token.loc.copy();
+                                            elseloc = this.token.loc.copy();
                                             this.nextToken();
                                             aelse = this.parseBlock(pLastDecl, null);
                                             this.checkDanglingElse(elseloc);
@@ -999,6 +1026,7 @@ public class parse {
 
         public  DArray<ASTBase.Dsymbol> parseBlock(Ptr<ASTBase.Dsymbol> pLastDecl, PrefixAttributesASTBase pAttrs) {
             DArray<ASTBase.Dsymbol> a = null;
+            Loc lookingForElseSave;
             switch ((this.token.value & 0xFF))
             {
                 case 9:
@@ -1009,7 +1037,7 @@ public class parse {
                     this.error(new BytePtr("declaration expected following attribute, not end of file"));
                     break;
                 case 5:
-                    Loc lookingForElseSave = this.lookingForElse.copy();
+                    lookingForElseSave = this.lookingForElse.copy();
                     this.lookingForElse = new Loc(null, 0, 0).copy();
                     this.nextToken();
                     a = this.parseDeclDefs(0, pLastDecl, null);
@@ -1123,6 +1151,7 @@ public class parse {
         public  long parsePostfix(long storageClass, Ptr<DArray<ASTBase.Expression>> pudas) {
             for (; (1) != 0;){
                 long stc = 0L;
+                Ref<DArray<ASTBase.Expression>> udas;
                 switch ((this.token.value & 0xFF))
                 {
                     case 171:
@@ -1150,7 +1179,7 @@ public class parse {
                         stc = 524288L;
                         break;
                     case 225:
-                        Ref<DArray<ASTBase.Expression>> udas = ref(null);
+                        udas = ref(null);
                         stc = this.parseAttribute(ptr(udas));
                         if (udas.value != null)
                         {
@@ -1537,6 +1566,7 @@ public class parse {
                 int __dispatch8 = 0;
                 dispatched_8:
                 do {
+                    ASTBase.Expression ea;
                     switch (__dispatch8 != 0 ? __dispatch8 : (this.token.value & 0xFF))
                     {
                         case 120:
@@ -1650,7 +1680,7 @@ public class parse {
                         case 222:
                         case 223:
                         case 123:
-                            ASTBase.Expression ea = this.parsePrimaryExp();
+                            ea = this.parsePrimaryExp();
                             (tiargs).push((RootObject)ea);
                             break;
                         default:
@@ -2255,6 +2285,15 @@ public class parse {
                             int __dispatch9 = 0;
                             dispatched_9:
                             do {
+                                DArray<ASTBase.Dsymbol> a;
+                                Loc loc;
+                                ASTBase.TemplateParameter tp;
+                                Ref<DArray<ASTBase.Expression>> exps;
+                                Identifier id;
+                                long stc2;
+                                ASTBase.Parameter param;
+                                Token t;
+                                ASTBase.UserAttributeDeclaration udad;
                                 switch (__dispatch9 != 0 ? __dispatch9 : (this.token.value & 0xFF))
                                 {
                                     case 2:
@@ -2286,8 +2325,8 @@ public class parse {
                                         stc = 2147483648L;
                                         /*goto L2*/{ __dispatch9 = -1; continue dispatched_9; }
                                     case 225:
-                                        Ref<DArray<ASTBase.Expression>> exps = ref(null);
-                                        long stc2 = this.parseAttribute(ptr(exps));
+                                        exps = ref(null);
+                                        stc2 = this.parseAttribute(ptr(exps));
                                         if (stc2 == 4294967296L || stc2 == 4398046511104L || stc2 == 137438953472L || stc2 == 8589934592L || stc2 == 17179869184L || stc2 == 34359738368L)
                                         {
                                             this.error(new BytePtr("`@%s` attribute for function parameter is not supported"), this.token.toChars());
@@ -2331,86 +2370,84 @@ public class parse {
                                         storageClass = this.appendStorageClass(storageClass, stc);
                                         continue L_outer6;
                                     default:
+                                    stc = storageClass & 2111488L;
+                                    if ((stc & stc - 1L) != 0 && !(stc == 2099200L))
+                                        this.error(new BytePtr("incompatible parameter storage classes"));
+                                    if (tpl != null && (this.token.value & 0xFF) == 120)
                                     {
-                                        stc = storageClass & 2111488L;
-                                        if ((stc & stc - 1L) != 0 && !(stc == 2099200L))
-                                            this.error(new BytePtr("incompatible parameter storage classes"));
-                                        if (tpl != null && (this.token.value & 0xFF) == 120)
+                                        t = this.peek(this.token);
+                                        if (((t).value & 0xFF) == 99 || ((t).value & 0xFF) == 2 || ((t).value & 0xFF) == 10)
                                         {
-                                            Token t = this.peek(this.token);
-                                            if (((t).value & 0xFF) == 99 || ((t).value & 0xFF) == 2 || ((t).value & 0xFF) == 10)
-                                            {
-                                                Identifier id = Identifier.generateId(new BytePtr("__T"));
-                                                Loc loc = this.token.loc.copy();
-                                                at = new ASTBase.TypeIdentifier(loc, id);
-                                                if (tpl.get() == null)
-                                                    tpl.set(0, (new DArray<ASTBase.TemplateParameter>()));
-                                                ASTBase.TemplateParameter tp = new ASTBase.TemplateTypeParameter(loc, id, null, null);
-                                                (tpl.get()).push(tp);
-                                                ai.value = this.token.ident;
-                                                this.nextToken();
-                                            }
-                                            else
-                                                /*goto _else*/{ __dispatch9 = -2; continue dispatched_9; }
+                                            id = Identifier.generateId(new BytePtr("__T"));
+                                            loc = this.token.loc.copy();
+                                            at = new ASTBase.TypeIdentifier(loc, id);
+                                            if (tpl.get() == null)
+                                                tpl.set(0, (new DArray<ASTBase.TemplateParameter>()));
+                                            tp = new ASTBase.TemplateTypeParameter(loc, id, null, null);
+                                            (tpl.get()).push(tp);
+                                            ai.value = this.token.ident;
+                                            this.nextToken();
+                                        }
+                                        else
+                                            /*goto _else*/{ __dispatch9 = -2; continue dispatched_9; }
+                                    }
+                                    else
+                                    {
+                                    /*_else:*/
+                                    case -2:
+                                    __dispatch9 = 0;
+                                        at = this.parseType(ptr(ai), null);
+                                    }
+                                    ae = null;
+                                    if ((this.token.value & 0xFF) == 90)
+                                    {
+                                        this.nextToken();
+                                        ae = this.parseDefaultInitExp();
+                                        hasdefault = 1;
+                                    }
+                                    else
+                                    {
+                                        if ((hasdefault) != 0)
+                                            this.error(new BytePtr("default argument expected for `%s`"), ai.value != null ? ai.value.toChars() : at.toChars());
+                                    }
+                                    param = new ASTBase.Parameter(storageClass, at, ai.value, ae, null);
+                                    if (udas != null)
+                                    {
+                                        a = new DArray<ASTBase.Dsymbol>();
+                                        udad = new ASTBase.UserAttributeDeclaration(udas, a);
+                                        param.userAttribDecl = udad;
+                                    }
+                                    if ((this.token.value & 0xFF) == 225)
+                                    {
+                                        exps = ref(null);
+                                        stc2 = this.parseAttribute(ptr(exps));
+                                        if (stc2 == 4294967296L || stc2 == 4398046511104L || stc2 == 137438953472L || stc2 == 8589934592L || stc2 == 17179869184L || stc2 == 34359738368L)
+                                        {
+                                            this.error(new BytePtr("`@%s` attribute for function parameter is not supported"), this.token.toChars());
                                         }
                                         else
                                         {
-                                        /*_else:*/
-                                        case -2:
-                                        __dispatch9 = 0;
-                                            at = this.parseType(ptr(ai), null);
+                                            this.error(new BytePtr("user-defined attributes cannot appear as postfixes"), this.token.toChars());
                                         }
-                                        ae = null;
-                                        if ((this.token.value & 0xFF) == 90)
-                                        {
+                                        if ((stc2) != 0)
                                             this.nextToken();
-                                            ae = this.parseDefaultInitExp();
-                                            hasdefault = 1;
-                                        }
-                                        else
-                                        {
-                                            if ((hasdefault) != 0)
-                                                this.error(new BytePtr("default argument expected for `%s`"), ai.value != null ? ai.value.toChars() : at.toChars());
-                                        }
-                                        ASTBase.Parameter param = new ASTBase.Parameter(storageClass, at, ai.value, ae, null);
-                                        if (udas != null)
-                                        {
-                                            DArray<ASTBase.Dsymbol> a = new DArray<ASTBase.Dsymbol>();
-                                            ASTBase.UserAttributeDeclaration udad = new ASTBase.UserAttributeDeclaration(udas, a);
-                                            param.userAttribDecl = udad;
-                                        }
-                                        if ((this.token.value & 0xFF) == 225)
-                                        {
-                                            Ref<DArray<ASTBase.Expression>> exps = ref(null);
-                                            long stc2 = this.parseAttribute(ptr(exps));
-                                            if (stc2 == 4294967296L || stc2 == 4398046511104L || stc2 == 137438953472L || stc2 == 8589934592L || stc2 == 17179869184L || stc2 == 34359738368L)
-                                            {
-                                                this.error(new BytePtr("`@%s` attribute for function parameter is not supported"), this.token.toChars());
-                                            }
-                                            else
-                                            {
-                                                this.error(new BytePtr("user-defined attributes cannot appear as postfixes"), this.token.toChars());
-                                            }
-                                            if ((stc2) != 0)
-                                                this.nextToken();
-                                        }
-                                        if ((this.token.value & 0xFF) == 10)
-                                        {
-                                            if ((storageClass & 2101248L) != 0)
-                                                this.error(new BytePtr("variadic argument cannot be `out` or `ref`"));
-                                            varargs = ASTBase.VarArg.typesafe;
-                                            (parameters).push(param);
-                                            this.nextToken();
-                                            break;
-                                        }
+                                    }
+                                    if ((this.token.value & 0xFF) == 10)
+                                    {
+                                        if ((storageClass & 2101248L) != 0)
+                                            this.error(new BytePtr("variadic argument cannot be `out` or `ref`"));
+                                        varargs = ASTBase.VarArg.typesafe;
                                         (parameters).push(param);
-                                        if ((this.token.value & 0xFF) == 99)
-                                        {
-                                            this.nextToken();
-                                            /*goto L1*/throw Dispatch0.INSTANCE;
-                                        }
+                                        this.nextToken();
                                         break;
                                     }
+                                    (parameters).push(param);
+                                    if ((this.token.value & 0xFF) == 99)
+                                    {
+                                        this.nextToken();
+                                        /*goto L1*/throw Dispatch0.INSTANCE;
+                                    }
+                                    break;
                                 }
                             } while(__dispatch9 != 0);
                         }
@@ -2472,6 +2509,8 @@ public class parse {
                             int __dispatch10 = 0;
                             dispatched_10:
                             do {
+                                OutBuffer buf;
+                                Token tp;
                                 switch (__dispatch10 != 0 ? __dispatch10 : (this.token.value & 0xFF))
                                 {
                                     case 225:
@@ -2483,7 +2522,7 @@ public class parse {
                                                     stc |= _stc;
                                                 else
                                                 {
-                                                    OutBuffer buf = new OutBuffer();
+                                                    buf = new OutBuffer();
                                                     try {
                                                         ASTBase.stcToBuffer(buf, _stc);
                                                         this.error(new BytePtr("`%s` is not a valid attribute for enum members"), buf.peekChars());
@@ -2506,7 +2545,7 @@ public class parse {
                                         }
                                         break;
                                     case 120:
-                                        Token tp = this.peek(this.token);
+                                        tp = this.peek(this.token);
                                         if (((tp).value & 0xFF) == 90 || ((tp).value & 0xFF) == 99 || ((tp).value & 0xFF) == 6)
                                         {
                                             ident.value = this.token.ident;
@@ -2659,6 +2698,7 @@ public class parse {
                 this.error(new BytePtr("{ } expected following `%s` declaration"), Token.toChars(tok));
             }
             ASTBase.AggregateDeclaration a = null;
+            boolean inObject;
             switch ((tok & 0xFF))
             {
                 case 154:
@@ -2670,13 +2710,13 @@ public class parse {
                 case 153:
                     if (!(id != null))
                         this.error(loc, new BytePtr("anonymous classes not allowed"));
-                    boolean inObject = this.md != null && (this.md).packages == null && (this.md).id.equals(Id.object);
+                    inObject = this.md != null && (this.md).packages == null && (this.md).id.equals(Id.object);
                     a = new ASTBase.ClassDeclaration(loc, id, baseclasses, members, inObject);
                     break;
                 case 152:
                     if (id != null)
                     {
-                        boolean inObject = this.md != null && (this.md).packages == null && (this.md).id.equals(Id.object);
+                        inObject = this.md != null && (this.md).packages == null && (this.md).id.equals(Id.object);
                         a = new ASTBase.StructDeclaration(loc, id, inObject);
                         a.members = members;
                     }
@@ -2864,6 +2904,7 @@ public class parse {
                 int __dispatch13 = 0;
                 dispatched_13:
                 do {
+                    ASTBase.TemplateInstance tempinst;
                     switch (__dispatch13 != 0 ? __dispatch13 : (this.token.value & 0xFF))
                     {
                         case 128:
@@ -2963,7 +3004,7 @@ public class parse {
                             this.nextToken();
                             if ((this.token.value & 0xFF) == 91)
                             {
-                                ASTBase.TemplateInstance tempinst = new ASTBase.TemplateInstance(loc, id, this.parseTemplateArguments());
+                                tempinst = new ASTBase.TemplateInstance(loc, id, this.parseTemplateArguments());
                                 t = this.parseBasicTypeStartingAt(new ASTBase.TypeInstance(loc, tempinst), dontLookDotIdents);
                             }
                             else
@@ -3037,6 +3078,14 @@ public class parse {
                         int __dispatch14 = 0;
                         dispatched_14:
                         do {
+                            ASTBase.Expression e;
+                            ASTBase.Type index;
+                            ASTBase.Expression e2;
+                            Loc loc;
+                            Identifier id;
+                            DArray<RootObject> dimStack;
+                            ASTBase.Type t;
+                            ASTBase.TemplateInstance tempinst;
                             switch (__dispatch14 != 0 ? __dispatch14 : (this.token.value & 0xFF))
                             {
                                 case 97:
@@ -3048,9 +3097,9 @@ public class parse {
                                     }
                                     if (maybeArray != null)
                                     {
-                                        DArray<RootObject> dimStack = new DArray<RootObject>();
+                                        dimStack = new DArray<RootObject>();
                                         try {
-                                            ASTBase.Type t = maybeArray;
+                                            t = maybeArray;
                                             for (; true;){
                                                 if ((t.ty & 0xFF) == ASTBase.ENUMTY.Tsarray)
                                                 {
@@ -3079,12 +3128,12 @@ public class parse {
                                         finally {
                                         }
                                     }
-                                    Loc loc = this.token.loc.copy();
-                                    Identifier id = this.token.ident;
+                                    loc = this.token.loc.copy();
+                                    id = this.token.ident;
                                     this.nextToken();
                                     if ((this.token.value & 0xFF) == 91)
                                     {
-                                        ASTBase.TemplateInstance tempinst = new ASTBase.TemplateInstance(loc, id, this.parseTemplateArguments());
+                                        tempinst = new ASTBase.TemplateInstance(loc, id, this.parseTemplateArguments());
                                         tid.addInst(tempinst);
                                     }
                                     else
@@ -3094,7 +3143,7 @@ public class parse {
                                     if (dontLookDotIdents)
                                         /*goto Lend*/throw Dispatch0.INSTANCE;
                                     this.nextToken();
-                                    ASTBase.Type t = maybeArray != null ? maybeArray : tid;
+                                    t = maybeArray != null ? maybeArray : tid;
                                     if ((this.token.value & 0xFF) == 4)
                                     {
                                         t = new ASTBase.TypeDArray(t);
@@ -3103,18 +3152,18 @@ public class parse {
                                     }
                                     else if (this.isDeclaration(this.token, NeedDeclaratorId.no, TOK.rightBracket, null))
                                     {
-                                        ASTBase.Type index = this.parseType(null, null);
+                                        index = this.parseType(null, null);
                                         maybeArray = new ASTBase.TypeAArray(t, index);
                                         this.check(TOK.rightBracket);
                                     }
                                     else
                                     {
                                         this.inBrackets++;
-                                        ASTBase.Expression e = this.parseAssignExp();
+                                        e = this.parseAssignExp();
                                         if ((this.token.value & 0xFF) == 31)
                                         {
                                             this.nextToken();
-                                            ASTBase.Expression e2 = this.parseAssignExp();
+                                            e2 = this.parseAssignExp();
                                             t = new ASTBase.TypeSlice(t, e, e2);
                                             this.inBrackets--;
                                             this.check(TOK.rightBracket);
@@ -3143,6 +3192,14 @@ public class parse {
 
         public  ASTBase.Type parseBasicType2(ASTBase.Type t) {
             for (; (1) != 0;){
+                ASTBase.Expression e;
+                ASTBase.Type index;
+                DArray<ASTBase.Parameter> parameters;
+                ASTBase.Expression e2;
+                byte save;
+                IntRef varargs;
+                ASTBase.TypeFunction tf;
+                long stc;
                 switch ((this.token.value & 0xFF))
                 {
                     case 78:
@@ -3158,18 +3215,18 @@ public class parse {
                         }
                         else if (this.isDeclaration(this.token, NeedDeclaratorId.no, TOK.rightBracket, null))
                         {
-                            ASTBase.Type index = this.parseType(null, null);
+                            index = this.parseType(null, null);
                             t = new ASTBase.TypeAArray(t, index);
                             this.check(TOK.rightBracket);
                         }
                         else
                         {
                             this.inBrackets++;
-                            ASTBase.Expression e = this.parseAssignExp();
+                            e = this.parseAssignExp();
                             if ((this.token.value & 0xFF) == 31)
                             {
                                 this.nextToken();
-                                ASTBase.Expression e2 = this.parseAssignExp();
+                                e2 = this.parseAssignExp();
                                 t = new ASTBase.TypeSlice(t, e, e2);
                             }
                             else
@@ -3182,12 +3239,12 @@ public class parse {
                         continue;
                     case 160:
                     case 161:
-                        byte save = this.token.value;
+                        save = this.token.value;
                         this.nextToken();
-                        IntRef varargs = ref(ASTBase.VarArg.none);
-                        DArray<ASTBase.Parameter> parameters = this.parseParameters(ptr(varargs), null);
-                        long stc = this.parsePostfix(0L, null);
-                        ASTBase.TypeFunction tf = new ASTBase.TypeFunction(new ASTBase.ParameterList(parameters, varargs.value), t, this.linkage, stc);
+                        varargs = ref(ASTBase.VarArg.none);
+                        parameters = this.parseParameters(ptr(varargs), null);
+                        stc = this.parsePostfix(0L, null);
+                        tf = new ASTBase.TypeFunction(new ASTBase.ParameterList(parameters, varargs.value), t, this.linkage, stc);
                         if ((stc & 17594871447556L) != 0)
                         {
                             if ((save & 0xFF) == 161)
@@ -3208,6 +3265,7 @@ public class parse {
         public  ASTBase.Type parseDeclarator(ASTBase.Type t, IntPtr palt, Ptr<Identifier> pident, Ptr<DArray<ASTBase.TemplateParameter>> tpl, long storageClass, IntPtr pdisable, Ptr<DArray<ASTBase.Expression>> pudas) {
             t = this.parseBasicType2(t);
             Ref<ASTBase.Type> ts = ref(null);
+            Ref<Token> peekt;
             switch ((this.token.value & 0xFF))
             {
                 case 120:
@@ -3228,7 +3286,7 @@ public class parse {
                         break;
                     }
                     ts.value = t;
-                    Ref<Token> peekt = ref(this.token);
+                    peekt = ref(this.token);
                     if (this.isParameters(ptr(peekt)))
                     {
                         this.error(new BytePtr("function declaration without return type. (Note that constructors are always named `this`)"));
@@ -3241,10 +3299,19 @@ public class parse {
                 break;
             }
             for (; (1) != 0;){
+                ASTBase.Expression e;
+                ASTBase.Type index;
+                DArray<ASTBase.Parameter> parameters;
+                IntRef varargs;
+                Token tk;
+                ASTBase.Type tf;
+                long stc;
+                ASTBase.TypeNext ta;
+                Ptr<ASTBase.Type> pt;
                 switch ((this.token.value & 0xFF))
                 {
                     case 3:
-                        ASTBase.TypeNext ta = null;
+                        ta = null;
                         this.nextToken();
                         if ((this.token.value & 0xFF) == 4)
                         {
@@ -3254,19 +3321,19 @@ public class parse {
                         }
                         else if (this.isDeclaration(this.token, NeedDeclaratorId.no, TOK.rightBracket, null))
                         {
-                            ASTBase.Type index = this.parseType(null, null);
+                            index = this.parseType(null, null);
                             this.check(TOK.rightBracket);
                             ta = new ASTBase.TypeAArray(t, index);
                             palt.get() |= 2;
                         }
                         else
                         {
-                            ASTBase.Expression e = this.parseAssignExp();
+                            e = this.parseAssignExp();
                             ta = new ASTBase.TypeSArray(t, e);
                             this.check(TOK.rightBracket);
                             palt.get() |= 2;
                         }
-                        Ptr<ASTBase.Type> pt = null;
+                        pt = null;
                         {
                             pt = pcopy(ptr(ts));
                             for (; pt.get().equals(t);pt = pcopy((((ASTBase.TypeNext)pt.get()).next))){
@@ -3277,7 +3344,7 @@ public class parse {
                     case 1:
                         if (tpl != null)
                         {
-                            Token tk = this.peekPastParen(this.token);
+                            tk = this.peekPastParen(this.token);
                             if (((tk).value & 0xFF) == 1)
                             {
                                 tpl.set(0, this.parseTemplateParameterList(0));
@@ -3288,14 +3355,14 @@ public class parse {
                                 break;
                             }
                         }
-                        IntRef varargs = ref(ASTBase.VarArg.none);
-                        DArray<ASTBase.Parameter> parameters = this.parseParameters(ptr(varargs), null);
-                        long stc = this.parsePostfix(storageClass, pudas);
-                        ASTBase.Type tf = new ASTBase.TypeFunction(new ASTBase.ParameterList(parameters, varargs.value), t, this.linkage, stc);
+                        varargs = ref(ASTBase.VarArg.none);
+                        parameters = this.parseParameters(ptr(varargs), null);
+                        stc = this.parsePostfix(storageClass, pudas);
+                        tf = new ASTBase.TypeFunction(new ASTBase.ParameterList(parameters, varargs.value), t, this.linkage, stc);
                         tf = tf.addSTC(stc);
                         if (pdisable != null)
                             pdisable.set(0, ((stc & 137438953472L) != 0 ? 1 : 0));
-                        Ptr<ASTBase.Type> pt = null;
+                        pt = null;
                         {
                             pt = pcopy(ptr(ts));
                             for (; pt.get().equals(t);pt = pcopy((((ASTBase.TypeNext)pt.get()).next))){
@@ -3320,6 +3387,11 @@ public class parse {
                     int __dispatch18 = 0;
                     dispatched_18:
                     do {
+                        Token t;
+                        Ref<DArray<Identifier>> idents;
+                        IntRef cppmangle;
+                        Ref<Boolean> cppMangleOnly;
+                        Ref<DArray<ASTBase.Expression>> identExps;
                         switch (__dispatch18 != 0 ? __dispatch18 : (this.token.value & 0xFF))
                         {
                             case 171:
@@ -3379,7 +3451,7 @@ public class parse {
                                 stc = 1073741824L;
                                 /*goto L1*/{ __dispatch18 = -1; continue dispatched_18; }
                             case 156:
-                                Token t = this.peek(this.token);
+                                t = this.peek(this.token);
                                 if (((t).value & 0xFF) == 5 || ((t).value & 0xFF) == 7)
                                     break;
                                 if (((t).value & 0xFF) == 120)
@@ -3412,10 +3484,10 @@ public class parse {
                                 if (sawLinkage)
                                     this.error(new BytePtr("redundant linkage declaration"));
                                 sawLinkage = true;
-                                Ref<DArray<Identifier>> idents = ref(null);
-                                Ref<DArray<ASTBase.Expression>> identExps = ref(null);
-                                IntRef cppmangle = ref(CPPMANGLE.def);
-                                Ref<Boolean> cppMangleOnly = ref(false);
+                                idents = ref(null);
+                                identExps = ref(null);
+                                cppmangle = ref(CPPMANGLE.def);
+                                cppMangleOnly = ref(false);
                                 link.value = this.parseLinkage(ptr(idents), ptr(identExps), cppmangle, cppMangleOnly);
                                 if (idents.value != null || identExps.value != null)
                                 {
@@ -3846,6 +3918,10 @@ public class parse {
                 int __dispatch22 = 0;
                 dispatched_22:
                 do {
+                    ASTBase.Type t;
+                    OutBuffer buf;
+                    ASTBase.TemplateParameter tp;
+                    Identifier id;
                     switch (__dispatch22 != 0 ? __dispatch22 : (this.token.value & 0xFF))
                     {
                         case 161:
@@ -3883,7 +3959,7 @@ public class parse {
                                 {
                                     if ((save & 0xFF) == 161)
                                     {
-                                        OutBuffer buf = new OutBuffer();
+                                        buf = new OutBuffer();
                                         try {
                                             ASTBase.stcToBuffer(buf, modStc);
                                             this.error(new BytePtr("function literal cannot be `%s`"), buf.peekChars());
@@ -3900,11 +3976,11 @@ public class parse {
                             break;
                         case 120:
                             parameters = new DArray<ASTBase.Parameter>();
-                            Identifier id = Identifier.generateId(new BytePtr("__T"));
-                            ASTBase.Type t = new ASTBase.TypeIdentifier(loc, id);
+                            id = Identifier.generateId(new BytePtr("__T"));
+                            t = new ASTBase.TypeIdentifier(loc, id);
                             (parameters).push(new ASTBase.Parameter(0L, t, this.token.ident, null, null));
                             tpl.value = new DArray<ASTBase.TemplateParameter>();
-                            ASTBase.TemplateParameter tp = new ASTBase.TemplateTypeParameter(loc, id, null, null);
+                            tp = new ASTBase.TemplateTypeParameter(loc, id, null, null);
                             (tpl.value).push(tp);
                             this.nextToken();
                             break;
@@ -3947,6 +4023,12 @@ public class parse {
                 int __dispatch23 = 0;
                 dispatched_23:
                 do {
+                    ASTBase.Expression e;
+                    ASTBase.Expression msg;
+                    Loc loc;
+                    BytePtr sbody;
+                    byte t;
+                    Identifier id;
                     switch (__dispatch23 != 0 ? __dispatch23 : (this.token.value & 0xFF))
                     {
                         case 5:
@@ -3965,7 +4047,7 @@ public class parse {
                             f.endloc = this.endloc.copy();
                             break;
                         case 175:
-                            Loc loc = this.token.loc.copy();
+                            loc = this.token.loc.copy();
                             this.nextToken();
                             if (f.frequires == null)
                             {
@@ -3974,8 +4056,8 @@ public class parse {
                             if ((this.token.value & 0xFF) == 1)
                             {
                                 this.nextToken();
-                                ASTBase.Expression e = this.parseAssignExp();
-                                ASTBase.Expression msg = null;
+                                e = this.parseAssignExp();
+                                msg = null;
                                 if ((this.token.value & 0xFF) == 99)
                                 {
                                     this.nextToken();
@@ -3998,13 +4080,13 @@ public class parse {
                             }
                             /*goto L1*/throw Dispatch0.INSTANCE;
                         case 176:
-                            Loc loc = this.token.loc.copy();
+                            loc = this.token.loc.copy();
                             this.nextToken();
                             if (f.fensures == null)
                             {
                                 f.fensures = new DArray<ASTBase.Ensure>();
                             }
-                            Identifier id = null;
+                            id = null;
                             if ((this.token.value & 0xFF) != 5)
                             {
                                 this.check(TOK.leftParentheses);
@@ -4018,8 +4100,8 @@ public class parse {
                                 if ((this.token.value & 0xFF) == 9)
                                 {
                                     this.nextToken();
-                                    ASTBase.Expression e = this.parseAssignExp();
-                                    ASTBase.Expression msg = null;
+                                    e = this.parseAssignExp();
+                                    msg = null;
                                     if ((this.token.value & 0xFF) == 99)
                                     {
                                         this.nextToken();
@@ -4052,12 +4134,12 @@ public class parse {
                         default:
                         if (literal)
                         {
-                            BytePtr sbody = pcopy(requireDo ? new BytePtr("do ") : new BytePtr(""));
+                            sbody = pcopy(requireDo ? new BytePtr("do ") : new BytePtr(""));
                             this.error(new BytePtr("missing `%s{ ... }` for function literal"), sbody);
                         }
                         else if (!(requireDo))
                         {
-                            byte t = this.token.value;
+                            t = this.token.value;
                             if ((t & 0xFF) == 171 || (t & 0xFF) == 182 || (t & 0xFF) == 177 || (t & 0xFF) == 195 || (t & 0xFF) == 224 || (t & 0xFF) == 216 || (t & 0xFF) == 215)
                                 this.error(new BytePtr("'%s' cannot be placed after a template constraint"), this.token.toChars());
                             else if ((t & 0xFF) == 225)
@@ -4500,13 +4582,52 @@ public class parse {
                 int __dispatch27 = 0;
                 dispatched_27:
                 do {
+                    DArray<ASTBase.Expression> args;
+                    DArray<ASTBase.Statement> statements;
+                    DArray<ASTBase.Dsymbol> a;
+                    ASTBase.Dsymbol d;
+                    ASTBase.Expression condition;
+                    ASTBase.Statement _body;
+                    Identifier ident;
+                    Loc lookingForElseSave;
+                    ASTBase.Statement handler;
+                    int nestlevel;
+                    int i;
+                    ASTBase.Expression increment;
+                    ASTBase.Expression e;
+                    Loc catchloc;
+                    Loc labelloc;
+                    ASTBase.Catch c;
+                    ASTBase.Statement finalbody;
+                    long stc;
+                    Token n;
+                    ASTBase.Type at;
+                    ASTBase.Expression exp;
+                    DArray<ASTBase.Dsymbol> imports;
+                    ASTBase.Parameter param;
+                    DArray<ASTBase.Expression> cases;
+                    Loc endloc;
+                    Ptr<Token> ptoklist;
+                    ASTBase.Statement st;
+                    long storageClass;
+                    ASTBase.Statement _init;
+                    Identifier ai;
+                    Ref<Token> toklist;
+                    Identifier label;
+                    Identifier id;
+                    DArray<ASTBase.Catch> catches;
+                    DArray<ASTBase.Statement> as;
+                    Token nt;
+                    ASTBase.CompileExp cpe;
+                    Loc elseloc;
+                    ASTBase.Expression last;
                     switch (__dispatch27 != 0 ? __dispatch27 : (this.token.value & 0xFF))
                     {
                         case 120:
                             Token t = this.peek(this.token);
                             if (((t).value & 0xFF) == 7)
                             {
-                                Token nt = this.peek(t);
+                                nt = this.peek(t);
                                 if (((nt).value & 0xFF) == 7)
                                 {
                                     this.nextToken();
@@ -4515,7 +4636,7 @@ public class parse {
                                     this.error(new BytePtr("use `.` for member lookup, not `::`"));
                                     break;
                                 }
-                                Identifier ident = this.token.ident;
+                                ident = this.token.ident;
                                 this.nextToken();
                                 this.nextToken();
                                 if ((this.token.value & 0xFF) == 6)
@@ -4584,7 +4705,7 @@ public class parse {
                         case -2:
                         __dispatch27 = 0;
                             {
-                                ASTBase.Expression exp = this.parseExpression();
+                                exp = this.parseExpression();
                                 this.check(TOK.semicolon, new BytePtr("statement"));
                                 s = new ASTBase.ExpStatement(loc, exp);
                                 break;
@@ -4610,7 +4731,7 @@ public class parse {
                             }
                             if (((t).value & 0xFF) == 157)
                             {
-                                DArray<ASTBase.Dsymbol> imports = this.parseImport();
+                                imports = this.parseImport();
                                 s = new ASTBase.ImportStatement(loc, imports);
                                 if ((flags & ParseStatementFlags.scope_) != 0)
                                     s = new ASTBase.ScopeStatement(loc, s, this.token.loc);
@@ -4676,17 +4797,17 @@ public class parse {
                         case -1:
                         __dispatch27 = 0;
                             {
-                                DArray<ASTBase.Dsymbol> a = this.parseDeclarations(false, null, null);
+                                a = this.parseDeclarations(false, null, null);
                                 if ((a).length > 1)
                                 {
-                                    DArray<ASTBase.Statement> as = new DArray<ASTBase.Statement>();
+                                    as = new DArray<ASTBase.Statement>();
                                     (as).reserve((a).length);
                                     {
                                         int __key98 = 0;
                                         int __limit99 = (a).length;
                                         for (; __key98 < __limit99;__key98 += 1) {
-                                            int i = __key98;
-                                            ASTBase.Dsymbol d = (a).get(i);
+                                            i = __key98;
+                                            d = (a).get(i);
                                             s = new ASTBase.ExpStatement(loc, d);
                                             (as).push(s);
                                         }
@@ -4695,7 +4816,7 @@ public class parse {
                                 }
                                 else if ((a).length == 1)
                                 {
-                                    ASTBase.Dsymbol d = (a).get(0);
+                                    d = (a).get(0);
                                     s = new ASTBase.ExpStatement(loc, d);
                                 }
                                 else
@@ -4705,7 +4826,7 @@ public class parse {
                                 break;
                             }
                         case 156:
-                            ASTBase.Dsymbol d = null;
+                            d = null;
                             Token t = this.peek(this.token);
                             if (((t).value & 0xFF) == 5 || ((t).value & 0xFF) == 7)
                                 d = this.parseEnum();
@@ -4727,11 +4848,11 @@ public class parse {
                             Token t = this.peek(this.token);
                             if (((t).value & 0xFF) == 1)
                             {
-                                ASTBase.Expression e = this.parseAssignExp();
+                                e = this.parseAssignExp();
                                 this.check(TOK.semicolon);
                                 if ((e.op & 0xFF) == 162)
                                 {
-                                    ASTBase.CompileExp cpe = (ASTBase.CompileExp)e;
+                                    cpe = (ASTBase.CompileExp)e;
                                     s = new ASTBase.CompileStatement(loc, cpe.exps);
                                 }
                                 else
@@ -4740,16 +4861,16 @@ public class parse {
                                 }
                                 break;
                             }
-                            ASTBase.Dsymbol d = this.parseMixin();
+                            d = this.parseMixin();
                             s = new ASTBase.ExpStatement(loc, d);
                             if ((flags & ParseStatementFlags.scope_) != 0)
                                 s = new ASTBase.ScopeStatement(loc, s, this.token.loc);
                             break;
                         case 5:
-                            Loc lookingForElseSave = this.lookingForElse.copy();
+                            lookingForElseSave = this.lookingForElse.copy();
                             this.lookingForElse = Loc.initial.copy();
                             this.nextToken();
-                            DArray<ASTBase.Statement> statements = new DArray<ASTBase.Statement>();
+                            statements = new DArray<ASTBase.Statement>();
                             for (; (this.token.value & 0xFF) != 6 && (this.token.value & 0xFF) != 11;){
                                 (statements).push(this.parseStatement(9, null, null));
                             }
@@ -4770,10 +4891,10 @@ public class parse {
                         case 185:
                             this.nextToken();
                             this.check(TOK.leftParentheses);
-                            ASTBase.Expression condition = this.parseExpression();
+                            condition = this.parseExpression();
                             this.check(TOK.rightParentheses);
-                            Loc endloc = new Loc();
-                            ASTBase.Statement _body = this.parseStatement(2, null, endloc);
+                            endloc = new Loc();
+                            _body = this.parseStatement(2, null, endloc);
                             s = new ASTBase.WhileStatement(loc, condition, _body, endloc);
                             break;
                         case 9:
@@ -4788,10 +4909,10 @@ public class parse {
                             s = new ASTBase.ExpStatement(loc, null);
                             break;
                         case 187:
-                            ASTBase.Statement _body = null;
-                            ASTBase.Expression condition = null;
+                            _body = null;
+                            condition = null;
                             this.nextToken();
-                            Loc lookingForElseSave = this.lookingForElse.copy();
+                            lookingForElseSave = this.lookingForElse.copy();
                             this.lookingForElse = Loc.initial.copy();
                             _body = this.parseStatement(2, null, null);
                             this.lookingForElse = lookingForElseSave.copy();
@@ -4806,9 +4927,9 @@ public class parse {
                             s = new ASTBase.DoStatement(loc, _body, condition, this.token.loc);
                             break;
                         case 186:
-                            ASTBase.Statement _init = null;
-                            ASTBase.Expression condition = null;
-                            ASTBase.Expression increment = null;
+                            _init = null;
+                            condition = null;
+                            increment = null;
                             this.nextToken();
                             this.check(TOK.leftParentheses);
                             if ((this.token.value & 0xFF) == 9)
@@ -4818,7 +4939,7 @@ public class parse {
                             }
                             else
                             {
-                                Loc lookingForElseSave = this.lookingForElse.copy();
+                                lookingForElseSave = this.lookingForElse.copy();
                                 this.lookingForElse = Loc.initial.copy();
                                 _init = this.parseStatement(0, null, null);
                                 this.lookingForElse = lookingForElseSave.copy();
@@ -4843,8 +4964,8 @@ public class parse {
                                 increment = this.parseExpression();
                                 this.check(TOK.rightParentheses);
                             }
-                            Loc endloc = new Loc();
-                            ASTBase.Statement _body = this.parseStatement(2, null, endloc);
+                            endloc = new Loc();
+                            _body = this.parseStatement(2, null, endloc);
                             s = new ASTBase.ForStatement(loc, _init, condition, increment, _body, endloc);
                             break;
                         case 201:
@@ -4852,12 +4973,12 @@ public class parse {
                             s = this.parseForeach00(loc);
                             break;
                         case 183:
-                            ASTBase.Parameter param = null;
-                            ASTBase.Expression condition = null;
+                            param = null;
+                            condition = null;
                             this.nextToken();
                             this.check(TOK.leftParentheses);
-                            long storageClass = 0L;
-                            long stc = 0L;
+                            storageClass = 0L;
+                            stc = 0L;
                         /*LagainStc:*/
                         case -5:
                         __dispatch27 = 0;
@@ -4911,37 +5032,37 @@ public class parse {
                                     }
                                 } while(__dispatch28 != 0);
                             }
-                            Token n = this.peek(this.token);
+                            n = this.peek(this.token);
                             if (storageClass != 0L && (this.token.value & 0xFF) == 120 && ((n).value & 0xFF) != 90 && ((n).value & 0xFF) != 120)
                             {
                                 this.error(new BytePtr("found `%s` while expecting `=` or identifier"), (n).toChars());
                             }
                             else if (storageClass != 0L && (this.token.value & 0xFF) == 120 && ((n).value & 0xFF) == 90)
                             {
-                                Identifier ai = this.token.ident;
-                                ASTBase.Type at = null;
+                                ai = this.token.ident;
+                                at = null;
                                 this.nextToken();
                                 this.check(TOK.assign);
                                 param = new ASTBase.Parameter(storageClass, at, ai, null, null);
                             }
                             else if (this.isDeclaration(this.token, NeedDeclaratorId.must, TOK.assign, null))
                             {
-                                Ref<Identifier> ai = ref(null);
-                                ASTBase.Type at = this.parseType(ptr(ai), null);
+                                ai = ref(null);
+                                at = this.parseType(ptr(ai), null);
                                 this.check(TOK.assign);
                                 param = new ASTBase.Parameter(storageClass, at, ai.value, null, null);
                             }
                             condition = this.parseExpression();
                             this.check(TOK.rightParentheses);
                             {
-                                Loc lookingForElseSave = this.lookingForElse.copy();
+                                lookingForElseSave = this.lookingForElse.copy();
                                 this.lookingForElse = loc.copy();
                                 ifbody = this.parseStatement(2, null, null);
                                 this.lookingForElse = lookingForElseSave.copy();
                             }
                             if ((this.token.value & 0xFF) == 184)
                             {
-                                Loc elseloc = this.token.loc.copy();
+                                elseloc = this.token.loc.copy();
                                 this.nextToken();
                                 elsebody = this.parseStatement(2, null, null);
                                 this.checkDanglingElse(elseloc);
@@ -4969,7 +5090,7 @@ public class parse {
                             else
                             {
                                 byte t = TOK.onScopeExit;
-                                Identifier id = this.token.ident;
+                                id = this.token.ident;
                                 if (id.equals(Id.exit))
                                     t = TOK.onScopeExit;
                                 else if (id.equals(Id.failure))
@@ -4980,7 +5101,7 @@ public class parse {
                                     this.error(new BytePtr("valid scope identifiers are `exit`, `failure`, or `success`, not `%s`"), id.toChars());
                                 this.nextToken();
                                 this.check(TOK.rightParentheses);
-                                ASTBase.Statement st = this.parseStatement(2, null, null);
+                                st = this.parseStatement(2, null, null);
                                 s = new ASTBase.ScopeGuardStatement(loc, t, st);
                                 break;
                             }
@@ -5010,7 +5131,7 @@ public class parse {
                         case -3:
                         __dispatch27 = 0;
                             {
-                                Loc lookingForElseSave = this.lookingForElse.copy();
+                                lookingForElseSave = this.lookingForElse.copy();
                                 this.lookingForElse = loc.copy();
                                 ifbody = this.parseStatement(0, null, null);
                                 this.lookingForElse = lookingForElseSave.copy();
@@ -5018,7 +5139,7 @@ public class parse {
                             elsebody = null;
                             if ((this.token.value & 0xFF) == 184)
                             {
-                                Loc elseloc = this.token.loc.copy();
+                                elseloc = this.token.loc.copy();
                                 this.nextToken();
                                 elsebody = this.parseStatement(0, null, null);
                                 this.checkDanglingElse(elseloc);
@@ -5028,9 +5149,9 @@ public class parse {
                                 s = new ASTBase.ScopeStatement(loc, s, this.token.loc);
                             break;
                         case 40:
-                            Identifier ident = null;
-                            DArray<ASTBase.Expression> args = null;
-                            ASTBase.Statement _body = null;
+                            ident = null;
+                            args = null;
+                            _body = null;
                             this.nextToken();
                             this.check(TOK.leftParentheses);
                             if ((this.token.value & 0xFF) != 120)
@@ -5062,17 +5183,17 @@ public class parse {
                             {
                                 this.nextToken();
                                 this.check(TOK.leftParentheses);
-                                ASTBase.Expression condition = this.parseExpression();
+                                condition = this.parseExpression();
                                 this.check(TOK.rightParentheses);
-                                ASTBase.Statement _body = this.parseStatement(2, null, null);
+                                _body = this.parseStatement(2, null, null);
                                 s = new ASTBase.SwitchStatement(loc, condition, _body, isfinal);
                                 break;
                             }
                         case 189:
-                            ASTBase.Expression exp = null;
-                            DArray<ASTBase.Expression> cases = new DArray<ASTBase.Expression>();
+                            exp = null;
+                            cases = new DArray<ASTBase.Expression>();
                             try {
-                                ASTBase.Expression last = null;
+                                last = null;
                                 for (; (1) != 0;){
                                     this.nextToken();
                                     exp = this.parseAssignExp();
@@ -5092,7 +5213,7 @@ public class parse {
                                 }
                                 if ((flags & ParseStatementFlags.curlyScope) != 0)
                                 {
-                                    DArray<ASTBase.Statement> statements = new DArray<ASTBase.Statement>();
+                                    statements = new DArray<ASTBase.Statement>();
                                     for (; (this.token.value & 0xFF) != 189 && (this.token.value & 0xFF) != 190 && (this.token.value & 0xFF) != 11 && (this.token.value & 0xFF) != 6;){
                                         (statements).push(this.parseStatement(9, null, null));
                                     }
@@ -5110,7 +5231,7 @@ public class parse {
                                 else
                                 {
                                     {
-                                        int i = cases.length;
+                                        i = cases.length;
                                         for (; (i) != 0;i--){
                                             exp = cases.get(i - 1);
                                             s = new ASTBase.CaseStatement(loc, exp, s);
@@ -5126,7 +5247,7 @@ public class parse {
                             this.check(TOK.colon);
                             if ((flags & ParseStatementFlags.curlyScope) != 0)
                             {
-                                DArray<ASTBase.Statement> statements = new DArray<ASTBase.Statement>();
+                                statements = new DArray<ASTBase.Statement>();
                                 for (; (this.token.value & 0xFF) != 189 && (this.token.value & 0xFF) != 190 && (this.token.value & 0xFF) != 11 && (this.token.value & 0xFF) != 6;){
                                     (statements).push(this.parseStatement(9, null, null));
                                 }
@@ -5138,14 +5259,14 @@ public class parse {
                             s = new ASTBase.DefaultStatement(loc, s);
                             break;
                         case 195:
-                            ASTBase.Expression exp = null;
+                            exp = null;
                             this.nextToken();
                             exp = (this.token.value & 0xFF) == 9 ? null : this.parseExpression();
                             this.check(TOK.semicolon, new BytePtr("`return` statement"));
                             s = new ASTBase.ReturnStatement(loc, exp);
                             break;
                         case 191:
-                            Identifier ident = null;
+                            ident = null;
                             this.nextToken();
                             ident = null;
                             if ((this.token.value & 0xFF) == 120)
@@ -5157,7 +5278,7 @@ public class parse {
                             s = new ASTBase.BreakStatement(loc, ident);
                             break;
                         case 192:
-                            Identifier ident = null;
+                            ident = null;
                             this.nextToken();
                             ident = null;
                             if ((this.token.value & 0xFF) == 120)
@@ -5169,7 +5290,7 @@ public class parse {
                             s = new ASTBase.ContinueStatement(loc, ident);
                             break;
                         case 196:
-                            Identifier ident = null;
+                            ident = null;
                             this.nextToken();
                             if ((this.token.value & 0xFF) == 190)
                             {
@@ -5178,7 +5299,7 @@ public class parse {
                             }
                             else if ((this.token.value & 0xFF) == 189)
                             {
-                                ASTBase.Expression exp = null;
+                                exp = null;
                                 this.nextToken();
                                 if ((this.token.value & 0xFF) != 9)
                                     exp = this.parseExpression();
@@ -5201,8 +5322,8 @@ public class parse {
                             this.check(TOK.semicolon, new BytePtr("`goto` statement"));
                             break;
                         case 194:
-                            ASTBase.Expression exp = null;
-                            ASTBase.Statement _body = null;
+                            exp = null;
+                            _body = null;
                             Ref<Token> t = ref(this.peek(this.token));
                             if (this.skipAttributes(t.value, ptr(t)) && ((t.value).value & 0xFF) == 153)
                                 /*goto Ldeclaration*/{ __dispatch27 = -1; continue dispatched_27; }
@@ -5219,9 +5340,9 @@ public class parse {
                             s = new ASTBase.SynchronizedStatement(loc, exp, _body);
                             break;
                         case 193:
-                            ASTBase.Expression exp = null;
-                            ASTBase.Statement _body = null;
-                            Loc endloc = loc.copy();
+                            exp = null;
+                            _body = null;
+                            endloc = loc.copy();
                             this.nextToken();
                             this.check(TOK.leftParentheses);
                             exp = this.parseExpression();
@@ -5230,20 +5351,20 @@ public class parse {
                             s = new ASTBase.WithStatement(loc, exp, _body, endloc);
                             break;
                         case 197:
-                            ASTBase.Statement _body = null;
-                            DArray<ASTBase.Catch> catches = null;
-                            ASTBase.Statement finalbody = null;
+                            _body = null;
+                            catches = null;
+                            finalbody = null;
                             this.nextToken();
-                            Loc lookingForElseSave = this.lookingForElse.copy();
+                            lookingForElseSave = this.lookingForElse.copy();
                             this.lookingForElse = Loc.initial.copy();
                             _body = this.parseStatement(2, null, null);
                             this.lookingForElse = lookingForElseSave.copy();
                             for (; (this.token.value & 0xFF) == 198;){
-                                ASTBase.Statement handler = null;
-                                ASTBase.Catch c = null;
+                                handler = null;
+                                c = null;
                                 ASTBase.Type t = null;
-                                Ref<Identifier> id = ref(null);
-                                Loc catchloc = this.token.loc.copy();
+                                id = ref(null);
+                                catchloc = this.token.loc.copy();
                                 this.nextToken();
                                 if ((this.token.value & 0xFF) == 5 || (this.token.value & 0xFF) != 1)
                                 {
@@ -5280,36 +5401,37 @@ public class parse {
                             }
                             break;
                         case 21:
-                            ASTBase.Expression exp = null;
+                            exp = null;
                             this.nextToken();
                             exp = this.parseExpression();
                             this.check(TOK.semicolon, new BytePtr("`throw` statement"));
                             s = new ASTBase.ThrowStatement(loc, exp);
                             break;
                         case 200:
-                            Loc labelloc = new Loc();
+                            labelloc = new Loc();
                             this.nextToken();
-                            long stc = this.parsePostfix(0L, null);
+                            stc = this.parsePostfix(0L, null);
                             if ((stc & 2685403140L) != 0)
                                 this.error(new BytePtr("`const`/`immutable`/`shared`/`inout` attributes are not allowed on `asm` blocks"));
                             this.check(TOK.leftCurly);
-                            Ref<Token> toklist = ref(null);
-                            Ptr<Token> ptoklist = pcopy(ptr(toklist));
-                            Identifier label = null;
-                            DArray<ASTBase.Statement> statements = new DArray<ASTBase.Statement>();
-                            int nestlevel = 0;
+                            toklist = ref(null);
+                            ptoklist = pcopy(ptr(toklist));
+                            label = null;
+                            statements = new DArray<ASTBase.Statement>();
+                            nestlevel = 0;
                         L_outer15:
                             for (; (1) != 0;){
                                 {
                                     int __dispatch29 = 0;
                                     dispatched_29:
                                     do {
+                                        Token t;
                                         switch (__dispatch29 != 0 ? __dispatch29 : (this.token.value & 0xFF))
                                         {
                                             case 120:
                                                 if (toklist.value == null)
                                                 {
-                                                    Token t = this.peek(this.token);
+                                                    t = this.peek(this.token);
                                                     if (((t).value & 0xFF) == 7)
                                                     {
                                                         label = this.token.ident;
@@ -5373,20 +5495,20 @@ public class parse {
                         case 157:
                             if ((this.peekNext() & 0xFF) == 1)
                             {
-                                ASTBase.Expression e = this.parseExpression();
+                                e = this.parseExpression();
                                 this.check(TOK.semicolon);
                                 s = new ASTBase.ExpStatement(loc, e);
                             }
                             else
                             {
-                                DArray<ASTBase.Dsymbol> imports = this.parseImport();
+                                imports = this.parseImport();
                                 s = new ASTBase.ImportStatement(loc, imports);
                                 if ((flags & ParseStatementFlags.scope_) != 0)
                                     s = new ASTBase.ScopeStatement(loc, s, this.token.loc);
                             }
                             break;
                         case 36:
-                            ASTBase.Dsymbol d = this.parseTemplateDeclaration(false);
+                            d = this.parseTemplateDeclaration(false);
                             s = new ASTBase.ExpStatement(loc, d);
                             break;
                         default:
@@ -5426,6 +5548,7 @@ public class parse {
                 int __dispatch30 = 0;
                 dispatched_30:
                 do {
+                    ASTBase.ExpInitializer expInit;
                     switch (__dispatch30 != 0 ? __dispatch30 : (this.token.value & 0xFF))
                     {
                         case 5:
@@ -5595,7 +5718,7 @@ public class parse {
                                         if ((this.token.value & 0xFF) == 7)
                                         {
                                             this.nextToken();
-                                            ASTBase.ExpInitializer expInit = value.isExpInitializer();
+                                            expInit = value.isExpInitializer();
                                             assert(expInit != null);
                                             e = expInit.exp;
                                             value = this.parseInitializer();
@@ -5758,6 +5881,7 @@ public class parse {
                     int __dispatch36 = 0;
                     dispatched_36:
                     do {
+                        Ref<Token> lp;
                         switch (__dispatch36 != 0 ? __dispatch36 : ((t.value).value & 0xFF))
                         {
                             case 149:
@@ -5900,7 +6024,7 @@ public class parse {
                                 t.value = this.peek(t.value);
                                 if (((t.value).value & 0xFF) != 1)
                                     /*goto Lfalse*/throw Dispatch0.INSTANCE;
-                                Ref<Token> lp = ref(t.value);
+                                lp = ref(t.value);
                                 t.value = this.peek(t.value);
                                 if (((t.value).value & 0xFF) != 120 || (t.value).ident.equals(Id.getMember))
                                     /*goto Lfalse*/throw Dispatch0.INSTANCE;
@@ -5943,6 +6067,7 @@ public class parse {
                 return false;
             for (; (1) != 0;){
                 parens = 0;
+                Token t2;
                 switch (((t.value).value & 0xFF))
                 {
                     case 78:
@@ -6003,7 +6128,7 @@ public class parse {
                             return false;
                         if (((t.value).value & 0xFF) == 120)
                         {
-                            Token t2 = this.peek(t.value);
+                            t2 = this.peek(t.value);
                             if (((t2).value & 0xFF) == 2)
                                 return false;
                         }
@@ -6143,6 +6268,7 @@ public class parse {
                     int __dispatch41 = 0;
                     dispatched_41:
                     do {
+                        IntRef tmp;
                         switch (__dispatch41 != 0 ? __dispatch41 : ((t.value).value & 0xFF))
                         {
                             case 2:
@@ -6180,7 +6306,7 @@ public class parse {
                             /*L2:*/
                             case -1:
                             __dispatch41 = 0;
-                                IntRef tmp = ref(0);
+                                tmp = ref(0);
                                 if (((t.value).value & 0xFF) != 10 && !(this.isDeclarator(ptr(t), ptr(tmp), null, TOK.reserved, true)))
                                     return false;
                                 if (((t.value).value & 0xFF) == 90)
@@ -6445,11 +6571,35 @@ public class parse {
                 int __dispatch45 = 0;
                 dispatched_45:
                 do {
+                    ASTBase.Type tspec;
+                    byte tok2;
+                    byte save;
+                    DArray<ASTBase.TemplateParameter> tpl;
+                    ASTBase.Type targ;
+                    ASTBase.Expression msg;
+                    BytePtr s2;
+                    Identifier ident;
+                    int len;
+                    Token tempTok;
+                    Token t1;
+                    DArray<ASTBase.Expression> exps;
+                    int len2;
+                    RootObject o;
+                    Token t2;
+                    byte postfix;
+                    DArray<RootObject> args;
+                    int len1;
+                    Ref<Token> tk;
+                    ASTBase.TemplateInstance tempinst;
+                    byte tok;
+                    Token prev;
+                    DArray<ASTBase.Expression> values;
+                    DArray<ASTBase.Expression> keys;
                     switch (__dispatch45 != 0 ? __dispatch45 : (this.token.value & 0xFF))
                     {
                         case 120:
-                            Token t1 = this.peek(this.token);
-                            Token t2 = this.peek(t1);
+                            t1 = this.peek(this.token);
+                            t2 = this.peek(t1);
                             if (((t1).value & 0xFF) == 75 && ((t2).value & 0xFF) == 55)
                             {
                                 this.nextToken();
@@ -6462,10 +6612,10 @@ public class parse {
                                 /*goto case_delegate*/{ __dispatch45 = -2; continue dispatched_45; }
                             id = this.token.ident;
                             this.nextToken();
-                            byte save = TOK.reserved;
+                            save = TOK.reserved;
                             if ((this.token.value & 0xFF) == 91 && ((save = this.peekNext()) & 0xFF) != 63 && (save & 0xFF) != 175)
                             {
-                                ASTBase.TemplateInstance tempinst = new ASTBase.TemplateInstance(loc, id, this.parseTemplateArguments());
+                                tempinst = new ASTBase.TemplateInstance(loc, id, this.parseTemplateArguments());
                                 e = new ASTBase.ScopeExp(loc, tempinst);
                             }
                             else
@@ -6538,7 +6688,7 @@ public class parse {
                             this.nextToken();
                             break;
                         case 220:
-                            assert(loc.isValid(),  new ByteSlice("__FILE_FULL_PATH__ does not work with an invalid location"));
+                            assertMsg(loc.isValid(),  new ByteSlice("__FILE_FULL_PATH__ does not work with an invalid location"));
                             e = new ASTBase.StringExp(loc, FileName.toAbsolute(loc.filename, null));
                             this.nextToken();
                             break;
@@ -6582,10 +6732,10 @@ public class parse {
                         case 121:
                         case 122:
                             BytePtr s = pcopy(this.token.ustring);
-                            int len = this.token.len;
-                            byte postfix = this.token.postfix;
+                            len = this.token.len;
+                            postfix = this.token.postfix;
                             for (; (1) != 0;){
-                                Token prev = this.token.copy();
+                                prev = this.token.copy();
                                 this.nextToken();
                                 if ((this.token.value & 0xFF) == 121 || (this.token.value & 0xFF) == 122)
                                 {
@@ -6596,10 +6746,10 @@ public class parse {
                                         postfix = this.token.postfix;
                                     }
                                     this.error(new BytePtr("Implicit string concatenation is deprecated, use %s ~ %s instead"), prev.toChars(), this.token.toChars());
-                                    int len1 = len;
-                                    int len2 = this.token.len;
+                                    len1 = len;
+                                    len2 = this.token.len;
                                     len = len1 + len2;
-                                    BytePtr s2 = pcopy(toBytePtr(Mem.xmalloc(len)));
+                                    s2 = pcopy(toBytePtr(Mem.xmalloc(len)));
                                     memcpy((BytePtr)(s2), (s), (len1));
                                     memcpy((BytePtr)((s2.plus(len1))), (this.token.ustring), (len2));
                                     s = pcopy(s2);
@@ -6711,7 +6861,7 @@ public class parse {
                         case 42:
                             this.nextToken();
                             this.check(TOK.leftParentheses, new BytePtr("`typeid`"));
-                            RootObject o = null;
+                            o = null;
                             if (this.isDeclaration(this.token, NeedDeclaratorId.no, TOK.reserved, null))
                             {
                                 o = this.parseType(null, null);
@@ -6724,8 +6874,8 @@ public class parse {
                             e = new ASTBase.TypeidExp(loc, o);
                             break;
                         case 213:
-                            Identifier ident = null;
-                            DArray<RootObject> args = null;
+                            ident = null;
+                            args = null;
                             this.nextToken();
                             this.check(TOK.leftParentheses);
                             if ((this.token.value & 0xFF) != 120)
@@ -6742,12 +6892,12 @@ public class parse {
                             e = new ASTBase.TraitsExp(loc, ident, args);
                             break;
                         case 63:
-                            ASTBase.Type targ = null;
-                            Ref<Identifier> ident = ref(null);
-                            ASTBase.Type tspec = null;
-                            byte tok = TOK.reserved;
-                            byte tok2 = TOK.reserved;
-                            DArray<ASTBase.TemplateParameter> tpl = null;
+                            targ = null;
+                            ident = ref(null);
+                            tspec = null;
+                            tok = TOK.reserved;
+                            tok2 = TOK.reserved;
+                            tpl = null;
                             this.nextToken();
                             if ((this.token.value & 0xFF) == 1)
                             {
@@ -6756,7 +6906,7 @@ public class parse {
                                 {
                                     this.error(loc, new BytePtr("unexpected `(` after `%s`, inside `is` expression. Try enclosing the contents of `is` with a `typeof` expression"), this.token.toChars());
                                     this.nextToken();
-                                    Token tempTok = this.peekPastParen(this.token);
+                                    tempTok = this.peekPastParen(this.token);
                                     (this.token).opAssign((tempTok));
                                     /*goto Lerr*/{ __dispatch45 = -1; continue dispatched_45; }
                                 }
@@ -6796,7 +6946,7 @@ public class parse {
                             e = new ASTBase.IsExp(loc, targ, ident.value, tok, tspec, tok2, tpl);
                             break;
                         case 14:
-                            ASTBase.Expression msg = null;
+                            msg = null;
                             this.nextToken();
                             this.check(TOK.leftParentheses, new BytePtr("`assert`"));
                             e = this.parseAssignExp();
@@ -6817,7 +6967,7 @@ public class parse {
                             this.nextToken();
                             if ((this.token.value & 0xFF) != 1)
                                 this.error(new BytePtr("found `%s` when expecting `%s` following %s"), this.token.toChars(), Token.toChars(TOK.leftParentheses), new BytePtr("`mixin`"));
-                            DArray<ASTBase.Expression> exps = this.parseArguments();
+                            exps = this.parseArguments();
                             e = new ASTBase.CompileExp(loc, exps);
                             break;
                         case 157:
@@ -6833,7 +6983,7 @@ public class parse {
                         case 210:
                             if ((this.peekNext() & 0xFF) == 1)
                             {
-                                Ref<Token> tk = ref(this.peekPastParen(this.peek(this.token)));
+                                tk = ref(this.peekPastParen(this.peek(this.token)));
                                 if (this.skipAttributes(tk.value, ptr(tk)) && ((tk.value).value & 0xFF) == 228 || ((tk.value).value & 0xFF) == 5)
                                 {
                                     /*goto case_delegate*/{ __dispatch45 = -2; continue dispatched_45; }
@@ -6843,7 +6993,7 @@ public class parse {
                             this.error(new BytePtr("found `%s` when expecting function literal following `ref`"), this.token.toChars());
                             /*goto Lerr*/{ __dispatch45 = -1; continue dispatched_45; }
                         case 1:
-                            Ref<Token> tk = ref(this.peekPastParen(this.token));
+                            tk = ref(this.peekPastParen(this.token));
                             if (this.skipAttributes(tk.value, ptr(tk)) && ((tk.value).value & 0xFF) == 228 || ((tk.value).value & 0xFF) == 5)
                             {
                                 /*goto case_delegate*/{ __dispatch45 = -2; continue dispatched_45; }
@@ -6854,8 +7004,8 @@ public class parse {
                             this.check(loc, TOK.rightParentheses);
                             break;
                         case 3:
-                            DArray<ASTBase.Expression> values = new DArray<ASTBase.Expression>();
-                            DArray<ASTBase.Expression> keys = null;
+                            values = new DArray<ASTBase.Expression>();
+                            keys = null;
                             this.nextToken();
                             for (; (this.token.value & 0xFF) != 4 && (this.token.value & 0xFF) != 11;){
                                 e = this.parseAssignExp();
@@ -6911,6 +7061,10 @@ public class parse {
         public  ASTBase.Expression parseUnaryExp() {
             ASTBase.Expression e = null;
             Loc loc = this.token.loc.copy();
+            Ref<Token> tk;
+            ASTBase.Type t;
+            byte m;
+            long stc;
             switch ((this.token.value & 0xFF))
             {
                 case 84:
@@ -6961,7 +7115,7 @@ public class parse {
                 case 12:
                     this.nextToken();
                     this.check(TOK.leftParentheses);
-                    byte m = (byte)0;
+                    m = (byte)0;
                     for (; (1) != 0;){
                         switch ((this.token.value & 0xFF))
                         {
@@ -7002,7 +7156,7 @@ public class parse {
                     }
                     else
                     {
-                        ASTBase.Type t = this.parseType(null, null);
+                        t = this.parseType(null, null);
                         t = t.addMod(m);
                         this.check(TOK.rightParentheses);
                         e = this.parseUnaryExp();
@@ -7013,8 +7167,8 @@ public class parse {
                 case 224:
                 case 171:
                 case 182:
-                    long stc = this.parseTypeCtor();
-                    ASTBase.Type t = this.parseBasicType(false);
+                    stc = this.parseTypeCtor();
+                    t = this.parseBasicType(false);
                     t = t.addSTC(stc);
                     if (stc == 0L && (this.token.value & 0xFF) == 97)
                     {
@@ -7040,7 +7194,7 @@ public class parse {
                     }
                     break;
                 case 1:
-                    Ref<Token> tk = ref(this.peek(this.token));
+                    tk = ref(this.peek(this.token));
                     if (this.isDeclaration(tk.value, NeedDeclaratorId.no, TOK.rightParentheses, ptr(tk)))
                     {
                         tk.value = this.peek(tk.value);
@@ -7114,7 +7268,7 @@ public class parse {
                             case 147:
                             case 128:
                                 this.nextToken();
-                                ASTBase.Type t = this.parseType(null, null);
+                                t = this.parseType(null, null);
                                 this.check(TOK.rightParentheses);
                                 if ((this.token.value & 0xFF) == 97)
                                 {
@@ -7157,17 +7311,22 @@ public class parse {
         public  ASTBase.Expression parsePostExp(ASTBase.Expression e) {
             for (; (1) != 0;){
                 Loc loc = this.token.loc.copy();
+                DArray<RootObject> tiargs;
+                ASTBase.Expression upr;
+                ASTBase.Expression index;
+                Identifier id;
+                DArray<ASTBase.Expression> arguments;
                 switch ((this.token.value & 0xFF))
                 {
                     case 97:
                         this.nextToken();
                         if ((this.token.value & 0xFF) == 120)
                         {
-                            Identifier id = this.token.ident;
+                            id = this.token.ident;
                             this.nextToken();
                             if ((this.token.value & 0xFF) == 91 && (this.peekNext() & 0xFF) != 63 && (this.peekNext() & 0xFF) != 175)
                             {
-                                DArray<RootObject> tiargs = this.parseTemplateArguments();
+                                tiargs = this.parseTemplateArguments();
                                 e = new ASTBase.DotTemplateInstanceExp(loc, e, id, tiargs);
                             }
                             else
@@ -7191,9 +7350,9 @@ public class parse {
                         e = new ASTBase.CallExp(loc, e, this.parseArguments());
                         continue;
                     case 3:
-                        ASTBase.Expression index = null;
-                        ASTBase.Expression upr = null;
-                        DArray<ASTBase.Expression> arguments = new DArray<ASTBase.Expression>();
+                        index = null;
+                        upr = null;
+                        arguments = new DArray<ASTBase.Expression>();
                         this.inBrackets++;
                         this.nextToken();
                         for (; (this.token.value & 0xFF) != 4 && (this.token.value & 0xFF) != 11;){
@@ -7225,21 +7384,22 @@ public class parse {
             Loc loc = this.token.loc.copy();
             ASTBase.Expression e = this.parseUnaryExp();
             for (; (1) != 0;){
+                ASTBase.Expression e2;
                 switch ((this.token.value & 0xFF))
                 {
                     case 78:
                         this.nextToken();
-                        ASTBase.Expression e2 = this.parseUnaryExp();
+                        e2 = this.parseUnaryExp();
                         e = new ASTBase.MulExp(loc, e, e2);
                         continue;
                     case 79:
                         this.nextToken();
-                        ASTBase.Expression e2 = this.parseUnaryExp();
+                        e2 = this.parseUnaryExp();
                         e = new ASTBase.DivExp(loc, e, e2);
                         continue;
                     case 80:
                         this.nextToken();
-                        ASTBase.Expression e2 = this.parseUnaryExp();
+                        e2 = this.parseUnaryExp();
                         e = new ASTBase.ModExp(loc, e, e2);
                         continue;
                     default:
@@ -7254,21 +7414,22 @@ public class parse {
             Loc loc = this.token.loc.copy();
             ASTBase.Expression e = this.parseMulExp();
             for (; (1) != 0;){
+                ASTBase.Expression e2;
                 switch ((this.token.value & 0xFF))
                 {
                     case 74:
                         this.nextToken();
-                        ASTBase.Expression e2 = this.parseMulExp();
+                        e2 = this.parseMulExp();
                         e = new ASTBase.AddExp(loc, e, e2);
                         continue;
                     case 75:
                         this.nextToken();
-                        ASTBase.Expression e2 = this.parseMulExp();
+                        e2 = this.parseMulExp();
                         e = new ASTBase.MinExp(loc, e, e2);
                         continue;
                     case 92:
                         this.nextToken();
-                        ASTBase.Expression e2 = this.parseMulExp();
+                        e2 = this.parseMulExp();
                         e = new ASTBase.CatExp(loc, e, e2);
                         continue;
                     default:
@@ -7283,21 +7444,22 @@ public class parse {
             Loc loc = this.token.loc.copy();
             ASTBase.Expression e = this.parseAddExp();
             for (; (1) != 0;){
+                ASTBase.Expression e2;
                 switch ((this.token.value & 0xFF))
                 {
                     case 64:
                         this.nextToken();
-                        ASTBase.Expression e2 = this.parseAddExp();
+                        e2 = this.parseAddExp();
                         e = new ASTBase.ShlExp(loc, e, e2);
                         continue;
                     case 65:
                         this.nextToken();
-                        ASTBase.Expression e2 = this.parseAddExp();
+                        e2 = this.parseAddExp();
                         e = new ASTBase.ShrExp(loc, e, e2);
                         continue;
                     case 68:
                         this.nextToken();
-                        ASTBase.Expression e2 = this.parseAddExp();
+                        e2 = this.parseAddExp();
                         e = new ASTBase.UshrExp(loc, e, e2);
                         continue;
                     default:
@@ -7316,12 +7478,14 @@ public class parse {
                 int __dispatch53 = 0;
                 dispatched_53:
                 do {
+                    Token t;
+                    ASTBase.Expression e2;
                     switch (__dispatch53 != 0 ? __dispatch53 : (op & 0xFF))
                     {
                         case 58:
                         case 59:
                             this.nextToken();
-                            ASTBase.Expression e2 = this.parseShiftExp();
+                            e2 = this.parseShiftExp();
                             e = new ASTBase.EqualExp(op, loc, e, e2);
                             break;
                         case 63:
@@ -7329,12 +7493,12 @@ public class parse {
                             /*goto L1*/{ __dispatch53 = -1; continue dispatched_53; }
                         case 91:
                             {
-                                Token t = this.peek(this.token);
+                                t = this.peek(this.token);
                                 if (((t).value & 0xFF) == 175)
                                 {
                                     this.nextToken();
                                     this.nextToken();
-                                    ASTBase.Expression e2 = this.parseShiftExp();
+                                    e2 = this.parseShiftExp();
                                     e = new ASTBase.InExp(loc, e, e2);
                                     e = new ASTBase.NotExp(loc, e);
                                     break;
@@ -7349,7 +7513,7 @@ public class parse {
                         case -1:
                         __dispatch53 = 0;
                             this.nextToken();
-                            ASTBase.Expression e2 = this.parseShiftExp();
+                            e2 = this.parseShiftExp();
                             e = new ASTBase.IdentityExp(op, loc, e, e2);
                             break;
                         case 54:
@@ -7357,12 +7521,12 @@ public class parse {
                         case 55:
                         case 57:
                             this.nextToken();
-                            ASTBase.Expression e2 = this.parseShiftExp();
+                            e2 = this.parseShiftExp();
                             e = new ASTBase.CmpExp(op, loc, e, e2);
                             break;
                         case 175:
                             this.nextToken();
-                            ASTBase.Expression e2 = this.parseShiftExp();
+                            e2 = this.parseShiftExp();
                             e = new ASTBase.InExp(loc, e, e2);
                             break;
                         default:
@@ -7457,76 +7621,77 @@ public class parse {
             if ((e.op & 0xFF) == 100 && !((e.parens) != 0) && precedence.get((this.token.value & 0xFF)) == PREC.assign)
                 deprecation(e.loc, new BytePtr("`%s` must be surrounded by parentheses when next to operator `%s`"), e.toChars(), Token.toChars(this.token.value));
             Loc loc = this.token.loc.copy();
+            ASTBase.Expression e2;
             switch ((this.token.value & 0xFF))
             {
                 case 90:
                     this.nextToken();
-                    ASTBase.Expression e2 = this.parseAssignExp();
+                    e2 = this.parseAssignExp();
                     e = new ASTBase.AssignExp(loc, e, e2);
                     break;
                 case 76:
                     this.nextToken();
-                    ASTBase.Expression e2 = this.parseAssignExp();
+                    e2 = this.parseAssignExp();
                     e = new ASTBase.AddAssignExp(loc, e, e2);
                     break;
                 case 77:
                     this.nextToken();
-                    ASTBase.Expression e2 = this.parseAssignExp();
+                    e2 = this.parseAssignExp();
                     e = new ASTBase.MinAssignExp(loc, e, e2);
                     break;
                 case 81:
                     this.nextToken();
-                    ASTBase.Expression e2 = this.parseAssignExp();
+                    e2 = this.parseAssignExp();
                     e = new ASTBase.MulAssignExp(loc, e, e2);
                     break;
                 case 82:
                     this.nextToken();
-                    ASTBase.Expression e2 = this.parseAssignExp();
+                    e2 = this.parseAssignExp();
                     e = new ASTBase.DivAssignExp(loc, e, e2);
                     break;
                 case 83:
                     this.nextToken();
-                    ASTBase.Expression e2 = this.parseAssignExp();
+                    e2 = this.parseAssignExp();
                     e = new ASTBase.ModAssignExp(loc, e, e2);
                     break;
                 case 227:
                     this.nextToken();
-                    ASTBase.Expression e2 = this.parseAssignExp();
+                    e2 = this.parseAssignExp();
                     e = new ASTBase.PowAssignExp(loc, e, e2);
                     break;
                 case 87:
                     this.nextToken();
-                    ASTBase.Expression e2 = this.parseAssignExp();
+                    e2 = this.parseAssignExp();
                     e = new ASTBase.AndAssignExp(loc, e, e2);
                     break;
                 case 88:
                     this.nextToken();
-                    ASTBase.Expression e2 = this.parseAssignExp();
+                    e2 = this.parseAssignExp();
                     e = new ASTBase.OrAssignExp(loc, e, e2);
                     break;
                 case 89:
                     this.nextToken();
-                    ASTBase.Expression e2 = this.parseAssignExp();
+                    e2 = this.parseAssignExp();
                     e = new ASTBase.XorAssignExp(loc, e, e2);
                     break;
                 case 66:
                     this.nextToken();
-                    ASTBase.Expression e2 = this.parseAssignExp();
+                    e2 = this.parseAssignExp();
                     e = new ASTBase.ShlAssignExp(loc, e, e2);
                     break;
                 case 67:
                     this.nextToken();
-                    ASTBase.Expression e2 = this.parseAssignExp();
+                    e2 = this.parseAssignExp();
                     e = new ASTBase.ShrAssignExp(loc, e, e2);
                     break;
                 case 69:
                     this.nextToken();
-                    ASTBase.Expression e2 = this.parseAssignExp();
+                    e2 = this.parseAssignExp();
                     e = new ASTBase.UshrAssignExp(loc, e, e2);
                     break;
                 case 71:
                     this.nextToken();
-                    ASTBase.Expression e2 = this.parseAssignExp();
+                    e2 = this.parseAssignExp();
                     e = new ASTBase.CatAssignExp(loc, e, e2);
                     break;
                 default:

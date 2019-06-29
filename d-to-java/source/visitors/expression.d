@@ -773,7 +773,7 @@ public:
                 return;
             }
         }
-        buf.put("assert(");
+        buf.fmt("assert%s(", e.msg ? "Msg" : "");
         buf.put(e.e1.toJavaBool(opts));
         if (e.msg)
         {
