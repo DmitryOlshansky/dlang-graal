@@ -1987,10 +1987,7 @@ public class astbase {
             public DArray<BaseClass> baseclasses;
             public int baseok;
             public  ClassDeclaration(Loc loc, Identifier id, DArray<BaseClass> baseclasses, DArray<Dsymbol> members, boolean inObject) {
-                if (!(id != null))
-                    id = Identifier.generateId(new BytePtr("__anonclass"));
-                assert(id != null);
-                super(loc, id);
+                super(loc, id == null ? Identifier.generateId(new BytePtr("__anonclass")) : id);
                 if (baseclasses != null)
                 {
                     this.baseclasses = baseclasses;
@@ -4317,7 +4314,7 @@ public class astbase {
                 this.arguments = arguments;
             }
 
-            public  TypeTuple(DArray<Expression> exps) {
+            public  TypeTuple(DArray<Expression> exps, int tag) {
                 super((byte)37);
                 DArray<Parameter> arguments = new DArray<Parameter>();
                 if (exps != null)
@@ -5911,9 +5908,7 @@ public class astbase {
         public static class VarExp extends SymbolExp
         {
             public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
-                if (var.isVarDeclaration() != null)
-                    hasOverloads = false;
-                super(loc, TOK.variable, 29, var, hasOverloads);
+                super(loc, TOK.variable, 29, var, var.isVarDeclaration() == null && hasOverloads);
                 this.type = var.type;
             }
 
@@ -7455,11 +7450,6 @@ public class astbase {
             public ForeachStatement aggrfe;
             public ForeachRangeStatement rangefe;
             public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
-                {
-                    {
-                        assert(!(!(aggrfe != null)) ^ !(!(rangefe != null)));
-                    }
-                }
                 super();
                 this.loc = loc.copy();
                 this.aggrfe = aggrfe;

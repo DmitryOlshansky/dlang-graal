@@ -371,9 +371,9 @@ public class tokens {
                             break;
                         case 121:
                             {
-                                OutBuffer buf1 = new OutBuffer();
+                                OutBuffer buf_1 = new OutBuffer();
                                 try {
-                                    buf1.writeByte(34);
+                                    buf_1.writeByte(34);
                                     {
                                         IntRef i = ref(0);
                                     L_outer1:
@@ -390,20 +390,20 @@ public class tokens {
                                                             break;
                                                         case 34:
                                                         case 92:
-                                                            buf1.writeByte(92);
+                                                            buf_1.writeByte(92);
                                                             /*goto default*/ { __dispatch1 = -1; continue dispatched_1; }
                                                         default:
                                                         if (c.value <= 127)
                                                         {
                                                             if ((isprint(c.value)) != 0)
-                                                                buf1.writeByte(c.value);
+                                                                buf_1.writeByte(c.value);
                                                             else
-                                                                buf1.printf( new ByteSlice("\\x%02x"), c.value);
+                                                                buf_1.printf( new ByteSlice("\\x%02x"), c.value);
                                                         }
                                                         else if (c.value <= 65535)
-                                                            buf1.printf( new ByteSlice("\\u%04x"), c.value);
+                                                            buf_1.printf( new ByteSlice("\\u%04x"), c.value);
                                                         else
-                                                            buf1.printf( new ByteSlice("\\U%08x"), c.value);
+                                                            buf_1.printf( new ByteSlice("\\U%08x"), c.value);
                                                         continue L_outer1;
                                                     }
                                                 } while(__dispatch1 != 0);
@@ -411,10 +411,10 @@ public class tokens {
                                             break;
                                         }
                                     }
-                                    buf1.writeByte(34);
+                                    buf_1.writeByte(34);
                                     if ((this.postfix) != 0)
-                                        buf1.writeByte((this.postfix & 0xFF));
-                                    p = pcopy(buf1.extractChars());
+                                        buf_1.writeByte((this.postfix & 0xFF));
+                                    p = pcopy(buf_1.extractChars());
                                 }
                                 finally {
                                 }
@@ -429,10 +429,10 @@ public class tokens {
                                     int __key50 = 0;
                                     int __limit51 = this.len;
                                     for (; __key50 < __limit51;__key50 += 1) {
-                                        int i1 = __key50;
-                                        if ((i1) != 0)
+                                        int i_1 = __key50;
+                                        if ((i_1) != 0)
                                             buf.writeByte(32);
-                                        buf.printf( new ByteSlice("%02x"), (this.ustring.get(i1) & 0xFF));
+                                        buf.printf( new ByteSlice("%02x"), (this.ustring.get(i_1) & 0xFF));
                                     }
                                 }
                                 buf.writeByte(34);

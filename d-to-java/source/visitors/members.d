@@ -131,7 +131,7 @@ void disambiguateVars(Statement st, ref IdentityMap!string renames) {
         foreach (i, var; g.enumerate) {
             if (i) {
                 if (var !in renames)
-                    renames[var] = (var.ident.toString ~ to!string(i)).dup;
+                    renames[var] = (var.ident.toString ~ "_" ~ to!string(i)).dup;
             }
         }
     }
