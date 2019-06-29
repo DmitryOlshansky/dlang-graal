@@ -2353,7 +2353,7 @@ public class parse {
                                     else
                                     {
                                     /*_else:*/
-                                    case -2:
+                                    //case -2:
                                     __dispatch9 = 0;
                                         at = this.parseType(ptr(ai), null);
                                     }
@@ -5797,11 +5797,11 @@ public class parse {
                             L_outer18:
                                 for (; (1) != 0;){
                                 /*L2:*/
-                                case -2:
+                                //case -2:
                                 __dispatch36 = 0;
                                     t.value = this.peek(t.value);
                                 /*L3:*/
-                                case -3:
+                                //case -3:
                                 __dispatch36 = 0;
                                     if (((t.value).value & 0xFF) == 97)
                                     {
@@ -6172,7 +6172,7 @@ public class parse {
                                 }
                                 /*goto L1*/throw Dispatch0.INSTANCE;
                             default:
-                            {
+
                                 if (!(this.isBasicType(ptr(t))))
                                     return false;
                             /*L2:*/
@@ -6192,7 +6192,7 @@ public class parse {
                                     t.value = this.peek(t.value);
                                     break;
                                 }
-                            }
+
                             if (((t.value).value & 0xFF) == 99)
                             {
                                 continue L_outer20;
