@@ -3389,7 +3389,7 @@ public class parse {
                                 /*goto L1*/{ __dispatch18 = -1; continue dispatched_18; }
                             case 225:
                                 {
-                                    stc = this.parseAttribute(ptr(udas_ref.value));
+                                    stc = this.parseAttribute(ptr(udas_ref));
                                     if ((stc) != 0)
                                         /*goto L1*/{ __dispatch18 = -1; continue dispatched_18; }
                                     continue L_outer11;

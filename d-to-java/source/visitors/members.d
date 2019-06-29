@@ -65,12 +65,9 @@ Members collectMembers(AggregateDeclaration agg, bool recurseBase = false) {
         }
         
         override void visit(ClassDeclaration d) {
-            import std.stdio;
             if (aggCount++ == 0) super.visit(d);
             if (recursive && d.baseClass) {
-                stderr.writefln("Before recursive call %s", decls);
                 decls ~= collectMembers(d.baseClass).all;
-                stderr.writefln("After recursive call %s", decls);
             }
         }
         override void visit(FuncDeclaration ){}

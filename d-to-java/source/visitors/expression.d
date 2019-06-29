@@ -638,7 +638,14 @@ public:
             }
             else if (e.op == TOK.address) {
                 buf.put("ptr(");
-                expToBuffer(e.e1, precedence[e.op], buf, opts);
+                if (auto var = e.e1.isVarExp) {
+                    if (auto name = var.var in opts.renamed)
+                        buf.put(*name);
+                    else
+                        buf.put(var.var.ident.symbol);
+                }
+                else
+                    expToBuffer(e.e1, precedence[e.op], buf, opts);
                 buf.put(")");
             }
             else {
