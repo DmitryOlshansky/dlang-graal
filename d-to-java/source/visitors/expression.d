@@ -1598,28 +1598,31 @@ private void typeToBufferx(Type t, TextBuffer buf, ExprOpts opts, Boxing boxing 
         buf.put('>');
     }
 
-    void visitPointer(TypePointer t)
+    void visitPointer(TypePointer tp)
     {
         //fmt("TypePointer::toCBuffer2() next = %d\n", t.next.ty);
-        if (t.next.ty == Tfunction)
-            visitFuncIdentWithPostfix(cast(TypeFunction)t.next, buf, opts);
+        if (tp.next.ty == Tfunction)
+            visitFuncIdentWithPostfix(cast(TypeFunction)tp.next, buf, opts);
         else
         {
-            if (t.next.ty == Tvoid) 
+            Type t = tp.next;
+            if (auto et = t.isTypeEnum)
+                t = et.memType;
+            if (t.ty == Tvoid) 
                 buf.put("Object");
-            else if (t.next.ty == Tchar || t.next.ty == Tuns8 || t.next.ty == Tint8)
+            else if (t.ty == Tchar || t.ty == Tuns8 || t.ty == Tint8)
                 buf.put("BytePtr");
-            else if (t.next.ty == Twchar)
+            else if (t.ty == Twchar)
                 buf.put("CharPtr");
-            else if (t.next.ty == Tdchar) 
+            else if (t.ty == Tdchar) 
                 buf.put("IntPtr");
-            else if (t.next.ty == Tint32 || t.next.ty == Tuns32)
+            else if (t.ty == Tint32 || t.ty == Tuns32)
                 buf.put("IntPtr");
-            else if (t.next.ty == Tstruct)
-                typeToBufferx(t.next, buf, opts, Boxing.yes);
+            else if (t.ty == Tstruct)
+                typeToBufferx(t, buf, opts, Boxing.yes);
             else {
                 buf.put("Ptr<");
-                typeToBufferx(t.next, buf, opts, Boxing.yes);
+                typeToBufferx(t, buf, opts, Boxing.yes);
                 buf.put(">");
             }
         }

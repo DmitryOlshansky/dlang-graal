@@ -1103,12 +1103,12 @@ public class lexer {
                             {
                                 int v = 0;
                                 int n = 0;
-                                do
+                                do {
                                     {
                                         v = v * 8 + (c - 48);
                                         c = ((p.plusAssign(1)).get() & 0xFF);
                                     }
-                                while ((n += 1) < 3 && isoctal((byte)c));
+                                } while ((n += 1) < 3 && isoctal((byte)c));
                                 c = v;
                                 if (c > 255)
                                     handler.error(loc, new BytePtr("escape octal sequence \\%03o is larger than \\377"), c);

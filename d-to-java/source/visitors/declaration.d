@@ -482,6 +482,10 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                         auto var = c.e1.isDeclarationExp().declaration.isVarDeclaration();
                         var.accept(this);
                     }
+                    else if (auto c  = ifs.condition.isDeclarationExp()) {
+                        auto var = c.declaration.isVarDeclaration();
+                        var.accept(this);
+                    }
                 }
                 if (!st.isCompoundStatement() && !st.isScopeStatement()) {
                     auto lambdas = collectLambdas(st);
@@ -524,12 +528,13 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
         else 
             forLoop.push(0); // no gotos, let it continue this inner for
-        buf.put("do\n");
+        scope(exit) forLoop.pop();
+        buf.put("do {\n");
         buf.indent;
         if (s._body)
             s._body.accept(this);
         buf.outdent;
-        buf.put("while (");
+        buf.put("} while (");
         buf.put(s.condition.toJavaBool(opts));
         buf.put(");\n");
     }
