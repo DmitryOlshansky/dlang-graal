@@ -5302,7 +5302,7 @@ public class parse {
                                 this.error(new BytePtr("`const`/`immutable`/`shared`/`inout` attributes are not allowed on `asm` blocks"));
                             this.check(TOK.leftCurly);
                             Ref<Token> toklist = ref(null);
-                            Token ptoklist = null;
+                            Ptr<Token> ptoklist = pcopy(ptr(toklist));
                             Identifier label = null;
                             DArray<ASTBase.Statement> statements_3 = new DArray<ASTBase.Statement>();
                             int nestlevel = 0;
@@ -5350,6 +5350,7 @@ public class parse {
                                                 {
                                                     s = new ASTBase.AsmStatement(this.token.loc, toklist.value);
                                                     toklist.value = null;
+                                                    ptoklist = pcopy(ptr(toklist));
                                                     if (label != null)
                                                     {
                                                         s = new ASTBase.LabelStatement(labelloc, label, s);
@@ -5363,18 +5364,10 @@ public class parse {
                                                 this.error(new BytePtr("matching `}` expected, not end of file"));
                                                 /*goto Lerror*/{ __dispatch27 = -6; continue dispatched_27; }
                                             default:
-                                                if (toklist.value == null) {
-                                                    toklist = ref(this.allocateToken());
-                                                    toklist.value.opAssign(this.token);
-                                                    ptoklist = toklist.value;
-                                                    ptoklist.next = null;
-                                                }
-                                                else {
-                                                    ptoklist.next = this.allocateToken();
-                                                    ptoklist.next.opAssign((this.token));
-                                                    ptoklist = ptoklist.next;
-                                                    ptoklist.next = null;
-                                                }
+                                            ptoklist.set(0, this.allocateToken());
+                                            (ptoklist.get()).opAssign((this.token));
+                                            ptoklist = pcopy((new PtrToNext(ptoklist.get())));
+                                            ptoklist.set(0, null);
                                             this.nextToken();
                                             continue L_outer15;
                                         }

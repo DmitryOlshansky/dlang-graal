@@ -1,5 +1,5 @@
 diff --git a/src/main/java/org/dlang/dmd/astbase.java b/src/main/java/org/dlang/dmd/astbase.java
-index 5e5257f..7d1a7d1 100644
+index c9bb4ef..acf4fab 100644
 --- a/src/main/java/org/dlang/dmd/astbase.java
 +++ b/src/main/java/org/dlang/dmd/astbase.java
 @@ -1987,7 +1987,10 @@ public class astbase {
@@ -23,7 +23,7 @@ index 5e5257f..7d1a7d1 100644
                  super((byte)37);
                  DArray<Parameter> arguments = new DArray<Parameter>();
                  if (exps != null)
-@@ -5908,7 +5911,9 @@ public class astbase {
+@@ -5922,7 +5925,9 @@ public class astbase {
          public static class VarExp extends SymbolExp
          {
              public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
@@ -34,7 +34,7 @@ index 5e5257f..7d1a7d1 100644
                  this.type = var.type;
              }
  
-@@ -7450,6 +7455,11 @@ public class astbase {
+@@ -7464,6 +7469,11 @@ public class astbase {
              public ForeachStatement aggrfe;
              public ForeachRangeStatement rangefe;
              public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
@@ -47,7 +47,7 @@ index 5e5257f..7d1a7d1 100644
                  this.loc = loc.copy();
                  this.aggrfe = aggrfe;
 diff --git a/src/main/java/org/dlang/dmd/globals.java b/src/main/java/org/dlang/dmd/globals.java
-index 8e6cb70..97f7c0d 100644
+index 7fb8963..b257606 100644
 --- a/src/main/java/org/dlang/dmd/globals.java
 +++ b/src/main/java/org/dlang/dmd/globals.java
 @@ -257,7 +257,19 @@ public class globals {
@@ -72,7 +72,7 @@ index 8e6cb70..97f7c0d 100644
  
          public Param(){
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
-index 760fe2e..0c92a84 100644
+index 2d4fdf2..377ef64 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java
 +++ b/src/main/java/org/dlang/dmd/lexer.java
 @@ -373,26 +373,17 @@ public class lexer {
@@ -177,10 +177,43 @@ index 760fe2e..0c92a84 100644
                                  default:
                                  break;
 diff --git a/src/main/java/org/dlang/dmd/parse.java b/src/main/java/org/dlang/dmd/parse.java
-index 54b09c6..e4f1509 100644
+index ee7f865..80bd6d7 100644
 --- a/src/main/java/org/dlang/dmd/parse.java
 +++ b/src/main/java/org/dlang/dmd/parse.java
-@@ -2353,7 +2353,7 @@ public class parse {
+@@ -633,9 +633,7 @@ public class parse {
+                                 case 174:
+                                     ASTBase.Expression e = null;
+                                     {
+-                                        Ref<ASTBase.Expression> depmsg_ref = ref((pAttrs).depmsg);
+-                                        long _stc = this.parseDeprecatedAttribute(depmsg_ref);
+-                                        pAttrs.depmsg = depmsg_ref.value;
++                                        long _stc = this.parseDeprecatedAttribute((pAttrs).depmsg);
+                                         if ((_stc) != 0)
+                                         {
+                                             stc = _stc;
+@@ -1793,17 +1791,11 @@ public class parse {
+                             link = LINK.objc;
+                             this.nextToken();
+                         }
+-                        else {
+-                            /*goto LinvalidLinkage*/
+-                            this.error(new BytePtr("valid linkage identifiers are `D`, `C`, `C++`, `Objective-C`, `Pascal`, `Windows`, `System`"));
+-                            link = LINK.d;
+-                        }
+-                    }
+-                    else {
+-                        /*goto LinvalidLinkage*/
+-                        this.error(new BytePtr("valid linkage identifiers are `D`, `C`, `C++`, `Objective-C`, `Pascal`, `Windows`, `System`"));
+-                        link = LINK.d;
++                        else
++                            /*goto LinvalidLinkage*/throw Dispatch.INSTANCE;
+                     }
++                    else
++                        /*goto LinvalidLinkage*/throw Dispatch.INSTANCE;
+                 }
+                 else if (id.equals(Id.System))
+                 {
+@@ -2361,7 +2353,7 @@ public class parse {
                                      else
                                      {
                                      /*_else:*/
@@ -189,61 +222,344 @@ index 54b09c6..e4f1509 100644
                                      __dispatch9 = 0;
                                          at = this.parseType(ptr(ai), null);
                                      }
-@@ -5290,7 +5290,7 @@ public class parse {
-                                 this.error(new BytePtr("`const`/`immutable`/`shared`/`inout` attributes are not allowed on `asm` blocks"));
-                             this.check(TOK.leftCurly);
-                             Ref<Token> toklist = ref(null);
--                            Token ptoklist = null;
-+                            Ptr<Token> ptoklist = pcopy(ptr(toklist));
-                             Identifier label = null;
-                             DArray<ASTBase.Statement> statements3 = new DArray<ASTBase.Statement>();
-                             int nestlevel = 0;
-@@ -5338,6 +5338,7 @@ public class parse {
-                                                 {
-                                                     s = new ASTBase.AsmStatement(this.token.loc, toklist.value);
-                                                     toklist.value = null;
-+                                                    ptoklist = pcopy(ptr(toklist));
-                                                     if (label != null)
-                                                     {
-                                                         s = new ASTBase.LabelStatement(labelloc, label, s);
-@@ -5351,18 +5352,10 @@ public class parse {
-                                                 this.error(new BytePtr("matching `}` expected, not end of file"));
-                                                 /*goto Lerror*/{ __dispatch27 = -6; continue dispatched_27; }
-                                             default:
--                                                if (toklist.value == null) {
--                                                    toklist = ref(this.allocateToken());
--                                                    toklist.value.opAssign(this.token);
--                                                    ptoklist = toklist.value;
--                                                    ptoklist.next = null;
--                                                }
--                                                else {
--                                                    ptoklist.next = this.allocateToken();
--                                                    ptoklist.next.opAssign((this.token));
--                                                    ptoklist = ptoklist.next;
--                                                    ptoklist.next = null;
--                                                }
-+                                            ptoklist.set(0, this.allocateToken());
-+                                            (ptoklist.get()).opAssign((this.token));
-+                                            ptoklist = pcopy((ptr((ptoklist.get()).next)));
-+                                            ptoklist.set(0, null);
-                                             this.nextToken();
-                                             continue L_outer15;
-                                         }
-@@ -5803,11 +5796,11 @@ public class parse {
-                             L_outer18:
-                                 for (; (1) != 0;){
+@@ -3204,9 +3196,9 @@ public class parse {
+                     default:
+                     return t;
+                 }
+-                //throw new AssertionError("Unreachable code!");
++                throw new AssertionError("Unreachable code!");
+             }
+-            //throw new AssertionError("Unreachable code!");
++            throw new AssertionError("Unreachable code!");
+         }
+ 
+         public  ASTBase.Type parseDeclarator(ASTBase.Type t, IntPtr palt, Ptr<Identifier> pident, Ptr<DArray<ASTBase.TemplateParameter>> tpl, long storageClass, IntPtr pdisable, Ptr<DArray<ASTBase.Expression>> pudas) {
+@@ -3946,8 +3938,7 @@ public class parse {
+             boolean literal = f.isFuncLiteralDeclaration() != null;
+             this.linkage = LINK.d;
+             boolean requireDo = false;
+-        L1:
+-            while(true)
++        /*L1:*/
+             {
+                 int __dispatch23 = 0;
+                 dispatched_23:
+@@ -4001,7 +3992,7 @@ public class parse {
+                                 (f.frequires).push(this.parseStatement(6, null, null));
+                                 requireDo = true;
+                             }
+-                            /*goto L1*/continue L1;
++                            /*goto L1*/throw Dispatch0.INSTANCE;
+                         case 176:
+                             Loc loc_1 = this.token.loc.copy();
+                             this.nextToken();
+@@ -4039,13 +4030,13 @@ public class parse {
+                                     e_1 = new ASTBase.AssertExp(loc_1, e_1, msg_1);
+                                     (f.fensures).push(new ASTBase.Ensure(id, new ASTBase.ExpStatement(loc_1, e_1)));
+                                     requireDo = false;
+-                                    /*goto L1*/continue L1;
++                                    /*goto L1*/throw Dispatch0.INSTANCE;
+                                 }
+                                 this.check(TOK.rightParentheses);
+                             }
+                             (f.fensures).push(new ASTBase.Ensure(id, this.parseStatement(6, null, null)));
+                             requireDo = true;
+-                            /*goto L1*/continue L1;
++                            /*goto L1*/throw Dispatch0.INSTANCE;
+                         case 9:
+                             if (!(literal))
+                             {
+@@ -4075,7 +4066,6 @@ public class parse {
+                         break;
+                     }
+                 } while(__dispatch23 != 0);
+-                break;
+             }
+             if (literal && !(f.fbody != null))
+             {
+@@ -4499,9 +4489,6 @@ public class parse {
+             ASTBase.Statement ifbody = null;
+             ASTBase.Statement elsebody = null;
+             boolean isfinal = false;
+-            long stc = 0;
+-            long storageClass = 0;
+-            ASTBase.Parameter param = null;
+             Loc loc = this.token.loc.copy();
+             if ((flags & ParseStatementFlags.curly) != 0 && (this.token.value & 0xFF) != 5)
+                 this.error(new BytePtr("statement expected to be `{ }`, not `%s`"), this.token.toChars());
+@@ -4708,7 +4695,7 @@ public class parse {
+                                     s = new ASTBase.ExpStatement(loc, d_1);
+                                 }
+                                 else
+-                                    s = new ASTBase.ExpStatement(loc, (ASTBase.Dsymbol)null);
++                                    s = new ASTBase.ExpStatement(loc, null);
+                                 if ((flags & ParseStatementFlags.scope_) != 0)
+                                     s = new ASTBase.ScopeStatement(loc, s, this.token.loc);
+                                 break;
+@@ -4794,7 +4781,7 @@ public class parse {
+                                     this.error(new BytePtr("use `{ }` for an empty statement, not `;`"));
+                             }
+                             this.nextToken();
+-                            s = new ASTBase.ExpStatement(loc, (ASTBase.Expression)null);
++                            s = new ASTBase.ExpStatement(loc, null);
+                             break;
+                         case 187:
+                             ASTBase.Statement _body_1 = null;
+@@ -4853,7 +4840,7 @@ public class parse {
+                                 this.check(TOK.rightParentheses);
+                             }
+                             Loc endloc_1 = new Loc();
+-                            ASTBase.Statement _body_2 = this.parseStatement(2, null, endloc_1);
++                            ASTBase.Statement _body_2 = this.parseStatement(2, null, endloc);
+                             s = new ASTBase.ForStatement(loc, _init, condition_2, increment, _body_2, endloc_1);
+                             break;
+                         case 201:
+@@ -4861,11 +4848,12 @@ public class parse {
+                             s = this.parseForeach00(loc);
+                             break;
+                         case 183:
++                            ASTBase.Parameter param = null;
+                             ASTBase.Expression condition_3 = null;
+                             this.nextToken();
+                             this.check(TOK.leftParentheses);
+-                            storageClass = 0L;
+-                            stc = 0L;
++                            long storageClass = 0L;
++                            long stc = 0L;
+                         /*LagainStc:*/
+                         case -5:
+                         __dispatch27 = 0;
+@@ -5234,7 +5222,7 @@ public class parse {
+                             this.check(TOK.leftParentheses);
+                             exp_5 = this.parseExpression();
+                             this.check(TOK.rightParentheses);
+-                            _body_6 = this.parseStatement(2, null, endloc_2);
++                            _body_6 = this.parseStatement(2, null, endloc);
+                             s = new ASTBase.WithStatement(loc, exp_5, _body_6, endloc_2);
+                             break;
+                         case 197:
+@@ -5654,7 +5635,6 @@ public class parse {
+                     }
+                 } while(__dispatch30 != 0);
+             }
+-            return null;
+         }
+ 
+         public  ASTBase.Expression parseDefaultInitExp() {
+@@ -5723,7 +5703,7 @@ public class parse {
+         }
+ 
+ 
+-        public static class NeedDeclaratorId
++        public static class NeedDeclaratorId 
+         {
+             public static final int no = 0;
+             public static final int opt = 1;
+@@ -5810,98 +5790,103 @@ public class parse {
+                                 t.value = this.peek(t.value);
+                                 if (((t.value).value & 0xFF) == 91)
+                                 {
+-                                    /*goto L4*/{ __dispatch36 = -4; continue dispatched_36; }
++                                    /*goto L4*/throw Dispatch.INSTANCE;
+                                 }
+                                 /*goto L3*/{ __dispatch36 = -3; continue dispatched_36; }
++                            L_outer18:
++                                for (; (1) != 0;){
                                  /*L2:*/
--                                //case -2:
+-                            case -2:
 +                                case -2:
                                  __dispatch36 = 0;
                                      t.value = this.peek(t.value);
                                  /*L3:*/
--                                //case -3:
+-                            case -3:
 +                                case -3:
                                  __dispatch36 = 0;
-                                     if (((t.value).value & 0xFF) == 97)
+-                                if (((t.value).value & 0xFF) != 97) break;
+-                            /*Ldot:*/
+-                            case -5:
+-                                    t.value = this.peek(t.value);
+-                                    if (((t.value).value & 0xFF) != 120)
+-                                        /*goto Lfalse*/throw Dispatch0.INSTANCE;
+-                                    t.value = this.peek(t.value);
+-                                    if (((t.value).value & 0xFF) != 91)
+-                                        /*goto L3*/{ __dispatch36 = -3; continue dispatched_36; }
+-                                /*L4:*/
+-                            case -4:
+-                                    t.value = this.peek(t.value);
++                                    if (((t.value).value & 0xFF) == 97)
                                      {
-@@ -6178,7 +6171,7 @@ public class parse {
+-                                        int __dispatch37 = 0;
+-                                        dispatched_37:
+-                                        do {
+-                                            switch (__dispatch37 != 0 ? __dispatch37 : ((t.value).value & 0xFF))
+-                                            {
+-                                                case 120:
+-                                                    /*goto L5*/{ __dispatch36 = -1; continue dispatched_36; }
+-                                                case 1:
+-                                                    if (!(this.skipParens(t.value, ptr(t))))
+-                                                        /*goto Lfalse*/throw Dispatch0.INSTANCE;
+-                                                    /*goto L3*/{ __dispatch36 = -3; continue dispatched_36; }
+-                                                case 149:
+-                                                case 150:
+-                                                case 151:
+-                                                case 148:
+-                                                case 129:
+-                                                case 130:
+-                                                case 131:
+-                                                case 132:
+-                                                case 133:
+-                                                case 134:
+-                                                case 135:
+-                                                case 136:
+-                                                case 137:
+-                                                case 138:
+-                                                case 139:
+-                                                case 140:
+-                                                case 141:
+-                                                case 142:
+-                                                case 143:
+-                                                case 144:
+-                                                case 145:
+-                                                case 146:
+-                                                case 147:
+-                                                case 128:
+-                                                case 105:
+-                                                case 106:
+-                                                case 107:
+-                                                case 108:
+-                                                case 109:
+-                                                case 110:
+-                                                case 111:
+-                                                case 112:
+-                                                case 113:
+-                                                case 114:
+-                                                case 115:
+-                                                case 116:
+-                                                case 13:
+-                                                case 15:
+-                                                case 16:
+-                                                case 117:
+-                                                case 118:
+-                                                case 119:
+-                                                case 121:
+-                                                case 122:
+-                                                case 219:
+-                                                case 220:
+-                                                case 218:
+-                                                case 221:
+-                                                case 222:
+-                                                case 223:
+-                                                    /*goto L2*/{ __dispatch36 = -2; continue dispatched_36; }
+-                                                default:
+-                                                /*goto Lfalse*/throw Dispatch0.INSTANCE;
+-                                            }
+-                                        } while(__dispatch37 != 0);
++                                    /*Ldot:*/
++                                        t.value = this.peek(t.value);
++                                        if (((t.value).value & 0xFF) != 120)
++                                            /*goto Lfalse*/throw Dispatch0.INSTANCE;
++                                        t.value = this.peek(t.value);
++                                        if (((t.value).value & 0xFF) != 91)
++                                            /*goto L3*/{ __dispatch36 = -3; continue dispatched_36; }
++                                    /*L4:*/
++                                        t.value = this.peek(t.value);
++                                        {
++                                            int __dispatch37 = 0;
++                                            dispatched_37:
++                                            do {
++                                                switch (__dispatch37 != 0 ? __dispatch37 : ((t.value).value & 0xFF))
++                                                {
++                                                    case 120:
++                                                        /*goto L5*/{ __dispatch36 = -1; continue dispatched_36; }
++                                                    case 1:
++                                                        if (!(this.skipParens(t.value, ptr(t))))
++                                                            /*goto Lfalse*/throw Dispatch0.INSTANCE;
++                                                        /*goto L3*/{ __dispatch36 = -3; continue dispatched_36; }
++                                                    case 149:
++                                                    case 150:
++                                                    case 151:
++                                                    case 148:
++                                                    case 129:
++                                                    case 130:
++                                                    case 131:
++                                                    case 132:
++                                                    case 133:
++                                                    case 134:
++                                                    case 135:
++                                                    case 136:
++                                                    case 137:
++                                                    case 138:
++                                                    case 139:
++                                                    case 140:
++                                                    case 141:
++                                                    case 142:
++                                                    case 143:
++                                                    case 144:
++                                                    case 145:
++                                                    case 146:
++                                                    case 147:
++                                                    case 128:
++                                                    case 105:
++                                                    case 106:
++                                                    case 107:
++                                                    case 108:
++                                                    case 109:
++                                                    case 110:
++                                                    case 111:
++                                                    case 112:
++                                                    case 113:
++                                                    case 114:
++                                                    case 115:
++                                                    case 116:
++                                                    case 13:
++                                                    case 15:
++                                                    case 16:
++                                                    case 117:
++                                                    case 118:
++                                                    case 119:
++                                                    case 121:
++                                                    case 122:
++                                                    case 219:
++                                                    case 220:
++                                                    case 218:
++                                                    case 221:
++                                                    case 222:
++                                                    case 223:
++                                                        /*goto L2*/{ __dispatch36 = -2; continue dispatched_36; }
++                                                    default:
++                                                    /*goto Lfalse*/throw Dispatch0.INSTANCE;
++                                                }
++                                            } while(__dispatch37 != 0);
++                                        }
+                                     }
++                                    break;
++                                }
++                                break;
+                             case 97:
+-                                /*goto Ldot*/{ __dispatch36 = -5; continue dispatched_36; }
++                                /*goto Ldot*/throw Dispatch.INSTANCE;
+                             case 39:
+                             case 229:
+                                 t.value = this.peek(t.value);
+@@ -6140,7 +6125,7 @@ public class parse {
+                     } while(__dispatch39 != 0);
+                 }
+             }
+-            //throw new AssertionError("Unreachable code!");
++            throw new AssertionError("Unreachable code!");
+         }
+ 
+         public  boolean isParameters(Ptr<Token> pt) {
+@@ -6151,7 +6136,7 @@ public class parse {
+         L_outer20:
+             for (; (1) != 0;t.value = this.peek(t.value)){
+             /*L1:*/
+-                while (true) try {
++                {
+                     int __dispatch41 = 0;
+                     dispatched_41:
+                     do {
+@@ -6186,7 +6171,7 @@ public class parse {
                                  }
                                  /*goto L1*/throw Dispatch0.INSTANCE;
                              default:
@@ -252,7 +568,7 @@ index 54b09c6..e4f1509 100644
                                  if (!(this.isBasicType(ptr(t))))
                                      return false;
                              /*L2:*/
-@@ -6198,7 +6191,7 @@ public class parse {
+@@ -6206,7 +6191,7 @@ public class parse {
                                      t.value = this.peek(t.value);
                                      break;
                                  }
@@ -261,3 +577,13 @@ index 54b09c6..e4f1509 100644
                              if (((t.value).value & 0xFF) == 99)
                              {
                                  continue L_outer20;
+@@ -6214,8 +6199,7 @@ public class parse {
+                             break;
+                         }
+                     } while(__dispatch41 != 0);
+-                    break;
+-                } catch(Dispatch0 __d0) {}
++                }
+                 break;
+             }
+             if (((t.value).value & 0xFF) != 2)

@@ -633,6 +633,15 @@ public:
                 buf.put(" == null");
             }
             else if (e.op == TOK.address) {
+                if (auto var = e.e1.isDotVarExp) {
+                    if (var.var.ident.symbol == "next") {
+                        //stderr.writefln("Took address of %s %s", e.e1.toString, var.var);
+                        buf.put("new PtrToNext(");
+                        expToBuffer(var.e1, precedence[e.op], buf, opts);
+                        buf.put(")");
+                        return;
+                    }
+                }
                 buf.put("ptr(");
                 if (auto var = e.e1.isVarExp) {
                     if (auto name = var.var in opts.renamed)
