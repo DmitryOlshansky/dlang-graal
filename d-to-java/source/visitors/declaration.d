@@ -883,11 +883,15 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     }
 
     override void visit(GotoStatement g) {
-        long myIndex = gotos.top.countUntil!(c => c.label is g.label);
         buf.fmt("/*goto %s*/", g.label.toString);
-        if (myIndex >= 0 && gotos.top[myIndex].local) {
+        auto myIndex = map!(gs => gs.countUntil!(c => c.label is g.label))(gotos[]);
+        auto stackIndex = myIndex.countUntil!(x => x >= 0);
+        auto idx = stackIndex >= 0 ? myIndex[stackIndex] : -1;
+        if (idx >= 0 && gotos[][stackIndex][idx].local) {
+            stderr.writefln("StackIdx = %d idx = %d dispatch = %s gotos = %s", stackIndex, idx, dispatch[], gotos[]);
+            // gotos have empty array added at start so -1
             buf.fmt("{ __dispatch%d = %d; continue dispatched_%d; }\n",
-                dispatch.top, -1-myIndex, dispatch.top);
+                dispatch[][stackIndex - 1], -1-idx, dispatch[][stackIndex - 1]);
         }
         else if (auto count = g.label.ident in labelGotoNums.top){
             buf.fmt("throw Dispatch%d.INSTANCE;\n", *count);
