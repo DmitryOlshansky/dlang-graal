@@ -482,7 +482,8 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     if (range[k].first > range[k].last) range[k].reversed = true;
                 }
         }
-        if (s.statements)
+        if (s.statements) {
+            ptrdiff_t[] totalRevs = [];
             foreach (idx, st; *s.statements) if (st) {
                 auto starts = range.filter!(x => x.first == idx && !x.reversed);
                 foreach (start; starts) {
@@ -493,6 +494,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 foreach (rev; revEnds) {
                     buf.put("while(true) try {\n");
                     buf.indent;
+                    totalRevs ~= range.countUntil(rev);
                 }
                 // try to find target on this level, if fails we are too deep
                 // some other (upper) check will eventually succeed
@@ -513,14 +515,15 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     buf.fmt("}\ncatch(Dispatch%d __d){}\n", end);
                 }                
                 st.accept(this);
-                auto revStart = range.countUntil!(x => x.first == idx && x.reversed);
-                if (revStart >= 0) {
-                    buf.put("break;\n");
-                    buf.outdent;
-                    buf.fmt("} catch(Dispatch%d __d){}\n", revStart);
-                }
+                if (idx == s.statements.length-1) 
+                    foreach (rev; totalRevs) {
+                        buf.put("break;\n");
+                        buf.outdent;
+                        buf.fmt("} catch(Dispatch%d __d){}\n", rev);
+                    }
                 //TODO: for?
             }
+        }
     }
 
     override void visit(WhileStatement s)
@@ -888,7 +891,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         auto stackIndex = myIndex.countUntil!(x => x >= 0);
         auto idx = stackIndex >= 0 ? myIndex[stackIndex] : -1;
         if (idx >= 0 && gotos[][stackIndex][idx].local) {
-            stderr.writefln("StackIdx = %d idx = %d dispatch = %s gotos = %s", stackIndex, idx, dispatch[], gotos[]);
+            //stderr.writefln("StackIdx = %d idx = %d dispatch = %s gotos = %s", stackIndex, idx, dispatch[], gotos[]);
             // gotos have empty array added at start so -1
             buf.fmt("{ __dispatch%d = %d; continue dispatched_%d; }\n",
                 dispatch[][stackIndex - 1], -1-idx, dispatch[][stackIndex - 1]);
@@ -1218,7 +1221,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             foreach(i, p; (*func.parameters)[]) {
                 if (i != 0) buf.fmt(", ");
                 auto box = p.isRef || p.isOut;
-                if (box && !isLambda && !isAggregate(p.type) && p.type.ty != Tpointer && p.type.ty != Tarray) {
+                if (box && !isLambda && !p.type.isTypeStruct && p.type.ty != Tpointer && p.type.ty != Tarray) {
                     opts.refParams[p] = true;
                     buf.fmt("%s %s", refType(p.type, opts), p.ident.symbol);
                 }
@@ -1260,7 +1263,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             foreach(i, p; (*func.parameters)[]) {
                 if (i != 0) buf.fmt(", ");
                 auto box = p.isRef || p.isOut;
-                if (box && !p.type.isAggregate && p.type.ty != Tpointer && p.type.ty != Tarray) {
+                if (box && !p.type.isTypeStruct && p.type.ty != Tpointer && p.type.ty != Tarray) {
                     opts.refParams[p] = true;
                     buf.fmt("%s %s", refType(p.type, opts), p.ident.toString);
                 }
@@ -1284,7 +1287,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                    if (i != 0) buf.fmt(", ");
                     auto box = p.storageClass & (STC.ref_ | STC.out_);
                     auto name = p.ident ? p.ident.toString : format("arg%d",i);
-                    if (box && !p.type.isAggregate && p.type.ty != Tpointer && p.type.ty != Tarray) {
+                    if (box && !p.type.isTypeStruct && p.type.ty != Tpointer && p.type.ty != Tarray) {
                         opts.refParams[p] = true;
                         buf.fmt("%s %s", refType(p.type, opts), name);
                     }

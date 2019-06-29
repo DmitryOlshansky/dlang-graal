@@ -264,18 +264,18 @@ public class parse {
             return new DArray<ASTBase.Dsymbol>();
         }
 
-        public  long parseDeprecatedAttribute(ASTBase.Expression msg) {
+        public  long parseDeprecatedAttribute(Ref<ASTBase.Expression> msg) {
             if (((this.peek(this.token)).value & 0xFF) != 1)
                 return 1024L;
             this.nextToken();
             this.check(TOK.leftParentheses);
             ASTBase.Expression e = this.parseAssignExp();
             this.check(TOK.rightParentheses);
-            if (msg != null)
+            if (msg.value != null)
             {
-                this.error(new BytePtr("conflicting storage class `deprecated(%s)` and `deprecated(%s)`"), msg.toChars(), e.toChars());
+                this.error(new BytePtr("conflicting storage class `deprecated(%s)` and `deprecated(%s)`"), msg.value.toChars(), e.toChars());
             }
-            msg = e;
+            msg.value = e;
             return 0L;
         }
 
@@ -2744,58 +2744,58 @@ public class parse {
                             aliasid = id;
                             /*goto L1*/throw Dispatch0.INSTANCE;
                         }
-                        break;
-                    } catch(Dispatch0 __d){}
-                    for (; (this.token.value & 0xFF) == 97;){
-                        if (a == null)
-                            a = new DArray<Identifier>();
-                        (a).push(id);
-                        this.nextToken();
-                        if ((this.token.value & 0xFF) != 120)
-                        {
-                            this.error(new BytePtr("identifier expected following `package`"));
-                            break;
-                        }
-                        id = this.token.ident;
-                        this.nextToken();
-                    }
-                    ASTBase.Import s = new ASTBase.Import(loc, a, id, aliasid, isstatic);
-                    (decldefs).push((ASTBase.Dsymbol)s);
-                    if ((this.token.value & 0xFF) == 7)
-                    {
-                        do {
+                        for (; (this.token.value & 0xFF) == 97;){
+                            if (a == null)
+                                a = new DArray<Identifier>();
+                            (a).push(id);
+                            this.nextToken();
+                            if ((this.token.value & 0xFF) != 120)
                             {
-                                this.nextToken();
-                                if ((this.token.value & 0xFF) != 120)
-                                {
-                                    this.error(new BytePtr("identifier expected following `:`"));
-                                    break;
-                                }
-                                Identifier _alias = this.token.ident;
-                                Identifier name = null;
-                                this.nextToken();
-                                if ((this.token.value & 0xFF) == 90)
+                                this.error(new BytePtr("identifier expected following `package`"));
+                                break;
+                            }
+                            id = this.token.ident;
+                            this.nextToken();
+                        }
+                        ASTBase.Import s = new ASTBase.Import(loc, a, id, aliasid, isstatic);
+                        (decldefs).push((ASTBase.Dsymbol)s);
+                        if ((this.token.value & 0xFF) == 7)
+                        {
+                            do {
                                 {
                                     this.nextToken();
                                     if ((this.token.value & 0xFF) != 120)
                                     {
-                                        this.error(new BytePtr("identifier expected following `%s=`"), _alias.toChars());
+                                        this.error(new BytePtr("identifier expected following `:`"));
                                         break;
                                     }
-                                    name = this.token.ident;
+                                    Identifier _alias = this.token.ident;
+                                    Identifier name = null;
                                     this.nextToken();
+                                    if ((this.token.value & 0xFF) == 90)
+                                    {
+                                        this.nextToken();
+                                        if ((this.token.value & 0xFF) != 120)
+                                        {
+                                            this.error(new BytePtr("identifier expected following `%s=`"), _alias.toChars());
+                                            break;
+                                        }
+                                        name = this.token.ident;
+                                        this.nextToken();
+                                    }
+                                    else
+                                    {
+                                        name = _alias;
+                                        _alias = null;
+                                    }
+                                    s.addAlias(name, _alias);
                                 }
-                                else
-                                {
-                                    name = _alias;
-                                    _alias = null;
-                                }
-                                s.addAlias(name, _alias);
-                            }
-                        } while ((this.token.value & 0xFF) == 99);
+                            } while ((this.token.value & 0xFF) == 99);
+                            break;
+                        }
+                        aliasid = null;
                         break;
-                    }
-                    aliasid = null;
+                    } catch(Dispatch0 __d){}
                 }
             } while ((this.token.value & 0xFF) == 99);
             if ((this.token.value & 0xFF) == 9)
@@ -3307,7 +3307,7 @@ public class parse {
             return ts.value;
         }
 
-        public  void parseStorageClasses(Ref<Long> storage_class, IntRef link, Ref<Boolean> setAlignment, ASTBase.Expression ealign, DArray<ASTBase.Expression> udas) {
+        public  void parseStorageClasses(Ref<Long> storage_class, IntRef link, Ref<Boolean> setAlignment, Ref<ASTBase.Expression> ealign, DArray<ASTBase.Expression> udas) {
             Ref<DArray<ASTBase.Expression>> udas_ref = ref(udas);
             long stc = 0L;
             boolean sawLinkage = false;
@@ -3429,7 +3429,7 @@ public class parse {
                                 if ((this.token.value & 0xFF) == 1)
                                 {
                                     this.nextToken();
-                                    ealign = this.parseExpression();
+                                    ealign.value = this.parseExpression();
                                     this.check(TOK.rightParentheses);
                                 }
                                 continue L_outer11;
@@ -4188,34 +4188,34 @@ public class parse {
                             }
                         } while(__dispatch24 != 0);
                     }
+                    try {
+                        if ((this.token.value & 0xFF) == 120)
+                        {
+                            Token t = this.peek(this.token);
+                            if (((t).value & 0xFF) == 99 || ((t).value & 0xFF) == 9)
+                            {
+                                ai.value = this.token.ident;
+                                at = null;
+                                this.nextToken();
+                                /*goto Larg*/throw Dispatch1.INSTANCE;
+                            }
+                        }
+                        at = this.parseType(ptr(ai), null);
+                        if (!(ai.value != null))
+                            this.error(new BytePtr("no identifier for declarator `%s`"), at.toChars());
+                    }
+                    catch(Dispatch1 __d){}
+                /*Larg:*/
+                    ASTBase.Parameter p = new ASTBase.Parameter(storageClass, at, ai.value, null, null);
+                    (parameters).push(p);
+                    if ((this.token.value & 0xFF) == 99)
+                    {
+                        this.nextToken();
+                        continue L_outer12;
+                    }
+                    break;
                     break;
                 } catch(Dispatch0 __d){}
-                try {
-                    if ((this.token.value & 0xFF) == 120)
-                    {
-                        Token t = this.peek(this.token);
-                        if (((t).value & 0xFF) == 99 || ((t).value & 0xFF) == 9)
-                        {
-                            ai.value = this.token.ident;
-                            at = null;
-                            this.nextToken();
-                            /*goto Larg*/throw Dispatch1.INSTANCE;
-                        }
-                    }
-                    at = this.parseType(ptr(ai), null);
-                    if (!(ai.value != null))
-                        this.error(new BytePtr("no identifier for declarator `%s`"), at.toChars());
-                }
-                catch(Dispatch1 __d){}
-            /*Larg:*/
-                ASTBase.Parameter p = new ASTBase.Parameter(storageClass, at, ai.value, null, null);
-                (parameters).push(p);
-                if ((this.token.value & 0xFF) == 99)
-                {
-                    this.nextToken();
-                    continue L_outer12;
-                }
-                break;
             }
             this.check(TOK.semicolon);
             ASTBase.Expression aggr = this.parseExpression();
@@ -4309,34 +4309,34 @@ public class parse {
                             }
                         } while(__dispatch25 != 0);
                     }
+                    try {
+                        if ((this.token.value & 0xFF) == 120)
+                        {
+                            Token t = this.peek(this.token);
+                            if (((t).value & 0xFF) == 99 || ((t).value & 0xFF) == 9)
+                            {
+                                ai.value = this.token.ident;
+                                at = null;
+                                this.nextToken();
+                                /*goto Larg*/throw Dispatch1.INSTANCE;
+                            }
+                        }
+                        at = this.parseType(ptr(ai), null);
+                        if (!(ai.value != null))
+                            this.error(new BytePtr("no identifier for declarator `%s`"), at.toChars());
+                    }
+                    catch(Dispatch1 __d){}
+                /*Larg:*/
+                    ASTBase.Parameter p = new ASTBase.Parameter(storageClass, at, ai.value, null, null);
+                    (parameters).push(p);
+                    if ((this.token.value & 0xFF) == 99)
+                    {
+                        this.nextToken();
+                        continue L_outer13;
+                    }
+                    break;
                     break;
                 } catch(Dispatch0 __d){}
-                try {
-                    if ((this.token.value & 0xFF) == 120)
-                    {
-                        Token t = this.peek(this.token);
-                        if (((t).value & 0xFF) == 99 || ((t).value & 0xFF) == 9)
-                        {
-                            ai.value = this.token.ident;
-                            at = null;
-                            this.nextToken();
-                            /*goto Larg*/throw Dispatch1.INSTANCE;
-                        }
-                    }
-                    at = this.parseType(ptr(ai), null);
-                    if (!(ai.value != null))
-                        this.error(new BytePtr("no identifier for declarator `%s`"), at.toChars());
-                }
-                catch(Dispatch1 __d){}
-            /*Larg:*/
-                ASTBase.Parameter p = new ASTBase.Parameter(storageClass, at, ai.value, null, null);
-                (parameters).push(p);
-                if ((this.token.value & 0xFF) == 99)
-                {
-                    this.nextToken();
-                    continue L_outer13;
-                }
-                break;
             }
             this.check(TOK.semicolon);
             ASTBase.Expression aggr = this.parseExpression();
@@ -4431,34 +4431,34 @@ public class parse {
                             }
                         } while(__dispatch26 != 0);
                     }
+                    try {
+                        if ((this.token.value & 0xFF) == 120)
+                        {
+                            Token t = this.peek(this.token);
+                            if (((t).value & 0xFF) == 99 || ((t).value & 0xFF) == 9)
+                            {
+                                ai.value = this.token.ident;
+                                at = null;
+                                this.nextToken();
+                                /*goto Larg*/throw Dispatch1.INSTANCE;
+                            }
+                        }
+                        at = this.parseType(ptr(ai), null);
+                        if (!(ai.value != null))
+                            this.error(new BytePtr("no identifier for declarator `%s`"), at.toChars());
+                    }
+                    catch(Dispatch1 __d){}
+                /*Larg:*/
+                    ASTBase.Parameter p = new ASTBase.Parameter(storageClass, at, ai.value, null, null);
+                    (parameters).push(p);
+                    if ((this.token.value & 0xFF) == 99)
+                    {
+                        this.nextToken();
+                        continue L_outer14;
+                    }
+                    break;
                     break;
                 } catch(Dispatch0 __d){}
-                try {
-                    if ((this.token.value & 0xFF) == 120)
-                    {
-                        Token t = this.peek(this.token);
-                        if (((t).value & 0xFF) == 99 || ((t).value & 0xFF) == 9)
-                        {
-                            ai.value = this.token.ident;
-                            at = null;
-                            this.nextToken();
-                            /*goto Larg*/throw Dispatch1.INSTANCE;
-                        }
-                    }
-                    at = this.parseType(ptr(ai), null);
-                    if (!(ai.value != null))
-                        this.error(new BytePtr("no identifier for declarator `%s`"), at.toChars());
-                }
-                catch(Dispatch1 __d){}
-            /*Larg:*/
-                ASTBase.Parameter p = new ASTBase.Parameter(storageClass, at, ai.value, null, null);
-                (parameters).push(p);
-                if ((this.token.value & 0xFF) == 99)
-                {
-                    this.nextToken();
-                    continue L_outer14;
-                }
-                break;
             }
             this.check(TOK.semicolon);
             ASTBase.Expression aggr = this.parseExpression();
