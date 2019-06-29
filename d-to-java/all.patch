@@ -1,8 +1,8 @@
 diff --git a/src/main/java/org/dlang/dmd/astbase.java b/src/main/java/org/dlang/dmd/astbase.java
-index ed047d6..64d11ea 100644
+index 5e5257f..7d1a7d1 100644
 --- a/src/main/java/org/dlang/dmd/astbase.java
 +++ b/src/main/java/org/dlang/dmd/astbase.java
-@@ -1983,7 +1983,10 @@ public class astbase {
+@@ -1987,7 +1987,10 @@ public class astbase {
              public DArray<BaseClass> baseclasses;
              public int baseok;
              public  ClassDeclaration(Loc loc, Identifier id, DArray<BaseClass> baseclasses, DArray<Dsymbol> members, boolean inObject) {
@@ -14,7 +14,7 @@ index ed047d6..64d11ea 100644
                  if (baseclasses != null)
                  {
                      this.baseclasses = baseclasses;
-@@ -4309,7 +4312,7 @@ public class astbase {
+@@ -4314,7 +4317,7 @@ public class astbase {
                  this.arguments = arguments;
              }
  
@@ -23,7 +23,7 @@ index ed047d6..64d11ea 100644
                  super((byte)37);
                  DArray<Parameter> arguments = new DArray<Parameter>();
                  if (exps != null)
-@@ -5903,7 +5906,9 @@ public class astbase {
+@@ -5908,7 +5911,9 @@ public class astbase {
          public static class VarExp extends SymbolExp
          {
              public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
@@ -34,7 +34,7 @@ index ed047d6..64d11ea 100644
                  this.type = var.type;
              }
  
-@@ -7443,6 +7448,11 @@ public class astbase {
+@@ -7450,6 +7455,11 @@ public class astbase {
              public ForeachStatement aggrfe;
              public ForeachRangeStatement rangefe;
              public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
@@ -72,7 +72,7 @@ index 8e6cb70..97f7c0d 100644
  
          public Param(){
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
-index 4bc0bc1..1919e06 100644
+index 760fe2e..735ca16 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java
 +++ b/src/main/java/org/dlang/dmd/lexer.java
 @@ -373,26 +373,17 @@ public class lexer {
@@ -105,7 +105,7 @@ index 4bc0bc1..1919e06 100644
                                          }
                                          else if (id.equals(Id.TIMESTAMP))
                                          {
-@@ -975,13 +966,13 @@ public class lexer {
+@@ -969,13 +960,13 @@ public class lexer {
              return escapeSequence(this.token.loc, this.diagnosticReporter, this.p);
          }
  
@@ -121,7 +121,7 @@ index 4bc0bc1..1919e06 100644
              try {
                  int c = (p.get() & 0xFF);
                  int ndigits = 0;
-@@ -1125,6 +1116,7 @@ public class lexer {
+@@ -1119,6 +1110,7 @@ public class lexer {
                  return c;
              }
              finally {
@@ -129,7 +129,7 @@ index 4bc0bc1..1919e06 100644
              }
          }
  
-@@ -1251,6 +1243,7 @@ public class lexer {
+@@ -1245,6 +1237,7 @@ public class lexer {
                      } while(__dispatch10 != 0);
                  }
              }
@@ -137,7 +137,7 @@ index 4bc0bc1..1919e06 100644
          }
  
          public  void delimitedStringConstant(Token result) {
-@@ -1635,25 +1628,18 @@ public class lexer {
+@@ -1629,25 +1622,18 @@ public class lexer {
                                          /*goto Ldone*/throw Dispatch0.INSTANCE;
                                      if ((isalpha((this.p.get(1) & 0xFF))) != 0 || (this.p.get(1) & 0xFF) == 95 || ((this.p.get(1) & 0xFF) & 128) != 0)
                                          /*goto Ldone*/throw Dispatch0.INSTANCE;
@@ -167,3 +167,48 @@ index 4bc0bc1..1919e06 100644
                                      break;
                                  default:
                                  break;
+diff --git a/src/main/java/org/dlang/dmd/parse.java b/src/main/java/org/dlang/dmd/parse.java
+index 347407e..8ca1bca 100644
+--- a/src/main/java/org/dlang/dmd/parse.java
++++ b/src/main/java/org/dlang/dmd/parse.java
+@@ -2353,7 +2353,7 @@ public class parse {
+                                     else
+                                     {
+                                     /*_else:*/
+-                                    //case -2:
++                                    case -2:
+                                     __dispatch9 = 0;
+                                         at = this.parseType(ptr(ai), null);
+                                     }
+@@ -5797,11 +5797,11 @@ public class parse {
+                             L_outer18:
+                                 for (; (1) != 0;){
+                                 /*L2:*/
+-                                //case -2:
++                                case -2:
+                                 __dispatch36 = 0;
+                                     t.value = this.peek(t.value);
+                                 /*L3:*/
+-                                //case -3:
++                                case -3:
+                                 __dispatch36 = 0;
+                                     if (((t.value).value & 0xFF) == 97)
+                                     {
+@@ -6172,7 +6172,7 @@ public class parse {
+                                 }
+                                 /*goto L1*/throw Dispatch0.INSTANCE;
+                             default:
+-
++                            {
+                                 if (!(this.isBasicType(ptr(t))))
+                                     return false;
+                             /*L2:*/
+@@ -6192,7 +6192,7 @@ public class parse {
+                                     t.value = this.peek(t.value);
+                                     break;
+                                 }
+-
++                            }
+                             if (((t.value).value & 0xFF) == 99)
+                             {
+                                 continue L_outer20;
