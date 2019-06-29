@@ -514,9 +514,16 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 if (end >= 0) {
                     buf.outdent;
                     buf.fmt("}\ncatch(Dispatch%d __d){}\n", end);
-                }                
+                }
+                if (idx == s.statements.length-1 && st.isBreakStatement) {
+                    foreach (rev; totalRevs) {
+                        buf.put("break;\n");
+                        buf.outdent;
+                        buf.fmt("} catch(Dispatch%d __d){}\n", rev);
+                    }
+                }
                 st.accept(this);
-                if (idx == s.statements.length-1) 
+                if (idx == s.statements.length-1 && !st.isBreakStatement) 
                     foreach (rev; totalRevs) {
                         buf.put("break;\n");
                         buf.outdent;
