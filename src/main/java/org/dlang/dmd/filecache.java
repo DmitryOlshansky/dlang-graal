@@ -56,11 +56,13 @@ public class filecache {
     {
         public StringTable files = new StringTable();
         public  FileAndLines addOrGetFile(ByteSlice file) {
-            StringValue payload = this.files.lookup(file);
-            if (payload != null)
             {
+                StringValue payload = this.files.lookup(file);
                 if (payload != null)
-                    return (FileAndLines)(payload).ptrvalue;
+                {
+                    if (payload != null)
+                        return (FileAndLines)(payload).ptrvalue;
+                }
             }
             FileAndLines lines = new FileAndLines(file);
             this.files.insert(file, lines);

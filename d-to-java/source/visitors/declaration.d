@@ -456,6 +456,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         static struct Range {
             long first = int.max;
             long last = int.min;
+            bool reversed = false;
         }
         auto labels = s.statements ? 
             (*s.statements)[]
@@ -476,19 +477,23 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                             if (range[k].last < target) range[k].last = target;
                         }
                     }
+                    if (range[k].first > range[k].last) range[k].reversed = true;
                 }
         }
         if (s.statements)
             foreach (idx, st; *s.statements) if (st) {
-                auto starts = range.count!(x => x.first == idx);
-                foreach (_ ; 0.. starts) {
+                auto starts = range.filter!(x => x.first == idx && !x.reversed);
+                foreach (start; starts) {
                     buf.put("try {\n");
+                    buf.indent;
+                }
+                auto revEnds = range.filter!(x => x.last == idx && x.reversed);
+                foreach (rev; revEnds) {
+                    buf.put("while(true) try {\n");
                     buf.indent;
                 }
                 // try to find target on this level, if fails we are too deep
                 // some other (upper) check will eventually succeed
-                auto var = hoistVarFromIf(st);
-                if (var) var.accept(this);
                 if (!st.isCompoundStatement() && !st.isScopeStatement()) {
                     auto lambdas = collectLambdas(st);
                     foreach (i, v; lambdas)  {
@@ -500,12 +505,18 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                         }
                     }
                 }
-                auto end = range.countUntil!(x => x.last == idx);
+                auto end = range.countUntil!(x => x.last == idx && !x.reversed);
                 if (end >= 0) {
                     buf.outdent;
                     buf.fmt("}\ncatch(Dispatch%d __d){}\n", end);
-                }
+                }                
                 st.accept(this);
+                auto revStart = range.countUntil!(x => x.first == idx && x.reversed);
+                if (revStart >= 0) {
+                    buf.put("break;\n");
+                    buf.outdent;
+                    buf.fmt("} catch(Dispatch%d __d){}\n", revStart);
+                }
                 //TODO: for?
             }
     }
@@ -590,6 +601,16 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(IfStatement s)
     {
+        auto var = hoistVarFromIf(s);
+        if (var) {
+            buf.put("{\n");
+            buf.indent;
+            var.accept(this);
+        }
+        scope(exit) if (var) {
+            buf.outdent;
+            buf.put("}\n");
+        }
         buf.put("if (");
         buf.put(s.condition.toJavaBool(opts));
         buf.put(")\n");
@@ -616,11 +637,11 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             }
             if (s.elsebody.isScopeStatement() || s.elsebody.isIfStatement())
             {
-                auto var = hoistVarFromIf(s.elsebody);
-                if (var) {
+                auto var2 = hoistVarFromIf(s.elsebody);
+                if (var2) {
                     buf.put("{\n");
                     buf.indent;
-                    var.accept(this);
+                    var2.accept(this);
                     s.elsebody.accept(this);
                     buf.outdent;
                     buf.put("}\n");
@@ -1180,6 +1201,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 auto e = arg.isExpression();
                 if (!t) stderr.writefln("Non-type template arg: %s", arg.toString);
                 if (e && e.type.toJava(opts) == "ByteSlice") temp.fmt("_%s", e.toString[1..$-1]);
+                else if(e && e.type.toJava(opts) == "boolean") temp.fmt("%d", e.toInteger());
                 if (t) temp.put(t.toJava(opts, Boxing.yes));
             }
             return temp.data.dup;

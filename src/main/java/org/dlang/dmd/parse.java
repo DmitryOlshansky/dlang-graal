@@ -649,11 +649,13 @@ public class parse {
                                 case 174:
                                     {
                                         ASTBase.Expression e = null;
-                                        long _stc = this.parseDeprecatedAttribute((pAttrs).depmsg);
-                                        if ((_stc) != 0)
                                         {
-                                            stc = _stc;
-                                            /*goto Lstc*/{ __dispatch1 = -3; continue dispatched_1; }
+                                            long _stc = this.parseDeprecatedAttribute((pAttrs).depmsg);
+                                            if ((_stc) != 0)
+                                            {
+                                                stc = _stc;
+                                                /*goto Lstc*/{ __dispatch1 = -3; continue dispatched_1; }
+                                            }
                                         }
                                         a = this.parseBlock(pLastDecl, pAttrs);
                                         if ((pAttrs).depmsg != null)
@@ -1516,17 +1518,17 @@ public class parse {
                 if ((tok & 0xFF) != 63 && (tok & 0xFF) != 175)
                 {
                     this.error(new BytePtr("multiple ! arguments are not allowed"));
-                }
-                catch(Dispatch0 __d){}
-            /*Lagain:*/
-                this.nextToken();
-                if ((this.token.value & 0xFF) == 1)
-                    this.parseTemplateArgumentList();
-                else
-                    this.parseTemplateSingleArgument();
-                try {
-                    if ((this.token.value & 0xFF) == 91 && ((tok = this.peekNext()) & 0xFF) != 63 && (tok & 0xFF) != 175)
-                        /*goto Lagain*/throw Dispatch0.INSTANCE;
+                    while(true) try {
+                    /*Lagain:*/
+                        this.nextToken();
+                        if ((this.token.value & 0xFF) == 1)
+                            this.parseTemplateArgumentList();
+                        else
+                            this.parseTemplateSingleArgument();
+                        if ((this.token.value & 0xFF) == 91 && ((tok = this.peekNext()) & 0xFF) != 63 && (tok & 0xFF) != 175)
+                            /*goto Lagain*/throw Dispatch0.INSTANCE;
+                        break;
+                    } catch(Dispatch0 __d){}
                 }
             }
             return tiargs;
@@ -1971,12 +1973,15 @@ public class parse {
             }
             else {
                 long ss = stc & 536870913L;
-                if ((ss) != 0)
                 {
-                    if (ss == 1L)
-                        this.error(loc, new BytePtr("use `static this()` to declare a static constructor"));
-                    else if (ss == 536870913L)
-                        this.error(loc, new BytePtr("use `shared static this()` to declare a shared static constructor"));
+                    long ss = stc & 536870913L;
+                    if ((ss) != 0)
+                    {
+                        if (ss == 1L)
+                            this.error(loc, new BytePtr("use `static this()` to declare a static constructor"));
+                        else if (ss == 536870913L)
+                            this.error(loc, new BytePtr("use `shared static this()` to declare a shared static constructor"));
+                    }
                 }
             }
             ASTBase.Expression constraint = tpl != null ? this.parseConstraint() : null;
@@ -2008,13 +2013,15 @@ public class parse {
             this.check(TOK.leftParentheses);
             this.check(TOK.rightParentheses);
             stc = this.parsePostfix(stc, ptr(udas));
-            long ss = stc & 536870913L;
-            if ((ss) != 0)
             {
-                if (ss == 1L)
-                    this.error(loc, new BytePtr("use `static ~this()` to declare a static destructor"));
-                else if (ss == 536870913L)
-                    this.error(loc, new BytePtr("use `shared static ~this()` to declare a shared static destructor"));
+                long ss = stc & 536870913L;
+                if ((ss) != 0)
+                {
+                    if (ss == 1L)
+                        this.error(loc, new BytePtr("use `static ~this()` to declare a static destructor"));
+                    else if (ss == 536870913L)
+                        this.error(loc, new BytePtr("use `shared static ~this()` to declare a shared static destructor"));
+                }
             }
             ASTBase.DtorDeclaration f = new ASTBase.DtorDeclaration(loc, Loc.initial, stc, Id.dtor);
             ASTBase.Dsymbol s = this.parseContracts((ASTBase.FuncDeclaration)f);
@@ -2041,14 +2048,17 @@ public class parse {
                 this.appendStorageClass(stc, 1L);
             else {
                 long modStc = stc & 2685403140L;
-                if ((modStc) != 0)
                 {
-                    OutBuffer buf = new OutBuffer();
-                    try {
-                        ASTBase.stcToBuffer(buf, modStc);
-                        this.error(loc, new BytePtr("static constructor cannot be `%s`"), buf.peekChars());
-                    }
-                    finally {
+                    long modStc = stc & 2685403140L;
+                    if ((modStc) != 0)
+                    {
+                        OutBuffer buf = new OutBuffer();
+                        try {
+                            ASTBase.stcToBuffer(buf, modStc);
+                            this.error(loc, new BytePtr("static constructor cannot be `%s`"), buf.peekChars());
+                        }
+                        finally {
+                        }
                     }
                 }
             }
@@ -2074,14 +2084,17 @@ public class parse {
                 this.appendStorageClass(stc, 1L);
             else {
                 long modStc = stc & 2685403140L;
-                if ((modStc) != 0)
                 {
-                    OutBuffer buf = new OutBuffer();
-                    try {
-                        ASTBase.stcToBuffer(buf, modStc);
-                        this.error(loc, new BytePtr("static destructor cannot be `%s`"), buf.peekChars());
-                    }
-                    finally {
+                    long modStc = stc & 2685403140L;
+                    if ((modStc) != 0)
+                    {
+                        OutBuffer buf = new OutBuffer();
+                        try {
+                            ASTBase.stcToBuffer(buf, modStc);
+                            this.error(loc, new BytePtr("static destructor cannot be `%s`"), buf.peekChars());
+                        }
+                        finally {
+                        }
                     }
                 }
             }
@@ -2106,19 +2119,24 @@ public class parse {
             this.check(TOK.leftParentheses);
             this.check(TOK.rightParentheses);
             stc = this.parsePostfix(stc & -2685403141L, null) | stc;
-            long ss = stc & 536870913L;
-            if ((ss) != 0)
-                this.appendStorageClass(stc, ss);
-            else {
-                long modStc = stc & 2685403140L;
-                if ((modStc) != 0)
-                {
-                    OutBuffer buf = new OutBuffer();
-                    try {
-                        ASTBase.stcToBuffer(buf, modStc);
-                        this.error(loc, new BytePtr("shared static constructor cannot be `%s`"), buf.peekChars());
-                    }
-                    finally {
+            {
+                long ss = stc & 536870913L;
+                if ((ss) != 0)
+                    this.appendStorageClass(stc, ss);
+                else {
+                    long modStc = stc & 2685403140L;
+                    {
+                        long modStc = stc & 2685403140L;
+                        if ((modStc) != 0)
+                        {
+                            OutBuffer buf = new OutBuffer();
+                            try {
+                                ASTBase.stcToBuffer(buf, modStc);
+                                this.error(loc, new BytePtr("shared static constructor cannot be `%s`"), buf.peekChars());
+                            }
+                            finally {
+                            }
+                        }
                     }
                 }
             }
@@ -2139,19 +2157,24 @@ public class parse {
             this.check(TOK.leftParentheses);
             this.check(TOK.rightParentheses);
             stc = this.parsePostfix(stc & -2685403141L, ptr(udas)) | stc;
-            long ss = stc & 536870913L;
-            if ((ss) != 0)
-                this.appendStorageClass(stc, ss);
-            else {
-                long modStc = stc & 2685403140L;
-                if ((modStc) != 0)
-                {
-                    OutBuffer buf = new OutBuffer();
-                    try {
-                        ASTBase.stcToBuffer(buf, modStc);
-                        this.error(loc, new BytePtr("shared static destructor cannot be `%s`"), buf.peekChars());
-                    }
-                    finally {
+            {
+                long ss = stc & 536870913L;
+                if ((ss) != 0)
+                    this.appendStorageClass(stc, ss);
+                else {
+                    long modStc = stc & 2685403140L;
+                    {
+                        long modStc = stc & 2685403140L;
+                        if ((modStc) != 0)
+                        {
+                            OutBuffer buf = new OutBuffer();
+                            try {
+                                ASTBase.stcToBuffer(buf, modStc);
+                                this.error(loc, new BytePtr("shared static destructor cannot be `%s`"), buf.peekChars());
+                            }
+                            finally {
+                            }
+                        }
                     }
                 }
             }
@@ -2499,30 +2522,34 @@ public class parse {
                                 switch (__dispatch10 != 0 ? __dispatch10 : (this.token.value & 0xFF))
                                 {
                                     case 225:
-                                        long _stc = this.parseAttribute(ptr(udas));
-                                        if ((_stc) != 0)
                                         {
-                                            if (_stc == 137438953472L)
-                                                stc |= _stc;
-                                            else
+                                            long _stc = this.parseAttribute(ptr(udas));
+                                            if ((_stc) != 0)
                                             {
-                                                OutBuffer buf = new OutBuffer();
-                                                try {
-                                                    ASTBase.stcToBuffer(buf, _stc);
-                                                    this.error(new BytePtr("`%s` is not a valid attribute for enum members"), buf.peekChars());
+                                                if (_stc == 137438953472L)
+                                                    stc |= _stc;
+                                                else
+                                                {
+                                                    OutBuffer buf = new OutBuffer();
+                                                    try {
+                                                        ASTBase.stcToBuffer(buf, _stc);
+                                                        this.error(new BytePtr("`%s` is not a valid attribute for enum members"), buf.peekChars());
+                                                    }
+                                                    finally {
+                                                    }
                                                 }
-                                                finally {
-                                                }
+                                                this.nextToken();
                                             }
-                                            this.nextToken();
                                         }
                                         break;
                                     case 174:
-                                        long _stc = this.parseDeprecatedAttribute(deprecationMessage);
-                                        if ((_stc) != 0)
                                         {
-                                            stc |= _stc;
-                                            this.nextToken();
+                                            long _stc = this.parseDeprecatedAttribute(deprecationMessage);
+                                            if ((_stc) != 0)
+                                            {
+                                                stc |= _stc;
+                                                this.nextToken();
+                                            }
                                         }
                                         break;
                                     case 120:
@@ -2751,25 +2778,25 @@ public class parse {
         L_outer9:
             do {
                 {
-                }
-                catch(Dispatch0 __d){}
-            /*L1:*/
-                this.nextToken();
-                if ((this.token.value & 0xFF) != 120)
-                {
-                    this.error(new BytePtr("identifier expected following `import`"));
-                    break;
-                }
-                Loc loc = this.token.loc.copy();
-                Identifier id = this.token.ident;
-                DArray<Identifier> a = null;
-                this.nextToken();
-                try {
-                    if (!(aliasid != null) && (this.token.value & 0xFF) == 90)
-                    {
-                        aliasid = id;
-                        /*goto L1*/throw Dispatch0.INSTANCE;
-                    }
+                    while(true) try {
+                    /*L1:*/
+                        this.nextToken();
+                        if ((this.token.value & 0xFF) != 120)
+                        {
+                            this.error(new BytePtr("identifier expected following `import`"));
+                            break;
+                        }
+                        Loc loc = this.token.loc.copy();
+                        Identifier id = this.token.ident;
+                        DArray<Identifier> a = null;
+                        this.nextToken();
+                        if (!(aliasid != null) && (this.token.value & 0xFF) == 90)
+                        {
+                            aliasid = id;
+                            /*goto L1*/throw Dispatch0.INSTANCE;
+                        }
+                        break;
+                    } catch(Dispatch0 __d){}
                     for (; (this.token.value & 0xFF) == 97;){
                         if (a == null)
                             a = new DArray<Identifier>();
@@ -3001,13 +3028,15 @@ public class parse {
                             t = this.parseVector();
                             break;
                         case 213:
-                            ASTBase.TraitsExp te = (ASTBase.TraitsExp)this.parsePrimaryExp();
-                            if (te != null)
-                                if (te.ident != null && te.args != null)
-                                {
-                                    t = new ASTBase.TypeTraits(this.token.loc, te);
-                                    break;
-                                }
+                            {
+                                ASTBase.TraitsExp te = (ASTBase.TraitsExp)this.parsePrimaryExp();
+                                if (te != null)
+                                    if (te.ident != null && te.args != null)
+                                    {
+                                        t = new ASTBase.TypeTraits(this.token.loc, te);
+                                        break;
+                                    }
+                            }
                             t = new ASTBase.TypeError();
                             break;
                         case 171:
@@ -3916,21 +3945,23 @@ public class parse {
                             {
                                 parameters = this.parseParameters(ptr(varargs), ptr(tpl));
                                 stc = this.parsePostfix(stc, null);
-                                long modStc = stc & 2685403140L;
-                                if ((modStc) != 0)
                                 {
-                                    if ((save & 0xFF) == 161)
+                                    long modStc = stc & 2685403140L;
+                                    if ((modStc) != 0)
                                     {
-                                        OutBuffer buf = new OutBuffer();
-                                        try {
-                                            ASTBase.stcToBuffer(buf, modStc);
-                                            this.error(new BytePtr("function literal cannot be `%s`"), buf.peekChars());
+                                        if ((save & 0xFF) == 161)
+                                        {
+                                            OutBuffer buf = new OutBuffer();
+                                            try {
+                                                ASTBase.stcToBuffer(buf, modStc);
+                                                this.error(new BytePtr("function literal cannot be `%s`"), buf.peekChars());
+                                            }
+                                            finally {
+                                            }
                                         }
-                                        finally {
-                                        }
+                                        else
+                                            save = TOK.delegate_;
                                     }
-                                    else
-                                        save = TOK.delegate_;
                                 }
                                 break;
                             }
@@ -4162,7 +4193,7 @@ public class parse {
         // from template ParseForeachRet!(,)
 
         // from template parseForeach!(,)
-        public  ASTBase.StaticForeachDeclaration parseForeach(Loc loc, Ptr<ASTBase.Dsymbol> _param_1) {
+        public  ASTBase.StaticForeachDeclaration parseForeach11(Loc loc, Ptr<ASTBase.Dsymbol> _param_1) {
             this.nextToken();
             Ptr<ASTBase.Dsymbol> pLastDecl = pcopy(_param_1);
             byte op = this.token.value;
@@ -4175,64 +4206,64 @@ public class parse {
                 ASTBase.Type at = null;
                 long storageClass = 0L;
                 long stc = 0L;
-            }
-            catch(Dispatch0 __d){}
-        /*Lagain:*/
-            if ((stc) != 0)
-            {
-                storageClass = this.appendStorageClass(storageClass, stc);
-                this.nextToken();
-            }
-            try {
-                {
-                    int __dispatch24 = 0;
-                    dispatched_24:
-                    do {
-                        switch (__dispatch24 != 0 ? __dispatch24 : (this.token.value & 0xFF))
-                        {
-                            case 210:
-                                stc = 2097152L;
-                                /*goto Lagain*/throw Dispatch0.INSTANCE;
-                            case 156:
-                                stc = 8388608L;
-                                /*goto Lagain*/throw Dispatch0.INSTANCE;
-                            case 158:
-                                storageClass = this.appendStorageClass(storageClass, 268435456L);
-                                this.nextToken();
-                                break;
-                            case 171:
-                                if ((this.peekNext() & 0xFF) != 1)
-                                {
-                                    stc = 4L;
+                while(true) try {
+                /*Lagain:*/
+                    if ((stc) != 0)
+                    {
+                        storageClass = this.appendStorageClass(storageClass, stc);
+                        this.nextToken();
+                    }
+                    {
+                        int __dispatch24 = 0;
+                        dispatched_24:
+                        do {
+                            switch (__dispatch24 != 0 ? __dispatch24 : (this.token.value & 0xFF))
+                            {
+                                case 210:
+                                    stc = 2097152L;
                                     /*goto Lagain*/throw Dispatch0.INSTANCE;
-                                }
-                                break;
-                            case 182:
-                                if ((this.peekNext() & 0xFF) != 1)
-                                {
-                                    stc = 1048576L;
+                                case 156:
+                                    stc = 8388608L;
                                     /*goto Lagain*/throw Dispatch0.INSTANCE;
-                                }
+                                case 158:
+                                    storageClass = this.appendStorageClass(storageClass, 268435456L);
+                                    this.nextToken();
+                                    break;
+                                case 171:
+                                    if ((this.peekNext() & 0xFF) != 1)
+                                    {
+                                        stc = 4L;
+                                        /*goto Lagain*/throw Dispatch0.INSTANCE;
+                                    }
+                                    break;
+                                case 182:
+                                    if ((this.peekNext() & 0xFF) != 1)
+                                    {
+                                        stc = 1048576L;
+                                        /*goto Lagain*/throw Dispatch0.INSTANCE;
+                                    }
+                                    break;
+                                case 224:
+                                    if ((this.peekNext() & 0xFF) != 1)
+                                    {
+                                        stc = 536870912L;
+                                        /*goto Lagain*/throw Dispatch0.INSTANCE;
+                                    }
+                                    break;
+                                case 177:
+                                    if ((this.peekNext() & 0xFF) != 1)
+                                    {
+                                        stc = 2147483648L;
+                                        /*goto Lagain*/throw Dispatch0.INSTANCE;
+                                    }
+                                    break;
+                                default:
                                 break;
-                            case 224:
-                                if ((this.peekNext() & 0xFF) != 1)
-                                {
-                                    stc = 536870912L;
-                                    /*goto Lagain*/throw Dispatch0.INSTANCE;
-                                }
-                                break;
-                            case 177:
-                                if ((this.peekNext() & 0xFF) != 1)
-                                {
-                                    stc = 2147483648L;
-                                    /*goto Lagain*/throw Dispatch0.INSTANCE;
-                                }
-                                break;
-                            default:
-                            break;
-                        }
-                    } while(__dispatch24 != 0);
-                }
+                            }
+                        } while(__dispatch24 != 0);
+                    }
+                    break;
+                } catch(Dispatch0 __d){}
                 try {
                     if ((this.token.value & 0xFF) == 120)
                     {
@@ -4285,7 +4316,7 @@ public class parse {
 
 
         // from template parseForeach!(,)
-        public  ASTBase.Statement parseForeach(Loc loc) {
+        public  ASTBase.Statement parseForeach00(Loc loc) {
             byte op = this.token.value;
             this.nextToken();
             this.check(TOK.leftParentheses);
@@ -4296,64 +4327,64 @@ public class parse {
                 ASTBase.Type at = null;
                 long storageClass = 0L;
                 long stc = 0L;
-            }
-            catch(Dispatch0 __d){}
-        /*Lagain:*/
-            if ((stc) != 0)
-            {
-                storageClass = this.appendStorageClass(storageClass, stc);
-                this.nextToken();
-            }
-            try {
-                {
-                    int __dispatch25 = 0;
-                    dispatched_25:
-                    do {
-                        switch (__dispatch25 != 0 ? __dispatch25 : (this.token.value & 0xFF))
-                        {
-                            case 210:
-                                stc = 2097152L;
-                                /*goto Lagain*/throw Dispatch0.INSTANCE;
-                            case 156:
-                                stc = 8388608L;
-                                /*goto Lagain*/throw Dispatch0.INSTANCE;
-                            case 158:
-                                storageClass = this.appendStorageClass(storageClass, 268435456L);
-                                this.nextToken();
-                                break;
-                            case 171:
-                                if ((this.peekNext() & 0xFF) != 1)
-                                {
-                                    stc = 4L;
+                while(true) try {
+                /*Lagain:*/
+                    if ((stc) != 0)
+                    {
+                        storageClass = this.appendStorageClass(storageClass, stc);
+                        this.nextToken();
+                    }
+                    {
+                        int __dispatch25 = 0;
+                        dispatched_25:
+                        do {
+                            switch (__dispatch25 != 0 ? __dispatch25 : (this.token.value & 0xFF))
+                            {
+                                case 210:
+                                    stc = 2097152L;
                                     /*goto Lagain*/throw Dispatch0.INSTANCE;
-                                }
-                                break;
-                            case 182:
-                                if ((this.peekNext() & 0xFF) != 1)
-                                {
-                                    stc = 1048576L;
+                                case 156:
+                                    stc = 8388608L;
                                     /*goto Lagain*/throw Dispatch0.INSTANCE;
-                                }
+                                case 158:
+                                    storageClass = this.appendStorageClass(storageClass, 268435456L);
+                                    this.nextToken();
+                                    break;
+                                case 171:
+                                    if ((this.peekNext() & 0xFF) != 1)
+                                    {
+                                        stc = 4L;
+                                        /*goto Lagain*/throw Dispatch0.INSTANCE;
+                                    }
+                                    break;
+                                case 182:
+                                    if ((this.peekNext() & 0xFF) != 1)
+                                    {
+                                        stc = 1048576L;
+                                        /*goto Lagain*/throw Dispatch0.INSTANCE;
+                                    }
+                                    break;
+                                case 224:
+                                    if ((this.peekNext() & 0xFF) != 1)
+                                    {
+                                        stc = 536870912L;
+                                        /*goto Lagain*/throw Dispatch0.INSTANCE;
+                                    }
+                                    break;
+                                case 177:
+                                    if ((this.peekNext() & 0xFF) != 1)
+                                    {
+                                        stc = 2147483648L;
+                                        /*goto Lagain*/throw Dispatch0.INSTANCE;
+                                    }
+                                    break;
+                                default:
                                 break;
-                            case 224:
-                                if ((this.peekNext() & 0xFF) != 1)
-                                {
-                                    stc = 536870912L;
-                                    /*goto Lagain*/throw Dispatch0.INSTANCE;
-                                }
-                                break;
-                            case 177:
-                                if ((this.peekNext() & 0xFF) != 1)
-                                {
-                                    stc = 2147483648L;
-                                    /*goto Lagain*/throw Dispatch0.INSTANCE;
-                                }
-                                break;
-                            default:
-                            break;
-                        }
-                    } while(__dispatch25 != 0);
-                }
+                            }
+                        } while(__dispatch25 != 0);
+                    }
+                    break;
+                } catch(Dispatch0 __d){}
                 try {
                     if ((this.token.value & 0xFF) == 120)
                     {
@@ -4406,7 +4437,7 @@ public class parse {
 
 
         // from template parseForeach!(,)
-        public  ASTBase.StaticForeachStatement parseForeach(Loc loc) {
+        public  ASTBase.StaticForeachStatement parseForeach10(Loc loc) {
             this.nextToken();
             byte op = this.token.value;
             this.nextToken();
@@ -4418,64 +4449,64 @@ public class parse {
                 ASTBase.Type at = null;
                 long storageClass = 0L;
                 long stc = 0L;
-            }
-            catch(Dispatch0 __d){}
-        /*Lagain:*/
-            if ((stc) != 0)
-            {
-                storageClass = this.appendStorageClass(storageClass, stc);
-                this.nextToken();
-            }
-            try {
-                {
-                    int __dispatch26 = 0;
-                    dispatched_26:
-                    do {
-                        switch (__dispatch26 != 0 ? __dispatch26 : (this.token.value & 0xFF))
-                        {
-                            case 210:
-                                stc = 2097152L;
-                                /*goto Lagain*/throw Dispatch0.INSTANCE;
-                            case 156:
-                                stc = 8388608L;
-                                /*goto Lagain*/throw Dispatch0.INSTANCE;
-                            case 158:
-                                storageClass = this.appendStorageClass(storageClass, 268435456L);
-                                this.nextToken();
-                                break;
-                            case 171:
-                                if ((this.peekNext() & 0xFF) != 1)
-                                {
-                                    stc = 4L;
+                while(true) try {
+                /*Lagain:*/
+                    if ((stc) != 0)
+                    {
+                        storageClass = this.appendStorageClass(storageClass, stc);
+                        this.nextToken();
+                    }
+                    {
+                        int __dispatch26 = 0;
+                        dispatched_26:
+                        do {
+                            switch (__dispatch26 != 0 ? __dispatch26 : (this.token.value & 0xFF))
+                            {
+                                case 210:
+                                    stc = 2097152L;
                                     /*goto Lagain*/throw Dispatch0.INSTANCE;
-                                }
-                                break;
-                            case 182:
-                                if ((this.peekNext() & 0xFF) != 1)
-                                {
-                                    stc = 1048576L;
+                                case 156:
+                                    stc = 8388608L;
                                     /*goto Lagain*/throw Dispatch0.INSTANCE;
-                                }
+                                case 158:
+                                    storageClass = this.appendStorageClass(storageClass, 268435456L);
+                                    this.nextToken();
+                                    break;
+                                case 171:
+                                    if ((this.peekNext() & 0xFF) != 1)
+                                    {
+                                        stc = 4L;
+                                        /*goto Lagain*/throw Dispatch0.INSTANCE;
+                                    }
+                                    break;
+                                case 182:
+                                    if ((this.peekNext() & 0xFF) != 1)
+                                    {
+                                        stc = 1048576L;
+                                        /*goto Lagain*/throw Dispatch0.INSTANCE;
+                                    }
+                                    break;
+                                case 224:
+                                    if ((this.peekNext() & 0xFF) != 1)
+                                    {
+                                        stc = 536870912L;
+                                        /*goto Lagain*/throw Dispatch0.INSTANCE;
+                                    }
+                                    break;
+                                case 177:
+                                    if ((this.peekNext() & 0xFF) != 1)
+                                    {
+                                        stc = 2147483648L;
+                                        /*goto Lagain*/throw Dispatch0.INSTANCE;
+                                    }
+                                    break;
+                                default:
                                 break;
-                            case 224:
-                                if ((this.peekNext() & 0xFF) != 1)
-                                {
-                                    stc = 536870912L;
-                                    /*goto Lagain*/throw Dispatch0.INSTANCE;
-                                }
-                                break;
-                            case 177:
-                                if ((this.peekNext() & 0xFF) != 1)
-                                {
-                                    stc = 2147483648L;
-                                    /*goto Lagain*/throw Dispatch0.INSTANCE;
-                                }
-                                break;
-                            default:
-                            break;
-                        }
-                    } while(__dispatch26 != 0);
-                }
+                            }
+                        } while(__dispatch26 != 0);
+                    }
+                    break;
+                } catch(Dispatch0 __d){}
                 try {
                     if ((this.token.value & 0xFF) == 120)
                     {
@@ -4646,7 +4677,7 @@ public class parse {
                                 }
                                 if (((t).value & 0xFF) == 201 || ((t).value & 0xFF) == 202)
                                 {
-                                    s = this.parseForeach(loc);
+                                    s = this.parseForeach10(loc);
                                     if ((flags & ParseStatementFlags.scope_) != 0)
                                         s = new ASTBase.ScopeStatement(loc, s, this.token.loc);
                                     break;
@@ -4906,7 +4937,7 @@ public class parse {
                         case 201:
                         case 202:
                             {
-                                s = this.parseForeach(loc);
+                                s = this.parseForeach00(loc);
                                 break;
                             }
                         case 183:
@@ -6142,23 +6173,25 @@ public class parse {
                                 continue L_outer19;
                             case 1:
                                 parens = 0;
-                                Token tk = this.peekPastParen(t.value);
-                                if (tk != null)
                                 {
-                                    if (((tk).value & 0xFF) == 1)
+                                    Token tk = this.peekPastParen(t.value);
+                                    if (tk != null)
                                     {
-                                        if (haveTpl == null)
-                                            return false;
-                                        haveTpl.set(0, 1);
-                                        t.value = tk;
-                                    }
-                                    else if (((tk).value & 0xFF) == 90)
-                                    {
-                                        if (haveTpl == null)
-                                            return false;
-                                        haveTpl.set(0, 1);
-                                        pt.set(0, tk);
-                                        return true;
+                                        if (((tk).value & 0xFF) == 1)
+                                        {
+                                            if (haveTpl == null)
+                                                return false;
+                                            haveTpl.set(0, 1);
+                                            t.value = tk;
+                                        }
+                                        else if (((tk).value & 0xFF) == 90)
+                                        {
+                                            if (haveTpl == null)
+                                                return false;
+                                            haveTpl.set(0, 1);
+                                            pt.set(0, tk);
+                                            return true;
+                                        }
                                     }
                                 }
                                 if (!(this.isParameters(ptr(t))))

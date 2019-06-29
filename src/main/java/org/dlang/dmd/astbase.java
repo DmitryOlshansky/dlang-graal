@@ -1446,12 +1446,16 @@ public class astbase {
             public  RootObject objectSyntaxCopy(RootObject o) {
                 if (!(o != null))
                     return null;
-                Type t = isType(o);
-                if (t != null)
-                    return t.syntaxCopy();
-                Expression e = isExpression(o);
-                if (e != null)
-                    return e.syntaxCopy();
+                {
+                    Type t = isType(o);
+                    if (t != null)
+                        return t.syntaxCopy();
+                }
+                {
+                    Expression e = isExpression(o);
+                    if (e != null)
+                        return e.syntaxCopy();
+                }
                 return o;
             }
 
@@ -5944,27 +5948,29 @@ public class astbase {
                     int i = 0;
                     for (; i < (tup.objects).length;i++){
                         RootObject o = (tup.objects).get(i);
-                        Dsymbol s = this.getDsymbol(o);
-                        if (s != null)
                         {
-                            Expression e = new DsymbolExp(loc, s, true);
-                            (this.exps).push(e);
-                        }
-                        else if (o.dyncast() == DYNCAST.expression)
-                        {
-                            Expression e = ((Expression)o).copy();
-                            e.loc = loc.copy();
-                            (this.exps).push(e);
-                        }
-                        else if (o.dyncast() == DYNCAST.type)
-                        {
-                            Type t = (Type)o;
-                            Expression e = new TypeExp(loc, t);
-                            (this.exps).push(e);
-                        }
-                        else
-                        {
-                            this.error(new BytePtr("%s is not an expression"), o.toChars());
+                            Dsymbol s = this.getDsymbol(o);
+                            if (s != null)
+                            {
+                                Expression e = new DsymbolExp(loc, s, true);
+                                (this.exps).push(e);
+                            }
+                            else if (o.dyncast() == DYNCAST.expression)
+                            {
+                                Expression e = ((Expression)o).copy();
+                                e.loc = loc.copy();
+                                (this.exps).push(e);
+                            }
+                            else if (o.dyncast() == DYNCAST.type)
+                            {
+                                Type t = (Type)o;
+                                Expression e = new TypeExp(loc, t);
+                                (this.exps).push(e);
+                            }
+                            else
+                            {
+                                this.error(new BytePtr("%s is not an expression"), o.toChars());
+                            }
                         }
                     }
                 }
