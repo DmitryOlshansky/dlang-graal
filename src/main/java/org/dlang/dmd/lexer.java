@@ -373,26 +373,17 @@ public class lexer {
                                         if (id.equals(Id.DATE))
                                         {
                                             (t).ustring = pcopy(ptr(lexer.scandate));
-                                            /*goto Lstr*/
-                                            (t).value = TOK.string_;
-                                            (t).postfix = (byte)0;
-                                            (t).len = strlen((t).ustring);
+                                            /*goto Lstr*/throw Dispatch.INSTANCE;
                                         }
                                         else if (id.equals(Id.TIME))
                                         {
                                             (t).ustring = pcopy(ptr(lexer.scantime));
-                                            /*goto Lstr*/
-                                            (t).value = TOK.string_;
-                                            (t).postfix = (byte)0;
-                                            (t).len = strlen((t).ustring);
+                                            /*goto Lstr*/throw Dispatch.INSTANCE;
                                         }
                                         else if (id.equals(Id.VENDOR))
                                         {
                                             (t).ustring = pcopy((toBytePtr(xarraydup(global.vendor))));
-                                            /*goto Lstr*/
-                                            (t).value = TOK.string_;
-                                            (t).postfix = (byte)0;
-                                            (t).len = strlen((t).ustring);
+                                            /*goto Lstr*/throw Dispatch.INSTANCE;
                                         }
                                         else if (id.equals(Id.TIMESTAMP))
                                         {
@@ -969,13 +960,13 @@ public class lexer {
             return escapeSequence(this.token.loc, this.diagnosticReporter, this.p);
         }
 
-        public int escapeSequence(Loc loc, DiagnosticReporter handler, BytePtr sequence) {
+        public static int escapeSequence(Loc loc, DiagnosticReporter handler, Ref<BytePtr> sequence) {
             {
                 {
                     assert(handler != null);
                 }
             }
-            p = pcopy(sequence);
+            BytePtr p = pcopy(sequence.value);
             try {
                 int c = (p.get() & 0xFF);
                 int ndigits = 0;
@@ -1058,7 +1049,7 @@ public class lexer {
                                 }
                                 else
                                 {
-                                    handler.error(loc, new BytePtr("undefined escape hex sequence \\%c%c"), sequence.get(0), c);
+                                    handler.error(loc, new BytePtr("undefined escape hex sequence \\%c%c"), sequence.value.get(0), c);
                                     p.postInc();
                                 }
                                 break;
@@ -1119,6 +1110,7 @@ public class lexer {
                 return c;
             }
             finally {
+                sequence.value = pcopy(p);
             }
         }
 
@@ -1245,6 +1237,7 @@ public class lexer {
                     } while(__dispatch10 != 0);
                 }
             }
+            throw new AssertionError("Unreachable code!");
         }
 
         public  void delimitedStringConstant(Token result) {
@@ -1629,25 +1622,18 @@ public class lexer {
                                         /*goto Ldone*/throw Dispatch0.INSTANCE;
                                     if ((isalpha((this.p.get(1) & 0xFF))) != 0 || (this.p.get(1) & 0xFF) == 95 || ((this.p.get(1) & 0xFF) & 128) != 0)
                                         /*goto Ldone*/throw Dispatch0.INSTANCE;
-                                    /*goto Lreal*/
-                                    this.p = pcopy(start);
-                                    return this.inreal(t);
+                                    /*goto Lreal*/throw Dispatch.INSTANCE;
                                 case 105:
                                 case 102:
                                 case 70:
-                                    /*goto Lreal*/
-                                    this.p = pcopy(start);
-                                    return this.inreal(t);
+                                    /*goto Lreal*/throw Dispatch.INSTANCE;
                                 case 95:
                                     this.p.plusAssign(1);
                                     base = 8;
                                     break;
                                 case 76:
-                                    if ((this.p.get(1) & 0xFF) == 105) {
-                                        /*goto Lreal*/
-                                        this.p = pcopy(start);
-                                        return this.inreal(t);
-                                    }
+                                    if ((this.p.get(1) & 0xFF) == 105)
+                                        /*goto Lreal*/throw Dispatch.INSTANCE;
                                     break;
                                 default:
                                 break;

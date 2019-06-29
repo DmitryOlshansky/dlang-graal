@@ -2353,7 +2353,7 @@ public class parse {
                                     else
                                     {
                                     /*_else:*/
-                                    //case -2:
+                                    case -2:
                                     __dispatch9 = 0;
                                         at = this.parseType(ptr(ai), null);
                                     }
@@ -5290,7 +5290,7 @@ public class parse {
                                 this.error(new BytePtr("`const`/`immutable`/`shared`/`inout` attributes are not allowed on `asm` blocks"));
                             this.check(TOK.leftCurly);
                             Ref<Token> toklist = ref(null);
-                            Token ptoklist = null;
+                            Ptr<Token> ptoklist = pcopy(ptr(toklist));
                             Identifier label = null;
                             DArray<ASTBase.Statement> statements3 = new DArray<ASTBase.Statement>();
                             int nestlevel = 0;
@@ -5338,6 +5338,7 @@ public class parse {
                                                 {
                                                     s = new ASTBase.AsmStatement(this.token.loc, toklist.value);
                                                     toklist.value = null;
+                                                    ptoklist = pcopy(ptr(toklist));
                                                     if (label != null)
                                                     {
                                                         s = new ASTBase.LabelStatement(labelloc, label, s);
@@ -5351,18 +5352,10 @@ public class parse {
                                                 this.error(new BytePtr("matching `}` expected, not end of file"));
                                                 /*goto Lerror*/{ __dispatch27 = -6; continue dispatched_27; }
                                             default:
-                                                if (toklist.value == null) {
-                                                    toklist = ref(this.allocateToken());
-                                                    toklist.value.opAssign(this.token);
-                                                    ptoklist = toklist.value;
-                                                    ptoklist.next = null;
-                                                }
-                                                else {
-                                                    ptoklist.next = this.allocateToken();
-                                                    ptoklist.next.opAssign((this.token));
-                                                    ptoklist = ptoklist.next;
-                                                    ptoklist.next = null;
-                                                }
+                                            ptoklist.set(0, this.allocateToken());
+                                            (ptoklist.get()).opAssign((this.token));
+                                            ptoklist = pcopy((ptr((ptoklist.get()).next)));
+                                            ptoklist.set(0, null);
                                             this.nextToken();
                                             continue L_outer15;
                                         }
@@ -5803,11 +5796,11 @@ public class parse {
                             L_outer18:
                                 for (; (1) != 0;){
                                 /*L2:*/
-                                //case -2:
+                                case -2:
                                 __dispatch36 = 0;
                                     t.value = this.peek(t.value);
                                 /*L3:*/
-                                //case -3:
+                                case -3:
                                 __dispatch36 = 0;
                                     if (((t.value).value & 0xFF) == 97)
                                     {
@@ -6178,7 +6171,7 @@ public class parse {
                                 }
                                 /*goto L1*/throw Dispatch0.INSTANCE;
                             default:
-
+                            {
                                 if (!(this.isBasicType(ptr(t))))
                                     return false;
                             /*L2:*/
@@ -6198,7 +6191,7 @@ public class parse {
                                     t.value = this.peek(t.value);
                                     break;
                                 }
-
+                            }
                             if (((t.value).value & 0xFF) == 99)
                             {
                                 continue L_outer20;

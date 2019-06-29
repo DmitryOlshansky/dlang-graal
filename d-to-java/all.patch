@@ -71,6 +71,34 @@ index 8e6cb70..97f7c0d 100644
          }
  
          public Param(){
+diff --git a/src/main/java/org/dlang/dmd/identifier.java b/src/main/java/org/dlang/dmd/identifier.java
+index b402f81..6a55b5b 100644
+--- a/src/main/java/org/dlang/dmd/identifier.java
++++ b/src/main/java/org/dlang/dmd/identifier.java
+@@ -142,6 +142,11 @@ public class identifier {
+ 
+         public static Identifier generateIdWithLoc(ByteSlice prefix, Loc loc) {
+             OutBuffer idBuf = new OutBuffer();
++            Function0<Integer> __lambda7 = new Function0<Integer>(){
++                public Integer invoke(){
++                    return 1;
++                }
++            };
+             Function1<Integer,Integer> __lambda8 = new Function1<Integer,Integer>(){
+                 public Integer invoke(Integer counter){
+                     idBuf.writestring( new ByteSlice("_"));
+@@ -149,11 +154,6 @@ public class identifier {
+                     return counter + 1;
+                 }
+             };
+-            Function0<Integer> __lambda7 = new Function0<Integer>(){
+-                public Integer invoke(){
+-                    return 1;
+-                }
+-            };
+             try {
+                 idBuf.writestring(prefix);
+                 idBuf.writestring( new ByteSlice("_L"));
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
 index 760fe2e..0c92a84 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java
@@ -177,7 +205,7 @@ index 760fe2e..0c92a84 100644
                                  default:
                                  break;
 diff --git a/src/main/java/org/dlang/dmd/parse.java b/src/main/java/org/dlang/dmd/parse.java
-index 31a1731..e4f1509 100644
+index 54b09c6..e4f1509 100644
 --- a/src/main/java/org/dlang/dmd/parse.java
 +++ b/src/main/java/org/dlang/dmd/parse.java
 @@ -2353,7 +2353,7 @@ public class parse {
@@ -189,7 +217,47 @@ index 31a1731..e4f1509 100644
                                      __dispatch9 = 0;
                                          at = this.parseType(ptr(ai), null);
                                      }
-@@ -5796,11 +5796,11 @@ public class parse {
+@@ -5290,7 +5290,7 @@ public class parse {
+                                 this.error(new BytePtr("`const`/`immutable`/`shared`/`inout` attributes are not allowed on `asm` blocks"));
+                             this.check(TOK.leftCurly);
+                             Ref<Token> toklist = ref(null);
+-                            Token ptoklist = null;
++                            Ptr<Token> ptoklist = pcopy(ptr(toklist));
+                             Identifier label = null;
+                             DArray<ASTBase.Statement> statements3 = new DArray<ASTBase.Statement>();
+                             int nestlevel = 0;
+@@ -5338,6 +5338,7 @@ public class parse {
+                                                 {
+                                                     s = new ASTBase.AsmStatement(this.token.loc, toklist.value);
+                                                     toklist.value = null;
++                                                    ptoklist = pcopy(ptr(toklist));
+                                                     if (label != null)
+                                                     {
+                                                         s = new ASTBase.LabelStatement(labelloc, label, s);
+@@ -5351,18 +5352,10 @@ public class parse {
+                                                 this.error(new BytePtr("matching `}` expected, not end of file"));
+                                                 /*goto Lerror*/{ __dispatch27 = -6; continue dispatched_27; }
+                                             default:
+-                                                if (toklist.value == null) {
+-                                                    toklist = ref(this.allocateToken());
+-                                                    toklist.value.opAssign(this.token);
+-                                                    ptoklist = toklist.value;
+-                                                    ptoklist.next = null;
+-                                                }
+-                                                else {
+-                                                    ptoklist.next = this.allocateToken();
+-                                                    ptoklist.next.opAssign((this.token));
+-                                                    ptoklist = ptoklist.next;
+-                                                    ptoklist.next = null;
+-                                                }
++                                            ptoklist.set(0, this.allocateToken());
++                                            (ptoklist.get()).opAssign((this.token));
++                                            ptoklist = pcopy((ptr((ptoklist.get()).next)));
++                                            ptoklist.set(0, null);
+                                             this.nextToken();
+                                             continue L_outer15;
+                                         }
+@@ -5803,11 +5796,11 @@ public class parse {
                              L_outer18:
                                  for (; (1) != 0;){
                                  /*L2:*/
@@ -203,7 +271,7 @@ index 31a1731..e4f1509 100644
                                  __dispatch36 = 0;
                                      if (((t.value).value & 0xFF) == 97)
                                      {
-@@ -6171,7 +6171,7 @@ public class parse {
+@@ -6178,7 +6171,7 @@ public class parse {
                                  }
                                  /*goto L1*/throw Dispatch0.INSTANCE;
                              default:
@@ -212,7 +280,7 @@ index 31a1731..e4f1509 100644
                                  if (!(this.isBasicType(ptr(t))))
                                      return false;
                              /*L2:*/
-@@ -6191,7 +6191,7 @@ public class parse {
+@@ -6198,7 +6191,7 @@ public class parse {
                                      t.value = this.peek(t.value);
                                      break;
                                  }
