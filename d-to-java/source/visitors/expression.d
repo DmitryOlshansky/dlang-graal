@@ -650,6 +650,15 @@ public:
             }
         }
         else if(e.op == TOK.address) {
+            if (auto var = e.e1.isDotVarExp) {
+                if (var.var.ident.symbol == "next") {
+                    //stderr.writefln("Took address of %s %s", e.e1.toString, var.var);
+                    buf.put("new PtrToNext(");
+                    expToBuffer(var.e1, precedence[e.op], buf, opts);
+                    buf.put(")");
+                    return;
+                }
+            }
             expToBuffer(e.e1, precedence[e.op], buf, opts);
         }
         else if(e.op == TOK.not) {
@@ -667,6 +676,7 @@ public:
     override void visit(BinExp e)
     {
         if (e.e1.type && (e.op == TOK.equal || e.op == TOK.notEqual) && !e.e1.type.isTypeBasic && !e.e1.type.isTypeEnum) {
+            if (e.op == TOK.notEqual) buf.put("!");
             expToBuffer(e.e1, cast(PREC)(precedence[e.op] + 1), buf, opts);
             buf.put(".equals(");
             expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);

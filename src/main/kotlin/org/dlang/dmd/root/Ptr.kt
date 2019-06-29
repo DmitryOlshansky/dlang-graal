@@ -13,6 +13,28 @@ abstract class Ptr<T> : RootObject() {
     abstract fun get(): T?
 }
 
+interface LinkedNode<T> {
+    fun getNext(): T
+    fun setNext(value: T)
+}
+
+// pointer to `next` field of object, used to manipualte linked lists
+class PtrToNext<T : LinkedNode<U>, U>(val node: T) : Ptr<U>() {
+    override fun copy(): Ptr<U> = PtrToNext<T, U>(node)
+
+    override operator fun set(idx: Int, value: U) {
+        require(idx == 0)
+        node.setNext(value)
+    }
+
+    override operator fun get(idx: Int): U? {
+        require(idx == 0)
+        return node.getNext()
+    }
+
+    override fun get(): U? = get(0)
+}
+
 class RawPtr<T>(val data: Array<T?>, var offset: Int) : Ptr<T>() {
 
     constructor(arr: Array<T?>): this(arr, 0)

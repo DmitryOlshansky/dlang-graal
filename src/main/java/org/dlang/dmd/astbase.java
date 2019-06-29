@@ -375,7 +375,7 @@ public class astbase {
                                 FuncDeclaration f2 = (ps.get()).isFuncDeclaration();
                                 if (f1 != null && f2 != null)
                                 {
-                                    for (; f1.equals(f2);f1 = f1.overnext0){
+                                    for (; !f1.equals(f2);f1 = f1.overnext0){
                                         if (f1.overnext0 == null)
                                         {
                                             f1.overnext0 = f2;
@@ -4450,7 +4450,7 @@ public class astbase {
                 return that;
             }
         }
-        public static class TypeReference extends TypeNext
+        public static class TypeReference extends TypeNext implements LinkedNode<Type>
         {
             public  TypeReference(Type t) {
                 super((byte)4, t);
@@ -4480,8 +4480,10 @@ public class astbase {
                 that.next = this.next;
                 return that;
             }
+            public void setNext(Type value) { next = value; }
+            public Type getNext() { return next; }
         }
-        public static abstract class TypeNext extends Type
+        public static abstract class TypeNext extends Type implements LinkedNode<Type>
         {
             public Type next;
             public  TypeNext(byte ty, Type next) {
@@ -4501,8 +4503,10 @@ public class astbase {
             protected TypeNext() {}
 
             public abstract TypeNext copy();
+            public void setNext(Type value) { next = value; }
+            public Type getNext() { return next; }
         }
-        public static class TypeSlice extends TypeNext
+        public static class TypeSlice extends TypeNext implements LinkedNode<Type>
         {
             public Expression lwr;
             public Expression upr;
@@ -4532,8 +4536,10 @@ public class astbase {
                 that.next = this.next;
                 return that;
             }
+            public void setNext(Type value) { next = value; }
+            public Type getNext() { return next; }
         }
-        public static class TypeDelegate extends TypeNext
+        public static class TypeDelegate extends TypeNext implements LinkedNode<Type>
         {
             public  TypeDelegate(Type t) {
                 super((byte)5, t);
@@ -4564,8 +4570,10 @@ public class astbase {
                 that.next = this.next;
                 return that;
             }
+            public void setNext(Type value) { next = value; }
+            public Type getNext() { return next; }
         }
-        public static class TypePointer extends TypeNext
+        public static class TypePointer extends TypeNext implements LinkedNode<Type>
         {
             public  TypePointer(Type t) {
                 super((byte)3, t);
@@ -4595,8 +4603,10 @@ public class astbase {
                 that.next = this.next;
                 return that;
             }
+            public void setNext(Type value) { next = value; }
+            public Type getNext() { return next; }
         }
-        public static class TypeFunction extends TypeNext
+        public static class TypeFunction extends TypeNext implements LinkedNode<Type>
         {
             public ParameterList parameterList = new ParameterList();
             public boolean isnothrow;
@@ -4680,8 +4690,10 @@ public class astbase {
                 that.next = this.next;
                 return that;
             }
+            public void setNext(Type value) { next = value; }
+            public Type getNext() { return next; }
         }
-        public static class TypeArray extends TypeNext
+        public static class TypeArray extends TypeNext implements LinkedNode<Type>
         {
             public  TypeArray(byte ty, Type next) {
                 super(ty, next);
@@ -4699,6 +4711,8 @@ public class astbase {
                 that.next = this.next;
                 return that;
             }
+            public void setNext(Type value) { next = value; }
+            public Type getNext() { return next; }
         }
         public static class TypeDArray extends TypeArray
         {
@@ -5089,7 +5103,7 @@ public class astbase {
             }
 
             public  void error(BytePtr format, Object... ap) {
-                if (this.type.equals(Type.terror))
+                if (!this.type.equals(Type.terror))
                 {
                     verror(this.loc, format, new Slice<>(ap), null, null, new BytePtr("Error: "));
                 }

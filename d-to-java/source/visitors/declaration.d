@@ -206,8 +206,6 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     Stack!TemplateInstance currentInst;
 
-    Stack!bool hasOpAssign;
-
     string nameOf(AggregateDeclaration agg) {
         auto tmpl = agg in opts.templates;
         return format("%s%s", agg.ident.symbol, tmpl ? tmpl.tiArgs : "");
@@ -1031,9 +1029,14 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         auto guard = handleTiAggregate(d);
 
         stderr.writefln("Struct %s", d);
+        auto members = collectMembers(d);
+        auto linkedNode = members.all.countUntil!(var => var.ident.symbol == "next" && (var.type.ty == Tpointer || var.type.ty == Tclass));
         buf.fmt("%s static class ", defAccess);
         if (!d.isAnonymous()) {
             buf.put(nameOf(d));
+        }
+        if (linkedNode >= 0) {
+            buf.fmt(" implements LinkedNode<%s>", nameOf(d));
         }
         if (!d.members)
         {
@@ -1045,10 +1048,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put('{');
         buf.put('\n');
         buf.indent;
-        auto opAssign = pushed(hasOpAssign);
         foreach (s; *d.members)
             s.accept(this);
-        auto members = collectMembers(d);
         // .init ctor
         buf.fmt("public %s(){\n", nameOf(d));
         buf.indent;
@@ -1094,16 +1095,18 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 }
             }
         }
-        if (!hasOpAssign.top) {
-            // generate opAssign
-            buf.fmt("public %s opAssign(%s that) {\n", nameOf(d), nameOf(d));
-            buf.indent;
-            foreach(i,m; members.all){
-                buf.fmt("this.%s = that.%s;\n", m.ident.toString, m.ident.toString);
-            }
-            buf.put("return this;\n");
-            buf.outdent;
-            buf.put("}\n");
+        // generate opAssign
+        buf.fmt("public %s opAssign(%s that) {\n", nameOf(d), nameOf(d));
+        buf.indent;
+        foreach(i,m; members.all){
+            buf.fmt("this.%s = that.%s;\n", m.ident.toString, m.ident.toString);
+        }
+        buf.put("return this;\n");
+        buf.outdent;
+        buf.put("}\n");
+        if (linkedNode >= 0) {
+            buf.fmt("public void setNext(%s value) { next = value; }\n", members.all[linkedNode].type.toJava(opts));
+            buf.fmt("public %s getNext() { return next; }\n", members.all[linkedNode].type.toJava(opts));
         }
         buf.outdent;
         buf.put('}');
@@ -1119,12 +1122,17 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         auto guard = handleTiAggregate(d);
 
         stderr.writefln("Class %s", d);
+        auto members = collectMembers(d, true);
+        auto linkedNode = members.all.countUntil!(var => var.ident.symbol == "next" && (var.type.ty == Tpointer || var.type.ty == Tclass));
         if (!d.isAnonymous())
         {
             auto abs =  d.isAbstract ? "abstract " : "";
             buf.fmt("%s static %sclass %s", defAccess, abs, nameOf(d));
         }
         visitBase(d);
+        if (linkedNode >= 0) {
+            buf.fmt(" implements LinkedNode<%s>", members.all[linkedNode].type.toJava(opts));
+        }
         if (d.members)
         {
             buf.put("\n{\n");
@@ -1138,8 +1146,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 s.accept(this);
             }
             if (!hasEmptyCtor) buf.fmt("\nprotected %s() {}\n", nameOf(d));
+
             // generate copy
-            auto members = collectMembers(d, true);
             buf.fmt("\npublic %s%s copy()", d.isAbstract ? "abstract " : "", nameOf(d));
             if (d.isAbstract) buf.put(";\n");
             else {
@@ -1153,8 +1161,16 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 buf.outdent;
                 buf.fmt("}\n");
             }
+
+            // linked node getters/setters
+            if (linkedNode >= 0) {
+                buf.fmt("public void setNext(%s value) { next = value; }\n", members.all[linkedNode].type.toJava(opts));
+                buf.fmt("public %s getNext() { return next; }\n", members.all[linkedNode].type.toJava(opts));
+            }
+
             buf.outdent;
             buf.put('}');
+            
         }
         else
             buf.put(';');
@@ -1317,10 +1333,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(FuncDeclaration func)  {
         if (func.funcName == "destroy") return;
-        if (func.funcName == "opAssign") {
-            hasOpAssign.top = true;
-            return;
-        }
+        if (func.funcName == "opAssign") return;
         if (func.funcName == "copy" && opts.aggregates.length > 0) return;
         if (func.isCtorDeclaration() && !func.parameters) hasEmptyCtor = true;
         if (opts.funcs.length > 0) opts.localFuncs[func] = true;

@@ -2534,7 +2534,7 @@ public class parse {
                             } while(__dispatch10 != 0);
                         }
                     }
-                    if (type != null && type.equals(ASTBase.Type.terror))
+                    if (type != null && !type.equals(ASTBase.Type.terror))
                     {
                         if (!(ident.value != null))
                             this.error(new BytePtr("no identifier for declarator `%s`"), type.toChars());
@@ -2550,7 +2550,7 @@ public class parse {
                     else
                     {
                         value = null;
-                        if (type != null && type.equals(ASTBase.Type.terror) && isAnonymousEnum)
+                        if (type != null && !type.equals(ASTBase.Type.terror) && isAnonymousEnum)
                             this.error(new BytePtr("if type, there must be an initializer"));
                     }
                     ASTBase.UserAttributeDeclaration uad = null;
@@ -3265,7 +3265,7 @@ public class parse {
                         Ptr<ASTBase.Type> pt = null;
                         {
                             pt = pcopy(ptr(ts));
-                            for (; pt.get().equals(t);pt = pcopy((((ASTBase.TypeNext)pt.get()).next))){
+                            for (; !pt.get().equals(t);pt = pcopy((new PtrToNext((ASTBase.TypeNext)pt.get())))){
                             }
                         }
                         pt.set(0, ta);
@@ -3294,7 +3294,7 @@ public class parse {
                         Ptr<ASTBase.Type> pt_1 = null;
                         {
                             pt_1 = pcopy(ptr(ts));
-                            for (; pt_1.get().equals(t);pt_1 = pcopy((((ASTBase.TypeNext)pt_1.get()).next))){
+                            for (; !pt_1.get().equals(t);pt_1 = pcopy((new PtrToNext((ASTBase.TypeNext)pt_1.get())))){
                             }
                         }
                         pt_1.set(0, tf);
@@ -3677,12 +3677,12 @@ public class parse {
                 assert(t != null);
                 if (!(tfirst != null))
                     tfirst = t;
-                else if (t.equals(tfirst))
+                else if (!t.equals(tfirst))
                     this.error(new BytePtr("multiple declarations must have the same type, not `%s` and `%s`"), tfirst.toChars(), t.toChars());
                 boolean isThis = (t.ty & 0xFF) == ASTBase.ENUMTY.Tident && ((ASTBase.TypeIdentifier)t).ident.equals(Id.This) && (this.token.value & 0xFF) == 90;
                 if (ident.value != null)
                     this.checkCstyleTypeSyntax(loc, t, alt.value, ident.value);
-                else if (!(isThis) && t.equals(ASTBase.Type.terror))
+                else if (!(isThis) && !t.equals(ASTBase.Type.terror))
                     this.error(new BytePtr("no identifier for declarator `%s`"), t.toChars());
                 if ((tok & 0xFF) == 158)
                 {
@@ -5906,7 +5906,7 @@ public class parse {
                                     /*goto Lfalse*/throw Dispatch0.INSTANCE;
                                 Ref<Token> lp = ref(t.value);
                                 t.value = this.peek(t.value);
-                                if (((t.value).value & 0xFF) != 120 || (t.value).ident.equals(Id.getMember))
+                                if (((t.value).value & 0xFF) != 120 || !(t.value).ident.equals(Id.getMember))
                                     /*goto Lfalse*/throw Dispatch0.INSTANCE;
                                 if (!(this.skipParens(lp.value, ptr(lp))))
                                     /*goto Lfalse*/throw Dispatch0.INSTANCE;

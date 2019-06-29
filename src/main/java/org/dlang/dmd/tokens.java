@@ -264,7 +264,7 @@ public class tokens {
     }
 
     static ByteSlice keywords = slice(initializer_0);
-    public static class Token
+    public static class Token implements LinkedNode<Token>
     {
         public Token next;
         public Loc loc = new Loc();
@@ -527,5 +527,7 @@ public class tokens {
             this.ident = that.ident;
             return this;
         }
+        public void setNext(Token value) { next = value; }
+        public Token getNext() { return next; }
     }
 }

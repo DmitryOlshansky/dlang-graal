@@ -102,5 +102,9 @@ public class filecache {
             this.files = files;
         }
 
+        public FileCache opAssign(FileCache that) {
+            this.files = that.files;
+            return this;
+        }
     }
 }
