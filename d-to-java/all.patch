@@ -72,7 +72,7 @@ index 8e6cb70..97f7c0d 100644
  
          public Param(){
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
-index 760fe2e..735ca16 100644
+index 760fe2e..0c92a84 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java
 +++ b/src/main/java/org/dlang/dmd/lexer.java
 @@ -373,26 +373,17 @@ public class lexer {
@@ -110,22 +110,31 @@ index 760fe2e..735ca16 100644
          }
  
 -        public int escapeSequence(Loc loc, DiagnosticReporter handler, BytePtr sequence) {
-+        public static int escapeSequence(Loc loc, DiagnosticReporter handler, BytePtr sequence) {
++        public static int escapeSequence(Loc loc, DiagnosticReporter handler, Ref<BytePtr> sequence) {
              {
                  {
                      assert(handler != null);
                  }
              }
 -            p = pcopy(sequence);
-+            BytePtr p = pcopy(sequence);
++            BytePtr p = pcopy(sequence.value);
              try {
                  int c = (p.get() & 0xFF);
                  int ndigits = 0;
+@@ -1058,7 +1049,7 @@ public class lexer {
+                                 }
+                                 else
+                                 {
+-                                    handler.error(loc, new BytePtr("undefined escape hex sequence \\%c%c"), sequence.get(0), c);
++                                    handler.error(loc, new BytePtr("undefined escape hex sequence \\%c%c"), sequence.value.get(0), c);
+                                     p.postInc();
+                                 }
+                                 break;
 @@ -1119,6 +1110,7 @@ public class lexer {
                  return c;
              }
              finally {
-+                sequence = pcopy(p);
++                sequence.value = pcopy(p);
              }
          }
  
@@ -168,7 +177,7 @@ index 760fe2e..735ca16 100644
                                  default:
                                  break;
 diff --git a/src/main/java/org/dlang/dmd/parse.java b/src/main/java/org/dlang/dmd/parse.java
-index 347407e..8ca1bca 100644
+index 31a1731..e4f1509 100644
 --- a/src/main/java/org/dlang/dmd/parse.java
 +++ b/src/main/java/org/dlang/dmd/parse.java
 @@ -2353,7 +2353,7 @@ public class parse {
@@ -180,7 +189,7 @@ index 347407e..8ca1bca 100644
                                      __dispatch9 = 0;
                                          at = this.parseType(ptr(ai), null);
                                      }
-@@ -5797,11 +5797,11 @@ public class parse {
+@@ -5796,11 +5796,11 @@ public class parse {
                              L_outer18:
                                  for (; (1) != 0;){
                                  /*L2:*/
@@ -194,7 +203,7 @@ index 347407e..8ca1bca 100644
                                  __dispatch36 = 0;
                                      if (((t.value).value & 0xFF) == 97)
                                      {
-@@ -6172,7 +6172,7 @@ public class parse {
+@@ -6171,7 +6171,7 @@ public class parse {
                                  }
                                  /*goto L1*/throw Dispatch0.INSTANCE;
                              default:
@@ -203,7 +212,7 @@ index 347407e..8ca1bca 100644
                                  if (!(this.isBasicType(ptr(t))))
                                      return false;
                              /*L2:*/
-@@ -6192,7 +6192,7 @@ public class parse {
+@@ -6191,7 +6191,7 @@ public class parse {
                                      t.value = this.peek(t.value);
                                      break;
                                  }
