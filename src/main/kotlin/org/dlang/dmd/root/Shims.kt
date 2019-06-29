@@ -250,9 +250,7 @@ fun toIntPtr(any: Any): IntPtr =
 
 fun ref(v: Int) = IntRef(v)
 
-fun<T> ref(v: T) = Ref(v)
-
-fun<T> ref(v: Ref<T>) = v
+fun<T> ref(v: T?) = Ref(v)
 
 fun<T> ptr(v: Ref<T>) = RefPtr(v)
 
@@ -275,8 +273,12 @@ typealias StdIo = _IO_FILE
 
 class _IO_FILE(val handle: PrintStream)
 
-fun getenv(s: ByteSlice): BytePtr = BytePtr(System.getenv(s.toString()))
-fun getenv(s: BytePtr): BytePtr = BytePtr(System.getenv(s.toString()))
+fun getenv(s: ByteSlice): BytePtr? = getenv(s.ptr())
+
+fun getenv(s: BytePtr): BytePtr? {
+    val r = System.getenv(s.toString())
+    return if (r != null) BytePtr(r) else null
+}
 
 fun isatty(n: Int):Int = if(System.console() != null) 1 else 0
 
