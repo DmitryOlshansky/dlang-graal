@@ -637,17 +637,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             }
             if (s.elsebody.isScopeStatement() || s.elsebody.isIfStatement())
             {
-                auto var2 = hoistVarFromIf(s.elsebody);
-                if (var2) {
-                    buf.put("{\n");
-                    buf.indent;
-                    var2.accept(this);
-                    s.elsebody.accept(this);
-                    buf.outdent;
-                    buf.put("}\n");
-                }
-                else
-                    s.elsebody.accept(this);
+                s.elsebody.accept(this);
             }
             else
             {
@@ -847,11 +837,12 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put(':');
         buf.put('\n');
         buf.indent;
-        if (auto ss = s.statement.isScopeStatement()){
-            if (ss.statement) ss.statement.accept(this);
+        Statement st = s.statement;
+        ScopeStatement ss;
+        while (st && ((ss = st.isScopeStatement()) !is null)) {
+            st = ss.statement;
         }
-        else
-            if (s.statement) s.statement.accept(this);
+        if (st) st.accept(this);
         buf.outdent;
     }
 

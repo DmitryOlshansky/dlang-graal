@@ -537,73 +537,71 @@ public class lexer {
                                         this.endOfLine();
                                         continue L_outer1;
                                     case 43:
-                                        {
-                                            int nest = 0;
-                                            startLoc = this.loc().copy();
-                                            this.p.postInc();
-                                            nest = 1;
-                                            for (; (1) != 0;){
-                                                byte c = this.p.get();
-                                                switch ((c & 0xFF))
-                                                {
-                                                    case 47:
-                                                        this.p.postInc();
-                                                        if ((this.p.get() & 0xFF) == 43)
-                                                        {
-                                                            this.p.postInc();
-                                                            nest++;
-                                                        }
-                                                        continue;
-                                                    case 43:
-                                                        this.p.postInc();
-                                                        if ((this.p.get() & 0xFF) == 47)
-                                                        {
-                                                            this.p.postInc();
-                                                            if ((nest -= 1) == 0)
-                                                                break;
-                                                        }
-                                                        continue;
-                                                    case 13:
-                                                        this.p.postInc();
-                                                        if ((this.p.get() & 0xFF) != 10)
-                                                            this.endOfLine();
-                                                        continue;
-                                                    case 10:
-                                                        this.endOfLine();
-                                                        this.p.postInc();
-                                                        continue;
-                                                    case 0:
-                                                    case 26:
-                                                        this.error(new BytePtr("unterminated /+ +/ comment"));
-                                                        this.p = pcopy(this.end);
-                                                        (t).loc = this.loc().copy();
-                                                        (t).value = TOK.endOfFile;
-                                                        return ;
-                                                    default:
-                                                    if (((c & 0xFF) & 128) != 0)
+                                        int nest = 0;
+                                        startLoc = this.loc().copy();
+                                        this.p.postInc();
+                                        nest = 1;
+                                        for (; (1) != 0;){
+                                            byte c = this.p.get();
+                                            switch ((c & 0xFF))
+                                            {
+                                                case 47:
+                                                    this.p.postInc();
+                                                    if ((this.p.get() & 0xFF) == 43)
                                                     {
-                                                        int u = this.decodeUTF();
-                                                        if (u == 8233 || u == 8232)
-                                                            this.endOfLine();
+                                                        this.p.postInc();
+                                                        nest++;
                                                     }
+                                                    continue;
+                                                case 43:
+                                                    this.p.postInc();
+                                                    if ((this.p.get() & 0xFF) == 47)
+                                                    {
+                                                        this.p.postInc();
+                                                        if ((nest -= 1) == 0)
+                                                            break;
+                                                    }
+                                                    continue;
+                                                case 13:
+                                                    this.p.postInc();
+                                                    if ((this.p.get() & 0xFF) != 10)
+                                                        this.endOfLine();
+                                                    continue;
+                                                case 10:
+                                                    this.endOfLine();
                                                     this.p.postInc();
                                                     continue;
+                                                case 0:
+                                                case 26:
+                                                    this.error(new BytePtr("unterminated /+ +/ comment"));
+                                                    this.p = pcopy(this.end);
+                                                    (t).loc = this.loc().copy();
+                                                    (t).value = TOK.endOfFile;
+                                                    return ;
+                                                default:
+                                                if (((c & 0xFF) & 128) != 0)
+                                                {
+                                                    int u = this.decodeUTF();
+                                                    if (u == 8233 || u == 8232)
+                                                        this.endOfLine();
                                                 }
-                                                break;
+                                                this.p.postInc();
+                                                continue;
                                             }
-                                            if (this.commentToken)
-                                            {
-                                                (t).loc = startLoc.copy();
-                                                (t).value = TOK.comment;
-                                                return ;
-                                            }
-                                            if (this.doDocComment && ((t).ptr.get(2) & 0xFF) == 43 && this.p.minus(4) != (t).ptr)
-                                            {
-                                                this.getDocComment(t, ((lastLine == startLoc.linnum) ? 1 : 0), startLoc.linnum - this.lastDocLine > 1);
-                                                this.lastDocLine = this.scanloc.linnum;
-                                            }
-                                            continue L_outer1;
+                                            break;
                                         }
+                                        if (this.commentToken)
+                                        {
+                                            (t).loc = startLoc.copy();
+                                            (t).value = TOK.comment;
+                                            return ;
+                                        }
+                                        if (this.doDocComment && ((t).ptr.get(2) & 0xFF) == 43 && this.p.minus(4) != (t).ptr)
+                                        {
+                                            this.getDocComment(t, ((lastLine == startLoc.linnum) ? 1 : 0), startLoc.linnum - this.lastDocLine > 1);
+                                            this.lastDocLine = this.scanloc.linnum;
+                                        }
+                                        continue L_outer1;
                                     default:
                                     break;
                                 }
@@ -870,30 +868,28 @@ public class lexer {
                                     (t).value = TOK.mod;
                                 return ;
                             case 35:
+                                this.p.postInc();
+                                Token n = new Token().copy();
+                                this.scan(n);
+                                if ((n.value & 0xFF) == 120)
                                 {
-                                    this.p.postInc();
-                                    Token n = new Token().copy();
-                                    this.scan(n);
-                                    if ((n.value & 0xFF) == 120)
+                                    if (n.ident.equals(Id.line))
                                     {
-                                        if (n.ident.equals(Id.line))
-                                        {
-                                            this.poundLine();
-                                            continue L_outer1;
-                                        }
-                                        else
-                                        {
-                                            Loc locx = this.loc().copy();
-                                            this.warning(locx, new BytePtr("C preprocessor directive `#%s` is not supported"), n.ident.toChars());
-                                        }
+                                        this.poundLine();
+                                        continue L_outer1;
                                     }
-                                    else if ((n.value & 0xFF) == 183)
+                                    else
                                     {
-                                        this.error(new BytePtr("C preprocessor directive `#if` is not supported, use `version` or `static if`"));
+                                        Loc locx = this.loc().copy();
+                                        this.warning(locx, new BytePtr("C preprocessor directive `#%s` is not supported"), n.ident.toChars());
                                     }
-                                    (t).value = TOK.pound;
-                                    return ;
                                 }
+                                else if ((n.value & 0xFF) == 183)
+                                {
+                                    this.error(new BytePtr("C preprocessor directive `#if` is not supported, use `version` or `static if`"));
+                                }
+                                (t).value = TOK.pound;
+                                return ;
                             default:
                             {
                                 int c = (this.p.get() & 0xFF);

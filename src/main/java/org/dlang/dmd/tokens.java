@@ -421,30 +421,28 @@ public class tokens {
                             }
                             break;
                         case 122:
-                            {
-                                OutBuffer buf = new OutBuffer();
-                                try {
-                                    buf.writeByte(120);
-                                    buf.writeByte(34);
-                                    {
-                                        int __key50 = 0;
-                                        int __limit51 = this.len;
-                                        for (; __key50 < __limit51;__key50 += 1) {
-                                            int i = __key50;
-                                            if ((i) != 0)
-                                                buf.writeByte(32);
-                                            buf.printf( new ByteSlice("%02x"), (this.ustring.get(i) & 0xFF));
-                                        }
+                            OutBuffer buf = new OutBuffer();
+                            try {
+                                buf.writeByte(120);
+                                buf.writeByte(34);
+                                {
+                                    int __key50 = 0;
+                                    int __limit51 = this.len;
+                                    for (; __key50 < __limit51;__key50 += 1) {
+                                        int i = __key50;
+                                        if ((i) != 0)
+                                            buf.writeByte(32);
+                                        buf.printf( new ByteSlice("%02x"), (this.ustring.get(i) & 0xFF));
                                     }
-                                    buf.writeByte(34);
-                                    if ((this.postfix) != 0)
-                                        buf.writeByte((this.postfix & 0xFF));
-                                    buf.writeByte(0);
-                                    p = pcopy(buf.extractData());
-                                    break;
                                 }
-                                finally {
-                                }
+                                buf.writeByte(34);
+                                if ((this.postfix) != 0)
+                                    buf.writeByte((this.postfix & 0xFF));
+                                buf.writeByte(0);
+                                p = pcopy(buf.extractData());
+                                break;
+                            }
+                            finally {
                             }
                         case 120:
                         case 156:
