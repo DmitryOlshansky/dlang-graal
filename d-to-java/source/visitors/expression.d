@@ -701,6 +701,27 @@ public:
                 }
             }
         }
+        else if(auto ptr = e.e1.isPtrExp) {
+            switch(e.op) {
+                case TOK.orAssign:
+                    expToBuffer(ptr.e1, precedence[e.e1.op], buf, opts);
+                    buf.put(".set(0, ");
+                    expToBuffer(e.e1, precedence[e.e1.op], buf, opts);
+                    buf.put(" | ");
+                    expToBuffer(e.e2, precedence[e.e2.op], buf, opts);
+                    buf.put(")");
+                    return;
+                case TOK.andAssign:
+                    expToBuffer(ptr.e1, precedence[e.e1.op], buf, opts);
+                    buf.put(".set(0, ");
+                    expToBuffer(e.e1, precedence[e.e1.op], buf, opts);
+                    buf.put(" & ");
+                    expToBuffer(e.e2, precedence[e.e2.op], buf, opts);
+                    buf.put(")");
+                    return;
+                default:
+            }
+        }
         else if(e.e1.type.ty == Tpointer && (e.e2.type.isTypeBasic() || e.e2.type.ty == Tpointer)) {
             string opName = "";
             switch(e.op) {
@@ -1168,6 +1189,13 @@ public:
             buf.put(')');
         }
         else if(auto pt = e.e1.isPtrExp()) {
+            if (pt.e1.type.nextOf.ty == Tstruct) {
+                expToBuffer(pt.e1, PREC.primary, buf, opts);
+                buf.put(".opAssign(");
+                expToBuffer(e.e2, PREC.primary, buf, opts);
+                buf.put(')');
+                return;
+            }
             expToBuffer(pt.e1, PREC.primary, buf, opts);
             buf.put(".set(0, ");
             expToBuffer(e.e2, PREC.primary, buf, opts);

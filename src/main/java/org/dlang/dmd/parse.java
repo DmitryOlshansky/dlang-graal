@@ -3217,7 +3217,7 @@ public class parse {
                 case 1:
                     if ((this.peekNext() & 0xFF) == 78 || (this.peekNext() & 0xFF) == 1)
                     {
-                        palt.get() |= 1;
+                        palt.set(0, palt.get() | 1);
                         this.nextToken();
                         ts.value = this.parseDeclarator(t, palt, pident, null, 0L, null, null);
                         this.check(TOK.rightParentheses);
@@ -3246,21 +3246,21 @@ public class parse {
                         {
                             ta = new ASTBase.TypeDArray(t);
                             this.nextToken();
-                            palt.get() |= 2;
+                            palt.set(0, palt.get() | 2);
                         }
                         else if (this.isDeclaration(this.token, NeedDeclaratorId.no, TOK.rightBracket, null))
                         {
                             ASTBase.Type index = this.parseType(null, null);
                             this.check(TOK.rightBracket);
                             ta = new ASTBase.TypeAArray(t, index);
-                            palt.get() |= 2;
+                            palt.set(0, palt.get() | 2);
                         }
                         else
                         {
                             ASTBase.Expression e = this.parseAssignExp();
                             ta = new ASTBase.TypeSArray(t, e);
                             this.check(TOK.rightBracket);
-                            palt.get() |= 2;
+                            palt.set(0, palt.get() | 2);
                         }
                         Ptr<ASTBase.Type> pt = null;
                         {
@@ -4755,7 +4755,7 @@ public class parse {
                             this.endloc = this.token.loc.copy();
                             if (pEndloc != null)
                             {
-                                pEndloc.set(0, this.token.loc);
+                                pEndloc.opAssign(this.token.loc);
                                 pEndloc = null;
                             }
                             s = new ASTBase.CompoundStatement(loc, statements);
@@ -5403,7 +5403,7 @@ public class parse {
                 } while(__dispatch27 != 0);
             }
             if (pEndloc != null)
-                pEndloc.set(0, this.prevloc);
+                pEndloc.opAssign(this.prevloc);
             return s;
         }
 
