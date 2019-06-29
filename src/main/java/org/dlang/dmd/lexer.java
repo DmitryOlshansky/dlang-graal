@@ -187,15 +187,6 @@ public class lexer {
                     int __dispatch1 = 0;
                     dispatched_1:
                     do {
-                        BytePtr start;
-                        BytePtr s;
-                        int nest;
-                        OutBuffer hexString;
-                        BytePtr p;
-                        Token n;
-                        Identifier id;
-                        IntRef ct;
-                        Loc locx;
                         switch (__dispatch1 != 0 ? __dispatch1 : (this.p.get() & 0xFF))
                         {
                             case 0:
@@ -269,8 +260,8 @@ public class lexer {
                                 if ((this.p.get(1) & 0xFF) != 34)
                                     /*goto case_ident*/{ __dispatch1 = -2; continue dispatched_1; }
                                 this.p.postInc();
-                                start = pcopy(this.p);
-                                hexString = new OutBuffer(null, 0, 0, 0, false, false);
+                                BytePtr start = pcopy(this.p);
+                                OutBuffer hexString = new OutBuffer(null, 0, 0, 0, false, false);
                                 (t).value = this.hexStringConstant(t);
                                 (hexString).write(start, ((this.p.minus(start))));
                                 this.error(new BytePtr("Built-in hex string literals are obsolete, use `std.conv.hexString!%s` instead."), (hexString).extractChars());
@@ -353,7 +344,7 @@ public class lexer {
                                             continue;
                                         else if (((c & 0xFF) & 128) != 0)
                                         {
-                                            s = pcopy(this.p);
+                                            BytePtr s = pcopy(this.p);
                                             int u = this.decodeUTF();
                                             if (isUniAlpha(u))
                                                 continue;
@@ -362,7 +353,7 @@ public class lexer {
                                         }
                                         break;
                                     }
-                                    id = Identifier.idPool((t).ptr, ((this.p.minus((t).ptr))));
+                                    Identifier id = Identifier.idPool((t).ptr, ((this.p.minus((t).ptr))));
                                     (t).ident = id;
                                     (t).value = (byte)id.getValue();
                                     this.anyToken = true;
@@ -371,9 +362,9 @@ public class lexer {
                                         if (!(lexer.scaninitdone))
                                         {
                                             lexer.scaninitdone = true;
-                                            ct = ref(0);
+                                            IntRef ct = ref(0);
                                             time(ptr(ct));
-                                            p = pcopy(ctime(ptr(ct)));
+                                            BytePtr p = pcopy(ctime(ptr(ct)));
                                             assert(p != null);
                                             sprintf(ptr(lexer.scandate),  new ByteSlice("%.6s %.4s"), p.plus(4), p.plus(20));
                                             sprintf(ptr(lexer.scantime),  new ByteSlice("%.8s"), p.plus(11));
@@ -439,9 +430,8 @@ public class lexer {
                                         startLoc = this.loc().copy();
                                         for (; (1) != 0;){
                                             for (; (1) != 0;){
-                                                byte c = this.p.get();
-                                                int u;
-                                                switch ((c & 0xFF))
+                                                byte c1 = this.p.get();
+                                                switch ((c1 & 0xFF))
                                                 {
                                                     case 47:
                                                         break;
@@ -462,10 +452,10 @@ public class lexer {
                                                         (t).value = TOK.endOfFile;
                                                         return ;
                                                     default:
-                                                    if (((c & 0xFF) & 128) != 0)
+                                                    if (((c1 & 0xFF) & 128) != 0)
                                                     {
-                                                        u = this.decodeUTF();
-                                                        if (u == 8233 || u == 8232)
+                                                        int u1 = this.decodeUTF();
+                                                        if (u1 == 8233 || u1 == 8232)
                                                             this.endOfLine();
                                                     }
                                                     this.p.postInc();
@@ -492,9 +482,8 @@ public class lexer {
                                     case 47:
                                         startLoc = this.loc().copy();
                                         for (; (1) != 0;){
-                                            byte c = (this.p.plusAssign(1)).get();
-                                            int u;
-                                            switch ((c & 0xFF))
+                                            byte c2 = (this.p.plusAssign(1)).get();
+                                            switch ((c2 & 0xFF))
                                             {
                                                 case 10:
                                                     break;
@@ -521,10 +510,10 @@ public class lexer {
                                                     (t).value = TOK.endOfFile;
                                                     return ;
                                                 default:
-                                                if (((c & 0xFF) & 128) != 0)
+                                                if (((c2 & 0xFF) & 128) != 0)
                                                 {
-                                                    u = this.decodeUTF();
-                                                    if (u == 8233 || u == 8232)
+                                                    int u2 = this.decodeUTF();
+                                                    if (u2 == 8233 || u2 == 8232)
                                                         break;
                                                 }
                                                 continue;
@@ -548,14 +537,13 @@ public class lexer {
                                         this.endOfLine();
                                         continue L_outer1;
                                     case 43:
-                                        nest = 0;
+                                        int nest = 0;
                                         startLoc = this.loc().copy();
                                         this.p.postInc();
                                         nest = 1;
                                         for (; (1) != 0;){
-                                            byte c = this.p.get();
-                                            int u;
-                                            switch ((c & 0xFF))
+                                            byte c4 = this.p.get();
+                                            switch ((c4 & 0xFF))
                                             {
                                                 case 47:
                                                     this.p.postInc();
@@ -591,10 +579,10 @@ public class lexer {
                                                     (t).value = TOK.endOfFile;
                                                     return ;
                                                 default:
-                                                if (((c & 0xFF) & 128) != 0)
+                                                if (((c4 & 0xFF) & 128) != 0)
                                                 {
-                                                    u = this.decodeUTF();
-                                                    if (u == 8233 || u == 8232)
+                                                    int u3 = this.decodeUTF();
+                                                    if (u3 == 8233 || u3 == 8232)
                                                         this.endOfLine();
                                                 }
                                                 this.p.postInc();
@@ -881,7 +869,7 @@ public class lexer {
                                 return ;
                             case 35:
                                 this.p.postInc();
-                                n = new Token().copy();
+                                Token n = new Token().copy();
                                 this.scan(n);
                                 if ((n.value & 0xFF) == 120)
                                 {
@@ -892,7 +880,7 @@ public class lexer {
                                     }
                                     else
                                     {
-                                        locx = this.loc().copy();
+                                        Loc locx = this.loc().copy();
                                         this.warning(locx, new BytePtr("C preprocessor directive `#%s` is not supported"), n.ident.toChars());
                                     }
                                 }
@@ -903,23 +891,23 @@ public class lexer {
                                 (t).value = TOK.pound;
                                 return ;
                             default:
-                            int c = (this.p.get() & 0xFF);
-                            if ((c & 128) != 0)
+                            int c3 = (this.p.get() & 0xFF);
+                            if ((c3 & 128) != 0)
                             {
-                                c = this.decodeUTF();
-                                if (isUniAlpha(c))
+                                c3 = this.decodeUTF();
+                                if (isUniAlpha(c3))
                                     /*goto case_ident*/{ __dispatch1 = -2; continue dispatched_1; }
-                                if (c == 8233 || c == 8232)
+                                if (c3 == 8233 || c3 == 8232)
                                 {
                                     this.endOfLine();
                                     this.p.postInc();
                                     continue L_outer1;
                                 }
                             }
-                            if (c < 128 && (isprint(c)) != 0)
-                                this.error(new BytePtr("character '%c' is not a valid token"), c);
+                            if (c3 < 128 && (isprint(c3)) != 0)
+                                this.error(new BytePtr("character '%c' is not a valid token"), c3);
                             else
-                                this.error(new BytePtr("character 0x%02x is not a valid token"), c);
+                                this.error(new BytePtr("character 0x%02x is not a valid token"), c3);
                             this.p.postInc();
                             continue L_outer1;
                         }
@@ -995,9 +983,6 @@ public class lexer {
                     int __dispatch7 = 0;
                     dispatched_7:
                     do {
-                        BytePtr idstart;
-                        int v;
-                        int n;
                         switch (__dispatch7 != 0 ? __dispatch7 : c)
                         {
                             case 39:
@@ -1045,8 +1030,8 @@ public class lexer {
                                 c = (p.get() & 0xFF);
                                 if (ishex((byte)c))
                                 {
-                                    v = 0;
-                                    n = 0;
+                                    int v = 0;
+                                    int n = 0;
                                     for (; (1) != 0;){
                                         if ((isdigit(((byte)c & 0xFF))) != 0)
                                             c -= 48;
@@ -1079,7 +1064,7 @@ public class lexer {
                                 break;
                             case 38:
                                 {
-                                    idstart = pcopy(p.plusAssign(1));
+                                    BytePtr idstart = pcopy(p.plusAssign(1));
                                     for (; (1) != 0;p.postInc()){
                                         switch ((p.get() & 0xFF))
                                         {
@@ -1110,15 +1095,15 @@ public class lexer {
                             default:
                             if (isoctal((byte)c))
                             {
-                                v = 0;
-                                n = 0;
+                                int v1 = 0;
+                                int n1 = 0;
                                 do {
                                     {
-                                        v = v * 8 + (c - 48);
+                                        v1 = v1 * 8 + (c - 48);
                                         c = ((p.plusAssign(1)).get() & 0xFF);
                                     }
-                                } while ((n += 1) < 3 && isoctal((byte)c));
-                                c = v;
+                                } while ((n1 += 1) < 3 && isoctal((byte)c));
+                                c = v1;
                                 if (c > 255)
                                     handler.error(loc, new BytePtr("escape octal sequence \\%03o is larger than \\377"), c);
                             }
@@ -1146,7 +1131,6 @@ public class lexer {
             for (; (1) != 0;){
                 int c = (this.p.get(0) & 0xFF);
                 this.p.postInc();
-                int u;
                 switch (c)
                 {
                     case 10:
@@ -1174,7 +1158,7 @@ public class lexer {
                     else if ((c & 128) != 0)
                     {
                         this.p.postDec();
-                        u = this.decodeUTF();
+                        int u = this.decodeUTF();
                         this.p.postInc();
                         if (u == 8233 || u == 8232)
                             this.endOfLine();
@@ -1200,7 +1184,6 @@ public class lexer {
                     int __dispatch10 = 0;
                     dispatched_10:
                     do {
-                        int u;
                         switch (__dispatch10 != 0 ? __dispatch10 : c)
                         {
                             case 32:
@@ -1240,7 +1223,7 @@ public class lexer {
                             else if ((c & 128) != 0)
                             {
                                 this.p.postDec();
-                                u = this.decodeUTF();
+                                int u = this.decodeUTF();
                                 this.p.postInc();
                                 if (u == 8233 || u == 8232)
                                     this.endOfLine();
@@ -2083,8 +2066,6 @@ public class lexer {
                         int __dispatch24 = 0;
                         dispatched_24:
                         do {
-                            int c;
-                            int u;
                             switch (__dispatch24 != 0 ? __dispatch24 : (this.p.get() & 0xFF))
                             {
                                 case 0:
@@ -2129,7 +2110,7 @@ public class lexer {
                                     this.p.postInc();
                                 L_outer7:
                                     for (; (1) != 0;){
-                                        c = 0;
+                                        int c = 0;
                                         c = (this.p.get() & 0xFF);
                                         {
                                             int __dispatch25 = 0;
@@ -2150,7 +2131,7 @@ public class lexer {
                                                     default:
                                                     if ((c & 128) != 0)
                                                     {
-                                                        u = this.decodeUTF();
+                                                        int u = this.decodeUTF();
                                                         if (u == 8233 || u == 8232)
                                                             /*goto Lerr*/throw Dispatch0.INSTANCE;
                                                     }
@@ -2166,8 +2147,8 @@ public class lexer {
                                 default:
                                 if (((this.p.get() & 0xFF) & 128) != 0)
                                 {
-                                    u = this.decodeUTF();
-                                    if (u == 8233 || u == 8232)
+                                    int u1 = this.decodeUTF();
+                                    if (u1 == 8233 || u1 == 8232)
                                         /*goto Lnewline*/{ __dispatch24 = -1; continue dispatched_24; }
                                 }
                                 /*goto Lerr*/throw Dispatch0.INSTANCE;

@@ -48,7 +48,7 @@ struct ExprOpts {
     Expression dollarValue = null; // expression that is referenced by dollar
     VarDeclaration vararg = null; // var decl of vararg parameter
     IdentityMap!bool refParams; //out and ref params, they must be boxed
-    IdentityMap!string globals; // basic type static vars pushed to global scope
+    IdentityMap!string renamed; // renamed or static vars pushed to global scope
     IdentityMap!bool localFuncs; // functions that are local to current scope
     IdentityMap!Template templates; // tiArg strings of template vars and funcs
 }
@@ -477,7 +477,7 @@ public:
         else if(e.var.type.ty == Tstruct)
             buf.fmt("%s", e.var.ident.symbol);
         else {
-            if (auto name = e.var in opts.globals)
+            if (auto name = e.var in opts.renamed)
                 buf.fmt("ptr(%s)", *name);
             else
                 buf.fmt("ptr(%s)", e.var.ident.symbol);
@@ -500,7 +500,7 @@ public:
         }
         else {
             buf.put(printParent(e.var));
-            if (auto name = e.var in opts.globals)
+            if (auto name = e.var in opts.renamed)
                 buf.put(*name);
             else
                 buf.put(e.var.ident.symbol);
@@ -1376,7 +1376,8 @@ private void argsToBuffer(Expressions* expressions, TextBuffer buf, ExprOpts opt
                 tmp.put(var.var.ident.symbol);
             }
             else if (var && var.var in opts.refParams && refParam) {
-                tmp.put(var.var.ident.toString);
+                string* renamed = var.var in opts.renamed;
+                tmp.put(renamed ? *renamed : var.var.ident.symbol);
             }
             else if(n && n.type.ty == Tarray) {
                 tmp.put("new ");

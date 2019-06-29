@@ -17,7 +17,7 @@ import dmd.init;
 import dmd.identifier;
 import dmd.staticassert;
 
-import std.algorithm, std.range;
+import std.algorithm, std.range, std.conv;
 
 struct Members {
     bool hasUnion;
@@ -60,6 +60,7 @@ Members collectMembers(AggregateDeclaration agg, bool recurseBase = false) {
         override void visit(StructDeclaration d) {
             if (aggCount++ == 0) super.visit(d);
         }
+        
         override void visit(ClassDeclaration d) {
             if (aggCount++ == 0) super.visit(d);
             if (recursive && d.baseClass) {
@@ -82,7 +83,7 @@ Members collectMembers(AggregateDeclaration agg, bool recurseBase = false) {
     return Members(v.hasUnion, v.decls);
 }
 
-VarDeclaration[] collectVars(Statement st) {
+void disambiguateVars(Statement st, ref IdentityMap!string renames) {
     extern(C++) static class Collector : SemanticTimeTransitiveVisitor {
         alias visit = typeof(super).visit;
         VarDeclaration[] decls = [];
@@ -120,18 +121,13 @@ VarDeclaration[] collectVars(Statement st) {
     }
     scope v = new Collector();
     st.accept(v);
-    IdentityMap!VarDeclaration decls;
-    IdentityMap!VarDeclaration dupes;
-    foreach (d; v.decls) {
-        if (auto p = d.ident in decls){
-            if (p.type.toString != d.type.toString)
-                dupes[d.ident] = d;
+    auto groups = sort!((a,b) => a.ident.toString < b.ident.toString)(v.decls).groupBy;
+    foreach (g; groups) {
+        foreach (i, var; g.enumerate) {
+            if (i) {
+                if (var !in renames)
+                    renames[var] = (var.ident.toString ~ to!string(i)).dup;
+            }
         }
-        else
-            decls[d.ident] = d;
     }
-    foreach (k; dupes.keys) {
-        decls.remove(k);
-    }
-    return decls.values;
 }

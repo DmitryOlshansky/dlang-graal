@@ -199,8 +199,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     Stack!int forLoop;
     int forCount;
 
-    Stack!(VarDeclaration[]) hoistedVars;
-
     bool hasEmptyCtor;
 
     Stack!(Goto[]) gotos;
@@ -278,7 +276,6 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         header.put("import static org.dlang.dmd.root.DArrayKt.*;\n");
         generatedFunctions.push(null);
         gotos.push(null);
-        hoistedVars.push(null);
     }
 
     void onModuleStart(Module mod){
@@ -330,7 +327,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         sink.fmt("new %s(new %s[%s])", type.toJava(opts), type.nextOf.toJava(opts), st.dim.toJava(opts));
     }
    
-    extern(D) private void printVar(VarDeclaration var, const(char)[] ident, TextBuffer sink, bool init) {
+    extern(D) private void printVar(VarDeclaration var, const(char)[] ident, TextBuffer sink) {
         // remove var-args decls
         if (funcs.length && opts.vararg) {
             if (var.ident.symbol == "_arguments") return;
@@ -346,70 +343,65 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         auto access = "";
         if (aggregates.length && !funcs.length) access = defAccess ~ " ";
         auto ti = funcs.length ? "" : tiArgs;
-        bool someInit = init && (var._init || var.type.ty == Tsarray || var.type.ty == Tstruct);
-        if (!hoistedVars.top.canFind!(x => x.ident == var.ident) || staticInit) sink.fmt("%s%s%s %s%s",  access, staticInit ? "static " : "", type, ident, ti);
-        else if (someInit) sink.fmt("%s%s", ident, ti);
+        sink.fmt("%s%s%s %s%s",  access, staticInit ? "static " : "", type, ident, ti);
         bool oldWantChar = opts.wantCharPtr;
         scope(exit) opts.wantCharPtr = oldWantChar;
         if (var.type.ty == Tpointer && var.type.nextOf.ty == Tchar) {
             opts.wantCharPtr = true;
         }
-        if (init) {
-            if (var._init) {
-                ExpInitializer ie = var._init.isExpInitializer();
-                if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit)) {
+        if (var._init) {
+            ExpInitializer ie = var._init.isExpInitializer();
+            if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit)) {
+                sink.fmt(" = ");
+                auto assign = (cast(AssignExp)ie.exp);
+                auto integer = assign.e2.isIntegerExp();
+                auto isNull = assign.e2.isNullExp();
+                //stderr.writefln("Init1 %s integer = %s null = %s", var, integer, isNull);
+                if (integer && integer.toInteger() == 0 && var.type.ty == Tstruct){
+                    sink.fmt("new %s()", var.type.toJava(opts));
+                }
+                else if(integer && integer.toInteger() == 0 && var.type.ty == Tsarray) {
                     sink.fmt(" = ");
-                    auto assign = (cast(AssignExp)ie.exp);
-                    auto integer = assign.e2.isIntegerExp();
-                    auto isNull = assign.e2.isNullExp();
-                    //stderr.writefln("Init1 %s integer = %s null = %s", var, integer, isNull);
-                    if (integer && integer.toInteger() == 0 && var.type.ty == Tstruct){
-                        sink.fmt("new %s()", var.type.toJava(opts));
-                    }
-                    else if(integer && integer.toInteger() == 0 && var.type.ty == Tsarray) {
-                        sink.fmt(" = ");
-                        printSArray(var.type, sink);
-                    }
-                    else if(var.type.ty == Tarray && isNull) {
-                        if (refVar) sink.fmt("ref(new %s())", var.type.toJava(opts));
-                        else sink.fmt("new %s()", var.type.toJava(opts));
-                    }
-                    else {
-                        bool needPCopy(Expression e) {
-                            return e.type.ty == Tpointer && !e.isNullExp && e.type.nextOf.ty != Tstruct;
-                        }
-                        bool needCopy(Expression e) {
-                            return e.type.ty == Tstruct || e.type.ty == Tarray;
-                        }
-                        //fprintf(stderr, "init %s with %s\n", var.toChars, assign.e2.toChars);
-                        if (refVar) sink.fmt("ref(");
-                        if (needPCopy(assign.e2)) sink.put("pcopy(");
-                        sink.put(assign.e2.toJava(opts));
-                        if (needCopy(assign.e2))  sink.put(".copy()");
-                        if (needPCopy(assign.e2)) sink.put(")");
-                        if (refVar) sink.fmt(")");
-                    }
+                    printSArray(var.type, sink);
+                }
+                else if(var.type.ty == Tarray && isNull) {
+                    if (refVar) sink.fmt("ref(new %s())", var.type.toJava(opts));
+                    else sink.fmt("new %s()", var.type.toJava(opts));
                 }
                 else {
-                    //stderr.writefln( "Init2 %s", var);
-                    sink.fmt(" = ");
-                    auto old = opts.wantCharPtr;
-                    scope(exit) opts.wantCharPtr = old;
-                    opts.wantCharPtr = var.type.ty == Tpointer && var.type.nextOf().ty == Tchar;
-                    initializerToBuffer(var._init, sink, opts);
+                    bool needPCopy(Expression e) {
+                        return e.type.ty == Tpointer && !e.isNullExp && e.type.nextOf.ty != Tstruct;
+                    }
+                    bool needCopy(Expression e) {
+                        return e.type.ty == Tstruct || e.type.ty == Tarray;
+                    }
+                    //fprintf(stderr, "init %s with %s\n", var.toChars, assign.e2.toChars);
+                    if (refVar) sink.fmt("ref(");
+                    if (needPCopy(assign.e2)) sink.put("pcopy(");
+                    sink.put(assign.e2.toJava(opts));
+                    if (needCopy(assign.e2))  sink.put(".copy()");
+                    if (needPCopy(assign.e2)) sink.put(")");
+                    if (refVar) sink.fmt(")");
                 }
             }
-            else if(var.type.ty == Tsarray) {
+            else {
+                //stderr.writefln( "Init2 %s", var);
                 sink.fmt(" = ");
-                printSArray(var.type, sink);
-            }
-            else if (var.type.ty == Tstruct) {
-                sink.fmt(" = new %s()", var.type.toJava(opts));
+                auto old = opts.wantCharPtr;
+                scope(exit) opts.wantCharPtr = old;
+                opts.wantCharPtr = var.type.ty == Tpointer && var.type.nextOf().ty == Tchar;
+                initializerToBuffer(var._init, sink, opts);
             }
         }
-        if (!hoistedVars.top.canFind!(x => x.ident == var.ident) || someInit) sink.fmt(";\n");
+        else if(var.type.ty == Tsarray) {
+            sink.fmt(" = ");
+            printSArray(var.type, sink);
+        }
+        else if (var.type.ty == Tstruct) {
+            sink.fmt(" = new %s()", var.type.toJava(opts));
+        }
+        sink.fmt(";\n");
     }
-
 
     override void visit(VarDeclaration var) {
         if (var.type is null) {
@@ -422,12 +414,15 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (pushToGlobal) {
             auto temp = new TextBuffer();
             const(char)[] id = funcs.top.funcName ~ var.ident.symbol;
-            printVar(var, id, temp, true);
+            printVar(var, id, temp);
             constants ~= temp.data.idup;
-            opts.globals[var] = format("%s.%s", moduleName, id);
+            opts.renamed[var] = format("%s.%s", moduleName, id);
         }
         else {
-            printVar(var, var.ident.symbol, buf, true);
+            if (auto name = var in opts.renamed)
+                printVar(var, *name, buf);
+            else 
+                printVar(var, var.ident.symbol, buf);
         }
     }
 
@@ -790,14 +785,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             buf.put("do {\n");
             buf.indent;
         }
-        VarDeclaration[] vars;
-        if (s._body) {
-            vars = collectVars(s._body);
-            foreach (v; vars) {
-                printVar(v, v.ident.symbol, buf, false);
-            }
-        }
-        auto hv = pushed(hoistedVars, vars);
+        disambiguateVars(s, opts.renamed);
         auto cond = s.condition.toJava(opts);
         if (s.condition.type.toJava(opts) == "byte") {
             cond = "(" ~ cond ~" & 0xFF)";
@@ -1221,19 +1209,30 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.fmt("%s %s%s = new %s(){\n", t.toJavaFunc(opts), func.funcName, tiArgs, t.toJavaFunc(opts));
         buf.indent;
         buf.fmt("public %s invoke(", t.nextOf.toJava(opts, Boxing.yes));
+        VarDeclaration[] renamedVars;
         if (func.parameters) {
             foreach(i, p; (*func.parameters)[]) {
                 if (i != 0) buf.fmt(", ");
                 auto box = p.isRef || p.isOut;
                 if (box && !isLambda && !isAggregate(p.type) && p.type.ty != Tpointer && p.type.ty != Tarray) {
                     opts.refParams[p] = true;
-                    buf.fmt("%s %s", refType(p.type, opts), p.ident.toString);
+                    buf.fmt("%s %s", refType(p.type, opts), p.ident.symbol);
                 }
-                else buf.fmt("%s %s", toJava(p.type, opts, Boxing.yes), p.ident.toString);
+                else {
+                    buf.fmt("%s %s", toJava(p.type, opts, Boxing.yes), p.ident.symbol);
+                    if (passedByRef(p, func)) {
+                        renamedVars ~= p;
+                        opts.refParams[p] = true;
+                        opts.renamed[p] = (p.ident.symbol ~ "_ref").dup;
+                    }
+                }
             }
         }
         buf.put("){\n");
         buf.indent;
+        foreach (var; renamedVars) {
+            buf.fmt("%s %s = ref(%s);\n", refType(var.type, opts), opts.renamed[var], var.ident.symbol);
+        }
         super.visit(func);
         if (t.nextOf.ty == Tvoid) buf.put("return null;\n");
         buf.outdent;
@@ -1252,6 +1251,7 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             buf.fmt("public %s %s%s(", storage, toJava(func.type.nextOf(), opts), tiArgs);
         else
             buf.fmt("public %s %s %s%s(", storage, toJava(func.type.nextOf(), opts), func.funcName, tiArgs);
+        VarDeclaration[] renamedVars;
         if (func.parameters) {
             foreach(i, p; (*func.parameters)[]) {
                 if (i != 0) buf.fmt(", ");
@@ -1260,7 +1260,14 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     opts.refParams[p] = true;
                     buf.fmt("%s %s", refType(p.type, opts), p.ident.toString);
                 }
-                else buf.fmt("%s %s", toJava(p.type, opts), p.ident.toString);
+                else {
+                    buf.fmt("%s %s", toJava(p.type, opts), p.ident.toString);
+                    if (passedByRef(p, func)) {
+                        renamedVars ~= p;
+                        opts.refParams[p] = true;
+                        opts.renamed[p] = (p.ident.symbol ~ "_ref").dup;
+                    }
+                }
             }
             if (auto var = varargVarDecl(func)) {
                 opts.vararg = var;
@@ -1286,6 +1293,9 @@ extern (C++) class toJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         else {
             buf.put(" {\n");
             buf.indent;
+            foreach (var; renamedVars) {
+                buf.fmt("%s %s = ref(%s);\n", refType(var.type, opts), opts.renamed[var], var.ident.symbol);
+            }
             func.fbody.accept(this);
             buf.outdent;
             buf.put('}');

@@ -46,18 +46,6 @@ index ed047d6..64d11ea 100644
                  super();
                  this.loc = loc.copy();
                  this.aggrfe = aggrfe;
-@@ -7884,9 +7894,8 @@ public class astbase {
-             boolean result = false;
-             if ((stc & 17592186568704L) == 17592186568704L)
-                 stc &= -524289L;
--            Ref<Long> stc_ref = ref(stc);
--            for (; (stc_ref.value) != 0;){
--                BytePtr p = pcopy(stcToChars(stc_ref));
-+            for (; (stc) != 0;){
-+                BytePtr p = pcopy(stcToChars(stc));
-                 if (p == null)
-                     break;
-                 if (!(result))
 diff --git a/src/main/java/org/dlang/dmd/globals.java b/src/main/java/org/dlang/dmd/globals.java
 index 8e6cb70..97f7c0d 100644
 --- a/src/main/java/org/dlang/dmd/globals.java

@@ -329,9 +329,6 @@ public class tokens {
                 int __dispatch0 = 0;
                 dispatched_0:
                 do {
-                    IntRef i;
-                    IntRef c;
-                    OutBuffer buf;
                     switch (__dispatch0 != 0 ? __dispatch0 : (this.value & 0xFF))
                     {
                         case 105:
@@ -374,14 +371,14 @@ public class tokens {
                             break;
                         case 121:
                             {
-                                buf = new OutBuffer();
+                                OutBuffer buf1 = new OutBuffer();
                                 try {
-                                    buf.writeByte(34);
+                                    buf1.writeByte(34);
                                     {
-                                        i = ref(0);
+                                        IntRef i = ref(0);
                                     L_outer1:
                                         for (; i.value < this.len;){
-                                            c = ref(0x0ffff);
+                                            IntRef c = ref(0x0ffff);
                                             utf_decodeChar(this.ustring, this.len, i, c);
                                             {
                                                 int __dispatch1 = 0;
@@ -393,20 +390,20 @@ public class tokens {
                                                             break;
                                                         case 34:
                                                         case 92:
-                                                            buf.writeByte(92);
+                                                            buf1.writeByte(92);
                                                             /*goto default*/ { __dispatch1 = -1; continue dispatched_1; }
                                                         default:
                                                         if (c.value <= 127)
                                                         {
                                                             if ((isprint(c.value)) != 0)
-                                                                buf.writeByte(c.value);
+                                                                buf1.writeByte(c.value);
                                                             else
-                                                                buf.printf( new ByteSlice("\\x%02x"), c.value);
+                                                                buf1.printf( new ByteSlice("\\x%02x"), c.value);
                                                         }
                                                         else if (c.value <= 65535)
-                                                            buf.printf( new ByteSlice("\\u%04x"), c.value);
+                                                            buf1.printf( new ByteSlice("\\u%04x"), c.value);
                                                         else
-                                                            buf.printf( new ByteSlice("\\U%08x"), c.value);
+                                                            buf1.printf( new ByteSlice("\\U%08x"), c.value);
                                                         continue L_outer1;
                                                     }
                                                 } while(__dispatch1 != 0);
@@ -414,17 +411,17 @@ public class tokens {
                                             break;
                                         }
                                     }
-                                    buf.writeByte(34);
+                                    buf1.writeByte(34);
                                     if ((this.postfix) != 0)
-                                        buf.writeByte((this.postfix & 0xFF));
-                                    p = pcopy(buf.extractChars());
+                                        buf1.writeByte((this.postfix & 0xFF));
+                                    p = pcopy(buf1.extractChars());
                                 }
                                 finally {
                                 }
                             }
                             break;
                         case 122:
-                            buf = new OutBuffer();
+                            OutBuffer buf = new OutBuffer();
                             try {
                                 buf.writeByte(120);
                                 buf.writeByte(34);
@@ -432,10 +429,10 @@ public class tokens {
                                     int __key50 = 0;
                                     int __limit51 = this.len;
                                     for (; __key50 < __limit51;__key50 += 1) {
-                                        i = __key50;
-                                        if ((i) != 0)
+                                        int i1 = __key50;
+                                        if ((i1) != 0)
                                             buf.writeByte(32);
-                                        buf.printf( new ByteSlice("%02x"), (this.ustring.get(i) & 0xFF));
+                                        buf.printf( new ByteSlice("%02x"), (this.ustring.get(i1) & 0xFF));
                                     }
                                 }
                                 buf.writeByte(34);

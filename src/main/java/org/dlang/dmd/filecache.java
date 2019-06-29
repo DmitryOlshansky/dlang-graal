@@ -81,7 +81,8 @@ public class filecache {
         public  void deinitialize() {
             Function1<StringValue,Integer> __foreachbody1 = new Function1<StringValue,Integer>(){
                 public Integer invoke(StringValue sv){
-                    destroy(sv);
+                    Ref<StringValue> sv_ref = ref(sv);
+                    destroy(sv_ref);
                     return 0;
                 }
             };

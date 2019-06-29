@@ -2258,10 +2258,11 @@ public class astbase {
             }
 
             public static Parameter getNth(DArray<Parameter> parameters, int nth, IntPtr pn) {
+                IntRef nth_ref = ref(nth);
                 Ref<Parameter> param = ref(null);
                 Function2<Integer,Parameter,Integer> getNthParamDg = new Function2<Integer,Parameter,Integer>(){
                     public Integer invoke(Integer n, Parameter p){
-                        if (n == nth)
+                        if (n == nth_ref.value)
                         {
                             param.value = p;
                             return 1;
@@ -4865,14 +4866,13 @@ public class astbase {
             public  Expression toExpressionHelper(Expression e, int i) {
                 for (; i < this.idents.length;i++){
                     RootObject id = this.idents.get(i);
-                    TemplateInstance ti;
                     switch (id.dyncast())
                     {
                         case DYNCAST.identifier:
                             e = new DotIdExp(e.loc, e, (Identifier)id);
                             break;
                         case DYNCAST.dsymbol:
-                            ti = ((Dsymbol)id).isTemplateInstance();
+                            TemplateInstance ti = ((Dsymbol)id).isTemplateInstance();
                             assert(ti != null);
                             e = new DotTemplateInstanceExp(e.loc, e, ti.name, ti.tiargs);
                             break;
@@ -7888,10 +7888,10 @@ public class astbase {
         }
 
         public static boolean stcToBuffer(OutBuffer buf, long stc) {
-            boolean result = false;
-            if ((stc & 17592186568704L) == 17592186568704L)
-                stc &= -524289L;
             Ref<Long> stc_ref = ref(stc);
+            boolean result = false;
+            if ((stc_ref.value & 17592186568704L) == 17592186568704L)
+                stc_ref.value &= -524289L;
             for (; (stc_ref.value) != 0;){
                 BytePtr p = pcopy(stcToChars(stc_ref));
                 if (p == null)

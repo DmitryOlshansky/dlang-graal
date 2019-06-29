@@ -5,6 +5,10 @@ import dmd.root.rootobject;
 struct IdentityMap(V) {
     V[void*] map;
     
+    V opIndex(RootObject key) {
+        return map[cast(void*)key];
+    }
+
     void opIndexAssign(V value, RootObject key) {
         map[cast(void*)key] = value;
     }
