@@ -3658,10 +3658,7 @@ public class parse {
                 }
                 {
                     Ref<Token> tk = ref(null);
-                    if (((storage_class.value) != 0 || udas.value != null) && (this.token.value & 0xFF) == 120
-                            && this.skipParens(this.peek(this.token), ptr(tk)) && this.skipAttributes(tk.value, ptr(tk))
-                            && (((tk.value).value & 0xFF) == 1 || ((tk.value).value & 0xFF) == 5 || ((tk.value).value & 0xFF) == 175 ||
-                            ((tk.value).value & 0xFF) == 176 || ((tk.value).value & 0xFF) == 187 || ((tk.value).value & 0xFF) == 120 && (tk.value).ident.equals(Id._body)))
+                    if ((storage_class.value) != 0 || udas.value != null && (this.token.value & 0xFF) == 120 && this.skipParens(this.peek(this.token), ptr(tk)) && this.skipAttributes(tk.value, ptr(tk)) && ((tk.value).value & 0xFF) == 1 || ((tk.value).value & 0xFF) == 5 || ((tk.value).value & 0xFF) == 175 || ((tk.value).value & 0xFF) == 176 || ((tk.value).value & 0xFF) == 187 || ((tk.value).value & 0xFF) == 120 && (tk.value).ident.equals(Id._body))
                     {
                         ts = null;
                     }

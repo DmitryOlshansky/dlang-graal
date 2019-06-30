@@ -204,6 +204,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     int inInitializer; // to avoid recursive decomposition of arrays
     string[] arrayInitializers;
 
+    bool noTiargs; // used for mixin templates
     Stack!TemplateInstance currentInst;
 
     string nameOf(AggregateDeclaration agg) {
@@ -212,7 +213,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     }
 
     string tiArgs() {
-        return currentInst.length ? .tiArgs(currentInst.top, opts) : "";
+        return currentInst.length && !noTiargs ? .tiArgs(currentInst.top, opts) : "";
     }
 
     void addImport(Array!Identifier* packages, Identifier id) {
@@ -659,6 +660,14 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 buf.outdent;
             }
         }
+    }
+
+    override void visit(TemplateMixin mix) {
+        buf.fmt("// from template mixin %s", mix.toString);
+        noTiargs = true;
+        scope(exit) noTiargs = false;
+        auto _ = pushed(currentInst, mix);
+        visit(cast(TemplateInstance)mix);
     }
 
     override void visit(TemplateDeclaration td) {
