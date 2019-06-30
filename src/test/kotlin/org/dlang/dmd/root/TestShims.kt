@@ -1,6 +1,7 @@
 package org.dlang.dmd.root
 
 import junit.framework.TestCase
+import org.dlang.dmd.tokens
 
 class TestShims : TestCase() {
 
@@ -26,5 +27,11 @@ class TestShims : TestCase() {
         assertEquals("!", strstr(p, n3)?.toString())
         val n4 = BytePtr("World")
         assertEquals(null, strstr(p, n4)?.toString())
+    }
+
+    fun testRefPtr() {
+        val r = ptr(ref<tokens.Token>(null))
+        val t: tokens.Token? = null
+        assertTrue(r.get() == t)
     }
 }

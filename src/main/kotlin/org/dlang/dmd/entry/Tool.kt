@@ -1,22 +1,22 @@
 package org.dlang.dmd.entry
 
+import org.dlang.dmd.*
 import org.dlang.dmd.errors.*
-import org.dlang.dmd.lexer
-import org.dlang.dmd.parse
-import org.dlang.dmd.parser
 import org.dlang.dmd.root.*
-import org.dlang.dmd.tokens
 import org.dlang.dmd.root.filename.*
 
 
 fun main(args: Array<String>) {
     val outdir = System.getProperty("outdir", ".")
     val tool = System.getProperty("tool", "lex")
+    globals.global.params.isLinux = true
+    globals.global._init()
+    astbase.ASTBase.Type._init()
     timeit {
         for (arg in args) {
             when(tool) {
-                "lex" -> processFile(arg, outdir, ::lex)
-                "lispy" -> processFile(arg, outdir, ::lispy)
+                "lex" -> processFile(arg, outdir, "tk", ::lex)
+                "lispy" -> processFile(arg, outdir, "ast", ::lispy)
             }
 
         }
@@ -30,14 +30,14 @@ fun timeit(fn: () -> Unit) {
     printf(ByteSlice("Total: %f ms\n"), (end - start) / 1000000)
 }
 
-fun processFile(arg: String, outdir: String, fn: (BytePtr, ByteSlice) -> ByteSlice) {
+fun processFile(arg: String, outdir: String, suffix: String, fn: (BytePtr, ByteSlice) -> ByteSlice) {
     val argz = BytePtr(arg)
     val buffer = File.read(argz)
     if (!buffer.success) {
         fprintf(stderr, ByteSlice("Failed to read from file: %s"), argz)
         exit(1)
     }
-    val dest = FileName.forceExt(FileName.name(argz), BytePtr("tk"))
+    val dest = FileName.forceExt(FileName.name(argz), BytePtr(suffix))
     val buf = buffer.extractData()
     val output = fn(argz, buf)
     val path = ByteSlice("$outdir/$dest")

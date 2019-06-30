@@ -183,6 +183,12 @@ fun mulu(a: Long, b: Long, overflow: Ref<Boolean>): Long {
     return a * b
 }
 
+fun<T> pequals(lhs: T?, rhs: T?): Boolean {
+    if (lhs === null) return rhs === null
+    if (rhs === null) return false
+    return lhs.equals(rhs)
+}
+
 fun destroy(a: Any)  {}
 
 fun hashOf(any: Any) = any.hashCode()

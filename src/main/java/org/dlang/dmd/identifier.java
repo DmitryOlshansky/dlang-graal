@@ -90,19 +90,19 @@ public class identifier {
 
         public  BytePtr toHChars2() {
             BytePtr p = null;
-            if (this.equals(Id.ctor))
+            if (pequals(this, Id.ctor))
                 p = pcopy(new BytePtr("this"));
-            else if (this.equals(Id.dtor))
+            else if (pequals(this, Id.dtor))
                 p = pcopy(new BytePtr("~this"));
-            else if (this.equals(Id.unitTest))
+            else if (pequals(this, Id.unitTest))
                 p = pcopy(new BytePtr("unittest"));
-            else if (this.equals(Id.dollar))
+            else if (pequals(this, Id.dollar))
                 p = pcopy(new BytePtr("$"));
-            else if (this.equals(Id.withSym))
+            else if (pequals(this, Id.withSym))
                 p = pcopy(new BytePtr("with"));
-            else if (this.equals(Id.result))
+            else if (pequals(this, Id.result))
                 p = pcopy(new BytePtr("result"));
-            else if (this.equals(Id.returnLabel))
+            else if (pequals(this, Id.returnLabel))
                 p = pcopy(new BytePtr("return"));
             else
             {

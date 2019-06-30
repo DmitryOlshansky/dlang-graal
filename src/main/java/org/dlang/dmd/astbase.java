@@ -375,7 +375,7 @@ public class astbase {
                                 FuncDeclaration f2 = (ps.get()).isFuncDeclaration();
                                 if (f1 != null && f2 != null)
                                 {
-                                    for (; !f1.equals(f2);f1 = f1.overnext0){
+                                    for (; !pequals(f1, f2);f1 = f1.overnext0){
                                         if (f1.overnext0 == null)
                                         {
                                             f1.overnext0 = f2;
@@ -1935,7 +1935,7 @@ public class astbase {
                 this.type = new TypeStruct(this);
                 if (inObject)
                 {
-                    if (id.equals(Id.ModuleInfo) && !(Module.moduleinfo != null))
+                    if (pequals(id, Id.ModuleInfo) && !(Module.moduleinfo != null))
                         Module.moduleinfo = this;
                 }
             }
@@ -1998,136 +1998,136 @@ public class astbase {
                 this.type = new TypeClass(this);
                 if (id != null)
                 {
-                    if (id.equals(Id.__sizeof) || id.equals(Id.__xalignof) || id.equals(Id._mangleof))
+                    if (pequals(id, Id.__sizeof) || pequals(id, Id.__xalignof) || pequals(id, Id._mangleof))
                         this.error(new BytePtr("illegal class name"));
                     if ((id.toChars().get(0) & 0xFF) == 84)
                     {
-                        if (id.equals(Id.TypeInfo))
+                        if (pequals(id, Id.TypeInfo))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.dtypeinfo = this;
                         }
-                        if (id.equals(Id.TypeInfo_Class))
+                        if (pequals(id, Id.TypeInfo_Class))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfoclass = this;
                         }
-                        if (id.equals(Id.TypeInfo_Interface))
+                        if (pequals(id, Id.TypeInfo_Interface))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfointerface = this;
                         }
-                        if (id.equals(Id.TypeInfo_Struct))
+                        if (pequals(id, Id.TypeInfo_Struct))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfostruct = this;
                         }
-                        if (id.equals(Id.TypeInfo_Pointer))
+                        if (pequals(id, Id.TypeInfo_Pointer))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfopointer = this;
                         }
-                        if (id.equals(Id.TypeInfo_Array))
+                        if (pequals(id, Id.TypeInfo_Array))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfoarray = this;
                         }
-                        if (id.equals(Id.TypeInfo_StaticArray))
+                        if (pequals(id, Id.TypeInfo_StaticArray))
                         {
                             Type.typeinfostaticarray = this;
                         }
-                        if (id.equals(Id.TypeInfo_AssociativeArray))
+                        if (pequals(id, Id.TypeInfo_AssociativeArray))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfoassociativearray = this;
                         }
-                        if (id.equals(Id.TypeInfo_Enum))
+                        if (pequals(id, Id.TypeInfo_Enum))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfoenum = this;
                         }
-                        if (id.equals(Id.TypeInfo_Function))
+                        if (pequals(id, Id.TypeInfo_Function))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfofunction = this;
                         }
-                        if (id.equals(Id.TypeInfo_Delegate))
+                        if (pequals(id, Id.TypeInfo_Delegate))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfodelegate = this;
                         }
-                        if (id.equals(Id.TypeInfo_Tuple))
+                        if (pequals(id, Id.TypeInfo_Tuple))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfotypelist = this;
                         }
-                        if (id.equals(Id.TypeInfo_Const))
+                        if (pequals(id, Id.TypeInfo_Const))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfoconst = this;
                         }
-                        if (id.equals(Id.TypeInfo_Invariant))
+                        if (pequals(id, Id.TypeInfo_Invariant))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfoinvariant = this;
                         }
-                        if (id.equals(Id.TypeInfo_Shared))
+                        if (pequals(id, Id.TypeInfo_Shared))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfoshared = this;
                         }
-                        if (id.equals(Id.TypeInfo_Wild))
+                        if (pequals(id, Id.TypeInfo_Wild))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfowild = this;
                         }
-                        if (id.equals(Id.TypeInfo_Vector))
+                        if (pequals(id, Id.TypeInfo_Vector))
                         {
                             if (!(inObject))
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfovector = this;
                         }
                     }
-                    if (id.equals(Id.Object))
+                    if (pequals(id, Id.Object))
                     {
                         if (!(inObject))
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
                         object = this;
                     }
-                    if (id.equals(Id.Throwable))
+                    if (pequals(id, Id.Throwable))
                     {
                         if (!(inObject))
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
                         throwable = this;
                     }
-                    if (id.equals(Id.Exception))
+                    if (pequals(id, Id.Exception))
                     {
                         if (!(inObject))
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
                         exception = this;
                     }
-                    if (id.equals(Id.Error))
+                    if (pequals(id, Id.Error))
                     {
                         if (!(inObject))
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
                         errorException = this;
                     }
-                    if (id.equals(Id.cpp_type_info_ptr))
+                    if (pequals(id, Id.cpp_type_info_ptr))
                     {
                         if (!(inObject))
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
@@ -4458,7 +4458,7 @@ public class astbase {
 
             public  Type syntaxCopy() {
                 Type t = this.next.syntaxCopy();
-                if (t.equals(this.next))
+                if (pequals(t, this.next))
                     t = this;
                 else
                 {
@@ -4548,7 +4548,7 @@ public class astbase {
 
             public  Type syntaxCopy() {
                 Type t = this.next.syntaxCopy();
-                if (t.equals(this.next))
+                if (pequals(t, this.next))
                     t = this;
                 else
                 {
@@ -4581,7 +4581,7 @@ public class astbase {
 
             public  Type syntaxCopy() {
                 Type t = this.next.syntaxCopy();
-                if (t.equals(this.next))
+                if (pequals(t, this.next))
                     t = this;
                 else
                 {
@@ -4722,7 +4722,7 @@ public class astbase {
 
             public  Type syntaxCopy() {
                 Type t = this.next.syntaxCopy();
-                if (t.equals(this.next))
+                if (pequals(t, this.next))
                     t = this;
                 else
                 {
@@ -4756,7 +4756,7 @@ public class astbase {
             public  Type syntaxCopy() {
                 Type t = this.next.syntaxCopy();
                 Type ti = this.index.syntaxCopy();
-                if (t.equals(this.next) && ti.equals(this.index))
+                if (pequals(t, this.next) && pequals(ti, this.index))
                     t = this;
                 else
                 {
@@ -5103,7 +5103,7 @@ public class astbase {
             }
 
             public  void error(BytePtr format, Object... ap) {
-                if (!this.type.equals(Type.terror))
+                if (!pequals(this.type, Type.terror))
                 {
                     verror(this.loc, format, new Slice<>(ap), null, null, new BytePtr("Error: "));
                 }

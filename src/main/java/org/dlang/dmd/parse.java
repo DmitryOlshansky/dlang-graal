@@ -601,7 +601,7 @@ public class parse {
                                         break;
                                     }
                                     Ref<Token> tk = ref(null);
-                                    if ((this.token.value & 0xFF) == 120 && this.skipParens(this.peek(this.token), ptr(tk)) && this.skipAttributes(tk.value, ptr(tk)) && ((tk.value).value & 0xFF) == 1 || ((tk.value).value & 0xFF) == 5 || ((tk.value).value & 0xFF) == 175 || ((tk.value).value & 0xFF) == 176 || ((tk.value).value & 0xFF) == 187 || ((tk.value).value & 0xFF) == 120 && (tk.value).ident.equals(Id._body))
+                                    if ((this.token.value & 0xFF) == 120 && this.skipParens(this.peek(this.token), ptr(tk)) && this.skipAttributes(tk.value, ptr(tk)) && ((tk.value).value & 0xFF) == 1 || ((tk.value).value & 0xFF) == 5 || ((tk.value).value & 0xFF) == 175 || ((tk.value).value & 0xFF) == 176 || ((tk.value).value & 0xFF) == 187 || ((tk.value).value & 0xFF) == 120 && pequals((tk.value).ident, Id._body))
                                     {
                                         a = this.parseDeclarations(true, pAttrs, (pAttrs).comment);
                                         if (a != null && ((a).length) != 0)
@@ -1072,19 +1072,19 @@ public class parse {
             long stc = 0L;
             if ((this.token.value & 0xFF) == 120)
             {
-                if (this.token.ident.equals(Id.property))
+                if (pequals(this.token.ident, Id.property))
                     stc = 4294967296L;
-                else if (this.token.ident.equals(Id.nogc))
+                else if (pequals(this.token.ident, Id.nogc))
                     stc = 4398046511104L;
-                else if (this.token.ident.equals(Id.safe))
+                else if (pequals(this.token.ident, Id.safe))
                     stc = 8589934592L;
-                else if (this.token.ident.equals(Id.trusted))
+                else if (pequals(this.token.ident, Id.trusted))
                     stc = 17179869184L;
-                else if (this.token.ident.equals(Id.system))
+                else if (pequals(this.token.ident, Id.system))
                     stc = 34359738368L;
-                else if (this.token.ident.equals(Id.disable))
+                else if (pequals(this.token.ident, Id.disable))
                     stc = 137438953472L;
-                else if (this.token.ident.equals(Id.future))
+                else if (pequals(this.token.ident, Id.future))
                     stc = 1125899906842624L;
                 else
                 {
@@ -1726,17 +1726,17 @@ public class parse {
             {
                 Identifier id = this.token.ident;
                 this.nextToken();
-                if (id.equals(Id.Windows))
+                if (pequals(id, Id.Windows))
                     link = LINK.windows;
-                else if (id.equals(Id.Pascal))
+                else if (pequals(id, Id.Pascal))
                 {
                     this.deprecation(new BytePtr("`extern(Pascal)` is deprecated. You might want to use `extern(Windows)` instead."));
                     link = LINK.pascal;
                 }
-                else if (id.equals(Id.D))
+                else if (pequals(id, Id.D))
                 {
                 }
-                else if (id.equals(Id.C))
+                else if (pequals(id, Id.C))
                 {
                     link = LINK.c;
                     if ((this.token.value & 0xFF) == 93)
@@ -1783,12 +1783,12 @@ public class parse {
                         }
                     }
                 }
-                else if (id.equals(Id.Objective))
+                else if (pequals(id, Id.Objective))
                 {
                     if ((this.token.value & 0xFF) == 75)
                     {
                         this.nextToken();
-                        if (this.token.ident.equals(Id.C))
+                        if (pequals(this.token.ident, Id.C))
                         {
                             link = LINK.objc;
                             this.nextToken();
@@ -1805,7 +1805,7 @@ public class parse {
                         link = LINK.d;
                     }
                 }
-                else if (id.equals(Id.System))
+                else if (pequals(id, Id.System))
                 {
                     link = LINK.system;
                 }
@@ -2526,7 +2526,7 @@ public class parse {
                                     if (isAnonymousEnum)
                                     {
                                         type = this.parseType(ptr(ident), null);
-                                        if (type.equals(ASTBase.Type.terror))
+                                        if (pequals(type, ASTBase.Type.terror))
                                         {
                                             type = null;
                                             this.nextToken();
@@ -2542,7 +2542,7 @@ public class parse {
                             } while(__dispatch10 != 0);
                         }
                     }
-                    if (type != null && !type.equals(ASTBase.Type.terror))
+                    if (type != null && !pequals(type, ASTBase.Type.terror))
                     {
                         if (!(ident.value != null))
                             this.error(new BytePtr("no identifier for declarator `%s`"), type.toChars());
@@ -2558,7 +2558,7 @@ public class parse {
                     else
                     {
                         value = null;
-                        if (type != null && !type.equals(ASTBase.Type.terror) && isAnonymousEnum)
+                        if (type != null && !pequals(type, ASTBase.Type.terror) && isAnonymousEnum)
                             this.error(new BytePtr("if type, there must be an initializer"));
                     }
                     ASTBase.UserAttributeDeclaration uad = null;
@@ -2674,13 +2674,13 @@ public class parse {
                 case 153:
                     if (!(id != null))
                         this.error(loc, new BytePtr("anonymous classes not allowed"));
-                    boolean inObject = this.md != null && (this.md).packages == null && (this.md).id.equals(Id.object);
+                    boolean inObject = this.md != null && (this.md).packages == null && pequals((this.md).id, Id.object);
                     a = new ASTBase.ClassDeclaration(loc, id, baseclasses, members, inObject);
                     break;
                 case 152:
                     if (id != null)
                     {
-                        boolean inObject_1 = this.md != null && (this.md).packages == null && (this.md).id.equals(Id.object);
+                        boolean inObject_1 = this.md != null && (this.md).packages == null && pequals((this.md).id, Id.object);
                         a = new ASTBase.StructDeclaration(loc, id, inObject_1);
                         a.members = members;
                     }
@@ -3273,7 +3273,7 @@ public class parse {
                         Ptr<ASTBase.Type> pt = null;
                         {
                             pt = pcopy(ptr(ts));
-                            for (; !pt.get().equals(t);pt = pcopy((new PtrToNext((ASTBase.TypeNext)pt.get())))){
+                            for (; !pequals(pt.get(), t);pt = pcopy((new PtrToNext((ASTBase.TypeNext)pt.get())))){
                             }
                         }
                         pt.set(0, ta);
@@ -3302,7 +3302,7 @@ public class parse {
                         Ptr<ASTBase.Type> pt_1 = null;
                         {
                             pt_1 = pcopy(ptr(ts));
-                            for (; !pt_1.get().equals(t);pt_1 = pcopy((new PtrToNext((ASTBase.TypeNext)pt_1.get())))){
+                            for (; !pequals(pt_1.get(), t);pt_1 = pcopy((new PtrToNext((ASTBase.TypeNext)pt_1.get())))){
                             }
                         }
                         pt_1.set(0, tf);
@@ -3660,7 +3660,8 @@ public class parse {
                     Ref<Token> tk = ref(null);
                     if (((storage_class.value) != 0 || udas.value != null)
                             && (this.token.value & 0xFF) == 120 && this.skipParens(this.peek(this.token), ptr(tk))
-                            && this.skipAttributes(tk.value, ptr(tk)) && (((tk.value).value & 0xFF) == 1 || ((tk.value).value & 0xFF) == 5 || ((tk.value).value & 0xFF) == 175 || ((tk.value).value & 0xFF) == 176 || ((tk.value).value & 0xFF) == 187 || ((tk.value).value & 0xFF) == 120) && (tk.value).ident.equals(Id._body))
+                            && this.skipAttributes(tk.value, ptr(tk))
+                            && (((tk.value).value & 0xFF) == 1 || ((tk.value).value & 0xFF) == 5 || ((tk.value).value & 0xFF) == 175 || ((tk.value).value & 0xFF) == 176 || ((tk.value).value & 0xFF) == 187 || ((tk.value).value & 0xFF) == 120) && pequals((tk.value).ident, Id._body))
                     {
                         ts = null;
                     }
@@ -3687,12 +3688,12 @@ public class parse {
                 assert(t != null);
                 if (!(tfirst != null))
                     tfirst = t;
-                else if (!t.equals(tfirst))
+                else if (!pequals(t, tfirst))
                     this.error(new BytePtr("multiple declarations must have the same type, not `%s` and `%s`"), tfirst.toChars(), t.toChars());
-                boolean isThis = (t.ty & 0xFF) == ASTBase.ENUMTY.Tident && ((ASTBase.TypeIdentifier)t).ident.equals(Id.This) && (this.token.value & 0xFF) == 90;
+                boolean isThis = (t.ty & 0xFF) == ASTBase.ENUMTY.Tident && pequals(((ASTBase.TypeIdentifier)t).ident, Id.This) && (this.token.value & 0xFF) == 90;
                 if (ident.value != null)
                     this.checkCstyleTypeSyntax(loc, t, alt.value, ident.value);
-                else if (!(isThis) && !t.equals(ASTBase.Type.terror))
+                else if (!(isThis) && !pequals(t, ASTBase.Type.terror))
                     this.error(new BytePtr("no identifier for declarator `%s`"), t.toChars());
                 if ((tok & 0xFF) == 158)
                 {
@@ -3963,7 +3964,7 @@ public class parse {
                             f.endloc = this.endloc.copy();
                             break;
                         case 120:
-                            if (this.token.ident.equals(Id._body))
+                            if (pequals(this.token.ident, Id._body))
                                 /*goto case*/{ __dispatch23 = 187; continue dispatched_23; }
                             /*goto default*/ { __dispatch23 = -2; continue dispatched_23; }
                         case 187:
@@ -4980,11 +4981,11 @@ public class parse {
                             {
                                 byte t_4 = TOK.onScopeExit;
                                 Identifier id = this.token.ident;
-                                if (id.equals(Id.exit))
+                                if (pequals(id, Id.exit))
                                     t_4 = TOK.onScopeExit;
-                                else if (id.equals(Id.failure))
+                                else if (pequals(id, Id.failure))
                                     t_4 = TOK.onScopeFailure;
-                                else if (id.equals(Id.success))
+                                else if (pequals(id, Id.success))
                                     t_4 = TOK.onScopeSuccess;
                                 else
                                     this.error(new BytePtr("valid scope identifiers are `exit`, `failure`, or `success`, not `%s`"), id.toChars());
@@ -5909,7 +5910,7 @@ public class parse {
                                     /*goto Lfalse*/throw Dispatch0.INSTANCE;
                                 Ref<Token> lp = ref(t.value);
                                 t.value = this.peek(t.value);
-                                if (((t.value).value & 0xFF) != 120 || !(t.value).ident.equals(Id.getMember))
+                                if (((t.value).value & 0xFF) != 120 || !pequals((t.value).ident, Id.getMember))
                                     /*goto Lfalse*/throw Dispatch0.INSTANCE;
                                 if (!(this.skipParens(lp.value, ptr(lp))))
                                     /*goto Lfalse*/throw Dispatch0.INSTANCE;
@@ -6124,7 +6125,7 @@ public class parse {
                                 }
                                 return false;
                             case 120:
-                                if ((t.value).ident.equals(Id._body))
+                                if (pequals((t.value).ident, Id._body))
                                     /*goto case*/{ __dispatch39 = 187; continue dispatched_39; }
                                 /*goto default*/ { __dispatch39 = -2; continue dispatched_39; }
                             case 183:
@@ -6376,7 +6377,7 @@ public class parse {
                                         t_ref.value = this.peek(t_ref.value);
                                         if (((t_ref.value).value & 0xFF) == 120)
                                         {
-                                            if ((t_ref.value).ident.equals(Id.property) || (t_ref.value).ident.equals(Id.nogc) || (t_ref.value).ident.equals(Id.safe) || (t_ref.value).ident.equals(Id.trusted) || (t_ref.value).ident.equals(Id.system) || (t_ref.value).ident.equals(Id.disable))
+                                            if (pequals((t_ref.value).ident, Id.property) || pequals((t_ref.value).ident, Id.nogc) || pequals((t_ref.value).ident, Id.safe) || pequals((t_ref.value).ident, Id.trusted) || pequals((t_ref.value).ident, Id.system) || pequals((t_ref.value).ident, Id.disable))
                                                 break;
                                             t_ref.value = this.peek(t_ref.value);
                                             if (((t_ref.value).value & 0xFF) == 91)

@@ -370,7 +370,7 @@ public class lexer {
                                             sprintf(ptr(lexer.scantime),  new ByteSlice("%.8s"), p.plus(11));
                                             sprintf(ptr(lexer.scantimestamp),  new ByteSlice("%.24s"), p);
                                         }
-                                        if (id.equals(Id.DATE))
+                                        if (pequals(id, Id.DATE))
                                         {
                                             (t).ustring = pcopy(ptr(lexer.scandate));
                                             /*goto Lstr*/
@@ -378,7 +378,7 @@ public class lexer {
                                             (t).postfix = (byte)0;
                                             (t).len = strlen((t).ustring);
                                         }
-                                        else if (id.equals(Id.TIME))
+                                        else if (pequals(id, Id.TIME))
                                         {
                                             (t).ustring = pcopy(ptr(lexer.scantime));
                                             /*goto Lstr*/
@@ -386,7 +386,7 @@ public class lexer {
                                             (t).postfix = (byte)0;
                                             (t).len = strlen((t).ustring);
                                         }
-                                        else if (id.equals(Id.VENDOR))
+                                        else if (pequals(id, Id.VENDOR))
                                         {
                                             (t).ustring = pcopy((toBytePtr(xarraydup(global.vendor))));
                                             /*goto Lstr*/
@@ -394,7 +394,7 @@ public class lexer {
                                             (t).postfix = (byte)0;
                                             (t).len = strlen((t).ustring);
                                         }
-                                        else if (id.equals(Id.TIMESTAMP))
+                                        else if (pequals(id, Id.TIMESTAMP))
                                         {
                                             (t).ustring = pcopy(ptr(lexer.scantimestamp));
                                         /*Lstr:*/
@@ -402,12 +402,12 @@ public class lexer {
                                             (t).postfix = (byte)0;
                                             (t).len = strlen((t).ustring);
                                         }
-                                        else if (id.equals(Id.VERSIONX))
+                                        else if (pequals(id, Id.VERSIONX))
                                         {
                                             (t).value = TOK.int64Literal;
                                             (t).unsvalue = (long)global.versionNumber();
                                         }
-                                        else if (id.equals(Id.EOFX))
+                                        else if (pequals(id, Id.EOFX))
                                         {
                                             (t).value = TOK.endOfFile;
                                             for (; !((this.p.get() & 0xFF) == 0 || (this.p.get() & 0xFF) == 26);) {
@@ -873,7 +873,7 @@ public class lexer {
                                 this.scan(n);
                                 if ((n.value & 0xFF) == 120)
                                 {
-                                    if (n.ident.equals(Id.line))
+                                    if (pequals(n.ident, Id.line))
                                     {
                                         this.poundLine();
                                         continue L_outer1;

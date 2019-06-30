@@ -681,7 +681,7 @@ public class transitivevisitor {
             if (d.members == null || (d.members).length != 1)
                 return false;
             ASTBase.Dsymbol onemember = (d.members).get(0);
-            if (!onemember.ident.equals(d.ident))
+            if (!pequals(onemember.ident, d.ident))
                 return false;
             {
                 ASTBase.FuncDeclaration fd = onemember.isFuncDeclaration();
