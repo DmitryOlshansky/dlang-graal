@@ -34,7 +34,11 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
 
     override void visit(AST.AttribDeclaration attr) { 
         buf.printf("( %s ", attr.toChars);
+        buf.writenl;
+        buf.level++;
         super.visit(attr);
+        buf.level--;
+        buf.writenl;
         buf.printf(")");
     }
 
@@ -46,70 +50,89 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     
     override void visit(AST.DebugSymbol sym) {
         buf.printf("( debug ");
+        buf.writenl;
+        buf.level++;
         super.visit(sym);
+        buf.level--;
+        buf.writenl;
         buf.printf(")");
+        buf.writenl;
     }
 
     override void visit(AST.VersionSymbol ver) { 
         buf.printf("( version ");
+        buf.writenl;
+        buf.level++;
         super.visit(ver);
+        buf.level--;
+        buf.writenl;
         buf.printf(")");
+        buf.writenl;
     }
 
     override void visit(AST.VarDeclaration d) {
         buf.printf("( var ");
         buf.level++;
-        super.visit(d);
+        buf.printf("%s ", d.ident.toChars);
+        d.type.accept(this);
         buf.level--;
         buf.printf(")");
     }
 
     override void visit(AST.FuncDeclaration d) {
-        buf.printf("( func \n");
+        buf.printf("( func ");
+        buf.writenl;
         buf.level++;
-        super.visit(d);
+        d.type.accept(this);
+        d.fbody.accept(this);
         buf.level--;
+        buf.writenl;
         buf.printf(")");
+        buf.writenl;
     }
 
     override void visit(AST.AliasDeclaration d) {
         buf.printf("(alias ");
+        buf.writenl;
         buf.level++;
         super.visit(d);
         buf.level--;
-
+        buf.writenl;
         buf.printf(")");
     }
 
     override void visit(AST.TupleDeclaration d) {
         buf.printf("( tuple ");
+        buf.writenl;
         buf.level++;
         super.visit(d);
         buf.level--;
-
+        buf.writenl;
         buf.printf(")");
     }
 
     override void visit(AST.FuncLiteralDeclaration d) {
-        buf.printf("( func literal");
+        buf.printf("( func literal ");
+        buf.writenl;
         buf.level++;
         super.visit(d);
         buf.level--;
-
+        buf.writenl;
         buf.printf(")");
     }
 
     override void visit(AST.PostBlitDeclaration d) {
         buf.printf("( this(this) ");
+        buf.writenl;
         buf.level++;
         super.visit(d);
         buf.level--;
-
+        buf.writenl;
         buf.printf(")");
     }
 
     override void visit(AST.CtorDeclaration d) {
-        buf.printf("( ctor ");
+        buf.printf("( ctor \n");
         buf.level++;
         super.visit(d);
         buf.level--;
@@ -174,12 +197,24 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     override void visit(AST.StaticIfDeclaration) { assert(0); }
     override void visit(AST.EnumMember) { assert(0); }
     override void visit(AST.Module) { assert(0); }
-    override void visit(AST.StructDeclaration) { assert(0); }
+    override void visit(AST.StructDeclaration d) {
+        buf.printf("( struct ");
+        buf.writenl;
+        buf.level++;
+        super.visit(d);
+        buf.level--;
+        buf.writenl;
+        buf.printf(")");
+        buf.writenl;
+    }
     override void visit(AST.UnionDeclaration) { assert(0); }
     override void visit(AST.ClassDeclaration) { assert(0); }
     override void visit(AST.InterfaceDeclaration) { assert(0); }
     override void visit(AST.TemplateMixin) { assert(0); }
-    override void visit(AST.Parameter) { assert(0); }
+    override void visit(AST.Parameter p) { 
+        buf.printf("%s ", p.ident.toChars);
+        super.visit(p);
+    }
     override void visit(AST.Statement) { assert(0); }
     override void visit(AST.ImportStatement) { assert(0); }
     override void visit(AST.ScopeStatement) { assert(0); }
@@ -211,16 +246,47 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     override void visit(AST.TryFinallyStatement) { assert(0); }
     override void visit(AST.ThrowStatement) { assert(0); }
     override void visit(AST.AsmStatement) { assert(0); }
-    override void visit(AST.ExpStatement) { assert(0); }
-    override void visit(AST.CompoundStatement) { assert(0); }
+    override void visit(AST.ExpStatement s) {
+        buf.printf("( expr ");
+        buf.writenl;
+        buf.level++;
+        super.visit(s);
+        buf.level--;
+        buf.writenl;
+        buf.printf(")");
+    }
+    override void visit(AST.CompoundStatement s) {
+        buf.printf("(");
+        buf.writenl;
+        buf.level++;
+        if (s.statements)
+            foreach (i, st; *s.statements) {
+                if (i) buf.writenl;
+                st.accept(this);
+            }
+        buf.level--;
+        buf.writenl;
+        buf.printf(")");
+        
+    }
     override void visit(AST.CompoundDeclarationStatement) { assert(0); }
     override void visit(AST.CompoundAsmStatement) { assert(0); }
     override void visit(AST.InlineAsmStatement) { assert(0); }
     override void visit(AST.Type) { assert(0); }
-    override void visit(AST.TypeBasic) { assert(0); }
-    override void visit(AST.TypeError) { assert(0); }
-    override void visit(AST.TypeNull) { assert(0); }
-    override void visit(AST.TypeVector) { assert(0); }
+    override void visit(AST.TypeBasic t) { 
+        buf.printf("%s", t.dstring);
+    }
+    override void visit(AST.TypeError) {
+        buf.printf("terror");
+    }
+    override void visit(AST.TypeNull) {
+        buf.printf("typeof(null)");
+    }
+    override void visit(AST.TypeVector t) {
+        buf.printf("( __vector");
+        super.visit(t);
+        buf.printf(")");
+    }
     override void visit(AST.TypeEnum) { assert(0); }
     override void visit(AST.TypeTuple) { assert(0); }
     override void visit(AST.TypeClass) { assert(0); }
@@ -230,20 +296,35 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     override void visit(AST.TypeSlice) { assert(0); }
     override void visit(AST.TypeDelegate) { assert(0); }
     override void visit(AST.TypePointer) { assert(0); }
-    override void visit(AST.TypeFunction) { assert(0); }
+    override void visit(AST.TypeFunction tf) {
+        tf.next.accept(this);
+        buf.printf(" ");
+        foreach (i, p; *tf.parameterList.parameters) {
+            if (i) buf.printf(" ");
+            p.accept(this);
+        }
+    }
     override void visit(AST.TypeArray) { assert(0); }
-    override void visit(AST.TypeDArray) { assert(0); }
+    override void visit(AST.TypeDArray d) {
+        super.visit(d);
+        buf.printf("[]");
+    }
     override void visit(AST.TypeAArray) { assert(0); }
     override void visit(AST.TypeSArray) { assert(0); }
     override void visit(AST.TypeQualified) { assert(0); }
     override void visit(AST.TypeTraits) { assert(0); }
-    override void visit(AST.TypeIdentifier) { assert(0); }
+    override void visit(AST.TypeIdentifier d) {
+        super.visit(d);
+        buf.printf("%s", d.ident.toChars);
+    }
     override void visit(AST.TypeReturn) { assert(0); }
     override void visit(AST.TypeTypeof) { assert(0); }
     override void visit(AST.TypeInstance) { assert(0); }
     override void visit(AST.Expression) { assert(0); }
     override void visit(AST.DeclarationExp) { assert(0); }
-    override void visit(AST.IntegerExp) { assert(0); }
+    override void visit(AST.IntegerExp e) {
+        buf.printf("%lld", e.value);
+    }
     override void visit(AST.NewAnonClassExp) { assert(0); }
     override void visit(AST.IsExp) { assert(0); }
     override void visit(AST.RealExp) { assert(0); }
@@ -258,7 +339,9 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     override void visit(AST.IntervalExp) { assert(0); }
     override void visit(AST.TypeExp) { assert(0); }
     override void visit(AST.ScopeExp) { assert(0); }
-    override void visit(AST.IdentifierExp) { assert(0); }
+    override void visit(AST.IdentifierExp e) {
+        buf.printf("%s", e.ident.toChars);
+    }
     override void visit(AST.UnaExp) { assert(0); }
     override void visit(AST.DefaultInitExp) { assert(0); }
     override void visit(AST.BinExp) { assert(0); }
@@ -312,7 +395,13 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     override void visit(AST.OrExp) { assert(0); }
     override void visit(AST.LogicalExp) { assert(0); }
     override void visit(AST.CondExp) { assert(0); }
-    override void visit(AST.AssignExp) { assert(0); }
+    override void visit(AST.AssignExp a) {
+        buf.printf("( = ");
+        a.e1.accept(this);
+        buf.printf(" ");
+        a.e2.accept(this);
+        buf.printf(")");
+    }
     override void visit(AST.BinAssignExp) { assert(0); }
     override void visit(AST.AddAssignExp) { assert(0); }
     override void visit(AST.MinAssignExp) { assert(0); }

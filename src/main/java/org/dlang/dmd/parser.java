@@ -44,7 +44,11 @@ public class parser {
 
         public  void visit(ASTBase.AttribDeclaration attr) {
             (this.buf).printf( new ByteSlice("( %s "), attr.toChars());
+            (this.buf).writenl();
+            (this.buf).level++;
             super.visit(attr);
+            (this.buf).level--;
+            (this.buf).writenl();
             (this.buf).printf( new ByteSlice(")"));
         }
 
@@ -56,66 +60,89 @@ public class parser {
 
         public  void visit(ASTBase.DebugSymbol sym) {
             (this.buf).printf( new ByteSlice("( debug "));
+            (this.buf).writenl();
+            (this.buf).level++;
             super.visit(sym);
+            (this.buf).level--;
+            (this.buf).writenl();
             (this.buf).printf( new ByteSlice(")"));
+            (this.buf).writenl();
         }
 
         public  void visit(ASTBase.VersionSymbol ver) {
             (this.buf).printf( new ByteSlice("( version "));
+            (this.buf).writenl();
+            (this.buf).level++;
             super.visit(ver);
+            (this.buf).level--;
+            (this.buf).writenl();
             (this.buf).printf( new ByteSlice(")"));
+            (this.buf).writenl();
         }
 
         public  void visit(ASTBase.VarDeclaration d) {
             (this.buf).printf( new ByteSlice("( var "));
             (this.buf).level++;
-            super.visit(d);
+            (this.buf).printf( new ByteSlice("%s "), d.ident.toChars());
+            d.type.accept(this);
             (this.buf).level--;
             (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.FuncDeclaration d) {
-            (this.buf).printf( new ByteSlice("( func \n"));
+            (this.buf).printf( new ByteSlice("( func "));
+            (this.buf).writenl();
             (this.buf).level++;
-            super.visit(d);
+            d.type.accept(this);
+            d.fbody.accept(this);
             (this.buf).level--;
+            (this.buf).writenl();
             (this.buf).printf( new ByteSlice(")"));
+            (this.buf).writenl();
         }
 
         public  void visit(ASTBase.AliasDeclaration d) {
             (this.buf).printf( new ByteSlice("(alias "));
+            (this.buf).writenl();
             (this.buf).level++;
             super.visit(d);
             (this.buf).level--;
+            (this.buf).writenl();
             (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.TupleDeclaration d) {
             (this.buf).printf( new ByteSlice("( tuple "));
+            (this.buf).writenl();
             (this.buf).level++;
             super.visit(d);
             (this.buf).level--;
+            (this.buf).writenl();
             (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.FuncLiteralDeclaration d) {
-            (this.buf).printf( new ByteSlice("( func literal"));
+            (this.buf).printf( new ByteSlice("( func literal "));
+            (this.buf).writenl();
             (this.buf).level++;
             super.visit(d);
             (this.buf).level--;
+            (this.buf).writenl();
             (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.PostBlitDeclaration d) {
             (this.buf).printf( new ByteSlice("( this(this) "));
+            (this.buf).writenl();
             (this.buf).level++;
             super.visit(d);
             (this.buf).level--;
+            (this.buf).writenl();
             (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.CtorDeclaration d) {
-            (this.buf).printf( new ByteSlice("( ctor "));
+            (this.buf).printf( new ByteSlice("( ctor \n"));
             (this.buf).level++;
             super.visit(d);
             (this.buf).level--;
@@ -250,8 +277,15 @@ public class parser {
             throw new AssertionError("Unreachable code!");
         }
 
-        public  void visit(ASTBase.StructDeclaration _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.StructDeclaration d) {
+            (this.buf).printf( new ByteSlice("( struct "));
+            (this.buf).writenl();
+            (this.buf).level++;
+            super.visit(d);
+            (this.buf).level--;
+            (this.buf).writenl();
+            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).writenl();
         }
 
         public  void visit(ASTBase.UnionDeclaration _param_0) {
@@ -270,8 +304,9 @@ public class parser {
             throw new AssertionError("Unreachable code!");
         }
 
-        public  void visit(ASTBase.Parameter _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.Parameter p) {
+            (this.buf).printf( new ByteSlice("%s "), p.ident.toChars());
+            super.visit(p);
         }
 
         public  void visit(ASTBase.Statement _param_0) {
@@ -398,12 +433,35 @@ public class parser {
             throw new AssertionError("Unreachable code!");
         }
 
-        public  void visit(ASTBase.ExpStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.ExpStatement s) {
+            (this.buf).printf( new ByteSlice("( expr "));
+            (this.buf).writenl();
+            (this.buf).level++;
+            super.visit(s);
+            (this.buf).level--;
+            (this.buf).writenl();
+            (this.buf).printf( new ByteSlice(")"));
         }
 
-        public  void visit(ASTBase.CompoundStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.CompoundStatement s) {
+            (this.buf).printf( new ByteSlice("("));
+            (this.buf).writenl();
+            (this.buf).level++;
+            if (s.statements != null)
+            {
+                Slice<ASTBase.Statement> __r99 = (s.statements).opSlice().copy();
+                int __key98 = 0;
+                for (; __key98 < __r99.getLength();__key98 += 1) {
+                    ASTBase.Statement st = __r99.get(__key98);
+                    int i = __key98;
+                    if ((i) != 0)
+                        (this.buf).writenl();
+                    st.accept(this);
+                }
+            }
+            (this.buf).level--;
+            (this.buf).writenl();
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.CompoundDeclarationStatement _param_0) {
@@ -422,20 +480,22 @@ public class parser {
             throw new AssertionError("Unreachable code!");
         }
 
-        public  void visit(ASTBase.TypeBasic _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.TypeBasic t) {
+            (this.buf).printf( new ByteSlice("%s"), t.dstring);
         }
 
         public  void visit(ASTBase.TypeError _param_0) {
-            throw new AssertionError("Unreachable code!");
+            (this.buf).printf( new ByteSlice("terror"));
         }
 
         public  void visit(ASTBase.TypeNull _param_0) {
-            throw new AssertionError("Unreachable code!");
+            (this.buf).printf( new ByteSlice("typeof(null)"));
         }
 
-        public  void visit(ASTBase.TypeVector _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.TypeVector t) {
+            (this.buf).printf( new ByteSlice("( __vector"));
+            super.visit(t);
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.TypeEnum _param_0) {
@@ -474,16 +534,29 @@ public class parser {
             throw new AssertionError("Unreachable code!");
         }
 
-        public  void visit(ASTBase.TypeFunction _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.TypeFunction tf) {
+            tf.next.accept(this);
+            (this.buf).printf( new ByteSlice(" "));
+            {
+                Slice<ASTBase.Parameter> __r101 = (tf.parameterList.parameters).opSlice().copy();
+                int __key100 = 0;
+                for (; __key100 < __r101.getLength();__key100 += 1) {
+                    ASTBase.Parameter p = __r101.get(__key100);
+                    int i = __key100;
+                    if ((i) != 0)
+                        (this.buf).printf( new ByteSlice(" "));
+                    p.accept(this);
+                }
+            }
         }
 
         public  void visit(ASTBase.TypeArray _param_0) {
             throw new AssertionError("Unreachable code!");
         }
 
-        public  void visit(ASTBase.TypeDArray _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.TypeDArray d) {
+            super.visit(d);
+            (this.buf).printf( new ByteSlice("[]"));
         }
 
         public  void visit(ASTBase.TypeAArray _param_0) {
@@ -502,8 +575,9 @@ public class parser {
             throw new AssertionError("Unreachable code!");
         }
 
-        public  void visit(ASTBase.TypeIdentifier _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.TypeIdentifier d) {
+            super.visit(d);
+            (this.buf).printf( new ByteSlice("%s"), d.ident.toChars());
         }
 
         public  void visit(ASTBase.TypeReturn _param_0) {
@@ -526,8 +600,8 @@ public class parser {
             throw new AssertionError("Unreachable code!");
         }
 
-        public  void visit(ASTBase.IntegerExp _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.IntegerExp e) {
+            (this.buf).printf( new ByteSlice("%lld"), e.value);
         }
 
         public  void visit(ASTBase.NewAnonClassExp _param_0) {
@@ -586,8 +660,8 @@ public class parser {
             throw new AssertionError("Unreachable code!");
         }
 
-        public  void visit(ASTBase.IdentifierExp _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.IdentifierExp e) {
+            (this.buf).printf( new ByteSlice("%s"), e.ident.toChars());
         }
 
         public  void visit(ASTBase.UnaExp _param_0) {
@@ -802,8 +876,12 @@ public class parser {
             throw new AssertionError("Unreachable code!");
         }
 
-        public  void visit(ASTBase.AssignExp _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.AssignExp a) {
+            (this.buf).printf( new ByteSlice("( = "));
+            a.e1.accept(this);
+            (this.buf).printf( new ByteSlice(" "));
+            a.e2.accept(this);
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.BinAssignExp _param_0) {
