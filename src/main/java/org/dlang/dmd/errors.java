@@ -57,7 +57,7 @@ public class errors {
 
         public abstract void deprecationSupplemental(Loc loc, BytePtr format, Slice<Object> arg2);
 
-        protected DiagnosticReporter() {}
+        public DiagnosticReporter() {}
 
         public abstract DiagnosticReporter copy();
     }
@@ -114,7 +114,7 @@ public class errors {
         }
 
 
-        protected StderrDiagnosticReporter() {}
+        public StderrDiagnosticReporter() {}
 
         public StderrDiagnosticReporter copy() {
             StderrDiagnosticReporter that = new StderrDiagnosticReporter();

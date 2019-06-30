@@ -482,7 +482,7 @@ public class astbase {
             }
 
 
-            protected AliasThis() {}
+            public AliasThis() {}
 
             public AliasThis copy() {
                 AliasThis that = new AliasThis();
@@ -518,7 +518,7 @@ public class astbase {
             }
 
 
-            protected Declaration() {}
+            public Declaration() {}
 
             public abstract Declaration copy();
         }
@@ -595,7 +595,7 @@ public class astbase {
             }
 
 
-            protected Import() {}
+            public Import() {}
 
             public Import copy() {
                 Import that = new Import();
@@ -632,7 +632,7 @@ public class astbase {
             }
 
 
-            protected AttribDeclaration() {}
+            public AttribDeclaration() {}
 
             public abstract AttribDeclaration copy();
         }
@@ -648,7 +648,7 @@ public class astbase {
             }
 
 
-            protected StaticAssert() {}
+            public StaticAssert() {}
 
             public StaticAssert copy() {
                 StaticAssert that = new StaticAssert();
@@ -682,7 +682,7 @@ public class astbase {
             }
 
 
-            protected DebugSymbol() {}
+            public DebugSymbol() {}
 
             public DebugSymbol copy() {
                 DebugSymbol that = new DebugSymbol();
@@ -715,7 +715,7 @@ public class astbase {
             }
 
 
-            protected VersionSymbol() {}
+            public VersionSymbol() {}
 
             public VersionSymbol copy() {
                 VersionSymbol that = new VersionSymbol();
@@ -756,7 +756,7 @@ public class astbase {
             }
 
 
-            protected VarDeclaration() {}
+            public VarDeclaration() {}
 
             public VarDeclaration copy() {
                 VarDeclaration that = new VarDeclaration();
@@ -836,7 +836,7 @@ public class astbase {
             }
 
 
-            protected FuncDeclaration() {}
+            public FuncDeclaration() {}
 
             public FuncDeclaration copy() {
                 FuncDeclaration that = new FuncDeclaration();
@@ -880,7 +880,7 @@ public class astbase {
             }
 
 
-            protected AliasDeclaration() {}
+            public AliasDeclaration() {}
 
             public AliasDeclaration copy() {
                 AliasDeclaration that = new AliasDeclaration();
@@ -906,7 +906,7 @@ public class astbase {
             }
 
 
-            protected TupleDeclaration() {}
+            public TupleDeclaration() {}
 
             public TupleDeclaration copy() {
                 TupleDeclaration that = new TupleDeclaration();
@@ -937,7 +937,7 @@ public class astbase {
             }
 
 
-            protected FuncLiteralDeclaration() {}
+            public FuncLiteralDeclaration() {}
 
             public FuncLiteralDeclaration copy() {
                 FuncLiteralDeclaration that = new FuncLiteralDeclaration();
@@ -965,7 +965,7 @@ public class astbase {
             }
 
 
-            protected PostBlitDeclaration() {}
+            public PostBlitDeclaration() {}
 
             public PostBlitDeclaration copy() {
                 PostBlitDeclaration that = new PostBlitDeclaration();
@@ -992,7 +992,7 @@ public class astbase {
             }
 
 
-            protected CtorDeclaration() {}
+            public CtorDeclaration() {}
 
             public CtorDeclaration copy() {
                 CtorDeclaration that = new CtorDeclaration();
@@ -1023,7 +1023,7 @@ public class astbase {
             }
 
 
-            protected DtorDeclaration() {}
+            public DtorDeclaration() {}
 
             public DtorDeclaration copy() {
                 DtorDeclaration that = new DtorDeclaration();
@@ -1051,7 +1051,7 @@ public class astbase {
             }
 
 
-            protected InvariantDeclaration() {}
+            public InvariantDeclaration() {}
 
             public InvariantDeclaration copy() {
                 InvariantDeclaration that = new InvariantDeclaration();
@@ -1080,7 +1080,7 @@ public class astbase {
             }
 
 
-            protected UnitTestDeclaration() {}
+            public UnitTestDeclaration() {}
 
             public UnitTestDeclaration copy() {
                 UnitTestDeclaration that = new UnitTestDeclaration();
@@ -1112,7 +1112,7 @@ public class astbase {
             }
 
 
-            protected NewDeclaration() {}
+            public NewDeclaration() {}
 
             public NewDeclaration copy() {
                 NewDeclaration that = new NewDeclaration();
@@ -1143,7 +1143,7 @@ public class astbase {
             }
 
 
-            protected DeleteDeclaration() {}
+            public DeleteDeclaration() {}
 
             public DeleteDeclaration copy() {
                 DeleteDeclaration that = new DeleteDeclaration();
@@ -1175,7 +1175,7 @@ public class astbase {
             }
 
 
-            protected StaticCtorDeclaration() {}
+            public StaticCtorDeclaration() {}
 
             public StaticCtorDeclaration copy() {
                 StaticCtorDeclaration that = new StaticCtorDeclaration();
@@ -1208,7 +1208,7 @@ public class astbase {
             }
 
 
-            protected StaticDtorDeclaration() {}
+            public StaticDtorDeclaration() {}
 
             public StaticDtorDeclaration copy() {
                 StaticDtorDeclaration that = new StaticDtorDeclaration();
@@ -1235,7 +1235,7 @@ public class astbase {
             }
 
 
-            protected SharedStaticCtorDeclaration() {}
+            public SharedStaticCtorDeclaration() {}
 
             public SharedStaticCtorDeclaration copy() {
                 SharedStaticCtorDeclaration that = new SharedStaticCtorDeclaration();
@@ -1253,7 +1253,7 @@ public class astbase {
             }
 
 
-            protected SharedStaticDtorDeclaration() {}
+            public SharedStaticDtorDeclaration() {}
 
             public SharedStaticDtorDeclaration copy() {
                 SharedStaticDtorDeclaration that = new SharedStaticDtorDeclaration();
@@ -1275,7 +1275,7 @@ public class astbase {
             }
 
 
-            protected Package() {}
+            public Package() {}
 
             public Package copy() {
                 Package that = new Package();
@@ -1303,7 +1303,7 @@ public class astbase {
             }
 
 
-            protected EnumDeclaration() {}
+            public EnumDeclaration() {}
 
             public EnumDeclaration copy() {
                 EnumDeclaration that = new EnumDeclaration();
@@ -1335,7 +1335,7 @@ public class astbase {
             }
 
 
-            protected AggregateDeclaration() {}
+            public AggregateDeclaration() {}
 
             public abstract AggregateDeclaration copy();
         }
@@ -1383,7 +1383,7 @@ public class astbase {
             }
 
 
-            protected TemplateDeclaration() {}
+            public TemplateDeclaration() {}
 
             public TemplateDeclaration copy() {
                 TemplateDeclaration that = new TemplateDeclaration();
@@ -1475,7 +1475,7 @@ public class astbase {
             }
 
 
-            protected TemplateInstance() {}
+            public TemplateInstance() {}
 
             public TemplateInstance copy() {
                 TemplateInstance that = new TemplateInstance();
@@ -1504,7 +1504,7 @@ public class astbase {
             }
 
 
-            protected Nspace() {}
+            public Nspace() {}
 
             public Nspace copy() {
                 Nspace that = new Nspace();
@@ -1527,7 +1527,7 @@ public class astbase {
             }
 
 
-            protected CompileDeclaration() {}
+            public CompileDeclaration() {}
 
             public CompileDeclaration copy() {
                 CompileDeclaration that = new CompileDeclaration();
@@ -1564,7 +1564,7 @@ public class astbase {
             }
 
 
-            protected UserAttributeDeclaration() {}
+            public UserAttributeDeclaration() {}
 
             public UserAttributeDeclaration copy() {
                 UserAttributeDeclaration that = new UserAttributeDeclaration();
@@ -1586,7 +1586,7 @@ public class astbase {
             }
 
 
-            protected LinkDeclaration() {}
+            public LinkDeclaration() {}
 
             public LinkDeclaration copy() {
                 LinkDeclaration that = new LinkDeclaration();
@@ -1609,7 +1609,7 @@ public class astbase {
             }
 
 
-            protected AnonDeclaration() {}
+            public AnonDeclaration() {}
 
             public AnonDeclaration copy() {
                 AnonDeclaration that = new AnonDeclaration();
@@ -1632,7 +1632,7 @@ public class astbase {
             }
 
 
-            protected AlignDeclaration() {}
+            public AlignDeclaration() {}
 
             public AlignDeclaration copy() {
                 AlignDeclaration that = new AlignDeclaration();
@@ -1654,7 +1654,7 @@ public class astbase {
             }
 
 
-            protected CPPMangleDeclaration() {}
+            public CPPMangleDeclaration() {}
 
             public CPPMangleDeclaration copy() {
                 CPPMangleDeclaration that = new CPPMangleDeclaration();
@@ -1681,7 +1681,7 @@ public class astbase {
             }
 
 
-            protected CPPNamespaceDeclaration() {}
+            public CPPNamespaceDeclaration() {}
 
             public CPPNamespaceDeclaration copy() {
                 CPPNamespaceDeclaration that = new CPPNamespaceDeclaration();
@@ -1713,7 +1713,7 @@ public class astbase {
             }
 
 
-            protected ProtDeclaration() {}
+            public ProtDeclaration() {}
 
             public ProtDeclaration copy() {
                 ProtDeclaration that = new ProtDeclaration();
@@ -1738,7 +1738,7 @@ public class astbase {
             }
 
 
-            protected PragmaDeclaration() {}
+            public PragmaDeclaration() {}
 
             public PragmaDeclaration copy() {
                 PragmaDeclaration that = new PragmaDeclaration();
@@ -1760,7 +1760,7 @@ public class astbase {
             }
 
 
-            protected StorageClassDeclaration() {}
+            public StorageClassDeclaration() {}
 
             public StorageClassDeclaration copy() {
                 StorageClassDeclaration that = new StorageClassDeclaration();
@@ -1784,7 +1784,7 @@ public class astbase {
             }
 
 
-            protected ConditionalDeclaration() {}
+            public ConditionalDeclaration() {}
 
             public ConditionalDeclaration copy() {
                 ConditionalDeclaration that = new ConditionalDeclaration();
@@ -1807,7 +1807,7 @@ public class astbase {
             }
 
 
-            protected DeprecatedDeclaration() {}
+            public DeprecatedDeclaration() {}
 
             public DeprecatedDeclaration copy() {
                 DeprecatedDeclaration that = new DeprecatedDeclaration();
@@ -1827,7 +1827,7 @@ public class astbase {
             }
 
 
-            protected StaticIfDeclaration() {}
+            public StaticIfDeclaration() {}
 
             public StaticIfDeclaration copy() {
                 StaticIfDeclaration that = new StaticIfDeclaration();
@@ -1849,7 +1849,7 @@ public class astbase {
             }
 
 
-            protected StaticForeachDeclaration() {}
+            public StaticForeachDeclaration() {}
 
             public StaticForeachDeclaration copy() {
                 StaticForeachDeclaration that = new StaticForeachDeclaration();
@@ -1883,7 +1883,7 @@ public class astbase {
             }
 
 
-            protected EnumMember() {}
+            public EnumMember() {}
 
             public EnumMember copy() {
                 EnumMember that = new EnumMember();
@@ -1913,7 +1913,7 @@ public class astbase {
             }
 
 
-            protected Module() {}
+            public Module() {}
 
             public Module copy() {
                 Module that = new Module();
@@ -1945,7 +1945,7 @@ public class astbase {
             }
 
 
-            protected StructDeclaration() {}
+            public StructDeclaration() {}
 
             public StructDeclaration copy() {
                 StructDeclaration that = new StructDeclaration();
@@ -1968,7 +1968,7 @@ public class astbase {
             }
 
 
-            protected UnionDeclaration() {}
+            public UnionDeclaration() {}
 
             public UnionDeclaration copy() {
                 UnionDeclaration that = new UnionDeclaration();
@@ -2146,7 +2146,7 @@ public class astbase {
             }
 
 
-            protected ClassDeclaration() {}
+            public ClassDeclaration() {}
 
             public ClassDeclaration copy() {
                 ClassDeclaration that = new ClassDeclaration();
@@ -2169,7 +2169,7 @@ public class astbase {
             }
 
 
-            protected InterfaceDeclaration() {}
+            public InterfaceDeclaration() {}
 
             public InterfaceDeclaration copy() {
                 InterfaceDeclaration that = new InterfaceDeclaration();
@@ -2192,7 +2192,7 @@ public class astbase {
             }
 
 
-            protected TemplateMixin() {}
+            public TemplateMixin() {}
 
             public TemplateMixin copy() {
                 TemplateMixin that = new TemplateMixin();
@@ -2328,7 +2328,7 @@ public class astbase {
             }
 
 
-            protected Parameter() {}
+            public Parameter() {}
 
             public Parameter copy() {
                 Parameter that = new Parameter();
@@ -2365,7 +2365,7 @@ public class astbase {
             }
 
 
-            protected Statement() {}
+            public Statement() {}
 
             public abstract Statement copy();
         }
@@ -2382,7 +2382,7 @@ public class astbase {
             }
 
 
-            protected ImportStatement() {}
+            public ImportStatement() {}
 
             public ImportStatement copy() {
                 ImportStatement that = new ImportStatement();
@@ -2406,7 +2406,7 @@ public class astbase {
             }
 
 
-            protected ScopeStatement() {}
+            public ScopeStatement() {}
 
             public ScopeStatement copy() {
                 ScopeStatement that = new ScopeStatement();
@@ -2433,7 +2433,7 @@ public class astbase {
             }
 
 
-            protected ReturnStatement() {}
+            public ReturnStatement() {}
 
             public ReturnStatement copy() {
                 ReturnStatement that = new ReturnStatement();
@@ -2457,7 +2457,7 @@ public class astbase {
             }
 
 
-            protected LabelStatement() {}
+            public LabelStatement() {}
 
             public LabelStatement copy() {
                 LabelStatement that = new LabelStatement();
@@ -2480,7 +2480,7 @@ public class astbase {
             }
 
 
-            protected StaticAssertStatement() {}
+            public StaticAssertStatement() {}
 
             public StaticAssertStatement copy() {
                 StaticAssertStatement that = new StaticAssertStatement();
@@ -2502,7 +2502,7 @@ public class astbase {
             }
 
 
-            protected CompileStatement() {}
+            public CompileStatement() {}
 
             public CompileStatement copy() {
                 CompileStatement that = new CompileStatement();
@@ -2528,7 +2528,7 @@ public class astbase {
             }
 
 
-            protected WhileStatement() {}
+            public WhileStatement() {}
 
             public WhileStatement copy() {
                 WhileStatement that = new WhileStatement();
@@ -2560,7 +2560,7 @@ public class astbase {
             }
 
 
-            protected ForStatement() {}
+            public ForStatement() {}
 
             public ForStatement copy() {
                 ForStatement that = new ForStatement();
@@ -2590,7 +2590,7 @@ public class astbase {
             }
 
 
-            protected DoStatement() {}
+            public DoStatement() {}
 
             public DoStatement copy() {
                 DoStatement that = new DoStatement();
@@ -2624,7 +2624,7 @@ public class astbase {
             }
 
 
-            protected ForeachRangeStatement() {}
+            public ForeachRangeStatement() {}
 
             public ForeachRangeStatement copy() {
                 ForeachRangeStatement that = new ForeachRangeStatement();
@@ -2659,7 +2659,7 @@ public class astbase {
             }
 
 
-            protected ForeachStatement() {}
+            public ForeachStatement() {}
 
             public ForeachStatement copy() {
                 ForeachStatement that = new ForeachStatement();
@@ -2694,7 +2694,7 @@ public class astbase {
             }
 
 
-            protected IfStatement() {}
+            public IfStatement() {}
 
             public IfStatement copy() {
                 IfStatement that = new IfStatement();
@@ -2723,7 +2723,7 @@ public class astbase {
             }
 
 
-            protected ScopeGuardStatement() {}
+            public ScopeGuardStatement() {}
 
             public ScopeGuardStatement copy() {
                 ScopeGuardStatement that = new ScopeGuardStatement();
@@ -2750,7 +2750,7 @@ public class astbase {
             }
 
 
-            protected ConditionalStatement() {}
+            public ConditionalStatement() {}
 
             public ConditionalStatement copy() {
                 ConditionalStatement that = new ConditionalStatement();
@@ -2774,7 +2774,7 @@ public class astbase {
             }
 
 
-            protected StaticForeachStatement() {}
+            public StaticForeachStatement() {}
 
             public StaticForeachStatement copy() {
                 StaticForeachStatement that = new StaticForeachStatement();
@@ -2800,7 +2800,7 @@ public class astbase {
             }
 
 
-            protected PragmaStatement() {}
+            public PragmaStatement() {}
 
             public PragmaStatement copy() {
                 PragmaStatement that = new PragmaStatement();
@@ -2828,7 +2828,7 @@ public class astbase {
             }
 
 
-            protected SwitchStatement() {}
+            public SwitchStatement() {}
 
             public SwitchStatement copy() {
                 SwitchStatement that = new SwitchStatement();
@@ -2856,7 +2856,7 @@ public class astbase {
             }
 
 
-            protected CaseRangeStatement() {}
+            public CaseRangeStatement() {}
 
             public CaseRangeStatement copy() {
                 CaseRangeStatement that = new CaseRangeStatement();
@@ -2882,7 +2882,7 @@ public class astbase {
             }
 
 
-            protected CaseStatement() {}
+            public CaseStatement() {}
 
             public CaseStatement copy() {
                 CaseStatement that = new CaseStatement();
@@ -2905,7 +2905,7 @@ public class astbase {
             }
 
 
-            protected DefaultStatement() {}
+            public DefaultStatement() {}
 
             public DefaultStatement copy() {
                 DefaultStatement that = new DefaultStatement();
@@ -2927,7 +2927,7 @@ public class astbase {
             }
 
 
-            protected BreakStatement() {}
+            public BreakStatement() {}
 
             public BreakStatement copy() {
                 BreakStatement that = new BreakStatement();
@@ -2949,7 +2949,7 @@ public class astbase {
             }
 
 
-            protected ContinueStatement() {}
+            public ContinueStatement() {}
 
             public ContinueStatement copy() {
                 ContinueStatement that = new ContinueStatement();
@@ -2969,7 +2969,7 @@ public class astbase {
             }
 
 
-            protected GotoDefaultStatement() {}
+            public GotoDefaultStatement() {}
 
             public GotoDefaultStatement copy() {
                 GotoDefaultStatement that = new GotoDefaultStatement();
@@ -2990,7 +2990,7 @@ public class astbase {
             }
 
 
-            protected GotoCaseStatement() {}
+            public GotoCaseStatement() {}
 
             public GotoCaseStatement copy() {
                 GotoCaseStatement that = new GotoCaseStatement();
@@ -3012,7 +3012,7 @@ public class astbase {
             }
 
 
-            protected GotoStatement() {}
+            public GotoStatement() {}
 
             public GotoStatement copy() {
                 GotoStatement that = new GotoStatement();
@@ -3036,7 +3036,7 @@ public class astbase {
             }
 
 
-            protected SynchronizedStatement() {}
+            public SynchronizedStatement() {}
 
             public SynchronizedStatement copy() {
                 SynchronizedStatement that = new SynchronizedStatement();
@@ -3063,7 +3063,7 @@ public class astbase {
             }
 
 
-            protected WithStatement() {}
+            public WithStatement() {}
 
             public WithStatement copy() {
                 WithStatement that = new WithStatement();
@@ -3089,7 +3089,7 @@ public class astbase {
             }
 
 
-            protected TryCatchStatement() {}
+            public TryCatchStatement() {}
 
             public TryCatchStatement copy() {
                 TryCatchStatement that = new TryCatchStatement();
@@ -3114,7 +3114,7 @@ public class astbase {
             }
 
 
-            protected TryFinallyStatement() {}
+            public TryFinallyStatement() {}
 
             public TryFinallyStatement copy() {
                 TryFinallyStatement that = new TryFinallyStatement();
@@ -3137,7 +3137,7 @@ public class astbase {
             }
 
 
-            protected ThrowStatement() {}
+            public ThrowStatement() {}
 
             public ThrowStatement copy() {
                 ThrowStatement that = new ThrowStatement();
@@ -3159,7 +3159,7 @@ public class astbase {
             }
 
 
-            protected AsmStatement() {}
+            public AsmStatement() {}
 
             public AsmStatement copy() {
                 AsmStatement that = new AsmStatement();
@@ -3179,7 +3179,7 @@ public class astbase {
             }
 
 
-            protected InlineAsmStatement() {}
+            public InlineAsmStatement() {}
 
             public InlineAsmStatement copy() {
                 InlineAsmStatement that = new InlineAsmStatement();
@@ -3198,7 +3198,7 @@ public class astbase {
             }
 
 
-            protected GccAsmStatement() {}
+            public GccAsmStatement() {}
 
             public GccAsmStatement copy() {
                 GccAsmStatement that = new GccAsmStatement();
@@ -3228,7 +3228,7 @@ public class astbase {
             }
 
 
-            protected ExpStatement() {}
+            public ExpStatement() {}
 
             public ExpStatement copy() {
                 ExpStatement that = new ExpStatement();
@@ -3268,7 +3268,7 @@ public class astbase {
             }
 
 
-            protected CompoundStatement() {}
+            public CompoundStatement() {}
 
             public CompoundStatement copy() {
                 CompoundStatement that = new CompoundStatement();
@@ -3288,7 +3288,7 @@ public class astbase {
             }
 
 
-            protected CompoundDeclarationStatement() {}
+            public CompoundDeclarationStatement() {}
 
             public CompoundDeclarationStatement copy() {
                 CompoundDeclarationStatement that = new CompoundDeclarationStatement();
@@ -3309,7 +3309,7 @@ public class astbase {
             }
 
 
-            protected CompoundAsmStatement() {}
+            public CompoundAsmStatement() {}
 
             public CompoundAsmStatement copy() {
                 CompoundAsmStatement that = new CompoundAsmStatement();
@@ -3333,7 +3333,7 @@ public class astbase {
             }
 
 
-            protected Catch() {}
+            public Catch() {}
 
             public Catch copy() {
                 Catch that = new Catch();
@@ -4011,7 +4011,7 @@ public class astbase {
             }
 
 
-            protected Type() {}
+            public Type() {}
 
             public abstract Type copy();
         }
@@ -4137,7 +4137,7 @@ public class astbase {
             }
 
 
-            protected TypeBasic() {}
+            public TypeBasic() {}
 
             public TypeBasic copy() {
                 TypeBasic that = new TypeBasic();
@@ -4245,7 +4245,7 @@ public class astbase {
             }
 
 
-            protected TypeVector() {}
+            public TypeVector() {}
 
             public TypeVector copy() {
                 TypeVector that = new TypeVector();
@@ -4284,7 +4284,7 @@ public class astbase {
             }
 
 
-            protected TypeEnum() {}
+            public TypeEnum() {}
 
             public TypeEnum copy() {
                 TypeEnum that = new TypeEnum();
@@ -4346,7 +4346,7 @@ public class astbase {
             }
 
 
-            protected TypeTuple() {}
+            public TypeTuple() {}
 
             public TypeTuple copy() {
                 TypeTuple that = new TypeTuple();
@@ -4386,7 +4386,7 @@ public class astbase {
             }
 
 
-            protected TypeClass() {}
+            public TypeClass() {}
 
             public TypeClass copy() {
                 TypeClass that = new TypeClass();
@@ -4427,7 +4427,7 @@ public class astbase {
             }
 
 
-            protected TypeStruct() {}
+            public TypeStruct() {}
 
             public TypeStruct copy() {
                 TypeStruct that = new TypeStruct();
@@ -4473,7 +4473,7 @@ public class astbase {
             }
 
 
-            protected TypeReference() {}
+            public TypeReference() {}
 
             public TypeReference copy() {
                 TypeReference that = new TypeReference();
@@ -4500,7 +4500,7 @@ public class astbase {
             }
 
 
-            protected TypeNext() {}
+            public TypeNext() {}
 
             public abstract TypeNext copy();
             public void setNext(Type value) { next = value; }
@@ -4527,7 +4527,7 @@ public class astbase {
             }
 
 
-            protected TypeSlice() {}
+            public TypeSlice() {}
 
             public TypeSlice copy() {
                 TypeSlice that = new TypeSlice();
@@ -4563,7 +4563,7 @@ public class astbase {
             }
 
 
-            protected TypeDelegate() {}
+            public TypeDelegate() {}
 
             public TypeDelegate copy() {
                 TypeDelegate that = new TypeDelegate();
@@ -4596,7 +4596,7 @@ public class astbase {
             }
 
 
-            protected TypePointer() {}
+            public TypePointer() {}
 
             public TypePointer copy() {
                 TypePointer that = new TypePointer();
@@ -4671,7 +4671,7 @@ public class astbase {
             }
 
 
-            protected TypeFunction() {}
+            public TypeFunction() {}
 
             public TypeFunction copy() {
                 TypeFunction that = new TypeFunction();
@@ -4704,7 +4704,7 @@ public class astbase {
             }
 
 
-            protected TypeArray() {}
+            public TypeArray() {}
 
             public TypeArray copy() {
                 TypeArray that = new TypeArray();
@@ -4737,7 +4737,7 @@ public class astbase {
             }
 
 
-            protected TypeDArray() {}
+            public TypeDArray() {}
 
             public TypeDArray copy() {
                 TypeDArray that = new TypeDArray();
@@ -4782,7 +4782,7 @@ public class astbase {
             }
 
 
-            protected TypeAArray() {}
+            public TypeAArray() {}
 
             public TypeAArray copy() {
                 TypeAArray that = new TypeAArray();
@@ -4819,7 +4819,7 @@ public class astbase {
             }
 
 
-            protected TypeSArray() {}
+            public TypeSArray() {}
 
             public TypeSArray copy() {
                 TypeSArray that = new TypeSArray();
@@ -4908,7 +4908,7 @@ public class astbase {
             }
 
 
-            protected TypeQualified() {}
+            public TypeQualified() {}
 
             public abstract TypeQualified copy();
         }
@@ -4935,7 +4935,7 @@ public class astbase {
             }
 
 
-            protected TypeTraits() {}
+            public TypeTraits() {}
 
             public TypeTraits copy() {
                 TypeTraits that = new TypeTraits();
@@ -4983,7 +4983,7 @@ public class astbase {
             }
 
 
-            protected TypeIdentifier() {}
+            public TypeIdentifier() {}
 
             public TypeIdentifier copy() {
                 TypeIdentifier that = new TypeIdentifier();
@@ -5011,7 +5011,7 @@ public class astbase {
             }
 
 
-            protected TypeReturn() {}
+            public TypeReturn() {}
 
             public TypeReturn copy() {
                 TypeReturn that = new TypeReturn();
@@ -5040,7 +5040,7 @@ public class astbase {
             }
 
 
-            protected TypeTypeof() {}
+            public TypeTypeof() {}
 
             public TypeTypeof copy() {
                 TypeTypeof that = new TypeTypeof();
@@ -5074,7 +5074,7 @@ public class astbase {
             }
 
 
-            protected TypeInstance() {}
+            public TypeInstance() {}
 
             public TypeInstance copy() {
                 TypeInstance that = new TypeInstance();
@@ -5118,7 +5118,7 @@ public class astbase {
             }
 
 
-            protected Expression() {}
+            public Expression() {}
 
             public abstract Expression copy();
         }
@@ -5135,7 +5135,7 @@ public class astbase {
             }
 
 
-            protected DeclarationExp() {}
+            public DeclarationExp() {}
 
             public DeclarationExp copy() {
                 DeclarationExp that = new DeclarationExp();
@@ -5226,7 +5226,7 @@ public class astbase {
             }
 
 
-            protected IntegerExp() {}
+            public IntegerExp() {}
 
             public IntegerExp copy() {
                 IntegerExp that = new IntegerExp();
@@ -5258,7 +5258,7 @@ public class astbase {
             }
 
 
-            protected NewAnonClassExp() {}
+            public NewAnonClassExp() {}
 
             public NewAnonClassExp copy() {
                 NewAnonClassExp that = new NewAnonClassExp();
@@ -5297,7 +5297,7 @@ public class astbase {
             }
 
 
-            protected IsExp() {}
+            public IsExp() {}
 
             public IsExp copy() {
                 IsExp that = new IsExp();
@@ -5329,7 +5329,7 @@ public class astbase {
             }
 
 
-            protected RealExp() {}
+            public RealExp() {}
 
             public RealExp copy() {
                 RealExp that = new RealExp();
@@ -5354,7 +5354,7 @@ public class astbase {
             }
 
 
-            protected NullExp() {}
+            public NullExp() {}
 
             public NullExp copy() {
                 NullExp that = new NullExp();
@@ -5379,7 +5379,7 @@ public class astbase {
             }
 
 
-            protected TypeidExp() {}
+            public TypeidExp() {}
 
             public TypeidExp copy() {
                 TypeidExp that = new TypeidExp();
@@ -5407,7 +5407,7 @@ public class astbase {
             }
 
 
-            protected TraitsExp() {}
+            public TraitsExp() {}
 
             public TraitsExp copy() {
                 TraitsExp that = new TraitsExp();
@@ -5492,7 +5492,7 @@ public class astbase {
             }
 
 
-            protected StringExp() {}
+            public StringExp() {}
 
             public StringExp copy() {
                 StringExp that = new StringExp();
@@ -5529,7 +5529,7 @@ public class astbase {
             }
 
 
-            protected NewExp() {}
+            public NewExp() {}
 
             public NewExp copy() {
                 NewExp that = new NewExp();
@@ -5561,7 +5561,7 @@ public class astbase {
             }
 
 
-            protected AssocArrayLiteralExp() {}
+            public AssocArrayLiteralExp() {}
 
             public AssocArrayLiteralExp copy() {
                 AssocArrayLiteralExp that = new AssocArrayLiteralExp();
@@ -5601,7 +5601,7 @@ public class astbase {
             }
 
 
-            protected ArrayLiteralExp() {}
+            public ArrayLiteralExp() {}
 
             public ArrayLiteralExp copy() {
                 ArrayLiteralExp that = new ArrayLiteralExp();
@@ -5639,7 +5639,7 @@ public class astbase {
             }
 
 
-            protected FuncExp() {}
+            public FuncExp() {}
 
             public FuncExp copy() {
                 FuncExp that = new FuncExp();
@@ -5669,7 +5669,7 @@ public class astbase {
             }
 
 
-            protected IntervalExp() {}
+            public IntervalExp() {}
 
             public IntervalExp copy() {
                 IntervalExp that = new IntervalExp();
@@ -5695,7 +5695,7 @@ public class astbase {
             }
 
 
-            protected TypeExp() {}
+            public TypeExp() {}
 
             public TypeExp copy() {
                 TypeExp that = new TypeExp();
@@ -5721,7 +5721,7 @@ public class astbase {
             }
 
 
-            protected ScopeExp() {}
+            public ScopeExp() {}
 
             public ScopeExp copy() {
                 ScopeExp that = new ScopeExp();
@@ -5747,7 +5747,7 @@ public class astbase {
             }
 
 
-            protected IdentifierExp() {}
+            public IdentifierExp() {}
 
             public IdentifierExp copy() {
                 IdentifierExp that = new IdentifierExp();
@@ -5773,7 +5773,7 @@ public class astbase {
             }
 
 
-            protected UnaExp() {}
+            public UnaExp() {}
 
             public UnaExp copy() {
                 UnaExp that = new UnaExp();
@@ -5799,7 +5799,7 @@ public class astbase {
             }
 
 
-            protected DefaultInitExp() {}
+            public DefaultInitExp() {}
 
             public DefaultInitExp copy() {
                 DefaultInitExp that = new DefaultInitExp();
@@ -5827,7 +5827,7 @@ public class astbase {
             }
 
 
-            protected BinExp() {}
+            public BinExp() {}
 
             public abstract BinExp copy();
         }
@@ -5846,7 +5846,7 @@ public class astbase {
             }
 
 
-            protected DsymbolExp() {}
+            public DsymbolExp() {}
 
             public DsymbolExp copy() {
                 DsymbolExp that = new DsymbolExp();
@@ -5875,7 +5875,7 @@ public class astbase {
             }
 
 
-            protected TemplateExp() {}
+            public TemplateExp() {}
 
             public TemplateExp copy() {
                 TemplateExp that = new TemplateExp();
@@ -5905,7 +5905,7 @@ public class astbase {
             }
 
 
-            protected SymbolExp() {}
+            public SymbolExp() {}
 
             public SymbolExp copy() {
                 SymbolExp that = new SymbolExp();
@@ -5931,7 +5931,7 @@ public class astbase {
             }
 
 
-            protected VarExp() {}
+            public VarExp() {}
 
             public VarExp copy() {
                 VarExp that = new VarExp();
@@ -6032,7 +6032,7 @@ public class astbase {
             }
 
 
-            protected TupleExp() {}
+            public TupleExp() {}
 
             public TupleExp copy() {
                 TupleExp that = new TupleExp();
@@ -6057,7 +6057,7 @@ public class astbase {
             }
 
 
-            protected DollarExp() {}
+            public DollarExp() {}
 
             public DollarExp copy() {
                 DollarExp that = new DollarExp();
@@ -6076,7 +6076,7 @@ public class astbase {
             }
 
 
-            protected ThisExp() {}
+            public ThisExp() {}
 
             public ThisExp copy() {
                 ThisExp that = new ThisExp();
@@ -6100,7 +6100,7 @@ public class astbase {
             }
 
 
-            protected SuperExp() {}
+            public SuperExp() {}
 
             public SuperExp copy() {
                 SuperExp that = new SuperExp();
@@ -6118,7 +6118,7 @@ public class astbase {
             }
 
 
-            protected AddrExp() {}
+            public AddrExp() {}
 
             public AddrExp copy() {
                 AddrExp that = new AddrExp();
@@ -6137,7 +6137,7 @@ public class astbase {
             }
 
 
-            protected PreExp() {}
+            public PreExp() {}
 
             public PreExp copy() {
                 PreExp that = new PreExp();
@@ -6161,7 +6161,7 @@ public class astbase {
             }
 
 
-            protected PtrExp() {}
+            public PtrExp() {}
 
             public PtrExp copy() {
                 PtrExp that = new PtrExp();
@@ -6180,7 +6180,7 @@ public class astbase {
             }
 
 
-            protected NegExp() {}
+            public NegExp() {}
 
             public NegExp copy() {
                 NegExp that = new NegExp();
@@ -6199,7 +6199,7 @@ public class astbase {
             }
 
 
-            protected UAddExp() {}
+            public UAddExp() {}
 
             public UAddExp copy() {
                 UAddExp that = new UAddExp();
@@ -6218,7 +6218,7 @@ public class astbase {
             }
 
 
-            protected NotExp() {}
+            public NotExp() {}
 
             public NotExp copy() {
                 NotExp that = new NotExp();
@@ -6237,7 +6237,7 @@ public class astbase {
             }
 
 
-            protected ComExp() {}
+            public ComExp() {}
 
             public ComExp copy() {
                 ComExp that = new ComExp();
@@ -6258,7 +6258,7 @@ public class astbase {
             }
 
 
-            protected DeleteExp() {}
+            public DeleteExp() {}
 
             public DeleteExp copy() {
                 DeleteExp that = new DeleteExp();
@@ -6286,7 +6286,7 @@ public class astbase {
             }
 
 
-            protected CastExp() {}
+            public CastExp() {}
 
             public CastExp copy() {
                 CastExp that = new CastExp();
@@ -6333,7 +6333,7 @@ public class astbase {
             }
 
 
-            protected CallExp() {}
+            public CallExp() {}
 
             public CallExp copy() {
                 CallExp that = new CallExp();
@@ -6355,7 +6355,7 @@ public class astbase {
             }
 
 
-            protected DotIdExp() {}
+            public DotIdExp() {}
 
             public DotIdExp copy() {
                 DotIdExp that = new DotIdExp();
@@ -6377,7 +6377,7 @@ public class astbase {
             }
 
 
-            protected AssertExp() {}
+            public AssertExp() {}
 
             public AssertExp copy() {
                 AssertExp that = new AssertExp();
@@ -6399,7 +6399,7 @@ public class astbase {
             }
 
 
-            protected CompileExp() {}
+            public CompileExp() {}
 
             public CompileExp copy() {
                 CompileExp that = new CompileExp();
@@ -6423,7 +6423,7 @@ public class astbase {
             }
 
 
-            protected ImportExp() {}
+            public ImportExp() {}
 
             public ImportExp copy() {
                 ImportExp that = new ImportExp();
@@ -6449,7 +6449,7 @@ public class astbase {
             }
 
 
-            protected DotTemplateInstanceExp() {}
+            public DotTemplateInstanceExp() {}
 
             public DotTemplateInstanceExp copy() {
                 DotTemplateInstanceExp that = new DotTemplateInstanceExp();
@@ -6478,7 +6478,7 @@ public class astbase {
             }
 
 
-            protected ArrayExp() {}
+            public ArrayExp() {}
 
             public ArrayExp copy() {
                 ArrayExp that = new ArrayExp();
@@ -6498,7 +6498,7 @@ public class astbase {
             }
 
 
-            protected FuncInitExp() {}
+            public FuncInitExp() {}
 
             public FuncInitExp copy() {
                 FuncInitExp that = new FuncInitExp();
@@ -6517,7 +6517,7 @@ public class astbase {
             }
 
 
-            protected PrettyFuncInitExp() {}
+            public PrettyFuncInitExp() {}
 
             public PrettyFuncInitExp copy() {
                 PrettyFuncInitExp that = new PrettyFuncInitExp();
@@ -6536,7 +6536,7 @@ public class astbase {
             }
 
 
-            protected FileInitExp() {}
+            public FileInitExp() {}
 
             public FileInitExp copy() {
                 FileInitExp that = new FileInitExp();
@@ -6555,7 +6555,7 @@ public class astbase {
             }
 
 
-            protected LineInitExp() {}
+            public LineInitExp() {}
 
             public LineInitExp copy() {
                 LineInitExp that = new LineInitExp();
@@ -6574,7 +6574,7 @@ public class astbase {
             }
 
 
-            protected ModuleInitExp() {}
+            public ModuleInitExp() {}
 
             public ModuleInitExp copy() {
                 ModuleInitExp that = new ModuleInitExp();
@@ -6596,7 +6596,7 @@ public class astbase {
             }
 
 
-            protected CommaExp() {}
+            public CommaExp() {}
 
             public CommaExp copy() {
                 CommaExp that = new CommaExp();
@@ -6618,7 +6618,7 @@ public class astbase {
             }
 
 
-            protected PostExp() {}
+            public PostExp() {}
 
             public PostExp copy() {
                 PostExp that = new PostExp();
@@ -6638,7 +6638,7 @@ public class astbase {
             }
 
 
-            protected PowExp() {}
+            public PowExp() {}
 
             public PowExp copy() {
                 PowExp that = new PowExp();
@@ -6658,7 +6658,7 @@ public class astbase {
             }
 
 
-            protected MulExp() {}
+            public MulExp() {}
 
             public MulExp copy() {
                 MulExp that = new MulExp();
@@ -6678,7 +6678,7 @@ public class astbase {
             }
 
 
-            protected DivExp() {}
+            public DivExp() {}
 
             public DivExp copy() {
                 DivExp that = new DivExp();
@@ -6698,7 +6698,7 @@ public class astbase {
             }
 
 
-            protected ModExp() {}
+            public ModExp() {}
 
             public ModExp copy() {
                 ModExp that = new ModExp();
@@ -6718,7 +6718,7 @@ public class astbase {
             }
 
 
-            protected AddExp() {}
+            public AddExp() {}
 
             public AddExp copy() {
                 AddExp that = new AddExp();
@@ -6738,7 +6738,7 @@ public class astbase {
             }
 
 
-            protected MinExp() {}
+            public MinExp() {}
 
             public MinExp copy() {
                 MinExp that = new MinExp();
@@ -6758,7 +6758,7 @@ public class astbase {
             }
 
 
-            protected CatExp() {}
+            public CatExp() {}
 
             public CatExp copy() {
                 CatExp that = new CatExp();
@@ -6778,7 +6778,7 @@ public class astbase {
             }
 
 
-            protected ShlExp() {}
+            public ShlExp() {}
 
             public ShlExp copy() {
                 ShlExp that = new ShlExp();
@@ -6798,7 +6798,7 @@ public class astbase {
             }
 
 
-            protected ShrExp() {}
+            public ShrExp() {}
 
             public ShrExp copy() {
                 ShrExp that = new ShrExp();
@@ -6818,7 +6818,7 @@ public class astbase {
             }
 
 
-            protected UshrExp() {}
+            public UshrExp() {}
 
             public UshrExp copy() {
                 UshrExp that = new UshrExp();
@@ -6839,7 +6839,7 @@ public class astbase {
             }
 
 
-            protected EqualExp() {}
+            public EqualExp() {}
 
             public EqualExp copy() {
                 EqualExp that = new EqualExp();
@@ -6859,7 +6859,7 @@ public class astbase {
             }
 
 
-            protected InExp() {}
+            public InExp() {}
 
             public InExp copy() {
                 InExp that = new InExp();
@@ -6879,7 +6879,7 @@ public class astbase {
             }
 
 
-            protected IdentityExp() {}
+            public IdentityExp() {}
 
             public IdentityExp copy() {
                 IdentityExp that = new IdentityExp();
@@ -6899,7 +6899,7 @@ public class astbase {
             }
 
 
-            protected CmpExp() {}
+            public CmpExp() {}
 
             public CmpExp copy() {
                 CmpExp that = new CmpExp();
@@ -6919,7 +6919,7 @@ public class astbase {
             }
 
 
-            protected AndExp() {}
+            public AndExp() {}
 
             public AndExp copy() {
                 AndExp that = new AndExp();
@@ -6939,7 +6939,7 @@ public class astbase {
             }
 
 
-            protected XorExp() {}
+            public XorExp() {}
 
             public XorExp copy() {
                 XorExp that = new XorExp();
@@ -6959,7 +6959,7 @@ public class astbase {
             }
 
 
-            protected OrExp() {}
+            public OrExp() {}
 
             public OrExp copy() {
                 OrExp that = new OrExp();
@@ -6979,7 +6979,7 @@ public class astbase {
             }
 
 
-            protected LogicalExp() {}
+            public LogicalExp() {}
 
             public LogicalExp copy() {
                 LogicalExp that = new LogicalExp();
@@ -7001,7 +7001,7 @@ public class astbase {
             }
 
 
-            protected CondExp() {}
+            public CondExp() {}
 
             public CondExp copy() {
                 CondExp that = new CondExp();
@@ -7022,7 +7022,7 @@ public class astbase {
             }
 
 
-            protected AssignExp() {}
+            public AssignExp() {}
 
             public AssignExp copy() {
                 AssignExp that = new AssignExp();
@@ -7042,7 +7042,7 @@ public class astbase {
             }
 
 
-            protected BinAssignExp() {}
+            public BinAssignExp() {}
 
             public BinAssignExp copy() {
                 BinAssignExp that = new BinAssignExp();
@@ -7062,7 +7062,7 @@ public class astbase {
             }
 
 
-            protected AddAssignExp() {}
+            public AddAssignExp() {}
 
             public AddAssignExp copy() {
                 AddAssignExp that = new AddAssignExp();
@@ -7080,7 +7080,7 @@ public class astbase {
             }
 
 
-            protected MinAssignExp() {}
+            public MinAssignExp() {}
 
             public MinAssignExp copy() {
                 MinAssignExp that = new MinAssignExp();
@@ -7098,7 +7098,7 @@ public class astbase {
             }
 
 
-            protected MulAssignExp() {}
+            public MulAssignExp() {}
 
             public MulAssignExp copy() {
                 MulAssignExp that = new MulAssignExp();
@@ -7116,7 +7116,7 @@ public class astbase {
             }
 
 
-            protected DivAssignExp() {}
+            public DivAssignExp() {}
 
             public DivAssignExp copy() {
                 DivAssignExp that = new DivAssignExp();
@@ -7134,7 +7134,7 @@ public class astbase {
             }
 
 
-            protected ModAssignExp() {}
+            public ModAssignExp() {}
 
             public ModAssignExp copy() {
                 ModAssignExp that = new ModAssignExp();
@@ -7152,7 +7152,7 @@ public class astbase {
             }
 
 
-            protected PowAssignExp() {}
+            public PowAssignExp() {}
 
             public PowAssignExp copy() {
                 PowAssignExp that = new PowAssignExp();
@@ -7170,7 +7170,7 @@ public class astbase {
             }
 
 
-            protected AndAssignExp() {}
+            public AndAssignExp() {}
 
             public AndAssignExp copy() {
                 AndAssignExp that = new AndAssignExp();
@@ -7188,7 +7188,7 @@ public class astbase {
             }
 
 
-            protected OrAssignExp() {}
+            public OrAssignExp() {}
 
             public OrAssignExp copy() {
                 OrAssignExp that = new OrAssignExp();
@@ -7206,7 +7206,7 @@ public class astbase {
             }
 
 
-            protected XorAssignExp() {}
+            public XorAssignExp() {}
 
             public XorAssignExp copy() {
                 XorAssignExp that = new XorAssignExp();
@@ -7224,7 +7224,7 @@ public class astbase {
             }
 
 
-            protected ShlAssignExp() {}
+            public ShlAssignExp() {}
 
             public ShlAssignExp copy() {
                 ShlAssignExp that = new ShlAssignExp();
@@ -7242,7 +7242,7 @@ public class astbase {
             }
 
 
-            protected ShrAssignExp() {}
+            public ShrAssignExp() {}
 
             public ShrAssignExp copy() {
                 ShrAssignExp that = new ShrAssignExp();
@@ -7260,7 +7260,7 @@ public class astbase {
             }
 
 
-            protected UshrAssignExp() {}
+            public UshrAssignExp() {}
 
             public UshrAssignExp copy() {
                 UshrAssignExp that = new UshrAssignExp();
@@ -7278,7 +7278,7 @@ public class astbase {
             }
 
 
-            protected CatAssignExp() {}
+            public CatAssignExp() {}
 
             public CatAssignExp copy() {
                 CatAssignExp that = new CatAssignExp();
@@ -7304,7 +7304,7 @@ public class astbase {
             }
 
 
-            protected TemplateParameter() {}
+            public TemplateParameter() {}
 
             public TemplateParameter copy() {
                 TemplateParameter that = new TemplateParameter();
@@ -7331,7 +7331,7 @@ public class astbase {
             }
 
 
-            protected TemplateAliasParameter() {}
+            public TemplateAliasParameter() {}
 
             public TemplateAliasParameter copy() {
                 TemplateAliasParameter that = new TemplateAliasParameter();
@@ -7359,7 +7359,7 @@ public class astbase {
             }
 
 
-            protected TemplateTypeParameter() {}
+            public TemplateTypeParameter() {}
 
             public TemplateTypeParameter copy() {
                 TemplateTypeParameter that = new TemplateTypeParameter();
@@ -7382,7 +7382,7 @@ public class astbase {
             }
 
 
-            protected TemplateTupleParameter() {}
+            public TemplateTupleParameter() {}
 
             public TemplateTupleParameter copy() {
                 TemplateTupleParameter that = new TemplateTupleParameter();
@@ -7409,7 +7409,7 @@ public class astbase {
             }
 
 
-            protected TemplateValueParameter() {}
+            public TemplateValueParameter() {}
 
             public TemplateValueParameter copy() {
                 TemplateValueParameter that = new TemplateValueParameter();
@@ -7432,7 +7432,7 @@ public class astbase {
             }
 
 
-            protected TemplateThisParameter() {}
+            public TemplateThisParameter() {}
 
             public TemplateThisParameter copy() {
                 TemplateThisParameter that = new TemplateThisParameter();
@@ -7454,7 +7454,7 @@ public class astbase {
             }
 
 
-            protected Condition() {}
+            public Condition() {}
 
             public abstract Condition copy();
         }
@@ -7471,7 +7471,7 @@ public class astbase {
             }
 
 
-            protected StaticForeach() {}
+            public StaticForeach() {}
 
             public StaticForeach copy() {
                 StaticForeach that = new StaticForeach();
@@ -7494,7 +7494,7 @@ public class astbase {
             }
 
 
-            protected StaticIfCondition() {}
+            public StaticIfCondition() {}
 
             public StaticIfCondition copy() {
                 StaticIfCondition that = new StaticIfCondition();
@@ -7519,7 +7519,7 @@ public class astbase {
             }
 
 
-            protected DVCondition() {}
+            public DVCondition() {}
 
             public DVCondition copy() {
                 DVCondition that = new DVCondition();
@@ -7541,7 +7541,7 @@ public class astbase {
             }
 
 
-            protected DebugCondition() {}
+            public DebugCondition() {}
 
             public DebugCondition copy() {
                 DebugCondition that = new DebugCondition();
@@ -7562,7 +7562,7 @@ public class astbase {
             }
 
 
-            protected VersionCondition() {}
+            public VersionCondition() {}
 
             public VersionCondition copy() {
                 VersionCondition that = new VersionCondition();
@@ -7605,7 +7605,7 @@ public class astbase {
             }
 
 
-            protected Initializer() {}
+            public Initializer() {}
 
             public Initializer copy() {
                 Initializer that = new Initializer();
@@ -7627,7 +7627,7 @@ public class astbase {
             }
 
 
-            protected ExpInitializer() {}
+            public ExpInitializer() {}
 
             public ExpInitializer copy() {
                 ExpInitializer that = new ExpInitializer();
@@ -7655,7 +7655,7 @@ public class astbase {
             }
 
 
-            protected StructInitializer() {}
+            public StructInitializer() {}
 
             public StructInitializer copy() {
                 StructInitializer that = new StructInitializer();
@@ -7688,7 +7688,7 @@ public class astbase {
             }
 
 
-            protected ArrayInitializer() {}
+            public ArrayInitializer() {}
 
             public ArrayInitializer copy() {
                 ArrayInitializer that = new ArrayInitializer();
@@ -7712,7 +7712,7 @@ public class astbase {
             }
 
 
-            protected VoidInitializer() {}
+            public VoidInitializer() {}
 
             public VoidInitializer copy() {
                 VoidInitializer that = new VoidInitializer();

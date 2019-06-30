@@ -14,7 +14,7 @@ class OutBuffer {
     @JvmField var data: BytePtr
     @JvmField var offset: Int
     var size: Int
-    var level: Int
+    @JvmField var level: Int
     var doindent: Boolean
     private var notlinehead: Boolean
 

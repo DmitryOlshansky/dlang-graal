@@ -21,8 +21,9 @@ public class parser {
 
     public static class LispyPrint extends ParseTimeTransitiveVisitorASTBase
     {
+        public OutBuffer buf;
         public  void visit(ASTBase.Dsymbol s) {
-            printf( new ByteSlice("%s"), s.toChars());
+            (this.buf).printf( new ByteSlice("%s"), s.toChars());
         }
 
         public  void visit(ASTBase.AliasThis a) {
@@ -30,99 +31,119 @@ public class parser {
         }
 
         public  void visit(ASTBase.Declaration d) {
-            printf( new ByteSlice("%s"), d.toChars());
+            (this.buf).printf( new ByteSlice("%s"), d.toChars());
         }
 
         public  void visit(ASTBase.ScopeDsymbol scd) {
-            printf( new ByteSlice("%s"), scd.toChars());
+            (this.buf).printf( new ByteSlice("%s"), scd.toChars());
         }
 
         public  void visit(ASTBase.Import imp) {
-            printf( new ByteSlice("import %s"), imp.toChars());
+            (this.buf).printf( new ByteSlice("import %s"), imp.toChars());
         }
 
         public  void visit(ASTBase.AttribDeclaration attr) {
-            printf( new ByteSlice("( %s "), attr.toChars());
+            (this.buf).printf( new ByteSlice("( %s "), attr.toChars());
             super.visit(attr);
-            printf( new ByteSlice(")"));
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.StaticAssert as) {
-            printf( new ByteSlice("( static assert "));
+            (this.buf).printf( new ByteSlice("( static assert "));
             super.visit(as);
-            printf( new ByteSlice(")"));
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.DebugSymbol sym) {
-            printf( new ByteSlice("( debug "));
+            (this.buf).printf( new ByteSlice("( debug "));
             super.visit(sym);
-            printf( new ByteSlice(")"));
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.VersionSymbol ver) {
-            printf( new ByteSlice("( version "));
+            (this.buf).printf( new ByteSlice("( version "));
             super.visit(ver);
-            printf( new ByteSlice(")"));
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.VarDeclaration d) {
-            printf( new ByteSlice("( var "));
+            (this.buf).printf( new ByteSlice("( var "));
+            (this.buf).level++;
             super.visit(d);
-            printf( new ByteSlice(")"));
+            (this.buf).level--;
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.FuncDeclaration d) {
-            printf( new ByteSlice("( func "));
+            (this.buf).printf( new ByteSlice("( func \n"));
+            (this.buf).level++;
             super.visit(d);
-            printf( new ByteSlice(")"));
+            (this.buf).level--;
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.AliasDeclaration d) {
-            printf( new ByteSlice("(alias "));
+            (this.buf).printf( new ByteSlice("(alias "));
+            (this.buf).level++;
             super.visit(d);
-            printf( new ByteSlice(")"));
+            (this.buf).level--;
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.TupleDeclaration d) {
-            printf( new ByteSlice("( tuple "));
+            (this.buf).printf( new ByteSlice("( tuple "));
+            (this.buf).level++;
             super.visit(d);
-            printf( new ByteSlice(")"));
+            (this.buf).level--;
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.FuncLiteralDeclaration d) {
-            printf( new ByteSlice("( func literal"));
+            (this.buf).printf( new ByteSlice("( func literal"));
+            (this.buf).level++;
             super.visit(d);
-            printf( new ByteSlice(")"));
+            (this.buf).level--;
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.PostBlitDeclaration d) {
-            printf( new ByteSlice("( this(this) "));
+            (this.buf).printf( new ByteSlice("( this(this) "));
+            (this.buf).level++;
             super.visit(d);
-            printf( new ByteSlice(")"));
+            (this.buf).level--;
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.CtorDeclaration d) {
-            printf( new ByteSlice("( ctor "));
+            (this.buf).printf( new ByteSlice("( ctor "));
+            (this.buf).level++;
             super.visit(d);
-            printf( new ByteSlice(")"));
+            (this.buf).level--;
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.DtorDeclaration d) {
-            printf( new ByteSlice("( dtor "));
+            (this.buf).printf( new ByteSlice("( dtor "));
+            (this.buf).level++;
             super.visit(d);
-            printf( new ByteSlice(")"));
+            (this.buf).level--;
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.InvariantDeclaration d) {
-            printf( new ByteSlice("( invariant "));
+            (this.buf).printf( new ByteSlice("( invariant "));
+            (this.buf).level++;
             super.visit(d);
-            printf( new ByteSlice(")"));
+            (this.buf).level--;
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.UnitTestDeclaration d) {
-            printf( new ByteSlice("( unittest "));
+            (this.buf).printf( new ByteSlice("( unittest "));
+            (this.buf).level++;
             super.visit(d);
-            printf( new ByteSlice(")"));
+            (this.buf).level--;
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.NewDeclaration _param_0) {
@@ -906,10 +927,11 @@ public class parser {
         }
 
 
-        protected LispyPrint() {}
+        public LispyPrint() {}
 
         public LispyPrint copy() {
             LispyPrint that = new LispyPrint();
+            that.buf = this.buf;
             return that;
         }
     }

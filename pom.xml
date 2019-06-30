@@ -51,7 +51,7 @@
                     <finalName>lexer</finalName>
                     <archive>
                         <manifest>
-                            <mainClass>org.dlang.dmd.entry.LexerKt</mainClass>
+                            <mainClass>org.dlang.dmd.entry.ToolKt</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

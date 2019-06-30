@@ -42,7 +42,7 @@ public class filecache {
         }
 
 
-        protected FileAndLines() {}
+        public FileAndLines() {}
 
         public FileAndLines copy() {
             FileAndLines that = new FileAndLines();

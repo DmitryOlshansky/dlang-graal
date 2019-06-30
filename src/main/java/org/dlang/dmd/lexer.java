@@ -2333,7 +2333,7 @@ public class lexer {
         }
 
 
-        protected Lexer() {}
+        public Lexer() {}
 
         public Lexer copy() {
             Lexer that = new Lexer();

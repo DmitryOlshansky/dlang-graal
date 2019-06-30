@@ -3,14 +3,16 @@ import dmd.errors;
 import dmd.globals;
 import dmd.parse;
 import dmd.transitivevisitor;
+import dmd.root.outbuffer;
 
 import core.stdc.stdio;
 
 alias AST = ASTBase;
 
 extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
+    OutBuffer* buf;
     override void visit(AST.Dsymbol s) { 
-        printf("%s", s.toChars());
+        buf.printf("%s", s.toChars());
     }
 
     override void visit(AST.AliasThis a) { 
@@ -19,99 +21,127 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
 
     override void visit(AST.Declaration d) { 
-        printf("%s", d.toChars());
+        buf.printf("%s", d.toChars());
     }
 
     override void visit(AST.ScopeDsymbol scd) { 
-        printf("%s", scd.toChars());
+        buf.printf("%s", scd.toChars());
     }
 
     override void visit(AST.Import imp) { 
-        printf("import %s", imp.toChars());
+        buf.printf("import %s", imp.toChars());
     }
 
     override void visit(AST.AttribDeclaration attr) { 
-        printf("( %s ", attr.toChars);
+        buf.printf("( %s ", attr.toChars);
         super.visit(attr);
-        printf(")");
+        buf.printf(")");
     }
 
     override void visit(AST.StaticAssert as) { 
-        printf("( static assert ");
+        buf.printf("( static assert ");
         super.visit(as);
-        printf(")");
+        buf.printf(")");
     }
     
     override void visit(AST.DebugSymbol sym) {
-        printf("( debug ");
+        buf.printf("( debug ");
         super.visit(sym);
-        printf(")");
+        buf.printf(")");
     }
 
     override void visit(AST.VersionSymbol ver) { 
-        printf("( version ");
+        buf.printf("( version ");
         super.visit(ver);
-        printf(")");
+        buf.printf(")");
     }
 
     override void visit(AST.VarDeclaration d) {
-        printf("( var ");
+        buf.printf("( var ");
+        buf.level++;
         super.visit(d);
-        printf(")");
+        buf.level--;
+        buf.printf(")");
     }
 
     override void visit(AST.FuncDeclaration d) {
-        printf("( func ");
+        buf.printf("( func \n");
+        buf.level++;
         super.visit(d);
-        printf(")");
+        buf.level--;
+        buf.printf(")");
     }
 
     override void visit(AST.AliasDeclaration d) {
-        printf("(alias ");
+        buf.printf("(alias ");
+        buf.level++;
         super.visit(d);
-        printf(")");
+        buf.level--;
+
+        buf.printf(")");
     }
 
     override void visit(AST.TupleDeclaration d) {
-        printf("( tuple ");
+        buf.printf("( tuple ");
+        buf.level++;
         super.visit(d);
-        printf(")");
+        buf.level--;
+
+        buf.printf(")");
     }
 
     override void visit(AST.FuncLiteralDeclaration d) {
-        printf("( func literal");
+        buf.printf("( func literal");
+        buf.level++;
         super.visit(d);
-        printf(")");
+        buf.level--;
+
+        buf.printf(")");
     }
 
     override void visit(AST.PostBlitDeclaration d) {
-        printf("( this(this) ");
+        buf.printf("( this(this) ");
+        buf.level++;
         super.visit(d);
-        printf(")");
+        buf.level--;
+
+        buf.printf(")");
     }
 
     override void visit(AST.CtorDeclaration d) {
-        printf("( ctor ");
+        buf.printf("( ctor ");
+        buf.level++;
         super.visit(d);
-        printf(")");
+        buf.level--;
+
+        buf.printf(")");
     }
 
     override void visit(AST.DtorDeclaration d) {
-        printf("( dtor ");
+        buf.printf("( dtor ");
+        buf.level++;
         super.visit(d);
-        printf(")");
+        buf.level--;
+
+        buf.printf(")");
     }
 
     override void visit(AST.InvariantDeclaration d) {
-        printf("( invariant ");
+        buf.printf("( invariant ");
+        buf.level++;
         super.visit(d);
-        printf(")");
+        buf.level--;
+
+        buf.printf(")");
     }
 
     override void visit(AST.UnitTestDeclaration d) {
-        printf("( unittest ");
+        buf.printf("( unittest ");
+        buf.level++;
         super.visit(d);
-        printf(")");
+        buf.level--;
+
+        buf.printf(")");
     }
 
     override void visit(AST.NewDeclaration) { assert(0); }

@@ -891,7 +891,7 @@ public class parsetimevisitor {
         }
 
 
-        protected ParseTimeVisitorASTBase() {}
+        public ParseTimeVisitorASTBase() {}
 
         public ParseTimeVisitorASTBase copy() {
             ParseTimeVisitorASTBase that = new ParseTimeVisitorASTBase();

@@ -41,7 +41,7 @@ public class permissivevisitor {
         }
 
 
-        protected PermissiveVisitorASTBase() {}
+        public PermissiveVisitorASTBase() {}
 
         public PermissiveVisitorASTBase copy() {
             PermissiveVisitorASTBase that = new PermissiveVisitorASTBase();

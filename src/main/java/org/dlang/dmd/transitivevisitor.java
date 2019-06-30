@@ -1311,7 +1311,7 @@ public class transitivevisitor {
 
 
 
-        protected ParseTimeTransitiveVisitorASTBase() {}
+        public ParseTimeTransitiveVisitorASTBase() {}
 
         public ParseTimeTransitiveVisitorASTBase copy() {
             ParseTimeTransitiveVisitorASTBase that = new ParseTimeTransitiveVisitorASTBase();

@@ -1169,7 +1169,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             foreach (s; *d.members) {
                 s.accept(this);
             }
-            if (!hasEmptyCtor) buf.fmt("\nprotected %s() {}\n", nameOf(d));
+            if (!hasEmptyCtor) buf.fmt("\npublic %s() {}\n", nameOf(d));
 
             // generate copy
             buf.fmt("\npublic %s%s copy()", d.isAbstract ? "abstract " : "", nameOf(d));
