@@ -186,7 +186,9 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     string moduleName;
     string[] constants; // all local static vars are collected here
     string[] imports; // all imports for deduplication
-    ExprOpts opts;
+    Module currentMod;
+
+    ExprOpts opts; // packs all information required for exp visitor
 
     int testCounter;
     
@@ -283,6 +285,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     void onModuleStart(Module mod){
         buf.indent;
         buf.put("\n");
+        currentMod = mod;
         opts.templates = registerTemplates(mod, opts);
     }
 
@@ -411,6 +414,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             stderr.writefln("NULL TYPE VAR: %s", var.ident.symbol);
             return;
         }
+        addImportForType(var.type);
         if (var.type.toJava(opts).startsWith("TypeInfo_")) return;
         bool pushToGlobal = (var.isStatic() || (var.storage_class & STC.gshared)) && !opts.funcs.empty;
         if (pushToGlobal) {
@@ -1013,6 +1017,19 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
     }
 
+    void addImportForType(Type t) {
+        // stderr.writefln("import for %s %s\n", t.toString, t.kind[0..strlen(t.kind)]);
+        auto tc = t.isTypeClass();
+        // if (tc) 
+        if (tc && tc.sym.getModule() !is currentMod) {
+            addImport(tc.sym.getModule.md.packages, tc.sym.getModule.ident);
+        }
+        auto ts = t.isTypeStruct();
+        if (ts && ts.sym.getModule() !is currentMod) {
+            addImport(ts.sym.getModule.md.packages, ts.sym.getModule.ident);
+        }
+    }
+
     auto handleTiAggregate(AggregateDeclaration d) { 
         if (!currentInst.empty) {
             auto tiargs = currentInst.top ? tiArgs() : "";
@@ -1020,16 +1037,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 if (currentInst.top.tiargs)
                     foreach (arg; *currentInst.top.tiargs) {
                         if (auto t = arg.isType()) {
-                            stderr.writefln("tiarg %s %s\n", t.toString, t.kind[0..strlen(t.kind)]);
-                            auto tc = t.isTypeClass();
-                            // if (tc) 
-                            if (tc && tc.sym.getModule() !is d.getModule()) {
-                                addImport(tc.sym.getModule.md.packages, tc.sym.getModule.ident);
-                            }
-                            auto ts = t.isTypeStruct();
-                            if (ts && ts.sym.getModule() !is d.getModule()) {
-                                addImport(ts.sym.getModule.md.packages, ts.sym.getModule.ident);
-                            }
+                            addImportForType(t);
                         }
                     }
             }
