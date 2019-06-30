@@ -1288,13 +1288,6 @@ public:
             expToBuffer(e.e2, PREC.primary, buf, opts);
             buf.put(".copy()");
         }
-        /*else if (auto var = e.e1.isDotVarExp()) {
-            if (var in opts.aliasedUnion)
-                stderr.writefln("ASS %s %s", var, var in opts.aliasedUnion);
-            visit(var);
-            buf.put(" = ");
-            expToBuffer(e.e2, PREC.primary, buf, opts);
-        }*/
         else
             visit(cast(BinExp)e);
     }
