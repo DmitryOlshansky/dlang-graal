@@ -93,11 +93,12 @@ class DArray<T>(storage: Array<Any?>, len: Int) {
 
     fun insert(i: Int, arr: DArray<T>?) {
         if (arr != null) {
+            reserve(arr.length)
             val d = arr.length
             reserve(d)
             if (length != i)
                 data.copyInto(data, i + d, i, length)
-            arr.data.copyInto(data, i, 0, d + length)
+            arr.data.copyInto(data, i, 0, d)
             length += d
         }
     }

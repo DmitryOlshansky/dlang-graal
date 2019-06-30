@@ -18,6 +18,6 @@ class TestParser : TestCase() {
     }
 
     fun testMain() {
-        testCase("void main(){}")
+        testCase("void main(){} int a;")
     }
 }

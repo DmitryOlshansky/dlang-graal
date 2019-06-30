@@ -95,7 +95,9 @@ class ByteSlice(var data: ByteArray, var beg: Int, var end: Int): RootObject() {
 
     fun set(value: Byte) = data.fill(value, beg, end)
 
-    fun ptr() = BytePtr(data, beg)
+    fun ptr() =
+        if (end == data.size) BytePtr(data, beg)
+        else BytePtr(data.copyOfRange(beg, end))
 
     fun toBytePtr() = ptr()
 

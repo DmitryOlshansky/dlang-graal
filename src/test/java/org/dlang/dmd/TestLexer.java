@@ -186,6 +186,13 @@ public class TestLexer extends TestCase {
         testCase("1 + a", new byte[]{TOK.int32Literal, TOK.add, TOK.identifier}, new Object[]{ 1L, null, "a" });
     }
 
+    public void testMain() {
+        testCase("void main(){}",
+            new byte[]{TOK.void_, TOK.identifier, TOK.leftParentheses, TOK.rightParentheses, TOK.leftCurly, TOK.rightCurly},
+            new Object[]{ null, "main", null, null, null, null}
+        );
+    }
+
     public void testRegression1() {
         testCase("0x0FFF_FFFF_FFFF_FFFFUL",
                 new byte[]{ TOK.uns64Literal},
