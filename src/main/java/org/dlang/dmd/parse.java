@@ -857,7 +857,7 @@ public class parse {
                                         if ((this.token.value & 0xFF) == 120)
                                             s = new ASTBase.DebugSymbol(this.token.loc, this.token.ident);
                                         else if (((this.token.value & 0xFF) == 105 || (this.token.value & 0xFF) == 107))
-                                            s = new ASTBase.DebugSymbol(this.token.loc, (int)this.token.unsvalue);
+                                            s = new ASTBase.DebugSymbol(this.token.loc, (int)this.token.intvalue);
                                         else
                                         {
                                             this.error(new BytePtr("identifier or integer expected, not `%s`"), this.token.toChars());
@@ -879,7 +879,7 @@ public class parse {
                                         if ((this.token.value & 0xFF) == 120)
                                             s = new ASTBase.VersionSymbol(this.token.loc, this.token.ident);
                                         else if (((this.token.value & 0xFF) == 105 || (this.token.value & 0xFF) == 107))
-                                            s = new ASTBase.VersionSymbol(this.token.loc, (int)this.token.unsvalue);
+                                            s = new ASTBase.VersionSymbol(this.token.loc, (int)this.token.intvalue);
                                         else
                                         {
                                             this.error(new BytePtr("identifier or integer expected, not `%s`"), this.token.toChars());
@@ -1851,7 +1851,7 @@ public class parse {
                 if ((this.token.value & 0xFF) == 120)
                     id = this.token.ident;
                 else if (((this.token.value & 0xFF) == 105 || (this.token.value & 0xFF) == 107))
-                    level = (int)this.token.unsvalue;
+                    level = (int)this.token.intvalue;
                 else
                     this.error(new BytePtr("identifier or integer expected inside debug(...), not `%s`"), this.token.toChars());
                 this.nextToken();
@@ -1869,7 +1869,7 @@ public class parse {
                 if ((this.token.value & 0xFF) == 120)
                     id = this.token.ident;
                 else if (((this.token.value & 0xFF) == 105 || (this.token.value & 0xFF) == 107))
-                    level = (int)this.token.unsvalue;
+                    level = (int)this.token.intvalue;
                 else if ((this.token.value & 0xFF) == 208)
                     id = Identifier.idPool(Token.asString(TOK.unittest_));
                 else if ((this.token.value & 0xFF) == 14)
@@ -6500,7 +6500,7 @@ public class parse {
                             this.nextToken();
                             break;
                         case 106:
-                            e = new ASTBase.IntegerExp(loc, (long)(int)this.token.unsvalue, ASTBase.Type.tuns32);
+                            e = new ASTBase.IntegerExp(loc, (long)(int)this.token.intvalue, ASTBase.Type.tuns32);
                             this.nextToken();
                             break;
                         case 107:
@@ -6508,7 +6508,7 @@ public class parse {
                             this.nextToken();
                             break;
                         case 108:
-                            e = new ASTBase.IntegerExp(loc, this.token.unsvalue, ASTBase.Type.tuns64);
+                            e = new ASTBase.IntegerExp(loc, this.token.intvalue, ASTBase.Type.tuns64);
                             this.nextToken();
                             break;
                         case 111:
@@ -6575,15 +6575,15 @@ public class parse {
                             this.nextToken();
                             break;
                         case 117:
-                            e = new ASTBase.IntegerExp(loc, (long)(byte)this.token.unsvalue, ASTBase.Type.tchar);
+                            e = new ASTBase.IntegerExp(loc, (long)(byte)this.token.intvalue, ASTBase.Type.tchar);
                             this.nextToken();
                             break;
                         case 118:
-                            e = new ASTBase.IntegerExp(loc, (long)(short)this.token.unsvalue, ASTBase.Type.twchar);
+                            e = new ASTBase.IntegerExp(loc, (long)(short)this.token.intvalue, ASTBase.Type.twchar);
                             this.nextToken();
                             break;
                         case 119:
-                            e = new ASTBase.IntegerExp(loc, (long)(int)this.token.unsvalue, ASTBase.Type.tdchar);
+                            e = new ASTBase.IntegerExp(loc, (long)(int)this.token.intvalue, ASTBase.Type.tdchar);
                             this.nextToken();
                             break;
                         case 121:

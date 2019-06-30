@@ -49,6 +49,7 @@ struct ExprOpts {
     Expression dollarValue = null; // expression that is referenced by dollar
     VarDeclaration vararg = null; // var decl of vararg parameter
     IdentityMap!bool refParams; //out and ref params, they must be boxed
+    IdentityMap!VarDeclaration aliasedUnion; //  = alias of symbol if same type in union
     IdentityMap!string renamed; // renamed or static vars pushed to global scope
     IdentityMap!bool localFuncs; // functions that are local to current scope
     IdentityMap!Template templates; // tiArg strings of template vars and funcs
@@ -476,6 +477,9 @@ public:
         else {
             if (auto name = e.var in opts.renamed)
                 buf.fmt("ptr(%s)", *name);
+            else if(auto un = e.var in opts.aliasedUnion) {
+                buf.fmt("ptr(%s)", un.ident.symbol);
+            }
             else
                 buf.fmt("ptr(%s)", e.var.ident.symbol);
         }
@@ -499,6 +503,9 @@ public:
             buf.put(printParent(e.var));
             if (auto name = e.var in opts.renamed)
                 buf.put(*name);
+            else if(auto un = e.var in opts.aliasedUnion) {
+                buf.put(un.ident.symbol);
+            }
             else
                 buf.put(e.var.ident.symbol);
             if (e.var in opts.refParams)
@@ -646,6 +653,8 @@ public:
                 if (auto var = e.e1.isVarExp) {
                     if (auto name = var.var in opts.renamed)
                         buf.put(*name);
+                    else if(auto un = var.var in opts.aliasedUnion)
+                        buf.put(un.ident.symbol);
                     else
                         buf.put(var.var.ident.symbol);
                 }
@@ -800,6 +809,8 @@ public:
                     case TOK.andAssign:
                         if (auto name = var.var in opts.renamed)
                             buf.put(*name);
+                        else if(auto un = var.var in opts.aliasedUnion)
+                            buf.put(un.ident.symbol);
                         else
                             buf.put(var.var.ident.symbol);
                         if (var.var in opts.refParams)
@@ -875,7 +886,10 @@ public:
             expToBuffer(e.e1, PREC.primary, buf, opts);
             buf.put('.');
         }
-        buf.put(e.var.ident.symbol);
+        if (auto un = e.var in opts.aliasedUnion)
+            buf.put(un.ident.symbol);
+        else
+            buf.put(e.var.ident.symbol);
     }
 
     override void visit(DotTemplateInstanceExp e)
@@ -1274,6 +1288,13 @@ public:
             expToBuffer(e.e2, PREC.primary, buf, opts);
             buf.put(".copy()");
         }
+        /*else if (auto var = e.e1.isDotVarExp()) {
+            if (var in opts.aliasedUnion)
+                stderr.writefln("ASS %s %s", var, var in opts.aliasedUnion);
+            visit(var);
+            buf.put(" = ");
+            expToBuffer(e.e2, PREC.primary, buf, opts);
+        }*/
         else
             visit(cast(BinExp)e);
     }
@@ -1458,7 +1479,12 @@ private void argsToBuffer(Expressions* expressions, TextBuffer buf, ExprOpts opt
             }
             else if (var && var.var in opts.refParams && refParam) {
                 string* renamed = var.var in opts.renamed;
-                tmp.put(renamed ? *renamed : var.var.ident.symbol);
+                if (renamed)
+                    tmp.put(*renamed);
+                else if(auto un = var.var in opts.aliasedUnion)
+                    buf.put(un.ident.symbol);
+                else 
+                    tmp.put(var.var.ident.symbol);
             }
             else if(n && n.type.ty == Tarray) {
                 tmp.put("new ");

@@ -7,8 +7,8 @@ vendor/dmd/src/dmd/globals.d
 vendor/dmd/src/dmd/errors.d
 vendor/dmd/src/dmd/id.d
 vendor/dmd/src/dmd/identifier.d
-vendor/dmd/src/dmd/lexer.d
 vendor/dmd/src/dmd/tokens.d
+vendor/dmd/src/dmd/lexer.d
 vendor/dmd/src/dmd/utf.d
 # Parser
 vendor/dmd/src/dmd/astbase.d

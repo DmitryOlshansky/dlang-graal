@@ -212,7 +212,7 @@ public class lexer {
                                 if (!(isZeroSecond(this.p.get(1))))
                                 {
                                     this.p.plusAssign(1);
-                                    (t).unsvalue = 0L;
+                                    (t).intvalue = 0L;
                                     (t).value = TOK.int32Literal;
                                     return ;
                                 }
@@ -228,7 +228,7 @@ public class lexer {
                             case 57:
                                 if (!(isDigitSecond(this.p.get(1))))
                                 {
-                                    (t).unsvalue = (long)((this.p.get() & 0xFF) - 48);
+                                    (t).intvalue = (long)((this.p.get() & 0xFF) - 48);
                                     this.p.plusAssign(1);
                                     (t).value = TOK.int32Literal;
                                     return ;
@@ -241,7 +241,7 @@ public class lexer {
                             case 39:
                                 if ((issinglechar(this.p.get(1)) && (this.p.get(2) & 0xFF) == 39))
                                 {
-                                    (t).unsvalue = (long)this.p.get(1);
+                                    (t).intvalue = (long)this.p.get(1);
                                     (t).value = TOK.charLiteral;
                                     this.p.plusAssign(3);
                                 }
@@ -405,7 +405,7 @@ public class lexer {
                                         else if (pequals(id, Id.VERSIONX))
                                         {
                                             (t).value = TOK.int64Literal;
-                                            (t).unsvalue = (long)global.versionNumber();
+                                            (t).intvalue = (long)global.versionNumber();
                                         }
                                         else if (pequals(id, Id.EOFX))
                                         {
@@ -1511,16 +1511,16 @@ public class lexer {
                             switch ((this.p.get() & 0xFF))
                             {
                                 case 117:
-                                    (t).unsvalue = (long)this.escapeSequence();
+                                    (t).intvalue = (long)this.escapeSequence();
                                     tk = TOK.wcharLiteral;
                                     break;
                                 case 85:
                                 case 38:
-                                    (t).unsvalue = (long)this.escapeSequence();
+                                    (t).intvalue = (long)this.escapeSequence();
                                     tk = TOK.dcharLiteral;
                                     break;
                                 default:
-                                (t).unsvalue = (long)this.escapeSequence();
+                                (t).intvalue = (long)this.escapeSequence();
                                 break;
                             }
                             break;
@@ -1536,7 +1536,7 @@ public class lexer {
                             this.p.postDec();
                         case 39:
                             this.error(new BytePtr("unterminated character constant"));
-                            (t).unsvalue = 63L;
+                            (t).intvalue = 63L;
                             return tk;
                         default:
                         if ((c & 128) != 0)
@@ -1551,7 +1551,7 @@ public class lexer {
                             else
                                 tk = TOK.dcharLiteral;
                         }
-                        (t).unsvalue = (long)c;
+                        (t).intvalue = (long)c;
                         break;
                     }
                 } while(__dispatch15 != 0);
@@ -1559,7 +1559,7 @@ public class lexer {
             if ((this.p.get() & 0xFF) != 39)
             {
                 this.error(new BytePtr("unterminated character constant"));
-                (t).unsvalue = 63L;
+                (t).intvalue = 63L;
                 return tk;
             }
             this.p.postInc();
@@ -1862,7 +1862,7 @@ public class lexer {
                 default:
                 throw new AssertionError("Unreachable code!");
             }
-            (t).unsvalue = n;
+            (t).intvalue = n;
             return result;
         }
 
@@ -2049,9 +2049,9 @@ public class lexer {
             try {
                 if (((tok.value & 0xFF) == 105 || (tok.value & 0xFF) == 107))
                 {
-                    int lin = (int)(tok.unsvalue - 1L);
-                    if ((long)lin != tok.unsvalue - 1L)
-                        this.error(new BytePtr("line number `%lld` out of range"), tok.unsvalue);
+                    int lin = (int)(tok.intvalue - 1L);
+                    if ((long)lin != tok.intvalue - 1L)
+                        this.error(new BytePtr("line number `%lld` out of range"), tok.intvalue);
                     else
                         linnum = lin;
                 }

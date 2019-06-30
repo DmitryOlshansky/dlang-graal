@@ -112,12 +112,13 @@ void main(string[] args) {
         stderr.writefln("Semantics run %s", m.toString);
         runSemanticAnalyzer(m, stringImportPaths);
     }
+    scope v = new ToJavaModuleVisitor();
     foreach(i, source; args[1..$]) {
         const modName = baseName(source);
         const java = modName[0..$-2] ~ ".java";
         stderr.writefln("\nConverting %s -> %s", modName, java);
         const target = outputDir ~ "/" ~ java;
-		writeFile(target, mods[i].toJava);
+		writeFile(target, mods[i].toJava(v));
 	}
 	
 }

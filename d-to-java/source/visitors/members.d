@@ -9,6 +9,7 @@ import dmd.attrib;
 import dmd.cond;
 import dmd.declaration;
 import dmd.dclass;
+import dmd.dsymbol;
 import dmd.dmodule;
 import dmd.dstruct;
 import dmd.expression;
@@ -27,7 +28,7 @@ struct Members {
     VarDeclaration[] all;
 }
 
-Members collectMembers(AggregateDeclaration agg, bool recurseBase = false) {
+Members collectMembers(Dsymbol agg, bool recurseBase = false) {
     extern(C++) static class Collector : SemanticTimeTransitiveVisitor {
         alias visit = typeof(super).visit;
         VarDeclaration[] decls = [];
@@ -76,7 +77,6 @@ Members collectMembers(AggregateDeclaration agg, bool recurseBase = false) {
         override void visit(StaticAssert ) {}
         override void visit(VarDeclaration v) {
             if (!v.isStatic && !(v.storage_class & STC.gshared) && !v.ident.toString.startsWith("__")){
-                if (v.ident.toString == "_body") foobar();
                 decls ~= v;
             }
         }

@@ -34,8 +34,7 @@ import visitors.expression, visitors.members, visitors.passed_by_ref, visitors.t
 alias toJava = visitors.expression.toJava; 
 
 ///
-string toJava(Module mod) {
-    scope v = new ToJavaModuleVisitor();
+string toJava(Module mod, ToJavaModuleVisitor v) {
     auto id = mod.ident.toString.idup;
     v.moduleName = id.endsWith(".d") ? id[0..$-2] : id;
     v.onModuleStart(mod);
@@ -266,10 +265,22 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
         return null;
     }
-    
-    this() {
+
+    void onModuleStart(Module mod){
         buf = new TextBuffer();
         header = new TextBuffer();
+        generatedLambdas = null;
+        currentMod = mod;
+        constants = null;
+        arrayInitializers = null;
+        imports = null;
+        testCounter = 0;
+        forCount = 0;
+        dispatchCount = 0;
+        if (generatedFunctions.length != 1) generatedFunctions.push(null);
+        if (gotos.length != 1) gotos.push(null);
+        opts.templates = registerTemplates(mod, opts);
+
         header.put("package org.dlang.dmd;\n");
         header.put("\nimport kotlin.jvm.functions.*;\n");
         header.put("\nimport org.dlang.dmd.root.*;\n");
@@ -278,15 +289,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         header.put("\nimport static org.dlang.dmd.root.ShimsKt.*;\n");
         header.put("import static org.dlang.dmd.root.SliceKt.*;\n");
         header.put("import static org.dlang.dmd.root.DArrayKt.*;\n");
-        generatedFunctions.push(null);
-        gotos.push(null);
-    }
-
-    void onModuleStart(Module mod){
         buf.indent;
         buf.put("\n");
-        currentMod = mod;
-        opts.templates = registerTemplates(mod, opts);
     }
 
     ///
@@ -407,6 +411,25 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             sink.fmt(" = new %s()", var.type.toJava(opts));
         }
         sink.fmt(";\n");
+    }
+
+    override void visit(AnonDeclaration anon)
+    {
+        auto members = collectMembers(anon);
+        VarDeclaration[string] visited;
+        stderr.writefln("UNION members: %s", members.all);
+        foreach (m; members.all) {
+            if (auto root = m.type.toJava(opts) in visited) {
+                opts.aliasedUnion[m] = *root;
+            }
+            else {
+                visited[m.type.toJava(opts)] = m;
+            }
+        }
+        foreach (m; members.all) {
+            if (m !in opts.aliasedUnion)
+                (cast(VarDeclaration)m).accept(this);
+        }
     }
 
     override void visit(VarDeclaration var) {
@@ -1089,11 +1112,13 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.indent;
         buf.fmt("%s r = new %s();\n", nameOf(d), nameOf(d));
         foreach(m; members.all) {
-            if (m.type.ty == Tstruct || m.type.ty == Tarray) {
-                buf.fmt("r.%s = %s.copy();\n", m.ident.symbol, m.ident.symbol);
+            if (m !in opts.aliasedUnion) {
+                if (m.type.ty == Tstruct || m.type.ty == Tarray) {
+                    buf.fmt("r.%s = %s.copy();\n", m.ident.symbol, m.ident.symbol);
+                }
+                else
+                    buf.fmt("r.%s = %s;\n", m.ident.symbol, m.ident.symbol);
             }
-            else
-                buf.fmt("r.%s = %s;\n", m.ident.symbol, m.ident.symbol);
         }
         buf.put("return r;\n");
         buf.outdent;
@@ -1112,7 +1137,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     buf.put(") {\n");
                     buf.indent;
                     foreach(i,m; members.all){
-                        buf.fmt("this.%s = %s;\n", m.ident.toString, m.ident.toString);
+                        if (m !in opts.aliasedUnion)
+                            buf.fmt("this.%s = %s;\n", m.ident.toString, m.ident.toString);
                     }
                     buf.outdent;
                     buf.put("}\n\n");
@@ -1123,7 +1149,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.fmt("public %s opAssign(%s that) {\n", nameOf(d), nameOf(d));
         buf.indent;
         foreach(i,m; members.all){
-            buf.fmt("this.%s = that.%s;\n", m.ident.toString, m.ident.toString);
+            if (m !in opts.aliasedUnion)
+                buf.fmt("this.%s = that.%s;\n", m.ident.toString, m.ident.toString);
         }
         buf.put("return this;\n");
         buf.outdent;

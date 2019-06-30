@@ -273,7 +273,6 @@ public class tokens {
         public BytePtr blockComment;
         public BytePtr lineComment;
         public long intvalue;
-        public long unsvalue;
         public double floatvalue;
         public BytePtr ustring;
         public int len;
@@ -338,13 +337,13 @@ public class tokens {
                         case 117:
                         case 118:
                         case 119:
-                            sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%uU"), (int)this.unsvalue);
+                            sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%uU"), (int)this.intvalue);
                             break;
                         case 107:
                             sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%lldL"), this.intvalue);
                             break;
                         case 108:
-                            sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%lluUL"), this.unsvalue);
+                            sprintf(ptr(tokens.toCharsbuffer),  new ByteSlice("%lluUL"), this.intvalue);
                             break;
                         case 111:
                             CTFloat.sprint(ptr(tokens.toCharsbuffer), (byte)103, this.floatvalue);
@@ -503,7 +502,6 @@ public class tokens {
             r.blockComment = blockComment;
             r.lineComment = lineComment;
             r.intvalue = intvalue;
-            r.unsvalue = unsvalue;
             r.floatvalue = floatvalue;
             r.ustring = ustring;
             r.len = len;
@@ -519,7 +517,6 @@ public class tokens {
             this.blockComment = that.blockComment;
             this.lineComment = that.lineComment;
             this.intvalue = that.intvalue;
-            this.unsvalue = that.unsvalue;
             this.floatvalue = that.floatvalue;
             this.ustring = that.ustring;
             this.len = that.len;

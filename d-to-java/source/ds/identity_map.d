@@ -9,12 +9,20 @@ struct IdentityMap(V) {
         return map[cast(void*)key];
     }
 
+    V opIndex(const(void)* key) {
+        return map[key];
+    }
+
     void opIndexAssign(V value, RootObject key) {
         map[cast(void*)key] = value;
     }
 
     V* opBinaryRight(string op:"in")(RootObject key) {
         return cast(void*)key in map;
+    }
+
+    V* opBinaryRight(string op:"in")(const(void)* key) {
+        return key in map;
     }
 
     void remove(RootObject key) { 

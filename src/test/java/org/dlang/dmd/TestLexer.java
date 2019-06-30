@@ -173,7 +173,7 @@ public class TestLexer extends TestCase {
         while (lex.nextToken() != 11) {
             assertEquals(toks[i], lex.token.value);
             if (lex.token.value == TOK.int32Literal)
-                assertEquals(values[i], lex.token.unsvalue);
+                assertEquals(values[i], lex.token.intvalue);
             if (lex.token.value == TOK.identifier)
                 assertEquals(values[i], lex.token.ident.name.toString());
             i++;
