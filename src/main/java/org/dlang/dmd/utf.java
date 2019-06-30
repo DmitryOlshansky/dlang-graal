@@ -32,14 +32,14 @@ public class utf {
     public static boolean utf_isValidDchar(int c) {
         if (c < 55296)
             return true;
-        if (c > 57343 && c <= 1114111)
+        if ((c > 57343 && c <= 1114111))
             return true;
         return false;
     }
 
     public static boolean isUniAlpha(int c) {
         int high = 244;
-        int low = c < (int)utf.isUniAlphaALPHA_TABLE.get(0).get(0) || (int)utf.isUniAlphaALPHA_TABLE.get(high).get(1) < c ? high + 1 : 0;
+        int low = (c < (int)utf.isUniAlphaALPHA_TABLE.get(0).get(0) || (int)utf.isUniAlphaALPHA_TABLE.get(high).get(1) < c) ? high + 1 : 0;
         for (; low <= high;){
             int mid = low + high >> 1;
             if (c < (int)utf.isUniAlphaALPHA_TABLE.get(mid).get(0))
@@ -48,7 +48,7 @@ public class utf {
                 low = mid + 1;
             else
             {
-                assert((int)utf.isUniAlphaALPHA_TABLE.get(mid).get(0) <= c && c <= (int)utf.isUniAlphaALPHA_TABLE.get(mid).get(1));
+                assert(((int)utf.isUniAlphaALPHA_TABLE.get(mid).get(0) <= c && c <= (int)utf.isUniAlphaALPHA_TABLE.get(mid).get(1)));
                 return true;
             }
         }
@@ -158,7 +158,7 @@ public class utf {
             return new BytePtr("Truncated UTF-8 sequence");
         int c = ((u & 0xFF) & (1 << (7 - n)) - 1);
         byte u2 = s.get(i += 1);
-        if (((u & 0xFF) & 254) == 192 || (u & 0xFF) == 224 && ((u2 & 0xFF) & 224) == 128 || (u & 0xFF) == 240 && ((u2 & 0xFF) & 240) == 128 || (u & 0xFF) == 248 && ((u2 & 0xFF) & 248) == 128 || (u & 0xFF) == 252 && ((u2 & 0xFF) & 252) == 128)
+        if (((((((u & 0xFF) & 254) == 192 || ((u & 0xFF) == 224 && ((u2 & 0xFF) & 224) == 128)) || ((u & 0xFF) == 240 && ((u2 & 0xFF) & 240) == 128)) || ((u & 0xFF) == 248 && ((u2 & 0xFF) & 248) == 128)) || ((u & 0xFF) == 252 && ((u2 & 0xFF) & 252) == 128)))
             return new BytePtr("Overlong UTF-8 sequence");
         {
             n += i - 1;
@@ -184,17 +184,17 @@ public class utf {
         int u = rresult.value = (int)s.get(i);
         if (u < 55296)
             return utf.utf_decodeWcharUTF16_DECODE_OK;
-        if (55296 <= u && u <= 56319)
+        if ((55296 <= u && u <= 56319))
         {
             if (len <= i + 1)
                 return new BytePtr("Truncated UTF-16 sequence");
             char u2 = s.get(i + 1);
-            if ((int)u2 < 56320 || 57343 < u)
+            if (((int)u2 < 56320 || 57343 < u))
                 return new BytePtr("Invalid low surrogate");
             u = ((u - 55232 << 10) + ((int)u2 - 56320));
             ridx.value += 1;
         }
-        else if (56320 <= u && u <= 57343)
+        else if ((56320 <= u && u <= 57343))
             return new BytePtr("Unpaired surrogate");
         if (!(utf_isValidDchar(u)))
             return new BytePtr("Invalid code point decoded");

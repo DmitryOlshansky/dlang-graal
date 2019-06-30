@@ -337,7 +337,7 @@ public class astbase {
             public  void addComment(BytePtr comment) {
                 if (this.comment == null)
                     this.comment = pcopy(comment);
-                else if (comment != null && strcmp(comment, this.comment) != 0)
+                else if ((comment != null && strcmp(comment, this.comment) != 0))
                     this.comment = pcopy(Lexer.combineComments(this.comment, comment, true));
             }
 
@@ -365,15 +365,15 @@ public class astbase {
                         if (ps.get() != null)
                         {
                             assert(ident != null);
-                            if (!((ps.get()).ident != null) || !((ps.get()).ident.equals(ident)))
+                            if ((!((ps.get()).ident != null) || !((ps.get()).ident.equals(ident))))
                                 continue;
                             if (!(s != null))
                                 s = ps.get();
-                            else if (s.isOverloadable() && (ps.get()).isOverloadable())
+                            else if ((s.isOverloadable() && (ps.get()).isOverloadable()))
                             {
                                 FuncDeclaration f1 = s.isFuncDeclaration();
                                 FuncDeclaration f2 = (ps.get()).isFuncDeclaration();
-                                if (f1 != null && f2 != null)
+                                if ((f1 != null && f2 != null))
                                 {
                                     for (; !pequals(f1, f2);f1 = f1.overnext0){
                                         if (f1.overnext0 == null)
@@ -571,7 +571,7 @@ public class astbase {
                 {
                     this.ident = aliasId;
                 }
-                else if (packages != null && ((packages).length) != 0)
+                else if ((packages != null && ((packages).length) != 0))
                 {
                     this.ident = (packages).get(0);
                 }
@@ -816,7 +816,7 @@ public class astbase {
                 }
                 this.loc = loc.copy();
                 this.endloc = endloc.copy();
-                this.inferRetType = type != null && type.nextOf() == null;
+                this.inferRetType = (type != null && type.nextOf() == null);
             }
 
             public  FuncLiteralDeclaration isFuncLiteralDeclaration() {
@@ -1359,10 +1359,10 @@ public class astbase {
                 this.ismixin = ismixin;
                 this.isstatic = true;
                 this.protection = new Prot(Prot.Kind.undefined, null).copy();
-                if (this.members != null && this.ident != null)
+                if ((this.members != null && this.ident != null))
                 {
                     Ref<Dsymbol> s = ref(null);
-                    if (Dsymbol.oneMembers(this.members, ptr(s), this.ident) && s.value != null)
+                    if ((Dsymbol.oneMembers(this.members, ptr(s), this.ident) && s.value != null))
                     {
                         this.onemember = s.value;
                         s.value.parent = this;
@@ -1463,7 +1463,7 @@ public class astbase {
                 TemplateInstance ti = s != null ? (TemplateInstance)s : new TemplateInstance(this.loc, this.name, null);
                 ti.tiargs = this.arraySyntaxCopy(this.tiargs);
                 TemplateDeclaration td = null;
-                if (this.inst != null && this.tempdecl != null && (td = this.tempdecl.isTemplateDeclaration()) != null)
+                if (((this.inst != null && this.tempdecl != null) && (td = this.tempdecl.isTemplateDeclaration()) != null))
                     td.syntaxCopy((Dsymbol)ti);
                 else
                     this.syntaxCopy((Dsymbol)ti);
@@ -1546,9 +1546,9 @@ public class astbase {
 
             public static DArray<Expression> concat(DArray<Expression> udas1, DArray<Expression> udas2) {
                 DArray<Expression> udas = null;
-                if (udas1 == null || (udas1).length == 0)
+                if ((udas1 == null || (udas1).length == 0))
                     udas = udas2;
-                else if (udas2 == null || (udas2).length == 0)
+                else if ((udas2 == null || (udas2).length == 0))
                     udas = udas1;
                 else
                 {
@@ -1935,7 +1935,7 @@ public class astbase {
                 this.type = new TypeStruct(this);
                 if (inObject)
                 {
-                    if (pequals(id, Id.ModuleInfo) && !(Module.moduleinfo != null))
+                    if ((pequals(id, Id.ModuleInfo) && !(Module.moduleinfo != null)))
                         Module.moduleinfo = this;
                 }
             }
@@ -1998,7 +1998,7 @@ public class astbase {
                 this.type = new TypeClass(this);
                 if (id != null)
                 {
-                    if (pequals(id, Id.__sizeof) || pequals(id, Id.__xalignof) || pequals(id, Id._mangleof))
+                    if (((pequals(id, Id.__sizeof) || pequals(id, Id.__xalignof)) || pequals(id, Id._mangleof)))
                         this.error(new BytePtr("illegal class name"));
                     if ((id.toChars().get(0) & 0xFF) == 84)
                     {
@@ -3603,9 +3603,9 @@ public class astbase {
                     return this;
                 if ((this.ty & 0xFF) == ENUMTY.Tinstance)
                     return this;
-                if ((this.ty & 0xFF) == ENUMTY.Taarray && ((TypeAArray)this).index.merge().deco == null)
+                if (((this.ty & 0xFF) == ENUMTY.Taarray && ((TypeAArray)this).index.merge().deco == null))
                     return this;
-                if ((this.ty & 0xFF) != ENUMTY.Tenum && this.nextOf() != null && this.nextOf().deco == null)
+                if ((((this.ty & 0xFF) != ENUMTY.Tenum && this.nextOf() != null) && this.nextOf().deco == null))
                     return this;
                 Type t = this;
                 assert(t != null);
@@ -3623,7 +3623,7 @@ public class astbase {
                 }
                 else
                 {
-                    if ((stc & 536870912L) != 0 && !(t.isShared()))
+                    if (((stc & 536870912L) != 0 && !(t.isShared())))
                     {
                         if (t.isWild())
                         {
@@ -3640,7 +3640,7 @@ public class astbase {
                                 t = t.makeShared();
                         }
                     }
-                    if ((stc & 4L) != 0 && !(t.isConst()))
+                    if (((stc & 4L) != 0 && !(t.isConst())))
                     {
                         if (t.isShared())
                         {
@@ -3657,7 +3657,7 @@ public class astbase {
                                 t = t.makeConst();
                         }
                     }
-                    if ((stc & 2147483648L) != 0 && !(t.isWild()))
+                    if (((stc & 2147483648L) != 0 && !(t.isWild())))
                     {
                         if (t.isShared())
                         {
@@ -3801,7 +3801,7 @@ public class astbase {
             public  void fixTo(Type t) {
                 Type mto = null;
                 Type tn = this.nextOf();
-                if (!(tn != null) || (this.ty & 0xFF) != ENUMTY.Tsarray && (tn.mod & 0xFF) == (t.nextOf().mod & 0xFF))
+                if ((!(tn != null) || ((this.ty & 0xFF) != ENUMTY.Tsarray && (tn.mod & 0xFF) == (t.nextOf().mod & 0xFF))))
                 {
                     switch ((t.mod & 0xFF))
                     {
@@ -4622,7 +4622,7 @@ public class astbase {
             public DArray<Expression> fargs;
             public  TypeFunction(ParameterList pl, Type treturn, int linkage, long stc) {
                 super((byte)5, treturn);
-                assert(VarArg.none <= pl.varargs && pl.varargs <= VarArg.typesafe);
+                assert((VarArg.none <= pl.varargs && pl.varargs <= VarArg.typesafe));
                 this.parameterList = pl.copy();
                 this.linkage = linkage;
                 if ((stc & 67108864L) != 0)
@@ -4756,7 +4756,7 @@ public class astbase {
             public  Type syntaxCopy() {
                 Type t = this.next.syntaxCopy();
                 Type ti = this.index.syntaxCopy();
-                if (pequals(t, this.next) && pequals(ti, this.index))
+                if ((pequals(t, this.next) && pequals(ti, this.index)))
                     t = this;
                 else
                 {
@@ -5627,7 +5627,7 @@ public class astbase {
                 if (this.td != null)
                 {
                     assert(this.td.literal);
-                    assert(this.td.members != null && (this.td.members).length == 1);
+                    assert((this.td.members != null && (this.td.members).length == 1));
                     this.fd = (this.td.members).get(0).isFuncLiteralDeclaration();
                 }
                 this.tok = this.fd.tok;
@@ -5992,7 +5992,7 @@ public class astbase {
             }
 
             public  Dsymbol isDsymbol(RootObject o) {
-                if (!(o != null) || (o.dyncast()) != 0 || (DYNCAST.dsymbol) != 0)
+                if (((!(o != null) || (o.dyncast()) != 0) || (DYNCAST.dsymbol) != 0))
                     return null;
                 return (Dsymbol)o;
             }
@@ -6831,7 +6831,7 @@ public class astbase {
         {
             public  EqualExp(byte op, Loc loc, Expression e1, Expression e2) {
                 super(loc, op, 32, e1, e2);
-                assert((op & 0xFF) == 58 || (op & 0xFF) == 59);
+                assert(((op & 0xFF) == 58 || (op & 0xFF) == 59));
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -7780,7 +7780,7 @@ public class astbase {
             public  BytePtr toChars() {
                 OutBuffer buf = new OutBuffer();
                 try {
-                    if (this.packages != null && ((this.packages).length) != 0)
+                    if ((this.packages != null && ((this.packages).length) != 0))
                     {
                         {
                             int i = 0;
@@ -7867,25 +7867,25 @@ public class astbase {
             }
         }
         public static Tuple isTuple(RootObject o) {
-            if (!(o != null) || o.dyncast() != DYNCAST.tuple)
+            if ((!(o != null) || o.dyncast() != DYNCAST.tuple))
                 return null;
             return (Tuple)o;
         }
 
         public static Type isType(RootObject o) {
-            if (!(o != null) || o.dyncast() != DYNCAST.type)
+            if ((!(o != null) || o.dyncast() != DYNCAST.type))
                 return null;
             return (Type)o;
         }
 
         public static Expression isExpression(RootObject o) {
-            if (!(o != null) || o.dyncast() != DYNCAST.expression)
+            if ((!(o != null) || o.dyncast() != DYNCAST.expression))
                 return null;
             return (Expression)o;
         }
 
         public static TemplateParameter isTemplateParameter(RootObject o) {
-            if (!(o != null) || o.dyncast() != DYNCAST.templateparameter)
+            if ((!(o != null) || o.dyncast() != DYNCAST.templateparameter))
                 return null;
             return (TemplateParameter)o;
         }
@@ -7987,7 +7987,7 @@ public class astbase {
                 {
                     return Type.tchar.pointerTo();
                 }
-                else if (global.params.isLinux || global.params.isFreeBSD || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris || global.params.isOSX)
+                else if ((((((global.params.isLinux || global.params.isFreeBSD) || global.params.isOpenBSD) || global.params.isDragonFlyBSD) || global.params.isSolaris) || global.params.isOSX))
                 {
                     if (global.params.is64bit)
                     {

@@ -703,11 +703,7 @@ public:
             return;
         }
         else if(e.op == TOK.andAnd || e.op == TOK.orOr) {
-            buf.put(e.e1.toJavaBool(opts));
-            buf.put(' ');
-            buf.put(Token.toString(e.op));
-            buf.put(' ');
-            buf.put(e.e2.toJavaBool(opts));
+            buf.fmt("(%s %s %s)", e.e1.toJavaBool(opts), Token.toString(e.op), e.e2.toJavaBool(opts));
             return;
         }
         else if(e.op == TOK.concatenate) {

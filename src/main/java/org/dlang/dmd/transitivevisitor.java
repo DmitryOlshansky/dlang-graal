@@ -23,7 +23,7 @@ public class transitivevisitor {
     {
         // from template mixin ParseVisitMethods!(ASTBase)// from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ExpStatement s) {
-            if (s.exp != null && (s.exp.op & 0xFF) == 38)
+            if ((s.exp != null && (s.exp.op & 0xFF) == 38))
             {
                 ((ASTBase.DeclarationExp)s.exp).declaration.accept(this);
                 return ;
@@ -60,7 +60,7 @@ public class transitivevisitor {
             if (v._init != null)
             {
                 ASTBase.ExpInitializer ie = v._init.isExpInitializer();
-                if (ie != null && (ie.exp.op & 0xFF) == 95 || (ie.exp.op & 0xFF) == 96)
+                if ((ie != null && ((ie.exp.op & 0xFF) == 95 || (ie.exp.op & 0xFF) == 96)))
                     ((ASTBase.AssignExp)ie.exp).e2.accept(this);
                 else
                     v._init.accept(this);
@@ -76,7 +76,7 @@ public class transitivevisitor {
                 for (; __key109 < __r108.getLength();__key109 += 1) {
                     ASTBase.Statement sx = __r108.get(__key109);
                     ASTBase.ExpStatement ds = sx != null ? sx.isExpStatement() : null;
-                    if (ds != null && (ds.exp.op & 0xFF) == 38)
+                    if ((ds != null && (ds.exp.op & 0xFF) == 38))
                     {
                         ASTBase.Dsymbol d = ((ASTBase.DeclarationExp)ds.exp).declaration;
                         assert(d.isDeclaration() != null);
@@ -159,7 +159,7 @@ public class transitivevisitor {
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.IfStatement s) {
-            if (s.prm != null && s.prm.type != null)
+            if ((s.prm != null && s.prm.type != null))
                 this.visitType(s.prm.type);
             s.condition.accept(this);
             s.ifbody.accept(this);
@@ -180,7 +180,7 @@ public class transitivevisitor {
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visitArgs(DArray<ASTBase.Expression> expressions, ASTBase.Expression basis) {
-            if (expressions == null || !(((expressions).length) != 0))
+            if ((expressions == null || !(((expressions).length) != 0)))
                 return ;
             {
                 Slice<ASTBase.Expression> __r100 = (expressions).opSlice().copy();
@@ -198,7 +198,7 @@ public class transitivevisitor {
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.PragmaStatement s) {
-            if (s.args != null && ((s.args).length) != 0)
+            if ((s.args != null && ((s.args).length) != 0))
                 this.visitArgs(s.args, null);
             if (s._body != null)
                 s._body.accept(this);
@@ -587,7 +587,7 @@ public class transitivevisitor {
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.PragmaDeclaration d) {
-            if (d.args != null && ((d.args).length) != 0)
+            if ((d.args != null && ((d.args).length) != 0))
                 this.visitArgs(d.args, null);
             this.visitAttribDeclaration((ASTBase.AttribDeclaration)d);
         }
@@ -663,7 +663,7 @@ public class transitivevisitor {
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visitBaseClasses(ASTBase.ClassDeclaration d) {
-            if (!(d != null) || !(((d.baseclasses).length) != 0))
+            if ((!(d != null) || !(((d.baseclasses).length) != 0)))
                 return ;
             {
                 Slice<ASTBase.BaseClass> __r128 = (d.baseclasses).opSlice().copy();
@@ -678,7 +678,7 @@ public class transitivevisitor {
 
         // from template ParseVisitMethods!(ASTBase)
         public  boolean visitEponymousMember(ASTBase.TemplateDeclaration d) {
-            if (d.members == null || (d.members).length != 1)
+            if ((d.members == null || (d.members).length != 1))
                 return false;
             ASTBase.Dsymbol onemember = (d.members).get(0);
             if (!pequals(onemember.ident, d.ident))
@@ -727,7 +727,7 @@ public class transitivevisitor {
                     if (vd._init != null)
                     {
                         ASTBase.ExpInitializer ie = vd._init.isExpInitializer();
-                        if (ie != null && (ie.exp.op & 0xFF) == 95 || (ie.exp.op & 0xFF) == 96)
+                        if ((ie != null && ((ie.exp.op & 0xFF) == 95 || (ie.exp.op & 0xFF) == 96)))
                             ((ASTBase.AssignExp)ie.exp).e2.accept(this);
                         else
                             vd._init.accept(this);
@@ -741,7 +741,7 @@ public class transitivevisitor {
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visitTemplateParameters(DArray<ASTBase.TemplateParameter> parameters) {
-            if (parameters == null || !(((parameters).length) != 0))
+            if ((parameters == null || !(((parameters).length) != 0)))
                 return ;
             {
                 Slice<ASTBase.TemplateParameter> __r130 = (parameters).opSlice().copy();
@@ -924,13 +924,13 @@ public class transitivevisitor {
             if ((f.type.ty & 0xFF) == ASTBase.ENUMTY.Terror)
                 return ;
             ASTBase.TypeFunction tf = (ASTBase.TypeFunction)f.type;
-            if (!(f.inferRetType) && tf.next != null)
+            if ((!(f.inferRetType) && tf.next != null))
                 this.visitType(tf.next);
             this.visitParameters(tf.parameterList.parameters);
             ASTBase.CompoundStatement cs = f.fbody.isCompoundStatement();
             ASTBase.Statement s = !(cs != null) ? f.fbody : null;
             ASTBase.ReturnStatement rs = s != null ? s.isReturnStatement() : null;
-            if (rs != null && rs.exp != null)
+            if ((rs != null && rs.exp != null))
                 rs.exp.accept(this);
             else
                 this.visitFuncBody((ASTBase.FuncDeclaration)f);
@@ -1069,10 +1069,10 @@ public class transitivevisitor {
         public  void visit(ASTBase.NewExp e) {
             if (e.thisexp != null)
                 e.thisexp.accept(this);
-            if (e.newargs != null && ((e.newargs).length) != 0)
+            if ((e.newargs != null && ((e.newargs).length) != 0))
                 this.visitArgs(e.newargs, null);
             this.visitType(e.newtype);
-            if (e.arguments != null && ((e.arguments).length) != 0)
+            if ((e.arguments != null && ((e.arguments).length) != 0))
                 this.visitArgs(e.arguments, null);
         }
 
@@ -1081,9 +1081,9 @@ public class transitivevisitor {
         public  void visit(ASTBase.NewAnonClassExp e) {
             if (e.thisexp != null)
                 e.thisexp.accept(this);
-            if (e.newargs != null && ((e.newargs).length) != 0)
+            if ((e.newargs != null && ((e.newargs).length) != 0))
                 this.visitArgs(e.newargs, null);
-            if (e.arguments != null && ((e.arguments).length) != 0)
+            if ((e.arguments != null && ((e.arguments).length) != 0))
                 this.visitArgs(e.arguments, null);
             if (e.cd != null)
                 e.cd.accept(this);
@@ -1141,7 +1141,7 @@ public class transitivevisitor {
             this.visitType(e.targ);
             if (e.tspec != null)
                 this.visitType(e.tspec);
-            if (e.parameters != null && ((e.parameters).length) != 0)
+            if ((e.parameters != null && ((e.parameters).length) != 0))
                 this.visitTemplateParameters(e.parameters);
         }
 

@@ -257,7 +257,7 @@ public class globals {
         public ByteSlice exefile;
         public ByteSlice mapfile;
         public  boolean isPOSIX() {
-            return this.isLinux || this.isOSX || this.isFreeBSD || this.isOpenBSD || this.isDragonFlyBSD || this.isSolaris;
+            return (((((this.isLinux || this.isOSX) || this.isFreeBSD) || this.isOpenBSD) || this.isDragonFlyBSD) || this.isSolaris);
         }
 
         public Param(){
@@ -889,7 +889,7 @@ public class globals {
                 {
                     buf.writeByte(40);
                     buf.print((long)this.linnum);
-                    if (showColumns && (this.charnum) != 0)
+                    if ((showColumns && (this.charnum) != 0))
                     {
                         buf.writeByte(44);
                         buf.print((long)this.charnum);
@@ -903,11 +903,11 @@ public class globals {
         }
 
         public  boolean equals(Loc loc) {
-            return !(global.params.showColumns) || this.charnum == loc.charnum && this.linnum == loc.linnum && FileName.equals(this.filename, loc.filename);
+            return (((!(global.params.showColumns) || this.charnum == loc.charnum) && this.linnum == loc.linnum) && FileName.equals(this.filename, loc.filename));
         }
 
         public  boolean opEquals(Loc loc) {
-            return this.charnum == loc.charnum && this.linnum == loc.linnum && this.filename == loc.filename || this.filename != null && loc.filename != null && strcmp(this.filename, loc.filename) == 0;
+            return ((this.charnum == loc.charnum && this.linnum == loc.linnum) && (this.filename == loc.filename || ((this.filename != null && loc.filename != null) && strcmp(this.filename, loc.filename) == 0)));
         }
 
         public  int toHash() {

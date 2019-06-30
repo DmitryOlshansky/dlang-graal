@@ -192,7 +192,7 @@ public class errors {
             fprintf(stderr,  new ByteSlice("%s "), p2);
         OutBuffer tmp = new OutBuffer();
         tmp.vprintf(format, ap);
-        if (con != null && strchr(tmp.peekChars(), 96) != null)
+        if ((con != null && strchr(tmp.peekChars(), 96) != null))
         {
             colorSyntaxHighlight(tmp);
             writeHighlights(con, tmp);
@@ -200,7 +200,7 @@ public class errors {
         else
             fputs(tmp.peekChars(), stderr);
         fputc(10, stderr);
-        if (global.params.printErrorContext && !(loc.opEquals(Loc.initial)) && strstr(loc.filename,  new ByteSlice(".d-mixin-")) == null && global.params.mixinOut == null)
+        if ((((global.params.printErrorContext && !(loc.opEquals(Loc.initial))) && strstr(loc.filename,  new ByteSlice(".d-mixin-")) == null) && global.params.mixinOut == null))
         {
             FileAndLines fllines = FileCache.fileCache.addOrGetFile(loc.filename.slice(0,strlen(loc.filename)));
             if (loc.linnum - 1 < fllines.lines.getLength())
@@ -230,7 +230,7 @@ public class errors {
         if (!((global.gag) != 0))
         {
             verrorPrint(loc, Color.brightRed, header, format, ap, p1, p2);
-            if ((global.params.errorLimit) != 0 && global.errors >= global.params.errorLimit)
+            if (((global.params.errorLimit) != 0 && global.errors >= global.params.errorLimit))
                 fatal();
         }
         else
@@ -274,7 +274,7 @@ public class errors {
     }
 
     public static void vwarningSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
-        if ((global.params.warnings & 0xFF) != 2 && !((global.gag) != 0))
+        if (((global.params.warnings & 0xFF) != 2 && !((global.gag) != 0)))
             verrorPrint(loc, Color.brightYellow, new BytePtr("       "), format, ap, null, null);
     }
 
@@ -311,7 +311,7 @@ public class errors {
     public static void vdeprecationSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
         if ((global.params.useDeprecated & 0xFF) == 0)
             verrorSupplemental(loc, format, ap);
-        else if ((global.params.useDeprecated & 0xFF) == 1 && !((global.gag) != 0))
+        else if (((global.params.useDeprecated & 0xFF) == 1 && !((global.gag) != 0)))
             verrorPrint(loc, Color.brightCyan, new BytePtr("       "), format, ap, null, null);
     }
 

@@ -195,11 +195,11 @@ public class identifier {
         }
 
         public static boolean isValidIdentifier(BytePtr str) {
-            return str != null && isValidIdentifier(toDString(str));
+            return (str != null && isValidIdentifier(toDString(str)));
         }
 
         public static boolean isValidIdentifier(ByteSlice str) {
-            if (str.getLength() == 0 || (str.get(0) & 0xFF) >= 48 && (str.get(0) & 0xFF) <= 57)
+            if ((str.getLength() == 0 || ((str.get(0) & 0xFF) >= 48 && (str.get(0) & 0xFF) <= 57)))
             {
                 return false;
             }
@@ -207,7 +207,7 @@ public class identifier {
             for (; idx.value < str.getLength();){
                 IntRef dc = ref(0x0ffff);
                 BytePtr q = pcopy(utf_decodeChar(toBytePtr(str), str.getLength(), idx, dc));
-                if (q != null || !(dc.value >= 128 && isUniAlpha(dc.value) || (isalnum(dc.value)) != 0 || dc.value == 95))
+                if ((q != null || !((((dc.value >= 128 && isUniAlpha(dc.value)) || (isalnum(dc.value)) != 0) || dc.value == 95))))
                 {
                     return false;
                 }
