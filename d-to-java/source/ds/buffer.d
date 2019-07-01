@@ -2,7 +2,7 @@ module ds.buffer;
 
 import core.stdc.string;
 
-import std.range, std.format, std.stdio;
+import std.range, std.format;
 
 extern(C) void foobar();
 
@@ -25,10 +25,6 @@ final:
     void indent(){ indentSize += 4; }
 
     void outdent(){ 
-        /*if (indentSize == 0) {
-            stderr.writefln("OUTDENTING BEYOND 0");
-            return;
-        }*/
         assert(indentSize != 0, "OUTDENTING BEYOND 0");
         indentSize -= 4; 
     }

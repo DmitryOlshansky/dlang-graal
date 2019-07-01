@@ -17,7 +17,7 @@ import dmd.func;
 
 import visitors.expression;
 
-import std.algorithm;
+import std.algorithm, std.stdio;
 
 struct Template {
     string tiArgs;
@@ -34,7 +34,8 @@ string tiArgs(TemplateInstance ti, ExprOpts opts) {
             auto e = arg.isExpression();
             if (e && e.type.toJava(opts) == "ByteSlice") temp.fmt("_%s", e.toString[1..$-1]);
             else if(e && e.type.toJava(opts) == "boolean") temp.fmt("%d", e.toInteger());
-            if (t) temp.put(t.toJava(opts, Boxing.yes));
+            else if (t) temp.put(t.toJava(opts, Boxing.yes));
+            else temp.fmt("_%s", arg.toString);
         }
         return temp.data.dup;
     }

@@ -1122,35 +1122,7 @@ public class dtool {
                     int __key405 = 0;
                     for (; __key405 < __r404.getLength();__key405 += 1) {
                         ByteSlice arg = __r404.get(__key405).copy();
-                        BytePtr argz = pcopy(toStringz(arg));
-                        File.ReadResult buffer = File.read(toBytePtr(argz)).copy();
-                        try {
-                            if (!(buffer.success))
-                            {
-                                fprintf(stderr,  new ByteSlice("Failed to read from file: %s"), argz);
-                                exit(2);
-                            }
-                            ByteSlice buf = buffer.extractData().copy();
-                            Lexer lex = new Lexer(toBytePtr(argz), toBytePtr(toBytePtr(buf)), 0, buf.getLength(), true, true, new StderrDiagnosticReporter(DiagnosticReporting.error));
-                            BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), new BytePtr("tk")));
-                            ByteSlice filePath = toByteSlice((outdir.value.concat( new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
-                            OutBuffer output = new OutBuffer(null, 0, 0, 0, false, false);
-                            int i = 0;
-                            for (; (lex.nextToken() & 0xFF) != 11;){
-                                (output).printf( new ByteSlice("%4d"), (lex.token.value & 0xFF));
-                                if ((i += 1) == 20)
-                                {
-                                    (output).printf( new ByteSlice(" | Line %5d |\n"), lex.token.loc.linnum);
-                                    i = 0;
-                                }
-                            }
-                            if (i != 0)
-                                (output).printf( new ByteSlice(" | Line %5d |\n"), lex.token.loc.linnum);
-                            if (!(File.write(toStringz(filePath), toByteSlice((output).extractSlice()))))
-                                fprintf(stderr,  new ByteSlice("Failed to write file: %s\n"), dest);
-                        }
-                        finally {
-                        }
+                        processFile_lex(arg, outdir.value);
                     }
                 }
                 exit(0);
@@ -1161,5 +1133,44 @@ public class dtool {
         finally {
         }
     }
+
+    public static ByteSlice lex(BytePtr argz, ByteSlice buf) {
+        Lexer lexer = new Lexer(argz, toBytePtr(buf), 0, buf.getLength(), true, true, new StderrDiagnosticReporter(DiagnosticReporting.error));
+        OutBuffer output = new OutBuffer(null, 0, 0, 0, false, false);
+        int i = 0;
+        for (; (lexer.nextToken() & 0xFF) != 11;){
+            (output).printf( new ByteSlice("%4d"), (lexer.token.value & 0xFF));
+            if ((i += 1) == 20)
+            {
+                (output).printf( new ByteSlice(" | Line %5d |\n"), lexer.token.loc.linnum);
+                i = 0;
+            }
+        }
+        if (i != 0)
+            (output).printf( new ByteSlice(" | Line %5d |\n"), lexer.token.loc.linnum);
+        return (output).extractSlice();
+    }
+
+    // from template processFile!(_lex)
+    public static void processFile_lex(ByteSlice arg, ByteSlice outdir) {
+        BytePtr argz = pcopy(toStringz(arg));
+        File.ReadResult buffer = File.read(toBytePtr(argz)).copy();
+        try {
+            if (!(buffer.success))
+            {
+                fprintf(stderr,  new ByteSlice("Failed to read from file: %s"), argz);
+                exit(2);
+            }
+            ByteSlice buf = buffer.extractData().copy();
+            BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), new BytePtr("tk")));
+            ByteSlice filePath = toByteSlice((outdir.concat( new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
+            ByteSlice output = lex(toBytePtr(argz), toByteSlice(buf)).copy();
+            if (!(File.write(toStringz(filePath), toByteSlice(output))))
+                fprintf(stderr,  new ByteSlice("Failed to write file: %s\n"), dest);
+        }
+        finally {
+        }
+    }
+
 
 }

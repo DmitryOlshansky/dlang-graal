@@ -3,11 +3,6 @@ dependency "dmd:frontend" path="vendor/dmd"
 +/
 module dtool;
 
-import core.stdc.stdio, core.stdc.string;
-
-import std.string;
-import std.getopt;
-
 import dmd.astbase;
 import dmd.errors;
 import dmd.globals;
@@ -21,7 +16,11 @@ import dmd.root.filename;
 import dmd.root.outbuffer;
 import dmd.root.outbuffer;
 
-import core.stdc.stdio, core.stdc.stdarg;
+import core.stdc.stdio, core.stdc.stdarg, core.stdc.stdlib,  core.stdc.string;
+
+import std.string;
+import std.getopt;
+
 
 alias AST = ASTBase;
 
@@ -365,7 +364,7 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         buf.printf("( expr ");
         buf.writenl;
         buf.level++;
-        super.visit(s);
+        s.exp.accept(this);
         buf.level--;
         buf.writenl;
         buf.printf(")");
@@ -464,27 +463,26 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         assert(0, "Unexpected generic array");
     }
     override void visit(AST.TypeDArray d) {
-        super.visit(d);
+        d.next.accept(this);
         buf.printf("[]");
     }
     override void visit(AST.TypeAArray ta) {
-        super.visit(ta.next);
+        ta.next.accept(this);
         buf.printf("[");
-        super.visit(ta.index);
+        ta.index.accept(this);
         buf.printf("]");
     }
 
     override void visit(AST.TypeSArray tsa) {
-        super.visit(tsa.next);
+        tsa.next.accept(this);
         buf.printf("[");
-        super.visit(tsa.dim);
+        tsa.dim.accept(this);
         buf.printf("]");
     }
     override void visit(AST.TypeQualified) { assert(0); }
     override void visit(AST.TypeTraits) { assert(0); }
 
     override void visit(AST.TypeIdentifier d) {
-        super.visit(d);
         buf.printf("%s", d.ident.toChars);
     }
 
@@ -492,7 +490,9 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     override void visit(AST.TypeTypeof) { assert(0); }
     override void visit(AST.TypeInstance) { assert(0); }
     override void visit(AST.Expression) { assert(0); }
-    override void visit(AST.DeclarationExp) { assert(0); }
+    override void visit(AST.DeclarationExp e) {
+        if (e.declaration) e.declaration.accept(this);
+    }
 
     override void visit(AST.IntegerExp e) {
         buf.printf("%lld", e.value);
@@ -614,43 +614,72 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     override void visit(AST.VoidInitializer) { assert(0); }
 }
 
-int main(string[] args)
-{
+int main(string[] args) {
 	string outdir = ".";
+    string tool = "lex";
 	auto res = getopt(args,
-		"outdir", "output directory", &outdir
+		"outdir", "output directory", &outdir,
+        "tool", "select tool - lex or lispy", &tool
 	);
 	if (res.helpWanted) {
 		defaultGetoptPrinter("Trivial D lexer based on DMD.", res.options);
 		return 1;
 	}
-    scope diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
-    scope parser = new Parser!ASTBase(null, null, false, diagnosticReporter);
-    assert(parser !is null);
-
+    global.params.isLinux = true;
+    global._init();
+    ASTBase.Type._init();
 	foreach(arg; args[1..$]) {
-		auto argz = arg.toStringz;
-		auto buffer = File.read(argz);
-        if (!buffer.success) {
-            fprintf(stderr, "Failed to read from file: %s", argz);
+        if (tool == "lex")
+		    processFile!lex(arg, outdir, "tk");
+        else if(tool == "lispy")
+            processFile!lispy(arg, outdir, "ast");        
+        else {
+            fprintf(stderr, "Unsupported tool name: %.*s", tool.length, tool.ptr);
             return 2;
         }
-        auto buf = buffer.extractData();
-        scope lex = new Lexer(argz, cast(char*)buf.ptr, 0, buf.length, true, true, new StderrDiagnosticReporter(DiagnosticReporting.error));
-        auto dest = FileName.forceExt(FileName.name(argz), "tk");
-        auto filePath = outdir ~ "/" ~ dest[0..strlen(dest)];
-        scope output = new OutBuffer();
-        int i = 0;
-        while (lex.nextToken() != TOK.endOfFile) {
-            output.printf("%4d", lex.token.value);
-            if (++i == 20) {
-                output.printf(" | Line %5d |\n", lex.token.loc.linnum);
-                i  = 0;
-            }
-        }
-        if (i != 0) output.printf(" | Line %5d |\n", lex.token.loc.linnum);
-        if (!File.write(filePath.toStringz, output.extractSlice()))
-            fprintf(stderr, "Failed to write file: %s\n", dest);
 	}
 	return 0;
+}
+
+char[] lex(const(char)* argz, const(char)[] buf) {
+    auto lexer = new Lexer(argz, cast(char*)buf.ptr, 0, buf.length, true, true, new StderrDiagnosticReporter(DiagnosticReporting.error));
+    auto output = new OutBuffer();
+    int i = 0;
+    while (lexer.nextToken() != TOK.endOfFile) {
+        output.printf("%4d", lexer.token.value);
+        if (++i == 20) {
+            output.printf(" | Line %5d |\n", lexer.token.loc.linnum);
+            i  = 0;
+        }
+    }
+    if (i != 0) output.printf(" | Line %5d |\n", lexer.token.loc.linnum);
+    return output.extractSlice;
+}
+
+char[] lispy(const(char)* argz, const(char)[] buf) {
+    scope diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
+    scope p = new Parser!ASTBase(null, buf, true, diagnosticReporter);
+    p.nextToken();
+    auto decls = p.parseModule();
+    auto lispPrint = new LispyPrint();
+    lispPrint.buf = new OutBuffer();
+    lispPrint.buf.doindent = true;
+    foreach (d; *decls)
+        d.accept(lispPrint);
+    return lispPrint.buf.extractSlice();
+}
+
+void processFile(alias fn)(string arg, string outdir, const(char)* suffix) {
+    auto argz = arg.toStringz;
+    auto buffer = File.read(argz);
+    if (!buffer.success) {
+        fprintf(stderr, "Failed to read from file: %s", argz);
+        exit(2);
+    }
+    auto buf = buffer.extractData();
+    auto dest = FileName.forceExt(FileName.name(argz), suffix);
+    auto filePath = outdir ~ "/" ~ dest[0..strlen(dest)];
+    auto output = fn(argz, cast(char[])buf);
+    if (!File.write(filePath.toStringz, output))
+        fprintf(stderr, "Failed to write file: %s\n", filePath.toStringz);
 }
