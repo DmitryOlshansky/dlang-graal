@@ -328,6 +328,44 @@ val stdout = _IO_FILE(System.out)
 @JvmField
 val stderr = _IO_FILE(System.err)
 
+// ======= std.getopt =======
+
+data class GetoptResult(@JvmField val helpWanted: Boolean, @JvmField val options: List<Pair<ByteSlice, ByteSlice>>) {
+    fun copy(): GetoptResult = this
+}
+
+fun getopt(args: Ref<Slice<ByteSlice>>, vararg params: Any): GetoptResult
+{
+    var help = false
+    val options = mutableListOf<Pair<ByteSlice,ByteSlice>>()
+    // ignore args and use System.properties instead
+    assert(params.size % 3 == 0)
+    for (i in 0 until params.size/3) {
+        val name = params[3 * i]
+        val message = params[3 * i + 1]
+        require(name is ByteSlice && message is ByteSlice)
+        options.add(Pair(name, message))
+        val prop = System.getProperty(name.toString())
+        if (prop === null) help = true
+        val target = params[3 * i + 2]
+        if (target is Ptr<*>) {
+            (target as Ptr<ByteSlice>)[0] = ByteSlice(prop)
+        }
+    }
+    return GetoptResult(help, options)
+}
+
+fun defaultGetoptPrinter(text: ByteSlice, options: List<Pair<ByteSlice, ByteSlice>>) {
+    printf(ByteSlice("%s\nOptions:\n"), text)
+    for (item in options) {
+        printf(ByteSlice("%s - %s\n"), item.first, item.second);
+    }
+}
+
+// ======= std.string =======
+
+fun toStringz(s: ByteSlice) = s.ptr()
+
 // ========== AA ============
 fun<K,V> update(aa: AA<K,V>, key: K, ins:() -> V, upd:(V) -> V) {
     val s = aa.getLvalue(key)

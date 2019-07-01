@@ -9,6 +9,7 @@ class StringTable(private val table : HashMap<ByteSlice, StringValue?>) {
     constructor(): this(HashMap<ByteSlice, StringValue?>()) {}
 
     // shim
+    @Suppress("UNUSED_PARAMETER")
     constructor(any: Any?, n: Int, any2: Any?, n1: Int, n2: Int, n3: Int, n4: Int) : this()
 
     fun copy(): StringTable = StringTable(table)

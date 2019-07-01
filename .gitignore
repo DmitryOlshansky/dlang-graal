@@ -3,7 +3,8 @@ target
 .idea
 *.iml
 
-d-to-java/.dub
+.dub
+dtool
 d-to-java/docs.json
 d-to-java/dummy.html
 d-to-java/docs/

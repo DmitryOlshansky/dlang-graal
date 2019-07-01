@@ -4691,10 +4691,10 @@ public class parse {
                                     DArray<ASTBase.Statement> as = new DArray<ASTBase.Statement>();
                                     (as).reserve((a).length);
                                     {
-                                        int __key102 = 0;
-                                        int __limit103 = (a).length;
-                                        for (; __key102 < __limit103;__key102 += 1) {
-                                            int i = __key102;
+                                        int __key402 = 0;
+                                        int __limit403 = (a).length;
+                                        for (; __key402 < __limit403;__key402 += 1) {
+                                            int i = __key402;
                                             ASTBase.Dsymbol d = (a).get(i);
                                             s = new ASTBase.ExpStatement(loc, d);
                                             (as).push(s);

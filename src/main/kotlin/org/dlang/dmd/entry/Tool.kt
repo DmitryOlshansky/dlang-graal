@@ -64,7 +64,7 @@ fun lispy(argz: BytePtr, buf: ByteSlice): ByteSlice {
     val p = parse.ParserASTBase(null, buf, true, StderrDiagnosticReporter(0))
     p.nextToken()
     val decls = p.parseModule()
-    val lispPrint = parser.LispyPrint()
+    val lispPrint = dtool.LispyPrint()
     lispPrint.buf = OutBuffer()
     lispPrint.buf.doindent = true
     for (i in 0 until decls.length)

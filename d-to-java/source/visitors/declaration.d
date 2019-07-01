@@ -1299,6 +1299,9 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (func.isAbstract && func.fbody is null) storage = "abstract";
         if (auto ctor = func.isCtorDeclaration())
             buf.fmt("public %s %s%s(", storage, toJava(func.type.nextOf(), opts), tiArgs);
+        else if(func.funcName == "main" && opts.aggregates.length == 0) {
+            buf.fmt("public %s void %s%s(", storage, func.funcName, tiArgs);
+        }
         else
             buf.fmt("public %s %s %s%s(", storage, toJava(func.type.nextOf(), opts), func.funcName, tiArgs);
         VarDeclaration[] renamedVars;

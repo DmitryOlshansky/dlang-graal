@@ -17,4 +17,4 @@ vendor/dmd/src/dmd/transitivevisitor.d
 vendor/dmd/src/dmd/permissivevisitor.d
 vendor/dmd/src/dmd/parsetimevisitor.d
 vendor/dmd/src/dmd/strictvisitor.d
-parser.d
+dtool.d
