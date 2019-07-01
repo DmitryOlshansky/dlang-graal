@@ -61,6 +61,16 @@ const(char)[] funcName(FuncDeclaration f) {
     return f.ident.symbol;
 }
 
+const(char)[] varName(Declaration var, ExprOpts opts) {
+    if (auto name = var in opts.renamed)
+        return *name;
+    else if(auto un = var in opts.aliasedUnion) {
+        return un.ident.symbol;
+    }
+    else
+        return var.ident.symbol;
+}
+
 ///
 const(char)[] symbol(const(char)[] s) {
     if (s == "native") return "native_";
@@ -475,13 +485,7 @@ public:
         else if(e.var.type.ty == Tstruct)
             buf.fmt("%s", e.var.ident.symbol);
         else {
-            if (auto name = e.var in opts.renamed)
-                buf.fmt("ptr(%s)", *name);
-            else if(auto un = e.var in opts.aliasedUnion) {
-                buf.fmt("ptr(%s)", un.ident.symbol);
-            }
-            else
-                buf.fmt("ptr(%s)", e.var.ident.symbol);
+            buf.fmt("ptr(%s)", e.var.varName(opts));
         }
     }
 
@@ -501,13 +505,7 @@ public:
         }
         else {
             buf.put(printParent(e.var));
-            if (auto name = e.var in opts.renamed)
-                buf.put(*name);
-            else if(auto un = e.var in opts.aliasedUnion) {
-                buf.put(un.ident.symbol);
-            }
-            else
-                buf.put(e.var.ident.symbol);
+            buf.put(e.var.varName(opts));
             if (e.var in opts.refParams)
                 buf.put(".value");
         }
@@ -651,12 +649,7 @@ public:
                 }
                 buf.put("ptr(");
                 if (auto var = e.e1.isVarExp) {
-                    if (auto name = var.var in opts.renamed)
-                        buf.put(*name);
-                    else if(auto un = var.var in opts.aliasedUnion)
-                        buf.put(un.ident.symbol);
-                    else
-                        buf.put(var.var.ident.symbol);
+                    buf.put(var.var.varName(opts));
                 }
                 else
                     expToBuffer(e.e1, precedence[e.op], buf, opts);
@@ -807,12 +800,7 @@ public:
                 switch(e.op) {
                     case TOK.orAssign:
                     case TOK.andAssign:
-                        if (auto name = var.var in opts.renamed)
-                            buf.put(*name);
-                        else if(auto un = var.var in opts.aliasedUnion)
-                            buf.put(un.ident.symbol);
-                        else
-                            buf.put(var.var.ident.symbol);
+                        buf.put(var.var.varName(opts));
                         if (var.var in opts.refParams)
                             buf.put(".value");
                         buf.fmt(" %s ", Token.toString(e.op));
@@ -1468,16 +1456,10 @@ private void argsToBuffer(Expressions* expressions, TextBuffer buf, ExprOpts opt
                 tmp.put("(");
                 tmp.put((*fd.parameters)[i].type.toJava(opts));
                 tmp.put(")");
-                tmp.put(var.var.ident.symbol);
+                tmp.put(var.var.varName(opts));
             }
             else if (var && var.var in opts.refParams && refParam) {
-                string* renamed = var.var in opts.renamed;
-                if (renamed)
-                    tmp.put(*renamed);
-                else if(auto un = var.var in opts.aliasedUnion)
-                    buf.put(un.ident.symbol);
-                else 
-                    tmp.put(var.var.ident.symbol);
+                tmp.put(var.var.varName(opts));
             }
             else if(n && n.type.ty == Tarray) {
                 tmp.put("new ");

@@ -1,5 +1,5 @@
 diff --git a/src/main/java/org/dlang/dmd/astbase.java b/src/main/java/org/dlang/dmd/astbase.java
-index 294a542..04bc21a 100644
+index a3a40f2..00bc79a 100644
 --- a/src/main/java/org/dlang/dmd/astbase.java
 +++ b/src/main/java/org/dlang/dmd/astbase.java
 @@ -1987,7 +1987,10 @@ public class astbase {
@@ -79,7 +79,7 @@ index f45a1d8..eb2223f 100644
 +    static Global global = new Global();
  }
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
-index 0d02029..5bf0e8e 100644
+index 3966182..3a16bb5 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java
 +++ b/src/main/java/org/dlang/dmd/lexer.java
 @@ -373,26 +373,17 @@ public class lexer {
@@ -183,8 +183,28 @@ index 0d02029..5bf0e8e 100644
                                      break;
                                  default:
                                  break;
+@@ -2287,14 +2273,11 @@ public class lexer {
+                 ByteSlice s = buf.peekSlice().copy();
+                 if ((s.getLength() == 0 || (s.get(s.getLength() - 1) & 0xFF) != 10))
+                     buf.writeByte(10);
+-                if (((lineComment) != 0 && this.anyToken)) {
+-                    if ((t).lineComment != null) t.lineComment = combineComments(t.lineComment, buf.peekChars(), newParagraph);
+-                    else t.lineComment =  buf.extractChars();
+-                }
+-                else {
+-                    if ((t).blockComment != null) t.blockComment = combineComments(t.blockComment, buf.peekChars(), newParagraph);
+-                    else t.blockComment =  buf.extractChars();
+-                }
++                Ptr<BytePtr> dc = pcopy(((lineComment) != 0 && this.anyToken) ? ptr((t).lineComment) : ptr((t).blockComment));
++                if (dc.get() != null)
++                    dc.set(0, combineComments(dc.get(), buf.peekChars(), newParagraph));
++                else
++                    dc.set(0, buf.extractChars());
+             }
+             finally {
+             }
 diff --git a/src/main/java/org/dlang/dmd/parse.java b/src/main/java/org/dlang/dmd/parse.java
-index 3e3d5ef..f7cb315 100644
+index e8b6c16..2447eb9 100644
 --- a/src/main/java/org/dlang/dmd/parse.java
 +++ b/src/main/java/org/dlang/dmd/parse.java
 @@ -633,9 +633,7 @@ public class parse {
