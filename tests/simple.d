@@ -6,7 +6,7 @@ void main(string[] args) {
 }
 
 struct ABC {
-    int[] items;
+    const(int)[] items;
     size_t cap;
 }
 

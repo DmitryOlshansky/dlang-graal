@@ -347,9 +347,11 @@ fun getopt(args: Ref<Slice<ByteSlice>>, vararg params: Any): GetoptResult
         options.add(Pair(name, message))
         val prop = System.getProperty(name.toString())
         if (prop === null) help = true
-        val target = params[3 * i + 2]
-        if (target is Ptr<*>) {
-            (target as Ptr<ByteSlice>)[0] = ByteSlice(prop)
+        else {
+            val target = params[3 * i + 2]
+            if (target is Ptr<*>) {
+                (target as Ptr<ByteSlice>)[0] = ByteSlice(prop)
+            }
         }
     }
     return GetoptResult(help, options)

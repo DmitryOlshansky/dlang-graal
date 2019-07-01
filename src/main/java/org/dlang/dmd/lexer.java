@@ -2287,11 +2287,14 @@ public class lexer {
                 ByteSlice s = buf.peekSlice().copy();
                 if ((s.getLength() == 0 || (s.get(s.getLength() - 1) & 0xFF) != 10))
                     buf.writeByte(10);
-                Ptr<BytePtr> dc = pcopy(((lineComment) != 0 && this.anyToken) ? ptr((t).lineComment) : ptr((t).blockComment));
-                if (dc.get() != null)
-                    dc.set(0, combineComments(dc.get(), buf.peekChars(), newParagraph));
-                else
-                    dc.set(0, buf.extractChars());
+                if (((lineComment) != 0 && this.anyToken)) {
+                    if ((t).lineComment != null) t.lineComment = combineComments(t.lineComment, buf.peekChars(), newParagraph);
+                    else t.lineComment =  buf.extractChars();
+                }
+                else {
+                    if ((t).blockComment != null) t.blockComment = combineComments(t.blockComment, buf.peekChars(), newParagraph);
+                    else t.blockComment =  buf.extractChars();
+                }
             }
             finally {
             }

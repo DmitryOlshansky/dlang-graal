@@ -15,7 +15,7 @@ class OutBuffer {
     @JvmField var offset: Int
     var size: Int
     @JvmField var level: Int
-    var doindent: Boolean
+    @JvmField var doindent: Boolean
     private var notlinehead: Boolean
 
     constructor(): this(null) {}

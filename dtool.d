@@ -24,6 +24,18 @@ import std.getopt;
 
 alias AST = ASTBase;
 
+const(char)* modToChars(uint mod){
+    switch(mod) with(ASTBase.MODFlags) {
+        case const_: return "const";
+        case immutable_: return "immutable";
+        case shared_: return "shared";
+        case wild: return "inout";
+        case wildconst: return "const(inout)";
+        case mutable: return "";
+        default: return "unknown";
+    }
+}
+
 extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     alias visit = typeof(super).visit;
     OutBuffer* buf;
@@ -270,7 +282,10 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         AST.stcToBuffer(buf, d.stc);
         buf.level++;
         buf.writenl;
-        super.visit(d);
+        if (d.decl) {
+            foreach ( di; *d.decl)
+                di.accept(this);
+        }
         close();
     }
 
@@ -392,7 +407,7 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
 
     override void visit(AST.TypeBasic t) { 
-        buf.printf("%s", t.dstring);
+        buf.printf("%s %s", modToChars(t.mod), t.dstring);
     }
 
     override void visit(AST.TypeError) {

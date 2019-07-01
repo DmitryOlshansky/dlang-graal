@@ -21,6 +21,26 @@ import static org.dlang.dmd.transitivevisitor.*;
 
 public class dtool {
 
+    public static BytePtr modToChars(int mod) {
+        switch (mod)
+        {
+            case 1:
+                return new BytePtr("const");
+            case 4:
+                return new BytePtr("immutable");
+            case 2:
+                return new BytePtr("shared");
+            case 8:
+                return new BytePtr("inout");
+            case 9:
+                return new BytePtr("const(inout)");
+            case 16:
+                return new BytePtr("");
+            default:
+            return new BytePtr("unknown");
+        }
+    }
+
     public static class LispyPrint extends ParseTimeTransitiveVisitorASTBase
     {
         public OutBuffer buf;
@@ -276,7 +296,17 @@ public class dtool {
             ASTBase.stcToBuffer(this.buf, d.stc);
             (this.buf).level++;
             (this.buf).writenl();
-            super.visit(d);
+            if (d.decl != null)
+            {
+                {
+                    Slice<ASTBase.Dsymbol> __r202 = (d.decl).opSlice().copy();
+                    int __key203 = 0;
+                    for (; __key203 < __r202.getLength();__key203 += 1) {
+                        ASTBase.Dsymbol di = __r202.get(__key203);
+                        di.accept(this);
+                    }
+                }
+            }
             this.close();
         }
 
@@ -305,10 +335,10 @@ public class dtool {
             if (d.members != null)
             {
                 {
-                    Slice<ASTBase.Dsymbol> __r202 = (d.members).opSlice().copy();
-                    int __key203 = 0;
-                    for (; __key203 < __r202.getLength();__key203 += 1) {
-                        ASTBase.Dsymbol m = __r202.get(__key203);
+                    Slice<ASTBase.Dsymbol> __r204 = (d.members).opSlice().copy();
+                    int __key205 = 0;
+                    for (; __key205 < __r204.getLength();__key205 += 1) {
+                        ASTBase.Dsymbol m = __r204.get(__key205);
                         m.accept(this);
                     }
                 }
@@ -327,11 +357,11 @@ public class dtool {
             if (d.baseclasses != null)
             {
                 {
-                    Slice<ASTBase.BaseClass> __r205 = (d.baseclasses).opSlice().copy();
-                    int __key204 = 0;
-                    for (; __key204 < __r205.getLength();__key204 += 1) {
-                        ASTBase.BaseClass c = __r205.get(__key204);
-                        int i = __key204;
+                    Slice<ASTBase.BaseClass> __r207 = (d.baseclasses).opSlice().copy();
+                    int __key206 = 0;
+                    for (; __key206 < __r207.getLength();__key206 += 1) {
+                        ASTBase.BaseClass c = __r207.get(__key206);
+                        int i = __key206;
                         if ((i) != 0)
                             printf( new ByteSlice(" "));
                         (c).type.accept(this);
@@ -342,10 +372,10 @@ public class dtool {
             if (d.members != null)
             {
                 {
-                    Slice<ASTBase.Dsymbol> __r206 = (d.members).opSlice().copy();
-                    int __key207 = 0;
-                    for (; __key207 < __r206.getLength();__key207 += 1) {
-                        ASTBase.Dsymbol m = __r206.get(__key207);
+                    Slice<ASTBase.Dsymbol> __r208 = (d.members).opSlice().copy();
+                    int __key209 = 0;
+                    for (; __key209 < __r208.getLength();__key209 += 1) {
+                        ASTBase.Dsymbol m = __r208.get(__key209);
                         m.accept(this);
                     }
                 }
@@ -498,7 +528,7 @@ public class dtool {
             (this.buf).printf( new ByteSlice("( expr "));
             (this.buf).writenl();
             (this.buf).level++;
-            super.visit(s);
+            s.exp.accept(this);
             (this.buf).level--;
             (this.buf).writenl();
             (this.buf).printf( new ByteSlice(")"));
@@ -510,11 +540,11 @@ public class dtool {
             (this.buf).level++;
             if (s.statements != null)
             {
-                Slice<ASTBase.Statement> __r209 = (s.statements).opSlice().copy();
-                int __key208 = 0;
-                for (; __key208 < __r209.getLength();__key208 += 1) {
-                    ASTBase.Statement st = __r209.get(__key208);
-                    int i = __key208;
+                Slice<ASTBase.Statement> __r211 = (s.statements).opSlice().copy();
+                int __key210 = 0;
+                for (; __key210 < __r211.getLength();__key210 += 1) {
+                    ASTBase.Statement st = __r211.get(__key210);
+                    int i = __key210;
                     if ((i) != 0)
                         (this.buf).writenl();
                     st.accept(this);
@@ -542,7 +572,7 @@ public class dtool {
         }
 
         public  void visit(ASTBase.TypeBasic t) {
-            (this.buf).printf( new ByteSlice("%s"), t.dstring);
+            (this.buf).printf( new ByteSlice("%s %s"), modToChars((t.mod & 0xFF)), t.dstring);
         }
 
         public  void visit(ASTBase.TypeError _param_0) {
@@ -569,11 +599,11 @@ public class dtool {
             if (t.arguments != null)
             {
                 {
-                    Slice<ASTBase.Parameter> __r211 = (t.arguments).opSlice().copy();
-                    int __key210 = 0;
-                    for (; __key210 < __r211.getLength();__key210 += 1) {
-                        ASTBase.Parameter a = __r211.get(__key210);
-                        int i = __key210;
+                    Slice<ASTBase.Parameter> __r213 = (t.arguments).opSlice().copy();
+                    int __key212 = 0;
+                    for (; __key212 < __r213.getLength();__key212 += 1) {
+                        ASTBase.Parameter a = __r213.get(__key212);
+                        int i = __key212;
                         if ((i) != 0)
                             (this.buf).printf( new ByteSlice(" "));
                         super.visit(a);
@@ -622,11 +652,11 @@ public class dtool {
             tf.next.accept(this);
             (this.buf).printf( new ByteSlice(" "));
             {
-                Slice<ASTBase.Parameter> __r213 = (tf.parameterList.parameters).opSlice().copy();
-                int __key212 = 0;
-                for (; __key212 < __r213.getLength();__key212 += 1) {
-                    ASTBase.Parameter p = __r213.get(__key212);
-                    int i = __key212;
+                Slice<ASTBase.Parameter> __r215 = (tf.parameterList.parameters).opSlice().copy();
+                int __key214 = 0;
+                for (; __key214 < __r215.getLength();__key214 += 1) {
+                    ASTBase.Parameter p = __r215.get(__key214);
+                    int i = __key214;
                     if ((i) != 0)
                         (this.buf).printf( new ByteSlice(" "));
                     p.accept(this);
@@ -639,21 +669,21 @@ public class dtool {
         }
 
         public  void visit(ASTBase.TypeDArray d) {
-            super.visit(d);
+            d.next.accept(this);
             (this.buf).printf( new ByteSlice("[]"));
         }
 
         public  void visit(ASTBase.TypeAArray ta) {
-            super.visit(ta.next);
+            ta.next.accept(this);
             (this.buf).printf( new ByteSlice("["));
-            super.visit(ta.index);
+            ta.index.accept(this);
             (this.buf).printf( new ByteSlice("]"));
         }
 
         public  void visit(ASTBase.TypeSArray tsa) {
-            super.visit(tsa.next);
+            tsa.next.accept(this);
             (this.buf).printf( new ByteSlice("["));
-            super.visit(tsa.dim);
+            tsa.dim.accept(this);
             (this.buf).printf( new ByteSlice("]"));
         }
 
@@ -666,7 +696,6 @@ public class dtool {
         }
 
         public  void visit(ASTBase.TypeIdentifier d) {
-            super.visit(d);
             (this.buf).printf( new ByteSlice("%s"), d.ident.toChars());
         }
 
@@ -686,8 +715,9 @@ public class dtool {
             throw new AssertionError("Unreachable code!");
         }
 
-        public  void visit(ASTBase.DeclarationExp _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.DeclarationExp e) {
+            if (e.declaration != null)
+                e.declaration.accept(this);
         }
 
         public  void visit(ASTBase.IntegerExp e) {
@@ -1106,32 +1136,33 @@ public class dtool {
     public static void main(Slice<ByteSlice> args) {
         Ref<Slice<ByteSlice>> args_ref = ref(args);
         Ref<ByteSlice> outdir = ref( new ByteSlice(".").copy());
-        GetoptResult res = getopt(args_ref,  new ByteSlice("outdir"),  new ByteSlice("output directory"), ptr(outdir)).copy();
+        Ref<ByteSlice> tool = ref( new ByteSlice("lex").copy());
+        GetoptResult res = getopt(args_ref,  new ByteSlice("outdir"),  new ByteSlice("output directory"), ptr(outdir),  new ByteSlice("tool"),  new ByteSlice("select tool - lex or lispy"), ptr(tool)).copy();
         if (res.helpWanted)
         {
             defaultGetoptPrinter( new ByteSlice("Trivial D lexer based on DMD."), res.options);
             exit(1);
         }
-        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
-        try {
-            ParserASTBase parser = new ParserASTBase(null, new ByteSlice(), false, diagnosticReporter);
-            try {
-                assert(parser != null);
+        global.params.isLinux = true;
+        global._init();
+        ASTBase.Type._init();
+        {
+            Slice<ByteSlice> __r411 = args_ref.value.slice(1,args_ref.value.getLength()).copy();
+            int __key412 = 0;
+            for (; __key412 < __r411.getLength();__key412 += 1) {
+                ByteSlice arg = __r411.get(__key412).copy();
+                if (__equals(tool.value,  new ByteSlice("lex")))
+                    processFile_lex(arg, outdir.value, new BytePtr("tk"));
+                else if (__equals(tool.value,  new ByteSlice("lispy")))
+                    processFile_lispy(arg, outdir.value, new BytePtr("ast"));
+                else
                 {
-                    Slice<ByteSlice> __r404 = args_ref.value.slice(1,args_ref.value.getLength()).copy();
-                    int __key405 = 0;
-                    for (; __key405 < __r404.getLength();__key405 += 1) {
-                        ByteSlice arg = __r404.get(__key405).copy();
-                        processFile_lex(arg, outdir.value);
-                    }
+                    fprintf(stderr,  new ByteSlice("Unsupported tool name: %.*s"), tool.value.getLength(), toBytePtr(tool.value));
+                    exit(2);
                 }
-                exit(0);
-            }
-            finally {
             }
         }
-        finally {
-        }
+        exit(0);
     }
 
     public static ByteSlice lex(BytePtr argz, ByteSlice buf) {
@@ -1151,8 +1182,35 @@ public class dtool {
         return (output).extractSlice();
     }
 
+    public static ByteSlice lispy(BytePtr argz, ByteSlice buf) {
+        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
+        try {
+            ParserASTBase p = new ParserASTBase(null, buf, true, diagnosticReporter);
+            try {
+                p.nextToken();
+                DArray<ASTBase.Dsymbol> decls = p.parseModule();
+                LispyPrint lispPrint = new LispyPrint();
+                lispPrint.buf = new OutBuffer(null, 0, 0, 0, false, false);
+                (lispPrint.buf).doindent = true;
+                {
+                    Slice<ASTBase.Dsymbol> __r415 = (decls).opSlice().copy();
+                    int __key416 = 0;
+                    for (; __key416 < __r415.getLength();__key416 += 1) {
+                        ASTBase.Dsymbol d = __r415.get(__key416);
+                        d.accept(lispPrint);
+                    }
+                }
+                return (lispPrint.buf).extractSlice();
+            }
+            finally {
+            }
+        }
+        finally {
+        }
+    }
+
     // from template processFile!(_lex)
-    public static void processFile_lex(ByteSlice arg, ByteSlice outdir) {
+    public static void processFile_lex(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
         BytePtr argz = pcopy(toStringz(arg));
         File.ReadResult buffer = File.read(toBytePtr(argz)).copy();
         try {
@@ -1162,11 +1220,33 @@ public class dtool {
                 exit(2);
             }
             ByteSlice buf = buffer.extractData().copy();
-            BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), new BytePtr("tk")));
+            BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), suffix));
             ByteSlice filePath = toByteSlice((outdir.concat( new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
             ByteSlice output = lex(toBytePtr(argz), toByteSlice(buf)).copy();
             if (!(File.write(toStringz(filePath), toByteSlice(output))))
-                fprintf(stderr,  new ByteSlice("Failed to write file: %s\n"), dest);
+                fprintf(stderr,  new ByteSlice("Failed to write file: %s\n"), toStringz(filePath));
+        }
+        finally {
+        }
+    }
+
+
+    // from template processFile!(_lispy)
+    public static void processFile_lispy(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
+        BytePtr argz = pcopy(toStringz(arg));
+        File.ReadResult buffer = File.read(toBytePtr(argz)).copy();
+        try {
+            if (!(buffer.success))
+            {
+                fprintf(stderr,  new ByteSlice("Failed to read from file: %s"), argz);
+                exit(2);
+            }
+            ByteSlice buf = buffer.extractData().copy();
+            BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), suffix));
+            ByteSlice filePath = toByteSlice((outdir.concat( new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
+            ByteSlice output = lispy(toBytePtr(argz), toByteSlice(buf)).copy();
+            if (!(File.write(toStringz(filePath), toByteSlice(output))))
+                fprintf(stderr,  new ByteSlice("Failed to write file: %s\n"), toStringz(filePath));
         }
         finally {
         }

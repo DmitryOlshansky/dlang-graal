@@ -1464,7 +1464,7 @@ private void argsToBuffer(Expressions* expressions, TextBuffer buf, ExprOpts opt
                 && (*fd.parameters)[i].type.nextOf.ty == Tchar;
 
             if (fd && var && var.type.isTypeClass() && fd.parameters && i < fd.parameters.length
-            && (*fd.parameters)[i].type != var.var.type) {
+            && (*fd.parameters)[i].type != var.var.type && fd.overnext) {
                 tmp.put("(");
                 tmp.put((*fd.parameters)[i].type.toJava(opts));
                 tmp.put(")");

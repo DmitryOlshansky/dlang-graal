@@ -1464,9 +1464,9 @@ public class astbase {
                 ti.tiargs = this.arraySyntaxCopy(this.tiargs);
                 TemplateDeclaration td = null;
                 if (((this.inst != null && this.tempdecl != null) && (td = this.tempdecl.isTemplateDeclaration()) != null))
-                    td.syntaxCopy((Dsymbol)ti);
+                    td.syntaxCopy(ti);
                 else
-                    this.syntaxCopy((Dsymbol)ti);
+                    this.syntaxCopy(ti);
                 return ti;
             }
 
@@ -4837,11 +4837,11 @@ public class astbase {
             }
 
             public  void addIdent(Identifier id) {
-                this.idents.push((RootObject)id);
+                this.idents.push(id);
             }
 
             public  void addInst(TemplateInstance ti) {
-                this.idents.push((RootObject)ti);
+                this.idents.push(ti);
             }
 
             public  void addIndex(RootObject e) {

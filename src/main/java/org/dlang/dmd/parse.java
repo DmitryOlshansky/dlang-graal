@@ -968,7 +968,7 @@ public class parse {
                 if (tpl != null)
                 {
                     DArray<ASTBase.Dsymbol> a2 = new DArray<ASTBase.Dsymbol>();
-                    (a2).push((ASTBase.Dsymbol)v);
+                    (a2).push(v);
                     ASTBase.TemplateDeclaration tempdecl = new ASTBase.TemplateDeclaration(loc, ident, tpl, null, a2, false, false);
                     s = tempdecl;
                 }
@@ -1515,12 +1515,12 @@ public class parse {
                 if (this.isDeclaration(this.token, NeedDeclaratorId.no, TOK.reserved, null))
                 {
                     ASTBase.Type ta = this.parseType(null, null);
-                    (tiargs).push((RootObject)ta);
+                    (tiargs).push(ta);
                 }
                 else
                 {
                     ASTBase.Expression ea = this.parseAssignExp();
-                    (tiargs).push((RootObject)ea);
+                    (tiargs).push(ea);
                 }
                 if ((this.token.value & 0xFF) != 99)
                     break;
@@ -1620,7 +1620,7 @@ public class parse {
                         /*LabelX:*/
                         case -1:
                         __dispatch8 = 0;
-                            (tiargs).push((RootObject)ta);
+                            (tiargs).push(ta);
                             this.nextToken();
                             break;
                         case 105:
@@ -1651,7 +1651,7 @@ public class parse {
                         case 223:
                         case 123:
                             ASTBase.Expression ea = this.parsePrimaryExp();
-                            (tiargs).push((RootObject)ea);
+                            (tiargs).push(ea);
                             break;
                         default:
                         this.error(new BytePtr("template argument expected following `!`"));
@@ -1925,11 +1925,11 @@ public class parse {
                 if ((stc & 1L) != 0)
                     this.error(loc, new BytePtr("postblit cannot be `static`"));
                 ASTBase.PostBlitDeclaration f = new ASTBase.PostBlitDeclaration(loc, Loc.initial, stc, Id.postblit);
-                ASTBase.Dsymbol s = this.parseContracts((ASTBase.FuncDeclaration)f);
+                ASTBase.Dsymbol s = this.parseContracts(f);
                 if (udas.value != null)
                 {
                     DArray<ASTBase.Dsymbol> a = new DArray<ASTBase.Dsymbol>();
-                    (a).push((ASTBase.Dsymbol)f);
+                    (a).push(f);
                     s = new ASTBase.UserAttributeDeclaration(udas.value, a);
                 }
                 return s;
@@ -1961,11 +1961,11 @@ public class parse {
             ASTBase.Type tf = new ASTBase.TypeFunction(new ASTBase.ParameterList(parameters, varargs.value), null, this.linkage, stc);
             tf = tf.addSTC(stc);
             ASTBase.CtorDeclaration f = new ASTBase.CtorDeclaration(loc, Loc.initial, stc, tf, false);
-            ASTBase.Dsymbol s = this.parseContracts((ASTBase.FuncDeclaration)f);
+            ASTBase.Dsymbol s = this.parseContracts(f);
             if (udas.value != null)
             {
                 DArray<ASTBase.Dsymbol> a = new DArray<ASTBase.Dsymbol>();
-                (a).push((ASTBase.Dsymbol)f);
+                (a).push(f);
                 s = new ASTBase.UserAttributeDeclaration(udas.value, a);
             }
             if (tpl != null)
@@ -1997,11 +1997,11 @@ public class parse {
                 }
             }
             ASTBase.DtorDeclaration f = new ASTBase.DtorDeclaration(loc, Loc.initial, stc, Id.dtor);
-            ASTBase.Dsymbol s = this.parseContracts((ASTBase.FuncDeclaration)f);
+            ASTBase.Dsymbol s = this.parseContracts(f);
             if (udas.value != null)
             {
                 DArray<ASTBase.Dsymbol> a = new DArray<ASTBase.Dsymbol>();
-                (a).push((ASTBase.Dsymbol)f);
+                (a).push(f);
                 s = new ASTBase.UserAttributeDeclaration(udas.value, a);
             }
             return s;
@@ -2034,7 +2034,7 @@ public class parse {
             }
             stc &= -2685403142L;
             ASTBase.StaticCtorDeclaration f = new ASTBase.StaticCtorDeclaration(loc, Loc.initial, stc);
-            ASTBase.Dsymbol s = this.parseContracts((ASTBase.FuncDeclaration)f);
+            ASTBase.Dsymbol s = this.parseContracts(f);
             return s;
         }
 
@@ -2067,11 +2067,11 @@ public class parse {
             }
             stc &= -2685403142L;
             ASTBase.StaticDtorDeclaration f = new ASTBase.StaticDtorDeclaration(loc, Loc.initial, stc);
-            ASTBase.Dsymbol s = this.parseContracts((ASTBase.FuncDeclaration)f);
+            ASTBase.Dsymbol s = this.parseContracts(f);
             if (udas.value != null)
             {
                 DArray<ASTBase.Dsymbol> a = new DArray<ASTBase.Dsymbol>();
-                (a).push((ASTBase.Dsymbol)f);
+                (a).push(f);
                 s = new ASTBase.UserAttributeDeclaration(udas.value, a);
             }
             return s;
@@ -2106,7 +2106,7 @@ public class parse {
             }
             stc &= -2685403142L;
             ASTBase.SharedStaticCtorDeclaration f = new ASTBase.SharedStaticCtorDeclaration(loc, Loc.initial, stc);
-            ASTBase.Dsymbol s = this.parseContracts((ASTBase.FuncDeclaration)f);
+            ASTBase.Dsymbol s = this.parseContracts(f);
             return s;
         }
 
@@ -2141,11 +2141,11 @@ public class parse {
             }
             stc &= -2685403142L;
             ASTBase.SharedStaticDtorDeclaration f = new ASTBase.SharedStaticDtorDeclaration(loc, Loc.initial, stc);
-            ASTBase.Dsymbol s = this.parseContracts((ASTBase.FuncDeclaration)f);
+            ASTBase.Dsymbol s = this.parseContracts(f);
             if (udas.value != null)
             {
                 DArray<ASTBase.Dsymbol> a = new DArray<ASTBase.Dsymbol>();
-                (a).push((ASTBase.Dsymbol)f);
+                (a).push(f);
                 s = new ASTBase.UserAttributeDeclaration(udas.value, a);
             }
             return s;
@@ -2223,7 +2223,7 @@ public class parse {
             IntRef varargs = ref(ASTBase.VarArg.none);
             DArray<ASTBase.Parameter> parameters = this.parseParameters(ptr(varargs), null);
             ASTBase.NewDeclaration f = new ASTBase.NewDeclaration(loc, Loc.initial, stc, parameters, varargs.value);
-            ASTBase.Dsymbol s = this.parseContracts((ASTBase.FuncDeclaration)f);
+            ASTBase.Dsymbol s = this.parseContracts(f);
             return s;
         }
 
@@ -2236,7 +2236,7 @@ public class parse {
             if (varargs.value != ASTBase.VarArg.none)
                 this.error(new BytePtr("`...` not allowed in delete function parameter list"));
             ASTBase.DeleteDeclaration f = new ASTBase.DeleteDeclaration(loc, Loc.initial, stc, parameters);
-            ASTBase.Dsymbol s = this.parseContracts((ASTBase.FuncDeclaration)f);
+            ASTBase.Dsymbol s = this.parseContracts(f);
             return s;
         }
 
@@ -2571,17 +2571,17 @@ public class parse {
                         stc |= 1024L;
                     }
                     ASTBase.EnumMember em = new ASTBase.EnumMember(loc, ident.value, value, type, stc, uad, dd);
-                    (e.members).push((ASTBase.Dsymbol)em);
+                    (e.members).push(em);
                     if ((this.token.value & 0xFF) == 6)
                     {
                     }
                     else
                     {
-                        this.addComment((ASTBase.Dsymbol)em, comment);
+                        this.addComment(em, comment);
                         comment = null;
                         this.check(TOK.comma);
                     }
-                    this.addComment((ASTBase.Dsymbol)em, comment);
+                    this.addComment(em, comment);
                     comment = pcopy(this.token.blockComment);
                     if ((this.token.value & 0xFF) == 11)
                     {
@@ -2708,7 +2708,7 @@ public class parse {
             if (tpl != null)
             {
                 DArray<ASTBase.Dsymbol> decldefs = new DArray<ASTBase.Dsymbol>();
-                (decldefs).push((ASTBase.Dsymbol)a);
+                (decldefs).push(a);
                 ASTBase.TemplateDeclaration tempdecl = new ASTBase.TemplateDeclaration(loc, id, tpl, constraint, decldefs, false, false);
                 return tempdecl;
             }
@@ -2766,7 +2766,7 @@ public class parse {
                             this.nextToken();
                         }
                         ASTBase.Import s = new ASTBase.Import(loc, a, id, aliasid, isstatic);
-                        (decldefs).push((ASTBase.Dsymbol)s);
+                        (decldefs).push(s);
                         if ((this.token.value & 0xFF) == 7)
                         {
                             do {
@@ -3470,8 +3470,8 @@ public class parse {
                     this.check(TOK.this_);
                     this.check(TOK.semicolon);
                     DArray<ASTBase.Dsymbol> a = new DArray<ASTBase.Dsymbol>();
-                    (a).push((ASTBase.Dsymbol)s);
-                    this.addComment((ASTBase.Dsymbol)s, comment);
+                    (a).push(s);
+                    this.addComment(s, comment);
                     return a;
                 }
                 if (((this.token.value & 0xFF) == 120 && this.hasOptionalParensThen(this.peek(this.token), TOK.assign)))
@@ -3720,7 +3720,7 @@ public class parse {
                     if (link.value != this.linkage)
                     {
                         DArray<ASTBase.Dsymbol> ax = new DArray<ASTBase.Dsymbol>();
-                        (ax).push((ASTBase.Dsymbol)v);
+                        (ax).push(v);
                         s = new ASTBase.LinkDeclaration(link.value, ax);
                     }
                     (a).push(s);
@@ -3930,12 +3930,12 @@ public class parse {
             }
             else
             {
-                this.parseContracts((ASTBase.FuncDeclaration)fd);
+                this.parseContracts(fd);
             }
             if (tpl.value != null)
             {
                 DArray<ASTBase.Dsymbol> decldefs = new DArray<ASTBase.Dsymbol>();
-                (decldefs).push((ASTBase.Dsymbol)fd);
+                (decldefs).push(fd);
                 return new ASTBase.TemplateDeclaration(fd.loc, fd.ident, tpl.value, null, decldefs, false, true);
             }
             return fd;
@@ -4691,10 +4691,10 @@ public class parse {
                                     DArray<ASTBase.Statement> as = new DArray<ASTBase.Statement>();
                                     (as).reserve((a).length);
                                     {
-                                        int __key402 = 0;
-                                        int __limit403 = (a).length;
-                                        for (; __key402 < __limit403;__key402 += 1) {
-                                            int i = __key402;
+                                        int __key413 = 0;
+                                        int __limit414 = (a).length;
+                                        for (; __key413 < __limit414;__key413 += 1) {
+                                            int i = __key413;
                                             ASTBase.Dsymbol d = (a).get(i);
                                             s = new ASTBase.ExpStatement(loc, d);
                                             (as).push(s);

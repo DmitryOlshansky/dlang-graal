@@ -253,6 +253,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 }
                 else b.fmt("%s", toJava(p.type, opts));
             }
+        if (auto ti = func in opts.templates) b.put(ti.tiArgs);
         return b.data.dup;
     }
 
@@ -870,6 +871,15 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             buf.outdent;
             buf.put("}\n");
         }
+    }
+
+    override void visit(WithStatement w)
+    {
+        if (auto ss = w._body.isScopeStatement) {
+            if (dispatch.length > 0 && ss.statement)
+                return ss.statement.accept(this);
+        }
+        w._body.accept(this);
     }
 
     override void visit(CaseStatement s)
