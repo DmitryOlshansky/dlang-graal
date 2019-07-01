@@ -44,7 +44,7 @@ public class identifier {
             return this;
         }
     }
-    static AA<Key,Integer> generateIdWithLoccounters;
+    static AA<Key,Integer> generateIdWithLoccounters = new AA<Key,Integer>();
 
     public static class Identifier extends RootObject
     {

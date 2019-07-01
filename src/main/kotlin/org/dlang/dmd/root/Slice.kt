@@ -179,7 +179,7 @@ class CharSlice(val data: CharArray, var beg: Int, var end: Int) : RootObject(),
         data[beg+idx] = value
     }
 
-    override operator fun get(idx: Int): Char = data[beg+idx]
+    override operator fun get(index: Int): Char = data[beg+index]
 
     fun ptr() = WCharPtr(data, beg)
 

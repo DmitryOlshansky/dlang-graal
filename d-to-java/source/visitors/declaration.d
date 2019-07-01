@@ -408,7 +408,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             sink.fmt(" = ");
             printSArray(var.type, sink);
         }
-        else if (var.type.ty == Tstruct) {
+        else if (var.type.ty == Tstruct || var.type.ty == Taarray) {
             sink.fmt(" = new %s()", var.type.toJava(opts));
         }
         sink.fmt(";\n");

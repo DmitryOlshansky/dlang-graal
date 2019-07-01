@@ -1552,7 +1552,7 @@ public class astbase {
                     udas = udas1;
                 else
                 {
-                    udas = new DArray<Expression>();
+                    udas = new DArray<Expression>(2);
                     udas.set(0, new TupleExp(Loc.initial, udas1));
                     udas.set(1, new TupleExp(Loc.initial, udas2));
                 }

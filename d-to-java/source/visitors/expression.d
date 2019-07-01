@@ -448,6 +448,9 @@ public:
                 argsToBuffer(e.arguments, buf, opts, null);
             }
         }
+        else if (e.type.toString.indexOf("Array") >= 0 && e.arguments && e.arguments.dim == 1) {
+            argsToBuffer(e.arguments, buf, opts, null);
+        }
         buf.put(')');
     }
 

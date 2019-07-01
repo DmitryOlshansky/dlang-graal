@@ -6,6 +6,8 @@ class DArray<T>(storage: Array<Any?>, len: Int) {
 
     constructor(): this(arrayOf())
 
+    constructor(len: Int) : this(arrayOfNulls(len), len)
+
     constructor(arr: Array<Any?>): this(arr, 0)
 
     fun toChars() = asString().ptr()
@@ -68,7 +70,7 @@ class DArray<T>(storage: Array<Any?>, len: Int) {
 
     fun reserve(more: Int) {
         if (data.isEmpty()) data = data.copyOf(more)
-        else if (data.size+more > data.size) {
+        else if (length + more > data.size) {
             data = data.copyOf((data.size + more) * 3 / 2)
         }
     }
