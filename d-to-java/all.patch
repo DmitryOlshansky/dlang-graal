@@ -1,8 +1,8 @@
 diff --git a/src/main/java/org/dlang/dmd/astbase.java b/src/main/java/org/dlang/dmd/astbase.java
-index a3a40f2..00bc79a 100644
+index 510a9b9..13c0e5a 100644
 --- a/src/main/java/org/dlang/dmd/astbase.java
 +++ b/src/main/java/org/dlang/dmd/astbase.java
-@@ -1987,7 +1987,10 @@ public class astbase {
+@@ -1942,7 +1942,10 @@ public class astbase {
              public DArray<BaseClass> baseclasses;
              public int baseok;
              public  ClassDeclaration(Loc loc, Identifier id, DArray<BaseClass> baseclasses, DArray<Dsymbol> members, boolean inObject) {
@@ -14,7 +14,7 @@ index a3a40f2..00bc79a 100644
                  if (baseclasses != null)
                  {
                      this.baseclasses = baseclasses;
-@@ -4314,7 +4317,7 @@ public class astbase {
+@@ -4269,7 +4272,7 @@ public class astbase {
                  this.arguments = arguments;
              }
  
@@ -23,7 +23,25 @@ index a3a40f2..00bc79a 100644
                  super((byte)37);
                  DArray<Parameter> arguments = new DArray<Parameter>();
                  if (exps != null)
-@@ -5922,7 +5925,9 @@ public class astbase {
+@@ -5139,14 +5142,14 @@ public class astbase {
+                                 break;
+                             case 31:
+                             case 14:
+-                                this.value = (long)(int)this.value;
++                                this.value = (long)(byte)this.value;
+                                 break;
+                             case 15:
+-                                this.value = (long)(int)this.value;
++                                this.value = (long)(short)this.value;
+                                 break;
+                             case 32:
+                             case 16:
+-                                this.value = (long)(int)this.value;
++                                this.value = (long)(short)this.value;
+                                 break;
+                             case 17:
+                                 this.value = (long)(int)this.value;
+@@ -5877,7 +5880,9 @@ public class astbase {
          public static class VarExp extends SymbolExp
          {
              public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
@@ -34,7 +52,7 @@ index a3a40f2..00bc79a 100644
                  this.type = var.type;
              }
  
-@@ -7464,6 +7469,11 @@ public class astbase {
+@@ -7419,6 +7424,11 @@ public class astbase {
              public ForeachStatement aggrfe;
              public ForeachRangeStatement rangefe;
              public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
@@ -46,6 +64,50 @@ index a3a40f2..00bc79a 100644
                  super();
                  this.loc = loc.copy();
                  this.aggrfe = aggrfe;
+diff --git a/src/main/java/org/dlang/dmd/dtool.java b/src/main/java/org/dlang/dmd/dtool.java
+index 82a4cea..daac76e 100644
+--- a/src/main/java/org/dlang/dmd/dtool.java
++++ b/src/main/java/org/dlang/dmd/dtool.java
+@@ -1494,8 +1494,8 @@ public class dtool {
+         }
+     }
+ 
+-    // from template processFile!(_lex)
+-    public static void processFile_lex(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
++    // from template processFile!(_lispy)
++    public static void processFile_lispy(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
+         BytePtr argz = pcopy(toStringz(arg));
+         File.ReadResult buffer = File.read(toBytePtr(argz)).copy();
+         try {
+@@ -1507,7 +1507,7 @@ public class dtool {
+             ByteSlice buf = buffer.extractData().copy();
+             BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), suffix));
+             ByteSlice filePath = toByteSlice((outdir.concat( new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
+-            ByteSlice output = lex(toBytePtr(argz), toByteSlice(buf)).copy();
++            ByteSlice output = lispy(toBytePtr(argz), toByteSlice(buf)).copy();
+             if (!(File.write(toStringz(filePath), toByteSlice(output))))
+                 fprintf(stderr,  new ByteSlice("Failed to write file: %s\n"), toStringz(filePath));
+         }
+@@ -1516,8 +1516,8 @@ public class dtool {
+     }
+ 
+ 
+-    // from template processFile!(_lispy)
+-    public static void processFile_lispy(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
++    // from template processFile!(_lex)
++    public static void processFile_lex(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
+         BytePtr argz = pcopy(toStringz(arg));
+         File.ReadResult buffer = File.read(toBytePtr(argz)).copy();
+         try {
+@@ -1529,7 +1529,7 @@ public class dtool {
+             ByteSlice buf = buffer.extractData().copy();
+             BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), suffix));
+             ByteSlice filePath = toByteSlice((outdir.concat( new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
+-            ByteSlice output = lispy(toBytePtr(argz), toByteSlice(buf)).copy();
++            ByteSlice output = lex(toBytePtr(argz), toByteSlice(buf)).copy();
+             if (!(File.write(toStringz(filePath), toByteSlice(output))))
+                 fprintf(stderr,  new ByteSlice("Failed to write file: %s\n"), toStringz(filePath));
+         }
 diff --git a/src/main/java/org/dlang/dmd/globals.java b/src/main/java/org/dlang/dmd/globals.java
 index f45a1d8..eb2223f 100644
 --- a/src/main/java/org/dlang/dmd/globals.java
@@ -78,6 +140,34 @@ index f45a1d8..eb2223f 100644
 -    public static Global global = new Global();
 +    static Global global = new Global();
  }
+diff --git a/src/main/java/org/dlang/dmd/identifier.java b/src/main/java/org/dlang/dmd/identifier.java
+index 492fe26..0769aeb 100644
+--- a/src/main/java/org/dlang/dmd/identifier.java
++++ b/src/main/java/org/dlang/dmd/identifier.java
+@@ -142,11 +142,6 @@ public class identifier {
+ 
+         public static Identifier generateIdWithLoc(ByteSlice prefix, Loc loc) {
+             OutBuffer idBuf = new OutBuffer();
+-            Function0<Integer> __lambda7 = new Function0<Integer>(){
+-                public Integer invoke(){
+-                    return 1;
+-                }
+-            };
+             Function1<Integer,Integer> __lambda8 = new Function1<Integer,Integer>(){
+                 public Integer invoke(Integer counter){
+                     idBuf.writestring( new ByteSlice("_"));
+@@ -154,6 +149,11 @@ public class identifier {
+                     return counter + 1;
+                 }
+             };
++            Function0<Integer> __lambda7 = new Function0<Integer>(){
++                public Integer invoke(){
++                    return 1;
++                }
++            };
+             try {
+                 idBuf.writestring(prefix);
+                 idBuf.writestring( new ByteSlice("_L"));
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
 index 3966182..3a16bb5 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java
@@ -204,7 +294,7 @@ index 3966182..3a16bb5 100644
              finally {
              }
 diff --git a/src/main/java/org/dlang/dmd/parse.java b/src/main/java/org/dlang/dmd/parse.java
-index e8b6c16..2447eb9 100644
+index 9b584de..2a1c528 100644
 --- a/src/main/java/org/dlang/dmd/parse.java
 +++ b/src/main/java/org/dlang/dmd/parse.java
 @@ -633,9 +633,7 @@ public class parse {
@@ -614,3 +704,12 @@ index e8b6c16..2447eb9 100644
                  break;
              }
              if (((t.value).value & 0xFF) != 2)
+@@ -6579,7 +6570,7 @@ public class parse {
+                             this.nextToken();
+                             break;
+                         case 118:
+-                            e = new ASTBase.IntegerExp(loc, (long)(int)this.token.intvalue, ASTBase.Type.twchar);
++                            e = new ASTBase.IntegerExp(loc, (long)(short)this.token.intvalue, ASTBase.Type.twchar);
+                             this.nextToken();
+                             break;
+                         case 119:
