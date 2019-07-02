@@ -1536,28 +1536,6 @@ public class dtool {
         }
     }
 
-    // from template processFile!(_lispy)
-    public static void processFile_lispy(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
-        BytePtr argz = pcopy(toStringz(arg));
-        File.ReadResult buffer = File.read(toBytePtr(argz)).copy();
-        try {
-            if (!(buffer.success))
-            {
-                fprintf(stderr,  new ByteSlice("Failed to read from file: %s"), argz);
-                exit(2);
-            }
-            ByteSlice buf = buffer.extractData().copy();
-            BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), suffix));
-            ByteSlice filePath = toByteSlice((outdir.concat( new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
-            ByteSlice output = lispy(toBytePtr(argz), toByteSlice(buf)).copy();
-            if (!(File.write(toStringz(filePath), toByteSlice(output))))
-                fprintf(stderr,  new ByteSlice("Failed to write file: %s\n"), toStringz(filePath));
-        }
-        finally {
-        }
-    }
-
-
     // from template processFile!(_lex)
     public static void processFile_lex(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
         BytePtr argz = pcopy(toStringz(arg));
@@ -1572,6 +1550,28 @@ public class dtool {
             BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), suffix));
             ByteSlice filePath = toByteSlice((outdir.concat( new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
             ByteSlice output = lex(toBytePtr(argz), toByteSlice(buf)).copy();
+            if (!(File.write(toStringz(filePath), toByteSlice(output))))
+                fprintf(stderr,  new ByteSlice("Failed to write file: %s\n"), toStringz(filePath));
+        }
+        finally {
+        }
+    }
+
+
+    // from template processFile!(_lispy)
+    public static void processFile_lispy(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
+        BytePtr argz = pcopy(toStringz(arg));
+        File.ReadResult buffer = File.read(toBytePtr(argz)).copy();
+        try {
+            if (!(buffer.success))
+            {
+                fprintf(stderr,  new ByteSlice("Failed to read from file: %s"), argz);
+                exit(2);
+            }
+            ByteSlice buf = buffer.extractData().copy();
+            BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), suffix));
+            ByteSlice filePath = toByteSlice((outdir.concat( new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
+            ByteSlice output = lispy(toBytePtr(argz), toByteSlice(buf)).copy();
             if (!(File.write(toStringz(filePath), toByteSlice(output))))
                 fprintf(stderr,  new ByteSlice("Failed to write file: %s\n"), toStringz(filePath));
         }

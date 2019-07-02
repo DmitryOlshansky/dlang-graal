@@ -1,8 +1,8 @@
 diff --git a/src/main/java/org/dlang/dmd/astbase.java b/src/main/java/org/dlang/dmd/astbase.java
-index 510a9b9..13c0e5a 100644
+index 7e37546..5fec60a 100644
 --- a/src/main/java/org/dlang/dmd/astbase.java
 +++ b/src/main/java/org/dlang/dmd/astbase.java
-@@ -1942,7 +1942,10 @@ public class astbase {
+@@ -2254,7 +2254,10 @@ public class astbase {
              public DArray<BaseClass> baseclasses;
              public int baseok;
              public  ClassDeclaration(Loc loc, Identifier id, DArray<BaseClass> baseclasses, DArray<Dsymbol> members, boolean inObject) {
@@ -14,7 +14,7 @@ index 510a9b9..13c0e5a 100644
                  if (baseclasses != null)
                  {
                      this.baseclasses = baseclasses;
-@@ -4269,7 +4272,7 @@ public class astbase {
+@@ -4609,7 +4612,7 @@ public class astbase {
                  this.arguments = arguments;
              }
  
@@ -23,7 +23,7 @@ index 510a9b9..13c0e5a 100644
                  super((byte)37);
                  DArray<Parameter> arguments = new DArray<Parameter>();
                  if (exps != null)
-@@ -5139,14 +5142,14 @@ public class astbase {
+@@ -5670,14 +5673,14 @@ public class astbase {
                                  break;
                              case 31:
                              case 14:
@@ -41,7 +41,7 @@ index 510a9b9..13c0e5a 100644
                                  break;
                              case 17:
                                  this.value = (long)(int)this.value;
-@@ -5877,7 +5880,9 @@ public class astbase {
+@@ -6408,7 +6411,9 @@ public class astbase {
          public static class VarExp extends SymbolExp
          {
              public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
@@ -52,7 +52,7 @@ index 510a9b9..13c0e5a 100644
                  this.type = var.type;
              }
  
-@@ -7419,6 +7424,11 @@ public class astbase {
+@@ -8273,6 +8278,11 @@ public class astbase {
              public ForeachStatement aggrfe;
              public ForeachRangeStatement rangefe;
              public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
@@ -64,50 +64,6 @@ index 510a9b9..13c0e5a 100644
                  super();
                  this.loc = loc.copy();
                  this.aggrfe = aggrfe;
-diff --git a/src/main/java/org/dlang/dmd/dtool.java b/src/main/java/org/dlang/dmd/dtool.java
-index 82a4cea..daac76e 100644
---- a/src/main/java/org/dlang/dmd/dtool.java
-+++ b/src/main/java/org/dlang/dmd/dtool.java
-@@ -1494,8 +1494,8 @@ public class dtool {
-         }
-     }
- 
--    // from template processFile!(_lex)
--    public static void processFile_lex(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
-+    // from template processFile!(_lispy)
-+    public static void processFile_lispy(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
-         BytePtr argz = pcopy(toStringz(arg));
-         File.ReadResult buffer = File.read(toBytePtr(argz)).copy();
-         try {
-@@ -1507,7 +1507,7 @@ public class dtool {
-             ByteSlice buf = buffer.extractData().copy();
-             BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), suffix));
-             ByteSlice filePath = toByteSlice((outdir.concat( new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
--            ByteSlice output = lex(toBytePtr(argz), toByteSlice(buf)).copy();
-+            ByteSlice output = lispy(toBytePtr(argz), toByteSlice(buf)).copy();
-             if (!(File.write(toStringz(filePath), toByteSlice(output))))
-                 fprintf(stderr,  new ByteSlice("Failed to write file: %s\n"), toStringz(filePath));
-         }
-@@ -1516,8 +1516,8 @@ public class dtool {
-     }
- 
- 
--    // from template processFile!(_lispy)
--    public static void processFile_lispy(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
-+    // from template processFile!(_lex)
-+    public static void processFile_lex(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
-         BytePtr argz = pcopy(toStringz(arg));
-         File.ReadResult buffer = File.read(toBytePtr(argz)).copy();
-         try {
-@@ -1529,7 +1529,7 @@ public class dtool {
-             ByteSlice buf = buffer.extractData().copy();
-             BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), suffix));
-             ByteSlice filePath = toByteSlice((outdir.concat( new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
--            ByteSlice output = lispy(toBytePtr(argz), toByteSlice(buf)).copy();
-+            ByteSlice output = lex(toBytePtr(argz), toByteSlice(buf)).copy();
-             if (!(File.write(toStringz(filePath), toByteSlice(output))))
-                 fprintf(stderr,  new ByteSlice("Failed to write file: %s\n"), toStringz(filePath));
-         }
 diff --git a/src/main/java/org/dlang/dmd/globals.java b/src/main/java/org/dlang/dmd/globals.java
 index f45a1d8..eb2223f 100644
 --- a/src/main/java/org/dlang/dmd/globals.java
@@ -266,7 +222,7 @@ index 3966182..3a16bb5 100644
              finally {
              }
 diff --git a/src/main/java/org/dlang/dmd/parse.java b/src/main/java/org/dlang/dmd/parse.java
-index 9b584de..2a1c528 100644
+index 43a3889..aae03d8 100644
 --- a/src/main/java/org/dlang/dmd/parse.java
 +++ b/src/main/java/org/dlang/dmd/parse.java
 @@ -633,9 +633,7 @@ public class parse {
@@ -302,7 +258,16 @@ index 9b584de..2a1c528 100644
                  }
                  else if (pequals(id, Id.System))
                  {
-@@ -2361,7 +2353,7 @@ public class parse {
+@@ -2356,15 +2348,12 @@ public class parse {
+                                             this.nextToken();
+                                         }
+                                         else
+-                                            /*goto _else*/ {
+-                                            __dispatch9 = 0;
+-                                                at = this.parseType(ptr(ai), null);
+-                                            }
++                                            /*goto _else*/{ __dispatch9 = -2; continue dispatched_9; }
+                                     }
                                      else
                                      {
                                      /*_else:*/
@@ -311,7 +276,7 @@ index 9b584de..2a1c528 100644
                                      __dispatch9 = 0;
                                          at = this.parseType(ptr(ai), null);
                                      }
-@@ -3204,9 +3196,9 @@ public class parse {
+@@ -3207,9 +3196,9 @@ public class parse {
                      default:
                      return t;
                  }
@@ -323,7 +288,7 @@ index 9b584de..2a1c528 100644
          }
  
          public  ASTBase.Type parseDeclarator(ASTBase.Type t, IntPtr palt, Ptr<Identifier> pident, Ptr<DArray<ASTBase.TemplateParameter>> tpl, long storageClass, IntPtr pdisable, Ptr<DArray<ASTBase.Expression>> pudas) {
-@@ -3946,8 +3938,7 @@ public class parse {
+@@ -3949,8 +3938,7 @@ public class parse {
              boolean literal = f.isFuncLiteralDeclaration() != null;
              this.linkage = LINK.d;
              boolean requireDo = false;
@@ -333,7 +298,7 @@ index 9b584de..2a1c528 100644
              {
                  int __dispatch23 = 0;
                  dispatched_23:
-@@ -4001,7 +3992,7 @@ public class parse {
+@@ -4004,7 +3992,7 @@ public class parse {
                                  (f.frequires).push(this.parseStatement(6, null, null));
                                  requireDo = true;
                              }
@@ -342,7 +307,7 @@ index 9b584de..2a1c528 100644
                          case 176:
                              Loc loc_1 = this.token.loc.copy();
                              this.nextToken();
-@@ -4039,13 +4030,13 @@ public class parse {
+@@ -4042,13 +4030,13 @@ public class parse {
                                      e_1 = new ASTBase.AssertExp(loc_1, e_1, msg_1);
                                      (f.fensures).push(new ASTBase.Ensure(id, new ASTBase.ExpStatement(loc_1, e_1)));
                                      requireDo = false;
@@ -358,7 +323,7 @@ index 9b584de..2a1c528 100644
                          case 9:
                              if (!(literal))
                              {
-@@ -4075,7 +4066,6 @@ public class parse {
+@@ -4078,7 +4066,6 @@ public class parse {
                          break;
                      }
                  } while(__dispatch23 != 0);
@@ -366,7 +331,7 @@ index 9b584de..2a1c528 100644
              }
              if ((literal && !(f.fbody != null)))
              {
-@@ -4499,9 +4489,6 @@ public class parse {
+@@ -4502,9 +4489,6 @@ public class parse {
              ASTBase.Statement ifbody = null;
              ASTBase.Statement elsebody = null;
              boolean isfinal = false;
@@ -376,7 +341,22 @@ index 9b584de..2a1c528 100644
              Loc loc = this.token.loc.copy();
              if (((flags & ParseStatementFlags.curly) != 0 && (this.token.value & 0xFF) != 5))
                  this.error(new BytePtr("statement expected to be `{ }`, not `%s`"), this.token.toChars());
-@@ -4708,7 +4695,7 @@ public class parse {
+@@ -4694,10 +4678,10 @@ public class parse {
+                                     DArray<ASTBase.Statement> as = new DArray<ASTBase.Statement>();
+                                     (as).reserve((a).length);
+                                     {
+-                                        int __key417 = 0;
+-                                        int __limit418 = (a).length;
+-                                        for (; __key417 < __limit418;__key417 += 1) {
+-                                            int i = __key417;
++                                        int __key421 = 0;
++                                        int __limit422 = (a).length;
++                                        for (; __key421 < __limit422;__key421 += 1) {
++                                            int i = __key421;
+                                             ASTBase.Dsymbol d = (a).get(i);
+                                             s = new ASTBase.ExpStatement(loc, d);
+                                             (as).push(s);
+@@ -4711,7 +4695,7 @@ public class parse {
                                      s = new ASTBase.ExpStatement(loc, d_1);
                                  }
                                  else
@@ -385,7 +365,7 @@ index 9b584de..2a1c528 100644
                                  if ((flags & ParseStatementFlags.scope_) != 0)
                                      s = new ASTBase.ScopeStatement(loc, s, this.token.loc);
                                  break;
-@@ -4794,7 +4781,7 @@ public class parse {
+@@ -4797,7 +4781,7 @@ public class parse {
                                      this.error(new BytePtr("use `{ }` for an empty statement, not `;`"));
                              }
                              this.nextToken();
@@ -394,7 +374,7 @@ index 9b584de..2a1c528 100644
                              break;
                          case 187:
                              ASTBase.Statement _body_1 = null;
-@@ -4853,7 +4840,7 @@ public class parse {
+@@ -4856,7 +4840,7 @@ public class parse {
                                  this.check(TOK.rightParentheses);
                              }
                              Loc endloc_1 = new Loc();
@@ -403,7 +383,7 @@ index 9b584de..2a1c528 100644
                              s = new ASTBase.ForStatement(loc, _init, condition_2, increment, _body_2, endloc_1);
                              break;
                          case 201:
-@@ -4861,11 +4848,12 @@ public class parse {
+@@ -4864,11 +4848,12 @@ public class parse {
                              s = this.parseForeach00(loc);
                              break;
                          case 183:
@@ -418,7 +398,7 @@ index 9b584de..2a1c528 100644
                          /*LagainStc:*/
                          case -5:
                          __dispatch27 = 0;
-@@ -5234,7 +5222,7 @@ public class parse {
+@@ -5237,7 +5222,7 @@ public class parse {
                              this.check(TOK.leftParentheses);
                              exp_5 = this.parseExpression();
                              this.check(TOK.rightParentheses);
@@ -427,7 +407,7 @@ index 9b584de..2a1c528 100644
                              s = new ASTBase.WithStatement(loc, exp_5, _body_6, endloc_2);
                              break;
                          case 197:
-@@ -5647,7 +5635,6 @@ public class parse {
+@@ -5650,7 +5635,6 @@ public class parse {
                      }
                  } while(__dispatch30 != 0);
              }
@@ -435,7 +415,7 @@ index 9b584de..2a1c528 100644
          }
  
          public  ASTBase.Expression parseDefaultInitExp() {
-@@ -5716,7 +5703,7 @@ public class parse {
+@@ -5719,7 +5703,7 @@ public class parse {
          }
  
  
@@ -444,7 +424,7 @@ index 9b584de..2a1c528 100644
          {
              public static final int no = 0;
              public static final int opt = 1;
-@@ -5803,98 +5790,103 @@ public class parse {
+@@ -5806,98 +5790,103 @@ public class parse {
                                  t.value = this.peek(t.value);
                                  if (((t.value).value & 0xFF) == 91)
                                  {
@@ -630,7 +610,7 @@ index 9b584de..2a1c528 100644
                              case 39:
                              case 229:
                                  t.value = this.peek(t.value);
-@@ -6133,7 +6125,7 @@ public class parse {
+@@ -6136,7 +6125,7 @@ public class parse {
                      } while(__dispatch39 != 0);
                  }
              }
@@ -639,7 +619,7 @@ index 9b584de..2a1c528 100644
          }
  
          public  boolean isParameters(Ptr<Token> pt) {
-@@ -6144,7 +6136,7 @@ public class parse {
+@@ -6147,7 +6136,7 @@ public class parse {
          L_outer20:
              for (; (1) != 0;t.value = this.peek(t.value)){
              /*L1:*/
@@ -648,7 +628,7 @@ index 9b584de..2a1c528 100644
                      int __dispatch41 = 0;
                      dispatched_41:
                      do {
-@@ -6179,7 +6171,7 @@ public class parse {
+@@ -6182,7 +6171,7 @@ public class parse {
                                  }
                                  /*goto L1*/throw Dispatch0.INSTANCE;
                              default:
@@ -657,7 +637,7 @@ index 9b584de..2a1c528 100644
                                  if (!(this.isBasicType(ptr(t))))
                                      return false;
                              /*L2:*/
-@@ -6199,7 +6191,7 @@ public class parse {
+@@ -6202,7 +6191,7 @@ public class parse {
                                      t.value = this.peek(t.value);
                                      break;
                                  }
@@ -666,7 +646,7 @@ index 9b584de..2a1c528 100644
                              if (((t.value).value & 0xFF) == 99)
                              {
                                  continue L_outer20;
-@@ -6207,8 +6199,7 @@ public class parse {
+@@ -6210,8 +6199,7 @@ public class parse {
                              break;
                          }
                      } while(__dispatch41 != 0);
@@ -676,7 +656,7 @@ index 9b584de..2a1c528 100644
                  break;
              }
              if (((t.value).value & 0xFF) != 2)
-@@ -6579,7 +6570,7 @@ public class parse {
+@@ -6582,7 +6570,7 @@ public class parse {
                              this.nextToken();
                              break;
                          case 118:
