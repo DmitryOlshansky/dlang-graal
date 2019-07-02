@@ -278,7 +278,10 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         testCounter = 0;
         forCount = 0;
         dispatchCount = 0;
-        if (generatedFunctions.length != 1) generatedFunctions.push(null);
+        if (generatedFunctions.length != 1) {
+            generatedFunctions.clear;
+            generatedFunctions.push(null);
+        }
         if (gotos.length != 1) gotos.push(null);
         opts.templates = registerTemplates(mod, opts);
 
@@ -1395,6 +1398,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(DtorDeclaration ) { }
 
+    override void visit(AliasDeclaration d) { }
+
     override void visit(FuncDeclaration func)  {
         if (func.funcName == "destroy") return;
         if (func.funcName == "opAssign") return;
@@ -1403,7 +1408,10 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (opts.funcs.length > 0) opts.localFuncs[func] = true;
         // check for duplicates
         auto sig = funcSig(func);
-        if (sig in generatedFunctions.top) return;
+        if (sig in generatedFunctions.top) {
+            buf.fmt("// removed duplicate function, [%s] signature: %s\n", generatedFunctions.top.keys, sig);
+            return;
+        }
         generatedFunctions.top[sig] = true;
         auto lgn = pushed(labelGotoNums);
         // hoist nested structs/classes to top level, mark them private

@@ -196,51 +196,6 @@ public class astbase {
             public static final int TMAX = 44;
         }
 
-        public static final int Tarray = ENUMTY.Tarray;
-        public static final int Tsarray = ENUMTY.Tsarray;
-        public static final int Taarray = ENUMTY.Taarray;
-        public static final int Tpointer = ENUMTY.Tpointer;
-        public static final int Treference = ENUMTY.Treference;
-        public static final int Tfunction = ENUMTY.Tfunction;
-        public static final int Tident = ENUMTY.Tident;
-        public static final int Tclass = ENUMTY.Tclass;
-        public static final int Tstruct = ENUMTY.Tstruct;
-        public static final int Tenum = ENUMTY.Tenum;
-        public static final int Tdelegate = ENUMTY.Tdelegate;
-        public static final int Tnone = ENUMTY.Tnone;
-        public static final int Tvoid = ENUMTY.Tvoid;
-        public static final int Tint8 = ENUMTY.Tint8;
-        public static final int Tuns8 = ENUMTY.Tuns8;
-        public static final int Tint16 = ENUMTY.Tint16;
-        public static final int Tuns16 = ENUMTY.Tuns16;
-        public static final int Tint32 = ENUMTY.Tint32;
-        public static final int Tuns32 = ENUMTY.Tuns32;
-        public static final int Tint64 = ENUMTY.Tint64;
-        public static final int Tuns64 = ENUMTY.Tuns64;
-        public static final int Tfloat32 = ENUMTY.Tfloat32;
-        public static final int Tfloat64 = ENUMTY.Tfloat64;
-        public static final int Tfloat80 = ENUMTY.Tfloat80;
-        public static final int Timaginary32 = ENUMTY.Timaginary32;
-        public static final int Timaginary64 = ENUMTY.Timaginary64;
-        public static final int Timaginary80 = ENUMTY.Timaginary80;
-        public static final int Tcomplex32 = ENUMTY.Tcomplex32;
-        public static final int Tcomplex64 = ENUMTY.Tcomplex64;
-        public static final int Tcomplex80 = ENUMTY.Tcomplex80;
-        public static final int Tbool = ENUMTY.Tbool;
-        public static final int Tchar = ENUMTY.Tchar;
-        public static final int Twchar = ENUMTY.Twchar;
-        public static final int Tdchar = ENUMTY.Tdchar;
-        public static final int Terror = ENUMTY.Terror;
-        public static final int Tinstance = ENUMTY.Tinstance;
-        public static final int Ttypeof = ENUMTY.Ttypeof;
-        public static final int Ttuple = ENUMTY.Ttuple;
-        public static final int Tslice = ENUMTY.Tslice;
-        public static final int Treturn = ENUMTY.Treturn;
-        public static final int Tnull = ENUMTY.Tnull;
-        public static final int Tvector = ENUMTY.Tvector;
-        public static final int Tint128 = ENUMTY.Tint128;
-        public static final int Tuns128 = ENUMTY.Tuns128;
-        public static final int TMAX = ENUMTY.TMAX;
 
         public static class TFlags 
         {
@@ -5184,14 +5139,14 @@ public class astbase {
                                 break;
                             case 31:
                             case 14:
-                                this.value = (long)(byte)this.value;
+                                this.value = (long)(int)this.value;
                                 break;
                             case 15:
-                                this.value = (long)(short)this.value;
+                                this.value = (long)(int)this.value;
                                 break;
                             case 32:
                             case 16:
-                                this.value = (long)(short)this.value;
+                                this.value = (long)(int)this.value;
                                 break;
                             case 17:
                                 this.value = (long)(int)this.value;

@@ -172,7 +172,7 @@ public class TestLexer extends TestCase {
         int i = 0;
         while (lex.nextToken() != 11) {
             assertEquals(toks[i], lex.token.value);
-            if (lex.token.value == TOK.int32Literal)
+            if (lex.token.value == TOK.int32Literal || lex.token.value == TOK.wcharLiteral)
                 assertEquals(values[i], lex.token.intvalue);
             if (lex.token.value == TOK.identifier)
                 assertEquals(values[i], lex.token.ident.name.toString());
@@ -184,6 +184,7 @@ public class TestLexer extends TestCase {
     public void testNumbers() {
         testCase("42", new byte[]{TOK.int32Literal}, new Object[]{ 42L });
         testCase("1 + a", new byte[]{TOK.int32Literal, TOK.add, TOK.identifier}, new Object[]{ 1L, null, "a" });
+        testCase("'０'", new byte[]{TOK.wcharLiteral}, new Object[]{ 65296L });
     }
 
     public void testMain() {

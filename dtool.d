@@ -34,7 +34,7 @@ const(char)* modToChars(uint mod){
         case wild: return "inout";
         case wildconst: return "const(inout)";
         case mutable: return "";
-        default: return "unknown";
+        default: return "";
     }
 }
 
@@ -69,9 +69,9 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
 
     void visitExps(Array!(AST.Expression)* exps) {
         if (exps) {
-            foreach (e; *exps) {
+            foreach (i, e; *exps) {
+                if (i) buf.printf(" ");
                 e.accept(this);
-                buf.writenl;
             }
         }
     }
@@ -118,25 +118,29 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
 
     override void visit(AST.VarDeclaration d) {
-        buf.printf("( var %s ", d.ident.toChars);
+        open("var %s ", d.ident.toChars);
         if (d.type) d.type.accept(this);
         if (d._init) {
             buf.printf(" ");
             d._init.accept(this);
         }
-        buf.printf(")");
+        close();
     }
 
     override void visit(AST.FuncDeclaration d) {
         open("func %s", d.ident.toChars);
-        d.type.accept(this);
+        if (d.type) d.type.accept(this);
         if (d.fbody) d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.AliasDeclaration d) {
-        open("alias %s", d.ident.toChars);
-        super.visit(d);
+        open("alias %s ", d.ident.toChars);
+        if (d.aliassym) {
+             d.aliassym.accept(this);
+             buf.printf(" ");
+        }
+        if (d.type) d.type.accept(this);
         close();
     }
 
@@ -147,74 +151,74 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
 
     override void visit(AST.FuncLiteralDeclaration d) {
-        open("func literal");
-        super.visit(d);
+        open("func literal %s", d.ident.toChars);
+        d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.PostBlitDeclaration d) {
         open("this(this)");
-        super.visit(d);
+        d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.CtorDeclaration d) {
         open("ctor");
-        super.visit(d);
+        d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.DtorDeclaration d) {
         open("dtor");
-        super.visit(d);
+        d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.InvariantDeclaration d) {
         open("invariant");
-        super.visit(d);
+        d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.UnitTestDeclaration d) {
         open("unittest");
-        super.visit(d);
+        d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.NewDeclaration d) { 
         open("newdecl");
-        super.visit(d);
+        d.fbody.accept(this);
         close();
     }
     
     override void visit(AST.DeleteDeclaration d) {
         open("deletedecl");
-        super.visit(d);
+        d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.StaticCtorDeclaration d) { 
         open("static this");
-        super.visit(d);
+        d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.StaticDtorDeclaration d) {
         open("static ~this");
-        super.visit(d);
+        d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.SharedStaticCtorDeclaration d) {
         open("shared static this");
-        super.visit(d);
+        d.fbody.accept(this);
         close();    
     }
 
     override void visit(AST.SharedStaticDtorDeclaration d) {
         open("shared static ~this");
-        super.visit(d);
+        d.fbody.accept(this);
         close();
     }
 
@@ -226,7 +230,7 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
 
     override void visit(AST.EnumDeclaration d) {
         open("enum %s", d.ident.toChars);
-        super.visit(d);
+        visitDecls(d.members);
         close();
     }
 
@@ -243,8 +247,13 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
 
     override void visit(AST.TemplateInstance ti) {
-        open("template instance %s", ti.ident.toChars);
-        super.visit(ti);
+        open("template instance %s", ti.ident ? ti.ident.toChars : ti.name.toChars);
+        if (ti.tiargs)
+            foreach (i, m; *ti.tiargs) {
+                if (i) buf.printf(" ");
+                buf.printf("%s", m.toChars);
+            }
+        visitDecls(ti.members);
         close();
     }
 
@@ -343,7 +352,7 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
 
     override void visit(AST.EnumMember em) {
-        buf.printf("( %s", em.ident.toChars);
+        buf.printf("( %s ", em.ident.toChars);
         if (em._init) {
             printf(" ");
             em._init.accept(this);
@@ -380,40 +389,179 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
 
     override void visit(AST.InterfaceDeclaration d) {
         open("interface %s", d.ident.toChars);
-        super.visit(d);
+        visitDecls(d.members);
         close();
     }
 
     override void visit(AST.TemplateMixin m) {
         open("template mixin");
-        super.visit(m);
+        visitDecls(m.members);
         close();
     }
 
     override void visit(AST.Parameter p) { 
         buf.printf("%s ", p.ident.toChars);
-        p.type.accept(this);
+        if (p.type) p.type.accept(this);
     }
 
     override void visit(AST.Statement) { assert(0); }
-    override void visit(AST.ImportStatement) { assert(0); }
-    override void visit(AST.ScopeStatement) { assert(0); }
-    override void visit(AST.ReturnStatement) { assert(0); }
-    override void visit(AST.LabelStatement) { assert(0); }
-    override void visit(AST.StaticAssertStatement) { assert(0); }
-    override void visit(AST.CompileStatement) { assert(0); }
-    override void visit(AST.WhileStatement) { assert(0); }
-    override void visit(AST.ForStatement) { assert(0); }
-    override void visit(AST.DoStatement) { assert(0); }
-    override void visit(AST.ForeachRangeStatement) { assert(0); }
-    override void visit(AST.ForeachStatement) { assert(0); }
-    override void visit(AST.IfStatement) { assert(0); }
-    override void visit(AST.ScopeGuardStatement) { assert(0); }
-    override void visit(AST.ConditionalStatement) { assert(0); }
-    override void visit(AST.PragmaStatement) { assert(0); }
-    override void visit(AST.SwitchStatement) { assert(0); }
-    override void visit(AST.CaseRangeStatement) { assert(0); }
-    override void visit(AST.CaseStatement) { assert(0); }
+    override void visit(AST.ImportStatement imp) {
+        open("import");
+        visitDecls(imp.imports);
+        close();
+    }
+
+    override void visit(AST.ScopeStatement ss) {
+        open("{}");
+        if (ss.statement) ss.statement.accept(this);
+        close();
+    }
+
+    override void visit(AST.ReturnStatement r) {
+        buf.printf("(return ");
+        if (r.exp) r.exp.accept(this);
+        buf.printf(")");
+    }
+
+    override void visit(AST.LabelStatement label) {
+        open("label %s", label.ident.toChars);
+        if (label.statement) label.statement.accept(this);
+        close();
+    }
+
+    override void visit(AST.StaticAssertStatement st) {
+        st.sa.accept(this);
+    }
+
+    override void visit(AST.CompileStatement ct) {
+        open("compiletime");
+        visitExps(ct.exps);
+        close();
+    }
+
+    override void visit(AST.WhileStatement st) {
+        open("while");
+        if(st.condition) st.condition.accept(this);
+        buf.writenl;
+        if(st._body) st._body.accept(this);
+        close();
+    }
+
+    override void visit(AST.ForStatement st) {
+        open("for");
+        if (st._init) st._init.accept(this);
+        buf.writenl;
+        if (st.condition) st.condition.accept(this);
+        buf.writenl;
+        if (st.increment) st.increment.accept(this);
+        buf.writenl;
+        if (st._body) st._body.accept(this);
+        close();    
+    }
+
+    override void visit(AST.DoStatement st) {
+        open("do");
+        if(st._body) st._body.accept(this);
+        buf.writenl;
+        if(st.condition) st.condition.accept(this);
+        close();
+    }
+    
+    override void visit(AST.ForeachRangeStatement st) {
+        open("%s", Token.toChars(st.op));
+        if (st.prm) st.prm.accept(this);
+        buf.writenl;
+        if (st.lwr) st.lwr.accept(this);
+        if (st.upr) {
+            buf.printf("..");
+            st.upr.accept(this);
+        }
+        if(st._body) st._body.accept(this);
+        buf.writenl;
+        close();
+    }
+
+    override void visit(AST.ForeachStatement st) {
+        open("%s", Token.toChars(st.op));
+        if (st.parameters)  {
+            foreach (prm; *st.parameters)
+                prm.accept(this);
+        }
+        buf.writenl;
+        if (st.aggr) st.aggr.accept(this);
+        buf.writenl;
+        if(st._body) st._body.accept(this);
+        buf.writenl;
+        close();
+    }
+
+    override void visit(AST.IfStatement st) {
+        open("if");
+        if (st.prm) st.prm.accept(this);
+        buf.writenl;
+        if (st.condition) st.condition.accept(this);
+        buf.writenl;
+        if (st.ifbody) st.ifbody.accept(this);
+        buf.writenl;
+        if (st.elsebody) {
+            open("else");
+            st.elsebody.accept(this);
+            close();
+        }
+        close();
+    }
+
+    override void visit(AST.ScopeGuardStatement sgt) {
+        open("scope %s ", Token.toChars(sgt.tok));
+        if (sgt.statement) sgt.statement.accept(this);
+        close();
+    }
+
+    override void visit(AST.ConditionalStatement st) {
+        open("static if");
+        if (st.condition) st.condition.accept(this);
+        buf.writenl;
+        if (st.ifbody) st.ifbody.accept(this);
+        buf.writenl;
+        if (st.elsebody) {
+            open("else");
+            st.elsebody.accept(this);
+            close();
+        }
+        close();
+    }
+
+    override void visit(AST.PragmaStatement st) {
+        buf.printf("( pragma %s", st.ident.toChars);
+        visitExps(st.args);
+        buf.printf(")");
+    }
+
+    override void visit(AST.SwitchStatement sw) {
+        open("%s switch", sw.isFinal ? cast(const(char)*)"final" : "");
+        if (sw._body) sw._body.accept(this);
+        close();
+    }
+
+    override void visit(AST.CaseRangeStatement st) {
+        open("case ");
+        st.first.accept(this);
+        buf.printf(" .. ");
+        buf.printf(" ");
+        st.last.accept(this);
+        buf.writenl;
+        st.statement.accept(this);
+        close();
+    }
+
+    override void visit(AST.CaseStatement ct) {
+        open("case ");
+        ct.exp.accept(this);
+        buf.writenl;
+        if (ct.statement) ct.statement.accept(this);
+        close();
+    }
+
     override void visit(AST.DefaultStatement) { assert(0); }
     override void visit(AST.BreakStatement) { assert(0); }
     override void visit(AST.ContinueStatement) { assert(0); }
@@ -531,8 +679,10 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
 
     override void visit(AST.TypeFunction tf) {
-        tf.next.accept(this);
-        buf.printf(" ");
+        if (tf.next) {
+            tf.next.accept(this);
+            buf.printf(" ");
+        }
         foreach (i, p; *tf.parameterList.parameters) {
             if (i) buf.printf(" ");
             p.accept(this);
@@ -568,9 +718,26 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         buf.printf("%s", d.ident.toChars);
     }
 
-    override void visit(AST.TypeReturn) { assert(0); }
-    override void visit(AST.TypeTypeof) { assert(0); }
-    override void visit(AST.TypeInstance) { assert(0); }
+    override void visit(AST.TypeReturn) {
+        buf.printf("typeof(return)");
+    }
+
+    override void visit(AST.TypeTypeof tt) {
+        buf.printf("typeof(");
+        if (tt.exp) tt.exp.accept(this);
+        buf.printf(")");
+    }
+    
+    override void visit(AST.TypeInstance ti) {    
+        buf.printf("%s!(", ti.tempinst.tempdecl ? ti.tempinst.tempdecl.toChars : ti.tempinst.name.toChars);
+        if (ti.tempinst.tiargs)
+            foreach (i, arg; *ti.tempinst.tiargs) {
+                if(i) buf.printf(" ");
+                buf.printf("%s", arg.toChars);
+            }
+        buf.printf(")");
+    }
+
     override void visit(AST.Expression) { assert(0); }
     override void visit(AST.DeclarationExp e) {
         if (e.declaration) e.declaration.accept(this);
@@ -599,7 +766,20 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
     override void visit(AST.NewExp) { assert(0); }
     override void visit(AST.AssocArrayLiteralExp) { assert(0); }
-    override void visit(AST.ArrayLiteralExp) { assert(0); }
+    
+    override void visit(AST.ArrayLiteralExp ae) {     
+        buf.printf("( [] ");
+        if (ae.elements)
+            foreach (i, el; *ae.elements) {
+                if (i) buf.printf(" ");
+                auto e = el ? el : ae.basis;
+                if (e) {
+                    e.accept(this);
+                }
+            }
+        buf.printf(")");
+    }
+
     override void visit(AST.FuncExp) { assert(0); }
     override void visit(AST.IntervalExp ival) {
         ival.lwr.accept(this);
@@ -639,29 +819,92 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         e.e2.accept(this);
         buf.printf(")");
     }
-    override void visit(AST.DsymbolExp) { assert(0); }
-    override void visit(AST.TemplateExp) { assert(0); }
-    override void visit(AST.SymbolExp) { assert(0); }
-    override void visit(AST.VarExp) { assert(0); }
-    override void visit(AST.TupleExp) { assert(0); }
-    override void visit(AST.DollarExp) { assert(0); }
-    override void visit(AST.ThisExp) { assert(0); }
-    override void visit(AST.SuperExp) { assert(0); }
-    override void visit(AST.AddrExp) { assert(0); }
-    override void visit(AST.PreExp) { assert(0); }
-    override void visit(AST.PtrExp) { assert(0); }
-    override void visit(AST.NegExp) { assert(0); }
-    override void visit(AST.UAddExp) { assert(0); }
-    override void visit(AST.NotExp) { assert(0); }
+    
+    override void visit(AST.DsymbolExp e) { 
+        buf.printf("%s", e.s.ident.toChars);
+    }
+    
+    override void visit(AST.TemplateExp e) {
+        assert(0);
+    }
+    
+    override void visit(AST.SymbolExp e) {
+        buf.printf("( symbol ");
+        e.type.accept(this);
+        buf.printf(" %s", e.var.ident.toChars);
+        buf.printf(")");
+    }
+    
+    override void visit(AST.VarExp e) {
+        buf.printf("( var ");
+        e.type.accept(this);
+        buf.printf(" %s", e.var.ident.toChars);
+        buf.printf(")");
+    }
+    
+    override void visit(AST.TupleExp e) { 
+        open("tuple-exp");
+        visitExps(e.exps);
+        close();  
+    }
+
+    override void visit(AST.DollarExp e) { buf.printf("$");  }
+    override void visit(AST.ThisExp e) { buf.printf("this");  }
+    override void visit(AST.SuperExp e) { buf.printf("super");  }
+    override void visit(AST.AddrExp e) { visit(cast(AST.UnaExp) e);  }
+    override void visit(AST.PreExp e) { visit(cast(AST.UnaExp) e);  }
+    override void visit(AST.PtrExp e) { visit(cast(AST.UnaExp) e);  }
+    override void visit(AST.NegExp e) { visit(cast(AST.UnaExp) e);  }
+    override void visit(AST.UAddExp e) { visit(cast(AST.UnaExp) e);  }
+    override void visit(AST.NotExp e) { visit(cast(AST.UnaExp) e);  }
+
     override void visit(AST.ComExp) { assert(0); }
     override void visit(AST.DeleteExp) { assert(0); }
-    override void visit(AST.CastExp) { assert(0); }
-    override void visit(AST.CallExp) { assert(0); }
-    override void visit(AST.DotIdExp) { assert(0); }
-    override void visit(AST.AssertExp) { assert(0); }
+    
+    override void visit(AST.CastExp e) {
+        buf.printf("( cast ");
+        if (e.to) {
+            e.to.accept(this);
+            buf.printf(" ");
+        }
+        e.e1.accept(this);
+        buf.printf(")");
+    }
+
+    override void visit(AST.CallExp call) {
+        buf.printf("( call ");
+        if (call.e1) {
+            call.e1.accept(this);
+            buf.printf(" ");
+        }
+        visitExps(call.arguments);
+        buf.printf(")");
+    }
+    override void visit(AST.DotIdExp e) {
+        buf.printf("( . %s ", e.ident.toChars);
+        e.e1.accept(this);
+        buf.printf(")");
+    }
+    
+    override void visit(AST.AssertExp e) {
+        buf.printf("( assert ");
+        e.e1.accept(this);
+        if (e.msg) {
+            buf.printf(" ");
+            e.msg.accept(this);
+        }
+        buf.printf(")");
+    }
+
     override void visit(AST.CompileExp) { assert(0); }
     override void visit(AST.ImportExp) { assert(0); }
-    override void visit(AST.DotTemplateInstanceExp) { assert(0); }
+    
+    override void visit(AST.DotTemplateInstanceExp e) {
+        buf.printf("( . %s ", e.ti.ident ? e.ti.ident.toChars : e.ti.name.toChars);
+        e.e1.accept(this);
+        buf.printf(")");
+    }
+
     override void visit(AST.ArrayExp arr) {
         if (arr.e1) arr.e1.accept(this);
         if (arr.arguments)
@@ -723,10 +966,25 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     override void visit(AST.TemplateValueParameter) { assert(0); }
     override void visit(AST.TemplateThisParameter) { assert(0); }
     override void visit(AST.Condition) { assert(0); }
-    override void visit(AST.StaticIfCondition) { assert(0); }
+
+    override void visit(AST.StaticForeachStatement sfst) {
+        if (sfst.sfe.aggrfe) sfst.sfe.aggrfe.accept(this);
+        else sfst.sfe.rangefe.accept(this);
+    }
+    
+    override void visit(AST.StaticIfCondition cond) {
+        cond.exp.accept(this);
+    }
+
     override void visit(AST.DVCondition) { assert(0); }
-    override void visit(AST.DebugCondition) { assert(0); }
-    override void visit(AST.VersionCondition) { assert(0); }
+    override void visit(AST.DebugCondition d) {
+        buf.printf("%s", d.ident.toChars);
+    }
+
+    override void visit(AST.VersionCondition ver) {
+        buf.printf("%s", ver.ident.toChars);
+    }
+    
     override void visit(AST.Initializer) { assert(0); }
     override void visit(AST.ExpInitializer ei) {
         if (ei.exp)
@@ -751,6 +1009,7 @@ int main(string[] args) {
 		return 1;
 	}
     global.params.isLinux = true;
+    global.params.useUnitTests = true;
     global._init();
     ASTBase.Type._init();
     Id.initialize();

@@ -19,6 +19,9 @@ public class permissivevisitor {
     // from template PermissiveVisitor!(ASTBase)
     public static class PermissiveVisitorASTBase extends ParseTimeVisitorASTBase
     {
+        public  void visit(ASTBase.Dsymbol _param_0) {
+        }
+
         public  void visit(ASTBase.Parameter _param_0) {
         }
 

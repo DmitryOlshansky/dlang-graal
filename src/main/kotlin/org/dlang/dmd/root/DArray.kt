@@ -52,7 +52,7 @@ class DArray<T>(storage: Array<Any?>, len: Int) {
         get() = length
 
     fun setDim(size: Int) {
-        if (size > data.size) reserve(size - data.size)
+        if (size > length) reserve(size - length)
         length = size
     }
 

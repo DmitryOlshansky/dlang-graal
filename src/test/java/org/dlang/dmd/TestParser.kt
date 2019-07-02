@@ -47,4 +47,5 @@ class TestParser : TestCase() {
     fun testAggregates() {
         testCase("struct A { int a; } class C { A a; }", arrayOf(Decl(Kind.struct, "A"), Decl(Kind.clazz, "C")))
     }
+
 }

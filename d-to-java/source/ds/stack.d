@@ -16,6 +16,11 @@ struct Stack(T) {
         store[used++] = value;
     }
 
+    void clear() {
+        store[0..used] = T.init;
+        used = 0; 
+    }
+
     T pop() {
         assert(used != 0, "poping an empty stack!");
         return store[--used];

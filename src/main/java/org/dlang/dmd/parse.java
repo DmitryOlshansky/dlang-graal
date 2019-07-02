@@ -4691,10 +4691,10 @@ public class parse {
                                     DArray<ASTBase.Statement> as = new DArray<ASTBase.Statement>();
                                     (as).reserve((a).length);
                                     {
-                                        int __key411 = 0;
-                                        int __limit412 = (a).length;
-                                        for (; __key411 < __limit412;__key411 += 1) {
-                                            int i = __key411;
+                                        int __key419 = 0;
+                                        int __limit420 = (a).length;
+                                        for (; __key419 < __limit420;__key419 += 1) {
+                                            int i = __key419;
                                             ASTBase.Dsymbol d = (a).get(i);
                                             s = new ASTBase.ExpStatement(loc, d);
                                             (as).push(s);
@@ -6579,7 +6579,7 @@ public class parse {
                             this.nextToken();
                             break;
                         case 118:
-                            e = new ASTBase.IntegerExp(loc, (long)(short)this.token.intvalue, ASTBase.Type.twchar);
+                            e = new ASTBase.IntegerExp(loc, (long)(int)this.token.intvalue, ASTBase.Type.twchar);
                             this.nextToken();
                             break;
                         case 119:

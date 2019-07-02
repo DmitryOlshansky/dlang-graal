@@ -29,6 +29,7 @@ class TestOutBuffer : TestCase() {
         check("           1", "%12d", 1)
         check("1111", "%.3d", 1111)
         check("Ptr<ABCDE> null", "%p %p", BytePtr("ABCDE"), null)
+        check("65296", "%lld", 65296)
     }
 
     fun testMixtures() {

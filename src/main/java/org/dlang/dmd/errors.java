@@ -138,6 +138,7 @@ public class errors {
         verror(loc, format, new Slice<>(ap), null, null, new BytePtr("Error: "));
     }
 
+    // removed duplicate function, [["void errorLoc, BytePtr", "int isattyint"]] signature: void errorLoc, BytePtr
     public static void error(BytePtr filename, int linnum, int charnum, BytePtr format, Object... ap) {
         Loc loc = loc = new Loc(filename, linnum, charnum);
         verror(loc, format, new Slice<>(ap), null, null, new BytePtr("Error: "));
