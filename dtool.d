@@ -759,9 +759,14 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     override void visit(AST.NewAnonClassExp) { assert(0); }
     override void visit(AST.IsExp) { assert(0); }
     override void visit(AST.RealExp) { assert(0); }
-    override void visit(AST.NullExp) { assert(0); }
+    
+    override void visit(AST.NullExp) {
+        buf.printf("null");
+    }
+
     override void visit(AST.TypeidExp) { assert(0); }
     override void visit(AST.TraitsExp) { assert(0); }
+    
     override void visit(AST.StringExp exp) {
         if (exp.type) exp.type.accept(this);
         if (exp.sz == 1)
@@ -773,7 +778,13 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
             buf.printf(`"""%.*s"""`, exp.len, exp.dstring);
         }
     }
-    override void visit(AST.NewExp) { assert(0); }
+    
+    override void visit(AST.NewExp ne) {  
+        buf.printf("( new ");
+        visitExps(ne.arguments);
+        buf.printf(")");
+    }
+    
     override void visit(AST.AssocArrayLiteralExp) { assert(0); }
     
     override void visit(AST.ArrayLiteralExp ae) {     
@@ -867,8 +878,8 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     override void visit(AST.UAddExp e) { visit(cast(AST.UnaExp) e);  }
     override void visit(AST.NotExp e) { visit(cast(AST.UnaExp) e);  }
 
-    override void visit(AST.ComExp) { assert(0); }
-    override void visit(AST.DeleteExp) { assert(0); }
+    override void visit(AST.ComExp e) { visit(cast(AST.UnaExp)e); }
+    override void visit(AST.DeleteExp e) { visit(cast(AST.UnaExp)e); }
     
     override void visit(AST.CastExp e) {
         buf.printf("( cast ");
@@ -989,6 +1000,7 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
 
     override void visit(AST.DVCondition) { assert(0); }
+    
     override void visit(AST.DebugCondition d) {
         buf.printf("%s", d.ident.toChars);
     }
@@ -998,13 +1010,42 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
     
     override void visit(AST.Initializer) { assert(0); }
+    
     override void visit(AST.ExpInitializer ei) {
         if (ei.exp)
             ei.exp.accept(this);
     }
-    override void visit(AST.StructInitializer) { assert(0); }
-    override void visit(AST.ArrayInitializer) { assert(0); }
-    override void visit(AST.VoidInitializer) { assert(0); }
+
+    override void visit(AST.StructInitializer si) {
+        buf.printf("( struct-init ");
+        foreach (i, const id; si.field)
+        {
+            if (i)
+                buf.printf(" ");
+            if (id)
+            {
+                buf.writestring(id.toString());
+                buf.writeByte(':');
+            }
+            if (auto iz = si.value[i])
+                iz.accept(this);
+        }
+        buf.printf(")");
+    }
+    
+    override void visit(AST.ArrayInitializer ai) {
+        buf.printf("( array-init ");
+        foreach (i, v; ai.value) {
+            if (i) buf.printf(" ");
+            if (v) v.accept(this);
+            else buf.printf("null");
+        }
+        buf.printf(")");
+    }
+
+    override void visit(AST.VoidInitializer) { 
+        buf.printf("void");
+    }
 }
 
 int main(string[] args) {

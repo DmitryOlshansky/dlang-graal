@@ -140,34 +140,6 @@ index f45a1d8..eb2223f 100644
 -    public static Global global = new Global();
 +    static Global global = new Global();
  }
-diff --git a/src/main/java/org/dlang/dmd/identifier.java b/src/main/java/org/dlang/dmd/identifier.java
-index 492fe26..0769aeb 100644
---- a/src/main/java/org/dlang/dmd/identifier.java
-+++ b/src/main/java/org/dlang/dmd/identifier.java
-@@ -142,11 +142,6 @@ public class identifier {
- 
-         public static Identifier generateIdWithLoc(ByteSlice prefix, Loc loc) {
-             OutBuffer idBuf = new OutBuffer();
--            Function0<Integer> __lambda7 = new Function0<Integer>(){
--                public Integer invoke(){
--                    return 1;
--                }
--            };
-             Function1<Integer,Integer> __lambda8 = new Function1<Integer,Integer>(){
-                 public Integer invoke(Integer counter){
-                     idBuf.writestring( new ByteSlice("_"));
-@@ -154,6 +149,11 @@ public class identifier {
-                     return counter + 1;
-                 }
-             };
-+            Function0<Integer> __lambda7 = new Function0<Integer>(){
-+                public Integer invoke(){
-+                    return 1;
-+                }
-+            };
-             try {
-                 idBuf.writestring(prefix);
-                 idBuf.writestring( new ByteSlice("_L"));
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
 index 3966182..3a16bb5 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java
