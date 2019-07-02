@@ -76,7 +76,6 @@ fun strncmp(ptr: BytePtr, s2: ByteSlice, n: Int): Int {
 fun strstr(ptr: BytePtr, needle: BytePtr) : BytePtr? = strstr(ptr, needle.slice(0, strlen(needle)))
 
 fun strstr(ptr: BytePtr, needle: ByteSlice): BytePtr? {
-    var i = 0
     var ch = needle[0]
     if (ch == 0.toByte()) return null
     var p: BytePtr? = ptr
@@ -136,6 +135,7 @@ fun realloc(ptr: BytePtr?, size: Int): BytePtr  {
     else BytePtr(ptr.data.copyOf(size))
 }
 
+@Suppress("UNUSED_PARAMETER")
 fun getcwd(s: BytePtr?, i: Int) = BytePtr(Paths.get(".").toAbsolutePath().normalize().toString())
 
 fun time(s: IntPtr): Int {
@@ -189,12 +189,14 @@ fun<T> pequals(lhs: T?, rhs: T?): Boolean {
     return lhs == rhs
 }
 
+@Suppress("UNUSED_PARAMETER")
 fun destroy(a: Any)  {}
 
 fun hashOf(any: Any) = any.hashCode()
 
 fun hashOf(any: Any, seed: Int) = any.hashCode() + seed * 31
 
+@Suppress("UNUSED_PARAMETER")
 fun<A,B> comma(a: A?, b: B?) = b
 
 fun assertMsg(cond: Boolean, msg: ByteSlice) {
@@ -271,6 +273,7 @@ fun<T> ptr(v: Slice<T>) = v.ptr()
 fun exit(code: Int): Nothing = exitProcess(code)
 
 // stub out speller
+@Suppress("UNUSED_PARAMETER")
 fun<T> speller(fn: (ByteSlice, IntRef) -> T) = null
 
 // ======== STDIO ===========
@@ -286,7 +289,7 @@ fun getenv(s: BytePtr): BytePtr? {
     return if (r != null) BytePtr(r) else null
 }
 
-fun isatty(n: Int):Int = if(System.console() != null) 1 else 0
+fun isatty(n: Int):Int = if(System.console() != null && n >= 0 && n <= 2) 1 else 0
 
 fun printf(fmt: ByteSlice, vararg args: Any?) = fprintf(stdout, fmt, *args)
 
@@ -334,7 +337,7 @@ data class GetoptResult(@JvmField val helpWanted: Boolean, @JvmField val options
     fun copy(): GetoptResult = this
 }
 
-fun getopt(args: Ref<Slice<ByteSlice>>, vararg params: Any): GetoptResult
+fun getopt(@Suppress("UNUSED_PARAMETER") args: Ref<Slice<ByteSlice>>, vararg params: Any): GetoptResult
 {
     var help = false
     val options = mutableListOf<Pair<ByteSlice,ByteSlice>>()

@@ -67,6 +67,15 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         }
     }
 
+    void visitExps(Array!(AST.Expression)* exps) {
+        if (exps) {
+            foreach (e; *exps) {
+                e.accept(this);
+                buf.writenl;
+            }
+        }
+    }
+
     override void visit(AST.Dsymbol s) { 
         buf.printf("%s", s.toChars());
     }
@@ -89,27 +98,23 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
 
     override void visit(AST.AttribDeclaration attr) { 
-        open(attr.toChars);
-        super.visit(attr);
+        open("%s", attr.toChars);
+        visitDecls(attr.decl);
         close();
     }
 
     override void visit(AST.StaticAssert as) { 
         open("static assert");
-        super.visit(as);
+        as.exp.accept(this);
         close();
     }
     
     override void visit(AST.DebugSymbol sym) {
-        open("debug");
-        super.visit(sym);
-        close();
+        buf.printf("debug");
     }
 
     override void visit(AST.VersionSymbol ver) { 
-        open("version");
-        super.visit(ver);
-        close();
+        buf.printf("version");
     }
 
     override void visit(AST.VarDeclaration d) {
@@ -251,25 +256,25 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
 
     override void visit(AST.CompileDeclaration d) {
         open("compiletime");
-        super.visit(d);
+        visitDecls(d.decl);
         close();
     }
 
     override void visit(AST.UserAttributeDeclaration d) { 
         open("udas");
-        super.visit(d);
+        visitDecls(d.decl);
         close();
     }
     
     override void visit(AST.LinkDeclaration link) {
         open("%s", link.ident.toChars);
-        super.visit(link);
+        visitDecls(link.decl);
         close();
     }
 
     override void visit(AST.AnonDeclaration anon) {
         open("anon union %s", anon.ident.toChars);
-        super.visit(anon);
+        visitDecls(anon.decl);
         close();
     }
 
@@ -280,9 +285,26 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         visitDecls(d.decl);
         close();
     }
-    override void visit(AST.CPPMangleDeclaration) { assert(0); }
-    override void visit(AST.ProtDeclaration) { assert(0); }
-    override void visit(AST.PragmaDeclaration) { assert(0); }
+
+    override void visit(AST.CPPMangleDeclaration mangle) {
+        open("cppmangle %d", mangle.cppmangle);
+        visitDecls(mangle.decl);
+        close();
+    }
+
+    override void visit(AST.ProtDeclaration d) {
+        open("%s", AST.protectionToChars(d.protection.kind));
+        visitDecls(d.decl);
+        close();
+    }
+
+    override void visit(AST.PragmaDeclaration d) {
+        open("pragma %s", d.ident.toChars);
+        visitExps(d.args);
+        buf.writenl;
+        visitDecls(d.decl);
+        close();
+    }
     
     override void visit(AST.StorageClassDeclaration d) {
         buf.printf("( ");
