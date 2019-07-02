@@ -43,6 +43,30 @@ public class dtool {
         }
     }
 
+    public static BytePtr linkToChars(int link) {
+        switch (link)
+        {
+            case 0:
+                return new BytePtr("");
+            case 1:
+                return new BytePtr("extern(D)");
+            case 2:
+                return new BytePtr("extern(C)");
+            case 3:
+                return new BytePtr("extern(C++)");
+            case 4:
+                return new BytePtr("extern(Windows)");
+            case 5:
+                return new BytePtr("extern(Pascal)");
+            case 6:
+                return new BytePtr("extern(Obj-C)");
+            case 7:
+                return new BytePtr("extern(System)");
+            default:
+            throw new AssertionError("Unreachable code!");
+        }
+    }
+
     public static class LispyPrint extends ParseTimeTransitiveVisitorASTBase
     {
         public OutBuffer buf;
@@ -91,14 +115,29 @@ public class dtool {
             }
         }
 
+        public  void visitStatements(DArray<ASTBase.Statement> statements) {
+            if (statements != null)
+            {
+                Slice<ASTBase.Statement> __r205 = (statements).opSlice().copy();
+                int __key204 = 0;
+                for (; __key204 < __r205.getLength();__key204 += 1) {
+                    ASTBase.Statement st = __r205.get(__key204);
+                    int i = __key204;
+                    if ((i) != 0)
+                        (this.buf).writenl();
+                    st.accept(this);
+                }
+            }
+        }
+
         public  void visitTiargs(DArray<RootObject> tiargs) {
             if (tiargs != null)
             {
-                Slice<RootObject> __r205 = (tiargs).opSlice().copy();
-                int __key204 = 0;
-                for (; __key204 < __r205.getLength();__key204 += 1) {
-                    RootObject m = __r205.get(__key204);
-                    int i = __key204;
+                Slice<RootObject> __r207 = (tiargs).opSlice().copy();
+                int __key206 = 0;
+                for (; __key206 < __r207.getLength();__key206 += 1) {
+                    RootObject m = __r207.get(__key206);
+                    int i = __key206;
                     if ((i) != 0)
                         (this.buf).printf( new ByteSlice(" "));
                     switch (m.dyncast())
@@ -197,73 +236,85 @@ public class dtool {
 
         public  void visit(ASTBase.FuncLiteralDeclaration d) {
             this.open(new BytePtr("func literal %s"), d.ident.toChars());
-            d.fbody.accept(this);
+            if (d.fbody != null)
+                d.fbody.accept(this);
             this.close();
         }
 
         public  void visit(ASTBase.PostBlitDeclaration d) {
             this.open(new BytePtr("this(this)"));
-            d.fbody.accept(this);
+            if (d.fbody != null)
+                d.fbody.accept(this);
             this.close();
         }
 
         public  void visit(ASTBase.CtorDeclaration d) {
             this.open(new BytePtr("ctor"));
-            d.fbody.accept(this);
+            if (d.fbody != null)
+                d.fbody.accept(this);
             this.close();
         }
 
         public  void visit(ASTBase.DtorDeclaration d) {
             this.open(new BytePtr("dtor"));
-            d.fbody.accept(this);
+            if (d.fbody != null)
+                d.fbody.accept(this);
             this.close();
         }
 
         public  void visit(ASTBase.InvariantDeclaration d) {
             this.open(new BytePtr("invariant"));
-            d.fbody.accept(this);
+            if (d.fbody != null)
+                d.fbody.accept(this);
             this.close();
         }
 
         public  void visit(ASTBase.UnitTestDeclaration d) {
             this.open(new BytePtr("unittest"));
-            d.fbody.accept(this);
+            if (d.fbody != null)
+                d.fbody.accept(this);
             this.close();
         }
 
         public  void visit(ASTBase.NewDeclaration d) {
             this.open(new BytePtr("newdecl"));
-            d.fbody.accept(this);
+            if (d.fbody != null)
+                d.fbody.accept(this);
             this.close();
         }
 
         public  void visit(ASTBase.DeleteDeclaration d) {
             this.open(new BytePtr("deletedecl"));
-            d.fbody.accept(this);
+            if (d.fbody != null)
+                d.fbody.accept(this);
             this.close();
         }
 
         public  void visit(ASTBase.StaticCtorDeclaration d) {
             this.open(new BytePtr("static this"));
-            d.fbody.accept(this);
+            if (d.fbody != null)
+                d.fbody.accept(this);
             this.close();
         }
 
         public  void visit(ASTBase.StaticDtorDeclaration d) {
             this.open(new BytePtr("static ~this"));
-            d.fbody.accept(this);
+            if (d.fbody != null)
+                d.fbody.accept(this);
             this.close();
         }
 
         public  void visit(ASTBase.SharedStaticCtorDeclaration d) {
             this.open(new BytePtr("shared static this"));
-            d.fbody.accept(this);
+            if (d.fbody != null)
+                d.fbody.accept(this);
             this.close();
         }
 
         public  void visit(ASTBase.SharedStaticDtorDeclaration d) {
             this.open(new BytePtr("shared static ~this"));
-            d.fbody.accept(this);
+            if (d.fbody != null)
+                d.fbody.accept(this);
             this.close();
         }
 
@@ -317,13 +368,13 @@ public class dtool {
         }
 
         public  void visit(ASTBase.LinkDeclaration link) {
-            this.open(new BytePtr("%s"), link.ident.toChars());
+            this.open(new BytePtr("%s"), linkToChars(link.linkage));
             this.visitDecls(link.decl);
             this.close();
         }
 
         public  void visit(ASTBase.AnonDeclaration anon) {
-            this.open(new BytePtr("anon union %s"), anon.ident.toChars());
+            this.open(new BytePtr("anon union"));
             this.visitDecls(anon.decl);
             this.close();
         }
@@ -423,11 +474,11 @@ public class dtool {
             if (d.baseclasses != null)
             {
                 {
-                    Slice<ASTBase.BaseClass> __r207 = (d.baseclasses).opSlice().copy();
-                    int __key206 = 0;
-                    for (; __key206 < __r207.getLength();__key206 += 1) {
-                        ASTBase.BaseClass c = __r207.get(__key206);
-                        int i = __key206;
+                    Slice<ASTBase.BaseClass> __r209 = (d.baseclasses).opSlice().copy();
+                    int __key208 = 0;
+                    for (; __key208 < __r209.getLength();__key208 += 1) {
+                        ASTBase.BaseClass c = __r209.get(__key208);
+                        int i = __key208;
                         if ((i) != 0)
                             printf( new ByteSlice(" "));
                         (c).type.accept(this);
@@ -452,7 +503,7 @@ public class dtool {
         }
 
         public  void visit(ASTBase.Parameter p) {
-            (this.buf).printf( new ByteSlice("%s "), p.ident.toChars());
+            (this.buf).printf( new ByteSlice("%s "), p.ident != null ? p.ident.toChars() :  new ByteSlice("anonymous"));
             if (p.type != null)
                 p.type.accept(this);
         }
@@ -557,10 +608,10 @@ public class dtool {
             if (st.parameters != null)
             {
                 {
-                    Slice<ASTBase.Parameter> __r208 = (st.parameters).opSlice().copy();
-                    int __key209 = 0;
-                    for (; __key209 < __r208.getLength();__key209 += 1) {
-                        ASTBase.Parameter prm = __r208.get(__key209);
+                    Slice<ASTBase.Parameter> __r210 = (st.parameters).opSlice().copy();
+                    int __key211 = 0;
+                    for (; __key211 < __r210.getLength();__key211 += 1) {
+                        ASTBase.Parameter prm = __r210.get(__key211);
                         prm.accept(this);
                     }
                 }
@@ -652,52 +703,110 @@ public class dtool {
             this.close();
         }
 
-        public  void visit(ASTBase.DefaultStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.DefaultStatement def) {
+            this.open(new BytePtr("default"));
+            if (def.statement != null)
+                def.statement.accept(this);
+            this.close();
         }
 
-        public  void visit(ASTBase.BreakStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.BreakStatement brk) {
+            (this.buf).printf( new ByteSlice("( break %s )"), brk.ident != null ? brk.ident.toChars() :  new ByteSlice(""));
+            (this.buf).writenl();
         }
 
-        public  void visit(ASTBase.ContinueStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.ContinueStatement cont) {
+            (this.buf).printf( new ByteSlice("( continue %s )"), cont.ident != null ? cont.ident.toChars() :  new ByteSlice(""));
+            (this.buf).writenl();
         }
 
-        public  void visit(ASTBase.GotoDefaultStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.GotoDefaultStatement gds) {
+            (this.buf).printf( new ByteSlice("( goto default )"));
+            (this.buf).writenl();
         }
 
-        public  void visit(ASTBase.GotoCaseStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.GotoCaseStatement gcs) {
+            (this.buf).printf( new ByteSlice("( goto case "));
+            if (gcs.exp != null)
+                gcs.exp.accept(this);
+            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).writenl();
         }
 
-        public  void visit(ASTBase.GotoStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.GotoStatement gs) {
+            (this.buf).printf( new ByteSlice("( goto %s)"), gs.ident.toChars());
+            (this.buf).writenl();
         }
 
-        public  void visit(ASTBase.SynchronizedStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.SynchronizedStatement sync) {
+            this.open(new BytePtr("synchronized"));
+            if (sync._body != null)
+                sync._body.accept(this);
+            this.close();
         }
 
-        public  void visit(ASTBase.WithStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.WithStatement w) {
+            this.open(new BytePtr("with"));
+            if (w.exp != null)
+                w.exp.accept(this);
+            (this.buf).writenl();
+            if (w._body != null)
+                w._body.accept(this);
+            this.close();
         }
 
-        public  void visit(ASTBase.TryCatchStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.TryCatchStatement tc) {
+            this.open(new BytePtr("try"));
+            if (tc._body != null)
+                tc._body.accept(this);
+            if (tc.catches != null)
+            {
+                Slice<ASTBase.Catch> __r212 = (tc.catches).opSlice().copy();
+                int __key213 = 0;
+                for (; __key213 < __r212.getLength();__key213 += 1) {
+                    ASTBase.Catch c = __r212.get(__key213);
+                    this.open(new BytePtr("catch"));
+                    if (c.type != null)
+                    {
+                        c.type.accept(this);
+                        (this.buf).printf( new ByteSlice(" "));
+                    }
+                    if (c.ident != null)
+                        (this.buf).printf( new ByteSlice("%s"), c.ident.toChars());
+                    (this.buf).writenl();
+                    if (c.handler != null)
+                        c.handler.accept(this);
+                    this.close();
+                }
+            }
+            this.close();
         }
 
-        public  void visit(ASTBase.TryFinallyStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.TryFinallyStatement tf) {
+            this.open(new BytePtr("try"));
+            if (tf._body != null)
+                tf._body.accept(this);
+            if (tf.finalbody != null)
+            {
+                this.open(new BytePtr("finally"));
+                tf.finalbody.accept(this);
+                this.close();
+            }
+            this.close();
         }
 
-        public  void visit(ASTBase.ThrowStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.ThrowStatement thr) {
+            this.open(new BytePtr("throw"));
+            thr.exp.accept(this);
+            this.close();
         }
 
-        public  void visit(ASTBase.AsmStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.AsmStatement ast) {
+            Token t = ast.tokens;
+            for (; t != null;){
+                (this.buf).printf( new ByteSlice("%s"), (t).toChars());
+                t = (t).next;
+            }
         }
 
         public  void visit(ASTBase.ExpStatement s) {
@@ -711,36 +820,24 @@ public class dtool {
         }
 
         public  void visit(ASTBase.CompoundStatement s) {
-            (this.buf).printf( new ByteSlice("("));
-            (this.buf).writenl();
-            (this.buf).level++;
-            if (s.statements != null)
-            {
-                Slice<ASTBase.Statement> __r211 = (s.statements).opSlice().copy();
-                int __key210 = 0;
-                for (; __key210 < __r211.getLength();__key210 += 1) {
-                    ASTBase.Statement st = __r211.get(__key210);
-                    int i = __key210;
-                    if ((i) != 0)
-                        (this.buf).writenl();
-                    st.accept(this);
-                }
-            }
-            (this.buf).level--;
-            (this.buf).writenl();
-            (this.buf).printf( new ByteSlice(")"));
+            this.open(new BytePtr(""));
+            this.visitStatements(s.statements);
+            this.close();
         }
 
-        public  void visit(ASTBase.CompoundDeclarationStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.CompoundDeclarationStatement s) {
+            this.visitStatements(s.statements);
         }
 
-        public  void visit(ASTBase.CompoundAsmStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.CompoundAsmStatement st) {
+            Ref<Long> stc = ref(st.stc);
+            this.open(new BytePtr("asm %s"), ASTBase.stcToChars(stc));
+            this.visitStatements(st.statements);
+            this.close();
         }
 
-        public  void visit(ASTBase.InlineAsmStatement _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.InlineAsmStatement iasm) {
+            this.visit((ASTBase.AsmStatement)iasm);
         }
 
         public  void visit(ASTBase.Type t) {
@@ -775,11 +872,11 @@ public class dtool {
             if (t.arguments != null)
             {
                 {
-                    Slice<ASTBase.Parameter> __r213 = (t.arguments).opSlice().copy();
-                    int __key212 = 0;
-                    for (; __key212 < __r213.getLength();__key212 += 1) {
-                        ASTBase.Parameter a = __r213.get(__key212);
-                        int i = __key212;
+                    Slice<ASTBase.Parameter> __r215 = (t.arguments).opSlice().copy();
+                    int __key214 = 0;
+                    for (; __key214 < __r215.getLength();__key214 += 1) {
+                        ASTBase.Parameter a = __r215.get(__key214);
+                        int i = __key214;
                         if ((i) != 0)
                             (this.buf).printf( new ByteSlice(" "));
                         super.visit(a);
@@ -834,11 +931,11 @@ public class dtool {
                 (this.buf).printf( new ByteSlice(" "));
             }
             {
-                Slice<ASTBase.Parameter> __r215 = (tf.parameterList.parameters).opSlice().copy();
-                int __key214 = 0;
-                for (; __key214 < __r215.getLength();__key214 += 1) {
-                    ASTBase.Parameter p = __r215.get(__key214);
-                    int i = __key214;
+                Slice<ASTBase.Parameter> __r217 = (tf.parameterList.parameters).opSlice().copy();
+                int __key216 = 0;
+                for (; __key216 < __r217.getLength();__key216 += 1) {
+                    ASTBase.Parameter p = __r217.get(__key216);
+                    int i = __key216;
                     if ((i) != 0)
                         (this.buf).printf( new ByteSlice(" "));
                     p.accept(this);
@@ -911,28 +1008,72 @@ public class dtool {
             (this.buf).printf( new ByteSlice("%lld"), e.value);
         }
 
-        public  void visit(ASTBase.NewAnonClassExp _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.NewAnonClassExp nc) {
+            (this.buf).printf( new ByteSlice("( new anonclass %s "), nc.cd.ident.toChars());
+            this.visitExps(nc.arguments);
+            nc.cd.accept(this);
+            (this.buf).printf( new ByteSlice(")"));
         }
 
-        public  void visit(ASTBase.IsExp _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.IsExp ie) {
+            (this.buf).printf( new ByteSlice("( is %s"), Token.toChars(ie.tok));
+            if (ie.id != null)
+                printf( new ByteSlice("%s "), ie.id.toChars());
+            if (ie.type != null)
+                ie.type.accept(this);
         }
 
-        public  void visit(ASTBase.RealExp _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.RealExp r) {
+            (this.buf).printf( new ByteSlice("%llf"), r.value);
         }
 
         public  void visit(ASTBase.NullExp _param_0) {
             (this.buf).printf( new ByteSlice("null"));
         }
 
-        public  void visit(ASTBase.TypeidExp _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.TypeidExp tie) {
+            switch (tie.obj.dyncast())
+            {
+                case DYNCAST.expression:
+                    ((ASTBase.Expression)tie.obj).accept(this);
+                    return ;
+                case DYNCAST.dsymbol:
+                    ((ASTBase.Dsymbol)tie.obj).accept(this);
+                    return ;
+                case DYNCAST.type:
+                    ((ASTBase.Type)tie.obj).accept(this);
+                    return ;
+                default:
+                (this.buf).printf( new ByteSlice("<typeid>"));
+            }
         }
 
-        public  void visit(ASTBase.TraitsExp _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.TraitsExp te) {
+            (this.buf).printf( new ByteSlice("( __traits %s "), te.ident.toChars());
+            if (te.args != null)
+            {
+                {
+                    Slice<RootObject> __r218 = (te.args).opSlice().copy();
+                    int __key219 = 0;
+                    for (; __key219 < __r218.getLength();__key219 += 1) {
+                        RootObject arg = __r218.get(__key219);
+                        switch (arg.dyncast())
+                        {
+                            case DYNCAST.expression:
+                                ((ASTBase.Expression)arg).accept(this);
+                                return ;
+                            case DYNCAST.dsymbol:
+                                ((ASTBase.Dsymbol)arg).accept(this);
+                                return ;
+                            case DYNCAST.type:
+                                ((ASTBase.Type)arg).accept(this);
+                                return ;
+                            default:
+                            (this.buf).printf( new ByteSlice("%s"), arg.toChars());
+                        }
+                    }
+                }
+            }
         }
 
         public  void visit(ASTBase.StringExp exp) {
@@ -956,19 +1097,35 @@ public class dtool {
             (this.buf).printf( new ByteSlice(")"));
         }
 
-        public  void visit(ASTBase.AssocArrayLiteralExp _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.AssocArrayLiteralExp aa) {
+            (this.buf).printf( new ByteSlice("( key[value] "));
+            if (aa.keys != null)
+            {
+                Slice<ASTBase.Expression> __r221 = (aa.keys).opSlice().copy();
+                int __key220 = 0;
+                for (; __key220 < __r221.getLength();__key220 += 1) {
+                    ASTBase.Expression key = __r221.get(__key220);
+                    int i = __key220;
+                    if ((i) != 0)
+                        (this.buf).printf( new ByteSlice(" "));
+                    ASTBase.Expression v = (aa.values).get(i);
+                    key.accept(this);
+                    (this.buf).printf( new ByteSlice(" "));
+                    v.accept(this);
+                }
+            }
+            (this.buf).printf( new ByteSlice(")"));
         }
 
         public  void visit(ASTBase.ArrayLiteralExp ae) {
             (this.buf).printf( new ByteSlice("( [] "));
             if (ae.elements != null)
             {
-                Slice<ASTBase.Expression> __r217 = (ae.elements).opSlice().copy();
-                int __key216 = 0;
-                for (; __key216 < __r217.getLength();__key216 += 1) {
-                    ASTBase.Expression el = __r217.get(__key216);
-                    int i = __key216;
+                Slice<ASTBase.Expression> __r223 = (ae.elements).opSlice().copy();
+                int __key222 = 0;
+                for (; __key222 < __r223.getLength();__key222 += 1) {
+                    ASTBase.Expression el = __r223.get(__key222);
+                    int i = __key222;
                     if ((i) != 0)
                         (this.buf).printf( new ByteSlice(" "));
                     ASTBase.Expression e = el != null ? el : ae.basis;
@@ -981,8 +1138,13 @@ public class dtool {
             (this.buf).printf( new ByteSlice(")"));
         }
 
-        public  void visit(ASTBase.FuncExp _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.FuncExp fe) {
+            this.open(new BytePtr("func-expr"));
+            if (fe.fd != null)
+                fe.fd.accept(this);
+            else if (fe.td != null)
+                fe.td.accept(this);
+            this.close();
         }
 
         public  void visit(ASTBase.IntervalExp ival) {
@@ -1141,12 +1303,14 @@ public class dtool {
             (this.buf).printf( new ByteSlice(")"));
         }
 
-        public  void visit(ASTBase.CompileExp _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.CompileExp c) {
+            (this.buf).printf( new ByteSlice("( mixin "));
+            this.visitExps(c.exps);
+            (this.buf).printf( new ByteSlice(")"));
         }
 
-        public  void visit(ASTBase.ImportExp _param_0) {
-            throw new AssertionError("Unreachable code!");
+        public  void visit(ASTBase.ImportExp ie) {
+            this.visit((ASTBase.UnaExp)ie);
         }
 
         public  void visit(ASTBase.DotTemplateInstanceExp e) {
@@ -1161,10 +1325,10 @@ public class dtool {
                 arr.e1.accept(this);
             if (arr.arguments != null)
             {
-                Slice<ASTBase.Expression> __r218 = (arr.arguments).opSlice().copy();
-                int __key219 = 0;
-                for (; __key219 < __r218.getLength();__key219 += 1) {
-                    ASTBase.Expression arg = __r218.get(__key219);
+                Slice<ASTBase.Expression> __r224 = (arr.arguments).opSlice().copy();
+                int __key225 = 0;
+                for (; __key225 < __r224.getLength();__key225 += 1) {
+                    ASTBase.Expression arg = __r224.get(__key225);
                     arg.accept(this);
                 }
             }
@@ -1404,11 +1568,11 @@ public class dtool {
         public  void visit(ASTBase.StructInitializer si) {
             (this.buf).printf( new ByteSlice("( struct-init "));
             {
-                Slice<Identifier> __r221 = si.field.opSlice().copy();
-                int __key220 = 0;
-                for (; __key220 < __r221.getLength();__key220 += 1) {
-                    Identifier id = __r221.get(__key220);
-                    int i = __key220;
+                Slice<Identifier> __r227 = si.field.opSlice().copy();
+                int __key226 = 0;
+                for (; __key226 < __r227.getLength();__key226 += 1) {
+                    Identifier id = __r227.get(__key226);
+                    int i = __key226;
                     if ((i) != 0)
                         (this.buf).printf( new ByteSlice(" "));
                     if (id != null)
@@ -1429,11 +1593,11 @@ public class dtool {
         public  void visit(ASTBase.ArrayInitializer ai) {
             (this.buf).printf( new ByteSlice("( array-init "));
             {
-                Slice<ASTBase.Initializer> __r223 = ai.value.opSlice().copy();
-                int __key222 = 0;
-                for (; __key222 < __r223.getLength();__key222 += 1) {
-                    ASTBase.Initializer v = __r223.get(__key222);
-                    int i = __key222;
+                Slice<ASTBase.Initializer> __r229 = ai.value.opSlice().copy();
+                int __key228 = 0;
+                for (; __key228 < __r229.getLength();__key228 += 1) {
+                    ASTBase.Initializer v = __r229.get(__key228);
+                    int i = __key228;
                     if ((i) != 0)
                         (this.buf).printf( new ByteSlice(" "));
                     if (v != null)
@@ -1474,10 +1638,10 @@ public class dtool {
         ASTBase.Type._init();
         Id.initialize();
         {
-            Slice<ByteSlice> __r419 = args_ref.value.slice(1,args_ref.value.getLength()).copy();
-            int __key420 = 0;
-            for (; __key420 < __r419.getLength();__key420 += 1) {
-                ByteSlice arg = __r419.get(__key420).copy();
+            Slice<ByteSlice> __r425 = args_ref.value.slice(1,args_ref.value.getLength()).copy();
+            int __key426 = 0;
+            for (; __key426 < __r425.getLength();__key426 += 1) {
+                ByteSlice arg = __r425.get(__key426).copy();
                 if (__equals(tool.value,  new ByteSlice("lex")))
                     processFile_lex(arg, outdir.value, new BytePtr("tk"));
                 else if (__equals(tool.value,  new ByteSlice("lispy")))
@@ -1520,10 +1684,10 @@ public class dtool {
                 lispPrint.buf = new OutBuffer(null, 0, 0, 0, false, false);
                 (lispPrint.buf).doindent = true;
                 {
-                    Slice<ASTBase.Dsymbol> __r423 = (decls).opSlice().copy();
-                    int __key424 = 0;
-                    for (; __key424 < __r423.getLength();__key424 += 1) {
-                        ASTBase.Dsymbol d = __r423.get(__key424);
+                    Slice<ASTBase.Dsymbol> __r429 = (decls).opSlice().copy();
+                    int __key430 = 0;
+                    for (; __key430 < __r429.getLength();__key430 += 1) {
+                        ASTBase.Dsymbol d = __r429.get(__key430);
                         d.accept(lispPrint);
                     }
                 }

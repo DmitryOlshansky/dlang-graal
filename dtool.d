@@ -26,7 +26,7 @@ import std.getopt;
 
 alias AST = ASTBase;
 
-const(char)* modToChars(uint mod){
+const(char)* modToChars(uint mod) {
     switch(mod) with(ASTBase.MODFlags) {
         case const_: return "const";
         case immutable_: return "immutable";
@@ -35,6 +35,20 @@ const(char)* modToChars(uint mod){
         case wildconst: return "const(inout)";
         case mutable: return "";
         default: return "";
+    }
+}
+
+const(char)* linkToChars(uint link) {
+    switch(link) with(LINK) {
+        case default_: return "";
+        case d: return "extern(D)";
+        case c: return "extern(C)";
+        case cpp: return "extern(C++)";
+        case windows: return "extern(Windows)";
+        case pascal: return "extern(Pascal)";
+        case objc: return "extern(Obj-C)";
+        case system: return "extern(System)";
+        default: assert(0);
     }
 }
 
@@ -74,6 +88,14 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
                 e.accept(this);
             }
         }
+    }
+
+    void visitStatements(Array!(AST.Statement)* statements) {
+        if (statements)
+            foreach (i, st; *statements) {
+                if (i) buf.writenl;
+                st.accept(this);
+            }
     }
 
     void visitTiargs(Array!(RootObject)* tiargs) {
@@ -169,73 +191,73 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
 
     override void visit(AST.FuncLiteralDeclaration d) {
         open("func literal %s", d.ident.toChars);
-        d.fbody.accept(this);
+        if (d.fbody) d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.PostBlitDeclaration d) {
         open("this(this)");
-        d.fbody.accept(this);
+        if (d.fbody) d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.CtorDeclaration d) {
         open("ctor");
-        d.fbody.accept(this);
+        if (d.fbody) d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.DtorDeclaration d) {
         open("dtor");
-        d.fbody.accept(this);
+        if (d.fbody) d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.InvariantDeclaration d) {
         open("invariant");
-        d.fbody.accept(this);
+        if (d.fbody) d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.UnitTestDeclaration d) {
         open("unittest");
-        d.fbody.accept(this);
+        if (d.fbody) d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.NewDeclaration d) { 
         open("newdecl");
-        d.fbody.accept(this);
+        if (d.fbody) d.fbody.accept(this);
         close();
     }
     
     override void visit(AST.DeleteDeclaration d) {
         open("deletedecl");
-        d.fbody.accept(this);
+        if (d.fbody) d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.StaticCtorDeclaration d) { 
         open("static this");
-        d.fbody.accept(this);
+        if (d.fbody) d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.StaticDtorDeclaration d) {
         open("static ~this");
-        d.fbody.accept(this);
+        if (d.fbody) d.fbody.accept(this);
         close();
     }
 
     override void visit(AST.SharedStaticCtorDeclaration d) {
         open("shared static this");
-        d.fbody.accept(this);
+        if (d.fbody) d.fbody.accept(this);
         close();    
     }
 
     override void visit(AST.SharedStaticDtorDeclaration d) {
         open("shared static ~this");
-        d.fbody.accept(this);
+        if (d.fbody) d.fbody.accept(this);
         close();
     }
 
@@ -289,13 +311,13 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
     
     override void visit(AST.LinkDeclaration link) {
-        open("%s", link.ident.toChars);
+        open("%s", linkToChars(link.linkage));
         visitDecls(link.decl);
         close();
     }
 
     override void visit(AST.AnonDeclaration anon) {
-        open("anon union %s", anon.ident.toChars);
+        open("anon union");
         visitDecls(anon.decl);
         close();
     }
@@ -413,7 +435,7 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
 
     override void visit(AST.Parameter p) { 
-        buf.printf("%s ", p.ident.toChars);
+        buf.printf("%s ", p.ident ? p.ident.toChars : "anonymous");
         if (p.type) p.type.accept(this);
     }
 
@@ -575,18 +597,95 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         close();
     }
 
-    override void visit(AST.DefaultStatement) { assert(0); }
-    override void visit(AST.BreakStatement) { assert(0); }
-    override void visit(AST.ContinueStatement) { assert(0); }
-    override void visit(AST.GotoDefaultStatement) { assert(0); }
-    override void visit(AST.GotoCaseStatement) { assert(0); }
-    override void visit(AST.GotoStatement) { assert(0); }
-    override void visit(AST.SynchronizedStatement) { assert(0); }
-    override void visit(AST.WithStatement) { assert(0); }
-    override void visit(AST.TryCatchStatement) { assert(0); }
-    override void visit(AST.TryFinallyStatement) { assert(0); }
-    override void visit(AST.ThrowStatement) { assert(0); }
-    override void visit(AST.AsmStatement) { assert(0); }
+    override void visit(AST.DefaultStatement def) {
+        open("default");
+        if(def.statement) def.statement.accept(this);
+        close();
+    }
+
+    override void visit(AST.BreakStatement brk) {
+        buf.printf("( break %s )", brk.ident ? brk.ident.toChars : "");
+        buf.writenl;
+    }
+
+    override void visit(AST.ContinueStatement cont) {
+        buf.printf("( continue %s )", cont.ident ? cont.ident.toChars : "");
+        buf.writenl;
+    }
+
+    override void visit(AST.GotoDefaultStatement gds) {
+        buf.printf("( goto default )");
+        buf.writenl;
+    }
+
+    override void visit(AST.GotoCaseStatement gcs) {
+        buf.printf("( goto case ");
+        if (gcs.exp) gcs.exp.accept(this);
+        buf.printf(")");
+        buf.writenl;
+    }
+
+    override void visit(AST.GotoStatement gs) {
+        buf.printf("( goto %s)", gs.ident.toChars);
+        buf.writenl;
+    }
+
+    override void visit(AST.SynchronizedStatement sync) {
+        open("synchronized");
+        if (sync._body) sync._body.accept(this);
+        close();
+    }
+
+    override void visit(AST.WithStatement w) { 
+        open("with");
+        if (w.exp) w.exp.accept(this);
+        buf.writenl;
+        if (w._body) w._body.accept(this);
+        close();
+    }
+
+    override void visit(AST.TryCatchStatement tc) {
+        open("try");
+        if (tc._body) tc._body.accept(this);
+        if (tc.catches)
+            foreach (c; *tc.catches) {
+                open("catch");
+                if (c.type) {
+                    c.type.accept(this);
+                    buf.printf(" ");
+                }
+                if (c.ident) buf.printf("%s", c.ident.toChars);
+                buf.writenl;
+                if (c.handler) c.handler.accept(this);
+                close();
+            }
+        close();
+    }
+
+    override void visit(AST.TryFinallyStatement tf) {
+        open("try");
+        if (tf._body) tf._body.accept(this);
+        if (tf.finalbody) {
+            open("finally");
+            tf.finalbody.accept(this);
+            close();
+        }
+        close();
+    }
+
+    override void visit(AST.ThrowStatement thr) { 
+        open("throw");
+        thr.exp.accept(this);
+        close();
+    }
+
+    override void visit(AST.AsmStatement ast) {
+        auto t = ast.tokens;
+        while(t) {
+            buf.printf("%s", t.toChars);
+            t = t.next;
+        }
+    }
 
     override void visit(AST.ExpStatement s) {
         buf.printf("( expr ");
@@ -599,22 +698,25 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
 
     override void visit(AST.CompoundStatement s) {
-        buf.printf("(");
-        buf.writenl;
-        buf.level++;
-        if (s.statements)
-            foreach (i, st; *s.statements) {
-                if (i) buf.writenl;
-                st.accept(this);
-            }
-        buf.level--;
-        buf.writenl;
-        buf.printf(")");
-        
+        open("");
+        visitStatements(s.statements);
+        close();
     }
-    override void visit(AST.CompoundDeclarationStatement) { assert(0); }
-    override void visit(AST.CompoundAsmStatement) { assert(0); }
-    override void visit(AST.InlineAsmStatement) { assert(0); }
+
+    override void visit(AST.CompoundDeclarationStatement s) {
+        visitStatements(s.statements);
+    }
+
+    override void visit(AST.CompoundAsmStatement st) {
+        auto stc = st.stc;
+        open("asm %s", AST.stcToChars(stc));
+        visitStatements(st.statements);
+        close();
+    }
+
+    override void visit(AST.InlineAsmStatement iasm) {
+        visit(cast(AST.AsmStatement)iasm);
+    }
 
     override void visit(AST.Type t) {
         assert(0, "unknown type?");
@@ -756,16 +858,57 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         buf.printf("%lld", e.value);
     }
 
-    override void visit(AST.NewAnonClassExp) { assert(0); }
-    override void visit(AST.IsExp) { assert(0); }
-    override void visit(AST.RealExp) { assert(0); }
+    override void visit(AST.NewAnonClassExp nc) { 
+        buf.printf("( new anonclass %s ", nc.cd.ident.toChars);
+        visitExps(nc.arguments);
+        nc.cd.accept(this);
+        buf.printf(")");
+    }
+    
+    override void visit(AST.IsExp ie) { 
+        buf.printf("( is %s", Token.toChars(ie.tok));
+        if (ie.id) printf("%s ", ie.id.toChars);
+        if (ie.type) ie.type.accept(this);
+    }
+
+    override void visit(AST.RealExp r) {
+        buf.printf("%llf", r.value);
+    }
     
     override void visit(AST.NullExp) {
         buf.printf("null");
     }
 
-    override void visit(AST.TypeidExp) { assert(0); }
-    override void visit(AST.TraitsExp) { assert(0); }
+    override void visit(AST.TypeidExp tie) {
+        switch(tie.obj.dyncast()){
+            case DYNCAST.expression:
+                return (cast(AST.Expression)tie.obj).accept(this);
+            case DYNCAST.dsymbol:
+                return (cast(AST.Dsymbol)tie.obj).accept(this);
+            case DYNCAST.type:
+                return (cast(AST.Type)tie.obj).accept(this);
+            default:
+                buf.printf("<typeid>");
+        }
+    }
+
+    override void visit(AST.TraitsExp te) {
+        buf.printf("( __traits %s ", te.ident.toChars);
+        if (te.args) {
+            foreach(arg; *te.args) {
+                switch(arg.dyncast) {
+                    case DYNCAST.expression:
+                        return (cast(AST.Expression)arg).accept(this);
+                    case DYNCAST.dsymbol:
+                        return (cast(AST.Dsymbol)arg).accept(this);
+                    case DYNCAST.type:
+                        return (cast(AST.Type)arg).accept(this);
+                    default:
+                        buf.printf("%s", arg.toChars);
+                }
+            }
+        }
+    }
     
     override void visit(AST.StringExp exp) {
         if (exp.type) exp.type.accept(this);
@@ -785,7 +928,18 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         buf.printf(")");
     }
     
-    override void visit(AST.AssocArrayLiteralExp) { assert(0); }
+    override void visit(AST.AssocArrayLiteralExp aa) {
+        buf.printf("( key[value] ");
+        if (aa.keys)
+            foreach (i, key; *aa.keys) {
+                if (i) buf.printf(" ");
+                auto v = (*aa.values)[i];
+                key.accept(this);
+                buf.printf(" ");
+                v.accept(this);
+            }
+        buf.printf(")");
+    }
     
     override void visit(AST.ArrayLiteralExp ae) {     
         buf.printf("( [] ");
@@ -800,7 +954,13 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         buf.printf(")");
     }
 
-    override void visit(AST.FuncExp) { assert(0); }
+    override void visit(AST.FuncExp fe) {
+        open("func-expr");
+        if (fe.fd) fe.fd.accept(this);
+        else if (fe.td) fe.td.accept(this);
+        close();
+    }
+
     override void visit(AST.IntervalExp ival) {
         ival.lwr.accept(this);
         buf.printf(" .. ");
@@ -918,8 +1078,15 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         buf.printf(")");
     }
 
-    override void visit(AST.CompileExp) { assert(0); }
-    override void visit(AST.ImportExp) { assert(0); }
+    override void visit(AST.CompileExp c) {
+        buf.printf("( mixin ");
+        visitExps(c.exps);
+        buf.printf(")");
+    }
+
+    override void visit(AST.ImportExp ie) {
+        visit(cast(AST.UnaExp)ie);
+    }
     
     override void visit(AST.DotTemplateInstanceExp e) {
         buf.printf("( . ");
