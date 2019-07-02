@@ -724,6 +724,12 @@ public class astbase {
                 that.protection = this.protection;
                 that.linkage = this.linkage;
                 that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -808,6 +814,12 @@ public class astbase {
                 that.protection = this.protection;
                 that.linkage = this.linkage;
                 that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -844,6 +856,12 @@ public class astbase {
                 that.protection = this.protection;
                 that.linkage = this.linkage;
                 that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -870,6 +888,12 @@ public class astbase {
                 that.protection = this.protection;
                 that.linkage = this.linkage;
                 that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -906,6 +930,16 @@ public class astbase {
                 that.inferRetType = this.inferRetType;
                 that.fes = this.fes;
                 that.overnext0 = this.overnext0;
+                that.storage_class = this.storage_class;
+                that.protection = this.protection;
+                that.linkage = this.linkage;
+                that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -933,6 +967,16 @@ public class astbase {
                 that.inferRetType = this.inferRetType;
                 that.fes = this.fes;
                 that.overnext0 = this.overnext0;
+                that.storage_class = this.storage_class;
+                that.protection = this.protection;
+                that.linkage = this.linkage;
+                that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -960,6 +1004,16 @@ public class astbase {
                 that.inferRetType = this.inferRetType;
                 that.fes = this.fes;
                 that.overnext0 = this.overnext0;
+                that.storage_class = this.storage_class;
+                that.protection = this.protection;
+                that.linkage = this.linkage;
+                that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -991,6 +1045,16 @@ public class astbase {
                 that.inferRetType = this.inferRetType;
                 that.fes = this.fes;
                 that.overnext0 = this.overnext0;
+                that.storage_class = this.storage_class;
+                that.protection = this.protection;
+                that.linkage = this.linkage;
+                that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1019,6 +1083,16 @@ public class astbase {
                 that.inferRetType = this.inferRetType;
                 that.fes = this.fes;
                 that.overnext0 = this.overnext0;
+                that.storage_class = this.storage_class;
+                that.protection = this.protection;
+                that.linkage = this.linkage;
+                that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1049,6 +1123,16 @@ public class astbase {
                 that.inferRetType = this.inferRetType;
                 that.fes = this.fes;
                 that.overnext0 = this.overnext0;
+                that.storage_class = this.storage_class;
+                that.protection = this.protection;
+                that.linkage = this.linkage;
+                that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1082,6 +1166,16 @@ public class astbase {
                 that.inferRetType = this.inferRetType;
                 that.fes = this.fes;
                 that.overnext0 = this.overnext0;
+                that.storage_class = this.storage_class;
+                that.protection = this.protection;
+                that.linkage = this.linkage;
+                that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1112,6 +1206,16 @@ public class astbase {
                 that.inferRetType = this.inferRetType;
                 that.fes = this.fes;
                 that.overnext0 = this.overnext0;
+                that.storage_class = this.storage_class;
+                that.protection = this.protection;
+                that.linkage = this.linkage;
+                that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1143,6 +1247,16 @@ public class astbase {
                 that.inferRetType = this.inferRetType;
                 that.fes = this.fes;
                 that.overnext0 = this.overnext0;
+                that.storage_class = this.storage_class;
+                that.protection = this.protection;
+                that.linkage = this.linkage;
+                that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1176,6 +1290,16 @@ public class astbase {
                 that.inferRetType = this.inferRetType;
                 that.fes = this.fes;
                 that.overnext0 = this.overnext0;
+                that.storage_class = this.storage_class;
+                that.protection = this.protection;
+                that.linkage = this.linkage;
+                that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1194,6 +1318,25 @@ public class astbase {
 
             public SharedStaticCtorDeclaration copy() {
                 SharedStaticCtorDeclaration that = new SharedStaticCtorDeclaration();
+                that.fbody = this.fbody;
+                that.frequires = this.frequires;
+                that.fensures = this.fensures;
+                that.endloc = this.endloc;
+                that.storage_class = this.storage_class;
+                that.type = this.type;
+                that.inferRetType = this.inferRetType;
+                that.fes = this.fes;
+                that.overnext0 = this.overnext0;
+                that.storage_class = this.storage_class;
+                that.protection = this.protection;
+                that.linkage = this.linkage;
+                that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1212,6 +1355,25 @@ public class astbase {
 
             public SharedStaticDtorDeclaration copy() {
                 SharedStaticDtorDeclaration that = new SharedStaticDtorDeclaration();
+                that.fbody = this.fbody;
+                that.frequires = this.frequires;
+                that.fensures = this.fensures;
+                that.endloc = this.endloc;
+                that.storage_class = this.storage_class;
+                that.type = this.type;
+                that.inferRetType = this.inferRetType;
+                that.fes = this.fes;
+                that.overnext0 = this.overnext0;
+                that.storage_class = this.storage_class;
+                that.protection = this.protection;
+                that.linkage = this.linkage;
+                that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1237,6 +1399,12 @@ public class astbase {
                 that.isPkgMod = this.isPkgMod;
                 that.tag = this.tag;
                 that.members = this.members;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1266,6 +1434,12 @@ public class astbase {
                 that.memtype = this.memtype;
                 that.protection = this.protection;
                 that.members = this.members;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1351,6 +1525,12 @@ public class astbase {
                 that.protection = this.protection;
                 that.onemember = this.onemember;
                 that.members = this.members;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1441,6 +1621,12 @@ public class astbase {
                 that.havetempdecl = this.havetempdecl;
                 that.inst = this.inst;
                 that.members = this.members;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1465,6 +1651,12 @@ public class astbase {
                 Nspace that = new Nspace();
                 that.identExp = this.identExp;
                 that.members = this.members;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1488,6 +1680,12 @@ public class astbase {
                 CompileDeclaration that = new CompileDeclaration();
                 that.exps = this.exps;
                 that.decl = this.decl;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1525,6 +1723,12 @@ public class astbase {
                 UserAttributeDeclaration that = new UserAttributeDeclaration();
                 that.atts = this.atts;
                 that.decl = this.decl;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1547,6 +1751,12 @@ public class astbase {
                 LinkDeclaration that = new LinkDeclaration();
                 that.linkage = this.linkage;
                 that.decl = this.decl;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1570,6 +1780,12 @@ public class astbase {
                 AnonDeclaration that = new AnonDeclaration();
                 that.isunion = this.isunion;
                 that.decl = this.decl;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1593,6 +1809,12 @@ public class astbase {
                 AlignDeclaration that = new AlignDeclaration();
                 that.ealign = this.ealign;
                 that.decl = this.decl;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1615,6 +1837,12 @@ public class astbase {
                 CPPMangleDeclaration that = new CPPMangleDeclaration();
                 that.cppmangle = this.cppmangle;
                 that.decl = this.decl;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1642,6 +1870,12 @@ public class astbase {
                 CPPNamespaceDeclaration that = new CPPNamespaceDeclaration();
                 that.exp = this.exp;
                 that.decl = this.decl;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1675,6 +1909,12 @@ public class astbase {
                 that.protection = this.protection;
                 that.pkg_identifiers = this.pkg_identifiers;
                 that.decl = this.decl;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1699,6 +1939,12 @@ public class astbase {
                 PragmaDeclaration that = new PragmaDeclaration();
                 that.args = this.args;
                 that.decl = this.decl;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1721,6 +1967,12 @@ public class astbase {
                 StorageClassDeclaration that = new StorageClassDeclaration();
                 that.stc = this.stc;
                 that.decl = this.decl;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1746,6 +1998,12 @@ public class astbase {
                 that.condition = this.condition;
                 that.elsedecl = this.elsedecl;
                 that.decl = this.decl;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1768,6 +2026,13 @@ public class astbase {
                 DeprecatedDeclaration that = new DeprecatedDeclaration();
                 that.msg = this.msg;
                 that.stc = this.stc;
+                that.decl = this.decl;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1788,6 +2053,13 @@ public class astbase {
                 StaticIfDeclaration that = new StaticIfDeclaration();
                 that.condition = this.condition;
                 that.elsedecl = this.elsedecl;
+                that.decl = this.decl;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1810,6 +2082,12 @@ public class astbase {
                 StaticForeachDeclaration that = new StaticForeachDeclaration();
                 that.sfe = this.sfe;
                 that.decl = this.decl;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1849,6 +2127,16 @@ public class astbase {
                 that.storage_class = this.storage_class;
                 that.ctfeAdrOnStack = this.ctfeAdrOnStack;
                 that.sequenceNumber = this.sequenceNumber;
+                that.storage_class = this.storage_class;
+                that.protection = this.protection;
+                that.linkage = this.linkage;
+                that.type = this.type;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1876,6 +2164,13 @@ public class astbase {
                 that.arg = this.arg;
                 that.isPkgMod = this.isPkgMod;
                 that.tag = this.tag;
+                that.members = this.members;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1909,6 +2204,13 @@ public class astbase {
                 that.protection = this.protection;
                 that.sizeok = this.sizeok;
                 that.type = this.type;
+                that.members = this.members;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -1929,6 +2231,16 @@ public class astbase {
                 UnionDeclaration that = new UnionDeclaration();
                 that.zeroInit = this.zeroInit;
                 that.ispod = this.ispod;
+                that.protection = this.protection;
+                that.sizeok = this.sizeok;
+                that.type = this.type;
+                that.members = this.members;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -2110,6 +2422,13 @@ public class astbase {
                 that.protection = this.protection;
                 that.sizeok = this.sizeok;
                 that.type = this.type;
+                that.members = this.members;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -2130,6 +2449,16 @@ public class astbase {
                 InterfaceDeclaration that = new InterfaceDeclaration();
                 that.baseclasses = this.baseclasses;
                 that.baseok = this.baseok;
+                that.protection = this.protection;
+                that.sizeok = this.sizeok;
+                that.type = this.type;
+                that.members = this.members;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -2158,6 +2487,13 @@ public class astbase {
                 that.semantictiargsdone = this.semantictiargsdone;
                 that.havetempdecl = this.havetempdecl;
                 that.inst = this.inst;
+                that.members = this.members;
+                that.loc = this.loc;
+                that.ident = this.ident;
+                that.ddocUnittest = this.ddocUnittest;
+                that.userAttribDecl = this.userAttribDecl;
+                that.parent = this.parent;
+                that.comment = this.comment;
                 return that;
             }
         }
@@ -3139,6 +3475,7 @@ public class astbase {
             public InlineAsmStatement copy() {
                 InlineAsmStatement that = new InlineAsmStatement();
                 that.tokens = this.tokens;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -3158,6 +3495,7 @@ public class astbase {
             public GccAsmStatement copy() {
                 GccAsmStatement that = new GccAsmStatement();
                 that.tokens = this.tokens;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -3248,6 +3586,7 @@ public class astbase {
             public CompoundDeclarationStatement copy() {
                 CompoundDeclarationStatement that = new CompoundDeclarationStatement();
                 that.statements = this.statements;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -3270,6 +3609,7 @@ public class astbase {
                 CompoundAsmStatement that = new CompoundAsmStatement();
                 that.stc = this.stc;
                 that.statements = this.statements;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -4433,6 +4773,20 @@ public class astbase {
             public TypeReference copy() {
                 TypeReference that = new TypeReference();
                 that.next = this.next;
+                that.ty = this.ty;
+                that.mod = this.mod;
+                that.deco = this.deco;
+                that.cto = this.cto;
+                that.ito = this.ito;
+                that.sto = this.sto;
+                that.scto = this.scto;
+                that.wto = this.wto;
+                that.wcto = this.wcto;
+                that.swto = this.swto;
+                that.swcto = this.swcto;
+                that.pto = this.pto;
+                that.rto = this.rto;
+                that.arrayof = this.arrayof;
                 return that;
             }
             public void setNext(Type value) { next = value; }
@@ -4489,6 +4843,20 @@ public class astbase {
                 that.lwr = this.lwr;
                 that.upr = this.upr;
                 that.next = this.next;
+                that.ty = this.ty;
+                that.mod = this.mod;
+                that.deco = this.deco;
+                that.cto = this.cto;
+                that.ito = this.ito;
+                that.sto = this.sto;
+                that.scto = this.scto;
+                that.wto = this.wto;
+                that.wcto = this.wcto;
+                that.swto = this.swto;
+                that.swcto = this.swcto;
+                that.pto = this.pto;
+                that.rto = this.rto;
+                that.arrayof = this.arrayof;
                 return that;
             }
             public void setNext(Type value) { next = value; }
@@ -4523,6 +4891,20 @@ public class astbase {
             public TypeDelegate copy() {
                 TypeDelegate that = new TypeDelegate();
                 that.next = this.next;
+                that.ty = this.ty;
+                that.mod = this.mod;
+                that.deco = this.deco;
+                that.cto = this.cto;
+                that.ito = this.ito;
+                that.sto = this.sto;
+                that.scto = this.scto;
+                that.wto = this.wto;
+                that.wcto = this.wcto;
+                that.swto = this.swto;
+                that.swcto = this.swcto;
+                that.pto = this.pto;
+                that.rto = this.rto;
+                that.arrayof = this.arrayof;
                 return that;
             }
             public void setNext(Type value) { next = value; }
@@ -4556,6 +4938,20 @@ public class astbase {
             public TypePointer copy() {
                 TypePointer that = new TypePointer();
                 that.next = this.next;
+                that.ty = this.ty;
+                that.mod = this.mod;
+                that.deco = this.deco;
+                that.cto = this.cto;
+                that.ito = this.ito;
+                that.sto = this.sto;
+                that.scto = this.scto;
+                that.wto = this.wto;
+                that.wcto = this.wcto;
+                that.swto = this.swto;
+                that.swcto = this.swcto;
+                that.pto = this.pto;
+                that.rto = this.rto;
+                that.arrayof = this.arrayof;
                 return that;
             }
             public void setNext(Type value) { next = value; }
@@ -4643,6 +5039,20 @@ public class astbase {
                 that.iswild = this.iswild;
                 that.fargs = this.fargs;
                 that.next = this.next;
+                that.ty = this.ty;
+                that.mod = this.mod;
+                that.deco = this.deco;
+                that.cto = this.cto;
+                that.ito = this.ito;
+                that.sto = this.sto;
+                that.scto = this.scto;
+                that.wto = this.wto;
+                that.wcto = this.wcto;
+                that.swto = this.swto;
+                that.swcto = this.swcto;
+                that.pto = this.pto;
+                that.rto = this.rto;
+                that.arrayof = this.arrayof;
                 return that;
             }
             public void setNext(Type value) { next = value; }
@@ -4664,12 +5074,26 @@ public class astbase {
             public TypeArray copy() {
                 TypeArray that = new TypeArray();
                 that.next = this.next;
+                that.ty = this.ty;
+                that.mod = this.mod;
+                that.deco = this.deco;
+                that.cto = this.cto;
+                that.ito = this.ito;
+                that.sto = this.sto;
+                that.scto = this.scto;
+                that.wto = this.wto;
+                that.wcto = this.wcto;
+                that.swto = this.swto;
+                that.swcto = this.swcto;
+                that.pto = this.pto;
+                that.rto = this.rto;
+                that.arrayof = this.arrayof;
                 return that;
             }
             public void setNext(Type value) { next = value; }
             public Type getNext() { return next; }
         }
-        public static class TypeDArray extends TypeArray
+        public static class TypeDArray extends TypeArray implements LinkedNode<Type>
         {
             public  TypeDArray(Type t) {
                 super((byte)0, t);
@@ -4696,10 +5120,27 @@ public class astbase {
 
             public TypeDArray copy() {
                 TypeDArray that = new TypeDArray();
+                that.next = this.next;
+                that.ty = this.ty;
+                that.mod = this.mod;
+                that.deco = this.deco;
+                that.cto = this.cto;
+                that.ito = this.ito;
+                that.sto = this.sto;
+                that.scto = this.scto;
+                that.wto = this.wto;
+                that.wcto = this.wcto;
+                that.swto = this.swto;
+                that.swcto = this.swcto;
+                that.pto = this.pto;
+                that.rto = this.rto;
+                that.arrayof = this.arrayof;
                 return that;
             }
+            public void setNext(Type value) { next = value; }
+            public Type getNext() { return next; }
         }
-        public static class TypeAArray extends TypeArray
+        public static class TypeAArray extends TypeArray implements LinkedNode<Type>
         {
             public Type index;
             public Loc loc = new Loc();
@@ -4743,10 +5184,27 @@ public class astbase {
                 TypeAArray that = new TypeAArray();
                 that.index = this.index;
                 that.loc = this.loc;
+                that.next = this.next;
+                that.ty = this.ty;
+                that.mod = this.mod;
+                that.deco = this.deco;
+                that.cto = this.cto;
+                that.ito = this.ito;
+                that.sto = this.sto;
+                that.scto = this.scto;
+                that.wto = this.wto;
+                that.wcto = this.wcto;
+                that.swto = this.swto;
+                that.swcto = this.swcto;
+                that.pto = this.pto;
+                that.rto = this.rto;
+                that.arrayof = this.arrayof;
                 return that;
             }
+            public void setNext(Type value) { next = value; }
+            public Type getNext() { return next; }
         }
-        public static class TypeSArray extends TypeArray
+        public static class TypeSArray extends TypeArray implements LinkedNode<Type>
         {
             public Expression dim;
             public  TypeSArray(Type t, Expression dim) {
@@ -4779,8 +5237,25 @@ public class astbase {
             public TypeSArray copy() {
                 TypeSArray that = new TypeSArray();
                 that.dim = this.dim;
+                that.next = this.next;
+                that.ty = this.ty;
+                that.mod = this.mod;
+                that.deco = this.deco;
+                that.cto = this.cto;
+                that.ito = this.ito;
+                that.sto = this.sto;
+                that.scto = this.scto;
+                that.wto = this.wto;
+                that.wcto = this.wcto;
+                that.swto = this.swto;
+                that.swcto = this.swcto;
+                that.pto = this.pto;
+                that.rto = this.rto;
+                that.arrayof = this.arrayof;
                 return that;
             }
+            public void setNext(Type value) { next = value; }
+            public Type getNext() { return next; }
         }
         public static abstract class TypeQualified extends Type
         {
@@ -4945,6 +5420,20 @@ public class astbase {
                 that.ident = this.ident;
                 that.idents = this.idents;
                 that.loc = this.loc;
+                that.ty = this.ty;
+                that.mod = this.mod;
+                that.deco = this.deco;
+                that.cto = this.cto;
+                that.ito = this.ito;
+                that.sto = this.sto;
+                that.scto = this.scto;
+                that.wto = this.wto;
+                that.wcto = this.wcto;
+                that.swto = this.swto;
+                that.swcto = this.swcto;
+                that.pto = this.pto;
+                that.rto = this.rto;
+                that.arrayof = this.arrayof;
                 return that;
             }
         }
@@ -4972,6 +5461,20 @@ public class astbase {
                 TypeReturn that = new TypeReturn();
                 that.idents = this.idents;
                 that.loc = this.loc;
+                that.ty = this.ty;
+                that.mod = this.mod;
+                that.deco = this.deco;
+                that.cto = this.cto;
+                that.ito = this.ito;
+                that.sto = this.sto;
+                that.scto = this.scto;
+                that.wto = this.wto;
+                that.wcto = this.wcto;
+                that.swto = this.swto;
+                that.swcto = this.swcto;
+                that.pto = this.pto;
+                that.rto = this.rto;
+                that.arrayof = this.arrayof;
                 return that;
             }
         }
@@ -5002,6 +5505,20 @@ public class astbase {
                 that.exp = this.exp;
                 that.idents = this.idents;
                 that.loc = this.loc;
+                that.ty = this.ty;
+                that.mod = this.mod;
+                that.deco = this.deco;
+                that.cto = this.cto;
+                that.ito = this.ito;
+                that.sto = this.sto;
+                that.scto = this.scto;
+                that.wto = this.wto;
+                that.wcto = this.wcto;
+                that.swto = this.swto;
+                that.swcto = this.swcto;
+                that.pto = this.pto;
+                that.rto = this.rto;
+                that.arrayof = this.arrayof;
                 return that;
             }
         }
@@ -5036,6 +5553,20 @@ public class astbase {
                 that.tempinst = this.tempinst;
                 that.idents = this.idents;
                 that.loc = this.loc;
+                that.ty = this.ty;
+                that.mod = this.mod;
+                that.deco = this.deco;
+                that.cto = this.cto;
+                that.ito = this.ito;
+                that.sto = this.sto;
+                that.scto = this.scto;
+                that.wto = this.wto;
+                that.wcto = this.wcto;
+                that.swto = this.swto;
+                that.swcto = this.swcto;
+                that.pto = this.pto;
+                that.rto = this.rto;
+                that.arrayof = this.arrayof;
                 return that;
             }
         }
@@ -5892,6 +6423,11 @@ public class astbase {
                 VarExp that = new VarExp();
                 that.var = this.var;
                 that.hasOverloads = this.hasOverloads;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6017,6 +6553,11 @@ public class astbase {
             public DollarExp copy() {
                 DollarExp that = new DollarExp();
                 that.ident = this.ident;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6059,6 +6600,11 @@ public class astbase {
 
             public SuperExp copy() {
                 SuperExp that = new SuperExp();
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6078,6 +6624,11 @@ public class astbase {
             public AddrExp copy() {
                 AddrExp that = new AddrExp();
                 that.e1 = this.e1;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6097,6 +6648,11 @@ public class astbase {
             public PreExp copy() {
                 PreExp that = new PreExp();
                 that.e1 = this.e1;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6121,6 +6677,11 @@ public class astbase {
             public PtrExp copy() {
                 PtrExp that = new PtrExp();
                 that.e1 = this.e1;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6140,6 +6701,11 @@ public class astbase {
             public NegExp copy() {
                 NegExp that = new NegExp();
                 that.e1 = this.e1;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6159,6 +6725,11 @@ public class astbase {
             public UAddExp copy() {
                 UAddExp that = new UAddExp();
                 that.e1 = this.e1;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6178,6 +6749,11 @@ public class astbase {
             public NotExp copy() {
                 NotExp that = new NotExp();
                 that.e1 = this.e1;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6197,6 +6773,11 @@ public class astbase {
             public ComExp copy() {
                 ComExp that = new ComExp();
                 that.e1 = this.e1;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6219,6 +6800,11 @@ public class astbase {
                 DeleteExp that = new DeleteExp();
                 that.isRAII = this.isRAII;
                 that.e1 = this.e1;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6248,6 +6834,11 @@ public class astbase {
                 that.to = this.to;
                 that.mod = this.mod;
                 that.e1 = this.e1;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6294,6 +6885,11 @@ public class astbase {
                 CallExp that = new CallExp();
                 that.arguments = this.arguments;
                 that.e1 = this.e1;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6316,6 +6912,11 @@ public class astbase {
                 DotIdExp that = new DotIdExp();
                 that.ident = this.ident;
                 that.e1 = this.e1;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6338,6 +6939,11 @@ public class astbase {
                 AssertExp that = new AssertExp();
                 that.msg = this.msg;
                 that.e1 = this.e1;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6383,6 +6989,11 @@ public class astbase {
             public ImportExp copy() {
                 ImportExp that = new ImportExp();
                 that.e1 = this.e1;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6410,6 +7021,11 @@ public class astbase {
                 DotTemplateInstanceExp that = new DotTemplateInstanceExp();
                 that.ti = this.ti;
                 that.e1 = this.e1;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6439,6 +7055,11 @@ public class astbase {
                 ArrayExp that = new ArrayExp();
                 that.arguments = this.arguments;
                 that.e1 = this.e1;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6458,6 +7079,11 @@ public class astbase {
             public FuncInitExp copy() {
                 FuncInitExp that = new FuncInitExp();
                 that.subop = this.subop;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6477,6 +7103,11 @@ public class astbase {
             public PrettyFuncInitExp copy() {
                 PrettyFuncInitExp that = new PrettyFuncInitExp();
                 that.subop = this.subop;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6496,6 +7127,11 @@ public class astbase {
             public FileInitExp copy() {
                 FileInitExp that = new FileInitExp();
                 that.subop = this.subop;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6515,6 +7151,11 @@ public class astbase {
             public LineInitExp copy() {
                 LineInitExp that = new LineInitExp();
                 that.subop = this.subop;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6534,6 +7175,11 @@ public class astbase {
             public ModuleInitExp copy() {
                 ModuleInitExp that = new ModuleInitExp();
                 that.subop = this.subop;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6559,6 +7205,11 @@ public class astbase {
                 that.allowCommaExp = this.allowCommaExp;
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6579,6 +7230,11 @@ public class astbase {
                 PostExp that = new PostExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6599,6 +7255,11 @@ public class astbase {
                 PowExp that = new PowExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6619,6 +7280,11 @@ public class astbase {
                 MulExp that = new MulExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6639,6 +7305,11 @@ public class astbase {
                 DivExp that = new DivExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6659,6 +7330,11 @@ public class astbase {
                 ModExp that = new ModExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6679,6 +7355,11 @@ public class astbase {
                 AddExp that = new AddExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6699,6 +7380,11 @@ public class astbase {
                 MinExp that = new MinExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6719,6 +7405,11 @@ public class astbase {
                 CatExp that = new CatExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6739,6 +7430,11 @@ public class astbase {
                 ShlExp that = new ShlExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6759,6 +7455,11 @@ public class astbase {
                 ShrExp that = new ShrExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6779,6 +7480,11 @@ public class astbase {
                 UshrExp that = new UshrExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6800,6 +7506,11 @@ public class astbase {
                 EqualExp that = new EqualExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6820,6 +7531,11 @@ public class astbase {
                 InExp that = new InExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6840,6 +7556,11 @@ public class astbase {
                 IdentityExp that = new IdentityExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6860,6 +7581,11 @@ public class astbase {
                 CmpExp that = new CmpExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6880,6 +7606,11 @@ public class astbase {
                 AndExp that = new AndExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6900,6 +7631,11 @@ public class astbase {
                 XorExp that = new XorExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6920,6 +7656,11 @@ public class astbase {
                 OrExp that = new OrExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6940,6 +7681,11 @@ public class astbase {
                 LogicalExp that = new LogicalExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6963,6 +7709,11 @@ public class astbase {
                 that.econd = this.econd;
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -6983,6 +7734,11 @@ public class astbase {
                 AssignExp that = new AssignExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7003,6 +7759,11 @@ public class astbase {
                 BinAssignExp that = new BinAssignExp();
                 that.e1 = this.e1;
                 that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7021,6 +7782,13 @@ public class astbase {
 
             public AddAssignExp copy() {
                 AddAssignExp that = new AddAssignExp();
+                that.e1 = this.e1;
+                that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7039,6 +7807,13 @@ public class astbase {
 
             public MinAssignExp copy() {
                 MinAssignExp that = new MinAssignExp();
+                that.e1 = this.e1;
+                that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7057,6 +7832,13 @@ public class astbase {
 
             public MulAssignExp copy() {
                 MulAssignExp that = new MulAssignExp();
+                that.e1 = this.e1;
+                that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7075,6 +7857,13 @@ public class astbase {
 
             public DivAssignExp copy() {
                 DivAssignExp that = new DivAssignExp();
+                that.e1 = this.e1;
+                that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7093,6 +7882,13 @@ public class astbase {
 
             public ModAssignExp copy() {
                 ModAssignExp that = new ModAssignExp();
+                that.e1 = this.e1;
+                that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7111,6 +7907,13 @@ public class astbase {
 
             public PowAssignExp copy() {
                 PowAssignExp that = new PowAssignExp();
+                that.e1 = this.e1;
+                that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7129,6 +7932,13 @@ public class astbase {
 
             public AndAssignExp copy() {
                 AndAssignExp that = new AndAssignExp();
+                that.e1 = this.e1;
+                that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7147,6 +7957,13 @@ public class astbase {
 
             public OrAssignExp copy() {
                 OrAssignExp that = new OrAssignExp();
+                that.e1 = this.e1;
+                that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7165,6 +7982,13 @@ public class astbase {
 
             public XorAssignExp copy() {
                 XorAssignExp that = new XorAssignExp();
+                that.e1 = this.e1;
+                that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7183,6 +8007,13 @@ public class astbase {
 
             public ShlAssignExp copy() {
                 ShlAssignExp that = new ShlAssignExp();
+                that.e1 = this.e1;
+                that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7201,6 +8032,13 @@ public class astbase {
 
             public ShrAssignExp copy() {
                 ShrAssignExp that = new ShrAssignExp();
+                that.e1 = this.e1;
+                that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7219,6 +8057,13 @@ public class astbase {
 
             public UshrAssignExp copy() {
                 UshrAssignExp that = new UshrAssignExp();
+                that.e1 = this.e1;
+                that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7237,6 +8082,13 @@ public class astbase {
 
             public CatAssignExp copy() {
                 CatAssignExp that = new CatAssignExp();
+                that.e1 = this.e1;
+                that.e2 = this.e2;
+                that.op = this.op;
+                that.size = this.size;
+                that.parens = this.parens;
+                that.type = this.type;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7393,6 +8245,8 @@ public class astbase {
                 TemplateThisParameter that = new TemplateThisParameter();
                 that.specType = this.specType;
                 that.defaultType = this.defaultType;
+                that.loc = this.loc;
+                that.ident = this.ident;
                 return that;
             }
         }
@@ -7503,6 +8357,7 @@ public class astbase {
                 that.level = this.level;
                 that.ident = this.ident;
                 that.mod = this.mod;
+                that.loc = this.loc;
                 return that;
             }
         }
@@ -7524,6 +8379,7 @@ public class astbase {
                 that.level = this.level;
                 that.ident = this.ident;
                 that.mod = this.mod;
+                that.loc = this.loc;
                 return that;
             }
         }

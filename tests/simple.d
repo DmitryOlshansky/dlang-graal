@@ -1,4 +1,9 @@
-
+class C
+{
+    //int x;
+    //this(int y) { x = y; }
+    override string toString() const @safe { return to!string(x); }
+}
 void main(string[] args) {
     int a = 1;
     uint b;

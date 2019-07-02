@@ -68,7 +68,7 @@ Members collectMembers(Dsymbol agg, bool recurseBase = false) {
         override void visit(ClassDeclaration d) {
             if (aggCount++ == 0) super.visit(d);
             if (recursive && d.baseClass) {
-                decls ~= collectMembers(d.baseClass).all;
+                decls ~= collectMembers(d.baseClass, true).all;
             }
         }
         override void visit(FuncDeclaration ){}

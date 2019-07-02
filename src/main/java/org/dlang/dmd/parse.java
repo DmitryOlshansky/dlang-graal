@@ -2356,7 +2356,10 @@ public class parse {
                                             this.nextToken();
                                         }
                                         else
-                                            /*goto _else*/{ __dispatch9 = -2; continue dispatched_9; }
+                                            /*goto _else*/ {
+                                            __dispatch9 = 0;
+                                                at = this.parseType(ptr(ai), null);
+                                            }
                                     }
                                     else
                                     {
@@ -4691,10 +4694,10 @@ public class parse {
                                     DArray<ASTBase.Statement> as = new DArray<ASTBase.Statement>();
                                     (as).reserve((a).length);
                                     {
-                                        int __key419 = 0;
-                                        int __limit420 = (a).length;
-                                        for (; __key419 < __limit420;__key419 += 1) {
-                                            int i = __key419;
+                                        int __key417 = 0;
+                                        int __limit418 = (a).length;
+                                        for (; __key417 < __limit418;__key417 += 1) {
+                                            int i = __key417;
                                             ASTBase.Dsymbol d = (a).get(i);
                                             s = new ASTBase.ExpStatement(loc, d);
                                             (as).push(s);

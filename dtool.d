@@ -16,7 +16,7 @@ import dmd.root.array;
 import dmd.root.file;
 import dmd.root.filename;
 import dmd.root.outbuffer;
-import dmd.root.outbuffer;
+import dmd.root.rootobject;
 
 import core.stdc.stdio, core.stdc.stdarg, core.stdc.stdlib,  core.stdc.string;
 
@@ -74,6 +74,23 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
                 e.accept(this);
             }
         }
+    }
+
+    void visitTiargs(Array!(RootObject)* tiargs) {
+        if (tiargs)
+            foreach (i, m; *tiargs) {
+                if (i) buf.printf(" ");
+                switch (m.dyncast) {
+                    case DYNCAST.expression:
+                        (cast(ASTBase.Expression)m).accept(this);
+                        break;
+                    case DYNCAST.type:
+                        (cast(ASTBase.Type)m).accept(this);
+                        break;
+                    default:
+                        buf.printf("%s", m.toChars);
+                }
+            }
     }
 
     override void visit(AST.Dsymbol s) { 
@@ -248,11 +265,7 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
 
     override void visit(AST.TemplateInstance ti) {
         open("template instance %s", ti.ident ? ti.ident.toChars : ti.name.toChars);
-        if (ti.tiargs)
-            foreach (i, m; *ti.tiargs) {
-                if (i) buf.printf(" ");
-                buf.printf("%s", m.toChars);
-            }
+        visitTiargs(ti.tiargs);
         visitDecls(ti.members);
         close();
     }
@@ -730,11 +743,7 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     
     override void visit(AST.TypeInstance ti) {    
         buf.printf("%s!(", ti.tempinst.tempdecl ? ti.tempinst.tempdecl.toChars : ti.tempinst.name.toChars);
-        if (ti.tempinst.tiargs)
-            foreach (i, arg; *ti.tempinst.tiargs) {
-                if(i) buf.printf(" ");
-                buf.printf("%s", arg.toChars);
-            }
+        visitTiargs(ti.tempinst.tiargs);
         buf.printf(")");
     }
 
@@ -880,9 +889,11 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         visitExps(call.arguments);
         buf.printf(")");
     }
+
     override void visit(AST.DotIdExp e) {
-        buf.printf("( . %s ", e.ident.toChars);
+        buf.printf("( . ");
         e.e1.accept(this);
+        buf.printf(" %s", e.ident.toChars);
         buf.printf(")");
     }
     
@@ -900,8 +911,9 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     override void visit(AST.ImportExp) { assert(0); }
     
     override void visit(AST.DotTemplateInstanceExp e) {
-        buf.printf("( . %s ", e.ti.ident ? e.ti.ident.toChars : e.ti.name.toChars);
+        buf.printf("( . ");
         e.e1.accept(this);
+        buf.printf(" %s", e.ti.ident ? e.ti.ident.toChars : e.ti.name.toChars);
         buf.printf(")");
     }
 
@@ -910,7 +922,7 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         if (arr.arguments)
             foreach(arg; *arr.arguments) {
                 arg.accept(this);
-            }
+            }        
     }
     override void visit(AST.FuncInitExp) { assert(0); }
     override void visit(AST.PrettyFuncInitExp) { assert(0); }
@@ -989,8 +1001,6 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     override void visit(AST.ExpInitializer ei) {
         if (ei.exp)
             ei.exp.accept(this);
-        else
-            buf.printf("null");
     }
     override void visit(AST.StructInitializer) { assert(0); }
     override void visit(AST.ArrayInitializer) { assert(0); }
