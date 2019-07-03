@@ -8,9 +8,8 @@ mkdir -p tests/graal
 
 
 dub --single dtool.d
-./dtool --tool=lex --outdir=tests/d $FILES
-echo ./dtool --tool=lispy --outdir=tests/d $FILES
-./dtool --tool=lispy --outdir=tests/d $FILES
+time ./dtool --tool=lex --outdir=tests/d $FILES
+time ./dtool --tool=lispy --outdir=tests/d $FILES
 
 mvn package
 time java -Doutdir=tests/graal -Dtool=lex -jar target/lexer-jar-with-dependencies.jar $FILES

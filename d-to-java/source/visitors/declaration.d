@@ -894,6 +894,9 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.indent;
         Statement st = s.statement;
         ScopeStatement ss;
+        if (gotos.top.canFind!(g => g.case_ && g.case_.toInteger == s.exp.toInteger)) {
+            buf.fmt("__dispatch%d = 0;\n", dispatch.top);
+        }
         while (st && ((ss = st.isScopeStatement()) !is null)) {
             st = ss.statement;
         }

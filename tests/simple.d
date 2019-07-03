@@ -1,3 +1,10 @@
+auto cartesianProduct(R1 range1, R2 range2)
+{
+        return zip(sequence!"n"(cast(size_t) 0), range1.save, range2.save,
+                    repeat(range1), repeat(range2))
+            .map!(function(a) => chain(zip(repeat(a[1]), repeat(a[2]))))();
+}
+
 class C
 {
     //int x;

@@ -3882,6 +3882,7 @@ public class parse {
                             this.nextToken();
                             /*goto case*/{ __dispatch22 = 1; continue dispatched_22; }
                         case 1:
+                            __dispatch22 = 0;
                             parameters = this.parseParameters(ptr(varargs), ptr(tpl));
                             stc = this.parsePostfix(stc, null);
                             {
@@ -3968,6 +3969,7 @@ public class parse {
                                 /*goto case*/{ __dispatch23 = 187; continue dispatched_23; }
                             /*goto default*/ { __dispatch23 = -2; continue dispatched_23; }
                         case 187:
+                            __dispatch23 = 0;
                             this.nextToken();
                             f.fbody = this.parseStatement(4, null, null);
                             f.endloc = this.endloc.copy();
@@ -4541,6 +4543,7 @@ public class parse {
                             }
                             /*goto case*/{ __dispatch27 = 97; continue dispatched_27; }
                         case 97:
+                            __dispatch27 = 0;
                         case 39:
                         case 229:
                         case 213:
@@ -6118,6 +6121,7 @@ public class parse {
                             case 175:
                             case 176:
                             case 187:
+                                __dispatch39 = 0;
                                 if ((!((parens) != 0) && ((endtok & 0xFF) == 0 || (endtok & 0xFF) == ((t.value).value & 0xFF))))
                                 {
                                     pt.set(0, t.value);

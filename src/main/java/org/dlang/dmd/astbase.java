@@ -5673,10 +5673,11 @@ public class astbase {
                                 this.value = (long)(int)this.value;
                                 break;
                             case 15:
-                                this.value = (long)(int)this.value;
+                                this.value = (long)(short)this.value;
                                 break;
                             case 32:
                             case 16:
+                                __dispatch5 = 0;
                                 this.value = (long)(int)this.value;
                                 break;
                             case 17:
@@ -5684,12 +5685,14 @@ public class astbase {
                                 break;
                             case 33:
                             case 18:
+                                __dispatch5 = 0;
                                 this.value = (long)(int)this.value;
                                 break;
                             case 19:
                                 this.value = (long)(long)this.value;
                                 break;
                             case 20:
+                                __dispatch5 = 0;
                                 this.value = this.value;
                                 break;
                             case 3:

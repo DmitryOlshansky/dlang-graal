@@ -254,6 +254,7 @@ public class lexer {
                                 this.p.postInc();
                                 /*goto case*/{ __dispatch1 = 96; continue dispatched_1; }
                             case 96:
+                                __dispatch1 = 0;
                                 this.wysiwygStringConstant(t);
                                 return ;
                             case 120:
@@ -1196,6 +1197,7 @@ public class lexer {
                                     continue L_outer2;
                                 /*goto case*/{ __dispatch10 = 10; continue dispatched_10; }
                             case 10:
+                                __dispatch10 = 0;
                                 this.endOfLine();
                                 continue L_outer2;
                             case 0:
@@ -1535,6 +1537,7 @@ public class lexer {
                         case 26:
                             this.p.postDec();
                         case 39:
+                            __dispatch15 = 0;
                             this.error(new BytePtr("unterminated character constant"));
                             (t).intvalue = 63L;
                             return tk;
@@ -1968,6 +1971,7 @@ public class lexer {
                             this.error(new BytePtr("use 'L' suffix instead of 'l'"));
                             /*goto case*/{ __dispatch22 = 76; continue dispatched_22; }
                         case 76:
+                            __dispatch22 = 0;
                             result = TOK.float80Literal;
                             this.p.postInc();
                             break;
