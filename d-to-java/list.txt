@@ -18,3 +18,38 @@ vendor/dmd/src/dmd/permissivevisitor.d
 vendor/dmd/src/dmd/parsetimevisitor.d
 vendor/dmd/src/dmd/strictvisitor.d
 dtool.d
+# Semantic
+vendor/dmd/src/dmd/aggregate.d
+vendor/dmd/src/dmd/aliasthis.d
+vendor/dmd/src/dmd/attrib.d
+vendor/dmd/src/dmd/arraytypes.d
+vendor/dmd/src/dmd/astcodegen.d
+vendor/dmd/src/dmd/builtin.d
+vendor/dmd/src/dmd/cond.d
+vendor/dmd/src/dmd/ctfeexpr.d
+vendor/dmd/src/dmd/dclass.d
+vendor/dmd/src/dmd/declaration.d
+vendor/dmd/src/dmd/denum.d
+# vendor/dmd/src/dmd/dinifile.d
+vendor/dmd/src/dmd/dimport.d
+vendor/dmd/src/dmd/dmodule.d
+vendor/dmd/src/dmd/dstruct.d
+vendor/dmd/src/dmd/dsymbol.d
+vendor/dmd/src/dmd/dsymbolsem.d
+vendor/dmd/src/dmd/dtemplate.d
+vendor/dmd/src/dmd/dversion.d
+vendor/dmd/src/dmd/expression.d
+vendor/dmd/src/dmd/func.d
+vendor/dmd/src/dmd/init.d
+vendor/dmd/src/dmd/initsem.d
+vendor/dmd/src/dmd/mars.d
+vendor/dmd/src/dmd/mtype.d
+vendor/dmd/src/dmd/nspace.d
+vendor/dmd/src/dmd/objc.d
+vendor/dmd/src/dmd/semantic2.d
+vendor/dmd/src/dmd/semantic3.d
+vendor/dmd/src/dmd/statement.d
+vendor/dmd/src/dmd/staticassert.d
+vendor/dmd/src/dmd/typesem.d
+# entry point, rewrite to something less fancy is w/o Phobos templates
+vendor/dmd/src/dmd/frontend.d

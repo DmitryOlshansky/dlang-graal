@@ -211,10 +211,10 @@ public class errors {
                 {
                     fprintf(stderr,  new ByteSlice("%.*s\n"), line.getLength(), toBytePtr(line));
                     {
-                        int __key42 = 1;
-                        int __limit43 = loc.charnum;
-                        for (; __key42 < __limit43;__key42 += 1) {
-                            int __ = __key42;
+                        int __key106 = 1;
+                        int __limit107 = loc.charnum;
+                        for (; __key106 < __limit107;__key106 += 1) {
+                            int __ = __key106;
                             fputc(32, stderr);
                         }
                     }

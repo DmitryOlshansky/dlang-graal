@@ -1101,11 +1101,11 @@ public class id {
     public static ByteSlice generate(Slice<Msgtable> msgtable, Function1<Msgtable,ByteSlice> dg) {
         ByteSlice code = new ByteSlice();
         {
-            Slice<Msgtable> __r26 = msgtable.copy();
-            int __key25 = 0;
-            for (; __key25 < __r26.getLength();__key25 += 1) {
-                Msgtable m = __r26.get(__key25).copy();
-                int i = __key25;
+            Slice<Msgtable> __r90 = msgtable.copy();
+            int __key89 = 0;
+            for (; __key89 < __r90.getLength();__key89 += 1) {
+                Msgtable m = __r90.get(__key89).copy();
+                int i = __key89;
                 if (i != 0)
                     code.append((byte)10);
                 code.append((dg).invoke(m));

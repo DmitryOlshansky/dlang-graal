@@ -2572,10 +2572,10 @@ public class astbase {
                 IntRef n = ref(pn != null ? pn.get() : 0);
                 int result = 0;
                 {
-                    int __key62 = 0;
-                    int __limit63 = (parameters).length;
-                    for (; __key62 < __limit63;__key62 += 1) {
-                        int i = __key62;
+                    int __key126 = 0;
+                    int __limit127 = (parameters).length;
+                    for (; __key126 < __limit127;__key126 += 1) {
+                        int i = __key126;
                         Parameter p = (parameters).get(i);
                         Type t = p.type.toBasetype();
                         if ((t.ty & 0xFF) == ENUMTY.Ttuple)
@@ -3543,10 +3543,10 @@ public class astbase {
                 this.statements = new DArray<Statement>();
                 (this.statements).reserve(sts.getLength());
                 {
-                    Slice<Statement> __r64 = sts.copy();
-                    int __key65 = 0;
-                    for (; __key65 < __r64.getLength();__key65 += 1) {
-                        Statement s = __r64.get(__key65);
+                    Slice<Statement> __r128 = sts.copy();
+                    int __key129 = 0;
+                    for (; __key129 < __r128.getLength();__key129 += 1) {
+                        Statement s = __r128.get(__key129);
                         (this.statements).push(s);
                     }
                 }
@@ -5686,7 +5686,7 @@ public class astbase {
                             case 33:
                             case 18:
                                 __dispatch5 = 0;
-                                this.value = (long)(long)this.value;
+                                this.value = (long)(int)this.value;
                                 break;
                             case 19:
                                 this.value = (long)(long)this.value;

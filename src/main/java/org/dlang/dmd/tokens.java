@@ -282,20 +282,20 @@ public class tokens {
         static {
             Identifier.initTable();
             {
-                ByteSlice __r46 = keywords.copy();
-                int __key47 = 0;
-                for (; __key47 < __r46.getLength();__key47 += 1) {
-                    byte kw = __r46.get(__key47);
+                ByteSlice __r110 = keywords.copy();
+                int __key111 = 0;
+                for (; __key111 < __r110.getLength();__key111 += 1) {
+                    byte kw = __r110.get(__key111);
                     Identifier.idPool(toBytePtr(tochars.get((kw & 0xFF))), tochars.get((kw & 0xFF)).getLength(), (kw & 0xFF));
                 }
             }
         }
         public  int isKeyword() {
             {
-                ByteSlice __r48 = keywords.copy();
-                int __key49 = 0;
-                for (; __key49 < __r48.getLength();__key49 += 1) {
-                    byte kw = __r48.get(__key49);
+                ByteSlice __r112 = keywords.copy();
+                int __key113 = 0;
+                for (; __key113 < __r112.getLength();__key113 += 1) {
+                    byte kw = __r112.get(__key113);
                     if ((kw & 0xFF) == (this.value & 0xFF))
                         return 1;
                 }
@@ -425,10 +425,10 @@ public class tokens {
                                 buf.writeByte(120);
                                 buf.writeByte(34);
                                 {
-                                    int __key50 = 0;
-                                    int __limit51 = this.len;
-                                    for (; __key50 < __limit51;__key50 += 1) {
-                                        int i_1 = __key50;
+                                    int __key114 = 0;
+                                    int __limit115 = this.len;
+                                    for (; __key114 < __limit115;__key114 += 1) {
+                                        int i_1 = __key114;
                                         if ((i_1) != 0)
                                             buf.writeByte(32);
                                         buf.printf( new ByteSlice("%02x"), (this.ustring.get(i_1) & 0xFF));
