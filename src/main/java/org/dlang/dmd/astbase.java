@@ -145,7 +145,7 @@ public class astbase {
             public static final long FUNCATTR = 4462573780992L;
         }
 
-        public static long STCStorageClass = 22196369506207L;
+        public static long STCStorageClass = 1148096276348831L;
 
         public static class ENUMTY 
         {
@@ -8750,7 +8750,7 @@ public class astbase {
                 int i = 0;
                 for (; (astbase.stcToCharstable.get(i).stc) != 0;i++){
                     long tbl = astbase.stcToCharstable.get(i).stc;
-                    assert((tbl & 22196369506207L) != 0);
+                    assert((tbl & 1148096276348831L) != 0);
                     if ((stc.value & tbl) != 0)
                     {
                         stc.value &= ~tbl;

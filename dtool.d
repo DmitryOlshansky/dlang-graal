@@ -10,6 +10,7 @@ import dmd.parse;
 import dmd.transitivevisitor;
 import dmd.tokens;
 import dmd.id;
+import dmd.identifier;
 import dmd.lexer;
 
 import dmd.root.array;
@@ -268,7 +269,8 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
 
     override void visit(AST.EnumDeclaration d) {
-        open("enum %s", d.ident.toChars);
+        open("enum ");
+        if (d.ident) buf.printf("%s", d.ident.toChars);
         visitDecls(d.members);
         close();
     }
@@ -389,7 +391,7 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     override void visit(AST.EnumMember em) {
         buf.printf("( %s ", em.ident.toChars);
         if (em._init) {
-            printf(" ");
+            buf.printf(" ");
             em._init.accept(this);
         }
         buf.printf(" )");
@@ -413,7 +415,7 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         open("class %s", d.ident ? d.ident.toChars : "");
         if (d.baseclasses) {
             foreach (i, c; *d.baseclasses) {
-                if (i) printf(" ");
+                if (i) buf.printf(" ");
                 c.type.accept(this);
             }
             buf.writenl;
@@ -735,14 +737,14 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
 
     override void visit(AST.TypeVector t) {
-        buf.printf("( __vector");
-        super.visit(t);
+        buf.printf("( __vector ");
+        if (t.basetype) t.basetype.accept(this);
         buf.printf(")");
     }
 
     override void visit(AST.TypeEnum t) {
-        buf.printf("enum %s : ", t.sym.toChars);
-        super.visit(t.sym.memtype);
+        buf.printf("enum %s ", t.sym.toChars);
+        t.sym.memtype.accept(this);
     }
 
     override void visit(AST.TypeTuple t) { 
@@ -775,11 +777,11 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
 
     override void visit(AST.TypeSlice ts) { 
         buf.printf("( slice ");
-        this.visit(ts.lwr);
+        ts.lwr.accept(this);
         buf.printf(" ");
-        this.visit(ts.upr);
+        ts.upr.accept(this);
         buf.printf(" ");
-        this.visit(ts.next);
+        ts.next.accept(this);
         buf.printf(")");
     }
 
@@ -826,8 +828,14 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         tsa.dim.accept(this);
         buf.printf("]");
     }
+
     override void visit(AST.TypeQualified) { assert(0); }
-    override void visit(AST.TypeTraits) { assert(0); }
+
+    override void visit(AST.TypeTraits tt) {
+        buf.printf("type __traits(");
+        tt.exp.accept(this);
+        buf.printf(")");
+    }
 
     override void visit(AST.TypeIdentifier d) {
         buf.printf("%s", d.ident.toChars);
@@ -849,7 +857,10 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
         buf.printf(")");
     }
 
-    override void visit(AST.Expression) { assert(0); }
+    override void visit(AST.Expression) { 
+        assert(0); 
+    }
+
     override void visit(AST.DeclarationExp e) {
         if (e.declaration) e.declaration.accept(this);
     }
@@ -867,7 +878,7 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     
     override void visit(AST.IsExp ie) { 
         buf.printf("( is %s", Token.toChars(ie.tok));
-        if (ie.id) printf("%s ", ie.id.toChars);
+        if (ie.id) buf.printf("%s ", ie.id.toChars);
         if (ie.type) ie.type.accept(this);
     }
 
@@ -1102,11 +1113,32 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
                 arg.accept(this);
             }        
     }
-    override void visit(AST.FuncInitExp) { assert(0); }
-    override void visit(AST.PrettyFuncInitExp) { assert(0); }
-    override void visit(AST.FileInitExp) { assert(0); }
-    override void visit(AST.LineInitExp) { assert(0); }
-    override void visit(AST.ModuleInitExp) { assert(0); }
+
+    override void visit(AST.FuncInitExp e) {
+        buf.printf("func-init ");
+        visit(cast(AST.DefaultInitExp)e);
+    }
+
+    override void visit(AST.PrettyFuncInitExp e) {
+        buf.printf("pretty-init ");
+        visit(cast(AST.DefaultInitExp)e);
+    }
+
+    override void visit(AST.FileInitExp e) {
+        buf.printf("file-init ");
+        visit(cast(AST.DefaultInitExp)e);
+    }
+
+    override void visit(AST.LineInitExp e) {
+        buf.printf("line-init ");
+        visit(cast(AST.DefaultInitExp)e);
+    }
+
+    override void visit(AST.ModuleInitExp e) {
+        buf.printf("module-init ");
+        visit(cast(AST.DefaultInitExp)e);
+    }
+
     override void visit(AST.CommaExp e) { visit(cast(AST.BinExp )e); }
     override void visit(AST.PostExp e) { visit(cast(AST.BinExp )e); }
     override void visit(AST.PowExp e) { visit(cast(AST.BinExp )e); }
@@ -1149,12 +1181,38 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     override void visit(AST.ShrAssignExp e) { visit(cast(AST.BinExp )e); }
     override void visit(AST.UshrAssignExp e) { visit(cast(AST.BinExp )e); }
     override void visit(AST.CatAssignExp e) { visit(cast(AST.BinExp )e); }
-    override void visit(AST.TemplateParameter) { assert(0); }
-    override void visit(AST.TemplateAliasParameter) { assert(0); }
-    override void visit(AST.TemplateTypeParameter) { assert(0); }
-    override void visit(AST.TemplateTupleParameter) { assert(0); }
-    override void visit(AST.TemplateValueParameter) { assert(0); }
-    override void visit(AST.TemplateThisParameter) { assert(0); }
+
+    override void visit(AST.TemplateParameter tp) { assert(0); }
+
+    override void visit(AST.TemplateAliasParameter tp) {
+        buf.printf("alias %s", tp.ident.toChars);
+    }
+
+    override void visit(AST.TemplateTypeParameter tp) {
+
+    }
+    
+    override void visit(AST.TemplateTupleParameter tp) {
+        buf.printf("alias %s", tp.ident.toChars);
+    }
+
+    override void visit(AST.TemplateValueParameter tv) {
+        buf.printf("template-value ");
+        tv.valType.accept(this);
+        if (tv.specValue) {
+            buf.printf(" ");
+            tv.specValue.accept(this);
+        }
+        if (tv.defaultValue) {
+            buf.printf(" default ");
+            tv.specValue.accept(this);
+        }
+    }
+
+    override void visit(AST.TemplateThisParameter tp) {
+        buf.printf("template-this");
+    }
+
     override void visit(AST.Condition) { assert(0); }
 
     override void visit(AST.StaticForeachStatement sfst) {
@@ -1169,7 +1227,7 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     override void visit(AST.DVCondition) { assert(0); }
     
     override void visit(AST.DebugCondition d) {
-        buf.printf("%s", d.ident.toChars);
+        buf.printf("debug %s", d.ident ? d.ident.toChars : "");
     }
 
     override void visit(AST.VersionCondition ver) {
@@ -1261,7 +1319,8 @@ char[] lex(const(char)* argz, const(char)[] buf) {
 
 char[] lispy(const(char)* argz, const(char)[] buf) {
     scope diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
-    scope p = new Parser!ASTBase(null, buf, true, diagnosticReporter);
+    auto mod = new AST.Module(argz, Identifier.idPool(argz[0..strlen(argz)-2]), 1, 0);
+    scope p = new Parser!ASTBase(mod, buf, true, diagnosticReporter);
     p.nextToken();
     auto decls = p.parseModule();
     auto lispPrint = new LispyPrint();
