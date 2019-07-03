@@ -91,6 +91,7 @@ fun strstr(ptr: BytePtr, needle: ByteSlice): BytePtr? {
 fun strcat(dest: BytePtr, src: ByteSlice) {
     val len = strlen(dest)
     src.data.copyInto(dest.data, dest.offset + len, src.beg, src.end)
+    dest.data[src.length + len] = 0.toByte()
 }
 
 fun strdup(src: BytePtr) = BytePtr(src.data.copyOf(), src.offset)
@@ -99,13 +100,10 @@ fun xarraydup(src: ByteSlice) = ByteSlice(src.data.copyOfRange(src.beg, src.end)
 
 fun xstrdup(src: ByteSlice) = Mem.xstrdup(src)
 
-fun sprintf(ptr: BytePtr, fmt: ByteSlice, vararg args: Any?) {
-    val s = String.format(fmt.toString(), *args)
-    var i = 0
-    for (c in s) {
-        ptr[i++] = c.toByte()
-    }
-    ptr[i] = 0.toByte()
+fun sprintf(ptr: BytePtr, fmt: ByteSlice, vararg args: Any?): Int {
+    val arr = arrayOfNulls<Any>(args.size)
+    args.copyInto(arr, 0, 0, args.size)
+    return vsprintf(ptr, fmt.ptr(), slice(arr))
 }
 
 fun isalpha(c: Int): Int = if(Character.isAlphabetic(c) || c == '_'.toInt()) 1 else 0
@@ -300,6 +298,7 @@ fun vsprintf(dest: BytePtr, fmt: BytePtr, args: Slice<Any>): Int {
     for (i in 0 until result.length) {
         dest[i] = result[i]
     }
+    dest[result.length] = 0.toByte()
     return result.length
 }
 

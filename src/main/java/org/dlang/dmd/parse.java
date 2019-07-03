@@ -6507,7 +6507,7 @@ public class parse {
                             this.nextToken();
                             break;
                         case 106:
-                            e = new ASTBase.IntegerExp(loc, (long)(int)this.token.intvalue, ASTBase.Type.tuns32);
+                            e = new ASTBase.IntegerExp(loc, (long)(long)this.token.intvalue, ASTBase.Type.tuns32);
                             this.nextToken();
                             break;
                         case 107:

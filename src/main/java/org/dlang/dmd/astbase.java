@@ -5686,7 +5686,7 @@ public class astbase {
                             case 33:
                             case 18:
                                 __dispatch5 = 0;
-                                this.value = (long)(int)this.value;
+                                this.value = (long)(long)this.value;
                                 break;
                             case 19:
                                 this.value = (long)(long)this.value;

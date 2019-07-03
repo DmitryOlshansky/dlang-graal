@@ -866,7 +866,7 @@ extern(C++) class LispyPrint : ParseTimeTransitiveVisitor!AST {
     }
 
     override void visit(AST.IntegerExp e) {
-        buf.printf("%lld", e.value);
+        buf.printf("%lld", cast(long)e.value);
     }
 
     override void visit(AST.NewAnonClassExp nc) { 

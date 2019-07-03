@@ -277,15 +277,34 @@ class OutBuffer {
                     if (w <= len) writestring(arg.slice(0, w))
                     else writestring(arg)
                 }
+                is Float -> writestring(ByteSlice(String.format("%.6f", arg).padStart(w, padChar)))
+                is Double -> writestring(ByteSlice(String.format("%.6f", arg).padStart(w, padChar)))
                 else -> writestring(ByteSlice(arg.toString().padStart(w, padChar)))
             }
             else when (arg) {
                 is ByteSlice -> writestring(arg)
                 is BytePtr -> writestring(arg)
+                is Float -> writestring(ByteSlice(String.format("%.6f", arg)))
+                is Double -> writestring(ByteSlice(String.format("%.6f", arg)))
                 else -> writestring(ByteSlice(arg.toString()))
             }
             args.beg += 1
         }
+
+        fun writeUnsigned() {
+            val w = extent()
+            val arg = args[0]
+            val str = when (arg) {
+                is Byte -> arg.toUByte().toString()
+                is Short -> arg.toUShort().toString()
+                is Int -> arg.toUInt().toString()
+                is Long ->  arg.toULong().toString()
+                else -> throw IllegalArgumentException("Expected integer for %x specifier, got ${arg}")
+            }
+            if (w != 0) writestring(ByteSlice(str.padStart(w, padChar)))
+            else writestring(ByteSlice(str))
+        }
+
         fun writeRadix(r: Int) {
             val w = extent()
             val arg = args[0]
@@ -312,6 +331,9 @@ class OutBuffer {
             }
             's', 'i', 'd', 'f' -> {
                 write()
+            }
+            'u' -> {
+                writeUnsigned()
             }
             'p' -> { // print pointer as values... but handle nulls
                 val arg = args[0]
