@@ -361,6 +361,9 @@ public class dcast {
                 }
             };
 
+            // from template isLosslesslyConvertibleToFP!(Double)
+            // removed duplicate function, [["boolean isLosslesslyConvertibleToFPDouble"]] signature: boolean isLosslesslyConvertibleToFPDouble
+
             // from template isLosslesslyConvertibleToFP!(Float)
             Function0<Boolean> isLosslesslyConvertibleToFPFloat = new Function0<Boolean>(){
                 public Boolean invoke(){
@@ -373,9 +376,6 @@ public class dcast {
                     return (long)f == (long)value;
                 }
             };
-
-            // from template isLosslesslyConvertibleToFP!(Double)
-            // removed duplicate function, [["boolean isLosslesslyConvertibleToFPFloat", "boolean isLosslesslyConvertibleToFPDouble"]] signature: boolean isLosslesslyConvertibleToFPDouble
 
             {
                 int __dispatch1 = 0;

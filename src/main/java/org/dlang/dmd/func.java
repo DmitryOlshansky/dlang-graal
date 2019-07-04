@@ -2508,58 +2508,6 @@ public class func {
         return bAnyClosures;
     }
 
-    // from template followInstantiationContext!(AggregateDeclaration)
-    public static boolean followInstantiationContextAggregateDeclaration(Dsymbol s, AggregateDeclaration _param_1) {
-        Function1<Dsymbol,Boolean> has2ThisAggregateDeclaration = new Function1<Dsymbol,Boolean>(){
-            public Boolean invoke(Dsymbol s){
-                {
-                    FuncDeclaration f = s.isFuncDeclaration();
-                    if (f != null)
-                        return f.isThis2;
-                }
-                {
-                    AggregateDeclaration ad = s.isAggregateDeclaration();
-                    if (ad != null)
-                        return ad.vthis2 != null;
-                }
-                return false;
-            }
-        };
-        assert(s != null);
-        if (has2ThisAggregateDeclaration.invoke(s))
-        {
-            assert((1) != 0);
-            Dsymbol parent = s.toParent();
-            for (; parent != null;){
-                TemplateInstance ti = parent.isTemplateInstance();
-                if (!(ti != null))
-                    break;
-                {
-                    Slice<RootObject> __r1364 = (ti.tiargs).opSlice().copy();
-                    int __key1365 = 0;
-                    for (; __key1365 < __r1364.getLength();__key1365 += 1) {
-                        RootObject oarg = __r1364.get(__key1365);
-                        Dsymbol sa = getDsymbol(oarg);
-                        if (!(sa != null))
-                            continue;
-                        sa = sa.toAlias().toParent2();
-                        if (!(sa != null))
-                            continue;
-                        {
-                            AggregateDeclaration ps = _param_1;
-                            if (pequals(sa, ps))
-                                return true;
-                        }
-                    }
-                }
-                parent = ti.tempdecl.toParent();
-            }
-            return false;
-        }
-        return false;
-    }
-
-
     // from template followInstantiationContext!(Dsymbol)
     public static boolean followInstantiationContextDsymbol(Dsymbol s, Dsymbol _param_1) {
         Function1<Dsymbol,Boolean> has2ThisDsymbol = new Function1<Dsymbol,Boolean>(){
@@ -2599,6 +2547,58 @@ public class func {
                             continue;
                         {
                             Dsymbol ps = _param_1;
+                            if (pequals(sa, ps))
+                                return true;
+                        }
+                    }
+                }
+                parent = ti.tempdecl.toParent();
+            }
+            return false;
+        }
+        return false;
+    }
+
+
+    // from template followInstantiationContext!(AggregateDeclaration)
+    public static boolean followInstantiationContextAggregateDeclaration(Dsymbol s, AggregateDeclaration _param_1) {
+        Function1<Dsymbol,Boolean> has2ThisAggregateDeclaration = new Function1<Dsymbol,Boolean>(){
+            public Boolean invoke(Dsymbol s){
+                {
+                    FuncDeclaration f = s.isFuncDeclaration();
+                    if (f != null)
+                        return f.isThis2;
+                }
+                {
+                    AggregateDeclaration ad = s.isAggregateDeclaration();
+                    if (ad != null)
+                        return ad.vthis2 != null;
+                }
+                return false;
+            }
+        };
+        assert(s != null);
+        if (has2ThisAggregateDeclaration.invoke(s))
+        {
+            assert((1) != 0);
+            Dsymbol parent = s.toParent();
+            for (; parent != null;){
+                TemplateInstance ti = parent.isTemplateInstance();
+                if (!(ti != null))
+                    break;
+                {
+                    Slice<RootObject> __r1364 = (ti.tiargs).opSlice().copy();
+                    int __key1365 = 0;
+                    for (; __key1365 < __r1364.getLength();__key1365 += 1) {
+                        RootObject oarg = __r1364.get(__key1365);
+                        Dsymbol sa = getDsymbol(oarg);
+                        if (!(sa != null))
+                            continue;
+                        sa = sa.toAlias().toParent2();
+                        if (!(sa != null))
+                            continue;
+                        {
+                            AggregateDeclaration ps = _param_1;
                             if (pequals(sa, ps))
                                 return true;
                         }
@@ -2664,15 +2664,15 @@ public class func {
     }
 
 
-    // from template toParentP!(AggregateDeclaration)
-    public static Dsymbol toParentPAggregateDeclaration(Dsymbol s, AggregateDeclaration _param_1) {
-        return followInstantiationContextAggregateDeclaration(s, _param_1) ? s.toParent2() : s.toParentLocal();
-    }
-
-
     // from template toParentP!(Dsymbol)
     public static Dsymbol toParentPDsymbol(Dsymbol s, Dsymbol _param_1) {
         return followInstantiationContextDsymbol(s, _param_1) ? s.toParent2() : s.toParentLocal();
+    }
+
+
+    // from template toParentP!(AggregateDeclaration)
+    public static Dsymbol toParentPAggregateDeclaration(Dsymbol s, AggregateDeclaration _param_1) {
+        return followInstantiationContextAggregateDeclaration(s, _param_1) ? s.toParent2() : s.toParentLocal();
     }
 
 

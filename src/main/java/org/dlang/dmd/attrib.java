@@ -953,14 +953,14 @@ public class attrib {
         }
 
         public  void addComment(BytePtr comment) {
-            Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
+            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
                     s.addComment(comment);
                     return null;
                     return null;
                 }
             };
-            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
+            Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
                     s.addComment(comment);
                     return null;
@@ -1152,16 +1152,16 @@ public class attrib {
                 return this.cache;
             }
             this.onStack = true;
-            Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
+            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
-                    s.setScope(_scope);
+                    s.addMember(_scope, scopesym);
                     return null;
                     return null;
                 }
             };
-            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
+            Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
-                    s.addMember(_scope, scopesym);
+                    s.setScope(_scope);
                     return null;
                     return null;
                 }

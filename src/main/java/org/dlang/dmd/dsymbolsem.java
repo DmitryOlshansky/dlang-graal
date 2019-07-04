@@ -3753,13 +3753,6 @@ public class dsymbolsem {
                     }
             }
             Ungag ungag = sd.ungagSpeculative().copy();
-            Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s){
-                    s.setScope(sc2);
-                    return null;
-                    return null;
-                }
-            };
             Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
                     s.addMember(sc, sd);
@@ -3778,6 +3771,13 @@ public class dsymbolsem {
                 public Void invoke(Dsymbol s){
                     dsymbolSemantic(s, sc2);
                     (sd.errors ? 1 : 0) |= (s.errors ? 1 : 0);
+                    return null;
+                }
+            };
+            Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.setScope(sc2);
+                    return null;
                     return null;
                 }
             };
@@ -3952,18 +3952,9 @@ public class dsymbolsem {
                     }
             }
             Ungag ungag = cldec_ref.value.ungagSpeculative().copy();
-            Function1<Dsymbol,Void> __lambda7 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s){
-                    s.setScope(sc2);
-                    return null;
-                    return null;
-                }
-            };
-            Function1<Dsymbol,Void> __lambda6 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s){
-                    s.addMember(sc, cldec_ref.value);
-                    return null;
-                    return null;
+            Function0<Type> __dgliteral2 = new Function0<Type>(){
+                public Type invoke(){
+                    return typeSemantic((b).type, cldec_ref.value.loc, sc);
                 }
             };
             Function0<Void> __dgliteral3 = new Function0<Void>(){
@@ -3978,14 +3969,23 @@ public class dsymbolsem {
                     return null;
                 }
             };
-            Function0<Type> __dgliteral2 = new Function0<Type>(){
-                public Type invoke(){
-                    return typeSemantic((b).type, cldec_ref.value.loc, sc);
-                }
-            };
             Function1<Dsymbol,Void> __lambda9 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
                     dsymbolSemantic(s, sc2);
+                    return null;
+                    return null;
+                }
+            };
+            Function1<Dsymbol,Void> __lambda7 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.setScope(sc2);
+                    return null;
+                    return null;
+                }
+            };
+            Function1<Dsymbol,Void> __lambda6 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.addMember(sc, cldec_ref.value);
                     return null;
                     return null;
                 }
@@ -4025,21 +4025,6 @@ public class dsymbolsem {
                 try {
                     if (cldec_ref.value.baseok < Baseok.done)
                     {
-                        // from template resolveBase!(Void)
-                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
-                            public Void invoke(Void exp){
-                                if (scx == null)
-                                {
-                                    scx = (sc).copy();
-                                    (scx).setNoFree();
-                                }
-                                cldec_ref.value._scope = scx;
-                                exp.invoke();
-                                cldec_ref.value._scope = null;
-                                return null;
-                            }
-                        };
-
                         // from template resolveBase!(Type)
                         Function1<Type,Type> resolveBaseType = new Function1<Type,Type>(){
                             public Type invoke(Type exp){
@@ -4052,6 +4037,21 @@ public class dsymbolsem {
                                 Type r = exp.invoke();
                                 cldec_ref.value._scope = null;
                                 return r;
+                            }
+                        };
+
+                        // from template resolveBase!(Void)
+                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
+                            public Void invoke(Void exp){
+                                if (scx == null)
+                                {
+                                    scx = (sc).copy();
+                                    (scx).setNoFree();
+                                }
+                                cldec_ref.value._scope = scx;
+                                exp.invoke();
+                                cldec_ref.value._scope = null;
+                                return null;
                             }
                         };
 
@@ -4523,22 +4523,9 @@ public class dsymbolsem {
                     ((TypeClass)idec.type).sym = idec;
             }
             Ungag ungag = idec.ungagSpeculative().copy();
-            Function0<Void> __dgliteral4 = new Function0<Void>(){
-                public Void invoke(){
-                    dsymbolSemantic(tc.sym, null);
-                    return null;
-                }
-            };
             Function1<Dsymbol,Void> __lambda6 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
                     s.setScope(sc2);
-                    return null;
-                    return null;
-                }
-            };
-            Function1<Dsymbol,Void> __lambda7 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s){
-                    s.importAll(sc2);
                     return null;
                     return null;
                 }
@@ -4550,10 +4537,23 @@ public class dsymbolsem {
                     return null;
                 }
             };
+            Function1<Dsymbol,Void> __lambda7 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.importAll(sc2);
+                    return null;
+                    return null;
+                }
+            };
             Function1<Dsymbol,Void> __lambda5 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
                     s.addMember(sc, idec);
                     return null;
+                    return null;
+                }
+            };
+            Function0<Void> __dgliteral4 = new Function0<Void>(){
+                public Void invoke(){
+                    dsymbolSemantic(tc.sym, null);
                     return null;
                 }
             };
@@ -4583,21 +4583,6 @@ public class dsymbolsem {
                 try {
                     if (idec.baseok < Baseok.done)
                     {
-                        // from template resolveBase!(Void)
-                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
-                            public Void invoke(Void exp){
-                                if (scx == null)
-                                {
-                                    scx = (sc).copy();
-                                    (scx).setNoFree();
-                                }
-                                idec._scope = scx;
-                                exp.invoke();
-                                idec._scope = null;
-                                return null;
-                            }
-                        };
-
                         // from template resolveBase!(Type)
                         Function1<Type,Type> resolveBaseType = new Function1<Type,Type>(){
                             public Type invoke(Type exp){
@@ -4610,6 +4595,21 @@ public class dsymbolsem {
                                 Type r = exp.invoke();
                                 idec._scope = null;
                                 return r;
+                            }
+                        };
+
+                        // from template resolveBase!(Void)
+                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
+                            public Void invoke(Void exp){
+                                if (scx == null)
+                                {
+                                    scx = (sc).copy();
+                                    (scx).setNoFree();
+                                }
+                                idec._scope = scx;
+                                exp.invoke();
+                                idec._scope = null;
+                                return null;
                             }
                         };
 

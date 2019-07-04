@@ -3972,9 +3972,9 @@ public class statementsem {
     }
 
     // from template TupleForeachArgs!(11)
-    // from template Seq!(DArray<Dsymbol>Boolean)
-
     // from template Seq!(Boolean)
+
+    // from template Seq!(DArray<Dsymbol>Boolean)
 
 
     // from template TupleForeachArgs!(11)

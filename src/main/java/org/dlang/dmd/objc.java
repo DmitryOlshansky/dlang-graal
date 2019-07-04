@@ -519,52 +519,6 @@ public class objc {
             return that;
         }
     }
-    // from template setMetaclass!(_newMetaclassInterfaceDeclaration)
-    public static void setMetaclass_newMetaclassInterfaceDeclaration(InterfaceDeclaration classDeclaration, Scope sc) {
-        ByteSlice errorType = new ByteSlice("interface");
-        {
-            if (((__withSym.classKind != ClassKind.objc || __withSym.objc.isMeta) || __withSym.objc.metaclass != null))
-                return ;
-            if (!(__withSym.objc.identifier != null))
-                __withSym.objc.identifier = classDeclaration.ident;
-            DArray<BaseClass> metaBases = new DArray<BaseClass>();
-            {
-                Slice<BaseClass> __r1598 = (__withSym.baseclasses).opSlice().copy();
-                int __key1599 = 0;
-                for (; __key1599 < __r1598.getLength();__key1599 += 1) {
-                    BaseClass base = __r1598.get(__key1599);
-                    ClassDeclaration baseCd = (base).sym;
-                    assert(baseCd != null);
-                    if (baseCd.classKind == ClassKind.objc)
-                    {
-                        assert(baseCd.objc.metaclass != null);
-                        assert(baseCd.objc.metaclass.objc.isMeta);
-                        assert((baseCd.objc.metaclass.type.ty & 0xFF) == ENUMTY.Tclass);
-                        BaseClass metaBase = new BaseClass(baseCd.objc.metaclass.type);
-                        (metaBase).sym = baseCd.objc.metaclass;
-                        (metaBases).push(metaBase);
-                    }
-                    else
-                    {
-                        __withSym.error(new BytePtr("base interface for an Objective-C interface must be `extern (Objective-C)`"));
-                    }
-                }
-            }
-            __withSym.objc.metaclass = newMetaclass.invoke(__withSym.loc, metaBases);
-            __withSym.objc.metaclass.storage_class |= 1L;
-            __withSym.objc.metaclass.classKind = ClassKind.objc;
-            __withSym.objc.metaclass.objc.isMeta = true;
-            __withSym.objc.metaclass.objc.isExtern = __withSym.objc.isExtern;
-            __withSym.objc.metaclass.objc.identifier = __withSym.objc.identifier;
-            if (__withSym.baseClass != null)
-                __withSym.objc.metaclass.baseClass = __withSym.baseClass.objc.metaclass;
-            (__withSym.members).push(__withSym.objc.metaclass);
-            __withSym.objc.metaclass.addMember(sc, classDeclaration);
-            dsymbolSemantic(__withSym.objc.metaclass, sc);
-        }
-    }
-
-
     // from template setMetaclass!(_newMetaclassClassDeclaration)
     public static void setMetaclass_newMetaclassClassDeclaration(ClassDeclaration classDeclaration, Scope sc) {
         ByteSlice errorType = new ByteSlice("class");
@@ -593,6 +547,52 @@ public class objc {
                     else
                     {
                         __withSym.error(new BytePtr("base class for an Objective-C class must be `extern (Objective-C)`"));
+                    }
+                }
+            }
+            __withSym.objc.metaclass = newMetaclass.invoke(__withSym.loc, metaBases);
+            __withSym.objc.metaclass.storage_class |= 1L;
+            __withSym.objc.metaclass.classKind = ClassKind.objc;
+            __withSym.objc.metaclass.objc.isMeta = true;
+            __withSym.objc.metaclass.objc.isExtern = __withSym.objc.isExtern;
+            __withSym.objc.metaclass.objc.identifier = __withSym.objc.identifier;
+            if (__withSym.baseClass != null)
+                __withSym.objc.metaclass.baseClass = __withSym.baseClass.objc.metaclass;
+            (__withSym.members).push(__withSym.objc.metaclass);
+            __withSym.objc.metaclass.addMember(sc, classDeclaration);
+            dsymbolSemantic(__withSym.objc.metaclass, sc);
+        }
+    }
+
+
+    // from template setMetaclass!(_newMetaclassInterfaceDeclaration)
+    public static void setMetaclass_newMetaclassInterfaceDeclaration(InterfaceDeclaration classDeclaration, Scope sc) {
+        ByteSlice errorType = new ByteSlice("interface");
+        {
+            if (((__withSym.classKind != ClassKind.objc || __withSym.objc.isMeta) || __withSym.objc.metaclass != null))
+                return ;
+            if (!(__withSym.objc.identifier != null))
+                __withSym.objc.identifier = classDeclaration.ident;
+            DArray<BaseClass> metaBases = new DArray<BaseClass>();
+            {
+                Slice<BaseClass> __r1598 = (__withSym.baseclasses).opSlice().copy();
+                int __key1599 = 0;
+                for (; __key1599 < __r1598.getLength();__key1599 += 1) {
+                    BaseClass base = __r1598.get(__key1599);
+                    ClassDeclaration baseCd = (base).sym;
+                    assert(baseCd != null);
+                    if (baseCd.classKind == ClassKind.objc)
+                    {
+                        assert(baseCd.objc.metaclass != null);
+                        assert(baseCd.objc.metaclass.objc.isMeta);
+                        assert((baseCd.objc.metaclass.type.ty & 0xFF) == ENUMTY.Tclass);
+                        BaseClass metaBase = new BaseClass(baseCd.objc.metaclass.type);
+                        (metaBase).sym = baseCd.objc.metaclass;
+                        (metaBases).push(metaBase);
+                    }
+                    else
+                    {
+                        __withSym.error(new BytePtr("base interface for an Objective-C interface must be `extern (Objective-C)`"));
                     }
                 }
             }
