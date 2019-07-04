@@ -3854,13 +3854,6 @@ public class dsymbolsem {
                     }
             }
             Ungag ungag = cldec_ref.value.ungagSpeculative().copy();
-            Function1<Dsymbol,Void> __lambda8 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s){
-                    s.importAll(sc2);
-                    return null;
-                    return null;
-                }
-            };
             Function1<Dsymbol,Void> __lambda7 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
                     s.setScope(sc2);
@@ -3879,6 +3872,12 @@ public class dsymbolsem {
                     return typeSemantic((b).type, cldec_ref.value.loc, sc);
                 }
             };
+            Function0<Void> __dgliteral3 = new Function0<Void>(){
+                public Void invoke(){
+                    dsymbolSemantic(tc.sym, null);
+                    return null;
+                }
+            };
             Function1<Dsymbol,Void> __lambda9 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
                     dsymbolSemantic(s, sc2);
@@ -3886,9 +3885,10 @@ public class dsymbolsem {
                     return null;
                 }
             };
-            Function0<Void> __dgliteral3 = new Function0<Void>(){
-                public Void invoke(){
-                    dsymbolSemantic(tc.sym, null);
+            Function1<Dsymbol,Void> __lambda8 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.importAll(sc2);
+                    return null;
                     return null;
                 }
             };

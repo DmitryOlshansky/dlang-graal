@@ -44,6 +44,75 @@ public class target {
         public boolean reverseCppOverloads;
         public boolean cppExceptions;
         public boolean twoDtorInVtable;
+        // from template FPTypeProperties!(Float)
+        public static class FPTypePropertiesFloat
+        {
+            public double max;
+            public double min_normal;
+            public double nan;
+            public double infinity;
+            public double epsilon;
+            public long dig = 6L;
+            public long mant_dig = 24L;
+            public long max_exp = 128L;
+            public long min_exp = -125L;
+            public long max_10_exp = 38L;
+            public long min_10_exp = -37L;
+            public  void _init() {
+                this.max = double;
+                this.min_normal = double;
+                this.nan = double;
+                this.infinity = double;
+                this.epsilon = double;
+            }
+
+            public FPTypePropertiesFloat(){
+            }
+            public FPTypePropertiesFloat copy(){
+                FPTypePropertiesFloat r = new FPTypePropertiesFloat();
+                r.max = max;
+                r.min_normal = min_normal;
+                r.nan = nan;
+                r.infinity = infinity;
+                r.epsilon = epsilon;
+                r.dig = dig;
+                r.mant_dig = mant_dig;
+                r.max_exp = max_exp;
+                r.min_exp = min_exp;
+                r.max_10_exp = max_10_exp;
+                r.min_10_exp = min_10_exp;
+                return r;
+            }
+            public FPTypePropertiesFloat(double max, double min_normal, double nan, double infinity, double epsilon, long dig, long mant_dig, long max_exp, long min_exp, long max_10_exp, long min_10_exp) {
+                this.max = max;
+                this.min_normal = min_normal;
+                this.nan = nan;
+                this.infinity = infinity;
+                this.epsilon = epsilon;
+                this.dig = dig;
+                this.mant_dig = mant_dig;
+                this.max_exp = max_exp;
+                this.min_exp = min_exp;
+                this.max_10_exp = max_10_exp;
+                this.min_10_exp = min_10_exp;
+            }
+
+            public FPTypePropertiesFloat opAssign(FPTypePropertiesFloat that) {
+                this.max = that.max;
+                this.min_normal = that.min_normal;
+                this.nan = that.nan;
+                this.infinity = that.infinity;
+                this.epsilon = that.epsilon;
+                this.dig = that.dig;
+                this.mant_dig = that.mant_dig;
+                this.max_exp = that.max_exp;
+                this.min_exp = that.min_exp;
+                this.max_10_exp = that.max_10_exp;
+                this.min_10_exp = that.min_10_exp;
+                return this;
+            }
+        }
+
         // from template FPTypeProperties!(Double)
         public static class FPTypePropertiesDouble
         {
@@ -167,75 +236,6 @@ public class target {
             }
 
             public FPTypePropertiesDouble opAssign(FPTypePropertiesDouble that) {
-                this.max = that.max;
-                this.min_normal = that.min_normal;
-                this.nan = that.nan;
-                this.infinity = that.infinity;
-                this.epsilon = that.epsilon;
-                this.dig = that.dig;
-                this.mant_dig = that.mant_dig;
-                this.max_exp = that.max_exp;
-                this.min_exp = that.min_exp;
-                this.max_10_exp = that.max_10_exp;
-                this.min_10_exp = that.min_10_exp;
-                return this;
-            }
-        }
-
-        // from template FPTypeProperties!(Float)
-        public static class FPTypePropertiesFloat
-        {
-            public double max;
-            public double min_normal;
-            public double nan;
-            public double infinity;
-            public double epsilon;
-            public long dig = 6L;
-            public long mant_dig = 24L;
-            public long max_exp = 128L;
-            public long min_exp = -125L;
-            public long max_10_exp = 38L;
-            public long min_10_exp = -37L;
-            public  void _init() {
-                this.max = double;
-                this.min_normal = double;
-                this.nan = double;
-                this.infinity = double;
-                this.epsilon = double;
-            }
-
-            public FPTypePropertiesFloat(){
-            }
-            public FPTypePropertiesFloat copy(){
-                FPTypePropertiesFloat r = new FPTypePropertiesFloat();
-                r.max = max;
-                r.min_normal = min_normal;
-                r.nan = nan;
-                r.infinity = infinity;
-                r.epsilon = epsilon;
-                r.dig = dig;
-                r.mant_dig = mant_dig;
-                r.max_exp = max_exp;
-                r.min_exp = min_exp;
-                r.max_10_exp = max_10_exp;
-                r.min_10_exp = min_10_exp;
-                return r;
-            }
-            public FPTypePropertiesFloat(double max, double min_normal, double nan, double infinity, double epsilon, long dig, long mant_dig, long max_exp, long min_exp, long max_10_exp, long min_10_exp) {
-                this.max = max;
-                this.min_normal = min_normal;
-                this.nan = nan;
-                this.infinity = infinity;
-                this.epsilon = epsilon;
-                this.dig = dig;
-                this.mant_dig = mant_dig;
-                this.max_exp = max_exp;
-                this.min_exp = min_exp;
-                this.max_10_exp = max_10_exp;
-                this.min_10_exp = min_10_exp;
-            }
-
-            public FPTypePropertiesFloat opAssign(FPTypePropertiesFloat that) {
                 this.max = that.max;
                 this.min_normal = that.min_normal;
                 this.nan = that.nan;

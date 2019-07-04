@@ -2294,10 +2294,10 @@ public class func {
         }
     }
 
-    // from template printCandidates!(TemplateDeclaration)
-    public static void printCandidatesTemplateDeclaration(Loc loc, TemplateDeclaration declaration) {
+    // from template printCandidates!(FuncDeclaration)
+    public static void printCandidatesFuncDeclaration(Loc loc, FuncDeclaration declaration) {
         int numToDisplay = 5;
-        Function1<Dsymbol,Integer> __lambda3TemplateDeclaration = new Function1<Dsymbol,Integer>(){
+        Function1<Dsymbol,Integer> __lambda3FuncDeclaration = new Function1<Dsymbol,Integer>(){
             public Integer invoke(Dsymbol s){
                 Dsymbol nextOverload = null;
                 {
@@ -2332,8 +2332,8 @@ public class func {
     }
 
 
-    // from template printCandidates!(FuncDeclaration)
-    public static void printCandidatesFuncDeclaration(Loc loc, FuncDeclaration declaration) {
+    // from template printCandidates!(TemplateDeclaration)
+    public static void printCandidatesTemplateDeclaration(Loc loc, TemplateDeclaration declaration) {
         int numToDisplay = 5;
         overloadApply(declaration, __lambda3, null);
     }
@@ -2465,9 +2465,9 @@ public class func {
         return bAnyClosures;
     }
 
-    // from template followInstantiationContext!(AggregateDeclaration)
-    public static boolean followInstantiationContextAggregateDeclaration(Dsymbol s, AggregateDeclaration _param_1) {
-        Function1<Dsymbol,Boolean> has2ThisAggregateDeclaration = new Function1<Dsymbol,Boolean>(){
+    // from template followInstantiationContext!(FuncDeclaration)
+    public static boolean followInstantiationContextFuncDeclaration(Dsymbol s, FuncDeclaration _param_1) {
+        Function1<Dsymbol,Boolean> has2ThisFuncDeclaration = new Function1<Dsymbol,Boolean>(){
             public Boolean invoke(Dsymbol s){
                 {
                     FuncDeclaration f = s.isFuncDeclaration();
@@ -2483,7 +2483,7 @@ public class func {
             }
         };
         assert(s != null);
-        if (has2ThisAggregateDeclaration.invoke(s))
+        if (has2ThisFuncDeclaration.invoke(s))
         {
             assert((1) != 0);
             Dsymbol parent = s.toParent();
@@ -2492,10 +2492,10 @@ public class func {
                 if (!(ti != null))
                     break;
                 {
-                    Slice<RootObject> __r1364 = (ti.tiargs).opSlice().copy();
-                    int __key1365 = 0;
-                    for (; __key1365 < __r1364.getLength();__key1365 += 1) {
-                        RootObject oarg = __r1364.get(__key1365);
+                    Slice<RootObject> __r1391 = (ti.tiargs).opSlice().copy();
+                    int __key1392 = 0;
+                    for (; __key1392 < __r1391.getLength();__key1392 += 1) {
+                        RootObject oarg = __r1391.get(__key1392);
                         Dsymbol sa = getDsymbol(oarg);
                         if (!(sa != null))
                             continue;
@@ -2503,7 +2503,7 @@ public class func {
                         if (!(sa != null))
                             continue;
                         {
-                            AggregateDeclaration ps = _param_1;
+                            FuncDeclaration ps = _param_1;
                             if (pequals(sa, ps))
                                 return true;
                         }
@@ -2569,9 +2569,9 @@ public class func {
     }
 
 
-    // from template followInstantiationContext!(FuncDeclaration)
-    public static boolean followInstantiationContextFuncDeclaration(Dsymbol s, FuncDeclaration _param_1) {
-        Function1<Dsymbol,Boolean> has2ThisFuncDeclaration = new Function1<Dsymbol,Boolean>(){
+    // from template followInstantiationContext!(AggregateDeclaration)
+    public static boolean followInstantiationContextAggregateDeclaration(Dsymbol s, AggregateDeclaration _param_1) {
+        Function1<Dsymbol,Boolean> has2ThisAggregateDeclaration = new Function1<Dsymbol,Boolean>(){
             public Boolean invoke(Dsymbol s){
                 {
                     FuncDeclaration f = s.isFuncDeclaration();
@@ -2587,7 +2587,7 @@ public class func {
             }
         };
         assert(s != null);
-        if (has2ThisFuncDeclaration.invoke(s))
+        if (has2ThisAggregateDeclaration.invoke(s))
         {
             assert((1) != 0);
             Dsymbol parent = s.toParent();
@@ -2596,10 +2596,10 @@ public class func {
                 if (!(ti != null))
                     break;
                 {
-                    Slice<RootObject> __r1391 = (ti.tiargs).opSlice().copy();
-                    int __key1392 = 0;
-                    for (; __key1392 < __r1391.getLength();__key1392 += 1) {
-                        RootObject oarg = __r1391.get(__key1392);
+                    Slice<RootObject> __r1364 = (ti.tiargs).opSlice().copy();
+                    int __key1365 = 0;
+                    for (; __key1365 < __r1364.getLength();__key1365 += 1) {
+                        RootObject oarg = __r1364.get(__key1365);
                         Dsymbol sa = getDsymbol(oarg);
                         if (!(sa != null))
                             continue;
@@ -2607,7 +2607,7 @@ public class func {
                         if (!(sa != null))
                             continue;
                         {
-                            FuncDeclaration ps = _param_1;
+                            AggregateDeclaration ps = _param_1;
                             if (pequals(sa, ps))
                                 return true;
                         }
@@ -2621,9 +2621,9 @@ public class func {
     }
 
 
-    // from template toParentP!(AggregateDeclaration)
-    public static Dsymbol toParentPAggregateDeclaration(Dsymbol s, AggregateDeclaration _param_1) {
-        return followInstantiationContextAggregateDeclaration(s, _param_1) ? s.toParent2() : s.toParentLocal();
+    // from template toParentP!(FuncDeclaration)
+    public static Dsymbol toParentPFuncDeclaration(Dsymbol s, FuncDeclaration _param_1) {
+        return followInstantiationContextFuncDeclaration(s, _param_1) ? s.toParent2() : s.toParentLocal();
     }
 
 
@@ -2633,9 +2633,9 @@ public class func {
     }
 
 
-    // from template toParentP!(FuncDeclaration)
-    public static Dsymbol toParentPFuncDeclaration(Dsymbol s, FuncDeclaration _param_1) {
-        return followInstantiationContextFuncDeclaration(s, _param_1) ? s.toParent2() : s.toParentLocal();
+    // from template toParentP!(AggregateDeclaration)
+    public static Dsymbol toParentPAggregateDeclaration(Dsymbol s, AggregateDeclaration _param_1) {
+        return followInstantiationContextAggregateDeclaration(s, _param_1) ? s.toParent2() : s.toParentLocal();
     }
 
 

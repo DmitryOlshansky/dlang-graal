@@ -348,6 +348,19 @@ public class dcast {
                 break;
             }
             long value = e.toInteger();
+            // from template isLosslesslyConvertibleToFP!(Float)
+            Function0<Boolean> isLosslesslyConvertibleToFPFloat = new Function0<Boolean>(){
+                public Boolean invoke(){
+                    if (e.type.isunsigned())
+                    {
+                        float f = (float)value;
+                        return (long)f == value;
+                    }
+                    float f = (float)(long)value;
+                    return (long)f == (long)value;
+                }
+            };
+
             // from template isLosslesslyConvertibleToFP!(Double)
             Function0<Boolean> isLosslesslyConvertibleToFPDouble = new Function0<Boolean>(){
                 public Boolean invoke(){
@@ -362,20 +375,7 @@ public class dcast {
             };
 
             // from template isLosslesslyConvertibleToFP!(Double)
-            // removed duplicate function, [["boolean isLosslesslyConvertibleToFPDouble"]] signature: boolean isLosslesslyConvertibleToFPDouble
-
-            // from template isLosslesslyConvertibleToFP!(Float)
-            Function0<Boolean> isLosslesslyConvertibleToFPFloat = new Function0<Boolean>(){
-                public Boolean invoke(){
-                    if (e.type.isunsigned())
-                    {
-                        float f = (float)value;
-                        return (long)f == value;
-                    }
-                    float f = (float)(long)value;
-                    return (long)f == (long)value;
-                }
-            };
+            // removed duplicate function, [["boolean isLosslesslyConvertibleToFPFloat", "boolean isLosslesslyConvertibleToFPDouble"]] signature: boolean isLosslesslyConvertibleToFPDouble
 
             {
                 int __dispatch1 = 0;
