@@ -278,7 +278,7 @@ public class mars {
                                 if (params.mixinFile != null)
                                 {
                                     params.mixinOut = (OutBuffer)calloc(1, 20);
-                                    atexit(ptr(flushMixins));
+                                    atexit(flushMixins);
                                 }
                                 try {
                                     global.path = buildPath.invoke(params.imppath);

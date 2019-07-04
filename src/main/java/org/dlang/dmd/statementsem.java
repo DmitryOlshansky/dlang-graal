@@ -2637,7 +2637,7 @@ public class statementsem {
                             return (se1 != null && se2 != null) ? se1.comparex(se2) : 0;
                         }
                     };
-                    qsort((csCopy).data, numcases, 4, ptr(sort_compare));
+                    qsort((csCopy).data, numcases, 4, sort_compare);
                 }
                 DArray<Expression> arguments = new DArray<Expression>();
                 (arguments).push(ss.condition);
@@ -3972,9 +3972,9 @@ public class statementsem {
     }
 
     // from template TupleForeachArgs!(11)
-    // from template Seq!(Boolean)
-
     // from template Seq!(DArray<Dsymbol>Boolean)
+
+    // from template Seq!(Boolean)
 
 
     // from template TupleForeachArgs!(11)

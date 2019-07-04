@@ -85,6 +85,13 @@ public class attrib {
 
         public  void addMember(Scope sc, ScopeDsymbol sds) {
             DArray<Dsymbol> d = this.include(sc);
+            Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.addMember(sc2, sds);
+                    return null;
+                    return null;
+                }
+            };
             if (d != null)
             {
                 Scope sc2 = this.newScope(sc);
@@ -114,6 +121,13 @@ public class attrib {
 
         public  void importAll(Scope sc) {
             DArray<Dsymbol> d = this.include(sc);
+            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.importAll(sc2);
+                    return null;
+                    return null;
+                }
+            };
             if (d != null)
             {
                 Scope sc2 = this.newScope(sc);
@@ -124,6 +138,13 @@ public class attrib {
         }
 
         public  void addComment(BytePtr comment) {
+            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.addComment(comment);
+                    return null;
+                    return null;
+                }
+            };
             if (comment != null)
             {
                 foreachDsymbol(this.include(null), __lambda2);
@@ -160,14 +181,33 @@ public class attrib {
         }
 
         public  boolean hasStaticCtorOrDtor() {
+            Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>(){
+                public Integer invoke(Dsymbol s){
+                    return (s.hasStaticCtorOrDtor() ? 1 : 0);
+                }
+            };
             return foreachDsymbol(this.include(null), __lambda1) != 0;
         }
 
         public  void checkCtorConstInit() {
+            Function1<Dsymbol,Void> __lambda1 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.checkCtorConstInit();
+                    return null;
+                    return null;
+                }
+            };
             foreachDsymbol(this.include(null), __lambda1);
         }
 
         public  void addLocalClass(DArray<ClassDeclaration> aclasses) {
+            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.addLocalClass(aclasses);
+                    return null;
+                    return null;
+                }
+            };
             foreachDsymbol(this.include(null), __lambda2);
         }
 
@@ -232,6 +272,26 @@ public class attrib {
 
         public  void addMember(Scope sc, ScopeDsymbol sds) {
             DArray<Dsymbol> d = this.include(sc);
+            Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    {
+                        Declaration decl = s.isDeclaration();
+                        if (decl != null)
+                        {
+                            decl.storage_class |= stc & 2251799813685248L;
+                            {
+                                StorageClassDeclaration sdecl = s.isStorageClassDeclaration();
+                                if (sdecl != null)
+                                {
+                                    sdecl.stc |= stc & 2251799813685248L;
+                                }
+                            }
+                        }
+                    }
+                    s.addMember(sc2, sds);
+                    return null;
+                }
+            };
             if (d != null)
             {
                 Scope sc2 = this.newScope(sc);
@@ -690,6 +750,14 @@ public class attrib {
         }
 
         public  void setFieldOffset(AggregateDeclaration ad, IntPtr poffset, boolean isunion) {
+            Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.setFieldOffset(ad, ptr(offset), isunion);
+                    if (isunion)
+                        offset = 0;
+                    return null;
+                }
+            };
             if (this.decl != null)
             {
                 int fieldstart = ad.fields.length;
@@ -885,6 +953,20 @@ public class attrib {
         }
 
         public  void addComment(BytePtr comment) {
+            Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.addComment(comment);
+                    return null;
+                    return null;
+                }
+            };
+            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.addComment(comment);
+                    return null;
+                    return null;
+                }
+            };
             if (comment != null)
             {
                 foreachDsymbol(this.decl, __lambda2);
@@ -893,6 +975,13 @@ public class attrib {
         }
 
         public  void setScope(Scope sc) {
+            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.setScope(sc);
+                    return null;
+                    return null;
+                }
+            };
             foreachDsymbol(this.include(sc), __lambda2);
         }
 
@@ -943,6 +1032,20 @@ public class attrib {
             if ((this.errors || this.onStack))
                 return null;
             this.onStack = true;
+            Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.setScope(_scope);
+                    return null;
+                    return null;
+                }
+            };
+            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.addMember(_scope, scopesym);
+                    return null;
+                    return null;
+                }
+            };
             try {
                 if ((sc != null && this.condition.inc == Include.notComputed))
                 {
@@ -1049,6 +1152,20 @@ public class attrib {
                 return this.cache;
             }
             this.onStack = true;
+            Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.setScope(_scope);
+                    return null;
+                    return null;
+                }
+            };
+            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.addMember(_scope, scopesym);
+                    return null;
+                    return null;
+                }
+            };
             try {
                 if (this._scope != null)
                 {

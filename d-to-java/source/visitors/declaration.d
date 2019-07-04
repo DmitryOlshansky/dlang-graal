@@ -180,7 +180,6 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     TextBuffer buf;
     TextBuffer header;
     string defAccess = "public";
-    bool[string] generatedLambdas;
     Stack!(bool[string]) generatedFunctions;
     string moduleName;
     string[] constants; // all local static vars are collected here
@@ -279,7 +278,6 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     void onModuleStart(Module mod){
         buf = new TextBuffer();
         header = new TextBuffer();
-        generatedLambdas = null;
         opts.currentMod = mod;
         constants = null;
         arrayInitializers = null;
@@ -536,10 +534,11 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     auto lambdas = collectLambdas(st);
                     foreach (i, v; lambdas)  {
                         stderr.writefln("lambda: %d", i);
-                        if (v.fd.ident.symbol !in generatedLambdas) {
+                        auto sig = funcSig(v.fd);
+                        if (sig !in generatedFunctions.top) {
                             auto _ = pushed(opts.funcs, v.fd);
                             printLocalFunction(v.fd, true);
-                            generatedLambdas[v.fd.ident.symbol] = true;
+                            generatedFunctions.top[sig] = true;
                         }
                     }
                 }

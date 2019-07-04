@@ -4015,10 +4015,10 @@ public class doc {
                                                 }
                                             }
                                             if (((!((codeLanguage.getLength()) != 0) || __equals(codeLanguage, new ByteSlice("dlang"))) || __equals(codeLanguage, new ByteSlice("d"))))
-                                                highlightCode2(sc, a, codebuf, 0);
+                                                highlightCode2(sc, a, codebuf_1, 0);
                                             else
                                                 codebuf_1.remove(codebuf_1.offset - 1, 1);
-                                            escapeStrayParenthesis(loc, codebuf, 0, false);
+                                            escapeStrayParenthesis(loc, codebuf_1, 0, false);
                                             (buf).remove(iCodeStart, i.value - iCodeStart);
                                             i.value = (buf).insert(iCodeStart, codebuf_1.peekSlice());
                                             i.value = (buf).insert(i.value, new ByteSlice(")\n"));

@@ -107,6 +107,11 @@ public class nspace {
         }
 
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
+            Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
+                public Integer invoke(Dsymbol s){
+                    return (((s != null && (s.apply(fp, param)) != 0)) ? 1 : 0);
+                }
+            };
             return foreachDsymbol(this.members, __lambda3);
         }
 

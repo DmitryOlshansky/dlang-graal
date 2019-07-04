@@ -175,7 +175,7 @@ public class aggregate {
                 int i = 0;
                 for (; i < (this.members).length;i++){
                     Dsymbol s = (this.members).get(i);
-                    if ((s.apply(ptr(func), this)) != 0)
+                    if ((s.apply(func, this)) != 0)
                     {
                         if (this.sizeok != Sizeok.none)
                         {
@@ -581,7 +581,7 @@ public class aggregate {
                     int i = 0;
                     for (; i < (this.members).length;i++){
                         Dsymbol sm = (this.members).get(i);
-                        sm.apply(ptr(fp), null);
+                        sm.apply(SearchCtor::fp, null);
                     }
                 }
             }

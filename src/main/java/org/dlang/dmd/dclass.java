@@ -725,7 +725,7 @@ public class dclass {
                 int i = 0;
                 for (; i < (this.members).length;i++){
                     Dsymbol s = (this.members).get(i);
-                    if ((s.apply(ptr(func), this)) != 0)
+                    if ((s.apply(func, this)) != 0)
                     {
                         return yes.invoke();
                     }
@@ -747,7 +747,7 @@ public class dclass {
                     int i = 0;
                     for (; i < (this.members).length;i++){
                         Dsymbol s = (this.members).get(i);
-                        s.apply(ptr(virtualSemantic), this);
+                        s.apply(virtualSemantic, this);
                     }
                 }
             }

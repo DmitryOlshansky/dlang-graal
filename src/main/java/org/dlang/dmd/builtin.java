@@ -261,86 +261,86 @@ public class builtin {
 
     public static void builtin_init() {
         builtins._init(65);
-        add_builtin(new BytePtr("_D4core4math3sinFNaNbNiNfeZe"), ptr(eval_sin));
-        add_builtin(new BytePtr("_D4core4math3cosFNaNbNiNfeZe"), ptr(eval_cos));
-        add_builtin(new BytePtr("_D4core4math3tanFNaNbNiNfeZe"), ptr(eval_tan));
-        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNfeZe"), ptr(eval_sqrt));
-        add_builtin(new BytePtr("_D4core4math4fabsFNaNbNiNfeZe"), ptr(eval_fabs));
-        add_builtin(new BytePtr("_D4core4math5expm1FNaNbNiNfeZe"), ptr(eval_unimp));
-        add_builtin(new BytePtr("_D4core4math4exp2FNaNbNiNfeZe"), ptr(eval_unimp));
-        add_builtin(new BytePtr("_D4core4math3sinFNaNbNiNeeZe"), ptr(eval_sin));
-        add_builtin(new BytePtr("_D4core4math3cosFNaNbNiNeeZe"), ptr(eval_cos));
-        add_builtin(new BytePtr("_D4core4math3tanFNaNbNiNeeZe"), ptr(eval_tan));
-        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNeeZe"), ptr(eval_sqrt));
-        add_builtin(new BytePtr("_D4core4math4fabsFNaNbNiNeeZe"), ptr(eval_fabs));
-        add_builtin(new BytePtr("_D4core4math5expm1FNaNbNiNeeZe"), ptr(eval_unimp));
-        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNfdZd"), ptr(eval_sqrt));
-        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNffZf"), ptr(eval_sqrt));
-        add_builtin(new BytePtr("_D4core4math5atan2FNaNbNiNfeeZe"), ptr(eval_unimp));
+        add_builtin(new BytePtr("_D4core4math3sinFNaNbNiNfeZe"), eval_sin);
+        add_builtin(new BytePtr("_D4core4math3cosFNaNbNiNfeZe"), eval_cos);
+        add_builtin(new BytePtr("_D4core4math3tanFNaNbNiNfeZe"), eval_tan);
+        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNfeZe"), eval_sqrt);
+        add_builtin(new BytePtr("_D4core4math4fabsFNaNbNiNfeZe"), eval_fabs);
+        add_builtin(new BytePtr("_D4core4math5expm1FNaNbNiNfeZe"), eval_unimp);
+        add_builtin(new BytePtr("_D4core4math4exp2FNaNbNiNfeZe"), eval_unimp);
+        add_builtin(new BytePtr("_D4core4math3sinFNaNbNiNeeZe"), eval_sin);
+        add_builtin(new BytePtr("_D4core4math3cosFNaNbNiNeeZe"), eval_cos);
+        add_builtin(new BytePtr("_D4core4math3tanFNaNbNiNeeZe"), eval_tan);
+        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNeeZe"), eval_sqrt);
+        add_builtin(new BytePtr("_D4core4math4fabsFNaNbNiNeeZe"), eval_fabs);
+        add_builtin(new BytePtr("_D4core4math5expm1FNaNbNiNeeZe"), eval_unimp);
+        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNfdZd"), eval_sqrt);
+        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNffZf"), eval_sqrt);
+        add_builtin(new BytePtr("_D4core4math5atan2FNaNbNiNfeeZe"), eval_unimp);
         if (true)
         {
-            add_builtin(new BytePtr("_D4core4math4yl2xFNaNbNiNfeeZe"), ptr(eval_yl2x));
+            add_builtin(new BytePtr("_D4core4math4yl2xFNaNbNiNfeeZe"), eval_yl2x);
         }
         else
         {
-            add_builtin(new BytePtr("_D4core4math4yl2xFNaNbNiNfeeZe"), ptr(eval_unimp));
+            add_builtin(new BytePtr("_D4core4math4yl2xFNaNbNiNfeeZe"), eval_unimp);
         }
         if (true)
         {
-            add_builtin(new BytePtr("_D4core4math6yl2xp1FNaNbNiNfeeZe"), ptr(eval_yl2xp1));
+            add_builtin(new BytePtr("_D4core4math6yl2xp1FNaNbNiNfeeZe"), eval_yl2xp1);
         }
         else
         {
-            add_builtin(new BytePtr("_D4core4math6yl2xp1FNaNbNiNfeeZe"), ptr(eval_unimp));
+            add_builtin(new BytePtr("_D4core4math6yl2xp1FNaNbNiNfeeZe"), eval_unimp);
         }
-        add_builtin(new BytePtr("_D4core4math6rndtolFNaNbNiNfeZl"), ptr(eval_unimp));
-        add_builtin(new BytePtr("_D3std4math3tanFNaNbNiNfeZe"), ptr(eval_tan));
-        add_builtin(new BytePtr("_D3std4math5expm1FNaNbNiNfeZe"), ptr(eval_unimp));
-        add_builtin(new BytePtr("_D3std4math3tanFNaNbNiNeeZe"), ptr(eval_tan));
-        add_builtin(new BytePtr("_D3std4math3expFNaNbNiNeeZe"), ptr(eval_exp));
-        add_builtin(new BytePtr("_D3std4math5expm1FNaNbNiNeeZe"), ptr(eval_expm1));
-        add_builtin(new BytePtr("_D3std4math4exp2FNaNbNiNeeZe"), ptr(eval_exp2));
-        add_builtin(new BytePtr("_D3std4math5atan2FNaNbNiNfeeZe"), ptr(eval_unimp));
-        add_builtin(new BytePtr("_D4core4math5ldexpFNaNbNiNfeiZe"), ptr(eval_ldexp));
-        add_builtin(new BytePtr("_D3std4math3logFNaNbNiNfeZe"), ptr(eval_log));
-        add_builtin(new BytePtr("_D3std4math4log2FNaNbNiNfeZe"), ptr(eval_log2));
-        add_builtin(new BytePtr("_D3std4math5log10FNaNbNiNfeZe"), ptr(eval_log10));
-        add_builtin(new BytePtr("_D3std4math5roundFNbNiNeeZe"), ptr(eval_round));
-        add_builtin(new BytePtr("_D3std4math5roundFNaNbNiNeeZe"), ptr(eval_round));
-        add_builtin(new BytePtr("_D3std4math5floorFNaNbNiNefZf"), ptr(eval_floor));
-        add_builtin(new BytePtr("_D3std4math5floorFNaNbNiNedZd"), ptr(eval_floor));
-        add_builtin(new BytePtr("_D3std4math5floorFNaNbNiNeeZe"), ptr(eval_floor));
-        add_builtin(new BytePtr("_D3std4math4ceilFNaNbNiNefZf"), ptr(eval_ceil));
-        add_builtin(new BytePtr("_D3std4math4ceilFNaNbNiNedZd"), ptr(eval_ceil));
-        add_builtin(new BytePtr("_D3std4math4ceilFNaNbNiNeeZe"), ptr(eval_ceil));
-        add_builtin(new BytePtr("_D3std4math5truncFNaNbNiNeeZe"), ptr(eval_trunc));
-        add_builtin(new BytePtr("_D3std4math4fminFNaNbNiNfeeZe"), ptr(eval_fmin));
-        add_builtin(new BytePtr("_D3std4math4fmaxFNaNbNiNfeeZe"), ptr(eval_fmax));
-        add_builtin(new BytePtr("_D3std4math__T8copysignTfTfZQoFNaNbNiNeffZf"), ptr(eval_copysign));
-        add_builtin(new BytePtr("_D3std4math__T8copysignTdTdZQoFNaNbNiNeddZd"), ptr(eval_copysign));
-        add_builtin(new BytePtr("_D3std4math__T8copysignTeTeZQoFNaNbNiNeeeZe"), ptr(eval_copysign));
-        add_builtin(new BytePtr("_D3std4math__T3powTfTfZQjFNaNbNiNeffZf"), ptr(eval_pow));
-        add_builtin(new BytePtr("_D3std4math__T3powTdTdZQjFNaNbNiNeddZd"), ptr(eval_pow));
-        add_builtin(new BytePtr("_D3std4math__T3powTeTeZQjFNaNbNiNeeeZe"), ptr(eval_pow));
-        add_builtin(new BytePtr("_D3std4math3fmaFNaNbNiNfeeeZe"), ptr(eval_fma));
-        add_builtin(new BytePtr("_D3std4math__T5isNaNTeZQjFNaNbNiNeeZb"), ptr(eval_isnan));
-        add_builtin(new BytePtr("_D3std4math__T5isNaNTdZQjFNaNbNiNedZb"), ptr(eval_isnan));
-        add_builtin(new BytePtr("_D3std4math__T5isNaNTfZQjFNaNbNiNefZb"), ptr(eval_isnan));
-        add_builtin(new BytePtr("_D3std4math__T10isInfinityTeZQpFNaNbNiNeeZb"), ptr(eval_isinfinity));
-        add_builtin(new BytePtr("_D3std4math__T10isInfinityTdZQpFNaNbNiNedZb"), ptr(eval_isinfinity));
-        add_builtin(new BytePtr("_D3std4math__T10isInfinityTfZQpFNaNbNiNefZb"), ptr(eval_isinfinity));
-        add_builtin(new BytePtr("_D3std4math__T8isFiniteTeZQmFNaNbNiNeeZb"), ptr(eval_isfinite));
-        add_builtin(new BytePtr("_D3std4math__T8isFiniteTdZQmFNaNbNiNedZb"), ptr(eval_isfinite));
-        add_builtin(new BytePtr("_D3std4math__T8isFiniteTfZQmFNaNbNiNefZb"), ptr(eval_isfinite));
-        add_builtin(new BytePtr("_D4core5bitop3bsfFNaNbNiNfkZi"), ptr(eval_bsf));
-        add_builtin(new BytePtr("_D4core5bitop3bsrFNaNbNiNfkZi"), ptr(eval_bsr));
-        add_builtin(new BytePtr("_D4core5bitop3bsfFNaNbNiNfmZi"), ptr(eval_bsf));
-        add_builtin(new BytePtr("_D4core5bitop3bsrFNaNbNiNfmZi"), ptr(eval_bsr));
-        add_builtin(new BytePtr("_D4core5bitop5bswapFNaNbNiNfkZk"), ptr(eval_bswap));
-        add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNfkZi"), ptr(eval_popcnt));
-        add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNftZt"), ptr(eval_popcnt));
+        add_builtin(new BytePtr("_D4core4math6rndtolFNaNbNiNfeZl"), eval_unimp);
+        add_builtin(new BytePtr("_D3std4math3tanFNaNbNiNfeZe"), eval_tan);
+        add_builtin(new BytePtr("_D3std4math5expm1FNaNbNiNfeZe"), eval_unimp);
+        add_builtin(new BytePtr("_D3std4math3tanFNaNbNiNeeZe"), eval_tan);
+        add_builtin(new BytePtr("_D3std4math3expFNaNbNiNeeZe"), eval_exp);
+        add_builtin(new BytePtr("_D3std4math5expm1FNaNbNiNeeZe"), eval_expm1);
+        add_builtin(new BytePtr("_D3std4math4exp2FNaNbNiNeeZe"), eval_exp2);
+        add_builtin(new BytePtr("_D3std4math5atan2FNaNbNiNfeeZe"), eval_unimp);
+        add_builtin(new BytePtr("_D4core4math5ldexpFNaNbNiNfeiZe"), eval_ldexp);
+        add_builtin(new BytePtr("_D3std4math3logFNaNbNiNfeZe"), eval_log);
+        add_builtin(new BytePtr("_D3std4math4log2FNaNbNiNfeZe"), eval_log2);
+        add_builtin(new BytePtr("_D3std4math5log10FNaNbNiNfeZe"), eval_log10);
+        add_builtin(new BytePtr("_D3std4math5roundFNbNiNeeZe"), eval_round);
+        add_builtin(new BytePtr("_D3std4math5roundFNaNbNiNeeZe"), eval_round);
+        add_builtin(new BytePtr("_D3std4math5floorFNaNbNiNefZf"), eval_floor);
+        add_builtin(new BytePtr("_D3std4math5floorFNaNbNiNedZd"), eval_floor);
+        add_builtin(new BytePtr("_D3std4math5floorFNaNbNiNeeZe"), eval_floor);
+        add_builtin(new BytePtr("_D3std4math4ceilFNaNbNiNefZf"), eval_ceil);
+        add_builtin(new BytePtr("_D3std4math4ceilFNaNbNiNedZd"), eval_ceil);
+        add_builtin(new BytePtr("_D3std4math4ceilFNaNbNiNeeZe"), eval_ceil);
+        add_builtin(new BytePtr("_D3std4math5truncFNaNbNiNeeZe"), eval_trunc);
+        add_builtin(new BytePtr("_D3std4math4fminFNaNbNiNfeeZe"), eval_fmin);
+        add_builtin(new BytePtr("_D3std4math4fmaxFNaNbNiNfeeZe"), eval_fmax);
+        add_builtin(new BytePtr("_D3std4math__T8copysignTfTfZQoFNaNbNiNeffZf"), eval_copysign);
+        add_builtin(new BytePtr("_D3std4math__T8copysignTdTdZQoFNaNbNiNeddZd"), eval_copysign);
+        add_builtin(new BytePtr("_D3std4math__T8copysignTeTeZQoFNaNbNiNeeeZe"), eval_copysign);
+        add_builtin(new BytePtr("_D3std4math__T3powTfTfZQjFNaNbNiNeffZf"), eval_pow);
+        add_builtin(new BytePtr("_D3std4math__T3powTdTdZQjFNaNbNiNeddZd"), eval_pow);
+        add_builtin(new BytePtr("_D3std4math__T3powTeTeZQjFNaNbNiNeeeZe"), eval_pow);
+        add_builtin(new BytePtr("_D3std4math3fmaFNaNbNiNfeeeZe"), eval_fma);
+        add_builtin(new BytePtr("_D3std4math__T5isNaNTeZQjFNaNbNiNeeZb"), eval_isnan);
+        add_builtin(new BytePtr("_D3std4math__T5isNaNTdZQjFNaNbNiNedZb"), eval_isnan);
+        add_builtin(new BytePtr("_D3std4math__T5isNaNTfZQjFNaNbNiNefZb"), eval_isnan);
+        add_builtin(new BytePtr("_D3std4math__T10isInfinityTeZQpFNaNbNiNeeZb"), eval_isinfinity);
+        add_builtin(new BytePtr("_D3std4math__T10isInfinityTdZQpFNaNbNiNedZb"), eval_isinfinity);
+        add_builtin(new BytePtr("_D3std4math__T10isInfinityTfZQpFNaNbNiNefZb"), eval_isinfinity);
+        add_builtin(new BytePtr("_D3std4math__T8isFiniteTeZQmFNaNbNiNeeZb"), eval_isfinite);
+        add_builtin(new BytePtr("_D3std4math__T8isFiniteTdZQmFNaNbNiNedZb"), eval_isfinite);
+        add_builtin(new BytePtr("_D3std4math__T8isFiniteTfZQmFNaNbNiNefZb"), eval_isfinite);
+        add_builtin(new BytePtr("_D4core5bitop3bsfFNaNbNiNfkZi"), eval_bsf);
+        add_builtin(new BytePtr("_D4core5bitop3bsrFNaNbNiNfkZi"), eval_bsr);
+        add_builtin(new BytePtr("_D4core5bitop3bsfFNaNbNiNfmZi"), eval_bsf);
+        add_builtin(new BytePtr("_D4core5bitop3bsrFNaNbNiNfmZi"), eval_bsr);
+        add_builtin(new BytePtr("_D4core5bitop5bswapFNaNbNiNfkZk"), eval_bswap);
+        add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNfkZi"), eval_popcnt);
+        add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNftZt"), eval_popcnt);
         if (global.params.is64bit)
-            add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNfmZi"), ptr(eval_popcnt));
+            add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNfmZi"), eval_popcnt);
     }
 
     public static void builtinDeinitialize() {

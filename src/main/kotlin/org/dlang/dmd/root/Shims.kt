@@ -171,12 +171,12 @@ fun memset(data: BytePtr, value: Int, nbytes: Int) {
 
 fun __equals(a: Any, b: Any) = a == b
 
-fun addu(a: Int, b: Int, overflow: Ref<Boolean>): Long {
+fun addu(a: Int, b: Int, overflow: Ref<Boolean>): Int {
     overflow.value = false
     return a + b
 }
 
-fun mulu(a: Int, b: Int, overflow: Ref<Boolean>): Long {
+fun mulu(a: Int, b: Int, overflow: Ref<Boolean>): Int {
     overflow.value = false
     return a * b
 }

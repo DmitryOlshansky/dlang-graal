@@ -489,10 +489,19 @@ public:
             buf.fmt("(%s.ptr().plus(%u))", e.var.ident.symbol, e.offset);
         else if (e.var.isTypeInfoDeclaration())
             buf.put(e.var.ident.symbol);
-        else if(e.var.type.ty == Tstruct)
-            buf.fmt("%s", e.var.ident.symbol);
+        else if(e.var.type.ty == Tstruct) {
+            buf.put(printParent(e.var));
+            buf.fmt("%s", e.var.varName(opts));
+        }
+        else if(e.var.type.isTypeFunction) {
+            auto parent = printParent(e.var);
+            if (parent.length) {
+                buf.fmt("%s::", parent[0..$-1]);
+            }
+            buf.fmt("%s", e.var.varName(opts));
+        }
         else {
-            buf.fmt("ptr(%s)", e.var.varName(opts));
+            buf.fmt("ptr(%s%s)", printParent(e.var), e.var.varName(opts));
         }
     }
 
@@ -645,22 +654,26 @@ public:
                 buf.put(" == null");
             }
             else if (e.op == TOK.address) {
-                if (auto var = e.e1.isDotVarExp) {
-                    if (var.var.ident.symbol == "next") {
-                        //stderr.writefln("Took address of %s %s", e.e1.toString, var.var);
-                        buf.put("new PtrToNext(");
-                        expToBuffer(var.e1, precedence[e.op], buf, opts);
-                        buf.put(")");
-                        return;
-                    }
-                }
-                buf.put("ptr(");
-                if (auto var = e.e1.isVarExp) {
-                    buf.put(var.var.varName(opts));
-                }
-                else
+                if (e.e1.type.isTypeFunction)
                     expToBuffer(e.e1, precedence[e.op], buf, opts);
-                buf.put(")");
+                else {
+                    if (auto var = e.e1.isDotVarExp) {
+                        if (var.var.ident.symbol == "next") {
+                            //stderr.writefln("Took address of %s %s", e.e1.toString, var.var);
+                            buf.put("new PtrToNext(");
+                            expToBuffer(var.e1, precedence[e.op], buf, opts);
+                            buf.put(")");
+                            return;
+                        }
+                    }
+                    buf.put("ptr(");
+                    if (auto var = e.e1.isVarExp) {
+                        buf.put(var.var.varName(opts));
+                    }
+                    else
+                        expToBuffer(e.e1, precedence[e.op], buf, opts);
+                    buf.put(")");
+                }
             }
             else {
                 stderr.writefln("Unsupported unary pointer arithmetic: %s", e.toString());

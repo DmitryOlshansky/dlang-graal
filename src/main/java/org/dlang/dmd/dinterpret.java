@@ -2875,54 +2875,54 @@ public class dinterpret {
             switch ((e.op & 0xFF))
             {
                 case 74:
-                    this.interpretCommon(e, ptr(Add));
+                    this.interpretCommon(e, Add);
                     return ;
                 case 75:
-                    this.interpretCommon(e, ptr(Min));
+                    this.interpretCommon(e, Min);
                     return ;
                 case 78:
-                    this.interpretCommon(e, ptr(Mul));
+                    this.interpretCommon(e, Mul);
                     return ;
                 case 79:
-                    this.interpretCommon(e, ptr(Div));
+                    this.interpretCommon(e, Div);
                     return ;
                 case 80:
-                    this.interpretCommon(e, ptr(Mod));
+                    this.interpretCommon(e, Mod);
                     return ;
                 case 64:
-                    this.interpretCommon(e, ptr(Shl));
+                    this.interpretCommon(e, Shl);
                     return ;
                 case 65:
-                    this.interpretCommon(e, ptr(Shr));
+                    this.interpretCommon(e, Shr);
                     return ;
                 case 68:
-                    this.interpretCommon(e, ptr(Ushr));
+                    this.interpretCommon(e, Ushr);
                     return ;
                 case 84:
-                    this.interpretCommon(e, ptr(And));
+                    this.interpretCommon(e, And);
                     return ;
                 case 85:
-                    this.interpretCommon(e, ptr(Or));
+                    this.interpretCommon(e, Or);
                     return ;
                 case 86:
-                    this.interpretCommon(e, ptr(Xor));
+                    this.interpretCommon(e, Xor);
                     return ;
                 case 226:
-                    this.interpretCommon(e, ptr(Pow));
+                    this.interpretCommon(e, Pow);
                     return ;
                 case 58:
                 case 59:
-                    this.interpretCompareCommon(e, ptr(ctfeEqual));
+                    this.interpretCompareCommon(e, ctfeEqual);
                     return ;
                 case 60:
                 case 61:
-                    this.interpretCompareCommon(e, ptr(ctfeIdentity));
+                    this.interpretCompareCommon(e, ctfeIdentity);
                     return ;
                 case 54:
                 case 56:
                 case 55:
                 case 57:
-                    this.interpretCompareCommon(e, ptr(ctfeCmp));
+                    this.interpretCompareCommon(e, ctfeCmp);
                     return ;
                 default:
                 printf(new BytePtr("be = '%s' %s at [%s]\n"), Token.toChars(e.op), e.toChars(), e.loc.toChars(global.params.showColumns));
@@ -3797,45 +3797,45 @@ public class dinterpret {
             switch ((e.op & 0xFF))
             {
                 case 76:
-                    this.interpretAssignCommon(e, ptr(Add), 0);
+                    this.interpretAssignCommon(e, Add, 0);
                     return ;
                 case 77:
-                    this.interpretAssignCommon(e, ptr(Min), 0);
+                    this.interpretAssignCommon(e, Min, 0);
                     return ;
                 case 71:
                 case 72:
                 case 73:
-                    this.interpretAssignCommon(e, ptr(ctfeCat), 0);
+                    this.interpretAssignCommon(e, ctfeCat, 0);
                     return ;
                 case 81:
-                    this.interpretAssignCommon(e, ptr(Mul), 0);
+                    this.interpretAssignCommon(e, Mul, 0);
                     return ;
                 case 82:
-                    this.interpretAssignCommon(e, ptr(Div), 0);
+                    this.interpretAssignCommon(e, Div, 0);
                     return ;
                 case 83:
-                    this.interpretAssignCommon(e, ptr(Mod), 0);
+                    this.interpretAssignCommon(e, Mod, 0);
                     return ;
                 case 66:
-                    this.interpretAssignCommon(e, ptr(Shl), 0);
+                    this.interpretAssignCommon(e, Shl, 0);
                     return ;
                 case 67:
-                    this.interpretAssignCommon(e, ptr(Shr), 0);
+                    this.interpretAssignCommon(e, Shr, 0);
                     return ;
                 case 69:
-                    this.interpretAssignCommon(e, ptr(Ushr), 0);
+                    this.interpretAssignCommon(e, Ushr, 0);
                     return ;
                 case 87:
-                    this.interpretAssignCommon(e, ptr(And), 0);
+                    this.interpretAssignCommon(e, And, 0);
                     return ;
                 case 88:
-                    this.interpretAssignCommon(e, ptr(Or), 0);
+                    this.interpretAssignCommon(e, Or, 0);
                     return ;
                 case 89:
-                    this.interpretAssignCommon(e, ptr(Xor), 0);
+                    this.interpretAssignCommon(e, Xor, 0);
                     return ;
                 case 227:
-                    this.interpretAssignCommon(e, ptr(Pow), 0);
+                    this.interpretAssignCommon(e, Pow, 0);
                     return ;
                 default:
                 throw new AssertionError("Unreachable code!");
@@ -3844,9 +3844,9 @@ public class dinterpret {
 
         public  void visit(PostExp e) {
             if ((e.op & 0xFF) == 93)
-                this.interpretAssignCommon(e, ptr(Add), 1);
+                this.interpretAssignCommon(e, Add, 1);
             else
-                this.interpretAssignCommon(e, ptr(Min), 1);
+                this.interpretAssignCommon(e, Min, 1);
         }
 
         public static int isPointerCmpExp(Expression e, Ptr<Expression> p1, Ptr<Expression> p2) {

@@ -36,890 +36,6 @@ import static org.dlang.dmd.staticassert.*;
 
 public class parsetimevisitor {
 
-    // from template ParseTimeVisitor!(ASTCodegen)
-    public static class ParseTimeVisitorASTCodegen
-    {
-        public  void visit(Dsymbol _param_0) {
-            throw new AssertionError("Unreachable code!");
-        }
-
-        public  void visit(Parameter _param_0) {
-            throw new AssertionError("Unreachable code!");
-        }
-
-        public  void visit(Statement _param_0) {
-            throw new AssertionError("Unreachable code!");
-        }
-
-        public  void visit(Type _param_0) {
-            throw new AssertionError("Unreachable code!");
-        }
-
-        public  void visit(Expression _param_0) {
-            throw new AssertionError("Unreachable code!");
-        }
-
-        public  void visit(TemplateParameter _param_0) {
-            throw new AssertionError("Unreachable code!");
-        }
-
-        public  void visit(Condition _param_0) {
-            throw new AssertionError("Unreachable code!");
-        }
-
-        public  void visit(Initializer _param_0) {
-            throw new AssertionError("Unreachable code!");
-        }
-
-        public  void visit(AliasThis s) {
-            this.visit((Dsymbol)s);
-        }
-
-        public  void visit(Declaration s) {
-            this.visit((Dsymbol)s);
-        }
-
-        public  void visit(ScopeDsymbol s) {
-            this.visit((Dsymbol)s);
-        }
-
-        public  void visit(Import s) {
-            this.visit((Dsymbol)s);
-        }
-
-        public  void visit(AttribDeclaration s) {
-            this.visit((Dsymbol)s);
-        }
-
-        public  void visit(StaticAssert s) {
-            this.visit((Dsymbol)s);
-        }
-
-        public  void visit(DebugSymbol s) {
-            this.visit((Dsymbol)s);
-        }
-
-        public  void visit(VersionSymbol s) {
-            this.visit((Dsymbol)s);
-        }
-
-        public  void visit(dmodule.Package s) {
-            this.visit((ScopeDsymbol)s);
-        }
-
-        public  void visit(EnumDeclaration s) {
-            this.visit((ScopeDsymbol)s);
-        }
-
-        public  void visit(AggregateDeclaration s) {
-            this.visit((ScopeDsymbol)s);
-        }
-
-        public  void visit(TemplateDeclaration s) {
-            this.visit((ScopeDsymbol)s);
-        }
-
-        public  void visit(TemplateInstance s) {
-            this.visit((ScopeDsymbol)s);
-        }
-
-        public  void visit(Nspace s) {
-            this.visit((ScopeDsymbol)s);
-        }
-
-        public  void visit(VarDeclaration s) {
-            this.visit((Declaration)s);
-        }
-
-        public  void visit(FuncDeclaration s) {
-            this.visit((Declaration)s);
-        }
-
-        public  void visit(AliasDeclaration s) {
-            this.visit((Declaration)s);
-        }
-
-        public  void visit(TupleDeclaration s) {
-            this.visit((Declaration)s);
-        }
-
-        public  void visit(FuncLiteralDeclaration s) {
-            this.visit((FuncDeclaration)s);
-        }
-
-        public  void visit(PostBlitDeclaration s) {
-            this.visit((FuncDeclaration)s);
-        }
-
-        public  void visit(CtorDeclaration s) {
-            this.visit((FuncDeclaration)s);
-        }
-
-        public  void visit(DtorDeclaration s) {
-            this.visit((FuncDeclaration)s);
-        }
-
-        public  void visit(InvariantDeclaration s) {
-            this.visit((FuncDeclaration)s);
-        }
-
-        public  void visit(UnitTestDeclaration s) {
-            this.visit((FuncDeclaration)s);
-        }
-
-        public  void visit(NewDeclaration s) {
-            this.visit((FuncDeclaration)s);
-        }
-
-        public  void visit(DeleteDeclaration s) {
-            this.visit((FuncDeclaration)s);
-        }
-
-        public  void visit(StaticCtorDeclaration s) {
-            this.visit((FuncDeclaration)s);
-        }
-
-        public  void visit(StaticDtorDeclaration s) {
-            this.visit((FuncDeclaration)s);
-        }
-
-        public  void visit(SharedStaticCtorDeclaration s) {
-            this.visit((StaticCtorDeclaration)s);
-        }
-
-        public  void visit(SharedStaticDtorDeclaration s) {
-            this.visit((StaticDtorDeclaration)s);
-        }
-
-        public  void visit(CompileDeclaration s) {
-            this.visit((AttribDeclaration)s);
-        }
-
-        public  void visit(UserAttributeDeclaration s) {
-            this.visit((AttribDeclaration)s);
-        }
-
-        public  void visit(LinkDeclaration s) {
-            this.visit((AttribDeclaration)s);
-        }
-
-        public  void visit(AnonDeclaration s) {
-            this.visit((AttribDeclaration)s);
-        }
-
-        public  void visit(AlignDeclaration s) {
-            this.visit((AttribDeclaration)s);
-        }
-
-        public  void visit(CPPMangleDeclaration s) {
-            this.visit((AttribDeclaration)s);
-        }
-
-        public  void visit(CPPNamespaceDeclaration s) {
-            this.visit((AttribDeclaration)s);
-        }
-
-        public  void visit(ProtDeclaration s) {
-            this.visit((AttribDeclaration)s);
-        }
-
-        public  void visit(PragmaDeclaration s) {
-            this.visit((AttribDeclaration)s);
-        }
-
-        public  void visit(StorageClassDeclaration s) {
-            this.visit((AttribDeclaration)s);
-        }
-
-        public  void visit(ConditionalDeclaration s) {
-            this.visit((AttribDeclaration)s);
-        }
-
-        public  void visit(StaticForeachDeclaration s) {
-            this.visit((AttribDeclaration)s);
-        }
-
-        public  void visit(DeprecatedDeclaration s) {
-            this.visit((StorageClassDeclaration)s);
-        }
-
-        public  void visit(StaticIfDeclaration s) {
-            this.visit((ConditionalDeclaration)s);
-        }
-
-        public  void visit(EnumMember s) {
-            this.visit((VarDeclaration)s);
-        }
-
-        public  void visit(dmodule.Module s) {
-            this.visit((dmodule.Package)s);
-        }
-
-        public  void visit(StructDeclaration s) {
-            this.visit((AggregateDeclaration)s);
-        }
-
-        public  void visit(UnionDeclaration s) {
-            this.visit((StructDeclaration)s);
-        }
-
-        public  void visit(ClassDeclaration s) {
-            this.visit((AggregateDeclaration)s);
-        }
-
-        public  void visit(InterfaceDeclaration s) {
-            this.visit((ClassDeclaration)s);
-        }
-
-        public  void visit(TemplateMixin s) {
-            this.visit((TemplateInstance)s);
-        }
-
-        public  void visit(ImportStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(ScopeStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(ReturnStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(LabelStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(StaticAssertStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(CompileStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(WhileStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(ForStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(DoStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(ForeachRangeStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(ForeachStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(IfStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(ScopeGuardStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(ConditionalStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(StaticForeachStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(PragmaStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(SwitchStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(CaseRangeStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(CaseStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(DefaultStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(BreakStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(ContinueStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(GotoDefaultStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(GotoCaseStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(GotoStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(SynchronizedStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(WithStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(TryCatchStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(TryFinallyStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(ThrowStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(AsmStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(ExpStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(CompoundStatement s) {
-            this.visit((Statement)s);
-        }
-
-        public  void visit(CompoundDeclarationStatement s) {
-            this.visit((CompoundStatement)s);
-        }
-
-        public  void visit(CompoundAsmStatement s) {
-            this.visit((CompoundStatement)s);
-        }
-
-        public  void visit(InlineAsmStatement s) {
-            this.visit((AsmStatement)s);
-        }
-
-        public  void visit(GccAsmStatement s) {
-            this.visit((AsmStatement)s);
-        }
-
-        public  void visit(TypeBasic t) {
-            this.visit((Type)t);
-        }
-
-        public  void visit(TypeError t) {
-            this.visit((Type)t);
-        }
-
-        public  void visit(TypeNull t) {
-            this.visit((Type)t);
-        }
-
-        public  void visit(TypeVector t) {
-            this.visit((Type)t);
-        }
-
-        public  void visit(TypeEnum t) {
-            this.visit((Type)t);
-        }
-
-        public  void visit(TypeTuple t) {
-            this.visit((Type)t);
-        }
-
-        public  void visit(TypeClass t) {
-            this.visit((Type)t);
-        }
-
-        public  void visit(TypeStruct t) {
-            this.visit((Type)t);
-        }
-
-        public  void visit(TypeNext t) {
-            this.visit((Type)t);
-        }
-
-        public  void visit(TypeQualified t) {
-            this.visit((Type)t);
-        }
-
-        public  void visit(TypeTraits t) {
-            this.visit((Type)t);
-        }
-
-        public  void visit(TypeReference t) {
-            this.visit((TypeNext)t);
-        }
-
-        public  void visit(TypeSlice t) {
-            this.visit((TypeNext)t);
-        }
-
-        public  void visit(TypeDelegate t) {
-            this.visit((TypeNext)t);
-        }
-
-        public  void visit(TypePointer t) {
-            this.visit((TypeNext)t);
-        }
-
-        public  void visit(TypeFunction t) {
-            this.visit((TypeNext)t);
-        }
-
-        public  void visit(TypeArray t) {
-            this.visit((TypeNext)t);
-        }
-
-        public  void visit(TypeDArray t) {
-            this.visit((TypeArray)t);
-        }
-
-        public  void visit(TypeAArray t) {
-            this.visit((TypeArray)t);
-        }
-
-        public  void visit(TypeSArray t) {
-            this.visit((TypeArray)t);
-        }
-
-        public  void visit(TypeIdentifier t) {
-            this.visit((TypeQualified)t);
-        }
-
-        public  void visit(TypeReturn t) {
-            this.visit((TypeQualified)t);
-        }
-
-        public  void visit(TypeTypeof t) {
-            this.visit((TypeQualified)t);
-        }
-
-        public  void visit(TypeInstance t) {
-            this.visit((TypeQualified)t);
-        }
-
-        public  void visit(DeclarationExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(IntegerExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(NewAnonClassExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(IsExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(RealExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(NullExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(TypeidExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(TraitsExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(StringExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(NewExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(AssocArrayLiteralExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(ArrayLiteralExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(CompileExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(FuncExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(IntervalExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(TypeExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(ScopeExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(IdentifierExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(UnaExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(DefaultInitExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(BinExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(DsymbolExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(TemplateExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(SymbolExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(TupleExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(ThisExp e) {
-            this.visit((Expression)e);
-        }
-
-        public  void visit(VarExp e) {
-            this.visit((SymbolExp)e);
-        }
-
-        public  void visit(DollarExp e) {
-            this.visit((IdentifierExp)e);
-        }
-
-        public  void visit(SuperExp e) {
-            this.visit((ThisExp)e);
-        }
-
-        public  void visit(AddrExp e) {
-            this.visit((UnaExp)e);
-        }
-
-        public  void visit(PreExp e) {
-            this.visit((UnaExp)e);
-        }
-
-        public  void visit(PtrExp e) {
-            this.visit((UnaExp)e);
-        }
-
-        public  void visit(NegExp e) {
-            this.visit((UnaExp)e);
-        }
-
-        public  void visit(UAddExp e) {
-            this.visit((UnaExp)e);
-        }
-
-        public  void visit(NotExp e) {
-            this.visit((UnaExp)e);
-        }
-
-        public  void visit(ComExp e) {
-            this.visit((UnaExp)e);
-        }
-
-        public  void visit(DeleteExp e) {
-            this.visit((UnaExp)e);
-        }
-
-        public  void visit(CastExp e) {
-            this.visit((UnaExp)e);
-        }
-
-        public  void visit(CallExp e) {
-            this.visit((UnaExp)e);
-        }
-
-        public  void visit(DotIdExp e) {
-            this.visit((UnaExp)e);
-        }
-
-        public  void visit(AssertExp e) {
-            this.visit((UnaExp)e);
-        }
-
-        public  void visit(ImportExp e) {
-            this.visit((UnaExp)e);
-        }
-
-        public  void visit(DotTemplateInstanceExp e) {
-            this.visit((UnaExp)e);
-        }
-
-        public  void visit(ArrayExp e) {
-            this.visit((UnaExp)e);
-        }
-
-        public  void visit(FuncInitExp e) {
-            this.visit((DefaultInitExp)e);
-        }
-
-        public  void visit(PrettyFuncInitExp e) {
-            this.visit((DefaultInitExp)e);
-        }
-
-        public  void visit(FileInitExp e) {
-            this.visit((DefaultInitExp)e);
-        }
-
-        public  void visit(LineInitExp e) {
-            this.visit((DefaultInitExp)e);
-        }
-
-        public  void visit(ModuleInitExp e) {
-            this.visit((DefaultInitExp)e);
-        }
-
-        public  void visit(CommaExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(PostExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(PowExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(MulExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(DivExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(ModExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(AddExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(MinExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(CatExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(ShlExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(ShrExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(UshrExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(EqualExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(InExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(IdentityExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(CmpExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(AndExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(XorExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(OrExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(LogicalExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(CondExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(AssignExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(BinAssignExp e) {
-            this.visit((BinExp)e);
-        }
-
-        public  void visit(AddAssignExp e) {
-            this.visit((BinAssignExp)e);
-        }
-
-        public  void visit(MinAssignExp e) {
-            this.visit((BinAssignExp)e);
-        }
-
-        public  void visit(MulAssignExp e) {
-            this.visit((BinAssignExp)e);
-        }
-
-        public  void visit(DivAssignExp e) {
-            this.visit((BinAssignExp)e);
-        }
-
-        public  void visit(ModAssignExp e) {
-            this.visit((BinAssignExp)e);
-        }
-
-        public  void visit(PowAssignExp e) {
-            this.visit((BinAssignExp)e);
-        }
-
-        public  void visit(AndAssignExp e) {
-            this.visit((BinAssignExp)e);
-        }
-
-        public  void visit(OrAssignExp e) {
-            this.visit((BinAssignExp)e);
-        }
-
-        public  void visit(XorAssignExp e) {
-            this.visit((BinAssignExp)e);
-        }
-
-        public  void visit(ShlAssignExp e) {
-            this.visit((BinAssignExp)e);
-        }
-
-        public  void visit(ShrAssignExp e) {
-            this.visit((BinAssignExp)e);
-        }
-
-        public  void visit(UshrAssignExp e) {
-            this.visit((BinAssignExp)e);
-        }
-
-        public  void visit(CatAssignExp e) {
-            this.visit((BinAssignExp)e);
-        }
-
-        public  void visit(TemplateAliasParameter tp) {
-            this.visit((TemplateParameter)tp);
-        }
-
-        public  void visit(TemplateTypeParameter tp) {
-            this.visit((TemplateParameter)tp);
-        }
-
-        public  void visit(TemplateTupleParameter tp) {
-            this.visit((TemplateParameter)tp);
-        }
-
-        public  void visit(TemplateValueParameter tp) {
-            this.visit((TemplateParameter)tp);
-        }
-
-        public  void visit(TemplateThisParameter tp) {
-            this.visit((TemplateTypeParameter)tp);
-        }
-
-        public  void visit(StaticIfCondition c) {
-            this.visit((Condition)c);
-        }
-
-        public  void visit(DVCondition c) {
-            this.visit((Condition)c);
-        }
-
-        public  void visit(DebugCondition c) {
-            this.visit((DVCondition)c);
-        }
-
-        public  void visit(VersionCondition c) {
-            this.visit((DVCondition)c);
-        }
-
-        public  void visit(ExpInitializer i) {
-            this.visit((Initializer)i);
-        }
-
-        public  void visit(StructInitializer i) {
-            this.visit((Initializer)i);
-        }
-
-        public  void visit(ArrayInitializer i) {
-            this.visit((Initializer)i);
-        }
-
-        public  void visit(VoidInitializer i) {
-            this.visit((Initializer)i);
-        }
-
-
-        public ParseTimeVisitorASTCodegen() {}
-
-        public ParseTimeVisitorASTCodegen copy() {
-            ParseTimeVisitorASTCodegen that = new ParseTimeVisitorASTCodegen();
-            return that;
-        }
-    }
-
     // from template ParseTimeVisitor!(ASTBase)
     public static class ParseTimeVisitorASTBase
     {
@@ -1800,6 +916,890 @@ public class parsetimevisitor {
 
         public ParseTimeVisitorASTBase copy() {
             ParseTimeVisitorASTBase that = new ParseTimeVisitorASTBase();
+            return that;
+        }
+    }
+
+    // from template ParseTimeVisitor!(ASTCodegen)
+    public static class ParseTimeVisitorASTCodegen
+    {
+        public  void visit(Dsymbol _param_0) {
+            throw new AssertionError("Unreachable code!");
+        }
+
+        public  void visit(Parameter _param_0) {
+            throw new AssertionError("Unreachable code!");
+        }
+
+        public  void visit(Statement _param_0) {
+            throw new AssertionError("Unreachable code!");
+        }
+
+        public  void visit(Type _param_0) {
+            throw new AssertionError("Unreachable code!");
+        }
+
+        public  void visit(Expression _param_0) {
+            throw new AssertionError("Unreachable code!");
+        }
+
+        public  void visit(TemplateParameter _param_0) {
+            throw new AssertionError("Unreachable code!");
+        }
+
+        public  void visit(Condition _param_0) {
+            throw new AssertionError("Unreachable code!");
+        }
+
+        public  void visit(Initializer _param_0) {
+            throw new AssertionError("Unreachable code!");
+        }
+
+        public  void visit(AliasThis s) {
+            this.visit((Dsymbol)s);
+        }
+
+        public  void visit(Declaration s) {
+            this.visit((Dsymbol)s);
+        }
+
+        public  void visit(ScopeDsymbol s) {
+            this.visit((Dsymbol)s);
+        }
+
+        public  void visit(Import s) {
+            this.visit((Dsymbol)s);
+        }
+
+        public  void visit(AttribDeclaration s) {
+            this.visit((Dsymbol)s);
+        }
+
+        public  void visit(StaticAssert s) {
+            this.visit((Dsymbol)s);
+        }
+
+        public  void visit(DebugSymbol s) {
+            this.visit((Dsymbol)s);
+        }
+
+        public  void visit(VersionSymbol s) {
+            this.visit((Dsymbol)s);
+        }
+
+        public  void visit(dmodule.Package s) {
+            this.visit((ScopeDsymbol)s);
+        }
+
+        public  void visit(EnumDeclaration s) {
+            this.visit((ScopeDsymbol)s);
+        }
+
+        public  void visit(AggregateDeclaration s) {
+            this.visit((ScopeDsymbol)s);
+        }
+
+        public  void visit(TemplateDeclaration s) {
+            this.visit((ScopeDsymbol)s);
+        }
+
+        public  void visit(TemplateInstance s) {
+            this.visit((ScopeDsymbol)s);
+        }
+
+        public  void visit(Nspace s) {
+            this.visit((ScopeDsymbol)s);
+        }
+
+        public  void visit(VarDeclaration s) {
+            this.visit((Declaration)s);
+        }
+
+        public  void visit(FuncDeclaration s) {
+            this.visit((Declaration)s);
+        }
+
+        public  void visit(AliasDeclaration s) {
+            this.visit((Declaration)s);
+        }
+
+        public  void visit(TupleDeclaration s) {
+            this.visit((Declaration)s);
+        }
+
+        public  void visit(FuncLiteralDeclaration s) {
+            this.visit((FuncDeclaration)s);
+        }
+
+        public  void visit(PostBlitDeclaration s) {
+            this.visit((FuncDeclaration)s);
+        }
+
+        public  void visit(CtorDeclaration s) {
+            this.visit((FuncDeclaration)s);
+        }
+
+        public  void visit(DtorDeclaration s) {
+            this.visit((FuncDeclaration)s);
+        }
+
+        public  void visit(InvariantDeclaration s) {
+            this.visit((FuncDeclaration)s);
+        }
+
+        public  void visit(UnitTestDeclaration s) {
+            this.visit((FuncDeclaration)s);
+        }
+
+        public  void visit(NewDeclaration s) {
+            this.visit((FuncDeclaration)s);
+        }
+
+        public  void visit(DeleteDeclaration s) {
+            this.visit((FuncDeclaration)s);
+        }
+
+        public  void visit(StaticCtorDeclaration s) {
+            this.visit((FuncDeclaration)s);
+        }
+
+        public  void visit(StaticDtorDeclaration s) {
+            this.visit((FuncDeclaration)s);
+        }
+
+        public  void visit(SharedStaticCtorDeclaration s) {
+            this.visit((StaticCtorDeclaration)s);
+        }
+
+        public  void visit(SharedStaticDtorDeclaration s) {
+            this.visit((StaticDtorDeclaration)s);
+        }
+
+        public  void visit(CompileDeclaration s) {
+            this.visit((AttribDeclaration)s);
+        }
+
+        public  void visit(UserAttributeDeclaration s) {
+            this.visit((AttribDeclaration)s);
+        }
+
+        public  void visit(LinkDeclaration s) {
+            this.visit((AttribDeclaration)s);
+        }
+
+        public  void visit(AnonDeclaration s) {
+            this.visit((AttribDeclaration)s);
+        }
+
+        public  void visit(AlignDeclaration s) {
+            this.visit((AttribDeclaration)s);
+        }
+
+        public  void visit(CPPMangleDeclaration s) {
+            this.visit((AttribDeclaration)s);
+        }
+
+        public  void visit(CPPNamespaceDeclaration s) {
+            this.visit((AttribDeclaration)s);
+        }
+
+        public  void visit(ProtDeclaration s) {
+            this.visit((AttribDeclaration)s);
+        }
+
+        public  void visit(PragmaDeclaration s) {
+            this.visit((AttribDeclaration)s);
+        }
+
+        public  void visit(StorageClassDeclaration s) {
+            this.visit((AttribDeclaration)s);
+        }
+
+        public  void visit(ConditionalDeclaration s) {
+            this.visit((AttribDeclaration)s);
+        }
+
+        public  void visit(StaticForeachDeclaration s) {
+            this.visit((AttribDeclaration)s);
+        }
+
+        public  void visit(DeprecatedDeclaration s) {
+            this.visit((StorageClassDeclaration)s);
+        }
+
+        public  void visit(StaticIfDeclaration s) {
+            this.visit((ConditionalDeclaration)s);
+        }
+
+        public  void visit(EnumMember s) {
+            this.visit((VarDeclaration)s);
+        }
+
+        public  void visit(dmodule.Module s) {
+            this.visit((dmodule.Package)s);
+        }
+
+        public  void visit(StructDeclaration s) {
+            this.visit((AggregateDeclaration)s);
+        }
+
+        public  void visit(UnionDeclaration s) {
+            this.visit((StructDeclaration)s);
+        }
+
+        public  void visit(ClassDeclaration s) {
+            this.visit((AggregateDeclaration)s);
+        }
+
+        public  void visit(InterfaceDeclaration s) {
+            this.visit((ClassDeclaration)s);
+        }
+
+        public  void visit(TemplateMixin s) {
+            this.visit((TemplateInstance)s);
+        }
+
+        public  void visit(ImportStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(ScopeStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(ReturnStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(LabelStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(StaticAssertStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(CompileStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(WhileStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(ForStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(DoStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(ForeachRangeStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(ForeachStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(IfStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(ScopeGuardStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(ConditionalStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(StaticForeachStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(PragmaStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(SwitchStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(CaseRangeStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(CaseStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(DefaultStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(BreakStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(ContinueStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(GotoDefaultStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(GotoCaseStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(GotoStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(SynchronizedStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(WithStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(TryCatchStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(TryFinallyStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(ThrowStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(AsmStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(ExpStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(CompoundStatement s) {
+            this.visit((Statement)s);
+        }
+
+        public  void visit(CompoundDeclarationStatement s) {
+            this.visit((CompoundStatement)s);
+        }
+
+        public  void visit(CompoundAsmStatement s) {
+            this.visit((CompoundStatement)s);
+        }
+
+        public  void visit(InlineAsmStatement s) {
+            this.visit((AsmStatement)s);
+        }
+
+        public  void visit(GccAsmStatement s) {
+            this.visit((AsmStatement)s);
+        }
+
+        public  void visit(TypeBasic t) {
+            this.visit((Type)t);
+        }
+
+        public  void visit(TypeError t) {
+            this.visit((Type)t);
+        }
+
+        public  void visit(TypeNull t) {
+            this.visit((Type)t);
+        }
+
+        public  void visit(TypeVector t) {
+            this.visit((Type)t);
+        }
+
+        public  void visit(TypeEnum t) {
+            this.visit((Type)t);
+        }
+
+        public  void visit(TypeTuple t) {
+            this.visit((Type)t);
+        }
+
+        public  void visit(TypeClass t) {
+            this.visit((Type)t);
+        }
+
+        public  void visit(TypeStruct t) {
+            this.visit((Type)t);
+        }
+
+        public  void visit(TypeNext t) {
+            this.visit((Type)t);
+        }
+
+        public  void visit(TypeQualified t) {
+            this.visit((Type)t);
+        }
+
+        public  void visit(TypeTraits t) {
+            this.visit((Type)t);
+        }
+
+        public  void visit(TypeReference t) {
+            this.visit((TypeNext)t);
+        }
+
+        public  void visit(TypeSlice t) {
+            this.visit((TypeNext)t);
+        }
+
+        public  void visit(TypeDelegate t) {
+            this.visit((TypeNext)t);
+        }
+
+        public  void visit(TypePointer t) {
+            this.visit((TypeNext)t);
+        }
+
+        public  void visit(TypeFunction t) {
+            this.visit((TypeNext)t);
+        }
+
+        public  void visit(TypeArray t) {
+            this.visit((TypeNext)t);
+        }
+
+        public  void visit(TypeDArray t) {
+            this.visit((TypeArray)t);
+        }
+
+        public  void visit(TypeAArray t) {
+            this.visit((TypeArray)t);
+        }
+
+        public  void visit(TypeSArray t) {
+            this.visit((TypeArray)t);
+        }
+
+        public  void visit(TypeIdentifier t) {
+            this.visit((TypeQualified)t);
+        }
+
+        public  void visit(TypeReturn t) {
+            this.visit((TypeQualified)t);
+        }
+
+        public  void visit(TypeTypeof t) {
+            this.visit((TypeQualified)t);
+        }
+
+        public  void visit(TypeInstance t) {
+            this.visit((TypeQualified)t);
+        }
+
+        public  void visit(DeclarationExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(IntegerExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(NewAnonClassExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(IsExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(RealExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(NullExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(TypeidExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(TraitsExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(StringExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(NewExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(AssocArrayLiteralExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(ArrayLiteralExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(CompileExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(FuncExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(IntervalExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(TypeExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(ScopeExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(IdentifierExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(UnaExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(DefaultInitExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(BinExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(DsymbolExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(TemplateExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(SymbolExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(TupleExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(ThisExp e) {
+            this.visit((Expression)e);
+        }
+
+        public  void visit(VarExp e) {
+            this.visit((SymbolExp)e);
+        }
+
+        public  void visit(DollarExp e) {
+            this.visit((IdentifierExp)e);
+        }
+
+        public  void visit(SuperExp e) {
+            this.visit((ThisExp)e);
+        }
+
+        public  void visit(AddrExp e) {
+            this.visit((UnaExp)e);
+        }
+
+        public  void visit(PreExp e) {
+            this.visit((UnaExp)e);
+        }
+
+        public  void visit(PtrExp e) {
+            this.visit((UnaExp)e);
+        }
+
+        public  void visit(NegExp e) {
+            this.visit((UnaExp)e);
+        }
+
+        public  void visit(UAddExp e) {
+            this.visit((UnaExp)e);
+        }
+
+        public  void visit(NotExp e) {
+            this.visit((UnaExp)e);
+        }
+
+        public  void visit(ComExp e) {
+            this.visit((UnaExp)e);
+        }
+
+        public  void visit(DeleteExp e) {
+            this.visit((UnaExp)e);
+        }
+
+        public  void visit(CastExp e) {
+            this.visit((UnaExp)e);
+        }
+
+        public  void visit(CallExp e) {
+            this.visit((UnaExp)e);
+        }
+
+        public  void visit(DotIdExp e) {
+            this.visit((UnaExp)e);
+        }
+
+        public  void visit(AssertExp e) {
+            this.visit((UnaExp)e);
+        }
+
+        public  void visit(ImportExp e) {
+            this.visit((UnaExp)e);
+        }
+
+        public  void visit(DotTemplateInstanceExp e) {
+            this.visit((UnaExp)e);
+        }
+
+        public  void visit(ArrayExp e) {
+            this.visit((UnaExp)e);
+        }
+
+        public  void visit(FuncInitExp e) {
+            this.visit((DefaultInitExp)e);
+        }
+
+        public  void visit(PrettyFuncInitExp e) {
+            this.visit((DefaultInitExp)e);
+        }
+
+        public  void visit(FileInitExp e) {
+            this.visit((DefaultInitExp)e);
+        }
+
+        public  void visit(LineInitExp e) {
+            this.visit((DefaultInitExp)e);
+        }
+
+        public  void visit(ModuleInitExp e) {
+            this.visit((DefaultInitExp)e);
+        }
+
+        public  void visit(CommaExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(PostExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(PowExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(MulExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(DivExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(ModExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(AddExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(MinExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(CatExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(ShlExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(ShrExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(UshrExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(EqualExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(InExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(IdentityExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(CmpExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(AndExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(XorExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(OrExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(LogicalExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(CondExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(AssignExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(BinAssignExp e) {
+            this.visit((BinExp)e);
+        }
+
+        public  void visit(AddAssignExp e) {
+            this.visit((BinAssignExp)e);
+        }
+
+        public  void visit(MinAssignExp e) {
+            this.visit((BinAssignExp)e);
+        }
+
+        public  void visit(MulAssignExp e) {
+            this.visit((BinAssignExp)e);
+        }
+
+        public  void visit(DivAssignExp e) {
+            this.visit((BinAssignExp)e);
+        }
+
+        public  void visit(ModAssignExp e) {
+            this.visit((BinAssignExp)e);
+        }
+
+        public  void visit(PowAssignExp e) {
+            this.visit((BinAssignExp)e);
+        }
+
+        public  void visit(AndAssignExp e) {
+            this.visit((BinAssignExp)e);
+        }
+
+        public  void visit(OrAssignExp e) {
+            this.visit((BinAssignExp)e);
+        }
+
+        public  void visit(XorAssignExp e) {
+            this.visit((BinAssignExp)e);
+        }
+
+        public  void visit(ShlAssignExp e) {
+            this.visit((BinAssignExp)e);
+        }
+
+        public  void visit(ShrAssignExp e) {
+            this.visit((BinAssignExp)e);
+        }
+
+        public  void visit(UshrAssignExp e) {
+            this.visit((BinAssignExp)e);
+        }
+
+        public  void visit(CatAssignExp e) {
+            this.visit((BinAssignExp)e);
+        }
+
+        public  void visit(TemplateAliasParameter tp) {
+            this.visit((TemplateParameter)tp);
+        }
+
+        public  void visit(TemplateTypeParameter tp) {
+            this.visit((TemplateParameter)tp);
+        }
+
+        public  void visit(TemplateTupleParameter tp) {
+            this.visit((TemplateParameter)tp);
+        }
+
+        public  void visit(TemplateValueParameter tp) {
+            this.visit((TemplateParameter)tp);
+        }
+
+        public  void visit(TemplateThisParameter tp) {
+            this.visit((TemplateTypeParameter)tp);
+        }
+
+        public  void visit(StaticIfCondition c) {
+            this.visit((Condition)c);
+        }
+
+        public  void visit(DVCondition c) {
+            this.visit((Condition)c);
+        }
+
+        public  void visit(DebugCondition c) {
+            this.visit((DVCondition)c);
+        }
+
+        public  void visit(VersionCondition c) {
+            this.visit((DVCondition)c);
+        }
+
+        public  void visit(ExpInitializer i) {
+            this.visit((Initializer)i);
+        }
+
+        public  void visit(StructInitializer i) {
+            this.visit((Initializer)i);
+        }
+
+        public  void visit(ArrayInitializer i) {
+            this.visit((Initializer)i);
+        }
+
+        public  void visit(VoidInitializer i) {
+            this.visit((Initializer)i);
+        }
+
+
+        public ParseTimeVisitorASTCodegen() {}
+
+        public ParseTimeVisitorASTCodegen copy() {
+            ParseTimeVisitorASTCodegen that = new ParseTimeVisitorASTCodegen();
             return that;
         }
     }
