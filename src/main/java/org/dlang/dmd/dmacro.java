@@ -115,7 +115,7 @@ public class dmacro {
                             (buf).data.set(u, (byte)255);
                             (buf).data.set((u + 1), (byte)123);
                             (buf).insert(u + 2, marg.value);
-                            (buf).insert(u + 2 + marg.value.getLength(),  new ByteSlice("\u00ff}"));
+                            (buf).insert(u + 2 + marg.value.getLength(), new ByteSlice("\u00ff}"));
                             end += 0 + marg.value.getLength() + 2;
                             IntRef mend = ref(u + 2 + marg.value.getLength());
                             this.expand(buf, u + 2, ptr(mend), new ByteSlice());
@@ -161,7 +161,7 @@ public class dmacro {
                             Macro m = this.search(name.slice(0,namelen));
                             if (m == null)
                             {
-                                ByteSlice undef =  new ByteSlice("DDOC_UNDEFINED_MACRO").copy();
+                                ByteSlice undef = new ByteSlice("DDOC_UNDEFINED_MACRO").copy();
                                 m = this.search(toByteSlice(undef));
                                 if (m != null)
                                 {

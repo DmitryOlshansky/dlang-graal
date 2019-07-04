@@ -233,7 +233,7 @@ public class access {
                                 AliasDeclaration ad = s.isAliasDeclaration();
                                 if (ad != null)
                                 {
-                                    assertMsg((ad.isOverloadable() || (ad.type != null && (ad.type.ty & 0xFF) == ENUMTY.Terror)),  new ByteSlice("Non overloadable Aliasee in overload list"));
+                                    assertMsg((ad.isOverloadable() || (ad.type != null && (ad.type.ty & 0xFF) == ENUMTY.Terror)), new ByteSlice("Non overloadable Aliasee in overload list"));
                                     if (ad.semanticRun < PASS.semanticdone)
                                         next = ad.overnext;
                                     else
@@ -243,7 +243,7 @@ public class access {
                                             next = aliasee;
                                         else
                                         {
-                                            assertMsg(ad.overnext == null,  new ByteSlice("Unresolved overload of alias"));
+                                            assertMsg(ad.overnext == null, new ByteSlice("Unresolved overload of alias"));
                                             break;
                                         }
                                     }

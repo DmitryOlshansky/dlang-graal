@@ -262,26 +262,26 @@ public class dsymbol {
 
         public  void error(Loc loc, BytePtr format, Object... ap) {
             BytePtr cstr = pcopy(this.toPrettyChars(false));
-            ByteSlice pretty = (byte)96.concat(cstr.slice(0,strlen(cstr))).concat( new ByteSlice("`\u0000")).copy();
+            ByteSlice pretty = (byte)96.concat(cstr.slice(0,strlen(cstr))).concat(new ByteSlice("`\u0000")).copy();
             verror(loc, format, new Slice<>(ap), this.kind(), toBytePtr(pretty), new BytePtr("Error: "));
         }
 
         public  void error(BytePtr format, Object... ap) {
             BytePtr cstr = pcopy(this.toPrettyChars(false));
-            ByteSlice pretty = (byte)96.concat(cstr.slice(0,strlen(cstr))).concat( new ByteSlice("`\u0000")).copy();
+            ByteSlice pretty = (byte)96.concat(cstr.slice(0,strlen(cstr))).concat(new ByteSlice("`\u0000")).copy();
             Loc loc = this.getLoc().copy();
             verror(loc, format, new Slice<>(ap), this.kind(), toBytePtr(pretty), new BytePtr("Error: "));
         }
 
         public  void deprecation(Loc loc, BytePtr format, Object... ap) {
             BytePtr cstr = pcopy(this.toPrettyChars(false));
-            ByteSlice pretty = (byte)96.concat(cstr.slice(0,strlen(cstr))).concat( new ByteSlice("`\u0000")).copy();
+            ByteSlice pretty = (byte)96.concat(cstr.slice(0,strlen(cstr))).concat(new ByteSlice("`\u0000")).copy();
             vdeprecation(loc, format, new Slice<>(ap), this.kind(), toBytePtr(pretty));
         }
 
         public  void deprecation(BytePtr format, Object... ap) {
             BytePtr cstr = pcopy(this.toPrettyChars(false));
-            ByteSlice pretty = (byte)96.concat(cstr.slice(0,strlen(cstr))).concat( new ByteSlice("`\u0000")).copy();
+            ByteSlice pretty = (byte)96.concat(cstr.slice(0,strlen(cstr))).concat(new ByteSlice("`\u0000")).copy();
             Loc loc = this.getLoc().copy();
             vdeprecation(loc, format, new Slice<>(ap), this.kind(), toBytePtr(pretty));
         }
@@ -697,7 +697,7 @@ public class dsymbol {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            printf( new ByteSlice("%s %s\n"), this.kind(), this.toChars());
+            printf(new BytePtr("%s %s\n"), this.kind(), this.toChars());
             throw new AssertionError("Unreachable code!");
         }
 

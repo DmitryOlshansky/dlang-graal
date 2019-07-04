@@ -406,7 +406,7 @@ public class clone {
         }
         if (!(StructDeclaration.xerreq != null))
         {
-            Identifier id = Identifier.idPool( new ByteSlice("_xopEquals"));
+            Identifier id = Identifier.idPool(new ByteSlice("_xopEquals"));
             Expression e = new IdentifierExp(sd.loc, Id.empty);
             e = new DotIdExp(sd.loc, e, Id.object);
             e = new DotIdExp(sd.loc, e, id);
@@ -470,7 +470,7 @@ public class clone {
         }
         if (!(StructDeclaration.xerrcmp != null))
         {
-            Identifier id = Identifier.idPool( new ByteSlice("_xopCmp"));
+            Identifier id = Identifier.idPool(new ByteSlice("_xopCmp"));
             Expression e = new IdentifierExp(sd.loc, Id.empty);
             e = new DotIdExp(sd.loc, e, Id.object);
             e = new DotIdExp(sd.loc, e, id);
@@ -742,7 +742,7 @@ public class clone {
         ClassDeclaration cldec = ad.isClassDeclaration();
         if ((!(cldec != null) || cldec.cppDtorVtblIndex == -1))
             return dtor;
-        Parameter delparam = new Parameter(0L, Type.tuns32, Identifier.idPool( new ByteSlice("del")), new IntegerExp(dtor.loc, 0L, Type.tuns32), null);
+        Parameter delparam = new Parameter(0L, Type.tuns32, Identifier.idPool(new ByteSlice("del")), new IntegerExp(dtor.loc, 0L, Type.tuns32), null);
         DArray<Parameter> params = new DArray<Parameter>();
         (params).push(delparam);
         TypeFunction ftype = new TypeFunction(new ParameterList(params, VarArg.none), Type.tvoidptr, LINK.cpp, dtor.storage_class);

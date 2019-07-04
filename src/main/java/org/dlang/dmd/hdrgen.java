@@ -45,7 +45,7 @@ import static org.dlang.dmd.utils.*;
 import static org.dlang.dmd.visitor.*;
 
 public class hdrgen {
-    private static final SCstring[] initializer_0 = {new SCstring(256L, TOK.auto_, new ByteSlice()), new SCstring(524288L, TOK.scope_, new ByteSlice()), new SCstring(1L, TOK.static_, new ByteSlice()), new SCstring(2L, TOK.extern_, new ByteSlice()), new SCstring(4L, TOK.const_, new ByteSlice()), new SCstring(8L, TOK.final_, new ByteSlice()), new SCstring(16L, TOK.abstract_, new ByteSlice()), new SCstring(512L, TOK.synchronized_, new ByteSlice()), new SCstring(1024L, TOK.deprecated_, new ByteSlice()), new SCstring(128L, TOK.override_, new ByteSlice()), new SCstring(8192L, TOK.lazy_, new ByteSlice()), new SCstring(268435456L, TOK.alias_, new ByteSlice()), new SCstring(4096L, TOK.out_, new ByteSlice()), new SCstring(2048L, TOK.in_, new ByteSlice()), new SCstring(8388608L, TOK.enum_, new ByteSlice()), new SCstring(1048576L, TOK.immutable_, new ByteSlice()), new SCstring(536870912L, TOK.shared_, new ByteSlice()), new SCstring(33554432L, TOK.nothrow_, new ByteSlice()), new SCstring(2147483648L, TOK.inout_, new ByteSlice()), new SCstring(67108864L, TOK.pure_, new ByteSlice()), new SCstring(2097152L, TOK.ref_, new ByteSlice()), new SCstring(17592186044416L, TOK.return_, new ByteSlice()), new SCstring(134217728L, TOK.reserved, new ByteSlice()), new SCstring(1073741824L, TOK.gshared, new ByteSlice()), new SCstring(4398046511104L, TOK.at,  new ByteSlice("@nogc")), new SCstring(4294967296L, TOK.at,  new ByteSlice("@property")), new SCstring(8589934592L, TOK.at,  new ByteSlice("@safe")), new SCstring(17179869184L, TOK.at,  new ByteSlice("@trusted")), new SCstring(34359738368L, TOK.at,  new ByteSlice("@system")), new SCstring(137438953472L, TOK.at,  new ByteSlice("@disable")), new SCstring(1125899906842624L, TOK.at,  new ByteSlice("@__future")), new SCstring(2251799813685248L, TOK.at,  new ByteSlice("__local")), new SCstring(0L, TOK.reserved, new ByteSlice())};
+    private static final SCstring[] initializer_0 = {new SCstring(256L, TOK.auto_, new ByteSlice()), new SCstring(524288L, TOK.scope_, new ByteSlice()), new SCstring(1L, TOK.static_, new ByteSlice()), new SCstring(2L, TOK.extern_, new ByteSlice()), new SCstring(4L, TOK.const_, new ByteSlice()), new SCstring(8L, TOK.final_, new ByteSlice()), new SCstring(16L, TOK.abstract_, new ByteSlice()), new SCstring(512L, TOK.synchronized_, new ByteSlice()), new SCstring(1024L, TOK.deprecated_, new ByteSlice()), new SCstring(128L, TOK.override_, new ByteSlice()), new SCstring(8192L, TOK.lazy_, new ByteSlice()), new SCstring(268435456L, TOK.alias_, new ByteSlice()), new SCstring(4096L, TOK.out_, new ByteSlice()), new SCstring(2048L, TOK.in_, new ByteSlice()), new SCstring(8388608L, TOK.enum_, new ByteSlice()), new SCstring(1048576L, TOK.immutable_, new ByteSlice()), new SCstring(536870912L, TOK.shared_, new ByteSlice()), new SCstring(33554432L, TOK.nothrow_, new ByteSlice()), new SCstring(2147483648L, TOK.inout_, new ByteSlice()), new SCstring(67108864L, TOK.pure_, new ByteSlice()), new SCstring(2097152L, TOK.ref_, new ByteSlice()), new SCstring(17592186044416L, TOK.return_, new ByteSlice()), new SCstring(134217728L, TOK.reserved, new ByteSlice()), new SCstring(1073741824L, TOK.gshared, new ByteSlice()), new SCstring(4398046511104L, TOK.at, new ByteSlice("@nogc")), new SCstring(4294967296L, TOK.at, new ByteSlice("@property")), new SCstring(8589934592L, TOK.at, new ByteSlice("@safe")), new SCstring(17179869184L, TOK.at, new ByteSlice("@trusted")), new SCstring(34359738368L, TOK.at, new ByteSlice("@system")), new SCstring(137438953472L, TOK.at, new ByteSlice("@disable")), new SCstring(1125899906842624L, TOK.at, new ByteSlice("@__future")), new SCstring(2251799813685248L, TOK.at, new ByteSlice("__local")), new SCstring(0L, TOK.reserved, new ByteSlice())};
     private static class SCstring
     {
         private long stc;
@@ -131,7 +131,7 @@ public class hdrgen {
         OutBuffer buf = new OutBuffer();
         try {
             buf.doindent = true;
-            buf.printf( new ByteSlice("// D import file generated from '%s'"), m.srcfile.toChars());
+            buf.printf(new BytePtr("// D import file generated from '%s'"), m.srcfile.toChars());
             buf.writenl();
             HdrGenState hgs = new HdrGenState();
             hgs.hdrgen = true;
@@ -153,7 +153,7 @@ public class hdrgen {
         {
             if (m.userAttribDecl != null)
             {
-                (buf).writestring( new ByteSlice("@("));
+                (buf).writestring(new ByteSlice("@("));
                 argsToBuffer(m.userAttribDecl.atts, buf, hgs, null);
                 (buf).writeByte(41);
                 (buf).writenl();
@@ -162,14 +162,14 @@ public class hdrgen {
             {
                 if ((m.md).msg != null)
                 {
-                    (buf).writestring( new ByteSlice("deprecated("));
+                    (buf).writestring(new ByteSlice("deprecated("));
                     expressionToBuffer((m.md).msg, buf, hgs);
-                    (buf).writestring( new ByteSlice(") "));
+                    (buf).writestring(new ByteSlice(") "));
                 }
                 else
-                    (buf).writestring( new ByteSlice("deprecated "));
+                    (buf).writestring(new ByteSlice("deprecated "));
             }
-            (buf).writestring( new ByteSlice("module "));
+            (buf).writestring(new ByteSlice("module "));
             (buf).writestring((m.md).toChars());
             (buf).writeByte(59);
             (buf).writenl();
@@ -199,13 +199,13 @@ public class hdrgen {
         }
 
         public  void visit(Statement s) {
-            (this.buf).writestring( new ByteSlice("Statement::toCBuffer()"));
+            (this.buf).writestring(new ByteSlice("Statement::toCBuffer()"));
             (this.buf).writenl();
             throw new AssertionError("Unreachable code!");
         }
 
         public  void visit(ErrorStatement s) {
-            (this.buf).writestring( new ByteSlice("__error__"));
+            (this.buf).writestring(new ByteSlice("__error__"));
             (this.buf).writenl();
         }
 
@@ -223,9 +223,9 @@ public class hdrgen {
         }
 
         public  void visit(CompileStatement s) {
-            (this.buf).writestring( new ByteSlice("mixin("));
+            (this.buf).writestring(new ByteSlice("mixin("));
             argsToBuffer(s.exps, this.buf, this.hgs, null);
-            (this.buf).writestring( new ByteSlice(");"));
+            (this.buf).writestring(new ByteSlice(");"));
             if (!(((this.hgs).forStmtInit) != 0))
                 (this.buf).writenl();
         }
@@ -274,7 +274,7 @@ public class hdrgen {
         }
 
         public  void visit(UnrolledLoopStatement s) {
-            (this.buf).writestring( new ByteSlice("/*unrolled*/ {"));
+            (this.buf).writestring(new ByteSlice("/*unrolled*/ {"));
             (this.buf).writenl();
             (this.buf).level++;
             {
@@ -303,7 +303,7 @@ public class hdrgen {
         }
 
         public  void visit(WhileStatement s) {
-            (this.buf).writestring( new ByteSlice("while ("));
+            (this.buf).writestring(new ByteSlice("while ("));
             expressionToBuffer(s.condition, this.buf, this.hgs);
             (this.buf).writeByte(41);
             (this.buf).writenl();
@@ -312,18 +312,18 @@ public class hdrgen {
         }
 
         public  void visit(DoStatement s) {
-            (this.buf).writestring( new ByteSlice("do"));
+            (this.buf).writestring(new ByteSlice("do"));
             (this.buf).writenl();
             if (s._body != null)
                 s._body.accept(this);
-            (this.buf).writestring( new ByteSlice("while ("));
+            (this.buf).writestring(new ByteSlice("while ("));
             expressionToBuffer(s.condition, this.buf, this.hgs);
-            (this.buf).writestring( new ByteSlice(");"));
+            (this.buf).writestring(new ByteSlice(");"));
             (this.buf).writenl();
         }
 
         public  void visit(ForStatement s) {
-            (this.buf).writestring( new ByteSlice("for ("));
+            (this.buf).writestring(new ByteSlice("for ("));
             if (s._init != null)
             {
                 (this.hgs).forStmtInit++;
@@ -357,7 +357,7 @@ public class hdrgen {
 
         public  void foreachWithoutBody(ForeachStatement s) {
             (this.buf).writestring(Token.asString(s.op));
-            (this.buf).writestring( new ByteSlice(" ("));
+            (this.buf).writestring(new ByteSlice(" ("));
             {
                 Slice<Parameter> __r1428 = (s.parameters).opSlice().copy();
                 int __key1427 = 0;
@@ -365,7 +365,7 @@ public class hdrgen {
                     Parameter p = __r1428.get(__key1427);
                     int i = __key1427;
                     if ((i) != 0)
-                        (this.buf).writestring( new ByteSlice(", "));
+                        (this.buf).writestring(new ByteSlice(", "));
                     if (stcToBuffer(this.buf, p.storageClass))
                         (this.buf).writeByte(32);
                     if (p.type != null)
@@ -374,7 +374,7 @@ public class hdrgen {
                         (this.buf).writestring(p.ident.asString());
                 }
             }
-            (this.buf).writestring( new ByteSlice("; "));
+            (this.buf).writestring(new ByteSlice("; "));
             expressionToBuffer(s.aggr, this.buf, this.hgs);
             (this.buf).writeByte(41);
             (this.buf).writenl();
@@ -394,14 +394,14 @@ public class hdrgen {
 
         public  void foreachRangeWithoutBody(ForeachRangeStatement s) {
             (this.buf).writestring(Token.asString(s.op));
-            (this.buf).writestring( new ByteSlice(" ("));
+            (this.buf).writestring(new ByteSlice(" ("));
             if (s.prm.type != null)
                 typeToBuffer(s.prm.type, s.prm.ident, this.buf, this.hgs);
             else
                 (this.buf).writestring(s.prm.ident.asString());
-            (this.buf).writestring( new ByteSlice("; "));
+            (this.buf).writestring(new ByteSlice("; "));
             expressionToBuffer(s.lwr, this.buf, this.hgs);
-            (this.buf).writestring( new ByteSlice(" .. "));
+            (this.buf).writestring(new ByteSlice(" .. "));
             expressionToBuffer(s.upr, this.buf, this.hgs);
             (this.buf).writeByte(41);
             (this.buf).writenl();
@@ -420,7 +420,7 @@ public class hdrgen {
         }
 
         public  void visit(StaticForeachStatement s) {
-            (this.buf).writestring( new ByteSlice("static "));
+            (this.buf).writestring(new ByteSlice("static "));
             if (s.sfe.aggrfe != null)
             {
                 this.visit(s.sfe.aggrfe);
@@ -433,7 +433,7 @@ public class hdrgen {
         }
 
         public  void visit(IfStatement s) {
-            (this.buf).writestring( new ByteSlice("if ("));
+            (this.buf).writestring(new ByteSlice("if ("));
             {
                 Parameter p = s.prm;
                 if (p != null)
@@ -447,7 +447,7 @@ public class hdrgen {
                         typeToBuffer(p.type, p.ident, this.buf, this.hgs);
                     else
                         (this.buf).writestring(p.ident.asString());
-                    (this.buf).writestring( new ByteSlice(" = "));
+                    (this.buf).writestring(new ByteSlice(" = "));
                 }
             }
             expressionToBuffer(s.condition, this.buf, this.hgs);
@@ -465,7 +465,7 @@ public class hdrgen {
             }
             if (s.elsebody != null)
             {
-                (this.buf).writestring( new ByteSlice("else"));
+                (this.buf).writestring(new ByteSlice("else"));
                 if (!(s.elsebody.isIfStatement() != null))
                 {
                     (this.buf).writenl();
@@ -500,7 +500,7 @@ public class hdrgen {
             (this.buf).writenl();
             if (s.elsebody != null)
             {
-                (this.buf).writestring( new ByteSlice("else"));
+                (this.buf).writestring(new ByteSlice("else"));
                 (this.buf).writenl();
                 (this.buf).writeByte(123);
                 (this.buf).level++;
@@ -513,11 +513,11 @@ public class hdrgen {
         }
 
         public  void visit(PragmaStatement s) {
-            (this.buf).writestring( new ByteSlice("pragma ("));
+            (this.buf).writestring(new ByteSlice("pragma ("));
             (this.buf).writestring(s.ident.asString());
             if ((s.args != null && ((s.args).length) != 0))
             {
-                (this.buf).writestring( new ByteSlice(", "));
+                (this.buf).writestring(new ByteSlice(", "));
                 argsToBuffer(s.args, this.buf, this.hgs, null);
             }
             (this.buf).writeByte(41);
@@ -544,7 +544,7 @@ public class hdrgen {
         }
 
         public  void visit(SwitchStatement s) {
-            (this.buf).writestring(s.isFinal ?  new ByteSlice("final switch (") :  new ByteSlice("switch ("));
+            (this.buf).writestring(s.isFinal ? new ByteSlice("final switch (") : new ByteSlice("switch ("));
             expressionToBuffer(s.condition, this.buf, this.hgs);
             (this.buf).writeByte(41);
             (this.buf).writenl();
@@ -568,7 +568,7 @@ public class hdrgen {
         }
 
         public  void visit(CaseStatement s) {
-            (this.buf).writestring( new ByteSlice("case "));
+            (this.buf).writestring(new ByteSlice("case "));
             expressionToBuffer(s.exp, this.buf, this.hgs);
             (this.buf).writeByte(58);
             (this.buf).writenl();
@@ -576,9 +576,9 @@ public class hdrgen {
         }
 
         public  void visit(CaseRangeStatement s) {
-            (this.buf).writestring( new ByteSlice("case "));
+            (this.buf).writestring(new ByteSlice("case "));
             expressionToBuffer(s.first, this.buf, this.hgs);
-            (this.buf).writestring( new ByteSlice(": .. case "));
+            (this.buf).writestring(new ByteSlice(": .. case "));
             expressionToBuffer(s.last, this.buf, this.hgs);
             (this.buf).writeByte(58);
             (this.buf).writenl();
@@ -586,18 +586,18 @@ public class hdrgen {
         }
 
         public  void visit(DefaultStatement s) {
-            (this.buf).writestring( new ByteSlice("default:"));
+            (this.buf).writestring(new ByteSlice("default:"));
             (this.buf).writenl();
             s.statement.accept(this);
         }
 
         public  void visit(GotoDefaultStatement s) {
-            (this.buf).writestring( new ByteSlice("goto default;"));
+            (this.buf).writestring(new ByteSlice("goto default;"));
             (this.buf).writenl();
         }
 
         public  void visit(GotoCaseStatement s) {
-            (this.buf).writestring( new ByteSlice("goto case"));
+            (this.buf).writestring(new ByteSlice("goto case"));
             if (s.exp != null)
             {
                 (this.buf).writeByte(32);
@@ -608,12 +608,12 @@ public class hdrgen {
         }
 
         public  void visit(SwitchErrorStatement s) {
-            (this.buf).writestring( new ByteSlice("SwitchErrorStatement::toCBuffer()"));
+            (this.buf).writestring(new ByteSlice("SwitchErrorStatement::toCBuffer()"));
             (this.buf).writenl();
         }
 
         public  void visit(ReturnStatement s) {
-            (this.buf).writestring( new ByteSlice("return "));
+            (this.buf).writestring(new ByteSlice("return "));
             if (s.exp != null)
                 expressionToBuffer(s.exp, this.buf, this.hgs);
             (this.buf).writeByte(59);
@@ -621,7 +621,7 @@ public class hdrgen {
         }
 
         public  void visit(BreakStatement s) {
-            (this.buf).writestring( new ByteSlice("break"));
+            (this.buf).writestring(new ByteSlice("break"));
             if (s.ident != null)
             {
                 (this.buf).writeByte(32);
@@ -632,7 +632,7 @@ public class hdrgen {
         }
 
         public  void visit(ContinueStatement s) {
-            (this.buf).writestring( new ByteSlice("continue"));
+            (this.buf).writestring(new ByteSlice("continue"));
             if (s.ident != null)
             {
                 (this.buf).writeByte(32);
@@ -643,7 +643,7 @@ public class hdrgen {
         }
 
         public  void visit(SynchronizedStatement s) {
-            (this.buf).writestring( new ByteSlice("synchronized"));
+            (this.buf).writestring(new ByteSlice("synchronized"));
             if (s.exp != null)
             {
                 (this.buf).writeByte(40);
@@ -658,16 +658,16 @@ public class hdrgen {
         }
 
         public  void visit(WithStatement s) {
-            (this.buf).writestring( new ByteSlice("with ("));
+            (this.buf).writestring(new ByteSlice("with ("));
             expressionToBuffer(s.exp, this.buf, this.hgs);
-            (this.buf).writestring( new ByteSlice(")"));
+            (this.buf).writestring(new ByteSlice(")"));
             (this.buf).writenl();
             if (s._body != null)
                 s._body.accept(this);
         }
 
         public  void visit(TryCatchStatement s) {
-            (this.buf).writestring( new ByteSlice("try"));
+            (this.buf).writestring(new ByteSlice("try"));
             (this.buf).writenl();
             if (s._body != null)
             {
@@ -693,7 +693,7 @@ public class hdrgen {
         }
 
         public  void visit(TryFinallyStatement s) {
-            (this.buf).writestring( new ByteSlice("try"));
+            (this.buf).writestring(new ByteSlice("try"));
             (this.buf).writenl();
             (this.buf).writeByte(123);
             (this.buf).writenl();
@@ -702,7 +702,7 @@ public class hdrgen {
             (this.buf).level--;
             (this.buf).writeByte(125);
             (this.buf).writenl();
-            (this.buf).writestring( new ByteSlice("finally"));
+            (this.buf).writestring(new ByteSlice("finally"));
             (this.buf).writenl();
             if (s.finalbody.isScopeStatement() != null)
             {
@@ -724,7 +724,7 @@ public class hdrgen {
         }
 
         public  void visit(ThrowStatement s) {
-            (this.buf).writestring( new ByteSlice("throw "));
+            (this.buf).writestring(new ByteSlice("throw "));
             expressionToBuffer(s.exp, this.buf, this.hgs);
             (this.buf).writeByte(59);
             (this.buf).writenl();
@@ -738,7 +738,7 @@ public class hdrgen {
         }
 
         public  void visit(GotoStatement s) {
-            (this.buf).writestring( new ByteSlice("goto "));
+            (this.buf).writestring(new ByteSlice("goto "));
             (this.buf).writestring(s.ident.asString());
             (this.buf).writeByte(59);
             (this.buf).writenl();
@@ -753,7 +753,7 @@ public class hdrgen {
         }
 
         public  void visit(AsmStatement s) {
-            (this.buf).writestring( new ByteSlice("asm { "));
+            (this.buf).writestring(new ByteSlice("asm { "));
             Token t = s.tokens;
             (this.buf).level++;
             for (; t != null;){
@@ -765,7 +765,7 @@ public class hdrgen {
                 t = (t).next;
             }
             (this.buf).level--;
-            (this.buf).writestring( new ByteSlice("; }"));
+            (this.buf).writestring(new ByteSlice("; }"));
             (this.buf).writenl();
         }
 
@@ -781,7 +781,7 @@ public class hdrgen {
         }
 
         public  void visit(Catch c) {
-            (this.buf).writestring( new ByteSlice("catch"));
+            (this.buf).writestring(new ByteSlice("catch"));
             if (c.type != null)
             {
                 (this.buf).writeByte(40);
@@ -833,15 +833,15 @@ public class hdrgen {
             expressionToBuffer(s.exp, this.buf, this.hgs);
             if (s.msg != null)
             {
-                (this.buf).writestring( new ByteSlice(", "));
+                (this.buf).writestring(new ByteSlice(", "));
                 expressionToBuffer(s.msg, this.buf, this.hgs);
             }
-            (this.buf).writestring( new ByteSlice(");"));
+            (this.buf).writestring(new ByteSlice(");"));
             (this.buf).writenl();
         }
 
         public  void visit(DebugSymbol s) {
-            (this.buf).writestring( new ByteSlice("debug = "));
+            (this.buf).writestring(new ByteSlice("debug = "));
             if (s.ident != null)
                 (this.buf).writestring(s.ident.asString());
             else
@@ -851,7 +851,7 @@ public class hdrgen {
         }
 
         public  void visit(VersionSymbol s) {
-            (this.buf).writestring( new ByteSlice("version = "));
+            (this.buf).writestring(new ByteSlice("version = "));
             if (s.ident != null)
                 (this.buf).writestring(s.ident.asString());
             else
@@ -867,7 +867,7 @@ public class hdrgen {
                 (this.buf).writestring(em.ident.asString());
             if (em.value() != null)
             {
-                (this.buf).writestring( new ByteSlice(" = "));
+                (this.buf).writestring(new ByteSlice(" = "));
                 expressionToBuffer(em.value(), this.buf, this.hgs);
             }
         }
@@ -876,11 +876,11 @@ public class hdrgen {
             if (((this.hgs).hdrgen && pequals(imp.id, Id.object)))
                 return ;
             if ((imp.isstatic) != 0)
-                (this.buf).writestring( new ByteSlice("static "));
-            (this.buf).writestring( new ByteSlice("import "));
+                (this.buf).writestring(new ByteSlice("static "));
+            (this.buf).writestring(new ByteSlice("import "));
             if (imp.aliasId != null)
             {
-                (this.buf).printf( new ByteSlice("%s = "), imp.aliasId.toChars());
+                (this.buf).printf(new BytePtr("%s = "), imp.aliasId.toChars());
             }
             if ((imp.packages != null && ((imp.packages).length) != 0))
             {
@@ -889,14 +889,14 @@ public class hdrgen {
                     int __key1434 = 0;
                     for (; __key1434 < __r1433.getLength();__key1434 += 1) {
                         Identifier pid = __r1433.get(__key1434);
-                        (this.buf).printf( new ByteSlice("%s."), pid.toChars());
+                        (this.buf).printf(new BytePtr("%s."), pid.toChars());
                     }
                 }
             }
             (this.buf).writestring(imp.id.asString());
             if ((imp.names.length) != 0)
             {
-                (this.buf).writestring( new ByteSlice(" : "));
+                (this.buf).writestring(new ByteSlice(" : "));
                 {
                     Slice<Identifier> __r1436 = imp.names.opSlice().copy();
                     int __key1435 = 0;
@@ -904,10 +904,10 @@ public class hdrgen {
                         Identifier name = __r1436.get(__key1435);
                         int i = __key1435;
                         if ((i) != 0)
-                            (this.buf).writestring( new ByteSlice(", "));
+                            (this.buf).writestring(new ByteSlice(", "));
                         Identifier _alias = imp.aliases.get(i);
                         if (_alias != null)
-                            (this.buf).printf( new ByteSlice("%s = %s"), _alias.toChars(), name.toChars());
+                            (this.buf).printf(new BytePtr("%s = %s"), _alias.toChars(), name.toChars());
                         else
                             (this.buf).writestring(name.toChars());
                     }
@@ -918,9 +918,9 @@ public class hdrgen {
         }
 
         public  void visit(AliasThis d) {
-            (this.buf).writestring( new ByteSlice("alias "));
+            (this.buf).writestring(new ByteSlice("alias "));
             (this.buf).writestring(d.ident.asString());
-            (this.buf).writestring( new ByteSlice(" this;\n"));
+            (this.buf).writestring(new ByteSlice(" this;\n"));
         }
 
         public  void visit(AttribDeclaration d) {
@@ -931,10 +931,10 @@ public class hdrgen {
                 return ;
             }
             if ((d.decl).length == 0)
-                (this.buf).writestring( new ByteSlice("{}"));
+                (this.buf).writestring(new ByteSlice("{}"));
             else if ((((this.hgs).hdrgen && (d.decl).length == 1) && (d.decl).get(0).isUnitTestDeclaration() != null))
             {
-                (this.buf).writestring( new ByteSlice("{}"));
+                (this.buf).writestring(new ByteSlice("{}"));
             }
             else if ((d.decl).length == 1)
             {
@@ -968,16 +968,16 @@ public class hdrgen {
         }
 
         public  void visit(DeprecatedDeclaration d) {
-            (this.buf).writestring( new ByteSlice("deprecated("));
+            (this.buf).writestring(new ByteSlice("deprecated("));
             expressionToBuffer(d.msg, this.buf, this.hgs);
-            (this.buf).writestring( new ByteSlice(") "));
+            (this.buf).writestring(new ByteSlice(") "));
             this.visit((AttribDeclaration)d);
         }
 
         public  void visit(LinkDeclaration d) {
-            (this.buf).writestring( new ByteSlice("extern ("));
+            (this.buf).writestring(new ByteSlice("extern ("));
             (this.buf).writestring(linkageToString(d.linkage));
-            (this.buf).writestring( new ByteSlice(") "));
+            (this.buf).writestring(new ByteSlice(") "));
             this.visit((AttribDeclaration)d);
         }
 
@@ -986,19 +986,19 @@ public class hdrgen {
             switch (d.cppmangle)
             {
                 case CPPMANGLE.asClass:
-                    s =  new ByteSlice("class").copy();
+                    s = new ByteSlice("class").copy();
                     break;
                 case CPPMANGLE.asStruct:
-                    s =  new ByteSlice("struct").copy();
+                    s = new ByteSlice("struct").copy();
                     break;
                 case CPPMANGLE.def:
                     break;
                 default:
                 throw SwitchError.INSTANCE;
             }
-            (this.buf).writestring( new ByteSlice("extern (C++, "));
+            (this.buf).writestring(new ByteSlice("extern (C++, "));
             (this.buf).writestring(s);
-            (this.buf).writestring( new ByteSlice(") "));
+            (this.buf).writestring(new ByteSlice(") "));
             this.visit((AttribDeclaration)d);
         }
 
@@ -1013,16 +1013,16 @@ public class hdrgen {
         }
 
         public  void visit(AlignDeclaration d) {
-            (this.buf).writestring( new ByteSlice("align "));
+            (this.buf).writestring(new ByteSlice("align "));
             if (d.ealign != null)
-                (this.buf).printf( new ByteSlice("(%s) "), d.ealign.toChars());
+                (this.buf).printf(new BytePtr("(%s) "), d.ealign.toChars());
             this.visit((AttribDeclaration)d);
         }
 
         public  void visit(AnonDeclaration d) {
-            (this.buf).writestring(d.isunion ?  new ByteSlice("union") :  new ByteSlice("struct"));
+            (this.buf).writestring(d.isunion ? new ByteSlice("union") : new ByteSlice("struct"));
             (this.buf).writenl();
-            (this.buf).writestring( new ByteSlice("{"));
+            (this.buf).writestring(new ByteSlice("{"));
             (this.buf).writenl();
             (this.buf).level++;
             if (d.decl != null)
@@ -1037,16 +1037,16 @@ public class hdrgen {
                 }
             }
             (this.buf).level--;
-            (this.buf).writestring( new ByteSlice("}"));
+            (this.buf).writestring(new ByteSlice("}"));
             (this.buf).writenl();
         }
 
         public  void visit(PragmaDeclaration d) {
-            (this.buf).writestring( new ByteSlice("pragma ("));
+            (this.buf).writestring(new ByteSlice("pragma ("));
             (this.buf).writestring(d.ident.asString());
             if ((d.args != null && ((d.args).length) != 0))
             {
-                (this.buf).writestring( new ByteSlice(", "));
+                (this.buf).writestring(new ByteSlice(", "));
                 argsToBuffer(d.args, this.buf, this.hgs, null);
             }
             (this.buf).writeByte(41);
@@ -1077,7 +1077,7 @@ public class hdrgen {
                 if (d.elsedecl != null)
                 {
                     (this.buf).writenl();
-                    (this.buf).writestring( new ByteSlice("else"));
+                    (this.buf).writestring(new ByteSlice("else"));
                     (this.buf).writenl();
                     (this.buf).writeByte(123);
                     (this.buf).writenl();
@@ -1103,7 +1103,7 @@ public class hdrgen {
             Function1<ForeachStatement,Void> foreachWithoutBody = new Function1<ForeachStatement,Void>(){
                 public Void invoke(ForeachStatement s){
                     (buf).writestring(Token.asString(s.op));
-                    (buf).writestring( new ByteSlice(" ("));
+                    (buf).writestring(new ByteSlice(" ("));
                     {
                         Slice<Parameter> __r1446 = (s.parameters).opSlice().copy();
                         int __key1445 = 0;
@@ -1111,7 +1111,7 @@ public class hdrgen {
                             Parameter p = __r1446.get(__key1445);
                             int i = __key1445;
                             if ((i) != 0)
-                                (buf).writestring( new ByteSlice(", "));
+                                (buf).writestring(new ByteSlice(", "));
                             if (stcToBuffer(buf, p.storageClass))
                                 (buf).writeByte(32);
                             if (p.type != null)
@@ -1120,7 +1120,7 @@ public class hdrgen {
                                 (buf).writestring(p.ident.asString());
                         }
                     }
-                    (buf).writestring( new ByteSlice("; "));
+                    (buf).writestring(new ByteSlice("; "));
                     expressionToBuffer(s.aggr, buf, hgs);
                     (buf).writeByte(41);
                     (buf).writenl();
@@ -1130,21 +1130,21 @@ public class hdrgen {
             Function1<ForeachRangeStatement,Void> foreachRangeWithoutBody = new Function1<ForeachRangeStatement,Void>(){
                 public Void invoke(ForeachRangeStatement s){
                     (buf).writestring(Token.asString(s.op));
-                    (buf).writestring( new ByteSlice(" ("));
+                    (buf).writestring(new ByteSlice(" ("));
                     if (s.prm.type != null)
                         typeToBuffer(s.prm.type, s.prm.ident, buf, hgs);
                     else
                         (buf).writestring(s.prm.ident.asString());
-                    (buf).writestring( new ByteSlice("; "));
+                    (buf).writestring(new ByteSlice("; "));
                     expressionToBuffer(s.lwr, buf, hgs);
-                    (buf).writestring( new ByteSlice(" .. "));
+                    (buf).writestring(new ByteSlice(" .. "));
                     expressionToBuffer(s.upr, buf, hgs);
                     (buf).writeByte(41);
                     (buf).writenl();
                     return null;
                 }
             };
-            (this.buf).writestring( new ByteSlice("static "));
+            (this.buf).writestring(new ByteSlice("static "));
             if (s.sfe.aggrfe != null)
             {
                 foreachWithoutBody.invoke(s.sfe.aggrfe);
@@ -1164,14 +1164,14 @@ public class hdrgen {
         }
 
         public  void visit(CompileDeclaration d) {
-            (this.buf).writestring( new ByteSlice("mixin("));
+            (this.buf).writestring(new ByteSlice("mixin("));
             argsToBuffer(d.exps, this.buf, this.hgs, null);
-            (this.buf).writestring( new ByteSlice(");"));
+            (this.buf).writestring(new ByteSlice(");"));
             (this.buf).writenl();
         }
 
         public  void visit(UserAttributeDeclaration d) {
-            (this.buf).writestring( new ByteSlice("@("));
+            (this.buf).writestring(new ByteSlice("@("));
             argsToBuffer(d.atts, this.buf, this.hgs, null);
             (this.buf).writeByte(41);
             this.visit((AttribDeclaration)d);
@@ -1183,7 +1183,7 @@ public class hdrgen {
             if ((this.hgs).ddoc)
                 (this.buf).writestring(d.kind());
             else
-                (this.buf).writestring( new ByteSlice("template"));
+                (this.buf).writestring(new ByteSlice("template"));
             (this.buf).writeByte(32);
             (this.buf).writestring(d.ident.asString());
             (this.buf).writeByte(40);
@@ -1287,7 +1287,7 @@ public class hdrgen {
                     (this.buf).writeByte(41);
                     if (vd._init != null)
                     {
-                        (this.buf).writestring( new ByteSlice(" = "));
+                        (this.buf).writestring(new ByteSlice(" = "));
                         ExpInitializer ie = vd._init.isExpInitializer();
                         if ((ie != null && ((ie.exp.op & 0xFF) == 95 || (ie.exp.op & 0xFF) == 96)))
                             expressionToBuffer(((AssignExp)ie.exp).e2, this.buf, this.hgs);
@@ -1312,7 +1312,7 @@ public class hdrgen {
                     TemplateParameter p = __r1452.get(__key1451);
                     int i = __key1451;
                     if ((i) != 0)
-                        (this.buf).writestring( new ByteSlice(", "));
+                        (this.buf).writestring(new ByteSlice(", "));
                     templateParameterToBuffer(p, this.buf, this.hgs);
                 }
             }
@@ -1321,7 +1321,7 @@ public class hdrgen {
         public  void visitTemplateConstraint(Expression constraint) {
             if (!(constraint != null))
                 return ;
-            (this.buf).writestring( new ByteSlice(" if ("));
+            (this.buf).writestring(new ByteSlice(" if ("));
             expressionToBuffer(constraint, this.buf, this.hgs);
             (this.buf).writeByte(41);
         }
@@ -1337,10 +1337,10 @@ public class hdrgen {
         }
 
         public  void visit(TemplateMixin tm) {
-            (this.buf).writestring( new ByteSlice("mixin "));
+            (this.buf).writestring(new ByteSlice("mixin "));
             typeToBuffer(tm.tqual, null, this.buf, this.hgs);
             tiargsToBuffer(tm, this.buf, this.hgs);
-            if ((tm.ident != null && memcmp(tm.ident.toChars(),  new ByteSlice("__mixin"), 7) != 0))
+            if ((tm.ident != null && memcmp(tm.ident.toChars(), new BytePtr("__mixin"), 7) != 0))
             {
                 (this.buf).writeByte(32);
                 (this.buf).writestring(tm.ident.asString());
@@ -1355,7 +1355,7 @@ public class hdrgen {
             EnumDeclaration oldInEnumDecl = (this.hgs).inEnumDecl;
             try {
                 (this.hgs).inEnumDecl = d;
-                (this.buf).writestring( new ByteSlice("enum "));
+                (this.buf).writestring(new ByteSlice("enum "));
                 if (d.ident != null)
                 {
                     (this.buf).writestring(d.ident.asString());
@@ -1363,7 +1363,7 @@ public class hdrgen {
                 }
                 if (d.memtype != null)
                 {
-                    (this.buf).writestring( new ByteSlice(": "));
+                    (this.buf).writestring(new ByteSlice(": "));
                     typeToBuffer(d.memtype, null, this.buf, this.hgs);
                 }
                 if (d.members == null)
@@ -1398,7 +1398,7 @@ public class hdrgen {
         }
 
         public  void visit(Nspace d) {
-            (this.buf).writestring( new ByteSlice("extern (C++, "));
+            (this.buf).writestring(new ByteSlice("extern (C++, "));
             (this.buf).writestring(d.ident.asString());
             (this.buf).writeByte(41);
             (this.buf).writenl();
@@ -1480,7 +1480,7 @@ public class hdrgen {
             if ((!(d != null) || !(((d.baseclasses).length) != 0)))
                 return ;
             if (!(d.isAnonymous()))
-                (this.buf).writestring( new ByteSlice(" : "));
+                (this.buf).writestring(new ByteSlice(" : "));
             {
                 Slice<BaseClass> __r1462 = (d.baseclasses).opSlice().copy();
                 int __key1461 = 0;
@@ -1488,7 +1488,7 @@ public class hdrgen {
                     BaseClass b = __r1462.get(__key1461);
                     int i = __key1461;
                     if ((i) != 0)
-                        (this.buf).writestring( new ByteSlice(", "));
+                        (this.buf).writestring(new ByteSlice(", "));
                     typeToBuffer((b).type, null, this.buf, this.hgs);
                 }
             }
@@ -1497,11 +1497,11 @@ public class hdrgen {
         public  void visit(AliasDeclaration d) {
             if ((d.storage_class & 2251799813685248L) != 0)
                 return ;
-            (this.buf).writestring( new ByteSlice("alias "));
+            (this.buf).writestring(new ByteSlice("alias "));
             if (d.aliassym != null)
             {
                 (this.buf).writestring(d.ident.asString());
-                (this.buf).writestring( new ByteSlice(" = "));
+                (this.buf).writestring(new ByteSlice(" = "));
                 if (stcToBuffer(this.buf, d.storage_class))
                     (this.buf).writeByte(32);
                 d.aliassym.accept(this);
@@ -1516,7 +1516,7 @@ public class hdrgen {
             {
                 (this.hgs).declstring = ((pequals(d.ident, Id.string) || pequals(d.ident, Id.wstring)) || pequals(d.ident, Id.dstring));
                 (this.buf).writestring(d.ident.asString());
-                (this.buf).writestring( new ByteSlice(" = "));
+                (this.buf).writestring(new ByteSlice(" = "));
                 if (stcToBuffer(this.buf, d.storage_class))
                     (this.buf).writeByte(32);
                 typeToBuffer(d.type, null, this.buf, this.hgs);
@@ -1537,7 +1537,7 @@ public class hdrgen {
         public  void visitVarDecl(VarDeclaration v, boolean anywritten) {
             if (anywritten)
             {
-                (this.buf).writestring( new ByteSlice(", "));
+                (this.buf).writestring(new ByteSlice(", "));
                 (this.buf).writestring(v.ident.asString());
             }
             else
@@ -1551,7 +1551,7 @@ public class hdrgen {
             }
             if (v._init != null)
             {
-                (this.buf).writestring( new ByteSlice(" = "));
+                (this.buf).writestring(new ByteSlice(" = "));
                 ExpInitializer ie = v._init.isExpInitializer();
                 if ((ie != null && ((ie.exp.op & 0xFF) == 95 || (ie.exp.op & 0xFF) == 96)))
                     expressionToBuffer(((AssignExp)ie.exp).e2, this.buf, this.hgs);
@@ -1605,13 +1605,13 @@ public class hdrgen {
                     int __key1464 = 0;
                     for (; __key1464 < __r1463.getLength();__key1464 += 1) {
                         Statement frequire = __r1463.get(__key1464);
-                        (this.buf).writestring( new ByteSlice("in"));
+                        (this.buf).writestring(new ByteSlice("in"));
                         {
                             ExpStatement es = frequire.isExpStatement();
                             if (es != null)
                             {
                                 assert((es.exp != null && (es.exp.op & 0xFF) == 14));
-                                (this.buf).writestring( new ByteSlice(" ("));
+                                (this.buf).writestring(new ByteSlice(" ("));
                                 expressionToBuffer(((AssertExp)es.exp).e1, this.buf, this.hgs);
                                 (this.buf).writeByte(41);
                                 (this.buf).writenl();
@@ -1634,18 +1634,18 @@ public class hdrgen {
                     int __key1466 = 0;
                     for (; __key1466 < __r1465.getLength();__key1466 += 1) {
                         Ensure fensure = __r1465.get(__key1466).copy();
-                        (this.buf).writestring( new ByteSlice("out"));
+                        (this.buf).writestring(new ByteSlice("out"));
                         {
                             ExpStatement es = fensure.ensure.isExpStatement();
                             if (es != null)
                             {
                                 assert((es.exp != null && (es.exp.op & 0xFF) == 14));
-                                (this.buf).writestring( new ByteSlice(" ("));
+                                (this.buf).writestring(new ByteSlice(" ("));
                                 if (fensure.id != null)
                                 {
                                     (this.buf).writestring(fensure.id.asString());
                                 }
-                                (this.buf).writestring( new ByteSlice("; "));
+                                (this.buf).writestring(new ByteSlice("; "));
                                 expressionToBuffer(((AssertExp)es.exp).e1, this.buf, this.hgs);
                                 (this.buf).writeByte(41);
                                 (this.buf).writenl();
@@ -1669,7 +1669,7 @@ public class hdrgen {
             }
             if (requireDo)
             {
-                (this.buf).writestring( new ByteSlice("do"));
+                (this.buf).writestring(new ByteSlice("do"));
                 (this.buf).writenl();
             }
             (this.buf).writeByte(123);
@@ -1686,7 +1686,7 @@ public class hdrgen {
         public  void visit(FuncLiteralDeclaration f) {
             if ((f.type.ty & 0xFF) == ENUMTY.Terror)
             {
-                (this.buf).writestring( new ByteSlice("__error"));
+                (this.buf).writestring(new ByteSlice("__error"));
                 return ;
             }
             if ((f.tok & 0xFF) != 0)
@@ -1709,7 +1709,7 @@ public class hdrgen {
             ReturnStatement rs = s1 != null ? s1.isReturnStatement() : null;
             if ((rs != null && rs.exp != null))
             {
-                (this.buf).writestring( new ByteSlice(" => "));
+                (this.buf).writestring(new ByteSlice(" => "));
                 expressionToBuffer(rs.exp, this.buf, this.hgs);
             }
             else
@@ -1723,20 +1723,20 @@ public class hdrgen {
         public  void visit(PostBlitDeclaration d) {
             if (stcToBuffer(this.buf, d.storage_class))
                 (this.buf).writeByte(32);
-            (this.buf).writestring( new ByteSlice("this(this)"));
+            (this.buf).writestring(new ByteSlice("this(this)"));
             this.bodyToBuffer(d);
         }
 
         public  void visit(DtorDeclaration d) {
             if ((d.storage_class & 17179869184L) != 0)
-                (this.buf).writestring( new ByteSlice("@trusted "));
+                (this.buf).writestring(new ByteSlice("@trusted "));
             if ((d.storage_class & 8589934592L) != 0)
-                (this.buf).writestring( new ByteSlice("@safe "));
+                (this.buf).writestring(new ByteSlice("@safe "));
             if ((d.storage_class & 4398046511104L) != 0)
-                (this.buf).writestring( new ByteSlice("@nogc "));
+                (this.buf).writestring(new ByteSlice("@nogc "));
             if ((d.storage_class & 137438953472L) != 0)
-                (this.buf).writestring( new ByteSlice("@disable "));
-            (this.buf).writestring( new ByteSlice("~this()"));
+                (this.buf).writestring(new ByteSlice("@disable "));
+            (this.buf).writestring(new ByteSlice("~this()"));
             this.bodyToBuffer(d);
         }
 
@@ -1744,8 +1744,8 @@ public class hdrgen {
             if (stcToBuffer(this.buf, d.storage_class & -2L))
                 (this.buf).writeByte(32);
             if (d.isSharedStaticCtorDeclaration() != null)
-                (this.buf).writestring( new ByteSlice("shared "));
-            (this.buf).writestring( new ByteSlice("static this()"));
+                (this.buf).writestring(new ByteSlice("shared "));
+            (this.buf).writestring(new ByteSlice("static this()"));
             if (((this.hgs).hdrgen && !(((this.hgs).tpltMember) != 0)))
             {
                 (this.buf).writeByte(59);
@@ -1759,8 +1759,8 @@ public class hdrgen {
             if (stcToBuffer(this.buf, d.storage_class & -2L))
                 (this.buf).writeByte(32);
             if (d.isSharedStaticDtorDeclaration() != null)
-                (this.buf).writestring( new ByteSlice("shared "));
-            (this.buf).writestring( new ByteSlice("static ~this()"));
+                (this.buf).writestring(new ByteSlice("shared "));
+            (this.buf).writestring(new ByteSlice("static ~this()"));
             if (((this.hgs).hdrgen && !(((this.hgs).tpltMember) != 0)))
             {
                 (this.buf).writeByte(59);
@@ -1775,15 +1775,15 @@ public class hdrgen {
                 return ;
             if (stcToBuffer(this.buf, d.storage_class))
                 (this.buf).writeByte(32);
-            (this.buf).writestring( new ByteSlice("invariant"));
+            (this.buf).writestring(new ByteSlice("invariant"));
             {
                 ExpStatement es = d.fbody.isExpStatement();
                 if (es != null)
                 {
                     assert((es.exp != null && (es.exp.op & 0xFF) == 14));
-                    (this.buf).writestring( new ByteSlice(" ("));
+                    (this.buf).writestring(new ByteSlice(" ("));
                     expressionToBuffer(((AssertExp)es.exp).e1, this.buf, this.hgs);
-                    (this.buf).writestring( new ByteSlice(");"));
+                    (this.buf).writestring(new ByteSlice(");"));
                     (this.buf).writenl();
                 }
                 else
@@ -1798,14 +1798,14 @@ public class hdrgen {
                 return ;
             if (stcToBuffer(this.buf, d.storage_class))
                 (this.buf).writeByte(32);
-            (this.buf).writestring( new ByteSlice("unittest"));
+            (this.buf).writestring(new ByteSlice("unittest"));
             this.bodyToBuffer(d);
         }
 
         public  void visit(NewDeclaration d) {
             if (stcToBuffer(this.buf, d.storage_class & -2L))
                 (this.buf).writeByte(32);
-            (this.buf).writestring( new ByteSlice("new"));
+            (this.buf).writestring(new ByteSlice("new"));
             parametersToBuffer(new ParameterList(d.parameters, d.varargs), this.buf, this.hgs);
             this.bodyToBuffer(d);
         }
@@ -1813,7 +1813,7 @@ public class hdrgen {
         public  void visit(DeleteDeclaration d) {
             if (stcToBuffer(this.buf, d.storage_class & -2L))
                 (this.buf).writeByte(32);
-            (this.buf).writestring( new ByteSlice("delete"));
+            (this.buf).writestring(new ByteSlice("delete"));
             parametersToBuffer(new ParameterList(d.parameters, VarArg.none), this.buf, this.hgs);
             this.bodyToBuffer(d);
         }
@@ -1871,67 +1871,67 @@ public class hdrgen {
                                             EnumMember em = (EnumMember)(sym.members).get(i);
                                             if (em.value().toInteger() == v)
                                             {
-                                                (this.buf).printf( new ByteSlice("%s.%s"), sym.toChars(), em.ident.toChars());
+                                                (this.buf).printf(new BytePtr("%s.%s"), sym.toChars(), em.ident.toChars());
                                                 return ;
                                             }
                                         }
                                     }
                                 }
-                                (this.buf).printf( new ByteSlice("cast(%s)"), te.sym.toChars());
+                                (this.buf).printf(new BytePtr("cast(%s)"), te.sym.toChars());
                                 t = te.sym.memtype;
                                 /*goto L1*/throw Dispatch0.INSTANCE;
                             case 32:
                             case 33:
                                 if (v > 255L)
                                 {
-                                    (this.buf).printf( new ByteSlice("'\\U%08x'"), v);
+                                    (this.buf).printf(new BytePtr("'\\U%08x'"), v);
                                     break;
                                 }
                             case 31:
                                 int o = (this.buf).offset;
                                 if (v == 39L)
-                                    (this.buf).writestring( new ByteSlice("'\\''"));
+                                    (this.buf).writestring(new ByteSlice("'\\''"));
                                 else if (((isprint((int)v)) != 0 && v != 92L))
-                                    (this.buf).printf( new ByteSlice("'%c'"), (int)v);
+                                    (this.buf).printf(new BytePtr("'%c'"), (int)v);
                                 else
-                                    (this.buf).printf( new ByteSlice("'\\x%02x'"), (int)v);
+                                    (this.buf).printf(new BytePtr("'\\x%02x'"), (int)v);
                                 if ((this.hgs).ddoc)
                                     escapeDdocString(this.buf, o);
                                 break;
                             case 13:
-                                (this.buf).writestring( new ByteSlice("cast(byte)"));
+                                (this.buf).writestring(new ByteSlice("cast(byte)"));
                                 /*goto L2*/{ __dispatch1 = -1; continue dispatched_1; }
                             case 15:
-                                (this.buf).writestring( new ByteSlice("cast(short)"));
+                                (this.buf).writestring(new ByteSlice("cast(short)"));
                                 /*goto L2*/{ __dispatch1 = -1; continue dispatched_1; }
                             case 17:
                             /*L2:*/
                             case -1:
                             __dispatch1 = 0;
-                                (this.buf).printf( new ByteSlice("%d"), (int)v);
+                                (this.buf).printf(new BytePtr("%d"), (int)v);
                                 break;
                             case 14:
-                                (this.buf).writestring( new ByteSlice("cast(ubyte)"));
+                                (this.buf).writestring(new ByteSlice("cast(ubyte)"));
                                 /*goto case*/{ __dispatch1 = 18; continue dispatched_1; }
                             case 16:
-                                (this.buf).writestring( new ByteSlice("cast(ushort)"));
+                                (this.buf).writestring(new ByteSlice("cast(ushort)"));
                                 /*goto case*/{ __dispatch1 = 18; continue dispatched_1; }
                             case 18:
                                 __dispatch1 = 0;
-                                (this.buf).printf( new ByteSlice("%uu"), (int)v);
+                                (this.buf).printf(new BytePtr("%uu"), (int)v);
                                 break;
                             case 19:
-                                (this.buf).printf( new ByteSlice("%lldL"), v);
+                                (this.buf).printf(new BytePtr("%lldL"), v);
                                 break;
                             case 20:
                                 __dispatch1 = 0;
-                                (this.buf).printf( new ByteSlice("%lluLU"), v);
+                                (this.buf).printf(new BytePtr("%lluLU"), v);
                                 break;
                             case 30:
-                                (this.buf).writestring((v) != 0 ?  new ByteSlice("true") :  new ByteSlice("false"));
+                                (this.buf).writestring((v) != 0 ? new ByteSlice("true") : new ByteSlice("false"));
                                 break;
                             case 3:
-                                (this.buf).writestring( new ByteSlice("cast("));
+                                (this.buf).writestring(new ByteSlice("cast("));
                                 (this.buf).writestring(t.toChars());
                                 (this.buf).writeByte(41);
                                 if (target.ptrsize == 8)
@@ -1949,17 +1949,17 @@ public class hdrgen {
                 }
             }
             else if ((v & -9223372036854775808L) != 0)
-                (this.buf).printf( new ByteSlice("0x%llx"), v);
+                (this.buf).printf(new BytePtr("0x%llx"), v);
             else
                 (this.buf).print(v);
         }
 
         public  void visit(ErrorExp e) {
-            (this.buf).writestring( new ByteSlice("__error"));
+            (this.buf).writestring(new ByteSlice("__error"));
         }
 
         public  void visit(VoidInitExp e) {
-            (this.buf).writestring( new ByteSlice("__void"));
+            (this.buf).writestring(new ByteSlice("__void"));
         }
 
         public  void floatToBuffer(Type type, double value) {
@@ -2006,7 +2006,7 @@ public class hdrgen {
             this.floatToBuffer(e.type, creall(e.value));
             (this.buf).writeByte(43);
             this.floatToBuffer(e.type, cimagl(e.value));
-            (this.buf).writestring( new ByteSlice("i)"));
+            (this.buf).writestring(new ByteSlice("i)"));
         }
 
         public  void visit(IdentifierExp e) {
@@ -2021,15 +2021,15 @@ public class hdrgen {
         }
 
         public  void visit(ThisExp e) {
-            (this.buf).writestring( new ByteSlice("this"));
+            (this.buf).writestring(new ByteSlice("this"));
         }
 
         public  void visit(SuperExp e) {
-            (this.buf).writestring( new ByteSlice("super"));
+            (this.buf).writestring(new ByteSlice("super"));
         }
 
         public  void visit(NullExp e) {
-            (this.buf).writestring( new ByteSlice("null"));
+            (this.buf).writestring(new ByteSlice("null"));
         }
 
         public  void visit(StringExp e) {
@@ -2056,12 +2056,12 @@ public class hdrgen {
                                     if ((c <= 127 && (isprint(c)) != 0))
                                         (this.buf).writeByte(c);
                                     else
-                                        (this.buf).printf( new ByteSlice("\\x%02x"), c);
+                                        (this.buf).printf(new BytePtr("\\x%02x"), c);
                                 }
                                 else if (c <= 65535)
-                                    (this.buf).printf( new ByteSlice("\\x%02x\\x%02x"), c & 255, c >> 8);
+                                    (this.buf).printf(new BytePtr("\\x%02x\\x%02x"), c & 255, c >> 8);
                                 else
-                                    (this.buf).printf( new ByteSlice("\\x%02x\\x%02x\\x%02x\\x%02x"), c & 255, c >> 8 & 255, c >> 16 & 255, c >> 24);
+                                    (this.buf).printf(new BytePtr("\\x%02x\\x%02x\\x%02x\\x%02x"), c & 255, c >> 8 & 255, c >> 16 & 255, c >> 24);
                                 break;
                             }
                         } while(__dispatch3 != 0);
@@ -2090,7 +2090,7 @@ public class hdrgen {
                     Expression key = __r1470.get(__key1469);
                     int i = __key1469;
                     if ((i) != 0)
-                        (this.buf).writestring( new ByteSlice(", "));
+                        (this.buf).writestring(new ByteSlice(", "));
                     expToBuffer(key, PREC.assign, this.buf, this.hgs);
                     (this.buf).writeByte(58);
                     Expression value = (e.values).get(i);
@@ -2104,7 +2104,7 @@ public class hdrgen {
             (this.buf).writestring(e.sd.toChars());
             (this.buf).writeByte(40);
             if ((e.stageflags & 32) != 0)
-                (this.buf).writestring( new ByteSlice("<recursion>"));
+                (this.buf).writestring(new ByteSlice("<recursion>"));
             else
             {
                 int old = e.stageflags;
@@ -2152,7 +2152,7 @@ public class hdrgen {
                 expToBuffer(e.thisexp, PREC.primary, this.buf, this.hgs);
                 (this.buf).writeByte(46);
             }
-            (this.buf).writestring( new ByteSlice("new "));
+            (this.buf).writestring(new ByteSlice("new "));
             if ((e.newargs != null && ((e.newargs).length) != 0))
             {
                 (this.buf).writeByte(40);
@@ -2174,14 +2174,14 @@ public class hdrgen {
                 expToBuffer(e.thisexp, PREC.primary, this.buf, this.hgs);
                 (this.buf).writeByte(46);
             }
-            (this.buf).writestring( new ByteSlice("new"));
+            (this.buf).writestring(new ByteSlice("new"));
             if ((e.newargs != null && ((e.newargs).length) != 0))
             {
                 (this.buf).writeByte(40);
                 argsToBuffer(e.newargs, this.buf, this.hgs, null);
                 (this.buf).writeByte(41);
             }
-            (this.buf).writestring( new ByteSlice(" class "));
+            (this.buf).writestring(new ByteSlice(" class "));
             if ((e.arguments != null && ((e.arguments).length) != 0))
             {
                 (this.buf).writeByte(40);
@@ -2194,11 +2194,11 @@ public class hdrgen {
 
         public  void visit(SymOffExp e) {
             if ((e.offset) != 0)
-                (this.buf).printf( new ByteSlice("(& %s+%u)"), e.var.toChars(), e.offset);
+                (this.buf).printf(new BytePtr("(& %s+%u)"), e.var.toChars(), e.offset);
             else if (e.var.isTypeInfoDeclaration() != null)
                 (this.buf).writestring(e.var.toChars());
             else
-                (this.buf).printf( new ByteSlice("& %s"), e.var.toChars());
+                (this.buf).printf(new BytePtr("& %s"), e.var.toChars());
         }
 
         public  void visit(VarExp e) {
@@ -2214,13 +2214,13 @@ public class hdrgen {
             {
                 (this.buf).writeByte(40);
                 e.e0.accept(this);
-                (this.buf).writestring( new ByteSlice(", tuple("));
+                (this.buf).writestring(new ByteSlice(", tuple("));
                 argsToBuffer(e.exps, this.buf, this.hgs, null);
-                (this.buf).writestring( new ByteSlice("))"));
+                (this.buf).writestring(new ByteSlice("))"));
             }
             else
             {
-                (this.buf).writestring( new ByteSlice("tuple("));
+                (this.buf).writestring(new ByteSlice("tuple("));
                 argsToBuffer(e.exps, this.buf, this.hgs, null);
                 (this.buf).writeByte(41);
             }
@@ -2250,13 +2250,13 @@ public class hdrgen {
         }
 
         public  void visit(TypeidExp e) {
-            (this.buf).writestring( new ByteSlice("typeid("));
+            (this.buf).writestring(new ByteSlice("typeid("));
             objectToBuffer(e.obj, this.buf, this.hgs);
             (this.buf).writeByte(41);
         }
 
         public  void visit(TraitsExp e) {
-            (this.buf).writestring( new ByteSlice("__traits("));
+            (this.buf).writestring(new ByteSlice("__traits("));
             if (e.ident != null)
                 (this.buf).writestring(e.ident.asString());
             if (e.args != null)
@@ -2266,7 +2266,7 @@ public class hdrgen {
                     int __key1472 = 0;
                     for (; __key1472 < __r1471.getLength();__key1472 += 1) {
                         RootObject arg = __r1471.get(__key1472);
-                        (this.buf).writestring( new ByteSlice(", "));
+                        (this.buf).writestring(new ByteSlice(", "));
                         objectToBuffer(arg, this.buf, this.hgs);
                     }
                 }
@@ -2275,27 +2275,27 @@ public class hdrgen {
         }
 
         public  void visit(HaltExp e) {
-            (this.buf).writestring( new ByteSlice("halt"));
+            (this.buf).writestring(new ByteSlice("halt"));
         }
 
         public  void visit(IsExp e) {
-            (this.buf).writestring( new ByteSlice("is("));
+            (this.buf).writestring(new ByteSlice("is("));
             typeToBuffer(e.targ, e.id, this.buf, this.hgs);
             if ((e.tok2 & 0xFF) != 0)
             {
-                (this.buf).printf( new ByteSlice(" %s %s"), Token.toChars(e.tok), Token.toChars(e.tok2));
+                (this.buf).printf(new BytePtr(" %s %s"), Token.toChars(e.tok), Token.toChars(e.tok2));
             }
             else if (e.tspec != null)
             {
                 if ((e.tok & 0xFF) == 7)
-                    (this.buf).writestring( new ByteSlice(" : "));
+                    (this.buf).writestring(new ByteSlice(" : "));
                 else
-                    (this.buf).writestring( new ByteSlice(" == "));
+                    (this.buf).writestring(new ByteSlice(" == "));
                 typeToBuffer(e.tspec, null, this.buf, this.hgs);
             }
             if ((e.parameters != null && ((e.parameters).length) != 0))
             {
-                (this.buf).writestring( new ByteSlice(", "));
+                (this.buf).writestring(new ByteSlice(", "));
                 DsymbolPrettyPrintVisitor v = new DsymbolPrettyPrintVisitor(this.buf, this.hgs);
                 v.visitTemplateParameters(e.parameters);
             }
@@ -2316,23 +2316,23 @@ public class hdrgen {
         }
 
         public  void visit(CompileExp e) {
-            (this.buf).writestring( new ByteSlice("mixin("));
+            (this.buf).writestring(new ByteSlice("mixin("));
             argsToBuffer(e.exps, this.buf, this.hgs, null);
             (this.buf).writeByte(41);
         }
 
         public  void visit(ImportExp e) {
-            (this.buf).writestring( new ByteSlice("import("));
+            (this.buf).writestring(new ByteSlice("import("));
             expToBuffer(e.e1, PREC.assign, this.buf, this.hgs);
             (this.buf).writeByte(41);
         }
 
         public  void visit(AssertExp e) {
-            (this.buf).writestring( new ByteSlice("assert("));
+            (this.buf).writestring(new ByteSlice("assert("));
             expToBuffer(e.e1, PREC.assign, this.buf, this.hgs);
             if (e.msg != null)
             {
-                (this.buf).writestring( new ByteSlice(", "));
+                (this.buf).writestring(new ByteSlice(", "));
                 expToBuffer(e.msg, PREC.assign, this.buf, this.hgs);
             }
             (this.buf).writeByte(41);
@@ -2396,12 +2396,12 @@ public class hdrgen {
         }
 
         public  void visit(DeleteExp e) {
-            (this.buf).writestring( new ByteSlice("delete "));
+            (this.buf).writestring(new ByteSlice("delete "));
             expToBuffer(e.e1, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
         }
 
         public  void visit(CastExp e) {
-            (this.buf).writestring( new ByteSlice("cast("));
+            (this.buf).writestring(new ByteSlice("cast("));
             if (e.to != null)
                 typeToBuffer(e.to, null, this.buf, this.hgs);
             else
@@ -2413,7 +2413,7 @@ public class hdrgen {
         }
 
         public  void visit(VectorExp e) {
-            (this.buf).writestring( new ByteSlice("cast("));
+            (this.buf).writestring(new ByteSlice("cast("));
             typeToBuffer(e.to, null, this.buf, this.hgs);
             (this.buf).writeByte(41);
             expToBuffer(e.e1, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
@@ -2421,7 +2421,7 @@ public class hdrgen {
 
         public  void visit(VectorArrayExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
-            (this.buf).writestring( new ByteSlice(".array"));
+            (this.buf).writestring(new ByteSlice(".array"));
         }
 
         public  void visit(SliceExp e) {
@@ -2433,7 +2433,7 @@ public class hdrgen {
                     sizeToBuffer(e.lwr, this.buf, this.hgs);
                 else
                     (this.buf).writeByte(48);
-                (this.buf).writestring( new ByteSlice(".."));
+                (this.buf).writestring(new ByteSlice(".."));
                 if (e.upr != null)
                     sizeToBuffer(e.upr, this.buf, this.hgs);
                 else
@@ -2444,23 +2444,23 @@ public class hdrgen {
 
         public  void visit(ArrayLengthExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
-            (this.buf).writestring( new ByteSlice(".length"));
+            (this.buf).writestring(new ByteSlice(".length"));
         }
 
         public  void visit(IntervalExp e) {
             expToBuffer(e.lwr, PREC.assign, this.buf, this.hgs);
-            (this.buf).writestring( new ByteSlice(".."));
+            (this.buf).writestring(new ByteSlice(".."));
             expToBuffer(e.upr, PREC.assign, this.buf, this.hgs);
         }
 
         public  void visit(DelegatePtrExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
-            (this.buf).writestring( new ByteSlice(".ptr"));
+            (this.buf).writestring(new ByteSlice(".ptr"));
         }
 
         public  void visit(DelegateFuncptrExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
-            (this.buf).writestring( new ByteSlice(".funcptr"));
+            (this.buf).writestring(new ByteSlice(".funcptr"));
         }
 
         public  void visit(ArrayExp e) {
@@ -2495,16 +2495,16 @@ public class hdrgen {
 
         public  void visit(RemoveExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
-            (this.buf).writestring( new ByteSlice(".remove("));
+            (this.buf).writestring(new ByteSlice(".remove("));
             expToBuffer(e.e2, PREC.assign, this.buf, this.hgs);
             (this.buf).writeByte(41);
         }
 
         public  void visit(CondExp e) {
             expToBuffer(e.econd, PREC.oror, this.buf, this.hgs);
-            (this.buf).writestring( new ByteSlice(" ? "));
+            (this.buf).writestring(new ByteSlice(" ? "));
             expToBuffer(e.e1, PREC.expr, this.buf, this.hgs);
-            (this.buf).writestring( new ByteSlice(" : "));
+            (this.buf).writestring(new ByteSlice(" : "));
             expToBuffer(e.e2, PREC.cond, this.buf, this.hgs);
         }
 
@@ -2544,35 +2544,35 @@ public class hdrgen {
             (this.buf).writestring(tp.ident.asString());
             if (tp.specType != null)
             {
-                (this.buf).writestring( new ByteSlice(" : "));
+                (this.buf).writestring(new ByteSlice(" : "));
                 typeToBuffer(tp.specType, null, this.buf, this.hgs);
             }
             if (tp.defaultType != null)
             {
-                (this.buf).writestring( new ByteSlice(" = "));
+                (this.buf).writestring(new ByteSlice(" = "));
                 typeToBuffer(tp.defaultType, null, this.buf, this.hgs);
             }
         }
 
         public  void visit(TemplateThisParameter tp) {
-            (this.buf).writestring( new ByteSlice("this "));
+            (this.buf).writestring(new ByteSlice("this "));
             this.visit((TemplateTypeParameter)tp);
         }
 
         public  void visit(TemplateAliasParameter tp) {
-            (this.buf).writestring( new ByteSlice("alias "));
+            (this.buf).writestring(new ByteSlice("alias "));
             if (tp.specType != null)
                 typeToBuffer(tp.specType, tp.ident, this.buf, this.hgs);
             else
                 (this.buf).writestring(tp.ident.asString());
             if (tp.specAlias != null)
             {
-                (this.buf).writestring( new ByteSlice(" : "));
+                (this.buf).writestring(new ByteSlice(" : "));
                 objectToBuffer(tp.specAlias, this.buf, this.hgs);
             }
             if (tp.defaultAlias != null)
             {
-                (this.buf).writestring( new ByteSlice(" = "));
+                (this.buf).writestring(new ByteSlice(" = "));
                 objectToBuffer(tp.defaultAlias, this.buf, this.hgs);
             }
         }
@@ -2581,19 +2581,19 @@ public class hdrgen {
             typeToBuffer(tp.valType, tp.ident, this.buf, this.hgs);
             if (tp.specValue != null)
             {
-                (this.buf).writestring( new ByteSlice(" : "));
+                (this.buf).writestring(new ByteSlice(" : "));
                 expressionToBuffer(tp.specValue, this.buf, this.hgs);
             }
             if (tp.defaultValue != null)
             {
-                (this.buf).writestring( new ByteSlice(" = "));
+                (this.buf).writestring(new ByteSlice(" = "));
                 expressionToBuffer(tp.defaultValue, this.buf, this.hgs);
             }
         }
 
         public  void visit(TemplateTupleParameter tp) {
             (this.buf).writestring(tp.ident.asString());
-            (this.buf).writestring( new ByteSlice("..."));
+            (this.buf).writestring(new ByteSlice("..."));
         }
 
 
@@ -2621,7 +2621,7 @@ public class hdrgen {
         }
 
         public  void visit(DebugCondition c) {
-            (this.buf).writestring( new ByteSlice("debug ("));
+            (this.buf).writestring(new ByteSlice("debug ("));
             if (c.ident != null)
                 (this.buf).writestring(c.ident.asString());
             else
@@ -2630,7 +2630,7 @@ public class hdrgen {
         }
 
         public  void visit(VersionCondition c) {
-            (this.buf).writestring( new ByteSlice("version ("));
+            (this.buf).writestring(new ByteSlice("version ("));
             if (c.ident != null)
                 (this.buf).writestring(c.ident.asString());
             else
@@ -2639,7 +2639,7 @@ public class hdrgen {
         }
 
         public  void visit(StaticIfCondition c) {
-            (this.buf).writestring( new ByteSlice("static if ("));
+            (this.buf).writestring(new ByteSlice("static if ("));
             expressionToBuffer(c.exp, this.buf, this.hgs);
             (this.buf).writeByte(41);
         }
@@ -2708,7 +2708,7 @@ public class hdrgen {
                 {
                     stc.value &= ~tbl;
                     if (tbl == 134217728L)
-                        return  new ByteSlice("__thread");
+                        return new ByteSlice("__thread");
                     byte tok = hdrgen.stcToStringtable.get(i).tok;
                     if (((tok & 0xFF) != 225 && !((hdrgen.stcToStringtable.get(i).id.getLength()) != 0)))
                         hdrgen.stcToStringtable.get(i).id = Token.asString(tok).copy();
@@ -2738,11 +2738,11 @@ public class hdrgen {
             case TRUST.default_:
                 return new ByteSlice();
             case TRUST.system:
-                return  new ByteSlice("@system");
+                return new ByteSlice("@system");
             case TRUST.trusted:
-                return  new ByteSlice("@trusted");
+                return new ByteSlice("@trusted");
             case TRUST.safe:
-                return  new ByteSlice("@safe");
+                return new ByteSlice("@safe");
             default:
             throw SwitchError.INSTANCE;
         }
@@ -2752,7 +2752,7 @@ public class hdrgen {
         ByteSlice s = linkageToString(linkage).copy();
         if ((s.getLength()) != 0)
         {
-            (buf).writestring( new ByteSlice("extern ("));
+            (buf).writestring(new ByteSlice("extern ("));
             (buf).writestring(s);
             (buf).writeByte(41);
         }
@@ -2768,19 +2768,19 @@ public class hdrgen {
             case LINK.default_:
                 return new ByteSlice();
             case LINK.d:
-                return  new ByteSlice("D");
+                return new ByteSlice("D");
             case LINK.c:
-                return  new ByteSlice("C");
+                return new ByteSlice("C");
             case LINK.cpp:
-                return  new ByteSlice("C++");
+                return new ByteSlice("C++");
             case LINK.windows:
-                return  new ByteSlice("Windows");
+                return new ByteSlice("Windows");
             case LINK.pascal:
-                return  new ByteSlice("Pascal");
+                return new ByteSlice("Pascal");
             case LINK.objc:
-                return  new ByteSlice("Objective-C");
+                return new ByteSlice("Objective-C");
             case LINK.system:
-                return  new ByteSlice("System");
+                return new ByteSlice("System");
             default:
             throw SwitchError.INSTANCE;
         }
@@ -2806,17 +2806,17 @@ public class hdrgen {
             case Prot.Kind.undefined:
                 return new ByteSlice();
             case Prot.Kind.none:
-                return  new ByteSlice("none");
+                return new ByteSlice("none");
             case Prot.Kind.private_:
-                return  new ByteSlice("private");
+                return new ByteSlice("private");
             case Prot.Kind.package_:
-                return  new ByteSlice("package");
+                return new ByteSlice("package");
             case Prot.Kind.protected_:
-                return  new ByteSlice("protected");
+                return new ByteSlice("protected");
             case Prot.Kind.public_:
-                return  new ByteSlice("public");
+                return new ByteSlice("public");
             case Prot.Kind.export_:
-                return  new ByteSlice("export");
+                return new ByteSlice("export");
             default:
             throw SwitchError.INSTANCE;
         }
@@ -2847,7 +2847,7 @@ public class hdrgen {
                 Expression arg = __r1474.get(__key1473);
                 int i = __key1473;
                 if ((i) != 0)
-                    (buf).writestring( new ByteSlice(", "));
+                    (buf).writestring(new ByteSlice(", "));
                 typeToBuffer(arg.type, null, buf, hgs);
             }
         }
@@ -2869,7 +2869,7 @@ public class hdrgen {
                 RootObject o = __r1476.get(__key1475);
                 int i = __key1475;
                 if ((i) != 0)
-                    (buf).writestring( new ByteSlice(", "));
+                    (buf).writestring(new ByteSlice(", "));
                 objectToBuffer(o, buf, hgs);
             }
         }
@@ -2894,7 +2894,7 @@ public class hdrgen {
             parameterToBuffer(parameter, buf, hgs);
             if ((tf.parameterList.varargs == VarArg.typesafe && pequals(parameter, tf.parameterList.get((tf.parameterList.parameters).length - 1))))
             {
-                buf.writestring( new ByteSlice("..."));
+                buf.writestring(new ByteSlice("..."));
             }
             return buf.extractChars();
         }
@@ -2910,7 +2910,7 @@ public class hdrgen {
             for (; __key1477 < __limit1478;__key1477 += 1) {
                 int i = __key1477;
                 if ((i) != 0)
-                    (buf).writestring( new ByteSlice(", "));
+                    (buf).writestring(new ByteSlice(", "));
                 parameterToBuffer(pl.get(i), buf, hgs);
             }
         }
@@ -2925,11 +2925,11 @@ public class hdrgen {
                     case VarArg.variadic:
                         if (pl.length() == 0)
                             /*goto case*/{ __dispatch7 = VarArg.typesafe; continue dispatched_7; }
-                        (buf).writestring( new ByteSlice(", ..."));
+                        (buf).writestring(new ByteSlice(", ..."));
                         break;
                     case VarArg.typesafe:
                         __dispatch7 = 0;
-                        (buf).writestring( new ByteSlice("..."));
+                        (buf).writestring(new ByteSlice("..."));
                         break;
                     default:
                     throw SwitchError.INSTANCE;
@@ -2952,19 +2952,19 @@ public class hdrgen {
             (buf).writeByte(32);
         }
         if ((p.storageClass & 256L) != 0)
-            (buf).writestring( new ByteSlice("auto "));
+            (buf).writestring(new ByteSlice("auto "));
         if ((p.storageClass & 17592186044416L) != 0)
-            (buf).writestring( new ByteSlice("return "));
+            (buf).writestring(new ByteSlice("return "));
         if ((p.storageClass & 4096L) != 0)
-            (buf).writestring( new ByteSlice("out "));
+            (buf).writestring(new ByteSlice("out "));
         else if ((p.storageClass & 2097152L) != 0)
-            (buf).writestring( new ByteSlice("ref "));
+            (buf).writestring(new ByteSlice("ref "));
         else if ((p.storageClass & 2048L) != 0)
-            (buf).writestring( new ByteSlice("in "));
+            (buf).writestring(new ByteSlice("in "));
         else if ((p.storageClass & 8192L) != 0)
-            (buf).writestring( new ByteSlice("lazy "));
+            (buf).writestring(new ByteSlice("lazy "));
         else if ((p.storageClass & 268435456L) != 0)
-            (buf).writestring( new ByteSlice("alias "));
+            (buf).writestring(new ByteSlice("alias "));
         long stc = p.storageClass;
         if ((p.type != null && ((p.type.mod & 0xFF) & MODFlags.shared_) != 0))
             stc &= -536870913L;
@@ -2975,7 +2975,7 @@ public class hdrgen {
             if (p.ident != null)
                 (buf).writestring(p.ident.asString());
         }
-        else if ((((p.type.ty & 0xFF) == ENUMTY.Tident && ((TypeIdentifier)p.type).ident.asString().getLength() > 3) && strncmp(((TypeIdentifier)p.type).ident.toChars(),  new ByteSlice("__T"), 3) == 0))
+        else if ((((p.type.ty & 0xFF) == ENUMTY.Tident && ((TypeIdentifier)p.type).ident.asString().getLength() > 3) && strncmp(((TypeIdentifier)p.type).ident.toChars(), new BytePtr("__T"), 3) == 0))
         {
             (buf).writestring(p.ident.asString());
         }
@@ -2985,7 +2985,7 @@ public class hdrgen {
         }
         if (p.defaultArg != null)
         {
-            (buf).writestring( new ByteSlice(" = "));
+            (buf).writestring(new ByteSlice(" = "));
             expToBuffer(p.defaultArg, PREC.assign, buf, hgs);
         }
     }
@@ -3000,7 +3000,7 @@ public class hdrgen {
                 Expression el = __r1480.get(__key1479);
                 int i = __key1479;
                 if ((i) != 0)
-                    (buf).writestring( new ByteSlice(", "));
+                    (buf).writestring(new ByteSlice(", "));
                 if (!(el != null))
                     el = basis;
                 if (el != null)
@@ -3135,12 +3135,12 @@ public class hdrgen {
         (buf).writeByte(33);
         if ((ti.nest) != 0)
         {
-            (buf).writestring( new ByteSlice("(...)"));
+            (buf).writestring(new ByteSlice("(...)"));
             return ;
         }
         if (ti.tiargs == null)
         {
-            (buf).writestring( new ByteSlice("()"));
+            (buf).writestring(new ByteSlice("()"));
             return ;
         }
         if ((ti.tiargs).length == 1)
@@ -3178,7 +3178,7 @@ public class hdrgen {
                 RootObject arg = __r1484.get(__key1483);
                 int i = __key1483;
                 if ((i) != 0)
-                    (buf).writestring( new ByteSlice(", "));
+                    (buf).writestring(new ByteSlice(", "));
                 objectToBuffer(arg, buf, hgs);
             }
         }
@@ -3220,14 +3220,14 @@ public class hdrgen {
                                     RootObject arg = __r1486.get(__key1485);
                                     int i = __key1485;
                                     if ((i) != 0)
-                                        (buf).writestring( new ByteSlice(", "));
+                                        (buf).writestring(new ByteSlice(", "));
                                     objectToBuffer(arg, buf, hgs);
                                 }
                             }
                         }
                         else if (!(oarg != null))
                         {
-                            (buf).writestring( new ByteSlice("NULL"));
+                            (buf).writestring(new ByteSlice("NULL"));
                         }
                         else
                         {
@@ -3259,7 +3259,7 @@ public class hdrgen {
                 (buf_ref.value).writeByte(32);
         }
         else if ((hgs).ddoc)
-            (buf_ref.value).writestring( new ByteSlice("auto "));
+            (buf_ref.value).writestring(new ByteSlice("auto "));
         if (ident.getLength() != 0)
             (buf_ref.value).writestring(ident);
         parametersToBuffer(t.parameterList, buf_ref.value, hgs);
@@ -3295,9 +3295,9 @@ public class hdrgen {
         }
         Function1<ByteSlice,Void> ignoreReturn = new Function1<ByteSlice,Void>(){
             public Void invoke(ByteSlice str){
-                if (!(__equals(str,  new ByteSlice("return"))))
+                if (!(__equals(str, new ByteSlice("return"))))
                 {
-                    if ((pequals(ident_ref.value, Id.ctor) && __equals(str,  new ByteSlice("ref"))))
+                    if ((pequals(ident_ref.value, Id.ctor) && __equals(str, new ByteSlice("ref"))))
                         return null;
                     (buf_ref.value).writestring(str);
                     (buf_ref.value).writeByte(32);
@@ -3321,7 +3321,7 @@ public class hdrgen {
                 (buf_ref.value).writeByte(32);
         }
         else if ((hgs).ddoc)
-            (buf_ref.value).writestring( new ByteSlice("auto "));
+            (buf_ref.value).writestring(new ByteSlice("auto "));
         if (ident_ref.value != null)
             (buf_ref.value).writestring(ident_ref.value.toHChars2());
         if (td != null)
@@ -3334,7 +3334,7 @@ public class hdrgen {
                     TemplateParameter p = __r1488.get(__key1487);
                     int i = __key1487;
                     if ((i) != 0)
-                        (buf_ref.value).writestring( new ByteSlice(", "));
+                        (buf_ref.value).writestring(new ByteSlice(", "));
                     templateParameterToBuffer(p, buf_ref.value, hgs);
                 }
             }
@@ -3343,7 +3343,7 @@ public class hdrgen {
         parametersToBuffer(t.parameterList, buf_ref.value, hgs);
         if (t.isreturn)
         {
-            (buf_ref.value).writestring( new ByteSlice(" return"));
+            (buf_ref.value).writestring(new ByteSlice(" return"));
         }
         t.inuse--;
     }
@@ -3353,13 +3353,13 @@ public class hdrgen {
         Ref<HdrGenState> hgs_ref = ref(hgs);
         Function1<ErrorInitializer,Void> visitError = new Function1<ErrorInitializer,Void>(){
             public Void invoke(ErrorInitializer iz){
-                (buf_ref.value).writestring( new ByteSlice("__error__"));
+                (buf_ref.value).writestring(new ByteSlice("__error__"));
                 return null;
             }
         };
         Function1<VoidInitializer,Void> visitVoid = new Function1<VoidInitializer,Void>(){
             public Void invoke(VoidInitializer iz){
-                (buf_ref.value).writestring( new ByteSlice("void"));
+                (buf_ref.value).writestring(new ByteSlice("void"));
                 return null;
             }
         };
@@ -3373,7 +3373,7 @@ public class hdrgen {
                         Identifier id = __r1490.get(__key1489);
                         int i = __key1489;
                         if ((i) != 0)
-                            (buf_ref.value).writestring( new ByteSlice(", "));
+                            (buf_ref.value).writestring(new ByteSlice(", "));
                         if (id != null)
                         {
                             (buf_ref.value).writestring(id.asString());
@@ -3400,7 +3400,7 @@ public class hdrgen {
                         Expression ex = __r1492.get(__key1491);
                         int i = __key1491;
                         if ((i) != 0)
-                            (buf_ref.value).writestring( new ByteSlice(", "));
+                            (buf_ref.value).writestring(new ByteSlice(", "));
                         if (ex != null)
                         {
                             expressionToBuffer(ex, buf_ref.value, hgs_ref.value);
@@ -3450,14 +3450,14 @@ public class hdrgen {
         Ref<HdrGenState> hgs_ref = ref(hgs);
         Function1<Type,Void> visitType = new Function1<Type,Void>(){
             public Void invoke(Type t){
-                printf( new ByteSlice("t = %p, ty = %d\n"), t, (t.ty & 0xFF));
+                printf(new BytePtr("t = %p, ty = %d\n"), t, (t.ty & 0xFF));
                 throw new AssertionError("Unreachable code!");
                 return null;
             }
         };
         Function1<TypeError,Void> visitError = new Function1<TypeError,Void>(){
             public Void invoke(TypeError t){
-                (buf_ref.value).writestring( new ByteSlice("_error_"));
+                (buf_ref.value).writestring(new ByteSlice("_error_"));
                 return null;
             }
         };
@@ -3475,9 +3475,9 @@ public class hdrgen {
         };
         Function1<TypeVector,Void> visitVector = new Function1<TypeVector,Void>(){
             public Void invoke(TypeVector t){
-                (buf_ref.value).writestring( new ByteSlice("__vector("));
+                (buf_ref.value).writestring(new ByteSlice("__vector("));
                 visitWithMask(t.basetype, t.mod, buf_ref.value, hgs_ref.value);
-                (buf_ref.value).writestring( new ByteSlice(")"));
+                (buf_ref.value).writestring(new ByteSlice(")"));
                 return null;
             }
         };
@@ -3496,16 +3496,16 @@ public class hdrgen {
                 if ((hgs_ref.value).declstring)
                     /*goto L1*/throw Dispatch.INSTANCE;
                 if (ut.equals(Type.tstring))
-                    (buf_ref.value).writestring( new ByteSlice("string"));
+                    (buf_ref.value).writestring(new ByteSlice("string"));
                 else if (ut.equals(Type.twstring))
-                    (buf_ref.value).writestring( new ByteSlice("wstring"));
+                    (buf_ref.value).writestring(new ByteSlice("wstring"));
                 else if (ut.equals(Type.tdstring))
-                    (buf_ref.value).writestring( new ByteSlice("dstring"));
+                    (buf_ref.value).writestring(new ByteSlice("dstring"));
                 else
                 {
                 /*L1:*/
                     visitWithMask(t.next, t.mod, buf_ref.value, hgs_ref.value);
-                    (buf_ref.value).writestring( new ByteSlice("[]"));
+                    (buf_ref.value).writestring(new ByteSlice("[]"));
                 }
                 return null;
             }
@@ -3522,7 +3522,7 @@ public class hdrgen {
         Function1<TypePointer,Void> visitPointer = new Function1<TypePointer,Void>(){
             public Void invoke(TypePointer t){
                 if ((t.next.ty & 0xFF) == ENUMTY.Tfunction)
-                    visitFuncIdentWithPostfix((TypeFunction)t.next,  new ByteSlice("function"), buf_ref.value, hgs_ref.value);
+                    visitFuncIdentWithPostfix((TypeFunction)t.next, new ByteSlice("function"), buf_ref.value, hgs_ref.value);
                 else
                 {
                     visitWithMask(t.next, t.mod, buf_ref.value, hgs_ref.value);
@@ -3546,7 +3546,7 @@ public class hdrgen {
         };
         Function1<TypeDelegate,Void> visitDelegate = new Function1<TypeDelegate,Void>(){
             public Void invoke(TypeDelegate t){
-                visitFuncIdentWithPostfix((TypeFunction)t.next,  new ByteSlice("delegate"), buf_ref.value, hgs_ref.value);
+                visitFuncIdentWithPostfix((TypeFunction)t.next, new ByteSlice("delegate"), buf_ref.value, hgs_ref.value);
                 return null;
             }
         };
@@ -3601,7 +3601,7 @@ public class hdrgen {
         };
         Function1<TypeTypeof,Void> visitTypeof = new Function1<TypeTypeof,Void>(){
             public Void invoke(TypeTypeof t){
-                (buf_ref.value).writestring( new ByteSlice("typeof("));
+                (buf_ref.value).writestring(new ByteSlice("typeof("));
                 expressionToBuffer(t.exp, buf_ref.value, hgs_ref.value);
                 (buf_ref.value).writeByte(41);
                 visitTypeQualifiedHelper.invoke(t);
@@ -3610,7 +3610,7 @@ public class hdrgen {
         };
         Function1<TypeReturn,Void> visitReturn = new Function1<TypeReturn,Void>(){
             public Void invoke(TypeReturn t){
-                (buf_ref.value).writestring( new ByteSlice("typeof(return)"));
+                (buf_ref.value).writestring(new ByteSlice("typeof(return)"));
                 visitTypeQualifiedHelper.invoke(t);
                 return null;
             }
@@ -3652,7 +3652,7 @@ public class hdrgen {
                 visitWithMask(t.next, t.mod, buf_ref.value, hgs_ref.value);
                 (buf_ref.value).writeByte(91);
                 sizeToBuffer(t.lwr, buf_ref.value, hgs_ref.value);
-                (buf_ref.value).writestring( new ByteSlice(" .. "));
+                (buf_ref.value).writestring(new ByteSlice(" .. "));
                 sizeToBuffer(t.upr, buf_ref.value, hgs_ref.value);
                 (buf_ref.value).writeByte(93);
                 return null;
@@ -3660,7 +3660,7 @@ public class hdrgen {
         };
         Function1<TypeNull,Void> visitNull = new Function1<TypeNull,Void>(){
             public Void invoke(TypeNull t){
-                (buf_ref.value).writestring( new ByteSlice("typeof(null)"));
+                (buf_ref.value).writestring(new ByteSlice("typeof(null)"));
                 return null;
             }
         };

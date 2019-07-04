@@ -52,7 +52,7 @@ import static org.dlang.dmd.typesem.*;
 import static org.dlang.dmd.visitor.*;
 
 public class typesem {
-    private static final BytePtr[] initializer_0 = { new ByteSlice("as type"),  new ByteSlice("in alias")};
+    private static final BytePtr[] initializer_0 = {new BytePtr("as type"), new BytePtr("in alias")};
     static FuncDeclaration visitAArrayfeq = null;
     static FuncDeclaration visitAArrayfcmp = null;
     static FuncDeclaration visitAArrayfhash = null;

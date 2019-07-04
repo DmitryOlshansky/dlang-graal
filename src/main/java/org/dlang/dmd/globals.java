@@ -680,18 +680,18 @@ public class globals {
     public static class Global
     {
         public ByteSlice inifilename;
-        public ByteSlice mars_ext =  new ByteSlice("d");
+        public ByteSlice mars_ext = new ByteSlice("d");
         public ByteSlice obj_ext;
         public ByteSlice lib_ext;
         public ByteSlice dll_ext;
-        public ByteSlice doc_ext =  new ByteSlice("html");
-        public ByteSlice ddoc_ext =  new ByteSlice("ddoc");
-        public ByteSlice hdr_ext =  new ByteSlice("di");
-        public ByteSlice json_ext =  new ByteSlice("json");
-        public ByteSlice map_ext =  new ByteSlice("map");
+        public ByteSlice doc_ext = new ByteSlice("html");
+        public ByteSlice ddoc_ext = new ByteSlice("ddoc");
+        public ByteSlice hdr_ext = new ByteSlice("di");
+        public ByteSlice json_ext = new ByteSlice("json");
+        public ByteSlice map_ext = new ByteSlice("map");
         public boolean run_noext;
-        public ByteSlice copyright =  new ByteSlice("Copyright (C) 1999-2019 by The D Language Foundation, All Rights Reserved");
-        public ByteSlice written =  new ByteSlice("written by Walter Bright");
+        public ByteSlice copyright = new ByteSlice("Copyright (C) 1999-2019 by The D Language Foundation, All Rights Reserved");
+        public ByteSlice written = new ByteSlice("written by Walter Bright");
         public DArray<BytePtr> path;
         public DArray<BytePtr> filePath;
         public ByteSlice _version;
@@ -726,17 +726,17 @@ public class globals {
         }
 
         public  void _init() {
-            this.obj_ext =  new ByteSlice("o").copy();
-            this.lib_ext =  new ByteSlice("a").copy();
-            this.dll_ext =  new ByteSlice("so").copy();
+            this.obj_ext = new ByteSlice("o").copy();
+            this.lib_ext = new ByteSlice("a").copy();
+            this.dll_ext = new ByteSlice("so").copy();
             this.run_noext = true;
-            this._version =  new ByteSlice("v2.087.0-beta.2\n\u0000").copy();
-            this.vendor =  new ByteSlice("Digital Mars D").copy();
+            this._version = new ByteSlice("v2.087.0-beta.2\n\u0000").copy();
+            this.vendor = new ByteSlice("Digital Mars D").copy();
             this.params.color = Console.detectTerminal();
         }
 
         public  void deinitialize() {
-            this.opAssign(new Global(new ByteSlice(),  new ByteSlice("d"), new ByteSlice(), new ByteSlice(), new ByteSlice(),  new ByteSlice("html"),  new ByteSlice("ddoc"),  new ByteSlice("di"),  new ByteSlice("json"),  new ByteSlice("map"), false,  new ByteSlice("Copyright (C) 1999-2019 by The D Language Foundation, All Rights Reserved"),  new ByteSlice("written by Walter Bright"), null, null, new ByteSlice(), new ByteSlice(), new Param(true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, (byte)0, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, DiagnosticReporting.inform, false, false, false, false, false, false, false, DiagnosticReporting.off, PIC.fixed, false, false, (byte)0, false, false, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, CppStdRevision.cpp98, false, false, false, false, false, false, false, false, false, false, false, false, false, false, CPU.baseline, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKACTION.D, 20, new ByteSlice(), new DArray<BytePtr>(), null, null, new ByteSlice(), new ByteSlice(), new ByteSlice(), false, null, null, new DArray<BytePtr>(), false, new ByteSlice(), new ByteSlice(), true, false, new ByteSlice(), JsonFieldFlags.none, null, null, 0, 0, null, 0, null, new ByteSlice(), new ByteSlice(), new ByteSlice(), new ByteSlice(), null, false, false, false, false, false, false, false, new DArray<BytePtr>(), new DArray<BytePtr>(), new DArray<BytePtr>(), new DArray<BytePtr>(), new DArray<BytePtr>(), new ByteSlice(), new ByteSlice(), new ByteSlice(), new ByteSlice()), 0, 0, 0, 0, 0, null, null, null));
+            this.opAssign(new Global(new ByteSlice(), new ByteSlice("d"), new ByteSlice(), new ByteSlice(), new ByteSlice(), new ByteSlice("html"), new ByteSlice("ddoc"), new ByteSlice("di"), new ByteSlice("json"), new ByteSlice("map"), false, new ByteSlice("Copyright (C) 1999-2019 by The D Language Foundation, All Rights Reserved"), new ByteSlice("written by Walter Bright"), null, null, new ByteSlice(), new ByteSlice(), new Param(true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, (byte)0, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, DiagnosticReporting.inform, false, false, false, false, false, false, false, DiagnosticReporting.off, PIC.fixed, false, false, (byte)0, false, false, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, CppStdRevision.cpp98, false, false, false, false, false, false, false, false, false, false, false, false, false, false, CPU.baseline, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKACTION.D, 20, new ByteSlice(), new DArray<BytePtr>(), null, null, new ByteSlice(), new ByteSlice(), new ByteSlice(), false, null, null, new DArray<BytePtr>(), false, new ByteSlice(), new ByteSlice(), true, false, new ByteSlice(), JsonFieldFlags.none, null, null, 0, 0, null, 0, null, new ByteSlice(), new ByteSlice(), new ByteSlice(), new ByteSlice(), null, false, false, false, false, false, false, false, new DArray<BytePtr>(), new DArray<BytePtr>(), new DArray<BytePtr>(), new DArray<BytePtr>(), new DArray<BytePtr>(), new ByteSlice(), new ByteSlice(), new ByteSlice(), new ByteSlice()), 0, 0, 0, 0, 0, null, null, null));
         }
 
         public  int versionNumber() {

@@ -409,7 +409,7 @@ public class intrange {
         }
 
         public  IntRange dump(BytePtr funcName, Expression e) {
-            printf( new ByteSlice("[(%c)%#018llx, (%c)%#018llx] @ %s ::: %s\n"), this.imin.negative ? 45 : 43, this.imin.value, this.imax.negative ? 45 : 43, this.imax.value, funcName, e.toChars());
+            printf(new BytePtr("[(%c)%#018llx, (%c)%#018llx] @ %s ::: %s\n"), this.imin.negative ? 45 : 43, this.imin.value, this.imax.negative ? 45 : 43, this.imax.value, funcName, e.toChars());
             return this;
         }
 

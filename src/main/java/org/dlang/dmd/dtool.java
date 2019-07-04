@@ -71,7 +71,7 @@ public class dtool {
     {
         public OutBuffer buf;
         public  void open(BytePtr format, Object... ap) {
-            (this.buf).writestring( new ByteSlice("( "));
+            (this.buf).writestring(new ByteSlice("( "));
             (this.buf).vprintf(format, new Slice<>(ap));
             (this.buf).level++;
             (this.buf).writenl();
@@ -80,7 +80,7 @@ public class dtool {
         public  void close() {
             (this.buf).level--;
             (this.buf).writenl();
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
             (this.buf).writenl();
         }
 
@@ -108,7 +108,7 @@ public class dtool {
                         ASTBase.Expression e = __r267.get(__key266);
                         int i = __key266;
                         if ((i) != 0)
-                            (this.buf).printf( new ByteSlice(" "));
+                            (this.buf).printf(new BytePtr(" "));
                         e.accept(this);
                     }
                 }
@@ -139,7 +139,7 @@ public class dtool {
                     RootObject m = __r271.get(__key270);
                     int i = __key270;
                     if ((i) != 0)
-                        (this.buf).printf( new ByteSlice(" "));
+                        (this.buf).printf(new BytePtr(" "));
                     switch (m.dyncast())
                     {
                         case DYNCAST.expression:
@@ -149,14 +149,14 @@ public class dtool {
                             ((ASTBase.Type)m).accept(this);
                             break;
                         default:
-                        (this.buf).printf( new ByteSlice("%s"), m.toChars());
+                        (this.buf).printf(new BytePtr("%s"), m.toChars());
                     }
                 }
             }
         }
 
         public  void visit(ASTBase.Dsymbol s) {
-            (this.buf).printf( new ByteSlice("%s"), s.toChars());
+            (this.buf).printf(new BytePtr("%s"), s.toChars());
         }
 
         public  void visit(ASTBase.AliasThis a) {
@@ -164,15 +164,15 @@ public class dtool {
         }
 
         public  void visit(ASTBase.Declaration d) {
-            (this.buf).printf( new ByteSlice("%s"), d.toChars());
+            (this.buf).printf(new BytePtr("%s"), d.toChars());
         }
 
         public  void visit(ASTBase.ScopeDsymbol scd) {
-            (this.buf).printf( new ByteSlice("%s"), scd.toChars());
+            (this.buf).printf(new BytePtr("%s"), scd.toChars());
         }
 
         public  void visit(ASTBase.Import imp) {
-            (this.buf).printf( new ByteSlice("import %s"), imp.toChars());
+            (this.buf).printf(new BytePtr("import %s"), imp.toChars());
         }
 
         public  void visit(ASTBase.AttribDeclaration attr) {
@@ -188,11 +188,11 @@ public class dtool {
         }
 
         public  void visit(ASTBase.DebugSymbol sym) {
-            (this.buf).printf( new ByteSlice("debug"));
+            (this.buf).printf(new BytePtr("debug"));
         }
 
         public  void visit(ASTBase.VersionSymbol ver) {
-            (this.buf).printf( new ByteSlice("version"));
+            (this.buf).printf(new BytePtr("version"));
         }
 
         public  void visit(ASTBase.VarDeclaration d) {
@@ -201,7 +201,7 @@ public class dtool {
                 d.type.accept(this);
             if (d._init != null)
             {
-                (this.buf).printf( new ByteSlice(" "));
+                (this.buf).printf(new BytePtr(" "));
                 d._init.accept(this);
             }
             this.close();
@@ -221,7 +221,7 @@ public class dtool {
             if (d.aliassym != null)
             {
                 d.aliassym.accept(this);
-                (this.buf).printf( new ByteSlice(" "));
+                (this.buf).printf(new BytePtr(" "));
             }
             if (d.type != null)
                 d.type.accept(this);
@@ -327,7 +327,7 @@ public class dtool {
         public  void visit(ASTBase.EnumDeclaration d) {
             this.open(new BytePtr("enum "));
             if (d.ident != null)
-                (this.buf).printf( new ByteSlice("%s"), d.ident.toChars());
+                (this.buf).printf(new BytePtr("%s"), d.ident.toChars());
             this.visitDecls(d.members);
             this.close();
         }
@@ -384,7 +384,7 @@ public class dtool {
         public  void visit(ASTBase.AlignDeclaration d) {
             this.open(new BytePtr("align "));
             super.visit(d.ealign);
-            (this.buf).printf( new ByteSlice(" "));
+            (this.buf).printf(new BytePtr(" "));
             this.visitDecls(d.decl);
             this.close();
         }
@@ -410,7 +410,7 @@ public class dtool {
         }
 
         public  void visit(ASTBase.StorageClassDeclaration d) {
-            (this.buf).printf( new ByteSlice("( "));
+            (this.buf).printf(new BytePtr("( "));
             ASTBase.stcToBuffer(this.buf, d.stc);
             (this.buf).level++;
             (this.buf).writenl();
@@ -421,10 +421,10 @@ public class dtool {
         public  void visit(ASTBase.ConditionalDeclaration ver) {
             this.open(new BytePtr("version %s "), ver.ident != null ? ver.ident.toChars() : new BytePtr(""));
             ver.condition.accept(this);
-            (this.buf).printf( new ByteSlice(" "));
+            (this.buf).printf(new BytePtr(" "));
             (this.buf).writenl();
             this.visitDecls(ver.decl);
-            (this.buf).printf( new ByteSlice(" else "));
+            (this.buf).printf(new BytePtr(" else "));
             (this.buf).writenl();
             this.visitDecls(ver.elsedecl);
             this.close();
@@ -439,20 +439,20 @@ public class dtool {
         public  void visit(ASTBase.StaticIfDeclaration sif) {
             this.open(new BytePtr("static if"));
             this.visitDecls(sif.decl);
-            (this.buf).printf( new ByteSlice("else"));
+            (this.buf).printf(new BytePtr("else"));
             (this.buf).writenl();
             this.visitDecls(sif.elsedecl);
             this.close();
         }
 
         public  void visit(ASTBase.EnumMember em) {
-            (this.buf).printf( new ByteSlice("( %s "), em.ident.toChars());
+            (this.buf).printf(new BytePtr("( %s "), em.ident.toChars());
             if (em._init != null)
             {
-                (this.buf).printf( new ByteSlice(" "));
+                (this.buf).printf(new BytePtr(" "));
                 em._init.accept(this);
             }
-            (this.buf).printf( new ByteSlice(" )"));
+            (this.buf).printf(new BytePtr(" )"));
         }
 
         public  void visit(ASTBase.Module _param_0) {
@@ -482,7 +482,7 @@ public class dtool {
                         ASTBase.BaseClass c = __r273.get(__key272);
                         int i = __key272;
                         if ((i) != 0)
-                            (this.buf).printf( new ByteSlice(" "));
+                            (this.buf).printf(new BytePtr(" "));
                         (c).type.accept(this);
                     }
                 }
@@ -505,7 +505,7 @@ public class dtool {
         }
 
         public  void visit(ASTBase.Parameter p) {
-            (this.buf).printf( new ByteSlice("%s "), p.ident != null ? p.ident.toChars() :  new ByteSlice("anonymous"));
+            (this.buf).printf(new BytePtr("%s "), p.ident != null ? p.ident.toChars() : new BytePtr("anonymous"));
             if (p.type != null)
                 p.type.accept(this);
         }
@@ -528,10 +528,10 @@ public class dtool {
         }
 
         public  void visit(ASTBase.ReturnStatement r) {
-            (this.buf).printf( new ByteSlice("(return "));
+            (this.buf).printf(new BytePtr("(return "));
             if (r.exp != null)
                 r.exp.accept(this);
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.LabelStatement label) {
@@ -596,7 +596,7 @@ public class dtool {
                 st.lwr.accept(this);
             if (st.upr != null)
             {
-                (this.buf).printf( new ByteSlice(".."));
+                (this.buf).printf(new BytePtr(".."));
                 st.upr.accept(this);
             }
             if (st._body != null)
@@ -673,9 +673,9 @@ public class dtool {
         }
 
         public  void visit(ASTBase.PragmaStatement st) {
-            (this.buf).printf( new ByteSlice("( pragma %s"), st.ident.toChars());
+            (this.buf).printf(new BytePtr("( pragma %s"), st.ident.toChars());
             this.visitExps(st.args);
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.SwitchStatement sw) {
@@ -688,8 +688,8 @@ public class dtool {
         public  void visit(ASTBase.CaseRangeStatement st) {
             this.open(new BytePtr("case "));
             st.first.accept(this);
-            (this.buf).printf( new ByteSlice(" .. "));
-            (this.buf).printf( new ByteSlice(" "));
+            (this.buf).printf(new BytePtr(" .. "));
+            (this.buf).printf(new BytePtr(" "));
             st.last.accept(this);
             (this.buf).writenl();
             st.statement.accept(this);
@@ -713,30 +713,30 @@ public class dtool {
         }
 
         public  void visit(ASTBase.BreakStatement brk) {
-            (this.buf).printf( new ByteSlice("( break %s )"), brk.ident != null ? brk.ident.toChars() :  new ByteSlice(""));
+            (this.buf).printf(new BytePtr("( break %s )"), brk.ident != null ? brk.ident.toChars() : new BytePtr(""));
             (this.buf).writenl();
         }
 
         public  void visit(ASTBase.ContinueStatement cont) {
-            (this.buf).printf( new ByteSlice("( continue %s )"), cont.ident != null ? cont.ident.toChars() :  new ByteSlice(""));
+            (this.buf).printf(new BytePtr("( continue %s )"), cont.ident != null ? cont.ident.toChars() : new BytePtr(""));
             (this.buf).writenl();
         }
 
         public  void visit(ASTBase.GotoDefaultStatement gds) {
-            (this.buf).printf( new ByteSlice("( goto default )"));
+            (this.buf).printf(new BytePtr("( goto default )"));
             (this.buf).writenl();
         }
 
         public  void visit(ASTBase.GotoCaseStatement gcs) {
-            (this.buf).printf( new ByteSlice("( goto case "));
+            (this.buf).printf(new BytePtr("( goto case "));
             if (gcs.exp != null)
                 gcs.exp.accept(this);
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
             (this.buf).writenl();
         }
 
         public  void visit(ASTBase.GotoStatement gs) {
-            (this.buf).printf( new ByteSlice("( goto %s)"), gs.ident.toChars());
+            (this.buf).printf(new BytePtr("( goto %s)"), gs.ident.toChars());
             (this.buf).writenl();
         }
 
@@ -771,10 +771,10 @@ public class dtool {
                     if (c.type != null)
                     {
                         c.type.accept(this);
-                        (this.buf).printf( new ByteSlice(" "));
+                        (this.buf).printf(new BytePtr(" "));
                     }
                     if (c.ident != null)
-                        (this.buf).printf( new ByteSlice("%s"), c.ident.toChars());
+                        (this.buf).printf(new BytePtr("%s"), c.ident.toChars());
                     (this.buf).writenl();
                     if (c.handler != null)
                         c.handler.accept(this);
@@ -806,19 +806,19 @@ public class dtool {
         public  void visit(ASTBase.AsmStatement ast) {
             Token t = ast.tokens;
             for (; t != null;){
-                (this.buf).printf( new ByteSlice("%s"), (t).toChars());
+                (this.buf).printf(new BytePtr("%s"), (t).toChars());
                 t = (t).next;
             }
         }
 
         public  void visit(ASTBase.ExpStatement s) {
-            (this.buf).printf( new ByteSlice("( expr "));
+            (this.buf).printf(new BytePtr("( expr "));
             (this.buf).writenl();
             (this.buf).level++;
             s.exp.accept(this);
             (this.buf).level--;
             (this.buf).writenl();
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.CompoundStatement s) {
@@ -847,31 +847,31 @@ public class dtool {
         }
 
         public  void visit(ASTBase.TypeBasic t) {
-            (this.buf).printf( new ByteSlice("%s %s"), modToChars((t.mod & 0xFF)), t.dstring);
+            (this.buf).printf(new BytePtr("%s %s"), modToChars((t.mod & 0xFF)), t.dstring);
         }
 
         public  void visit(ASTBase.TypeError _param_0) {
-            (this.buf).printf( new ByteSlice("terror"));
+            (this.buf).printf(new BytePtr("terror"));
         }
 
         public  void visit(ASTBase.TypeNull _param_0) {
-            (this.buf).printf( new ByteSlice("typeof(null)"));
+            (this.buf).printf(new BytePtr("typeof(null)"));
         }
 
         public  void visit(ASTBase.TypeVector t) {
-            (this.buf).printf( new ByteSlice("( __vector "));
+            (this.buf).printf(new BytePtr("( __vector "));
             if (t.basetype != null)
                 t.basetype.accept(this);
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.TypeEnum t) {
-            (this.buf).printf( new ByteSlice("enum %s "), t.sym.toChars());
+            (this.buf).printf(new BytePtr("enum %s "), t.sym.toChars());
             t.sym.memtype.accept(this);
         }
 
         public  void visit(ASTBase.TypeTuple t) {
-            (this.buf).printf( new ByteSlice("( typetuple "));
+            (this.buf).printf(new BytePtr("( typetuple "));
             if (t.arguments != null)
             {
                 {
@@ -881,20 +881,20 @@ public class dtool {
                         ASTBase.Parameter a = __r279.get(__key278);
                         int i = __key278;
                         if ((i) != 0)
-                            (this.buf).printf( new ByteSlice(" "));
+                            (this.buf).printf(new BytePtr(" "));
                         super.visit(a);
                     }
                 }
             }
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.TypeClass tc) {
-            (this.buf).printf( new ByteSlice("%s"), tc.sym.ident.toChars());
+            (this.buf).printf(new BytePtr("%s"), tc.sym.ident.toChars());
         }
 
         public  void visit(ASTBase.TypeStruct ts) {
-            (this.buf).printf( new ByteSlice("%s"), ts.sym.ident.toChars());
+            (this.buf).printf(new BytePtr("%s"), ts.sym.ident.toChars());
         }
 
         public  void visit(ASTBase.TypeNext _param_0) {
@@ -902,36 +902,36 @@ public class dtool {
         }
 
         public  void visit(ASTBase.TypeReference t) {
-            (this.buf).printf( new ByteSlice("ref "));
+            (this.buf).printf(new BytePtr("ref "));
             super.visit(t.next);
         }
 
         public  void visit(ASTBase.TypeSlice ts) {
-            (this.buf).printf( new ByteSlice("( slice "));
+            (this.buf).printf(new BytePtr("( slice "));
             ts.lwr.accept(this);
-            (this.buf).printf( new ByteSlice(" "));
+            (this.buf).printf(new BytePtr(" "));
             ts.upr.accept(this);
-            (this.buf).printf( new ByteSlice(" "));
+            (this.buf).printf(new BytePtr(" "));
             ts.next.accept(this);
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.TypeDelegate td) {
-            (this.buf).printf( new ByteSlice("delegate "));
+            (this.buf).printf(new BytePtr("delegate "));
             if (td.next != null)
                 td.next.accept(this);
         }
 
         public  void visit(ASTBase.TypePointer tp) {
             tp.next.accept(this);
-            (this.buf).printf( new ByteSlice("*"));
+            (this.buf).printf(new BytePtr("*"));
         }
 
         public  void visit(ASTBase.TypeFunction tf) {
             if (tf.next != null)
             {
                 tf.next.accept(this);
-                (this.buf).printf( new ByteSlice(" "));
+                (this.buf).printf(new BytePtr(" "));
             }
             {
                 Slice<ASTBase.Parameter> __r281 = (tf.parameterList.parameters).opSlice().copy();
@@ -940,7 +940,7 @@ public class dtool {
                     ASTBase.Parameter p = __r281.get(__key280);
                     int i = __key280;
                     if ((i) != 0)
-                        (this.buf).printf( new ByteSlice(" "));
+                        (this.buf).printf(new BytePtr(" "));
                     p.accept(this);
                 }
             }
@@ -952,21 +952,21 @@ public class dtool {
 
         public  void visit(ASTBase.TypeDArray d) {
             d.next.accept(this);
-            (this.buf).printf( new ByteSlice("[]"));
+            (this.buf).printf(new BytePtr("[]"));
         }
 
         public  void visit(ASTBase.TypeAArray ta) {
             ta.next.accept(this);
-            (this.buf).printf( new ByteSlice("["));
+            (this.buf).printf(new BytePtr("["));
             ta.index.accept(this);
-            (this.buf).printf( new ByteSlice("]"));
+            (this.buf).printf(new BytePtr("]"));
         }
 
         public  void visit(ASTBase.TypeSArray tsa) {
             tsa.next.accept(this);
-            (this.buf).printf( new ByteSlice("["));
+            (this.buf).printf(new BytePtr("["));
             tsa.dim.accept(this);
-            (this.buf).printf( new ByteSlice("]"));
+            (this.buf).printf(new BytePtr("]"));
         }
 
         public  void visit(ASTBase.TypeQualified _param_0) {
@@ -974,30 +974,30 @@ public class dtool {
         }
 
         public  void visit(ASTBase.TypeTraits tt) {
-            (this.buf).printf( new ByteSlice("type __traits("));
+            (this.buf).printf(new BytePtr("type __traits("));
             tt.exp.accept(this);
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.TypeIdentifier d) {
-            (this.buf).printf( new ByteSlice("%s"), d.ident.toChars());
+            (this.buf).printf(new BytePtr("%s"), d.ident.toChars());
         }
 
         public  void visit(ASTBase.TypeReturn _param_0) {
-            (this.buf).printf( new ByteSlice("typeof(return)"));
+            (this.buf).printf(new BytePtr("typeof(return)"));
         }
 
         public  void visit(ASTBase.TypeTypeof tt) {
-            (this.buf).printf( new ByteSlice("typeof("));
+            (this.buf).printf(new BytePtr("typeof("));
             if (tt.exp != null)
                 tt.exp.accept(this);
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.TypeInstance ti) {
-            (this.buf).printf( new ByteSlice("%s!("), ti.tempinst.tempdecl != null ? ti.tempinst.tempdecl.toChars() : ti.tempinst.name.toChars());
+            (this.buf).printf(new BytePtr("%s!("), ti.tempinst.tempdecl != null ? ti.tempinst.tempdecl.toChars() : ti.tempinst.name.toChars());
             this.visitTiargs(ti.tempinst.tiargs);
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.Expression _param_0) {
@@ -1010,30 +1010,30 @@ public class dtool {
         }
 
         public  void visit(ASTBase.IntegerExp e) {
-            (this.buf).printf( new ByteSlice("%lld"), (long)e.value);
+            (this.buf).printf(new BytePtr("%lld"), (long)e.value);
         }
 
         public  void visit(ASTBase.NewAnonClassExp nc) {
-            (this.buf).printf( new ByteSlice("( new anonclass %s "), nc.cd.ident.toChars());
+            (this.buf).printf(new BytePtr("( new anonclass %s "), nc.cd.ident.toChars());
             this.visitExps(nc.arguments);
             nc.cd.accept(this);
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.IsExp ie) {
-            (this.buf).printf( new ByteSlice("( is %s"), Token.toChars(ie.tok));
+            (this.buf).printf(new BytePtr("( is %s"), Token.toChars(ie.tok));
             if (ie.id != null)
-                (this.buf).printf( new ByteSlice("%s "), ie.id.toChars());
+                (this.buf).printf(new BytePtr("%s "), ie.id.toChars());
             if (ie.type != null)
                 ie.type.accept(this);
         }
 
         public  void visit(ASTBase.RealExp r) {
-            (this.buf).printf( new ByteSlice("%llf"), r.value);
+            (this.buf).printf(new BytePtr("%llf"), r.value);
         }
 
         public  void visit(ASTBase.NullExp _param_0) {
-            (this.buf).printf( new ByteSlice("null"));
+            (this.buf).printf(new BytePtr("null"));
         }
 
         public  void visit(ASTBase.TypeidExp tie) {
@@ -1049,12 +1049,12 @@ public class dtool {
                     ((ASTBase.Type)tie.obj).accept(this);
                     return ;
                 default:
-                (this.buf).printf( new ByteSlice("<typeid>"));
+                (this.buf).printf(new BytePtr("<typeid>"));
             }
         }
 
         public  void visit(ASTBase.TraitsExp te) {
-            (this.buf).printf( new ByteSlice("( __traits %s "), te.ident.toChars());
+            (this.buf).printf(new BytePtr("( __traits %s "), te.ident.toChars());
             if (te.args != null)
             {
                 {
@@ -1074,7 +1074,7 @@ public class dtool {
                                 ((ASTBase.Type)arg).accept(this);
                                 return ;
                             default:
-                            (this.buf).printf( new ByteSlice("%s"), arg.toChars());
+                            (this.buf).printf(new BytePtr("%s"), arg.toChars());
                         }
                     }
                 }
@@ -1085,25 +1085,25 @@ public class dtool {
             if (exp.type != null)
                 exp.type.accept(this);
             if ((exp.sz & 0xFF) == 1)
-                (this.buf).printf( new ByteSlice("\"\"\"%.*s\"\"\""), exp.len, exp.string);
+                (this.buf).printf(new BytePtr("\"\"\"%.*s\"\"\""), exp.len, exp.string);
             else if ((exp.sz & 0xFF) == 2)
             {
-                (this.buf).printf( new ByteSlice("\"\"\"%.*s\"\"\""), exp.len, exp.wstring);
+                (this.buf).printf(new BytePtr("\"\"\"%.*s\"\"\""), exp.len, exp.wstring);
             }
             else if ((exp.sz & 0xFF) == 4)
             {
-                (this.buf).printf( new ByteSlice("\"\"\"%.*s\"\"\""), exp.len, exp.dstring);
+                (this.buf).printf(new BytePtr("\"\"\"%.*s\"\"\""), exp.len, exp.dstring);
             }
         }
 
         public  void visit(ASTBase.NewExp ne) {
-            (this.buf).printf( new ByteSlice("( new "));
+            (this.buf).printf(new BytePtr("( new "));
             this.visitExps(ne.arguments);
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.AssocArrayLiteralExp aa) {
-            (this.buf).printf( new ByteSlice("( key[value] "));
+            (this.buf).printf(new BytePtr("( key[value] "));
             if (aa.keys != null)
             {
                 Slice<ASTBase.Expression> __r285 = (aa.keys).opSlice().copy();
@@ -1112,18 +1112,18 @@ public class dtool {
                     ASTBase.Expression key = __r285.get(__key284);
                     int i = __key284;
                     if ((i) != 0)
-                        (this.buf).printf( new ByteSlice(" "));
+                        (this.buf).printf(new BytePtr(" "));
                     ASTBase.Expression v = (aa.values).get(i);
                     key.accept(this);
-                    (this.buf).printf( new ByteSlice(" "));
+                    (this.buf).printf(new BytePtr(" "));
                     v.accept(this);
                 }
             }
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.ArrayLiteralExp ae) {
-            (this.buf).printf( new ByteSlice("( [] "));
+            (this.buf).printf(new BytePtr("( [] "));
             if (ae.elements != null)
             {
                 Slice<ASTBase.Expression> __r287 = (ae.elements).opSlice().copy();
@@ -1132,7 +1132,7 @@ public class dtool {
                     ASTBase.Expression el = __r287.get(__key286);
                     int i = __key286;
                     if ((i) != 0)
-                        (this.buf).printf( new ByteSlice(" "));
+                        (this.buf).printf(new BytePtr(" "));
                     ASTBase.Expression e = el != null ? el : ae.basis;
                     if (e != null)
                     {
@@ -1140,7 +1140,7 @@ public class dtool {
                     }
                 }
             }
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.FuncExp fe) {
@@ -1154,11 +1154,11 @@ public class dtool {
 
         public  void visit(ASTBase.IntervalExp ival) {
             ival.lwr.accept(this);
-            (this.buf).printf( new ByteSlice(" .. "));
+            (this.buf).printf(new BytePtr(" .. "));
             if (ival.upr != null)
                 ival.upr.accept(this);
             else
-                (this.buf).printf( new ByteSlice("$"));
+                (this.buf).printf(new BytePtr("$"));
         }
 
         public  void visit(ASTBase.TypeExp te) {
@@ -1174,30 +1174,30 @@ public class dtool {
         }
 
         public  void visit(ASTBase.IdentifierExp e) {
-            (this.buf).printf( new ByteSlice("%s"), e.ident.toChars());
+            (this.buf).printf(new BytePtr("%s"), e.ident.toChars());
         }
 
         public  void visit(ASTBase.UnaExp e) {
-            (this.buf).printf( new ByteSlice("%s"), Token.toChars(e.op));
+            (this.buf).printf(new BytePtr("%s"), Token.toChars(e.op));
             e.e1.accept(this);
         }
 
         public  void visit(ASTBase.DefaultInitExp ie) {
             if (ie.type != null)
                 ie.type.accept(this);
-            (this.buf).printf( new ByteSlice(" init"));
+            (this.buf).printf(new BytePtr(" init"));
         }
 
         public  void visit(ASTBase.BinExp e) {
-            (this.buf).printf( new ByteSlice("( %s "), Token.toChars(e.op));
+            (this.buf).printf(new BytePtr("( %s "), Token.toChars(e.op));
             e.e1.accept(this);
-            (this.buf).printf( new ByteSlice(" "));
+            (this.buf).printf(new BytePtr(" "));
             e.e2.accept(this);
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.DsymbolExp e) {
-            (this.buf).printf( new ByteSlice("%s"), e.s.ident.toChars());
+            (this.buf).printf(new BytePtr("%s"), e.s.ident.toChars());
         }
 
         public  void visit(ASTBase.TemplateExp e) {
@@ -1205,17 +1205,17 @@ public class dtool {
         }
 
         public  void visit(ASTBase.SymbolExp e) {
-            (this.buf).printf( new ByteSlice("( symbol "));
+            (this.buf).printf(new BytePtr("( symbol "));
             e.type.accept(this);
-            (this.buf).printf( new ByteSlice(" %s"), e.var.ident.toChars());
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(" %s"), e.var.ident.toChars());
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.VarExp e) {
-            (this.buf).printf( new ByteSlice("( var "));
+            (this.buf).printf(new BytePtr("( var "));
             e.type.accept(this);
-            (this.buf).printf( new ByteSlice(" %s"), e.var.ident.toChars());
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(" %s"), e.var.ident.toChars());
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.TupleExp e) {
@@ -1225,15 +1225,15 @@ public class dtool {
         }
 
         public  void visit(ASTBase.DollarExp e) {
-            (this.buf).printf( new ByteSlice("$"));
+            (this.buf).printf(new BytePtr("$"));
         }
 
         public  void visit(ASTBase.ThisExp e) {
-            (this.buf).printf( new ByteSlice("this"));
+            (this.buf).printf(new BytePtr("this"));
         }
 
         public  void visit(ASTBase.SuperExp e) {
-            (this.buf).printf( new ByteSlice("super"));
+            (this.buf).printf(new BytePtr("super"));
         }
 
         public  void visit(ASTBase.AddrExp e) {
@@ -1269,49 +1269,49 @@ public class dtool {
         }
 
         public  void visit(ASTBase.CastExp e) {
-            (this.buf).printf( new ByteSlice("( cast "));
+            (this.buf).printf(new BytePtr("( cast "));
             if (e.to != null)
             {
                 e.to.accept(this);
-                (this.buf).printf( new ByteSlice(" "));
+                (this.buf).printf(new BytePtr(" "));
             }
             e.e1.accept(this);
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.CallExp call) {
-            (this.buf).printf( new ByteSlice("( call "));
+            (this.buf).printf(new BytePtr("( call "));
             if (call.e1 != null)
             {
                 call.e1.accept(this);
-                (this.buf).printf( new ByteSlice(" "));
+                (this.buf).printf(new BytePtr(" "));
             }
             this.visitExps(call.arguments);
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.DotIdExp e) {
-            (this.buf).printf( new ByteSlice("( . "));
+            (this.buf).printf(new BytePtr("( . "));
             e.e1.accept(this);
-            (this.buf).printf( new ByteSlice(" %s"), e.ident.toChars());
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(" %s"), e.ident.toChars());
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.AssertExp e) {
-            (this.buf).printf( new ByteSlice("( assert "));
+            (this.buf).printf(new BytePtr("( assert "));
             e.e1.accept(this);
             if (e.msg != null)
             {
-                (this.buf).printf( new ByteSlice(" "));
+                (this.buf).printf(new BytePtr(" "));
                 e.msg.accept(this);
             }
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.CompileExp c) {
-            (this.buf).printf( new ByteSlice("( mixin "));
+            (this.buf).printf(new BytePtr("( mixin "));
             this.visitExps(c.exps);
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.ImportExp ie) {
@@ -1319,10 +1319,10 @@ public class dtool {
         }
 
         public  void visit(ASTBase.DotTemplateInstanceExp e) {
-            (this.buf).printf( new ByteSlice("( . "));
+            (this.buf).printf(new BytePtr("( . "));
             e.e1.accept(this);
-            (this.buf).printf( new ByteSlice(" %s"), e.ti.ident != null ? e.ti.ident.toChars() : e.ti.name.toChars());
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(" %s"), e.ti.ident != null ? e.ti.ident.toChars() : e.ti.name.toChars());
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.ArrayExp arr) {
@@ -1340,27 +1340,27 @@ public class dtool {
         }
 
         public  void visit(ASTBase.FuncInitExp e) {
-            (this.buf).printf( new ByteSlice("func-init "));
+            (this.buf).printf(new BytePtr("func-init "));
             this.visit((ASTBase.DefaultInitExp)e);
         }
 
         public  void visit(ASTBase.PrettyFuncInitExp e) {
-            (this.buf).printf( new ByteSlice("pretty-init "));
+            (this.buf).printf(new BytePtr("pretty-init "));
             this.visit((ASTBase.DefaultInitExp)e);
         }
 
         public  void visit(ASTBase.FileInitExp e) {
-            (this.buf).printf( new ByteSlice("file-init "));
+            (this.buf).printf(new BytePtr("file-init "));
             this.visit((ASTBase.DefaultInitExp)e);
         }
 
         public  void visit(ASTBase.LineInitExp e) {
-            (this.buf).printf( new ByteSlice("line-init "));
+            (this.buf).printf(new BytePtr("line-init "));
             this.visit((ASTBase.DefaultInitExp)e);
         }
 
         public  void visit(ASTBase.ModuleInitExp e) {
-            (this.buf).printf( new ByteSlice("module-init "));
+            (this.buf).printf(new BytePtr("module-init "));
             this.visit((ASTBase.DefaultInitExp)e);
         }
 
@@ -1445,14 +1445,14 @@ public class dtool {
         }
 
         public  void visit(ASTBase.CondExp e) {
-            (this.buf).printf( new ByteSlice("( ? "));
+            (this.buf).printf(new BytePtr("( ? "));
             if (e.econd != null)
                 e.econd.accept(this);
             if (e.e1 != null)
                 e.e1.accept(this);
             if (e.e2 != null)
                 e.e2.accept(this);
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.AssignExp e) {
@@ -1520,33 +1520,33 @@ public class dtool {
         }
 
         public  void visit(ASTBase.TemplateAliasParameter tp) {
-            (this.buf).printf( new ByteSlice("alias %s"), tp.ident.toChars());
+            (this.buf).printf(new BytePtr("alias %s"), tp.ident.toChars());
         }
 
         public  void visit(ASTBase.TemplateTypeParameter tp) {
         }
 
         public  void visit(ASTBase.TemplateTupleParameter tp) {
-            (this.buf).printf( new ByteSlice("alias %s"), tp.ident.toChars());
+            (this.buf).printf(new BytePtr("alias %s"), tp.ident.toChars());
         }
 
         public  void visit(ASTBase.TemplateValueParameter tv) {
-            (this.buf).printf( new ByteSlice("template-value "));
+            (this.buf).printf(new BytePtr("template-value "));
             tv.valType.accept(this);
             if (tv.specValue != null)
             {
-                (this.buf).printf( new ByteSlice(" "));
+                (this.buf).printf(new BytePtr(" "));
                 tv.specValue.accept(this);
             }
             if (tv.defaultValue != null)
             {
-                (this.buf).printf( new ByteSlice(" default "));
+                (this.buf).printf(new BytePtr(" default "));
                 tv.specValue.accept(this);
             }
         }
 
         public  void visit(ASTBase.TemplateThisParameter tp) {
-            (this.buf).printf( new ByteSlice("template-this"));
+            (this.buf).printf(new BytePtr("template-this"));
         }
 
         public  void visit(ASTBase.Condition _param_0) {
@@ -1569,11 +1569,11 @@ public class dtool {
         }
 
         public  void visit(ASTBase.DebugCondition d) {
-            (this.buf).printf( new ByteSlice("debug %s"), d.ident != null ? d.ident.toChars() :  new ByteSlice(""));
+            (this.buf).printf(new BytePtr("debug %s"), d.ident != null ? d.ident.toChars() : new BytePtr(""));
         }
 
         public  void visit(ASTBase.VersionCondition ver) {
-            (this.buf).printf( new ByteSlice("%s"), ver.ident.toChars());
+            (this.buf).printf(new BytePtr("%s"), ver.ident.toChars());
         }
 
         public  void visit(ASTBase.Initializer _param_0) {
@@ -1586,7 +1586,7 @@ public class dtool {
         }
 
         public  void visit(ASTBase.StructInitializer si) {
-            (this.buf).printf( new ByteSlice("( struct-init "));
+            (this.buf).printf(new BytePtr("( struct-init "));
             {
                 Slice<Identifier> __r291 = si.field.opSlice().copy();
                 int __key290 = 0;
@@ -1594,7 +1594,7 @@ public class dtool {
                     Identifier id = __r291.get(__key290);
                     int i = __key290;
                     if ((i) != 0)
-                        (this.buf).printf( new ByteSlice(" "));
+                        (this.buf).printf(new BytePtr(" "));
                     if (id != null)
                     {
                         (this.buf).writestring(id.asString());
@@ -1607,11 +1607,11 @@ public class dtool {
                     }
                 }
             }
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.ArrayInitializer ai) {
-            (this.buf).printf( new ByteSlice("( array-init "));
+            (this.buf).printf(new BytePtr("( array-init "));
             {
                 Slice<ASTBase.Initializer> __r293 = ai.value.opSlice().copy();
                 int __key292 = 0;
@@ -1619,18 +1619,18 @@ public class dtool {
                     ASTBase.Initializer v = __r293.get(__key292);
                     int i = __key292;
                     if ((i) != 0)
-                        (this.buf).printf( new ByteSlice(" "));
+                        (this.buf).printf(new BytePtr(" "));
                     if (v != null)
                         v.accept(this);
                     else
-                        (this.buf).printf( new ByteSlice("null"));
+                        (this.buf).printf(new BytePtr("null"));
                 }
             }
-            (this.buf).printf( new ByteSlice(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         public  void visit(ASTBase.VoidInitializer _param_0) {
-            (this.buf).printf( new ByteSlice("void"));
+            (this.buf).printf(new BytePtr("void"));
         }
 
 
@@ -1644,12 +1644,12 @@ public class dtool {
     }
     public static void main(Slice<ByteSlice> args) {
         Ref<Slice<ByteSlice>> args_ref = ref(args);
-        Ref<ByteSlice> outdir = ref( new ByteSlice(".").copy());
-        Ref<ByteSlice> tool = ref( new ByteSlice("lex").copy());
-        GetoptResult res = getopt(args_ref,  new ByteSlice("outdir"),  new ByteSlice("output directory"), ptr(outdir),  new ByteSlice("tool"),  new ByteSlice("select tool - lex or lispy"), ptr(tool)).copy();
+        Ref<ByteSlice> outdir = ref(new ByteSlice(".").copy());
+        Ref<ByteSlice> tool = ref(new ByteSlice("lex").copy());
+        GetoptResult res = getopt(args_ref, new ByteSlice("outdir"), new ByteSlice("output directory"), ptr(outdir), new ByteSlice("tool"), new ByteSlice("select tool - lex or lispy"), ptr(tool)).copy();
         if (res.helpWanted)
         {
-            defaultGetoptPrinter( new ByteSlice("Trivial D lexer based on DMD."), res.options);
+            defaultGetoptPrinter(new ByteSlice("Trivial D lexer based on DMD."), res.options);
             exit(1);
         }
         global.params.isLinux = true;
@@ -1662,13 +1662,13 @@ public class dtool {
             int __key490 = 0;
             for (; __key490 < __r489.getLength();__key490 += 1) {
                 ByteSlice arg = __r489.get(__key490).copy();
-                if (__equals(tool.value,  new ByteSlice("lex")))
+                if (__equals(tool.value, new ByteSlice("lex")))
                     processFile_lex(arg, outdir.value, new BytePtr("tk"));
-                else if (__equals(tool.value,  new ByteSlice("lispy")))
+                else if (__equals(tool.value, new ByteSlice("lispy")))
                     processFile_lispy(arg, outdir.value, new BytePtr("ast"));
                 else
                 {
-                    fprintf(stderr,  new ByteSlice("Unsupported tool name: %.*s"), tool.value.getLength(), toBytePtr(tool.value));
+                    fprintf(stderr, new BytePtr("Unsupported tool name: %.*s"), tool.value.getLength(), toBytePtr(tool.value));
                     exit(2);
                 }
             }
@@ -1681,15 +1681,15 @@ public class dtool {
         OutBuffer output = new OutBuffer(null, 0, 0, 0, false, false);
         int i = 0;
         for (; (lexer.nextToken() & 0xFF) != 11;){
-            (output).printf( new ByteSlice("%4d"), (lexer.token.value & 0xFF));
+            (output).printf(new BytePtr("%4d"), (lexer.token.value & 0xFF));
             if ((i += 1) == 20)
             {
-                (output).printf( new ByteSlice(" | Line %5d |\n"), lexer.token.loc.linnum);
+                (output).printf(new BytePtr(" | Line %5d |\n"), lexer.token.loc.linnum);
                 i = 0;
             }
         }
         if (i != 0)
-            (output).printf( new ByteSlice(" | Line %5d |\n"), lexer.token.loc.linnum);
+            (output).printf(new BytePtr(" | Line %5d |\n"), lexer.token.loc.linnum);
         return (output).extractSlice();
     }
 
@@ -1721,28 +1721,6 @@ public class dtool {
         }
     }
 
-    // from template processFile!(_lispy)
-    public static void processFile_lispy(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
-        BytePtr argz = pcopy(toStringz(arg));
-        File.ReadResult buffer = File.read(toBytePtr(argz)).copy();
-        try {
-            if (!(buffer.success))
-            {
-                fprintf(stderr,  new ByteSlice("Failed to read from file: %s"), argz);
-                exit(2);
-            }
-            ByteSlice buf = buffer.extractData().copy();
-            BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), suffix));
-            ByteSlice filePath = toByteSlice((outdir.concat( new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
-            ByteSlice output = lispy(toBytePtr(argz), toByteSlice(buf)).copy();
-            if (!(File.write(toStringz(filePath), toByteSlice(output))))
-                fprintf(stderr,  new ByteSlice("Failed to write file: %s\n"), toStringz(filePath));
-        }
-        finally {
-        }
-    }
-
-
     // from template processFile!(_lex)
     public static void processFile_lex(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
         BytePtr argz = pcopy(toStringz(arg));
@@ -1750,15 +1728,37 @@ public class dtool {
         try {
             if (!(buffer.success))
             {
-                fprintf(stderr,  new ByteSlice("Failed to read from file: %s"), argz);
+                fprintf(stderr, new BytePtr("Failed to read from file: %s"), argz);
                 exit(2);
             }
             ByteSlice buf = buffer.extractData().copy();
             BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), suffix));
-            ByteSlice filePath = toByteSlice((outdir.concat( new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
+            ByteSlice filePath = toByteSlice((outdir.concat(new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
             ByteSlice output = lex(toBytePtr(argz), toByteSlice(buf)).copy();
             if (!(File.write(toStringz(filePath), toByteSlice(output))))
-                fprintf(stderr,  new ByteSlice("Failed to write file: %s\n"), toStringz(filePath));
+                fprintf(stderr, new BytePtr("Failed to write file: %s\n"), toStringz(filePath));
+        }
+        finally {
+        }
+    }
+
+
+    // from template processFile!(_lispy)
+    public static void processFile_lispy(ByteSlice arg, ByteSlice outdir, BytePtr suffix) {
+        BytePtr argz = pcopy(toStringz(arg));
+        File.ReadResult buffer = File.read(toBytePtr(argz)).copy();
+        try {
+            if (!(buffer.success))
+            {
+                fprintf(stderr, new BytePtr("Failed to read from file: %s"), argz);
+                exit(2);
+            }
+            ByteSlice buf = buffer.extractData().copy();
+            BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), suffix));
+            ByteSlice filePath = toByteSlice((outdir.concat(new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
+            ByteSlice output = lispy(toBytePtr(argz), toByteSlice(buf)).copy();
+            if (!(File.write(toStringz(filePath), toByteSlice(output))))
+                fprintf(stderr, new BytePtr("Failed to write file: %s\n"), toStringz(filePath));
         }
         finally {
         }

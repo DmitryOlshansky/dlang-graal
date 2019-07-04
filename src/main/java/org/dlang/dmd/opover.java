@@ -1295,8 +1295,8 @@ public class opover {
                     MatchAccumulator m = new MatchAccumulator();
                     if (false)
                     {
-                        printf( new ByteSlice("s  : %s\n"), s.toPrettyChars(false));
-                        printf( new ByteSlice("s_r: %s\n"), s_r.toPrettyChars(false));
+                        printf(new BytePtr("s  : %s\n"), s.toPrettyChars(false));
+                        printf(new BytePtr("s_r: %s\n"), s_r.toPrettyChars(false));
                     }
                     if (s != null)
                     {

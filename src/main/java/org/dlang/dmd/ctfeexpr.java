@@ -908,6 +908,24 @@ public class ctfeexpr {
         return true;
     }
 
+    // from template numCmp!(Integer)
+    public static boolean numCmpInteger(byte op, int n1, int n2) {
+        switch ((op & 0xFF))
+        {
+            case 54:
+                return n1 < n2;
+            case 56:
+                return n1 <= n2;
+            case 55:
+                return n1 > n2;
+            case 57:
+                return n1 >= n2;
+            default:
+            throw new AssertionError("Unreachable code!");
+        }
+    }
+
+
     // from template numCmp!(Double)
     public static boolean numCmpDouble(byte op, double n1, double n2) {
         switch ((op & 0xFF))
@@ -928,24 +946,6 @@ public class ctfeexpr {
 
     // from template numCmp!(Long)
     public static boolean numCmpLong(byte op, long n1, long n2) {
-        switch ((op & 0xFF))
-        {
-            case 54:
-                return n1 < n2;
-            case 56:
-                return n1 <= n2;
-            case 55:
-                return n1 > n2;
-            case 57:
-                return n1 >= n2;
-            default:
-            throw new AssertionError("Unreachable code!");
-        }
-    }
-
-
-    // from template numCmp!(Integer)
-    public static boolean numCmpInteger(byte op, int n1, int n2) {
         switch ((op & 0xFF))
         {
             case 54:
@@ -1741,7 +1741,7 @@ public class ctfeexpr {
         {
             int i = level;
             for (; i > 0;i -= 1) {
-                printf( new ByteSlice(" "));
+                printf(new BytePtr(" "));
             }
         }
         DArray<Expression> elements = null;
@@ -1751,45 +1751,45 @@ public class ctfeexpr {
         {
             elements = ((StructLiteralExp)e).elements;
             sd = ((StructLiteralExp)e).sd;
-            printf( new ByteSlice("STRUCT type = %s %p:\n"), e.type.toChars(), e);
+            printf(new BytePtr("STRUCT type = %s %p:\n"), e.type.toChars(), e);
         }
         else if ((e.op & 0xFF) == 50)
         {
             elements = ((ClassReferenceExp)e).value.elements;
             cd = ((ClassReferenceExp)e).originalClass();
-            printf( new ByteSlice("CLASS type = %s %p:\n"), e.type.toChars(), ((ClassReferenceExp)e).value);
+            printf(new BytePtr("CLASS type = %s %p:\n"), e.type.toChars(), ((ClassReferenceExp)e).value);
         }
         else if ((e.op & 0xFF) == 47)
         {
             elements = ((ArrayLiteralExp)e).elements;
-            printf( new ByteSlice("ARRAY LITERAL type=%s %p:\n"), e.type.toChars(), e);
+            printf(new BytePtr("ARRAY LITERAL type=%s %p:\n"), e.type.toChars(), e);
         }
         else if ((e.op & 0xFF) == 48)
         {
-            printf( new ByteSlice("AA LITERAL type=%s %p:\n"), e.type.toChars(), e);
+            printf(new BytePtr("AA LITERAL type=%s %p:\n"), e.type.toChars(), e);
         }
         else if ((e.op & 0xFF) == 121)
         {
-            printf( new ByteSlice("STRING %s %p\n"), e.toChars(), ((StringExp)e).string);
+            printf(new BytePtr("STRING %s %p\n"), e.toChars(), ((StringExp)e).string);
         }
         else if ((e.op & 0xFF) == 31)
         {
-            printf( new ByteSlice("SLICE %p: %s\n"), e, e.toChars());
+            printf(new BytePtr("SLICE %p: %s\n"), e, e.toChars());
             showCtfeExpr(((SliceExp)e).e1, level + 1);
         }
         else if ((e.op & 0xFF) == 26)
         {
-            printf( new ByteSlice("VAR %p %s\n"), e, e.toChars());
+            printf(new BytePtr("VAR %p %s\n"), e, e.toChars());
             VarDeclaration v = ((VarExp)e).var.isVarDeclaration();
             if ((v != null && getValue(v) != null))
                 showCtfeExpr(getValue(v), level + 1);
         }
         else if ((e.op & 0xFF) == 19)
         {
-            printf( new ByteSlice("POINTER %p to %p: %s\n"), e, ((AddrExp)e).e1, e.toChars());
+            printf(new BytePtr("POINTER %p to %p: %s\n"), e, ((AddrExp)e).e1, e.toChars());
         }
         else
-            printf( new ByteSlice("VALUE %p: %s\n"), e, e.toChars());
+            printf(new BytePtr("VALUE %p: %s\n"), e, e.toChars());
         if (elements != null)
         {
             int fieldsSoFar = 0;
@@ -1800,7 +1800,7 @@ public class ctfeexpr {
                     VarDeclaration v = null;
                     if (i > 15)
                     {
-                        printf( new ByteSlice("...(total %d elements)\n"), (elements).length);
+                        printf(new BytePtr("...(total %d elements)\n"), (elements).length);
                         return ;
                     }
                     if (sd != null)
@@ -1816,10 +1816,10 @@ public class ctfeexpr {
                             {
                                 int j = level;
                                 for (; j > 0;j -= 1) {
-                                    printf( new ByteSlice(" "));
+                                    printf(new BytePtr(" "));
                                 }
                             }
-                            printf( new ByteSlice(" BASE CLASS: %s\n"), cd.toChars());
+                            printf(new BytePtr(" BASE CLASS: %s\n"), cd.toChars());
                         }
                         v = cd.fields.get(i - fieldsSoFar);
                         assert((elements).length + i >= fieldsSoFar + cd.fields.length);
@@ -1832,10 +1832,10 @@ public class ctfeexpr {
                         {
                             int j = level;
                             for (; j > 0;j -= 1) {
-                                printf( new ByteSlice(" "));
+                                printf(new BytePtr(" "));
                             }
                         }
-                        printf( new ByteSlice(" void\n"));
+                        printf(new BytePtr(" void\n"));
                         continue;
                     }
                     if (v != null)
@@ -1845,10 +1845,10 @@ public class ctfeexpr {
                             {
                                 int j = level;
                                 for (; (j -= 1) != 0;) {
-                                    printf( new ByteSlice(" "));
+                                    printf(new BytePtr(" "));
                                 }
                             }
-                            printf( new ByteSlice(" field: block initialized static array\n"));
+                            printf(new BytePtr(" field: block initialized static array\n"));
                             continue;
                         }
                     }

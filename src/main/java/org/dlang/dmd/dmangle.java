@@ -55,19 +55,19 @@ public class dmangle {
                 (buf).writeByte(79);
                 break;
             case 3:
-                (buf).writestring( new ByteSlice("Ox"));
+                (buf).writestring(new ByteSlice("Ox"));
                 break;
             case 8:
-                (buf).writestring( new ByteSlice("Ng"));
+                (buf).writestring(new ByteSlice("Ng"));
                 break;
             case 9:
-                (buf).writestring( new ByteSlice("Ngx"));
+                (buf).writestring(new ByteSlice("Ngx"));
                 break;
             case 10:
-                (buf).writestring( new ByteSlice("ONg"));
+                (buf).writestring(new ByteSlice("ONg"));
                 break;
             case 11:
-                (buf).writestring( new ByteSlice("ONgx"));
+                (buf).writestring(new ByteSlice("ONgx"));
                 break;
             default:
             throw new AssertionError("Unreachable code!");
@@ -156,7 +156,7 @@ public class dmangle {
         }
 
         public  void visit(TypeVector t) {
-            (this.buf).writestring( new ByteSlice("Nh"));
+            (this.buf).writestring(new ByteSlice("Nh"));
             this.visitWithMask(t.basetype, t.mod);
         }
 
@@ -221,26 +221,26 @@ public class dmangle {
             }
             (this.buf).writeByte((mc & 0xFF));
             if ((ta.purity) != 0)
-                (this.buf).writestring( new ByteSlice("Na"));
+                (this.buf).writestring(new ByteSlice("Na"));
             if (ta.isnothrow)
-                (this.buf).writestring( new ByteSlice("Nb"));
+                (this.buf).writestring(new ByteSlice("Nb"));
             if (ta.isref)
-                (this.buf).writestring( new ByteSlice("Nc"));
+                (this.buf).writestring(new ByteSlice("Nc"));
             if (ta.isproperty)
-                (this.buf).writestring( new ByteSlice("Nd"));
+                (this.buf).writestring(new ByteSlice("Nd"));
             if (ta.isnogc)
-                (this.buf).writestring( new ByteSlice("Ni"));
+                (this.buf).writestring(new ByteSlice("Ni"));
             if ((ta.isreturn && !(ta.isreturninferred)))
-                (this.buf).writestring( new ByteSlice("Nj"));
+                (this.buf).writestring(new ByteSlice("Nj"));
             else if ((ta.isscope && !(ta.isscopeinferred)))
-                (this.buf).writestring( new ByteSlice("Nl"));
+                (this.buf).writestring(new ByteSlice("Nl"));
             switch (ta.trust)
             {
                 case TRUST.trusted:
-                    (this.buf).writestring( new ByteSlice("Ne"));
+                    (this.buf).writestring(new ByteSlice("Ne"));
                     break;
                 case TRUST.safe:
-                    (this.buf).writestring( new ByteSlice("Nf"));
+                    (this.buf).writestring(new ByteSlice("Nf"));
                     break;
                 default:
                 break;
@@ -339,7 +339,7 @@ public class dmangle {
                 (this.buf).writeByte(77);
             if ((!(fd.type != null) || (fd.type.ty & 0xFF) == ENUMTY.Terror))
             {
-                (this.buf).writestring( new ByteSlice("9__error__FZ"));
+                (this.buf).writestring(new ByteSlice("9__error__FZ"));
             }
             else if (inParent)
             {
@@ -399,7 +399,7 @@ public class dmangle {
                     return ;
                 }
             }
-            (this.buf).writestring( new ByteSlice("_D"));
+            (this.buf).writestring(new ByteSlice("_D"));
             this.mangleDecl(d);
         }
 
@@ -466,7 +466,7 @@ public class dmangle {
             }
             if (fd.isMain())
             {
-                (this.buf).writestring( new ByteSlice("_Dmain"));
+                (this.buf).writestring(new ByteSlice("_Dmain"));
                 return ;
             }
             if (((fd.isWinMain() || fd.isDllMain()) || pequals(fd.ident, Id.tls_get_addr)))
@@ -491,7 +491,7 @@ public class dmangle {
             Dsymbol parentsave = ad.parent;
             if (cd != null)
             {
-                if ((((((((((pequals(cd.ident, Id.Exception) && pequals(cd.parent.ident, Id.object)) || pequals(cd.ident, Id.TypeInfo)) || pequals(cd.ident, Id.TypeInfo_Struct)) || pequals(cd.ident, Id.TypeInfo_Class)) || pequals(cd.ident, Id.TypeInfo_Tuple)) || pequals(cd, ClassDeclaration.object)) || pequals(cd, Type.typeinfoclass)) || pequals(cd, dmodule.Module.moduleinfo)) || strncmp(cd.ident.toChars(),  new ByteSlice("TypeInfo_"), 9) == 0))
+                if ((((((((((pequals(cd.ident, Id.Exception) && pequals(cd.parent.ident, Id.object)) || pequals(cd.ident, Id.TypeInfo)) || pequals(cd.ident, Id.TypeInfo_Struct)) || pequals(cd.ident, Id.TypeInfo_Class)) || pequals(cd.ident, Id.TypeInfo_Tuple)) || pequals(cd, ClassDeclaration.object)) || pequals(cd, Type.typeinfoclass)) || pequals(cd, dmodule.Module.moduleinfo)) || strncmp(cd.ident.toChars(), new BytePtr("TypeInfo_"), 9) == 0))
                 {
                     ad.parent = null;
                 }
@@ -515,7 +515,7 @@ public class dmangle {
             TemplateDeclaration tempdecl = ti.tempdecl.isTemplateDeclaration();
             assert(tempdecl != null);
             byte T = ti.members != null ? (byte)84 : (byte)85;
-            (this.buf).printf( new ByteSlice("__%c"), (T & 0xFF));
+            (this.buf).printf(new BytePtr("__%c"), (T & 0xFF));
             this.mangleIdentifier(tempdecl.ident, tempdecl);
             DArray<RootObject> args = ti.tiargs;
             int nparams = (tempdecl.parameters).length - (tempdecl.isVariadic() != null ? 1 : 0);
@@ -667,7 +667,7 @@ public class dmangle {
         public  void realToMangleBuffer(double value) {
             if (CTFloat.isNaN(value))
             {
-                (this.buf).writestring( new ByteSlice("NAN"));
+                (this.buf).writestring(new ByteSlice("NAN"));
                 return ;
             }
             if (value < CTFloat.zero)
@@ -677,7 +677,7 @@ public class dmangle {
             }
             if (CTFloat.isInfinity(value))
             {
-                (this.buf).writestring( new ByteSlice("INF"));
+                (this.buf).writestring(new ByteSlice("INF"));
                 return ;
             }
             ByteSlice buffer = new ByteSlice(new byte[36]);
@@ -842,7 +842,7 @@ public class dmangle {
             if (((p.storageClass & 524288L) != 0 && !((p.storageClass & 562949953421312L) != 0)))
                 (this.buf).writeByte(77);
             if (((p.storageClass & 17594333528064L) == 17592186044416L && !((p.storageClass & 4503599627370496L) != 0)))
-                (this.buf).writestring( new ByteSlice("Nk"));
+                (this.buf).writestring(new ByteSlice("Nk"));
             switch (p.storageClass & 2111488L)
             {
                 case 0L:
@@ -875,7 +875,7 @@ public class dmangle {
         }
     }
     public static boolean isValidMangling(int c) {
-        return ((((c >= 65 && c <= 90) || (c >= 97 && c <= 122)) || (c >= 48 && c <= 57)) || (c != 0 && strchr( new ByteSlice("$%().:?@[]_"), c) != null));
+        return ((((c >= 65 && c <= 90) || (c >= 97 && c <= 122)) || (c >= 48 && c <= 57)) || (c != 0 && strchr(new BytePtr("$%().:?@[]_"), c) != null));
     }
 
     public static BytePtr mangleExact(FuncDeclaration fd) {

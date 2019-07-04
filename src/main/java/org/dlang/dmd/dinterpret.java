@@ -2925,7 +2925,7 @@ public class dinterpret {
                     this.interpretCompareCommon(e, ptr(ctfeCmp));
                     return ;
                 default:
-                printf( new ByteSlice("be = '%s' %s at [%s]\n"), Token.toChars(e.op), e.toChars(), e.loc.toChars(global.params.showColumns));
+                printf(new BytePtr("be = '%s' %s at [%s]\n"), Token.toChars(e.op), e.toChars(), e.loc.toChars(global.params.showColumns));
                 throw new AssertionError("Unreachable code!");
             }
         }
@@ -6304,7 +6304,7 @@ public class dinterpret {
         {
             int idlen = fd.ident.asString().getLength();
             BytePtr id = pcopy(fd.ident.toChars());
-            if (((nargs == 2 && (idlen == 10 || idlen == 11)) && !((strncmp(id,  new ByteSlice("_aApply"), 7)) != 0)))
+            if (((nargs == 2 && (idlen == 10 || idlen == 11)) && !((strncmp(id, new BytePtr("_aApply"), 7)) != 0)))
             {
                 boolean rvs = idlen == 11;
                 byte c = id.get(idlen - 3);

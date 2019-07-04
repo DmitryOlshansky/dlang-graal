@@ -63,7 +63,7 @@ public class arrayop {
             {
                 OutBuffer buf = new OutBuffer();
                 try {
-                    buf.writestring( new ByteSlice("u"));
+                    buf.writestring(new ByteSlice("u"));
                     buf.writestring(Token.asString(e.op));
                     e.e1.accept(this);
                     (this.tiargs).push(expressionSemantic(new StringExp(Loc.initial, buf.extractChars()), this.sc));
@@ -175,10 +175,10 @@ public class arrayop {
         {
             Expression id = new IdentifierExp(e.loc, Id.empty);
             id = new DotIdExp(e.loc, id, Id.object);
-            id = new DotIdExp(e.loc, id, Identifier.idPool( new ByteSlice("_arrayOp")));
+            id = new DotIdExp(e.loc, id, Identifier.idPool(new ByteSlice("_arrayOp")));
             id = expressionSemantic(id, sc);
             if ((id.op & 0xFF) != 36)
-                ObjectNotFound(Identifier.idPool( new ByteSlice("_arrayOp")));
+                ObjectNotFound(Identifier.idPool(new ByteSlice("_arrayOp")));
             arrayop.arrayOparrayOp = ((TemplateExp)id).td;
         }
         FuncDeclaration fd = resolveFuncCall(e.loc, sc, arrayop.arrayOparrayOp, tiargs, null, args, FuncResolveFlag.standard);

@@ -632,7 +632,7 @@ public class semantic3 {
                                 funcdecl_ref.value.error(new BytePtr("no `return exp;` or `assert(0);` at end of function"));
                             if (((global.params.useAssert & 0xFF) == 2 && !(global.params.useInline)))
                             {
-                                e = new AssertExp(funcdecl_ref.value.endloc, literal(), new StringExp(funcdecl_ref.value.loc,  new ByteSlice("missing return expression")));
+                                e = new AssertExp(funcdecl_ref.value.endloc, literal(), new StringExp(funcdecl_ref.value.loc, new BytePtr("missing return expression")));
                             }
                             else
                                 e = new HaltExp(funcdecl_ref.value.endloc);

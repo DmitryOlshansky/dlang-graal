@@ -150,23 +150,23 @@ public class mtype {
         switch ((mod & 0xFF))
         {
             case 0:
-                return  new ByteSlice("");
+                return new ByteSlice("");
             case 4:
-                return  new ByteSlice("immutable");
+                return new ByteSlice("immutable");
             case 2:
-                return  new ByteSlice("shared");
+                return new ByteSlice("shared");
             case 3:
-                return  new ByteSlice("shared const");
+                return new ByteSlice("shared const");
             case 1:
-                return  new ByteSlice("const");
+                return new ByteSlice("const");
             case 10:
-                return  new ByteSlice("shared inout");
+                return new ByteSlice("shared inout");
             case 8:
-                return  new ByteSlice("inout");
+                return new ByteSlice("inout");
             case 11:
-                return  new ByteSlice("shared inout const");
+                return new ByteSlice("shared inout const");
             case 9:
-                return  new ByteSlice("inout const");
+                return new ByteSlice("inout const");
             default:
             throw SwitchError.INSTANCE;
         }
@@ -358,7 +358,7 @@ public class mtype {
         }
 
         public  Type syntaxCopy() {
-            fprintf(stderr,  new ByteSlice("this = %s, ty = %d\n"), this.toChars(), (this.ty & 0xFF));
+            fprintf(stderr, new BytePtr("this = %s, ty = %d\n"), this.toChars(), (this.ty & 0xFF));
             throw new AssertionError("Unreachable code!");
         }
 
@@ -1878,7 +1878,7 @@ public class mtype {
                 int namelen = 31 + slice.getLength() + 1;
                 BytePtr name = pcopy(namelen <= 128 ? ptr(namebuf) : toBytePtr(malloc(namelen)));
                 assert(name != null);
-                int length = sprintf(name,  new ByteSlice("_D%lluTypeInfo_%.*s6__initZ"), (long)(9 + slice.getLength()), slice.getLength(), toBytePtr(slice));
+                int length = sprintf(name, new BytePtr("_D%lluTypeInfo_%.*s6__initZ"), (long)(9 + slice.getLength()), slice.getLength(), toBytePtr(slice));
                 assert((0 < length && length < namelen));
                 Identifier id = Identifier.idPool(name, length);
                 if (name != ptr(namebuf))
@@ -3819,15 +3819,15 @@ public class mtype {
             OutBuffer buf = new OutBuffer();
             try {
                 boolean rv = (!(arg.isLvalue()) && (par.storageClass & 2101248L) != 0);
-                buf.printf( new ByteSlice("cannot pass %sargument `%s` of type `%s` to parameter `%s`"), rv ?  new ByteSlice("rvalue ") :  new ByteSlice(""), arg.toChars(), at, parameterToChars(par, this, qual));
+                buf.printf(new BytePtr("cannot pass %sargument `%s` of type `%s` to parameter `%s`"), rv ? new BytePtr("rvalue ") : new BytePtr(""), arg.toChars(), at, parameterToChars(par, this, qual));
                 return buf.extractChars();
             }
             finally {
             }
         }
 
-        // from template getMatchError!(IntegerBytePtr)
-        public  BytePtr getMatchErrorIntegerBytePtr(BytePtr format, int _param_1, BytePtr _param_2) {
+        // from template getMatchError!(IntegerInteger)
+        public  BytePtr getMatchErrorIntegerInteger(BytePtr format, int _param_1, int _param_2) {
             if (((global.gag) != 0 && !(global.params.showGaggedErrors)))
                 return null;
             OutBuffer buf = new OutBuffer();
@@ -3840,8 +3840,8 @@ public class mtype {
         }
 
 
-        // from template getMatchError!(IntegerInteger)
-        public  BytePtr getMatchErrorIntegerInteger(BytePtr format, int _param_1, int _param_2) {
+        // from template getMatchError!(IntegerBytePtr)
+        public  BytePtr getMatchErrorIntegerBytePtr(BytePtr format, int _param_1, BytePtr _param_2) {
             if (((global.gag) != 0 && !(global.params.showGaggedErrors)))
                 return null;
             OutBuffer buf = new OutBuffer();
@@ -3981,7 +3981,7 @@ public class mtype {
                                                 {
                                                     OutBuffer buf = new OutBuffer();
                                                     try {
-                                                        buf.printf( new ByteSlice("`struct %s` does not define a copy constructor for `%s` to `%s` copies"), argStruct.toChars(), targ.toChars(), tprm.toChars());
+                                                        buf.printf(new BytePtr("`struct %s` does not define a copy constructor for `%s` to `%s` copies"), argStruct.toChars(), targ.toChars(), tprm.toChars());
                                                         pMessage.set(0, buf.extractChars());
                                                     }
                                                     finally {
@@ -4077,8 +4077,8 @@ public class mtype {
                                                             if ((!((global.gag) != 0) || global.params.showGaggedErrors))
                                                             {
                                                                 OutBuffer buf = new OutBuffer();
-                                                                buf.printf( new ByteSlice("expected %d variadic argument(s)"), sz);
-                                                                buf.printf( new ByteSlice(", not %d"), nargs - u);
+                                                                buf.printf(new BytePtr("expected %d variadic argument(s)"), sz);
+                                                                buf.printf(new BytePtr(", not %d"), nargs - u);
                                                                 pMessage.set(0, buf.extractChars());
                                                             }
                                                         /*goto Nomatch*/throw Dispatch1.INSTANCE;
@@ -5866,19 +5866,19 @@ public class mtype {
 
     public static void attributesApply(TypeFunction tf, Function1<ByteSlice,Void> dg, int trustFormat) {
         if ((tf.purity) != 0)
-            dg.invoke( new ByteSlice("pure"));
+            dg.invoke(new ByteSlice("pure"));
         if (tf.isnothrow)
-            dg.invoke( new ByteSlice("nothrow"));
+            dg.invoke(new ByteSlice("nothrow"));
         if (tf.isnogc)
-            dg.invoke( new ByteSlice("@nogc"));
+            dg.invoke(new ByteSlice("@nogc"));
         if (tf.isproperty)
-            dg.invoke( new ByteSlice("@property"));
+            dg.invoke(new ByteSlice("@property"));
         if (tf.isref)
-            dg.invoke( new ByteSlice("ref"));
+            dg.invoke(new ByteSlice("ref"));
         if ((tf.isreturn && !(tf.isreturninferred)))
-            dg.invoke( new ByteSlice("return"));
+            dg.invoke(new ByteSlice("return"));
         if ((tf.isscope && !(tf.isscopeinferred)))
-            dg.invoke( new ByteSlice("scope"));
+            dg.invoke(new ByteSlice("scope"));
         int trustAttrib = tf.trust;
         if (trustAttrib == TRUST.default_)
         {

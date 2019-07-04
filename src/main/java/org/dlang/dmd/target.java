@@ -52,75 +52,6 @@ public class target {
             public double nan;
             public double infinity;
             public double epsilon;
-            public long dig = 18L;
-            public long mant_dig = 64L;
-            public long max_exp = 16384L;
-            public long min_exp = -16381L;
-            public long max_10_exp = 4932L;
-            public long min_10_exp = -4931L;
-            public  void _init() {
-                this.max = double;
-                this.min_normal = double;
-                this.nan = double;
-                this.infinity = double;
-                this.epsilon = double;
-            }
-
-            public FPTypePropertiesDouble(){
-            }
-            public FPTypePropertiesDouble copy(){
-                FPTypePropertiesDouble r = new FPTypePropertiesDouble();
-                r.max = max;
-                r.min_normal = min_normal;
-                r.nan = nan;
-                r.infinity = infinity;
-                r.epsilon = epsilon;
-                r.dig = dig;
-                r.mant_dig = mant_dig;
-                r.max_exp = max_exp;
-                r.min_exp = min_exp;
-                r.max_10_exp = max_10_exp;
-                r.min_10_exp = min_10_exp;
-                return r;
-            }
-            public FPTypePropertiesDouble(double max, double min_normal, double nan, double infinity, double epsilon, long dig, long mant_dig, long max_exp, long min_exp, long max_10_exp, long min_10_exp) {
-                this.max = max;
-                this.min_normal = min_normal;
-                this.nan = nan;
-                this.infinity = infinity;
-                this.epsilon = epsilon;
-                this.dig = dig;
-                this.mant_dig = mant_dig;
-                this.max_exp = max_exp;
-                this.min_exp = min_exp;
-                this.max_10_exp = max_10_exp;
-                this.min_10_exp = min_10_exp;
-            }
-
-            public FPTypePropertiesDouble opAssign(FPTypePropertiesDouble that) {
-                this.max = that.max;
-                this.min_normal = that.min_normal;
-                this.nan = that.nan;
-                this.infinity = that.infinity;
-                this.epsilon = that.epsilon;
-                this.dig = that.dig;
-                this.mant_dig = that.mant_dig;
-                this.max_exp = that.max_exp;
-                this.min_exp = that.min_exp;
-                this.max_10_exp = that.max_10_exp;
-                this.min_10_exp = that.min_10_exp;
-                return this;
-            }
-        }
-
-        // from template FPTypeProperties!(Double)
-        public static class FPTypePropertiesDouble
-        {
-            public double max;
-            public double min_normal;
-            public double nan;
-            public double infinity;
-            public double epsilon;
             public long dig = 15L;
             public long mant_dig = 53L;
             public long max_exp = 1024L;
@@ -236,6 +167,75 @@ public class target {
             }
 
             public FPTypePropertiesFloat opAssign(FPTypePropertiesFloat that) {
+                this.max = that.max;
+                this.min_normal = that.min_normal;
+                this.nan = that.nan;
+                this.infinity = that.infinity;
+                this.epsilon = that.epsilon;
+                this.dig = that.dig;
+                this.mant_dig = that.mant_dig;
+                this.max_exp = that.max_exp;
+                this.min_exp = that.min_exp;
+                this.max_10_exp = that.max_10_exp;
+                this.min_10_exp = that.min_10_exp;
+                return this;
+            }
+        }
+
+        // from template FPTypeProperties!(Double)
+        public static class FPTypePropertiesDouble
+        {
+            public double max;
+            public double min_normal;
+            public double nan;
+            public double infinity;
+            public double epsilon;
+            public long dig = 18L;
+            public long mant_dig = 64L;
+            public long max_exp = 16384L;
+            public long min_exp = -16381L;
+            public long max_10_exp = 4932L;
+            public long min_10_exp = -4931L;
+            public  void _init() {
+                this.max = double;
+                this.min_normal = double;
+                this.nan = double;
+                this.infinity = double;
+                this.epsilon = double;
+            }
+
+            public FPTypePropertiesDouble(){
+            }
+            public FPTypePropertiesDouble copy(){
+                FPTypePropertiesDouble r = new FPTypePropertiesDouble();
+                r.max = max;
+                r.min_normal = min_normal;
+                r.nan = nan;
+                r.infinity = infinity;
+                r.epsilon = epsilon;
+                r.dig = dig;
+                r.mant_dig = mant_dig;
+                r.max_exp = max_exp;
+                r.min_exp = min_exp;
+                r.max_10_exp = max_10_exp;
+                r.min_10_exp = min_10_exp;
+                return r;
+            }
+            public FPTypePropertiesDouble(double max, double min_normal, double nan, double infinity, double epsilon, long dig, long mant_dig, long max_exp, long min_exp, long max_10_exp, long min_10_exp) {
+                this.max = max;
+                this.min_normal = min_normal;
+                this.nan = nan;
+                this.infinity = infinity;
+                this.epsilon = epsilon;
+                this.dig = dig;
+                this.mant_dig = mant_dig;
+                this.max_exp = max_exp;
+                this.min_exp = min_exp;
+                this.max_10_exp = max_10_exp;
+                this.min_10_exp = min_10_exp;
+            }
+
+            public FPTypePropertiesDouble opAssign(FPTypePropertiesDouble that) {
                 this.max = that.max;
                 this.min_normal = that.min_normal;
                 this.nan = that.nan;
@@ -403,7 +403,7 @@ public class target {
             {
                 if (global.params.is64bit)
                 {
-                    return (new TypeIdentifier(Loc.initial, Identifier.idPool( new ByteSlice("__va_list_tag")))).pointerTo();
+                    return (new TypeIdentifier(Loc.initial, Identifier.idPool(new ByteSlice("__va_list_tag")))).pointerTo();
                 }
                 else
                 {
@@ -710,21 +710,21 @@ public class target {
             {
                 case 2:
                     if (global.params.isWindows)
-                        return stringExp.invoke(global.params.mscoff ?  new ByteSlice("coff") :  new ByteSlice("omf"));
+                        return stringExp.invoke(global.params.mscoff ? new ByteSlice("coff") : new ByteSlice("omf"));
                     else if (global.params.isOSX)
-                        return stringExp.invoke( new ByteSlice("macho"));
+                        return stringExp.invoke(new ByteSlice("macho"));
                     else
-                        return stringExp.invoke( new ByteSlice("elf"));
+                        return stringExp.invoke(new ByteSlice("elf"));
                 case 1:
-                    return stringExp.invoke( new ByteSlice("hard"));
+                    return stringExp.invoke(new ByteSlice("hard"));
                 case 3:
                     if (global.params.isWindows)
                     {
                         if (global.params.mscoff)
                             return stringExp.invoke(global.params.mscrtlib);
-                        return stringExp.invoke( new ByteSlice("snn"));
+                        return stringExp.invoke(new ByteSlice("snn"));
                     }
-                    return stringExp.invoke( new ByteSlice(""));
+                    return stringExp.invoke(new ByteSlice(""));
                 case 0:
                     return new IntegerExp((long)global.params.cplusplus);
                 default:

@@ -35,8 +35,8 @@ import static org.dlang.dmd.target.*;
 public class frontend {
 
 
-    static ByteSlice sep =  new ByteSlice(":");
-    static ByteSlice exe =  new ByteSlice("");
+    static ByteSlice sep = new ByteSlice(":");
+    static ByteSlice exe = new ByteSlice("");
     public static class Diagnostics
     {
         public int errors;
@@ -165,42 +165,42 @@ public class frontend {
     }
 
     public static ByteSlice findDMDConfig(ByteSlice dmdFilePath) {
-        ByteSlice configFile =  new ByteSlice("dmd.conf");
-        return idup(findConfFile(dmdFilePath,  new ByteSlice("dmd.conf")));
+        ByteSlice configFile = new ByteSlice("dmd.conf");
+        return idup(findConfFile(dmdFilePath, new ByteSlice("dmd.conf")));
     }
 
     public static ByteSlice findLDCConfig(ByteSlice ldcFilePath) {
         ByteSlice execDir = dirName(ldcFilePath).copy();
-        ByteSlice ldcConfig =  new ByteSlice("ldc2.conf").copy();
-        FilterResultnothingSlice<ByteSlice> ldcConfigs = filter(slice(new ByteSlice[]{buildPath(slice(new ByteSlice[]{getcwd(), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{execDir, toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{dirName(execDir),  new ByteSlice("etc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{ new ByteSlice("~/.ldc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{execDir,  new ByteSlice("etc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{execDir,  new ByteSlice("etc"),  new ByteSlice("ldc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{ new ByteSlice("/etc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{ new ByteSlice("/etc/ldc"), toByteSlice(ldcConfig)}))})).copy();
+        ByteSlice ldcConfig = new ByteSlice("ldc2.conf").copy();
+        FilterResultnothingSlice<ByteSlice> ldcConfigs = filter(slice(new ByteSlice[]{buildPath(slice(new ByteSlice[]{getcwd(), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{execDir, toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{dirName(execDir), new ByteSlice("etc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{new ByteSlice("~/.ldc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{execDir, new ByteSlice("etc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{execDir, new ByteSlice("etc"), new ByteSlice("ldc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{new ByteSlice("/etc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{new ByteSlice("/etc/ldc"), toByteSlice(ldcConfig)}))})).copy();
         if (ldcConfigs.empty())
             return new ByteSlice();
         return ldcConfigs.front();
     }
 
     public static ByteSlice determineDefaultCompiler() {
-        Slice<ByteSlice> compilers = slice(new ByteSlice[]{ new ByteSlice("dmd"),  new ByteSlice("gdc"),  new ByteSlice("gdmd"),  new ByteSlice("ldc2"),  new ByteSlice("ldmd2")}).copy();
-        if (opBinaryRight( new ByteSlice("DMD")))
-            compilers = (slice(new ByteSlice[]{environment.get( new ByteSlice("DMD"), new ByteSlice())}).concat(compilers)).copy();
-        Result paths = splitter(environment.get( new ByteSlice("PATH"),  new ByteSlice("")),  new ByteSlice(":")).copy();
+        Slice<ByteSlice> compilers = slice(new ByteSlice[]{new ByteSlice("dmd"), new ByteSlice("gdc"), new ByteSlice("gdmd"), new ByteSlice("ldc2"), new ByteSlice("ldmd2")}).copy();
+        if (opBinaryRight(new ByteSlice("DMD")))
+            compilers = (slice(new ByteSlice[]{environment.get(new ByteSlice("DMD"), new ByteSlice())}).concat(compilers)).copy();
+        Result paths = splitter(environment.get(new ByteSlice("PATH"), new ByteSlice("")), new ByteSlice(":")).copy();
         FilterResultnothingResult res = filter(joiner(map.invoke(compilers))).copy();
         return !(res.empty()) ? res.front() : new ByteSlice();
     }
 
     public static MapResultnothingUniqResultnothingSortedRangeSlice<ByteSlice>nothing parseImportPathsFromConfig(ByteSlice iniFile, ByteSlice execDir) {
-        return map(uniq(sort(array(joiner(map.invoke(new File(iniFile,  new ByteSlice("r")).byLineCopy(Flag.no, (byte)10)))))));
+        return map(uniq(sort(array(joiner(map.invoke(new File(iniFile, new ByteSlice("r")).byLineCopy(Flag.no, (byte)10)))))));
     }
 
     public static MapResultnothingUniqResultnothingSortedRangeSlice<ByteSlice>nothing findImportPaths() {
         ByteSlice execFilePath = determineDefaultCompiler().copy();
-        assertMsg(execFilePath != new ByteSlice(),  new ByteSlice("No D compiler found. `Use parseImportsFromConfig` manually."));
+        assertMsg(execFilePath != new ByteSlice(), new ByteSlice("No D compiler found. `Use parseImportsFromConfig` manually."));
         ByteSlice execDir = dirName(execFilePath).copy();
         ByteSlice iniFile = new ByteSlice();
-        if ((endsWith(execFilePath,  new ByteSlice("ldc"),  new ByteSlice("ldc2"),  new ByteSlice("ldmd"),  new ByteSlice("ldmd2"))) != 0)
+        if ((endsWith(execFilePath, new ByteSlice("ldc"), new ByteSlice("ldc2"), new ByteSlice("ldmd"), new ByteSlice("ldmd2"))) != 0)
             iniFile = findLDCConfig(toByteSlice(execFilePath)).copy();
         else
             iniFile = findDMDConfig(toByteSlice(execFilePath)).copy();
-        assertMsg((iniFile != new ByteSlice() && exists(iniFile)),  new ByteSlice("No valid config found."));
+        assertMsg((iniFile != new ByteSlice() && exists(iniFile)), new ByteSlice("No valid config found."));
         return parseImportPathsFromConfig(toByteSlice(iniFile), toByteSlice(execDir));
     }
 
@@ -221,7 +221,7 @@ public class frontend {
         try {
             HdrGenState hgs = new HdrGenState(false, false, true, false, 0, 0, 0, false, null).copy();
             moduleToBuffer2(m, buf, hgs);
-            Ref<ByteSlice> generated = ref(replace(fromStringz(buf.extractData()),  new ByteSlice("\u0009"),  new ByteSlice("    ")).copy());
+            Ref<ByteSlice> generated = ref(replace(fromStringz(buf.extractData()), new ByteSlice("\u0009"), new ByteSlice("    ")).copy());
             return assumeUnique(generated);
         }
         finally {

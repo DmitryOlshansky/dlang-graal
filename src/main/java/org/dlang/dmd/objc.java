@@ -90,7 +90,7 @@ public class objc {
                         byte firstChar = id.get(0);
                         if (((firstChar & 0xFF) >= 97 && (firstChar & 0xFF) <= 122))
                             firstChar = (byte)((firstChar & 0xFF) - 97 + 65);
-                        buf.writestring( new ByteSlice("set"));
+                        buf.writestring(new ByteSlice("set"));
                         buf.writeByte((firstChar & 0xFF));
                         buf.write((toBytePtr(id).plus(1)), id.getLength() - 1);
                         buf.writeByte(58);
@@ -298,7 +298,7 @@ public class objc {
     public static class Supported extends Objc
     {
         public  Supported() {
-            VersionCondition.addPredefinedGlobalIdent( new ByteSlice("D_ObjectiveC"));
+            VersionCondition.addPredefinedGlobalIdent(new ByteSlice("D_ObjectiveC"));
             ObjcGlue.initialize();
             ObjcSelector._init();
         }
@@ -493,8 +493,8 @@ public class objc {
         public  void checkOffsetof(Expression expression, AggregateDeclaration aggregateDeclaration) {
             if (aggregateDeclaration.classKind != ClassKind.objc)
                 return ;
-            ByteSlice errorMessage =  new ByteSlice("no property `offsetof` for member `%s` of type `%s`");
-            ByteSlice supplementalMessage =  new ByteSlice("`offsetof` is not available for members of Objective-C classes. Please use the Objective-C runtime instead");
+            ByteSlice errorMessage = new ByteSlice("no property `offsetof` for member `%s` of type `%s`");
+            ByteSlice supplementalMessage = new ByteSlice("`offsetof` is not available for members of Objective-C classes. Please use the Objective-C runtime instead");
             expression.error(new BytePtr("no property `offsetof` for member `%s` of type `%s`"), expression.toChars(), expression.type.toChars());
             expression.errorSupplemental(new BytePtr("`offsetof` is not available for members of Objective-C classes. Please use the Objective-C runtime instead"));
         }
@@ -521,7 +521,7 @@ public class objc {
     }
     // from template setMetaclass!(_newMetaclassInterfaceDeclaration)
     public static void setMetaclass_newMetaclassInterfaceDeclaration(InterfaceDeclaration classDeclaration, Scope sc) {
-        ByteSlice errorType =  new ByteSlice("interface");
+        ByteSlice errorType = new ByteSlice("interface");
         {
             if (((__withSym.classKind != ClassKind.objc || __withSym.objc.isMeta) || __withSym.objc.metaclass != null))
                 return ;
@@ -567,7 +567,7 @@ public class objc {
 
     // from template setMetaclass!(_newMetaclassClassDeclaration)
     public static void setMetaclass_newMetaclassClassDeclaration(ClassDeclaration classDeclaration, Scope sc) {
-        ByteSlice errorType =  new ByteSlice("class");
+        ByteSlice errorType = new ByteSlice("class");
         {
             if (((__withSym.classKind != ClassKind.objc || __withSym.objc.isMeta) || __withSym.objc.metaclass != null))
                 return ;

@@ -38,8 +38,8 @@ public class blockexit {
         }
 
         public  void visit(Statement s) {
-            printf( new ByteSlice("Statement::blockExit(%p)\n"), s);
-            printf( new ByteSlice("%s\n"), s.toChars());
+            printf(new BytePtr("Statement::blockExit(%p)\n"), s);
+            printf(new BytePtr("%s\n"), s.toChars());
             throw new AssertionError("Unreachable code!");
         }
 

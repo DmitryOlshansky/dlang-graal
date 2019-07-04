@@ -1512,7 +1512,7 @@ public class declaration {
         public  BytePtr toChars() {
             OutBuffer buf = new OutBuffer();
             try {
-                buf.writestring( new ByteSlice("typeid("));
+                buf.writestring(new ByteSlice("typeid("));
                 buf.writestring(this.tinfo.toChars());
                 buf.writeByte(41);
                 return buf.extractChars();

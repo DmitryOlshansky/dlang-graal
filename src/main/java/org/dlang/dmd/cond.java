@@ -76,7 +76,7 @@ public class cond {
     }
     public static class StaticForeach extends RootObject
     {
-        public static ByteSlice tupleFieldName =  new ByteSlice("tuple");
+        public static ByteSlice tupleFieldName = new ByteSlice("tuple");
         public Loc loc = new Loc();
         public ForeachStatement aggrfe;
         public ForeachRangeStatement rangefe;
@@ -376,7 +376,7 @@ public class cond {
                 else if ((this.level <= global.params.debuglevel || this.level <= this.mod.debuglevel))
                     this.inc = Include.yes;
                 if (!(definedInModule))
-                    printDepsConditional(sc, this,  new ByteSlice("depsDebug "));
+                    printDepsConditional(sc, this, new ByteSlice("depsDebug "));
             }
             return ((this.inc == Include.yes) ? 1 : 0);
         }
@@ -508,7 +508,7 @@ public class cond {
                 case 17:
                     return true;
                 default:
-                return (ident.getLength() >= 2 && __equals(ident.slice(0,2),  new ByteSlice("D_")));
+                return (ident.getLength() >= 2 && __equals(ident.slice(0,2), new ByteSlice("D_")));
             }
         }
 
@@ -564,7 +564,7 @@ public class cond {
                     this.inc = Include.yes;
                 if ((!(definedInModule) && (!(this.ident != null) || ((!(isReserved(this.ident.asString())) && !pequals(this.ident, Id._unittest)) && !pequals(this.ident, Id._assert)))))
                 {
-                    printDepsConditional(sc, this,  new ByteSlice("depsVersion "));
+                    printDepsConditional(sc, this, new ByteSlice("depsVersion "));
                 }
             }
             return ((this.inc == Include.yes) ? 1 : 0);
@@ -681,9 +681,9 @@ public class cond {
             return ;
         (ob).writestring(depType);
         (ob).writestring(imod.toPrettyChars(false));
-        (ob).writestring( new ByteSlice(" ("));
+        (ob).writestring(new ByteSlice(" ("));
         escapePath(ob, imod.srcfile.toChars());
-        (ob).writestring( new ByteSlice(") : "));
+        (ob).writestring(new ByteSlice(") : "));
         if (condition.ident != null)
             (ob).writestring(condition.ident.asString());
         else

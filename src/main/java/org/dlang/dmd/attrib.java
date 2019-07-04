@@ -358,7 +358,7 @@ public class attrib {
         }
 
         public  ByteSlice asString() {
-            return  new ByteSlice("extern ()");
+            return new ByteSlice("extern ()");
         }
 
         public  void accept(Visitor v) {
@@ -411,7 +411,7 @@ public class attrib {
         }
 
         public  ByteSlice asString() {
-            return  new ByteSlice("extern ()");
+            return new ByteSlice("extern ()");
         }
 
         public  void accept(Visitor v) {
@@ -479,7 +479,7 @@ public class attrib {
         }
 
         public  ByteSlice asString() {
-            return  new ByteSlice("extern (C++, `namespace`)");
+            return new ByteSlice("extern (C++, `namespace`)");
         }
 
         public  void accept(Visitor v) {

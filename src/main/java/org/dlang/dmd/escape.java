@@ -531,7 +531,7 @@ public class escape {
         Ref<Boolean> gag_ref = ref(gag);
         boolean log = false;
         if (false)
-            printf( new ByteSlice("checkParamArgumentEscape(arg: %s par: %s)\n"), arg_ref.value != null ? arg_ref.value.toChars() :  new ByteSlice("null"), par_ref.value != null ? par_ref.value.toChars() :  new ByteSlice("this"));
+            printf(new BytePtr("checkParamArgumentEscape(arg: %s par: %s)\n"), arg_ref.value != null ? arg_ref.value.toChars() : new BytePtr("null"), par_ref.value != null ? par_ref.value.toChars() : new BytePtr("this"));
         if (!(arg_ref.value.type.hasPointers()))
             return false;
         EscapeByResults er = new EscapeByResults();
@@ -557,7 +557,7 @@ public class escape {
                 for (; __key1265 < __r1264.getLength();__key1265 += 1) {
                     VarDeclaration v = __r1264.get(__key1265);
                     if (false)
-                        printf( new ByteSlice("byvalue %s\n"), v.toChars());
+                        printf(new BytePtr("byvalue %s\n"), v.toChars());
                     if (v.isDataseg())
                         continue;
                     Dsymbol p = v.toParent2();
@@ -577,7 +577,7 @@ public class escape {
                     else
                     {
                         if (false)
-                            printf( new ByteSlice("no infer for %s in %s loc %s, fdc %s, %d\n"), v.toChars(), (sc_ref.value).func.ident.toChars(), (sc_ref.value).func.loc.toChars(global.params.showColumns), fdc_ref.value.ident.toChars(), 162);
+                            printf(new BytePtr("no infer for %s in %s loc %s, fdc %s, %d\n"), v.toChars(), (sc_ref.value).func.ident.toChars(), (sc_ref.value).func.loc.toChars(global.params.showColumns), fdc_ref.value.ident.toChars(), 162);
                         v.doNotInferScope = true;
                     }
                 }
@@ -588,7 +588,7 @@ public class escape {
                 for (; __key1267 < __r1266.getLength();__key1267 += 1) {
                     VarDeclaration v = __r1266.get(__key1267);
                     if (false)
-                        printf( new ByteSlice("byref %s\n"), v.toChars());
+                        printf(new BytePtr("byref %s\n"), v.toChars());
                     if (v.isDataseg())
                         continue;
                     Dsymbol p = v.toParent2();
@@ -652,7 +652,7 @@ public class escape {
     public static boolean checkParamArgumentReturn(Scope sc, Expression firstArg, Expression arg, boolean gag) {
         boolean log = false;
         if (false)
-            printf( new ByteSlice("checkParamArgumentReturn(firstArg: %s arg: %s)\n"), firstArg.toChars(), arg.toChars());
+            printf(new BytePtr("checkParamArgumentReturn(firstArg: %s arg: %s)\n"), firstArg.toChars(), arg.toChars());
         if (!(arg.type.hasPointers()))
             return false;
         AssignExp e = new AssignExp(arg.loc, firstArg, arg);
@@ -662,7 +662,7 @@ public class escape {
     public static boolean checkConstructorEscape(Scope sc, CallExp ce, boolean gag) {
         boolean log = false;
         if (false)
-            printf( new ByteSlice("checkConstructorEscape(%s, %s)\n"), ce.toChars(), ce.type.toChars());
+            printf(new BytePtr("checkConstructorEscape(%s, %s)\n"), ce.toChars(), ce.type.toChars());
         Type tthis = ce.type.toBasetype();
         assert((tthis.ty & 0xFF) == ENUMTY.Tstruct);
         if (!(tthis.hasPointers()))
@@ -705,7 +705,7 @@ public class escape {
         Ref<Scope> sc_ref = ref(sc);
         boolean log = false;
         if (false)
-            printf( new ByteSlice("checkAssignEscape(e: %s)\n"), e.toChars());
+            printf(new BytePtr("checkAssignEscape(e: %s)\n"), e.toChars());
         if (((((((e.op & 0xFF) != 90 && (e.op & 0xFF) != 96) && (e.op & 0xFF) != 95) && (e.op & 0xFF) != 71) && (e.op & 0xFF) != 72) && (e.op & 0xFF) != 73))
             return false;
         BinExp ae = (BinExp)e;
@@ -732,13 +732,13 @@ public class escape {
                 va.value = null;
             }
             if (false)
-                printf( new ByteSlice("va: %s\n"), va.value.toChars());
+                printf(new BytePtr("va: %s\n"), va.value.toChars());
             boolean inferScope = false;
             if ((((va.value != null && (sc_ref.value).func != null) && (sc_ref.value).func.type != null) && ((sc_ref.value).func.type.ty & 0xFF) == ENUMTY.Tfunction))
                 inferScope = ((TypeFunction)(sc_ref.value).func.type).trust != TRUST.system;
             Ref<Boolean> vaIsRef = ref(((va.value != null && (va.value.storage_class & 32L) != 0) && ((va.value.storage_class & 2101248L) != 0 || (va.value.type.toBasetype().ty & 0xFF) == ENUMTY.Tclass)));
             if (false)
-                printf( new ByteSlice("va is ref `%s`\n"), va.value.toChars());
+                printf(new BytePtr("va is ref `%s`\n"), va.value.toChars());
             Function0<Boolean> isFirstRef = new Function0<Boolean>(){
                 public Boolean invoke(){
                     if (!(vaIsRef.value))
@@ -760,7 +760,7 @@ public class escape {
             };
             boolean vaIsFirstRef = isFirstRef.invoke();
             if (false)
-                printf( new ByteSlice("va is first ref `%s`\n"), va.value.toChars());
+                printf(new BytePtr("va is first ref `%s`\n"), va.value.toChars());
             boolean result = false;
             {
                 Slice<VarDeclaration> __r1276 = er.byvalue.opSlice().copy();
@@ -768,7 +768,7 @@ public class escape {
                 for (; __key1277 < __r1276.getLength();__key1277 += 1) {
                     VarDeclaration v = __r1276.get(__key1277);
                     if (false)
-                        printf( new ByteSlice("byvalue: %s\n"), v.toChars());
+                        printf(new BytePtr("byvalue: %s\n"), v.toChars());
                     if (v.isDataseg())
                         continue;
                     if (pequals(v, va.value))
@@ -782,7 +782,7 @@ public class escape {
                     if ((((((vaIsFirstRef && (v.isScope() || (v.storage_class & 281474976710656L) != 0)) && !((v.storage_class & 17592186044416L) != 0)) && v.isParameter()) && ((sc_ref.value).func.flags & FUNCFLAG.returnInprocess) != 0) && pequals(p, (sc_ref.value).func)))
                     {
                         if (false)
-                            printf( new ByteSlice("inferring 'return' for parameter %s in function %s\n"), v.toChars(), (sc_ref.value).func.toChars());
+                            printf(new BytePtr("inferring 'return' for parameter %s in function %s\n"), v.toChars(), (sc_ref.value).func.toChars());
                         inferReturn((sc_ref.value).func, v);
                     }
                     if ((!((va.value != null && va.value.isScope())) || vaIsRef.value))
@@ -796,7 +796,7 @@ public class escape {
                             if ((inferScope && !(va.value.doNotInferScope)))
                             {
                                 if (false)
-                                    printf( new ByteSlice("inferring scope for lvalue %s\n"), va.value.toChars());
+                                    printf(new BytePtr("inferring scope for lvalue %s\n"), va.value.toChars());
                                 va.value.storage_class |= 562949953945600L;
                                 continue;
                             }
@@ -868,7 +868,7 @@ public class escape {
                 for (; __key1279 < __r1278.getLength();__key1279 += 1) {
                     VarDeclaration v = __r1278.get(__key1279);
                     if (false)
-                        printf( new ByteSlice("byref: %s\n"), v.toChars());
+                        printf(new BytePtr("byref: %s\n"), v.toChars());
                     if (v.isDataseg())
                         continue;
                     if (global.params.vsafe)
@@ -940,7 +940,7 @@ public class escape {
                 for (; __key1281 < __r1280.getLength();__key1281 += 1) {
                     FuncDeclaration fd = __r1280.get(__key1281);
                     if (false)
-                        printf( new ByteSlice("byfunc: %s, %d\n"), fd.toChars(), fd.tookAddressOf);
+                        printf(new BytePtr("byfunc: %s, %d\n"), fd.toChars(), fd.tookAddressOf);
                     DArray<VarDeclaration> vars = new DArray<VarDeclaration>();
                     try {
                         findAllOuterAccessedVariables(fd, vars);
@@ -982,7 +982,7 @@ public class escape {
                 for (; __key1285 < __r1284.getLength();__key1285 += 1) {
                     Expression ee = __r1284.get(__key1285);
                     if (false)
-                        printf( new ByteSlice("byexp: %s\n"), ee.toChars());
+                        printf(new BytePtr("byexp: %s\n"), ee.toChars());
                     if (((((va.value != null && (ee.op & 0xFF) == 18) && (ee.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) && (va.value.type.toBasetype().ty & 0xFF) == ENUMTY.Tarray) && !((va.value.storage_class & 1099511627776L) != 0)))
                     {
                         if (!(gag))
@@ -1055,7 +1055,7 @@ public class escape {
         Ref<Boolean> gag_ref = ref(gag);
         boolean log = false;
         if (false)
-            printf( new ByteSlice("[%s] checkNewEscape, e: `%s`\n"), e_ref.value.loc.toChars(global.params.showColumns), e_ref.value.toChars());
+            printf(new BytePtr("[%s] checkNewEscape, e: `%s`\n"), e_ref.value.loc.toChars(global.params.showColumns), e_ref.value.toChars());
         EscapeByResults er = new EscapeByResults();
         try {
             escapeByValue(e_ref.value, er);
@@ -1068,7 +1068,7 @@ public class escape {
                 for (; __key1289 < __r1288.getLength();__key1289 += 1) {
                     VarDeclaration v = __r1288.get(__key1289);
                     if (false)
-                        printf( new ByteSlice("byvalue `%s`\n"), v.toChars());
+                        printf(new BytePtr("byvalue `%s`\n"), v.toChars());
                     if (v.isDataseg())
                         continue;
                     Dsymbol p = v.toParent2();
@@ -1107,7 +1107,7 @@ public class escape {
                 for (; __key1291 < __r1290.getLength();__key1291 += 1) {
                     VarDeclaration v = __r1290.get(__key1291);
                     if (false)
-                        printf( new ByteSlice("byref `%s`\n"), v.toChars());
+                        printf(new BytePtr("byref `%s`\n"), v.toChars());
                     Function1<VarDeclaration,Void> escapingRef = new Function1<VarDeclaration,Void>(){
                         public Void invoke(VarDeclaration v){
                             if (!(gag_ref.value))
@@ -1161,7 +1161,7 @@ public class escape {
                 for (; __key1293 < __r1292.getLength();__key1293 += 1) {
                     Expression ee = __r1292.get(__key1293);
                     if (false)
-                        printf( new ByteSlice("byexp %s\n"), ee.toChars());
+                        printf(new BytePtr("byexp %s\n"), ee.toChars());
                     if (!(gag_ref.value))
                         error(ee.loc, new BytePtr("storing reference to stack allocated value returned by `%s` into allocated memory causes it to escape"), ee.toChars());
                     result.value = true;
@@ -1186,7 +1186,7 @@ public class escape {
         Ref<Boolean> gag_ref = ref(gag);
         boolean log = false;
         if (false)
-            printf( new ByteSlice("[%s] checkReturnEscapeImpl, refs: %d e: `%s`\n"), e_ref.value.loc.toChars(global.params.showColumns), (refs ? 1 : 0), e_ref.value.toChars());
+            printf(new BytePtr("[%s] checkReturnEscapeImpl, refs: %d e: `%s`\n"), e_ref.value.loc.toChars(global.params.showColumns), (refs ? 1 : 0), e_ref.value.toChars());
         EscapeByResults er = new EscapeByResults();
         try {
             if (refs)
@@ -1202,7 +1202,7 @@ public class escape {
                 for (; __key1295 < __r1294.getLength();__key1295 += 1) {
                     VarDeclaration v = __r1294.get(__key1295);
                     if (false)
-                        printf( new ByteSlice("byvalue `%s`\n"), v.toChars());
+                        printf(new BytePtr("byvalue `%s`\n"), v.toChars());
                     if (v.isDataseg())
                         continue;
                     Dsymbol p = v.toParent2();
@@ -1248,7 +1248,7 @@ public class escape {
                 for (; __key1297 < __r1296.getLength();__key1297 += 1) {
                     VarDeclaration v = __r1296.get(__key1297);
                     if (false)
-                        printf( new ByteSlice("byref `%s`\n"), v.toChars());
+                        printf(new BytePtr("byref `%s`\n"), v.toChars());
                     Function1<VarDeclaration,Void> escapingRef = new Function1<VarDeclaration,Void>(){
                         public Void invoke(VarDeclaration v){
                             if (!(gag_ref.value))
@@ -1318,7 +1318,7 @@ public class escape {
                 for (; __key1299 < __r1298.getLength();__key1299 += 1) {
                     Expression ee = __r1298.get(__key1299);
                     if (false)
-                        printf( new ByteSlice("byexp %s\n"), ee.toChars());
+                        printf(new BytePtr("byexp %s\n"), ee.toChars());
                     if (!(gag_ref.value))
                         error(ee.loc, new BytePtr("escaping reference to stack allocated value returned by `%s`"), ee.toChars());
                     result.value = true;
@@ -1446,7 +1446,7 @@ public class escape {
     public static void eliminateMaybeScopes(Slice<VarDeclaration> array) {
         boolean log = false;
         if (false)
-            printf( new ByteSlice("eliminateMaybeScopes()\n"));
+            printf(new BytePtr("eliminateMaybeScopes()\n"));
         boolean changes = false;
         do {
             {
@@ -1457,7 +1457,7 @@ public class escape {
                     for (; __key1315 < __r1314.getLength();__key1315 += 1) {
                         VarDeclaration va = __r1314.get(__key1315);
                         if (false)
-                            printf( new ByteSlice("  va = %s\n"), va.toChars());
+                            printf(new BytePtr("  va = %s\n"), va.toChars());
                         if (!((va.storage_class & 281474977234944L) != 0))
                         {
                             if (va.maybes != null)
@@ -1468,7 +1468,7 @@ public class escape {
                                     for (; __key1317 < __r1316.getLength();__key1317 += 1) {
                                         VarDeclaration v = __r1316.get(__key1317);
                                         if (false)
-                                            printf( new ByteSlice("    v = %s\n"), v.toChars());
+                                            printf(new BytePtr("    v = %s\n"), v.toChars());
                                         if ((v.storage_class & 281474976710656L) != 0)
                                         {
                                             notMaybeScope(v);

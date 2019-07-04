@@ -41,9 +41,9 @@ import std.algorithm, std.format, std.stdio, std.string;
 import visitors.members, visitors.templates;
 
 struct ExprOpts {
-    bool wantCharPtr = false;
     bool rawArrayLiterals = false;
     EnumDeclaration inEnumDecl = null;
+    Module currentMod;
     Stack!FuncDeclaration funcs; // chain of nested functions for current scope
     Stack!AggregateDeclaration aggregates; // chain of aggregates for current scope
     Expression dollarValue = null; // expression that is referenced by dollar
@@ -180,9 +180,10 @@ public:
                 break;
             var = var.parent;
         }
-        foreach_reverse (p; chain) {
-            if (p.ident.symbol == "Module" || p.ident.symbol == "Package")
-            buf.fmt("dmodule.%s.", p.ident.symbol);
+        foreach_reverse (i, p; chain) {
+            if ((p.ident.symbol == "Module" || p.ident.symbol == "Package") && !(p.getModule is opts.currentMod)) {
+                buf.fmt("dmodule.%s.", p.ident.symbol);
+            }
             else 
                 buf.fmt("%s.", p.ident.symbol);
         }
@@ -333,9 +334,8 @@ public:
 
     override void visit(StringExp e)
     {
-        //stderr.writefln("WantChar = %d\n", opts.wantCharPtr ? 1 : 0);
-        if (opts.wantCharPtr) buf.put("new BytePtr(");
-        else buf.put(" new ByteSlice(");
+        if (e.type.isTypePointer) buf.put("new BytePtr(");
+        else buf.put("new ByteSlice(");
         buf.put('"');
         for (size_t i = 0; i < e.len; i++)
         {
@@ -1268,11 +1268,6 @@ public:
             if (e.e2.isNullExp()) expToBuffer(e.e2, PREC.primary, buf, opts);
             else {
                 buf.put("pcopy(");
-                auto old = opts.wantCharPtr;
-                scope(exit) opts.wantCharPtr = old;
-                if (e.e1.type.nextOf.ty == Tchar) {
-                    opts.wantCharPtr = true;
-                }
                 expToBuffer(e.e2, PREC.primary, buf, opts);
                 buf.put(")");
             }
@@ -1412,19 +1407,10 @@ private void structLiteralArgs(Expressions* expressions, TextBuffer buf, ExprOpt
         if (el) {
             auto n = el.isNullExp();
             auto members = collectMembers(sd);
-
-            const wantChar = members.all[i].type.ty == Tpointer
-                && members.all[i].type.nextOf.ty == Tchar;
-            
             if(n && n.type.ty == Tarray) {
                 tmp.put("new ");
                 tmp.put(n.type.toJava(opts));
                 tmp.put("()");
-            }
-            else if(wantChar) {
-                // stderr.writefln("WantChar func = %s args=%d\n", fd.ident.toString, i);
-                opts.wantCharPtr = true;
-                expToBuffer(el, PREC.assign, tmp, opts);
             }
             else {
                 expToBuffer(el, PREC.assign, tmp, opts);
@@ -1458,10 +1444,6 @@ private void argsToBuffer(Expressions* expressions, TextBuffer buf, ExprOpts opt
             auto refParam = fd && fd.parameters && i < fd.parameters.length
                 && ((*fd.parameters)[i].isRef() || (*fd.parameters)[i].isOut());
 
-            auto wantChar = fd && fd.parameters && i < fd.parameters.length
-                && (*fd.parameters)[i].type.ty == Tpointer
-                && (*fd.parameters)[i].type.nextOf.ty == Tchar;
-
             if (fd && var && var.type.isTypeClass() && fd.parameters && i < fd.parameters.length
             && (*fd.parameters)[i].type != var.var.type && fd.overnext) {
                 tmp.put("(");
@@ -1476,11 +1458,6 @@ private void argsToBuffer(Expressions* expressions, TextBuffer buf, ExprOpts opt
                 tmp.put("new ");
                 tmp.put(n.type.toJava(opts));
                 tmp.put("()");
-            }
-            else if(wantChar) {
-                // stderr.writefln("WantChar func = %s args=%d\n", fd.ident.toString, i);
-                opts.wantCharPtr = true;
-                expToBuffer(el, PREC.assign, tmp, opts);
             }
             else {
                 expToBuffer(el, PREC.assign, tmp, opts);
@@ -1859,7 +1836,7 @@ private void typeToBufferx(Type t, TextBuffer buf, ExprOpts opts, Boxing boxing 
             buf.put(t.sym.ident.symbol);
             return;
         }
-        else if(t.sym.ident.symbol == "Module" || t.sym.ident.symbol == "Package")
+        else if((t.sym.ident.symbol == "Module" || t.sym.ident.symbol == "Package") && t.sym.getModule !is opts.currentMod)
         {
             buf.put("dmodule.");
         }
@@ -2002,7 +1979,7 @@ private void printTiArgs(TemplateInstance ti, TextBuffer buf, ExprOpts opts)
     if (ti.tiargs)
         foreach(arg; *ti.tiargs) {
             auto t = arg.isType();
-            if (t is null) stderr.writefln("NON-TYPE Template parameter!\n");
+            //if (t is null) stderr.writefln("NON-TYPE Template parameter!\n");
             buf.put(t.toJava(opts, Boxing.yes));
         }
 }
@@ -2030,8 +2007,7 @@ private void parameterToBuffer(Parameter p, TextBuffer buf, ExprOpts opts, Boxin
             buf.put(p.ident.symbol);
         }
     }
-    opts.wantCharPtr = p.type.ty == Tpointer && p.type.nextOf().ty == Tchar;
-
+    
     if (p.defaultArg)
     {
         buf.put(" = ");

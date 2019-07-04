@@ -63,9 +63,9 @@ public class compiler {
         public static void genCmain(Scope sc) {
             if (entrypoint != null)
                 return ;
-            ByteSlice cmaincode =  new ByteSlice("\n            extern(C)\n            {\n                int _d_run_main(int argc, char **argv, void* mainFunc);\n                int _Dmain(char[][] args);\n                int main(int argc, char **argv)\n                {\n                    return _d_run_main(argc, argv, &_Dmain);\n                }\n                version (Solaris) int _main(int argc, char** argv) { return main(argc, argv); }\n            }\n        ").copy();
+            ByteSlice cmaincode = new ByteSlice("\n            extern(C)\n            {\n                int _d_run_main(int argc, char **argv, void* mainFunc);\n                int _Dmain(char[][] args);\n                int main(int argc, char **argv)\n                {\n                    return _d_run_main(argc, argv, &_Dmain);\n                }\n                version (Solaris) int _main(int argc, char** argv) { return main(argc, argv); }\n            }\n        ").copy();
             Identifier id = Id.entrypoint;
-            dmodule.Module m = new dmodule.Module( new ByteSlice("__entrypoint.d"), id, 0, 0);
+            dmodule.Module m = new dmodule.Module(new ByteSlice("__entrypoint.d"), id, 0, 0);
             StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
             try {
                 ParserASTCodegen p = new ParserASTCodegen(m, toByteSlice(cmaincode), false, diagnosticReporter);
@@ -212,7 +212,7 @@ public class compiler {
             if (this.index == (this.packages).length)
                 return this.name;
             else
-                return Identifier.idPool( new ByteSlice("package"));
+                return Identifier.idPool(new ByteSlice("package"));
         }
 
         public  void popFront() {
@@ -274,7 +274,7 @@ public class compiler {
             }
             nodeIndex += (int)info.depth;
         }
-        assertMsg(nodeIndex == matchNodes.length,  new ByteSlice("code bug"));
+        assertMsg(nodeIndex == matchNodes.length, new ByteSlice("code bug"));
         return includeByDefault;
     }
 
@@ -381,7 +381,7 @@ public class compiler {
                 for (; ;modulePattern.postInc()){
                     if ((modulePattern.get() & 0xFF) == 46)
                     {
-                        assertMsg(modulePattern.greaterThan(idStart),  new ByteSlice("empty module pattern"));
+                        assertMsg(modulePattern.greaterThan(idStart), new ByteSlice("empty module pattern"));
                         dst.opAssign(new MatcherNode(Identifier.idPool(idStart, ((modulePattern.minus(idStart))))));
                         modulePattern.postInc();
                         idStart = pcopy(modulePattern);
@@ -392,7 +392,7 @@ public class compiler {
             for (; ;modulePattern.postInc()){
                 if ((modulePattern.get() & 0xFF) == 0)
                 {
-                    assertMsg(modulePattern.greaterThan(idStart),  new ByteSlice("empty module pattern"));
+                    assertMsg(modulePattern.greaterThan(idStart), new ByteSlice("empty module pattern"));
                     lastNode.opAssign(new MatcherNode(Identifier.idPool(idStart, ((modulePattern.minus(idStart))))));
                     break;
                 }

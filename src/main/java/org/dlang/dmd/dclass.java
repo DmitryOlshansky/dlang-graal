@@ -548,12 +548,12 @@ public class dclass {
                 return false;
             }
             s = s.toAlias();
-            Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>(){
+            Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
                 public Integer invoke(Dsymbol s){
                     return ((pequals(fd, s.isFuncDeclaration())) ? 1 : 0);
                 }
             };
-            Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
+            Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>(){
                 public Integer invoke(Dsymbol s){
                     return ((pequals(fd, s.isFuncDeclaration())) ? 1 : 0);
                 }
@@ -688,11 +688,11 @@ public class dclass {
             if (this.isabstract != Abstract.fwdref)
                 return this.isabstract == Abstract.yes;
             if (false)
-                printf( new ByteSlice("isAbstract(%s)\n"), this.toChars());
+                printf(new BytePtr("isAbstract(%s)\n"), this.toChars());
             Function0<Boolean> no = new Function0<Boolean>(){
                 public Boolean invoke(){
                     if (false)
-                        printf( new ByteSlice("no\n"));
+                        printf(new BytePtr("no\n"));
                     isabstract = Abstract.no;
                     return false;
                 }
@@ -700,7 +700,7 @@ public class dclass {
             Function0<Boolean> yes = new Function0<Boolean>(){
                 public Boolean invoke(){
                     if (false)
-                        printf( new ByteSlice("yes\n"));
+                        printf(new BytePtr("yes\n"));
                     isabstract = Abstract.yes;
                     return true;
                 }
@@ -788,7 +788,7 @@ public class dclass {
             if (!(this.vtblsym != null))
             {
                 Type vtype = Type.tvoidptr.immutableOf().sarrayOf((long)this.vtbl.length);
-                VarDeclaration var = new VarDeclaration(this.loc, vtype, Identifier.idPool( new ByteSlice("__vtbl")), null, 1048577L);
+                VarDeclaration var = new VarDeclaration(this.loc, vtype, Identifier.idPool(new ByteSlice("__vtbl")), null, 1048577L);
                 var.addMember(null, this);
                 var.isdataseg = (byte)1;
                 var.linkage = LINK.d;

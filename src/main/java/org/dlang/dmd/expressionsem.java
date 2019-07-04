@@ -68,7 +68,7 @@ import static org.dlang.dmd.visitor.*;
 public class expressionsem {
     static Import loadStdMathimpStdMath = null;
     static int visitnest;
-    static ByteSlice visitcompMsg =  new ByteSlice("==");
+    static ByteSlice visitcompMsg = new ByteSlice("==");
 
     static boolean LOGSEMANTIC = false;
     public static boolean expressionsToString(OutBuffer buf, Scope sc, DArray<Expression> exps) {
@@ -4833,17 +4833,17 @@ public class expressionsem {
                 OutBuffer ob = global.params.moduleDeps;
                 dmodule.Module imod = (this.sc).instantiatingModule();
                 if (!(global.params.moduleDepsFile.getLength() != 0))
-                    (ob).writestring( new ByteSlice("depsFile "));
+                    (ob).writestring(new ByteSlice("depsFile "));
                 (ob).writestring(imod.toPrettyChars(false));
-                (ob).writestring( new ByteSlice(" ("));
+                (ob).writestring(new ByteSlice(" ("));
                 escapePath(ob, imod.srcfile.toChars());
-                (ob).writestring( new ByteSlice(") : "));
+                (ob).writestring(new ByteSlice(") : "));
                 if (global.params.moduleDepsFile.getLength() != 0)
-                    (ob).writestring( new ByteSlice("string : "));
+                    (ob).writestring(new ByteSlice("string : "));
                 (ob).write(se.string, se.len);
-                (ob).writestring( new ByteSlice(" ("));
+                (ob).writestring(new ByteSlice(" ("));
                 escapePath(ob, name);
-                (ob).writestring( new ByteSlice(")"));
+                (ob).writestring(new ByteSlice(")"));
                 (ob).writenl();
             }
             {
@@ -4892,7 +4892,7 @@ public class expressionsem {
                 }
                 if (((((((((((tok & 0xFF) == 58 || (tok & 0xFF) == 59) || (tok & 0xFF) == 54) || (tok & 0xFF) == 55) || (tok & 0xFF) == 56) || (tok & 0xFF) == 57) || (tok & 0xFF) == 60) || (tok & 0xFF) == 61) || (tok & 0xFF) == 175) || isEqualsCallExpression))
                 {
-                    if (!(verifyHookExist(exp.loc, this.sc, Id._d_assert_fail,  new ByteSlice("generating assert messages"), Id.object)))
+                    if (!(verifyHookExist(exp.loc, this.sc, Id._d_assert_fail, new ByteSlice("generating assert messages"), Id.object)))
                         this.setError();
                         return ;
                     DArray<Expression> es = new DArray<Expression>(2);
@@ -4931,7 +4931,7 @@ public class expressionsem {
                 {
                     OutBuffer buf = new OutBuffer();
                     try {
-                        buf.printf( new ByteSlice("%s failed"), assertExpMsg);
+                        buf.printf(new BytePtr("%s failed"), assertExpMsg);
                         exp.msg = new StringExp(Loc.initial, buf.extractChars());
                     }
                     finally {
@@ -5917,7 +5917,7 @@ public class expressionsem {
                         int toSize = (int)tTo.size();
                         if (fromSize != toSize)
                         {
-                            if (!(verifyHookExist(exp.loc, this.sc, Id.__ArrayCast,  new ByteSlice("casting array of structs"), Id.object)))
+                            if (!(verifyHookExist(exp.loc, this.sc, Id.__ArrayCast, new ByteSlice("casting array of structs"), Id.object)))
                                 this.setError();
                                 return ;
                             if ((toSize == 0 || fromSize % toSize != 0))
@@ -8900,7 +8900,7 @@ public class expressionsem {
                 }
                 if ((((t1.ty & 0xFF) == ENUMTY.Tarray || (t1.ty & 0xFF) == ENUMTY.Tsarray) && ((t2.ty & 0xFF) == ENUMTY.Tarray || (t2.ty & 0xFF) == ENUMTY.Tsarray)))
                 {
-                    if (!(verifyHookExist(exp.loc, this.sc, Id.__cmp,  new ByteSlice("comparing arrays"), Id.object)))
+                    if (!(verifyHookExist(exp.loc, this.sc, Id.__cmp, new ByteSlice("comparing arrays"), Id.object)))
                         this.setError();
                         return ;
                     Expression al = new IdentifierExp(exp.loc, Id.empty);
@@ -9115,11 +9115,11 @@ public class expressionsem {
             }
             if (((t1.ty & 0xFF) == ENUMTY.Tarray && (t2.ty & 0xFF) == ENUMTY.Tarray))
             {
-                if (!(verifyHookExist(exp.loc, this.sc, Id.__equals,  new ByteSlice("equal checks on arrays"), Id.object)))
+                if (!(verifyHookExist(exp.loc, this.sc, Id.__equals, new ByteSlice("equal checks on arrays"), Id.object)))
                     this.setError();
                     return ;
                 Expression __equals = new IdentifierExp(exp.loc, Id.empty);
-                Identifier id = Identifier.idPool( new ByteSlice("__equals"));
+                Identifier id = Identifier.idPool(new ByteSlice("__equals"));
                 __equals = new DotIdExp(exp.loc, __equals, Id.object);
                 __equals = new DotIdExp(exp.loc, __equals, id);
                 DArray<Expression> arguments = new DArray<Expression>(2);

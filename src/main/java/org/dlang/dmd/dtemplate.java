@@ -2045,7 +2045,7 @@ public class dtemplate {
                     for (; i < (this.parameters).length;i++){
                         TemplateParameter tp = (this.parameters).get(i);
                         if ((i) != 0)
-                            buf.writestring( new ByteSlice(", "));
+                            buf.writestring(new ByteSlice(", "));
                         toCBuffer(tp, buf, hgs);
                     }
                 }
@@ -2061,7 +2061,7 @@ public class dtemplate {
                 }
                 if (this.constraint != null)
                 {
-                    buf.writestring( new ByteSlice(" if ("));
+                    buf.writestring(new ByteSlice(" if ("));
                     toCBuffer(this.constraint, buf, hgs);
                     buf.writeByte(41);
                 }
@@ -3882,17 +3882,17 @@ public class dtemplate {
     }
 
     public static int deduceTypeHelper(Type t, Ptr<Type> at, Type tparam) {
-        // from template X!(IntegerInteger)
-        Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
-            public Integer invoke(Integer U, Integer T){
-                return U << 4 | T;
-            }
-        };
-
         // from template X!(ByteByte)
         Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
             public Integer invoke(Byte U, Byte T){
                 return (U & 0xFF) << 4 | (T & 0xFF);
+            }
+        };
+
+        // from template X!(IntegerInteger)
+        Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
+            public Integer invoke(Integer U, Integer T){
+                return U << 4 | T;
             }
         };
 
@@ -4263,16 +4263,16 @@ public class dtemplate {
         }
 
         public  void print(RootObject oarg, RootObject oded) {
-            printf( new ByteSlice(" %s\n"), this.ident.toChars());
+            printf(new BytePtr(" %s\n"), this.ident.toChars());
             Type t = isType(oarg);
             Type ta = isType(oded);
             assert(ta != null);
             if (this.specType != null)
-                printf( new ByteSlice("\u0009Specialization: %s\n"), this.specType.toChars());
+                printf(new BytePtr("\u0009Specialization: %s\n"), this.specType.toChars());
             if (this.defaultType != null)
-                printf( new ByteSlice("\u0009Default:        %s\n"), this.defaultType.toChars());
-            printf( new ByteSlice("\u0009Parameter:       %s\n"), t != null ? t.toChars() :  new ByteSlice("NULL"));
-            printf( new ByteSlice("\u0009Deduced Type:   %s\n"), ta.toChars());
+                printf(new BytePtr("\u0009Default:        %s\n"), this.defaultType.toChars());
+            printf(new BytePtr("\u0009Parameter:       %s\n"), t != null ? t.toChars() : new BytePtr("NULL"));
+            printf(new BytePtr("\u0009Deduced Type:   %s\n"), ta.toChars());
         }
 
         public  RootObject specialization() {
@@ -4434,11 +4434,11 @@ public class dtemplate {
         }
 
         public  void print(RootObject oarg, RootObject oded) {
-            printf( new ByteSlice(" %s\n"), this.ident.toChars());
+            printf(new BytePtr(" %s\n"), this.ident.toChars());
             Expression ea = isExpression(oded);
             if (this.specValue != null)
-                printf( new ByteSlice("\u0009Specialization: %s\n"), this.specValue.toChars());
-            printf( new ByteSlice("\u0009Parameter Value: %s\n"), ea != null ? ea.toChars() :  new ByteSlice("NULL"));
+                printf(new BytePtr("\u0009Specialization: %s\n"), this.specValue.toChars());
+            printf(new BytePtr("\u0009Parameter Value: %s\n"), ea != null ? ea.toChars() : new BytePtr("NULL"));
         }
 
         public  RootObject specialization() {
@@ -4610,10 +4610,10 @@ public class dtemplate {
         }
 
         public  void print(RootObject oarg, RootObject oded) {
-            printf( new ByteSlice(" %s\n"), this.ident.toChars());
+            printf(new BytePtr(" %s\n"), this.ident.toChars());
             Dsymbol sa = isDsymbol(oded);
             assert(sa != null);
-            printf( new ByteSlice("\u0009Parameter alias: %s\n"), sa.toChars());
+            printf(new BytePtr("\u0009Parameter alias: %s\n"), sa.toChars());
         }
 
         public  RootObject specialization() {
@@ -4802,28 +4802,28 @@ public class dtemplate {
         }
 
         public  void print(RootObject oarg, RootObject oded) {
-            printf( new ByteSlice(" %s... ["), this.ident.toChars());
+            printf(new BytePtr(" %s... ["), this.ident.toChars());
             Tuple v = isTuple(oded);
             assert(v != null);
             {
                 int i = 0;
                 for (; i < v.objects.length;i++){
                     if ((i) != 0)
-                        printf( new ByteSlice(", "));
+                        printf(new BytePtr(", "));
                     RootObject o = v.objects.get(i);
                     Dsymbol sa = isDsymbol(o);
                     if (sa != null)
-                        printf( new ByteSlice("alias: %s"), sa.toChars());
+                        printf(new BytePtr("alias: %s"), sa.toChars());
                     Type ta = isType(o);
                     if (ta != null)
-                        printf( new ByteSlice("type: %s"), ta.toChars());
+                        printf(new BytePtr("type: %s"), ta.toChars());
                     Expression ea = isExpression(o);
                     if (ea != null)
-                        printf( new ByteSlice("exp: %s"), ea.toChars());
+                        printf(new BytePtr("exp: %s"), ea.toChars());
                     assert(!(isTuple(o) != null));
                 }
             }
-            printf( new ByteSlice("]\n"));
+            printf(new BytePtr("]\n"));
         }
 
         public  RootObject specialization() {

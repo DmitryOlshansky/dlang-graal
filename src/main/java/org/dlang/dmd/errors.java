@@ -179,7 +179,7 @@ public class errors {
             (con).setColorBright(true);
         if ((p.get()) != 0)
         {
-            fprintf(stderr,  new ByteSlice("%s: "), p);
+            fprintf(stderr, new BytePtr("%s: "), p);
             Mem.xfree(p);
         }
         if (con != null)
@@ -188,9 +188,9 @@ public class errors {
         if (con != null)
             (con).resetColor();
         if (p1 != null)
-            fprintf(stderr,  new ByteSlice("%s "), p1);
+            fprintf(stderr, new BytePtr("%s "), p1);
         if (p2 != null)
-            fprintf(stderr,  new ByteSlice("%s "), p2);
+            fprintf(stderr, new BytePtr("%s "), p2);
         OutBuffer tmp = new OutBuffer();
         tmp.vprintf(format, ap);
         if ((con != null && strchr(tmp.peekChars(), 96) != null))
@@ -201,7 +201,7 @@ public class errors {
         else
             fputs(tmp.peekChars(), stderr);
         fputc(10, stderr);
-        if ((((global.params.printErrorContext && !(loc.opEquals(Loc.initial))) && strstr(loc.filename,  new ByteSlice(".d-mixin-")) == null) && global.params.mixinOut == null))
+        if ((((global.params.printErrorContext && !(loc.opEquals(Loc.initial))) && strstr(loc.filename, new BytePtr(".d-mixin-")) == null) && global.params.mixinOut == null))
         {
             FileAndLines fllines = FileCache.fileCache.addOrGetFile(loc.filename.slice(0,strlen(loc.filename)));
             if (loc.linnum - 1 < fllines.lines.getLength())
@@ -209,7 +209,7 @@ public class errors {
                 ByteSlice line = fllines.lines.get(loc.linnum - 1).copy();
                 if (loc.charnum < line.getLength())
                 {
-                    fprintf(stderr,  new ByteSlice("%.*s\n"), line.getLength(), toBytePtr(line));
+                    fprintf(stderr, new BytePtr("%.*s\n"), line.getLength(), toBytePtr(line));
                     {
                         int __key106 = 1;
                         int __limit107 = loc.charnum;
@@ -238,7 +238,7 @@ public class errors {
         {
             if (global.params.showGaggedErrors)
             {
-                fprintf(stderr,  new ByteSlice("(spec:%d) "), global.gag);
+                fprintf(stderr, new BytePtr("(spec:%d) "), global.gag);
                 verrorPrint(loc, Color.brightBlue, header, format, ap, p1, p2);
             }
             global.gaggedErrors++;
@@ -299,7 +299,7 @@ public class errors {
         BytePtr p = pcopy(loc.toChars(global.params.showColumns));
         if ((p.get()) != 0)
         {
-            fprintf(stdout,  new ByteSlice("%s: "), p);
+            fprintf(stdout, new BytePtr("%s: "), p);
             Mem.xfree(p);
         }
         OutBuffer tmp = new OutBuffer();
@@ -344,7 +344,7 @@ public class errors {
                                 codebuf.writeByte(0);
                                 colorHighlightCode(codebuf);
                                 (buf).remove(iCodeStart, i - iCodeStart + 1);
-                                ByteSlice pre =  new ByteSlice("").copy();
+                                ByteSlice pre = new ByteSlice("").copy();
                                 i = (buf).insert(iCodeStart, toByteSlice(pre));
                                 i = (buf).insert(i, codebuf.peekSlice());
                                 i--;

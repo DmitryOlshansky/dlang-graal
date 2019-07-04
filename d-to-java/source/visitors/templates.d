@@ -35,7 +35,14 @@ string tiArgs(TemplateInstance ti, ExprOpts opts) {
             if (e && e.type.toJava(opts) == "ByteSlice") temp.fmt("_%s", e.toString[1..$-1]);
             else if(e && e.type.toJava(opts) == "boolean") temp.fmt("%d", e.toInteger());
             else if (t) temp.put(t.toJava(opts, Boxing.yes));
-            else temp.fmt("_%s", arg.toString);
+            else if (e){
+                if(auto em = e.type.isTypeEnum())
+                    temp.fmt("%s", e.toInteger);
+                else 
+                    temp.fmt("%s", e.toString);
+            }
+            else
+                temp.fmt("_%s", arg.toString);
         }
         return temp.data.dup;
     }

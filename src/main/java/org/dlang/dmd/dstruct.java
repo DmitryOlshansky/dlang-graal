@@ -371,7 +371,7 @@ public class dstruct {
                         error(loc, new BytePtr("overlapping initialization for `%s`"), v.toChars());
                         if (!(this.isUnionDeclaration() != null))
                         {
-                            ByteSlice errorMsg =  new ByteSlice("`struct` initializers that contain anonymous unions must initialize only the first member of a `union`. All subsequent non-overlapping fields are default initialized");
+                            ByteSlice errorMsg = new ByteSlice("`struct` initializers that contain anonymous unions must initialize only the first member of a `union`. All subsequent non-overlapping fields are default initialized");
                             errorSupplemental(loc, new BytePtr("`struct` initializers that contain anonymous unions must initialize only the first member of a `union`. All subsequent non-overlapping fields are default initialized"));
                         }
                         return false;

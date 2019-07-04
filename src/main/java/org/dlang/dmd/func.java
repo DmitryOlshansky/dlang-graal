@@ -2114,24 +2114,24 @@ public class func {
         boolean sharedMismatch = (((lhsMod & 0xFF) ^ (rhsMod & 0xFF)) & MODFlags.shared_) != 0;
         boolean sharedMismatchOnly = ((lhsMod & 0xFF) ^ (rhsMod & 0xFF)) == MODFlags.shared_;
         if (((lhsMod & 0xFF) & MODFlags.shared_) != 0)
-            (buf).writestring( new ByteSlice("`shared` "));
+            (buf).writestring(new ByteSlice("`shared` "));
         else if ((sharedMismatch && !(((lhsMod & 0xFF) & MODFlags.immutable_) != 0)))
         {
-            (buf).writestring( new ByteSlice("non-shared "));
+            (buf).writestring(new ByteSlice("non-shared "));
             mismatches.isNotShared = true;
         }
         if ((bothMutable && sharedMismatchOnly))
         {
         }
         else if (((lhsMod & 0xFF) & MODFlags.immutable_) != 0)
-            (buf).writestring( new ByteSlice("`immutable` "));
+            (buf).writestring(new ByteSlice("`immutable` "));
         else if (((lhsMod & 0xFF) & MODFlags.const_) != 0)
-            (buf).writestring( new ByteSlice("`const` "));
+            (buf).writestring(new ByteSlice("`const` "));
         else if (((lhsMod & 0xFF) & MODFlags.wild) != 0)
-            (buf).writestring( new ByteSlice("`inout` "));
+            (buf).writestring(new ByteSlice("`inout` "));
         else
         {
-            (buf).writestring( new ByteSlice("mutable "));
+            (buf).writestring(new ByteSlice("mutable "));
             mismatches.isMutable = true;
         }
         return mismatches;
@@ -2140,7 +2140,7 @@ public class func {
     public static BytePtr prependSpace(BytePtr str) {
         if ((str == null || !((str.get()) != 0)))
             return new BytePtr("");
-        return toBytePtr((new BytePtr(" ").concat(str.slice(0,strlen(str))).concat(new BytePtr("\u0000"))));
+        return toBytePtr((new ByteSlice(" ").concat(str.slice(0,strlen(str))).concat(new ByteSlice("\u0000"))));
     }
 
 
@@ -2294,10 +2294,10 @@ public class func {
         }
     }
 
-    // from template printCandidates!(FuncDeclaration)
-    public static void printCandidatesFuncDeclaration(Loc loc, FuncDeclaration declaration) {
+    // from template printCandidates!(TemplateDeclaration)
+    public static void printCandidatesTemplateDeclaration(Loc loc, TemplateDeclaration declaration) {
         int numToDisplay = 5;
-        Function1<Dsymbol,Integer> __lambda3FuncDeclaration = new Function1<Dsymbol,Integer>(){
+        Function1<Dsymbol,Integer> __lambda3TemplateDeclaration = new Function1<Dsymbol,Integer>(){
             public Integer invoke(Dsymbol s){
                 Dsymbol nextOverload = null;
                 {
@@ -2332,8 +2332,8 @@ public class func {
     }
 
 
-    // from template printCandidates!(TemplateDeclaration)
-    public static void printCandidatesTemplateDeclaration(Loc loc, TemplateDeclaration declaration) {
+    // from template printCandidates!(FuncDeclaration)
+    public static void printCandidatesFuncDeclaration(Loc loc, FuncDeclaration declaration) {
         int numToDisplay = 5;
         overloadApply(declaration, __lambda3, null);
     }
@@ -3320,7 +3320,7 @@ public class func {
     public static class StaticCtorDeclaration extends FuncDeclaration
     {
         public  StaticCtorDeclaration(Loc loc, Loc endloc, long stc) {
-            super(loc, endloc, Identifier.generateIdWithLoc( new ByteSlice("_staticCtor"), loc), 1L | stc, null);
+            super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("_staticCtor"), loc), 1L | stc, null);
         }
 
         public  StaticCtorDeclaration(Loc loc, Loc endloc, ByteSlice name, long stc) {
@@ -3450,7 +3450,7 @@ public class func {
     public static class SharedStaticCtorDeclaration extends StaticCtorDeclaration
     {
         public  SharedStaticCtorDeclaration(Loc loc, Loc endloc, long stc) {
-            super(loc, endloc,  new ByteSlice("_sharedStaticCtor"), stc);
+            super(loc, endloc, new ByteSlice("_sharedStaticCtor"), stc);
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
@@ -3557,7 +3557,7 @@ public class func {
     {
         public VarDeclaration vgate;
         public  StaticDtorDeclaration(Loc loc, Loc endloc, long stc) {
-            super(loc, endloc, Identifier.generateIdWithLoc( new ByteSlice("_staticDtor"), loc), 1L | stc, null);
+            super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("_staticDtor"), loc), 1L | stc, null);
         }
 
         public  StaticDtorDeclaration(Loc loc, Loc endloc, ByteSlice name, long stc) {
@@ -3688,7 +3688,7 @@ public class func {
     public static class SharedStaticDtorDeclaration extends StaticDtorDeclaration
     {
         public  SharedStaticDtorDeclaration(Loc loc, Loc endloc, long stc) {
-            super(loc, endloc,  new ByteSlice("_sharedStaticDtor"), stc);
+            super(loc, endloc, new ByteSlice("_sharedStaticDtor"), stc);
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
@@ -3916,7 +3916,7 @@ public class func {
         public BytePtr codedoc;
         public DArray<FuncDeclaration> deferredNested = new DArray<FuncDeclaration>();
         public  UnitTestDeclaration(Loc loc, Loc endloc, long stc, BytePtr codedoc) {
-            super(loc, endloc, Identifier.generateIdWithLoc( new ByteSlice("__unittest"), loc), stc, null);
+            super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("__unittest"), loc), stc, null);
             this.codedoc = pcopy(codedoc);
         }
 

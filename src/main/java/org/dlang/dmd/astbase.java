@@ -1100,7 +1100,7 @@ public class astbase {
         {
             public BytePtr codedoc;
             public  UnitTestDeclaration(Loc loc, Loc endloc, long stc, BytePtr codedoc) {
-                super(loc, endloc, Identifier.generateIdWithLoc( new ByteSlice("__unittest"), loc), stc, null);
+                super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("__unittest"), loc), stc, null);
                 this.codedoc = pcopy(codedoc);
             }
 
@@ -1222,7 +1222,7 @@ public class astbase {
         public static class StaticCtorDeclaration extends FuncDeclaration
         {
             public  StaticCtorDeclaration(Loc loc, Loc endloc, long stc) {
-                super(loc, endloc, Identifier.generateIdWithLoc( new ByteSlice("_staticCtor"), loc), 1L | stc, null);
+                super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("_staticCtor"), loc), 1L | stc, null);
             }
 
             public  StaticCtorDeclaration(Loc loc, Loc endloc, ByteSlice name, long stc) {
@@ -1264,7 +1264,7 @@ public class astbase {
         {
             // from template __ctor!()
             public  StaticDtorDeclaration(Loc loc, Loc endloc, long stc) {
-                super(loc, endloc, Identifier.generateIdWithLoc( new ByteSlice("__staticDtor"), loc), 1L | stc, null);
+                super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("__staticDtor"), loc), 1L | stc, null);
             }
 
 
@@ -1306,7 +1306,7 @@ public class astbase {
         public static class SharedStaticCtorDeclaration extends StaticCtorDeclaration
         {
             public  SharedStaticCtorDeclaration(Loc loc, Loc endloc, long stc) {
-                super(loc, endloc,  new ByteSlice("_sharedStaticCtor"), stc);
+                super(loc, endloc, new ByteSlice("_sharedStaticCtor"), stc);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -1343,7 +1343,7 @@ public class astbase {
         public static class SharedStaticDtorDeclaration extends StaticDtorDeclaration
         {
             public  SharedStaticDtorDeclaration(Loc loc, Loc endloc, long stc) {
-                super(loc, endloc,  new ByteSlice("_sharedStaticDtor"), stc);
+                super(loc, endloc, new ByteSlice("_sharedStaticDtor"), stc);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -1381,7 +1381,7 @@ public class astbase {
         {
             public int isPkgMod;
             public int tag;
-            public  dmodule.Package(Identifier ident) {
+            public  Package(Identifier ident) {
                 super(ident);
                 this.isPkgMod = PKG.unknown;
                 this.tag = astbase.__ctorpackageTag++;
@@ -2140,12 +2140,12 @@ public class astbase {
                 return that;
             }
         }
-        public static class Module extends dmodule.Package
+        public static class Module extends Package
         {
             public static AggregateDeclaration moduleinfo;
             public FileName srcfile = new FileName();
             public BytePtr arg;
-            public  dmodule.Module(BytePtr filename, Identifier ident, int doDocComment, int doHdrGen) {
+            public  Module(BytePtr filename, Identifier ident, int doDocComment, int doHdrGen) {
                 super(ident);
                 this.arg = pcopy(filename);
                 this.srcfile = new FileName(FileName.defaultExt(toDString(filename), toByteSlice(global.mars_ext)));
@@ -2185,8 +2185,8 @@ public class astbase {
                 this.type = new TypeStruct(this);
                 if (inObject)
                 {
-                    if ((pequals(id, Id.ModuleInfo) && !(dmodule.Module.moduleinfo != null)))
-                        dmodule.Module.moduleinfo = this;
+                    if ((pequals(id, Id.ModuleInfo) && !(Module.moduleinfo != null)))
+                        Module.moduleinfo = this;
                 }
             }
 
@@ -8329,8 +8329,8 @@ public class astbase {
         {
             public int level;
             public Identifier ident;
-            public dmodule.Module mod;
-            public  DVCondition(dmodule.Module mod, int level, Identifier ident) {
+            public Module mod;
+            public  DVCondition(Module mod, int level, Identifier ident) {
                 super(Loc.initial);
                 this.mod = mod;
                 this.ident = ident;
@@ -8354,7 +8354,7 @@ public class astbase {
         }
         public static class DebugCondition extends DVCondition
         {
-            public  DebugCondition(dmodule.Module mod, int level, Identifier ident) {
+            public  DebugCondition(Module mod, int level, Identifier ident) {
                 super(mod, level, ident);
             }
 
@@ -8376,7 +8376,7 @@ public class astbase {
         }
         public static class VersionCondition extends DVCondition
         {
-            public  VersionCondition(dmodule.Module mod, int level, Identifier ident) {
+            public  VersionCondition(Module mod, int level, Identifier ident) {
                 super(mod, level, ident);
             }
 
@@ -8658,7 +8658,7 @@ public class astbase {
             }
 
             public int kind;
-            public dmodule.Package pkg;
+            public Package pkg;
             public Prot(){
             }
             public Prot copy(){
@@ -8667,7 +8667,7 @@ public class astbase {
                 r.pkg = pkg;
                 return r;
             }
-            public Prot(int kind, dmodule.Package pkg) {
+            public Prot(int kind, Package pkg) {
                 this.kind = kind;
                 this.pkg = pkg;
             }
@@ -8815,7 +8815,7 @@ public class astbase {
                 {
                     if (global.params.is64bit)
                     {
-                        return (new TypeIdentifier(Loc.initial, Identifier.idPool( new ByteSlice("__va_list_tag")))).pointerTo();
+                        return (new TypeIdentifier(Loc.initial, Identifier.idPool(new ByteSlice("__va_list_tag")))).pointerTo();
                     }
                     else
                     {

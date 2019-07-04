@@ -785,7 +785,7 @@ public class dsymbolsem {
                             Parameter arg = Parameter.getNth(tt.arguments, i, null);
                             OutBuffer buf = new OutBuffer();
                             try {
-                                buf.printf( new ByteSlice("__%s_field_%llu"), dsym.ident.toChars(), (long)i);
+                                buf.printf(new BytePtr("__%s_field_%llu"), dsym.ident.toChars(), (long)i);
                                 Identifier id = Identifier.idPool(buf.peekSlice());
                                 Initializer ti = null;
                                 if (ie != null)
@@ -1331,16 +1331,16 @@ public class dsymbolsem {
                 this.sc = (this.sc).pop();
             }
             imp.semanticRun = PASS.semanticdone;
-            if ((((global.params.moduleDeps != null && !((pequals(imp.id, Id.object) && pequals((this.sc)._module.ident, Id.object)))) && !pequals((this.sc)._module.ident, Id.entrypoint)) && strcmp((this.sc)._module.ident.toChars(),  new ByteSlice("__main")) != 0))
+            if ((((global.params.moduleDeps != null && !((pequals(imp.id, Id.object) && pequals((this.sc)._module.ident, Id.object)))) && !pequals((this.sc)._module.ident, Id.entrypoint)) && strcmp((this.sc)._module.ident.toChars(), new BytePtr("__main")) != 0))
             {
                 OutBuffer ob = global.params.moduleDeps;
                 dmodule.Module imod = (this.sc).instantiatingModule();
                 if (!(global.params.moduleDepsFile.getLength() != 0))
-                    (ob).writestring( new ByteSlice("depsImport "));
+                    (ob).writestring(new ByteSlice("depsImport "));
                 (ob).writestring(imod.toPrettyChars(false));
-                (ob).writestring( new ByteSlice(" ("));
+                (ob).writestring(new ByteSlice(" ("));
                 escapePath(ob, imod.srcfile.toChars());
-                (ob).writestring( new ByteSlice(") : "));
+                (ob).writestring(new ByteSlice(") : "));
                 protectionToBuffer(ob, imp.protection);
                 (ob).writeByte(32);
                 if ((imp.isstatic) != 0)
@@ -1348,23 +1348,23 @@ public class dsymbolsem {
                     stcToBuffer(ob, 1L);
                     (ob).writeByte(32);
                 }
-                (ob).writestring( new ByteSlice(": "));
+                (ob).writestring(new ByteSlice(": "));
                 if (imp.packages != null)
                 {
                     {
                         int i = 0;
                         for (; i < (imp.packages).length;i++){
                             Identifier pid = (imp.packages).get(i);
-                            (ob).printf( new ByteSlice("%s."), pid.toChars());
+                            (ob).printf(new BytePtr("%s."), pid.toChars());
                         }
                     }
                 }
                 (ob).writestring(imp.id.asString());
-                (ob).writestring( new ByteSlice(" ("));
+                (ob).writestring(new ByteSlice(" ("));
                 if (imp.mod != null)
                     escapePath(ob, imp.mod.srcfile.toChars());
                 else
-                    (ob).writestring( new ByteSlice("???"));
+                    (ob).writestring(new ByteSlice("???"));
                 (ob).writeByte(41);
                 {
                     Slice<Identifier> __r1149 = imp.names.opSlice().copy();
@@ -1379,15 +1379,15 @@ public class dsymbolsem {
                         Identifier _alias = imp.aliases.get(i);
                         if (!(_alias != null))
                         {
-                            (ob).printf( new ByteSlice("%s"), name.toChars());
+                            (ob).printf(new BytePtr("%s"), name.toChars());
                             _alias = name;
                         }
                         else
-                            (ob).printf( new ByteSlice("%s=%s"), _alias.toChars(), name.toChars());
+                            (ob).printf(new BytePtr("%s=%s"), _alias.toChars(), name.toChars());
                     }
                 }
                 if (imp.aliasId != null)
-                    (ob).printf( new ByteSlice(" -> %s"), imp.aliasId.toChars());
+                    (ob).printf(new BytePtr(" -> %s"), imp.aliasId.toChars());
                 (ob).writenl();
             }
         }
@@ -1495,13 +1495,13 @@ public class dsymbolsem {
                                     if (se != null)
                                     {
                                         se = se.toUTF8(this.sc);
-                                        fprintf(stderr,  new ByteSlice("%.*s"), se.len, se.string);
+                                        fprintf(stderr, new BytePtr("%.*s"), se.len, se.string);
                                     }
                                     else
-                                        fprintf(stderr,  new ByteSlice("%s"), e.toChars());
+                                        fprintf(stderr, new BytePtr("%s"), e.toChars());
                                 }
                             }
-                            fprintf(stderr,  new ByteSlice("\n"));
+                            fprintf(stderr, new BytePtr("\n"));
                         }
                         /*goto Lnodecl*/throw Dispatch1.INSTANCE;
                     }
@@ -1522,11 +1522,11 @@ public class dsymbolsem {
                             {
                                 OutBuffer ob = global.params.moduleDeps;
                                 dmodule.Module imod = (this.sc).instantiatingModule();
-                                (ob).writestring( new ByteSlice("depsLib "));
+                                (ob).writestring(new ByteSlice("depsLib "));
                                 (ob).writestring(imod.toPrettyChars(false));
-                                (ob).writestring( new ByteSlice(" ("));
+                                (ob).writestring(new ByteSlice(" ("));
                                 escapePath(ob, imod.srcfile.toChars());
-                                (ob).writestring( new ByteSlice(") : "));
+                                (ob).writestring(new ByteSlice(") : "));
                                 (ob).writestring(name);
                                 (ob).writenl();
                             }
@@ -1639,7 +1639,7 @@ public class dsymbolsem {
                                             this.sc = (this.sc).endCTFE();
                                             e = e.ctfeInterpret();
                                             if (i == 0)
-                                                buf.writestring( new ByteSlice(" ("));
+                                                buf.writestring(new ByteSlice(" ("));
                                             else
                                                 buf.writeByte(44);
                                             buf.writestring(e.toChars());
@@ -3854,18 +3854,25 @@ public class dsymbolsem {
                     }
             }
             Ungag ungag = cldec_ref.value.ungagSpeculative().copy();
-            Function0<Void> __dgliteral3 = new Function0<Void>(){
-                public Void invoke(){
-                    dsymbolSemantic(tc.sym, null);
-                    return null;
-                }
-            };
             Function0<Type> __dgliteral2 = new Function0<Type>(){
                 public Type invoke(){
                     return typeSemantic((b).type, cldec_ref.value.loc, sc);
                 }
             };
+            Function1<Dsymbol,Void> __lambda7 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.setScope(sc2);
+                    return null;
+                    return null;
+                }
+            };
             Function0<Void> __dgliteral4 = new Function0<Void>(){
+                public Void invoke(){
+                    dsymbolSemantic(tc.sym, null);
+                    return null;
+                }
+            };
+            Function0<Void> __dgliteral3 = new Function0<Void>(){
                 public Void invoke(){
                     dsymbolSemantic(tc.sym, null);
                     return null;
@@ -3881,13 +3888,6 @@ public class dsymbolsem {
             Function1<Dsymbol,Void> __lambda9 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
                     dsymbolSemantic(s, sc2);
-                    return null;
-                    return null;
-                }
-            };
-            Function1<Dsymbol,Void> __lambda7 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s){
-                    s.setScope(sc2);
                     return null;
                     return null;
                 }
@@ -3920,21 +3920,6 @@ public class dsymbolsem {
                 try {
                     if (cldec_ref.value.baseok < Baseok.done)
                     {
-                        // from template resolveBase!(Void)
-                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
-                            public Void invoke(Void exp){
-                                if (scx == null)
-                                {
-                                    scx = (sc).copy();
-                                    (scx).setNoFree();
-                                }
-                                cldec_ref.value._scope = scx;
-                                exp.invoke();
-                                cldec_ref.value._scope = null;
-                                return null;
-                            }
-                        };
-
                         // from template resolveBase!(Type)
                         Function1<Type,Type> resolveBaseType = new Function1<Type,Type>(){
                             public Type invoke(Type exp){
@@ -3947,6 +3932,21 @@ public class dsymbolsem {
                                 Type r = exp.invoke();
                                 cldec_ref.value._scope = null;
                                 return r;
+                            }
+                        };
+
+                        // from template resolveBase!(Void)
+                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
+                            public Void invoke(Void exp){
+                                if (scx == null)
+                                {
+                                    scx = (sc).copy();
+                                    (scx).setNoFree();
+                                }
+                                cldec_ref.value._scope = scx;
+                                exp.invoke();
+                                cldec_ref.value._scope = null;
+                                return null;
                             }
                         };
 
@@ -4439,21 +4439,6 @@ public class dsymbolsem {
                 try {
                     if (idec.baseok < Baseok.done)
                     {
-                        // from template resolveBase!(Void)
-                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
-                            public Void invoke(Void exp){
-                                if (scx == null)
-                                {
-                                    scx = (sc).copy();
-                                    (scx).setNoFree();
-                                }
-                                idec._scope = scx;
-                                exp.invoke();
-                                idec._scope = null;
-                                return null;
-                            }
-                        };
-
                         // from template resolveBase!(Type)
                         Function1<Type,Type> resolveBaseType = new Function1<Type,Type>(){
                             public Type invoke(Type exp){
@@ -4466,6 +4451,21 @@ public class dsymbolsem {
                                 Type r = exp.invoke();
                                 idec._scope = null;
                                 return r;
+                            }
+                        };
+
+                        // from template resolveBase!(Void)
+                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
+                            public Void invoke(Void exp){
+                                if (scx == null)
+                                {
+                                    scx = (sc).copy();
+                                    (scx).setNoFree();
+                                }
+                                idec._scope = scx;
+                                exp.invoke();
+                                idec._scope = null;
+                                return null;
                             }
                         };
 

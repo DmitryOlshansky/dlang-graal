@@ -56,7 +56,7 @@ import static org.dlang.dmd.visitor.*;
 public class statementsem {
     private static final FuncDeclaration[] initializer_0 = {null, null};
     private static final TypeDelegate[] initializer_1 = {null, null};
-    private static final BytePtr[] initializer_2 = { new ByteSlice("cc"),  new ByteSlice("cw"),  new ByteSlice("cd"),  new ByteSlice("wc"),  new ByteSlice("cc"),  new ByteSlice("wd"),  new ByteSlice("dc"),  new ByteSlice("dw"),  new ByteSlice("dd")};
+    private static final BytePtr[] initializer_2 = {new BytePtr("cc"), new BytePtr("cw"), new BytePtr("cd"), new BytePtr("wc"), new BytePtr("cc"), new BytePtr("wd"), new BytePtr("dc"), new BytePtr("dw"), new BytePtr("dd")};
     static Slice<FuncDeclaration> visitfdapply = slice(initializer_0);
     static Slice<TypeDelegate> visitfldeTy = slice(initializer_1);
     static Slice<BytePtr> visitfntab = slice(initializer_2);
@@ -67,7 +67,7 @@ public class statementsem {
         if ((((flags) != 0 && flags != 32) && !(((id.getLength() >= 2 && (id.get(0) & 0xFF) == 95) && (id.get(1) & 0xFF) == 95))))
         {
             OutBuffer buf = new OutBuffer();
-            buf.writestring(flags == 64 ?  new ByteSlice("__in_") :  new ByteSlice("__out_"));
+            buf.writestring(flags == 64 ? new ByteSlice("__in_") : new ByteSlice("__out_"));
             buf.writestring(ident.asString());
             ident = Identifier.idPool(buf.peekSlice());
         }
@@ -1879,7 +1879,7 @@ public class statementsem {
                                         throw new AssertionError("Unreachable code!");
                                     }
                                     BytePtr r_1 = pcopy((fs.op & 0xFF) == 202 ? new BytePtr("R") : new BytePtr(""));
-                                    int j = sprintf(ptr(fdname),  new ByteSlice("_aApply%s%.*s%llu"), r_1, 2, statementsem.visitfntab.get(flag), (long)dim);
+                                    int j = sprintf(ptr(fdname), new BytePtr("_aApply%s%.*s%llu"), r_1, 2, statementsem.visitfntab.get(flag), (long)dim);
                                     assert(j < 23);
                                     FuncDeclaration fdapply_1 = null;
                                     TypeDelegate dgty = null;
@@ -2304,13 +2304,13 @@ public class statementsem {
                             if (se != null)
                             {
                                 se = se.toUTF8(this.sc);
-                                fprintf(stderr,  new ByteSlice("%.*s"), se.len, se.string);
+                                fprintf(stderr, new BytePtr("%.*s"), se.len, se.string);
                             }
                             else
-                                fprintf(stderr,  new ByteSlice("%s"), e.toChars());
+                                fprintf(stderr, new BytePtr("%s"), e.toChars());
                         }
                     }
-                    fprintf(stderr,  new ByteSlice("\n"));
+                    fprintf(stderr, new BytePtr("\n"));
                 }
             }
             else if (pequals(ps.ident, Id.lib))
@@ -2579,7 +2579,7 @@ public class statementsem {
                     }
                     else
                     {
-                        if (!(verifyHookExist(ss.loc, this.sc, Id.__switch_error,  new ByteSlice("generating assert messages"), Id.object)))
+                        if (!(verifyHookExist(ss.loc, this.sc, Id.__switch_error, new ByteSlice("generating assert messages"), Id.object)))
                             this.setError();
                             return ;
                         Expression sl = new IdentifierExp(ss.loc, Id.empty);
@@ -2612,7 +2612,7 @@ public class statementsem {
             }
             if (ss.condition.type.isString())
             {
-                if (!(verifyHookExist(ss.loc, this.sc, Id.__switch,  new ByteSlice("switch cases on strings"), Id.object)))
+                if (!(verifyHookExist(ss.loc, this.sc, Id.__switch, new ByteSlice("switch cases on strings"), Id.object)))
                     this.setError();
                     return ;
                 int numcases = 0;

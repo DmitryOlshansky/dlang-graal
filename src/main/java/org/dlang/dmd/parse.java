@@ -182,7 +182,7 @@ public class parse {
         if (global.params.mixinOut == null)
             return false;
         OutBuffer ob = global.params.mixinOut;
-        (ob).writestring( new ByteSlice("// expansion at "));
+        (ob).writestring(new ByteSlice("// expansion at "));
         (ob).writestring(loc.toChars(global.params.showColumns));
         (ob).writenl();
         global.params.mixinLines++;
@@ -231,7 +231,7 @@ public class parse {
             if ((!(writeMixin(input, this.scanloc)) && loc.filename != null))
             {
                 BytePtr filename = pcopy(toBytePtr(Mem.xmalloc(strlen(loc.filename) + 7 + 12 + 1)));
-                sprintf(filename,  new ByteSlice("%s-mixin-%d"), loc.filename, loc.linnum);
+                sprintf(filename, new BytePtr("%s-mixin-%d"), loc.filename, loc.linnum);
                 this.scanloc.filename = pcopy(filename);
             }
             this.mod = _module;
@@ -1449,7 +1449,7 @@ public class parse {
                             if (!(tp_ident.value != null))
                             {
                                 this.error(new BytePtr("identifier expected for template value parameter"));
-                                tp_ident.value = Identifier.idPool( new ByteSlice("error"));
+                                tp_ident.value = Identifier.idPool(new ByteSlice("error"));
                             }
                             if ((this.token.value & 0xFF) == 7)
                             {
@@ -2541,7 +2541,7 @@ public class parse {
                     Ref<DArray<Expression>> udas = ref(null);
                     long stc = 0L;
                     Ref<Expression> deprecationMessage = ref(null);
-                    ByteSlice attributeErrorMessage =  new ByteSlice("`%s` is not a valid attribute for enum members");
+                    ByteSlice attributeErrorMessage = new ByteSlice("`%s` is not a valid attribute for enum members");
                 L_outer8:
                     for (; (((this.token.value & 0xFF) != 6 && (this.token.value & 0xFF) != 99) && (this.token.value & 0xFF) != 90);){
                         {
@@ -6620,7 +6620,7 @@ public class parse {
                             this.nextToken();
                             break;
                         case 220:
-                            assertMsg(loc.isValid(),  new ByteSlice("__FILE_FULL_PATH__ does not work with an invalid location"));
+                            assertMsg(loc.isValid(), new ByteSlice("__FILE_FULL_PATH__ does not work with an invalid location"));
                             e = new StringExp(loc, FileName.toAbsolute(loc.filename, null));
                             this.nextToken();
                             break;
@@ -7747,7 +7747,7 @@ public class parse {
             if ((!(writeMixin(input, this.scanloc)) && loc.filename != null))
             {
                 BytePtr filename = pcopy(toBytePtr(Mem.xmalloc(strlen(loc.filename) + 7 + 12 + 1)));
-                sprintf(filename,  new ByteSlice("%s-mixin-%d"), loc.filename, loc.linnum);
+                sprintf(filename, new BytePtr("%s-mixin-%d"), loc.filename, loc.linnum);
                 this.scanloc.filename = pcopy(filename);
             }
             this.mod = _module;
@@ -8967,7 +8967,7 @@ public class parse {
                             if (!(tp_ident.value != null))
                             {
                                 this.error(new BytePtr("identifier expected for template value parameter"));
-                                tp_ident.value = Identifier.idPool( new ByteSlice("error"));
+                                tp_ident.value = Identifier.idPool(new ByteSlice("error"));
                             }
                             if ((this.token.value & 0xFF) == 7)
                             {
@@ -10065,7 +10065,7 @@ public class parse {
                     Ref<DArray<ASTBase.Expression>> udas = ref(null);
                     long stc = 0L;
                     Ref<ASTBase.Expression> deprecationMessage = ref(null);
-                    ByteSlice attributeErrorMessage =  new ByteSlice("`%s` is not a valid attribute for enum members");
+                    ByteSlice attributeErrorMessage = new ByteSlice("`%s` is not a valid attribute for enum members");
                 L_outer30:
                     for (; (((this.token.value & 0xFF) != 6 && (this.token.value & 0xFF) != 99) && (this.token.value & 0xFF) != 90);){
                         {
@@ -14150,7 +14150,7 @@ public class parse {
                             this.nextToken();
                             break;
                         case 220:
-                            assertMsg(loc.isValid(),  new ByteSlice("__FILE_FULL_PATH__ does not work with an invalid location"));
+                            assertMsg(loc.isValid(), new ByteSlice("__FILE_FULL_PATH__ does not work with an invalid location"));
                             e = new ASTBase.StringExp(loc, FileName.toAbsolute(loc.filename, null));
                             this.nextToken();
                             break;

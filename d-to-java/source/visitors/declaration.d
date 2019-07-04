@@ -185,7 +185,6 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     string moduleName;
     string[] constants; // all local static vars are collected here
     string[] imports; // all imports for deduplication
-    Module currentMod;
 
     ExprOpts opts; // packs all information required for exp visitor
 
@@ -281,7 +280,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf = new TextBuffer();
         header = new TextBuffer();
         generatedLambdas = null;
-        currentMod = mod;
+        opts.currentMod = mod;
         constants = null;
         arrayInitializers = null;
         imports = null;
@@ -368,11 +367,6 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (opts.aggregates.length && !opts.funcs.length) access = defAccess ~ " ";
         auto ti = opts.funcs.length ? "" : tiArgs;
         sink.fmt("%s%s%s %s%s",  access, staticInit ? "static " : "", type, ident, ti);
-        bool oldWantChar = opts.wantCharPtr;
-        scope(exit) opts.wantCharPtr = oldWantChar;
-        if (var.type.ty == Tpointer && var.type.nextOf.ty == Tchar) {
-            opts.wantCharPtr = true;
-        }
         if (var._init) {
             ExpInitializer ie = var._init.isExpInitializer();
             if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit)) {
@@ -411,9 +405,6 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             else {
                 //stderr.writefln( "Init2 %s", var);
                 sink.fmt(" = ");
-                auto old = opts.wantCharPtr;
-                scope(exit) opts.wantCharPtr = old;
-                opts.wantCharPtr = var.type.ty == Tpointer && var.type.nextOf().ty == Tchar;
                 initializerToBuffer(var._init, sink, opts);
             }
         }
@@ -431,7 +422,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     {
         auto members = collectMembers(anon);
         VarDeclaration[string] visited;
-        stderr.writefln("UNION members: %s", members.all);
+        //stderr.writefln("UNION members: %s", members.all);
         foreach (m; members.all) {
             if (auto root = typeOf(m.type) in visited) {
                 opts.aliasedUnion[m] = *root;
@@ -1056,9 +1047,6 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 buf.put("return ");
                 if (s.exp) {
                     auto retType = opts.funcs.top.type.nextOf();
-                    auto oldOpts = opts;
-                    scope(exit) opts = oldOpts;
-                    opts.wantCharPtr = retType.ty == Tpointer && retType.nextOf().ty == Tchar;
                     buf.put(s.exp.toJava(opts));
                 }
                 buf.put(";\n");
@@ -1070,11 +1058,11 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         // stderr.writefln("import for %s %s\n", t.toString, t.kind[0..strlen(t.kind)]);
         auto tc = t.isTypeClass();
         // if (tc) 
-        if (tc && tc.sym.getModule() !is currentMod) {
+        if (tc && tc.sym.getModule() !is opts.currentMod) {
             addImport(tc.sym.getModule.md.packages, tc.sym.getModule.ident);
         }
         auto ts = t.isTypeStruct();
-        if (ts && ts.sym.getModule() !is currentMod) {
+        if (ts && ts.sym.getModule() !is opts.currentMod) {
             addImport(ts.sym.getModule.md.packages, ts.sym.getModule.ident);
         }
     }
@@ -1432,7 +1420,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     override void visit(AliasDeclaration d) { 
         if (d.aliassym) {
             auto f = d.aliassym.isFuncDeclaration;
-            if (f && f.getModule !is currentMod)
+            if (f && f.getModule !is opts.currentMod)
                 addImport(f.getModule.md.packages, f.getModule.ident);
         }
     }

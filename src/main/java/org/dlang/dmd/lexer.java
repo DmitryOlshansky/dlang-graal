@@ -367,9 +367,9 @@ public class lexer {
                                             time(ptr(ct));
                                             BytePtr p = pcopy(ctime(ptr(ct)));
                                             assert(p != null);
-                                            sprintf(ptr(lexer.scandate),  new ByteSlice("%.6s %.4s"), p.plus(4), p.plus(20));
-                                            sprintf(ptr(lexer.scantime),  new ByteSlice("%.8s"), p.plus(11));
-                                            sprintf(ptr(lexer.scantimestamp),  new ByteSlice("%.24s"), p);
+                                            sprintf(ptr(lexer.scandate), new BytePtr("%.6s %.4s"), p.plus(4), p.plus(20));
+                                            sprintf(ptr(lexer.scantime), new BytePtr("%.8s"), p.plus(11));
+                                            sprintf(ptr(lexer.scantimestamp), new BytePtr("%.24s"), p);
                                         }
                                         if (pequals(id, Id.DATE))
                                         {
@@ -2100,7 +2100,7 @@ public class lexer {
                                     this.p.postInc();
                                     continue L_outer6;
                                 case 95:
-                                    if (memcmp(this.p,  new ByteSlice("__FILE__"), 8) == 0)
+                                    if (memcmp(this.p, new BytePtr("__FILE__"), 8) == 0)
                                     {
                                         this.p.plusAssign(8);
                                         filespec = pcopy(Mem.xstrdup(this.scanloc.filename));
