@@ -399,7 +399,6 @@ public class objc {
                             assert(metaclass != null);
                         }
                     }
-                    return null;
                 }
             };
             __ensure.invoke(__result, fd_ref, cd_ref);

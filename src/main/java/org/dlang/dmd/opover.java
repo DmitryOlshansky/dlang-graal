@@ -190,16 +190,8 @@ public class opover {
             this.id = Id.opStar;
         }
 
-        private Object this;
 
         public OpIdVisitor() {}
-
-        public OpIdVisitor copy() {
-            OpIdVisitor that = new OpIdVisitor();
-            that.id = this.id;
-            that.this = this.this;
-            return that;
-        }
     }
     private static class OpIdRVisitor extends Visitor
     {
@@ -264,16 +256,8 @@ public class opover {
             this.id = Id.cat_r;
         }
 
-        private Object this;
 
         public OpIdRVisitor() {}
-
-        public OpIdRVisitor copy() {
-            OpIdRVisitor that = new OpIdRVisitor();
-            that.id = this.id;
-            that.this = this.this;
-            return that;
-        }
     }
     private static class OpOverload extends Visitor
     {
@@ -1123,18 +1107,8 @@ public class opover {
             }
         }
 
-        private Object this;
 
         public OpOverload() {}
-
-        public OpOverload copy() {
-            OpOverload that = new OpOverload();
-            that.sc = this.sc;
-            that.pop = this.pop;
-            that.result = this.result;
-            that.this = this.this;
-            return that;
-        }
     }
 
     public static boolean isCommutative(byte op) {

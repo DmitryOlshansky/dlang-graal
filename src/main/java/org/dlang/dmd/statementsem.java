@@ -291,7 +291,6 @@ public class statementsem {
                             i += 1;
                         }
                     }
-                    return null;
                 }
             };
             flatten.invoke(cs.statements);
@@ -754,7 +753,6 @@ public class statementsem {
                 public Void invoke(){
                     result = new ErrorStatement();
                     return null;
-                    return null;
                 }
             };
             Loc loc = fs_ref.value.loc.copy();
@@ -975,7 +973,6 @@ public class statementsem {
             Function0<Void> returnEarly10 = new Function0<Void>(){
                 public Void invoke(){
                     result = new ErrorStatement();
-                    return null;
                     return null;
                 }
             };
@@ -1542,7 +1539,7 @@ public class statementsem {
                                     fs._body = new CompoundStatement(loc, slice(new Statement[]{new ExpStatement(loc, v_1), fs._body}));
                                     if ((fs.key.range != null && !(p_3.type.isMutable())))
                                     {
-                                        v_1.range = new IntRange((fs.key.range).imin, (fs.key.range).imax.opBinary(new SignExtendedNumber(1L, false)));
+                                        v_1.range = new IntRange((fs.key.range).imin, (fs.key.range).imax.opBinary_-(new SignExtendedNumber(1L, false)));
                                     }
                                 }
                             }
@@ -2070,7 +2067,7 @@ public class statementsem {
                 }
                 else
                 {
-                    Expression limit = new MinExp(loc, fs.upr, literal());
+                    Expression limit = new MinExp(loc, fs.upr, literal1());
                     limit = expressionSemantic(limit, this.sc);
                     limit = limit.optimize(0, false);
                     if (!((limit.implicitConvTo(fs.prm.type)) != 0))
@@ -2175,7 +2172,7 @@ public class statementsem {
                 fs._body = new CompoundStatement(loc, slice(new Statement[]{new ExpStatement(loc, v), fs._body}));
                 if ((fs.key.range != null && !(fs.prm.type.isMutable())))
                 {
-                    v.range = new IntRange((fs.key.range).imin, (fs.key.range).imax.opBinary(new SignExtendedNumber(1L, false)));
+                    v.range = new IntRange((fs.key.range).imin, (fs.key.range).imax.opBinary_-(new SignExtendedNumber(1L, false)));
                 }
             }
             if ((fs.prm.storageClass & 2097152L) != 0)
@@ -3068,7 +3065,6 @@ public class statementsem {
                             tf.value.isref = false;
                             tf.value.isreturn = false;
                             fd.value.storage_class &= -17592186044417L;
-                            return null;
                         }
                     };
                     if (rs.exp.isLvalue())
@@ -3136,7 +3132,7 @@ public class statementsem {
                 }
                 else if (fd.value.isMain())
                 {
-                    rs.exp = literal();
+                    rs.exp = literal0();
                 }
             }
             if ((((this.sc).ctorflow.callSuper & 16) != 0 && !(((this.sc).ctorflow.callSuper & 3) != 0)))
@@ -3262,7 +3258,7 @@ public class statementsem {
                 }
                 else if ((this.sc).fes != null)
                 {
-                    this.result = new ReturnStatement(Loc.initial, literal());
+                    this.result = new ReturnStatement(Loc.initial, literal1());
                     return ;
                 }
                 else
@@ -3295,7 +3291,7 @@ public class statementsem {
                                     ls = (scx).slabel;
                                     if (((ls != null && pequals(ls.ident, cs.ident)) && pequals(ls.statement, (this.sc).fes)))
                                     {
-                                        this.result = new ReturnStatement(Loc.initial, literal());
+                                        this.result = new ReturnStatement(Loc.initial, literal0());
                                         return ;
                                     }
                                 }
@@ -3335,7 +3331,7 @@ public class statementsem {
                 }
                 else if ((this.sc).fes != null)
                 {
-                    this.result = new ReturnStatement(Loc.initial, literal());
+                    this.result = new ReturnStatement(Loc.initial, literal0());
                     return ;
                 }
                 else
@@ -3972,9 +3968,9 @@ public class statementsem {
     }
 
     // from template TupleForeachArgs!(11)
-    // from template Seq!(Boolean)
-
     // from template Seq!(DArray<Dsymbol>Boolean)
+
+    // from template Seq!(Boolean)
 
 
     // from template TupleForeachArgs!(11)

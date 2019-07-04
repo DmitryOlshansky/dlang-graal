@@ -278,7 +278,7 @@ public class mars {
                                 if (params.mixinFile != null)
                                 {
                                     params.mixinOut = (OutBuffer)calloc(1, 20);
-                                    atexit(flushMixins);
+                                    atexit(mars::flushMixins);
                                 }
                                 try {
                                     global.path = buildPath.invoke(params.imppath);
@@ -1080,7 +1080,6 @@ public class mars {
             public Void invoke(BytePtr format, BytePtr arg){
                 error(Loc.initial, format, arg);
                 errors.value = true;
-                return null;
             }
         };
         Function2<BytePtr,Integer,Integer> parseDigits = new Function2<BytePtr,Integer,Integer>(){
@@ -1117,7 +1116,6 @@ public class mars {
                 error.invoke(new BytePtr("Switch `%s` is invalid"), p);
                 if (availableOptions != new ByteSlice())
                     errorSupplemental(Loc.initial, new BytePtr("%.*s"), availableOptions.getLength(), toBytePtr(availableOptions));
-                return null;
             }
         };
         Function3<BytePtr,Boolean,ByteSlice,Integer> checkOptions = new Function3<BytePtr,Boolean,ByteSlice,Integer>(){

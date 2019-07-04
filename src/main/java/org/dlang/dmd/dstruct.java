@@ -69,14 +69,12 @@ public class dstruct {
         Function1<TypeVector,Void> visitVector = new Function1<TypeVector,Void>(){
             public Void invoke(TypeVector t){
                 semanticTypeInfo(sc_ref.value, t.basetype);
-                return null;
             }
         };
         Function1<TypeAArray,Void> visitAArray = new Function1<TypeAArray,Void>(){
             public Void invoke(TypeAArray t){
                 semanticTypeInfo(sc_ref.value, t.index);
                 semanticTypeInfo(sc_ref.value, t.next);
-                return null;
             }
         };
         Function1<TypeStruct,Void> visitStruct = new Function1<TypeStruct,Void>(){
@@ -119,7 +117,6 @@ public class dstruct {
                         }
                     }
                 }
-                return null;
             }
         };
         Function1<TypeTuple,Void> visitTuple = new Function1<TypeTuple,Void>(){
@@ -135,7 +132,6 @@ public class dstruct {
                         }
                     }
                 }
-                return null;
             }
         };
         Type tb = t.toBasetype();

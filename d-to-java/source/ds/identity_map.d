@@ -13,6 +13,10 @@ struct IdentityMap(V) {
         return map[key];
     }
 
+    void opIndexAssign(V value, const(void)* key) {
+        map[key] = value;
+    }
+
     void opIndexAssign(V value, RootObject key) {
         map[cast(void*)key] = value;
     }

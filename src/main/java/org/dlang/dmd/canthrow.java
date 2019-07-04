@@ -192,18 +192,8 @@ public class canthrow {
             throw new AssertionError("Unreachable code!");
         }
 
-        private Object this;
 
         public CanThrow() {}
-
-        public CanThrow copy() {
-            CanThrow that = new CanThrow();
-            that.func = this.func;
-            that.mustNotThrow = this.mustNotThrow;
-            that.this = this.this;
-            that.stop = this.stop;
-            return that;
-        }
     }
 
     public static boolean canThrow(Expression e, FuncDeclaration func, boolean mustNotThrow) {

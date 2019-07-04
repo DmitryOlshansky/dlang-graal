@@ -40,14 +40,6 @@ public class sideeffect {
             this.stop = lambdaHasSideEffect(e);
         }
 
-        private Object this;
-
-        public IsTrivialExp copy() {
-            IsTrivialExp that = new IsTrivialExp();
-            that.this = this.this;
-            that.stop = this.stop;
-            return that;
-        }
     }
     private static class LambdaHasSideEffect extends StoppableVisitor
     {
@@ -59,14 +51,6 @@ public class sideeffect {
             this.stop = lambdaHasSideEffect(e);
         }
 
-        private Object this;
-
-        public LambdaHasSideEffect copy() {
-            LambdaHasSideEffect that = new LambdaHasSideEffect();
-            that.this = this.this;
-            that.stop = this.stop;
-            return that;
-        }
     }
 
     public static boolean isTrivialExp(Expression e) {

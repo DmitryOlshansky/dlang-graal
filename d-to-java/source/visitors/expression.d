@@ -498,6 +498,8 @@ public:
             if (parent.length) {
                 buf.fmt("%s::", parent[0..$-1]);
             }
+            else  if (e.var.parent.isModule())
+                buf.fmt("%s::", opts.currentMod.ident.symbol);
             buf.fmt("%s", e.var.varName(opts));
         }
         else {
@@ -1007,7 +1009,7 @@ public:
                 else 
                     expToBuffer(e.e1, precedence[e.op], buf, opts);
                 if (auto tmpl = e.f in opts.templates) {
-                    buf.put(tmpl.tiArgs);
+                    buf.put(tmpl.str);
                 }
             }
             else
@@ -1050,6 +1052,7 @@ public:
         bool toVoidPtr = false;
         bool toVoid = false;
         bool toClass = false;
+        bool toFnPtr = false;
         bool fromByte = false;
         if (e.to) switch(e.to.ty) {
             case Tvoid:
@@ -1058,6 +1061,10 @@ public:
             case Tpointer:
                 if (e.to.nextOf.ty == Tvoid)  {
                     toVoidPtr = true;
+                    break;
+                }
+                if (e.to.nextOf.isTypeFunction) {
+                    toFnPtr = true;
                     break;
                 }
                 if (e.to.nextOf.ty == Tstruct)
@@ -1139,7 +1146,7 @@ public:
             buf.put("(Object)");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
         }
-        else if (complexTarget) { // rely on toTypeName(x)
+        else if (complexTarget && !toFnPtr) { // rely on toTypeName(x)
             buf.put("to");
             typeToBuffer(e.to, buf, opts);
             buf.put("(");

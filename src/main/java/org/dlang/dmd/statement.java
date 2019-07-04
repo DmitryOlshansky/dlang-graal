@@ -67,18 +67,10 @@ public class statement {
             this.stop = true;
         }
 
-        private Object this;
         public  UsesEH() {
             super();
         }
 
-
-        public UsesEH copy() {
-            UsesEH that = new UsesEH();
-            that.this = this.this;
-            that.stop = this.stop;
-            return that;
-        }
     }
     private static class ComeFrom extends StoppableVisitor
     {
@@ -101,18 +93,10 @@ public class statement {
             this.stop = true;
         }
 
-        private Object this;
         public  ComeFrom() {
             super();
         }
 
-
-        public ComeFrom copy() {
-            ComeFrom that = new ComeFrom();
-            that.this = this.this;
-            that.stop = this.stop;
-            return that;
-        }
     }
     private static class HasCode extends StoppableVisitor
     {
@@ -136,18 +120,10 @@ public class statement {
         public  void visit(ImportStatement s) {
         }
 
-        private Object this;
         public  HasCode() {
             super();
         }
 
-
-        public HasCode copy() {
-            HasCode that = new HasCode();
-            that.this = this.this;
-            that.stop = this.stop;
-            return that;
-        }
     }
     private static class ToStmt extends Visitor
     {
@@ -264,16 +240,8 @@ public class statement {
             this.result = this.visitMembers(d.loc, d.include(null));
         }
 
-        private Object this;
 
         public ToStmt() {}
-
-        public ToStmt copy() {
-            ToStmt that = new ToStmt();
-            that.result = this.result;
-            that.this = this.this;
-            return that;
-        }
     }
 
     public static TypeIdentifier getThrowable() {
@@ -1334,7 +1302,7 @@ public class statement {
             this.sfe.prepare(sc);
             if (this.sfe.ready())
             {
-                Statement s = makeTupleForeach(sc, this.sfe.aggrfe, this.sfe.needExpansion);
+                Statement s = makeTupleForeach10(sc, this.sfe.aggrfe, this.sfe.needExpansion);
                 DArray<Statement> result = s.flatten(sc);
                 if (result != null)
                 {

@@ -300,6 +300,7 @@ fun getenv(s: BytePtr): BytePtr? {
 fun isatty(n: Int):Int = if(System.console() != null && n >= 0 && n <= 2) 1 else 0
 
 fun printf(fmt: ByteSlice, vararg args: Any?) = fprintf(stdout, fmt, *args)
+fun printf(fmt: BytePtr, vararg args: Any?) = fprintf(stdout, fmt, *args)
 
 fun vsprintf(dest: BytePtr, fmt: BytePtr, args: Slice<Any>): Int {
     val outbuf = OutBuffer()
@@ -310,6 +311,9 @@ fun vsprintf(dest: BytePtr, fmt: BytePtr, args: Slice<Any>): Int {
     }
     dest[result.length] = 0.toByte()
     return result.length
+}
+
+fun fprintf(io: StdIo, fmt: BytePtr, vararg args: Any?) = fprintf(io, fmt.slice(0, strlen(fmt)), *args)
 }
 
 fun fprintf(io: StdIo, fmt: ByteSlice, vararg args: Any?) {

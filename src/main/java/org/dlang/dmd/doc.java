@@ -285,17 +285,8 @@ public class doc {
             }
         }
 
-        private Object this;
 
         public EmitComment() {}
-
-        public EmitComment copy() {
-            EmitComment that = new EmitComment();
-            that.buf = this.buf;
-            that.sc = this.sc;
-            that.this = this.this;
-            return that;
-        }
     }
     private static class ToDocBuffer extends Visitor
     {
@@ -574,17 +565,8 @@ public class doc {
             (this.buf).writestring(em.toChars());
         }
 
-        private Object this;
 
         public ToDocBuffer() {}
-
-        public ToDocBuffer copy() {
-            ToDocBuffer that = new ToDocBuffer();
-            that.buf = this.buf;
-            that.sc = this.sc;
-            that.this = this.this;
-            return that;
-        }
     }
     static ByteSlice percentEncodehexDigits = new ByteSlice("0123456789ABCDEF");
 
@@ -1288,7 +1270,6 @@ public class doc {
                                     }
                                 }
                                 (buf_ref.value).writestring(imp.value.id.asString());
-                                return null;
                             }
                         };
                         (buf_ref.value).printf(new BytePtr("$(%.*s "), macroName.getLength(), toBytePtr(macroName));
@@ -3531,7 +3512,6 @@ public class doc {
                         }
                     } while(__dispatch11 != 0);
                 }
-                return null;
             }
         };
         int cellIndex = cellCount - 1;

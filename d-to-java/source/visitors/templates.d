@@ -14,20 +14,23 @@ import dmd.dsymbol;
 import dmd.dtemplate;
 import dmd.statement;
 import dmd.func;
+import dmd.mtype;
 
 import visitors.expression;
 
 import std.algorithm, std.stdio;
 
 struct Template {
-    string tiArgs;
-    bool local; // = true for nested function
+    string str;
+    Type[] types;
+    bool empty(){ return str.length == 0; }
 }
 
 
-string tiArgs(TemplateInstance ti, ExprOpts opts) {
-    if (ti is null || ti.tiargs is null) return "";
+Template tiArgs(TemplateInstance ti, ExprOpts opts) {
+    if (ti is null || ti.tiargs is null) return Template.init;
     else {
+        Type[] types;
         auto temp = new TextBuffer();
         foreach (arg; *ti.tiargs) {
             auto t = arg.isType();
@@ -43,8 +46,9 @@ string tiArgs(TemplateInstance ti, ExprOpts opts) {
             }
             else
                 temp.fmt("_%s", arg.toString);
+            if (t) types ~= t;
         }
-        return temp.data.dup;
+        return Template(temp.data.dup, types);
     }
 }
 
@@ -57,8 +61,8 @@ extern(C++) class RegisterTemplates : SemanticTimeTransitiveVisitor {
     ExprOpts opts;
     int inFunc;
 
-    string args() {
-        return inst.length ? tiArgs(inst.top, opts) : "";
+    Template args() {
+        return inst.length ? tiArgs(inst.top, opts) : Template.init;
     }
 
     override void visit(ConditionalDeclaration ver) {
@@ -95,33 +99,32 @@ extern(C++) class RegisterTemplates : SemanticTimeTransitiveVisitor {
     }
 
     override void visit(StructDeclaration d) {
-        if (args.length) templates[d] = Template(args, false);
+        if (!args.empty) templates[d] = args;
         auto _ = pushed(inst, null);
         super.visit(d);
     }
 
     override void visit(ClassDeclaration d) {
-        if (args.length) templates[d] = Template(args, false);
+        if (!args.empty) templates[d] = args;
         auto _ = pushed(inst, null);
         super.visit(d);
     }
 
     override void visit(FuncDeclaration func) {
         inFunc++;
-        if (args.length) templates[func] = Template(args, false);
+        if (!args.empty) templates[func] = args;
         super.visit(func);
         inFunc--;
     }
 
     override void visit(VarDeclaration var) {
-        if (args.length && inFunc == 0) templates[var] = Template(args, false);
+        if (!args.empty) templates[var] = args;
         super.visit(var);
     }
 }
 
-IdentityMap!Template registerTemplates(Dsymbol sym, ExprOpts opts) {
+IdentityMap!Template registerTemplates(Dsymbol sym) {
     scope v = new RegisterTemplates();
-    v.opts = opts;
     sym.accept(v);
     return v.templates;
 }

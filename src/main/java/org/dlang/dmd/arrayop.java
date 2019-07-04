@@ -87,18 +87,8 @@ public class arrayop {
             }
         }
 
-        private Object this;
 
         public BuildArrayOpVisitor() {}
-
-        public BuildArrayOpVisitor copy() {
-            BuildArrayOpVisitor that = new BuildArrayOpVisitor();
-            that.sc = this.sc;
-            that.tiargs = this.tiargs;
-            that.args = this.args;
-            that.this = this.this;
-            return that;
-        }
     }
 
     public static boolean isArrayOpValid(Expression e) {

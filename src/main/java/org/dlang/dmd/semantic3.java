@@ -613,7 +613,7 @@ public class semantic3 {
                     {
                         if ((blockexit & 1) != 0)
                         {
-                            Expression e = literal();
+                            Expression e = literal0();
                             Statement s = new ReturnStatement(Loc.initial, e);
                             funcdecl_ref.value.fbody = new CompoundStatement(Loc.initial, slice(new Statement[]{funcdecl_ref.value.fbody, s}));
                             funcdecl_ref.value.hasReturnExp |= (funcdecl_ref.value.hasReturnExp & 1) != 0 ? 16 : 1;
@@ -632,7 +632,7 @@ public class semantic3 {
                                 funcdecl_ref.value.error(new BytePtr("no `return exp;` or `assert(0);` at end of function"));
                             if (((global.params.useAssert & 0xFF) == 2 && !(global.params.useInline)))
                             {
-                                e = new AssertExp(funcdecl_ref.value.endloc, literal(), new StringExp(funcdecl_ref.value.loc, new BytePtr("missing return expression")));
+                                e = new AssertExp(funcdecl_ref.value.endloc, literal0(), new StringExp(funcdecl_ref.value.loc, new BytePtr("missing return expression")));
                             }
                             else
                                 e = new HaltExp(funcdecl_ref.value.endloc);
@@ -837,7 +837,7 @@ public class semantic3 {
                     }
                     if (addReturn0.invoke())
                     {
-                        Statement s = new ReturnStatement(Loc.initial, literal());
+                        Statement s = new ReturnStatement(Loc.initial, literal0());
                         (a).push(s);
                     }
                     Statement sbody = new CompoundStatement(Loc.initial, a);
@@ -893,7 +893,7 @@ public class semantic3 {
                                     if (funcdecl_ref.value.isThis2)
                                     {
                                         vsync = new PtrExp(funcdecl_ref.value.loc, vsync);
-                                        vsync = new IndexExp(funcdecl_ref.value.loc, vsync, literal());
+                                        vsync = new IndexExp(funcdecl_ref.value.loc, vsync, literal0());
                                     }
                                 }
                                 sbody = new PeelStatement(sbody);

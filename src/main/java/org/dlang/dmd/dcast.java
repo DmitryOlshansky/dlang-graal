@@ -162,18 +162,8 @@ public class dcast {
             }
         }
 
-        private Object this;
 
         public ImplicitCastTo() {}
-
-        public ImplicitCastTo copy() {
-            ImplicitCastTo that = new ImplicitCastTo();
-            that.t = this.t;
-            that.sc = this.sc;
-            that.result = this.result;
-            that.this = this.this;
-            return that;
-        }
     }
     private static class ClassCheck
     {
@@ -1090,17 +1080,8 @@ public class dcast {
                 e.e1.accept(this);
         }
 
-        private Object this;
 
         public ImplicitConvTo() {}
-
-        public ImplicitConvTo copy() {
-            ImplicitConvTo that = new ImplicitConvTo();
-            that.t = this.t;
-            that.result = this.result;
-            that.this = this.this;
-            return that;
-        }
     }
     static BytePtr visitmsg = new BytePtr("cannot form delegate due to covariant return type");
     private static class CastTo extends Visitor
@@ -1851,7 +1832,7 @@ public class dcast {
                         }
                         else if (f.isNested())
                         {
-                            this.result = new DelegateExp(e.loc, literal(), f, false, null);
+                            this.result = new DelegateExp(e.loc, literal0(), f, false, null);
                             this.result = expressionSemantic(this.result, this.sc);
                         }
                         else
@@ -2020,18 +2001,8 @@ public class dcast {
             this.result = new ErrorExp();
         }
 
-        private Object this;
 
         public CastTo() {}
-
-        public CastTo copy() {
-            CastTo that = new CastTo();
-            that.t = this.t;
-            that.sc = this.sc;
-            that.result = this.result;
-            that.this = this.this;
-            return that;
-        }
     }
     private static class InferType extends Visitor
     {
@@ -2117,18 +2088,8 @@ public class dcast {
             this.result = ce;
         }
 
-        private Object this;
 
         public InferType() {}
-
-        public InferType copy() {
-            InferType that = new InferType();
-            that.t = this.t;
-            that.flag = this.flag;
-            that.result = this.result;
-            that.this = this.this;
-            return that;
-        }
     }
     private static class IntRangeVisitor extends Visitor
     {
@@ -2148,25 +2109,25 @@ public class dcast {
         public  void visit(AddExp e) {
             IntRange ir1 = getIntRange(e.e1).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
-            this.range = ir1.opBinary(ir2)._cast(e.type).copy();
+            this.range = ir1.opBinary_+(ir2)._cast(e.type).copy();
         }
 
         public  void visit(MinExp e) {
             IntRange ir1 = getIntRange(e.e1).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
-            this.range = ir1.opBinary(ir2)._cast(e.type).copy();
+            this.range = ir1.opBinary_-(ir2)._cast(e.type).copy();
         }
 
         public  void visit(DivExp e) {
             IntRange ir1 = getIntRange(e.e1).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
-            this.range = ir1.opBinary(ir2)._cast(e.type).copy();
+            this.range = ir1.opBinary_/(ir2)._cast(e.type).copy();
         }
 
         public  void visit(MulExp e) {
             IntRange ir1 = getIntRange(e.e1).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
-            this.range = ir1.opBinary(ir2)._cast(e.type).copy();
+            this.range = ir1.opBinary_*(ir2)._cast(e.type).copy();
         }
 
         public  void visit(ModExp e) {
@@ -2177,13 +2138,13 @@ public class dcast {
                 this.visit((Expression)e);
                 return ;
             }
-            this.range = ir1.opBinary(ir2)._cast(e.type).copy();
+            this.range = ir1.opBinary_%(ir2)._cast(e.type).copy();
         }
 
         public  void visit(AndExp e) {
             IntRange result = new IntRange();
             Ref<Boolean> hasResult = ref(false);
-            result.unionOrAssign(getIntRange(e.e1).opBinary(getIntRange(e.e2)), hasResult);
+            result.unionOrAssign(getIntRange(e.e1).opBinary_&(getIntRange(e.e2)), hasResult);
             assert(hasResult.value);
             this.range = result._cast(e.type).copy();
         }
@@ -2191,7 +2152,7 @@ public class dcast {
         public  void visit(OrExp e) {
             IntRange result = new IntRange();
             Ref<Boolean> hasResult = ref(false);
-            result.unionOrAssign(getIntRange(e.e1).opBinary(getIntRange(e.e2)), hasResult);
+            result.unionOrAssign(getIntRange(e.e1).opBinary_|(getIntRange(e.e2)), hasResult);
             assert(hasResult.value);
             this.range = result._cast(e.type).copy();
         }
@@ -2199,7 +2160,7 @@ public class dcast {
         public  void visit(XorExp e) {
             IntRange result = new IntRange();
             Ref<Boolean> hasResult = ref(false);
-            result.unionOrAssign(getIntRange(e.e1).opBinary(getIntRange(e.e2)), hasResult);
+            result.unionOrAssign(getIntRange(e.e1).opBinary_^(getIntRange(e.e2)), hasResult);
             assert(hasResult.value);
             this.range = result._cast(e.type).copy();
         }
@@ -2207,19 +2168,19 @@ public class dcast {
         public  void visit(ShlExp e) {
             IntRange ir1 = getIntRange(e.e1).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
-            this.range = ir1.opBinary(ir2)._cast(e.type).copy();
+            this.range = ir1.opBinary_<<(ir2)._cast(e.type).copy();
         }
 
         public  void visit(ShrExp e) {
             IntRange ir1 = getIntRange(e.e1).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
-            this.range = ir1.opBinary(ir2)._cast(e.type).copy();
+            this.range = ir1.opBinary_>>(ir2)._cast(e.type).copy();
         }
 
         public  void visit(UshrExp e) {
             IntRange ir1 = getIntRange(e.e1).castUnsigned(e.e1.type).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
-            this.range = ir1.opBinary(ir2)._cast(e.type).copy();
+            this.range = ir1.opBinary_>>>(ir2)._cast(e.type).copy();
         }
 
         public  void visit(AssignExp e) {
@@ -2254,19 +2215,11 @@ public class dcast {
 
         public  void visit(NegExp e) {
             IntRange ir = getIntRange(e.e1).copy();
-            this.range = ir.opUnary()._cast(e.type).copy();
+            this.range = ir.opUnary_-()._cast(e.type).copy();
         }
 
-        private Object this;
 
         public IntRangeVisitor() {}
-
-        public IntRangeVisitor copy() {
-            IntRangeVisitor that = new IntRangeVisitor();
-            that.range = this.range;
-            that.this = this.this;
-            return that;
-        }
     }
 
     static boolean LOG = false;

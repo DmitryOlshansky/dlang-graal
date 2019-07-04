@@ -169,7 +169,6 @@ public class dmodule {
                             }
                         }
                         dotmods.writeByte(46);
-                        return null;
                     }
                 };
                 {

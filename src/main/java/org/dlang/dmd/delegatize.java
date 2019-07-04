@@ -110,17 +110,8 @@ public class delegatize {
             }
         }
 
-        private Object this;
 
         public LambdaSetParent() {}
-
-        public LambdaSetParent copy() {
-            LambdaSetParent that = new LambdaSetParent();
-            that.fd = this.fd;
-            that.this = this.this;
-            that.stop = this.stop;
-            return that;
-        }
     }
     private static class LambdaCheckForNestedRef extends StoppableVisitor
     {
@@ -166,18 +157,8 @@ public class delegatize {
             }
         }
 
-        private Object this;
 
         public LambdaCheckForNestedRef() {}
-
-        public LambdaCheckForNestedRef copy() {
-            LambdaCheckForNestedRef that = new LambdaCheckForNestedRef();
-            that.sc = this.sc;
-            that.result = this.result;
-            that.this = this.this;
-            that.stop = this.stop;
-            return that;
-        }
     }
 
     public static Expression toDelegate(Expression e, Type t, Scope sc) {
@@ -240,7 +221,7 @@ public class delegatize {
                         break;
                 }
             }
-            s = toParentP(s, p);
+            s = toParentPDsymbol(s, p);
         }
         return false;
     }

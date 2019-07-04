@@ -83,17 +83,17 @@ public class mtype {
             return MATCH.exact;
         if (MODimplicitConv(modfrom, modto))
             return MATCH.constant;
-        // from template X!(ByteByte)
-        Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
-            public Integer invoke(Byte m, Byte n){
-                return (m & 0xFF) << 4 | (n & 0xFF);
-            }
-        };
-
         // from template X!(IntegerInteger)
         Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
             public Integer invoke(Integer m, Integer n){
                 return m << 4 | n;
+            }
+        };
+
+        // from template X!(ByteByte)
+        Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
+            public Integer invoke(Byte m, Byte n){
+                return (m & 0xFF) << 4 | (n & 0xFF);
             }
         };
 
@@ -3826,8 +3826,8 @@ public class mtype {
             }
         }
 
-        // from template getMatchError!(IntegerInteger)
-        public  BytePtr getMatchErrorIntegerInteger(BytePtr format, int _param_1, int _param_2) {
+        // from template getMatchError!(IntegerBytePtr)
+        public  BytePtr getMatchErrorIntegerBytePtr(BytePtr format, int _param_1, BytePtr _param_2) {
             if (((global.gag) != 0 && !(global.params.showGaggedErrors)))
                 return null;
             OutBuffer buf = new OutBuffer();
@@ -3840,8 +3840,8 @@ public class mtype {
         }
 
 
-        // from template getMatchError!(IntegerBytePtr)
-        public  BytePtr getMatchErrorIntegerBytePtr(BytePtr format, int _param_1, BytePtr _param_2) {
+        // from template getMatchError!(IntegerInteger)
+        public  BytePtr getMatchErrorIntegerInteger(BytePtr format, int _param_1, int _param_2) {
             if (((global.gag) != 0 && !(global.params.showGaggedErrors)))
                 return null;
             OutBuffer buf = new OutBuffer();

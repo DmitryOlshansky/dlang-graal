@@ -278,16 +278,8 @@ public class escape {
             }
         }
 
-        private Object this;
 
         public EscapeVisitor() {}
-
-        public EscapeVisitor copy() {
-            EscapeVisitor that = new EscapeVisitor();
-            that.er = this.er;
-            that.this = this.this;
-            return that;
-        }
     }
     private static class EscapeRefVisitor extends Visitor
     {
@@ -472,16 +464,8 @@ public class escape {
                 (this.er).byexp.push(e);
         }
 
-        private Object this;
 
         public EscapeRefVisitor() {}
-
-        public EscapeRefVisitor copy() {
-            EscapeRefVisitor that = new EscapeRefVisitor();
-            that.er = this.er;
-            that.this = this.this;
-            return that;
-        }
     }
 
     public static boolean checkArrayLiteralEscape(Scope sc, ArrayLiteralExp ae, boolean gag) {
@@ -548,7 +532,6 @@ public class escape {
                             error(arg_ref.value.loc, new BytePtr("%s `%s` assigned to non-scope parameter `%s` calling %s"), desc, v.toChars(), par_ref.value != null ? par_ref.value.toChars() : new BytePtr("this"), fdc_ref.value != null ? fdc_ref.value.toPrettyChars(false) : new BytePtr("indirectly"));
                         result.value = true;
                     }
-                    return null;
                 }
             };
             {
@@ -1116,7 +1099,6 @@ public class escape {
                                 error(e_ref.value.loc, new BytePtr("copying `%s` into allocated memory escapes a reference to %s variable `%s`"), e_ref.value.toChars(), kind, v.toChars());
                             }
                             result.value = true;
-                            return null;
                         }
                     };
                     if (v.isDataseg())
@@ -1261,7 +1243,6 @@ public class escape {
                                 error(e_ref.value.loc, msg, e_ref.value.toChars(), v.toChars());
                             }
                             result.value = true;
-                            return null;
                         }
                     };
                     if (v.isDataseg())

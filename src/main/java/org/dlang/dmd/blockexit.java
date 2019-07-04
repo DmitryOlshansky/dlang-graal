@@ -416,18 +416,8 @@ public class blockexit {
             this.result = 1;
         }
 
-        private Object this;
 
         public BlockExit() {}
-
-        public BlockExit copy() {
-            BlockExit that = new BlockExit();
-            that.func = this.func;
-            that.mustNotThrow = this.mustNotThrow;
-            that.result = this.result;
-            that.this = this.this;
-            return that;
-        }
     }
 
 

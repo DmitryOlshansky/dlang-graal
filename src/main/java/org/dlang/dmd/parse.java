@@ -3579,7 +3579,6 @@ public class parse {
                                 setAlignment.value = false;
                                 ealign.value = null;
                                 parseStorageClasses(storage_class, link, setAlignment, ealign, udas);
-                                return null;
                             }
                         };
                         if ((this.token.value & 0xFF) == 225)
@@ -11096,7 +11095,6 @@ public class parse {
                                 setAlignment.value = false;
                                 ealign.value = null;
                                 parseStorageClasses(storage_class, link, setAlignment, ealign, udas);
-                                return null;
                             }
                         };
                         if ((this.token.value & 0xFF) == 225)

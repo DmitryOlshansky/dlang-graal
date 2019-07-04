@@ -8,7 +8,7 @@ import dmd.globals : Global;
 import std.file : readFile = read, writeFile = write;
 import std.getopt, std.path, std.stdio;
 
-import visitors.declaration;
+import visitors.declaration, visitors.templates;
 
 class DiagnosticsException : Exception
 {
@@ -113,6 +113,11 @@ void main(string[] args) {
         runSemanticAnalyzer(m, stringImportPaths);
     }
     scope v = new ToJavaModuleVisitor();
+    foreach (ref m; mods) {
+        auto map = registerTemplates(m);
+        foreach(k; map.keys)
+            v.opts.templates[k] = map[k];
+    }
     foreach(i, source; args[1..$]) {
         const modName = baseName(source);
         const java = modName[0..$-2] ~ ".java";

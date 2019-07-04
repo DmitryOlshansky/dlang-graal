@@ -2235,7 +2235,6 @@ public class lexer {
                             len -= 1;
                         }
                         buf.setsize(len);
-                        return null;
                     }
                 };
             L_outer8:

@@ -290,40 +290,6 @@ public class semantic2 {
                 return ;
             assert(fd.semanticRun <= PASS.semantic2);
             fd.semanticRun = PASS.semantic2;
-            Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>(){
-                public Integer invoke(Dsymbol s){
-                    FuncDeclaration f2 = s.isFuncDeclaration();
-                    if (((!(f2 != null) || pequals(f1, f2)) || f2.errors))
-                        return 0;
-                    if (((f1.fbody != null) ? 1 : 0) != ((f2.fbody != null) ? 1 : 0))
-                        return 0;
-                    if ((f1.overrides(f2)) != 0)
-                        return 0;
-                    if ((((pequals(f1.ident, f2.ident) && pequals(f1.toParent2(), f2.toParent2())) && (f1.linkage != LINK.d && f1.linkage != LINK.cpp)) && (f2.linkage != LINK.d && f2.linkage != LINK.cpp)))
-                    {
-                        if ((f1.fbody == null || f2.fbody == null))
-                            return 0;
-                        TypeFunction tf1 = (TypeFunction)f1.type;
-                        TypeFunction tf2 = (TypeFunction)f2.type;
-                        error(f2.loc, new BytePtr("%s `%s%s` cannot be overloaded with %s`extern(%s)` function at %s"), f2.kind(), f2.toPrettyChars(false), parametersTypeToChars(tf2.parameterList), f1.linkage == f2.linkage ? new BytePtr("another ") : new BytePtr(""), linkageToChars(f1.linkage), f1.loc.toChars(global.params.showColumns));
-                        f2.type = Type.terror;
-                        f2.errors = true;
-                        return 0;
-                    }
-                    buf2.reset();
-                    mangleToFuncSignature(buf2, f2);
-                    BytePtr s1 = pcopy(buf1.peekChars());
-                    BytePtr s2 = pcopy(buf2.peekChars());
-                    if (strcmp(s1, s2) == 0)
-                    {
-                        TypeFunction tf2 = (TypeFunction)f2.type;
-                        error(f2.loc, new BytePtr("%s `%s%s` conflicts with previous declaration at %s"), f2.kind(), f2.toPrettyChars(false), parametersTypeToChars(tf2.parameterList), f1.loc.toChars(global.params.showColumns));
-                        f2.type = Type.terror;
-                        f2.errors = true;
-                    }
-                    return 0;
-                }
-            };
             if ((0) != 0)
                 if ((fd.overnext != null && !(fd.errors)))
                 {
@@ -333,6 +299,40 @@ public class semantic2 {
                         try {
                             FuncDeclaration f1 = fd;
                             mangleToFuncSignature(buf1, f1);
+                            Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>(){
+                                public Integer invoke(Dsymbol s){
+                                    FuncDeclaration f2 = s.isFuncDeclaration();
+                                    if (((!(f2 != null) || pequals(f1, f2)) || f2.errors))
+                                        return 0;
+                                    if (((f1.fbody != null) ? 1 : 0) != ((f2.fbody != null) ? 1 : 0))
+                                        return 0;
+                                    if ((f1.overrides(f2)) != 0)
+                                        return 0;
+                                    if ((((pequals(f1.ident, f2.ident) && pequals(f1.toParent2(), f2.toParent2())) && (f1.linkage != LINK.d && f1.linkage != LINK.cpp)) && (f2.linkage != LINK.d && f2.linkage != LINK.cpp)))
+                                    {
+                                        if ((f1.fbody == null || f2.fbody == null))
+                                            return 0;
+                                        TypeFunction tf1 = (TypeFunction)f1.type;
+                                        TypeFunction tf2 = (TypeFunction)f2.type;
+                                        error(f2.loc, new BytePtr("%s `%s%s` cannot be overloaded with %s`extern(%s)` function at %s"), f2.kind(), f2.toPrettyChars(false), parametersTypeToChars(tf2.parameterList), f1.linkage == f2.linkage ? new BytePtr("another ") : new BytePtr(""), linkageToChars(f1.linkage), f1.loc.toChars(global.params.showColumns));
+                                        f2.type = Type.terror;
+                                        f2.errors = true;
+                                        return 0;
+                                    }
+                                    buf2.reset();
+                                    mangleToFuncSignature(buf2, f2);
+                                    BytePtr s1 = pcopy(buf1.peekChars());
+                                    BytePtr s2 = pcopy(buf2.peekChars());
+                                    if (strcmp(s1, s2) == 0)
+                                    {
+                                        TypeFunction tf2 = (TypeFunction)f2.type;
+                                        error(f2.loc, new BytePtr("%s `%s%s` conflicts with previous declaration at %s"), f2.kind(), f2.toPrettyChars(false), parametersTypeToChars(tf2.parameterList), f1.loc.toChars(global.params.showColumns));
+                                        f2.type = Type.terror;
+                                        f2.errors = true;
+                                    }
+                                    return 0;
+                                }
+                            };
                             overloadApply(f1, __lambda2, null);
                         }
                         finally {
@@ -439,7 +439,6 @@ public class semantic2 {
                                 }
                             }
                         }
-                        return null;
                     }
                 };
                 uad._scope = null;

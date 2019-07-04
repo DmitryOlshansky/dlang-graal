@@ -864,11 +864,11 @@ public class expressionsem {
                 FuncDeclaration f = hasThis(sc);
                 if ((f != null && f.isThis2))
                 {
-                    if (followInstantiationContext(f, ad))
+                    if (followInstantiationContextAggregateDeclaration(f, ad))
                     {
                         e1 = new VarExp(loc, f.vthis, true);
                         e1 = new PtrExp(loc, e1);
-                        e1 = new IndexExp(loc, e1, literal());
+                        e1 = new IndexExp(loc, e1, literal1());
                         e1 = getThisSkipNestedFuncs(loc, sc, f.toParent2(), ad, e1, t, var, false);
                         if ((e1.op & 0xFF) == 127)
                             return e1;
@@ -884,11 +884,11 @@ public class expressionsem {
                 {
                     if ((tcd != null && tcd.isNested()))
                     {
-                        VarDeclaration vthis = followInstantiationContext(tcd, ad) ? tcd.vthis2 : tcd.vthis;
+                        VarDeclaration vthis = followInstantiationContextAggregateDeclaration(tcd, ad) ? tcd.vthis2 : tcd.vthis;
                         e1 = new DotVarExp(loc, e1, vthis, true);
                         e1.type = vthis.type;
                         e1.type = e1.type.addMod(t.mod);
-                        e1 = getThisSkipNestedFuncs(loc, sc, toParentP(tcd, ad), ad, e1, t, var, false);
+                        e1 = getThisSkipNestedFuncs(loc, sc, toParentPAggregateDeclaration(tcd, ad), ad, e1, t, var, false);
                         if ((e1.op & 0xFF) == 127)
                             return e1;
                         /*goto L1*/throw Dispatch0.INSTANCE;
@@ -1169,7 +1169,7 @@ public class expressionsem {
     }
 
     public static boolean arrayExpressionToCommonType(Scope sc, DArray<Expression> exps, Ptr<Type> pt) {
-        IntegerExp integerexp = literal();
+        IntegerExp integerexp = literal0();
         CondExp condexp = new CondExp(Loc.initial, integerexp, null, null);
         Type t0 = null;
         Expression e0 = null;
@@ -6718,7 +6718,6 @@ public class expressionsem {
             Function2<Expression,Integer,Void> setResult = new Function2<Expression,Integer,Void>(){
                 public Void invoke(Expression e, Integer line){
                     result = e;
-                    return null;
                 }
             };
             if (exp.type != null)
@@ -8911,7 +8910,7 @@ public class expressionsem {
                     arguments.set(0, exp.e1);
                     arguments.set(1, exp.e2);
                     al = new CallExp(exp.loc, al, arguments);
-                    al = new CmpExp(exp.op, exp.loc, al, literal());
+                    al = new CmpExp(exp.op, exp.loc, al, literal0());
                     arrayLowering = al;
                 }
             }
@@ -9990,9 +9989,9 @@ public class expressionsem {
                     if (n > 1)
                         e1 = expressionSemantic(e1, sc);
                     e1 = new PtrExp(loc, e1);
-                    int i = (followInstantiationContext(f, ad) ? 1 : 0);
+                    int i = (followInstantiationContextAggregateDeclaration(f, ad) ? 1 : 0);
                     e1 = new IndexExp(loc, e1, new IntegerExp((long)i));
-                    s = toParentP(f, ad);
+                    s = toParentPAggregateDeclaration(f, ad);
                     continue;
                 }
             }

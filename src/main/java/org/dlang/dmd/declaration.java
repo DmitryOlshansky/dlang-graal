@@ -160,7 +160,7 @@ public class declaration {
             {
                 if (s != null)
                 {
-                    s = toParentP(s, var.toParent2());
+                    s = toParentPDsymbol(s, var.toParent2());
                     continue;
                 }
             }

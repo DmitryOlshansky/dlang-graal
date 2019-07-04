@@ -40,13 +40,6 @@ public class nspace {
 
         public  void addMember(Scope sc, ScopeDsymbol sds) {
             this.addMember(sc, sds);
-            Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s){
-                    s.addMember(sc, this);
-                    return null;
-                    return null;
-                }
-            };
             if (this.members != null)
             {
                 if (!(this.symtab != null))
@@ -66,6 +59,12 @@ public class nspace {
                 sc = (sc).push(this);
                 (sc).linkage = LINK.cpp;
                 (sc).parent = this;
+                Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
+                    public Void invoke(Dsymbol s){
+                        s.addMember(sc, this);
+                        return null;
+                    }
+                };
                 foreachDsymbol(this.members, __lambda3);
                 (sc).pop();
             }
@@ -73,19 +72,18 @@ public class nspace {
 
         public  void setScope(Scope sc) {
             this.setScope(sc);
-            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s){
-                    s.setScope(sc);
-                    return null;
-                    return null;
-                }
-            };
             if (this.members != null)
             {
                 assert(sc != null);
                 sc = (sc).push(this);
                 (sc).linkage = LINK.cpp;
                 (sc).parent = this;
+                Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
+                    public Void invoke(Dsymbol s){
+                        s.setScope(sc);
+                        return null;
+                    }
+                };
                 foreachDsymbol(this.members, __lambda2);
                 (sc).pop();
             }
@@ -130,7 +128,6 @@ public class nspace {
             Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
                     s.setFieldOffset(ad, poffset, isunion);
-                    return null;
                     return null;
                 }
             };

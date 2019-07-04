@@ -105,17 +105,8 @@ public class dinterpret {
                 (this.ccf).onDeclaration(e.lengthVar);
         }
 
-        private Object this;
 
         public VarWalker() {}
-
-        public VarWalker copy() {
-            VarWalker that = new VarWalker();
-            that.ccf = this.ccf;
-            that.this = this.this;
-            that.stop = this.stop;
-            return that;
-        }
     }
     private static class RecursiveBlock
     {
@@ -1682,7 +1673,7 @@ public class dinterpret {
                     {
                         this.result = new PtrExp(e.loc, this.result);
                         this.result.type = Type.tvoidptr.sarrayOf(2L);
-                        this.result = new IndexExp(e.loc, this.result, literal());
+                        this.result = new IndexExp(e.loc, this.result, literal0());
                     }
                     this.result.type = e.type;
                 }
@@ -1779,7 +1770,7 @@ public class dinterpret {
                 long elemsize = elemtype.size();
                 if ((((val.type.ty & 0xFF) == ENUMTY.Tsarray && (pointee.ty & 0xFF) == ENUMTY.Tarray) && elemsize == pointee.nextOf().size()))
                 {
-                    emplaceExp(this.pue, e.loc, val, e.type);
+                    emplaceExpAddrExpLocExpressionType(this.pue, e.loc, val, e.type);
                     this.result = (this.pue).exp();
                     return ;
                 }
@@ -1790,7 +1781,7 @@ public class dinterpret {
                     Expression eupr = new IntegerExp(e.loc, e.offset / elemsize + (long)d, Type.tsize_t);
                     SliceExp se = new SliceExp(e.loc, val, elwr, eupr);
                     se.type = pointee;
-                    emplaceExp(this.pue, e.loc, se, e.type);
+                    emplaceExpAddrExpLocSliceExpType(this.pue, e.loc, se, e.type);
                     this.result = (this.pue).exp();
                     return ;
                 }
@@ -1800,7 +1791,7 @@ public class dinterpret {
                     {
                         VarExp ve = new VarExp(e.loc, e.var, true);
                         ve.type = elemtype;
-                        emplaceExp(this.pue, e.loc, ve, e.type);
+                        emplaceExpAddrExpLocVarExpType(this.pue, e.loc, ve, e.type);
                         this.result = (this.pue).exp();
                         return ;
                     }
@@ -1831,7 +1822,7 @@ public class dinterpret {
                     IntegerExp ofs = new IntegerExp(e.loc, indx, Type.tsize_t);
                     IndexExp ei = new IndexExp(e.loc, aggregate, ofs);
                     ei.type = elemtype;
-                    emplaceExp(this.pue, e.loc, ei, e.type);
+                    emplaceExpAddrExpLocIndexExpType(this.pue, e.loc, ei, e.type);
                     this.result = (this.pue).exp();
                     return ;
                 }
@@ -1840,7 +1831,7 @@ public class dinterpret {
             {
                 VarExp ve = new VarExp(e.loc, e.var, true);
                 ve.type = e.var.type;
-                emplaceExp(this.pue, e.loc, ve, e.type);
+                emplaceExpAddrExpLocVarExpType(this.pue, e.loc, ve, e.type);
                 this.result = (this.pue).exp();
                 return ;
             }
@@ -1862,7 +1853,7 @@ public class dinterpret {
                     }
                     if (decl.isDataseg())
                     {
-                        emplaceExp(this.pue, e.loc, ((VarExp)e.e1).var, 0);
+                        emplaceExpSymOffExpLocDeclarationInteger(this.pue, e.loc, ((VarExp)e.e1).var, 0);
                         this.result = (this.pue).exp();
                         this.result.type = e.type;
                         return ;
@@ -1878,7 +1869,7 @@ public class dinterpret {
             }
             if (this.exceptionOrCant(er))
                 return ;
-            emplaceExp(this.pue, e.loc, er, e.type);
+            emplaceExpAddrExpLocExpressionType(this.pue, e.loc, er, e.type);
             this.result = (this.pue).exp();
         }
 
@@ -1902,7 +1893,7 @@ public class dinterpret {
             else
             {
                 er = pequals(er, (this.pue).exp()) ? (this.pue).copy() : er;
-                emplaceExp(this.pue, e.loc, er, e.func, false);
+                emplaceExpDelegateExpLocExpressionFuncDeclarationBoolean(this.pue, e.loc, er, e.func, false);
                 this.result = (this.pue).exp();
                 this.result.type = e.type;
             }
@@ -2219,7 +2210,7 @@ public class dinterpret {
                     }
                     ClassDeclaration cd = ((ClassReferenceExp)this.result).originalClass();
                     assert(cd != null);
-                    emplaceExp(this.pue, e.loc, cd.type);
+                    emplaceExpTypeidExpLocType(this.pue, e.loc, cd.type);
                     this.result = (this.pue).exp();
                     this.result.type = e.type;
                     return ;
@@ -2258,7 +2249,7 @@ public class dinterpret {
             if (expsx != e.exps)
             {
                 expandTuples(expsx);
-                emplaceExp(this.pue, e.loc, expsx);
+                emplaceExpTupleExpLocDArray<Expression>(this.pue, e.loc, expsx);
                 this.result = (this.pue).exp();
                 this.result.type = new TypeTuple(expsx);
             }
@@ -2313,7 +2304,7 @@ public class dinterpret {
                     this.result = CTFEExp.cantexp;
                     return ;
                 }
-                emplaceExp(this.pue, e.loc, e.type, basis, expsx);
+                emplaceExpArrayLiteralExpLocTypeExpressionDArray<Expression>(this.pue, e.loc, e.type, basis, expsx);
                 ArrayLiteralExp ale = (ArrayLiteralExp)(this.pue).exp();
                 ale.ownedByCtfe = OwnedBy.ctfe;
                 this.result = ale;
@@ -2474,7 +2465,7 @@ public class dinterpret {
                     this.result = CTFEExp.cantexp;
                     return ;
                 }
-                emplaceExp(this.pue, e.loc, e.sd, expsx);
+                emplaceExpStructLiteralExpLocStructDeclarationDArray<Expression>(this.pue, e.loc, e.sd, expsx);
                 StructLiteralExp sle = (StructLiteralExp)(this.pue).exp();
                 sle.type = e.type;
                 sle.ownedByCtfe = OwnedBy.ctfe;
@@ -2508,7 +2499,7 @@ public class dinterpret {
                         element = copyLiteral(elem).copy();
                     }
                 }
-                emplaceExp(pue, loc, newtype, elements);
+                emplaceExpArrayLiteralExpLocTypeDArray<Expression>(pue, loc, newtype, elements);
                 ArrayLiteralExp ae = (ArrayLiteralExp)(pue).exp();
                 ae.ownedByCtfe = OwnedBy.ctfe;
                 return ae;
@@ -2585,7 +2576,7 @@ public class dinterpret {
                     if (this.exceptionOrCant(this.result))
                         return ;
                     Expression ev = pequals(this.result, (this.pue).exp()) ? (this.pue).copy() : this.result;
-                    emplaceExp(this.pue, e.loc, ev, e.type);
+                    emplaceExpAddrExpLocExpressionType(this.pue, e.loc, ev, e.type);
                     this.result = (this.pue).exp();
                     return ;
                 }
@@ -2639,7 +2630,7 @@ public class dinterpret {
                     }
                     StructLiteralExp se = new StructLiteralExp(e.loc, (StructDeclaration)cd, elems, e.newtype);
                     se.ownedByCtfe = OwnedBy.ctfe;
-                    emplaceExp(this.pue, e.loc, se, e.type);
+                    emplaceExpClassReferenceExpLocStructLiteralExpType(this.pue, e.loc, se, e.type);
                     Expression eref = (this.pue).exp();
                     if (e.member != null)
                     {
@@ -2683,7 +2674,7 @@ public class dinterpret {
                 ae.ownedByCtfe = OwnedBy.ctfe;
                 IndexExp ei = new IndexExp(e.loc, ae, new IntegerExp(Loc.initial, 0L, Type.tsize_t));
                 ei.type = e.newtype;
-                emplaceExp(this.pue, e.loc, ei, e.type);
+                emplaceExpAddrExpLocIndexExpType(this.pue, e.loc, ei, e.type);
                 this.result = (this.pue).exp();
                 return ;
             }
@@ -2844,7 +2835,7 @@ public class dinterpret {
                     this.result = CTFEExp.cantexp;
                     return ;
                 }
-                emplaceExp(this.pue, e.loc, cmp, e.type);
+                emplaceExpIntegerExpLocIntegerType(this.pue, e.loc, cmp, e.type);
                 this.result = (this.pue).exp();
                 return ;
             }
@@ -2867,7 +2858,7 @@ public class dinterpret {
                 return ;
             }
             int cmp = (fp).invoke(e.loc, e.op, e1, e2);
-            emplaceExp(this.pue, e.loc, cmp, e.type);
+            emplaceExpIntegerExpLocIntegerType(this.pue, e.loc, cmp, e.type);
             this.result = (this.pue).exp();
         }
 
@@ -2875,54 +2866,54 @@ public class dinterpret {
             switch ((e.op & 0xFF))
             {
                 case 74:
-                    this.interpretCommon(e, Add);
+                    this.interpretCommon(e, dinterpret::Add);
                     return ;
                 case 75:
-                    this.interpretCommon(e, Min);
+                    this.interpretCommon(e, dinterpret::Min);
                     return ;
                 case 78:
-                    this.interpretCommon(e, Mul);
+                    this.interpretCommon(e, dinterpret::Mul);
                     return ;
                 case 79:
-                    this.interpretCommon(e, Div);
+                    this.interpretCommon(e, dinterpret::Div);
                     return ;
                 case 80:
-                    this.interpretCommon(e, Mod);
+                    this.interpretCommon(e, dinterpret::Mod);
                     return ;
                 case 64:
-                    this.interpretCommon(e, Shl);
+                    this.interpretCommon(e, dinterpret::Shl);
                     return ;
                 case 65:
-                    this.interpretCommon(e, Shr);
+                    this.interpretCommon(e, dinterpret::Shr);
                     return ;
                 case 68:
-                    this.interpretCommon(e, Ushr);
+                    this.interpretCommon(e, dinterpret::Ushr);
                     return ;
                 case 84:
-                    this.interpretCommon(e, And);
+                    this.interpretCommon(e, dinterpret::And);
                     return ;
                 case 85:
-                    this.interpretCommon(e, Or);
+                    this.interpretCommon(e, dinterpret::Or);
                     return ;
                 case 86:
-                    this.interpretCommon(e, Xor);
+                    this.interpretCommon(e, dinterpret::Xor);
                     return ;
                 case 226:
-                    this.interpretCommon(e, Pow);
+                    this.interpretCommon(e, dinterpret::Pow);
                     return ;
                 case 58:
                 case 59:
-                    this.interpretCompareCommon(e, ctfeEqual);
+                    this.interpretCompareCommon(e, dinterpret::ctfeEqual);
                     return ;
                 case 60:
                 case 61:
-                    this.interpretCompareCommon(e, ctfeIdentity);
+                    this.interpretCompareCommon(e, dinterpret::ctfeIdentity);
                     return ;
                 case 54:
                 case 56:
                 case 55:
                 case 57:
-                    this.interpretCompareCommon(e, ctfeCmp);
+                    this.interpretCompareCommon(e, dinterpret::ctfeCmp);
                     return ;
                 default:
                 printf(new BytePtr("be = '%s' %s at [%s]\n"), Token.toChars(e.op), e.toChars(), e.loc.toChars(global.params.showColumns));
@@ -3797,45 +3788,45 @@ public class dinterpret {
             switch ((e.op & 0xFF))
             {
                 case 76:
-                    this.interpretAssignCommon(e, Add, 0);
+                    this.interpretAssignCommon(e, dinterpret::Add, 0);
                     return ;
                 case 77:
-                    this.interpretAssignCommon(e, Min, 0);
+                    this.interpretAssignCommon(e, dinterpret::Min, 0);
                     return ;
                 case 71:
                 case 72:
                 case 73:
-                    this.interpretAssignCommon(e, ctfeCat, 0);
+                    this.interpretAssignCommon(e, dinterpret::ctfeCat, 0);
                     return ;
                 case 81:
-                    this.interpretAssignCommon(e, Mul, 0);
+                    this.interpretAssignCommon(e, dinterpret::Mul, 0);
                     return ;
                 case 82:
-                    this.interpretAssignCommon(e, Div, 0);
+                    this.interpretAssignCommon(e, dinterpret::Div, 0);
                     return ;
                 case 83:
-                    this.interpretAssignCommon(e, Mod, 0);
+                    this.interpretAssignCommon(e, dinterpret::Mod, 0);
                     return ;
                 case 66:
-                    this.interpretAssignCommon(e, Shl, 0);
+                    this.interpretAssignCommon(e, dinterpret::Shl, 0);
                     return ;
                 case 67:
-                    this.interpretAssignCommon(e, Shr, 0);
+                    this.interpretAssignCommon(e, dinterpret::Shr, 0);
                     return ;
                 case 69:
-                    this.interpretAssignCommon(e, Ushr, 0);
+                    this.interpretAssignCommon(e, dinterpret::Ushr, 0);
                     return ;
                 case 87:
-                    this.interpretAssignCommon(e, And, 0);
+                    this.interpretAssignCommon(e, dinterpret::And, 0);
                     return ;
                 case 88:
-                    this.interpretAssignCommon(e, Or, 0);
+                    this.interpretAssignCommon(e, dinterpret::Or, 0);
                     return ;
                 case 89:
-                    this.interpretAssignCommon(e, Xor, 0);
+                    this.interpretAssignCommon(e, dinterpret::Xor, 0);
                     return ;
                 case 227:
-                    this.interpretAssignCommon(e, Pow, 0);
+                    this.interpretAssignCommon(e, dinterpret::Pow, 0);
                     return ;
                 default:
                 throw new AssertionError("Unreachable code!");
@@ -3844,9 +3835,9 @@ public class dinterpret {
 
         public  void visit(PostExp e) {
             if ((e.op & 0xFF) == 93)
-                this.interpretAssignCommon(e, Add, 1);
+                this.interpretAssignCommon(e, dinterpret::Add, 1);
             else
-                this.interpretAssignCommon(e, Min, 1);
+                this.interpretAssignCommon(e, dinterpret::Min, 1);
         }
 
         public static int isPointerCmpExp(Expression e, Ptr<Expression> p1, Ptr<Expression> p2) {
@@ -3932,7 +3923,7 @@ public class dinterpret {
                 Expression agg4 = getAggregateFromPointer(p4.value, ptr(ofs4));
                 if ((((dir1 == dir2 && pointToSameMemoryBlock(agg1, agg4)) && pointToSameMemoryBlock(agg2, agg3)) || ((dir1 != dir2 && pointToSameMemoryBlock(agg1, agg3)) && pointToSameMemoryBlock(agg2, agg4))))
                 {
-                    emplaceExp(pue, e.loc, (e.op & 0xFF) == 101 ? 0 : 1, e.type);
+                    emplaceExpIntegerExpLocIntegerType(pue, e.loc, (e.op & 0xFF) == 101 ? 0 : 1, e.type);
                     this.result = (pue).exp();
                     return ;
                 }
@@ -3984,7 +3975,7 @@ public class dinterpret {
                 this.result = interpret(pue, e.e2, this.istate, CtfeGoal.ctfeNeedRvalue);
                 return ;
             }
-            emplaceExp(pue, e.loc, (e.op & 0xFF) == 101 ? 0 : 1, e.type);
+            emplaceExpIntegerExpLocIntegerType(pue, e.loc, (e.op & 0xFF) == 101 ? 0 : 1, e.type);
             this.result = (pue).exp();
         }
 
@@ -4030,7 +4021,7 @@ public class dinterpret {
             }
             if (this.goal != CtfeGoal.ctfeNeedNothing)
             {
-                emplaceExp(this.pue, e.loc, res, e.type);
+                emplaceExpIntegerExpLocIntegerType(this.pue, e.loc, res, e.type);
                 this.result = (this.pue).exp();
             }
         }
@@ -4258,7 +4249,6 @@ public class dinterpret {
                 public Void invoke(){
                     if (istate == istateComma)
                         ctfeStack.endFrame();
-                    return null;
                 }
             };
             this.result = CTFEExp.cantexp;
@@ -4307,7 +4297,7 @@ public class dinterpret {
             {
                 if ((econd.op & 0xFF) != 13)
                 {
-                    emplaceExp(uecond, e.loc, 1, Type.tbool);
+                    emplaceExpIntegerExpLocIntegerType(uecond, e.loc, 1, Type.tbool);
                     econd = uecond.exp();
                 }
             }
@@ -4334,7 +4324,7 @@ public class dinterpret {
                 this.result = CTFEExp.cantexp;
                 return ;
             }
-            emplaceExp(this.pue, e.loc, resolveArrayLength(e1), e.type);
+            emplaceExpIntegerExpLocLongType(this.pue, e.loc, resolveArrayLength(e1), e.type);
             this.result = (this.pue).exp();
         }
 
@@ -4357,7 +4347,7 @@ public class dinterpret {
                 }
                 Type type = (e.type.ty & 0xFF) == ENUMTY.Tvector ? e.type.isTypeVector().basetype : e.type.isTypeSArray();
                 assert(type != null);
-                emplaceExp(pue, e.loc, type, elements);
+                emplaceExpArrayLiteralExpLocTypeDArray<Expression>(pue, e.loc, type, elements);
                 ArrayLiteralExp ale = (ArrayLiteralExp)(pue).exp();
                 ale.ownedByCtfe = OwnedBy.ctfe;
                 return ale;
@@ -4383,7 +4373,7 @@ public class dinterpret {
             }
             if (pequals(e1, (this.pue).exp()))
                 e1 = (this.pue).copy();
-            emplaceExp(this.pue, e.loc, e1, e.to);
+            emplaceExpVectorExpLocExpressionTypeVector(this.pue, e.loc, e1, e.to);
             VectorExp ve = (VectorExp)(this.pue).exp();
             ve.type = e.type;
             ve.dim = e.dim;
@@ -4564,7 +4554,7 @@ public class dinterpret {
                 {
                     if (this.goal == CtfeGoal.ctfeNeedLvalue)
                     {
-                        emplaceExp(this.pue, e.loc, agg.value, new IntegerExp(e.e2.loc, indexToAccess.value, e.e2.type));
+                        emplaceExpIndexExpLocExpressionIntegerExp(this.pue, e.loc, agg.value, new IntegerExp(e.e2.loc, indexToAccess.value, e.e2.type));
                         this.result = (this.pue).exp();
                         this.result.type = e.type;
                         return ;
@@ -4606,7 +4596,7 @@ public class dinterpret {
                         this.result = e;
                     else
                     {
-                        emplaceExp(this.pue, e.loc, e1, e2);
+                        emplaceExpIndexExpLocExpressionExpression(this.pue, e.loc, e1, e2);
                         this.result = (this.pue).exp();
                         this.result.type = e.type;
                     }
@@ -4633,7 +4623,7 @@ public class dinterpret {
             if (this.goal == CtfeGoal.ctfeNeedLvalue)
             {
                 Expression e2 = new IntegerExp(e.e2.loc, indexToAccess.value, Type.tsize_t);
-                emplaceExp(this.pue, e.loc, agg.value, e2);
+                emplaceExpIndexExpLocExpressionExpression(this.pue, e.loc, agg.value, e2);
                 this.result = (this.pue).exp();
                 this.result.type = e.type;
                 return ;
@@ -4712,7 +4702,7 @@ public class dinterpret {
                     lwr = new IntegerExp(e.loc, ilwr, lwr.type);
                     upr = new IntegerExp(e.loc, iupr, upr.type);
                 }
-                emplaceExp(this.pue, e.loc, agg, lwr, upr);
+                emplaceExpSliceExpLocExpressionExpressionExpression(this.pue, e.loc, agg, lwr, upr);
                 this.result = (this.pue).exp();
                 this.result.type = e.type;
                 return ;
@@ -4810,7 +4800,7 @@ public class dinterpret {
                     }
                     ilwr += lo1;
                     iupr += lo1;
-                    emplaceExp(this.pue, e.loc, se.e1, new IntegerExp(e.loc, ilwr, lwr.type), new IntegerExp(e.loc, iupr, upr.type));
+                    emplaceExpSliceExpLocExpressionIntegerExpIntegerExp(this.pue, e.loc, se.e1, new IntegerExp(e.loc, ilwr, lwr.type), new IntegerExp(e.loc, iupr, upr.type));
                     this.result = (this.pue).exp();
                     this.result.type = e.type;
                     return ;
@@ -4825,7 +4815,7 @@ public class dinterpret {
                     return ;
                 }
             }
-            emplaceExp(this.pue, e.loc, e1, lwr, upr);
+            emplaceExpSliceExpLocExpressionExpressionExpression(this.pue, e.loc, e1, lwr, upr);
             this.result = (this.pue).exp();
             this.result.type = e.type;
         }
@@ -4839,7 +4829,7 @@ public class dinterpret {
                 return ;
             if ((e2.op & 0xFF) == 13)
             {
-                emplaceExp(this.pue, e.loc, e.type);
+                emplaceExpNullExpLocType(this.pue, e.loc, e.type);
                 this.result = (this.pue).exp();
                 return ;
             }
@@ -4855,14 +4845,14 @@ public class dinterpret {
                 return ;
             if (!(this.result != null))
             {
-                emplaceExp(this.pue, e.loc, e.type);
+                emplaceExpNullExpLocType(this.pue, e.loc, e.type);
                 this.result = (this.pue).exp();
             }
             else
             {
                 this.result = new IndexExp(e.loc, e2, e1);
                 this.result.type = e.type.nextOf();
-                emplaceExp(this.pue, e.loc, this.result, e.type);
+                emplaceExpAddrExpLocExpressionType(this.pue, e.loc, this.result, e.type);
                 this.result = (this.pue).exp();
             }
         }
@@ -5074,7 +5064,7 @@ public class dinterpret {
                         }
                         IndexExp ei = new IndexExp(e.loc, se.e1, se.lwr);
                         ei.type = e.type.nextOf();
-                        emplaceExp(this.pue, e.loc, ei, e.type);
+                        emplaceExpAddrExpLocIndexExpType(this.pue, e.loc, ei, e.type);
                         this.result = (this.pue).exp();
                         return ;
                     }
@@ -5083,7 +5073,7 @@ public class dinterpret {
                 {
                     IndexExp ei = new IndexExp(e.loc, e1, new IntegerExp(e.loc, 0L, Type.tsize_t));
                     ei.type = e.type.nextOf();
-                    emplaceExp(this.pue, e.loc, ei, e.type);
+                    emplaceExpAddrExpLocIndexExpType(this.pue, e.loc, ei, e.type);
                     this.result = (this.pue).exp();
                     return ;
                 }
@@ -5129,7 +5119,7 @@ public class dinterpret {
                             return ;
                         }
                     }
-                    emplaceExp(this.pue, e1.loc, ie.e1, ie.e2);
+                    emplaceExpIndexExpLocExpressionExpression(this.pue, e1.loc, ie.e1, ie.e2);
                     this.result = (this.pue).exp();
                     this.result.type = e.type;
                     return ;
@@ -5141,7 +5131,7 @@ public class dinterpret {
                         Type origType = ae.e1.type;
                         if (isSafePointerCast(origType, pointee))
                         {
-                            emplaceExp(this.pue, e.loc, ae.e1, e.type);
+                            emplaceExpAddrExpLocExpressionType(this.pue, e.loc, ae.e1, e.type);
                             this.result = (this.pue).exp();
                             return ;
                         }
@@ -5153,7 +5143,7 @@ public class dinterpret {
                             Expression upr = new IntegerExp(ie.e2.loc, ie.e2.toInteger() + dim, Type.tsize_t);
                             SliceExp er = new SliceExp(e.loc, ie.e1, lwr, upr);
                             er.type = pointee;
-                            emplaceExp(this.pue, e.loc, er, e.type);
+                            emplaceExpAddrExpLocSliceExpType(this.pue, e.loc, er, e.type);
                             this.result = (this.pue).exp();
                             return ;
                         }
@@ -5171,9 +5161,9 @@ public class dinterpret {
                     {
                         VarExp ve = e1.isVarExp();
                         if (ve != null)
-                            emplaceExp(this.pue, e.loc, ve.var);
+                            emplaceExpVarExpLocDeclaration(this.pue, e.loc, ve.var);
                         else
-                            emplaceExp(this.pue, e.loc, ((SymOffExp)e1).var, ((SymOffExp)e1).offset);
+                            emplaceExpSymOffExpLocDeclarationLong(this.pue, e.loc, ((SymOffExp)e1).var, ((SymOffExp)e1).offset);
                     }
                     this.result = (this.pue).exp();
                     this.result.type = e.to;
@@ -5204,7 +5194,7 @@ public class dinterpret {
                     this.result = CTFEExp.cantexp;
                     return ;
                 }
-                emplaceExp(this.pue, e1.loc, se.e1, se.lwr, se.upr);
+                emplaceExpSliceExpLocExpressionExpressionExpression(this.pue, e1.loc, se.e1, se.lwr, se.upr);
                 this.result = (this.pue).exp();
                 this.result.type = e.to;
                 return ;
@@ -5219,7 +5209,7 @@ public class dinterpret {
                 e1 = resolveSlice(e1, null);
             if (((e.to.toBasetype().ty & 0xFF) == ENUMTY.Tbool && (e1.type.ty & 0xFF) == ENUMTY.Tpointer))
             {
-                emplaceExp(this.pue, e.loc, (e1.op & 0xFF) != 13, e.to);
+                emplaceExpIntegerExpLocBooleanType(this.pue, e.loc, (e1.op & 0xFF) != 13, e.to);
                 this.result = (this.pue).exp();
                 return ;
             }
@@ -5354,7 +5344,7 @@ public class dinterpret {
                         this.result = e;
                     else
                     {
-                        emplaceExp(this.pue, e.loc, ex, f, false);
+                        emplaceExpDotVarExpLocExpressionFuncDeclarationBoolean(this.pue, e.loc, ex, f, false);
                         this.result = (this.pue).exp();
                         this.result.type = e.type;
                     }
@@ -5410,7 +5400,7 @@ public class dinterpret {
                     this.result = e;
                 else
                 {
-                    emplaceExp(this.pue, e.loc, ex, v);
+                    emplaceExpDotVarExpLocExpressionVarDeclaration(this.pue, e.loc, ex, v);
                     this.result = (this.pue).exp();
                     this.result.type = e.type;
                 }
@@ -5491,7 +5481,7 @@ public class dinterpret {
             }
             (valuesx).length = (valuesx).length - removed;
             (keysx).length = (keysx).length - removed;
-            emplaceExp(this.pue, e.loc, (removed) != 0 ? 1 : 0, Type.tbool);
+            emplaceExpIntegerExpLocIntegerType(this.pue, e.loc, (removed) != 0 ? 1 : 0, Type.tbool);
             this.result = (this.pue).exp();
         }
 
@@ -5839,7 +5829,7 @@ public class dinterpret {
             else
                 assert((earg.op & 0xFF) == 13);
         }
-        emplaceExp(pue, earg.loc, len, Type.tsize_t);
+        emplaceExpIntegerExpLocLongType(pue, earg.loc, len, Type.tsize_t);
         return (pue).exp();
     }
 
@@ -5849,7 +5839,7 @@ public class dinterpret {
             return earg;
         if ((earg.op & 0xFF) == 13)
         {
-            emplaceExp(pue, earg.loc, earg.type);
+            emplaceExpNullExpLocType(pue, earg.loc, earg.type);
             return (pue).exp();
         }
         if (((earg.op & 0xFF) != 48 && (earg.type.toBasetype().ty & 0xFF) != ENUMTY.Taarray))
@@ -5867,7 +5857,7 @@ public class dinterpret {
             return earg;
         if ((earg.op & 0xFF) == 13)
         {
-            emplaceExp(pue, earg.loc, earg.type);
+            emplaceExpNullExpLocType(pue, earg.loc, earg.type);
             return (pue).exp();
         }
         if (((earg.op & 0xFF) != 48 && (earg.type.toBasetype().ty & 0xFF) != ENUMTY.Taarray))
@@ -5885,7 +5875,7 @@ public class dinterpret {
             return earg;
         if ((earg.op & 0xFF) == 13)
         {
-            emplaceExp(pue, earg.loc, earg.type);
+            emplaceExpNullExpLocType(pue, earg.loc, earg.type);
             return (pue).exp();
         }
         if (((earg.op & 0xFF) != 48 && (earg.type.toBasetype().ty & 0xFF) != ENUMTY.Taarray))
@@ -5916,7 +5906,7 @@ public class dinterpret {
             return aa;
         if ((aa.op & 0xFF) != 48)
         {
-            emplaceExp(pue, deleg.loc, 0, Type.tsize_t);
+            emplaceExpIntegerExpLocIntegerType(pue, deleg.loc, 0, Type.tsize_t);
             return (pue).exp();
         }
         FuncDeclaration fd = null;
@@ -6001,7 +5991,7 @@ public class dinterpret {
         int len = (int)resolveArrayLength(str);
         if (len == 0)
         {
-            emplaceExp(pue, deleg.loc, 0, indexType);
+            emplaceExpIntegerExpLocIntegerType(pue, deleg.loc, 0, indexType);
             return (pue).exp();
         }
         str = resolveSlice(str, null);

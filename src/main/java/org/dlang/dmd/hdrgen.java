@@ -1124,7 +1124,6 @@ public class hdrgen {
                     expressionToBuffer(s.aggr, buf, hgs);
                     (buf).writeByte(41);
                     (buf).writenl();
-                    return null;
                 }
             };
             Function1<ForeachRangeStatement,Void> foreachRangeWithoutBody = new Function1<ForeachRangeStatement,Void>(){
@@ -1141,7 +1140,6 @@ public class hdrgen {
                     expressionToBuffer(s.upr, buf, hgs);
                     (buf).writeByte(41);
                     (buf).writenl();
-                    return null;
                 }
             };
             (this.buf).writestring(new ByteSlice("static "));
@@ -3272,7 +3270,6 @@ public class hdrgen {
             public Void invoke(ByteSlice str){
                 (buf_ref.value).writeByte(32);
                 (buf_ref.value).writestring(str);
-                return null;
             }
         };
         attributesApply(t, dg, TRUSTformat.TRUSTformatDefault);
@@ -3302,7 +3299,6 @@ public class hdrgen {
                     (buf_ref.value).writestring(str);
                     (buf_ref.value).writeByte(32);
                 }
-                return null;
             }
         };
         attributesApply(t, ignoreReturn, TRUSTformat.TRUSTformatDefault);
@@ -3354,13 +3350,11 @@ public class hdrgen {
         Function1<ErrorInitializer,Void> visitError = new Function1<ErrorInitializer,Void>(){
             public Void invoke(ErrorInitializer iz){
                 (buf_ref.value).writestring(new ByteSlice("__error__"));
-                return null;
             }
         };
         Function1<VoidInitializer,Void> visitVoid = new Function1<VoidInitializer,Void>(){
             public Void invoke(VoidInitializer iz){
                 (buf_ref.value).writestring(new ByteSlice("void"));
-                return null;
             }
         };
         Function1<StructInitializer,Void> visitStruct = new Function1<StructInitializer,Void>(){
@@ -3387,7 +3381,6 @@ public class hdrgen {
                     }
                 }
                 (buf_ref.value).writeByte(125);
-                return null;
             }
         };
         Function1<ArrayInitializer,Void> visitArray = new Function1<ArrayInitializer,Void>(){
@@ -3414,13 +3407,11 @@ public class hdrgen {
                     }
                 }
                 (buf_ref.value).writeByte(93);
-                return null;
             }
         };
         Function1<ExpInitializer,Void> visitExp = new Function1<ExpInitializer,Void>(){
             public Void invoke(ExpInitializer ei){
                 expressionToBuffer(ei.exp, buf_ref.value, hgs_ref.value);
-                return null;
             }
         };
         switch ((inx.kind & 0xFF))
@@ -3452,25 +3443,21 @@ public class hdrgen {
             public Void invoke(Type t){
                 printf(new BytePtr("t = %p, ty = %d\n"), t, (t.ty & 0xFF));
                 throw new AssertionError("Unreachable code!");
-                return null;
             }
         };
         Function1<TypeError,Void> visitError = new Function1<TypeError,Void>(){
             public Void invoke(TypeError t){
                 (buf_ref.value).writestring(new ByteSlice("_error_"));
-                return null;
             }
         };
         Function1<TypeBasic,Void> visitBasic = new Function1<TypeBasic,Void>(){
             public Void invoke(TypeBasic t){
                 (buf_ref.value).writestring(t.dstring);
-                return null;
             }
         };
         Function1<TypeTraits,Void> visitTraits = new Function1<TypeTraits,Void>(){
             public Void invoke(TypeTraits t){
                 expressionToBuffer(t.exp, buf_ref.value, hgs_ref.value);
-                return null;
             }
         };
         Function1<TypeVector,Void> visitVector = new Function1<TypeVector,Void>(){
@@ -3478,7 +3465,6 @@ public class hdrgen {
                 (buf_ref.value).writestring(new ByteSlice("__vector("));
                 visitWithMask(t.basetype, t.mod, buf_ref.value, hgs_ref.value);
                 (buf_ref.value).writestring(new ByteSlice(")"));
-                return null;
             }
         };
         Function1<TypeSArray,Void> visitSArray = new Function1<TypeSArray,Void>(){
@@ -3487,7 +3473,6 @@ public class hdrgen {
                 (buf_ref.value).writeByte(91);
                 sizeToBuffer(t.dim, buf_ref.value, hgs_ref.value);
                 (buf_ref.value).writeByte(93);
-                return null;
             }
         };
         Function1<TypeDArray,Void> visitDArray = new Function1<TypeDArray,Void>(){
@@ -3507,7 +3492,6 @@ public class hdrgen {
                     visitWithMask(t.next, t.mod, buf_ref.value, hgs_ref.value);
                     (buf_ref.value).writestring(new ByteSlice("[]"));
                 }
-                return null;
             }
         };
         Function1<TypeAArray,Void> visitAArray = new Function1<TypeAArray,Void>(){
@@ -3516,7 +3500,6 @@ public class hdrgen {
                 (buf_ref.value).writeByte(91);
                 visitWithMask(t.index, (byte)0, buf_ref.value, hgs_ref.value);
                 (buf_ref.value).writeByte(93);
-                return null;
             }
         };
         Function1<TypePointer,Void> visitPointer = new Function1<TypePointer,Void>(){
@@ -3528,26 +3511,22 @@ public class hdrgen {
                     visitWithMask(t.next, t.mod, buf_ref.value, hgs_ref.value);
                     (buf_ref.value).writeByte(42);
                 }
-                return null;
             }
         };
         Function1<TypeReference,Void> visitReference = new Function1<TypeReference,Void>(){
             public Void invoke(TypeReference t){
                 visitWithMask(t.next, t.mod, buf_ref.value, hgs_ref.value);
                 (buf_ref.value).writeByte(38);
-                return null;
             }
         };
         Function1<TypeFunction,Void> visitFunction = new Function1<TypeFunction,Void>(){
             public Void invoke(TypeFunction t){
                 visitFuncIdentWithPostfix(t, new ByteSlice(), buf_ref.value, hgs_ref.value);
-                return null;
             }
         };
         Function1<TypeDelegate,Void> visitDelegate = new Function1<TypeDelegate,Void>(){
             public Void invoke(TypeDelegate t){
                 visitFuncIdentWithPostfix((TypeFunction)t.next, new ByteSlice("delegate"), buf_ref.value, hgs_ref.value);
-                return null;
             }
         };
         Function1<TypeQualified,Void> visitTypeQualifiedHelper = new Function1<TypeQualified,Void>(){
@@ -3582,21 +3561,18 @@ public class hdrgen {
                         }
                     }
                 }
-                return null;
             }
         };
         Function1<TypeIdentifier,Void> visitIdentifier = new Function1<TypeIdentifier,Void>(){
             public Void invoke(TypeIdentifier t){
                 (buf_ref.value).writestring(t.ident.asString());
                 visitTypeQualifiedHelper.invoke(t);
-                return null;
             }
         };
         Function1<TypeInstance,Void> visitInstance = new Function1<TypeInstance,Void>(){
             public Void invoke(TypeInstance t){
                 dsymbolToBuffer(t.tempinst, buf_ref.value, hgs_ref.value);
                 visitTypeQualifiedHelper.invoke(t);
-                return null;
             }
         };
         Function1<TypeTypeof,Void> visitTypeof = new Function1<TypeTypeof,Void>(){
@@ -3605,20 +3581,17 @@ public class hdrgen {
                 expressionToBuffer(t.exp, buf_ref.value, hgs_ref.value);
                 (buf_ref.value).writeByte(41);
                 visitTypeQualifiedHelper.invoke(t);
-                return null;
             }
         };
         Function1<TypeReturn,Void> visitReturn = new Function1<TypeReturn,Void>(){
             public Void invoke(TypeReturn t){
                 (buf_ref.value).writestring(new ByteSlice("typeof(return)"));
                 visitTypeQualifiedHelper.invoke(t);
-                return null;
             }
         };
         Function1<TypeEnum,Void> visitEnum = new Function1<TypeEnum,Void>(){
             public Void invoke(TypeEnum t){
                 (buf_ref.value).writestring((hgs_ref.value).fullQual ? t.sym.toPrettyChars(false) : t.sym.toChars());
-                return null;
             }
         };
         Function1<TypeStruct,Void> visitStruct = new Function1<TypeStruct,Void>(){
@@ -3628,7 +3601,6 @@ public class hdrgen {
                     (buf_ref.value).writestring((hgs_ref.value).fullQual ? ti.toPrettyChars(false) : ti.toChars());
                 else
                     (buf_ref.value).writestring((hgs_ref.value).fullQual ? t.sym.toPrettyChars(false) : t.sym.toChars());
-                return null;
             }
         };
         Function1<TypeClass,Void> visitClass = new Function1<TypeClass,Void>(){
@@ -3638,13 +3610,11 @@ public class hdrgen {
                     (buf_ref.value).writestring((hgs_ref.value).fullQual ? ti.toPrettyChars(false) : ti.toChars());
                 else
                     (buf_ref.value).writestring((hgs_ref.value).fullQual ? t.sym.toPrettyChars(false) : t.sym.toChars());
-                return null;
             }
         };
         Function1<TypeTuple,Void> visitTuple = new Function1<TypeTuple,Void>(){
             public Void invoke(TypeTuple t){
                 parametersToBuffer(new ParameterList(t.arguments, VarArg.none), buf_ref.value, hgs_ref.value);
-                return null;
             }
         };
         Function1<TypeSlice,Void> visitSlice = new Function1<TypeSlice,Void>(){
@@ -3655,13 +3625,11 @@ public class hdrgen {
                 (buf_ref.value).writestring(new ByteSlice(" .. "));
                 sizeToBuffer(t.upr, buf_ref.value, hgs_ref.value);
                 (buf_ref.value).writeByte(93);
-                return null;
             }
         };
         Function1<TypeNull,Void> visitNull = new Function1<TypeNull,Void>(){
             public Void invoke(TypeNull t){
                 (buf_ref.value).writestring(new ByteSlice("typeof(null)"));
-                return null;
             }
         };
         switch ((t.ty & 0xFF))

@@ -31,7 +31,7 @@ public class builtin {
         {
             StringValue sv = builtins.lookup(mangle, strlen(mangle));
             if (sv != null)
-                return toFunction3<Loc,FuncDeclaration,DArray<Expression>,Expression>((sv).ptrvalue);
+                return (Function3<Loc,FuncDeclaration,DArray<Expression>,Expression>)(sv).ptrvalue;
         }
         return null;
     }
@@ -261,86 +261,86 @@ public class builtin {
 
     public static void builtin_init() {
         builtins._init(65);
-        add_builtin(new BytePtr("_D4core4math3sinFNaNbNiNfeZe"), eval_sin);
-        add_builtin(new BytePtr("_D4core4math3cosFNaNbNiNfeZe"), eval_cos);
-        add_builtin(new BytePtr("_D4core4math3tanFNaNbNiNfeZe"), eval_tan);
-        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNfeZe"), eval_sqrt);
-        add_builtin(new BytePtr("_D4core4math4fabsFNaNbNiNfeZe"), eval_fabs);
-        add_builtin(new BytePtr("_D4core4math5expm1FNaNbNiNfeZe"), eval_unimp);
-        add_builtin(new BytePtr("_D4core4math4exp2FNaNbNiNfeZe"), eval_unimp);
-        add_builtin(new BytePtr("_D4core4math3sinFNaNbNiNeeZe"), eval_sin);
-        add_builtin(new BytePtr("_D4core4math3cosFNaNbNiNeeZe"), eval_cos);
-        add_builtin(new BytePtr("_D4core4math3tanFNaNbNiNeeZe"), eval_tan);
-        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNeeZe"), eval_sqrt);
-        add_builtin(new BytePtr("_D4core4math4fabsFNaNbNiNeeZe"), eval_fabs);
-        add_builtin(new BytePtr("_D4core4math5expm1FNaNbNiNeeZe"), eval_unimp);
-        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNfdZd"), eval_sqrt);
-        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNffZf"), eval_sqrt);
-        add_builtin(new BytePtr("_D4core4math5atan2FNaNbNiNfeeZe"), eval_unimp);
+        add_builtin(new BytePtr("_D4core4math3sinFNaNbNiNfeZe"), builtin::eval_sin);
+        add_builtin(new BytePtr("_D4core4math3cosFNaNbNiNfeZe"), builtin::eval_cos);
+        add_builtin(new BytePtr("_D4core4math3tanFNaNbNiNfeZe"), builtin::eval_tan);
+        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNfeZe"), builtin::eval_sqrt);
+        add_builtin(new BytePtr("_D4core4math4fabsFNaNbNiNfeZe"), builtin::eval_fabs);
+        add_builtin(new BytePtr("_D4core4math5expm1FNaNbNiNfeZe"), builtin::eval_unimp);
+        add_builtin(new BytePtr("_D4core4math4exp2FNaNbNiNfeZe"), builtin::eval_unimp);
+        add_builtin(new BytePtr("_D4core4math3sinFNaNbNiNeeZe"), builtin::eval_sin);
+        add_builtin(new BytePtr("_D4core4math3cosFNaNbNiNeeZe"), builtin::eval_cos);
+        add_builtin(new BytePtr("_D4core4math3tanFNaNbNiNeeZe"), builtin::eval_tan);
+        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNeeZe"), builtin::eval_sqrt);
+        add_builtin(new BytePtr("_D4core4math4fabsFNaNbNiNeeZe"), builtin::eval_fabs);
+        add_builtin(new BytePtr("_D4core4math5expm1FNaNbNiNeeZe"), builtin::eval_unimp);
+        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNfdZd"), builtin::eval_sqrt);
+        add_builtin(new BytePtr("_D4core4math4sqrtFNaNbNiNffZf"), builtin::eval_sqrt);
+        add_builtin(new BytePtr("_D4core4math5atan2FNaNbNiNfeeZe"), builtin::eval_unimp);
         if (true)
         {
-            add_builtin(new BytePtr("_D4core4math4yl2xFNaNbNiNfeeZe"), eval_yl2x);
+            add_builtin(new BytePtr("_D4core4math4yl2xFNaNbNiNfeeZe"), builtin::eval_yl2x);
         }
         else
         {
-            add_builtin(new BytePtr("_D4core4math4yl2xFNaNbNiNfeeZe"), eval_unimp);
+            add_builtin(new BytePtr("_D4core4math4yl2xFNaNbNiNfeeZe"), builtin::eval_unimp);
         }
         if (true)
         {
-            add_builtin(new BytePtr("_D4core4math6yl2xp1FNaNbNiNfeeZe"), eval_yl2xp1);
+            add_builtin(new BytePtr("_D4core4math6yl2xp1FNaNbNiNfeeZe"), builtin::eval_yl2xp1);
         }
         else
         {
-            add_builtin(new BytePtr("_D4core4math6yl2xp1FNaNbNiNfeeZe"), eval_unimp);
+            add_builtin(new BytePtr("_D4core4math6yl2xp1FNaNbNiNfeeZe"), builtin::eval_unimp);
         }
-        add_builtin(new BytePtr("_D4core4math6rndtolFNaNbNiNfeZl"), eval_unimp);
-        add_builtin(new BytePtr("_D3std4math3tanFNaNbNiNfeZe"), eval_tan);
-        add_builtin(new BytePtr("_D3std4math5expm1FNaNbNiNfeZe"), eval_unimp);
-        add_builtin(new BytePtr("_D3std4math3tanFNaNbNiNeeZe"), eval_tan);
-        add_builtin(new BytePtr("_D3std4math3expFNaNbNiNeeZe"), eval_exp);
-        add_builtin(new BytePtr("_D3std4math5expm1FNaNbNiNeeZe"), eval_expm1);
-        add_builtin(new BytePtr("_D3std4math4exp2FNaNbNiNeeZe"), eval_exp2);
-        add_builtin(new BytePtr("_D3std4math5atan2FNaNbNiNfeeZe"), eval_unimp);
-        add_builtin(new BytePtr("_D4core4math5ldexpFNaNbNiNfeiZe"), eval_ldexp);
-        add_builtin(new BytePtr("_D3std4math3logFNaNbNiNfeZe"), eval_log);
-        add_builtin(new BytePtr("_D3std4math4log2FNaNbNiNfeZe"), eval_log2);
-        add_builtin(new BytePtr("_D3std4math5log10FNaNbNiNfeZe"), eval_log10);
-        add_builtin(new BytePtr("_D3std4math5roundFNbNiNeeZe"), eval_round);
-        add_builtin(new BytePtr("_D3std4math5roundFNaNbNiNeeZe"), eval_round);
-        add_builtin(new BytePtr("_D3std4math5floorFNaNbNiNefZf"), eval_floor);
-        add_builtin(new BytePtr("_D3std4math5floorFNaNbNiNedZd"), eval_floor);
-        add_builtin(new BytePtr("_D3std4math5floorFNaNbNiNeeZe"), eval_floor);
-        add_builtin(new BytePtr("_D3std4math4ceilFNaNbNiNefZf"), eval_ceil);
-        add_builtin(new BytePtr("_D3std4math4ceilFNaNbNiNedZd"), eval_ceil);
-        add_builtin(new BytePtr("_D3std4math4ceilFNaNbNiNeeZe"), eval_ceil);
-        add_builtin(new BytePtr("_D3std4math5truncFNaNbNiNeeZe"), eval_trunc);
-        add_builtin(new BytePtr("_D3std4math4fminFNaNbNiNfeeZe"), eval_fmin);
-        add_builtin(new BytePtr("_D3std4math4fmaxFNaNbNiNfeeZe"), eval_fmax);
-        add_builtin(new BytePtr("_D3std4math__T8copysignTfTfZQoFNaNbNiNeffZf"), eval_copysign);
-        add_builtin(new BytePtr("_D3std4math__T8copysignTdTdZQoFNaNbNiNeddZd"), eval_copysign);
-        add_builtin(new BytePtr("_D3std4math__T8copysignTeTeZQoFNaNbNiNeeeZe"), eval_copysign);
-        add_builtin(new BytePtr("_D3std4math__T3powTfTfZQjFNaNbNiNeffZf"), eval_pow);
-        add_builtin(new BytePtr("_D3std4math__T3powTdTdZQjFNaNbNiNeddZd"), eval_pow);
-        add_builtin(new BytePtr("_D3std4math__T3powTeTeZQjFNaNbNiNeeeZe"), eval_pow);
-        add_builtin(new BytePtr("_D3std4math3fmaFNaNbNiNfeeeZe"), eval_fma);
-        add_builtin(new BytePtr("_D3std4math__T5isNaNTeZQjFNaNbNiNeeZb"), eval_isnan);
-        add_builtin(new BytePtr("_D3std4math__T5isNaNTdZQjFNaNbNiNedZb"), eval_isnan);
-        add_builtin(new BytePtr("_D3std4math__T5isNaNTfZQjFNaNbNiNefZb"), eval_isnan);
-        add_builtin(new BytePtr("_D3std4math__T10isInfinityTeZQpFNaNbNiNeeZb"), eval_isinfinity);
-        add_builtin(new BytePtr("_D3std4math__T10isInfinityTdZQpFNaNbNiNedZb"), eval_isinfinity);
-        add_builtin(new BytePtr("_D3std4math__T10isInfinityTfZQpFNaNbNiNefZb"), eval_isinfinity);
-        add_builtin(new BytePtr("_D3std4math__T8isFiniteTeZQmFNaNbNiNeeZb"), eval_isfinite);
-        add_builtin(new BytePtr("_D3std4math__T8isFiniteTdZQmFNaNbNiNedZb"), eval_isfinite);
-        add_builtin(new BytePtr("_D3std4math__T8isFiniteTfZQmFNaNbNiNefZb"), eval_isfinite);
-        add_builtin(new BytePtr("_D4core5bitop3bsfFNaNbNiNfkZi"), eval_bsf);
-        add_builtin(new BytePtr("_D4core5bitop3bsrFNaNbNiNfkZi"), eval_bsr);
-        add_builtin(new BytePtr("_D4core5bitop3bsfFNaNbNiNfmZi"), eval_bsf);
-        add_builtin(new BytePtr("_D4core5bitop3bsrFNaNbNiNfmZi"), eval_bsr);
-        add_builtin(new BytePtr("_D4core5bitop5bswapFNaNbNiNfkZk"), eval_bswap);
-        add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNfkZi"), eval_popcnt);
-        add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNftZt"), eval_popcnt);
+        add_builtin(new BytePtr("_D4core4math6rndtolFNaNbNiNfeZl"), builtin::eval_unimp);
+        add_builtin(new BytePtr("_D3std4math3tanFNaNbNiNfeZe"), builtin::eval_tan);
+        add_builtin(new BytePtr("_D3std4math5expm1FNaNbNiNfeZe"), builtin::eval_unimp);
+        add_builtin(new BytePtr("_D3std4math3tanFNaNbNiNeeZe"), builtin::eval_tan);
+        add_builtin(new BytePtr("_D3std4math3expFNaNbNiNeeZe"), builtin::eval_exp);
+        add_builtin(new BytePtr("_D3std4math5expm1FNaNbNiNeeZe"), builtin::eval_expm1);
+        add_builtin(new BytePtr("_D3std4math4exp2FNaNbNiNeeZe"), builtin::eval_exp2);
+        add_builtin(new BytePtr("_D3std4math5atan2FNaNbNiNfeeZe"), builtin::eval_unimp);
+        add_builtin(new BytePtr("_D4core4math5ldexpFNaNbNiNfeiZe"), builtin::eval_ldexp);
+        add_builtin(new BytePtr("_D3std4math3logFNaNbNiNfeZe"), builtin::eval_log);
+        add_builtin(new BytePtr("_D3std4math4log2FNaNbNiNfeZe"), builtin::eval_log2);
+        add_builtin(new BytePtr("_D3std4math5log10FNaNbNiNfeZe"), builtin::eval_log10);
+        add_builtin(new BytePtr("_D3std4math5roundFNbNiNeeZe"), builtin::eval_round);
+        add_builtin(new BytePtr("_D3std4math5roundFNaNbNiNeeZe"), builtin::eval_round);
+        add_builtin(new BytePtr("_D3std4math5floorFNaNbNiNefZf"), builtin::eval_floor);
+        add_builtin(new BytePtr("_D3std4math5floorFNaNbNiNedZd"), builtin::eval_floor);
+        add_builtin(new BytePtr("_D3std4math5floorFNaNbNiNeeZe"), builtin::eval_floor);
+        add_builtin(new BytePtr("_D3std4math4ceilFNaNbNiNefZf"), builtin::eval_ceil);
+        add_builtin(new BytePtr("_D3std4math4ceilFNaNbNiNedZd"), builtin::eval_ceil);
+        add_builtin(new BytePtr("_D3std4math4ceilFNaNbNiNeeZe"), builtin::eval_ceil);
+        add_builtin(new BytePtr("_D3std4math5truncFNaNbNiNeeZe"), builtin::eval_trunc);
+        add_builtin(new BytePtr("_D3std4math4fminFNaNbNiNfeeZe"), builtin::eval_fmin);
+        add_builtin(new BytePtr("_D3std4math4fmaxFNaNbNiNfeeZe"), builtin::eval_fmax);
+        add_builtin(new BytePtr("_D3std4math__T8copysignTfTfZQoFNaNbNiNeffZf"), builtin::eval_copysign);
+        add_builtin(new BytePtr("_D3std4math__T8copysignTdTdZQoFNaNbNiNeddZd"), builtin::eval_copysign);
+        add_builtin(new BytePtr("_D3std4math__T8copysignTeTeZQoFNaNbNiNeeeZe"), builtin::eval_copysign);
+        add_builtin(new BytePtr("_D3std4math__T3powTfTfZQjFNaNbNiNeffZf"), builtin::eval_pow);
+        add_builtin(new BytePtr("_D3std4math__T3powTdTdZQjFNaNbNiNeddZd"), builtin::eval_pow);
+        add_builtin(new BytePtr("_D3std4math__T3powTeTeZQjFNaNbNiNeeeZe"), builtin::eval_pow);
+        add_builtin(new BytePtr("_D3std4math3fmaFNaNbNiNfeeeZe"), builtin::eval_fma);
+        add_builtin(new BytePtr("_D3std4math__T5isNaNTeZQjFNaNbNiNeeZb"), builtin::eval_isnan);
+        add_builtin(new BytePtr("_D3std4math__T5isNaNTdZQjFNaNbNiNedZb"), builtin::eval_isnan);
+        add_builtin(new BytePtr("_D3std4math__T5isNaNTfZQjFNaNbNiNefZb"), builtin::eval_isnan);
+        add_builtin(new BytePtr("_D3std4math__T10isInfinityTeZQpFNaNbNiNeeZb"), builtin::eval_isinfinity);
+        add_builtin(new BytePtr("_D3std4math__T10isInfinityTdZQpFNaNbNiNedZb"), builtin::eval_isinfinity);
+        add_builtin(new BytePtr("_D3std4math__T10isInfinityTfZQpFNaNbNiNefZb"), builtin::eval_isinfinity);
+        add_builtin(new BytePtr("_D3std4math__T8isFiniteTeZQmFNaNbNiNeeZb"), builtin::eval_isfinite);
+        add_builtin(new BytePtr("_D3std4math__T8isFiniteTdZQmFNaNbNiNedZb"), builtin::eval_isfinite);
+        add_builtin(new BytePtr("_D3std4math__T8isFiniteTfZQmFNaNbNiNefZb"), builtin::eval_isfinite);
+        add_builtin(new BytePtr("_D4core5bitop3bsfFNaNbNiNfkZi"), builtin::eval_bsf);
+        add_builtin(new BytePtr("_D4core5bitop3bsrFNaNbNiNfkZi"), builtin::eval_bsr);
+        add_builtin(new BytePtr("_D4core5bitop3bsfFNaNbNiNfmZi"), builtin::eval_bsf);
+        add_builtin(new BytePtr("_D4core5bitop3bsrFNaNbNiNfmZi"), builtin::eval_bsr);
+        add_builtin(new BytePtr("_D4core5bitop5bswapFNaNbNiNfkZk"), builtin::eval_bswap);
+        add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNfkZi"), builtin::eval_popcnt);
+        add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNftZt"), builtin::eval_popcnt);
         if (global.params.is64bit)
-            add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNfmZi"), eval_popcnt);
+            add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNfmZi"), builtin::eval_popcnt);
     }
 
     public static void builtinDeinitialize() {

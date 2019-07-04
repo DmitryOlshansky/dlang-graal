@@ -1212,23 +1212,8 @@ public class dtemplate {
             e.e2.accept(this);
         }
 
-        private Object this;
 
         public DeduceType() {}
-
-        public DeduceType copy() {
-            DeduceType that = new DeduceType();
-            that.sc = this.sc;
-            that.tparam = this.tparam;
-            that.parameters = this.parameters;
-            that.dedtypes = this.dedtypes;
-            that.wm = this.wm;
-            that.inferStart = this.inferStart;
-            that.ignoreAliasThis = this.ignoreAliasThis;
-            that.result = this.result;
-            that.this = this.this;
-            return that;
-        }
     }
     private static class ReliesOnTemplateParameters extends Visitor
     {
@@ -1507,17 +1492,8 @@ public class dtemplate {
                 this.visit((BinExp)e);
         }
 
-        private Object this;
 
         public ReliesOnTemplateParameters() {}
-
-        public ReliesOnTemplateParameters copy() {
-            ReliesOnTemplateParameters that = new ReliesOnTemplateParameters();
-            that.tparams = this.tparams;
-            that.result = this.result;
-            that.this = this.this;
-            return that;
-        }
     }
     static int tryExpandMembersnest;
     static int trySemantic3nest;
@@ -3811,15 +3787,15 @@ public class dtemplate {
             }
         };
 
+        // from template X!(IntegerInteger)
+        // removed duplicate function, [["int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
+
         // from template X!(ByteByte)
         Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
             public Integer invoke(Byte U, Byte T){
                 return (U & 0xFF) << 4 | (T & 0xFF);
             }
         };
-
-        // from template X!(IntegerInteger)
-        // removed duplicate function, [["int Xbyte, byteByteByte", "int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
 
         switch (XByteByte.invoke(tparam.mod, t.mod))
         {
@@ -5289,34 +5265,34 @@ public class dtemplate {
             {
                 int __key1244 = 0;
                 int __limit1245 = tovers != null ? tovers.a.length : 1;
-                Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
-                    public Integer invoke(Dsymbol s){
-                        TemplateDeclaration td = s.isTemplateDeclaration();
-                        if (!(td != null))
-                            return 0;
-                        if (td.semanticRun == PASS.init)
-                        {
-                            if (td._scope != null)
-                            {
-                                Ungag ungag = td.ungagSpeculative().copy();
-                                try {
-                                    dsymbolSemantic(td, td._scope);
-                                }
-                                finally {
-                                }
-                            }
-                            if (td.semanticRun == PASS.init)
-                            {
-                                error(new BytePtr("`%s` forward references template declaration `%s`"), toChars(), td.toChars());
-                                return 1;
-                            }
-                        }
-                        return 0;
-                    }
-                };
                 for (; __key1244 < __limit1245;__key1244 += 1) {
                     int oi = __key1244;
                     Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl;
+                    Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
+                        public Integer invoke(Dsymbol s){
+                            TemplateDeclaration td = s.isTemplateDeclaration();
+                            if (!(td != null))
+                                return 0;
+                            if (td.semanticRun == PASS.init)
+                            {
+                                if (td._scope != null)
+                                {
+                                    Ungag ungag = td.ungagSpeculative().copy();
+                                    try {
+                                        dsymbolSemantic(td, td._scope);
+                                    }
+                                    finally {
+                                    }
+                                }
+                                if (td.semanticRun == PASS.init)
+                                {
+                                    error(new BytePtr("`%s` forward references template declaration `%s`"), toChars(), td.toChars());
+                                    return 1;
+                                }
+                            }
+                            return 0;
+                        }
+                    };
                     int r = overloadApply(dstart, __lambda3, null);
                     if ((r) != 0)
                         return false;
@@ -5630,61 +5606,6 @@ public class dtemplate {
             int errs = global.errors;
             TemplateDeclaration td_last = null;
             DArray<RootObject> dedtypes = new DArray<RootObject>();
-            Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
-                public Integer invoke(Dsymbol s){
-                    TemplateDeclaration td = s.isTemplateDeclaration();
-                    if (!(td != null))
-                        return 0;
-                    if ((td.inuse) != 0)
-                    {
-                        td.error(loc, new BytePtr("recursive template expansion"));
-                        return 1;
-                    }
-                    if (pequals(td, td_best))
-                        return 0;
-                    if ((td.parameters).length < (tiargs).length)
-                    {
-                        if (!(td.isVariadic() != null))
-                            return 0;
-                    }
-                    dedtypes.setDim((td.parameters).length);
-                    dedtypes.zero();
-                    assert(td.semanticRun != PASS.init);
-                    int m = td.matchWithInstance(sc, this, dedtypes, fargs, 0);
-                    if (m <= MATCH.nomatch)
-                        return 0;
-                    try {
-                        if (m < m_best)
-                            /*goto Ltd_best*/throw Dispatch0.INSTANCE;
-                        try {
-                            if (m > m_best)
-                                /*goto Ltd*/throw Dispatch1.INSTANCE;
-                            {
-                                int c1 = td.leastAsSpecialized(sc, td_best, fargs);
-                                int c2 = td_best.leastAsSpecialized(sc, td, fargs);
-                                if (c1 > c2)
-                                    /*goto Ltd*/throw Dispatch1.INSTANCE;
-                                if (c1 < c2)
-                                    /*goto Ltd_best*/throw Dispatch0.INSTANCE;
-                            }
-                            td_ambig = td;
-                            return 0;
-                        }
-                        catch(Dispatch0 __d){}
-                    /*Ltd_best:*/
-                        td_ambig = null;
-                        return 0;
-                    }
-                    catch(Dispatch1 __d){}
-                /*Ltd:*/
-                    td_ambig = null;
-                    td_best = td;
-                    m_best = m;
-                    tdtypes.setDim(dedtypes.length);
-                    memcpy((BytePtr)(tdtypes.tdata()), (dedtypes.tdata()), (tdtypes.length * 4));
-                    return 0;
-                }
-            };
             try {
                 OverloadSet tovers = this.tempdecl.isOverloadSet();
                 {
@@ -5696,6 +5617,61 @@ public class dtemplate {
                         TemplateDeclaration td_ambig = null;
                         int m_best = MATCH.nomatch;
                         Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl;
+                        Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
+                            public Integer invoke(Dsymbol s){
+                                TemplateDeclaration td = s.isTemplateDeclaration();
+                                if (!(td != null))
+                                    return 0;
+                                if ((td.inuse) != 0)
+                                {
+                                    td.error(loc, new BytePtr("recursive template expansion"));
+                                    return 1;
+                                }
+                                if (pequals(td, td_best))
+                                    return 0;
+                                if ((td.parameters).length < (tiargs).length)
+                                {
+                                    if (!(td.isVariadic() != null))
+                                        return 0;
+                                }
+                                dedtypes.setDim((td.parameters).length);
+                                dedtypes.zero();
+                                assert(td.semanticRun != PASS.init);
+                                int m = td.matchWithInstance(sc, this, dedtypes, fargs, 0);
+                                if (m <= MATCH.nomatch)
+                                    return 0;
+                                try {
+                                    if (m < m_best)
+                                        /*goto Ltd_best*/throw Dispatch0.INSTANCE;
+                                    try {
+                                        if (m > m_best)
+                                            /*goto Ltd*/throw Dispatch1.INSTANCE;
+                                        {
+                                            int c1 = td.leastAsSpecialized(sc, td_best, fargs);
+                                            int c2 = td_best.leastAsSpecialized(sc, td, fargs);
+                                            if (c1 > c2)
+                                                /*goto Ltd*/throw Dispatch1.INSTANCE;
+                                            if (c1 < c2)
+                                                /*goto Ltd_best*/throw Dispatch0.INSTANCE;
+                                        }
+                                        td_ambig = td;
+                                        return 0;
+                                    }
+                                    catch(Dispatch0 __d){}
+                                /*Ltd_best:*/
+                                    td_ambig = null;
+                                    return 0;
+                                }
+                                catch(Dispatch1 __d){}
+                            /*Ltd:*/
+                                td_ambig = null;
+                                td_best = td;
+                                m_best = m;
+                                tdtypes.setDim(dedtypes.length);
+                                memcpy((BytePtr)(tdtypes.tdata()), (dedtypes.tdata()), (tdtypes.length * 4));
+                                return 0;
+                            }
+                        };
                         overloadApply(dstart, __lambda3, null);
                         if (td_ambig != null)
                         {
@@ -5767,100 +5743,6 @@ public class dtemplate {
                 return false;
             int olderrs = global.errors;
             DArray<RootObject> dedtypes = new DArray<RootObject>();
-            Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
-                public Integer invoke(Dsymbol s){
-                    TemplateDeclaration td = s.isTemplateDeclaration();
-                    if (!(td != null))
-                        return 0;
-                    if ((td.inuse) != 0)
-                    {
-                        td.error(loc, new BytePtr("recursive template expansion"));
-                        return 1;
-                    }
-                    if (!(td.onemember != null))
-                        return 0;
-                    {
-                        TemplateDeclaration td2 = td.onemember.isTemplateDeclaration();
-                        if (td2 != null)
-                        {
-                            if ((!(td2.onemember != null) || !(td2.onemember.isFuncDeclaration() != null)))
-                                return 0;
-                            if ((tiargs).length >= (td.parameters).length - (td.isVariadic() != null ? 1 : 0))
-                                return 0;
-                            return 1;
-                        }
-                    }
-                    FuncDeclaration fd = td.onemember.isFuncDeclaration();
-                    if ((!(fd != null) || (fd.type.ty & 0xFF) != ENUMTY.Tfunction))
-                        return 0;
-                    {
-                        Slice<TemplateParameter> __r1250 = (td.parameters).opSlice().copy();
-                        int __key1251 = 0;
-                        for (; __key1251 < __r1250.getLength();__key1251 += 1) {
-                            TemplateParameter tp = __r1250.get(__key1251);
-                            if (tp.isTemplateThisParameter() != null)
-                                return 1;
-                        }
-                    }
-                    TypeFunction tf = (TypeFunction)fd.type;
-                    {
-                        int dim = tf.parameterList.length();
-                        if ((dim) != 0)
-                        {
-                            TemplateTupleParameter tp = td.isVariadic();
-                            if ((tp != null && (td.parameters).length > 1))
-                                return 1;
-                            if ((!(tp != null) && (tiargs).length < (td.parameters).length))
-                            {
-                                {
-                                    int __key1252 = (tiargs).length;
-                                    int __limit1253 = (td.parameters).length;
-                                    for (; __key1252 < __limit1253;__key1252 += 1) {
-                                        int i = __key1252;
-                                        if (!((td.parameters).get(i).hasDefaultArg()))
-                                            return 1;
-                                    }
-                                }
-                            }
-                            {
-                                int __key1254 = 0;
-                                int __limit1255 = dim;
-                                for (; __key1254 < __limit1255;__key1254 += 1) {
-                                    int i = __key1254;
-                                    if ((tf.parameterList.get(i).storageClass & 256L) != 0)
-                                        return 1;
-                                }
-                            }
-                        }
-                    }
-                    if (!((flag) != 0))
-                    {
-                        dedtypes.setDim((td.parameters).length);
-                        dedtypes.zero();
-                        if (td.semanticRun == PASS.init)
-                        {
-                            if (td._scope != null)
-                            {
-                                Ungag ungag = td.ungagSpeculative().copy();
-                                try {
-                                    dsymbolSemantic(td, td._scope);
-                                }
-                                finally {
-                                }
-                            }
-                            if (td.semanticRun == PASS.init)
-                            {
-                                error(new BytePtr("`%s` forward references template declaration `%s`"), toChars(), td.toChars());
-                                return 1;
-                            }
-                        }
-                        int m = td.matchWithInstance(sc, this, dedtypes, null, 0);
-                        if (m <= MATCH.nomatch)
-                            return 0;
-                    }
-                    return (count += 1) > 1 ? 1 : 0;
-                }
-            };
             try {
                 int count = 0;
                 OverloadSet tovers = this.tempdecl.isOverloadSet();
@@ -5870,6 +5752,100 @@ public class dtemplate {
                     for (; __key1248 < __limit1249;__key1248 += 1) {
                         int oi = __key1248;
                         Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl;
+                        Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
+                            public Integer invoke(Dsymbol s){
+                                TemplateDeclaration td = s.isTemplateDeclaration();
+                                if (!(td != null))
+                                    return 0;
+                                if ((td.inuse) != 0)
+                                {
+                                    td.error(loc, new BytePtr("recursive template expansion"));
+                                    return 1;
+                                }
+                                if (!(td.onemember != null))
+                                    return 0;
+                                {
+                                    TemplateDeclaration td2 = td.onemember.isTemplateDeclaration();
+                                    if (td2 != null)
+                                    {
+                                        if ((!(td2.onemember != null) || !(td2.onemember.isFuncDeclaration() != null)))
+                                            return 0;
+                                        if ((tiargs).length >= (td.parameters).length - (td.isVariadic() != null ? 1 : 0))
+                                            return 0;
+                                        return 1;
+                                    }
+                                }
+                                FuncDeclaration fd = td.onemember.isFuncDeclaration();
+                                if ((!(fd != null) || (fd.type.ty & 0xFF) != ENUMTY.Tfunction))
+                                    return 0;
+                                {
+                                    Slice<TemplateParameter> __r1250 = (td.parameters).opSlice().copy();
+                                    int __key1251 = 0;
+                                    for (; __key1251 < __r1250.getLength();__key1251 += 1) {
+                                        TemplateParameter tp = __r1250.get(__key1251);
+                                        if (tp.isTemplateThisParameter() != null)
+                                            return 1;
+                                    }
+                                }
+                                TypeFunction tf = (TypeFunction)fd.type;
+                                {
+                                    int dim = tf.parameterList.length();
+                                    if ((dim) != 0)
+                                    {
+                                        TemplateTupleParameter tp = td.isVariadic();
+                                        if ((tp != null && (td.parameters).length > 1))
+                                            return 1;
+                                        if ((!(tp != null) && (tiargs).length < (td.parameters).length))
+                                        {
+                                            {
+                                                int __key1252 = (tiargs).length;
+                                                int __limit1253 = (td.parameters).length;
+                                                for (; __key1252 < __limit1253;__key1252 += 1) {
+                                                    int i = __key1252;
+                                                    if (!((td.parameters).get(i).hasDefaultArg()))
+                                                        return 1;
+                                                }
+                                            }
+                                        }
+                                        {
+                                            int __key1254 = 0;
+                                            int __limit1255 = dim;
+                                            for (; __key1254 < __limit1255;__key1254 += 1) {
+                                                int i = __key1254;
+                                                if ((tf.parameterList.get(i).storageClass & 256L) != 0)
+                                                    return 1;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (!((flag) != 0))
+                                {
+                                    dedtypes.setDim((td.parameters).length);
+                                    dedtypes.zero();
+                                    if (td.semanticRun == PASS.init)
+                                    {
+                                        if (td._scope != null)
+                                        {
+                                            Ungag ungag = td.ungagSpeculative().copy();
+                                            try {
+                                                dsymbolSemantic(td, td._scope);
+                                            }
+                                            finally {
+                                            }
+                                        }
+                                        if (td.semanticRun == PASS.init)
+                                        {
+                                            error(new BytePtr("`%s` forward references template declaration `%s`"), toChars(), td.toChars());
+                                            return 1;
+                                        }
+                                    }
+                                    int m = td.matchWithInstance(sc, this, dedtypes, null, 0);
+                                    if (m <= MATCH.nomatch)
+                                        return 0;
+                                }
+                                return (count += 1) > 1 ? 1 : 0;
+                            }
+                        };
                         int r = overloadApply(dstart, __lambda3, null);
                         if ((r) != 0)
                             return true;
@@ -6068,14 +6044,12 @@ public class dtemplate {
             Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
                     s.setScope(sc2_ref.value);
-                    return null;
                 }
             };
             foreachDsymbol(this.members, __lambda2);
             Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
                     s.importAll(sc2_ref.value);
-                    return null;
                 }
             };
             foreachDsymbol(this.members, __lambda3);
@@ -6083,7 +6057,6 @@ public class dtemplate {
                 public Void invoke(Dsymbol s){
                     dsymbolSemantic(s, sc2_ref.value);
                     dmodule.Module.runDeferredSemantic();
-                    return null;
                 }
             };
             foreachDsymbol(this.members, symbolDg);
@@ -6305,7 +6278,6 @@ public class dtemplate {
             Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
                     s.setFieldOffset(ad, poffset, isunion);
-                    return null;
                 }
             };
             foreachDsymbol(this.members, __lambda4);
@@ -6366,27 +6338,27 @@ public class dtemplate {
             {
                 int __key1256 = 0;
                 int __limit1257 = tovers != null ? tovers.a.length : 1;
-                Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>(){
-                    public Integer invoke(Dsymbol s){
-                        TemplateDeclaration td = s.isTemplateDeclaration();
-                        if (!(td != null))
-                            return 0;
-                        if (td.semanticRun == PASS.init)
-                        {
-                            if (td._scope != null)
-                                dsymbolSemantic(td, td._scope);
-                            else
-                            {
-                                semanticRun = PASS.init;
-                                return 1;
-                            }
-                        }
-                        return 0;
-                    }
-                };
                 for (; __key1256 < __limit1257;__key1256 += 1) {
                     int oi = __key1256;
                     Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl;
+                    Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>(){
+                        public Integer invoke(Dsymbol s){
+                            TemplateDeclaration td = s.isTemplateDeclaration();
+                            if (!(td != null))
+                                return 0;
+                            if (td.semanticRun == PASS.init)
+                            {
+                                if (td._scope != null)
+                                    dsymbolSemantic(td, td._scope);
+                                else
+                                {
+                                    semanticRun = PASS.init;
+                                    return 1;
+                                }
+                            }
+                            return 0;
+                        }
+                    };
                     int r = overloadApply(dstart, __lambda2, null);
                     if ((r) != 0)
                         return false;

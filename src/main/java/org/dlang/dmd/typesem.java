@@ -219,7 +219,6 @@ public class typesem {
                             e = typeToExpressionHelper(mt_ref.value, e, i.value);
                             e = expressionSemantic(e, sc_ref.value);
                             resolveExp(e, pt_ref.value, pe_ref.value, ps_ref.value);
-                            return null;
                         }
                     };
                     if ((((intypeid_ref.value && !(t != null)) && sm != null) && sm.needThis()))
@@ -2154,7 +2153,6 @@ public class typesem {
                 pt_ref.value.set(0, null);
                 pe_ref.value.set(0, e);
                 ps_ref.value.set(0, null);
-                return null;
             }
         };
         Function1<Type,Void> returnType = new Function1<Type,Void>(){
@@ -2162,7 +2160,6 @@ public class typesem {
                 pt_ref.value.set(0, t);
                 pe_ref.value.set(0, null);
                 ps_ref.value.set(0, null);
-                return null;
             }
         };
         Function1<Dsymbol,Void> returnSymbol = new Function1<Dsymbol,Void>(){
@@ -2170,13 +2167,11 @@ public class typesem {
                 pt_ref.value.set(0, null);
                 pe_ref.value.set(0, null);
                 ps_ref.value.set(0, s);
-                return null;
             }
         };
         Function0<Void> returnError = new Function0<Void>(){
             public Void invoke(){
                 returnType.invoke(Type.terror);
-                return null;
             }
         };
         Function1<Type,Void> visitType = new Function1<Type,Void>(){
@@ -2184,7 +2179,6 @@ public class typesem {
                 Type t = typeSemantic(mt, loc, sc_ref.value);
                 assert(t != null);
                 returnType.invoke(t);
-                return null;
             }
         };
         Function1<TypeSArray,Void> visitSArray = new Function1<TypeSArray,Void>(){
@@ -2255,7 +2249,6 @@ public class typesem {
                         mt.next = pt_ref.value.get();
                     visitType.invoke(mt);
                 }
-                return null;
             }
         };
         Function1<TypeDArray,Void> visitDArray = new Function1<TypeDArray,Void>(){
@@ -2287,7 +2280,6 @@ public class typesem {
                         mt.next = pt_ref.value.get();
                     visitType.invoke(mt);
                 }
-                return null;
             }
         };
         Function1<TypeAArray,Void> visitAArray = new Function1<TypeAArray,Void>(){
@@ -2311,13 +2303,11 @@ public class typesem {
                         error(loc, new BytePtr("index is not a type or an expression"));
                 }
                 visitType.invoke(mt);
-                return null;
             }
         };
         Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
             public Void invoke(Dsymbol s){
                 semanticOnMixin.invoke(s);
-                return null;
                 return null;
             }
         };
@@ -2381,7 +2371,6 @@ public class typesem {
                                             dsymbolSemantic(mixinTempl, sc_ref.value);
                                     }
                                 }
-                                return null;
                             }
                         };
                         foreachDsymbol(sds.members, __lambda3);
@@ -2409,7 +2398,6 @@ public class typesem {
                 resolveHelper(mt, loc, sc_ref.value, s, scopesym.value, pe_ref.value, pt_ref.value, ps_ref.value, intypeid_ref.value);
                 if (pt_ref.value.get() != null)
                     pt_ref.value.set(0, (pt_ref.value.get()).addMod(mt.mod));
-                return null;
             }
         };
         Function1<TypeInstance,Void> visitInstance = new Function1<TypeInstance,Void>(){
@@ -2421,7 +2409,6 @@ public class typesem {
                 resolveHelper(mt, loc, sc_ref.value, mt.tempinst, null, pe_ref.value, pt_ref.value, ps_ref.value, intypeid_ref.value);
                 if (pt_ref.value.get() != null)
                     pt_ref.value.set(0, (pt_ref.value.get()).addMod(mt.mod));
-                return null;
             }
         };
         Function1<TypeTypeof,Void> visitTypeof = new Function1<TypeTypeof,Void>(){
@@ -2507,7 +2494,6 @@ public class typesem {
                         pt_ref.value.set(0, (pt_ref.value.get()).addMod(mt.mod));
                 }
                 mt.inuse--;
-                return null;
             }
         };
         Function1<TypeReturn,Void> visitReturn = new Function1<TypeReturn,Void>(){
@@ -2552,7 +2538,6 @@ public class typesem {
                     if (pt_ref.value.get() != null)
                         pt_ref.value.set(0, (pt_ref.value.get()).addMod(mt.mod));
                 }
-                return null;
             }
         };
         Function1<TypeSlice,Void> visitSlice = new Function1<TypeSlice,Void>(){
@@ -2616,7 +2601,6 @@ public class typesem {
                         mt.next = pt_ref.value.get();
                     visitType.invoke(mt);
                 }
-                return null;
             }
         };
         switch ((mt.ty & 0xFF))
@@ -3436,7 +3420,7 @@ public class typesem {
                         if ((pequals(ident_ref.value, Id.__monitor) && mt.sym.hasMonitor()))
                         {
                             e_ref.value = e_ref.value.castTo(sc_ref.value, Type.tvoidptr.pointerTo());
-                            e_ref.value = new AddExp(e_ref.value.loc, e_ref.value, literal());
+                            e_ref.value = new AddExp(e_ref.value.loc, e_ref.value, literal1());
                             e_ref.value = new PtrExp(e_ref.value.loc, e_ref.value);
                             e_ref.value = expressionSemantic(e_ref.value, sc_ref.value);
                             return e_ref.value;
@@ -3630,11 +3614,11 @@ public class typesem {
                                     try {
                                         if (f.isThis2)
                                         {
-                                            if (followInstantiationContext(f, ad))
+                                            if (followInstantiationContextAggregateDeclaration(f, ad))
                                             {
                                                 e1 = new VarExp(e_ref.value.loc, f.vthis, true);
                                                 e1 = new PtrExp(e1.loc, e1);
-                                                e1 = new IndexExp(e1.loc, e1, literal());
+                                                e1 = new IndexExp(e1.loc, e1, literal1());
                                                 Declaration pd = f.toParent2().isDeclaration();
                                                 assert(pd != null);
                                                 t = pd.type.toBasetype();
@@ -3664,11 +3648,11 @@ public class typesem {
                                     }
                                     if ((tcd != null && tcd.isNested()))
                                     {
-                                        VarDeclaration vthis = followInstantiationContext(tcd, ad) ? tcd.vthis2 : tcd.vthis;
+                                        VarDeclaration vthis = followInstantiationContextAggregateDeclaration(tcd, ad) ? tcd.vthis2 : tcd.vthis;
                                         e1 = new DotVarExp(e_ref.value.loc, e1, vthis, true);
                                         e1.type = vthis.type;
                                         e1.type = e1.type.addMod(t.mod);
-                                        e1 = getThisSkipNestedFuncs(e1.loc, sc_ref.value, toParentP(tcd, ad), ad, e1, t, d, true);
+                                        e1 = getThisSkipNestedFuncs(e1.loc, sc_ref.value, toParentPAggregateDeclaration(tcd, ad), ad, e1, t, d, true);
                                         if (!(e1 != null))
                                         {
                                             e_ref.value = new VarExp(e_ref.value.loc, d, true);
