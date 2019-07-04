@@ -973,7 +973,7 @@ public:
                 auto var = e.e1.isDotVarExp();
                 if (var) expToBuffer(var.e1, PREC.primary, buf, opts);
                 else expToBuffer(e.e1, PREC.primary, buf, opts);
-                if (e.f.parameters.length == 1)
+                if (!e.f.parameters || e.f.parameters.length == 1)
                     buf.put(".get");
                 else
                     buf.put(".set");
@@ -1153,8 +1153,12 @@ public:
         if (e.upr || e.lwr)
         {
             buf.put(".slice(");
-            if (e.lwr)
+            if (e.lwr) {
+                auto old = opts.dollarValue;
+                scope(exit) opts.dollarValue = old;
+                opts.dollarValue = e.e1;
                 sizeToBuffer(e.lwr, buf, opts);
+            }
             else
                 buf.put('0');
             
@@ -1932,10 +1936,12 @@ private void visitFuncIdentWithPostfix(TypeFunction t, TextBuffer buf, ExprOpts 
         return;
     }
     t.inuse++;
-    buf.fmt("Function%d<", t.parameterList.length);
-    foreach(i, p; *t.parameterList) {
-        if (i) buf.put(",");
-        typeToBuffer(p.type, buf, opts, Boxing.yes);
+    buf.fmt("Function%d<", t.parameterList ? t.parameterList.length : 0);
+    if (t.parameterList){
+        foreach(i, p; *t.parameterList) {
+            if (i) buf.put(",");
+            typeToBuffer(p.type, buf, opts, Boxing.yes);
+        }
     }
     if (t.parameterList && t.parameterList.length > 0) buf.put(",");
     if (t.next)

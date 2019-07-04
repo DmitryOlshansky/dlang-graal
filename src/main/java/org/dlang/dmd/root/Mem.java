@@ -5,6 +5,9 @@ public class Mem {
     public static BytePtr xmalloc(int size) {
         return new BytePtr(size);
     }
+    public static BytePtr xcalloc(int size, int item) {
+        return new BytePtr(size*item);
+    }
 
     public static void xfree(BytePtr p) { }
 

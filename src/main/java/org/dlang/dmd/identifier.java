@@ -12,10 +12,6 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.globals.*;
-import static org.dlang.dmd.id.*;
-import static org.dlang.dmd.tokens.*;
-import static org.dlang.dmd.utf.*;
-import static org.dlang.dmd.utils.*;
 
 public class identifier {
     static Identifier anonymousanonymous;
@@ -142,16 +138,16 @@ public class identifier {
 
         public static Identifier generateIdWithLoc(ByteSlice prefix, Loc loc) {
             OutBuffer idBuf = new OutBuffer();
-            Function0<Integer> __lambda7 = new Function0<Integer>(){
-                public Integer invoke(){
-                    return 1;
-                }
-            };
             Function1<Integer,Integer> __lambda8 = new Function1<Integer,Integer>(){
                 public Integer invoke(Integer counter){
                     idBuf.writestring( new ByteSlice("_"));
                     idBuf.print((long)counter);
                     return counter + 1;
+                }
+            };
+            Function0<Integer> __lambda7 = new Function0<Integer>(){
+                public Integer invoke(){
+                    return 1;
                 }
             };
             try {

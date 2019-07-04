@@ -11,14 +11,9 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
-import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.globals.*;
-import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
-import static org.dlang.dmd.lexer.*;
 import static org.dlang.dmd.parsetimevisitor.*;
-import static org.dlang.dmd.tokens.*;
-import static org.dlang.dmd.utils.*;
 
 public class astbase {
     private static final byte[] initializer_0 = {(byte)12, (byte)13, (byte)14, (byte)15, (byte)16, (byte)17, (byte)18, (byte)19, (byte)20, (byte)42, (byte)43, (byte)21, (byte)22, (byte)23, (byte)24, (byte)25, (byte)26, (byte)27, (byte)28, (byte)29, (byte)30, (byte)31, (byte)32, (byte)33, (byte)34};
@@ -145,7 +140,7 @@ public class astbase {
             public static final long FUNCATTR = 4462573780992L;
         }
 
-        public static long STCStorageClass = 1148096276348831L;
+        public static long STCStorageClass = 22196369506207L;
 
         public static class ENUMTY 
         {
@@ -8753,7 +8748,7 @@ public class astbase {
                 int i = 0;
                 for (; (astbase.stcToCharstable.get(i).stc) != 0;i++){
                     long tbl = astbase.stcToCharstable.get(i).stc;
-                    assert((tbl & 1148096276348831L) != 0);
+                    assert((tbl & 22196369506207L) != 0);
                     if ((stc.value & tbl) != 0)
                     {
                         stc.value &= ~tbl;

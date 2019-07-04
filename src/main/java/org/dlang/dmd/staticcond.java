@@ -1,0 +1,77 @@
+package org.dlang.dmd;
+
+import kotlin.jvm.functions.*;
+
+import org.dlang.dmd.root.*;
+
+import static org.dlang.dmd.root.filename.*;
+
+import static org.dlang.dmd.root.File.*;
+
+import static org.dlang.dmd.root.ShimsKt.*;
+import static org.dlang.dmd.root.SliceKt.*;
+import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.expression.*;
+
+public class staticcond {
+
+    public static boolean evalStaticCondition(Scope sc, Expression exp, Expression e, Ref<Boolean> errors) {
+        if (((e.op & 0xFF) == 101 || (e.op & 0xFF) == 102))
+        {
+            LogicalExp aae = (LogicalExp)e;
+            boolean result = evalStaticCondition(sc, exp, aae.e1, errors);
+            if (errors.value)
+                return false;
+            if ((e.op & 0xFF) == 101)
+            {
+                if (!(result))
+                    return false;
+            }
+            else
+            {
+                if (result)
+                    return true;
+            }
+            result = evalStaticCondition(sc, exp, aae.e2, errors);
+            return (!(errors.value) && result);
+        }
+        if ((e.op & 0xFF) == 100)
+        {
+            CondExp ce = (CondExp)e;
+            boolean result = evalStaticCondition(sc, exp, ce.econd, errors);
+            if (errors.value)
+                return false;
+            Expression leg = result ? ce.e1 : ce.e2;
+            result = evalStaticCondition(sc, exp, leg, errors);
+            return (!(errors.value) && result);
+        }
+        int nerrors = global.errors;
+        sc = (sc).startCTFE();
+        (sc).flags |= 4;
+        e = expressionSemantic(e, sc);
+        e = resolveProperties(sc, e);
+        sc = (sc).endCTFE();
+        e = e.optimize(0, false);
+        if (((nerrors != global.errors || (e.op & 0xFF) == 127) || pequals(e.type.toBasetype(), Type.terror)))
+        {
+            errors.value = true;
+            return false;
+        }
+        e = resolveAliasThis(sc, e, false);
+        if (!(e.type.isBoolean()))
+        {
+            exp.error(new BytePtr("expression `%s` of type `%s` does not have a boolean value"), exp.toChars(), e.type.toChars());
+            errors.value = true;
+            return false;
+        }
+        e = e.ctfeInterpret();
+        if (e.isBool(true))
+            return true;
+        else if (e.isBool(false))
+            return false;
+        e.error(new BytePtr("expression `%s` is not constant"), e.toChars());
+        errors.value = true;
+        return false;
+    }
+
+}

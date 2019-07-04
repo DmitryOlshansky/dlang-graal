@@ -10,6 +10,7 @@ import dmd.cond;
 import dmd.declaration;
 import dmd.dclass;
 import dmd.dsymbol;
+import dmd.dimport;
 import dmd.dmodule;
 import dmd.dstruct;
 import dmd.expression;
@@ -86,6 +87,57 @@ Members collectMembers(Dsymbol agg, bool recurseBase = false) {
     v.recursive = recurseBase;
     agg.accept(v);
     return Members(v.hasUnion, v.decls);
+}
+
+Import[] collectImports(Dsymbol agg) {
+    extern(C++) static class Collector : SemanticTimeTransitiveVisitor {
+        alias visit = typeof(super).visit;
+        Import[] imps = [];
+        bool recursive = false;
+        int aggCount = 0;
+
+        override void visit(ConditionalDeclaration ver) {
+            if (ver.condition.inc == Include.yes) {
+                if (ver.decl) {
+                    foreach(d; *ver.decl){
+                        d.accept(this);
+                    }
+                }
+            }
+            else if(ver.elsedecl) {
+                foreach(d; *ver.elsedecl){
+                    d.accept(this);
+                }
+            }
+        }
+
+        override void visit(AnonDeclaration un) {
+            super.visit(un);
+        }
+
+        override void visit(UnionDeclaration un) {
+            super.visit(un);
+        }
+
+        override void visit(StructDeclaration d) {
+            super.visit(d);
+        }
+        
+        override void visit(ClassDeclaration d) {
+            super.visit(d);
+        }
+        override void visit(FuncDeclaration ){}
+        override void visit(StaticCtorDeclaration){}
+        override void visit(SharedStaticCtorDeclaration){}
+        override void visit(StaticAssert ) {}
+        override void visit(Import imp) {
+            imps ~= imp;
+        }
+        override void visit(ExpStatement ) {}
+    }
+    scope v = new Collector();
+    agg.accept(v);
+    return v.imps;
 }
 
 void disambiguateVars(Statement st, ref IdentityMap!string renames) {

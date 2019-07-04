@@ -28,12 +28,12 @@ import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
-import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.init.*;
 import static org.dlang.dmd.lexer.*;
 import static org.dlang.dmd.mtype.*;
 import static org.dlang.dmd.statement.*;
+import static org.dlang.dmd.staticassert.*;
 import static org.dlang.dmd.tokens.*;
 
 public class parse {
@@ -12288,10 +12288,10 @@ public class parse {
                                     DArray<Statement> as = new DArray<Statement>();
                                     (as).reserve((a).length);
                                     {
-                                        int __key906 = 0;
-                                        int __limit907 = (a).length;
-                                        for (; __key906 < __limit907;__key906 += 1) {
-                                            int i = __key906;
+                                        int __key817 = 0;
+                                        int __limit818 = (a).length;
+                                        for (; __key817 < __limit818;__key817 += 1) {
+                                            int i = __key817;
                                             Dsymbol d = (a).get(i);
                                             s = new ExpStatement(loc, d);
                                             (as).push(s);

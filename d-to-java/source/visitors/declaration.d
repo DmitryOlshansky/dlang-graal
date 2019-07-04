@@ -217,6 +217,16 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         return currentInst.length && !noTiargs ? .tiArgs(currentInst.top, opts) : "";
     }
 
+    string typeOf(Type t, Boxing boxing = Boxing.no) {
+        addImportForType(t);
+        return toJava(t, opts, boxing);
+    }
+
+    string refTypeOf(Type t) {
+        addImportForType(t);
+        return refType(t, opts);
+    }
+
     void addImport(Array!Identifier* packages, Identifier id) {
         if (id == Id.object)
             return; // object is imported by default
@@ -240,7 +250,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     string funcSig(FuncDeclaration func) {
         auto b = new TextBuffer();
-        b.put(func.type.nextOf.toJava(opts));
+        b.put(typeOf(func.type.nextOf));
         b.put(" ");
         b.put(func.ident.symbol);
         auto tf = func.type.isTypeFunction();
@@ -249,9 +259,9 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 if (i) b.put(", ");
                 auto box = p.storageClass & (STC.ref_ | STC.out_);
                 if (box && !p.type.isTypeStruct) {
-                    b.fmt("%s", refType(p.type, opts));
+                    b.fmt("%s", refTypeOf(p.type));
                 }
-                else b.fmt("%s", toJava(p.type, opts));
+                else b.fmt("%s", typeOf(p.type));
             }
         if (auto ti = func in opts.templates) b.put(ti.tiArgs);
         return b.data.dup;
@@ -338,7 +348,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     void printSArray(Type type, TextBuffer sink) {
         auto st = cast(TypeSArray)type;
-        sink.fmt("new %s(new %s[%s])", type.toJava(opts), type.nextOf.toJava(opts), st.dim.toJava(opts));
+        sink.fmt("new %s(new %s[%s])", typeOf(type), typeOf(type.nextOf), st.dim.toJava(opts));
     }
    
     extern(D) private void printVar(VarDeclaration var, const(char)[] ident, TextBuffer sink) {
@@ -353,7 +363,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         Type t = var.type;
         if(var._init && var._init.kind == InitKind.array && var.type.ty == Tpointer)
             t = var.type.nextOf.arrayOf;
-        auto type = refVar ? refType(var.type, opts) : toJava(t, opts);
+        auto type = refVar ? refTypeOf(var.type) : typeOf(t);
         auto access = "";
         if (opts.aggregates.length && !opts.funcs.length) access = defAccess ~ " ";
         auto ti = opts.funcs.length ? "" : tiArgs;
@@ -372,15 +382,15 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 auto isNull = assign.e2.isNullExp();
                 //stderr.writefln("Init1 %s integer = %s null = %s", var, integer, isNull);
                 if (integer && integer.toInteger() == 0 && var.type.ty == Tstruct){
-                    sink.fmt("new %s()", var.type.toJava(opts));
+                    sink.fmt("new %s()", typeOf(var.type));
                 }
                 else if(integer && integer.toInteger() == 0 && var.type.ty == Tsarray) {
                     sink.fmt(" = ");
                     printSArray(var.type, sink);
                 }
                 else if(var.type.ty == Tarray && isNull) {
-                    if (refVar) sink.fmt("ref(new %s())", var.type.toJava(opts));
-                    else sink.fmt("new %s()", var.type.toJava(opts));
+                    if (refVar) sink.fmt("ref(new %s())", typeOf(var.type));
+                    else sink.fmt("new %s()", typeOf(var.type));
                 }
                 else {
                     bool needPCopy(Expression e) {
@@ -412,7 +422,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             printSArray(var.type, sink);
         }
         else if (var.type.ty == Tstruct || var.type.ty == Taarray) {
-            sink.fmt(" = new %s()", var.type.toJava(opts));
+            sink.fmt(" = new %s()", typeOf(var.type));
         }
         sink.fmt(";\n");
     }
@@ -423,11 +433,11 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         VarDeclaration[string] visited;
         stderr.writefln("UNION members: %s", members.all);
         foreach (m; members.all) {
-            if (auto root = m.type.toJava(opts) in visited) {
+            if (auto root = typeOf(m.type) in visited) {
                 opts.aliasedUnion[m] = *root;
             }
             else {
-                visited[m.type.toJava(opts)] = m;
+                visited[typeOf(m.type)] = m;
             }
         }
         foreach (m; members.all) {
@@ -750,7 +760,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(Import imp)
     {
-        addImport(imp.packages, imp.id);
+        //addImport(imp.packages, imp.id);
     }
 
     override void visit(CompileDeclaration compile)
@@ -811,7 +821,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (em.value)
         {
             buf.fmt("public static final %s %s = %s;\n", 
-                em.type.toJava(opts), em.ident.symbol, em.value.toJava(opts));
+                typeOf(em.type), em.ident.symbol, em.value.toJava(opts));
         }
     }
 
@@ -1069,6 +1079,22 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
     }
 
+    void addNestedImports(Type t) {
+        // stderr.writefln("import for %s %s\n", t.toString, t.kind[0..strlen(t.kind)]);
+        Import[] imps;
+        auto tc = t.isTypeClass();
+        // if (tc) 
+        if (tc) {
+            imps = collectImports(tc.sym);
+        }
+        auto ts = t.isTypeStruct();
+        if (ts) {
+            imps = collectImports(ts.sym);
+        }
+        foreach(imp; imps)
+            addImport(imp.packages, imp.id);
+    }
+
     auto handleTiAggregate(AggregateDeclaration d) { 
         if (!currentInst.empty) {
             auto tiargs = currentInst.top ? tiArgs() : "";
@@ -1077,6 +1103,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     foreach (arg; *currentInst.top.tiargs) {
                         if (auto t = arg.isType()) {
                             addImportForType(t);
+                            // addNestedImports(t);
                         }
                     }
             }
@@ -1118,7 +1145,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.indent;
         foreach(m; members.all) {
             if (auto ts = m.type.isTypeStruct()) {
-                buf.fmt("%s = new %s();\n", m.ident.symbol, toJava(ts, opts));
+                buf.fmt("%s = new %s();\n", m.ident.symbol, typeOf(ts));
             }
         }
         buf.outdent;
@@ -1148,7 +1175,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     buf.fmt("public %s(", nameOf(d));
                     foreach(i, m; members.all) {
                         if(i) buf.put(", ");
-                        buf.fmt("%s %s", m.type.toJava(opts), m.ident.toString);
+                        buf.fmt("%s %s", typeOf(m.type), m.ident.toString);
                     }
                     buf.put(") {\n");
                     buf.indent;
@@ -1172,8 +1199,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.outdent;
         buf.put("}\n");
         if (linkedNode >= 0) {
-            buf.fmt("public void setNext(%s value) { next = value; }\n", members.all[linkedNode].type.toJava(opts));
-            buf.fmt("public %s getNext() { return next; }\n", members.all[linkedNode].type.toJava(opts));
+            buf.fmt("public void setNext(%s value) { next = value; }\n", typeOf(members.all[linkedNode].type));
+            buf.fmt("public %s getNext() { return next; }\n", typeOf(members.all[linkedNode].type));
         }
         buf.outdent;
         buf.put('}');
@@ -1198,7 +1225,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
         visitBase(d);
         if (linkedNode >= 0) {
-            buf.fmt(" implements LinkedNode<%s>", members.all[linkedNode].type.toJava(opts));
+            buf.fmt(" implements LinkedNode<%s>", typeOf(members.all[linkedNode].type));
         }
         if (d.members)
         {
@@ -1231,8 +1258,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
             // linked node getters/setters
             if (linkedNode >= 0) {
-                buf.fmt("public void setNext(%s value) { next = value; }\n", members.all[linkedNode].type.toJava(opts));
-                buf.fmt("public %s getNext() { return next; }\n", members.all[linkedNode].type.toJava(opts));
+                buf.fmt("public void setNext(%s value) { next = value; }\n", typeOf(members.all[linkedNode].type));
+                buf.fmt("public %s getNext() { return next; }\n", typeOf(members.all[linkedNode].type));
             }
 
             buf.outdent;
@@ -1252,8 +1279,9 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             buf.put(" extends ");
         foreach (i, b; *d.baseclasses)
         {
+            addNestedImports(b.type);
             if (i) buf.put(", ");
-            buf.put(b.type.toJava(opts));
+            buf.put(typeOf(b.type));
         }
     }
 
@@ -1274,7 +1302,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         //stderr.writefln("\tLocal function %s", func.ident.toString);
         buf.fmt("%s %s%s = new %s(){\n", t.toJavaFunc(opts), func.funcName, tiArgs, t.toJavaFunc(opts));
         buf.indent;
-        buf.fmt("public %s invoke(", t.nextOf.toJava(opts, Boxing.yes));
+        buf.fmt("public %s invoke(", typeOf(t.nextOf, Boxing.yes));
         VarDeclaration[] renamedVars;
         if (func.parameters) {
             foreach(i, p; (*func.parameters)[]) {
@@ -1282,10 +1310,10 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 auto box = p.isRef || p.isOut;
                 if (box && !isLambda && !p.type.isTypeStruct && p.type.ty != Tarray) {
                     opts.refParams[p] = true;
-                    buf.fmt("%s %s", refType(p.type, opts), p.ident.symbol);
+                    buf.fmt("%s %s", refTypeOf(p.type), p.ident.symbol);
                 }
                 else {
-                    buf.fmt("%s %s", toJava(p.type, opts, Boxing.yes), p.ident.symbol);
+                    buf.fmt("%s %s", typeOf(p.type, Boxing.yes), p.ident.symbol);
                     if (passedByRef(p, func)) {
                         renamedVars ~= p;
                         opts.refParams[p] = true;
@@ -1297,7 +1325,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put("){\n");
         buf.indent;
         foreach (var; renamedVars) {
-            buf.fmt("%s %s = ref(%s);\n", refType(var.type, opts), opts.renamed[var], var.ident.symbol);
+            buf.fmt("%s %s = ref(%s);\n", refTypeOf(var.type), opts.renamed[var], var.ident.symbol);
         }
         super.visit(func);
         if (t.nextOf.ty == Tvoid) buf.put("return null;\n");
@@ -1314,12 +1342,12 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         auto storage = (func.isStatic()  || opts.aggregates.length == 0) ? "static" : "";
         if (func.isAbstract && func.fbody is null) storage = "abstract";
         if (auto ctor = func.isCtorDeclaration())
-            buf.fmt("public %s %s%s(", storage, toJava(func.type.nextOf(), opts), tiArgs);
+            buf.fmt("public %s %s%s(", storage, typeOf(func.type.nextOf()), tiArgs);
         else if(func.funcName == "main" && opts.aggregates.length == 0) {
             buf.fmt("public %s void %s%s(", storage, func.funcName, tiArgs);
         }
         else
-            buf.fmt("public %s %s %s%s(", storage, toJava(func.type.nextOf(), opts), func.funcName, tiArgs);
+            buf.fmt("public %s %s %s%s(", storage, typeOf(func.type.nextOf()), func.funcName, tiArgs);
         VarDeclaration[] renamedVars;
         if (func.parameters) {
             foreach(i, p; (*func.parameters)[]) {
@@ -1327,10 +1355,10 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 auto box = p.isRef || p.isOut;
                 if (box && !p.type.isTypeStruct && p.type.ty != Tarray) {
                     opts.refParams[p] = true;
-                    buf.fmt("%s %s", refType(p.type, opts), p.ident.toString);
+                    buf.fmt("%s %s", refTypeOf(p.type), p.ident.toString);
                 }
                 else {
-                    buf.fmt("%s %s", toJava(p.type, opts), p.ident.toString);
+                    buf.fmt("%s %s", typeOf(p.type), p.ident.toString);
                     if (passedByRef(p, func)) {
                         renamedVars ~= p;
                         opts.refParams[p] = true;
@@ -1351,9 +1379,9 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     auto name = p.ident ? p.ident.toString : format("arg%d",i);
                     if (box && !p.type.isTypeStruct && p.type.ty != Tarray) {
                         opts.refParams[p] = true;
-                        buf.fmt("%s %s", refType(p.type, opts), name);
+                        buf.fmt("%s %s", refTypeOf(p.type), name);
                     }
-                    else buf.fmt("%s %s", toJava(p.type, opts), name);
+                    else buf.fmt("%s %s", typeOf(p.type), name);
                 }
         }
         buf.put(")");
@@ -1500,7 +1528,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     suffix ~= "[]";
                     t = t.nextOf();
                 }
-                tmp.fmt("private static final %s%s initializer_%d = ", t.toJava(opts), suffix, arrayInitializers.length);
+                tmp.fmt("private static final %s%s initializer_%d = ", typeOf(t), suffix, arrayInitializers.length);
             }
             
             tmp.put("{");

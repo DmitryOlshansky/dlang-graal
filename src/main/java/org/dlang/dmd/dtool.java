@@ -13,12 +13,9 @@ import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.astbase.*;
 import static org.dlang.dmd.errors.*;
-import static org.dlang.dmd.globals.*;
-import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.lexer.*;
 import static org.dlang.dmd.parse.*;
-import static org.dlang.dmd.tokens.*;
 import static org.dlang.dmd.transitivevisitor.*;
 
 public class dtool {
