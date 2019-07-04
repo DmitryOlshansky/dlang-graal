@@ -2294,10 +2294,10 @@ public class func {
         }
     }
 
-    // from template printCandidates!(FuncDeclaration)
-    public static void printCandidatesFuncDeclaration(Loc loc, FuncDeclaration declaration) {
+    // from template printCandidates!(TemplateDeclaration)
+    public static void printCandidatesTemplateDeclaration(Loc loc, TemplateDeclaration declaration) {
         int numToDisplay = 5;
-        Function1<Dsymbol,Integer> __lambda3FuncDeclaration = new Function1<Dsymbol,Integer>(){
+        Function1<Dsymbol,Integer> __lambda3TemplateDeclaration = new Function1<Dsymbol,Integer>(){
             public Integer invoke(Dsymbol s){
                 Dsymbol nextOverload = null;
                 {
@@ -2332,8 +2332,8 @@ public class func {
     }
 
 
-    // from template printCandidates!(TemplateDeclaration)
-    public static void printCandidatesTemplateDeclaration(Loc loc, TemplateDeclaration declaration) {
+    // from template printCandidates!(FuncDeclaration)
+    public static void printCandidatesFuncDeclaration(Loc loc, FuncDeclaration declaration) {
         int numToDisplay = 5;
         overloadApply(declaration, __lambda3, null);
     }

@@ -3804,17 +3804,17 @@ public class dtemplate {
         if (((tparam.mod & 0xFF) & MODFlags.wild) == 0)
             return (byte)0;
         at.set(0, null);
-        // from template X!(IntegerInteger)
-        Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
-            public Integer invoke(Integer U, Integer T){
-                return U << 4 | T;
-            }
-        };
-
         // from template X!(ByteByte)
         Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
             public Integer invoke(Byte U, Byte T){
                 return (U & 0xFF) << 4 | (T & 0xFF);
+            }
+        };
+
+        // from template X!(IntegerInteger)
+        Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
+            public Integer invoke(Integer U, Integer T){
+                return U << 4 | T;
             }
         };
 
@@ -3882,6 +3882,13 @@ public class dtemplate {
     }
 
     public static int deduceTypeHelper(Type t, Ptr<Type> at, Type tparam) {
+        // from template X!(ByteByte)
+        Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
+            public Integer invoke(Byte U, Byte T){
+                return (U & 0xFF) << 4 | (T & 0xFF);
+            }
+        };
+
         // from template X!(IntegerInteger)
         Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
             public Integer invoke(Integer U, Integer T){
@@ -3890,17 +3897,10 @@ public class dtemplate {
         };
 
         // from template X!(IntegerInteger)
-        // removed duplicate function, [["int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
+        // removed duplicate function, [["int Xbyte, byteByteByte", "int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
 
         // from template X!(IntegerInteger)
-        // removed duplicate function, [["int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
-
-        // from template X!(ByteByte)
-        Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
-            public Integer invoke(Byte U, Byte T){
-                return (U & 0xFF) << 4 | (T & 0xFF);
-            }
-        };
+        // removed duplicate function, [["int Xbyte, byteByteByte", "int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
 
         // from template X!(IntegerInteger)
         // removed duplicate function, [["int Xbyte, byteByteByte", "int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger

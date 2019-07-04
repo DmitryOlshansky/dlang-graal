@@ -286,20 +286,20 @@ public class arrayop {
         return new ErrorExp();
     }
 
-    // from template checkPossibleAddCatError!(AddAssignExpCatAssignExp)
-    public static void checkPossibleAddCatErrorAddAssignExpCatAssignExp(AddAssignExp ae) {
-        if (((!(ae.e2.type != null) || (ae.e2.type.ty & 0xFF) != ENUMTY.Tarray) || !((ae.e2.type.implicitConvTo(ae.e1.type)) != 0)))
-            return ;
-        CatAssignExp ce = new CatAssignExp(ae.loc, ae.e1, ae.e2);
-        ae.errorSupplemental(new BytePtr("did you mean to concatenate (`%s`) instead ?"), ce.toChars());
-    }
-
-
     // from template checkPossibleAddCatError!(AddExpCatExp)
     public static void checkPossibleAddCatErrorAddExpCatExp(AddExp ae) {
         if (((!(ae.e2.type != null) || (ae.e2.type.ty & 0xFF) != ENUMTY.Tarray) || !((ae.e2.type.implicitConvTo(ae.e1.type)) != 0)))
             return ;
         CatExp ce = new CatExp(ae.loc, ae.e1, ae.e2);
+        ae.errorSupplemental(new BytePtr("did you mean to concatenate (`%s`) instead ?"), ce.toChars());
+    }
+
+
+    // from template checkPossibleAddCatError!(AddAssignExpCatAssignExp)
+    public static void checkPossibleAddCatErrorAddAssignExpCatAssignExp(AddAssignExp ae) {
+        if (((!(ae.e2.type != null) || (ae.e2.type.ty & 0xFF) != ENUMTY.Tarray) || !((ae.e2.type.implicitConvTo(ae.e1.type)) != 0)))
+            return ;
+        CatAssignExp ce = new CatAssignExp(ae.loc, ae.e1, ae.e2);
         ae.errorSupplemental(new BytePtr("did you mean to concatenate (`%s`) instead ?"), ce.toChars());
     }
 

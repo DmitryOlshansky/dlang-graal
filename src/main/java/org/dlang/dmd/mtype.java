@@ -83,17 +83,17 @@ public class mtype {
             return MATCH.exact;
         if (MODimplicitConv(modfrom, modto))
             return MATCH.constant;
-        // from template X!(IntegerInteger)
-        Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
-            public Integer invoke(Integer m, Integer n){
-                return m << 4 | n;
-            }
-        };
-
         // from template X!(ByteByte)
         Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
             public Integer invoke(Byte m, Byte n){
                 return (m & 0xFF) << 4 | (n & 0xFF);
+            }
+        };
+
+        // from template X!(IntegerInteger)
+        Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
+            public Integer invoke(Integer m, Integer n){
+                return m << 4 | n;
             }
         };
 
