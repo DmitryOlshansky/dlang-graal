@@ -3882,17 +3882,17 @@ public class dtemplate {
     }
 
     public static int deduceTypeHelper(Type t, Ptr<Type> at, Type tparam) {
-        // from template X!(ByteByte)
-        Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
-            public Integer invoke(Byte U, Byte T){
-                return (U & 0xFF) << 4 | (T & 0xFF);
-            }
-        };
-
         // from template X!(IntegerInteger)
         Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
             public Integer invoke(Integer U, Integer T){
                 return U << 4 | T;
+            }
+        };
+
+        // from template X!(ByteByte)
+        Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
+            public Integer invoke(Byte U, Byte T){
+                return (U & 0xFF) << 4 | (T & 0xFF);
             }
         };
 
@@ -5884,9 +5884,9 @@ public class dtemplate {
             (a).push(this);
             this.memberOf = mi;
             if ((mi.semanticRun >= PASS.semantic2done && mi.isRoot()))
-                Module.addDeferredSemantic2(this);
+                dmodule.Module.addDeferredSemantic2(this);
             if ((mi.semanticRun >= PASS.semantic3done && mi.isRoot()))
-                Module.addDeferredSemantic3(this);
+                dmodule.Module.addDeferredSemantic3(this);
             return a;
         }
 
@@ -5927,7 +5927,7 @@ public class dtemplate {
             Function1<Dsymbol,Void> symbolDg = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
                     dsymbolSemantic(s, sc2_ref.value);
-                    Module.runDeferredSemantic();
+                    dmodule.Module.runDeferredSemantic();
                     return null;
                 }
             };

@@ -491,7 +491,7 @@ public class dmangle {
             Dsymbol parentsave = ad.parent;
             if (cd != null)
             {
-                if ((((((((((pequals(cd.ident, Id.Exception) && pequals(cd.parent.ident, Id.object)) || pequals(cd.ident, Id.TypeInfo)) || pequals(cd.ident, Id.TypeInfo_Struct)) || pequals(cd.ident, Id.TypeInfo_Class)) || pequals(cd.ident, Id.TypeInfo_Tuple)) || pequals(cd, ClassDeclaration.object)) || pequals(cd, Type.typeinfoclass)) || pequals(cd, Module.moduleinfo)) || strncmp(cd.ident.toChars(),  new ByteSlice("TypeInfo_"), 9) == 0))
+                if ((((((((((pequals(cd.ident, Id.Exception) && pequals(cd.parent.ident, Id.object)) || pequals(cd.ident, Id.TypeInfo)) || pequals(cd.ident, Id.TypeInfo_Struct)) || pequals(cd.ident, Id.TypeInfo_Class)) || pequals(cd.ident, Id.TypeInfo_Tuple)) || pequals(cd, ClassDeclaration.object)) || pequals(cd, Type.typeinfoclass)) || pequals(cd, dmodule.Module.moduleinfo)) || strncmp(cd.ident.toChars(),  new ByteSlice("TypeInfo_"), 9) == 0))
                 {
                     ad.parent = null;
                 }

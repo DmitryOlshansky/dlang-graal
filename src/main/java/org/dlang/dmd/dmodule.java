@@ -222,7 +222,7 @@ public class dmodule {
         }
 
         public static DsymbolTable resolve(DArray<Identifier> packages, Ptr<Dsymbol> pparent, Ptr<dmodule.Package> ppkg) {
-            DsymbolTable dst = Module.modules;
+            DsymbolTable dst = dmodule.Module.modules;
             Dsymbol parent = null;
             if (ppkg != null)
                 ppkg.set(0, null);
@@ -316,7 +316,7 @@ public class dmodule {
                     }
                 }
                 if (lookForSourceFile(getFilename(packages, this.ident)).getLength() != 0)
-                    Module.load(new Loc(null, 0, 0), packages, this.ident);
+                    dmodule.Module.load(new Loc(null, 0, 0), packages, this.ident);
                 else
                     this.isPkgMod = PKG.package_;
             }
@@ -961,7 +961,7 @@ public class dmodule {
             {
                 this.ident = (this.md).id;
                 Ref<dmodule.Package> ppack = ref(null);
-                dst = Package.resolve((this.md).packages, this.parent, ptr(ppack));
+                dst = dmodule.Package.resolve((this.md).packages, this.parent, ptr(ppack));
                 assert(dst != null);
                 dmodule.Module m = ppack.value != null ? ppack.value.isModule() : null;
                 if ((m != null && (strcmp(m.srcfile.name(),  new ByteSlice("package.d")) != 0 && strcmp(m.srcfile.name(),  new ByteSlice("package.di")) != 0)))

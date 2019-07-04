@@ -240,7 +240,7 @@ public class mars {
                                 setDefaultLibrary();
                                 Type._init();
                                 Id.initialize();
-                                Module._init();
+                                dmodule.Module._init();
                                 target._init(params);
                                 Expression._init();
                                 Objc._init();
@@ -322,8 +322,8 @@ public class mars {
                                                 dmodule.Module m = modules.get(modi);
                                                 if (params.verbose)
                                                     message(new BytePtr("parse     %s"), m.toChars());
-                                                if (!(Module.rootModule != null))
-                                                    Module.rootModule = m;
+                                                if (!(dmodule.Module.rootModule != null))
+                                                    dmodule.Module.rootModule = m;
                                                 m.importedFrom = m;
                                                 if (((!(params.oneobj) || modi == 0) || m.isDocFile))
                                                     m.deleteObjFile();
@@ -411,14 +411,14 @@ public class mars {
                                                 dsymbolSemantic(m, null);
                                             }
                                         }
-                                        Module.dprogress = 1;
-                                        Module.runDeferredSemantic();
-                                        if ((Module.deferred.length) != 0)
+                                        dmodule.Module.dprogress = 1;
+                                        dmodule.Module.runDeferredSemantic();
+                                        if ((dmodule.Module.deferred.length) != 0)
                                         {
                                             {
                                                 int i = 0;
-                                                for (; i < Module.deferred.length;i++){
-                                                    Dsymbol sd = Module.deferred.get(i);
+                                                for (; i < dmodule.Module.deferred.length;i++){
+                                                    Dsymbol sd = dmodule.Module.deferred.get(i);
                                                     sd.error(new BytePtr("unable to resolve forward reference in definition"));
                                                 }
                                             }
@@ -433,7 +433,7 @@ public class mars {
                                                 semantic2(m, null);
                                             }
                                         }
-                                        Module.runDeferredSemantic2();
+                                        dmodule.Module.runDeferredSemantic2();
                                         if ((global.errors) != 0)
                                             fatal();
                                         {
@@ -460,7 +460,7 @@ public class mars {
                                                 }
                                             }
                                         }
-                                        Module.runDeferredSemantic3();
+                                        dmodule.Module.runDeferredSemantic3();
                                         if ((global.errors) != 0)
                                             fatal();
                                         if (params.useInline)

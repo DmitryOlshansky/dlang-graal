@@ -354,7 +354,7 @@ public class dscope {
                     if (!(id != null))
                         return null;
                     Scope sc = this;
-                    Module.clearCache();
+                    dmodule.Module.clearCache();
                     Ref<Dsymbol> scopesym = ref(null);
                     Dsymbol s = (sc).search(Loc.initial, id, ptr(scopesym), 2);
                     if (s != null)

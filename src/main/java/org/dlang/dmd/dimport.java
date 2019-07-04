@@ -98,7 +98,7 @@ public class dimport {
 
         public  boolean load(Scope sc) {
             int errors = global.errors;
-            DsymbolTable dst = Package.resolve(this.packages, null, this.pkg);
+            DsymbolTable dst = dmodule.Package.resolve(this.packages, null, this.pkg);
             Dsymbol s = dst.lookup(this.id);
             if (s != null)
             {
@@ -116,7 +116,7 @@ public class dimport {
                         {
                             if (p.isPkgMod == PKG.unknown)
                             {
-                                this.mod = Module.load(this.loc, this.packages, this.id);
+                                this.mod = dmodule.Module.load(this.loc, this.packages, this.id);
                                 if (!(this.mod != null))
                                     p.isPkgMod = PKG.package_;
                                 else
@@ -148,14 +148,14 @@ public class dimport {
             }
             if (!(this.mod != null))
             {
-                this.mod = Module.load(this.loc, this.packages, this.id);
+                this.mod = dmodule.Module.load(this.loc, this.packages, this.id);
                 if (this.mod != null)
                 {
                     dst.insert(this.id, this.mod);
                 }
             }
             if ((this.mod != null && !(this.mod.importedFrom != null)))
-                this.mod.importedFrom = sc != null ? (sc)._module.importedFrom : Module.rootModule;
+                this.mod.importedFrom = sc != null ? (sc)._module.importedFrom : dmodule.Module.rootModule;
             if (!(this.pkg != null))
                 this.pkg = this.mod;
             return global.errors != errors;

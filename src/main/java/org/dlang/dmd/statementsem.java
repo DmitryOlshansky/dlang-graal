@@ -3838,7 +3838,7 @@ public class statementsem {
                     dsymbolSemantic(s, this.sc);
                     if (s.mod != null)
                     {
-                        Module.addDeferredSemantic2(s);
+                        dmodule.Module.addDeferredSemantic2(s);
                         (this.sc).insert(s);
                         {
                             Slice<AliasDeclaration> __r1716 = s.aliasdecls.opSlice().copy();

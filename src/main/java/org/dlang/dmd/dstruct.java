@@ -109,13 +109,13 @@ public class dstruct {
                     if (ti != null)
                     {
                         if ((ti.minst != null && !(ti.minst.isRoot())))
-                            Module.addDeferredSemantic3(sd);
+                            dmodule.Module.addDeferredSemantic3(sd);
                     }
                     else
                     {
                         if (sd.inNonRoot())
                         {
-                            Module.addDeferredSemantic3(sd);
+                            dmodule.Module.addDeferredSemantic3(sd);
                         }
                     }
                 }
@@ -203,8 +203,8 @@ public class dstruct {
             this.type = new TypeStruct(this);
             if (inObject)
             {
-                if ((pequals(id, Id.ModuleInfo) && !(Module.moduleinfo != null)))
-                    Module.moduleinfo = this;
+                if ((pequals(id, Id.ModuleInfo) && !(dmodule.Module.moduleinfo != null)))
+                    dmodule.Module.moduleinfo = this;
             }
         }
 

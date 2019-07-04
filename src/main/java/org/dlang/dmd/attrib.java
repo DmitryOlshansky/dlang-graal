@@ -530,7 +530,7 @@ public class attrib {
             if ((pkg_identifiers != null && (pkg_identifiers).length > 0))
             {
                 Ref<Dsymbol> tmp = ref(null);
-                Package.resolve(pkg_identifiers, ptr(tmp), null);
+                dmodule.Package.resolve(pkg_identifiers, ptr(tmp), null);
                 this.protection.pkg = tmp.value != null ? tmp.value.isPackage() : null;
             }
         }
@@ -553,7 +553,7 @@ public class attrib {
             if (this.pkg_identifiers != null)
             {
                 Ref<Dsymbol> tmp = ref(null);
-                Package.resolve(this.pkg_identifiers, ptr(tmp), null);
+                dmodule.Package.resolve(this.pkg_identifiers, ptr(tmp), null);
                 this.protection.pkg = tmp.value != null ? tmp.value.isPackage() : null;
                 this.pkg_identifiers = null;
             }

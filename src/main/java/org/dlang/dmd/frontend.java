@@ -132,7 +132,7 @@ public class frontend {
         addDefaultVersionIdentifiers(global.params);
         Type._init();
         Id.initialize();
-        Module._init();
+        dmodule.Module._init();
         target._init(global.params);
         Expression._init();
         Objc._init();
@@ -145,7 +145,7 @@ public class frontend {
         global.deinitialize();
         Type.deinitialize();
         Id.deinitialize();
-        Module.deinitialize();
+        dmodule.Module.deinitialize();
         target.deinitialize();
         Expression.deinitialize();
         Objc.deinitialize();
@@ -208,12 +208,12 @@ public class frontend {
         m.importedFrom = m;
         m.importAll(null);
         dsymbolSemantic(m, null);
-        Module.dprogress = 1;
-        Module.runDeferredSemantic();
+        dmodule.Module.dprogress = 1;
+        dmodule.Module.runDeferredSemantic();
         semantic2(m, null);
-        Module.runDeferredSemantic2();
+        dmodule.Module.runDeferredSemantic2();
         semantic3(m, null);
-        Module.runDeferredSemantic3();
+        dmodule.Module.runDeferredSemantic3();
     }
 
     public static ByteSlice prettyPrint(dmodule.Module m) {

@@ -155,7 +155,7 @@ public class semantic3 {
                 for (; i < (mod.members).length;i++){
                     Dsymbol s = (mod.members).get(i);
                     semantic3(s, sc);
-                    Module.runDeferredSemantic2();
+                    dmodule.Module.runDeferredSemantic2();
                 }
             }
             if (mod.userAttribDecl != null)

@@ -13,7 +13,7 @@ echo
 echo "==== APPLYING PATCHES ===="
 for p in d-to-java/all.patch ; do
     echo "Applying patch $p"
-    patch -u -R -l -p 1 < $p
+    patch -u -F 10  -R -l -p 1 < $p
 done
 
 elif [ "x$1" != "x" ] ; then

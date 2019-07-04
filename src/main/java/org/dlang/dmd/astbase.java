@@ -2185,8 +2185,8 @@ public class astbase {
                 this.type = new TypeStruct(this);
                 if (inObject)
                 {
-                    if ((pequals(id, Id.ModuleInfo) && !(Module.moduleinfo != null)))
-                        Module.moduleinfo = this;
+                    if ((pequals(id, Id.ModuleInfo) && !(dmodule.Module.moduleinfo != null)))
+                        dmodule.Module.moduleinfo = this;
                 }
             }
 

@@ -556,7 +556,7 @@ public class dsymbol {
                         return null;
                     cost.value = 0;
                     Dsymbol s = this;
-                    Module.clearCache();
+                    dmodule.Module.clearCache();
                     return s.search(Loc.initial, id, 2);
                 }
             };

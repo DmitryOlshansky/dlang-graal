@@ -57,7 +57,7 @@ public class access {
                     dmodule.Module m = s.isModule();
                     if (m != null)
                     {
-                        DsymbolTable dst = Package.resolve(m.md != null ? (m.md).packages : null, null, null);
+                        DsymbolTable dst = dmodule.Package.resolve(m.md != null ? (m.md).packages : null, null, null);
                         assert(dst != null);
                         Dsymbol s2 = dst.lookup(m.ident);
                         assert(s2 != null);

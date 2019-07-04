@@ -1429,7 +1429,13 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(DtorDeclaration ) { }
 
-    override void visit(AliasDeclaration d) { }
+    override void visit(AliasDeclaration d) { 
+        if (d.aliassym) {
+            auto f = d.aliassym.isFuncDeclaration;
+            if (f && f.getModule !is currentMod)
+                addImport(f.getModule.md.packages, f.getModule.ident);
+        }
+    }
 
     override void visit(FuncDeclaration func)  {
         if (func.funcName == "destroy") return;

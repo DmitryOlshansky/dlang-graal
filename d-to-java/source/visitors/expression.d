@@ -180,8 +180,12 @@ public:
                 break;
             var = var.parent;
         }
-        foreach_reverse (p; chain)
-            buf.fmt("%s.", p.ident.symbol);
+        foreach_reverse (p; chain) {
+            if (p.ident.symbol == "Module" || p.ident.symbol == "Package")
+            buf.fmt("dmodule.%s.", p.ident.symbol);
+            else 
+                buf.fmt("%s.", p.ident.symbol);
+        }
         return buf.data.dup;
     }
 

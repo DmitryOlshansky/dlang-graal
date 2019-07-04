@@ -3826,8 +3826,8 @@ public class mtype {
             }
         }
 
-        // from template getMatchError!(IntegerInteger)
-        public  BytePtr getMatchErrorIntegerInteger(BytePtr format, int _param_1, int _param_2) {
+        // from template getMatchError!(IntegerBytePtr)
+        public  BytePtr getMatchErrorIntegerBytePtr(BytePtr format, int _param_1, BytePtr _param_2) {
             if (((global.gag) != 0 && !(global.params.showGaggedErrors)))
                 return null;
             OutBuffer buf = new OutBuffer();
@@ -3840,8 +3840,8 @@ public class mtype {
         }
 
 
-        // from template getMatchError!(IntegerBytePtr)
-        public  BytePtr getMatchErrorIntegerBytePtr(BytePtr format, int _param_1, BytePtr _param_2) {
+        // from template getMatchError!(IntegerInteger)
+        public  BytePtr getMatchErrorIntegerInteger(BytePtr format, int _param_1, int _param_2) {
             if (((global.gag) != 0 && !(global.params.showGaggedErrors)))
                 return null;
             OutBuffer buf = new OutBuffer();

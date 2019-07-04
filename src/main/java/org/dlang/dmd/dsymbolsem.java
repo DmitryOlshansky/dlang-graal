@@ -1864,7 +1864,7 @@ public class dsymbolsem {
             Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
                     dsymbolSemantic(s, sc);
-                    Module.runDeferredSemantic();
+                    dmodule.Module.runDeferredSemantic();
                     return null;
                 }
             };
@@ -1892,7 +1892,7 @@ public class dsymbolsem {
                 ed.semanticRun = PASS.semanticdone;
                 return ;
             }
-            int dprogress_save = Module.dprogress;
+            int dprogress_save = dmodule.Module.dprogress;
             Scope scx = null;
             if (ed._scope != null)
             {
@@ -1928,8 +1928,8 @@ public class dsymbolsem {
                         {
                             ed._scope = scx != null ? scx : (this.sc).copy();
                             (ed._scope).setNoFree();
-                            Module.addDeferredSemantic(ed);
-                            Module.dprogress = dprogress_save;
+                            dmodule.Module.addDeferredSemantic(ed);
+                            dmodule.Module.dprogress = dprogress_save;
                             ed.semanticRun = PASS.init;
                             return ;
                         }
@@ -1957,7 +1957,7 @@ public class dsymbolsem {
                 ed.errors = true;
                 return ;
             }
-            Module.dprogress++;
+            dmodule.Module.dprogress++;
             Scope sce = null;
             if (ed.isAnonymous())
                 sce = this.sc;
@@ -2334,7 +2334,7 @@ public class dsymbolsem {
                 {
                     tm._scope = scx != null ? scx : (this.sc).copy();
                     (tm._scope).setNoFree();
-                    Module.addDeferredSemantic(tm);
+                    dmodule.Module.addDeferredSemantic(tm);
                     return ;
                 }
                 tm.inst = tm;
@@ -3202,7 +3202,7 @@ public class dsymbolsem {
                 funcdecl.checkDmain();
             if (funcdecl.canInferAttributes(this.sc))
                 funcdecl.initInferAttributes();
-            Module.dprogress++;
+            dmodule.Module.dprogress++;
             funcdecl.semanticRun = PASS.semanticdone;
             funcdecl._scope = (this.sc).copy();
             (funcdecl._scope).setNoFree();
@@ -3743,7 +3743,7 @@ public class dsymbolsem {
                         (sc2).pop();
                         sd._scope = scx != null ? scx : (this.sc).copy();
                         (sd._scope).setNoFree();
-                        Module.addDeferredSemantic(sd);
+                        dmodule.Module.addDeferredSemantic(sd);
                         return ;
                     }
                 }
@@ -3765,7 +3765,7 @@ public class dsymbolsem {
                 sd.inv = buildInv(sd, sc2);
                 if (sd.inv != null)
                     this.reinforceInvariant(sd, sc2);
-                Module.dprogress++;
+                dmodule.Module.dprogress++;
                 sd.semanticRun = PASS.semanticdone;
                 (sc2).pop();
                 if (sd.ctor != null)
@@ -3854,17 +3854,9 @@ public class dsymbolsem {
                     }
             }
             Ungag ungag = cldec_ref.value.ungagSpeculative().copy();
-            Function1<Dsymbol,Void> __lambda8 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s){
-                    s.importAll(sc2);
-                    return null;
-                    return null;
-                }
-            };
-            Function1<Dsymbol,Void> __lambda9 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s){
-                    dsymbolSemantic(s, sc2);
-                    return null;
+            Function0<Void> __dgliteral3 = new Function0<Void>(){
+                public Void invoke(){
+                    dsymbolSemantic(tc.sym, null);
                     return null;
                 }
             };
@@ -3879,16 +3871,24 @@ public class dsymbolsem {
                     return null;
                 }
             };
-            Function1<Dsymbol,Void> __lambda7 = new Function1<Dsymbol,Void>(){
+            Function1<Dsymbol,Void> __lambda8 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
-                    s.setScope(sc2);
+                    s.importAll(sc2);
                     return null;
                     return null;
                 }
             };
-            Function0<Void> __dgliteral3 = new Function0<Void>(){
-                public Void invoke(){
-                    dsymbolSemantic(tc.sym, null);
+            Function1<Dsymbol,Void> __lambda9 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    dsymbolSemantic(s, sc2);
+                    return null;
+                    return null;
+                }
+            };
+            Function1<Dsymbol,Void> __lambda7 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.setScope(sc2);
+                    return null;
                     return null;
                 }
             };
@@ -4025,7 +4025,7 @@ public class dsymbolsem {
                                 if (tc.sym.baseok < Baseok.done)
                                 {
                                     if (tc.sym._scope != null)
-                                        Module.addDeferredSemantic(tc.sym);
+                                        dmodule.Module.addDeferredSemantic(tc.sym);
                                     cldec_ref.value.baseok = Baseok.none;
                                 }
                             }
@@ -4086,7 +4086,7 @@ public class dsymbolsem {
                                 if (tc.sym.baseok < Baseok.done)
                                 {
                                     if (tc.sym._scope != null)
-                                        Module.addDeferredSemantic(tc.sym);
+                                        dmodule.Module.addDeferredSemantic(tc.sym);
                                     cldec_ref.value.baseok = Baseok.none;
                                 }
                                 i++;
@@ -4096,7 +4096,7 @@ public class dsymbolsem {
                         {
                             cldec_ref.value._scope = scx != null ? scx : (this.sc).copy();
                             (cldec_ref.value._scope).setNoFree();
-                            Module.addDeferredSemantic(cldec_ref.value);
+                            dmodule.Module.addDeferredSemantic(cldec_ref.value);
                             return ;
                         }
                         cldec_ref.value.baseok = Baseok.done;
@@ -4181,8 +4181,8 @@ public class dsymbolsem {
                             cldec_ref.value._scope = scx != null ? scx : (this.sc).copy();
                             (cldec_ref.value._scope).setNoFree();
                             if (tc.sym._scope != null)
-                                Module.addDeferredSemantic(tc.sym);
-                            Module.addDeferredSemantic(cldec_ref.value);
+                                dmodule.Module.addDeferredSemantic(tc.sym);
+                            dmodule.Module.addDeferredSemantic(cldec_ref.value);
                             return ;
                         }
                     }
@@ -4267,7 +4267,7 @@ public class dsymbolsem {
                         (sc2).pop();
                         cldec_ref.value._scope = scx != null ? scx : (this.sc).copy();
                         (cldec_ref.value._scope).setNoFree();
-                        Module.addDeferredSemantic(cldec_ref.value);
+                        dmodule.Module.addDeferredSemantic(cldec_ref.value);
                         return ;
                     }
                 }
@@ -4335,7 +4335,7 @@ public class dsymbolsem {
                 cldec_ref.value.inv = buildInv(cldec_ref.value, sc2);
                 if (cldec_ref.value.inv != null)
                     this.reinforceInvariant(cldec_ref.value, sc2);
-                Module.dprogress++;
+                dmodule.Module.dprogress++;
                 cldec_ref.value.semanticRun = PASS.semanticdone;
                 (sc2).pop();
                 if (cldec_ref.value.isabstract != Abstract.fwdref)
@@ -4555,7 +4555,7 @@ public class dsymbolsem {
                                 if (tc.sym.baseok < Baseok.done)
                                 {
                                     if (tc.sym._scope != null)
-                                        Module.addDeferredSemantic(tc.sym);
+                                        dmodule.Module.addDeferredSemantic(tc.sym);
                                     idec.baseok = Baseok.none;
                                 }
                                 i++;
@@ -4565,7 +4565,7 @@ public class dsymbolsem {
                         {
                             idec._scope = scx != null ? scx : (this.sc).copy();
                             (idec._scope).setNoFree();
-                            Module.addDeferredSemantic(idec);
+                            dmodule.Module.addDeferredSemantic(idec);
                             return ;
                         }
                         idec.baseok = Baseok.done;
@@ -4604,8 +4604,8 @@ public class dsymbolsem {
                             idec._scope = scx != null ? scx : (this.sc).copy();
                             (idec._scope).setNoFree();
                             if (tc.sym._scope != null)
-                                Module.addDeferredSemantic(tc.sym);
-                            Module.addDeferredSemantic(idec);
+                                dmodule.Module.addDeferredSemantic(tc.sym);
+                            dmodule.Module.addDeferredSemantic(idec);
                             return ;
                         }
                     }
@@ -4655,7 +4655,7 @@ public class dsymbolsem {
                 foreachDsymbol(idec.members, __lambda6);
                 foreachDsymbol(idec.members, __lambda7);
                 foreachDsymbol(idec.members, __lambda8);
-                Module.dprogress++;
+                dmodule.Module.dprogress++;
                 idec.semanticRun = PASS.semanticdone;
                 (sc2).pop();
                 if (global.errors != errors)
@@ -4862,8 +4862,8 @@ public class dsymbolsem {
                 boolean found_deferred_ad = false;
                 {
                     int i = 0;
-                    for (; i < Module.deferred.length;i++){
-                        Dsymbol sd = Module.deferred.get(i);
+                    for (; i < dmodule.Module.deferred.length;i++){
+                        Dsymbol sd = dmodule.Module.deferred.get(i);
                         AggregateDeclaration ad = sd.isAggregateDeclaration();
                         if (((ad != null && ad.parent != null) && ad.parent.isTemplateInstance() != null))
                         {
@@ -4876,7 +4876,7 @@ public class dsymbolsem {
                         }
                     }
                 }
-                if ((found_deferred_ad || (Module.deferred.length) != 0))
+                if ((found_deferred_ad || (dmodule.Module.deferred.length) != 0))
                     /*goto Laftersemantic*/throw Dispatch0.INSTANCE;
             }
             {

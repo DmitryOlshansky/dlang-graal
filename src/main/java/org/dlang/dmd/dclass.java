@@ -548,12 +548,12 @@ public class dclass {
                 return false;
             }
             s = s.toAlias();
-            Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
+            Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>(){
                 public Integer invoke(Dsymbol s){
                     return ((pequals(fd, s.isFuncDeclaration())) ? 1 : 0);
                 }
             };
-            Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>(){
+            Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
                 public Integer invoke(Dsymbol s){
                     return ((pequals(fd, s.isFuncDeclaration())) ? 1 : 0);
                 }
