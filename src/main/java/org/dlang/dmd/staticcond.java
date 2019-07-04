@@ -11,7 +11,19 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.aliasthis.*;
+import static org.dlang.dmd.arraytypes.*;
+import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
+import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
+import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.identifier.*;
+import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.utils.*;
 
 public class staticcond {
 

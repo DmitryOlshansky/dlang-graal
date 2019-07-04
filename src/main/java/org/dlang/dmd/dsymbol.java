@@ -11,7 +11,10 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.access.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.aliasthis.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.ast_node.*;
 import static org.dlang.dmd.attrib.*;
 import static org.dlang.dmd.dclass.*;
@@ -19,16 +22,25 @@ import static org.dlang.dmd.declaration.*;
 import static org.dlang.dmd.denum.*;
 import static org.dlang.dmd.dimport.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dstruct.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.dtemplate.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.gluelayer.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.init.*;
+import static org.dlang.dmd.lexer.*;
 import static org.dlang.dmd.mtype.*;
 import static org.dlang.dmd.nspace.*;
+import static org.dlang.dmd.opover.*;
 import static org.dlang.dmd.statement.*;
+import static org.dlang.dmd.tokens.*;
 import static org.dlang.dmd.visitor.*;
 
 public class dsymbol {
@@ -98,7 +110,7 @@ public class dsymbol {
         }
 
         public int kind;
-        public Package pkg;
+        public dmodule.Package pkg;
         public  Prot(int kind) {
             this.kind = kind;
         }
@@ -222,7 +234,7 @@ public class dsymbol {
         public  Loc getLoc() {
             if (!(this.loc.isValid()))
                 {
-                    Module m = this.getModule();
+                    dmodule.Module m = this.getModule();
                     if (m != null)
                         return new Loc(m.srcfile.toChars(), 0, 0);
                 }
@@ -297,7 +309,7 @@ public class dsymbol {
             return false;
         }
 
-        public  Module getModule() {
+        public  dmodule.Module getModule() {
             {
                 TemplateInstance ti = this.isInstantiated();
                 if (ti != null)
@@ -305,7 +317,7 @@ public class dsymbol {
             }
             Dsymbol s = this;
             for (; s != null;){
-                Module m = s.isModule();
+                dmodule.Module m = s.isModule();
                 if (m != null)
                     return m;
                 s = s.parent;
@@ -313,7 +325,7 @@ public class dsymbol {
             return null;
         }
 
-        public  Module getAccessModule() {
+        public  dmodule.Module getAccessModule() {
             {
                 TemplateInstance ti = this.isInstantiated();
                 if (ti != null)
@@ -321,7 +333,7 @@ public class dsymbol {
             }
             Dsymbol s = this;
             for (; s != null;){
-                Module m = s.isModule();
+                dmodule.Module m = s.isModule();
                 if (m != null)
                     return m;
                 TemplateInstance ti = s.isTemplateInstance();
@@ -458,10 +470,10 @@ public class dsymbol {
             BytePtr q = pcopy(s.plus(length).minus(1));
             q.set(0, (byte)0);
             {
-                int __key1100 = 0;
-                int __limit1101 = complength;
-                for (; __key1100 < __limit1101;__key1100 += 1) {
-                    int j = __key1100;
+                int __key1124 = 0;
+                int __limit1125 = complength;
+                for (; __key1124 < __limit1125;__key1124 += 1) {
+                    int j = __key1124;
                     BytePtr t = pcopy(toBytePtr(comp.get(j)));
                     int len = comp.get(j).getLength();
                     q.minusAssign(len);
@@ -785,7 +797,7 @@ public class dsymbol {
                     }
                 }
                 {
-                    Module m = s.isModule();
+                    dmodule.Module m = s.isModule();
                     if (m != null)
                     {
                         if (!(m.isRoot()))
@@ -801,11 +813,11 @@ public class dsymbol {
             v.visit(this);
         }
 
-        public  Package isPackage() {
+        public  dmodule.Package isPackage() {
             return null;
         }
 
-        public  Module isModule() {
+        public  dmodule.Module isModule() {
             return null;
         }
 
@@ -1212,7 +1224,7 @@ public class dsymbol {
             }
         }
 
-        public  void addAccessiblePackage(Package p, Prot protection) {
+        public  void addAccessiblePackage(dmodule.Package p, Prot protection) {
             if (p == null)
                 return ;
             BitArray pary = protection.kind == Prot.Kind.private_ ? this.privateAccessiblePackages : this.accessiblePackages;
@@ -1221,15 +1233,15 @@ public class dsymbol {
             (pary).opIndexAssign(true, p.tag);
         }
 
-        public  boolean isPackageAccessible(Package p, Prot protection, int flags) {
+        public  boolean isPackageAccessible(dmodule.Package p, Prot protection, int flags) {
             if (((p.tag < this.accessiblePackages.length() && this.accessiblePackages.get(p.tag)) || ((protection.kind == Prot.Kind.private_ && p.tag < this.privateAccessiblePackages.length()) && this.privateAccessiblePackages.get(p.tag))))
                 return true;
             {
-                Slice<Dsymbol> __r1111 = (this.importedScopes != null ? (this.importedScopes).opSlice() : new Slice<Dsymbol>()).copy();
-                int __key1110 = 0;
-                for (; __key1110 < __r1111.getLength();__key1110 += 1) {
-                    Dsymbol ss = __r1111.get(__key1110);
-                    int i = __key1110;
+                Slice<Dsymbol> __r1135 = (this.importedScopes != null ? (this.importedScopes).opSlice() : new Slice<Dsymbol>()).copy();
+                int __key1134 = 0;
+                for (; __key1134 < __r1135.getLength();__key1134 += 1) {
+                    Dsymbol ss = __r1135.get(__key1134);
+                    int i = __key1134;
                     if ((protection.kind <= this.prots.get(i) && ss.isScopeDsymbol().isPackageAccessible(p, protection, 1)))
                         return true;
                 }
@@ -1294,10 +1306,10 @@ public class dsymbol {
             IntRef n = ref(pn != null ? pn.get() : 0);
             int result = 0;
             {
-                int __key1112 = 0;
-                int __limit1113 = (members).length;
-                for (; __key1112 < __limit1113;__key1112 += 1) {
-                    int i = __key1112;
+                int __key1136 = 0;
+                int __limit1137 = (members).length;
+                for (; __key1136 < __limit1137;__key1136 += 1) {
+                    int i = __key1136;
                     Dsymbol s = (members).get(i);
                     {
                         AttribDeclaration a = s.isAttribDeclaration();

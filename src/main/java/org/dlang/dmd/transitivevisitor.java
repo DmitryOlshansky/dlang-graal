@@ -14,6 +14,7 @@ import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.astbase.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.permissivevisitor.*;
+import static org.dlang.dmd.tokens.*;
 
 public class transitivevisitor {
 

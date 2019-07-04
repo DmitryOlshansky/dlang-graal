@@ -11,10 +11,13 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.entity.*;
 import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.utf.*;
 
 public class lexer {
     static boolean scaninitdone = false;

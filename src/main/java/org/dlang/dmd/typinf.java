@@ -14,10 +14,14 @@ import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dstruct.*;
 import static org.dlang.dmd.dtemplate.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.gluelayer.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.visitor.*;
 
 public class typinf {
 
@@ -53,7 +57,7 @@ public class typinf {
             {
                 if (sc != null)
                 {
-                    Module m = (sc)._module.importedFrom;
+                    dmodule.Module m = (sc)._module.importedFrom;
                     (m.members).push(t.vtinfo);
                 }
                 else
@@ -159,10 +163,10 @@ public class typinf {
                 if (t.arguments != null)
                 {
                     {
-                        Slice<Parameter> __r1642 = (t.arguments).opSlice().copy();
-                        int __key1643 = 0;
-                        for (; __key1643 < __r1642.getLength();__key1643 += 1) {
-                            Parameter arg = __r1642.get(__key1643);
+                        Slice<Parameter> __r1726 = (t.arguments).opSlice().copy();
+                        int __key1727 = 0;
+                        for (; __key1727 < __r1726.getLength();__key1727 += 1) {
+                            Parameter arg = __r1726.get(__key1727);
                             if (isSpeculativeType(arg.type))
                                 return true;
                         }

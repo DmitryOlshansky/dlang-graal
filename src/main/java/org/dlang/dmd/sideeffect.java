@@ -11,10 +11,17 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.apply.*;
 import static org.dlang.dmd.declaration.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
+import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.identifier.*;
+import static org.dlang.dmd.init.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.tokens.*;
 import static org.dlang.dmd.visitor.*;
 
 public class sideeffect {

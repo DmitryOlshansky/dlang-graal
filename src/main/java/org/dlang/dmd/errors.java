@@ -11,6 +11,7 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.console.*;
 import static org.dlang.dmd.filecache.*;
 import static org.dlang.dmd.globals.*;
 import static org.dlang.dmd.lexer.*;

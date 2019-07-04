@@ -15,12 +15,16 @@ import static org.dlang.dmd.aggregate.*;
 import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dstruct.*;
 import static org.dlang.dmd.dsymbol.*;
 import static org.dlang.dmd.dtemplate.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.tokens.*;
 
 public class access {
 
@@ -42,22 +46,22 @@ public class access {
         return hasPackageAccess((sc)._module, s);
     }
 
-    public static boolean hasPackageAccess(Module mod, Dsymbol s) {
-        Package pkg = null;
+    public static boolean hasPackageAccess(dmodule.Module mod, Dsymbol s) {
+        dmodule.Package pkg = null;
         if (s.prot().pkg != null)
             pkg = s.prot().pkg;
         else
         {
             for (; s != null;s = s.parent){
                 {
-                    Module m = s.isModule();
+                    dmodule.Module m = s.isModule();
                     if (m != null)
                     {
                         DsymbolTable dst = Package.resolve(m.md != null ? (m.md).packages : null, null, null);
                         assert(dst != null);
                         Dsymbol s2 = dst.lookup(m.ident);
                         assert(s2 != null);
-                        Package p = s2.isPackage();
+                        dmodule.Package p = s2.isPackage();
                         if ((p != null && p.isPackageMod() != null))
                         {
                             pkg = p;
@@ -140,7 +144,7 @@ public class access {
         return false;
     }
 
-    public static boolean checkAccess(Loc loc, Scope sc, Package p) {
+    public static boolean checkAccess(Loc loc, Scope sc, dmodule.Package p) {
         if (pequals((sc)._module, p))
             return false;
         for (; sc != null;sc = (sc).enclosing){
@@ -150,7 +154,7 @@ public class access {
         return true;
     }
 
-    public static boolean symbolIsVisible(Module mod, Dsymbol s) {
+    public static boolean symbolIsVisible(dmodule.Module mod, Dsymbol s) {
         s = mostVisibleOverload(s, null);
         switch (s.prot().kind)
         {
@@ -202,7 +206,7 @@ public class access {
         }
     }
 
-    public static Dsymbol mostVisibleOverload(Dsymbol s, Module mod) {
+    public static Dsymbol mostVisibleOverload(Dsymbol s, dmodule.Module mod) {
         if (!(s.isOverloadable()))
             return s;
         Dsymbol next = null;
@@ -253,8 +257,8 @@ public class access {
                     }
                 }
             }
-            Function2<Dsymbol,Module,Prot> protectionSeenFromModule = new Function2<Dsymbol,Module,Prot>(){
-                public Prot invoke(Dsymbol d, Module mod){
+            Function2<Dsymbol,dmodule.Module,Prot> protectionSeenFromModule = new Function2<Dsymbol,dmodule.Module,Prot>(){
+                public Prot invoke(Dsymbol d, dmodule.Module mod){
                     Prot prot = d.prot().copy();
                     if ((mod != null && prot.kind == Prot.Kind.package_))
                     {

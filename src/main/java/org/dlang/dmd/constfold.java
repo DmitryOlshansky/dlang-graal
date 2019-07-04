@@ -11,12 +11,19 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.complex.*;
+import static org.dlang.dmd.ctfeexpr.*;
 import static org.dlang.dmd.declaration.*;
 import static org.dlang.dmd.dstruct.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
 import static org.dlang.dmd.globals.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.sideeffect.*;
+import static org.dlang.dmd.target.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.utf.*;
 
 public class constfold {
 
@@ -1281,10 +1288,10 @@ public class constfold {
         int len = newval.len;
         Type elemType = existingAE.type.nextOf();
         {
-            int __key826 = 0;
-            int __limit827 = len;
-            for (; __key826 < __limit827;__key826 += 1) {
-                int j = __key826;
+            int __key844 = 0;
+            int __limit845 = len;
+            for (; __key844 < __limit845;__key844 += 1) {
+                int j = __key844;
                 int val = newval.getCodeUnit(j);
                 existingAE.elements.set(j + firstIndex, new IntegerExp(newval.loc, (long)val, elemType));
             }
@@ -1294,10 +1301,10 @@ public class constfold {
     public static void sliceAssignStringFromArrayLiteral(StringExp existingSE, ArrayLiteralExp newae, int firstIndex) {
         assert((existingSE.ownedByCtfe & 0xFF) != 0);
         {
-            int __key828 = 0;
-            int __limit829 = (newae.elements).length;
-            for (; __key828 < __limit829;__key828 += 1) {
-                int j = __key828;
+            int __key846 = 0;
+            int __limit847 = (newae.elements).length;
+            for (; __key846 < __limit847;__key846 += 1) {
+                int j = __key846;
                 existingSE.setCodeUnit(firstIndex + j, (int)newae.getElement(j).toInteger());
             }
         }
@@ -1318,10 +1325,10 @@ public class constfold {
 
     public static int sliceCmpStringWithArray(StringExp se1, ArrayLiteralExp ae2, int lo1, int lo2, int len) {
         {
-            int __key830 = 0;
-            int __limit831 = len;
-            for (; __key830 < __limit831;__key830 += 1) {
-                int j = __key830;
+            int __key848 = 0;
+            int __limit849 = len;
+            for (; __key848 < __limit849;__key848 += 1) {
+                int j = __key848;
                 int val2 = (int)ae2.getElement(j + lo2).toInteger();
                 int val1 = se1.getCodeUnit(j + lo1);
                 int c = (val1 - val2);
@@ -1341,10 +1348,10 @@ public class constfold {
                 int d = (elems.value).length;
                 (elems.value).append(ale.elements);
                 {
-                    Slice<Expression> __r832 = (elems.value).opSlice(d, (elems.value).length).copy();
-                    int __key833 = 0;
-                    for (; __key833 < __r832.getLength();__key833 += 1) {
-                        Expression el = __r832.get(__key833);
+                    Slice<Expression> __r850 = (elems.value).opSlice(d, (elems.value).length).copy();
+                    int __key851 = 0;
+                    for (; __key851 < __r850.getLength();__key851 += 1) {
+                        Expression el = __r850.get(__key851);
                         if (!(el != null))
                             el = ale.basis;
                     }

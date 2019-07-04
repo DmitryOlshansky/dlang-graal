@@ -11,16 +11,25 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.ast_node.*;
 import static org.dlang.dmd.declaration.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dstruct.*;
+import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.mtype.*;
 import static org.dlang.dmd.statement.*;
+import static org.dlang.dmd.staticcond.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.utils.*;
 import static org.dlang.dmd.visitor.*;
 
 public class cond {
@@ -97,10 +106,10 @@ public class cond {
                 long length = el.toInteger();
                 DArray<Expression> es = new DArray<Expression>();
                 {
-                    long __key801 = 0L;
-                    long __limit802 = length;
-                    for (; __key801 < __limit802;__key801 += 1L) {
-                        long i = __key801;
+                    long __key819 = 0L;
+                    long __limit820 = length;
+                    for (; __key819 < __limit820;__key819 += 1L) {
+                        long i = __key819;
                         IntegerExp index = new IntegerExp(this.loc, i, Type.tsize_t);
                         IndexExp value = new IndexExp(aggr.loc, aggr, index);
                         (es).push(value);
@@ -159,15 +168,15 @@ public class cond {
             Loc aloc = this.aggrfe != null ? this.aggrfe.aggr.loc : this.rangefe.lwr.loc.copy();
             Slice<DArray<Parameter>> pparams = slice(new DArray<Parameter>[]{new DArray<Parameter>(), new DArray<Parameter>(), new DArray<Parameter>()});
             {
-                int __key803 = 0;
-                int __limit804 = nvars;
-                for (; __key803 < __limit804;__key803 += 1) {
-                    int i = __key803;
+                int __key821 = 0;
+                int __limit822 = nvars;
+                for (; __key821 < __limit822;__key821 += 1) {
+                    int i = __key821;
                     {
-                        Slice<DArray<Parameter>> __r805 = pparams.copy();
-                        int __key806 = 0;
-                        for (; __key806 < __r805.getLength();__key806 += 1) {
-                            DArray<Parameter> params = __r805.get(__key806);
+                        Slice<DArray<Parameter>> __r823 = pparams.copy();
+                        int __key824 = 0;
+                        for (; __key824 < __r823.getLength();__key824 += 1) {
+                            DArray<Parameter> params = __r823.get(__key824);
                             Parameter p = this.aggrfe != null ? (this.aggrfe.parameters).get(i) : this.rangefe.prm;
                             (params).push(new Parameter(p.storageClass, p.type, p.ident, null, null));
                         }
@@ -179,10 +188,10 @@ public class cond {
             if (nvars == 1)
             {
                 {
-                    int __key807 = 0;
-                    int __limit808 = 2;
-                    for (; __key807 < __limit808;__key807 += 1) {
-                        int i = __key807;
+                    int __key825 = 0;
+                    int __limit826 = 2;
+                    for (; __key825 < __limit826;__key825 += 1) {
+                        int i = __key825;
                         res.set((i), new IdentifierExp(aloc, (pparams.get(i)).get(0).ident));
                     }
                 }
@@ -190,17 +199,17 @@ public class cond {
             else
             {
                 {
-                    int __key809 = 0;
-                    int __limit810 = 2;
-                    for (; __key809 < __limit810;__key809 += 1) {
-                        int i = __key809;
+                    int __key827 = 0;
+                    int __limit828 = 2;
+                    for (; __key827 < __limit828;__key827 += 1) {
+                        int i = __key827;
                         DArray<Expression> e = new DArray<Expression>((pparams.get(0)).length);
                         {
-                            Slice<Expression> __r812 = (e).opSlice().copy();
-                            int __key811 = 0;
-                            for (; __key811 < __r812.getLength();__key811 += 1) {
-                                Expression elem = __r812.get(__key811);
-                                int j = __key811;
+                            Slice<Expression> __r830 = (e).opSlice().copy();
+                            int __key829 = 0;
+                            for (; __key829 < __r830.getLength();__key829 += 1) {
+                                Expression elem = __r830.get(__key829);
+                                int j = __key829;
                                 Parameter p = (pparams.get(i)).get(j);
                                 elem = new IdentifierExp(aloc, p.ident);
                             }
@@ -307,8 +316,8 @@ public class cond {
     {
         public int level;
         public Identifier ident;
-        public Module mod;
-        public  DVCondition(Module mod, int level, Identifier ident) {
+        public dmodule.Module mod;
+        public  DVCondition(dmodule.Module mod, int level, Identifier ident) {
             super(Loc.initial);
             this.mod = mod;
             this.level = level;
@@ -339,7 +348,7 @@ public class cond {
         }
 
         // removed duplicate function, [["void addGlobalIdentByteSlice", "void addGlobalIdentBytePtr"]] signature: void addGlobalIdentByteSlice
-        public  DebugCondition(Module mod, int level, Identifier ident) {
+        public  DebugCondition(dmodule.Module mod, int level, Identifier ident) {
             super(mod, level, ident);
         }
 
@@ -526,7 +535,7 @@ public class cond {
         }
 
         // removed duplicate function, [["void checkReservedLoc, ByteSlice", "void addGlobalIdentByteSlice", "void addGlobalIdentBytePtr", "boolean isReservedByteSlice", "void addPredefinedGlobalIdentByteSlice", "void addPredefinedGlobalIdentBytePtr"]] signature: void addPredefinedGlobalIdentByteSlice
-        public  VersionCondition(Module mod, int level, Identifier ident) {
+        public  VersionCondition(dmodule.Module mod, int level, Identifier ident) {
             super(mod, level, ident);
         }
 
@@ -651,10 +660,10 @@ public class cond {
         if (ids != null)
         {
             {
-                Slice<Identifier> __r815 = (ids).opSlice().copy();
-                int __key816 = 0;
-                for (; __key816 < __r815.getLength();__key816 += 1) {
-                    Identifier id = __r815.get(__key816);
+                Slice<Identifier> __r833 = (ids).opSlice().copy();
+                int __key834 = 0;
+                for (; __key834 < __r833.getLength();__key834 += 1) {
+                    Identifier id = __r833.get(__key834);
                     if (pequals(id, ident))
                         return true;
                 }
@@ -667,7 +676,7 @@ public class cond {
         if ((global.params.moduleDeps == null || global.params.moduleDepsFile.getLength() != 0))
             return ;
         OutBuffer ob = global.params.moduleDeps;
-        Module imod = sc != null ? (sc).instantiatingModule() : condition.mod;
+        dmodule.Module imod = sc != null ? (sc).instantiatingModule() : condition.mod;
         if (!(imod != null))
             return ;
         (ob).writestring(depType);

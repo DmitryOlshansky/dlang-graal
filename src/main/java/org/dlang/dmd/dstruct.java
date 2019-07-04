@@ -12,15 +12,27 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.declaration.*;
+import static org.dlang.dmd.dmodule.*;
 import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.dtemplate.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.opover.*;
+import static org.dlang.dmd.semantic3.*;
+import static org.dlang.dmd.target.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.typesem.*;
+import static org.dlang.dmd.typinf.*;
 import static org.dlang.dmd.visitor.*;
 
 public class dstruct {
@@ -115,10 +127,10 @@ public class dstruct {
                 if (t.arguments != null)
                 {
                     {
-                        Slice<Parameter> __r1089 = (t.arguments).opSlice().copy();
-                        int __key1090 = 0;
-                        for (; __key1090 < __r1089.getLength();__key1090 += 1) {
-                            Parameter arg = __r1089.get(__key1090);
+                        Slice<Parameter> __r1113 = (t.arguments).opSlice().copy();
+                        int __key1114 = 0;
+                        for (; __key1114 < __r1113.getLength();__key1114 += 1) {
+                            Parameter arg = __r1113.get(__key1114);
                             semanticTypeInfo(sc_ref.value, arg.type);
                         }
                     }
@@ -296,10 +308,10 @@ public class dstruct {
             }
             this.zeroInit = true;
             {
-                Slice<VarDeclaration> __r1091 = this.fields.opSlice().copy();
-                int __key1092 = 0;
-                for (; __key1092 < __r1091.getLength();__key1092 += 1) {
-                    VarDeclaration vd = __r1091.get(__key1092);
+                Slice<VarDeclaration> __r1115 = this.fields.opSlice().copy();
+                int __key1116 = 0;
+                for (; __key1116 < __r1115.getLength();__key1116 += 1) {
+                    VarDeclaration vd = __r1115.get(__key1116);
                     if (vd._init != null)
                     {
                         if (vd._init.isVoidInitializer() != null)
@@ -532,10 +544,10 @@ public class dstruct {
             case 49:
                 StructLiteralExp sle = (StructLiteralExp)exp;
                 {
-                    int __key1093 = 0;
-                    int __limit1094 = sle.sd.fields.length;
-                    for (; __key1093 < __limit1094;__key1093 += 1) {
-                        int i = __key1093;
+                    int __key1117 = 0;
+                    int __limit1118 = sle.sd.fields.length;
+                    for (; __key1117 < __limit1118;__key1117 += 1) {
+                        int i = __key1117;
                         VarDeclaration field = sle.sd.fields.get(i);
                         if ((field.type.size(field.loc)) != 0)
                         {
@@ -552,10 +564,10 @@ public class dstruct {
                 if ((ale.type.toBasetype().ty & 0xFF) == ENUMTY.Tarray)
                     return dim == 0;
                 {
-                    int __key1095 = 0;
-                    int __limit1096 = dim;
-                    for (; __key1095 < __limit1096;__key1095 += 1) {
-                        int i_1 = __key1095;
+                    int __key1119 = 0;
+                    int __limit1120 = dim;
+                    for (; __key1119 < __limit1120;__key1119 += 1) {
+                        int i_1 = __key1119;
                         if (!(_isZeroInit(ale.getElement(i_1))))
                             return false;
                     }
@@ -566,10 +578,10 @@ public class dstruct {
                 if ((se.type.toBasetype().ty & 0xFF) == ENUMTY.Tarray)
                     return se.len == 0;
                 {
-                    int __key1097 = 0;
-                    int __limit1098 = se.len;
-                    for (; __key1097 < __limit1098;__key1097 += 1) {
-                        int i_2 = __key1097;
+                    int __key1121 = 0;
+                    int __limit1122 = se.len;
+                    for (; __key1121 < __limit1122;__key1121 += 1) {
+                        int i_2 = __key1121;
                         if ((se.getCodeUnit(i_2)) != 0)
                             return false;
                     }

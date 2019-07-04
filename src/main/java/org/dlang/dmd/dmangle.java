@@ -12,14 +12,21 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
+import static org.dlang.dmd.dmodule.*;
 import static org.dlang.dmd.dsymbol.*;
 import static org.dlang.dmd.dtemplate.*;
 import static org.dlang.dmd.expression.*;
 import static org.dlang.dmd.func.*;
+import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.target.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.utf.*;
 import static org.dlang.dmd.visitor.*;
 
 public class dmangle {
@@ -677,10 +684,10 @@ public class dmangle {
             int n = CTFloat.sprint(ptr(buffer), (byte)65, value);
             assert(n < 36);
             {
-                ByteSlice __r984 = buffer.slice(2,n).copy();
-                int __key985 = 0;
-                for (; __key985 < __r984.getLength();__key985 += 1) {
-                    byte c = __r984.get(__key985);
+                ByteSlice __r1008 = buffer.slice(2,n).copy();
+                int __key1009 = 0;
+                for (; __key1009 < __r1008.getLength();__key1009 += 1) {
+                    byte c = __r1008.get(__key1009);
                     switch ((c & 0xFF))
                     {
                         case 45:
@@ -737,10 +744,10 @@ public class dmangle {
                     case 4:
                         m = (byte)100;
                         {
-                            int __key986 = 0;
-                            int __limit987 = e.len;
-                            for (; __key986 < __limit987;__key986 += 1) {
-                                int u_1 = __key986;
+                            int __key1010 = 0;
+                            int __limit1011 = e.len;
+                            for (; __key1010 < __limit1011;__key1010 += 1) {
+                                int u_1 = __key1010;
                                 int c_1 = (toIntPtr(e.string)).get(u_1);
                                 if (!(utf_isValidDchar(c_1)))
                                     e.error(new BytePtr("invalid UCS-32 char \\U%08x"), c_1);
@@ -779,10 +786,10 @@ public class dmangle {
             (this.buf).writeByte(65);
             (this.buf).print((long)dim);
             {
-                int __key988 = 0;
-                int __limit989 = dim;
-                for (; __key988 < __limit989;__key988 += 1) {
-                    int i = __key988;
+                int __key1012 = 0;
+                int __limit1013 = dim;
+                for (; __key1012 < __limit1013;__key1012 += 1) {
+                    int i = __key1012;
                     e.getElement(i).accept(this);
                 }
             }
@@ -793,10 +800,10 @@ public class dmangle {
             (this.buf).writeByte(65);
             (this.buf).print((long)dim);
             {
-                int __key990 = 0;
-                int __limit991 = dim;
-                for (; __key990 < __limit991;__key990 += 1) {
-                    int i = __key990;
+                int __key1014 = 0;
+                int __limit1015 = dim;
+                for (; __key1014 < __limit1015;__key1014 += 1) {
+                    int i = __key1014;
                     (e.keys).get(i).accept(this);
                     (e.values).get(i).accept(this);
                 }
@@ -808,10 +815,10 @@ public class dmangle {
             (this.buf).writeByte(83);
             (this.buf).print((long)dim);
             {
-                int __key992 = 0;
-                int __limit993 = dim;
-                for (; __key992 < __limit993;__key992 += 1) {
-                    int i = __key992;
+                int __key1016 = 0;
+                int __limit1017 = dim;
+                for (; __key1016 < __limit1017;__key1016 += 1) {
+                    int i = __key1016;
                     Expression ex = (e.elements).get(i);
                     if (ex != null)
                         ex.accept(this);

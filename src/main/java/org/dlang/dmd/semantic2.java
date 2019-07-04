@@ -12,18 +12,54 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.aliasthis.*;
+import static org.dlang.dmd.arraytypes.*;
+import static org.dlang.dmd.astcodegen.*;
 import static org.dlang.dmd.attrib.*;
+import static org.dlang.dmd.blockexit.*;
+import static org.dlang.dmd.clone.*;
+import static org.dlang.dmd.dcast.*;
+import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
+import static org.dlang.dmd.denum.*;
 import static org.dlang.dmd.dimport.*;
+import static org.dlang.dmd.dinterpret.*;
+import static org.dlang.dmd.dmangle.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
+import static org.dlang.dmd.dstruct.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.dtemplate.*;
+import static org.dlang.dmd.dversion.*;
+import static org.dlang.dmd.errors.*;
+import static org.dlang.dmd.escape.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
+import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.hdrgen.*;
+import static org.dlang.dmd.id.*;
+import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.init.*;
+import static org.dlang.dmd.initsem.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.nogc.*;
 import static org.dlang.dmd.nspace.*;
+import static org.dlang.dmd.objc.*;
+import static org.dlang.dmd.opover.*;
+import static org.dlang.dmd.parse.*;
+import static org.dlang.dmd.sideeffect.*;
+import static org.dlang.dmd.statement.*;
+import static org.dlang.dmd.statementsem.*;
 import static org.dlang.dmd.staticassert.*;
+import static org.dlang.dmd.staticcond.*;
+import static org.dlang.dmd.target.*;
+import static org.dlang.dmd.templateparamsem.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.typesem.*;
+import static org.dlang.dmd.utf.*;
+import static org.dlang.dmd.utils.*;
 import static org.dlang.dmd.visitor.*;
 
 public class semantic2 {
@@ -178,10 +214,10 @@ public class semantic2 {
                                 Function1<DArray<Expression>,Boolean> arrayHasInvalidEnumInitializer = new Function1<DArray<Expression>,Boolean>(){
                                     public Boolean invoke(DArray<Expression> elems){
                                         {
-                                            Slice<Expression> __r1526 = (elems).opSlice().copy();
-                                            int __key1527 = 0;
-                                            for (; __key1527 < __r1526.getLength();__key1527 += 1) {
-                                                Expression e = __r1526.get(__key1527);
+                                            Slice<Expression> __r1610 = (elems).opSlice().copy();
+                                            int __key1611 = 0;
+                                            for (; __key1611 < __r1610.getLength();__key1611 += 1) {
+                                                Expression e = __r1610.get(__key1611);
                                                 if ((e != null && hasInvalidEnumInitializer.invoke(e)))
                                                     return true;
                                             }
@@ -228,7 +264,7 @@ public class semantic2 {
             vd.semanticRun = PASS.semantic2done;
         }
 
-        public  void visit(Module mod) {
+        public  void visit(dmodule.Module mod) {
             if (mod.semanticRun != PASS.semanticdone)
                 return ;
             mod.semanticRun = PASS.semantic2;
@@ -309,10 +345,10 @@ public class semantic2 {
                 return ;
             TypeFunction f = (TypeFunction)fd.type;
             {
-                int __key1528 = 0;
-                int __limit1529 = f.parameterList.length();
-                for (; __key1528 < __limit1529;__key1528 += 1) {
-                    int i = __key1528;
+                int __key1612 = 0;
+                int __limit1613 = f.parameterList.length();
+                for (; __key1612 < __limit1613;__key1612 += 1) {
+                    int i = __key1612;
                     Parameter param = f.parameterList.get(i);
                     if ((param != null && param.userAttribDecl != null))
                         semantic2(param.userAttribDecl, this.sc);
@@ -342,10 +378,10 @@ public class semantic2 {
                 this.sc = (this.sc).push(ns);
                 (this.sc).linkage = LINK.cpp;
                 {
-                    Slice<Dsymbol> __r1530 = (ns.members).opSlice().copy();
-                    int __key1531 = 0;
-                    for (; __key1531 < __r1530.getLength();__key1531 += 1) {
-                        Dsymbol s = __r1530.get(__key1531);
+                    Slice<Dsymbol> __r1614 = (ns.members).opSlice().copy();
+                    int __key1615 = 0;
+                    for (; __key1615 < __r1614.getLength();__key1615 += 1) {
+                        Dsymbol s = __r1614.get(__key1615);
                         semantic2(s, this.sc);
                     }
                 }
@@ -386,10 +422,10 @@ public class semantic2 {
                 Function2<Scope,DArray<Expression>,Void> eval = new Function2<Scope,DArray<Expression>,Void>(){
                     public Void invoke(Scope sc, DArray<Expression> exps){
                         {
-                            Slice<Expression> __r1532 = (exps).opSlice().copy();
-                            int __key1533 = 0;
-                            for (; __key1533 < __r1532.getLength();__key1533 += 1) {
-                                Expression e = __r1532.get(__key1533);
+                            Slice<Expression> __r1616 = (exps).opSlice().copy();
+                            int __key1617 = 0;
+                            for (; __key1617 < __r1616.getLength();__key1617 += 1) {
+                                Expression e = __r1616.get(__key1617);
                                 if (e != null)
                                 {
                                     e = expressionSemantic(e, sc);

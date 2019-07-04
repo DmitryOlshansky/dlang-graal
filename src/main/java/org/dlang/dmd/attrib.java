@@ -12,14 +12,25 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.cond.*;
 import static org.dlang.dmd.declaration.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.hdrgen.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
+import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.objc.*;
+import static org.dlang.dmd.statementsem.*;
+import static org.dlang.dmd.target.*;
+import static org.dlang.dmd.tokens.*;
 import static org.dlang.dmd.visitor.*;
 
 public class attrib {
@@ -548,8 +559,8 @@ public class attrib {
             }
             if (((this.protection.kind == Prot.Kind.package_ && this.protection.pkg != null) && (sc)._module != null))
             {
-                Module m = (sc)._module;
-                Package pkg = m.parent != null ? m.parent.isPackage() : null;
+                dmodule.Module m = (sc)._module;
+                dmodule.Package pkg = m.parent != null ? m.parent.isPackage() : null;
                 if ((!(pkg != null) || !(this.protection.pkg.isAncestorPackageOf(pkg))))
                     this.error(new BytePtr("does not bind to one of ancestor packages of module `%s`"), m.toPrettyChars(true));
             }

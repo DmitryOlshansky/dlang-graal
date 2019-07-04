@@ -12,15 +12,20 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.apply.*;
 import static org.dlang.dmd.declaration.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dsymbol.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.init.*;
+import static org.dlang.dmd.initsem.*;
 import static org.dlang.dmd.mtype.*;
 import static org.dlang.dmd.statement.*;
+import static org.dlang.dmd.tokens.*;
 import static org.dlang.dmd.visitor.*;
 
 public class delegatize {
@@ -73,11 +78,11 @@ public class delegatize {
 
         public  void visit(StructInitializer si) {
             {
-                Slice<Identifier> __r900 = si.field.opSlice().copy();
-                int __key899 = 0;
-                for (; __key899 < __r900.getLength();__key899 += 1) {
-                    Identifier id = __r900.get(__key899);
-                    int i = __key899;
+                Slice<Identifier> __r924 = si.field.opSlice().copy();
+                int __key923 = 0;
+                for (; __key923 < __r924.getLength();__key923 += 1) {
+                    Identifier id = __r924.get(__key923);
+                    int i = __key923;
                     {
                         Initializer iz = si.value.get(i);
                         if (iz != null)
@@ -89,11 +94,11 @@ public class delegatize {
 
         public  void visit(ArrayInitializer ai) {
             {
-                Slice<Expression> __r902 = ai.index.opSlice().copy();
-                int __key901 = 0;
-                for (; __key901 < __r902.getLength();__key901 += 1) {
-                    Expression ex = __r902.get(__key901);
-                    int i = __key901;
+                Slice<Expression> __r926 = ai.index.opSlice().copy();
+                int __key925 = 0;
+                for (; __key925 < __r926.getLength();__key925 += 1) {
+                    Expression ex = __r926.get(__key925);
+                    int i = __key925;
                     if (ex != null)
                         walkPostorder(ex, this);
                     {

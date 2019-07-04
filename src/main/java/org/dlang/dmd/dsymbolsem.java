@@ -11,30 +11,57 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.access.*;
 import static org.dlang.dmd.aggregate.*;
 import static org.dlang.dmd.aliasthis.*;
+import static org.dlang.dmd.arraytypes.*;
+import static org.dlang.dmd.astcodegen.*;
 import static org.dlang.dmd.attrib.*;
+import static org.dlang.dmd.blockexit.*;
+import static org.dlang.dmd.clone.*;
+import static org.dlang.dmd.compiler.*;
+import static org.dlang.dmd.dcast.*;
 import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
 import static org.dlang.dmd.denum.*;
 import static org.dlang.dmd.dimport.*;
+import static org.dlang.dmd.dinterpret.*;
+import static org.dlang.dmd.dmangle.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dstruct.*;
 import static org.dlang.dmd.dsymbol.*;
 import static org.dlang.dmd.dtemplate.*;
 import static org.dlang.dmd.dversion.*;
 import static org.dlang.dmd.errors.*;
+import static org.dlang.dmd.escape.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
 import static org.dlang.dmd.hdrgen.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.init.*;
+import static org.dlang.dmd.initsem.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.nogc.*;
 import static org.dlang.dmd.nspace.*;
+import static org.dlang.dmd.objc.*;
+import static org.dlang.dmd.opover.*;
 import static org.dlang.dmd.parse.*;
+import static org.dlang.dmd.semantic2.*;
+import static org.dlang.dmd.semantic3.*;
+import static org.dlang.dmd.sideeffect.*;
 import static org.dlang.dmd.statement.*;
+import static org.dlang.dmd.statementsem.*;
 import static org.dlang.dmd.staticassert.*;
+import static org.dlang.dmd.target.*;
+import static org.dlang.dmd.templateparamsem.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.typesem.*;
+import static org.dlang.dmd.utf.*;
+import static org.dlang.dmd.utils.*;
 import static org.dlang.dmd.visitor.*;
 
 public class dsymbolsem {
@@ -76,10 +103,10 @@ public class dsymbolsem {
                 {
                     Slice<Expression> dtorCalls = new Slice<Expression>();
                     {
-                        Slice<VarDeclaration> __r1114 = fieldsToDestroy.copy();
-                        int __key1115 = 0;
-                        for (; __key1115 < __r1114.getLength();__key1115 += 1) {
-                            VarDeclaration sf = __r1114.get(__key1115);
+                        Slice<VarDeclaration> __r1138 = fieldsToDestroy.copy();
+                        int __key1139 = 0;
+                        for (; __key1139 < __r1138.getLength();__key1139 += 1) {
+                            VarDeclaration sf = __r1138.get(__key1139);
                             Expression ex = null;
                             tv = sf.type.toBasetype();
                             if ((tv.ty & 0xFF) == ENUMTY.Tstruct)
@@ -116,10 +143,10 @@ public class dsymbolsem {
                     fieldsToDestroy = slice(new VarDeclaration[]{}).copy();
                     DArray<Statement> dtors = new DArray<Statement>();
                     {
-                        Slice<Expression> __r1116 = dtorCalls.copy();
-                        int __key1117 = __r1116.getLength();
-                        for (; (__key1117--) != 0;) {
-                            Expression dc = __r1116.get(__key1117);
+                        Slice<Expression> __r1140 = dtorCalls.copy();
+                        int __key1141 = __r1140.getLength();
+                        for (; (__key1141--) != 0;) {
+                            Expression dc = __r1140.get(__key1141);
                             (dtors).push(new ExpStatement(loc, dc));
                         }
                     }
@@ -253,10 +280,10 @@ public class dsymbolsem {
         Loc loc = new Loc();
         Expression e = null;
         {
-            Slice<VarDeclaration> __r1118 = sd.fields.opSlice().copy();
-            int __key1119 = 0;
-            for (; __key1119 < __r1118.getLength();__key1119 += 1) {
-                VarDeclaration v = __r1118.get(__key1119);
+            Slice<VarDeclaration> __r1142 = sd.fields.opSlice().copy();
+            int __key1143 = 0;
+            for (; __key1143 < __r1142.getLength();__key1143 += 1) {
+                VarDeclaration v = __r1142.get(__key1143);
                 AssignExp ec = new AssignExp(loc, new DotVarExp(loc, new ThisExp(loc), v, true), new DotVarExp(loc, new IdentifierExp(loc, Id.p), v, true));
                 e = Expression.combine(e, (Expression)ec);
             }
@@ -329,10 +356,10 @@ public class dsymbolsem {
     /*LcheckFields:*/
         VarDeclaration fieldWithCpCtor = null;
         {
-            Slice<VarDeclaration> __r1120 = sd.fields.opSlice().copy();
-            int __key1121 = 0;
-            for (; __key1121 < __r1120.getLength();__key1121 += 1) {
-                VarDeclaration v = __r1120.get(__key1121);
+            Slice<VarDeclaration> __r1144 = sd.fields.opSlice().copy();
+            int __key1145 = 0;
+            for (; __key1145 < __r1144.getLength();__key1145 += 1) {
+                VarDeclaration v = __r1144.get(__key1145);
                 if ((v.storage_class & 2097152L) != 0)
                     continue;
                 if (v.overlapped)
@@ -1255,14 +1282,14 @@ public class dsymbolsem {
                     }
                     if (imp.packages != null)
                     {
-                        Package p = imp.pkg;
+                        dmodule.Package p = imp.pkg;
                         scopesym.addAccessiblePackage(p, imp.protection);
                         {
-                            Slice<Identifier> __r1122 = (imp.packages).opSlice(1, (imp.packages).length).copy();
-                            int __key1123 = 0;
-                            for (; __key1123 < __r1122.getLength();__key1123 += 1) {
-                                Identifier id = __r1122.get(__key1123);
-                                p = (Package)p.symtab.lookup(id);
+                            Slice<Identifier> __r1146 = (imp.packages).opSlice(1, (imp.packages).length).copy();
+                            int __key1147 = 0;
+                            for (; __key1147 < __r1146.getLength();__key1147 += 1) {
+                                Identifier id = __r1146.get(__key1147);
+                                p = (dmodule.Package)p.symtab.lookup(id);
                                 scopesym.addAccessiblePackage(p, imp.protection);
                             }
                         }
@@ -1307,7 +1334,7 @@ public class dsymbolsem {
             if ((((global.params.moduleDeps != null && !((pequals(imp.id, Id.object) && pequals((this.sc)._module.ident, Id.object)))) && !pequals((this.sc)._module.ident, Id.entrypoint)) && strcmp((this.sc)._module.ident.toChars(),  new ByteSlice("__main")) != 0))
             {
                 OutBuffer ob = global.params.moduleDeps;
-                Module imod = (this.sc).instantiatingModule();
+                dmodule.Module imod = (this.sc).instantiatingModule();
                 if (!(global.params.moduleDepsFile.getLength() != 0))
                     (ob).writestring( new ByteSlice("depsImport "));
                 (ob).writestring(imod.toPrettyChars(false));
@@ -1340,11 +1367,11 @@ public class dsymbolsem {
                     (ob).writestring( new ByteSlice("???"));
                 (ob).writeByte(41);
                 {
-                    Slice<Identifier> __r1125 = imp.names.opSlice().copy();
-                    int __key1124 = 0;
-                    for (; __key1124 < __r1125.getLength();__key1124 += 1) {
-                        Identifier name = __r1125.get(__key1124);
-                        int i = __key1124;
+                    Slice<Identifier> __r1149 = imp.names.opSlice().copy();
+                    int __key1148 = 0;
+                    for (; __key1148 < __r1149.getLength();__key1148 += 1) {
+                        Identifier name = __r1149.get(__key1148);
+                        int i = __key1148;
                         if (i == 0)
                             (ob).writeByte(58);
                         else
@@ -1494,7 +1521,7 @@ public class dsymbolsem {
                             if ((global.params.moduleDeps != null && !(global.params.moduleDepsFile.getLength() != 0)))
                             {
                                 OutBuffer ob = global.params.moduleDeps;
-                                Module imod = (this.sc).instantiatingModule();
+                                dmodule.Module imod = (this.sc).instantiatingModule();
                                 (ob).writestring( new ByteSlice("depsLib "));
                                 (ob).writestring(imod.toPrettyChars(false));
                                 (ob).writestring( new ByteSlice(" ("));
@@ -1820,12 +1847,12 @@ public class dsymbolsem {
                 vs.semanticRun = PASS.semanticdone;
         }
 
-        public  void visit(Package pkg) {
+        public  void visit(dmodule.Package pkg) {
             if (pkg.semanticRun < PASS.semanticdone)
                 pkg.semanticRun = PASS.semanticdone;
         }
 
-        public  void visit(Module m) {
+        public  void visit(dmodule.Module m) {
             if (m.semanticRun != PASS.init)
                 return ;
             m.semanticRun = PASS.semantic;
@@ -2489,11 +2516,11 @@ public class dsymbolsem {
                 {
                     Nspace parentns = ns;
                     {
-                        Slice<Expression> __r1128 = (tup.exps).opSlice().copy();
-                        int __key1127 = 0;
-                        for (; __key1127 < __r1128.getLength();__key1127 += 1) {
-                            Expression exp = __r1128.get(__key1127);
-                            int i = __key1127;
+                        Slice<Expression> __r1152 = (tup.exps).opSlice().copy();
+                        int __key1151 = 0;
+                        for (; __key1151 < __r1152.getLength();__key1151 += 1) {
+                            Expression exp = __r1152.get(__key1151);
+                            int i = __key1151;
                             name = exp.toStringExp();
                             if (!(name != null))
                             {
@@ -2531,10 +2558,10 @@ public class dsymbolsem {
                 (this.sc).linkage = LINK.cpp;
                 (this.sc).parent = ns;
                 {
-                    Slice<Dsymbol> __r1129 = (ns.members).opSlice().copy();
-                    int __key1130 = 0;
-                    for (; __key1130 < __r1129.getLength();__key1130 += 1) {
-                        Dsymbol s = __r1129.get(__key1130);
+                    Slice<Dsymbol> __r1153 = (ns.members).opSlice().copy();
+                    int __key1154 = 0;
+                    for (; __key1154 < __r1153.getLength();__key1154 += 1) {
+                        Dsymbol s = __r1153.get(__key1154);
                         if (repopulateMembers)
                         {
                             s.addMember(this.sc, (this.sc).scopesym);
@@ -2544,10 +2571,10 @@ public class dsymbolsem {
                     }
                 }
                 {
-                    Slice<Dsymbol> __r1131 = (ns.members).opSlice().copy();
-                    int __key1132 = 0;
-                    for (; __key1132 < __r1131.getLength();__key1132 += 1) {
-                        Dsymbol s = __r1131.get(__key1132);
+                    Slice<Dsymbol> __r1155 = (ns.members).opSlice().copy();
+                    int __key1156 = 0;
+                    for (; __key1156 < __r1155.getLength();__key1156 += 1) {
+                        Dsymbol s = __r1155.get(__key1156);
                         dsymbolSemantic(s, this.sc);
                     }
                 }
@@ -2901,11 +2928,11 @@ public class dsymbolsem {
                                                     funcdecl.vtblIndex = cd.vtbl.length;
                                                     boolean found = false;
                                                     {
-                                                        Slice<Dsymbol> __r1134 = cd.vtbl.opSlice().copy();
-                                                        int __key1133 = 0;
-                                                        for (; __key1133 < __r1134.getLength();__key1133 += 1) {
-                                                            Dsymbol s_1 = __r1134.get(__key1133);
-                                                            int i = __key1133;
+                                                        Slice<Dsymbol> __r1158 = cd.vtbl.opSlice().copy();
+                                                        int __key1157 = 0;
+                                                        for (; __key1157 < __r1158.getLength();__key1157 += 1) {
+                                                            Dsymbol s_1 = __r1158.get(__key1157);
+                                                            int i = __key1157;
                                                             if (found)
                                                                 s_1.isFuncDeclaration().vtblIndex += 1;
                                                             else if ((pequals(s_1.ident, funcdecl.ident) && pequals(s_1.parent, parent)))
@@ -3011,10 +3038,10 @@ public class dsymbolsem {
                     /*Linterfaces:*/
                         boolean foundVtblMatch = false;
                         {
-                            Slice<BaseClass> __r1135 = cd.interfaces.copy();
-                            int __key1136 = 0;
-                            for (; __key1136 < __r1135.getLength();__key1136 += 1) {
-                                BaseClass b = __r1135.get(__key1136);
+                            Slice<BaseClass> __r1159 = cd.interfaces.copy();
+                            int __key1160 = 0;
+                            for (; __key1160 < __r1159.getLength();__key1160 += 1) {
+                                BaseClass b = __r1159.get(__key1160);
                                 vi = funcdecl.findVtblIndex((b).sym.vtbl, (b).sym.vtbl.length, true);
                                 switch (vi)
                                 {
@@ -3110,10 +3137,10 @@ public class dsymbolsem {
                         objc().checkLinkage(funcdecl);
                         objc().addToClassMethodList(funcdecl, cd);
                         {
-                            Slice<BaseClass> __r1137 = cd.interfaces.copy();
-                            int __key1138 = 0;
-                            for (; __key1138 < __r1137.getLength();__key1138 += 1) {
-                                BaseClass b = __r1137.get(__key1138);
+                            Slice<BaseClass> __r1161 = cd.interfaces.copy();
+                            int __key1162 = 0;
+                            for (; __key1162 < __r1161.getLength();__key1162 += 1) {
+                                BaseClass b = __r1161.get(__key1162);
                                 if ((b).sym != null)
                                 {
                                     Dsymbol s = search_function((b).sym, funcdecl.ident);
@@ -3182,7 +3209,7 @@ public class dsymbolsem {
             if ((global.params.verbose && !(dsymbolsem.funcDeclarationSemanticprintedMain)))
             {
                 BytePtr type = pcopy(funcdecl.isMain() ? new BytePtr("main") : funcdecl.isWinMain() ? new BytePtr("winmain") : funcdecl.isDllMain() ? new BytePtr("dllmain") : null);
-                Module mod = (this.sc)._module;
+                dmodule.Module mod = (this.sc)._module;
                 if ((type != null && mod != null))
                 {
                     dsymbolsem.funcDeclarationSemanticprintedMain = true;
@@ -3194,10 +3221,10 @@ public class dsymbolsem {
                 Compiler.genCmain(this.sc);
             assert(((funcdecl.type.ty & 0xFF) != ENUMTY.Terror || funcdecl.errors));
             {
-                int __key1139 = 0;
-                int __limit1140 = f.parameterList.length();
-                for (; __key1139 < __limit1140;__key1139 += 1) {
-                    int i = __key1139;
+                int __key1163 = 0;
+                int __limit1164 = f.parameterList.length();
+                for (; __key1163 < __limit1164;__key1163 += 1) {
+                    int i = __key1163;
                     Parameter param = f.parameterList.get(i);
                     if ((param != null && param.userAttribDecl != null))
                         dsymbolSemantic(param.userAttribDecl, this.sc);
@@ -3408,7 +3435,7 @@ public class dsymbolsem {
                 scd.fbody = new CompoundStatement(Loc.initial, sa);
             }
             this.funcDeclarationSemantic(scd);
-            Module m = scd.getModule();
+            dmodule.Module m = scd.getModule();
             if (!(m != null))
                 m = (this.sc)._module;
             if (m != null)
@@ -3455,7 +3482,7 @@ public class dsymbolsem {
                 sdd.vgate = v;
             }
             this.funcDeclarationSemantic(sdd);
-            Module m = sdd.getModule();
+            dmodule.Module m = sdd.getModule();
             if (!(m != null))
                 m = (this.sc)._module;
             if (m != null)
@@ -3703,10 +3730,10 @@ public class dsymbolsem {
                     return ;
                 }
                 {
-                    Slice<VarDeclaration> __r1141 = sd.fields.opSlice().copy();
-                    int __key1142 = 0;
-                    for (; __key1142 < __r1141.getLength();__key1142 += 1) {
-                        VarDeclaration v = __r1141.get(__key1142);
+                    Slice<VarDeclaration> __r1165 = sd.fields.opSlice().copy();
+                    int __key1166 = 0;
+                    for (; __key1166 < __r1165.getLength();__key1166 += 1) {
+                        VarDeclaration v = __r1165.get(__key1166);
                         Type tb = v.type.baseElemOf();
                         if ((tb.ty & 0xFF) != ENUMTY.Tstruct)
                             continue;
@@ -3786,10 +3813,10 @@ public class dsymbolsem {
             cd.vtblInterfaces = new DArray<BaseClass>();
             (cd.vtblInterfaces).reserve(cd.interfaces.getLength());
             {
-                Slice<BaseClass> __r1143 = cd.interfaces.copy();
-                int __key1144 = 0;
-                for (; __key1144 < __r1143.getLength();__key1144 += 1) {
-                    BaseClass b = __r1143.get(__key1144);
+                Slice<BaseClass> __r1167 = cd.interfaces.copy();
+                int __key1168 = 0;
+                for (; __key1168 < __r1167.getLength();__key1168 += 1) {
+                    BaseClass b = __r1167.get(__key1168);
                     (cd.vtblInterfaces).push(b);
                     (b).copyBaseInterfaces(cd.vtblInterfaces);
                 }
@@ -3827,14 +3854,10 @@ public class dsymbolsem {
                     }
             }
             Ungag ungag = cldec_ref.value.ungagSpeculative().copy();
-            Function0<Type> __dgliteral2 = new Function0<Type>(){
-                public Type invoke(){
-                    return typeSemantic((b).type, cldec_ref.value.loc, sc);
-                }
-            };
-            Function0<Void> __dgliteral4 = new Function0<Void>(){
-                public Void invoke(){
-                    dsymbolSemantic(tc.sym, null);
+            Function1<Dsymbol,Void> __lambda8 = new Function1<Dsymbol,Void>(){
+                public Void invoke(Dsymbol s){
+                    s.importAll(sc2);
+                    return null;
                     return null;
                 }
             };
@@ -3845,16 +3868,20 @@ public class dsymbolsem {
                     return null;
                 }
             };
-            Function1<Dsymbol,Void> __lambda9 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s){
-                    dsymbolSemantic(s, sc2);
-                    return null;
+            Function0<Void> __dgliteral4 = new Function0<Void>(){
+                public Void invoke(){
+                    dsymbolSemantic(tc.sym, null);
                     return null;
                 }
             };
-            Function1<Dsymbol,Void> __lambda8 = new Function1<Dsymbol,Void>(){
+            Function0<Type> __dgliteral2 = new Function0<Type>(){
+                public Type invoke(){
+                    return typeSemantic((b).type, cldec_ref.value.loc, sc);
+                }
+            };
+            Function1<Dsymbol,Void> __lambda9 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s){
-                    s.importAll(sc2);
+                    dsymbolSemantic(s, sc2);
                     return null;
                     return null;
                 }
@@ -3893,21 +3920,6 @@ public class dsymbolsem {
                 try {
                     if (cldec_ref.value.baseok < Baseok.done)
                     {
-                        // from template resolveBase!(Void)
-                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
-                            public Void invoke(Void exp){
-                                if (scx == null)
-                                {
-                                    scx = (sc).copy();
-                                    (scx).setNoFree();
-                                }
-                                cldec_ref.value._scope = scx;
-                                exp.invoke();
-                                cldec_ref.value._scope = null;
-                                return null;
-                            }
-                        };
-
                         // from template resolveBase!(Type)
                         Function1<Type,Type> resolveBaseType = new Function1<Type,Type>(){
                             public Type invoke(Type exp){
@@ -3920,6 +3932,21 @@ public class dsymbolsem {
                                 Type r = exp.invoke();
                                 cldec_ref.value._scope = null;
                                 return r;
+                            }
+                        };
+
+                        // from template resolveBase!(Void)
+                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
+                            public Void invoke(Void exp){
+                                if (scx == null)
+                                {
+                                    scx = (sc).copy();
+                                    (scx).setNoFree();
+                                }
+                                cldec_ref.value._scope = scx;
+                                exp.invoke();
+                                cldec_ref.value._scope = null;
+                                return null;
                             }
                         };
 
@@ -4113,10 +4140,10 @@ public class dsymbolsem {
                         }
                         cldec_ref.value.interfaces = (cldec_ref.value.baseclasses).tdata().slice(cldec_ref.value.baseClass != null ? 1 : 0,(cldec_ref.value.baseclasses).length).copy();
                         {
-                            Slice<BaseClass> __r1145 = cldec_ref.value.interfaces.copy();
-                            int __key1146 = 0;
-                            for (; __key1146 < __r1145.getLength();__key1146 += 1) {
-                                BaseClass b = __r1145.get(__key1146);
+                            Slice<BaseClass> __r1169 = cldec_ref.value.interfaces.copy();
+                            int __key1170 = 0;
+                            for (; __key1170 < __r1169.getLength();__key1170 += 1) {
+                                BaseClass b = __r1169.get(__key1170);
                                 if ((b).sym.isCOMinterface())
                                     cldec_ref.value.com = true;
                                 if ((cldec_ref.value.classKind == ClassKind.cpp && !((b).sym.isCPPinterface())))
@@ -4227,10 +4254,10 @@ public class dsymbolsem {
                     return ;
                 }
                 {
-                    Slice<VarDeclaration> __r1147 = cldec_ref.value.fields.opSlice().copy();
-                    int __key1148 = 0;
-                    for (; __key1148 < __r1147.getLength();__key1148 += 1) {
-                        VarDeclaration v = __r1147.get(__key1148);
+                    Slice<VarDeclaration> __r1171 = cldec_ref.value.fields.opSlice().copy();
+                    int __key1172 = 0;
+                    for (; __key1172 < __r1171.getLength();__key1172 += 1) {
+                        VarDeclaration v = __r1171.get(__key1172);
                         Type tb = v.type.baseElemOf();
                         if ((tb.ty & 0xFF) != ENUMTY.Tstruct)
                             continue;
@@ -4250,10 +4277,10 @@ public class dsymbolsem {
                 if ((!(cldec_ref.value.ctor != null) && cldec_ref.value.noDefaultCtor))
                 {
                     {
-                        Slice<VarDeclaration> __r1149 = cldec_ref.value.fields.opSlice().copy();
-                        int __key1150 = 0;
-                        for (; __key1150 < __r1149.getLength();__key1150 += 1) {
-                            VarDeclaration v = __r1149.get(__key1150);
+                        Slice<VarDeclaration> __r1173 = cldec_ref.value.fields.opSlice().copy();
+                        int __key1174 = 0;
+                        for (; __key1174 < __r1173.getLength();__key1174 += 1) {
+                            VarDeclaration v = __r1173.get(__key1174);
                             if ((v.storage_class & 549755813888L) != 0)
                                 error(v.loc, new BytePtr("field `%s` must be initialized in constructor"), v.toChars());
                         }
@@ -4336,10 +4363,10 @@ public class dsymbolsem {
                 if ((cldec_ref.value.storage_class & 512L) != 0)
                 {
                     {
-                        Slice<VarDeclaration> __r1151 = cldec_ref.value.fields.opSlice().copy();
-                        int __key1152 = 0;
-                        for (; __key1152 < __r1151.getLength();__key1152 += 1) {
-                            VarDeclaration vd = __r1151.get(__key1152);
+                        Slice<VarDeclaration> __r1175 = cldec_ref.value.fields.opSlice().copy();
+                        int __key1176 = 0;
+                        for (; __key1176 < __r1175.getLength();__key1176 += 1) {
+                            VarDeclaration vd = __r1175.get(__key1176);
                             if ((!(vd.isThisDeclaration() != null) && !(vd.prot().isMoreRestrictiveThan(new Prot(Prot.Kind.public_)))))
                             {
                                 vd.error(new BytePtr("Field members of a `synchronized` class cannot be `%s`"), protectionToChars(vd.prot().kind));
@@ -4412,21 +4439,6 @@ public class dsymbolsem {
                 try {
                     if (idec.baseok < Baseok.done)
                     {
-                        // from template resolveBase!(Void)
-                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
-                            public Void invoke(Void exp){
-                                if (scx == null)
-                                {
-                                    scx = (sc).copy();
-                                    (scx).setNoFree();
-                                }
-                                idec._scope = scx;
-                                exp.invoke();
-                                idec._scope = null;
-                                return null;
-                            }
-                        };
-
                         // from template resolveBase!(Type)
                         Function1<Type,Type> resolveBaseType = new Function1<Type,Type>(){
                             public Type invoke(Type exp){
@@ -4439,6 +4451,21 @@ public class dsymbolsem {
                                 Type r = exp.invoke();
                                 idec._scope = null;
                                 return r;
+                            }
+                        };
+
+                        // from template resolveBase!(Void)
+                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
+                            public Void invoke(Void exp){
+                                if (scx == null)
+                                {
+                                    scx = (sc).copy();
+                                    (scx).setNoFree();
+                                }
+                                idec._scope = scx;
+                                exp.invoke();
+                                idec._scope = null;
+                                return null;
                             }
                         };
 
@@ -4544,10 +4571,10 @@ public class dsymbolsem {
                         idec.baseok = Baseok.done;
                         idec.interfaces = (idec.baseclasses).tdata().slice(0,(idec.baseclasses).length).copy();
                         {
-                            Slice<BaseClass> __r1153 = idec.interfaces.copy();
-                            int __key1154 = 0;
-                            for (; __key1154 < __r1153.getLength();__key1154 += 1) {
-                                BaseClass b = __r1153.get(__key1154);
+                            Slice<BaseClass> __r1177 = idec.interfaces.copy();
+                            int __key1178 = 0;
+                            for (; __key1178 < __r1177.getLength();__key1178 += 1) {
+                                BaseClass b = __r1177.get(__key1178);
                                 if ((b).sym.isCOMinterface())
                                     idec.com = true;
                                 if ((b).sym.isCPPinterface())
@@ -4590,12 +4617,12 @@ public class dsymbolsem {
                     if ((idec.vtblOffset()) != 0)
                         idec.vtbl.push(idec);
                     {
-                        Slice<BaseClass> __r1156 = idec.interfaces.copy();
-                        int __key1155 = 0;
+                        Slice<BaseClass> __r1180 = idec.interfaces.copy();
+                        int __key1179 = 0;
                     L_outer8:
-                        for (; __key1155 < __r1156.getLength();__key1155 += 1) {
-                            BaseClass b = __r1156.get(__key1155);
-                            int i = __key1155;
+                        for (; __key1179 < __r1180.getLength();__key1179 += 1) {
+                            BaseClass b = __r1180.get(__key1179);
+                            int i = __key1179;
                             try {
                                 {
                                     int k = 0;
@@ -4728,7 +4755,7 @@ public class dsymbolsem {
             tempinst.inst.tnext = tempinst;
             if (((tempinst.minst != null && tempinst.minst.isRoot()) && !((tempinst.inst.minst != null && tempinst.inst.minst.isRoot()))))
             {
-                Module mi = tempinst.minst;
+                dmodule.Module mi = tempinst.minst;
                 TemplateInstance ti = tempinst.tinst;
                 tempinst.minst = tempinst.inst.minst;
                 tempinst.tinst = tempinst.inst.tinst;
@@ -4891,10 +4918,10 @@ public class dsymbolsem {
                 else if ((sc).func != null)
                 {
                     {
-                        Slice<RootObject> __r1158 = tempinst.tdtypes.opSlice().copy();
-                        int __key1159 = 0;
-                        for (; __key1159 < __r1158.getLength();__key1159 += 1) {
-                            RootObject oarg = __r1158.get(__key1159);
+                        Slice<RootObject> __r1182 = tempinst.tdtypes.opSlice().copy();
+                        int __key1183 = 0;
+                        for (; __key1183 < __r1182.getLength();__key1183 += 1) {
+                            RootObject oarg = __r1182.get(__key1183);
                             Dsymbol s = getDsymbol(oarg);
                             if (!(s != null))
                                 continue;
@@ -4990,7 +5017,7 @@ public class dsymbolsem {
             TemplateInstanceBox ti1 = ti1 = new TemplateInstanceBox(errinst);
             tempdecl.instances.remove(ti1);
             TemplateInstanceBox ti2 = ti2 = new TemplateInstanceBox(tempinst);
-            tempdecl.instances.set(ti2, __aaval1160);
+            tempdecl.instances.set(ti2, __aaval1184);
         }
     }
 

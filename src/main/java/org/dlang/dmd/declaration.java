@@ -12,16 +12,28 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.arraytypes.*;
+import static org.dlang.dmd.ctorflow.*;
 import static org.dlang.dmd.dclass.*;
+import static org.dlang.dmd.delegatize.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dstruct.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.dtemplate.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.init.*;
+import static org.dlang.dmd.initsem.*;
+import static org.dlang.dmd.intrange.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.target.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.typesem.*;
 import static org.dlang.dmd.visitor.*;
 
 public class declaration {
@@ -114,11 +126,11 @@ public class declaration {
                     if (var.overlapped)
                     {
                         {
-                            Slice<VarDeclaration> __r896 = ad.fields.opSlice().copy();
-                            int __key895 = 0;
-                            for (; __key895 < __r896.getLength();__key895 += 1) {
-                                VarDeclaration v = __r896.get(__key895);
-                                int j = __key895;
+                            Slice<VarDeclaration> __r920 = ad.fields.opSlice().copy();
+                            int __key919 = 0;
+                            for (; __key919 < __r920.getLength();__key919 += 1) {
+                                VarDeclaration v = __r920.get(__key919);
+                                int j = __key919;
                                 if ((v == var || !(var.isOverlappedWith(v))))
                                     continue;
                                 v.ctorinit = true;

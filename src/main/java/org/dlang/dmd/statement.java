@@ -12,23 +12,37 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.ast_node.*;
+import static org.dlang.dmd.astcodegen.*;
 import static org.dlang.dmd.attrib.*;
+import static org.dlang.dmd.canthrow.*;
 import static org.dlang.dmd.cond.*;
+import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
 import static org.dlang.dmd.denum.*;
 import static org.dlang.dmd.dimport.*;
+import static org.dlang.dmd.dinterpret.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.dtemplate.*;
 import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.gluelayer.*;
 import static org.dlang.dmd.hdrgen.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.mtype.*;
 import static org.dlang.dmd.parse.*;
+import static org.dlang.dmd.sapply.*;
+import static org.dlang.dmd.sideeffect.*;
+import static org.dlang.dmd.statementsem.*;
 import static org.dlang.dmd.staticassert.*;
+import static org.dlang.dmd.tokens.*;
 import static org.dlang.dmd.visitor.*;
 
 public class statement {
@@ -143,10 +157,10 @@ public class statement {
                 return null;
             DArray<Statement> statements = new DArray<Statement>();
             {
-                Slice<Dsymbol> __r1550 = (a).opSlice().copy();
-                int __key1551 = 0;
-                for (; __key1551 < __r1550.getLength();__key1551 += 1) {
-                    Dsymbol s = __r1550.get(__key1551);
+                Slice<Dsymbol> __r1634 = (a).opSlice().copy();
+                int __key1635 = 0;
+                for (; __key1635 < __r1634.getLength();__key1635 += 1) {
+                    Dsymbol s = __r1634.get(__key1635);
                     (statements).push(toStatement(s));
                 }
             }
@@ -161,10 +175,10 @@ public class statement {
         public  void visit(TemplateMixin tm) {
             DArray<Statement> a = new DArray<Statement>();
             {
-                Slice<Dsymbol> __r1552 = (tm.members).opSlice().copy();
-                int __key1553 = 0;
-                for (; __key1553 < __r1552.getLength();__key1553 += 1) {
-                    Dsymbol m = __r1552.get(__key1553);
+                Slice<Dsymbol> __r1636 = (tm.members).opSlice().copy();
+                int __key1637 = 0;
+                for (; __key1637 < __r1636.getLength();__key1637 += 1) {
+                    Dsymbol m = __r1636.get(__key1637);
                     Statement s = toStatement(m);
                     if (s != null)
                         (a).push(s);
@@ -298,11 +312,11 @@ public class statement {
             {
                 b = (a).copy();
                 {
-                    Slice<Statement> __r1549 = (a).opSlice().copy();
-                    int __key1548 = 0;
-                    for (; __key1548 < __r1549.getLength();__key1548 += 1) {
-                        Statement s = __r1549.get(__key1548);
-                        int i = __key1548;
+                    Slice<Statement> __r1633 = (a).opSlice().copy();
+                    int __key1632 = 0;
+                    for (; __key1632 < __r1633.getLength();__key1632 += 1) {
+                        Statement s = __r1633.get(__key1632);
+                        int i = __key1632;
                         b.set(i, s != null ? s.syntaxCopy() : null);
                     }
                 }
@@ -703,10 +717,10 @@ public class statement {
             this.statements = new DArray<Statement>();
             (this.statements).reserve(sts.getLength());
             {
-                Slice<Statement> __r1554 = sts.copy();
-                int __key1555 = 0;
-                for (; __key1555 < __r1554.getLength();__key1555 += 1) {
-                    Statement s = __r1554.get(__key1555);
+                Slice<Statement> __r1638 = sts.copy();
+                int __key1639 = 0;
+                for (; __key1639 < __r1638.getLength();__key1639 += 1) {
+                    Statement s = __r1638.get(__key1639);
                     (this.statements).push(s);
                 }
             }
@@ -727,10 +741,10 @@ public class statement {
         public  ReturnStatement isReturnStatement() {
             ReturnStatement rs = null;
             {
-                Slice<Statement> __r1556 = (this.statements).opSlice().copy();
-                int __key1557 = 0;
-                for (; __key1557 < __r1556.getLength();__key1557 += 1) {
-                    Statement s = __r1556.get(__key1557);
+                Slice<Statement> __r1640 = (this.statements).opSlice().copy();
+                int __key1641 = 0;
+                for (; __key1641 < __r1640.getLength();__key1641 += 1) {
+                    Statement s = __r1640.get(__key1641);
                     if (s != null)
                     {
                         rs = s.isReturnStatement();
@@ -786,11 +800,11 @@ public class statement {
         public  Statement syntaxCopy() {
             DArray<Statement> a = new DArray<Statement>((this.statements).length);
             {
-                Slice<Statement> __r1559 = (this.statements).opSlice().copy();
-                int __key1558 = 0;
-                for (; __key1558 < __r1559.getLength();__key1558 += 1) {
-                    Statement s = __r1559.get(__key1558);
-                    int i = __key1558;
+                Slice<Statement> __r1643 = (this.statements).opSlice().copy();
+                int __key1642 = 0;
+                for (; __key1642 < __r1643.getLength();__key1642 += 1) {
+                    Statement s = __r1643.get(__key1642);
+                    int i = __key1642;
                     a.set(i, s != null ? s.syntaxCopy() : null);
                 }
             }
@@ -822,11 +836,11 @@ public class statement {
         public  Statement syntaxCopy() {
             DArray<Statement> a = new DArray<Statement>((this.statements).length);
             {
-                Slice<Statement> __r1561 = (this.statements).opSlice().copy();
-                int __key1560 = 0;
-                for (; __key1560 < __r1561.getLength();__key1560 += 1) {
-                    Statement s = __r1561.get(__key1560);
-                    int i = __key1560;
+                Slice<Statement> __r1645 = (this.statements).opSlice().copy();
+                int __key1644 = 0;
+                for (; __key1644 < __r1645.getLength();__key1644 += 1) {
+                    Statement s = __r1645.get(__key1644);
+                    int i = __key1644;
                     a.set(i, s != null ? s.syntaxCopy() : null);
                 }
             }
@@ -937,11 +951,11 @@ public class statement {
             }
             DArray<Statement> b = new DArray<Statement>((a).length);
             {
-                Slice<Statement> __r1563 = (a).opSlice().copy();
-                int __key1562 = 0;
-                for (; __key1562 < __r1563.getLength();__key1562 += 1) {
-                    Statement s = __r1563.get(__key1562);
-                    int i = __key1562;
+                Slice<Statement> __r1647 = (a).opSlice().copy();
+                int __key1646 = 0;
+                for (; __key1646 < __r1647.getLength();__key1646 += 1) {
+                    Statement s = __r1647.get(__key1646);
+                    int i = __key1646;
                     b.set(i, s != null ? new ForwardingStatement(s.loc, this.sym, s) : null);
                 }
             }
@@ -1459,10 +1473,10 @@ public class statement {
             if ((this.sdefault != null && checkVar.invoke(this.sdefault.lastVar)))
                 return false;
             {
-                Slice<CaseStatement> __r1568 = (this.cases).opSlice().copy();
-                int __key1569 = 0;
-                for (; __key1569 < __r1568.getLength();__key1569 += 1) {
-                    CaseStatement scase = __r1568.get(__key1569);
+                Slice<CaseStatement> __r1652 = (this.cases).opSlice().copy();
+                int __key1653 = 0;
+                for (; __key1653 < __r1652.getLength();__key1653 += 1) {
+                    CaseStatement scase = __r1652.get(__key1653);
                     if ((scase != null && checkVar.invoke(scase.lastVar)))
                         return false;
                 }
@@ -1853,11 +1867,11 @@ public class statement {
         public  Statement syntaxCopy() {
             DArray<Catch> a = new DArray<Catch>((this.catches).length);
             {
-                Slice<Catch> __r1571 = (this.catches).opSlice().copy();
-                int __key1570 = 0;
-                for (; __key1570 < __r1571.getLength();__key1570 += 1) {
-                    Catch c = __r1571.get(__key1570);
-                    int i = __key1570;
+                Slice<Catch> __r1655 = (this.catches).opSlice().copy();
+                int __key1654 = 0;
+                for (; __key1654 < __r1655.getLength();__key1654 += 1) {
+                    Catch c = __r1655.get(__key1654);
+                    int i = __key1654;
                     a.set(i, c.syntaxCopy());
                 }
             }
@@ -2071,10 +2085,10 @@ public class statement {
             if (a != null)
             {
                 {
-                    Slice<Statement> __r1572 = (a).opSlice().copy();
-                    int __key1573 = 0;
-                    for (; __key1573 < __r1572.getLength();__key1573 += 1) {
-                        Statement s = __r1572.get(__key1573);
+                    Slice<Statement> __r1656 = (a).opSlice().copy();
+                    int __key1657 = 0;
+                    for (; __key1657 < __r1656.getLength();__key1657 += 1) {
+                        Statement s = __r1656.get(__key1657);
                         s = new DebugStatement(this.loc, s);
                     }
                 }
@@ -2409,11 +2423,11 @@ public class statement {
         public  CompoundAsmStatement syntaxCopy() {
             DArray<Statement> a = new DArray<Statement>((this.statements).length);
             {
-                Slice<Statement> __r1575 = (this.statements).opSlice().copy();
-                int __key1574 = 0;
-                for (; __key1574 < __r1575.getLength();__key1574 += 1) {
-                    Statement s = __r1575.get(__key1574);
-                    int i = __key1574;
+                Slice<Statement> __r1659 = (this.statements).opSlice().copy();
+                int __key1658 = 0;
+                for (; __key1658 < __r1659.getLength();__key1658 += 1) {
+                    Statement s = __r1659.get(__key1658);
+                    int i = __key1658;
                     a.set(i, s != null ? s.syntaxCopy() : null);
                 }
             }
@@ -2450,11 +2464,11 @@ public class statement {
         public  Statement syntaxCopy() {
             DArray<Dsymbol> m = new DArray<Dsymbol>((this.imports).length);
             {
-                Slice<Dsymbol> __r1577 = (this.imports).opSlice().copy();
-                int __key1576 = 0;
-                for (; __key1576 < __r1577.getLength();__key1576 += 1) {
-                    Dsymbol s = __r1577.get(__key1576);
-                    int i = __key1576;
+                Slice<Dsymbol> __r1661 = (this.imports).opSlice().copy();
+                int __key1660 = 0;
+                for (; __key1660 < __r1661.getLength();__key1660 += 1) {
+                    Dsymbol s = __r1661.get(__key1660);
+                    int i = __key1660;
                     m.set(i, s.syntaxCopy(null));
                 }
             }

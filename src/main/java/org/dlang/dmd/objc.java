@@ -12,17 +12,27 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.attrib.*;
+import static org.dlang.dmd.cond.*;
 import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
+import static org.dlang.dmd.dmangle.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dstruct.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.gluelayer.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.tokens.*;
 
 public class objc {
 
@@ -466,10 +476,10 @@ public class objc {
             if (symbols == null)
                 return ;
             {
-                Slice<Dsymbol> __r1518 = (symbols).opSlice().copy();
-                int __key1519 = 0;
-                for (; __key1519 < __r1518.getLength();__key1519 += 1) {
-                    Dsymbol symbol = __r1518.get(__key1519);
+                Slice<Dsymbol> __r1602 = (symbols).opSlice().copy();
+                int __key1603 = 0;
+                for (; __key1603 < __r1602.getLength();__key1603 += 1) {
+                    Dsymbol symbol = __r1602.get(__key1603);
                     symbol.addObjcSymbols(classes, categories);
                 }
             }
@@ -499,7 +509,7 @@ public class objc {
         public  boolean isUdaSelector(StructDeclaration sd) {
             if ((!pequals(sd.ident, Id.udaSelector) || !(sd.parent != null)))
                 return false;
-            Module _module = sd.parent.isModule();
+            dmodule.Module _module = sd.parent.isModule();
             return (_module != null && _module.isCoreModule(Id.attribute));
         }
 
@@ -519,10 +529,10 @@ public class objc {
                 __withSym.objc.identifier = classDeclaration.ident;
             DArray<BaseClass> metaBases = new DArray<BaseClass>();
             {
-                Slice<BaseClass> __r1516 = (__withSym.baseclasses).opSlice().copy();
-                int __key1517 = 0;
-                for (; __key1517 < __r1516.getLength();__key1517 += 1) {
-                    BaseClass base = __r1516.get(__key1517);
+                Slice<BaseClass> __r1600 = (__withSym.baseclasses).opSlice().copy();
+                int __key1601 = 0;
+                for (; __key1601 < __r1600.getLength();__key1601 += 1) {
+                    BaseClass base = __r1600.get(__key1601);
                     ClassDeclaration baseCd = (base).sym;
                     assert(baseCd != null);
                     if (baseCd.classKind == ClassKind.objc)
@@ -565,10 +575,10 @@ public class objc {
                 __withSym.objc.identifier = classDeclaration.ident;
             DArray<BaseClass> metaBases = new DArray<BaseClass>();
             {
-                Slice<BaseClass> __r1514 = (__withSym.baseclasses).opSlice().copy();
-                int __key1515 = 0;
-                for (; __key1515 < __r1514.getLength();__key1515 += 1) {
-                    BaseClass base = __r1514.get(__key1515);
+                Slice<BaseClass> __r1598 = (__withSym.baseclasses).opSlice().copy();
+                int __key1599 = 0;
+                for (; __key1599 < __r1598.getLength();__key1599 += 1) {
+                    BaseClass base = __r1598.get(__key1599);
                     ClassDeclaration baseCd = (base).sym;
                     assert(baseCd != null);
                     if (baseCd.classKind == ClassKind.objc)

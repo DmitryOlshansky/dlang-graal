@@ -12,18 +12,36 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.aliasthis.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.ast_node.*;
+import static org.dlang.dmd.dcast.*;
 import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
+import static org.dlang.dmd.dmangle.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
 import static org.dlang.dmd.hdrgen.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
+import static org.dlang.dmd.impcnvtab.*;
 import static org.dlang.dmd.init.*;
+import static org.dlang.dmd.initsem.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.opover.*;
+import static org.dlang.dmd.semantic2.*;
+import static org.dlang.dmd.semantic3.*;
+import static org.dlang.dmd.staticcond.*;
+import static org.dlang.dmd.templateparamsem.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.typesem.*;
 import static org.dlang.dmd.visitor.*;
 
 public class dtemplate {
@@ -396,10 +414,10 @@ public class dtemplate {
                     return ;
                 }
                 {
-                    Slice<Parameter> __r1179 = (tp.parameterList.parameters).opSlice().copy();
-                    int __key1180 = 0;
-                    for (; __key1180 < __r1179.getLength();__key1180 += 1) {
-                        Parameter fparam = __r1179.get(__key1180);
+                    Slice<Parameter> __r1203 = (tp.parameterList.parameters).opSlice().copy();
+                    int __key1204 = 0;
+                    for (; __key1204 < __r1203.getLength();__key1204 += 1) {
+                        Parameter fparam = __r1203.get(__key1204);
                         fparam.type = fparam.type.addStorageClass(fparam.storageClass);
                         fparam.storageClass &= -2685405189L;
                         if (!(reliesOnTemplateParameters(fparam.type, (this.parameters).opSlice(this.inferStart, (this.parameters).length))))
@@ -797,10 +815,10 @@ public class dtemplate {
                 }
             }
             {
-                Slice<BaseClass> __r1181 = b.baseInterfaces.copy();
-                int __key1182 = 0;
-                for (; __key1182 < __r1181.getLength();__key1182 += 1) {
-                    BaseClass bi = __r1181.get(__key1182).copy();
+                Slice<BaseClass> __r1205 = b.baseInterfaces.copy();
+                int __key1206 = 0;
+                for (; __key1206 < __r1205.getLength();__key1206 += 1) {
+                    BaseClass bi = __r1205.get(__key1206).copy();
                     deduceBaseClassParameters(bi, sc, tparam, parameters, dedtypes, best, numBaseClassMatches);
                 }
             }
@@ -845,10 +863,10 @@ public class dtemplate {
                 for (; (s != null && (s.baseclasses).length > 0);){
                     deduceBaseClassParameters((s.baseclasses).get(0), this.sc, this.tparam, this.parameters, this.dedtypes, best, numBaseClassMatches);
                     {
-                        Slice<BaseClass> __r1183 = s.interfaces.copy();
-                        int __key1184 = 0;
-                        for (; __key1184 < __r1183.getLength();__key1184 += 1) {
-                            BaseClass b = __r1183.get(__key1184);
+                        Slice<BaseClass> __r1207 = s.interfaces.copy();
+                        int __key1208 = 0;
+                        for (; __key1208 < __r1207.getLength();__key1208 += 1) {
+                            BaseClass b = __r1207.get(__key1208);
                             deduceBaseClassParameters(b, this.sc, this.tparam, this.parameters, this.dedtypes, best, numBaseClassMatches);
                         }
                     }
@@ -1225,10 +1243,10 @@ public class dtemplate {
 
         public  void visit(IdentifierExp e) {
             {
-                Slice<TemplateParameter> __r1195 = this.tparams.copy();
-                int __key1196 = 0;
-                for (; __key1196 < __r1195.getLength();__key1196 += 1) {
-                    TemplateParameter tp = __r1195.get(__key1196);
+                Slice<TemplateParameter> __r1219 = this.tparams.copy();
+                int __key1220 = 0;
+                for (; __key1220 < __r1219.getLength();__key1220 += 1) {
+                    TemplateParameter tp = __r1219.get(__key1220);
                     if (pequals(e.ident, tp.ident))
                     {
                         this.result = true;
@@ -1242,10 +1260,10 @@ public class dtemplate {
             if (e.exps != null)
             {
                 {
-                    Slice<Expression> __r1197 = (e.exps).opSlice().copy();
-                    int __key1198 = 0;
-                    for (; __key1198 < __r1197.getLength();__key1198 += 1) {
-                        Expression ea = __r1197.get(__key1198);
+                    Slice<Expression> __r1221 = (e.exps).opSlice().copy();
+                    int __key1222 = 0;
+                    for (; __key1222 < __r1221.getLength();__key1222 += 1) {
+                        Expression ea = __r1221.get(__key1222);
                         ea.accept(this);
                         if (this.result)
                             return ;
@@ -1258,10 +1276,10 @@ public class dtemplate {
             if (e.elements != null)
             {
                 {
-                    Slice<Expression> __r1199 = (e.elements).opSlice().copy();
-                    int __key1200 = 0;
-                    for (; __key1200 < __r1199.getLength();__key1200 += 1) {
-                        Expression el = __r1199.get(__key1200);
+                    Slice<Expression> __r1223 = (e.elements).opSlice().copy();
+                    int __key1224 = 0;
+                    for (; __key1224 < __r1223.getLength();__key1224 += 1) {
+                        Expression el = __r1223.get(__key1224);
                         el.accept(this);
                         if (this.result)
                             return ;
@@ -1272,20 +1290,20 @@ public class dtemplate {
 
         public  void visit(AssocArrayLiteralExp e) {
             {
-                Slice<Expression> __r1201 = (e.keys).opSlice().copy();
-                int __key1202 = 0;
-                for (; __key1202 < __r1201.getLength();__key1202 += 1) {
-                    Expression ek = __r1201.get(__key1202);
+                Slice<Expression> __r1225 = (e.keys).opSlice().copy();
+                int __key1226 = 0;
+                for (; __key1226 < __r1225.getLength();__key1226 += 1) {
+                    Expression ek = __r1225.get(__key1226);
                     ek.accept(this);
                     if (this.result)
                         return ;
                 }
             }
             {
-                Slice<Expression> __r1203 = (e.values).opSlice().copy();
-                int __key1204 = 0;
-                for (; __key1204 < __r1203.getLength();__key1204 += 1) {
-                    Expression ev = __r1203.get(__key1204);
+                Slice<Expression> __r1227 = (e.values).opSlice().copy();
+                int __key1228 = 0;
+                for (; __key1228 < __r1227.getLength();__key1228 += 1) {
+                    Expression ev = __r1227.get(__key1228);
                     ev.accept(this);
                     if (this.result)
                         return ;
@@ -1297,10 +1315,10 @@ public class dtemplate {
             if (e.elements != null)
             {
                 {
-                    Slice<Expression> __r1205 = (e.elements).opSlice().copy();
-                    int __key1206 = 0;
-                    for (; __key1206 < __r1205.getLength();__key1206 += 1) {
-                        Expression ea = __r1205.get(__key1206);
+                    Slice<Expression> __r1229 = (e.elements).opSlice().copy();
+                    int __key1230 = 0;
+                    for (; __key1230 < __r1229.getLength();__key1230 += 1) {
+                        Expression ea = __r1229.get(__key1230);
                         ea.accept(this);
                         if (this.result)
                             return ;
@@ -1319,10 +1337,10 @@ public class dtemplate {
             if ((!(this.result) && e.newargs != null))
             {
                 {
-                    Slice<Expression> __r1207 = (e.newargs).opSlice().copy();
-                    int __key1208 = 0;
-                    for (; __key1208 < __r1207.getLength();__key1208 += 1) {
-                        Expression ea = __r1207.get(__key1208);
+                    Slice<Expression> __r1231 = (e.newargs).opSlice().copy();
+                    int __key1232 = 0;
+                    for (; __key1232 < __r1231.getLength();__key1232 += 1) {
+                        Expression ea = __r1231.get(__key1232);
                         ea.accept(this);
                         if (this.result)
                             return ;
@@ -1333,10 +1351,10 @@ public class dtemplate {
             if ((!(this.result) && e.arguments != null))
             {
                 {
-                    Slice<Expression> __r1209 = (e.arguments).opSlice().copy();
-                    int __key1210 = 0;
-                    for (; __key1210 < __r1209.getLength();__key1210 += 1) {
-                        Expression ea = __r1209.get(__key1210);
+                    Slice<Expression> __r1233 = (e.arguments).opSlice().copy();
+                    int __key1234 = 0;
+                    for (; __key1234 < __r1233.getLength();__key1234 += 1) {
+                        Expression ea = __r1233.get(__key1234);
                         ea.accept(this);
                         if (this.result)
                             return ;
@@ -1370,10 +1388,10 @@ public class dtemplate {
             if (e.args != null)
             {
                 {
-                    Slice<RootObject> __r1211 = (e.args).opSlice().copy();
-                    int __key1212 = 0;
-                    for (; __key1212 < __r1211.getLength();__key1212 += 1) {
-                        RootObject oa = __r1211.get(__key1212);
+                    Slice<RootObject> __r1235 = (e.args).opSlice().copy();
+                    int __key1236 = 0;
+                    for (; __key1236 < __r1235.getLength();__key1236 += 1) {
+                        RootObject oa = __r1235.get(__key1236);
                         {
                             Expression ea = isExpression(oa);
                             if (ea != null)
@@ -1404,10 +1422,10 @@ public class dtemplate {
             if ((!(this.result) && e.ti.tiargs != null))
             {
                 {
-                    Slice<RootObject> __r1213 = (e.ti.tiargs).opSlice().copy();
-                    int __key1214 = 0;
-                    for (; __key1214 < __r1213.getLength();__key1214 += 1) {
-                        RootObject oa = __r1213.get(__key1214);
+                    Slice<RootObject> __r1237 = (e.ti.tiargs).opSlice().copy();
+                    int __key1238 = 0;
+                    for (; __key1238 < __r1237.getLength();__key1238 += 1) {
+                        RootObject oa = __r1237.get(__key1238);
                         {
                             Expression ea = isExpression(oa);
                             if (ea != null)
@@ -1430,10 +1448,10 @@ public class dtemplate {
             if ((!(this.result) && e.arguments != null))
             {
                 {
-                    Slice<Expression> __r1215 = (e.arguments).opSlice().copy();
-                    int __key1216 = 0;
-                    for (; __key1216 < __r1215.getLength();__key1216 += 1) {
-                        Expression ea = __r1215.get(__key1216);
+                    Slice<Expression> __r1239 = (e.arguments).opSlice().copy();
+                    int __key1240 = 0;
+                    for (; __key1240 < __r1239.getLength();__key1240 += 1) {
+                        Expression ea = __r1239.get(__key1240);
                         ea.accept(this);
                         if (this.result)
                             return ;
@@ -1467,10 +1485,10 @@ public class dtemplate {
             if ((!(this.result) && e.arguments != null))
             {
                 {
-                    Slice<Expression> __r1217 = (e.arguments).opSlice().copy();
-                    int __key1218 = 0;
-                    for (; __key1218 < __r1217.getLength();__key1218 += 1) {
-                        Expression ea = __r1217.get(__key1218);
+                    Slice<Expression> __r1241 = (e.arguments).opSlice().copy();
+                    int __key1242 = 0;
+                    for (; __key1242 < __r1241.getLength();__key1242 += 1) {
+                        Expression ea = __r1241.get(__key1242);
                         ea.accept(this);
                     }
                 }
@@ -1567,10 +1585,10 @@ public class dtemplate {
 
     public static boolean arrayObjectIsError(DArray<RootObject> args) {
         {
-            Slice<RootObject> __r1162 = (args).opSlice().copy();
-            int __key1163 = 0;
-            for (; __key1163 < __r1162.getLength();__key1163 += 1) {
-                RootObject o = __r1162.get(__key1163);
+            Slice<RootObject> __r1186 = (args).opSlice().copy();
+            int __key1187 = 0;
+            for (; __key1187 < __r1186.getLength();__key1187 += 1) {
+                RootObject o = __r1186.get(__key1187);
                 if (isError(o))
                     return true;
             }
@@ -1732,10 +1750,10 @@ public class dtemplate {
         Ptr<RootObject> oa1d = pcopy((oa1).data);
         Ptr<RootObject> oa2d = pcopy((oa2).data);
         {
-            int __key1164 = 0;
-            int __limit1165 = oa1dim;
-            for (; __key1164 < __limit1165;__key1164 += 1) {
-                int j = __key1164;
+            int __key1188 = 0;
+            int __limit1189 = oa1dim;
+            for (; __key1188 < __limit1189;__key1188 += 1) {
+                int j = __key1188;
                 RootObject o1 = oa1d.get(j);
                 RootObject o2 = oa2d.get(j);
                 if (!(match(o1, o2)))
@@ -1750,10 +1768,10 @@ public class dtemplate {
     public static int arrayObjectHash(DArray<RootObject> oa1) {
         int hash = 0;
         {
-            Slice<RootObject> __r1166 = (oa1).opSlice().copy();
-            int __key1167 = 0;
-            for (; __key1167 < __r1166.getLength();__key1167 += 1) {
-                RootObject o1 = __r1166.get(__key1167);
+            Slice<RootObject> __r1190 = (oa1).opSlice().copy();
+            int __key1191 = 0;
+            for (; __key1191 < __r1190.getLength();__key1191 += 1) {
+                RootObject o1 = __r1190.get(__key1191);
                 {
                     Type t1 = isType(o1);
                     if (t1 != null)
@@ -1806,10 +1824,10 @@ public class dtemplate {
                 int hash = 0;
                 hash += te.e0 != null ? expressionHash(te.e0) : 0;
                 {
-                    Slice<Expression> __r1168 = (te.exps).opSlice().copy();
-                    int __key1169 = 0;
-                    for (; __key1169 < __r1168.getLength();__key1169 += 1) {
-                        Expression elem = __r1168.get(__key1169);
+                    Slice<Expression> __r1192 = (te.exps).opSlice().copy();
+                    int __key1193 = 0;
+                    for (; __key1193 < __r1192.getLength();__key1193 += 1) {
+                        Expression elem = __r1192.get(__key1193);
                         hash = mixHash(hash, expressionHash(elem));
                     }
                 }
@@ -1818,10 +1836,10 @@ public class dtemplate {
                 ArrayLiteralExp ae = (ArrayLiteralExp)e;
                 int hash_1 = 0;
                 {
-                    int __key1170 = 0;
-                    int __limit1171 = (ae.elements).length;
-                    for (; __key1170 < __limit1171;__key1170 += 1) {
-                        int i = __key1170;
+                    int __key1194 = 0;
+                    int __limit1195 = (ae.elements).length;
+                    for (; __key1194 < __limit1195;__key1194 += 1) {
+                        int i = __key1194;
                         hash_1 = mixHash(hash_1, expressionHash(ae.getElement(i)));
                     }
                 }
@@ -1830,10 +1848,10 @@ public class dtemplate {
                 AssocArrayLiteralExp ae_1 = (AssocArrayLiteralExp)e;
                 int hash_2 = 0;
                 {
-                    int __key1172 = 0;
-                    int __limit1173 = (ae_1.keys).length;
-                    for (; __key1172 < __limit1173;__key1172 += 1) {
-                        int i_1 = __key1172;
+                    int __key1196 = 0;
+                    int __limit1197 = (ae_1.keys).length;
+                    for (; __key1196 < __limit1197;__key1196 += 1) {
+                        int i_1 = __key1196;
                         hash_2 ^= mixHash(expressionHash((ae_1.keys).get(i_1)), expressionHash((ae_1.values).get(i_1)));
                     }
                 }
@@ -1842,10 +1860,10 @@ public class dtemplate {
                 StructLiteralExp se_1 = (StructLiteralExp)e;
                 int hash_3 = 0;
                 {
-                    Slice<Expression> __r1174 = (se_1.elements).opSlice().copy();
-                    int __key1175 = 0;
-                    for (; __key1175 < __r1174.getLength();__key1175 += 1) {
-                        Expression elem_1 = __r1174.get(__key1175);
+                    Slice<Expression> __r1198 = (se_1.elements).opSlice().copy();
+                    int __key1199 = 0;
+                    for (; __key1199 < __r1198.getLength();__key1199 += 1) {
+                        Expression elem_1 = __r1198.get(__key1199);
                         hash_3 = mixHash(hash_3, elem_1 != null ? expressionHash(elem_1) : 0);
                     }
                 }
@@ -3172,7 +3190,7 @@ public class dtemplate {
 
         public  TemplateInstance addInstance(TemplateInstance ti) {
             TemplateInstanceBox tibox = tibox = new TemplateInstanceBox(ti);
-            this.instances.set(tibox, __aaval1177);
+            this.instances.set(tibox, __aaval1201);
             return ti;
         }
 
@@ -3786,6 +3804,13 @@ public class dtemplate {
         if (((tparam.mod & 0xFF) & MODFlags.wild) == 0)
             return (byte)0;
         at.set(0, null);
+        // from template X!(ByteByte)
+        Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
+            public Integer invoke(Byte U, Byte T){
+                return (U & 0xFF) << 4 | (T & 0xFF);
+            }
+        };
+
         // from template X!(IntegerInteger)
         Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
             public Integer invoke(Integer U, Integer T){
@@ -3794,14 +3819,7 @@ public class dtemplate {
         };
 
         // from template X!(IntegerInteger)
-        // removed duplicate function, [["int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
-
-        // from template X!(ByteByte)
-        Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
-            public Integer invoke(Byte U, Byte T){
-                return (U & 0xFF) << 4 | (T & 0xFF);
-            }
-        };
+        // removed duplicate function, [["int Xbyte, byteByteByte", "int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
 
         switch (XByteByte.invoke(tparam.mod, t.mod))
         {
@@ -3871,21 +3889,21 @@ public class dtemplate {
             }
         };
 
-        // from template X!(IntegerInteger)
-        // removed duplicate function, [["int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
-
-        // from template X!(IntegerInteger)
-        // removed duplicate function, [["int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
-
-        // from template X!(IntegerInteger)
-        // removed duplicate function, [["int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
-
         // from template X!(ByteByte)
         Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
             public Integer invoke(Byte U, Byte T){
                 return (U & 0xFF) << 4 | (T & 0xFF);
             }
         };
+
+        // from template X!(IntegerInteger)
+        // removed duplicate function, [["int Xbyte, byteByteByte", "int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
+
+        // from template X!(IntegerInteger)
+        // removed duplicate function, [["int Xbyte, byteByteByte", "int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
+
+        // from template X!(IntegerInteger)
+        // removed duplicate function, [["int Xbyte, byteByteByte", "int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
 
         switch (XByteByte.invoke(tparam.mod, t.mod))
         {
@@ -4030,10 +4048,10 @@ public class dtemplate {
         Function1<TypeFunction,Boolean> visitFunction = new Function1<TypeFunction,Boolean>(){
             public Boolean invoke(TypeFunction t){
                 {
-                    int __key1185 = 0;
-                    int __limit1186 = t.parameterList.length();
-                    for (; __key1185 < __limit1186;__key1185 += 1) {
-                        int i = __key1185;
+                    int __key1209 = 0;
+                    int __limit1210 = t.parameterList.length();
+                    for (; __key1209 < __limit1210;__key1209 += 1) {
+                        int i = __key1209;
                         Parameter fparam = t.parameterList.get(i);
                         if (reliesOnTemplateParameters(fparam.type, tparams_ref.value))
                             return true;
@@ -4045,10 +4063,10 @@ public class dtemplate {
         Function1<TypeIdentifier,Boolean> visitIdentifier = new Function1<TypeIdentifier,Boolean>(){
             public Boolean invoke(TypeIdentifier t){
                 {
-                    Slice<TemplateParameter> __r1187 = tparams_ref.value.copy();
-                    int __key1188 = 0;
-                    for (; __key1188 < __r1187.getLength();__key1188 += 1) {
-                        TemplateParameter tp = __r1187.get(__key1188);
+                    Slice<TemplateParameter> __r1211 = tparams_ref.value.copy();
+                    int __key1212 = 0;
+                    for (; __key1212 < __r1211.getLength();__key1212 += 1) {
+                        TemplateParameter tp = __r1211.get(__key1212);
                         if (tp.ident.equals(t.ident))
                             return true;
                     }
@@ -4059,20 +4077,20 @@ public class dtemplate {
         Function1<TypeInstance,Boolean> visitInstance = new Function1<TypeInstance,Boolean>(){
             public Boolean invoke(TypeInstance t){
                 {
-                    Slice<TemplateParameter> __r1189 = tparams_ref.value.copy();
-                    int __key1190 = 0;
-                    for (; __key1190 < __r1189.getLength();__key1190 += 1) {
-                        TemplateParameter tp = __r1189.get(__key1190);
+                    Slice<TemplateParameter> __r1213 = tparams_ref.value.copy();
+                    int __key1214 = 0;
+                    for (; __key1214 < __r1213.getLength();__key1214 += 1) {
+                        TemplateParameter tp = __r1213.get(__key1214);
                         if (pequals(t.tempinst.name, tp.ident))
                             return true;
                     }
                 }
                 if (t.tempinst.tiargs != null)
                 {
-                    Slice<RootObject> __r1191 = (t.tempinst.tiargs).opSlice().copy();
-                    int __key1192 = 0;
-                    for (; __key1192 < __r1191.getLength();__key1192 += 1) {
-                        RootObject arg = __r1191.get(__key1192);
+                    Slice<RootObject> __r1215 = (t.tempinst.tiargs).opSlice().copy();
+                    int __key1216 = 0;
+                    for (; __key1216 < __r1215.getLength();__key1216 += 1) {
+                        RootObject arg = __r1215.get(__key1216);
                         {
                             Type ta = isType(arg);
                             if (ta != null)
@@ -4095,10 +4113,10 @@ public class dtemplate {
             public Boolean invoke(TypeTuple t){
                 if (t.arguments != null)
                 {
-                    Slice<Parameter> __r1193 = (t.arguments).opSlice().copy();
-                    int __key1194 = 0;
-                    for (; __key1194 < __r1193.getLength();__key1194 += 1) {
-                        Parameter arg = __r1193.get(__key1194);
+                    Slice<Parameter> __r1217 = (t.arguments).opSlice().copy();
+                    int __key1218 = 0;
+                    for (; __key1218 < __r1217.getLength();__key1218 += 1) {
+                        Parameter arg = __r1217.get(__key1218);
                         if (reliesOnTemplateParameters(arg.type, tparams_ref.value))
                             return true;
                     }
@@ -4538,7 +4556,7 @@ public class dtemplate {
                 if (pe == null)
                 {
                     e = defaultInit(this.valType, Loc.initial);
-                    edummies.set((this.valType), __aaval1219);
+                    edummies.set((this.valType), __aaval1243);
                 }
                 else
                     e = pe.get();
@@ -4891,7 +4909,7 @@ public class dtemplate {
         public Identifier name;
         public DArray<RootObject> tiargs;
         public DArray<RootObject> tdtypes = new DArray<RootObject>();
-        public DArray<Module> importedModules = new DArray<Module>();
+        public DArray<dmodule.Module> importedModules = new DArray<dmodule.Module>();
         public Dsymbol tempdecl;
         public Dsymbol enclosing;
         public Dsymbol aliasdecl;
@@ -4905,10 +4923,10 @@ public class dtemplate {
         public int hash;
         public DArray<Expression> fargs;
         public DArray<TemplateInstance> deferred;
-        public Module memberOf;
+        public dmodule.Module memberOf;
         public TemplateInstance tinst;
         public TemplateInstance tnext;
-        public Module minst;
+        public dmodule.Module minst;
         public  TemplateInstance(Loc loc, Identifier ident, DArray<RootObject> tiargs) {
             super(loc, null);
             this.name = ident;
@@ -5269,8 +5287,8 @@ public class dtemplate {
             assert(this.tempdecl != null);
             OverloadSet tovers = this.tempdecl.isOverloadSet();
             {
-                int __key1220 = 0;
-                int __limit1221 = tovers != null ? tovers.a.length : 1;
+                int __key1244 = 0;
+                int __limit1245 = tovers != null ? tovers.a.length : 1;
                 Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
                     public Integer invoke(Dsymbol s){
                         TemplateDeclaration td = s.isTemplateDeclaration();
@@ -5296,8 +5314,8 @@ public class dtemplate {
                         return 0;
                     }
                 };
-                for (; __key1220 < __limit1221;__key1220 += 1) {
-                    int oi = __key1220;
+                for (; __key1244 < __limit1245;__key1244 += 1) {
+                    int oi = __key1244;
                     Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl;
                     int r = overloadApply(dstart, __lambda3, null);
                     if ((r) != 0)
@@ -5615,10 +5633,10 @@ public class dtemplate {
             try {
                 OverloadSet tovers = this.tempdecl.isOverloadSet();
                 {
-                    int __key1222 = 0;
-                    int __limit1223 = tovers != null ? tovers.a.length : 1;
-                    for (; __key1222 < __limit1223;__key1222 += 1) {
-                        int oi = __key1222;
+                    int __key1246 = 0;
+                    int __limit1247 = tovers != null ? tovers.a.length : 1;
+                    for (; __key1246 < __limit1247;__key1246 += 1) {
+                        int oi = __key1246;
                         TemplateDeclaration td_best = null;
                         TemplateDeclaration td_ambig = null;
                         int m_best = MATCH.nomatch;
@@ -5698,10 +5716,10 @@ public class dtemplate {
                 int count = 0;
                 OverloadSet tovers = this.tempdecl.isOverloadSet();
                 {
-                    int __key1224 = 0;
-                    int __limit1225 = tovers != null ? tovers.a.length : 1;
-                    for (; __key1224 < __limit1225;__key1224 += 1) {
-                        int oi = __key1224;
+                    int __key1248 = 0;
+                    int __limit1249 = tovers != null ? tovers.a.length : 1;
+                    for (; __key1248 < __limit1249;__key1248 += 1) {
+                        int oi = __key1248;
                         Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl;
                         int r = overloadApply(dstart, __lambda3, null);
                         if ((r) != 0)
@@ -5829,7 +5847,7 @@ public class dtemplate {
         }
 
         public  DArray<Dsymbol> appendToModuleMember() {
-            Module mi = this.minst;
+            dmodule.Module mi = this.minst;
             if ((global.params.useUnitTests || (global.params.debuglevel) != 0))
             {
                 if ((mi != null && !(mi.isRoot())))
@@ -6186,10 +6204,10 @@ public class dtemplate {
             assert(this.tempdecl != null);
             OverloadSet tovers = this.tempdecl.isOverloadSet();
             {
-                int __key1232 = 0;
-                int __limit1233 = tovers != null ? tovers.a.length : 1;
-                for (; __key1232 < __limit1233;__key1232 += 1) {
-                    int oi = __key1232;
+                int __key1256 = 0;
+                int __limit1257 = tovers != null ? tovers.a.length : 1;
+                for (; __key1256 < __limit1257;__key1256 += 1) {
+                    int oi = __key1256;
                     Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl;
                     int r = overloadApply(dstart, __lambda2, null);
                     if ((r) != 0)

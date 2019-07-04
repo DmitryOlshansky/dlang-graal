@@ -12,19 +12,32 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.ast_node.*;
 import static org.dlang.dmd.attrib.*;
 import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
 import static org.dlang.dmd.denum.*;
+import static org.dlang.dmd.dmangle.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dstruct.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.dtemplate.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.gluelayer.*;
 import static org.dlang.dmd.hdrgen.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
+import static org.dlang.dmd.init.*;
+import static org.dlang.dmd.opover.*;
+import static org.dlang.dmd.target.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.typesem.*;
 import static org.dlang.dmd.visitor.*;
 
 public class mtype {
@@ -70,6 +83,13 @@ public class mtype {
             return MATCH.exact;
         if (MODimplicitConv(modfrom, modto))
             return MATCH.constant;
+        // from template X!(ByteByte)
+        Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
+            public Integer invoke(Byte m, Byte n){
+                return (m & 0xFF) << 4 | (n & 0xFF);
+            }
+        };
+
         // from template X!(IntegerInteger)
         Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
             public Integer invoke(Integer m, Integer n){
@@ -78,14 +98,7 @@ public class mtype {
         };
 
         // from template X!(IntegerInteger)
-        // removed duplicate function, [["int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
-
-        // from template X!(ByteByte)
-        Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
-            public Integer invoke(Byte m, Byte n){
-                return (m & 0xFF) << 4 | (n & 0xFF);
-            }
-        };
+        // removed duplicate function, [["int Xbyte, byteByteByte", "int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
 
         switch (XByteByte.invoke(modfrom, modto))
         {
@@ -2966,10 +2979,10 @@ public class mtype {
                 elementinit = this.next.defaultInitLiteral(loc);
             DArray<Expression> elements = new DArray<Expression>(d);
             {
-                Slice<Expression> __r1494 = (elements).opSlice().copy();
-                int __key1495 = 0;
-                for (; __key1495 < __r1494.getLength();__key1495 += 1) {
-                    Expression e = __r1494.get(__key1495);
+                Slice<Expression> __r1578 = (elements).opSlice().copy();
+                int __key1579 = 0;
+                for (; __key1579 < __r1578.getLength();__key1579 += 1) {
+                    Expression e = __r1578.get(__key1579);
                     e = null;
                 }
             }
@@ -3592,10 +3605,10 @@ public class mtype {
             int dim = tf.parameterList.length();
         /*Lloop:*/
             {
-                int __key1496 = 0;
-                int __limit1497 = dim;
-                for (; __key1496 < __limit1497;__key1496 += 1) {
-                    int i = __key1496;
+                int __key1580 = 0;
+                int __limit1581 = dim;
+                for (; __key1580 < __limit1581;__key1580 += 1) {
+                    int i = __key1580;
                     Parameter fparam = tf.parameterList.get(i);
                     Type t = fparam.type;
                     if (!(t != null))
@@ -3661,10 +3674,10 @@ public class mtype {
             {
                 int dim = this.parameterList.length();
                 {
-                    int __key1498 = 0;
-                    int __limit1499 = dim;
-                    for (; __key1498 < __limit1499;__key1498 += 1) {
-                        int i = __key1498;
+                    int __key1582 = 0;
+                    int __limit1583 = dim;
+                    for (; __key1582 < __limit1583;__key1582 += 1) {
+                        int i = __key1582;
                         Parameter fparam = this.parameterList.get(i);
                         if (pequals(fparam, p))
                             continue;
@@ -3704,10 +3717,10 @@ public class mtype {
                         }
                     }
                     {
-                        Slice<VarDeclaration> __r1500 = ad.fields.opSlice().copy();
-                        int __key1501 = 0;
-                        for (; __key1501 < __r1500.getLength();__key1501 += 1) {
-                            VarDeclaration v = __r1500.get(__key1501);
+                        Slice<VarDeclaration> __r1584 = ad.fields.opSlice().copy();
+                        int __key1585 = 0;
+                        for (; __key1585 < __r1584.getLength();__key1585 += 1) {
+                            VarDeclaration v = __r1584.get(__key1585);
                             if (v.hasPointers())
                                 return stc;
                         }
@@ -3813,8 +3826,8 @@ public class mtype {
             }
         }
 
-        // from template getMatchError!(IntegerBytePtr)
-        public  BytePtr getMatchErrorIntegerBytePtr(BytePtr format, int _param_1, BytePtr _param_2) {
+        // from template getMatchError!(IntegerInteger)
+        public  BytePtr getMatchErrorIntegerInteger(BytePtr format, int _param_1, int _param_2) {
             if (((global.gag) != 0 && !(global.params.showGaggedErrors)))
                 return null;
             OutBuffer buf = new OutBuffer();
@@ -3827,8 +3840,8 @@ public class mtype {
         }
 
 
-        // from template getMatchError!(IntegerInteger)
-        public  BytePtr getMatchErrorIntegerInteger(BytePtr format, int _param_1, int _param_2) {
+        // from template getMatchError!(IntegerBytePtr)
+        public  BytePtr getMatchErrorIntegerBytePtr(BytePtr format, int _param_1, BytePtr _param_2) {
             if (((global.gag) != 0 && !(global.params.showGaggedErrors)))
                 return null;
             OutBuffer buf = new OutBuffer();
@@ -4075,11 +4088,11 @@ public class mtype {
                                                     __dispatch15 = 0;
                                                     TypeArray ta = (TypeArray)tb;
                                                     {
-                                                        Slice<Expression> __r1502 = args.slice(u,nargs).copy();
-                                                        int __key1503 = 0;
+                                                        Slice<Expression> __r1586 = args.slice(u,nargs).copy();
+                                                        int __key1587 = 0;
                                                     L_outer3:
-                                                        for (; __key1503 < __r1502.getLength();__key1503 += 1) {
-                                                            Expression arg = __r1502.get(__key1503);
+                                                        for (; __key1587 < __r1586.getLength();__key1587 += 1) {
+                                                            Expression arg = __r1586.get(__key1587);
                                                             assert(arg != null);
                                                             Type tret = p.isLazyArray();
                                                             if (tret != null)
@@ -4757,10 +4770,10 @@ public class mtype {
             DArray<Expression> structelems = new DArray<Expression>(this.sym.nonHiddenFields());
             int offset = 0;
             {
-                int __key1504 = 0;
-                int __limit1505 = (structelems).length;
-                for (; __key1504 < __limit1505;__key1504 += 1) {
-                    int j = __key1504;
+                int __key1588 = 0;
+                int __limit1589 = (structelems).length;
+                for (; __key1588 < __limit1589;__key1588 += 1) {
+                    int j = __key1588;
                     VarDeclaration vd = this.sym.fields.get(j);
                     Expression e = null;
                     if ((vd.inuse) != 0)
@@ -4852,10 +4865,10 @@ public class mtype {
             if (((this.sym.members != null && !(this.sym.determineFields())) && !pequals(this.sym.type, Type.terror)))
                 error(this.sym.loc, new BytePtr("no size because of forward references"));
             {
-                Slice<VarDeclaration> __r1506 = s.fields.opSlice().copy();
-                int __key1507 = 0;
-                for (; __key1507 < __r1506.getLength();__key1507 += 1) {
-                    VarDeclaration v = __r1506.get(__key1507);
+                Slice<VarDeclaration> __r1590 = s.fields.opSlice().copy();
+                int __key1591 = 0;
+                for (; __key1591 < __r1590.getLength();__key1591 += 1) {
+                    VarDeclaration v = __r1590.get(__key1591);
                     if (((v.storage_class & 2097152L) != 0 || v.hasPointers()))
                         return true;
                 }
@@ -4867,10 +4880,10 @@ public class mtype {
             StructDeclaration s = this.sym;
             this.sym.size(Loc.initial);
             {
-                Slice<VarDeclaration> __r1508 = s.fields.opSlice().copy();
-                int __key1509 = 0;
-                for (; __key1509 < __r1508.getLength();__key1509 += 1) {
-                    VarDeclaration v = __r1508.get(__key1509);
+                Slice<VarDeclaration> __r1592 = s.fields.opSlice().copy();
+                int __key1593 = 0;
+                for (; __key1593 < __r1592.getLength();__key1593 += 1) {
+                    VarDeclaration v = __r1592.get(__key1593);
                     if (((v._init != null && v._init.isVoidInitializer() != null) && v.type.hasPointers()))
                         return true;
                     if ((!(v._init != null) && v.type.hasVoidInitPointers()))
@@ -5702,10 +5715,10 @@ public class mtype {
             IntRef n = ref(pn != null ? pn.get() : 0);
             int result = 0;
             {
-                int __key1510 = 0;
-                int __limit1511 = (parameters).length;
-                for (; __key1510 < __limit1511;__key1510 += 1) {
-                    int i = __key1510;
+                int __key1594 = 0;
+                int __limit1595 = (parameters).length;
+                for (; __key1594 < __limit1595;__key1594 += 1) {
+                    int i = __key1594;
                     Parameter p = (parameters).get(i);
                     Type t = p.type.toBasetype();
                     {
@@ -5839,10 +5852,10 @@ public class mtype {
     public static void modifiersApply(TypeFunction tf, Function1<ByteSlice,Void> dg) {
         ByteSlice modsArr = slice(new byte[]{(byte)1, (byte)4, (byte)8, (byte)2});
         {
-            ByteSlice __r1512 = modsArr.copy();
-            int __key1513 = 0;
-            for (; __key1513 < __r1512.getLength();__key1513 += 1) {
-                byte modsarr = __r1512.get(__key1513);
+            ByteSlice __r1596 = modsArr.copy();
+            int __key1597 = 0;
+            for (; __key1597 < __r1596.getLength();__key1597 += 1) {
+                byte modsarr = __r1596.get(__key1597);
                 if (((tf.mod & 0xFF) & (modsarr & 0xFF)) != 0)
                 {
                     dg.invoke(MODtoString(modsarr));

@@ -73,10 +73,10 @@ public class ctorflow {
         public  void orCSX(short csx) {
             this.callSuper |= csx;
             {
-                Slice<FieldInit> __r872 = this.fieldinit.copy();
-                int __key873 = 0;
-                for (; __key873 < __r872.getLength();__key873 += 1) {
-                    FieldInit u = __r872.get(__key873).copy();
+                Slice<FieldInit> __r890 = this.fieldinit.copy();
+                int __key891 = 0;
+                for (; __key891 < __r890.getLength();__key891 += 1) {
+                    FieldInit u = __r890.get(__key891).copy();
                     u.csx |= csx;
                 }
             }
@@ -88,11 +88,11 @@ public class ctorflow {
             {
                 assert(this.fieldinit.getLength() == ctorflow.fieldinit.getLength());
                 {
-                    Slice<FieldInit> __r875 = ctorflow.fieldinit.copy();
-                    int __key874 = 0;
-                    for (; __key874 < __r875.getLength();__key874 += 1) {
-                        FieldInit u = __r875.get(__key874).copy();
-                        int i = __key874;
+                    Slice<FieldInit> __r893 = ctorflow.fieldinit.copy();
+                    int __key892 = 0;
+                    for (; __key892 < __r893.getLength();__key892 += 1) {
+                        FieldInit u = __r893.get(__key892).copy();
+                        int i = __key892;
                         FieldInit fi = this.fieldinit.get(i);
                         (fi).csx |= u.csx;
                         if ((fi).loc == new Loc(null, 0, 0))

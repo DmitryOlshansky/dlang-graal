@@ -11,9 +11,13 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.declaration.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
 import static org.dlang.dmd.globals.*;
 import static org.dlang.dmd.identifier.*;
@@ -31,8 +35,8 @@ public class dimport {
         public Prot protection = new Prot();
         public DArray<Identifier> names = new DArray<Identifier>();
         public DArray<Identifier> aliases = new DArray<Identifier>();
-        public Module mod;
-        public Package pkg;
+        public dmodule.Module mod;
+        public dmodule.Package pkg;
         public DArray<AliasDeclaration> aliasdecls = new DArray<AliasDeclaration>();
         public  Import(Loc loc, DArray<Identifier> packages, Identifier id, Identifier aliasId, int isstatic) {
             Ref<DArray<Identifier>> packages_ref = ref(packages);
@@ -99,7 +103,7 @@ public class dimport {
             if (s != null)
             {
                 if (s.isModule() != null)
-                    this.mod = (Module)s;
+                    this.mod = (dmodule.Module)s;
                 else
                 {
                     if (s.isAliasDeclaration() != null)
@@ -107,7 +111,7 @@ public class dimport {
                         error(this.loc, new BytePtr("%s `%s` conflicts with `%s`"), s.kind(), s.toPrettyChars(false), this.id.toChars());
                     }
                     else {
-                        Package p = s.isPackage();
+                        dmodule.Package p = s.isPackage();
                         if (p != null)
                         {
                             if (p.isPkgMod == PKG.unknown)
@@ -218,10 +222,10 @@ public class dimport {
                 sc = (sc).push(this.mod);
                 (sc).protection = this.protection.copy();
                 {
-                    Slice<AliasDeclaration> __r905 = this.aliasdecls.opSlice().copy();
-                    int __key906 = 0;
-                    for (; __key906 < __r905.getLength();__key906 += 1) {
-                        AliasDeclaration ad = __r905.get(__key906);
+                    Slice<AliasDeclaration> __r929 = this.aliasdecls.opSlice().copy();
+                    int __key930 = 0;
+                    for (; __key930 < __r929.getLength();__key930 += 1) {
+                        AliasDeclaration ad = __r929.get(__key930);
                         ad.setScope(sc);
                     }
                 }

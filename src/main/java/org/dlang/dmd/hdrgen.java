@@ -13,7 +13,9 @@ import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.aggregate.*;
 import static org.dlang.dmd.aliasthis.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.attrib.*;
+import static org.dlang.dmd.complex.*;
 import static org.dlang.dmd.cond.*;
 import static org.dlang.dmd.ctfeexpr.*;
 import static org.dlang.dmd.dclass.*;
@@ -21,18 +23,25 @@ import static org.dlang.dmd.declaration.*;
 import static org.dlang.dmd.denum.*;
 import static org.dlang.dmd.dimport.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.doc.*;
 import static org.dlang.dmd.dstruct.*;
 import static org.dlang.dmd.dsymbol.*;
 import static org.dlang.dmd.dtemplate.*;
 import static org.dlang.dmd.dversion.*;
 import static org.dlang.dmd.expression.*;
 import static org.dlang.dmd.func.*;
+import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.init.*;
 import static org.dlang.dmd.mtype.*;
 import static org.dlang.dmd.nspace.*;
+import static org.dlang.dmd.parse.*;
 import static org.dlang.dmd.statement.*;
 import static org.dlang.dmd.staticassert.*;
+import static org.dlang.dmd.target.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.utils.*;
 import static org.dlang.dmd.visitor.*;
 
 public class hdrgen {
@@ -118,7 +127,7 @@ public class hdrgen {
         }
     }
     static int TEST_EMIT_ALL = 0;
-    public static void genhdrfile(Module m) {
+    public static void genhdrfile(dmodule.Module m) {
         OutBuffer buf = new OutBuffer();
         try {
             buf.doindent = true;
@@ -133,13 +142,13 @@ public class hdrgen {
         }
     }
 
-    public static void moduleToBuffer(OutBuffer buf, Module m) {
+    public static void moduleToBuffer(OutBuffer buf, dmodule.Module m) {
         HdrGenState hgs = new HdrGenState();
         hgs.fullDump = true;
         toCBuffer((Dsymbol)m, buf, hgs);
     }
 
-    public static void moduleToBuffer2(Module m, OutBuffer buf, HdrGenState hgs) {
+    public static void moduleToBuffer2(dmodule.Module m, OutBuffer buf, HdrGenState hgs) {
         if (m.md != null)
         {
             if (m.userAttribDecl != null)
@@ -166,10 +175,10 @@ public class hdrgen {
             (buf).writenl();
         }
         {
-            Slice<Dsymbol> __r1335 = (m.members).opSlice().copy();
-            int __key1336 = 0;
-            for (; __key1336 < __r1335.getLength();__key1336 += 1) {
-                Dsymbol s = __r1335.get(__key1336);
+            Slice<Dsymbol> __r1419 = (m.members).opSlice().copy();
+            int __key1420 = 0;
+            for (; __key1420 < __r1419.getLength();__key1420 += 1) {
+                Dsymbol s = __r1419.get(__key1420);
                 dsymbolToBuffer(s, buf, hgs);
             }
         }
@@ -223,10 +232,10 @@ public class hdrgen {
 
         public  void visit(CompoundStatement s) {
             {
-                Slice<Statement> __r1337 = (s.statements).opSlice().copy();
-                int __key1338 = 0;
-                for (; __key1338 < __r1337.getLength();__key1338 += 1) {
-                    Statement sx = __r1337.get(__key1338);
+                Slice<Statement> __r1421 = (s.statements).opSlice().copy();
+                int __key1422 = 0;
+                for (; __key1422 < __r1421.getLength();__key1422 += 1) {
+                    Statement sx = __r1421.get(__key1422);
                     if (sx != null)
                         sx.accept(this);
                 }
@@ -236,10 +245,10 @@ public class hdrgen {
         public  void visit(CompoundDeclarationStatement s) {
             boolean anywritten = false;
             {
-                Slice<Statement> __r1339 = (s.statements).opSlice().copy();
-                int __key1340 = 0;
-                for (; __key1340 < __r1339.getLength();__key1340 += 1) {
-                    Statement sx = __r1339.get(__key1340);
+                Slice<Statement> __r1423 = (s.statements).opSlice().copy();
+                int __key1424 = 0;
+                for (; __key1424 < __r1423.getLength();__key1424 += 1) {
+                    Statement sx = __r1423.get(__key1424);
                     ExpStatement ds = sx != null ? sx.isExpStatement() : null;
                     if ((ds != null && (ds.exp.op & 0xFF) == 38))
                     {
@@ -269,10 +278,10 @@ public class hdrgen {
             (this.buf).writenl();
             (this.buf).level++;
             {
-                Slice<Statement> __r1341 = (s.statements).opSlice().copy();
-                int __key1342 = 0;
-                for (; __key1342 < __r1341.getLength();__key1342 += 1) {
-                    Statement sx = __r1341.get(__key1342);
+                Slice<Statement> __r1425 = (s.statements).opSlice().copy();
+                int __key1426 = 0;
+                for (; __key1426 < __r1425.getLength();__key1426 += 1) {
+                    Statement sx = __r1425.get(__key1426);
                     if (sx != null)
                         sx.accept(this);
                 }
@@ -350,11 +359,11 @@ public class hdrgen {
             (this.buf).writestring(Token.asString(s.op));
             (this.buf).writestring( new ByteSlice(" ("));
             {
-                Slice<Parameter> __r1344 = (s.parameters).opSlice().copy();
-                int __key1343 = 0;
-                for (; __key1343 < __r1344.getLength();__key1343 += 1) {
-                    Parameter p = __r1344.get(__key1343);
-                    int i = __key1343;
+                Slice<Parameter> __r1428 = (s.parameters).opSlice().copy();
+                int __key1427 = 0;
+                for (; __key1427 < __r1428.getLength();__key1427 += 1) {
+                    Parameter p = __r1428.get(__key1427);
+                    int i = __key1427;
                     if ((i) != 0)
                         (this.buf).writestring( new ByteSlice(", "));
                     if (stcToBuffer(this.buf, p.storageClass))
@@ -674,10 +683,10 @@ public class hdrgen {
                 }
             }
             {
-                Slice<Catch> __r1345 = (s.catches).opSlice().copy();
-                int __key1346 = 0;
-                for (; __key1346 < __r1345.getLength();__key1346 += 1) {
-                    Catch c = __r1345.get(__key1346);
+                Slice<Catch> __r1429 = (s.catches).opSlice().copy();
+                int __key1430 = 0;
+                for (; __key1430 < __r1429.getLength();__key1430 += 1) {
+                    Catch c = __r1429.get(__key1430);
                     this.visit(c);
                 }
             }
@@ -762,10 +771,10 @@ public class hdrgen {
 
         public  void visit(ImportStatement s) {
             {
-                Slice<Dsymbol> __r1347 = (s.imports).opSlice().copy();
-                int __key1348 = 0;
-                for (; __key1348 < __r1347.getLength();__key1348 += 1) {
-                    Dsymbol imp = __r1347.get(__key1348);
+                Slice<Dsymbol> __r1431 = (s.imports).opSlice().copy();
+                int __key1432 = 0;
+                for (; __key1432 < __r1431.getLength();__key1432 += 1) {
+                    Dsymbol imp = __r1431.get(__key1432);
                     dsymbolToBuffer(imp, this.buf, this.hgs);
                 }
             }
@@ -876,10 +885,10 @@ public class hdrgen {
             if ((imp.packages != null && ((imp.packages).length) != 0))
             {
                 {
-                    Slice<Identifier> __r1349 = (imp.packages).opSlice().copy();
-                    int __key1350 = 0;
-                    for (; __key1350 < __r1349.getLength();__key1350 += 1) {
-                        Identifier pid = __r1349.get(__key1350);
+                    Slice<Identifier> __r1433 = (imp.packages).opSlice().copy();
+                    int __key1434 = 0;
+                    for (; __key1434 < __r1433.getLength();__key1434 += 1) {
+                        Identifier pid = __r1433.get(__key1434);
                         (this.buf).printf( new ByteSlice("%s."), pid.toChars());
                     }
                 }
@@ -889,11 +898,11 @@ public class hdrgen {
             {
                 (this.buf).writestring( new ByteSlice(" : "));
                 {
-                    Slice<Identifier> __r1352 = imp.names.opSlice().copy();
-                    int __key1351 = 0;
-                    for (; __key1351 < __r1352.getLength();__key1351 += 1) {
-                        Identifier name = __r1352.get(__key1351);
-                        int i = __key1351;
+                    Slice<Identifier> __r1436 = imp.names.opSlice().copy();
+                    int __key1435 = 0;
+                    for (; __key1435 < __r1436.getLength();__key1435 += 1) {
+                        Identifier name = __r1436.get(__key1435);
+                        int i = __key1435;
                         if ((i) != 0)
                             (this.buf).writestring( new ByteSlice(", "));
                         Identifier _alias = imp.aliases.get(i);
@@ -939,10 +948,10 @@ public class hdrgen {
                 (this.buf).writenl();
                 (this.buf).level++;
                 {
-                    Slice<Dsymbol> __r1353 = (d.decl).opSlice().copy();
-                    int __key1354 = 0;
-                    for (; __key1354 < __r1353.getLength();__key1354 += 1) {
-                        Dsymbol de = __r1353.get(__key1354);
+                    Slice<Dsymbol> __r1437 = (d.decl).opSlice().copy();
+                    int __key1438 = 0;
+                    for (; __key1438 < __r1437.getLength();__key1438 += 1) {
+                        Dsymbol de = __r1437.get(__key1438);
                         de.accept(this);
                     }
                 }
@@ -1019,10 +1028,10 @@ public class hdrgen {
             if (d.decl != null)
             {
                 {
-                    Slice<Dsymbol> __r1355 = (d.decl).opSlice().copy();
-                    int __key1356 = 0;
-                    for (; __key1356 < __r1355.getLength();__key1356 += 1) {
-                        Dsymbol de = __r1355.get(__key1356);
+                    Slice<Dsymbol> __r1439 = (d.decl).opSlice().copy();
+                    int __key1440 = 0;
+                    for (; __key1440 < __r1439.getLength();__key1440 += 1) {
+                        Dsymbol de = __r1439.get(__key1440);
                         de.accept(this);
                     }
                 }
@@ -1055,10 +1064,10 @@ public class hdrgen {
                 if (d.decl != null)
                 {
                     {
-                        Slice<Dsymbol> __r1357 = (d.decl).opSlice().copy();
-                        int __key1358 = 0;
-                        for (; __key1358 < __r1357.getLength();__key1358 += 1) {
-                            Dsymbol de = __r1357.get(__key1358);
+                        Slice<Dsymbol> __r1441 = (d.decl).opSlice().copy();
+                        int __key1442 = 0;
+                        for (; __key1442 < __r1441.getLength();__key1442 += 1) {
+                            Dsymbol de = __r1441.get(__key1442);
                             de.accept(this);
                         }
                     }
@@ -1074,10 +1083,10 @@ public class hdrgen {
                     (this.buf).writenl();
                     (this.buf).level++;
                     {
-                        Slice<Dsymbol> __r1359 = (d.elsedecl).opSlice().copy();
-                        int __key1360 = 0;
-                        for (; __key1360 < __r1359.getLength();__key1360 += 1) {
-                            Dsymbol de = __r1359.get(__key1360);
+                        Slice<Dsymbol> __r1443 = (d.elsedecl).opSlice().copy();
+                        int __key1444 = 0;
+                        for (; __key1444 < __r1443.getLength();__key1444 += 1) {
+                            Dsymbol de = __r1443.get(__key1444);
                             de.accept(this);
                         }
                     }
@@ -1096,11 +1105,11 @@ public class hdrgen {
                     (buf).writestring(Token.asString(s.op));
                     (buf).writestring( new ByteSlice(" ("));
                     {
-                        Slice<Parameter> __r1362 = (s.parameters).opSlice().copy();
-                        int __key1361 = 0;
-                        for (; __key1361 < __r1362.getLength();__key1361 += 1) {
-                            Parameter p = __r1362.get(__key1361);
-                            int i = __key1361;
+                        Slice<Parameter> __r1446 = (s.parameters).opSlice().copy();
+                        int __key1445 = 0;
+                        for (; __key1445 < __r1446.getLength();__key1445 += 1) {
+                            Parameter p = __r1446.get(__key1445);
+                            int i = __key1445;
                             if ((i) != 0)
                                 (buf).writestring( new ByteSlice(", "));
                             if (stcToBuffer(buf, p.storageClass))
@@ -1189,10 +1198,10 @@ public class hdrgen {
                 (this.buf).writenl();
                 (this.buf).level++;
                 {
-                    Slice<Dsymbol> __r1363 = (d.members).opSlice().copy();
-                    int __key1364 = 0;
-                    for (; __key1364 < __r1363.getLength();__key1364 += 1) {
-                        Dsymbol s = __r1363.get(__key1364);
+                    Slice<Dsymbol> __r1447 = (d.members).opSlice().copy();
+                    int __key1448 = 0;
+                    for (; __key1448 < __r1447.getLength();__key1448 += 1) {
+                        Dsymbol s = __r1447.get(__key1448);
                         s.accept(this);
                     }
                 }
@@ -1244,10 +1253,10 @@ public class hdrgen {
                         (this.buf).writenl();
                         (this.buf).level++;
                         {
-                            Slice<Dsymbol> __r1365 = (ad.members).opSlice().copy();
-                            int __key1366 = 0;
-                            for (; __key1366 < __r1365.getLength();__key1366 += 1) {
-                                Dsymbol s = __r1365.get(__key1366);
+                            Slice<Dsymbol> __r1449 = (ad.members).opSlice().copy();
+                            int __key1450 = 0;
+                            for (; __key1450 < __r1449.getLength();__key1450 += 1) {
+                                Dsymbol s = __r1449.get(__key1450);
                                 s.accept(this);
                             }
                         }
@@ -1297,11 +1306,11 @@ public class hdrgen {
             if ((parameters == null || !(((parameters).length) != 0)))
                 return ;
             {
-                Slice<TemplateParameter> __r1368 = (parameters).opSlice().copy();
-                int __key1367 = 0;
-                for (; __key1367 < __r1368.getLength();__key1367 += 1) {
-                    TemplateParameter p = __r1368.get(__key1367);
-                    int i = __key1367;
+                Slice<TemplateParameter> __r1452 = (parameters).opSlice().copy();
+                int __key1451 = 0;
+                for (; __key1451 < __r1452.getLength();__key1451 += 1) {
+                    TemplateParameter p = __r1452.get(__key1451);
+                    int i = __key1451;
                     if ((i) != 0)
                         (this.buf).writestring( new ByteSlice(", "));
                     templateParameterToBuffer(p, this.buf, this.hgs);
@@ -1368,10 +1377,10 @@ public class hdrgen {
                 (this.buf).writenl();
                 (this.buf).level++;
                 {
-                    Slice<Dsymbol> __r1369 = (d.members).opSlice().copy();
-                    int __key1370 = 0;
-                    for (; __key1370 < __r1369.getLength();__key1370 += 1) {
-                        Dsymbol em = __r1369.get(__key1370);
+                    Slice<Dsymbol> __r1453 = (d.members).opSlice().copy();
+                    int __key1454 = 0;
+                    for (; __key1454 < __r1453.getLength();__key1454 += 1) {
+                        Dsymbol em = __r1453.get(__key1454);
                         if (!(em != null))
                             continue;
                         em.accept(this);
@@ -1397,10 +1406,10 @@ public class hdrgen {
             (this.buf).writenl();
             (this.buf).level++;
             {
-                Slice<Dsymbol> __r1371 = (d.members).opSlice().copy();
-                int __key1372 = 0;
-                for (; __key1372 < __r1371.getLength();__key1372 += 1) {
-                    Dsymbol s = __r1371.get(__key1372);
+                Slice<Dsymbol> __r1455 = (d.members).opSlice().copy();
+                int __key1456 = 0;
+                for (; __key1456 < __r1455.getLength();__key1456 += 1) {
+                    Dsymbol s = __r1455.get(__key1456);
                     s.accept(this);
                 }
             }
@@ -1425,10 +1434,10 @@ public class hdrgen {
             (this.buf).writenl();
             (this.buf).level++;
             {
-                Slice<Dsymbol> __r1373 = (d.members).opSlice().copy();
-                int __key1374 = 0;
-                for (; __key1374 < __r1373.getLength();__key1374 += 1) {
-                    Dsymbol s = __r1373.get(__key1374);
+                Slice<Dsymbol> __r1457 = (d.members).opSlice().copy();
+                int __key1458 = 0;
+                for (; __key1458 < __r1457.getLength();__key1458 += 1) {
+                    Dsymbol s = __r1457.get(__key1458);
                     s.accept(this);
                 }
             }
@@ -1452,10 +1461,10 @@ public class hdrgen {
                 (this.buf).writenl();
                 (this.buf).level++;
                 {
-                    Slice<Dsymbol> __r1375 = (d.members).opSlice().copy();
-                    int __key1376 = 0;
-                    for (; __key1376 < __r1375.getLength();__key1376 += 1) {
-                        Dsymbol s = __r1375.get(__key1376);
+                    Slice<Dsymbol> __r1459 = (d.members).opSlice().copy();
+                    int __key1460 = 0;
+                    for (; __key1460 < __r1459.getLength();__key1460 += 1) {
+                        Dsymbol s = __r1459.get(__key1460);
                         s.accept(this);
                     }
                 }
@@ -1473,11 +1482,11 @@ public class hdrgen {
             if (!(d.isAnonymous()))
                 (this.buf).writestring( new ByteSlice(" : "));
             {
-                Slice<BaseClass> __r1378 = (d.baseclasses).opSlice().copy();
-                int __key1377 = 0;
-                for (; __key1377 < __r1378.getLength();__key1377 += 1) {
-                    BaseClass b = __r1378.get(__key1377);
-                    int i = __key1377;
+                Slice<BaseClass> __r1462 = (d.baseclasses).opSlice().copy();
+                int __key1461 = 0;
+                for (; __key1461 < __r1462.getLength();__key1461 += 1) {
+                    BaseClass b = __r1462.get(__key1461);
+                    int i = __key1461;
                     if ((i) != 0)
                         (this.buf).writestring( new ByteSlice(", "));
                     typeToBuffer((b).type, null, this.buf, this.hgs);
@@ -1592,10 +1601,10 @@ public class hdrgen {
             if (f.frequires != null)
             {
                 {
-                    Slice<Statement> __r1379 = (f.frequires).opSlice().copy();
-                    int __key1380 = 0;
-                    for (; __key1380 < __r1379.getLength();__key1380 += 1) {
-                        Statement frequire = __r1379.get(__key1380);
+                    Slice<Statement> __r1463 = (f.frequires).opSlice().copy();
+                    int __key1464 = 0;
+                    for (; __key1464 < __r1463.getLength();__key1464 += 1) {
+                        Statement frequire = __r1463.get(__key1464);
                         (this.buf).writestring( new ByteSlice("in"));
                         {
                             ExpStatement es = frequire.isExpStatement();
@@ -1621,10 +1630,10 @@ public class hdrgen {
             if (f.fensures != null)
             {
                 {
-                    Slice<Ensure> __r1381 = (f.fensures).opSlice().copy();
-                    int __key1382 = 0;
-                    for (; __key1382 < __r1381.getLength();__key1382 += 1) {
-                        Ensure fensure = __r1381.get(__key1382).copy();
+                    Slice<Ensure> __r1465 = (f.fensures).opSlice().copy();
+                    int __key1466 = 0;
+                    for (; __key1466 < __r1465.getLength();__key1466 += 1) {
+                        Ensure fensure = __r1465.get(__key1466).copy();
                         (this.buf).writestring( new ByteSlice("out"));
                         {
                             ExpStatement es = fensure.ensure.isExpStatement();
@@ -1809,7 +1818,7 @@ public class hdrgen {
             this.bodyToBuffer(d);
         }
 
-        public  void visit(Module m) {
+        public  void visit(dmodule.Module m) {
             moduleToBuffer2(m, this.buf, this.hgs);
         }
 
@@ -1855,10 +1864,10 @@ public class hdrgen {
                                     EnumDeclaration sym = te.sym;
                                     if (!pequals((this.hgs).inEnumDecl, sym))
                                     {
-                                        int __key1383 = 0;
-                                        int __limit1384 = (sym.members).length;
-                                        for (; __key1383 < __limit1384;__key1383 += 1) {
-                                            int i = __key1383;
+                                        int __key1467 = 0;
+                                        int __limit1468 = (sym.members).length;
+                                        for (; __key1467 < __limit1468;__key1467 += 1) {
+                                            int i = __key1467;
                                             EnumMember em = (EnumMember)(sym.members).get(i);
                                             if (em.value().toInteger() == v)
                                             {
@@ -2075,11 +2084,11 @@ public class hdrgen {
         public  void visit(AssocArrayLiteralExp e) {
             (this.buf).writeByte(91);
             {
-                Slice<Expression> __r1386 = (e.keys).opSlice().copy();
-                int __key1385 = 0;
-                for (; __key1385 < __r1386.getLength();__key1385 += 1) {
-                    Expression key = __r1386.get(__key1385);
-                    int i = __key1385;
+                Slice<Expression> __r1470 = (e.keys).opSlice().copy();
+                int __key1469 = 0;
+                for (; __key1469 < __r1470.getLength();__key1469 += 1) {
+                    Expression key = __r1470.get(__key1469);
+                    int i = __key1469;
                     if ((i) != 0)
                         (this.buf).writestring( new ByteSlice(", "));
                     expToBuffer(key, PREC.assign, this.buf, this.hgs);
@@ -2118,7 +2127,7 @@ public class hdrgen {
             else if ((this.hgs != null && (this.hgs).ddoc))
             {
                 {
-                    Module m = e.sds.isModule();
+                    dmodule.Module m = e.sds.isModule();
                     if (m != null)
                         (this.buf).writestring((m.md).toChars());
                     else
@@ -2253,10 +2262,10 @@ public class hdrgen {
             if (e.args != null)
             {
                 {
-                    Slice<RootObject> __r1387 = (e.args).opSlice().copy();
-                    int __key1388 = 0;
-                    for (; __key1388 < __r1387.getLength();__key1388 += 1) {
-                        RootObject arg = __r1387.get(__key1388);
+                    Slice<RootObject> __r1471 = (e.args).opSlice().copy();
+                    int __key1472 = 0;
+                    for (; __key1472 < __r1471.getLength();__key1472 += 1) {
+                        RootObject arg = __r1471.get(__key1472);
                         (this.buf).writestring( new ByteSlice(", "));
                         objectToBuffer(arg, this.buf, this.hgs);
                     }
@@ -2832,11 +2841,11 @@ public class hdrgen {
             return ;
         HdrGenState hgs = new HdrGenState();
         {
-            Slice<Expression> __r1390 = (arguments).opSlice().copy();
-            int __key1389 = 0;
-            for (; __key1389 < __r1390.getLength();__key1389 += 1) {
-                Expression arg = __r1390.get(__key1389);
-                int i = __key1389;
+            Slice<Expression> __r1474 = (arguments).opSlice().copy();
+            int __key1473 = 0;
+            for (; __key1473 < __r1474.getLength();__key1473 += 1) {
+                Expression arg = __r1474.get(__key1473);
+                int i = __key1473;
                 if ((i) != 0)
                     (buf).writestring( new ByteSlice(", "));
                 typeToBuffer(arg.type, null, buf, hgs);
@@ -2854,11 +2863,11 @@ public class hdrgen {
             return ;
         HdrGenState hgs = new HdrGenState();
         {
-            Slice<RootObject> __r1392 = (objects).opSlice().copy();
-            int __key1391 = 0;
-            for (; __key1391 < __r1392.getLength();__key1391 += 1) {
-                RootObject o = __r1392.get(__key1391);
-                int i = __key1391;
+            Slice<RootObject> __r1476 = (objects).opSlice().copy();
+            int __key1475 = 0;
+            for (; __key1475 < __r1476.getLength();__key1475 += 1) {
+                RootObject o = __r1476.get(__key1475);
+                int i = __key1475;
                 if ((i) != 0)
                     (buf).writestring( new ByteSlice(", "));
                 objectToBuffer(o, buf, hgs);
@@ -2896,10 +2905,10 @@ public class hdrgen {
     public static void parametersToBuffer(ParameterList pl, OutBuffer buf, HdrGenState hgs) {
         (buf).writeByte(40);
         {
-            int __key1393 = 0;
-            int __limit1394 = pl.length();
-            for (; __key1393 < __limit1394;__key1393 += 1) {
-                int i = __key1393;
+            int __key1477 = 0;
+            int __limit1478 = pl.length();
+            for (; __key1477 < __limit1478;__key1477 += 1) {
+                int i = __key1477;
                 if ((i) != 0)
                     (buf).writestring( new ByteSlice(", "));
                 parameterToBuffer(pl.get(i), buf, hgs);
@@ -2985,11 +2994,11 @@ public class hdrgen {
         if ((expressions == null || !(((expressions).length) != 0)))
             return ;
         {
-            Slice<Expression> __r1396 = (expressions).opSlice().copy();
-            int __key1395 = 0;
-            for (; __key1395 < __r1396.getLength();__key1395 += 1) {
-                Expression el = __r1396.get(__key1395);
-                int i = __key1395;
+            Slice<Expression> __r1480 = (expressions).opSlice().copy();
+            int __key1479 = 0;
+            for (; __key1479 < __r1480.getLength();__key1479 += 1) {
+                Expression el = __r1480.get(__key1479);
+                int i = __key1479;
                 if ((i) != 0)
                     (buf).writestring( new ByteSlice(", "));
                 if (!(el != null))
@@ -3109,10 +3118,10 @@ public class hdrgen {
         else if (ti.members != null)
         {
             {
-                Slice<Dsymbol> __r1397 = (ti.members).opSlice().copy();
-                int __key1398 = 0;
-                for (; __key1398 < __r1397.getLength();__key1398 += 1) {
-                    Dsymbol m = __r1397.get(__key1398);
+                Slice<Dsymbol> __r1481 = (ti.members).opSlice().copy();
+                int __key1482 = 0;
+                for (; __key1482 < __r1481.getLength();__key1482 += 1) {
+                    Dsymbol m = __r1481.get(__key1482);
                     dsymbolToBuffer(m, buf, hgs);
                 }
             }
@@ -3163,11 +3172,11 @@ public class hdrgen {
         (buf).writeByte(40);
         ti.nest++;
         {
-            Slice<RootObject> __r1400 = (ti.tiargs).opSlice().copy();
-            int __key1399 = 0;
-            for (; __key1399 < __r1400.getLength();__key1399 += 1) {
-                RootObject arg = __r1400.get(__key1399);
-                int i = __key1399;
+            Slice<RootObject> __r1484 = (ti.tiargs).opSlice().copy();
+            int __key1483 = 0;
+            for (; __key1483 < __r1484.getLength();__key1483 += 1) {
+                RootObject arg = __r1484.get(__key1483);
+                int i = __key1483;
                 if ((i) != 0)
                     (buf).writestring( new ByteSlice(", "));
                 objectToBuffer(arg, buf, hgs);
@@ -3205,11 +3214,11 @@ public class hdrgen {
                         {
                             DArray<RootObject> args = v.objects;
                             {
-                                Slice<RootObject> __r1402 = (args).opSlice().copy();
-                                int __key1401 = 0;
-                                for (; __key1401 < __r1402.getLength();__key1401 += 1) {
-                                    RootObject arg = __r1402.get(__key1401);
-                                    int i = __key1401;
+                                Slice<RootObject> __r1486 = (args).opSlice().copy();
+                                int __key1485 = 0;
+                                for (; __key1485 < __r1486.getLength();__key1485 += 1) {
+                                    RootObject arg = __r1486.get(__key1485);
+                                    int i = __key1485;
                                     if ((i) != 0)
                                         (buf).writestring( new ByteSlice(", "));
                                     objectToBuffer(arg, buf, hgs);
@@ -3319,11 +3328,11 @@ public class hdrgen {
         {
             (buf_ref.value).writeByte(40);
             {
-                Slice<TemplateParameter> __r1404 = (td.origParameters).opSlice().copy();
-                int __key1403 = 0;
-                for (; __key1403 < __r1404.getLength();__key1403 += 1) {
-                    TemplateParameter p = __r1404.get(__key1403);
-                    int i = __key1403;
+                Slice<TemplateParameter> __r1488 = (td.origParameters).opSlice().copy();
+                int __key1487 = 0;
+                for (; __key1487 < __r1488.getLength();__key1487 += 1) {
+                    TemplateParameter p = __r1488.get(__key1487);
+                    int i = __key1487;
                     if ((i) != 0)
                         (buf_ref.value).writestring( new ByteSlice(", "));
                     templateParameterToBuffer(p, buf_ref.value, hgs);
@@ -3358,11 +3367,11 @@ public class hdrgen {
             public Void invoke(StructInitializer si){
                 (buf_ref.value).writeByte(123);
                 {
-                    Slice<Identifier> __r1406 = si.field.opSlice().copy();
-                    int __key1405 = 0;
-                    for (; __key1405 < __r1406.getLength();__key1405 += 1) {
-                        Identifier id = __r1406.get(__key1405);
-                        int i = __key1405;
+                    Slice<Identifier> __r1490 = si.field.opSlice().copy();
+                    int __key1489 = 0;
+                    for (; __key1489 < __r1490.getLength();__key1489 += 1) {
+                        Identifier id = __r1490.get(__key1489);
+                        int i = __key1489;
                         if ((i) != 0)
                             (buf_ref.value).writestring( new ByteSlice(", "));
                         if (id != null)
@@ -3385,11 +3394,11 @@ public class hdrgen {
             public Void invoke(ArrayInitializer ai){
                 (buf_ref.value).writeByte(91);
                 {
-                    Slice<Expression> __r1408 = ai.index.opSlice().copy();
-                    int __key1407 = 0;
-                    for (; __key1407 < __r1408.getLength();__key1407 += 1) {
-                        Expression ex = __r1408.get(__key1407);
-                        int i = __key1407;
+                    Slice<Expression> __r1492 = ai.index.opSlice().copy();
+                    int __key1491 = 0;
+                    for (; __key1491 < __r1492.getLength();__key1491 += 1) {
+                        Expression ex = __r1492.get(__key1491);
+                        int i = __key1491;
                         if ((i) != 0)
                             (buf_ref.value).writestring( new ByteSlice(", "));
                         if (ex != null)
@@ -3544,10 +3553,10 @@ public class hdrgen {
         Function1<TypeQualified,Void> visitTypeQualifiedHelper = new Function1<TypeQualified,Void>(){
             public Void invoke(TypeQualified t){
                 {
-                    Slice<RootObject> __r1409 = t.idents.opSlice().copy();
-                    int __key1410 = 0;
-                    for (; __key1410 < __r1409.getLength();__key1410 += 1) {
-                        RootObject id = __r1409.get(__key1410);
+                    Slice<RootObject> __r1493 = t.idents.opSlice().copy();
+                    int __key1494 = 0;
+                    for (; __key1494 < __r1493.getLength();__key1494 += 1) {
+                        RootObject id = __r1493.get(__key1494);
                         if (id.dyncast() == DYNCAST.dsymbol)
                         {
                             (buf_ref.value).writeByte(46);

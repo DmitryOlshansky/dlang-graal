@@ -987,7 +987,7 @@ public class parsetimevisitor {
             this.visit((Dsymbol)s);
         }
 
-        public  void visit(Package s) {
+        public  void visit(dmodule.Package s) {
             this.visit((ScopeDsymbol)s);
         }
 
@@ -1135,8 +1135,8 @@ public class parsetimevisitor {
             this.visit((VarDeclaration)s);
         }
 
-        public  void visit(Module s) {
-            this.visit((Package)s);
+        public  void visit(dmodule.Module s) {
+            this.visit((dmodule.Package)s);
         }
 
         public  void visit(StructDeclaration s) {

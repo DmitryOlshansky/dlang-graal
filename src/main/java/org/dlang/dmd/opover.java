@@ -12,17 +12,26 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.aliasthis.*;
+import static org.dlang.dmd.arraytypes.*;
+import static org.dlang.dmd.clone.*;
 import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dstruct.*;
 import static org.dlang.dmd.dsymbol.*;
 import static org.dlang.dmd.dtemplate.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.mtype.*;
 import static org.dlang.dmd.statement.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.typesem.*;
 import static org.dlang.dmd.visitor.*;
 
 public class opover {
@@ -1445,10 +1454,10 @@ public class opover {
         if (sapply.value != null)
         {
             {
-                Slice<Parameter> __r1522 = (fes.parameters).opSlice().copy();
-                int __key1523 = 0;
-                for (; __key1523 < __r1522.getLength();__key1523 += 1) {
-                    Parameter p = __r1522.get(__key1523);
+                Slice<Parameter> __r1606 = (fes.parameters).opSlice().copy();
+                int __key1607 = 0;
+                for (; __key1607 < __r1606.getLength();__key1607 += 1) {
+                    Parameter p = __r1606.get(__key1607);
                     if (p.type != null)
                     {
                         p.type = typeSemantic(p.type, fes.loc, sc);
@@ -1622,11 +1631,11 @@ public class opover {
         if (((nparams == 0 || nparams != (parameters).length) || tdg.parameterList.varargs != VarArg.none))
             return false;
         {
-            Slice<Parameter> __r1525 = (parameters).opSlice().copy();
-            int __key1524 = 0;
-            for (; __key1524 < __r1525.getLength();__key1524 += 1) {
-                Parameter p = __r1525.get(__key1524);
-                int u = __key1524;
+            Slice<Parameter> __r1609 = (parameters).opSlice().copy();
+            int __key1608 = 0;
+            for (; __key1608 < __r1609.getLength();__key1608 += 1) {
+                Parameter p = __r1609.get(__key1608);
+                int u = __key1608;
                 Parameter param = tdg.parameterList.get(u);
                 if (p.type != null)
                 {

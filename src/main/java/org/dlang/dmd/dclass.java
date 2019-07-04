@@ -11,14 +11,21 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.access.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.declaration.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.gluelayer.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.mtype.*;
 import static org.dlang.dmd.objc.*;
+import static org.dlang.dmd.target.*;
 import static org.dlang.dmd.visitor.*;
 
 public class dclass {
@@ -426,10 +433,10 @@ public class dclass {
 
         public  ClassDeclaration searchBase(Identifier ident) {
             {
-                Slice<BaseClass> __r881 = (this.baseclasses).opSlice().copy();
-                int __key882 = 0;
-                for (; __key882 < __r881.getLength();__key882 += 1) {
-                    BaseClass b = __r881.get(__key882);
+                Slice<BaseClass> __r905 = (this.baseclasses).opSlice().copy();
+                int __key906 = 0;
+                for (; __key906 < __r905.getLength();__key906 += 1) {
+                    BaseClass b = __r905.get(__key906);
                     ClassDeclaration cdb = (b).type.isClassHandle();
                     if (!(cdb != null))
                         return null;
@@ -473,10 +480,10 @@ public class dclass {
                 public Integer invoke(ClassDeclaration cd, Integer baseOffset){
                     IntRef offset = ref(baseOffset);
                     {
-                        Slice<BaseClass> __r883 = cd.interfaces.copy();
-                        int __key884 = 0;
-                        for (; __key884 < __r883.getLength();__key884 += 1) {
-                            BaseClass b = __r883.get(__key884);
+                        Slice<BaseClass> __r907 = cd.interfaces.copy();
+                        int __key908 = 0;
+                        for (; __key908 < __r907.getLength();__key908 += 1) {
+                            BaseClass b = __r907.get(__key908);
                             if ((b).sym.sizeok != Sizeok.done)
                                 (b).sym.finalizeSize();
                             assert((b).sym.sizeok == Sizeok.done);
@@ -515,10 +522,10 @@ public class dclass {
             this.fields.setDim(0);
             IntRef offset = ref(this.structsize);
             {
-                Slice<Dsymbol> __r885 = (this.members).opSlice().copy();
-                int __key886 = 0;
-                for (; __key886 < __r885.getLength();__key886 += 1) {
-                    Dsymbol s = __r885.get(__key886);
+                Slice<Dsymbol> __r909 = (this.members).opSlice().copy();
+                int __key910 = 0;
+                for (; __key910 < __r909.getLength();__key910 += 1) {
+                    Dsymbol s = __r909.get(__key910);
                     s.setFieldOffset(this, ptr(offset), false);
                 }
             }
@@ -541,12 +548,12 @@ public class dclass {
                 return false;
             }
             s = s.toAlias();
-            Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
+            Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>(){
                 public Integer invoke(Dsymbol s){
                     return ((pequals(fd, s.isFuncDeclaration())) ? 1 : 0);
                 }
             };
-            Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>(){
+            Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
                 public Integer invoke(Dsymbol s){
                     return ((pequals(fd, s.isFuncDeclaration())) ? 1 : 0);
                 }
@@ -556,10 +563,10 @@ public class dclass {
                 if (os != null)
                 {
                     {
-                        Slice<Dsymbol> __r887 = os.a.opSlice().copy();
-                        int __key888 = 0;
-                        for (; __key888 < __r887.getLength();__key888 += 1) {
-                            Dsymbol sm = __r887.get(__key888);
+                        Slice<Dsymbol> __r911 = os.a.opSlice().copy();
+                        int __key912 = 0;
+                        for (; __key912 < __r911.getLength();__key912 += 1) {
+                            Dsymbol sm = __r911.get(__key912);
                             FuncDeclaration fm = sm.isFuncDeclaration();
                             if ((overloadApply(fm, __lambda2, null)) != 0)
                                 return false;
@@ -592,10 +599,10 @@ public class dclass {
             Function1<DArray<Dsymbol>,Void> searchVtbl = new Function1<DArray<Dsymbol>,Void>(){
                 public Void invoke(DArray<Dsymbol> vtbl){
                     {
-                        Slice<Dsymbol> __r889 = vtbl.opSlice().copy();
-                        int __key890 = 0;
-                        for (; __key890 < __r889.getLength();__key890 += 1) {
-                            Dsymbol s = __r889.get(__key890);
+                        Slice<Dsymbol> __r913 = vtbl.opSlice().copy();
+                        int __key914 = 0;
+                        for (; __key914 < __r913.getLength();__key914 += 1) {
+                            Dsymbol s = __r913.get(__key914);
                             FuncDeclaration fd = s.isFuncDeclaration();
                             if (!(fd != null))
                                 continue;
@@ -745,10 +752,10 @@ public class dclass {
                 }
             }
             {
-                int __key891 = 1;
-                int __limit892 = this.vtbl.length;
-                for (; __key891 < __limit892;__key891 += 1) {
-                    int i = __key891;
+                int __key915 = 1;
+                int __limit916 = this.vtbl.length;
+                for (; __key915 < __limit916;__key915 += 1) {
+                    int i = __key915;
                     FuncDeclaration fd = this.vtbl.get(i).isFuncDeclaration();
                     if ((!(fd != null) || fd.isAbstract()))
                     {
@@ -908,10 +915,10 @@ public class dclass {
         public  boolean isBaseOf(ClassDeclaration cd, IntPtr poffset) {
             assert(!(this.baseClass != null));
             {
-                Slice<BaseClass> __r893 = cd.interfaces.copy();
-                int __key894 = 0;
-                for (; __key894 < __r893.getLength();__key894 += 1) {
-                    BaseClass b = __r893.get(__key894);
+                Slice<BaseClass> __r917 = cd.interfaces.copy();
+                int __key918 = 0;
+                for (; __key918 < __r917.getLength();__key918 += 1) {
+                    BaseClass b = __r917.get(__key918);
                     if (pequals(this, (b).sym))
                     {
                         if (poffset != null)

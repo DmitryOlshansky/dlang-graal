@@ -11,9 +11,14 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
+import static org.dlang.dmd.lexer.*;
 import static org.dlang.dmd.parsetimevisitor.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.utils.*;
 
 public class astbase {
     private static final byte[] initializer_0 = {(byte)12, (byte)13, (byte)14, (byte)15, (byte)16, (byte)17, (byte)18, (byte)19, (byte)20, (byte)42, (byte)43, (byte)21, (byte)22, (byte)23, (byte)24, (byte)25, (byte)26, (byte)27, (byte)28, (byte)29, (byte)30, (byte)31, (byte)32, (byte)33, (byte)34};
@@ -1376,7 +1381,7 @@ public class astbase {
         {
             public int isPkgMod;
             public int tag;
-            public  Package(Identifier ident) {
+            public  dmodule.Package(Identifier ident) {
                 super(ident);
                 this.isPkgMod = PKG.unknown;
                 this.tag = astbase.__ctorpackageTag++;
@@ -2135,12 +2140,12 @@ public class astbase {
                 return that;
             }
         }
-        public static class Module extends Package
+        public static class Module extends dmodule.Package
         {
             public static AggregateDeclaration moduleinfo;
             public FileName srcfile = new FileName();
             public BytePtr arg;
-            public  Module(BytePtr filename, Identifier ident, int doDocComment, int doHdrGen) {
+            public  dmodule.Module(BytePtr filename, Identifier ident, int doDocComment, int doHdrGen) {
                 super(ident);
                 this.arg = pcopy(filename);
                 this.srcfile = new FileName(FileName.defaultExt(toDString(filename), toByteSlice(global.mars_ext)));
@@ -8314,8 +8319,8 @@ public class astbase {
         {
             public int level;
             public Identifier ident;
-            public Module mod;
-            public  DVCondition(Module mod, int level, Identifier ident) {
+            public dmodule.Module mod;
+            public  DVCondition(dmodule.Module mod, int level, Identifier ident) {
                 super(Loc.initial);
                 this.mod = mod;
                 this.ident = ident;
@@ -8339,7 +8344,7 @@ public class astbase {
         }
         public static class DebugCondition extends DVCondition
         {
-            public  DebugCondition(Module mod, int level, Identifier ident) {
+            public  DebugCondition(dmodule.Module mod, int level, Identifier ident) {
                 super(mod, level, ident);
             }
 
@@ -8361,7 +8366,7 @@ public class astbase {
         }
         public static class VersionCondition extends DVCondition
         {
-            public  VersionCondition(Module mod, int level, Identifier ident) {
+            public  VersionCondition(dmodule.Module mod, int level, Identifier ident) {
                 super(mod, level, ident);
             }
 
@@ -8643,7 +8648,7 @@ public class astbase {
             }
 
             public int kind;
-            public Package pkg;
+            public dmodule.Package pkg;
             public Prot(){
             }
             public Prot copy(){
@@ -8652,7 +8657,7 @@ public class astbase {
                 r.pkg = pkg;
                 return r;
             }
-            public Prot(int kind, Package pkg) {
+            public Prot(int kind, dmodule.Package pkg) {
                 this.kind = kind;
                 this.pkg = pkg;
             }

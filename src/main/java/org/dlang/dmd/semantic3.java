@@ -12,20 +12,54 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.aliasthis.*;
+import static org.dlang.dmd.arraytypes.*;
+import static org.dlang.dmd.astcodegen.*;
 import static org.dlang.dmd.attrib.*;
+import static org.dlang.dmd.blockexit.*;
+import static org.dlang.dmd.clone.*;
+import static org.dlang.dmd.ctorflow.*;
+import static org.dlang.dmd.dcast.*;
 import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
+import static org.dlang.dmd.denum.*;
+import static org.dlang.dmd.dimport.*;
+import static org.dlang.dmd.dinterpret.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dstruct.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.dtemplate.*;
+import static org.dlang.dmd.dversion.*;
+import static org.dlang.dmd.errors.*;
+import static org.dlang.dmd.escape.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
+import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.hdrgen.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.init.*;
+import static org.dlang.dmd.initsem.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.nogc.*;
 import static org.dlang.dmd.nspace.*;
+import static org.dlang.dmd.objc.*;
+import static org.dlang.dmd.opover.*;
+import static org.dlang.dmd.parse.*;
+import static org.dlang.dmd.semantic2.*;
+import static org.dlang.dmd.sideeffect.*;
 import static org.dlang.dmd.statement.*;
+import static org.dlang.dmd.statementsem.*;
+import static org.dlang.dmd.staticassert.*;
+import static org.dlang.dmd.target.*;
+import static org.dlang.dmd.templateparamsem.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.typesem.*;
+import static org.dlang.dmd.utf.*;
+import static org.dlang.dmd.utils.*;
 import static org.dlang.dmd.visitor.*;
 
 public class semantic3 {
@@ -111,7 +145,7 @@ public class semantic3 {
             }
         }
 
-        public  void visit(Module mod) {
+        public  void visit(dmodule.Module mod) {
             if (mod.semanticRun != PASS.semantic2done)
                 return ;
             mod.semanticRun = PASS.semantic3;
@@ -419,10 +453,10 @@ public class semantic3 {
                     {
                         (sc2).ctorflow.allocFieldinit(ad2.fields.length);
                         {
-                            Slice<VarDeclaration> __r1534 = ad2.fields.opSlice().copy();
-                            int __key1535 = 0;
-                            for (; __key1535 < __r1534.getLength();__key1535 += 1) {
-                                VarDeclaration v = __r1534.get(__key1535);
+                            Slice<VarDeclaration> __r1618 = ad2.fields.opSlice().copy();
+                            int __key1619 = 0;
+                            for (; __key1619 < __r1618.getLength();__key1619 += 1) {
+                                VarDeclaration v = __r1618.get(__key1619);
                                 v.ctorinit = false;
                             }
                         }
@@ -497,11 +531,11 @@ public class semantic3 {
                         if (!(((sc2).ctorflow.callSuper & 1) != 0))
                         {
                             {
-                                Slice<VarDeclaration> __r1537 = ad2.fields.opSlice().copy();
-                                int __key1536 = 0;
-                                for (; __key1536 < __r1537.getLength();__key1536 += 1) {
-                                    VarDeclaration v = __r1537.get(__key1536);
-                                    int i = __key1536;
+                                Slice<VarDeclaration> __r1621 = ad2.fields.opSlice().copy();
+                                int __key1620 = 0;
+                                for (; __key1620 < __r1621.getLength();__key1620 += 1) {
+                                    VarDeclaration v = __r1621.get(__key1620);
+                                    int i = __key1620;
                                     if (v.isThisDeclaration() != null)
                                         continue;
                                     if ((v.ctorinit ? 1 : 0) == 0)
@@ -703,10 +737,10 @@ public class semantic3 {
                     if (((f.next.ty & 0xFF) == ENUMTY.Tvoid && funcdecl_ref.value.fensures != null))
                     {
                         {
-                            Slice<Ensure> __r1538 = (funcdecl_ref.value.fensures).opSlice().copy();
-                            int __key1539 = 0;
-                            for (; __key1539 < __r1538.getLength();__key1539 += 1) {
-                                Ensure e = __r1538.get(__key1539).copy();
+                            Slice<Ensure> __r1622 = (funcdecl_ref.value.fensures).opSlice().copy();
+                            int __key1623 = 0;
+                            for (; __key1623 < __r1622.getLength();__key1623 += 1) {
+                                Ensure e = __r1622.get(__key1623).copy();
                                 if (e.id != null)
                                 {
                                     funcdecl_ref.value.error(e.ensure.loc, new BytePtr("`void` functions have no result"));
@@ -810,10 +844,10 @@ public class semantic3 {
                     if (funcdecl_ref.value.parameters != null)
                     {
                         {
-                            Slice<VarDeclaration> __r1540 = (funcdecl_ref.value.parameters).opSlice().copy();
-                            int __key1541 = 0;
-                            for (; __key1541 < __r1540.getLength();__key1541 += 1) {
-                                VarDeclaration v = __r1540.get(__key1541);
+                            Slice<VarDeclaration> __r1624 = (funcdecl_ref.value.parameters).opSlice().copy();
+                            int __key1625 = 0;
+                            for (; __key1625 < __r1624.getLength();__key1625 += 1) {
+                                VarDeclaration v = __r1624.get(__key1625);
                                 if ((v.storage_class & 2109440L) != 0)
                                     continue;
                                 if (v.needsScopeDtor())
@@ -943,10 +977,10 @@ public class semantic3 {
                 if (funcdecl_ref.value.parameters != null)
                 {
                     {
-                        Slice<VarDeclaration> __r1542 = (funcdecl_ref.value.parameters).opSlice().copy();
-                        int __key1543 = 0;
-                        for (; __key1543 < __r1542.getLength();__key1543 += 1) {
-                            VarDeclaration v = __r1542.get(__key1543);
+                        Slice<VarDeclaration> __r1626 = (funcdecl_ref.value.parameters).opSlice().copy();
+                        int __key1627 = 0;
+                        for (; __key1627 < __r1626.getLength();__key1627 += 1) {
+                            VarDeclaration v = __r1626.get(__key1627);
                             array.set(n++, v);
                         }
                     }
@@ -960,11 +994,11 @@ public class semantic3 {
                 int nfparams = f.parameterList.length();
                 assert(nfparams == (funcdecl_ref.value.parameters).length);
                 {
-                    Slice<VarDeclaration> __r1545 = (funcdecl_ref.value.parameters).opSlice().copy();
-                    int __key1544 = 0;
-                    for (; __key1544 < __r1545.getLength();__key1544 += 1) {
-                        VarDeclaration v = __r1545.get(__key1544);
-                        int u = __key1544;
+                    Slice<VarDeclaration> __r1629 = (funcdecl_ref.value.parameters).opSlice().copy();
+                    int __key1628 = 0;
+                    for (; __key1628 < __r1629.getLength();__key1628 += 1) {
+                        VarDeclaration v = __r1629.get(__key1628);
+                        int u = __key1628;
                         if ((v.storage_class & 281474976710656L) != 0)
                         {
                             Parameter p = f.parameterList.get(u);
@@ -1033,10 +1067,10 @@ public class semantic3 {
                 this.sc = (this.sc).push(ns);
                 (this.sc).linkage = LINK.cpp;
                 {
-                    Slice<Dsymbol> __r1546 = (ns.members).opSlice().copy();
-                    int __key1547 = 0;
-                    for (; __key1547 < __r1546.getLength();__key1547 += 1) {
-                        Dsymbol s = __r1546.get(__key1547);
+                    Slice<Dsymbol> __r1630 = (ns.members).opSlice().copy();
+                    int __key1631 = 0;
+                    for (; __key1631 < __r1630.getLength();__key1631 += 1) {
+                        Dsymbol s = __r1630.get(__key1631);
                         semantic3(s, this.sc);
                     }
                 }

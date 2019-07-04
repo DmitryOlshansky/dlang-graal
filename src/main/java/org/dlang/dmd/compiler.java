@@ -11,12 +11,21 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.arraytypes.*;
+import static org.dlang.dmd.astcodegen.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.mtype.*;
 import static org.dlang.dmd.parse.*;
+import static org.dlang.dmd.semantic2.*;
+import static org.dlang.dmd.semantic3.*;
+import static org.dlang.dmd.tokens.*;
 
 public class compiler {
     private static class U
@@ -44,11 +53,11 @@ public class compiler {
         }
     }
 
-    static Module entrypoint = null;
-    static Module rootHasMain = null;
+    static dmodule.Module entrypoint = null;
+    static dmodule.Module rootHasMain = null;
     static boolean includeImports = false;
     static DArray<BytePtr> includeModulePatterns = new DArray<BytePtr>();
-    static DArray<Module> compiledImports = new DArray<Module>();
+    static DArray<dmodule.Module> compiledImports = new DArray<dmodule.Module>();
     public static class Compiler
     {
         public static void genCmain(Scope sc) {
@@ -56,7 +65,7 @@ public class compiler {
                 return ;
             ByteSlice cmaincode =  new ByteSlice("\n            extern(C)\n            {\n                int _d_run_main(int argc, char **argv, void* mainFunc);\n                int _Dmain(char[][] args);\n                int main(int argc, char **argv)\n                {\n                    return _d_run_main(argc, argv, &_Dmain);\n                }\n                version (Solaris) int _main(int argc, char** argv) { return main(argc, argv); }\n            }\n        ").copy();
             Identifier id = Id.entrypoint;
-            Module m = new Module( new ByteSlice("__entrypoint.d"), id, 0, 0);
+            dmodule.Module m = new dmodule.Module( new ByteSlice("__entrypoint.d"), id, 0, 0);
             StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
             try {
                 ParserASTCodegen p = new ParserASTCodegen(m, toByteSlice(cmaincode), false, diagnosticReporter);
@@ -151,10 +160,10 @@ public class compiler {
             return (pue).exp();
         }
 
-        public static void loadModule(Module m) {
+        public static void loadModule(dmodule.Module m) {
         }
 
-        public static boolean onImport(Module m) {
+        public static boolean onImport(dmodule.Module m) {
             if (includeImports)
             {
                 DArray<Identifier> empty = new DArray<Identifier>();
@@ -317,10 +326,10 @@ public class compiler {
         if (matchNodes.length == 0)
         {
             {
-                Slice<BytePtr> __r819 = includeModulePatterns.opSlice().copy();
-                int __key820 = 0;
-                for (; __key820 < __r819.getLength();__key820 += 1) {
-                    BytePtr modulePattern = pcopy(__r819.get(__key820));
+                Slice<BytePtr> __r837 = includeModulePatterns.opSlice().copy();
+                int __key838 = 0;
+                for (; __key838 < __r837.getLength();__key838 += 1) {
+                    BytePtr modulePattern = pcopy(__r837.get(__key838));
                     short depth = parseModulePatternDepth(modulePattern);
                     int entryIndex = findSortedIndexToAddForDepth.invoke((int)depth);
                     split(matchNodes, entryIndex, ((int)depth + 1));

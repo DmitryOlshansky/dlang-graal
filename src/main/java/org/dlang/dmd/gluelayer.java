@@ -12,8 +12,10 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dsymbol.*;
 import static org.dlang.dmd.lib.*;
+import static org.dlang.dmd.mtype.*;
 import static org.dlang.dmd.statement.*;
 
 public class gluelayer {
@@ -34,7 +36,7 @@ public class gluelayer {
     public static void obj_end(Library library, BytePtr objfilename) {
     }
 
-    public static void genObjFile(Module m, boolean multiobj) {
+    public static void genObjFile(dmodule.Module m, boolean multiobj) {
     }
 
     public static void backend_init() {

@@ -12,19 +12,25 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.attrib.*;
 import static org.dlang.dmd.ctorflow.*;
 import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.doc.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.dtemplate.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.mtype.*;
 import static org.dlang.dmd.statement.*;
+import static org.dlang.dmd.tokens.*;
 
 public class dscope {
 
@@ -52,7 +58,7 @@ public class dscope {
     public static class Scope
     {
         public Scope enclosing;
-        public Module _module;
+        public dmodule.Module _module;
         public ScopeDsymbol scopesym;
         public FuncDeclaration func;
         public Dsymbol parent;
@@ -69,7 +75,7 @@ public class dscope {
         public boolean inLoop;
         public int intypeof;
         public VarDeclaration lastVar;
-        public Module minst;
+        public dmodule.Module minst;
         public TemplateInstance tinst;
         public CtorFlow ctorflow = new CtorFlow();
         public AlignDeclaration aligndecl;
@@ -99,7 +105,7 @@ public class dscope {
             return new Scope(null, null, null, null, null, null, null, null, null, null, null, null, null, null, false, false, 0, null, null, null, new CtorFlow(CSX.none, new Slice<FieldInit>()), null, null, LINK.d, CPPMANGLE.def, PINLINE.default_, new Prot(Prot.Kind.public_, null), 0, 0L, null, 0, null, null, null, null);
         }
 
-        public static Scope createGlobal(Module _module) {
+        public static Scope createGlobal(dmodule.Module _module) {
             Scope sc = alloc();
             sc.opAssign(new Scope(null, null, null, null, null, null, null, null, null, null, null, null, null, null, false, false, 0, null, null, null, new CtorFlow(CSX.none, new Slice<FieldInit>()), null, null, LINK.d, CPPMANGLE.def, PINLINE.default_, new Prot(Prot.Kind.public_, null), 0, 0L, null, 0, null, null, null, null));
             (sc)._module = _module;
@@ -180,11 +186,11 @@ public class dscope {
                 AggregateDeclaration ad = f.isMemberDecl();
                 assert(ad != null);
                 {
-                    Slice<VarDeclaration> __r1080 = ad.fields.opSlice().copy();
-                    int __key1079 = 0;
-                    for (; __key1079 < __r1080.getLength();__key1079 += 1) {
-                        VarDeclaration v = __r1080.get(__key1079);
-                        int i = __key1079;
+                    Slice<VarDeclaration> __r1104 = ad.fields.opSlice().copy();
+                    int __key1103 = 0;
+                    for (; __key1103 < __r1104.getLength();__key1103 += 1) {
+                        VarDeclaration v = __r1104.get(__key1103);
+                        int i = __key1103;
                         boolean mustInit = ((v.storage_class & 549755813888L) != 0 || v.type.needsNested());
                         FieldInit fieldInit = this.ctorflow.fieldinit.get(i);
                         FieldInit fiesCurrent = fies.get(i).copy();
@@ -199,7 +205,7 @@ public class dscope {
             }
         }
 
-        public  Module instantiatingModule() {
+        public  dmodule.Module instantiatingModule() {
             return this.minst != null ? this.minst : this._module;
         }
 

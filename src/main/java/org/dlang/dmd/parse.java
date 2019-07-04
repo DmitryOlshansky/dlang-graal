@@ -28,6 +28,7 @@ import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.init.*;
 import static org.dlang.dmd.lexer.*;
@@ -7746,13 +7747,13 @@ public class parse {
     public static class ParserASTCodegen extends Lexer
     {
         public ModuleDeclaration md;
-        public Module mod;
+        public dmodule.Module mod;
         public int linkage;
         public int cppmangle;
         public Loc endloc = new Loc();
         public int inBrackets;
         public Loc lookingForElse = new Loc();
-        public  ParserASTCodegen(Loc loc, Module _module, ByteSlice input, boolean doDocComment, DiagnosticReporter diagnosticReporter) {
+        public  ParserASTCodegen(Loc loc, dmodule.Module _module, ByteSlice input, boolean doDocComment, DiagnosticReporter diagnosticReporter) {
             super(_module != null ? _module.srcfile.toChars() : null, toBytePtr(input), 0, input.getLength(), doDocComment, false, diagnosticReporter);
             this.scanloc = loc.copy();
             if ((!(writeMixin(input, this.scanloc)) && loc.filename != null))
@@ -7765,7 +7766,7 @@ public class parse {
             this.linkage = LINK.d;
         }
 
-        public  ParserASTCodegen(Module _module, ByteSlice input, boolean doDocComment, DiagnosticReporter diagnosticReporter) {
+        public  ParserASTCodegen(dmodule.Module _module, ByteSlice input, boolean doDocComment, DiagnosticReporter diagnosticReporter) {
             super(_module != null ? _module.srcfile.toChars() : null, toBytePtr(input), 0, input.getLength(), doDocComment, false, diagnosticReporter);
             this.mod = _module;
             this.linkage = LINK.d;
@@ -12288,10 +12289,10 @@ public class parse {
                                     DArray<Statement> as = new DArray<Statement>();
                                     (as).reserve((a).length);
                                     {
-                                        int __key817 = 0;
-                                        int __limit818 = (a).length;
-                                        for (; __key817 < __limit818;__key817 += 1) {
-                                            int i = __key817;
+                                        int __key835 = 0;
+                                        int __limit836 = (a).length;
+                                        for (; __key835 < __limit836;__key835 += 1) {
+                                            int i = __key835;
                                             Dsymbol d = (a).get(i);
                                             s = new ExpStatement(loc, d);
                                             (as).push(s);

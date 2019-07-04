@@ -11,27 +11,58 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.access.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.aliasthis.*;
+import static org.dlang.dmd.arrayop.*;
+import static org.dlang.dmd.arraytypes.*;
+import static org.dlang.dmd.astcodegen.*;
 import static org.dlang.dmd.attrib.*;
+import static org.dlang.dmd.canthrow.*;
 import static org.dlang.dmd.ctorflow.*;
+import static org.dlang.dmd.dcast.*;
 import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
+import static org.dlang.dmd.delegatize.*;
 import static org.dlang.dmd.denum.*;
 import static org.dlang.dmd.dimport.*;
+import static org.dlang.dmd.dinterpret.*;
+import static org.dlang.dmd.dmangle.*;
 import static org.dlang.dmd.dmodule.*;
 import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dstruct.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.dtemplate.*;
 import static org.dlang.dmd.errors.*;
+import static org.dlang.dmd.escape.*;
 import static org.dlang.dmd.expression.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.hdrgen.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
+import static org.dlang.dmd.imphint.*;
+import static org.dlang.dmd.init.*;
+import static org.dlang.dmd.initsem.*;
+import static org.dlang.dmd.inline.*;
 import static org.dlang.dmd.intrange.*;
 import static org.dlang.dmd.mtype.*;
 import static org.dlang.dmd.nspace.*;
+import static org.dlang.dmd.opover.*;
+import static org.dlang.dmd.optimize.*;
 import static org.dlang.dmd.parse.*;
+import static org.dlang.dmd.safe.*;
+import static org.dlang.dmd.semantic2.*;
+import static org.dlang.dmd.semantic3.*;
+import static org.dlang.dmd.sideeffect.*;
+import static org.dlang.dmd.target.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.traits.*;
+import static org.dlang.dmd.typesem.*;
+import static org.dlang.dmd.typinf.*;
+import static org.dlang.dmd.utf.*;
+import static org.dlang.dmd.utils.*;
 import static org.dlang.dmd.visitor.*;
 
 public class expressionsem {
@@ -44,10 +75,10 @@ public class expressionsem {
         if (exps == null)
             return false;
         {
-            Slice<Expression> __r1270 = (exps).opSlice().copy();
-            int __key1271 = 0;
-            for (; __key1271 < __r1270.getLength();__key1271 += 1) {
-                Expression ex = __r1270.get(__key1271);
+            Slice<Expression> __r1354 = (exps).opSlice().copy();
+            int __key1355 = 0;
+            for (; __key1355 < __r1354.getLength();__key1355 += 1) {
+                Expression ex = __r1354.get(__key1355);
                 if (!(ex != null))
                     continue;
                 Scope sc2 = (sc).startCTFE();
@@ -128,12 +159,12 @@ public class expressionsem {
         AggregateDeclaration ad = isAggregate(ae.e1.type);
         Dsymbol slice = search_function(ad, Id.slice);
         {
-            Slice<Expression> __r1273 = (ae.arguments).opSlice().copy();
-            int __key1272 = 0;
+            Slice<Expression> __r1357 = (ae.arguments).opSlice().copy();
+            int __key1356 = 0;
         L_outer1:
-            for (; __key1272 < __r1273.getLength();__key1272 += 1) {
-                Expression e = __r1273.get(__key1272);
-                int i = __key1272;
+            for (; __key1356 < __r1357.getLength();__key1356 += 1) {
+                Expression e = __r1357.get(__key1356);
+                int i = __key1356;
                 if (i == 0)
                     pe0.set(0, extractOpDollarSideEffect(sc, ae));
                 if (((e.op & 0xFF) == 231 && !((slice != null && slice.isTemplateDeclaration() != null))))
@@ -200,10 +231,10 @@ public class expressionsem {
         sym.parent = (sc).scopesym;
         sc = (sc).push(sym);
         {
-            int __key1274 = 0;
-            int __limit1275 = 2;
-            for (; __key1274 < __limit1275;__key1274 += 1) {
-                int i = __key1274;
+            int __key1358 = 0;
+            int __limit1359 = 2;
+            for (; __key1358 < __limit1359;__key1358 += 1) {
+                int i = __key1358;
                 Expression e = i == 0 ? ie.lwr : ie.upr;
                 e = expressionSemantic(e, sc);
                 e = resolveProperties(sc, e);
@@ -230,10 +261,10 @@ public class expressionsem {
         if (exps != null)
         {
             {
-                Slice<Expression> __r1276 = (exps).opSlice().copy();
-                int __key1277 = 0;
-                for (; __key1277 < __r1276.getLength();__key1277 += 1) {
-                    Expression e = __r1276.get(__key1277);
+                Slice<Expression> __r1360 = (exps).opSlice().copy();
+                int __key1361 = 0;
+                for (; __key1361 < __r1360.getLength();__key1361 += 1) {
+                    Expression e = __r1360.get(__key1361);
                     if (e != null)
                     {
                         Expression e2 = expressionSemantic(e, sc);
@@ -540,10 +571,10 @@ public class expressionsem {
         /*Los:*/
             assert(os != null);
             {
-                Slice<Dsymbol> __r1278 = os.a.opSlice().copy();
-                int __key1279 = 0;
-                for (; __key1279 < __r1278.getLength();__key1279 += 1) {
-                    Dsymbol s = __r1278.get(__key1279);
+                Slice<Dsymbol> __r1362 = os.a.opSlice().copy();
+                int __key1363 = 0;
+                for (; __key1363 < __r1362.getLength();__key1363 += 1) {
+                    Dsymbol s = __r1362.get(__key1363);
                     fd = s.isFuncDeclaration();
                     td = s.isTemplateDeclaration();
                     if (fd != null)
@@ -736,7 +767,7 @@ public class expressionsem {
                 }
             }
             {
-                Package pkg = s.isPackage();
+                dmodule.Package pkg = s.isPackage();
                 if (pkg != null)
                 {
                     ScopeExp ie = new ScopeExp(loc, pkg);
@@ -744,7 +775,7 @@ public class expressionsem {
                 }
             }
             {
-                Module mod = s.isModule();
+                dmodule.Module mod = s.isModule();
                 if (mod != null)
                 {
                     ScopeExp ie = new ScopeExp(loc, mod);
@@ -1369,11 +1400,11 @@ public class expressionsem {
         byte wildmatch = (tthis != null && !(isCtorCall)) ? (byte)(tthis.deduceWild(tf, false) & 0xFF) : (byte)0;
         boolean done = false;
         {
-            int __key1282 = 0;
-            int __limit1283 = n;
+            int __key1366 = 0;
+            int __limit1367 = n;
         L_outer3:
-            for (; __key1282 < __limit1283;__key1282 += 1) {
-                int i = __key1282;
+            for (; __key1366 < __limit1367;__key1366 += 1) {
+                int i = __key1366;
                 Expression arg = i < nargs.value ? (arguments).get(i) : null;
                 if (i < nparams.value)
                 {
@@ -1433,10 +1464,10 @@ public class expressionsem {
                                     Type tret = p.isLazyArray();
                                     DArray<Expression> elements = new DArray<Expression>(nargs.value - i);
                                     {
-                                        int __key1284 = 0;
-                                        int __limit1285 = (elements).length;
-                                        for (; __key1284 < __limit1285;__key1284 += 1) {
-                                            int u = __key1284;
+                                        int __key1368 = 0;
+                                        int __limit1369 = (elements).length;
+                                        for (; __key1368 < __limit1369;__key1368 += 1) {
+                                            int u = __key1368;
                                             Expression a = (arguments).get(i + u);
                                             if ((tret != null && (a.implicitConvTo(tret)) != 0))
                                             {
@@ -1458,10 +1489,10 @@ public class expressionsem {
                                 case 7:
                                     DArray<Expression> args = new DArray<Expression>(nargs.value - i);
                                     {
-                                        int __key1286 = i;
-                                        int __limit1287 = nargs.value;
-                                        for (; __key1286 < __limit1287;__key1286 += 1) {
-                                            int u_1 = __key1286;
+                                        int __key1370 = i;
+                                        int __limit1371 = nargs.value;
+                                        for (; __key1370 < __limit1371;__key1370 += 1) {
+                                            int u_1 = __key1370;
                                             args.set(u_1 - i, (arguments).get(u_1));
                                         }
                                     }
@@ -1556,11 +1587,11 @@ public class expressionsem {
         Expression firstArg = ((((((tf.next != null && (tf.next.ty & 0xFF) == ENUMTY.Tvoid) || isCtorCall) && tthis != null) && tthis.isMutable()) && (tthis.toBasetype().ty & 0xFF) == ENUMTY.Tstruct) && tthis.hasPointers()) ? ethis : null;
         assert(nargs.value >= nparams.value);
         {
-            Slice<Expression> __r1289 = (arguments).opSlice(0, nargs.value).copy();
-            int __key1288 = 0;
-            for (; __key1288 < __r1289.getLength();__key1288 += 1) {
-                Expression arg = __r1289.get(__key1288);
-                int i = __key1288;
+            Slice<Expression> __r1373 = (arguments).opSlice(0, nargs.value).copy();
+            int __key1372 = 0;
+            for (; __key1372 < __r1373.getLength();__key1372 += 1) {
+                Expression arg = __r1373.get(__key1372);
+                int i = __key1372;
                 assert(arg != null);
                 if (i < nparams.value)
                 {
@@ -1853,8 +1884,8 @@ public class expressionsem {
         return (err || olderrors != global.errors);
     }
 
-    public static Package resolveIsPackage(Dsymbol sym) {
-        Package pkg = null;
+    public static dmodule.Package resolveIsPackage(Dsymbol sym) {
+        dmodule.Package pkg = null;
         {
             Import imp = sym.isImport();
             if (imp != null)
@@ -1874,7 +1905,7 @@ public class expressionsem {
         return pkg;
     }
 
-    public static Module loadStdMath() {
+    public static dmodule.Module loadStdMath() {
         if (!(expressionsem.loadStdMathimpStdMath != null))
         {
             DArray<Identifier> a = new DArray<Identifier>();
@@ -2913,10 +2944,10 @@ public class expressionsem {
                         ClassDeclaration c = cd;
                         for (; c != null;c = c.baseClass){
                             {
-                                Slice<VarDeclaration> __r1290 = c.fields.opSlice().copy();
-                                int __key1291 = 0;
-                                for (; __key1291 < __r1290.getLength();__key1291 += 1) {
-                                    VarDeclaration v = __r1290.get(__key1291);
+                                Slice<VarDeclaration> __r1374 = c.fields.opSlice().copy();
+                                int __key1375 = 0;
+                                for (; __key1375 < __r1374.getLength();__key1375 += 1) {
+                                    VarDeclaration v = __r1374.get(__key1375);
                                     if (((((v.inuse) != 0 || v._scope == null) || v._init == null) || v._init.isVoidInitializer() != null))
                                         continue;
                                     v.inuse++;
@@ -3008,10 +3039,10 @@ public class expressionsem {
                     if (global.params.vsafe)
                     {
                         {
-                            Slice<Expression> __r1292 = (exp.arguments).opSlice().copy();
-                            int __key1293 = 0;
-                            for (; __key1293 < __r1292.getLength();__key1293 += 1) {
-                                Expression arg = __r1292.get(__key1293);
+                            Slice<Expression> __r1376 = (exp.arguments).opSlice().copy();
+                            int __key1377 = 0;
+                            for (; __key1377 < __r1376.getLength();__key1377 += 1) {
+                                Expression arg = __r1376.get(__key1377);
                                 if ((arg != null && checkNewEscape(this.sc, arg, false)))
                                     this.setError();
                                     return ;
@@ -3648,10 +3679,10 @@ public class expressionsem {
                     public FuncDeclaration invoke(Loc loc, Scope sc, OverloadSet os, DArray<RootObject> tiargs, Type tthis, DArray<Expression> arguments){
                         FuncDeclaration f = null;
                         {
-                            Slice<Dsymbol> __r1294 = os.a.opSlice().copy();
-                            int __key1295 = 0;
-                            for (; __key1295 < __r1294.getLength();__key1295 += 1) {
-                                Dsymbol s = __r1294.get(__key1295);
+                            Slice<Dsymbol> __r1378 = os.a.opSlice().copy();
+                            int __key1379 = 0;
+                            for (; __key1379 < __r1378.getLength();__key1379 += 1) {
+                                Dsymbol s = __r1378.get(__key1379);
                                 if ((tiargs != null && s.isFuncDeclaration() != null))
                                     continue;
                                 {
@@ -3827,10 +3858,10 @@ public class expressionsem {
                             return ;
                         }
                         {
-                            Slice<FieldInit> __r1296 = (this.sc).ctorflow.fieldinit.copy();
-                            int __key1297 = 0;
-                            for (; __key1297 < __r1296.getLength();__key1297 += 1) {
-                                FieldInit field = __r1296.get(__key1297).copy();
+                            Slice<FieldInit> __r1380 = (this.sc).ctorflow.fieldinit.copy();
+                            int __key1381 = 0;
+                            for (; __key1381 < __r1380.getLength();__key1381 += 1) {
+                                FieldInit field = __r1380.get(__key1381).copy();
                                 field.csx |= 65;
                             }
                         }
@@ -4354,7 +4385,7 @@ public class expressionsem {
                         Dsymbol sym = e.targ.toDsymbol(this.sc);
                         if (sym == null)
                             /*goto Lno*/throw Dispatch1.INSTANCE;
-                        Package p = resolveIsPackage(sym);
+                        dmodule.Package p = resolveIsPackage(sym);
                         if (p == null)
                             /*goto Lno*/throw Dispatch1.INSTANCE;
                         if (((e.tok2 & 0xFF) == 180 && p.isModule() != null))
@@ -4800,7 +4831,7 @@ public class expressionsem {
             if (global.params.moduleDeps != null)
             {
                 OutBuffer ob = global.params.moduleDeps;
-                Module imod = (this.sc).instantiatingModule();
+                dmodule.Module imod = (this.sc).instantiatingModule();
                 if (!(global.params.moduleDepsFile.getLength() != 0))
                     (ob).writestring( new ByteSlice("depsFile "));
                 (ob).writestring(imod.toPrettyChars(false));
@@ -5942,10 +5973,10 @@ public class expressionsem {
             if ((exp_ref.value.e1.op & 0xFF) == 47)
             {
                 {
-                    int __key1300 = 0;
-                    int __limit1301 = exp_ref.value.dim;
-                    for (; __key1300 < __limit1301;__key1300 += 1) {
-                        int i = __key1300;
+                    int __key1384 = 0;
+                    int __limit1385 = exp_ref.value.dim;
+                    for (; __key1384 < __limit1385;__key1384 += 1) {
+                        int i = __key1384;
                         (res ? 1 : 0) |= (checkElem.invoke(((ArrayLiteralExp)exp_ref.value.e1).getElement(i)) ? 1 : 0);
                     }
                 }
@@ -7508,7 +7539,7 @@ public class expressionsem {
                     exp.type = exp.e1.type;
                     if ((exp.op & 0xFF) == 95)
                         exp.e1.type = exp.e1.type.nextOf().mutableOf().arrayOf();
-                    this.result = arrayOp(exp, this.sc);
+                    this.result = arrayOp((BinExp)exp, this.sc);
                     return ;
                 }
                 if (checkNonAssignmentArrayOp(exp.e2, (!((exp.memset & MemorySet.blockAssign) != 0) && (exp.op & 0xFF) == 90)))
@@ -8443,7 +8474,7 @@ public class expressionsem {
                 this.result = e;
                 return ;
             }
-            Module mmath = loadStdMath();
+            dmodule.Module mmath = loadStdMath();
             if (!(mmath != null))
             {
                 e.error(new BytePtr("`%s` requires `std.math` for `^^` operators"), e.toChars());
@@ -9537,7 +9568,7 @@ public class expressionsem {
             }
             if (s != null)
             {
-                Package p = s.isPackage();
+                dmodule.Package p = s.isPackage();
                 if ((p != null && checkAccess(exp.loc, sc, p)))
                 {
                     s = null;

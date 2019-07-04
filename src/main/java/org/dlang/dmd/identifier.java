@@ -12,6 +12,10 @@ import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.id.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.utf.*;
+import static org.dlang.dmd.utils.*;
 
 public class identifier {
     static Identifier anonymousanonymous;

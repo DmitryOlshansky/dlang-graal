@@ -11,12 +11,22 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.argtypes.*;
+import static org.dlang.dmd.cppmangle.*;
+import static org.dlang.dmd.cppmanglewin.*;
 import static org.dlang.dmd.dclass.*;
+import static org.dlang.dmd.declaration.*;
 import static org.dlang.dmd.dstruct.*;
 import static org.dlang.dmd.dsymbol.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.id.*;
+import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.typesem.*;
+import static org.dlang.dmd.utils.*;
 
 public class target {
 

@@ -11,12 +11,37 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.arraytypes.*;
+import static org.dlang.dmd.astcodegen.*;
+import static org.dlang.dmd.builtin.*;
 import static org.dlang.dmd.cli.*;
+import static org.dlang.dmd.compiler.*;
+import static org.dlang.dmd.cond.*;
+import static org.dlang.dmd.console.*;
+import static org.dlang.dmd.dinifile.*;
+import static org.dlang.dmd.dinterpret.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.doc.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
+import static org.dlang.dmd.errors.*;
+import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.filecache.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.gluelayer.*;
+import static org.dlang.dmd.hdrgen.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
+import static org.dlang.dmd.inline.*;
+import static org.dlang.dmd.json.*;
 import static org.dlang.dmd.lib.*;
+import static org.dlang.dmd.link.*;
+import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.objc.*;
+import static org.dlang.dmd.semantic2.*;
+import static org.dlang.dmd.semantic3.*;
+import static org.dlang.dmd.target.*;
+import static org.dlang.dmd.utils.*;
 
 public class mars {
 
@@ -142,10 +167,10 @@ public class mars {
                                     public ByteSlice invoke(Slice<ByteSlice> params){
                                         ByteSlice s = new ByteSlice();
                                         {
-                                            Slice<ByteSlice> __r1430 = params.copy();
-                                            int __key1431 = 0;
-                                            for (; __key1431 < __r1430.getLength();__key1431 += 1) {
-                                                ByteSlice n = __r1430.get(__key1431).copy();
+                                            Slice<ByteSlice> __r1514 = params.copy();
+                                            int __key1515 = 0;
+                                            for (; __key1515 < __r1514.getLength();__key1515 += 1) {
+                                                ByteSlice n = __r1514.get(__key1515).copy();
                                                 s.append( new ByteSlice("\n                if (params.").concat(n).concat( new ByteSlice("Usage)\n                    return printHelpUsage(CLIUsage.")).concat(n).concat( new ByteSlice("Usage);\n            ")));
                                             }
                                         }
@@ -194,19 +219,19 @@ public class mars {
                                 reconcileCommands(params, files.length);
                                 if (params.versionids != null)
                                 {
-                                    Slice<BytePtr> __r1432 = (params.versionids).opSlice().copy();
-                                    int __key1433 = 0;
-                                    for (; __key1433 < __r1432.getLength();__key1433 += 1) {
-                                        BytePtr charz = pcopy(__r1432.get(__key1433));
+                                    Slice<BytePtr> __r1516 = (params.versionids).opSlice().copy();
+                                    int __key1517 = 0;
+                                    for (; __key1517 < __r1516.getLength();__key1517 += 1) {
+                                        BytePtr charz = pcopy(__r1516.get(__key1517));
                                         VersionCondition.addGlobalIdent(charz.slice(0,strlen(charz)));
                                     }
                                 }
                                 if (params.debugids != null)
                                 {
-                                    Slice<BytePtr> __r1434 = (params.debugids).opSlice().copy();
-                                    int __key1435 = 0;
-                                    for (; __key1435 < __r1434.getLength();__key1435 += 1) {
-                                        BytePtr charz = pcopy(__r1434.get(__key1435));
+                                    Slice<BytePtr> __r1518 = (params.debugids).opSlice().copy();
+                                    int __key1519 = 0;
+                                    for (; __key1519 < __r1518.getLength();__key1519 += 1) {
+                                        BytePtr charz = pcopy(__r1518.get(__key1519));
                                         DebugCondition.addGlobalIdent(charz.slice(0,strlen(charz)));
                                     }
                                 }
@@ -233,10 +258,10 @@ public class mars {
                                         if (imppath != null)
                                         {
                                             {
-                                                Slice<BytePtr> __r1436 = (imppath).opSlice().copy();
-                                                int __key1437 = 0;
-                                                for (; __key1437 < __r1436.getLength();__key1437 += 1) {
-                                                    BytePtr path = pcopy(__r1436.get(__key1437));
+                                                Slice<BytePtr> __r1520 = (imppath).opSlice().copy();
+                                                int __key1521 = 0;
+                                                for (; __key1521 < __r1520.getLength();__key1521 += 1) {
+                                                    BytePtr path = pcopy(__r1520.get(__key1521));
                                                     DArray<BytePtr> a = FileName.splitPath(path);
                                                     if (a != null)
                                                     {
@@ -260,14 +285,14 @@ public class mars {
                                     global.filePath = buildPath.invoke(params.fileImppath);
                                     if (params.addMain)
                                         files.push(new BytePtr("__main.d"));
-                                    DArray<Module> modules = createModules(files, libmodules).copy();
+                                    DArray<dmodule.Module> modules = createModules(files, libmodules).copy();
                                     try {
                                         boolean ASYNCREAD = false;
                                         {
-                                            Slice<Module> __r1438 = modules.opSlice().copy();
-                                            int __key1439 = 0;
-                                            for (; __key1439 < __r1438.getLength();__key1439 += 1) {
-                                                Module m = __r1438.get(__key1439);
+                                            Slice<dmodule.Module> __r1522 = modules.opSlice().copy();
+                                            int __key1523 = 0;
+                                            for (; __key1523 < __r1522.getLength();__key1523 += 1) {
+                                                dmodule.Module m = __r1522.get(__key1523);
                                                 if ((params.addMain && __equals(m.srcfile.asString(),  new ByteSlice("__main.d"))))
                                                 {
                                                     ByteSlice data = arraydup( new ByteSlice("int main(){return 0;}\u0000\u0000")).copy();
@@ -281,10 +306,10 @@ public class mars {
                                             }
                                         }
                                         {
-                                            Slice<Module> __r1440 = modules.opSlice().copy();
-                                            int __key1441 = 0;
-                                            for (; __key1441 < __r1440.getLength();__key1441 += 1) {
-                                                Module m = __r1440.get(__key1441);
+                                            Slice<dmodule.Module> __r1524 = modules.opSlice().copy();
+                                            int __key1525 = 0;
+                                            for (; __key1525 < __r1524.getLength();__key1525 += 1) {
+                                                dmodule.Module m = __r1524.get(__key1525);
                                                 m.read(Loc.initial);
                                             }
                                         }
@@ -294,7 +319,7 @@ public class mars {
                                             int filei = 0;
                                             int modi = 0;
                                             for (; filei < filecount;comma(filei++, modi++)){
-                                                Module m = modules.get(modi);
+                                                dmodule.Module m = modules.get(modi);
                                                 if (params.verbose)
                                                     message(new BytePtr("parse     %s"), m.toChars());
                                                 if (!(Module.rootModule != null))
@@ -349,10 +374,10 @@ public class mars {
                                         if (params.doHdrGeneration)
                                         {
                                             {
-                                                Slice<Module> __r1442 = modules.opSlice().copy();
-                                                int __key1443 = 0;
-                                                for (; __key1443 < __r1442.getLength();__key1443 += 1) {
-                                                    Module m = __r1442.get(__key1443);
+                                                Slice<dmodule.Module> __r1526 = modules.opSlice().copy();
+                                                int __key1527 = 0;
+                                                for (; __key1527 < __r1526.getLength();__key1527 += 1) {
+                                                    dmodule.Module m = __r1526.get(__key1527);
                                                     if (m.isHdrFile)
                                                         continue;
                                                     if (params.verbose)
@@ -364,10 +389,10 @@ public class mars {
                                         if ((global.errors) != 0)
                                             fatal();
                                         {
-                                            Slice<Module> __r1444 = modules.opSlice().copy();
-                                            int __key1445 = 0;
-                                            for (; __key1445 < __r1444.getLength();__key1445 += 1) {
-                                                Module m = __r1444.get(__key1445);
+                                            Slice<dmodule.Module> __r1528 = modules.opSlice().copy();
+                                            int __key1529 = 0;
+                                            for (; __key1529 < __r1528.getLength();__key1529 += 1) {
+                                                dmodule.Module m = __r1528.get(__key1529);
                                                 if (params.verbose)
                                                     message(new BytePtr("importall %s"), m.toChars());
                                                 m.importAll(null);
@@ -377,10 +402,10 @@ public class mars {
                                             fatal();
                                         backend_init();
                                         {
-                                            Slice<Module> __r1446 = modules.opSlice().copy();
-                                            int __key1447 = 0;
-                                            for (; __key1447 < __r1446.getLength();__key1447 += 1) {
-                                                Module m = __r1446.get(__key1447);
+                                            Slice<dmodule.Module> __r1530 = modules.opSlice().copy();
+                                            int __key1531 = 0;
+                                            for (; __key1531 < __r1530.getLength();__key1531 += 1) {
+                                                dmodule.Module m = __r1530.get(__key1531);
                                                 if (params.verbose)
                                                     message(new BytePtr("semantic  %s"), m.toChars());
                                                 dsymbolSemantic(m, null);
@@ -399,10 +424,10 @@ public class mars {
                                             }
                                         }
                                         {
-                                            Slice<Module> __r1448 = modules.opSlice().copy();
-                                            int __key1449 = 0;
-                                            for (; __key1449 < __r1448.getLength();__key1449 += 1) {
-                                                Module m = __r1448.get(__key1449);
+                                            Slice<dmodule.Module> __r1532 = modules.opSlice().copy();
+                                            int __key1533 = 0;
+                                            for (; __key1533 < __r1532.getLength();__key1533 += 1) {
+                                                dmodule.Module m = __r1532.get(__key1533);
                                                 if (params.verbose)
                                                     message(new BytePtr("semantic2 %s"), m.toChars());
                                                 semantic2(m, null);
@@ -412,10 +437,10 @@ public class mars {
                                         if ((global.errors) != 0)
                                             fatal();
                                         {
-                                            Slice<Module> __r1450 = modules.opSlice().copy();
-                                            int __key1451 = 0;
-                                            for (; __key1451 < __r1450.getLength();__key1451 += 1) {
-                                                Module m = __r1450.get(__key1451);
+                                            Slice<dmodule.Module> __r1534 = modules.opSlice().copy();
+                                            int __key1535 = 0;
+                                            for (; __key1535 < __r1534.getLength();__key1535 += 1) {
+                                                dmodule.Module m = __r1534.get(__key1535);
                                                 if (params.verbose)
                                                     message(new BytePtr("semantic3 %s"), m.toChars());
                                                 semantic3(m, null);
@@ -426,7 +451,7 @@ public class mars {
                                             {
                                                 int i = 0;
                                                 for (; i < compiledImports.length;i++){
-                                                    Module m = compiledImports.get(i);
+                                                    dmodule.Module m = compiledImports.get(i);
                                                     assert(m.isRoot());
                                                     if (params.verbose)
                                                         message(new BytePtr("semantic3 %s"), m.toChars());
@@ -441,10 +466,10 @@ public class mars {
                                         if (params.useInline)
                                         {
                                             {
-                                                Slice<Module> __r1452 = modules.opSlice().copy();
-                                                int __key1453 = 0;
-                                                for (; __key1453 < __r1452.getLength();__key1453 += 1) {
-                                                    Module m = __r1452.get(__key1453);
+                                                Slice<dmodule.Module> __r1536 = modules.opSlice().copy();
+                                                int __key1537 = 0;
+                                                for (; __key1537 < __r1536.getLength();__key1537 += 1) {
+                                                    dmodule.Module m = __r1536.get(__key1537);
                                                     if (params.verbose)
                                                         message(new BytePtr("inline scan %s"), m.toChars());
                                                     inlineScanModule(m);
@@ -458,11 +483,11 @@ public class mars {
                                             if (ob != null)
                                             {
                                                 {
-                                                    int __key1454 = 1;
-                                                    int __limit1455 = modules.get(0).aimports.length;
-                                                    for (; __key1454 < __limit1455;__key1454 += 1) {
-                                                        int i = __key1454;
-                                                        semantic3OnDependencies((__dop1456.get(i)));
+                                                    int __key1538 = 1;
+                                                    int __limit1539 = modules.get(0).aimports.length;
+                                                    for (; __key1538 < __limit1539;__key1538 += 1) {
+                                                        int i = __key1538;
+                                                        semantic3OnDependencies((__dop1540.get(i)));
                                                     }
                                                 }
                                                 ByteSlice data = (ob).peekSlice().copy();
@@ -484,10 +509,10 @@ public class mars {
                                             library = Library.factory();
                                             library.setFilename(params.objdir, params.libname);
                                             {
-                                                Slice<BytePtr> __r1457 = libmodules.opSlice().copy();
-                                                int __key1458 = 0;
-                                                for (; __key1458 < __r1457.getLength();__key1458 += 1) {
-                                                    BytePtr p = pcopy(__r1457.get(__key1458));
+                                                Slice<BytePtr> __r1541 = libmodules.opSlice().copy();
+                                                int __key1542 = 0;
+                                                for (; __key1542 < __r1541.getLength();__key1542 += 1) {
+                                                    BytePtr p = pcopy(__r1541.get(__key1542));
                                                     library.addObject(p, new ByteSlice());
                                                 }
                                             }
@@ -499,10 +524,10 @@ public class mars {
                                         if ((!((global.errors) != 0) && params.doDocComments))
                                         {
                                             {
-                                                Slice<Module> __r1459 = modules.opSlice().copy();
-                                                int __key1460 = 0;
-                                                for (; __key1460 < __r1459.getLength();__key1460 += 1) {
-                                                    Module m = __r1459.get(__key1460);
+                                                Slice<dmodule.Module> __r1543 = modules.opSlice().copy();
+                                                int __key1544 = 0;
+                                                for (; __key1544 < __r1543.getLength();__key1544 += 1) {
+                                                    dmodule.Module m = __r1543.get(__key1544);
                                                     gendocfile(m);
                                                 }
                                             }
@@ -510,10 +535,10 @@ public class mars {
                                         if (params.vcg_ast)
                                         {
                                             {
-                                                Slice<Module> __r1461 = modules.opSlice().copy();
-                                                int __key1462 = 0;
-                                                for (; __key1462 < __r1461.getLength();__key1462 += 1) {
-                                                    Module mod = __r1461.get(__key1462);
+                                                Slice<dmodule.Module> __r1545 = modules.opSlice().copy();
+                                                int __key1546 = 0;
+                                                for (; __key1546 < __r1545.getLength();__key1546 += 1) {
+                                                    dmodule.Module mod = __r1545.get(__key1546);
                                                     OutBuffer buf = new OutBuffer(null, 0, 0, 0, false, false).copy();
                                                     try {
                                                         buf.doindent = true;
@@ -531,12 +556,12 @@ public class mars {
                                         }
                                         else if (params.oneobj)
                                         {
-                                            Module firstm = null;
+                                            dmodule.Module firstm = null;
                                             {
-                                                Slice<Module> __r1463 = modules.opSlice().copy();
-                                                int __key1464 = 0;
-                                                for (; __key1464 < __r1463.getLength();__key1464 += 1) {
-                                                    Module m = __r1463.get(__key1464);
+                                                Slice<dmodule.Module> __r1547 = modules.opSlice().copy();
+                                                int __key1548 = 0;
+                                                for (; __key1548 < __r1547.getLength();__key1548 += 1) {
+                                                    dmodule.Module m = __r1547.get(__key1548);
                                                     if (m.isHdrFile)
                                                         continue;
                                                     if (!(firstm != null))
@@ -559,10 +584,10 @@ public class mars {
                                         else
                                         {
                                             {
-                                                Slice<Module> __r1465 = modules.opSlice().copy();
-                                                int __key1466 = 0;
-                                                for (; __key1466 < __r1465.getLength();__key1466 += 1) {
-                                                    Module m = __r1465.get(__key1466);
+                                                Slice<dmodule.Module> __r1549 = modules.opSlice().copy();
+                                                int __key1550 = 0;
+                                                for (; __key1550 < __r1549.getLength();__key1550 += 1) {
+                                                    dmodule.Module m = __r1549.get(__key1550);
                                                     if (m.isHdrFile)
                                                         continue;
                                                     if (params.verbose)
@@ -599,10 +624,10 @@ public class mars {
                                                 {
                                                     status = runProgram();
                                                     {
-                                                        Slice<Module> __r1467 = modules.opSlice().copy();
-                                                        int __key1468 = 0;
-                                                        for (; __key1468 < __r1467.getLength();__key1468 += 1) {
-                                                            Module m = __r1467.get(__key1468);
+                                                        Slice<dmodule.Module> __r1551 = modules.opSlice().copy();
+                                                        int __key1552 = 0;
+                                                        for (; __key1552 < __r1551.getLength();__key1552 += 1) {
+                                                            dmodule.Module m = __r1551.get(__key1552);
                                                             m.deleteObjFile();
                                                             if (params.oneobj)
                                                                 break;
@@ -673,7 +698,7 @@ public class mars {
         throw new AssertionError("Unreachable code!");
     }
 
-    public static void generateJson(DArray<Module> modules) {
+    public static void generateJson(DArray<dmodule.Module> modules) {
         OutBuffer buf = new OutBuffer();
         try {
             json_generate(buf, modules);
@@ -782,10 +807,10 @@ public class mars {
 
     public static BytePtr parse_arch_arg(DArray<BytePtr> args, BytePtr arch) {
         {
-            Slice<BytePtr> __r1469 = (args).opSlice().copy();
-            int __key1470 = 0;
-            for (; __key1470 < __r1469.getLength();__key1470 += 1) {
-                BytePtr p = pcopy(__r1469.get(__key1470));
+            Slice<BytePtr> __r1553 = (args).opSlice().copy();
+            int __key1554 = 0;
+            for (; __key1554 < __r1553.getLength();__key1554 += 1) {
+                BytePtr p = pcopy(__r1553.get(__key1554));
                 if ((p.get(0) & 0xFF) == 45)
                 {
                     if (((strcmp(p.plus(1),  new ByteSlice("m32")) == 0 || strcmp(p.plus(1),  new ByteSlice("m32mscoff")) == 0) || strcmp(p.plus(1),  new ByteSlice("m64")) == 0))
@@ -801,10 +826,10 @@ public class mars {
     public static ByteSlice parse_conf_arg(DArray<BytePtr> args) {
         ByteSlice conf = new ByteSlice();
         {
-            Slice<BytePtr> __r1471 = (args).opSlice().copy();
-            int __key1472 = 0;
-            for (; __key1472 < __r1471.getLength();__key1472 += 1) {
-                BytePtr p = pcopy(__r1471.get(__key1472));
+            Slice<BytePtr> __r1555 = (args).opSlice().copy();
+            int __key1556 = 0;
+            for (; __key1556 < __r1555.getLength();__key1556 += 1) {
+                BytePtr p = pcopy(__r1555.get(__key1556));
                 ByteSlice arg = toDString(p).copy();
                 if (((arg.getLength()) != 0 && (arg.get(0) & 0xFF) == 45))
                 {
@@ -960,10 +985,10 @@ public class mars {
         {
             OutBuffer buf = new OutBuffer();
             {
-                Slice<Identifier> __r1473 = (global.versionids).opSlice().copy();
-                int __key1474 = 0;
-                for (; __key1474 < __r1473.getLength();__key1474 += 1) {
-                    Identifier str = __r1473.get(__key1474);
+                Slice<Identifier> __r1557 = (global.versionids).opSlice().copy();
+                int __key1558 = 0;
+                for (; __key1558 < __r1557.getLength();__key1558 += 1) {
+                    Identifier str = __r1557.get(__key1558);
                     buf.writeByte(32);
                     buf.writestring(str.toChars());
                 }
@@ -987,16 +1012,16 @@ public class mars {
                     environment.reset(1);
                     OutBuffer buf = new OutBuffer();
                     {
-                        Slice<BytePtr> __r1475 = dflags.opSlice().copy();
-                        int __key1476 = 0;
-                        for (; __key1476 < __r1475.getLength();__key1476 += 1) {
-                            BytePtr flag = pcopy(__r1475.get(__key1476));
+                        Slice<BytePtr> __r1559 = dflags.opSlice().copy();
+                        int __key1560 = 0;
+                        for (; __key1560 < __r1559.getLength();__key1560 += 1) {
+                            BytePtr flag = pcopy(__r1559.get(__key1560));
                             boolean needsQuoting = false;
                             {
-                                ByteSlice __r1477 = flag.slice(0,strlen(flag)).copy();
-                                int __key1478 = 0;
-                                for (; __key1478 < __r1477.getLength();__key1478 += 1) {
-                                    byte c = __r1477.get(__key1478);
+                                ByteSlice __r1561 = flag.slice(0,strlen(flag)).copy();
+                                int __key1562 = 0;
+                                for (; __key1562 < __r1561.getLength();__key1562 += 1) {
+                                    byte c = __r1561.get(__key1562);
                                     if (!(((isalnum((c & 0xFF))) != 0 || (c & 0xFF) == 95)))
                                     {
                                         needsQuoting = true;
@@ -1075,10 +1100,10 @@ public class mars {
         Function2<BytePtr,ByteSlice,Boolean> startsWith = new Function2<BytePtr,ByteSlice,Boolean>(){
             public Boolean invoke(BytePtr p, ByteSlice s){
                 {
-                    ByteSlice __r1479 = s.copy();
-                    int __key1480 = 0;
-                    for (; __key1480 < __r1479.getLength();__key1480 += 1) {
-                        byte c = __r1479.get(__key1480);
+                    ByteSlice __r1563 = s.copy();
+                    int __key1564 = 0;
+                    for (; __key1564 < __r1563.getLength();__key1564 += 1) {
+                        byte c = __r1563.get(__key1564);
                         if ((c & 0xFF) != (p.get() & 0xFF))
                             return false;
                         p.plusAssign(1);
@@ -1130,10 +1155,10 @@ public class mars {
                         public ByteSlice invoke(){
                             ByteSlice buf =  new ByteSlice("case \"all\":").copy();
                             {
-                                Slice<Usage.Feature> __r1489 = slice(new Usage.Feature[]{new Usage.Feature( new ByteSlice("dip25"),  new ByteSlice("noDIP25"),  new ByteSlice("revert DIP25 changes https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md"), true, false), new Usage.Feature( new ByteSlice("import"),  new ByteSlice("bug10378"),  new ByteSlice("revert to single phase name lookup"), true, true)});
-                                int __key1490 = 0;
-                                for (; __key1490 < 2;__key1490 += 1) {
-                                    Usage.Feature t = __r1489.get(__key1490).copy();
+                                Slice<Usage.Feature> __r1573 = slice(new Usage.Feature[]{new Usage.Feature( new ByteSlice("dip25"),  new ByteSlice("noDIP25"),  new ByteSlice("revert DIP25 changes https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md"), true, false), new Usage.Feature( new ByteSlice("import"),  new ByteSlice("bug10378"),  new ByteSlice("revert to single phase name lookup"), true, true)});
+                                int __key1574 = 0;
+                                for (; __key1574 < 2;__key1574 += 1) {
+                                    Usage.Feature t = __r1573.get(__key1574).copy();
                                     if (t.deprecated_)
                                         continue;
                                     buf.append( new ByteSlice("params.").concat(t.paramName).concat( new ByteSlice(" = true;")));
@@ -1141,10 +1166,10 @@ public class mars {
                             }
                             buf.append( new ByteSlice("break;\n"));
                             {
-                                Slice<Usage.Feature> __r1491 = slice(new Usage.Feature[]{new Usage.Feature( new ByteSlice("dip25"),  new ByteSlice("noDIP25"),  new ByteSlice("revert DIP25 changes https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md"), true, false), new Usage.Feature( new ByteSlice("import"),  new ByteSlice("bug10378"),  new ByteSlice("revert to single phase name lookup"), true, true)});
-                                int __key1492 = 0;
-                                for (; __key1492 < 2;__key1492 += 1) {
-                                    Usage.Feature t = __r1491.get(__key1492).copy();
+                                Slice<Usage.Feature> __r1575 = slice(new Usage.Feature[]{new Usage.Feature( new ByteSlice("dip25"),  new ByteSlice("noDIP25"),  new ByteSlice("revert DIP25 changes https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md"), true, false), new Usage.Feature( new ByteSlice("import"),  new ByteSlice("bug10378"),  new ByteSlice("revert to single phase name lookup"), true, true)});
+                                int __key1576 = 0;
+                                for (; __key1576 < 2;__key1576 += 1) {
+                                    Usage.Feature t = __r1575.get(__key1576).copy();
                                     buf.append( new ByteSlice("case \"").concat(t.name).concat( new ByteSlice("\":")));
                                     if (t.deprecated_)
                                         buf.append( new ByteSlice("deprecation(Loc.initial, \"`-revert=").concat(t.name).concat( new ByteSlice("` no longer has any effect.\"); ")));
@@ -1185,10 +1210,10 @@ public class mars {
                         public ByteSlice invoke(){
                             ByteSlice buf =  new ByteSlice("case \"all\":").copy();
                             {
-                                Slice<Usage.Feature> __r1481 = slice(new Usage.Feature[]{new Usage.Feature( new ByteSlice("field"),  new ByteSlice("vfield"),  new ByteSlice("list all non-mutable fields which occupy an object instance"), true, false), new Usage.Feature( new ByteSlice("checkimports"),  new ByteSlice("check10378"),  new ByteSlice("give deprecation messages about 10378 anomalies"), true, true), new Usage.Feature( new ByteSlice("complex"),  new ByteSlice("vcomplex"),  new ByteSlice("give deprecation messages about all usages of complex or imaginary types"), true, false), new Usage.Feature( new ByteSlice("tls"),  new ByteSlice("vtls"),  new ByteSlice("list all variables going into thread local storage"), true, false), new Usage.Feature( new ByteSlice("vmarkdown"),  new ByteSlice("vmarkdown"),  new ByteSlice("list instances of Markdown replacements in Ddoc"), true, false)});
-                                int __key1482 = 0;
-                                for (; __key1482 < 5;__key1482 += 1) {
-                                    Usage.Feature t = __r1481.get(__key1482).copy();
+                                Slice<Usage.Feature> __r1565 = slice(new Usage.Feature[]{new Usage.Feature( new ByteSlice("field"),  new ByteSlice("vfield"),  new ByteSlice("list all non-mutable fields which occupy an object instance"), true, false), new Usage.Feature( new ByteSlice("checkimports"),  new ByteSlice("check10378"),  new ByteSlice("give deprecation messages about 10378 anomalies"), true, true), new Usage.Feature( new ByteSlice("complex"),  new ByteSlice("vcomplex"),  new ByteSlice("give deprecation messages about all usages of complex or imaginary types"), true, false), new Usage.Feature( new ByteSlice("tls"),  new ByteSlice("vtls"),  new ByteSlice("list all variables going into thread local storage"), true, false), new Usage.Feature( new ByteSlice("vmarkdown"),  new ByteSlice("vmarkdown"),  new ByteSlice("list instances of Markdown replacements in Ddoc"), true, false)});
+                                int __key1566 = 0;
+                                for (; __key1566 < 5;__key1566 += 1) {
+                                    Usage.Feature t = __r1565.get(__key1566).copy();
                                     if (t.deprecated_)
                                         continue;
                                     buf.append( new ByteSlice("params.").concat(t.paramName).concat( new ByteSlice(" = true;")));
@@ -1196,10 +1221,10 @@ public class mars {
                             }
                             buf.append( new ByteSlice("break;\n"));
                             {
-                                Slice<Usage.Feature> __r1483 = slice(new Usage.Feature[]{new Usage.Feature( new ByteSlice("field"),  new ByteSlice("vfield"),  new ByteSlice("list all non-mutable fields which occupy an object instance"), true, false), new Usage.Feature( new ByteSlice("checkimports"),  new ByteSlice("check10378"),  new ByteSlice("give deprecation messages about 10378 anomalies"), true, true), new Usage.Feature( new ByteSlice("complex"),  new ByteSlice("vcomplex"),  new ByteSlice("give deprecation messages about all usages of complex or imaginary types"), true, false), new Usage.Feature( new ByteSlice("tls"),  new ByteSlice("vtls"),  new ByteSlice("list all variables going into thread local storage"), true, false), new Usage.Feature( new ByteSlice("vmarkdown"),  new ByteSlice("vmarkdown"),  new ByteSlice("list instances of Markdown replacements in Ddoc"), true, false)});
-                                int __key1484 = 0;
-                                for (; __key1484 < 5;__key1484 += 1) {
-                                    Usage.Feature t = __r1483.get(__key1484).copy();
+                                Slice<Usage.Feature> __r1567 = slice(new Usage.Feature[]{new Usage.Feature( new ByteSlice("field"),  new ByteSlice("vfield"),  new ByteSlice("list all non-mutable fields which occupy an object instance"), true, false), new Usage.Feature( new ByteSlice("checkimports"),  new ByteSlice("check10378"),  new ByteSlice("give deprecation messages about 10378 anomalies"), true, true), new Usage.Feature( new ByteSlice("complex"),  new ByteSlice("vcomplex"),  new ByteSlice("give deprecation messages about all usages of complex or imaginary types"), true, false), new Usage.Feature( new ByteSlice("tls"),  new ByteSlice("vtls"),  new ByteSlice("list all variables going into thread local storage"), true, false), new Usage.Feature( new ByteSlice("vmarkdown"),  new ByteSlice("vmarkdown"),  new ByteSlice("list instances of Markdown replacements in Ddoc"), true, false)});
+                                int __key1568 = 0;
+                                for (; __key1568 < 5;__key1568 += 1) {
+                                    Usage.Feature t = __r1567.get(__key1568).copy();
                                     buf.append( new ByteSlice("case \"").concat(t.name).concat( new ByteSlice("\":")));
                                     if (t.deprecated_)
                                         buf.append( new ByteSlice("deprecation(Loc.initial, \"`-transition=").concat(t.name).concat( new ByteSlice("` no longer has any effect.\"); ")));
@@ -1252,10 +1277,10 @@ public class mars {
                         public ByteSlice invoke(){
                             ByteSlice buf =  new ByteSlice("case \"all\":").copy();
                             {
-                                Slice<Usage.Feature> __r1485 = slice(new Usage.Feature[]{new Usage.Feature( new ByteSlice("dip25"),  new ByteSlice("useDIP25"),  new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)"), true, false), new Usage.Feature( new ByteSlice("dip1000"),  new ByteSlice("vsafe"),  new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)"), true, false), new Usage.Feature( new ByteSlice("dip1008"),  new ByteSlice("ehnogc"),  new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)"), true, false), new Usage.Feature( new ByteSlice("fieldwise"),  new ByteSlice("fieldwise"),  new ByteSlice("use fieldwise comparisons for struct equality"), true, false), new Usage.Feature( new ByteSlice("markdown"),  new ByteSlice("markdown"),  new ByteSlice("enable Markdown replacements in Ddoc"), true, false), new Usage.Feature( new ByteSlice("fixAliasThis"),  new ByteSlice("fixAliasThis"),  new ByteSlice("when a symbol is resolved, check alias this scope before going to upper scopes"), true, false), new Usage.Feature( new ByteSlice("intpromote"),  new ByteSlice("fix16997"),  new ByteSlice("fix integral promotions for unary + - ~ operators"), true, false), new Usage.Feature( new ByteSlice("dtorfields"),  new ByteSlice("dtorFields"),  new ByteSlice("destruct fields of partially constructed objects"), true, false), new Usage.Feature( new ByteSlice("rvaluerefparam"),  new ByteSlice("rvalueRefParam"),  new ByteSlice("enable rvalue arguments to ref parameters"), true, false)});
-                                int __key1486 = 0;
-                                for (; __key1486 < 9;__key1486 += 1) {
-                                    Usage.Feature t = __r1485.get(__key1486).copy();
+                                Slice<Usage.Feature> __r1569 = slice(new Usage.Feature[]{new Usage.Feature( new ByteSlice("dip25"),  new ByteSlice("useDIP25"),  new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)"), true, false), new Usage.Feature( new ByteSlice("dip1000"),  new ByteSlice("vsafe"),  new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)"), true, false), new Usage.Feature( new ByteSlice("dip1008"),  new ByteSlice("ehnogc"),  new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)"), true, false), new Usage.Feature( new ByteSlice("fieldwise"),  new ByteSlice("fieldwise"),  new ByteSlice("use fieldwise comparisons for struct equality"), true, false), new Usage.Feature( new ByteSlice("markdown"),  new ByteSlice("markdown"),  new ByteSlice("enable Markdown replacements in Ddoc"), true, false), new Usage.Feature( new ByteSlice("fixAliasThis"),  new ByteSlice("fixAliasThis"),  new ByteSlice("when a symbol is resolved, check alias this scope before going to upper scopes"), true, false), new Usage.Feature( new ByteSlice("intpromote"),  new ByteSlice("fix16997"),  new ByteSlice("fix integral promotions for unary + - ~ operators"), true, false), new Usage.Feature( new ByteSlice("dtorfields"),  new ByteSlice("dtorFields"),  new ByteSlice("destruct fields of partially constructed objects"), true, false), new Usage.Feature( new ByteSlice("rvaluerefparam"),  new ByteSlice("rvalueRefParam"),  new ByteSlice("enable rvalue arguments to ref parameters"), true, false)});
+                                int __key1570 = 0;
+                                for (; __key1570 < 9;__key1570 += 1) {
+                                    Usage.Feature t = __r1569.get(__key1570).copy();
                                     if (t.deprecated_)
                                         continue;
                                     buf.append( new ByteSlice("params.").concat(t.paramName).concat( new ByteSlice(" = true;")));
@@ -1263,10 +1288,10 @@ public class mars {
                             }
                             buf.append( new ByteSlice("break;\n"));
                             {
-                                Slice<Usage.Feature> __r1487 = slice(new Usage.Feature[]{new Usage.Feature( new ByteSlice("dip25"),  new ByteSlice("useDIP25"),  new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)"), true, false), new Usage.Feature( new ByteSlice("dip1000"),  new ByteSlice("vsafe"),  new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)"), true, false), new Usage.Feature( new ByteSlice("dip1008"),  new ByteSlice("ehnogc"),  new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)"), true, false), new Usage.Feature( new ByteSlice("fieldwise"),  new ByteSlice("fieldwise"),  new ByteSlice("use fieldwise comparisons for struct equality"), true, false), new Usage.Feature( new ByteSlice("markdown"),  new ByteSlice("markdown"),  new ByteSlice("enable Markdown replacements in Ddoc"), true, false), new Usage.Feature( new ByteSlice("fixAliasThis"),  new ByteSlice("fixAliasThis"),  new ByteSlice("when a symbol is resolved, check alias this scope before going to upper scopes"), true, false), new Usage.Feature( new ByteSlice("intpromote"),  new ByteSlice("fix16997"),  new ByteSlice("fix integral promotions for unary + - ~ operators"), true, false), new Usage.Feature( new ByteSlice("dtorfields"),  new ByteSlice("dtorFields"),  new ByteSlice("destruct fields of partially constructed objects"), true, false), new Usage.Feature( new ByteSlice("rvaluerefparam"),  new ByteSlice("rvalueRefParam"),  new ByteSlice("enable rvalue arguments to ref parameters"), true, false)});
-                                int __key1488 = 0;
-                                for (; __key1488 < 9;__key1488 += 1) {
-                                    Usage.Feature t = __r1487.get(__key1488).copy();
+                                Slice<Usage.Feature> __r1571 = slice(new Usage.Feature[]{new Usage.Feature( new ByteSlice("dip25"),  new ByteSlice("useDIP25"),  new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)"), true, false), new Usage.Feature( new ByteSlice("dip1000"),  new ByteSlice("vsafe"),  new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)"), true, false), new Usage.Feature( new ByteSlice("dip1008"),  new ByteSlice("ehnogc"),  new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)"), true, false), new Usage.Feature( new ByteSlice("fieldwise"),  new ByteSlice("fieldwise"),  new ByteSlice("use fieldwise comparisons for struct equality"), true, false), new Usage.Feature( new ByteSlice("markdown"),  new ByteSlice("markdown"),  new ByteSlice("enable Markdown replacements in Ddoc"), true, false), new Usage.Feature( new ByteSlice("fixAliasThis"),  new ByteSlice("fixAliasThis"),  new ByteSlice("when a symbol is resolved, check alias this scope before going to upper scopes"), true, false), new Usage.Feature( new ByteSlice("intpromote"),  new ByteSlice("fix16997"),  new ByteSlice("fix integral promotions for unary + - ~ operators"), true, false), new Usage.Feature( new ByteSlice("dtorfields"),  new ByteSlice("dtorFields"),  new ByteSlice("destruct fields of partially constructed objects"), true, false), new Usage.Feature( new ByteSlice("rvaluerefparam"),  new ByteSlice("rvalueRefParam"),  new ByteSlice("enable rvalue arguments to ref parameters"), true, false)});
+                                int __key1572 = 0;
+                                for (; __key1572 < 9;__key1572 += 1) {
+                                    Usage.Feature t = __r1571.get(__key1572).copy();
                                     buf.append( new ByteSlice("case \"").concat(t.name).concat( new ByteSlice("\":")));
                                     if (t.deprecated_)
                                         buf.append( new ByteSlice("deprecation(Loc.initial, \"`-preview=").concat(t.name).concat( new ByteSlice("` no longer has any effect.\"); ")));
@@ -2275,8 +2300,8 @@ public class mars {
             params.useDIP25 = false;
     }
 
-    public static DArray<Module> createModules(DArray<BytePtr> files, DArray<BytePtr> libmodules) {
-        DArray<Module> modules = new DArray<Module>();
+    public static DArray<dmodule.Module> createModules(DArray<BytePtr> files, DArray<BytePtr> libmodules) {
+        DArray<dmodule.Module> modules = new DArray<dmodule.Module>();
         modules.reserve(files.length);
         boolean firstmodule = true;
         {
@@ -2346,7 +2371,7 @@ public class mars {
                         /*goto Linvalid*/throw Dispatch0.INSTANCE;
                 }
                 Identifier id = Identifier.idPool(name);
-                Module m = new Module(toDString(files.get(i)), id, (global.params.doDocComments ? 1 : 0), (global.params.doHdrGeneration ? 1 : 0));
+                dmodule.Module m = new dmodule.Module(toDString(files.get(i)), id, (global.params.doDocComments ? 1 : 0), (global.params.doHdrGeneration ? 1 : 0));
                 modules.push(m);
                 if (firstmodule)
                 {

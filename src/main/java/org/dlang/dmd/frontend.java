@@ -11,9 +11,26 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.arraytypes.*;
+import static org.dlang.dmd.astcodegen.*;
+import static org.dlang.dmd.builtin.*;
+import static org.dlang.dmd.cond.*;
+import static org.dlang.dmd.dinifile.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.errors.*;
+import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.filecache.*;
+import static org.dlang.dmd.globals.*;
 import static org.dlang.dmd.hdrgen.*;
+import static org.dlang.dmd.id.*;
+import static org.dlang.dmd.identifier.*;
+import static org.dlang.dmd.mars.*;
+import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.objc.*;
+import static org.dlang.dmd.semantic2.*;
+import static org.dlang.dmd.semantic3.*;
+import static org.dlang.dmd.target.*;
 
 public class frontend {
 
@@ -187,7 +204,7 @@ public class frontend {
         return parseImportPathsFromConfig(toByteSlice(iniFile), toByteSlice(execDir));
     }
 
-    public static void fullSemantic(Module m) {
+    public static void fullSemantic(dmodule.Module m) {
         m.importedFrom = m;
         m.importAll(null);
         dsymbolSemantic(m, null);
@@ -199,7 +216,7 @@ public class frontend {
         Module.runDeferredSemantic3();
     }
 
-    public static ByteSlice prettyPrint(Module m) {
+    public static ByteSlice prettyPrint(dmodule.Module m) {
         OutBuffer buf = new OutBuffer(null, 0, 0, 0, true, false).copy();
         try {
             HdrGenState hgs = new HdrGenState(false, false, true, false, 0, 0, 0, false, null).copy();

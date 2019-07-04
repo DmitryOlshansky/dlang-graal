@@ -11,6 +11,9 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.doc.*;
+import static org.dlang.dmd.errors.*;
+import static org.dlang.dmd.globals.*;
 
 public class dmacro {
     static int expandnest;

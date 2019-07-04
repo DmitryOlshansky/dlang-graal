@@ -11,6 +11,8 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.arraytypes.*;
+import static org.dlang.dmd.dtemplate.*;
 import static org.dlang.dmd.expression.*;
 import static org.dlang.dmd.visitor.*;
 

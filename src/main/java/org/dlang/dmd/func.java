@@ -11,21 +11,37 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.access.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.arraytypes.*;
+import static org.dlang.dmd.blockexit.*;
 import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
+import static org.dlang.dmd.delegatize.*;
 import static org.dlang.dmd.dinterpret.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dstruct.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.dtemplate.*;
+import static org.dlang.dmd.errors.*;
+import static org.dlang.dmd.escape.*;
 import static org.dlang.dmd.expression.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.gluelayer.*;
+import static org.dlang.dmd.hdrgen.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.init.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.objc.*;
+import static org.dlang.dmd.semantic2.*;
+import static org.dlang.dmd.semantic3.*;
 import static org.dlang.dmd.statement.*;
 import static org.dlang.dmd.statement_rewrite_walker.*;
+import static org.dlang.dmd.statementsem.*;
+import static org.dlang.dmd.tokens.*;
 import static org.dlang.dmd.visitor.*;
 
 public class func {
@@ -231,11 +247,11 @@ public class func {
             {
                 b = (a).copy();
                 {
-                    Slice<Ensure> __r1303 = (a).opSlice().copy();
-                    int __key1302 = 0;
-                    for (; __key1302 < __r1303.getLength();__key1302 += 1) {
-                        Ensure e = __r1303.get(__key1302).copy();
-                        int i = __key1302;
+                    Slice<Ensure> __r1387 = (a).opSlice().copy();
+                    int __key1386 = 0;
+                    for (; __key1386 < __r1387.getLength();__key1386 += 1) {
+                        Ensure e = __r1387.get(__key1386).copy();
+                        int i = __key1386;
                         b.set(i, e.syntaxCopy());
                     }
                 }
@@ -634,10 +650,10 @@ public class func {
                 if (cd != null)
                 {
                     {
-                        Slice<BaseClass> __r1304 = cd.interfaces.copy();
-                        int __key1305 = 0;
-                        for (; __key1305 < __r1304.getLength();__key1305 += 1) {
-                            BaseClass b = __r1304.get(__key1305);
+                        Slice<BaseClass> __r1388 = cd.interfaces.copy();
+                        int __key1389 = 0;
+                        for (; __key1389 < __r1388.getLength();__key1389 += 1) {
+                            BaseClass b = __r1388.get(__key1389);
                             int v = this.findVtblIndex((b).sym.vtbl, (b).sym.vtbl.length, true);
                             if (v >= 0)
                                 return b;
@@ -1149,7 +1165,7 @@ public class func {
         public  void printGCUsage(Loc loc, BytePtr warn) {
             if (!(global.params.vgc))
                 return ;
-            Module m = this.getModule();
+            dmodule.Module m = this.getModule();
             if (((m != null && m.isRoot()) && !(this.inUnittest())))
             {
                 message(loc, new BytePtr("vgc: %s"), warn);
@@ -1178,10 +1194,10 @@ public class func {
                 case 8:
                     StructDeclaration sym = t.toDsymbol(null).isStructDeclaration();
                     {
-                        Slice<VarDeclaration> __r1309 = sym.fields.opSlice().copy();
-                        int __key1310 = 0;
-                        for (; __key1310 < __r1309.getLength();__key1310 += 1) {
-                            VarDeclaration v = __r1309.get(__key1310);
+                        Slice<VarDeclaration> __r1393 = sym.fields.opSlice().copy();
+                        int __key1394 = 0;
+                        for (; __key1394 < __r1393.getLength();__key1394 += 1) {
+                            VarDeclaration v = __r1393.get(__key1394);
                             Type tmi = v.type.addMod(t.mod);
                             if (!(this.isTypeIsolated(tmi)))
                                 return false;
@@ -1226,10 +1242,10 @@ public class func {
                                 case 8:
                                     StructDeclaration sym = tp.toDsymbol(null).isStructDeclaration();
                                     {
-                                        Slice<VarDeclaration> __r1311 = sym.fields.opSlice().copy();
-                                        int __key1312 = 0;
-                                        for (; __key1312 < __r1311.getLength();__key1312 += 1) {
-                                            VarDeclaration v = __r1311.get(__key1312);
+                                        Slice<VarDeclaration> __r1395 = sym.fields.opSlice().copy();
+                                        int __key1396 = 0;
+                                        for (; __key1396 < __r1395.getLength();__key1396 += 1) {
+                                            VarDeclaration v = __r1395.get(__key1396);
                                             Type tprmi = v.type.addMod(tp.mod);
                                             if (!(traverse.invoke(tprmi, t)))
                                                 return false;
@@ -1471,15 +1487,15 @@ public class func {
             DArray<FuncDeclaration> a = new DArray<FuncDeclaration>();
             try {
                 {
-                    Slice<VarDeclaration> __r1313 = this.closureVars.opSlice().copy();
-                    int __key1314 = 0;
-                    for (; __key1314 < __r1313.getLength();__key1314 += 1) {
-                        VarDeclaration v = __r1313.get(__key1314);
+                    Slice<VarDeclaration> __r1397 = this.closureVars.opSlice().copy();
+                    int __key1398 = 0;
+                    for (; __key1398 < __r1397.getLength();__key1398 += 1) {
+                        VarDeclaration v = __r1397.get(__key1398);
                         {
-                            Slice<FuncDeclaration> __r1315 = v.nestedrefs.opSlice().copy();
-                            int __key1316 = 0;
-                            for (; __key1316 < __r1315.getLength();__key1316 += 1) {
-                                FuncDeclaration f = __r1315.get(__key1316);
+                            Slice<FuncDeclaration> __r1399 = v.nestedrefs.opSlice().copy();
+                            int __key1400 = 0;
+                            for (; __key1400 < __r1399.getLength();__key1400 += 1) {
+                                FuncDeclaration f = __r1399.get(__key1400);
                                 assert(f != this);
                             /*LcheckAncestorsOfANestedRef:*/
                                 {
@@ -1491,10 +1507,10 @@ public class func {
                                         if (((fx.isThis() != null || (fx.tookAddressOf) != 0) || checkEscapingSiblings(fx, this, null)))
                                         {
                                             {
-                                                Slice<FuncDeclaration> __r1317 = a.opSlice().copy();
-                                                int __key1318 = 0;
-                                                for (; __key1318 < __r1317.getLength();__key1318 += 1) {
-                                                    FuncDeclaration f2 = __r1317.get(__key1318);
+                                                Slice<FuncDeclaration> __r1401 = a.opSlice().copy();
+                                                int __key1402 = 0;
+                                                for (; __key1402 < __r1401.getLength();__key1402 += 1) {
+                                                    FuncDeclaration f2 = __r1401.get(__key1402);
                                                     if (pequals(f2, f))
                                                         break LcheckAncestorsOfANestedRef;
                                                 }
@@ -1565,10 +1581,10 @@ public class func {
 
         public  Statement mergeFrequire(Statement sf, DArray<Expression> params) {
             {
-                Slice<FuncDeclaration> __r1319 = this.foverrides.opSlice().copy();
-                int __key1320 = 0;
-                for (; __key1320 < __r1319.getLength();__key1320 += 1) {
-                    FuncDeclaration fdv = __r1319.get(__key1320);
+                Slice<FuncDeclaration> __r1403 = this.foverrides.opSlice().copy();
+                int __key1404 = 0;
+                for (; __key1404 < __r1403.getLength();__key1404 += 1) {
+                    FuncDeclaration fdv = __r1403.get(__key1404);
                     if ((fdv.frequires != null && fdv.semanticRun != PASS.semantic3done))
                     {
                         assert(fdv._scope != null);
@@ -1600,10 +1616,10 @@ public class func {
             if (fd.fensures != null)
                 return true;
             {
-                Slice<FuncDeclaration> __r1321 = fd.foverrides.opSlice().copy();
-                int __key1322 = 0;
-                for (; __key1322 < __r1321.getLength();__key1322 += 1) {
-                    FuncDeclaration fdv = __r1321.get(__key1322);
+                Slice<FuncDeclaration> __r1405 = fd.foverrides.opSlice().copy();
+                int __key1406 = 0;
+                for (; __key1406 < __r1405.getLength();__key1406 += 1) {
+                    FuncDeclaration fdv = __r1405.get(__key1406);
                     if (needsFensure(fdv))
                         return true;
                 }
@@ -1618,10 +1634,10 @@ public class func {
                 Loc loc = (this.frequires).get(0).loc.copy();
                 DArray<Statement> s = new DArray<Statement>();
                 {
-                    Slice<Statement> __r1323 = (this.frequires).opSlice().copy();
-                    int __key1324 = 0;
-                    for (; __key1324 < __r1323.getLength();__key1324 += 1) {
-                        Statement r = __r1323.get(__key1324);
+                    Slice<Statement> __r1407 = (this.frequires).opSlice().copy();
+                    int __key1408 = 0;
+                    for (; __key1408 < __r1407.getLength();__key1408 += 1) {
+                        Statement r = __r1407.get(__key1408);
                         (s).push(new ScopeStatement(r.loc, r, r.loc));
                     }
                 }
@@ -1633,10 +1649,10 @@ public class func {
                 Loc loc = (this.fensures).get(0).ensure.loc.copy();
                 DArray<Statement> s = new DArray<Statement>();
                 {
-                    Slice<Ensure> __r1325 = (this.fensures).opSlice().copy();
-                    int __key1326 = 0;
-                    for (; __key1326 < __r1325.getLength();__key1326 += 1) {
-                        Ensure r = __r1325.get(__key1326).copy();
+                    Slice<Ensure> __r1409 = (this.fensures).opSlice().copy();
+                    int __key1410 = 0;
+                    for (; __key1410 < __r1409.getLength();__key1410 += 1) {
+                        Ensure r = __r1409.get(__key1410).copy();
                         if ((r.id != null && this.canBuildResultVar()))
                         {
                             Loc rloc = r.ensure.loc.copy();
@@ -1682,10 +1698,10 @@ public class func {
                 if (this.parameters != null)
                 {
                     {
-                        Slice<VarDeclaration> __r1327 = (this.parameters).opSlice().copy();
-                        int __key1328 = 0;
-                        for (; __key1328 < __r1327.getLength();__key1328 += 1) {
-                            VarDeclaration vd = __r1327.get(__key1328);
+                        Slice<VarDeclaration> __r1411 = (this.parameters).opSlice().copy();
+                        int __key1412 = 0;
+                        for (; __key1412 < __r1411.getLength();__key1412 += 1) {
+                            VarDeclaration vd = __r1411.get(__key1412);
                             (this.fdrequireParams).push(new VarExp(loc, vd, true));
                         }
                     }
@@ -1711,10 +1727,10 @@ public class func {
             if (this.parameters != null)
             {
                 {
-                    Slice<VarDeclaration> __r1329 = (this.parameters).opSlice().copy();
-                    int __key1330 = 0;
-                    for (; __key1330 < __r1329.getLength();__key1330 += 1) {
-                        VarDeclaration vd = __r1329.get(__key1330);
+                    Slice<VarDeclaration> __r1413 = (this.parameters).opSlice().copy();
+                    int __key1414 = 0;
+                    for (; __key1414 < __r1413.getLength();__key1414 += 1) {
+                        VarDeclaration vd = __r1413.get(__key1414);
                         (this.fdensureParams).push(new VarExp(this.loc, vd, true));
                     }
                 }
@@ -1747,10 +1763,10 @@ public class func {
 
         public  Statement mergeFensure(Statement sf, Identifier oid, DArray<Expression> params) {
             {
-                Slice<FuncDeclaration> __r1331 = this.foverrides.opSlice().copy();
-                int __key1332 = 0;
-                for (; __key1332 < __r1331.getLength();__key1332 += 1) {
-                    FuncDeclaration fdv = __r1331.get(__key1332);
+                Slice<FuncDeclaration> __r1415 = this.foverrides.opSlice().copy();
+                int __key1416 = 0;
+                for (; __key1416 < __r1415.getLength();__key1416 += 1) {
+                    FuncDeclaration fdv = __r1415.get(__key1416);
                     if ((needsFensure(fdv) && fdv.semanticRun != PASS.semantic3done))
                     {
                         assert(fdv._scope != null);
@@ -2366,10 +2382,10 @@ public class func {
                     c.type = tb;
                     AggregateDeclaration sym = tb.toDsymbol(null).isAggregateDeclaration();
                     {
-                        Slice<VarDeclaration> __r1333 = sym.fields.opSlice().copy();
-                        int __key1334 = 0;
-                        for (; __key1334 < __r1333.getLength();__key1334 += 1) {
-                            VarDeclaration v = __r1333.get(__key1334);
+                        Slice<VarDeclaration> __r1417 = sym.fields.opSlice().copy();
+                        int __key1418 = 0;
+                        for (; __key1418 < __r1417.getLength();__key1418 += 1) {
+                            VarDeclaration v = __r1417.get(__key1418);
                             Type tprmi = v.type.addMod(tb.mod);
                             if (!(traverse.invoke(ta, tprmi, c, reversePass)))
                                 return false;
@@ -2449,58 +2465,6 @@ public class func {
         return bAnyClosures;
     }
 
-    // from template followInstantiationContext!(Dsymbol)
-    public static boolean followInstantiationContextDsymbol(Dsymbol s, Dsymbol _param_1) {
-        Function1<Dsymbol,Boolean> has2ThisDsymbol = new Function1<Dsymbol,Boolean>(){
-            public Boolean invoke(Dsymbol s){
-                {
-                    FuncDeclaration f = s.isFuncDeclaration();
-                    if (f != null)
-                        return f.isThis2;
-                }
-                {
-                    AggregateDeclaration ad = s.isAggregateDeclaration();
-                    if (ad != null)
-                        return ad.vthis2 != null;
-                }
-                return false;
-            }
-        };
-        assert(s != null);
-        if (has2ThisDsymbol.invoke(s))
-        {
-            assert((1) != 0);
-            Dsymbol parent = s.toParent();
-            for (; parent != null;){
-                TemplateInstance ti = parent.isTemplateInstance();
-                if (!(ti != null))
-                    break;
-                {
-                    Slice<RootObject> __r897 = (ti.tiargs).opSlice().copy();
-                    int __key898 = 0;
-                    for (; __key898 < __r897.getLength();__key898 += 1) {
-                        RootObject oarg = __r897.get(__key898);
-                        Dsymbol sa = getDsymbol(oarg);
-                        if (!(sa != null))
-                            continue;
-                        sa = sa.toAlias().toParent2();
-                        if (!(sa != null))
-                            continue;
-                        {
-                            Dsymbol ps = _param_1;
-                            if (pequals(sa, ps))
-                                return true;
-                        }
-                    }
-                }
-                parent = ti.tempdecl.toParent();
-            }
-            return false;
-        }
-        return false;
-    }
-
-
     // from template followInstantiationContext!(AggregateDeclaration)
     public static boolean followInstantiationContextAggregateDeclaration(Dsymbol s, AggregateDeclaration _param_1) {
         Function1<Dsymbol,Boolean> has2ThisAggregateDeclaration = new Function1<Dsymbol,Boolean>(){
@@ -2528,10 +2492,10 @@ public class func {
                 if (!(ti != null))
                     break;
                 {
-                    Slice<RootObject> __r1280 = (ti.tiargs).opSlice().copy();
-                    int __key1281 = 0;
-                    for (; __key1281 < __r1280.getLength();__key1281 += 1) {
-                        RootObject oarg = __r1280.get(__key1281);
+                    Slice<RootObject> __r1364 = (ti.tiargs).opSlice().copy();
+                    int __key1365 = 0;
+                    for (; __key1365 < __r1364.getLength();__key1365 += 1) {
+                        RootObject oarg = __r1364.get(__key1365);
                         Dsymbol sa = getDsymbol(oarg);
                         if (!(sa != null))
                             continue;
@@ -2540,6 +2504,58 @@ public class func {
                             continue;
                         {
                             AggregateDeclaration ps = _param_1;
+                            if (pequals(sa, ps))
+                                return true;
+                        }
+                    }
+                }
+                parent = ti.tempdecl.toParent();
+            }
+            return false;
+        }
+        return false;
+    }
+
+
+    // from template followInstantiationContext!(Dsymbol)
+    public static boolean followInstantiationContextDsymbol(Dsymbol s, Dsymbol _param_1) {
+        Function1<Dsymbol,Boolean> has2ThisDsymbol = new Function1<Dsymbol,Boolean>(){
+            public Boolean invoke(Dsymbol s){
+                {
+                    FuncDeclaration f = s.isFuncDeclaration();
+                    if (f != null)
+                        return f.isThis2;
+                }
+                {
+                    AggregateDeclaration ad = s.isAggregateDeclaration();
+                    if (ad != null)
+                        return ad.vthis2 != null;
+                }
+                return false;
+            }
+        };
+        assert(s != null);
+        if (has2ThisDsymbol.invoke(s))
+        {
+            assert((1) != 0);
+            Dsymbol parent = s.toParent();
+            for (; parent != null;){
+                TemplateInstance ti = parent.isTemplateInstance();
+                if (!(ti != null))
+                    break;
+                {
+                    Slice<RootObject> __r921 = (ti.tiargs).opSlice().copy();
+                    int __key922 = 0;
+                    for (; __key922 < __r921.getLength();__key922 += 1) {
+                        RootObject oarg = __r921.get(__key922);
+                        Dsymbol sa = getDsymbol(oarg);
+                        if (!(sa != null))
+                            continue;
+                        sa = sa.toAlias().toParent2();
+                        if (!(sa != null))
+                            continue;
+                        {
+                            Dsymbol ps = _param_1;
                             if (pequals(sa, ps))
                                 return true;
                         }
@@ -2580,10 +2596,10 @@ public class func {
                 if (!(ti != null))
                     break;
                 {
-                    Slice<RootObject> __r1307 = (ti.tiargs).opSlice().copy();
-                    int __key1308 = 0;
-                    for (; __key1308 < __r1307.getLength();__key1308 += 1) {
-                        RootObject oarg = __r1307.get(__key1308);
+                    Slice<RootObject> __r1391 = (ti.tiargs).opSlice().copy();
+                    int __key1392 = 0;
+                    for (; __key1392 < __r1391.getLength();__key1392 += 1) {
+                        RootObject oarg = __r1391.get(__key1392);
                         Dsymbol sa = getDsymbol(oarg);
                         if (!(sa != null))
                             continue;
@@ -2605,15 +2621,15 @@ public class func {
     }
 
 
-    // from template toParentP!(Dsymbol)
-    public static Dsymbol toParentPDsymbol(Dsymbol s, Dsymbol _param_1) {
-        return followInstantiationContextDsymbol(s, _param_1) ? s.toParent2() : s.toParentLocal();
-    }
-
-
     // from template toParentP!(AggregateDeclaration)
     public static Dsymbol toParentPAggregateDeclaration(Dsymbol s, AggregateDeclaration _param_1) {
         return followInstantiationContextAggregateDeclaration(s, _param_1) ? s.toParent2() : s.toParentLocal();
+    }
+
+
+    // from template toParentP!(Dsymbol)
+    public static Dsymbol toParentPDsymbol(Dsymbol s, Dsymbol _param_1) {
+        return followInstantiationContextDsymbol(s, _param_1) ? s.toParent2() : s.toParentLocal();
     }
 
 

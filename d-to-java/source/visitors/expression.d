@@ -1855,6 +1855,10 @@ private void typeToBufferx(Type t, TextBuffer buf, ExprOpts opts, Boxing boxing 
             buf.put(t.sym.ident.symbol);
             return;
         }
+        else if(t.sym.ident.symbol == "Module" || t.sym.ident.symbol == "Package")
+        {
+            buf.put("dmodule.");
+        }
         buf.put(t.sym.ident.symbol);
     }
 

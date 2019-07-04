@@ -11,23 +11,45 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.access.*;
 import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.aliasthis.*;
+import static org.dlang.dmd.arrayop.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.attrib.*;
 import static org.dlang.dmd.complex.*;
+import static org.dlang.dmd.dcast.*;
 import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
 import static org.dlang.dmd.denum.*;
 import static org.dlang.dmd.dimport.*;
+import static org.dlang.dmd.dmangle.*;
 import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dstruct.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.dtemplate.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.hdrgen.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
+import static org.dlang.dmd.imphint.*;
 import static org.dlang.dmd.init.*;
+import static org.dlang.dmd.initsem.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.objc.*;
+import static org.dlang.dmd.opover.*;
+import static org.dlang.dmd.semantic3.*;
+import static org.dlang.dmd.sideeffect.*;
+import static org.dlang.dmd.target.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.traits.*;
+import static org.dlang.dmd.typesem.*;
+import static org.dlang.dmd.visitor.*;
 
 public class typesem {
     private static final BytePtr[] initializer_0 = { new ByteSlice("as type"),  new ByteSlice("in alias")};
@@ -378,21 +400,21 @@ public class typesem {
                 if (parameters != null)
                 {
                     {
-                        Slice<Parameter> __r1635 = (parameters).opSlice().copy();
-                        int __key1634 = 0;
-                        for (; __key1634 < __r1635.getLength();__key1634 += 1) {
-                            Parameter p = __r1635.get(__key1634);
-                            int i = __key1634;
+                        Slice<Parameter> __r1719 = (parameters).opSlice().copy();
+                        int __key1718 = 0;
+                        for (; __key1718 < __r1719.getLength();__key1718 += 1) {
+                            Parameter p = __r1719.get(__key1718);
+                            int i = __key1718;
                             Parameter ps = stripParameter.invoke(p);
                             if (ps != null)
                             {
                                 DArray<Parameter> nparams = new DArray<Parameter>((parameters).length);
                                 {
-                                    Slice<Parameter> __r1637 = (nparams).opSlice().copy();
-                                    int __key1636 = 0;
-                                    for (; __key1636 < __r1637.getLength();__key1636 += 1) {
-                                        Parameter np = __r1637.get(__key1636);
-                                        int j = __key1636;
+                                    Slice<Parameter> __r1721 = (nparams).opSlice().copy();
+                                    int __key1720 = 0;
+                                    for (; __key1720 < __r1721.getLength();__key1720 += 1) {
+                                        Parameter np = __r1721.get(__key1720);
+                                        int j = __key1720;
                                         Parameter pj = (parameters).get(j);
                                         if (j < i)
                                             np = pj;
@@ -511,10 +533,10 @@ public class typesem {
 
     public static Expression typeToExpressionHelper(TypeQualified t, Expression e, int i) {
         {
-            Slice<RootObject> __r1638 = t.idents.opSlice(i, t.idents.length).copy();
-            int __key1639 = 0;
-            for (; __key1639 < __r1638.getLength();__key1639 += 1) {
-                RootObject id = __r1638.get(__key1639);
+            Slice<RootObject> __r1722 = t.idents.opSlice(i, t.idents.length).copy();
+            int __key1723 = 0;
+            for (; __key1723 < __r1722.getLength();__key1723 += 1) {
+                RootObject id = __r1722.get(__key1723);
                 switch (id.dyncast())
                 {
                     case DYNCAST.identifier:
@@ -1526,10 +1548,10 @@ public class typesem {
                 DArray<Parameter> args = new DArray<Parameter>();
                 (args).reserve((int)(i2 - i1));
                 {
-                    Slice<Parameter> __r1640 = (tt.arguments).opSlice((int)i1, (int)i2).copy();
-                    int __key1641 = 0;
-                    for (; __key1641 < __r1640.getLength();__key1641 += 1) {
-                        Parameter arg = __r1640.get(__key1641);
+                    Slice<Parameter> __r1724 = (tt.arguments).opSlice((int)i1, (int)i2).copy();
+                    int __key1725 = 0;
+                    for (; __key1725 < __r1724.getLength();__key1725 += 1) {
+                        Parameter arg = __r1724.get(__key1725);
                         (args).push(arg);
                     }
                 }

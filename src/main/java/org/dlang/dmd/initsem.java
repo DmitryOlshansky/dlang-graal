@@ -11,16 +11,28 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.aggregate.*;
+import static org.dlang.dmd.aliasthis.*;
+import static org.dlang.dmd.arraytypes.*;
+import static org.dlang.dmd.dcast.*;
 import static org.dlang.dmd.declaration.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dstruct.*;
 import static org.dlang.dmd.dsymbol.*;
 import static org.dlang.dmd.dtemplate.*;
+import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.func.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.init.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.statement.*;
+import static org.dlang.dmd.target.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.typesem.*;
 
 public class initsem {
 
@@ -783,18 +795,18 @@ public class initsem {
                                 int dim = (int)((TypeSArray)tn).dim.toInteger();
                                 Type te = tn.nextOf().toBasetype();
                                 {
-                                    Slice<Expression> __r1419 = (elements).opSlice().copy();
-                                    int __key1420 = 0;
-                                    for (; __key1420 < __r1419.getLength();__key1420 += 1) {
-                                        Expression e = __r1419.get(__key1420);
+                                    Slice<Expression> __r1503 = (elements).opSlice().copy();
+                                    int __key1504 = 0;
+                                    for (; __key1504 < __r1503.getLength();__key1504 += 1) {
+                                        Expression e = __r1503.get(__key1504);
                                         if (te.equals(e.type))
                                         {
                                             DArray<Expression> elements2 = new DArray<Expression>(dim);
                                             {
-                                                Slice<Expression> __r1421 = (elements2).opSlice().copy();
-                                                int __key1422 = 0;
-                                                for (; __key1422 < __r1421.getLength();__key1422 += 1) {
-                                                    Expression e2 = __r1421.get(__key1422);
+                                                Slice<Expression> __r1505 = (elements2).opSlice().copy();
+                                                int __key1506 = 0;
+                                                for (; __key1506 < __r1505.getLength();__key1506 += 1) {
+                                                    Expression e2 = __r1505.get(__key1506);
                                                     e2 = e;
                                                 }
                                             }

@@ -11,12 +11,15 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.ast_node.*;
+import static org.dlang.dmd.dsymbol.*;
 import static org.dlang.dmd.expression.*;
 import static org.dlang.dmd.globals.*;
 import static org.dlang.dmd.hdrgen.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.tokens.*;
 import static org.dlang.dmd.visitor.*;
 
 public class init {
@@ -182,10 +185,10 @@ public class init {
 
         public  boolean isAssociativeArray() {
             {
-                Slice<Expression> __r1411 = this.index.opSlice().copy();
-                int __key1412 = 0;
-                for (; __key1412 < __r1411.getLength();__key1412 += 1) {
-                    Expression idx = __r1411.get(__key1412);
+                Slice<Expression> __r1495 = this.index.opSlice().copy();
+                int __key1496 = 0;
+                for (; __key1496 < __r1495.getLength();__key1496 += 1) {
+                    Expression idx = __r1495.get(__key1496);
                     if (idx != null)
                         return true;
                 }
@@ -242,10 +245,10 @@ public class init {
         Function1<DArray<Expression>,Boolean> checkArray = new Function1<DArray<Expression>,Boolean>(){
             public Boolean invoke(DArray<Expression> elems){
                 {
-                    Slice<Expression> __r1413 = (elems).opSlice().copy();
-                    int __key1414 = 0;
-                    for (; __key1414 < __r1413.getLength();__key1414 += 1) {
-                        Expression e = __r1413.get(__key1414);
+                    Slice<Expression> __r1497 = (elems).opSlice().copy();
+                    int __key1498 = 0;
+                    for (; __key1498 < __r1497.getLength();__key1498 += 1) {
+                        Expression e = __r1497.get(__key1498);
                         if ((e != null && hasNonConstPointers(e)))
                             return true;
                     }
@@ -330,10 +333,10 @@ public class init {
                 si.field.setDim(vi.field.length);
                 si.value.setDim(vi.value.length);
                 {
-                    int __key1415 = 0;
-                    int __limit1416 = vi.field.length;
-                    for (; __key1415 < __limit1416;__key1415 += 1) {
-                        int i = __key1415;
+                    int __key1499 = 0;
+                    int __limit1500 = vi.field.length;
+                    for (; __key1499 < __limit1500;__key1499 += 1) {
+                        int i = __key1499;
                         si.field.set(i, vi.field.get(i));
                         si.value.set(i, syntaxCopy(vi.value.get(i)));
                     }
@@ -348,10 +351,10 @@ public class init {
                 ai.index.setDim(vi.index.length);
                 ai.value.setDim(vi.value.length);
                 {
-                    int __key1417 = 0;
-                    int __limit1418 = vi.value.length;
-                    for (; __key1417 < __limit1418;__key1417 += 1) {
-                        int i = __key1417;
+                    int __key1501 = 0;
+                    int __limit1502 = vi.value.length;
+                    for (; __key1501 < __limit1502;__key1501 += 1) {
+                        int i = __key1501;
                         ai.index.set(i, vi.index.get(i) != null ? vi.index.get(i).syntaxCopy() : null);
                         ai.value.set(i, syntaxCopy(vi.value.get(i)));
                     }

@@ -11,8 +11,12 @@ import static org.dlang.dmd.root.File.*;
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
+import static org.dlang.dmd.arraytypes.*;
+import static org.dlang.dmd.cond.*;
 import static org.dlang.dmd.dmodule.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.globals.*;
 import static org.dlang.dmd.identifier.*;
 import static org.dlang.dmd.visitor.*;
@@ -54,7 +58,7 @@ public class dversion {
         }
 
         public  void addMember(Scope sc, ScopeDsymbol sds) {
-            Module m = sds.isModule();
+            dmodule.Module m = sds.isModule();
             if (this.ident != null)
             {
                 if (!(m != null))
@@ -151,7 +155,7 @@ public class dversion {
         }
 
         public  void addMember(Scope sc, ScopeDsymbol sds) {
-            Module m = sds.isModule();
+            dmodule.Module m = sds.isModule();
             if (this.ident != null)
             {
                 VersionCondition.checkReserved(this.loc, this.ident.asString());

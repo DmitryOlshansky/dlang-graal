@@ -760,7 +760,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(Import imp)
     {
-        //addImport(imp.packages, imp.id);
+        addImport(imp.packages, imp.id);
     }
 
     override void visit(CompileDeclaration compile)

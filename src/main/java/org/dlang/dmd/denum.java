@@ -13,11 +13,19 @@ import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.attrib.*;
 import static org.dlang.dmd.declaration.*;
+import static org.dlang.dmd.dscope.*;
 import static org.dlang.dmd.dsymbol.*;
+import static org.dlang.dmd.dsymbolsem.*;
 import static org.dlang.dmd.expression.*;
+import static org.dlang.dmd.expressionsem.*;
 import static org.dlang.dmd.globals.*;
+import static org.dlang.dmd.gluelayer.*;
+import static org.dlang.dmd.id.*;
 import static org.dlang.dmd.identifier.*;
+import static org.dlang.dmd.init.*;
 import static org.dlang.dmd.mtype.*;
+import static org.dlang.dmd.tokens.*;
+import static org.dlang.dmd.typesem.*;
 import static org.dlang.dmd.visitor.*;
 
 public class denum {
@@ -218,10 +226,10 @@ public class denum {
                 return handleErrors.invoke();
             }
             {
-                int __key903 = 0;
-                int __limit904 = (this.members).length;
-                for (; __key903 < __limit904;__key903 += 1) {
-                    int i = __key903;
+                int __key927 = 0;
+                int __limit928 = (this.members).length;
+                for (; __key927 < __limit928;__key927 += 1) {
+                    int i = __key927;
                     EnumMember em = (this.members).get(i).isEnumMember();
                     if (em != null)
                     {
