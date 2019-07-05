@@ -183,7 +183,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     Stack!(bool[string]) generatedFunctions;
     string moduleName;
     string[] constants; // all local static vars are collected here
-    string[] imports; // all imports for deduplication
+    bool[string] imports; // all imports for deduplication
 
     ExprOpts opts; // packs all information required for exp visitor
 
@@ -243,7 +243,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             }
         }
         temp.fmt("%s.*;\n", id.toString(), id.toString());
-        imports ~= temp.data.dup;
+        imports[temp.data.idup] = true;
     }
 
     string funcSig(FuncDeclaration func) {
@@ -305,11 +305,9 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     ///
     void onModuleEnd() {
-        imports = uniq(sort(imports)).array;
-        if (imports.length)  {
-            foreach(imp; imports) {
-                header.put(imp);
-            }
+        auto imps = sort(imports.keys).array;
+        foreach(imp; imps) {
+            header.put(imp);
         }
         header.fmt("\npublic class %s {\n", moduleName);
         header.indent;
@@ -527,13 +525,17 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     if (range[k].first > range[k].last) range[k].reversed = true;
                 }
         }
+        bool addedStart = false;
         if (s.statements) {
             ptrdiff_t[] totalRevs = [];
             foreach (idx, st; *s.statements) if (st) {
                 auto starts = range.filter!(x => x.first == idx && !x.reversed);
-                foreach (start; starts) {
-                    buf.put("try {\n");
-                    buf.indent;
+                if(!starts.empty && !addedStart) {
+                    addedStart = true;
+                    foreach (start; range.filter!(x => !x.reversed)) {
+                        buf.put("try {\n");
+                        buf.indent;
+                    }
                 }
                 auto revEnds = range.filter!(x => x.last == idx && x.reversed);
                 foreach (rev; revEnds) {
@@ -919,6 +921,9 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     override void visit(DefaultStatement s)
     {
         buf.put("default:\n");
+        if (gotos.top.canFind!(g => g.default_)) {
+            buf.fmt("__dispatch%d = 0;\n", dispatch.top);
+        }
         Statement st = s.statement;
         ScopeStatement ss;
         while (st && ((ss = st.isScopeStatement()) !is null)) {
@@ -1056,6 +1061,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     }
 
     void addImportForType(Type t) {
+        if (auto p = t.isTypePointer) return addImportForType(p.next);
         // stderr.writefln("import for %s %s\n", t.toString, t.kind[0..strlen(t.kind)]);
         auto tc = t.isTypeClass();
         // if (tc) 
@@ -1070,15 +1076,18 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             if (auto tmpl = ts.sym in opts.templates) {
                 foreach (tt; tmpl.types) addImportForType(tt);
             }
-            addImport(ts.sym.getModule.md.packages, ts.sym.getModule.ident);
-        }
-        auto ti = t.isTypeInstance();
-        if (ti && ti.tempinst.tiargs && ti.tempinst.getModule !is opts.currentMod) {
-            foreach (arg; *ti.tempinst.tiargs) {
-                if (auto tt = arg.isType()) {
-                    addImportForType(tt);
+            else if (ts.sym.parent) {
+                if (auto ti = ts.sym.parent.isTemplateInstance) {
+                    if (ti.tiargs) {
+                        foreach (arg; *ti.tiargs) {
+                            if (auto tt = arg.isType()) {
+                                addImportForType(tt);
+                            }
+                        }   
+                    }
                 }
             }
+            addImport(ts.sym.getModule.md.packages, ts.sym.getModule.ident);
         }
     }
 

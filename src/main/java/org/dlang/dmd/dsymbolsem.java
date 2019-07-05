@@ -1453,25 +1453,25 @@ public class dsymbolsem {
 
         public  void visit(PragmaDeclaration pd) {
             try {
-                if (global.params.mscoff)
-                {
-                    if (pequals(pd.ident, Id.linkerDirective))
-                    {
-                        if ((pd.args == null || (pd.args).length != 1))
-                            pd.error(new BytePtr("one string argument expected for pragma(linkerDirective)"));
-                        else
-                        {
-                            StringExp se = semanticString(this.sc, (pd.args).get(0), new BytePtr("linker directive"));
-                            if (!(se != null))
-                                /*goto Lnodecl*/throw Dispatch1.INSTANCE;
-                            pd.args.set(0, se);
-                            if (global.params.verbose)
-                                message(new BytePtr("linkopt   %.*s"), se.len, se.string);
-                        }
-                        /*goto Lnodecl*/throw Dispatch1.INSTANCE;
-                    }
-                }
                 try {
+                    if (global.params.mscoff)
+                    {
+                        if (pequals(pd.ident, Id.linkerDirective))
+                        {
+                            if ((pd.args == null || (pd.args).length != 1))
+                                pd.error(new BytePtr("one string argument expected for pragma(linkerDirective)"));
+                            else
+                            {
+                                StringExp se = semanticString(this.sc, (pd.args).get(0), new BytePtr("linker directive"));
+                                if (!(se != null))
+                                    /*goto Lnodecl*/throw Dispatch1.INSTANCE;
+                                pd.args.set(0, se);
+                                if (global.params.verbose)
+                                    message(new BytePtr("linkopt   %.*s"), se.len, se.string);
+                            }
+                            /*goto Lnodecl*/throw Dispatch1.INSTANCE;
+                        }
+                    }
                     if (pequals(pd.ident, Id.msg))
                     {
                         if (pd.args != null)
@@ -2940,206 +2940,206 @@ public class dsymbolsem {
                         int vi = cd.baseClass != null ? funcdecl.findVtblIndex(cd.baseClass.vtbl, cd.baseClass.vtbl.length, true) : -1;
                         boolean doesoverride = false;
                         try {
-                            {
-                                int __dispatch1 = 0;
-                                dispatched_1:
-                                do {
-                                    switch (__dispatch1 != 0 ? __dispatch1 : vi)
-                                    {
-                                        case -1:
-                                        /*Lintro:*/
-                                        case -1:
-                                        __dispatch1 = 0;
-                                            if (cd.baseClass != null)
-                                            {
-                                                Dsymbol s = cd.baseClass.search(funcdecl.loc, funcdecl.ident, 8);
-                                                if (s != null)
+                            try {
+                                {
+                                    int __dispatch1 = 0;
+                                    dispatched_1:
+                                    do {
+                                        switch (__dispatch1 != 0 ? __dispatch1 : vi)
+                                        {
+                                            case -1:
+                                            /*Lintro:*/
+                                            case -1:
+                                            __dispatch1 = 0;
+                                                if (cd.baseClass != null)
                                                 {
-                                                    FuncDeclaration f2 = s.isFuncDeclaration();
-                                                    if (f2 != null)
+                                                    Dsymbol s = cd.baseClass.search(funcdecl.loc, funcdecl.ident, 8);
+                                                    if (s != null)
                                                     {
-                                                        f2 = f2.overloadExactMatch(funcdecl.type);
-                                                        if (((f2 != null && f2.isFinalFunc()) && f2.prot().kind != Prot.Kind.private_))
-                                                            funcdecl.error(new BytePtr("cannot override `final` function `%s`"), f2.toPrettyChars(false));
-                                                    }
-                                                }
-                                            }
-                                            if ((((global.params.mscoff && cd.classKind == ClassKind.cpp) && cd.baseClass != null) && (cd.baseClass.vtbl.length) != 0))
-                                            {
-                                                funcdecl.interfaceVirtual = funcdecl.overrideInterface();
-                                                if (funcdecl.interfaceVirtual != null)
-                                                {
-                                                    cd.vtblFinal.push(funcdecl);
-                                                    /*goto Linterfaces*/throw Dispatch0.INSTANCE;
-                                                }
-                                            }
-                                            if (funcdecl.isFinalFunc())
-                                            {
-                                                cd.vtblFinal.push(funcdecl);
-                                            }
-                                            else
-                                            {
-                                                funcdecl.introducing = true;
-                                                if ((cd.classKind == ClassKind.cpp && target.reverseCppOverloads))
-                                                {
-                                                    funcdecl.vtblIndex = cd.vtbl.length;
-                                                    boolean found = false;
-                                                    {
-                                                        Slice<Dsymbol> __r1158 = cd.vtbl.opSlice().copy();
-                                                        int __key1157 = 0;
-                                                        for (; __key1157 < __r1158.getLength();__key1157 += 1) {
-                                                            Dsymbol s_1 = __r1158.get(__key1157);
-                                                            int i = __key1157;
-                                                            if (found)
-                                                                s_1.isFuncDeclaration().vtblIndex += 1;
-                                                            else if ((pequals(s_1.ident, funcdecl.ident) && pequals(s_1.parent, parent)))
-                                                            {
-                                                                funcdecl.vtblIndex = i;
-                                                                found = true;
-                                                                s_1.isFuncDeclaration().vtblIndex += 1;
-                                                            }
+                                                        FuncDeclaration f2 = s.isFuncDeclaration();
+                                                        if (f2 != null)
+                                                        {
+                                                            f2 = f2.overloadExactMatch(funcdecl.type);
+                                                            if (((f2 != null && f2.isFinalFunc()) && f2.prot().kind != Prot.Kind.private_))
+                                                                funcdecl.error(new BytePtr("cannot override `final` function `%s`"), f2.toPrettyChars(false));
                                                         }
                                                     }
-                                                    cd.vtbl.insert(funcdecl.vtblIndex, funcdecl);
+                                                }
+                                                if ((((global.params.mscoff && cd.classKind == ClassKind.cpp) && cd.baseClass != null) && (cd.baseClass.vtbl.length) != 0))
+                                                {
+                                                    funcdecl.interfaceVirtual = funcdecl.overrideInterface();
+                                                    if (funcdecl.interfaceVirtual != null)
+                                                    {
+                                                        cd.vtblFinal.push(funcdecl);
+                                                        /*goto Linterfaces*/throw Dispatch0.INSTANCE;
+                                                    }
+                                                }
+                                                if (funcdecl.isFinalFunc())
+                                                {
+                                                    cd.vtblFinal.push(funcdecl);
                                                 }
                                                 else
                                                 {
-                                                    vi = cd.vtbl.length;
-                                                    cd.vtbl.push(funcdecl);
-                                                    funcdecl.vtblIndex = vi;
+                                                    funcdecl.introducing = true;
+                                                    if ((cd.classKind == ClassKind.cpp && target.reverseCppOverloads))
+                                                    {
+                                                        funcdecl.vtblIndex = cd.vtbl.length;
+                                                        boolean found = false;
+                                                        {
+                                                            Slice<Dsymbol> __r1158 = cd.vtbl.opSlice().copy();
+                                                            int __key1157 = 0;
+                                                            for (; __key1157 < __r1158.getLength();__key1157 += 1) {
+                                                                Dsymbol s_1 = __r1158.get(__key1157);
+                                                                int i = __key1157;
+                                                                if (found)
+                                                                    s_1.isFuncDeclaration().vtblIndex += 1;
+                                                                else if ((pequals(s_1.ident, funcdecl.ident) && pequals(s_1.parent, parent)))
+                                                                {
+                                                                    funcdecl.vtblIndex = i;
+                                                                    found = true;
+                                                                    s_1.isFuncDeclaration().vtblIndex += 1;
+                                                                }
+                                                            }
+                                                        }
+                                                        cd.vtbl.insert(funcdecl.vtblIndex, funcdecl);
+                                                    }
+                                                    else
+                                                    {
+                                                        vi = cd.vtbl.length;
+                                                        cd.vtbl.push(funcdecl);
+                                                        funcdecl.vtblIndex = vi;
+                                                    }
+                                                }
+                                                break;
+                                            case -2:
+                                                funcdecl.errors = true;
+                                                return ;
+                                            default:
+                                            FuncDeclaration fdv = cd.baseClass.vtbl.get(vi).isFuncDeclaration();
+                                            FuncDeclaration fdc = cd.vtbl.get(vi).isFuncDeclaration();
+                                            if (pequals(fdc, funcdecl))
+                                            {
+                                                doesoverride = true;
+                                                break;
+                                            }
+                                            if (pequals(fdc.toParent(), parent))
+                                            {
+                                                if (((fdc.type.mod & 0xFF) == (fdv.type.mod & 0xFF) && (funcdecl.type.mod & 0xFF) != (fdv.type.mod & 0xFF)))
+                                                    /*goto Lintro*/{ __dispatch1 = -1; continue dispatched_1; }
+                                            }
+                                            if (fdv.isDeprecated())
+                                                deprecation(funcdecl.loc, new BytePtr("`%s` is overriding the deprecated method `%s`"), funcdecl.toPrettyChars(false), fdv.toPrettyChars(false));
+                                            if (fdv.isFinalFunc())
+                                                funcdecl.error(new BytePtr("cannot override `final` function `%s`"), fdv.toPrettyChars(false));
+                                            if (!(funcdecl.isOverride()))
+                                            {
+                                                if (fdv.isFuture())
+                                                {
+                                                    deprecation(funcdecl.loc, new BytePtr("`@__future` base class method `%s` is being overridden by `%s`; rename the latter"), fdv.toPrettyChars(false), funcdecl.toPrettyChars(false));
+                                                    /*goto Lintro*/{ __dispatch1 = -1; continue dispatched_1; }
+                                                }
+                                                else
+                                                {
+                                                    int vi2 = funcdecl.findVtblIndex(cd.baseClass.vtbl, cd.baseClass.vtbl.length, false);
+                                                    if (vi2 < 0)
+                                                        deprecation(funcdecl.loc, new BytePtr("cannot implicitly override base class method `%s` with `%s`; add `override` attribute"), fdv.toPrettyChars(false), funcdecl.toPrettyChars(false));
+                                                    else
+                                                        error(funcdecl.loc, new BytePtr("cannot implicitly override base class method `%s` with `%s`; add `override` attribute"), fdv.toPrettyChars(false), funcdecl.toPrettyChars(false));
                                                 }
                                             }
+                                            doesoverride = true;
+                                            if (pequals(fdc.toParent(), parent))
+                                            {
+                                                boolean thismixin = funcdecl.parent.isClassDeclaration() != null;
+                                                boolean fdcmixin = fdc.parent.isClassDeclaration() != null;
+                                                if ((thismixin ? 1 : 0) == (fdcmixin ? 1 : 0))
+                                                {
+                                                    funcdecl.error(new BytePtr("multiple overrides of same function"));
+                                                }
+                                                else if (thismixin)
+                                                {
+                                                    int vitmp = cd.vtbl.length;
+                                                    cd.vtbl.push(fdc);
+                                                    fdc.vtblIndex = vitmp;
+                                                }
+                                                else if (fdcmixin)
+                                                {
+                                                    int vitmp_1 = cd.vtbl.length;
+                                                    cd.vtbl.push(funcdecl);
+                                                    funcdecl.vtblIndex = vitmp_1;
+                                                    break;
+                                                }
+                                                else
+                                                {
+                                                    break;
+                                                }
+                                            }
+                                            cd.vtbl.set(vi, funcdecl);
+                                            funcdecl.vtblIndex = vi;
+                                            funcdecl.foverrides.push(fdv);
+                                            if (fdv.tintro != null)
+                                                funcdecl.tintro = fdv.tintro;
+                                            else if (!(funcdecl.type.equals(fdv.type)))
+                                            {
+                                                IntRef offset = ref(0);
+                                                if (fdv.type.nextOf().isBaseOf(funcdecl.type.nextOf(), ptr(offset)))
+                                                {
+                                                    funcdecl.tintro = fdv.type;
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    } while(__dispatch1 != 0);
+                                }
+                            }
+                            catch(Dispatch0 __d){}
+                        /*Linterfaces:*/
+                            boolean foundVtblMatch = false;
+                            {
+                                Slice<BaseClass> __r1159 = cd.interfaces.copy();
+                                int __key1160 = 0;
+                                for (; __key1160 < __r1159.getLength();__key1160 += 1) {
+                                    BaseClass b = __r1159.get(__key1160);
+                                    vi = funcdecl.findVtblIndex((b).sym.vtbl, (b).sym.vtbl.length, true);
+                                    switch (vi)
+                                    {
+                                        case -1:
                                             break;
                                         case -2:
                                             funcdecl.errors = true;
                                             return ;
                                         default:
-                                        FuncDeclaration fdv = cd.baseClass.vtbl.get(vi).isFuncDeclaration();
-                                        FuncDeclaration fdc = cd.vtbl.get(vi).isFuncDeclaration();
-                                        if (pequals(fdc, funcdecl))
-                                        {
-                                            doesoverride = true;
-                                            break;
-                                        }
-                                        if (pequals(fdc.toParent(), parent))
-                                        {
-                                            if (((fdc.type.mod & 0xFF) == (fdv.type.mod & 0xFF) && (funcdecl.type.mod & 0xFF) != (fdv.type.mod & 0xFF)))
-                                                /*goto Lintro*/{ __dispatch1 = -1; continue dispatched_1; }
-                                        }
-                                        if (fdv.isDeprecated())
-                                            deprecation(funcdecl.loc, new BytePtr("`%s` is overriding the deprecated method `%s`"), funcdecl.toPrettyChars(false), fdv.toPrettyChars(false));
-                                        if (fdv.isFinalFunc())
-                                            funcdecl.error(new BytePtr("cannot override `final` function `%s`"), fdv.toPrettyChars(false));
-                                        if (!(funcdecl.isOverride()))
-                                        {
-                                            if (fdv.isFuture())
-                                            {
-                                                deprecation(funcdecl.loc, new BytePtr("`@__future` base class method `%s` is being overridden by `%s`; rename the latter"), fdv.toPrettyChars(false), funcdecl.toPrettyChars(false));
-                                                /*goto Lintro*/{ __dispatch1 = -1; continue dispatched_1; }
-                                            }
-                                            else
-                                            {
-                                                int vi2 = funcdecl.findVtblIndex(cd.baseClass.vtbl, cd.baseClass.vtbl.length, false);
-                                                if (vi2 < 0)
-                                                    deprecation(funcdecl.loc, new BytePtr("cannot implicitly override base class method `%s` with `%s`; add `override` attribute"), fdv.toPrettyChars(false), funcdecl.toPrettyChars(false));
-                                                else
-                                                    error(funcdecl.loc, new BytePtr("cannot implicitly override base class method `%s` with `%s`; add `override` attribute"), fdv.toPrettyChars(false), funcdecl.toPrettyChars(false));
-                                            }
-                                        }
-                                        doesoverride = true;
-                                        if (pequals(fdc.toParent(), parent))
-                                        {
-                                            boolean thismixin = funcdecl.parent.isClassDeclaration() != null;
-                                            boolean fdcmixin = fdc.parent.isClassDeclaration() != null;
-                                            if ((thismixin ? 1 : 0) == (fdcmixin ? 1 : 0))
-                                            {
-                                                funcdecl.error(new BytePtr("multiple overrides of same function"));
-                                            }
-                                            else if (thismixin)
-                                            {
-                                                int vitmp = cd.vtbl.length;
-                                                cd.vtbl.push(fdc);
-                                                fdc.vtblIndex = vitmp;
-                                            }
-                                            else if (fdcmixin)
-                                            {
-                                                int vitmp_1 = cd.vtbl.length;
-                                                cd.vtbl.push(funcdecl);
-                                                funcdecl.vtblIndex = vitmp_1;
-                                                break;
-                                            }
-                                            else
-                                            {
-                                                break;
-                                            }
-                                        }
-                                        cd.vtbl.set(vi, funcdecl);
-                                        funcdecl.vtblIndex = vi;
+                                        FuncDeclaration fdv = (FuncDeclaration)(b).sym.vtbl.get(vi);
+                                        Type ti = null;
+                                        foundVtblMatch = true;
                                         funcdecl.foverrides.push(fdv);
                                         if (fdv.tintro != null)
-                                            funcdecl.tintro = fdv.tintro;
+                                            ti = fdv.tintro;
                                         else if (!(funcdecl.type.equals(fdv.type)))
                                         {
                                             IntRef offset = ref(0);
                                             if (fdv.type.nextOf().isBaseOf(funcdecl.type.nextOf(), ptr(offset)))
                                             {
-                                                funcdecl.tintro = fdv.type;
+                                                ti = fdv.type;
                                             }
                                         }
-                                        break;
-                                    }
-                                } while(__dispatch1 != 0);
-                            }
-                        }
-                        catch(Dispatch0 __d){}
-                    /*Linterfaces:*/
-                        boolean foundVtblMatch = false;
-                        {
-                            Slice<BaseClass> __r1159 = cd.interfaces.copy();
-                            int __key1160 = 0;
-                            for (; __key1160 < __r1159.getLength();__key1160 += 1) {
-                                BaseClass b = __r1159.get(__key1160);
-                                vi = funcdecl.findVtblIndex((b).sym.vtbl, (b).sym.vtbl.length, true);
-                                switch (vi)
-                                {
-                                    case -1:
-                                        break;
-                                    case -2:
-                                        funcdecl.errors = true;
-                                        return ;
-                                    default:
-                                    FuncDeclaration fdv = (FuncDeclaration)(b).sym.vtbl.get(vi);
-                                    Type ti = null;
-                                    foundVtblMatch = true;
-                                    funcdecl.foverrides.push(fdv);
-                                    if (fdv.tintro != null)
-                                        ti = fdv.tintro;
-                                    else if (!(funcdecl.type.equals(fdv.type)))
-                                    {
-                                        IntRef offset = ref(0);
-                                        if (fdv.type.nextOf().isBaseOf(funcdecl.type.nextOf(), ptr(offset)))
+                                        if (ti != null)
                                         {
-                                            ti = fdv.type;
-                                        }
-                                    }
-                                    if (ti != null)
-                                    {
-                                        if (funcdecl.tintro != null)
-                                        {
-                                            if (((!(funcdecl.tintro.nextOf().equals(ti.nextOf())) && !(funcdecl.tintro.nextOf().isBaseOf(ti.nextOf(), null))) && !(ti.nextOf().isBaseOf(funcdecl.tintro.nextOf(), null))))
+                                            if (funcdecl.tintro != null)
                                             {
-                                                funcdecl.error(new BytePtr("incompatible covariant types `%s` and `%s`"), funcdecl.tintro.toChars(), ti.toChars());
+                                                if (((!(funcdecl.tintro.nextOf().equals(ti.nextOf())) && !(funcdecl.tintro.nextOf().isBaseOf(ti.nextOf(), null))) && !(ti.nextOf().isBaseOf(funcdecl.tintro.nextOf(), null))))
+                                                {
+                                                    funcdecl.error(new BytePtr("incompatible covariant types `%s` and `%s`"), funcdecl.tintro.toChars(), ti.toChars());
+                                                }
                                             }
-                                        }
-                                        else
-                                        {
-                                            funcdecl.tintro = ti;
+                                            else
+                                            {
+                                                funcdecl.tintro = ti;
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                        try {
                             if (foundVtblMatch)
                             {
                                 /*goto L2*/throw Dispatch1.INSTANCE;

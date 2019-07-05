@@ -338,6 +338,19 @@ public class dcast {
                 break;
             }
             long value = e.toInteger();
+            // from template isLosslesslyConvertibleToFP!(Float)
+            Function0<Boolean> isLosslesslyConvertibleToFPFloat = new Function0<Boolean>(){
+                public Boolean invoke(){
+                    if (e.type.isunsigned())
+                    {
+                        float f = (float)value;
+                        return (long)f == value;
+                    }
+                    float f = (float)(long)value;
+                    return (long)f == (long)value;
+                }
+            };
+
             // from template isLosslesslyConvertibleToFP!(Double)
             Function0<Boolean> isLosslesslyConvertibleToFPDouble = new Function0<Boolean>(){
                 public Boolean invoke(){
@@ -352,20 +365,7 @@ public class dcast {
             };
 
             // from template isLosslesslyConvertibleToFP!(Double)
-            // removed duplicate function, [["boolean isLosslesslyConvertibleToFPDouble"]] signature: boolean isLosslesslyConvertibleToFPDouble
-
-            // from template isLosslesslyConvertibleToFP!(Float)
-            Function0<Boolean> isLosslesslyConvertibleToFPFloat = new Function0<Boolean>(){
-                public Boolean invoke(){
-                    if (e.type.isunsigned())
-                    {
-                        float f = (float)value;
-                        return (long)f == value;
-                    }
-                    float f = (float)(long)value;
-                    return (long)f == (long)value;
-                }
-            };
+            // removed duplicate function, [["boolean isLosslesslyConvertibleToFPFloat", "boolean isLosslesslyConvertibleToFPDouble"]] signature: boolean isLosslesslyConvertibleToFPDouble
 
             {
                 int __dispatch1 = 0;
@@ -446,6 +446,7 @@ public class dcast {
                             }
                             /*goto default*/ { __dispatch1 = -3; continue dispatched_1; }
                         default:
+                        __dispatch1 = 0;
                         this.visit((Expression)e);
                         return ;
                     }
@@ -1364,25 +1365,25 @@ public class dcast {
                 return ;
             }
             try {
-                if ((((tb.ty & 0xFF) != ENUMTY.Tsarray && (tb.ty & 0xFF) != ENUMTY.Tarray) && (tb.ty & 0xFF) != ENUMTY.Tpointer))
-                {
-                    if (!((copied) != 0))
-                    {
-                        se = (StringExp)e.copy();
-                        copied = 1;
-                    }
-                    /*goto Lcast*/throw Dispatch1.INSTANCE;
-                }
-                if ((((typeb.ty & 0xFF) != ENUMTY.Tsarray && (typeb.ty & 0xFF) != ENUMTY.Tarray) && (typeb.ty & 0xFF) != ENUMTY.Tpointer))
-                {
-                    if (!((copied) != 0))
-                    {
-                        se = (StringExp)e.copy();
-                        copied = 1;
-                    }
-                    /*goto Lcast*/throw Dispatch1.INSTANCE;
-                }
                 try {
+                    if ((((tb.ty & 0xFF) != ENUMTY.Tsarray && (tb.ty & 0xFF) != ENUMTY.Tarray) && (tb.ty & 0xFF) != ENUMTY.Tpointer))
+                    {
+                        if (!((copied) != 0))
+                        {
+                            se = (StringExp)e.copy();
+                            copied = 1;
+                        }
+                        /*goto Lcast*/throw Dispatch1.INSTANCE;
+                    }
+                    if ((((typeb.ty & 0xFF) != ENUMTY.Tsarray && (typeb.ty & 0xFF) != ENUMTY.Tarray) && (typeb.ty & 0xFF) != ENUMTY.Tpointer))
+                    {
+                        if (!((copied) != 0))
+                        {
+                            se = (StringExp)e.copy();
+                            copied = 1;
+                        }
+                        /*goto Lcast*/throw Dispatch1.INSTANCE;
+                    }
                     if (typeb.nextOf().size() == tb.nextOf().size())
                     {
                         if (!((copied) != 0))

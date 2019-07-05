@@ -2376,6 +2376,7 @@ public class expressionsem {
                                 e.committed = (byte)1;
                                 /*goto default*/ { __dispatch3 = -1; continue dispatched_3; }
                             default:
+                            __dispatch3 = 0;
                             e.type = new TypeDArray(Type.tchar.immutableOf());
                             break;
                         }
@@ -5506,6 +5507,7 @@ public class expressionsem {
                             this.setError();
                             return ;
                         default:
+                        __dispatch5 = 0;
                         exp.error(new BytePtr("can only `*` a pointer, not a `%s`"), exp.e1.type.toChars());
                         /*goto case*/{ __dispatch5 = 34; continue dispatched_5; }
                     }

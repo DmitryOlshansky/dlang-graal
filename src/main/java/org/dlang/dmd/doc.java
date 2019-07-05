@@ -2852,6 +2852,7 @@ public class doc {
                                 }
                                 return false;
                             default:
+                            __dispatch7 = 0;
                             this.label.append(c);
                             break;
                         }
@@ -3506,6 +3507,7 @@ public class doc {
                                 delta.value += 7;
                                 /*goto default*/ { __dispatch11 = -1; continue dispatched_11; }
                             default:
+                            __dispatch11 = 0;
                             (buf_ref.value).insert(iCellStart, headerRow_ref.value ? new ByteSlice("$(TH_ALIGN ") : new ByteSlice("$(TD_ALIGN "));
                             delta.value += 11;
                             break;
@@ -4256,6 +4258,7 @@ public class doc {
                                 }
                                 break;
                             default:
+                            __dispatch12 = 0;
                             leadingBlank = false;
                             if (((sc)._module.isDocFile || (inCode) != 0))
                                 break;

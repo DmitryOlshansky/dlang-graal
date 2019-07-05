@@ -252,9 +252,9 @@ public class clone {
 
     public static boolean needOpEquals(StructDeclaration sd) {
         try {
-            if (sd.isUnionDeclaration() != null)
-                /*goto Ldontneed*/throw Dispatch0.INSTANCE;
             try {
+                if (sd.isUnionDeclaration() != null)
+                    /*goto Ldontneed*/throw Dispatch0.INSTANCE;
                 if (sd.hasIdentityEquals)
                     /*goto Lneed*/throw Dispatch1.INSTANCE;
                 {
@@ -506,9 +506,9 @@ public class clone {
 
     public static boolean needToHash(StructDeclaration sd) {
         try {
-            if (sd.isUnionDeclaration() != null)
-                /*goto Ldontneed*/throw Dispatch0.INSTANCE;
             try {
+                if (sd.isUnionDeclaration() != null)
+                    /*goto Ldontneed*/throw Dispatch0.INSTANCE;
                 if (sd.xhash != null)
                     /*goto Lneed*/throw Dispatch1.INSTANCE;
                 {
@@ -806,6 +806,7 @@ public class clone {
                     case 1:
                         /*goto default*/ { __dispatch2 = -1; continue dispatched_2; }
                     default:
+                    __dispatch2 = 0;
                     Expression e = null;
                     long stcx = 0L;
                     long stc = 4406737108992L;

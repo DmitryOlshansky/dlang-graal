@@ -71,6 +71,8 @@ vendor/dmd/src/dmd/nogc.d
 vendor/dmd/src/dmd/nspace.d
 vendor/dmd/src/dmd/objc.d
 vendor/dmd/src/dmd/opover.d
+vendor/dmd/src/dmd/optimize.d
+vendor/dmd/src/dmd/safe.d
 vendor/dmd/src/dmd/sapply.d
 vendor/dmd/src/dmd/semantic2.d
 vendor/dmd/src/dmd/semantic3.d

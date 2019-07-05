@@ -148,16 +148,16 @@ public class identifier {
                 idBuf.print((long)loc.linnum);
                 idBuf.writestring(new ByteSlice("_C"));
                 idBuf.print((long)loc.charnum);
+                Function0<Integer> __lambda7 = new Function0<Integer>(){
+                    public Integer invoke(){
+                        return 1;
+                    }
+                };
                 Function1<Integer,Integer> __lambda8 = new Function1<Integer,Integer>(){
                     public Integer invoke(Integer counter){
                         idBuf.writestring(new ByteSlice("_"));
                         idBuf.print((long)counter);
                         return counter + 1;
-                    }
-                };
-                Function0<Integer> __lambda7 = new Function0<Integer>(){
-                    public Integer invoke(){
-                        return 1;
                     }
                 };
                 update(identifier.generateIdWithLoccounters, new Key(loc, prefix), __lambda7, __lambda8);

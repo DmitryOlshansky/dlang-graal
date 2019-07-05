@@ -753,6 +753,7 @@ public class mars {
                         case 0:
                             return ;
                         default:
+                        __dispatch0 = 0;
                         (args).push(env);
                         BytePtr p = pcopy(env);
                         int slash = 0;
@@ -790,6 +791,7 @@ public class mars {
                                             p.set(0, (byte)0);
                                             return ;
                                         default:
+                                        __dispatch1 = 0;
                                         slash = 0;
                                         p.postInc().set(0, c);
                                         continue L_outer3;

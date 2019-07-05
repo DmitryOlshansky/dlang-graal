@@ -14,6 +14,7 @@ import static org.dlang.dmd.root.DArrayKt.*;
 import static org.dlang.dmd.aggregate.*;
 import static org.dlang.dmd.arraytypes.*;
 import static org.dlang.dmd.cond.*;
+import static org.dlang.dmd.dclass.*;
 import static org.dlang.dmd.declaration.*;
 import static org.dlang.dmd.dmodule.*;
 import static org.dlang.dmd.dscope.*;

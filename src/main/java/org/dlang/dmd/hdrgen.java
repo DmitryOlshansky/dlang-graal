@@ -2049,6 +2049,7 @@ public class hdrgen {
                                     (this.buf).writeByte(92);
                                     /*goto default*/ { __dispatch3 = -1; continue dispatched_3; }
                                 default:
+                                __dispatch3 = 0;
                                 if (c <= 255)
                                 {
                                     if ((c <= 127 && (isprint(c)) != 0))

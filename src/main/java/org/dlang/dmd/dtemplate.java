@@ -68,12 +68,12 @@ public class dtemplate {
 
         public  void visit(Type t) {
             try {
-                if (!(this.tparam != null))
-                    /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                 try {
-                    if (pequals(t, this.tparam))
-                        /*goto Lexact*/throw Dispatch0.INSTANCE;
                     try {
+                        if (!(this.tparam != null))
+                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                        if (pequals(t, this.tparam))
+                            /*goto Lexact*/throw Dispatch0.INSTANCE;
                         if ((this.tparam.ty & 0xFF) == ENUMTY.Tident)
                         {
                             int i = templateParameterLookup(this.tparam, this.parameters);
@@ -2165,80 +2165,80 @@ public class dtemplate {
             Scope paramscope = this.scopeForTemplateParameters(ti, sc);
             m = MATCH.exact;
             try {
-                {
-                    int i = 0;
-                L_outer1:
-                    for (; i < dedtypes_dim;i++){
-                        int m2 = MATCH.nomatch;
-                        TemplateParameter tp = (this.parameters).get(i);
-                        Ref<Declaration> sparam = ref(null);
-                        this.inuse++;
-                        m2 = tp.matchArg(ti.loc, paramscope, ti.tiargs, i, this.parameters, dedtypes, ptr(sparam));
-                        this.inuse--;
-                        if (m2 == MATCH.nomatch)
-                        {
-                            /*goto Lnomatch*/throw Dispatch0.INSTANCE;
-                        }
-                        if (m2 < m)
-                            m = m2;
-                        if (!((flag) != 0))
-                            dsymbolSemantic(sparam.value, paramscope);
-                        if (!((paramscope).insert(sparam.value) != null))
-                        {
-                            /*goto Lnomatch*/throw Dispatch0.INSTANCE;
-                        }
-                    }
-                }
-                if (!((flag) != 0))
-                {
+                try {
                     {
                         int i = 0;
+                    L_outer1:
                         for (; i < dedtypes_dim;i++){
-                            if (!((dedtypes).get(i) != null))
+                            int m2 = MATCH.nomatch;
+                            TemplateParameter tp = (this.parameters).get(i);
+                            Ref<Declaration> sparam = ref(null);
+                            this.inuse++;
+                            m2 = tp.matchArg(ti.loc, paramscope, ti.tiargs, i, this.parameters, dedtypes, ptr(sparam));
+                            this.inuse--;
+                            if (m2 == MATCH.nomatch)
                             {
-                                assert(i < (ti.tiargs).length);
-                                dedtypes.set(i, (Type)(ti.tiargs).get(i));
+                                /*goto Lnomatch*/throw Dispatch0.INSTANCE;
+                            }
+                            if (m2 < m)
+                                m = m2;
+                            if (!((flag) != 0))
+                                dsymbolSemantic(sparam.value, paramscope);
+                            if (!((paramscope).insert(sparam.value) != null))
+                            {
+                                /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                             }
                         }
                     }
-                }
-                if (((m > MATCH.nomatch && this.constraint != null) && !((flag) != 0)))
-                {
-                    if (ti.hasNestedArgs(ti.tiargs, this.isstatic))
-                        ti.parent = ti.enclosing;
-                    else
-                        ti.parent = this.parent;
-                    FuncDeclaration fd = this.onemember != null ? this.onemember.isFuncDeclaration() : null;
-                    if (fd != null)
+                    if (!((flag) != 0))
                     {
-                        assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
-                        TypeFunction tf = (TypeFunction)fd.type.syntaxCopy();
-                        fd = new FuncDeclaration(fd.loc, fd.endloc, fd.ident, fd.storage_class, tf);
-                        fd.parent = ti;
-                        fd.inferRetType = true;
                         {
                             int i = 0;
-                            for (; i < (tf.parameterList.parameters).length;i++) {
-                                (tf.parameterList.parameters).get(i).defaultArg = null;
+                            for (; i < dedtypes_dim;i++){
+                                if (!((dedtypes).get(i) != null))
+                                {
+                                    assert(i < (ti.tiargs).length);
+                                    dedtypes.set(i, (Type)(ti.tiargs).get(i));
+                                }
                             }
                         }
-                        tf.next = null;
-                        tf.incomplete = true;
-                        tf.fargs = fargs;
-                        int olderrors = global.startGagging();
-                        fd.type = typeSemantic(tf, this.loc, paramscope);
-                        if (global.endGagging(olderrors))
-                        {
-                            assert((fd.type.ty & 0xFF) != ENUMTY.Tfunction);
-                            /*goto Lnomatch*/throw Dispatch0.INSTANCE;
-                        }
-                        assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
-                        fd.originalType = fd.type;
                     }
-                    if (!(this.evaluateConstraint(ti, sc, paramscope, dedtypes, fd)))
-                        /*goto Lnomatch*/throw Dispatch0.INSTANCE;
-                }
-                try {
+                    if (((m > MATCH.nomatch && this.constraint != null) && !((flag) != 0)))
+                    {
+                        if (ti.hasNestedArgs(ti.tiargs, this.isstatic))
+                            ti.parent = ti.enclosing;
+                        else
+                            ti.parent = this.parent;
+                        FuncDeclaration fd = this.onemember != null ? this.onemember.isFuncDeclaration() : null;
+                        if (fd != null)
+                        {
+                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            TypeFunction tf = (TypeFunction)fd.type.syntaxCopy();
+                            fd = new FuncDeclaration(fd.loc, fd.endloc, fd.ident, fd.storage_class, tf);
+                            fd.parent = ti;
+                            fd.inferRetType = true;
+                            {
+                                int i = 0;
+                                for (; i < (tf.parameterList.parameters).length;i++) {
+                                    (tf.parameterList.parameters).get(i).defaultArg = null;
+                                }
+                            }
+                            tf.next = null;
+                            tf.incomplete = true;
+                            tf.fargs = fargs;
+                            int olderrors = global.startGagging();
+                            fd.type = typeSemantic(tf, this.loc, paramscope);
+                            if (global.endGagging(olderrors))
+                            {
+                                assert((fd.type.ty & 0xFF) != ENUMTY.Tfunction);
+                                /*goto Lnomatch*/throw Dispatch0.INSTANCE;
+                            }
+                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            fd.originalType = fd.type;
+                        }
+                        if (!(this.evaluateConstraint(ti, sc, paramscope, dedtypes, fd)))
+                            /*goto Lnomatch*/throw Dispatch0.INSTANCE;
+                    }
                     /*goto Lret*/throw Dispatch1.INSTANCE;
                 }
                 catch(Dispatch0 __d){}
@@ -2315,593 +2315,593 @@ public class dtemplate {
             Tuple declaredTuple = null;
             ntargs = 0;
             try {
-                if (tiargs != null)
-                {
-                    ntargs = (tiargs).length;
-                    int n = (this.parameters).length;
-                    if (tp != null)
-                        n--;
-                    if (ntargs > n)
-                    {
-                        if (!(tp != null))
-                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                        Tuple t = new Tuple(ntargs - n);
-                        assert(((this.parameters).length) != 0);
-                        dedargs.set((this.parameters).length - 1, t);
+                try {
+                    try {
+                        if (tiargs != null)
                         {
-                            int i = 0;
-                            for (; i < t.objects.length;i++){
-                                t.objects.set(i, (tiargs).get(n + i));
-                            }
-                        }
-                        this.declareParameter(paramscope, tp, t);
-                        declaredTuple = t;
-                    }
-                    else
-                        n = ntargs;
-                    memcpy((BytePtr)((dedargs).tdata()), ((tiargs).tdata()), (n * 4));
-                    {
-                        int i = 0;
-                    L_outer2:
-                        for (; i < n;i++){
-                            assert(i < (this.parameters).length);
-                            Ref<Declaration> sparam = ref(null);
-                            int m = (this.parameters).get(i).matchArg(instLoc, paramscope, dedargs, i, this.parameters, dedtypes, ptr(sparam));
-                            if (m <= MATCH.nomatch)
-                                /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                            if (m < matchTiargs)
-                                matchTiargs = m;
-                            dsymbolSemantic(sparam.value, paramscope);
-                            if (!((paramscope).insert(sparam.value) != null))
-                                /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                        }
-                    }
-                    if ((n < (this.parameters).length && !(declaredTuple != null)))
-                    {
-                        inferStart = n;
-                    }
-                    else
-                        inferStart = (this.parameters).length;
-                }
-                fparameters = fd.value.getParameterList().copy();
-                nfparams = fparameters.length();
-                nfargs = fargs != null ? (fargs).length : 0;
-                if (tp != null)
-                {
-                    matchTiargs = MATCH.convert;
-                    if ((nfparams == 0 && nfargs != 0))
-                    {
-                        if (!(declaredTuple != null))
-                        {
-                            Tuple t = new Tuple();
-                            dedargs.set((this.parameters).length - 1, t);
-                            this.declareParameter(paramscope, tp, t);
-                            declaredTuple = t;
-                        }
-                    }
-                    else
-                    {
-                        try {
+                            ntargs = (tiargs).length;
+                            int n = (this.parameters).length;
+                            if (tp != null)
+                                n--;
+                            if (ntargs > n)
                             {
-                                fptupindex = 0;
-                            L_outer3:
-                                for (; fptupindex < nfparams;fptupindex++){
-                                    Parameter fparam = (fparameters.parameters).get(fptupindex);
-                                    if ((fparam.type.ty & 0xFF) != ENUMTY.Tident)
-                                        continue L_outer3;
-                                    TypeIdentifier tid = (TypeIdentifier)fparam.type;
-                                    if ((!(tp.ident.equals(tid.ident)) || (tid.idents.length) != 0))
-                                        continue L_outer3;
-                                    if (fparameters.varargs != VarArg.none)
+                                if (!(tp != null))
+                                    /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                Tuple t = new Tuple(ntargs - n);
+                                assert(((this.parameters).length) != 0);
+                                dedargs.set((this.parameters).length - 1, t);
+                                {
+                                    int i = 0;
+                                    for (; i < t.objects.length;i++){
+                                        t.objects.set(i, (tiargs).get(n + i));
+                                    }
+                                }
+                                this.declareParameter(paramscope, tp, t);
+                                declaredTuple = t;
+                            }
+                            else
+                                n = ntargs;
+                            memcpy((BytePtr)((dedargs).tdata()), ((tiargs).tdata()), (n * 4));
+                            {
+                                int i = 0;
+                            L_outer2:
+                                for (; i < n;i++){
+                                    assert(i < (this.parameters).length);
+                                    Ref<Declaration> sparam = ref(null);
+                                    int m = (this.parameters).get(i).matchArg(instLoc, paramscope, dedargs, i, this.parameters, dedtypes, ptr(sparam));
+                                    if (m <= MATCH.nomatch)
                                         /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                    /*goto L1*/throw Dispatch0.INSTANCE;
+                                    if (m < matchTiargs)
+                                        matchTiargs = m;
+                                    dsymbolSemantic(sparam.value, paramscope);
+                                    if (!((paramscope).insert(sparam.value) != null))
+                                        /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                 }
                             }
-                            fptupindex = 305419896;
-                        }
-                        catch(Dispatch0 __d){}
-                    /*L1:*/
-                    }
-                }
-                if ((this.toParent().isModule() != null || ((this._scope).stc & 1L) != 0))
-                    tthis = null;
-                if (tthis != null)
-                {
-                    boolean hasttp = false;
-                    {
-                        int i = 0;
-                    L_outer4:
-                        for (; i < (this.parameters).length;i++){
-                            TemplateThisParameter ttp = (this.parameters).get(i).isTemplateThisParameter();
-                            if (ttp != null)
+                            if ((n < (this.parameters).length && !(declaredTuple != null)))
                             {
-                                hasttp = true;
-                                Type t = new TypeIdentifier(Loc.initial, ttp.ident);
-                                int m = deduceType(tthis, paramscope, t, this.parameters, dedtypes, null, 0, false);
+                                inferStart = n;
+                            }
+                            else
+                                inferStart = (this.parameters).length;
+                        }
+                        fparameters = fd.value.getParameterList().copy();
+                        nfparams = fparameters.length();
+                        nfargs = fargs != null ? (fargs).length : 0;
+                        if (tp != null)
+                        {
+                            matchTiargs = MATCH.convert;
+                            if ((nfparams == 0 && nfargs != 0))
+                            {
+                                if (!(declaredTuple != null))
+                                {
+                                    Tuple t = new Tuple();
+                                    dedargs.set((this.parameters).length - 1, t);
+                                    this.declareParameter(paramscope, tp, t);
+                                    declaredTuple = t;
+                                }
+                            }
+                            else
+                            {
+                                try {
+                                    {
+                                        fptupindex = 0;
+                                    L_outer3:
+                                        for (; fptupindex < nfparams;fptupindex++){
+                                            Parameter fparam = (fparameters.parameters).get(fptupindex);
+                                            if ((fparam.type.ty & 0xFF) != ENUMTY.Tident)
+                                                continue L_outer3;
+                                            TypeIdentifier tid = (TypeIdentifier)fparam.type;
+                                            if ((!(tp.ident.equals(tid.ident)) || (tid.idents.length) != 0))
+                                                continue L_outer3;
+                                            if (fparameters.varargs != VarArg.none)
+                                                /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                            /*goto L1*/throw Dispatch0.INSTANCE;
+                                        }
+                                    }
+                                    fptupindex = 305419896;
+                                }
+                                catch(Dispatch0 __d){}
+                            /*L1:*/
+                            }
+                        }
+                        if ((this.toParent().isModule() != null || ((this._scope).stc & 1L) != 0))
+                            tthis = null;
+                        if (tthis != null)
+                        {
+                            boolean hasttp = false;
+                            {
+                                int i = 0;
+                            L_outer4:
+                                for (; i < (this.parameters).length;i++){
+                                    TemplateThisParameter ttp = (this.parameters).get(i).isTemplateThisParameter();
+                                    if (ttp != null)
+                                    {
+                                        hasttp = true;
+                                        Type t = new TypeIdentifier(Loc.initial, ttp.ident);
+                                        int m = deduceType(tthis, paramscope, t, this.parameters, dedtypes, null, 0, false);
+                                        if (m <= MATCH.nomatch)
+                                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                        if (m < match)
+                                            match = m;
+                                    }
+                                }
+                            }
+                            if ((fd.value.type != null && !(fd.value.isCtorDeclaration() != null)))
+                            {
+                                long stc = (this._scope).stc | fd.value.storage_class2;
+                                Dsymbol p = this.parent;
+                                for (; (p.isTemplateDeclaration() != null || p.isTemplateInstance() != null);) {
+                                    p = p.parent;
+                                }
+                                AggregateDeclaration ad = p.isAggregateDeclaration();
+                                if (ad != null)
+                                    stc |= ad.storage_class;
+                                byte mod = fd.value.type.mod;
+                                if ((stc & 1048576L) != 0)
+                                    mod = (byte)4;
+                                else
+                                {
+                                    if ((stc & 536871424L) != 0)
+                                        mod |= MODFlags.shared_;
+                                    if ((stc & 4L) != 0)
+                                        mod |= MODFlags.const_;
+                                    if ((stc & 2147483648L) != 0)
+                                        mod |= MODFlags.wild;
+                                }
+                                byte thismod = tthis.mod;
+                                if (hasttp)
+                                    mod = MODmerge(thismod, mod);
+                                int m = MODmethodConv(thismod, mod);
                                 if (m <= MATCH.nomatch)
                                     /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                 if (m < match)
                                     match = m;
                             }
                         }
-                    }
-                    if ((fd.value.type != null && !(fd.value.isCtorDeclaration() != null)))
-                    {
-                        long stc = (this._scope).stc | fd.value.storage_class2;
-                        Dsymbol p = this.parent;
-                        for (; (p.isTemplateDeclaration() != null || p.isTemplateInstance() != null);) {
-                            p = p.parent;
-                        }
-                        AggregateDeclaration ad = p.isAggregateDeclaration();
-                        if (ad != null)
-                            stc |= ad.storage_class;
-                        byte mod = fd.value.type.mod;
-                        if ((stc & 1048576L) != 0)
-                            mod = (byte)4;
-                        else
                         {
-                            if ((stc & 536871424L) != 0)
-                                mod |= MODFlags.shared_;
-                            if ((stc & 4L) != 0)
-                                mod |= MODFlags.const_;
-                            if ((stc & 2147483648L) != 0)
-                                mod |= MODFlags.wild;
-                        }
-                        byte thismod = tthis.mod;
-                        if (hasttp)
-                            mod = MODmerge(thismod, mod);
-                        int m = MODmethodConv(thismod, mod);
-                        if (m <= MATCH.nomatch)
-                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                        if (m < match)
-                            match = m;
-                    }
-                }
-                try {
-                    {
-                        int argi = 0;
-                        int nfargs2 = nfargs;
-                        {
-                            int parami = 0;
-                        L_outer5:
-                            for (; parami < nfparams;parami++){
-                                Parameter fparam = fparameters.get(parami);
-                                Type prmtype = fparam.type.addStorageClass(fparam.storageClass);
-                                Expression farg = null;
-                                if ((fptupindex != 305419896 && parami == fptupindex))
-                                {
-                                    assert((prmtype.ty & 0xFF) == ENUMTY.Tident);
-                                    TypeIdentifier tid = (TypeIdentifier)prmtype;
-                                    if (!(declaredTuple != null))
+                            int argi = 0;
+                            int nfargs2 = nfargs;
+                            {
+                                int parami = 0;
+                            L_outer5:
+                                for (; parami < nfparams;parami++){
+                                    Parameter fparam = fparameters.get(parami);
+                                    Type prmtype = fparam.type.addStorageClass(fparam.storageClass);
+                                    Expression farg = null;
+                                    if ((fptupindex != 305419896 && parami == fptupindex))
                                     {
-                                        declaredTuple = new Tuple();
-                                        dedargs.set((this.parameters).length - 1, declaredTuple);
-                                        int rem = 0;
+                                        assert((prmtype.ty & 0xFF) == ENUMTY.Tident);
+                                        TypeIdentifier tid = (TypeIdentifier)prmtype;
+                                        if (!(declaredTuple != null))
                                         {
-                                            int j = parami + 1;
-                                            for (; j < nfparams;j++){
-                                                Parameter p = fparameters.get(j);
-                                                if (p.defaultArg != null)
-                                                {
-                                                    break;
-                                                }
-                                                if (!(reliesOnTemplateParameters(p.type, (this.parameters).opSlice(inferStart, (this.parameters).length))))
-                                                {
-                                                    Type pt = typeSemantic(p.type.syntaxCopy(), fd.value.loc, paramscope);
-                                                    rem += (pt.ty & 0xFF) == ENUMTY.Ttuple ? (((TypeTuple)pt).arguments).length : 1;
-                                                }
-                                                else
-                                                {
-                                                    rem += 1;
-                                                }
-                                            }
-                                        }
-                                        if (nfargs2 - argi < rem)
-                                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                        declaredTuple.objects.setDim(nfargs2 - argi - rem);
-                                        {
-                                            int i = 0;
-                                        L_outer6:
-                                            for (; i < declaredTuple.objects.length;i++){
-                                                farg = (fargs).get(argi + i);
-                                                if (((farg.op & 0xFF) == 127 || (farg.type.ty & 0xFF) == ENUMTY.Terror))
-                                                    /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                                if ((!((fparam.storageClass & 8192L) != 0) && (farg.type.ty & 0xFF) == ENUMTY.Tvoid))
-                                                    /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                                Ref<Type> tt = ref(null);
-                                                int m = MATCH.nomatch;
-                                                {
-                                                    byte wm = deduceWildHelper(farg.type, ptr(tt), tid);
-                                                    if ((wm) != 0)
+                                            declaredTuple = new Tuple();
+                                            dedargs.set((this.parameters).length - 1, declaredTuple);
+                                            int rem = 0;
+                                            {
+                                                int j = parami + 1;
+                                                for (; j < nfparams;j++){
+                                                    Parameter p = fparameters.get(j);
+                                                    if (p.defaultArg != null)
                                                     {
-                                                        wildmatch |= (wm & 0xFF);
-                                                        m = MATCH.constant;
+                                                        break;
+                                                    }
+                                                    if (!(reliesOnTemplateParameters(p.type, (this.parameters).opSlice(inferStart, (this.parameters).length))))
+                                                    {
+                                                        Type pt = typeSemantic(p.type.syntaxCopy(), fd.value.loc, paramscope);
+                                                        rem += (pt.ty & 0xFF) == ENUMTY.Ttuple ? (((TypeTuple)pt).arguments).length : 1;
                                                     }
                                                     else
                                                     {
-                                                        m = deduceTypeHelper(farg.type, ptr(tt), tid);
+                                                        rem += 1;
                                                     }
                                                 }
-                                                if (m <= MATCH.nomatch)
-                                                    /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                                if (m < match)
-                                                    match = m;
-                                                if (((((tt.value.ty & 0xFF) == ENUMTY.Tarray || (tt.value.ty & 0xFF) == ENUMTY.Tpointer) && !(tt.value.isMutable())) && (!((fparam.storageClass & 2097152L) != 0) || ((fparam.storageClass & 256L) != 0 && !(farg.isLvalue())))))
-                                                {
-                                                    tt.value = tt.value.mutableOf();
-                                                }
-                                                declaredTuple.objects.set(i, tt.value);
                                             }
-                                        }
-                                        this.declareParameter(paramscope, tp, declaredTuple);
-                                    }
-                                    else
-                                    {
-                                        {
-                                            int i = 0;
-                                        L_outer7:
-                                            for (; i < declaredTuple.objects.length;i++){
-                                                if (!(isType(declaredTuple.objects.get(i)) != null))
-                                                    /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                            }
-                                        }
-                                    }
-                                    assert(declaredTuple != null);
-                                    argi += declaredTuple.objects.length;
-                                    continue L_outer5;
-                                }
-                                try {
-                                    if (!(reliesOnTemplateParameters(prmtype, (this.parameters).opSlice(inferStart, (this.parameters).length))))
-                                    {
-                                        prmtype = typeSemantic(prmtype.syntaxCopy(), fd.value.loc, paramscope);
-                                        if ((prmtype.ty & 0xFF) == ENUMTY.Ttuple)
-                                        {
-                                            TypeTuple tt = (TypeTuple)prmtype;
-                                            int tt_dim = (tt.arguments).length;
+                                            if (nfargs2 - argi < rem)
+                                                /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                            declaredTuple.objects.setDim(nfargs2 - argi - rem);
                                             {
-                                                int j = 0;
-                                            L_outer8:
-                                                for (; j < tt_dim;comma(j++, argi += 1)){
-                                                    Parameter p = (tt.arguments).get(j);
-                                                    if ((((j == tt_dim - 1 && fparameters.varargs == VarArg.typesafe) && parami + 1 == nfparams) && argi < nfargs))
-                                                    {
-                                                        prmtype = p.type;
-                                                        /*goto Lvarargs*/throw Dispatch0.INSTANCE;
-                                                    }
-                                                    if (argi >= nfargs)
-                                                    {
-                                                        if (p.defaultArg != null)
-                                                            continue L_outer8;
-                                                        if (fparam.defaultArg != null)
-                                                            break;
+                                                int i = 0;
+                                            L_outer6:
+                                                for (; i < declaredTuple.objects.length;i++){
+                                                    farg = (fargs).get(argi + i);
+                                                    if (((farg.op & 0xFF) == 127 || (farg.type.ty & 0xFF) == ENUMTY.Terror))
                                                         /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                                    }
-                                                    farg = (fargs).get(argi);
-                                                    if (!((farg.implicitConvTo(p.type)) != 0))
+                                                    if ((!((fparam.storageClass & 8192L) != 0) && (farg.type.ty & 0xFF) == ENUMTY.Tvoid))
                                                         /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                    Ref<Type> tt = ref(null);
+                                                    int m = MATCH.nomatch;
+                                                    {
+                                                        byte wm = deduceWildHelper(farg.type, ptr(tt), tid);
+                                                        if ((wm) != 0)
+                                                        {
+                                                            wildmatch |= (wm & 0xFF);
+                                                            m = MATCH.constant;
+                                                        }
+                                                        else
+                                                        {
+                                                            m = deduceTypeHelper(farg.type, ptr(tt), tid);
+                                                        }
+                                                    }
+                                                    if (m <= MATCH.nomatch)
+                                                        /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                    if (m < match)
+                                                        match = m;
+                                                    if (((((tt.value.ty & 0xFF) == ENUMTY.Tarray || (tt.value.ty & 0xFF) == ENUMTY.Tpointer) && !(tt.value.isMutable())) && (!((fparam.storageClass & 2097152L) != 0) || ((fparam.storageClass & 256L) != 0 && !(farg.isLvalue())))))
+                                                    {
+                                                        tt.value = tt.value.mutableOf();
+                                                    }
+                                                    declaredTuple.objects.set(i, tt.value);
                                                 }
                                             }
-                                            continue L_outer5;
+                                            this.declareParameter(paramscope, tp, declaredTuple);
                                         }
-                                    }
-                                    if (argi >= nfargs)
-                                    {
-                                        if (!(fparam.defaultArg != null))
-                                            /*goto Lvarargs*/throw Dispatch0.INSTANCE;
-                                        if (argi == nfargs)
+                                        else
                                         {
                                             {
                                                 int i = 0;
-                                                for (; i < (dedtypes).length;i++){
-                                                    Type at = isType((dedtypes).get(i));
-                                                    if ((at != null && (at.ty & 0xFF) == ENUMTY.Tnone))
-                                                    {
-                                                        TypeDeduced xt = (TypeDeduced)at;
-                                                        dedtypes.set(i, xt.tded);
-                                                    }
+                                            L_outer7:
+                                                for (; i < declaredTuple.objects.length;i++){
+                                                    if (!(isType(declaredTuple.objects.get(i)) != null))
+                                                        /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                                 }
                                             }
+                                        }
+                                        assert(declaredTuple != null);
+                                        argi += declaredTuple.objects.length;
+                                        continue L_outer5;
+                                    }
+                                    try {
+                                        if (!(reliesOnTemplateParameters(prmtype, (this.parameters).opSlice(inferStart, (this.parameters).length))))
+                                        {
+                                            prmtype = typeSemantic(prmtype.syntaxCopy(), fd.value.loc, paramscope);
+                                            if ((prmtype.ty & 0xFF) == ENUMTY.Ttuple)
                                             {
-                                                int i = ntargs;
-                                            L_outer9:
-                                                for (; i < (dedargs).length;i++){
-                                                    TemplateParameter tparam = (this.parameters).get(i);
-                                                    RootObject oarg = (dedargs).get(i);
-                                                    RootObject oded = (dedtypes).get(i);
-                                                    if (!(oarg != null))
-                                                    {
-                                                        if (oded != null)
+                                                TypeTuple tt = (TypeTuple)prmtype;
+                                                int tt_dim = (tt.arguments).length;
+                                                {
+                                                    int j = 0;
+                                                L_outer8:
+                                                    for (; j < tt_dim;comma(j++, argi += 1)){
+                                                        Parameter p = (tt.arguments).get(j);
+                                                        if ((((j == tt_dim - 1 && fparameters.varargs == VarArg.typesafe) && parami + 1 == nfparams) && argi < nfargs))
                                                         {
-                                                            if ((tparam.specialization() != null || !(tparam.isTemplateTypeParameter() != null)))
+                                                            prmtype = p.type;
+                                                            /*goto Lvarargs*/throw Dispatch0.INSTANCE;
+                                                        }
+                                                        if (argi >= nfargs)
+                                                        {
+                                                            if (p.defaultArg != null)
+                                                                continue L_outer8;
+                                                            if (fparam.defaultArg != null)
+                                                                break;
+                                                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                        }
+                                                        farg = (fargs).get(argi);
+                                                        if (!((farg.implicitConvTo(p.type)) != 0))
+                                                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                    }
+                                                }
+                                                continue L_outer5;
+                                            }
+                                        }
+                                        if (argi >= nfargs)
+                                        {
+                                            if (!(fparam.defaultArg != null))
+                                                /*goto Lvarargs*/throw Dispatch0.INSTANCE;
+                                            if (argi == nfargs)
+                                            {
+                                                {
+                                                    int i = 0;
+                                                    for (; i < (dedtypes).length;i++){
+                                                        Type at = isType((dedtypes).get(i));
+                                                        if ((at != null && (at.ty & 0xFF) == ENUMTY.Tnone))
+                                                        {
+                                                            TypeDeduced xt = (TypeDeduced)at;
+                                                            dedtypes.set(i, xt.tded);
+                                                        }
+                                                    }
+                                                }
+                                                {
+                                                    int i = ntargs;
+                                                L_outer9:
+                                                    for (; i < (dedargs).length;i++){
+                                                        TemplateParameter tparam = (this.parameters).get(i);
+                                                        RootObject oarg = (dedargs).get(i);
+                                                        RootObject oded = (dedtypes).get(i);
+                                                        if (!(oarg != null))
+                                                        {
+                                                            if (oded != null)
                                                             {
-                                                                dedargs.set(i, oded);
-                                                                int m2 = tparam.matchArg(instLoc, paramscope, dedargs, i, this.parameters, dedtypes, null);
-                                                                if (m2 <= MATCH.nomatch)
-                                                                    /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                                                if (m2 < matchTiargs)
-                                                                    matchTiargs = m2;
-                                                                if (!((dedtypes).get(i).equals(oded)))
-                                                                    this.error(new BytePtr("specialization not allowed for deduced parameter `%s`"), tparam.ident.toChars());
+                                                                if ((tparam.specialization() != null || !(tparam.isTemplateTypeParameter() != null)))
+                                                                {
+                                                                    dedargs.set(i, oded);
+                                                                    int m2 = tparam.matchArg(instLoc, paramscope, dedargs, i, this.parameters, dedtypes, null);
+                                                                    if (m2 <= MATCH.nomatch)
+                                                                        /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                                    if (m2 < matchTiargs)
+                                                                        matchTiargs = m2;
+                                                                    if (!((dedtypes).get(i).equals(oded)))
+                                                                        this.error(new BytePtr("specialization not allowed for deduced parameter `%s`"), tparam.ident.toChars());
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (MATCH.convert < matchTiargs)
+                                                                        matchTiargs = MATCH.convert;
+                                                                }
+                                                                dedargs.set(i, this.declareParameter(paramscope, tparam, oded));
                                                             }
                                                             else
                                                             {
-                                                                if (MATCH.convert < matchTiargs)
-                                                                    matchTiargs = MATCH.convert;
+                                                                this.inuse++;
+                                                                oded = tparam.defaultArg(instLoc, paramscope);
+                                                                this.inuse--;
+                                                                if (oded != null)
+                                                                    dedargs.set(i, this.declareParameter(paramscope, tparam, oded));
                                                             }
-                                                            dedargs.set(i, this.declareParameter(paramscope, tparam, oded));
-                                                        }
-                                                        else
-                                                        {
-                                                            this.inuse++;
-                                                            oded = tparam.defaultArg(instLoc, paramscope);
-                                                            this.inuse--;
-                                                            if (oded != null)
-                                                                dedargs.set(i, this.declareParameter(paramscope, tparam, oded));
                                                         }
                                                     }
                                                 }
                                             }
-                                        }
-                                        nfargs2 = argi + 1;
-                                        if ((prmtype.deco != null || prmtype.syntaxCopy().trySemantic(this.loc, paramscope) != null))
-                                        {
-                                            argi += 1;
-                                            continue L_outer5;
-                                        }
-                                        farg = fparam.defaultArg.syntaxCopy();
-                                        farg = expressionSemantic(farg, paramscope);
-                                        farg = resolveProperties(paramscope, farg);
-                                    }
-                                    else
-                                    {
-                                        farg = (fargs).get(argi);
-                                    }
-                                    {
-                                        if (((farg.op & 0xFF) == 127 || (farg.type.ty & 0xFF) == ENUMTY.Terror))
-                                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                        Type att = null;
-                                        while(true) try {
-                                        /*Lretry:*/
-                                            Type argtype = farg.type;
-                                            if (((!((fparam.storageClass & 8192L) != 0) && (argtype.ty & 0xFF) == ENUMTY.Tvoid) && (farg.op & 0xFF) != 161))
-                                                /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                            farg = farg.optimize(0, (fparam.storageClass & 2101248L) != 0L);
-                                            RootObject oarg = farg;
-                                            if (((fparam.storageClass & 2097152L) != 0 && (!((fparam.storageClass & 256L) != 0) || farg.isLvalue())))
+                                            nfargs2 = argi + 1;
+                                            if ((prmtype.deco != null || prmtype.syntaxCopy().trySemantic(this.loc, paramscope) != null))
                                             {
-                                                Type taai = null;
-                                                if (((argtype.ty & 0xFF) == ENUMTY.Tarray && ((prmtype.ty & 0xFF) == ENUMTY.Tsarray || (((prmtype.ty & 0xFF) == ENUMTY.Taarray && ((taai = ((TypeAArray)prmtype).index).ty & 0xFF) == ENUMTY.Tident) && ((TypeIdentifier)taai).idents.length == 0))))
-                                                {
-                                                    if ((farg.op & 0xFF) == 121)
-                                                    {
-                                                        StringExp se = (StringExp)farg;
-                                                        argtype = se.type.nextOf().sarrayOf((long)se.len);
-                                                    }
-                                                    else if ((farg.op & 0xFF) == 47)
-                                                    {
-                                                        ArrayLiteralExp ae = (ArrayLiteralExp)farg;
-                                                        argtype = ae.type.nextOf().sarrayOf((long)(ae.elements).length);
-                                                    }
-                                                    else if ((farg.op & 0xFF) == 31)
-                                                    {
-                                                        SliceExp se = (SliceExp)farg;
-                                                        {
-                                                            Type tsa = toStaticArrayType(se);
-                                                            if (tsa != null)
-                                                                argtype = tsa;
-                                                        }
-                                                    }
-                                                }
-                                                oarg = argtype;
-                                            }
-                                            else if (((((fparam.storageClass & 4096L) == 0L && ((argtype.ty & 0xFF) == ENUMTY.Tarray || (argtype.ty & 0xFF) == ENUMTY.Tpointer)) && templateParameterLookup(prmtype, this.parameters) != 305419896) && ((TypeIdentifier)prmtype).idents.length == 0))
-                                            {
-                                                Type ta = argtype.castMod((prmtype.mod) != 0 ? (byte)(argtype.nextOf().mod & 0xFF) : (byte)0);
-                                                if (!pequals(ta, argtype))
-                                                {
-                                                    Expression ea = farg.copy();
-                                                    ea.type = ta;
-                                                    oarg = ea;
-                                                }
-                                            }
-                                            if (((fparameters.varargs == VarArg.typesafe && parami + 1 == nfparams) && argi + 1 < nfargs))
-                                                /*goto Lvarargs*/throw Dispatch0.INSTANCE;
-                                            IntRef wm = ref(0);
-                                            int m = deduceType(oarg, paramscope, prmtype, this.parameters, dedtypes, ptr(wm), inferStart, false);
-                                            wildmatch |= wm.value;
-                                            if ((m == MATCH.nomatch && prmtype.deco != null))
-                                                m = farg.implicitConvTo(prmtype);
-                                            if (m == MATCH.nomatch)
-                                            {
-                                                AggregateDeclaration ad = isAggregate(farg.type);
-                                                if (((ad != null && ad.aliasthis != null) && !pequals(argtype, att)))
-                                                {
-                                                    if ((!(att != null) && argtype.checkAliasThisRec()))
-                                                        att = argtype;
-                                                    {
-                                                        Expression e = resolveAliasThis(sc, farg, true);
-                                                        if (e != null)
-                                                        {
-                                                            farg = e;
-                                                            /*goto Lretry*/throw Dispatch0.INSTANCE;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            if ((m > MATCH.nomatch && (fparam.storageClass & 2097408L) == 2097152L))
-                                            {
-                                                if (!(farg.isLvalue()))
-                                                {
-                                                    if ((((farg.op & 0xFF) == 121 || (farg.op & 0xFF) == 31) && ((prmtype.ty & 0xFF) == ENUMTY.Tsarray || (prmtype.ty & 0xFF) == ENUMTY.Taarray)))
-                                                    {
-                                                    }
-                                                    else
-                                                        /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                                }
-                                            }
-                                            if ((m > MATCH.nomatch && (fparam.storageClass & 4096L) != 0))
-                                            {
-                                                if (!(farg.isLvalue()))
-                                                    /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                                if (!(farg.type.isMutable()))
-                                                    /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                            }
-                                            if ((((m == MATCH.nomatch && (fparam.storageClass & 8192L) != 0) && (prmtype.ty & 0xFF) == ENUMTY.Tvoid) && (farg.type.ty & 0xFF) != ENUMTY.Tvoid))
-                                                m = MATCH.convert;
-                                            if (m != MATCH.nomatch)
-                                            {
-                                                if (m < match)
-                                                    match = m;
-                                                argi++;
+                                                argi += 1;
                                                 continue L_outer5;
                                             }
-                                            break;
-                                        } catch(Dispatch0 __d){}
-                                    }
-                                }
-                                catch(Dispatch0 __d){}
-                            /*Lvarargs:*/
-                                if (!((fparameters.varargs == VarArg.typesafe && parami + 1 == nfparams)))
-                                    /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                Type tb = prmtype.toBasetype();
-                                {
-                                    int __dispatch1 = 0;
-                                    dispatched_1:
-                                    do {
-                                        switch (__dispatch1 != 0 ? __dispatch1 : (tb.ty & 0xFF))
+                                            farg = fparam.defaultArg.syntaxCopy();
+                                            farg = expressionSemantic(farg, paramscope);
+                                            farg = resolveProperties(paramscope, farg);
+                                        }
+                                        else
                                         {
-                                            case 1:
-                                            case 2:
-                                                if ((tb.ty & 0xFF) == ENUMTY.Tsarray)
+                                            farg = (fargs).get(argi);
+                                        }
+                                        {
+                                            if (((farg.op & 0xFF) == 127 || (farg.type.ty & 0xFF) == ENUMTY.Terror))
+                                                /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                            Type att = null;
+                                            while(true) try {
+                                            /*Lretry:*/
+                                                Type argtype = farg.type;
+                                                if (((!((fparam.storageClass & 8192L) != 0) && (argtype.ty & 0xFF) == ENUMTY.Tvoid) && (farg.op & 0xFF) != 161))
+                                                    /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                farg = farg.optimize(0, (fparam.storageClass & 2101248L) != 0L);
+                                                RootObject oarg = farg;
+                                                if (((fparam.storageClass & 2097152L) != 0 && (!((fparam.storageClass & 256L) != 0) || farg.isLvalue())))
                                                 {
-                                                    TypeSArray tsa = (TypeSArray)tb;
-                                                    long sz = tsa.dim.toInteger();
-                                                    if (sz != (long)(nfargs - argi))
-                                                        /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                                }
-                                                else if ((tb.ty & 0xFF) == ENUMTY.Taarray)
-                                                {
-                                                    TypeAArray taa = (TypeAArray)tb;
-                                                    Expression dim = new IntegerExp(instLoc, (long)(nfargs - argi), Type.tsize_t);
-                                                    int i = templateParameterLookup(taa.index, this.parameters);
-                                                    if (i == 305419896)
+                                                    Type taai = null;
+                                                    if (((argtype.ty & 0xFF) == ENUMTY.Tarray && ((prmtype.ty & 0xFF) == ENUMTY.Tsarray || (((prmtype.ty & 0xFF) == ENUMTY.Taarray && ((taai = ((TypeAArray)prmtype).index).ty & 0xFF) == ENUMTY.Tident) && ((TypeIdentifier)taai).idents.length == 0))))
                                                     {
-                                                        Ref<Expression> e = ref(null);
-                                                        Ref<Type> t = ref(null);
-                                                        Ref<Dsymbol> s = ref(null);
-                                                        Scope sco = null;
-                                                        int errors = global.startGagging();
-                                                        sco = sc;
-                                                        resolve(taa.index, instLoc, sco, ptr(e), ptr(t), ptr(s), false);
-                                                        if (!(e.value != null))
+                                                        if ((farg.op & 0xFF) == 121)
                                                         {
-                                                            sco = paramscope;
-                                                            resolve(taa.index, instLoc, sco, ptr(e), ptr(t), ptr(s), false);
+                                                            StringExp se = (StringExp)farg;
+                                                            argtype = se.type.nextOf().sarrayOf((long)se.len);
                                                         }
-                                                        global.endGagging(errors);
-                                                        if (!(e.value != null))
+                                                        else if ((farg.op & 0xFF) == 47)
                                                         {
-                                                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                            ArrayLiteralExp ae = (ArrayLiteralExp)farg;
+                                                            argtype = ae.type.nextOf().sarrayOf((long)(ae.elements).length);
                                                         }
-                                                        e.value = e.value.ctfeInterpret();
-                                                        e.value = e.value.implicitCastTo(sco, Type.tsize_t);
-                                                        e.value = e.value.optimize(0, false);
-                                                        if (!(dim.equals(e.value)))
-                                                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                                    }
-                                                    else
-                                                    {
-                                                        TemplateParameter tprm = (this.parameters).get(i);
-                                                        TemplateValueParameter tvp = tprm.isTemplateValueParameter();
-                                                        if (!(tvp != null))
-                                                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                                        Expression e_1 = (Expression)(dedtypes).get(i);
-                                                        if (e_1 != null)
+                                                        else if ((farg.op & 0xFF) == 31)
                                                         {
-                                                            if (!(dim.equals(e_1)))
-                                                                /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                                        }
-                                                        else
-                                                        {
-                                                            Type vt = typeSemantic(tvp.valType, Loc.initial, sc);
-                                                            int m = dim.implicitConvTo(vt);
-                                                            if (m <= MATCH.nomatch)
-                                                                /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                                            dedtypes.set(i, dim);
-                                                        }
-                                                    }
-                                                }
-                                                /*goto case*/{ __dispatch1 = 0; continue dispatched_1; }
-                                            case 0:
-                                                __dispatch1 = 0;
-                                                TypeArray ta = (TypeArray)tb;
-                                                Type tret = fparam.isLazyArray();
-                                            L_outer10:
-                                                for (; argi < nfargs;argi++){
-                                                    Expression arg = (fargs).get(argi);
-                                                    assert(arg != null);
-                                                    int m_1 = MATCH.nomatch;
-                                                    if (tret != null)
-                                                    {
-                                                        if (ta.next.equals(arg.type))
-                                                        {
-                                                            m_1 = MATCH.exact;
-                                                        }
-                                                        else
-                                                        {
-                                                            m_1 = arg.implicitConvTo(tret);
-                                                            if (m_1 == MATCH.nomatch)
+                                                            SliceExp se = (SliceExp)farg;
                                                             {
-                                                                if ((tret.toBasetype().ty & 0xFF) == ENUMTY.Tvoid)
-                                                                    m_1 = MATCH.convert;
+                                                                Type tsa = toStaticArrayType(se);
+                                                                if (tsa != null)
+                                                                    argtype = tsa;
                                                             }
                                                         }
                                                     }
-                                                    else
-                                                    {
-                                                        IntRef wm = ref(0);
-                                                        m_1 = deduceType(arg, paramscope, ta.next, this.parameters, dedtypes, ptr(wm), inferStart, false);
-                                                        wildmatch |= wm.value;
-                                                    }
-                                                    if (m_1 == MATCH.nomatch)
-                                                        /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                                                    if (m_1 < match)
-                                                        match = m_1;
+                                                    oarg = argtype;
                                                 }
-                                                /*goto Lmatch*/throw Dispatch0.INSTANCE;
-                                            case 7:
-                                            case 6:
-                                                /*goto Lmatch*/throw Dispatch0.INSTANCE;
-                                            default:
-                                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                else if (((((fparam.storageClass & 4096L) == 0L && ((argtype.ty & 0xFF) == ENUMTY.Tarray || (argtype.ty & 0xFF) == ENUMTY.Tpointer)) && templateParameterLookup(prmtype, this.parameters) != 305419896) && ((TypeIdentifier)prmtype).idents.length == 0))
+                                                {
+                                                    Type ta = argtype.castMod((prmtype.mod) != 0 ? (byte)(argtype.nextOf().mod & 0xFF) : (byte)0);
+                                                    if (!pequals(ta, argtype))
+                                                    {
+                                                        Expression ea = farg.copy();
+                                                        ea.type = ta;
+                                                        oarg = ea;
+                                                    }
+                                                }
+                                                if (((fparameters.varargs == VarArg.typesafe && parami + 1 == nfparams) && argi + 1 < nfargs))
+                                                    /*goto Lvarargs*/throw Dispatch0.INSTANCE;
+                                                IntRef wm = ref(0);
+                                                int m = deduceType(oarg, paramscope, prmtype, this.parameters, dedtypes, ptr(wm), inferStart, false);
+                                                wildmatch |= wm.value;
+                                                if ((m == MATCH.nomatch && prmtype.deco != null))
+                                                    m = farg.implicitConvTo(prmtype);
+                                                if (m == MATCH.nomatch)
+                                                {
+                                                    AggregateDeclaration ad = isAggregate(farg.type);
+                                                    if (((ad != null && ad.aliasthis != null) && !pequals(argtype, att)))
+                                                    {
+                                                        if ((!(att != null) && argtype.checkAliasThisRec()))
+                                                            att = argtype;
+                                                        {
+                                                            Expression e = resolveAliasThis(sc, farg, true);
+                                                            if (e != null)
+                                                            {
+                                                                farg = e;
+                                                                /*goto Lretry*/throw Dispatch0.INSTANCE;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                if ((m > MATCH.nomatch && (fparam.storageClass & 2097408L) == 2097152L))
+                                                {
+                                                    if (!(farg.isLvalue()))
+                                                    {
+                                                        if ((((farg.op & 0xFF) == 121 || (farg.op & 0xFF) == 31) && ((prmtype.ty & 0xFF) == ENUMTY.Tsarray || (prmtype.ty & 0xFF) == ENUMTY.Taarray)))
+                                                        {
+                                                        }
+                                                        else
+                                                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                    }
+                                                }
+                                                if ((m > MATCH.nomatch && (fparam.storageClass & 4096L) != 0))
+                                                {
+                                                    if (!(farg.isLvalue()))
+                                                        /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                    if (!(farg.type.isMutable()))
+                                                        /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                }
+                                                if ((((m == MATCH.nomatch && (fparam.storageClass & 8192L) != 0) && (prmtype.ty & 0xFF) == ENUMTY.Tvoid) && (farg.type.ty & 0xFF) != ENUMTY.Tvoid))
+                                                    m = MATCH.convert;
+                                                if (m != MATCH.nomatch)
+                                                {
+                                                    if (m < match)
+                                                        match = m;
+                                                    argi++;
+                                                    continue L_outer5;
+                                                }
+                                                break;
+                                            } catch(Dispatch0 __d){}
                                         }
-                                    } while(__dispatch1 != 0);
+                                    }
+                                    catch(Dispatch0 __d){}
+                                /*Lvarargs:*/
+                                    if (!((fparameters.varargs == VarArg.typesafe && parami + 1 == nfparams)))
+                                        /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                    Type tb = prmtype.toBasetype();
+                                    {
+                                        int __dispatch1 = 0;
+                                        dispatched_1:
+                                        do {
+                                            switch (__dispatch1 != 0 ? __dispatch1 : (tb.ty & 0xFF))
+                                            {
+                                                case 1:
+                                                case 2:
+                                                    if ((tb.ty & 0xFF) == ENUMTY.Tsarray)
+                                                    {
+                                                        TypeSArray tsa = (TypeSArray)tb;
+                                                        long sz = tsa.dim.toInteger();
+                                                        if (sz != (long)(nfargs - argi))
+                                                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                    }
+                                                    else if ((tb.ty & 0xFF) == ENUMTY.Taarray)
+                                                    {
+                                                        TypeAArray taa = (TypeAArray)tb;
+                                                        Expression dim = new IntegerExp(instLoc, (long)(nfargs - argi), Type.tsize_t);
+                                                        int i = templateParameterLookup(taa.index, this.parameters);
+                                                        if (i == 305419896)
+                                                        {
+                                                            Ref<Expression> e = ref(null);
+                                                            Ref<Type> t = ref(null);
+                                                            Ref<Dsymbol> s = ref(null);
+                                                            Scope sco = null;
+                                                            int errors = global.startGagging();
+                                                            sco = sc;
+                                                            resolve(taa.index, instLoc, sco, ptr(e), ptr(t), ptr(s), false);
+                                                            if (!(e.value != null))
+                                                            {
+                                                                sco = paramscope;
+                                                                resolve(taa.index, instLoc, sco, ptr(e), ptr(t), ptr(s), false);
+                                                            }
+                                                            global.endGagging(errors);
+                                                            if (!(e.value != null))
+                                                            {
+                                                                /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                            }
+                                                            e.value = e.value.ctfeInterpret();
+                                                            e.value = e.value.implicitCastTo(sco, Type.tsize_t);
+                                                            e.value = e.value.optimize(0, false);
+                                                            if (!(dim.equals(e.value)))
+                                                                /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                        }
+                                                        else
+                                                        {
+                                                            TemplateParameter tprm = (this.parameters).get(i);
+                                                            TemplateValueParameter tvp = tprm.isTemplateValueParameter();
+                                                            if (!(tvp != null))
+                                                                /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                            Expression e_1 = (Expression)(dedtypes).get(i);
+                                                            if (e_1 != null)
+                                                            {
+                                                                if (!(dim.equals(e_1)))
+                                                                    /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                            }
+                                                            else
+                                                            {
+                                                                Type vt = typeSemantic(tvp.valType, Loc.initial, sc);
+                                                                int m = dim.implicitConvTo(vt);
+                                                                if (m <= MATCH.nomatch)
+                                                                    /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                                dedtypes.set(i, dim);
+                                                            }
+                                                        }
+                                                    }
+                                                    /*goto case*/{ __dispatch1 = 0; continue dispatched_1; }
+                                                case 0:
+                                                    __dispatch1 = 0;
+                                                    TypeArray ta = (TypeArray)tb;
+                                                    Type tret = fparam.isLazyArray();
+                                                L_outer10:
+                                                    for (; argi < nfargs;argi++){
+                                                        Expression arg = (fargs).get(argi);
+                                                        assert(arg != null);
+                                                        int m_1 = MATCH.nomatch;
+                                                        if (tret != null)
+                                                        {
+                                                            if (ta.next.equals(arg.type))
+                                                            {
+                                                                m_1 = MATCH.exact;
+                                                            }
+                                                            else
+                                                            {
+                                                                m_1 = arg.implicitConvTo(tret);
+                                                                if (m_1 == MATCH.nomatch)
+                                                                {
+                                                                    if ((tret.toBasetype().ty & 0xFF) == ENUMTY.Tvoid)
+                                                                        m_1 = MATCH.convert;
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            IntRef wm = ref(0);
+                                                            m_1 = deduceType(arg, paramscope, ta.next, this.parameters, dedtypes, ptr(wm), inferStart, false);
+                                                            wildmatch |= wm.value;
+                                                        }
+                                                        if (m_1 == MATCH.nomatch)
+                                                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                                        if (m_1 < match)
+                                                            match = m_1;
+                                                    }
+                                                    /*goto Lmatch*/throw Dispatch0.INSTANCE;
+                                                case 7:
+                                                case 6:
+                                                    /*goto Lmatch*/throw Dispatch0.INSTANCE;
+                                                default:
+                                                /*goto Lnomatch*/throw Dispatch1.INSTANCE;
+                                            }
+                                        } while(__dispatch1 != 0);
+                                    }
+                                    throw new AssertionError("Unreachable code!");
                                 }
-                                throw new AssertionError("Unreachable code!");
                             }
+                            if ((argi != nfargs2 && fparameters.varargs == VarArg.none))
+                                /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                         }
-                        if ((argi != nfargs2 && fparameters.varargs == VarArg.none))
-                            /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                     }
-                }
-                catch(Dispatch0 __d){}
-            /*Lmatch:*/
-                {
-                    int i = 0;
-                    for (; i < (dedtypes).length;i++){
-                        Type at = isType((dedtypes).get(i));
-                        if (at != null)
-                        {
-                            if ((at.ty & 0xFF) == ENUMTY.Tnone)
+                    catch(Dispatch0 __d){}
+                /*Lmatch:*/
+                    {
+                        int i = 0;
+                        for (; i < (dedtypes).length;i++){
+                            Type at = isType((dedtypes).get(i));
+                            if (at != null)
                             {
-                                TypeDeduced xt = (TypeDeduced)at;
-                                at = xt.tded;
+                                if ((at.ty & 0xFF) == ENUMTY.Tnone)
+                                {
+                                    TypeDeduced xt = (TypeDeduced)at;
+                                    at = xt.tded;
+                                }
+                                dedtypes.set(i, at.merge2());
                             }
-                            dedtypes.set(i, at.merge2());
                         }
                     }
-                }
-                try {
                     {
                         int i = ntargs;
                     L_outer11:
@@ -3374,9 +3374,9 @@ public class dtemplate {
                 if (mfa > MATCH.nomatch)
                 {
                     try {
-                        if (mfa > m.last)
-                            /*goto LfIsBetter*/throw Dispatch1.INSTANCE;
                         try {
+                            if (mfa > m.last)
+                                /*goto LfIsBetter*/throw Dispatch1.INSTANCE;
                             if (mfa < m.last)
                                 /*goto LlastIsBetter*/throw Dispatch0.INSTANCE;
                             assert(m.lastf != null);
@@ -3550,9 +3550,9 @@ public class dtemplate {
                         if (mfa < m.last)
                             return 0;
                         try {
-                            if (mta < ta_last.value)
-                                /*goto Ltd_best2*/throw Dispatch0.INSTANCE;
                             try {
+                                if (mta < ta_last.value)
+                                    /*goto Ltd_best2*/throw Dispatch0.INSTANCE;
                                 if (mta > ta_last.value)
                                     /*goto Ltd2*/throw Dispatch1.INSTANCE;
                                 if (mfa < m.last)
@@ -3613,9 +3613,9 @@ public class dtemplate {
                                 continue L_outer14;
                         }
                         try {
-                            if (mta < ta_last.value)
-                                /*goto Ltd_best*/throw Dispatch0.INSTANCE;
                             try {
+                                if (mta < ta_last.value)
+                                    /*goto Ltd_best*/throw Dispatch0.INSTANCE;
                                 if (mta > ta_last.value)
                                     /*goto Ltd*/throw Dispatch1.INSTANCE;
                                 if (mfa < m.last)
@@ -3780,6 +3780,13 @@ public class dtemplate {
         if (((tparam.mod & 0xFF) & MODFlags.wild) == 0)
             return (byte)0;
         at.set(0, null);
+        // from template X!(ByteByte)
+        Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
+            public Integer invoke(Byte U, Byte T){
+                return (U & 0xFF) << 4 | (T & 0xFF);
+            }
+        };
+
         // from template X!(IntegerInteger)
         Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
             public Integer invoke(Integer U, Integer T){
@@ -3788,14 +3795,7 @@ public class dtemplate {
         };
 
         // from template X!(IntegerInteger)
-        // removed duplicate function, [["int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
-
-        // from template X!(ByteByte)
-        Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
-            public Integer invoke(Byte U, Byte T){
-                return (U & 0xFF) << 4 | (T & 0xFF);
-            }
-        };
+        // removed duplicate function, [["int Xbyte, byteByteByte", "int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
 
         switch (XByteByte.invoke(tparam.mod, t.mod))
         {
@@ -5641,9 +5641,9 @@ public class dtemplate {
                                 if (m <= MATCH.nomatch)
                                     return 0;
                                 try {
-                                    if (m < m_best)
-                                        /*goto Ltd_best*/throw Dispatch0.INSTANCE;
                                     try {
+                                        if (m < m_best)
+                                            /*goto Ltd_best*/throw Dispatch0.INSTANCE;
                                         if (m > m_best)
                                             /*goto Ltd*/throw Dispatch1.INSTANCE;
                                         {

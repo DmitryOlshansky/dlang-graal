@@ -392,6 +392,7 @@ public class tokens {
                                                             buf_1.writeByte(92);
                                                             /*goto default*/ { __dispatch1 = -1; continue dispatched_1; }
                                                         default:
+                                                        __dispatch1 = 0;
                                                         if (c.value <= 127)
                                                         {
                                                             if ((isprint(c.value)) != 0)
@@ -474,6 +475,7 @@ public class tokens {
                             p = pcopy(this.ident.toChars());
                             break;
                         default:
+                        __dispatch0 = 0;
                         p = pcopy(toChars(this.value));
                         break;
                     }

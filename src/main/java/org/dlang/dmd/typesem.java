@@ -1620,6 +1620,7 @@ public class typesem {
                             return type;
                         /*goto default*/ { __dispatch10 = -1; continue dispatched_10; }
                     default:
+                    __dispatch10 = 0;
                     if ((type.nextOf() != null && type.nextOf().deco == null))
                         return type;
                     break;
@@ -2134,6 +2135,7 @@ public class typesem {
                         s = ((DotTemplateExp)e).td;
                         break;
                     default:
+                    __dispatch24 = 0;
                     pe.set(0, e);
                     return ;
                 }

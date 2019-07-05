@@ -262,6 +262,7 @@ public class initsem {
                                         break;
                                     /*goto default*/ { __dispatch0 = -2; continue dispatched_0; }
                                 default:
+                                __dispatch0 = 0;
                                 error(i.loc, new BytePtr("cannot use array to initialize `%s`"), t_ref.value.toChars());
                                 /*goto Lerr*/throw Dispatch0.INSTANCE;
                             }

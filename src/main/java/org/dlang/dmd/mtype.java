@@ -389,82 +389,82 @@ public class mtype {
             TypeFunction t1 = this.isTypeFunction();
             TypeFunction t2 = t.isTypeFunction();
             try {
-                if ((!(t1 != null) || !(t2 != null)))
-                    /*goto Ldistinct*/throw Dispatch1.INSTANCE;
-                if (t1.parameterList.varargs != t2.parameterList.varargs)
-                    /*goto Ldistinct*/throw Dispatch1.INSTANCE;
-                if ((t1.parameterList.parameters != null && t2.parameterList.parameters != null))
-                {
-                    int dim = t1.parameterList.length();
-                    if (dim != t2.parameterList.length())
-                        /*goto Ldistinct*/throw Dispatch1.INSTANCE;
-                    {
-                        int i = 0;
-                    L_outer1:
-                        for (; i < dim;i++){
-                            Parameter fparam1 = t1.parameterList.get(i);
-                            Parameter fparam2 = t2.parameterList.get(i);
-                            try {
-                                if (!(fparam1.type.equals(fparam2.type)))
-                                {
-                                    if (!(fix17349))
-                                        /*goto Ldistinct*/throw Dispatch1.INSTANCE;
-                                    Type tp1 = fparam1.type;
-                                    Type tp2 = fparam2.type;
-                                    if ((tp1.ty & 0xFF) == (tp2.ty & 0xFF))
-                                    {
+                try {
+                    try {
+                        if ((!(t1 != null) || !(t2 != null)))
+                            /*goto Ldistinct*/throw Dispatch1.INSTANCE;
+                        if (t1.parameterList.varargs != t2.parameterList.varargs)
+                            /*goto Ldistinct*/throw Dispatch1.INSTANCE;
+                        if ((t1.parameterList.parameters != null && t2.parameterList.parameters != null))
+                        {
+                            int dim = t1.parameterList.length();
+                            if (dim != t2.parameterList.length())
+                                /*goto Ldistinct*/throw Dispatch1.INSTANCE;
+                            {
+                                int i = 0;
+                            L_outer1:
+                                for (; i < dim;i++){
+                                    Parameter fparam1 = t1.parameterList.get(i);
+                                    Parameter fparam2 = t2.parameterList.get(i);
+                                    try {
+                                        if (!(fparam1.type.equals(fparam2.type)))
                                         {
-                                            TypeClass tc1 = tp1.isTypeClass();
-                                            if (tc1 != null)
+                                            if (!(fix17349))
+                                                /*goto Ldistinct*/throw Dispatch1.INSTANCE;
+                                            Type tp1 = fparam1.type;
+                                            Type tp2 = fparam2.type;
+                                            if ((tp1.ty & 0xFF) == (tp2.ty & 0xFF))
                                             {
-                                                if ((pequals(tc1.sym, ((TypeClass)tp2).sym) && MODimplicitConv(tp2.mod, tp1.mod)))
-                                                    /*goto Lcov*/throw Dispatch0.INSTANCE;
+                                                {
+                                                    TypeClass tc1 = tp1.isTypeClass();
+                                                    if (tc1 != null)
+                                                    {
+                                                        if ((pequals(tc1.sym, ((TypeClass)tp2).sym) && MODimplicitConv(tp2.mod, tp1.mod)))
+                                                            /*goto Lcov*/throw Dispatch0.INSTANCE;
+                                                    }
+                                                    else {
+                                                        TypeStruct ts1 = tp1.isTypeStruct();
+                                                        if (ts1 != null)
+                                                        {
+                                                            if ((pequals(ts1.sym, ((TypeStruct)tp2).sym) && MODimplicitConv(tp2.mod, tp1.mod)))
+                                                                /*goto Lcov*/throw Dispatch0.INSTANCE;
+                                                        }
+                                                        else if ((tp1.ty & 0xFF) == ENUMTY.Tpointer)
+                                                        {
+                                                            if ((tp2.implicitConvTo(tp1)) != 0)
+                                                                /*goto Lcov*/throw Dispatch0.INSTANCE;
+                                                        }
+                                                        else if ((tp1.ty & 0xFF) == ENUMTY.Tarray)
+                                                        {
+                                                            if ((tp2.implicitConvTo(tp1)) != 0)
+                                                                /*goto Lcov*/throw Dispatch0.INSTANCE;
+                                                        }
+                                                        else if ((tp1.ty & 0xFF) == ENUMTY.Tdelegate)
+                                                        {
+                                                            if ((tp1.implicitConvTo(tp2)) != 0)
+                                                                /*goto Lcov*/throw Dispatch0.INSTANCE;
+                                                        }
+                                                    }
+                                                }
                                             }
-                                            else {
-                                                TypeStruct ts1 = tp1.isTypeStruct();
-                                                if (ts1 != null)
-                                                {
-                                                    if ((pequals(ts1.sym, ((TypeStruct)tp2).sym) && MODimplicitConv(tp2.mod, tp1.mod)))
-                                                        /*goto Lcov*/throw Dispatch0.INSTANCE;
-                                                }
-                                                else if ((tp1.ty & 0xFF) == ENUMTY.Tpointer)
-                                                {
-                                                    if ((tp2.implicitConvTo(tp1)) != 0)
-                                                        /*goto Lcov*/throw Dispatch0.INSTANCE;
-                                                }
-                                                else if ((tp1.ty & 0xFF) == ENUMTY.Tarray)
-                                                {
-                                                    if ((tp2.implicitConvTo(tp1)) != 0)
-                                                        /*goto Lcov*/throw Dispatch0.INSTANCE;
-                                                }
-                                                else if ((tp1.ty & 0xFF) == ENUMTY.Tdelegate)
-                                                {
-                                                    if ((tp1.implicitConvTo(tp2)) != 0)
-                                                        /*goto Lcov*/throw Dispatch0.INSTANCE;
-                                                }
-                                            }
+                                            /*goto Ldistinct*/throw Dispatch1.INSTANCE;
                                         }
                                     }
-                                    /*goto Ldistinct*/throw Dispatch1.INSTANCE;
+                                    catch(Dispatch0 __d){}
+                                /*Lcov:*/
+                                    (notcovariant ? 1 : 0) |= (!(fparam1.isCovariant(t1.isref, fparam2)) ? 1 : 0);
                                 }
                             }
-                            catch(Dispatch0 __d){}
-                        /*Lcov:*/
-                            (notcovariant ? 1 : 0) |= (!(fparam1.isCovariant(t1.isref, fparam2)) ? 1 : 0);
                         }
-                    }
-                }
-                else if (t1.parameterList.parameters != t2.parameterList.parameters)
-                {
-                    if (((t1.parameterList.length()) != 0 || (t2.parameterList.length()) != 0))
-                        /*goto Ldistinct*/throw Dispatch1.INSTANCE;
-                }
-                try {
-                    if (notcovariant)
-                        /*goto Lnotcovariant*/throw Dispatch2.INSTANCE;
-                    if (t1.linkage != t2.linkage)
-                        /*goto Lnotcovariant*/throw Dispatch2.INSTANCE;
-                    try {
+                        else if (t1.parameterList.parameters != t2.parameterList.parameters)
+                        {
+                            if (((t1.parameterList.length()) != 0 || (t2.parameterList.length()) != 0))
+                                /*goto Ldistinct*/throw Dispatch1.INSTANCE;
+                        }
+                        if (notcovariant)
+                            /*goto Lnotcovariant*/throw Dispatch2.INSTANCE;
+                        if (t1.linkage != t2.linkage)
+                            /*goto Lnotcovariant*/throw Dispatch2.INSTANCE;
                         {
                             Type t1n = t1.next;
                             Type t2n = t2.next;
@@ -3826,8 +3826,8 @@ public class mtype {
             }
         }
 
-        // from template getMatchError!(IntegerBytePtr)
-        public  BytePtr getMatchErrorIntegerBytePtr(BytePtr format, int _param_1, BytePtr _param_2) {
+        // from template getMatchError!(IntegerInteger)
+        public  BytePtr getMatchErrorIntegerInteger(BytePtr format, int _param_1, int _param_2) {
             if (((global.gag) != 0 && !(global.params.showGaggedErrors)))
                 return null;
             OutBuffer buf = new OutBuffer();
@@ -3840,8 +3840,8 @@ public class mtype {
         }
 
 
-        // from template getMatchError!(IntegerInteger)
-        public  BytePtr getMatchErrorIntegerInteger(BytePtr format, int _param_1, int _param_2) {
+        // from template getMatchError!(IntegerBytePtr)
+        public  BytePtr getMatchErrorIntegerBytePtr(BytePtr format, int _param_1, BytePtr _param_2) {
             if (((global.gag) != 0 && !(global.params.showGaggedErrors)))
                 return null;
             OutBuffer buf = new OutBuffer();
@@ -3888,47 +3888,47 @@ public class mtype {
             int nparams = this.parameterList.length();
             int nargs = args.getLength();
             try {
-                if (nargs > nparams)
-                {
-                    if (this.parameterList.varargs == VarArg.none)
+                try {
+                    if (nargs > nparams)
                     {
-                        if (pMessage == null)
-                            /*goto Nomatch*/throw Dispatch1.INSTANCE;
-                    }
-                    match = MATCH.convert;
-                }
-                {
-                    int u = 0;
-                    for (; u < nargs;u++){
-                        if (u >= nparams)
-                            break;
-                        Parameter p = this.parameterList.get(u);
-                        Expression arg = args.get(u);
-                        assert(arg != null);
-                        Type tprm = p.type;
-                        Type targ = arg.type;
-                        if (!((((p.storageClass & 8192L) != 0 && (tprm.ty & 0xFF) == ENUMTY.Tvoid) && (targ.ty & 0xFF) != ENUMTY.Tvoid)))
+                        if (this.parameterList.varargs == VarArg.none)
                         {
-                            boolean isRef = (p.storageClass & 2101248L) != 0L;
-                            wildmatch |= (targ.deduceWild(tprm, isRef) & 0xFF);
+                            if (pMessage == null)
+                                /*goto Nomatch*/throw Dispatch1.INSTANCE;
+                        }
+                        match = MATCH.convert;
+                    }
+                    {
+                        int u = 0;
+                        for (; u < nargs;u++){
+                            if (u >= nparams)
+                                break;
+                            Parameter p = this.parameterList.get(u);
+                            Expression arg = args.get(u);
+                            assert(arg != null);
+                            Type tprm = p.type;
+                            Type targ = arg.type;
+                            if (!((((p.storageClass & 8192L) != 0 && (tprm.ty & 0xFF) == ENUMTY.Tvoid) && (targ.ty & 0xFF) != ENUMTY.Tvoid)))
+                            {
+                                boolean isRef = (p.storageClass & 2101248L) != 0L;
+                                wildmatch |= (targ.deduceWild(tprm, isRef) & 0xFF);
+                            }
                         }
                     }
-                }
-                if ((wildmatch) != 0)
-                {
-                    if ((((wildmatch & 0xFF) & MODFlags.const_) != 0 || ((wildmatch & 0xFF) & (wildmatch & 0xFF) - 1) != 0))
-                        wildmatch = (byte)1;
-                    else if (((wildmatch & 0xFF) & MODFlags.immutable_) != 0)
-                        wildmatch = (byte)4;
-                    else if (((wildmatch & 0xFF) & MODFlags.wild) != 0)
-                        wildmatch = (byte)8;
-                    else
+                    if ((wildmatch) != 0)
                     {
-                        assert(((wildmatch & 0xFF) & MODFlags.mutable) != 0);
-                        wildmatch = (byte)16;
+                        if ((((wildmatch & 0xFF) & MODFlags.const_) != 0 || ((wildmatch & 0xFF) & (wildmatch & 0xFF) - 1) != 0))
+                            wildmatch = (byte)1;
+                        else if (((wildmatch & 0xFF) & MODFlags.immutable_) != 0)
+                            wildmatch = (byte)4;
+                        else if (((wildmatch & 0xFF) & MODFlags.wild) != 0)
+                            wildmatch = (byte)8;
+                        else
+                        {
+                            assert(((wildmatch & 0xFF) & MODFlags.mutable) != 0);
+                            wildmatch = (byte)16;
+                        }
                     }
-                }
-                try {
                     {
                         int u = 0;
                     L_outer2:
