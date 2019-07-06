@@ -854,7 +854,16 @@ public class constfold {
         {
             r1 = e1.toReal();
             r2 = e2.toReal();
-            /*goto L1*/throw Dispatch.INSTANCE;
+            /*goto L1*//*unrolled goto*/
+        /*L1:*/
+            if ((CTFloat.isNaN(r1) || CTFloat.isNaN(r2)))
+            {
+                cmp = 0;
+            }
+            else
+            {
+                cmp = ((r1 == r2) ? 1 : 0);
+            }
         }
         else if (e1.type.isimaginary())
         {

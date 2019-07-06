@@ -745,12 +745,24 @@ public class declaration {
                 int olderrors = global.errors;
                 Dsymbol s = this.type.toDsymbol(this._scope);
                 if (global.errors != olderrors)
-                    /*goto Lerr*/throw Dispatch.INSTANCE;
+                    /*goto Lerr*//*unrolled goto*/
+                /*Lerr:*/
+                    if ((global.gag) != 0)
+                        return this;
+                    this.aliassym = new AliasDeclaration(this.loc, this.ident, Type.terror);
+                    this.type = Type.terror;
+                    return this.aliassym;
                 if (s != null)
                 {
                     s = s.toAlias();
                     if (global.errors != olderrors)
-                        /*goto Lerr*/throw Dispatch.INSTANCE;
+                        /*goto Lerr*//*unrolled goto*/
+                    /*Lerr:*/
+                        if ((global.gag) != 0)
+                            return this;
+                        this.aliassym = new AliasDeclaration(this.loc, this.ident, Type.terror);
+                        this.type = Type.terror;
+                        return this.aliassym;
                     this.aliassym = s;
                     this.inuse = 0;
                 }
@@ -758,9 +770,21 @@ public class declaration {
                 {
                     Type t = typeSemantic(this.type, this.loc, this._scope);
                     if ((t.ty & 0xFF) == ENUMTY.Terror)
-                        /*goto Lerr*/throw Dispatch.INSTANCE;
+                        /*goto Lerr*//*unrolled goto*/
+                    /*Lerr:*/
+                        if ((global.gag) != 0)
+                            return this;
+                        this.aliassym = new AliasDeclaration(this.loc, this.ident, Type.terror);
+                        this.type = Type.terror;
+                        return this.aliassym;
                     if (global.errors != olderrors)
-                        /*goto Lerr*/throw Dispatch.INSTANCE;
+                        /*goto Lerr*//*unrolled goto*/
+                    /*Lerr:*/
+                        if ((global.gag) != 0)
+                            return this;
+                        this.aliassym = new AliasDeclaration(this.loc, this.ident, Type.terror);
+                        this.type = Type.terror;
+                        return this.aliassym;
                     this.inuse = 0;
                 }
             }

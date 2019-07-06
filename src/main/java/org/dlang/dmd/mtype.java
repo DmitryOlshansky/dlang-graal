@@ -3940,7 +3940,85 @@ public class mtype {
                             {
                                 if (p.defaultArg != null)
                                     continue L_outer2;
-                                /*goto L1*/throw Dispatch.INSTANCE;
+                                /*goto L1*//*unrolled goto*/
+                            /*L1:*/
+                                if ((this.parameterList.varargs == VarArg.typesafe && u + 1 == nparams))
+                                {
+                                    Type tb = p.type.toBasetype();
+                                    TypeSArray tsa = null;
+                                    long sz = 0L;
+                                    {
+                                        int __dispatch15 = 0;
+                                        dispatched_15:
+                                        do {
+                                            switch (__dispatch15 != 0 ? __dispatch15 : (tb.ty & 0xFF))
+                                            {
+                                                case 1:
+                                                    tsa = (TypeSArray)tb;
+                                                    sz = tsa.dim.toInteger();
+                                                    if (sz != (long)(nargs - u))
+                                                    {
+                                                        if (pMessage != null)
+                                                            if ((!((global.gag) != 0) || global.params.showGaggedErrors))
+                                                            {
+                                                                OutBuffer buf = new OutBuffer();
+                                                                buf.printf(new BytePtr("expected %d variadic argument(s)"), sz);
+                                                                buf.printf(new BytePtr(", not %d"), nargs - u);
+                                                                pMessage.set(0, buf.extractChars());
+                                                            }
+                                                        /*goto Nomatch*/throw Dispatch1.INSTANCE;
+                                                    }
+                                                    /*goto case*/{ __dispatch15 = 0; continue dispatched_15; }
+                                                case 0:
+                                                    __dispatch15 = 0;
+                                                    TypeArray ta = (TypeArray)tb;
+                                                    {
+                                                        Slice<Expression> __r1586 = args.slice(u,nargs).copy();
+                                                        int __key1587 = 0;
+                                                    L_outer3:
+                                                        for (; __key1587 < __r1586.getLength();__key1587 += 1) {
+                                                            Expression arg = __r1586.get(__key1587);
+                                                            assert(arg != null);
+                                                            Type tret = p.isLazyArray();
+                                                            if (tret != null)
+                                                            {
+                                                                if (ta.next.equals(arg.type))
+                                                                    m = MATCH.exact;
+                                                                else if ((tret.toBasetype().ty & 0xFF) == ENUMTY.Tvoid)
+                                                                    m = MATCH.convert;
+                                                                else
+                                                                {
+                                                                    m = arg.implicitConvTo(tret);
+                                                                    if (m == MATCH.nomatch)
+                                                                        m = arg.implicitConvTo(ta.next);
+                                                                }
+                                                            }
+                                                            else
+                                                                m = arg.implicitConvTo(ta.next);
+                                                            if (m == MATCH.nomatch)
+                                                            {
+                                                                if (pMessage != null)
+                                                                    pMessage.set(0, this.getParamError(arg, p));
+                                                                /*goto Nomatch*/throw Dispatch1.INSTANCE;
+                                                            }
+                                                            if (m < match)
+                                                                match = m;
+                                                        }
+                                                    }
+                                                    /*goto Ldone*/throw Dispatch0.INSTANCE;
+                                                case 7:
+                                                    /*goto Ldone*/throw Dispatch0.INSTANCE;
+                                                default:
+                                                break;
+                                            }
+                                        } while(__dispatch15 != 0);
+                                    }
+                                }
+                                if ((pMessage != null && u < nargs))
+                                    pMessage.set(0, this.getParamError(args.get(u), p));
+                                else if (pMessage != null)
+                                    pMessage.set(0, this.getMatchErrorIntegerBytePtr(new BytePtr("missing argument for parameter #%d: `%s`"), u + 1, parameterToChars(p, this, false)));
+                                /*goto Nomatch*/throw Dispatch1.INSTANCE;
                             }
                             {
                                 Expression arg = args.get(u);
@@ -4053,9 +4131,7 @@ public class mtype {
                                 }
                             }
                             if (((this.parameterList.varargs == VarArg.typesafe && u + 1 == nparams) && nargs > nparams))
-                                /*goto L1*/throw Dispatch.INSTANCE;
-                            if (m == MATCH.nomatch)
-                            {
+                                /*goto L1*//*unrolled goto*/
                             /*L1:*/
                                 if ((this.parameterList.varargs == VarArg.typesafe && u + 1 == nparams))
                                 {
@@ -4063,10 +4139,10 @@ public class mtype {
                                     TypeSArray tsa = null;
                                     long sz = 0L;
                                     {
-                                        int __dispatch15 = 0;
-                                        dispatched_15:
+                                        int __dispatch16 = 0;
+                                        dispatched_16:
                                         do {
-                                            switch (__dispatch15 != 0 ? __dispatch15 : (tb.ty & 0xFF))
+                                            switch (__dispatch16 != 0 ? __dispatch16 : (tb.ty & 0xFF))
                                             {
                                                 case 1:
                                                     tsa = (TypeSArray)tb;
@@ -4083,14 +4159,14 @@ public class mtype {
                                                             }
                                                         /*goto Nomatch*/throw Dispatch1.INSTANCE;
                                                     }
-                                                    /*goto case*/{ __dispatch15 = 0; continue dispatched_15; }
+                                                    /*goto case*/{ __dispatch16 = 0; continue dispatched_16; }
                                                 case 0:
-                                                    __dispatch15 = 0;
+                                                    __dispatch16 = 0;
                                                     TypeArray ta = (TypeArray)tb;
                                                     {
                                                         Slice<Expression> __r1586 = args.slice(u,nargs).copy();
                                                         int __key1587 = 0;
-                                                    L_outer3:
+                                                    L_outer4:
                                                         for (; __key1587 < __r1586.getLength();__key1587 += 1) {
                                                             Expression arg = __r1586.get(__key1587);
                                                             assert(arg != null);
@@ -4126,7 +4202,87 @@ public class mtype {
                                                 default:
                                                 break;
                                             }
-                                        } while(__dispatch15 != 0);
+                                        } while(__dispatch16 != 0);
+                                    }
+                                }
+                                if ((pMessage != null && u < nargs))
+                                    pMessage.set(0, this.getParamError(args.get(u), p));
+                                else if (pMessage != null)
+                                    pMessage.set(0, this.getMatchErrorIntegerBytePtr(new BytePtr("missing argument for parameter #%d: `%s`"), u + 1, parameterToChars(p, this, false)));
+                                /*goto Nomatch*/throw Dispatch1.INSTANCE;
+                            if (m == MATCH.nomatch)
+                            {
+                            /*L1:*/
+                                if ((this.parameterList.varargs == VarArg.typesafe && u + 1 == nparams))
+                                {
+                                    Type tb = p.type.toBasetype();
+                                    TypeSArray tsa = null;
+                                    long sz = 0L;
+                                    {
+                                        int __dispatch17 = 0;
+                                        dispatched_17:
+                                        do {
+                                            switch (__dispatch17 != 0 ? __dispatch17 : (tb.ty & 0xFF))
+                                            {
+                                                case 1:
+                                                    tsa = (TypeSArray)tb;
+                                                    sz = tsa.dim.toInteger();
+                                                    if (sz != (long)(nargs - u))
+                                                    {
+                                                        if (pMessage != null)
+                                                            if ((!((global.gag) != 0) || global.params.showGaggedErrors))
+                                                            {
+                                                                OutBuffer buf = new OutBuffer();
+                                                                buf.printf(new BytePtr("expected %d variadic argument(s)"), sz);
+                                                                buf.printf(new BytePtr(", not %d"), nargs - u);
+                                                                pMessage.set(0, buf.extractChars());
+                                                            }
+                                                        /*goto Nomatch*/throw Dispatch1.INSTANCE;
+                                                    }
+                                                    /*goto case*/{ __dispatch17 = 0; continue dispatched_17; }
+                                                case 0:
+                                                    __dispatch17 = 0;
+                                                    TypeArray ta = (TypeArray)tb;
+                                                    {
+                                                        Slice<Expression> __r1586 = args.slice(u,nargs).copy();
+                                                        int __key1587 = 0;
+                                                    L_outer5:
+                                                        for (; __key1587 < __r1586.getLength();__key1587 += 1) {
+                                                            Expression arg = __r1586.get(__key1587);
+                                                            assert(arg != null);
+                                                            Type tret = p.isLazyArray();
+                                                            if (tret != null)
+                                                            {
+                                                                if (ta.next.equals(arg.type))
+                                                                    m = MATCH.exact;
+                                                                else if ((tret.toBasetype().ty & 0xFF) == ENUMTY.Tvoid)
+                                                                    m = MATCH.convert;
+                                                                else
+                                                                {
+                                                                    m = arg.implicitConvTo(tret);
+                                                                    if (m == MATCH.nomatch)
+                                                                        m = arg.implicitConvTo(ta.next);
+                                                                }
+                                                            }
+                                                            else
+                                                                m = arg.implicitConvTo(ta.next);
+                                                            if (m == MATCH.nomatch)
+                                                            {
+                                                                if (pMessage != null)
+                                                                    pMessage.set(0, this.getParamError(arg, p));
+                                                                /*goto Nomatch*/throw Dispatch1.INSTANCE;
+                                                            }
+                                                            if (m < match)
+                                                                match = m;
+                                                        }
+                                                    }
+                                                    /*goto Ldone*/throw Dispatch0.INSTANCE;
+                                                case 7:
+                                                    /*goto Ldone*/throw Dispatch0.INSTANCE;
+                                                default:
+                                                break;
+                                            }
+                                        } while(__dispatch17 != 0);
                                     }
                                 }
                                 if ((pMessage != null && u < nargs))

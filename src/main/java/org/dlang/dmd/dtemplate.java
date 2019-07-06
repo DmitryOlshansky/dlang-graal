@@ -671,7 +671,17 @@ public class dtemplate {
                                 {
                                     j = templateIdentifierLookup(((VarExp)e2.value).var.ident, this.parameters);
                                     if (j != 305419896)
-                                        /*goto L1*/throw Dispatch.INSTANCE;
+                                        /*goto L1*//*unrolled goto*/
+                                    /*L1:*/
+                                        if (j == 305419896)
+                                        {
+                                            resolve(t2.value, ((TypeIdentifier)t2.value).loc, this.sc, ptr(e2), ptr(t2), ptr(s2), false);
+                                            if (e2.value != null)
+                                                /*goto Le*/throw Dispatch0.INSTANCE;
+                                            /*goto Lnomatch*/throw Dispatch0.INSTANCE;
+                                        }
+                                        if (!(((this.parameters).get(j).matchArg(this.sc, e1, j, this.parameters, this.dedtypes, null)) != 0))
+                                            /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                 }
                                 e2.value = expressionSemantic(e2.value, this.sc);
                                 e2.value = e2.value.ctfeInterpret();
@@ -712,7 +722,10 @@ public class dtemplate {
                                 {
                                     resolve(t2.value, ((TypeIdentifier)t2.value).loc, this.sc, ptr(e2), ptr(t2), ptr(s2), false);
                                     if (s2.value != null)
-                                        /*goto Ls*/throw Dispatch.INSTANCE;
+                                        /*goto Ls*//*unrolled goto*/
+                                    /*Ls:*/
+                                        if (!(s1.value.equals(s2.value)))
+                                            /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                     /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                 }
                                 if (!(((this.parameters).get(j).matchArg(this.sc, s1.value, j, this.parameters, this.dedtypes, null)) != 0))
@@ -5402,9 +5415,267 @@ public class dtemplate {
                     {
                         resolve(ta.value, loc, sc, ptr(ea), ptr(ta), ptr(sa), (flags & 1) != 0);
                         if (ea.value != null)
-                            /*goto Lexpr*/throw Dispatch.INSTANCE;
+                            /*goto Lexpr*//*unrolled goto*/
+                        /*Lexpr:*/
+                            if ((flags & 1) != 0)
+                            {
+                                ea.value = expressionSemantic(ea.value, sc);
+                                if (((ea.value.op & 0xFF) != 26 || (((VarExp)ea.value).var.storage_class & 262144L) != 0))
+                                {
+                                    ea.value = ea.value.optimize(0, false);
+                                }
+                            }
+                            else
+                            {
+                                sc = (sc).startCTFE();
+                                ea.value = expressionSemantic(ea.value, sc);
+                                sc = (sc).endCTFE();
+                                if ((ea.value.op & 0xFF) == 26)
+                                {
+                                }
+                                else if (definitelyValueParameter(ea.value))
+                                {
+                                    if (ea.value.checkValue())
+                                        ea.value = new ErrorExp();
+                                    int olderrs = global.errors;
+                                    ea.value = ea.value.ctfeInterpret();
+                                    if (global.errors != olderrs)
+                                        ea.value = new ErrorExp();
+                                }
+                            }
+                            if ((ea.value.op & 0xFF) == 126)
+                            {
+                                TupleExp te = (TupleExp)ea.value;
+                                int dim = (te.exps).length;
+                                (tiargs).remove(j);
+                                if ((dim) != 0)
+                                {
+                                    (tiargs).reserve(dim);
+                                    {
+                                        int i = 0;
+                                        for (; i < dim;i++) {
+                                            (tiargs).insert(j + i, (te.exps).get(i));
+                                        }
+                                    }
+                                }
+                                j--;
+                                continue L_outer20;
+                            }
+                            if ((ea.value.op & 0xFF) == 127)
+                            {
+                                err = true;
+                                continue L_outer20;
+                            }
+                            tiargs.set(j, ea.value);
+                            if ((ea.value.op & 0xFF) == 20)
+                            {
+                                ta.value = ea.value.type;
+                                /*goto Ltype*/throw Dispatch0.INSTANCE;
+                            }
+                            if ((ea.value.op & 0xFF) == 203)
+                            {
+                                sa.value = ((ScopeExp)ea.value).sds;
+                                /*goto Ldsym*//*unrolled goto*/
+                            /*Ldsym:*/
+                                if (sa.value.errors)
+                                {
+                                    err = true;
+                                    continue L_outer20;
+                                }
+                                TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
+                                if (d != null)
+                                {
+                                    (tiargs).remove(j);
+                                    (tiargs).insert(j, d.objects);
+                                    j--;
+                                    continue L_outer20;
+                                }
+                                {
+                                    FuncAliasDeclaration fa = sa.value.isFuncAliasDeclaration();
+                                    if (fa != null)
+                                    {
+                                        FuncDeclaration f = fa.toAliasFunc();
+                                        if ((!(fa.hasOverloads) && f.isUnique()))
+                                        {
+                                            sa.value = f;
+                                        }
+                                    }
+                                }
+                                tiargs.set(j, sa.value);
+                                TemplateDeclaration td = sa.value.isTemplateDeclaration();
+                                if (((td != null && td.semanticRun == PASS.init) && td.literal))
+                                {
+                                    dsymbolSemantic(td, sc);
+                                }
+                                FuncDeclaration fd = sa.value.isFuncDeclaration();
+                                if (fd != null)
+                                    fd.functionSemantic();
+                            }
+                            if ((ea.value.op & 0xFF) == 161)
+                            {
+                                FuncExp fe = (FuncExp)ea.value;
+                                if (((fe.fd.tok & 0xFF) == 0 && (fe.type.ty & 0xFF) == ENUMTY.Tpointer))
+                                {
+                                    fe.fd.tok = TOK.function_;
+                                    fe.fd.vthis = null;
+                                }
+                                else if (fe.td != null)
+                                {
+                                }
+                            }
+                            if (((ea.value.op & 0xFF) == 27 && !((flags & 1) != 0)))
+                            {
+                                sa.value = ((DotVarExp)ea.value).var;
+                                /*goto Ldsym*//*unrolled goto*/
+                            /*Ldsym:*/
+                                if (sa.value.errors)
+                                {
+                                    err = true;
+                                    continue L_outer20;
+                                }
+                                TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
+                                if (d != null)
+                                {
+                                    (tiargs).remove(j);
+                                    (tiargs).insert(j, d.objects);
+                                    j--;
+                                    continue L_outer20;
+                                }
+                                {
+                                    FuncAliasDeclaration fa = sa.value.isFuncAliasDeclaration();
+                                    if (fa != null)
+                                    {
+                                        FuncDeclaration f = fa.toAliasFunc();
+                                        if ((!(fa.hasOverloads) && f.isUnique()))
+                                        {
+                                            sa.value = f;
+                                        }
+                                    }
+                                }
+                                tiargs.set(j, sa.value);
+                                TemplateDeclaration td = sa.value.isTemplateDeclaration();
+                                if (((td != null && td.semanticRun == PASS.init) && td.literal))
+                                {
+                                    dsymbolSemantic(td, sc);
+                                }
+                                FuncDeclaration fd = sa.value.isFuncDeclaration();
+                                if (fd != null)
+                                    fd.functionSemantic();
+                            }
+                            if ((ea.value.op & 0xFF) == 36)
+                            {
+                                sa.value = ((TemplateExp)ea.value).td;
+                                /*goto Ldsym*//*unrolled goto*/
+                            /*Ldsym:*/
+                                if (sa.value.errors)
+                                {
+                                    err = true;
+                                    continue L_outer20;
+                                }
+                                TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
+                                if (d != null)
+                                {
+                                    (tiargs).remove(j);
+                                    (tiargs).insert(j, d.objects);
+                                    j--;
+                                    continue L_outer20;
+                                }
+                                {
+                                    FuncAliasDeclaration fa = sa.value.isFuncAliasDeclaration();
+                                    if (fa != null)
+                                    {
+                                        FuncDeclaration f = fa.toAliasFunc();
+                                        if ((!(fa.hasOverloads) && f.isUnique()))
+                                        {
+                                            sa.value = f;
+                                        }
+                                    }
+                                }
+                                tiargs.set(j, sa.value);
+                                TemplateDeclaration td = sa.value.isTemplateDeclaration();
+                                if (((td != null && td.semanticRun == PASS.init) && td.literal))
+                                {
+                                    dsymbolSemantic(td, sc);
+                                }
+                                FuncDeclaration fd = sa.value.isFuncDeclaration();
+                                if (fd != null)
+                                    fd.functionSemantic();
+                            }
+                            if (((ea.value.op & 0xFF) == 37 && !((flags & 1) != 0)))
+                            {
+                                sa.value = ((DotTemplateExp)ea.value).td;
+                                /*goto Ldsym*//*unrolled goto*/
+                            /*Ldsym:*/
+                                if (sa.value.errors)
+                                {
+                                    err = true;
+                                    continue L_outer20;
+                                }
+                                TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
+                                if (d != null)
+                                {
+                                    (tiargs).remove(j);
+                                    (tiargs).insert(j, d.objects);
+                                    j--;
+                                    continue L_outer20;
+                                }
+                                {
+                                    FuncAliasDeclaration fa = sa.value.isFuncAliasDeclaration();
+                                    if (fa != null)
+                                    {
+                                        FuncDeclaration f = fa.toAliasFunc();
+                                        if ((!(fa.hasOverloads) && f.isUnique()))
+                                        {
+                                            sa.value = f;
+                                        }
+                                    }
+                                }
+                                tiargs.set(j, sa.value);
+                                TemplateDeclaration td = sa.value.isTemplateDeclaration();
+                                if (((td != null && td.semanticRun == PASS.init) && td.literal))
+                                {
+                                    dsymbolSemantic(td, sc);
+                                }
+                                FuncDeclaration fd = sa.value.isFuncDeclaration();
+                                if (fd != null)
+                                    fd.functionSemantic();
+                            }
                         if (sa.value != null)
-                            /*goto Ldsym*/throw Dispatch.INSTANCE;
+                            /*goto Ldsym*//*unrolled goto*/
+                        /*Ldsym:*/
+                            if (sa.value.errors)
+                            {
+                                err = true;
+                                continue L_outer20;
+                            }
+                            TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
+                            if (d != null)
+                            {
+                                (tiargs).remove(j);
+                                (tiargs).insert(j, d.objects);
+                                j--;
+                                continue L_outer20;
+                            }
+                            {
+                                FuncAliasDeclaration fa = sa.value.isFuncAliasDeclaration();
+                                if (fa != null)
+                                {
+                                    FuncDeclaration f = fa.toAliasFunc();
+                                    if ((!(fa.hasOverloads) && f.isUnique()))
+                                    {
+                                        sa.value = f;
+                                    }
+                                }
+                            }
+                            tiargs.set(j, sa.value);
+                            TemplateDeclaration td = sa.value.isTemplateDeclaration();
+                            if (((td != null && td.semanticRun == PASS.init) && td.literal))
+                            {
+                                dsymbolSemantic(td, sc);
+                            }
+                            FuncDeclaration fd = sa.value.isFuncDeclaration();
+                            if (fd != null)
+                                fd.functionSemantic();
                         if (ta.value == null)
                         {
                             assert((global.errors) != 0);
@@ -5501,7 +5772,41 @@ public class dtemplate {
                         if ((ea.value.op & 0xFF) == 203)
                         {
                             sa.value = ((ScopeExp)ea.value).sds;
-                            /*goto Ldsym*/throw Dispatch.INSTANCE;
+                            /*goto Ldsym*//*unrolled goto*/
+                        /*Ldsym:*/
+                            if (sa.value.errors)
+                            {
+                                err = true;
+                                continue L_outer20;
+                            }
+                            TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
+                            if (d != null)
+                            {
+                                (tiargs).remove(j);
+                                (tiargs).insert(j, d.objects);
+                                j--;
+                                continue L_outer20;
+                            }
+                            {
+                                FuncAliasDeclaration fa = sa.value.isFuncAliasDeclaration();
+                                if (fa != null)
+                                {
+                                    FuncDeclaration f = fa.toAliasFunc();
+                                    if ((!(fa.hasOverloads) && f.isUnique()))
+                                    {
+                                        sa.value = f;
+                                    }
+                                }
+                            }
+                            tiargs.set(j, sa.value);
+                            TemplateDeclaration td = sa.value.isTemplateDeclaration();
+                            if (((td != null && td.semanticRun == PASS.init) && td.literal))
+                            {
+                                dsymbolSemantic(td, sc);
+                            }
+                            FuncDeclaration fd = sa.value.isFuncDeclaration();
+                            if (fd != null)
+                                fd.functionSemantic();
                         }
                         if ((ea.value.op & 0xFF) == 161)
                         {
@@ -5518,17 +5823,119 @@ public class dtemplate {
                         if (((ea.value.op & 0xFF) == 27 && !((flags & 1) != 0)))
                         {
                             sa.value = ((DotVarExp)ea.value).var;
-                            /*goto Ldsym*/throw Dispatch.INSTANCE;
+                            /*goto Ldsym*//*unrolled goto*/
+                        /*Ldsym:*/
+                            if (sa.value.errors)
+                            {
+                                err = true;
+                                continue L_outer20;
+                            }
+                            TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
+                            if (d != null)
+                            {
+                                (tiargs).remove(j);
+                                (tiargs).insert(j, d.objects);
+                                j--;
+                                continue L_outer20;
+                            }
+                            {
+                                FuncAliasDeclaration fa = sa.value.isFuncAliasDeclaration();
+                                if (fa != null)
+                                {
+                                    FuncDeclaration f = fa.toAliasFunc();
+                                    if ((!(fa.hasOverloads) && f.isUnique()))
+                                    {
+                                        sa.value = f;
+                                    }
+                                }
+                            }
+                            tiargs.set(j, sa.value);
+                            TemplateDeclaration td = sa.value.isTemplateDeclaration();
+                            if (((td != null && td.semanticRun == PASS.init) && td.literal))
+                            {
+                                dsymbolSemantic(td, sc);
+                            }
+                            FuncDeclaration fd = sa.value.isFuncDeclaration();
+                            if (fd != null)
+                                fd.functionSemantic();
                         }
                         if ((ea.value.op & 0xFF) == 36)
                         {
                             sa.value = ((TemplateExp)ea.value).td;
-                            /*goto Ldsym*/throw Dispatch.INSTANCE;
+                            /*goto Ldsym*//*unrolled goto*/
+                        /*Ldsym:*/
+                            if (sa.value.errors)
+                            {
+                                err = true;
+                                continue L_outer20;
+                            }
+                            TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
+                            if (d != null)
+                            {
+                                (tiargs).remove(j);
+                                (tiargs).insert(j, d.objects);
+                                j--;
+                                continue L_outer20;
+                            }
+                            {
+                                FuncAliasDeclaration fa = sa.value.isFuncAliasDeclaration();
+                                if (fa != null)
+                                {
+                                    FuncDeclaration f = fa.toAliasFunc();
+                                    if ((!(fa.hasOverloads) && f.isUnique()))
+                                    {
+                                        sa.value = f;
+                                    }
+                                }
+                            }
+                            tiargs.set(j, sa.value);
+                            TemplateDeclaration td = sa.value.isTemplateDeclaration();
+                            if (((td != null && td.semanticRun == PASS.init) && td.literal))
+                            {
+                                dsymbolSemantic(td, sc);
+                            }
+                            FuncDeclaration fd = sa.value.isFuncDeclaration();
+                            if (fd != null)
+                                fd.functionSemantic();
                         }
                         if (((ea.value.op & 0xFF) == 37 && !((flags & 1) != 0)))
                         {
                             sa.value = ((DotTemplateExp)ea.value).td;
-                            /*goto Ldsym*/throw Dispatch.INSTANCE;
+                            /*goto Ldsym*//*unrolled goto*/
+                        /*Ldsym:*/
+                            if (sa.value.errors)
+                            {
+                                err = true;
+                                continue L_outer20;
+                            }
+                            TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
+                            if (d != null)
+                            {
+                                (tiargs).remove(j);
+                                (tiargs).insert(j, d.objects);
+                                j--;
+                                continue L_outer20;
+                            }
+                            {
+                                FuncAliasDeclaration fa = sa.value.isFuncAliasDeclaration();
+                                if (fa != null)
+                                {
+                                    FuncDeclaration f = fa.toAliasFunc();
+                                    if ((!(fa.hasOverloads) && f.isUnique()))
+                                    {
+                                        sa.value = f;
+                                    }
+                                }
+                            }
+                            tiargs.set(j, sa.value);
+                            TemplateDeclaration td = sa.value.isTemplateDeclaration();
+                            if (((td != null && td.semanticRun == PASS.init) && td.literal))
+                            {
+                                dsymbolSemantic(td, sc);
+                            }
+                            FuncDeclaration fd = sa.value.isFuncDeclaration();
+                            if (fd != null)
+                                fd.functionSemantic();
                         }
                     }
                     else if (sa.value != null)

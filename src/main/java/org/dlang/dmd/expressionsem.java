@@ -8500,7 +8500,17 @@ public class expressionsem {
                     {
                         exp.e1 = exp.e1.implicitCastTo(this.sc, tb2.arrayOf());
                         exp.type = tb2.arrayOf();
-                        /*goto L2elem*/throw Dispatch.INSTANCE;
+                        /*goto L2elem*//*unrolled goto*/
+                    /*L2elem:*/
+                        if (((tb2.ty & 0xFF) == ENUMTY.Tarray || (tb2.ty & 0xFF) == ENUMTY.Tsarray))
+                        {
+                            exp.e2 = new ArrayLiteralExp(exp.e2.loc, exp.type, exp.e2);
+                        }
+                        else if (checkNewEscape(this.sc, exp.e2, false))
+                            this.setError();
+                            return ;
+                        this.result = exp.optimize(0, false);
+                        return ;
                     }
                     if (exp.e2.implicitConvTo(tb1next) >= MATCH.convert)
                     {
@@ -8537,7 +8547,17 @@ public class expressionsem {
                     {
                         exp.e2 = exp.e2.implicitCastTo(this.sc, tb1.arrayOf());
                         exp.type = tb1.arrayOf();
-                        /*goto L1elem*/throw Dispatch.INSTANCE;
+                        /*goto L1elem*//*unrolled goto*/
+                    /*L1elem:*/
+                        if (((tb1.ty & 0xFF) == ENUMTY.Tarray || (tb1.ty & 0xFF) == ENUMTY.Tsarray))
+                        {
+                            exp.e1 = new ArrayLiteralExp(exp.e1.loc, exp.type, exp.e1);
+                        }
+                        else if (checkNewEscape(this.sc, exp.e1, false))
+                            this.setError();
+                            return ;
+                        this.result = exp.optimize(0, false);
+                        return ;
                     }
                     if (exp.e1.implicitConvTo(tb2next) >= MATCH.convert)
                     {

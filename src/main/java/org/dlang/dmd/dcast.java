@@ -1163,7 +1163,17 @@ public class dcast {
                             if (t1b.size(e.loc) == tob.size(e.loc))
                                 /*goto Lok*/throw Dispatch0.INSTANCE;
                         }
-                        /*goto Lfail*/throw Dispatch.INSTANCE;
+                        /*goto Lfail*//*unrolled goto*/
+                    /*Lfail:*/
+                        if (hasAliasThis)
+                        {
+                            this.result = tryAliasThisCast(e, this.sc, tob, t1b, this.t);
+                            if (this.result != null)
+                                return ;
+                        }
+                        e.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e.toChars(), e.type.toChars(), this.t.toChars());
+                        this.result = new ErrorExp();
+                        return ;
                     }
                     else if ((t1b.implicitConvTo(tob) == MATCH.constant && this.t.equals(e.type.constOf())))
                     {
@@ -1178,7 +1188,17 @@ public class dcast {
                 }
                 if (((tob_isA && (t1b_isR || t1b_isFV)) || (t1b_isA && (tob_isR || tob_isFV))))
                 {
-                    /*goto Lfail*/throw Dispatch.INSTANCE;
+                    /*goto Lfail*//*unrolled goto*/
+                /*Lfail:*/
+                    if (hasAliasThis)
+                    {
+                        this.result = tryAliasThisCast(e, this.sc, tob, t1b, this.t);
+                        if (this.result != null)
+                            return ;
+                    }
+                    e.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e.toChars(), e.type.toChars(), this.t.toChars());
+                    this.result = new ErrorExp();
+                    return ;
                 }
                 if ((tob_isFV && t1b_isFV))
                 {
@@ -1214,12 +1234,32 @@ public class dcast {
                         }
                         /*goto Lok*/throw Dispatch0.INSTANCE;
                     }
-                    /*goto Lfail*/throw Dispatch.INSTANCE;
+                    /*goto Lfail*//*unrolled goto*/
+                /*Lfail:*/
+                    if (hasAliasThis)
+                    {
+                        this.result = tryAliasThisCast(e, this.sc, tob, t1b, this.t);
+                        if (this.result != null)
+                            return ;
+                    }
+                    e.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e.toChars(), e.type.toChars(), this.t.toChars());
+                    this.result = new ErrorExp();
+                    return ;
                 }
                 if ((((tob.ty & 0xFF) == (t1b.ty & 0xFF) && tob_isR) && t1b_isR))
                     /*goto Lok*/throw Dispatch0.INSTANCE;
                 if (((tob.ty & 0xFF) == ENUMTY.Tnull && (t1b.ty & 0xFF) != ENUMTY.Tnull))
-                    /*goto Lfail*/throw Dispatch.INSTANCE;
+                    /*goto Lfail*//*unrolled goto*/
+                /*Lfail:*/
+                    if (hasAliasThis)
+                    {
+                        this.result = tryAliasThisCast(e, this.sc, tob, t1b, this.t);
+                        if (this.result != null)
+                            return ;
+                    }
+                    e.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e.toChars(), e.type.toChars(), this.t.toChars());
+                    this.result = new ErrorExp();
+                    return ;
                 if (((t1b.ty & 0xFF) == ENUMTY.Tnull && (tob.ty & 0xFF) != ENUMTY.Tnull))
                     /*goto Lok*/throw Dispatch0.INSTANCE;
                 if (((tob_isFR && t1b_isR) || (t1b_isFR && tob_isR)))
@@ -1233,7 +1273,17 @@ public class dcast {
                         e.deprecation(new BytePtr("casting from %s to %s is deprecated"), e.type.toChars(), this.t.toChars());
                         /*goto Lok*/throw Dispatch0.INSTANCE;
                     }
-                    /*goto Lfail*/throw Dispatch.INSTANCE;
+                    /*goto Lfail*//*unrolled goto*/
+                /*Lfail:*/
+                    if (hasAliasThis)
+                    {
+                        this.result = tryAliasThisCast(e, this.sc, tob, t1b, this.t);
+                        if (this.result != null)
+                            return ;
+                    }
+                    e.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e.toChars(), e.type.toChars(), this.t.toChars());
+                    this.result = new ErrorExp();
+                    return ;
                 }
                 if (((t1b.ty & 0xFF) == ENUMTY.Tvoid && (tob.ty & 0xFF) != ENUMTY.Tvoid))
                 {
@@ -2807,7 +2857,17 @@ public class dcast {
                 TypeVector tv2 = (TypeVector)t2.value;
                 if (!(tv1.basetype.equals(tv2.basetype)))
                     return Lincompatible.invoke();
-                /*goto LmodCompare*/throw Dispatch.INSTANCE;
+                /*goto LmodCompare*//*unrolled goto*/
+            /*LmodCompare:*/
+                if (((!(t1.value.isImmutable()) && !(t2.value.isImmutable())) && (t1.value.isShared() ? 1 : 0) != (t2.value.isShared() ? 1 : 0)))
+                    return Lincompatible.invoke();
+                byte mod = MODmerge(t1.value.mod, t2.value.mod);
+                t1.value = t1.value.castMod(mod);
+                t2.value = t2.value.castMod(mod);
+                t.value = t1.value;
+                e1.value = e1.value.castTo(sc_ref.value, t.value);
+                e2.value = e2.value.castTo(sc_ref.value, t.value);
+                /*goto Lagain*/throw Dispatch0.INSTANCE;
             }
             else if ((((t1.value.ty & 0xFF) == ENUMTY.Tvector && (t2.value.ty & 0xFF) != ENUMTY.Tvector) && (e2.value.implicitConvTo(t1.value)) != 0))
             {

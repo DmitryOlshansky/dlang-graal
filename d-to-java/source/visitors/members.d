@@ -216,6 +216,11 @@ bool containsStatement(Statement haystack, Statement needle) {
             super.visit(st);
         }
 
+        override void visit(IfStatement st) {
+            if (st == target) found = true;
+            super.visit(st);
+        }
+
         override void visit(ExpStatement st) {
             if (st == target) found = true;
             super.visit(st);
