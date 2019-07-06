@@ -1145,6 +1145,89 @@ public class mars {
                 return new ByteSlice("\n            final switch (checkOptions(p + len - 1, params.").concat(usageFlag).concat(new ByteSlice(",\"")).concat(missingMsg).concat(new ByteSlice("\"))\n            {\n                case CheckOptions.error:\n                    goto Lerror;\n                case CheckOptions.help:\n                    return false;\n                case CheckOptions.success:\n                    break;\n            }\n        "));
             }
         };
+        // from template parseCLIOption!(_preview[Feature("dip25", "useDIP25", "implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)", true, false), Feature("dip1000", "vsafe", "implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)", true, false), Feature("dip1008", "ehnogc", "implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)", true, false), Feature("fieldwise", "fieldwise", "use fieldwise comparisons for struct equality", true, false), Feature("markdown", "markdown", "enable Markdown replacements in Ddoc", true, false), Feature("fixAliasThis", "fixAliasThis", "when a symbol is resolved, check alias this scope before going to upper scopes", true, false), Feature("intpromote", "fix16997", "fix integral promotions for unary + - ~ operators", true, false), Feature("dtorfields", "dtorFields", "destruct fields of partially constructed objects", true, false), Feature("rvaluerefparam", "rvalueRefParam", "enable rvalue arguments to ref parameters", true, false)])
+        Function2<Param,BytePtr,Boolean> parseCLIOption_preview[Feature("dip25", "useDIP25", "implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)", true, false), Feature("dip1000", "vsafe", "implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)", true, false), Feature("dip1008", "ehnogc", "implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)", true, false), Feature("fieldwise", "fieldwise", "use fieldwise comparisons for struct equality", true, false), Feature("markdown", "markdown", "enable Markdown replacements in Ddoc", true, false), Feature("fixAliasThis", "fixAliasThis", "when a symbol is resolved, check alias this scope before going to upper scopes", true, false), Feature("intpromote", "fix16997", "fix integral promotions for unary + - ~ operators", true, false), Feature("dtorfields", "dtorFields", "destruct fields of partially constructed objects", true, false), Feature("rvaluerefparam", "rvalueRefParam", "enable rvalue arguments to ref parameters", true, false)] = new Function2<Param,BytePtr,Boolean>(){
+            public Boolean invoke(Param params, BytePtr p){
+                BytePtr ps = pcopy(p.plus(7).plus(1));
+                if (Identifier.isValidIdentifier(ps.plus(1)))
+                {
+                    Function0<ByteSlice> generateTransitionsText_preview[Feature("dip25", "useDIP25", "implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)", true, false), Feature("dip1000", "vsafe", "implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)", true, false), Feature("dip1008", "ehnogc", "implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)", true, false), Feature("fieldwise", "fieldwise", "use fieldwise comparisons for struct equality", true, false), Feature("markdown", "markdown", "enable Markdown replacements in Ddoc", true, false), Feature("fixAliasThis", "fixAliasThis", "when a symbol is resolved, check alias this scope before going to upper scopes", true, false), Feature("intpromote", "fix16997", "fix integral promotions for unary + - ~ operators", true, false), Feature("dtorfields", "dtorFields", "destruct fields of partially constructed objects", true, false), Feature("rvaluerefparam", "rvalueRefParam", "enable rvalue arguments to ref parameters", true, false)] = new Function0<ByteSlice>(){
+                        public ByteSlice invoke(){
+                            ByteSlice buf = new ByteSlice("case \"all\":").copy();
+                            {
+                                Slice<Usage.Feature> __r1569 = slice(new Usage.Feature[]{new Usage.Feature(new ByteSlice("dip25"), new ByteSlice("useDIP25"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)"), true, false), new Usage.Feature(new ByteSlice("dip1000"), new ByteSlice("vsafe"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)"), true, false), new Usage.Feature(new ByteSlice("dip1008"), new ByteSlice("ehnogc"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)"), true, false), new Usage.Feature(new ByteSlice("fieldwise"), new ByteSlice("fieldwise"), new ByteSlice("use fieldwise comparisons for struct equality"), true, false), new Usage.Feature(new ByteSlice("markdown"), new ByteSlice("markdown"), new ByteSlice("enable Markdown replacements in Ddoc"), true, false), new Usage.Feature(new ByteSlice("fixAliasThis"), new ByteSlice("fixAliasThis"), new ByteSlice("when a symbol is resolved, check alias this scope before going to upper scopes"), true, false), new Usage.Feature(new ByteSlice("intpromote"), new ByteSlice("fix16997"), new ByteSlice("fix integral promotions for unary + - ~ operators"), true, false), new Usage.Feature(new ByteSlice("dtorfields"), new ByteSlice("dtorFields"), new ByteSlice("destruct fields of partially constructed objects"), true, false), new Usage.Feature(new ByteSlice("rvaluerefparam"), new ByteSlice("rvalueRefParam"), new ByteSlice("enable rvalue arguments to ref parameters"), true, false)});
+                                int __key1570 = 0;
+                                for (; __key1570 < 9;__key1570 += 1) {
+                                    Usage.Feature t = __r1569.get(__key1570).copy();
+                                    if (t.deprecated_)
+                                        continue;
+                                    buf.append(new ByteSlice("params.").concat(t.paramName).concat(new ByteSlice(" = true;")));
+                                }
+                            }
+                            buf.append(new ByteSlice("break;\n"));
+                            {
+                                Slice<Usage.Feature> __r1571 = slice(new Usage.Feature[]{new Usage.Feature(new ByteSlice("dip25"), new ByteSlice("useDIP25"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)"), true, false), new Usage.Feature(new ByteSlice("dip1000"), new ByteSlice("vsafe"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)"), true, false), new Usage.Feature(new ByteSlice("dip1008"), new ByteSlice("ehnogc"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)"), true, false), new Usage.Feature(new ByteSlice("fieldwise"), new ByteSlice("fieldwise"), new ByteSlice("use fieldwise comparisons for struct equality"), true, false), new Usage.Feature(new ByteSlice("markdown"), new ByteSlice("markdown"), new ByteSlice("enable Markdown replacements in Ddoc"), true, false), new Usage.Feature(new ByteSlice("fixAliasThis"), new ByteSlice("fixAliasThis"), new ByteSlice("when a symbol is resolved, check alias this scope before going to upper scopes"), true, false), new Usage.Feature(new ByteSlice("intpromote"), new ByteSlice("fix16997"), new ByteSlice("fix integral promotions for unary + - ~ operators"), true, false), new Usage.Feature(new ByteSlice("dtorfields"), new ByteSlice("dtorFields"), new ByteSlice("destruct fields of partially constructed objects"), true, false), new Usage.Feature(new ByteSlice("rvaluerefparam"), new ByteSlice("rvalueRefParam"), new ByteSlice("enable rvalue arguments to ref parameters"), true, false)});
+                                int __key1572 = 0;
+                                for (; __key1572 < 9;__key1572 += 1) {
+                                    Usage.Feature t = __r1571.get(__key1572).copy();
+                                    buf.append(new ByteSlice("case \"").concat(t.name).concat(new ByteSlice("\":")));
+                                    if (t.deprecated_)
+                                        buf.append(new ByteSlice("deprecation(Loc.initial, \"`-preview=").concat(t.name).concat(new ByteSlice("` no longer has any effect.\"); ")));
+                                    buf.append(new ByteSlice("params.").concat(t.paramName).concat(new ByteSlice(" = true; return true;")));
+                                }
+                            }
+                            return buf;
+                        }
+                    };
+                    BytePtr ident = pcopy(ps.plus(1));
+                    switch (__switch(ident.slice(0,strlen(ident))))
+                    {
+                        case 0:
+                            params.useDIP25 = true;
+                            params.vsafe = true;
+                            params.ehnogc = true;
+                            params.fieldwise = true;
+                            params.markdown = true;
+                            params.fixAliasThis = true;
+                            params.fix16997 = true;
+                            params.dtorFields = true;
+                            params.rvalueRefParam = true;
+                            break;
+                        case 1:
+                            params.useDIP25 = true;
+                            return true;
+                        case 2:
+                            params.vsafe = true;
+                            return true;
+                        case 3:
+                            params.ehnogc = true;
+                            return true;
+                        case 5:
+                            params.fieldwise = true;
+                            return true;
+                        case 4:
+                            params.markdown = true;
+                            return true;
+                        case 8:
+                            params.fixAliasThis = true;
+                            return true;
+                        case 7:
+                            params.fix16997 = true;
+                            return true;
+                        case 6:
+                            params.dtorFields = true;
+                            return true;
+                        case 9:
+                            params.rvalueRefParam = true;
+                            return true;
+                        default:
+                        return false;
+                    }
+                }
+                return false;
+            }
+        };
+
         // from template parseCLIOption!(_revert[Feature("dip25", "noDIP25", "revert DIP25 changes https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md", true, false), Feature("import", "bug10378", "revert to single phase name lookup", true, true)])
         Function2<Param,BytePtr,Boolean> parseCLIOption_revert[Feature("dip25", "noDIP25", "revert DIP25 changes https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md", true, false), Feature("import", "bug10378", "revert to single phase name lookup", true, true)] = new Function2<Param,BytePtr,Boolean>(){
             public Boolean invoke(Param params, BytePtr p){
@@ -1258,89 +1341,6 @@ public class mars {
                             return true;
                         case 4:
                             params.vmarkdown = true;
-                            return true;
-                        default:
-                        return false;
-                    }
-                }
-                return false;
-            }
-        };
-
-        // from template parseCLIOption!(_preview[Feature("dip25", "useDIP25", "implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)", true, false), Feature("dip1000", "vsafe", "implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)", true, false), Feature("dip1008", "ehnogc", "implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)", true, false), Feature("fieldwise", "fieldwise", "use fieldwise comparisons for struct equality", true, false), Feature("markdown", "markdown", "enable Markdown replacements in Ddoc", true, false), Feature("fixAliasThis", "fixAliasThis", "when a symbol is resolved, check alias this scope before going to upper scopes", true, false), Feature("intpromote", "fix16997", "fix integral promotions for unary + - ~ operators", true, false), Feature("dtorfields", "dtorFields", "destruct fields of partially constructed objects", true, false), Feature("rvaluerefparam", "rvalueRefParam", "enable rvalue arguments to ref parameters", true, false)])
-        Function2<Param,BytePtr,Boolean> parseCLIOption_preview[Feature("dip25", "useDIP25", "implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)", true, false), Feature("dip1000", "vsafe", "implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)", true, false), Feature("dip1008", "ehnogc", "implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)", true, false), Feature("fieldwise", "fieldwise", "use fieldwise comparisons for struct equality", true, false), Feature("markdown", "markdown", "enable Markdown replacements in Ddoc", true, false), Feature("fixAliasThis", "fixAliasThis", "when a symbol is resolved, check alias this scope before going to upper scopes", true, false), Feature("intpromote", "fix16997", "fix integral promotions for unary + - ~ operators", true, false), Feature("dtorfields", "dtorFields", "destruct fields of partially constructed objects", true, false), Feature("rvaluerefparam", "rvalueRefParam", "enable rvalue arguments to ref parameters", true, false)] = new Function2<Param,BytePtr,Boolean>(){
-            public Boolean invoke(Param params, BytePtr p){
-                BytePtr ps = pcopy(p.plus(7).plus(1));
-                if (Identifier.isValidIdentifier(ps.plus(1)))
-                {
-                    Function0<ByteSlice> generateTransitionsText_preview[Feature("dip25", "useDIP25", "implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)", true, false), Feature("dip1000", "vsafe", "implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)", true, false), Feature("dip1008", "ehnogc", "implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)", true, false), Feature("fieldwise", "fieldwise", "use fieldwise comparisons for struct equality", true, false), Feature("markdown", "markdown", "enable Markdown replacements in Ddoc", true, false), Feature("fixAliasThis", "fixAliasThis", "when a symbol is resolved, check alias this scope before going to upper scopes", true, false), Feature("intpromote", "fix16997", "fix integral promotions for unary + - ~ operators", true, false), Feature("dtorfields", "dtorFields", "destruct fields of partially constructed objects", true, false), Feature("rvaluerefparam", "rvalueRefParam", "enable rvalue arguments to ref parameters", true, false)] = new Function0<ByteSlice>(){
-                        public ByteSlice invoke(){
-                            ByteSlice buf = new ByteSlice("case \"all\":").copy();
-                            {
-                                Slice<Usage.Feature> __r1569 = slice(new Usage.Feature[]{new Usage.Feature(new ByteSlice("dip25"), new ByteSlice("useDIP25"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)"), true, false), new Usage.Feature(new ByteSlice("dip1000"), new ByteSlice("vsafe"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)"), true, false), new Usage.Feature(new ByteSlice("dip1008"), new ByteSlice("ehnogc"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)"), true, false), new Usage.Feature(new ByteSlice("fieldwise"), new ByteSlice("fieldwise"), new ByteSlice("use fieldwise comparisons for struct equality"), true, false), new Usage.Feature(new ByteSlice("markdown"), new ByteSlice("markdown"), new ByteSlice("enable Markdown replacements in Ddoc"), true, false), new Usage.Feature(new ByteSlice("fixAliasThis"), new ByteSlice("fixAliasThis"), new ByteSlice("when a symbol is resolved, check alias this scope before going to upper scopes"), true, false), new Usage.Feature(new ByteSlice("intpromote"), new ByteSlice("fix16997"), new ByteSlice("fix integral promotions for unary + - ~ operators"), true, false), new Usage.Feature(new ByteSlice("dtorfields"), new ByteSlice("dtorFields"), new ByteSlice("destruct fields of partially constructed objects"), true, false), new Usage.Feature(new ByteSlice("rvaluerefparam"), new ByteSlice("rvalueRefParam"), new ByteSlice("enable rvalue arguments to ref parameters"), true, false)});
-                                int __key1570 = 0;
-                                for (; __key1570 < 9;__key1570 += 1) {
-                                    Usage.Feature t = __r1569.get(__key1570).copy();
-                                    if (t.deprecated_)
-                                        continue;
-                                    buf.append(new ByteSlice("params.").concat(t.paramName).concat(new ByteSlice(" = true;")));
-                                }
-                            }
-                            buf.append(new ByteSlice("break;\n"));
-                            {
-                                Slice<Usage.Feature> __r1571 = slice(new Usage.Feature[]{new Usage.Feature(new ByteSlice("dip25"), new ByteSlice("useDIP25"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)"), true, false), new Usage.Feature(new ByteSlice("dip1000"), new ByteSlice("vsafe"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)"), true, false), new Usage.Feature(new ByteSlice("dip1008"), new ByteSlice("ehnogc"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)"), true, false), new Usage.Feature(new ByteSlice("fieldwise"), new ByteSlice("fieldwise"), new ByteSlice("use fieldwise comparisons for struct equality"), true, false), new Usage.Feature(new ByteSlice("markdown"), new ByteSlice("markdown"), new ByteSlice("enable Markdown replacements in Ddoc"), true, false), new Usage.Feature(new ByteSlice("fixAliasThis"), new ByteSlice("fixAliasThis"), new ByteSlice("when a symbol is resolved, check alias this scope before going to upper scopes"), true, false), new Usage.Feature(new ByteSlice("intpromote"), new ByteSlice("fix16997"), new ByteSlice("fix integral promotions for unary + - ~ operators"), true, false), new Usage.Feature(new ByteSlice("dtorfields"), new ByteSlice("dtorFields"), new ByteSlice("destruct fields of partially constructed objects"), true, false), new Usage.Feature(new ByteSlice("rvaluerefparam"), new ByteSlice("rvalueRefParam"), new ByteSlice("enable rvalue arguments to ref parameters"), true, false)});
-                                int __key1572 = 0;
-                                for (; __key1572 < 9;__key1572 += 1) {
-                                    Usage.Feature t = __r1571.get(__key1572).copy();
-                                    buf.append(new ByteSlice("case \"").concat(t.name).concat(new ByteSlice("\":")));
-                                    if (t.deprecated_)
-                                        buf.append(new ByteSlice("deprecation(Loc.initial, \"`-preview=").concat(t.name).concat(new ByteSlice("` no longer has any effect.\"); ")));
-                                    buf.append(new ByteSlice("params.").concat(t.paramName).concat(new ByteSlice(" = true; return true;")));
-                                }
-                            }
-                            return buf;
-                        }
-                    };
-                    BytePtr ident = pcopy(ps.plus(1));
-                    switch (__switch(ident.slice(0,strlen(ident))))
-                    {
-                        case 0:
-                            params.useDIP25 = true;
-                            params.vsafe = true;
-                            params.ehnogc = true;
-                            params.fieldwise = true;
-                            params.markdown = true;
-                            params.fixAliasThis = true;
-                            params.fix16997 = true;
-                            params.dtorFields = true;
-                            params.rvalueRefParam = true;
-                            break;
-                        case 1:
-                            params.useDIP25 = true;
-                            return true;
-                        case 2:
-                            params.vsafe = true;
-                            return true;
-                        case 3:
-                            params.ehnogc = true;
-                            return true;
-                        case 5:
-                            params.fieldwise = true;
-                            return true;
-                        case 4:
-                            params.markdown = true;
-                            return true;
-                        case 8:
-                            params.fixAliasThis = true;
-                            return true;
-                        case 7:
-                            params.fix16997 = true;
-                            return true;
-                        case 6:
-                            params.dtorFields = true;
-                            return true;
-                        case 9:
-                            params.rvalueRefParam = true;
                             return true;
                         default:
                         return false;

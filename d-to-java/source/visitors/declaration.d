@@ -326,8 +326,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     void processLambdas(Statement st) {
         auto lambdas = collectLambdas(st);
+        schwartzSort!(x => x.fd.funcName)(lambdas);
         foreach (i, v; lambdas)  {
-            stderr.writefln("lambda: %d", i);
             auto sig = funcSig(v.fd);
             if (sig !in generatedFunctions.top) {
                 auto _ = pushed(opts.funcs, v.fd);
@@ -706,7 +706,9 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(TemplateDeclaration td) {
         if (td.ident.symbol.startsWith("RTInfo")) return;
-        foreach(inst; td.instances.values) {
+        auto instances = td.instances.values;
+        schwartzSort!(x => (x.ident ? x.ident.symbol : "") ~ .tiArgs(x, opts).str)(instances);
+        foreach(inst; instances) {
             auto _ = pushed(currentInst, inst);
             inst.accept(this);
         }

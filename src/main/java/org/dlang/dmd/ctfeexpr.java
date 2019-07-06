@@ -908,8 +908,8 @@ public class ctfeexpr {
         return true;
     }
 
-    // from template numCmp!(Integer)
-    public static boolean numCmpInteger(byte op, int n1, int n2) {
+    // from template numCmp!(Double)
+    public static boolean numCmpDouble(byte op, double n1, double n2) {
         switch ((op & 0xFF))
         {
             case 54:
@@ -926,8 +926,8 @@ public class ctfeexpr {
     }
 
 
-    // from template numCmp!(Double)
-    public static boolean numCmpDouble(byte op, double n1, double n2) {
+    // from template numCmp!(Integer)
+    public static boolean numCmpInteger(byte op, int n1, int n2) {
         switch ((op & 0xFF))
         {
             case 54:

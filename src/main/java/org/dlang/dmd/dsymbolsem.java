@@ -3963,20 +3963,6 @@ public class dsymbolsem {
                 try {
                     if (cldec_ref.value.baseok < Baseok.done)
                     {
-                        // from template resolveBase!(Void)
-                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
-                            public Void invoke(Void exp){
-                                if (scx == null)
-                                {
-                                    scx = (sc).copy();
-                                    (scx).setNoFree();
-                                }
-                                cldec_ref.value._scope = scx;
-                                exp.invoke();
-                                cldec_ref.value._scope = null;
-                            }
-                        };
-
                         // from template resolveBase!(Type)
                         Function1<Type,Type> resolveBaseType = new Function1<Type,Type>(){
                             public Type invoke(Type exp){
@@ -3989,6 +3975,20 @@ public class dsymbolsem {
                                 Type r = exp.invoke();
                                 cldec_ref.value._scope = null;
                                 return r;
+                            }
+                        };
+
+                        // from template resolveBase!(Void)
+                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
+                            public Void invoke(Void exp){
+                                if (scx == null)
+                                {
+                                    scx = (sc).copy();
+                                    (scx).setNoFree();
+                                }
+                                cldec_ref.value._scope = scx;
+                                exp.invoke();
+                                cldec_ref.value._scope = null;
                             }
                         };
 
@@ -4519,20 +4519,6 @@ public class dsymbolsem {
                 try {
                     if (idec.baseok < Baseok.done)
                     {
-                        // from template resolveBase!(Void)
-                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
-                            public Void invoke(Void exp){
-                                if (scx == null)
-                                {
-                                    scx = (sc).copy();
-                                    (scx).setNoFree();
-                                }
-                                idec._scope = scx;
-                                exp.invoke();
-                                idec._scope = null;
-                            }
-                        };
-
                         // from template resolveBase!(Type)
                         Function1<Type,Type> resolveBaseType = new Function1<Type,Type>(){
                             public Type invoke(Type exp){
@@ -4545,6 +4531,20 @@ public class dsymbolsem {
                                 Type r = exp.invoke();
                                 idec._scope = null;
                                 return r;
+                            }
+                        };
+
+                        // from template resolveBase!(Void)
+                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>(){
+                            public Void invoke(Void exp){
+                                if (scx == null)
+                                {
+                                    scx = (sc).copy();
+                                    (scx).setNoFree();
+                                }
+                                idec._scope = scx;
+                                exp.invoke();
+                                idec._scope = null;
                             }
                         };
 

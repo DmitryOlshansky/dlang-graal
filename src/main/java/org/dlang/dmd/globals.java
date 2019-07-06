@@ -18,23 +18,23 @@ import static org.dlang.dmd.utils.*;
 public class globals {
     static int versionNumbercached = 0;
 
-    // from template xversion!(_OSX)
-    static boolean xversion_OSX = false;
+    // from template xversion!(_DragonFlyBSD)
+    static boolean xversion_DragonFlyBSD = false;
 
     // from template xversion!(_FreeBSD)
     static boolean xversion_FreeBSD = false;
 
-    // from template xversion!(_DragonFlyBSD)
-    static boolean xversion_DragonFlyBSD = false;
+    // from template xversion!(_OSX)
+    static boolean xversion_OSX = false;
 
     // from template xversion!(_OpenBSD)
     static boolean xversion_OpenBSD = false;
 
-    // from template xversion!(_Windows)
-    static boolean xversion_Windows = false;
-
     // from template xversion!(_Solaris)
     static boolean xversion_Solaris = false;
+
+    // from template xversion!(_Windows)
+    static boolean xversion_Windows = false;
 
     // from template xversion!(_linux)
     static boolean xversion_linux = true;

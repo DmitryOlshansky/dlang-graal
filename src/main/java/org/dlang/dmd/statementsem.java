@@ -497,255 +497,6 @@ public class statementsem {
         // from template MakeTupleForeachRet!(1)
 
 
-        // from template makeTupleForeach!(11)
-        public  DArray<Dsymbol> makeTupleForeach11(ForeachStatement fs, DArray<Dsymbol> _param_1, boolean _param_2) {
-            Ref<ForeachStatement> fs_ref = ref(fs);
-            Function0<Object> returnEarly11 = new Function0<Object>(){
-                public Object invoke(){
-                    return null;
-                }
-            };
-            DArray<Dsymbol> dbody = _param_1;
-            Ref<Boolean> needExpansion = ref(_param_2);
-            assert(this.sc != null);
-            ScopeDsymbol previous = (this.sc).scopesym;
-            Loc loc = fs_ref.value.loc.copy();
-            int dim = (fs_ref.value.parameters).length;
-            boolean skipCheck = needExpansion.value;
-            if ((!(skipCheck) && (dim < 1 || dim > 2)))
-            {
-                fs_ref.value.error(new BytePtr("only one (value) or two (key,value) arguments for tuple `foreach`"));
-                this.setError();
-                return (DArray<Dsymbol>)returnEarly11.invoke();
-            }
-            Ref<Type> paramtype = ref((fs_ref.value.parameters).get(dim - 1).type);
-            if (paramtype.value != null)
-            {
-                paramtype.value = typeSemantic(paramtype.value, loc, this.sc);
-                if ((paramtype.value.ty & 0xFF) == ENUMTY.Terror)
-                {
-                    this.setError();
-                    return (DArray<Dsymbol>)returnEarly11.invoke();
-                }
-            }
-            Type tab = fs_ref.value.aggr.type.toBasetype();
-            TypeTuple tuple = (TypeTuple)tab;
-            DArray<Dsymbol> declarations = new DArray<Dsymbol>();
-            int n = 0;
-            Ref<TupleExp> te = ref(null);
-            if ((fs_ref.value.aggr.op & 0xFF) == 126)
-            {
-                te.value = (TupleExp)fs_ref.value.aggr;
-                n = (te.value.exps).length;
-            }
-            else if ((fs_ref.value.aggr.op & 0xFF) == 20)
-            {
-                n = Parameter.dim(tuple.arguments);
-            }
-            else
-                throw new AssertionError("Unreachable code!");
-            {
-                int __key717 = 0;
-                int __limit718 = n;
-                for (; __key717 < __limit718;__key717 += 1) {
-                    int j = __key717;
-                    int k = (fs_ref.value.op & 0xFF) == 201 ? j : n - 1 - j;
-                    Expression e = null;
-                    Type t = null;
-                    if (te.value != null)
-                        e = (te.value.exps).get(k);
-                    else
-                        t = Parameter.getNth(tuple.arguments, k, null).type;
-                    Parameter p = (fs_ref.value.parameters).get(0);
-                    Ref<DArray<Dsymbol>> st = ref(new DArray<Dsymbol>());
-                    boolean skip = needExpansion.value;
-                    if ((!(skip) && dim == 2))
-                    {
-                        if ((p.storageClass & 2109440L) != 0)
-                        {
-                            fs_ref.value.error(new BytePtr("no storage class for key `%s`"), p.ident.toChars());
-                            this.setError();
-                            return (DArray<Dsymbol>)returnEarly11.invoke();
-                        }
-                        if (!(p.type != null))
-                        {
-                            p.type = Type.tsize_t;
-                        }
-                        p.type = typeSemantic(p.type, loc, this.sc);
-                        byte keyty = p.type.ty;
-                        if (((keyty & 0xFF) != ENUMTY.Tint32 && (keyty & 0xFF) != ENUMTY.Tuns32))
-                        {
-                            if (global.params.isLP64)
-                            {
-                                if (((keyty & 0xFF) != ENUMTY.Tint64 && (keyty & 0xFF) != ENUMTY.Tuns64))
-                                {
-                                    fs_ref.value.error(new BytePtr("`foreach`: key type must be `int` or `uint`, `long` or `ulong`, not `%s`"), p.type.toChars());
-                                    this.setError();
-                                    return (DArray<Dsymbol>)returnEarly11.invoke();
-                                }
-                            }
-                            else
-                            {
-                                fs_ref.value.error(new BytePtr("`foreach`: key type must be `int` or `uint`, not `%s`"), p.type.toChars());
-                                this.setError();
-                                return (DArray<Dsymbol>)returnEarly11.invoke();
-                            }
-                        }
-                        Initializer ie = new ExpInitializer(Loc.initial, new IntegerExp((long)k));
-                        VarDeclaration var = new VarDeclaration(loc, p.type, p.ident, ie, 0L);
-                        var.storage_class |= 8388608L;
-                        var.storage_class |= 2251799813685248L;
-                        (st.value).push(var);
-                        p = (fs_ref.value.parameters).get(1);
-                    }
-                    Function5<Long,Type,Identifier,Expression,Type,Boolean> declareVariable11 = new Function5<Long,Type,Identifier,Expression,Type,Boolean>(){
-                        public Boolean invoke(Long storageClass, Type type, Identifier ident, Expression e, Type t){
-                            if (((storageClass & 12288L) != 0 || ((storageClass & 2097152L) != 0 && !(te.value != null))))
-                            {
-                                fs_ref.value.error(new BytePtr("no storage class for value `%s`"), ident.toChars());
-                                setError();
-                                return false;
-                            }
-                            Declaration var = null;
-                            if (e != null)
-                            {
-                                Type tb = e.type.toBasetype();
-                                Dsymbol ds = null;
-                                if (!((storageClass & 8388608L) != 0))
-                                {
-                                    if ((e.op & 0xFF) == 26)
-                                        ds = ((VarExp)e).var;
-                                    else if ((e.op & 0xFF) == 36)
-                                        ds = ((TemplateExp)e).td;
-                                    else if ((e.op & 0xFF) == 203)
-                                        ds = ((ScopeExp)e).sds;
-                                    else if ((e.op & 0xFF) == 161)
-                                    {
-                                        FuncExp fe = (FuncExp)e;
-                                        ds = fe.td != null ? fe.td : fe.fd;
-                                    }
-                                    else if ((e.op & 0xFF) == 214)
-                                        ds = ((OverExp)e).vars;
-                                }
-                                else if ((storageClass & 268435456L) != 0)
-                                {
-                                    fs_ref.value.error(new BytePtr("`foreach` loop variable cannot be both `enum` and `alias`"));
-                                    setError();
-                                    return false;
-                                }
-                                if (ds != null)
-                                {
-                                    var = new AliasDeclaration(loc, ident, ds);
-                                    if ((storageClass & 2097152L) != 0)
-                                    {
-                                        fs_ref.value.error(new BytePtr("symbol `%s` cannot be `ref`"), ds.toChars());
-                                        setError();
-                                        return false;
-                                    }
-                                    if (paramtype.value != null)
-                                    {
-                                        fs_ref.value.error(new BytePtr("cannot specify element type for symbol `%s`"), ds.toChars());
-                                        setError();
-                                        return false;
-                                    }
-                                }
-                                else if ((e.op & 0xFF) == 20)
-                                {
-                                    var = new AliasDeclaration(loc, ident, e.type);
-                                    if (paramtype.value != null)
-                                    {
-                                        fs_ref.value.error(new BytePtr("cannot specify element type for type `%s`"), e.type.toChars());
-                                        setError();
-                                        return false;
-                                    }
-                                }
-                                else
-                                {
-                                    e = resolveProperties(sc, e);
-                                    type = e.type;
-                                    if (paramtype.value != null)
-                                        type = paramtype.value;
-                                    Initializer ie = new ExpInitializer(Loc.initial, e);
-                                    VarDeclaration v = new VarDeclaration(loc, type, ident, ie, 0L);
-                                    if ((storageClass & 2097152L) != 0)
-                                        v.storage_class |= 2113536L;
-                                    if (true)
-                                    {
-                                        if ((v.storage_class & 2097152L) != 0)
-                                        {
-                                            if (!(needExpansion.value))
-                                            {
-                                                fs_ref.value.error(new BytePtr("constant value `%s` cannot be `ref`"), ie.toChars());
-                                            }
-                                            else
-                                            {
-                                                fs_ref.value.error(new BytePtr("constant value `%s` cannot be `ref`"), ident.toChars());
-                                            }
-                                            setError();
-                                            return false;
-                                        }
-                                        else
-                                            v.storage_class |= 8388608L;
-                                    }
-                                    var = v;
-                                }
-                            }
-                            else
-                            {
-                                var = new AliasDeclaration(loc, ident, t);
-                                if (paramtype.value != null)
-                                {
-                                    fs_ref.value.error(new BytePtr("cannot specify element type for symbol `%s`"), fs_ref.value.toChars());
-                                    setError();
-                                    return false;
-                                }
-                            }
-                            var.storage_class |= 2251799813685248L;
-                            (st.value).push(var);
-                            return true;
-                        }
-                    };
-                    if (!(needExpansion.value))
-                    {
-                        if (!(declareVariable11.invoke(p.storageClass, p.type, p.ident, e, t)))
-                        {
-                            return (DArray<Dsymbol>)returnEarly11.invoke();
-                        }
-                    }
-                    else
-                    {
-                        assert((e != null && !(t != null)));
-                        Identifier ident = Identifier.generateId(new BytePtr("__value"));
-                        declareVariable11.invoke(0L, e.type, ident, e, null);
-                        Identifier field = Identifier.idPool(toBytePtr(StaticForeach.tupleFieldName), 5);
-                        Expression access = new DotIdExp(loc, e, field);
-                        access = expressionSemantic(access, this.sc);
-                        if (!(tuple != null))
-                            return (DArray<Dsymbol>)returnEarly11.invoke();
-                        {
-                            int __key719 = 0;
-                            int __limit720 = dim;
-                            for (; __key719 < __limit720;__key719 += 1) {
-                                int l = __key719;
-                                Parameter cp = (fs_ref.value.parameters).get(l);
-                                Expression init_ = new IndexExp(loc, access, new IntegerExp(loc, (long)l, Type.tsize_t));
-                                init_ = expressionSemantic(init_, this.sc);
-                                assert(init_.type != null);
-                                declareVariable11.invoke(p.storageClass, init_.type, cp.ident, init_, null);
-                            }
-                        }
-                    }
-                    (st.value).append(Dsymbol.arraySyntaxCopy(dbody));
-                    ForwardingAttribDeclaration res = new ForwardingAttribDeclaration(st.value);
-                    previous = res.sym;
-                    (declarations).push(res);
-                }
-            }
-            DArray<Dsymbol> res = declarations;
-            return res;
-        }
-
-
         // from template makeTupleForeach!(00)
         public  void makeTupleForeach00(ForeachStatement fs) {
             Ref<ForeachStatement> fs_ref = ref(fs);
@@ -1223,6 +974,255 @@ public class statementsem {
             }
             Statement res = new CompoundStatement(loc, statements);
             this.result = res;
+        }
+
+
+        // from template makeTupleForeach!(11)
+        public  DArray<Dsymbol> makeTupleForeach11(ForeachStatement fs, DArray<Dsymbol> _param_1, boolean _param_2) {
+            Ref<ForeachStatement> fs_ref = ref(fs);
+            Function0<Object> returnEarly11 = new Function0<Object>(){
+                public Object invoke(){
+                    return null;
+                }
+            };
+            DArray<Dsymbol> dbody = _param_1;
+            Ref<Boolean> needExpansion = ref(_param_2);
+            assert(this.sc != null);
+            ScopeDsymbol previous = (this.sc).scopesym;
+            Loc loc = fs_ref.value.loc.copy();
+            int dim = (fs_ref.value.parameters).length;
+            boolean skipCheck = needExpansion.value;
+            if ((!(skipCheck) && (dim < 1 || dim > 2)))
+            {
+                fs_ref.value.error(new BytePtr("only one (value) or two (key,value) arguments for tuple `foreach`"));
+                this.setError();
+                return (DArray<Dsymbol>)returnEarly11.invoke();
+            }
+            Ref<Type> paramtype = ref((fs_ref.value.parameters).get(dim - 1).type);
+            if (paramtype.value != null)
+            {
+                paramtype.value = typeSemantic(paramtype.value, loc, this.sc);
+                if ((paramtype.value.ty & 0xFF) == ENUMTY.Terror)
+                {
+                    this.setError();
+                    return (DArray<Dsymbol>)returnEarly11.invoke();
+                }
+            }
+            Type tab = fs_ref.value.aggr.type.toBasetype();
+            TypeTuple tuple = (TypeTuple)tab;
+            DArray<Dsymbol> declarations = new DArray<Dsymbol>();
+            int n = 0;
+            Ref<TupleExp> te = ref(null);
+            if ((fs_ref.value.aggr.op & 0xFF) == 126)
+            {
+                te.value = (TupleExp)fs_ref.value.aggr;
+                n = (te.value.exps).length;
+            }
+            else if ((fs_ref.value.aggr.op & 0xFF) == 20)
+            {
+                n = Parameter.dim(tuple.arguments);
+            }
+            else
+                throw new AssertionError("Unreachable code!");
+            {
+                int __key717 = 0;
+                int __limit718 = n;
+                for (; __key717 < __limit718;__key717 += 1) {
+                    int j = __key717;
+                    int k = (fs_ref.value.op & 0xFF) == 201 ? j : n - 1 - j;
+                    Expression e = null;
+                    Type t = null;
+                    if (te.value != null)
+                        e = (te.value.exps).get(k);
+                    else
+                        t = Parameter.getNth(tuple.arguments, k, null).type;
+                    Parameter p = (fs_ref.value.parameters).get(0);
+                    Ref<DArray<Dsymbol>> st = ref(new DArray<Dsymbol>());
+                    boolean skip = needExpansion.value;
+                    if ((!(skip) && dim == 2))
+                    {
+                        if ((p.storageClass & 2109440L) != 0)
+                        {
+                            fs_ref.value.error(new BytePtr("no storage class for key `%s`"), p.ident.toChars());
+                            this.setError();
+                            return (DArray<Dsymbol>)returnEarly11.invoke();
+                        }
+                        if (!(p.type != null))
+                        {
+                            p.type = Type.tsize_t;
+                        }
+                        p.type = typeSemantic(p.type, loc, this.sc);
+                        byte keyty = p.type.ty;
+                        if (((keyty & 0xFF) != ENUMTY.Tint32 && (keyty & 0xFF) != ENUMTY.Tuns32))
+                        {
+                            if (global.params.isLP64)
+                            {
+                                if (((keyty & 0xFF) != ENUMTY.Tint64 && (keyty & 0xFF) != ENUMTY.Tuns64))
+                                {
+                                    fs_ref.value.error(new BytePtr("`foreach`: key type must be `int` or `uint`, `long` or `ulong`, not `%s`"), p.type.toChars());
+                                    this.setError();
+                                    return (DArray<Dsymbol>)returnEarly11.invoke();
+                                }
+                            }
+                            else
+                            {
+                                fs_ref.value.error(new BytePtr("`foreach`: key type must be `int` or `uint`, not `%s`"), p.type.toChars());
+                                this.setError();
+                                return (DArray<Dsymbol>)returnEarly11.invoke();
+                            }
+                        }
+                        Initializer ie = new ExpInitializer(Loc.initial, new IntegerExp((long)k));
+                        VarDeclaration var = new VarDeclaration(loc, p.type, p.ident, ie, 0L);
+                        var.storage_class |= 8388608L;
+                        var.storage_class |= 2251799813685248L;
+                        (st.value).push(var);
+                        p = (fs_ref.value.parameters).get(1);
+                    }
+                    Function5<Long,Type,Identifier,Expression,Type,Boolean> declareVariable11 = new Function5<Long,Type,Identifier,Expression,Type,Boolean>(){
+                        public Boolean invoke(Long storageClass, Type type, Identifier ident, Expression e, Type t){
+                            if (((storageClass & 12288L) != 0 || ((storageClass & 2097152L) != 0 && !(te.value != null))))
+                            {
+                                fs_ref.value.error(new BytePtr("no storage class for value `%s`"), ident.toChars());
+                                setError();
+                                return false;
+                            }
+                            Declaration var = null;
+                            if (e != null)
+                            {
+                                Type tb = e.type.toBasetype();
+                                Dsymbol ds = null;
+                                if (!((storageClass & 8388608L) != 0))
+                                {
+                                    if ((e.op & 0xFF) == 26)
+                                        ds = ((VarExp)e).var;
+                                    else if ((e.op & 0xFF) == 36)
+                                        ds = ((TemplateExp)e).td;
+                                    else if ((e.op & 0xFF) == 203)
+                                        ds = ((ScopeExp)e).sds;
+                                    else if ((e.op & 0xFF) == 161)
+                                    {
+                                        FuncExp fe = (FuncExp)e;
+                                        ds = fe.td != null ? fe.td : fe.fd;
+                                    }
+                                    else if ((e.op & 0xFF) == 214)
+                                        ds = ((OverExp)e).vars;
+                                }
+                                else if ((storageClass & 268435456L) != 0)
+                                {
+                                    fs_ref.value.error(new BytePtr("`foreach` loop variable cannot be both `enum` and `alias`"));
+                                    setError();
+                                    return false;
+                                }
+                                if (ds != null)
+                                {
+                                    var = new AliasDeclaration(loc, ident, ds);
+                                    if ((storageClass & 2097152L) != 0)
+                                    {
+                                        fs_ref.value.error(new BytePtr("symbol `%s` cannot be `ref`"), ds.toChars());
+                                        setError();
+                                        return false;
+                                    }
+                                    if (paramtype.value != null)
+                                    {
+                                        fs_ref.value.error(new BytePtr("cannot specify element type for symbol `%s`"), ds.toChars());
+                                        setError();
+                                        return false;
+                                    }
+                                }
+                                else if ((e.op & 0xFF) == 20)
+                                {
+                                    var = new AliasDeclaration(loc, ident, e.type);
+                                    if (paramtype.value != null)
+                                    {
+                                        fs_ref.value.error(new BytePtr("cannot specify element type for type `%s`"), e.type.toChars());
+                                        setError();
+                                        return false;
+                                    }
+                                }
+                                else
+                                {
+                                    e = resolveProperties(sc, e);
+                                    type = e.type;
+                                    if (paramtype.value != null)
+                                        type = paramtype.value;
+                                    Initializer ie = new ExpInitializer(Loc.initial, e);
+                                    VarDeclaration v = new VarDeclaration(loc, type, ident, ie, 0L);
+                                    if ((storageClass & 2097152L) != 0)
+                                        v.storage_class |= 2113536L;
+                                    if (true)
+                                    {
+                                        if ((v.storage_class & 2097152L) != 0)
+                                        {
+                                            if (!(needExpansion.value))
+                                            {
+                                                fs_ref.value.error(new BytePtr("constant value `%s` cannot be `ref`"), ie.toChars());
+                                            }
+                                            else
+                                            {
+                                                fs_ref.value.error(new BytePtr("constant value `%s` cannot be `ref`"), ident.toChars());
+                                            }
+                                            setError();
+                                            return false;
+                                        }
+                                        else
+                                            v.storage_class |= 8388608L;
+                                    }
+                                    var = v;
+                                }
+                            }
+                            else
+                            {
+                                var = new AliasDeclaration(loc, ident, t);
+                                if (paramtype.value != null)
+                                {
+                                    fs_ref.value.error(new BytePtr("cannot specify element type for symbol `%s`"), fs_ref.value.toChars());
+                                    setError();
+                                    return false;
+                                }
+                            }
+                            var.storage_class |= 2251799813685248L;
+                            (st.value).push(var);
+                            return true;
+                        }
+                    };
+                    if (!(needExpansion.value))
+                    {
+                        if (!(declareVariable11.invoke(p.storageClass, p.type, p.ident, e, t)))
+                        {
+                            return (DArray<Dsymbol>)returnEarly11.invoke();
+                        }
+                    }
+                    else
+                    {
+                        assert((e != null && !(t != null)));
+                        Identifier ident = Identifier.generateId(new BytePtr("__value"));
+                        declareVariable11.invoke(0L, e.type, ident, e, null);
+                        Identifier field = Identifier.idPool(toBytePtr(StaticForeach.tupleFieldName), 5);
+                        Expression access = new DotIdExp(loc, e, field);
+                        access = expressionSemantic(access, this.sc);
+                        if (!(tuple != null))
+                            return (DArray<Dsymbol>)returnEarly11.invoke();
+                        {
+                            int __key719 = 0;
+                            int __limit720 = dim;
+                            for (; __key719 < __limit720;__key719 += 1) {
+                                int l = __key719;
+                                Parameter cp = (fs_ref.value.parameters).get(l);
+                                Expression init_ = new IndexExp(loc, access, new IntegerExp(loc, (long)l, Type.tsize_t));
+                                init_ = expressionSemantic(init_, this.sc);
+                                assert(init_.type != null);
+                                declareVariable11.invoke(p.storageClass, init_.type, cp.ident, init_, null);
+                            }
+                        }
+                    }
+                    (st.value).append(Dsymbol.arraySyntaxCopy(dbody));
+                    ForwardingAttribDeclaration res = new ForwardingAttribDeclaration(st.value);
+                    previous = res.sym;
+                    (declarations).push(res);
+                }
+            }
+            DArray<Dsymbol> res = declarations;
+            return res;
         }
 
 
@@ -3967,17 +3967,6 @@ public class statementsem {
         return s;
     }
 
-    // from template TupleForeachArgs!(11)
-    // from template Seq!(Boolean)
-
-    // from template Seq!(DArray<Dsymbol>Boolean)
-
-
-    // from template TupleForeachArgs!(11)
-
-
-    // from template TupleForeachArgs!(11)
-
     // from template TupleForeachArgs!(00)
     // from template Seq!()
 
@@ -3997,27 +3986,38 @@ public class statementsem {
     // from template TupleForeachArgs!(10)
 
 
-    // from template TupleForeachRet!(11)
+    // from template TupleForeachArgs!(11)
+    // from template Seq!(Boolean)
 
-    // from template TupleForeachRet!(11)
+    // from template Seq!(DArray<Dsymbol>Boolean)
+
+
+    // from template TupleForeachArgs!(11)
+
+
+    // from template TupleForeachArgs!(11)
 
     // from template TupleForeachRet!(10)
 
     // from template TupleForeachRet!(10)
 
 
-    // from template makeTupleForeach!(11)
-    public static DArray<Dsymbol> makeTupleForeach11(Scope sc, ForeachStatement fs, DArray<Dsymbol> _param_2, boolean _param_3) {
-        StatementSemanticVisitor v = new StatementSemanticVisitor(sc);
-        return v.makeTupleForeach11(fs, _param_2, _param_3);
-    }
+    // from template TupleForeachRet!(11)
 
+    // from template TupleForeachRet!(11)
 
     // from template makeTupleForeach!(10)
     public static Statement makeTupleForeach10(Scope sc, ForeachStatement fs, boolean _param_2) {
         StatementSemanticVisitor v = new StatementSemanticVisitor(sc);
         v.makeTupleForeach10(fs, _param_2);
         return v.result;
+    }
+
+
+    // from template makeTupleForeach!(11)
+    public static DArray<Dsymbol> makeTupleForeach11(Scope sc, ForeachStatement fs, DArray<Dsymbol> _param_2, boolean _param_3) {
+        StatementSemanticVisitor v = new StatementSemanticVisitor(sc);
+        return v.makeTupleForeach11(fs, _param_2, _param_3);
     }
 
 
