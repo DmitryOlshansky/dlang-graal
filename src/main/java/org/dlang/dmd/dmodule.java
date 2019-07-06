@@ -724,7 +724,7 @@ public class dmodule {
                         error(new BytePtr("odd length of UTF-16 char source %u"), buf.getLength());
                         fatal();
                     }
-                    Slice<Short> eBuf = __ArrayCast(buf).copy();
+                    Slice<Integer> eBuf = __ArrayCast(buf).copy();
                     OutBuffer dbuf = new OutBuffer();
                     try {
                         dbuf.reserve(eBuf.getLength());
@@ -784,7 +784,7 @@ public class dmodule {
                         error(new BytePtr("odd length of UTF-16 char source %u"), buf.getLength());
                         fatal();
                     }
-                    Slice<Short> eBuf = __ArrayCast(buf).copy();
+                    Slice<Integer> eBuf = __ArrayCast(buf).copy();
                     OutBuffer dbuf = new OutBuffer();
                     try {
                         dbuf.reserve(eBuf.getLength());

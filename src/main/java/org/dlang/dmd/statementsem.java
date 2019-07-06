@@ -915,7 +915,7 @@ public class statementsem {
                                     VarDeclaration v = new VarDeclaration(loc, type, ident, ie, 0L);
                                     if ((storageClass & 2097152L) != 0)
                                         v.storage_class |= 2113536L;
-                                    if ((((((boolean)(storageClass & 8388608L) || (e.isConst()) != 0) || (e.op & 0xFF) == 121) || (e.op & 0xFF) == 49) || (e.op & 0xFF) == 47))
+                                    if (((((((storageClass & 8388608L) != 0) || (e.isConst()) != 0) || (e.op & 0xFF) == 121) || (e.op & 0xFF) == 49) || (e.op & 0xFF) == 47))
                                     {
                                         if ((v.storage_class & 2097152L) != 0)
                                         {
@@ -3968,9 +3968,9 @@ public class statementsem {
     }
 
     // from template TupleForeachArgs!(11)
-    // from template Seq!(DArray<Dsymbol>Boolean)
-
     // from template Seq!(Boolean)
+
+    // from template Seq!(DArray<Dsymbol>Boolean)
 
 
     // from template TupleForeachArgs!(11)

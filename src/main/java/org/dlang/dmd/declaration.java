@@ -92,7 +92,7 @@ public class declaration {
                     }
                     assert(i < dim);
                     FieldInit fieldInit = (sc).ctorflow.fieldinit.get(i);
-                    short fi = (fieldInit).csx;
+                    int fi = (fieldInit).csx;
                     if ((fi & 1) != 0)
                     {
                         if ((var.type.isMutable() && e1.type.isMutable()))

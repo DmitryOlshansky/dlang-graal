@@ -395,7 +395,7 @@ public class dcast {
                         case 15:
                             if (((ty & 0xFF) == ENUMTY.Tuns64 && (value & 4294934528L) != 0))
                                 return ;
-                            else if ((long)(int)(short)value != value)
+                            else if ((long)(int)(int)value != value)
                                 return ;
                             break;
                         case 32:
@@ -404,7 +404,7 @@ public class dcast {
                             /*goto case*/{ __dispatch1 = 16; continue dispatched_1; }
                         case 16:
                             __dispatch1 = 0;
-                            if ((long)(int)(short)value != value)
+                            if ((long)(int)(int)value != value)
                                 return ;
                             break;
                         case 17:

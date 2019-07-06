@@ -26,7 +26,7 @@ public class intrange {
         public long value;
         public boolean negative;
         public static SignExtendedNumber fromInteger(long value_) {
-            return new SignExtendedNumber(value_, (boolean)(value_ >> 63));
+            return new SignExtendedNumber(value_, ((value_ >> 63) != 0));
         }
 
         public static SignExtendedNumber extreme(boolean minimum) {

@@ -6659,7 +6659,7 @@ public class parse {
                             this.nextToken();
                             break;
                         case 118:
-                            e = new IntegerExp(loc, (long)(short)this.token.intvalue, Type.twchar);
+                            e = new IntegerExp(loc, (long)(int)this.token.intvalue, Type.twchar);
                             this.nextToken();
                             break;
                         case 119:

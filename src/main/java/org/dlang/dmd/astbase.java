@@ -5673,7 +5673,7 @@ public class astbase {
                                 this.value = (long)(int)this.value;
                                 break;
                             case 15:
-                                this.value = (long)(short)this.value;
+                                this.value = (long)(int)this.value;
                                 break;
                             case 32:
                             case 16:

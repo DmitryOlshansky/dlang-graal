@@ -18,19 +18,19 @@ public class ctorflow {
 
     public static class CSX 
     {
-        public static final short none = (short)0;
-        public static final short this_ctor = (short)1;
-        public static final short super_ctor = (short)2;
-        public static final short label = (short)4;
-        public static final short return_ = (short)8;
-        public static final short any_ctor = (short)16;
-        public static final short halt = (short)32;
-        public static final short deprecate_18719 = (short)64;
+        public static final int none = (int)0;
+        public static final int this_ctor = (int)1;
+        public static final int super_ctor = (int)2;
+        public static final int label = (int)4;
+        public static final int return_ = (int)8;
+        public static final int any_ctor = (int)16;
+        public static final int halt = (int)32;
+        public static final int deprecate_18719 = (int)64;
     }
 
     public static class FieldInit
     {
-        public short csx;
+        public int csx;
         public Loc loc = new Loc();
         public FieldInit(){
             loc = new Loc();
@@ -41,7 +41,7 @@ public class ctorflow {
             r.loc = loc.copy();
             return r;
         }
-        public FieldInit(short csx, Loc loc) {
+        public FieldInit(int csx, Loc loc) {
             this.csx = csx;
             this.loc = loc;
         }
@@ -54,7 +54,7 @@ public class ctorflow {
     }
     public static class CtorFlow
     {
-        public short callSuper;
+        public int callSuper;
         public Slice<FieldInit> fieldinit;
         public  void allocFieldinit(int dim) {
             this.fieldinit = ((FieldInit)Mem.xcalloc(16, dim)).slice(0,dim).copy();
@@ -70,7 +70,7 @@ public class ctorflow {
             return new CtorFlow(this.callSuper, arraydup(this.fieldinit));
         }
 
-        public  void orCSX(short csx) {
+        public  void orCSX(int csx) {
             this.callSuper |= csx;
             {
                 Slice<FieldInit> __r890 = this.fieldinit.copy();
@@ -110,7 +110,7 @@ public class ctorflow {
             r.fieldinit = fieldinit.copy();
             return r;
         }
-        public CtorFlow(short callSuper, Slice<FieldInit> fieldinit) {
+        public CtorFlow(int callSuper, Slice<FieldInit> fieldinit) {
             this.callSuper = callSuper;
             this.fieldinit = fieldinit;
         }
@@ -121,7 +121,7 @@ public class ctorflow {
             return this;
         }
     }
-    public static boolean mergeCallSuper(Ref<Short> a, short b) {
+    public static boolean mergeCallSuper(Ref<Integer> a, int b) {
         if (b == a.value)
             return true;
         boolean aAll = (a.value & 3) != 0;
@@ -146,7 +146,7 @@ public class ctorflow {
         }
         else if ((aHalt || (aRet && aAll)))
         {
-            a.value = (short)(b | a.value & 20);
+            a.value = (int)(b | a.value & 20);
         }
         else if ((aAll ? 1 : 0) != (bAll ? 1 : 0))
             return false;
@@ -159,7 +159,7 @@ public class ctorflow {
         return true;
     }
 
-    public static boolean mergeFieldInit(Ref<Short> a, short b) {
+    public static boolean mergeFieldInit(Ref<Integer> a, int b) {
         if (b == a.value)
             return true;
         boolean aRet = (a.value & 8) != 0;
@@ -174,22 +174,22 @@ public class ctorflow {
         boolean ok = false;
         if ((!(bHalt) && bRet))
         {
-            ok = (boolean)(b & 1);
+            ok = ((b & 1) != 0);
             a.value = a.value;
         }
         else if ((!(aHalt) && aRet))
         {
-            ok = (boolean)(a.value & 1);
+            ok = ((a.value & 1) != 0);
             a.value = b;
         }
         else if (bHalt)
         {
-            ok = (boolean)(a.value & 1);
+            ok = ((a.value & 1) != 0);
             a.value = a.value;
         }
         else if (aHalt)
         {
-            ok = (boolean)(b & 1);
+            ok = ((b & 1) != 0);
             a.value = b;
         }
         else

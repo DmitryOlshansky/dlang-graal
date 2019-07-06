@@ -245,13 +245,13 @@ public:
                 castTarget = "byte";
                 goto L2;
             case Tint16:
-                castTarget = "short";
+                castTarget = "int";
                 goto L2;
             case Tuns8:
                 castTarget = "byte";
                 goto L2;
             case Tuns16:
-                castTarget = "short";
+                castTarget = "int";
                 goto L2;
             case Tint32:
             case Tuns32:
@@ -1049,6 +1049,7 @@ public:
         bool fromEnum = false;
         bool fromClass = false;
         bool fromVoidPtr = false;
+        bool toBool = false;
         bool toVoidPtr = false;
         bool toVoid = false;
         bool toClass = false;
@@ -1072,6 +1073,9 @@ public:
                 goto case;
             case Tarray:
                 complexTarget = true;
+                break;
+            case Tbool:
+                toBool = true;
                 break;
             case Tint32:
             case Tuns32:
@@ -1120,6 +1124,11 @@ public:
             buf.put("(");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
             buf.put(" ? 1 : 0)");
+        }
+        else if (toBool) {
+            buf.put("(");
+            buf.put(toJavaBool(e.e1, opts));
+            buf.put(")");
         }
         else if(fromByte && toInt) {
             buf.put("(");
@@ -1571,8 +1580,8 @@ private void typeToBufferx(Type t, TextBuffer buf, ExprOpts opts, Boxing boxing 
 
         case Tint16:
         case Tuns16:
-            if (boxing == yes) buf.put("Short");
-            else buf.put("short");
+            if (boxing == yes) buf.put("Integer");
+            else buf.put("int");
             break;
 
         case Tint32:

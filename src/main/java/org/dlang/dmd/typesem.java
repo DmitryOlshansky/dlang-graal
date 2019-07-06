@@ -2975,7 +2975,7 @@ public class typesem {
         };
         Function5<Type,Scope,Expression,Identifier,Integer,Expression> noMember = new Function5<Type,Scope,Expression,Identifier,Integer,Expression>(){
             public Expression invoke(Type mt, Scope sc, Expression e, Identifier ident, Integer flag){
-                boolean gagError = (boolean)(flag & 1);
+                boolean gagError = ((flag & 1) != 0);
                 Function1<Expression,Expression> returnExp = new Function1<Expression,Expression>(){
                     public Expression invoke(Expression e){
                         typesem.noMembernest -= 1;

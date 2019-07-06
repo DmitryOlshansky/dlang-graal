@@ -576,11 +576,11 @@ public class constfold {
                 value = (long)(((byte)value & 0xFF) >> count);
                 break;
             case 15:
-                value = (long)((int)(short)value >> count);
+                value = (long)((int)(int)value >> count);
                 break;
             case 16:
             case 32:
-                value = (long)((int)(short)value >> count);
+                value = (long)((int)(int)value >> count);
                 break;
             case 17:
                 value = (long)((int)value >> count);
@@ -1025,11 +1025,11 @@ public class constfold {
                         result = (long)(byte)(long)r;
                         break;
                     case 15:
-                        result = (long)(short)(long)r;
+                        result = (long)(int)(long)r;
                         break;
                     case 32:
                     case 16:
-                        result = (long)(short)(long)r;
+                        result = (long)(int)(long)r;
                         break;
                     case 17:
                         result = (long)(int)r;

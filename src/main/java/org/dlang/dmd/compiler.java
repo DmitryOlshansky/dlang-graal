@@ -280,14 +280,14 @@ public class compiler {
 
     public static class MatcherNode
     {
-        public short depth;
+        public int depth;
         public boolean isExclude;
         public Identifier id;
         public  MatcherNode(Identifier id) {
             this.id = id;
         }
 
-        public  MatcherNode(boolean isExclude, short depth) {
+        public  MatcherNode(boolean isExclude, int depth) {
             this.depth = depth;
             this.isExclude = isExclude;
         }
@@ -330,7 +330,7 @@ public class compiler {
                 int __key838 = 0;
                 for (; __key838 < __r837.getLength();__key838 += 1) {
                     BytePtr modulePattern = pcopy(__r837.get(__key838));
-                    short depth = parseModulePatternDepth(modulePattern);
+                    int depth = parseModulePatternDepth(modulePattern);
                     int entryIndex = findSortedIndexToAddForDepth.invoke((int)depth);
                     split(matchNodes, entryIndex, ((int)depth + 1));
                     parseModulePattern(modulePattern, matchNodes.get(entryIndex), depth);
@@ -340,7 +340,7 @@ public class compiler {
                     }
                 }
             }
-            Slice<MatcherNode> defaultDepth1MatchNodes = slice(new MatcherNode[]{new MatcherNode(true, (short)1), new MatcherNode(Id.std), new MatcherNode(true, (short)1), new MatcherNode(Id.core), new MatcherNode(true, (short)1), new MatcherNode(Id.etc), new MatcherNode(true, (short)1), new MatcherNode(Id.object)});
+            Slice<MatcherNode> defaultDepth1MatchNodes = slice(new MatcherNode[]{new MatcherNode(true, (int)1), new MatcherNode(Id.std), new MatcherNode(true, (int)1), new MatcherNode(Id.core), new MatcherNode(true, (int)1), new MatcherNode(Id.etc), new MatcherNode(true, (int)1), new MatcherNode(Id.object)});
             {
                 int index = findSortedIndexToAddForDepth.invoke(1);
                 split(matchNodes, index, 8);
@@ -349,12 +349,12 @@ public class compiler {
         }
     }
 
-    public static short parseModulePatternDepth(BytePtr modulePattern) {
+    public static int parseModulePatternDepth(BytePtr modulePattern) {
         if ((modulePattern.get(0) & 0xFF) == 45)
             modulePattern.postInc();
         if (((modulePattern.get(0) & 0xFF) == 46 && (modulePattern.get(1) & 0xFF) == 0))
-            return (short)0;
-        short depth = (short)1;
+            return (int)0;
+        int depth = (int)1;
         for (; ;modulePattern.postInc()){
             byte c = modulePattern.get();
             if ((c & 0xFF) == 46)
@@ -364,7 +364,7 @@ public class compiler {
         }
     }
 
-    public static void parseModulePattern(BytePtr modulePattern, MatcherNode dst, short depth) {
+    public static void parseModulePattern(BytePtr modulePattern, MatcherNode dst, int depth) {
         boolean isExclude = false;
         if ((modulePattern.get(0) & 0xFF) == 45)
         {

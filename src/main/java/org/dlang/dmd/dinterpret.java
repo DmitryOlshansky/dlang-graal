@@ -6053,7 +6053,7 @@ public class dinterpret {
                                     indx.value -= 1;
                                     buflen = 1;
                                     Expression r_3 = (ale.elements).get(indx.value);
-                                    short x_1 = (short)r_3.isIntegerExp().getInteger();
+                                    int x_1 = (int)r_3.isIntegerExp().getInteger();
                                     if (((indx.value > 0 && (int)x_1 >= 56320) && (int)x_1 <= 57343))
                                     {
                                         indx.value -= 1;
@@ -6066,7 +6066,7 @@ public class dinterpret {
                                     int i_1 = 0;
                                     for (; i_1 < buflen;i_1 += 1){
                                         Expression r_2 = (ale.elements).get(indx.value + i_1);
-                                        utf16buf.set(i_1, (char)(short)r_2.isIntegerExp().getInteger());
+                                        utf16buf.set(i_1, (char)(int)r_2.isIntegerExp().getInteger());
                                     }
                                 }
                                 n.value = 0;
