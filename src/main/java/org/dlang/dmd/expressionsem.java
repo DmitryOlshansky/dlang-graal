@@ -562,7 +562,30 @@ public class expressionsem {
             if ((de.e2.op & 0xFF) == 214)
             {
                 os = ((OverExp)de.e2).vars;
-                /*goto Los*/throw Dispatch.INSTANCE;
+                /*goto Los*//*unrolled goto*/
+            /*Los:*/
+                assert(os != null);
+                {
+                    Slice<Dsymbol> __r1362 = os.a.opSlice().copy();
+                    int __key1363 = 0;
+                    for (; __key1363 < __r1362.getLength();__key1363 += 1) {
+                        Dsymbol s = __r1362.get(__key1363);
+                        fd = s.isFuncDeclaration();
+                        td = s.isTemplateDeclaration();
+                        if (fd != null)
+                        {
+                            if (((TypeFunction)fd.type).isproperty)
+                                return resolveProperties(sc, e1);
+                        }
+                        else if (((td != null && td.onemember != null) && (fd = td.onemember.isFuncDeclaration()) != null))
+                        {
+                            if (((((TypeFunction)fd.type).isproperty || (fd.storage_class2 & 4294967296L) != 0) || ((td._scope).stc & 4294967296L) != 0))
+                            {
+                                return resolveProperties(sc, e1);
+                            }
+                        }
+                    }
+                }
             }
         }
         else if ((e1.op & 0xFF) == 214)
@@ -596,12 +619,30 @@ public class expressionsem {
         {
             DotTemplateInstanceExp dti = (DotTemplateInstanceExp)e1;
             if ((dti.ti.tempdecl != null && (td = dti.ti.tempdecl.isTemplateDeclaration()) != null))
-                /*goto Ltd*/throw Dispatch.INSTANCE;
+                /*goto Ltd*//*unrolled goto*/
+            /*Ltd:*/
+                assert(td != null);
+                if ((td.onemember != null && (fd = td.onemember.isFuncDeclaration()) != null))
+                {
+                    if (((((TypeFunction)fd.type).isproperty || (fd.storage_class2 & 4294967296L) != 0) || ((td._scope).stc & 4294967296L) != 0))
+                    {
+                        return resolveProperties(sc, e1);
+                    }
+                }
         }
         else if ((e1.op & 0xFF) == 37)
         {
             td = ((DotTemplateExp)e1).td;
-            /*goto Ltd*/throw Dispatch.INSTANCE;
+            /*goto Ltd*//*unrolled goto*/
+        /*Ltd:*/
+            assert(td != null);
+            if ((td.onemember != null && (fd = td.onemember.isFuncDeclaration()) != null))
+            {
+                if (((((TypeFunction)fd.type).isproperty || (fd.storage_class2 & 4294967296L) != 0) || ((td._scope).stc & 4294967296L) != 0))
+                {
+                    return resolveProperties(sc, e1);
+                }
+            }
         }
         else if ((e1.op & 0xFF) == 203)
         {
@@ -610,7 +651,16 @@ public class expressionsem {
             if (((ti != null && !((ti.semanticRun) != 0)) && ti.tempdecl != null))
             {
                 if ((td = ti.tempdecl.isTemplateDeclaration()) != null)
-                    /*goto Ltd*/throw Dispatch.INSTANCE;
+                    /*goto Ltd*//*unrolled goto*/
+                /*Ltd:*/
+                    assert(td != null);
+                    if ((td.onemember != null && (fd = td.onemember.isFuncDeclaration()) != null))
+                    {
+                        if (((((TypeFunction)fd.type).isproperty || (fd.storage_class2 & 4294967296L) != 0) || ((td._scope).stc & 4294967296L) != 0))
+                        {
+                            return resolveProperties(sc, e1);
+                        }
+                    }
             }
         }
         else if ((e1.op & 0xFF) == 36)
@@ -630,7 +680,11 @@ public class expressionsem {
         {
             DotVarExp dve = (DotVarExp)e1;
             fd = dve.var.isFuncDeclaration();
-            /*goto Lfd*/throw Dispatch.INSTANCE;
+            /*goto Lfd*//*unrolled goto*/
+        /*Lfd:*/
+            assert(fd != null);
+            if (((TypeFunction)fd.type).isproperty)
+                return resolveProperties(sc, e1);
         }
         else if (((((e1.op & 0xFF) == 26 && e1.type != null) && (e1.type.ty & 0xFF) == ENUMTY.Tfunction) && (((sc).intypeof) != 0 || !(((VarExp)e1).var.needThis()))))
         {
@@ -920,7 +974,73 @@ public class expressionsem {
                         tiargs = null;
                         tthis = de.e1.type;
                         os = ((OverExp)de.e2).vars;
-                        /*goto Los*/throw Dispatch.INSTANCE;
+                        /*goto Los*//*unrolled goto*/
+                    /*Los:*/
+                        assert(os != null);
+                        FuncDeclaration fd = null;
+                        if (e2 != null)
+                        {
+                            e2 = expressionSemantic(e2, sc);
+                            if ((e2.op & 0xFF) == 127)
+                                return new ErrorExp();
+                            e2 = resolveProperties(sc, e2);
+                            DArray<Expression> a = new DArray<Expression>();
+                            try {
+                                a.push(e2);
+                                {
+                                    int i = 0;
+                                    for (; i < os.a.length;i++){
+                                        {
+                                            FuncDeclaration f = resolveFuncCall(loc, sc, os.a.get(i), tiargs, tthis, a, FuncResolveFlag.quiet);
+                                            if (f != null)
+                                            {
+                                                if (f.errors)
+                                                    return new ErrorExp();
+                                                fd = f;
+                                                assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                            }
+                                        }
+                                    }
+                                }
+                                if (fd != null)
+                                {
+                                    Expression e = new CallExp(loc, e1, e2);
+                                    return expressionSemantic(e, sc);
+                                }
+                            }
+                            finally {
+                            }
+                        }
+                        {
+                            {
+                                int i = 0;
+                            L_outer2:
+                                for (; i < os.a.length;i++){
+                                    {
+                                        FuncDeclaration f = resolveFuncCall(loc, sc, os.a.get(i), tiargs, tthis, null, FuncResolveFlag.quiet);
+                                        if (f != null)
+                                        {
+                                            if (f.errors)
+                                                return new ErrorExp();
+                                            fd = f;
+                                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                            TypeFunction tf = (TypeFunction)fd.type;
+                                            if ((!(tf.isref) && e2 != null))
+                                                /*goto Leproplvalue*/throw Dispatch1.INSTANCE;
+                                        }
+                                    }
+                                }
+                            }
+                            if (fd != null)
+                            {
+                                Expression e = new CallExp(loc, e1);
+                                if (e2 != null)
+                                    e = new AssignExp(loc, e, e2);
+                                return expressionSemantic(e, sc);
+                            }
+                        }
+                        if (e2 != null)
+                            /*goto Leprop*/throw Dispatch0.INSTANCE;
                     }
                 }
                 else if ((e1.op & 0xFF) == 214)
@@ -967,7 +1087,7 @@ public class expressionsem {
                     {
                         {
                             int i = 0;
-                        L_outer2:
+                        L_outer3:
                             for (; i < os.a.length;i++){
                                 {
                                     FuncDeclaration f = resolveFuncCall(loc, sc, os.a.get(i), tiargs, tthis, null, FuncResolveFlag.quiet);
@@ -1007,7 +1127,59 @@ public class expressionsem {
                     if ((os = dti.ti.tempdecl.isOverloadSet()) != null)
                         /*goto Los*/throw Dispatch0.INSTANCE;
                     if ((s = dti.ti.tempdecl) != null)
-                        /*goto Lfd*/throw Dispatch.INSTANCE;
+                        /*goto Lfd*//*unrolled goto*/
+                    /*Lfd:*/
+                        assert(s != null);
+                        if (e2 != null)
+                        {
+                            e2 = expressionSemantic(e2, sc);
+                            if ((e2.op & 0xFF) == 127)
+                                return new ErrorExp();
+                            e2 = resolveProperties(sc, e2);
+                            DArray<Expression> a = new DArray<Expression>();
+                            try {
+                                a.push(e2);
+                                FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, a, FuncResolveFlag.quiet);
+                                if ((fd != null && fd.type != null))
+                                {
+                                    if (fd.errors)
+                                        return new ErrorExp();
+                                    assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                    Expression e = new CallExp(loc, e1, e2);
+                                    return expressionSemantic(e, sc);
+                                }
+                            }
+                            finally {
+                            }
+                        }
+                        {
+                            FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, null, FuncResolveFlag.quiet);
+                            if ((fd != null && fd.type != null))
+                            {
+                                if (fd.errors)
+                                    return new ErrorExp();
+                                assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                TypeFunction tf = (TypeFunction)fd.type;
+                                if ((!(e2 != null) || tf.isref))
+                                {
+                                    Expression e = new CallExp(loc, e1);
+                                    if (e2 != null)
+                                        e = new AssignExp(loc, e, e2);
+                                    return expressionSemantic(e, sc);
+                                }
+                            }
+                        }
+                        {
+                            FuncDeclaration fd = s.isFuncDeclaration();
+                            if (fd != null)
+                            {
+                                assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                Expression e = new CallExp(loc, e1, e2);
+                                return expressionSemantic(e, sc);
+                            }
+                        }
+                        if (e2 != null)
+                            /*goto Leprop*/throw Dispatch0.INSTANCE;
                 }
                 else if ((e1.op & 0xFF) == 37)
                 {
@@ -1015,7 +1187,59 @@ public class expressionsem {
                     s = dte.td;
                     tiargs = null;
                     tthis = dte.e1.type;
-                    /*goto Lfd*/throw Dispatch.INSTANCE;
+                    /*goto Lfd*//*unrolled goto*/
+                /*Lfd:*/
+                    assert(s != null);
+                    if (e2 != null)
+                    {
+                        e2 = expressionSemantic(e2, sc);
+                        if ((e2.op & 0xFF) == 127)
+                            return new ErrorExp();
+                        e2 = resolveProperties(sc, e2);
+                        DArray<Expression> a = new DArray<Expression>();
+                        try {
+                            a.push(e2);
+                            FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, a, FuncResolveFlag.quiet);
+                            if ((fd != null && fd.type != null))
+                            {
+                                if (fd.errors)
+                                    return new ErrorExp();
+                                assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                Expression e = new CallExp(loc, e1, e2);
+                                return expressionSemantic(e, sc);
+                            }
+                        }
+                        finally {
+                        }
+                    }
+                    {
+                        FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, null, FuncResolveFlag.quiet);
+                        if ((fd != null && fd.type != null))
+                        {
+                            if (fd.errors)
+                                return new ErrorExp();
+                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            TypeFunction tf = (TypeFunction)fd.type;
+                            if ((!(e2 != null) || tf.isref))
+                            {
+                                Expression e = new CallExp(loc, e1);
+                                if (e2 != null)
+                                    e = new AssignExp(loc, e, e2);
+                                return expressionSemantic(e, sc);
+                            }
+                        }
+                    }
+                    {
+                        FuncDeclaration fd = s.isFuncDeclaration();
+                        if (fd != null)
+                        {
+                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            Expression e = new CallExp(loc, e1, e2);
+                            return expressionSemantic(e, sc);
+                        }
+                    }
+                    if (e2 != null)
+                        /*goto Leprop*/throw Dispatch0.INSTANCE;
                 }
                 else if ((e1.op & 0xFF) == 203)
                 {
@@ -1030,7 +1254,59 @@ public class expressionsem {
                         if ((os = ti.tempdecl.isOverloadSet()) != null)
                             /*goto Los*/throw Dispatch0.INSTANCE;
                         if ((s = ti.tempdecl) != null)
-                            /*goto Lfd*/throw Dispatch.INSTANCE;
+                            /*goto Lfd*//*unrolled goto*/
+                        /*Lfd:*/
+                            assert(s != null);
+                            if (e2 != null)
+                            {
+                                e2 = expressionSemantic(e2, sc);
+                                if ((e2.op & 0xFF) == 127)
+                                    return new ErrorExp();
+                                e2 = resolveProperties(sc, e2);
+                                DArray<Expression> a = new DArray<Expression>();
+                                try {
+                                    a.push(e2);
+                                    FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, a, FuncResolveFlag.quiet);
+                                    if ((fd != null && fd.type != null))
+                                    {
+                                        if (fd.errors)
+                                            return new ErrorExp();
+                                        assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                        Expression e = new CallExp(loc, e1, e2);
+                                        return expressionSemantic(e, sc);
+                                    }
+                                }
+                                finally {
+                                }
+                            }
+                            {
+                                FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, null, FuncResolveFlag.quiet);
+                                if ((fd != null && fd.type != null))
+                                {
+                                    if (fd.errors)
+                                        return new ErrorExp();
+                                    assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                    TypeFunction tf = (TypeFunction)fd.type;
+                                    if ((!(e2 != null) || tf.isref))
+                                    {
+                                        Expression e = new CallExp(loc, e1);
+                                        if (e2 != null)
+                                            e = new AssignExp(loc, e, e2);
+                                        return expressionSemantic(e, sc);
+                                    }
+                                }
+                            }
+                            {
+                                FuncDeclaration fd = s.isFuncDeclaration();
+                                if (fd != null)
+                                {
+                                    assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                    Expression e = new CallExp(loc, e1, e2);
+                                    return expressionSemantic(e, sc);
+                                }
+                            }
+                            if (e2 != null)
+                                /*goto Leprop*/throw Dispatch0.INSTANCE;
                     }
                 }
                 else if ((e1.op & 0xFF) == 36)
@@ -1038,7 +1314,59 @@ public class expressionsem {
                     s = ((TemplateExp)e1).td;
                     tiargs = null;
                     tthis = null;
-                    /*goto Lfd*/throw Dispatch.INSTANCE;
+                    /*goto Lfd*//*unrolled goto*/
+                /*Lfd:*/
+                    assert(s != null);
+                    if (e2 != null)
+                    {
+                        e2 = expressionSemantic(e2, sc);
+                        if ((e2.op & 0xFF) == 127)
+                            return new ErrorExp();
+                        e2 = resolveProperties(sc, e2);
+                        DArray<Expression> a = new DArray<Expression>();
+                        try {
+                            a.push(e2);
+                            FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, a, FuncResolveFlag.quiet);
+                            if ((fd != null && fd.type != null))
+                            {
+                                if (fd.errors)
+                                    return new ErrorExp();
+                                assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                Expression e = new CallExp(loc, e1, e2);
+                                return expressionSemantic(e, sc);
+                            }
+                        }
+                        finally {
+                        }
+                    }
+                    {
+                        FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, null, FuncResolveFlag.quiet);
+                        if ((fd != null && fd.type != null))
+                        {
+                            if (fd.errors)
+                                return new ErrorExp();
+                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            TypeFunction tf = (TypeFunction)fd.type;
+                            if ((!(e2 != null) || tf.isref))
+                            {
+                                Expression e = new CallExp(loc, e1);
+                                if (e2 != null)
+                                    e = new AssignExp(loc, e, e2);
+                                return expressionSemantic(e, sc);
+                            }
+                        }
+                    }
+                    {
+                        FuncDeclaration fd = s.isFuncDeclaration();
+                        if (fd != null)
+                        {
+                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            Expression e = new CallExp(loc, e1, e2);
+                            return expressionSemantic(e, sc);
+                        }
+                    }
+                    if (e2 != null)
+                        /*goto Leprop*/throw Dispatch0.INSTANCE;
                 }
                 else if ((((e1.op & 0xFF) == 27 && e1.type != null) && (e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tfunction))
                 {
@@ -1046,7 +1374,59 @@ public class expressionsem {
                     s = dve.var.isFuncDeclaration();
                     tiargs = null;
                     tthis = dve.e1.type;
-                    /*goto Lfd*/throw Dispatch.INSTANCE;
+                    /*goto Lfd*//*unrolled goto*/
+                /*Lfd:*/
+                    assert(s != null);
+                    if (e2 != null)
+                    {
+                        e2 = expressionSemantic(e2, sc);
+                        if ((e2.op & 0xFF) == 127)
+                            return new ErrorExp();
+                        e2 = resolveProperties(sc, e2);
+                        DArray<Expression> a = new DArray<Expression>();
+                        try {
+                            a.push(e2);
+                            FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, a, FuncResolveFlag.quiet);
+                            if ((fd != null && fd.type != null))
+                            {
+                                if (fd.errors)
+                                    return new ErrorExp();
+                                assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                Expression e = new CallExp(loc, e1, e2);
+                                return expressionSemantic(e, sc);
+                            }
+                        }
+                        finally {
+                        }
+                    }
+                    {
+                        FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, null, FuncResolveFlag.quiet);
+                        if ((fd != null && fd.type != null))
+                        {
+                            if (fd.errors)
+                                return new ErrorExp();
+                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            TypeFunction tf = (TypeFunction)fd.type;
+                            if ((!(e2 != null) || tf.isref))
+                            {
+                                Expression e = new CallExp(loc, e1);
+                                if (e2 != null)
+                                    e = new AssignExp(loc, e, e2);
+                                return expressionSemantic(e, sc);
+                            }
+                        }
+                    }
+                    {
+                        FuncDeclaration fd = s.isFuncDeclaration();
+                        if (fd != null)
+                        {
+                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            Expression e = new CallExp(loc, e1, e2);
+                            return expressionSemantic(e, sc);
+                        }
+                    }
+                    if (e2 != null)
+                        /*goto Leprop*/throw Dispatch0.INSTANCE;
                 }
                 else if ((((e1.op & 0xFF) == 26 && e1.type != null) && (e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tfunction))
                 {
@@ -1402,7 +1782,7 @@ public class expressionsem {
         {
             int __key1366 = 0;
             int __limit1367 = n;
-        L_outer3:
+        L_outer4:
             for (; __key1366 < __limit1367;__key1366 += 1) {
                 int i = __key1366;
                 Expression arg = i < nargs.value ? (arguments).get(i) : null;
@@ -1420,7 +1800,64 @@ public class expressionsem {
                         if (!(p.defaultArg != null))
                         {
                             if ((tf.parameterList.varargs == VarArg.typesafe && i + 1 == nparams.value))
-                                /*goto L2*/throw Dispatch.INSTANCE;
+                                /*goto L2*//*unrolled goto*/
+                            /*L2:*/
+                                Type tb = p.type.toBasetype();
+                                switch ((tb.ty & 0xFF))
+                                {
+                                    case 1:
+                                    case 0:
+                                        Type tbn = ((TypeArray)tb).next;
+                                        Type tret = p.isLazyArray();
+                                        DArray<Expression> elements = new DArray<Expression>(nargs.value - i);
+                                        {
+                                            int __key1368 = 0;
+                                            int __limit1369 = (elements).length;
+                                            for (; __key1368 < __limit1369;__key1368 += 1) {
+                                                int u = __key1368;
+                                                Expression a = (arguments).get(i + u);
+                                                if ((tret != null && (a.implicitConvTo(tret)) != 0))
+                                                {
+                                                    a = toDelegate(a.implicitCastTo(sc, tret).optimize(0, false), tret, sc);
+                                                }
+                                                else
+                                                    a = a.implicitCastTo(sc, tbn);
+                                                a = a.addDtorHook(sc);
+                                                elements.set(u, a);
+                                            }
+                                        }
+                                        arg = new ArrayLiteralExp(loc, tbn.sarrayOf((long)(nargs.value - i)), elements);
+                                        if ((tb.ty & 0xFF) == ENUMTY.Tarray)
+                                        {
+                                            arg = new SliceExp(loc, arg, null, null);
+                                            arg.type = p.type;
+                                        }
+                                        break;
+                                    case 7:
+                                        DArray<Expression> args = new DArray<Expression>(nargs.value - i);
+                                        {
+                                            int __key1370 = i;
+                                            int __limit1371 = nargs.value;
+                                            for (; __key1370 < __limit1371;__key1370 += 1) {
+                                                int u_1 = __key1370;
+                                                args.set(u_1 - i, (arguments).get(u_1));
+                                            }
+                                        }
+                                        arg = new NewExp(loc, null, null, p.type, args);
+                                        break;
+                                    default:
+                                    if (!(arg != null))
+                                    {
+                                        error(loc, new BytePtr("not enough arguments"));
+                                        return true;
+                                    }
+                                    break;
+                                }
+                                arg = expressionSemantic(arg, sc);
+                                (arguments).setDim(i + 1);
+                                arguments.set(i, arg);
+                                nargs.value = i + 1;
+                                done = true;
                             return errorArgs.invoke();
                         }
                         arg = p.defaultArg;
@@ -2176,7 +2613,7 @@ public class expressionsem {
                 {
                     {
                         Dsymbol s = (this.sc).getStructClassScope();
-                    L_outer4:
+                    L_outer5:
                         for (; (1) != 0;s = s.parent){
                             if (!(s != null))
                             {
@@ -2236,7 +2673,7 @@ public class expressionsem {
                 {
                     {
                         s = (this.sc).getStructClassScope();
-                    L_outer5:
+                    L_outer6:
                         for (; (1) != 0;s = s.parent){
                             if (!(s != null))
                             {
@@ -2315,10 +2752,10 @@ public class expressionsem {
                 IntRef u = ref(0);
                 IntRef c = ref(0x0ffff);
                 {
-                    int __dispatch3 = 0;
-                    dispatched_3:
+                    int __dispatch4 = 0;
+                    dispatched_4:
                     do {
-                        switch (__dispatch3 != 0 ? __dispatch3 : (e.postfix & 0xFF))
+                        switch (__dispatch4 != 0 ? __dispatch4 : (e.postfix & 0xFF))
                         {
                             case 100:
                                 {
@@ -2374,13 +2811,13 @@ public class expressionsem {
                                 break;
                             case 99:
                                 e.committed = (byte)1;
-                                /*goto default*/ { __dispatch3 = -1; continue dispatched_3; }
+                                /*goto default*/ { __dispatch4 = -1; continue dispatched_4; }
                             default:
-                            __dispatch3 = 0;
+                            __dispatch4 = 0;
                             e.type = new TypeDArray(Type.tchar.immutableOf());
                             break;
                         }
-                    } while(__dispatch3 != 0);
+                    } while(__dispatch4 != 0);
                 }
                 e.type = typeSemantic(e.type, e.loc, this.sc);
                 this.result = e;
@@ -3617,8 +4054,7 @@ public class expressionsem {
                                 return ;
                             }
                             if (search_function(sd, Id.call) != null)
-                                /*goto L1*/throw Dispatch.INSTANCE;
-                            if ((exp.e1.op & 0xFF) != 20)
+                                /*goto L1*/if ((exp.e1.op & 0xFF) != 20)
                             {
                                 if ((sd.aliasthis != null && !pequals(exp.e1.type, exp.att1)))
                                 {
@@ -3972,7 +4408,28 @@ public class expressionsem {
                     else if (((exp.e1.op & 0xFF) == 26 && ((VarExp)exp.e1).var.isOverDeclaration() != null))
                     {
                         s = ((VarExp)exp.e1).var;
-                        /*goto L2*/throw Dispatch.INSTANCE;
+                        /*goto L2*//*unrolled goto*/
+                    /*L2:*/
+                        exp.f = resolveFuncCall(exp.loc, this.sc, s, tiargs, null, exp.arguments, FuncResolveFlag.standard);
+                        if ((!(exp.f != null) || exp.f.errors))
+                            this.setError();
+                            return ;
+                        if (exp.f.needThis())
+                        {
+                            if (hasThis(this.sc) != null)
+                            {
+                                exp.e1 = new DotVarExp(exp.loc, expressionSemantic(new ThisExp(exp.loc), this.sc), exp.f, false);
+                                /*goto Lagain*/throw Dispatch1.INSTANCE;
+                            }
+                            else if (isNeedThisScope(this.sc, exp.f))
+                            {
+                                exp.error(new BytePtr("need `this` for `%s` of type `%s`"), exp.f.toChars(), exp.f.type.toChars());
+                                this.setError();
+                                return ;
+                            }
+                        }
+                        exp.e1 = new VarExp(exp.e1.loc, exp.f, false);
+                        /*goto Lagain*/throw Dispatch1.INSTANCE;
                     }
                     else if ((exp.e1.op & 0xFF) == 36)
                     {
@@ -4410,10 +4867,10 @@ public class expressionsem {
                     if ((e.tok2 & 0xFF) != 0)
                     {
                         {
-                            int __dispatch4 = 0;
-                            dispatched_4:
+                            int __dispatch5 = 0;
+                            dispatched_5:
                             do {
-                                switch (__dispatch4 != 0 ? __dispatch4 : (e.tok2 & 0xFF))
+                                switch (__dispatch5 != 0 ? __dispatch5 : (e.tok2 & 0xFF))
                                 {
                                     case 152:
                                         if ((e.targ.ty & 0xFF) != ENUMTY.Tstruct)
@@ -4551,7 +5008,7 @@ public class expressionsem {
                                     default:
                                     throw new AssertionError("Unreachable code!");
                                 }
-                            } while(__dispatch4 != 0);
+                            } while(__dispatch5 != 0);
                         }
                         if (tded != null)
                             /*goto Lyes*/throw Dispatch0.INSTANCE;
@@ -4597,7 +5054,7 @@ public class expressionsem {
                                     tiargs.set(0, e.targ);
                                     {
                                         int i = 1;
-                                    L_outer6:
+                                    L_outer7:
                                         for (; i < (e.parameters).length;i++){
                                             TemplateParameter tp = (e.parameters).get(i);
                                             Ref<Declaration> s = ref(null);
@@ -5486,10 +5943,10 @@ public class expressionsem {
             }
             Type tb = exp.e1.type.toBasetype();
             {
-                int __dispatch5 = 0;
-                dispatched_5:
+                int __dispatch6 = 0;
+                dispatched_6:
                 do {
-                    switch (__dispatch5 != 0 ? __dispatch5 : (tb.ty & 0xFF))
+                    switch (__dispatch6 != 0 ? __dispatch6 : (tb.ty & 0xFF))
                     {
                         case 3:
                             exp.type = ((TypePointer)tb).next;
@@ -5497,21 +5954,21 @@ public class expressionsem {
                         case 1:
                         case 0:
                             if (isNonAssignmentArrayOp(exp.e1))
-                                /*goto default*/ { __dispatch5 = -1; continue dispatched_5; }
+                                /*goto default*/ { __dispatch6 = -1; continue dispatched_6; }
                             exp.error(new BytePtr("using `*` on an array is no longer supported; use `*(%s).ptr` instead"), exp.e1.toChars());
                             exp.type = ((TypeArray)tb).next;
                             exp.e1 = exp.e1.castTo(this.sc, exp.type.pointerTo());
                             break;
                         case 34:
-                            __dispatch5 = 0;
+                            __dispatch6 = 0;
                             this.setError();
                             return ;
                         default:
-                        __dispatch5 = 0;
+                        __dispatch6 = 0;
                         exp.error(new BytePtr("can only `*` a pointer, not a `%s`"), exp.e1.type.toChars());
-                        /*goto case*/{ __dispatch5 = 34; continue dispatched_5; }
+                        /*goto case*/{ __dispatch6 = 34; continue dispatched_6; }
                     }
-                } while(__dispatch5 != 0);
+                } while(__dispatch6 != 0);
             }
             if (exp.checkValue())
                 this.setError();
@@ -6756,7 +7213,7 @@ public class expressionsem {
                         assert(((ae.arguments).get(0).op & 0xFF) == 231);
                         ie = (IntervalExp)(ae.arguments).get(0);
                     }
-                L_outer7:
+                L_outer8:
                     for (; true;){
                         if ((ae.e1.op & 0xFF) == 127)
                             setResult.invoke(ae.e1, 7962);
@@ -6827,7 +7284,7 @@ public class expressionsem {
                                 ae.att1 = t1b;
                             ae.e1 = resolveAliasThis(this.sc, ae1save, true);
                             if (ae.e1 != null)
-                                continue L_outer7;
+                                continue L_outer8;
                         }
                         break;
                     }
@@ -6962,7 +7419,7 @@ public class expressionsem {
                             (iexps).push(ev);
                             {
                                 int u = 0;
-                            L_outer8:
+                            L_outer9:
                                 for (; u < (iexps).length;u++){
                                     while(true) try {
                                     /*Lexpand:*/
@@ -7695,9 +8152,11 @@ public class expressionsem {
             else if (((tb1.ty & 0xFF) == ENUMTY.Tarray && (exp.e2.implicitConvTo(tb1next)) != 0))
             {
                 if (((tb2.ty & 0xFF) == ENUMTY.Tstruct && (((TypeStruct)tb2).implicitConvToThroughAliasThis(tb1next)) != 0))
-                    /*goto Laliasthis*/throw Dispatch.INSTANCE;
+                    /*goto Laliasthis*//*unrolled goto*/
+                    exp = new CatDcharAssignExp(exp.loc, exp.type, exp.e1, exp.e2.castTo(this.sc, Type.tdchar));
                 if (((tb2.ty & 0xFF) == ENUMTY.Tclass && (((TypeClass)tb2).implicitConvToThroughAliasThis(tb1next)) != 0))
-                    /*goto Laliasthis*/throw Dispatch.INSTANCE;
+                    /*goto Laliasthis*//*unrolled goto*/
+                    exp = new CatDcharAssignExp(exp.loc, exp.type, exp.e1, exp.e2.castTo(this.sc, Type.tdchar));
                 if (exp.e2.checkPostblit(this.sc, tb2))
                     this.setError();
                     return ;
@@ -9416,23 +9875,23 @@ public class expressionsem {
         {
             Dsymbol ds = null;
             {
-                int __dispatch15 = 0;
-                dispatched_15:
+                int __dispatch16 = 0;
+                dispatched_16:
                 do {
-                    switch (__dispatch15 != 0 ? __dispatch15 : (exp.e1.op & 0xFF))
+                    switch (__dispatch16 != 0 ? __dispatch16 : (exp.e1.op & 0xFF))
                     {
                         case 203:
                             ds = ((ScopeExp)exp.e1).sds;
-                            /*goto L1*/{ __dispatch15 = -1; continue dispatched_15; }
+                            /*goto L1*/{ __dispatch16 = -1; continue dispatched_16; }
                         case 26:
                             ds = ((VarExp)exp.e1).var;
-                            /*goto L1*/{ __dispatch15 = -1; continue dispatched_15; }
+                            /*goto L1*/{ __dispatch16 = -1; continue dispatched_16; }
                         case 27:
                             ds = ((DotVarExp)exp.e1).var;
-                            /*goto L1*/{ __dispatch15 = -1; continue dispatched_15; }
+                            /*goto L1*/{ __dispatch16 = -1; continue dispatched_16; }
                         case 214:
                             ds = ((OverExp)exp.e1).vars;
-                            /*goto L1*/{ __dispatch15 = -1; continue dispatched_15; }
+                            /*goto L1*/{ __dispatch16 = -1; continue dispatched_16; }
                         case 36:
                             {
                                 TemplateExp te = (TemplateExp)exp.e1;
@@ -9440,7 +9899,7 @@ public class expressionsem {
                             }
                         /*L1:*/
                         case -1:
-                        __dispatch15 = 0;
+                        __dispatch16 = 0;
                             {
                                 assert(ds != null);
                                 {
@@ -9467,7 +9926,7 @@ public class expressionsem {
                         default:
                         break;
                     }
-                } while(__dispatch15 != 0);
+                } while(__dispatch16 != 0);
             }
         }
         if ((((exp.e1.op & 0xFF) == 26 && (exp.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) && pequals(exp.ident, Id.length)))

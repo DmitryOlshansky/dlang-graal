@@ -2002,7 +2002,8 @@ public class statementsem {
                                 fs.error(new BytePtr("`foreach`: cannot make `%s` `ref`"), p.ident.toChars());
                                 return null;
                             }
-                            /*goto LcopyArg*/throw Dispatch.INSTANCE;
+                            /*goto LcopyArg*//*unrolled goto*/
+                            id = p.ident;
                         }
                     }
                     else if ((p.storageClass & 2097152L) != 0)

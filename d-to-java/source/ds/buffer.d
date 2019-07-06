@@ -18,6 +18,14 @@ final:
         buf = appender!(char[]);
     }
 
+    TextBuffer copy(){ 
+        auto r = new TextBuffer();
+        r.put(buf.data);
+        r.indentSize = this.indentSize;
+        r.indentNext = this.indentNext;
+        return r;
+    }
+
     private void pad() { 
         foreach (_; 0..indentSize) buf.put(' ');
     }

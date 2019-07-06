@@ -3717,7 +3717,8 @@ public class dtemplate {
             templateInstanceSemantic(ti, sc_ref.value, fargs_ref.value);
             m.lastf = ti.toAlias().isFuncDeclaration();
             if (!(m.lastf != null))
-                /*goto Lnomatch*/throw Dispatch.INSTANCE;
+                /*goto Lnomatch*//*unrolled goto*/
+                assert(m.count >= 1);
             if (ti.errors)
             {
             /*Lerror:*/
@@ -3736,7 +3737,8 @@ public class dtemplate {
                 /*goto Lerror*/throw Dispatch0.INSTANCE;
             assert((tf.ty & 0xFF) == ENUMTY.Tfunction);
             if (!((tf.callMatch(tthis_best.value, fargs_.value, 0, null, sc_ref.value)) != 0))
-                /*goto Lnomatch*/throw Dispatch.INSTANCE;
+                /*goto Lnomatch*//*unrolled goto*/
+                assert(m.count >= 1);
             if ((tf.next != null && !(m.lastf.inferRetType)))
             {
                 m.lastf.type = typeSemantic(tf, loc, sc_ref.value);
@@ -5890,12 +5892,108 @@ public class dtemplate {
                         if ((ea.op & 0xFF) == 26)
                         {
                             sa = ((VarExp)ea).var;
-                            /*goto Lsa*/throw Dispatch.INSTANCE;
+                            /*goto Lsa*//*unrolled goto*/
+                        /*Lsa:*/
+                            sa = sa.toAlias();
+                            TemplateDeclaration td = sa.isTemplateDeclaration();
+                            if (td != null)
+                            {
+                                TemplateInstance ti = sa.toParent().isTemplateInstance();
+                                if ((ti != null && ti.enclosing != null))
+                                    sa = ti;
+                            }
+                            TemplateInstance ti = sa.isTemplateInstance();
+                            Declaration d = sa.isDeclaration();
+                            if ((((td != null && td.literal) || (ti != null && ti.enclosing != null)) || ((((d != null && !(d.isDataseg())) && !((d.storage_class & 8388608L) != 0)) && (!(d.isFuncDeclaration() != null) || d.isFuncDeclaration().isNested())) && !(this.isTemplateMixin() != null))))
+                            {
+                                Dsymbol dparent = sa.toParent2();
+                                try {
+                                    if (!(dparent != null))
+                                        /*goto L1*/throw Dispatch0.INSTANCE;
+                                    else if (!(this.enclosing != null))
+                                        this.enclosing = dparent;
+                                    else if (!pequals(this.enclosing, dparent))
+                                    {
+                                        {
+                                            Dsymbol p = this.enclosing;
+                                        L_outer22:
+                                            for (; p != null;p = p.parent){
+                                                if (pequals(p, dparent))
+                                                    /*goto L1*/throw Dispatch0.INSTANCE;
+                                            }
+                                        }
+                                        {
+                                            Dsymbol p = dparent;
+                                        L_outer23:
+                                            for (; p != null;p = p.parent){
+                                                if (pequals(p, this.enclosing))
+                                                {
+                                                    this.enclosing = dparent;
+                                                    /*goto L1*/throw Dispatch0.INSTANCE;
+                                                }
+                                            }
+                                        }
+                                        this.error(new BytePtr("`%s` is nested in both `%s` and `%s`"), this.toChars(), this.enclosing.toChars(), dparent.toChars());
+                                        this.errors = true;
+                                    }
+                                }
+                                catch(Dispatch0 __d){}
+                            /*L1:*/
+                                nested |= 1;
+                            }
                         }
                         if ((ea.op & 0xFF) == 123)
                         {
                             sa = ((ThisExp)ea).var;
-                            /*goto Lsa*/throw Dispatch.INSTANCE;
+                            /*goto Lsa*//*unrolled goto*/
+                        /*Lsa:*/
+                            sa = sa.toAlias();
+                            TemplateDeclaration td = sa.isTemplateDeclaration();
+                            if (td != null)
+                            {
+                                TemplateInstance ti = sa.toParent().isTemplateInstance();
+                                if ((ti != null && ti.enclosing != null))
+                                    sa = ti;
+                            }
+                            TemplateInstance ti = sa.isTemplateInstance();
+                            Declaration d = sa.isDeclaration();
+                            if ((((td != null && td.literal) || (ti != null && ti.enclosing != null)) || ((((d != null && !(d.isDataseg())) && !((d.storage_class & 8388608L) != 0)) && (!(d.isFuncDeclaration() != null) || d.isFuncDeclaration().isNested())) && !(this.isTemplateMixin() != null))))
+                            {
+                                Dsymbol dparent = sa.toParent2();
+                                try {
+                                    if (!(dparent != null))
+                                        /*goto L1*/throw Dispatch0.INSTANCE;
+                                    else if (!(this.enclosing != null))
+                                        this.enclosing = dparent;
+                                    else if (!pequals(this.enclosing, dparent))
+                                    {
+                                        {
+                                            Dsymbol p = this.enclosing;
+                                        L_outer24:
+                                            for (; p != null;p = p.parent){
+                                                if (pequals(p, dparent))
+                                                    /*goto L1*/throw Dispatch0.INSTANCE;
+                                            }
+                                        }
+                                        {
+                                            Dsymbol p = dparent;
+                                        L_outer25:
+                                            for (; p != null;p = p.parent){
+                                                if (pequals(p, this.enclosing))
+                                                {
+                                                    this.enclosing = dparent;
+                                                    /*goto L1*/throw Dispatch0.INSTANCE;
+                                                }
+                                            }
+                                        }
+                                        this.error(new BytePtr("`%s` is nested in both `%s` and `%s`"), this.toChars(), this.enclosing.toChars(), dparent.toChars());
+                                        this.errors = true;
+                                    }
+                                }
+                                catch(Dispatch0 __d){}
+                            /*L1:*/
+                                nested |= 1;
+                            }
                         }
                         if ((ea.op & 0xFF) == 161)
                         {
@@ -5903,7 +6001,55 @@ public class dtemplate {
                                 sa = ((FuncExp)ea).td;
                             else
                                 sa = ((FuncExp)ea).fd;
-                            /*goto Lsa*/throw Dispatch.INSTANCE;
+                            /*goto Lsa*//*unrolled goto*/
+                        /*Lsa:*/
+                            sa = sa.toAlias();
+                            TemplateDeclaration td = sa.isTemplateDeclaration();
+                            if (td != null)
+                            {
+                                TemplateInstance ti = sa.toParent().isTemplateInstance();
+                                if ((ti != null && ti.enclosing != null))
+                                    sa = ti;
+                            }
+                            TemplateInstance ti = sa.isTemplateInstance();
+                            Declaration d = sa.isDeclaration();
+                            if ((((td != null && td.literal) || (ti != null && ti.enclosing != null)) || ((((d != null && !(d.isDataseg())) && !((d.storage_class & 8388608L) != 0)) && (!(d.isFuncDeclaration() != null) || d.isFuncDeclaration().isNested())) && !(this.isTemplateMixin() != null))))
+                            {
+                                Dsymbol dparent = sa.toParent2();
+                                try {
+                                    if (!(dparent != null))
+                                        /*goto L1*/throw Dispatch0.INSTANCE;
+                                    else if (!(this.enclosing != null))
+                                        this.enclosing = dparent;
+                                    else if (!pequals(this.enclosing, dparent))
+                                    {
+                                        {
+                                            Dsymbol p = this.enclosing;
+                                        L_outer26:
+                                            for (; p != null;p = p.parent){
+                                                if (pequals(p, dparent))
+                                                    /*goto L1*/throw Dispatch0.INSTANCE;
+                                            }
+                                        }
+                                        {
+                                            Dsymbol p = dparent;
+                                        L_outer27:
+                                            for (; p != null;p = p.parent){
+                                                if (pequals(p, this.enclosing))
+                                                {
+                                                    this.enclosing = dparent;
+                                                    /*goto L1*/throw Dispatch0.INSTANCE;
+                                                }
+                                            }
+                                        }
+                                        this.error(new BytePtr("`%s` is nested in both `%s` and `%s`"), this.toChars(), this.enclosing.toChars(), dparent.toChars());
+                                        this.errors = true;
+                                    }
+                                }
+                                catch(Dispatch0 __d){}
+                            /*L1:*/
+                                nested |= 1;
+                            }
                         }
                         if (((((((((ea.op & 0xFF) != 135 && (ea.op & 0xFF) != 140) && (ea.op & 0xFF) != 147) && (ea.op & 0xFF) != 13) && (ea.op & 0xFF) != 121) && (ea.op & 0xFF) != 47) && (ea.op & 0xFF) != 48) && (ea.op & 0xFF) != 49))
                         {
@@ -5936,7 +6082,7 @@ public class dtemplate {
                                 {
                                     {
                                         Dsymbol p = this.enclosing;
-                                    L_outer22:
+                                    L_outer28:
                                         for (; p != null;p = p.parent){
                                             if (pequals(p, dparent))
                                                 /*goto L1*/throw Dispatch0.INSTANCE;
@@ -5944,7 +6090,7 @@ public class dtemplate {
                                     }
                                     {
                                         Dsymbol p = dparent;
-                                    L_outer23:
+                                    L_outer29:
                                         for (; p != null;p = p.parent){
                                             if (pequals(p, this.enclosing))
                                             {

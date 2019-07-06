@@ -25,7 +25,7 @@ import dmd.statement;
 import dmd.staticassert;
 import dmd.tokens;
 import dmd.visitor : Visitor, SemanticTimeTransitiveVisitor;
-import dmd.root.array;
+import dmd.root.array, dmd.root.rootobject;
 
 import std.array, std.algorithm, std.format, std.string, std.range, std.stdio;
 
@@ -198,6 +198,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     bool hasEmptyCtor;
 
     Stack!(Goto[]) gotos;
+    Stack!(IdentityMap!Statement) unrolledGotos; // goto that may be unrolled
+    IdentityMap!bool unrolling; // keep track of unrolling process to avoid infinite recursion
     Stack!(IdentityMap!int) labelGotoNums;
     
     int inInitializer; // to avoid recursive decomposition of arrays
@@ -510,20 +512,43 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             : null;
         auto range = new Range[labels.length];
         if (gotos.top.length == 0) { // do not use try/catch mechanism inside of switches
-            if (s.statements)
+            if (s.statements) {
+                // top-level non-local gotos
                 foreach(k, lbl; labels) {
                     labelGotoNums.top[lbl.ident] = cast(int)k;
                     foreach (i, st; *s.statements) if (st) {
                         auto gs = collectGotos(st);
                         auto nonLocalGotos = gs.filter!(g => !g.local);
-                        if (nonLocalGotos.canFind!(g => g.label && g.label.ident == lbl.ident)) {
-                            auto target = (*s.statements)[].countUntil!(x => x is lbl);
-                            if (range[k].first > i) range[k].first = i;
-                            if (range[k].last < target) range[k].last = target;
+                        if (!nonLocalGotos.empty){
+                            if (nonLocalGotos.canFind!(g => g.label && g.label.ident == lbl.ident)) {
+                                auto target = (*s.statements)[].countUntil!(x => x is lbl);
+                                if (range[k].first > i) range[k].first = i;
+                                if (range[k].last < target) range[k].last = target;
+                            }
                         }
                     }
                     if (range[k].first > range[k].last) range[k].reversed = true;
                 }
+                // unroll gotos inside of if/else chains - a typical pattern s
+                Goto[] allGotos = collectGotos(s).filter!(g => g.label).array;
+                auto labeled = allGotos.map!(x => cast(Statement)x.label.statement.statement).enumerate.array;
+                void recurse(Statement st) {
+                    if (auto ifst = st.isIfStatement) {
+                        auto cnt = labeled.filter!(lbl => ifst.containsStatement(lbl[1]));
+                        foreach(i, c; cnt) {
+                            // stderr.writefln("FOUND %s", i);
+                            unrolledGotos.top[allGotos[i].label.ident] = ifst;
+                        }
+                        if (ifst.elsebody) {
+                            recurse(ifst.elsebody);
+                        }
+                    }
+                }
+                foreach (st; *s.statements) {
+                    if (st)
+                        recurse(st);
+                }
+            }
         }
         bool addedStart = false;
         if (s.statements) {
@@ -959,8 +984,43 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         else if (auto count = g.label.ident in labelGotoNums.top){
             buf.fmt("throw Dispatch%d.INSTANCE;\n", *count);
         }
-        else
+        else if (auto ifs = g.label.ident in unrolledGotos.top) {
+            // if we are already unrolling this goto...
+            if (auto mark = g.label.ident in unrolling) {
+                if (*mark) {
+                    unrolling[g.label.ident] = false;
+                    return;
+                }
+            }
+            auto saved = buf.copy;
+            // attempt to unroll, restore buffer on failure
+            unrolling[g.label.ident] = true;
+            scope(exit) unrolling.remove(g.label.ident);
+            buf.fmt("/*unrolled goto*/\n");
+            Statement st = ifs.isIfStatement ? ifs.isIfStatement.ifbody : *ifs;
+            st = st.isScopeStatement ? st.isScopeStatement.statement : st;
+            if (auto comp = st.isCompoundStatement){
+                bool generate = false;
+                foreach (s; *comp.statements) {
+                    if (s == g.label.statement) {
+                        generate = true;
+                    }
+                    if (generate) s.accept(this);
+
+                }
+            }
+            else 
+                st.accept(this);
+            if (!unrolling[g.label.ident]) {
+                buf.put("/* failed to unroll*/");
+                buf.put("throw Dispatch.INSTANCE;\n");
+                // rollback changes
+                buf = saved;
+            }
+        }
+        else {
             buf.put("throw Dispatch.INSTANCE;\n");
+        }
     }
 
     override void visit(GotoDefaultStatement s)
@@ -1354,7 +1414,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     void printGlobalFunction(FuncDeclaration func) {
         opts.vararg = null;
         if (func.fbody is null && !func.isAbstract) return;
-        //stderr.writefln("\tFunction %s", func.ident.toString);
+        stderr.writefln("\tFunction %s", func.ident.toString);
         auto storage = (func.isStatic()  || opts.aggregates.length == 0) ? "static" : "";
         if (func.isAbstract && func.fbody is null) storage = "abstract";
         if (auto ctor = func.isCtorDeclaration())
@@ -1465,6 +1525,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             buf.fmt("// removed duplicate function, [%s] signature: %s\n", generatedFunctions.top.keys, sig);
             return;
         }
+        auto unrolled = pushed(unrolledGotos, IdentityMap!Statement());
         generatedFunctions.top[sig] = true;
         auto lgn = pushed(labelGotoNums);
         // hoist nested structs/classes to top level, mark them private

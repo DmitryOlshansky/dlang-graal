@@ -1381,7 +1381,8 @@ public class mars {
                             switch (__dispatch6 != 0 ? __dispatch6 : checkOptions.invoke(p.plus(13).minus(1), params.checkActionUsage, new ByteSlice("`-check=<behavior>` requires a behavior")))
                             {
                                 case CheckOptions.error:
-                                    /*goto Lerror*/throw Dispatch.INSTANCE;
+                                    /*goto Lerror*//*unrolled goto*/
+                                    files.push(new BytePtr("__stdin.d"));
                                 case CheckOptions.help:
                                     return false;
                                 case CheckOptions.success:
@@ -1416,7 +1417,8 @@ public class mars {
                             switch (__dispatch7 != 0 ? __dispatch7 : checkOptions.invoke(p.plus(7).minus(1), params.checkUsage, new ByteSlice("`-check=<action>` requires an action")))
                             {
                                 case CheckOptions.error:
-                                    /*goto Lerror*/throw Dispatch.INSTANCE;
+                                    /*goto Lerror*//*unrolled goto*/
+                                    files.push(new BytePtr("__stdin.d"));
                                 case CheckOptions.help:
                                     return false;
                                 case CheckOptions.success:
@@ -1468,7 +1470,8 @@ public class mars {
                         }
                     }
                     else if ((p.get(6)) != 0)
-                        /*goto Lerror*/throw Dispatch.INSTANCE;
+                        /*goto Lerror*//*unrolled goto*/
+                        files.push(new BytePtr("__stdin.d"));
                     else
                         params.color = true;
                 }
@@ -1484,7 +1487,8 @@ public class mars {
                         {
                             int percent = parseDigits.invoke(p.plus(5), 100);
                             if (percent == -1)
-                                /*goto Lerror*/throw Dispatch.INSTANCE;
+                                /*goto Lerror*//*unrolled goto*/
+                                files.push(new BytePtr("__stdin.d"));
                             params.covPercent = (byte)percent;
                         }
                         else
@@ -1494,7 +1498,8 @@ public class mars {
                         }
                     }
                     else if ((p.get(4)) != 0)
-                        /*goto Lerror*/throw Dispatch.INSTANCE;
+                        /*goto Lerror*//*unrolled goto*/
+                        files.push(new BytePtr("__stdin.d"));
                 }
                 else if (__equals(arg, new ByteSlice("-shared")))
                     params.dll = true;
@@ -1514,7 +1519,8 @@ public class mars {
                 {
                     BytePtr tmp = pcopy(p.plus(6).plus(1));
                     if (!((tmp.get(0)) != 0))
-                        /*goto Lnoarg*/throw Dispatch.INSTANCE;
+                        /*goto Lnoarg*//*unrolled goto*/
+                        files.push(new BytePtr("__stdin.d"));
                     params.mixinFile = pcopy(Mem.xstrdup(tmp));
                 }
                 else if (__equals(arg, new ByteSlice("-g")))
@@ -1566,7 +1572,8 @@ public class mars {
                         }
                     }
                     else if ((p.get(8)) != 0)
-                        /*goto Lerror*/throw Dispatch.INSTANCE;
+                        /*goto Lerror*//*unrolled goto*/
+                        files.push(new BytePtr("__stdin.d"));
                     else
                         params.trace = true;
                 }
@@ -1586,7 +1593,8 @@ public class mars {
                     {
                         int num = parseDigits.invoke(p.plus(9), 2147483647);
                         if (num == -1)
-                            /*goto Lerror*/throw Dispatch.INSTANCE;
+                            /*goto Lerror*//*unrolled goto*/
+                            files.push(new BytePtr("__stdin.d"));
                         params.errorLimit = num;
                     }
                     else if (startsWith.invoke(p.plus(9), new ByteSlice("spec")))
@@ -1613,7 +1621,8 @@ public class mars {
                             switch (__dispatch8 != 0 ? __dispatch8 : checkOptions.invoke(p.plus(6).minus(1), params.mcpuUsage, new ByteSlice("`-mcpu=<architecture>` requires an architecture")))
                             {
                                 case CheckOptions.error:
-                                    /*goto Lerror*/throw Dispatch.INSTANCE;
+                                    /*goto Lerror*//*unrolled goto*/
+                                    files.push(new BytePtr("__stdin.d"));
                                 case CheckOptions.help:
                                     return false;
                                 case CheckOptions.success:
@@ -1663,7 +1672,8 @@ public class mars {
                             switch (__dispatch10 != 0 ? __dispatch10 : checkOptions.invoke(p.plus(12).minus(1), params.externStdUsage, new ByteSlice("`-extern-std=<standard>` requires a standard")))
                             {
                                 case CheckOptions.error:
-                                    /*goto Lerror*/throw Dispatch.INSTANCE;
+                                    /*goto Lerror*//*unrolled goto*/
+                                    files.push(new BytePtr("__stdin.d"));
                                 case CheckOptions.help:
                                     return false;
                                 case CheckOptions.success:
@@ -1698,7 +1708,8 @@ public class mars {
                             switch (__dispatch11 != 0 ? __dispatch11 : checkOptions.invoke(p.plus(12).minus(1), params.transitionUsage, new ByteSlice("`-transition=<name>` requires a name")))
                             {
                                 case CheckOptions.error:
-                                    /*goto Lerror*/throw Dispatch.INSTANCE;
+                                    /*goto Lerror*//*unrolled goto*/
+                                    files.push(new BytePtr("__stdin.d"));
                                 case CheckOptions.help:
                                     return false;
                                 case CheckOptions.success:
@@ -1714,7 +1725,8 @@ public class mars {
                         {
                             int num = parseDigits.invoke(p.plus(12), 2147483647);
                             if (num == -1)
-                                /*goto Lerror*/throw Dispatch.INSTANCE;
+                                /*goto Lerror*//*unrolled goto*/
+                                files.push(new BytePtr("__stdin.d"));
                             switch (num)
                             {
                                 case 3449:
@@ -1776,7 +1788,8 @@ public class mars {
                             switch (__dispatch14 != 0 ? __dispatch14 : checkOptions.invoke(p.plus(9).minus(1), params.previewUsage, new ByteSlice("`-preview=<name>` requires a name")))
                             {
                                 case CheckOptions.error:
-                                    /*goto Lerror*/throw Dispatch.INSTANCE;
+                                    /*goto Lerror*//*unrolled goto*/
+                                    files.push(new BytePtr("__stdin.d"));
                                 case CheckOptions.help:
                                     return false;
                                 case CheckOptions.success:
@@ -1805,7 +1818,8 @@ public class mars {
                             switch (__dispatch15 != 0 ? __dispatch15 : checkOptions.invoke(p.plus(8).minus(1), params.revertUsage, new ByteSlice("`-revert=<name>` requires a name")))
                             {
                                 case CheckOptions.error:
-                                    /*goto Lerror*/throw Dispatch.INSTANCE;
+                                    /*goto Lerror*//*unrolled goto*/
+                                    files.push(new BytePtr("__stdin.d"));
                                 case CheckOptions.help:
                                     return false;
                                 case CheckOptions.success:
@@ -1844,26 +1858,30 @@ public class mars {
                                     break;
                                 case 100:
                                     if (!((p.get(3)) != 0))
-                                        /*goto Lnoarg*/throw Dispatch.INSTANCE;
+                                        /*goto Lnoarg*//*unrolled goto*/
+                                        files.push(new BytePtr("__stdin.d"));
                                     path = pcopy((p.plus(3).plus((((p.get(3) & 0xFF) == 61) ? 1 : 0))));
                                     params.objdir = toDString(path).copy();
                                     break;
                                 case 102:
                                     if (!((p.get(3)) != 0))
-                                        /*goto Lnoarg*/throw Dispatch.INSTANCE;
+                                        /*goto Lnoarg*//*unrolled goto*/
+                                        files.push(new BytePtr("__stdin.d"));
                                     path = pcopy((p.plus(3).plus((((p.get(3) & 0xFF) == 61) ? 1 : 0))));
                                     params.objname = toDString(path).copy();
                                     break;
                                 case 112:
                                     if ((p.get(3)) != 0)
-                                        /*goto Lerror*/throw Dispatch.INSTANCE;
+                                        /*goto Lerror*//*unrolled goto*/
+                                        files.push(new BytePtr("__stdin.d"));
                                     params.preservePaths = true;
                                     break;
                                 case 0:
                                     error.invoke(new BytePtr("-o no longer supported, use -of or -od"), null);
                                     break;
                                 default:
-                                /*goto Lerror*/throw Dispatch.INSTANCE;
+                                /*goto Lerror*//*unrolled goto*/
+                                files.push(new BytePtr("__stdin.d"));
                             }
                         } while(__dispatch16 != 0);
                     }
@@ -1879,18 +1897,21 @@ public class mars {
                             {
                                 case 100:
                                     if (!((p.get(3)) != 0))
-                                        /*goto Lnoarg*/throw Dispatch.INSTANCE;
+                                        /*goto Lnoarg*//*unrolled goto*/
+                                        files.push(new BytePtr("__stdin.d"));
                                     params.docdir = pcopy((p.plus(3).plus((((p.get(3) & 0xFF) == 61) ? 1 : 0))));
                                     break;
                                 case 102:
                                     if (!((p.get(3)) != 0))
-                                        /*goto Lnoarg*/throw Dispatch.INSTANCE;
+                                        /*goto Lnoarg*//*unrolled goto*/
+                                        files.push(new BytePtr("__stdin.d"));
                                     params.docname = pcopy((p.plus(3).plus((((p.get(3) & 0xFF) == 61) ? 1 : 0))));
                                     break;
                                 case 0:
                                     break;
                                 default:
-                                /*goto Lerror*/throw Dispatch.INSTANCE;
+                                /*goto Lerror*//*unrolled goto*/
+                                files.push(new BytePtr("__stdin.d"));
                             }
                         } while(__dispatch17 != 0);
                     }
@@ -1906,18 +1927,21 @@ public class mars {
                             {
                                 case 100:
                                     if (!((p.get(3)) != 0))
-                                        /*goto Lnoarg*/throw Dispatch.INSTANCE;
+                                        /*goto Lnoarg*//*unrolled goto*/
+                                        files.push(new BytePtr("__stdin.d"));
                                     params.hdrdir = toDString(p.plus(3).plus((((p.get(3) & 0xFF) == 61) ? 1 : 0))).copy();
                                     break;
                                 case 102:
                                     if (!((p.get(3)) != 0))
-                                        /*goto Lnoarg*/throw Dispatch.INSTANCE;
+                                        /*goto Lnoarg*//*unrolled goto*/
+                                        files.push(new BytePtr("__stdin.d"));
                                     params.hdrname = toDString(p.plus(3).plus((((p.get(3) & 0xFF) == 61) ? 1 : 0))).copy();
                                     break;
                                 case 0:
                                     break;
                                 default:
-                                /*goto Lerror*/throw Dispatch.INSTANCE;
+                                /*goto Lerror*//*unrolled goto*/
+                                files.push(new BytePtr("__stdin.d"));
                             }
                         } while(__dispatch18 != 0);
                     }
@@ -1933,16 +1957,20 @@ public class mars {
                             {
                                 case 102:
                                     if (!((p.get(3)) != 0))
-                                        /*goto Lnoarg*/throw Dispatch.INSTANCE;
+                                        /*goto Lnoarg*//*unrolled goto*/
+                                        files.push(new BytePtr("__stdin.d"));
                                     params.jsonfilename = toDString(p.plus(3).plus((((p.get(3) & 0xFF) == 61) ? 1 : 0))).copy();
                                     break;
                                 case 105:
                                     if (!((p.get(3)) != 0))
-                                        /*goto Lnoarg*/throw Dispatch.INSTANCE;
+                                        /*goto Lnoarg*//*unrolled goto*/
+                                        files.push(new BytePtr("__stdin.d"));
                                     if ((p.get(3) & 0xFF) != 61)
-                                        /*goto Lerror*/throw Dispatch.INSTANCE;
+                                        /*goto Lerror*//*unrolled goto*/
+                                        files.push(new BytePtr("__stdin.d"));
                                     if (!((p.get(4)) != 0))
-                                        /*goto Lnoarg*/throw Dispatch.INSTANCE;
+                                        /*goto Lnoarg*//*unrolled goto*/
+                                        files.push(new BytePtr("__stdin.d"));
                                     {
                                         int flag = tryParseJsonField(p.plus(4));
                                         if (!((flag) != 0))
@@ -1956,7 +1984,8 @@ public class mars {
                                 case 0:
                                     break;
                                 default:
-                                /*goto Lerror*/throw Dispatch.INSTANCE;
+                                /*goto Lerror*//*unrolled goto*/
+                                files.push(new BytePtr("__stdin.d"));
                             }
                         } while(__dispatch19 != 0);
                     }
@@ -2025,10 +2054,12 @@ public class mars {
                             params.boundscheck = CHECKENABLE.off;
                         }
                         else
-                            /*goto Lerror*/throw Dispatch.INSTANCE;
+                            /*goto Lerror*//*unrolled goto*/
+                            files.push(new BytePtr("__stdin.d"));
                     }
                     else
-                        /*goto Lerror*/throw Dispatch.INSTANCE;
+                        /*goto Lerror*//*unrolled goto*/
+                        files.push(new BytePtr("__stdin.d"));
                 }
                 else if (__equals(arg, new ByteSlice("-unittest")))
                     params.useUnitTests = true;
@@ -2045,7 +2076,8 @@ public class mars {
                         params.modFileAliasStrings.push(p.plus(4));
                     }
                     else
-                        /*goto Lerror*/throw Dispatch.INSTANCE;
+                        /*goto Lerror*//*unrolled goto*/
+                        files.push(new BytePtr("__stdin.d"));
                 }
                 else if ((p.get(1) & 0xFF) == 74)
                 {
@@ -2061,7 +2093,8 @@ public class mars {
                         {
                             int level = parseDigits.invoke(p.plus(7), 2147483647);
                             if (level == -1)
-                                /*goto Lerror*/throw Dispatch.INSTANCE;
+                                /*goto Lerror*//*unrolled goto*/
+                                files.push(new BytePtr("__stdin.d"));
                             params.debuglevel = level;
                         }
                         else if (Identifier.isValidIdentifier(p.plus(7)))
@@ -2071,10 +2104,12 @@ public class mars {
                             (params.debugids).push(p.plus(7));
                         }
                         else
-                            /*goto Lerror*/throw Dispatch.INSTANCE;
+                            /*goto Lerror*//*unrolled goto*/
+                            files.push(new BytePtr("__stdin.d"));
                     }
                     else if ((p.get(6)) != 0)
-                        /*goto Lerror*/throw Dispatch.INSTANCE;
+                        /*goto Lerror*//*unrolled goto*/
+                        files.push(new BytePtr("__stdin.d"));
                     else
                         params.debuglevel = 1;
                 }
@@ -2086,7 +2121,8 @@ public class mars {
                         {
                             int level = parseDigits.invoke(p.plus(9), 2147483647);
                             if (level == -1)
-                                /*goto Lerror*/throw Dispatch.INSTANCE;
+                                /*goto Lerror*//*unrolled goto*/
+                                files.push(new BytePtr("__stdin.d"));
                             params.versionlevel = level;
                         }
                         else if (Identifier.isValidIdentifier(p.plus(9)))
@@ -2096,10 +2132,12 @@ public class mars {
                             (params.versionids).push(p.plus(9));
                         }
                         else
-                            /*goto Lerror*/throw Dispatch.INSTANCE;
+                            /*goto Lerror*//*unrolled goto*/
+                            files.push(new BytePtr("__stdin.d"));
                     }
                     else
-                        /*goto Lerror*/throw Dispatch.INSTANCE;
+                        /*goto Lerror*//*unrolled goto*/
+                        files.push(new BytePtr("__stdin.d"));
                 }
                 else if (__equals(arg, new ByteSlice("--b")))
                     params.debugb = true;
@@ -2146,11 +2184,13 @@ public class mars {
                     {
                         params.moduleDepsFile = toDString(p.plus(1).plus(5)).copy();
                         if (!((params.moduleDepsFile.get(0)) != 0))
-                            /*goto Lnoarg*/throw Dispatch.INSTANCE;
+                            /*goto Lnoarg*//*unrolled goto*/
+                            files.push(new BytePtr("__stdin.d"));
                     }
                     else if ((p.get(5) & 0xFF) != 0)
                     {
-                        /*goto Lerror*/throw Dispatch.INSTANCE;
+                        /*goto Lerror*//*unrolled goto*/
+                        files.push(new BytePtr("__stdin.d"));
                     }
                     params.moduleDeps = new OutBuffer(null, 0, 0, 0, false, false);
                 }
@@ -2191,7 +2231,8 @@ public class mars {
                     else
                     {
                         params.run = false;
-                        /*goto Lnoarg*/throw Dispatch.INSTANCE;
+                        /*goto Lnoarg*//*unrolled goto*/
+                        files.push(new BytePtr("__stdin.d"));
                     }
                 }
                 else if ((p.get(1) & 0xFF) == 0)

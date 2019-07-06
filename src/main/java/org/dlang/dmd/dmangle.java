@@ -545,7 +545,42 @@ public class dmangle {
                             {
                                 sa = ev.var;
                                 ea = null;
-                                /*goto Lsa*/throw Dispatch.INSTANCE;
+                                /*goto Lsa*//*unrolled goto*/
+                            /*Lsa:*/
+                                sa = sa.toAlias();
+                                {
+                                    Declaration d = sa.isDeclaration();
+                                    if (d != null)
+                                    {
+                                        {
+                                            FuncAliasDeclaration fad = d.isFuncAliasDeclaration();
+                                            if (fad != null)
+                                                d = fad.toAliasFunc();
+                                        }
+                                        if (d.mangleOverride.getLength() != 0)
+                                        {
+                                            (this.buf).writeByte(88);
+                                            this.toBuffer(d.mangleOverride, d);
+                                            continue L_outer1;
+                                        }
+                                        {
+                                            ByteSlice id = externallyMangledIdentifier(d).copy();
+                                            if (id.getLength() != 0)
+                                            {
+                                                (this.buf).writeByte(88);
+                                                this.toBuffer(id, d);
+                                                continue L_outer1;
+                                            }
+                                        }
+                                        if ((!(d.type != null) || d.type.deco == null))
+                                        {
+                                            ti.error(new BytePtr("forward reference of %s `%s`"), d.kind(), d.toChars());
+                                            continue L_outer1;
+                                        }
+                                    }
+                                }
+                                (this.buf).writeByte(83);
+                                this.mangleSymbol(sa);
                             }
                         }
                         {
@@ -554,7 +589,42 @@ public class dmangle {
                             {
                                 sa = et.var;
                                 ea = null;
-                                /*goto Lsa*/throw Dispatch.INSTANCE;
+                                /*goto Lsa*//*unrolled goto*/
+                            /*Lsa:*/
+                                sa = sa.toAlias();
+                                {
+                                    Declaration d = sa.isDeclaration();
+                                    if (d != null)
+                                    {
+                                        {
+                                            FuncAliasDeclaration fad = d.isFuncAliasDeclaration();
+                                            if (fad != null)
+                                                d = fad.toAliasFunc();
+                                        }
+                                        if (d.mangleOverride.getLength() != 0)
+                                        {
+                                            (this.buf).writeByte(88);
+                                            this.toBuffer(d.mangleOverride, d);
+                                            continue L_outer1;
+                                        }
+                                        {
+                                            ByteSlice id = externallyMangledIdentifier(d).copy();
+                                            if (id.getLength() != 0)
+                                            {
+                                                (this.buf).writeByte(88);
+                                                this.toBuffer(id, d);
+                                                continue L_outer1;
+                                            }
+                                        }
+                                        if ((!(d.type != null) || d.type.deco == null))
+                                        {
+                                            ti.error(new BytePtr("forward reference of %s `%s`"), d.kind(), d.toChars());
+                                            continue L_outer1;
+                                        }
+                                    }
+                                }
+                                (this.buf).writeByte(83);
+                                this.mangleSymbol(sa);
                             }
                         }
                         {
@@ -566,7 +636,42 @@ public class dmangle {
                                 else
                                     sa = ef.fd;
                                 ea = null;
-                                /*goto Lsa*/throw Dispatch.INSTANCE;
+                                /*goto Lsa*//*unrolled goto*/
+                            /*Lsa:*/
+                                sa = sa.toAlias();
+                                {
+                                    Declaration d = sa.isDeclaration();
+                                    if (d != null)
+                                    {
+                                        {
+                                            FuncAliasDeclaration fad = d.isFuncAliasDeclaration();
+                                            if (fad != null)
+                                                d = fad.toAliasFunc();
+                                        }
+                                        if (d.mangleOverride.getLength() != 0)
+                                        {
+                                            (this.buf).writeByte(88);
+                                            this.toBuffer(d.mangleOverride, d);
+                                            continue L_outer1;
+                                        }
+                                        {
+                                            ByteSlice id = externallyMangledIdentifier(d).copy();
+                                            if (id.getLength() != 0)
+                                            {
+                                                (this.buf).writeByte(88);
+                                                this.toBuffer(id, d);
+                                                continue L_outer1;
+                                            }
+                                        }
+                                        if ((!(d.type != null) || d.type.deco == null))
+                                        {
+                                            ti.error(new BytePtr("forward reference of %s `%s`"), d.kind(), d.toChars());
+                                            continue L_outer1;
+                                        }
+                                    }
+                                }
+                                (this.buf).writeByte(83);
+                                this.mangleSymbol(sa);
                             }
                         }
                         (this.buf).writeByte(86);

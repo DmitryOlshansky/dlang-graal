@@ -1873,17 +1873,13 @@ public class parse {
                             link = LINK.objc;
                             this.nextToken();
                         }
-                        else {
-                            /*goto LinvalidLinkage*/
-                            this.error(new BytePtr("valid linkage identifiers are `D`, `C`, `C++`, `Objective-C`, `Pascal`, `Windows`, `System`"));
-                            link = LINK.d;
-                        }
+                        else
+                            /*goto LinvalidLinkage*//*unrolled goto*/
+                            link = LINK.system;
                     }
-                    else {
-                        /*goto LinvalidLinkage*/
-                        this.error(new BytePtr("valid linkage identifiers are `D`, `C`, `C++`, `Objective-C`, `Pascal`, `Windows`, `System`"));
-                        link = LINK.d;
-                    }
+                    else
+                        /*goto LinvalidLinkage*//*unrolled goto*/
+                        link = LINK.system;
                 }
                 else if (pequals(id, Id.System))
                 {
@@ -9405,10 +9401,12 @@ public class parse {
                             this.nextToken();
                         }
                         else
-                            /*goto LinvalidLinkage*/throw Dispatch.INSTANCE;
+                            /*goto LinvalidLinkage*//*unrolled goto*/
+                            link = LINK.system;
                     }
                     else
-                        /*goto LinvalidLinkage*/throw Dispatch.INSTANCE;
+                        /*goto LinvalidLinkage*//*unrolled goto*/
+                        link = LINK.system;
                 }
                 else if (pequals(id, Id.System))
                 {

@@ -751,7 +751,33 @@ public class constfold {
             Expression etmp = e1;
             e1 = e2;
             e2 = etmp;
-            /*goto Lsa*/throw Dispatch.INSTANCE;
+            /*goto Lsa*//*unrolled goto*/
+        /*Lsa:*/
+            StringExp es1 = (StringExp)e1;
+            ArrayLiteralExp es2 = (ArrayLiteralExp)e2;
+            int dim1 = es1.len;
+            int dim2 = es2.elements != null ? (es2.elements).length : 0;
+            if (dim1 != dim2)
+                cmp = 0;
+            else
+            {
+                cmp = 1;
+                {
+                    int i = 0;
+                    for (; i < dim1;i++){
+                        long c = (long)es1.charAt((long)i);
+                        Expression ee2 = es2.getElement(i);
+                        if (ee2.isConst() != 1)
+                        {
+                            cantExp(ue);
+                            return ue;
+                        }
+                        cmp = ((c == ee2.toInteger()) ? 1 : 0);
+                        if (cmp == 0)
+                            break;
+                    }
+                }
+            }
         }
         else if (((e1.op & 0xFF) == 121 && (e2.op & 0xFF) == 47))
         {
@@ -936,7 +962,9 @@ public class constfold {
         {
             r1 = e1.toReal();
             r2 = e2.toReal();
-            /*goto L1*/throw Dispatch.INSTANCE;
+            /*goto L1*//*unrolled goto*/
+        /*L1:*/
+            n = (long)realCmp(op, r1, r2);
         }
         else if (e1.type.isimaginary())
         {
@@ -981,17 +1009,29 @@ public class constfold {
         }
         if ((e1.type.implicitConvTo(to) >= MATCH.constant || to.implicitConvTo(e1.type) >= MATCH.constant))
         {
-            /*goto L1*/throw Dispatch.INSTANCE;
+            /*goto L1*//*unrolled goto*/
+        /*L1:*/
+            Expression ex = expType(to, e1);
+            emplaceExpUnionExp(ue, ex);
+            return ue;
         }
         if (((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tdelegate && e1.type.implicitConvTo(to) == MATCH.convert))
         {
-            /*goto L1*/throw Dispatch.INSTANCE;
+            /*goto L1*//*unrolled goto*/
+        /*L1:*/
+            Expression ex = expType(to, e1);
+            emplaceExpUnionExp(ue, ex);
+            return ue;
         }
         if ((e1.op & 0xFF) == 121)
         {
             if ((((tb.ty & 0xFF) == ENUMTY.Tarray && (typeb.ty & 0xFF) == ENUMTY.Tarray) && tb.nextOf().size() == typeb.nextOf().size()))
             {
-                /*goto L1*/throw Dispatch.INSTANCE;
+                /*goto L1*//*unrolled goto*/
+            /*L1:*/
+                Expression ex = expType(to, e1);
+                emplaceExpUnionExp(ue, ex);
+                return ue;
             }
         }
         if (((e1.op & 0xFF) == 47 && pequals(typeb, tb)))
@@ -1383,7 +1423,35 @@ public class constfold {
         {
             e = e2;
             t = t1;
-            /*goto L2*/throw Dispatch.INSTANCE;
+            /*goto L2*//*unrolled goto*/
+        /*L2:*/
+            Type tn = e.type.toBasetype();
+            if ((((tn.ty & 0xFF) == ENUMTY.Tchar || (tn.ty & 0xFF) == ENUMTY.Twchar) || (tn.ty & 0xFF) == ENUMTY.Tdchar))
+            {
+                if (t.nextOf() != null)
+                    t = t.nextOf().toBasetype();
+                byte sz = (byte)t.size();
+                long v = e.toInteger();
+                int len = (t.ty & 0xFF) == (tn.ty & 0xFF) ? 1 : utf_codeLength((sz & 0xFF), (int)v);
+                Object s = pcopy(Mem.xmalloc(len * (sz & 0xFF)));
+                if ((t.ty & 0xFF) == (tn.ty & 0xFF))
+                    Port.valcpy(s, v, (sz & 0xFF));
+                else
+                    utf_encode((sz & 0xFF), s, (int)v);
+                emplaceExpStringExpLocObjectInteger(ue, loc, s, len);
+                StringExp es = (StringExp)ue.exp();
+                es.type = type;
+                es.sz = sz;
+                es.committed = (byte)1;
+            }
+            else
+            {
+                DArray<Expression> elements = new DArray<Expression>();
+                (elements).push(e);
+                emplaceExpArrayLiteralExpLocTypeDArray<Expression>(ue, e.loc, type, elements);
+            }
+            assert(ue.exp().type != null);
+            return ue;
         }
         else if ((((e1.op & 0xFF) == 135 || (e1.op & 0xFF) == 49) && (e2.op & 0xFF) == 13))
         {
@@ -1562,7 +1630,19 @@ public class constfold {
         else if ((((e1.op & 0xFF) == 47 && (e2.op & 0xFF) == 13) && t1.nextOf().equals(t2.nextOf())))
         {
             e = e1;
-            /*goto L3*/throw Dispatch.INSTANCE;
+            /*goto L3*//*unrolled goto*/
+        /*L3:*/
+            DArray<Expression> elems = copyElements(e, null);
+            emplaceExpArrayLiteralExpLocTypeDArray<Expression>(ue, e.loc, null, elems);
+            e = ue.exp();
+            if ((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray)
+            {
+                e.type = t1.nextOf().sarrayOf((long)(elems).length);
+            }
+            else
+                e.type = type;
+            assert(ue.exp().type != null);
+            return ue;
         }
         else if ((((e1.op & 0xFF) == 13 && (e2.op & 0xFF) == 47) && t1.nextOf().equals(t2.nextOf())))
         {
@@ -1613,7 +1693,28 @@ public class constfold {
         {
             t = e1.type;
             e = e2;
-            /*goto L1*/throw Dispatch.INSTANCE;
+            /*goto L1*//*unrolled goto*/
+        /*L1:*/
+            Type tb = t.toBasetype();
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray && tb.nextOf().equivalent(e.type)))
+            {
+                DArray<Expression> expressions = new DArray<Expression>();
+                (expressions).push(e);
+                emplaceExpArrayLiteralExpLocTypeDArray<Expression>(ue, loc, t, expressions);
+                e = ue.exp();
+            }
+            else
+            {
+                emplaceExpUnionExp(ue, e);
+                e = ue.exp();
+            }
+            if (!(e.type.equals(type)))
+            {
+                StringExp se = (StringExp)e.copy();
+                e = se.castTo(null, type);
+                emplaceExpUnionExp(ue, e);
+                e = ue.exp();
+            }
         }
         else if (((e1.op & 0xFF) == 121 && (e2.op & 0xFF) == 13))
         {

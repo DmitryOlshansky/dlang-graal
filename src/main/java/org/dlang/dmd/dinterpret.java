@@ -3110,7 +3110,7 @@ public class dinterpret {
                         VarDeclaration v = ve.var.isVarDeclaration();
                         assert(v != null);
                         if ((v.storage_class & 4096L) != 0)
-                            /*goto L1*/throw Dispatch.INSTANCE;
+                            /*goto L1*//*unrolled goto*/
                     }
                     else if ((ultimateVar != null && !(getValue(ultimateVar) != null)))
                     {
@@ -3120,7 +3120,7 @@ public class dinterpret {
                         setValue(ultimateVar, ex);
                     }
                     else
-                        /*goto L1*/throw Dispatch.INSTANCE;
+                        /*goto L1*//*unrolled goto*/
                 }
             }
             else

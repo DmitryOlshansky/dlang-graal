@@ -2393,7 +2393,7 @@ public class dsymbolsem {
                         tm.symtab = func.localsymtab;
                         if (tm.symtab != null)
                         {
-                            /*goto L1*/throw Dispatch.INSTANCE;
+                            /*goto L1*//*unrolled goto*/
                         }
                     }
                     else

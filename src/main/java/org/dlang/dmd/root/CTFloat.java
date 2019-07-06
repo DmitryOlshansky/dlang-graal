@@ -11,6 +11,12 @@ public class CTFloat {
         s.set(i, (byte)0);
     }
 
+    public static final double one = 1.0;
+
+    public static boolean isNaN(double d) {
+        return Double.isNaN(d);
+    }
+
 
     public static double parse(BytePtr sbufptr, Ptr<Boolean> isOutOfRange){
         try {

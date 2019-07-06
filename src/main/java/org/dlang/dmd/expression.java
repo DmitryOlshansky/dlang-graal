@@ -320,7 +320,7 @@ public class expression {
 
     // from template emplaceExp!(IntegerExpLocLongType)
     public static void emplaceExpIntegerExpLocLongType(Object p, Loc _param_1, long _param_2, Type _param_3) {
-        IntegerExp tmp = new IntegerExp(_param_1, (long)_param_2, _param_3);
+        IntegerExp tmp = new IntegerExp(_param_1, _param_2, _param_3);
         memcpy((BytePtr)p, (tmp), 32);
     }
 

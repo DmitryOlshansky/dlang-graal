@@ -188,3 +188,41 @@ void disambiguateVars(Statement st, ref IdentityMap!string renames) {
         }
     }
 }
+
+
+bool containsStatement(Statement haystack, Statement needle) {
+    extern(C++) static class Collector : SemanticTimeTransitiveVisitor {
+        alias visit = typeof(super).visit;
+        Statement target;
+        bool found;
+        
+        override void visit(ConditionalDeclaration ver) {
+            if (ver.condition.inc == Include.yes) {
+                if (ver.decl) {
+                    foreach(d; *ver.decl){
+                        d.accept(this);
+                    }
+                }
+            }
+            else if(ver.elsedecl) {
+                foreach(d; *ver.elsedecl){
+                    d.accept(this);
+                }
+            }
+        }
+
+        override void visit(Statement st) {
+            if (st == target) found = true;
+            super.visit(st);
+        }
+
+        override void visit(ExpStatement st) {
+            if (st == target) found = true;
+            super.visit(st);
+        }
+    }
+    scope v = new Collector();
+    v.target = needle;
+    haystack.accept(v);
+    return v.found;   
+}

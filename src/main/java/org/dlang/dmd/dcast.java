@@ -2553,11 +2553,19 @@ public class dcast {
             }
             else if ((((t1.value.ty & 0xFF) == ENUMTY.Tsarray || (t1.value.ty & 0xFF) == ENUMTY.Tarray) && (((((e2.value.op & 0xFF) == 13 && (t2.value.ty & 0xFF) == ENUMTY.Tpointer) && (t2.value.nextOf().ty & 0xFF) == ENUMTY.Tvoid) || ((((e2.value.op & 0xFF) == 47 && (t2.value.ty & 0xFF) == ENUMTY.Tsarray) && (t2.value.nextOf().ty & 0xFF) == ENUMTY.Tvoid) && ((TypeSArray)t2.value).dim.toInteger() == 0L)) || isVoidArrayLiteral(e2.value, t1.value))))
             {
-                /*goto Lx1*/throw Dispatch.INSTANCE;
+                /*goto Lx1*//*unrolled goto*/
+            /*Lx1:*/
+                t.value = t1.value.nextOf().arrayOf();
+                e1.value = e1.value.castTo(sc_ref.value, t.value);
+                e2.value = e2.value.castTo(sc_ref.value, t.value);
             }
             else if ((((t2.value.ty & 0xFF) == ENUMTY.Tsarray || (t2.value.ty & 0xFF) == ENUMTY.Tarray) && (((((e1.value.op & 0xFF) == 13 && (t1.value.ty & 0xFF) == ENUMTY.Tpointer) && (t1.value.nextOf().ty & 0xFF) == ENUMTY.Tvoid) || ((((e1.value.op & 0xFF) == 47 && (t1.value.ty & 0xFF) == ENUMTY.Tsarray) && (t1.value.nextOf().ty & 0xFF) == ENUMTY.Tvoid) && ((TypeSArray)t1.value).dim.toInteger() == 0L)) || isVoidArrayLiteral(e1.value, t2.value))))
             {
-                /*goto Lx2*/throw Dispatch.INSTANCE;
+                /*goto Lx2*//*unrolled goto*/
+            /*Lx2:*/
+                t.value = t2.value.nextOf().arrayOf();
+                e1.value = e1.value.castTo(sc_ref.value, t.value);
+                e2.value = e2.value.castTo(sc_ref.value, t.value);
             }
             else if ((((t1.value.ty & 0xFF) == ENUMTY.Tsarray || (t1.value.ty & 0xFF) == ENUMTY.Tarray) && (m = t1.value.implicitConvTo(t2.value)) != MATCH.nomatch))
             {

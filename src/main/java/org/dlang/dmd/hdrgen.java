@@ -3480,7 +3480,8 @@ public class hdrgen {
             public Void invoke(TypeDArray t){
                 Type ut = t.castMod((byte)0);
                 if ((hgs_ref.value).declstring)
-                    /*goto L1*/throw Dispatch.INSTANCE;
+                    /*goto L1*//*unrolled goto*/
+                    (buf_ref.value).writestring(new ByteSlice("dstring"));
                 if (ut.equals(Type.tstring))
                     (buf_ref.value).writestring(new ByteSlice("string"));
                 else if (ut.equals(Type.twstring))
