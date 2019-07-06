@@ -197,6 +197,8 @@ fun<T> reverse(a: Slice<T>):Slice<T> {
     return a
 }
 
+fun<T> arraydup(a: Slice<T>):Slice<T> = Slice(a.data.copyOfRange(a.beg, a.end))
+
 /**
  * Splits the array at $(D index) and expands it to make room for $(D length)
  * elements by shifting everything past $(D index) to the right.

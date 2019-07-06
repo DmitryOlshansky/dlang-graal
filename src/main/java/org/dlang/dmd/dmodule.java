@@ -1160,7 +1160,7 @@ public class dmodule {
                     }
                     else
                     {
-                        todo = pcopy((toPtr<Dsymbol>(malloc(len * 4))));
+                        todo = pcopy(((Ptr<Dsymbol>)malloc(len * 4)));
                         assert(todo != null);
                         todoalloc = pcopy(todo);
                     }

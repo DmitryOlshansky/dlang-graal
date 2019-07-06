@@ -673,7 +673,7 @@ public class mars {
         int sz = 131072;
         BytePtr buffer = null;
         for (; ;){
-            buffer = pcopy((toBytePtr(Mem.xrealloc(buffer, sz + 2))));
+            buffer = pcopy(((BytePtr)Mem.xrealloc(buffer, sz + 2)));
             do {
                 {
                     assert(sz > pos);

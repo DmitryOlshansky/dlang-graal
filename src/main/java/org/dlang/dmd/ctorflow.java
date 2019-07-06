@@ -57,7 +57,7 @@ public class ctorflow {
         public int callSuper;
         public Slice<FieldInit> fieldinit;
         public  void allocFieldinit(int dim) {
-            this.fieldinit = ((FieldInit)Mem.xcalloc(16, dim)).slice(0,dim).copy();
+            this.fieldinit = (ptr(new FieldInit[dim])).slice(0,dim).copy();
         }
 
         public  void freeFieldinit() {

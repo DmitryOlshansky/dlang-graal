@@ -1409,7 +1409,7 @@ public class dcast {
                     int srcSize = e.len * (e.sz & 0xFF);
                     memcpy((BytePtr)s, (se.string), srcSize);
                     memset(((BytePtr)s).plus(srcSize), 0, fullSize - srcSize);
-                    se.string = pcopy((toBytePtr(s)));
+                    se.string = pcopy(((BytePtr)s));
                 }
                 this.result = se;
                 return ;
@@ -1603,7 +1603,7 @@ public class dcast {
                         Object s = pcopy(Mem.xmalloc((dim2 + 1) * newsz));
                         memcpy((BytePtr)s, (se.string), (d * newsz));
                         memset(((BytePtr)s).plus((d * newsz)), 0, (dim2 + 1 - d) * newsz);
-                        se.string = pcopy((toBytePtr(s)));
+                        se.string = pcopy(((BytePtr)s));
                         se.len = dim2;
                     }
                 }

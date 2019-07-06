@@ -968,7 +968,7 @@ public class semantic3 {
                     array = tmp.slice(0,dim).copy();
                 else
                 {
-                    Ptr<VarDeclaration> ptr = pcopy(toPtr<VarDeclaration>(Mem.xmalloc(dim * 4)));
+                    Ptr<VarDeclaration> ptr = pcopy((Ptr<VarDeclaration>)Mem.xmalloc(dim * 4));
                     array = ptr.slice(0,dim).copy();
                 }
                 int n = 0;

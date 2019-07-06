@@ -1536,8 +1536,8 @@ public class constfold {
                 return ue;
             }
             Object s = pcopy(Mem.xmalloc(len * (sz & 0xFF)));
-            memcpy((BytePtr)(toBytePtr(s)), (es1.string), (es1.len * (sz & 0xFF)));
-            memcpy((BytePtr)((toBytePtr(s).plus((es1.len * (sz & 0xFF))))), (es2.string), (es2.len * (sz & 0xFF)));
+            memcpy((BytePtr)((BytePtr)s), (es1.string), (es1.len * (sz & 0xFF)));
+            memcpy((BytePtr)(((BytePtr)s.plus((es1.len * (sz & 0xFF))))), (es2.string), (es2.len * (sz & 0xFF)));
             emplaceExpStringExpLocObjectInteger(ue, loc, s, len);
             StringExp es = (StringExp)ue.exp();
             es.sz = sz;
@@ -1594,9 +1594,9 @@ public class constfold {
             Object s = pcopy(Mem.xmalloc(len * (sz & 0xFF)));
             memcpy((BytePtr)s, (es1.string), (es1.len * (sz & 0xFF)));
             if (homoConcat)
-                Port.valcpy((toBytePtr(s).plus(((sz & 0xFF) * es1.len))), v, (sz & 0xFF));
+                Port.valcpy(((BytePtr)s.plus(((sz & 0xFF) * es1.len))), v, (sz & 0xFF));
             else
-                utf_encode((sz & 0xFF), (toBytePtr(s).plus(((sz & 0xFF) * es1.len))), (int)v);
+                utf_encode((sz & 0xFF), ((BytePtr)s.plus(((sz & 0xFF) * es1.len))), (int)v);
             emplaceExpStringExpLocObjectInteger(ue, loc, s, len);
             es = (StringExp)ue.exp();
             es.sz = sz;
@@ -1612,8 +1612,8 @@ public class constfold {
             byte sz = es2.sz;
             long v = e1.toInteger();
             Object s = pcopy(Mem.xmalloc(len * (sz & 0xFF)));
-            Port.valcpy(toBytePtr(s), v, (sz & 0xFF));
-            memcpy((BytePtr)((toBytePtr(s).plus((sz & 0xFF)))), (es2.string), (es2.len * (sz & 0xFF)));
+            Port.valcpy((BytePtr)s, v, (sz & 0xFF));
+            memcpy((BytePtr)(((BytePtr)s.plus((sz & 0xFF)))), (es2.string), (es2.len * (sz & 0xFF)));
             emplaceExpStringExpLocObjectInteger(ue, loc, s, len);
             StringExp es = (StringExp)ue.exp();
             es.sz = sz;

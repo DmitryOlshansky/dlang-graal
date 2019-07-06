@@ -1584,7 +1584,7 @@ public class doc {
                     p.postInc();
                 }
                 int len = ((p.minus(start)));
-                BytePtr s = pcopy(toBytePtr(memcpy((BytePtr)Mem.xmalloc(len + 1), (start), len)));
+                BytePtr s = pcopy((BytePtr)memcpy((BytePtr)Mem.xmalloc(len + 1), (start), len));
                 s.set(len, (byte)0);
                 (escapetable).strings.set(((c & 0xFF)), s.slice(0,len));
                 p.postInc();

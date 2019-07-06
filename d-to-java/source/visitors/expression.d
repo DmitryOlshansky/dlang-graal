@@ -1119,41 +1119,51 @@ public:
                 break;
             default:
         }
-        if (toVoid || toVoidPtr) expToBuffer(e.e1, precedence[e.op], buf, opts);
+        if (toVoid || toVoidPtr)  return expToBuffer(e.e1, precedence[e.op], buf, opts);
         else if(fromBool && (toInt || toLong)) {
             buf.put("(");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
             buf.put(" ? 1 : 0)");
+            return;
         }
         else if (toBool) {
             buf.put("(");
             buf.put(toJavaBool(e.e1, opts));
             buf.put(")");
+            return;
         }
         else if(fromByte && toInt) {
             buf.put("(");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
             buf.put(" & 0xFF)");
+            return;
         }
-        else if (fromInt && toInt) expToBuffer(e.e1, precedence[e.op], buf, opts);
+        else if (fromInt && toInt) return expToBuffer(e.e1, precedence[e.op], buf, opts);
         else if(fromEnum) {
             expToBuffer(e.e1, precedence[e.op], buf, opts);
+            return;
         }
         else if(fromVoidPtr && toClass) {
             if (auto call = e.e1.isCallExp) {
-                if (call.f && call.f.funcName == "xmalloc")
+                if (call.f && call.f.funcName == "xmalloc") {
                     buf.put("null");
+                    return;
+                }
             }
-            else { // simple casts
-                buf.put("(");
-                typeToBuffer(e.to, buf, opts);
-                buf.put(")");
-                expToBuffer(e.e1, precedence[e.op], buf, opts);
+        }
+        else if(fromVoidPtr) {
+            if(auto call = e.e1.isCallExp) {
+                if (call.f && call.f.funcName == "xcalloc") {
+                    buf.fmt("ptr(new %s[%s])", 
+                        e.to.nextOf.toJava(opts),(*call.arguments)[1]);
+                    return;
+                }
             }
         }
         else if(complexTarget && fromClass) {
             buf.put("(Object)");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
+            return;
         }
         else if (complexTarget && !toFnPtr) { // rely on toTypeName(x)
             buf.put("to");
@@ -1161,13 +1171,13 @@ public:
             buf.put("(");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
             buf.put(")");
+            return;
         }
-        else { // simple casts
-            buf.put("(");
-            typeToBuffer(e.to, buf, opts);
-            buf.put(")");
-            expToBuffer(e.e1, precedence[e.op], buf, opts);
-        }
+        // simple casts
+        buf.put("(");
+        typeToBuffer(e.to, buf, opts);
+        buf.put(")");
+        expToBuffer(e.e1, precedence[e.op], buf, opts);
     }
 
     override void visit(VectorExp e)

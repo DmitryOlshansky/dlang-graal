@@ -320,7 +320,7 @@ public class expression {
 
     // from template emplaceExp!(IntegerExpLocLongType)
     public static void emplaceExpIntegerExpLocLongType(Object p, Loc _param_1, long _param_2, Type _param_3) {
-        IntegerExp tmp = new IntegerExp(_param_1, _param_2, _param_3);
+        IntegerExp tmp = new IntegerExp(_param_1, (long)_param_2, _param_3);
         memcpy((BytePtr)p, (tmp), 32);
     }
 
@@ -2658,7 +2658,7 @@ public class expression {
         public  StringExp toStringExp() {
             if ((this.implicitConvTo(Type.tstring)) != 0)
             {
-                StringExp se = new StringExp(this.loc, toBytePtr(Mem.xcalloc(1, 1)), 0);
+                StringExp se = new StringExp(this.loc, ptr(new byte[1u]), 0);
                 se.type = Type.tstring;
                 return se;
             }
@@ -2702,14 +2702,14 @@ public class expression {
 
         public  StringExp(Loc loc, Object string, int len) {
             super(loc, TOK.string_, 36);
-            this.string = pcopy((toBytePtr(string)));
+            this.string = pcopy(((BytePtr)string));
             this.len = len;
             this.sz = (byte)1;
         }
 
         public  StringExp(Loc loc, Object string, int len, byte postfix) {
             super(loc, TOK.string_, 36);
-            this.string = pcopy((toBytePtr(string)));
+            this.string = pcopy(((BytePtr)string));
             this.len = len;
             this.postfix = postfix;
             this.sz = (byte)1;
@@ -2987,7 +2987,7 @@ public class expression {
 
         public  ByteSlice toStringz() {
             int nbytes = this.len * (this.sz & 0xFF);
-            BytePtr s = pcopy(toBytePtr(Mem.xmalloc(nbytes + (this.sz & 0xFF))));
+            BytePtr s = pcopy((BytePtr)Mem.xmalloc(nbytes + (this.sz & 0xFF)));
             this.writeTo(s, true, 0);
             return s.slice(0,nbytes);
         }

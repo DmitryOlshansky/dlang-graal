@@ -230,7 +230,7 @@ public class parse {
             this.scanloc = loc.copy();
             if ((!(writeMixin(input, this.scanloc)) && loc.filename != null))
             {
-                BytePtr filename = pcopy(toBytePtr(Mem.xmalloc(strlen(loc.filename) + 7 + 12 + 1)));
+                BytePtr filename = pcopy((BytePtr)Mem.xmalloc(strlen(loc.filename) + 7 + 12 + 1));
                 sprintf(filename, new BytePtr("%s-mixin-%d"), loc.filename, loc.linnum);
                 this.scanloc.filename = pcopy(filename);
             }
@@ -2281,7 +2281,7 @@ public class parse {
                 int len = ((endPtr.value.minus(begPtr)));
                 if (len > 0)
                 {
-                    docline = pcopy((toBytePtr(Mem.xmalloc(len + 2))));
+                    docline = pcopy(((BytePtr)Mem.xmalloc(len + 2)));
                     memcpy((BytePtr)(docline), (begPtr), len);
                     docline.set(len, (byte)10);
                     docline.set((len + 1), (byte)0);
@@ -6694,7 +6694,7 @@ public class parse {
                                     int len1 = len;
                                     int len2 = this.token.len;
                                     len = len1 + len2;
-                                    BytePtr s2 = pcopy(toBytePtr(Mem.xmalloc(len)));
+                                    BytePtr s2 = pcopy((BytePtr)Mem.xmalloc(len));
                                     memcpy((BytePtr)(s2), (s_2), (len1));
                                     memcpy((BytePtr)((s2.plus(len1))), (this.token.ustring), (len2));
                                     s_2 = pcopy(s2);
@@ -7759,7 +7759,7 @@ public class parse {
             this.scanloc = loc.copy();
             if ((!(writeMixin(input, this.scanloc)) && loc.filename != null))
             {
-                BytePtr filename = pcopy(toBytePtr(Mem.xmalloc(strlen(loc.filename) + 7 + 12 + 1)));
+                BytePtr filename = pcopy((BytePtr)Mem.xmalloc(strlen(loc.filename) + 7 + 12 + 1));
                 sprintf(filename, new BytePtr("%s-mixin-%d"), loc.filename, loc.linnum);
                 this.scanloc.filename = pcopy(filename);
             }
@@ -9808,7 +9808,7 @@ public class parse {
                 int len = ((endPtr.value.minus(begPtr)));
                 if (len > 0)
                 {
-                    docline = pcopy((toBytePtr(Mem.xmalloc(len + 2))));
+                    docline = pcopy(((BytePtr)Mem.xmalloc(len + 2)));
                     memcpy((BytePtr)(docline), (begPtr), len);
                     docline.set(len, (byte)10);
                     docline.set((len + 1), (byte)0);
@@ -14217,7 +14217,7 @@ public class parse {
                                     int len1 = len;
                                     int len2 = this.token.len;
                                     len = len1 + len2;
-                                    BytePtr s2 = pcopy(toBytePtr(Mem.xmalloc(len)));
+                                    BytePtr s2 = pcopy((BytePtr)Mem.xmalloc(len));
                                     memcpy((BytePtr)(s2), (s_2), (len1));
                                     memcpy((BytePtr)((s2.plus(len1))), (this.token.ustring), (len2));
                                     s_2 = pcopy(s2);

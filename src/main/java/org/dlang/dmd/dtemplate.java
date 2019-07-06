@@ -2274,7 +2274,7 @@ public class dtemplate {
                     TemplateParameter tp = (this.parameters).get(i);
                     if (tp.dependent)
                         break;
-                    RootObject p = ;
+                    RootObject p = (RootObject)tp.dummyArg();
                     if (!(p != null))
                         break;
                     (tiargs).push(p);

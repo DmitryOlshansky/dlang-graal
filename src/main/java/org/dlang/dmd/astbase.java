@@ -5927,14 +5927,14 @@ public class astbase {
 
             public  StringExp(Loc loc, Object string, int len) {
                 super(loc, TOK.string_, 34);
-                this.string = pcopy((toBytePtr(string)));
+                this.string = pcopy(((BytePtr)string));
                 this.len = len;
                 this.sz = (byte)1;
             }
 
             public  StringExp(Loc loc, Object string, int len, byte postfix) {
                 super(loc, TOK.string_, 34);
-                this.string = pcopy((toBytePtr(string)));
+                this.string = pcopy(((BytePtr)string));
                 this.len = len;
                 this.postfix = postfix;
                 this.sz = (byte)1;
@@ -5971,7 +5971,7 @@ public class astbase {
 
             public  ByteSlice toStringz() {
                 int nbytes = this.len * (this.sz & 0xFF);
-                BytePtr s = pcopy(toBytePtr(Mem.xmalloc(nbytes + (this.sz & 0xFF))));
+                BytePtr s = pcopy((BytePtr)Mem.xmalloc(nbytes + (this.sz & 0xFF)));
                 this.writeTo(s, true, 0);
                 return s.slice(0,nbytes);
             }

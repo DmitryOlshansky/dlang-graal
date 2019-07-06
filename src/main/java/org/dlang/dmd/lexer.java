@@ -2319,7 +2319,7 @@ public class lexer {
                         len1 += 1;
                         insertNewLine = 1;
                     }
-                    BytePtr p = pcopy(toBytePtr(Mem.xmalloc(len1 + newParagraphSize + len2 + 1)));
+                    BytePtr p = pcopy((BytePtr)Mem.xmalloc(len1 + newParagraphSize + len2 + 1));
                     memcpy((BytePtr)(p), (c1), (len1 - insertNewLine));
                     if ((insertNewLine) != 0)
                         p.set((len1 - 1), (byte)10);

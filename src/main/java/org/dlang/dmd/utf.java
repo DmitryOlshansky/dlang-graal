@@ -125,13 +125,13 @@ public class utf {
 
     public static void utf_encode(int sz, Object s, int c) {
         if (sz == 1)
-            utf_encodeChar(toBytePtr(s), c);
+            utf_encodeChar((BytePtr)s, c);
         else if (sz == 2)
-            utf_encodeWchar(toCharPtr(s), c);
+            utf_encodeWchar((CharPtr)s, c);
         else
         {
             assert(sz == 4);
-            (toIntPtr(s)).set(0, c);
+            ((IntPtr)s).set(0, c);
         }
     }
 

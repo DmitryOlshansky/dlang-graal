@@ -1876,7 +1876,7 @@ public class mtype {
                 ByteSlice slice = buf.peekSlice().copy();
                 ByteSlice namebuf = (byte)255;
                 int namelen = 31 + slice.getLength() + 1;
-                BytePtr name = pcopy(namelen <= 128 ? ptr(namebuf) : toBytePtr(malloc(namelen)));
+                BytePtr name = pcopy(namelen <= 128 ? ptr(namebuf) : (BytePtr)malloc(namelen));
                 assert(name != null);
                 int length = sprintf(name, new BytePtr("_D%lluTypeInfo_%.*s6__initZ"), (long)(9 + slice.getLength()), slice.getLength(), toBytePtr(slice));
                 assert((0 < length && length < namelen));

@@ -276,6 +276,8 @@ fun ptr(v: IntRef) = IntRefPtr(v)
 
 fun ptr(v: ByteSlice) = v.ptr()
 
+fun<T> ptr(arr: Array<T>) = RawPtr<T>(arr)
+
 fun<T> ptr(v: Slice<T>) = v.ptr()
 
 fun exit(code: Int): Nothing = exitProcess(code)
@@ -314,7 +316,6 @@ fun vsprintf(dest: BytePtr, fmt: BytePtr, args: Slice<Any>): Int {
 }
 
 fun fprintf(io: StdIo, fmt: BytePtr, vararg args: Any?) = fprintf(io, fmt.slice(0, strlen(fmt)), *args)
-}
 
 fun fprintf(io: StdIo, fmt: ByteSlice, vararg args: Any?) {
     val outbuf = OutBuffer()

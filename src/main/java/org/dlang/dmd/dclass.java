@@ -86,7 +86,7 @@ public class dclass {
         }
 
         public  void copyBaseInterfaces(DArray<BaseClass> vtblInterfaces) {
-            BaseClass bc = (BaseClass)Mem.xcalloc(this.sym.interfaces.getLength(), 36);
+            BaseClass bc = ptr(new BaseClass[36u]);
             this.baseInterfaces = bc.slice(0,this.sym.interfaces.getLength()).copy();
             {
                 int i = 0;

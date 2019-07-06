@@ -2628,8 +2628,8 @@ public class statementsem {
                 {
                     Function2<Object,Object,Integer> sort_compare = new Function2<Object,Object,Integer>(){
                         public Integer invoke(Object x, Object y){
-                            CaseStatement ox = toPtr<CaseStatement>(x).get();
-                            CaseStatement oy = toPtr<CaseStatement>(y).get();
+                            CaseStatement ox = (Ptr<CaseStatement>)x.get();
+                            CaseStatement oy = (Ptr<CaseStatement>)y.get();
                             StringExp se1 = ox.exp.isStringExp();
                             StringExp se2 = oy.exp.isStringExp();
                             return (se1 != null && se2 != null) ? se1.comparex(se2) : 0;

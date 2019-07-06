@@ -88,7 +88,7 @@ class RawPtr<T>(val data: Array<T?>, var offset: Int) : Ptr<T>() {
 
     override fun get(): T? = data[offset]
 
-    fun slice(start: Int, end: Int) = Slice(data, start + offset, end + offset)
+    fun slice(start: Int, end: Int) = Slice<T>(data, start + offset, end + offset)
 
     override fun equals(other: Any?): Boolean =
         when (other) {
