@@ -48,7 +48,7 @@ public class dimport {
                     {
                         return aliasId_ref.value;
                     }
-                    else if ((packages_ref.value != null && ((packages_ref.value).length) != 0))
+                    else if ((packages_ref.value != null) && ((packages_ref.value).length != 0))
                     {
                         return (packages_ref.value).get(0);
                     }
@@ -68,16 +68,16 @@ public class dimport {
         }
 
         public  void addAlias(Identifier name, Identifier _alias) {
-            if ((this.isstatic) != 0)
+            if (this.isstatic != 0)
                 this.error(new BytePtr("cannot have an import bind list"));
-            if (!(this.aliasId != null))
+            if (this.aliasId == null)
                 this.ident = null;
             this.names.push(name);
             this.aliases.push(_alias);
         }
 
         public  BytePtr kind() {
-            return (this.isstatic) != 0 ? new BytePtr("static import") : new BytePtr("import");
+            return this.isstatic != 0 ? new BytePtr("static import") : new BytePtr("import");
         }
 
         public  Prot prot() {
@@ -85,11 +85,11 @@ public class dimport {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             Import si = new Import(this.loc, this.packages, this.id, this.aliasId, this.isstatic);
             {
                 int i = 0;
-                for (; i < this.names.length;i++){
+                for (; (i < this.names.length);i++){
                     si.addAlias(this.names.get(i), this.aliases.get(i));
                 }
             }
@@ -112,16 +112,16 @@ public class dimport {
                     }
                     else {
                         dmodule.Package p = s.isPackage();
-                        if (p != null)
+                        if ((p) != null)
                         {
-                            if (p.isPkgMod == PKG.unknown)
+                            if ((p.isPkgMod == PKG.unknown))
                             {
                                 this.mod = dmodule.Module.load(this.loc, this.packages, this.id);
-                                if (!(this.mod != null))
+                                if (this.mod == null)
                                     p.isPkgMod = PKG.package_;
                                 else
                                 {
-                                    assert((this.mod.isPackageFile ? 1 : 0) == ((p.isPkgMod == PKG.module_) ? 1 : 0));
+                                    assert(((this.mod.isPackageFile ? 1 : 0) == ((p.isPkgMod == PKG.module_) ? 1 : 0)));
                                     if (this.mod.isPackageFile)
                                         this.mod.tag = p.tag;
                                 }
@@ -130,7 +130,7 @@ public class dimport {
                             {
                                 this.mod = p.isPackageMod();
                             }
-                            if (!(this.mod != null))
+                            if (this.mod == null)
                             {
                                 error(this.loc, new BytePtr("can only import from a module, not from package `%s.%s`"), p.toPrettyChars(false), this.id.toChars());
                             }
@@ -146,7 +146,7 @@ public class dimport {
                     }
                 }
             }
-            if (!(this.mod != null))
+            if (this.mod == null)
             {
                 this.mod = dmodule.Module.load(this.loc, this.packages, this.id);
                 if (this.mod != null)
@@ -154,9 +154,9 @@ public class dimport {
                     dst.insert(this.id, this.mod);
                 }
             }
-            if ((this.mod != null && !(this.mod.importedFrom != null)))
+            if ((this.mod != null) && (this.mod.importedFrom == null))
                 this.mod.importedFrom = sc != null ? (sc)._module.importedFrom : dmodule.Module.rootModule;
-            if (!(this.pkg != null))
+            if (this.pkg == null)
                 this.pkg = this.mod;
             return global.errors != errors;
         }
@@ -165,23 +165,23 @@ public class dimport {
             if (this.mod != null)
                 return ;
             this.load(sc);
-            if (!(this.mod != null))
+            if (this.mod == null)
                 return ;
             this.mod.importAll(null);
-            if ((this.mod.md != null && (this.mod.md).isdeprecated))
+            if ((this.mod.md != null) && (this.mod.md).isdeprecated)
             {
                 Expression msg = (this.mod.md).msg;
                 {
                     StringExp se = msg != null ? msg.toStringExp() : null;
-                    if (se != null)
+                    if ((se) != null)
                         this.mod.deprecation(this.loc, new BytePtr("is deprecated - %s"), se.string);
                     else
                         this.mod.deprecation(this.loc, new BytePtr("is deprecated"));
                 }
             }
-            if (((sc).explicitProtection) != 0)
+            if ((sc).explicitProtection != 0)
                 this.protection = (sc).protection.copy();
-            if (((!((this.isstatic) != 0) && !(this.aliasId != null)) && !((this.names.length) != 0)))
+            if ((this.isstatic == 0) && (this.aliasId == null) && (this.names.length == 0))
                 (sc).scopesym.importScope(this.mod, this.protection);
         }
 
@@ -192,17 +192,17 @@ public class dimport {
         }
 
         public  void addMember(Scope sc, ScopeDsymbol sd) {
-            if (this.names.length == 0)
+            if ((this.names.length == 0))
                 this.addMember(sc, sd);
                 return ;
             if (this.aliasId != null)
                 this.addMember(sc, sd);
             {
                 int i = 0;
-                for (; i < this.names.length;i++){
+                for (; (i < this.names.length);i++){
                     Identifier name = this.names.get(i);
                     Identifier _alias = this.aliases.get(i);
-                    if (!(_alias != null))
+                    if (_alias == null)
                         _alias = name;
                     TypeIdentifier tname = new TypeIdentifier(this.loc, name);
                     AliasDeclaration ad = new AliasDeclaration(this.loc, _alias, tname);
@@ -215,16 +215,16 @@ public class dimport {
 
         public  void setScope(Scope sc) {
             this.setScope(sc);
-            if ((this.aliasdecls.length) != 0)
+            if (this.aliasdecls.length != 0)
             {
-                if (!(this.mod != null))
+                if (this.mod == null)
                     this.importAll(sc);
                 sc = (sc).push(this.mod);
                 (sc).protection = this.protection.copy();
                 {
                     Slice<AliasDeclaration> __r929 = this.aliasdecls.opSlice().copy();
                     int __key930 = 0;
-                    for (; __key930 < __r929.getLength();__key930 += 1) {
+                    for (; (__key930 < __r929.getLength());__key930 += 1) {
                         AliasDeclaration ad = __r929.get(__key930);
                         ad.setScope(sc);
                     }
@@ -234,7 +234,7 @@ public class dimport {
         }
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
-            if (!(this.pkg != null))
+            if (this.pkg == null)
             {
                 this.load(null);
                 this.mod.importAll(null);
@@ -244,9 +244,9 @@ public class dimport {
         }
 
         public  boolean overloadInsert(Dsymbol s) {
-            assert((this.ident != null && pequals(this.ident, s.ident)));
+            assert((this.ident != null) && (pequals(this.ident, s.ident)));
             Import imp = null;
-            if (((!(this.aliasId != null) && (imp = s.isImport()) != null) && !(imp.aliasId != null)))
+            if ((this.aliasId == null) && ((imp = s.isImport()) != null) && (imp.aliasId == null))
                 return true;
             else
                 return false;

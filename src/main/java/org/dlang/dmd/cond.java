@@ -83,7 +83,7 @@ public class cond {
         public boolean needExpansion = false;
         public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
             super();
-            assert(!(!(aggrfe != null)) ^ !(!(rangefe != null)));
+            assert(!aggrfe == null ^ !rangefe == null);
             this.loc = loc.copy();
             this.aggrfe = aggrfe;
             this.rangefe = rangefe;
@@ -101,14 +101,14 @@ public class cond {
             sc = (sc).endCTFE();
             el = el.optimize(0, false);
             el = el.ctfeInterpret();
-            if ((el.op & 0xFF) == 135)
+            if (((el.op & 0xFF) == 135))
             {
                 long length = el.toInteger();
                 DArray<Expression> es = new DArray<Expression>();
                 {
                     long __key819 = 0L;
                     long __limit820 = length;
-                    for (; __key819 < __limit820;__key819 += 1L) {
+                    for (; (__key819 < __limit820);__key819 += 1L) {
                         long i = __key819;
                         IntegerExp index = new IntegerExp(this.loc, i, Type.tsize_t);
                         IndexExp value = new IndexExp(aggr.loc, aggr, index);
@@ -141,7 +141,7 @@ public class cond {
             }
             else
             {
-                assert((this.rangefe != null && (parameters).length == 1));
+                assert((this.rangefe != null) && ((parameters).length == 1));
                 return new ForeachRangeStatement(loc, this.rangefe.op, (parameters).get(0), this.rangefe.lwr.syntaxCopy(), this.rangefe.upr.syntaxCopy(), s, loc);
             }
         }
@@ -170,12 +170,12 @@ public class cond {
             {
                 int __key821 = 0;
                 int __limit822 = nvars;
-                for (; __key821 < __limit822;__key821 += 1) {
+                for (; (__key821 < __limit822);__key821 += 1) {
                     int i = __key821;
                     {
                         Slice<DArray<Parameter>> __r823 = pparams.copy();
                         int __key824 = 0;
-                        for (; __key824 < __r823.getLength();__key824 += 1) {
+                        for (; (__key824 < __r823.getLength());__key824 += 1) {
                             DArray<Parameter> params = __r823.get(__key824);
                             Parameter p = this.aggrfe != null ? (this.aggrfe.parameters).get(i) : this.rangefe.prm;
                             (params).push(new Parameter(p.storageClass, p.type, p.ident, null, null));
@@ -185,12 +185,12 @@ public class cond {
             }
             Slice<Expression> res = null;
             TypeStruct tplty = null;
-            if (nvars == 1)
+            if ((nvars == 1))
             {
                 {
                     int __key825 = 0;
                     int __limit826 = 2;
-                    for (; __key825 < __limit826;__key825 += 1) {
+                    for (; (__key825 < __limit826);__key825 += 1) {
                         int i = __key825;
                         res.set((i), new IdentifierExp(aloc, (pparams.get(i)).get(0).ident));
                     }
@@ -201,20 +201,20 @@ public class cond {
                 {
                     int __key827 = 0;
                     int __limit828 = 2;
-                    for (; __key827 < __limit828;__key827 += 1) {
+                    for (; (__key827 < __limit828);__key827 += 1) {
                         int i = __key827;
                         DArray<Expression> e = new DArray<Expression>((pparams.get(0)).length);
                         {
                             Slice<Expression> __r830 = (e).opSlice().copy();
                             int __key829 = 0;
-                            for (; __key829 < __r830.getLength();__key829 += 1) {
+                            for (; (__key829 < __r830.getLength());__key829 += 1) {
                                 Expression elem = __r830.get(__key829);
                                 int j = __key829;
                                 Parameter p = (pparams.get(i)).get(j);
                                 elem = new IdentifierExp(aloc, p.ident);
                             }
                         }
-                        if (!(tplty != null))
+                        if (tplty == null)
                         {
                             tplty = this.createTupleType(aloc, e, sc);
                         }
@@ -259,7 +259,7 @@ public class cond {
             sc = (sc).endCTFE();
             aggr = aggr.optimize(0, false);
             aggr = aggr.ctfeInterpret();
-            assert(!(!(this.aggrfe != null)) ^ !(!(this.rangefe != null)));
+            assert(!this.aggrfe == null ^ !this.rangefe == null);
             this.aggrfe = new ForeachStatement(this.loc, TOK.foreach_, pparams.get(2), aggr, this.aggrfe != null ? this.aggrfe._body : this.rangefe._body, this.aggrfe != null ? this.aggrfe.endloc : this.rangefe.endloc);
             this.rangefe = null;
             this.lowerArrayAggregate(sc);
@@ -274,18 +274,18 @@ public class cond {
                 sc = (sc).endCTFE();
                 this.aggrfe.aggr = this.aggrfe.aggr.optimize(0, false);
                 Type tab = this.aggrfe.aggr.type.toBasetype();
-                if ((tab.ty & 0xFF) != ENUMTY.Ttuple)
+                if (((tab.ty & 0xFF) != ENUMTY.Ttuple))
                 {
                     this.aggrfe.aggr = this.aggrfe.aggr.ctfeInterpret();
                 }
             }
-            if ((this.aggrfe != null && (this.aggrfe.aggr.type.toBasetype().ty & 0xFF) == ENUMTY.Terror))
+            if ((this.aggrfe != null) && ((this.aggrfe.aggr.type.toBasetype().ty & 0xFF) == ENUMTY.Terror))
             {
                 return ;
             }
-            if (!(this.ready()))
+            if (!this.ready())
             {
-                if ((this.aggrfe != null && (this.aggrfe.aggr.type.toBasetype().ty & 0xFF) == ENUMTY.Tarray))
+                if ((this.aggrfe != null) && ((this.aggrfe.aggr.type.toBasetype().ty & 0xFF) == ENUMTY.Tarray))
                 {
                     this.lowerArrayAggregate(sc);
                 }
@@ -297,7 +297,7 @@ public class cond {
         }
 
         public  boolean ready() {
-            return (((this.aggrfe != null && this.aggrfe.aggr != null) && this.aggrfe.aggr.type != null) && (this.aggrfe.aggr.type.toBasetype().ty & 0xFF) == ENUMTY.Ttuple);
+            return (this.aggrfe != null) && (this.aggrfe.aggr != null) && (this.aggrfe.aggr.type != null) && ((this.aggrfe.aggr.type.toBasetype().ty & 0xFF) == ENUMTY.Ttuple);
         }
 
 
@@ -353,7 +353,7 @@ public class cond {
         }
 
         public  int include(Scope sc) {
-            if (this.inc == Include.notComputed)
+            if ((this.inc == Include.notComputed))
             {
                 this.inc = Include.no;
                 boolean definedInModule = false;
@@ -373,9 +373,9 @@ public class cond {
                         (this.mod.debugidsNot).push(this.ident);
                     }
                 }
-                else if ((this.level <= global.params.debuglevel || this.level <= this.mod.debuglevel))
+                else if ((this.level <= global.params.debuglevel) || (this.level <= this.mod.debuglevel))
                     this.inc = Include.yes;
-                if (!(definedInModule))
+                if (!definedInModule)
                     printDepsConditional(sc, this, new ByteSlice("depsDebug "));
             }
             return ((this.inc == Include.yes) ? 1 : 0);
@@ -508,7 +508,7 @@ public class cond {
                 case 17:
                     return true;
                 default:
-                return (ident.getLength() >= 2 && __equals(ident.slice(0,2), new ByteSlice("D_")));
+                return (ident.getLength() >= 2) && __equals(ident.slice(0,2), new ByteSlice("D_"));
             }
         }
 
@@ -540,7 +540,7 @@ public class cond {
         }
 
         public  int include(Scope sc) {
-            if (this.inc == Include.notComputed)
+            if ((this.inc == Include.notComputed))
             {
                 this.inc = Include.no;
                 boolean definedInModule = false;
@@ -560,9 +560,9 @@ public class cond {
                         (this.mod.versionidsNot).push(this.ident);
                     }
                 }
-                else if ((this.level <= global.params.versionlevel || this.level <= this.mod.versionlevel))
+                else if ((this.level <= global.params.versionlevel) || (this.level <= this.mod.versionlevel))
                     this.inc = Include.yes;
-                if ((!(definedInModule) && (!(this.ident != null) || ((!(isReserved(this.ident.asString())) && !pequals(this.ident, Id._unittest)) && !pequals(this.ident, Id._assert)))))
+                if (!definedInModule && (this.ident == null) || !isReserved(this.ident.asString()) && (!pequals(this.ident, Id._unittest)) && (!pequals(this.ident, Id._assert)))
                 {
                     printDepsConditional(sc, this, new ByteSlice("depsVersion "));
                 }
@@ -610,12 +610,12 @@ public class cond {
         public  int include(Scope sc) {
             Function0<Integer> errorReturn = new Function0<Integer>(){
                 public Integer invoke(){
-                    if (!((global.gag) != 0))
+                    if (global.gag == 0)
                         inc = Include.no;
                     return 0;
                 }
             };
-            if (this.inc == Include.notComputed)
+            if ((this.inc == Include.notComputed))
             {
                 if (sc == null)
                 {
@@ -625,7 +625,7 @@ public class cond {
                 }
                 Ref<Boolean> errors = ref(false);
                 boolean result = evalStaticCondition(sc, this.exp, this.exp, errors);
-                if (this.inc != Include.notComputed)
+                if ((this.inc != Include.notComputed))
                     return ((this.inc == Include.yes) ? 1 : 0);
                 if (errors.value)
                     return errorReturn.invoke();
@@ -662,9 +662,9 @@ public class cond {
             {
                 Slice<Identifier> __r833 = (ids).opSlice().copy();
                 int __key834 = 0;
-                for (; __key834 < __r833.getLength();__key834 += 1) {
+                for (; (__key834 < __r833.getLength());__key834 += 1) {
                     Identifier id = __r833.get(__key834);
-                    if (pequals(id, ident))
+                    if ((pequals(id, ident)))
                         return true;
                 }
             }
@@ -673,11 +673,11 @@ public class cond {
     }
 
     public static void printDepsConditional(Scope sc, DVCondition condition, ByteSlice depType) {
-        if ((global.params.moduleDeps == null || global.params.moduleDepsFile.getLength() != 0))
+        if ((global.params.moduleDeps == null) || (global.params.moduleDepsFile.getLength() != 0))
             return ;
         OutBuffer ob = global.params.moduleDeps;
         dmodule.Module imod = sc != null ? (sc).instantiatingModule() : condition.mod;
-        if (!(imod != null))
+        if (imod == null)
             return ;
         (ob).writestring(depType);
         (ob).writestring(imod.toPrettyChars(false));

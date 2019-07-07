@@ -292,7 +292,7 @@ public class astbase {
             public  void addComment(BytePtr comment) {
                 if (this.comment == null)
                     this.comment = pcopy(comment);
-                else if ((comment != null && strcmp(comment, this.comment) != 0))
+                else if ((comment != null) && (strcmp(comment, this.comment) != 0))
                     this.comment = pcopy(Lexer.combineComments(this.comment, comment, true));
             }
 
@@ -309,29 +309,29 @@ public class astbase {
                 Dsymbol s = null;
                 {
                     int i = 0;
-                    for (; i < members.length;i++){
+                    for (; (i < members.length);i++){
                         Dsymbol sx = members.get(i);
                         boolean x = sx.oneMember(ps, ident);
-                        if (!(x))
+                        if (!x)
                         {
-                            assert(ps.get() == null);
+                            assert((ps.get() == null));
                             return false;
                         }
                         if (ps.get() != null)
                         {
                             assert(ident != null);
-                            if ((!((ps.get()).ident != null) || !((ps.get()).ident.equals(ident))))
+                            if (((ps.get()).ident == null) || !(ps.get()).ident.equals(ident))
                                 continue;
-                            if (!(s != null))
+                            if (s == null)
                                 s = ps.get();
-                            else if ((s.isOverloadable() && (ps.get()).isOverloadable()))
+                            else if (s.isOverloadable() && (ps.get()).isOverloadable())
                             {
                                 FuncDeclaration f1 = s.isFuncDeclaration();
                                 FuncDeclaration f2 = (ps.get()).isFuncDeclaration();
-                                if ((f1 != null && f2 != null))
+                                if ((f1 != null) && (f2 != null))
                                 {
-                                    for (; !pequals(f1, f2);f1 = f1.overnext0){
-                                        if (f1.overnext0 == null)
+                                    for (; (!pequals(f1, f2));f1 = f1.overnext0){
+                                        if ((f1.overnext0 == null))
                                         {
                                             f1.overnext0 = f2;
                                             break;
@@ -526,7 +526,7 @@ public class astbase {
                 {
                     this.ident = aliasId;
                 }
-                else if ((packages != null && ((packages).length) != 0))
+                else if ((packages != null) && ((packages).length != 0))
                 {
                     this.ident = (packages).get(0);
                 }
@@ -537,9 +537,9 @@ public class astbase {
             }
 
             public  void addAlias(Identifier name, Identifier _alias) {
-                if ((this.isstatic) != 0)
+                if (this.isstatic != 0)
                     this.error(new BytePtr("cannot have an import bind list"));
-                if (!(this.aliasId != null))
+                if (this.aliasId == null)
                     this.ident = null;
                 this.names.push(name);
                 this.aliases.push(_alias);
@@ -777,7 +777,7 @@ public class astbase {
                 }
                 this.loc = loc.copy();
                 this.endloc = endloc.copy();
-                this.inferRetType = (type != null && type.nextOf() == null);
+                this.inferRetType = (type != null) && (type.nextOf() == null);
             }
 
             public  FuncLiteralDeclaration isFuncLiteralDeclaration() {
@@ -1488,10 +1488,10 @@ public class astbase {
                 this.ismixin = ismixin;
                 this.isstatic = true;
                 this.protection = new Prot(Prot.Kind.undefined, null).copy();
-                if ((this.members != null && this.ident != null))
+                if ((this.members != null) && (this.ident != null))
                 {
                     Ref<Dsymbol> s = ref(null);
-                    if ((Dsymbol.oneMembers(this.members, ptr(s), this.ident) && s.value != null))
+                    if (Dsymbol.oneMembers(this.members, ptr(s), this.ident) && (s.value != null))
                     {
                         this.onemember = s.value;
                         s.value.parent = this;
@@ -1570,7 +1570,7 @@ public class astbase {
                     (a).setDim((objs).length);
                     {
                         int i = 0;
-                        for (; i < (objs).length;i++) {
+                        for (; (i < (objs).length);i++) {
                             a.set(i, this.objectSyntaxCopy((objs).get(i)));
                         }
                     }
@@ -1579,16 +1579,16 @@ public class astbase {
             }
 
             public  RootObject objectSyntaxCopy(RootObject o) {
-                if (!(o != null))
+                if (o == null)
                     return null;
                 {
                     Type t = isType(o);
-                    if (t != null)
+                    if ((t) != null)
                         return t.syntaxCopy();
                 }
                 {
                     Expression e = isExpression(o);
-                    if (e != null)
+                    if ((e) != null)
                         return e.syntaxCopy();
                 }
                 return o;
@@ -1598,7 +1598,7 @@ public class astbase {
                 TemplateInstance ti = s != null ? (TemplateInstance)s : new TemplateInstance(this.loc, this.name, null);
                 ti.tiargs = this.arraySyntaxCopy(this.tiargs);
                 TemplateDeclaration td = null;
-                if (((this.inst != null && this.tempdecl != null) && (td = this.tempdecl.isTemplateDeclaration()) != null))
+                if ((this.inst != null) && (this.tempdecl != null) && ((td = this.tempdecl.isTemplateDeclaration()) != null))
                     td.syntaxCopy(ti);
                 else
                     this.syntaxCopy(ti);
@@ -1699,9 +1699,9 @@ public class astbase {
 
             public static DArray<Expression> concat(DArray<Expression> udas1, DArray<Expression> udas2) {
                 DArray<Expression> udas = null;
-                if ((udas1 == null || (udas1).length == 0))
+                if ((udas1 == null) || ((udas1).length == 0))
                     udas = udas2;
-                else if ((udas2 == null || (udas2).length == 0))
+                else if ((udas2 == null) || ((udas2).length == 0))
                     udas = udas1;
                 else
                 {
@@ -2185,7 +2185,7 @@ public class astbase {
                 this.type = new TypeStruct(this);
                 if (inObject)
                 {
-                    if ((pequals(id, Id.ModuleInfo) && !(Module.moduleinfo != null)))
+                    if ((pequals(id, Id.ModuleInfo)) && (Module.moduleinfo == null))
                         Module.moduleinfo = this;
                 }
             }
@@ -2254,7 +2254,10 @@ public class astbase {
             public DArray<BaseClass> baseclasses;
             public int baseok;
             public  ClassDeclaration(Loc loc, Identifier id, DArray<BaseClass> baseclasses, DArray<Dsymbol> members, boolean inObject) {
-                super(loc, id == null ? Identifier.generateId(new BytePtr("__anonclass")) : id);
+                if (id == null)
+                    id = Identifier.generateId(new BytePtr("__anonclass"));
+                assert(id != null);
+                super(loc, id);
                 if (baseclasses != null)
                 {
                     this.baseclasses = baseclasses;
@@ -2265,138 +2268,138 @@ public class astbase {
                 this.type = new TypeClass(this);
                 if (id != null)
                 {
-                    if (((pequals(id, Id.__sizeof) || pequals(id, Id.__xalignof)) || pequals(id, Id._mangleof)))
+                    if ((pequals(id, Id.__sizeof)) || (pequals(id, Id.__xalignof)) || (pequals(id, Id._mangleof)))
                         this.error(new BytePtr("illegal class name"));
-                    if ((id.toChars().get(0) & 0xFF) == 84)
+                    if (((id.toChars().get(0) & 0xFF) == 84))
                     {
-                        if (pequals(id, Id.TypeInfo))
+                        if ((pequals(id, Id.TypeInfo)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.dtypeinfo = this;
                         }
-                        if (pequals(id, Id.TypeInfo_Class))
+                        if ((pequals(id, Id.TypeInfo_Class)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfoclass = this;
                         }
-                        if (pequals(id, Id.TypeInfo_Interface))
+                        if ((pequals(id, Id.TypeInfo_Interface)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfointerface = this;
                         }
-                        if (pequals(id, Id.TypeInfo_Struct))
+                        if ((pequals(id, Id.TypeInfo_Struct)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfostruct = this;
                         }
-                        if (pequals(id, Id.TypeInfo_Pointer))
+                        if ((pequals(id, Id.TypeInfo_Pointer)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfopointer = this;
                         }
-                        if (pequals(id, Id.TypeInfo_Array))
+                        if ((pequals(id, Id.TypeInfo_Array)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfoarray = this;
                         }
-                        if (pequals(id, Id.TypeInfo_StaticArray))
+                        if ((pequals(id, Id.TypeInfo_StaticArray)))
                         {
                             Type.typeinfostaticarray = this;
                         }
-                        if (pequals(id, Id.TypeInfo_AssociativeArray))
+                        if ((pequals(id, Id.TypeInfo_AssociativeArray)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfoassociativearray = this;
                         }
-                        if (pequals(id, Id.TypeInfo_Enum))
+                        if ((pequals(id, Id.TypeInfo_Enum)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfoenum = this;
                         }
-                        if (pequals(id, Id.TypeInfo_Function))
+                        if ((pequals(id, Id.TypeInfo_Function)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfofunction = this;
                         }
-                        if (pequals(id, Id.TypeInfo_Delegate))
+                        if ((pequals(id, Id.TypeInfo_Delegate)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfodelegate = this;
                         }
-                        if (pequals(id, Id.TypeInfo_Tuple))
+                        if ((pequals(id, Id.TypeInfo_Tuple)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfotypelist = this;
                         }
-                        if (pequals(id, Id.TypeInfo_Const))
+                        if ((pequals(id, Id.TypeInfo_Const)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfoconst = this;
                         }
-                        if (pequals(id, Id.TypeInfo_Invariant))
+                        if ((pequals(id, Id.TypeInfo_Invariant)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfoinvariant = this;
                         }
-                        if (pequals(id, Id.TypeInfo_Shared))
+                        if ((pequals(id, Id.TypeInfo_Shared)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfoshared = this;
                         }
-                        if (pequals(id, Id.TypeInfo_Wild))
+                        if ((pequals(id, Id.TypeInfo_Wild)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfowild = this;
                         }
-                        if (pequals(id, Id.TypeInfo_Vector))
+                        if ((pequals(id, Id.TypeInfo_Vector)))
                         {
-                            if (!(inObject))
+                            if (!inObject)
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
                             Type.typeinfovector = this;
                         }
                     }
-                    if (pequals(id, Id.Object))
+                    if ((pequals(id, Id.Object)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
                         object = this;
                     }
-                    if (pequals(id, Id.Throwable))
+                    if ((pequals(id, Id.Throwable)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
                         throwable = this;
                     }
-                    if (pequals(id, Id.Exception))
+                    if ((pequals(id, Id.Exception)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
                         exception = this;
                     }
-                    if (pequals(id, Id.Error))
+                    if ((pequals(id, Id.Error)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
                         errorException = this;
                     }
-                    if (pequals(id, Id.cpp_type_info_ptr))
+                    if ((pequals(id, Id.cpp_type_info_ptr)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
                         cpp_type_info_ptr = this;
                     }
@@ -2466,7 +2469,7 @@ public class astbase {
         {
             public TypeQualified tqual;
             public  TemplateMixin(Loc loc, Identifier ident, TypeQualified tqual, DArray<RootObject> tiargs) {
-                super(loc, (tqual.idents.length) != 0 ? (Identifier)tqual.idents.get(tqual.idents.length - 1) : ((TypeIdentifier)tqual).ident, tiargs != null ? tiargs : new DArray<RootObject>());
+                super(loc, tqual.idents.length != 0 ? (Identifier)tqual.idents.get(tqual.idents.length - 1) : ((TypeIdentifier)tqual).ident, tiargs != null ? tiargs : new DArray<RootObject>());
                 this.ident = ident;
                 this.tqual = tqual;
             }
@@ -2553,7 +2556,7 @@ public class astbase {
                 Ref<Parameter> param = ref(null);
                 Function2<Integer,Parameter,Integer> getNthParamDg = new Function2<Integer,Parameter,Integer>(){
                     public Integer invoke(Integer n, Parameter p){
-                        if (n == nth_ref.value)
+                        if ((n == nth_ref.value))
                         {
                             param.value = p;
                             return 1;
@@ -2562,7 +2565,7 @@ public class astbase {
                     }
                 };
                 int res = _foreach(parameters, getNthParamDg, null);
-                return (res) != 0 ? param.value : null;
+                return res != 0 ? param.value : null;
             }
 
             public static int _foreach(DArray<Parameter> parameters, Function2<Integer,Parameter,Integer> dg, IntPtr pn) {
@@ -2574,18 +2577,18 @@ public class astbase {
                 {
                     int __key126 = 0;
                     int __limit127 = (parameters).length;
-                    for (; __key126 < __limit127;__key126 += 1) {
+                    for (; (__key126 < __limit127);__key126 += 1) {
                         int i = __key126;
                         Parameter p = (parameters).get(i);
                         Type t = p.type.toBasetype();
-                        if ((t.ty & 0xFF) == ENUMTY.Ttuple)
+                        if (((t.ty & 0xFF) == ENUMTY.Ttuple))
                         {
                             TypeTuple tu = (TypeTuple)t;
                             result = _foreach(tu.arguments, dg, ptr(n));
                         }
                         else
                             result = dg.invoke(n.value++, p);
-                        if ((result) != 0)
+                        if (result != 0)
                             break;
                     }
                 }
@@ -2610,7 +2613,7 @@ public class astbase {
                     (params).setDim((parameters).length);
                     {
                         int i = 0;
-                        for (; i < (params).length;i++) {
+                        for (; (i < (params).length);i++) {
                             params.set(i, (parameters).get(i).syntaxCopy());
                         }
                     }
@@ -3545,7 +3548,7 @@ public class astbase {
                 {
                     Slice<Statement> __r128 = sts.copy();
                     int __key129 = 0;
-                    for (; __key129 < __r128.getLength();__key129 += 1) {
+                    for (; (__key129 < __r128.getLength());__key129 += 1) {
                         Statement s = __r128.get(__key129);
                         (this.statements).push(s);
                     }
@@ -3723,7 +3726,7 @@ public class astbase {
                 stringtable._init(14000);
                 {
                     int i = 0;
-                    for (; (astbase._initbasetab.get(i) & 0xFF) != ENUMTY.Terror;i++){
+                    for (; ((astbase._initbasetab.get(i) & 0xFF) != ENUMTY.Terror);i++){
                         Type t = new TypeBasic(astbase._initbasetab.get(i));
                         t = t.merge();
                         basic.set(((astbase._initbasetab.get(i) & 0xFF)), t);
@@ -3771,12 +3774,12 @@ public class astbase {
             }
 
             public  Type pointerTo() {
-                if ((this.ty & 0xFF) == ENUMTY.Terror)
+                if (((this.ty & 0xFF) == ENUMTY.Terror))
                     return this;
-                if (!(this.pto != null))
+                if (this.pto == null)
                 {
                     Type t = new TypePointer(this);
-                    if ((this.ty & 0xFF) == ENUMTY.Tfunction)
+                    if (((this.ty & 0xFF) == ENUMTY.Tfunction))
                     {
                         t.deco = pcopy(t.merge().deco);
                         this.pto = t;
@@ -3788,9 +3791,9 @@ public class astbase {
             }
 
             public  Type arrayOf() {
-                if ((this.ty & 0xFF) == ENUMTY.Terror)
+                if (((this.ty & 0xFF) == ENUMTY.Terror))
                     return this;
-                if (!(this.arrayof != null))
+                if (this.arrayof == null)
                 {
                     Type t = new TypeDArray(this);
                     this.arrayof = t.merge();
@@ -3818,9 +3821,9 @@ public class astbase {
                 t.wcto = null;
                 t.swto = null;
                 t.swcto = null;
-                if ((t.ty & 0xFF) == ENUMTY.Tstruct)
+                if (((t.ty & 0xFF) == ENUMTY.Tstruct))
                     ((TypeStruct)t).att = AliasThisRec.fwdref;
-                if ((t.ty & 0xFF) == ENUMTY.Tclass)
+                if (((t.ty & 0xFF) == ENUMTY.Tclass))
                     ((TypeClass)t).att = AliasThisRec.fwdref;
                 return t;
             }
@@ -3890,17 +3893,17 @@ public class astbase {
             }
 
             public  Type merge() {
-                if ((this.ty & 0xFF) == ENUMTY.Terror)
+                if (((this.ty & 0xFF) == ENUMTY.Terror))
                     return this;
-                if ((this.ty & 0xFF) == ENUMTY.Ttypeof)
+                if (((this.ty & 0xFF) == ENUMTY.Ttypeof))
                     return this;
-                if ((this.ty & 0xFF) == ENUMTY.Tident)
+                if (((this.ty & 0xFF) == ENUMTY.Tident))
                     return this;
-                if ((this.ty & 0xFF) == ENUMTY.Tinstance)
+                if (((this.ty & 0xFF) == ENUMTY.Tinstance))
                     return this;
-                if (((this.ty & 0xFF) == ENUMTY.Taarray && ((TypeAArray)this).index.merge().deco == null))
+                if (((this.ty & 0xFF) == ENUMTY.Taarray) && (((TypeAArray)this).index.merge().deco == null))
                     return this;
-                if ((((this.ty & 0xFF) != ENUMTY.Tenum && this.nextOf() != null) && this.nextOf().deco == null))
+                if (((this.ty & 0xFF) != ENUMTY.Tenum) && (this.nextOf() != null) && (this.nextOf().deco == null))
                     return this;
                 Type t = this;
                 assert(t != null);
@@ -3918,7 +3921,7 @@ public class astbase {
                 }
                 else
                 {
-                    if (((stc & 536870912L) != 0 && !(t.isShared())))
+                    if (((stc & 536870912L) != 0) && !t.isShared())
                     {
                         if (t.isWild())
                         {
@@ -3935,7 +3938,7 @@ public class astbase {
                                 t = t.makeShared();
                         }
                     }
-                    if (((stc & 4L) != 0 && !(t.isConst())))
+                    if (((stc & 4L) != 0) && !t.isConst())
                     {
                         if (t.isShared())
                         {
@@ -3952,7 +3955,7 @@ public class astbase {
                                 t = t.makeConst();
                         }
                     }
-                    if (((stc & 2147483648L) != 0 && !(t.isWild())))
+                    if (((stc & 2147483648L) != 0) && !t.isWild())
                     {
                         if (t.isShared())
                         {
@@ -3982,11 +3985,11 @@ public class astbase {
             }
 
             public  Type sharedWildConstOf() {
-                if ((this.mod & 0xFF) == 11)
+                if (((this.mod & 0xFF) == 11))
                     return this;
                 if (this.swcto != null)
                 {
-                    assert((this.swcto.mod & 0xFF) == 11);
+                    assert(((this.swcto.mod & 0xFF) == 11));
                     return this.swcto;
                 }
                 Type t = this.makeSharedWildConst();
@@ -3996,11 +3999,11 @@ public class astbase {
             }
 
             public  Type sharedConstOf() {
-                if ((this.mod & 0xFF) == 3)
+                if (((this.mod & 0xFF) == 3))
                     return this;
                 if (this.scto != null)
                 {
-                    assert((this.scto.mod & 0xFF) == 3);
+                    assert(((this.scto.mod & 0xFF) == 3));
                     return this.scto;
                 }
                 Type t = this.makeSharedConst();
@@ -4010,11 +4013,11 @@ public class astbase {
             }
 
             public  Type wildConstOf() {
-                if ((this.mod & 0xFF) == MODFlags.wildconst)
+                if (((this.mod & 0xFF) == MODFlags.wildconst))
                     return this;
                 if (this.wcto != null)
                 {
-                    assert((this.wcto.mod & 0xFF) == MODFlags.wildconst);
+                    assert(((this.wcto.mod & 0xFF) == MODFlags.wildconst));
                     return this.wcto;
                 }
                 Type t = this.makeWildConst();
@@ -4024,11 +4027,11 @@ public class astbase {
             }
 
             public  Type constOf() {
-                if ((this.mod & 0xFF) == MODFlags.const_)
+                if (((this.mod & 0xFF) == MODFlags.const_))
                     return this;
                 if (this.cto != null)
                 {
-                    assert((this.cto.mod & 0xFF) == MODFlags.const_);
+                    assert(((this.cto.mod & 0xFF) == MODFlags.const_));
                     return this.cto;
                 }
                 Type t = this.makeConst();
@@ -4038,11 +4041,11 @@ public class astbase {
             }
 
             public  Type sharedWildOf() {
-                if ((this.mod & 0xFF) == 10)
+                if (((this.mod & 0xFF) == 10))
                     return this;
                 if (this.swto != null)
                 {
-                    assert((this.swto.mod & 0xFF) == 10);
+                    assert(((this.swto.mod & 0xFF) == 10));
                     return this.swto;
                 }
                 Type t = this.makeSharedWild();
@@ -4052,11 +4055,11 @@ public class astbase {
             }
 
             public  Type wildOf() {
-                if ((this.mod & 0xFF) == MODFlags.wild)
+                if (((this.mod & 0xFF) == MODFlags.wild))
                     return this;
                 if (this.wto != null)
                 {
-                    assert((this.wto.mod & 0xFF) == MODFlags.wild);
+                    assert(((this.wto.mod & 0xFF) == MODFlags.wild));
                     return this.wto;
                 }
                 Type t = this.makeWild();
@@ -4066,11 +4069,11 @@ public class astbase {
             }
 
             public  Type sharedOf() {
-                if ((this.mod & 0xFF) == MODFlags.shared_)
+                if (((this.mod & 0xFF) == MODFlags.shared_))
                     return this;
                 if (this.sto != null)
                 {
-                    assert((this.sto.mod & 0xFF) == MODFlags.shared_);
+                    assert(((this.sto.mod & 0xFF) == MODFlags.shared_));
                     return this.sto;
                 }
                 Type t = this.makeShared();
@@ -4096,7 +4099,7 @@ public class astbase {
             public  void fixTo(Type t) {
                 Type mto = null;
                 Type tn = this.nextOf();
-                if ((!(tn != null) || ((this.ty & 0xFF) != ENUMTY.Tsarray && (tn.mod & 0xFF) == (t.nextOf().mod & 0xFF))))
+                if ((tn == null) || ((this.ty & 0xFF) != ENUMTY.Tsarray) && ((tn.mod & 0xFF) == (t.nextOf().mod & 0xFF)))
                 {
                     switch ((t.mod & 0xFF))
                     {
@@ -4131,7 +4134,7 @@ public class astbase {
                         break;
                     }
                 }
-                assert((this.mod & 0xFF) != (t.mod & 0xFF));
+                assert(((this.mod & 0xFF) != (t.mod & 0xFF)));
                 switch ((this.mod & 0xFF))
                 {
                     case 0:
@@ -4188,7 +4191,7 @@ public class astbase {
 
             public  Type addMod(byte mod) {
                 Type t = this;
-                if (!(t.isImmutable()))
+                if (!t.isImmutable())
                 {
                     switch ((mod & 0xFF))
                     {
@@ -4617,9 +4620,9 @@ public class astbase {
                     (arguments).setDim((exps).length);
                     {
                         int i = 0;
-                        for (; i < (exps).length;i++){
+                        for (; (i < (exps).length);i++){
                             Expression e = (exps).get(i);
-                            if ((e.type.ty & 0xFF) == ENUMTY.Ttuple)
+                            if (((e.type.ty & 0xFF) == ENUMTY.Ttuple))
                                 e.error(new BytePtr("cannot form tuple of tuples"));
                             Parameter arg = new Parameter(0L, e.type, null, null, null);
                             arguments.set(i, arg);
@@ -4753,7 +4756,7 @@ public class astbase {
 
             public  Type syntaxCopy() {
                 Type t = this.next.syntaxCopy();
-                if (pequals(t, this.next))
+                if ((pequals(t, this.next)))
                     t = this;
                 else
                 {
@@ -4871,7 +4874,7 @@ public class astbase {
 
             public  Type syntaxCopy() {
                 Type t = this.next.syntaxCopy();
-                if (pequals(t, this.next))
+                if ((pequals(t, this.next)))
                     t = this;
                 else
                 {
@@ -4918,7 +4921,7 @@ public class astbase {
 
             public  Type syntaxCopy() {
                 Type t = this.next.syntaxCopy();
-                if (pequals(t, this.next))
+                if ((pequals(t, this.next)))
                     t = this;
                 else
                 {
@@ -4973,7 +4976,7 @@ public class astbase {
             public DArray<Expression> fargs;
             public  TypeFunction(ParameterList pl, Type treturn, int linkage, long stc) {
                 super((byte)5, treturn);
-                assert((VarArg.none <= pl.varargs && pl.varargs <= VarArg.typesafe));
+                assert((VarArg.none <= pl.varargs) && (pl.varargs <= VarArg.typesafe));
                 this.parameterList = pl.copy();
                 this.linkage = linkage;
                 if ((stc & 67108864L) != 0)
@@ -5101,7 +5104,7 @@ public class astbase {
 
             public  Type syntaxCopy() {
                 Type t = this.next.syntaxCopy();
-                if (pequals(t, this.next))
+                if ((pequals(t, this.next)))
                     t = this;
                 else
                 {
@@ -5152,7 +5155,7 @@ public class astbase {
             public  Type syntaxCopy() {
                 Type t = this.next.syntaxCopy();
                 Type ti = this.index.syntaxCopy();
-                if ((pequals(t, this.next) && pequals(ti, this.index)))
+                if ((pequals(t, this.next)) && (pequals(ti, this.index)))
                     t = this;
                 else
                 {
@@ -5282,21 +5285,21 @@ public class astbase {
                 this.idents.setDim(t.idents.length);
                 {
                     int i = 0;
-                    for (; i < this.idents.length;i++){
+                    for (; (i < this.idents.length);i++){
                         RootObject id = t.idents.get(i);
-                        if (id.dyncast() == DYNCAST.dsymbol)
+                        if ((id.dyncast() == DYNCAST.dsymbol))
                         {
                             TemplateInstance ti = (TemplateInstance)id;
                             ti = (TemplateInstance)ti.syntaxCopy(null);
                             id = ti;
                         }
-                        else if (id.dyncast() == DYNCAST.expression)
+                        else if ((id.dyncast() == DYNCAST.expression))
                         {
                             Expression e = (Expression)id;
                             e = e.syntaxCopy();
                             id = e;
                         }
-                        else if (id.dyncast() == DYNCAST.type)
+                        else if ((id.dyncast() == DYNCAST.type))
                         {
                             Type tx = (Type)id;
                             tx = tx.syntaxCopy();
@@ -5308,7 +5311,7 @@ public class astbase {
             }
 
             public  Expression toExpressionHelper(Expression e, int i) {
-                for (; i < this.idents.length;i++){
+                for (; (i < this.idents.length);i++){
                     RootObject id = this.idents.get(i);
                     switch (id.dyncast())
                     {
@@ -5589,7 +5592,7 @@ public class astbase {
             }
 
             public  void error(BytePtr format, Object... ap) {
-                if (!pequals(this.type, Type.terror))
+                if ((!pequals(this.type, Type.terror)))
                 {
                     verror(this.loc, format, new Slice<>(ap), null, null, new BytePtr("Error: "));
                 }
@@ -5640,9 +5643,9 @@ public class astbase {
             public  IntegerExp(Loc loc, long value, Type type) {
                 super(loc, TOK.int64, 32);
                 assert(type != null);
-                if (!(type.isscalar()))
+                if (!type.isscalar())
                 {
-                    if ((type.ty & 0xFF) != ENUMTY.Terror)
+                    if (((type.ty & 0xFF) != ENUMTY.Terror))
                         this.error(new BytePtr("integral constant must be scalar type, not %s"), type.toChars());
                     type = Type.terror;
                 }
@@ -5696,11 +5699,11 @@ public class astbase {
                                 this.value = this.value;
                                 break;
                             case 3:
-                                if (Target.ptrsize == 8)
+                                if ((Target.ptrsize == 8))
                                     /*goto case*/{ __dispatch5 = 20; continue dispatched_5; }
-                                if (Target.ptrsize == 4)
+                                if ((Target.ptrsize == 4))
                                     /*goto case*/{ __dispatch5 = 18; continue dispatched_5; }
-                                if (Target.ptrsize == 2)
+                                if ((Target.ptrsize == 2))
                                     /*goto case*/{ __dispatch5 = 16; continue dispatched_5; }
                                 throw new AssertionError("Unreachable code!");
                             default:
@@ -5959,7 +5962,7 @@ public class astbase {
                     default:
                     throw new AssertionError("Unreachable code!");
                 }
-                if ((this.sz & 0xFF) == encSize)
+                if (((this.sz & 0xFF) == encSize))
                 {
                     memcpy((BytePtr)dest, (this.string), (this.len * (this.sz & 0xFF)));
                     if (zero)
@@ -6040,7 +6043,7 @@ public class astbase {
             public DArray<Expression> values;
             public  AssocArrayLiteralExp(Loc loc, DArray<Expression> keys, DArray<Expression> values) {
                 super(loc, TOK.assocArrayLiteral, 32);
-                assert((keys).length == (values).length);
+                assert(((keys).length == (values).length));
                 this.keys = keys;
                 this.values = values;
             }
@@ -6116,7 +6119,7 @@ public class astbase {
                 if (this.td != null)
                 {
                     assert(this.td.literal);
-                    assert((this.td.members != null && (this.td.members).length == 1));
+                    assert((this.td.members != null) && ((this.td.members).length == 1));
                     this.fd = (this.td.members).get(0).isFuncLiteralDeclaration();
                 }
                 this.tok = this.fd.tok;
@@ -6202,7 +6205,7 @@ public class astbase {
             public  ScopeExp(Loc loc, ScopeDsymbol sds) {
                 super(loc, TOK.scope_, 28);
                 this.sds = sds;
-                assert(!(sds.isTemplateDeclaration() != null));
+                assert(sds.isTemplateDeclaration() == null);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -6455,22 +6458,22 @@ public class astbase {
                 (this.exps).reserve((tup.objects).length);
                 {
                     int i = 0;
-                    for (; i < (tup.objects).length;i++){
+                    for (; (i < (tup.objects).length);i++){
                         RootObject o = (tup.objects).get(i);
                         {
                             Dsymbol s = this.getDsymbol(o);
-                            if (s != null)
+                            if ((s) != null)
                             {
                                 Expression e = new DsymbolExp(loc, s, true);
                                 (this.exps).push(e);
                             }
-                            else if (o.dyncast() == DYNCAST.expression)
+                            else if ((o.dyncast() == DYNCAST.expression))
                             {
                                 Expression e = ((Expression)o).copy();
                                 e.loc = loc.copy();
                                 (this.exps).push(e);
                             }
-                            else if (o.dyncast() == DYNCAST.type)
+                            else if ((o.dyncast() == DYNCAST.type))
                             {
                                 Type t = (Type)o;
                                 Expression e = new TypeExp(loc, t);
@@ -6486,7 +6489,7 @@ public class astbase {
             }
 
             public  Dsymbol isDsymbol(RootObject o) {
-                if (((!(o != null) || (o.dyncast()) != 0) || (DYNCAST.dsymbol) != 0))
+                if ((o == null) || (o.dyncast() != 0) || (DYNCAST.dsymbol != 0))
                     return null;
                 return (Dsymbol)o;
             }
@@ -6496,16 +6499,16 @@ public class astbase {
                 Expression ea = isExpression(oarg);
                 if (ea != null)
                 {
-                    if ((ea.op & 0xFF) == 26)
+                    if (((ea.op & 0xFF) == 26))
                         sa = ((VarExp)ea).var;
-                    else if ((ea.op & 0xFF) == 161)
+                    else if (((ea.op & 0xFF) == 161))
                     {
                         if (((FuncExp)ea).td != null)
                             sa = ((FuncExp)ea).td;
                         else
                             sa = ((FuncExp)ea).fd;
                     }
-                    else if ((ea.op & 0xFF) == 36)
+                    else if (((ea.op & 0xFF) == 36))
                         sa = ((TemplateExp)ea).td;
                     else
                         sa = null;
@@ -7495,7 +7498,7 @@ public class astbase {
         {
             public  EqualExp(byte op, Loc loc, Expression e1, Expression e2) {
                 super(loc, op, 32, e1, e2);
-                assert(((op & 0xFF) == 58 || (op & 0xFF) == 59));
+                assert(((op & 0xFF) == 58) || ((op & 0xFF) == 59));
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -8276,6 +8279,11 @@ public class astbase {
             public ForeachStatement aggrfe;
             public ForeachRangeStatement rangefe;
             public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
+                {
+                    {
+                        assert(!aggrfe == null ^ !rangefe == null);
+                    }
+                }
                 super();
                 this.loc = loc.copy();
                 this.aggrfe = aggrfe;
@@ -8411,7 +8419,7 @@ public class astbase {
             }
 
             public  ExpInitializer isExpInitializer() {
-                return (this.kind & 0xFF) == 4 ? (ExpInitializer)this : null;
+                return ((this.kind & 0xFF) == 4) ? (ExpInitializer)this : null;
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -8594,11 +8602,11 @@ public class astbase {
             public  BytePtr toChars() {
                 OutBuffer buf = new OutBuffer();
                 try {
-                    if ((this.packages != null && ((this.packages).length) != 0))
+                    if ((this.packages != null) && ((this.packages).length != 0))
                     {
                         {
                             int i = 0;
-                            for (; i < (this.packages).length;i++){
+                            for (; (i < (this.packages).length);i++){
                                 Identifier pid = (this.packages).get(i);
                                 buf.writestring(pid.asString());
                                 buf.writeByte(46);
@@ -8681,25 +8689,25 @@ public class astbase {
             }
         }
         public static Tuple isTuple(RootObject o) {
-            if ((!(o != null) || o.dyncast() != DYNCAST.tuple))
+            if ((o == null) || (o.dyncast() != DYNCAST.tuple))
                 return null;
             return (Tuple)o;
         }
 
         public static Type isType(RootObject o) {
-            if ((!(o != null) || o.dyncast() != DYNCAST.type))
+            if ((o == null) || (o.dyncast() != DYNCAST.type))
                 return null;
             return (Type)o;
         }
 
         public static Expression isExpression(RootObject o) {
-            if ((!(o != null) || o.dyncast() != DYNCAST.expression))
+            if ((o == null) || (o.dyncast() != DYNCAST.expression))
                 return null;
             return (Expression)o;
         }
 
         public static TemplateParameter isTemplateParameter(RootObject o) {
-            if ((!(o != null) || o.dyncast() != DYNCAST.templateparameter))
+            if ((o == null) || (o.dyncast() != DYNCAST.templateparameter))
                 return null;
             return (TemplateParameter)o;
         }
@@ -8729,13 +8737,13 @@ public class astbase {
         public static boolean stcToBuffer(OutBuffer buf, long stc) {
             Ref<Long> stc_ref = ref(stc);
             boolean result = false;
-            if ((stc_ref.value & 17592186568704L) == 17592186568704L)
+            if (((stc_ref.value & 17592186568704L) == 17592186568704L))
                 stc_ref.value &= -524289L;
-            for (; (stc_ref.value) != 0;){
+            for (; stc_ref.value != 0;){
                 BytePtr p = pcopy(stcToChars(stc_ref));
                 if (p == null)
                     break;
-                if (!(result))
+                if (!result)
                     result = true;
                 else
                     (buf).writeByte(32);
@@ -8751,16 +8759,16 @@ public class astbase {
         public static BytePtr stcToChars(Ref<Long> stc) {
             {
                 int i = 0;
-                for (; (astbase.stcToCharstable.get(i).stc) != 0;i++){
+                for (; astbase.stcToCharstable.get(i).stc != 0;i++){
                     long tbl = astbase.stcToCharstable.get(i).stc;
                     assert((tbl & 22196369506207L) != 0);
                     if ((stc.value & tbl) != 0)
                     {
                         stc.value &= ~tbl;
-                        if (tbl == 134217728L)
+                        if ((tbl == 134217728L))
                             return new BytePtr("__thread");
                         byte tok = astbase.stcToCharstable.get(i).tok;
-                        if ((tok & 0xFF) == 225)
+                        if (((tok & 0xFF) == 225))
                             return astbase.stcToCharstable.get(i).id;
                         else
                             return Token.toChars(tok);
@@ -8801,7 +8809,7 @@ public class astbase {
                 {
                     return Type.tchar.pointerTo();
                 }
-                else if ((((((global.params.isLinux || global.params.isFreeBSD) || global.params.isOpenBSD) || global.params.isDragonFlyBSD) || global.params.isSolaris) || global.params.isOSX))
+                else if (global.params.isLinux || global.params.isFreeBSD || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris || global.params.isOSX)
                 {
                     if (global.params.is64bit)
                     {

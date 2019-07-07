@@ -46,18 +46,18 @@ public class canthrow {
         }
 
         public  void visit(CallExp ce) {
-            if (((global.errors) != 0 && !(ce.e1.type != null)))
+            if ((global.errors != 0) && (ce.e1.type == null))
                 return ;
-            if ((ce.f != null && pequals(ce.f, this.func)))
+            if ((ce.f != null) && (pequals(ce.f, this.func)))
                 return ;
             Type t = ce.e1.type.toBasetype();
             TypeFunction tf = t.isTypeFunction();
-            if ((tf != null && tf.isnothrow))
+            if ((tf != null) && tf.isnothrow)
                 return ;
             else
             {
                 TypeDelegate td = t.isTypeDelegate();
-                if ((td != null && td.nextOf().isTypeFunction().isnothrow))
+                if ((td != null) && td.nextOf().isTypeFunction().isnothrow)
                     return ;
             }
             if (this.mustNotThrow)
@@ -71,7 +71,7 @@ public class canthrow {
                     Expression e1 = ce.e1;
                     {
                         PtrExp pe = e1.isPtrExp();
-                        if (pe != null)
+                        if ((pe) != null)
                             e1 = pe.e1;
                     }
                     ce.error(new BytePtr("`%s` is not `nothrow`"), e1.toChars());
@@ -86,7 +86,7 @@ public class canthrow {
                 if (ne.allocator != null)
                 {
                     TypeFunction tf = ne.allocator.type.toBasetype().isTypeFunction();
-                    if ((tf != null && !(tf.isnothrow)))
+                    if ((tf != null) && !tf.isnothrow)
                     {
                         if (this.mustNotThrow)
                         {
@@ -96,7 +96,7 @@ public class canthrow {
                     }
                 }
                 TypeFunction tf = ne.member.type.toBasetype().isTypeFunction();
-                if ((tf != null && !(tf.isnothrow)))
+                if ((tf != null) && !tf.isnothrow)
                 {
                     if (this.mustNotThrow)
                     {
@@ -118,7 +118,7 @@ public class canthrow {
                 case 3:
                 case 0:
                     TypeStruct ts = tb.nextOf().baseElemOf().isTypeStruct();
-                    if (!(ts != null))
+                    if (ts == null)
                         return ;
                     ad = ts.sym;
                     break;
@@ -128,7 +128,7 @@ public class canthrow {
             if (ad.dtor != null)
             {
                 TypeFunction tf = ad.dtor.type.toBasetype().isTypeFunction();
-                if ((tf != null && !(tf.isnothrow)))
+                if ((tf != null) && !tf.isnothrow)
                 {
                     if (this.mustNotThrow)
                     {
@@ -137,10 +137,10 @@ public class canthrow {
                     this.stop = true;
                 }
             }
-            if ((ad.aggDelete != null && (tb.ty & 0xFF) != ENUMTY.Tarray))
+            if ((ad.aggDelete != null) && ((tb.ty & 0xFF) != ENUMTY.Tarray))
             {
                 TypeFunction tf = ad.aggDelete.type.isTypeFunction();
-                if ((tf != null && !(tf.isnothrow)))
+                if ((tf != null) && !tf.isnothrow)
                 {
                     if (this.mustNotThrow)
                     {
@@ -152,30 +152,30 @@ public class canthrow {
         }
 
         public  void visit(AssignExp ae) {
-            if ((ae.op & 0xFF) == 96)
+            if (((ae.op & 0xFF) == 96))
                 return ;
             Type t = null;
-            if ((ae.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray)
+            if (((ae.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
             {
-                if (!(ae.e2.isLvalue()))
+                if (!ae.e2.isLvalue())
                     return ;
                 t = ae.type;
             }
             else {
                 SliceExp se = ae.e1.isSliceExp();
-                if (se != null)
+                if ((se) != null)
                     t = se.e1.type;
                 else
                     return ;
             }
             TypeStruct ts = t.baseElemOf().isTypeStruct();
-            if (!(ts != null))
+            if (ts == null)
                 return ;
             StructDeclaration sd = ts.sym;
-            if (!(sd.postblit != null))
+            if (sd.postblit == null)
                 return ;
             TypeFunction tf = sd.postblit.type.isTypeFunction();
-            if ((!(tf != null) || tf.isnothrow))
+            if ((tf == null) || tf.isnothrow)
             {
             }
             else
@@ -211,15 +211,15 @@ public class canthrow {
         };
         {
             VarDeclaration vd = s.isVarDeclaration();
-            if (vd != null)
+            if ((vd) != null)
             {
                 s = s.toAlias();
-                if (!pequals(s, vd))
+                if ((!pequals(s, vd)))
                     return Dsymbol_canThrow(s, func_ref.value, mustNotThrow_ref.value);
                 if ((vd.storage_class & 8388608L) != 0)
                 {
                 }
-                else if ((vd.isStatic() || (vd.storage_class & 1207959554L) != 0))
+                else if (vd.isStatic() || ((vd.storage_class & 1207959554L) != 0))
                 {
                 }
                 else
@@ -228,7 +228,7 @@ public class canthrow {
                     {
                         {
                             ExpInitializer ie = vd._init.isExpInitializer();
-                            if (ie != null)
+                            if ((ie) != null)
                                 if (canThrow(ie.exp, func_ref.value, mustNotThrow_ref.value))
                                     return true;
                         }
@@ -239,30 +239,30 @@ public class canthrow {
             }
             else {
                 AttribDeclaration ad = s.isAttribDeclaration();
-                if (ad != null)
+                if ((ad) != null)
                 {
                     return foreachDsymbol(ad.include(null), symbolDg) != 0;
                 }
                 else {
                     TemplateMixin tm = s.isTemplateMixin();
-                    if (tm != null)
+                    if ((tm) != null)
                     {
                         return foreachDsymbol(tm.members, symbolDg) != 0;
                     }
                     else {
                         TupleDeclaration td = s.isTupleDeclaration();
-                        if (td != null)
+                        if ((td) != null)
                         {
                             {
                                 int i = 0;
-                                for (; i < (td.objects).length;i++){
+                                for (; (i < (td.objects).length);i++){
                                     RootObject o = (td.objects).get(i);
-                                    if (o.dyncast() == DYNCAST.expression)
+                                    if ((o.dyncast() == DYNCAST.expression))
                                     {
                                         Expression eo = (Expression)o;
                                         {
                                             DsymbolExp se = eo.isDsymbolExp();
-                                            if (se != null)
+                                            if ((se) != null)
                                             {
                                                 if (Dsymbol_canThrow(se.s, func_ref.value, mustNotThrow_ref.value))
                                                     return true;

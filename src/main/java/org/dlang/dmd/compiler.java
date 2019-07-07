@@ -73,8 +73,8 @@ public class compiler {
                     p.scanloc = Loc.initial.copy();
                     p.nextToken();
                     m.members = p.parseModule();
-                    assert((p.token.value & 0xFF) == 11);
-                    assert(!(p.errors()));
+                    assert(((p.token.value & 0xFF) == 11));
+                    assert(!p.errors());
                     boolean v = global.params.verbose;
                     global.params.verbose = false;
                     m.importedFrom = m;
@@ -95,7 +95,7 @@ public class compiler {
 
         public static Expression paintAsType(UnionExp pue, Expression e, Type type) {
             U u = null;
-            assert(e.type.size() == type.size());
+            assert((e.type.size() == type.size()));
             {
                 int __dispatch0 = 0;
                 dispatched_0:
@@ -118,7 +118,7 @@ public class compiler {
                             u.float64value = (double)e.toReal();
                             break;
                         case 23:
-                            assert(e.type.size() == 8L);
+                            assert((e.type.size() == 8L));
                             /*goto case*/{ __dispatch0 = 22; continue dispatched_0; }
                         default:
                         throw new AssertionError("Unreachable code!");
@@ -150,7 +150,7 @@ public class compiler {
                             emplaceExpRealExpLocDoubleType(pue, e.loc, r, type);
                             break;
                         case 23:
-                            assert(type.size() == 8L);
+                            assert((type.size() == 8L));
                             /*goto case*/{ __dispatch1 = 22; continue dispatched_1; }
                         default:
                         throw new AssertionError("Unreachable code!");
@@ -168,7 +168,7 @@ public class compiler {
             {
                 DArray<Identifier> empty = new DArray<Identifier>();
                 try {
-                    if (includeImportedModuleCheck(new ModuleComponentRange((m.md != null && (m.md).packages != null) ? (m.md).packages : empty, m.ident, m.isPackageFile, 0)))
+                    if (includeImportedModuleCheck(new ModuleComponentRange((m.md != null) && ((m.md).packages != null) ? (m.md).packages : empty, m.ident, m.isPackageFile, 0)))
                     {
                         if (global.params.verbose)
                             message(new BytePtr("compileimport (%s)"), m.srcfile.toChars());
@@ -207,9 +207,9 @@ public class compiler {
         }
 
         public  Identifier front() {
-            if (this.index < (this.packages).length)
+            if ((this.index < (this.packages).length))
                 return (this.packages).get(this.index);
-            if (this.index == (this.packages).length)
+            if ((this.index == (this.packages).length))
                 return this.name;
             else
                 return Identifier.idPool(new ByteSlice("package"));
@@ -252,17 +252,17 @@ public class compiler {
         }
         createMatchNodes();
         int nodeIndex = 0;
-        for (; nodeIndex < matchNodes.length;){
+        for (; (nodeIndex < matchNodes.length);){
             MatcherNode info = matchNodes.get(nodeIndex++).copy();
-            if ((int)info.depth <= components.totalLength())
+            if (((int)info.depth <= components.totalLength()))
             {
                 int nodeOffset = 0;
                 {
                     ModuleComponentRange range = components.copy();
                     for (; ;range.popFront()){
-                        if ((range.empty() || nodeOffset >= (int)info.depth))
+                        if (range.empty() || (nodeOffset >= (int)info.depth))
                         {
-                            return !(info.isExclude);
+                            return !info.isExclude;
                         }
                         if (!(range.front() == matchNodes.get(nodeIndex + nodeOffset).id))
                         {
@@ -274,7 +274,7 @@ public class compiler {
             }
             nodeIndex += (int)info.depth;
         }
-        assertMsg(nodeIndex == matchNodes.length, new ByteSlice("code bug"));
+        assertMsg((nodeIndex == matchNodes.length), new ByteSlice("code bug"));
         return includeByDefault;
     }
 
@@ -314,27 +314,27 @@ public class compiler {
         Function1<Integer,Integer> findSortedIndexToAddForDepth = new Function1<Integer,Integer>(){
             public Integer invoke(Integer depth){
                 int index = 0;
-                for (; index < matchNodes.length;){
+                for (; (index < matchNodes.length);){
                     MatcherNode info = matchNodes.get(index).copy();
-                    if (depth > (int)info.depth)
+                    if ((depth > (int)info.depth))
                         break;
                     index += (1 + (int)info.depth);
                 }
                 return index;
             }
         };
-        if (matchNodes.length == 0)
+        if ((matchNodes.length == 0))
         {
             {
                 Slice<BytePtr> __r837 = includeModulePatterns.opSlice().copy();
                 int __key838 = 0;
-                for (; __key838 < __r837.getLength();__key838 += 1) {
+                for (; (__key838 < __r837.getLength());__key838 += 1) {
                     BytePtr modulePattern = pcopy(__r837.get(__key838));
                     int depth = parseModulePatternDepth(modulePattern);
                     int entryIndex = findSortedIndexToAddForDepth.invoke((int)depth);
                     split(matchNodes, entryIndex, ((int)depth + 1));
                     parseModulePattern(modulePattern, matchNodes.get(entryIndex), depth);
-                    if ((includeByDefault && !(matchNodes.get(entryIndex).isExclude)))
+                    if (includeByDefault && !matchNodes.get(entryIndex).isExclude)
                     {
                         includeByDefault = false;
                     }
@@ -350,38 +350,38 @@ public class compiler {
     }
 
     public static int parseModulePatternDepth(BytePtr modulePattern) {
-        if ((modulePattern.get(0) & 0xFF) == 45)
+        if (((modulePattern.get(0) & 0xFF) == 45))
             modulePattern.postInc();
-        if (((modulePattern.get(0) & 0xFF) == 46 && (modulePattern.get(1) & 0xFF) == 0))
+        if (((modulePattern.get(0) & 0xFF) == 46) && ((modulePattern.get(1) & 0xFF) == 0))
             return (int)0;
         int depth = (int)1;
         for (; ;modulePattern.postInc()){
             byte c = modulePattern.get();
-            if ((c & 0xFF) == 46)
+            if (((c & 0xFF) == 46))
                 depth++;
-            if ((c & 0xFF) == 0)
+            if (((c & 0xFF) == 0))
                 return depth;
         }
     }
 
     public static void parseModulePattern(BytePtr modulePattern, MatcherNode dst, int depth) {
         boolean isExclude = false;
-        if ((modulePattern.get(0) & 0xFF) == 45)
+        if (((modulePattern.get(0) & 0xFF) == 45))
         {
             isExclude = true;
             modulePattern.postInc();
         }
         dst.opAssign(new MatcherNode(isExclude, depth));
         dst.postInc();
-        if ((int)depth > 0)
+        if (((int)depth > 0))
         {
             BytePtr idStart = pcopy(modulePattern);
             MatcherNode lastNode = dst.plus((int)depth * 4).minus(4);
-            for (; dst.lessThan(lastNode);dst.postInc()){
+            for (; (dst.lessThan(lastNode));dst.postInc()){
                 for (; ;modulePattern.postInc()){
-                    if ((modulePattern.get() & 0xFF) == 46)
+                    if (((modulePattern.get() & 0xFF) == 46))
                     {
-                        assertMsg(modulePattern.greaterThan(idStart), new ByteSlice("empty module pattern"));
+                        assertMsg((modulePattern.greaterThan(idStart)), new ByteSlice("empty module pattern"));
                         dst.opAssign(new MatcherNode(Identifier.idPool(idStart, ((modulePattern.minus(idStart))))));
                         modulePattern.postInc();
                         idStart = pcopy(modulePattern);
@@ -390,9 +390,9 @@ public class compiler {
                 }
             }
             for (; ;modulePattern.postInc()){
-                if ((modulePattern.get() & 0xFF) == 0)
+                if (((modulePattern.get() & 0xFF) == 0))
                 {
-                    assertMsg(modulePattern.greaterThan(idStart), new ByteSlice("empty module pattern"));
+                    assertMsg((modulePattern.greaterThan(idStart)), new ByteSlice("empty module pattern"));
                     lastNode.opAssign(new MatcherNode(Identifier.idPool(idStart, ((modulePattern.minus(idStart))))));
                     break;
                 }

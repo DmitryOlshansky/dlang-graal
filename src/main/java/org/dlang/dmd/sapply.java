@@ -25,7 +25,7 @@ public class sapply {
         }
 
         public  boolean doCond(Statement s) {
-            if ((!(this.stop) && s != null))
+            if (!this.stop && (s != null))
                 s.accept(this);
             return this.stop;
         }
@@ -41,13 +41,13 @@ public class sapply {
         }
 
         public  void visit(PeelStatement s) {
-            (this.doCond(s.s) || this.applyTo(s));
+            this.doCond(s.s) || this.applyTo(s);
         }
 
         public  void visit(CompoundStatement s) {
             {
                 int i = 0;
-                for (; i < (s.statements).length;i++) {
+                for (; (i < (s.statements).length);i++) {
                     if (this.doCond((s.statements).get(i)))
                         return ;
                 }
@@ -58,7 +58,7 @@ public class sapply {
         public  void visit(UnrolledLoopStatement s) {
             {
                 int i = 0;
-                for (; i < (s.statements).length;i++) {
+                for (; (i < (s.statements).length);i++) {
                     if (this.doCond((s.statements).get(i)))
                         return ;
                 }
@@ -67,55 +67,55 @@ public class sapply {
         }
 
         public  void visit(ScopeStatement s) {
-            (this.doCond(s.statement) || this.applyTo(s));
+            this.doCond(s.statement) || this.applyTo(s);
         }
 
         public  void visit(WhileStatement s) {
-            (this.doCond(s._body) || this.applyTo(s));
+            this.doCond(s._body) || this.applyTo(s);
         }
 
         public  void visit(DoStatement s) {
-            (this.doCond(s._body) || this.applyTo(s));
+            this.doCond(s._body) || this.applyTo(s);
         }
 
         public  void visit(ForStatement s) {
-            ((this.doCond(s._init) || this.doCond(s._body)) || this.applyTo(s));
+            this.doCond(s._init) || this.doCond(s._body) || this.applyTo(s);
         }
 
         public  void visit(ForeachStatement s) {
-            (this.doCond(s._body) || this.applyTo(s));
+            this.doCond(s._body) || this.applyTo(s);
         }
 
         public  void visit(ForeachRangeStatement s) {
-            (this.doCond(s._body) || this.applyTo(s));
+            this.doCond(s._body) || this.applyTo(s);
         }
 
         public  void visit(IfStatement s) {
-            ((this.doCond(s.ifbody) || this.doCond(s.elsebody)) || this.applyTo(s));
+            this.doCond(s.ifbody) || this.doCond(s.elsebody) || this.applyTo(s);
         }
 
         public  void visit(PragmaStatement s) {
-            (this.doCond(s._body) || this.applyTo(s));
+            this.doCond(s._body) || this.applyTo(s);
         }
 
         public  void visit(SwitchStatement s) {
-            (this.doCond(s._body) || this.applyTo(s));
+            this.doCond(s._body) || this.applyTo(s);
         }
 
         public  void visit(CaseStatement s) {
-            (this.doCond(s.statement) || this.applyTo(s));
+            this.doCond(s.statement) || this.applyTo(s);
         }
 
         public  void visit(DefaultStatement s) {
-            (this.doCond(s.statement) || this.applyTo(s));
+            this.doCond(s.statement) || this.applyTo(s);
         }
 
         public  void visit(SynchronizedStatement s) {
-            (this.doCond(s._body) || this.applyTo(s));
+            this.doCond(s._body) || this.applyTo(s);
         }
 
         public  void visit(WithStatement s) {
-            (this.doCond(s._body) || this.applyTo(s));
+            this.doCond(s._body) || this.applyTo(s);
         }
 
         public  void visit(TryCatchStatement s) {
@@ -123,7 +123,7 @@ public class sapply {
                 return ;
             {
                 int i = 0;
-                for (; i < (s.catches).length;i++) {
+                for (; (i < (s.catches).length);i++) {
                     if (this.doCond((s.catches).get(i).handler))
                         return ;
                 }
@@ -132,19 +132,19 @@ public class sapply {
         }
 
         public  void visit(TryFinallyStatement s) {
-            ((this.doCond(s._body) || this.doCond(s.finalbody)) || this.applyTo(s));
+            this.doCond(s._body) || this.doCond(s.finalbody) || this.applyTo(s);
         }
 
         public  void visit(ScopeGuardStatement s) {
-            (this.doCond(s.statement) || this.applyTo(s));
+            this.doCond(s.statement) || this.applyTo(s);
         }
 
         public  void visit(DebugStatement s) {
-            (this.doCond(s.statement) || this.applyTo(s));
+            this.doCond(s.statement) || this.applyTo(s);
         }
 
         public  void visit(LabelStatement s) {
-            (this.doCond(s.statement) || this.applyTo(s));
+            this.doCond(s.statement) || this.applyTo(s);
         }
 
 

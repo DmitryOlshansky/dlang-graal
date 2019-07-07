@@ -58,7 +58,7 @@ public class attrib {
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
             Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
                 public Integer invoke(Dsymbol s){
-                    return (((s != null && (s.apply(fp, param)) != 0)) ? 1 : 0);
+                    return (((s != null) && (s.apply(fp, param) != 0)) ? 1 : 0);
                 }
             };
             return foreachDsymbol(this.include(this._scope), __lambda3);
@@ -66,7 +66,7 @@ public class attrib {
 
         public static Scope createNewScope(Scope sc, long stc, int linkage, int cppmangle, Prot protection, int explicitProtection, AlignDeclaration aligndecl, int inlining) {
             Scope sc2 = sc;
-            if (((((((stc != (sc).stc || linkage != (sc).linkage) || cppmangle != (sc).cppmangle) || !(protection.isSubsetOf((sc).protection))) || explicitProtection != (sc).explicitProtection) || aligndecl != (sc).aligndecl) || inlining != (sc).inlining))
+            if ((stc != (sc).stc) || (linkage != (sc).linkage) || (cppmangle != (sc).cppmangle) || !protection.isSubsetOf((sc).protection) || (explicitProtection != (sc).explicitProtection) || (aligndecl != (sc).aligndecl) || (inlining != (sc).inlining))
             {
                 sc2 = (sc).copy();
                 (sc2).stc = stc;
@@ -96,7 +96,7 @@ public class attrib {
                     }
                 };
                 foreachDsymbol(d, __lambda3);
-                if (sc2 != sc)
+                if ((sc2 != sc))
                     (sc2).pop();
             }
         }
@@ -113,7 +113,7 @@ public class attrib {
                     }
                 };
                 foreachDsymbol(d, __lambda2);
-                if (sc2 != sc)
+                if ((sc2 != sc))
                     (sc2).pop();
             }
         }
@@ -130,7 +130,7 @@ public class attrib {
                     }
                 };
                 foreachDsymbol(d, __lambda2);
-                if (sc2 != sc)
+                if ((sc2 != sc))
                     (sc2).pop();
             }
         }
@@ -231,7 +231,7 @@ public class attrib {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             return new StorageClassDeclaration(this.stc, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
@@ -253,7 +253,7 @@ public class attrib {
 
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             boolean t = Dsymbol.oneMembers(this.decl, ps, ident);
-            if ((t && ps.get() != null))
+            if (t && (ps.get() != null))
             {
                 FuncDeclaration fd = (ps.get()).isFuncDeclaration();
                 if (fd != null)
@@ -273,12 +273,12 @@ public class attrib {
                     public Void invoke(Dsymbol s){
                         {
                             Declaration decl = s.isDeclaration();
-                            if (decl != null)
+                            if ((decl) != null)
                             {
                                 decl.storage_class |= stc & 2251799813685248L;
                                 {
                                     StorageClassDeclaration sdecl = s.isStorageClassDeclaration();
-                                    if (sdecl != null)
+                                    if ((sdecl) != null)
                                     {
                                         sdecl.stc |= stc & 2251799813685248L;
                                     }
@@ -289,7 +289,7 @@ public class attrib {
                     }
                 };
                 foreachDsymbol(d, __lambda3);
-                if (sc2 != sc)
+                if ((sc2 != sc))
                     (sc2).pop();
             }
         }
@@ -336,13 +336,13 @@ public class attrib {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             return new DeprecatedDeclaration(this.msg.syntaxCopy(), Dsymbol.arraySyntaxCopy(this.decl));
         }
 
         public  Scope newScope(Scope sc) {
             Scope scx = super.newScope(sc);
-            if (scx == sc)
+            if ((scx == sc))
                 scx = (sc).push();
             (scx).depdecl = this;
             return scx;
@@ -390,7 +390,7 @@ public class attrib {
         public int linkage;
         public  LinkDeclaration(int linkage, DArray<Dsymbol> decl) {
             super(decl);
-            this.linkage = linkage == LINK.system ? target.systemLinkage() : linkage;
+            this.linkage = (linkage == LINK.system) ? target.systemLinkage() : linkage;
         }
 
         public static LinkDeclaration create(int p, DArray<Dsymbol> decl) {
@@ -398,7 +398,7 @@ public class attrib {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             return new LinkDeclaration(this.linkage, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
@@ -451,7 +451,7 @@ public class attrib {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             return new CPPMangleDeclaration(this.cppmangle, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
@@ -516,7 +516,7 @@ public class attrib {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             return new CPPNamespaceDeclaration(this.ident, this.exp, Dsymbol.arraySyntaxCopy(this.decl), this.namespace);
         }
 
@@ -580,7 +580,7 @@ public class attrib {
             super(loc, null, decl);
             this.protection.kind = Prot.Kind.package_;
             this.pkg_identifiers = pkg_identifiers;
-            if ((pkg_identifiers != null && (pkg_identifiers).length > 0))
+            if ((pkg_identifiers != null) && ((pkg_identifiers).length > 0))
             {
                 Ref<Dsymbol> tmp = ref(null);
                 dmodule.Package.resolve(pkg_identifiers, ptr(tmp), null);
@@ -589,8 +589,8 @@ public class attrib {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
-            if (this.protection.kind == Prot.Kind.package_)
+            assert(s == null);
+            if ((this.protection.kind == Prot.Kind.package_))
                 return new ProtDeclaration(this.loc, this.pkg_identifiers, Dsymbol.arraySyntaxCopy(this.decl));
             else
                 return new ProtDeclaration(this.loc, this.protection, Dsymbol.arraySyntaxCopy(this.decl));
@@ -610,11 +610,11 @@ public class attrib {
                 this.protection.pkg = tmp.value != null ? tmp.value.isPackage() : null;
                 this.pkg_identifiers = null;
             }
-            if (((this.protection.kind == Prot.Kind.package_ && this.protection.pkg != null) && (sc)._module != null))
+            if ((this.protection.kind == Prot.Kind.package_) && (this.protection.pkg != null) && ((sc)._module != null))
             {
                 dmodule.Module m = (sc)._module;
                 dmodule.Package pkg = m.parent != null ? m.parent.isPackage() : null;
-                if ((!(pkg != null) || !(this.protection.pkg.isAncestorPackageOf(pkg))))
+                if ((pkg == null) || !this.protection.pkg.isAncestorPackageOf(pkg))
                     this.error(new BytePtr("does not bind to one of ancestor packages of module `%s`"), m.toPrettyChars(true));
             }
             this.addMember(sc, sds);
@@ -626,7 +626,7 @@ public class attrib {
         }
 
         public  BytePtr toPrettyChars(boolean _param_0) {
-            assert(this.protection.kind > Prot.Kind.undefined);
+            assert((this.protection.kind > Prot.Kind.undefined));
             OutBuffer buf = new OutBuffer();
             try {
                 protectionToBuffer(buf, this.protection);
@@ -680,7 +680,7 @@ public class attrib {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             return new AlignDeclaration(this.loc, this.ealign != null ? this.ealign.syntaxCopy() : null, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
@@ -731,7 +731,7 @@ public class attrib {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             return new AnonDeclaration(this.loc, this.isunion, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
@@ -759,7 +759,7 @@ public class attrib {
                     }
                 };
                 foreachDsymbol(this.decl, __lambda4);
-                if (fieldstart == ad.fields.length)
+                if ((fieldstart == ad.fields.length))
                 {
                     ad.structsize = savestructsize;
                     ad.alignsize = savealignsize;
@@ -770,7 +770,7 @@ public class attrib {
                 this.anonalignsize = ad.alignsize;
                 ad.structsize = savestructsize;
                 ad.alignsize = savealignsize;
-                if (this.anonstructsize == 0)
+                if ((this.anonstructsize == 0))
                 {
                     this.anonstructsize = 1;
                     this.anonalignsize = 1;
@@ -781,7 +781,7 @@ public class attrib {
                 {
                     int __key715 = fieldstart;
                     int __limit716 = ad.fields.length;
-                    for (; __key715 < __limit716;__key715 += 1) {
+                    for (; (__key715 < __limit716);__key715 += 1) {
                         int i = __key715;
                         VarDeclaration v = ad.fields.get(i);
                         v.offset += this.anonoffset;
@@ -839,17 +839,17 @@ public class attrib {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             return new PragmaDeclaration(this.loc, this.ident, Expression.arraySyntaxCopy(this.args), Dsymbol.arraySyntaxCopy(this.decl));
         }
 
         public  Scope newScope(Scope sc) {
-            if (pequals(this.ident, Id.Pinline))
+            if ((pequals(this.ident, Id.Pinline)))
             {
                 int inlining = PINLINE.default_;
-                if ((this.args == null || (this.args).length == 0))
+                if ((this.args == null) || ((this.args).length == 0))
                     inlining = PINLINE.default_;
-                else if ((this.args).length != 1)
+                else if (((this.args).length != 1))
                 {
                     this.error(new BytePtr("one boolean expression expected for `pragma(inline)`, not %d"), (this.args).length);
                     (this.args).setDim(1);
@@ -858,9 +858,9 @@ public class attrib {
                 else
                 {
                     Expression e = (this.args).get(0);
-                    if (((e.op & 0xFF) != 135 || !(e.type.equals(Type.tbool))))
+                    if (((e.op & 0xFF) != 135) || !e.type.equals(Type.tbool))
                     {
-                        if ((e.op & 0xFF) != 127)
+                        if (((e.op & 0xFF) != 127))
                         {
                             this.error(new BytePtr("pragma(`inline`, `true` or `false`) expected, not `%s`"), e.toChars());
                             this.args.set(0, new ErrorExp());
@@ -919,19 +919,19 @@ public class attrib {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             return new ConditionalDeclaration(this.condition.syntaxCopy(), Dsymbol.arraySyntaxCopy(this.decl), Dsymbol.arraySyntaxCopy(this.elsedecl));
         }
 
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
-            if (this.condition.inc != Include.notComputed)
+            if ((this.condition.inc != Include.notComputed))
             {
-                DArray<Dsymbol> d = (this.condition.include(null)) != 0 ? this.decl : this.elsedecl;
+                DArray<Dsymbol> d = this.condition.include(null) != 0 ? this.decl : this.elsedecl;
                 return Dsymbol.oneMembers(d, ps, ident);
             }
             else
             {
-                boolean res = (((Dsymbol.oneMembers(this.decl, ps, ident) && ps.get() == null) && Dsymbol.oneMembers(this.elsedecl, ps, ident)) && ps.get() == null);
+                boolean res = Dsymbol.oneMembers(this.decl, ps, ident) && (ps.get() == null) && Dsymbol.oneMembers(this.elsedecl, ps, ident) && (ps.get() == null);
                 ps.set(0, null);
                 return res;
             }
@@ -941,7 +941,7 @@ public class attrib {
             if (this.errors)
                 return null;
             assert(this.condition != null);
-            return (this.condition.include(this._scope != null ? this._scope : sc)) != 0 ? this.decl : this.elsedecl;
+            return this.condition.include(this._scope != null ? this._scope : sc) != 0 ? this.decl : this.elsedecl;
         }
 
         public  void addComment(BytePtr comment) {
@@ -1013,21 +1013,21 @@ public class attrib {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             return new StaticIfDeclaration(this.condition.syntaxCopy(), Dsymbol.arraySyntaxCopy(this.decl), Dsymbol.arraySyntaxCopy(this.elsedecl));
         }
 
         public  DArray<Dsymbol> include(Scope sc) {
-            if ((this.errors || this.onStack))
+            if (this.errors || this.onStack)
                 return null;
             this.onStack = true;
             try {
-                if ((sc != null && this.condition.inc == Include.notComputed))
+                if ((sc != null) && (this.condition.inc == Include.notComputed))
                 {
                     assert(this.scopesym != null);
                     assert(this._scope != null);
                     DArray<Dsymbol> d = this.include(this._scope);
-                    if ((d != null && !(this.addisdone)))
+                    if ((d != null) && !this.addisdone)
                     {
                         Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                             public Void invoke(Dsymbol s){
@@ -1117,7 +1117,7 @@ public class attrib {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             return new StaticForeachDeclaration(this.sfe.syntaxCopy(), Dsymbol.arraySyntaxCopy(this.decl));
         }
 
@@ -1131,11 +1131,11 @@ public class attrib {
         }
 
         public  DArray<Dsymbol> include(Scope sc) {
-            if ((this.errors || this.onStack))
+            if (this.errors || this.onStack)
                 return null;
             if (this.cached)
             {
-                assert(!(this.onStack));
+                assert(!this.onStack);
                 return this.cache;
             }
             this.onStack = true;
@@ -1144,7 +1144,7 @@ public class attrib {
                 {
                     this.sfe.prepare(this._scope);
                 }
-                if (!(this.sfe.ready()))
+                if (!this.sfe.ready())
                 {
                     return null;
                 }
@@ -1341,13 +1341,13 @@ public class attrib {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             return new UserAttributeDeclaration(Expression.arraySyntaxCopy(this.atts), Dsymbol.arraySyntaxCopy(this.decl));
         }
 
         public  Scope newScope(Scope sc) {
             Scope sc2 = sc;
-            if ((this.atts != null && ((this.atts).length) != 0))
+            if ((this.atts != null) && ((this.atts).length != 0))
             {
                 sc2 = (sc).copy();
                 (sc2).userAttribDecl = this;
@@ -1364,9 +1364,9 @@ public class attrib {
 
         public static DArray<Expression> concat(DArray<Expression> udas1, DArray<Expression> udas2) {
             DArray<Expression> udas = null;
-            if ((udas1 == null || (udas1).length == 0))
+            if ((udas1 == null) || ((udas1).length == 0))
                 udas = udas2;
-            else if ((udas2 == null || (udas2).length == 0))
+            else if ((udas2 == null) || ((udas2).length == 0))
                 udas = udas1;
             else
             {
@@ -1380,7 +1380,7 @@ public class attrib {
         public  DArray<Expression> getAttributes() {
             {
                 Scope sc = this._scope;
-                if (sc != null)
+                if ((sc) != null)
                 {
                     this._scope = null;
                     arrayExpressionSemantic(this.atts, sc, false);
@@ -1389,7 +1389,7 @@ public class attrib {
             DArray<Expression> exps = new DArray<Expression>();
             if (this.userAttribDecl != null)
                 (exps).push(new TupleExp(Loc.initial, this.userAttribDecl.getAttributes()));
-            if ((this.atts != null && ((this.atts).length) != 0))
+            if ((this.atts != null) && ((this.atts).length != 0))
                 (exps).push(new TupleExp(Loc.initial, this.atts));
             return exps;
         }

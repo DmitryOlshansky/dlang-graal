@@ -42,11 +42,11 @@ public class nspace {
             this.addMember(sc, sds);
             if (this.members != null)
             {
-                if (!(this.symtab != null))
+                if (this.symtab == null)
                     this.symtab = new DsymbolTable();
                 {
                     Scope sce = sc;
-                    for (; (1) != 0;sce = (sce).enclosing){
+                    for (; 1 != 0;sce = (sce).enclosing){
                         ScopeDsymbol sds2 = (sce).scopesym;
                         if (sds2 != null)
                         {
@@ -94,9 +94,9 @@ public class nspace {
         }
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
-            if ((this._scope != null && !(this.symtab != null)))
+            if ((this._scope != null) && (this.symtab == null))
                 dsymbolSemantic(this, this._scope);
-            if ((this.members == null || !(this.symtab != null)))
+            if ((this.members == null) || (this.symtab == null))
             {
                 this.error(new BytePtr("is forward referenced when looking for `%s`"), ident.toChars());
                 return null;
@@ -107,7 +107,7 @@ public class nspace {
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
             Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
                 public Integer invoke(Dsymbol s){
-                    return (((s != null && (s.apply(fp, param)) != 0)) ? 1 : 0);
+                    return (((s != null) && (s.apply(fp, param) != 0)) ? 1 : 0);
                 }
             };
             return foreachDsymbol(this.members, __lambda3);

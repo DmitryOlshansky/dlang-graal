@@ -80,12 +80,12 @@ public class delegatize {
             {
                 Slice<Identifier> __r924 = si.field.opSlice().copy();
                 int __key923 = 0;
-                for (; __key923 < __r924.getLength();__key923 += 1) {
+                for (; (__key923 < __r924.getLength());__key923 += 1) {
                     Identifier id = __r924.get(__key923);
                     int i = __key923;
                     {
                         Initializer iz = si.value.get(i);
-                        if (iz != null)
+                        if ((iz) != null)
                             iz.accept(this);
                     }
                 }
@@ -96,14 +96,14 @@ public class delegatize {
             {
                 Slice<Expression> __r926 = ai.index.opSlice().copy();
                 int __key925 = 0;
-                for (; __key925 < __r926.getLength();__key925 += 1) {
+                for (; (__key925 < __r926.getLength());__key925 += 1) {
                     Expression ex = __r926.get(__key925);
                     int i = __key925;
                     if (ex != null)
                         walkPostorder(ex, this);
                     {
                         Initializer iz = ai.value.get(i);
-                        if (iz != null)
+                        if ((iz) != null)
                             iz.accept(this);
                     }
                 }
@@ -149,7 +149,7 @@ public class delegatize {
                 this.result = v.checkNestedReference(this.sc, Loc.initial);
                 if (this.result)
                     return ;
-                if ((v._init != null && v._init.isExpInitializer() != null))
+                if ((v._init != null) && (v._init.isExpInitializer() != null))
                 {
                     Expression ie = initializerToExpression(v._init, null);
                     this.result = lambdaCheckForNestedRef(ie, this.sc);
@@ -164,7 +164,7 @@ public class delegatize {
     public static Expression toDelegate(Expression e, Type t, Scope sc) {
         Loc loc = e.loc.copy();
         TypeFunction tf = new TypeFunction(new ParameterList(null, VarArg.none), t, LINK.d, 0L);
-        if ((t.hasWild()) != 0)
+        if (t.hasWild() != 0)
             tf.mod = (byte)8;
         FuncLiteralDeclaration fld = new FuncLiteralDeclaration(loc, loc, tf, TOK.delegate_, null, null);
         lambdaSetParent(e, fld);
@@ -175,7 +175,7 @@ public class delegatize {
         if (r)
             return new ErrorExp();
         Statement s = null;
-        if ((t.ty & 0xFF) == ENUMTY.Tvoid)
+        if (((t.ty & 0xFF) == ENUMTY.Tvoid))
             s = new ExpStatement(loc, e);
         else
             s = new ReturnStatement(loc, e);
@@ -198,24 +198,24 @@ public class delegatize {
 
     public static boolean ensureStaticLinkTo(Dsymbol s, Dsymbol p) {
         for (; s != null;){
-            if (pequals(s, p))
+            if ((pequals(s, p)))
                 return true;
             {
                 FuncDeclaration fd = s.isFuncDeclaration();
-                if (fd != null)
+                if ((fd) != null)
                 {
-                    if ((!(fd.isThis() != null) && !(fd.isNested())))
+                    if ((fd.isThis() == null) && !fd.isNested())
                         break;
                     {
                         FuncLiteralDeclaration fld = fd.isFuncLiteralDeclaration();
-                        if (fld != null)
+                        if ((fld) != null)
                             fld.tok = TOK.delegate_;
                     }
                 }
             }
             {
                 AggregateDeclaration ad = s.isAggregateDeclaration();
-                if (ad != null)
+                if ((ad) != null)
                 {
                     if ((ad.storage_class & 1L) != 0)
                         break;

@@ -46,7 +46,7 @@ public class console {
 
         public static boolean detectTerminal() {
             BytePtr term = pcopy(getenv(new BytePtr("TERM")));
-            return ((((isatty(2)) != 0 && term != null) && (term.get(0)) != 0) && strcmp(term, new BytePtr("dumb")) != 0);
+            return (isatty(2) != 0) && (term != null) && (term.get(0) != 0) && (strcmp(term, new BytePtr("dumb")) != 0);
         }
 
         public static Console create(_IO_FILE fp) {

@@ -49,24 +49,24 @@ public class denum {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             EnumDeclaration ed = new EnumDeclaration(this.loc, this.ident, this.memtype != null ? this.memtype.syntaxCopy() : null);
             return this.syntaxCopy(ed);
         }
 
         public  void addMember(Scope sc, ScopeDsymbol sds) {
             ScopeDsymbol scopesym = this.isAnonymous() ? sds : this;
-            if (!(this.isAnonymous()))
+            if (!this.isAnonymous())
             {
                 this.addMember(sc, sds);
-                if (!(this.symtab != null))
+                if (this.symtab == null)
                     this.symtab = new DsymbolTable();
             }
             if (this.members != null)
             {
                 {
                     int i = 0;
-                    for (; i < (this.members).length;i++){
+                    for (; (i < (this.members).length);i++){
                         EnumMember em = (this.members).get(i).isEnumMember();
                         em.ed = this;
                         em.addMember(sc, this.isAnonymous() ? scopesym : this);
@@ -77,7 +77,7 @@ public class denum {
         }
 
         public  void setScope(Scope sc) {
-            if (this.semanticRun > PASS.init)
+            if ((this.semanticRun > PASS.init))
                 return ;
             this.setScope(sc);
         }
@@ -101,7 +101,7 @@ public class denum {
             {
                 dsymbolSemantic(this, this._scope);
             }
-            if (((this.members == null || !(this.symtab != null)) || this._scope != null))
+            if ((this.members == null) || (this.symtab == null) || (this._scope != null))
             {
                 this.error(new BytePtr("is forward referenced when looking for `%s`"), ident.toChars());
                 return null;
@@ -121,7 +121,7 @@ public class denum {
         public  Expression getMaxMinValue(Loc loc, Identifier id) {
             Function2<Expression,Loc,Expression> pvalToResult = new Function2<Expression,Loc,Expression>(){
                 public Expression invoke(Expression e, Loc loc){
-                    if ((e.op & 0xFF) != 127)
+                    if (((e.op & 0xFF) != 127))
                     {
                         e = e.copy();
                         e.loc = loc.copy();
@@ -129,14 +129,14 @@ public class denum {
                     return e;
                 }
             };
-            Ref<Ptr<Expression>> pval = ref(pcopy(pequals(id, Id.max) ? this.maxval : this.minval));
+            Ref<Ptr<Expression>> pval = ref(pcopy((pequals(id, Id.max)) ? this.maxval : this.minval));
             Function0<Expression> errorReturn = new Function0<Expression>(){
                 public Expression invoke(){
                     pval.value.set(0, (new ErrorExp()));
                     return pval.value.get();
                 }
             };
-            if ((this.inuse) != 0)
+            if (this.inuse != 0)
             {
                 this.error(loc, new BytePtr("recursive definition of `.%s` property"), id.toChars());
                 return errorReturn.invoke();
@@ -147,7 +147,7 @@ public class denum {
                 dsymbolSemantic(this, this._scope);
             if (this.errors)
                 return errorReturn.invoke();
-            if ((this.semanticRun == PASS.init || this.members == null))
+            if ((this.semanticRun == PASS.init) || (this.members == null))
             {
                 if (this.isSpecial())
                 {
@@ -156,7 +156,7 @@ public class denum {
                 this.error(new BytePtr("is forward referenced looking for `.%s`"), id.toChars());
                 return errorReturn.invoke();
             }
-            if (!((this.memtype != null && this.memtype.isintegral())))
+            if (!((this.memtype != null) && this.memtype.isintegral()))
             {
                 this.error(loc, new BytePtr("has no `.%s` property because base type `%s` is not an integral type"), id.toChars(), this.memtype != null ? this.memtype.toChars() : new BytePtr(""));
                 return errorReturn.invoke();
@@ -164,9 +164,9 @@ public class denum {
             boolean first = true;
             {
                 int i = 0;
-                for (; i < (this.members).length;i++){
+                for (; (i < (this.members).length);i++){
                     EnumMember em = (this.members).get(i).isEnumMember();
-                    if (!(em != null))
+                    if (em == null)
                         continue;
                     if (em.errors)
                     {
@@ -181,17 +181,17 @@ public class denum {
                     else
                     {
                         Expression e = em.value();
-                        Expression ec = new CmpExp(pequals(id, Id.max) ? TOK.greaterThan : TOK.lessThan, em.loc, e, pval.value.get());
+                        Expression ec = new CmpExp((pequals(id, Id.max)) ? TOK.greaterThan : TOK.lessThan, em.loc, e, pval.value.get());
                         this.inuse++;
                         ec = expressionSemantic(ec, em._scope);
                         this.inuse--;
                         ec = ec.ctfeInterpret();
-                        if ((ec.op & 0xFF) == 127)
+                        if (((ec.op & 0xFF) == 127))
                         {
                             this.errors = true;
                             continue;
                         }
-                        if ((ec.toInteger()) != 0)
+                        if (ec.toInteger() != 0)
                             pval.value.set(0, e);
                     }
                 }
@@ -200,7 +200,7 @@ public class denum {
         }
 
         public  boolean isSpecial() {
-            return (isSpecialEnumIdent(this.ident) && this.memtype != null);
+            return isSpecialEnumIdent(this.ident) && (this.memtype != null);
         }
 
         public  Expression getDefaultValue(Loc loc) {
@@ -216,7 +216,7 @@ public class denum {
                 dsymbolSemantic(this, this._scope);
             if (this.errors)
                 return handleErrors.invoke();
-            if ((this.semanticRun == PASS.init || this.members == null))
+            if ((this.semanticRun == PASS.init) || (this.members == null))
             {
                 if (this.isSpecial())
                 {
@@ -228,7 +228,7 @@ public class denum {
             {
                 int __key927 = 0;
                 int __limit928 = (this.members).length;
-                for (; __key927 < __limit928;__key927 += 1) {
+                for (; (__key927 < __limit928);__key927 += 1) {
                     int i = __key927;
                     EnumMember em = (this.members).get(i).isEnumMember();
                     if (em != null)
@@ -251,13 +251,13 @@ public class denum {
                 }
                 else
                 {
-                    if ((!(this.isAnonymous()) && this.members != null))
+                    if (!this.isAnonymous() && (this.members != null))
                         this.memtype = Type.tint32;
                 }
             }
-            if (!(this.memtype != null))
+            if (this.memtype == null)
             {
-                if ((!(this.isAnonymous()) && this.members != null))
+                if (!this.isAnonymous() && (this.members != null))
                     this.memtype = Type.tint32;
                 else
                 {
@@ -340,7 +340,7 @@ public class denum {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             return new EnumMember(this.loc, this.ident, this.value() != null ? this.value().syntaxCopy() : null, this.origType != null ? this.origType.syntaxCopy() : null, this.storage_class, this.userAttribDecl != null ? (UserAttributeDeclaration)this.userAttribDecl.syntaxCopy(s) : null, this.depdecl != null ? (DeprecatedDeclaration)this.depdecl.syntaxCopy(s) : null);
         }
 
@@ -353,7 +353,7 @@ public class denum {
             if (this.errors)
                 return new ErrorExp();
             this.checkDisabled(loc, sc, false);
-            if ((this.depdecl != null && this.depdecl._scope == null))
+            if ((this.depdecl != null) && (this.depdecl._scope == null))
                 this.depdecl._scope = sc;
             this.checkDeprecated(loc, sc);
             if (this.errors)
@@ -426,7 +426,7 @@ public class denum {
         }
     }
     public static boolean isSpecialEnumIdent(Identifier ident) {
-        return (((((pequals(ident, Id.__c_long) || pequals(ident, Id.__c_ulong)) || pequals(ident, Id.__c_longlong)) || pequals(ident, Id.__c_ulonglong)) || pequals(ident, Id.__c_long_double)) || pequals(ident, Id.__c_wchar_t));
+        return (pequals(ident, Id.__c_long)) || (pequals(ident, Id.__c_ulong)) || (pequals(ident, Id.__c_longlong)) || (pequals(ident, Id.__c_ulonglong)) || (pequals(ident, Id.__c_long_double)) || (pequals(ident, Id.__c_wchar_t));
     }
 
 }

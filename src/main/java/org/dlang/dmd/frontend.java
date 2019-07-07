@@ -153,13 +153,13 @@ public class frontend {
     }
 
     public static void addImport(ByteSlice path) {
-        if (global.path == null)
+        if ((global.path == null))
             global.path = new DArray<BytePtr>();
         (global.path).push(toStringz(path));
     }
 
     public static void addStringImport(ByteSlice path) {
-        if (global.filePath == null)
+        if ((global.filePath == null))
             global.filePath = new DArray<BytePtr>();
         (global.filePath).push(toStringz(path));
     }
@@ -184,7 +184,7 @@ public class frontend {
             compilers = (slice(new ByteSlice[]{environment.get(new ByteSlice("DMD"), new ByteSlice())}).concat(compilers)).copy();
         Result paths = splitter(environment.get(new ByteSlice("PATH"), new ByteSlice("")), new ByteSlice(":")).copy();
         FilterResultnothingResult res = filter(joiner(map.invoke(compilers))).copy();
-        return !(res.empty()) ? res.front() : new ByteSlice();
+        return !res.empty() ? res.front() : new ByteSlice();
     }
 
     public static MapResultnothingUniqResultnothingSortedRangeSlice<ByteSlice>nothing parseImportPathsFromConfig(ByteSlice iniFile, ByteSlice execDir) {
@@ -193,14 +193,14 @@ public class frontend {
 
     public static MapResultnothingUniqResultnothingSortedRangeSlice<ByteSlice>nothing findImportPaths() {
         ByteSlice execFilePath = determineDefaultCompiler().copy();
-        assertMsg(execFilePath != new ByteSlice(), new ByteSlice("No D compiler found. `Use parseImportsFromConfig` manually."));
+        assertMsg((execFilePath != new ByteSlice()), new ByteSlice("No D compiler found. `Use parseImportsFromConfig` manually."));
         ByteSlice execDir = dirName(execFilePath).copy();
         ByteSlice iniFile = new ByteSlice();
-        if ((endsWith(execFilePath, new ByteSlice("ldc"), new ByteSlice("ldc2"), new ByteSlice("ldmd"), new ByteSlice("ldmd2"))) != 0)
+        if (endsWith(execFilePath, new ByteSlice("ldc"), new ByteSlice("ldc2"), new ByteSlice("ldmd"), new ByteSlice("ldmd2")) != 0)
             iniFile = findLDCConfig(toByteSlice(execFilePath)).copy();
         else
             iniFile = findDMDConfig(toByteSlice(execFilePath)).copy();
-        assertMsg((iniFile != new ByteSlice() && exists(iniFile)), new ByteSlice("No valid config found."));
+        assertMsg((iniFile != new ByteSlice()) && exists(iniFile), new ByteSlice("No valid config found."));
         return parseImportPathsFromConfig(toByteSlice(iniFile), toByteSlice(execDir));
     }
 

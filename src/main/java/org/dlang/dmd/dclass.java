@@ -56,25 +56,25 @@ public class dclass {
                 (vtbl).setDim(this.sym.vtbl.length);
             {
                 int j = this.sym.vtblOffset();
-                for (; j < this.sym.vtbl.length;j++){
+                for (; (j < this.sym.vtbl.length);j++){
                     FuncDeclaration ifd = this.sym.vtbl.get(j).isFuncDeclaration();
                     FuncDeclaration fd = null;
                     TypeFunction tf = null;
                     assert(ifd != null);
                     tf = ifd.type.toTypeFunction();
                     fd = cd.findFunc(ifd.ident, tf);
-                    if ((fd != null && !(fd.isAbstract())))
+                    if ((fd != null) && !fd.isAbstract())
                     {
-                        if (fd.linkage != ifd.linkage)
+                        if ((fd.linkage != ifd.linkage))
                             fd.error(new BytePtr("linkage doesn't match interface function"));
-                        if ((((newinstance) != 0 && !pequals(fd.toParent(), cd)) && pequals(ifd.toParent(), this.sym)))
+                        if ((newinstance != 0) && (!pequals(fd.toParent(), cd)) && (pequals(ifd.toParent(), this.sym)))
                             cd.error(new BytePtr("interface function `%s` is not implemented"), ifd.toFullSignature());
-                        if (pequals(fd.toParent(), cd))
+                        if ((pequals(fd.toParent(), cd)))
                             result = true;
                     }
                     else
                     {
-                        if (!(cd.isAbstract()))
+                        if (!cd.isAbstract())
                             cd.error(new BytePtr("interface function `%s` is not implemented"), ifd.toFullSignature());
                         fd = null;
                     }
@@ -90,12 +90,12 @@ public class dclass {
             this.baseInterfaces = bc.slice(0,this.sym.interfaces.getLength()).copy();
             {
                 int i = 0;
-                for (; i < this.baseInterfaces.getLength();i++){
+                for (; (i < this.baseInterfaces.getLength());i++){
                     BaseClass b = this.baseInterfaces.get(i);
                     BaseClass b2 = this.sym.interfaces.get(i);
-                    assert((b2).vtbl.length == 0);
+                    assert(((b2).vtbl.length == 0));
                     (b).opAssign((b2));
-                    if ((i) != 0)
+                    if (i != 0)
                         (vtblInterfaces).push(b);
                     (b).copyBaseInterfaces(vtblInterfaces);
                 }
@@ -165,7 +165,7 @@ public class dclass {
         public Symbol cpp_type_info_ptr_sym;
         public  ClassDeclaration(Loc loc, Identifier id, DArray<BaseClass> baseclasses, DArray<Dsymbol> members, boolean inObject) {
             this.objc = new ObjcClassDeclaration(this);
-            if (!(id != null))
+            if (id == null)
             {
                 this.isActuallyAnonymous = true;
             }
@@ -180,138 +180,138 @@ public class dclass {
             this.type = new TypeClass(this);
             if (id != null)
             {
-                if (((pequals(id, Id.__sizeof) || pequals(id, Id.__xalignof)) || pequals(id, Id._mangleof)))
+                if ((pequals(id, Id.__sizeof)) || (pequals(id, Id.__xalignof)) || (pequals(id, Id._mangleof)))
                     this.error(new BytePtr("illegal class name"));
-                if ((id.toChars().get(0) & 0xFF) == 84)
+                if (((id.toChars().get(0) & 0xFF) == 84))
                 {
-                    if (pequals(id, Id.TypeInfo))
+                    if ((pequals(id, Id.TypeInfo)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.dtypeinfo = this;
                     }
-                    if (pequals(id, Id.TypeInfo_Class))
+                    if ((pequals(id, Id.TypeInfo_Class)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.typeinfoclass = this;
                     }
-                    if (pequals(id, Id.TypeInfo_Interface))
+                    if ((pequals(id, Id.TypeInfo_Interface)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.typeinfointerface = this;
                     }
-                    if (pequals(id, Id.TypeInfo_Struct))
+                    if ((pequals(id, Id.TypeInfo_Struct)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.typeinfostruct = this;
                     }
-                    if (pequals(id, Id.TypeInfo_Pointer))
+                    if ((pequals(id, Id.TypeInfo_Pointer)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.typeinfopointer = this;
                     }
-                    if (pequals(id, Id.TypeInfo_Array))
+                    if ((pequals(id, Id.TypeInfo_Array)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.typeinfoarray = this;
                     }
-                    if (pequals(id, Id.TypeInfo_StaticArray))
+                    if ((pequals(id, Id.TypeInfo_StaticArray)))
                     {
                         Type.typeinfostaticarray = this;
                     }
-                    if (pequals(id, Id.TypeInfo_AssociativeArray))
+                    if ((pequals(id, Id.TypeInfo_AssociativeArray)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.typeinfoassociativearray = this;
                     }
-                    if (pequals(id, Id.TypeInfo_Enum))
+                    if ((pequals(id, Id.TypeInfo_Enum)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.typeinfoenum = this;
                     }
-                    if (pequals(id, Id.TypeInfo_Function))
+                    if ((pequals(id, Id.TypeInfo_Function)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.typeinfofunction = this;
                     }
-                    if (pequals(id, Id.TypeInfo_Delegate))
+                    if ((pequals(id, Id.TypeInfo_Delegate)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.typeinfodelegate = this;
                     }
-                    if (pequals(id, Id.TypeInfo_Tuple))
+                    if ((pequals(id, Id.TypeInfo_Tuple)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.typeinfotypelist = this;
                     }
-                    if (pequals(id, Id.TypeInfo_Const))
+                    if ((pequals(id, Id.TypeInfo_Const)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.typeinfoconst = this;
                     }
-                    if (pequals(id, Id.TypeInfo_Invariant))
+                    if ((pequals(id, Id.TypeInfo_Invariant)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.typeinfoinvariant = this;
                     }
-                    if (pequals(id, Id.TypeInfo_Shared))
+                    if ((pequals(id, Id.TypeInfo_Shared)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.typeinfoshared = this;
                     }
-                    if (pequals(id, Id.TypeInfo_Wild))
+                    if ((pequals(id, Id.TypeInfo_Wild)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.typeinfowild = this;
                     }
-                    if (pequals(id, Id.TypeInfo_Vector))
+                    if ((pequals(id, Id.TypeInfo_Vector)))
                     {
-                        if (!(inObject))
+                        if (!inObject)
                             this.error(new BytePtr("%s"), dclass.__ctormsg);
                         Type.typeinfovector = this;
                     }
                 }
-                if (pequals(id, Id.Object))
+                if ((pequals(id, Id.Object)))
                 {
-                    if (!(inObject))
+                    if (!inObject)
                         this.error(new BytePtr("%s"), dclass.__ctormsg);
                     object = this;
                 }
-                if (pequals(id, Id.Throwable))
+                if ((pequals(id, Id.Throwable)))
                 {
-                    if (!(inObject))
+                    if (!inObject)
                         this.error(new BytePtr("%s"), dclass.__ctormsg);
                     throwable = this;
                 }
-                if (pequals(id, Id.Exception))
+                if ((pequals(id, Id.Exception)))
                 {
-                    if (!(inObject))
+                    if (!inObject)
                         this.error(new BytePtr("%s"), dclass.__ctormsg);
                     exception = this;
                 }
-                if (pequals(id, Id.Error))
+                if ((pequals(id, Id.Error)))
                 {
-                    if (!(inObject))
+                    if (!inObject)
                         this.error(new BytePtr("%s"), dclass.__ctormsg);
                     errorException = this;
                 }
-                if (pequals(id, Id.cpp_type_info_ptr))
+                if ((pequals(id, Id.cpp_type_info_ptr)))
                 {
-                    if (!(inObject))
+                    if (!inObject)
                         this.error(new BytePtr("%s"), dclass.__ctormsg);
                     cpp_type_info_ptr = this;
                 }
@@ -329,7 +329,7 @@ public class dclass {
             (cd.baseclasses).setDim((this.baseclasses).length);
             {
                 int i = 0;
-                for (; i < (cd.baseclasses).length;i++){
+                for (; (i < (cd.baseclasses).length);i++){
                     BaseClass b = (this.baseclasses).get(i);
                     BaseClass b2 = new BaseClass((b).type.syntaxCopy());
                     cd.baseclasses.set(i, b2);
@@ -348,13 +348,13 @@ public class dclass {
         }
 
         public  boolean isBaseOf2(ClassDeclaration cd) {
-            if (!(cd != null))
+            if (cd == null)
                 return false;
             {
                 int i = 0;
-                for (; i < (cd.baseclasses).length;i++){
+                for (; (i < (cd.baseclasses).length);i++){
                     BaseClass b = (cd.baseclasses).get(i);
-                    if ((pequals((b).sym, this) || this.isBaseOf2((b).sym)))
+                    if ((pequals((b).sym, this)) || this.isBaseOf2((b).sym))
                         return true;
                 }
             }
@@ -367,13 +367,13 @@ public class dclass {
             if (poffset != null)
                 poffset.set(0, 0);
             for (; cd != null;){
-                if (((!(cd.baseClass != null) && cd.semanticRun < PASS.semanticdone) && !(cd.isInterfaceDeclaration() != null)))
+                if ((cd.baseClass == null) && (cd.semanticRun < PASS.semanticdone) && (cd.isInterfaceDeclaration() == null))
                 {
                     dsymbolSemantic(cd, null);
-                    if ((!(cd.baseClass != null) && cd.semanticRun < PASS.semanticdone))
+                    if ((cd.baseClass == null) && (cd.semanticRun < PASS.semanticdone))
                         cd.error(new BytePtr("base class is forward referenced by `%s`"), this.toChars());
                 }
-                if (pequals(this, cd.baseClass))
+                if ((pequals(this, cd.baseClass)))
                     return true;
                 cd = cd.baseClass;
             }
@@ -385,16 +385,16 @@ public class dclass {
         }
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
-            if ((this._scope != null && this.baseok < Baseok.done))
+            if ((this._scope != null) && (this.baseok < Baseok.done))
             {
-                if (!(this.inuse))
+                if (!this.inuse)
                 {
                     this.inuse = true;
                     dsymbolSemantic(this, null);
                     this.inuse = false;
                 }
             }
-            if ((this.members == null || !(this.symtab != null)))
+            if ((this.members == null) || (this.symtab == null))
             {
                 this.error(new BytePtr("is forward referenced when looking for `%s`"), ident.toChars());
                 return null;
@@ -402,24 +402,24 @@ public class dclass {
             Dsymbol s = this.search(loc, ident, flags);
             if ((flags & 16) != 0)
                 return s;
-            if (!(s != null))
+            if (s == null)
             {
                 {
                     int i = 0;
-                    for (; i < (this.baseclasses).length;i++){
+                    for (; (i < (this.baseclasses).length);i++){
                         BaseClass b = (this.baseclasses).get(i);
                         if ((b).sym != null)
                         {
-                            if (!((b).sym.symtab != null))
+                            if ((b).sym.symtab == null)
                                 this.error(new BytePtr("base `%s` is forward referenced"), (b).sym.ident.toChars());
                             else
                             {
                                 s = (b).sym.search(loc, ident, flags);
-                                if (!(s != null))
+                                if (s == null)
                                     continue;
-                                else if (pequals(s, this))
+                                else if ((pequals(s, this)))
                                     s = null;
-                                else if (((!((flags & 128) != 0) && !(s.prot().kind == Prot.Kind.protected_)) && !(symbolIsVisible(this, s))))
+                                else if (((flags & 128) == 0) && !(s.prot().kind == Prot.Kind.protected_) && !symbolIsVisible(this, s))
                                     s = null;
                                 else
                                     break;
@@ -435,10 +435,10 @@ public class dclass {
             {
                 Slice<BaseClass> __r905 = (this.baseclasses).opSlice().copy();
                 int __key906 = 0;
-                for (; __key906 < __r905.getLength();__key906 += 1) {
+                for (; (__key906 < __r905.getLength());__key906 += 1) {
                     BaseClass b = __r905.get(__key906);
                     ClassDeclaration cdb = (b).type.isClassHandle();
-                    if (!(cdb != null))
+                    if (cdb == null)
                         return null;
                     if (cdb.ident.equals(ident))
                         return cdb;
@@ -451,18 +451,18 @@ public class dclass {
         }
 
         public  void finalizeSize() {
-            assert(this.sizeok != Sizeok.done);
+            assert((this.sizeok != Sizeok.done));
             if (this.baseClass != null)
             {
-                assert(this.baseClass.sizeok == Sizeok.done);
+                assert((this.baseClass.sizeok == Sizeok.done));
                 this.alignsize = this.baseClass.alignsize;
                 this.structsize = this.baseClass.structsize;
-                if ((this.classKind == ClassKind.cpp && global.params.isWindows))
+                if ((this.classKind == ClassKind.cpp) && global.params.isWindows)
                     this.structsize = this.structsize + this.alignsize - 1 & ~(this.alignsize - 1);
             }
             else if (this.isInterfaceDeclaration() != null)
             {
-                if (this.interfaces.getLength() == 0)
+                if ((this.interfaces.getLength() == 0))
                 {
                     this.alignsize = target.ptrsize;
                     this.structsize = target.ptrsize;
@@ -482,23 +482,23 @@ public class dclass {
                     {
                         Slice<BaseClass> __r907 = cd.interfaces.copy();
                         int __key908 = 0;
-                        for (; __key908 < __r907.getLength();__key908 += 1) {
+                        for (; (__key908 < __r907.getLength());__key908 += 1) {
                             BaseClass b = __r907.get(__key908);
-                            if ((b).sym.sizeok != Sizeok.done)
+                            if (((b).sym.sizeok != Sizeok.done))
                                 (b).sym.finalizeSize();
-                            assert((b).sym.sizeok == Sizeok.done);
-                            if (!(((b).sym.alignsize) != 0))
+                            assert(((b).sym.sizeok == Sizeok.done));
+                            if ((b).sym.alignsize == 0)
                                 (b).sym.alignsize = target.ptrsize;
                             AggregateDeclaration.alignmember((b).sym.alignsize, (b).sym.alignsize, ptr(offset));
-                            assert(bi.value < (vtblInterfaces).length);
+                            assert((bi.value < (vtblInterfaces).length));
                             BaseClass bv = (vtblInterfaces).get(bi.value);
-                            if ((b).sym.interfaces.getLength() == 0)
+                            if (((b).sym.interfaces.getLength() == 0))
                             {
                                 (bv).offset = offset.value;
                                 bi.value += 1;
                                 {
                                     BaseClass b2 = bv;
-                                    for (; ((b2).baseInterfaces.getLength()) != 0;){
+                                    for (; (b2).baseInterfaces.getLength() != 0;){
                                         b2 = (b2).baseInterfaces.get(0);
                                         (b2).offset = offset.value;
                                     }
@@ -506,7 +506,7 @@ public class dclass {
                             }
                             membersPlace.invoke((b).sym, offset.value);
                             offset.value += (b).sym.structsize;
-                            if (alignsize < (b).sym.alignsize)
+                            if ((alignsize < (b).sym.alignsize))
                                 alignsize = (b).sym.alignsize;
                         }
                     }
@@ -524,7 +524,7 @@ public class dclass {
             {
                 Slice<Dsymbol> __r909 = (this.members).opSlice().copy();
                 int __key910 = 0;
-                for (; __key910 < __r909.getLength();__key910 += 1) {
+                for (; (__key910 < __r909.getLength());__key910 += 1) {
                     Dsymbol s = __r909.get(__key910);
                     s.setFieldOffset(this, ptr(offset), false);
                 }
@@ -543,22 +543,22 @@ public class dclass {
 
         public  boolean isFuncHidden(FuncDeclaration fd) {
             Dsymbol s = this.search(Loc.initial, fd.ident, 6);
-            if (!(s != null))
+            if (s == null)
             {
                 return false;
             }
             s = s.toAlias();
             {
                 OverloadSet os = s.isOverloadSet();
-                if (os != null)
+                if ((os) != null)
                 {
                     {
                         Slice<Dsymbol> __r911 = os.a.opSlice().copy();
                         int __key912 = 0;
-                        for (; __key912 < __r911.getLength();__key912 += 1) {
+                        for (; (__key912 < __r911.getLength());__key912 += 1) {
                             Dsymbol sm = __r911.get(__key912);
                             FuncDeclaration fm = sm.isFuncDeclaration();
-                            if ((overloadApply(fm, __lambda2, null)) != 0)
+                            if (overloadApply(fm, __lambda2, null) != 0)
                                 return false;
                         }
                     }
@@ -567,9 +567,9 @@ public class dclass {
                 else
                 {
                     FuncDeclaration f = s.isFuncDeclaration();
-                    if ((overloadApply(f, __lambda3, null)) != 0)
+                    if (overloadApply(f, __lambda3, null) != 0)
                         return false;
-                    return !(fd.parent.isTemplateMixin() != null);
+                    return fd.parent.isTemplateMixin() == null;
                 }
             }
         }
@@ -590,51 +590,51 @@ public class dclass {
                     {
                         Slice<Dsymbol> __r913 = vtbl.opSlice().copy();
                         int __key914 = 0;
-                        for (; __key914 < __r913.getLength();__key914 += 1) {
+                        for (; (__key914 < __r913.getLength());__key914 += 1) {
                             Dsymbol s = __r913.get(__key914);
                             FuncDeclaration fd = s.isFuncDeclaration();
-                            if (!(fd != null))
+                            if (fd == null)
                                 continue;
-                            if ((pequals(ident_ref.value, fd.ident) && fd.type.covariant(tf_ref.value, null, true) == 1))
+                            if ((pequals(ident_ref.value, fd.ident)) && (fd.type.covariant(tf_ref.value, null, true) == 1))
                             {
-                                if (!(fdmatch.value != null))
+                                if (fdmatch.value == null)
                                 {
                                     updateBestMatch.invoke(fd);
                                     continue;
                                 }
-                                if (pequals(fd, fdmatch.value))
+                                if ((pequals(fd, fdmatch.value)))
                                     continue;
                                 {
                                     int m1 = tf_ref.value.equals(fd.type) ? MATCH.exact : MATCH.nomatch;
                                     int m2 = tf_ref.value.equals(fdmatch.value.type) ? MATCH.exact : MATCH.nomatch;
-                                    if (m1 > m2)
+                                    if ((m1 > m2))
                                     {
                                         updateBestMatch.invoke(fd);
                                         continue;
                                     }
-                                    else if (m1 < m2)
+                                    else if ((m1 < m2))
                                         continue;
                                 }
                                 {
-                                    int m1 = (tf_ref.value.mod & 0xFF) == (fd.type.mod & 0xFF) ? MATCH.exact : MATCH.nomatch;
-                                    int m2 = (tf_ref.value.mod & 0xFF) == (fdmatch.value.type.mod & 0xFF) ? MATCH.exact : MATCH.nomatch;
-                                    if (m1 > m2)
+                                    int m1 = ((tf_ref.value.mod & 0xFF) == (fd.type.mod & 0xFF)) ? MATCH.exact : MATCH.nomatch;
+                                    int m2 = ((tf_ref.value.mod & 0xFF) == (fdmatch.value.type.mod & 0xFF)) ? MATCH.exact : MATCH.nomatch;
+                                    if ((m1 > m2))
                                     {
                                         updateBestMatch.invoke(fd);
                                         continue;
                                     }
-                                    else if (m1 < m2)
+                                    else if ((m1 < m2))
                                         continue;
                                 }
                                 {
                                     int m1 = fd.parent.isClassDeclaration() != null ? MATCH.exact : MATCH.nomatch;
                                     int m2 = fdmatch.value.parent.isClassDeclaration() != null ? MATCH.exact : MATCH.nomatch;
-                                    if (m1 > m2)
+                                    if ((m1 > m2))
                                     {
                                         updateBestMatch.invoke(fd);
                                         continue;
                                     }
-                                    else if (m1 < m2)
+                                    else if ((m1 < m2))
                                         continue;
                                 }
                                 fdambig.value = fd;
@@ -673,7 +673,7 @@ public class dclass {
 
         public  boolean isAbstract() {
             boolean log = false;
-            if (this.isabstract != Abstract.fwdref)
+            if ((this.isabstract != Abstract.fwdref))
                 return this.isabstract == Abstract.yes;
             if (false)
                 printf(new BytePtr("isAbstract(%s)\n"), this.toChars());
@@ -693,14 +693,14 @@ public class dclass {
                     return true;
                 }
             };
-            if (((this.storage_class & 16L) != 0 || (this._scope != null && ((this._scope).stc & 16L) != 0)))
+            if (((this.storage_class & 16L) != 0) || (this._scope != null) && (((this._scope).stc & 16L) != 0))
                 return yes.invoke();
             if (this.errors)
                 return no.invoke();
             Function2<Dsymbol,Object,Integer> func = new Function2<Dsymbol,Object,Integer>(){
                 public Integer invoke(Dsymbol s, Object param){
                     FuncDeclaration fd = s.isFuncDeclaration();
-                    if (!(fd != null))
+                    if (fd == null)
                         return 0;
                     if ((fd.storage_class & 1L) != 0)
                         return 0;
@@ -711,29 +711,29 @@ public class dclass {
             };
             {
                 int i = 0;
-                for (; i < (this.members).length;i++){
+                for (; (i < (this.members).length);i++){
                     Dsymbol s = (this.members).get(i);
-                    if ((s.apply(func, this)) != 0)
+                    if (s.apply(func, this) != 0)
                     {
                         return yes.invoke();
                     }
                 }
             }
-            if ((!(this.isInterfaceDeclaration() != null) && (!(this.baseClass != null) || !(this.baseClass.isAbstract()))))
+            if ((this.isInterfaceDeclaration() == null) && (this.baseClass == null) || !this.baseClass.isAbstract())
                 return no.invoke();
             dsymbolSemantic(this, null);
             {
                 Function2<Dsymbol,Object,Integer> virtualSemantic = new Function2<Dsymbol,Object,Integer>(){
                     public Integer invoke(Dsymbol s, Object param){
                         FuncDeclaration fd = s.isFuncDeclaration();
-                        if (((fd != null && !((fd.storage_class & 1L) != 0)) && !(fd.isUnitTestDeclaration() != null)))
+                        if ((fd != null) && ((fd.storage_class & 1L) == 0) && (fd.isUnitTestDeclaration() == null))
                             dsymbolSemantic(fd, null);
                         return 0;
                     }
                 };
                 {
                     int i = 0;
-                    for (; i < (this.members).length;i++){
+                    for (; (i < (this.members).length);i++){
                         Dsymbol s = (this.members).get(i);
                         s.apply(virtualSemantic, this);
                     }
@@ -742,10 +742,10 @@ public class dclass {
             {
                 int __key915 = 1;
                 int __limit916 = this.vtbl.length;
-                for (; __key915 < __limit916;__key915 += 1) {
+                for (; (__key915 < __limit916);__key915 += 1) {
                     int i = __key915;
                     FuncDeclaration fd = this.vtbl.get(i).isFuncDeclaration();
-                    if ((!(fd != null) || fd.isAbstract()))
+                    if ((fd == null) || fd.isAbstract())
                     {
                         return yes.invoke();
                     }
@@ -755,7 +755,7 @@ public class dclass {
         }
 
         public  int vtblOffset() {
-            return this.classKind == ClassKind.cpp ? 0 : 1;
+            return (this.classKind == ClassKind.cpp) ? 0 : 1;
         }
 
         public  BytePtr kind() {
@@ -763,7 +763,7 @@ public class dclass {
         }
 
         public  void addLocalClass(DArray<ClassDeclaration> aclasses) {
-            if (this.classKind != ClassKind.objc)
+            if ((this.classKind != ClassKind.objc))
                 (aclasses).push(this);
         }
 
@@ -773,7 +773,7 @@ public class dclass {
 
         public Dsymbol vtblsym;
         public  Dsymbol vtblSymbol() {
-            if (!(this.vtblsym != null))
+            if (this.vtblsym == null)
             {
                 Type vtype = Type.tvoidptr.immutableOf().sarrayOf((long)this.vtbl.length);
                 VarDeclaration var = new VarDeclaration(this.loc, vtype, Identifier.idPool(new ByteSlice("__vtbl")), null, 1048577L);
@@ -877,7 +877,7 @@ public class dclass {
     {
         public  InterfaceDeclaration(Loc loc, Identifier id, DArray<BaseClass> baseclasses) {
             super(loc, id, baseclasses, null, false);
-            if (pequals(id, Id.IUnknown))
+            if ((pequals(id, Id.IUnknown)))
             {
                 this.com = true;
                 this.classKind = ClassKind.cpp;
@@ -893,25 +893,25 @@ public class dclass {
             Scope sc2 = super.newScope(sc);
             if (this.com)
                 (sc2).linkage = LINK.windows;
-            else if (this.classKind == ClassKind.cpp)
+            else if ((this.classKind == ClassKind.cpp))
                 (sc2).linkage = LINK.cpp;
-            else if (this.classKind == ClassKind.objc)
+            else if ((this.classKind == ClassKind.objc))
                 (sc2).linkage = LINK.objc;
             return sc2;
         }
 
         public  boolean isBaseOf(ClassDeclaration cd, IntPtr poffset) {
-            assert(!(this.baseClass != null));
+            assert(this.baseClass == null);
             {
                 Slice<BaseClass> __r917 = cd.interfaces.copy();
                 int __key918 = 0;
-                for (; __key918 < __r917.getLength();__key918 += 1) {
+                for (; (__key918 < __r917.getLength());__key918 += 1) {
                     BaseClass b = __r917.get(__key918);
-                    if (pequals(this, (b).sym))
+                    if ((pequals(this, (b).sym)))
                     {
                         if (poffset != null)
                         {
-                            poffset.set(0, (cd.sizeok == Sizeok.done ? (b).offset : 1985229329));
+                            poffset.set(0, ((cd.sizeok == Sizeok.done) ? (b).offset : 1985229329));
                         }
                         return true;
                     }
@@ -919,7 +919,7 @@ public class dclass {
                         return true;
                 }
             }
-            if ((cd.baseClass != null && this.isBaseOf(cd.baseClass, poffset)))
+            if ((cd.baseClass != null) && this.isBaseOf(cd.baseClass, poffset))
                 return true;
             if (poffset != null)
                 poffset.set(0, 0);
@@ -929,9 +929,9 @@ public class dclass {
         public  boolean isBaseOf(BaseClass bc, IntPtr poffset) {
             {
                 int j = 0;
-                for (; j < (bc).baseInterfaces.getLength();j++){
+                for (; (j < (bc).baseInterfaces.getLength());j++){
                     BaseClass b = (bc).baseInterfaces.get(j);
-                    if (pequals(this, (b).sym))
+                    if ((pequals(this, (b).sym)))
                     {
                         if (poffset != null)
                         {
@@ -955,7 +955,7 @@ public class dclass {
         }
 
         public  int vtblOffset() {
-            if ((this.isCOMinterface() || this.isCPPinterface()))
+            if (this.isCOMinterface() || this.isCPPinterface())
                 return 0;
             return 1;
         }

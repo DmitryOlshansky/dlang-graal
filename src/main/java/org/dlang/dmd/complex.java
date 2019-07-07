@@ -56,7 +56,7 @@ public class complex {
         }
 
         public  complex_t opDiv(complex_t y) {
-            if (CTFloat.fabs(y.re) < CTFloat.fabs(y.im))
+            if ((CTFloat.fabs(y.re) < CTFloat.fabs(y.im)))
             {
                 double r = y.re / y.im;
                 double den = y.im + r * y.re;
@@ -72,12 +72,12 @@ public class complex {
 
         // from template opCast!(Boolean)
         public  boolean opCastBoolean() {
-            return ((this.re) != 0 || (this.im) != 0);
+            return (this.re != 0) || (this.im != 0);
         }
 
 
         public  int opEquals(complex_t y) {
-            return (((this.re == y.re && this.im == y.im)) ? 1 : 0);
+            return (((this.re == y.re) && (this.im == y.im)) ? 1 : 0);
         }
 
         public complex_t(){

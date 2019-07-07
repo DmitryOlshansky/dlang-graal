@@ -26,21 +26,21 @@ import static org.dlang.dmd.visitor.*;
 public class typinf {
 
     public static void genTypeInfo(Loc loc, Type torig, Scope sc) {
-        if ((sc == null || !(((sc).flags & 128) != 0)))
+        if ((sc == null) || (((sc).flags & 128) == 0))
         {
-            if (!(global.params.useTypeInfo))
+            if (!global.params.useTypeInfo)
             {
                 error(loc, new BytePtr("`TypeInfo` cannot be used with -betterC"));
                 fatal();
             }
         }
-        if (!(Type.dtypeinfo != null))
+        if (Type.dtypeinfo == null)
         {
             error(loc, new BytePtr("`object.TypeInfo` could not be found, but is implicitly used"));
             fatal();
         }
         Type t = torig.merge2();
-        if (!(t.vtinfo != null))
+        if (t.vtinfo == null)
         {
             if (t.isShared())
                 t.vtinfo = TypeInfoSharedDeclaration.create(t);
@@ -53,7 +53,7 @@ public class typinf {
             else
                 t.vtinfo = getTypeInfoDeclaration(t);
             assert(t.vtinfo != null);
-            if (!(builtinTypeInfo(t)))
+            if (!builtinTypeInfo(t))
             {
                 if (sc != null)
                 {
@@ -66,13 +66,13 @@ public class typinf {
                 }
             }
         }
-        if (!(torig.vtinfo != null))
+        if (torig.vtinfo == null)
             torig.vtinfo = t.vtinfo;
         assert(torig.vtinfo != null);
     }
 
     public static Type getTypeInfoType(Loc loc, Type t, Scope sc) {
-        assert((t.ty & 0xFF) != ENUMTY.Terror);
+        assert(((t.ty & 0xFF) != ENUMTY.Terror));
         genTypeInfo(loc, t, sc);
         return t.vtinfo.type;
     }
@@ -118,7 +118,7 @@ public class typinf {
         };
         Function1<TypeAArray,Boolean> visitAArray = new Function1<TypeAArray,Boolean>(){
             public Boolean invoke(TypeAArray t){
-                return (isSpeculativeType(t.index) || isSpeculativeType(t.next));
+                return isSpeculativeType(t.index) || isSpeculativeType(t.next);
             }
         };
         Function1<TypeStruct,Boolean> visitStruct = new Function1<TypeStruct,Boolean>(){
@@ -126,11 +126,11 @@ public class typinf {
                 StructDeclaration sd = t.sym;
                 {
                     TemplateInstance ti = sd.isInstantiated();
-                    if (ti != null)
+                    if ((ti) != null)
                     {
-                        if (!(ti.needsCodegen()))
+                        if (!ti.needsCodegen())
                         {
-                            if ((ti.minst != null || sd.requestTypeInfo))
+                            if ((ti.minst != null) || sd.requestTypeInfo)
                                 return false;
                             return true;
                         }
@@ -147,9 +147,9 @@ public class typinf {
                 ClassDeclaration sd = t.sym;
                 {
                     TemplateInstance ti = sd.isInstantiated();
-                    if (ti != null)
+                    if ((ti) != null)
                     {
-                        if ((!(ti.needsCodegen()) && !(ti.minst != null)))
+                        if (!ti.needsCodegen() && (ti.minst == null))
                         {
                             return true;
                         }
@@ -165,7 +165,7 @@ public class typinf {
                     {
                         Slice<Parameter> __r1726 = (t.arguments).opSlice().copy();
                         int __key1727 = 0;
-                        for (; __key1727 < __r1726.getLength();__key1727 += 1) {
+                        for (; (__key1727 < __r1726.getLength());__key1727 += 1) {
                             Parameter arg = __r1726.get(__key1727);
                             if (isSpeculativeType(arg.type))
                                 return true;
@@ -175,7 +175,7 @@ public class typinf {
                 return false;
             }
         };
-        if (!(t != null))
+        if (t == null)
             return false;
         Type tb = t.toBasetype();
         switch ((tb.ty & 0xFF))
@@ -198,12 +198,12 @@ public class typinf {
     }
 
     public static boolean builtinTypeInfo(Type t) {
-        if (((t.isTypeBasic() != null || (t.ty & 0xFF) == ENUMTY.Tclass) || (t.ty & 0xFF) == ENUMTY.Tnull))
-            return !((t.mod) != 0);
-        if ((t.ty & 0xFF) == ENUMTY.Tarray)
+        if ((t.isTypeBasic() != null) || ((t.ty & 0xFF) == ENUMTY.Tclass) || ((t.ty & 0xFF) == ENUMTY.Tnull))
+            return t.mod == 0;
+        if (((t.ty & 0xFF) == ENUMTY.Tarray))
         {
             Type next = t.nextOf();
-            return (!((t.mod) != 0) && (((next.isTypeBasic() != null && !((next.mod) != 0)) || ((next.ty & 0xFF) == ENUMTY.Tchar && (next.mod & 0xFF) == MODFlags.immutable_)) || ((next.ty & 0xFF) == ENUMTY.Tchar && (next.mod & 0xFF) == MODFlags.const_)));
+            return (t.mod == 0) && (next.isTypeBasic() != null) && (next.mod == 0) || ((next.ty & 0xFF) == ENUMTY.Tchar) && ((next.mod & 0xFF) == MODFlags.immutable_) || ((next.ty & 0xFF) == ENUMTY.Tchar) && ((next.mod & 0xFF) == MODFlags.const_);
         }
         return false;
     }

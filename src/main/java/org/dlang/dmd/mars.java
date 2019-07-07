@@ -78,7 +78,7 @@ public class mars {
             DArray<BytePtr> libmodules = new DArray<BytePtr>();
             try {
                 global._init();
-                if ((argc < 1 || argv == null))
+                if ((argc < 1) || (argv == null))
                 {
                 /*Largs:*/
                     error(Loc.initial, new BytePtr("missing or null command line arguments"));
@@ -89,7 +89,7 @@ public class mars {
                     {
                         int i = 0;
                     L_outer1:
-                        for (; i < argc;i++){
+                        for (; (i < argc);i++){
                             if (argv.get(i) == null)
                                 /*goto Largs*/throw Dispatch0.INSTANCE;
                             arguments.set(i, argv.get(i));
@@ -102,7 +102,7 @@ public class mars {
                     global.inifilename = parse_conf_arg(arguments).copy();
                     if (global.inifilename.getLength() != 0)
                     {
-                        if (((global.inifilename.getLength()) != 0 && !((FileName.exists(global.inifilename)) != 0)))
+                        if ((global.inifilename.getLength() != 0) && (FileName.exists(global.inifilename) == 0))
                             error(Loc.initial, new BytePtr("Config file '%.*s' does not exist."), global.inifilename.getLength(), toBytePtr(global.inifilename));
                     }
                     else
@@ -160,7 +160,7 @@ public class mars {
                                 Function1<ByteSlice,Integer> printHelpUsage = new Function1<ByteSlice,Integer>(){
                                     public Integer invoke(ByteSlice help){
                                         printf(new BytePtr("%.*s"), help.getLength(), help.get(0));
-                                        return (global.errors) != 0 ? 1 : 0;
+                                        return global.errors != 0 ? 1 : 0;
                                     }
                                 };
                                 Function1<Slice<ByteSlice>,ByteSlice> generateUsageChecks = new Function1<Slice<ByteSlice>,ByteSlice>(){
@@ -169,7 +169,7 @@ public class mars {
                                         {
                                             Slice<ByteSlice> __r1514 = params.copy();
                                             int __key1515 = 0;
-                                            for (; __key1515 < __r1514.getLength();__key1515 += 1) {
+                                            for (; (__key1515 < __r1514.getLength());__key1515 += 1) {
                                                 ByteSlice n = __r1514.get(__key1515).copy();
                                                 s.append(new ByteSlice("\n                if (params.").concat(n).concat(new ByteSlice("Usage)\n                    return printHelpUsage(CLIUsage.")).concat(n).concat(new ByteSlice("Usage);\n            ")));
                                             }
@@ -200,15 +200,15 @@ public class mars {
                                     global.console = pcopy((Console.create(stderr)));
                                 setTarget(params);
                                 setTargetCPU(params);
-                                if ((params.is64bit ? 1 : 0) != (is64bit ? 1 : 0))
+                                if (((params.is64bit ? 1 : 0) != (is64bit ? 1 : 0)))
                                     error(Loc.initial, new BytePtr("the architecture must not be changed in the %s section of %.*s"), ptr(envsection), global.inifilename.getLength(), toBytePtr(global.inifilename));
-                                if ((global.errors) != 0)
+                                if (global.errors != 0)
                                 {
                                     fatal();
                                 }
-                                if (files.length == 0)
+                                if ((files.length == 0))
                                 {
-                                    if ((params.jsonFieldFlags) != 0)
+                                    if (params.jsonFieldFlags != 0)
                                     {
                                         generateJson(null);
                                         return 0;
@@ -221,7 +221,7 @@ public class mars {
                                 {
                                     Slice<BytePtr> __r1516 = (params.versionids).opSlice().copy();
                                     int __key1517 = 0;
-                                    for (; __key1517 < __r1516.getLength();__key1517 += 1) {
+                                    for (; (__key1517 < __r1516.getLength());__key1517 += 1) {
                                         BytePtr charz = pcopy(__r1516.get(__key1517));
                                         VersionCondition.addGlobalIdent(charz.slice(0,strlen(charz)));
                                     }
@@ -230,7 +230,7 @@ public class mars {
                                 {
                                     Slice<BytePtr> __r1518 = (params.debugids).opSlice().copy();
                                     int __key1519 = 0;
-                                    for (; __key1519 < __r1518.getLength();__key1519 += 1) {
+                                    for (; (__key1519 < __r1518.getLength());__key1519 += 1) {
                                         BytePtr charz = pcopy(__r1518.get(__key1519));
                                         DebugCondition.addGlobalIdent(charz.slice(0,strlen(charz)));
                                     }
@@ -260,7 +260,7 @@ public class mars {
                                             {
                                                 Slice<BytePtr> __r1520 = (imppath).opSlice().copy();
                                                 int __key1521 = 0;
-                                                for (; __key1521 < __r1520.getLength();__key1521 += 1) {
+                                                for (; (__key1521 < __r1520.getLength());__key1521 += 1) {
                                                     BytePtr path = pcopy(__r1520.get(__key1521));
                                                     DArray<BytePtr> a = FileName.splitPath(path);
                                                     if (a != null)
@@ -291,9 +291,9 @@ public class mars {
                                         {
                                             Slice<dmodule.Module> __r1522 = modules.opSlice().copy();
                                             int __key1523 = 0;
-                                            for (; __key1523 < __r1522.getLength();__key1523 += 1) {
+                                            for (; (__key1523 < __r1522.getLength());__key1523 += 1) {
                                                 dmodule.Module m = __r1522.get(__key1523);
-                                                if ((params.addMain && __equals(m.srcfile.asString(), new ByteSlice("__main.d"))))
+                                                if (params.addMain && __equals(m.srcfile.asString(), new ByteSlice("__main.d")))
                                                 {
                                                     ByteSlice data = arraydup(new ByteSlice("int main(){return 0;}\u0000\u0000")).copy();
                                                     m.srcBuffer = new FileBuffer(toByteSlice(data.slice(0,data.getLength() - 2)));
@@ -308,7 +308,7 @@ public class mars {
                                         {
                                             Slice<dmodule.Module> __r1524 = modules.opSlice().copy();
                                             int __key1525 = 0;
-                                            for (; __key1525 < __r1524.getLength();__key1525 += 1) {
+                                            for (; (__key1525 < __r1524.getLength());__key1525 += 1) {
                                                 dmodule.Module m = __r1524.get(__key1525);
                                                 m.read(Loc.initial);
                                             }
@@ -318,29 +318,29 @@ public class mars {
                                         {
                                             int filei = 0;
                                             int modi = 0;
-                                            for (; filei < filecount;comma(filei++, modi++)){
+                                            for (; (filei < filecount);comma(filei++, modi++)){
                                                 dmodule.Module m = modules.get(modi);
                                                 if (params.verbose)
                                                     message(new BytePtr("parse     %s"), m.toChars());
-                                                if (!(dmodule.Module.rootModule != null))
+                                                if (dmodule.Module.rootModule == null)
                                                     dmodule.Module.rootModule = m;
                                                 m.importedFrom = m;
-                                                if (((!(params.oneobj) || modi == 0) || m.isDocFile))
+                                                if (!params.oneobj || (modi == 0) || m.isDocFile)
                                                     m.deleteObjFile();
                                                 m.parse();
                                                 if (m.isHdrFile)
                                                 {
                                                     {
                                                         int j = 0;
-                                                        for (; j < params.objfiles.length;j++){
-                                                            if (m.objfile.toChars() == params.objfiles.get(j))
+                                                        for (; (j < params.objfiles.length);j++){
+                                                            if ((m.objfile.toChars() == params.objfiles.get(j)))
                                                             {
                                                                 params.objfiles.remove(j);
                                                                 break;
                                                             }
                                                         }
                                                     }
-                                                    if (params.objfiles.length == 0)
+                                                    if ((params.objfiles.length == 0))
                                                         params.link = false;
                                                 }
                                                 if (m.isDocFile)
@@ -351,32 +351,32 @@ public class mars {
                                                     modi--;
                                                     {
                                                         int j = 0;
-                                                        for (; j < params.objfiles.length;j++){
-                                                            if (m.objfile.toChars() == params.objfiles.get(j))
+                                                        for (; (j < params.objfiles.length);j++){
+                                                            if ((m.objfile.toChars() == params.objfiles.get(j)))
                                                             {
                                                                 params.objfiles.remove(j);
                                                                 break;
                                                             }
                                                         }
                                                     }
-                                                    if (params.objfiles.length == 0)
+                                                    if ((params.objfiles.length == 0))
                                                         params.link = false;
                                                 }
                                             }
                                         }
-                                        if (((anydocfiles && (modules.length) != 0) && (params.oneobj || params.objname.getLength() != 0)))
+                                        if (anydocfiles && (modules.length != 0) && params.oneobj || (params.objname.getLength() != 0))
                                         {
                                             error(Loc.initial, new BytePtr("conflicting Ddoc and obj generation options"));
                                             fatal();
                                         }
-                                        if ((global.errors) != 0)
+                                        if (global.errors != 0)
                                             fatal();
                                         if (params.doHdrGeneration)
                                         {
                                             {
                                                 Slice<dmodule.Module> __r1526 = modules.opSlice().copy();
                                                 int __key1527 = 0;
-                                                for (; __key1527 < __r1526.getLength();__key1527 += 1) {
+                                                for (; (__key1527 < __r1526.getLength());__key1527 += 1) {
                                                     dmodule.Module m = __r1526.get(__key1527);
                                                     if (m.isHdrFile)
                                                         continue;
@@ -386,25 +386,25 @@ public class mars {
                                                 }
                                             }
                                         }
-                                        if ((global.errors) != 0)
+                                        if (global.errors != 0)
                                             fatal();
                                         {
                                             Slice<dmodule.Module> __r1528 = modules.opSlice().copy();
                                             int __key1529 = 0;
-                                            for (; __key1529 < __r1528.getLength();__key1529 += 1) {
+                                            for (; (__key1529 < __r1528.getLength());__key1529 += 1) {
                                                 dmodule.Module m = __r1528.get(__key1529);
                                                 if (params.verbose)
                                                     message(new BytePtr("importall %s"), m.toChars());
                                                 m.importAll(null);
                                             }
                                         }
-                                        if ((global.errors) != 0)
+                                        if (global.errors != 0)
                                             fatal();
                                         backend_init();
                                         {
                                             Slice<dmodule.Module> __r1530 = modules.opSlice().copy();
                                             int __key1531 = 0;
-                                            for (; __key1531 < __r1530.getLength();__key1531 += 1) {
+                                            for (; (__key1531 < __r1530.getLength());__key1531 += 1) {
                                                 dmodule.Module m = __r1530.get(__key1531);
                                                 if (params.verbose)
                                                     message(new BytePtr("semantic  %s"), m.toChars());
@@ -413,11 +413,11 @@ public class mars {
                                         }
                                         dmodule.Module.dprogress = 1;
                                         dmodule.Module.runDeferredSemantic();
-                                        if ((dmodule.Module.deferred.length) != 0)
+                                        if (dmodule.Module.deferred.length != 0)
                                         {
                                             {
                                                 int i = 0;
-                                                for (; i < dmodule.Module.deferred.length;i++){
+                                                for (; (i < dmodule.Module.deferred.length);i++){
                                                     Dsymbol sd = dmodule.Module.deferred.get(i);
                                                     sd.error(new BytePtr("unable to resolve forward reference in definition"));
                                                 }
@@ -426,7 +426,7 @@ public class mars {
                                         {
                                             Slice<dmodule.Module> __r1532 = modules.opSlice().copy();
                                             int __key1533 = 0;
-                                            for (; __key1533 < __r1532.getLength();__key1533 += 1) {
+                                            for (; (__key1533 < __r1532.getLength());__key1533 += 1) {
                                                 dmodule.Module m = __r1532.get(__key1533);
                                                 if (params.verbose)
                                                     message(new BytePtr("semantic2 %s"), m.toChars());
@@ -434,12 +434,12 @@ public class mars {
                                             }
                                         }
                                         dmodule.Module.runDeferredSemantic2();
-                                        if ((global.errors) != 0)
+                                        if (global.errors != 0)
                                             fatal();
                                         {
                                             Slice<dmodule.Module> __r1534 = modules.opSlice().copy();
                                             int __key1535 = 0;
-                                            for (; __key1535 < __r1534.getLength();__key1535 += 1) {
+                                            for (; (__key1535 < __r1534.getLength());__key1535 += 1) {
                                                 dmodule.Module m = __r1534.get(__key1535);
                                                 if (params.verbose)
                                                     message(new BytePtr("semantic3 %s"), m.toChars());
@@ -450,7 +450,7 @@ public class mars {
                                         {
                                             {
                                                 int i = 0;
-                                                for (; i < compiledImports.length;i++){
+                                                for (; (i < compiledImports.length);i++){
                                                     dmodule.Module m = compiledImports.get(i);
                                                     assert(m.isRoot());
                                                     if (params.verbose)
@@ -461,14 +461,14 @@ public class mars {
                                             }
                                         }
                                         dmodule.Module.runDeferredSemantic3();
-                                        if ((global.errors) != 0)
+                                        if (global.errors != 0)
                                             fatal();
                                         if (params.useInline)
                                         {
                                             {
                                                 Slice<dmodule.Module> __r1536 = modules.opSlice().copy();
                                                 int __key1537 = 0;
-                                                for (; __key1537 < __r1536.getLength();__key1537 += 1) {
+                                                for (; (__key1537 < __r1536.getLength());__key1537 += 1) {
                                                     dmodule.Module m = __r1536.get(__key1537);
                                                     if (params.verbose)
                                                         message(new BytePtr("inline scan %s"), m.toChars());
@@ -476,16 +476,16 @@ public class mars {
                                                 }
                                             }
                                         }
-                                        if (((global.errors) != 0 || (global.warnings) != 0))
+                                        if ((global.errors != 0) || (global.warnings != 0))
                                             fatal();
                                         {
                                             OutBuffer ob = params.moduleDeps;
-                                            if (ob != null)
+                                            if ((ob) != null)
                                             {
                                                 {
                                                     int __key1538 = 1;
                                                     int __limit1539 = modules.get(0).aimports.length;
-                                                    for (; __key1538 < __limit1539;__key1538 += 1) {
+                                                    for (; (__key1538 < __limit1539);__key1538 += 1) {
                                                         int i = __key1538;
                                                         semantic3OnDependencies((__dop1540.get(i)));
                                                     }
@@ -501,7 +501,7 @@ public class mars {
                                         Library library = null;
                                         if (params.lib)
                                         {
-                                            if (params.objfiles.length == 0)
+                                            if ((params.objfiles.length == 0))
                                             {
                                                 error(Loc.initial, new BytePtr("no input files"));
                                                 return 1;
@@ -511,7 +511,7 @@ public class mars {
                                             {
                                                 Slice<BytePtr> __r1541 = libmodules.opSlice().copy();
                                                 int __key1542 = 0;
-                                                for (; __key1542 < __r1541.getLength();__key1542 += 1) {
+                                                for (; (__key1542 < __r1541.getLength());__key1542 += 1) {
                                                     BytePtr p = pcopy(__r1541.get(__key1542));
                                                     library.addObject(p, new ByteSlice());
                                                 }
@@ -521,12 +521,12 @@ public class mars {
                                         {
                                             generateJson(modules);
                                         }
-                                        if ((!((global.errors) != 0) && params.doDocComments))
+                                        if ((global.errors == 0) && params.doDocComments)
                                         {
                                             {
                                                 Slice<dmodule.Module> __r1543 = modules.opSlice().copy();
                                                 int __key1544 = 0;
-                                                for (; __key1544 < __r1543.getLength();__key1544 += 1) {
+                                                for (; (__key1544 < __r1543.getLength());__key1544 += 1) {
                                                     dmodule.Module m = __r1543.get(__key1544);
                                                     gendocfile(m);
                                                 }
@@ -537,7 +537,7 @@ public class mars {
                                             {
                                                 Slice<dmodule.Module> __r1545 = modules.opSlice().copy();
                                                 int __key1546 = 0;
-                                                for (; __key1546 < __r1545.getLength();__key1546 += 1) {
+                                                for (; (__key1546 < __r1545.getLength());__key1546 += 1) {
                                                     dmodule.Module mod = __r1545.get(__key1546);
                                                     OutBuffer buf = new OutBuffer(null, 0, 0, 0, false, false).copy();
                                                     try {
@@ -551,7 +551,7 @@ public class mars {
                                                 }
                                             }
                                         }
-                                        if (!(params.obj))
+                                        if (!params.obj)
                                         {
                                         }
                                         else if (params.oneobj)
@@ -560,11 +560,11 @@ public class mars {
                                             {
                                                 Slice<dmodule.Module> __r1547 = modules.opSlice().copy();
                                                 int __key1548 = 0;
-                                                for (; __key1548 < __r1547.getLength();__key1548 += 1) {
+                                                for (; (__key1548 < __r1547.getLength());__key1548 += 1) {
                                                     dmodule.Module m = __r1547.get(__key1548);
                                                     if (m.isHdrFile)
                                                         continue;
-                                                    if (!(firstm != null))
+                                                    if (firstm == null)
                                                     {
                                                         firstm = m;
                                                         obj_start(m.srcfile.toChars());
@@ -572,11 +572,11 @@ public class mars {
                                                     if (params.verbose)
                                                         message(new BytePtr("code      %s"), m.toChars());
                                                     genObjFile(m, false);
-                                                    if ((entrypoint != null && pequals(m, rootHasMain)))
+                                                    if ((entrypoint != null) && (pequals(m, rootHasMain)))
                                                         genObjFile(entrypoint, false);
                                                 }
                                             }
-                                            if ((!((global.errors) != 0) && firstm != null))
+                                            if ((global.errors == 0) && (firstm != null))
                                             {
                                                 obj_end(library, firstm.objfile.toChars());
                                             }
@@ -586,7 +586,7 @@ public class mars {
                                             {
                                                 Slice<dmodule.Module> __r1549 = modules.opSlice().copy();
                                                 int __key1550 = 0;
-                                                for (; __key1550 < __r1549.getLength();__key1550 += 1) {
+                                                for (; (__key1550 < __r1549.getLength());__key1550 += 1) {
                                                     dmodule.Module m = __r1549.get(__key1550);
                                                     if (m.isHdrFile)
                                                         continue;
@@ -594,22 +594,22 @@ public class mars {
                                                         message(new BytePtr("code      %s"), m.toChars());
                                                     obj_start(m.srcfile.toChars());
                                                     genObjFile(m, params.multiobj);
-                                                    if ((entrypoint != null && pequals(m, rootHasMain)))
+                                                    if ((entrypoint != null) && (pequals(m, rootHasMain)))
                                                         genObjFile(entrypoint, params.multiobj);
                                                     obj_end(library, m.objfile.toChars());
                                                     obj_write_deferred(library);
-                                                    if (((global.errors) != 0 && !(params.lib)))
+                                                    if ((global.errors != 0) && !params.lib)
                                                         m.deleteObjFile();
                                                 }
                                             }
                                         }
-                                        if ((params.lib && !((global.errors) != 0)))
+                                        if (params.lib && (global.errors == 0))
                                             library.write();
                                         backend_term();
-                                        if ((global.errors) != 0)
+                                        if (global.errors != 0)
                                             fatal();
                                         int status = 0;
-                                        if (!((params.objfiles.length) != 0))
+                                        if (params.objfiles.length == 0)
                                         {
                                             if (params.link)
                                                 error(Loc.initial, new BytePtr("no object files to link"));
@@ -620,13 +620,13 @@ public class mars {
                                                 status = runLINK();
                                             if (params.run)
                                             {
-                                                if (!((status) != 0))
+                                                if (status == 0)
                                                 {
                                                     status = runProgram();
                                                     {
                                                         Slice<dmodule.Module> __r1551 = modules.opSlice().copy();
                                                         int __key1552 = 0;
-                                                        for (; __key1552 < __r1551.getLength();__key1552 += 1) {
+                                                        for (; (__key1552 < __r1551.getLength());__key1552 += 1) {
                                                             dmodule.Module m = __r1551.get(__key1552);
                                                             m.deleteObjFile();
                                                             if (params.oneobj)
@@ -637,7 +637,7 @@ public class mars {
                                                 }
                                             }
                                         }
-                                        if (((global.errors) != 0 || (global.warnings) != 0))
+                                        if ((global.errors != 0) || (global.warnings != 0))
                                             fatal();
                                         return status;
                                     }
@@ -676,23 +676,23 @@ public class mars {
             buffer = pcopy(((BytePtr)Mem.xrealloc(buffer, sz + 2)));
             do {
                 {
-                    assert(sz > pos);
+                    assert((sz > pos));
                     int rlen = fread((buffer.plus(pos)), 1, sz - pos, stdin);
                     pos += rlen;
-                    if ((ferror(stdin)) != 0)
+                    if (ferror(stdin) != 0)
                     {
                         error(Loc.initial, new BytePtr("cannot read from stdin, errno = %d"), __errno_location());
                         fatal();
                     }
-                    if ((feof(stdin)) != 0)
+                    if (feof(stdin) != 0)
                     {
-                        assert(pos < sz + 2);
+                        assert((pos < sz + 2));
                         buffer.set(pos, (byte)0);
                         buffer.set((pos + 1), (byte)0);
                         return new FileBuffer(buffer.slice(0,pos));
                     }
                 }
-            } while (pos < sz);
+            } while ((pos < sz));
             sz += 131072;
         }
         throw new AssertionError("Unreachable code!");
@@ -706,7 +706,7 @@ public class mars {
             if (__equals(name, new ByteSlice("-")))
             {
                 int n = fwrite(buf.data, 1, buf.offset, stdout);
-                assert(n == buf.offset);
+                assert((n == buf.offset));
             }
             else
             {
@@ -717,7 +717,7 @@ public class mars {
                 }
                 else
                 {
-                    if (global.params.objfiles.length == 0)
+                    if ((global.params.objfiles.length == 0))
                     {
                         error(Loc.initial, new BytePtr("cannot determine JSON filename, use `-Xf=<file>` or provide a source file"));
                         fatal();
@@ -739,7 +739,7 @@ public class mars {
             return ;
         BytePtr env = pcopy(Mem.xstrdup(envvalue));
     L_outer2:
-        for (; (1) != 0;){
+        for (; 1 != 0;){
             {
                 int __dispatch0 = 0;
                 dispatched_0:
@@ -759,7 +759,7 @@ public class mars {
                         int slash = 0;
                         boolean instring = false;
                     L_outer3:
-                        for (; (1) != 0;){
+                        for (; 1 != 0;){
                             byte c = env.postInc().get();
                             {
                                 int __dispatch1 = 0;
@@ -811,13 +811,13 @@ public class mars {
         {
             Slice<BytePtr> __r1553 = (args).opSlice().copy();
             int __key1554 = 0;
-            for (; __key1554 < __r1553.getLength();__key1554 += 1) {
+            for (; (__key1554 < __r1553.getLength());__key1554 += 1) {
                 BytePtr p = pcopy(__r1553.get(__key1554));
-                if ((p.get(0) & 0xFF) == 45)
+                if (((p.get(0) & 0xFF) == 45))
                 {
-                    if (((strcmp(p.plus(1), new BytePtr("m32")) == 0 || strcmp(p.plus(1), new BytePtr("m32mscoff")) == 0) || strcmp(p.plus(1), new BytePtr("m64")) == 0))
+                    if ((strcmp(p.plus(1), new BytePtr("m32")) == 0) || (strcmp(p.plus(1), new BytePtr("m32mscoff")) == 0) || (strcmp(p.plus(1), new BytePtr("m64")) == 0))
                         arch = pcopy((p.plus(2)));
-                    else if (strcmp(p.plus(1), new BytePtr("run")) == 0)
+                    else if ((strcmp(p.plus(1), new BytePtr("run")) == 0))
                         break;
                 }
             }
@@ -830,12 +830,12 @@ public class mars {
         {
             Slice<BytePtr> __r1555 = (args).opSlice().copy();
             int __key1556 = 0;
-            for (; __key1556 < __r1555.getLength();__key1556 += 1) {
+            for (; (__key1556 < __r1555.getLength());__key1556 += 1) {
                 BytePtr p = pcopy(__r1555.get(__key1556));
                 ByteSlice arg = toDString(p).copy();
-                if (((arg.getLength()) != 0 && (arg.get(0) & 0xFF) == 45))
+                if ((arg.getLength() != 0) && ((arg.get(0) & 0xFF) == 45))
                 {
-                    if ((arg.getLength() >= 6 && __equals(arg.slice(1,6), new ByteSlice("conf="))))
+                    if ((arg.getLength() >= 6) && __equals(arg.slice(1,6), new ByteSlice("conf=")))
                     {
                         conf = arg.slice(6,arg.getLength()).copy();
                     }
@@ -848,13 +848,13 @@ public class mars {
     }
 
     public static void setDefaultLibrary() {
-        if (global.params.defaultlibname == new ByteSlice())
+        if ((global.params.defaultlibname == new ByteSlice()))
         {
             global.params.defaultlibname = new ByteSlice("libphobos2.a").copy();
         }
-        else if (!((global.params.defaultlibname.getLength()) != 0))
+        else if (global.params.defaultlibname.getLength() == 0)
             global.params.defaultlibname = new ByteSlice().copy();
-        if (global.params.debuglibname == new ByteSlice())
+        if ((global.params.debuglibname == new ByteSlice()))
             global.params.debuglibname = global.params.defaultlibname.copy();
     }
 
@@ -928,12 +928,12 @@ public class mars {
         VersionCondition.addPredefinedGlobalIdent(new ByteSlice("LittleEndian"));
         VersionCondition.addPredefinedGlobalIdent(new ByteSlice("D_Version2"));
         VersionCondition.addPredefinedGlobalIdent(new ByteSlice("all"));
-        if (params.cpu >= CPU.sse2)
+        if ((params.cpu >= CPU.sse2))
         {
             VersionCondition.addPredefinedGlobalIdent(new ByteSlice("D_SIMD"));
-            if (params.cpu >= CPU.avx)
+            if ((params.cpu >= CPU.avx))
                 VersionCondition.addPredefinedGlobalIdent(new ByteSlice("D_AVX"));
-            if (params.cpu >= CPU.avx2)
+            if ((params.cpu >= CPU.avx2))
                 VersionCondition.addPredefinedGlobalIdent(new ByteSlice("D_AVX2"));
         }
         if (params.is64bit)
@@ -961,13 +961,13 @@ public class mars {
             VersionCondition.addPredefinedGlobalIdent(new ByteSlice("D_Ddoc"));
         if (params.cov)
             VersionCondition.addPredefinedGlobalIdent(new ByteSlice("D_Coverage"));
-        if ((params.pic & 0xFF) != 0)
-            VersionCondition.addPredefinedGlobalIdent((params.pic & 0xFF) == 1 ? new ByteSlice("D_PIC") : new ByteSlice("D_PIE"));
+        if (((params.pic & 0xFF) != 0))
+            VersionCondition.addPredefinedGlobalIdent(((params.pic & 0xFF) == 1) ? new ByteSlice("D_PIC") : new ByteSlice("D_PIE"));
         if (params.useUnitTests)
             VersionCondition.addPredefinedGlobalIdent(new ByteSlice("unittest"));
-        if ((params.useAssert & 0xFF) == 2)
+        if (((params.useAssert & 0xFF) == 2))
             VersionCondition.addPredefinedGlobalIdent(new ByteSlice("assert"));
-        if ((params.useArrayBounds & 0xFF) == 1)
+        if (((params.useArrayBounds & 0xFF) == 1))
             VersionCondition.addPredefinedGlobalIdent(new ByteSlice("D_NoBoundsChecks"));
         if (params.betterC)
         {
@@ -989,7 +989,7 @@ public class mars {
             {
                 Slice<Identifier> __r1557 = (global.versionids).opSlice().copy();
                 int __key1558 = 0;
-                for (; __key1558 < __r1557.getLength();__key1558 += 1) {
+                for (; (__key1558 < __r1557.getLength());__key1558 += 1) {
                     Identifier str = __r1557.get(__key1558);
                     buf.writeByte(32);
                     buf.writestring(str.toChars());
@@ -1016,15 +1016,15 @@ public class mars {
                     {
                         Slice<BytePtr> __r1559 = dflags.opSlice().copy();
                         int __key1560 = 0;
-                        for (; __key1560 < __r1559.getLength();__key1560 += 1) {
+                        for (; (__key1560 < __r1559.getLength());__key1560 += 1) {
                             BytePtr flag = pcopy(__r1559.get(__key1560));
                             boolean needsQuoting = false;
                             {
                                 ByteSlice __r1561 = flag.slice(0,strlen(flag)).copy();
                                 int __key1562 = 0;
-                                for (; __key1562 < __r1561.getLength();__key1562 += 1) {
+                                for (; (__key1562 < __r1561.getLength());__key1562 += 1) {
                                     byte c = __r1561.get(__key1562);
-                                    if (!(((isalnum((c & 0xFF))) != 0 || (c & 0xFF) == 95)))
+                                    if (!((isalnum((c & 0xFF)) != 0) || ((c & 0xFF) == 95)))
                                     {
                                         needsQuoting = true;
                                         break;
@@ -1090,12 +1090,12 @@ public class mars {
                 Ref<Boolean> overflow = ref(false);
                 {
                     int d = 0;
-                    for (; (d = (p.get() & 0xFF) - 48) < 10;p.plusAssign(1)){
+                    for (; ((d = (p.get() & 0xFF) - 48) < 10);p.plusAssign(1)){
                         value = mulu(value, 10, overflow);
                         value = addu(value, d, overflow);
                     }
                 }
-                return ((overflow.value || value > max) || (p.get()) != 0) ? -1 : value;
+                return overflow.value || (value > max) || (p.get() != 0) ? -1 : value;
             }
         };
         Function2<BytePtr,ByteSlice,Boolean> startsWith = new Function2<BytePtr,ByteSlice,Boolean>(){
@@ -1103,9 +1103,9 @@ public class mars {
                 {
                     ByteSlice __r1563 = s.copy();
                     int __key1564 = 0;
-                    for (; __key1564 < __r1563.getLength();__key1564 += 1) {
+                    for (; (__key1564 < __r1563.getLength());__key1564 += 1) {
                         byte c = __r1563.get(__key1564);
-                        if ((c & 0xFF) != (p.get() & 0xFF))
+                        if (((c & 0xFF) != (p.get() & 0xFF)))
                             return false;
                         p.plusAssign(1);
                     }
@@ -1116,23 +1116,23 @@ public class mars {
         Function2<BytePtr,ByteSlice,Void> errorInvalidSwitch = new Function2<BytePtr,ByteSlice,Void>(){
             public Void invoke(BytePtr p, ByteSlice availableOptions){
                 error.invoke(new BytePtr("Switch `%s` is invalid"), p);
-                if (availableOptions != new ByteSlice())
+                if ((availableOptions != new ByteSlice()))
                     errorSupplemental(Loc.initial, new BytePtr("%.*s"), availableOptions.getLength(), toBytePtr(availableOptions));
             }
         };
         Function3<BytePtr,Boolean,ByteSlice,Integer> checkOptions = new Function3<BytePtr,Boolean,ByteSlice,Integer>(){
             public Integer invoke(BytePtr p, Ref<Boolean> usageFlag, ByteSlice missingMsg){
-                if (((p.get() & 0xFF) == 0 || ((p.get() & 0xFF) == 61 && !((p.get(1)) != 0))))
+                if (((p.get() & 0xFF) == 0) || ((p.get() & 0xFF) == 61) && (p.get(1) == 0))
                 {
                     error(Loc.initial, new BytePtr("%.*s"), missingMsg.getLength(), toBytePtr(missingMsg));
                     errors.value = true;
                     usageFlag.value = true;
                     return CheckOptions.help;
                 }
-                if ((p.get() & 0xFF) != 61)
+                if (((p.get() & 0xFF) != 61))
                     return CheckOptions.error;
                 p.postInc();
-                if (((((p.get() & 0xFF) == 104 || (p.get() & 0xFF) == 63) && !((p.get(1)) != 0)) || strcmp(p, new BytePtr("help")) == 0))
+                if (((p.get() & 0xFF) == 104) || ((p.get() & 0xFF) == 63) && (p.get(1) == 0) || (strcmp(p, new BytePtr("help")) == 0))
                 {
                     usageFlag.value = true;
                     return CheckOptions.help;
@@ -1157,7 +1157,7 @@ public class mars {
                             {
                                 Slice<Usage.Feature> __r1569 = slice(new Usage.Feature[]{new Usage.Feature(new ByteSlice("dip25"), new ByteSlice("useDIP25"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)"), true, false), new Usage.Feature(new ByteSlice("dip1000"), new ByteSlice("vsafe"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)"), true, false), new Usage.Feature(new ByteSlice("dip1008"), new ByteSlice("ehnogc"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)"), true, false), new Usage.Feature(new ByteSlice("fieldwise"), new ByteSlice("fieldwise"), new ByteSlice("use fieldwise comparisons for struct equality"), true, false), new Usage.Feature(new ByteSlice("markdown"), new ByteSlice("markdown"), new ByteSlice("enable Markdown replacements in Ddoc"), true, false), new Usage.Feature(new ByteSlice("fixAliasThis"), new ByteSlice("fixAliasThis"), new ByteSlice("when a symbol is resolved, check alias this scope before going to upper scopes"), true, false), new Usage.Feature(new ByteSlice("intpromote"), new ByteSlice("fix16997"), new ByteSlice("fix integral promotions for unary + - ~ operators"), true, false), new Usage.Feature(new ByteSlice("dtorfields"), new ByteSlice("dtorFields"), new ByteSlice("destruct fields of partially constructed objects"), true, false), new Usage.Feature(new ByteSlice("rvaluerefparam"), new ByteSlice("rvalueRefParam"), new ByteSlice("enable rvalue arguments to ref parameters"), true, false)});
                                 int __key1570 = 0;
-                                for (; __key1570 < 9;__key1570 += 1) {
+                                for (; (__key1570 < 9);__key1570 += 1) {
                                     Usage.Feature t = __r1569.get(__key1570).copy();
                                     if (t.deprecated_)
                                         continue;
@@ -1168,7 +1168,7 @@ public class mars {
                             {
                                 Slice<Usage.Feature> __r1571 = slice(new Usage.Feature[]{new Usage.Feature(new ByteSlice("dip25"), new ByteSlice("useDIP25"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)"), true, false), new Usage.Feature(new ByteSlice("dip1000"), new ByteSlice("vsafe"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)"), true, false), new Usage.Feature(new ByteSlice("dip1008"), new ByteSlice("ehnogc"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)"), true, false), new Usage.Feature(new ByteSlice("fieldwise"), new ByteSlice("fieldwise"), new ByteSlice("use fieldwise comparisons for struct equality"), true, false), new Usage.Feature(new ByteSlice("markdown"), new ByteSlice("markdown"), new ByteSlice("enable Markdown replacements in Ddoc"), true, false), new Usage.Feature(new ByteSlice("fixAliasThis"), new ByteSlice("fixAliasThis"), new ByteSlice("when a symbol is resolved, check alias this scope before going to upper scopes"), true, false), new Usage.Feature(new ByteSlice("intpromote"), new ByteSlice("fix16997"), new ByteSlice("fix integral promotions for unary + - ~ operators"), true, false), new Usage.Feature(new ByteSlice("dtorfields"), new ByteSlice("dtorFields"), new ByteSlice("destruct fields of partially constructed objects"), true, false), new Usage.Feature(new ByteSlice("rvaluerefparam"), new ByteSlice("rvalueRefParam"), new ByteSlice("enable rvalue arguments to ref parameters"), true, false)});
                                 int __key1572 = 0;
-                                for (; __key1572 < 9;__key1572 += 1) {
+                                for (; (__key1572 < 9);__key1572 += 1) {
                                     Usage.Feature t = __r1571.get(__key1572).copy();
                                     buf.append(new ByteSlice("case \"").concat(t.name).concat(new ByteSlice("\":")));
                                     if (t.deprecated_)
@@ -1240,7 +1240,7 @@ public class mars {
                             {
                                 Slice<Usage.Feature> __r1573 = slice(new Usage.Feature[]{new Usage.Feature(new ByteSlice("dip25"), new ByteSlice("noDIP25"), new ByteSlice("revert DIP25 changes https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md"), true, false), new Usage.Feature(new ByteSlice("import"), new ByteSlice("bug10378"), new ByteSlice("revert to single phase name lookup"), true, true)});
                                 int __key1574 = 0;
-                                for (; __key1574 < 2;__key1574 += 1) {
+                                for (; (__key1574 < 2);__key1574 += 1) {
                                     Usage.Feature t = __r1573.get(__key1574).copy();
                                     if (t.deprecated_)
                                         continue;
@@ -1251,7 +1251,7 @@ public class mars {
                             {
                                 Slice<Usage.Feature> __r1575 = slice(new Usage.Feature[]{new Usage.Feature(new ByteSlice("dip25"), new ByteSlice("noDIP25"), new ByteSlice("revert DIP25 changes https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md"), true, false), new Usage.Feature(new ByteSlice("import"), new ByteSlice("bug10378"), new ByteSlice("revert to single phase name lookup"), true, true)});
                                 int __key1576 = 0;
-                                for (; __key1576 < 2;__key1576 += 1) {
+                                for (; (__key1576 < 2);__key1576 += 1) {
                                     Usage.Feature t = __r1575.get(__key1576).copy();
                                     buf.append(new ByteSlice("case \"").concat(t.name).concat(new ByteSlice("\":")));
                                     if (t.deprecated_)
@@ -1295,7 +1295,7 @@ public class mars {
                             {
                                 Slice<Usage.Feature> __r1565 = slice(new Usage.Feature[]{new Usage.Feature(new ByteSlice("field"), new ByteSlice("vfield"), new ByteSlice("list all non-mutable fields which occupy an object instance"), true, false), new Usage.Feature(new ByteSlice("checkimports"), new ByteSlice("check10378"), new ByteSlice("give deprecation messages about 10378 anomalies"), true, true), new Usage.Feature(new ByteSlice("complex"), new ByteSlice("vcomplex"), new ByteSlice("give deprecation messages about all usages of complex or imaginary types"), true, false), new Usage.Feature(new ByteSlice("tls"), new ByteSlice("vtls"), new ByteSlice("list all variables going into thread local storage"), true, false), new Usage.Feature(new ByteSlice("vmarkdown"), new ByteSlice("vmarkdown"), new ByteSlice("list instances of Markdown replacements in Ddoc"), true, false)});
                                 int __key1566 = 0;
-                                for (; __key1566 < 5;__key1566 += 1) {
+                                for (; (__key1566 < 5);__key1566 += 1) {
                                     Usage.Feature t = __r1565.get(__key1566).copy();
                                     if (t.deprecated_)
                                         continue;
@@ -1306,7 +1306,7 @@ public class mars {
                             {
                                 Slice<Usage.Feature> __r1567 = slice(new Usage.Feature[]{new Usage.Feature(new ByteSlice("field"), new ByteSlice("vfield"), new ByteSlice("list all non-mutable fields which occupy an object instance"), true, false), new Usage.Feature(new ByteSlice("checkimports"), new ByteSlice("check10378"), new ByteSlice("give deprecation messages about 10378 anomalies"), true, true), new Usage.Feature(new ByteSlice("complex"), new ByteSlice("vcomplex"), new ByteSlice("give deprecation messages about all usages of complex or imaginary types"), true, false), new Usage.Feature(new ByteSlice("tls"), new ByteSlice("vtls"), new ByteSlice("list all variables going into thread local storage"), true, false), new Usage.Feature(new ByteSlice("vmarkdown"), new ByteSlice("vmarkdown"), new ByteSlice("list instances of Markdown replacements in Ddoc"), true, false)});
                                 int __key1568 = 0;
-                                for (; __key1568 < 5;__key1568 += 1) {
+                                for (; (__key1568 < 5);__key1568 += 1) {
                                     Usage.Feature t = __r1567.get(__key1568).copy();
                                     buf.append(new ByteSlice("case \"").concat(t.name).concat(new ByteSlice("\":")));
                                     if (t.deprecated_)
@@ -1353,10 +1353,10 @@ public class mars {
         {
             int i = 1;
         L_outer4:
-            for (; i < arguments.length;i++){
+            for (; (i < arguments.length);i++){
                 BytePtr p = pcopy(arguments.get(i));
                 ByteSlice arg = p.slice(0,strlen(p)).copy();
-                if ((p.get() & 0xFF) != 45)
+                if (((p.get() & 0xFF) != 45))
                 {
                     files.push(p);
                     continue L_outer4;
@@ -1392,13 +1392,13 @@ public class mars {
                             }
                         } while(__dispatch6 != 0);
                     }
-                    if (strcmp(p.plus(13), new BytePtr("D")) == 0)
+                    if ((strcmp(p.plus(13), new BytePtr("D")) == 0))
                         params.checkAction = CHECKACTION.D;
-                    else if (strcmp(p.plus(13), new BytePtr("C")) == 0)
+                    else if ((strcmp(p.plus(13), new BytePtr("C")) == 0))
                         params.checkAction = CHECKACTION.C;
-                    else if (strcmp(p.plus(13), new BytePtr("halt")) == 0)
+                    else if ((strcmp(p.plus(13), new BytePtr("halt")) == 0))
                         params.checkAction = CHECKACTION.halt;
-                    else if (strcmp(p.plus(13), new BytePtr("context")) == 0)
+                    else if ((strcmp(p.plus(13), new BytePtr("context")) == 0))
                         params.checkAction = CHECKACTION.context;
                     else
                     {
@@ -1434,12 +1434,12 @@ public class mars {
                             if (startsWith.invoke(p, name))
                             {
                                 p.plusAssign(name.getLength());
-                                if (((p.get() & 0xFF) == 0 || strcmp(p, new BytePtr("=on")) == 0))
+                                if (((p.get() & 0xFF) == 0) || (strcmp(p, new BytePtr("=on")) == 0))
                                 {
                                     ce.value = CHECKENABLE.on;
                                     return true;
                                 }
-                                else if (strcmp(p, new BytePtr("=off")) == 0)
+                                else if ((strcmp(p, new BytePtr("=off")) == 0))
                                 {
                                     ce.value = CHECKENABLE.off;
                                     return true;
@@ -1448,7 +1448,7 @@ public class mars {
                             return false;
                         }
                     };
-                    if (!((((((check.invoke(p, new ByteSlice("assert"), params.useAssert) || check.invoke(p, new ByteSlice("bounds"), params.useArrayBounds)) || check.invoke(p, new ByteSlice("in"), params.useIn)) || check.invoke(p, new ByteSlice("invariant"), params.useInvariants)) || check.invoke(p, new ByteSlice("out"), params.useOut)) || check.invoke(p, new ByteSlice("switch"), params.useSwitchError))))
+                    if (!(check.invoke(p, new ByteSlice("assert"), params.useAssert) || check.invoke(p, new ByteSlice("bounds"), params.useArrayBounds) || check.invoke(p, new ByteSlice("in"), params.useIn) || check.invoke(p, new ByteSlice("invariant"), params.useInvariants) || check.invoke(p, new ByteSlice("out"), params.useOut) || check.invoke(p, new ByteSlice("switch"), params.useSwitchError)))
                     {
                         errorInvalidSwitch.invoke(p, new ByteSlice());
                         params.checkUsage = true;
@@ -1457,19 +1457,19 @@ public class mars {
                 }
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("color")))
                 {
-                    if ((p.get(6) & 0xFF) == 61)
+                    if (((p.get(6) & 0xFF) == 61))
                     {
-                        if (strcmp(p.plus(7), new BytePtr("on")) == 0)
+                        if ((strcmp(p.plus(7), new BytePtr("on")) == 0))
                             params.color = true;
-                        else if (strcmp(p.plus(7), new BytePtr("off")) == 0)
+                        else if ((strcmp(p.plus(7), new BytePtr("off")) == 0))
                             params.color = false;
-                        else if (strcmp(p.plus(7), new BytePtr("auto")) != 0)
+                        else if ((strcmp(p.plus(7), new BytePtr("auto")) != 0))
                         {
                             errorInvalidSwitch.invoke(p, new ByteSlice("Available options for `-color` are `on`, `off` and `auto`"));
                             return true;
                         }
                     }
-                    else if ((p.get(6)) != 0)
+                    else if (p.get(6) != 0)
                         /*goto Lerror*//*unrolled goto*/
                         files.push(new BytePtr("__stdin.d"));
                     else
@@ -1481,12 +1481,12 @@ public class mars {
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("cov")))
                 {
                     params.cov = true;
-                    if ((p.get(4) & 0xFF) == 61)
+                    if (((p.get(4) & 0xFF) == 61))
                     {
-                        if ((isdigit((p.get(5) & 0xFF))) != 0)
+                        if (isdigit((p.get(5) & 0xFF)) != 0)
                         {
                             int percent = parseDigits.invoke(p.plus(5), 100);
-                            if (percent == -1)
+                            if ((percent == -1))
                                 /*goto Lerror*//*unrolled goto*/
                                 files.push(new BytePtr("__stdin.d"));
                             params.covPercent = (byte)percent;
@@ -1497,7 +1497,7 @@ public class mars {
                             return true;
                         }
                     }
-                    else if ((p.get(4)) != 0)
+                    else if (p.get(4) != 0)
                         /*goto Lerror*//*unrolled goto*/
                         files.push(new BytePtr("__stdin.d"));
                 }
@@ -1518,7 +1518,7 @@ public class mars {
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("mixin=")))
                 {
                     BytePtr tmp = pcopy(p.plus(6).plus(1));
-                    if (!((tmp.get(0)) != 0))
+                    if (tmp.get(0) == 0)
                         /*goto Lnoarg*//*unrolled goto*/
                         files.push(new BytePtr("__stdin.d"));
                     params.mixinFile = pcopy(Mem.xstrdup(tmp));
@@ -1527,7 +1527,7 @@ public class mars {
                     params.symdebug = (byte)1;
                 else if (__equals(arg, new ByteSlice("-gf")))
                 {
-                    if (!((params.symdebug) != 0))
+                    if (params.symdebug == 0)
                         params.symdebug = (byte)1;
                     params.symdebugref = true;
                 }
@@ -1538,7 +1538,7 @@ public class mars {
                 else if (__equals(arg, new ByteSlice("-lowmem")))
                 {
                 }
-                else if ((arg.getLength() > 6 && __equals(arg.slice(0,6), new ByteSlice("--DRT-"))))
+                else if ((arg.getLength() > 6) && __equals(arg.slice(0,6), new ByteSlice("--DRT-")))
                 {
                     continue L_outer4;
                 }
@@ -1555,15 +1555,15 @@ public class mars {
                 {
                     error.invoke(new BytePtr("-m32mscoff can only be used on windows"), null);
                 }
-                else if (strncmp(p.plus(1), new BytePtr("mscrtlib="), 9) == 0)
+                else if ((strncmp(p.plus(1), new BytePtr("mscrtlib="), 9) == 0))
                 {
                     error.invoke(new BytePtr("-mscrtlib"), null);
                 }
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("profile")))
                 {
-                    if ((p.get(8) & 0xFF) == 61)
+                    if (((p.get(8) & 0xFF) == 61))
                     {
-                        if (strcmp(p.plus(9), new BytePtr("gc")) == 0)
+                        if ((strcmp(p.plus(9), new BytePtr("gc")) == 0))
                             params.tracegc = true;
                         else
                         {
@@ -1571,7 +1571,7 @@ public class mars {
                             return true;
                         }
                     }
-                    else if ((p.get(8)) != 0)
+                    else if (p.get(8) != 0)
                         /*goto Lerror*//*unrolled goto*/
                         files.push(new BytePtr("__stdin.d"));
                     else
@@ -1589,10 +1589,10 @@ public class mars {
                     params.vgc = true;
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("verrors")))
                 {
-                    if (((p.get(8) & 0xFF) == 61 && (isdigit((p.get(9) & 0xFF))) != 0))
+                    if (((p.get(8) & 0xFF) == 61) && (isdigit((p.get(9) & 0xFF)) != 0))
                     {
                         int num = parseDigits.invoke(p.plus(9), 2147483647);
-                        if (num == -1)
+                        if ((num == -1))
                             /*goto Lerror*//*unrolled goto*/
                             files.push(new BytePtr("__stdin.d"));
                         params.errorLimit = num;
@@ -1683,13 +1683,13 @@ public class mars {
                             }
                         } while(__dispatch10 != 0);
                     }
-                    if (strcmp(p.plus(12), new BytePtr("c++98")) == 0)
+                    if ((strcmp(p.plus(12), new BytePtr("c++98")) == 0))
                         params.cplusplus = CppStdRevision.cpp98;
-                    else if (strcmp(p.plus(12), new BytePtr("c++11")) == 0)
+                    else if ((strcmp(p.plus(12), new BytePtr("c++11")) == 0))
                         params.cplusplus = CppStdRevision.cpp11;
-                    else if (strcmp(p.plus(12), new BytePtr("c++14")) == 0)
+                    else if ((strcmp(p.plus(12), new BytePtr("c++14")) == 0))
                         params.cplusplus = CppStdRevision.cpp14;
-                    else if (strcmp(p.plus(12), new BytePtr("c++17")) == 0)
+                    else if ((strcmp(p.plus(12), new BytePtr("c++17")) == 0))
                         params.cplusplus = CppStdRevision.cpp17;
                     else
                     {
@@ -1719,12 +1719,12 @@ public class mars {
                             }
                         } while(__dispatch11 != 0);
                     }
-                    if (!(parseCLIOption_transition[Feature("field", "vfield", "list all non-mutable fields which occupy an object instance", true, false), Feature("checkimports", "check10378", "give deprecation messages about 10378 anomalies", true, true), Feature("complex", "vcomplex", "give deprecation messages about all usages of complex or imaginary types", true, false), Feature("tls", "vtls", "list all variables going into thread local storage", true, false), Feature("vmarkdown", "vmarkdown", "list instances of Markdown replacements in Ddoc", true, false)].invoke(params, p)))
+                    if (!parseCLIOption_transition[Feature("field", "vfield", "list all non-mutable fields which occupy an object instance", true, false), Feature("checkimports", "check10378", "give deprecation messages about 10378 anomalies", true, true), Feature("complex", "vcomplex", "give deprecation messages about all usages of complex or imaginary types", true, false), Feature("tls", "vtls", "list all variables going into thread local storage", true, false), Feature("vmarkdown", "vmarkdown", "list instances of Markdown replacements in Ddoc", true, false)].invoke(params, p))
                     {
-                        if ((isdigit((p.get(12) & 0xFF))) != 0)
+                        if (isdigit((p.get(12) & 0xFF)) != 0)
                         {
                             int num = parseDigits.invoke(p.plus(12), 2147483647);
-                            if (num == -1)
+                            if ((num == -1))
                                 /*goto Lerror*//*unrolled goto*/
                                 files.push(new BytePtr("__stdin.d"));
                             switch (num)
@@ -1799,7 +1799,7 @@ public class mars {
                             }
                         } while(__dispatch14 != 0);
                     }
-                    if (!(parseCLIOption_preview[Feature("dip25", "useDIP25", "implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)", true, false), Feature("dip1000", "vsafe", "implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)", true, false), Feature("dip1008", "ehnogc", "implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)", true, false), Feature("fieldwise", "fieldwise", "use fieldwise comparisons for struct equality", true, false), Feature("markdown", "markdown", "enable Markdown replacements in Ddoc", true, false), Feature("fixAliasThis", "fixAliasThis", "when a symbol is resolved, check alias this scope before going to upper scopes", true, false), Feature("intpromote", "fix16997", "fix integral promotions for unary + - ~ operators", true, false), Feature("dtorfields", "dtorFields", "destruct fields of partially constructed objects", true, false), Feature("rvaluerefparam", "rvalueRefParam", "enable rvalue arguments to ref parameters", true, false)].invoke(params, p)))
+                    if (!parseCLIOption_preview[Feature("dip25", "useDIP25", "implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)", true, false), Feature("dip1000", "vsafe", "implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)", true, false), Feature("dip1008", "ehnogc", "implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)", true, false), Feature("fieldwise", "fieldwise", "use fieldwise comparisons for struct equality", true, false), Feature("markdown", "markdown", "enable Markdown replacements in Ddoc", true, false), Feature("fixAliasThis", "fixAliasThis", "when a symbol is resolved, check alias this scope before going to upper scopes", true, false), Feature("intpromote", "fix16997", "fix integral promotions for unary + - ~ operators", true, false), Feature("dtorfields", "dtorFields", "destruct fields of partially constructed objects", true, false), Feature("rvaluerefparam", "rvalueRefParam", "enable rvalue arguments to ref parameters", true, false)].invoke(params, p))
                     {
                         error.invoke(new BytePtr("Preview `%s` is invalid"), p);
                         params.previewUsage = true;
@@ -1829,7 +1829,7 @@ public class mars {
                             }
                         } while(__dispatch15 != 0);
                     }
-                    if (!(parseCLIOption_revert[Feature("dip25", "noDIP25", "revert DIP25 changes https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md", true, false), Feature("import", "bug10378", "revert to single phase name lookup", true, true)].invoke(params, p)))
+                    if (!parseCLIOption_revert[Feature("dip25", "noDIP25", "revert DIP25 changes https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md", true, false), Feature("import", "bug10378", "revert to single phase name lookup", true, true)].invoke(params, p))
                     {
                         error.invoke(new BytePtr("Revert `%s` is invalid"), p);
                         params.revertUsage = true;
@@ -1844,7 +1844,7 @@ public class mars {
                     params.warnings = DiagnosticReporting.inform;
                 else if (__equals(arg, new ByteSlice("-O")))
                     params.optimize = true;
-                else if ((p.get(1) & 0xFF) == 111)
+                else if (((p.get(1) & 0xFF) == 111))
                 {
                     BytePtr path = null;
                     {
@@ -1857,21 +1857,21 @@ public class mars {
                                     params.obj = false;
                                     break;
                                 case 100:
-                                    if (!((p.get(3)) != 0))
+                                    if (p.get(3) == 0)
                                         /*goto Lnoarg*//*unrolled goto*/
                                         files.push(new BytePtr("__stdin.d"));
                                     path = pcopy((p.plus(3).plus((((p.get(3) & 0xFF) == 61) ? 1 : 0))));
                                     params.objdir = toDString(path).copy();
                                     break;
                                 case 102:
-                                    if (!((p.get(3)) != 0))
+                                    if (p.get(3) == 0)
                                         /*goto Lnoarg*//*unrolled goto*/
                                         files.push(new BytePtr("__stdin.d"));
                                     path = pcopy((p.plus(3).plus((((p.get(3) & 0xFF) == 61) ? 1 : 0))));
                                     params.objname = toDString(path).copy();
                                     break;
                                 case 112:
-                                    if ((p.get(3)) != 0)
+                                    if (p.get(3) != 0)
                                         /*goto Lerror*//*unrolled goto*/
                                         files.push(new BytePtr("__stdin.d"));
                                     params.preservePaths = true;
@@ -1886,7 +1886,7 @@ public class mars {
                         } while(__dispatch16 != 0);
                     }
                 }
-                else if ((p.get(1) & 0xFF) == 68)
+                else if (((p.get(1) & 0xFF) == 68))
                 {
                     params.doDocComments = true;
                     {
@@ -1896,13 +1896,13 @@ public class mars {
                             switch (__dispatch17 != 0 ? __dispatch17 : (p.get(2) & 0xFF))
                             {
                                 case 100:
-                                    if (!((p.get(3)) != 0))
+                                    if (p.get(3) == 0)
                                         /*goto Lnoarg*//*unrolled goto*/
                                         files.push(new BytePtr("__stdin.d"));
                                     params.docdir = pcopy((p.plus(3).plus((((p.get(3) & 0xFF) == 61) ? 1 : 0))));
                                     break;
                                 case 102:
-                                    if (!((p.get(3)) != 0))
+                                    if (p.get(3) == 0)
                                         /*goto Lnoarg*//*unrolled goto*/
                                         files.push(new BytePtr("__stdin.d"));
                                     params.docname = pcopy((p.plus(3).plus((((p.get(3) & 0xFF) == 61) ? 1 : 0))));
@@ -1916,7 +1916,7 @@ public class mars {
                         } while(__dispatch17 != 0);
                     }
                 }
-                else if ((p.get(1) & 0xFF) == 72)
+                else if (((p.get(1) & 0xFF) == 72))
                 {
                     params.doHdrGeneration = true;
                     {
@@ -1926,13 +1926,13 @@ public class mars {
                             switch (__dispatch18 != 0 ? __dispatch18 : (p.get(2) & 0xFF))
                             {
                                 case 100:
-                                    if (!((p.get(3)) != 0))
+                                    if (p.get(3) == 0)
                                         /*goto Lnoarg*//*unrolled goto*/
                                         files.push(new BytePtr("__stdin.d"));
                                     params.hdrdir = toDString(p.plus(3).plus((((p.get(3) & 0xFF) == 61) ? 1 : 0))).copy();
                                     break;
                                 case 102:
-                                    if (!((p.get(3)) != 0))
+                                    if (p.get(3) == 0)
                                         /*goto Lnoarg*//*unrolled goto*/
                                         files.push(new BytePtr("__stdin.d"));
                                     params.hdrname = toDString(p.plus(3).plus((((p.get(3) & 0xFF) == 61) ? 1 : 0))).copy();
@@ -1946,7 +1946,7 @@ public class mars {
                         } while(__dispatch18 != 0);
                     }
                 }
-                else if ((p.get(1) & 0xFF) == 88)
+                else if (((p.get(1) & 0xFF) == 88))
                 {
                     params.doJsonGeneration = true;
                     {
@@ -1956,24 +1956,24 @@ public class mars {
                             switch (__dispatch19 != 0 ? __dispatch19 : (p.get(2) & 0xFF))
                             {
                                 case 102:
-                                    if (!((p.get(3)) != 0))
+                                    if (p.get(3) == 0)
                                         /*goto Lnoarg*//*unrolled goto*/
                                         files.push(new BytePtr("__stdin.d"));
                                     params.jsonfilename = toDString(p.plus(3).plus((((p.get(3) & 0xFF) == 61) ? 1 : 0))).copy();
                                     break;
                                 case 105:
-                                    if (!((p.get(3)) != 0))
+                                    if (p.get(3) == 0)
                                         /*goto Lnoarg*//*unrolled goto*/
                                         files.push(new BytePtr("__stdin.d"));
-                                    if ((p.get(3) & 0xFF) != 61)
+                                    if (((p.get(3) & 0xFF) != 61))
                                         /*goto Lerror*//*unrolled goto*/
                                         files.push(new BytePtr("__stdin.d"));
-                                    if (!((p.get(4)) != 0))
+                                    if (p.get(4) == 0)
                                         /*goto Lnoarg*//*unrolled goto*/
                                         files.push(new BytePtr("__stdin.d"));
                                     {
                                         int flag = tryParseJsonField(p.plus(4));
-                                        if (!((flag) != 0))
+                                        if (flag == 0)
                                         {
                                             error.invoke(new BytePtr("unknown JSON field `-Xi=%s`, expected one of `compilerInfo`, `buildInfo`, `modules`, `semantics`"), p.plus(4));
                                             continue L_outer4;
@@ -2002,7 +2002,7 @@ public class mars {
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("i=")))
                 {
                     includeImports = true;
-                    if (!((p.get(3)) != 0))
+                    if (p.get(3) == 0)
                     {
                         error.invoke(new BytePtr("invalid option '%s', module patterns cannot be empty"), p);
                     }
@@ -2039,17 +2039,17 @@ public class mars {
                 }
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("boundscheck")))
                 {
-                    if ((p.get(12) & 0xFF) == 61)
+                    if (((p.get(12) & 0xFF) == 61))
                     {
-                        if (strcmp(p.plus(13), new BytePtr("on")) == 0)
+                        if ((strcmp(p.plus(13), new BytePtr("on")) == 0))
                         {
                             params.boundscheck = CHECKENABLE.on;
                         }
-                        else if (strcmp(p.plus(13), new BytePtr("safeonly")) == 0)
+                        else if ((strcmp(p.plus(13), new BytePtr("safeonly")) == 0))
                         {
                             params.boundscheck = CHECKENABLE.safeonly;
                         }
-                        else if (strcmp(p.plus(13), new BytePtr("off")) == 0)
+                        else if ((strcmp(p.plus(13), new BytePtr("off")) == 0))
                         {
                             params.boundscheck = CHECKENABLE.off;
                         }
@@ -2063,15 +2063,15 @@ public class mars {
                 }
                 else if (__equals(arg, new ByteSlice("-unittest")))
                     params.useUnitTests = true;
-                else if ((p.get(1) & 0xFF) == 73)
+                else if (((p.get(1) & 0xFF) == 73))
                 {
                     if (params.imppath == null)
                         params.imppath = new DArray<BytePtr>();
                     (params.imppath).push(p.plus(2).plus((((p.get(2) & 0xFF) == 61) ? 1 : 0)));
                 }
-                else if ((((p.get(1) & 0xFF) == 109 && (p.get(2) & 0xFF) == 118) && (p.get(3) & 0xFF) == 61))
+                else if (((p.get(1) & 0xFF) == 109) && ((p.get(2) & 0xFF) == 118) && ((p.get(3) & 0xFF) == 61))
                 {
-                    if (((p.get(4)) != 0 && strchr(p.plus(5), 61) != null))
+                    if ((p.get(4) != 0) && (strchr(p.plus(5), 61) != null))
                     {
                         params.modFileAliasStrings.push(p.plus(4));
                     }
@@ -2079,20 +2079,20 @@ public class mars {
                         /*goto Lerror*//*unrolled goto*/
                         files.push(new BytePtr("__stdin.d"));
                 }
-                else if ((p.get(1) & 0xFF) == 74)
+                else if (((p.get(1) & 0xFF) == 74))
                 {
                     if (params.fileImppath == null)
                         params.fileImppath = new DArray<BytePtr>();
                     (params.fileImppath).push(p.plus(2).plus((((p.get(2) & 0xFF) == 61) ? 1 : 0)));
                 }
-                else if ((startsWith.invoke(p.plus(1), new ByteSlice("debug")) && (p.get(6) & 0xFF) != 108))
+                else if (startsWith.invoke(p.plus(1), new ByteSlice("debug")) && ((p.get(6) & 0xFF) != 108))
                 {
-                    if ((p.get(6) & 0xFF) == 61)
+                    if (((p.get(6) & 0xFF) == 61))
                     {
-                        if ((isdigit((p.get(7) & 0xFF))) != 0)
+                        if (isdigit((p.get(7) & 0xFF)) != 0)
                         {
                             int level = parseDigits.invoke(p.plus(7), 2147483647);
-                            if (level == -1)
+                            if ((level == -1))
                                 /*goto Lerror*//*unrolled goto*/
                                 files.push(new BytePtr("__stdin.d"));
                             params.debuglevel = level;
@@ -2107,7 +2107,7 @@ public class mars {
                             /*goto Lerror*//*unrolled goto*/
                             files.push(new BytePtr("__stdin.d"));
                     }
-                    else if ((p.get(6)) != 0)
+                    else if (p.get(6) != 0)
                         /*goto Lerror*//*unrolled goto*/
                         files.push(new BytePtr("__stdin.d"));
                     else
@@ -2115,12 +2115,12 @@ public class mars {
                 }
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("version")))
                 {
-                    if ((p.get(8) & 0xFF) == 61)
+                    if (((p.get(8) & 0xFF) == 61))
                     {
-                        if ((isdigit((p.get(9) & 0xFF))) != 0)
+                        if (isdigit((p.get(9) & 0xFF)) != 0)
                         {
                             int level = parseDigits.invoke(p.plus(9), 2147483647);
-                            if (level == -1)
+                            if ((level == -1))
                                 /*goto Lerror*//*unrolled goto*/
                                 files.push(new BytePtr("__stdin.d"));
                             params.versionlevel = level;
@@ -2145,7 +2145,7 @@ public class mars {
                     params.debugc = true;
                 else if (__equals(arg, new ByteSlice("--f")))
                     params.debugf = true;
-                else if ((__equals(arg, new ByteSlice("--help")) || __equals(arg, new ByteSlice("-h"))))
+                else if (__equals(arg, new ByteSlice("--help")) || __equals(arg, new ByteSlice("-h")))
                 {
                     params.usage = true;
                     return false;
@@ -2161,7 +2161,7 @@ public class mars {
                     params.debugx = true;
                 else if (__equals(arg, new ByteSlice("--y")))
                     params.debugy = true;
-                else if ((p.get(1) & 0xFF) == 76)
+                else if (((p.get(1) & 0xFF) == 76))
                 {
                     params.linkswitches.push(p.plus(2).plus((((p.get(2) & 0xFF) == 61) ? 1 : 0)));
                 }
@@ -2180,14 +2180,14 @@ public class mars {
                         error.invoke(new BytePtr("-deps[=file] can only be provided once!"), null);
                         break;
                     }
-                    if ((p.get(5) & 0xFF) == 61)
+                    if (((p.get(5) & 0xFF) == 61))
                     {
                         params.moduleDepsFile = toDString(p.plus(1).plus(5)).copy();
-                        if (!((params.moduleDepsFile.get(0)) != 0))
+                        if (params.moduleDepsFile.get(0) == 0)
                             /*goto Lnoarg*//*unrolled goto*/
                             files.push(new BytePtr("__stdin.d"));
                     }
-                    else if ((p.get(5) & 0xFF) != 0)
+                    else if (((p.get(5) & 0xFF) != 0))
                     {
                         /*goto Lerror*//*unrolled goto*/
                         files.push(new BytePtr("__stdin.d"));
@@ -2207,22 +2207,22 @@ public class mars {
                 {
                     params.run = true;
                     int length = argc - i - 1;
-                    if ((length) != 0)
+                    if (length != 0)
                     {
                         BytePtr ext = pcopy(FileName.ext(arguments.get(i + 1)));
-                        if (((ext != null && (FileName.equals(ext, new BytePtr("d")) ? 1 : 0) == 0) && (FileName.equals(ext, new BytePtr("di")) ? 1 : 0) == 0))
+                        if ((ext != null) && ((FileName.equals(ext, new BytePtr("d")) ? 1 : 0) == 0) && ((FileName.equals(ext, new BytePtr("di")) ? 1 : 0) == 0))
                         {
                             error.invoke(new BytePtr("-run must be followed by a source file, not '%s'"), arguments.get(i + 1));
                             break;
                         }
-                        if (strcmp(arguments.get(i + 1), new BytePtr("-")) == 0)
+                        if ((strcmp(arguments.get(i + 1), new BytePtr("-")) == 0))
                             files.push(new BytePtr("__stdin.d"));
                         else
                             files.push(arguments.get(i + 1));
                         params.runargs.setDim(length - 1);
                         {
                             int j = 0;
-                            for (; j < length - 1;j += 1){
+                            for (; (j < length - 1);j += 1){
                                 params.runargs.set(j, arguments.get(i + 2 + j));
                             }
                         }
@@ -2235,7 +2235,7 @@ public class mars {
                         files.push(new BytePtr("__stdin.d"));
                     }
                 }
-                else if ((p.get(1) & 0xFF) == 0)
+                else if (((p.get(1) & 0xFF) == 0))
                     files.push(new BytePtr("__stdin.d"));
                 else
                 {
@@ -2252,47 +2252,47 @@ public class mars {
     }
 
     public static void reconcileCommands(Param params, int numSrcFiles) {
-        if ((params.lib && params.dll))
+        if (params.lib && params.dll)
             error(Loc.initial, new BytePtr("cannot mix -lib and -shared"));
         params.isLP64 = params.is64bit;
-        if ((params.boundscheck & 0xFF) != 0)
+        if (((params.boundscheck & 0xFF) != 0))
         {
-            if ((params.useArrayBounds & 0xFF) == 0)
+            if (((params.useArrayBounds & 0xFF) == 0))
                 params.useArrayBounds = params.boundscheck;
         }
         if (params.useUnitTests)
         {
-            if ((params.useAssert & 0xFF) == 0)
+            if (((params.useAssert & 0xFF) == 0))
                 params.useAssert = CHECKENABLE.on;
         }
         if (params.release)
         {
-            if ((params.useInvariants & 0xFF) == 0)
+            if (((params.useInvariants & 0xFF) == 0))
                 params.useInvariants = CHECKENABLE.off;
-            if ((params.useIn & 0xFF) == 0)
+            if (((params.useIn & 0xFF) == 0))
                 params.useIn = CHECKENABLE.off;
-            if ((params.useOut & 0xFF) == 0)
+            if (((params.useOut & 0xFF) == 0))
                 params.useOut = CHECKENABLE.off;
-            if ((params.useArrayBounds & 0xFF) == 0)
+            if (((params.useArrayBounds & 0xFF) == 0))
                 params.useArrayBounds = CHECKENABLE.safeonly;
-            if ((params.useAssert & 0xFF) == 0)
+            if (((params.useAssert & 0xFF) == 0))
                 params.useAssert = CHECKENABLE.off;
-            if ((params.useSwitchError & 0xFF) == 0)
+            if (((params.useSwitchError & 0xFF) == 0))
                 params.useSwitchError = CHECKENABLE.off;
         }
         else
         {
-            if ((params.useInvariants & 0xFF) == 0)
+            if (((params.useInvariants & 0xFF) == 0))
                 params.useInvariants = CHECKENABLE.on;
-            if ((params.useIn & 0xFF) == 0)
+            if (((params.useIn & 0xFF) == 0))
                 params.useIn = CHECKENABLE.on;
-            if ((params.useOut & 0xFF) == 0)
+            if (((params.useOut & 0xFF) == 0))
                 params.useOut = CHECKENABLE.on;
-            if ((params.useArrayBounds & 0xFF) == 0)
+            if (((params.useArrayBounds & 0xFF) == 0))
                 params.useArrayBounds = CHECKENABLE.on;
-            if ((params.useAssert & 0xFF) == 0)
+            if (((params.useAssert & 0xFF) == 0))
                 params.useAssert = CHECKENABLE.on;
-            if ((params.useSwitchError & 0xFF) == 0)
+            if (((params.useSwitchError & 0xFF) == 0))
                 params.useSwitchError = CHECKENABLE.on;
         }
         if (params.betterC)
@@ -2302,7 +2302,7 @@ public class mars {
             params.useTypeInfo = false;
             params.useExceptions = false;
         }
-        if ((!(params.obj) || params.lib))
+        if (!params.obj || params.lib)
             params.link = false;
         if (params.link)
         {
@@ -2327,12 +2327,12 @@ public class mars {
         {
             params.libname = params.objname.copy();
             params.objname = new ByteSlice().copy();
-            if ((!(params.cov) && !(params.trace)))
+            if (!params.cov && !params.trace)
                 params.multiobj = true;
         }
         else
         {
-            if ((params.objname.getLength() != 0 && (numSrcFiles) != 0))
+            if ((params.objname.getLength() != 0) && (numSrcFiles != 0))
             {
                 params.oneobj = true;
             }
@@ -2348,7 +2348,7 @@ public class mars {
         {
             int i = 0;
         L_outer5:
-            for (; i < files.length;i++){
+            for (; (i < files.length);i++){
                 ByteSlice name = new ByteSlice();
                 ByteSlice p = toDString(files.get(i)).copy();
                 p = FileName.name(p).copy();
@@ -2389,10 +2389,10 @@ public class mars {
                         global.params.mapfile = toDString(files.get(i)).copy();
                         continue L_outer5;
                     }
-                    if (((FileName.equals(ext, toByteSlice(global.mars_ext)) || FileName.equals(ext, toByteSlice(global.hdr_ext))) || FileName.equals(ext, new ByteSlice("dd"))))
+                    if (FileName.equals(ext, toByteSlice(global.mars_ext)) || FileName.equals(ext, toByteSlice(global.hdr_ext)) || FileName.equals(ext, new ByteSlice("dd")))
                     {
                         name = FileName.removeExt(p).copy();
-                        if (((!((name.getLength()) != 0) || __equals(name, new ByteSlice(".."))) || __equals(name, new ByteSlice("."))))
+                        if ((name.getLength() == 0) || __equals(name, new ByteSlice("..")) || __equals(name, new ByteSlice(".")))
                         {
                         /*Linvalid:*/
                             error(Loc.initial, new BytePtr("invalid file name '%s'"), files.get(i));
@@ -2408,7 +2408,7 @@ public class mars {
                 else
                 {
                     name = p.copy();
-                    if (!((name.getLength()) != 0))
+                    if (name.getLength() == 0)
                         /*goto Linvalid*/throw Dispatch0.INSTANCE;
                 }
                 Identifier id = Identifier.idPool(name);

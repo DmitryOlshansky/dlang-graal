@@ -114,22 +114,41 @@ string toJava(Expression e, ExprOpts opts) {
 }
 
 ///
-string toJavaBool(Expression e, ExprOpts opts) {
+string toJavaBool(Expression e, ExprOpts opts, PREC pr = PREC.primary) {
     scope TextBuffer buf = new TextBuffer();
-    scope v = new toJavaExpressionVisitor(buf, opts);
-    e.accept(v);
-    string op = "!=";
-    if (e.type && e.type.ty != Tbool) switch(e.type.ty){
-        case Tpointer:
-        case Tclass:
-        case Tdelegate:
-            buf.fmt(" %s null", op);
-            break;
-        case Tarray:
-            buf.fmt(".getLength() %s 0", op);
-            break;
-        default:
-            return format("(%s) %s 0", buf.data, op);
+    
+    bool negated = false;
+    if (auto not = e.isNotExp) {
+        negated = true;
+        e = not.e1;
+    }
+    if (e.type && e.type.ty != Tbool) {
+        string op = negated ? "==" : "!=";
+        if (pr <= PREC.equal) buf.fmt("(");
+        switch(e.type.ty){
+            case Tpointer:
+            case Tclass:
+            case Tdelegate:
+                expToBuffer(e, PREC.equal, buf, opts);
+                buf.fmt(" %s null", op);
+                break;
+            case Tarray:
+                expToBuffer(e, PREC.primary, buf, opts);
+                buf.fmt(".getLength() %s 0", op);
+                break;
+            default:
+                expToBuffer(e, PREC.equal, buf, opts);
+                buf.fmt(" %s 0", op);
+        }
+        if (pr <= PREC.equal) buf.fmt(")");
+    }
+    else {
+        if (negated) {
+            buf.put("!");
+            expToBuffer(e, PREC.unary, buf, opts);
+        }
+        else
+            expToBuffer(e, precedence[e.op], buf, opts);
     }
     return buf.data.dup;
 }
@@ -695,10 +714,7 @@ public:
             expToBuffer(e.e1, precedence[e.op], buf, opts);
         }
         else if(e.op == TOK.not) {
-            buf.put(Token.toString(e.op));
-            buf.put('(');
-            buf.put(e.e1.toJavaBool(opts));
-            buf.put(')');
+            buf.put(e.toJavaBool(opts, precedence[e.op]));
         }
         else {
             buf.put(Token.toString(e.op));
@@ -727,7 +743,11 @@ public:
             return;
         }
         else if(e.op == TOK.andAnd || e.op == TOK.orOr) {
-            buf.fmt("(%s %s %s)", e.e1.toJavaBool(opts), Token.toString(e.op), e.e2.toJavaBool(opts));
+            buf.fmt("%s %s %s", 
+                e.e1.toJavaBool(opts, cast(PREC)(precedence[e.op])), 
+                Token.toString(e.op), 
+                e.e2.toJavaBool(opts, cast(PREC)(precedence[e.op]))
+            );
             return;
         }
         else if(e.op == TOK.concatenate) {

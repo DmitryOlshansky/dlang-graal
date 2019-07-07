@@ -103,7 +103,7 @@ public class errors {
 
         public  void deprecation(Loc loc, BytePtr format, Slice<Object> args) {
             vdeprecation(loc, format, args, null, null);
-            if ((this.useDeprecated & 0xFF) == 0)
+            if (((this.useDeprecated & 0xFF) == 0))
                 this.errorCount_++;
             else
                 this.deprecationCount_++;
@@ -177,7 +177,7 @@ public class errors {
         BytePtr p = pcopy(loc.toChars(global.params.showColumns));
         if (con != null)
             (con).setColorBright(true);
-        if ((p.get()) != 0)
+        if (p.get() != 0)
         {
             fprintf(stderr, new BytePtr("%s: "), p);
             Mem.xfree(p);
@@ -193,7 +193,7 @@ public class errors {
             fprintf(stderr, new BytePtr("%s "), p2);
         OutBuffer tmp = new OutBuffer();
         tmp.vprintf(format, ap);
-        if ((con != null && strchr(tmp.peekChars(), 96) != null))
+        if ((con != null) && (strchr(tmp.peekChars(), 96) != null))
         {
             colorSyntaxHighlight(tmp);
             writeHighlights(con, tmp);
@@ -201,19 +201,19 @@ public class errors {
         else
             fputs(tmp.peekChars(), stderr);
         fputc(10, stderr);
-        if ((((global.params.printErrorContext && !(loc.opEquals(Loc.initial))) && strstr(loc.filename, new BytePtr(".d-mixin-")) == null) && global.params.mixinOut == null))
+        if (global.params.printErrorContext && !loc.opEquals(Loc.initial) && (strstr(loc.filename, new BytePtr(".d-mixin-")) == null) && (global.params.mixinOut == null))
         {
             FileAndLines fllines = FileCache.fileCache.addOrGetFile(loc.filename.slice(0,strlen(loc.filename)));
-            if (loc.linnum - 1 < fllines.lines.getLength())
+            if ((loc.linnum - 1 < fllines.lines.getLength()))
             {
                 ByteSlice line = fllines.lines.get(loc.linnum - 1).copy();
-                if (loc.charnum < line.getLength())
+                if ((loc.charnum < line.getLength()))
                 {
                     fprintf(stderr, new BytePtr("%.*s\n"), line.getLength(), toBytePtr(line));
                     {
                         int __key106 = 1;
                         int __limit107 = loc.charnum;
-                        for (; __key106 < __limit107;__key106 += 1) {
+                        for (; (__key106 < __limit107);__key106 += 1) {
                             int __ = __key106;
                             fputc(32, stderr);
                         }
@@ -228,10 +228,10 @@ public class errors {
 
     public static void verror(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2, BytePtr header) {
         global.errors++;
-        if (!((global.gag) != 0))
+        if (global.gag == 0)
         {
             verrorPrint(loc, Color.brightRed, header, format, ap, p1, p2);
-            if (((global.params.errorLimit) != 0 && global.errors >= global.params.errorLimit))
+            if ((global.params.errorLimit != 0) && (global.errors >= global.params.errorLimit))
                 fatal();
         }
         else
@@ -247,9 +247,9 @@ public class errors {
 
     public static void verrorSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
         int color = Color.black;
-        if ((global.gag) != 0)
+        if (global.gag != 0)
         {
-            if (!(global.params.showGaggedErrors))
+            if (!global.params.showGaggedErrors)
                 return ;
             color = Color.brightBlue;
         }
@@ -259,12 +259,12 @@ public class errors {
     }
 
     public static void vwarning(Loc loc, BytePtr format, Slice<Object> ap) {
-        if ((global.params.warnings & 0xFF) != 2)
+        if (((global.params.warnings & 0xFF) != 2))
         {
-            if (!((global.gag) != 0))
+            if (global.gag == 0)
             {
                 verrorPrint(loc, Color.brightYellow, new BytePtr("Warning: "), format, ap, null, null);
-                if ((global.params.warnings & 0xFF) == 0)
+                if (((global.params.warnings & 0xFF) == 0))
                     global.warnings++;
             }
             else
@@ -275,16 +275,16 @@ public class errors {
     }
 
     public static void vwarningSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
-        if (((global.params.warnings & 0xFF) != 2 && !((global.gag) != 0)))
+        if (((global.params.warnings & 0xFF) != 2) && (global.gag == 0))
             verrorPrint(loc, Color.brightYellow, new BytePtr("       "), format, ap, null, null);
     }
 
     public static void vdeprecation(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2) {
-        if ((global.params.useDeprecated & 0xFF) == 0)
+        if (((global.params.useDeprecated & 0xFF) == 0))
             verror(loc, format, ap, p1, p2, errors.vdeprecationheader);
-        else if ((global.params.useDeprecated & 0xFF) == 1)
+        else if (((global.params.useDeprecated & 0xFF) == 1))
         {
-            if (!((global.gag) != 0))
+            if (global.gag == 0)
             {
                 verrorPrint(loc, Color.brightCyan, errors.vdeprecationheader, format, ap, p1, p2);
             }
@@ -297,7 +297,7 @@ public class errors {
 
     public static void vmessage(Loc loc, BytePtr format, Slice<Object> ap) {
         BytePtr p = pcopy(loc.toChars(global.params.showColumns));
-        if ((p.get()) != 0)
+        if (p.get() != 0)
         {
             fprintf(stdout, new BytePtr("%s: "), p);
             Mem.xfree(p);
@@ -310,9 +310,9 @@ public class errors {
     }
 
     public static void vdeprecationSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
-        if ((global.params.useDeprecated & 0xFF) == 0)
+        if (((global.params.useDeprecated & 0xFF) == 0))
             verrorSupplemental(loc, format, ap);
-        else if (((global.params.useDeprecated & 0xFF) == 1 && !((global.gag) != 0)))
+        else if (((global.params.useDeprecated & 0xFF) == 1) && (global.gag == 0))
             verrorPrint(loc, Color.brightCyan, new BytePtr("       "), format, ap, null, null);
     }
 
@@ -330,7 +330,7 @@ public class errors {
         int offset = 0;
         {
             int i = offset;
-            for (; i < (buf).offset;i += 1){
+            for (; (i < (buf).offset);i += 1){
                 byte c = (byte)(buf).data.get(i);
                 switch ((c & 0xFF))
                 {
@@ -376,7 +376,7 @@ public class errors {
     }
 
     public static void colorHighlightCode(OutBuffer buf) {
-        if ((errors.colorHighlightCodenested) != 0)
+        if (errors.colorHighlightCodenested != 0)
         {
             errors.colorHighlightCodenested -= 1;
             return ;
@@ -390,7 +390,7 @@ public class errors {
         res.reserve((buf).offset);
         res.writeByte(255);
         res.writeByte(6);
-        for (; (1) != 0;){
+        for (; 1 != 0;){
             Token tok = new Token().copy();
             lex.scan(tok);
             res.writestring(lastp.slice(0,((tok.ptr.minus(lastp)))));
@@ -422,11 +422,11 @@ public class errors {
                     highlight = HIGHLIGHT.Identifier;
                     break;
                 default:
-                if ((tok.isKeyword()) != 0)
+                if (tok.isKeyword() != 0)
                     highlight = HIGHLIGHT.Identifier;
                 break;
             }
-            if ((highlight & 0xFF) != 0)
+            if (((highlight & 0xFF) != 0))
             {
                 res.writeByte(255);
                 res.writeByte((highlight & 0xFF));
@@ -436,7 +436,7 @@ public class errors {
             }
             else
                 res.writestring(tok.ptr.slice(0,((lex.p.minus(tok.ptr)))));
-            if ((tok.value & 0xFF) == 11)
+            if (((tok.value & 0xFF) == 11))
                 break;
             lastp = pcopy(lex.p);
         }
@@ -452,17 +452,17 @@ public class errors {
         boolean colors = false;
         {
             int i = 0;
-            for (; i < (buf).offset;i += 1){
+            for (; (i < (buf).offset);i += 1){
                 byte c = (buf).data.get(i);
-                if ((c & 0xFF) == 255)
+                if (((c & 0xFF) == 255))
                 {
                     byte color = (buf).data.get(i += 1);
-                    if ((color & 0xFF) == 0)
+                    if (((color & 0xFF) == 0))
                     {
                         (con).resetColor();
                         colors = false;
                     }
-                    else if ((color & 0xFF) == Color.white)
+                    else if (((color & 0xFF) == Color.white))
                     {
                         (con).resetColor();
                         (con).setColorBright(true);

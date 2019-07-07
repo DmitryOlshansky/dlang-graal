@@ -77,20 +77,20 @@ public class expressionsem {
         {
             Slice<Expression> __r1354 = (exps).opSlice().copy();
             int __key1355 = 0;
-            for (; __key1355 < __r1354.getLength();__key1355 += 1) {
+            for (; (__key1355 < __r1354.getLength());__key1355 += 1) {
                 Expression ex = __r1354.get(__key1355);
-                if (!(ex != null))
+                if (ex == null)
                     continue;
                 Scope sc2 = (sc).startCTFE();
                 Expression e2 = expressionSemantic(ex, sc2);
                 Expression e3 = resolveProperties(sc2, e2);
                 (sc2).endCTFE();
                 Expression e4 = ctfeInterpretForPragmaMsg(e3);
-                if ((!(e4 != null) || (e4.op & 0xFF) == 127))
+                if ((e4 == null) || ((e4.op & 0xFF) == 127))
                     return true;
                 {
                     TupleExp te = e4.isTupleExp();
-                    if (te != null)
+                    if ((te) != null)
                     {
                         if (expressionsToString(buf, sc, te.exps))
                             return true;
@@ -98,15 +98,15 @@ public class expressionsem {
                     }
                 }
                 IntegerExp ie = e4.isIntegerExp();
-                int ty = (ie != null && ie.type != null) ? (ie.type.ty & 0xFF) : 34;
-                if (((ty == 31 || ty == 32) || ty == 33))
+                int ty = (ie != null) && (ie.type != null) ? (ie.type.ty & 0xFF) : 34;
+                if ((ty == 31) || (ty == 32) || (ty == 33))
                 {
                     TypeSArray tsa = new TypeSArray(ie.type, new IntegerExp(1L));
                     e4 = new ArrayLiteralExp(ex.loc, tsa, ie);
                 }
                 {
                     StringExp se = e4.toStringExp();
-                    if (se != null)
+                    if ((se) != null)
                         buf.writestring(se.toUTF8(sc).peekSlice());
                     else
                         buf.writestring(e4.asString());
@@ -121,17 +121,17 @@ public class expressionsem {
         exp = expressionSemantic(exp, sc);
         exp = resolveProperties(sc, exp);
         sc = (sc).endCTFE();
-        if ((exp.op & 0xFF) == 127)
+        if (((exp.op & 0xFF) == 127))
             return null;
         Expression e = exp;
         if (exp.type.isString())
         {
             e = e.ctfeInterpret();
-            if ((e.op & 0xFF) == 127)
+            if (((e.op & 0xFF) == 127))
                 return null;
         }
         StringExp se = e.toStringExp();
-        if (!(se != null))
+        if (se == null)
         {
             exp.error(new BytePtr("`string` expected for %s, not `(%s)` of type `%s`"), s, exp.toChars(), exp.type.toChars());
             return null;
@@ -142,10 +142,10 @@ public class expressionsem {
     public static Expression extractOpDollarSideEffect(Scope sc, UnaExp ue) {
         Ref<Expression> e0 = ref(null);
         Expression e1 = Expression.extractLast(ue.e1, e0);
-        if (!(isTrivialExp(e1)))
+        if (!isTrivialExp(e1))
         {
             e1 = extractSideEffect(sc, new BytePtr("__dop"), e0, e1, false);
-            assert((e1.op & 0xFF) == 26);
+            assert(((e1.op & 0xFF) == 26));
             VarExp ve = (VarExp)e1;
             ve.var.storage_class |= 140737488355328L;
         }
@@ -154,7 +154,7 @@ public class expressionsem {
     }
 
     public static Expression resolveOpDollar(Scope sc, ArrayExp ae, Ptr<Expression> pe0) {
-        assert(!(ae.lengthVar != null));
+        assert(ae.lengthVar == null);
         pe0.set(0, null);
         AggregateDeclaration ad = isAggregate(ae.e1.type);
         Dsymbol slice = search_function(ad, Id.slice);
@@ -162,15 +162,15 @@ public class expressionsem {
             Slice<Expression> __r1357 = (ae.arguments).opSlice().copy();
             int __key1356 = 0;
         L_outer1:
-            for (; __key1356 < __r1357.getLength();__key1356 += 1) {
+            for (; (__key1356 < __r1357.getLength());__key1356 += 1) {
                 Expression e = __r1357.get(__key1356);
                 int i = __key1356;
-                if (i == 0)
+                if ((i == 0))
                     pe0.set(0, extractOpDollarSideEffect(sc, ae));
-                if (((e.op & 0xFF) == 231 && !((slice != null && slice.isTemplateDeclaration() != null))))
+                if (((e.op & 0xFF) == 231) && !((slice != null) && (slice.isTemplateDeclaration() != null)))
                 {
                 /*Lfallback:*/
-                    if ((ae.arguments).length == 1)
+                    if (((ae.arguments).length == 1))
                         return null;
                     ae.error(new BytePtr("multi-dimensional slicing requires template `opSlice`"));
                     return new ErrorExp();
@@ -182,14 +182,14 @@ public class expressionsem {
                 ae.currentDimension = i;
                 e = expressionSemantic(e, sc);
                 e = resolveProperties(sc, e);
-                if ((ae.lengthVar != null && (sc).func != null))
+                if ((ae.lengthVar != null) && ((sc).func != null))
                 {
                     Expression de = new DeclarationExp(ae.loc, ae.lengthVar);
                     de = expressionSemantic(de, sc);
                     pe0.set(0, Expression.combine(pe0.get(), de));
                 }
                 sc = (sc).pop();
-                if ((e.op & 0xFF) == 231)
+                if (((e.op & 0xFF) == 231))
                 {
                     IntervalExp ie = (IntervalExp)e;
                     DArray<RootObject> tiargs = new DArray<RootObject>();
@@ -204,18 +204,18 @@ public class expressionsem {
                     FuncDeclaration fslice = resolveFuncCall(ae.loc, sc, slice, tiargs, ae.e1.type, fargs, FuncResolveFlag.quiet);
                     sc = (sc).pop();
                     global.endGagging(xerrors);
-                    if (!(fslice != null))
+                    if (fslice == null)
                         /*goto Lfallback*/throw Dispatch0.INSTANCE;
                     e = new DotTemplateInstanceExp(ae.loc, ae.e1, slice.ident, tiargs);
                     e = new CallExp(ae.loc, e, fargs);
                     e = expressionSemantic(e, sc);
                 }
-                if (!(e.type != null))
+                if (e.type == null)
                 {
                     ae.error(new BytePtr("`%s` has no value"), e.toChars());
                     e = new ErrorExp();
                 }
-                if ((e.op & 0xFF) == 127)
+                if (((e.op & 0xFF) == 127))
                     return e;
                 ae.arguments.set(i, e);
             }
@@ -224,7 +224,7 @@ public class expressionsem {
     }
 
     public static Expression resolveOpDollar(Scope sc, ArrayExp ae, IntervalExp ie, Ptr<Expression> pe0) {
-        if (!(ie != null))
+        if (ie == null)
             return ae;
         VarDeclaration lengthVar = ae.lengthVar;
         ArrayScopeSymbol sym = new ArrayScopeSymbol(sc, ae);
@@ -233,20 +233,20 @@ public class expressionsem {
         {
             int __key1358 = 0;
             int __limit1359 = 2;
-            for (; __key1358 < __limit1359;__key1358 += 1) {
+            for (; (__key1358 < __limit1359);__key1358 += 1) {
                 int i = __key1358;
-                Expression e = i == 0 ? ie.lwr : ie.upr;
+                Expression e = (i == 0) ? ie.lwr : ie.upr;
                 e = expressionSemantic(e, sc);
                 e = resolveProperties(sc, e);
-                if (!(e.type != null))
+                if (e.type == null)
                 {
                     ae.error(new BytePtr("`%s` has no value"), e.toChars());
                     return new ErrorExp();
                 }
-                (i == 0 ? ie.lwr : ie.upr).set(0, e);
+                ((i == 0) ? ie.lwr : ie.upr).set(0, e);
             }
         }
-        if ((!pequals(lengthVar, ae.lengthVar) && (sc).func != null))
+        if ((!pequals(lengthVar, ae.lengthVar)) && ((sc).func != null))
         {
             Expression de = new DeclarationExp(ae.loc, ae.lengthVar);
             de = expressionSemantic(de, sc);
@@ -263,14 +263,14 @@ public class expressionsem {
             {
                 Slice<Expression> __r1360 = (exps).opSlice().copy();
                 int __key1361 = 0;
-                for (; __key1361 < __r1360.getLength();__key1361 += 1) {
+                for (; (__key1361 < __r1360.getLength());__key1361 += 1) {
                     Expression e = __r1360.get(__key1361);
                     if (e != null)
                     {
                         Expression e2 = expressionSemantic(e, sc);
-                        if ((e2.op & 0xFF) == 127)
+                        if (((e2.op & 0xFF) == 127))
                             err = true;
-                        if ((preserveErrors || (e2.op & 0xFF) != 127))
+                        if (preserveErrors || ((e2.op & 0xFF) != 127))
                             e = e2;
                     }
                 }
@@ -281,24 +281,24 @@ public class expressionsem {
 
     public static boolean checkPropertyCall(Expression e) {
         e = lastComma(e);
-        if ((e.op & 0xFF) == 18)
+        if (((e.op & 0xFF) == 18))
         {
             CallExp ce = (CallExp)e;
             TypeFunction tf = null;
             if (ce.f != null)
             {
                 tf = (TypeFunction)ce.f.type;
-                if ((tf.deco == null && ce.f.semanticRun < PASS.semanticdone))
+                if ((tf.deco == null) && (ce.f.semanticRun < PASS.semanticdone))
                 {
                     dsymbolSemantic(ce.f, null);
                     tf = (TypeFunction)ce.f.type;
                 }
             }
-            else if ((ce.e1.type.ty & 0xFF) == ENUMTY.Tfunction)
+            else if (((ce.e1.type.ty & 0xFF) == ENUMTY.Tfunction))
                 tf = (TypeFunction)ce.e1.type;
-            else if ((ce.e1.type.ty & 0xFF) == ENUMTY.Tdelegate)
+            else if (((ce.e1.type.ty & 0xFF) == ENUMTY.Tdelegate))
                 tf = (TypeFunction)ce.e1.type.nextOf();
-            else if (((ce.e1.type.ty & 0xFF) == ENUMTY.Tpointer && (ce.e1.type.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
+            else if (((ce.e1.type.ty & 0xFF) == ENUMTY.Tpointer) && ((ce.e1.type.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
                 tf = (TypeFunction)ce.e1.type.nextOf();
             else
                 throw new AssertionError("Unreachable code!");
@@ -316,7 +316,7 @@ public class expressionsem {
                 {
                     Scope scx = sc_ref.value;
                     for (; scx != null;scx = (scx).enclosing){
-                        if (!((scx).scopesym != null))
+                        if ((scx).scopesym == null)
                             continue;
                         if ((scx).scopesym.isModule() != null)
                             flags |= 32;
@@ -327,18 +327,18 @@ public class expressionsem {
                                 break;
                             {
                                 AliasDeclaration ad = s.isAliasDeclaration();
-                                if (ad != null)
+                                if ((ad) != null)
                                 {
                                     if (ad._import != null)
                                         break;
                                 }
                             }
                             Dsymbol p = s.toParent2();
-                            if ((p != null && p.isModule() != null))
+                            if ((p != null) && (p.isModule() != null))
                                 break;
                         }
                         s = null;
-                        if (((scx).scopesym.isModule() != null && !(((scx).enclosing != null && ((scx).enclosing).enclosing == null))))
+                        if (((scx).scopesym.isModule() != null) && !(((scx).enclosing != null) && (((scx).enclosing).enclosing == null)))
                             break;
                     }
                 }
@@ -350,11 +350,11 @@ public class expressionsem {
         if (((sc_ref.value).flags & 512) != 0)
             flags |= 128;
         s = searchScopes.invoke(flags | 8);
-        if (!(s != null))
+        if (s == null)
         {
             s = searchScopes.invoke(flags | 16);
         }
-        if (!(s != null))
+        if (s == null)
             return getProperty(ue.e1.type.Type, loc, ident_ref.value, 0);
         FuncDeclaration f = s.isFuncDeclaration();
         if (f != null)
@@ -367,11 +367,11 @@ public class expressionsem {
                 s = td;
             }
         }
-        if ((ue.op & 0xFF) == 29)
+        if (((ue.op & 0xFF) == 29))
         {
             DotTemplateInstanceExp dti = (DotTemplateInstanceExp)ue;
             TemplateInstance ti = new TemplateInstance(loc, s.ident, dti.ti.tiargs);
-            if (!(ti.updateTempDecl(sc_ref.value, s)))
+            if (!ti.updateTempDecl(sc_ref.value, s))
                 return new ErrorExp();
             return new ScopeExp(loc, ti);
         }
@@ -385,31 +385,31 @@ public class expressionsem {
         Loc loc = ce.loc.copy();
         Expression eleft = null;
         Expression e = null;
-        if ((ce.e1.op & 0xFF) == 28)
+        if (((ce.e1.op & 0xFF) == 28))
         {
             DotIdExp die = (DotIdExp)ce.e1;
             Identifier ident = die.ident;
             Expression ex = semanticX(die, sc);
-            if (!pequals(ex, die))
+            if ((!pequals(ex, die)))
             {
                 ce.e1 = ex;
                 return null;
             }
             eleft = die.e1;
             Type t = eleft.type.toBasetype();
-            if (((((t.ty & 0xFF) == ENUMTY.Tarray || (t.ty & 0xFF) == ENUMTY.Tsarray) || (t.ty & 0xFF) == ENUMTY.Tnull) || (t.isTypeBasic() != null && (t.ty & 0xFF) != ENUMTY.Tvoid)))
+            if (((t.ty & 0xFF) == ENUMTY.Tarray) || ((t.ty & 0xFF) == ENUMTY.Tsarray) || ((t.ty & 0xFF) == ENUMTY.Tnull) || (t.isTypeBasic() != null) && ((t.ty & 0xFF) != ENUMTY.Tvoid))
             {
             }
-            else if ((t.ty & 0xFF) == ENUMTY.Taarray)
+            else if (((t.ty & 0xFF) == ENUMTY.Taarray))
             {
-                if (pequals(ident, Id.remove))
+                if ((pequals(ident, Id.remove)))
                 {
-                    if ((ce.arguments == null || (ce.arguments).length != 1))
+                    if ((ce.arguments == null) || ((ce.arguments).length != 1))
                     {
                         ce.error(new BytePtr("expected key as argument to `aa.remove()`"));
                         return new ErrorExp();
                     }
-                    if (!(eleft.type.isMutable()))
+                    if (!eleft.type.isMutable())
                     {
                         ce.error(new BytePtr("cannot remove key from `%s` associative array `%s`"), MODtoChars(t.mod), eleft.toChars());
                         return new ErrorExp();
@@ -431,16 +431,16 @@ public class expressionsem {
                     return new ErrorExp();
                 {
                     Expression ey = semanticY(die, sc, 1);
-                    if (ey != null)
+                    if ((ey) != null)
                     {
-                        if ((ey.op & 0xFF) == 127)
+                        if (((ey.op & 0xFF) == 127))
                             return ey;
                         ce.e1 = ey;
                         if (isDotOpDispatch(ey))
                         {
                             int errors = global.startGagging();
                             e = expressionSemantic(ce.syntaxCopy(), sc);
-                            if (!(global.endGagging(errors)))
+                            if (!global.endGagging(errors))
                                 return e;
                         }
                         else
@@ -452,10 +452,10 @@ public class expressionsem {
             e = searchUFCS(sc, die, ident);
             if (global.endGagging(errors))
             {
-                if (pequals(ident, Id.remove))
+                if ((pequals(ident, Id.remove)))
                 {
                     Expression alias_e = resolveAliasThis(sc, die.e1, true);
-                    if ((alias_e != null && !pequals(alias_e, die.e1)))
+                    if ((alias_e != null) && (!pequals(alias_e, die.e1)))
                     {
                         die.e1 = alias_e;
                         CallExp ce2 = (CallExp)ce.syntaxCopy();
@@ -468,12 +468,12 @@ public class expressionsem {
                 searchUFCS(sc, die, ident);
             }
         }
-        else if ((ce.e1.op & 0xFF) == 29)
+        else if (((ce.e1.op & 0xFF) == 29))
         {
             DotTemplateInstanceExp dti = (DotTemplateInstanceExp)ce.e1;
             {
                 Expression ey = semanticY(dti, sc, 1);
-                if (ey != null)
+                if ((ey) != null)
                 {
                     ce.e1 = ey;
                     return null;
@@ -495,13 +495,13 @@ public class expressionsem {
         Loc loc = e1.loc.copy();
         Expression eleft = null;
         Expression e = null;
-        if ((e1.op & 0xFF) == 28)
+        if (((e1.op & 0xFF) == 28))
         {
             DotIdExp die = (DotIdExp)e1;
             eleft = die.e1;
             e = searchUFCS(sc, die, die.ident);
         }
-        else if ((e1.op & 0xFF) == 29)
+        else if (((e1.op & 0xFF) == 29))
         {
             DotTemplateInstanceExp dti = null;
             dti = (DotTemplateInstanceExp)e1;
@@ -510,7 +510,7 @@ public class expressionsem {
         }
         else
             return null;
-        if (e == null)
+        if ((e == null))
             return null;
         if (e2 != null)
         {
@@ -527,7 +527,7 @@ public class expressionsem {
             if (ex != null)
             {
                 e = trySemantic(e, sc);
-                if (!(e != null))
+                if (e == null)
                 {
                     checkPropertyCall(ex);
                     ex = new AssignExp(loc, ex, e2);
@@ -556,10 +556,10 @@ public class expressionsem {
         OverloadSet os = null;
         FuncDeclaration fd = null;
         TemplateDeclaration td = null;
-        if ((e1.op & 0xFF) == 97)
+        if (((e1.op & 0xFF) == 97))
         {
             DotExp de = (DotExp)e1;
-            if ((de.e2.op & 0xFF) == 214)
+            if (((de.e2.op & 0xFF) == 214))
             {
                 os = ((OverExp)de.e2).vars;
                 /*goto Los*//*unrolled goto*/
@@ -568,7 +568,7 @@ public class expressionsem {
                 {
                     Slice<Dsymbol> __r1362 = os.a.opSlice().copy();
                     int __key1363 = 0;
-                    for (; __key1363 < __r1362.getLength();__key1363 += 1) {
+                    for (; (__key1363 < __r1362.getLength());__key1363 += 1) {
                         Dsymbol s = __r1362.get(__key1363);
                         fd = s.isFuncDeclaration();
                         td = s.isTemplateDeclaration();
@@ -577,9 +577,9 @@ public class expressionsem {
                             if (((TypeFunction)fd.type).isproperty)
                                 return resolveProperties(sc, e1);
                         }
-                        else if (((td != null && td.onemember != null) && (fd = td.onemember.isFuncDeclaration()) != null))
+                        else if ((td != null) && (td.onemember != null) && ((fd = td.onemember.isFuncDeclaration()) != null))
                         {
-                            if (((((TypeFunction)fd.type).isproperty || (fd.storage_class2 & 4294967296L) != 0) || ((td._scope).stc & 4294967296L) != 0))
+                            if (((TypeFunction)fd.type).isproperty || ((fd.storage_class2 & 4294967296L) != 0) || (((td._scope).stc & 4294967296L) != 0))
                             {
                                 return resolveProperties(sc, e1);
                             }
@@ -588,7 +588,7 @@ public class expressionsem {
                 }
             }
         }
-        else if ((e1.op & 0xFF) == 214)
+        else if (((e1.op & 0xFF) == 214))
         {
             os = ((OverExp)e1).vars;
         /*Los:*/
@@ -596,7 +596,7 @@ public class expressionsem {
             {
                 Slice<Dsymbol> __r1362 = os.a.opSlice().copy();
                 int __key1363 = 0;
-                for (; __key1363 < __r1362.getLength();__key1363 += 1) {
+                for (; (__key1363 < __r1362.getLength());__key1363 += 1) {
                     Dsymbol s = __r1362.get(__key1363);
                     fd = s.isFuncDeclaration();
                     td = s.isTemplateDeclaration();
@@ -605,9 +605,9 @@ public class expressionsem {
                         if (((TypeFunction)fd.type).isproperty)
                             return resolveProperties(sc, e1);
                     }
-                    else if (((td != null && td.onemember != null) && (fd = td.onemember.isFuncDeclaration()) != null))
+                    else if ((td != null) && (td.onemember != null) && ((fd = td.onemember.isFuncDeclaration()) != null))
                     {
-                        if (((((TypeFunction)fd.type).isproperty || (fd.storage_class2 & 4294967296L) != 0) || ((td._scope).stc & 4294967296L) != 0))
+                        if (((TypeFunction)fd.type).isproperty || ((fd.storage_class2 & 4294967296L) != 0) || (((td._scope).stc & 4294967296L) != 0))
                         {
                             return resolveProperties(sc, e1);
                         }
@@ -615,68 +615,68 @@ public class expressionsem {
                 }
             }
         }
-        else if ((e1.op & 0xFF) == 29)
+        else if (((e1.op & 0xFF) == 29))
         {
             DotTemplateInstanceExp dti = (DotTemplateInstanceExp)e1;
-            if ((dti.ti.tempdecl != null && (td = dti.ti.tempdecl.isTemplateDeclaration()) != null))
+            if ((dti.ti.tempdecl != null) && ((td = dti.ti.tempdecl.isTemplateDeclaration()) != null))
                 /*goto Ltd*//*unrolled goto*/
             /*Ltd:*/
                 assert(td != null);
-                if ((td.onemember != null && (fd = td.onemember.isFuncDeclaration()) != null))
+                if ((td.onemember != null) && ((fd = td.onemember.isFuncDeclaration()) != null))
                 {
-                    if (((((TypeFunction)fd.type).isproperty || (fd.storage_class2 & 4294967296L) != 0) || ((td._scope).stc & 4294967296L) != 0))
+                    if (((TypeFunction)fd.type).isproperty || ((fd.storage_class2 & 4294967296L) != 0) || (((td._scope).stc & 4294967296L) != 0))
                     {
                         return resolveProperties(sc, e1);
                     }
                 }
         }
-        else if ((e1.op & 0xFF) == 37)
+        else if (((e1.op & 0xFF) == 37))
         {
             td = ((DotTemplateExp)e1).td;
             /*goto Ltd*//*unrolled goto*/
         /*Ltd:*/
             assert(td != null);
-            if ((td.onemember != null && (fd = td.onemember.isFuncDeclaration()) != null))
+            if ((td.onemember != null) && ((fd = td.onemember.isFuncDeclaration()) != null))
             {
-                if (((((TypeFunction)fd.type).isproperty || (fd.storage_class2 & 4294967296L) != 0) || ((td._scope).stc & 4294967296L) != 0))
+                if (((TypeFunction)fd.type).isproperty || ((fd.storage_class2 & 4294967296L) != 0) || (((td._scope).stc & 4294967296L) != 0))
                 {
                     return resolveProperties(sc, e1);
                 }
             }
         }
-        else if ((e1.op & 0xFF) == 203)
+        else if (((e1.op & 0xFF) == 203))
         {
             Dsymbol s = ((ScopeExp)e1).sds;
             TemplateInstance ti = s.isTemplateInstance();
-            if (((ti != null && !((ti.semanticRun) != 0)) && ti.tempdecl != null))
+            if ((ti != null) && (ti.semanticRun == 0) && (ti.tempdecl != null))
             {
-                if ((td = ti.tempdecl.isTemplateDeclaration()) != null)
+                if (((td = ti.tempdecl.isTemplateDeclaration()) != null))
                     /*goto Ltd*//*unrolled goto*/
                 /*Ltd:*/
                     assert(td != null);
-                    if ((td.onemember != null && (fd = td.onemember.isFuncDeclaration()) != null))
+                    if ((td.onemember != null) && ((fd = td.onemember.isFuncDeclaration()) != null))
                     {
-                        if (((((TypeFunction)fd.type).isproperty || (fd.storage_class2 & 4294967296L) != 0) || ((td._scope).stc & 4294967296L) != 0))
+                        if (((TypeFunction)fd.type).isproperty || ((fd.storage_class2 & 4294967296L) != 0) || (((td._scope).stc & 4294967296L) != 0))
                         {
                             return resolveProperties(sc, e1);
                         }
                     }
             }
         }
-        else if ((e1.op & 0xFF) == 36)
+        else if (((e1.op & 0xFF) == 36))
         {
             td = ((TemplateExp)e1).td;
         /*Ltd:*/
             assert(td != null);
-            if ((td.onemember != null && (fd = td.onemember.isFuncDeclaration()) != null))
+            if ((td.onemember != null) && ((fd = td.onemember.isFuncDeclaration()) != null))
             {
-                if (((((TypeFunction)fd.type).isproperty || (fd.storage_class2 & 4294967296L) != 0) || ((td._scope).stc & 4294967296L) != 0))
+                if (((TypeFunction)fd.type).isproperty || ((fd.storage_class2 & 4294967296L) != 0) || (((td._scope).stc & 4294967296L) != 0))
                 {
                     return resolveProperties(sc, e1);
                 }
             }
         }
-        else if (((e1.op & 0xFF) == 27 && (e1.type.ty & 0xFF) == ENUMTY.Tfunction))
+        else if (((e1.op & 0xFF) == 27) && ((e1.type.ty & 0xFF) == ENUMTY.Tfunction))
         {
             DotVarExp dve = (DotVarExp)e1;
             fd = dve.var.isFuncDeclaration();
@@ -686,7 +686,7 @@ public class expressionsem {
             if (((TypeFunction)fd.type).isproperty)
                 return resolveProperties(sc, e1);
         }
-        else if (((((e1.op & 0xFF) == 26 && e1.type != null) && (e1.type.ty & 0xFF) == ENUMTY.Tfunction) && (((sc).intypeof) != 0 || !(((VarExp)e1).var.needThis()))))
+        else if (((e1.op & 0xFF) == 26) && (e1.type != null) && ((e1.type.ty & 0xFF) == ENUMTY.Tfunction) && ((sc).intypeof != 0) || !((VarExp)e1).var.needThis())
         {
             fd = ((VarExp)e1).var.isFuncDeclaration();
         /*Lfd:*/
@@ -703,20 +703,20 @@ public class expressionsem {
             Expression e = null;
             Dsymbol olds = s;
             Declaration d = s.isDeclaration();
-            if ((d != null && (d.storage_class & 262144L) != 0))
+            if ((d != null) && ((d.storage_class & 262144L) != 0))
             {
                 s = s.toAlias();
             }
             else
             {
-                if (!(s.isFuncDeclaration() != null))
+                if (s.isFuncDeclaration() == null)
                 {
                     s.checkDeprecated(loc, sc);
                     if (d != null)
                         d.checkDisabled(loc, sc, false);
                 }
                 s = s.toAlias();
-                if ((!pequals(s, olds) && !(s.isFuncDeclaration() != null)))
+                if ((!pequals(s, olds)) && (s.isFuncDeclaration() == null))
                 {
                     s.checkDeprecated(loc, sc);
                     if (d != null)
@@ -725,30 +725,30 @@ public class expressionsem {
             }
             {
                 EnumMember em = s.isEnumMember();
-                if (em != null)
+                if ((em) != null)
                 {
                     return em.getVarExp(loc, sc);
                 }
             }
             {
                 VarDeclaration v = s.isVarDeclaration();
-                if (v != null)
+                if ((v) != null)
                 {
-                    if (((sc).intypeof == 1 && !((v.inuse) != 0)))
+                    if (((sc).intypeof == 1) && (v.inuse == 0))
                         dsymbolSemantic(v, sc);
-                    if ((!(v.type != null) || (v.type.deco == null && (v.inuse) != 0)))
+                    if ((v.type == null) || (v.type.deco == null) && (v.inuse != 0))
                     {
-                        if ((v.inuse) != 0)
+                        if (v.inuse != 0)
                             error(loc, new BytePtr("circular reference to %s `%s`"), v.kind(), v.toPrettyChars(false));
                         else
                             error(loc, new BytePtr("forward reference to %s `%s`"), v.kind(), v.toPrettyChars(false));
                         return new ErrorExp();
                     }
-                    if ((v.type.ty & 0xFF) == ENUMTY.Terror)
+                    if (((v.type.ty & 0xFF) == ENUMTY.Terror))
                         return new ErrorExp();
-                    if (((v.storage_class & 8388608L) != 0 && v._init != null))
+                    if (((v.storage_class & 8388608L) != 0) && (v._init != null))
                     {
-                        if ((v.inuse) != 0)
+                        if (v.inuse != 0)
                         {
                             error(loc, new BytePtr("circular initialization of %s `%s`"), v.kind(), v.toPrettyChars(false));
                             return new ErrorExp();
@@ -761,7 +761,7 @@ public class expressionsem {
                     }
                     if (v.checkNestedReference(sc, loc))
                         return new ErrorExp();
-                    if ((v.needThis() && hasThis(sc) != null))
+                    if (v.needThis() && (hasThis(sc) != null))
                         e = new DotVarExp(loc, new ThisExp(loc), v, true);
                     else
                         e = new VarExp(loc, v, true);
@@ -771,7 +771,7 @@ public class expressionsem {
             }
             {
                 FuncLiteralDeclaration fld = s.isFuncLiteralDeclaration();
-                if (fld != null)
+                if ((fld) != null)
                 {
                     e = new FuncExp(loc, fld);
                     return expressionSemantic(e, sc);
@@ -779,12 +779,12 @@ public class expressionsem {
             }
             {
                 FuncDeclaration f = s.isFuncDeclaration();
-                if (f != null)
+                if ((f) != null)
                 {
                     f = f.toAliasFunc();
-                    if (!(f.functionSemantic()))
+                    if (!f.functionSemantic())
                         return new ErrorExp();
-                    if ((!(hasOverloads) && f.checkForwardRef(loc)))
+                    if (!hasOverloads && f.checkForwardRef(loc))
                         return new ErrorExp();
                     FuncDeclaration fd = s.isFuncDeclaration();
                     fd.type = f.type;
@@ -793,7 +793,7 @@ public class expressionsem {
             }
             {
                 OverDeclaration od = s.isOverDeclaration();
-                if (od != null)
+                if ((od) != null)
                 {
                     e = new VarExp(loc, od, true);
                     e.type = Type.tvoid;
@@ -802,16 +802,16 @@ public class expressionsem {
             }
             {
                 OverloadSet o = s.isOverloadSet();
-                if (o != null)
+                if ((o) != null)
                 {
                     return new OverExp(loc, o);
                 }
             }
             {
                 Import imp = s.isImport();
-                if (imp != null)
+                if ((imp) != null)
                 {
-                    if (!(imp.pkg != null))
+                    if (imp.pkg == null)
                     {
                         error(loc, new BytePtr("forward reference of import `%s`"), imp.toChars());
                         return new ErrorExp();
@@ -822,7 +822,7 @@ public class expressionsem {
             }
             {
                 dmodule.Package pkg = s.isPackage();
-                if (pkg != null)
+                if ((pkg) != null)
                 {
                     ScopeExp ie = new ScopeExp(loc, pkg);
                     return expressionSemantic(ie, sc);
@@ -830,7 +830,7 @@ public class expressionsem {
             }
             {
                 dmodule.Module mod = s.isModule();
-                if (mod != null)
+                if ((mod) != null)
                 {
                     ScopeExp ie = new ScopeExp(loc, mod);
                     return expressionSemantic(ie, sc);
@@ -838,7 +838,7 @@ public class expressionsem {
             }
             {
                 Nspace ns = s.isNspace();
-                if (ns != null)
+                if ((ns) != null)
                 {
                     ScopeExp ie = new ScopeExp(loc, ns);
                     return expressionSemantic(ie, sc);
@@ -846,16 +846,16 @@ public class expressionsem {
             }
             {
                 Type t = s.getType();
-                if (t != null)
+                if ((t) != null)
                 {
                     return expressionSemantic(new TypeExp(loc, t), sc);
                 }
             }
             {
                 TupleDeclaration tup = s.isTupleDeclaration();
-                if (tup != null)
+                if ((tup) != null)
                 {
-                    if ((tup.needThis() && hasThis(sc) != null))
+                    if (tup.needThis() && (hasThis(sc) != null))
                         e = new DotVarExp(loc, new ThisExp(loc), tup, true);
                     else
                         e = new TupleExp(loc, tup);
@@ -865,13 +865,13 @@ public class expressionsem {
             }
             {
                 TemplateInstance ti = s.isTemplateInstance();
-                if (ti != null)
+                if ((ti) != null)
                 {
                     dsymbolSemantic(ti, sc);
-                    if ((!(ti.inst != null) || ti.errors))
+                    if ((ti.inst == null) || ti.errors)
                         return new ErrorExp();
                     s = ti.toAlias();
-                    if (!(s.isTemplateInstance() != null))
+                    if (s.isTemplateInstance() == null)
                         /*goto Lagain*/throw Dispatch0.INSTANCE;
                     e = new ScopeExp(loc, ti);
                     e = expressionSemantic(e, sc);
@@ -880,12 +880,12 @@ public class expressionsem {
             }
             {
                 TemplateDeclaration td = s.isTemplateDeclaration();
-                if (td != null)
+                if ((td) != null)
                 {
                     Dsymbol p = td.toParentLocal();
                     FuncDeclaration fdthis = hasThis(sc);
                     AggregateDeclaration ad = p != null ? p.isAggregateDeclaration() : null;
-                    if ((((fdthis != null && ad != null) && pequals(fdthis.isMemberLocal(), ad)) && ((td._scope).stc & 1L) == 0L))
+                    if ((fdthis != null) && (ad != null) && (pequals(fdthis.isMemberLocal(), ad)) && (((td._scope).stc & 1L) == 0L))
                     {
                         e = new DotTemplateExp(loc, new ThisExp(loc), td);
                     }
@@ -905,18 +905,18 @@ public class expressionsem {
         while(true) try {
         /*L1:*/
             Type t = e1.type.toBasetype();
-            if ((e1.op & 0xFF) == 235)
+            if (((e1.op & 0xFF) == 235))
             {
                 return e1;
             }
-            else if ((((((ad != null && ad.isClassDeclaration() != null) && ad.isClassDeclaration().classKind == ClassKind.objc) && var.isFuncDeclaration() != null) && var.isFuncDeclaration().isStatic()) && var.isFuncDeclaration().selector != null))
+            else if ((ad != null) && (ad.isClassDeclaration() != null) && (ad.isClassDeclaration().classKind == ClassKind.objc) && (var.isFuncDeclaration() != null) && var.isFuncDeclaration().isStatic() && (var.isFuncDeclaration().selector != null))
             {
                 return new ObjcClassReferenceExp(e1.loc, (ClassDeclaration)ad);
             }
-            if ((e1.op & 0xFF) == 123)
+            if (((e1.op & 0xFF) == 123))
             {
                 FuncDeclaration f = hasThis(sc);
-                if ((f != null && f.isThis2))
+                if ((f != null) && f.isThis2)
                 {
                     if (followInstantiationContextAggregateDeclaration(f, ad))
                     {
@@ -924,30 +924,30 @@ public class expressionsem {
                         e1 = new PtrExp(loc, e1);
                         e1 = new IndexExp(loc, e1, literal1());
                         e1 = getThisSkipNestedFuncs(loc, sc, f.toParent2(), ad, e1, t, var, false);
-                        if ((e1.op & 0xFF) == 127)
+                        if (((e1.op & 0xFF) == 127))
                             return e1;
                         /*goto L1*/throw Dispatch0.INSTANCE;
                     }
                 }
             }
-            if (((ad != null && !((((t.ty & 0xFF) == ENUMTY.Tpointer && (t.nextOf().ty & 0xFF) == ENUMTY.Tstruct) && pequals(((TypeStruct)t.nextOf()).sym, ad)))) && !(((t.ty & 0xFF) == ENUMTY.Tstruct && pequals(((TypeStruct)t).sym, ad)))))
+            if ((ad != null) && !(((t.ty & 0xFF) == ENUMTY.Tpointer) && ((t.nextOf().ty & 0xFF) == ENUMTY.Tstruct) && (pequals(((TypeStruct)t.nextOf()).sym, ad))) && !(((t.ty & 0xFF) == ENUMTY.Tstruct) && (pequals(((TypeStruct)t).sym, ad))))
             {
                 ClassDeclaration cd = ad.isClassDeclaration();
                 ClassDeclaration tcd = t.isClassHandle();
-                if (((!(cd != null) || !(tcd != null)) || !((pequals(tcd, cd) || cd.isBaseOf(tcd, null)))))
+                if ((cd == null) || (tcd == null) || !((pequals(tcd, cd)) || cd.isBaseOf(tcd, null)))
                 {
-                    if ((tcd != null && tcd.isNested()))
+                    if ((tcd != null) && tcd.isNested())
                     {
                         VarDeclaration vthis = followInstantiationContextAggregateDeclaration(tcd, ad) ? tcd.vthis2 : tcd.vthis;
                         e1 = new DotVarExp(loc, e1, vthis, true);
                         e1.type = vthis.type;
                         e1.type = e1.type.addMod(t.mod);
                         e1 = getThisSkipNestedFuncs(loc, sc, toParentPAggregateDeclaration(tcd, ad), ad, e1, t, var, false);
-                        if ((e1.op & 0xFF) == 127)
+                        if (((e1.op & 0xFF) == 127))
                             return e1;
                         /*goto L1*/throw Dispatch0.INSTANCE;
                     }
-                    if ((flag) != 0)
+                    if (flag != 0)
                         return null;
                     e1.error(new BytePtr("`this` for `%s` needs to be type `%s` not type `%s`"), var.toChars(), ad.toChars(), t.toChars());
                     return new ErrorExp();
@@ -966,10 +966,10 @@ public class expressionsem {
         Type tthis = null;
         try {
             try {
-                if ((e1.op & 0xFF) == 97)
+                if (((e1.op & 0xFF) == 97))
                 {
                     DotExp de = (DotExp)e1;
-                    if ((de.e2.op & 0xFF) == 214)
+                    if (((de.e2.op & 0xFF) == 214))
                     {
                         tiargs = null;
                         tthis = de.e1.type;
@@ -981,7 +981,7 @@ public class expressionsem {
                         if (e2 != null)
                         {
                             e2 = expressionSemantic(e2, sc);
-                            if ((e2.op & 0xFF) == 127)
+                            if (((e2.op & 0xFF) == 127))
                                 return new ErrorExp();
                             e2 = resolveProperties(sc, e2);
                             DArray<Expression> a = new DArray<Expression>();
@@ -989,15 +989,15 @@ public class expressionsem {
                                 a.push(e2);
                                 {
                                     int i = 0;
-                                    for (; i < os.a.length;i++){
+                                    for (; (i < os.a.length);i++){
                                         {
                                             FuncDeclaration f = resolveFuncCall(loc, sc, os.a.get(i), tiargs, tthis, a, FuncResolveFlag.quiet);
-                                            if (f != null)
+                                            if ((f) != null)
                                             {
                                                 if (f.errors)
                                                     return new ErrorExp();
                                                 fd = f;
-                                                assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                                assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                                             }
                                         }
                                     }
@@ -1015,17 +1015,17 @@ public class expressionsem {
                             {
                                 int i = 0;
                             L_outer2:
-                                for (; i < os.a.length;i++){
+                                for (; (i < os.a.length);i++){
                                     {
                                         FuncDeclaration f = resolveFuncCall(loc, sc, os.a.get(i), tiargs, tthis, null, FuncResolveFlag.quiet);
-                                        if (f != null)
+                                        if ((f) != null)
                                         {
                                             if (f.errors)
                                                 return new ErrorExp();
                                             fd = f;
-                                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                            assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                                             TypeFunction tf = (TypeFunction)fd.type;
-                                            if ((!(tf.isref) && e2 != null))
+                                            if (!tf.isref && (e2 != null))
                                                 /*goto Leproplvalue*/throw Dispatch1.INSTANCE;
                                         }
                                     }
@@ -1043,7 +1043,7 @@ public class expressionsem {
                             /*goto Leprop*/throw Dispatch0.INSTANCE;
                     }
                 }
-                else if ((e1.op & 0xFF) == 214)
+                else if (((e1.op & 0xFF) == 214))
                 {
                     tiargs = null;
                     tthis = null;
@@ -1054,7 +1054,7 @@ public class expressionsem {
                     if (e2 != null)
                     {
                         e2 = expressionSemantic(e2, sc);
-                        if ((e2.op & 0xFF) == 127)
+                        if (((e2.op & 0xFF) == 127))
                             return new ErrorExp();
                         e2 = resolveProperties(sc, e2);
                         DArray<Expression> a = new DArray<Expression>();
@@ -1062,15 +1062,15 @@ public class expressionsem {
                             a.push(e2);
                             {
                                 int i = 0;
-                                for (; i < os.a.length;i++){
+                                for (; (i < os.a.length);i++){
                                     {
                                         FuncDeclaration f = resolveFuncCall(loc, sc, os.a.get(i), tiargs, tthis, a, FuncResolveFlag.quiet);
-                                        if (f != null)
+                                        if ((f) != null)
                                         {
                                             if (f.errors)
                                                 return new ErrorExp();
                                             fd = f;
-                                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                            assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                                         }
                                     }
                                 }
@@ -1088,17 +1088,17 @@ public class expressionsem {
                         {
                             int i = 0;
                         L_outer3:
-                            for (; i < os.a.length;i++){
+                            for (; (i < os.a.length);i++){
                                 {
                                     FuncDeclaration f = resolveFuncCall(loc, sc, os.a.get(i), tiargs, tthis, null, FuncResolveFlag.quiet);
-                                    if (f != null)
+                                    if ((f) != null)
                                     {
                                         if (f.errors)
                                             return new ErrorExp();
                                         fd = f;
-                                        assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                        assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                                         TypeFunction tf = (TypeFunction)fd.type;
-                                        if ((!(tf.isref) && e2 != null))
+                                        if (!tf.isref && (e2 != null))
                                             /*goto Leproplvalue*/throw Dispatch1.INSTANCE;
                                     }
                                 }
@@ -1115,36 +1115,36 @@ public class expressionsem {
                     if (e2 != null)
                         /*goto Leprop*/throw Dispatch0.INSTANCE;
                 }
-                else if ((e1.op & 0xFF) == 29)
+                else if (((e1.op & 0xFF) == 29))
                 {
                     DotTemplateInstanceExp dti = (DotTemplateInstanceExp)e1;
-                    if (!(dti.findTempDecl(sc)))
+                    if (!dti.findTempDecl(sc))
                         /*goto Leprop*/throw Dispatch0.INSTANCE;
-                    if (!(dti.ti.semanticTiargs(sc)))
+                    if (!dti.ti.semanticTiargs(sc))
                         /*goto Leprop*/throw Dispatch0.INSTANCE;
                     tiargs = dti.ti.tiargs;
                     tthis = dti.e1.type;
-                    if ((os = dti.ti.tempdecl.isOverloadSet()) != null)
+                    if (((os = dti.ti.tempdecl.isOverloadSet()) != null))
                         /*goto Los*/throw Dispatch0.INSTANCE;
-                    if ((s = dti.ti.tempdecl) != null)
+                    if (((s = dti.ti.tempdecl) != null))
                         /*goto Lfd*//*unrolled goto*/
                     /*Lfd:*/
                         assert(s != null);
                         if (e2 != null)
                         {
                             e2 = expressionSemantic(e2, sc);
-                            if ((e2.op & 0xFF) == 127)
+                            if (((e2.op & 0xFF) == 127))
                                 return new ErrorExp();
                             e2 = resolveProperties(sc, e2);
                             DArray<Expression> a = new DArray<Expression>();
                             try {
                                 a.push(e2);
                                 FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, a, FuncResolveFlag.quiet);
-                                if ((fd != null && fd.type != null))
+                                if ((fd != null) && (fd.type != null))
                                 {
                                     if (fd.errors)
                                         return new ErrorExp();
-                                    assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                    assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                                     Expression e = new CallExp(loc, e1, e2);
                                     return expressionSemantic(e, sc);
                                 }
@@ -1154,13 +1154,13 @@ public class expressionsem {
                         }
                         {
                             FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, null, FuncResolveFlag.quiet);
-                            if ((fd != null && fd.type != null))
+                            if ((fd != null) && (fd.type != null))
                             {
                                 if (fd.errors)
                                     return new ErrorExp();
-                                assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                                 TypeFunction tf = (TypeFunction)fd.type;
-                                if ((!(e2 != null) || tf.isref))
+                                if ((e2 == null) || tf.isref)
                                 {
                                     Expression e = new CallExp(loc, e1);
                                     if (e2 != null)
@@ -1171,9 +1171,9 @@ public class expressionsem {
                         }
                         {
                             FuncDeclaration fd = s.isFuncDeclaration();
-                            if (fd != null)
+                            if ((fd) != null)
                             {
-                                assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                                 Expression e = new CallExp(loc, e1, e2);
                                 return expressionSemantic(e, sc);
                             }
@@ -1181,7 +1181,7 @@ public class expressionsem {
                         if (e2 != null)
                             /*goto Leprop*/throw Dispatch0.INSTANCE;
                 }
-                else if ((e1.op & 0xFF) == 37)
+                else if (((e1.op & 0xFF) == 37))
                 {
                     DotTemplateExp dte = (DotTemplateExp)e1;
                     s = dte.td;
@@ -1193,18 +1193,18 @@ public class expressionsem {
                     if (e2 != null)
                     {
                         e2 = expressionSemantic(e2, sc);
-                        if ((e2.op & 0xFF) == 127)
+                        if (((e2.op & 0xFF) == 127))
                             return new ErrorExp();
                         e2 = resolveProperties(sc, e2);
                         DArray<Expression> a = new DArray<Expression>();
                         try {
                             a.push(e2);
                             FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, a, FuncResolveFlag.quiet);
-                            if ((fd != null && fd.type != null))
+                            if ((fd != null) && (fd.type != null))
                             {
                                 if (fd.errors)
                                     return new ErrorExp();
-                                assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                                 Expression e = new CallExp(loc, e1, e2);
                                 return expressionSemantic(e, sc);
                             }
@@ -1214,13 +1214,13 @@ public class expressionsem {
                     }
                     {
                         FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, null, FuncResolveFlag.quiet);
-                        if ((fd != null && fd.type != null))
+                        if ((fd != null) && (fd.type != null))
                         {
                             if (fd.errors)
                                 return new ErrorExp();
-                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                             TypeFunction tf = (TypeFunction)fd.type;
-                            if ((!(e2 != null) || tf.isref))
+                            if ((e2 == null) || tf.isref)
                             {
                                 Expression e = new CallExp(loc, e1);
                                 if (e2 != null)
@@ -1231,9 +1231,9 @@ public class expressionsem {
                     }
                     {
                         FuncDeclaration fd = s.isFuncDeclaration();
-                        if (fd != null)
+                        if ((fd) != null)
                         {
-                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                             Expression e = new CallExp(loc, e1, e2);
                             return expressionSemantic(e, sc);
                         }
@@ -1241,37 +1241,37 @@ public class expressionsem {
                     if (e2 != null)
                         /*goto Leprop*/throw Dispatch0.INSTANCE;
                 }
-                else if ((e1.op & 0xFF) == 203)
+                else if (((e1.op & 0xFF) == 203))
                 {
                     s = ((ScopeExp)e1).sds;
                     TemplateInstance ti = s.isTemplateInstance();
-                    if (((ti != null && !((ti.semanticRun) != 0)) && ti.tempdecl != null))
+                    if ((ti != null) && (ti.semanticRun == 0) && (ti.tempdecl != null))
                     {
-                        if (!(ti.semanticTiargs(sc)))
+                        if (!ti.semanticTiargs(sc))
                             /*goto Leprop*/throw Dispatch0.INSTANCE;
                         tiargs = ti.tiargs;
                         tthis = null;
-                        if ((os = ti.tempdecl.isOverloadSet()) != null)
+                        if (((os = ti.tempdecl.isOverloadSet()) != null))
                             /*goto Los*/throw Dispatch0.INSTANCE;
-                        if ((s = ti.tempdecl) != null)
+                        if (((s = ti.tempdecl) != null))
                             /*goto Lfd*//*unrolled goto*/
                         /*Lfd:*/
                             assert(s != null);
                             if (e2 != null)
                             {
                                 e2 = expressionSemantic(e2, sc);
-                                if ((e2.op & 0xFF) == 127)
+                                if (((e2.op & 0xFF) == 127))
                                     return new ErrorExp();
                                 e2 = resolveProperties(sc, e2);
                                 DArray<Expression> a = new DArray<Expression>();
                                 try {
                                     a.push(e2);
                                     FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, a, FuncResolveFlag.quiet);
-                                    if ((fd != null && fd.type != null))
+                                    if ((fd != null) && (fd.type != null))
                                     {
                                         if (fd.errors)
                                             return new ErrorExp();
-                                        assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                        assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                                         Expression e = new CallExp(loc, e1, e2);
                                         return expressionSemantic(e, sc);
                                     }
@@ -1281,13 +1281,13 @@ public class expressionsem {
                             }
                             {
                                 FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, null, FuncResolveFlag.quiet);
-                                if ((fd != null && fd.type != null))
+                                if ((fd != null) && (fd.type != null))
                                 {
                                     if (fd.errors)
                                         return new ErrorExp();
-                                    assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                    assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                                     TypeFunction tf = (TypeFunction)fd.type;
-                                    if ((!(e2 != null) || tf.isref))
+                                    if ((e2 == null) || tf.isref)
                                     {
                                         Expression e = new CallExp(loc, e1);
                                         if (e2 != null)
@@ -1298,9 +1298,9 @@ public class expressionsem {
                             }
                             {
                                 FuncDeclaration fd = s.isFuncDeclaration();
-                                if (fd != null)
+                                if ((fd) != null)
                                 {
-                                    assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                    assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                                     Expression e = new CallExp(loc, e1, e2);
                                     return expressionSemantic(e, sc);
                                 }
@@ -1309,7 +1309,7 @@ public class expressionsem {
                                 /*goto Leprop*/throw Dispatch0.INSTANCE;
                     }
                 }
-                else if ((e1.op & 0xFF) == 36)
+                else if (((e1.op & 0xFF) == 36))
                 {
                     s = ((TemplateExp)e1).td;
                     tiargs = null;
@@ -1320,18 +1320,18 @@ public class expressionsem {
                     if (e2 != null)
                     {
                         e2 = expressionSemantic(e2, sc);
-                        if ((e2.op & 0xFF) == 127)
+                        if (((e2.op & 0xFF) == 127))
                             return new ErrorExp();
                         e2 = resolveProperties(sc, e2);
                         DArray<Expression> a = new DArray<Expression>();
                         try {
                             a.push(e2);
                             FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, a, FuncResolveFlag.quiet);
-                            if ((fd != null && fd.type != null))
+                            if ((fd != null) && (fd.type != null))
                             {
                                 if (fd.errors)
                                     return new ErrorExp();
-                                assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                                 Expression e = new CallExp(loc, e1, e2);
                                 return expressionSemantic(e, sc);
                             }
@@ -1341,13 +1341,13 @@ public class expressionsem {
                     }
                     {
                         FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, null, FuncResolveFlag.quiet);
-                        if ((fd != null && fd.type != null))
+                        if ((fd != null) && (fd.type != null))
                         {
                             if (fd.errors)
                                 return new ErrorExp();
-                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                             TypeFunction tf = (TypeFunction)fd.type;
-                            if ((!(e2 != null) || tf.isref))
+                            if ((e2 == null) || tf.isref)
                             {
                                 Expression e = new CallExp(loc, e1);
                                 if (e2 != null)
@@ -1358,9 +1358,9 @@ public class expressionsem {
                     }
                     {
                         FuncDeclaration fd = s.isFuncDeclaration();
-                        if (fd != null)
+                        if ((fd) != null)
                         {
-                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                             Expression e = new CallExp(loc, e1, e2);
                             return expressionSemantic(e, sc);
                         }
@@ -1368,7 +1368,7 @@ public class expressionsem {
                     if (e2 != null)
                         /*goto Leprop*/throw Dispatch0.INSTANCE;
                 }
-                else if ((((e1.op & 0xFF) == 27 && e1.type != null) && (e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tfunction))
+                else if (((e1.op & 0xFF) == 27) && (e1.type != null) && ((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tfunction))
                 {
                     DotVarExp dve = (DotVarExp)e1;
                     s = dve.var.isFuncDeclaration();
@@ -1380,18 +1380,18 @@ public class expressionsem {
                     if (e2 != null)
                     {
                         e2 = expressionSemantic(e2, sc);
-                        if ((e2.op & 0xFF) == 127)
+                        if (((e2.op & 0xFF) == 127))
                             return new ErrorExp();
                         e2 = resolveProperties(sc, e2);
                         DArray<Expression> a = new DArray<Expression>();
                         try {
                             a.push(e2);
                             FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, a, FuncResolveFlag.quiet);
-                            if ((fd != null && fd.type != null))
+                            if ((fd != null) && (fd.type != null))
                             {
                                 if (fd.errors)
                                     return new ErrorExp();
-                                assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                                 Expression e = new CallExp(loc, e1, e2);
                                 return expressionSemantic(e, sc);
                             }
@@ -1401,13 +1401,13 @@ public class expressionsem {
                     }
                     {
                         FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, null, FuncResolveFlag.quiet);
-                        if ((fd != null && fd.type != null))
+                        if ((fd != null) && (fd.type != null))
                         {
                             if (fd.errors)
                                 return new ErrorExp();
-                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                             TypeFunction tf = (TypeFunction)fd.type;
-                            if ((!(e2 != null) || tf.isref))
+                            if ((e2 == null) || tf.isref)
                             {
                                 Expression e = new CallExp(loc, e1);
                                 if (e2 != null)
@@ -1418,9 +1418,9 @@ public class expressionsem {
                     }
                     {
                         FuncDeclaration fd = s.isFuncDeclaration();
-                        if (fd != null)
+                        if ((fd) != null)
                         {
-                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                             Expression e = new CallExp(loc, e1, e2);
                             return expressionSemantic(e, sc);
                         }
@@ -1428,7 +1428,7 @@ public class expressionsem {
                     if (e2 != null)
                         /*goto Leprop*/throw Dispatch0.INSTANCE;
                 }
-                else if ((((e1.op & 0xFF) == 26 && e1.type != null) && (e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tfunction))
+                else if (((e1.op & 0xFF) == 26) && (e1.type != null) && ((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tfunction))
                 {
                     s = ((VarExp)e1).var.isFuncDeclaration();
                     tiargs = null;
@@ -1438,18 +1438,18 @@ public class expressionsem {
                     if (e2 != null)
                     {
                         e2 = expressionSemantic(e2, sc);
-                        if ((e2.op & 0xFF) == 127)
+                        if (((e2.op & 0xFF) == 127))
                             return new ErrorExp();
                         e2 = resolveProperties(sc, e2);
                         DArray<Expression> a = new DArray<Expression>();
                         try {
                             a.push(e2);
                             FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, a, FuncResolveFlag.quiet);
-                            if ((fd != null && fd.type != null))
+                            if ((fd != null) && (fd.type != null))
                             {
                                 if (fd.errors)
                                     return new ErrorExp();
-                                assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                                assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                                 Expression e = new CallExp(loc, e1, e2);
                                 return expressionSemantic(e, sc);
                             }
@@ -1459,13 +1459,13 @@ public class expressionsem {
                     }
                     {
                         FuncDeclaration fd = resolveFuncCall(loc, sc, s, tiargs, tthis, null, FuncResolveFlag.quiet);
-                        if ((fd != null && fd.type != null))
+                        if ((fd != null) && (fd.type != null))
                         {
                             if (fd.errors)
                                 return new ErrorExp();
-                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                             TypeFunction tf = (TypeFunction)fd.type;
-                            if ((!(e2 != null) || tf.isref))
+                            if ((e2 == null) || tf.isref)
                             {
                                 Expression e = new CallExp(loc, e1);
                                 if (e2 != null)
@@ -1476,9 +1476,9 @@ public class expressionsem {
                     }
                     {
                         FuncDeclaration fd = s.isFuncDeclaration();
-                        if (fd != null)
+                        if ((fd) != null)
                         {
-                            assert((fd.type.ty & 0xFF) == ENUMTY.Tfunction);
+                            assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
                             Expression e = new CallExp(loc, e1, e2);
                             return expressionSemantic(e, sc);
                         }
@@ -1486,18 +1486,18 @@ public class expressionsem {
                     if (e2 != null)
                         /*goto Leprop*/throw Dispatch0.INSTANCE;
                 }
-                if ((e1.op & 0xFF) == 26)
+                if (((e1.op & 0xFF) == 26))
                 {
                     VarExp ve = (VarExp)e1;
                     VarDeclaration v = ve.var.isVarDeclaration();
-                    if ((v != null && ve.checkPurity(sc, v)))
+                    if ((v != null) && ve.checkPurity(sc, v))
                         return new ErrorExp();
                 }
                 if (e2 != null)
                     return null;
-                if ((e1.type != null && (e1.op & 0xFF) != 20))
+                if ((e1.type != null) && ((e1.op & 0xFF) != 20))
                 {
-                    if ((e1.op & 0xFF) == 26)
+                    if (((e1.op & 0xFF) == 26))
                     {
                         VarExp ve = (VarExp)e1;
                         if ((ve.var.storage_class & 8192L) != 0)
@@ -1506,24 +1506,24 @@ public class expressionsem {
                             return expressionSemantic(e, sc);
                         }
                     }
-                    else if ((e1.op & 0xFF) == 27)
+                    else if (((e1.op & 0xFF) == 27))
                     {
                         if (checkUnsafeAccess(sc, e1, true, true))
                             return new ErrorExp();
                     }
-                    else if ((e1.op & 0xFF) == 97)
+                    else if (((e1.op & 0xFF) == 97))
                     {
                         e1.error(new BytePtr("expression has no value"));
                         return new ErrorExp();
                     }
-                    else if ((e1.op & 0xFF) == 18)
+                    else if (((e1.op & 0xFF) == 18))
                     {
                         CallExp ce = (CallExp)e1;
                         if (checkUnsafeAccess(sc, ce.e1, true, true))
                             return new ErrorExp();
                     }
                 }
-                if (!(e1.type != null))
+                if (e1.type == null)
                 {
                     error(loc, new BytePtr("cannot resolve type for %s"), e1.toChars());
                     e1 = new ErrorExp();
@@ -1557,25 +1557,25 @@ public class expressionsem {
         boolean foundType = false;
         {
             int i = 0;
-            for (; i < (exps).length;i++){
+            for (; (i < (exps).length);i++){
                 Expression e = (exps).get(i);
-                if (!(e != null))
+                if (e == null)
                     continue;
                 e = resolveProperties(sc, e);
-                if (!(e.type != null))
+                if (e.type == null)
                 {
                     e.error(new BytePtr("`%s` has no value"), e.toChars());
                     t0 = Type.terror;
                     continue;
                 }
-                if ((e.op & 0xFF) == 20)
+                if (((e.op & 0xFF) == 20))
                 {
                     foundType = true;
                     e.checkValue();
                     t0 = Type.terror;
                     continue;
                 }
-                if ((e.type.ty & 0xFF) == ENUMTY.Tvoid)
+                if (((e.type.ty & 0xFF) == ENUMTY.Tvoid))
                 {
                     continue;
                 }
@@ -1585,14 +1585,14 @@ public class expressionsem {
                     continue;
                 }
                 e = doCopyOrMove(sc, e, null);
-                if (((!(foundType) && t0 != null) && !(t0.equals(e.type))))
+                if (!foundType && (t0 != null) && !t0.equals(e.type))
                 {
                     condexp.type = null;
                     condexp.e1 = e0;
                     condexp.e2 = e;
                     condexp.loc = e.loc.copy();
                     Expression ex = expressionSemantic(condexp, sc);
-                    if ((ex.op & 0xFF) == 127)
+                    if (((ex.op & 0xFF) == 127))
                         e = ex;
                     else
                     {
@@ -1603,22 +1603,22 @@ public class expressionsem {
                 j0 = i;
                 e0 = e;
                 t0 = e.type;
-                if ((e.op & 0xFF) != 127)
+                if (((e.op & 0xFF) != 127))
                     exps.set(i, e);
             }
         }
-        if (!(t0 != null))
+        if (t0 == null)
             t0 = Type.tvoid;
-        else if ((t0.ty & 0xFF) != ENUMTY.Terror)
+        else if (((t0.ty & 0xFF) != ENUMTY.Terror))
         {
             {
                 int i = 0;
-                for (; i < (exps).length;i++){
+                for (; (i < (exps).length);i++){
                     Expression e = (exps).get(i);
-                    if (!(e != null))
+                    if (e == null)
                         continue;
                     e = e.implicitCastTo(sc, t0);
-                    if ((e.op & 0xFF) == 127)
+                    if (((e.op & 0xFF) == 127))
                     {
                         t0 = Type.terror;
                         break;
@@ -1677,9 +1677,9 @@ public class expressionsem {
 
     public static Expression rewriteOpAssign(BinExp exp) {
         Expression e = null;
-        assert((exp.e1.op & 0xFF) == 32);
+        assert(((exp.e1.op & 0xFF) == 32));
         ArrayLengthExp ale = (ArrayLengthExp)exp.e1;
-        if ((ale.e1.op & 0xFF) == 26)
+        if (((ale.e1.op & 0xFF) == 26))
         {
             e = opAssignToOp(exp.loc, exp.op, ale, exp.e2);
             e = new AssignExp(exp.loc, ale.syntaxCopy(), e);
@@ -1703,20 +1703,20 @@ public class expressionsem {
             expandTuples(exps);
             {
                 int i = 0;
-                for (; i < (exps).length;i++){
+                for (; (i < (exps).length);i++){
                     Expression arg = (exps).get(i);
                     arg = resolveProperties(sc, arg);
-                    if ((arg.op & 0xFF) == 20)
+                    if (((arg.op & 0xFF) == 20))
                     {
                         arg = resolveAliasThis(sc, arg, false);
-                        if ((arg.op & 0xFF) == 20)
+                        if (((arg.op & 0xFF) == 20))
                         {
                             arg.error(new BytePtr("cannot pass type `%s` as a function argument"), arg.toChars());
                             arg = new ErrorExp();
                             err = true;
                         }
                     }
-                    else if ((arg.type.toBasetype().ty & 0xFF) == ENUMTY.Tfunction)
+                    else if (((arg.type.toBasetype().ty & 0xFF) == ENUMTY.Tfunction))
                     {
                         arg.error(new BytePtr("cannot pass function `%s` as a function argument"), arg.toChars());
                         arg = new ErrorExp();
@@ -1736,7 +1736,7 @@ public class expressionsem {
 
     public static boolean checkDefCtor(Loc loc, Type t) {
         t = t.baseElemOf();
-        if ((t.ty & 0xFF) == ENUMTY.Tstruct)
+        if (((t.ty & 0xFF) == ENUMTY.Tstruct))
         {
             StructDeclaration sd = ((TypeStruct)t).sym;
             if (sd.noDefaultCtor)
@@ -1750,7 +1750,7 @@ public class expressionsem {
 
     public static boolean functionParameters(Loc loc, Scope sc, TypeFunction tf, Expression ethis, Type tthis, DArray<Expression> arguments, FuncDeclaration fd, Ptr<Type> prettype, Ptr<Expression> peprefix) {
         assert(arguments != null);
-        assert((fd != null || tf.next != null));
+        assert((fd != null) || (tf.next != null));
         IntRef nargs = ref(arguments != null ? (arguments).length : 0);
         IntRef nparams = ref(tf.parameterList.length());
         int olderrors = global.errors;
@@ -1758,35 +1758,35 @@ public class expressionsem {
         prettype.set(0, Type.terror);
         Expression eprefix = null;
         peprefix.set(0, null);
-        if ((nargs.value > nparams.value && tf.parameterList.varargs == VarArg.none))
+        if ((nargs.value > nparams.value) && (tf.parameterList.varargs == VarArg.none))
         {
             error(loc, new BytePtr("expected %llu arguments, not %llu for non-variadic function type `%s`"), (long)nparams.value, (long)nargs.value, tf.toChars());
             return true;
         }
-        if ((!(tf.next != null) && fd.inferRetType))
+        if ((tf.next == null) && fd.inferRetType)
         {
             fd.functionSemantic();
         }
-        else if ((fd != null && fd.parent != null))
+        else if ((fd != null) && (fd.parent != null))
         {
             TemplateInstance ti = fd.parent.isTemplateInstance();
-            if ((ti != null && ti.tempdecl != null))
+            if ((ti != null) && (ti.tempdecl != null))
             {
                 fd.functionSemantic3();
             }
         }
-        boolean isCtorCall = ((fd != null && fd.needThis()) && fd.isCtorDeclaration() != null);
-        int n = nargs.value > nparams.value ? nargs.value : nparams.value;
-        byte wildmatch = (tthis != null && !(isCtorCall)) ? (byte)(tthis.deduceWild(tf, false) & 0xFF) : (byte)0;
+        boolean isCtorCall = (fd != null) && fd.needThis() && (fd.isCtorDeclaration() != null);
+        int n = (nargs.value > nparams.value) ? nargs.value : nparams.value;
+        byte wildmatch = (tthis != null) && !isCtorCall ? (byte)(tthis.deduceWild(tf, false) & 0xFF) : (byte)0;
         boolean done = false;
         {
             int __key1366 = 0;
             int __limit1367 = n;
         L_outer4:
-            for (; __key1366 < __limit1367;__key1366 += 1) {
+            for (; (__key1366 < __limit1367);__key1366 += 1) {
                 int i = __key1366;
-                Expression arg = i < nargs.value ? (arguments).get(i) : null;
-                if (i < nparams.value)
+                Expression arg = (i < nargs.value) ? (arguments).get(i) : null;
+                if ((i < nparams.value))
                 {
                     Function0<Boolean> errorArgs = new Function0<Boolean>(){
                         public Boolean invoke(){
@@ -1795,11 +1795,11 @@ public class expressionsem {
                         }
                     };
                     Parameter p = tf.parameterList.get(i);
-                    if (!(arg != null))
+                    if (arg == null)
                     {
-                        if (!(p.defaultArg != null))
+                        if (p.defaultArg == null)
                         {
-                            if ((tf.parameterList.varargs == VarArg.typesafe && i + 1 == nparams.value))
+                            if ((tf.parameterList.varargs == VarArg.typesafe) && (i + 1 == nparams.value))
                                 /*goto L2*//*unrolled goto*/
                             /*L2:*/
                                 Type tb = p.type.toBasetype();
@@ -1813,10 +1813,10 @@ public class expressionsem {
                                         {
                                             int __key1368 = 0;
                                             int __limit1369 = (elements).length;
-                                            for (; __key1368 < __limit1369;__key1368 += 1) {
+                                            for (; (__key1368 < __limit1369);__key1368 += 1) {
                                                 int u = __key1368;
                                                 Expression a = (arguments).get(i + u);
-                                                if ((tret != null && (a.implicitConvTo(tret)) != 0))
+                                                if ((tret != null) && (a.implicitConvTo(tret) != 0))
                                                 {
                                                     a = toDelegate(a.implicitCastTo(sc, tret).optimize(0, false), tret, sc);
                                                 }
@@ -1827,7 +1827,7 @@ public class expressionsem {
                                             }
                                         }
                                         arg = new ArrayLiteralExp(loc, tbn.sarrayOf((long)(nargs.value - i)), elements);
-                                        if ((tb.ty & 0xFF) == ENUMTY.Tarray)
+                                        if (((tb.ty & 0xFF) == ENUMTY.Tarray))
                                         {
                                             arg = new SliceExp(loc, arg, null, null);
                                             arg.type = p.type;
@@ -1838,7 +1838,7 @@ public class expressionsem {
                                         {
                                             int __key1370 = i;
                                             int __limit1371 = nargs.value;
-                                            for (; __key1370 < __limit1371;__key1370 += 1) {
+                                            for (; (__key1370 < __limit1371);__key1370 += 1) {
                                                 int u_1 = __key1370;
                                                 args.set(u_1 - i, (arguments).get(u_1));
                                             }
@@ -1846,7 +1846,7 @@ public class expressionsem {
                                         arg = new NewExp(loc, null, null, p.type, args);
                                         break;
                                     default:
-                                    if (!(arg != null))
+                                    if (arg == null)
                                     {
                                         error(loc, new BytePtr("not enough arguments"));
                                         return true;
@@ -1868,23 +1868,23 @@ public class expressionsem {
                     }
                     else
                     {
-                        if ((arg.op & 0xFF) == 190)
+                        if (((arg.op & 0xFF) == 190))
                         {
                             arg = arg.resolveLoc(loc, sc);
                             arguments.set(i, arg);
                         }
                     }
                     try {
-                        if ((tf.parameterList.varargs == VarArg.typesafe && i + 1 == nparams.value))
+                        if ((tf.parameterList.varargs == VarArg.typesafe) && (i + 1 == nparams.value))
                         {
                             try {
                                 {
                                     int m = MATCH.nomatch;
-                                    if ((m = arg.implicitConvTo(p.type)) > MATCH.nomatch)
+                                    if (((m = arg.implicitConvTo(p.type)) > MATCH.nomatch))
                                     {
-                                        if ((p.type.nextOf() != null && arg.implicitConvTo(p.type.nextOf()) >= m))
+                                        if ((p.type.nextOf() != null) && (arg.implicitConvTo(p.type.nextOf()) >= m))
                                             /*goto L2*/throw Dispatch0.INSTANCE;
-                                        else if (nargs.value != nparams.value)
+                                        else if ((nargs.value != nparams.value))
                                             return errorArgs.invoke();
                                         /*goto L1*/throw Dispatch0.INSTANCE;
                                     }
@@ -1903,10 +1903,10 @@ public class expressionsem {
                                     {
                                         int __key1368 = 0;
                                         int __limit1369 = (elements).length;
-                                        for (; __key1368 < __limit1369;__key1368 += 1) {
+                                        for (; (__key1368 < __limit1369);__key1368 += 1) {
                                             int u = __key1368;
                                             Expression a = (arguments).get(i + u);
-                                            if ((tret != null && (a.implicitConvTo(tret)) != 0))
+                                            if ((tret != null) && (a.implicitConvTo(tret) != 0))
                                             {
                                                 a = toDelegate(a.implicitCastTo(sc, tret).optimize(0, false), tret, sc);
                                             }
@@ -1917,7 +1917,7 @@ public class expressionsem {
                                         }
                                     }
                                     arg = new ArrayLiteralExp(loc, tbn.sarrayOf((long)(nargs.value - i)), elements);
-                                    if ((tb.ty & 0xFF) == ENUMTY.Tarray)
+                                    if (((tb.ty & 0xFF) == ENUMTY.Tarray))
                                     {
                                         arg = new SliceExp(loc, arg, null, null);
                                         arg.type = p.type;
@@ -1928,7 +1928,7 @@ public class expressionsem {
                                     {
                                         int __key1370 = i;
                                         int __limit1371 = nargs.value;
-                                        for (; __key1370 < __limit1371;__key1370 += 1) {
+                                        for (; (__key1370 < __limit1371);__key1370 += 1) {
                                             int u_1 = __key1370;
                                             args.set(u_1 - i, (arguments).get(u_1));
                                         }
@@ -1936,7 +1936,7 @@ public class expressionsem {
                                     arg = new NewExp(loc, null, null, p.type, args);
                                     break;
                                 default:
-                                if (!(arg != null))
+                                if (arg == null)
                                 {
                                     error(loc, new BytePtr("not enough arguments"));
                                     return true;
@@ -1952,14 +1952,14 @@ public class expressionsem {
                     }
                     catch(Dispatch0 __d){}
                 /*L1:*/
-                    if (!(((p.storageClass & 8192L) != 0 && (p.type.ty & 0xFF) == ENUMTY.Tvoid)))
+                    if (!(((p.storageClass & 8192L) != 0) && ((p.type.ty & 0xFF) == ENUMTY.Tvoid)))
                     {
                         boolean isRef = (p.storageClass & 2101248L) != 0L;
                         {
                             byte wm = arg.type.deduceWild(p.type, isRef);
                             if ((wm) != 0)
                             {
-                                wildmatch = (wildmatch) != 0 ? MODmerge(wildmatch, wm) : wm;
+                                wildmatch = wildmatch != 0 ? MODmerge(wildmatch, wm) : wm;
                             }
                         }
                     }
@@ -1968,11 +1968,11 @@ public class expressionsem {
                     break;
             }
         }
-        if ((((((wildmatch & 0xFF) == MODFlags.mutable || (wildmatch & 0xFF) == MODFlags.immutable_) && tf.next != null) && (tf.next.hasWild()) != 0) && (tf.isref || !((tf.next.implicitConvTo(tf.next.immutableOf())) != 0))))
+        if (((wildmatch & 0xFF) == MODFlags.mutable) || ((wildmatch & 0xFF) == MODFlags.immutable_) && (tf.next != null) && (tf.next.hasWild() != 0) && tf.isref || (tf.next.implicitConvTo(tf.next.immutableOf()) == 0))
         {
             Function1<Byte,Boolean> errorInout = new Function1<Byte,Boolean>(){
                 public Boolean invoke(Byte wildmatch){
-                    BytePtr s = pcopy((wildmatch & 0xFF) == MODFlags.mutable ? new BytePtr("mutable") : MODtoChars(wildmatch));
+                    BytePtr s = pcopy(((wildmatch & 0xFF) == MODFlags.mutable) ? new BytePtr("mutable") : MODtoChars(wildmatch));
                     error(loc, new BytePtr("modify `inout` to `%s` is not allowed inside `inout` function"), s);
                     return true;
                 }
@@ -1983,22 +1983,22 @@ public class expressionsem {
                     public Boolean invoke(Dsymbol s){
                         Function1<Dsymbol,Boolean> checkWild = new Function1<Dsymbol,Boolean>(){
                             public Boolean invoke(Dsymbol s){
-                                if (!(s != null))
+                                if (s == null)
                                     return false;
                                 {
                                     AggregateDeclaration ad = s.isAggregateDeclaration();
-                                    if (ad != null)
+                                    if ((ad) != null)
                                     {
                                         if (ad.isNested())
                                             return checkEnclosingWild.invoke(s);
                                     }
                                     else {
                                         FuncDeclaration ff = s.isFuncDeclaration();
-                                        if (ff != null)
+                                        if ((ff) != null)
                                         {
-                                            if ((((TypeFunction)ff.type).iswild) != 0)
+                                            if (((TypeFunction)ff.type).iswild != 0)
                                                 return errorInout.invoke(wildmatch);
-                                            if ((ff.isNested() || ff.isThis() != null))
+                                            if (ff.isNested() || (ff.isThis() != null))
                                                 return checkEnclosingWild.invoke(s);
                                         }
                                     }
@@ -2010,35 +2010,35 @@ public class expressionsem {
                         Dsymbol ctx1 = s.toParentLocal();
                         if (checkWild.invoke(ctx0))
                             return true;
-                        if (!pequals(ctx0, ctx1))
+                        if ((!pequals(ctx0, ctx1)))
                             return checkWild.invoke(ctx1);
                         return false;
                     }
                 };
-                if (((fd.isThis() != null || fd.isNested()) && checkEnclosingWild.invoke(fd)))
+                if ((fd.isThis() != null) || fd.isNested() && checkEnclosingWild.invoke(fd))
                     return true;
             }
             else if (tf.isWild())
                 return errorInout.invoke(wildmatch);
         }
-        Expression firstArg = ((((((tf.next != null && (tf.next.ty & 0xFF) == ENUMTY.Tvoid) || isCtorCall) && tthis != null) && tthis.isMutable()) && (tthis.toBasetype().ty & 0xFF) == ENUMTY.Tstruct) && tthis.hasPointers()) ? ethis : null;
-        assert(nargs.value >= nparams.value);
+        Expression firstArg = (tf.next != null) && ((tf.next.ty & 0xFF) == ENUMTY.Tvoid) || isCtorCall && (tthis != null) && tthis.isMutable() && ((tthis.toBasetype().ty & 0xFF) == ENUMTY.Tstruct) && tthis.hasPointers() ? ethis : null;
+        assert((nargs.value >= nparams.value));
         {
             Slice<Expression> __r1373 = (arguments).opSlice(0, nargs.value).copy();
             int __key1372 = 0;
-            for (; __key1372 < __r1373.getLength();__key1372 += 1) {
+            for (; (__key1372 < __r1373.getLength());__key1372 += 1) {
                 Expression arg = __r1373.get(__key1372);
                 int i = __key1372;
                 assert(arg != null);
-                if (i < nparams.value)
+                if ((i < nparams.value))
                 {
                     Parameter p = tf.parameterList.get(i);
                     Type targ = arg.type;
-                    if (!(((p.storageClass & 8192L) != 0 && (p.type.ty & 0xFF) == ENUMTY.Tvoid)))
+                    if (!(((p.storageClass & 8192L) != 0) && ((p.type.ty & 0xFF) == ENUMTY.Tvoid)))
                     {
-                        Type tprm = (p.type.hasWild()) != 0 ? p.type.substWildTo((wildmatch & 0xFF)) : p.type;
-                        boolean hasCopyCtor = ((arg.type.ty & 0xFF) == ENUMTY.Tstruct && ((TypeStruct)arg.type).sym.hasCopyCtor);
-                        if (!((hasCopyCtor || tprm.equals(arg.type))))
+                        Type tprm = p.type.hasWild() != 0 ? p.type.substWildTo((wildmatch & 0xFF)) : p.type;
+                        boolean hasCopyCtor = ((arg.type.ty & 0xFF) == ENUMTY.Tstruct) && ((TypeStruct)arg.type).sym.hasCopyCtor;
+                        if (!(hasCopyCtor || tprm.equals(arg.type)))
                         {
                             arg = arg.implicitCastTo(sc, tprm);
                             arg = arg.optimize(0, (p.storageClass & 2101248L) != 0L);
@@ -2046,7 +2046,7 @@ public class expressionsem {
                     }
                     if ((p.storageClass & 2097152L) != 0)
                     {
-                        if (((global.params.rvalueRefParam && !(arg.isLvalue())) && isCopyable(targ)))
+                        if (global.params.rvalueRefParam && !arg.isLvalue() && isCopyable(targ))
                         {
                             VarDeclaration v = copyToTemp(0L, new BytePtr("__rvalue"), arg);
                             Expression ev = new DeclarationExp(arg.loc, v);
@@ -2059,7 +2059,7 @@ public class expressionsem {
                     else if ((p.storageClass & 4096L) != 0)
                     {
                         Type t = arg.type;
-                        if ((!(t.isMutable()) || !(t.isAssignable())))
+                        if (!t.isMutable() || !t.isAssignable())
                         {
                             arg.error(new BytePtr("cannot modify struct `%s` with immutable members"), arg.toChars());
                             err = true;
@@ -2073,10 +2073,10 @@ public class expressionsem {
                     }
                     else if ((p.storageClass & 8192L) != 0)
                     {
-                        Type t = (p.type.ty & 0xFF) == ENUMTY.Tvoid ? p.type : arg.type;
+                        Type t = ((p.type.ty & 0xFF) == ENUMTY.Tvoid) ? p.type : arg.type;
                         arg = toDelegate(arg, t, sc);
                     }
-                    if ((firstArg != null && (p.storageClass & 17592186044416L) != 0))
+                    if ((firstArg != null) && ((p.storageClass & 17592186044416L) != 0))
                     {
                         if (global.params.vsafe)
                             (err ? 1 : 0) |= (checkParamArgumentReturn(sc, firstArg, arg, false) ? 1 : 0);
@@ -2089,17 +2089,17 @@ public class expressionsem {
                     else
                     {
                         Expression a = arg;
-                        if ((a.op & 0xFF) == 12)
+                        if (((a.op & 0xFF) == 12))
                             a = ((CastExp)a).e1;
-                        if ((a.op & 0xFF) == 161)
+                        if (((a.op & 0xFF) == 161))
                         {
                             FuncExp fe = (FuncExp)a;
                             fe.fd.tookAddressOf = 0;
                         }
-                        else if ((a.op & 0xFF) == 160)
+                        else if (((a.op & 0xFF) == 160))
                         {
                             DelegateExp de = (DelegateExp)a;
-                            if ((de.e1.op & 0xFF) == 26)
+                            if (((de.e1.op & 0xFF) == 26))
                             {
                                 VarExp ve = (VarExp)de.e1;
                                 FuncDeclaration f = ve.var.isFuncDeclaration();
@@ -2111,10 +2111,10 @@ public class expressionsem {
                         }
                     }
                     arg = arg.optimize(0, (p.storageClass & 2101248L) != 0L);
-                    if (((((i == 0 && !(tthis != null)) && (p.storageClass & 2101248L) != 0) && p.type != null) && ((tf.next != null && (tf.next.ty & 0xFF) == ENUMTY.Tvoid) || isCtorCall)))
+                    if ((i == 0) && (tthis == null) && ((p.storageClass & 2101248L) != 0) && (p.type != null) && (tf.next != null) && ((tf.next.ty & 0xFF) == ENUMTY.Tvoid) || isCtorCall)
                     {
                         Type tb = p.type.baseElemOf();
-                        if ((tb.isMutable() && tb.hasPointers()))
+                        if (tb.isMutable() && tb.hasPointers())
                         {
                             firstArg = arg;
                         }
@@ -2122,7 +2122,7 @@ public class expressionsem {
                 }
                 else
                 {
-                    if (tf.linkage != LINK.d)
+                    if ((tf.linkage != LINK.d))
                     {
                         arg = integralPromotions(arg, sc);
                         switch ((arg.type.ty & 0xFF))
@@ -2136,15 +2136,15 @@ public class expressionsem {
                             default:
                             break;
                         }
-                        if (tf.parameterList.varargs == VarArg.variadic)
+                        if ((tf.parameterList.varargs == VarArg.variadic))
                         {
-                            BytePtr p = pcopy(tf.linkage == LINK.c ? new BytePtr("extern(C)") : new BytePtr("extern(C++)"));
-                            if ((arg.type.ty & 0xFF) == ENUMTY.Tarray)
+                            BytePtr p = pcopy((tf.linkage == LINK.c) ? new BytePtr("extern(C)") : new BytePtr("extern(C++)"));
+                            if (((arg.type.ty & 0xFF) == ENUMTY.Tarray))
                             {
                                 arg.error(new BytePtr("cannot pass dynamic arrays to `%s` vararg functions"), p);
                                 err = true;
                             }
-                            if ((arg.type.ty & 0xFF) == ENUMTY.Tsarray)
+                            if (((arg.type.ty & 0xFF) == ENUMTY.Tsarray))
                             {
                                 arg.error(new BytePtr("cannot pass static arrays to `%s` vararg functions"), p);
                                 err = true;
@@ -2157,22 +2157,22 @@ public class expressionsem {
                         err = true;
                     }
                     Type tb = arg.type.toBasetype();
-                    if ((tb.ty & 0xFF) == ENUMTY.Tsarray)
+                    if (((tb.ty & 0xFF) == ENUMTY.Tsarray))
                     {
                         TypeSArray ts = (TypeSArray)tb;
                         Type ta = ts.next.arrayOf();
-                        if (ts.size(arg.loc) == 0L)
+                        if ((ts.size(arg.loc) == 0L))
                             arg = new NullExp(arg.loc, ta);
                         else
                             arg = arg.castTo(sc, ta);
                     }
-                    if ((tb.ty & 0xFF) == ENUMTY.Tstruct)
+                    if (((tb.ty & 0xFF) == ENUMTY.Tstruct))
                     {
                     }
-                    if ((arg.op & 0xFF) == 25)
+                    if (((arg.op & 0xFF) == 25))
                     {
                         SymOffExp se = (SymOffExp)arg;
-                        if ((se.hasOverloads && !(se.var.isFuncDeclaration().isUnique())))
+                        if (se.hasOverloads && !se.var.isFuncDeclaration().isUnique())
                         {
                             arg.error(new BytePtr("function `%s` is overloaded"), arg.toChars());
                             err = true;
@@ -2188,7 +2188,7 @@ public class expressionsem {
         {
             boolean leftToRight = true;
             if (false)
-                assert(nargs.value == nparams.value);
+                assert((nargs.value == nparams.value));
             int start = 0;
             int end = nargs.value;
             int step = 1;
@@ -2196,19 +2196,19 @@ public class expressionsem {
             int firstdtor = -1;
             {
                 int i = 0;
-                for (; i != end;i += 1){
+                for (; (i != end);i += 1){
                     Expression arg = (arguments).get(i);
                     if (canThrow(arg, (sc).func, false))
                         lastthrow = i;
-                    if ((firstdtor == -1 && arg.type.needsDestruction()))
+                    if ((firstdtor == -1) && arg.type.needsDestruction())
                     {
-                        Parameter p = i >= nparams.value ? null : tf.parameterList.get(i);
-                        if (!((p != null && (p.storageClass & 2109440L) != 0)))
+                        Parameter p = (i >= nparams.value) ? null : tf.parameterList.get(i);
+                        if (!((p != null) && ((p.storageClass & 2109440L) != 0)))
                             firstdtor = i;
                     }
                 }
             }
-            boolean needsPrefix = ((firstdtor >= 0 && lastthrow >= 0) && (lastthrow - firstdtor) > 0);
+            boolean needsPrefix = (firstdtor >= 0) && (lastthrow >= 0) && ((lastthrow - firstdtor) > 0);
             VarDeclaration gate = null;
             if (needsPrefix)
             {
@@ -2221,23 +2221,23 @@ public class expressionsem {
             }
             {
                 int i = 0;
-                for (; i != end;i += 1){
+                for (; (i != end);i += 1){
                     Expression arg = (arguments).get(i);
-                    Parameter parameter = i >= nparams.value ? null : tf.parameterList.get(i);
-                    boolean isRef = (parameter != null && (parameter.storageClass & 2101248L) != 0);
-                    boolean isLazy = (parameter != null && (parameter.storageClass & 8192L) != 0);
+                    Parameter parameter = (i >= nparams.value) ? null : tf.parameterList.get(i);
+                    boolean isRef = (parameter != null) && ((parameter.storageClass & 2101248L) != 0);
+                    boolean isLazy = (parameter != null) && ((parameter.storageClass & 8192L) != 0);
                     if (isLazy)
                         continue;
                     if (gate != null)
                     {
-                        boolean needsDtor = ((!(isRef) && arg.type.needsDestruction()) && i != lastthrow);
-                        VarDeclaration tmp = copyToTemp(0L, needsDtor ? new BytePtr("__pfx") : new BytePtr("__pfy"), !(isRef) ? arg : arg.addressOf());
+                        boolean needsDtor = !isRef && arg.type.needsDestruction() && (i != lastthrow);
+                        VarDeclaration tmp = copyToTemp(0L, needsDtor ? new BytePtr("__pfx") : new BytePtr("__pfy"), !isRef ? arg : arg.addressOf());
                         dsymbolSemantic(tmp, sc);
-                        if (!(needsDtor))
+                        if (!needsDtor)
                         {
                             if (tmp.edtor != null)
                             {
-                                assert(i == lastthrow);
+                                assert((i == lastthrow));
                                 tmp.edtor = null;
                             }
                         }
@@ -2257,7 +2257,7 @@ public class expressionsem {
                             arg = new PtrExp(loc, arg);
                             arg = expressionSemantic(arg, sc);
                         }
-                        if (i == lastthrow)
+                        if ((i == lastthrow))
                         {
                             AssignExp e = new AssignExp(gate.loc, new VarExp(gate.loc, gate, true), new IntegerExp(gate.loc, 1L, Type.tbool));
                             eprefix = Expression.combine(eprefix, expressionSemantic(e, sc));
@@ -2267,20 +2267,20 @@ public class expressionsem {
                     else
                     {
                         Type tv = arg.type.baseElemOf();
-                        if ((!(isRef) && (tv.ty & 0xFF) == ENUMTY.Tstruct))
+                        if (!isRef && ((tv.ty & 0xFF) == ENUMTY.Tstruct))
                             arg = doCopyOrMove(sc, arg, parameter != null ? parameter.type : null);
                     }
                     arguments.set(i, arg);
                 }
             }
         }
-        if ((tf.linkage == LINK.d && tf.parameterList.varargs == VarArg.variadic))
+        if ((tf.linkage == LINK.d) && (tf.parameterList.varargs == VarArg.variadic))
         {
-            assert((arguments).length >= nparams.value);
+            assert(((arguments).length >= nparams.value));
             DArray<Parameter> args = new DArray<Parameter>((arguments).length - nparams.value);
             {
                 int i = 0;
-                for (; i < (arguments).length - nparams.value;i++){
+                for (; (i < (arguments).length - nparams.value);i++){
                     Parameter arg = new Parameter(2048L, (arguments).get(nparams.value + i).type, null, null, null);
                     args.set(i, arg);
                 }
@@ -2292,17 +2292,17 @@ public class expressionsem {
         Type tret = tf.next;
         if (isCtorCall)
         {
-            if (!(tthis != null))
+            if (tthis == null)
             {
-                assert((((sc).intypeof) != 0 || (global.errors) != 0));
+                assert(((sc).intypeof != 0) || (global.errors != 0));
                 tthis = fd.isThis().type.addMod(fd.type.mod);
             }
-            if ((tf.isWild() && !(fd.isReturnIsolated())))
+            if (tf.isWild() && !fd.isReturnIsolated())
             {
-                if ((wildmatch) != 0)
+                if (wildmatch != 0)
                     tret = tret.substWildTo((wildmatch & 0xFF));
                 IntRef offset = ref(0);
-                if ((!((tret.implicitConvTo(tthis)) != 0) && !(((MODimplicitConv(tret.mod, tthis.mod) && tret.isBaseOf(tthis, ptr(offset))) && offset.value == 0))))
+                if ((tret.implicitConvTo(tthis) == 0) && !(MODimplicitConv(tret.mod, tthis.mod) && tret.isBaseOf(tthis, ptr(offset)) && (offset.value == 0)))
                 {
                     BytePtr s1 = pcopy(tret.isNaked() ? new BytePtr(" mutable") : tret.modToChars());
                     BytePtr s2 = pcopy(tthis.isNaked() ? new BytePtr(" mutable") : tthis.modToChars());
@@ -2312,22 +2312,22 @@ public class expressionsem {
             }
             tret = tthis;
         }
-        else if (((wildmatch) != 0 && tret != null))
+        else if ((wildmatch != 0) && (tret != null))
         {
             tret = tret.substWildTo((wildmatch & 0xFF));
         }
         prettype.set(0, tret);
         peprefix.set(0, eprefix);
-        return (err || olderrors != global.errors);
+        return err || (olderrors != global.errors);
     }
 
     public static dmodule.Package resolveIsPackage(Dsymbol sym) {
         dmodule.Package pkg = null;
         {
             Import imp = sym.isImport();
-            if (imp != null)
+            if ((imp) != null)
             {
-                if (imp.pkg == null)
+                if ((imp.pkg == null))
                 {
                     error(sym.loc, new BytePtr("Internal Compiler Error: unable to process forward-referenced import `%s`"), imp.toChars());
                     throw new AssertionError("Unreachable code!");
@@ -2343,7 +2343,7 @@ public class expressionsem {
     }
 
     public static dmodule.Module loadStdMath() {
-        if (!(expressionsem.loadStdMathimpStdMath != null))
+        if (expressionsem.loadStdMathimpStdMath == null)
         {
             DArray<Identifier> a = new DArray<Identifier>();
             (a).push(Id.std);
@@ -2383,7 +2383,7 @@ public class expressionsem {
 
         public  void visit(IntegerExp e) {
             assert(e.type != null);
-            if ((e.type.ty & 0xFF) == ENUMTY.Terror)
+            if (((e.type.ty & 0xFF) == ENUMTY.Terror))
                 this.setError();
                 return ;
             assert(e.type.deco != null);
@@ -2392,7 +2392,7 @@ public class expressionsem {
         }
 
         public  void visit(RealExp e) {
-            if (!(e.type != null))
+            if (e.type == null)
                 e.type = Type.tfloat64;
             else
                 e.type = typeSemantic(e.type, e.loc, this.sc);
@@ -2400,7 +2400,7 @@ public class expressionsem {
         }
 
         public  void visit(ComplexExp e) {
-            if (!(e.type != null))
+            if (e.type == null)
                 e.type = Type.tcomplex80;
             else
                 e.type = typeSemantic(e.type, e.loc, this.sc);
@@ -2422,18 +2422,18 @@ public class expressionsem {
                     return ;
                 Expression e = null;
                 WithScopeSymbol withsym = scopesym.value.isWithScopeSymbol();
-                if ((withsym != null && withsym.withstate.wthis != null))
+                if ((withsym != null) && (withsym.withstate.wthis != null))
                 {
                     Scope scwith = this.sc;
-                    for (; !pequals((scwith).scopesym, scopesym.value);){
+                    for (; (!pequals((scwith).scopesym, scopesym.value));){
                         scwith = (scwith).enclosing;
                         assert(scwith != null);
                     }
                     {
                         Scope scx = scwith;
-                        for (; (scx != null && pequals((scx).func, (scwith).func));scx = (scx).enclosing){
+                        for (; (scx != null) && (pequals((scx).func, (scwith).func));scx = (scx).enclosing){
                             Dsymbol s2 = null;
-                            if (((((scx).scopesym != null && (scx).scopesym.symtab != null) && (s2 = (scx).scopesym.symtab.lookup(s.ident)) != null) && !pequals(s, s2)))
+                            if (((scx).scopesym != null) && ((scx).scopesym.symtab != null) && ((s2 = (scx).scopesym.symtab.lookup(s.ident)) != null) && (!pequals(s, s2)))
                             {
                                 exp.error(new BytePtr("with symbol `%s` is shadowing local symbol `%s`"), s.toPrettyChars(false), s2.toPrettyChars(false));
                                 this.setError();
@@ -2452,7 +2452,7 @@ public class expressionsem {
                     {
                         {
                             TypeExp t = withsym.withstate.exp.isTypeExp();
-                            if (t != null)
+                            if ((t) != null)
                             {
                                 e = new TypeExp(exp.loc, t.type);
                                 e = new DotIdExp(exp.loc, e, exp.ident);
@@ -2489,7 +2489,7 @@ public class expressionsem {
                 this.result = e;
                 return ;
             }
-            if ((!(global.params.fixAliasThis) && hasThis(this.sc) != null))
+            if (!global.params.fixAliasThis && (hasThis(this.sc) != null))
             {
                 {
                     AggregateDeclaration ad = (this.sc).getStructClassScope();
@@ -2508,7 +2508,7 @@ public class expressionsem {
                             }
                         }
                         ClassDeclaration cd = ad.isClassDeclaration();
-                        if (((cd != null && cd.baseClass != null) && !pequals(cd.baseClass, ClassDeclaration.object)))
+                        if ((cd != null) && (cd.baseClass != null) && (!pequals(cd.baseClass, ClassDeclaration.object)))
                         {
                             ad = cd.baseClass;
                             continue;
@@ -2517,7 +2517,7 @@ public class expressionsem {
                     }
                 }
             }
-            if (pequals(exp.ident, Id.ctfe))
+            if ((pequals(exp.ident, Id.ctfe)))
             {
                 if (((this.sc).flags & 128) != 0)
                 {
@@ -2536,11 +2536,11 @@ public class expressionsem {
             {
                 Scope sc2 = this.sc;
                 for (; sc2 != null;sc2 = (sc2).enclosing){
-                    if (!((sc2).scopesym != null))
+                    if ((sc2).scopesym == null)
                         continue;
                     {
                         WithScopeSymbol ss = (sc2).scopesym.isWithScopeSymbol();
-                        if (ss != null)
+                        if ((ss) != null)
                         {
                             if (ss.withstate.wthis != null)
                             {
@@ -2554,11 +2554,11 @@ public class expressionsem {
                                     return ;
                                 }
                             }
-                            else if ((ss.withstate.exp != null && (ss.withstate.exp.op & 0xFF) == 20))
+                            else if ((ss.withstate.exp != null) && ((ss.withstate.exp.op & 0xFF) == 20))
                             {
                                 {
                                     Type t = ss.withstate.exp.isTypeExp().type;
-                                    if (t != null)
+                                    if ((t) != null)
                                     {
                                         Expression e = null;
                                         e = new TypeExp(exp.loc, t);
@@ -2578,15 +2578,15 @@ public class expressionsem {
             }
             {
                 ByteSlice n = importHint(exp.ident.asString()).copy();
-                if (n.getLength() != 0)
+                if ((n).getLength() != 0)
                     exp.error(new BytePtr("`%s` is not defined, perhaps `import %.*s;` is needed?"), exp.ident.toChars(), n.getLength(), toBytePtr(n));
                 else {
                     Dsymbol s2 = (this.sc).search_correct(exp.ident);
-                    if (s2 != null)
+                    if ((s2) != null)
                         exp.error(new BytePtr("undefined identifier `%s`, did you mean %s `%s`?"), exp.ident.toChars(), s2.kind(), s2.toChars());
                     else {
                         BytePtr p = pcopy(Scope.search_correct_C(exp.ident));
-                        if (p != null)
+                        if ((p) != null)
                             exp.error(new BytePtr("undefined identifier `%s`, did you mean `%s`?"), exp.ident.toChars(), p);
                         else
                             exp.error(new BytePtr("undefined identifier `%s`"), exp.ident.toChars());
@@ -2609,13 +2609,13 @@ public class expressionsem {
             FuncDeclaration fd = hasThis(this.sc);
             AggregateDeclaration ad = null;
             try {
-                if ((!(fd != null) && (this.sc).intypeof == 1))
+                if ((fd == null) && ((this.sc).intypeof == 1))
                 {
                     {
                         Dsymbol s = (this.sc).getStructClassScope();
                     L_outer5:
-                        for (; (1) != 0;s = s.parent){
-                            if (!(s != null))
+                        for (; 1 != 0;s = s.parent){
+                            if (s == null)
                             {
                                 e.error(new BytePtr("`%s` is not in a class or struct scope"), e.toChars());
                                 /*goto Lerr*/throw Dispatch0.INSTANCE;
@@ -2637,13 +2637,13 @@ public class expressionsem {
                         }
                     }
                 }
-                if (!(fd != null))
+                if (fd == null)
                     /*goto Lerr*/throw Dispatch0.INSTANCE;
                 assert(fd.vthis != null);
                 e.var = fd.vthis;
                 assert(e.var.parent != null);
                 ad = fd.isMemberLocal();
-                if (!(ad != null))
+                if (ad == null)
                     ad = fd.isMember2();
                 assert(ad != null);
                 e.type = ad.type.addMod(e.var.type.mod);
@@ -2669,13 +2669,13 @@ public class expressionsem {
             ClassDeclaration cd = null;
             Dsymbol s = null;
             try {
-                if ((!(fd != null) && (this.sc).intypeof == 1))
+                if ((fd == null) && ((this.sc).intypeof == 1))
                 {
                     {
                         s = (this.sc).getStructClassScope();
                     L_outer6:
-                        for (; (1) != 0;s = s.parent){
-                            if (!(s != null))
+                        for (; 1 != 0;s = s.parent){
+                            if (s == null)
                             {
                                 e.error(new BytePtr("`%s` is not in a class scope"), e.toChars());
                                 /*goto Lerr*/throw Dispatch0.INSTANCE;
@@ -2684,7 +2684,7 @@ public class expressionsem {
                             if (cd != null)
                             {
                                 cd = cd.baseClass;
-                                if (!(cd != null))
+                                if (cd == null)
                                 {
                                     e.error(new BytePtr("class `%s` has no `super`"), s.toChars());
                                     /*goto Lerr*/throw Dispatch0.INSTANCE;
@@ -2696,18 +2696,18 @@ public class expressionsem {
                         }
                     }
                 }
-                if (!(fd != null))
+                if (fd == null)
                     /*goto Lerr*/throw Dispatch0.INSTANCE;
                 e.var = fd.vthis;
-                assert((e.var != null && e.var.parent != null));
+                assert((e.var != null) && (e.var.parent != null));
                 s = fd.toParentDecl();
                 if (s.isTemplateDeclaration() != null)
                     s = s.toParent();
                 assert(s != null);
                 cd = s.isClassDeclaration();
-                if (!(cd != null))
+                if (cd == null)
                     /*goto Lerr*/throw Dispatch0.INSTANCE;
-                if (!(cd.baseClass != null))
+                if (cd.baseClass == null)
                 {
                     e.error(new BytePtr("no base class for `%s`"), cd.toChars());
                     e.type = cd.type.addMod(e.var.type.mod);
@@ -2760,7 +2760,7 @@ public class expressionsem {
                             case 100:
                                 {
                                     u.value = 0;
-                                    for (; u.value < e.len;){
+                                    for (; (u.value < e.len);){
                                         p = pcopy(utf_decodeChar(e.string, e.len, u, c));
                                         if (p != null)
                                         {
@@ -2785,7 +2785,7 @@ public class expressionsem {
                             case 119:
                                 {
                                     u.value = 0;
-                                    for (; u.value < e.len;){
+                                    for (; (u.value < e.len);){
                                         p = pcopy(utf_decodeChar(e.string, e.len, u, c));
                                         if (p != null)
                                         {
@@ -2797,7 +2797,7 @@ public class expressionsem {
                                         {
                                             buffer.writeUTF16(c.value);
                                             newlen++;
-                                            if (c.value >= 65536)
+                                            if ((c.value >= 65536))
                                                 newlen++;
                                         }
                                     }
@@ -2837,15 +2837,15 @@ public class expressionsem {
             boolean err = false;
             {
                 int i = 0;
-                for (; i < (exp.exps).length;i++){
+                for (; (i < (exp.exps).length);i++){
                     Expression e = (exp.exps).get(i);
                     e = expressionSemantic(e, this.sc);
-                    if (!(e.type != null))
+                    if (e.type == null)
                     {
                         exp.error(new BytePtr("`%s` has no value"), e.toChars());
                         err = true;
                     }
-                    else if ((e.op & 0xFF) == 127)
+                    else if (((e.op & 0xFF) == 127))
                         err = true;
                     else
                         exp.exps.set(i, e);
@@ -2868,7 +2868,7 @@ public class expressionsem {
             }
             if (e.basis != null)
                 e.basis = expressionSemantic(e.basis, this.sc);
-            if ((arrayExpressionSemantic(e.elements, this.sc, false) || (e.basis != null && (e.basis.op & 0xFF) == 127)))
+            if (arrayExpressionSemantic(e.elements, this.sc, false) || (e.basis != null) && ((e.basis.op & 0xFF) == 127))
                 this.setError();
                 return ;
             expandTuples(e.elements);
@@ -2883,13 +2883,13 @@ public class expressionsem {
                 return ;
             e.type = t0.value.arrayOf();
             e.type = typeSemantic(e.type, e.loc, this.sc);
-            if (((e.elements).length > 0 && (t0.value.ty & 0xFF) == ENUMTY.Tvoid))
+            if (((e.elements).length > 0) && ((t0.value.ty & 0xFF) == ENUMTY.Tvoid))
             {
                 e.error(new BytePtr("`%s` of type `%s` has no value"), e.toChars(), e.type.toChars());
                 this.setError();
                 return ;
             }
-            if ((global.params.useTypeInfo && Type.dtypeinfo != null))
+            if (global.params.useTypeInfo && (Type.dtypeinfo != null))
                 semanticTypeInfo(this.sc, e.type);
             this.result = e;
         }
@@ -2902,12 +2902,12 @@ public class expressionsem {
             }
             boolean err_keys = arrayExpressionSemantic(e.keys, this.sc, false);
             boolean err_vals = arrayExpressionSemantic(e.values, this.sc, false);
-            if ((err_keys || err_vals))
+            if (err_keys || err_vals)
                 this.setError();
                 return ;
             expandTuples(e.keys);
             expandTuples(e.values);
-            if ((e.keys).length != (e.values).length)
+            if (((e.keys).length != (e.values).length))
             {
                 e.error(new BytePtr("number of keys is %u, must match number of values %u"), (e.keys).length, (e.values).length);
                 this.setError();
@@ -2917,10 +2917,10 @@ public class expressionsem {
             Ref<Type> tvalue = ref(null);
             err_keys = arrayExpressionToCommonType(this.sc, e.keys, ptr(tkey));
             err_vals = arrayExpressionToCommonType(this.sc, e.values, ptr(tvalue));
-            if ((err_keys || err_vals))
+            if (err_keys || err_vals)
                 this.setError();
                 return ;
-            if ((pequals(tkey.value, Type.terror) || pequals(tvalue.value, Type.terror)))
+            if ((pequals(tkey.value, Type.terror)) || (pequals(tvalue.value, Type.terror)))
                 this.setError();
                 return ;
             e.type = new TypeAArray(tvalue.value, tkey.value);
@@ -2942,17 +2942,17 @@ public class expressionsem {
                 return ;
             }
             e.sd.size(e.loc);
-            if (e.sd.sizeok != Sizeok.done)
+            if ((e.sd.sizeok != Sizeok.done))
                 this.setError();
                 return ;
             if (arrayExpressionSemantic(e.elements, this.sc, false))
                 this.setError();
                 return ;
             expandTuples(e.elements);
-            if (!(e.sd.fit(e.loc, this.sc, e.elements, e.stype)))
+            if (!e.sd.fit(e.loc, this.sc, e.elements, e.stype))
                 this.setError();
                 return ;
-            if (!(e.sd.fill(e.loc, e.elements, false)))
+            if (!e.sd.fill(e.loc, e.elements, false))
             {
                 global.increaseErrorCount();
                 this.setError();
@@ -2966,7 +2966,7 @@ public class expressionsem {
         }
 
         public  void visit(TypeExp exp) {
-            if ((exp.type.ty & 0xFF) == ENUMTY.Terror)
+            if (((exp.type.ty & 0xFF) == ENUMTY.Terror))
                 this.setError();
                 return ;
             Ref<Expression> e = ref(null);
@@ -3003,10 +3003,10 @@ public class expressionsem {
             TemplateInstance ti = sds2.isTemplateInstance();
             for (; ti != null;){
                 Ref<WithScopeSymbol> withsym = ref(null);
-                if ((!(ti.findTempDecl(this.sc, ptr(withsym))) || !(ti.semanticTiargs(this.sc))))
+                if (!ti.findTempDecl(this.sc, ptr(withsym)) || !ti.semanticTiargs(this.sc))
                     this.setError();
                     return ;
-                if ((withsym.value != null && withsym.value.withstate.wthis != null))
+                if ((withsym.value != null) && (withsym.value.withstate.wthis != null))
                 {
                     Expression e = new VarExp(exp.loc, withsym.value.withstate.wthis, true);
                     e = new DotTemplateInstanceExp(exp.loc, e, ti);
@@ -3017,12 +3017,12 @@ public class expressionsem {
                 {
                     {
                         TemplateDeclaration td = ti.tempdecl.isTemplateDeclaration();
-                        if (td != null)
+                        if ((td) != null)
                         {
                             Dsymbol p = td.toParentLocal();
                             FuncDeclaration fdthis = hasThis(this.sc);
                             AggregateDeclaration ad = p != null ? p.isAggregateDeclaration() : null;
-                            if ((((fdthis != null && ad != null) && pequals(fdthis.isMemberLocal(), ad)) && ((td._scope).stc & 1L) == 0L))
+                            if ((fdthis != null) && (ad != null) && (pequals(fdthis.isMemberLocal(), ad)) && (((td._scope).stc & 1L) == 0L))
                             {
                                 Expression e = new DotTemplateInstanceExp(exp.loc, new ThisExp(exp.loc), ti.name, ti.tiargs);
                                 this.result = expressionSemantic(e, this.sc);
@@ -3031,11 +3031,11 @@ public class expressionsem {
                         }
                         else {
                             OverloadSet os = ti.tempdecl.isOverloadSet();
-                            if (os != null)
+                            if ((os) != null)
                             {
                                 FuncDeclaration fdthis = hasThis(this.sc);
                                 AggregateDeclaration ad = os.parent.isAggregateDeclaration();
-                                if (((fdthis != null && ad != null) && pequals(fdthis.isMemberLocal(), ad)))
+                                if ((fdthis != null) && (ad != null) && (pequals(fdthis.isMemberLocal(), ad)))
                                 {
                                     Expression e = new DotTemplateInstanceExp(exp.loc, new ThisExp(exp.loc), ti.name, ti.tiargs);
                                     this.result = expressionSemantic(e, this.sc);
@@ -3050,11 +3050,11 @@ public class expressionsem {
                     return ;
                 }
                 dsymbolSemantic(ti, this.sc);
-                if ((!(ti.inst != null) || ti.errors))
+                if ((ti.inst == null) || ti.errors)
                     this.setError();
                     return ;
                 Dsymbol s = ti.toAlias();
-                if (pequals(s, ti))
+                if ((pequals(s, ti)))
                 {
                     exp.sds = ti;
                     exp.type = Type.tvoid;
@@ -3069,17 +3069,17 @@ public class expressionsem {
                 }
                 {
                     VarDeclaration v = s.isVarDeclaration();
-                    if (v != null)
+                    if ((v) != null)
                     {
-                        if (!(v.type != null))
+                        if (v.type == null)
                         {
                             exp.error(new BytePtr("forward reference of %s `%s`"), v.kind(), v.toChars());
                             this.setError();
                             return ;
                         }
-                        if (((v.storage_class & 8388608L) != 0 && v._init != null))
+                        if (((v.storage_class & 8388608L) != 0) && (v._init != null))
                         {
-                            if ((ti.inuse) != 0)
+                            if (ti.inuse != 0)
                             {
                                 exp.error(new BytePtr("recursive expansion of %s `%s`"), ti.kind(), ti.toPrettyChars(false));
                                 this.setError();
@@ -3102,7 +3102,7 @@ public class expressionsem {
             dsymbolSemantic(sds2, this.sc);
             {
                 Type t = sds2.getType();
-                if (t != null)
+                if ((t) != null)
                 {
                     this.result = expressionSemantic(new TypeExp(exp.loc, t), this.sc);
                     return ;
@@ -3110,7 +3110,7 @@ public class expressionsem {
             }
             {
                 TemplateDeclaration td = sds2.isTemplateDeclaration();
-                if (td != null)
+                if ((td) != null)
                 {
                     this.result = expressionSemantic(new TemplateExp(exp.loc, td, null), this.sc);
                     return ;
@@ -3128,7 +3128,7 @@ public class expressionsem {
                 return ;
             }
             Expression edim = null;
-            if ((exp.arguments == null && (exp.newtype.ty & 0xFF) == ENUMTY.Tsarray))
+            if ((exp.arguments == null) && ((exp.newtype.ty & 0xFF) == ENUMTY.Tsarray))
             {
                 edim = ((TypeSArray)exp.newtype).dim;
                 exp.newtype = ((TypeNext)exp.newtype).next;
@@ -3137,11 +3137,11 @@ public class expressionsem {
             if (exp.thisexp != null)
             {
                 exp.thisexp = expressionSemantic(exp.thisexp, this.sc);
-                if ((exp.thisexp.op & 0xFF) == 127)
+                if (((exp.thisexp.op & 0xFF) == 127))
                     this.setError();
                     return ;
                 cdthis = exp.thisexp.type.isClassHandle();
-                if (!(cdthis != null))
+                if (cdthis == null)
                 {
                     exp.error(new BytePtr("`this` for nested class must be a class type, not `%s`"), exp.thisexp.type.toChars());
                     this.setError();
@@ -3155,16 +3155,16 @@ public class expressionsem {
             {
                 exp.type = typeSemantic(exp.newtype, exp.loc, this.sc);
             }
-            if ((exp.type.ty & 0xFF) == ENUMTY.Terror)
+            if (((exp.type.ty & 0xFF) == ENUMTY.Terror))
                 this.setError();
                 return ;
             if (edim != null)
             {
-                if ((exp.type.toBasetype().ty & 0xFF) == ENUMTY.Ttuple)
+                if (((exp.type.toBasetype().ty & 0xFF) == ENUMTY.Ttuple))
                 {
                     exp.type = new TypeSArray(exp.type, edim);
                     exp.type = typeSemantic(exp.type, exp.loc, this.sc);
-                    if ((exp.type.ty & 0xFF) == ENUMTY.Terror)
+                    if (((exp.type.ty & 0xFF) == ENUMTY.Terror))
                         this.setError();
                         return ;
                 }
@@ -3177,17 +3177,17 @@ public class expressionsem {
             }
             exp.newtype = exp.type;
             Type tb = exp.type.toBasetype();
-            if ((arrayExpressionSemantic(exp.newargs, this.sc, false) || preFunctionParameters(this.sc, exp.newargs)))
+            if (arrayExpressionSemantic(exp.newargs, this.sc, false) || preFunctionParameters(this.sc, exp.newargs))
             {
                 this.setError();
                 return ;
             }
-            if ((arrayExpressionSemantic(exp.arguments, this.sc, false) || preFunctionParameters(this.sc, exp.arguments)))
+            if (arrayExpressionSemantic(exp.arguments, this.sc, false) || preFunctionParameters(this.sc, exp.arguments))
             {
                 this.setError();
                 return ;
             }
-            if ((exp.thisexp != null && (tb.ty & 0xFF) != ENUMTY.Tclass))
+            if ((exp.thisexp != null) && ((tb.ty & 0xFF) != ENUMTY.Tclass))
             {
                 exp.error(new BytePtr("`.new` is only for allocating nested classes, not `%s`"), tb.toChars());
                 this.setError();
@@ -3195,16 +3195,16 @@ public class expressionsem {
             }
             int nargs = exp.arguments != null ? (exp.arguments).length : 0;
             Ref<Expression> newprefix = ref(null);
-            if ((tb.ty & 0xFF) == ENUMTY.Tclass)
+            if (((tb.ty & 0xFF) == ENUMTY.Tclass))
             {
                 ClassDeclaration cd = ((TypeClass)tb).sym;
                 cd.size(exp.loc);
-                if (cd.sizeok != Sizeok.done)
+                if ((cd.sizeok != Sizeok.done))
                     this.setError();
                     return ;
-                if (!(cd.ctor != null))
+                if (cd.ctor == null)
                     cd.ctor = cd.searchCtor();
-                if (((cd.noDefaultCtor && !((nargs) != 0)) && !(cd.defaultCtor != null)))
+                if (cd.noDefaultCtor && (nargs == 0) && (cd.defaultCtor == null))
                 {
                     exp.error(new BytePtr("default construction is disabled for type `%s`"), cd.type.toChars());
                     this.setError();
@@ -3221,9 +3221,9 @@ public class expressionsem {
                     exp.error(new BytePtr("cannot create instance of abstract class `%s`"), cd.toChars());
                     {
                         int i = 0;
-                        for (; i < cd.vtbl.length;i++){
+                        for (; (i < cd.vtbl.length);i++){
                             FuncDeclaration fd = cd.vtbl.get(i).isFuncDeclaration();
-                            if ((fd != null && fd.isAbstract()))
+                            if ((fd != null) && fd.isAbstract())
                             {
                                 errorSupplemental(exp.loc, new BytePtr("function `%s` is not implemented"), fd.toFullSignature());
                             }
@@ -3237,41 +3237,41 @@ public class expressionsem {
                     Dsymbol s = cd.toParentLocal();
                     {
                         ClassDeclaration cdn = s.isClassDeclaration();
-                        if (cdn != null)
+                        if ((cdn) != null)
                         {
-                            if (!(cdthis != null))
+                            if (cdthis == null)
                             {
                                 exp.thisexp = new ThisExp(exp.loc);
                                 {
                                     Dsymbol sp = (this.sc).parent;
-                                    for (; (1) != 0;sp = sp.toParentLocal()){
-                                        if (!(sp != null))
+                                    for (; 1 != 0;sp = sp.toParentLocal()){
+                                        if (sp == null)
                                         {
                                             exp.error(new BytePtr("outer class `%s` `this` needed to `new` nested class `%s`"), cdn.toChars(), cd.toChars());
                                             this.setError();
                                             return ;
                                         }
                                         ClassDeclaration cdp = sp.isClassDeclaration();
-                                        if (!(cdp != null))
+                                        if (cdp == null)
                                             continue;
-                                        if ((pequals(cdp, cdn) || cdn.isBaseOf(cdp, null)))
+                                        if ((pequals(cdp, cdn)) || cdn.isBaseOf(cdp, null))
                                             break;
                                         exp.thisexp = new DotIdExp(exp.loc, exp.thisexp, Id.outer);
                                     }
                                 }
                                 exp.thisexp = expressionSemantic(exp.thisexp, this.sc);
-                                if ((exp.thisexp.op & 0xFF) == 127)
+                                if (((exp.thisexp.op & 0xFF) == 127))
                                     this.setError();
                                     return ;
                                 cdthis = exp.thisexp.type.isClassHandle();
                             }
-                            if ((!pequals(cdthis, cdn) && !(cdn.isBaseOf(cdthis, null))))
+                            if ((!pequals(cdthis, cdn)) && !cdn.isBaseOf(cdthis, null))
                             {
                                 exp.error(new BytePtr("`this` for nested class must be of type `%s`, not `%s`"), cdn.toChars(), exp.thisexp.type.toChars());
                                 this.setError();
                                 return ;
                             }
-                            if (!(MODimplicitConv(exp.thisexp.type.mod, exp.newtype.mod)))
+                            if (!MODimplicitConv(exp.thisexp.type.mod, exp.newtype.mod))
                             {
                                 exp.error(new BytePtr("nested type `%s` should have the same or weaker constancy as enclosing type `%s`"), exp.newtype.toChars(), exp.thisexp.type.toChars());
                                 this.setError();
@@ -3286,9 +3286,9 @@ public class expressionsem {
                         }
                         else {
                             FuncDeclaration fdn = s.isFuncDeclaration();
-                            if (fdn != null)
+                            if ((fdn) != null)
                             {
-                                if (!(ensureStaticLinkTo((this.sc).parent, fdn)))
+                                if (!ensureStaticLinkTo((this.sc).parent, fdn))
                                 {
                                     exp.error(new BytePtr("outer function context of `%s` is needed to `new` nested class `%s`"), fdn.toPrettyChars(false), cd.toPrettyChars(false));
                                     this.setError();
@@ -3310,12 +3310,12 @@ public class expressionsem {
                 {
                     {
                         AggregateDeclaration ad2 = cd.isMember2();
-                        if (ad2 != null)
+                        if ((ad2) != null)
                         {
                             Expression te = expressionSemantic(new ThisExp(exp.loc), this.sc);
-                            if ((te.op & 0xFF) != 127)
+                            if (((te.op & 0xFF) != 127))
                                 te = getRightThis(exp.loc, this.sc, ad2, te, cd, 0);
-                            if ((te.op & 0xFF) == 127)
+                            if (((te.op & 0xFF) == 127))
                             {
                                 exp.error(new BytePtr("need `this` of type `%s` needed to `new` nested class `%s`"), ad2.toChars(), cd.toChars());
                                 this.setError();
@@ -3331,7 +3331,7 @@ public class expressionsem {
                         exp.newargs = new DArray<Expression>();
                     (exp.newargs).shift(e);
                     FuncDeclaration f = resolveFuncCall(exp.loc, this.sc, cd.aggNew, null, tb, exp.newargs, FuncResolveFlag.standard);
-                    if ((!(f != null) || f.errors))
+                    if ((f == null) || f.errors)
                         this.setError();
                         return ;
                     checkFunctionAttributes(exp, this.sc, f);
@@ -3346,7 +3346,7 @@ public class expressionsem {
                 }
                 else
                 {
-                    if ((exp.newargs != null && ((exp.newargs).length) != 0))
+                    if ((exp.newargs != null) && ((exp.newargs).length != 0))
                     {
                         exp.error(new BytePtr("no allocator for `%s`"), cd.toChars());
                         this.setError();
@@ -3356,7 +3356,7 @@ public class expressionsem {
                 if (cd.ctor != null)
                 {
                     FuncDeclaration f = resolveFuncCall(exp.loc, this.sc, cd.ctor, null, tb, exp.arguments, FuncResolveFlag.standard);
-                    if ((!(f != null) || f.errors))
+                    if ((f == null) || f.errors)
                         this.setError();
                         return ;
                     checkFunctionAttributes(exp, this.sc, f);
@@ -3372,7 +3372,7 @@ public class expressionsem {
                 }
                 else
                 {
-                    if ((nargs) != 0)
+                    if (nargs != 0)
                     {
                         exp.error(new BytePtr("no constructor for `%s`"), cd.toChars());
                         this.setError();
@@ -3384,9 +3384,9 @@ public class expressionsem {
                             {
                                 Slice<VarDeclaration> __r1374 = c.fields.opSlice().copy();
                                 int __key1375 = 0;
-                                for (; __key1375 < __r1374.getLength();__key1375 += 1) {
+                                for (; (__key1375 < __r1374.getLength());__key1375 += 1) {
                                     VarDeclaration v = __r1374.get(__key1375);
-                                    if (((((v.inuse) != 0 || v._scope == null) || v._init == null) || v._init.isVoidInitializer() != null))
+                                    if ((v.inuse != 0) || (v._scope == null) || (v._init == null) || (v._init.isVoidInitializer() != null))
                                         continue;
                                     v.inuse++;
                                     v._init = initializerSemantic(v._init, v._scope, v.type, NeedInterpret.INITinterpret);
@@ -3397,16 +3397,16 @@ public class expressionsem {
                     }
                 }
             }
-            else if ((tb.ty & 0xFF) == ENUMTY.Tstruct)
+            else if (((tb.ty & 0xFF) == ENUMTY.Tstruct))
             {
                 StructDeclaration sd = ((TypeStruct)tb).sym;
                 sd.size(exp.loc);
-                if (sd.sizeok != Sizeok.done)
+                if ((sd.sizeok != Sizeok.done))
                     this.setError();
                     return ;
-                if (!(sd.ctor != null))
+                if (sd.ctor == null)
                     sd.ctor = sd.searchCtor();
-                if ((sd.noDefaultCtor && !((nargs) != 0)))
+                if (sd.noDefaultCtor && (nargs == 0))
                 {
                     exp.error(new BytePtr("default construction is disabled for type `%s`"), sd.type.toChars());
                     this.setError();
@@ -3419,7 +3419,7 @@ public class expressionsem {
                         exp.newargs = new DArray<Expression>();
                     (exp.newargs).shift(e);
                     FuncDeclaration f = resolveFuncCall(exp.loc, this.sc, sd.aggNew, null, tb, exp.newargs, FuncResolveFlag.standard);
-                    if ((!(f != null) || f.errors))
+                    if ((f == null) || f.errors)
                         this.setError();
                         return ;
                     checkFunctionAttributes(exp, this.sc, f);
@@ -3434,17 +3434,17 @@ public class expressionsem {
                 }
                 else
                 {
-                    if ((exp.newargs != null && ((exp.newargs).length) != 0))
+                    if ((exp.newargs != null) && ((exp.newargs).length != 0))
                     {
                         exp.error(new BytePtr("no allocator for `%s`"), sd.toChars());
                         this.setError();
                         return ;
                     }
                 }
-                if ((sd.ctor != null && (nargs) != 0))
+                if ((sd.ctor != null) && (nargs != 0))
                 {
                     FuncDeclaration f = resolveFuncCall(exp.loc, this.sc, sd.ctor, null, tb, exp.arguments, FuncResolveFlag.standard);
-                    if ((!(f != null) || f.errors))
+                    if ((f == null) || f.errors)
                         this.setError();
                         return ;
                     checkFunctionAttributes(exp, this.sc, f);
@@ -3465,10 +3465,10 @@ public class expressionsem {
                 {
                     if (exp.arguments == null)
                         exp.arguments = new DArray<Expression>();
-                    if (!(sd.fit(exp.loc, this.sc, exp.arguments, tb)))
+                    if (!sd.fit(exp.loc, this.sc, exp.arguments, tb))
                         this.setError();
                         return ;
-                    if (!(sd.fill(exp.loc, exp.arguments, false)))
+                    if (!sd.fill(exp.loc, exp.arguments, false))
                         this.setError();
                         return ;
                     if (checkFrameAccess(exp.loc, this.sc, sd, exp.arguments != null ? (exp.arguments).length : 0))
@@ -3479,9 +3479,9 @@ public class expressionsem {
                         {
                             Slice<Expression> __r1376 = (exp.arguments).opSlice().copy();
                             int __key1377 = 0;
-                            for (; __key1377 < __r1376.getLength();__key1377 += 1) {
+                            for (; (__key1377 < __r1376.getLength());__key1377 += 1) {
                                 Expression arg = __r1376.get(__key1377);
-                                if ((arg != null && checkNewEscape(this.sc, arg, false)))
+                                if ((arg != null) && checkNewEscape(this.sc, arg, false))
                                     this.setError();
                                     return ;
                             }
@@ -3490,12 +3490,12 @@ public class expressionsem {
                 }
                 exp.type = exp.type.pointerTo();
             }
-            else if (((tb.ty & 0xFF) == ENUMTY.Tarray && (nargs) != 0))
+            else if (((tb.ty & 0xFF) == ENUMTY.Tarray) && (nargs != 0))
             {
                 Type tn = tb.nextOf().baseElemOf();
                 Dsymbol s = tn.toDsymbol(this.sc);
                 AggregateDeclaration ad = s != null ? s.isAggregateDeclaration() : null;
-                if ((ad != null && ad.noDefaultCtor))
+                if ((ad != null) && ad.noDefaultCtor)
                 {
                     exp.error(new BytePtr("default construction is disabled for type `%s`"), tb.nextOf().toChars());
                     this.setError();
@@ -3503,8 +3503,8 @@ public class expressionsem {
                 }
                 {
                     int i = 0;
-                    for (; i < nargs;i++){
-                        if ((tb.ty & 0xFF) != ENUMTY.Tarray)
+                    for (; (i < nargs);i++){
+                        if (((tb.ty & 0xFF) != ENUMTY.Tarray))
                         {
                             exp.error(new BytePtr("too many arguments for array"));
                             this.setError();
@@ -3513,11 +3513,11 @@ public class expressionsem {
                         Expression arg = (exp.arguments).get(i);
                         arg = resolveProperties(this.sc, arg);
                         arg = arg.implicitCastTo(this.sc, Type.tsize_t);
-                        if ((arg.op & 0xFF) == 127)
+                        if (((arg.op & 0xFF) == 127))
                             this.setError();
                             return ;
                         arg = arg.optimize(0, false);
-                        if (((arg.op & 0xFF) == 135 && (long)arg.toInteger() < 0L))
+                        if (((arg.op & 0xFF) == 135) && ((long)arg.toInteger() < 0L))
                         {
                             exp.error(new BytePtr("negative array index `%s`"), arg.toChars());
                             this.setError();
@@ -3530,10 +3530,10 @@ public class expressionsem {
             }
             else if (tb.isscalar())
             {
-                if (!((nargs) != 0))
+                if (nargs == 0)
                 {
                 }
-                else if (nargs == 1)
+                else if ((nargs == 1))
                 {
                     Expression e = (exp.arguments).get(0);
                     e = e.implicitCastTo(this.sc, tb);
@@ -3568,7 +3568,7 @@ public class expressionsem {
             (this.sc).flags &= -129;
             d = expressionSemantic(d, this.sc);
             this.sc = (this.sc).pop();
-            if (((!(e.cd.errors) && ((this.sc).intypeof) != 0) && !((this.sc).parent.inNonRoot())))
+            if (!e.cd.errors && ((this.sc).intypeof != 0) && !(this.sc).parent.inNonRoot())
             {
                 ScopeDsymbol sds = (this.sc).tinst != null ? (this.sc).tinst : (this.sc)._module;
                 if (sds.members == null)
@@ -3581,11 +3581,11 @@ public class expressionsem {
         }
 
         public  void visit(SymOffExp e) {
-            if (!(e.type != null))
+            if (e.type == null)
                 e.type = e.var.type.pointerTo();
             {
                 VarDeclaration v = e.var.isVarDeclaration();
-                if (v != null)
+                if ((v) != null)
                 {
                     if (v.checkNestedReference(this.sc, e.loc))
                         this.setError();
@@ -3593,7 +3593,7 @@ public class expressionsem {
                 }
                 else {
                     FuncDeclaration f = e.var.isFuncDeclaration();
-                    if (f != null)
+                    if ((f) != null)
                     {
                         if (f.checkNestedReference(this.sc, e.loc))
                             this.setError();
@@ -3609,13 +3609,13 @@ public class expressionsem {
             FuncDeclaration fd = e.var.isFuncDeclaration();
             if (fd != null)
             {
-                if (!(fd.functionSemantic()))
+                if (!fd.functionSemantic())
                     this.setError();
                     return ;
             }
-            if (!(e.type != null))
+            if (e.type == null)
                 e.type = e.var.type;
-            if ((e.type != null && e.type.deco == null))
+            if ((e.type != null) && (e.type.deco == null))
             {
                 Declaration decl = e.var.isDeclaration();
                 if (decl != null)
@@ -3638,7 +3638,7 @@ public class expressionsem {
             }
             else {
                 OverDeclaration od = e.var.isOverDeclaration();
-                if (od != null)
+                if ((od) != null)
                 {
                     e.type = Type.tvoid;
                 }
@@ -3658,10 +3658,10 @@ public class expressionsem {
             (this.sc).flags &= -129;
             (this.sc).protection = new Prot(Prot.Kind.public_).copy();
             exp.genIdent(this.sc);
-            if ((exp.fd.treq != null && !(exp.fd.type.nextOf() != null)))
+            if ((exp.fd.treq != null) && (exp.fd.type.nextOf() == null))
             {
                 TypeFunction tfv = null;
-                if (((exp.fd.treq.ty & 0xFF) == ENUMTY.Tdelegate || ((exp.fd.treq.ty & 0xFF) == ENUMTY.Tpointer && (exp.fd.treq.nextOf().ty & 0xFF) == ENUMTY.Tfunction)))
+                if (((exp.fd.treq.ty & 0xFF) == ENUMTY.Tdelegate) || ((exp.fd.treq.ty & 0xFF) == ENUMTY.Tpointer) && ((exp.fd.treq.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
                     tfv = (TypeFunction)exp.fd.treq.nextOf();
                 if (tfv != null)
                 {
@@ -3672,13 +3672,13 @@ public class expressionsem {
             try {
                 if (exp.td != null)
                 {
-                    assert((exp.td.parameters != null && ((exp.td.parameters).length) != 0));
+                    assert((exp.td.parameters != null) && ((exp.td.parameters).length != 0));
                     dsymbolSemantic(exp.td, this.sc);
                     exp.type = Type.tvoid;
                     if (exp.fd.treq != null)
                     {
                         Ref<FuncExp> fe = ref(null);
-                        if (exp.matchType(exp.fd.treq, this.sc, ptr(fe), 0) > MATCH.nomatch)
+                        if ((exp.matchType(exp.fd.treq, this.sc, ptr(fe), 0) > MATCH.nomatch))
                             e = fe.value;
                         else
                             e = new ErrorExp();
@@ -3687,20 +3687,20 @@ public class expressionsem {
                 }
                 olderrors = global.errors;
                 dsymbolSemantic(exp.fd, this.sc);
-                if (olderrors == global.errors)
+                if ((olderrors == global.errors))
                 {
                     semantic2(exp.fd, this.sc);
-                    if (olderrors == global.errors)
+                    if ((olderrors == global.errors))
                         semantic3(exp.fd, this.sc);
                 }
-                if (olderrors != global.errors)
+                if ((olderrors != global.errors))
                 {
-                    if (((exp.fd.type != null && (exp.fd.type.ty & 0xFF) == ENUMTY.Tfunction) && !(exp.fd.type.nextOf() != null)))
+                    if ((exp.fd.type != null) && ((exp.fd.type.ty & 0xFF) == ENUMTY.Tfunction) && (exp.fd.type.nextOf() == null))
                         ((TypeFunction)exp.fd.type).next = Type.terror;
                     e = new ErrorExp();
                     /*goto Ldone*/throw Dispatch0.INSTANCE;
                 }
-                if (((exp.fd.isNested() && (exp.fd.tok & 0xFF) == 160) || (((exp.tok & 0xFF) == 0 && exp.fd.treq != null) && (exp.fd.treq.ty & 0xFF) == ENUMTY.Tdelegate)))
+                if (exp.fd.isNested() && ((exp.fd.tok & 0xFF) == 160) || ((exp.tok & 0xFF) == 0) && (exp.fd.treq != null) && ((exp.fd.treq.ty & 0xFF) == ENUMTY.Tdelegate))
                 {
                     exp.type = new TypeDelegate(exp.fd.type);
                     exp.type = typeSemantic(exp.type, exp.loc, this.sc);
@@ -3710,7 +3710,7 @@ public class expressionsem {
                 {
                     exp.type = new TypePointer(exp.fd.type);
                     exp.type = typeSemantic(exp.type, exp.loc, this.sc);
-                    if ((exp.fd.treq != null && (exp.fd.treq.ty & 0xFF) == ENUMTY.Tpointer))
+                    if ((exp.fd.treq != null) && ((exp.fd.treq.ty & 0xFF) == ENUMTY.Tpointer))
                     {
                         exp.fd.tok = TOK.function_;
                         exp.fd.vthis = null;
@@ -3725,40 +3725,40 @@ public class expressionsem {
         }
 
         public  Expression callExpSemantic(FuncExp exp, Scope sc, DArray<Expression> arguments) {
-            if (((((!(exp.type != null) || pequals(exp.type, Type.tvoid)) && exp.td != null) && arguments != null) && ((arguments).length) != 0))
+            if ((exp.type == null) || (pequals(exp.type, Type.tvoid)) && (exp.td != null) && (arguments != null) && ((arguments).length != 0))
             {
                 {
                     int k = 0;
-                    for (; k < (arguments).length;k++){
+                    for (; (k < (arguments).length);k++){
                         Expression checkarg = (arguments).get(k);
-                        if ((checkarg.op & 0xFF) == 127)
+                        if (((checkarg.op & 0xFF) == 127))
                             return checkarg;
                     }
                 }
                 exp.genIdent(sc);
-                assert((exp.td.parameters != null && ((exp.td.parameters).length) != 0));
+                assert((exp.td.parameters != null) && ((exp.td.parameters).length != 0));
                 dsymbolSemantic(exp.td, sc);
                 TypeFunction tfl = (TypeFunction)exp.fd.type;
                 int dim = tfl.parameterList.length();
-                if ((arguments).length < dim)
+                if (((arguments).length < dim))
                 {
                     Parameter p = tfl.parameterList.get((arguments).length);
                     if (p.defaultArg != null)
                         dim = (arguments).length;
                 }
-                if (((tfl.parameterList.varargs == VarArg.none && (arguments).length == dim) || (tfl.parameterList.varargs != VarArg.none && (arguments).length >= dim)))
+                if ((tfl.parameterList.varargs == VarArg.none) && ((arguments).length == dim) || (tfl.parameterList.varargs != VarArg.none) && ((arguments).length >= dim))
                 {
                     DArray<RootObject> tiargs = new DArray<RootObject>();
                     (tiargs).reserve((exp.td.parameters).length);
                     {
                         int i = 0;
-                        for (; i < (exp.td.parameters).length;i++){
+                        for (; (i < (exp.td.parameters).length);i++){
                             TemplateParameter tp = (exp.td.parameters).get(i);
                             {
                                 int u = 0;
-                                for (; u < dim;u++){
+                                for (; (u < dim);u++){
                                     Parameter p = tfl.parameterList.get(u);
-                                    if (((p.type.ty & 0xFF) == ENUMTY.Tident && pequals(((TypeIdentifier)p.type).ident, tp.ident)))
+                                    if (((p.type.ty & 0xFF) == ENUMTY.Tident) && (pequals(((TypeIdentifier)p.type).ident, tp.ident)))
                                     {
                                         Expression e = (arguments).get(u);
                                         (tiargs).push(e.type);
@@ -3788,7 +3788,7 @@ public class expressionsem {
             Expression ethis = null;
             Type tthis = null;
             Expression e1org = exp.e1;
-            if ((exp.e1.op & 0xFF) == 99)
+            if (((exp.e1.op & 0xFF) == 99))
             {
                 CommaExp ce = (CommaExp)exp.e1;
                 exp.e1 = ce.e2;
@@ -3796,21 +3796,21 @@ public class expressionsem {
                 this.result = expressionSemantic(ce, this.sc);
                 return ;
             }
-            if ((exp.e1.op & 0xFF) == 160)
+            if (((exp.e1.op & 0xFF) == 160))
             {
                 DelegateExp de = (DelegateExp)exp.e1;
                 exp.e1 = new DotVarExp(de.loc, de.e1, de.func, de.hasOverloads);
                 this.visit(exp);
                 return ;
             }
-            if ((exp.e1.op & 0xFF) == 161)
+            if (((exp.e1.op & 0xFF) == 161))
             {
-                if ((arrayExpressionSemantic(exp.arguments, this.sc, false) || preFunctionParameters(this.sc, exp.arguments)))
+                if (arrayExpressionSemantic(exp.arguments, this.sc, false) || preFunctionParameters(this.sc, exp.arguments))
                     this.setError();
                     return ;
                 FuncExp fe = (FuncExp)exp.e1;
                 exp.e1 = this.callExpSemantic(fe, this.sc, exp.arguments);
-                if ((exp.e1.op & 0xFF) == 127)
+                if (((exp.e1.op & 0xFF) == 127))
                 {
                     this.result = exp.e1;
                     return ;
@@ -3818,24 +3818,24 @@ public class expressionsem {
             }
             {
                 Expression ex = resolveUFCS(this.sc, exp);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
                 }
             }
             try {
-                if ((exp.e1.op & 0xFF) == 203)
+                if (((exp.e1.op & 0xFF) == 203))
                 {
                     ScopeExp se = (ScopeExp)exp.e1;
                     TemplateInstance ti = se.sds.isTemplateInstance();
                     if (ti != null)
                     {
                         Ref<WithScopeSymbol> withsym = ref(null);
-                        if ((!(ti.findTempDecl(this.sc, ptr(withsym))) || !(ti.semanticTiargs(this.sc))))
+                        if (!ti.findTempDecl(this.sc, ptr(withsym)) || !ti.semanticTiargs(this.sc))
                             this.setError();
                             return ;
-                        if ((withsym.value != null && withsym.value.withstate.wthis != null))
+                        if ((withsym.value != null) && (withsym.value.withstate.wthis != null))
                         {
                             exp.e1 = new VarExp(exp.e1.loc, withsym.value.withstate.wthis, true);
                             exp.e1 = new DotTemplateInstanceExp(exp.e1.loc, exp.e1, ti);
@@ -3847,11 +3847,11 @@ public class expressionsem {
                             assert(ti.tempdecl != null);
                             {
                                 TemplateDeclaration td = ti.tempdecl.isTemplateDeclaration();
-                                if (td != null)
+                                if ((td) != null)
                                     exp.e1 = new TemplateExp(exp.loc, td, null);
                                 else {
                                     OverDeclaration od = ti.tempdecl.isOverDeclaration();
-                                    if (od != null)
+                                    if ((od) != null)
                                         exp.e1 = new VarExp(exp.loc, od, true);
                                     else
                                         exp.e1 = new OverExp(exp.loc, ti.tempdecl.isOverloadSet());
@@ -3861,7 +3861,7 @@ public class expressionsem {
                         else
                         {
                             Expression e1x = expressionSemantic(exp.e1, this.sc);
-                            if ((e1x.op & 0xFF) == 127)
+                            if (((e1x.op & 0xFF) == 127))
                             {
                                 this.result = e1x;
                                 return ;
@@ -3873,12 +3873,12 @@ public class expressionsem {
             }
             catch(Dispatch0 __d){}
         /*Ldotti:*/
-            if (((exp.e1.op & 0xFF) == 29 && !(exp.e1.type != null)))
+            if (((exp.e1.op & 0xFF) == 29) && (exp.e1.type == null))
             {
                 DotTemplateInstanceExp se = (DotTemplateInstanceExp)exp.e1;
                 TemplateInstance ti = se.ti;
                 {
-                    if ((!(se.findTempDecl(this.sc)) || !(ti.semanticTiargs(this.sc))))
+                    if (!se.findTempDecl(this.sc) || !ti.semanticTiargs(this.sc))
                         this.setError();
                         return ;
                     if (ti.needsTypeInference(this.sc, 1))
@@ -3887,11 +3887,11 @@ public class expressionsem {
                         assert(ti.tempdecl != null);
                         {
                             TemplateDeclaration td = ti.tempdecl.isTemplateDeclaration();
-                            if (td != null)
+                            if ((td) != null)
                                 exp.e1 = new DotTemplateExp(exp.loc, se.e1, td);
                             else {
                                 OverDeclaration od = ti.tempdecl.isOverDeclaration();
-                                if (od != null)
+                                if ((od) != null)
                                 {
                                     exp.e1 = new DotVarExp(exp.loc, se.e1, od, true);
                                 }
@@ -3903,7 +3903,7 @@ public class expressionsem {
                     else
                     {
                         Expression e1x = expressionSemantic(exp.e1, this.sc);
-                        if ((e1x.op & 0xFF) == 127)
+                        if (((e1x.op & 0xFF) == 127))
                         {
                             this.result = e1x;
                             return ;
@@ -3915,23 +3915,23 @@ public class expressionsem {
             while(true) try {
             /*Lagain:*/
                 exp.f = null;
-                if (((exp.e1.op & 0xFF) == 123 || (exp.e1.op & 0xFF) == 124))
+                if (((exp.e1.op & 0xFF) == 123) || ((exp.e1.op & 0xFF) == 124))
                 {
                 }
                 else
                 {
-                    if ((exp.e1.op & 0xFF) == 28)
+                    if (((exp.e1.op & 0xFF) == 28))
                     {
                         DotIdExp die = (DotIdExp)exp.e1;
                         exp.e1 = expressionSemantic(die, this.sc);
-                        if (((exp.e1.op & 0xFF) == 29 && !(exp.e1.type != null)))
+                        if (((exp.e1.op & 0xFF) == 29) && (exp.e1.type == null))
                         {
                             /*goto Ldotti*/throw Dispatch0.INSTANCE;
                         }
                     }
                     else
                     {
-                        if ((expressionsem.visitnest += 1) > 500)
+                        if (((expressionsem.visitnest += 1) > 500))
                         {
                             exp.error(new BytePtr("recursive evaluation of `%s`"), exp.toChars());
                             expressionsem.visitnest -= 1;
@@ -3946,7 +3946,7 @@ public class expressionsem {
                             return ;
                         }
                     }
-                    if ((exp.e1.op & 0xFF) == 26)
+                    if (((exp.e1.op & 0xFF) == 26))
                     {
                         VarExp ve = (VarExp)exp.e1;
                         if ((ve.var.storage_class & 8192L) != 0)
@@ -3959,64 +3959,64 @@ public class expressionsem {
                             ve.type = typeSemantic(t, exp.loc, this.sc);
                         }
                         VarDeclaration v = ve.var.isVarDeclaration();
-                        if ((v != null && ve.checkPurity(this.sc, v)))
+                        if ((v != null) && ve.checkPurity(this.sc, v))
                             this.setError();
                             return ;
                     }
-                    if (((exp.e1.op & 0xFF) == 25 && ((SymOffExp)exp.e1).hasOverloads))
+                    if (((exp.e1.op & 0xFF) == 25) && ((SymOffExp)exp.e1).hasOverloads)
                     {
                         SymOffExp se = (SymOffExp)exp.e1;
                         exp.e1 = new VarExp(se.loc, se.var, true);
                         exp.e1 = expressionSemantic(exp.e1, this.sc);
                     }
-                    else if ((exp.e1.op & 0xFF) == 97)
+                    else if (((exp.e1.op & 0xFF) == 97))
                     {
                         DotExp de = (DotExp)exp.e1;
-                        if ((de.e2.op & 0xFF) == 214)
+                        if (((de.e2.op & 0xFF) == 214))
                         {
                             ethis = de.e1;
                             tthis = de.e1.type;
                             exp.e1 = de.e2;
                         }
                     }
-                    else if (((exp.e1.op & 0xFF) == 24 && (exp.e1.type.ty & 0xFF) == ENUMTY.Tfunction))
+                    else if (((exp.e1.op & 0xFF) == 24) && ((exp.e1.type.ty & 0xFF) == ENUMTY.Tfunction))
                     {
                         exp.e1 = ((PtrExp)exp.e1).e1;
                     }
                 }
                 t1 = exp.e1.type != null ? exp.e1.type.toBasetype() : null;
-                if ((exp.e1.op & 0xFF) == 127)
+                if (((exp.e1.op & 0xFF) == 127))
                 {
                     this.result = exp.e1;
                     return ;
                 }
-                if ((arrayExpressionSemantic(exp.arguments, this.sc, false) || preFunctionParameters(this.sc, exp.arguments)))
+                if (arrayExpressionSemantic(exp.arguments, this.sc, false) || preFunctionParameters(this.sc, exp.arguments))
                     this.setError();
                     return ;
                 if (t1 != null)
                 {
-                    if ((t1.ty & 0xFF) == ENUMTY.Tstruct)
+                    if (((t1.ty & 0xFF) == ENUMTY.Tstruct))
                     {
                         StructDeclaration sd = ((TypeStruct)t1).sym;
                         sd.size(exp.loc);
-                        if (sd.sizeok != Sizeok.done)
+                        if ((sd.sizeok != Sizeok.done))
                             this.setError();
                             return ;
-                        if (!(sd.ctor != null))
+                        if (sd.ctor == null)
                             sd.ctor = sd.searchCtor();
                         if (sd.ctor != null)
                         {
                             CtorDeclaration ctor = sd.ctor.isCtorDeclaration();
-                            if (((ctor != null && ctor.isCpCtor) && ctor.generated))
+                            if ((ctor != null) && ctor.isCpCtor && ctor.generated)
                                 sd.ctor = null;
                         }
                         try {
-                            if (((exp.e1.op & 0xFF) == 20 && sd.ctor != null))
+                            if (((exp.e1.op & 0xFF) == 20) && (sd.ctor != null))
                             {
-                                if ((!(sd.noDefaultCtor) && !((exp.arguments != null && ((exp.arguments).length) != 0))))
+                                if (!sd.noDefaultCtor && !((exp.arguments != null) && ((exp.arguments).length != 0)))
                                     /*goto Lx*/throw Dispatch0.INSTANCE;
                                 StructLiteralExp sle = new StructLiteralExp(exp.loc, sd, null, exp.e1.type);
-                                if (!(sd.fill(exp.loc, sle.elements, true)))
+                                if (!sd.fill(exp.loc, sle.elements, true))
                                     this.setError();
                                     return ;
                                 if (checkFrameAccess(exp.loc, this.sc, sd, (sle.elements).length))
@@ -4027,19 +4027,19 @@ public class expressionsem {
                                 Expression e = sle;
                                 {
                                     CtorDeclaration cf = sd.ctor.isCtorDeclaration();
-                                    if (cf != null)
+                                    if ((cf) != null)
                                     {
                                         e = new DotVarExp(exp.loc, e, cf, true);
                                     }
                                     else {
                                         TemplateDeclaration td = sd.ctor.isTemplateDeclaration();
-                                        if (td != null)
+                                        if ((td) != null)
                                         {
                                             e = new DotIdExp(exp.loc, e, td.ident);
                                         }
                                         else {
                                             OverloadSet os = sd.ctor.isOverloadSet();
-                                            if (os != null)
+                                            if ((os) != null)
                                             {
                                                 e = new DotExp(exp.loc, e, new OverExp(exp.loc, os));
                                             }
@@ -4054,11 +4054,11 @@ public class expressionsem {
                                 return ;
                             }
                             if (search_function(sd, Id.call) != null)
-                                /*goto L1*/if ((exp.e1.op & 0xFF) != 20)
+                                /*goto L1*/if (((exp.e1.op & 0xFF) != 20))
                             {
-                                if ((sd.aliasthis != null && !pequals(exp.e1.type, exp.att1)))
+                                if ((sd.aliasthis != null) && (!pequals(exp.e1.type, exp.att1)))
                                 {
-                                    if ((!(exp.att1 != null) && exp.e1.type.checkAliasThisRec()))
+                                    if ((exp.att1 == null) && exp.e1.type.checkAliasThisRec())
                                         exp.att1 = exp.e1.type;
                                     exp.e1 = resolveAliasThis(this.sc, exp.e1, false);
                                     /*goto Lagain*/throw Dispatch1.INSTANCE;
@@ -4075,7 +4075,7 @@ public class expressionsem {
                         this.result = e;
                         return ;
                     }
-                    else if ((t1.ty & 0xFF) == ENUMTY.Tclass)
+                    else if (((t1.ty & 0xFF) == ENUMTY.Tclass))
                     {
                     /*L1:*/
                         Expression e = new DotIdExp(exp.loc, exp.e1, Id.call);
@@ -4084,18 +4084,18 @@ public class expressionsem {
                         this.result = e;
                         return ;
                     }
-                    else if (((exp.e1.op & 0xFF) == 20 && t1.isscalar()))
+                    else if (((exp.e1.op & 0xFF) == 20) && t1.isscalar())
                     {
                         Expression e = null;
-                        if ((exp.e1.type.ty & 0xFF) == ENUMTY.Tenum)
+                        if (((exp.e1.type.ty & 0xFF) == ENUMTY.Tenum))
                         {
                             t1 = exp.e1.type;
                         }
-                        if ((exp.arguments == null || (exp.arguments).length == 0))
+                        if ((exp.arguments == null) || ((exp.arguments).length == 0))
                         {
                             e = t1.defaultInitLiteral(exp.loc);
                         }
-                        else if ((exp.arguments).length == 1)
+                        else if (((exp.arguments).length == 1))
                         {
                             e = (exp.arguments).get(0);
                             e = e.implicitCastTo(this.sc, t1);
@@ -4118,13 +4118,13 @@ public class expressionsem {
                         {
                             Slice<Dsymbol> __r1378 = os.a.opSlice().copy();
                             int __key1379 = 0;
-                            for (; __key1379 < __r1378.getLength();__key1379 += 1) {
+                            for (; (__key1379 < __r1378.getLength());__key1379 += 1) {
                                 Dsymbol s = __r1378.get(__key1379);
-                                if ((tiargs != null && s.isFuncDeclaration() != null))
+                                if ((tiargs != null) && (s.isFuncDeclaration() != null))
                                     continue;
                                 {
                                     FuncDeclaration f2 = resolveFuncCall(loc, sc, s, tiargs, tthis, arguments, FuncResolveFlag.quiet);
-                                    if (f2 != null)
+                                    if ((f2) != null)
                                     {
                                         if (f2.errors)
                                             return null;
@@ -4138,7 +4138,7 @@ public class expressionsem {
                                 }
                             }
                         }
-                        if (!(f != null))
+                        if (f == null)
                             error(loc, new BytePtr("no overload matches for `%s`"), os.toChars());
                         else if (f.errors)
                             f = null;
@@ -4146,13 +4146,13 @@ public class expressionsem {
                     }
                 };
                 boolean isSuper = false;
-                if ((((exp.e1.op & 0xFF) == 27 && (t1.ty & 0xFF) == ENUMTY.Tfunction) || (exp.e1.op & 0xFF) == 37))
+                if (((exp.e1.op & 0xFF) == 27) && ((t1.ty & 0xFF) == ENUMTY.Tfunction) || ((exp.e1.op & 0xFF) == 37))
                 {
                     UnaExp ue = (UnaExp)exp.e1;
                     Expression ue1 = ue.e1;
                     Expression ue1old = ue1;
                     VarDeclaration v = null;
-                    if ((((ue1.op & 0xFF) == 26 && (v = ((VarExp)ue1).var.isVarDeclaration()) != null) && v.needThis()))
+                    if (((ue1.op & 0xFF) == 26) && ((v = ((VarExp)ue1).var.isVarDeclaration()) != null) && v.needThis())
                     {
                         ue.e1 = new TypeExp(ue1.loc, ue1.type);
                         ue1 = null;
@@ -4160,7 +4160,7 @@ public class expressionsem {
                     DotVarExp dve = null;
                     DotTemplateExp dte = null;
                     Dsymbol s = null;
-                    if ((exp.e1.op & 0xFF) == 27)
+                    if (((exp.e1.op & 0xFF) == 27))
                     {
                         dve = (DotVarExp)exp.e1;
                         dte = null;
@@ -4174,7 +4174,7 @@ public class expressionsem {
                         s = dte.td;
                     }
                     exp.f = resolveFuncCall(exp.loc, this.sc, s, tiargs, ue1 != null ? ue1.type : null, exp.arguments, FuncResolveFlag.standard);
-                    if (((!(exp.f != null) || exp.f.errors) || (exp.f.type.ty & 0xFF) == ENUMTY.Terror))
+                    if ((exp.f == null) || exp.f.errors || ((exp.f.type.ty & 0xFF) == ENUMTY.Terror))
                         this.setError();
                         return ;
                     if (exp.f.interfaceVirtual != null)
@@ -4185,7 +4185,7 @@ public class expressionsem {
                         ue.e1 = expressionSemantic(ue.e1, this.sc);
                         ue1 = ue.e1;
                         int vi = exp.f.findVtblIndex(ad2.vtbl, ad2.vtbl.length, true);
-                        assert(vi >= 0);
+                        assert((vi >= 0));
                         exp.f = ad2.vtbl.get(vi).isFuncDeclaration();
                         assert(exp.f != null);
                     }
@@ -4193,21 +4193,21 @@ public class expressionsem {
                     {
                         AggregateDeclaration ad = exp.f.toParentLocal().isAggregateDeclaration();
                         ue.e1 = getRightThis(exp.loc, this.sc, ad, ue.e1, exp.f, 0);
-                        if ((ue.e1.op & 0xFF) == 127)
+                        if (((ue.e1.op & 0xFF) == 127))
                         {
                             this.result = ue.e1;
                             return ;
                         }
                         ethis = ue.e1;
                         tthis = ue.e1.type;
-                        if (!(((exp.f.type.ty & 0xFF) == ENUMTY.Tfunction && ((TypeFunction)exp.f.type).isscope)))
+                        if (!(((exp.f.type.ty & 0xFF) == ENUMTY.Tfunction) && ((TypeFunction)exp.f.type).isscope))
                         {
-                            if ((global.params.vsafe && checkParamArgumentEscape(this.sc, exp.f, null, ethis, false)))
+                            if (global.params.vsafe && checkParamArgumentEscape(this.sc, exp.f, null, ethis, false))
                                 this.setError();
                                 return ;
                         }
                     }
-                    if (((((this.sc).func != null && (this.sc).func.isInvariantDeclaration() != null) && (ue.e1.op & 0xFF) == 123) && exp.f.addPostInvariant()))
+                    if (((this.sc).func != null) && ((this.sc).func.isInvariantDeclaration() != null) && ((ue.e1.op & 0xFF) == 123) && exp.f.addPostInvariant())
                     {
                         exp.error(new BytePtr("cannot call `public`/`export` function `%s` from invariant"), exp.f.toChars());
                         this.setError();
@@ -4215,7 +4215,7 @@ public class expressionsem {
                     }
                     checkFunctionAttributes(exp, this.sc, exp.f);
                     checkAccess(exp.loc, this.sc, ue.e1, exp.f);
-                    if (!(exp.f.needThis()))
+                    if (!exp.f.needThis())
                     {
                         exp.e1 = Expression.combine(ue.e1, new VarExp(exp.loc, exp.f, false));
                     }
@@ -4224,7 +4224,7 @@ public class expressionsem {
                         if (ue1old.checkRightThis(this.sc))
                             this.setError();
                             return ;
-                        if ((exp.e1.op & 0xFF) == 27)
+                        if (((exp.e1.op & 0xFF) == 27))
                         {
                             dve.var = exp.f;
                             exp.e1.type = exp.f.type;
@@ -4233,32 +4233,32 @@ public class expressionsem {
                         {
                             exp.e1 = new DotVarExp(exp.loc, dte.e1, exp.f, false);
                             exp.e1 = expressionSemantic(exp.e1, this.sc);
-                            if ((exp.e1.op & 0xFF) == 127)
+                            if (((exp.e1.op & 0xFF) == 127))
                                 this.setError();
                                 return ;
                             ue = (UnaExp)exp.e1;
                         }
                         AggregateDeclaration ad = exp.f.isThis();
                         ClassDeclaration cd = ue.e1.type.isClassHandle();
-                        if (((ad != null && cd != null) && ad.isClassDeclaration() != null))
+                        if ((ad != null) && (cd != null) && (ad.isClassDeclaration() != null))
                         {
-                            if ((ue.e1.op & 0xFF) == 30)
+                            if (((ue.e1.op & 0xFF) == 30))
                             {
                                 ue.e1 = ((DotTypeExp)ue.e1).e1;
                                 exp.directcall = true;
                             }
-                            else if ((ue.e1.op & 0xFF) == 124)
+                            else if (((ue.e1.op & 0xFF) == 124))
                                 exp.directcall = true;
-                            else if ((cd.storage_class & 8L) != 0L)
+                            else if (((cd.storage_class & 8L) != 0L))
                                 exp.directcall = true;
-                            if (!pequals(ad, cd))
+                            if ((!pequals(ad, cd)))
                             {
                                 ue.e1 = ue.e1.castTo(this.sc, ad.type.addMod(ue.e1.type.mod));
                                 ue.e1 = expressionSemantic(ue.e1, this.sc);
                             }
                         }
                     }
-                    if (((exp.e1.type.ty & 0xFF) == ENUMTY.Tpointer && (exp.e1.type.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
+                    if (((exp.e1.type.ty & 0xFF) == ENUMTY.Tpointer) && ((exp.e1.type.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
                     {
                         Expression e = new PtrExp(exp.loc, exp.e1);
                         e.type = exp.e1.type.nextOf();
@@ -4266,20 +4266,20 @@ public class expressionsem {
                     }
                     t1 = exp.e1.type;
                 }
-                else if (((exp.e1.op & 0xFF) == 124 || (exp.e1.op & 0xFF) == 123))
+                else if (((exp.e1.op & 0xFF) == 124) || ((exp.e1.op & 0xFF) == 123))
                 {
                     AggregateDeclaration ad = (this.sc).func != null ? (this.sc).func.isThis() : null;
                     ClassDeclaration cd = ad != null ? ad.isClassDeclaration() : null;
                     isSuper = (exp.e1.op & 0xFF) == 124;
                     if (isSuper)
                     {
-                        if (((!(cd != null) || !(cd.baseClass != null)) || !((this.sc).func.isCtorDeclaration() != null)))
+                        if ((cd == null) || (cd.baseClass == null) || ((this.sc).func.isCtorDeclaration() == null))
                         {
                             exp.error(new BytePtr("super class constructor call must be in a constructor"));
                             this.setError();
                             return ;
                         }
-                        if (!(cd.baseClass.ctor != null))
+                        if (cd.baseClass.ctor == null)
                         {
                             exp.error(new BytePtr("no super class constructor for `%s`"), cd.baseClass.toChars());
                             this.setError();
@@ -4288,7 +4288,7 @@ public class expressionsem {
                     }
                     else
                     {
-                        if ((!(ad != null) || !((this.sc).func.isCtorDeclaration() != null)))
+                        if ((ad == null) || ((this.sc).func.isCtorDeclaration() == null))
                         {
                             exp.error(new BytePtr("constructor call must be in a constructor"));
                             this.setError();
@@ -4297,19 +4297,19 @@ public class expressionsem {
                         {
                             Slice<FieldInit> __r1380 = (this.sc).ctorflow.fieldinit.copy();
                             int __key1381 = 0;
-                            for (; __key1381 < __r1380.getLength();__key1381 += 1) {
+                            for (; (__key1381 < __r1380.getLength());__key1381 += 1) {
                                 FieldInit field = __r1380.get(__key1381).copy();
                                 field.csx |= 65;
                             }
                         }
                     }
-                    if ((!(((this.sc).intypeof) != 0) && !(((this.sc).ctorflow.callSuper & 32) != 0)))
+                    if (((this.sc).intypeof == 0) && (((this.sc).ctorflow.callSuper & 32) == 0))
                     {
-                        if (((this.sc).inLoop || ((this.sc).ctorflow.callSuper & 4) != 0))
+                        if ((this.sc).inLoop || (((this.sc).ctorflow.callSuper & 4) != 0))
                             exp.error(new BytePtr("constructor calls not allowed in loops or after labels"));
                         if (((this.sc).ctorflow.callSuper & 3) != 0)
                             exp.error(new BytePtr("multiple constructor calls"));
-                        if ((((this.sc).ctorflow.callSuper & 8) != 0 && !(((this.sc).ctorflow.callSuper & 16) != 0)))
+                        if ((((this.sc).ctorflow.callSuper & 8) != 0) && (((this.sc).ctorflow.callSuper & 16) == 0))
                             exp.error(new BytePtr("an earlier `return` statement skips constructor"));
                         (this.sc).ctorflow.callSuper |= 16 | (isSuper ? 2 : 1);
                     }
@@ -4317,12 +4317,12 @@ public class expressionsem {
                     Dsymbol ctor = isSuper ? cd.baseClass.ctor : ad.ctor;
                     {
                         OverloadSet os = ctor.isOverloadSet();
-                        if (os != null)
+                        if ((os) != null)
                             exp.f = resolveOverloadSet.invoke(exp.loc, this.sc, os, null, tthis, exp.arguments);
                         else
                             exp.f = resolveFuncCall(exp.loc, this.sc, ctor, null, tthis, exp.arguments, FuncResolveFlag.standard);
                     }
-                    if ((!(exp.f != null) || exp.f.errors))
+                    if ((exp.f == null) || exp.f.errors)
                         this.setError();
                         return ;
                     checkFunctionAttributes(exp, this.sc, exp.f);
@@ -4330,18 +4330,18 @@ public class expressionsem {
                     exp.e1 = new DotVarExp(exp.e1.loc, exp.e1, exp.f, false);
                     exp.e1 = expressionSemantic(exp.e1, this.sc);
                     t1 = exp.e1.type;
-                    if (pequals(exp.f, (this.sc).func))
+                    if ((pequals(exp.f, (this.sc).func)))
                     {
                         exp.error(new BytePtr("cyclic constructor call"));
                         this.setError();
                         return ;
                     }
                 }
-                else if ((exp.e1.op & 0xFF) == 214)
+                else if (((exp.e1.op & 0xFF) == 214))
                 {
                     OverloadSet os = ((OverExp)exp.e1).vars;
                     exp.f = resolveOverloadSet.invoke(exp.loc, this.sc, os, tiargs, tthis, exp.arguments);
-                    if (!(exp.f != null))
+                    if (exp.f == null)
                         this.setError();
                         return ;
                     if (ethis != null)
@@ -4350,47 +4350,47 @@ public class expressionsem {
                         exp.e1 = new VarExp(exp.loc, exp.f, false);
                     /*goto Lagain*/throw Dispatch1.INSTANCE;
                 }
-                else if (!(t1 != null))
+                else if (t1 == null)
                 {
                     exp.error(new BytePtr("function expected before `()`, not `%s`"), exp.e1.toChars());
                     this.setError();
                     return ;
                 }
-                else if ((t1.ty & 0xFF) == ENUMTY.Terror)
+                else if (((t1.ty & 0xFF) == ENUMTY.Terror))
                 {
                     this.setError();
                     return ;
                 }
-                else if ((t1.ty & 0xFF) != ENUMTY.Tfunction)
+                else if (((t1.ty & 0xFF) != ENUMTY.Tfunction))
                 {
                     TypeFunction tf = null;
                     BytePtr p = null;
                     Dsymbol s = null;
                     exp.f = null;
-                    if ((exp.e1.op & 0xFF) == 161)
+                    if (((exp.e1.op & 0xFF) == 161))
                     {
                         assert(((FuncExp)exp.e1).fd != null);
                         exp.f = ((FuncExp)exp.e1).fd;
                         tf = (TypeFunction)exp.f.type;
                         p = pcopy(new BytePtr("function literal"));
                     }
-                    else if ((t1.ty & 0xFF) == ENUMTY.Tdelegate)
+                    else if (((t1.ty & 0xFF) == ENUMTY.Tdelegate))
                     {
                         TypeDelegate td = (TypeDelegate)t1;
-                        assert((td.next.ty & 0xFF) == ENUMTY.Tfunction);
+                        assert(((td.next.ty & 0xFF) == ENUMTY.Tfunction));
                         tf = (TypeFunction)td.next;
                         p = pcopy(new BytePtr("delegate"));
                     }
-                    else if (((t1.ty & 0xFF) == ENUMTY.Tpointer && (((TypePointer)t1).next.ty & 0xFF) == ENUMTY.Tfunction))
+                    else if (((t1.ty & 0xFF) == ENUMTY.Tpointer) && ((((TypePointer)t1).next.ty & 0xFF) == ENUMTY.Tfunction))
                     {
                         tf = (TypeFunction)((TypePointer)t1).next;
                         p = pcopy(new BytePtr("function pointer"));
                     }
-                    else if (((exp.e1.op & 0xFF) == 27 && ((DotVarExp)exp.e1).var.isOverDeclaration() != null))
+                    else if (((exp.e1.op & 0xFF) == 27) && (((DotVarExp)exp.e1).var.isOverDeclaration() != null))
                     {
                         DotVarExp dve = (DotVarExp)exp.e1;
                         exp.f = resolveFuncCall(exp.loc, this.sc, dve.var, tiargs, dve.e1.type, exp.arguments, FuncResolveFlag.overloadOnly);
-                        if (!(exp.f != null))
+                        if (exp.f == null)
                             this.setError();
                             return ;
                         if (exp.f.needThis())
@@ -4405,13 +4405,13 @@ public class expressionsem {
                         this.result = expressionSemantic(e, this.sc);
                         return ;
                     }
-                    else if (((exp.e1.op & 0xFF) == 26 && ((VarExp)exp.e1).var.isOverDeclaration() != null))
+                    else if (((exp.e1.op & 0xFF) == 26) && (((VarExp)exp.e1).var.isOverDeclaration() != null))
                     {
                         s = ((VarExp)exp.e1).var;
                         /*goto L2*//*unrolled goto*/
                     /*L2:*/
                         exp.f = resolveFuncCall(exp.loc, this.sc, s, tiargs, null, exp.arguments, FuncResolveFlag.standard);
-                        if ((!(exp.f != null) || exp.f.errors))
+                        if ((exp.f == null) || exp.f.errors)
                             this.setError();
                             return ;
                         if (exp.f.needThis())
@@ -4431,12 +4431,12 @@ public class expressionsem {
                         exp.e1 = new VarExp(exp.e1.loc, exp.f, false);
                         /*goto Lagain*/throw Dispatch1.INSTANCE;
                     }
-                    else if ((exp.e1.op & 0xFF) == 36)
+                    else if (((exp.e1.op & 0xFF) == 36))
                     {
                         s = ((TemplateExp)exp.e1).td;
                     /*L2:*/
                         exp.f = resolveFuncCall(exp.loc, this.sc, s, tiargs, null, exp.arguments, FuncResolveFlag.standard);
-                        if ((!(exp.f != null) || exp.f.errors))
+                        if ((exp.f == null) || exp.f.errors)
                             this.setError();
                             return ;
                         if (exp.f.needThis())
@@ -4464,7 +4464,7 @@ public class expressionsem {
                     }
                     Ref<BytePtr> failMessage = ref(null);
                     Slice<Expression> fargs = exp.arguments != null ? (exp.arguments).opSlice() : new Slice<Expression>().copy();
-                    if (!((tf.callMatch(null, fargs, 0, ptr(failMessage), this.sc)) != 0))
+                    if (tf.callMatch(null, fargs, 0, ptr(failMessage), this.sc) == 0)
                     {
                         OutBuffer buf = new OutBuffer();
                         try {
@@ -4491,20 +4491,20 @@ public class expressionsem {
                             this.setError();
                             return ;
                     }
-                    else if ((((this.sc).func != null && (this.sc).intypeof != 1) && !(((this.sc).flags & 128) != 0)))
+                    else if (((this.sc).func != null) && ((this.sc).intypeof != 1) && (((this.sc).flags & 128) == 0))
                     {
                         boolean err = false;
-                        if (((!((tf.purity) != 0) && !(((this.sc).flags & 8) != 0)) && (this.sc).func.setImpure()))
+                        if ((tf.purity == 0) && (((this.sc).flags & 8) == 0) && (this.sc).func.setImpure())
                         {
                             exp.error(new BytePtr("`pure` %s `%s` cannot call impure %s `%s`"), (this.sc).func.kind(), (this.sc).func.toPrettyChars(false), p, exp.e1.toChars());
                             err = true;
                         }
-                        if (((!(tf.isnogc) && (this.sc).func.setGC()) && !(((this.sc).flags & 8) != 0)))
+                        if (!tf.isnogc && (this.sc).func.setGC() && (((this.sc).flags & 8) == 0))
                         {
                             exp.error(new BytePtr("`@nogc` %s `%s` cannot call non-@nogc %s `%s`"), (this.sc).func.kind(), (this.sc).func.toPrettyChars(false), p, exp.e1.toChars());
                             err = true;
                         }
-                        if (((tf.trust <= TRUST.system && (this.sc).func.setUnsafe()) && !(((this.sc).flags & 8) != 0)))
+                        if ((tf.trust <= TRUST.system) && (this.sc).func.setUnsafe() && (((this.sc).flags & 8) == 0))
                         {
                             exp.error(new BytePtr("`@safe` %s `%s` cannot call `@system` %s `%s`"), (this.sc).func.kind(), (this.sc).func.toPrettyChars(false), p, exp.e1.toChars());
                             err = true;
@@ -4513,7 +4513,7 @@ public class expressionsem {
                             this.setError();
                             return ;
                     }
-                    if ((t1.ty & 0xFF) == ENUMTY.Tpointer)
+                    if (((t1.ty & 0xFF) == ENUMTY.Tpointer))
                     {
                         Expression e = new PtrExp(exp.loc, exp.e1);
                         e.type = tf;
@@ -4521,7 +4521,7 @@ public class expressionsem {
                     }
                     t1 = tf;
                 }
-                else if ((exp.e1.op & 0xFF) == 26)
+                else if (((exp.e1.op & 0xFF) == 26))
                 {
                     VarExp ve = (VarExp)exp.e1;
                     exp.f = ve.var.isFuncDeclaration();
@@ -4535,7 +4535,7 @@ public class expressionsem {
                         TypeFunction tf = (TypeFunction)exp.f.type;
                         Ref<BytePtr> failMessage = ref(null);
                         Slice<Expression> fargs = exp.arguments != null ? (exp.arguments).opSlice() : new Slice<Expression>().copy();
-                        if (!((tf.callMatch(null, fargs, 0, ptr(failMessage), this.sc)) != 0))
+                        if (tf.callMatch(null, fargs, 0, ptr(failMessage), this.sc) == 0)
                         {
                             OutBuffer buf = new OutBuffer();
                             try {
@@ -4551,7 +4551,7 @@ public class expressionsem {
                             }
                         }
                     }
-                    if ((!(exp.f != null) || exp.f.errors))
+                    if ((exp.f == null) || exp.f.errors)
                         this.setError();
                         return ;
                     if (exp.f.needThis())
@@ -4585,33 +4585,33 @@ public class expressionsem {
                     }
                     t1 = exp.f.type;
                 }
-                assert((t1.ty & 0xFF) == ENUMTY.Tfunction);
+                assert(((t1.ty & 0xFF) == ENUMTY.Tfunction));
                 Ref<Expression> argprefix = ref(null);
                 if (exp.arguments == null)
                     exp.arguments = new DArray<Expression>();
                 if (functionParameters(exp.loc, this.sc, (TypeFunction)t1, ethis, tthis, exp.arguments, exp.f, exp.type, ptr(argprefix)))
                     this.setError();
                     return ;
-                if (!(exp.type != null))
+                if (exp.type == null)
                 {
                     exp.e1 = e1org;
                     exp.error(new BytePtr("forward reference to inferred return type of function call `%s`"), exp.toChars());
                     this.setError();
                     return ;
                 }
-                if ((exp.f != null && exp.f.tintro != null))
+                if ((exp.f != null) && (exp.f.tintro != null))
                 {
                     Type t = exp.type;
                     IntRef offset = ref(0);
                     TypeFunction tf = (TypeFunction)exp.f.tintro;
-                    if ((tf.next.isBaseOf(t, ptr(offset)) && (offset.value) != 0))
+                    if (tf.next.isBaseOf(t, ptr(offset)) && (offset.value != 0))
                     {
                         exp.type = tf.next;
                         this.result = Expression.combine(argprefix.value, exp.castTo(this.sc, t));
                         return ;
                     }
                 }
-                if ((((exp.f != null && exp.f.isFuncLiteralDeclaration() != null) && (this.sc).func != null) && !(((this.sc).intypeof) != 0)))
+                if ((exp.f != null) && (exp.f.isFuncLiteralDeclaration() != null) && ((this.sc).func != null) && ((this.sc).intypeof == 0))
                 {
                     exp.f.tookAddressOf = 0;
                 }
@@ -4620,7 +4620,7 @@ public class expressionsem {
                 {
                     AggregateDeclaration ad = (this.sc).func != null ? (this.sc).func.isThis() : null;
                     ClassDeclaration cd = ad != null ? ad.isClassDeclaration() : null;
-                    if ((((cd != null && cd.classKind == ClassKind.cpp) && exp.f != null) && !(exp.f.fbody != null)))
+                    if ((cd != null) && (cd.classKind == ClassKind.cpp) && (exp.f != null) && (exp.f.fbody == null))
                     {
                         Loc loc = exp.loc.copy();
                         DotIdExp vptr = new DotIdExp(loc, new ThisExp(loc), Id.__vptr);
@@ -4634,16 +4634,16 @@ public class expressionsem {
                         this.result = expressionSemantic(e, this.sc);
                     }
                 }
-                if ((((exp.f != null && exp.f.isThis2) && !(((this.sc).intypeof) != 0)) && (this.sc).func != null))
+                if ((exp.f != null) && exp.f.isThis2 && ((this.sc).intypeof == 0) && ((this.sc).func != null))
                 {
                     {
                         AggregateDeclaration ad2 = exp.f.isMember2();
-                        if (ad2 != null)
+                        if ((ad2) != null)
                         {
                             Expression te = expressionSemantic(new ThisExp(exp.loc), this.sc);
-                            if ((te.op & 0xFF) != 127)
+                            if (((te.op & 0xFF) != 127))
                                 te = getRightThis(exp.loc, this.sc, ad2, te, exp.f, 0);
-                            if ((te.op & 0xFF) == 127)
+                            if (((te.op & 0xFF) == 127))
                             {
                                 exp.error(new BytePtr("need `this` of type `%s` to call function `%s`"), ad2.toChars(), exp.f.toChars());
                                 this.setError();
@@ -4669,11 +4669,11 @@ public class expressionsem {
             }
             int olderrors = global.errors;
             Dsymbol s = e.declaration;
-            for (; (1) != 0;){
+            for (; 1 != 0;){
                 AttribDeclaration ad = s.isAttribDeclaration();
                 if (ad != null)
                 {
-                    if ((ad.decl != null && (ad.decl).length == 1))
+                    if ((ad.decl != null) && ((ad.decl).length == 1))
                     {
                         s = (ad.decl).get(0);
                         continue;
@@ -4689,7 +4689,7 @@ public class expressionsem {
             }
             if (s.ident != null)
             {
-                if (!((this.sc).insert(s) != null))
+                if ((this.sc).insert(s) == null)
                 {
                     e.error(new BytePtr("declaration `%s` is already defined"), s.toPrettyChars(false));
                     this.setError();
@@ -4697,7 +4697,7 @@ public class expressionsem {
                 }
                 else if ((this.sc).func != null)
                 {
-                    if (((((s.isFuncDeclaration() != null || s.isAggregateDeclaration() != null) || s.isEnumDeclaration() != null) || (v != null && v.isDataseg())) && !((this.sc).func.localsymtab.insert(s) != null)))
+                    if ((s.isFuncDeclaration() != null) || (s.isAggregateDeclaration() != null) || (s.isEnumDeclaration() != null) || (v != null) && v.isDataseg() && ((this.sc).func.localsymtab.insert(s) == null))
                     {
                         s.parent = (this.sc).parent;
                         Dsymbol originalSymbol = (this.sc).func.localsymtab.lookup(s.ident);
@@ -4710,12 +4710,12 @@ public class expressionsem {
                     {
                         {
                             Scope scx = (this.sc).enclosing;
-                            for (; (scx != null && pequals((scx).func, (this.sc).func));scx = (scx).enclosing){
+                            for (; (scx != null) && (pequals((scx).func, (this.sc).func));scx = (scx).enclosing){
                                 Dsymbol s2 = null;
-                                if (((((scx).scopesym != null && (scx).scopesym.symtab != null) && (s2 = (scx).scopesym.symtab.lookup(s.ident)) != null) && !pequals(s, s2)))
+                                if (((scx).scopesym != null) && ((scx).scopesym.symtab != null) && ((s2 = (scx).scopesym.symtab.lookup(s.ident)) != null) && (!pequals(s, s2)))
                                 {
                                     Declaration decl = s2.isDeclaration();
-                                    if ((!(decl != null) || !((decl.storage_class & 2251799813685248L) != 0)))
+                                    if ((decl == null) || ((decl.storage_class & 2251799813685248L) == 0))
                                     {
                                         e.error(new BytePtr("%s `%s` is shadowing %s `%s`"), s.kind(), s.ident.toChars(), s2.kind(), s2.toPrettyChars(false));
                                         this.setError();
@@ -4727,21 +4727,21 @@ public class expressionsem {
                     }
                 }
             }
-            if (!(s.isVarDeclaration() != null))
+            if (s.isVarDeclaration() == null)
             {
                 Scope sc2 = this.sc;
                 if (((sc2).stc & 4398147174400L) != 0)
                     sc2 = (this.sc).push();
                 (sc2).stc &= -4398147174401L;
                 dsymbolSemantic(e.declaration, sc2);
-                if (sc2 != this.sc)
+                if ((sc2 != this.sc))
                     (sc2).pop();
                 s.parent = (this.sc).parent;
             }
-            if (global.errors == olderrors)
+            if ((global.errors == olderrors))
             {
                 semantic2(e.declaration, this.sc);
-                if (global.errors == olderrors)
+                if ((global.errors == olderrors))
                 {
                     semantic3(e.declaration, this.sc);
                 }
@@ -4762,17 +4762,17 @@ public class expressionsem {
             {
                 {
                     Dsymbol sym = getDsymbol(ea.value);
-                    if (sym != null)
+                    if ((sym) != null)
                         ea.value = symbolToExp(sym, exp.loc, this.sc, false);
                     else
                         ea.value = expressionSemantic(ea.value, this.sc);
                 }
                 ea.value = resolveProperties(this.sc, ea.value);
                 ta.value = ea.value.type;
-                if ((ea.value.op & 0xFF) == 20)
+                if (((ea.value.op & 0xFF) == 20))
                     ea.value = null;
             }
-            if (!(ta.value != null))
+            if (ta.value == null)
             {
                 exp.error(new BytePtr("no type for `typeid(%s)`"), ea.value != null ? ea.value.toChars() : sa.value != null ? sa.value.toChars() : new BytePtr(""));
                 this.setError();
@@ -4782,14 +4782,14 @@ public class expressionsem {
                 ta.value.checkComplexTransition(exp.loc, this.sc);
             Expression e = null;
             Type tb = ta.value.toBasetype();
-            if ((ea.value != null && (tb.ty & 0xFF) == ENUMTY.Tclass))
+            if ((ea.value != null) && ((tb.ty & 0xFF) == ENUMTY.Tclass))
             {
-                if (tb.toDsymbol(this.sc).isClassDeclaration().classKind == ClassKind.cpp)
+                if ((tb.toDsymbol(this.sc).isClassDeclaration().classKind == ClassKind.cpp))
                 {
                     error(exp.loc, new BytePtr("Runtime type information is not supported for `extern(C++)` classes"));
                     e = new ErrorExp();
                 }
-                else if (!(Type.typeinfoclass != null))
+                else if (Type.typeinfoclass == null)
                 {
                     error(exp.loc, new BytePtr("`object.TypeInfo_Class` could not be found, but is implicitly used"));
                     e = new ErrorExp();
@@ -4801,7 +4801,7 @@ public class expressionsem {
                     e.type = Type.typeinfoclass.type;
                 }
             }
-            else if ((ta.value.ty & 0xFF) == ENUMTY.Terror)
+            else if (((ta.value.ty & 0xFF) == ENUMTY.Terror))
             {
                 e = new ErrorExp();
             }
@@ -4829,7 +4829,7 @@ public class expressionsem {
         }
 
         public  void visit(IsExp e) {
-            if ((e.id != null && !(((this.sc).flags & 4) != 0)))
+            if ((e.id != null) && (((this.sc).flags & 4) == 0))
             {
                 e.error(new BytePtr("can only declare type aliases within `static if` conditionals or `static assert`s"));
                 this.setError();
@@ -4838,17 +4838,17 @@ public class expressionsem {
             Type tded = null;
             try {
                 try {
-                    if (((e.tok2 & 0xFF) == 180 || (e.tok2 & 0xFF) == 34))
+                    if (((e.tok2 & 0xFF) == 180) || ((e.tok2 & 0xFF) == 34))
                     {
                         Dsymbol sym = e.targ.toDsymbol(this.sc);
-                        if (sym == null)
+                        if ((sym == null))
                             /*goto Lno*/throw Dispatch1.INSTANCE;
                         dmodule.Package p = resolveIsPackage(sym);
-                        if (p == null)
+                        if ((p == null))
                             /*goto Lno*/throw Dispatch1.INSTANCE;
-                        if (((e.tok2 & 0xFF) == 180 && p.isModule() != null))
+                        if (((e.tok2 & 0xFF) == 180) && (p.isModule() != null))
                             /*goto Lno*/throw Dispatch1.INSTANCE;
-                        else if (((e.tok2 & 0xFF) == 34 && !((p.isModule() != null || p.isPackageMod() != null))))
+                        else if (((e.tok2 & 0xFF) == 34) && !((p.isModule() != null) || (p.isPackageMod() != null)))
                             /*goto Lno*/throw Dispatch1.INSTANCE;
                         tded = e.targ;
                         /*goto Lyes*/throw Dispatch0.INSTANCE;
@@ -4860,11 +4860,11 @@ public class expressionsem {
                         (sc2).flags |= 65536;
                         Type t = e.targ.trySemantic(e.loc, sc2);
                         (sc2).pop();
-                        if (!(t != null))
+                        if (t == null)
                             /*goto Lno*/throw Dispatch1.INSTANCE;
                         e.targ = t;
                     }
-                    if ((e.tok2 & 0xFF) != 0)
+                    if (((e.tok2 & 0xFF) != 0))
                     {
                         {
                             int __dispatch5 = 0;
@@ -4873,66 +4873,66 @@ public class expressionsem {
                                 switch (__dispatch5 != 0 ? __dispatch5 : (e.tok2 & 0xFF))
                                 {
                                     case 152:
-                                        if ((e.targ.ty & 0xFF) != ENUMTY.Tstruct)
+                                        if (((e.targ.ty & 0xFF) != ENUMTY.Tstruct))
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         if (((TypeStruct)e.targ).sym.isUnionDeclaration() != null)
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         tded = e.targ;
                                         break;
                                     case 155:
-                                        if ((e.targ.ty & 0xFF) != ENUMTY.Tstruct)
+                                        if (((e.targ.ty & 0xFF) != ENUMTY.Tstruct))
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
-                                        if (!(((TypeStruct)e.targ).sym.isUnionDeclaration() != null))
+                                        if (((TypeStruct)e.targ).sym.isUnionDeclaration() == null)
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         tded = e.targ;
                                         break;
                                     case 153:
-                                        if ((e.targ.ty & 0xFF) != ENUMTY.Tclass)
+                                        if (((e.targ.ty & 0xFF) != ENUMTY.Tclass))
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         if (((TypeClass)e.targ).sym.isInterfaceDeclaration() != null)
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         tded = e.targ;
                                         break;
                                     case 154:
-                                        if ((e.targ.ty & 0xFF) != ENUMTY.Tclass)
+                                        if (((e.targ.ty & 0xFF) != ENUMTY.Tclass))
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
-                                        if (!(((TypeClass)e.targ).sym.isInterfaceDeclaration() != null))
+                                        if (((TypeClass)e.targ).sym.isInterfaceDeclaration() == null)
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         tded = e.targ;
                                         break;
                                     case 171:
-                                        if (!(e.targ.isConst()))
+                                        if (!e.targ.isConst())
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         tded = e.targ;
                                         break;
                                     case 182:
-                                        if (!(e.targ.isImmutable()))
+                                        if (!e.targ.isImmutable())
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         tded = e.targ;
                                         break;
                                     case 224:
-                                        if (!(e.targ.isShared()))
+                                        if (!e.targ.isShared())
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         tded = e.targ;
                                         break;
                                     case 177:
-                                        if (!(e.targ.isWild()))
+                                        if (!e.targ.isWild())
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         tded = e.targ;
                                         break;
                                     case 124:
-                                        if ((e.targ.ty & 0xFF) != ENUMTY.Tclass)
+                                        if (((e.targ.ty & 0xFF) != ENUMTY.Tclass))
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         else
                                         {
                                             ClassDeclaration cd = ((TypeClass)e.targ).sym;
                                             DArray<Parameter> args = new DArray<Parameter>();
                                             (args).reserve((cd.baseclasses).length);
-                                            if (cd.semanticRun < PASS.semanticdone)
+                                            if ((cd.semanticRun < PASS.semanticdone))
                                                 dsymbolSemantic(cd, null);
                                             {
                                                 int i = 0;
-                                                for (; i < (cd.baseclasses).length;i++){
+                                                for (; (i < (cd.baseclasses).length);i++){
                                                     BaseClass b = (cd.baseclasses).get(i);
                                                     (args).push(new Parameter(2048L, (b).type, null, null, null));
                                                 }
@@ -4941,53 +4941,53 @@ public class expressionsem {
                                         }
                                         break;
                                     case 156:
-                                        if ((e.targ.ty & 0xFF) != ENUMTY.Tenum)
+                                        if (((e.targ.ty & 0xFF) != ENUMTY.Tenum))
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         if (e.id != null)
                                             tded = ((TypeEnum)e.targ).sym.getMemtype(e.loc);
                                         else
                                             tded = e.targ;
-                                        if ((tded.ty & 0xFF) == ENUMTY.Terror)
+                                        if (((tded.ty & 0xFF) == ENUMTY.Terror))
                                             this.setError();
                                             return ;
                                         break;
                                     case 160:
-                                        if ((e.targ.ty & 0xFF) != ENUMTY.Tdelegate)
+                                        if (((e.targ.ty & 0xFF) != ENUMTY.Tdelegate))
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         tded = ((TypeDelegate)e.targ).next;
                                         break;
                                     case 161:
                                     case 212:
-                                        if ((e.targ.ty & 0xFF) != ENUMTY.Tfunction)
+                                        if (((e.targ.ty & 0xFF) != ENUMTY.Tfunction))
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         tded = e.targ;
-                                        assert((tded.ty & 0xFF) == ENUMTY.Tfunction);
+                                        assert(((tded.ty & 0xFF) == ENUMTY.Tfunction));
                                         TypeFunction tdedf = tded.isTypeFunction();
                                         int dim = tdedf.parameterList.length();
                                         DArray<Parameter> args_1 = new DArray<Parameter>();
                                         (args_1).reserve(dim);
                                         {
                                             int i_1 = 0;
-                                            for (; i_1 < dim;i_1++){
+                                            for (; (i_1 < dim);i_1++){
                                                 Parameter arg = tdedf.parameterList.get(i_1);
-                                                assert((arg != null && arg.type != null));
-                                                if ((((e.tok2 & 0xFF) == 212 && arg.defaultArg != null) && (arg.defaultArg.op & 0xFF) == 127))
+                                                assert((arg != null) && (arg.type != null));
+                                                if (((e.tok2 & 0xFF) == 212) && (arg.defaultArg != null) && ((arg.defaultArg.op & 0xFF) == 127))
                                                     this.setError();
                                                     return ;
-                                                (args_1).push(new Parameter(arg.storageClass, arg.type, (e.tok2 & 0xFF) == 212 ? arg.ident : null, (e.tok2 & 0xFF) == 212 ? arg.defaultArg : null, arg.userAttribDecl));
+                                                (args_1).push(new Parameter(arg.storageClass, arg.type, ((e.tok2 & 0xFF) == 212) ? arg.ident : null, ((e.tok2 & 0xFF) == 212) ? arg.defaultArg : null, arg.userAttribDecl));
                                             }
                                         }
                                         tded = new TypeTuple(args_1);
                                         break;
                                     case 195:
-                                        if ((e.targ.ty & 0xFF) == ENUMTY.Tfunction)
+                                        if (((e.targ.ty & 0xFF) == ENUMTY.Tfunction))
                                             tded = ((TypeFunction)e.targ).next;
-                                        else if ((e.targ.ty & 0xFF) == ENUMTY.Tdelegate)
+                                        else if (((e.targ.ty & 0xFF) == ENUMTY.Tdelegate))
                                         {
                                             tded = ((TypeDelegate)e.targ).next;
                                             tded = ((TypeFunction)tded).next;
                                         }
-                                        else if (((e.targ.ty & 0xFF) == ENUMTY.Tpointer && (((TypePointer)e.targ).next.ty & 0xFF) == ENUMTY.Tfunction))
+                                        else if (((e.targ.ty & 0xFF) == ENUMTY.Tpointer) && ((((TypePointer)e.targ).next.ty & 0xFF) == ENUMTY.Tfunction))
                                         {
                                             tded = ((TypePointer)e.targ).next;
                                             tded = ((TypeFunction)tded).next;
@@ -4997,11 +4997,11 @@ public class expressionsem {
                                         break;
                                     case 209:
                                         tded = target.toArgTypes(e.targ);
-                                        if (!(tded != null))
+                                        if (tded == null)
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         break;
                                     case 229:
-                                        if ((e.targ.ty & 0xFF) != ENUMTY.Tvector)
+                                        if (((e.targ.ty & 0xFF) != ENUMTY.Tvector))
                                             /*goto Lno*/throw Dispatch1.INSTANCE;
                                         tded = ((TypeVector)e.targ).basetype;
                                         break;
@@ -5014,12 +5014,12 @@ public class expressionsem {
                             /*goto Lyes*/throw Dispatch0.INSTANCE;
                         /*goto Lno*/throw Dispatch1.INSTANCE;
                     }
-                    else if (((e.tspec != null && !(e.id != null)) && !((e.parameters != null && ((e.parameters).length) != 0))))
+                    else if ((e.tspec != null) && (e.id == null) && !((e.parameters != null) && ((e.parameters).length != 0)))
                     {
                         e.tspec = typeSemantic(e.tspec, e.loc, this.sc);
-                        if ((e.tok & 0xFF) == 7)
+                        if (((e.tok & 0xFF) == 7))
                         {
-                            if ((e.targ.implicitConvTo(e.tspec)) != 0)
+                            if (e.targ.implicitConvTo(e.tspec) != 0)
                                 /*goto Lyes*/throw Dispatch0.INSTANCE;
                             else
                                 /*goto Lno*/throw Dispatch1.INSTANCE;
@@ -5040,14 +5040,14 @@ public class expressionsem {
                         try {
                             dedtypes.zero();
                             int m = deduceType(e.targ, this.sc, e.tspec, e.parameters, dedtypes, null, 0, (e.tok & 0xFF) == 58);
-                            if ((m <= MATCH.nomatch || (m != MATCH.exact && (e.tok & 0xFF) == 58)))
+                            if ((m <= MATCH.nomatch) || (m != MATCH.exact) && ((e.tok & 0xFF) == 58))
                             {
                                 /*goto Lno*/throw Dispatch1.INSTANCE;
                             }
                             else
                             {
                                 tded = (Type)dedtypes.get(0);
-                                if (!(tded != null))
+                                if (tded == null)
                                     tded = e.targ;
                                 DArray<RootObject> tiargs = tiargs = new DArray<RootObject>(1);
                                 try {
@@ -5055,14 +5055,14 @@ public class expressionsem {
                                     {
                                         int i = 1;
                                     L_outer7:
-                                        for (; i < (e.parameters).length;i++){
+                                        for (; (i < (e.parameters).length);i++){
                                             TemplateParameter tp = (e.parameters).get(i);
                                             Ref<Declaration> s = ref(null);
                                             m = tp.matchArg(e.loc, this.sc, tiargs, i, e.parameters, dedtypes, ptr(s));
-                                            if (m <= MATCH.nomatch)
+                                            if ((m <= MATCH.nomatch))
                                                 /*goto Lno*/throw Dispatch1.INSTANCE;
                                             dsymbolSemantic(s.value, this.sc);
-                                            if (!((this.sc).insert(s.value) != null))
+                                            if ((this.sc).insert(s.value) == null)
                                                 e.error(new BytePtr("declaration `%s` is already defined"), s.value.toChars());
                                             unSpeculative(this.sc, s.value);
                                         }
@@ -5093,7 +5093,7 @@ public class expressionsem {
                     else
                         s = new AliasDeclaration(e.loc, e.id, tded);
                     dsymbolSemantic(s, this.sc);
-                    if ((!(tup != null) && !((this.sc).insert(s) != null)))
+                    if ((tup == null) && ((this.sc).insert(s) == null))
                         e.error(new BytePtr("declaration `%s` is already defined"), s.toChars());
                     unSpeculative(this.sc, s);
                 }
@@ -5117,27 +5117,27 @@ public class expressionsem {
                 this.result = e;
                 return ;
             }
-            if ((exp.e1.op & 0xFF) == 32)
+            if (((exp.e1.op & 0xFF) == 32))
             {
                 e = rewriteOpAssign(exp);
                 e = expressionSemantic(e, this.sc);
                 this.result = e;
                 return ;
             }
-            if ((((exp.e1.op & 0xFF) == 31 || (exp.e1.type.ty & 0xFF) == ENUMTY.Tarray) || (exp.e1.type.ty & 0xFF) == ENUMTY.Tsarray))
+            if (((exp.e1.op & 0xFF) == 31) || ((exp.e1.type.ty & 0xFF) == ENUMTY.Tarray) || ((exp.e1.type.ty & 0xFF) == ENUMTY.Tsarray))
             {
                 if (checkNonAssignmentArrayOp(exp.e1, false))
                     this.setError();
                     return ;
-                if ((exp.e1.op & 0xFF) == 31)
+                if (((exp.e1.op & 0xFF) == 31))
                     ((SliceExp)exp.e1).arrayop = true;
-                if ((exp.e2.implicitConvTo(exp.e1.type.nextOf())) != 0)
+                if (exp.e2.implicitConvTo(exp.e1.type.nextOf()) != 0)
                 {
                     exp.e2 = exp.e2.castTo(this.sc, exp.e1.type.nextOf());
                 }
                 else {
                     Expression ex = typeCombine(exp, this.sc);
-                    if (ex != null)
+                    if ((ex) != null)
                     {
                         this.result = ex;
                         return ;
@@ -5153,11 +5153,11 @@ public class expressionsem {
             exp.type = exp.e1.type;
             {
                 AggregateDeclaration ad = isAggregate(exp.e1.type);
-                if (ad != null)
+                if ((ad) != null)
                 {
                     {
                         Dsymbol s = search_function(ad, Id.opOpAssign);
-                        if (s != null)
+                        if ((s) != null)
                         {
                             error(exp.loc, new BytePtr("none of the `opOpAssign` overloads of `%s` are callable for `%s` of type `%s`"), ad.toChars(), exp.e1.toChars(), exp.e1.type.toChars());
                             this.setError();
@@ -5166,56 +5166,56 @@ public class expressionsem {
                     }
                 }
             }
-            if ((exp.e1.checkScalar() || exp.e1.checkReadModifyWrite(exp.op, exp.e2)))
+            if (exp.e1.checkScalar() || exp.e1.checkReadModifyWrite(exp.op, exp.e2))
                 this.setError();
                 return ;
-            int arith = ((((((((exp.op & 0xFF) == 76 || (exp.op & 0xFF) == 77) || (exp.op & 0xFF) == 81) || (exp.op & 0xFF) == 82) || (exp.op & 0xFF) == 83) || (exp.op & 0xFF) == 227)) ? 1 : 0);
-            int bitwise = (((((exp.op & 0xFF) == 87 || (exp.op & 0xFF) == 88) || (exp.op & 0xFF) == 89)) ? 1 : 0);
-            int shift = (((((exp.op & 0xFF) == 66 || (exp.op & 0xFF) == 67) || (exp.op & 0xFF) == 69)) ? 1 : 0);
-            if (((bitwise) != 0 && (exp.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool))
+            int arith = ((((exp.op & 0xFF) == 76) || ((exp.op & 0xFF) == 77) || ((exp.op & 0xFF) == 81) || ((exp.op & 0xFF) == 82) || ((exp.op & 0xFF) == 83) || ((exp.op & 0xFF) == 227)) ? 1 : 0);
+            int bitwise = ((((exp.op & 0xFF) == 87) || ((exp.op & 0xFF) == 88) || ((exp.op & 0xFF) == 89)) ? 1 : 0);
+            int shift = ((((exp.op & 0xFF) == 66) || ((exp.op & 0xFF) == 67) || ((exp.op & 0xFF) == 69)) ? 1 : 0);
+            if ((bitwise != 0) && ((exp.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool))
                 exp.e2 = exp.e2.implicitCastTo(this.sc, exp.type);
             else if (exp.checkNoBool())
                 this.setError();
                 return ;
-            if (((((exp.op & 0xFF) == 76 || (exp.op & 0xFF) == 77) && (exp.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tpointer) && exp.e2.type.toBasetype().isintegral()))
+            if (((exp.op & 0xFF) == 76) || ((exp.op & 0xFF) == 77) && ((exp.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tpointer) && exp.e2.type.toBasetype().isintegral())
             {
                 this.result = scaleFactor(exp, this.sc);
                 return ;
             }
             {
                 Expression ex = typeCombine(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
                 }
             }
-            if (((arith) != 0 && exp.checkArithmeticBin()))
+            if ((arith != 0) && exp.checkArithmeticBin())
                 this.setError();
                 return ;
-            if ((((bitwise) != 0 || (shift) != 0) && exp.checkIntegralBin()))
+            if ((bitwise != 0) || (shift != 0) && exp.checkIntegralBin())
                 this.setError();
                 return ;
-            if ((shift) != 0)
+            if (shift != 0)
             {
-                if ((exp.e2.type.toBasetype().ty & 0xFF) != ENUMTY.Tvector)
+                if (((exp.e2.type.toBasetype().ty & 0xFF) != ENUMTY.Tvector))
                     exp.e2 = exp.e2.castTo(this.sc, Type.tshiftcnt);
             }
-            if (!(target.isVectorOpSupported(exp.type.toBasetype(), exp.op, exp.e2.type.toBasetype())))
+            if (!target.isVectorOpSupported(exp.type.toBasetype(), exp.op, exp.e2.type.toBasetype()))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
             }
-            if (((exp.e1.op & 0xFF) == 127 || (exp.e2.op & 0xFF) == 127))
+            if (((exp.e1.op & 0xFF) == 127) || ((exp.e2.op & 0xFF) == 127))
                 this.setError();
                 return ;
             e = exp.checkOpAssignTypes(this.sc);
-            if ((e.op & 0xFF) == 127)
+            if (((e.op & 0xFF) == 127))
             {
                 this.result = e;
                 return ;
             }
-            assert(((e.op & 0xFF) == 90 || pequals(e, exp)));
+            assert(((e.op & 0xFF) == 90) || (pequals(e, exp)));
             this.result = ((BinExp)e).reorderSettingAAElem(this.sc);
         }
 
@@ -5235,10 +5235,10 @@ public class expressionsem {
                         Expression e = p.parseExpression();
                         if (p.errors())
                         {
-                            assert(global.errors != errors);
+                            assert((global.errors != errors));
                             return null;
                         }
-                        if ((p.token.value & 0xFF) != 11)
+                        if (((p.token.value & 0xFF) != 11))
                         {
                             exp.error(new BytePtr("incomplete mixin expression `%s`"), toBytePtr(str));
                             return null;
@@ -5257,7 +5257,7 @@ public class expressionsem {
 
         public  void visit(CompileExp exp) {
             Expression e = this.compileIt(exp);
-            if (!(e != null))
+            if (e == null)
                 this.setError();
                 return ;
             this.result = expressionSemantic(e, this.sc);
@@ -5265,7 +5265,7 @@ public class expressionsem {
 
         public  void visit(ImportExp e) {
             StringExp se = semanticString(this.sc, e.e1, new BytePtr("file name argument"));
-            if (!(se != null))
+            if (se == null)
                 this.setError();
                 return ;
             se = se.toUTF8(this.sc);
@@ -5286,11 +5286,11 @@ public class expressionsem {
             (this.sc)._module.contentImportedFiles.push(name);
             if (global.params.verbose)
                 message(new BytePtr("file      %.*s\u0009(%s)"), se.len, se.string, name);
-            if (global.params.moduleDeps != null)
+            if ((global.params.moduleDeps != null))
             {
                 OutBuffer ob = global.params.moduleDeps;
                 dmodule.Module imod = (this.sc).instantiatingModule();
-                if (!(global.params.moduleDepsFile.getLength() != 0))
+                if (global.params.moduleDepsFile.getLength() == 0)
                     (ob).writestring(new ByteSlice("depsFile "));
                 (ob).writestring(imod.toPrettyChars(false));
                 (ob).writestring(new ByteSlice(" ("));
@@ -5307,7 +5307,7 @@ public class expressionsem {
             {
                 File.ReadResult readResult = File.read(name).copy();
                 try {
-                    if (!(readResult.success))
+                    if (!readResult.success)
                     {
                         e.error(new BytePtr("cannot read file `%s`"), name);
                         this.setError();
@@ -5329,7 +5329,7 @@ public class expressionsem {
             BytePtr assertExpMsg = pcopy(exp.msg != null ? null : exp.toChars());
             {
                 Expression ex = unaSemantic(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -5338,19 +5338,19 @@ public class expressionsem {
             exp.e1 = resolveProperties(this.sc, exp.e1);
             exp.e1 = exp.e1.optimize(0, false);
             exp.e1 = exp.e1.toBoolean(this.sc);
-            if ((!(exp.msg != null) && (global.params.checkAction & 0xFF) == 3))
+            if ((exp.msg == null) && ((global.params.checkAction & 0xFF) == 3))
             {
                 byte tok = exp.e1.op;
                 boolean isEqualsCallExpression = false;
-                if ((tok & 0xFF) == 18)
+                if (((tok & 0xFF) == 18))
                 {
                     CallExp callExp = (CallExp)exp.e1;
                     Identifier callExpIdent = callExp.f.ident;
-                    isEqualsCallExpression = (pequals(callExpIdent, Id.__equals) || pequals(callExpIdent, Id.eq));
+                    isEqualsCallExpression = (pequals(callExpIdent, Id.__equals)) || (pequals(callExpIdent, Id.eq));
                 }
-                if (((((((((((tok & 0xFF) == 58 || (tok & 0xFF) == 59) || (tok & 0xFF) == 54) || (tok & 0xFF) == 55) || (tok & 0xFF) == 56) || (tok & 0xFF) == 57) || (tok & 0xFF) == 60) || (tok & 0xFF) == 61) || (tok & 0xFF) == 175) || isEqualsCallExpression))
+                if (((tok & 0xFF) == 58) || ((tok & 0xFF) == 59) || ((tok & 0xFF) == 54) || ((tok & 0xFF) == 55) || ((tok & 0xFF) == 56) || ((tok & 0xFF) == 57) || ((tok & 0xFF) == 60) || ((tok & 0xFF) == 61) || ((tok & 0xFF) == 175) || isEqualsCallExpression)
                 {
-                    if (!(verifyHookExist(exp.loc, this.sc, Id._d_assert_fail, new ByteSlice("generating assert messages"), Id.object)))
+                    if (!verifyHookExist(exp.loc, this.sc, Id._d_assert_fail, new ByteSlice("generating assert messages"), Id.object))
                         this.setError();
                         return ;
                     DArray<Expression> es = new DArray<Expression>(2);
@@ -5403,19 +5403,19 @@ public class expressionsem {
                 exp.msg = exp.msg.implicitCastTo(this.sc, Type.tchar.constOf().arrayOf());
                 exp.msg = exp.msg.optimize(0, false);
             }
-            if ((exp.e1.op & 0xFF) == 127)
+            if (((exp.e1.op & 0xFF) == 127))
             {
                 this.result = exp.e1;
                 return ;
             }
-            if ((exp.msg != null && (exp.msg.op & 0xFF) == 127))
+            if ((exp.msg != null) && ((exp.msg.op & 0xFF) == 127))
             {
                 this.result = exp.msg;
                 return ;
             }
             boolean f1 = checkNonAssignmentArrayOp(exp.e1, false);
-            boolean f2 = (exp.msg != null && checkNonAssignmentArrayOp(exp.msg, false));
-            if ((f1 || f2))
+            boolean f2 = (exp.msg != null) && checkNonAssignmentArrayOp(exp.msg, false);
+            if (f1 || f2)
                 this.setError();
                 return ;
             if (exp.e1.isBool(false))
@@ -5424,7 +5424,7 @@ public class expressionsem {
                 if (fd != null)
                     fd.hasReturnExp |= 4;
                 (this.sc).ctorflow.orCSX(CSX.halt);
-                if ((global.params.useAssert & 0xFF) == 1)
+                if (((global.params.useAssert & 0xFF) == 1))
                 {
                     Expression e = new HaltExp(exp.loc);
                     e = expressionSemantic(e, this.sc);
@@ -5438,7 +5438,7 @@ public class expressionsem {
 
         public  void visit(DotIdExp exp) {
             Expression e = semanticY(exp, this.sc, 1);
-            if ((e != null && isDotOpDispatch(e)))
+            if ((e != null) && isDotOpDispatch(e))
             {
                 int errors = global.startGagging();
                 e = resolvePropertiesX(this.sc, e, null);
@@ -5450,7 +5450,7 @@ public class expressionsem {
                     return ;
                 }
             }
-            if (!(e != null))
+            if (e == null)
             {
                 e = resolveUFCSProperties(this.sc, exp, null);
             }
@@ -5460,7 +5460,7 @@ public class expressionsem {
         public  void visit(DotTemplateExp e) {
             {
                 Expression ex = unaSemantic(e, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -5479,7 +5479,7 @@ public class expressionsem {
             exp.e1 = expressionSemantic(exp.e1, this.sc);
             {
                 TupleDeclaration tup = exp.var.isTupleDeclaration();
-                if (tup != null)
+                if ((tup) != null)
                 {
                     Ref<Expression> e0 = ref(null);
                     Expression ev = (this.sc).func != null ? extractSideEffect(this.sc, new BytePtr("__tup"), e0, exp.e1, false) : exp.e1;
@@ -5487,23 +5487,23 @@ public class expressionsem {
                     (exps).reserve((tup.objects).length);
                     {
                         int i = 0;
-                        for (; i < (tup.objects).length;i++){
+                        for (; (i < (tup.objects).length);i++){
                             RootObject o = (tup.objects).get(i);
                             Expression e = null;
-                            if (o.dyncast() == DYNCAST.expression)
+                            if ((o.dyncast() == DYNCAST.expression))
                             {
                                 e = (Expression)o;
-                                if ((e.op & 0xFF) == 41)
+                                if (((e.op & 0xFF) == 41))
                                 {
                                     Dsymbol s = ((DsymbolExp)e).s;
                                     e = new DotVarExp(exp.loc, ev, s.isDeclaration(), true);
                                 }
                             }
-                            else if (o.dyncast() == DYNCAST.dsymbol)
+                            else if ((o.dyncast() == DYNCAST.dsymbol))
                             {
                                 e = new DsymbolExp(exp.loc, (Dsymbol)o, true);
                             }
-                            else if (o.dyncast() == DYNCAST.type)
+                            else if ((o.dyncast() == DYNCAST.type))
                             {
                                 e = new TypeExp(exp.loc, (Type)o);
                             }
@@ -5526,12 +5526,12 @@ public class expressionsem {
             Type t1 = exp.e1.type;
             {
                 FuncDeclaration fd = exp.var.isFuncDeclaration();
-                if (fd != null)
+                if ((fd) != null)
                 {
-                    if (!(fd.functionSemantic()))
+                    if (!fd.functionSemantic())
                         this.setError();
                         return ;
-                    if (((fd.isNested() && !(fd.isThis() != null)) || fd.isFuncLiteralDeclaration() != null))
+                    if (fd.isNested() && (fd.isThis() == null) || (fd.isFuncLiteralDeclaration() != null))
                     {
                         Expression e = symbolToExp(fd, exp.loc, this.sc, false);
                         this.result = Expression.combine(exp.e1, e);
@@ -5542,25 +5542,25 @@ public class expressionsem {
                 }
                 else {
                     OverDeclaration od = exp.var.isOverDeclaration();
-                    if (od != null)
+                    if ((od) != null)
                     {
                         exp.type = Type.tvoid;
                     }
                     else
                     {
                         exp.type = exp.var.type;
-                        if ((!(exp.type != null) && (global.errors) != 0))
+                        if ((exp.type == null) && (global.errors != 0))
                             this.setError();
                             return ;
                         assert(exp.type != null);
-                        if ((t1.ty & 0xFF) == ENUMTY.Tpointer)
+                        if (((t1.ty & 0xFF) == ENUMTY.Tpointer))
                             t1 = t1.nextOf();
                         exp.type = exp.type.addMod(t1.mod);
                         Dsymbol vparent = exp.var.toParent();
                         AggregateDeclaration ad = vparent != null ? vparent.isAggregateDeclaration() : null;
                         {
                             Expression e1x = getRightThis(exp.loc, this.sc, ad, exp.e1, exp.var, 1);
-                            if (e1x != null)
+                            if ((e1x) != null)
                                 exp.e1 = e1x;
                             else
                             {
@@ -5572,7 +5572,7 @@ public class expressionsem {
                         }
                         checkAccess(exp.loc, this.sc, exp.e1, exp.var);
                         VarDeclaration v = exp.var.isVarDeclaration();
-                        if ((v != null && (v.isDataseg() || (v.storage_class & 8388608L) != 0)))
+                        if ((v != null) && v.isDataseg() || ((v.storage_class & 8388608L) != 0))
                         {
                             Expression e = expandVar(0, v);
                             if (e != null)
@@ -5581,7 +5581,7 @@ public class expressionsem {
                                 return ;
                             }
                         }
-                        if ((v != null && (v.isDataseg() || !(v.needThis()))))
+                        if ((v != null) && v.isDataseg() || !v.needThis())
                         {
                             checkAccess(exp.loc, this.sc, exp.e1, (Declaration)v);
                             Expression e = new VarExp(exp.loc, v, true);
@@ -5598,7 +5598,7 @@ public class expressionsem {
 
         public  void visit(DotTemplateInstanceExp exp) {
             Expression e = semanticY(exp, this.sc, 1);
-            if (!(e != null))
+            if (e == null)
                 e = resolveUFCSProperties(this.sc, exp, null);
             this.result = e;
         }
@@ -5616,22 +5616,22 @@ public class expressionsem {
             AggregateDeclaration ad = f.toParentLocal().isAggregateDeclaration();
             if (f.needThis())
                 e.e1 = getRightThis(e.loc, this.sc, ad, e.e1, f, 0);
-            if ((global.params.vsafe && (e.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tstruct))
+            if (global.params.vsafe && ((e.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tstruct))
             {
                 {
                     VarDeclaration v = expToVariable(e.e1);
-                    if (v != null)
+                    if ((v) != null)
                     {
-                        if (!(checkAddressVar(this.sc, e, v)))
+                        if (!checkAddressVar(this.sc, e, v))
                             this.setError();
                             return ;
                     }
                 }
             }
-            if ((f.type.ty & 0xFF) == ENUMTY.Tfunction)
+            if (((f.type.ty & 0xFF) == ENUMTY.Tfunction))
             {
                 TypeFunction tf = (TypeFunction)f.type;
-                if (!((MODmethodConv(e.e1.type.mod, f.type.mod)) != 0))
+                if (MODmethodConv(e.e1.type.mod, f.type.mod) == 0)
                 {
                     OutBuffer thisBuf = new OutBuffer();
                     try {
@@ -5650,22 +5650,22 @@ public class expressionsem {
                     }
                 }
             }
-            if (((ad != null && ad.isClassDeclaration() != null) && !pequals(ad.type, e.e1.type)))
+            if ((ad != null) && (ad.isClassDeclaration() != null) && (!pequals(ad.type, e.e1.type)))
             {
                 e.e1 = new CastExp(e.loc, e.e1, ad.type);
                 e.e1 = expressionSemantic(e.e1, this.sc);
             }
             this.result = e;
-            if (((f.isThis2 && !(((this.sc).intypeof) != 0)) && (this.sc).func != null))
+            if (f.isThis2 && ((this.sc).intypeof == 0) && ((this.sc).func != null))
             {
                 {
                     AggregateDeclaration ad2 = f.isMember2();
-                    if (ad2 != null)
+                    if ((ad2) != null)
                     {
                         Expression te = expressionSemantic(new ThisExp(e.loc), this.sc);
-                        if ((te.op & 0xFF) != 127)
+                        if (((te.op & 0xFF) != 127))
                             te = getRightThis(e.loc, this.sc, ad2, te, f, 0);
-                        if ((te.op & 0xFF) == 127)
+                        if (((te.op & 0xFF) == 127))
                         {
                             e.error(new BytePtr("need `this` of type `%s` to make delegate from function `%s`"), ad2.toChars(), f.toChars());
                             this.setError();
@@ -5689,7 +5689,7 @@ public class expressionsem {
             }
             {
                 Expression e = unaSemantic(exp, this.sc);
-                if (e != null)
+                if ((e) != null)
                 {
                     this.result = e;
                     return ;
@@ -5707,20 +5707,20 @@ public class expressionsem {
             }
             {
                 Expression ex = unaSemantic(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
                 }
             }
             int wasCond = (((exp.e1.op & 0xFF) == 100) ? 1 : 0);
-            if ((exp.e1.op & 0xFF) == 29)
+            if (((exp.e1.op & 0xFF) == 29))
             {
                 DotTemplateInstanceExp dti = (DotTemplateInstanceExp)exp.e1;
                 TemplateInstance ti = dti.ti;
                 {
                     dsymbolSemantic(ti, this.sc);
-                    if ((!(ti.inst != null) || ti.errors))
+                    if ((ti.inst == null) || ti.errors)
                         this.setError();
                         return ;
                     Dsymbol s = ti.toAlias();
@@ -5732,13 +5732,13 @@ public class expressionsem {
                     }
                 }
             }
-            else if ((exp.e1.op & 0xFF) == 203)
+            else if (((exp.e1.op & 0xFF) == 203))
             {
                 TemplateInstance ti = ((ScopeExp)exp.e1).sds.isTemplateInstance();
                 if (ti != null)
                 {
                     dsymbolSemantic(ti, this.sc);
-                    if ((!(ti.inst != null) || ti.errors))
+                    if ((ti.inst == null) || ti.errors)
                         this.setError();
                         return ;
                     Dsymbol s = ti.toAlias();
@@ -5751,7 +5751,7 @@ public class expressionsem {
                 }
             }
             exp.e1 = exp.e1.toLvalue(this.sc, null);
-            if ((exp.e1.op & 0xFF) == 127)
+            if (((exp.e1.op & 0xFF) == 127))
             {
                 this.result = exp.e1;
                 return ;
@@ -5759,7 +5759,7 @@ public class expressionsem {
             if (checkNonAssignmentArrayOp(exp.e1, false))
                 this.setError();
                 return ;
-            if (!(exp.e1.type != null))
+            if (exp.e1.type == null)
             {
                 exp.error(new BytePtr("cannot take address of `%s`"), exp.e1.toChars());
                 this.setError();
@@ -5768,15 +5768,15 @@ public class expressionsem {
             Ref<Boolean> hasOverloads = ref(false);
             {
                 FuncDeclaration f = isFuncAddress(exp, ptr(hasOverloads));
-                if (f != null)
+                if ((f) != null)
                 {
-                    if ((!(hasOverloads.value) && f.checkForwardRef(exp.loc)))
+                    if (!hasOverloads.value && f.checkForwardRef(exp.loc))
                         this.setError();
                         return ;
                 }
                 else if (exp.e1.type.deco == null)
                 {
-                    if ((exp.e1.op & 0xFF) == 26)
+                    if (((exp.e1.op & 0xFF) == 26))
                     {
                         VarExp ve = (VarExp)exp.e1;
                         Declaration d = ve.var;
@@ -5789,14 +5789,14 @@ public class expressionsem {
                 }
             }
             exp.type = exp.e1.type.pointerTo();
-            if ((exp.e1.op & 0xFF) == 27)
+            if (((exp.e1.op & 0xFF) == 27))
             {
                 DotVarExp dve = (DotVarExp)exp.e1;
                 FuncDeclaration f = dve.var.isFuncDeclaration();
                 if (f != null)
                 {
                     f = f.toAliasFunc();
-                    if (!(dve.hasOverloads))
+                    if (!dve.hasOverloads)
                         f.tookAddressOf++;
                     Expression e = null;
                     if (f.needThis())
@@ -5807,29 +5807,29 @@ public class expressionsem {
                     this.result = e;
                     return ;
                 }
-                if (checkUnsafeAccess(this.sc, dve, !(exp.type.isMutable()), true))
+                if (checkUnsafeAccess(this.sc, dve, !exp.type.isMutable(), true))
                     this.setError();
                     return ;
                 if (global.params.vsafe)
                 {
                     {
                         VarDeclaration v = expToVariable(dve.e1);
-                        if (v != null)
+                        if ((v) != null)
                         {
-                            if (!(checkAddressVar(this.sc, exp, v)))
+                            if (!checkAddressVar(this.sc, exp, v))
                                 this.setError();
                                 return ;
                         }
                     }
                 }
             }
-            else if ((exp.e1.op & 0xFF) == 26)
+            else if (((exp.e1.op & 0xFF) == 26))
             {
                 VarExp ve = (VarExp)exp.e1;
                 VarDeclaration v = ve.var.isVarDeclaration();
                 if (v != null)
                 {
-                    if (!(checkAddressVar(this.sc, exp, v)))
+                    if (!checkAddressVar(this.sc, exp, v))
                         this.setError();
                         return ;
                     ve.checkPurity(this.sc, v);
@@ -5837,13 +5837,13 @@ public class expressionsem {
                 FuncDeclaration f = ve.var.isFuncDeclaration();
                 if (f != null)
                 {
-                    if ((!(ve.hasOverloads) || (f.isNested() && !(f.needThis()))))
+                    if (!ve.hasOverloads || f.isNested() && !f.needThis())
                         f.tookAddressOf++;
-                    if ((f.isNested() && !(f.needThis())))
+                    if (f.isNested() && !f.needThis())
                     {
                         if (f.isFuncLiteralDeclaration() != null)
                         {
-                            if (!(f.isNested()))
+                            if (!f.isNested())
                             {
                                 Expression e = new DelegateExp(exp.loc, new NullExp(exp.loc, Type.tnull), f, ve.hasOverloads, null);
                                 e = expressionSemantic(e, this.sc);
@@ -5866,9 +5866,9 @@ public class expressionsem {
                             this.result = e;
                             return ;
                         }
-                        if (((this.sc).func != null && !(((this.sc).intypeof) != 0)))
+                        if (((this.sc).func != null) && ((this.sc).intypeof == 0))
                         {
-                            if (((this.sc).func.setUnsafe() && !(((this.sc).flags & 8) != 0)))
+                            if ((this.sc).func.setUnsafe() && (((this.sc).flags & 8) == 0))
                             {
                                 exp.error(new BytePtr("`this` reference necessary to take address of member `%s` in `@safe` function `%s`"), f.toChars(), (this.sc).func.toChars());
                             }
@@ -5876,51 +5876,51 @@ public class expressionsem {
                     }
                 }
             }
-            else if ((((exp.e1.op & 0xFF) == 123 || (exp.e1.op & 0xFF) == 124) && global.params.vsafe))
+            else if (((exp.e1.op & 0xFF) == 123) || ((exp.e1.op & 0xFF) == 124) && global.params.vsafe)
             {
                 {
                     VarDeclaration v = expToVariable(exp.e1);
-                    if (v != null)
+                    if ((v) != null)
                     {
-                        if (!(checkAddressVar(this.sc, exp, v)))
+                        if (!checkAddressVar(this.sc, exp, v))
                             this.setError();
                             return ;
                     }
                 }
             }
-            else if ((exp.e1.op & 0xFF) == 18)
+            else if (((exp.e1.op & 0xFF) == 18))
             {
                 CallExp ce = (CallExp)exp.e1;
-                if ((ce.e1.type.ty & 0xFF) == ENUMTY.Tfunction)
+                if (((ce.e1.type.ty & 0xFF) == ENUMTY.Tfunction))
                 {
                     TypeFunction tf = (TypeFunction)ce.e1.type;
-                    if (((((tf.isref && (this.sc).func != null) && !(((this.sc).intypeof) != 0)) && (this.sc).func.setUnsafe()) && !(((this.sc).flags & 8) != 0)))
+                    if (tf.isref && ((this.sc).func != null) && ((this.sc).intypeof == 0) && (this.sc).func.setUnsafe() && (((this.sc).flags & 8) == 0))
                     {
                         exp.error(new BytePtr("cannot take address of `ref return` of `%s()` in `@safe` function `%s`"), ce.e1.toChars(), (this.sc).func.toChars());
                     }
                 }
             }
-            else if ((exp.e1.op & 0xFF) == 62)
+            else if (((exp.e1.op & 0xFF) == 62))
             {
                 {
                     VarDeclaration v = expToVariable(exp.e1);
-                    if (v != null)
+                    if ((v) != null)
                     {
-                        if ((global.params.vsafe && !(checkAddressVar(this.sc, exp, v))))
+                        if (global.params.vsafe && !checkAddressVar(this.sc, exp, v))
                             this.setError();
                             return ;
                         exp.e1.checkPurity(this.sc, v);
                     }
                 }
             }
-            else if ((wasCond) != 0)
+            else if (wasCond != 0)
             {
-                assert((exp.e1.op & 0xFF) == 24);
+                assert(((exp.e1.op & 0xFF) == 24));
                 PtrExp pe = (PtrExp)exp.e1;
-                assert((pe.e1.op & 0xFF) == 100);
+                assert(((pe.e1.op & 0xFF) == 100));
                 CondExp ce = (CondExp)pe.e1;
-                assert((ce.e1.op & 0xFF) == 19);
-                assert((ce.e2.op & 0xFF) == 19);
+                assert(((ce.e1.op & 0xFF) == 19));
+                assert(((ce.e2.op & 0xFF) == 19));
                 ce.e1.type = null;
                 ce.e1 = expressionSemantic(ce.e1, this.sc);
                 ce.e2.type = null;
@@ -5991,9 +5991,9 @@ public class expressionsem {
             fix16997(this.sc, exp);
             exp.type = exp.e1.type;
             Type tb = exp.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray || (tb.ty & 0xFF) == ENUMTY.Tsarray))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                if (!(isArrayOpValid(exp.e1)))
+                if (!isArrayOpValid(exp.e1))
                 {
                     this.result = arrayOpInvalidError(exp);
                     return ;
@@ -6001,7 +6001,7 @@ public class expressionsem {
                 this.result = exp;
                 return ;
             }
-            if (!(target.isVectorOpSupported(tb, exp.op, null)))
+            if (!target.isVectorOpSupported(tb, exp.op, null))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
@@ -6016,7 +6016,7 @@ public class expressionsem {
         }
 
         public  void visit(UAddExp exp) {
-            assert(!(exp.type != null));
+            assert(exp.type == null);
             Expression e = op_overload(exp, this.sc, null);
             if (e != null)
             {
@@ -6024,7 +6024,7 @@ public class expressionsem {
                 return ;
             }
             fix16997(this.sc, exp);
-            if (!(target.isVectorOpSupported(exp.e1.type.toBasetype(), exp.op, null)))
+            if (!target.isVectorOpSupported(exp.e1.type.toBasetype(), exp.op, null))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
@@ -6053,9 +6053,9 @@ public class expressionsem {
             fix16997(this.sc, exp);
             exp.type = exp.e1.type;
             Type tb = exp.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray || (tb.ty & 0xFF) == ENUMTY.Tsarray))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                if (!(isArrayOpValid(exp.e1)))
+                if (!isArrayOpValid(exp.e1))
                 {
                     this.result = arrayOpInvalidError(exp);
                     return ;
@@ -6063,7 +6063,7 @@ public class expressionsem {
                 this.result = exp;
                 return ;
             }
-            if (!(target.isVectorOpSupported(tb, exp.op, null)))
+            if (!target.isVectorOpSupported(tb, exp.op, null))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
@@ -6086,22 +6086,22 @@ public class expressionsem {
             e.setNoderefOperand();
             {
                 Expression ex = unaSemantic(e, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
                 }
             }
-            if ((e.e1.op & 0xFF) == 20)
+            if (((e.e1.op & 0xFF) == 20))
                 e.e1 = resolveAliasThis(this.sc, e.e1, false);
             e.e1 = resolveProperties(this.sc, e.e1);
             e.e1 = e.e1.toBoolean(this.sc);
-            if (pequals(e.e1.type, Type.terror))
+            if ((pequals(e.e1.type, Type.terror)))
             {
                 this.result = e.e1;
                 return ;
             }
-            if (!(target.isVectorOpSupported(e.e1.type.toBasetype(), e.op, null)))
+            if (!target.isVectorOpSupported(e.e1.type.toBasetype(), e.op, null))
             {
                 this.result = e.incompatibleTypes();
             }
@@ -6113,14 +6113,14 @@ public class expressionsem {
         }
 
         public  void visit(DeleteExp exp) {
-            if (!((this.sc).isDeprecated()))
+            if (!(this.sc).isDeprecated())
             {
-                if (!(exp.isRAII))
+                if (!exp.isRAII)
                     deprecation(exp.loc, new BytePtr("The `delete` keyword has been deprecated.  Use `object.destroy()` (and `core.memory.GC.free()` if applicable) instead."));
             }
             {
                 Expression ex = unaSemantic(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -6128,7 +6128,7 @@ public class expressionsem {
             }
             exp.e1 = resolveProperties(this.sc, exp.e1);
             exp.e1 = exp.e1.modifiableLvalue(this.sc, null);
-            if ((exp.e1.op & 0xFF) == 127)
+            if (((exp.e1.op & 0xFF) == 127))
             {
                 this.result = exp.e1;
                 return ;
@@ -6150,12 +6150,12 @@ public class expressionsem {
                     break;
                 case 3:
                     tb = ((TypePointer)tb).next.toBasetype();
-                    if ((tb.ty & 0xFF) == ENUMTY.Tstruct)
+                    if (((tb.ty & 0xFF) == ENUMTY.Tstruct))
                     {
                         ad = ((TypeStruct)tb).sym;
                         DeleteDeclaration f = ad.aggDelete;
                         DtorDeclaration fd = ad.dtor;
-                        if (!(f != null))
+                        if (f == null)
                         {
                             semanticTypeInfo(this.sc, tb);
                             break;
@@ -6164,7 +6164,7 @@ public class expressionsem {
                         Expression eb = null;
                         Expression ec = null;
                         VarDeclaration v = null;
-                        if ((fd != null && f != null))
+                        if ((fd != null) && (f != null))
                         {
                             v = copyToTemp(0L, new BytePtr("__tmpea"), exp.e1);
                             dsymbolSemantic(v, this.sc);
@@ -6193,7 +6193,7 @@ public class expressionsem {
                     break;
                 case 0:
                     Type tv = tb.nextOf().baseElemOf();
-                    if ((tv.ty & 0xFF) == ENUMTY.Tstruct)
+                    if (((tv.ty & 0xFF) == ENUMTY.Tstruct))
                     {
                         ad = ((TypeStruct)tv).sym;
                         if (ad.dtor != null)
@@ -6214,7 +6214,7 @@ public class expressionsem {
                     (err ? 1 : 0) |= (exp.checkSafety(this.sc, ad.dtor) ? 1 : 0);
                     (err ? 1 : 0) |= (exp.checkNogc(this.sc, ad.dtor) ? 1 : 0);
                 }
-                if ((ad.aggDelete != null && (tb.ty & 0xFF) != ENUMTY.Tarray))
+                if ((ad.aggDelete != null) && ((tb.ty & 0xFF) != ENUMTY.Tarray))
                 {
                     (err ? 1 : 0) |= (exp.checkPurity(this.sc, ad.aggDelete) ? 1 : 0);
                     (err ? 1 : 0) |= (exp.checkSafety(this.sc, ad.aggDelete) ? 1 : 0);
@@ -6224,7 +6224,7 @@ public class expressionsem {
                     this.setError();
                     return ;
             }
-            if (((((!(((this.sc).intypeof) != 0) && (this.sc).func != null) && !(exp.isRAII)) && (this.sc).func.setUnsafe()) && !(((this.sc).flags & 8) != 0)))
+            if (((this.sc).intypeof == 0) && ((this.sc).func != null) && !exp.isRAII && (this.sc).func.setUnsafe() && (((this.sc).flags & 8) == 0))
             {
                 exp.error(new BytePtr("`%s` is not `@safe` but is used in `@safe` function `%s`"), exp.toChars(), (this.sc).func.toChars());
                 err = true;
@@ -6244,25 +6244,25 @@ public class expressionsem {
             if (exp.to != null)
             {
                 exp.to = typeSemantic(exp.to, exp.loc, this.sc);
-                if (pequals(exp.to, Type.terror))
+                if ((pequals(exp.to, Type.terror)))
                     this.setError();
                     return ;
-                if (!(exp.to.hasPointers()))
+                if (!exp.to.hasPointers())
                     exp.setNoderefOperand();
                 exp.e1 = inferType(exp.e1, exp.to, 0);
             }
             {
                 Expression e = unaSemantic(exp, this.sc);
-                if (e != null)
+                if ((e) != null)
                 {
                     this.result = e;
                     return ;
                 }
             }
-            if ((exp.e1.op & 0xFF) == 20)
+            if (((exp.e1.op & 0xFF) == 20))
                 exp.e1 = resolveAliasThis(this.sc, exp.e1, false);
             Expression e1x = resolveProperties(this.sc, exp.e1);
-            if ((e1x.op & 0xFF) == 127)
+            if (((e1x.op & 0xFF) == 127))
             {
                 this.result = e1x;
                 return ;
@@ -6271,44 +6271,44 @@ public class expressionsem {
                 this.setError();
                 return ;
             exp.e1 = e1x;
-            if (!(exp.e1.type != null))
+            if (exp.e1.type == null)
             {
                 exp.error(new BytePtr("cannot cast `%s`"), exp.e1.toChars());
                 this.setError();
                 return ;
             }
-            if ((exp.e1.type.ty & 0xFF) == ENUMTY.Ttuple)
+            if (((exp.e1.type.ty & 0xFF) == ENUMTY.Ttuple))
             {
                 TupleExp te = exp.e1.isTupleExp();
-                if ((te.exps).length == 1)
+                if (((te.exps).length == 1))
                     exp.e1 = (te.exps).get(0);
             }
             boolean allowImplicitConstruction = exp.to != null;
-            if (!(exp.to != null))
+            if (exp.to == null)
             {
                 exp.to = exp.e1.type.castMod(exp.mod);
                 exp.to = typeSemantic(exp.to, exp.loc, this.sc);
-                if (pequals(exp.to, Type.terror))
+                if ((pequals(exp.to, Type.terror)))
                     this.setError();
                     return ;
             }
-            if ((exp.to.ty & 0xFF) == ENUMTY.Ttuple)
+            if (((exp.to.ty & 0xFF) == ENUMTY.Ttuple))
             {
                 exp.error(new BytePtr("cannot cast `%s` to tuple type `%s`"), exp.e1.toChars(), exp.to.toChars());
                 this.setError();
                 return ;
             }
-            if ((exp.to.ty & 0xFF) == ENUMTY.Tvoid)
+            if (((exp.to.ty & 0xFF) == ENUMTY.Tvoid))
             {
                 exp.type = exp.to;
                 this.result = exp;
                 return ;
             }
-            if ((!(exp.to.equals(exp.e1.type)) && (exp.mod & 0xFF) == 255))
+            if (!exp.to.equals(exp.e1.type) && ((exp.mod & 0xFF) == 255))
             {
                 {
                     Expression e = op_overload(exp, this.sc, null);
-                    if (e != null)
+                    if ((e) != null)
                     {
                         this.result = e.implicitCastTo(this.sc, exp.to);
                         return ;
@@ -6317,7 +6317,7 @@ public class expressionsem {
             }
             Type t1b = exp.e1.type.toBasetype();
             Type tob = exp.to.toBasetype();
-            if (((allowImplicitConstruction && (tob.ty & 0xFF) == ENUMTY.Tstruct) && !(tob.equals(t1b))))
+            if (allowImplicitConstruction && ((tob.ty & 0xFF) == ENUMTY.Tstruct) && !tob.equals(t1b))
             {
                 Expression e = new TypeExp(exp.loc, exp.to);
                 e = new CallExp(exp.loc, e, exp.e1);
@@ -6328,34 +6328,34 @@ public class expressionsem {
                     return ;
                 }
             }
-            if ((!(t1b.equals(tob)) && ((t1b.ty & 0xFF) == ENUMTY.Tarray || (t1b.ty & 0xFF) == ENUMTY.Tsarray)))
+            if (!t1b.equals(tob) && ((t1b.ty & 0xFF) == ENUMTY.Tarray) || ((t1b.ty & 0xFF) == ENUMTY.Tsarray))
             {
                 if (checkNonAssignmentArrayOp(exp.e1, false))
                     this.setError();
                     return ;
             }
-            if (((tob.ty & 0xFF) == ENUMTY.Tvector && (t1b.ty & 0xFF) != ENUMTY.Tvector))
+            if (((tob.ty & 0xFF) == ENUMTY.Tvector) && ((t1b.ty & 0xFF) != ENUMTY.Tvector))
             {
                 this.result = new VectorExp(exp.loc, exp.e1, exp.to);
                 return ;
             }
             Expression ex = exp.e1.castTo(this.sc, exp.to);
-            if ((ex.op & 0xFF) == 127)
+            if (((ex.op & 0xFF) == 127))
             {
                 this.result = ex;
                 return ;
             }
-            if ((((!(((this.sc).intypeof) != 0) && !(isSafeCast(ex, t1b, tob))) && ((!((this.sc).func != null) && ((this.sc).stc & 8589934592L) != 0) || ((this.sc).func != null && (this.sc).func.setUnsafe()))) && !(((this.sc).flags & 8) != 0)))
+            if (((this.sc).intypeof == 0) && !isSafeCast(ex, t1b, tob) && ((this.sc).func == null) && (((this.sc).stc & 8589934592L) != 0) || ((this.sc).func != null) && (this.sc).func.setUnsafe() && (((this.sc).flags & 8) == 0))
             {
                 exp.error(new BytePtr("cast from `%s` to `%s` not allowed in safe code"), exp.e1.type.toChars(), exp.to.toChars());
                 this.setError();
                 return ;
             }
-            if ((tob.ty & 0xFF) == ENUMTY.Tarray)
+            if (((tob.ty & 0xFF) == ENUMTY.Tarray))
             {
                 {
                     AggregateDeclaration ad = isAggregate(t1b);
-                    if (ad != null)
+                    if ((ad) != null)
                     {
                         if (ad.aliasthis != null)
                         {
@@ -6366,20 +6366,20 @@ public class expressionsem {
                         }
                     }
                 }
-                if ((((t1b.ty & 0xFF) == ENUMTY.Tarray && (exp.e1.op & 0xFF) != 47) && ((this.sc).flags & 128) == 0))
+                if (((t1b.ty & 0xFF) == ENUMTY.Tarray) && ((exp.e1.op & 0xFF) != 47) && (((this.sc).flags & 128) == 0))
                 {
                     Type tFrom = t1b.nextOf();
                     Type tTo = tob.nextOf();
-                    if (((exp.e1.op & 0xFF) != 121 || (tTo.ty & 0xFF) == ENUMTY.Tarray))
+                    if (((exp.e1.op & 0xFF) != 121) || ((tTo.ty & 0xFF) == ENUMTY.Tarray))
                     {
                         int fromSize = (int)tFrom.size();
                         int toSize = (int)tTo.size();
-                        if (fromSize != toSize)
+                        if ((fromSize != toSize))
                         {
-                            if (!(verifyHookExist(exp.loc, this.sc, Id.__ArrayCast, new ByteSlice("casting array of structs"), Id.object)))
+                            if (!verifyHookExist(exp.loc, this.sc, Id.__ArrayCast, new ByteSlice("casting array of structs"), Id.object))
                                 this.setError();
                                 return ;
-                            if ((toSize == 0 || fromSize % toSize != 0))
+                            if ((toSize == 0) || (fromSize % toSize != 0))
                             {
                                 Expression id = new IdentifierExp(exp.loc, Id.empty);
                                 DotIdExp dotid = new DotIdExp(exp.loc, id, Id.object);
@@ -6409,19 +6409,19 @@ public class expressionsem {
             }
             exp_ref.value.e1 = expressionSemantic(exp_ref.value.e1, this.sc);
             exp_ref.value.type = typeSemantic(exp_ref.value.to, exp_ref.value.loc, this.sc);
-            if (((exp_ref.value.e1.op & 0xFF) == 127 || (exp_ref.value.type.ty & 0xFF) == ENUMTY.Terror))
+            if (((exp_ref.value.e1.op & 0xFF) == 127) || ((exp_ref.value.type.ty & 0xFF) == ENUMTY.Terror))
             {
                 this.result = exp_ref.value.e1;
                 return ;
             }
             Type tb = exp_ref.value.type.toBasetype();
-            assert((tb.ty & 0xFF) == ENUMTY.Tvector);
+            assert(((tb.ty & 0xFF) == ENUMTY.Tvector));
             TypeVector tv = (TypeVector)tb;
             Type te = tv.elementType();
             exp_ref.value.dim = (int)(tv.size(exp_ref.value.loc) / te.size(exp_ref.value.loc));
             Function1<Expression,Boolean> checkElem = new Function1<Expression,Boolean>(){
                 public Boolean invoke(Expression elem){
-                    if (elem.isConst() == 1)
+                    if ((elem.isConst() == 1))
                         return false;
                     exp_ref.value.error(new BytePtr("constant expression expected, not `%s`"), elem.toChars());
                     return true;
@@ -6429,33 +6429,33 @@ public class expressionsem {
             };
             exp_ref.value.e1 = exp_ref.value.e1.optimize(0, false);
             boolean res = false;
-            if ((exp_ref.value.e1.op & 0xFF) == 47)
+            if (((exp_ref.value.e1.op & 0xFF) == 47))
             {
                 {
                     int __key1384 = 0;
                     int __limit1385 = exp_ref.value.dim;
-                    for (; __key1384 < __limit1385;__key1384 += 1) {
+                    for (; (__key1384 < __limit1385);__key1384 += 1) {
                         int i = __key1384;
                         (res ? 1 : 0) |= (checkElem.invoke(((ArrayLiteralExp)exp_ref.value.e1).getElement(i)) ? 1 : 0);
                     }
                 }
             }
-            else if ((exp_ref.value.e1.type.ty & 0xFF) == ENUMTY.Tvoid)
+            else if (((exp_ref.value.e1.type.ty & 0xFF) == ENUMTY.Tvoid))
                 checkElem.invoke(exp_ref.value.e1);
             this.result = res ? new ErrorExp() : exp_ref.value;
         }
 
         public  void visit(VectorArrayExp e) {
-            if (!(e.type != null))
+            if (e.type == null)
             {
                 unaSemantic(e, this.sc);
                 e.e1 = resolveProperties(this.sc, e.e1);
-                if ((e.e1.op & 0xFF) == 127)
+                if (((e.e1.op & 0xFF) == 127))
                 {
                     this.result = e.e1;
                     return ;
                 }
-                assert((e.e1.type.ty & 0xFF) == ENUMTY.Tvector);
+                assert(((e.e1.type.ty & 0xFF) == ENUMTY.Tvector));
                 e.type = e.e1.type.isTypeVector().basetype;
             }
             this.result = e;
@@ -6469,16 +6469,16 @@ public class expressionsem {
             }
             {
                 Expression ex = unaSemantic(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
                 }
             }
             exp.e1 = resolveProperties(this.sc, exp.e1);
-            if (((exp.e1.op & 0xFF) == 20 && (exp.e1.type.ty & 0xFF) != ENUMTY.Ttuple))
+            if (((exp.e1.op & 0xFF) == 20) && ((exp.e1.type.ty & 0xFF) != ENUMTY.Ttuple))
             {
-                if ((exp.lwr != null || exp.upr != null))
+                if ((exp.lwr != null) || (exp.upr != null))
                 {
                     exp.error(new BytePtr("cannot slice type `%s`"), exp.e1.toChars());
                     this.setError();
@@ -6488,13 +6488,13 @@ public class expressionsem {
                 this.result = expressionSemantic(e, this.sc);
                 return ;
             }
-            if ((!(exp.lwr != null) && !(exp.upr != null)))
+            if ((exp.lwr == null) && (exp.upr == null))
             {
-                if ((exp.e1.op & 0xFF) == 47)
+                if (((exp.e1.op & 0xFF) == 47))
                 {
                     Type t1b = exp.e1.type.toBasetype();
                     Expression e = exp.e1;
-                    if ((t1b.ty & 0xFF) == ENUMTY.Tsarray)
+                    if (((t1b.ty & 0xFF) == ENUMTY.Tsarray))
                     {
                         e = e.copy();
                         e.type = t1b.nextOf().arrayOf();
@@ -6502,10 +6502,10 @@ public class expressionsem {
                     this.result = e;
                     return ;
                 }
-                if ((exp.e1.op & 0xFF) == 31)
+                if (((exp.e1.op & 0xFF) == 31))
                 {
                     SliceExp se = (SliceExp)exp.e1;
-                    if ((!(se.lwr != null) && !(se.upr != null)))
+                    if ((se.lwr == null) && (se.upr == null))
                     {
                         this.result = se;
                         return ;
@@ -6517,77 +6517,77 @@ public class expressionsem {
                     return ;
                 }
             }
-            if ((exp.e1.op & 0xFF) == 127)
+            if (((exp.e1.op & 0xFF) == 127))
             {
                 this.result = exp.e1;
                 return ;
             }
-            if ((exp.e1.type.ty & 0xFF) == ENUMTY.Terror)
+            if (((exp.e1.type.ty & 0xFF) == ENUMTY.Terror))
                 this.setError();
                 return ;
             Type t1b = exp.e1.type.toBasetype();
-            if ((t1b.ty & 0xFF) == ENUMTY.Tpointer)
+            if (((t1b.ty & 0xFF) == ENUMTY.Tpointer))
             {
-                if ((((TypePointer)t1b).next.ty & 0xFF) == ENUMTY.Tfunction)
+                if (((((TypePointer)t1b).next.ty & 0xFF) == ENUMTY.Tfunction))
                 {
                     exp.error(new BytePtr("cannot slice function pointer `%s`"), exp.e1.toChars());
                     this.setError();
                     return ;
                 }
-                if ((!(exp.lwr != null) || !(exp.upr != null)))
+                if ((exp.lwr == null) || (exp.upr == null))
                 {
                     exp.error(new BytePtr("need upper and lower bound to slice pointer"));
                     this.setError();
                     return ;
                 }
-                if (((((this.sc).func != null && !(((this.sc).intypeof) != 0)) && (this.sc).func.setUnsafe()) && !(((this.sc).flags & 8) != 0)))
+                if (((this.sc).func != null) && ((this.sc).intypeof == 0) && (this.sc).func.setUnsafe() && (((this.sc).flags & 8) == 0))
                 {
                     exp.error(new BytePtr("pointer slicing not allowed in safe functions"));
                     this.setError();
                     return ;
                 }
             }
-            else if ((t1b.ty & 0xFF) == ENUMTY.Tarray)
+            else if (((t1b.ty & 0xFF) == ENUMTY.Tarray))
             {
             }
-            else if ((t1b.ty & 0xFF) == ENUMTY.Tsarray)
+            else if (((t1b.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                if ((!(exp.arrayop) && global.params.vsafe))
+                if (!exp.arrayop && global.params.vsafe)
                 {
                     {
                         VarDeclaration v = expToVariable(exp.e1);
-                        if (v != null)
+                        if ((v) != null)
                         {
-                            if ((exp.e1.op & 0xFF) == 27)
+                            if (((exp.e1.op & 0xFF) == 27))
                             {
                                 DotVarExp dve = (DotVarExp)exp.e1;
-                                if ((((dve.e1.op & 0xFF) == 123 || (dve.e1.op & 0xFF) == 124) && !((v.storage_class & 2097152L) != 0)))
+                                if (((dve.e1.op & 0xFF) == 123) || ((dve.e1.op & 0xFF) == 124) && ((v.storage_class & 2097152L) == 0))
                                 {
                                     v = null;
                                 }
                             }
-                            if ((v != null && !(checkAddressVar(this.sc, exp, v))))
+                            if ((v != null) && !checkAddressVar(this.sc, exp, v))
                                 this.setError();
                                 return ;
                         }
                     }
                 }
             }
-            else if ((t1b.ty & 0xFF) == ENUMTY.Ttuple)
+            else if (((t1b.ty & 0xFF) == ENUMTY.Ttuple))
             {
-                if ((!(exp.lwr != null) && !(exp.upr != null)))
+                if ((exp.lwr == null) && (exp.upr == null))
                 {
                     this.result = exp.e1;
                     return ;
                 }
-                if ((!(exp.lwr != null) || !(exp.upr != null)))
+                if ((exp.lwr == null) || (exp.upr == null))
                 {
                     exp.error(new BytePtr("need upper and lower bound to slice tuple"));
                     this.setError();
                     return ;
                 }
             }
-            else if ((t1b.ty & 0xFF) == ENUMTY.Tvector)
+            else if (((t1b.ty & 0xFF) == ENUMTY.Tvector))
             {
                 TypeVector tv1 = (TypeVector)t1b;
                 t1b = tv1.basetype;
@@ -6596,12 +6596,12 @@ public class expressionsem {
             }
             else
             {
-                exp.error(new BytePtr("`%s` cannot be sliced with `[]`"), (t1b.ty & 0xFF) == ENUMTY.Tvoid ? exp.e1.toChars() : t1b.toChars());
+                exp.error(new BytePtr("`%s` cannot be sliced with `[]`"), ((t1b.ty & 0xFF) == ENUMTY.Tvoid) ? exp.e1.toChars() : t1b.toChars());
                 this.setError();
                 return ;
             }
             Scope scx = this.sc;
-            if ((((t1b.ty & 0xFF) == ENUMTY.Tsarray || (t1b.ty & 0xFF) == ENUMTY.Tarray) || (t1b.ty & 0xFF) == ENUMTY.Ttuple))
+            if (((t1b.ty & 0xFF) == ENUMTY.Tsarray) || ((t1b.ty & 0xFF) == ENUMTY.Tarray) || ((t1b.ty & 0xFF) == ENUMTY.Ttuple))
             {
                 ScopeDsymbol sym = new ArrayScopeSymbol(this.sc, exp);
                 sym.parent = (this.sc).scopesym;
@@ -6609,30 +6609,30 @@ public class expressionsem {
             }
             if (exp.lwr != null)
             {
-                if ((t1b.ty & 0xFF) == ENUMTY.Ttuple)
+                if (((t1b.ty & 0xFF) == ENUMTY.Ttuple))
                     this.sc = (this.sc).startCTFE();
                 exp.lwr = expressionSemantic(exp.lwr, this.sc);
                 exp.lwr = resolveProperties(this.sc, exp.lwr);
-                if ((t1b.ty & 0xFF) == ENUMTY.Ttuple)
+                if (((t1b.ty & 0xFF) == ENUMTY.Ttuple))
                     this.sc = (this.sc).endCTFE();
                 exp.lwr = exp.lwr.implicitCastTo(this.sc, Type.tsize_t);
             }
             if (exp.upr != null)
             {
-                if ((t1b.ty & 0xFF) == ENUMTY.Ttuple)
+                if (((t1b.ty & 0xFF) == ENUMTY.Ttuple))
                     this.sc = (this.sc).startCTFE();
                 exp.upr = expressionSemantic(exp.upr, this.sc);
                 exp.upr = resolveProperties(this.sc, exp.upr);
-                if ((t1b.ty & 0xFF) == ENUMTY.Ttuple)
+                if (((t1b.ty & 0xFF) == ENUMTY.Ttuple))
                     this.sc = (this.sc).endCTFE();
                 exp.upr = exp.upr.implicitCastTo(this.sc, Type.tsize_t);
             }
-            if (this.sc != scx)
+            if ((this.sc != scx))
                 this.sc = (this.sc).pop();
-            if (((exp.lwr != null && pequals(exp.lwr.type, Type.terror)) || (exp.upr != null && pequals(exp.upr.type, Type.terror))))
+            if ((exp.lwr != null) && (pequals(exp.lwr.type, Type.terror)) || (exp.upr != null) && (pequals(exp.upr.type, Type.terror)))
                 this.setError();
                 return ;
-            if ((t1b.ty & 0xFF) == ENUMTY.Ttuple)
+            if (((t1b.ty & 0xFF) == ENUMTY.Ttuple))
             {
                 exp.lwr = exp.lwr.ctfeInterpret();
                 exp.upr = exp.upr.ctfeInterpret();
@@ -6641,13 +6641,13 @@ public class expressionsem {
                 TupleExp te = null;
                 TypeTuple tup = null;
                 int length = 0;
-                if ((exp.e1.op & 0xFF) == 126)
+                if (((exp.e1.op & 0xFF) == 126))
                 {
                     te = (TupleExp)exp.e1;
                     tup = null;
                     length = (te.exps).length;
                 }
-                else if ((exp.e1.op & 0xFF) == 20)
+                else if (((exp.e1.op & 0xFF) == 20))
                 {
                     te = null;
                     tup = (TypeTuple)t1b;
@@ -6655,7 +6655,7 @@ public class expressionsem {
                 }
                 else
                     throw new AssertionError("Unreachable code!");
-                if ((i2 < i1 || (long)length < i2))
+                if ((i2 < i1) || ((long)length < i2))
                 {
                     exp.error(new BytePtr("string slice `[%llu .. %llu]` is out of bounds"), i1, i2);
                     this.setError();
@@ -6664,12 +6664,12 @@ public class expressionsem {
                 int j1 = (int)i1;
                 int j2 = (int)i2;
                 Expression e = null;
-                if ((exp.e1.op & 0xFF) == 126)
+                if (((exp.e1.op & 0xFF) == 126))
                 {
                     DArray<Expression> exps = new DArray<Expression>(j2 - j1);
                     {
                         int i = 0;
-                        for (; i < j2 - j1;i++){
+                        for (; (i < j2 - j1);i++){
                             exps.set(i, (te.exps).get(j1 + i));
                         }
                     }
@@ -6681,7 +6681,7 @@ public class expressionsem {
                     (args).reserve(j2 - j1);
                     {
                         int i = j1;
-                        for (; i < j2;i++){
+                        for (; (i < j2);i++){
                             Parameter arg = Parameter.getNth(tup.arguments, i, null);
                             (args).push(arg);
                         }
@@ -6696,33 +6696,33 @@ public class expressionsem {
             if (exp.type.equals(t1b))
                 exp.type = exp.e1.type;
             setLengthVarIfKnown(exp.lengthVar, t1b);
-            if ((exp.lwr != null && exp.upr != null))
+            if ((exp.lwr != null) && (exp.upr != null))
             {
                 exp.lwr = exp.lwr.optimize(0, false);
                 exp.upr = exp.upr.optimize(0, false);
                 IntRange lwrRange = getIntRange(exp.lwr).copy();
                 IntRange uprRange = getIntRange(exp.upr).copy();
-                if (((t1b.ty & 0xFF) == ENUMTY.Tsarray || (t1b.ty & 0xFF) == ENUMTY.Tarray))
+                if (((t1b.ty & 0xFF) == ENUMTY.Tsarray) || ((t1b.ty & 0xFF) == ENUMTY.Tarray))
                 {
                     Expression el = new ArrayLengthExp(exp.loc, exp.e1);
                     el = expressionSemantic(el, this.sc);
                     el = el.optimize(0, false);
-                    if ((el.op & 0xFF) == 135)
+                    if (((el.op & 0xFF) == 135))
                     {
                         long length = el.toInteger();
                         IntRange bounds = bounds = new IntRange(new SignExtendedNumber(0L, false), new SignExtendedNumber(length, false));
                         exp.upperIsInBounds = bounds.contains(uprRange);
                     }
-                    else if (((exp.upr.op & 0xFF) == 135 && exp.upr.toInteger() == 0L))
+                    else if (((exp.upr.op & 0xFF) == 135) && (exp.upr.toInteger() == 0L))
                     {
                         exp.upperIsInBounds = true;
                     }
-                    else if (((exp.upr.op & 0xFF) == 26 && pequals(((VarExp)exp.upr).var.ident, Id.dollar)))
+                    else if (((exp.upr.op & 0xFF) == 26) && (pequals(((VarExp)exp.upr).var.ident, Id.dollar)))
                     {
                         exp.upperIsInBounds = true;
                     }
                 }
-                else if ((t1b.ty & 0xFF) == ENUMTY.Tpointer)
+                else if (((t1b.ty & 0xFF) == ENUMTY.Tpointer))
                 {
                     exp.upperIsInBounds = true;
                 }
@@ -6741,7 +6741,7 @@ public class expressionsem {
             }
             {
                 Expression ex = unaSemantic(e, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -6753,7 +6753,7 @@ public class expressionsem {
         }
 
         public  void visit(ArrayExp exp) {
-            assert(!(exp.type != null));
+            assert(exp.type == null);
             Expression e = op_overload(exp, this.sc, null);
             if (e != null)
             {
@@ -6762,7 +6762,7 @@ public class expressionsem {
             }
             if (isAggregate(exp.e1.type) != null)
                 exp.error(new BytePtr("no `[]` operator overload for type `%s`"), exp.e1.type.toChars());
-            else if (((exp.e1.op & 0xFF) == 20 && (exp.e1.type.ty & 0xFF) != ENUMTY.Ttuple))
+            else if (((exp.e1.op & 0xFF) == 20) && ((exp.e1.type.ty & 0xFF) != ENUMTY.Ttuple))
                 exp.error(new BytePtr("static array of `%s` with multiple lengths not allowed"), exp.e1.type.toChars());
             else if (isIndexableNonAggregate(exp.e1.type))
                 exp.error(new BytePtr("only one index allowed to index `%s`"), exp.e1.type.toChars());
@@ -6774,24 +6774,24 @@ public class expressionsem {
         public  void visit(DotExp exp) {
             exp.e1 = expressionSemantic(exp.e1, this.sc);
             exp.e2 = expressionSemantic(exp.e2, this.sc);
-            if ((exp.e1.op & 0xFF) == 20)
+            if (((exp.e1.op & 0xFF) == 20))
             {
                 this.result = exp.e2;
                 return ;
             }
-            if ((exp.e2.op & 0xFF) == 20)
+            if (((exp.e2.op & 0xFF) == 20))
             {
                 this.result = exp.e2;
                 return ;
             }
-            if ((exp.e2.op & 0xFF) == 36)
+            if (((exp.e2.op & 0xFF) == 36))
             {
                 TemplateDeclaration td = ((TemplateExp)exp.e2).td;
                 Expression e = new DotTemplateExp(exp.loc, exp.e1, td);
                 this.result = expressionSemantic(e, this.sc);
                 return ;
             }
-            if (!(exp.type != null))
+            if (exp.type == null)
                 exp.type = exp.e2.type;
             this.result = exp;
         }
@@ -6809,7 +6809,7 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemanticProp(e, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -6820,7 +6820,7 @@ public class expressionsem {
                 this.setError();
                 return ;
             e.type = e.e2.type;
-            if (((e.type != Type.tvoid && !(e.allowCommaExp)) && !(e.isGenerated)))
+            if ((e.type != Type.tvoid) && !e.allowCommaExp && !e.isGenerated)
                 e.error(new BytePtr("Using the result of a comma expression is not allowed"));
             this.result = e;
         }
@@ -6837,12 +6837,12 @@ public class expressionsem {
             Expression ue = e.upr;
             ue = expressionSemantic(ue, this.sc);
             ue = resolveProperties(this.sc, ue);
-            if ((le.op & 0xFF) == 127)
+            if (((le.op & 0xFF) == 127))
             {
                 this.result = le;
                 return ;
             }
-            if ((ue.op & 0xFF) == 127)
+            if (((ue.op & 0xFF) == 127))
             {
                 this.result = ue;
                 return ;
@@ -6854,11 +6854,11 @@ public class expressionsem {
         }
 
         public  void visit(DelegatePtrExp e) {
-            if (!(e.type != null))
+            if (e.type == null)
             {
                 unaSemantic(e, this.sc);
                 e.e1 = resolveProperties(this.sc, e.e1);
-                if ((e.e1.op & 0xFF) == 127)
+                if (((e.e1.op & 0xFF) == 127))
                 {
                     this.result = e.e1;
                     return ;
@@ -6869,11 +6869,11 @@ public class expressionsem {
         }
 
         public  void visit(DelegateFuncptrExp e) {
-            if (!(e.type != null))
+            if (e.type == null)
             {
                 unaSemantic(e, this.sc);
                 e.e1 = resolveProperties(this.sc, e.e1);
-                if ((e.e1.op & 0xFF) == 127)
+                if (((e.e1.op & 0xFF) == 127))
                 {
                     this.result = e.e1;
                     return ;
@@ -6889,15 +6889,15 @@ public class expressionsem {
                 this.result = exp;
                 return ;
             }
-            if (!(exp.e1.type != null))
+            if (exp.e1.type == null)
                 exp.e1 = expressionSemantic(exp.e1, this.sc);
             assert(exp.e1.type != null);
-            if (((exp.e1.op & 0xFF) == 20 && (exp.e1.type.ty & 0xFF) != ENUMTY.Ttuple))
+            if (((exp.e1.op & 0xFF) == 20) && ((exp.e1.type.ty & 0xFF) != ENUMTY.Ttuple))
             {
                 exp.e2 = expressionSemantic(exp.e2, this.sc);
                 exp.e2 = resolveProperties(this.sc, exp.e2);
                 Type nt = null;
-                if ((exp.e2.op & 0xFF) == 20)
+                if (((exp.e2.op & 0xFF) == 20))
                     nt = new TypeAArray(exp.e1.type, exp.e2.type);
                 else
                     nt = new TypeSArray(exp.e1.type, exp.e2);
@@ -6905,16 +6905,16 @@ public class expressionsem {
                 this.result = expressionSemantic(e, this.sc);
                 return ;
             }
-            if ((exp.e1.op & 0xFF) == 127)
+            if (((exp.e1.op & 0xFF) == 127))
             {
                 this.result = exp.e1;
                 return ;
             }
-            if ((exp.e1.type.ty & 0xFF) == ENUMTY.Terror)
+            if (((exp.e1.type.ty & 0xFF) == ENUMTY.Terror))
                 this.setError();
                 return ;
             Type t1b = exp.e1.type.toBasetype();
-            if ((t1b.ty & 0xFF) == ENUMTY.Tvector)
+            if (((t1b.ty & 0xFF) == ENUMTY.Tvector))
             {
                 TypeVector tv1 = (TypeVector)t1b;
                 t1b = tv1.basetype;
@@ -6922,27 +6922,27 @@ public class expressionsem {
                 exp.e1.type = t1b;
             }
             Scope scx = this.sc;
-            if ((((t1b.ty & 0xFF) == ENUMTY.Tsarray || (t1b.ty & 0xFF) == ENUMTY.Tarray) || (t1b.ty & 0xFF) == ENUMTY.Ttuple))
+            if (((t1b.ty & 0xFF) == ENUMTY.Tsarray) || ((t1b.ty & 0xFF) == ENUMTY.Tarray) || ((t1b.ty & 0xFF) == ENUMTY.Ttuple))
             {
                 ScopeDsymbol sym = new ArrayScopeSymbol(this.sc, exp);
                 sym.parent = (this.sc).scopesym;
                 this.sc = (this.sc).push(sym);
             }
-            if ((t1b.ty & 0xFF) == ENUMTY.Ttuple)
+            if (((t1b.ty & 0xFF) == ENUMTY.Ttuple))
                 this.sc = (this.sc).startCTFE();
             exp.e2 = expressionSemantic(exp.e2, this.sc);
             exp.e2 = resolveProperties(this.sc, exp.e2);
-            if ((t1b.ty & 0xFF) == ENUMTY.Ttuple)
+            if (((t1b.ty & 0xFF) == ENUMTY.Ttuple))
                 this.sc = (this.sc).endCTFE();
-            if ((exp.e2.op & 0xFF) == 126)
+            if (((exp.e2.op & 0xFF) == 126))
             {
                 TupleExp te = (TupleExp)exp.e2;
-                if ((te.exps != null && (te.exps).length == 1))
+                if ((te.exps != null) && ((te.exps).length == 1))
                     exp.e2 = Expression.combine(te.e0, (te.exps).get(0));
             }
-            if (this.sc != scx)
+            if ((this.sc != scx))
                 this.sc = (this.sc).pop();
-            if (pequals(exp.e2.type, Type.terror))
+            if ((pequals(exp.e2.type, Type.terror)))
                 this.setError();
                 return ;
             if (checkNonAssignmentArrayOp(exp.e1, false))
@@ -6951,21 +6951,21 @@ public class expressionsem {
             switch ((t1b.ty & 0xFF))
             {
                 case 3:
-                    if ((((TypePointer)t1b).next.ty & 0xFF) == ENUMTY.Tfunction)
+                    if (((((TypePointer)t1b).next.ty & 0xFF) == ENUMTY.Tfunction))
                     {
                         exp.error(new BytePtr("cannot index function pointer `%s`"), exp.e1.toChars());
                         this.setError();
                         return ;
                     }
                     exp.e2 = exp.e2.implicitCastTo(this.sc, Type.tsize_t);
-                    if (pequals(exp.e2.type, Type.terror))
+                    if ((pequals(exp.e2.type, Type.terror)))
                         this.setError();
                         return ;
                     exp.e2 = exp.e2.optimize(0, false);
-                    if (((exp.e2.op & 0xFF) == 135 && exp.e2.toInteger() == 0L))
+                    if (((exp.e2.op & 0xFF) == 135) && (exp.e2.toInteger() == 0L))
                     {
                     }
-                    else if ((((this.sc).func != null && (this.sc).func.setUnsafe()) && !(((this.sc).flags & 8) != 0)))
+                    else if (((this.sc).func != null) && (this.sc).func.setUnsafe() && (((this.sc).flags & 8) == 0))
                     {
                         exp.error(new BytePtr("safe function `%s` cannot index pointer `%s`"), (this.sc).func.toPrettyChars(false), exp.e1.toChars());
                         this.setError();
@@ -6975,24 +6975,24 @@ public class expressionsem {
                     break;
                 case 0:
                     exp.e2 = exp.e2.implicitCastTo(this.sc, Type.tsize_t);
-                    if (pequals(exp.e2.type, Type.terror))
+                    if ((pequals(exp.e2.type, Type.terror)))
                         this.setError();
                         return ;
                     exp.type = ((TypeNext)t1b).next;
                     break;
                 case 1:
                     exp.e2 = exp.e2.implicitCastTo(this.sc, Type.tsize_t);
-                    if (pequals(exp.e2.type, Type.terror))
+                    if ((pequals(exp.e2.type, Type.terror)))
                         this.setError();
                         return ;
                     exp.type = t1b.nextOf();
                     break;
                 case 2:
                     TypeAArray taa = (TypeAArray)t1b;
-                    if (!(arrayTypeCompatibleWithoutCasting(exp.e2.type, taa.index)))
+                    if (!arrayTypeCompatibleWithoutCasting(exp.e2.type, taa.index))
                     {
                         exp.e2 = exp.e2.implicitCastTo(this.sc, taa.index);
-                        if (pequals(exp.e2.type, Type.terror))
+                        if ((pequals(exp.e2.type, Type.terror)))
                             this.setError();
                             return ;
                     }
@@ -7001,7 +7001,7 @@ public class expressionsem {
                     break;
                 case 37:
                     exp.e2 = exp.e2.implicitCastTo(this.sc, Type.tsize_t);
-                    if (pequals(exp.e2.type, Type.terror))
+                    if ((pequals(exp.e2.type, Type.terror)))
                         this.setError();
                         return ;
                     exp.e2 = exp.e2.ctfeInterpret();
@@ -7009,13 +7009,13 @@ public class expressionsem {
                     TupleExp te = null;
                     TypeTuple tup = null;
                     int length = 0;
-                    if ((exp.e1.op & 0xFF) == 126)
+                    if (((exp.e1.op & 0xFF) == 126))
                     {
                         te = (TupleExp)exp.e1;
                         tup = null;
                         length = (te.exps).length;
                     }
-                    else if ((exp.e1.op & 0xFF) == 20)
+                    else if (((exp.e1.op & 0xFF) == 20))
                     {
                         te = null;
                         tup = (TypeTuple)t1b;
@@ -7023,14 +7023,14 @@ public class expressionsem {
                     }
                     else
                         throw new AssertionError("Unreachable code!");
-                    if ((long)length <= index)
+                    if (((long)length <= index))
                     {
                         exp.error(new BytePtr("array index `[%llu]` is outside array bounds `[0 .. %llu]`"), index, (long)length);
                         this.setError();
                         return ;
                     }
                     Expression e = null;
-                    if ((exp.e1.op & 0xFF) == 126)
+                    if (((exp.e1.op & 0xFF) == 126))
                     {
                         e = (te.exps).get((int)index);
                         e = Expression.combine(te.e0, e);
@@ -7045,16 +7045,16 @@ public class expressionsem {
                 return ;
             }
             setLengthVarIfKnown(exp.lengthVar, t1b);
-            if (((t1b.ty & 0xFF) == ENUMTY.Tsarray || (t1b.ty & 0xFF) == ENUMTY.Tarray))
+            if (((t1b.ty & 0xFF) == ENUMTY.Tsarray) || ((t1b.ty & 0xFF) == ENUMTY.Tarray))
             {
                 Expression el = new ArrayLengthExp(exp.loc, exp.e1);
                 el = expressionSemantic(el, this.sc);
                 el = el.optimize(0, false);
-                if ((el.op & 0xFF) == 135)
+                if (((el.op & 0xFF) == 135))
                 {
                     exp.e2 = exp.e2.optimize(0, false);
                     long length = el.toInteger();
-                    if ((length) != 0)
+                    if (length != 0)
                     {
                         IntRange bounds = bounds = new IntRange(new SignExtendedNumber(0L, false), new SignExtendedNumber(length - 1L, false));
                         exp.indexIsInBounds = bounds.contains(getIntRange(exp.e2));
@@ -7072,14 +7072,14 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemantic(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
                 }
             }
             Expression e1x = resolveProperties(this.sc, exp.e1);
-            if ((e1x.op & 0xFF) == 127)
+            if (((e1x.op & 0xFF) == 127))
             {
                 this.result = e1x;
                 return ;
@@ -7094,19 +7094,19 @@ public class expressionsem {
             if (exp.e1.checkReadModifyWrite(exp.op, null))
                 this.setError();
                 return ;
-            if ((exp.e1.op & 0xFF) == 31)
+            if (((exp.e1.op & 0xFF) == 31))
             {
-                BytePtr s = pcopy((exp.op & 0xFF) == 93 ? new BytePtr("increment") : new BytePtr("decrement"));
+                BytePtr s = pcopy(((exp.op & 0xFF) == 93) ? new BytePtr("increment") : new BytePtr("decrement"));
                 exp.error(new BytePtr("cannot post-%s array slice `%s`, use pre-%s instead"), s, exp.e1.toChars(), s);
                 this.setError();
                 return ;
             }
             exp.e1 = exp.e1.optimize(0, false);
             Type t1 = exp.e1.type.toBasetype();
-            if ((((t1.ty & 0xFF) == ENUMTY.Tclass || (t1.ty & 0xFF) == ENUMTY.Tstruct) || (exp.e1.op & 0xFF) == 32))
+            if (((t1.ty & 0xFF) == ENUMTY.Tclass) || ((t1.ty & 0xFF) == ENUMTY.Tstruct) || ((exp.e1.op & 0xFF) == 32))
             {
                 Expression de = null;
-                if (((exp.e1.op & 0xFF) != 26 && (exp.e1.op & 0xFF) != 32))
+                if (((exp.e1.op & 0xFF) != 26) && ((exp.e1.op & 0xFF) != 32))
                 {
                     VarDeclaration v = copyToTemp(2097152L, new BytePtr("__postref"), exp.e1);
                     de = new DeclarationExp(exp.loc, v);
@@ -7115,7 +7115,7 @@ public class expressionsem {
                 VarDeclaration tmp = copyToTemp(0L, new BytePtr("__pitmp"), exp.e1);
                 Expression ea = new DeclarationExp(exp.loc, tmp);
                 Expression eb = exp.e1.syntaxCopy();
-                eb = new PreExp((exp.op & 0xFF) == 93 ? TOK.prePlusPlus : TOK.preMinusMinus, exp.loc, eb);
+                eb = new PreExp(((exp.op & 0xFF) == 93) ? TOK.prePlusPlus : TOK.preMinusMinus, exp.loc, eb);
                 Expression ec = new VarExp(exp.loc, tmp, true);
                 if (de != null)
                     ea = new CommaExp(exp.loc, de, ea, true);
@@ -7133,7 +7133,7 @@ public class expressionsem {
             if (exp.e1.checkNoBool())
                 this.setError();
                 return ;
-            if ((exp.e1.type.ty & 0xFF) == ENUMTY.Tpointer)
+            if (((exp.e1.type.ty & 0xFF) == ENUMTY.Tpointer))
                 e = scaleFactor(exp, this.sc);
             else
                 exp.e2 = exp.e2.castTo(this.sc, exp.e1.type);
@@ -7148,7 +7148,7 @@ public class expressionsem {
                 this.result = e;
                 return ;
             }
-            if ((exp.op & 0xFF) == 103)
+            if (((exp.op & 0xFF) == 103))
                 e = new AddAssignExp(exp.loc, exp.e1, new IntegerExp(exp.loc, 1L, Type.tint32));
             else
                 e = new MinAssignExp(exp.loc, exp.e1, new IntegerExp(exp.loc, 1L, Type.tint32));
@@ -7156,14 +7156,14 @@ public class expressionsem {
         }
 
         public  Expression getInitExp(StructDeclaration sd, Loc loc, Scope sc, Type t) {
-            if ((sd.zeroInit && !(sd.isNested())))
+            if (sd.zeroInit && !sd.isNested())
             {
                 return new IntegerExp(loc, 0L, Type.tint32);
             }
             if (sd.isNested())
             {
                 StructLiteralExp sle = new StructLiteralExp(loc, sd, null, t);
-                if (!(sd.fill(loc, sle.elements, true)))
+                if (!sd.fill(loc, sle.elements, true))
                     return new ErrorExp();
                 if (checkFrameAccess(loc, sc, sd, (sle.elements).length))
                     return new ErrorExp();
@@ -7187,9 +7187,9 @@ public class expressionsem {
             Expression e1old = exp.e1;
             {
                 CommaExp e2comma = exp.e2.isCommaExp();
-                if (e2comma != null)
+                if ((e2comma) != null)
                 {
-                    if (!(e2comma.isGenerated))
+                    if (!e2comma.isGenerated)
                         exp.error(new BytePtr("Using the result of a comma expression is not allowed"));
                     Ref<Expression> e0 = ref(null);
                     exp.e2 = Expression.extractLast(e2comma, e0);
@@ -7200,22 +7200,22 @@ public class expressionsem {
             }
             {
                 ArrayExp ae = exp.e1.isArrayExp();
-                if (ae != null)
+                if ((ae) != null)
                 {
                     Expression res = null;
                     ae.e1 = expressionSemantic(ae.e1, this.sc);
                     ae.e1 = resolveProperties(this.sc, ae.e1);
                     Expression ae1old = ae.e1;
-                    boolean maybeSlice = ((ae.arguments).length == 0 || ((ae.arguments).length == 1 && ((ae.arguments).get(0).op & 0xFF) == 231));
+                    boolean maybeSlice = ((ae.arguments).length == 0) || ((ae.arguments).length == 1) && (((ae.arguments).get(0).op & 0xFF) == 231);
                     IntervalExp ie = null;
-                    if ((maybeSlice && ((ae.arguments).length) != 0))
+                    if (maybeSlice && ((ae.arguments).length != 0))
                     {
-                        assert(((ae.arguments).get(0).op & 0xFF) == 231);
+                        assert((((ae.arguments).get(0).op & 0xFF) == 231));
                         ie = (IntervalExp)(ae.arguments).get(0);
                     }
                 L_outer8:
                     for (; true;){
-                        if ((ae.e1.op & 0xFF) == 127)
+                        if (((ae.e1.op & 0xFF) == 127))
                             setResult.invoke(ae.e1, 7962);
                             return ;
                         Ref<Expression> e0 = ref(null);
@@ -7223,19 +7223,19 @@ public class expressionsem {
                         ae.lengthVar = null;
                         Type t1b = ae.e1.type.toBasetype();
                         AggregateDeclaration ad = isAggregate(t1b);
-                        if (!(ad != null))
+                        if (ad == null)
                             break;
                         try {
                             if (search_function(ad, Id.indexass) != null)
                             {
                                 res = resolveOpDollar(this.sc, ae, ptr(e0));
-                                if (!(res != null))
+                                if (res == null)
                                     /*goto Lfallback*/throw Dispatch0.INSTANCE;
-                                if ((res.op & 0xFF) == 127)
+                                if (((res.op & 0xFF) == 127))
                                     setResult.invoke(res, 7979);
                                     return ;
                                 res = expressionSemantic(exp.e2, this.sc);
-                                if ((res.op & 0xFF) == 127)
+                                if (((res.op & 0xFF) == 127))
                                     setResult.invoke(res, 7983);
                                     return ;
                                 exp.e2 = res;
@@ -7254,14 +7254,14 @@ public class expressionsem {
                         }
                         catch(Dispatch0 __d){}
                     /*Lfallback:*/
-                        if ((maybeSlice && search_function(ad, Id.sliceass) != null))
+                        if (maybeSlice && (search_function(ad, Id.sliceass) != null))
                         {
                             res = resolveOpDollar(this.sc, ae, ie, ptr(e0));
-                            if ((res.op & 0xFF) == 127)
+                            if (((res.op & 0xFF) == 127))
                                 setResult.invoke(res, 8007);
                                 return ;
                             res = expressionSemantic(exp.e2, this.sc);
-                            if ((res.op & 0xFF) == 127)
+                            if (((res.op & 0xFF) == 127))
                                 setResult.invoke(res, 8011);
                                 return ;
                             exp.e2 = res;
@@ -7278,9 +7278,9 @@ public class expressionsem {
                             setResult.invoke(Expression.combine(e0.value, res), 8028);
                             return ;
                         }
-                        if ((ad.aliasthis != null && !pequals(t1b, ae.att1)))
+                        if ((ad.aliasthis != null) && (!pequals(t1b, ae.att1)))
                         {
-                            if ((!(ae.att1 != null) && t1b.checkAliasThisRec()))
+                            if ((ae.att1 == null) && t1b.checkAliasThisRec())
                                 ae.att1 = t1b;
                             ae.e1 = resolveAliasThis(this.sc, ae1save, true);
                             if (ae.e1 != null)
@@ -7296,10 +7296,10 @@ public class expressionsem {
                 Expression e1x = exp.e1;
                 {
                     DotTemplateInstanceExp dti = e1x.isDotTemplateInstanceExp();
-                    if (dti != null)
+                    if ((dti) != null)
                     {
                         Expression e = semanticY(dti, this.sc, 1);
-                        if (!(e != null))
+                        if (e == null)
                         {
                             setResult.invoke(resolveUFCSProperties(this.sc, e1x, exp.e2), 8067);
                             return ;
@@ -7308,10 +7308,10 @@ public class expressionsem {
                     }
                     else {
                         DotIdExp die = e1x.isDotIdExp();
-                        if (die != null)
+                        if ((die) != null)
                         {
                             Expression e = semanticY(die, this.sc, 1);
-                            if ((e != null && isDotOpDispatch(e)))
+                            if ((e != null) && isDotOpDispatch(e))
                             {
                                 exp.e2 = expressionSemantic(exp.e2, this.sc);
                                 int errors = global.startGagging();
@@ -7322,7 +7322,7 @@ public class expressionsem {
                                     setResult.invoke(e, 8090);
                                     return ;
                             }
-                            if (!(e != null))
+                            if (e == null)
                                 setResult.invoke(resolveUFCSProperties(this.sc, e1x, exp.e2), 8093);
                                 return ;
                             e1x = e;
@@ -7331,7 +7331,7 @@ public class expressionsem {
                         {
                             {
                                 SliceExp se = e1x.isSliceExp();
-                                if (se != null)
+                                if ((se) != null)
                                     se.arrayop = true;
                             }
                             e1x = expressionSemantic(e1x, this.sc);
@@ -7340,7 +7340,7 @@ public class expressionsem {
                 }
                 {
                     Expression e = resolvePropertiesX(this.sc, e1x, exp.e2);
-                    if (e != null)
+                    if ((e) != null)
                         setResult.invoke(e, 8111);
                         return ;
                 }
@@ -7357,9 +7357,9 @@ public class expressionsem {
                 Expression e2x = inferType(exp.e2, t1.baseElemOf(), 0);
                 e2x = expressionSemantic(e2x, this.sc);
                 e2x = resolveProperties(this.sc, e2x);
-                if ((e2x.op & 0xFF) == 20)
+                if (((e2x.op & 0xFF) == 20))
                     e2x = resolveAliasThis(this.sc, e2x, false);
-                if ((e2x.op & 0xFF) == 127)
+                if (((e2x.op & 0xFF) == 127))
                     setResult.invoke(e2x, 8133);
                     return ;
                 if (e2x.checkValue())
@@ -7371,19 +7371,19 @@ public class expressionsem {
                 Expression e2x = exp.e2;
                 while(true) try {
                 /*Ltupleassign:*/
-                    if (((exp.e1.op & 0xFF) == 126 && (e2x.op & 0xFF) == 126))
+                    if (((exp.e1.op & 0xFF) == 126) && ((e2x.op & 0xFF) == 126))
                     {
                         TupleExp tup1 = (TupleExp)exp.e1;
                         TupleExp tup2 = (TupleExp)e2x;
                         int dim = (tup1.exps).length;
                         Expression e = null;
-                        if (dim != (tup2.exps).length)
+                        if ((dim != (tup2.exps).length))
                         {
                             exp.error(new BytePtr("mismatched tuple lengths, %d and %d"), dim, (tup2.exps).length);
                             this.setError();
                             return ;
                         }
-                        if (dim == 0)
+                        if ((dim == 0))
                         {
                             e = new IntegerExp(exp.loc, 0L, Type.tint32);
                             e = new CastExp(exp.loc, e, Type.tvoid);
@@ -7394,7 +7394,7 @@ public class expressionsem {
                             DArray<Expression> exps = new DArray<Expression>(dim);
                             {
                                 int i = 0;
-                                for (; i < dim;i++){
+                                for (; (i < dim);i++){
                                     Expression ex1 = (tup1.exps).get(i);
                                     Expression ex2 = (tup2.exps).get(i);
                                     exps.set(i, new AssignExp(exp.loc, ex1, ex2));
@@ -7406,12 +7406,12 @@ public class expressionsem {
                         return ;
                     }
                     try {
-                        if ((exp.e1.op & 0xFF) == 126)
+                        if (((exp.e1.op & 0xFF) == 126))
                         {
                             TupleDeclaration td = isAliasThisTuple(e2x);
-                            if (!(td != null))
+                            if (td == null)
                                 /*goto Lnomatch*/throw Dispatch1.INSTANCE;
-                            assert((exp.e1.type.ty & 0xFF) == ENUMTY.Ttuple);
+                            assert(((exp.e1.type.ty & 0xFF) == ENUMTY.Ttuple));
                             TypeTuple tt = (TypeTuple)exp.e1.type;
                             Ref<Expression> e0 = ref(null);
                             Expression ev = extractSideEffect(this.sc, new BytePtr("__tup"), e0, e2x, false);
@@ -7420,16 +7420,16 @@ public class expressionsem {
                             {
                                 int u = 0;
                             L_outer9:
-                                for (; u < (iexps).length;u++){
+                                for (; (u < (iexps).length);u++){
                                     while(true) try {
                                     /*Lexpand:*/
                                         Expression e = (iexps).get(u);
                                         Parameter arg = Parameter.getNth(tt.arguments, u, null);
-                                        if ((!(arg != null) || !((e.type.implicitConvTo(arg.type)) != 0)))
+                                        if ((arg == null) || (e.type.implicitConvTo(arg.type) == 0))
                                         {
-                                            if (expandAliasThisTuples(iexps, u) != -1)
+                                            if ((expandAliasThisTuples(iexps, u) != -1))
                                             {
-                                                if ((iexps).length <= u)
+                                                if (((iexps).length <= u))
                                                     break;
                                                 /*goto Lexpand*/throw Dispatch0.INSTANCE;
                                             }
@@ -7441,7 +7441,7 @@ public class expressionsem {
                             }
                             e2x = new TupleExp(e2x.loc, e0.value, iexps);
                             e2x = expressionSemantic(e2x, this.sc);
-                            if ((e2x.op & 0xFF) == 127)
+                            if (((e2x.op & 0xFF) == 127))
                             {
                                 this.result = e2x;
                                 return ;
@@ -7454,22 +7454,22 @@ public class expressionsem {
                     break;
                 } catch(Dispatch0 __d){}
             }
-            if (((exp.op & 0xFF) == 90 && exp.e1.checkModifiable(this.sc, 0) == Modifiable.initialization))
+            if (((exp.op & 0xFF) == 90) && (exp.e1.checkModifiable(this.sc, 0) == Modifiable.initialization))
             {
                 Type t = exp.type;
                 exp = new ConstructExp(exp.loc, exp.e1, exp.e2);
                 exp.type = t;
-                if ((((this.sc).func.isStaticCtorDeclaration() != null && !((this.sc).func.isSharedStaticCtorDeclaration() != null)) && exp.e1.type.isImmutable()))
+                if (((this.sc).func.isStaticCtorDeclaration() != null) && ((this.sc).func.isSharedStaticCtorDeclaration() == null) && exp.e1.type.isImmutable())
                 {
                     deprecation(exp.loc, new BytePtr("initialization of `immutable` variable from `static this` is deprecated."));
                     deprecationSupplemental(exp.loc, new BytePtr("Use `shared static this` instead."));
                 }
                 {
                     IndexExp ie1 = exp.e1.isIndexExp();
-                    if (ie1 != null)
+                    if ((ie1) != null)
                     {
                         Expression e1x = ie1.markSettingAAElem();
-                        if ((e1x.op & 0xFF) == 127)
+                        if (((e1x.op & 0xFF) == 127))
                         {
                             this.result = e1x;
                             return ;
@@ -7477,36 +7477,36 @@ public class expressionsem {
                     }
                 }
             }
-            else if ((((exp.op & 0xFF) == 95 && (exp.e1.op & 0xFF) == 26) && (((VarExp)exp.e1).var.storage_class & 2101248L) != 0))
+            else if (((exp.op & 0xFF) == 95) && ((exp.e1.op & 0xFF) == 26) && ((((VarExp)exp.e1).var.storage_class & 2101248L) != 0))
             {
                 exp.memset |= MemorySet.referenceInit;
             }
             if ((exp.memset & MemorySet.referenceInit) != 0)
             {
             }
-            else if ((t1.ty & 0xFF) == ENUMTY.Tstruct)
+            else if (((t1.ty & 0xFF) == ENUMTY.Tstruct))
             {
                 Expression e1x = exp.e1;
                 Expression e2x = exp.e2;
                 StructDeclaration sd = ((TypeStruct)t1).sym;
-                if ((exp.op & 0xFF) == 95)
+                if (((exp.op & 0xFF) == 95))
                 {
                     Type t2 = e2x.type.toBasetype();
-                    if (((t2.ty & 0xFF) == ENUMTY.Tstruct && pequals(sd, ((TypeStruct)t2).sym)))
+                    if (((t2.ty & 0xFF) == ENUMTY.Tstruct) && (pequals(sd, ((TypeStruct)t2).sym)))
                     {
                         sd.size(exp.loc);
-                        if (sd.sizeok != Sizeok.done)
+                        if ((sd.sizeok != Sizeok.done))
                             this.setError();
                             return ;
-                        if (!(sd.ctor != null))
+                        if (sd.ctor == null)
                             sd.ctor = sd.searchCtor();
                         Expression e2y = lastComma(e2x);
-                        CallExp ce = (e2y.op & 0xFF) == 18 ? (CallExp)e2y : null;
-                        DotVarExp dve = (ce != null && (ce.e1.op & 0xFF) == 27) ? (DotVarExp)ce.e1 : null;
-                        if ((((((sd.ctor != null && ce != null) && dve != null) && dve.var.isCtorDeclaration() != null) && (dve.e1.op & 0xFF) != 27) && (e2y.type.implicitConvTo(t1)) != 0))
+                        CallExp ce = ((e2y.op & 0xFF) == 18) ? (CallExp)e2y : null;
+                        DotVarExp dve = (ce != null) && ((ce.e1.op & 0xFF) == 27) ? (DotVarExp)ce.e1 : null;
+                        if ((sd.ctor != null) && (ce != null) && (dve != null) && (dve.var.isCtorDeclaration() != null) && ((dve.e1.op & 0xFF) != 27) && (e2y.type.implicitConvTo(t1) != 0))
                         {
                             Expression einit = this.getInitExp(sd, exp.loc, this.sc, t1);
-                            if ((einit.op & 0xFF) == 127)
+                            if (((einit.op & 0xFF) == 127))
                             {
                                 this.result = einit;
                                 return ;
@@ -7517,7 +7517,7 @@ public class expressionsem {
                             dvx.e1 = e1x;
                             CallExp cx = (CallExp)ce.copy();
                             cx.e1 = dvx;
-                            if ((global.params.vsafe && checkConstructorEscape(this.sc, cx, false)))
+                            if (global.params.vsafe && checkConstructorEscape(this.sc, cx, false))
                                 this.setError();
                                 return ;
                             Ref<Expression> e0 = ref(null);
@@ -7527,9 +7527,9 @@ public class expressionsem {
                             this.result = e;
                             return ;
                         }
-                        if ((sd.postblit != null || sd.hasCopyCtor))
+                        if ((sd.postblit != null) || sd.hasCopyCtor)
                         {
-                            if ((e2x.op & 0xFF) == 100)
+                            if (((e2x.op & 0xFF) == 100))
                             {
                                 CondExp econd = (CondExp)e2x;
                                 Expression ea1 = new ConstructExp(econd.e1.loc, e1x, econd.e1);
@@ -7553,7 +7553,7 @@ public class expressionsem {
                                 }
                                 else
                                 {
-                                    if (!((e2x.type.implicitConvTo(e1x.type)) != 0))
+                                    if (e2x.type.implicitConvTo(e1x.type) == 0)
                                     {
                                         exp.error(new BytePtr("conversion error from `%s` to `%s`"), e2x.type.toChars(), e1x.type.toChars());
                                         this.setError();
@@ -7561,7 +7561,7 @@ public class expressionsem {
                                     }
                                     Expression e = e1x.copy();
                                     e.type = e.type.mutableOf();
-                                    if ((e.type.isShared() && !(sd.type.isShared())))
+                                    if (e.type.isShared() && !sd.type.isShared())
                                         e.type = e.type.unSharedOf();
                                     e = new BlitExp(exp.loc, e, e2x);
                                     e = new DotVarExp(exp.loc, e, sd.postblit, false);
@@ -7575,12 +7575,12 @@ public class expressionsem {
                                 e2x = valueNoDtor(e2x);
                             }
                         }
-                        if (!((e2x.implicitConvTo(t1)) != 0))
+                        if (e2x.implicitConvTo(t1) == 0)
                         {
                             AggregateDeclaration ad2 = isAggregate(e2x.type);
-                            if (((ad2 != null && ad2.aliasthis != null) && !((exp.att2 != null && pequals(e2x.type, exp.att2)))))
+                            if ((ad2 != null) && (ad2.aliasthis != null) && !((exp.att2 != null) && (pequals(e2x.type, exp.att2))))
                             {
-                                if ((!(exp.att2 != null) && exp.e2.type.checkAliasThisRec()))
+                                if ((exp.att2 == null) && exp.e2.type.checkAliasThisRec())
                                     exp.att2 = exp.e2.type;
                                 exp.e2 = new DotIdExp(exp.e2.loc, exp.e2, ad2.aliasthis.ident);
                                 this.result = expressionSemantic(exp, this.sc);
@@ -7588,20 +7588,20 @@ public class expressionsem {
                             }
                         }
                     }
-                    else if (!((e2x.implicitConvTo(t1)) != 0))
+                    else if (e2x.implicitConvTo(t1) == 0)
                     {
                         sd.size(exp.loc);
-                        if (sd.sizeok != Sizeok.done)
+                        if ((sd.sizeok != Sizeok.done))
                             this.setError();
                             return ;
-                        if (!(sd.ctor != null))
+                        if (sd.ctor == null)
                             sd.ctor = sd.searchCtor();
                         if (sd.ctor != null)
                         {
-                            if ((exp.e2.op & 0xFF) == 22)
+                            if (((exp.e2.op & 0xFF) == 22))
                             {
                                 NewExp newExp = (NewExp)exp.e2;
-                                if ((newExp.newtype != null && pequals(newExp.newtype, t1)))
+                                if ((newExp.newtype != null) && (pequals(newExp.newtype, t1)))
                                 {
                                     error(exp.loc, new BytePtr("cannot implicitly convert expression `%s` of type `%s` to `%s`"), newExp.toChars(), newExp.type.toChars(), t1.toChars());
                                     errorSupplemental(exp.loc, new BytePtr("Perhaps remove the `new` keyword?"));
@@ -7625,7 +7625,7 @@ public class expressionsem {
                             e2x = new CallExp(exp.loc, e2x, exp.e2);
                             e2x = expressionSemantic(e2x, this.sc);
                             e2x = resolveProperties(this.sc, e2x);
-                            if ((e2x.op & 0xFF) == 127)
+                            if (((e2x.op & 0xFF) == 127))
                             {
                                 this.result = e2x;
                                 return ;
@@ -7638,9 +7638,9 @@ public class expressionsem {
                     else
                     {
                         AggregateDeclaration ad2 = isAggregate(e2x.type);
-                        if (((ad2 != null && ad2.aliasthis != null) && !((exp.att2 != null && pequals(e2x.type, exp.att2)))))
+                        if ((ad2 != null) && (ad2.aliasthis != null) && !((exp.att2 != null) && (pequals(e2x.type, exp.att2))))
                         {
-                            if ((!(exp.att2 != null) && exp.e2.type.checkAliasThisRec()))
+                            if ((exp.att2 == null) && exp.e2.type.checkAliasThisRec())
                                 exp.att2 = exp.e2.type;
                             exp.e2 = new DotIdExp(exp.e2.loc, exp.e2, ad2.aliasthis.ident);
                             this.result = expressionSemantic(exp, this.sc);
@@ -7648,9 +7648,9 @@ public class expressionsem {
                         }
                     }
                 }
-                else if ((exp.op & 0xFF) == 90)
+                else if (((exp.op & 0xFF) == 90))
                 {
-                    if (((e1x.op & 0xFF) == 62 && (((IndexExp)e1x).e1.type.toBasetype().ty & 0xFF) == ENUMTY.Taarray))
+                    if (((e1x.op & 0xFF) == 62) && ((((IndexExp)e1x).e1.type.toBasetype().ty & 0xFF) == ENUMTY.Taarray))
                     {
                         IndexExp ie = (IndexExp)e1x;
                         Type t2 = e2x.type.toBasetype();
@@ -7667,11 +7667,11 @@ public class expressionsem {
                         if (e != null)
                         {
                             Ref<Expression> ey = ref(null);
-                            if (((t2.ty & 0xFF) == ENUMTY.Tstruct && pequals(sd, t2.toDsymbol(this.sc))))
+                            if (((t2.ty & 0xFF) == ENUMTY.Tstruct) && (pequals(sd, t2.toDsymbol(this.sc))))
                             {
                                 ey.value = ev;
                             }
-                            else if ((!((ev.implicitConvTo(ie.type)) != 0) && sd.ctor != null))
+                            else if ((ev.implicitConvTo(ie.type) == 0) && (sd.ctor != null))
                             {
                                 ey.value = new StructLiteralExp(exp.loc, sd, null, null);
                                 ey.value = new DotIdExp(exp.loc, ey.value, Id.ctor);
@@ -7687,14 +7687,14 @@ public class expressionsem {
                                 ex.value = ex.value.modifiableLvalue(this.sc, ex.value);
                                 ey.value = new ConstructExp(exp.loc, ex.value, ey.value);
                                 ey.value = expressionSemantic(ey.value, this.sc);
-                                if ((ey.value.op & 0xFF) == 127)
+                                if (((ey.value.op & 0xFF) == 127))
                                 {
                                     this.result = ey.value;
                                     return ;
                                 }
                                 ex.value = e;
                                 Ref<Type> t = ref(null);
-                                if (!(typeMerge(this.sc, TOK.question, ptr(t), ptr(ex), ptr(ey))))
+                                if (!typeMerge(this.sc, TOK.question, ptr(t), ptr(ex), ptr(ey)))
                                 {
                                     ex.value = new CastExp(ex.value.loc, ex.value, Type.tvoid);
                                     ey.value = new CastExp(ey.value.loc, ey.value, Type.tvoid);
@@ -7718,13 +7718,13 @@ public class expressionsem {
                     }
                 }
                 else
-                    assert((exp.op & 0xFF) == 96);
+                    assert(((exp.op & 0xFF) == 96));
                 exp.e1 = e1x;
                 exp.e2 = e2x;
             }
-            else if ((t1.ty & 0xFF) == ENUMTY.Tclass)
+            else if (((t1.ty & 0xFF) == ENUMTY.Tclass))
             {
-                if (((exp.op & 0xFF) == 90 && !((exp.e2.implicitConvTo(exp.e1.type)) != 0)))
+                if (((exp.op & 0xFF) == 90) && (exp.e2.implicitConvTo(exp.e1.type) == 0))
                 {
                     Expression e = op_overload(exp, this.sc, null);
                     if (e != null)
@@ -7734,20 +7734,20 @@ public class expressionsem {
                     }
                 }
             }
-            else if ((t1.ty & 0xFF) == ENUMTY.Tsarray)
+            else if (((t1.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                assert((exp.e1.op & 0xFF) != 31);
+                assert(((exp.e1.op & 0xFF) != 31));
                 Expression e1x = exp.e1;
                 Expression e2x = exp.e2;
-                if ((e2x.implicitConvTo(e1x.type)) != 0)
+                if (e2x.implicitConvTo(e1x.type) != 0)
                 {
-                    if (((exp.op & 0xFF) != 96 && ((((e2x.op & 0xFF) == 31 && ((UnaExp)e2x).e1.isLvalue()) || ((e2x.op & 0xFF) == 12 && ((UnaExp)e2x).e1.isLvalue())) || ((e2x.op & 0xFF) != 31 && e2x.isLvalue()))))
+                    if (((exp.op & 0xFF) != 96) && ((e2x.op & 0xFF) == 31) && ((UnaExp)e2x).e1.isLvalue() || ((e2x.op & 0xFF) == 12) && ((UnaExp)e2x).e1.isLvalue() || ((e2x.op & 0xFF) != 31) && e2x.isLvalue())
                     {
                         if (e1x.checkPostblit(this.sc, t1))
                             this.setError();
                             return ;
                     }
-                    if ((isUnaArrayOp(e2x.op) || isBinArrayOp(e2x.op)))
+                    if (isUnaArrayOp(e2x.op) || isBinArrayOp(e2x.op))
                     {
                         SliceExp sle = new SliceExp(e1x.loc, e1x, null, null);
                         sle.arrayop = true;
@@ -7759,19 +7759,19 @@ public class expressionsem {
                 }
                 else
                 {
-                    if (e2x.implicitConvTo(t1.nextOf().arrayOf()) > MATCH.nomatch)
+                    if ((e2x.implicitConvTo(t1.nextOf().arrayOf()) > MATCH.nomatch))
                     {
                         long dim1 = ((TypeSArray)t1).dim.toInteger();
                         long dim2 = dim1;
                         {
                             ArrayLiteralExp ale = e2x.isArrayLiteralExp();
-                            if (ale != null)
+                            if ((ale) != null)
                             {
                                 dim2 = ale.elements != null ? (long)(ale.elements).length : 0L;
                             }
                             else {
                                 SliceExp se = e2x.isSliceExp();
-                                if (se != null)
+                                if ((se) != null)
                                 {
                                     Type tx = toStaticArrayType(se);
                                     if (tx != null)
@@ -7779,14 +7779,14 @@ public class expressionsem {
                                 }
                             }
                         }
-                        if (dim1 != dim2)
+                        if ((dim1 != dim2))
                         {
                             exp.error(new BytePtr("mismatched array lengths, %d and %d"), (int)dim1, (int)dim2);
                             this.setError();
                             return ;
                         }
                     }
-                    if ((exp.op & 0xFF) != 90)
+                    if (((exp.op & 0xFF) != 90))
                     {
                         int dim = t1.numberOfElems(exp.loc);
                         e1x.type = t1.baseElemOf().sarrayOf((long)dim);
@@ -7795,10 +7795,10 @@ public class expressionsem {
                     sle.arrayop = true;
                     e1x = expressionSemantic(sle, this.sc);
                 }
-                if ((e1x.op & 0xFF) == 127)
+                if (((e1x.op & 0xFF) == 127))
                     setResult.invoke(e1x, 8691);
                     return ;
-                if ((e2x.op & 0xFF) == 127)
+                if (((e2x.op & 0xFF) == 127))
                     setResult.invoke(e2x, 8693);
                     return ;
                 exp.e1 = e1x;
@@ -7807,10 +7807,10 @@ public class expressionsem {
             }
             {
                 ArrayLengthExp ale = exp.e1.isArrayLengthExp();
-                if (ale != null)
+                if ((ale) != null)
                 {
                     Expression ale1x = ale.e1.modifiableLvalue(this.sc, exp.e1);
-                    if ((ale1x.op & 0xFF) == 127)
+                    if (((ale1x.op & 0xFF) == 127))
                         setResult.invoke(ale1x, 8707);
                         return ;
                     ale.e1 = ale1x;
@@ -7820,39 +7820,39 @@ public class expressionsem {
                 }
                 else {
                     SliceExp se = exp.e1.isSliceExp();
-                    if (se != null)
+                    if ((se) != null)
                     {
                         Type tn = se.type.nextOf();
                         FuncDeclaration fun = (this.sc).func;
-                        if ((((exp.op & 0xFF) == 90 && !(tn.isMutable())) && (!(fun != null) || (fun != null && !(fun.isStaticCtorDeclaration() != null)))))
+                        if (((exp.op & 0xFF) == 90) && !tn.isMutable() && (fun == null) || (fun != null) && (fun.isStaticCtorDeclaration() == null))
                         {
                             exp.error(new BytePtr("slice `%s` is not mutable"), se.toChars());
                             this.setError();
                             return ;
                         }
-                        if (((exp.op & 0xFF) == 90 && !(tn.baseElemOf().isAssignable())))
+                        if (((exp.op & 0xFF) == 90) && !tn.baseElemOf().isAssignable())
                         {
                             exp.error(new BytePtr("slice `%s` is not mutable, struct `%s` has immutable members"), exp.e1.toChars(), tn.baseElemOf().toChars());
                             this.result = new ErrorExp();
                             return ;
                         }
-                        for (; (se.e1.op & 0xFF) == 31;) {
+                        for (; ((se.e1.op & 0xFF) == 31);) {
                             se = (SliceExp)se.e1;
                         }
-                        if (((se.e1.op & 0xFF) == 100 && (se.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
+                        if (((se.e1.op & 0xFF) == 100) && ((se.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
                         {
                             se.e1 = se.e1.modifiableLvalue(this.sc, exp.e1);
-                            if ((se.e1.op & 0xFF) == 127)
+                            if (((se.e1.op & 0xFF) == 127))
                                 setResult.invoke(se.e1, 8742);
                                 return ;
                         }
                     }
                     else
                     {
-                        if (((t1.ty & 0xFF) == ENUMTY.Tsarray && (exp.op & 0xFF) == 90))
+                        if (((t1.ty & 0xFF) == ENUMTY.Tsarray) && ((exp.op & 0xFF) == 90))
                         {
                             Type tn = exp.e1.type.nextOf();
-                            if ((tn != null && !(tn.baseElemOf().isAssignable())))
+                            if ((tn != null) && !tn.baseElemOf().isAssignable())
                             {
                                 exp.error(new BytePtr("array `%s` is not mutable, struct `%s` has immutable members"), exp.e1.toChars(), tn.baseElemOf().toChars());
                                 this.result = new ErrorExp();
@@ -7860,11 +7860,11 @@ public class expressionsem {
                             }
                         }
                         Expression e1x = exp.e1;
-                        if ((exp.op & 0xFF) == 90)
+                        if (((exp.op & 0xFF) == 90))
                             e1x = e1x.modifiableLvalue(this.sc, e1old);
-                        if ((e1x.op & 0xFF) != 26)
+                        if (((e1x.op & 0xFF) != 26))
                             e1x = e1x.optimize(0, false);
-                        if ((e1x.op & 0xFF) == 127)
+                        if (((e1x.op & 0xFF) == 127))
                         {
                             this.result = e1x;
                             return ;
@@ -7876,46 +7876,46 @@ public class expressionsem {
             Expression e2x = exp.e2;
             Type t2 = e2x.type.toBasetype();
             Type telem = t1;
-            for (; (telem.ty & 0xFF) == ENUMTY.Tarray;) {
+            for (; ((telem.ty & 0xFF) == ENUMTY.Tarray);) {
                 telem = telem.nextOf();
             }
-            if (((((exp.e1.op & 0xFF) == 31 && t1.nextOf() != null) && ((telem.ty & 0xFF) != ENUMTY.Tvoid || (e2x.op & 0xFF) == 13)) && (e2x.implicitConvTo(t1.nextOf())) != 0))
+            if (((exp.e1.op & 0xFF) == 31) && (t1.nextOf() != null) && ((telem.ty & 0xFF) != ENUMTY.Tvoid) || ((e2x.op & 0xFF) == 13) && (e2x.implicitConvTo(t1.nextOf()) != 0))
             {
                 exp.memset |= MemorySet.blockAssign;
                 e2x = e2x.implicitCastTo(this.sc, t1.nextOf());
-                if ((((exp.op & 0xFF) != 96 && e2x.isLvalue()) && exp.e1.checkPostblit(this.sc, t1.nextOf())))
+                if (((exp.op & 0xFF) != 96) && e2x.isLvalue() && exp.e1.checkPostblit(this.sc, t1.nextOf()))
                     this.setError();
                     return ;
             }
-            else if ((((exp.e1.op & 0xFF) == 31 && ((t2.ty & 0xFF) == ENUMTY.Tarray || (t2.ty & 0xFF) == ENUMTY.Tsarray)) && (t2.nextOf().implicitConvTo(t1.nextOf())) != 0))
+            else if (((exp.e1.op & 0xFF) == 31) && ((t2.ty & 0xFF) == ENUMTY.Tarray) || ((t2.ty & 0xFF) == ENUMTY.Tsarray) && (t2.nextOf().implicitConvTo(t1.nextOf()) != 0))
             {
                 SliceExp se1 = (SliceExp)exp.e1;
                 TypeSArray tsa1 = (TypeSArray)toStaticArrayType(se1);
                 TypeSArray tsa2 = null;
                 {
                     ArrayLiteralExp ale = e2x.isArrayLiteralExp();
-                    if (ale != null)
+                    if ((ale) != null)
                         tsa2 = (TypeSArray)t2.nextOf().sarrayOf((long)(ale.elements).length);
                     else {
                         SliceExp se = e2x.isSliceExp();
-                        if (se != null)
+                        if ((se) != null)
                             tsa2 = (TypeSArray)toStaticArrayType(se);
                         else
                             tsa2 = t2.isTypeSArray();
                     }
                 }
-                if ((tsa1 != null && tsa2 != null))
+                if ((tsa1 != null) && (tsa2 != null))
                 {
                     long dim1 = tsa1.dim.toInteger();
                     long dim2 = tsa2.dim.toInteger();
-                    if (dim1 != dim2)
+                    if ((dim1 != dim2))
                     {
                         exp.error(new BytePtr("mismatched array lengths, %d and %d"), (int)dim1, (int)dim2);
                         this.setError();
                         return ;
                     }
                 }
-                if (((exp.op & 0xFF) != 96 && ((((e2x.op & 0xFF) == 31 && ((UnaExp)e2x).e1.isLvalue()) || ((e2x.op & 0xFF) == 12 && ((UnaExp)e2x).e1.isLvalue())) || ((e2x.op & 0xFF) != 31 && e2x.isLvalue()))))
+                if (((exp.op & 0xFF) != 96) && ((e2x.op & 0xFF) == 31) && ((UnaExp)e2x).e1.isLvalue() || ((e2x.op & 0xFF) == 12) && ((UnaExp)e2x).e1.isLvalue() || ((e2x.op & 0xFF) != 31) && e2x.isLvalue())
                 {
                     if (exp.e1.checkPostblit(this.sc, t1.nextOf()))
                         this.setError();
@@ -7930,7 +7930,7 @@ public class expressionsem {
                 Type t2n = t2.nextOf();
                 Type t1n = t1.nextOf();
                 IntRef offset = ref(0);
-                if ((t2n.equivalent(t1n) || (t1n.isBaseOf(t2n, ptr(offset)) && offset.value == 0)))
+                if (t2n.equivalent(t1n) || t1n.isBaseOf(t2n, ptr(offset)) && (offset.value == 0))
                 {
                     if (isArrayOpValid(e2x))
                     {
@@ -7942,14 +7942,14 @@ public class expressionsem {
                 }
                 else
                 {
-                    if ((e2x.op & 0xFF) == 121)
+                    if (((e2x.op & 0xFF) == 121))
                         e2x = e2x.implicitCastTo(this.sc, exp.e1.type.constOf());
                     else
                         e2x = e2x.implicitCastTo(this.sc, exp.e1.type);
                 }
-                if (((t1n.toBasetype().ty & 0xFF) == ENUMTY.Tvoid && (t2n.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
+                if (((t1n.toBasetype().ty & 0xFF) == ENUMTY.Tvoid) && ((t2n.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
                 {
-                    if ((((!(((this.sc).intypeof) != 0) && (this.sc).func != null) && (this.sc).func.setUnsafe()) && !(((this.sc).flags & 8) != 0)))
+                    if (((this.sc).intypeof == 0) && ((this.sc).func != null) && (this.sc).func.setUnsafe() && (((this.sc).flags & 8) == 0))
                     {
                         exp.error(new BytePtr("cannot copy `void[]` to `void[]` in `@safe` code"));
                         this.setError();
@@ -7963,15 +7963,15 @@ public class expressionsem {
                 {
                     BytePtr e1str = pcopy(exp.e1.toChars());
                     BytePtr e2str = pcopy(e2x.toChars());
-                    BytePtr atypestr = pcopy((exp.e1.op & 0xFF) == 31 ? new BytePtr("element-wise") : new BytePtr("slice"));
+                    BytePtr atypestr = pcopy(((exp.e1.op & 0xFF) == 31) ? new BytePtr("element-wise") : new BytePtr("slice"));
                     exp.warning(new BytePtr("explicit %s assignment `%s = (%s)[]` is better than `%s = %s`"), atypestr, e1str, e2str, e1str, e2str);
                 }
-                if ((exp.op & 0xFF) == 96)
+                if (((exp.op & 0xFF) == 96))
                     e2x = e2x.castTo(this.sc, exp.e1.type);
                 else
                 {
                     e2x = e2x.implicitCastTo(this.sc, exp.e1.type);
-                    if ((((e2x.op & 0xFF) == 127 && (exp.op & 0xFF) == 95) && (t1.ty & 0xFF) == ENUMTY.Tstruct))
+                    if (((e2x.op & 0xFF) == 127) && ((exp.op & 0xFF) == 95) && ((t1.ty & 0xFF) == ENUMTY.Tstruct))
                     {
                         StructDeclaration sd = ((TypeStruct)t1).sym;
                         Dsymbol opAssign = search_function(sd, Id.assign);
@@ -7983,44 +7983,44 @@ public class expressionsem {
                     }
                 }
             }
-            if ((e2x.op & 0xFF) == 127)
+            if (((e2x.op & 0xFF) == 127))
             {
                 this.result = e2x;
                 return ;
             }
             exp.e2 = e2x;
             t2 = exp.e2.type.toBasetype();
-            if ((((t2.ty & 0xFF) == ENUMTY.Tarray || (t2.ty & 0xFF) == ENUMTY.Tsarray) && isArrayOpValid(exp.e2)))
+            if (((t2.ty & 0xFF) == ENUMTY.Tarray) || ((t2.ty & 0xFF) == ENUMTY.Tsarray) && isArrayOpValid(exp.e2))
             {
-                if (((!((exp.memset & MemorySet.blockAssign) != 0) && (exp.e1.op & 0xFF) == 31) && (isUnaArrayOp(exp.e2.op) || isBinArrayOp(exp.e2.op))))
+                if (((exp.memset & MemorySet.blockAssign) == 0) && ((exp.e1.op & 0xFF) == 31) && isUnaArrayOp(exp.e2.op) || isBinArrayOp(exp.e2.op))
                 {
                     exp.type = exp.e1.type;
-                    if ((exp.op & 0xFF) == 95)
+                    if (((exp.op & 0xFF) == 95))
                         exp.e1.type = exp.e1.type.nextOf().mutableOf().arrayOf();
                     this.result = arrayOp((BinExp)exp, this.sc);
                     return ;
                 }
-                if (checkNonAssignmentArrayOp(exp.e2, (!((exp.memset & MemorySet.blockAssign) != 0) && (exp.op & 0xFF) == 90)))
+                if (checkNonAssignmentArrayOp(exp.e2, ((exp.memset & MemorySet.blockAssign) == 0) && ((exp.op & 0xFF) == 90)))
                     this.setError();
                     return ;
             }
-            if (((exp.e1.op & 0xFF) == 26 && (exp.op & 0xFF) == 90))
+            if (((exp.e1.op & 0xFF) == 26) && ((exp.op & 0xFF) == 90))
             {
                 VarExp ve = (VarExp)exp.e1;
                 VarDeclaration vd = ve.var.isVarDeclaration();
-                if ((vd != null && (vd.onstack || vd.mynew)))
+                if ((vd != null) && vd.onstack || vd.mynew)
                 {
-                    assert((t1.ty & 0xFF) == ENUMTY.Tclass);
+                    assert(((t1.ty & 0xFF) == ENUMTY.Tclass));
                     exp.error(new BytePtr("cannot rebind scope variables"));
                 }
             }
-            if (((exp.e1.op & 0xFF) == 26 && pequals(((VarExp)exp.e1).var.ident, Id.ctfe)))
+            if (((exp.e1.op & 0xFF) == 26) && (pequals(((VarExp)exp.e1).var.ident, Id.ctfe)))
             {
                 exp.error(new BytePtr("cannot modify compiler-generated variable `__ctfe`"));
             }
             exp.type = exp.e1.type;
             assert(exp.type != null);
-            Expression res = (exp.op & 0xFF) == 90 ? exp.reorderSettingAAElem(this.sc) : exp;
+            Expression res = ((exp.op & 0xFF) == 90) ? exp.reorderSettingAAElem(this.sc) : exp;
             checkAssignEscape(this.sc, res, false);
             setResult.invoke(res, 9001);
             return ;
@@ -8041,19 +8041,19 @@ public class expressionsem {
             if (exp.e1.checkReadModifyWrite(exp.op, exp.e2))
                 this.setError();
                 return ;
-            assert((exp.e1.type != null && exp.e2.type != null));
-            if ((((exp.e1.op & 0xFF) == 31 || (exp.e1.type.ty & 0xFF) == ENUMTY.Tarray) || (exp.e1.type.ty & 0xFF) == ENUMTY.Tsarray))
+            assert((exp.e1.type != null) && (exp.e2.type != null));
+            if (((exp.e1.op & 0xFF) == 31) || ((exp.e1.type.ty & 0xFF) == ENUMTY.Tarray) || ((exp.e1.type.ty & 0xFF) == ENUMTY.Tsarray))
             {
                 if (checkNonAssignmentArrayOp(exp.e1, false))
                     this.setError();
                     return ;
-                if ((exp.e2.implicitConvTo(exp.e1.type.nextOf())) != 0)
+                if (exp.e2.implicitConvTo(exp.e1.type.nextOf()) != 0)
                 {
                     exp.e2 = exp.e2.castTo(this.sc, exp.e1.type.nextOf());
                 }
                 else {
                     Expression ex = typeCombine(exp, this.sc);
-                    if (ex != null)
+                    if ((ex) != null)
                     {
                         this.result = ex;
                         return ;
@@ -8061,9 +8061,9 @@ public class expressionsem {
                 }
                 Type tb1 = exp.e1.type.nextOf().toBasetype();
                 Type tb2 = exp.e2.type.toBasetype();
-                if (((tb2.ty & 0xFF) == ENUMTY.Tarray || (tb2.ty & 0xFF) == ENUMTY.Tsarray))
+                if (((tb2.ty & 0xFF) == ENUMTY.Tarray) || ((tb2.ty & 0xFF) == ENUMTY.Tsarray))
                     tb2 = tb2.nextOf().toBasetype();
-                if (((tb1.isintegral() || tb1.isfloating()) && (tb2.isintegral() || tb2.isfloating())))
+                if (tb1.isintegral() || tb1.isfloating() && tb2.isintegral() || tb2.isfloating())
                 {
                     exp.type = exp.e1.type;
                     this.result = arrayOp(exp, this.sc);
@@ -8074,13 +8074,13 @@ public class expressionsem {
             {
                 exp.e1 = exp.e1.modifiableLvalue(this.sc, exp.e1);
             }
-            if (((exp.e1.type.isintegral() || exp.e1.type.isfloating()) && (exp.e2.type.isintegral() || exp.e2.type.isfloating())))
+            if (exp.e1.type.isintegral() || exp.e1.type.isfloating() && exp.e2.type.isintegral() || exp.e2.type.isfloating())
             {
                 Ref<Expression> e0 = ref(null);
                 e = exp.reorderSettingAAElem(this.sc);
                 e = Expression.extractLast(e, e0);
-                assert(pequals(e, exp));
-                if ((exp.e1.op & 0xFF) == 26)
+                assert((pequals(e, exp)));
+                if (((exp.e1.op & 0xFF) == 26))
                 {
                     e = new PowExp(exp.loc, exp.e1.syntaxCopy(), exp.e2);
                     e = new AssignExp(exp.loc, exp.e1, e);
@@ -8114,10 +8114,10 @@ public class expressionsem {
                 this.result = e;
                 return ;
             }
-            if ((exp.e1.op & 0xFF) == 31)
+            if (((exp.e1.op & 0xFF) == 31))
             {
                 SliceExp se = (SliceExp)exp.e1;
-                if ((se.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray)
+                if (((se.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
                 {
                     exp.error(new BytePtr("cannot append to static array `%s`"), se.e1.type.toChars());
                     this.setError();
@@ -8125,12 +8125,12 @@ public class expressionsem {
                 }
             }
             exp.e1 = exp.e1.modifiableLvalue(this.sc, exp.e1);
-            if ((exp.e1.op & 0xFF) == 127)
+            if (((exp.e1.op & 0xFF) == 127))
             {
                 this.result = exp.e1;
                 return ;
             }
-            if ((exp.e2.op & 0xFF) == 127)
+            if (((exp.e2.op & 0xFF) == 127))
             {
                 this.result = exp.e2;
                 return ;
@@ -8141,20 +8141,20 @@ public class expressionsem {
             Type tb1 = exp.e1.type.toBasetype();
             Type tb1next = tb1.nextOf();
             Type tb2 = exp.e2.type.toBasetype();
-            if ((((tb1.ty & 0xFF) == ENUMTY.Tarray && ((tb2.ty & 0xFF) == ENUMTY.Tarray || (tb2.ty & 0xFF) == ENUMTY.Tsarray)) && ((exp.e2.implicitConvTo(exp.e1.type)) != 0 || ((tb2.nextOf().implicitConvTo(tb1next)) != 0 && tb2.nextOf().size(Loc.initial) == tb1next.size(Loc.initial)))))
+            if (((tb1.ty & 0xFF) == ENUMTY.Tarray) && ((tb2.ty & 0xFF) == ENUMTY.Tarray) || ((tb2.ty & 0xFF) == ENUMTY.Tsarray) && (exp.e2.implicitConvTo(exp.e1.type) != 0) || (tb2.nextOf().implicitConvTo(tb1next) != 0) && (tb2.nextOf().size(Loc.initial) == tb1next.size(Loc.initial)))
             {
-                assert((exp.op & 0xFF) == 71);
+                assert(((exp.op & 0xFF) == 71));
                 if (exp.e1.checkPostblit(this.sc, tb1next))
                     this.setError();
                     return ;
                 exp.e2 = exp.e2.castTo(this.sc, exp.e1.type);
             }
-            else if (((tb1.ty & 0xFF) == ENUMTY.Tarray && (exp.e2.implicitConvTo(tb1next)) != 0))
+            else if (((tb1.ty & 0xFF) == ENUMTY.Tarray) && (exp.e2.implicitConvTo(tb1next) != 0))
             {
-                if (((tb2.ty & 0xFF) == ENUMTY.Tstruct && (((TypeStruct)tb2).implicitConvToThroughAliasThis(tb1next)) != 0))
+                if (((tb2.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)tb2).implicitConvToThroughAliasThis(tb1next) != 0))
                     /*goto Laliasthis*//*unrolled goto*/
                     exp = new CatDcharAssignExp(exp.loc, exp.type, exp.e1, exp.e2.castTo(this.sc, Type.tdchar));
-                if (((tb2.ty & 0xFF) == ENUMTY.Tclass && (((TypeClass)tb2).implicitConvToThroughAliasThis(tb1next)) != 0))
+                if (((tb2.ty & 0xFF) == ENUMTY.Tclass) && (((TypeClass)tb2).implicitConvToThroughAliasThis(tb1next) != 0))
                     /*goto Laliasthis*//*unrolled goto*/
                     exp = new CatDcharAssignExp(exp.loc, exp.type, exp.e1, exp.e2.castTo(this.sc, Type.tdchar));
                 if (exp.e2.checkPostblit(this.sc, tb2))
@@ -8166,7 +8166,7 @@ public class expressionsem {
                 exp = new CatElemAssignExp(exp.loc, exp.type, exp.e1, exp.e2.castTo(this.sc, tb1next));
                 exp.e2 = doCopyOrMove(this.sc, exp.e2, null);
             }
-            else if (((((tb1.ty & 0xFF) == ENUMTY.Tarray && ((tb1next.ty & 0xFF) == ENUMTY.Tchar || (tb1next.ty & 0xFF) == ENUMTY.Twchar)) && (exp.e2.type.ty & 0xFF) != (tb1next.ty & 0xFF)) && (exp.e2.implicitConvTo(Type.tdchar)) != 0))
+            else if (((tb1.ty & 0xFF) == ENUMTY.Tarray) && ((tb1next.ty & 0xFF) == ENUMTY.Tchar) || ((tb1next.ty & 0xFF) == ENUMTY.Twchar) && ((exp.e2.type.ty & 0xFF) != (tb1next.ty & 0xFF)) && (exp.e2.implicitConvTo(Type.tdchar) != 0))
             {
                 exp = new CatDcharAssignExp(exp.loc, exp.type, exp.e1, exp.e2.castTo(this.sc, Type.tdchar));
             }
@@ -8175,13 +8175,13 @@ public class expressionsem {
                 Function2<BinAssignExp,Scope,Expression> tryAliasThisForLhs = new Function2<BinAssignExp,Scope,Expression>(){
                     public Expression invoke(BinAssignExp exp, Scope sc){
                         AggregateDeclaration ad1 = isAggregate(exp.e1.type);
-                        if ((!(ad1 != null) || !(ad1.aliasthis != null)))
+                        if ((ad1 == null) || (ad1.aliasthis == null))
                             return null;
-                        if ((exp.att1 != null && pequals(exp.e1.type, exp.att1)))
+                        if ((exp.att1 != null) && (pequals(exp.e1.type, exp.att1)))
                             return null;
                         Expression e1 = new DotIdExp(exp.loc, exp.e1, ad1.aliasthis.ident);
                         BinExp be = (BinExp)exp.copy();
-                        if ((!(be.att1 != null) && exp.e1.type.checkAliasThisRec()))
+                        if ((be.att1 == null) && exp.e1.type.checkAliasThisRec())
                             be.att1 = exp.e1.type;
                         be.e1 = e1;
                         return trySemantic(be, sc);
@@ -8190,13 +8190,13 @@ public class expressionsem {
                 Function2<BinAssignExp,Scope,Expression> tryAliasThisForRhs = new Function2<BinAssignExp,Scope,Expression>(){
                     public Expression invoke(BinAssignExp exp, Scope sc){
                         AggregateDeclaration ad2 = isAggregate(exp.e2.type);
-                        if ((!(ad2 != null) || !(ad2.aliasthis != null)))
+                        if ((ad2 == null) || (ad2.aliasthis == null))
                             return null;
-                        if ((exp.att2 != null && pequals(exp.e2.type, exp.att2)))
+                        if ((exp.att2 != null) && (pequals(exp.e2.type, exp.att2)))
                             return null;
                         Expression e2 = new DotIdExp(exp.loc, exp.e2, ad2.aliasthis.ident);
                         BinExp be = (BinExp)exp.copy();
-                        if ((!(be.att2 != null) && exp.e2.type.checkAliasThisRec()))
+                        if ((be.att2 == null) && exp.e2.type.checkAliasThisRec())
                             be.att2 = exp.e2.type;
                         be.e2 = e2;
                         return trySemantic(be, sc);
@@ -8218,7 +8218,7 @@ public class expressionsem {
                 return ;
             exp.type = exp.e1.type;
             Expression res = exp.reorderSettingAAElem(this.sc);
-            if ((((exp.op & 0xFF) == 72 || (exp.op & 0xFF) == 73) && global.params.vsafe))
+            if (((exp.op & 0xFF) == 72) || ((exp.op & 0xFF) == 73) && global.params.vsafe)
                 checkAssignEscape(this.sc, res, false);
             this.result = res;
         }
@@ -8231,7 +8231,7 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemanticProp(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -8246,39 +8246,39 @@ public class expressionsem {
             Type tb1 = exp.e1.type.toBasetype();
             Type tb2 = exp.e2.type.toBasetype();
             boolean err = false;
-            if (((tb1.ty & 0xFF) == ENUMTY.Tdelegate || ((tb1.ty & 0xFF) == ENUMTY.Tpointer && (tb1.nextOf().ty & 0xFF) == ENUMTY.Tfunction)))
+            if (((tb1.ty & 0xFF) == ENUMTY.Tdelegate) || ((tb1.ty & 0xFF) == ENUMTY.Tpointer) && ((tb1.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
                 (err ? 1 : 0) |= (exp.e1.checkArithmetic() ? 1 : 0);
             }
-            if (((tb2.ty & 0xFF) == ENUMTY.Tdelegate || ((tb2.ty & 0xFF) == ENUMTY.Tpointer && (tb2.nextOf().ty & 0xFF) == ENUMTY.Tfunction)))
+            if (((tb2.ty & 0xFF) == ENUMTY.Tdelegate) || ((tb2.ty & 0xFF) == ENUMTY.Tpointer) && ((tb2.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
                 (err ? 1 : 0) |= (exp.e2.checkArithmetic() ? 1 : 0);
             }
             if (err)
                 this.setError();
                 return ;
-            if ((((tb1.ty & 0xFF) == ENUMTY.Tpointer && exp.e2.type.isintegral()) || ((tb2.ty & 0xFF) == ENUMTY.Tpointer && exp.e1.type.isintegral())))
+            if (((tb1.ty & 0xFF) == ENUMTY.Tpointer) && exp.e2.type.isintegral() || ((tb2.ty & 0xFF) == ENUMTY.Tpointer) && exp.e1.type.isintegral())
             {
                 this.result = scaleFactor(exp, this.sc);
                 return ;
             }
-            if (((tb1.ty & 0xFF) == ENUMTY.Tpointer && (tb2.ty & 0xFF) == ENUMTY.Tpointer))
+            if (((tb1.ty & 0xFF) == ENUMTY.Tpointer) && ((tb2.ty & 0xFF) == ENUMTY.Tpointer))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
             }
             {
                 Expression ex = typeCombine(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
                 }
             }
             Type tb = exp.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray || (tb.ty & 0xFF) == ENUMTY.Tsarray))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                if (!(isArrayOpValid(exp)))
+                if (!isArrayOpValid(exp))
                 {
                     this.result = arrayOpInvalidError(exp);
                     return ;
@@ -8287,12 +8287,12 @@ public class expressionsem {
                 return ;
             }
             tb1 = exp.e1.type.toBasetype();
-            if (!(target.isVectorOpSupported(tb1, exp.op, tb2)))
+            if (!target.isVectorOpSupported(tb1, exp.op, tb2))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
             }
-            if (((tb1.isreal() && exp.e2.type.isimaginary()) || (tb1.isimaginary() && exp.e2.type.isreal())))
+            if (tb1.isreal() && exp.e2.type.isimaginary() || tb1.isimaginary() && exp.e2.type.isreal())
             {
                 switch ((exp.type.toBasetype().ty & 0xFF))
                 {
@@ -8323,7 +8323,7 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemanticProp(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -8338,31 +8338,31 @@ public class expressionsem {
             Type t1 = exp.e1.type.toBasetype();
             Type t2 = exp.e2.type.toBasetype();
             boolean err = false;
-            if (((t1.ty & 0xFF) == ENUMTY.Tdelegate || ((t1.ty & 0xFF) == ENUMTY.Tpointer && (t1.nextOf().ty & 0xFF) == ENUMTY.Tfunction)))
+            if (((t1.ty & 0xFF) == ENUMTY.Tdelegate) || ((t1.ty & 0xFF) == ENUMTY.Tpointer) && ((t1.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
                 (err ? 1 : 0) |= (exp.e1.checkArithmetic() ? 1 : 0);
             }
-            if (((t2.ty & 0xFF) == ENUMTY.Tdelegate || ((t2.ty & 0xFF) == ENUMTY.Tpointer && (t2.nextOf().ty & 0xFF) == ENUMTY.Tfunction)))
+            if (((t2.ty & 0xFF) == ENUMTY.Tdelegate) || ((t2.ty & 0xFF) == ENUMTY.Tpointer) && ((t2.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
                 (err ? 1 : 0) |= (exp.e2.checkArithmetic() ? 1 : 0);
             }
             if (err)
                 this.setError();
                 return ;
-            if ((t1.ty & 0xFF) == ENUMTY.Tpointer)
+            if (((t1.ty & 0xFF) == ENUMTY.Tpointer))
             {
-                if ((t2.ty & 0xFF) == ENUMTY.Tpointer)
+                if (((t2.ty & 0xFF) == ENUMTY.Tpointer))
                 {
                     Type p1 = t1.nextOf();
                     Type p2 = t2.nextOf();
-                    if (!(p1.equivalent(p2)))
+                    if (!p1.equivalent(p2))
                     {
                         deprecation(exp.loc, new BytePtr("cannot subtract pointers to different types: `%s` and `%s`."), t1.toChars(), t2.toChars());
                     }
                     long stride = 0L;
                     {
                         Expression ex = typeCombine(exp, this.sc);
-                        if (ex != null)
+                        if ((ex) != null)
                         {
                             this.result = ex;
                             return ;
@@ -8370,7 +8370,7 @@ public class expressionsem {
                     }
                     exp.type = Type.tptrdiff_t;
                     stride = (long)t2.nextOf().size();
-                    if (stride == 0L)
+                    if ((stride == 0L))
                     {
                         e = new IntegerExp(exp.loc, 0L, Type.tptrdiff_t);
                     }
@@ -8390,7 +8390,7 @@ public class expressionsem {
                 this.result = e;
                 return ;
             }
-            if ((t2.ty & 0xFF) == ENUMTY.Tpointer)
+            if (((t2.ty & 0xFF) == ENUMTY.Tpointer))
             {
                 exp.type = exp.e2.type;
                 exp.error(new BytePtr("can't subtract pointer from `%s`"), exp.e1.type.toChars());
@@ -8399,16 +8399,16 @@ public class expressionsem {
             }
             {
                 Expression ex = typeCombine(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
                 }
             }
             Type tb = exp.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray || (tb.ty & 0xFF) == ENUMTY.Tsarray))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                if (!(isArrayOpValid(exp)))
+                if (!isArrayOpValid(exp))
                 {
                     this.result = arrayOpInvalidError(exp);
                     return ;
@@ -8418,12 +8418,12 @@ public class expressionsem {
             }
             t1 = exp.e1.type.toBasetype();
             t2 = exp.e2.type.toBasetype();
-            if (!(target.isVectorOpSupported(t1, exp.op, t2)))
+            if (!target.isVectorOpSupported(t1, exp.op, t2))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
             }
-            if (((t1.isreal() && t2.isimaginary()) || (t1.isimaginary() && t2.isreal())))
+            if (t1.isreal() && t2.isimaginary() || t1.isimaginary() && t2.isreal())
             {
                 switch ((exp.type.ty & 0xFF))
                 {
@@ -8455,7 +8455,7 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemanticProp(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -8471,23 +8471,23 @@ public class expressionsem {
             Type tb2 = exp.e2.type.toBasetype();
             boolean f1 = checkNonAssignmentArrayOp(exp.e1, false);
             boolean f2 = checkNonAssignmentArrayOp(exp.e2, false);
-            if ((f1 || f2))
+            if (f1 || f2)
                 this.setError();
                 return ;
             Type tb1next = tb1.nextOf();
             Type tb2next = tb2.nextOf();
             try {
-                if (((tb1next != null && tb2next != null) && (((tb1next.implicitConvTo(tb2next) >= MATCH.constant || tb2next.implicitConvTo(tb1next) >= MATCH.constant) || ((exp.e1.op & 0xFF) == 47 && (exp.e1.implicitConvTo(tb2)) != 0)) || ((exp.e2.op & 0xFF) == 47 && (exp.e2.implicitConvTo(tb1)) != 0))))
+                if ((tb1next != null) && (tb2next != null) && (tb1next.implicitConvTo(tb2next) >= MATCH.constant) || (tb2next.implicitConvTo(tb1next) >= MATCH.constant) || ((exp.e1.op & 0xFF) == 47) && (exp.e1.implicitConvTo(tb2) != 0) || ((exp.e2.op & 0xFF) == 47) && (exp.e2.implicitConvTo(tb1) != 0))
                 {
                     /*goto Lpeer*/throw Dispatch0.INSTANCE;
                 }
-                if ((((tb1.ty & 0xFF) == ENUMTY.Tsarray || (tb1.ty & 0xFF) == ENUMTY.Tarray) && (tb2.ty & 0xFF) != ENUMTY.Tvoid))
+                if (((tb1.ty & 0xFF) == ENUMTY.Tsarray) || ((tb1.ty & 0xFF) == ENUMTY.Tarray) && ((tb2.ty & 0xFF) != ENUMTY.Tvoid))
                 {
-                    if ((exp.e1.op & 0xFF) == 47)
+                    if (((exp.e1.op & 0xFF) == 47))
                     {
                         exp.e2 = doCopyOrMove(this.sc, exp.e2, null);
                     }
-                    else if ((exp.e1.op & 0xFF) == 121)
+                    else if (((exp.e1.op & 0xFF) == 121))
                     {
                     }
                     else
@@ -8496,13 +8496,13 @@ public class expressionsem {
                             this.setError();
                             return ;
                     }
-                    if (((exp.e1.op & 0xFF) == 47 && (exp.e1.implicitConvTo(tb2.arrayOf())) != 0))
+                    if (((exp.e1.op & 0xFF) == 47) && (exp.e1.implicitConvTo(tb2.arrayOf()) != 0))
                     {
                         exp.e1 = exp.e1.implicitCastTo(this.sc, tb2.arrayOf());
                         exp.type = tb2.arrayOf();
                         /*goto L2elem*//*unrolled goto*/
                     /*L2elem:*/
-                        if (((tb2.ty & 0xFF) == ENUMTY.Tarray || (tb2.ty & 0xFF) == ENUMTY.Tsarray))
+                        if (((tb2.ty & 0xFF) == ENUMTY.Tarray) || ((tb2.ty & 0xFF) == ENUMTY.Tsarray))
                         {
                             exp.e2 = new ArrayLiteralExp(exp.e2.loc, exp.type, exp.e2);
                         }
@@ -8512,12 +8512,12 @@ public class expressionsem {
                         this.result = exp.optimize(0, false);
                         return ;
                     }
-                    if (exp.e2.implicitConvTo(tb1next) >= MATCH.convert)
+                    if ((exp.e2.implicitConvTo(tb1next) >= MATCH.convert))
                     {
                         exp.e2 = exp.e2.implicitCastTo(this.sc, tb1next);
                         exp.type = tb1next.arrayOf();
                     /*L2elem:*/
-                        if (((tb2.ty & 0xFF) == ENUMTY.Tarray || (tb2.ty & 0xFF) == ENUMTY.Tsarray))
+                        if (((tb2.ty & 0xFF) == ENUMTY.Tarray) || ((tb2.ty & 0xFF) == ENUMTY.Tsarray))
                         {
                             exp.e2 = new ArrayLiteralExp(exp.e2.loc, exp.type, exp.e2);
                         }
@@ -8528,13 +8528,13 @@ public class expressionsem {
                         return ;
                     }
                 }
-                if ((((tb2.ty & 0xFF) == ENUMTY.Tsarray || (tb2.ty & 0xFF) == ENUMTY.Tarray) && (tb1.ty & 0xFF) != ENUMTY.Tvoid))
+                if (((tb2.ty & 0xFF) == ENUMTY.Tsarray) || ((tb2.ty & 0xFF) == ENUMTY.Tarray) && ((tb1.ty & 0xFF) != ENUMTY.Tvoid))
                 {
-                    if ((exp.e2.op & 0xFF) == 47)
+                    if (((exp.e2.op & 0xFF) == 47))
                     {
                         exp.e1 = doCopyOrMove(this.sc, exp.e1, null);
                     }
-                    else if ((exp.e2.op & 0xFF) == 121)
+                    else if (((exp.e2.op & 0xFF) == 121))
                     {
                     }
                     else
@@ -8543,13 +8543,13 @@ public class expressionsem {
                             this.setError();
                             return ;
                     }
-                    if (((exp.e2.op & 0xFF) == 47 && (exp.e2.implicitConvTo(tb1.arrayOf())) != 0))
+                    if (((exp.e2.op & 0xFF) == 47) && (exp.e2.implicitConvTo(tb1.arrayOf()) != 0))
                     {
                         exp.e2 = exp.e2.implicitCastTo(this.sc, tb1.arrayOf());
                         exp.type = tb1.arrayOf();
                         /*goto L1elem*//*unrolled goto*/
                     /*L1elem:*/
-                        if (((tb1.ty & 0xFF) == ENUMTY.Tarray || (tb1.ty & 0xFF) == ENUMTY.Tsarray))
+                        if (((tb1.ty & 0xFF) == ENUMTY.Tarray) || ((tb1.ty & 0xFF) == ENUMTY.Tsarray))
                         {
                             exp.e1 = new ArrayLiteralExp(exp.e1.loc, exp.type, exp.e1);
                         }
@@ -8559,12 +8559,12 @@ public class expressionsem {
                         this.result = exp.optimize(0, false);
                         return ;
                     }
-                    if (exp.e1.implicitConvTo(tb2next) >= MATCH.convert)
+                    if ((exp.e1.implicitConvTo(tb2next) >= MATCH.convert))
                     {
                         exp.e1 = exp.e1.implicitCastTo(this.sc, tb2next);
                         exp.type = tb2next.arrayOf();
                     /*L1elem:*/
-                        if (((tb1.ty & 0xFF) == ENUMTY.Tarray || (tb1.ty & 0xFF) == ENUMTY.Tsarray))
+                        if (((tb1.ty & 0xFF) == ENUMTY.Tarray) || ((tb1.ty & 0xFF) == ENUMTY.Tsarray))
                         {
                             exp.e1 = new ArrayLiteralExp(exp.e1.loc, exp.type, exp.e1);
                         }
@@ -8578,22 +8578,22 @@ public class expressionsem {
             }
             catch(Dispatch0 __d){}
         /*Lpeer:*/
-            if ((((((tb1.ty & 0xFF) == ENUMTY.Tsarray || (tb1.ty & 0xFF) == ENUMTY.Tarray) && ((tb2.ty & 0xFF) == ENUMTY.Tsarray || (tb2.ty & 0xFF) == ENUMTY.Tarray)) && ((tb1next.mod) != 0 || (tb2next.mod) != 0)) && (tb1next.mod & 0xFF) != (tb2next.mod & 0xFF)))
+            if (((tb1.ty & 0xFF) == ENUMTY.Tsarray) || ((tb1.ty & 0xFF) == ENUMTY.Tarray) && ((tb2.ty & 0xFF) == ENUMTY.Tsarray) || ((tb2.ty & 0xFF) == ENUMTY.Tarray) && (tb1next.mod != 0) || (tb2next.mod != 0) && ((tb1next.mod & 0xFF) != (tb2next.mod & 0xFF)))
             {
                 Type t1 = tb1next.mutableOf().constOf().arrayOf();
                 Type t2 = tb2next.mutableOf().constOf().arrayOf();
-                if (((exp.e1.op & 0xFF) == 121 && !((((StringExp)exp.e1).committed) != 0)))
+                if (((exp.e1.op & 0xFF) == 121) && (((StringExp)exp.e1).committed == 0))
                     exp.e1.type = t1;
                 else
                     exp.e1 = exp.e1.castTo(this.sc, t1);
-                if (((exp.e2.op & 0xFF) == 121 && !((((StringExp)exp.e2).committed) != 0)))
+                if (((exp.e2.op & 0xFF) == 121) && (((StringExp)exp.e2).committed == 0))
                     exp.e2.type = t2;
                 else
                     exp.e2 = exp.e2.castTo(this.sc, t2);
             }
             {
                 Expression ex = typeCombine(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -8601,15 +8601,15 @@ public class expressionsem {
             }
             exp.type = exp.type.toHeadMutable();
             Type tb = exp.type.toBasetype();
-            if ((tb.ty & 0xFF) == ENUMTY.Tsarray)
+            if (((tb.ty & 0xFF) == ENUMTY.Tsarray))
                 exp.type = tb.nextOf().arrayOf();
-            if (((((exp.type.ty & 0xFF) == ENUMTY.Tarray && tb1next != null) && tb2next != null) && (tb1next.mod & 0xFF) != (tb2next.mod & 0xFF)))
+            if (((exp.type.ty & 0xFF) == ENUMTY.Tarray) && (tb1next != null) && (tb2next != null) && ((tb1next.mod & 0xFF) != (tb2next.mod & 0xFF)))
             {
                 exp.type = exp.type.nextOf().toHeadMutable().arrayOf();
             }
             {
                 Type tbn = tb.nextOf();
-                if (tbn != null)
+                if ((tbn) != null)
                 {
                     if (exp.checkPostblit(this.sc, tbn))
                         this.setError();
@@ -8618,7 +8618,7 @@ public class expressionsem {
             }
             Type t1 = exp.e1.type.toBasetype();
             Type t2 = exp.e2.type.toBasetype();
-            if ((((t1.ty & 0xFF) == ENUMTY.Tarray || (t1.ty & 0xFF) == ENUMTY.Tsarray) && ((t2.ty & 0xFF) == ENUMTY.Tarray || (t2.ty & 0xFF) == ENUMTY.Tsarray)))
+            if (((t1.ty & 0xFF) == ENUMTY.Tarray) || ((t1.ty & 0xFF) == ENUMTY.Tsarray) && ((t2.ty & 0xFF) == ENUMTY.Tarray) || ((t2.ty & 0xFF) == ENUMTY.Tsarray))
             {
                 e = exp.optimize(0, false);
             }
@@ -8638,7 +8638,7 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemanticProp(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -8652,16 +8652,16 @@ public class expressionsem {
             }
             {
                 Expression ex = typeCombine(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
                 }
             }
             Type tb = exp.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray || (tb.ty & 0xFF) == ENUMTY.Tsarray))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                if (!(isArrayOpValid(exp)))
+                if (!isArrayOpValid(exp))
                 {
                     this.result = arrayOpInvalidError(exp);
                     return ;
@@ -8717,7 +8717,7 @@ public class expressionsem {
                     exp.type = t1;
                 }
             }
-            else if (!(target.isVectorOpSupported(tb, exp.op, exp.e2.type.toBasetype())))
+            else if (!target.isVectorOpSupported(tb, exp.op, exp.e2.type.toBasetype()))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
@@ -8733,7 +8733,7 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemanticProp(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -8747,16 +8747,16 @@ public class expressionsem {
             }
             {
                 Expression ex = typeCombine(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
                 }
             }
             Type tb = exp.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray || (tb.ty & 0xFF) == ENUMTY.Tsarray))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                if (!(isArrayOpValid(exp)))
+                if (!isArrayOpValid(exp))
                 {
                     this.result = arrayOpInvalidError(exp);
                     return ;
@@ -8814,7 +8814,7 @@ public class expressionsem {
                     exp.type = t1;
                 }
             }
-            else if (!(target.isVectorOpSupported(tb, exp.op, exp.e2.type.toBasetype())))
+            else if (!target.isVectorOpSupported(tb, exp.op, exp.e2.type.toBasetype()))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
@@ -8830,7 +8830,7 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemanticProp(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -8844,16 +8844,16 @@ public class expressionsem {
             }
             {
                 Expression ex = typeCombine(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
                 }
             }
             Type tb = exp.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray || (tb.ty & 0xFF) == ENUMTY.Tsarray))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                if (!(isArrayOpValid(exp)))
+                if (!isArrayOpValid(exp))
                 {
                     this.result = arrayOpInvalidError(exp);
                     return ;
@@ -8861,7 +8861,7 @@ public class expressionsem {
                 this.result = exp;
                 return ;
             }
-            if (!(target.isVectorOpSupported(tb, exp.op, exp.e2.type.toBasetype())))
+            if (!target.isVectorOpSupported(tb, exp.op, exp.e2.type.toBasetype()))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
@@ -8890,7 +8890,7 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemanticProp(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -8904,16 +8904,16 @@ public class expressionsem {
             }
             {
                 Expression ex = typeCombine(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
                 }
             }
             Type tb = exp.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray || (tb.ty & 0xFF) == ENUMTY.Tsarray))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                if (!(isArrayOpValid(exp)))
+                if (!isArrayOpValid(exp))
                 {
                     this.result = arrayOpInvalidError(exp);
                     return ;
@@ -8924,30 +8924,30 @@ public class expressionsem {
             if (exp.checkArithmeticBin())
                 this.setError();
                 return ;
-            if (!(target.isVectorOpSupported(tb, exp.op, exp.e2.type.toBasetype())))
+            if (!target.isVectorOpSupported(tb, exp.op, exp.e2.type.toBasetype()))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
             }
             e = exp.optimize(0, false);
-            if ((e.op & 0xFF) != 226)
+            if (((e.op & 0xFF) != 226))
             {
                 e = expressionSemantic(e, this.sc);
                 this.result = e;
                 return ;
             }
             long intpow = 0L;
-            if (((exp.e2.op & 0xFF) == 135 && ((long)exp.e2.toInteger() == 2L || (long)exp.e2.toInteger() == 3L)))
+            if (((exp.e2.op & 0xFF) == 135) && ((long)exp.e2.toInteger() == 2L) || ((long)exp.e2.toInteger() == 3L))
                 intpow = (long)exp.e2.toInteger();
-            else if (((exp.e2.op & 0xFF) == 140 && exp.e2.toReal() == (double)(long)exp.e2.toReal()))
+            else if (((exp.e2.op & 0xFF) == 140) && (exp.e2.toReal() == (double)(long)exp.e2.toReal()))
                 intpow = (long)exp.e2.toReal();
-            if ((intpow == 2L || intpow == 3L))
+            if ((intpow == 2L) || (intpow == 3L))
             {
                 VarDeclaration tmp = copyToTemp(0L, new BytePtr("__powtmp"), exp.e1);
                 Expression de = new DeclarationExp(exp.loc, tmp);
                 Expression ve = new VarExp(exp.loc, tmp, true);
                 Expression me = new MulExp(exp.loc, ve, ve);
-                if (intpow == 3L)
+                if ((intpow == 3L))
                     me = new MulExp(exp.loc, me, ve);
                 e = new CommaExp(exp.loc, de, me, true);
                 e = expressionSemantic(e, this.sc);
@@ -8955,14 +8955,14 @@ public class expressionsem {
                 return ;
             }
             dmodule.Module mmath = loadStdMath();
-            if (!(mmath != null))
+            if (mmath == null)
             {
                 e.error(new BytePtr("`%s` requires `std.math` for `^^` operators"), e.toChars());
                 this.setError();
                 return ;
             }
             e = new ScopeExp(exp.loc, mmath);
-            if (((exp.e2.op & 0xFF) == 140 && exp.e2.toReal() == CTFloat.half))
+            if (((exp.e2.op & 0xFF) == 140) && (exp.e2.toReal() == CTFloat.half))
             {
                 e = new CallExp(exp.loc, new DotIdExp(exp.loc, e, Id._sqrt), exp.e1);
             }
@@ -8983,7 +8983,7 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemanticProp(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -8998,13 +8998,13 @@ public class expressionsem {
             if (exp.checkIntegralBin())
                 this.setError();
                 return ;
-            if (!(target.isVectorOpSupported(exp.e1.type.toBasetype(), exp.op, exp.e2.type.toBasetype())))
+            if (!target.isVectorOpSupported(exp.e1.type.toBasetype(), exp.op, exp.e2.type.toBasetype()))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
             }
             exp.e1 = integralPromotions(exp.e1, this.sc);
-            if ((exp.e2.type.toBasetype().ty & 0xFF) != ENUMTY.Tvector)
+            if (((exp.e2.type.toBasetype().ty & 0xFF) != ENUMTY.Tvector))
                 exp.e2 = exp.e2.castTo(this.sc, Type.tshiftcnt);
             exp.type = exp.e1.type;
             this.result = exp;
@@ -9018,7 +9018,7 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemanticProp(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -9033,13 +9033,13 @@ public class expressionsem {
             if (exp.checkIntegralBin())
                 this.setError();
                 return ;
-            if (!(target.isVectorOpSupported(exp.e1.type.toBasetype(), exp.op, exp.e2.type.toBasetype())))
+            if (!target.isVectorOpSupported(exp.e1.type.toBasetype(), exp.op, exp.e2.type.toBasetype()))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
             }
             exp.e1 = integralPromotions(exp.e1, this.sc);
-            if ((exp.e2.type.toBasetype().ty & 0xFF) != ENUMTY.Tvector)
+            if (((exp.e2.type.toBasetype().ty & 0xFF) != ENUMTY.Tvector))
                 exp.e2 = exp.e2.castTo(this.sc, Type.tshiftcnt);
             exp.type = exp.e1.type;
             this.result = exp;
@@ -9053,7 +9053,7 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemanticProp(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -9068,13 +9068,13 @@ public class expressionsem {
             if (exp.checkIntegralBin())
                 this.setError();
                 return ;
-            if (!(target.isVectorOpSupported(exp.e1.type.toBasetype(), exp.op, exp.e2.type.toBasetype())))
+            if (!target.isVectorOpSupported(exp.e1.type.toBasetype(), exp.op, exp.e2.type.toBasetype()))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
             }
             exp.e1 = integralPromotions(exp.e1, this.sc);
-            if ((exp.e2.type.toBasetype().ty & 0xFF) != ENUMTY.Tvector)
+            if (((exp.e2.type.toBasetype().ty & 0xFF) != ENUMTY.Tvector))
                 exp.e2 = exp.e2.castTo(this.sc, Type.tshiftcnt);
             exp.type = exp.e1.type;
             this.result = exp;
@@ -9088,7 +9088,7 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemanticProp(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -9100,7 +9100,7 @@ public class expressionsem {
                 this.result = e;
                 return ;
             }
-            if (((exp.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool && (exp.e2.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool))
+            if (((exp.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool) && ((exp.e2.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool))
             {
                 exp.type = exp.e1.type;
                 this.result = exp;
@@ -9108,16 +9108,16 @@ public class expressionsem {
             }
             {
                 Expression ex = typeCombine(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
                 }
             }
             Type tb = exp.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray || (tb.ty & 0xFF) == ENUMTY.Tsarray))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                if (!(isArrayOpValid(exp)))
+                if (!isArrayOpValid(exp))
                 {
                     this.result = arrayOpInvalidError(exp);
                     return ;
@@ -9125,7 +9125,7 @@ public class expressionsem {
                 this.result = exp;
                 return ;
             }
-            if (!(target.isVectorOpSupported(tb, exp.op, exp.e2.type.toBasetype())))
+            if (!target.isVectorOpSupported(tb, exp.op, exp.e2.type.toBasetype()))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
@@ -9144,7 +9144,7 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemanticProp(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -9156,7 +9156,7 @@ public class expressionsem {
                 this.result = e;
                 return ;
             }
-            if (((exp.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool && (exp.e2.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool))
+            if (((exp.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool) && ((exp.e2.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool))
             {
                 exp.type = exp.e1.type;
                 this.result = exp;
@@ -9164,16 +9164,16 @@ public class expressionsem {
             }
             {
                 Expression ex = typeCombine(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
                 }
             }
             Type tb = exp.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray || (tb.ty & 0xFF) == ENUMTY.Tsarray))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                if (!(isArrayOpValid(exp)))
+                if (!isArrayOpValid(exp))
                 {
                     this.result = arrayOpInvalidError(exp);
                     return ;
@@ -9181,7 +9181,7 @@ public class expressionsem {
                 this.result = exp;
                 return ;
             }
-            if (!(target.isVectorOpSupported(tb, exp.op, exp.e2.type.toBasetype())))
+            if (!target.isVectorOpSupported(tb, exp.op, exp.e2.type.toBasetype()))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
@@ -9200,7 +9200,7 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemanticProp(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -9212,7 +9212,7 @@ public class expressionsem {
                 this.result = e;
                 return ;
             }
-            if (((exp.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool && (exp.e2.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool))
+            if (((exp.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool) && ((exp.e2.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool))
             {
                 exp.type = exp.e1.type;
                 this.result = exp;
@@ -9220,16 +9220,16 @@ public class expressionsem {
             }
             {
                 Expression ex = typeCombine(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
                 }
             }
             Type tb = exp.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray || (tb.ty & 0xFF) == ENUMTY.Tsarray))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                if (!(isArrayOpValid(exp)))
+                if (!isArrayOpValid(exp))
                 {
                     this.result = arrayOpInvalidError(exp);
                     return ;
@@ -9237,7 +9237,7 @@ public class expressionsem {
                 this.result = exp;
                 return ;
             }
-            if (!(target.isVectorOpSupported(tb, exp.op, exp.e2.type.toBasetype())))
+            if (!target.isVectorOpSupported(tb, exp.op, exp.e2.type.toBasetype()))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
@@ -9256,7 +9256,7 @@ public class expressionsem {
             }
             exp.setNoderefOperands();
             Expression e1x = expressionSemantic(exp.e1, this.sc);
-            if ((e1x.op & 0xFF) == 20)
+            if (((e1x.op & 0xFF) == 20))
                 e1x = resolveAliasThis(this.sc, e1x, false);
             e1x = resolveProperties(this.sc, e1x);
             e1x = e1x.toBoolean(this.sc);
@@ -9273,33 +9273,33 @@ public class expressionsem {
             Expression e2x = expressionSemantic(exp.e2, this.sc);
             (this.sc).merge(exp.loc, ctorflow);
             ctorflow.freeFieldinit();
-            if ((e2x.op & 0xFF) == 20)
+            if (((e2x.op & 0xFF) == 20))
                 e2x = resolveAliasThis(this.sc, e2x, false);
             e2x = resolveProperties(this.sc, e2x);
             boolean f1 = checkNonAssignmentArrayOp(e1x, false);
             boolean f2 = checkNonAssignmentArrayOp(e2x, false);
-            if ((f1 || f2))
+            if (f1 || f2)
                 this.setError();
                 return ;
-            if ((e2x.type.ty & 0xFF) != ENUMTY.Tvoid)
+            if (((e2x.type.ty & 0xFF) != ENUMTY.Tvoid))
                 e2x = e2x.toBoolean(this.sc);
-            if (((e2x.op & 0xFF) == 20 || (e2x.op & 0xFF) == 203))
+            if (((e2x.op & 0xFF) == 20) || ((e2x.op & 0xFF) == 203))
             {
                 exp.error(new BytePtr("`%s` is not an expression"), exp.e2.toChars());
                 this.setError();
                 return ;
             }
-            if ((e1x.op & 0xFF) == 127)
+            if (((e1x.op & 0xFF) == 127))
             {
                 this.result = e1x;
                 return ;
             }
-            if ((e2x.op & 0xFF) == 127)
+            if (((e2x.op & 0xFF) == 127))
             {
                 this.result = e2x;
                 return ;
             }
-            if ((e2x.type.ty & 0xFF) == ENUMTY.Tvoid)
+            if (((e2x.type.ty & 0xFF) == ENUMTY.Tvoid))
                 exp.type = Type.tvoid;
             else
                 exp.type = Type.tbool;
@@ -9317,7 +9317,7 @@ public class expressionsem {
             exp.setNoderefOperands();
             {
                 Expression ex = binSemanticProp(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -9325,7 +9325,7 @@ public class expressionsem {
             }
             Type t1 = exp.e1.type.toBasetype();
             Type t2 = exp.e2.type.toBasetype();
-            if ((((t1.ty & 0xFF) == ENUMTY.Tclass && (exp.e2.op & 0xFF) == 13) || ((t2.ty & 0xFF) == ENUMTY.Tclass && (exp.e1.op & 0xFF) == 13)))
+            if (((t1.ty & 0xFF) == ENUMTY.Tclass) && ((exp.e2.op & 0xFF) == 13) || ((t2.ty & 0xFF) == ENUMTY.Tclass) && ((exp.e1.op & 0xFF) == 13))
             {
                 exp.error(new BytePtr("do not use `null` when comparing class types"));
                 this.setError();
@@ -9334,15 +9334,15 @@ public class expressionsem {
             Ref<Byte> cmpop = ref(TOK.reserved);
             {
                 Expression e = op_overload(exp, this.sc, ptr(cmpop));
-                if (e != null)
+                if ((e) != null)
                 {
-                    if ((!(e.type.isscalar()) && e.type.equals(exp.e1.type)))
+                    if (!e.type.isscalar() && e.type.equals(exp.e1.type))
                     {
                         exp.error(new BytePtr("recursive `opCmp` expansion"));
                         this.setError();
                         return ;
                     }
-                    if ((e.op & 0xFF) == 18)
+                    if (((e.op & 0xFF) == 18))
                     {
                         e = new CmpExp(cmpop.value, exp.loc, e, new IntegerExp(exp.loc, 0L, Type.tint32));
                         e = expressionSemantic(e, this.sc);
@@ -9353,7 +9353,7 @@ public class expressionsem {
             }
             {
                 Expression ex = typeCombine(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -9361,26 +9361,26 @@ public class expressionsem {
             }
             boolean f1 = checkNonAssignmentArrayOp(exp.e1, false);
             boolean f2 = checkNonAssignmentArrayOp(exp.e2, false);
-            if ((f1 || f2))
+            if (f1 || f2)
                 this.setError();
                 return ;
             exp.type = Type.tbool;
             Expression arrayLowering = null;
             t1 = exp.e1.type.toBasetype();
             t2 = exp.e2.type.toBasetype();
-            if (((((t1.ty & 0xFF) == ENUMTY.Tarray || (t1.ty & 0xFF) == ENUMTY.Tsarray) || (t1.ty & 0xFF) == ENUMTY.Tpointer) && (((t2.ty & 0xFF) == ENUMTY.Tarray || (t2.ty & 0xFF) == ENUMTY.Tsarray) || (t2.ty & 0xFF) == ENUMTY.Tpointer)))
+            if (((t1.ty & 0xFF) == ENUMTY.Tarray) || ((t1.ty & 0xFF) == ENUMTY.Tsarray) || ((t1.ty & 0xFF) == ENUMTY.Tpointer) && ((t2.ty & 0xFF) == ENUMTY.Tarray) || ((t2.ty & 0xFF) == ENUMTY.Tsarray) || ((t2.ty & 0xFF) == ENUMTY.Tpointer))
             {
                 Type t1next = t1.nextOf();
                 Type t2next = t2.nextOf();
-                if (((t1next.implicitConvTo(t2next) < MATCH.constant && t2next.implicitConvTo(t1next) < MATCH.constant) && ((t1next.ty & 0xFF) != ENUMTY.Tvoid && (t2next.ty & 0xFF) != ENUMTY.Tvoid)))
+                if ((t1next.implicitConvTo(t2next) < MATCH.constant) && (t2next.implicitConvTo(t1next) < MATCH.constant) && ((t1next.ty & 0xFF) != ENUMTY.Tvoid) && ((t2next.ty & 0xFF) != ENUMTY.Tvoid))
                 {
                     exp.error(new BytePtr("array comparison type mismatch, `%s` vs `%s`"), t1next.toChars(), t2next.toChars());
                     this.setError();
                     return ;
                 }
-                if ((((t1.ty & 0xFF) == ENUMTY.Tarray || (t1.ty & 0xFF) == ENUMTY.Tsarray) && ((t2.ty & 0xFF) == ENUMTY.Tarray || (t2.ty & 0xFF) == ENUMTY.Tsarray)))
+                if (((t1.ty & 0xFF) == ENUMTY.Tarray) || ((t1.ty & 0xFF) == ENUMTY.Tsarray) && ((t2.ty & 0xFF) == ENUMTY.Tarray) || ((t2.ty & 0xFF) == ENUMTY.Tsarray))
                 {
-                    if (!(verifyHookExist(exp.loc, this.sc, Id.__cmp, new ByteSlice("comparing arrays"), Id.object)))
+                    if (!verifyHookExist(exp.loc, this.sc, Id.__cmp, new ByteSlice("comparing arrays"), Id.object))
                         this.setError();
                         return ;
                     Expression al = new IdentifierExp(exp.loc, Id.empty);
@@ -9395,28 +9395,28 @@ public class expressionsem {
                     arrayLowering = al;
                 }
             }
-            else if ((((t1.ty & 0xFF) == ENUMTY.Tstruct || (t2.ty & 0xFF) == ENUMTY.Tstruct) || ((t1.ty & 0xFF) == ENUMTY.Tclass && (t2.ty & 0xFF) == ENUMTY.Tclass)))
+            else if (((t1.ty & 0xFF) == ENUMTY.Tstruct) || ((t2.ty & 0xFF) == ENUMTY.Tstruct) || ((t1.ty & 0xFF) == ENUMTY.Tclass) && ((t2.ty & 0xFF) == ENUMTY.Tclass))
             {
-                if ((t2.ty & 0xFF) == ENUMTY.Tstruct)
+                if (((t2.ty & 0xFF) == ENUMTY.Tstruct))
                     exp.error(new BytePtr("need member function `opCmp()` for %s `%s` to compare"), t2.toDsymbol(this.sc).kind(), t2.toChars());
                 else
                     exp.error(new BytePtr("need member function `opCmp()` for %s `%s` to compare"), t1.toDsymbol(this.sc).kind(), t1.toChars());
                 this.setError();
                 return ;
             }
-            else if ((t1.iscomplex() || t2.iscomplex()))
+            else if (t1.iscomplex() || t2.iscomplex())
             {
                 exp.error(new BytePtr("compare not defined for complex operands"));
                 this.setError();
                 return ;
             }
-            else if (((t1.ty & 0xFF) == ENUMTY.Taarray || (t2.ty & 0xFF) == ENUMTY.Taarray))
+            else if (((t1.ty & 0xFF) == ENUMTY.Taarray) || ((t2.ty & 0xFF) == ENUMTY.Taarray))
             {
                 exp.error(new BytePtr("`%s` is not defined for associative arrays"), Token.toChars(exp.op));
                 this.setError();
                 return ;
             }
-            else if (!(target.isVectorOpSupported(t1, exp.op, t2)))
+            else if (!target.isVectorOpSupported(t1, exp.op, t2))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
@@ -9425,7 +9425,7 @@ public class expressionsem {
             {
                 boolean r1 = exp.e1.checkValue();
                 boolean r2 = exp.e2.checkValue();
-                if ((r1 || r2))
+                if (r1 || r2)
                     this.setError();
                     return ;
             }
@@ -9447,7 +9447,7 @@ public class expressionsem {
             }
             {
                 Expression ex = binSemanticProp(exp, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -9464,7 +9464,7 @@ public class expressionsem {
             {
                 case 2:
                     TypeAArray ta = (TypeAArray)t2b;
-                    if (!(arrayTypeCompatibleWithoutCasting(exp.e1.type, ta.index)))
+                    if (!arrayTypeCompatibleWithoutCasting(exp.e1.type, ta.index))
                     {
                         exp.e1 = exp.e1.implicitCastTo(this.sc, ta.index);
                     }
@@ -9484,7 +9484,7 @@ public class expressionsem {
         public  void visit(RemoveExp e) {
             {
                 Expression ex = binSemantic(e, this.sc);
-                if (ex != null)
+                if ((ex) != null)
                 {
                     this.result = ex;
                     return ;
@@ -9502,13 +9502,13 @@ public class expressionsem {
             exp.setNoderefOperands();
             {
                 Expression e = binSemanticProp(exp, this.sc);
-                if (e != null)
+                if ((e) != null)
                 {
                     this.result = e;
                     return ;
                 }
             }
-            if (((exp.e1.op & 0xFF) == 20 || (exp.e2.op & 0xFF) == 20))
+            if (((exp.e1.op & 0xFF) == 20) || ((exp.e2.op & 0xFF) == 20))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
@@ -9516,18 +9516,18 @@ public class expressionsem {
             {
                 Type t1 = exp.e1.type;
                 Type t2 = exp.e2.type;
-                if ((((t1.ty & 0xFF) == ENUMTY.Tenum && (t2.ty & 0xFF) == ENUMTY.Tenum) && !(t1.equivalent(t2))))
+                if (((t1.ty & 0xFF) == ENUMTY.Tenum) && ((t2.ty & 0xFF) == ENUMTY.Tenum) && !t1.equivalent(t2))
                     exp.error(new BytePtr("Comparison between different enumeration types `%s` and `%s`; If this behavior is intended consider using `std.conv.asOriginalType`"), t1.toChars(), t2.toChars());
             }
-            if (((exp.e1.op & 0xFF) == 19 && (exp.e2.op & 0xFF) == 19))
+            if (((exp.e1.op & 0xFF) == 19) && ((exp.e2.op & 0xFF) == 19))
             {
                 AddrExp ae1 = (AddrExp)exp.e1;
                 AddrExp ae2 = (AddrExp)exp.e2;
-                if (((ae1.e1.op & 0xFF) == 26 && (ae2.e1.op & 0xFF) == 26))
+                if (((ae1.e1.op & 0xFF) == 26) && ((ae2.e1.op & 0xFF) == 26))
                 {
                     VarExp ve1 = (VarExp)ae1.e1;
                     VarExp ve2 = (VarExp)ae2.e1;
-                    if (pequals(ve1.var, ve2.var))
+                    if ((pequals(ve1.var, ve2.var)))
                     {
                         this.result = new IntegerExp(exp.loc, (((exp.op & 0xFF) == 58) ? 1 : 0), Type.tbool);
                         return ;
@@ -9540,36 +9540,36 @@ public class expressionsem {
                 public Boolean invoke(Type t1, Type t2){
                     Type t1n = t1.nextOf().toBasetype();
                     Type t2n = t2.nextOf().toBasetype();
-                    if ((((((t1n.ty & 0xFF) == ENUMTY.Tchar || (t1n.ty & 0xFF) == ENUMTY.Twchar) || (t1n.ty & 0xFF) == ENUMTY.Tdchar) && (((t2n.ty & 0xFF) == ENUMTY.Tchar || (t2n.ty & 0xFF) == ENUMTY.Twchar) || (t2n.ty & 0xFF) == ENUMTY.Tdchar)) || ((t1n.ty & 0xFF) == ENUMTY.Tvoid || (t2n.ty & 0xFF) == ENUMTY.Tvoid)))
+                    if (((t1n.ty & 0xFF) == ENUMTY.Tchar) || ((t1n.ty & 0xFF) == ENUMTY.Twchar) || ((t1n.ty & 0xFF) == ENUMTY.Tdchar) && ((t2n.ty & 0xFF) == ENUMTY.Tchar) || ((t2n.ty & 0xFF) == ENUMTY.Twchar) || ((t2n.ty & 0xFF) == ENUMTY.Tdchar) || ((t1n.ty & 0xFF) == ENUMTY.Tvoid) || ((t2n.ty & 0xFF) == ENUMTY.Tvoid))
                     {
                         return false;
                     }
-                    if (!pequals(t1n.constOf(), t2n.constOf()))
+                    if ((!pequals(t1n.constOf(), t2n.constOf())))
                         return true;
                     Type t = t1n;
                     for (; t.toBasetype().nextOf() != null;) {
                         t = t.nextOf().toBasetype();
                     }
-                    if ((t.ty & 0xFF) != ENUMTY.Tstruct)
+                    if (((t.ty & 0xFF) != ENUMTY.Tstruct))
                         return false;
-                    if ((global.params.useTypeInfo && Type.dtypeinfo != null))
+                    if (global.params.useTypeInfo && (Type.dtypeinfo != null))
                         semanticTypeInfo(sc, t);
                     return ((TypeStruct)t).sym.hasIdentityEquals;
                 }
             };
             {
                 Expression e = op_overload(exp, this.sc, null);
-                if (e != null)
+                if ((e) != null)
                 {
                     this.result = e;
                     return ;
                 }
             }
-            if (!((((t1.ty & 0xFF) == ENUMTY.Tarray && (t2.ty & 0xFF) == ENUMTY.Tarray) && needsDirectEq.invoke(t1, t2))))
+            if (!(((t1.ty & 0xFF) == ENUMTY.Tarray) && ((t2.ty & 0xFF) == ENUMTY.Tarray) && needsDirectEq.invoke(t1, t2)))
             {
                 {
                     Expression e = typeCombine(exp, this.sc);
-                    if (e != null)
+                    if ((e) != null)
                     {
                         this.result = e;
                         return ;
@@ -9578,24 +9578,24 @@ public class expressionsem {
             }
             boolean f1 = checkNonAssignmentArrayOp(exp.e1, false);
             boolean f2 = checkNonAssignmentArrayOp(exp.e2, false);
-            if ((f1 || f2))
+            if (f1 || f2)
                 this.setError();
                 return ;
             exp.type = Type.tbool;
-            if (!((((t1.ty & 0xFF) == ENUMTY.Tarray && (t2.ty & 0xFF) == ENUMTY.Tarray) && needsDirectEq.invoke(t1, t2))))
+            if (!(((t1.ty & 0xFF) == ENUMTY.Tarray) && ((t2.ty & 0xFF) == ENUMTY.Tarray) && needsDirectEq.invoke(t1, t2)))
             {
-                if (!(arrayTypeCompatible(exp.loc, exp.e1.type, exp.e2.type)))
+                if (!arrayTypeCompatible(exp.loc, exp.e1.type, exp.e2.type))
                 {
-                    if (((!pequals(exp.e1.type, exp.e2.type) && exp.e1.type.isfloating()) && exp.e2.type.isfloating()))
+                    if ((!pequals(exp.e1.type, exp.e2.type)) && exp.e1.type.isfloating() && exp.e2.type.isfloating())
                     {
                         exp.e1 = exp.e1.castTo(this.sc, Type.tcomplex80);
                         exp.e2 = exp.e2.castTo(this.sc, Type.tcomplex80);
                     }
                 }
             }
-            if (((t1.ty & 0xFF) == ENUMTY.Tarray && (t2.ty & 0xFF) == ENUMTY.Tarray))
+            if (((t1.ty & 0xFF) == ENUMTY.Tarray) && ((t2.ty & 0xFF) == ENUMTY.Tarray))
             {
-                if (!(verifyHookExist(exp.loc, this.sc, Id.__equals, new ByteSlice("equal checks on arrays"), Id.object)))
+                if (!verifyHookExist(exp.loc, this.sc, Id.__equals, new ByteSlice("equal checks on arrays"), Id.object))
                     this.setError();
                     return ;
                 Expression __equals = new IdentifierExp(exp.loc, Id.empty);
@@ -9606,7 +9606,7 @@ public class expressionsem {
                 arguments.set(0, exp.e1);
                 arguments.set(1, exp.e2);
                 __equals = new CallExp(exp.loc, __equals, arguments);
-                if ((exp.op & 0xFF) == 59)
+                if (((exp.op & 0xFF) == 59))
                 {
                     __equals = new NotExp(exp.loc, __equals);
                 }
@@ -9614,9 +9614,9 @@ public class expressionsem {
                 this.result = __equals;
                 return ;
             }
-            if ((exp.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Taarray)
+            if (((exp.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Taarray))
                 semanticTypeInfo(this.sc, exp.e1.type.toBasetype());
-            if (!(target.isVectorOpSupported(t1, exp.op, t2)))
+            if (!target.isVectorOpSupported(t1, exp.op, t2))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
@@ -9633,7 +9633,7 @@ public class expressionsem {
             exp.setNoderefOperands();
             {
                 Expression e = binSemanticProp(exp, this.sc);
-                if (e != null)
+                if ((e) != null)
                 {
                     this.result = e;
                     return ;
@@ -9641,7 +9641,7 @@ public class expressionsem {
             }
             {
                 Expression e = typeCombine(exp, this.sc);
-                if (e != null)
+                if ((e) != null)
                 {
                     this.result = e;
                     return ;
@@ -9649,32 +9649,32 @@ public class expressionsem {
             }
             boolean f1 = checkNonAssignmentArrayOp(exp.e1, false);
             boolean f2 = checkNonAssignmentArrayOp(exp.e2, false);
-            if ((f1 || f2))
+            if (f1 || f2)
                 this.setError();
                 return ;
-            if (((exp.e1.op & 0xFF) == 20 || (exp.e2.op & 0xFF) == 20))
+            if (((exp.e1.op & 0xFF) == 20) || ((exp.e2.op & 0xFF) == 20))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
             }
             exp.type = Type.tbool;
-            if (((!pequals(exp.e1.type, exp.e2.type) && exp.e1.type.isfloating()) && exp.e2.type.isfloating()))
+            if ((!pequals(exp.e1.type, exp.e2.type)) && exp.e1.type.isfloating() && exp.e2.type.isfloating())
             {
                 exp.e1 = exp.e1.castTo(this.sc, Type.tcomplex80);
                 exp.e2 = exp.e2.castTo(this.sc, Type.tcomplex80);
             }
             Type tb1 = exp.e1.type.toBasetype();
             Type tb2 = exp.e2.type.toBasetype();
-            if (!(target.isVectorOpSupported(tb1, exp.op, tb2)))
+            if (!target.isVectorOpSupported(tb1, exp.op, tb2))
             {
                 this.result = exp.incompatibleTypes();
                 return ;
             }
-            if ((exp.e1.op & 0xFF) == 18)
+            if (((exp.e1.op & 0xFF) == 18))
                 exp.e1 = ((CallExp)exp.e1).addDtorHook(this.sc);
-            if ((exp.e2.op & 0xFF) == 18)
+            if (((exp.e2.op & 0xFF) == 18))
                 exp.e2 = ((CallExp)exp.e2).addDtorHook(this.sc);
-            if (((exp.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray || (exp.e2.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
+            if (((exp.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) || ((exp.e2.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
                 exp.deprecation(new BytePtr("identity comparison of static arrays implicitly coerces them to slices, which are compared by reference"));
             this.result = exp;
         }
@@ -9685,7 +9685,7 @@ public class expressionsem {
                 this.result = exp;
                 return ;
             }
-            if ((exp.econd.op & 0xFF) == 28)
+            if (((exp.econd.op & 0xFF) == 28))
                 ((DotIdExp)exp.econd).noderef = true;
             Expression ec = expressionSemantic(exp.econd, this.sc);
             ec = resolveProperties(this.sc, ec);
@@ -9699,54 +9699,54 @@ public class expressionsem {
             e2x = resolveProperties(this.sc, e2x);
             (this.sc).merge(exp.loc, ctorflow1);
             ctorflow1.freeFieldinit();
-            if ((ec.op & 0xFF) == 127)
+            if (((ec.op & 0xFF) == 127))
             {
                 this.result = ec;
                 return ;
             }
-            if (pequals(ec.type, Type.terror))
+            if ((pequals(ec.type, Type.terror)))
                 this.setError();
                 return ;
             exp.econd = ec;
-            if ((e1x.op & 0xFF) == 127)
+            if (((e1x.op & 0xFF) == 127))
             {
                 this.result = e1x;
                 return ;
             }
-            if (pequals(e1x.type, Type.terror))
+            if ((pequals(e1x.type, Type.terror)))
                 this.setError();
                 return ;
             exp.e1 = e1x;
-            if ((e2x.op & 0xFF) == 127)
+            if (((e2x.op & 0xFF) == 127))
             {
                 this.result = e2x;
                 return ;
             }
-            if (pequals(e2x.type, Type.terror))
+            if ((pequals(e2x.type, Type.terror)))
                 this.setError();
                 return ;
             exp.e2 = e2x;
             boolean f0 = checkNonAssignmentArrayOp(exp.econd, false);
             boolean f1 = checkNonAssignmentArrayOp(exp.e1, false);
             boolean f2 = checkNonAssignmentArrayOp(exp.e2, false);
-            if (((f0 || f1) || f2))
+            if (f0 || f1 || f2)
                 this.setError();
                 return ;
             Type t1 = exp.e1.type;
             Type t2 = exp.e2.type;
-            if (((t1.ty & 0xFF) == ENUMTY.Tvoid || (t2.ty & 0xFF) == ENUMTY.Tvoid))
+            if (((t1.ty & 0xFF) == ENUMTY.Tvoid) || ((t2.ty & 0xFF) == ENUMTY.Tvoid))
             {
                 exp.type = Type.tvoid;
                 exp.e1 = exp.e1.castTo(this.sc, exp.type);
                 exp.e2 = exp.e2.castTo(this.sc, exp.type);
             }
-            else if (pequals(t1, t2))
+            else if ((pequals(t1, t2)))
                 exp.type = t1;
             else
             {
                 {
                     Expression ex = typeCombine(exp, this.sc);
-                    if (ex != null)
+                    if ((ex) != null)
                     {
                         this.result = ex;
                         return ;
@@ -9772,7 +9772,7 @@ public class expressionsem {
                     default:
                     break;
                 }
-                if ((exp.type.toBasetype().ty & 0xFF) == ENUMTY.Tarray)
+                if (((exp.type.toBasetype().ty & 0xFF) == ENUMTY.Tarray))
                 {
                     exp.e1 = exp.e1.castTo(this.sc, exp.type);
                     exp.e2 = exp.e2.castTo(this.sc, exp.type);
@@ -9840,7 +9840,7 @@ public class expressionsem {
 
     public static Expression unaSemantic(UnaExp e, Scope sc) {
         Expression e1x = expressionSemantic(e.e1, sc);
-        if ((e1x.op & 0xFF) == 127)
+        if (((e1x.op & 0xFF) == 127))
             return e1x;
         e.e1 = e1x;
         return null;
@@ -9849,13 +9849,13 @@ public class expressionsem {
     public static Expression binSemantic(BinExp e, Scope sc) {
         Expression e1x = expressionSemantic(e.e1, sc);
         Expression e2x = expressionSemantic(e.e2, sc);
-        if ((e1x.op & 0xFF) == 20)
+        if (((e1x.op & 0xFF) == 20))
             e1x = resolveAliasThis(sc, e1x, false);
-        if ((e2x.op & 0xFF) == 20)
+        if (((e2x.op & 0xFF) == 20))
             e2x = resolveAliasThis(sc, e2x, false);
-        if ((e1x.op & 0xFF) == 127)
+        if (((e1x.op & 0xFF) == 127))
             return e1x;
-        if ((e2x.op & 0xFF) == 127)
+        if (((e2x.op & 0xFF) == 127))
             return e2x;
         e.e1 = e1x;
         e.e2 = e2x;
@@ -9865,14 +9865,14 @@ public class expressionsem {
     public static Expression binSemanticProp(BinExp e, Scope sc) {
         {
             Expression ex = binSemantic(e, sc);
-            if (ex != null)
+            if ((ex) != null)
                 return ex;
         }
         Expression e1x = resolveProperties(sc, e.e1);
         Expression e2x = resolveProperties(sc, e.e2);
-        if ((e1x.op & 0xFF) == 127)
+        if (((e1x.op & 0xFF) == 127))
             return e1x;
-        if ((e2x.op & 0xFF) == 127)
+        if (((e2x.op & 0xFF) == 127))
             return e2x;
         e.e1 = e1x;
         e.e2 = e2x;
@@ -9888,10 +9888,10 @@ public class expressionsem {
     public static Expression semanticX(DotIdExp exp, Scope sc) {
         {
             Expression ex = unaSemantic(exp, sc);
-            if (ex != null)
+            if ((ex) != null)
                 return ex;
         }
-        if (pequals(exp.ident, Id._mangleof))
+        if ((pequals(exp.ident, Id._mangleof)))
         {
             Dsymbol ds = null;
             {
@@ -9924,7 +9924,7 @@ public class expressionsem {
                                 assert(ds != null);
                                 {
                                     FuncDeclaration f = ds.isFuncDeclaration();
-                                    if (f != null)
+                                    if ((f) != null)
                                     {
                                         if (f.checkForwardRef(exp.loc))
                                         {
@@ -9949,24 +9949,24 @@ public class expressionsem {
                 } while(__dispatch16 != 0);
             }
         }
-        if ((((exp.e1.op & 0xFF) == 26 && (exp.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) && pequals(exp.ident, Id.length)))
+        if (((exp.e1.op & 0xFF) == 26) && ((exp.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) && (pequals(exp.ident, Id.length)))
         {
             return dotExp(exp.e1.type, sc, exp.e1, exp.ident, exp.noderef ? DotExpFlag.noDeref : 0);
         }
-        if ((exp.e1.op & 0xFF) == 97)
+        if (((exp.e1.op & 0xFF) == 97))
         {
         }
         else
         {
             exp.e1 = resolvePropertiesX(sc, exp.e1, null);
         }
-        if (((exp.e1.op & 0xFF) == 126 && pequals(exp.ident, Id.offsetof)))
+        if (((exp.e1.op & 0xFF) == 126) && (pequals(exp.ident, Id.offsetof)))
         {
             TupleExp te = (TupleExp)exp.e1;
             DArray<Expression> exps = new DArray<Expression>((te.exps).length);
             {
                 int i = 0;
-                for (; i < (exps).length;i++){
+                for (; (i < (exps).length);i++){
                     Expression e = (te.exps).get(i);
                     e = expressionSemantic(e, sc);
                     e = new DotIdExp(e.loc, e, Id.offsetof);
@@ -9977,18 +9977,18 @@ public class expressionsem {
             e = expressionSemantic(e, sc);
             return e;
         }
-        if (((exp.e1.op & 0xFF) == 126 && pequals(exp.ident, Id.length)))
+        if (((exp.e1.op & 0xFF) == 126) && (pequals(exp.ident, Id.length)))
         {
             TupleExp te = (TupleExp)exp.e1;
             Expression e = new IntegerExp(exp.loc, (long)(te.exps).length, Type.tsize_t);
             return e;
         }
-        if ((((exp.e1.op & 0xFF) == 37 || (exp.e1.op & 0xFF) == 36) && !pequals(exp.ident, Id.stringof)))
+        if (((exp.e1.op & 0xFF) == 37) || ((exp.e1.op & 0xFF) == 36) && (!pequals(exp.ident, Id.stringof)))
         {
             exp.error(new BytePtr("template `%s` does not have property `%s`"), exp.e1.toChars(), exp.ident.toChars());
             return new ErrorExp();
         }
-        if (!(exp.e1.type != null))
+        if (exp.e1.type == null)
         {
             exp.error(new BytePtr("expression `%s` does not have property `%s`"), exp.e1.toChars(), exp.ident.toChars());
             return new ErrorExp();
@@ -9997,31 +9997,31 @@ public class expressionsem {
     }
 
     public static Expression semanticY(DotIdExp exp, Scope sc, int flag) {
-        if ((((exp.e1.op & 0xFF) == 123 || (exp.e1.op & 0xFF) == 124) && !(hasThis(sc) != null)))
+        if (((exp.e1.op & 0xFF) == 123) || ((exp.e1.op & 0xFF) == 124) && (hasThis(sc) == null))
         {
             {
                 AggregateDeclaration ad = (sc).getStructClassScope();
-                if (ad != null)
+                if ((ad) != null)
                 {
-                    if ((exp.e1.op & 0xFF) == 123)
+                    if (((exp.e1.op & 0xFF) == 123))
                     {
                         exp.e1 = new TypeExp(exp.e1.loc, ad.type);
                     }
                     else
                     {
                         ClassDeclaration cd = ad.isClassDeclaration();
-                        if ((cd != null && cd.baseClass != null))
+                        if ((cd != null) && (cd.baseClass != null))
                             exp.e1 = new TypeExp(exp.e1.loc, cd.baseClass.type);
                     }
                 }
             }
         }
         Expression e = semanticX(exp, sc);
-        if (!pequals(e, exp))
+        if ((!pequals(e, exp)))
             return e;
         Expression eleft = null;
         Expression eright = null;
-        if ((exp.e1.op & 0xFF) == 97)
+        if (((exp.e1.op & 0xFF) == 97))
         {
             DotExp de = (DotExp)exp.e1;
             eleft = de.e1;
@@ -10033,23 +10033,23 @@ public class expressionsem {
             eright = exp.e1;
         }
         Type t1b = exp.e1.type.toBasetype();
-        if ((eright.op & 0xFF) == 203)
+        if (((eright.op & 0xFF) == 203))
         {
             ScopeExp ie = (ScopeExp)eright;
             int flags = 8;
-            if ((ie.sds.isModule() != null && !pequals(ie.sds, (sc)._module)))
+            if ((ie.sds.isModule() != null) && (!pequals(ie.sds, (sc)._module)))
                 flags |= 1;
             if (((sc).flags & 512) != 0)
                 flags |= 128;
             Dsymbol s = ie.sds.search(exp.loc, exp.ident, flags);
-            if (((s != null && !(((sc).flags & 512) != 0)) && !(symbolIsVisible((sc)._module, s))))
+            if ((s != null) && (((sc).flags & 512) == 0) && !symbolIsVisible((sc)._module, s))
             {
                 s = null;
             }
             if (s != null)
             {
                 dmodule.Package p = s.isPackage();
-                if ((p != null && checkAccess(exp.loc, sc, p)))
+                if ((p != null) && checkAccess(exp.loc, sc, p))
                 {
                     s = null;
                 }
@@ -10067,19 +10067,19 @@ public class expressionsem {
                 VarDeclaration v = s.isVarDeclaration();
                 if (v != null)
                 {
-                    if ((!(v.type != null) || (v.type.deco == null && (v.inuse) != 0)))
+                    if ((v.type == null) || (v.type.deco == null) && (v.inuse != 0))
                     {
-                        if ((v.inuse) != 0)
+                        if (v.inuse != 0)
                             exp.error(new BytePtr("circular reference to %s `%s`"), v.kind(), v.toPrettyChars(false));
                         else
                             exp.error(new BytePtr("forward reference to %s `%s`"), v.kind(), v.toPrettyChars(false));
                         return new ErrorExp();
                     }
-                    if ((v.type.ty & 0xFF) == ENUMTY.Terror)
+                    if (((v.type.ty & 0xFF) == ENUMTY.Terror))
                         return new ErrorExp();
-                    if ((((v.storage_class & 8388608L) != 0 && v._init != null) && !(exp.wantsym)))
+                    if (((v.storage_class & 8388608L) != 0) && (v._init != null) && !exp.wantsym)
                     {
-                        if ((v.inuse) != 0)
+                        if (v.inuse != 0)
                         {
                             error(exp.loc, new BytePtr("circular initialization of %s `%s`"), v.kind(), v.toPrettyChars(false));
                             return new ErrorExp();
@@ -10092,7 +10092,7 @@ public class expressionsem {
                     }
                     if (v.needThis())
                     {
-                        if (!(eleft != null))
+                        if (eleft == null)
                             eleft = new ThisExp(exp.loc);
                         e = new DotVarExp(exp.loc, eleft, v, true);
                         e = expressionSemantic(e, sc);
@@ -10112,11 +10112,11 @@ public class expressionsem {
                 FuncDeclaration f = s.isFuncDeclaration();
                 if (f != null)
                 {
-                    if (!(f.functionSemantic()))
+                    if (!f.functionSemantic())
                         return new ErrorExp();
                     if (f.needThis())
                     {
-                        if (!(eleft != null))
+                        if (eleft == null)
                             eleft = new ThisExp(exp.loc);
                         e = new DotVarExp(exp.loc, eleft, f, true);
                         e = expressionSemantic(e, sc);
@@ -10134,7 +10134,7 @@ public class expressionsem {
                 }
                 {
                     TemplateDeclaration td = s.isTemplateDeclaration();
-                    if (td != null)
+                    if ((td) != null)
                     {
                         if (eleft != null)
                             e = new DotTemplateExp(exp.loc, eleft, td);
@@ -10146,7 +10146,7 @@ public class expressionsem {
                 }
                 {
                     OverDeclaration od = s.isOverDeclaration();
-                    if (od != null)
+                    if ((od) != null)
                     {
                         e = new VarExp(exp.loc, od, true);
                         if (eleft != null)
@@ -10164,7 +10164,7 @@ public class expressionsem {
                 }
                 {
                     Type t = s.getType();
-                    if (t != null)
+                    if ((t) != null)
                     {
                         return expressionSemantic(new TypeExp(exp.loc, t), sc);
                     }
@@ -10199,18 +10199,18 @@ public class expressionsem {
                 }
                 throw new AssertionError("Unreachable code!");
             }
-            else if (pequals(exp.ident, Id.stringof))
+            else if ((pequals(exp.ident, Id.stringof)))
             {
                 ByteSlice p = ie.asString().copy();
                 e = new StringExp(exp.loc, toBytePtr(p), p.getLength());
                 e = expressionSemantic(e, sc);
                 return e;
             }
-            if (((ie.sds.isPackage() != null || ie.sds.isImport() != null) || ie.sds.isModule() != null))
+            if ((ie.sds.isPackage() != null) || (ie.sds.isImport() != null) || (ie.sds.isModule() != null))
             {
                 flag = 0;
             }
-            if ((flag) != 0)
+            if (flag != 0)
                 return null;
             s = ie.sds.search_correct(exp.ident);
             if (s != null)
@@ -10224,16 +10224,16 @@ public class expressionsem {
                 exp.error(new BytePtr("undefined identifier `%s` in %s `%s`"), exp.ident.toChars(), ie.sds.kind(), ie.sds.toPrettyChars(false));
             return new ErrorExp();
         }
-        else if (((((((((t1b.ty & 0xFF) == ENUMTY.Tpointer && (exp.e1.type.ty & 0xFF) != ENUMTY.Tenum) && !pequals(exp.ident, Id._init)) && !pequals(exp.ident, Id.__sizeof)) && !pequals(exp.ident, Id.__xalignof)) && !pequals(exp.ident, Id.offsetof)) && !pequals(exp.ident, Id._mangleof)) && !pequals(exp.ident, Id.stringof)))
+        else if (((t1b.ty & 0xFF) == ENUMTY.Tpointer) && ((exp.e1.type.ty & 0xFF) != ENUMTY.Tenum) && (!pequals(exp.ident, Id._init)) && (!pequals(exp.ident, Id.__sizeof)) && (!pequals(exp.ident, Id.__xalignof)) && (!pequals(exp.ident, Id.offsetof)) && (!pequals(exp.ident, Id._mangleof)) && (!pequals(exp.ident, Id.stringof)))
         {
             Type t1bn = t1b.nextOf();
-            if ((flag) != 0)
+            if (flag != 0)
             {
                 AggregateDeclaration ad = isAggregate(t1bn);
-                if ((ad != null && ad.members == null))
+                if ((ad != null) && (ad.members == null))
                     return null;
             }
-            if (((flag) != 0 && (t1bn.ty & 0xFF) == ENUMTY.Tvoid))
+            if ((flag != 0) && ((t1bn.ty & 0xFF) == ENUMTY.Tvoid))
                 return null;
             e = new PtrExp(exp.loc, exp.e1);
             e = expressionSemantic(e, sc);
@@ -10241,7 +10241,7 @@ public class expressionsem {
         }
         else
         {
-            if (((exp.e1.op & 0xFF) == 20 || (exp.e1.op & 0xFF) == 36))
+            if (((exp.e1.op & 0xFF) == 20) || ((exp.e1.op & 0xFF) == 36))
                 flag = 0;
             e = dotExp(exp.e1.type, sc, exp.e1, exp.ident, flag | (exp.noderef ? DotExpFlag.noDeref : 0));
             if (e != null)
@@ -10258,38 +10258,38 @@ public class expressionsem {
         };
         DotIdExp die = new DotIdExp(exp.loc, exp.e1, exp.ti.name);
         Expression e = semanticX(die, sc);
-        if (pequals(e, die))
+        if ((pequals(e, die)))
         {
             exp.e1 = die.e1;
             Type t1b = exp.e1.type.toBasetype();
-            if ((((((t1b.ty & 0xFF) == ENUMTY.Tarray || (t1b.ty & 0xFF) == ENUMTY.Tsarray) || (t1b.ty & 0xFF) == ENUMTY.Taarray) || (t1b.ty & 0xFF) == ENUMTY.Tnull) || (t1b.isTypeBasic() != null && (t1b.ty & 0xFF) != ENUMTY.Tvoid)))
+            if (((t1b.ty & 0xFF) == ENUMTY.Tarray) || ((t1b.ty & 0xFF) == ENUMTY.Tsarray) || ((t1b.ty & 0xFF) == ENUMTY.Taarray) || ((t1b.ty & 0xFF) == ENUMTY.Tnull) || (t1b.isTypeBasic() != null) && ((t1b.ty & 0xFF) != ENUMTY.Tvoid))
             {
-                if ((flag) != 0)
+                if (flag != 0)
                     return null;
             }
             e = semanticY(die, sc, flag);
-            if ((flag) != 0)
+            if (flag != 0)
             {
-                if ((!(e != null) || isDotOpDispatch(e)))
+                if ((e == null) || isDotOpDispatch(e))
                 {
                     return null;
                 }
             }
         }
         assert(e != null);
-        if ((e.op & 0xFF) == 127)
+        if (((e.op & 0xFF) == 127))
             return e;
         try {
-            if ((e.op & 0xFF) == 27)
+            if (((e.op & 0xFF) == 27))
             {
                 DotVarExp dve = (DotVarExp)e;
                 {
                     FuncDeclaration fd = dve.var.isFuncDeclaration();
-                    if (fd != null)
+                    if ((fd) != null)
                     {
                         {
                             TemplateDeclaration td = fd.findTemplateDeclRoot();
-                            if (td != null)
+                            if ((td) != null)
                             {
                                 e = new DotTemplateExp(dve.loc, dve.e1, td);
                                 e = expressionSemantic(e, sc);
@@ -10298,21 +10298,21 @@ public class expressionsem {
                     }
                     else {
                         OverDeclaration od = dve.var.isOverDeclaration();
-                        if (od != null)
+                        if ((od) != null)
                         {
                             exp.e1 = dve.e1;
-                            if (!(exp.findTempDecl(sc)))
+                            if (!exp.findTempDecl(sc))
                                 /*goto Lerr*/throw Dispatch0.INSTANCE;
                             if (exp.ti.needsTypeInference(sc, 0))
                                 return exp;
                             dsymbolSemantic(exp.ti, sc);
-                            if ((!(exp.ti.inst != null) || exp.ti.errors))
+                            if ((exp.ti.inst == null) || exp.ti.errors)
                                 return errorExp.invoke();
                             {
                                 Declaration v = exp.ti.toAlias().isDeclaration();
-                                if (v != null)
+                                if ((v) != null)
                                 {
-                                    if ((v.type != null && v.type.deco == null))
+                                    if ((v.type != null) && (v.type.deco == null))
                                         v.type = typeSemantic(v.type, v.loc, sc);
                                     return expressionSemantic(new DotVarExp(exp.loc, exp.e1, v, true), sc);
                                 }
@@ -10322,16 +10322,16 @@ public class expressionsem {
                     }
                 }
             }
-            else if ((e.op & 0xFF) == 26)
+            else if (((e.op & 0xFF) == 26))
             {
                 VarExp ve = (VarExp)e;
                 {
                     FuncDeclaration fd = ve.var.isFuncDeclaration();
-                    if (fd != null)
+                    if ((fd) != null)
                     {
                         {
                             TemplateDeclaration td = fd.findTemplateDeclRoot();
-                            if (td != null)
+                            if ((td) != null)
                             {
                                 e = expressionSemantic(new TemplateExp(ve.loc, td, null), sc);
                             }
@@ -10339,7 +10339,7 @@ public class expressionsem {
                     }
                     else {
                         OverDeclaration od = ve.var.isOverDeclaration();
-                        if (od != null)
+                        if ((od) != null)
                         {
                             exp.ti.tempdecl = od;
                             return expressionSemantic(new ScopeExp(exp.loc, exp.ti), sc);
@@ -10347,23 +10347,23 @@ public class expressionsem {
                     }
                 }
             }
-            if ((e.op & 0xFF) == 37)
+            if (((e.op & 0xFF) == 37))
             {
                 DotTemplateExp dte = (DotTemplateExp)e;
                 exp.e1 = dte.e1;
                 exp.ti.tempdecl = dte.td;
-                if (!(exp.ti.semanticTiargs(sc)))
+                if (!exp.ti.semanticTiargs(sc))
                     return errorExp.invoke();
                 if (exp.ti.needsTypeInference(sc, 0))
                     return exp;
                 dsymbolSemantic(exp.ti, sc);
-                if ((!(exp.ti.inst != null) || exp.ti.errors))
+                if ((exp.ti.inst == null) || exp.ti.errors)
                     return errorExp.invoke();
                 {
                     Declaration v = exp.ti.toAlias().isDeclaration();
-                    if (v != null)
+                    if ((v) != null)
                     {
-                        if ((v.isFuncDeclaration() != null || v.isVarDeclaration() != null))
+                        if ((v.isFuncDeclaration() != null) || (v.isVarDeclaration() != null))
                         {
                             return expressionSemantic(new DotVarExp(exp.loc, exp.e1, v, true), sc);
                         }
@@ -10371,30 +10371,30 @@ public class expressionsem {
                 }
                 return expressionSemantic(new DotExp(exp.loc, exp.e1, new ScopeExp(exp.loc, exp.ti)), sc);
             }
-            else if ((e.op & 0xFF) == 36)
+            else if (((e.op & 0xFF) == 36))
             {
                 exp.ti.tempdecl = ((TemplateExp)e).td;
                 return expressionSemantic(new ScopeExp(exp.loc, exp.ti), sc);
             }
-            else if ((e.op & 0xFF) == 97)
+            else if (((e.op & 0xFF) == 97))
             {
                 DotExp de = (DotExp)e;
-                if ((de.e2.op & 0xFF) == 214)
+                if (((de.e2.op & 0xFF) == 214))
                 {
-                    if ((!(exp.findTempDecl(sc)) || !(exp.ti.semanticTiargs(sc))))
+                    if (!exp.findTempDecl(sc) || !exp.ti.semanticTiargs(sc))
                     {
                         return errorExp.invoke();
                     }
                     if (exp.ti.needsTypeInference(sc, 0))
                         return exp;
                     dsymbolSemantic(exp.ti, sc);
-                    if ((!(exp.ti.inst != null) || exp.ti.errors))
+                    if ((exp.ti.inst == null) || exp.ti.errors)
                         return errorExp.invoke();
                     {
                         Declaration v = exp.ti.toAlias().isDeclaration();
-                        if (v != null)
+                        if ((v) != null)
                         {
-                            if ((v.type != null && v.type.deco == null))
+                            if ((v.type != null) && (v.type.deco == null))
                                 v.type = typeSemantic(v.type, v.loc, sc);
                             return expressionSemantic(new DotVarExp(exp.loc, exp.e1, v, true), sc);
                         }
@@ -10402,7 +10402,7 @@ public class expressionsem {
                     return expressionSemantic(new DotExp(exp.loc, exp.e1, new ScopeExp(exp.loc, exp.ti)), sc);
                 }
             }
-            else if ((e.op & 0xFF) == 214)
+            else if (((e.op & 0xFF) == 214))
             {
                 OverExp oe = (OverExp)e;
                 exp.ti.tempdecl = oe.vars;
@@ -10418,25 +10418,25 @@ public class expressionsem {
     public static boolean checkAddressVar(Scope sc, UnaExp exp, VarDeclaration v) {
         if (v != null)
         {
-            if (!(v.canTakeAddressOf()))
+            if (!v.canTakeAddressOf())
             {
                 exp.error(new BytePtr("cannot take address of `%s`"), exp.e1.toChars());
                 return false;
             }
-            if ((((sc).func != null && !(((sc).intypeof) != 0)) && !(v.isDataseg())))
+            if (((sc).func != null) && ((sc).intypeof == 0) && !v.isDataseg())
             {
                 BytePtr p = pcopy(v.isParameter() ? new BytePtr("parameter") : new BytePtr("local"));
                 if (global.params.vsafe)
                 {
                     v.storage_class &= -281474976710657L;
                     v.doNotInferScope = true;
-                    if ((((v.storage_class & 524288L) != 0 && (sc).func.setUnsafe()) && !(((sc).flags & 8) != 0)))
+                    if (((v.storage_class & 524288L) != 0) && (sc).func.setUnsafe() && (((sc).flags & 8) == 0))
                     {
                         exp.error(new BytePtr("cannot take address of `scope` %s `%s` in `@safe` function `%s`"), p, v.toChars(), (sc).func.toChars());
                         return false;
                     }
                 }
-                else if (((sc).func.setUnsafe() && !(((sc).flags & 8) != 0)))
+                else if ((sc).func.setUnsafe() && (((sc).flags & 8) == 0))
                 {
                     exp.error(new BytePtr("cannot take address of %s `%s` in `@safe` function `%s`"), p, v.toChars(), (sc).func.toChars());
                     return false;
@@ -10459,7 +10459,7 @@ public class expressionsem {
 
     public static Expression getThisSkipNestedFuncs(Loc loc, Scope sc, Dsymbol s, AggregateDeclaration ad, Expression e1, Type t, Dsymbol var, boolean flag) {
         int n = 0;
-        for (; (s != null && s.isFuncDeclaration() != null);){
+        for (; (s != null) && (s.isFuncDeclaration() != null);){
             FuncDeclaration f = s.isFuncDeclaration();
             if (f.vthis != null)
             {
@@ -10467,7 +10467,7 @@ public class expressionsem {
                 e1 = new VarExp(loc, f.vthis, true);
                 if (f.isThis2)
                 {
-                    if (n > 1)
+                    if ((n > 1))
                         e1 = expressionSemantic(e1, sc);
                     e1 = new PtrExp(loc, e1);
                     int i = (followInstantiationContextAggregateDeclaration(f, ad) ? 1 : 0);
@@ -10486,16 +10486,16 @@ public class expressionsem {
             }
             s = s.toParent2();
         }
-        if ((n > 1 || (e1.op & 0xFF) == 62))
+        if ((n > 1) || ((e1.op & 0xFF) == 62))
             e1 = expressionSemantic(e1, sc);
-        if ((s != null && e1.type.equivalent(Type.tvoidptr)))
+        if ((s != null) && e1.type.equivalent(Type.tvoidptr))
         {
             {
                 AggregateDeclaration sad = s.isAggregateDeclaration();
-                if (sad != null)
+                if ((sad) != null)
                 {
                     Type ta = sad.handleType();
-                    if ((ta.ty & 0xFF) == ENUMTY.Tstruct)
+                    if (((ta.ty & 0xFF) == ENUMTY.Tstruct))
                         ta = ta.pointerTo();
                     e1.type = ta;
                 }
@@ -10521,7 +10521,7 @@ public class expressionsem {
         Dsymbol rootSymbol = sc.search(loc, Id.empty, null, 0);
         {
             Dsymbol moduleSymbol = rootSymbol.search(loc, module_, 0);
-            if (moduleSymbol != null)
+            if ((moduleSymbol) != null)
                 if (moduleSymbol.search(loc, id, 0) != null)
                     return true;
         }

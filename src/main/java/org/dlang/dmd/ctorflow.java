@@ -75,7 +75,7 @@ public class ctorflow {
             {
                 Slice<FieldInit> __r890 = this.fieldinit.copy();
                 int __key891 = 0;
-                for (; __key891 < __r890.getLength();__key891 += 1) {
+                for (; (__key891 < __r890.getLength());__key891 += 1) {
                     FieldInit u = __r890.get(__key891).copy();
                     u.csx |= csx;
                 }
@@ -84,18 +84,18 @@ public class ctorflow {
 
         public  void OR(CtorFlow ctorflow) {
             this.callSuper |= ctorflow.callSuper;
-            if (((this.fieldinit.getLength()) != 0 && (ctorflow.fieldinit.getLength()) != 0))
+            if ((this.fieldinit.getLength() != 0) && (ctorflow.fieldinit.getLength() != 0))
             {
-                assert(this.fieldinit.getLength() == ctorflow.fieldinit.getLength());
+                assert((this.fieldinit.getLength() == ctorflow.fieldinit.getLength()));
                 {
                     Slice<FieldInit> __r893 = ctorflow.fieldinit.copy();
                     int __key892 = 0;
-                    for (; __key892 < __r893.getLength();__key892 += 1) {
+                    for (; (__key892 < __r893.getLength());__key892 += 1) {
                         FieldInit u = __r893.get(__key892).copy();
                         int i = __key892;
                         FieldInit fi = this.fieldinit.get(i);
                         (fi).csx |= u.csx;
-                        if ((fi).loc == new Loc(null, 0, 0))
+                        if (((fi).loc == new Loc(null, 0, 0)))
                             (fi).loc = u.loc.copy();
                     }
                 }
@@ -122,7 +122,7 @@ public class ctorflow {
         }
     }
     public static boolean mergeCallSuper(Ref<Integer> a, int b) {
-        if (b == a.value)
+        if ((b == a.value))
             return true;
         boolean aAll = (a.value & 3) != 0;
         boolean bAll = (b & 3) != 0;
@@ -132,27 +132,27 @@ public class ctorflow {
         boolean bRet = (b & 8) != 0;
         boolean aHalt = (a.value & 32) != 0;
         boolean bHalt = (b & 32) != 0;
-        if ((aHalt && bHalt))
+        if (aHalt && bHalt)
         {
             a.value = CSX.halt;
         }
-        else if (((((!(bHalt) && bRet) && !(bAny)) && aAny) || (((!(aHalt) && aRet) && !(aAny)) && bAny)))
+        else if (!bHalt && bRet && !bAny && aAny || !aHalt && aRet && !aAny && bAny)
         {
             return false;
         }
-        else if ((bHalt || (bRet && bAll)))
+        else if (bHalt || bRet && bAll)
         {
             a.value |= b & 20;
         }
-        else if ((aHalt || (aRet && aAll)))
+        else if (aHalt || aRet && aAll)
         {
             a.value = (int)(b | a.value & 20);
         }
-        else if ((aAll ? 1 : 0) != (bAll ? 1 : 0))
+        else if (((aAll ? 1 : 0) != (bAll ? 1 : 0)))
             return false;
         else
         {
-            if ((bRet && !(bAny)))
+            if (bRet && !bAny)
                 a.value |= 8;
             a.value |= b & 20;
         }
@@ -160,24 +160,24 @@ public class ctorflow {
     }
 
     public static boolean mergeFieldInit(Ref<Integer> a, int b) {
-        if (b == a.value)
+        if ((b == a.value))
             return true;
         boolean aRet = (a.value & 8) != 0;
         boolean bRet = (b & 8) != 0;
         boolean aHalt = (a.value & 32) != 0;
         boolean bHalt = (b & 32) != 0;
-        if ((aHalt && bHalt))
+        if (aHalt && bHalt)
         {
             a.value = CSX.halt;
             return true;
         }
         boolean ok = false;
-        if ((!(bHalt) && bRet))
+        if (!bHalt && bRet)
         {
             ok = ((b & 1) != 0);
             a.value = a.value;
         }
-        else if ((!(aHalt) && aRet))
+        else if (!aHalt && aRet)
         {
             ok = ((a.value & 1) != 0);
             a.value = b;
@@ -194,7 +194,7 @@ public class ctorflow {
         }
         else
         {
-            ok = !(((a.value ^ b) & 1) != 0);
+            ok = ((a.value ^ b) & 1) == 0;
             a.value |= b;
         }
         return ok;

@@ -79,19 +79,19 @@ public class expression {
 
         public  void visit(DeclarationExp e) {
             VarDeclaration v = e.declaration.isVarDeclaration();
-            if ((v != null && !(v.isDataseg())))
+            if ((v != null) && !v.isDataseg())
             {
                 if (v._init != null)
                 {
                     {
                         ExpInitializer ei = v._init.isExpInitializer();
-                        if (ei != null)
+                        if ((ei) != null)
                             ei.exp.accept(this);
                     }
                 }
                 if (v.needsScopeDtor())
                 {
-                    if (!(this.vcond != null))
+                    if (this.vcond == null)
                     {
                         this.vcond = copyToTemp(8796093022208L, new BytePtr("__cond"), this.ce.econd);
                         dsymbolSemantic(this.vcond, this.sc);
@@ -504,7 +504,7 @@ public class expression {
 
     public static Expression firstComma(Expression e) {
         Expression ex = e;
-        for (; (ex.op & 0xFF) == 99;) {
+        for (; ((ex.op & 0xFF) == 99);) {
             ex = ((CommaExp)ex).e1;
         }
         return ex;
@@ -512,7 +512,7 @@ public class expression {
 
     public static Expression lastComma(Expression e) {
         Expression ex = e;
-        for (; (ex.op & 0xFF) == 99;) {
+        for (; ((ex.op & 0xFF) == 99);) {
             ex = ((CommaExp)ex).e2;
         }
         return ex;
@@ -520,21 +520,21 @@ public class expression {
 
     public static FuncDeclaration hasThis(Scope sc) {
         Dsymbol p = (sc).parent;
-        for (; (p != null && p.isTemplateMixin() != null);) {
+        for (; (p != null) && (p.isTemplateMixin() != null);) {
             p = p.parent;
         }
         FuncDeclaration fdthis = p != null ? p.isFuncDeclaration() : null;
         FuncDeclaration fd = fdthis;
-        for (; (1) != 0;){
-            if (!(fd != null))
+        for (; 1 != 0;){
+            if (fd == null)
             {
                 return null;
             }
-            if (((!(fd.isNested()) || fd.isThis() != null) || (fd.isThis2 && fd.isMember2() != null)))
+            if (!fd.isNested() || (fd.isThis() != null) || fd.isThis2 && (fd.isMember2() != null))
                 break;
             Dsymbol parent = fd.parent;
-            for (; (1) != 0;){
-                if (!(parent != null))
+            for (; 1 != 0;){
+                if (parent == null)
                     return null;
                 TemplateInstance ti = parent.isTemplateInstance();
                 if (ti != null)
@@ -544,7 +544,7 @@ public class expression {
             }
             fd = parent.isFuncDeclaration();
         }
-        if ((!(fd.isThis() != null) && !((fd.isThis2 && fd.isMember2() != null))))
+        if ((fd.isThis() == null) && !(fd.isThis2 && (fd.isMember2() != null)))
         {
             return null;
         }
@@ -553,19 +553,19 @@ public class expression {
     }
 
     public static boolean isNeedThisScope(Scope sc, Declaration d) {
-        if ((sc).intypeof == 1)
+        if (((sc).intypeof == 1))
             return false;
         AggregateDeclaration ad = d.isThis();
-        if (!(ad != null))
+        if (ad == null)
             return false;
         {
             Dsymbol s = (sc).parent;
             for (; s != null;s = s.toParentLocal()){
                 {
                     AggregateDeclaration ad2 = s.isAggregateDeclaration();
-                    if (ad2 != null)
+                    if ((ad2) != null)
                     {
-                        if (pequals(ad2, ad))
+                        if ((pequals(ad2, ad)))
                             return false;
                         else if (ad2.isNested())
                             continue;
@@ -575,7 +575,7 @@ public class expression {
                 }
                 {
                     FuncDeclaration f = s.isFuncDeclaration();
-                    if (f != null)
+                    if ((f) != null)
                     {
                         if (f.isMemberLocal() != null)
                             break;
@@ -589,33 +589,33 @@ public class expression {
     public static boolean isDotOpDispatch(Expression e) {
         {
             DotTemplateInstanceExp dtie = e.isDotTemplateInstanceExp();
-            if (dtie != null)
+            if ((dtie) != null)
                 return pequals(dtie.ti.name, Id.opDispatch);
         }
         return false;
     }
 
     public static void expandTuples(DArray<Expression> exps) {
-        if (exps == null)
+        if ((exps == null))
             return ;
         {
             int i = 0;
-            for (; i < (exps).length;i++){
+            for (; (i < (exps).length);i++){
                 Expression arg = (exps).get(i);
-                if (!(arg != null))
+                if (arg == null)
                     continue;
                 {
                     TypeExp e = arg.isTypeExp();
-                    if (e != null)
+                    if ((e) != null)
                     {
                         {
                             TypeTuple tt = e.type.toBasetype().isTypeTuple();
-                            if (tt != null)
+                            if ((tt) != null)
                             {
-                                if ((tt.arguments == null || (tt.arguments).length == 0))
+                                if ((tt.arguments == null) || ((tt.arguments).length == 0))
                                 {
                                     (exps).remove(i);
-                                    if (i == (exps).length)
+                                    if ((i == (exps).length))
                                         return ;
                                     i--;
                                     continue;
@@ -624,11 +624,11 @@ public class expression {
                         }
                     }
                 }
-                for (; (arg.op & 0xFF) == 126;){
+                for (; ((arg.op & 0xFF) == 126);){
                     TupleExp te = (TupleExp)arg;
                     (exps).remove(i);
                     (exps).insert(i, te.exps);
-                    if (i == (exps).length)
+                    if ((i == (exps).length))
                         return ;
                     exps.set(i, Expression.combine(te.e0, (exps).get(i)));
                     arg = (exps).get(i);
@@ -638,28 +638,28 @@ public class expression {
     }
 
     public static TupleDeclaration isAliasThisTuple(Expression e) {
-        if (!(e.type != null))
+        if (e.type == null)
             return null;
         Type t = e.type.toBasetype();
         for (; true;){
             {
                 Dsymbol s = t.toDsymbol(null);
-                if (s != null)
+                if ((s) != null)
                 {
                     {
                         AggregateDeclaration ad = s.isAggregateDeclaration();
-                        if (ad != null)
+                        if ((ad) != null)
                         {
                             s = ad.aliasthis;
-                            if ((s != null && s.isVarDeclaration() != null))
+                            if ((s != null) && (s.isVarDeclaration() != null))
                             {
                                 TupleDeclaration td = s.isVarDeclaration().toAlias().isTupleDeclaration();
-                                if ((td != null && td.isexp))
+                                if ((td != null) && td.isexp)
                                     return td;
                             }
                             {
                                 Type att = t.aliasthisOf();
-                                if (att != null)
+                                if ((att) != null)
                                 {
                                     t = att;
                                     continue;
@@ -674,21 +674,21 @@ public class expression {
     }
 
     public static int expandAliasThisTuples(DArray<Expression> exps, int starti) {
-        if ((exps == null || (exps).length == 0))
+        if ((exps == null) || ((exps).length == 0))
             return -1;
         {
             int u = starti;
-            for (; u < (exps).length;u++){
+            for (; (u < (exps).length);u++){
                 Expression exp = (exps).get(u);
                 {
                     TupleDeclaration td = isAliasThisTuple(exp);
-                    if (td != null)
+                    if ((td) != null)
                     {
                         (exps).remove(u);
                         {
                             Slice<RootObject> __r1319 = (td.objects).opSlice().copy();
                             int __key1318 = 0;
-                            for (; __key1318 < __r1319.getLength();__key1318 += 1) {
+                            for (; (__key1318 < __r1319.getLength());__key1318 += 1) {
                                 RootObject o = __r1319.get(__key1318);
                                 int i = __key1318;
                                 Declaration d = isExpression(o).isDsymbolExp().s.isDeclaration();
@@ -708,16 +708,16 @@ public class expression {
 
     public static TemplateDeclaration getFuncTemplateDecl(Dsymbol s) {
         FuncDeclaration f = s.isFuncDeclaration();
-        if ((f != null && f.parent != null))
+        if ((f != null) && (f.parent != null))
         {
             {
                 TemplateInstance ti = f.parent.isTemplateInstance();
-                if (ti != null)
+                if ((ti) != null)
                 {
-                    if ((!(ti.isTemplateMixin() != null) && ti.tempdecl != null))
+                    if ((ti.isTemplateMixin() == null) && (ti.tempdecl != null))
                     {
                         TemplateDeclaration td = ti.tempdecl.isTemplateDeclaration();
-                        if ((td.onemember != null && pequals(td.ident, f.ident)))
+                        if ((td.onemember != null) && (pequals(td.ident, f.ident)))
                         {
                             return td;
                         }
@@ -732,27 +732,27 @@ public class expression {
         Expression ex = lastComma(e);
         {
             CallExp ce = ex.isCallExp();
-            if (ce != null)
+            if ((ce) != null)
             {
                 {
                     DotVarExp dve = ce.e1.isDotVarExp();
-                    if (dve != null)
+                    if ((dve) != null)
                     {
                         if (dve.var.isCtorDeclaration() != null)
                         {
                             {
                                 CommaExp comma = dve.e1.isCommaExp();
-                                if (comma != null)
+                                if ((comma) != null)
                                 {
                                     {
                                         VarExp ve = comma.e2.isVarExp();
-                                        if (ve != null)
+                                        if ((ve) != null)
                                         {
                                             VarDeclaration ctmp = ve.var.isVarDeclaration();
                                             if (ctmp != null)
                                             {
                                                 ctmp.storage_class |= 16777216L;
-                                                assert(!(ce.isLvalue()));
+                                                assert(!ce.isLvalue());
                                             }
                                         }
                                     }
@@ -764,10 +764,10 @@ public class expression {
             }
             else {
                 VarExp ve = ex.isVarExp();
-                if (ve != null)
+                if ((ve) != null)
                 {
                     VarDeclaration vtmp = ve.var.isVarDeclaration();
-                    if ((vtmp != null && (vtmp.storage_class & 2199023255552L) != 0))
+                    if ((vtmp != null) && ((vtmp.storage_class & 2199023255552L) != 0))
                     {
                         vtmp.storage_class |= 16777216L;
                     }
@@ -780,13 +780,13 @@ public class expression {
     public static Expression callCpCtor(Scope sc, Expression e, Type destinationType) {
         {
             TypeStruct ts = e.type.baseElemOf().isTypeStruct();
-            if (ts != null)
+            if ((ts) != null)
             {
                 StructDeclaration sd = ts.sym;
-                if ((sd.postblit != null || sd.hasCopyCtor))
+                if ((sd.postblit != null) || sd.hasCopyCtor)
                 {
                     VarDeclaration tmp = copyToTemp(2199023255552L, new BytePtr("__copytmp"), e);
-                    if ((sd.hasCopyCtor && destinationType != null))
+                    if (sd.hasCopyCtor && (destinationType != null))
                         tmp.type = destinationType;
                     tmp.storage_class |= 16777216L;
                     dsymbolSemantic(tmp, sc);
@@ -804,7 +804,7 @@ public class expression {
     public static Expression doCopyOrMove(Scope sc, Expression e, Type t) {
         {
             CondExp ce = e.isCondExp();
-            if (ce != null)
+            if ((ce) != null)
             {
                 ce.e1 = doCopyOrMove(sc, ce.e1, null);
                 ce.e2 = doCopyOrMove(sc, ce.e2, null);
@@ -902,7 +902,7 @@ public class expression {
         }
     }
     public static int RealIdentical(double x1, double x2) {
-        return ((((CTFloat.isNaN(x1) && CTFloat.isNaN(x2)) || CTFloat.isIdentical(x1, x2))) ? 1 : 0);
+        return ((CTFloat.isNaN(x1) && CTFloat.isNaN(x2) || CTFloat.isIdentical(x1, x2)) ? 1 : 0);
     }
 
     public static DotIdExp typeDotIdExp(Loc loc, Type type, Identifier ident) {
@@ -910,7 +910,7 @@ public class expression {
     }
 
     public static VarDeclaration expToVariable(Expression e) {
-        for (; (1) != 0;){
+        for (; 1 != 0;){
             switch ((e.op & 0xFF))
             {
                 case 26:
@@ -922,14 +922,14 @@ public class expression {
                     IndexExp ei = (IndexExp)e;
                     e = ei.e1;
                     Type ti = e.type.toBasetype();
-                    if ((ti.ty & 0xFF) == ENUMTY.Tsarray)
+                    if (((ti.ty & 0xFF) == ENUMTY.Tsarray))
                         continue;
                     return null;
                 case 31:
                     SliceExp ei_1 = (SliceExp)e;
                     e = ei_1.e1;
                     Type ti_1 = e.type.toBasetype();
-                    if ((ti_1.ty & 0xFF) == ENUMTY.Tsarray)
+                    if (((ti_1.ty & 0xFF) == ENUMTY.Tsarray))
                         continue;
                     return null;
                 case 123:
@@ -1003,27 +1003,27 @@ public class expression {
         }
 
         public  void error(BytePtr format, Object... ap) {
-            if (!pequals(this.type, Type.terror))
+            if ((!pequals(this.type, Type.terror)))
             {
                 verror(this.loc, format, new Slice<>(ap), null, null, new BytePtr("Error: "));
             }
         }
 
         public  void errorSupplemental(BytePtr format, Object... ap) {
-            if (pequals(this.type, Type.terror))
+            if ((pequals(this.type, Type.terror)))
                 return ;
             verrorSupplemental(this.loc, format, new Slice<>(ap));
         }
 
         public  void warning(BytePtr format, Object... ap) {
-            if (!pequals(this.type, Type.terror))
+            if ((!pequals(this.type, Type.terror)))
             {
                 vwarning(this.loc, format, new Slice<>(ap));
             }
         }
 
         public  void deprecation(BytePtr format, Object... ap) {
-            if (!pequals(this.type, Type.terror))
+            if ((!pequals(this.type, Type.terror)))
             {
                 vdeprecation(this.loc, format, new Slice<>(ap), null, null);
             }
@@ -1053,12 +1053,12 @@ public class expression {
 
         public static Expression extractLast(Expression e, Ref<Expression> e0) {
             e0.value = null;
-            if ((e.op & 0xFF) != 99)
+            if (((e.op & 0xFF) != 99))
             {
                 return e;
             }
             CommaExp ce = (CommaExp)e;
-            if ((ce.e2.op & 0xFF) != 99)
+            if (((ce.e2.op & 0xFF) != 99))
             {
                 e0.value = ce.e1;
                 return ce.e2;
@@ -1067,10 +1067,10 @@ public class expression {
             {
                 e0.value = e;
                 Ptr<Expression> pce = pcopy(ce.e2);
-                for (; (((CommaExp)pce.get()).e2.op & 0xFF) == 99;){
+                for (; ((((CommaExp)pce.get()).e2.op & 0xFF) == 99);){
                     pce = pcopy((((CommaExp)pce.get()).e2));
                 }
-                assert(((pce.get()).op & 0xFF) == 99);
+                assert((((pce.get()).op & 0xFF) == 99));
                 ce = (CommaExp)pce.get();
                 pce.set(0, ce.e1);
                 return ce.e2;
@@ -1085,7 +1085,7 @@ public class expression {
                 {
                     Slice<Expression> __r1321 = (exps).opSlice().copy();
                     int __key1320 = 0;
-                    for (; __key1320 < __r1321.getLength();__key1320 += 1) {
+                    for (; (__key1320 < __r1321.getLength());__key1320 += 1) {
                         Expression e = __r1321.get(__key1320);
                         int i = __key1320;
                         a.set(i, e != null ? e.syntaxCopy() : null);
@@ -1132,11 +1132,11 @@ public class expression {
         }
 
         public  Expression toLvalue(Scope sc, Expression e) {
-            if (!(e != null))
+            if (e == null)
                 e = this;
-            else if (!(this.loc.isValid()))
+            else if (!this.loc.isValid())
                 this.loc = e.loc.copy();
-            if ((e.op & 0xFF) == 20)
+            if (((e.op & 0xFF) == 20))
                 this.error(new BytePtr("`%s` is a `%s` definition and cannot be modified"), e.type.toChars(), e.type.kind());
             else
                 this.error(new BytePtr("`%s` is not an lvalue and cannot be modified"), e.toChars());
@@ -1144,23 +1144,23 @@ public class expression {
         }
 
         public  Expression modifiableLvalue(Scope sc, Expression e) {
-            if (this.checkModifiable(sc, 0) == Modifiable.yes)
+            if ((this.checkModifiable(sc, 0) == Modifiable.yes))
             {
                 assert(this.type != null);
-                if (!(this.type.isMutable()))
+                if (!this.type.isMutable())
                 {
                     {
                         DotVarExp dve = this.isDotVarExp();
-                        if (dve != null)
+                        if ((dve) != null)
                         {
                             if (isNeedThisScope(sc, dve.var))
                             {
                                 Dsymbol s = (sc).func;
                                 for (; s != null;s = s.toParentLocal()){
                                     FuncDeclaration ff = s.isFuncDeclaration();
-                                    if (!(ff != null))
+                                    if (ff == null)
                                         break;
-                                    if (!(ff.type.isMutable()))
+                                    if (!ff.type.isMutable())
                                     {
                                         this.error(new BytePtr("cannot modify `%s` in `%s` function"), this.toChars(), MODtoChars(this.type.mod));
                                         return new ErrorExp();
@@ -1172,7 +1172,7 @@ public class expression {
                     this.error(new BytePtr("cannot modify `%s` expression `%s`"), MODtoChars(this.type.mod), this.toChars());
                     return new ErrorExp();
                 }
-                else if (!(this.type.isAssignable()))
+                else if (!this.type.isAssignable())
                 {
                     this.error(new BytePtr("cannot modify struct instance `%s` of type `%s` because it contains `const` or `immutable` members"), this.toChars(), this.type.toChars());
                     return new ErrorExp();
@@ -1203,10 +1203,10 @@ public class expression {
         }
 
         public  boolean checkValue() {
-            if ((this.type != null && (this.type.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
+            if ((this.type != null) && ((this.type.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
             {
                 this.error(new BytePtr("expression `%s` is `void` and has no value"), this.toChars());
-                if (!((global.gag) != 0))
+                if (global.gag == 0)
                     this.type = Type.terror;
                 return true;
             }
@@ -1214,11 +1214,11 @@ public class expression {
         }
 
         public  boolean checkScalar() {
-            if ((this.op & 0xFF) == 127)
+            if (((this.op & 0xFF) == 127))
                 return true;
-            if ((this.type.toBasetype().ty & 0xFF) == ENUMTY.Terror)
+            if (((this.type.toBasetype().ty & 0xFF) == ENUMTY.Terror))
                 return true;
-            if (!(this.type.isscalar()))
+            if (!this.type.isscalar())
             {
                 this.error(new BytePtr("`%s` is not a scalar, it is a `%s`"), this.toChars(), this.type.toChars());
                 return true;
@@ -1227,11 +1227,11 @@ public class expression {
         }
 
         public  boolean checkNoBool() {
-            if ((this.op & 0xFF) == 127)
+            if (((this.op & 0xFF) == 127))
                 return true;
-            if ((this.type.toBasetype().ty & 0xFF) == ENUMTY.Terror)
+            if (((this.type.toBasetype().ty & 0xFF) == ENUMTY.Terror))
                 return true;
-            if ((this.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool)
+            if (((this.type.toBasetype().ty & 0xFF) == ENUMTY.Tbool))
             {
                 this.error(new BytePtr("operation not allowed on `bool` `%s`"), this.toChars());
                 return true;
@@ -1240,11 +1240,11 @@ public class expression {
         }
 
         public  boolean checkIntegral() {
-            if ((this.op & 0xFF) == 127)
+            if (((this.op & 0xFF) == 127))
                 return true;
-            if ((this.type.toBasetype().ty & 0xFF) == ENUMTY.Terror)
+            if (((this.type.toBasetype().ty & 0xFF) == ENUMTY.Terror))
                 return true;
-            if (!(this.type.isintegral()))
+            if (!this.type.isintegral())
             {
                 this.error(new BytePtr("`%s` is not of integral type, it is a `%s`"), this.toChars(), this.type.toChars());
                 return true;
@@ -1253,11 +1253,11 @@ public class expression {
         }
 
         public  boolean checkArithmetic() {
-            if ((this.op & 0xFF) == 127)
+            if (((this.op & 0xFF) == 127))
                 return true;
-            if ((this.type.toBasetype().ty & 0xFF) == ENUMTY.Terror)
+            if (((this.type.toBasetype().ty & 0xFF) == ENUMTY.Terror))
                 return true;
-            if ((!(this.type.isintegral()) && !(this.type.isfloating())))
+            if (!this.type.isintegral() && !this.type.isfloating())
             {
                 this.error(new BytePtr("`%s` is not of arithmetic type, it is a `%s`"), this.toChars(), this.type.toChars());
                 return true;
@@ -1272,7 +1272,7 @@ public class expression {
         public  boolean checkDisabled(Scope sc, Dsymbol s) {
             {
                 Declaration d = s.isDeclaration();
-                if (d != null)
+                if ((d) != null)
                 {
                     return d.checkDisabled(this.loc, sc, false);
                 }
@@ -1281,11 +1281,11 @@ public class expression {
         }
 
         public  boolean checkPurity(Scope sc, FuncDeclaration f) {
-            if (!((sc).func != null))
+            if ((sc).func == null)
                 return false;
-            if (pequals((sc).func, f))
+            if ((pequals((sc).func, f)))
                 return false;
-            if ((sc).intypeof == 1)
+            if (((sc).intypeof == 1))
                 return false;
             if (((sc).flags & 136) != 0)
                 return false;
@@ -1302,18 +1302,18 @@ public class expression {
             }
             else
             {
-                for (; ((outerfunc.toParent2() != null && outerfunc.isPureBypassingInference() == PURE.impure) && outerfunc.toParent2().isFuncDeclaration() != null);){
+                for (; (outerfunc.toParent2() != null) && (outerfunc.isPureBypassingInference() == PURE.impure) && (outerfunc.toParent2().isFuncDeclaration() != null);){
                     outerfunc = outerfunc.toParent2().isFuncDeclaration();
-                    if ((outerfunc.type.ty & 0xFF) == ENUMTY.Terror)
+                    if (((outerfunc.type.ty & 0xFF) == ENUMTY.Terror))
                         return true;
                 }
-                for (; ((calledparent.toParent2() != null && calledparent.isPureBypassingInference() == PURE.impure) && calledparent.toParent2().isFuncDeclaration() != null);){
+                for (; (calledparent.toParent2() != null) && (calledparent.isPureBypassingInference() == PURE.impure) && (calledparent.toParent2().isFuncDeclaration() != null);){
                     calledparent = calledparent.toParent2().isFuncDeclaration();
-                    if ((calledparent.type.ty & 0xFF) == ENUMTY.Terror)
+                    if (((calledparent.type.ty & 0xFF) == ENUMTY.Terror))
                         return true;
                 }
             }
-            if ((!((f.isPure()) != 0) && !pequals(calledparent, outerfunc)))
+            if ((f.isPure() == 0) && (!pequals(calledparent, outerfunc)))
             {
                 FuncDeclaration ff = outerfunc;
                 if (((sc).flags & 256) != 0 ? ff.isPureBypassingInference() >= PURE.weak : ff.setImpure())
@@ -1326,21 +1326,21 @@ public class expression {
         }
 
         public  boolean checkPurity(Scope sc, VarDeclaration v) {
-            if (!((sc).func != null))
+            if ((sc).func == null)
                 return false;
-            if ((sc).intypeof == 1)
+            if (((sc).intypeof == 1))
                 return false;
             if (((sc).flags & 136) != 0)
                 return false;
-            if (pequals(v.ident, Id.ctfe))
+            if ((pequals(v.ident, Id.ctfe)))
                 return false;
             if (v.isImmutable())
                 return false;
-            if ((((v.isConst() && !(v.isRef())) && (v.isDataseg() || v.isParameter())) && (v.type.implicitConvTo(v.type.immutableOf())) != 0))
+            if (v.isConst() && !v.isRef() && v.isDataseg() || v.isParameter() && (v.type.implicitConvTo(v.type.immutableOf()) != 0))
                 return false;
             if ((v.storage_class & 8388608L) != 0)
                 return false;
-            if ((v.type.ty & 0xFF) == ENUMTY.Tstruct)
+            if (((v.type.ty & 0xFF) == ENUMTY.Tstruct))
             {
                 StructDeclaration sd = ((TypeStruct)v.type).sym;
                 if (sd.hasNoFields)
@@ -1349,13 +1349,13 @@ public class expression {
             boolean err = false;
             if (v.isDataseg())
             {
-                if (pequals(v.ident, Id.gate))
+                if ((pequals(v.ident, Id.gate)))
                     return false;
                 {
                     Dsymbol s = (sc).func;
                     for (; s != null;s = s.toParent2()){
                         FuncDeclaration ff = s.isFuncDeclaration();
-                        if (!(ff != null))
+                        if (ff == null)
                             break;
                         if (((sc).flags & 256) != 0 ? ff.isPureBypassingInference() >= PURE.weak : ff.setImpure())
                         {
@@ -1375,12 +1375,12 @@ public class expression {
                 Dsymbol vparent = v.toParent2();
                 {
                     Dsymbol s = (sc).func;
-                    for (; (!(err) && s != null);s = toParentPDsymbol(s, vparent)){
-                        if (pequals(s, vparent))
+                    for (; !err && (s != null);s = toParentPDsymbol(s, vparent)){
+                        if ((pequals(s, vparent)))
                             break;
                         {
                             AggregateDeclaration ad = s.isAggregateDeclaration();
-                            if (ad != null)
+                            if ((ad) != null)
                             {
                                 if (ad.isNested())
                                     continue;
@@ -1388,11 +1388,11 @@ public class expression {
                             }
                         }
                         FuncDeclaration ff = s.isFuncDeclaration();
-                        if (!(ff != null))
+                        if (ff == null)
                             break;
-                        if ((ff.isNested() || ff.isThis() != null))
+                        if (ff.isNested() || (ff.isThis() != null))
                         {
-                            if ((ff.type.isImmutable() || (ff.type.isShared() && !(MODimplicitConv(ff.type.mod, v.type.mod)))))
+                            if (ff.type.isImmutable() || ff.type.isShared() && !MODimplicitConv(ff.type.mod, v.type.mod))
                             {
                                 OutBuffer ffbuf = new OutBuffer();
                                 try {
@@ -1428,19 +1428,19 @@ public class expression {
         }
 
         public  boolean checkSafety(Scope sc, FuncDeclaration f) {
-            if (!((sc).func != null))
+            if ((sc).func == null)
                 return false;
-            if (pequals((sc).func, f))
+            if ((pequals((sc).func, f)))
                 return false;
-            if ((sc).intypeof == 1)
+            if (((sc).intypeof == 1))
                 return false;
             if (((sc).flags & 128) != 0)
                 return false;
-            if ((!(f.isSafe()) && !(f.isTrusted())))
+            if (!f.isSafe() && !f.isTrusted())
             {
-                if (((sc).flags & 256) != 0 ? (sc).func.isSafeBypassingInference() : ((sc).func.setUnsafe() && !(((sc).flags & 8) != 0)))
+                if (((sc).flags & 256) != 0 ? (sc).func.isSafeBypassingInference() : (sc).func.setUnsafe() && (((sc).flags & 8) == 0))
                 {
-                    if (!(this.loc.isValid()))
+                    if (!this.loc.isValid())
                         this.loc = (sc).func.loc.copy();
                     BytePtr prettyChars = pcopy(f.toPrettyChars(false));
                     this.error(new BytePtr("`@safe` %s `%s` cannot call `@system` %s `%s`"), (sc).func.kind(), (sc).func.toPrettyChars(false), f.kind(), prettyChars);
@@ -1452,19 +1452,19 @@ public class expression {
         }
 
         public  boolean checkNogc(Scope sc, FuncDeclaration f) {
-            if (!((sc).func != null))
+            if ((sc).func == null)
                 return false;
-            if (pequals((sc).func, f))
+            if ((pequals((sc).func, f)))
                 return false;
-            if ((sc).intypeof == 1)
+            if (((sc).intypeof == 1))
                 return false;
             if (((sc).flags & 128) != 0)
                 return false;
-            if (!(f.isNogc()))
+            if (!f.isNogc())
             {
-                if (((sc).flags & 256) != 0 ? (sc).func.isNogcBypassingInference() : ((sc).func.setGC() && !(((sc).flags & 8) != 0)))
+                if (((sc).flags & 256) != 0 ? (sc).func.isNogcBypassingInference() : (sc).func.setGC() && (((sc).flags & 8) == 0))
                 {
-                    if (this.loc.linnum == 0)
+                    if ((this.loc.linnum == 0))
                         this.loc = (sc).func.loc.copy();
                     this.error(new BytePtr("`@nogc` %s `%s` cannot call non-@nogc %s `%s`"), (sc).func.kind(), (sc).func.toPrettyChars(false), f.kind(), f.toPrettyChars(false));
                     return true;
@@ -1476,7 +1476,7 @@ public class expression {
         public  boolean checkPostblit(Scope sc, Type t) {
             {
                 TypeStruct ts = t.baseElemOf().isTypeStruct();
-                if (ts != null)
+                if ((ts) != null)
                 {
                     if (global.params.useTypeInfo)
                     {
@@ -1498,9 +1498,9 @@ public class expression {
         }
 
         public  boolean checkRightThis(Scope sc) {
-            if ((this.op & 0xFF) == 127)
+            if (((this.op & 0xFF) == 127))
                 return true;
-            if (((this.op & 0xFF) == 26 && (this.type.ty & 0xFF) != ENUMTY.Terror))
+            if (((this.op & 0xFF) == 26) && ((this.type.ty & 0xFF) != ENUMTY.Terror))
             {
                 VarExp ve = (VarExp)this;
                 if (isNeedThisScope(sc, ve.var))
@@ -1513,7 +1513,7 @@ public class expression {
         }
 
         public  boolean checkReadModifyWrite(byte rmwOp, Expression ex) {
-            if ((!(this.type != null) || !(this.type.isShared())))
+            if ((this.type == null) || !this.type.isShared())
                 return false;
             switch ((rmwOp & 0xFF))
             {
@@ -1541,24 +1541,24 @@ public class expression {
             Type t = this.type;
             Type tb = this.type.toBasetype();
             Type att = null;
-            for (; (1) != 0;){
+            for (; 1 != 0;){
                 {
                     TypeStruct ts = tb.isTypeStruct();
-                    if (ts != null)
+                    if ((ts) != null)
                     {
                         AggregateDeclaration ad = ts.sym;
                         {
                             Dsymbol fd = search_function(ad, Id._cast);
-                            if (fd != null)
+                            if ((fd) != null)
                             {
                                 e = new CastExp(this.loc, e, Type.tbool);
                                 e = expressionSemantic(e, sc);
                                 return e;
                             }
                         }
-                        if ((ad.aliasthis != null && !pequals(tb, att)))
+                        if ((ad.aliasthis != null) && (!pequals(tb, att)))
                         {
-                            if ((!(att != null) && tb.checkAliasThisRec()))
+                            if ((att == null) && tb.checkAliasThisRec())
                                 att = tb;
                             e = resolveAliasThis(sc, e, false);
                             t = e.type;
@@ -1569,9 +1569,9 @@ public class expression {
                 }
                 break;
             }
-            if (!(t.isBoolean()))
+            if (!t.isBoolean())
             {
-                if (!pequals(tb, Type.terror))
+                if ((!pequals(tb, Type.terror)))
                     this.error(new BytePtr("expression `%s` of type `%s` does not have a boolean value"), this.toChars(), t.toChars());
                 return new ErrorExp();
             }
@@ -1591,7 +1591,7 @@ public class expression {
             if (this.type != null)
                 {
                     TypeReference tr = this.type.isTypeReference();
-                    if (tr != null)
+                    if ((tr) != null)
                     {
                         Expression e = new PtrExp(this.loc, this, tr.next);
                         return e;
@@ -1621,423 +1621,423 @@ public class expression {
         }
 
         public  IntegerExp isIntegerExp() {
-            return (this.op & 0xFF) == 135 ? (IntegerExp)this : null;
+            return ((this.op & 0xFF) == 135) ? (IntegerExp)this : null;
         }
 
         public  ErrorExp isErrorExp() {
-            return (this.op & 0xFF) == 127 ? (ErrorExp)this : null;
+            return ((this.op & 0xFF) == 127) ? (ErrorExp)this : null;
         }
 
         public  VoidInitExp isVoidInitExp() {
-            return (this.op & 0xFF) == 128 ? (VoidInitExp)this : null;
+            return ((this.op & 0xFF) == 128) ? (VoidInitExp)this : null;
         }
 
         public  RealExp isRealExp() {
-            return (this.op & 0xFF) == 140 ? (RealExp)this : null;
+            return ((this.op & 0xFF) == 140) ? (RealExp)this : null;
         }
 
         public  ComplexExp isComplexExp() {
-            return (this.op & 0xFF) == 147 ? (ComplexExp)this : null;
+            return ((this.op & 0xFF) == 147) ? (ComplexExp)this : null;
         }
 
         public  IdentifierExp isIdentifierExp() {
-            return (this.op & 0xFF) == 120 ? (IdentifierExp)this : null;
+            return ((this.op & 0xFF) == 120) ? (IdentifierExp)this : null;
         }
 
         public  DollarExp isDollarExp() {
-            return (this.op & 0xFF) == 35 ? (DollarExp)this : null;
+            return ((this.op & 0xFF) == 35) ? (DollarExp)this : null;
         }
 
         public  DsymbolExp isDsymbolExp() {
-            return (this.op & 0xFF) == 41 ? (DsymbolExp)this : null;
+            return ((this.op & 0xFF) == 41) ? (DsymbolExp)this : null;
         }
 
         public  ThisExp isThisExp() {
-            return (this.op & 0xFF) == 123 ? (ThisExp)this : null;
+            return ((this.op & 0xFF) == 123) ? (ThisExp)this : null;
         }
 
         public  SuperExp isSuperExp() {
-            return (this.op & 0xFF) == 124 ? (SuperExp)this : null;
+            return ((this.op & 0xFF) == 124) ? (SuperExp)this : null;
         }
 
         public  NullExp isNullExp() {
-            return (this.op & 0xFF) == 13 ? (NullExp)this : null;
+            return ((this.op & 0xFF) == 13) ? (NullExp)this : null;
         }
 
         public  StringExp isStringExp() {
-            return (this.op & 0xFF) == 121 ? (StringExp)this : null;
+            return ((this.op & 0xFF) == 121) ? (StringExp)this : null;
         }
 
         public  TupleExp isTupleExp() {
-            return (this.op & 0xFF) == 126 ? (TupleExp)this : null;
+            return ((this.op & 0xFF) == 126) ? (TupleExp)this : null;
         }
 
         public  ArrayLiteralExp isArrayLiteralExp() {
-            return (this.op & 0xFF) == 47 ? (ArrayLiteralExp)this : null;
+            return ((this.op & 0xFF) == 47) ? (ArrayLiteralExp)this : null;
         }
 
         public  AssocArrayLiteralExp isAssocArrayLiteralExp() {
-            return (this.op & 0xFF) == 48 ? (AssocArrayLiteralExp)this : null;
+            return ((this.op & 0xFF) == 48) ? (AssocArrayLiteralExp)this : null;
         }
 
         public  StructLiteralExp isStructLiteralExp() {
-            return (this.op & 0xFF) == 49 ? (StructLiteralExp)this : null;
+            return ((this.op & 0xFF) == 49) ? (StructLiteralExp)this : null;
         }
 
         public  TypeExp isTypeExp() {
-            return (this.op & 0xFF) == 20 ? (TypeExp)this : null;
+            return ((this.op & 0xFF) == 20) ? (TypeExp)this : null;
         }
 
         public  ScopeExp isScopeExp() {
-            return (this.op & 0xFF) == 203 ? (ScopeExp)this : null;
+            return ((this.op & 0xFF) == 203) ? (ScopeExp)this : null;
         }
 
         public  TemplateExp isTemplateExp() {
-            return (this.op & 0xFF) == 36 ? (TemplateExp)this : null;
+            return ((this.op & 0xFF) == 36) ? (TemplateExp)this : null;
         }
 
         public  NewExp isNewExp() {
-            return (this.op & 0xFF) == 22 ? (NewExp)this : null;
+            return ((this.op & 0xFF) == 22) ? (NewExp)this : null;
         }
 
         public  NewAnonClassExp isNewAnonClassExp() {
-            return (this.op & 0xFF) == 45 ? (NewAnonClassExp)this : null;
+            return ((this.op & 0xFF) == 45) ? (NewAnonClassExp)this : null;
         }
 
         public  SymOffExp isSymOffExp() {
-            return (this.op & 0xFF) == 25 ? (SymOffExp)this : null;
+            return ((this.op & 0xFF) == 25) ? (SymOffExp)this : null;
         }
 
         public  VarExp isVarExp() {
-            return (this.op & 0xFF) == 26 ? (VarExp)this : null;
+            return ((this.op & 0xFF) == 26) ? (VarExp)this : null;
         }
 
         public  OverExp isOverExp() {
-            return (this.op & 0xFF) == 214 ? (OverExp)this : null;
+            return ((this.op & 0xFF) == 214) ? (OverExp)this : null;
         }
 
         public  FuncExp isFuncExp() {
-            return (this.op & 0xFF) == 161 ? (FuncExp)this : null;
+            return ((this.op & 0xFF) == 161) ? (FuncExp)this : null;
         }
 
         public  DeclarationExp isDeclarationExp() {
-            return (this.op & 0xFF) == 38 ? (DeclarationExp)this : null;
+            return ((this.op & 0xFF) == 38) ? (DeclarationExp)this : null;
         }
 
         public  TypeidExp isTypeidExp() {
-            return (this.op & 0xFF) == 42 ? (TypeidExp)this : null;
+            return ((this.op & 0xFF) == 42) ? (TypeidExp)this : null;
         }
 
         public  TraitsExp isTraitsExp() {
-            return (this.op & 0xFF) == 213 ? (TraitsExp)this : null;
+            return ((this.op & 0xFF) == 213) ? (TraitsExp)this : null;
         }
 
         public  HaltExp isHaltExp() {
-            return (this.op & 0xFF) == 125 ? (HaltExp)this : null;
+            return ((this.op & 0xFF) == 125) ? (HaltExp)this : null;
         }
 
         public  IsExp isExp() {
-            return (this.op & 0xFF) == 63 ? (IsExp)this : null;
+            return ((this.op & 0xFF) == 63) ? (IsExp)this : null;
         }
 
         public  CompileExp isCompileExp() {
-            return (this.op & 0xFF) == 162 ? (CompileExp)this : null;
+            return ((this.op & 0xFF) == 162) ? (CompileExp)this : null;
         }
 
         public  ImportExp isImportExp() {
-            return (this.op & 0xFF) == 157 ? (ImportExp)this : null;
+            return ((this.op & 0xFF) == 157) ? (ImportExp)this : null;
         }
 
         public  AssertExp isAssertExp() {
-            return (this.op & 0xFF) == 14 ? (AssertExp)this : null;
+            return ((this.op & 0xFF) == 14) ? (AssertExp)this : null;
         }
 
         public  DotIdExp isDotIdExp() {
-            return (this.op & 0xFF) == 28 ? (DotIdExp)this : null;
+            return ((this.op & 0xFF) == 28) ? (DotIdExp)this : null;
         }
 
         public  DotTemplateExp isDotTemplateExp() {
-            return (this.op & 0xFF) == 37 ? (DotTemplateExp)this : null;
+            return ((this.op & 0xFF) == 37) ? (DotTemplateExp)this : null;
         }
 
         public  DotVarExp isDotVarExp() {
-            return (this.op & 0xFF) == 27 ? (DotVarExp)this : null;
+            return ((this.op & 0xFF) == 27) ? (DotVarExp)this : null;
         }
 
         public  DotTemplateInstanceExp isDotTemplateInstanceExp() {
-            return (this.op & 0xFF) == 29 ? (DotTemplateInstanceExp)this : null;
+            return ((this.op & 0xFF) == 29) ? (DotTemplateInstanceExp)this : null;
         }
 
         public  DelegateExp isDelegateExp() {
-            return (this.op & 0xFF) == 160 ? (DelegateExp)this : null;
+            return ((this.op & 0xFF) == 160) ? (DelegateExp)this : null;
         }
 
         public  DotTypeExp isDotTypeExp() {
-            return (this.op & 0xFF) == 30 ? (DotTypeExp)this : null;
+            return ((this.op & 0xFF) == 30) ? (DotTypeExp)this : null;
         }
 
         public  CallExp isCallExp() {
-            return (this.op & 0xFF) == 18 ? (CallExp)this : null;
+            return ((this.op & 0xFF) == 18) ? (CallExp)this : null;
         }
 
         public  AddrExp isAddrExp() {
-            return (this.op & 0xFF) == 19 ? (AddrExp)this : null;
+            return ((this.op & 0xFF) == 19) ? (AddrExp)this : null;
         }
 
         public  PtrExp isPtrExp() {
-            return (this.op & 0xFF) == 24 ? (PtrExp)this : null;
+            return ((this.op & 0xFF) == 24) ? (PtrExp)this : null;
         }
 
         public  NegExp isNegExp() {
-            return (this.op & 0xFF) == 8 ? (NegExp)this : null;
+            return ((this.op & 0xFF) == 8) ? (NegExp)this : null;
         }
 
         public  UAddExp isUAddExp() {
-            return (this.op & 0xFF) == 43 ? (UAddExp)this : null;
+            return ((this.op & 0xFF) == 43) ? (UAddExp)this : null;
         }
 
         public  ComExp isComExp() {
-            return (this.op & 0xFF) == 92 ? (ComExp)this : null;
+            return ((this.op & 0xFF) == 92) ? (ComExp)this : null;
         }
 
         public  NotExp isNotExp() {
-            return (this.op & 0xFF) == 91 ? (NotExp)this : null;
+            return ((this.op & 0xFF) == 91) ? (NotExp)this : null;
         }
 
         public  DeleteExp isDeleteExp() {
-            return (this.op & 0xFF) == 23 ? (DeleteExp)this : null;
+            return ((this.op & 0xFF) == 23) ? (DeleteExp)this : null;
         }
 
         public  CastExp isCastExp() {
-            return (this.op & 0xFF) == 12 ? (CastExp)this : null;
+            return ((this.op & 0xFF) == 12) ? (CastExp)this : null;
         }
 
         public  VectorExp isVectorExp() {
-            return (this.op & 0xFF) == 229 ? (VectorExp)this : null;
+            return ((this.op & 0xFF) == 229) ? (VectorExp)this : null;
         }
 
         public  VectorArrayExp isVectorArrayExp() {
-            return (this.op & 0xFF) == 236 ? (VectorArrayExp)this : null;
+            return ((this.op & 0xFF) == 236) ? (VectorArrayExp)this : null;
         }
 
         public  SliceExp isSliceExp() {
-            return (this.op & 0xFF) == 31 ? (SliceExp)this : null;
+            return ((this.op & 0xFF) == 31) ? (SliceExp)this : null;
         }
 
         public  ArrayLengthExp isArrayLengthExp() {
-            return (this.op & 0xFF) == 32 ? (ArrayLengthExp)this : null;
+            return ((this.op & 0xFF) == 32) ? (ArrayLengthExp)this : null;
         }
 
         public  ArrayExp isArrayExp() {
-            return (this.op & 0xFF) == 17 ? (ArrayExp)this : null;
+            return ((this.op & 0xFF) == 17) ? (ArrayExp)this : null;
         }
 
         public  DotExp isDotExp() {
-            return (this.op & 0xFF) == 97 ? (DotExp)this : null;
+            return ((this.op & 0xFF) == 97) ? (DotExp)this : null;
         }
 
         public  CommaExp isCommaExp() {
-            return (this.op & 0xFF) == 99 ? (CommaExp)this : null;
+            return ((this.op & 0xFF) == 99) ? (CommaExp)this : null;
         }
 
         public  IntervalExp isIntervalExp() {
-            return (this.op & 0xFF) == 231 ? (IntervalExp)this : null;
+            return ((this.op & 0xFF) == 231) ? (IntervalExp)this : null;
         }
 
         public  DelegatePtrExp isDelegatePtrExp() {
-            return (this.op & 0xFF) == 52 ? (DelegatePtrExp)this : null;
+            return ((this.op & 0xFF) == 52) ? (DelegatePtrExp)this : null;
         }
 
         public  DelegateFuncptrExp isDelegateFuncptrExp() {
-            return (this.op & 0xFF) == 53 ? (DelegateFuncptrExp)this : null;
+            return ((this.op & 0xFF) == 53) ? (DelegateFuncptrExp)this : null;
         }
 
         public  IndexExp isIndexExp() {
-            return (this.op & 0xFF) == 62 ? (IndexExp)this : null;
+            return ((this.op & 0xFF) == 62) ? (IndexExp)this : null;
         }
 
         public  PostExp isPostExp() {
-            return ((this.op & 0xFF) == 93 || (this.op & 0xFF) == 94) ? (PostExp)this : null;
+            return ((this.op & 0xFF) == 93) || ((this.op & 0xFF) == 94) ? (PostExp)this : null;
         }
 
         public  PreExp isPreExp() {
-            return ((this.op & 0xFF) == 103 || (this.op & 0xFF) == 104) ? (PreExp)this : null;
+            return ((this.op & 0xFF) == 103) || ((this.op & 0xFF) == 104) ? (PreExp)this : null;
         }
 
         public  AssignExp isAssignExp() {
-            return (this.op & 0xFF) == 90 ? (AssignExp)this : null;
+            return ((this.op & 0xFF) == 90) ? (AssignExp)this : null;
         }
 
         public  ConstructExp isConstructExp() {
-            return (this.op & 0xFF) == 95 ? (ConstructExp)this : null;
+            return ((this.op & 0xFF) == 95) ? (ConstructExp)this : null;
         }
 
         public  BlitExp isBlitExp() {
-            return (this.op & 0xFF) == 96 ? (BlitExp)this : null;
+            return ((this.op & 0xFF) == 96) ? (BlitExp)this : null;
         }
 
         public  AddAssignExp isAddAssignExp() {
-            return (this.op & 0xFF) == 76 ? (AddAssignExp)this : null;
+            return ((this.op & 0xFF) == 76) ? (AddAssignExp)this : null;
         }
 
         public  MinAssignExp isMinAssignExp() {
-            return (this.op & 0xFF) == 77 ? (MinAssignExp)this : null;
+            return ((this.op & 0xFF) == 77) ? (MinAssignExp)this : null;
         }
 
         public  MulAssignExp isMulAssignExp() {
-            return (this.op & 0xFF) == 81 ? (MulAssignExp)this : null;
+            return ((this.op & 0xFF) == 81) ? (MulAssignExp)this : null;
         }
 
         public  DivAssignExp isDivAssignExp() {
-            return (this.op & 0xFF) == 82 ? (DivAssignExp)this : null;
+            return ((this.op & 0xFF) == 82) ? (DivAssignExp)this : null;
         }
 
         public  ModAssignExp isModAssignExp() {
-            return (this.op & 0xFF) == 83 ? (ModAssignExp)this : null;
+            return ((this.op & 0xFF) == 83) ? (ModAssignExp)this : null;
         }
 
         public  AndAssignExp isAndAssignExp() {
-            return (this.op & 0xFF) == 87 ? (AndAssignExp)this : null;
+            return ((this.op & 0xFF) == 87) ? (AndAssignExp)this : null;
         }
 
         public  OrAssignExp isOrAssignExp() {
-            return (this.op & 0xFF) == 88 ? (OrAssignExp)this : null;
+            return ((this.op & 0xFF) == 88) ? (OrAssignExp)this : null;
         }
 
         public  XorAssignExp isXorAssignExp() {
-            return (this.op & 0xFF) == 89 ? (XorAssignExp)this : null;
+            return ((this.op & 0xFF) == 89) ? (XorAssignExp)this : null;
         }
 
         public  PowAssignExp isPowAssignExp() {
-            return (this.op & 0xFF) == 227 ? (PowAssignExp)this : null;
+            return ((this.op & 0xFF) == 227) ? (PowAssignExp)this : null;
         }
 
         public  ShlAssignExp isShlAssignExp() {
-            return (this.op & 0xFF) == 66 ? (ShlAssignExp)this : null;
+            return ((this.op & 0xFF) == 66) ? (ShlAssignExp)this : null;
         }
 
         public  ShrAssignExp isShrAssignExp() {
-            return (this.op & 0xFF) == 67 ? (ShrAssignExp)this : null;
+            return ((this.op & 0xFF) == 67) ? (ShrAssignExp)this : null;
         }
 
         public  UshrAssignExp isUshrAssignExp() {
-            return (this.op & 0xFF) == 69 ? (UshrAssignExp)this : null;
+            return ((this.op & 0xFF) == 69) ? (UshrAssignExp)this : null;
         }
 
         public  CatAssignExp isCatAssignExp() {
-            return (this.op & 0xFF) == 71 ? (CatAssignExp)this : null;
+            return ((this.op & 0xFF) == 71) ? (CatAssignExp)this : null;
         }
 
         public  CatElemAssignExp isCatElemAssignExp() {
-            return (this.op & 0xFF) == 72 ? (CatElemAssignExp)this : null;
+            return ((this.op & 0xFF) == 72) ? (CatElemAssignExp)this : null;
         }
 
         public  CatDcharAssignExp isCatDcharAssignExp() {
-            return (this.op & 0xFF) == 73 ? (CatDcharAssignExp)this : null;
+            return ((this.op & 0xFF) == 73) ? (CatDcharAssignExp)this : null;
         }
 
         public  AddExp isAddExp() {
-            return (this.op & 0xFF) == 74 ? (AddExp)this : null;
+            return ((this.op & 0xFF) == 74) ? (AddExp)this : null;
         }
 
         public  MinExp isMinExp() {
-            return (this.op & 0xFF) == 75 ? (MinExp)this : null;
+            return ((this.op & 0xFF) == 75) ? (MinExp)this : null;
         }
 
         public  CatExp isCatExp() {
-            return (this.op & 0xFF) == 70 ? (CatExp)this : null;
+            return ((this.op & 0xFF) == 70) ? (CatExp)this : null;
         }
 
         public  MulExp isMulExp() {
-            return (this.op & 0xFF) == 78 ? (MulExp)this : null;
+            return ((this.op & 0xFF) == 78) ? (MulExp)this : null;
         }
 
         public  DivExp isDivExp() {
-            return (this.op & 0xFF) == 79 ? (DivExp)this : null;
+            return ((this.op & 0xFF) == 79) ? (DivExp)this : null;
         }
 
         public  ModExp isModExp() {
-            return (this.op & 0xFF) == 80 ? (ModExp)this : null;
+            return ((this.op & 0xFF) == 80) ? (ModExp)this : null;
         }
 
         public  PowExp isPowExp() {
-            return (this.op & 0xFF) == 226 ? (PowExp)this : null;
+            return ((this.op & 0xFF) == 226) ? (PowExp)this : null;
         }
 
         public  ShlExp isShlExp() {
-            return (this.op & 0xFF) == 64 ? (ShlExp)this : null;
+            return ((this.op & 0xFF) == 64) ? (ShlExp)this : null;
         }
 
         public  ShrExp isShrExp() {
-            return (this.op & 0xFF) == 65 ? (ShrExp)this : null;
+            return ((this.op & 0xFF) == 65) ? (ShrExp)this : null;
         }
 
         public  UshrExp isUshrExp() {
-            return (this.op & 0xFF) == 68 ? (UshrExp)this : null;
+            return ((this.op & 0xFF) == 68) ? (UshrExp)this : null;
         }
 
         public  AndExp isAndExp() {
-            return (this.op & 0xFF) == 84 ? (AndExp)this : null;
+            return ((this.op & 0xFF) == 84) ? (AndExp)this : null;
         }
 
         public  OrExp isOrExp() {
-            return (this.op & 0xFF) == 85 ? (OrExp)this : null;
+            return ((this.op & 0xFF) == 85) ? (OrExp)this : null;
         }
 
         public  XorExp isXorExp() {
-            return (this.op & 0xFF) == 86 ? (XorExp)this : null;
+            return ((this.op & 0xFF) == 86) ? (XorExp)this : null;
         }
 
         public  LogicalExp isLogicalExp() {
-            return ((this.op & 0xFF) == 101 || (this.op & 0xFF) == 102) ? (LogicalExp)this : null;
+            return ((this.op & 0xFF) == 101) || ((this.op & 0xFF) == 102) ? (LogicalExp)this : null;
         }
 
         public  InExp isInExp() {
-            return (this.op & 0xFF) == 175 ? (InExp)this : null;
+            return ((this.op & 0xFF) == 175) ? (InExp)this : null;
         }
 
         public  RemoveExp isRemoveExp() {
-            return (this.op & 0xFF) == 44 ? (RemoveExp)this : null;
+            return ((this.op & 0xFF) == 44) ? (RemoveExp)this : null;
         }
 
         public  EqualExp isEqualExp() {
-            return ((this.op & 0xFF) == 58 || (this.op & 0xFF) == 59) ? (EqualExp)this : null;
+            return ((this.op & 0xFF) == 58) || ((this.op & 0xFF) == 59) ? (EqualExp)this : null;
         }
 
         public  IdentityExp isIdentityExp() {
-            return ((this.op & 0xFF) == 60 || (this.op & 0xFF) == 61) ? (IdentityExp)this : null;
+            return ((this.op & 0xFF) == 60) || ((this.op & 0xFF) == 61) ? (IdentityExp)this : null;
         }
 
         public  CondExp isCondExp() {
-            return (this.op & 0xFF) == 100 ? (CondExp)this : null;
+            return ((this.op & 0xFF) == 100) ? (CondExp)this : null;
         }
 
         public  DefaultInitExp isDefaultInitExp() {
-            return (this.op & 0xFF) == 190 ? (DefaultInitExp)this : null;
+            return ((this.op & 0xFF) == 190) ? (DefaultInitExp)this : null;
         }
 
         public  FileInitExp isFileInitExp() {
-            return ((this.op & 0xFF) == 219 || (this.op & 0xFF) == 220) ? (FileInitExp)this : null;
+            return ((this.op & 0xFF) == 219) || ((this.op & 0xFF) == 220) ? (FileInitExp)this : null;
         }
 
         public  LineInitExp isLineInitExp() {
-            return (this.op & 0xFF) == 218 ? (LineInitExp)this : null;
+            return ((this.op & 0xFF) == 218) ? (LineInitExp)this : null;
         }
 
         public  ModuleInitExp isModuleInitExp() {
-            return (this.op & 0xFF) == 221 ? (ModuleInitExp)this : null;
+            return ((this.op & 0xFF) == 221) ? (ModuleInitExp)this : null;
         }
 
         public  FuncInitExp isFuncInitExp() {
-            return (this.op & 0xFF) == 222 ? (FuncInitExp)this : null;
+            return ((this.op & 0xFF) == 222) ? (FuncInitExp)this : null;
         }
 
         public  PrettyFuncInitExp isPrettyFuncInitExp() {
-            return (this.op & 0xFF) == 223 ? (PrettyFuncInitExp)this : null;
+            return ((this.op & 0xFF) == 223) ? (PrettyFuncInitExp)this : null;
         }
 
         public  ClassReferenceExp isClassReferenceExp() {
-            return (this.op & 0xFF) == 50 ? (ClassReferenceExp)this : null;
+            return ((this.op & 0xFF) == 50) ? (ClassReferenceExp)this : null;
         }
 
         public  void accept(Visitor v) {
@@ -2055,9 +2055,9 @@ public class expression {
         public  IntegerExp(Loc loc, long value, Type type) {
             super(loc, TOK.int64, 32);
             assert(type != null);
-            if (!(type.isscalar()))
+            if (!type.isscalar())
             {
-                if ((type.ty & 0xFF) != ENUMTY.Terror)
+                if (((type.ty & 0xFF) != ENUMTY.Terror))
                     this.error(new BytePtr("integral constant must be scalar type, not `%s`"), type.toChars());
                 type = Type.terror;
             }
@@ -2080,13 +2080,13 @@ public class expression {
         }
 
         public  boolean equals(RootObject o) {
-            if (pequals(this, o))
+            if ((pequals(this, o)))
                 return true;
             {
                 IntegerExp ne = ((Expression)o).isIntegerExp();
-                if (ne != null)
+                if ((ne) != null)
                 {
-                    if ((this.type.toHeadMutable().equals(ne.type.toHeadMutable()) && this.value == ne.value))
+                    if (this.type.toHeadMutable().equals(ne.type.toHeadMutable()) && (this.value == ne.value))
                     {
                         return true;
                     }
@@ -2103,7 +2103,7 @@ public class expression {
             byte ty = this.type.toBasetype().ty;
             long val = normalize(ty, this.value);
             this.value = val;
-            return (ty & 0xFF) == ENUMTY.Tuns64 ? (double)val : (double)(long)val;
+            return ((ty & 0xFF) == ENUMTY.Tuns64) ? (double)val : (double)(long)val;
         }
 
         public  double toImaginary() {
@@ -2116,13 +2116,13 @@ public class expression {
 
         public  boolean isBool(boolean result) {
             boolean r = this.toInteger() != 0L;
-            return result ? r : !(r);
+            return result ? r : !r;
         }
 
         public  Expression toLvalue(Scope sc, Expression e) {
-            if (!(e != null))
+            if (e == null)
                 e = this;
-            else if (!(this.loc.isValid()))
+            else if (!this.loc.isValid())
                 this.loc = e.loc.copy();
             e.error(new BytePtr("cannot modify constant `%s`"), e.toChars());
             return new ErrorExp();
@@ -2182,11 +2182,11 @@ public class expression {
                             result = value;
                             break;
                         case 3:
-                            if (target.ptrsize == 8)
+                            if ((target.ptrsize == 8))
                                 /*goto case*/{ __dispatch2 = 20; continue dispatched_2; }
-                            if (target.ptrsize == 4)
+                            if ((target.ptrsize == 4))
                                 /*goto case*/{ __dispatch2 = 18; continue dispatched_2; }
-                            if (target.ptrsize == 2)
+                            if ((target.ptrsize == 2))
                                 /*goto case*/{ __dispatch2 = 16; continue dispatched_2; }
                             throw new AssertionError("Unreachable code!");
                         default:
@@ -2203,7 +2203,7 @@ public class expression {
 
         // from template literal!(-1)
         public static IntegerExp literal-1() {
-            if (!(expression.literaltheConstant != null))
+            if (expression.literaltheConstant == null)
                 expression.literaltheConstant = new IntegerExp(-1L);
             return expression.literaltheConstant;
         }
@@ -2211,7 +2211,7 @@ public class expression {
 
         // from template literal!(0)
         public static IntegerExp literal0() {
-            if (!(expression.literaltheConstant != null))
+            if (expression.literaltheConstant == null)
                 expression.literaltheConstant = new IntegerExp(0L);
             return expression.literaltheConstant;
         }
@@ -2219,7 +2219,7 @@ public class expression {
 
         // from template literal!(1)
         public static IntegerExp literal1() {
-            if (!(expression.literaltheConstant != null))
+            if (expression.literaltheConstant == null)
                 expression.literaltheConstant = new IntegerExp(1L);
             return expression.literaltheConstant;
         }
@@ -2242,7 +2242,7 @@ public class expression {
     public static class ErrorExp extends Expression
     {
         public  ErrorExp() {
-            if ((global.errors == 0 && global.gaggedErrors == 0))
+            if ((global.errors == 0) && (global.gaggedErrors == 0))
             {
                 this.error(new BytePtr("unknown, please file report on issues.dlang.org"));
             }
@@ -2319,13 +2319,13 @@ public class expression {
         }
 
         public  boolean equals(RootObject o) {
-            if (pequals(this, o))
+            if ((pequals(this, o)))
                 return true;
             {
                 RealExp ne = ((Expression)o).isRealExp();
-                if (ne != null)
+                if ((ne) != null)
                 {
-                    if ((this.type.toHeadMutable().equals(ne.type.toHeadMutable()) && (RealIdentical(this.value, ne.value)) != 0))
+                    if (this.type.toHeadMutable().equals(ne.type.toHeadMutable()) && (RealIdentical(this.value, ne.value) != 0))
                     {
                         return true;
                     }
@@ -2355,7 +2355,7 @@ public class expression {
         }
 
         public  boolean isBool(boolean result) {
-            return result ? ((this.value) != 0) : !(((this.value) != 0));
+            return result ? (this.value != 0) : !(this.value != 0);
         }
 
         public  void accept(Visitor v) {
@@ -2394,13 +2394,13 @@ public class expression {
         }
 
         public  boolean equals(RootObject o) {
-            if (pequals(this, o))
+            if ((pequals(this, o)))
                 return true;
             {
                 ComplexExp ne = ((Expression)o).isComplexExp();
-                if (ne != null)
+                if ((ne) != null)
                 {
-                    if (((this.type.toHeadMutable().equals(ne.type.toHeadMutable()) && (RealIdentical(creall(this.value), creall(ne.value))) != 0) && (RealIdentical(cimagl(this.value), cimagl(ne.value))) != 0))
+                    if (this.type.toHeadMutable().equals(ne.type.toHeadMutable()) && (RealIdentical(creall(this.value), creall(ne.value)) != 0) && (RealIdentical(cimagl(this.value), cimagl(ne.value)) != 0))
                     {
                         return true;
                     }
@@ -2433,7 +2433,7 @@ public class expression {
             if (result)
                 return this.value.opCastBoolean();
             else
-                return !(this.value.opCastBoolean());
+                return !this.value.opCastBoolean();
         }
 
         public  void accept(Visitor v) {
@@ -2580,7 +2580,7 @@ public class expression {
         }
 
         public  Expression toLvalue(Scope sc, Expression e) {
-            if ((this.type.toBasetype().ty & 0xFF) == ENUMTY.Tclass)
+            if (((this.type.toBasetype().ty & 0xFF) == ENUMTY.Tclass))
             {
                 return this.toLvalue(sc, e);
             }
@@ -2640,9 +2640,9 @@ public class expression {
         public  boolean equals(RootObject o) {
             {
                 Expression e = isExpression(o);
-                if (e != null)
+                if ((e) != null)
                 {
-                    if (((e.op & 0xFF) == 13 && this.type.equals(e.type)))
+                    if (((e.op & 0xFF) == 13) && this.type.equals(e.type))
                     {
                         return true;
                     }
@@ -2656,7 +2656,7 @@ public class expression {
         }
 
         public  StringExp toStringExp() {
-            if ((this.implicitConvTo(Type.tstring)) != 0)
+            if (this.implicitConvTo(Type.tstring) != 0)
             {
                 StringExp se = new StringExp(this.loc, ptr(new byte[1u]), 0);
                 se.type = Type.tstring;
@@ -2734,11 +2734,11 @@ public class expression {
         public  boolean equals(RootObject o) {
             {
                 Expression e = isExpression(o);
-                if (e != null)
+                if ((e) != null)
                 {
                     {
                         StringExp se = e.isStringExp();
-                        if (se != null)
+                        if ((se) != null)
                         {
                             return this.comparex(se) == 0;
                         }
@@ -2766,7 +2766,7 @@ public class expression {
                 default:
                 throw new AssertionError("Unreachable code!");
             }
-            if ((this.sz & 0xFF) == encSize)
+            if (((this.sz & 0xFF) == encSize))
                 return this.len;
             int result = 0;
             IntRef c = ref(0x0ffff);
@@ -2775,10 +2775,10 @@ public class expression {
                 case 1:
                     {
                         IntRef u = ref(0);
-                        for (; u.value < this.len;){
+                        for (; (u.value < this.len);){
                             {
                                 BytePtr p = pcopy(utf_decodeChar(this.string, this.len, u, c));
-                                if (p != null)
+                                if ((p) != null)
                                 {
                                     this.error(new BytePtr("%s"), p);
                                     return 0;
@@ -2791,10 +2791,10 @@ public class expression {
                 case 2:
                     {
                         IntRef u_1 = ref(0);
-                        for (; u_1.value < this.len;){
+                        for (; (u_1.value < this.len);){
                             {
                                 BytePtr p = pcopy(utf_decodeWchar(this.wstring, this.len, u_1, c));
-                                if (p != null)
+                                if ((p) != null)
                                 {
                                     this.error(new BytePtr("%s"), p);
                                     return 0;
@@ -2808,7 +2808,7 @@ public class expression {
                     {
                         int __key1322 = 0;
                         int __limit1323 = this.len;
-                        for (; __key1322 < __limit1323;__key1322 += 1) {
+                        for (; (__key1322 < __limit1323);__key1322 += 1) {
                             int u_2 = __key1322;
                             result += utf_codeLength(encSize, this.dstring.get(u_2));
                         }
@@ -2839,7 +2839,7 @@ public class expression {
                 default:
                 throw new AssertionError("Unreachable code!");
             }
-            if ((this.sz & 0xFF) == encSize)
+            if (((this.sz & 0xFF) == encSize))
             {
                 memcpy((BytePtr)dest, (this.string), (this.len * (this.sz & 0xFF)));
                 if (zero)
@@ -2850,7 +2850,7 @@ public class expression {
         }
 
         public  int getCodeUnit(int i) {
-            assert(i < this.len);
+            assert((i < this.len));
             switch ((this.sz & 0xFF))
             {
                 case 1:
@@ -2865,7 +2865,7 @@ public class expression {
         }
 
         public  void setCodeUnit(int i, int c) {
-            assert(i < this.len);
+            assert((i < this.len));
             switch ((this.sz & 0xFF))
             {
                 case 1:
@@ -2883,7 +2883,7 @@ public class expression {
         }
 
         public  BytePtr toPtr() {
-            return (this.sz & 0xFF) == 1 ? this.string : null;
+            return ((this.sz & 0xFF) == 1) ? this.string : null;
         }
 
         public  StringExp toStringExp() {
@@ -2891,13 +2891,13 @@ public class expression {
         }
 
         public  StringExp toUTF8(Scope sc) {
-            if ((this.sz & 0xFF) != 1)
+            if (((this.sz & 0xFF) != 1))
             {
                 this.committed = (byte)0;
                 Expression e = this.castTo(sc, Type.tchar.arrayOf());
                 e = e.optimize(0, false);
                 StringExp se = e.isStringExp();
-                assert((se.sz & 0xFF) == 1);
+                assert(((se.sz & 0xFF) == 1));
                 return se;
             }
             return this;
@@ -2906,7 +2906,7 @@ public class expression {
         public  int comparex(StringExp se2) {
             int len1 = this.len;
             int len2 = se2.len;
-            if (len1 == len2)
+            if ((len1 == len2))
             {
                 switch ((this.sz & 0xFF))
                 {
@@ -2919,9 +2919,9 @@ public class expression {
                             {
                                 int __key1324 = 0;
                                 int __limit1325 = this.len;
-                                for (; __key1324 < __limit1325;__key1324 += 1) {
+                                for (; (__key1324 < __limit1325);__key1324 += 1) {
                                     int u = __key1324;
-                                    if ((int)s1.get(u) != (int)s2_1.get(u))
+                                    if (((int)s1.get(u) != (int)s2_1.get(u)))
                                         return (int)s1.get(u) - (int)s2_1.get(u);
                                 }
                             }
@@ -2934,9 +2934,9 @@ public class expression {
                             {
                                 int __key1326 = 0;
                                 int __limit1327 = this.len;
-                                for (; __key1326 < __limit1327;__key1326 += 1) {
+                                for (; (__key1326 < __limit1327);__key1326 += 1) {
                                     int u_1 = __key1326;
-                                    if (s1_1.get(u_1) != s2.get(u_1))
+                                    if ((s1_1.get(u_1) != s2.get(u_1)))
                                         return (s1_1.get(u_1) - s2.get(u_1));
                                 }
                             }
@@ -2954,11 +2954,11 @@ public class expression {
         }
 
         public  boolean isLvalue() {
-            return (this.type != null && (this.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray);
+            return (this.type != null) && ((this.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray);
         }
 
         public  Expression toLvalue(Scope sc, Expression e) {
-            return (this.type != null && (this.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) ? this : this.toLvalue(sc, e);
+            return (this.type != null) && ((this.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) ? this : this.toLvalue(sc, e);
         }
 
         public  Expression modifiableLvalue(Scope sc, Expression e) {
@@ -2993,7 +2993,7 @@ public class expression {
         }
 
         public  ByteSlice peekSlice() {
-            assert((this.sz & 0xFF) == 1);
+            assert(((this.sz & 0xFF) == 1));
             return this.string.slice(0,this.len);
         }
 
@@ -3044,18 +3044,18 @@ public class expression {
             {
                 Slice<RootObject> __r1328 = (tup.objects).opSlice().copy();
                 int __key1329 = 0;
-                for (; __key1329 < __r1328.getLength();__key1329 += 1) {
+                for (; (__key1329 < __r1328.getLength());__key1329 += 1) {
                     RootObject o = __r1328.get(__key1329);
                     {
                         Dsymbol s = getDsymbol(o);
-                        if (s != null)
+                        if ((s) != null)
                         {
                             Expression e = new DsymbolExp(loc, s, true);
                             (this.exps).push(e);
                         }
                         else {
                             Expression eo = isExpression(o);
-                            if (eo != null)
+                            if ((eo) != null)
                             {
                                 Expression e = eo.copy();
                                 e.loc = loc.copy();
@@ -3063,7 +3063,7 @@ public class expression {
                             }
                             else {
                                 Type t = isType(o);
-                                if (t != null)
+                                if ((t) != null)
                                 {
                                     Expression e = new TypeExp(loc, t);
                                     (this.exps).push(e);
@@ -3092,27 +3092,27 @@ public class expression {
         }
 
         public  boolean equals(RootObject o) {
-            if (pequals(this, o))
+            if ((pequals(this, o)))
                 return true;
             {
                 Expression e = isExpression(o);
-                if (e != null)
+                if ((e) != null)
                     {
                         TupleExp te = e.isTupleExp();
-                        if (te != null)
+                        if ((te) != null)
                         {
-                            if ((this.exps).length != (te.exps).length)
+                            if (((this.exps).length != (te.exps).length))
                                 return false;
-                            if (((this.e0 != null && !(this.e0.equals(te.e0))) || (!(this.e0 != null) && te.e0 != null)))
+                            if ((this.e0 != null) && !this.e0.equals(te.e0) || (this.e0 == null) && (te.e0 != null))
                                 return false;
                             {
                                 Slice<Expression> __r1331 = (this.exps).opSlice().copy();
                                 int __key1330 = 0;
-                                for (; __key1330 < __r1331.getLength();__key1330 += 1) {
+                                for (; (__key1330 < __r1331.getLength());__key1330 += 1) {
                                     Expression e1 = __r1331.get(__key1330);
                                     int i = __key1330;
                                     Expression e2 = (te.exps).get(i);
-                                    if (!(e1.equals(e2)))
+                                    if (!e1.equals(e2))
                                         return false;
                                 }
                             }
@@ -3180,33 +3180,33 @@ public class expression {
         }
 
         public  boolean equals(RootObject o) {
-            if (pequals(this, o))
+            if ((pequals(this, o)))
                 return true;
             Expression e = isExpression(o);
-            if (!(e != null))
+            if (e == null)
                 return false;
             {
                 ArrayLiteralExp ae = e.isArrayLiteralExp();
-                if (ae != null)
+                if ((ae) != null)
                 {
-                    if ((this.elements).length != (ae.elements).length)
+                    if (((this.elements).length != (ae.elements).length))
                         return false;
-                    if (((this.elements).length == 0 && !(this.type.equals(ae.type))))
+                    if (((this.elements).length == 0) && !this.type.equals(ae.type))
                     {
                         return false;
                     }
                     {
                         Slice<Expression> __r1333 = (this.elements).opSlice().copy();
                         int __key1332 = 0;
-                        for (; __key1332 < __r1333.getLength();__key1332 += 1) {
+                        for (; (__key1332 < __r1333.getLength());__key1332 += 1) {
                             Expression e1 = __r1333.get(__key1332);
                             int i = __key1332;
                             Expression e2 = (ae.elements).get(i);
-                            if (!(e1 != null))
+                            if (e1 == null)
                                 e1 = this.basis;
-                            if (!(e2 != null))
+                            if (e2 == null)
                                 e2 = ae.basis;
-                            if ((!pequals(e1, e2) && ((!(e1 != null) || !(e2 != null)) || !(e1.equals(e2)))))
+                            if ((!pequals(e1, e2)) && (e1 == null) || (e2 == null) || !e1.equals(e2))
                                 return false;
                         }
                     }
@@ -3228,12 +3228,12 @@ public class expression {
 
         public  StringExp toStringExp() {
             byte telem = this.type.nextOf().toBasetype().ty;
-            if (((((telem & 0xFF) == ENUMTY.Tchar || (telem & 0xFF) == ENUMTY.Twchar) || (telem & 0xFF) == ENUMTY.Tdchar) || ((telem & 0xFF) == ENUMTY.Tvoid && (this.elements == null || (this.elements).length == 0))))
+            if (((telem & 0xFF) == ENUMTY.Tchar) || ((telem & 0xFF) == ENUMTY.Twchar) || ((telem & 0xFF) == ENUMTY.Tdchar) || ((telem & 0xFF) == ENUMTY.Tvoid) && (this.elements == null) || ((this.elements).length == 0))
             {
                 byte sz = (byte)1;
-                if ((telem & 0xFF) == ENUMTY.Twchar)
+                if (((telem & 0xFF) == ENUMTY.Twchar))
                     sz = (byte)2;
-                else if ((telem & 0xFF) == ENUMTY.Tdchar)
+                else if (((telem & 0xFF) == ENUMTY.Tdchar))
                     sz = (byte)4;
                 OutBuffer buf = new OutBuffer();
                 try {
@@ -3242,14 +3242,14 @@ public class expression {
                         {
                             int __key1334 = 0;
                             int __limit1335 = (this.elements).length;
-                            for (; __key1334 < __limit1335;__key1334 += 1) {
+                            for (; (__key1334 < __limit1335);__key1334 += 1) {
                                 int i = __key1334;
                                 Expression ch = this.getElement(i);
-                                if ((ch.op & 0xFF) != 135)
+                                if (((ch.op & 0xFF) != 135))
                                     return null;
-                                if ((sz & 0xFF) == 1)
+                                if (((sz & 0xFF) == 1))
                                     buf.writeByte((int)ch.toInteger());
-                                else if ((sz & 0xFF) == 2)
+                                else if (((sz & 0xFF) == 2))
                                     buf.writeword((int)ch.toInteger());
                                 else
                                     buf.write4((int)ch.toInteger());
@@ -3257,12 +3257,12 @@ public class expression {
                         }
                     }
                     byte prefix = (byte)255;
-                    if ((sz & 0xFF) == 1)
+                    if (((sz & 0xFF) == 1))
                     {
                         prefix = (byte)99;
                         buf.writeByte(0);
                     }
-                    else if ((sz & 0xFF) == 2)
+                    else if (((sz & 0xFF) == 2))
                     {
                         prefix = (byte)119;
                         buf.writeword(0);
@@ -3311,39 +3311,39 @@ public class expression {
         public byte ownedByCtfe = OwnedBy.code;
         public  AssocArrayLiteralExp(Loc loc, DArray<Expression> keys, DArray<Expression> values) {
             super(loc, TOK.assocArrayLiteral, 33);
-            assert((keys).length == (values).length);
+            assert(((keys).length == (values).length));
             this.keys = keys;
             this.values = values;
         }
 
         public  boolean equals(RootObject o) {
-            if (pequals(this, o))
+            if ((pequals(this, o)))
                 return true;
             Expression e = isExpression(o);
-            if (!(e != null))
+            if (e == null)
                 return false;
             {
                 AssocArrayLiteralExp ae = e.isAssocArrayLiteralExp();
-                if (ae != null)
+                if ((ae) != null)
                 {
-                    if ((this.keys).length != (ae.keys).length)
+                    if (((this.keys).length != (ae.keys).length))
                         return false;
                     int count = 0;
                     {
                         Slice<Expression> __r1337 = (this.keys).opSlice().copy();
                         int __key1336 = 0;
-                        for (; __key1336 < __r1337.getLength();__key1336 += 1) {
+                        for (; (__key1336 < __r1337.getLength());__key1336 += 1) {
                             Expression key = __r1337.get(__key1336);
                             int i = __key1336;
                             {
                                 Slice<Expression> __r1339 = (ae.keys).opSlice().copy();
                                 int __key1338 = 0;
-                                for (; __key1338 < __r1339.getLength();__key1338 += 1) {
+                                for (; (__key1338 < __r1339.getLength());__key1338 += 1) {
                                     Expression akey = __r1339.get(__key1338);
                                     int j = __key1338;
                                     if (key.equals(akey))
                                     {
-                                        if (!((this.values).get(i).equals((ae.values).get(j))))
+                                        if (!(this.values).get(i).equals((ae.values).get(j)))
                                             return false;
                                         count += 1;
                                     }
@@ -3418,27 +3418,27 @@ public class expression {
         }
 
         public  boolean equals(RootObject o) {
-            if (pequals(this, o))
+            if ((pequals(this, o)))
                 return true;
             Expression e = isExpression(o);
-            if (!(e != null))
+            if (e == null)
                 return false;
             {
                 StructLiteralExp se = e.isStructLiteralExp();
-                if (se != null)
+                if ((se) != null)
                 {
-                    if (!(this.type.equals(se.type)))
+                    if (!this.type.equals(se.type))
                         return false;
-                    if ((this.elements).length != (se.elements).length)
+                    if (((this.elements).length != (se.elements).length))
                         return false;
                     {
                         Slice<Expression> __r1341 = (this.elements).opSlice().copy();
                         int __key1340 = 0;
-                        for (; __key1340 < __r1341.getLength();__key1340 += 1) {
+                        for (; (__key1340 < __r1341.getLength());__key1340 += 1) {
                             Expression e1 = __r1341.get(__key1340);
                             int i = __key1340;
                             Expression e2 = (se.elements).get(i);
-                            if ((!pequals(e1, e2) && ((!(e1 != null) || !(e2 != null)) || !(e1.equals(e2)))))
+                            if ((!pequals(e1, e2)) && (e1 == null) || (e2 == null) || !e1.equals(e2))
                                 return false;
                         }
                     }
@@ -3457,23 +3457,23 @@ public class expression {
         public  Expression getField(Type type, int offset) {
             Expression e = null;
             int i = this.getFieldIndex(type, offset);
-            if (i != -1)
+            if ((i != -1))
             {
-                if (i >= this.sd.nonHiddenFields())
+                if ((i >= this.sd.nonHiddenFields()))
                     return null;
-                assert(i < (this.elements).length);
+                assert((i < (this.elements).length));
                 e = (this.elements).get(i);
                 if (e != null)
                 {
                     TypeSArray tsa = type.isTypeSArray();
-                    if ((tsa != null && !pequals(e.type.castMod((byte)0), type.castMod((byte)0))))
+                    if ((tsa != null) && (!pequals(e.type.castMod((byte)0), type.castMod((byte)0))))
                     {
                         int length = (int)tsa.dim.toInteger();
                         DArray<Expression> z = new DArray<Expression>(length);
                         {
                             Slice<Expression> __r1342 = (z).opSlice().copy();
                             int __key1343 = 0;
-                            for (; __key1343 < __r1342.getLength();__key1343 += 1) {
+                            for (; (__key1343 < __r1342.getLength());__key1343 += 1) {
                                 Expression q = __r1342.get(__key1343);
                                 q = e.copy();
                             }
@@ -3485,10 +3485,10 @@ public class expression {
                         e = e.copy();
                         e.type = type;
                     }
-                    if ((this.useStaticInit && e.type.needsNested()))
+                    if (this.useStaticInit && e.type.needsNested())
                         {
                             StructLiteralExp se = e.isStructLiteralExp();
-                            if (se != null)
+                            if ((se) != null)
                             {
                                 se.useStaticInit = true;
                             }
@@ -3499,21 +3499,21 @@ public class expression {
         }
 
         public  int getFieldIndex(Type type, int offset) {
-            if (((this.elements).length) != 0)
+            if ((this.elements).length != 0)
             {
                 {
                     Slice<VarDeclaration> __r1345 = this.sd.fields.opSlice().copy();
                     int __key1344 = 0;
-                    for (; __key1344 < __r1345.getLength();__key1344 += 1) {
+                    for (; (__key1344 < __r1345.getLength());__key1344 += 1) {
                         VarDeclaration v = __r1345.get(__key1344);
                         int i = __key1344;
-                        if ((offset == v.offset && type.size() == v.type.size()))
+                        if ((offset == v.offset) && (type.size() == v.type.size()))
                         {
-                            if (i >= this.sd.nonHiddenFields())
+                            if ((i >= this.sd.nonHiddenFields()))
                                 return i;
                             {
                                 Expression e = (this.elements).get(i);
-                                if (e != null)
+                                if ((e) != null)
                                 {
                                     return i;
                                 }
@@ -3527,14 +3527,14 @@ public class expression {
         }
 
         public  Expression addDtorHook(Scope sc) {
-            if ((this.sd.dtor != null && (sc).func != null))
+            if ((this.sd.dtor != null) && ((sc).func != null))
             {
                 int len = 10;
                 ByteSlice buf = new ByteSlice(new byte[11]);
                 buf.set(10, (byte)0);
                 strcpy(ptr(buf), new BytePtr("__sl"));
                 strncat(ptr(buf), this.sd.ident.toChars(), 5);
-                assert((buf.get(10) & 0xFF) == 0);
+                assert(((buf.get(10) & 0xFF) == 0));
                 VarDeclaration tmp = copyToTemp(0L, ptr(buf), this);
                 Expression ae = new DeclarationExp(this.loc, tmp);
                 Expression e = new CommaExp(this.loc, ae, new VarExp(this.loc, tmp, true), true);
@@ -3614,7 +3614,7 @@ public class expression {
         public  ScopeExp(Loc loc, ScopeDsymbol sds) {
             super(loc, TOK.scope_, 28);
             this.sds = sds;
-            assert(!(sds.isTemplateDeclaration() != null));
+            assert(sds.isTemplateDeclaration() == null);
         }
 
         public  Expression syntaxCopy() {
@@ -3629,9 +3629,9 @@ public class expression {
             }
             {
                 TemplateInstance ti = this.sds.isTemplateInstance();
-                if (ti != null)
+                if ((ti) != null)
                 {
-                    if (((ti.tempdecl != null && ti.semantictiargsdone) && ti.semanticRun == PASS.init))
+                    if ((ti.tempdecl != null) && ti.semantictiargsdone && (ti.semanticRun == PASS.init))
                     {
                         this.error(new BytePtr("partial %s `%s` has no type"), this.sds.kind(), this.toChars());
                         return true;
@@ -3679,7 +3679,7 @@ public class expression {
         }
 
         public  Expression toLvalue(Scope sc, Expression e) {
-            if (!(this.fd != null))
+            if (this.fd == null)
                 return this.toLvalue(sc, e);
             assert(sc != null);
             return symbolToExp(this.fd, this.loc, sc, true);
@@ -3844,7 +3844,7 @@ public class expression {
         public  SymOffExp(Loc loc, Declaration var, long offset, boolean hasOverloads) {
             {
                 VarDeclaration v = var.isVarDeclaration();
-                if (v != null)
+                if ((v) != null)
                 {
                     if (v.needThis())
                         error(loc, new BytePtr("need `this` for address of `%s`"), v.toChars());
@@ -3894,13 +3894,13 @@ public class expression {
         }
 
         public  boolean equals(RootObject o) {
-            if (pequals(this, o))
+            if ((pequals(this, o)))
                 return true;
             {
                 VarExp ne = isExpression(o).isVarExp();
-                if (ne != null)
+                if ((ne) != null)
                 {
-                    if ((this.type.toHeadMutable().equals(ne.type.toHeadMutable()) && pequals(this.var, ne.var)))
+                    if (this.type.toHeadMutable().equals(ne.type.toHeadMutable()) && (pequals(this.var, ne.var)))
                     {
                         return true;
                     }
@@ -3931,12 +3931,12 @@ public class expression {
                 this.error(new BytePtr("lazy variable `%s` cannot be modified"), this.var.toChars());
                 return new ErrorExp();
             }
-            if (pequals(this.var.ident, Id.ctfe))
+            if ((pequals(this.var.ident, Id.ctfe)))
             {
                 this.error(new BytePtr("cannot modify compiler-generated variable `__ctfe`"));
                 return new ErrorExp();
             }
-            if (pequals(this.var.ident, Id.dollar))
+            if ((pequals(this.var.ident, Id.dollar)))
             {
                 this.error(new BytePtr("cannot modify operator `$`"));
                 return new ErrorExp();
@@ -4025,7 +4025,7 @@ public class expression {
             if (this.td != null)
             {
                 assert(this.td.literal);
-                assert((this.td.members != null && (this.td.members).length == 1));
+                assert((this.td.members != null) && ((this.td.members).length == 1));
                 this.fd = (this.td.members).get(0).isFuncLiteralDeclaration();
             }
             this.tok = this.fd.tok;
@@ -4033,14 +4033,14 @@ public class expression {
         }
 
         public  boolean equals(RootObject o) {
-            if (pequals(this, o))
+            if ((pequals(this, o)))
                 return true;
             Expression e = isExpression(o);
-            if (!(e != null))
+            if (e == null)
                 return false;
             {
                 FuncExp fe = e.isFuncExp();
-                if (fe != null)
+                if ((fe) != null)
                 {
                     return pequals(this.fd, fe.fd);
                 }
@@ -4049,23 +4049,23 @@ public class expression {
         }
 
         public  void genIdent(Scope sc) {
-            if (pequals(this.fd.ident, Id.empty))
+            if ((pequals(this.fd.ident, Id.empty)))
             {
                 BytePtr s = null;
                 if (this.fd.fes != null)
                     s = pcopy(new BytePtr("__foreachbody"));
-                else if ((this.fd.tok & 0xFF) == 0)
+                else if (((this.fd.tok & 0xFF) == 0))
                     s = pcopy(new BytePtr("__lambda"));
-                else if ((this.fd.tok & 0xFF) == 160)
+                else if (((this.fd.tok & 0xFF) == 160))
                     s = pcopy(new BytePtr("__dgliteral"));
                 else
                     s = pcopy(new BytePtr("__funcliteral"));
                 DsymbolTable symtab = null;
                 {
                     FuncDeclaration func = (sc).parent.isFuncDeclaration();
-                    if (func != null)
+                    if ((func) != null)
                     {
-                        if (func.localsymtab == null)
+                        if ((func.localsymtab == null))
                         {
                             func.localsymtab = new DsymbolTable();
                         }
@@ -4074,7 +4074,7 @@ public class expression {
                     else
                     {
                         ScopeDsymbol sds = (sc).parent.isScopeDsymbol();
-                        if (!(sds.symtab != null))
+                        if (sds.symtab == null)
                         {
                             assert(sds.isTemplateInstance() != null);
                             sds.symtab = new DsymbolTable();
@@ -4094,7 +4094,7 @@ public class expression {
         public  Expression syntaxCopy() {
             if (this.td != null)
                 return new FuncExp(this.loc, this.td.syntaxCopy(null));
-            else if (this.fd.semanticRun == PASS.init)
+            else if ((this.fd.semanticRun == PASS.init))
                 return new FuncExp(this.loc, this.fd.syntaxCopy(null));
             else
                 return new FuncExp(this.loc, this.fd);
@@ -4103,7 +4103,7 @@ public class expression {
         public  int matchType(Type to, Scope sc, Ptr<FuncExp> presult, int flag) {
             Function3<Expression,Type,Integer,Integer> cannotInfer = new Function3<Expression,Type,Integer,Integer>(){
                 public Integer invoke(Expression e, Type to, Integer flag){
-                    if (!((flag) != 0))
+                    if (flag == 0)
                         e.error(new BytePtr("cannot infer parameter types from `%s`"), to.toChars());
                     return MATCH.nomatch;
                 }
@@ -4111,86 +4111,86 @@ public class expression {
             if (presult != null)
                 presult.set(0, null);
             TypeFunction tof = null;
-            if ((to.ty & 0xFF) == ENUMTY.Tdelegate)
+            if (((to.ty & 0xFF) == ENUMTY.Tdelegate))
             {
-                if ((this.tok & 0xFF) == 161)
+                if (((this.tok & 0xFF) == 161))
                 {
-                    if (!((flag) != 0))
+                    if (flag == 0)
                         this.error(new BytePtr("cannot match function literal to delegate type `%s`"), to.toChars());
                     return MATCH.nomatch;
                 }
                 tof = (TypeFunction)to.nextOf();
             }
-            else if (((to.ty & 0xFF) == ENUMTY.Tpointer && (tof = to.nextOf().isTypeFunction()) != null))
+            else if (((to.ty & 0xFF) == ENUMTY.Tpointer) && ((tof = to.nextOf().isTypeFunction()) != null))
             {
-                if ((this.tok & 0xFF) == 160)
+                if (((this.tok & 0xFF) == 160))
                 {
-                    if (!((flag) != 0))
+                    if (flag == 0)
                         this.error(new BytePtr("cannot match delegate literal to function pointer type `%s`"), to.toChars());
                     return MATCH.nomatch;
                 }
             }
             if (this.td != null)
             {
-                if (!(tof != null))
+                if (tof == null)
                 {
                     return cannotInfer.invoke(this, to, flag);
                 }
                 assert(this.td._scope != null);
                 TypeFunction tf = this.fd.type.isTypeFunction();
                 int dim = tf.parameterList.length();
-                if ((tof.parameterList.length() != dim || tof.parameterList.varargs != tf.parameterList.varargs))
+                if ((tof.parameterList.length() != dim) || (tof.parameterList.varargs != tf.parameterList.varargs))
                     return cannotInfer.invoke(this, to, flag);
                 DArray<RootObject> tiargs = new DArray<RootObject>();
                 (tiargs).reserve((this.td.parameters).length);
                 {
                     Slice<TemplateParameter> __r1346 = (this.td.parameters).opSlice().copy();
                     int __key1347 = 0;
-                    for (; __key1347 < __r1346.getLength();__key1347 += 1) {
+                    for (; (__key1347 < __r1346.getLength());__key1347 += 1) {
                         TemplateParameter tp = __r1346.get(__key1347);
                         int u = 0;
-                        for (; u < dim;u++){
+                        for (; (u < dim);u++){
                             Parameter p = tf.parameterList.get(u);
                             {
                                 TypeIdentifier ti = p.type.isTypeIdentifier();
-                                if (ti != null)
-                                    if ((ti != null && pequals(ti.ident, tp.ident)))
+                                if ((ti) != null)
+                                    if ((ti != null) && (pequals(ti.ident, tp.ident)))
                                     {
                                         break;
                                     }
                             }
                         }
-                        assert(u < dim);
+                        assert((u < dim));
                         Parameter pto = tof.parameterList.get(u);
                         Type t = pto.type;
-                        if ((t.ty & 0xFF) == ENUMTY.Terror)
+                        if (((t.ty & 0xFF) == ENUMTY.Terror))
                             return cannotInfer.invoke(this, to, flag);
                         (tiargs).push(t);
                     }
                 }
-                if ((!(tf.next != null) && tof.next != null))
+                if ((tf.next == null) && (tof.next != null))
                     this.fd.treq = to;
                 TemplateInstance ti = new TemplateInstance(this.loc, this.td, tiargs);
                 Expression ex = expressionSemantic(new ScopeExp(this.loc, ti), this.td._scope);
                 this.fd.treq = null;
-                if ((ex.op & 0xFF) == 127)
+                if (((ex.op & 0xFF) == 127))
                     return MATCH.nomatch;
                 {
                     FuncExp ef = ex.isFuncExp();
-                    if (ef != null)
+                    if ((ef) != null)
                         return ef.matchType(to, sc, presult, flag);
                     else
                         return cannotInfer.invoke(this, to, flag);
                 }
             }
-            if ((!(tof != null) || !(tof.next != null)))
+            if ((tof == null) || (tof.next == null))
                 return MATCH.nomatch;
-            assert((this.type != null && !pequals(this.type, Type.tvoid)));
-            if ((this.fd.type.ty & 0xFF) == ENUMTY.Terror)
+            assert((this.type != null) && (!pequals(this.type, Type.tvoid)));
+            if (((this.fd.type.ty & 0xFF) == ENUMTY.Terror))
                 return MATCH.nomatch;
             TypeFunction tfx = this.fd.type.isTypeFunction();
             boolean convertMatch = (this.type.ty & 0xFF) != (to.ty & 0xFF);
-            if ((this.fd.inferRetType && tfx.next.implicitConvTo(tof.next) == MATCH.convert))
+            if (this.fd.inferRetType && (tfx.next.implicitConvTo(tof.next) == MATCH.convert))
             {
                 convertMatch = true;
                 TypeFunction tfy = new TypeFunction(tfx.parameterList, tof.next, tfx.linkage, 0L);
@@ -4205,18 +4205,18 @@ public class expression {
                 tfx = tfy;
             }
             Type tx = null;
-            if (((this.tok & 0xFF) == 160 || ((this.tok & 0xFF) == 0 && ((this.type.ty & 0xFF) == ENUMTY.Tdelegate || ((this.type.ty & 0xFF) == ENUMTY.Tpointer && (to.ty & 0xFF) == ENUMTY.Tdelegate)))))
+            if (((this.tok & 0xFF) == 160) || ((this.tok & 0xFF) == 0) && ((this.type.ty & 0xFF) == ENUMTY.Tdelegate) || ((this.type.ty & 0xFF) == ENUMTY.Tpointer) && ((to.ty & 0xFF) == ENUMTY.Tdelegate))
             {
                 tx = new TypeDelegate(tfx);
                 tx.deco = pcopy(merge(tx).deco);
             }
             else
             {
-                assert(((this.tok & 0xFF) == 161 || ((this.tok & 0xFF) == 0 && (this.type.ty & 0xFF) == ENUMTY.Tpointer)));
+                assert(((this.tok & 0xFF) == 161) || ((this.tok & 0xFF) == 0) && ((this.type.ty & 0xFF) == ENUMTY.Tpointer));
                 tx = tfx.pointerTo();
             }
             int m = tx.implicitConvTo(to);
-            if (m > MATCH.nomatch)
+            if ((m > MATCH.nomatch))
             {
                 m = convertMatch ? MATCH.convert : tx.equals(to) ? MATCH.exact : MATCH.constant;
                 if (presult != null)
@@ -4226,7 +4226,7 @@ public class expression {
                     (presult.get()).fd.modifyReturns(sc, tof.next);
                 }
             }
-            else if (!((flag) != 0))
+            else if (flag == 0)
             {
                 Slice<BytePtr> ts = toAutoQualChars(tx, to);
                 this.error(new BytePtr("cannot implicitly convert expression `%s` of type `%s` to `%s`"), this.toChars(), ts.get(0), ts.get(1));
@@ -4291,9 +4291,9 @@ public class expression {
         public  boolean hasCode() {
             {
                 VarDeclaration vd = this.declaration.isVarDeclaration();
-                if (vd != null)
+                if ((vd) != null)
                 {
-                    return !((vd.storage_class & 8388609L) != 0);
+                    return (vd.storage_class & 8388609L) == 0;
                 }
             }
             return false;
@@ -4429,7 +4429,7 @@ public class expression {
                 {
                     Slice<TemplateParameter> __r1349 = (this.parameters).opSlice().copy();
                     int __key1348 = 0;
-                    for (; __key1348 < __r1349.getLength();__key1348 += 1) {
+                    for (; (__key1348 < __r1349.getLength());__key1348 += 1) {
                         TemplateParameter el = __r1349.get(__key1348);
                         int i = __key1348;
                         p.set(i, el.syntaxCopy());
@@ -4479,9 +4479,9 @@ public class expression {
         }
 
         public  Expression incompatibleTypes() {
-            if (pequals(this.e1.type.toBasetype(), Type.terror))
+            if ((pequals(this.e1.type.toBasetype(), Type.terror)))
                 return this.e1;
-            if ((this.e1.op & 0xFF) == 20)
+            if (((this.e1.op & 0xFF) == 20))
             {
                 this.error(new BytePtr("incompatible type for `%s(%s)`: cannot use `%s` with types"), Token.toChars(this.op), this.e1.toChars(), Token.toChars(this.op));
             }
@@ -4495,7 +4495,7 @@ public class expression {
         public  void setNoderefOperand() {
             {
                 DotIdExp edi = this.e1.isDotIdExp();
-                if (edi != null)
+                if ((edi) != null)
                     edi.noderef = true;
             }
         }
@@ -4535,12 +4535,12 @@ public class expression {
         }
 
         public  Expression incompatibleTypes() {
-            if (pequals(this.e1.type.toBasetype(), Type.terror))
+            if ((pequals(this.e1.type.toBasetype(), Type.terror)))
                 return this.e1;
-            if (pequals(this.e2.type.toBasetype(), Type.terror))
+            if ((pequals(this.e2.type.toBasetype(), Type.terror)))
                 return this.e2;
-            byte thisOp = (this.op & 0xFF) == 100 ? TOK.colon : (byte)(this.op & 0xFF);
-            if (((this.e1.op & 0xFF) == 20 || (this.e2.op & 0xFF) == 20))
+            byte thisOp = ((this.op & 0xFF) == 100) ? TOK.colon : (byte)(this.op & 0xFF);
+            if (((this.e1.op & 0xFF) == 20) || ((this.e2.op & 0xFF) == 20))
             {
                 this.error(new BytePtr("incompatible types for `(%s) %s (%s)`: cannot use `%s` with types"), this.e1.toChars(), Token.toChars(thisOp), this.e2.toChars(), Token.toChars(this.op));
             }
@@ -4559,59 +4559,59 @@ public class expression {
         public  Expression checkOpAssignTypes(Scope sc) {
             Type t1 = this.e1.type;
             Type t2 = this.e2.type;
-            if (((((((this.op & 0xFF) == 76 || (this.op & 0xFF) == 77) || (this.op & 0xFF) == 81) || (this.op & 0xFF) == 82) || (this.op & 0xFF) == 83) || (this.op & 0xFF) == 227))
+            if (((this.op & 0xFF) == 76) || ((this.op & 0xFF) == 77) || ((this.op & 0xFF) == 81) || ((this.op & 0xFF) == 82) || ((this.op & 0xFF) == 83) || ((this.op & 0xFF) == 227))
             {
-                if ((this.type.isintegral() && t2.isfloating()))
+                if (this.type.isintegral() && t2.isfloating())
                 {
                     this.warning(new BytePtr("`%s %s %s` is performing truncating conversion"), this.type.toChars(), Token.toChars(this.op), t2.toChars());
                 }
             }
-            if ((((this.op & 0xFF) == 81 || (this.op & 0xFF) == 82) || (this.op & 0xFF) == 83))
+            if (((this.op & 0xFF) == 81) || ((this.op & 0xFF) == 82) || ((this.op & 0xFF) == 83))
             {
                 BytePtr opstr = pcopy(Token.toChars(this.op));
-                if ((t1.isreal() && t2.iscomplex()))
+                if (t1.isreal() && t2.iscomplex())
                 {
                     this.error(new BytePtr("`%s %s %s` is undefined. Did you mean `%s %s %s.re`?"), t1.toChars(), opstr, t2.toChars(), t1.toChars(), opstr, t2.toChars());
                     return new ErrorExp();
                 }
-                else if ((t1.isimaginary() && t2.iscomplex()))
+                else if (t1.isimaginary() && t2.iscomplex())
                 {
                     this.error(new BytePtr("`%s %s %s` is undefined. Did you mean `%s %s %s.im`?"), t1.toChars(), opstr, t2.toChars(), t1.toChars(), opstr, t2.toChars());
                     return new ErrorExp();
                 }
-                else if (((t1.isreal() || t1.isimaginary()) && t2.isimaginary()))
+                else if (t1.isreal() || t1.isimaginary() && t2.isimaginary())
                 {
                     this.error(new BytePtr("`%s %s %s` is an undefined operation"), t1.toChars(), opstr, t2.toChars());
                     return new ErrorExp();
                 }
             }
-            if (((this.op & 0xFF) == 76 || (this.op & 0xFF) == 77))
+            if (((this.op & 0xFF) == 76) || ((this.op & 0xFF) == 77))
             {
-                if (((t1.isreal() && (t2.isimaginary() || t2.iscomplex())) || (t1.isimaginary() && (t2.isreal() || t2.iscomplex()))))
+                if (t1.isreal() && t2.isimaginary() || t2.iscomplex() || t1.isimaginary() && t2.isreal() || t2.iscomplex())
                 {
                     this.error(new BytePtr("`%s %s %s` is undefined (result is complex)"), t1.toChars(), Token.toChars(this.op), t2.toChars());
                     return new ErrorExp();
                 }
-                if ((this.type.isreal() || this.type.isimaginary()))
+                if (this.type.isreal() || this.type.isimaginary())
                 {
-                    assert(((global.errors) != 0 || t2.isfloating()));
+                    assert((global.errors != 0) || t2.isfloating());
                     this.e2 = this.e2.castTo(sc, t1);
                 }
             }
-            if ((this.op & 0xFF) == 81)
+            if (((this.op & 0xFF) == 81))
             {
                 if (t2.isfloating())
                 {
                     if (t1.isreal())
                     {
-                        if ((t2.isimaginary() || t2.iscomplex()))
+                        if (t2.isimaginary() || t2.iscomplex())
                         {
                             this.e2 = this.e2.castTo(sc, t1);
                         }
                     }
                     else if (t1.isimaginary())
                     {
-                        if ((t2.isimaginary() || t2.iscomplex()))
+                        if (t2.isimaginary() || t2.iscomplex())
                         {
                             switch ((t1.ty & 0xFF))
                             {
@@ -4632,7 +4632,7 @@ public class expression {
                     }
                 }
             }
-            else if ((this.op & 0xFF) == 82)
+            else if (((this.op & 0xFF) == 82))
             {
                 if (t2.isimaginary())
                 {
@@ -4668,7 +4668,7 @@ public class expression {
                     }
                 }
             }
-            else if ((this.op & 0xFF) == 83)
+            else if (((this.op & 0xFF) == 83))
             {
                 if (t2.iscomplex())
                 {
@@ -4682,24 +4682,24 @@ public class expression {
         public  boolean checkIntegralBin() {
             boolean r1 = this.e1.checkIntegral();
             boolean r2 = this.e2.checkIntegral();
-            return (r1 || r2);
+            return r1 || r2;
         }
 
         public  boolean checkArithmeticBin() {
             boolean r1 = this.e1.checkArithmetic();
             boolean r2 = this.e2.checkArithmetic();
-            return (r1 || r2);
+            return r1 || r2;
         }
 
         public  void setNoderefOperands() {
             {
                 DotIdExp edi = this.e1.isDotIdExp();
-                if (edi != null)
+                if ((edi) != null)
                     edi.noderef = true;
             }
             {
                 DotIdExp edi = this.e2.isDotIdExp();
-                if (edi != null)
+                if ((edi) != null)
                     edi.noderef = true;
             }
         }
@@ -4707,23 +4707,23 @@ public class expression {
         public  Expression reorderSettingAAElem(Scope sc) {
             BinExp be = this;
             IndexExp ie = be.e1.isIndexExp();
-            if (!(ie != null))
+            if (ie == null)
                 return be;
-            if ((ie.e1.type.toBasetype().ty & 0xFF) != ENUMTY.Taarray)
+            if (((ie.e1.type.toBasetype().ty & 0xFF) != ENUMTY.Taarray))
                 return be;
             Ref<Expression> e0 = ref(null);
-            for (; (1) != 0;){
+            for (; 1 != 0;){
                 Ref<Expression> de = ref(null);
                 ie.e2 = extractSideEffect(sc, new BytePtr("__aakey"), de, ie.e2, false);
                 e0.value = Expression.combine(de.value, e0.value);
                 IndexExp ie1 = ie.e1.isIndexExp();
-                if ((!(ie1 != null) || (ie1.e1.type.toBasetype().ty & 0xFF) != ENUMTY.Taarray))
+                if ((ie1 == null) || ((ie1.e1.type.toBasetype().ty & 0xFF) != ENUMTY.Taarray))
                 {
                     break;
                 }
                 ie = ie1;
             }
-            assert((ie.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Taarray);
+            assert(((ie.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Taarray));
             Ref<Expression> de = ref(null);
             ie.e1 = extractSideEffect(sc, new BytePtr("__aatmp"), de, ie.e1, false);
             e0.value = Expression.combine(de.value, e0.value);
@@ -4792,25 +4792,25 @@ public class expression {
         }
 
         public  boolean equals(RootObject o) {
-            if (pequals(this, o))
+            if ((pequals(this, o)))
                 return true;
             Expression e = isExpression(o);
-            if (!(e != null))
+            if (e == null)
                 return false;
             {
                 CompileExp ce = e.isCompileExp();
-                if (ce != null)
+                if ((ce) != null)
                 {
-                    if ((this.exps).length != (ce.exps).length)
+                    if (((this.exps).length != (ce.exps).length))
                         return false;
                     {
                         Slice<Expression> __r1351 = (this.exps).opSlice().copy();
                         int __key1350 = 0;
-                        for (; __key1350 < __r1351.getLength();__key1350 += 1) {
+                        for (; (__key1350 < __r1351.getLength());__key1350 += 1) {
                             Expression e1 = __r1351.get(__key1350);
                             int i = __key1350;
                             Expression e2 = (ce.exps).get(i);
-                            if ((!pequals(e1, e2) && ((!(e1 != null) || !(e2 != null)) || !(e1.equals(e2)))))
+                            if ((!pequals(e1, e2)) && (e1 == null) || (e2 == null) || !e1.equals(e2))
                                 return false;
                         }
                     }
@@ -4972,30 +4972,30 @@ public class expression {
         }
 
         public  int checkModifiable(Scope sc, int flag) {
-            if (checkUnsafeAccess(sc, this, false, !((flag) != 0)))
+            if (checkUnsafeAccess(sc, this, false, flag == 0))
                 return Modifiable.initialization;
-            if ((this.e1.op & 0xFF) == 123)
+            if (((this.e1.op & 0xFF) == 123))
                 return this.var.checkModify(this.loc, sc, this.e1, flag);
-            if (((sc).func != null && (sc).func.isCtorDeclaration() != null))
+            if (((sc).func != null) && ((sc).func.isCtorDeclaration() != null))
             {
                 {
                     DotVarExp dve = this.e1.isDotVarExp();
-                    if (dve != null)
+                    if ((dve) != null)
                     {
-                        if ((dve.e1.op & 0xFF) == 123)
+                        if (((dve.e1.op & 0xFF) == 123))
                         {
                             VarDeclaration v = dve.var.isVarDeclaration();
-                            if ((((v != null && v.isField()) && !(v._init != null)) && !(v.ctorinit)))
+                            if ((v != null) && v.isField() && (v._init == null) && !v.ctorinit)
                             {
                                 {
                                     TypeStruct ts = v.type.isTypeStruct();
-                                    if (ts != null)
+                                    if ((ts) != null)
                                     {
                                         if (ts.sym.noDefaultCtor)
                                         {
                                             int modifyLevel = v.checkModify(this.loc, sc, dve.e1, flag);
                                             v.ctorinit = false;
-                                            if (modifyLevel == Modifiable.initialization)
+                                            if ((modifyLevel == Modifiable.initialization))
                                                 return Modifiable.yes;
                                             return modifyLevel;
                                         }
@@ -5014,24 +5014,24 @@ public class expression {
         }
 
         public  Expression toLvalue(Scope sc, Expression e) {
-            if ((((this.e1.op & 0xFF) == 123 && ((sc).ctorflow.fieldinit.getLength()) != 0) && !(((sc).ctorflow.callSuper & 16) != 0)))
+            if (((this.e1.op & 0xFF) == 123) && ((sc).ctorflow.fieldinit.getLength() != 0) && (((sc).ctorflow.callSuper & 16) == 0))
             {
                 {
                     VarDeclaration vd = this.var.isVarDeclaration();
-                    if (vd != null)
+                    if ((vd) != null)
                     {
                         AggregateDeclaration ad = vd.isMember2();
-                        if ((ad != null && ad.fields.length == (sc).ctorflow.fieldinit.getLength()))
+                        if ((ad != null) && (ad.fields.length == (sc).ctorflow.fieldinit.getLength()))
                         {
                             {
                                 Slice<VarDeclaration> __r1353 = ad.fields.opSlice().copy();
                                 int __key1352 = 0;
-                                for (; __key1352 < __r1353.getLength();__key1352 += 1) {
+                                for (; (__key1352 < __r1353.getLength());__key1352 += 1) {
                                     VarDeclaration f = __r1353.get(__key1352);
                                     int i = __key1352;
-                                    if (pequals(f, vd))
+                                    if ((pequals(f, vd)))
                                     {
-                                        if (!(((sc).ctorflow.fieldinit.get(i).csx & 1) != 0))
+                                        if (((sc).ctorflow.fieldinit.get(i).csx & 1) == 0)
                                         {
                                             modifyFieldVar(this.loc, sc, vd, this.e1);
                                         }
@@ -5093,7 +5093,7 @@ public class expression {
                 return true;
             Expression e = new DotIdExp(this.loc, this.e1, this.ti.name);
             e = expressionSemantic(e, sc);
-            if ((e.op & 0xFF) == 97)
+            if (((e.op & 0xFF) == 97))
                 e = ((DotExp)e).e2;
             Dsymbol s = null;
             switch ((e.op & 0xFF))
@@ -5258,14 +5258,14 @@ public class expression {
 
         public  boolean isLvalue() {
             Type tb = this.e1.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tdelegate || (tb.ty & 0xFF) == ENUMTY.Tpointer))
+            if (((tb.ty & 0xFF) == ENUMTY.Tdelegate) || ((tb.ty & 0xFF) == ENUMTY.Tpointer))
                 tb = tb.nextOf();
             TypeFunction tf = tb.isTypeFunction();
-            if ((tf != null && tf.isref))
+            if ((tf != null) && tf.isref)
             {
                 {
                     DotVarExp dve = this.e1.isDotVarExp();
-                    if (dve != null)
+                    if ((dve) != null)
                         if (dve.var.isCtorDeclaration() != null)
                             return false;
                 }
@@ -5283,7 +5283,7 @@ public class expression {
         public  Expression addDtorHook(Scope sc) {
             {
                 TypeFunction tf = this.e1.type.isTypeFunction();
-                if (tf != null)
+                if ((tf) != null)
                 {
                     if (tf.isref)
                         return this;
@@ -5292,7 +5292,7 @@ public class expression {
             Type tv = this.type.baseElemOf();
             {
                 TypeStruct ts = tv.isTypeStruct();
-                if (ts != null)
+                if ((ts) != null)
                 {
                     StructDeclaration sd = ts.sym;
                     if (sd.dtor != null)
@@ -5335,12 +5335,12 @@ public class expression {
     public static FuncDeclaration isFuncAddress(Expression e, Ptr<Boolean> hasOverloads) {
         {
             AddrExp ae = e.isAddrExp();
-            if (ae != null)
+            if ((ae) != null)
             {
                 Expression ae1 = ae.e1;
                 {
                     VarExp ve = ae1.isVarExp();
-                    if (ve != null)
+                    if ((ve) != null)
                     {
                         if (hasOverloads != null)
                             hasOverloads.set(0, ve.hasOverloads);
@@ -5349,7 +5349,7 @@ public class expression {
                 }
                 {
                     DotVarExp dve = ae1.isDotVarExp();
-                    if (dve != null)
+                    if ((dve) != null)
                     {
                         if (hasOverloads != null)
                             hasOverloads.set(0, dve.hasOverloads);
@@ -5361,7 +5361,7 @@ public class expression {
             {
                 {
                     SymOffExp soe = e.isSymOffExp();
-                    if (soe != null)
+                    if ((soe) != null)
                     {
                         if (hasOverloads != null)
                             hasOverloads.set(0, soe.hasOverloads);
@@ -5370,7 +5370,7 @@ public class expression {
                 }
                 {
                     DelegateExp dge = e.isDelegateExp();
-                    if (dge != null)
+                    if ((dge) != null)
                     {
                         if (hasOverloads != null)
                             hasOverloads.set(0, dge.hasOverloads);
@@ -5426,13 +5426,13 @@ public class expression {
         public  int checkModifiable(Scope sc, int flag) {
             {
                 SymOffExp se = this.e1.isSymOffExp();
-                if (se != null)
+                if ((se) != null)
                 {
                     return se.var.checkModify(this.loc, sc, null, flag);
                 }
                 else {
                     AddrExp ae = this.e1.isAddrExp();
-                    if (ae != null)
+                    if ((ae) != null)
                     {
                         return ae.e1.checkModifiable(sc, flag);
                     }
@@ -5624,7 +5624,7 @@ public class expression {
         }
 
         public  boolean isLvalue() {
-            return (this.e1.isLvalue() && this.e1.type.mutableOf().unSharedOf().equals(this.to.mutableOf().unSharedOf()));
+            return this.e1.isLvalue() && this.e1.type.mutableOf().unSharedOf().equals(this.to.mutableOf().unSharedOf());
         }
 
         public  Expression toLvalue(Scope sc, Expression e) {
@@ -5634,7 +5634,7 @@ public class expression {
         }
 
         public  Expression addDtorHook(Scope sc) {
-            if ((this.to.toBasetype().ty & 0xFF) == ENUMTY.Tvoid)
+            if (((this.to.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
                 this.e1 = this.e1.addDtorHook(sc);
             return this;
         }
@@ -5667,7 +5667,7 @@ public class expression {
         public byte ownedByCtfe = OwnedBy.code;
         public  VectorExp(Loc loc, Expression e, Type t) {
             super(loc, TOK.vector, 41, e);
-            assert((t.ty & 0xFF) == ENUMTY.Tvector);
+            assert(((t.ty & 0xFF) == ENUMTY.Tvector));
             this.to = (TypeVector)t;
         }
 
@@ -5766,7 +5766,7 @@ public class expression {
         }
 
         public  int checkModifiable(Scope sc, int flag) {
-            if ((((this.e1.type.ty & 0xFF) == ENUMTY.Tsarray || ((this.e1.op & 0xFF) == 62 && (this.e1.type.ty & 0xFF) != ENUMTY.Tarray)) || (this.e1.op & 0xFF) == 31))
+            if (((this.e1.type.ty & 0xFF) == ENUMTY.Tsarray) || ((this.e1.op & 0xFF) == 62) && ((this.e1.type.ty & 0xFF) != ENUMTY.Tarray) || ((this.e1.op & 0xFF) == 31))
             {
                 return this.e1.checkModifiable(sc, flag);
             }
@@ -5774,11 +5774,11 @@ public class expression {
         }
 
         public  boolean isLvalue() {
-            return (this.type != null && (this.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray);
+            return (this.type != null) && ((this.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray);
         }
 
         public  Expression toLvalue(Scope sc, Expression e) {
-            return (this.type != null && (this.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) ? this : this.toLvalue(sc, e);
+            return (this.type != null) && ((this.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) ? this : this.toLvalue(sc, e);
         }
 
         public  Expression modifiableLvalue(Scope sc, Expression e) {
@@ -5864,13 +5864,13 @@ public class expression {
         }
 
         public  boolean isLvalue() {
-            if ((this.type != null && (this.type.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
+            if ((this.type != null) && ((this.type.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
                 return false;
             return true;
         }
 
         public  Expression toLvalue(Scope sc, Expression e) {
-            if ((this.type != null && (this.type.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
+            if ((this.type != null) && ((this.type.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
                 this.error(new BytePtr("`void`s have no value"));
             return this;
         }
@@ -5957,7 +5957,7 @@ public class expression {
 
         public  Expression toBoolean(Scope sc) {
             Expression ex2 = this.e2.toBoolean(sc);
-            if ((ex2.op & 0xFF) == 127)
+            if (((ex2.op & 0xFF) == 127))
                 return ex2;
             this.e2 = ex2;
             this.type = this.e2.type;
@@ -5977,7 +5977,7 @@ public class expression {
             if (exp != null)
                 {
                     CommaExp ce = exp.isCommaExp();
-                    if (ce != null)
+                    if ((ce) != null)
                         ce.allowCommaExp = true;
                 }
         }
@@ -6136,7 +6136,7 @@ public class expression {
         }
 
         public  int checkModifiable(Scope sc, int flag) {
-            if (((((this.e1.type.ty & 0xFF) == ENUMTY.Tsarray || (this.e1.type.ty & 0xFF) == ENUMTY.Taarray) || ((this.e1.op & 0xFF) == 62 && (this.e1.type.ty & 0xFF) != ENUMTY.Tarray)) || (this.e1.op & 0xFF) == 31))
+            if (((this.e1.type.ty & 0xFF) == ENUMTY.Tsarray) || ((this.e1.type.ty & 0xFF) == ENUMTY.Taarray) || ((this.e1.op & 0xFF) == 62) && ((this.e1.type.ty & 0xFF) != ENUMTY.Tarray) || ((this.e1.op & 0xFF) == 31))
             {
                 return this.e1.checkModifiable(sc, flag);
             }
@@ -6153,16 +6153,16 @@ public class expression {
 
         public  Expression modifiableLvalue(Scope sc, Expression e) {
             Expression ex = this.markSettingAAElem();
-            if ((ex.op & 0xFF) == 127)
+            if (((ex.op & 0xFF) == 127))
                 return ex;
             return this.modifiableLvalue(sc, e);
         }
 
         public  Expression markSettingAAElem() {
-            if ((this.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Taarray)
+            if (((this.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Taarray))
             {
                 Type t2b = this.e2.type.toBasetype();
-                if (((t2b.ty & 0xFF) == ENUMTY.Tarray && t2b.nextOf().isMutable()))
+                if (((t2b.ty & 0xFF) == ENUMTY.Tarray) && t2b.nextOf().isMutable())
                 {
                     this.error(new BytePtr("associative arrays can only be assigned values with immutable keys, not `%s`"), this.e2.type.toChars());
                     return new ErrorExp();
@@ -6170,12 +6170,12 @@ public class expression {
                 this.modifiable = true;
                 {
                     IndexExp ie = this.e1.isIndexExp();
-                    if (ie != null)
+                    if ((ie) != null)
                     {
                         Expression ex = ie.markSettingAAElem();
-                        if ((ex.op & 0xFF) == 127)
+                        if (((ex.op & 0xFF) == 127))
                             return ex;
-                        assert(pequals(ex, this.e1));
+                        assert((pequals(ex, this.e1)));
                     }
                 }
             }
@@ -6210,7 +6210,7 @@ public class expression {
     {
         public  PostExp(byte op, Loc loc, Expression e) {
             super(loc, op, 40, e, new IntegerExp(loc, 1L, Type.tint32));
-            assert(((op & 0xFF) == 94 || (op & 0xFF) == 93));
+            assert(((op & 0xFF) == 94) || ((op & 0xFF) == 93));
         }
 
         public  void accept(Visitor v) {
@@ -6238,7 +6238,7 @@ public class expression {
     {
         public  PreExp(byte op, Loc loc, Expression e) {
             super(loc, op, 32, e);
-            assert(((op & 0xFF) == 104 || (op & 0xFF) == 103));
+            assert(((op & 0xFF) == 104) || ((op & 0xFF) == 103));
         }
 
         public  void accept(Visitor v) {
@@ -6279,7 +6279,7 @@ public class expression {
         }
 
         public  boolean isLvalue() {
-            if (((this.e1.op & 0xFF) == 31 || (this.e1.op & 0xFF) == 32))
+            if (((this.e1.op & 0xFF) == 31) || ((this.e1.op & 0xFF) == 32))
             {
                 return false;
             }
@@ -6287,7 +6287,7 @@ public class expression {
         }
 
         public  Expression toLvalue(Scope sc, Expression ex) {
-            if (((this.e1.op & 0xFF) == 31 || (this.e1.op & 0xFF) == 32))
+            if (((this.e1.op & 0xFF) == 31) || ((this.e1.op & 0xFF) == 32))
             {
                 return this.toLvalue(sc, ex);
             }
@@ -6329,7 +6329,7 @@ public class expression {
 
         public  ConstructExp(Loc loc, VarDeclaration v, Expression e2) {
             VarExp ve = new VarExp(loc, v, true);
-            assert((v.type != null && ve.type != null));
+            assert((v.type != null) && (ve.type != null));
             super(loc, TOK.construct, ve, e2);
             if ((v.storage_class & 2101248L) != 0)
                 this.memset |= MemorySet.referenceInit;
@@ -6365,7 +6365,7 @@ public class expression {
 
         public  BlitExp(Loc loc, VarDeclaration v, Expression e2) {
             VarExp ve = new VarExp(loc, v, true);
-            assert((v.type != null && ve.type != null));
+            assert((v.type != null) && (ve.type != null));
             super(loc, TOK.blit, ve, e2);
             if ((v.storage_class & 2101248L) != 0)
                 this.memset |= MemorySet.referenceInit;
@@ -7165,12 +7165,12 @@ public class expression {
     {
         public  LogicalExp(Loc loc, byte op, Expression e1, Expression e2) {
             super(loc, op, 40, e1, e2);
-            assert(((op & 0xFF) == 101 || (op & 0xFF) == 102));
+            assert(((op & 0xFF) == 101) || ((op & 0xFF) == 102));
         }
 
         public  Expression toBoolean(Scope sc) {
             Expression ex2 = this.e2.toBoolean(sc);
-            if ((ex2.op & 0xFF) == 127)
+            if (((ex2.op & 0xFF) == 127))
                 return ex2;
             this.e2 = ex2;
             return this;
@@ -7201,7 +7201,7 @@ public class expression {
     {
         public  CmpExp(byte op, Loc loc, Expression e1, Expression e2) {
             super(loc, op, 40, e1, e2);
-            assert(((((op & 0xFF) == 54 || (op & 0xFF) == 56) || (op & 0xFF) == 55) || (op & 0xFF) == 57));
+            assert(((op & 0xFF) == 54) || ((op & 0xFF) == 56) || ((op & 0xFF) == 55) || ((op & 0xFF) == 57));
         }
 
         public  void accept(Visitor v) {
@@ -7284,7 +7284,7 @@ public class expression {
     {
         public  EqualExp(byte op, Loc loc, Expression e1, Expression e2) {
             super(loc, op, 40, e1, e2);
-            assert(((op & 0xFF) == 58 || (op & 0xFF) == 59));
+            assert(((op & 0xFF) == 58) || ((op & 0xFF) == 59));
         }
 
         public  void accept(Visitor v) {
@@ -7312,7 +7312,7 @@ public class expression {
     {
         public  IdentityExp(byte op, Loc loc, Expression e1, Expression e2) {
             super(loc, op, 40, e1, e2);
-            assert(((op & 0xFF) == 60 || (op & 0xFF) == 61));
+            assert(((op & 0xFF) == 60) || ((op & 0xFF) == 61));
         }
 
         public  void accept(Visitor v) {
@@ -7349,13 +7349,13 @@ public class expression {
         }
 
         public  int checkModifiable(Scope sc, int flag) {
-            if ((this.e1.checkModifiable(sc, flag) != Modifiable.no && this.e2.checkModifiable(sc, flag) != Modifiable.no))
+            if ((this.e1.checkModifiable(sc, flag) != Modifiable.no) && (this.e2.checkModifiable(sc, flag) != Modifiable.no))
                 return Modifiable.yes;
             return Modifiable.no;
         }
 
         public  boolean isLvalue() {
-            return (this.e1.isLvalue() && this.e2.isLvalue());
+            return this.e1.isLvalue() && this.e2.isLvalue();
         }
 
         public  Expression toLvalue(Scope sc, Expression ex) {
@@ -7375,9 +7375,9 @@ public class expression {
         public  Expression toBoolean(Scope sc) {
             Expression ex1 = this.e1.toBoolean(sc);
             Expression ex2 = this.e2.toBoolean(sc);
-            if ((ex1.op & 0xFF) == 127)
+            if (((ex1.op & 0xFF) == 127))
                 return ex1;
-            if ((ex2.op & 0xFF) == 127)
+            if (((ex2.op & 0xFF) == 127))
                 return ex2;
             this.e1 = ex1;
             this.e2 = ex2;
@@ -7448,7 +7448,7 @@ public class expression {
 
         public  Expression resolveLoc(Loc loc, Scope sc) {
             BytePtr s = null;
-            if ((this.subop & 0xFF) == 220)
+            if (((this.subop & 0xFF) == 220))
                 s = pcopy(FileName.toAbsolute(loc.isValid() ? loc.filename : (sc)._module.srcfile.toChars(), null));
             else
                 s = pcopy((loc.isValid() ? loc.filename : (sc)._module.ident.toChars()));
@@ -7546,7 +7546,7 @@ public class expression {
 
         public  Expression resolveLoc(Loc loc, Scope sc) {
             BytePtr s = null;
-            if (((sc).callsc != null && ((sc).callsc).func != null))
+            if (((sc).callsc != null) && (((sc).callsc).func != null))
                 s = pcopy(((sc).callsc).func.toPrettyChars(false));
             else if ((sc).func != null)
                 s = pcopy((sc).func.toPrettyChars(false));
@@ -7583,7 +7583,7 @@ public class expression {
         }
 
         public  Expression resolveLoc(Loc loc, Scope sc) {
-            FuncDeclaration fd = ((sc).callsc != null && ((sc).callsc).func != null) ? ((sc).callsc).func : (sc).func;
+            FuncDeclaration fd = ((sc).callsc != null) && (((sc).callsc).func != null) ? ((sc).callsc).func : (sc).func;
             BytePtr s = null;
             if (fd != null)
             {

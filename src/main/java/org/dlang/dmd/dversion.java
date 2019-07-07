@@ -36,7 +36,7 @@ public class dversion {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             DebugSymbol ds = new DebugSymbol(this.loc, this.ident);
             ds.level = this.level;
             return ds;
@@ -61,7 +61,7 @@ public class dversion {
             dmodule.Module m = sds.isModule();
             if (this.ident != null)
             {
-                if (!(m != null))
+                if (m == null)
                 {
                     this.error(new BytePtr("declaration must be at module level"));
                     this.errors = true;
@@ -80,7 +80,7 @@ public class dversion {
             }
             else
             {
-                if (!(m != null))
+                if (m == null)
                 {
                     this.error(new BytePtr("level declaration must be at module level"));
                     this.errors = true;
@@ -134,7 +134,7 @@ public class dversion {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             VersionSymbol ds = this.ident != null ? new VersionSymbol(this.loc, this.ident) : new VersionSymbol(this.loc, this.level);
             return ds;
         }
@@ -159,7 +159,7 @@ public class dversion {
             if (this.ident != null)
             {
                 VersionCondition.checkReserved(this.loc, this.ident.asString());
-                if (!(m != null))
+                if (m == null)
                 {
                     this.error(new BytePtr("declaration must be at module level"));
                     this.errors = true;
@@ -178,7 +178,7 @@ public class dversion {
             }
             else
             {
-                if (!(m != null))
+                if (m == null)
                 {
                     this.error(new BytePtr("level declaration must be at module level"));
                     this.errors = true;

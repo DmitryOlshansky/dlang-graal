@@ -28,15 +28,15 @@ import static org.dlang.dmd.utils.*;
 public class staticcond {
 
     public static boolean evalStaticCondition(Scope sc, Expression exp, Expression e, Ref<Boolean> errors) {
-        if (((e.op & 0xFF) == 101 || (e.op & 0xFF) == 102))
+        if (((e.op & 0xFF) == 101) || ((e.op & 0xFF) == 102))
         {
             LogicalExp aae = (LogicalExp)e;
             boolean result = evalStaticCondition(sc, exp, aae.e1, errors);
             if (errors.value)
                 return false;
-            if ((e.op & 0xFF) == 101)
+            if (((e.op & 0xFF) == 101))
             {
-                if (!(result))
+                if (!result)
                     return false;
             }
             else
@@ -45,9 +45,9 @@ public class staticcond {
                     return true;
             }
             result = evalStaticCondition(sc, exp, aae.e2, errors);
-            return (!(errors.value) && result);
+            return !errors.value && result;
         }
-        if ((e.op & 0xFF) == 100)
+        if (((e.op & 0xFF) == 100))
         {
             CondExp ce = (CondExp)e;
             boolean result = evalStaticCondition(sc, exp, ce.econd, errors);
@@ -55,7 +55,7 @@ public class staticcond {
                 return false;
             Expression leg = result ? ce.e1 : ce.e2;
             result = evalStaticCondition(sc, exp, leg, errors);
-            return (!(errors.value) && result);
+            return !errors.value && result;
         }
         int nerrors = global.errors;
         sc = (sc).startCTFE();
@@ -64,13 +64,13 @@ public class staticcond {
         e = resolveProperties(sc, e);
         sc = (sc).endCTFE();
         e = e.optimize(0, false);
-        if (((nerrors != global.errors || (e.op & 0xFF) == 127) || pequals(e.type.toBasetype(), Type.terror)))
+        if ((nerrors != global.errors) || ((e.op & 0xFF) == 127) || (pequals(e.type.toBasetype(), Type.terror)))
         {
             errors.value = true;
             return false;
         }
         e = resolveAliasThis(sc, e, false);
-        if (!(e.type.isBoolean()))
+        if (!e.type.isBoolean())
         {
             exp.error(new BytePtr("expression `%s` of type `%s` does not have a boolean value"), exp.toChars(), e.type.toChars());
             errors.value = true;

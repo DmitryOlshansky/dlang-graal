@@ -33,7 +33,7 @@ public class staticassert {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             return new StaticAssert(this.loc, this.exp.syntaxCopy(), this.msg != null ? this.msg.syntaxCopy() : null);
         }
 

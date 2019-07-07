@@ -266,7 +266,7 @@ public class target {
                 this.ptrsize = 8;
                 this.classinfosize = 152;
             }
-            if (((((params.isLinux || params.isFreeBSD) || params.isOpenBSD) || params.isDragonFlyBSD) || params.isSolaris))
+            if (params.isLinux || params.isFreeBSD || params.isOpenBSD || params.isDragonFlyBSD || params.isSolaris)
             {
                 this.realsize = 12;
                 this.realpad = 2;
@@ -290,7 +290,7 @@ public class target {
                 this.reverseCppOverloads = true;
                 this.twoDtorInVtable = false;
                 this.c_longsize = 4;
-                if (this.ptrsize == 4)
+                if ((this.ptrsize == 4))
                 {
                     this.maxStaticDataSize = 16777216L;
                 }
@@ -299,7 +299,7 @@ public class target {
                 throw new AssertionError("Unreachable code!");
             if (params.is64bit)
             {
-                if ((((params.isLinux || params.isFreeBSD) || params.isDragonFlyBSD) || params.isSolaris))
+                if (params.isLinux || params.isFreeBSD || params.isDragonFlyBSD || params.isSolaris)
                 {
                     this.realsize = 16;
                     this.realpad = 6;
@@ -312,10 +312,10 @@ public class target {
                 }
             }
             this.c_long_doublesize = this.realsize;
-            if ((params.is64bit && params.isWindows))
+            if (params.is64bit && params.isWindows)
                 this.c_long_doublesize = 8;
             this.criticalSectionSize = getCriticalSectionSize(params);
-            this.cppExceptions = (((params.isLinux || params.isFreeBSD) || params.isDragonFlyBSD) || params.isOSX);
+            this.cppExceptions = params.isLinux || params.isFreeBSD || params.isDragonFlyBSD || params.isOSX;
         }
 
         public  void deinitialize() {
@@ -331,7 +331,7 @@ public class target {
                 case 29:
                     return target.realalignsize;
                 case 27:
-                    if ((((((global.params.isLinux || global.params.isOSX) || global.params.isFreeBSD) || global.params.isOpenBSD) || global.params.isDragonFlyBSD) || global.params.isSolaris))
+                    if (global.params.isLinux || global.params.isOSX || global.params.isFreeBSD || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris)
                         return 4;
                     break;
                 case 19:
@@ -339,7 +339,7 @@ public class target {
                 case 22:
                 case 25:
                 case 28:
-                    if ((((((global.params.isLinux || global.params.isOSX) || global.params.isFreeBSD) || global.params.isOpenBSD) || global.params.isDragonFlyBSD) || global.params.isSolaris))
+                    if (global.params.isLinux || global.params.isOSX || global.params.isFreeBSD || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris)
                         return global.params.is64bit ? 8 : 4;
                     break;
                 default:
@@ -350,9 +350,9 @@ public class target {
 
         public  int fieldalign(Type type) {
             int size = type.alignsize();
-            if (((global.params.is64bit || global.params.isOSX) && (size == 16 || size == 32)))
+            if (global.params.is64bit || global.params.isOSX && (size == 16) || (size == 32))
                 return size;
-            return 8 < size ? 8 : size;
+            return (8 < size) ? 8 : size;
         }
 
         public  int critsecsize() {
@@ -399,7 +399,7 @@ public class target {
             {
                 return Type.tchar.pointerTo();
             }
-            else if ((((((global.params.isLinux || global.params.isFreeBSD) || global.params.isOpenBSD) || global.params.isDragonFlyBSD) || global.params.isSolaris) || global.params.isOSX))
+            else if (global.params.isLinux || global.params.isFreeBSD || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris || global.params.isOSX)
             {
                 if (global.params.is64bit)
                 {
@@ -417,11 +417,11 @@ public class target {
         }
 
         public  boolean isXmmSupported() {
-            return (global.params.is64bit || global.params.isOSX);
+            return global.params.is64bit || global.params.isOSX;
         }
 
         public  int isVectorTypeSupported(int sz, Type type) {
-            if (!(this.isXmmSupported()))
+            if (!this.isXmmSupported())
                 return 1;
             switch ((type.ty & 0xFF))
             {
@@ -440,13 +440,13 @@ public class target {
                 default:
                 return 2;
             }
-            if ((sz != 16 && !((global.params.cpu >= CPU.avx && sz == 32))))
+            if ((sz != 16) && !((global.params.cpu >= CPU.avx) && (sz == 32)))
                 return 3;
             return 0;
         }
 
         public  boolean isVectorOpSupported(Type type, byte op, Type t2) {
-            if ((type.ty & 0xFF) != ENUMTY.Tvector)
+            if (((type.ty & 0xFF) != ENUMTY.Tvector))
                 return true;
             TypeVector tvec = (TypeVector)type;
             boolean supported = false;
@@ -482,7 +482,7 @@ public class target {
                                 break;
                 case 78:
                     case 81:
-                        if (((tvec.isfloating() || tvec.elementType().size(Loc.initial) == 2L) || (global.params.cpu >= CPU.sse4_1 && tvec.elementType().size(Loc.initial) == 4L)))
+                        if (tvec.isfloating() || (tvec.elementType().size(Loc.initial) == 2L) || (global.params.cpu >= CPU.sse4_1) && (tvec.elementType().size(Loc.initial) == 4L))
                             supported = true;
                         else
                             supported = false;
@@ -553,7 +553,7 @@ public class target {
         }
 
         public  TypeTuple toArgTypes(Type t) {
-            if ((global.params.is64bit && global.params.isWindows))
+            if (global.params.is64bit && global.params.isWindows)
                 return null;
             return toArgTypes(t);
         }
@@ -566,45 +566,45 @@ public class target {
             Type tn = tf.next.toBasetype();
             long sz = tn.size();
             Type tns = tn;
-            if ((global.params.isWindows && global.params.is64bit))
+            if (global.params.isWindows && global.params.is64bit)
             {
-                if ((tns.ty & 0xFF) == ENUMTY.Tcomplex32)
+                if (((tns.ty & 0xFF) == ENUMTY.Tcomplex32))
                     return true;
                 if (tns.isscalar())
                     return false;
                 tns = tns.baseElemOf();
-                if ((tns.ty & 0xFF) == ENUMTY.Tstruct)
+                if (((tns.ty & 0xFF) == ENUMTY.Tstruct))
                 {
                     StructDeclaration sd = ((TypeStruct)tns).sym;
-                    if ((tf.linkage == LINK.cpp && needsThis))
+                    if ((tf.linkage == LINK.cpp) && needsThis)
                         return true;
-                    if ((!(sd.isPOD()) || sz > 8L))
+                    if (!sd.isPOD() || (sz > 8L))
                         return true;
-                    if (sd.fields.length == 0)
+                    if ((sd.fields.length == 0))
                         return true;
                 }
-                if ((sz <= 16L && !((sz & sz - 1L) != 0)))
+                if ((sz <= 16L) && ((sz & sz - 1L) == 0))
                     return false;
                 return true;
             }
-            else if ((global.params.isWindows && global.params.mscoff))
+            else if (global.params.isWindows && global.params.mscoff)
             {
                 Type tb = tns.baseElemOf();
-                if ((tb.ty & 0xFF) == ENUMTY.Tstruct)
+                if (((tb.ty & 0xFF) == ENUMTY.Tstruct))
                 {
-                    if ((tf.linkage == LINK.cpp && needsThis))
+                    if ((tf.linkage == LINK.cpp) && needsThis)
                         return true;
                 }
             }
             while(true) try {
             /*Lagain:*/
-                if ((tns.ty & 0xFF) == ENUMTY.Tsarray)
+                if (((tns.ty & 0xFF) == ENUMTY.Tsarray))
                 {
                     tns = tns.baseElemOf();
-                    if ((tns.ty & 0xFF) != ENUMTY.Tstruct)
+                    if (((tns.ty & 0xFF) != ENUMTY.Tstruct))
                     {
                     /*L2:*/
-                        if (((global.params.isLinux && tf.linkage != LINK.d) && !(global.params.is64bit)))
+                        if (global.params.isLinux && (tf.linkage != LINK.d) && !global.params.is64bit)
                         {
                         }
                         else
@@ -623,25 +623,25 @@ public class target {
                         return true;
                     }
                 }
-                if ((tns.ty & 0xFF) == ENUMTY.Tstruct)
+                if (((tns.ty & 0xFF) == ENUMTY.Tstruct))
                 {
                     StructDeclaration sd = ((TypeStruct)tns).sym;
-                    if (((global.params.isLinux && tf.linkage != LINK.d) && !(global.params.is64bit)))
+                    if (global.params.isLinux && (tf.linkage != LINK.d) && !global.params.is64bit)
                     {
                         return true;
                     }
-                    if (((((global.params.isWindows && tf.linkage == LINK.cpp) && !(global.params.is64bit)) && sd.isPOD()) && sd.ctor != null))
+                    if (global.params.isWindows && (tf.linkage == LINK.cpp) && !global.params.is64bit && sd.isPOD() && (sd.ctor != null))
                     {
                         return true;
                     }
-                    if ((sd.arg1type != null && !(sd.arg2type != null)))
+                    if ((sd.arg1type != null) && (sd.arg2type == null))
                     {
                         tns = sd.arg1type;
-                        if ((tns.ty & 0xFF) != ENUMTY.Tstruct)
+                        if (((tns.ty & 0xFF) != ENUMTY.Tstruct))
                             /*goto L2*/throw Dispatch0.INSTANCE;
                         /*goto Lagain*/throw Dispatch0.INSTANCE;
                     }
-                    else if (((global.params.is64bit && !(sd.arg1type != null)) && !(sd.arg2type != null)))
+                    else if (global.params.is64bit && (sd.arg1type == null) && (sd.arg2type == null))
                         return true;
                     else if (sd.isPOD())
                     {
@@ -653,7 +653,7 @@ public class target {
                             case 8L:
                                 return false;
                             case 16L:
-                                if ((!(global.params.isWindows) && global.params.is64bit))
+                                if (!global.params.isWindows && global.params.is64bit)
                                     return false;
                                 break;
                             default:
@@ -662,9 +662,9 @@ public class target {
                     }
                     return true;
                 }
-                else if (((((((global.params.isLinux || global.params.isOSX) || global.params.isFreeBSD) || global.params.isSolaris) || global.params.isDragonFlyBSD) && tf.linkage == LINK.c) && tns.iscomplex()))
+                else if (global.params.isLinux || global.params.isOSX || global.params.isFreeBSD || global.params.isSolaris || global.params.isDragonFlyBSD && (tf.linkage == LINK.c) && tns.iscomplex())
                 {
-                    if ((tns.ty & 0xFF) == ENUMTY.Tcomplex32)
+                    if (((tns.ty & 0xFF) == ENUMTY.Tcomplex32))
                         return false;
                     else
                         return true;
@@ -678,9 +678,9 @@ public class target {
         }
 
         public  long parameterSize(Loc loc, Type t) {
-            if ((!(global.params.is64bit) && (global.params.isFreeBSD || global.params.isOSX)))
+            if (!global.params.is64bit && global.params.isFreeBSD || global.params.isOSX)
             {
-                if ((t.ty & 0xFF) == ENUMTY.Tstruct)
+                if (((t.ty & 0xFF) == ENUMTY.Tstruct))
                 {
                     TypeStruct ts = (TypeStruct)t;
                     if (ts.sym.hasNoFields)

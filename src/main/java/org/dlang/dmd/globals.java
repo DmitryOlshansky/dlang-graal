@@ -257,7 +257,19 @@ public class globals {
         public ByteSlice exefile;
         public ByteSlice mapfile;
         public  boolean isPOSIX() {
-            return (((((this.isLinux || this.isOSX) || this.isFreeBSD) || this.isOpenBSD) || this.isDragonFlyBSD) || this.isSolaris);
+            try {
+                __result = this.isLinux || this.isOSX || this.isFreeBSD || this.isOpenBSD || this.isDragonFlyBSD || this.isSolaris;
+                /*goto __returnLabel*/throw Dispatch0.INSTANCE;
+            }
+            catch(Dispatch0 __d){}
+        /*__returnLabel:*/
+            {
+                boolean result = __result;
+                {
+                    assert(result || this.isWindows);
+                }
+            }
+            return __result;
         }
 
         public Param(){
@@ -720,7 +732,7 @@ public class globals {
         }
 
         public  void increaseErrorCount() {
-            if ((this.gag) != 0)
+            if (this.gag != 0)
                 this.gaggedErrors += 1;
             this.errors += 1;
         }
@@ -740,7 +752,7 @@ public class globals {
         }
 
         public  int versionNumber() {
-            if (globals.versionNumbercached == 0)
+            if ((globals.versionNumbercached == 0))
             {
                 int major = 0;
                 int minor = 0;
@@ -749,11 +761,11 @@ public class globals {
                     BytePtr p = pcopy(toBytePtr(this._version).plus(1));
                     for (; ;p.postInc()){
                         byte c = p.get();
-                        if ((isdigit((c & 0xFF))) != 0)
+                        if (isdigit((c & 0xFF)) != 0)
                         {
                             minor = minor * 10 + (c & 0xFF) - 48;
                         }
-                        else if ((c & 0xFF) == 46)
+                        else if (((c & 0xFF) == 46))
                         {
                             if (point)
                                 break;
@@ -771,7 +783,7 @@ public class globals {
         }
 
         public  ByteSlice finalDefaultlibname() {
-            return this.params.betterC ? new ByteSlice() : (this.params.symdebug) != 0 ? this.params.debuglibname : this.params.defaultlibname;
+            return this.params.betterC ? new ByteSlice() : this.params.symdebug != 0 ? this.params.debuglibname : this.params.defaultlibname;
         }
 
         public Global(){
@@ -885,11 +897,11 @@ public class globals {
                 {
                     buf.writestring(this.filename);
                 }
-                if ((this.linnum) != 0)
+                if (this.linnum != 0)
                 {
                     buf.writeByte(40);
                     buf.print((long)this.linnum);
-                    if ((showColumns && (this.charnum) != 0))
+                    if (showColumns && (this.charnum != 0))
                     {
                         buf.writeByte(44);
                         buf.print((long)this.charnum);
@@ -903,11 +915,11 @@ public class globals {
         }
 
         public  boolean equals(Loc loc) {
-            return (((!(global.params.showColumns) || this.charnum == loc.charnum) && this.linnum == loc.linnum) && FileName.equals(this.filename, loc.filename));
+            return !global.params.showColumns || (this.charnum == loc.charnum) && (this.linnum == loc.linnum) && FileName.equals(this.filename, loc.filename);
         }
 
         public  boolean opEquals(Loc loc) {
-            return ((this.charnum == loc.charnum && this.linnum == loc.linnum) && (this.filename == loc.filename || ((this.filename != null && loc.filename != null) && strcmp(this.filename, loc.filename) == 0)));
+            return (this.charnum == loc.charnum) && (this.linnum == loc.linnum) && (this.filename == loc.filename) || (this.filename != null) && (loc.filename != null) && (strcmp(this.filename, loc.filename) == 0);
         }
 
         public  int toHash() {

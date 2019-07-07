@@ -28,13 +28,13 @@ public class filecache {
             File.ReadResult readResult = File.read((this.file).toChars()).copy();
             this.buffer = new FileBuffer(readResult.extractData());
             BytePtr buf = pcopy(toBytePtr((this.buffer).data));
-            for (; (buf.get()) != 0;){
+            for (; buf.get() != 0;){
                 BytePtr prevBuf = pcopy(buf);
-                for (; ((buf.get() & 0xFF) != 10 && (buf.get() & 0xFF) != 13);buf.postInc()){
-                    if (!((buf.get()) != 0))
+                for (; ((buf.get() & 0xFF) != 10) && ((buf.get() & 0xFF) != 13);buf.postInc()){
+                    if (buf.get() == 0)
                         break;
                 }
-                if (((buf.get() & 0xFF) == 13 && ((buf.plus(1)).get() & 0xFF) == 10))
+                if (((buf.get() & 0xFF) == 13) && (((buf.plus(1)).get() & 0xFF) == 10))
                     buf.postInc();
                 this.lines.append(toByteSlice(prevBuf.slice(0,((buf.minus(prevBuf))))));
                 buf.postInc();
@@ -58,9 +58,9 @@ public class filecache {
         public  FileAndLines addOrGetFile(ByteSlice file) {
             {
                 StringValue payload = this.files.lookup(file);
-                if (payload != null)
+                if ((payload) != null)
                 {
-                    if (payload != null)
+                    if ((payload != null))
                         return (FileAndLines)(payload).ptrvalue;
                 }
             }

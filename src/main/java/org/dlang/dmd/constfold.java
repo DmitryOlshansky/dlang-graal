@@ -29,7 +29,7 @@ public class constfold {
 
     static boolean LOG = false;
     public static Expression expType(Type type, Expression e) {
-        if (!pequals(type, e.type))
+        if ((!pequals(type, e.type)))
         {
             e = e.copy();
             e.type = type;
@@ -186,13 +186,13 @@ public class constfold {
             }
             emplaceExpComplexExpLoccomplex_tType(ue, loc, v, type);
         }
-        else if ((e1.op & 0xFF) == 25)
+        else if (((e1.op & 0xFF) == 25))
         {
             SymOffExp soe = (SymOffExp)e1;
             emplaceExpSymOffExpLocDeclarationLong(ue, loc, soe.var, soe.offset + e2.toInteger());
             ue.exp().type = type;
         }
-        else if ((e2.op & 0xFF) == 25)
+        else if (((e2.op & 0xFF) == 25))
         {
             SymOffExp soe = (SymOffExp)e2;
             emplaceExpSymOffExpLocDeclarationLong(ue, loc, soe.var, soe.offset + e1.toInteger());
@@ -286,7 +286,7 @@ public class constfold {
             }
             emplaceExpComplexExpLoccomplex_tType(ue, loc, v, type);
         }
-        else if ((e1.op & 0xFF) == 25)
+        else if (((e1.op & 0xFF) == 25))
         {
             SymOffExp soe = (SymOffExp)e1;
             emplaceExpSymOffExpLocDeclarationLong(ue, loc, soe.var, soe.offset - e2.toInteger());
@@ -389,28 +389,28 @@ public class constfold {
             long n = 0L;
             n1 = (long)e1.toInteger();
             n2 = (long)e2.toInteger();
-            if (n2 == 0L)
+            if ((n2 == 0L))
             {
                 e2.error(new BytePtr("divide by 0"));
                 emplaceExpErrorExp(ue);
                 return ue;
             }
-            if ((n2 == -1L && !(type.isunsigned())))
+            if ((n2 == -1L) && !type.isunsigned())
             {
-                if (((long)n1 == -2147483648L && (type.toBasetype().ty & 0xFF) != ENUMTY.Tint64))
+                if (((long)n1 == -2147483648L) && ((type.toBasetype().ty & 0xFF) != ENUMTY.Tint64))
                 {
                     e2.error(new BytePtr("integer overflow: `int.min / -1`"));
                     emplaceExpErrorExp(ue);
                     return ue;
                 }
-                else if ((long)n1 == -9223372036854775808L)
+                else if (((long)n1 == -9223372036854775808L))
                 {
                     e2.error(new BytePtr("integer overflow: `long.min / -1L`"));
                     emplaceExpErrorExp(ue);
                     return ue;
                 }
             }
-            if ((e1.type.isunsigned() || e2.type.isunsigned()))
+            if (e1.type.isunsigned() || e2.type.isunsigned())
                 n = (long)((long)n1 / (long)n2);
             else
                 n = n1 / n2;
@@ -452,28 +452,28 @@ public class constfold {
             long n = 0L;
             n1 = (long)e1.toInteger();
             n2 = (long)e2.toInteger();
-            if (n2 == 0L)
+            if ((n2 == 0L))
             {
                 e2.error(new BytePtr("divide by 0"));
                 emplaceExpErrorExp(ue);
                 return ue;
             }
-            if ((n2 == -1L && !(type.isunsigned())))
+            if ((n2 == -1L) && !type.isunsigned())
             {
-                if (((long)n1 == -2147483648L && (type.toBasetype().ty & 0xFF) != ENUMTY.Tint64))
+                if (((long)n1 == -2147483648L) && ((type.toBasetype().ty & 0xFF) != ENUMTY.Tint64))
                 {
                     e2.error(new BytePtr("integer overflow: `int.min %% -1`"));
                     emplaceExpErrorExp(ue);
                     return ue;
                 }
-                else if ((long)n1 == -9223372036854775808L)
+                else if (((long)n1 == -9223372036854775808L))
                 {
                     e2.error(new BytePtr("integer overflow: `long.min %% -1L`"));
                     emplaceExpErrorExp(ue);
                     return ue;
                 }
             }
-            if ((e1.type.isunsigned() || e2.type.isunsigned()))
+            if (e1.type.isunsigned() || e2.type.isunsigned())
                 n = (long)((long)n1 % (long)n2);
             else
                 n = n1 % n2;
@@ -488,7 +488,7 @@ public class constfold {
         {
             long n = e2.toInteger();
             boolean neg = false;
-            if ((!(e2.type.isunsigned()) && (long)n < 0L))
+            if (!e2.type.isunsigned() && ((long)n < 0L))
             {
                 if (e1.type.isintegral())
                 {
@@ -519,7 +519,7 @@ public class constfold {
             }
             Expression r = ur.exp();
             Expression v = uv.exp();
-            for (; n != 0L;){
+            for (; (n != 0L);){
                 if ((n & 1L) != 0)
                 {
                     uv = Mul(loc, v.type, v, r).copy();
@@ -542,7 +542,7 @@ public class constfold {
         }
         else if (e2.type.isfloating())
         {
-            if (e1.toReal() < CTFloat.zero)
+            if ((e1.toReal() < CTFloat.zero))
             {
                 emplaceExpRealExpLocDoubleType(ue, loc, target.RealProperties.nan, type);
             }
@@ -564,7 +564,7 @@ public class constfold {
         UnionExp ue = null;
         long value = e1.toInteger();
         long dcount = e2.toInteger();
-        assert(dcount <= 4294967295L);
+        assert((dcount <= 4294967295L));
         int count = (int)dcount;
         switch ((e1.type.toBasetype().ty & 0xFF))
         {
@@ -609,7 +609,7 @@ public class constfold {
         UnionExp ue = null;
         long value = e1.toInteger();
         long dcount = e2.toInteger();
-        assert(dcount <= 4294967295L);
+        assert((dcount <= 4294967295L));
         int count = (int)dcount;
         switch ((e1.type.toBasetype().ty & 0xFF))
         {
@@ -665,20 +665,20 @@ public class constfold {
         int cmp = 0;
         double r1 = CTFloat.zero;
         double r2 = CTFloat.zero;
-        assert(((op & 0xFF) == 58 || (op & 0xFF) == 59));
-        if ((e1.op & 0xFF) == 13)
+        assert(((op & 0xFF) == 58) || ((op & 0xFF) == 59));
+        if (((e1.op & 0xFF) == 13))
         {
-            if ((e2.op & 0xFF) == 13)
+            if (((e2.op & 0xFF) == 13))
                 cmp = 1;
-            else if ((e2.op & 0xFF) == 121)
+            else if (((e2.op & 0xFF) == 121))
             {
                 StringExp es2 = (StringExp)e2;
                 cmp = ((0 == es2.len) ? 1 : 0);
             }
-            else if ((e2.op & 0xFF) == 47)
+            else if (((e2.op & 0xFF) == 47))
             {
                 ArrayLiteralExp es2 = (ArrayLiteralExp)e2;
-                cmp = (((es2.elements == null || 0 == (es2.elements).length)) ? 1 : 0);
+                cmp = (((es2.elements == null) || (0 == (es2.elements).length)) ? 1 : 0);
             }
             else
             {
@@ -686,17 +686,17 @@ public class constfold {
                 return ue;
             }
         }
-        else if ((e2.op & 0xFF) == 13)
+        else if (((e2.op & 0xFF) == 13))
         {
-            if ((e1.op & 0xFF) == 121)
+            if (((e1.op & 0xFF) == 121))
             {
                 StringExp es1 = (StringExp)e1;
                 cmp = ((0 == es1.len) ? 1 : 0);
             }
-            else if ((e1.op & 0xFF) == 47)
+            else if (((e1.op & 0xFF) == 47))
             {
                 ArrayLiteralExp es1 = (ArrayLiteralExp)e1;
-                cmp = (((es1.elements == null || 0 == (es1.elements).length)) ? 1 : 0);
+                cmp = (((es1.elements == null) || (0 == (es1.elements).length)) ? 1 : 0);
             }
             else
             {
@@ -704,49 +704,49 @@ public class constfold {
                 return ue;
             }
         }
-        else if (((e1.op & 0xFF) == 121 && (e2.op & 0xFF) == 121))
+        else if (((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 121))
         {
             StringExp es1 = (StringExp)e1;
             StringExp es2 = (StringExp)e2;
-            if ((es1.sz & 0xFF) != (es2.sz & 0xFF))
+            if (((es1.sz & 0xFF) != (es2.sz & 0xFF)))
             {
-                assert((global.errors) != 0);
+                assert(global.errors != 0);
                 cantExp(ue);
                 return ue;
             }
-            if ((es1.len == es2.len && memcmp(es1.string, es2.string, (es1.sz & 0xFF) * es1.len) == 0))
+            if ((es1.len == es2.len) && (memcmp(es1.string, es2.string, (es1.sz & 0xFF) * es1.len) == 0))
                 cmp = 1;
             else
                 cmp = 0;
         }
-        else if (((e1.op & 0xFF) == 47 && (e2.op & 0xFF) == 47))
+        else if (((e1.op & 0xFF) == 47) && ((e2.op & 0xFF) == 47))
         {
             ArrayLiteralExp es1 = (ArrayLiteralExp)e1;
             ArrayLiteralExp es2 = (ArrayLiteralExp)e2;
-            if (((es1.elements == null || !(((es1.elements).length) != 0)) && (es2.elements == null || !(((es2.elements).length) != 0))))
+            if ((es1.elements == null) || ((es1.elements).length == 0) && (es2.elements == null) || ((es2.elements).length == 0))
                 cmp = 1;
-            else if ((es1.elements == null || es2.elements == null))
+            else if ((es1.elements == null) || (es2.elements == null))
                 cmp = 0;
-            else if ((es1.elements).length != (es2.elements).length)
+            else if (((es1.elements).length != (es2.elements).length))
                 cmp = 0;
             else
             {
                 {
                     int i = 0;
-                    for (; i < (es1.elements).length;i++){
+                    for (; (i < (es1.elements).length);i++){
                         Expression ee1 = es1.getElement(i);
                         Expression ee2 = es2.getElement(i);
                         ue = Equal(TOK.equal, loc, Type.tint32, ee1, ee2).copy();
                         if (CTFEExp.isCantExp(ue.exp()))
                             return ue;
                         cmp = (int)ue.exp().toInteger();
-                        if (cmp == 0)
+                        if ((cmp == 0))
                             break;
                     }
                 }
             }
         }
-        else if (((e1.op & 0xFF) == 47 && (e2.op & 0xFF) == 121))
+        else if (((e1.op & 0xFF) == 47) && ((e2.op & 0xFF) == 121))
         {
             Expression etmp = e1;
             e1 = e2;
@@ -757,95 +757,95 @@ public class constfold {
             ArrayLiteralExp es2 = (ArrayLiteralExp)e2;
             int dim1 = es1.len;
             int dim2 = es2.elements != null ? (es2.elements).length : 0;
-            if (dim1 != dim2)
+            if ((dim1 != dim2))
                 cmp = 0;
             else
             {
                 cmp = 1;
                 {
                     int i = 0;
-                    for (; i < dim1;i++){
+                    for (; (i < dim1);i++){
                         long c = (long)es1.charAt((long)i);
                         Expression ee2 = es2.getElement(i);
-                        if (ee2.isConst() != 1)
+                        if ((ee2.isConst() != 1))
                         {
                             cantExp(ue);
                             return ue;
                         }
                         cmp = ((c == ee2.toInteger()) ? 1 : 0);
-                        if (cmp == 0)
+                        if ((cmp == 0))
                             break;
                     }
                 }
             }
         }
-        else if (((e1.op & 0xFF) == 121 && (e2.op & 0xFF) == 47))
+        else if (((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 47))
         {
         /*Lsa:*/
             StringExp es1 = (StringExp)e1;
             ArrayLiteralExp es2 = (ArrayLiteralExp)e2;
             int dim1 = es1.len;
             int dim2 = es2.elements != null ? (es2.elements).length : 0;
-            if (dim1 != dim2)
+            if ((dim1 != dim2))
                 cmp = 0;
             else
             {
                 cmp = 1;
                 {
                     int i = 0;
-                    for (; i < dim1;i++){
+                    for (; (i < dim1);i++){
                         long c = (long)es1.charAt((long)i);
                         Expression ee2 = es2.getElement(i);
-                        if (ee2.isConst() != 1)
+                        if ((ee2.isConst() != 1))
                         {
                             cantExp(ue);
                             return ue;
                         }
                         cmp = ((c == ee2.toInteger()) ? 1 : 0);
-                        if (cmp == 0)
+                        if ((cmp == 0))
                             break;
                     }
                 }
             }
         }
-        else if (((e1.op & 0xFF) == 49 && (e2.op & 0xFF) == 49))
+        else if (((e1.op & 0xFF) == 49) && ((e2.op & 0xFF) == 49))
         {
             StructLiteralExp es1 = (StructLiteralExp)e1;
             StructLiteralExp es2 = (StructLiteralExp)e2;
-            if (!pequals(es1.sd, es2.sd))
+            if ((!pequals(es1.sd, es2.sd)))
                 cmp = 0;
-            else if (((es1.elements == null || !(((es1.elements).length) != 0)) && (es2.elements == null || !(((es2.elements).length) != 0))))
+            else if ((es1.elements == null) || ((es1.elements).length == 0) && (es2.elements == null) || ((es2.elements).length == 0))
                 cmp = 1;
-            else if ((es1.elements == null || es2.elements == null))
+            else if ((es1.elements == null) || (es2.elements == null))
                 cmp = 0;
-            else if ((es1.elements).length != (es2.elements).length)
+            else if (((es1.elements).length != (es2.elements).length))
                 cmp = 0;
             else
             {
                 cmp = 1;
                 {
                     int i = 0;
-                    for (; i < (es1.elements).length;i++){
+                    for (; (i < (es1.elements).length);i++){
                         Expression ee1 = (es1.elements).get(i);
                         Expression ee2 = (es2.elements).get(i);
-                        if (pequals(ee1, ee2))
+                        if ((pequals(ee1, ee2)))
                             continue;
-                        if ((!(ee1 != null) || !(ee2 != null)))
+                        if ((ee1 == null) || (ee2 == null))
                         {
                             cmp = 0;
                             break;
                         }
                         ue = Equal(TOK.equal, loc, Type.tint32, ee1, ee2).copy();
-                        if ((ue.exp().op & 0xFF) == 233)
+                        if (((ue.exp().op & 0xFF) == 233))
                             return ue;
                         cmp = (int)ue.exp().toInteger();
-                        if (cmp == 0)
+                        if ((cmp == 0))
                             break;
                     }
                 }
             }
         }
-        else if ((e1.isConst() != 1 || e2.isConst() != 1))
+        else if ((e1.isConst() != 1) || (e2.isConst() != 1))
         {
             cantExp(ue);
             return ue;
@@ -856,7 +856,7 @@ public class constfold {
             r2 = e2.toReal();
             /*goto L1*//*unrolled goto*/
         /*L1:*/
-            if ((CTFloat.isNaN(r1) || CTFloat.isNaN(r2)))
+            if (CTFloat.isNaN(r1) || CTFloat.isNaN(r2))
             {
                 cmp = 0;
             }
@@ -870,7 +870,7 @@ public class constfold {
             r1 = e1.toImaginary();
             r2 = e2.toImaginary();
         /*L1:*/
-            if ((CTFloat.isNaN(r1) || CTFloat.isNaN(r2)))
+            if (CTFloat.isNaN(r1) || CTFloat.isNaN(r2))
             {
                 cmp = 0;
             }
@@ -883,7 +883,7 @@ public class constfold {
         {
             cmp = e1.toComplex().opEquals(e2.toComplex());
         }
-        else if ((e1.type.isintegral() || (e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tpointer))
+        else if (e1.type.isintegral() || ((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tpointer))
         {
             cmp = ((e1.toInteger() == e2.toInteger()) ? 1 : 0);
         }
@@ -892,7 +892,7 @@ public class constfold {
             cantExp(ue);
             return ue;
         }
-        if ((op & 0xFF) == 59)
+        if (((op & 0xFF) == 59))
             cmp ^= 1;
         emplaceExpIntegerExpLocIntegerType(ue, loc, cmp, type);
         return ue;
@@ -901,19 +901,19 @@ public class constfold {
     public static UnionExp Identity(byte op, Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         int cmp = 0;
-        if ((e1.op & 0xFF) == 13)
+        if (((e1.op & 0xFF) == 13))
         {
             cmp = (((e2.op & 0xFF) == 13) ? 1 : 0);
         }
-        else if ((e2.op & 0xFF) == 13)
+        else if (((e2.op & 0xFF) == 13))
         {
             cmp = 0;
         }
-        else if (((e1.op & 0xFF) == 25 && (e2.op & 0xFF) == 25))
+        else if (((e1.op & 0xFF) == 25) && ((e2.op & 0xFF) == 25))
         {
             SymOffExp es1 = (SymOffExp)e1;
             SymOffExp es2 = (SymOffExp)e2;
-            cmp = (((pequals(es1.var, es2.var) && es1.offset == es2.offset)) ? 1 : 0);
+            cmp = (((pequals(es1.var, es2.var)) && (es1.offset == es2.offset)) ? 1 : 0);
         }
         else
         {
@@ -929,15 +929,15 @@ public class constfold {
             {
                 complex_t v1 = e1.toComplex().copy();
                 complex_t v2 = e2.toComplex().copy();
-                cmp = ((((RealIdentical(creall(v1), creall(v2))) != 0 && (RealIdentical(cimagl(v1), cimagl(v1))) != 0)) ? 1 : 0);
+                cmp = (((RealIdentical(creall(v1), creall(v2)) != 0) && (RealIdentical(cimagl(v1), cimagl(v1)) != 0)) ? 1 : 0);
             }
             else
             {
-                ue = Equal((op & 0xFF) == 60 ? TOK.equal : TOK.notEqual, loc, type, e1, e2).copy();
+                ue = Equal(((op & 0xFF) == 60) ? TOK.equal : TOK.notEqual, loc, type, e1, e2).copy();
                 return ue;
             }
         }
-        if ((op & 0xFF) == 61)
+        if (((op & 0xFF) == 61))
             cmp ^= 1;
         emplaceExpIntegerExpLocIntegerType(ue, loc, cmp, type);
         return ue;
@@ -948,21 +948,21 @@ public class constfold {
         long n = 0L;
         double r1 = CTFloat.zero;
         double r2 = CTFloat.zero;
-        if (((e1.op & 0xFF) == 121 && (e2.op & 0xFF) == 121))
+        if (((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 121))
         {
             StringExp es1 = (StringExp)e1;
             StringExp es2 = (StringExp)e2;
             int sz = (es1.sz & 0xFF);
-            assert(sz == (es2.sz & 0xFF));
+            assert((sz == (es2.sz & 0xFF)));
             int len = es1.len;
-            if (es2.len < len)
+            if ((es2.len < len))
                 len = es2.len;
             int rawCmp = memcmp(es1.string, es2.string, sz * len);
-            if (rawCmp == 0)
+            if ((rawCmp == 0))
                 rawCmp = (es1.len - es2.len);
             n = (long)specificCmp(op, rawCmp);
         }
-        else if ((e1.isConst() != 1 || e2.isConst() != 1))
+        else if ((e1.isConst() != 1) || (e2.isConst() != 1))
         {
             cantExp(ue);
             return ue;
@@ -992,7 +992,7 @@ public class constfold {
             long n2 = 0L;
             n1 = (long)e1.toInteger();
             n2 = (long)e2.toInteger();
-            if ((e1.type.isunsigned() || e2.type.isunsigned()))
+            if (e1.type.isunsigned() || e2.type.isunsigned())
                 n = (long)intUnsignedCmp(op, (long)n1, (long)n2);
             else
                 n = (long)intSignedCmp(op, n1, n2);
@@ -1005,18 +1005,18 @@ public class constfold {
         UnionExp ue = null;
         Type tb = to.toBasetype();
         Type typeb = type.toBasetype();
-        if ((e1.type.equals(type) && type.equals(to)))
+        if (e1.type.equals(type) && type.equals(to))
         {
             emplaceExpUnionExp(ue, e1);
             return ue;
         }
-        if ((((e1.op & 0xFF) == 229 && ((TypeVector)e1.type).basetype.equals(type)) && type.equals(to)))
+        if (((e1.op & 0xFF) == 229) && ((TypeVector)e1.type).basetype.equals(type) && type.equals(to))
         {
             Expression ex = ((VectorExp)e1).e1;
             emplaceExpUnionExp(ue, ex);
             return ue;
         }
-        if ((e1.type.implicitConvTo(to) >= MATCH.constant || to.implicitConvTo(e1.type) >= MATCH.constant))
+        if ((e1.type.implicitConvTo(to) >= MATCH.constant) || (to.implicitConvTo(e1.type) >= MATCH.constant))
         {
             /*goto L1*//*unrolled goto*/
         /*L1:*/
@@ -1024,7 +1024,7 @@ public class constfold {
             emplaceExpUnionExp(ue, ex);
             return ue;
         }
-        if (((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tdelegate && e1.type.implicitConvTo(to) == MATCH.convert))
+        if (((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tdelegate) && (e1.type.implicitConvTo(to) == MATCH.convert))
         {
             /*goto L1*//*unrolled goto*/
         /*L1:*/
@@ -1032,9 +1032,9 @@ public class constfold {
             emplaceExpUnionExp(ue, ex);
             return ue;
         }
-        if ((e1.op & 0xFF) == 121)
+        if (((e1.op & 0xFF) == 121))
         {
-            if ((((tb.ty & 0xFF) == ENUMTY.Tarray && (typeb.ty & 0xFF) == ENUMTY.Tarray) && tb.nextOf().size() == typeb.nextOf().size()))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) && ((typeb.ty & 0xFF) == ENUMTY.Tarray) && (tb.nextOf().size() == typeb.nextOf().size()))
             {
                 /*goto L1*//*unrolled goto*/
             /*L1:*/
@@ -1043,18 +1043,18 @@ public class constfold {
                 return ue;
             }
         }
-        if (((e1.op & 0xFF) == 47 && pequals(typeb, tb)))
+        if (((e1.op & 0xFF) == 47) && (pequals(typeb, tb)))
         {
         /*L1:*/
             Expression ex = expType(to, e1);
             emplaceExpUnionExp(ue, ex);
             return ue;
         }
-        if (e1.isConst() != 1)
+        if ((e1.isConst() != 1))
         {
             cantExp(ue);
         }
-        else if ((tb.ty & 0xFF) == ENUMTY.Tbool)
+        else if (((tb.ty & 0xFF) == ENUMTY.Tbool))
         {
             emplaceExpIntegerExpLocBooleanType(ue, loc, e1.toInteger() != 0L, type);
         }
@@ -1122,23 +1122,23 @@ public class constfold {
         {
             emplaceExpIntegerExpLocLongType(ue, loc, e1.toInteger(), type);
         }
-        else if ((tb.ty & 0xFF) == ENUMTY.Tvoid)
+        else if (((tb.ty & 0xFF) == ENUMTY.Tvoid))
         {
             cantExp(ue);
         }
-        else if (((tb.ty & 0xFF) == ENUMTY.Tstruct && (e1.op & 0xFF) == 135))
+        else if (((tb.ty & 0xFF) == ENUMTY.Tstruct) && ((e1.op & 0xFF) == 135))
         {
             StructDeclaration sd = tb.toDsymbol(null).isStructDeclaration();
             assert(sd != null);
             DArray<Expression> elements = new DArray<Expression>();
             {
                 int i = 0;
-                for (; i < sd.fields.length;i++){
+                for (; (i < sd.fields.length);i++){
                     VarDeclaration v = sd.fields.get(i);
                     UnionExp zero = new UnionExp().copy();
                     emplaceExpIntegerExpInteger(zero, 0);
                     ue = Cast(loc, v.type, v.type, zero.exp()).copy();
-                    if ((ue.exp().op & 0xFF) == 233)
+                    if (((ue.exp().op & 0xFF) == 233))
                         return ue;
                     (elements).push(ue.exp().copy());
                 }
@@ -1148,7 +1148,7 @@ public class constfold {
         }
         else
         {
-            if (!pequals(type, Type.terror))
+            if ((!pequals(type, Type.terror)))
             {
                 error(loc, new BytePtr("cannot cast `%s` to `%s`"), e1.type.toChars(), type.toChars());
             }
@@ -1160,24 +1160,24 @@ public class constfold {
     public static UnionExp ArrayLength(Type type, Expression e1) {
         UnionExp ue = null;
         Loc loc = e1.loc.copy();
-        if ((e1.op & 0xFF) == 121)
+        if (((e1.op & 0xFF) == 121))
         {
             StringExp es1 = (StringExp)e1;
             emplaceExpIntegerExpLocIntegerType(ue, loc, es1.len, type);
         }
-        else if ((e1.op & 0xFF) == 47)
+        else if (((e1.op & 0xFF) == 47))
         {
             ArrayLiteralExp ale = (ArrayLiteralExp)e1;
             int dim = ale.elements != null ? (ale.elements).length : 0;
             emplaceExpIntegerExpLocIntegerType(ue, loc, dim, type);
         }
-        else if ((e1.op & 0xFF) == 48)
+        else if (((e1.op & 0xFF) == 48))
         {
             AssocArrayLiteralExp ale = (AssocArrayLiteralExp)e1;
             int dim = (ale.keys).length;
             emplaceExpIntegerExpLocIntegerType(ue, loc, dim, type);
         }
-        else if ((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray)
+        else if (((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
         {
             Expression e = ((TypeSArray)e1.type.toBasetype()).dim;
             emplaceExpUnionExp(ue, e);
@@ -1191,11 +1191,11 @@ public class constfold {
         UnionExp ue = null;
         Loc loc = e1.loc.copy();
         assert(e1.type != null);
-        if (((e1.op & 0xFF) == 121 && (e2.op & 0xFF) == 135))
+        if (((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 135))
         {
             StringExp es1 = (StringExp)e1;
             long i = e2.toInteger();
-            if (i >= (long)es1.len)
+            if ((i >= (long)es1.len))
             {
                 e1.error(new BytePtr("string index %llu is out of bounds `[0 .. %llu]`"), i, (long)es1.len);
                 emplaceExpErrorExp(ue);
@@ -1205,17 +1205,17 @@ public class constfold {
                 emplaceExpIntegerExpLocIntegerType(ue, loc, es1.charAt(i), type);
             }
         }
-        else if (((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray && (e2.op & 0xFF) == 135))
+        else if (((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) && ((e2.op & 0xFF) == 135))
         {
             TypeSArray tsa = (TypeSArray)e1.type.toBasetype();
             long length = tsa.dim.toInteger();
             long i = e2.toInteger();
-            if (i >= length)
+            if ((i >= length))
             {
                 e1.error(new BytePtr("array index %llu is out of bounds `%s[0 .. %llu]`"), i, e1.toChars(), length);
                 emplaceExpErrorExp(ue);
             }
-            else if ((e1.op & 0xFF) == 47)
+            else if (((e1.op & 0xFF) == 47))
             {
                 ArrayLiteralExp ale = (ArrayLiteralExp)e1;
                 Expression e = ale.getElement((int)i);
@@ -1229,13 +1229,13 @@ public class constfold {
             else
                 cantExp(ue);
         }
-        else if (((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tarray && (e2.op & 0xFF) == 135))
+        else if (((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tarray) && ((e2.op & 0xFF) == 135))
         {
             long i = e2.toInteger();
-            if ((e1.op & 0xFF) == 47)
+            if (((e1.op & 0xFF) == 47))
             {
                 ArrayLiteralExp ale = (ArrayLiteralExp)e1;
-                if (i >= (long)(ale.elements).length)
+                if ((i >= (long)(ale.elements).length))
                 {
                     e1.error(new BytePtr("array index %llu is out of bounds `%s[0 .. %u]`"), i, e1.toChars(), (ale.elements).length);
                     emplaceExpErrorExp(ue);
@@ -1254,12 +1254,12 @@ public class constfold {
             else
                 cantExp(ue);
         }
-        else if ((e1.op & 0xFF) == 48)
+        else if (((e1.op & 0xFF) == 48))
         {
             AssocArrayLiteralExp ae = (AssocArrayLiteralExp)e1;
             {
                 int i = (ae.keys).length;
-                for (; (i) != 0;){
+                for (; i != 0;){
                     i--;
                     Expression ekey = (ae.keys).get(i);
                     ue = Equal(TOK.equal, loc, Type.tbool, ekey, e2).copy();
@@ -1290,11 +1290,11 @@ public class constfold {
         Loc loc = e1.loc.copy();
         Function4<Long,Long,Long,Long,Boolean> sliceBoundsCheck = new Function4<Long,Long,Long,Long,Boolean>(){
             public Boolean invoke(Long lwr, Long upr, Long newlwr, Long newupr){
-                assert(lwr <= upr);
-                return !(((newlwr <= newupr && lwr <= newlwr) && newupr <= upr));
+                assert((lwr <= upr));
+                return !((newlwr <= newupr) && (lwr <= newlwr) && (newupr <= upr));
             }
         };
-        if ((((e1.op & 0xFF) == 121 && (lwr.op & 0xFF) == 135) && (upr.op & 0xFF) == 135))
+        if (((e1.op & 0xFF) == 121) && ((lwr.op & 0xFF) == 135) && ((upr.op & 0xFF) == 135))
         {
             StringExp es1 = (StringExp)e1;
             long ilwr = lwr.toInteger();
@@ -1314,7 +1314,7 @@ public class constfold {
                 es.type = type;
             }
         }
-        else if (((((e1.op & 0xFF) == 47 && (lwr.op & 0xFF) == 135) && (upr.op & 0xFF) == 135) && !(hasSideEffect(e1))))
+        else if (((e1.op & 0xFF) == 47) && ((lwr.op & 0xFF) == 135) && ((upr.op & 0xFF) == 135) && !hasSideEffect(e1))
         {
             ArrayLiteralExp es1 = (ArrayLiteralExp)e1;
             long ilwr = lwr.toInteger();
@@ -1339,7 +1339,7 @@ public class constfold {
         {
             int __key844 = 0;
             int __limit845 = len;
-            for (; __key844 < __limit845;__key844 += 1) {
+            for (; (__key844 < __limit845);__key844 += 1) {
                 int j = __key844;
                 int val = newval.getCodeUnit(j);
                 existingAE.elements.set(j + firstIndex, new IntegerExp(newval.loc, (long)val, elemType));
@@ -1348,11 +1348,11 @@ public class constfold {
     }
 
     public static void sliceAssignStringFromArrayLiteral(StringExp existingSE, ArrayLiteralExp newae, int firstIndex) {
-        assert((existingSE.ownedByCtfe & 0xFF) != 0);
+        assert(((existingSE.ownedByCtfe & 0xFF) != 0));
         {
             int __key846 = 0;
             int __limit847 = (newae.elements).length;
-            for (; __key846 < __limit847;__key846 += 1) {
+            for (; (__key846 < __limit847);__key846 += 1) {
                 int j = __key846;
                 existingSE.setCodeUnit(firstIndex + j, (int)newae.getElement(j).toInteger());
             }
@@ -1360,15 +1360,15 @@ public class constfold {
     }
 
     public static void sliceAssignStringFromString(StringExp existingSE, StringExp newstr, int firstIndex) {
-        assert((existingSE.ownedByCtfe & 0xFF) != 0);
+        assert(((existingSE.ownedByCtfe & 0xFF) != 0));
         int sz = (existingSE.sz & 0xFF);
-        assert(sz == (newstr.sz & 0xFF));
+        assert((sz == (newstr.sz & 0xFF)));
         memcpy((BytePtr)((existingSE.string.plus((firstIndex * sz)))), (newstr.string), (sz * newstr.len));
     }
 
     public static int sliceCmpStringWithString(StringExp se1, StringExp se2, int lo1, int lo2, int len) {
         int sz = (se1.sz & 0xFF);
-        assert(sz == (se2.sz & 0xFF));
+        assert((sz == (se2.sz & 0xFF)));
         return memcmp((se1.string.plus((sz * lo1))), (se2.string.plus((sz * lo2))), sz * len);
     }
 
@@ -1376,12 +1376,12 @@ public class constfold {
         {
             int __key848 = 0;
             int __limit849 = len;
-            for (; __key848 < __limit849;__key848 += 1) {
+            for (; (__key848 < __limit849);__key848 += 1) {
                 int j = __key848;
                 int val2 = (int)ae2.getElement(j + lo2).toInteger();
                 int val1 = se1.getCodeUnit(j + lo1);
                 int c = (val1 - val2);
-                if ((c) != 0)
+                if (c != 0)
                     return c;
             }
         }
@@ -1399,21 +1399,21 @@ public class constfold {
                 {
                     Slice<Expression> __r850 = (elems.value).opSlice(d, (elems.value).length).copy();
                     int __key851 = 0;
-                    for (; __key851 < __r850.getLength();__key851 += 1) {
+                    for (; (__key851 < __r850.getLength());__key851 += 1) {
                         Expression el = __r850.get(__key851);
-                        if (!(el != null))
+                        if (el == null)
                             el = ale.basis;
                     }
                 }
             }
         };
-        if ((e1.op & 0xFF) == 47)
+        if (((e1.op & 0xFF) == 47))
             append.invoke((ArrayLiteralExp)e1);
         else
             (elems.value).push(e1);
         if (e2 != null)
         {
-            if ((e2.op & 0xFF) == 47)
+            if (((e2.op & 0xFF) == 47))
                 append.invoke((ArrayLiteralExp)e2);
             else
                 (elems.value).push(e2);
@@ -1428,22 +1428,22 @@ public class constfold {
         Type t = null;
         Type t1 = e1.type.toBasetype();
         Type t2 = e2.type.toBasetype();
-        if (((e1.op & 0xFF) == 13 && ((e2.op & 0xFF) == 135 || (e2.op & 0xFF) == 49)))
+        if (((e1.op & 0xFF) == 13) && ((e2.op & 0xFF) == 135) || ((e2.op & 0xFF) == 49))
         {
             e = e2;
             t = t1;
             /*goto L2*//*unrolled goto*/
         /*L2:*/
             Type tn = e.type.toBasetype();
-            if ((((tn.ty & 0xFF) == ENUMTY.Tchar || (tn.ty & 0xFF) == ENUMTY.Twchar) || (tn.ty & 0xFF) == ENUMTY.Tdchar))
+            if (((tn.ty & 0xFF) == ENUMTY.Tchar) || ((tn.ty & 0xFF) == ENUMTY.Twchar) || ((tn.ty & 0xFF) == ENUMTY.Tdchar))
             {
                 if (t.nextOf() != null)
                     t = t.nextOf().toBasetype();
                 byte sz = (byte)t.size();
                 long v = e.toInteger();
-                int len = (t.ty & 0xFF) == (tn.ty & 0xFF) ? 1 : utf_codeLength((sz & 0xFF), (int)v);
+                int len = ((t.ty & 0xFF) == (tn.ty & 0xFF)) ? 1 : utf_codeLength((sz & 0xFF), (int)v);
                 Object s = pcopy(Mem.xmalloc(len * (sz & 0xFF)));
-                if ((t.ty & 0xFF) == (tn.ty & 0xFF))
+                if (((t.ty & 0xFF) == (tn.ty & 0xFF)))
                     Port.valcpy(s, v, (sz & 0xFF));
                 else
                     utf_encode((sz & 0xFF), s, (int)v);
@@ -1462,21 +1462,21 @@ public class constfold {
             assert(ue.exp().type != null);
             return ue;
         }
-        else if ((((e1.op & 0xFF) == 135 || (e1.op & 0xFF) == 49) && (e2.op & 0xFF) == 13))
+        else if (((e1.op & 0xFF) == 135) || ((e1.op & 0xFF) == 49) && ((e2.op & 0xFF) == 13))
         {
             e = e1;
             t = t2;
         /*L2:*/
             Type tn = e.type.toBasetype();
-            if ((((tn.ty & 0xFF) == ENUMTY.Tchar || (tn.ty & 0xFF) == ENUMTY.Twchar) || (tn.ty & 0xFF) == ENUMTY.Tdchar))
+            if (((tn.ty & 0xFF) == ENUMTY.Tchar) || ((tn.ty & 0xFF) == ENUMTY.Twchar) || ((tn.ty & 0xFF) == ENUMTY.Tdchar))
             {
                 if (t.nextOf() != null)
                     t = t.nextOf().toBasetype();
                 byte sz = (byte)t.size();
                 long v = e.toInteger();
-                int len = (t.ty & 0xFF) == (tn.ty & 0xFF) ? 1 : utf_codeLength((sz & 0xFF), (int)v);
+                int len = ((t.ty & 0xFF) == (tn.ty & 0xFF)) ? 1 : utf_codeLength((sz & 0xFF), (int)v);
                 Object s = pcopy(Mem.xmalloc(len * (sz & 0xFF)));
-                if ((t.ty & 0xFF) == (tn.ty & 0xFF))
+                if (((t.ty & 0xFF) == (tn.ty & 0xFF)))
                     Port.valcpy(s, v, (sz & 0xFF));
                 else
                     utf_encode((sz & 0xFF), s, (int)v);
@@ -1495,11 +1495,11 @@ public class constfold {
             assert(ue.exp().type != null);
             return ue;
         }
-        else if (((e1.op & 0xFF) == 13 && (e2.op & 0xFF) == 13))
+        else if (((e1.op & 0xFF) == 13) && ((e2.op & 0xFF) == 13))
         {
-            if (pequals(type, e1.type))
+            if ((pequals(type, e1.type)))
             {
-                if (((t1.ty & 0xFF) == ENUMTY.Tarray && pequals(t2, t1.nextOf())))
+                if (((t1.ty & 0xFF) == ENUMTY.Tarray) && (pequals(t2, t1.nextOf())))
                 {
                     emplaceExpArrayLiteralExpLocTypeExpression(ue, e1.loc, type, e2);
                     assert(ue.exp().type != null);
@@ -1512,7 +1512,7 @@ public class constfold {
                     return ue;
                 }
             }
-            if (pequals(type, e2.type))
+            if ((pequals(type, e2.type)))
             {
                 emplaceExpUnionExp(ue, e2);
                 assert(ue.exp().type != null);
@@ -1522,15 +1522,15 @@ public class constfold {
             assert(ue.exp().type != null);
             return ue;
         }
-        else if (((e1.op & 0xFF) == 121 && (e2.op & 0xFF) == 121))
+        else if (((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 121))
         {
             StringExp es1 = (StringExp)e1;
             StringExp es2 = (StringExp)e2;
             int len = es1.len + es2.len;
             byte sz = es1.sz;
-            if ((sz & 0xFF) != (es2.sz & 0xFF))
+            if (((sz & 0xFF) != (es2.sz & 0xFF)))
             {
-                assert((global.errors) != 0);
+                assert(global.errors != 0);
                 cantExp(ue);
                 assert(ue.exp().type != null);
                 return ue;
@@ -1546,7 +1546,7 @@ public class constfold {
             assert(ue.exp().type != null);
             return ue;
         }
-        else if ((((e2.op & 0xFF) == 121 && (e1.op & 0xFF) == 47) && t1.nextOf().isintegral()))
+        else if (((e2.op & 0xFF) == 121) && ((e1.op & 0xFF) == 47) && t1.nextOf().isintegral())
         {
             StringExp es = (StringExp)e2;
             ArrayLiteralExp ea = (ArrayLiteralExp)e1;
@@ -1554,7 +1554,7 @@ public class constfold {
             DArray<Expression> elems = new DArray<Expression>(len);
             {
                 int i = 0;
-                for (; i < (ea.elements).length;i += 1){
+                for (; (i < (ea.elements).length);i += 1){
                     elems.set(i, ea.getElement(i));
                 }
             }
@@ -1564,7 +1564,7 @@ public class constfold {
             assert(ue.exp().type != null);
             return ue;
         }
-        else if ((((e1.op & 0xFF) == 121 && (e2.op & 0xFF) == 47) && t2.nextOf().isintegral()))
+        else if (((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 47) && t2.nextOf().isintegral())
         {
             StringExp es = (StringExp)e1;
             ArrayLiteralExp ea = (ArrayLiteralExp)e2;
@@ -1572,7 +1572,7 @@ public class constfold {
             DArray<Expression> elems = new DArray<Expression>(len);
             {
                 int i = 0;
-                for (; i < (ea.elements).length;i += 1){
+                for (; (i < (ea.elements).length);i += 1){
                     elems.set(es.len + i, ea.getElement(i));
                 }
             }
@@ -1582,7 +1582,7 @@ public class constfold {
             assert(ue.exp().type != null);
             return ue;
         }
-        else if (((e1.op & 0xFF) == 121 && (e2.op & 0xFF) == 135))
+        else if (((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 135))
         {
             StringExp es1 = (StringExp)e1;
             StringExp es = null;
@@ -1605,7 +1605,7 @@ public class constfold {
             assert(ue.exp().type != null);
             return ue;
         }
-        else if (((e1.op & 0xFF) == 135 && (e2.op & 0xFF) == 121))
+        else if (((e1.op & 0xFF) == 135) && ((e2.op & 0xFF) == 121))
         {
             StringExp es2 = (StringExp)e2;
             int len = 1 + es2.len;
@@ -1622,12 +1622,12 @@ public class constfold {
             assert(ue.exp().type != null);
             return ue;
         }
-        else if ((((e1.op & 0xFF) == 47 && (e2.op & 0xFF) == 47) && t1.nextOf().equals(t2.nextOf())))
+        else if (((e1.op & 0xFF) == 47) && ((e2.op & 0xFF) == 47) && t1.nextOf().equals(t2.nextOf()))
         {
             DArray<Expression> elems = copyElements(e1, e2);
             emplaceExpArrayLiteralExpLocTypeDArray<Expression>(ue, e1.loc, null, elems);
             e = ue.exp();
-            if ((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray)
+            if (((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
             {
                 e.type = t1.nextOf().sarrayOf((long)(elems).length);
             }
@@ -1636,7 +1636,7 @@ public class constfold {
             assert(ue.exp().type != null);
             return ue;
         }
-        else if ((((e1.op & 0xFF) == 47 && (e2.op & 0xFF) == 13) && t1.nextOf().equals(t2.nextOf())))
+        else if (((e1.op & 0xFF) == 47) && ((e2.op & 0xFF) == 13) && t1.nextOf().equals(t2.nextOf()))
         {
             e = e1;
             /*goto L3*//*unrolled goto*/
@@ -1644,7 +1644,7 @@ public class constfold {
             DArray<Expression> elems = copyElements(e, null);
             emplaceExpArrayLiteralExpLocTypeDArray<Expression>(ue, e.loc, null, elems);
             e = ue.exp();
-            if ((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray)
+            if (((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
             {
                 e.type = t1.nextOf().sarrayOf((long)(elems).length);
             }
@@ -1653,14 +1653,14 @@ public class constfold {
             assert(ue.exp().type != null);
             return ue;
         }
-        else if ((((e1.op & 0xFF) == 13 && (e2.op & 0xFF) == 47) && t1.nextOf().equals(t2.nextOf())))
+        else if (((e1.op & 0xFF) == 13) && ((e2.op & 0xFF) == 47) && t1.nextOf().equals(t2.nextOf()))
         {
             e = e2;
         /*L3:*/
             DArray<Expression> elems = copyElements(e, null);
             emplaceExpArrayLiteralExpLocTypeDArray<Expression>(ue, e.loc, null, elems);
             e = ue.exp();
-            if ((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray)
+            if (((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
             {
                 e.type = t1.nextOf().sarrayOf((long)(elems).length);
             }
@@ -1669,13 +1669,13 @@ public class constfold {
             assert(ue.exp().type != null);
             return ue;
         }
-        else if (((((e1.op & 0xFF) == 47 || (e1.op & 0xFF) == 13) && e1.type.toBasetype().nextOf() != null) && e1.type.toBasetype().nextOf().equals(e2.type)))
+        else if (((e1.op & 0xFF) == 47) || ((e1.op & 0xFF) == 13) && (e1.type.toBasetype().nextOf() != null) && e1.type.toBasetype().nextOf().equals(e2.type))
         {
-            DArray<Expression> elems = (e1.op & 0xFF) == 47 ? copyElements(e1, null) : new DArray<Expression>();
+            DArray<Expression> elems = ((e1.op & 0xFF) == 47) ? copyElements(e1, null) : new DArray<Expression>();
             (elems).push(e2);
             emplaceExpArrayLiteralExpLocTypeDArray<Expression>(ue, e1.loc, null, elems);
             e = ue.exp();
-            if ((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray)
+            if (((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
             {
                 e.type = e2.type.sarrayOf((long)(elems).length);
             }
@@ -1684,12 +1684,12 @@ public class constfold {
             assert(ue.exp().type != null);
             return ue;
         }
-        else if (((e2.op & 0xFF) == 47 && e2.type.toBasetype().nextOf().equals(e1.type)))
+        else if (((e2.op & 0xFF) == 47) && e2.type.toBasetype().nextOf().equals(e1.type))
         {
             DArray<Expression> elems = copyElements(e1, e2);
             emplaceExpArrayLiteralExpLocTypeDArray<Expression>(ue, e2.loc, null, elems);
             e = ue.exp();
-            if ((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray)
+            if (((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
             {
                 e.type = e1.type.sarrayOf((long)(elems).length);
             }
@@ -1698,14 +1698,14 @@ public class constfold {
             assert(ue.exp().type != null);
             return ue;
         }
-        else if (((e1.op & 0xFF) == 13 && (e2.op & 0xFF) == 121))
+        else if (((e1.op & 0xFF) == 13) && ((e2.op & 0xFF) == 121))
         {
             t = e1.type;
             e = e2;
             /*goto L1*//*unrolled goto*/
         /*L1:*/
             Type tb = t.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray && tb.nextOf().equivalent(e.type)))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) && tb.nextOf().equivalent(e.type))
             {
                 DArray<Expression> expressions = new DArray<Expression>();
                 (expressions).push(e);
@@ -1717,7 +1717,7 @@ public class constfold {
                 emplaceExpUnionExp(ue, e);
                 e = ue.exp();
             }
-            if (!(e.type.equals(type)))
+            if (!e.type.equals(type))
             {
                 StringExp se = (StringExp)e.copy();
                 e = se.castTo(null, type);
@@ -1725,13 +1725,13 @@ public class constfold {
                 e = ue.exp();
             }
         }
-        else if (((e1.op & 0xFF) == 121 && (e2.op & 0xFF) == 13))
+        else if (((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 13))
         {
             e = e1;
             t = e2.type;
         /*L1:*/
             Type tb = t.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray && tb.nextOf().equivalent(e.type)))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) && tb.nextOf().equivalent(e.type))
             {
                 DArray<Expression> expressions = new DArray<Expression>();
                 (expressions).push(e);
@@ -1743,7 +1743,7 @@ public class constfold {
                 emplaceExpUnionExp(ue, e);
                 e = ue.exp();
             }
-            if (!(e.type.equals(type)))
+            if (!e.type.equals(type))
             {
                 StringExp se = (StringExp)e.copy();
                 e = se.castTo(null, type);
@@ -1759,13 +1759,13 @@ public class constfold {
 
     public static UnionExp Ptr(Type type, Expression e1) {
         UnionExp ue = null;
-        if ((e1.op & 0xFF) == 74)
+        if (((e1.op & 0xFF) == 74))
         {
             AddExp ae = (AddExp)e1;
-            if (((ae.e1.op & 0xFF) == 19 && (ae.e2.op & 0xFF) == 135))
+            if (((ae.e1.op & 0xFF) == 19) && ((ae.e2.op & 0xFF) == 135))
             {
                 AddrExp ade = (AddrExp)ae.e1;
-                if ((ade.e1.op & 0xFF) == 49)
+                if (((ade.e1.op & 0xFF) == 49))
                 {
                     StructLiteralExp se = (StructLiteralExp)ade.e1;
                     int offset = (int)ae.e2.toInteger();

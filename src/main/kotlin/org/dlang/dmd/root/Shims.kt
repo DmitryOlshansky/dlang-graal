@@ -100,10 +100,10 @@ fun xarraydup(src: ByteSlice) = ByteSlice(src.data.copyOfRange(src.beg, src.end)
 
 fun xstrdup(src: ByteSlice) = Mem.xstrdup(src)
 
-fun sprintf(ptr: BytePtr, fmt: ByteSlice, vararg args: Any?): Int {
+fun sprintf(ptr: BytePtr, fmt: BytePtr, vararg args: Any?): Int {
     val arr = arrayOfNulls<Any>(args.size)
     args.copyInto(arr, 0, 0, args.size)
-    return vsprintf(ptr, fmt.ptr(), slice(arr))
+    return vsprintf(ptr, fmt, slice(arr))
 }
 
 fun isalpha(c: Int): Int = if(Character.isAlphabetic(c) || c == '_'.toInt()) 1 else 0
@@ -206,6 +206,9 @@ fun hashOf(any: Any, seed: Int) = any.hashCode() + seed * 31
 
 @Suppress("UNUSED_PARAMETER")
 fun<A,B> comma(a: A?, b: B?) = b
+
+@Suppress("UNUSED_PARAMETER")
+fun expr(arg: Boolean) {}
 
 fun assertMsg(cond: Boolean, msg: ByteSlice) {
     require(cond){ msg }

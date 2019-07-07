@@ -30,7 +30,7 @@ public class builtin {
     public static Function3<Loc,FuncDeclaration,DArray<Expression>,Expression> builtin_lookup(BytePtr mangle) {
         {
             StringValue sv = builtins.lookup(mangle, strlen(mangle));
-            if (sv != null)
+            if ((sv) != null)
                 return (Function3<Loc,FuncDeclaration,DArray<Expression>,Expression>)(sv).ptrvalue;
         }
         return null;
@@ -42,187 +42,187 @@ public class builtin {
 
     public static Expression eval_sin(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.sin(arg0.toReal()), arg0.type);
     }
 
     public static Expression eval_cos(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.cos(arg0.toReal()), arg0.type);
     }
 
     public static Expression eval_tan(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.tan(arg0.toReal()), arg0.type);
     }
 
     public static Expression eval_sqrt(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.sqrt(arg0.toReal()), arg0.type);
     }
 
     public static Expression eval_fabs(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.fabs(arg0.toReal()), arg0.type);
     }
 
     public static Expression eval_ldexp(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         Expression arg1 = (arguments).get(1);
-        assert((arg1.op & 0xFF) == 135);
+        assert(((arg1.op & 0xFF) == 135));
         return new RealExp(loc, CTFloat.ldexp(arg0.toReal(), (int)arg1.toInteger()), arg0.type);
     }
 
     public static Expression eval_log(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.log(arg0.toReal()), arg0.type);
     }
 
     public static Expression eval_log2(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.log2(arg0.toReal()), arg0.type);
     }
 
     public static Expression eval_log10(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.log10(arg0.toReal()), arg0.type);
     }
 
     public static Expression eval_exp(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.exp(arg0.toReal()), arg0.type);
     }
 
     public static Expression eval_expm1(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.expm1(arg0.toReal()), arg0.type);
     }
 
     public static Expression eval_exp2(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.exp2(arg0.toReal()), arg0.type);
     }
 
     public static Expression eval_round(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.round(arg0.toReal()), arg0.type);
     }
 
     public static Expression eval_floor(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.floor(arg0.toReal()), arg0.type);
     }
 
     public static Expression eval_ceil(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.ceil(arg0.toReal()), arg0.type);
     }
 
     public static Expression eval_trunc(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.trunc(arg0.toReal()), arg0.type);
     }
 
     public static Expression eval_copysign(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         Expression arg1 = (arguments).get(1);
-        assert((arg1.op & 0xFF) == 140);
+        assert(((arg1.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.copysign(arg0.toReal(), arg1.toReal()), arg0.type);
     }
 
     public static Expression eval_pow(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         Expression arg1 = (arguments).get(1);
-        assert((arg1.op & 0xFF) == 140);
+        assert(((arg1.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.pow(arg0.toReal(), arg1.toReal()), arg0.type);
     }
 
     public static Expression eval_fmin(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         Expression arg1 = (arguments).get(1);
-        assert((arg1.op & 0xFF) == 140);
+        assert(((arg1.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.fmin(arg0.toReal(), arg1.toReal()), arg0.type);
     }
 
     public static Expression eval_fmax(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         Expression arg1 = (arguments).get(1);
-        assert((arg1.op & 0xFF) == 140);
+        assert(((arg1.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.fmax(arg0.toReal(), arg1.toReal()), arg0.type);
     }
 
     public static Expression eval_fma(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         Expression arg1 = (arguments).get(1);
-        assert((arg1.op & 0xFF) == 140);
+        assert(((arg1.op & 0xFF) == 140));
         Expression arg2 = (arguments).get(2);
-        assert((arg2.op & 0xFF) == 140);
+        assert(((arg2.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.fma(arg0.toReal(), arg1.toReal(), arg2.toReal()), arg0.type);
     }
 
     public static Expression eval_isnan(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new IntegerExp(loc, (CTFloat.isNaN(arg0.toReal()) ? 1 : 0), Type.tbool);
     }
 
     public static Expression eval_isinfinity(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         return new IntegerExp(loc, (CTFloat.isInfinity(arg0.toReal()) ? 1 : 0), Type.tbool);
     }
 
     public static Expression eval_isfinite(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
-        boolean value = (!(CTFloat.isNaN(arg0.toReal())) && !(CTFloat.isInfinity(arg0.toReal())));
+        assert(((arg0.op & 0xFF) == 140));
+        boolean value = !CTFloat.isNaN(arg0.toReal()) && !CTFloat.isInfinity(arg0.toReal());
         return new IntegerExp(loc, (value ? 1 : 0), Type.tbool);
     }
 
     public static Expression eval_bsf(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 135);
+        assert(((arg0.op & 0xFF) == 135));
         long n = arg0.toInteger();
-        if (n == 0L)
+        if ((n == 0L))
             error(loc, new BytePtr("`bsf(0)` is undefined"));
         return new IntegerExp(loc, (long)bsf(n), Type.tint32);
     }
 
     public static Expression eval_bsr(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 135);
+        assert(((arg0.op & 0xFF) == 135));
         long n = arg0.toInteger();
-        if (n == 0L)
+        if ((n == 0L))
             error(loc, new BytePtr("`bsr(0)` is undefined"));
         return new IntegerExp(loc, (long)bsr(n), Type.tint32);
     }
 
     public static Expression eval_bswap(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 135);
+        assert(((arg0.op & 0xFF) == 135));
         long n = arg0.toInteger();
         byte ty = arg0.type.toBasetype().ty;
-        if (((ty & 0xFF) == ENUMTY.Tint64 || (ty & 0xFF) == ENUMTY.Tuns64))
+        if (((ty & 0xFF) == ENUMTY.Tint64) || ((ty & 0xFF) == ENUMTY.Tuns64))
             return new IntegerExp(loc, bswap(n), arg0.type);
         else
             return new IntegerExp(loc, (long)bswap((int)n), arg0.type);
@@ -230,16 +230,16 @@ public class builtin {
 
     public static Expression eval_popcnt(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 135);
+        assert(((arg0.op & 0xFF) == 135));
         long n = arg0.toInteger();
         return new IntegerExp(loc, (long)popcnt(n), Type.tint32);
     }
 
     public static Expression eval_yl2x(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         Expression arg1 = (arguments).get(1);
-        assert((arg1.op & 0xFF) == 140);
+        assert(((arg1.op & 0xFF) == 140));
         Ref<Double> x = ref(arg0.toReal());
         Ref<Double> y = ref(arg1.toReal());
         Ref<Double> result = ref(CTFloat.zero);
@@ -249,9 +249,9 @@ public class builtin {
 
     public static Expression eval_yl2xp1(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
         Expression arg0 = (arguments).get(0);
-        assert((arg0.op & 0xFF) == 140);
+        assert(((arg0.op & 0xFF) == 140));
         Expression arg1 = (arguments).get(1);
-        assert((arg1.op & 0xFF) == 140);
+        assert(((arg1.op & 0xFF) == 140));
         Ref<Double> x = ref(arg0.toReal());
         Ref<Double> y = ref(arg1.toReal());
         Ref<Double> result = ref(CTFloat.zero);
@@ -348,7 +348,7 @@ public class builtin {
     }
 
     public static int isBuiltin(FuncDeclaration fd) {
-        if (fd.builtin == BUILTIN.unknown)
+        if ((fd.builtin == BUILTIN.unknown))
         {
             Function3<Loc,FuncDeclaration,DArray<Expression>,Expression> fp = pcopy(builtin_lookup(mangleExact(fd)));
             fd.builtin = fp != null ? BUILTIN.yes : BUILTIN.no;
@@ -357,7 +357,7 @@ public class builtin {
     }
 
     public static Expression eval_builtin(Loc loc, FuncDeclaration fd, DArray<Expression> arguments) {
-        if (fd.builtin == BUILTIN.yes)
+        if ((fd.builtin == BUILTIN.yes))
         {
             Function3<Loc,FuncDeclaration,DArray<Expression>,Expression> fp = pcopy(builtin_lookup(mangleExact(fd)));
             assert(fp != null);

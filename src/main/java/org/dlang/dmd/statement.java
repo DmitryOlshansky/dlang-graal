@@ -105,7 +105,7 @@ public class statement {
         }
 
         public  void visit(ExpStatement s) {
-            if (s.exp != null)
+            if ((s.exp != null))
             {
                 this.stop = s.exp.hasCode();
             }
@@ -135,7 +135,7 @@ public class statement {
             {
                 Slice<Dsymbol> __r1634 = (a).opSlice().copy();
                 int __key1635 = 0;
-                for (; __key1635 < __r1634.getLength();__key1635 += 1) {
+                for (; (__key1635 < __r1634.getLength());__key1635 += 1) {
                     Dsymbol s = __r1634.get(__key1635);
                     (statements).push(toStatement(s));
                 }
@@ -153,7 +153,7 @@ public class statement {
             {
                 Slice<Dsymbol> __r1636 = (tm.members).opSlice().copy();
                 int __key1637 = 0;
-                for (; __key1637 < __r1636.getLength();__key1637 += 1) {
+                for (; (__key1637 < __r1636.getLength());__key1637 += 1) {
                     Dsymbol m = __r1636.get(__key1637);
                     Statement s = toStatement(m);
                     if (s != null)
@@ -231,7 +231,7 @@ public class statement {
         }
 
         public  void visit(StaticForeachDeclaration d) {
-            assert((d.sfe != null && !(!(d.sfe.aggrfe != null)) ^ !(!(d.sfe.rangefe != null))));
+            assert((d.sfe != null) && !d.sfe.aggrfe == null ^ !d.sfe.rangefe == null);
             (d.sfe.aggrfe != null ? d.sfe.aggrfe._body : d.sfe.rangefe._body).set(0, this.visitMembers(d.loc, d.decl));
             this.result = new StaticForeachStatement(d.loc, d.sfe);
         }
@@ -282,7 +282,7 @@ public class statement {
                 {
                     Slice<Statement> __r1633 = (a).opSlice().copy();
                     int __key1632 = 0;
-                    for (; __key1632 < __r1633.getLength();__key1632 += 1) {
+                    for (; (__key1632 < __r1633.getLength());__key1632 += 1) {
                         Statement s = __r1633.get(__key1632);
                         int i = __key1632;
                         b.set(i, s != null ? s.syntaxCopy() : null);
@@ -426,7 +426,7 @@ public class statement {
     {
         public  ErrorStatement() {
             super(Loc.initial);
-            assert(((global.gaggedErrors) != 0 || (global.errors) != 0));
+            assert((global.gaggedErrors != 0) || (global.errors != 0));
         }
 
         public  Statement syntaxCopy() {
@@ -471,7 +471,7 @@ public class statement {
         }
     }
     public static Statement toStatement(Dsymbol s) {
-        if (!(s != null))
+        if (s == null)
             return null;
         ToStmt v = new ToStmt();
         s.accept(v);
@@ -503,11 +503,11 @@ public class statement {
             sentry.set(0, null);
             sexception.set(0, null);
             sfinally.set(0, null);
-            if ((this.exp != null && (this.exp.op & 0xFF) == 38))
+            if ((this.exp != null) && ((this.exp.op & 0xFF) == 38))
             {
                 DeclarationExp de = (DeclarationExp)this.exp;
                 VarDeclaration v = de.declaration.isVarDeclaration();
-                if ((v != null && !(v.isDataseg())))
+                if ((v != null) && !v.isDataseg())
                 {
                     if (v.needsScopeDtor())
                     {
@@ -520,15 +520,15 @@ public class statement {
         }
 
         public  DArray<Statement> flatten(Scope sc) {
-            if ((this.exp != null && (this.exp.op & 0xFF) == 38))
+            if ((this.exp != null) && ((this.exp.op & 0xFF) == 38))
             {
                 Dsymbol d = ((DeclarationExp)this.exp).declaration;
                 {
                     TemplateMixin tm = d.isTemplateMixin();
-                    if (tm != null)
+                    if ((tm) != null)
                     {
                         Expression e = expressionSemantic(this.exp, sc);
-                        if (((e.op & 0xFF) == 127 || tm.errors))
+                        if (((e.op & 0xFF) == 127) || tm.errors)
                         {
                             DArray<Statement> a = new DArray<Statement>();
                             (a).push(new ErrorStatement());
@@ -633,11 +633,11 @@ public class statement {
                     try {
                         p.nextToken();
                         DArray<Statement> a = new DArray<Statement>();
-                        for (; (p.token.value & 0xFF) != 11;){
+                        for (; ((p.token.value & 0xFF) != 11);){
                             Statement s = p.parseStatement(9, null, null);
-                            if ((!(s != null) || p.errors()))
+                            if ((s == null) || p.errors())
                             {
-                                assert((!(p.errors()) || global.errors != errors));
+                                assert(!p.errors() || (global.errors != errors));
                                 return errorStatements.invoke();
                             }
                             (a).push(s);
@@ -687,7 +687,7 @@ public class statement {
             {
                 Slice<Statement> __r1638 = sts.copy();
                 int __key1639 = 0;
-                for (; __key1639 < __r1638.getLength();__key1639 += 1) {
+                for (; (__key1639 < __r1638.getLength());__key1639 += 1) {
                     Statement s = __r1638.get(__key1639);
                     (this.statements).push(s);
                 }
@@ -711,7 +711,7 @@ public class statement {
             {
                 Slice<Statement> __r1640 = (this.statements).opSlice().copy();
                 int __key1641 = 0;
-                for (; __key1641 < __r1640.getLength();__key1641 += 1) {
+                for (; (__key1641 < __r1640.getLength());__key1641 += 1) {
                     Statement s = __r1640.get(__key1641);
                     if (s != null)
                     {
@@ -728,7 +728,7 @@ public class statement {
             Statement s = null;
             {
                 int i = (this.statements).length;
-                for (; (i) != 0;i -= 1){
+                for (; i != 0;i -= 1){
                     s = (this.statements).get(i - 1);
                     if (s != null)
                     {
@@ -770,7 +770,7 @@ public class statement {
             {
                 Slice<Statement> __r1643 = (this.statements).opSlice().copy();
                 int __key1642 = 0;
-                for (; __key1642 < __r1643.getLength();__key1642 += 1) {
+                for (; (__key1642 < __r1643.getLength());__key1642 += 1) {
                     Statement s = __r1643.get(__key1642);
                     int i = __key1642;
                     a.set(i, s != null ? s.syntaxCopy() : null);
@@ -806,7 +806,7 @@ public class statement {
             {
                 Slice<Statement> __r1645 = (this.statements).opSlice().copy();
                 int __key1644 = 0;
-                for (; __key1644 < __r1645.getLength();__key1644 += 1) {
+                for (; (__key1644 < __r1645.getLength());__key1644 += 1) {
                     Statement s = __r1645.get(__key1644);
                     int i = __key1644;
                     a.set(i, s != null ? s.syntaxCopy() : null);
@@ -906,7 +906,7 @@ public class statement {
         }
 
         public  DArray<Statement> flatten(Scope sc) {
-            if (!(this.statement != null))
+            if (this.statement == null)
             {
                 return null;
             }
@@ -921,7 +921,7 @@ public class statement {
             {
                 Slice<Statement> __r1647 = (a).opSlice().copy();
                 int __key1646 = 0;
-                for (; __key1646 < __r1647.getLength();__key1646 += 1) {
+                for (; (__key1646 < __r1647.getLength());__key1646 += 1) {
                     Statement s = __r1647.get(__key1646);
                     int i = __key1646;
                     b.set(i, s != null ? new ForwardingStatement(s.loc, this.sym, s) : null);
@@ -1255,7 +1255,7 @@ public class statement {
 
         public  DArray<Statement> flatten(Scope sc) {
             Statement s = null;
-            if ((this.condition.include(sc)) != 0)
+            if (this.condition.include(sc) != 0)
             {
                 DebugCondition dc = this.condition.isDebugCondition();
                 if (dc != null)
@@ -1424,10 +1424,10 @@ public class statement {
                 public Boolean invoke(VarDeclaration vd){
                     {
                         VarDeclaration v = vd;
-                        for (; (v != null && !pequals(v, lastVar));v = v.lastVar){
-                            if (((v.isDataseg() || (v.storage_class & 1099520016384L) != 0) || v._init.isVoidInitializer() != null))
+                        for (; (v != null) && (!pequals(v, lastVar));v = v.lastVar){
+                            if (v.isDataseg() || ((v.storage_class & 1099520016384L) != 0) || (v._init.isVoidInitializer() != null))
                                 continue;
-                            if (pequals(vd.ident, Id.withSym))
+                            if ((pequals(vd.ident, Id.withSym)))
                                 error(new BytePtr("`switch` skips declaration of `with` temporary at %s"), v.loc.toChars(global.params.showColumns));
                             else
                                 error(new BytePtr("`switch` skips declaration of variable `%s` at %s"), v.toPrettyChars(false), v.loc.toChars(global.params.showColumns));
@@ -1438,14 +1438,14 @@ public class statement {
                 }
             };
             boolean error = true;
-            if ((this.sdefault != null && checkVar.invoke(this.sdefault.lastVar)))
+            if ((this.sdefault != null) && checkVar.invoke(this.sdefault.lastVar))
                 return false;
             {
                 Slice<CaseStatement> __r1652 = (this.cases).opSlice().copy();
                 int __key1653 = 0;
-                for (; __key1653 < __r1652.getLength();__key1653 += 1) {
+                for (; (__key1653 < __r1652.getLength());__key1653 += 1) {
                     CaseStatement scase = __r1652.get(__key1653);
-                    if ((scase != null && checkVar.invoke(scase.lastVar)))
+                    if ((scase != null) && checkVar.invoke(scase.lastVar))
                         return false;
                 }
             }
@@ -1837,7 +1837,7 @@ public class statement {
             {
                 Slice<Catch> __r1655 = (this.catches).opSlice().copy();
                 int __key1654 = 0;
-                for (; __key1654 < __r1655.getLength();__key1654 += 1) {
+                for (; (__key1654 < __r1655.getLength());__key1654 += 1) {
                     Catch c = __r1655.get(__key1654);
                     int i = __key1654;
                     a.set(i, c.syntaxCopy());
@@ -2055,7 +2055,7 @@ public class statement {
                 {
                     Slice<Statement> __r1656 = (a).opSlice().copy();
                     int __key1657 = 0;
-                    for (; __key1657 < __r1656.getLength();__key1657 += 1) {
+                    for (; (__key1657 < __r1656.getLength());__key1657 += 1) {
                         Statement s = __r1656.get(__key1657);
                         s = new DebugStatement(this.loc, s);
                     }
@@ -2095,14 +2095,14 @@ public class statement {
         }
 
         public  boolean checkLabel() {
-            if (!(this.label.statement != null))
+            if (this.label.statement == null)
             {
                 this.error(new BytePtr("label `%s` is undefined"), this.label.toChars());
                 return true;
             }
-            if (!pequals(this.label.statement.os, this.os))
+            if ((!pequals(this.label.statement.os, this.os)))
             {
-                if (((this.os != null && (this.os.tok & 0xFF) == 205) && !(this.label.statement.os != null)))
+                if ((this.os != null) && ((this.os.tok & 0xFF) == 205) && (this.label.statement.os == null))
                 {
                 }
                 else
@@ -2114,25 +2114,25 @@ public class statement {
                     return true;
                 }
             }
-            if (!pequals(this.label.statement.tf, this.tf))
+            if ((!pequals(this.label.statement.tf, this.tf)))
             {
                 this.error(new BytePtr("cannot `goto` in or out of `finally` block"));
                 return true;
             }
             VarDeclaration vd = this.label.statement.lastVar;
-            if (((!(vd != null) || vd.isDataseg()) || (vd.storage_class & 8388608L) != 0))
+            if ((vd == null) || vd.isDataseg() || ((vd.storage_class & 8388608L) != 0))
                 return false;
             VarDeclaration last = this.lastVar;
-            for (; (last != null && !pequals(last, vd));) {
+            for (; (last != null) && (!pequals(last, vd));) {
                 last = last.lastVar;
             }
-            if (pequals(last, vd))
+            if ((pequals(last, vd)))
             {
             }
             else if ((vd.storage_class & 140737488355328L) != 0)
             {
             }
-            else if (pequals(vd.ident, Id.withSym))
+            else if ((pequals(vd.ident, Id.withSym)))
             {
                 this.error(new BytePtr("`goto` skips declaration of `with` temporary at %s"), vd.loc.toChars(global.params.showColumns));
                 return true;
@@ -2189,7 +2189,7 @@ public class statement {
                 a = this.statement.flatten(sc);
                 if (a != null)
                 {
-                    if (!(((a).length) != 0))
+                    if ((a).length == 0)
                     {
                         (a).push(new ExpStatement(this.loc, null));
                     }
@@ -2393,7 +2393,7 @@ public class statement {
             {
                 Slice<Statement> __r1659 = (this.statements).opSlice().copy();
                 int __key1658 = 0;
-                for (; __key1658 < __r1659.getLength();__key1658 += 1) {
+                for (; (__key1658 < __r1659.getLength());__key1658 += 1) {
                     Statement s = __r1659.get(__key1658);
                     int i = __key1658;
                     a.set(i, s != null ? s.syntaxCopy() : null);
@@ -2434,7 +2434,7 @@ public class statement {
             {
                 Slice<Dsymbol> __r1661 = (this.imports).opSlice().copy();
                 int __key1660 = 0;
-                for (; __key1660 < __r1661.getLength();__key1660 += 1) {
+                for (; (__key1660 < __r1661.getLength());__key1660 += 1) {
                     Dsymbol s = __r1661.get(__key1660);
                     int i = __key1660;
                     m.set(i, s.syntaxCopy(null));

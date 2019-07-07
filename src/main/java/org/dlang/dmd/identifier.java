@@ -90,30 +90,30 @@ public class identifier {
 
         public  BytePtr toHChars2() {
             BytePtr p = null;
-            if (pequals(this, Id.ctor))
+            if ((pequals(this, Id.ctor)))
                 p = pcopy(new BytePtr("this"));
-            else if (pequals(this, Id.dtor))
+            else if ((pequals(this, Id.dtor)))
                 p = pcopy(new BytePtr("~this"));
-            else if (pequals(this, Id.unitTest))
+            else if ((pequals(this, Id.unitTest)))
                 p = pcopy(new BytePtr("unittest"));
-            else if (pequals(this, Id.dollar))
+            else if ((pequals(this, Id.dollar)))
                 p = pcopy(new BytePtr("$"));
-            else if (pequals(this, Id.withSym))
+            else if ((pequals(this, Id.withSym)))
                 p = pcopy(new BytePtr("with"));
-            else if (pequals(this, Id.result))
+            else if ((pequals(this, Id.result)))
                 p = pcopy(new BytePtr("result"));
-            else if (pequals(this, Id.returnLabel))
+            else if ((pequals(this, Id.returnLabel)))
                 p = pcopy(new BytePtr("return"));
             else
             {
                 p = pcopy(this.toChars());
-                if ((p.get() & 0xFF) == 95)
+                if (((p.get() & 0xFF) == 95))
                 {
-                    if (strncmp(p, new BytePtr("_staticCtor"), 11) == 0)
+                    if ((strncmp(p, new BytePtr("_staticCtor"), 11) == 0))
                         p = pcopy(new BytePtr("static this"));
-                    else if (strncmp(p, new BytePtr("_staticDtor"), 11) == 0)
+                    else if ((strncmp(p, new BytePtr("_staticDtor"), 11) == 0))
                         p = pcopy(new BytePtr("static ~this"));
-                    else if (strncmp(p, new BytePtr("__invariant"), 11) == 0)
+                    else if ((strncmp(p, new BytePtr("__invariant"), 11) == 0))
                         p = pcopy(new BytePtr("invariant"));
                 }
             }
@@ -174,7 +174,7 @@ public class identifier {
         public static Identifier idPool(ByteSlice s) {
             StringValue sv = stringtable.update(s);
             Identifier id = (Identifier)(sv).ptrvalue;
-            if (!(id != null))
+            if (id == null)
             {
                 id = new Identifier((sv).asString(), 120);
                 (sv).ptrvalue = pcopy(((Object)id));
@@ -195,19 +195,19 @@ public class identifier {
         }
 
         public static boolean isValidIdentifier(BytePtr str) {
-            return (str != null && isValidIdentifier(toDString(str)));
+            return (str != null) && isValidIdentifier(toDString(str));
         }
 
         public static boolean isValidIdentifier(ByteSlice str) {
-            if ((str.getLength() == 0 || ((str.get(0) & 0xFF) >= 48 && (str.get(0) & 0xFF) <= 57)))
+            if ((str.getLength() == 0) || ((str.get(0) & 0xFF) >= 48) && ((str.get(0) & 0xFF) <= 57))
             {
                 return false;
             }
             IntRef idx = ref(0);
-            for (; idx.value < str.getLength();){
+            for (; (idx.value < str.getLength());){
                 IntRef dc = ref(0x0ffff);
                 BytePtr q = pcopy(utf_decodeChar(toBytePtr(str), str.getLength(), idx, dc));
-                if ((q != null || !((((dc.value >= 128 && isUniAlpha(dc.value)) || (isalnum(dc.value)) != 0) || dc.value == 95))))
+                if ((q != null) || !((dc.value >= 128) && isUniAlpha(dc.value) || (isalnum(dc.value) != 0) || (dc.value == 95)))
                 {
                     return false;
                 }

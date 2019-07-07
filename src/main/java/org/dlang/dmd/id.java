@@ -1103,10 +1103,10 @@ public class id {
         {
             Slice<Msgtable> __r90 = msgtable.copy();
             int __key89 = 0;
-            for (; __key89 < __r90.getLength();__key89 += 1) {
+            for (; (__key89 < __r90.getLength());__key89 += 1) {
                 Msgtable m = __r90.get(__key89).copy();
                 int i = __key89;
-                if (i != 0)
+                if ((i != 0))
                     code.append((byte)10);
                 code.append((dg).invoke(m));
             }

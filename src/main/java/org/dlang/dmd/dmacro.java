@@ -63,23 +63,23 @@ public class dmacro {
         }
 
         public  void expand(OutBuffer buf, int start, IntPtr pend, ByteSlice arg) {
-            if (dmacro.expandnest > 1000)
+            if ((dmacro.expandnest > 1000))
             {
                 error(Loc.initial, new BytePtr("DDoc macro expansion limit exceeded; more than %d expansions."), 1000);
                 return ;
             }
             dmacro.expandnest++;
             int end = pend.get();
-            assert(start <= end);
-            assert(end <= (buf).offset);
+            assert((start <= end));
+            assert((end <= (buf).offset));
             arg = memdup(arg).copy();
             {
                 int u = start;
-                for (; u + 1 < end;){
+                for (; (u + 1 < end);){
                     BytePtr p = pcopy(toBytePtr((buf).data));
-                    if (((p.get(u) & 0xFF) == 36 && ((isdigit((p.get(u + 1) & 0xFF))) != 0 || (p.get(u + 1) & 0xFF) == 43)))
+                    if (((p.get(u) & 0xFF) == 36) && (isdigit((p.get(u + 1) & 0xFF)) != 0) || ((p.get(u + 1) & 0xFF) == 43))
                     {
-                        if ((u > start && (p.get(u - 1) & 0xFF) == 36))
+                        if ((u > start) && ((p.get(u - 1) & 0xFF) == 36))
                         {
                             (buf).remove(u - 1, 1);
                             end--;
@@ -87,20 +87,20 @@ public class dmacro {
                             continue;
                         }
                         byte c = p.get(u + 1);
-                        int n = (c & 0xFF) == 43 ? -1 : (c & 0xFF) - 48;
+                        int n = ((c & 0xFF) == 43) ? -1 : (c & 0xFF) - 48;
                         Ref<ByteSlice> marg = ref(new ByteSlice());
-                        if (n == 0)
+                        if ((n == 0))
                         {
                             marg.value = arg.copy();
                         }
                         else
                             extractArgN(arg, marg, n);
-                        if (marg.value.getLength() == 0)
+                        if ((marg.value.getLength() == 0))
                         {
                             (buf).remove(u, 2);
                             end -= 2;
                         }
-                        else if ((c & 0xFF) == 43)
+                        else if (((c & 0xFF) == 43))
                         {
                             (buf).remove(u, 2);
                             (buf).insert(u, marg.value);
@@ -129,9 +129,9 @@ public class dmacro {
             }
             {
                 int u = start;
-                for (; u + 4 < end;){
+                for (; (u + 4 < end);){
                     BytePtr p = pcopy(toBytePtr((buf).data));
-                    if ((((p.get(u) & 0xFF) == 36 && (p.get(u + 1) & 0xFF) == 40) && isIdStart(p.plus(u).plus(2))))
+                    if (((p.get(u) & 0xFF) == 36) && ((p.get(u + 1) & 0xFF) == 40) && isIdStart(p.plus(u).plus(2)))
                     {
                         BytePtr name = pcopy(p.plus(u).plus(2));
                         int namelen = 0;
@@ -139,8 +139,8 @@ public class dmacro {
                         int v = 0;
                         {
                             v = u + 2;
-                            for (; v < end;v += utfStride(p.plus(v))){
-                                if (!(isIdTail(p.plus(v))))
+                            for (; (v < end);v += utfStride(p.plus(v))){
+                                if (!isIdTail(p.plus(v)))
                                 {
                                     namelen = v - (u + 2);
                                     break;
@@ -148,10 +148,10 @@ public class dmacro {
                             }
                         }
                         v += extractArgN(p.slice(v,end), marg, 0);
-                        assert(v <= end);
-                        if (v < end)
+                        assert((v <= end));
+                        if ((v < end))
                         {
-                            if ((u > start && (p.get(u - 1) & 0xFF) == 36))
+                            if ((u > start) && ((p.get(u - 1) & 0xFF) == 36))
                             {
                                 (buf).remove(u - 1, 1);
                                 end--;
@@ -165,7 +165,7 @@ public class dmacro {
                                 m = this.search(toByteSlice(undef));
                                 if (m != null)
                                 {
-                                    if ((marg.value.getLength()) != 0)
+                                    if (marg.value.getLength() != 0)
                                     {
                                         BytePtr q = pcopy((BytePtr)Mem.xmalloc(namelen + 1 + marg.value.getLength()));
                                         assert(q != null);
@@ -182,12 +182,12 @@ public class dmacro {
                             }
                             if (m != null)
                             {
-                                if ((((m).inuse) != 0 && marg.value.getLength() == 0))
+                                if (((m).inuse != 0) && (marg.value.getLength() == 0))
                                 {
                                     (buf).remove(u, v + 1 - u);
                                     end -= v + 1 - u;
                                 }
-                                else if ((((m).inuse) != 0 && ((arg.getLength() == marg.value.getLength() && memcmp(toBytePtr(arg), toBytePtr(marg.value), arg.getLength()) == 0) || (((((arg.getLength() + 4 == marg.value.getLength() && (marg.value.get(0) & 0xFF) == 255) && (marg.value.get(1) & 0xFF) == 123) && memcmp(toBytePtr(arg), (toBytePtr(marg.value).plus(2)), arg.getLength()) == 0) && (marg.value.get(marg.value.getLength() - 2) & 0xFF) == 255) && (marg.value.get(marg.value.getLength() - 1) & 0xFF) == 125))))
+                                else if (((m).inuse != 0) && (arg.getLength() == marg.value.getLength()) && (memcmp(toBytePtr(arg), toBytePtr(marg.value), arg.getLength()) == 0) || (arg.getLength() + 4 == marg.value.getLength()) && ((marg.value.get(0) & 0xFF) == 255) && ((marg.value.get(1) & 0xFF) == 123) && (memcmp(toBytePtr(arg), (toBytePtr(marg.value).plus(2)), arg.getLength()) == 0) && ((marg.value.get(marg.value.getLength() - 2) & 0xFF) == 255) && ((marg.value.get(marg.value.getLength() - 1) & 0xFF) == 125))
                                 {
                                 }
                                 else
@@ -266,11 +266,11 @@ public class dmacro {
         int end = buf.getLength();
         while(true) try {
         /*Largstart:*/
-            if (((n != 1 && v < end) && (isspace((p.get(v) & 0xFF))) != 0))
+            if ((n != 1) && (v < end) && (isspace((p.get(v) & 0xFF)) != 0))
                 v++;
             int vstart = v;
         L_outer1:
-            for (; v < end;v++){
+            for (; (v < end);v++){
                 byte c = p.get(v);
                 {
                     int __dispatch0 = 0;
@@ -279,17 +279,17 @@ public class dmacro {
                         switch (__dispatch0 != 0 ? __dispatch0 : (c & 0xFF))
                         {
                             case 44:
-                                if ((((!((inexp) != 0) && !((instring) != 0)) && !((incomment) != 0)) && parens == 1))
+                                if ((inexp == 0) && (instring == 0) && (incomment == 0) && (parens == 1))
                                 {
                                     argn++;
-                                    if ((argn == 1 && n == -1))
+                                    if ((argn == 1) && (n == -1))
                                     {
                                         v++;
                                         /*goto Largstart*/throw Dispatch0.INSTANCE;
                                     }
-                                    if (argn == n)
+                                    if ((argn == n))
                                         break;
-                                    if (argn + 1 == n)
+                                    if ((argn + 1 == n))
                                     {
                                         v++;
                                         /*goto Largstart*/throw Dispatch0.INSTANCE;
@@ -297,54 +297,54 @@ public class dmacro {
                                 }
                                 continue L_outer1;
                             case 40:
-                                if (((!((inexp) != 0) && !((instring) != 0)) && !((incomment) != 0)))
+                                if ((inexp == 0) && (instring == 0) && (incomment == 0))
                                     parens++;
                                 continue L_outer1;
                             case 41:
-                                if ((((!((inexp) != 0) && !((instring) != 0)) && !((incomment) != 0)) && (parens -= 1) == 0))
+                                if ((inexp == 0) && (instring == 0) && (incomment == 0) && ((parens -= 1) == 0))
                                 {
                                     break;
                                 }
                                 continue L_outer1;
                             case 34:
                             case 39:
-                                if (((!((inexp) != 0) && !((incomment) != 0)) && (intag) != 0))
+                                if ((inexp == 0) && (incomment == 0) && (intag != 0))
                                 {
-                                    if ((c & 0xFF) == (instring & 0xFF))
+                                    if (((c & 0xFF) == (instring & 0xFF)))
                                         instring = (byte)0;
-                                    else if (!((instring) != 0))
+                                    else if (instring == 0)
                                         instring = (byte)c;
                                 }
                                 continue L_outer1;
                             case 60:
-                                if (((!((inexp) != 0) && !((instring) != 0)) && !((incomment) != 0)))
+                                if ((inexp == 0) && (instring == 0) && (incomment == 0))
                                 {
-                                    if ((((v + 6 < end && (p.get(v + 1) & 0xFF) == 33) && (p.get(v + 2) & 0xFF) == 45) && (p.get(v + 3) & 0xFF) == 45))
+                                    if ((v + 6 < end) && ((p.get(v + 1) & 0xFF) == 33) && ((p.get(v + 2) & 0xFF) == 45) && ((p.get(v + 3) & 0xFF) == 45))
                                     {
                                         incomment = 1;
                                         v += 3;
                                     }
-                                    else if ((v + 2 < end && (isalpha((p.get(v + 1) & 0xFF))) != 0))
+                                    else if ((v + 2 < end) && (isalpha((p.get(v + 1) & 0xFF)) != 0))
                                         intag = 1;
                                 }
                                 continue L_outer1;
                             case 62:
-                                if (!((inexp) != 0))
+                                if (inexp == 0)
                                     intag = 0;
                                 continue L_outer1;
                             case 45:
-                                if ((((((!((inexp) != 0) && !((instring) != 0)) && (incomment) != 0) && v + 2 < end) && (p.get(v + 1) & 0xFF) == 45) && (p.get(v + 2) & 0xFF) == 62))
+                                if ((inexp == 0) && (instring == 0) && (incomment != 0) && (v + 2 < end) && ((p.get(v + 1) & 0xFF) == 45) && ((p.get(v + 2) & 0xFF) == 62))
                                 {
                                     incomment = 0;
                                     v += 2;
                                 }
                                 continue L_outer1;
                             case 255:
-                                if (v + 1 < end)
+                                if ((v + 1 < end))
                                 {
-                                    if ((p.get(v + 1) & 0xFF) == 123)
+                                    if (((p.get(v + 1) & 0xFF) == 123))
                                         inexp++;
-                                    else if ((p.get(v + 1) & 0xFF) == 125)
+                                    else if (((p.get(v + 1) & 0xFF) == 125))
                                         inexp--;
                                 }
                                 continue L_outer1;
@@ -355,7 +355,7 @@ public class dmacro {
                 }
                 break;
             }
-            if ((argn == 0 && n == -1))
+            if ((argn == 0) && (n == -1))
                 marg = p.slice(v,v).copy();
             else
                 marg = p.slice(vstart,v).copy();

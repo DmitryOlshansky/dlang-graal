@@ -36,7 +36,7 @@ public class aliasthis {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            assert(!(s != null));
+            assert(s == null);
             return new AliasThis(this.loc, this.ident);
         }
 
@@ -84,24 +84,24 @@ public class aliasthis {
                 {
                     int olderrors = gag ? global.startGagging() : 0;
                     Loc loc = e.loc.copy();
-                    Type tthis = (e.op & 0xFF) == 20 ? e.type : null;
+                    Type tthis = ((e.op & 0xFF) == 20) ? e.type : null;
                     e = new DotIdExp(loc, e, ad.aliasthis.ident);
                     e = expressionSemantic(e, sc);
-                    if ((tthis != null && ad.aliasthis.needThis()))
+                    if ((tthis != null) && ad.aliasthis.needThis())
                     {
                         try {
-                            if ((e.op & 0xFF) == 26)
+                            if (((e.op & 0xFF) == 26))
                             {
                                 {
                                     FuncDeclaration fd = ((VarExp)e).var.isFuncDeclaration();
-                                    if (fd != null)
+                                    if ((fd) != null)
                                     {
                                         Ref<Boolean> hasOverloads = ref(false);
                                         {
                                             FuncDeclaration f = fd.overloadModMatch(loc, tthis, hasOverloads);
-                                            if (f != null)
+                                            if ((f) != null)
                                             {
-                                                if (!(hasOverloads.value))
+                                                if (!hasOverloads.value)
                                                     fd = f;
                                                 e = new VarExp(loc, fd, hasOverloads.value);
                                                 e.type = f.type;
@@ -125,11 +125,11 @@ public class aliasthis {
                         e = expressionSemantic(e, sc);
                     }
                     e = resolveProperties(sc, e);
-                    if ((gag && global.endGagging(olderrors)))
+                    if (gag && global.endGagging(olderrors))
                         e = null;
                 }
                 ClassDeclaration cd = ad.isClassDeclaration();
-                if (((((!(e != null) || !(ad.aliasthis != null)) && cd != null) && cd.baseClass != null) && !pequals(cd.baseClass, ClassDeclaration.object)))
+                if ((e == null) || (ad.aliasthis == null) && (cd != null) && (cd.baseClass != null) && (!pequals(cd.baseClass, ClassDeclaration.object)))
                 {
                     ad = cd.baseClass;
                     continue L_outer1;

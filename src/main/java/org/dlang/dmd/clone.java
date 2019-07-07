@@ -39,17 +39,17 @@ public class clone {
     static TypeFunction buildXtoHashtftohash;
 
     public static long mergeFuncAttrs(long s1, FuncDeclaration f) {
-        if (!(f != null))
+        if (f == null)
             return s1;
         long s2 = f.storage_class & 137438953472L;
         TypeFunction tf = (TypeFunction)f.type;
-        if (tf.trust == TRUST.safe)
+        if ((tf.trust == TRUST.safe))
             s2 |= 8589934592L;
-        else if (tf.trust == TRUST.system)
+        else if ((tf.trust == TRUST.system))
             s2 |= 34359738368L;
-        else if (tf.trust == TRUST.trusted)
+        else if ((tf.trust == TRUST.trusted))
             s2 |= 17179869184L;
-        if (tf.purity != PURE.impure)
+        if ((tf.purity != PURE.impure))
             s2 |= 67108864L;
         if (tf.isnothrow)
             s2 |= 33554432L;
@@ -62,7 +62,7 @@ public class clone {
             stc |= 34359738368L;
         else if ((sa & 17179869184L) != 0)
             stc |= 17179869184L;
-        else if ((so & 25769803776L) == 25769803776L)
+        else if (((so & 25769803776L) == 25769803776L))
             stc |= 17179869184L;
         else if ((sa & 8589934592L) != 0)
             stc |= 8589934592L;
@@ -85,7 +85,7 @@ public class clone {
                 (sc).minst = null;
                 a.set(0, er);
                 FuncDeclaration f = resolveFuncCall(ad.loc, sc, assign, null, ad.type, a, FuncResolveFlag.quiet);
-                if (!(f != null))
+                if (f == null)
                 {
                     a.set(0, el);
                     f = resolveFuncCall(ad.loc, sc, assign, null, ad.type, a, FuncResolveFlag.quiet);
@@ -97,10 +97,10 @@ public class clone {
                     if (f.errors)
                         return null;
                     ParameterList fparams = f.getParameterList().copy();
-                    if ((fparams.length()) != 0)
+                    if (fparams.length() != 0)
                     {
                         Parameter fparam0 = fparams.get(0);
-                        if (!pequals(fparam0.type.toDsymbol(null), ad))
+                        if ((!pequals(fparam0.type.toDsymbol(null), ad)))
                             f = null;
                     }
                 }
@@ -119,20 +119,20 @@ public class clone {
             }
         };
         if (sd.isUnionDeclaration() != null)
-            return !(isNeeded.invoke());
-        if (((sd.hasIdentityAssign || sd.dtor != null) || sd.postblit != null))
+            return !isNeeded.invoke();
+        if (sd.hasIdentityAssign || (sd.dtor != null) || (sd.postblit != null))
             return isNeeded.invoke();
         {
             Slice<VarDeclaration> __r807 = sd.fields.opSlice().copy();
             int __key808 = 0;
-            for (; __key808 < __r807.getLength();__key808 += 1) {
+            for (; (__key808 < __r807.getLength());__key808 += 1) {
                 VarDeclaration v = __r807.get(__key808);
                 if ((v.storage_class & 2097152L) != 0)
                     continue;
                 if (v.overlapped)
                     continue;
                 Type tv = v.type.baseElemOf();
-                if ((tv.ty & 0xFF) == ENUMTY.Tstruct)
+                if (((tv.ty & 0xFF) == ENUMTY.Tstruct))
                 {
                     TypeStruct ts = (TypeStruct)tv;
                     if (ts.sym.isUnionDeclaration() != null)
@@ -142,19 +142,19 @@ public class clone {
                 }
             }
         }
-        return !(isNeeded.invoke());
+        return !isNeeded.invoke();
     }
 
     public static FuncDeclaration buildOpAssign(StructDeclaration sd, Scope sc) {
         {
             FuncDeclaration f = hasIdentityOpAssign(sd, sc);
-            if (f != null)
+            if ((f) != null)
             {
                 sd.hasIdentityAssign = true;
                 return f;
             }
         }
-        if (!(needOpAssign(sd)))
+        if (!needOpAssign(sd))
             return null;
         long stc = 4406737108992L;
         Loc declLoc = sd.loc.copy();
@@ -162,22 +162,22 @@ public class clone {
         {
             Slice<VarDeclaration> __r809 = sd.fields.opSlice().copy();
             int __key810 = 0;
-            for (; __key810 < __r809.getLength();__key810 += 1) {
+            for (; (__key810 < __r809.getLength());__key810 += 1) {
                 VarDeclaration v = __r809.get(__key810);
                 if ((v.storage_class & 2097152L) != 0)
                     continue;
                 if (v.overlapped)
                     continue;
                 Type tv = v.type.baseElemOf();
-                if ((tv.ty & 0xFF) != ENUMTY.Tstruct)
+                if (((tv.ty & 0xFF) != ENUMTY.Tstruct))
                     continue;
                 StructDeclaration sdv = ((TypeStruct)tv).sym;
                 stc = mergeFuncAttrs(stc, hasIdentityOpAssign(sdv, sc));
             }
         }
-        if ((sd.dtor != null || sd.postblit != null))
+        if ((sd.dtor != null) || (sd.postblit != null))
         {
-            if (!(sd.type.isAssignable()))
+            if (!sd.type.isAssignable())
                 return null;
             stc = mergeFuncAttrs(stc, sd.dtor);
             if ((stc & 8589934592L) != 0)
@@ -197,7 +197,7 @@ public class clone {
         else if (sd.dtor != null)
         {
             TypeFunction tdtor = (TypeFunction)sd.dtor.type;
-            assert((tdtor.ty & 0xFF) == ENUMTY.Tfunction);
+            assert(((tdtor.ty & 0xFF) == ENUMTY.Tfunction));
             Identifier idswap = Identifier.generateId(new BytePtr("__swap"));
             VarDeclaration swap = new VarDeclaration(loc, sd.type, idswap, new VoidInitializer(loc), 0L);
             swap.storage_class |= 1168247881728L;
@@ -217,7 +217,7 @@ public class clone {
             {
                 Slice<VarDeclaration> __r811 = sd.fields.opSlice().copy();
                 int __key812 = 0;
-                for (; __key812 < __r811.getLength();__key812 += 1) {
+                for (; (__key812 < __r811.getLength());__key812 += 1) {
                     VarDeclaration v = __r811.get(__key812);
                     AssignExp ec = new AssignExp(loc, new DotVarExp(loc, new ThisExp(loc), v, true), new DotVarExp(loc, new IdentifierExp(loc, Id.p), v, true));
                     e = Expression.combine(e, (Expression)ec);
@@ -260,7 +260,7 @@ public class clone {
                 {
                     int i = 0;
                 L_outer1:
-                    for (; i < sd.fields.length;i++){
+                    for (; (i < sd.fields.length);i++){
                         VarDeclaration v = sd.fields.get(i);
                         if ((v.storage_class & 2097152L) != 0)
                             continue L_outer1;
@@ -268,7 +268,7 @@ public class clone {
                             continue L_outer1;
                         Type tv = v.type.toBasetype();
                         Type tvbase = tv.baseElemOf();
-                        if ((tvbase.ty & 0xFF) == ENUMTY.Tstruct)
+                        if (((tvbase.ty & 0xFF) == ENUMTY.Tstruct))
                         {
                             TypeStruct ts = (TypeStruct)tvbase;
                             if (ts.sym.isUnionDeclaration() != null)
@@ -282,11 +282,11 @@ public class clone {
                         {
                             /*goto Lneed*/throw Dispatch1.INSTANCE;
                         }
-                        if ((tv.ty & 0xFF) == ENUMTY.Tarray)
+                        if (((tv.ty & 0xFF) == ENUMTY.Tarray))
                             /*goto Lneed*/throw Dispatch1.INSTANCE;
-                        if ((tv.ty & 0xFF) == ENUMTY.Taarray)
+                        if (((tv.ty & 0xFF) == ENUMTY.Taarray))
                             /*goto Lneed*/throw Dispatch1.INSTANCE;
-                        if ((tv.ty & 0xFF) == ENUMTY.Tclass)
+                        if (((tv.ty & 0xFF) == ENUMTY.Tclass))
                             /*goto Lneed*/throw Dispatch1.INSTANCE;
                     }
                 }
@@ -312,7 +312,7 @@ public class clone {
                 {
                     int __key813 = 0;
                     int __limit814 = 5;
-                    for (; __key813 < __limit814;__key813 += 1) {
+                    for (; (__key813 < __limit814);__key813 += 1) {
                         int i = __key813;
                         Type tthis = null;
                         switch (i)
@@ -343,9 +343,9 @@ public class clone {
                         {
                             int __key815 = 0;
                             int __limit816 = 2;
-                            for (; __key815 < __limit816;__key815 += 1) {
+                            for (; (__key815 < __limit816);__key815 += 1) {
                                 int j = __key815;
-                                a.set(0, j == 0 ? er : el);
+                                a.set(0, (j == 0) ? er : el);
                                 a.get(0).type = tthis;
                                 f = resolveFuncCall(ad.loc, sc, eq, null, tthis, a, FuncResolveFlag.quiet);
                                 if (f != null)
@@ -378,15 +378,15 @@ public class clone {
     }
 
     public static FuncDeclaration buildXopEquals(StructDeclaration sd, Scope sc) {
-        if (!(needOpEquals(sd)))
+        if (!needOpEquals(sd))
             return null;
         {
             Dsymbol eq = search_function(sd, Id.eq);
-            if (eq != null)
+            if ((eq) != null)
             {
                 {
                     FuncDeclaration fd = eq.isFuncDeclaration();
-                    if (fd != null)
+                    if ((fd) != null)
                     {
                         TypeFunction tfeqptr = null;
                         {
@@ -404,7 +404,7 @@ public class clone {
                 }
             }
         }
-        if (!(StructDeclaration.xerreq != null))
+        if (StructDeclaration.xerreq == null)
         {
             Identifier id = Identifier.idPool(new ByteSlice("_xopEquals"));
             Expression e = new IdentifierExp(sd.loc, Id.empty);
@@ -442,11 +442,11 @@ public class clone {
     public static FuncDeclaration buildXopCmp(StructDeclaration sd, Scope sc) {
         {
             Dsymbol cmp = search_function(sd, Id.cmp);
-            if (cmp != null)
+            if ((cmp) != null)
             {
                 {
                     FuncDeclaration fd = cmp.isFuncDeclaration();
-                    if (fd != null)
+                    if ((fd) != null)
                     {
                         TypeFunction tfcmpptr = null;
                         {
@@ -468,7 +468,7 @@ public class clone {
                 return null;
             }
         }
-        if (!(StructDeclaration.xerrcmp != null))
+        if (StructDeclaration.xerrcmp == null)
         {
             Identifier id = Identifier.idPool(new ByteSlice("_xopCmp"));
             Expression e = new IdentifierExp(sd.loc, Id.empty);
@@ -514,7 +514,7 @@ public class clone {
                 {
                     int i = 0;
                 L_outer2:
-                    for (; i < sd.fields.length;i++){
+                    for (; (i < sd.fields.length);i++){
                         VarDeclaration v = sd.fields.get(i);
                         if ((v.storage_class & 2097152L) != 0)
                             continue L_outer2;
@@ -522,7 +522,7 @@ public class clone {
                             continue L_outer2;
                         Type tv = v.type.toBasetype();
                         Type tvbase = tv.baseElemOf();
-                        if ((tvbase.ty & 0xFF) == ENUMTY.Tstruct)
+                        if (((tvbase.ty & 0xFF) == ENUMTY.Tstruct))
                         {
                             TypeStruct ts = (TypeStruct)tvbase;
                             if (ts.sym.isUnionDeclaration() != null)
@@ -536,11 +536,11 @@ public class clone {
                         {
                             /*goto Lneed*/throw Dispatch1.INSTANCE;
                         }
-                        if ((tv.ty & 0xFF) == ENUMTY.Tarray)
+                        if (((tv.ty & 0xFF) == ENUMTY.Tarray))
                             /*goto Lneed*/throw Dispatch1.INSTANCE;
-                        if ((tv.ty & 0xFF) == ENUMTY.Taarray)
+                        if (((tv.ty & 0xFF) == ENUMTY.Taarray))
                             /*goto Lneed*/throw Dispatch1.INSTANCE;
-                        if ((tv.ty & 0xFF) == ENUMTY.Tclass)
+                        if (((tv.ty & 0xFF) == ENUMTY.Tclass))
                             /*goto Lneed*/throw Dispatch1.INSTANCE;
                     }
                 }
@@ -557,9 +557,9 @@ public class clone {
     public static FuncDeclaration buildXtoHash(StructDeclaration sd, Scope sc) {
         {
             Dsymbol s = search_function(sd, Id.tohash);
-            if (s != null)
+            if ((s) != null)
             {
-                if (!(clone.buildXtoHashtftohash != null))
+                if (clone.buildXtoHashtftohash == null)
                 {
                     clone.buildXtoHashtftohash = new TypeFunction(new ParameterList(null, VarArg.none), Type.thash_t, LINK.d, 0L);
                     clone.buildXtoHashtftohash.mod = (byte)1;
@@ -567,7 +567,7 @@ public class clone {
                 }
                 {
                     FuncDeclaration fd = s.isFuncDeclaration();
-                    if (fd != null)
+                    if ((fd) != null)
                     {
                         fd = fd.overloadExactMatch(clone.buildXtoHashtftohash);
                         if (fd != null)
@@ -576,7 +576,7 @@ public class clone {
                 }
             }
         }
-        if (!(needToHash(sd)))
+        if (!needToHash(sd))
             return null;
         Loc declLoc = new Loc();
         Loc loc = new Loc();
@@ -601,25 +601,25 @@ public class clone {
         if (ad.isUnionDeclaration() != null)
             return null;
         long stc = 4406737108992L;
-        Loc declLoc = (ad.dtors.length) != 0 ? ad.dtors.get(0).loc : ad.loc.copy();
+        Loc declLoc = ad.dtors.length != 0 ? ad.dtors.get(0).loc : ad.loc.copy();
         Loc loc = new Loc();
-        boolean dtorIsCppPrototype = ((ad.dtors.length == 1 && ad.dtors.get(0).linkage == LINK.cpp) && !(ad.dtors.get(0).fbody != null));
-        if (!(dtorIsCppPrototype))
+        boolean dtorIsCppPrototype = (ad.dtors.length == 1) && (ad.dtors.get(0).linkage == LINK.cpp) && (ad.dtors.get(0).fbody == null);
+        if (!dtorIsCppPrototype)
         {
             Expression e = null;
             {
                 int i = 0;
-                for (; i < ad.fields.length;i++){
+                for (; (i < ad.fields.length);i++){
                     VarDeclaration v = ad.fields.get(i);
                     if ((v.storage_class & 2097152L) != 0)
                         continue;
                     if (v.overlapped)
                         continue;
                     Type tv = v.type.baseElemOf();
-                    if ((tv.ty & 0xFF) != ENUMTY.Tstruct)
+                    if (((tv.ty & 0xFF) != ENUMTY.Tstruct))
                         continue;
                     StructDeclaration sdv = ((TypeStruct)tv).sym;
-                    if (!(sdv.dtor != null))
+                    if (sdv.dtor == null)
                         continue;
                     sdv.dtor.functionSemantic();
                     stc = mergeFuncAttrs(stc, sdv.dtor);
@@ -630,7 +630,7 @@ public class clone {
                     }
                     Expression ex = null;
                     tv = v.type.toBasetype();
-                    if ((tv.ty & 0xFF) == ENUMTY.Tstruct)
+                    if (((tv.ty & 0xFF) == ENUMTY.Tstruct))
                     {
                         ex = new ThisExp(loc);
                         ex = new DotVarExp(loc, ex, v, true);
@@ -643,7 +643,7 @@ public class clone {
                     else
                     {
                         int n = tv.numberOfElems(loc);
-                        if (n == 0)
+                        if ((n == 0))
                             continue;
                         ex = new ThisExp(loc);
                         ex = new DotVarExp(loc, ex, v, true);
@@ -660,11 +660,11 @@ public class clone {
                 }
             }
             ClassDeclaration cldec = ad.isClassDeclaration();
-            if ((((cldec != null && cldec.classKind == ClassKind.cpp) && cldec.baseClass != null) && cldec.baseClass.primaryDtor != null))
+            if ((cldec != null) && (cldec.classKind == ClassKind.cpp) && (cldec.baseClass != null) && (cldec.baseClass.primaryDtor != null))
             {
                 cldec.baseClass.dtor.functionSemantic();
                 stc = mergeFuncAttrs(stc, cldec.baseClass.primaryDtor);
-                if (!((stc & 137438953472L) != 0))
+                if ((stc & 137438953472L) == 0)
                 {
                     Expression ex = new SuperExp(loc);
                     ex = new CastExp(loc, ex, cldec.baseClass.type.mutableOf());
@@ -675,7 +675,7 @@ public class clone {
                     e = Expression.combine(e, ex);
                 }
             }
-            if ((e != null || (stc & 137438953472L) != 0))
+            if ((e != null) || ((stc & 137438953472L) != 0))
             {
                 DtorDeclaration dd = new DtorDeclaration(declLoc, Loc.initial, stc, Id.__fieldDtor);
                 dd.generated = true;
@@ -696,13 +696,13 @@ public class clone {
                 xdtor = ad.dtors.get(0);
                 break;
             default:
-            assert(!(dtorIsCppPrototype));
+            assert(!dtorIsCppPrototype);
             Expression e = null;
             e = null;
             stc = 4406737108992L;
             {
                 int i = 0;
-                for (; i < ad.dtors.length;i++){
+                for (; (i < ad.dtors.length);i++){
                     FuncDeclaration fd = ad.dtors.get(i);
                     stc = mergeFuncAttrs(stc, fd);
                     if ((stc & 137438953472L) != 0)
@@ -726,7 +726,7 @@ public class clone {
             break;
         }
         ad.primaryDtor = xdtor;
-        if (((xdtor != null && xdtor.linkage == LINK.cpp) && !(target.twoDtorInVtable)))
+        if ((xdtor != null) && (xdtor.linkage == LINK.cpp) && !target.twoDtorInVtable)
             xdtor = buildWindowsCppDtor(ad, xdtor, sc);
         if (xdtor != null)
         {
@@ -740,7 +740,7 @@ public class clone {
 
     public static DtorDeclaration buildWindowsCppDtor(AggregateDeclaration ad, DtorDeclaration dtor, Scope sc) {
         ClassDeclaration cldec = ad.isClassDeclaration();
-        if ((!(cldec != null) || cldec.cppDtorVtblIndex == -1))
+        if ((cldec == null) || (cldec.cppDtorVtblIndex == -1))
             return dtor;
         Parameter delparam = new Parameter(0L, Type.tuns32, Identifier.idPool(new ByteSlice("del")), new IntegerExp(dtor.loc, 0L, Type.tuns32), null);
         DArray<Parameter> params = new DArray<Parameter>();
@@ -771,9 +771,9 @@ public class clone {
 
     public static DtorDeclaration buildExternDDtor(AggregateDeclaration ad, Scope sc) {
         DtorDeclaration dtor = ad.primaryDtor;
-        if (!(dtor != null))
+        if (dtor == null)
             return null;
-        if ((ad.classKind != ClassKind.cpp || global.params.is64bit))
+        if ((ad.classKind != ClassKind.cpp) || global.params.is64bit)
             return dtor;
         TypeFunction ftype = new TypeFunction(new ParameterList(null, VarArg.none), Type.tvoid, LINK.d, dtor.storage_class);
         DtorDeclaration func = new DtorDeclaration(dtor.loc, dtor.loc, dtor.storage_class, Id.ticppdtor);
@@ -813,7 +813,7 @@ public class clone {
                     {
                         Slice<FuncDeclaration> __r818 = ad.invs.opSlice().copy();
                         int __key817 = 0;
-                        for (; __key817 < __r818.getLength();__key817 += 1) {
+                        for (; (__key817 < __r818.getLength());__key817 += 1) {
                             FuncDeclaration inv = __r818.get(__key817);
                             int i = __key817;
                             stc = mergeFuncAttrs(stc, inv);
@@ -821,7 +821,7 @@ public class clone {
                             {
                             }
                             long stcy = inv.storage_class & 512L | (((inv.type.mod & 0xFF) & MODFlags.shared_) != 0 ? 536870912L : 0L);
-                            if (i == 0)
+                            if ((i == 0))
                                 stcx = stcy;
                             else if ((stcx ^ stcy) != 0)
                             {

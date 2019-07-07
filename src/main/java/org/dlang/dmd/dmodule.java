@@ -54,21 +54,21 @@ public class dmodule {
 
     public static ByteSlice lookForSourceFile(ByteSlice filename) {
         ByteSlice sdi = FileName.forceExt(filename, toByteSlice(global.hdr_ext)).copy();
-        if (FileName.exists(sdi) == 1)
+        if ((FileName.exists(sdi) == 1))
             return sdi;
         try {
             ByteSlice sd = FileName.forceExt(filename, toByteSlice(global.mars_ext)).copy();
-            if (FileName.exists(sd) == 1)
+            if ((FileName.exists(sd) == 1))
                 return sd;
             try {
-                if (FileName.exists(filename) == 2)
+                if ((FileName.exists(filename) == 2))
                 {
                     ByteSlice ni = FileName.combine(filename, new ByteSlice("package.di")).copy();
-                    if (FileName.exists(ni) == 1)
+                    if ((FileName.exists(ni) == 1))
                         return ni;
                     FileName.free(toBytePtr(ni));
                     ByteSlice n = FileName.combine(filename, new ByteSlice("package.d")).copy();
-                    if (FileName.exists(n) == 1)
+                    if ((FileName.exists(n) == 1))
                         return n;
                     FileName.free(toBytePtr(n));
                 }
@@ -78,16 +78,16 @@ public class dmodule {
                     return new ByteSlice();
                 {
                     int i = 0;
-                    for (; i < (global.path).length;i++){
+                    for (; (i < (global.path).length);i++){
                         ByteSlice p = toDString((global.path).get(i)).copy();
                         ByteSlice n = FileName.combine(p, sdi).copy();
-                        if (FileName.exists(n) == 1)
+                        if ((FileName.exists(n) == 1))
                         {
                             return n;
                         }
                         FileName.free(toBytePtr(n));
                         n = FileName.combine(p, sd).copy();
-                        if (FileName.exists(n) == 1)
+                        if ((FileName.exists(n) == 1))
                         {
                             return n;
                         }
@@ -95,14 +95,14 @@ public class dmodule {
                         ByteSlice b = FileName.removeExt(filename).copy();
                         n = FileName.combine(p, b).copy();
                         FileName.free(toBytePtr(b));
-                        if (FileName.exists(n) == 2)
+                        if ((FileName.exists(n) == 2))
                         {
                             ByteSlice n2i = FileName.combine(n, new ByteSlice("package.di")).copy();
-                            if (FileName.exists(n2i) == 1)
+                            if ((FileName.exists(n2i) == 1))
                                 return n2i;
                             FileName.free(toBytePtr(n2i));
                             ByteSlice n2 = FileName.combine(n, new ByteSlice("package.d")).copy();
-                            if (FileName.exists(n2) == 1)
+                            if ((FileName.exists(n2) == 1))
                             {
                                 return n2;
                             }
@@ -123,15 +123,15 @@ public class dmodule {
     }
 
     public static void semantic3OnDependencies(Module m) {
-        if (!(m != null))
+        if (m == null)
             return ;
-        if (m.semanticRun > PASS.semantic3)
+        if ((m.semanticRun > PASS.semantic3))
             return ;
         semantic3(m, null);
         {
             int __key1018 = 1;
             int __limit1019 = m.aimports.length;
-            for (; __key1018 < __limit1019;__key1018 += 1) {
+            for (; (__key1018 < __limit1019);__key1018 += 1) {
                 int i = __key1018;
                 semantic3OnDependencies(m.aimports.get(i));
             }
@@ -140,7 +140,7 @@ public class dmodule {
 
     public static ByteSlice getFilename(DArray<Identifier> packages, Identifier ident) {
         ByteSlice filename = ident.asString().copy();
-        if ((packages == null || (packages).length == 0))
+        if ((packages == null) || ((packages).length == 0))
             return filename;
         OutBuffer buf = new OutBuffer();
         try {
@@ -153,15 +153,15 @@ public class dmodule {
                         {
                             Slice<BytePtr> __r1020 = (modAliases.value).opSlice().copy();
                             int __key1021 = __r1020.getLength();
-                            for (; (__key1021--) != 0;) {
+                            for (; __key1021-- != 0;) {
                                 BytePtr m = pcopy(__r1020.get(__key1021));
                                 BytePtr q = pcopy(strchr(m, 61));
                                 assert(q != null);
-                                if ((dotmods.offset == ((q.minus(m))) && memcmp(dotmods.peekChars(), m, ((q.minus(m)))) == 0))
+                                if ((dotmods.offset == ((q.minus(m)))) && (memcmp(dotmods.peekChars(), m, ((q.minus(m)))) == 0))
                                 {
                                     buf.reset();
                                     ByteSlice rhs = q.slice(1,strlen(q)).copy();
-                                    if ((rhs.getLength() > 0 && ((rhs.get(rhs.getLength() - 1) & 0xFF) == 47 || (rhs.get(rhs.getLength() - 1) & 0xFF) == 92)))
+                                    if ((rhs.getLength() > 0) && ((rhs.get(rhs.getLength() - 1) & 0xFF) == 47) || ((rhs.get(rhs.getLength() - 1) & 0xFF) == 92))
                                         rhs = rhs.slice(0,rhs.getLength() - 1).copy();
                                     buf.writestring(rhs);
                                     break;
@@ -174,18 +174,18 @@ public class dmodule {
                 {
                     Slice<Identifier> __r1022 = (packages).opSlice().copy();
                     int __key1023 = 0;
-                    for (; __key1023 < __r1022.getLength();__key1023 += 1) {
+                    for (; (__key1023 < __r1022.getLength());__key1023 += 1) {
                         Identifier pid = __r1022.get(__key1023);
                         ByteSlice p = pid.asString().copy();
                         buf.writestring(p);
-                        if (((modAliases.value).length) != 0)
+                        if ((modAliases.value).length != 0)
                             checkModFileAlias.invoke(p);
                         byte FileSeparator = (byte)47;
                         buf.writeByte(47);
                     }
                 }
                 buf.writestring(filename);
-                if (((modAliases.value).length) != 0)
+                if ((modAliases.value).length != 0)
                     checkModFileAlias.invoke(filename);
                 buf.writeByte(0);
                 filename = buf.extractSlice().slice(0,buf.extractSlice().getLength() - 1).copy();
@@ -229,11 +229,11 @@ public class dmodule {
             {
                 {
                     int i = 0;
-                    for (; i < (packages).length;i++){
+                    for (; (i < (packages).length);i++){
                         Identifier pid = (packages).get(i);
                         Package pkg = null;
                         Dsymbol p = dst.lookup(pid);
-                        if (!(p != null))
+                        if (p == null)
                         {
                             pkg = new Package(Loc.initial, pid);
                             dst.insert((Dsymbol)pkg);
@@ -244,12 +244,12 @@ public class dmodule {
                         {
                             pkg = p.isPackage();
                             assert(pkg != null);
-                            if (!(pkg.symtab != null))
+                            if (pkg.symtab == null)
                                 pkg.symtab = new DsymbolTable();
                         }
                         parent = pkg;
                         dst = pkg.symtab;
-                        if ((ppkg != null && !(ppkg.get() != null)))
+                        if ((ppkg != null) && (ppkg.get() == null))
                             ppkg.set(0, pkg);
                         if (pkg.isModule() != null)
                         {
@@ -270,16 +270,16 @@ public class dmodule {
         }
 
         public  boolean isAncestorPackageOf(Package pkg) {
-            if (pequals(this, pkg))
+            if ((pequals(this, pkg)))
                 return true;
-            if ((!(pkg != null) || !(pkg.parent != null)))
+            if ((pkg == null) || (pkg.parent == null))
                 return false;
             return this.isAncestorPackageOf(pkg.parent.isPackage());
         }
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             flags &= -9;
-            if ((!(this.isModule() != null) && this.mod != null))
+            if ((this.isModule() == null) && (this.mod != null))
             {
                 Dsymbol s = this.symtab != null ? this.symtab.lookup(ident) : null;
                 if (s != null)
@@ -294,7 +294,7 @@ public class dmodule {
         }
 
         public  Module isPackageMod() {
-            if (this.isPkgMod == PKG.module_)
+            if ((this.isPkgMod == PKG.module_))
             {
                 return this.mod;
             }
@@ -304,7 +304,7 @@ public class dmodule {
         public  void resolvePKGunknown() {
             if (this.isModule() != null)
                 return ;
-            if (this.isPkgMod != PKG.unknown)
+            if ((this.isPkgMod != PKG.unknown))
                 return ;
             DArray<Identifier> packages = new DArray<Identifier>();
             try {
@@ -389,18 +389,18 @@ public class dmodule {
         public int needmoduleinfo;
         public int selfimports;
         public  boolean selfImports() {
-            if (this.selfimports == 0)
+            if ((this.selfimports == 0))
             {
                 {
                     int i = 0;
-                    for (; i < amodules.length;i++) {
+                    for (; (i < amodules.length);i++) {
                         amodules.get(i).insearch = 0;
                     }
                 }
                 this.selfimports = this.imports(this) + 1;
                 {
                     int i = 0;
-                    for (; i < amodules.length;i++) {
+                    for (; (i < amodules.length);i++) {
                         amodules.get(i).insearch = 0;
                     }
                 }
@@ -410,20 +410,20 @@ public class dmodule {
 
         public int rootimports;
         public  boolean rootImports() {
-            if (this.rootimports == 0)
+            if ((this.rootimports == 0))
             {
                 {
                     int i = 0;
-                    for (; i < amodules.length;i++) {
+                    for (; (i < amodules.length);i++) {
                         amodules.get(i).insearch = 0;
                     }
                 }
                 this.rootimports = 1;
                 {
                     int i = 0;
-                    for (; i < amodules.length;i += 1){
+                    for (; (i < amodules.length);i += 1){
                         Module m = amodules.get(i);
-                        if ((m.isRoot() && (this.imports(m)) != 0))
+                        if (m.isRoot() && (this.imports(m) != 0))
                         {
                             this.rootimports = 2;
                             break;
@@ -432,7 +432,7 @@ public class dmodule {
                 }
                 {
                     int i = 0;
-                    for (; i < amodules.length;i++) {
+                    for (; (i < amodules.length);i++) {
                         amodules.get(i).insearch = 0;
                     }
                 }
@@ -462,21 +462,21 @@ public class dmodule {
             ByteSlice srcfilename = new ByteSlice();
             this.arg = filename.copy();
             srcfilename = FileName.defaultExt(filename, toByteSlice(global.mars_ext)).copy();
-            if (((((global.run_noext && global.params.run) && !(FileName.ext(filename).getLength() != 0)) && FileName.exists(srcfilename) == 0) && FileName.exists(filename) == 1))
+            if (global.run_noext && global.params.run && (FileName.ext(filename).getLength() == 0) && (FileName.exists(srcfilename) == 0) && (FileName.exists(filename) == 1))
             {
                 FileName.free(toBytePtr(srcfilename));
                 srcfilename = FileName.removeExt(filename).copy();
             }
-            else if (((!(FileName.equalsExt(srcfilename, toByteSlice(global.mars_ext))) && !(FileName.equalsExt(srcfilename, toByteSlice(global.hdr_ext)))) && !(FileName.equalsExt(srcfilename, new ByteSlice("dd")))))
+            else if (!FileName.equalsExt(srcfilename, toByteSlice(global.mars_ext)) && !FileName.equalsExt(srcfilename, toByteSlice(global.hdr_ext)) && !FileName.equalsExt(srcfilename, new ByteSlice("dd")))
             {
                 this.error(new BytePtr("source file name '%.*s' must have .%.*s extension"), srcfilename.getLength(), toBytePtr(srcfilename), global.mars_ext.getLength(), toBytePtr(global.mars_ext));
                 fatal();
             }
             this.srcfile = new FileName(srcfilename);
             this.objfile = this.setOutfilename(global.params.objname, global.params.objdir, filename, global.obj_ext).copy();
-            if ((doDocComment) != 0)
+            if (doDocComment != 0)
                 this.setDocfile();
-            if ((doHdrGen) != 0)
+            if (doHdrGen != 0)
                 this.hdrfile = this.setOutfilename(global.params.hdrname, global.params.hdrdir, this.arg, toByteSlice(global.hdr_ext)).copy();
             this.escapetable = new Escape(new ByteSlice());
         }
@@ -497,11 +497,11 @@ public class dmodule {
             ByteSlice filename = getFilename(packages, ident).copy();
             {
                 ByteSlice result = lookForSourceFile(filename).copy();
-                if (result.getLength() != 0)
+                if ((result).getLength() != 0)
                     filename = result.copy();
             }
             Module m = new Module(loc, filename, ident, 0, 0);
-            if (!(m.read(loc)))
+            if (!m.read(loc))
                 return null;
             if (global.params.verbose)
             {
@@ -511,7 +511,7 @@ public class dmodule {
                     {
                         Slice<Identifier> __r1024 = (packages).opSlice().copy();
                         int __key1025 = 0;
-                        for (; __key1025 < __r1024.getLength();__key1025 += 1) {
+                        for (; (__key1025 < __r1024.getLength());__key1025 += 1) {
                             Identifier pid = __r1024.get(__key1025);
                             buf.writestring(pid.asString());
                             buf.writeByte(46);
@@ -522,7 +522,7 @@ public class dmodule {
                 message(new BytePtr("import    %s"), buf.peekChars());
             }
             m = m.parse();
-            if ((!(m.isRoot()) && Compiler.onImport(m)))
+            if (!m.isRoot() && Compiler.onImport(m))
             {
                 m.importedFrom = m;
                 assert(m.isRoot());
@@ -558,7 +558,7 @@ public class dmodule {
                     argdoc = arg.copy();
                 else
                     argdoc = FileName.name(arg).copy();
-                if (!(FileName.absolute(argdoc)))
+                if (!FileName.absolute(argdoc))
                 {
                     argdoc = FileName.combine(dir, argdoc).copy();
                 }
@@ -584,25 +584,25 @@ public class dmodule {
             {
                 error(loc, new BytePtr("cannot find source code for runtime library file 'object.d'"));
                 errorSupplemental(loc, new BytePtr("dmd might not be correctly installed. Run 'dmd -man' for installation instructions."));
-                ByteSlice dmdConfFile = (global.inifilename.getLength()) != 0 ? FileName.canonicalName(global.inifilename) : new ByteSlice("not found").copy();
+                ByteSlice dmdConfFile = global.inifilename.getLength() != 0 ? FileName.canonicalName(global.inifilename) : new ByteSlice("not found").copy();
                 errorSupplemental(loc, new BytePtr("config file: %.*s"), dmdConfFile.getLength(), toBytePtr(dmdConfFile));
             }
             else
             {
-                boolean isPackageMod = (strcmp(this.toChars(), new BytePtr("package")) != 0 && (strcmp(this.srcfile.name(), new BytePtr("package.d")) == 0 || strcmp(this.srcfile.name(), new BytePtr("package.di")) == 0));
+                boolean isPackageMod = (strcmp(this.toChars(), new BytePtr("package")) != 0) && (strcmp(this.srcfile.name(), new BytePtr("package.d")) == 0) || (strcmp(this.srcfile.name(), new BytePtr("package.di")) == 0);
                 if (isPackageMod)
                     error(loc, new BytePtr("importing package '%s' requires a 'package.d' file which cannot be found in '%s'"), this.toChars(), this.srcfile.toChars());
                 else
                     this.error(loc, new BytePtr("is in file '%s' which cannot be read"), this.srcfile.toChars());
             }
-            if (!((global.gag) != 0))
+            if (global.gag == 0)
             {
                 if (global.path != null)
                 {
                     {
                         Slice<BytePtr> __r1027 = (global.path).opSlice().copy();
                         int __key1026 = 0;
-                        for (; __key1026 < __r1027.getLength();__key1026 += 1) {
+                        for (; (__key1026 < __r1027.getLength());__key1026 += 1) {
                             BytePtr p = pcopy(__r1027.get(__key1026));
                             int i = __key1026;
                             fprintf(stderr, new BytePtr("import path[%llu] = %s\n"), (long)i, p);
@@ -653,12 +653,12 @@ public class dmodule {
                         {
                             int __key1038 = 0;
                             int __limit1039 = eBuf.getLength();
-                            for (; __key1038 < __limit1039;__key1038 += 1) {
+                            for (; (__key1038 < __limit1039);__key1038 += 1) {
                                 int i = __key1038;
                                 int u = Port.readlongLE0(eBuf.get(i));
                                 if ((u & -128) != 0)
                                 {
-                                    if (u > 1114111)
+                                    if ((u > 1114111))
                                     {
                                         error(new BytePtr("UTF-32 value %08x greater than 0x10FFFF"), u);
                                         fatal();
@@ -692,12 +692,12 @@ public class dmodule {
                         {
                             int __key1040 = 0;
                             int __limit1041 = eBuf.getLength();
-                            for (; __key1040 < __limit1041;__key1040 += 1) {
+                            for (; (__key1040 < __limit1041);__key1040 += 1) {
                                 int i = __key1040;
                                 int u = Port.readlongBE1(eBuf.get(i));
                                 if ((u & -128) != 0)
                                 {
-                                    if (u > 1114111)
+                                    if ((u > 1114111))
                                     {
                                         error(new BytePtr("UTF-32 value %08x greater than 0x10FFFF"), u);
                                         fatal();
@@ -731,20 +731,20 @@ public class dmodule {
                         {
                             int __key1034 = 0;
                             int __limit1035 = eBuf.getLength();
-                            for (; __key1034 < __limit1035;__key1034 += 1) {
+                            for (; (__key1034 < __limit1035);__key1034 += 1) {
                                 int u = Port.readwordLE0(eBuf.get(__key1034));
                                 if ((u & -128) != 0)
                                 {
-                                    if ((55296 <= u && u < 56320))
+                                    if ((55296 <= u) && (u < 56320))
                                     {
                                         __key1034++;
-                                        if (__key1034 >= eBuf.getLength())
+                                        if ((__key1034 >= eBuf.getLength()))
                                         {
                                             error(new BytePtr("surrogate UTF-16 high value %04x at end of file"), u);
                                             fatal();
                                         }
                                         int u2 = Port.readwordLE0(eBuf.get(__key1034));
-                                        if ((u2 < 56320 || 57344 <= u2))
+                                        if ((u2 < 56320) || (57344 <= u2))
                                         {
                                             error(new BytePtr("surrogate UTF-16 low value %04x out of range"), u2);
                                             fatal();
@@ -752,12 +752,12 @@ public class dmodule {
                                         u = u - 55232 << 10;
                                         u |= u2 - 56320;
                                     }
-                                    else if ((u >= 56320 && u <= 57343))
+                                    else if ((u >= 56320) && (u <= 57343))
                                     {
                                         error(new BytePtr("unpaired surrogate UTF-16 value %04x"), u);
                                         fatal();
                                     }
-                                    else if ((u == 65534 || u == 65535))
+                                    else if ((u == 65534) || (u == 65535))
                                     {
                                         error(new BytePtr("illegal UTF-16 value %04x"), u);
                                         fatal();
@@ -791,20 +791,20 @@ public class dmodule {
                         {
                             int __key1036 = 0;
                             int __limit1037 = eBuf.getLength();
-                            for (; __key1036 < __limit1037;__key1036 += 1) {
+                            for (; (__key1036 < __limit1037);__key1036 += 1) {
                                 int u = Port.readwordBE1(eBuf.get(__key1036));
                                 if ((u & -128) != 0)
                                 {
-                                    if ((55296 <= u && u < 56320))
+                                    if ((55296 <= u) && (u < 56320))
                                     {
                                         __key1036++;
-                                        if (__key1036 >= eBuf.getLength())
+                                        if ((__key1036 >= eBuf.getLength()))
                                         {
                                             error(new BytePtr("surrogate UTF-16 high value %04x at end of file"), u);
                                             fatal();
                                         }
                                         int u2 = Port.readwordBE1(eBuf.get(__key1036));
-                                        if ((u2 < 56320 || 57344 <= u2))
+                                        if ((u2 < 56320) || (57344 <= u2))
                                         {
                                             error(new BytePtr("surrogate UTF-16 low value %04x out of range"), u2);
                                             fatal();
@@ -812,12 +812,12 @@ public class dmodule {
                                         u = u - 55232 << 10;
                                         u |= u2 - 56320;
                                     }
-                                    else if ((u >= 56320 && u <= 57343))
+                                    else if ((u >= 56320) && (u <= 57343))
                                     {
                                         error(new BytePtr("unpaired surrogate UTF-16 value %04x"), u);
                                         fatal();
                                     }
-                                    else if ((u == 65534 || u == 65535))
+                                    else if ((u == 65534) || (u == 65535))
                                     {
                                         error(new BytePtr("illegal UTF-16 value %04x"), u);
                                         fatal();
@@ -837,52 +837,52 @@ public class dmodule {
             };
 
             BytePtr srcname = pcopy(this.srcfile.toChars());
-            this.isPackageFile = (strcmp(this.srcfile.name(), new BytePtr("package.d")) == 0 || strcmp(this.srcfile.name(), new BytePtr("package.di")) == 0);
+            this.isPackageFile = (strcmp(this.srcfile.name(), new BytePtr("package.d")) == 0) || (strcmp(this.srcfile.name(), new BytePtr("package.di")) == 0);
             ByteSlice buf = toByteSlice((this.srcBuffer).data).copy();
             boolean needsReencoding = true;
             boolean hasBOM = true;
             int endian = Endian.little;
             int sourceEncoding = SourceEncoding.utf16;
-            if (buf.getLength() >= 2)
+            if ((buf.getLength() >= 2))
             {
-                if (((buf.get(0) & 0xFF) == 255 && (buf.get(1) & 0xFF) == 254))
+                if (((buf.get(0) & 0xFF) == 255) && ((buf.get(1) & 0xFF) == 254))
                 {
                     endian = Endian.little;
-                    sourceEncoding = ((buf.getLength() >= 4 && (buf.get(2) & 0xFF) == 0) && (buf.get(3) & 0xFF) == 0) ? SourceEncoding.utf32 : SourceEncoding.utf16;
+                    sourceEncoding = (buf.getLength() >= 4) && ((buf.get(2) & 0xFF) == 0) && ((buf.get(3) & 0xFF) == 0) ? SourceEncoding.utf32 : SourceEncoding.utf16;
                 }
-                else if (((buf.get(0) & 0xFF) == 254 && (buf.get(1) & 0xFF) == 255))
+                else if (((buf.get(0) & 0xFF) == 254) && ((buf.get(1) & 0xFF) == 255))
                 {
                     endian = Endian.big;
                     sourceEncoding = SourceEncoding.utf16;
                 }
-                else if (((((buf.getLength() >= 4 && (buf.get(0) & 0xFF) == 0) && (buf.get(1) & 0xFF) == 0) && (buf.get(2) & 0xFF) == 254) && (buf.get(3) & 0xFF) == 255))
+                else if ((buf.getLength() >= 4) && ((buf.get(0) & 0xFF) == 0) && ((buf.get(1) & 0xFF) == 0) && ((buf.get(2) & 0xFF) == 254) && ((buf.get(3) & 0xFF) == 255))
                 {
                     endian = Endian.big;
                     sourceEncoding = SourceEncoding.utf32;
                 }
-                else if ((((buf.getLength() >= 3 && (buf.get(0) & 0xFF) == 239) && (buf.get(1) & 0xFF) == 187) && (buf.get(2) & 0xFF) == 191))
+                else if ((buf.getLength() >= 3) && ((buf.get(0) & 0xFF) == 239) && ((buf.get(1) & 0xFF) == 187) && ((buf.get(2) & 0xFF) == 191))
                 {
                     needsReencoding = false;
                 }
                 else
                 {
                     hasBOM = false;
-                    if ((((buf.getLength() >= 4 && (buf.get(1) & 0xFF) == 0) && (buf.get(2) & 0xFF) == 0) && (buf.get(3) & 0xFF) == 0))
+                    if ((buf.getLength() >= 4) && ((buf.get(1) & 0xFF) == 0) && ((buf.get(2) & 0xFF) == 0) && ((buf.get(3) & 0xFF) == 0))
                     {
                         endian = Endian.little;
                         sourceEncoding = SourceEncoding.utf32;
                     }
-                    else if ((((buf.getLength() >= 4 && (buf.get(0) & 0xFF) == 0) && (buf.get(1) & 0xFF) == 0) && (buf.get(2) & 0xFF) == 0))
+                    else if ((buf.getLength() >= 4) && ((buf.get(0) & 0xFF) == 0) && ((buf.get(1) & 0xFF) == 0) && ((buf.get(2) & 0xFF) == 0))
                     {
                         endian = Endian.big;
                         sourceEncoding = SourceEncoding.utf32;
                     }
-                    else if ((buf.getLength() >= 2 && (buf.get(1) & 0xFF) == 0))
+                    else if ((buf.getLength() >= 2) && ((buf.get(1) & 0xFF) == 0))
                     {
                         endian = Endian.little;
                         sourceEncoding = SourceEncoding.utf16;
                     }
-                    else if ((buf.get(0) & 0xFF) == 0)
+                    else if (((buf.get(0) & 0xFF) == 0))
                     {
                         endian = Endian.big;
                         sourceEncoding = SourceEncoding.utf16;
@@ -890,7 +890,7 @@ public class dmodule {
                     else
                     {
                         needsReencoding = false;
-                        if ((buf.get(0) & 0xFF) >= 128)
+                        if (((buf.get(0) & 0xFF) >= 128))
                         {
                             this.error(new BytePtr("source file must start with BOM or ASCII character, not \\x%02X"), (buf.get(0) & 0xFF));
                             fatal();
@@ -899,32 +899,32 @@ public class dmodule {
                 }
                 if (hasBOM)
                 {
-                    if (!(needsReencoding))
+                    if (!needsReencoding)
                         buf = buf.slice(3,buf.getLength()).copy();
-                    else if (sourceEncoding == SourceEncoding.utf32)
+                    else if ((sourceEncoding == SourceEncoding.utf32))
                         buf = buf.slice(4,buf.getLength()).copy();
                     else
                         buf = buf.slice(2,buf.getLength()).copy();
                 }
             }
-            else if ((buf.getLength() >= 1 && ((buf.get(0) & 0xFF) == 0 || (buf.get(0) & 0xFF) == 26)))
+            else if ((buf.getLength() >= 1) && ((buf.get(0) & 0xFF) == 0) || ((buf.get(0) & 0xFF) == 26))
                 needsReencoding = false;
             if (needsReencoding)
             {
-                if (sourceEncoding == SourceEncoding.utf16)
+                if ((sourceEncoding == SourceEncoding.utf16))
                 {
-                    buf = (endian == Endian.little ? UTF16ToUTF80.invoke(buf) : UTF16ToUTF81.invoke(buf)).copy();
+                    buf = ((endian == Endian.little) ? UTF16ToUTF80.invoke(buf) : UTF16ToUTF81.invoke(buf)).copy();
                 }
                 else
                 {
-                    buf = (endian == Endian.little ? UTF32ToUTF80.invoke(buf) : UTF32ToUTF81.invoke(buf)).copy();
+                    buf = ((endian == Endian.little) ? UTF32ToUTF80.invoke(buf) : UTF32ToUTF81.invoke(buf)).copy();
                 }
             }
-            if ((buf.getLength() >= 4 && __equals(buf.slice(0,4), new ByteSlice("Ddoc"))))
+            if ((buf.getLength() >= 4) && __equals(buf.slice(0,4), new ByteSlice("Ddoc")))
             {
                 this.comment = pcopy((toBytePtr(buf).plus(4)));
                 this.isDocFile = true;
-                if (!(this.docfile.opCast()))
+                if (!this.docfile.opCast())
                     this.setDocfile();
                 return this;
             }
@@ -932,7 +932,7 @@ public class dmodule {
             {
                 this.comment = pcopy((toBytePtr(buf)));
                 this.isDocFile = true;
-                if (!(this.docfile.opCast()))
+                if (!this.docfile.opCast())
                     this.setDocfile();
                 return this;
             }
@@ -963,7 +963,7 @@ public class dmodule {
                 dst = Package.resolve((this.md).packages, this.parent, ptr(ppack));
                 assert(dst != null);
                 Module m = ppack.value != null ? ppack.value.isModule() : null;
-                if ((m != null && (strcmp(m.srcfile.name(), new BytePtr("package.d")) != 0 && strcmp(m.srcfile.name(), new BytePtr("package.di")) != 0)))
+                if ((m != null) && (strcmp(m.srcfile.name(), new BytePtr("package.d")) != 0) && (strcmp(m.srcfile.name(), new BytePtr("package.di")) != 0))
                 {
                     error((this.md).loc, new BytePtr("package name '%s' conflicts with usage as a module name in file %s"), ppack.value.toPrettyChars(false), m.srcfile.toChars());
                 }
@@ -971,7 +971,7 @@ public class dmodule {
             else
             {
                 dst = modules;
-                if (!(Identifier.isValidIdentifier(this.ident.toChars())))
+                if (!Identifier.isValidIdentifier(this.ident.toChars()))
                     this.error(new BytePtr("has non-identifier characters in filename, use module declaration instead"));
             }
             Dsymbol s = this;
@@ -985,17 +985,17 @@ public class dmodule {
                 p.symtab = new DsymbolTable();
                 s = p;
             }
-            if (!(dst.insert(s) != null))
+            if (dst.insert(s) == null)
             {
                 Dsymbol prev = dst.lookup(this.ident);
                 assert(prev != null);
                 {
                     Module mprev = prev.isModule();
-                    if (mprev != null)
+                    if ((mprev) != null)
                     {
-                        if (!(FileName.equals(srcname, mprev.srcfile.toChars())))
+                        if (!FileName.equals(srcname, mprev.srcfile.toChars()))
                             this.error(this.loc, new BytePtr("from file %s conflicts with another module %s from file %s"), srcname, mprev.toChars(), mprev.srcfile.toChars());
-                        else if ((this.isRoot() && mprev.isRoot()))
+                        else if (this.isRoot() && mprev.isRoot())
                             this.error(this.loc, new BytePtr("from file %s is specified twice on the command line"), srcname);
                         else
                             this.error(this.loc, new BytePtr("from file %s must be imported with 'import %s;'"), srcname, this.toPrettyChars(false));
@@ -1003,9 +1003,9 @@ public class dmodule {
                     }
                     else {
                         Package pkg = prev.isPackage();
-                        if (pkg != null)
+                        if ((pkg) != null)
                         {
-                            if ((pkg.isPkgMod == PKG.unknown && this.isPackageFile))
+                            if ((pkg.isPkgMod == PKG.unknown) && this.isPackageFile)
                             {
                                 pkg.isPkgMod = PKG.module_;
                                 pkg.mod = this;
@@ -1016,7 +1016,7 @@ public class dmodule {
                                 this.error((this.md != null ? (this.md).loc : this.loc), new BytePtr("from file %s conflicts with package name %s"), srcname, pkg.toChars());
                         }
                         else
-                            assert((global.errors) != 0);
+                            assert(global.errors != 0);
                     }
                 }
             }
@@ -1037,19 +1037,19 @@ public class dmodule {
                 return ;
             }
             Scope sc = Scope.createGlobal(this);
-            if ((this.md != null && (this.md).msg != null))
+            if ((this.md != null) && ((this.md).msg != null))
                 (this.md).msg = semanticString(sc, (this.md).msg, new BytePtr("deprecation message"));
-            if ((((this.members).length == 0 || !pequals((this.members).get(0).ident, Id.object)) || (this.members).get(0).isImport() == null))
+            if (((this.members).length == 0) || (!pequals((this.members).get(0).ident, Id.object)) || ((this.members).get(0).isImport() == null))
             {
                 Import im = new Import(Loc.initial, null, Id.object, null, 0);
                 (this.members).shift(im);
             }
-            if (!(this.symtab != null))
+            if (this.symtab == null)
             {
                 this.symtab = new DsymbolTable();
                 {
                     int i = 0;
-                    for (; i < (this.members).length;i++){
+                    for (; (i < (this.members).length);i++){
                         Dsymbol s = (this.members).get(i);
                         s.addMember(sc, (sc).scopesym);
                     }
@@ -1058,14 +1058,14 @@ public class dmodule {
             this.setScope(sc);
             {
                 int i = 0;
-                for (; i < (this.members).length;i++){
+                for (; (i < (this.members).length);i++){
                     Dsymbol s = (this.members).get(i);
                     s.setScope(sc);
                 }
             }
             {
                 int i = 0;
-                for (; i < (this.members).length;i++){
+                for (; (i < (this.members).length);i++){
                     Dsymbol s = (this.members).get(i);
                     s.importAll(sc);
                 }
@@ -1075,15 +1075,15 @@ public class dmodule {
         }
 
         public  int needModuleInfo() {
-            return ((((this.needmoduleinfo) != 0 || global.params.cov)) ? 1 : 0);
+            return (((this.needmoduleinfo != 0) || global.params.cov) ? 1 : 0);
         }
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
-            if ((this.insearch) != 0)
+            if (this.insearch != 0)
                 return null;
-            if (!((flags & 32) != 0))
+            if ((flags & 32) == 0)
                 flags &= -41;
-            if ((pequals(this.searchCacheIdent, ident) && this.searchCacheFlags == flags))
+            if ((pequals(this.searchCacheIdent, ident)) && (this.searchCacheFlags == flags))
             {
                 return this.searchCacheSymbol;
             }
@@ -1091,7 +1091,7 @@ public class dmodule {
             this.insearch = 1;
             Dsymbol s = this.search(loc, ident, flags);
             this.insearch = 0;
-            if (errors == global.errors)
+            if ((errors == global.errors))
             {
                 this.searchCacheIdent = ident;
                 this.searchCacheSymbol = s;
@@ -1101,7 +1101,7 @@ public class dmodule {
         }
 
         public  boolean isPackageAccessible(Package p, Prot protection, int flags) {
-            if ((this.insearch) != 0)
+            if (this.insearch != 0)
                 return false;
             this.insearch = 1;
             try {
@@ -1139,9 +1139,9 @@ public class dmodule {
         }
 
         public static void runDeferredSemantic() {
-            if (dprogress == 0)
+            if ((dprogress == 0))
                 return ;
-            if ((dmodule.runDeferredSemanticnested) != 0)
+            if (dmodule.runDeferredSemanticnested != 0)
                 return ;
             dmodule.runDeferredSemanticnested++;
             int len = 0;
@@ -1149,12 +1149,12 @@ public class dmodule {
                 {
                     dprogress = 0;
                     len = deferred.length;
-                    if (!((len) != 0))
+                    if (len == 0)
                         break;
                     Ptr<Dsymbol> todo = null;
                     Ptr<Dsymbol> todoalloc = null;
                     Ref<Dsymbol> tmp = ref(null);
-                    if (len == 1)
+                    if ((len == 1))
                     {
                         todo = pcopy(ptr(tmp));
                     }
@@ -1168,7 +1168,7 @@ public class dmodule {
                     deferred.setDim(0);
                     {
                         int i = 0;
-                        for (; i < len;i++){
+                        for (; (i < len);i++){
                             Dsymbol s = todo.get(i);
                             dsymbolSemantic(s, null);
                         }
@@ -1176,7 +1176,7 @@ public class dmodule {
                     if (todoalloc != null)
                         free(todoalloc);
                 }
-            } while ((deferred.length < len || (dprogress) != 0));
+            } while ((deferred.length < len) || (dprogress != 0));
             dmodule.runDeferredSemanticnested--;
         }
 
@@ -1185,10 +1185,10 @@ public class dmodule {
             DArray<Dsymbol> a = deferred2;
             {
                 int i = 0;
-                for (; i < (a).length;i++){
+                for (; (i < (a).length);i++){
                     Dsymbol s = (a).get(i);
                     semantic2(s, null);
-                    if ((global.errors) != 0)
+                    if (global.errors != 0)
                         break;
                 }
             }
@@ -1200,10 +1200,10 @@ public class dmodule {
             DArray<Dsymbol> a = deferred3;
             {
                 int i = 0;
-                for (; i < (a).length;i++){
+                for (; (i < (a).length);i++){
                     Dsymbol s = (a).get(i);
                     semantic3(s, null);
-                    if ((global.errors) != 0)
+                    if (global.errors != 0)
                         break;
                 }
             }
@@ -1213,7 +1213,7 @@ public class dmodule {
         public static void clearCache() {
             {
                 int i = 0;
-                for (; i < amodules.length;i++){
+                for (; (i < amodules.length);i++){
                     Module m = amodules.get(i);
                     m.searchCacheIdent = null;
                 }
@@ -1223,15 +1223,15 @@ public class dmodule {
         public  int imports(Module m) {
             {
                 int i = 0;
-                for (; i < this.aimports.length;i++){
+                for (; (i < this.aimports.length);i++){
                     Module mi = this.aimports.get(i);
-                    if (pequals(mi, m))
+                    if ((pequals(mi, m)))
                         return 1;
-                    if (!((mi.insearch) != 0))
+                    if (mi.insearch == 0)
                     {
                         mi.insearch = 1;
                         int r = mi.imports(m);
-                        if ((r) != 0)
+                        if (r != 0)
                             return r;
                     }
                 }
@@ -1244,7 +1244,7 @@ public class dmodule {
         }
 
         public  boolean isCoreModule(Identifier ident) {
-            return (((pequals(this.ident, ident) && this.parent != null) && pequals(this.parent.ident, Id.core)) && !(this.parent.parent != null));
+            return (pequals(this.ident, ident)) && (this.parent != null) && (pequals(this.parent.ident, Id.core)) && (this.parent.parent == null);
         }
 
         public int doppelganger;
@@ -1269,7 +1269,7 @@ public class dmodule {
             buf.writestring(this.ident.asString());
             {
                 Dsymbol package_ = this.parent;
-                for (; package_ != null;package_ = package_.parent){
+                for (; (package_ != null);package_ = package_.parent){
                     buf.prependstring(new BytePtr("."));
                     buf.prependstring(package_.ident.toChars());
                 }
@@ -1369,12 +1369,12 @@ public class dmodule {
         public  BytePtr toChars() {
             OutBuffer buf = new OutBuffer();
             try {
-                if ((this.packages != null && ((this.packages).length) != 0))
+                if ((this.packages != null) && ((this.packages).length != 0))
                 {
                     {
                         Slice<Identifier> __r1042 = (this.packages).opSlice().copy();
                         int __key1043 = 0;
-                        for (; __key1043 < __r1042.getLength();__key1043 += 1) {
+                        for (; (__key1043 < __r1042.getLength());__key1043 += 1) {
                             Identifier pid = __r1042.get(__key1043);
                             buf.writestring(pid.asString());
                             buf.writeByte(46);

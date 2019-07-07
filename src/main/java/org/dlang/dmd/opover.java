@@ -63,7 +63,7 @@ public class opover {
         }
 
         public  void visit(PostExp e) {
-            this.id = (e.op & 0xFF) == 93 ? Id.postinc : Id.postdec;
+            this.id = ((e.op & 0xFF) == 93) ? Id.postinc : Id.postdec;
         }
 
         public  void visit(AddExp e) {
@@ -274,22 +274,22 @@ public class opover {
         }
 
         public  void visit(UnaExp e) {
-            if ((e.e1.op & 0xFF) == 17)
+            if (((e.e1.op & 0xFF) == 17))
             {
                 ArrayExp ae = (ArrayExp)e.e1;
                 ae.e1 = expressionSemantic(ae.e1, this.sc);
                 ae.e1 = resolveProperties(this.sc, ae.e1);
                 Expression ae1old = ae.e1;
-                boolean maybeSlice = ((ae.arguments).length == 0 || ((ae.arguments).length == 1 && ((ae.arguments).get(0).op & 0xFF) == 231));
+                boolean maybeSlice = ((ae.arguments).length == 0) || ((ae.arguments).length == 1) && (((ae.arguments).get(0).op & 0xFF) == 231);
                 IntervalExp ie = null;
-                if ((maybeSlice && ((ae.arguments).length) != 0))
+                if (maybeSlice && ((ae.arguments).length != 0))
                 {
-                    assert(((ae.arguments).get(0).op & 0xFF) == 231);
+                    assert((((ae.arguments).get(0).op & 0xFF) == 231));
                     ie = (IntervalExp)(ae.arguments).get(0);
                 }
             L_outer1:
                 for (; true;){
-                    if ((ae.e1.op & 0xFF) == 127)
+                    if (((ae.e1.op & 0xFF) == 127))
                     {
                         this.result = ae.e1;
                         return ;
@@ -299,15 +299,15 @@ public class opover {
                     ae.lengthVar = null;
                     Type t1b = ae.e1.type.toBasetype();
                     AggregateDeclaration ad = isAggregate(t1b);
-                    if (!(ad != null))
+                    if (ad == null)
                         break;
                     try {
                         if (search_function(ad, Id.opIndexUnary) != null)
                         {
                             this.result = resolveOpDollar(this.sc, ae, ptr(e0));
-                            if (!(this.result != null))
+                            if (this.result == null)
                                 /*goto Lfallback*/throw Dispatch0.INSTANCE;
-                            if ((this.result.op & 0xFF) == 127)
+                            if (((this.result.op & 0xFF) == 127))
                                 return ;
                             DArray<Expression> a = (ae.arguments).copy();
                             DArray<RootObject> tiargs = opToArg(this.sc, e.op);
@@ -326,10 +326,10 @@ public class opover {
                     }
                     catch(Dispatch0 __d){}
                 /*Lfallback:*/
-                    if ((maybeSlice && search_function(ad, Id.opSliceUnary) != null))
+                    if (maybeSlice && (search_function(ad, Id.opSliceUnary) != null))
                     {
                         this.result = resolveOpDollar(this.sc, ae, ie, ptr(e0));
-                        if ((this.result.op & 0xFF) == 127)
+                        if (((this.result.op & 0xFF) == 127))
                             return ;
                         DArray<Expression> a = new DArray<Expression>();
                         if (ie != null)
@@ -344,9 +344,9 @@ public class opover {
                         this.result = Expression.combine(e0.value, this.result);
                         return ;
                     }
-                    if ((ad.aliasthis != null && !pequals(t1b, ae.att1)))
+                    if ((ad.aliasthis != null) && (!pequals(t1b, ae.att1)))
                     {
-                        if ((!(ae.att1 != null) && t1b.checkAliasThisRec()))
+                        if ((ae.att1 == null) && t1b.checkAliasThisRec())
                             ae.att1 = t1b;
                         ae.e1 = resolveAliasThis(this.sc, ae1save, true);
                         if (ae.e1 != null)
@@ -359,7 +359,7 @@ public class opover {
             }
             e.e1 = expressionSemantic(e.e1, this.sc);
             e.e1 = resolveProperties(this.sc, e.e1);
-            if ((e.e1.op & 0xFF) == 127)
+            if (((e.e1.op & 0xFF) == 127))
             {
                 this.result = e.e1;
                 return ;
@@ -368,7 +368,7 @@ public class opover {
             if (ad != null)
             {
                 Dsymbol fd = null;
-                if (((e.op & 0xFF) != 103 && (e.op & 0xFF) != 104))
+                if (((e.op & 0xFF) != 103) && ((e.op & 0xFF) != 104))
                 {
                     fd = search_function(ad, opId(e));
                     if (fd != null)
@@ -386,11 +386,11 @@ public class opover {
                     this.result = expressionSemantic(this.result, this.sc);
                     return ;
                 }
-                if ((ad.aliasthis != null && !pequals(e.e1.type, e.att1)))
+                if ((ad.aliasthis != null) && (!pequals(e.e1.type, e.att1)))
                 {
                     Expression e1 = new DotIdExp(e.loc, e.e1, ad.aliasthis.ident);
                     UnaExp ue = (UnaExp)e.copy();
-                    if ((!(ue.att1 != null) && e.e1.type.checkAliasThisRec()))
+                    if ((ue.att1 == null) && e.e1.type.checkAliasThisRec())
                         ue.att1 = e.e1.type;
                     ue.e1 = e1;
                     this.result = trySemantic(ue, this.sc);
@@ -403,16 +403,16 @@ public class opover {
             ae.e1 = expressionSemantic(ae.e1, this.sc);
             ae.e1 = resolveProperties(this.sc, ae.e1);
             Expression ae1old = ae.e1;
-            boolean maybeSlice = ((ae.arguments).length == 0 || ((ae.arguments).length == 1 && ((ae.arguments).get(0).op & 0xFF) == 231));
+            boolean maybeSlice = ((ae.arguments).length == 0) || ((ae.arguments).length == 1) && (((ae.arguments).get(0).op & 0xFF) == 231);
             IntervalExp ie = null;
-            if ((maybeSlice && ((ae.arguments).length) != 0))
+            if (maybeSlice && ((ae.arguments).length != 0))
             {
-                assert(((ae.arguments).get(0).op & 0xFF) == 231);
+                assert((((ae.arguments).get(0).op & 0xFF) == 231));
                 ie = (IntervalExp)(ae.arguments).get(0);
             }
         L_outer2:
             for (; true;){
-                if ((ae.e1.op & 0xFF) == 127)
+                if (((ae.e1.op & 0xFF) == 127))
                 {
                     this.result = ae.e1;
                     return ;
@@ -422,9 +422,9 @@ public class opover {
                 ae.lengthVar = null;
                 Type t1b = ae.e1.type.toBasetype();
                 AggregateDeclaration ad = isAggregate(t1b);
-                if (!(ad != null))
+                if (ad == null)
                 {
-                    if ((isIndexableNonAggregate(t1b) || (ae.e1.op & 0xFF) == 20))
+                    if (isIndexableNonAggregate(t1b) || ((ae.e1.op & 0xFF) == 20))
                     {
                         if (maybeSlice)
                         {
@@ -432,7 +432,7 @@ public class opover {
                             this.result = expressionSemantic(this.result, this.sc);
                             return ;
                         }
-                        if ((ae.arguments).length == 1)
+                        if (((ae.arguments).length == 1))
                         {
                             this.result = new IndexExp(ae.loc, ae.e1, (ae.arguments).get(0));
                             this.result = expressionSemantic(this.result, this.sc);
@@ -445,9 +445,9 @@ public class opover {
                     if (search_function(ad, Id.index) != null)
                     {
                         this.result = resolveOpDollar(this.sc, ae, ptr(e0));
-                        if (!(this.result != null))
+                        if (this.result == null)
                             /*goto Lfallback*/throw Dispatch0.INSTANCE;
-                        if ((this.result.op & 0xFF) == 127)
+                        if (((this.result.op & 0xFF) == 127))
                             return ;
                         DArray<Expression> a = (ae.arguments).copy();
                         this.result = new DotIdExp(ae.loc, ae.e1, Id.index);
@@ -465,17 +465,17 @@ public class opover {
                 }
                 catch(Dispatch0 __d){}
             /*Lfallback:*/
-                if ((maybeSlice && (ae.e1.op & 0xFF) == 20))
+                if (maybeSlice && ((ae.e1.op & 0xFF) == 20))
                 {
                     this.result = new SliceExp(ae.loc, ae.e1, ie);
                     this.result = expressionSemantic(this.result, this.sc);
                     this.result = Expression.combine(e0.value, this.result);
                     return ;
                 }
-                if ((maybeSlice && search_function(ad, Id.slice) != null))
+                if (maybeSlice && (search_function(ad, Id.slice) != null))
                 {
                     this.result = resolveOpDollar(this.sc, ae, ie, ptr(e0));
-                    if ((this.result.op & 0xFF) == 127)
+                    if (((this.result.op & 0xFF) == 127))
                         return ;
                     DArray<Expression> a = new DArray<Expression>();
                     if (ie != null)
@@ -489,9 +489,9 @@ public class opover {
                     this.result = Expression.combine(e0.value, this.result);
                     return ;
                 }
-                if ((ad.aliasthis != null && !pequals(t1b, ae.att1)))
+                if ((ad.aliasthis != null) && (!pequals(t1b, ae.att1)))
                 {
-                    if ((!(ae.att1 != null) && t1b.checkAliasThisRec()))
+                    if ((ae.att1 == null) && t1b.checkAliasThisRec())
                         ae.att1 = t1b;
                     ae.e1 = resolveAliasThis(this.sc, ae1save, true);
                     if (ae.e1 != null)
@@ -544,38 +544,38 @@ public class opover {
                     int argsset = 0;
                     AggregateDeclaration ad1 = isAggregate(e.e1.type);
                     AggregateDeclaration ad2 = isAggregate(e.e2.type);
-                    if (((e.op & 0xFF) == 90 && pequals(ad1, ad2)))
+                    if (((e.op & 0xFF) == 90) && (pequals(ad1, ad2)))
                     {
                         StructDeclaration sd = ad1.isStructDeclaration();
-                        if ((sd != null && !(sd.hasIdentityAssign)))
+                        if ((sd != null) && !sd.hasIdentityAssign)
                         {
                             return ;
                         }
                     }
                     Dsymbol s = null;
                     Dsymbol s_r = null;
-                    if ((ad1 != null && id != null))
+                    if ((ad1 != null) && (id != null))
                     {
                         s = search_function(ad1, id);
                     }
-                    if ((ad2 != null && id_r != null))
+                    if ((ad2 != null) && (id_r != null))
                     {
                         s_r = search_function(ad2, id_r);
-                        if ((s_r != null && pequals(s_r, s)))
+                        if ((s_r != null) && (pequals(s_r, s)))
                             s_r = null;
                     }
                     DArray<RootObject> tiargs = null;
-                    if (((e.op & 0xFF) == 93 || (e.op & 0xFF) == 94))
+                    if (((e.op & 0xFF) == 93) || ((e.op & 0xFF) == 94))
                     {
-                        if ((ad1 != null && search_function(ad1, Id.opUnary) != null))
+                        if ((ad1 != null) && (search_function(ad1, Id.opUnary) != null))
                             return ;
                     }
-                    if (((((((!(s != null) && !(s_r != null)) && (e.op & 0xFF) != 58) && (e.op & 0xFF) != 59) && (e.op & 0xFF) != 90) && (e.op & 0xFF) != 93) && (e.op & 0xFF) != 94))
+                    if ((s == null) && (s_r == null) && ((e.op & 0xFF) != 58) && ((e.op & 0xFF) != 59) && ((e.op & 0xFF) != 90) && ((e.op & 0xFF) != 93) && ((e.op & 0xFF) != 94))
                     {
                         if (ad1 != null)
                         {
                             s = search_function(ad1, Id.opBinary);
-                            if ((s != null && !(s.isTemplateDeclaration() != null)))
+                            if ((s != null) && (s.isTemplateDeclaration() == null))
                             {
                                 e.e1.error(new BytePtr("`%s.opBinary` isn't a template"), e.e1.toChars());
                                 this.result = new ErrorExp();
@@ -585,16 +585,16 @@ public class opover {
                         if (ad2 != null)
                         {
                             s_r = search_function(ad2, Id.opBinaryRight);
-                            if ((s_r != null && !(s_r.isTemplateDeclaration() != null)))
+                            if ((s_r != null) && (s_r.isTemplateDeclaration() == null))
                             {
                                 e.e2.error(new BytePtr("`%s.opBinaryRight` isn't a template"), e.e2.toChars());
                                 this.result = new ErrorExp();
                                 return ;
                             }
-                            if ((s_r != null && pequals(s_r, s)))
+                            if ((s_r != null) && (pequals(s_r, s)))
                                 s_r = null;
                         }
-                        if ((s != null || s_r != null))
+                        if ((s != null) || (s_r != null))
                         {
                             id = Id.opBinary;
                             id_r = Id.opBinaryRight;
@@ -602,7 +602,7 @@ public class opover {
                         }
                     }
                     try {
-                        if ((s != null || s_r != null))
+                        if ((s != null) || (s_r != null))
                         {
                             args1.setDim(1);
                             args1.set(0, e.e1);
@@ -615,7 +615,7 @@ public class opover {
                             if (s != null)
                             {
                                 functionResolve(m, s, e.loc, this.sc, tiargs, e.e1.type, args2, null);
-                                if ((m.lastf != null && (m.lastf.errors || m.lastf.semantic3Errors)))
+                                if ((m.lastf != null) && m.lastf.errors || m.lastf.semantic3Errors)
                                 {
                                     this.result = new ErrorExp();
                                     return ;
@@ -625,27 +625,27 @@ public class opover {
                             if (s_r != null)
                             {
                                 functionResolve(m, s_r, e.loc, this.sc, tiargs, e.e2.type, args1, null);
-                                if ((m.lastf != null && (m.lastf.errors || m.lastf.semantic3Errors)))
+                                if ((m.lastf != null) && m.lastf.errors || m.lastf.semantic3Errors)
                                 {
                                     this.result = new ErrorExp();
                                     return ;
                                 }
                             }
-                            if (m.count > 1)
+                            if ((m.count > 1))
                             {
                                 e.error(new BytePtr("overloads `%s` and `%s` both match argument list for `%s`"), m.lastf.type.toChars(), m.nextf.type.toChars(), m.lastf.toChars());
                             }
-                            else if (m.last <= MATCH.nomatch)
+                            else if ((m.last <= MATCH.nomatch))
                             {
                                 if (tiargs != null)
                                     /*goto L1*/throw Dispatch0.INSTANCE;
                                 m.lastf = null;
                             }
-                            if (((e.op & 0xFF) == 93 || (e.op & 0xFF) == 94))
+                            if (((e.op & 0xFF) == 93) || ((e.op & 0xFF) == 94))
                             {
                                 this.result = build_overload(e.loc, this.sc, e.e1, null, m.lastf != null ? m.lastf : s);
                             }
-                            else if (((lastf != null && pequals(m.lastf, lastf)) || (!(s_r != null) && m.last <= MATCH.nomatch)))
+                            else if ((lastf != null) && (pequals(m.lastf, lastf)) || (s_r == null) && (m.last <= MATCH.nomatch))
                             {
                                 this.result = build_overload(e.loc, this.sc, e.e1, e.e2, m.lastf != null ? m.lastf : s);
                             }
@@ -658,23 +658,23 @@ public class opover {
                     }
                     catch(Dispatch0 __d){}
                 /*L1:*/
-                    if ((isCommutative(e.op) && tiargs == null))
+                    if (isCommutative(e.op) && (tiargs == null))
                     {
                         s = null;
                         s_r = null;
-                        if ((ad1 != null && id_r != null))
+                        if ((ad1 != null) && (id_r != null))
                         {
                             s_r = search_function(ad1, id_r);
                         }
-                        if ((ad2 != null && id != null))
+                        if ((ad2 != null) && (id != null))
                         {
                             s = search_function(ad2, id);
-                            if ((s != null && pequals(s, s_r)))
+                            if ((s != null) && (pequals(s, s_r)))
                                 s = null;
                         }
-                        if ((s != null || s_r != null))
+                        if ((s != null) || (s_r != null))
                         {
-                            if (!((argsset) != 0))
+                            if (argsset == 0)
                             {
                                 args1.setDim(1);
                                 args1.set(0, e.e1);
@@ -687,7 +687,7 @@ public class opover {
                             if (s_r != null)
                             {
                                 functionResolve(m, s_r, e.loc, this.sc, tiargs, e.e1.type, args2, null);
-                                if ((m.lastf != null && (m.lastf.errors || m.lastf.semantic3Errors)))
+                                if ((m.lastf != null) && m.lastf.errors || m.lastf.semantic3Errors)
                                 {
                                     this.result = new ErrorExp();
                                     return ;
@@ -697,21 +697,21 @@ public class opover {
                             if (s != null)
                             {
                                 functionResolve(m, s, e.loc, this.sc, tiargs, e.e2.type, args1, null);
-                                if ((m.lastf != null && (m.lastf.errors || m.lastf.semantic3Errors)))
+                                if ((m.lastf != null) && m.lastf.errors || m.lastf.semantic3Errors)
                                 {
                                     this.result = new ErrorExp();
                                     return ;
                                 }
                             }
-                            if (m.count > 1)
+                            if ((m.count > 1))
                             {
                                 e.error(new BytePtr("overloads `%s` and `%s` both match argument list for `%s`"), m.lastf.type.toChars(), m.nextf.type.toChars(), m.lastf.toChars());
                             }
-                            else if (m.last <= MATCH.nomatch)
+                            else if ((m.last <= MATCH.nomatch))
                             {
                                 m.lastf = null;
                             }
-                            if (((lastf != null && pequals(m.lastf, lastf)) || (!(s != null) && m.last <= MATCH.nomatch)))
+                            if ((lastf != null) && (pequals(m.lastf, lastf)) || (s == null) && (m.last <= MATCH.nomatch))
                             {
                                 this.result = build_overload(e.loc, this.sc, e.e1, e.e2, m.lastf != null ? m.lastf : s_r);
                             }
@@ -725,27 +725,27 @@ public class opover {
                         }
                     }
                     Expression tempResult = null;
-                    if (!((((e.op & 0xFF) == 90 && ad2 != null) && pequals(ad1, ad2))))
+                    if (!(((e.op & 0xFF) == 90) && (ad2 != null) && (pequals(ad1, ad2))))
                     {
                         this.result = checkAliasThisForLhs(ad1, this.sc, e);
                         if (this.result != null)
                         {
-                            if (((e.op & 0xFF) != 90 || (e.e1.op & 0xFF) == 20))
+                            if (((e.op & 0xFF) != 90) || ((e.e1.op & 0xFF) == 20))
                                 return ;
-                            if ((ad1.fields.length == 1 || (ad1.fields.length == 2 && ad1.vthis != null)))
+                            if ((ad1.fields.length == 1) || (ad1.fields.length == 2) && (ad1.vthis != null))
                             {
                                 VarDeclaration var = ad1.aliasthis.isVarDeclaration();
-                                if ((var != null && pequals(var.type, ad1.fields.get(0).type)))
+                                if ((var != null) && (pequals(var.type, ad1.fields.get(0).type)))
                                     return ;
                                 FuncDeclaration func = ad1.aliasthis.isFuncDeclaration();
                                 TypeFunction tf = (TypeFunction)func.type;
-                                if ((tf.isref && pequals(ad1.fields.get(0).type, tf.next)))
+                                if (tf.isref && (pequals(ad1.fields.get(0).type, tf.next)))
                                     return ;
                             }
                             tempResult = this.result;
                         }
                     }
-                    if (!((((e.op & 0xFF) == 90 && ad1 != null) && pequals(ad1, ad2))))
+                    if (!(((e.op & 0xFF) == 90) && (ad1 != null) && (pequals(ad1, ad2))))
                     {
                         this.result = checkAliasThisForRhs(ad2, this.sc, e);
                         if (this.result != null)
@@ -767,37 +767,37 @@ public class opover {
         public  void visit(EqualExp e) {
             Ref<Type> t1 = ref(e.e1.type.toBasetype());
             Ref<Type> t2 = ref(e.e2.type.toBasetype());
-            if ((((t1.value.ty & 0xFF) == ENUMTY.Tarray || (t1.value.ty & 0xFF) == ENUMTY.Tsarray) && ((t2.value.ty & 0xFF) == ENUMTY.Tarray || (t2.value.ty & 0xFF) == ENUMTY.Tsarray)))
+            if (((t1.value.ty & 0xFF) == ENUMTY.Tarray) || ((t1.value.ty & 0xFF) == ENUMTY.Tsarray) && ((t2.value.ty & 0xFF) == ENUMTY.Tarray) || ((t2.value.ty & 0xFF) == ENUMTY.Tsarray))
             {
                 Function0<Boolean> needsDirectEq = new Function0<Boolean>(){
                     public Boolean invoke(){
                         Type t1n = t1.value.nextOf().toBasetype();
                         Type t2n = t2.value.nextOf().toBasetype();
-                        if ((((((t1n.ty & 0xFF) == ENUMTY.Tchar || (t1n.ty & 0xFF) == ENUMTY.Twchar) || (t1n.ty & 0xFF) == ENUMTY.Tdchar) && (((t2n.ty & 0xFF) == ENUMTY.Tchar || (t2n.ty & 0xFF) == ENUMTY.Twchar) || (t2n.ty & 0xFF) == ENUMTY.Tdchar)) || ((t1n.ty & 0xFF) == ENUMTY.Tvoid || (t2n.ty & 0xFF) == ENUMTY.Tvoid)))
+                        if (((t1n.ty & 0xFF) == ENUMTY.Tchar) || ((t1n.ty & 0xFF) == ENUMTY.Twchar) || ((t1n.ty & 0xFF) == ENUMTY.Tdchar) && ((t2n.ty & 0xFF) == ENUMTY.Tchar) || ((t2n.ty & 0xFF) == ENUMTY.Twchar) || ((t2n.ty & 0xFF) == ENUMTY.Tdchar) || ((t1n.ty & 0xFF) == ENUMTY.Tvoid) || ((t2n.ty & 0xFF) == ENUMTY.Tvoid))
                         {
                             return false;
                         }
-                        if (!pequals(t1n.constOf(), t2n.constOf()))
+                        if ((!pequals(t1n.constOf(), t2n.constOf())))
                             return true;
                         Type t = t1n;
                         for (; t.toBasetype().nextOf() != null;) {
                             t = t.nextOf().toBasetype();
                         }
-                        if ((t.ty & 0xFF) != ENUMTY.Tstruct)
+                        if (((t.ty & 0xFF) != ENUMTY.Tstruct))
                             return false;
-                        if ((global.params.useTypeInfo && Type.dtypeinfo != null))
+                        if (global.params.useTypeInfo && (Type.dtypeinfo != null))
                             semanticTypeInfo(sc, t);
                         return ((TypeStruct)t).sym.hasIdentityEquals;
                     }
                 };
-                if ((needsDirectEq.invoke() && !(((t1.value.ty & 0xFF) == ENUMTY.Tarray && (t2.value.ty & 0xFF) == ENUMTY.Tarray))))
+                if (needsDirectEq.invoke() && !(((t1.value.ty & 0xFF) == ENUMTY.Tarray) && ((t2.value.ty & 0xFF) == ENUMTY.Tarray)))
                 {
                     Expression eeq = new IdentifierExp(e.loc, Id.__ArrayEq);
                     this.result = new CallExp(e.loc, eeq, e.e1, e.e2);
-                    if ((e.op & 0xFF) == 59)
+                    if (((e.op & 0xFF) == 59))
                         this.result = new NotExp(e.loc, this.result);
                     this.result = trySemantic(this.result, this.sc);
-                    if (!(this.result != null))
+                    if (this.result == null)
                     {
                         e.error(new BytePtr("cannot compare `%s` and `%s`"), t1.value.toChars(), t2.value.toChars());
                         this.result = new ErrorExp();
@@ -805,21 +805,21 @@ public class opover {
                     return ;
                 }
             }
-            if ((((t1.value.ty & 0xFF) == ENUMTY.Tclass && (e.e2.op & 0xFF) == 13) || ((t2.value.ty & 0xFF) == ENUMTY.Tclass && (e.e1.op & 0xFF) == 13)))
+            if (((t1.value.ty & 0xFF) == ENUMTY.Tclass) && ((e.e2.op & 0xFF) == 13) || ((t2.value.ty & 0xFF) == ENUMTY.Tclass) && ((e.e1.op & 0xFF) == 13))
             {
-                e.error(new BytePtr("use `%s` instead of `%s` when comparing with `null`"), Token.toChars((e.op & 0xFF) == 58 ? TOK.identity : TOK.notIdentity), Token.toChars(e.op));
+                e.error(new BytePtr("use `%s` instead of `%s` when comparing with `null`"), Token.toChars(((e.op & 0xFF) == 58) ? TOK.identity : TOK.notIdentity), Token.toChars(e.op));
                 this.result = new ErrorExp();
                 return ;
             }
-            if ((((t1.value.ty & 0xFF) == ENUMTY.Tclass && (t2.value.ty & 0xFF) == ENUMTY.Tnull) || ((t1.value.ty & 0xFF) == ENUMTY.Tnull && (t2.value.ty & 0xFF) == ENUMTY.Tclass)))
+            if (((t1.value.ty & 0xFF) == ENUMTY.Tclass) && ((t2.value.ty & 0xFF) == ENUMTY.Tnull) || ((t1.value.ty & 0xFF) == ENUMTY.Tnull) && ((t2.value.ty & 0xFF) == ENUMTY.Tclass))
             {
                 return ;
             }
-            if (((t1.value.ty & 0xFF) == ENUMTY.Tclass && (t2.value.ty & 0xFF) == ENUMTY.Tclass))
+            if (((t1.value.ty & 0xFF) == ENUMTY.Tclass) && ((t2.value.ty & 0xFF) == ENUMTY.Tclass))
             {
                 ClassDeclaration cd1 = t1.value.isClassHandle();
                 ClassDeclaration cd2 = t2.value.isClassHandle();
-                if (!((cd1.classKind == ClassKind.cpp || cd2.classKind == ClassKind.cpp)))
+                if (!((cd1.classKind == ClassKind.cpp) || (cd2.classKind == ClassKind.cpp)))
                 {
                     Expression e1x = e.e1;
                     Expression e2x = e.e2;
@@ -832,7 +832,7 @@ public class opover {
                     this.result = new DotIdExp(e.loc, this.result, Id.object);
                     this.result = new DotIdExp(e.loc, this.result, Id.eq);
                     this.result = new CallExp(e.loc, this.result, e1x, e2x);
-                    if ((e.op & 0xFF) == 59)
+                    if (((e.op & 0xFF) == 59))
                         this.result = new NotExp(e.loc, this.result);
                     this.result = expressionSemantic(this.result, this.sc);
                     return ;
@@ -841,42 +841,42 @@ public class opover {
             this.result = compare_overload(e, this.sc, Id.eq, null);
             if (this.result != null)
             {
-                if (((this.result.op & 0xFF) == 18 && (e.op & 0xFF) == 59))
+                if (((this.result.op & 0xFF) == 18) && ((e.op & 0xFF) == 59))
                 {
                     this.result = new NotExp(this.result.loc, this.result);
                     this.result = expressionSemantic(this.result, this.sc);
                 }
                 return ;
             }
-            if (((t1.value.ty & 0xFF) == ENUMTY.Tarray && (t2.value.ty & 0xFF) == ENUMTY.Tarray))
+            if (((t1.value.ty & 0xFF) == ENUMTY.Tarray) && ((t2.value.ty & 0xFF) == ENUMTY.Tarray))
                 return ;
-            if (((t1.value.ty & 0xFF) == ENUMTY.Tpointer || (t2.value.ty & 0xFF) == ENUMTY.Tpointer))
+            if (((t1.value.ty & 0xFF) == ENUMTY.Tpointer) || ((t2.value.ty & 0xFF) == ENUMTY.Tpointer))
             {
-                byte op2 = (e.op & 0xFF) == 58 ? TOK.identity : TOK.notIdentity;
+                byte op2 = ((e.op & 0xFF) == 58) ? TOK.identity : TOK.notIdentity;
                 this.result = new IdentityExp(op2, e.loc, e.e1, e.e2);
                 this.result = expressionSemantic(this.result, this.sc);
                 return ;
             }
-            if (((t1.value.ty & 0xFF) == ENUMTY.Tstruct && (t2.value.ty & 0xFF) == ENUMTY.Tstruct))
+            if (((t1.value.ty & 0xFF) == ENUMTY.Tstruct) && ((t2.value.ty & 0xFF) == ENUMTY.Tstruct))
             {
                 StructDeclaration sd = ((TypeStruct)t1.value).sym;
-                if (!pequals(sd, ((TypeStruct)t2.value).sym))
+                if ((!pequals(sd, ((TypeStruct)t2.value).sym)))
                     return ;
-                if ((!(global.params.fieldwise) && !(needOpEquals(sd))))
+                if (!global.params.fieldwise && !needOpEquals(sd))
                 {
-                    byte op2 = (e.op & 0xFF) == 58 ? TOK.identity : TOK.notIdentity;
+                    byte op2 = ((e.op & 0xFF) == 58) ? TOK.identity : TOK.notIdentity;
                     this.result = new IdentityExp(op2, e.loc, e.e1, e.e2);
                     this.result = expressionSemantic(this.result, this.sc);
                     return ;
                 }
-                if ((e.att1 != null && pequals(t1.value, e.att1)))
+                if ((e.att1 != null) && (pequals(t1.value, e.att1)))
                     return ;
-                if ((e.att2 != null && pequals(t2.value, e.att2)))
+                if ((e.att2 != null) && (pequals(t2.value, e.att2)))
                     return ;
                 e = (EqualExp)e.copy();
-                if (!(e.att1 != null))
+                if (e.att1 == null)
                     e.att1 = t1.value;
-                if (!(e.att2 != null))
+                if (e.att2 == null)
                     e.att2 = t2.value;
                 e.e1 = new DotIdExp(e.loc, e.e1, Id._tupleof);
                 e.e2 = new DotIdExp(e.loc, e.e2, Id._tupleof);
@@ -884,25 +884,25 @@ public class opover {
                 (sc2).flags = (sc2).flags & -1025 | 2;
                 this.result = expressionSemantic(e, sc2);
                 (sc2).pop();
-                if (((this.result.op & 0xFF) == (e.op & 0xFF) && pequals(((EqualExp)this.result).e1.type.toBasetype(), t1.value)))
+                if (((this.result.op & 0xFF) == (e.op & 0xFF)) && (pequals(((EqualExp)this.result).e1.type.toBasetype(), t1.value)))
                 {
                     e.error(new BytePtr("cannot compare `%s` because its auto generated member-wise equality has recursive definition"), t1.value.toChars());
                     this.result = new ErrorExp();
                 }
                 return ;
             }
-            if (((e.e1.op & 0xFF) == 126 && (e.e2.op & 0xFF) == 126))
+            if (((e.e1.op & 0xFF) == 126) && ((e.e2.op & 0xFF) == 126))
             {
                 TupleExp tup1 = (TupleExp)e.e1;
                 TupleExp tup2 = (TupleExp)e.e2;
                 int dim = (tup1.exps).length;
-                if (dim != (tup2.exps).length)
+                if ((dim != (tup2.exps).length))
                 {
                     e.error(new BytePtr("mismatched tuple lengths, `%d` and `%d`"), dim, (tup2.exps).length);
                     this.result = new ErrorExp();
                     return ;
                 }
-                if (dim == 0)
+                if ((dim == 0))
                 {
                     this.result = new IntegerExp(e.loc, (((e.op & 0xFF) == 58) ? 1 : 0), Type.tbool);
                 }
@@ -910,15 +910,15 @@ public class opover {
                 {
                     {
                         int i = 0;
-                        for (; i < dim;i++){
+                        for (; (i < dim);i++){
                             Expression ex1 = (tup1.exps).get(i);
                             Expression ex2 = (tup2.exps).get(i);
                             EqualExp eeq = new EqualExp(e.op, e.loc, ex1, ex2);
                             eeq.att1 = e.att1;
                             eeq.att2 = e.att2;
-                            if (!(this.result != null))
+                            if (this.result == null)
                                 this.result = eeq;
-                            else if ((e.op & 0xFF) == 58)
+                            else if (((e.op & 0xFF) == 58))
                                 this.result = new LogicalExp(e.loc, TOK.andAnd, this.result, eeq);
                             else
                                 this.result = new LogicalExp(e.loc, TOK.orOr, this.result, eeq);
@@ -937,22 +937,22 @@ public class opover {
         }
 
         public  void visit(BinAssignExp e) {
-            if ((e.e1.op & 0xFF) == 17)
+            if (((e.e1.op & 0xFF) == 17))
             {
                 ArrayExp ae = (ArrayExp)e.e1;
                 ae.e1 = expressionSemantic(ae.e1, this.sc);
                 ae.e1 = resolveProperties(this.sc, ae.e1);
                 Expression ae1old = ae.e1;
-                boolean maybeSlice = ((ae.arguments).length == 0 || ((ae.arguments).length == 1 && ((ae.arguments).get(0).op & 0xFF) == 231));
+                boolean maybeSlice = ((ae.arguments).length == 0) || ((ae.arguments).length == 1) && (((ae.arguments).get(0).op & 0xFF) == 231);
                 IntervalExp ie = null;
-                if ((maybeSlice && ((ae.arguments).length) != 0))
+                if (maybeSlice && ((ae.arguments).length != 0))
                 {
-                    assert(((ae.arguments).get(0).op & 0xFF) == 231);
+                    assert((((ae.arguments).get(0).op & 0xFF) == 231));
                     ie = (IntervalExp)(ae.arguments).get(0);
                 }
             L_outer3:
                 for (; true;){
-                    if ((ae.e1.op & 0xFF) == 127)
+                    if (((ae.e1.op & 0xFF) == 127))
                     {
                         this.result = ae.e1;
                         return ;
@@ -962,18 +962,18 @@ public class opover {
                     ae.lengthVar = null;
                     Type t1b = ae.e1.type.toBasetype();
                     AggregateDeclaration ad = isAggregate(t1b);
-                    if (!(ad != null))
+                    if (ad == null)
                         break;
                     try {
                         if (search_function(ad, Id.opIndexOpAssign) != null)
                         {
                             this.result = resolveOpDollar(this.sc, ae, ptr(e0));
-                            if (!(this.result != null))
+                            if (this.result == null)
                                 /*goto Lfallback*/throw Dispatch0.INSTANCE;
-                            if ((this.result.op & 0xFF) == 127)
+                            if (((this.result.op & 0xFF) == 127))
                                 return ;
                             this.result = expressionSemantic(e.e2, this.sc);
-                            if ((this.result.op & 0xFF) == 127)
+                            if (((this.result.op & 0xFF) == 127))
                                 return ;
                             e.e2 = this.result;
                             DArray<Expression> a = (ae.arguments).copy();
@@ -994,13 +994,13 @@ public class opover {
                     }
                     catch(Dispatch0 __d){}
                 /*Lfallback:*/
-                    if ((maybeSlice && search_function(ad, Id.opSliceOpAssign) != null))
+                    if (maybeSlice && (search_function(ad, Id.opSliceOpAssign) != null))
                     {
                         this.result = resolveOpDollar(this.sc, ae, ie, ptr(e0));
-                        if ((this.result.op & 0xFF) == 127)
+                        if (((this.result.op & 0xFF) == 127))
                             return ;
                         this.result = expressionSemantic(e.e2, this.sc);
-                        if ((this.result.op & 0xFF) == 127)
+                        if (((this.result.op & 0xFF) == 127))
                             return ;
                         e.e2 = this.result;
                         DArray<Expression> a = new DArray<Expression>();
@@ -1017,9 +1017,9 @@ public class opover {
                         this.result = Expression.combine(e0.value, this.result);
                         return ;
                     }
-                    if ((ad.aliasthis != null && !pequals(t1b, ae.att1)))
+                    if ((ad.aliasthis != null) && (!pequals(t1b, ae.att1)))
                     {
-                        if ((!(ae.att1 != null) && t1b.checkAliasThisRec()))
+                        if ((ae.att1 == null) && t1b.checkAliasThisRec())
                             ae.att1 = t1b;
                         ae.e1 = resolveAliasThis(this.sc, ae1save, true);
                         if (ae.e1 != null)
@@ -1033,7 +1033,7 @@ public class opover {
             this.result = binSemanticProp(e, this.sc);
             if (this.result != null)
                 return ;
-            if (((e.e1.type.ty & 0xFF) == ENUMTY.Terror || (e.e2.type.ty & 0xFF) == ENUMTY.Terror))
+            if (((e.e1.type.ty & 0xFF) == ENUMTY.Terror) || ((e.e2.type.ty & 0xFF) == ENUMTY.Terror))
             {
                 this.result = new ErrorExp();
                 return ;
@@ -1043,17 +1043,17 @@ public class opover {
             try {
                 AggregateDeclaration ad1 = isAggregate(e.e1.type);
                 Dsymbol s = null;
-                if ((ad1 != null && id != null))
+                if ((ad1 != null) && (id != null))
                 {
                     s = search_function(ad1, id);
                 }
                 DArray<RootObject> tiargs = null;
-                if (!(s != null))
+                if (s == null)
                 {
                     if (ad1 != null)
                     {
                         s = search_function(ad1, Id.opOpAssign);
-                        if ((s != null && !(s.isTemplateDeclaration() != null)))
+                        if ((s != null) && (s.isTemplateDeclaration() == null))
                         {
                             e.error(new BytePtr("`%s.opOpAssign` isn't a template"), e.e1.toChars());
                             this.result = new ErrorExp();
@@ -1076,17 +1076,17 @@ public class opover {
                         if (s != null)
                         {
                             functionResolve(m, s, e.loc, this.sc, tiargs, e.e1.type, args2, null);
-                            if ((m.lastf != null && (m.lastf.errors || m.lastf.semantic3Errors)))
+                            if ((m.lastf != null) && m.lastf.errors || m.lastf.semantic3Errors)
                             {
                                 this.result = new ErrorExp();
                                 return ;
                             }
                         }
-                        if (m.count > 1)
+                        if ((m.count > 1))
                         {
                             e.error(new BytePtr("overloads `%s` and `%s` both match argument list for `%s`"), m.lastf.type.toChars(), m.nextf.type.toChars(), m.lastf.toChars());
                         }
-                        else if (m.last <= MATCH.nomatch)
+                        else if ((m.last <= MATCH.nomatch))
                         {
                             if (tiargs != null)
                                 /*goto L1*/throw Dispatch0.INSTANCE;
@@ -1099,7 +1099,7 @@ public class opover {
                 catch(Dispatch0 __d){}
             /*L1:*/
                 this.result = checkAliasThisForLhs(ad1, this.sc, e);
-                if ((this.result != null || !(s != null)))
+                if ((this.result != null) || (s == null))
                     return ;
                 this.result = checkAliasThisForRhs(isAggregate(e.e2.type), this.sc, e);
             }
@@ -1197,17 +1197,17 @@ public class opover {
     }
 
     public static Expression checkAliasThisForLhs(AggregateDeclaration ad, Scope sc, BinExp e) {
-        if ((!(ad != null) || !(ad.aliasthis != null)))
+        if ((ad == null) || (ad.aliasthis == null))
             return null;
-        if ((e.att1 != null && pequals(e.e1.type, e.att1)))
+        if ((e.att1 != null) && (pequals(e.e1.type, e.att1)))
             return null;
         Expression e1 = new DotIdExp(e.loc, e.e1, ad.aliasthis.ident);
         BinExp be = (BinExp)e.copy();
-        if ((!(be.att1 != null) && e.e1.type.checkAliasThisRec()))
+        if ((be.att1 == null) && e.e1.type.checkAliasThisRec())
             be.att1 = e.e1.type;
         be.e1 = e1;
         Expression result = null;
-        if ((be.op & 0xFF) == 71)
+        if (((be.op & 0xFF) == 71))
             result = op_overload(be, sc, null);
         else
             result = trySemantic(be, sc);
@@ -1215,17 +1215,17 @@ public class opover {
     }
 
     public static Expression checkAliasThisForRhs(AggregateDeclaration ad, Scope sc, BinExp e) {
-        if ((!(ad != null) || !(ad.aliasthis != null)))
+        if ((ad == null) || (ad.aliasthis == null))
             return null;
-        if ((e.att2 != null && pequals(e.e2.type, e.att2)))
+        if ((e.att2 != null) && (pequals(e.e2.type, e.att2)))
             return null;
         Expression e2 = new DotIdExp(e.loc, e.e2, ad.aliasthis.ident);
         BinExp be = (BinExp)e.copy();
-        if ((!(be.att2 != null) && e.e2.type.checkAliasThisRec()))
+        if ((be.att2 == null) && e.e2.type.checkAliasThisRec())
             be.att2 = e.e2.type;
         be.e2 = e2;
         Expression result = null;
-        if ((be.op & 0xFF) == 71)
+        if (((be.op & 0xFF) == 71))
             result = op_overload(be, sc, null);
         else
             result = trySemantic(be, sc);
@@ -1252,11 +1252,11 @@ public class opover {
         if (ad2 != null)
         {
             s_r = search_function(ad2, id);
-            if (pequals(s, s_r))
+            if ((pequals(s, s_r)))
                 s_r = null;
         }
         DArray<RootObject> tiargs = null;
-        if ((s != null || s_r != null))
+        if ((s != null) || (s_r != null))
         {
             DArray<Expression> args1 = args1 = new DArray<Expression>(1);
             try {
@@ -1275,7 +1275,7 @@ public class opover {
                     if (s != null)
                     {
                         functionResolve(m, s, e.loc, sc, tiargs, e.e1.type, args2, null);
-                        if ((m.lastf != null && (m.lastf.errors || m.lastf.semantic3Errors)))
+                        if ((m.lastf != null) && m.lastf.errors || m.lastf.semantic3Errors)
                             return new ErrorExp();
                     }
                     FuncDeclaration lastf = m.lastf;
@@ -1283,22 +1283,22 @@ public class opover {
                     if (s_r != null)
                     {
                         functionResolve(m, s_r, e.loc, sc, tiargs, e.e2.type, args1, null);
-                        if ((m.lastf != null && (m.lastf.errors || m.lastf.semantic3Errors)))
+                        if ((m.lastf != null) && m.lastf.errors || m.lastf.semantic3Errors)
                             return new ErrorExp();
                     }
-                    if (m.count > 1)
+                    if ((m.count > 1))
                     {
-                        if (!(((pequals(m.lastf, lastf) && m.count == 2) && count == 1)))
+                        if (!((pequals(m.lastf, lastf)) && (m.count == 2) && (count == 1)))
                         {
                             e.error(new BytePtr("overloads `%s` and `%s` both match argument list for `%s`"), m.lastf.type.toChars(), m.nextf.type.toChars(), m.lastf.toChars());
                         }
                     }
-                    else if (m.last <= MATCH.nomatch)
+                    else if ((m.last <= MATCH.nomatch))
                     {
                         m.lastf = null;
                     }
                     Expression result = null;
-                    if (((lastf != null && pequals(m.lastf, lastf)) || (!(s_r != null) && m.last <= MATCH.nomatch)))
+                    if ((lastf != null) && (pequals(m.lastf, lastf)) || (s_r == null) && (m.last <= MATCH.nomatch))
                     {
                         result = build_overload(e.loc, sc, e.e1, e.e2, m.lastf != null ? m.lastf : s);
                     }
@@ -1316,7 +1316,7 @@ public class opover {
             finally {
             }
         }
-        if ((((e.op & 0xFF) == 58 || (e.op & 0xFF) == 59) && pequals(ad1, ad2)))
+        if (((e.op & 0xFF) == 58) || ((e.op & 0xFF) == 59) && (pequals(ad1, ad2)))
             return null;
         Expression result = checkAliasThisForLhs(ad1, sc, e);
         return result != null ? result : checkAliasThisForRhs(isAggregate(e.e2.type), sc, e);
@@ -1341,7 +1341,7 @@ public class opover {
         {
             Dsymbol s2 = s.toAlias();
             FuncDeclaration fd = s2.isFuncDeclaration();
-            if ((fd != null && (fd.type.ty & 0xFF) == ENUMTY.Tfunction))
+            if ((fd != null) && ((fd.type.ty & 0xFF) == ENUMTY.Tfunction))
                 return fd;
             TemplateDeclaration td = s2.isTemplateDeclaration();
             if (td != null)
@@ -1355,11 +1355,11 @@ public class opover {
         boolean sliced = false;
         Type att = null;
         Expression aggr = feaggr.value;
-        for (; (1) != 0;){
+        for (; 1 != 0;){
             aggr = expressionSemantic(aggr, sc);
             aggr = resolveProperties(sc, aggr);
             aggr = aggr.optimize(0, false);
-            if ((!(aggr.type != null) || (aggr.op & 0xFF) == 127))
+            if ((aggr.type == null) || ((aggr.op & 0xFF) == 127))
                 return false;
             Type tab = aggr.type.toBasetype();
             switch ((tab.ty & 0xFF))
@@ -1371,15 +1371,15 @@ public class opover {
                     break;
                 case 7:
                 case 8:
-                    AggregateDeclaration ad = (tab.ty & 0xFF) == ENUMTY.Tclass ? ((TypeClass)tab).sym : ((TypeStruct)tab).sym;
-                    if (!(sliced))
+                    AggregateDeclaration ad = ((tab.ty & 0xFF) == ENUMTY.Tclass) ? ((TypeClass)tab).sym : ((TypeStruct)tab).sym;
+                    if (!sliced)
                     {
                         sapply.value = search_function(ad, isForeach ? Id.apply : Id.applyReverse);
                         if (sapply.value != null)
                         {
                             break;
                         }
-                        if ((feaggr.value.op & 0xFF) != 20)
+                        if (((feaggr.value.op & 0xFF) != 20))
                         {
                             Expression rinit = new ArrayExp(aggr.loc, feaggr.value, null);
                             rinit = trySemantic(rinit, sc);
@@ -1397,16 +1397,16 @@ public class opover {
                     }
                     if (ad.aliasthis != null)
                     {
-                        if (pequals(att, tab))
+                        if ((pequals(att, tab)))
                             return false;
-                        if ((!(att != null) && tab.checkAliasThisRec()))
+                        if ((att == null) && tab.checkAliasThisRec())
                             att = tab;
                         aggr = resolveAliasThis(sc, aggr, false);
                         continue;
                     }
                     return false;
                 case 10:
-                    if ((aggr.op & 0xFF) == 160)
+                    if (((aggr.op & 0xFF) == 160))
                     {
                         sapply.value = ((DelegateExp)aggr).func;
                     }
@@ -1423,14 +1423,14 @@ public class opover {
     }
 
     public static boolean inferApplyArgTypes(ForeachStatement fes, Scope sc, Ref<Dsymbol> sapply) {
-        if ((fes.parameters == null || !(((fes.parameters).length) != 0)))
+        if ((fes.parameters == null) || ((fes.parameters).length == 0))
             return false;
         if (sapply.value != null)
         {
             {
                 Slice<Parameter> __r1606 = (fes.parameters).opSlice().copy();
                 int __key1607 = 0;
-                for (; __key1607 < __r1606.getLength();__key1607 += 1) {
+                for (; (__key1607 < __r1606.getLength());__key1607 += 1) {
                     Parameter p = __r1606.get(__key1607);
                     if (p.type != null)
                     {
@@ -1441,16 +1441,16 @@ public class opover {
             }
             Expression ethis = null;
             Type tab = fes.aggr.type.toBasetype();
-            if (((tab.ty & 0xFF) == ENUMTY.Tclass || (tab.ty & 0xFF) == ENUMTY.Tstruct))
+            if (((tab.ty & 0xFF) == ENUMTY.Tclass) || ((tab.ty & 0xFF) == ENUMTY.Tstruct))
                 ethis = fes.aggr;
             else
             {
-                assert(((tab.ty & 0xFF) == ENUMTY.Tdelegate && (fes.aggr.op & 0xFF) == 160));
+                assert(((tab.ty & 0xFF) == ENUMTY.Tdelegate) && ((fes.aggr.op & 0xFF) == 160));
                 ethis = ((DelegateExp)fes.aggr).e1;
             }
             {
                 FuncDeclaration fd = sapply.value.isFuncDeclaration();
-                if (fd != null)
+                if ((fd) != null)
                 {
                     FuncDeclaration fdapply = findBestOpApplyMatch(ethis, fd, fes.parameters);
                     if (fdapply != null)
@@ -1473,16 +1473,16 @@ public class opover {
             case 0:
             case 1:
             case 37:
-                if ((fes.parameters).length == 2)
+                if (((fes.parameters).length == 2))
                 {
-                    if (!(p.type != null))
+                    if (p.type == null)
                     {
                         p.type = Type.tsize_t;
                         p.type = p.type.addStorageClass(p.storageClass);
                     }
                     p = (fes.parameters).get(1);
                 }
-                if ((!(p.type != null) && (tab.ty & 0xFF) != ENUMTY.Ttuple))
+                if ((p.type == null) && ((tab.ty & 0xFF) != ENUMTY.Ttuple))
                 {
                     p.type = tab.nextOf();
                     p.type = p.type.addStorageClass(p.storageClass);
@@ -1490,9 +1490,9 @@ public class opover {
                 break;
             case 2:
                 TypeAArray taa = (TypeAArray)tab;
-                if ((fes.parameters).length == 2)
+                if (((fes.parameters).length == 2))
                 {
-                    if (!(p.type != null))
+                    if (p.type == null)
                     {
                         p.type = taa.index;
                         p.type = p.type.addStorageClass(p.storageClass);
@@ -1501,7 +1501,7 @@ public class opover {
                     }
                     p = (fes.parameters).get(1);
                 }
-                if (!(p.type != null))
+                if (p.type == null)
                 {
                     p.type = taa.next;
                     p.type = p.type.addStorageClass(p.storageClass);
@@ -1509,12 +1509,12 @@ public class opover {
                 break;
             case 7:
             case 8:
-                AggregateDeclaration ad = (tab.ty & 0xFF) == ENUMTY.Tclass ? ((TypeClass)tab).sym : ((TypeStruct)tab).sym;
-                if ((fes.parameters).length == 1)
+                AggregateDeclaration ad = ((tab.ty & 0xFF) == ENUMTY.Tclass) ? ((TypeClass)tab).sym : ((TypeStruct)tab).sym;
+                if (((fes.parameters).length == 1))
                 {
-                    if (!(p.type != null))
+                    if (p.type == null)
                     {
-                        Identifier id = (fes.op & 0xFF) == 201 ? Id.Ffront : Id.Fback;
+                        Identifier id = ((fes.op & 0xFF) == 201) ? Id.Ffront : Id.Fback;
                         Dsymbol s = ad.search(Loc.initial, id, 8);
                         FuncDeclaration fd = s != null ? s.isFuncDeclaration() : null;
                         if (fd != null)
@@ -1526,10 +1526,10 @@ public class opover {
                                 p.type = p.type.addStorageClass(p.storageClass);
                             }
                         }
-                        else if ((s != null && s.isTemplateDeclaration() != null))
+                        else if ((s != null) && (s.isTemplateDeclaration() != null))
                         {
                         }
-                        else if ((s != null && s.isDeclaration() != null))
+                        else if ((s != null) && (s.isDeclaration() != null))
                             p.type = ((Declaration)s).type;
                         else
                             break;
@@ -1538,7 +1538,7 @@ public class opover {
                 }
                 break;
             case 10:
-                if (!(matchParamsToOpApply((TypeFunction)tab.nextOf(), fes.parameters, true)))
+                if (!matchParamsToOpApply((TypeFunction)tab.nextOf(), fes.parameters, true))
                     return false;
                 break;
             default:
@@ -1555,29 +1555,29 @@ public class opover {
         Function1<Dsymbol,Integer> __lambda4 = new Function1<Dsymbol,Integer>(){
             public Integer invoke(Dsymbol s){
                 FuncDeclaration f = s.isFuncDeclaration();
-                if (!(f != null))
+                if (f == null)
                     return 0;
                 TypeFunction tf = (TypeFunction)f.type;
                 int m = MATCH.exact;
                 if (f.isThis() != null)
                 {
-                    if (!(MODimplicitConv(mod, tf.mod)))
+                    if (!MODimplicitConv(mod, tf.mod))
                         m = MATCH.nomatch;
-                    else if ((mod & 0xFF) != (tf.mod & 0xFF))
+                    else if (((mod & 0xFF) != (tf.mod & 0xFF)))
                         m = MATCH.constant;
                 }
-                if (!(matchParamsToOpApply(tf, parameters, false)))
+                if (!matchParamsToOpApply(tf, parameters, false))
                     m = MATCH.nomatch;
-                if (m > match)
+                if ((m > match))
                 {
                     fd_best = f;
                     fd_ambig = null;
                     match = m;
                 }
-                else if ((m == match && m > MATCH.nomatch))
+                else if ((m == match) && (m > MATCH.nomatch))
                 {
                     assert(fd_best != null);
-                    if ((tf.covariant(fd_best.type, null, true) != 1 && fd_best.type.covariant(tf, null, true) != 1))
+                    if ((tf.covariant(fd_best.type, null, true) != 1) && (fd_best.type.covariant(tf, null, true) != 1))
                         fd_ambig = f;
                 }
                 return 0;
@@ -1594,26 +1594,26 @@ public class opover {
 
     public static boolean matchParamsToOpApply(TypeFunction tf, DArray<Parameter> parameters, boolean infer) {
         boolean nomatch = false;
-        if (tf.parameterList.length() != 1)
+        if ((tf.parameterList.length() != 1))
             return false;
         Parameter p0 = tf.parameterList.get(0);
-        if ((p0.type.ty & 0xFF) != ENUMTY.Tdelegate)
+        if (((p0.type.ty & 0xFF) != ENUMTY.Tdelegate))
             return false;
         TypeFunction tdg = (TypeFunction)p0.type.nextOf();
-        assert((tdg.ty & 0xFF) == ENUMTY.Tfunction);
+        assert(((tdg.ty & 0xFF) == ENUMTY.Tfunction));
         int nparams = tdg.parameterList.length();
-        if (((nparams == 0 || nparams != (parameters).length) || tdg.parameterList.varargs != VarArg.none))
+        if ((nparams == 0) || (nparams != (parameters).length) || (tdg.parameterList.varargs != VarArg.none))
             return false;
         {
             Slice<Parameter> __r1609 = (parameters).opSlice().copy();
             int __key1608 = 0;
-            for (; __key1608 < __r1609.getLength();__key1608 += 1) {
+            for (; (__key1608 < __r1609.getLength());__key1608 += 1) {
                 Parameter p = __r1609.get(__key1608);
                 int u = __key1608;
                 Parameter param = tdg.parameterList.get(u);
                 if (p.type != null)
                 {
-                    if (!(p.type.equals(param.type)))
+                    if (!p.type.equals(param.type))
                         return false;
                 }
                 else if (infer)

@@ -51,12 +51,12 @@ public class blockexit {
             this.result = 1;
             if (s.exp != null)
             {
-                if ((s.exp.op & 0xFF) == 125)
+                if (((s.exp.op & 0xFF) == 125))
                 {
                     this.result = 16;
                     return ;
                 }
-                if ((s.exp.op & 0xFF) == 14)
+                if (((s.exp.op & 0xFF) == 14))
                 {
                     AssertExp a = (AssertExp)s.exp;
                     if (a.e1.isBool(false))
@@ -71,7 +71,7 @@ public class blockexit {
         }
 
         public  void visit(CompileStatement s) {
-            assert((global.errors) != 0);
+            assert(global.errors != 0);
             this.result = 1;
         }
 
@@ -81,21 +81,21 @@ public class blockexit {
             {
                 Slice<Statement> __r801 = (cs.statements).opSlice().copy();
                 int __key802 = 0;
-                for (; __key802 < __r801.getLength();__key802 += 1) {
+                for (; (__key802 < __r801.getLength());__key802 += 1) {
                     Statement s = __r801.get(__key802);
                     if (s != null)
                     {
-                        if (((this.result & BE.fallthru) != 0 && slast != null))
+                        if (((this.result & BE.fallthru) != 0) && (slast != null))
                         {
                             slast = slast.last();
-                            if (((slast != null && (slast.isCaseStatement() != null || slast.isDefaultStatement() != null)) && (s.isCaseStatement() != null || s.isDefaultStatement() != null)))
+                            if ((slast != null) && (slast.isCaseStatement() != null) || (slast.isDefaultStatement() != null) && (s.isCaseStatement() != null) || (s.isDefaultStatement() != null))
                             {
                                 CaseStatement sc = slast.isCaseStatement();
                                 DefaultStatement sd = slast.isDefaultStatement();
-                                if ((sc != null && ((!(sc.statement.hasCode()) || sc.statement.isCaseStatement() != null) || sc.statement.isErrorStatement() != null)))
+                                if ((sc != null) && !sc.statement.hasCode() || (sc.statement.isCaseStatement() != null) || (sc.statement.isErrorStatement() != null))
                                 {
                                 }
-                                else if ((sd != null && ((!(sd.statement.hasCode()) || sd.statement.isCaseStatement() != null) || sd.statement.isErrorStatement() != null)))
+                                else if ((sd != null) && !sd.statement.hasCode() || (sd.statement.isCaseStatement() != null) || (sd.statement.isErrorStatement() != null))
                                 {
                                 }
                                 else
@@ -105,9 +105,9 @@ public class blockexit {
                                 }
                             }
                         }
-                        if ((!((this.result & BE.fallthru) != 0) && !(s.comeFrom())))
+                        if (((this.result & BE.fallthru) == 0) && !s.comeFrom())
                         {
-                            if ((blockExit(s, this.func, this.mustNotThrow) != BE.halt && s.hasCode()))
+                            if ((blockExit(s, this.func, this.mustNotThrow) != BE.halt) && s.hasCode())
                                 s.warning(new BytePtr("statement is not reachable"));
                         }
                         else
@@ -126,13 +126,13 @@ public class blockexit {
             {
                 Slice<Statement> __r803 = (uls.statements).opSlice().copy();
                 int __key804 = 0;
-                for (; __key804 < __r803.getLength();__key804 += 1) {
+                for (; (__key804 < __r803.getLength());__key804 += 1) {
                     Statement s = __r803.get(__key804);
                     if (s != null)
                     {
                         int r = blockExit(s, this.func, this.mustNotThrow);
                         this.result |= r & -98;
-                        if ((r & 97) == 0)
+                        if (((r & 97) == 0))
                             this.result &= -2;
                     }
                 }
@@ -144,7 +144,7 @@ public class blockexit {
         }
 
         public  void visit(WhileStatement s) {
-            assert((global.errors) != 0);
+            assert(global.errors != 0);
             this.result = 1;
         }
 
@@ -152,7 +152,7 @@ public class blockexit {
             if (s._body != null)
             {
                 this.result = blockExit(s._body, this.func, this.mustNotThrow);
-                if (this.result == BE.break_)
+                if ((this.result == BE.break_))
                 {
                     this.result = 1;
                     return ;
@@ -166,7 +166,7 @@ public class blockexit {
             {
                 if (canThrow(s.condition, this.func, this.mustNotThrow))
                     this.result |= BE.throw_;
-                if ((!((this.result & BE.break_) != 0) && s.condition.isBool(true)))
+                if (((this.result & BE.break_) == 0) && s.condition.isBool(true))
                     this.result &= -2;
             }
             this.result &= -97;
@@ -177,7 +177,7 @@ public class blockexit {
             if (s._init != null)
             {
                 this.result = blockExit(s._init, this.func, this.mustNotThrow);
-                if (!((this.result & BE.fallthru) != 0))
+                if ((this.result & BE.fallthru) == 0)
                     return ;
             }
             if (s.condition != null)
@@ -198,7 +198,7 @@ public class blockexit {
                     this.result |= BE.fallthru;
                 this.result |= r & -98;
             }
-            if ((s.increment != null && canThrow(s.increment, this.func, this.mustNotThrow)))
+            if ((s.increment != null) && canThrow(s.increment, this.func, this.mustNotThrow))
                 this.result |= BE.throw_;
         }
 
@@ -211,7 +211,7 @@ public class blockexit {
         }
 
         public  void visit(ForeachRangeStatement s) {
-            assert((global.errors) != 0);
+            assert(global.errors != 0);
             this.result = 1;
         }
 
@@ -287,7 +287,7 @@ public class blockexit {
 
         public  void visit(ReturnStatement s) {
             this.result = 4;
-            if ((s.exp != null && canThrow(s.exp, this.func, this.mustNotThrow)))
+            if ((s.exp != null) && canThrow(s.exp, this.func, this.mustNotThrow))
                 this.result |= BE.throw_;
         }
 
@@ -317,28 +317,28 @@ public class blockexit {
             {
                 Slice<Catch> __r805 = (s.catches).opSlice().copy();
                 int __key806 = 0;
-                for (; __key806 < __r805.getLength();__key806 += 1) {
+                for (; (__key806 < __r805.getLength());__key806 += 1) {
                     Catch c = __r805.get(__key806);
-                    if (pequals(c.type, Type.terror))
+                    if ((pequals(c.type, Type.terror)))
                         continue;
                     int cresult = blockExit(c.handler, this.func, this.mustNotThrow);
                     Identifier id = c.type.toBasetype().isClassHandle().ident;
-                    if ((c.internalCatch && (cresult & BE.fallthru) != 0))
+                    if (c.internalCatch && ((cresult & BE.fallthru) != 0))
                     {
                         cresult &= -2;
                     }
-                    else if ((pequals(id, Id.Object) || pequals(id, Id.Throwable)))
+                    else if ((pequals(id, Id.Object)) || (pequals(id, Id.Throwable)))
                     {
                         this.result &= -131;
                     }
-                    else if (pequals(id, Id.Exception))
+                    else if ((pequals(id, Id.Exception)))
                     {
                         this.result &= -3;
                     }
                     catchresult |= cresult;
                 }
             }
-            if ((this.mustNotThrow && (this.result & BE.throw_) != 0))
+            if (this.mustNotThrow && ((this.result & BE.throw_) != 0))
             {
                 blockExit(s._body, this.func, this.mustNotThrow);
             }
@@ -352,18 +352,18 @@ public class blockexit {
             int finalresult = 1;
             if (s.finalbody != null)
                 finalresult = blockExit(s.finalbody, this.func, false);
-            if (this.result == BE.halt)
+            if ((this.result == BE.halt))
                 finalresult = 0;
-            if (finalresult == BE.halt)
+            if ((finalresult == BE.halt))
                 this.result = 0;
             if (this.mustNotThrow)
             {
-                if ((s._body != null && (this.result & BE.throw_) != 0))
+                if ((s._body != null) && ((this.result & BE.throw_) != 0))
                     blockExit(s._body, this.func, this.mustNotThrow);
-                if ((s.finalbody != null && (finalresult & BE.throw_) != 0))
+                if ((s.finalbody != null) && ((finalresult & BE.throw_) != 0))
                     blockExit(s.finalbody, this.func, this.mustNotThrow);
             }
-            if (!((finalresult & BE.fallthru) != 0))
+            if ((finalresult & BE.fallthru) == 0)
                 this.result &= -2;
             this.result |= finalresult & -2;
         }
@@ -381,7 +381,7 @@ public class blockexit {
             Type t = s.exp.type.toBasetype();
             ClassDeclaration cd = t.isClassHandle();
             assert(cd != null);
-            if ((pequals(cd, ClassDeclaration.errorException) || ClassDeclaration.errorException.isBaseOf(cd, null)))
+            if ((pequals(cd, ClassDeclaration.errorException)) || ClassDeclaration.errorException.isBaseOf(cd, null))
             {
                 this.result = 128;
                 return ;
@@ -403,9 +403,9 @@ public class blockexit {
 
         public  void visit(CompoundAsmStatement s) {
             this.result = 29;
-            if (!((s.stc & 33554432L) != 0))
+            if ((s.stc & 33554432L) == 0)
             {
-                if ((this.mustNotThrow && !((s.stc & 33554432L) != 0)))
+                if (this.mustNotThrow && ((s.stc & 33554432L) == 0))
                     s.deprecation(new BytePtr("`asm` statement is assumed to throw - mark it with `nothrow` if it does not"));
                 else
                     this.result |= BE.throw_;
@@ -436,7 +436,7 @@ public class blockexit {
     }
 
     public static int blockExit(Statement s, FuncDeclaration func, boolean mustNotThrow) {
-        if (!(s != null))
+        if (s == null)
             return 1;
         BlockExit be = new BlockExit(func, mustNotThrow);
         s.accept(be);

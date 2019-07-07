@@ -284,7 +284,7 @@ public class tokens {
             {
                 ByteSlice __r110 = keywords.copy();
                 int __key111 = 0;
-                for (; __key111 < __r110.getLength();__key111 += 1) {
+                for (; (__key111 < __r110.getLength());__key111 += 1) {
                     byte kw = __r110.get(__key111);
                     Identifier.idPool(toBytePtr(tochars.get((kw & 0xFF))), tochars.get((kw & 0xFF)).getLength(), (kw & 0xFF));
                 }
@@ -294,9 +294,9 @@ public class tokens {
             {
                 ByteSlice __r112 = keywords.copy();
                 int __key113 = 0;
-                for (; __key113 < __r112.getLength();__key113 += 1) {
+                for (; (__key113 < __r112.getLength());__key113 += 1) {
                     byte kw = __r112.get(__key113);
-                    if ((kw & 0xFF) == (this.value & 0xFF))
+                    if (((kw & 0xFF) == (this.value & 0xFF)))
                         return 1;
                 }
             }
@@ -376,7 +376,7 @@ public class tokens {
                                     {
                                         IntRef i = ref(0);
                                     L_outer1:
-                                        for (; i.value < this.len;){
+                                        for (; (i.value < this.len);){
                                             IntRef c = ref(0x0ffff);
                                             utf_decodeChar(this.ustring, this.len, i, c);
                                             {
@@ -393,14 +393,14 @@ public class tokens {
                                                             /*goto default*/ { __dispatch1 = -1; continue dispatched_1; }
                                                         default:
                                                         __dispatch1 = 0;
-                                                        if (c.value <= 127)
+                                                        if ((c.value <= 127))
                                                         {
-                                                            if ((isprint(c.value)) != 0)
+                                                            if (isprint(c.value) != 0)
                                                                 buf_1.writeByte(c.value);
                                                             else
                                                                 buf_1.printf(new BytePtr("\\x%02x"), c.value);
                                                         }
-                                                        else if (c.value <= 65535)
+                                                        else if ((c.value <= 65535))
                                                             buf_1.printf(new BytePtr("\\u%04x"), c.value);
                                                         else
                                                             buf_1.printf(new BytePtr("\\U%08x"), c.value);
@@ -412,7 +412,7 @@ public class tokens {
                                         }
                                     }
                                     buf_1.writeByte(34);
-                                    if ((this.postfix) != 0)
+                                    if (this.postfix != 0)
                                         buf_1.writeByte((this.postfix & 0xFF));
                                     p = pcopy(buf_1.extractChars());
                                 }
@@ -428,15 +428,15 @@ public class tokens {
                                 {
                                     int __key114 = 0;
                                     int __limit115 = this.len;
-                                    for (; __key114 < __limit115;__key114 += 1) {
+                                    for (; (__key114 < __limit115);__key114 += 1) {
                                         int i_1 = __key114;
-                                        if ((i_1) != 0)
+                                        if (i_1 != 0)
                                             buf.writeByte(32);
                                         buf.printf(new BytePtr("%02x"), (this.ustring.get(i_1) & 0xFF));
                                     }
                                 }
                                 buf.writeByte(34);
-                                if ((this.postfix) != 0)
+                                if (this.postfix != 0)
                                     buf.writeByte((this.postfix & 0xFF));
                                 buf.writeByte(0);
                                 p = pcopy(buf.extractData());
