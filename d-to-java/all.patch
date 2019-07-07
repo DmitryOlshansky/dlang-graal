@@ -100,36 +100,6 @@ diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dm
 index ba0e307..202cd9a 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java
 +++ b/src/main/java/org/dlang/dmd/lexer.java
-@@ -374,26 +374,17 @@ public class lexer {
-                                         if (pequals(id, Id.DATE))
-                                         {
-                                             (t).ustring = pcopy(ptr(lexer.scandate));
--                                            /*goto Lstr*/
--                                            (t).value = TOK.string_;
--                                            (t).postfix = (byte)0;
--                                            (t).len = strlen((t).ustring);
-+                                            /*goto Lstr*/throw Dispatch.INSTANCE;
-                                         }
-                                         else if (pequals(id, Id.TIME))
-                                         {
-                                             (t).ustring = pcopy(ptr(lexer.scantime));
--                                            /*goto Lstr*/
--                                            (t).value = TOK.string_;
--                                            (t).postfix = (byte)0;
--                                            (t).len = strlen((t).ustring);
-+                                            /*goto Lstr*/throw Dispatch.INSTANCE;
-                                         }
-                                         else if (pequals(id, Id.VENDOR))
-                                         {
-                                             (t).ustring = pcopy((toBytePtr(xarraydup(global.vendor))));
--                                            /*goto Lstr*/
--                                            (t).value = TOK.string_;
--                                            (t).postfix = (byte)0;
--                                            (t).len = strlen((t).ustring);
-+                                            /*goto Lstr*/throw Dispatch.INSTANCE;
-                                         }
-                                         else if (pequals(id, Id.TIMESTAMP))
-                                         {
 @@ -970,13 +961,13 @@ public class lexer {
              return escapeSequence(this.token.loc, this.diagnosticReporter, this.p);
          }

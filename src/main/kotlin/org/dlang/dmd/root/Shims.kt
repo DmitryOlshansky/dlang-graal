@@ -279,7 +279,7 @@ fun ptr(v: IntRef) = IntRefPtr(v)
 
 fun ptr(v: ByteSlice) = v.ptr()
 
-fun<T> ptr(arr: Array<T>) = RawPtr<T>(arr)
+fun<T> ptr(arr: Array<T?>) = RawPtr<T>(arr)
 
 fun<T> ptr(v: Slice<T>) = v.ptr()
 

@@ -374,17 +374,29 @@ public class lexer {
                                         if ((pequals(id, Id.DATE)))
                                         {
                                             (t).ustring = pcopy(ptr(lexer.scandate));
-                                            /*goto Lstr*/throw Dispatch.INSTANCE;
+                                            /*goto Lstr*//*unrolled goto*/
+                                        /*Lstr:*/
+                                            (t).value = TOK.string_;
+                                            (t).postfix = (byte)0;
+                                            (t).len = strlen((t).ustring);
                                         }
                                         else if ((pequals(id, Id.TIME)))
                                         {
                                             (t).ustring = pcopy(ptr(lexer.scantime));
-                                            /*goto Lstr*/throw Dispatch.INSTANCE;
+                                            /*goto Lstr*//*unrolled goto*/
+                                        /*Lstr:*/
+                                            (t).value = TOK.string_;
+                                            (t).postfix = (byte)0;
+                                            (t).len = strlen((t).ustring);
                                         }
                                         else if ((pequals(id, Id.VENDOR)))
                                         {
                                             (t).ustring = pcopy((toBytePtr(xarraydup(global.vendor))));
-                                            /*goto Lstr*/throw Dispatch.INSTANCE;
+                                            /*goto Lstr*//*unrolled goto*/
+                                        /*Lstr:*/
+                                            (t).value = TOK.string_;
+                                            (t).postfix = (byte)0;
+                                            (t).len = strlen((t).ustring);
                                         }
                                         else if ((pequals(id, Id.TIMESTAMP)))
                                         {

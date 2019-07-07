@@ -52,12 +52,12 @@ public class target {
             public double nan;
             public double infinity;
             public double epsilon;
-            public long dig = 15L;
-            public long mant_dig = 53L;
-            public long max_exp = 1024L;
-            public long min_exp = -1021L;
-            public long max_10_exp = 308L;
-            public long min_10_exp = -307L;
+            public long dig = 18L;
+            public long mant_dig = 64L;
+            public long max_exp = 16384L;
+            public long min_exp = -16381L;
+            public long max_10_exp = 4932L;
+            public long min_10_exp = -4931L;
             public  void _init() {
                 this.max = double;
                 this.min_normal = double;
@@ -121,12 +121,12 @@ public class target {
             public double nan;
             public double infinity;
             public double epsilon;
-            public long dig = 18L;
-            public long mant_dig = 64L;
-            public long max_exp = 16384L;
-            public long min_exp = -16381L;
-            public long max_10_exp = 4932L;
-            public long min_10_exp = -4931L;
+            public long dig = 15L;
+            public long mant_dig = 53L;
+            public long max_exp = 1024L;
+            public long min_exp = -1021L;
+            public long max_10_exp = 308L;
+            public long min_10_exp = -307L;
             public  void _init() {
                 this.max = double;
                 this.min_normal = double;

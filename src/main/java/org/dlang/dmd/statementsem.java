@@ -1742,7 +1742,18 @@ public class statementsem {
                                     {
                                         assert((fdapply.type != null) && ((fdapply.type.ty & 0xFF) == ENUMTY.Tfunction));
                                         tfld = (TypeFunction)typeSemantic(fdapply.type, loc, sc2);
-                                        /*goto Lget*/throw Dispatch.INSTANCE;
+                                        /*goto Lget*//*unrolled goto*/
+                                    /*Lget:*/
+                                        if (((tfld.parameterList.parameters).length == 1))
+                                        {
+                                            Parameter p_6 = tfld.parameterList.get(0);
+                                            if ((p_6.type != null) && ((p_6.type.ty & 0xFF) == ENUMTY.Tdelegate))
+                                            {
+                                                Type t_1 = typeSemantic(p_6.type, loc, sc2);
+                                                assert(((t_1.ty & 0xFF) == ENUMTY.Tdelegate));
+                                                tfld = (TypeFunction)t_1.nextOf();
+                                            }
+                                        }
                                     }
                                     else if (((tab.ty & 0xFF) == ENUMTY.Tdelegate))
                                     {

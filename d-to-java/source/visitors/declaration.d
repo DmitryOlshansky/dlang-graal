@@ -529,25 +529,27 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     }
                     if (range[k].first > range[k].last) range[k].reversed = true;
                 }
-                // unroll gotos inside of if/else chains - a typical pattern s
-                Goto[] allGotos = collectGotos(s).filter!(g => g.label).array;
-                auto labeled = allGotos.map!(x => cast(Statement)x.label.statement.statement).enumerate.array;
-                void recurse(Statement st) {
-                    if (auto ifst = st.isIfStatement) {
-                        auto cnt = labeled.filter!(lbl => ifst.containsStatement(lbl[1]));
-                        foreach(i, c; cnt) {
-                            // stderr.writefln("FOUND %s", i);
-                            unrolledGotos.top[allGotos[i].label.ident] = ifst;
-                        }
-                        if (ifst.elsebody) {
-                            recurse(ifst.elsebody);
-                        }
+            }
+        }
+        // unroll gotos inside of if/else chains - a typical pattern s
+        {
+            Goto[] allGotos = collectGotos(s).filter!(g => g.label).array;
+            auto labeled = allGotos.map!(x => cast(Statement)x.label.statement.statement).enumerate.array;
+            void recurse(Statement st) {
+                if (auto ifst = st.isIfStatement) {
+                    auto cnt = labeled.filter!(lbl => ifst.containsStatement(lbl[1]));
+                    foreach(i, c; cnt) {
+                        // stderr.writefln("FOUND %s", i);
+                        unrolledGotos.top[allGotos[i].label.ident] = ifst;
+                    }
+                    if (ifst.elsebody) {
+                        recurse(ifst.elsebody);
                     }
                 }
-                foreach (st; *s.statements) {
-                    if (st)
-                        recurse(st);
-                }
+            }
+            foreach (st; *s.statements) {
+                if (st)
+                    recurse(st);
             }
         }
         bool addedStart = false;
