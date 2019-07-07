@@ -310,7 +310,7 @@ public class mars {
                                             int __key1525 = 0;
                                             for (; (__key1525 < __r1524.getLength());__key1525 += 1) {
                                                 dmodule.Module m = __r1524.get(__key1525);
-                                                m.read(Loc.initial);
+                                                expr(m.read(Loc.initial));
                                             }
                                         }
                                         boolean anydocfiles = false;
@@ -341,11 +341,11 @@ public class mars {
                                                         }
                                                     }
                                                     if ((params.objfiles.length == 0))
-                                                        params.link = false;
+                                                        expr(params.link = false);
                                                 }
                                                 if (m.isDocFile)
                                                 {
-                                                    anydocfiles = true;
+                                                    expr(anydocfiles = true);
                                                     gendocfile(m);
                                                     modules.remove(modi);
                                                     modi--;
@@ -360,7 +360,7 @@ public class mars {
                                                         }
                                                     }
                                                     if ((params.objfiles.length == 0))
-                                                        params.link = false;
+                                                        expr(params.link = false);
                                                 }
                                             }
                                         }
@@ -541,10 +541,10 @@ public class mars {
                                                     dmodule.Module mod = __r1545.get(__key1546);
                                                     OutBuffer buf = new OutBuffer(null, 0, 0, 0, false, false).copy();
                                                     try {
-                                                        buf.doindent = true;
+                                                        expr(buf.doindent = true);
                                                         moduleToBuffer(buf, mod);
                                                         ByteSlice cgFilename = FileName.addExt(mod.srcfile.asString(), new ByteSlice("cg")).copy();
-                                                        File.write(toBytePtr(cgFilename), toByteSlice(buf.peekSlice()));
+                                                        expr(File.write(toBytePtr(cgFilename), toByteSlice(buf.peekSlice())));
                                                     }
                                                     finally {
                                                     }
@@ -774,7 +774,7 @@ public class mars {
                                                 p.postDec();
                                                 /*goto default*/ { __dispatch1 = -1; continue dispatched_1; }
                                             }
-                                            (instring ? 1 : 0) ^= 1;
+                                            expr((instring ? 1 : 0) ^= 1);
                                             slash = 0;
                                             continue L_outer3;
                                         case 32:
@@ -859,7 +859,7 @@ public class mars {
     }
 
     public static void setTarget(Param params) {
-        params.isLinux = true;
+        expr(params.isLinux = true);
     }
 
     public static void addDefaultVersionIdentifiers(Param params) {
@@ -1026,7 +1026,7 @@ public class mars {
                                     byte c = __r1561.get(__key1562);
                                     if (!((isalnum((c & 0xFF)) != 0) || ((c & 0xFF) == 95)))
                                     {
-                                        needsQuoting = true;
+                                        expr(needsQuoting = true);
                                         break;
                                     }
                                 }
@@ -1071,7 +1071,7 @@ public class mars {
         if (global.params.mixinOut == null)
             return ;
         assert(global.params.mixinFile != null);
-        File.write(global.params.mixinFile, toByteSlice((global.params.mixinOut).peekSlice()));
+        expr(File.write(global.params.mixinFile, toByteSlice((global.params.mixinOut).peekSlice())));
         (global.params.mixinOut).destroy();
         global.params.mixinOut = null;
     }
@@ -1081,7 +1081,7 @@ public class mars {
         Function2<BytePtr,BytePtr,Void> error = new Function2<BytePtr,BytePtr,Void>(){
             public Void invoke(BytePtr format, BytePtr arg){
                 error(Loc.initial, format, arg);
-                errors.value = true;
+                expr(errors.value = true);
             }
         };
         Function2<BytePtr,Integer,Integer> parseDigits = new Function2<BytePtr,Integer,Integer>(){
@@ -1125,8 +1125,8 @@ public class mars {
                 if (((p.get() & 0xFF) == 0) || ((p.get() & 0xFF) == 61) && (p.get(1) == 0))
                 {
                     error(Loc.initial, new BytePtr("%.*s"), missingMsg.getLength(), toBytePtr(missingMsg));
-                    errors.value = true;
-                    usageFlag.value = true;
+                    expr(errors.value = true);
+                    expr(usageFlag.value = true);
                     return CheckOptions.help;
                 }
                 if (((p.get() & 0xFF) != 61))
@@ -1134,7 +1134,7 @@ public class mars {
                 p.postInc();
                 if (((p.get() & 0xFF) == 104) || ((p.get() & 0xFF) == 63) && (p.get(1) == 0) || (strcmp(p, new BytePtr("help")) == 0))
                 {
-                    usageFlag.value = true;
+                    expr(usageFlag.value = true);
                     return CheckOptions.help;
                 }
                 return CheckOptions.success;
@@ -1183,42 +1183,42 @@ public class mars {
                     switch (__switch(ident.slice(0,strlen(ident))))
                     {
                         case 0:
-                            params.useDIP25 = true;
-                            params.vsafe = true;
-                            params.ehnogc = true;
-                            params.fieldwise = true;
-                            params.markdown = true;
-                            params.fixAliasThis = true;
-                            params.fix16997 = true;
-                            params.dtorFields = true;
-                            params.rvalueRefParam = true;
+                            expr(params.useDIP25 = true);
+                            expr(params.vsafe = true);
+                            expr(params.ehnogc = true);
+                            expr(params.fieldwise = true);
+                            expr(params.markdown = true);
+                            expr(params.fixAliasThis = true);
+                            expr(params.fix16997 = true);
+                            expr(params.dtorFields = true);
+                            expr(params.rvalueRefParam = true);
                             break;
                         case 1:
-                            params.useDIP25 = true;
+                            expr(params.useDIP25 = true);
                             return true;
                         case 2:
-                            params.vsafe = true;
+                            expr(params.vsafe = true);
                             return true;
                         case 3:
-                            params.ehnogc = true;
+                            expr(params.ehnogc = true);
                             return true;
                         case 5:
-                            params.fieldwise = true;
+                            expr(params.fieldwise = true);
                             return true;
                         case 4:
-                            params.markdown = true;
+                            expr(params.markdown = true);
                             return true;
                         case 8:
-                            params.fixAliasThis = true;
+                            expr(params.fixAliasThis = true);
                             return true;
                         case 7:
-                            params.fix16997 = true;
+                            expr(params.fix16997 = true);
                             return true;
                         case 6:
-                            params.dtorFields = true;
+                            expr(params.dtorFields = true);
                             return true;
                         case 9:
-                            params.rvalueRefParam = true;
+                            expr(params.rvalueRefParam = true);
                             return true;
                         default:
                         return false;
@@ -1266,14 +1266,14 @@ public class mars {
                     switch (__switch(ident.slice(0,strlen(ident))))
                     {
                         case 0:
-                            params.noDIP25 = true;
+                            expr(params.noDIP25 = true);
                             break;
                         case 1:
-                            params.noDIP25 = true;
+                            expr(params.noDIP25 = true);
                             return true;
                         case 2:
                             deprecation(Loc.initial, new BytePtr("`-revert=import` no longer has any effect."));
-                            params.bug10378 = true;
+                            expr(params.bug10378 = true);
                             return true;
                         default:
                         return false;
@@ -1321,26 +1321,26 @@ public class mars {
                     switch (__switch(ident.slice(0,strlen(ident))))
                     {
                         case 0:
-                            params.vfield = true;
-                            params.vcomplex = true;
-                            params.vtls = true;
-                            params.vmarkdown = true;
+                            expr(params.vfield = true);
+                            expr(params.vcomplex = true);
+                            expr(params.vtls = true);
+                            expr(params.vmarkdown = true);
                             break;
                         case 2:
-                            params.vfield = true;
+                            expr(params.vfield = true);
                             return true;
                         case 5:
                             deprecation(Loc.initial, new BytePtr("`-transition=checkimports` no longer has any effect."));
-                            params.check10378 = true;
+                            expr(params.check10378 = true);
                             return true;
                         case 3:
-                            params.vcomplex = true;
+                            expr(params.vcomplex = true);
                             return true;
                         case 1:
-                            params.vtls = true;
+                            expr(params.vtls = true);
                             return true;
                         case 4:
-                            params.vmarkdown = true;
+                            expr(params.vmarkdown = true);
                             return true;
                         default:
                         return false;
@@ -1362,7 +1362,7 @@ public class mars {
                     continue L_outer4;
                 }
                 if (__equals(arg, new ByteSlice("-allinst")))
-                    params.allInst = true;
+                    expr(params.allInst = true);
                 else if (__equals(arg, new ByteSlice("-de")))
                     params.useDeprecated = DiagnosticReporting.error;
                 else if (__equals(arg, new ByteSlice("-d")))
@@ -1370,7 +1370,7 @@ public class mars {
                 else if (__equals(arg, new ByteSlice("-dw")))
                     params.useDeprecated = DiagnosticReporting.inform;
                 else if (__equals(arg, new ByteSlice("-c")))
-                    params.link = false;
+                    expr(params.link = false);
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("checkaction")))
                 {
                     int len = 13;
@@ -1403,7 +1403,7 @@ public class mars {
                     else
                     {
                         errorInvalidSwitch.invoke(p, new ByteSlice());
-                        params.checkActionUsage = true;
+                        expr(params.checkActionUsage = true);
                         return false;
                     }
                 }
@@ -1451,7 +1451,7 @@ public class mars {
                     if (!(check.invoke(p, new ByteSlice("assert"), params.useAssert) || check.invoke(p, new ByteSlice("bounds"), params.useArrayBounds) || check.invoke(p, new ByteSlice("in"), params.useIn) || check.invoke(p, new ByteSlice("invariant"), params.useInvariants) || check.invoke(p, new ByteSlice("out"), params.useOut) || check.invoke(p, new ByteSlice("switch"), params.useSwitchError)))
                     {
                         errorInvalidSwitch.invoke(p, new ByteSlice());
-                        params.checkUsage = true;
+                        expr(params.checkUsage = true);
                         return false;
                     }
                 }
@@ -1460,9 +1460,9 @@ public class mars {
                     if (((p.get(6) & 0xFF) == 61))
                     {
                         if ((strcmp(p.plus(7), new BytePtr("on")) == 0))
-                            params.color = true;
+                            expr(params.color = true);
                         else if ((strcmp(p.plus(7), new BytePtr("off")) == 0))
-                            params.color = false;
+                            expr(params.color = false);
                         else if ((strcmp(p.plus(7), new BytePtr("auto")) != 0))
                         {
                             errorInvalidSwitch.invoke(p, new ByteSlice("Available options for `-color` are `on`, `off` and `auto`"));
@@ -1473,14 +1473,14 @@ public class mars {
                         /*goto Lerror*//*unrolled goto*/
                         files.push(new BytePtr("__stdin.d"));
                     else
-                        params.color = true;
+                        expr(params.color = true);
                 }
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("conf=")))
                 {
                 }
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("cov")))
                 {
-                    params.cov = true;
+                    expr(params.cov = true);
                     if (((p.get(4) & 0xFF) == 61))
                     {
                         if (isdigit((p.get(5) & 0xFF)) != 0)
@@ -1502,7 +1502,7 @@ public class mars {
                         files.push(new BytePtr("__stdin.d"));
                 }
                 else if (__equals(arg, new ByteSlice("-shared")))
-                    params.dll = true;
+                    expr(params.dll = true);
                 else if (__equals(arg, new ByteSlice("-fPIC")))
                 {
                     params.pic = PIC.pic;
@@ -1512,9 +1512,9 @@ public class mars {
                     params.pic = PIC.pie;
                 }
                 else if (__equals(arg, new ByteSlice("-map")))
-                    params.map = true;
+                    expr(params.map = true);
                 else if (__equals(arg, new ByteSlice("-multiobj")))
-                    params.multiobj = true;
+                    expr(params.multiobj = true);
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("mixin=")))
                 {
                     BytePtr tmp = pcopy(p.plus(6).plus(1));
@@ -1529,12 +1529,12 @@ public class mars {
                 {
                     if (params.symdebug == 0)
                         params.symdebug = (byte)1;
-                    params.symdebugref = true;
+                    expr(params.symdebugref = true);
                 }
                 else if (__equals(arg, new ByteSlice("-gs")))
-                    params.alwaysframe = true;
+                    expr(params.alwaysframe = true);
                 else if (__equals(arg, new ByteSlice("-gx")))
-                    params.stackstomp = true;
+                    expr(params.stackstomp = true);
                 else if (__equals(arg, new ByteSlice("-lowmem")))
                 {
                 }
@@ -1544,12 +1544,12 @@ public class mars {
                 }
                 else if (__equals(arg, new ByteSlice("-m32")))
                 {
-                    params.is64bit = false;
-                    params.mscoff = false;
+                    expr(params.is64bit = false);
+                    expr(params.mscoff = false);
                 }
                 else if (__equals(arg, new ByteSlice("-m64")))
                 {
-                    params.is64bit = true;
+                    expr(params.is64bit = true);
                 }
                 else if (__equals(arg, new ByteSlice("-m32mscoff")))
                 {
@@ -1564,7 +1564,7 @@ public class mars {
                     if (((p.get(8) & 0xFF) == 61))
                     {
                         if ((strcmp(p.plus(9), new BytePtr("gc")) == 0))
-                            params.tracegc = true;
+                            expr(params.tracegc = true);
                         else
                         {
                             errorInvalidSwitch.invoke(p, new ByteSlice("Only `gc` is allowed for `-profile`"));
@@ -1575,18 +1575,18 @@ public class mars {
                         /*goto Lerror*//*unrolled goto*/
                         files.push(new BytePtr("__stdin.d"));
                     else
-                        params.trace = true;
+                        expr(params.trace = true);
                 }
                 else if (__equals(arg, new ByteSlice("-v")))
-                    params.verbose = true;
+                    expr(params.verbose = true);
                 else if (__equals(arg, new ByteSlice("-vcg-ast")))
-                    params.vcg_ast = true;
+                    expr(params.vcg_ast = true);
                 else if (__equals(arg, new ByteSlice("-vtls")))
-                    params.vtls = true;
+                    expr(params.vtls = true);
                 else if (__equals(arg, new ByteSlice("-vcolumns")))
-                    params.showColumns = true;
+                    expr(params.showColumns = true);
                 else if (__equals(arg, new ByteSlice("-vgc")))
-                    params.vgc = true;
+                    expr(params.vgc = true);
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("verrors")))
                 {
                     if (((p.get(8) & 0xFF) == 61) && (isdigit((p.get(9) & 0xFF)) != 0))
@@ -1599,11 +1599,11 @@ public class mars {
                     }
                     else if (startsWith.invoke(p.plus(9), new ByteSlice("spec")))
                     {
-                        params.showGaggedErrors = true;
+                        expr(params.showGaggedErrors = true);
                     }
                     else if (startsWith.invoke(p.plus(9), new ByteSlice("context")))
                     {
-                        params.printErrorContext = true;
+                        expr(params.printErrorContext = true);
                     }
                     else
                     {
@@ -1651,14 +1651,14 @@ public class mars {
                                 break;
                             default:
                             errorInvalidSwitch.invoke(p, new ByteSlice("Only `baseline`, `avx`, `avx2` or `native` are allowed for `-mcpu`"));
-                            params.mcpuUsage = true;
+                            expr(params.mcpuUsage = true);
                             return false;
                         }
                     }
                     else
                     {
                         errorInvalidSwitch.invoke(p, new ByteSlice("Only `baseline`, `avx`, `avx2` or `native` are allowed for `-mcpu`"));
-                        params.mcpuUsage = true;
+                        expr(params.mcpuUsage = true);
                         return false;
                     }
                 }
@@ -1694,7 +1694,7 @@ public class mars {
                     else
                     {
                         error.invoke(new BytePtr("Switch `%s` is invalid"), p);
-                        params.externStdUsage = true;
+                        expr(params.externStdUsage = true);
                         return false;
                     }
                 }
@@ -1730,23 +1730,23 @@ public class mars {
                             switch (num)
                             {
                                 case 3449:
-                                    params.vfield = true;
+                                    expr(params.vfield = true);
                                     break;
                                 case 10378:
-                                    params.bug10378 = true;
+                                    expr(params.bug10378 = true);
                                     break;
                                 case 14246:
-                                    params.dtorFields = true;
+                                    expr(params.dtorFields = true);
                                     break;
                                 case 14488:
-                                    params.vcomplex = true;
+                                    expr(params.vcomplex = true);
                                     break;
                                 case 16997:
-                                    params.fix16997 = true;
+                                    expr(params.fix16997 = true);
                                     break;
                                 default:
                                 error.invoke(new BytePtr("Transition `%s` is invalid"), p);
-                                params.transitionUsage = true;
+                                expr(params.transitionUsage = true);
                                 return false;
                             }
                         }
@@ -1756,25 +1756,25 @@ public class mars {
                             switch (__switch(ident.slice(0,strlen(ident))))
                             {
                                 case 0:
-                                    params.bug10378 = true;
+                                    expr(params.bug10378 = true);
                                     break;
                                 case 2:
-                                    params.dtorFields = true;
+                                    expr(params.dtorFields = true);
                                     break;
                                 case 3:
-                                    params.fix16997 = true;
+                                    expr(params.fix16997 = true);
                                     break;
                                 case 1:
-                                    params.markdown = true;
+                                    expr(params.markdown = true);
                                     break;
                                 default:
                                 error.invoke(new BytePtr("Transition `%s` is invalid"), p);
-                                params.transitionUsage = true;
+                                expr(params.transitionUsage = true);
                                 return false;
                             }
                         }
                         errorInvalidSwitch.invoke(p, new ByteSlice());
-                        params.transitionUsage = true;
+                        expr(params.transitionUsage = true);
                         return false;
                     }
                 }
@@ -1802,11 +1802,11 @@ public class mars {
                     if (!parseCLIOption_preview[Feature("dip25", "useDIP25", "implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)", true, false), Feature("dip1000", "vsafe", "implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)", true, false), Feature("dip1008", "ehnogc", "implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)", true, false), Feature("fieldwise", "fieldwise", "use fieldwise comparisons for struct equality", true, false), Feature("markdown", "markdown", "enable Markdown replacements in Ddoc", true, false), Feature("fixAliasThis", "fixAliasThis", "when a symbol is resolved, check alias this scope before going to upper scopes", true, false), Feature("intpromote", "fix16997", "fix integral promotions for unary + - ~ operators", true, false), Feature("dtorfields", "dtorFields", "destruct fields of partially constructed objects", true, false), Feature("rvaluerefparam", "rvalueRefParam", "enable rvalue arguments to ref parameters", true, false)].invoke(params, p))
                     {
                         error.invoke(new BytePtr("Preview `%s` is invalid"), p);
-                        params.previewUsage = true;
+                        expr(params.previewUsage = true);
                         return false;
                     }
                     if (params.vsafe)
-                        params.useDIP25 = true;
+                        expr(params.useDIP25 = true);
                 }
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("revert")))
                 {
@@ -1832,18 +1832,18 @@ public class mars {
                     if (!parseCLIOption_revert[Feature("dip25", "noDIP25", "revert DIP25 changes https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md", true, false), Feature("import", "bug10378", "revert to single phase name lookup", true, true)].invoke(params, p))
                     {
                         error.invoke(new BytePtr("Revert `%s` is invalid"), p);
-                        params.revertUsage = true;
+                        expr(params.revertUsage = true);
                         return false;
                     }
                     if (params.noDIP25)
-                        params.useDIP25 = false;
+                        expr(params.useDIP25 = false);
                 }
                 else if (__equals(arg, new ByteSlice("-w")))
                     params.warnings = DiagnosticReporting.error;
                 else if (__equals(arg, new ByteSlice("-wi")))
                     params.warnings = DiagnosticReporting.inform;
                 else if (__equals(arg, new ByteSlice("-O")))
-                    params.optimize = true;
+                    expr(params.optimize = true);
                 else if (((p.get(1) & 0xFF) == 111))
                 {
                     BytePtr path = null;
@@ -1854,7 +1854,7 @@ public class mars {
                             switch (__dispatch16 != 0 ? __dispatch16 : (p.get(2) & 0xFF))
                             {
                                 case 45:
-                                    params.obj = false;
+                                    expr(params.obj = false);
                                     break;
                                 case 100:
                                     if (p.get(3) == 0)
@@ -1874,7 +1874,7 @@ public class mars {
                                     if (p.get(3) != 0)
                                         /*goto Lerror*//*unrolled goto*/
                                         files.push(new BytePtr("__stdin.d"));
-                                    params.preservePaths = true;
+                                    expr(params.preservePaths = true);
                                     break;
                                 case 0:
                                     error.invoke(new BytePtr("-o no longer supported, use -of or -od"), null);
@@ -1888,7 +1888,7 @@ public class mars {
                 }
                 else if (((p.get(1) & 0xFF) == 68))
                 {
-                    params.doDocComments = true;
+                    expr(params.doDocComments = true);
                     {
                         int __dispatch17 = 0;
                         dispatched_17:
@@ -1918,7 +1918,7 @@ public class mars {
                 }
                 else if (((p.get(1) & 0xFF) == 72))
                 {
-                    params.doHdrGeneration = true;
+                    expr(params.doHdrGeneration = true);
                     {
                         int __dispatch18 = 0;
                         dispatched_18:
@@ -1948,7 +1948,7 @@ public class mars {
                 }
                 else if (((p.get(1) & 0xFF) == 88))
                 {
-                    params.doJsonGeneration = true;
+                    expr(params.doJsonGeneration = true);
                     {
                         int __dispatch19 = 0;
                         dispatched_19:
@@ -1991,17 +1991,17 @@ public class mars {
                     }
                 }
                 else if (__equals(arg, new ByteSlice("-ignore")))
-                    params.ignoreUnsupportedPragmas = true;
+                    expr(params.ignoreUnsupportedPragmas = true);
                 else if (__equals(arg, new ByteSlice("-inline")))
                 {
-                    params.useInline = true;
-                    params.hdrStripPlainFunctions = false;
+                    expr(params.useInline = true);
+                    expr(params.hdrStripPlainFunctions = false);
                 }
                 else if (__equals(arg, new ByteSlice("-i")))
-                    includeImports = true;
+                    expr(includeImports = true);
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("i=")))
                 {
-                    includeImports = true;
+                    expr(includeImports = true);
                     if (p.get(3) == 0)
                     {
                         error.invoke(new BytePtr("invalid option '%s', module patterns cannot be empty"), p);
@@ -2012,27 +2012,27 @@ public class mars {
                     }
                 }
                 else if (__equals(arg, new ByteSlice("-dip25")))
-                    params.useDIP25 = true;
+                    expr(params.useDIP25 = true);
                 else if (__equals(arg, new ByteSlice("-dip1000")))
                 {
-                    params.useDIP25 = true;
-                    params.vsafe = true;
+                    expr(params.useDIP25 = true);
+                    expr(params.vsafe = true);
                 }
                 else if (__equals(arg, new ByteSlice("-dip1008")))
                 {
-                    params.ehnogc = true;
+                    expr(params.ehnogc = true);
                 }
                 else if (__equals(arg, new ByteSlice("-lib")))
-                    params.lib = true;
+                    expr(params.lib = true);
                 else if (__equals(arg, new ByteSlice("-nofloat")))
-                    params.nofloat = true;
+                    expr(params.nofloat = true);
                 else if (__equals(arg, new ByteSlice("-quiet")))
                 {
                 }
                 else if (__equals(arg, new ByteSlice("-release")))
-                    params.release = true;
+                    expr(params.release = true);
                 else if (__equals(arg, new ByteSlice("-betterC")))
-                    params.betterC = true;
+                    expr(params.betterC = true);
                 else if (__equals(arg, new ByteSlice("-noboundscheck")))
                 {
                     params.boundscheck = CHECKENABLE.off;
@@ -2062,7 +2062,7 @@ public class mars {
                         files.push(new BytePtr("__stdin.d"));
                 }
                 else if (__equals(arg, new ByteSlice("-unittest")))
-                    params.useUnitTests = true;
+                    expr(params.useUnitTests = true);
                 else if (((p.get(1) & 0xFF) == 73))
                 {
                     if (params.imppath == null)
@@ -2140,27 +2140,27 @@ public class mars {
                         files.push(new BytePtr("__stdin.d"));
                 }
                 else if (__equals(arg, new ByteSlice("--b")))
-                    params.debugb = true;
+                    expr(params.debugb = true);
                 else if (__equals(arg, new ByteSlice("--c")))
-                    params.debugc = true;
+                    expr(params.debugc = true);
                 else if (__equals(arg, new ByteSlice("--f")))
-                    params.debugf = true;
+                    expr(params.debugf = true);
                 else if (__equals(arg, new ByteSlice("--help")) || __equals(arg, new ByteSlice("-h")))
                 {
-                    params.usage = true;
+                    expr(params.usage = true);
                     return false;
                 }
                 else if (__equals(arg, new ByteSlice("--r")))
-                    params.debugr = true;
+                    expr(params.debugr = true);
                 else if (__equals(arg, new ByteSlice("--version")))
                 {
-                    params.logo = true;
+                    expr(params.logo = true);
                     return false;
                 }
                 else if (__equals(arg, new ByteSlice("--x")))
-                    params.debugx = true;
+                    expr(params.debugx = true);
                 else if (__equals(arg, new ByteSlice("--y")))
-                    params.debugy = true;
+                    expr(params.debugy = true);
                 else if (((p.get(1) & 0xFF) == 76))
                 {
                     params.linkswitches.push(p.plus(2).plus((((p.get(2) & 0xFF) == 61) ? 1 : 0)));
@@ -2196,16 +2196,16 @@ public class mars {
                 }
                 else if (__equals(arg, new ByteSlice("-main")))
                 {
-                    params.addMain = true;
+                    expr(params.addMain = true);
                 }
                 else if (startsWith.invoke(p.plus(1), new ByteSlice("man")))
                 {
-                    params.manual = true;
+                    expr(params.manual = true);
                     return false;
                 }
                 else if (__equals(arg, new ByteSlice("-run")))
                 {
-                    params.run = true;
+                    expr(params.run = true);
                     int length = argc - i - 1;
                     if (length != 0)
                     {
@@ -2230,7 +2230,7 @@ public class mars {
                     }
                     else
                     {
-                        params.run = false;
+                        expr(params.run = false);
                         /*goto Lnoarg*//*unrolled goto*/
                         files.push(new BytePtr("__stdin.d"));
                     }
@@ -2254,7 +2254,7 @@ public class mars {
     public static void reconcileCommands(Param params, int numSrcFiles) {
         if (params.lib && params.dll)
             error(Loc.initial, new BytePtr("cannot mix -lib and -shared"));
-        params.isLP64 = params.is64bit;
+        expr(params.isLP64 = params.is64bit);
         if (((params.boundscheck & 0xFF) != 0))
         {
             if (((params.useArrayBounds & 0xFF) == 0))
@@ -2298,16 +2298,16 @@ public class mars {
         if (params.betterC)
         {
             params.checkAction = CHECKACTION.C;
-            params.useModuleInfo = false;
-            params.useTypeInfo = false;
-            params.useExceptions = false;
+            expr(params.useModuleInfo = false);
+            expr(params.useTypeInfo = false);
+            expr(params.useExceptions = false);
         }
         if (!params.obj || params.lib)
-            params.link = false;
+            expr(params.link = false);
         if (params.link)
         {
             params.exefile = params.objname.copy();
-            params.oneobj = true;
+            expr(params.oneobj = true);
             if (params.objname.getLength() != 0)
             {
                 params.objname = FileName.forceExt(params.objname, global.obj_ext).copy();
@@ -2328,17 +2328,17 @@ public class mars {
             params.libname = params.objname.copy();
             params.objname = new ByteSlice().copy();
             if (!params.cov && !params.trace)
-                params.multiobj = true;
+                expr(params.multiobj = true);
         }
         else
         {
             if ((params.objname.getLength() != 0) && (numSrcFiles != 0))
             {
-                params.oneobj = true;
+                expr(params.oneobj = true);
             }
         }
         if (params.noDIP25)
-            params.useDIP25 = false;
+            expr(params.useDIP25 = false);
     }
 
     public static DArray<dmodule.Module> createModules(DArray<BytePtr> files, DArray<BytePtr> libmodules) {
@@ -2380,7 +2380,7 @@ public class mars {
                     }
                     if (FileName.equals(ext, toByteSlice(global.json_ext)))
                     {
-                        global.params.doJsonGeneration = true;
+                        expr(global.params.doJsonGeneration = true);
                         global.params.jsonfilename = toDString(files.get(i)).copy();
                         continue L_outer5;
                     }
@@ -2417,7 +2417,7 @@ public class mars {
                 if (firstmodule)
                 {
                     global.params.objfiles.push(m.objfile.toChars());
-                    firstmodule = false;
+                    expr(firstmodule = false);
                 }
             }
         }

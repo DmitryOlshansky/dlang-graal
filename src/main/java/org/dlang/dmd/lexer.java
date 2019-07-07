@@ -105,8 +105,8 @@ public class lexer {
             this.end = pcopy((base.plus(endoffset)));
             this.p = pcopy((base.plus(begoffset)));
             this.line = pcopy(this.p);
-            this.doDocComment = doDocComment;
-            this.commentToken = commentToken;
+            expr(this.doDocComment = doDocComment);
+            expr(this.commentToken = commentToken);
             this.inTokenStringConstant = 0;
             this.lastDocLine = 0;
             if ((this.p != null) && ((this.p.get(0) & 0xFF) == 35) && ((this.p.get(1) & 0xFF) == 33))
@@ -357,12 +357,12 @@ public class lexer {
                                     Identifier id = Identifier.idPool((t).ptr, ((this.p.minus((t).ptr))));
                                     (t).ident = id;
                                     (t).value = (byte)id.getValue();
-                                    this.anyToken = true;
+                                    expr(this.anyToken = true);
                                     if ((((t).ptr.get() & 0xFF) == 95))
                                     {
                                         if (!lexer.scaninitdone)
                                         {
-                                            lexer.scaninitdone = true;
+                                            expr(lexer.scaninitdone = true);
                                             IntRef ct = ref(0);
                                             time(ptr(ct));
                                             BytePtr p = pcopy(ctime(ptr(ct)));
@@ -1729,12 +1729,12 @@ public class lexer {
                             }
                         } while(__dispatch19 != 0);
                     }
-                    anyHexDigitsNoSingleUS = true;
-                    anyBinaryDigitsNoSingleUS = true;
+                    expr(anyHexDigitsNoSingleUS = true);
+                    expr(anyBinaryDigitsNoSingleUS = true);
                     if (!err && (d >= base))
                     {
                         this.error(new BytePtr("%s digit expected, not `%c`"), (base == 2) ? new BytePtr("binary") : (base == 8) ? new BytePtr("octal") : new BytePtr("decimal"), c);
-                        err = true;
+                        expr(err = true);
                     }
                     if ((n <= 1152921504606846975L))
                         n = n * (long)base + (long)d;
@@ -1750,7 +1750,7 @@ public class lexer {
             if (overflow.value && !err)
             {
                 this.error(new BytePtr("integer overflow"));
-                err = true;
+                expr(err = true);
             }
             if ((base == 2) && !anyBinaryDigitsNoSingleUS || (base == 16) && !anyHexDigitsNoSingleUS)
                 this.error(new BytePtr("`%.*s` isn't a valid integer literal, use `%.*s0` instead"), (this.p.minus(start)), start, 2, start);
@@ -1782,7 +1782,7 @@ public class lexer {
                                 if (((flags & f) != 0) && !err)
                                 {
                                     this.error(new BytePtr("unrecognized token"));
-                                    err = true;
+                                    expr(err = true);
                                 }
                                 flags = flags | f;
                                 continue L_outer5;
@@ -1819,7 +1819,7 @@ public class lexer {
                         if (!err)
                         {
                             this.error(new BytePtr("signed integer overflow"));
-                            err = true;
+                            expr(err = true);
                         }
                         result = TOK.uns64Literal;
                     }
@@ -1841,7 +1841,7 @@ public class lexer {
                         if (!err)
                         {
                             this.error(new BytePtr("signed integer overflow"));
-                            err = true;
+                            expr(err = true);
                         }
                         result = TOK.uns64Literal;
                     }
@@ -1876,7 +1876,7 @@ public class lexer {
                 c = (this.p.postInc().get() & 0xFF);
                 if ((c == 120) || (c == 88))
                 {
-                    hex = true;
+                    expr(hex = true);
                     c = (this.p.postInc().get() & 0xFF);
                 }
             }
@@ -1912,7 +1912,7 @@ public class lexer {
                 for (; 1 != 0;){
                     if (isdigit(c) != 0)
                     {
-                        anyexp = true;
+                        expr(anyexp = true);
                         c = (this.p.postInc().get() & 0xFF);
                         continue;
                     }
@@ -1924,7 +1924,7 @@ public class lexer {
                     if (!anyexp)
                     {
                         this.error(new BytePtr("missing exponent"));
-                        isWellformedString = false;
+                        expr(isWellformedString = false);
                     }
                     break;
                 }
@@ -1932,7 +1932,7 @@ public class lexer {
             else if (hex)
             {
                 this.error(new BytePtr("exponent required for hex float"));
-                isWellformedString = false;
+                expr(isWellformedString = false);
             }
             this.p.minusAssign(1);
             for (; (pstart.lessThan(this.p));){
@@ -1954,13 +1954,13 @@ public class lexer {
                         case 70:
                         case 102:
                             if (isWellformedString && !isOutOfRange.value)
-                                isOutOfRange.value = Port.isFloat32LiteralOutOfRange(sbufptr);
+                                expr(isOutOfRange.value = Port.isFloat32LiteralOutOfRange(sbufptr));
                             result = TOK.float32Literal;
                             this.p.postInc();
                             break;
                         default:
                         if (isWellformedString && !isOutOfRange.value)
-                            isOutOfRange.value = Port.isFloat64LiteralOutOfRange(sbufptr);
+                            expr(isOutOfRange.value = Port.isFloat64LiteralOutOfRange(sbufptr));
                         result = TOK.float64Literal;
                         break;
                         case 108:

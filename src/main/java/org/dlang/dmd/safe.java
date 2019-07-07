@@ -39,7 +39,7 @@ public class safe {
                 if (hasPointers)
                 {
                     if ((ad.sizeok != Sizeok.done))
-                        ad.determineSize(ad.loc);
+                        expr(ad.determineSize(ad.loc));
                     if (v.overlapped && (sc).func.setUnsafe())
                     {
                         if (printmsg)

@@ -52,19 +52,19 @@ public class statement {
         }
 
         public  void visit(TryCatchStatement s) {
-            this.stop = true;
+            expr(this.stop = true);
         }
 
         public  void visit(TryFinallyStatement s) {
-            this.stop = true;
+            expr(this.stop = true);
         }
 
         public  void visit(ScopeGuardStatement s) {
-            this.stop = true;
+            expr(this.stop = true);
         }
 
         public  void visit(SynchronizedStatement s) {
-            this.stop = true;
+            expr(this.stop = true);
         }
 
         public  UsesEH() {
@@ -78,19 +78,19 @@ public class statement {
         }
 
         public  void visit(CaseStatement s) {
-            this.stop = true;
+            expr(this.stop = true);
         }
 
         public  void visit(DefaultStatement s) {
-            this.stop = true;
+            expr(this.stop = true);
         }
 
         public  void visit(LabelStatement s) {
-            this.stop = true;
+            expr(this.stop = true);
         }
 
         public  void visit(AsmStatement s) {
-            this.stop = true;
+            expr(this.stop = true);
         }
 
         public  ComeFrom() {
@@ -101,13 +101,13 @@ public class statement {
     private static class HasCode extends StoppableVisitor
     {
         public  void visit(Statement s) {
-            this.stop = true;
+            expr(this.stop = true);
         }
 
         public  void visit(ExpStatement s) {
             if ((s.exp != null))
             {
-                this.stop = s.exp.hasCode();
+                expr(this.stop = s.exp.hasCode());
             }
         }
 
@@ -1408,7 +1408,7 @@ public class statement {
             super(loc);
             this.condition = condition;
             this._body = _body;
-            this.isFinal = isFinal;
+            expr(this.isFinal = isFinal);
         }
 
         public  Statement syntaxCopy() {
@@ -1884,7 +1884,7 @@ public class statement {
 
         public  Catch syntaxCopy() {
             Catch c = new Catch(this.loc, this.type != null ? this.type.syntaxCopy() : getThrowable(), this.ident, this.handler != null ? this.handler.syntaxCopy() : null);
-            c.internalCatch = this.internalCatch;
+            expr(c.internalCatch = this.internalCatch);
             return c;
         }
 
@@ -1912,7 +1912,7 @@ public class statement {
             super(loc);
             this._body = _body;
             this.finalbody = finalbody;
-            this.bodyFallsThru = true;
+            expr(this.bodyFallsThru = true);
         }
 
         public static TryFinallyStatement create(Loc loc, Statement _body, Statement finalbody) {
@@ -2017,7 +2017,7 @@ public class statement {
 
         public  Statement syntaxCopy() {
             ThrowStatement s = new ThrowStatement(this.loc, this.exp.syntaxCopy());
-            s.internalThrow = this.internalThrow;
+            expr(s.internalThrow = this.internalThrow);
             return s;
         }
 

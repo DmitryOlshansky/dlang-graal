@@ -158,10 +158,10 @@ public class semantic2 {
                         if (tempinst.tinst != null)
                             tempinst.tinst.printInstantiationTrace();
                     }
-                    tempinst.errors = true;
+                    expr(tempinst.errors = true);
                 }
                 if (needGagging != 0)
-                    global.endGagging(oldGaggedErrors);
+                    expr(global.endGagging(oldGaggedErrors));
                 this.sc = (this.sc).pop();
                 (this.sc).pop();
             }
@@ -316,7 +316,7 @@ public class semantic2 {
                                         TypeFunction tf2 = (TypeFunction)f2.type;
                                         error(f2.loc, new BytePtr("%s `%s%s` cannot be overloaded with %s`extern(%s)` function at %s"), f2.kind(), f2.toPrettyChars(false), parametersTypeToChars(tf2.parameterList), (f1.linkage == f2.linkage) ? new BytePtr("another ") : new BytePtr(""), linkageToChars(f1.linkage), f1.loc.toChars(global.params.showColumns));
                                         f2.type = Type.terror;
-                                        f2.errors = true;
+                                        expr(f2.errors = true);
                                         return 0;
                                     }
                                     buf2.reset();
@@ -328,7 +328,7 @@ public class semantic2 {
                                         TypeFunction tf2 = (TypeFunction)f2.type;
                                         error(f2.loc, new BytePtr("%s `%s%s` conflicts with previous declaration at %s"), f2.kind(), f2.toPrettyChars(false), parametersTypeToChars(tf2.parameterList), f1.loc.toChars(global.params.showColumns));
                                         f2.type = Type.terror;
-                                        f2.errors = true;
+                                        expr(f2.errors = true);
                                     }
                                     return 0;
                                 }
@@ -456,7 +456,7 @@ public class semantic2 {
                 return ;
             }
             Scope sc2 = ad.newScope(this.sc);
-            ad.determineSize(ad.loc);
+            expr(ad.determineSize(ad.loc));
             {
                 int i = 0;
                 for (; (i < (ad.members).length);i++){

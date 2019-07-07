@@ -35,14 +35,14 @@ public class canthrow {
         public  CanThrow(FuncDeclaration func, boolean mustNotThrow) {
             super();
             this.func = func;
-            this.mustNotThrow = mustNotThrow;
+            expr(this.mustNotThrow = mustNotThrow);
         }
 
         public  void visit(Expression _param_0) {
         }
 
         public  void visit(DeclarationExp de) {
-            this.stop = Dsymbol_canThrow(de.declaration, this.func, this.mustNotThrow);
+            expr(this.stop = Dsymbol_canThrow(de.declaration, this.func, this.mustNotThrow));
         }
 
         public  void visit(CallExp ce) {
@@ -77,7 +77,7 @@ public class canthrow {
                     ce.error(new BytePtr("`%s` is not `nothrow`"), e1.toChars());
                 }
             }
-            this.stop = true;
+            expr(this.stop = true);
         }
 
         public  void visit(NewExp ne) {
@@ -92,7 +92,7 @@ public class canthrow {
                         {
                             ne.error(new BytePtr("%s `%s` is not `nothrow`"), ne.allocator.kind(), ne.allocator.toPrettyChars(false));
                         }
-                        this.stop = true;
+                        expr(this.stop = true);
                     }
                 }
                 TypeFunction tf = ne.member.type.toBasetype().isTypeFunction();
@@ -102,7 +102,7 @@ public class canthrow {
                     {
                         ne.error(new BytePtr("%s `%s` is not `nothrow`"), ne.member.kind(), ne.member.toPrettyChars(false));
                     }
-                    this.stop = true;
+                    expr(this.stop = true);
                 }
             }
         }
@@ -134,7 +134,7 @@ public class canthrow {
                     {
                         de.error(new BytePtr("%s `%s` is not `nothrow`"), ad.dtor.kind(), ad.dtor.toPrettyChars(false));
                     }
-                    this.stop = true;
+                    expr(this.stop = true);
                 }
             }
             if ((ad.aggDelete != null) && ((tb.ty & 0xFF) != ENUMTY.Tarray))
@@ -146,7 +146,7 @@ public class canthrow {
                     {
                         de.error(new BytePtr("%s `%s` is not `nothrow`"), ad.aggDelete.kind(), ad.aggDelete.toPrettyChars(false));
                     }
-                    this.stop = true;
+                    expr(this.stop = true);
                 }
             }
         }
@@ -184,7 +184,7 @@ public class canthrow {
                 {
                     ae.error(new BytePtr("%s `%s` is not `nothrow`"), sd.postblit.kind(), sd.postblit.toPrettyChars(false));
                 }
-                this.stop = true;
+                expr(this.stop = true);
             }
         }
 

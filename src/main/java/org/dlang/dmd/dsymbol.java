@@ -515,7 +515,7 @@ public class dsymbol {
                     if (!s2.overloadInsert(this))
                     {
                         ScopeDsymbol.multiplyDefined(Loc.initial, this, s2);
-                        this.errors = true;
+                        expr(this.errors = true);
                     }
                 }
                 if ((sds.isAggregateDeclaration() != null) || (sds.isEnumDeclaration() != null))
@@ -523,7 +523,7 @@ public class dsymbol {
                     if ((pequals(this.ident, Id.__sizeof)) || (pequals(this.ident, Id.__xalignof)) || (pequals(this.ident, Id._mangleof)))
                     {
                         this.error(new BytePtr("`.%s` property cannot be redefined"), this.ident.toChars());
-                        this.errors = true;
+                        expr(this.errors = true);
                     }
                 }
             }

@@ -227,12 +227,12 @@ public class statementsem {
                                     if ((blockExit(sexception.value, (this.sc).func, false) & BE.fallthru) != 0)
                                     {
                                         ThrowStatement ts = new ThrowStatement(Loc.initial, new IdentifierExp(Loc.initial, id));
-                                        ts.internalThrow = true;
+                                        expr(ts.internalThrow = true);
                                         handler = new CompoundStatement(Loc.initial, slice(new Statement[]{handler, ts}));
                                     }
                                     DArray<Catch> catches = new DArray<Catch>();
                                     Catch ctch = new Catch(Loc.initial, getThrowable(), id, handler);
-                                    ctch.internalCatch = true;
+                                    expr(ctch.internalCatch = true);
                                     (catches).push(ctch);
                                     Statement st = new TryCatchStatement(Loc.initial, _body, catches);
                                     if (sfinally.value != null)
@@ -405,12 +405,12 @@ public class statementsem {
 
         public  void visit(DoStatement ds) {
             boolean inLoopSave = (this.sc).inLoop;
-            (this.sc).inLoop = true;
+            expr((this.sc).inLoop = true);
             if (ds._body != null)
                 ds._body = semanticScope(ds._body, this.sc, ds, ds);
-            (this.sc).inLoop = inLoopSave;
+            expr((this.sc).inLoop = inLoopSave);
             if (((ds.condition.op & 0xFF) == 28))
-                ((DotIdExp)ds.condition).noderef = true;
+                expr(((DotIdExp)ds.condition).noderef = true);
             ds.condition = checkAssignmentAsCondition(ds.condition);
             ds.condition = expressionSemantic(ds.condition, this.sc);
             ds.condition = resolveProperties(this.sc, ds.condition);
@@ -457,11 +457,11 @@ public class statementsem {
             sym.parent = (this.sc).scopesym;
             sym.endlinnum = fs.endloc.linnum;
             this.sc = (this.sc).push(sym);
-            (this.sc).inLoop = true;
+            expr((this.sc).inLoop = true);
             if (fs.condition != null)
             {
                 if (((fs.condition.op & 0xFF) == 28))
-                    ((DotIdExp)fs.condition).noderef = true;
+                    expr(((DotIdExp)fs.condition).noderef = true);
                 fs.condition = checkAssignmentAsCondition(fs.condition);
                 fs.condition = expressionSemantic(fs.condition, this.sc);
                 fs.condition = resolveProperties(this.sc, fs.condition);
@@ -943,7 +943,7 @@ public class statementsem {
                     {
                         assert((e != null) && (t == null));
                         Identifier ident = Identifier.generateId(new BytePtr("__value"));
-                        declareVariable10.invoke(0L, e.type, ident, e, null);
+                        expr(declareVariable10.invoke(0L, e.type, ident, e, null));
                         Identifier field = Identifier.idPool(toBytePtr(StaticForeach.tupleFieldName), 5);
                         Expression access = new DotIdExp(loc, e, field);
                         access = expressionSemantic(access, this.sc);
@@ -959,7 +959,7 @@ public class statementsem {
                                 Expression init_ = new IndexExp(loc, access, new IntegerExp(loc, (long)l, Type.tsize_t));
                                 init_ = expressionSemantic(init_, this.sc);
                                 assert(init_.type != null);
-                                declareVariable10.invoke(p.storageClass, init_.type, cp.ident, init_, null);
+                                expr(declareVariable10.invoke(p.storageClass, init_.type, cp.ident, init_, null));
                             }
                         }
                     }
@@ -1196,7 +1196,7 @@ public class statementsem {
                     {
                         assert((e != null) && (t == null));
                         Identifier ident = Identifier.generateId(new BytePtr("__value"));
-                        declareVariable11.invoke(0L, e.type, ident, e, null);
+                        expr(declareVariable11.invoke(0L, e.type, ident, e, null));
                         Identifier field = Identifier.idPool(toBytePtr(StaticForeach.tupleFieldName), 5);
                         Expression access = new DotIdExp(loc, e, field);
                         access = expressionSemantic(access, this.sc);
@@ -1211,7 +1211,7 @@ public class statementsem {
                                 Expression init_ = new IndexExp(loc, access, new IntegerExp(loc, (long)l, Type.tsize_t));
                                 init_ = expressionSemantic(init_, this.sc);
                                 assert(init_.type != null);
-                                declareVariable11.invoke(p.storageClass, init_.type, cp.ident, init_, null);
+                                expr(declareVariable11.invoke(p.storageClass, init_.type, cp.ident, init_, null));
                             }
                         }
                     }
@@ -1239,7 +1239,7 @@ public class statementsem {
                             {
                                 fs.error(new BytePtr("cannot infer type for `foreach` variable `%s`, perhaps set it explicitly"), p.ident.toChars());
                                 p.type = Type.terror;
-                                result = true;
+                                expr(result = true);
                             }
                         }
                     }
@@ -1300,7 +1300,7 @@ public class statementsem {
                                 {
                                     TypeFunction tf = (TypeFunction)fparam.type.nextOf();
                                     foreachParamCount = tf.parameterList.length();
-                                    foundMismatch = true;
+                                    expr(foundMismatch = true);
                                 }
                             }
                         }
@@ -1329,7 +1329,7 @@ public class statementsem {
             sym.parent = (this.sc).scopesym;
             sym.endlinnum = fs.endloc.linnum;
             Scope sc2 = (this.sc).push(sym);
-            (sc2).inLoop = true;
+            expr((sc2).inLoop = true);
             {
                 Slice<Parameter> __r1672 = (fs.parameters).opSlice().copy();
                 int __key1673 = 0;
@@ -1519,7 +1519,7 @@ public class statementsem {
                                 increment = new AddAssignExp(loc, new VarExp(loc, fs.key, true), new IntegerExp(loc, 1L, fs.key.type));
                             }
                             IndexExp indexExp = new IndexExp(loc, new VarExp(loc, tmp, true), new VarExp(loc, fs.key, true));
-                            indexExp.indexIsInBounds = true;
+                            expr(indexExp.indexIsInBounds = true);
                             fs.value._init = new ExpInitializer(loc, indexExp);
                             Statement ds = new ExpStatement(loc, fs.value);
                             if ((dim == 2))
@@ -1652,7 +1652,7 @@ public class statementsem {
                                     if (!ftt.isref)
                                     {
                                         if (tfront.needsDestruction())
-                                            ignoreRef = true;
+                                            expr(ignoreRef = true);
                                     }
                                 }
                                 if (((tfront.ty & 0xFF) == ENUMTY.Tvoid))
@@ -1811,7 +1811,7 @@ public class statementsem {
                                             /*goto case*/{ __dispatch0 = 34; continue dispatched_0; }
                                         }
                                         p_7 = (fs.parameters).get(1);
-                                        isRef = (p_7.storageClass & 2097152L) != 0L;
+                                        expr(isRef = (p_7.storageClass & 2097152L) != 0L);
                                         ta_1 = p_7.type;
                                     }
                                     Type taav = taa.nextOf();
@@ -2238,7 +2238,7 @@ public class statementsem {
             else
             {
                 if (((ifs.condition.op & 0xFF) == 28))
-                    ((DotIdExp)ifs.condition).noderef = true;
+                    expr(((DotIdExp)ifs.condition).noderef = true);
                 ifs.condition = expressionSemantic(ifs.condition, scd);
                 ifs.condition = resolveProperties(scd, ifs.condition);
                 ifs.condition = ifs.condition.addDtorHook(scd);
@@ -2468,7 +2468,7 @@ public class statementsem {
                 if (((ss.condition.op & 0xFF) != 127))
                 {
                     ss.error(new BytePtr("`%s` must be of integral or string type, it is a `%s`"), ss.condition.toChars(), ss.condition.type.toChars());
-                    conditionError = true;
+                    expr(conditionError = true);
                     break;
                 }
             }
@@ -2477,7 +2477,7 @@ public class statementsem {
             ss.condition = ss.condition.optimize(0, false);
             ss.condition = checkGC(this.sc, ss.condition);
             if (((ss.condition.op & 0xFF) == 127))
-                conditionError = true;
+                expr(conditionError = true);
             boolean needswitcherror = false;
             ss.lastVar = (this.sc).lastVar;
             this.sc = (this.sc).push();
@@ -2485,9 +2485,9 @@ public class statementsem {
             (this.sc).sw = ss;
             ss.cases = new DArray<CaseStatement>();
             boolean inLoopSave = (this.sc).inLoop;
-            (this.sc).inLoop = true;
+            expr((this.sc).inLoop = true);
             ss._body = statementSemantic(ss._body, this.sc);
-            (this.sc).inLoop = inLoopSave;
+            expr((this.sc).inLoop = inLoopSave);
             if (conditionError || (ss._body != null) && (ss._body.isErrorStatement() != null))
             {
                 (this.sc).pop();
@@ -2570,7 +2570,7 @@ public class statementsem {
                     }
                 }
                 else
-                    needswitcherror = true;
+                    expr(needswitcherror = true);
             }
             if (((this.sc).sw.sdefault == null) && !ss.isFinal || needswitcherror || ((global.params.useAssert & 0xFF) == 2))
             {
@@ -2712,7 +2712,7 @@ public class statementsem {
                             if (sw.isFinal)
                             {
                                 cs.error(new BytePtr("`case` variables not allowed in `final switch` statements"));
-                                errors = true;
+                                expr(errors = true);
                             }
                             {
                                 Scope scx = this.sc;
@@ -2723,7 +2723,7 @@ public class statementsem {
                                     if ((scx).search(cs.exp.loc, v.ident, null, 0) == null)
                                     {
                                         cs.error(new BytePtr("`case` variable `%s` declared at %s cannot be declared in `switch` body"), v.toChars(), v.loc.toChars(global.params.showColumns));
-                                        errors = true;
+                                        expr(errors = true);
                                     }
                                     break;
                                 }
@@ -2740,7 +2740,7 @@ public class statementsem {
                         else if (((cs.exp.op & 0xFF) != 135) && ((cs.exp.op & 0xFF) != 127))
                         {
                             cs.error(new BytePtr("`case` must be a `string` or an integral constant, not `%s`"), cs.exp.toChars());
-                            errors = true;
+                            expr(errors = true);
                         }
                     }
                 }
@@ -2754,7 +2754,7 @@ public class statementsem {
                         if (cs2.exp.equals(cs.exp))
                         {
                             cs.error(new BytePtr("duplicate `case %s` in `switch` statement"), cs.exp.toChars());
-                            errors = true;
+                            expr(errors = true);
                             break;
                         }
                     }
@@ -2776,13 +2776,13 @@ public class statementsem {
                 if ((!pequals((this.sc).sw.tf, (this.sc).tf)))
                 {
                     cs.error(new BytePtr("`switch` and `case` are in different `finally` blocks"));
-                    errors = true;
+                    expr(errors = true);
                 }
             }
             else
             {
                 cs.error(new BytePtr("`case` not in `switch` statement"));
-                errors = true;
+                expr(errors = true);
             }
             (this.sc).ctorflow.orCSX(CSX.label);
             cs.statement = statementSemantic(cs.statement, this.sc);
@@ -2810,7 +2810,7 @@ public class statementsem {
             if (sw.isFinal)
             {
                 crs.error(new BytePtr("case ranges not allowed in `final switch`"));
-                errors = true;
+                expr(errors = true);
             }
             this.sc = (this.sc).startCTFE();
             crs.first = expressionSemantic(crs.first, this.sc);
@@ -2836,13 +2836,13 @@ public class statementsem {
             if (crs.first.type.isunsigned() && (fval > lval) || !crs.first.type.isunsigned() && ((long)fval > (long)lval))
             {
                 crs.error(new BytePtr("first `case %s` is greater than last `case %s`"), crs.first.toChars(), crs.last.toChars());
-                errors = true;
+                expr(errors = true);
                 lval = fval;
             }
             if ((lval - fval > 256L))
             {
                 crs.error(new BytePtr("had %llu cases which is more than 256 cases in case range"), lval - fval);
-                errors = true;
+                expr(errors = true);
                 lval = fval + 256L;
             }
             if (errors)
@@ -2873,24 +2873,24 @@ public class statementsem {
                 if ((this.sc).sw.sdefault != null)
                 {
                     ds.error(new BytePtr("`switch` statement already has a default"));
-                    errors = true;
+                    expr(errors = true);
                 }
                 (this.sc).sw.sdefault = ds;
                 if ((!pequals((this.sc).sw.tf, (this.sc).tf)))
                 {
                     ds.error(new BytePtr("`switch` and `default` are in different `finally` blocks"));
-                    errors = true;
+                    expr(errors = true);
                 }
                 if ((this.sc).sw.isFinal)
                 {
                     ds.error(new BytePtr("`default` statement not allowed in `final switch` statement"));
-                    errors = true;
+                    expr(errors = true);
                 }
             }
             else
             {
                 ds.error(new BytePtr("`default` not in `switch` statement"));
-                errors = true;
+                expr(errors = true);
             }
             (this.sc).ctorflow.orCSX(CSX.label);
             ds.statement = statementSemantic(ds.statement, this.sc);
@@ -2974,24 +2974,24 @@ public class statementsem {
             if (((this.sc).flags & 96) != 0)
             {
                 rs.error(new BytePtr("`return` statements cannot be in contracts"));
-                errors = true;
+                expr(errors = true);
             }
             if (((this.sc).os != null) && (((this.sc).os.tok & 0xFF) != 205))
             {
                 rs.error(new BytePtr("`return` statements cannot be in `%s` bodies"), Token.toChars((this.sc).os.tok));
-                errors = true;
+                expr(errors = true);
             }
             if ((this.sc).tf != null)
             {
                 rs.error(new BytePtr("`return` statements cannot be in `finally` bodies"));
-                errors = true;
+                expr(errors = true);
             }
             if (fd.value.isCtorDeclaration() != null)
             {
                 if (rs.exp != null)
                 {
                     rs.error(new BytePtr("cannot return expression from constructor"));
-                    errors = true;
+                    expr(errors = true);
                 }
                 rs.exp = new ThisExp(Loc.initial);
                 rs.exp.type = tret;
@@ -3030,7 +3030,7 @@ public class statementsem {
                     if (((rs.exp.type.ty & 0xFF) != ENUMTY.Tvoid))
                     {
                         rs.error(new BytePtr("cannot return non-void from `void` function"));
-                        errors = true;
+                        expr(errors = true);
                         rs.exp = new CastExp(rs.loc, rs.exp, Type.tvoid);
                         rs.exp = expressionSemantic(rs.exp, this.sc);
                     }
@@ -3063,7 +3063,7 @@ public class statementsem {
                         else if (((rs.exp.op & 0xFF) != 127))
                         {
                             rs.error(new BytePtr("mismatched function return type inference of `%s` and `%s`"), rs.exp.type.toChars(), tret.toChars());
-                            errors = true;
+                            expr(errors = true);
                             tf.value.next = Type.terror;
                         }
                     }
@@ -3074,8 +3074,8 @@ public class statementsem {
                 {
                     Function0<Void> turnOffRef = new Function0<Void>(){
                         public Void invoke(){
-                            tf.value.isref = false;
-                            tf.value.isreturn = false;
+                            expr(tf.value.isref = false);
+                            expr(tf.value.isreturn = false);
                             fd.value.storage_class &= -17592186044417L;
                         }
                     };
@@ -3096,10 +3096,10 @@ public class statementsem {
                     if (tf.value.isref)
                     {
                         if (!inferRef)
-                            fd.value.nrvo_can = false;
+                            expr(fd.value.nrvo_can = false);
                     }
                     else if ((v == null) || v.isOut() || v.isRef())
-                        fd.value.nrvo_can = false;
+                        expr(fd.value.nrvo_can = false);
                     else if ((fd.value.nrvo_var == null))
                     {
                         if (!v.isDataseg() && !v.isParameter() && (pequals(v.toParent2(), fd.value)))
@@ -3107,17 +3107,17 @@ public class statementsem {
                             fd.value.nrvo_var = v;
                         }
                         else
-                            fd.value.nrvo_can = false;
+                            expr(fd.value.nrvo_can = false);
                     }
                     else if ((!pequals(fd.value.nrvo_var, v)))
-                        fd.value.nrvo_can = false;
+                        expr(fd.value.nrvo_can = false);
                 }
                 else
-                    fd.value.nrvo_can = false;
+                    expr(fd.value.nrvo_can = false);
             }
             else
             {
-                fd.value.nrvo_can = false;
+                expr(fd.value.nrvo_can = false);
                 if (fd.value.inferRetType)
                 {
                     if ((tf.value.next != null) && ((tf.value.next.ty & 0xFF) != ENUMTY.Tvoid))
@@ -3126,7 +3126,7 @@ public class statementsem {
                         {
                             rs.error(new BytePtr("mismatched function return type inference of `void` and `%s`"), tf.value.next.toChars());
                         }
-                        errors = true;
+                        expr(errors = true);
                         tf.value.next = Type.terror;
                     }
                     else
@@ -3135,12 +3135,12 @@ public class statementsem {
                     tbret = tret.toBasetype();
                 }
                 if (inferRef)
-                    tf.value.isref = false;
+                    expr(tf.value.isref = false);
                 if (((tbret.ty & 0xFF) != ENUMTY.Tvoid))
                 {
                     if (((tbret.ty & 0xFF) != ENUMTY.Terror))
                         rs.error(new BytePtr("`return` expression expected"));
-                    errors = true;
+                    expr(errors = true);
                 }
                 else if (fd.value.isMain())
                 {
@@ -3150,7 +3150,7 @@ public class statementsem {
             if ((((this.sc).ctorflow.callSuper & 16) != 0) && (((this.sc).ctorflow.callSuper & 3) == 0))
             {
                 rs.error(new BytePtr("`return` without calling constructor"));
-                errors = true;
+                expr(errors = true);
             }
             if ((this.sc).ctorflow.fieldinit.getLength() != 0)
             {
@@ -3166,7 +3166,7 @@ public class statementsem {
                         if (mustInit && (((this.sc).ctorflow.fieldinit.get(i).csx & 1) == 0))
                         {
                             rs.error(new BytePtr("an earlier `return` statement skips field `%s` initialization"), v.toChars());
-                            errors = true;
+                            expr(errors = true);
                         }
                     }
                 }
@@ -3249,7 +3249,7 @@ public class statementsem {
                                 bs.error(new BytePtr("cannot break out of `finally` block"));
                             else
                             {
-                                ls.breaks = true;
+                                expr(ls.breaks = true);
                                 this.result = bs;
                                 return ;
                             }
@@ -3568,7 +3568,7 @@ public class statementsem {
                     catchSemantic(c, this.sc);
                     if (c.errors)
                     {
-                        catchErrors = true;
+                        expr(catchErrors = true);
                         continue;
                     }
                     ClassDeclaration cd = c.type.toBasetype().isClassHandle();
@@ -3584,7 +3584,7 @@ public class statementsem {
                             if (c.type.toBasetype().implicitConvTo(cj.type.toBasetype()) != 0)
                             {
                                 tcs.error(new BytePtr("`catch` at %s hides `catch` at %s"), sj, si);
-                                catchErrors = true;
+                                expr(catchErrors = true);
                             }
                         }
                     }
@@ -3596,7 +3596,7 @@ public class statementsem {
                 if ((flags == 3))
                 {
                     tcs.error(new BytePtr("cannot mix catching D and C++ exceptions in the same try-catch"));
-                    catchErrors = true;
+                    expr(catchErrors = true);
                 }
             }
             if (catchErrors)
@@ -3656,7 +3656,7 @@ public class statementsem {
                 this.result = new CompoundStatement(tfs.loc, slice(new Statement[]{tfs._body, tfs.finalbody}));
                 return ;
             }
-            tfs.bodyFallsThru = (blockexit & BE.fallthru) != 0;
+            expr(tfs.bodyFallsThru = (blockexit & BE.fallthru) != 0);
             this.result = tfs;
         }
 
@@ -3712,7 +3712,7 @@ public class statementsem {
             if (((ts.exp.op & 0xFF) == 22))
             {
                 NewExp ne = (NewExp)ts.exp;
-                ne.thrownew = true;
+                expr(ne.thrownew = true);
             }
             ts.exp = expressionSemantic(ts.exp, this.sc);
             ts.exp = resolveProperties(this.sc, ts.exp);
@@ -3720,7 +3720,7 @@ public class statementsem {
             if (((ts.exp.op & 0xFF) == 127))
                 this.setError();
                 return ;
-            checkThrowEscape(this.sc, ts.exp, false);
+            expr(checkThrowEscape(this.sc, ts.exp, false));
             ClassDeclaration cd = ts.exp.type.toBasetype().isClassHandle();
             if ((cd == null) || (!pequals(cd, ClassDeclaration.throwable)) && !ClassDeclaration.throwable.isBaseOf(cd, null))
             {
@@ -3876,12 +3876,12 @@ public class statementsem {
         if (((sc).os != null) && (((sc).os.tok & 0xFF) != 205))
         {
             error(c.loc, new BytePtr("cannot put `catch` statement inside `%s`"), Token.toChars((sc).os.tok));
-            c.errors = true;
+            expr(c.errors = true);
         }
         if ((sc).tf != null)
         {
             error(c.loc, new BytePtr("cannot put `catch` statement inside `finally` block"));
-            c.errors = true;
+            expr(c.errors = true);
         }
         ScopeDsymbol sym = new ScopeDsymbol();
         sym.parent = (sc).scopesym;
@@ -3890,12 +3890,12 @@ public class statementsem {
         {
             error(c.loc, new BytePtr("`catch` statement without an exception specification is deprecated"));
             errorSupplemental(c.loc, new BytePtr("use `catch(Throwable)` for old behavior"));
-            c.errors = true;
+            expr(c.errors = true);
             c.type = getThrowable();
         }
         c.type = typeSemantic(c.type, c.loc, sc);
         if ((pequals(c.type, Type.terror)))
-            c.errors = true;
+            expr(c.errors = true);
         else
         {
             long stc = 0L;
@@ -3903,30 +3903,30 @@ public class statementsem {
             if (cd == null)
             {
                 error(c.loc, new BytePtr("can only catch class objects, not `%s`"), c.type.toChars());
-                c.errors = true;
+                expr(c.errors = true);
             }
             else if (cd.isCPPclass())
             {
                 if (!target.cppExceptions)
                 {
                     error(c.loc, new BytePtr("catching C++ class objects not supported for this target"));
-                    c.errors = true;
+                    expr(c.errors = true);
                 }
                 if (((sc).func != null) && ((sc).intypeof == 0) && !c.internalCatch && (sc).func.setUnsafe())
                 {
                     error(c.loc, new BytePtr("cannot catch C++ class objects in `@safe` code"));
-                    c.errors = true;
+                    expr(c.errors = true);
                 }
             }
             else if ((!pequals(cd, ClassDeclaration.throwable)) && !ClassDeclaration.throwable.isBaseOf(cd, null))
             {
                 error(c.loc, new BytePtr("can only catch class objects derived from `Throwable`, not `%s`"), c.type.toChars());
-                c.errors = true;
+                expr(c.errors = true);
             }
             else if (((sc).func != null) && ((sc).intypeof == 0) && !c.internalCatch && (ClassDeclaration.exception != null) && (!pequals(cd, ClassDeclaration.exception)) && !ClassDeclaration.exception.isBaseOf(cd, null) && (sc).func.setUnsafe())
             {
                 error(c.loc, new BytePtr("can only catch class objects derived from `Exception` in `@safe` code, not `%s`"), c.type.toChars());
-                c.errors = true;
+                expr(c.errors = true);
             }
             else if (global.params.ehnogc)
             {
@@ -3935,7 +3935,7 @@ public class statementsem {
             if (c.ident != null)
             {
                 c.var = new VarDeclaration(c.loc, c.type, c.ident, null, stc);
-                c.var.iscatchvar = true;
+                expr(c.var.iscatchvar = true);
                 dsymbolSemantic(c.var, sc);
                 (sc).insert(c.var);
                 if (global.params.ehnogc && ((stc & 524288L) != 0))
@@ -3952,7 +3952,7 @@ public class statementsem {
             }
             c.handler = statementSemantic(c.handler, sc);
             if ((c.handler != null) && (c.handler.isErrorStatement() != null))
-                c.errors = true;
+                expr(c.errors = true);
         }
         (sc).pop();
     }

@@ -1216,7 +1216,7 @@ public class ctfeexpr {
                             Expression k2 = (es2.keys).get(j);
                             if (ctfeRawCmp(loc, k1, k2, identity) != 0)
                                 continue;
-                            used.set(j, true);
+                            expr(used.set(j, true));
                             v2 = (es2.values).get(j);
                             break;
                         }

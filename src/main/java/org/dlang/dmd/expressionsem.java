@@ -203,7 +203,7 @@ public class expressionsem {
                     sc = (sc).push();
                     FuncDeclaration fslice = resolveFuncCall(ae.loc, sc, slice, tiargs, ae.e1.type, fargs, FuncResolveFlag.quiet);
                     sc = (sc).pop();
-                    global.endGagging(xerrors);
+                    expr(global.endGagging(xerrors));
                     if (fslice == null)
                         /*goto Lfallback*/throw Dispatch0.INSTANCE;
                     e = new DotTemplateInstanceExp(ae.loc, ae.e1, slice.ident, tiargs);
@@ -269,7 +269,7 @@ public class expressionsem {
                     {
                         Expression e2 = expressionSemantic(e, sc);
                         if (((e2.op & 0xFF) == 127))
-                            err = true;
+                            expr(err = true);
                         if (preserveErrors || ((e2.op & 0xFF) != 127))
                             e = e2;
                     }
@@ -529,7 +529,7 @@ public class expressionsem {
                 e = trySemantic(e, sc);
                 if (e == null)
                 {
-                    checkPropertyCall(ex);
+                    expr(checkPropertyCall(ex));
                     ex = new AssignExp(loc, ex, e2);
                     return expressionSemantic(ex, sc);
                 }
@@ -538,7 +538,7 @@ public class expressionsem {
             {
                 e = expressionSemantic(e, sc);
             }
-            checkPropertyCall(e);
+            expr(checkPropertyCall(e));
             return e;
         }
         else
@@ -547,7 +547,7 @@ public class expressionsem {
             arguments.set(0, eleft);
             e = new CallExp(loc, e, arguments);
             e = expressionSemantic(e, sc);
-            checkPropertyCall(e);
+            expr(checkPropertyCall(e));
             return expressionSemantic(e, sc);
         }
     }
@@ -711,16 +711,16 @@ public class expressionsem {
             {
                 if (s.isFuncDeclaration() == null)
                 {
-                    s.checkDeprecated(loc, sc);
+                    expr(s.checkDeprecated(loc, sc));
                     if (d != null)
-                        d.checkDisabled(loc, sc, false);
+                        expr(d.checkDisabled(loc, sc, false));
                 }
                 s = s.toAlias();
                 if ((!pequals(s, olds)) && (s.isFuncDeclaration() == null))
                 {
-                    s.checkDeprecated(loc, sc);
+                    expr(s.checkDeprecated(loc, sc));
                     if (d != null)
-                        d.checkDisabled(loc, sc, false);
+                        expr(d.checkDisabled(loc, sc, false));
                 }
             }
             {
@@ -1570,8 +1570,8 @@ public class expressionsem {
                 }
                 if (((e.op & 0xFF) == 20))
                 {
-                    foundType = true;
-                    e.checkValue();
+                    expr(foundType = true);
+                    expr(e.checkValue());
                     t0 = Type.terror;
                     continue;
                 }
@@ -1713,19 +1713,19 @@ public class expressionsem {
                         {
                             arg.error(new BytePtr("cannot pass type `%s` as a function argument"), arg.toChars());
                             arg = new ErrorExp();
-                            err = true;
+                            expr(err = true);
                         }
                     }
                     else if (((arg.type.toBasetype().ty & 0xFF) == ENUMTY.Tfunction))
                     {
                         arg.error(new BytePtr("cannot pass function `%s` as a function argument"), arg.toChars());
                         arg = new ErrorExp();
-                        err = true;
+                        expr(err = true);
                     }
                     else if (checkNonAssignmentArrayOp(arg, false))
                     {
                         arg = new ErrorExp();
-                        err = true;
+                        expr(err = true);
                     }
                     exps.set(i, arg);
                 }
@@ -1765,14 +1765,14 @@ public class expressionsem {
         }
         if ((tf.next == null) && fd.inferRetType)
         {
-            fd.functionSemantic();
+            expr(fd.functionSemantic());
         }
         else if ((fd != null) && (fd.parent != null))
         {
             TemplateInstance ti = fd.parent.isTemplateInstance();
             if ((ti != null) && (ti.tempdecl != null))
             {
-                fd.functionSemantic3();
+                expr(fd.functionSemantic3());
             }
         }
         boolean isCtorCall = (fd != null) && fd.needThis() && (fd.isCtorDeclaration() != null);
@@ -1857,7 +1857,7 @@ public class expressionsem {
                                 (arguments).setDim(i + 1);
                                 arguments.set(i, arg);
                                 nargs.value = i + 1;
-                                done = true;
+                                expr(done = true);
                             return errorArgs.invoke();
                         }
                         arg = p.defaultArg;
@@ -1947,7 +1947,7 @@ public class expressionsem {
                             (arguments).setDim(i + 1);
                             arguments.set(i, arg);
                             nargs.value = i + 1;
-                            done = true;
+                            expr(done = true);
                         }
                     }
                     catch(Dispatch0 __d){}
@@ -2054,7 +2054,7 @@ public class expressionsem {
                             arg = expressionSemantic(ev, sc);
                         }
                         arg = arg.toLvalue(sc, arg);
-                        (err ? 1 : 0) |= (checkUnsafeAccess(sc, arg, false, true) ? 1 : 0);
+                        expr((err ? 1 : 0) |= (checkUnsafeAccess(sc, arg, false, true) ? 1 : 0));
                     }
                     else if ((p.storageClass & 4096L) != 0)
                     {
@@ -2062,12 +2062,12 @@ public class expressionsem {
                         if (!t.isMutable() || !t.isAssignable())
                         {
                             arg.error(new BytePtr("cannot modify struct `%s` with immutable members"), arg.toChars());
-                            err = true;
+                            expr(err = true);
                         }
                         else
                         {
-                            (err ? 1 : 0) |= (checkUnsafeAccess(sc, arg, false, true) ? 1 : 0);
-                            (err ? 1 : 0) |= (checkDefCtor(arg.loc, t) ? 1 : 0);
+                            expr((err ? 1 : 0) |= (checkUnsafeAccess(sc, arg, false, true) ? 1 : 0));
+                            expr((err ? 1 : 0) |= (checkDefCtor(arg.loc, t) ? 1 : 0));
                         }
                         arg = arg.toLvalue(sc, arg);
                     }
@@ -2079,12 +2079,12 @@ public class expressionsem {
                     if ((firstArg != null) && ((p.storageClass & 17592186044416L) != 0))
                     {
                         if (global.params.vsafe)
-                            (err ? 1 : 0) |= (checkParamArgumentReturn(sc, firstArg, arg, false) ? 1 : 0);
+                            expr((err ? 1 : 0) |= (checkParamArgumentReturn(sc, firstArg, arg, false) ? 1 : 0));
                     }
                     else if (tf.parameterEscapes(tthis, p))
                     {
                         if (global.params.vsafe)
-                            (err ? 1 : 0) |= (checkParamArgumentEscape(sc, fd, p, arg, false) ? 1 : 0);
+                            expr((err ? 1 : 0) |= (checkParamArgumentEscape(sc, fd, p, arg, false) ? 1 : 0));
                     }
                     else
                     {
@@ -2142,19 +2142,19 @@ public class expressionsem {
                             if (((arg.type.ty & 0xFF) == ENUMTY.Tarray))
                             {
                                 arg.error(new BytePtr("cannot pass dynamic arrays to `%s` vararg functions"), p);
-                                err = true;
+                                expr(err = true);
                             }
                             if (((arg.type.ty & 0xFF) == ENUMTY.Tsarray))
                             {
                                 arg.error(new BytePtr("cannot pass static arrays to `%s` vararg functions"), p);
-                                err = true;
+                                expr(err = true);
                             }
                         }
                     }
                     if (arg.type.needsDestruction())
                     {
                         arg.error(new BytePtr("cannot pass types that need destruction as variadic arguments"));
-                        err = true;
+                        expr(err = true);
                     }
                     Type tb = arg.type.toBasetype();
                     if (((tb.ty & 0xFF) == ENUMTY.Tsarray))
@@ -2175,11 +2175,11 @@ public class expressionsem {
                         if (se.hasOverloads && !se.var.isFuncDeclaration().isUnique())
                         {
                             arg.error(new BytePtr("function `%s` is overloaded"), arg.toChars());
-                            err = true;
+                            expr(err = true);
                         }
                     }
                     if (arg.checkValue())
-                        err = true;
+                        expr(err = true);
                     arg = arg.optimize(0, false);
                 }
                 arguments.set(i, arg);
@@ -2307,7 +2307,7 @@ public class expressionsem {
                     BytePtr s1 = pcopy(tret.isNaked() ? new BytePtr(" mutable") : tret.modToChars());
                     BytePtr s2 = pcopy(tthis.isNaked() ? new BytePtr(" mutable") : tthis.modToChars());
                     error(loc, new BytePtr("`inout` constructor `%s` creates%s object, not%s"), fd.toPrettyChars(false), s1, s2);
-                    err = true;
+                    expr(err = true);
                 }
             }
             tret = tthis;
@@ -2349,13 +2349,13 @@ public class expressionsem {
             (a).push(Id.std);
             Import s = new Import(Loc.initial, a, Id.math, null, 0);
             int errors = global.startGagging();
-            s.load(null);
+            expr(s.load(null));
             if (s.mod != null)
             {
                 s.mod.importAll(null);
                 dsymbolSemantic(s.mod, null);
             }
-            global.endGagging(errors);
+            expr(global.endGagging(errors));
             expressionsem.loadStdMathimpStdMath = s;
         }
         return expressionsem.loadStdMathimpStdMath.mod;
@@ -2843,10 +2843,10 @@ public class expressionsem {
                     if (e.type == null)
                     {
                         exp.error(new BytePtr("`%s` has no value"), e.toChars());
-                        err = true;
+                        expr(err = true);
                     }
                     else if (((e.op & 0xFF) == 127))
-                        err = true;
+                        expr(err = true);
                     else
                         exp.exps.set(i, e);
                 }
@@ -2915,8 +2915,8 @@ public class expressionsem {
             }
             Ref<Type> tkey = ref(null);
             Ref<Type> tvalue = ref(null);
-            err_keys = arrayExpressionToCommonType(this.sc, e.keys, ptr(tkey));
-            err_vals = arrayExpressionToCommonType(this.sc, e.values, ptr(tvalue));
+            expr(err_keys = arrayExpressionToCommonType(this.sc, e.keys, ptr(tkey)));
+            expr(err_vals = arrayExpressionToCommonType(this.sc, e.values, ptr(tvalue)));
             if (err_keys || err_vals)
                 this.setError();
                 return ;
@@ -2989,7 +2989,7 @@ public class expressionsem {
             else
                 throw new AssertionError("Unreachable code!");
             if (global.params.vcomplex)
-                exp.type.checkComplexTransition(exp.loc, this.sc);
+                expr(exp.type.checkComplexTransition(exp.loc, this.sc));
             this.result = e.value;
         }
 
@@ -3085,7 +3085,7 @@ public class expressionsem {
                                 this.setError();
                                 return ;
                             }
-                            v.checkDeprecated(exp.loc, this.sc);
+                            expr(v.checkDeprecated(exp.loc, this.sc));
                             Expression e = v.expandInitializer(exp.loc);
                             ti.inuse++;
                             e = expressionSemantic(e, this.sc);
@@ -3334,8 +3334,8 @@ public class expressionsem {
                     if ((f == null) || f.errors)
                         this.setError();
                         return ;
-                    checkFunctionAttributes(exp, this.sc, f);
-                    checkAccess((AggregateDeclaration)cd, exp.loc, this.sc, (Dsymbol)f);
+                    expr(checkFunctionAttributes(exp, this.sc, f));
+                    expr(checkAccess((AggregateDeclaration)cd, exp.loc, this.sc, (Dsymbol)f));
                     TypeFunction tf = (TypeFunction)f.type;
                     Ref<Type> rettype = ref(null);
                     if (functionParameters(exp.loc, this.sc, tf, null, null, exp.newargs, f, ptr(rettype), ptr(newprefix)))
@@ -3359,8 +3359,8 @@ public class expressionsem {
                     if ((f == null) || f.errors)
                         this.setError();
                         return ;
-                    checkFunctionAttributes(exp, this.sc, f);
-                    checkAccess((AggregateDeclaration)cd, exp.loc, this.sc, (Dsymbol)f);
+                    expr(checkFunctionAttributes(exp, this.sc, f));
+                    expr(checkAccess((AggregateDeclaration)cd, exp.loc, this.sc, (Dsymbol)f));
                     TypeFunction tf = (TypeFunction)f.type;
                     if (exp.arguments == null)
                         exp.arguments = new DArray<Expression>();
@@ -3422,8 +3422,8 @@ public class expressionsem {
                     if ((f == null) || f.errors)
                         this.setError();
                         return ;
-                    checkFunctionAttributes(exp, this.sc, f);
-                    checkAccess((AggregateDeclaration)sd, exp.loc, this.sc, (Dsymbol)f);
+                    expr(checkFunctionAttributes(exp, this.sc, f));
+                    expr(checkAccess((AggregateDeclaration)sd, exp.loc, this.sc, (Dsymbol)f));
                     TypeFunction tf = (TypeFunction)f.type;
                     Ref<Type> rettype = ref(null);
                     if (functionParameters(exp.loc, this.sc, tf, null, null, exp.newargs, f, ptr(rettype), ptr(newprefix)))
@@ -3447,8 +3447,8 @@ public class expressionsem {
                     if ((f == null) || f.errors)
                         this.setError();
                         return ;
-                    checkFunctionAttributes(exp, this.sc, f);
-                    checkAccess((AggregateDeclaration)sd, exp.loc, this.sc, (Dsymbol)f);
+                    expr(checkFunctionAttributes(exp, this.sc, f));
+                    expr(checkAccess((AggregateDeclaration)sd, exp.loc, this.sc, (Dsymbol)f));
                     TypeFunction tf = (TypeFunction)f.type;
                     if (exp.arguments == null)
                         exp.arguments = new DArray<Expression>();
@@ -4023,7 +4023,7 @@ public class expressionsem {
                                     this.setError();
                                     return ;
                                 sle.type = exp.e1.type;
-                                sle.useStaticInit = false;
+                                expr(sle.useStaticInit = false);
                                 Expression e = sle;
                                 {
                                     CtorDeclaration cf = sd.ctor.isCtorDeclaration();
@@ -4213,8 +4213,8 @@ public class expressionsem {
                         this.setError();
                         return ;
                     }
-                    checkFunctionAttributes(exp, this.sc, exp.f);
-                    checkAccess(exp.loc, this.sc, ue.e1, exp.f);
+                    expr(checkFunctionAttributes(exp, this.sc, exp.f));
+                    expr(checkAccess(exp.loc, this.sc, ue.e1, exp.f));
                     if (!exp.f.needThis())
                     {
                         exp.e1 = Expression.combine(ue.e1, new VarExp(exp.loc, exp.f, false));
@@ -4245,12 +4245,12 @@ public class expressionsem {
                             if (((ue.e1.op & 0xFF) == 30))
                             {
                                 ue.e1 = ((DotTypeExp)ue.e1).e1;
-                                exp.directcall = true;
+                                expr(exp.directcall = true);
                             }
                             else if (((ue.e1.op & 0xFF) == 124))
-                                exp.directcall = true;
+                                expr(exp.directcall = true);
                             else if (((cd.storage_class & 8L) != 0L))
-                                exp.directcall = true;
+                                expr(exp.directcall = true);
                             if ((!pequals(ad, cd)))
                             {
                                 ue.e1 = ue.e1.castTo(this.sc, ad.type.addMod(ue.e1.type.mod));
@@ -4270,7 +4270,7 @@ public class expressionsem {
                 {
                     AggregateDeclaration ad = (this.sc).func != null ? (this.sc).func.isThis() : null;
                     ClassDeclaration cd = ad != null ? ad.isClassDeclaration() : null;
-                    isSuper = (exp.e1.op & 0xFF) == 124;
+                    expr(isSuper = (exp.e1.op & 0xFF) == 124);
                     if (isSuper)
                     {
                         if ((cd == null) || (cd.baseClass == null) || ((this.sc).func.isCtorDeclaration() == null))
@@ -4325,8 +4325,8 @@ public class expressionsem {
                     if ((exp.f == null) || exp.f.errors)
                         this.setError();
                         return ;
-                    checkFunctionAttributes(exp, this.sc, exp.f);
-                    checkAccess(exp.loc, this.sc, null, exp.f);
+                    expr(checkFunctionAttributes(exp, this.sc, exp.f));
+                    expr(checkAccess(exp.loc, this.sc, null, exp.f));
                     exp.e1 = new DotVarExp(exp.e1.loc, exp.e1, exp.f, false);
                     exp.e1 = expressionSemantic(exp.e1, this.sc);
                     t1 = exp.e1.type;
@@ -4397,7 +4397,7 @@ public class expressionsem {
                         {
                             dve.var = exp.f;
                             dve.type = exp.f.type;
-                            dve.hasOverloads = false;
+                            expr(dve.hasOverloads = false);
                             /*goto Lagain*/throw Dispatch1.INSTANCE;
                         }
                         exp.e1 = new VarExp(dve.loc, exp.f, false);
@@ -4484,9 +4484,9 @@ public class expressionsem {
                     }
                     if (exp.f != null)
                     {
-                        exp.checkPurity(this.sc, exp.f);
-                        exp.checkSafety(this.sc, exp.f);
-                        exp.checkNogc(this.sc, exp.f);
+                        expr(exp.checkPurity(this.sc, exp.f));
+                        expr(exp.checkSafety(this.sc, exp.f));
+                        expr(exp.checkNogc(this.sc, exp.f));
                         if (exp.f.checkNestedReference(this.sc, exp.loc))
                             this.setError();
                             return ;
@@ -4497,17 +4497,17 @@ public class expressionsem {
                         if ((tf.purity == 0) && (((this.sc).flags & 8) == 0) && (this.sc).func.setImpure())
                         {
                             exp.error(new BytePtr("`pure` %s `%s` cannot call impure %s `%s`"), (this.sc).func.kind(), (this.sc).func.toPrettyChars(false), p, exp.e1.toChars());
-                            err = true;
+                            expr(err = true);
                         }
                         if (!tf.isnogc && (this.sc).func.setGC() && (((this.sc).flags & 8) == 0))
                         {
                             exp.error(new BytePtr("`@nogc` %s `%s` cannot call non-@nogc %s `%s`"), (this.sc).func.kind(), (this.sc).func.toPrettyChars(false), p, exp.e1.toChars());
-                            err = true;
+                            expr(err = true);
                         }
                         if ((tf.trust <= TRUST.system) && (this.sc).func.setUnsafe() && (((this.sc).flags & 8) == 0))
                         {
                             exp.error(new BytePtr("`@safe` %s `%s` cannot call `@system` %s `%s`"), (this.sc).func.kind(), (this.sc).func.toPrettyChars(false), p, exp.e1.toChars());
-                            err = true;
+                            expr(err = true);
                         }
                         if (err)
                             this.setError();
@@ -4571,8 +4571,8 @@ public class expressionsem {
                             return ;
                         }
                     }
-                    checkFunctionAttributes(exp, this.sc, exp.f);
-                    checkAccess(exp.loc, this.sc, null, exp.f);
+                    expr(checkFunctionAttributes(exp, this.sc, exp.f));
+                    expr(checkAccess(exp.loc, this.sc, null, exp.f));
                     if (exp.f.checkNestedReference(this.sc, exp.loc))
                         this.setError();
                         return ;
@@ -4779,7 +4779,7 @@ public class expressionsem {
                 return ;
             }
             if (global.params.vcomplex)
-                ta.value.checkComplexTransition(exp.loc, this.sc);
+                expr(ta.value.checkComplexTransition(exp.loc, this.sc));
             Expression e = null;
             Type tb = ta.value.toBasetype();
             if ((ea.value != null) && ((tb.ty & 0xFF) == ENUMTY.Tclass))
@@ -5130,7 +5130,7 @@ public class expressionsem {
                     this.setError();
                     return ;
                 if (((exp.e1.op & 0xFF) == 31))
-                    ((SliceExp)exp.e1).arrayop = true;
+                    expr(((SliceExp)exp.e1).arrayop = true);
                 if (exp.e2.implicitConvTo(exp.e1.type.nextOf()) != 0)
                 {
                     exp.e2 = exp.e2.castTo(this.sc, exp.e1.type.nextOf());
@@ -5346,7 +5346,7 @@ public class expressionsem {
                 {
                     CallExp callExp = (CallExp)exp.e1;
                     Identifier callExpIdent = callExp.f.ident;
-                    isEqualsCallExpression = (pequals(callExpIdent, Id.__equals)) || (pequals(callExpIdent, Id.eq));
+                    expr(isEqualsCallExpression = (pequals(callExpIdent, Id.__equals)) || (pequals(callExpIdent, Id.eq)));
                 }
                 if (((tok & 0xFF) == 58) || ((tok & 0xFF) == 59) || ((tok & 0xFF) == 54) || ((tok & 0xFF) == 55) || ((tok & 0xFF) == 56) || ((tok & 0xFF) == 57) || ((tok & 0xFF) == 60) || ((tok & 0xFF) == 61) || ((tok & 0xFF) == 175) || isEqualsCallExpression)
                 {
@@ -5570,7 +5570,7 @@ public class expressionsem {
                                 return ;
                             }
                         }
-                        checkAccess(exp.loc, this.sc, exp.e1, exp.var);
+                        expr(checkAccess(exp.loc, this.sc, exp.e1, exp.var));
                         VarDeclaration v = exp.var.isVarDeclaration();
                         if ((v != null) && v.isDataseg() || ((v.storage_class & 8388608L) != 0))
                         {
@@ -5583,7 +5583,7 @@ public class expressionsem {
                         }
                         if ((v != null) && v.isDataseg() || !v.needThis())
                         {
-                            checkAccess(exp.loc, this.sc, exp.e1, (Declaration)v);
+                            expr(checkAccess(exp.loc, this.sc, exp.e1, (Declaration)v));
                             Expression e = new VarExp(exp.loc, v, true);
                             e = new CommaExp(exp.loc, exp.e1, e, true);
                             e = expressionSemantic(e, this.sc);
@@ -5832,7 +5832,7 @@ public class expressionsem {
                     if (!checkAddressVar(this.sc, exp, v))
                         this.setError();
                         return ;
-                    ve.checkPurity(this.sc, v);
+                    expr(ve.checkPurity(this.sc, v));
                 }
                 FuncDeclaration f = ve.var.isFuncDeclaration();
                 if (f != null)
@@ -5909,7 +5909,7 @@ public class expressionsem {
                         if (global.params.vsafe && !checkAddressVar(this.sc, exp, v))
                             this.setError();
                             return ;
-                        exp.e1.checkPurity(this.sc, v);
+                        expr(exp.e1.checkPurity(this.sc, v));
                     }
                 }
             }
@@ -6210,15 +6210,15 @@ public class expressionsem {
             {
                 if (ad.dtor != null)
                 {
-                    (err ? 1 : 0) |= (exp.checkPurity(this.sc, ad.dtor) ? 1 : 0);
-                    (err ? 1 : 0) |= (exp.checkSafety(this.sc, ad.dtor) ? 1 : 0);
-                    (err ? 1 : 0) |= (exp.checkNogc(this.sc, ad.dtor) ? 1 : 0);
+                    expr((err ? 1 : 0) |= (exp.checkPurity(this.sc, ad.dtor) ? 1 : 0));
+                    expr((err ? 1 : 0) |= (exp.checkSafety(this.sc, ad.dtor) ? 1 : 0));
+                    expr((err ? 1 : 0) |= (exp.checkNogc(this.sc, ad.dtor) ? 1 : 0));
                 }
                 if ((ad.aggDelete != null) && ((tb.ty & 0xFF) != ENUMTY.Tarray))
                 {
-                    (err ? 1 : 0) |= (exp.checkPurity(this.sc, ad.aggDelete) ? 1 : 0);
-                    (err ? 1 : 0) |= (exp.checkSafety(this.sc, ad.aggDelete) ? 1 : 0);
-                    (err ? 1 : 0) |= (exp.checkNogc(this.sc, ad.aggDelete) ? 1 : 0);
+                    expr((err ? 1 : 0) |= (exp.checkPurity(this.sc, ad.aggDelete) ? 1 : 0));
+                    expr((err ? 1 : 0) |= (exp.checkSafety(this.sc, ad.aggDelete) ? 1 : 0));
+                    expr((err ? 1 : 0) |= (exp.checkNogc(this.sc, ad.aggDelete) ? 1 : 0));
                 }
                 if (err)
                     this.setError();
@@ -6227,7 +6227,7 @@ public class expressionsem {
             if (((this.sc).intypeof == 0) && ((this.sc).func != null) && !exp.isRAII && (this.sc).func.setUnsafe() && (((this.sc).flags & 8) == 0))
             {
                 exp.error(new BytePtr("`%s` is not `@safe` but is used in `@safe` function `%s`"), exp.toChars(), (this.sc).func.toChars());
-                err = true;
+                expr(err = true);
             }
             if (err)
                 this.setError();
@@ -6436,12 +6436,12 @@ public class expressionsem {
                     int __limit1385 = exp_ref.value.dim;
                     for (; (__key1384 < __limit1385);__key1384 += 1) {
                         int i = __key1384;
-                        (res ? 1 : 0) |= (checkElem.invoke(((ArrayLiteralExp)exp_ref.value.e1).getElement(i)) ? 1 : 0);
+                        expr((res ? 1 : 0) |= (checkElem.invoke(((ArrayLiteralExp)exp_ref.value.e1).getElement(i)) ? 1 : 0));
                     }
                 }
             }
             else if (((exp_ref.value.e1.type.ty & 0xFF) == ENUMTY.Tvoid))
-                checkElem.invoke(exp_ref.value.e1);
+                expr(checkElem.invoke(exp_ref.value.e1));
             this.result = res ? new ErrorExp() : exp_ref.value;
         }
 
@@ -6711,24 +6711,24 @@ public class expressionsem {
                     {
                         long length = el.toInteger();
                         IntRange bounds = bounds = new IntRange(new SignExtendedNumber(0L, false), new SignExtendedNumber(length, false));
-                        exp.upperIsInBounds = bounds.contains(uprRange);
+                        expr(exp.upperIsInBounds = bounds.contains(uprRange));
                     }
                     else if (((exp.upr.op & 0xFF) == 135) && (exp.upr.toInteger() == 0L))
                     {
-                        exp.upperIsInBounds = true;
+                        expr(exp.upperIsInBounds = true);
                     }
                     else if (((exp.upr.op & 0xFF) == 26) && (pequals(((VarExp)exp.upr).var.ident, Id.dollar)))
                     {
-                        exp.upperIsInBounds = true;
+                        expr(exp.upperIsInBounds = true);
                     }
                 }
                 else if (((t1b.ty & 0xFF) == ENUMTY.Tpointer))
                 {
-                    exp.upperIsInBounds = true;
+                    expr(exp.upperIsInBounds = true);
                 }
                 else
                     throw new AssertionError("Unreachable code!");
-                exp.lowerIsLessThanUpper = lwrRange.imax.opCmp(uprRange.imin) <= 0;
+                expr(exp.lowerIsLessThanUpper = lwrRange.imax.opCmp(uprRange.imin) <= 0);
             }
             this.result = exp;
         }
@@ -7057,7 +7057,7 @@ public class expressionsem {
                     if (length != 0)
                     {
                         IntRange bounds = bounds = new IntRange(new SignExtendedNumber(0L, false), new SignExtendedNumber(length - 1L, false));
-                        exp.indexIsInBounds = bounds.contains(getIntRange(exp.e2));
+                        expr(exp.indexIsInBounds = bounds.contains(getIntRange(exp.e2)));
                     }
                 }
             }
@@ -7332,7 +7332,7 @@ public class expressionsem {
                             {
                                 SliceExp se = e1x.isSliceExp();
                                 if ((se) != null)
-                                    se.arrayop = true;
+                                    expr(se.arrayop = true);
                             }
                             e1x = expressionSemantic(e1x, this.sc);
                         }
@@ -7750,7 +7750,7 @@ public class expressionsem {
                     if (isUnaArrayOp(e2x.op) || isBinArrayOp(e2x.op))
                     {
                         SliceExp sle = new SliceExp(e1x.loc, e1x, null, null);
-                        sle.arrayop = true;
+                        expr(sle.arrayop = true);
                         e1x = expressionSemantic(sle, this.sc);
                     }
                     else
@@ -7792,7 +7792,7 @@ public class expressionsem {
                         e1x.type = t1.baseElemOf().sarrayOf((long)dim);
                     }
                     SliceExp sle = new SliceExp(e1x.loc, e1x, null, null);
-                    sle.arrayop = true;
+                    expr(sle.arrayop = true);
                     e1x = expressionSemantic(sle, this.sc);
                 }
                 if (((e1x.op & 0xFF) == 127))
@@ -7815,7 +7815,7 @@ public class expressionsem {
                         return ;
                     ale.e1 = ale1x;
                     Type tn = ale.e1.type.toBasetype().nextOf();
-                    checkDefCtor(ale.loc, tn);
+                    expr(checkDefCtor(ale.loc, tn));
                     semanticTypeInfo(this.sc, tn);
                 }
                 else {
@@ -8021,7 +8021,7 @@ public class expressionsem {
             exp.type = exp.e1.type;
             assert(exp.type != null);
             Expression res = ((exp.op & 0xFF) == 90) ? exp.reorderSettingAAElem(this.sc) : exp;
-            checkAssignEscape(this.sc, res, false);
+            expr(checkAssignEscape(this.sc, res, false));
             setResult.invoke(res, 9001);
             return ;
         }
@@ -8219,7 +8219,7 @@ public class expressionsem {
             exp.type = exp.e1.type;
             Expression res = exp.reorderSettingAAElem(this.sc);
             if (((exp.op & 0xFF) == 72) || ((exp.op & 0xFF) == 73) && global.params.vsafe)
-                checkAssignEscape(this.sc, res, false);
+                expr(checkAssignEscape(this.sc, res, false));
             this.result = res;
         }
 
@@ -8248,11 +8248,11 @@ public class expressionsem {
             boolean err = false;
             if (((tb1.ty & 0xFF) == ENUMTY.Tdelegate) || ((tb1.ty & 0xFF) == ENUMTY.Tpointer) && ((tb1.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
-                (err ? 1 : 0) |= (exp.e1.checkArithmetic() ? 1 : 0);
+                expr((err ? 1 : 0) |= (exp.e1.checkArithmetic() ? 1 : 0));
             }
             if (((tb2.ty & 0xFF) == ENUMTY.Tdelegate) || ((tb2.ty & 0xFF) == ENUMTY.Tpointer) && ((tb2.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
-                (err ? 1 : 0) |= (exp.e2.checkArithmetic() ? 1 : 0);
+                expr((err ? 1 : 0) |= (exp.e2.checkArithmetic() ? 1 : 0));
             }
             if (err)
                 this.setError();
@@ -8340,11 +8340,11 @@ public class expressionsem {
             boolean err = false;
             if (((t1.ty & 0xFF) == ENUMTY.Tdelegate) || ((t1.ty & 0xFF) == ENUMTY.Tpointer) && ((t1.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
-                (err ? 1 : 0) |= (exp.e1.checkArithmetic() ? 1 : 0);
+                expr((err ? 1 : 0) |= (exp.e1.checkArithmetic() ? 1 : 0));
             }
             if (((t2.ty & 0xFF) == ENUMTY.Tdelegate) || ((t2.ty & 0xFF) == ENUMTY.Tpointer) && ((t2.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
-                (err ? 1 : 0) |= (exp.e2.checkArithmetic() ? 1 : 0);
+                expr((err ? 1 : 0) |= (exp.e2.checkArithmetic() ? 1 : 0));
             }
             if (err)
                 this.setError();
@@ -9686,7 +9686,7 @@ public class expressionsem {
                 return ;
             }
             if (((exp.econd.op & 0xFF) == 28))
-                ((DotIdExp)exp.econd).noderef = true;
+                expr(((DotIdExp)exp.econd).noderef = true);
             Expression ec = expressionSemantic(exp.econd, this.sc);
             ec = resolveProperties(this.sc, ec);
             ec = ec.toBoolean(this.sc);
@@ -10057,8 +10057,8 @@ public class expressionsem {
             if (s != null)
             {
                 s = s.toAlias();
-                exp.checkDeprecated(sc, s);
-                exp.checkDisabled(sc, s);
+                expr(exp.checkDeprecated(sc, s));
+                expr(exp.checkDisabled(sc, s));
                 EnumMember em = s.isEnumMember();
                 if (em != null)
                 {
@@ -10429,7 +10429,7 @@ public class expressionsem {
                 if (global.params.vsafe)
                 {
                     v.storage_class &= -281474976710657L;
-                    v.doNotInferScope = true;
+                    expr(v.doNotInferScope = true);
                     if (((v.storage_class & 524288L) != 0) && (sc).func.setUnsafe() && (((sc).flags & 8) == 0))
                     {
                         exp.error(new BytePtr("cannot take address of `scope` %s `%s` in `@safe` function `%s`"), p, v.toChars(), (sc).func.toChars());
@@ -10449,10 +10449,10 @@ public class expressionsem {
     public static boolean checkFunctionAttributes(Expression exp, Scope sc, FuncDeclaration f) {
         {
             boolean error = __withSym.checkDisabled(sc, f);
-            (error ? 1 : 0) |= (__withSym.checkDeprecated(sc, f) ? 1 : 0);
-            (error ? 1 : 0) |= (__withSym.checkPurity(sc, f) ? 1 : 0);
-            (error ? 1 : 0) |= (__withSym.checkSafety(sc, f) ? 1 : 0);
-            (error ? 1 : 0) |= (__withSym.checkNogc(sc, f) ? 1 : 0);
+            expr((error ? 1 : 0) |= (__withSym.checkDeprecated(sc, f) ? 1 : 0));
+            expr((error ? 1 : 0) |= (__withSym.checkPurity(sc, f) ? 1 : 0));
+            expr((error ? 1 : 0) |= (__withSym.checkSafety(sc, f) ? 1 : 0));
+            expr((error ? 1 : 0) |= (__withSym.checkNogc(sc, f) ? 1 : 0));
             return error;
         }
     }

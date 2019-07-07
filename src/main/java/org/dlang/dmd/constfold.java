@@ -495,11 +495,11 @@ public class constfold {
                     cantExp(ue);
                     return ue;
                 }
-                neg = true;
+                expr(neg = true);
                 n = -n;
             }
             else
-                neg = false;
+                expr(neg = false);
             UnionExp ur = new UnionExp().copy();
             UnionExp uv = new UnionExp().copy();
             if (e1.type.iscomplex())

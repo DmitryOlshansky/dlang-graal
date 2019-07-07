@@ -129,7 +129,7 @@ public class dscope {
             (s).scopesym = null;
             (s).enclosing = this;
             (s).slabel = null;
-            (s).nofree = false;
+            expr((s).nofree = false);
             (s).ctorflow.fieldinit = arraydup(this.ctorflow.fieldinit).copy();
             (s).flags = this.flags & 2042;
             (s).lastdc = null;
@@ -477,7 +477,7 @@ public class dscope {
             {
                 Scope sc = this;
                 for (; sc != null;sc = (sc).enclosing){
-                    (sc).nofree = true;
+                    expr((sc).nofree = true);
                     assert((this.flags & 32768) == 0);
                 }
             }
@@ -508,8 +508,8 @@ public class dscope {
             this.stc = sc.stc;
             this.depdecl = sc.depdecl;
             this.inunion = sc.inunion;
-            this.nofree = sc.nofree;
-            this.inLoop = sc.inLoop;
+            expr(this.nofree = sc.nofree);
+            expr(this.inLoop = sc.inLoop);
             this.intypeof = sc.intypeof;
             this.lastVar = sc.lastVar;
             this.ctorflow = sc.ctorflow.copy();

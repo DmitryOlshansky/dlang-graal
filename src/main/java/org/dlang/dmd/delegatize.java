@@ -73,7 +73,7 @@ public class delegatize {
         }
 
         public  void visit(ExpInitializer ei) {
-            walkPostorder(ei.exp, this);
+            expr(walkPostorder(ei.exp, this));
         }
 
         public  void visit(StructInitializer si) {
@@ -100,7 +100,7 @@ public class delegatize {
                     Expression ex = __r926.get(__key925);
                     int i = __key925;
                     if (ex != null)
-                        walkPostorder(ex, this);
+                        expr(walkPostorder(ex, this));
                     {
                         Initializer iz = ai.value.get(i);
                         if ((iz) != null)
@@ -128,31 +128,31 @@ public class delegatize {
         public  void visit(SymOffExp e) {
             VarDeclaration v = e.var.isVarDeclaration();
             if (v != null)
-                this.result = v.checkNestedReference(this.sc, Loc.initial);
+                expr(this.result = v.checkNestedReference(this.sc, Loc.initial));
         }
 
         public  void visit(VarExp e) {
             VarDeclaration v = e.var.isVarDeclaration();
             if (v != null)
-                this.result = v.checkNestedReference(this.sc, Loc.initial);
+                expr(this.result = v.checkNestedReference(this.sc, Loc.initial));
         }
 
         public  void visit(ThisExp e) {
             if (e.var != null)
-                this.result = e.var.checkNestedReference(this.sc, Loc.initial);
+                expr(this.result = e.var.checkNestedReference(this.sc, Loc.initial));
         }
 
         public  void visit(DeclarationExp e) {
             VarDeclaration v = e.declaration.isVarDeclaration();
             if (v != null)
             {
-                this.result = v.checkNestedReference(this.sc, Loc.initial);
+                expr(this.result = v.checkNestedReference(this.sc, Loc.initial));
                 if (this.result)
                     return ;
                 if ((v._init != null) && (v._init.isExpInitializer() != null))
                 {
                     Expression ie = initializerToExpression(v._init, null);
-                    this.result = lambdaCheckForNestedRef(ie, this.sc);
+                    expr(this.result = lambdaCheckForNestedRef(ie, this.sc));
                 }
             }
         }
@@ -187,12 +187,12 @@ public class delegatize {
 
     public static void lambdaSetParent(Expression e, FuncDeclaration fd) {
         LambdaSetParent lsp = new LambdaSetParent(fd);
-        walkPostorder(e, lsp);
+        expr(walkPostorder(e, lsp));
     }
 
     public static boolean lambdaCheckForNestedRef(Expression e, Scope sc) {
         LambdaCheckForNestedRef v = new LambdaCheckForNestedRef(sc);
-        walkPostorder(e, v);
+        expr(walkPostorder(e, v));
         return v.result;
     }
 

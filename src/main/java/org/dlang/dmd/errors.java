@@ -337,7 +337,7 @@ public class errors {
                     case 96:
                         if (inBacktick)
                         {
-                            inBacktick = false;
+                            expr(inBacktick = false);
                             OutBuffer codebuf = new OutBuffer();
                             try {
                                 codebuf.write((toBytePtr((buf).peekSlice()).plus(iCodeStart).plus(1)), i - (iCodeStart + 1));
@@ -353,7 +353,7 @@ public class errors {
                             finally {
                             }
                         }
-                        inBacktick = true;
+                        expr(inBacktick = true);
                         iCodeStart = i;
                         break;
                     default:
@@ -444,7 +444,7 @@ public class errors {
         res.writeByte(0);
         (buf).setsize(0);
         (buf).write(res);
-        global.endGagging(gaggedErrorsSave);
+        expr(global.endGagging(gaggedErrorsSave));
         errors.colorHighlightCodenested -= 1;
     }
 
@@ -460,18 +460,18 @@ public class errors {
                     if (((color & 0xFF) == 0))
                     {
                         (con).resetColor();
-                        colors = false;
+                        expr(colors = false);
                     }
                     else if (((color & 0xFF) == Color.white))
                     {
                         (con).resetColor();
                         (con).setColorBright(true);
-                        colors = true;
+                        expr(colors = true);
                     }
                     else
                     {
                         (con).setColor((int)color);
-                        colors = true;
+                        expr(colors = true);
                     }
                 }
                 else

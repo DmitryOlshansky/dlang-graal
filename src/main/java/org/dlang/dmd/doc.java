@@ -299,7 +299,7 @@ public class doc {
 
         public  void visit(Dsymbol s) {
             HdrGenState hgs = new HdrGenState();
-            hgs.ddoc = true;
+            expr(hgs.ddoc = true);
             toCBuffer(s, this.buf, hgs);
         }
 
@@ -341,7 +341,7 @@ public class doc {
 
         public  void visit(Import i) {
             HdrGenState hgs = new HdrGenState();
-            hgs.ddoc = true;
+            expr(hgs.ddoc = true);
             emitProtection(this.buf, i);
             toCBuffer((Dsymbol)i, this.buf, hgs);
         }
@@ -351,7 +351,7 @@ public class doc {
                 return ;
             TemplateDeclaration td = getEponymousParent(d);
             HdrGenState hgs = new HdrGenState();
-            hgs.ddoc = true;
+            expr(hgs.ddoc = true);
             if (d.isDeprecated())
                 (this.buf).writestring(new ByteSlice("$(DEPRECATED "));
             this.prefix(d);
@@ -1063,7 +1063,7 @@ public class doc {
                     case 40:
                         if (inCode == 0)
                             par_open++;
-                        atLineStart = false;
+                        expr(atLineStart = false);
                         break;
                     case 41:
                         if (inCode == 0)
@@ -1078,10 +1078,10 @@ public class doc {
                             else
                                 par_open--;
                         }
-                        atLineStart = false;
+                        expr(atLineStart = false);
                         break;
                     case 10:
-                        atLineStart = true;
+                        expr(atLineStart = true);
                         break;
                     case 32:
                     case 13:
@@ -1105,7 +1105,7 @@ public class doc {
                             else if (inCode == 0)
                                 inCode = c;
                         }
-                        atLineStart = false;
+                        expr(atLineStart = false);
                         break;
                     case 92:
                         if ((inCode == 0) && respectBackslashEscapes && (u + 1 < (buf).offset) && global.params.markdown)
@@ -1122,7 +1122,7 @@ public class doc {
                         }
                         break;
                     default:
-                    atLineStart = false;
+                    expr(atLineStart = false);
                     break;
                 }
             }
@@ -1171,9 +1171,9 @@ public class doc {
         boolean dot = false;
         TemplateDeclaration eponymousParent = getEponymousParent(s);
         if (includeParent && (s.parent != null) || (eponymousParent != null))
-            dot = emitAnchorName(buf, s.parent, sc, includeParent);
+            expr(dot = emitAnchorName(buf, s.parent, sc, includeParent));
         else if (includeParent && (sc != null))
-            dot = emitAnchorName(buf, (sc).scopesym, skipNonQualScopes((sc).enclosing), includeParent);
+            expr(dot = emitAnchorName(buf, (sc).scopesym, skipNonQualScopes((sc).enclosing), includeParent));
         if (eponymousParent != null)
             return dot;
         if (dot)
@@ -1196,7 +1196,7 @@ public class doc {
         {
             OutBuffer anc = new OutBuffer();
             try {
-                emitAnchorName(anc, s, skipNonQualScopes(sc), true);
+                expr(emitAnchorName(anc, s, skipNonQualScopes(sc), true));
                 ident = Identifier.idPool(anc.peekSlice());
             }
             finally {
@@ -1295,7 +1295,7 @@ public class doc {
                     {
                         OutBuffer anc = new OutBuffer();
                         try {
-                            emitAnchorName(anc, s, skipNonQualScopes(sc), false);
+                            expr(emitAnchorName(anc, s, skipNonQualScopes(sc), false));
                             shortIdent = Identifier.idPool(anc.peekSlice());
                         }
                         finally {
@@ -2034,7 +2034,7 @@ public class doc {
                     i_ref.value = oi;
                     break;
                 }
-                lastCharWasDot = true;
+                expr(lastCharWasDot = true);
                 continue;
             }
             else
@@ -2043,13 +2043,13 @@ public class doc {
                 {
                     if (isUniAlpha(c.value))
                     {
-                        lastCharWasDot = false;
+                        expr(lastCharWasDot = false);
                         continue;
                     }
                 }
                 else if ((isalnum(c.value) != 0) || (c.value == 95))
                 {
-                    lastCharWasDot = false;
+                    expr(lastCharWasDot = false);
                     continue;
                 }
                 i_ref.value = oi;
@@ -2084,7 +2084,7 @@ public class doc {
                     continue;
                 if (((c & 0xFF) == 46))
                 {
-                    sawdot = true;
+                    expr(sawdot = true);
                     continue;
                 }
                 break;
@@ -2765,7 +2765,7 @@ public class doc {
                 if ((((buf).data.get(iEnd) & 0xFF) == 91))
                     iEnd += 2;
             }
-            this.parseLabel(buf, iStart);
+            expr(this.parseLabel(buf, iStart));
             if (this.label.getLength() == 0)
                 return i;
             if ((iEnd < iStart.value))
@@ -2777,12 +2777,12 @@ public class doc {
             if (!delimiter.atParagraphStart || ((delimiter.type & 0xFF) != 91) || (i + 1 >= (buf).offset) || (((buf).data.get(i + 1) & 0xFF) != 58))
                 return i;
             IntRef iEnd = ref(delimiter.iStart);
-            this.parseLabel(buf, iEnd);
+            expr(this.parseLabel(buf, iEnd));
             if ((this.label.getLength() == 0) || (iEnd.value != i + 1))
                 return i;
             iEnd.value += 1;
             iEnd.value = skipChars(buf, iEnd.value, new ByteSlice(" \u0009"));
-            skipOneNewline(buf, iEnd);
+            expr(skipOneNewline(buf, iEnd));
             if (!this.parseHref(buf, iEnd) || (this.href.getLength() == 0))
                 return i;
             iEnd.value = skipChars(buf, iEnd.value, new ByteSlice(" \u0009"));
@@ -2881,7 +2881,7 @@ public class doc {
                                 case 60:
                                     if (!inPointy && (j == iHrefStart))
                                     {
-                                        inPointy = true;
+                                        expr(inPointy = true);
                                         iHrefStart += 1;
                                     }
                                     break;
@@ -3198,27 +3198,27 @@ public class doc {
                                 break;
                             case 10:
                                 if (leadingBlank && (inCode == 0))
-                                    newParagraph = true;
-                                leadingBlank = true;
+                                    expr(newParagraph = true);
+                                expr(leadingBlank = true);
                                 break;
                             case 92:
                                 i_ref.value += 1;
                                 break;
                             case 35:
                                 if (leadingBlank && (inCode == 0))
-                                    newParagraph = true;
-                                leadingBlank = false;
+                                    expr(newParagraph = true);
+                                expr(leadingBlank = false);
                                 break;
                             case 62:
                                 if (leadingBlank && (inCode == 0))
-                                    newParagraph = true;
+                                    expr(newParagraph = true);
                                 break;
                             case 43:
                                 __dispatch10 = 0;
                                 if (leadingBlank && (inCode == 0) && isFollowedBySpace.invoke(buf, i_ref.value))
-                                    newParagraph = true;
+                                    expr(newParagraph = true);
                                 else
-                                    leadingBlank = false;
+                                    expr(leadingBlank = false);
                                 break;
                             case 48:
                             case 49:
@@ -3234,17 +3234,17 @@ public class doc {
                                 {
                                     i_ref.value = skipChars(buf, i_ref.value, new ByteSlice("0123456789"));
                                     if ((i_ref.value < (buf).offset) && (((buf).data.get(i_ref.value) & 0xFF) == 46) || (((buf).data.get(i_ref.value) & 0xFF) == 41) && isFollowedBySpace.invoke(buf, i_ref.value))
-                                        newParagraph = true;
+                                        expr(newParagraph = true);
                                     else
-                                        leadingBlank = false;
+                                        expr(leadingBlank = false);
                                 }
                                 break;
                             case 42:
                                 if (leadingBlank && (inCode == 0))
                                 {
-                                    newParagraph = true;
+                                    expr(newParagraph = true);
                                     if (!isFollowedBySpace.invoke(buf, i_ref.value))
-                                        leadingBlank = false;
+                                        expr(leadingBlank = false);
                                 }
                                 break;
                             case 96:
@@ -3254,9 +3254,9 @@ public class doc {
                                 {
                                     inCode = (inCode == (c & 0xFF)) ? 0 : (c & 0xFF);
                                     i_ref.value = skipChars(buf, i_ref.value, slice(new byte[]{(byte)c})) - 1;
-                                    newParagraph = true;
+                                    expr(newParagraph = true);
                                 }
-                                leadingBlank = false;
+                                expr(leadingBlank = false);
                                 break;
                             case 45:
                                 if (leadingBlank && (inCode == 0) && isFollowedBySpace.invoke(buf, i_ref.value))
@@ -3273,14 +3273,14 @@ public class doc {
                                 break;
                             default:
                             if (leadingBlank)
-                                newParagraph = false;
-                            leadingBlank = false;
+                                expr(newParagraph = false);
+                            expr(leadingBlank = false);
                             break;
                         }
                     } while(__dispatch10 != 0);
                 }
             }
-            this.extractedAll = true;
+            expr(this.extractedAll = true);
         }
 
         public static Slice<ByteSlice> split(ByteSlice s, byte delimiter) {
@@ -3454,7 +3454,7 @@ public class doc {
         if (ignoreLast)
         {
             int iLast = skipChars(buf_ref.value, inlineDelimiters_ref.value.get(inlineDelimiters_ref.value.getLength() - 1).iStart + inlineDelimiters_ref.value.get(inlineDelimiters_ref.value.getLength() - 1).count, new ByteSlice(" \u0009"));
-            ignoreLast = iLast >= iEnd;
+            expr(ignoreLast = iLast >= iEnd);
         }
         if (!ignoreLast)
             cellCount += 1;
@@ -3528,7 +3528,7 @@ public class doc {
                 {
                     if (ignoreLast && (di == inlineDelimiters_ref.value.getLength() - 1))
                     {
-                        ignoreLast = false;
+                        expr(ignoreLast = false);
                         continue;
                     }
                     if ((cellIndex >= columnAlignments_ref.value.getLength()))
@@ -3665,9 +3665,9 @@ public class doc {
                                     i.value += endAllMarkdownQuotes(buf, i.value, quoteLevel);
                                     quoteMacroLevel.value = 0;
                                 }
-                                leadingBlank = true;
-                                lineQuoted = false;
-                                tableRowDetected = false;
+                                expr(leadingBlank = true);
+                                expr(lineQuoted = false);
+                                expr(tableRowDetected = false);
                                 iLineStart.value = i.value + 1;
                                 loc.linnum += incrementLoc;
                                 if ((previousMacroLevel < macroLevel) && (iParagraphStart.value < iLineStart.value))
@@ -3675,7 +3675,7 @@ public class doc {
                                 previousMacroLevel = macroLevel;
                                 break;
                             case 60:
-                                leadingBlank = false;
+                                expr(leadingBlank = false);
                                 if (inCode != 0)
                                     break;
                                 ByteSlice slice = (buf).peekSlice().copy();
@@ -3741,7 +3741,7 @@ public class doc {
                                         ByteSlice s = (buf).peekSlice().slice(i.value,iEnd).copy();
                                         message(loc, new BytePtr("Ddoc: starting quote block with '%.*s'"), s.getLength(), toBytePtr(s));
                                     }
-                                    lineQuoted = true;
+                                    expr(lineQuoted = true);
                                     int lineQuoteLevel = 1;
                                     int iAfterDelimiters = i.value + 1;
                                     for (; (iAfterDelimiters < (buf).offset);iAfterDelimiters += 1){
@@ -3777,7 +3777,7 @@ public class doc {
                                     }
                                     break;
                                 }
-                                leadingBlank = false;
+                                expr(leadingBlank = false);
                                 if (inCode != 0)
                                     break;
                                 ByteSlice se_1 = ((sc)._module.escapetable).escapeChar((byte)62).copy();
@@ -3789,7 +3789,7 @@ public class doc {
                                 }
                                 break;
                             case 38:
-                                leadingBlank = false;
+                                expr(leadingBlank = false);
                                 if (inCode != 0)
                                     break;
                                 BytePtr p_1 = pcopy(toBytePtr((buf).data.get(i.value)));
@@ -3833,7 +3833,7 @@ public class doc {
                                         int j_2 = iAfterDelimiter;
                                         for (; !moreBackticks && (j_2 < (buf).offset);j_2 += 1) {
                                             if ((((buf).data.get(j_2) & 0xFF) == 96))
-                                                moreBackticks = true;
+                                                expr(moreBackticks = true);
                                             else if ((((buf).data.get(j_2) & 0xFF) == 13) || (((buf).data.get(j_2) & 0xFF) == 10))
                                                 break;
                                         }
@@ -3856,7 +3856,7 @@ public class doc {
                             case 35:
                                 if (leadingBlank && (inCode == 0))
                                 {
-                                    leadingBlank = false;
+                                    expr(leadingBlank = false);
                                     headingLevel.value = detectAtxHeadingLevel(buf, i.value);
                                     if (headingLevel.value == 0)
                                         break;
@@ -3878,7 +3878,7 @@ public class doc {
                                     if ((iAfterDelimiter_1 - i.value >= 3))
                                         /*goto case*/{ __dispatch12 = 45; continue dispatched_12; }
                                 }
-                                leadingBlank = false;
+                                expr(leadingBlank = false);
                                 break;
                             case 45:
                                 __dispatch12 = 0;
@@ -3901,7 +3901,7 @@ public class doc {
                                     }
                                     int istart = i.value;
                                     int eollen = 0;
-                                    leadingBlank = false;
+                                    expr(leadingBlank = false);
                                     byte c0_1 = c;
                                     int iInfoString = 0;
                                     if (inCode == 0)
@@ -3959,7 +3959,7 @@ public class doc {
                                     (buf).remove(iLineStart.value, i.value - iLineStart.value + eollen);
                                     i.value = iLineStart.value;
                                     if (eollen != 0)
-                                        leadingBlank = true;
+                                        expr(leadingBlank = true);
                                     if ((inCode != 0) && (i.value <= iCodeStart))
                                     {
                                         inCode = 0;
@@ -3987,12 +3987,12 @@ public class doc {
                                                         codebuf_1.remove(((p_2.minus(toBytePtr(codebuf_1.data)))), ((q.minus(p_2))));
                                                         assert((toBytePtr(codebuf_1.data).lessOrEqual(p_2)));
                                                         assert((p_2.lessThan(toBytePtr(codebuf_1.data).plus(codebuf_1.offset))));
-                                                        lineStart = false;
+                                                        expr(lineStart = false);
                                                         endp = pcopy((toBytePtr(codebuf_1.data).plus(codebuf_1.offset)));
                                                         continue;
                                                     }
                                                     if (((p_2.get() & 0xFF) == 10))
-                                                        lineStart = true;
+                                                        expr(lineStart = true);
                                                     p_2.plusAssign(1);
                                                 }
                                             }
@@ -4039,7 +4039,7 @@ public class doc {
                                             i.value = (buf).insert(i.value, new ByteSlice("$(D_CODE "));
                                         iCodeStart = i.value;
                                         i.value--;
-                                        leadingBlank = true;
+                                        expr(leadingBlank = true);
                                     }
                                 }
                                 break;
@@ -4085,16 +4085,16 @@ public class doc {
                                             list_1.iContentStart += delta_2;
                                         }
                                         list_1.macroLevel = macroLevel;
-                                        list_1.startItem(buf, iLineStart, i, iPrecedingBlankLine, nestedLists, loc);
+                                        expr(list_1.startItem(buf, iLineStart, i, iPrecedingBlankLine, nestedLists, loc));
                                         break;
                                     }
                                 }
-                                leadingBlank = false;
+                                expr(leadingBlank = false);
                                 break;
                             case 42:
                                 if ((inCode != 0) || (inBacktick != 0) || !global.params.markdown)
                                 {
-                                    leadingBlank = false;
+                                    expr(leadingBlank = false);
                                     break;
                                 }
                                 if (leadingBlank)
@@ -4129,7 +4129,7 @@ public class doc {
                                 i.value -= 1;
                                 break;
                             case 33:
-                                leadingBlank = false;
+                                expr(leadingBlank = false);
                                 if ((inCode != 0) || !global.params.markdown)
                                     break;
                                 if ((i.value < (buf).offset - 1) && (((buf).data.get(i.value + 1) & 0xFF) == 91))
@@ -4142,7 +4142,7 @@ public class doc {
                             case 91:
                                 if ((inCode != 0) || !global.params.markdown)
                                 {
-                                    leadingBlank = false;
+                                    expr(leadingBlank = false);
                                     break;
                                 }
                                 int leftC_1 = (i.value > offset) ? ((buf).data.get(i.value - 1) & 0xFF) : 0;
@@ -4150,10 +4150,10 @@ public class doc {
                                 boolean atParagraphStart = leadingBlank && (iParagraphStart.value >= iLineStart.value);
                                 MarkdownDelimiter linkStart = new MarkdownDelimiter(i.value, 1, macroLevel, false, rightFlanking_1, atParagraphStart, c).copy();
                                 inlineDelimiters.value.append(linkStart);
-                                leadingBlank = false;
+                                expr(leadingBlank = false);
                                 break;
                             case 93:
-                                leadingBlank = false;
+                                expr(leadingBlank = false);
                                 if ((inCode != 0) || !global.params.markdown)
                                     break;
                                 {
@@ -4165,7 +4165,7 @@ public class doc {
                                             if (delimiter.isValid() && MarkdownLink.replaceLink(buf, i, loc, inlineDelimiters, d, linkReferences))
                                             {
                                                 if ((i.value <= delimiter.iStart))
-                                                    leadingBlank = true;
+                                                    expr(leadingBlank = true);
                                                 if (((delimiter.type & 0xFF) == 91))
                                                 {
                                                     d -= 1;
@@ -4187,15 +4187,15 @@ public class doc {
                             case 124:
                                 if ((inCode != 0) || !global.params.markdown)
                                 {
-                                    leadingBlank = false;
+                                    expr(leadingBlank = false);
                                     break;
                                 }
-                                tableRowDetected = true;
+                                expr(tableRowDetected = true);
                                 inlineDelimiters.value.append(new MarkdownDelimiter(i.value, 1, macroLevel, leadingBlank, false, false, c));
-                                leadingBlank = false;
+                                expr(leadingBlank = false);
                                 break;
                             case 92:
-                                leadingBlank = false;
+                                expr(leadingBlank = false);
                                 if ((inCode != 0) || (i.value + 1 >= (buf).offset) || !global.params.markdown)
                                     break;
                                 byte c1 = (byte)(buf).data.get(i.value + 1);
@@ -4216,7 +4216,7 @@ public class doc {
                                 }
                                 break;
                             case 36:
-                                leadingBlank = false;
+                                expr(leadingBlank = false);
                                 if ((inCode != 0) || (inBacktick != 0))
                                     break;
                                 ByteSlice slice_1 = (buf).peekSlice().copy();
@@ -4229,7 +4229,7 @@ public class doc {
                                     parenLevel += 1;
                                 break;
                             case 41:
-                                leadingBlank = false;
+                                expr(leadingBlank = false);
                                 if ((inCode != 0) || (inBacktick != 0))
                                     break;
                                 if ((parenLevel > 0))
@@ -4259,7 +4259,7 @@ public class doc {
                                 break;
                             default:
                             __dispatch12 = 0;
-                            leadingBlank = false;
+                            expr(leadingBlank = false);
                             if ((sc)._module.isDocFile || (inCode != 0))
                                 break;
                             BytePtr start = pcopy(toBytePtr((buf).data).plus(i.value));
@@ -4461,7 +4461,7 @@ public class doc {
                                                 i += 2;
                                             }
                                         }
-                                        resolvedTemplateParameters = true;
+                                        expr(resolvedTemplateParameters = true);
                                         i = previ;
                                         continue;
                                     }
@@ -4548,7 +4548,7 @@ public class doc {
                     }
                     (buf).setsize(offset);
                     (buf).write(res);
-                    global.endGagging(errorsave);
+                    expr(global.endGagging(errorsave));
                 }
                 finally {
                 }

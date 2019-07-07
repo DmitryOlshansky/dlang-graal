@@ -38,7 +38,7 @@ public class apply {
             {
                 int i = 0;
                 for (; (i < (e).length) && !this.stop;i++) {
-                    this.doCond((e).get(i));
+                    expr(this.doCond((e).get(i)));
                 }
             }
             return this.stop;
@@ -46,56 +46,56 @@ public class apply {
 
         public  boolean applyTo(Expression e) {
             e.accept(this.v);
-            this.stop = this.v.stop;
+            expr(this.stop = this.v.stop);
             return true;
         }
 
         public  void visit(Expression e) {
-            this.applyTo(e);
+            expr(this.applyTo(e));
         }
 
         public  void visit(NewExp e) {
-            this.doCond(e.thisexp) || this.doCond(e.newargs) || this.doCond(e.arguments) || this.applyTo(e);
+            expr(this.doCond(e.thisexp) || this.doCond(e.newargs) || this.doCond(e.arguments) || this.applyTo(e));
         }
 
         public  void visit(NewAnonClassExp e) {
-            this.doCond(e.thisexp) || this.doCond(e.newargs) || this.doCond(e.arguments) || this.applyTo(e);
+            expr(this.doCond(e.thisexp) || this.doCond(e.newargs) || this.doCond(e.arguments) || this.applyTo(e));
         }
 
         public  void visit(TypeidExp e) {
-            this.doCond(isExpression(e.obj)) || this.applyTo(e);
+            expr(this.doCond(isExpression(e.obj)) || this.applyTo(e));
         }
 
         public  void visit(UnaExp e) {
-            this.doCond(e.e1) || this.applyTo(e);
+            expr(this.doCond(e.e1) || this.applyTo(e));
         }
 
         public  void visit(BinExp e) {
-            this.doCond(e.e1) || this.doCond(e.e2) || this.applyTo(e);
+            expr(this.doCond(e.e1) || this.doCond(e.e2) || this.applyTo(e));
         }
 
         public  void visit(AssertExp e) {
-            this.doCond(e.e1) || this.doCond(e.msg) || this.applyTo(e);
+            expr(this.doCond(e.e1) || this.doCond(e.msg) || this.applyTo(e));
         }
 
         public  void visit(CallExp e) {
-            this.doCond(e.e1) || this.doCond(e.arguments) || this.applyTo(e);
+            expr(this.doCond(e.e1) || this.doCond(e.arguments) || this.applyTo(e));
         }
 
         public  void visit(ArrayExp e) {
-            this.doCond(e.e1) || this.doCond(e.arguments) || this.applyTo(e);
+            expr(this.doCond(e.e1) || this.doCond(e.arguments) || this.applyTo(e));
         }
 
         public  void visit(SliceExp e) {
-            this.doCond(e.e1) || this.doCond(e.lwr) || this.doCond(e.upr) || this.applyTo(e);
+            expr(this.doCond(e.e1) || this.doCond(e.lwr) || this.doCond(e.upr) || this.applyTo(e));
         }
 
         public  void visit(ArrayLiteralExp e) {
-            this.doCond(e.basis) || this.doCond(e.elements) || this.applyTo(e);
+            expr(this.doCond(e.basis) || this.doCond(e.elements) || this.applyTo(e));
         }
 
         public  void visit(AssocArrayLiteralExp e) {
-            this.doCond(e.keys) || this.doCond(e.values) || this.applyTo(e);
+            expr(this.doCond(e.keys) || this.doCond(e.values) || this.applyTo(e));
         }
 
         public  void visit(StructLiteralExp e) {
@@ -103,16 +103,16 @@ public class apply {
                 return ;
             int old = e.stageflags;
             e.stageflags |= 8;
-            this.doCond(e.elements) || this.applyTo(e);
+            expr(this.doCond(e.elements) || this.applyTo(e));
             e.stageflags = old;
         }
 
         public  void visit(TupleExp e) {
-            this.doCond(e.e0) || this.doCond(e.exps) || this.applyTo(e);
+            expr(this.doCond(e.e0) || this.doCond(e.exps) || this.applyTo(e));
         }
 
         public  void visit(CondExp e) {
-            this.doCond(e.econd) || this.doCond(e.e1) || this.doCond(e.e2) || this.applyTo(e);
+            expr(this.doCond(e.econd) || this.doCond(e.e1) || this.doCond(e.e2) || this.applyTo(e));
         }
 
 

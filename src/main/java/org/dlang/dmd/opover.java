@@ -1386,7 +1386,7 @@ public class opover {
                             if (rinit != null)
                             {
                                 aggr = rinit;
-                                sliced = true;
+                                expr(sliced = true);
                                 continue;
                             }
                         }
@@ -1455,7 +1455,7 @@ public class opover {
                     FuncDeclaration fdapply = findBestOpApplyMatch(ethis, fd, fes.parameters);
                     if (fdapply != null)
                     {
-                        matchParamsToOpApply((TypeFunction)fdapply.type, fes.parameters, true);
+                        expr(matchParamsToOpApply((TypeFunction)fdapply.type, fes.parameters, true));
                         sapply.value = fdapply;
                         return true;
                     }

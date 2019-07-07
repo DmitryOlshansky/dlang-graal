@@ -58,7 +58,7 @@ public class declaration {
                 Type tb = vd.type.baseElemOf();
                 if (((tb.ty & 0xFF) == ENUMTY.Tstruct))
                 {
-                    (result ? 1 : 0) |= (checkFrameAccess(loc, sc, ((TypeStruct)tb).sym, 0) ? 1 : 0);
+                    expr((result ? 1 : 0) |= (checkFrameAccess(loc, sc, ((TypeStruct)tb).sym, 0) ? 1 : 0));
                 }
             }
         }
@@ -74,7 +74,7 @@ public class declaration {
             if ((fd != null) && (fd.isCtorDeclaration() != null) && var.isField() || (fd.isStaticCtorDeclaration() != null) && !var.isField() && (pequals(fd.toParentDecl(), var.toParent2())) && (e1 == null) || ((e1.op & 0xFF) == 123))
             {
                 boolean result = true;
-                var.ctorinit = true;
+                expr(var.ctorinit = true);
                 if (var.isField() && ((sc).ctorflow.fieldinit.getLength() != 0) && ((sc).intypeof == 0))
                 {
                     assert(e1 != null);
@@ -96,7 +96,7 @@ public class declaration {
                     if ((fi & 1) != 0)
                     {
                         if (var.type.isMutable() && e1.type.isMutable())
-                            result = false;
+                            expr(result = false);
                         else
                         {
                             BytePtr modStr = pcopy(!var.type.isMutable() ? MODtoChars(var.type.mod) : MODtoChars(e1.type.mod));
@@ -114,7 +114,7 @@ public class declaration {
                     else if ((sc).inLoop || ((fi & 4) != 0))
                     {
                         if (!mustInit && var.type.isMutable() && e1.type.isMutable())
-                            result = false;
+                            expr(result = false);
                         else
                         {
                             BytePtr modStr = pcopy(!var.type.isMutable() ? MODtoChars(var.type.mod) : MODtoChars(e1.type.mod));
@@ -133,7 +133,7 @@ public class declaration {
                                 int j = __key919;
                                 if ((v == var) || !var.isOverlappedWith(v))
                                     continue;
-                                v.ctorinit = true;
+                                expr(v.ctorinit = true);
                                 (sc).ctorflow.fieldinit.get(j).csx = CSX.this_ctor;
                             }
                         }
@@ -142,7 +142,7 @@ public class declaration {
                 else if ((!pequals(fd, (sc).func)))
                 {
                     if (var.type.isMutable())
-                        result = false;
+                        expr(result = false);
                     else if ((sc).func.fes != null)
                     {
                         BytePtr p = pcopy(var.isField() ? new BytePtr("field") : var.kind());
@@ -882,13 +882,13 @@ public class declaration {
         public  OverDeclaration(Identifier ident, Dsymbol s, boolean hasOverloads) {
             super(ident);
             this.aliassym = s;
-            this.hasOverloads = hasOverloads;
+            expr(this.hasOverloads = hasOverloads);
             if (hasOverloads)
             {
                 {
                     OverDeclaration od = this.aliassym.isOverDeclaration();
                     if ((od) != null)
-                        this.hasOverloads = od.hasOverloads;
+                        expr(this.hasOverloads = od.hasOverloads);
                 }
             }
             else
@@ -1047,7 +1047,7 @@ public class declaration {
             if ((ident == Identifier.anonymous()))
             {
                 ident = Identifier.generateId(new BytePtr("__anonvar"));
-                this._isAnonymous = true;
+                expr(this._isAnonymous = true);
             }
             assert(ident != null);
             super(loc, ident);
@@ -1118,7 +1118,7 @@ public class declaration {
                 if (!ts.sym.determineSize(this.loc))
                 {
                     this.type = Type.terror;
-                    this.errors = true;
+                    expr(this.errors = true);
                     return ;
                 }
             }
@@ -1255,8 +1255,8 @@ public class declaration {
                     assert((sdsz != -1L) && (sdsz != 0L));
                     long n = sz / sdsz;
                     e = new SliceExp(this.loc, e, new IntegerExp(this.loc, 0L, Type.tsize_t), new IntegerExp(this.loc, n, Type.tsize_t));
-                    ((SliceExp)e).upperIsInBounds = true;
-                    ((SliceExp)e).lowerIsLessThanUpper = true;
+                    expr(((SliceExp)e).upperIsInBounds = true);
+                    expr(((SliceExp)e).lowerIsLessThanUpper = true);
                     e.type = sd.type.arrayOf();
                     e = new CallExp(this.loc, new IdentifierExp(this.loc, Id.__ArrayDtor), e);
                 }
@@ -1333,7 +1333,7 @@ public class declaration {
             if (fdthis == null)
                 return false;
             Dsymbol p = this.toParent2();
-            ensureStaticLinkTo(fdthis, p);
+            expr(ensureStaticLinkTo(fdthis, p));
             FuncDeclaration fdv = p.isFuncDeclaration();
             if ((fdv == null) || (pequals(fdv, fdthis)))
                 return false;

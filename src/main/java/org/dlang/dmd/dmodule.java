@@ -837,7 +837,7 @@ public class dmodule {
             };
 
             BytePtr srcname = pcopy(this.srcfile.toChars());
-            this.isPackageFile = (strcmp(this.srcfile.name(), new BytePtr("package.d")) == 0) || (strcmp(this.srcfile.name(), new BytePtr("package.di")) == 0);
+            expr(this.isPackageFile = (strcmp(this.srcfile.name(), new BytePtr("package.d")) == 0) || (strcmp(this.srcfile.name(), new BytePtr("package.di")) == 0));
             ByteSlice buf = toByteSlice((this.srcBuffer).data).copy();
             boolean needsReencoding = true;
             boolean hasBOM = true;
@@ -862,11 +862,11 @@ public class dmodule {
                 }
                 else if ((buf.getLength() >= 3) && ((buf.get(0) & 0xFF) == 239) && ((buf.get(1) & 0xFF) == 187) && ((buf.get(2) & 0xFF) == 191))
                 {
-                    needsReencoding = false;
+                    expr(needsReencoding = false);
                 }
                 else
                 {
-                    hasBOM = false;
+                    expr(hasBOM = false);
                     if ((buf.getLength() >= 4) && ((buf.get(1) & 0xFF) == 0) && ((buf.get(2) & 0xFF) == 0) && ((buf.get(3) & 0xFF) == 0))
                     {
                         endian = Endian.little;
@@ -889,7 +889,7 @@ public class dmodule {
                     }
                     else
                     {
-                        needsReencoding = false;
+                        expr(needsReencoding = false);
                         if (((buf.get(0) & 0xFF) >= 128))
                         {
                             this.error(new BytePtr("source file must start with BOM or ASCII character, not \\x%02X"), (buf.get(0) & 0xFF));
@@ -908,7 +908,7 @@ public class dmodule {
                 }
             }
             else if ((buf.getLength() >= 1) && ((buf.get(0) & 0xFF) == 0) || ((buf.get(0) & 0xFF) == 26))
-                needsReencoding = false;
+                expr(needsReencoding = false);
             if (needsReencoding)
             {
                 if ((sourceEncoding == SourceEncoding.utf16))
@@ -923,7 +923,7 @@ public class dmodule {
             if ((buf.getLength() >= 4) && __equals(buf.slice(0,4), new ByteSlice("Ddoc")))
             {
                 this.comment = pcopy((toBytePtr(buf).plus(4)));
-                this.isDocFile = true;
+                expr(this.isDocFile = true);
                 if (!this.docfile.opCast())
                     this.setDocfile();
                 return this;
@@ -931,14 +931,14 @@ public class dmodule {
             if (FileName.equalsExt(this.arg, new ByteSlice("dd")))
             {
                 this.comment = pcopy((toBytePtr(buf)));
-                this.isDocFile = true;
+                expr(this.isDocFile = true);
                 if (!this.docfile.opCast())
                     this.setDocfile();
                 return this;
             }
             if (FileName.equalsExt(this.arg, new ByteSlice("di")))
             {
-                this.isHdrFile = true;
+                expr(this.isHdrFile = true);
             }
             {
                 ParserASTCodegen p = new ParserASTCodegen(this, buf, this.docfile.opCast(), diagnosticReporter);
@@ -1363,7 +1363,7 @@ public class dmodule {
             this.packages = packages;
             this.id = id;
             this.msg = msg;
-            this.isdeprecated = isdeprecated;
+            expr(this.isdeprecated = isdeprecated);
         }
 
         public  BytePtr toChars() {

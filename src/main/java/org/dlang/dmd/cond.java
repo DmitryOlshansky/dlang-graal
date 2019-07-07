@@ -221,7 +221,7 @@ public class cond {
                         res.set((i), this.createTuple(aloc, tplty, e));
                     }
                 }
-                this.needExpansion = true;
+                expr(this.needExpansion = true);
             }
             if (this.rangefe != null)
             {
@@ -362,7 +362,7 @@ public class cond {
                     if (findCondition(this.mod.debugids, this.ident))
                     {
                         this.inc = Include.yes;
-                        definedInModule = true;
+                        expr(definedInModule = true);
                     }
                     else if (findCondition(global.debugids, this.ident))
                         this.inc = Include.yes;
@@ -549,7 +549,7 @@ public class cond {
                     if (findCondition(this.mod.versionids, this.ident))
                     {
                         this.inc = Include.yes;
-                        definedInModule = true;
+                        expr(definedInModule = true);
                     }
                     else if (findCondition(global.versionids, this.ident))
                         this.inc = Include.yes;

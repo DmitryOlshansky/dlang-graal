@@ -33,7 +33,7 @@ public class blockexit {
         private int result;
         public  BlockExit(FuncDeclaration func, boolean mustNotThrow) {
             this.func = func;
-            this.mustNotThrow = mustNotThrow;
+            expr(this.mustNotThrow = mustNotThrow);
             this.result = 0;
         }
 

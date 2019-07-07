@@ -36,7 +36,7 @@ public class optimize {
         public  OptimizeVisitor(Expression e, int result, boolean keepLvalue) {
             this.ret = e;
             this.result = result;
-            this.keepLvalue = keepLvalue;
+            expr(this.keepLvalue = keepLvalue);
         }
 
         public  void error() {
@@ -64,8 +64,8 @@ public class optimize {
         }
 
         public  boolean binOptimize(BinExp e, int flags) {
-            this.expOptimize(e.e1, flags, false);
-            this.expOptimize(e.e2, flags, false);
+            expr(this.expOptimize(e.e1, flags, false));
+            expr(this.expOptimize(e.e2, flags, false));
             return (this.ret.op & 0xFF) == 127;
         }
 
@@ -83,11 +83,11 @@ public class optimize {
         }
 
         public  void visit(TupleExp e) {
-            this.expOptimize(e.e0, 0, false);
+            expr(this.expOptimize(e.e0, 0, false));
             {
                 int i = 0;
                 for (; (i < (e.exps).length);i++){
-                    this.expOptimize((e.exps).get(i), 0, false);
+                    expr(this.expOptimize((e.exps).get(i), 0, false));
                 }
             }
         }
@@ -95,11 +95,11 @@ public class optimize {
         public  void visit(ArrayLiteralExp e) {
             if (e.elements != null)
             {
-                this.expOptimize(e.basis, this.result & 1, false);
+                expr(this.expOptimize(e.basis, this.result & 1, false));
                 {
                     int i = 0;
                     for (; (i < (e.elements).length);i++){
-                        this.expOptimize((e.elements).get(i), this.result & 1, false);
+                        expr(this.expOptimize((e.elements).get(i), this.result & 1, false));
                     }
                 }
             }
@@ -110,8 +110,8 @@ public class optimize {
             {
                 int i = 0;
                 for (; (i < (e.keys).length);i++){
-                    this.expOptimize((e.keys).get(i), this.result & 1, false);
-                    this.expOptimize((e.values).get(i), this.result & 1, false);
+                    expr(this.expOptimize((e.keys).get(i), this.result & 1, false));
+                    expr(this.expOptimize((e.values).get(i), this.result & 1, false));
                 }
             }
         }
@@ -126,7 +126,7 @@ public class optimize {
                 {
                     int i = 0;
                     for (; (i < (e.elements).length);i++){
-                        this.expOptimize((e.elements).get(i), this.result & 1, false);
+                        expr(this.expOptimize((e.elements).get(i), this.result & 1, false));
                     }
                 }
             }
@@ -307,13 +307,13 @@ public class optimize {
         }
 
         public  void visit(NewExp e) {
-            this.expOptimize(e.thisexp, 0, false);
+            expr(this.expOptimize(e.thisexp, 0, false));
             if (e.newargs != null)
             {
                 {
                     int i = 0;
                     for (; (i < (e.newargs).length);i++){
-                        this.expOptimize((e.newargs).get(i), 0, false);
+                        expr(this.expOptimize((e.newargs).get(i), 0, false));
                     }
                 }
             }
@@ -322,7 +322,7 @@ public class optimize {
                 {
                     int i = 0;
                     for (; (i < (e.arguments).length);i++){
-                        this.expOptimize((e.arguments).get(i), 0, false);
+                        expr(this.expOptimize((e.arguments).get(i), 0, false));
                     }
                 }
             }
@@ -343,7 +343,7 @@ public class optimize {
                     for (; (i < (e.arguments).length);i++){
                         Parameter p = tf.parameterList.get(i);
                         boolean keep = (p != null) && ((p.storageClass & 2101248L) != 0L);
-                        this.expOptimize((e.arguments).get(i), 0, keep);
+                        expr(this.expOptimize((e.arguments).get(i), 0, keep));
                     }
                 }
             }
@@ -635,8 +635,8 @@ public class optimize {
         }
 
         public  void visit(CommaExp e) {
-            this.expOptimize(e.e1, 0, false);
-            this.expOptimize(e.e2, this.result, this.keepLvalue);
+            expr(this.expOptimize(e.e1, 0, false));
+            expr(this.expOptimize(e.e2, this.result, this.keepLvalue));
             if (((this.ret.op & 0xFF) == 127))
                 return ;
             if ((e.e1 == null) || ((e.e1.op & 0xFF) == 135) || ((e.e1.op & 0xFF) == 140) || !hasSideEffect(e.e1))
@@ -732,8 +732,8 @@ public class optimize {
             {
                 e.e1 = fromConstInitializer(this.result, e.e1);
                 setLengthVarIfKnown(e.lengthVar, e.e1);
-                this.expOptimize(e.lwr, 0, false);
-                this.expOptimize(e.upr, 0, false);
+                expr(this.expOptimize(e.lwr, 0, false));
+                expr(this.expOptimize(e.upr, 0, false));
                 if (((this.ret.op & 0xFF) == 127))
                     return ;
                 this.ret = Slice(e.type, e.e1, e.lwr, e.upr).copy();
@@ -839,8 +839,8 @@ public class optimize {
                 this.ret = Expression_optimize(e.e2, this.result, this.keepLvalue);
             else
             {
-                this.expOptimize(e.e1, this.result, this.keepLvalue);
-                this.expOptimize(e.e2, this.result, this.keepLvalue);
+                expr(this.expOptimize(e.e1, this.result, this.keepLvalue));
+                expr(this.expOptimize(e.e2, this.result, this.keepLvalue));
             }
         }
 

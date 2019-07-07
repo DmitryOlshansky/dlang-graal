@@ -174,27 +174,27 @@ public class ctorflow {
         boolean ok = false;
         if (!bHalt && bRet)
         {
-            ok = ((b & 1) != 0);
+            expr(ok = ((b & 1) != 0));
             a.value = a.value;
         }
         else if (!aHalt && aRet)
         {
-            ok = ((a.value & 1) != 0);
+            expr(ok = ((a.value & 1) != 0));
             a.value = b;
         }
         else if (bHalt)
         {
-            ok = ((a.value & 1) != 0);
+            expr(ok = ((a.value & 1) != 0));
             a.value = a.value;
         }
         else if (aHalt)
         {
-            ok = ((b & 1) != 0);
+            expr(ok = ((b & 1) != 0));
             a.value = b;
         }
         else
         {
-            ok = ((a.value ^ b) & 1) == 0;
+            expr(ok = ((a.value ^ b) & 1) == 0);
             a.value |= b;
         }
         return ok;

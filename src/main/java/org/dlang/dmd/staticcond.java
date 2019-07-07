@@ -44,7 +44,7 @@ public class staticcond {
                 if (result)
                     return true;
             }
-            result = evalStaticCondition(sc, exp, aae.e2, errors);
+            expr(result = evalStaticCondition(sc, exp, aae.e2, errors));
             return !errors.value && result;
         }
         if (((e.op & 0xFF) == 100))
@@ -54,7 +54,7 @@ public class staticcond {
             if (errors.value)
                 return false;
             Expression leg = result ? ce.e1 : ce.e2;
-            result = evalStaticCondition(sc, exp, leg, errors);
+            expr(result = evalStaticCondition(sc, exp, leg, errors));
             return !errors.value && result;
         }
         int nerrors = global.errors;
@@ -66,14 +66,14 @@ public class staticcond {
         e = e.optimize(0, false);
         if ((nerrors != global.errors) || ((e.op & 0xFF) == 127) || (pequals(e.type.toBasetype(), Type.terror)))
         {
-            errors.value = true;
+            expr(errors.value = true);
             return false;
         }
         e = resolveAliasThis(sc, e, false);
         if (!e.type.isBoolean())
         {
             exp.error(new BytePtr("expression `%s` of type `%s` does not have a boolean value"), exp.toChars(), e.type.toChars());
-            errors.value = true;
+            expr(errors.value = true);
             return false;
         }
         e = e.ctfeInterpret();
@@ -82,7 +82,7 @@ public class staticcond {
         else if (e.isBool(false))
             return false;
         e.error(new BytePtr("expression `%s` is not constant"), e.toChars());
-        errors.value = true;
+        expr(errors.value = true);
         return false;
     }
 

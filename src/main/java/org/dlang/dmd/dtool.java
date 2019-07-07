@@ -411,7 +411,7 @@ public class dtool {
 
         public  void visit(ASTBase.StorageClassDeclaration d) {
             (this.buf).printf(new BytePtr("( "));
-            ASTBase.stcToBuffer(this.buf, d.stc);
+            expr(ASTBase.stcToBuffer(this.buf, d.stc));
             (this.buf).level++;
             (this.buf).writenl();
             this.visitDecls(d.decl);
@@ -1652,8 +1652,8 @@ public class dtool {
             defaultGetoptPrinter(new ByteSlice("Trivial D lexer based on DMD."), res.options);
             exit(1);
         }
-        global.params.isLinux = true;
-        global.params.useUnitTests = true;
+        expr(global.params.isLinux = true);
+        expr(global.params.useUnitTests = true);
         global._init();
         ASTBase.Type._init();
         Id.initialize();
@@ -1703,7 +1703,7 @@ public class dtool {
                 DArray<ASTBase.Dsymbol> decls = p.parseModule();
                 LispyPrint lispPrint = new LispyPrint();
                 lispPrint.buf = new OutBuffer(null, 0, 0, 0, false, false);
-                (lispPrint.buf).doindent = true;
+                expr((lispPrint.buf).doindent = true);
                 {
                     Slice<ASTBase.Dsymbol> __r493 = (decls).opSlice().copy();
                     int __key494 = 0;

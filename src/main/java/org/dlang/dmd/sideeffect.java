@@ -34,10 +34,10 @@ public class sideeffect {
         public  void visit(Expression e) {
             if (((e.op & 0xFF) == 18))
             {
-                this.stop = true;
+                expr(this.stop = true);
                 return ;
             }
-            this.stop = lambdaHasSideEffect(e);
+            expr(this.stop = lambdaHasSideEffect(e));
         }
 
     }
@@ -48,7 +48,7 @@ public class sideeffect {
         }
 
         public  void visit(Expression e) {
-            this.stop = lambdaHasSideEffect(e);
+            expr(this.stop = lambdaHasSideEffect(e));
         }
 
     }

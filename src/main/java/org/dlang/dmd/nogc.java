@@ -36,7 +36,7 @@ public class nogc {
 
         public  void doCond(Expression exp) {
             if (exp != null)
-                walkPostorder(exp, this);
+                expr(walkPostorder(exp, this));
         }
 
         public  void visit(Expression e) {
@@ -65,7 +65,7 @@ public class nogc {
             if (this.f.setGC())
             {
                 e.error(new BytePtr("array literal in `@nogc` %s `%s` may cause a GC allocation"), this.f.kind(), this.f.toPrettyChars(false));
-                this.err = true;
+                expr(this.err = true);
                 return ;
             }
             this.f.printGCUsage(e.loc, new BytePtr("array literal may cause a GC allocation"));
@@ -77,7 +77,7 @@ public class nogc {
             if (this.f.setGC())
             {
                 e.error(new BytePtr("associative array literal in `@nogc` %s `%s` may cause a GC allocation"), this.f.kind(), this.f.toPrettyChars(false));
-                this.err = true;
+                expr(this.err = true);
                 return ;
             }
             this.f.printGCUsage(e.loc, new BytePtr("associative array literal may cause a GC allocation"));
@@ -97,7 +97,7 @@ public class nogc {
             if (this.f.setGC())
             {
                 e.error(new BytePtr("cannot use `new` in `@nogc` %s `%s`"), this.f.kind(), this.f.toPrettyChars(false));
-                this.err = true;
+                expr(this.err = true);
                 return ;
             }
             this.f.printGCUsage(e.loc, new BytePtr("`new` causes a GC allocation"));
@@ -130,7 +130,7 @@ public class nogc {
             if (this.f.setGC())
             {
                 e.error(new BytePtr("cannot use `delete` in `@nogc` %s `%s`"), this.f.kind(), this.f.toPrettyChars(false));
-                this.err = true;
+                expr(this.err = true);
                 return ;
             }
             this.f.printGCUsage(e.loc, new BytePtr("`delete` requires the GC"));
@@ -143,7 +143,7 @@ public class nogc {
                 if (this.f.setGC())
                 {
                     e.error(new BytePtr("indexing an associative array in `@nogc` %s `%s` may cause a GC allocation"), this.f.kind(), this.f.toPrettyChars(false));
-                    this.err = true;
+                    expr(this.err = true);
                     return ;
                 }
                 this.f.printGCUsage(e.loc, new BytePtr("indexing an associative array may cause a GC allocation"));
@@ -156,7 +156,7 @@ public class nogc {
                 if (this.f.setGC())
                 {
                     e.error(new BytePtr("setting `length` in `@nogc` %s `%s` may cause a GC allocation"), this.f.kind(), this.f.toPrettyChars(false));
-                    this.err = true;
+                    expr(this.err = true);
                     return ;
                 }
                 this.f.printGCUsage(e.loc, new BytePtr("setting `length` may cause a GC allocation"));
@@ -167,7 +167,7 @@ public class nogc {
             if (this.f.setGC())
             {
                 e.error(new BytePtr("cannot use operator `~=` in `@nogc` %s `%s`"), this.f.kind(), this.f.toPrettyChars(false));
-                this.err = true;
+                expr(this.err = true);
                 return ;
             }
             this.f.printGCUsage(e.loc, new BytePtr("operator `~=` may cause a GC allocation"));
@@ -177,7 +177,7 @@ public class nogc {
             if (this.f.setGC())
             {
                 e.error(new BytePtr("cannot use operator `~` in `@nogc` %s `%s`"), this.f.kind(), this.f.toPrettyChars(false));
-                this.err = true;
+                expr(this.err = true);
                 return ;
             }
             this.f.printGCUsage(e.loc, new BytePtr("operator `~` may cause a GC allocation"));
@@ -199,7 +199,7 @@ public class nogc {
         if ((e != null) && ((e.op & 0xFF) != 127) && (f != null) && ((sc).intypeof != 1) && (((sc).flags & 128) == 0) && ((f.type.ty & 0xFF) == ENUMTY.Tfunction) && ((TypeFunction)f.type).isnogc || ((f.flags & FUNCFLAG.nogcInprocess) != 0) || global.params.vgc && (((sc).flags & 8) == 0))
         {
             NOGCVisitor gcv = new NOGCVisitor(f);
-            walkPostorder(e, gcv);
+            expr(walkPostorder(e, gcv));
             if (gcv.err)
                 return new ErrorExp();
         }

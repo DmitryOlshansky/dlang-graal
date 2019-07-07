@@ -130,11 +130,11 @@ public class hdrgen {
     public static void genhdrfile(dmodule.Module m) {
         OutBuffer buf = new OutBuffer();
         try {
-            buf.doindent = true;
+            expr(buf.doindent = true);
             buf.printf(new BytePtr("// D import file generated from '%s'"), m.srcfile.toChars());
             buf.writenl();
             HdrGenState hgs = new HdrGenState();
-            hgs.hdrgen = true;
+            expr(hgs.hdrgen = true);
             toCBuffer((Dsymbol)m, buf, hgs);
             writeFile(m.loc, m.hdrfile.asString(), toByteSlice(buf.peekSlice()));
         }
@@ -144,7 +144,7 @@ public class hdrgen {
 
     public static void moduleToBuffer(OutBuffer buf, dmodule.Module m) {
         HdrGenState hgs = new HdrGenState();
-        hgs.fullDump = true;
+        expr(hgs.fullDump = true);
         toCBuffer((Dsymbol)m, buf, hgs);
     }
 
@@ -264,7 +264,7 @@ public class hdrgen {
                             else
                                 dsymbolToBuffer(d, this.buf, this.hgs);
                         }
-                        anywritten = true;
+                        expr(anywritten = true);
                     }
                 }
             }
@@ -1512,13 +1512,13 @@ public class hdrgen {
             }
             else if (d.ident != null)
             {
-                (this.hgs).declstring = (pequals(d.ident, Id.string)) || (pequals(d.ident, Id.wstring)) || (pequals(d.ident, Id.dstring));
+                expr((this.hgs).declstring = (pequals(d.ident, Id.string)) || (pequals(d.ident, Id.wstring)) || (pequals(d.ident, Id.dstring)));
                 (this.buf).writestring(d.ident.asString());
                 (this.buf).writestring(new ByteSlice(" = "));
                 if (stcToBuffer(this.buf, d.storage_class))
                     (this.buf).writeByte(32);
                 typeToBuffer(d.type, null, this.buf, this.hgs);
-                (this.hgs).declstring = false;
+                expr((this.hgs).declstring = false);
             }
             (this.buf).writeByte(59);
             (this.buf).writenl();
@@ -1613,13 +1613,13 @@ public class hdrgen {
                                 expressionToBuffer(((AssertExp)es.exp).e1, this.buf, this.hgs);
                                 (this.buf).writeByte(41);
                                 (this.buf).writenl();
-                                requireDo = false;
+                                expr(requireDo = false);
                             }
                             else
                             {
                                 (this.buf).writenl();
                                 statementToBuffer(frequire, this.buf, this.hgs);
-                                requireDo = true;
+                                expr(requireDo = true);
                             }
                         }
                     }
@@ -1647,7 +1647,7 @@ public class hdrgen {
                                 expressionToBuffer(((AssertExp)es.exp).e1, this.buf, this.hgs);
                                 (this.buf).writeByte(41);
                                 (this.buf).writenl();
-                                requireDo = false;
+                                expr(requireDo = false);
                             }
                             else
                             {
@@ -1659,7 +1659,7 @@ public class hdrgen {
                                 }
                                 (this.buf).writenl();
                                 statementToBuffer(fensure.ensure, this.buf, this.hgs);
-                                requireDo = true;
+                                expr(requireDo = true);
                             }
                         }
                     }
@@ -2669,7 +2669,7 @@ public class hdrgen {
 
     public static void toCBufferInstance(TemplateInstance ti, OutBuffer buf, boolean qualifyTypes) {
         HdrGenState hgs = new HdrGenState();
-        hgs.fullQual = qualifyTypes;
+        expr(hgs.fullQual = qualifyTypes);
         DsymbolPrettyPrintVisitor v = new DsymbolPrettyPrintVisitor(buf, hgs);
         v.visit(ti);
     }
@@ -2691,7 +2691,7 @@ public class hdrgen {
                 break;
             if (result)
                 (buf).writeByte(32);
-            result = true;
+            expr(result = true);
             (buf).writestring(s);
         }
         return result;
@@ -2889,7 +2889,7 @@ public class hdrgen {
         OutBuffer buf = new OutBuffer();
         try {
             HdrGenState hgs = new HdrGenState();
-            hgs.fullQual = fullQual;
+            expr(hgs.fullQual = fullQual);
             parameterToBuffer(parameter, buf, hgs);
             if ((tf.parameterList.varargs == VarArg.typesafe) && (pequals(parameter, tf.parameterList.get((tf.parameterList.parameters).length - 1))))
             {
