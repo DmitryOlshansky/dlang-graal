@@ -63,23 +63,23 @@ public class init {
         }
 
         public  ErrorInitializer isErrorInitializer() {
-            return ((this.kind & 0xFF) == 1) ? (ErrorInitializer)this : null;
+            return ((this.kind & 0xFF) == 1) ? ((ErrorInitializer)this) : null;
         }
 
         public  VoidInitializer isVoidInitializer() {
-            return ((this.kind & 0xFF) == 0) ? (VoidInitializer)this : null;
+            return ((this.kind & 0xFF) == 0) ? ((VoidInitializer)this) : null;
         }
 
         public  StructInitializer isStructInitializer() {
-            return ((this.kind & 0xFF) == 2) ? (StructInitializer)this : null;
+            return ((this.kind & 0xFF) == 2) ? ((StructInitializer)this) : null;
         }
 
         public  ArrayInitializer isArrayInitializer() {
-            return ((this.kind & 0xFF) == 3) ? (ArrayInitializer)this : null;
+            return ((this.kind & 0xFF) == 3) ? ((ArrayInitializer)this) : null;
         }
 
         public  ExpInitializer isExpInitializer() {
-            return ((this.kind & 0xFF) == 4) ? (ExpInitializer)this : null;
+            return ((this.kind & 0xFF) == 4) ? ((ExpInitializer)this) : null;
         }
 
         public  void accept(Visitor v) {

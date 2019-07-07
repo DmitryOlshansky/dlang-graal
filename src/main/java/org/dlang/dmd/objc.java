@@ -69,7 +69,7 @@ public class objc {
 
         public static ObjcSelector lookup(BytePtr s, int len, int pcount) {
             StringValue sv = stringtable.update(s, len);
-            ObjcSelector sel = (ObjcSelector)(sv).ptrvalue;
+            ObjcSelector sel = ((ObjcSelector)(sv).ptrvalue);
             if (sel == null)
             {
                 sel = new ObjcSelector((sv).toDchars(), len, pcount);
@@ -305,12 +305,12 @@ public class objc {
 
         public  void setObjc(ClassDeclaration cd) {
             cd.classKind = ClassKind.objc;
-            expr(cd.objc.isExtern = (cd.storage_class & 2L) > 0L);
+            cd.objc.isExtern = (cd.storage_class & 2L) > 0L;
         }
 
         public  void setObjc(InterfaceDeclaration id) {
             id.classKind = ClassKind.objc;
-            expr(id.objc.isExtern = true);
+            id.objc.isExtern = true;
         }
 
         public  void deprecate(InterfaceDeclaration id) {
@@ -324,7 +324,7 @@ public class objc {
             if (fd.userAttribDecl == null)
                 return ;
             DArray<Expression> udas = fd.userAttribDecl.getAttributes();
-            expr(arrayExpressionSemantic(udas, sc, true));
+            arrayExpressionSemantic(udas, sc, true);
             {
                 int i = 0;
                 for (; (i < (udas).length);i++){
@@ -552,8 +552,8 @@ public class objc {
             __withSym.objc.metaclass = newMetaclass.invoke(__withSym.loc, metaBases);
             __withSym.objc.metaclass.storage_class |= 1L;
             __withSym.objc.metaclass.classKind = ClassKind.objc;
-            expr(__withSym.objc.metaclass.objc.isMeta = true);
-            expr(__withSym.objc.metaclass.objc.isExtern = __withSym.objc.isExtern);
+            __withSym.objc.metaclass.objc.isMeta = true;
+            __withSym.objc.metaclass.objc.isExtern = __withSym.objc.isExtern;
             __withSym.objc.metaclass.objc.identifier = __withSym.objc.identifier;
             if (__withSym.baseClass != null)
                 __withSym.objc.metaclass.baseClass = __withSym.baseClass.objc.metaclass;
@@ -598,8 +598,8 @@ public class objc {
             __withSym.objc.metaclass = newMetaclass.invoke(__withSym.loc, metaBases);
             __withSym.objc.metaclass.storage_class |= 1L;
             __withSym.objc.metaclass.classKind = ClassKind.objc;
-            expr(__withSym.objc.metaclass.objc.isMeta = true);
-            expr(__withSym.objc.metaclass.objc.isExtern = __withSym.objc.isExtern);
+            __withSym.objc.metaclass.objc.isMeta = true;
+            __withSym.objc.metaclass.objc.isExtern = __withSym.objc.isExtern;
             __withSym.objc.metaclass.objc.identifier = __withSym.objc.identifier;
             if (__withSym.baseClass != null)
                 __withSym.objc.metaclass.baseClass = __withSym.baseClass.objc.metaclass;

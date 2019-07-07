@@ -32,12 +32,12 @@ public class sapply {
 
         public  boolean applyTo(Statement s) {
             s.accept(this.v);
-            expr(this.stop = this.v.stop);
+            this.stop = this.v.stop;
             return true;
         }
 
         public  void visit(Statement s) {
-            expr(this.applyTo(s));
+            this.applyTo(s);
         }
 
         public  void visit(PeelStatement s) {
@@ -52,7 +52,7 @@ public class sapply {
                         return ;
                 }
             }
-            expr(this.applyTo(s));
+            this.applyTo(s);
         }
 
         public  void visit(UnrolledLoopStatement s) {
@@ -63,7 +63,7 @@ public class sapply {
                         return ;
                 }
             }
-            expr(this.applyTo(s));
+            this.applyTo(s);
         }
 
         public  void visit(ScopeStatement s) {
@@ -128,7 +128,7 @@ public class sapply {
                         return ;
                 }
             }
-            expr(this.applyTo(s));
+            this.applyTo(s);
         }
 
         public  void visit(TryFinallyStatement s) {

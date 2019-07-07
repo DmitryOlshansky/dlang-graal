@@ -85,7 +85,7 @@ public class dstruct {
                     Scope scx = new Scope().copy();
                     scx._module = sd.getModule();
                     getTypeInfoType(sd.loc, t, scx);
-                    expr(sd.requestTypeInfo = true);
+                    sd.requestTypeInfo = true;
                 }
                 else if ((sc_ref.value).minst == null)
                 {
@@ -93,7 +93,7 @@ public class dstruct {
                 else
                 {
                     getTypeInfoType(sd.loc, t, sc_ref.value);
-                    expr(sd.requestTypeInfo = true);
+                    sd.requestTypeInfo = true;
                 }
                 if (sd.members == null)
                     return null;
@@ -194,7 +194,7 @@ public class dstruct {
         public boolean requestTypeInfo;
         public  StructDeclaration(Loc loc, Identifier id, boolean inObject) {
             super(loc, id);
-            expr(this.zeroInit = false);
+            this.zeroInit = false;
             this.ispod = StructPOD.fwd;
             this.type = new TypeStruct(this);
             if (inObject)
@@ -281,12 +281,12 @@ public class dstruct {
             }
             if (((this.type.ty & 0xFF) == ENUMTY.Terror))
             {
-                expr(this.errors = true);
+                this.errors = true;
                 return ;
             }
             if ((this.structsize == 0))
             {
-                expr(this.hasNoFields = true);
+                this.hasNoFields = true;
                 this.structsize = 1;
                 this.alignsize = 1;
             }
@@ -299,10 +299,10 @@ public class dstruct {
                 return ;
             if (this.checkOverlappedFields())
             {
-                expr(this.errors = true);
+                this.errors = true;
                 return ;
             }
-            expr(this.zeroInit = true);
+            this.zeroInit = true;
             {
                 Slice<VarDeclaration> __r1115 = this.fields.opSlice().copy();
                 int __key1116 = 0;
@@ -317,13 +317,13 @@ public class dstruct {
                         Expression exp = vd.getConstInitializer(true);
                         if ((exp == null) || !_isZeroInit(exp))
                         {
-                            expr(this.zeroInit = false);
+                            this.zeroInit = false;
                             break;
                         }
                     }
                     else if (!vd.type.isZeroInit(this.loc))
                     {
-                        expr(this.zeroInit = false);
+                        this.zeroInit = false;
                         break;
                     }
                 }

@@ -258,7 +258,7 @@ public class globals {
         public ByteSlice mapfile;
         public  boolean isPOSIX() {
             try {
-                expr(__result = this.isLinux || this.isOSX || this.isFreeBSD || this.isOpenBSD || this.isDragonFlyBSD || this.isSolaris);
+                __result = this.isLinux || this.isOSX || this.isFreeBSD || this.isOpenBSD || this.isDragonFlyBSD || this.isSolaris;
                 /*goto __returnLabel*/throw Dispatch0.INSTANCE;
             }
             catch(Dispatch0 __d){}
@@ -741,10 +741,10 @@ public class globals {
             this.obj_ext = new ByteSlice("o").copy();
             this.lib_ext = new ByteSlice("a").copy();
             this.dll_ext = new ByteSlice("so").copy();
-            expr(this.run_noext = true);
+            this.run_noext = true;
             this._version = new ByteSlice("v2.087.0-beta.2\n\u0000").copy();
             this.vendor = new ByteSlice("Digital Mars D").copy();
-            expr(this.params.color = Console.detectTerminal());
+            this.params.color = Console.detectTerminal();
         }
 
         public  void deinitialize() {
@@ -769,7 +769,7 @@ public class globals {
                         {
                             if (point)
                                 break;
-                            expr(point = true);
+                            point = true;
                             major = minor;
                             minor = 0;
                         }

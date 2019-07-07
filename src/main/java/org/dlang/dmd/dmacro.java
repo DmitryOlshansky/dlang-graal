@@ -167,7 +167,7 @@ public class dmacro {
                                 {
                                     if (marg.value.getLength() != 0)
                                     {
-                                        BytePtr q = pcopy((BytePtr)Mem.xmalloc(namelen + 1 + marg.value.getLength()));
+                                        BytePtr q = pcopy(((BytePtr)Mem.xmalloc(namelen + 1 + marg.value.getLength())));
                                         assert(q != null);
                                         memcpy((BytePtr)(q), (name), namelen);
                                         q.set(namelen, (byte)44);
@@ -250,7 +250,7 @@ public class dmacro {
     }
     public static ByteSlice memdup(ByteSlice p) {
         int len = p.getLength();
-        return ((BytePtr)memcpy((BytePtr)Mem.xmalloc(len), (toBytePtr(p)), len)).slice(0,len);
+        return (((BytePtr)memcpy((BytePtr)Mem.xmalloc(len), (toBytePtr(p)), len))).slice(0,len);
     }
 
     public static int extractArgN(ByteSlice buf, ByteSlice marg, int n) {

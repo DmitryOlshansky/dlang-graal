@@ -153,7 +153,7 @@ public class initsem {
                             if ((elements).get(fieldi) != null)
                             {
                                 error(i.loc, new BytePtr("duplicate initializer for field `%s`"), vd.toChars());
-                                expr(errors = true);
+                                errors = true;
                                 continue;
                             }
                             if (vd.type.hasPointers())
@@ -161,7 +161,7 @@ public class initsem {
                                 if ((t_ref.value.alignment() < target.ptrsize) || ((vd.offset & target.ptrsize - 1) != 0) && ((sc_ref.value).func != null) && (sc_ref.value).func.setUnsafe())
                                 {
                                     error(i.loc, new BytePtr("field `%s.%s` cannot assign to misaligned pointers in `@safe` code"), sd.toChars(), vd.toChars());
-                                    expr(errors = true);
+                                    errors = true;
                                 }
                             }
                             {
@@ -171,7 +171,7 @@ public class initsem {
                                     if (vd.isOverlappedWith(v2) && ((elements).get(k) != null))
                                     {
                                         error(i.loc, new BytePtr("overlapping initialization for field `%s` and `%s`"), v2.toChars(), vd.toChars());
-                                        expr(errors = true);
+                                        errors = true;
                                         continue;
                                     }
                                 }
@@ -182,7 +182,7 @@ public class initsem {
                             Expression ex = initializerToExpression(iz, null);
                             if (((ex.op & 0xFF) == 127))
                             {
-                                expr(errors = true);
+                                errors = true;
                                 continue;
                             }
                             i.value.set(j, iz);
@@ -228,7 +228,7 @@ public class initsem {
                 {
                     return i;
                 }
-                expr(i.sem = true);
+                i.sem = true;
                 t_ref.value = t_ref.value.toBasetype();
                 try {
                     {
@@ -286,19 +286,19 @@ public class initsem {
                                 if ((idxvalue >= 2147483648L))
                                 {
                                     error(i.loc, new BytePtr("array index %llu overflow"), idxvalue);
-                                    expr(errors = true);
+                                    errors = true;
                                 }
                                 length = (int)idxvalue;
                                 if (((idx.op & 0xFF) == 127))
-                                    expr(errors = true);
+                                    errors = true;
                             }
                             Initializer val = i.value.get(j);
                             ExpInitializer ei = val.isExpInitializer();
                             if ((ei != null) && (idx == null))
-                                expr(ei.expandTuples = true);
+                                ei.expandTuples = true;
                             val = initializerSemantic(val, sc_ref.value, t_ref.value.nextOf(), needInterpret_ref.value);
                             if (val.isErrorInitializer() != null)
-                                expr(errors = true);
+                                errors = true;
                             ei = val.isExpInitializer();
                             if ((ei != null) && ((ei.exp.op & 0xFF) == 126))
                             {

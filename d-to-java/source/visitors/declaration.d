@@ -481,9 +481,9 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         else if (s.exp) {
             auto text = s.exp.toJava(opts);
             if (text.length) {
-                if (s.exp.type.ty == Tbool) buf.put("expr(");
+                if (s.exp.type.ty == Tbool && s.exp.op == TOK.orOr) buf.put("expr(");
                 buf.put(text);
-                if (s.exp.type.ty == Tbool) buf.put(")");
+                if (s.exp.type.ty == Tbool && s.exp.op == TOK.orOr) buf.put(")");
                 buf.put(";\n");
             }
         }

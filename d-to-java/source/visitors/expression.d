@@ -116,10 +116,11 @@ string toJava(Expression e, ExprOpts opts) {
 ///
 string toJavaBool(Expression e, ExprOpts opts, PREC pr = PREC.primary) {
     scope TextBuffer buf = new TextBuffer();
-    
     bool negated = false;
-    if (auto not = e.isNotExp) {
-        negated = true;
+    for (;;) {
+        auto not = e.isNotExp;
+        if (!not) break;
+        negated = !negated;
         e = not.e1;
     }
     if (e.type && e.type.ty != Tbool) {
@@ -671,8 +672,7 @@ public:
     {
         if (e.e1.type.ty == Tpointer) {
             if(e.op == TOK.not) {
-                expToBuffer(e.e1, precedence[e.op], buf, opts);
-                buf.put(" == null");
+                buf.put(e.toJavaBool(opts, precedence[e.op]));
             }
             else if (e.op == TOK.address) {
                 if (e.e1.type.isTypeFunction)
@@ -1193,11 +1193,13 @@ public:
             buf.put(")");
             return;
         }
+        if (e.e1.type.isTypePointer) buf.put("(");
         // simple casts
         buf.put("(");
         typeToBuffer(e.to, buf, opts);
         buf.put(")");
         expToBuffer(e.e1, precedence[e.op], buf, opts);
+        if (e.e1.type.isTypePointer) buf.put(")");
     }
 
     override void visit(VectorExp e)

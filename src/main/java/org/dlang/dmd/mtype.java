@@ -452,7 +452,7 @@ public class mtype {
                                     }
                                     catch(Dispatch0 __d){}
                                 /*Lcov:*/
-                                    expr((notcovariant ? 1 : 0) |= (!fparam1.isCovariant(t1.isref, fparam2) ? 1 : 0));
+                                    (notcovariant ? 1 : 0) |= (!fparam1.isCovariant(t1.isref, fparam2) ? 1 : 0);
                                 }
                             }
                         }
@@ -561,7 +561,7 @@ public class mtype {
             try {
                 buf.reserve(16);
                 HdrGenState hgs = new HdrGenState();
-                expr(hgs.fullQual = ((this.ty & 0xFF) == ENUMTY.Tclass) && (this.mod == 0));
+                hgs.fullQual = ((this.ty & 0xFF) == ENUMTY.Tclass) && (this.mod == 0);
                 toCBuffer(this, buf, null, hgs);
                 return buf.extractChars();
             }
@@ -574,7 +574,7 @@ public class mtype {
             try {
                 buf.reserve(16);
                 HdrGenState hgs = new HdrGenState();
-                expr(hgs.fullQual = QualifyTypes);
+                hgs.fullQual = QualifyTypes;
                 toCBuffer(this, buf, null, hgs);
                 return buf.extractChars();
             }
@@ -674,7 +674,7 @@ public class mtype {
             StringValue sv = stringtable.lookup(t.deco, strlen(t.deco));
             if ((sv != null) && ((sv).ptrvalue != null))
             {
-                t = (Type)(sv).ptrvalue;
+                t = ((Type)(sv).ptrvalue);
                 assert(t.deco != null);
             }
             else
@@ -754,7 +754,7 @@ public class mtype {
                 Dsymbol s = this.toDsymbol(sc);
                 if ((s) != null)
                 {
-                    expr(s.checkDeprecated(loc, sc));
+                    s.checkDeprecated(loc, sc);
                 }
             }
         }
@@ -1876,7 +1876,7 @@ public class mtype {
                 ByteSlice slice = buf.peekSlice().copy();
                 ByteSlice namebuf = (byte)255;
                 int namelen = 31 + slice.getLength() + 1;
-                BytePtr name = pcopy((namelen <= 128) ? ptr(namebuf) : (BytePtr)malloc(namelen));
+                BytePtr name = pcopy((namelen <= 128) ? ptr(namebuf) : ((BytePtr)malloc(namelen)));
                 assert(name != null);
                 int length = sprintf(name, new BytePtr("_D%lluTypeInfo_%.*s6__initZ"), (long)(9 + slice.getLength()), slice.getLength(), toBytePtr(slice));
                 assert((0 < length) && (length < namelen));
@@ -3519,21 +3519,21 @@ public class mtype {
             if ((stc & 67108864L) != 0)
                 this.purity = PURE.fwdref;
             if ((stc & 33554432L) != 0)
-                expr(this.isnothrow = true);
+                this.isnothrow = true;
             if ((stc & 4398046511104L) != 0)
-                expr(this.isnogc = true);
+                this.isnogc = true;
             if ((stc & 4294967296L) != 0)
-                expr(this.isproperty = true);
+                this.isproperty = true;
             if ((stc & 2097152L) != 0)
-                expr(this.isref = true);
+                this.isref = true;
             if ((stc & 17592186044416L) != 0)
-                expr(this.isreturn = true);
+                this.isreturn = true;
             if ((stc & 4503599627370496L) != 0)
-                expr(this.isreturninferred = true);
+                this.isreturninferred = true;
             if ((stc & 524288L) != 0)
-                expr(this.isscope = true);
+                this.isscope = true;
             if ((stc & 562949953421312L) != 0)
-                expr(this.isscopeinferred = true);
+                this.isscopeinferred = true;
             this.trust = TRUST.default_;
             if ((stc & 8589934592L) != 0)
                 this.trust = TRUST.safe;
@@ -3556,15 +3556,15 @@ public class mtype {
             DArray<Parameter> params = Parameter.arraySyntaxCopy(this.parameterList.parameters);
             TypeFunction t = new TypeFunction(new ParameterList(params, this.parameterList.varargs), treturn, this.linkage, 0L);
             t.mod = this.mod;
-            expr(t.isnothrow = this.isnothrow);
-            expr(t.isnogc = this.isnogc);
+            t.isnothrow = this.isnothrow;
+            t.isnogc = this.isnogc;
             t.purity = this.purity;
-            expr(t.isproperty = this.isproperty);
-            expr(t.isref = this.isref);
-            expr(t.isreturn = this.isreturn);
-            expr(t.isscope = this.isscope);
-            expr(t.isreturninferred = this.isreturninferred);
-            expr(t.isscopeinferred = this.isscopeinferred);
+            t.isproperty = this.isproperty;
+            t.isref = this.isref;
+            t.isreturn = this.isreturn;
+            t.isscope = this.isscope;
+            t.isreturninferred = this.isreturninferred;
+            t.isscopeinferred = this.isscopeinferred;
             t.iswild = this.iswild;
             t.trust = this.trust;
             t.fargs = this.fargs;
@@ -3739,29 +3739,29 @@ public class mtype {
                 tf.mod = t.mod;
                 tf.fargs = this.fargs;
                 tf.purity = t.purity;
-                expr(tf.isnothrow = t.isnothrow);
-                expr(tf.isnogc = t.isnogc);
-                expr(tf.isproperty = t.isproperty);
-                expr(tf.isref = t.isref);
-                expr(tf.isreturn = t.isreturn);
-                expr(tf.isscope = t.isscope);
-                expr(tf.isreturninferred = t.isreturninferred);
-                expr(tf.isscopeinferred = t.isscopeinferred);
+                tf.isnothrow = t.isnothrow;
+                tf.isnogc = t.isnogc;
+                tf.isproperty = t.isproperty;
+                tf.isref = t.isref;
+                tf.isreturn = t.isreturn;
+                tf.isscope = t.isscope;
+                tf.isreturninferred = t.isreturninferred;
+                tf.isscopeinferred = t.isscopeinferred;
                 tf.trust = t.trust;
                 tf.iswild = t.iswild;
                 if ((stc & 67108864L) != 0)
                     tf.purity = PURE.fwdref;
                 if ((stc & 33554432L) != 0)
-                    expr(tf.isnothrow = true);
+                    tf.isnothrow = true;
                 if ((stc & 4398046511104L) != 0)
-                    expr(tf.isnogc = true);
+                    tf.isnogc = true;
                 if ((stc & 8589934592L) != 0)
                     tf.trust = TRUST.safe;
                 if ((stc & 524288L) != 0)
                 {
-                    expr(tf.isscope = true);
+                    tf.isscope = true;
                     if ((stc & 562949953421312L) != 0)
-                        expr(tf.isscopeinferred = true);
+                        tf.isscopeinferred = true;
                 }
                 tf.deco = pcopy(merge(tf).deco);
                 t = tf;
@@ -3794,15 +3794,15 @@ public class mtype {
                 return this;
             TypeFunction t = new TypeFunction(new ParameterList(params, this.parameterList.varargs), tret, this.linkage, 0L);
             t.mod = ((this.mod & 0xFF) & MODFlags.wild) != 0 ? (byte)((this.mod & 0xFF) & -9 | MODFlags.const_) : (byte)(this.mod & 0xFF);
-            expr(t.isnothrow = this.isnothrow);
-            expr(t.isnogc = this.isnogc);
+            t.isnothrow = this.isnothrow;
+            t.isnogc = this.isnogc;
             t.purity = this.purity;
-            expr(t.isproperty = this.isproperty);
-            expr(t.isref = this.isref);
-            expr(t.isreturn = this.isreturn);
-            expr(t.isscope = this.isscope);
-            expr(t.isreturninferred = this.isreturninferred);
-            expr(t.isscopeinferred = this.isscopeinferred);
+            t.isproperty = this.isproperty;
+            t.isref = this.isref;
+            t.isreturn = this.isreturn;
+            t.isscope = this.isscope;
+            t.isreturninferred = this.isreturninferred;
+            t.isscopeinferred = this.isscopeinferred;
             t.iswild = (byte)0;
             t.trust = this.trust;
             t.fargs = this.fargs;
@@ -4957,7 +4957,7 @@ public class mtype {
             }
             StructLiteralExp structinit = new StructLiteralExp(loc, this.sym, structelems, null);
             if ((this.size(loc) > (long)(target.ptrsize * 4)) && !this.needsNested())
-                expr(structinit.useStaticInit = true);
+                structinit.useStaticInit = true;
             structinit.type = this;
             return structinit;
         }
@@ -4969,7 +4969,7 @@ public class mtype {
         public  boolean isAssignable() {
             boolean assignable = true;
             int offset = -1;
-            expr(this.sym.determineSize(this.sym.loc));
+            this.sym.determineSize(this.sym.loc);
             {
                 int i = 0;
                 for (; (i < this.sym.fields.length);i++){
@@ -4987,7 +4987,7 @@ public class mtype {
                         if (!assignable)
                             return false;
                     }
-                    expr(assignable = v.type.isMutable() && v.type.isAssignable());
+                    assignable = v.type.isMutable() && v.type.isAssignable();
                     offset = v.offset;
                 }
             }
@@ -5966,17 +5966,17 @@ public class mtype {
                 int __limit702 = 8;
                 for (; (__key701 < __limit702);__key701 += 1) {
                     int i = __key701;
-                    expr(covariant.get(i).set((i), true));
-                    expr(covariant.get(5).set((i), true));
+                    covariant.get(i).set((i), true);
+                    covariant.get(5).set((i), true);
                 }
             }
-            expr(covariant.get(2).set(0, true));
-            expr(covariant.get(1).set(0, true));
-            expr(covariant.get(1).set(2, true));
-            expr(covariant.get(3).set(4, true));
-            expr(covariant.get(6).set(4, true));
-            expr(covariant.get(7).set(3, true));
-            expr(covariant.get(7).set(4, true));
+            covariant.get(2).set(0, true);
+            covariant.get(1).set(0, true);
+            covariant.get(1).set(2, true);
+            covariant.get(3).set(4, true);
+            covariant.get(6).set(4, true);
+            covariant.get(7).set(3, true);
+            covariant.get(7).set(4, true);
             return covariant;
         }
 

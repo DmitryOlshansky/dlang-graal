@@ -52,19 +52,19 @@ public class statement {
         }
 
         public  void visit(TryCatchStatement s) {
-            expr(this.stop = true);
+            this.stop = true;
         }
 
         public  void visit(TryFinallyStatement s) {
-            expr(this.stop = true);
+            this.stop = true;
         }
 
         public  void visit(ScopeGuardStatement s) {
-            expr(this.stop = true);
+            this.stop = true;
         }
 
         public  void visit(SynchronizedStatement s) {
-            expr(this.stop = true);
+            this.stop = true;
         }
 
         public  UsesEH() {
@@ -78,19 +78,19 @@ public class statement {
         }
 
         public  void visit(CaseStatement s) {
-            expr(this.stop = true);
+            this.stop = true;
         }
 
         public  void visit(DefaultStatement s) {
-            expr(this.stop = true);
+            this.stop = true;
         }
 
         public  void visit(LabelStatement s) {
-            expr(this.stop = true);
+            this.stop = true;
         }
 
         public  void visit(AsmStatement s) {
-            expr(this.stop = true);
+            this.stop = true;
         }
 
         public  ComeFrom() {
@@ -101,13 +101,13 @@ public class statement {
     private static class HasCode extends StoppableVisitor
     {
         public  void visit(Statement s) {
-            expr(this.stop = true);
+            this.stop = true;
         }
 
         public  void visit(ExpStatement s) {
             if ((s.exp != null))
             {
-                expr(this.stop = s.exp.hasCode());
+                this.stop = s.exp.hasCode();
             }
         }
 
@@ -231,7 +231,7 @@ public class statement {
         }
 
         public  void visit(StaticForeachDeclaration d) {
-            assert((d.sfe != null) && !d.sfe.aggrfe == null ^ !d.sfe.rangefe == null);
+            assert((d.sfe != null) && d.sfe.aggrfe != null ^ d.sfe.rangefe != null);
             (d.sfe.aggrfe != null ? d.sfe.aggrfe._body : d.sfe.rangefe._body).set(0, this.visitMembers(d.loc, d.decl));
             this.result = new StaticForeachStatement(d.loc, d.sfe);
         }
@@ -1408,7 +1408,7 @@ public class statement {
             super(loc);
             this.condition = condition;
             this._body = _body;
-            expr(this.isFinal = isFinal);
+            this.isFinal = isFinal;
         }
 
         public  Statement syntaxCopy() {
@@ -1884,7 +1884,7 @@ public class statement {
 
         public  Catch syntaxCopy() {
             Catch c = new Catch(this.loc, this.type != null ? this.type.syntaxCopy() : getThrowable(), this.ident, this.handler != null ? this.handler.syntaxCopy() : null);
-            expr(c.internalCatch = this.internalCatch);
+            c.internalCatch = this.internalCatch;
             return c;
         }
 
@@ -1912,7 +1912,7 @@ public class statement {
             super(loc);
             this._body = _body;
             this.finalbody = finalbody;
-            expr(this.bodyFallsThru = true);
+            this.bodyFallsThru = true;
         }
 
         public static TryFinallyStatement create(Loc loc, Statement _body, Statement finalbody) {
@@ -2017,7 +2017,7 @@ public class statement {
 
         public  Statement syntaxCopy() {
             ThrowStatement s = new ThrowStatement(this.loc, this.exp.syntaxCopy());
-            expr(s.internalThrow = this.internalThrow);
+            s.internalThrow = this.internalThrow;
             return s;
         }
 

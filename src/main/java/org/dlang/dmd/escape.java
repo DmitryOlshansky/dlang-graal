@@ -471,14 +471,14 @@ public class escape {
     public static boolean checkArrayLiteralEscape(Scope sc, ArrayLiteralExp ae, boolean gag) {
         boolean errors = false;
         if (ae.basis != null)
-            expr(errors = checkNewEscape(sc, ae.basis, gag));
+            errors = checkNewEscape(sc, ae.basis, gag);
         {
             Slice<Expression> __r1258 = (ae.elements).opSlice().copy();
             int __key1259 = 0;
             for (; (__key1259 < __r1258.getLength());__key1259 += 1) {
                 Expression ex = __r1258.get(__key1259);
                 if (ex != null)
-                    expr((errors ? 1 : 0) |= (checkNewEscape(sc, ex, gag) ? 1 : 0));
+                    (errors ? 1 : 0) |= (checkNewEscape(sc, ex, gag) ? 1 : 0);
             }
         }
         return errors;
@@ -492,7 +492,7 @@ public class escape {
             for (; (__key1261 < __r1260.getLength());__key1261 += 1) {
                 Expression ex = __r1260.get(__key1261);
                 if (ex != null)
-                    expr((errors ? 1 : 0) |= (checkNewEscape(sc, ex, gag) ? 1 : 0));
+                    (errors ? 1 : 0) |= (checkNewEscape(sc, ex, gag) ? 1 : 0);
             }
         }
         {
@@ -501,7 +501,7 @@ public class escape {
             for (; (__key1263 < __r1262.getLength());__key1263 += 1) {
                 Expression ex = __r1262.get(__key1263);
                 if (ex != null)
-                    expr((errors ? 1 : 0) |= (checkNewEscape(sc, ex, gag) ? 1 : 0));
+                    (errors ? 1 : 0) |= (checkNewEscape(sc, ex, gag) ? 1 : 0);
             }
         }
         return errors;
@@ -530,7 +530,7 @@ public class escape {
                     {
                         if (!gag_ref.value)
                             error(arg_ref.value.loc, new BytePtr("%s `%s` assigned to non-scope parameter `%s` calling %s"), desc, v.toChars(), par_ref.value != null ? par_ref.value.toChars() : new BytePtr("this"), fdc_ref.value != null ? fdc_ref.value.toPrettyChars(false) : new BytePtr("indirectly"));
-                        expr(result.value = true);
+                        result.value = true;
                     }
                 }
             };
@@ -561,7 +561,7 @@ public class escape {
                     {
                         if (false)
                             printf(new BytePtr("no infer for %s in %s loc %s, fdc %s, %d\n"), v.toChars(), (sc_ref.value).func.ident.toChars(), (sc_ref.value).func.loc.toChars(global.params.showColumns), fdc_ref.value.ident.toChars(), 162);
-                        expr(v.doNotInferScope = true);
+                        v.doNotInferScope = true;
                     }
                 }
             }
@@ -622,7 +622,7 @@ public class escape {
                     {
                         if (!gag_ref.value)
                             error(ee.loc, new BytePtr("reference to stack allocated value returned by `%s` assigned to non-scope parameter `%s`"), ee.toChars(), par_ref.value != null ? par_ref.value.toChars() : new BytePtr("this"));
-                        expr(result.value = true);
+                        result.value = true;
                     }
                 }
             }
@@ -718,7 +718,7 @@ public class escape {
                 printf(new BytePtr("va: %s\n"), va.value.toChars());
             boolean inferScope = false;
             if ((va.value != null) && ((sc_ref.value).func != null) && ((sc_ref.value).func.type != null) && (((sc_ref.value).func.type.ty & 0xFF) == ENUMTY.Tfunction))
-                expr(inferScope = ((TypeFunction)(sc_ref.value).func.type).trust != TRUST.system);
+                inferScope = ((TypeFunction)(sc_ref.value).func.type).trust != TRUST.system;
             Ref<Boolean> vaIsRef = ref((va.value != null) && ((va.value.storage_class & 32L) != 0) && ((va.value.storage_class & 2101248L) != 0) || ((va.value.type.toBasetype().ty & 0xFF) == ENUMTY.Tclass));
             if (false)
                 printf(new BytePtr("va is ref `%s`\n"), va.value.toChars());
@@ -788,14 +788,14 @@ public class escape {
                         {
                             if (!gag)
                                 error(ae.loc, new BytePtr("scope variable `%s` assigned to return scope `%s`"), v.toChars(), va.value.toChars());
-                            expr(result = true);
+                            result = true;
                             continue;
                         }
                         if ((va.value != null) && va.value.enclosesLifetimeOf(v) && ((v.storage_class & 1099511627808L) == 0) || ((ae.e1.op & 0xFF) == 27) && ((va.value.type.toBasetype().ty & 0xFF) == ENUMTY.Tclass) && va.value.enclosesLifetimeOf(v) || !va.value.isScope() || vaIsRef.value || ((va.value.storage_class & 2101248L) != 0) && ((v.storage_class & 1099511627808L) == 0) && (sc_ref.value).func.setUnsafe())
                         {
                             if (!gag)
                                 error(ae.loc, new BytePtr("scope variable `%s` assigned to `%s` with longer lifetime"), v.toChars(), va.value.toChars());
-                            expr(result = true);
+                            result = true;
                             continue;
                         }
                         if ((va.value != null) && !va.value.isDataseg() && !va.value.doNotInferScope)
@@ -814,7 +814,7 @@ public class escape {
                         {
                             if (!gag)
                                 error(ae.loc, new BytePtr("scope variable `%s` assigned to non-scope `%s`"), v.toChars(), e1.toChars());
-                            expr(result = true);
+                            result = true;
                         }
                     }
                     else if (((v.storage_class & 65536L) != 0) && (pequals(p, (sc_ref.value).func)))
@@ -834,13 +834,13 @@ public class escape {
                             {
                                 if (!gag)
                                     error(ae.loc, new BytePtr("variadic variable `%s` assigned to non-scope `%s`"), v.toChars(), e1.toChars());
-                                expr(result = true);
+                                result = true;
                             }
                         }
                     }
                     else
                     {
-                        expr(v.doNotInferScope = true);
+                        v.doNotInferScope = true;
                     }
                 }
             }
@@ -860,7 +860,7 @@ public class escape {
                         {
                             if (!gag)
                                 error(ae.loc, new BytePtr("address of local variable `%s` assigned to return scope `%s`"), v.toChars(), va.value.toChars());
-                            expr(result = true);
+                            result = true;
                             continue;
                         }
                     }
@@ -869,7 +869,7 @@ public class escape {
                     {
                         if (!gag)
                             error(ae.loc, new BytePtr("address of variable `%s` assigned to `%s` with longer lifetime"), v.toChars(), va.value.toChars());
-                        expr(result = true);
+                        result = true;
                         continue;
                     }
                     if ((va.value != null) && ((v.storage_class & 2101248L) != 0))
@@ -885,7 +885,7 @@ public class escape {
                                     {
                                         if (!gag)
                                             error(ae.loc, new BytePtr("reference `%s` assigned to `%s` with longer lifetime"), v.toChars(), va.value.toChars());
-                                        expr(result = true);
+                                        result = true;
                                         continue ByRef;
                                     }
                                     break;
@@ -911,7 +911,7 @@ public class escape {
                         {
                             if (!gag)
                                 error(ae.loc, new BytePtr("reference to local variable `%s` assigned to non-scope `%s`"), v.toChars(), e1.toChars());
-                            expr(result = true);
+                            result = true;
                         }
                         continue;
                     }
@@ -948,7 +948,7 @@ public class escape {
                                     {
                                         if (!gag)
                                             error(ae.loc, new BytePtr("reference to local `%s` assigned to non-scope `%s` in @safe code"), v.toChars(), e1.toChars());
-                                        expr(result = true);
+                                        result = true;
                                     }
                                     continue;
                                 }
@@ -984,7 +984,7 @@ public class escape {
                     {
                         if (!gag)
                             error(ee.loc, new BytePtr("reference to stack allocated value returned by `%s` assigned to non-scope `%s`"), ee.toChars(), e1.toChars());
-                        expr(result = true);
+                        result = true;
                     }
                 }
             }
@@ -1016,14 +1016,14 @@ public class escape {
                             {
                                 if (!gag)
                                     error(e.loc, new BytePtr("scope variable `%s` may not be thrown"), v.toChars());
-                                expr(result = true);
+                                result = true;
                             }
                             continue;
                         }
                     }
                     else
                     {
-                        expr(v.doNotInferScope = true);
+                        v.doNotInferScope = true;
                     }
                 }
             }
@@ -1063,7 +1063,7 @@ public class escape {
                             {
                                 if (!gag_ref.value)
                                     error(e_ref.value.loc, new BytePtr("scope variable `%s` may not be copied into allocated memory"), v.toChars());
-                                expr(result.value = true);
+                                result.value = true;
                             }
                             continue;
                         }
@@ -1075,12 +1075,12 @@ public class escape {
                         {
                             if (!gag_ref.value)
                                 error(e_ref.value.loc, new BytePtr("copying `%s` into allocated memory escapes a reference to variadic parameter `%s`"), e_ref.value.toChars(), v.toChars());
-                            expr(result.value = false);
+                            result.value = false;
                         }
                     }
                     else
                     {
-                        expr(v.doNotInferScope = true);
+                        v.doNotInferScope = true;
                     }
                 }
             }
@@ -1098,7 +1098,7 @@ public class escape {
                                 BytePtr kind = pcopy((v.storage_class & 32L) != 0 ? new BytePtr("parameter") : new BytePtr("local"));
                                 error(e_ref.value.loc, new BytePtr("copying `%s` into allocated memory escapes a reference to %s variable `%s`"), e_ref.value.toChars(), kind, v.toChars());
                             }
-                            expr(result.value = true);
+                            result.value = true;
                         }
                     };
                     if (v.isDataseg())
@@ -1129,7 +1129,7 @@ public class escape {
                                 {
                                     if (!gag_ref.value)
                                         error(e_ref.value.loc, new BytePtr("storing reference to outer local variable `%s` into allocated memory causes it to escape"), v.toChars());
-                                    expr(result.value = true);
+                                    result.value = true;
                                     continue;
                                 }
                             }
@@ -1146,7 +1146,7 @@ public class escape {
                         printf(new BytePtr("byexp %s\n"), ee.toChars());
                     if (!gag_ref.value)
                         error(ee.loc, new BytePtr("storing reference to stack allocated value returned by `%s` into allocated memory causes it to escape"), ee.toChars());
-                    expr(result.value = true);
+                    result.value = true;
                 }
             }
             return result.value;
@@ -1203,7 +1203,7 @@ public class escape {
                             {
                                 if (!gag_ref.value)
                                     error(e_ref.value.loc, new BytePtr("scope variable `%s` may not be returned"), v.toChars());
-                                expr(result.value = true);
+                                result.value = true;
                             }
                             continue;
                         }
@@ -1215,12 +1215,12 @@ public class escape {
                         {
                             if (!gag_ref.value)
                                 error(e_ref.value.loc, new BytePtr("returning `%s` escapes a reference to variadic parameter `%s`"), e_ref.value.toChars(), v.toChars());
-                            expr(result.value = false);
+                            result.value = false;
                         }
                     }
                     else
                     {
-                        expr(v.doNotInferScope = true);
+                        v.doNotInferScope = true;
                     }
                 }
             }
@@ -1242,7 +1242,7 @@ public class escape {
                                     msg = pcopy(new BytePtr("returning `%s` escapes a reference to local variable `%s`"));
                                 error(e_ref.value.loc, msg, e_ref.value.toChars(), v.toChars());
                             }
-                            expr(result.value = true);
+                            result.value = true;
                         }
                     };
                     if (v.isDataseg())
@@ -1285,7 +1285,7 @@ public class escape {
                                 {
                                     if (!gag_ref.value)
                                         error(e_ref.value.loc, new BytePtr("escaping reference to outer local variable `%s`"), v.toChars());
-                                    expr(result.value = true);
+                                    result.value = true;
                                     continue;
                                 }
                             }
@@ -1302,7 +1302,7 @@ public class escape {
                         printf(new BytePtr("byexp %s\n"), ee.toChars());
                     if (!gag_ref.value)
                         error(ee.loc, new BytePtr("escaping reference to stack allocated value returned by `%s`"), ee.toChars());
-                    expr(result.value = true);
+                    result.value = true;
                 }
             }
             return result.value;
@@ -1319,8 +1319,8 @@ public class escape {
             fd.storage_class |= 4521191813414912L;
             if (((tf.ty & 0xFF) == ENUMTY.Tfunction))
             {
-                expr(tf.isreturn = true);
-                expr(tf.isreturninferred = true);
+                tf.isreturn = true;
+                tf.isreturninferred = true;
             }
         }
         else
@@ -1431,7 +1431,7 @@ public class escape {
         boolean changes = false;
         do {
             {
-                expr(changes = false);
+                changes = false;
                 {
                     Slice<VarDeclaration> __r1314 = array.copy();
                     int __key1315 = 0;
@@ -1455,7 +1455,7 @@ public class escape {
                                             notMaybeScope(v);
                                             if ((v.storage_class & 2101248L) == 0)
                                                 v.storage_class &= -4521191813414913L;
-                                            expr(changes = true);
+                                            changes = true;
                                         }
                                     }
                                 }

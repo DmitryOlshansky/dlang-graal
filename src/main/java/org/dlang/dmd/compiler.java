@@ -76,13 +76,13 @@ public class compiler {
                     assert(((p.token.value & 0xFF) == 11));
                     assert(!p.errors());
                     boolean v = global.params.verbose;
-                    expr(global.params.verbose = false);
+                    global.params.verbose = false;
                     m.importedFrom = m;
                     m.importAll(null);
                     dsymbolSemantic(m, null);
                     semantic2(m, null);
                     semantic3(m, null);
-                    expr(global.params.verbose = v);
+                    global.params.verbose = v;
                     entrypoint = m;
                     rootHasMain = (sc)._module;
                 }
@@ -289,7 +289,7 @@ public class compiler {
 
         public  MatcherNode(boolean isExclude, int depth) {
             this.depth = depth;
-            expr(this.isExclude = isExclude);
+            this.isExclude = isExclude;
         }
 
         public MatcherNode(){
@@ -336,7 +336,7 @@ public class compiler {
                     parseModulePattern(modulePattern, matchNodes.get(entryIndex), depth);
                     if (includeByDefault && !matchNodes.get(entryIndex).isExclude)
                     {
-                        expr(includeByDefault = false);
+                        includeByDefault = false;
                     }
                 }
             }
@@ -368,7 +368,7 @@ public class compiler {
         boolean isExclude = false;
         if (((modulePattern.get(0) & 0xFF) == 45))
         {
-            expr(isExclude = true);
+            isExclude = true;
             modulePattern.postInc();
         }
         dst.opAssign(new MatcherNode(isExclude, depth));

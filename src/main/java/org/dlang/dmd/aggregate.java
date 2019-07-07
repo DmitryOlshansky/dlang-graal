@@ -143,7 +143,7 @@ public class aggregate {
                         return 0;
                     if ((v.storage_class & 8388608L) != 0)
                         return 0;
-                    AggregateDeclaration ad = (AggregateDeclaration)param;
+                    AggregateDeclaration ad = ((AggregateDeclaration)param);
                     if ((v.semanticRun < PASS.semanticdone))
                         dsymbolSemantic(v, null);
                     if ((ad.sizeok != Sizeok.none))
@@ -165,7 +165,7 @@ public class aggregate {
                         BytePtr psz = pcopy(((v.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) ? new BytePtr("static array of ") : new BytePtr(""));
                         ad.error(new BytePtr("cannot have field `%s` with %ssame struct type"), v.toChars(), psz);
                         ad.type = Type.terror;
-                        expr(ad.errors = true);
+                        ad.errors = true;
                         return 1;
                     }
                     return 0;
@@ -232,7 +232,7 @@ public class aggregate {
             if (global.gag == 0)
             {
                 this.type = Type.terror;
-                expr(this.errors = true);
+                this.errors = true;
             }
             return false;
         }
@@ -263,7 +263,7 @@ public class aggregate {
                     VarDeclaration vd = this.fields.get(i);
                     if (vd.errors)
                     {
-                        expr(errors = true);
+                        errors = true;
                         continue;
                     }
                     VarDeclaration vx = vd;
@@ -279,17 +279,17 @@ public class aggregate {
                             VarDeclaration v2 = this.fields.get(j);
                             if (v2.errors)
                             {
-                                expr(errors = true);
+                                errors = true;
                                 continue;
                             }
                             if (!vd.isOverlappedWith(v2))
                                 continue;
-                            expr(vd.overlapped = true);
-                            expr(v2.overlapped = true);
+                            vd.overlapped = true;
+                            v2.overlapped = true;
                             if (!MODimplicitConv(vd.type.mod, v2.type.mod))
-                                expr(v2.overlapUnsafe = true);
+                                v2.overlapUnsafe = true;
                             if (!MODimplicitConv(v2.type.mod, vd.type.mod))
-                                expr(vd.overlapUnsafe = true);
+                                vd.overlapUnsafe = true;
                             if (vx == null)
                                 continue;
                             if ((v2._init != null) && (v2._init.isVoidInitializer() != null))
@@ -297,7 +297,7 @@ public class aggregate {
                             if ((vx._init != null) && (v2._init != null))
                             {
                                 error(this.loc, new BytePtr("overlapping default initialization for field `%s` and `%s`"), v2.toChars(), vd.toChars());
-                                expr(errors = true);
+                                errors = true;
                             }
                         }
                     }
@@ -358,7 +358,7 @@ public class aggregate {
                             else if (v2._init != null)
                             {
                                 error(loc, new BytePtr("overlapping initialization for field `%s` and `%s`"), v2.toChars(), vd.toChars());
-                                expr(errors = true);
+                                errors = true;
                             }
                         }
                     }
@@ -375,7 +375,7 @@ public class aggregate {
                             if (vx.inuse != 0)
                             {
                                 vx.error(loc, new BytePtr("recursive initialization of field"));
-                                expr(errors = true);
+                                errors = true;
                             }
                             else
                                 e = vx.getConstInitializer(false);
@@ -385,7 +385,7 @@ public class aggregate {
                             if (((vx.storage_class & 549755813888L) != 0) && !ctorinit)
                             {
                                 error(loc, new BytePtr("field `%s.%s` must be initialized because it has no default constructor"), this.type.toChars(), vx.toChars());
-                                expr(errors = true);
+                                errors = true;
                             }
                             Type telem = vx.type;
                             if (((telem.ty & 0xFF) == ENUMTY.Tsarray))
@@ -569,7 +569,7 @@ public class aggregate {
                 if (!((s.isCtorDeclaration() != null) || (s.isTemplateDeclaration() != null) || (s.isOverloadSet() != null)))
                 {
                     s.error(new BytePtr("is not a constructor; identifiers starting with `__` are reserved for the implementation"));
-                    expr(this.errors = true);
+                    this.errors = true;
                     s = null;
                 }
             }

@@ -70,7 +70,7 @@ public class dclass {
                         if ((newinstance != 0) && (!pequals(fd.toParent(), cd)) && (pequals(ifd.toParent(), this.sym)))
                             cd.error(new BytePtr("interface function `%s` is not implemented"), ifd.toFullSignature());
                         if ((pequals(fd.toParent(), cd)))
-                            expr(result = true);
+                            result = true;
                     }
                     else
                     {
@@ -167,7 +167,7 @@ public class dclass {
             this.objc = new ObjcClassDeclaration(this);
             if (id == null)
             {
-                expr(this.isActuallyAnonymous = true);
+                this.isActuallyAnonymous = true;
             }
             super(loc, id != null ? id : Identifier.generateId(new BytePtr("__anonclass")));
             if (baseclasses != null)
@@ -389,9 +389,9 @@ public class dclass {
             {
                 if (!this.inuse)
                 {
-                    expr(this.inuse = true);
+                    this.inuse = true;
                     dsymbolSemantic(this, null);
-                    expr(this.inuse = false);
+                    this.inuse = false;
                 }
             }
             if ((this.members == null) || (this.symtab == null))
@@ -530,7 +530,7 @@ public class dclass {
                 }
             }
             this.sizeok = Sizeok.done;
-            expr(this.checkOverlappedFields());
+            this.checkOverlappedFields();
         }
 
         public  boolean hasMonitor() {
@@ -879,7 +879,7 @@ public class dclass {
             super(loc, id, baseclasses, null, false);
             if ((pequals(id, Id.IUnknown)))
             {
-                expr(this.com = true);
+                this.com = true;
                 this.classKind = ClassKind.cpp;
             }
         }

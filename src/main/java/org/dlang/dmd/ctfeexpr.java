@@ -1196,7 +1196,7 @@ public class ctfeexpr {
             int dim = (es1.keys).length;
             if (((es2.keys).length != dim))
                 return 1;
-            Ptr<Boolean> used = pcopy((Ptr<Boolean>)Mem.xmalloc(1 * dim));
+            Ptr<Boolean> used = pcopy(((Ptr<Boolean>)Mem.xmalloc(1 * dim)));
             memset(used, 0, 1 * dim);
             {
                 int __key866 = 0;
@@ -1216,7 +1216,7 @@ public class ctfeexpr {
                             Expression k2 = (es2.keys).get(j);
                             if (ctfeRawCmp(loc, k1, k2, identity) != 0)
                                 continue;
-                            expr(used.set(j, true));
+                            used.set(j, true);
                             v2 = (es2.values).get(j);
                             break;
                         }
@@ -1300,7 +1300,7 @@ public class ctfeexpr {
             int len = es1.len + (es2.elements).length;
             byte sz = es1.sz;
             Object s = pcopy(Mem.xmalloc((len + 1) * (sz & 0xFF)));
-            memcpy((BytePtr)(((BytePtr)s.plus(((sz & 0xFF) * (es2.elements).length)))), (es1.string), (es1.len * (sz & 0xFF)));
+            memcpy((BytePtr)((((BytePtr)s).plus(((sz & 0xFF) * (es2.elements).length)))), (es1.string), (es1.len * (sz & 0xFF)));
             {
                 int __key870 = 0;
                 int __limit871 = (es2.elements).length;
@@ -1313,10 +1313,10 @@ public class ctfeexpr {
                         return ue;
                     }
                     long v = es2e.toInteger();
-                    Port.valcpy(((BytePtr)s.plus((i * (sz & 0xFF)))), v, (sz & 0xFF));
+                    Port.valcpy((((BytePtr)s).plus((i * (sz & 0xFF)))), v, (sz & 0xFF));
                 }
             }
-            memset(((BytePtr)s.plus((len * (sz & 0xFF)))), 0, (sz & 0xFF));
+            memset((((BytePtr)s).plus((len * (sz & 0xFF)))), 0, (sz & 0xFF));
             emplaceExpStringExpLocObjectInteger(ue, loc, s, len);
             StringExp es = (StringExp)ue.exp();
             es.sz = sz;
@@ -1344,10 +1344,10 @@ public class ctfeexpr {
                         return ue;
                     }
                     long v = es2e.toInteger();
-                    Port.valcpy(((BytePtr)s.plus(((es1.len + i) * (sz & 0xFF)))), v, (sz & 0xFF));
+                    Port.valcpy((((BytePtr)s).plus(((es1.len + i) * (sz & 0xFF)))), v, (sz & 0xFF));
                 }
             }
-            memset(((BytePtr)s.plus((len * (sz & 0xFF)))), 0, (sz & 0xFF));
+            memset((((BytePtr)s).plus((len * (sz & 0xFF)))), 0, (sz & 0xFF));
             emplaceExpStringExpLocObjectInteger(ue, loc, s, len);
             StringExp es = (StringExp)ue.exp();
             es.sz = sz;
@@ -1595,13 +1595,13 @@ public class ctfeexpr {
                     switch ((oldse.sz & 0xFF))
                     {
                         case 1:
-                            ((BytePtr)s).set((indxlo + elemi), (byte)defaultValue);
+                            (((BytePtr)s)).set((indxlo + elemi), (byte)defaultValue);
                             break;
                         case 2:
-                            ((CharPtr)s).set((indxlo + elemi), (char)defaultValue);
+                            (((CharPtr)s)).set((indxlo + elemi), (char)defaultValue);
                             break;
                         case 4:
-                            ((IntPtr)s).set((indxlo + elemi), defaultValue);
+                            (((IntPtr)s)).set((indxlo + elemi), defaultValue);
                             break;
                         default:
                         throw new AssertionError("Unreachable code!");

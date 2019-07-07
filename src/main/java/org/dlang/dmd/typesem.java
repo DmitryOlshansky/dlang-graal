@@ -165,9 +165,9 @@ public class typesem {
                 s_ref.value = s_ref.value.toAlias();
             else
             {
-                expr(s_ref.value.checkDeprecated(loc, sc_ref.value));
+                s_ref.value.checkDeprecated(loc, sc_ref.value);
                 if (d != null)
-                    expr(d.checkDisabled(loc, sc_ref.value, true));
+                    d.checkDisabled(loc, sc_ref.value, true);
             }
             s_ref.value = s_ref.value.toAlias();
             {
@@ -1013,19 +1013,19 @@ public class typesem {
                 if (((sc_ref.value).stc & 67108864L) != 0)
                     tf.purity = PURE.fwdref;
                 if (((sc_ref.value).stc & 33554432L) != 0)
-                    expr(tf.isnothrow = true);
+                    tf.isnothrow = true;
                 if (((sc_ref.value).stc & 4398046511104L) != 0)
-                    expr(tf.isnogc = true);
+                    tf.isnogc = true;
                 if (((sc_ref.value).stc & 2097152L) != 0)
-                    expr(tf.isref = true);
+                    tf.isref = true;
                 if (((sc_ref.value).stc & 17592186044416L) != 0)
-                    expr(tf.isreturn = true);
+                    tf.isreturn = true;
                 if (((sc_ref.value).stc & 4503599627370496L) != 0)
-                    expr(tf.isreturninferred = true);
+                    tf.isreturninferred = true;
                 if (((sc_ref.value).stc & 524288L) != 0)
-                    expr(tf.isscope = true);
+                    tf.isscope = true;
                 if (((sc_ref.value).stc & 562949953421312L) != 0)
-                    expr(tf.isscopeinferred = true);
+                    tf.isscopeinferred = true;
                 if ((tf.trust == TRUST.default_))
                 {
                     if (((sc_ref.value).stc & 8589934592L) != 0)
@@ -1036,7 +1036,7 @@ public class typesem {
                         tf.trust = TRUST.trusted;
                 }
                 if (((sc_ref.value).stc & 4294967296L) != 0)
-                    expr(tf.isproperty = true);
+                    tf.isproperty = true;
                 tf.linkage = (sc_ref.value).linkage;
                 boolean wildreturn = false;
                 if (tf.next != null)
@@ -1045,17 +1045,17 @@ public class typesem {
                     (sc_ref.value).stc &= -4465259184133L;
                     tf.next = typeSemantic(tf.next, loc, sc_ref.value);
                     sc_ref.value = (sc_ref.value).pop();
-                    expr((errors ? 1 : 0) |= (tf.checkRetType(loc) ? 1 : 0));
+                    (errors ? 1 : 0) |= (tf.checkRetType(loc) ? 1 : 0);
                     if (tf.next.isscope() && (((sc_ref.value).flags & 1) == 0))
                     {
                         error(loc, new BytePtr("functions cannot return `scope %s`"), tf.next.toChars());
-                        expr(errors = true);
+                        errors = true;
                     }
                     if (tf.next.hasWild() != 0)
-                        expr(wildreturn = true);
+                        wildreturn = true;
                     if (tf.isreturn && !tf.isref && !tf.next.hasPointers())
                     {
-                        expr(tf.isreturn = false);
+                        tf.isreturn = false;
                     }
                 }
                 byte wildparams = (byte)0;
@@ -1075,7 +1075,7 @@ public class typesem {
                             mtype.inuse--;
                             if (((fparam.type.ty & 0xFF) == ENUMTY.Terror))
                             {
-                                expr(errors = true);
+                                errors = true;
                                 continue;
                             }
                             fparam.type = fparam.type.addStorageClass(fparam.storageClass);
@@ -1088,7 +1088,7 @@ public class typesem {
                             if (((t.ty & 0xFF) == ENUMTY.Tfunction))
                             {
                                 error(loc, new BytePtr("cannot have parameter of function type `%s`"), fparam.type.toChars());
-                                expr(errors = true);
+                                errors = true;
                             }
                             else if (((fparam.storageClass & 2101248L) == 0) && ((t.ty & 0xFF) == ENUMTY.Tstruct) || ((t.ty & 0xFF) == ENUMTY.Tsarray) || ((t.ty & 0xFF) == ENUMTY.Tenum))
                             {
@@ -1096,13 +1096,13 @@ public class typesem {
                                 if (((tb2.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)tb2).sym.members == null) || ((tb2.ty & 0xFF) == ENUMTY.Tenum) && (((TypeEnum)tb2).sym.memtype == null))
                                 {
                                     error(loc, new BytePtr("cannot have parameter of opaque type `%s` by value"), fparam.type.toChars());
-                                    expr(errors = true);
+                                    errors = true;
                                 }
                             }
                             else if (((fparam.storageClass & 8192L) == 0) && ((t.ty & 0xFF) == ENUMTY.Tvoid))
                             {
                                 error(loc, new BytePtr("cannot have parameter of type `%s`"), fparam.type.toChars());
-                                expr(errors = true);
+                                errors = true;
                             }
                             if (((fparam.storageClass & 2149580800L) == 2149580800L))
                             {
@@ -1116,7 +1116,7 @@ public class typesem {
                                     {
                                         Ref<Long> stc = ref(fparam.storageClass & 2101248L);
                                         error(loc, new BytePtr("parameter `%s` is `return %s` but function does not return by `ref`"), fparam.ident != null ? fparam.ident.toChars() : new BytePtr(""), stcToChars(stc));
-                                        expr(errors = true);
+                                        errors = true;
                                     }
                                 }
                                 else
@@ -1142,7 +1142,7 @@ public class typesem {
                                     if ((m) != 0)
                                     {
                                         error(loc, new BytePtr("cannot have `%s out` parameter of type `%s`"), MODtoChars(m), t.toChars());
-                                        expr(errors = true);
+                                        errors = true;
                                     }
                                     else
                                     {
@@ -1150,7 +1150,7 @@ public class typesem {
                                         if (((tv.ty & 0xFF) == ENUMTY.Tstruct) && ((TypeStruct)tv).sym.noDefaultCtor)
                                         {
                                             error(loc, new BytePtr("cannot have `out` parameter of type `%s` because the default construction is disabled"), fparam.type.toChars());
-                                            expr(errors = true);
+                                            errors = true;
                                         }
                                     }
                                 }
@@ -1199,7 +1199,7 @@ public class typesem {
                                     e = e.toLvalue(argsc, e);
                                 fparam.defaultArg = e;
                                 if (((e.op & 0xFF) == 127))
-                                    expr(errors = true);
+                                    errors = true;
                             }
                             {
                                 TypeTuple tt = t.isTypeTuple();
@@ -1220,12 +1220,12 @@ public class typesem {
                                                 {
                                                     OutBuffer buf1 = new OutBuffer();
                                                     try {
-                                                        expr(stcToBuffer(buf1, stc1 | ((stc1 & 2097152L) != 0 ? fparam.storageClass & 256L : 0L)));
+                                                        stcToBuffer(buf1, stc1 | ((stc1 & 2097152L) != 0 ? fparam.storageClass & 256L : 0L));
                                                         OutBuffer buf2 = new OutBuffer();
                                                         try {
-                                                            expr(stcToBuffer(buf2, stc2));
+                                                            stcToBuffer(buf2, stc2);
                                                             error(loc, new BytePtr("incompatible parameter storage classes `%s` and `%s`"), buf1.peekChars(), buf2.peekChars());
-                                                            expr(errors = true);
+                                                            errors = true;
                                                             stc = stc1 | stc & -2109441L;
                                                         }
                                                         finally {
@@ -1270,7 +1270,7 @@ public class typesem {
                                 else
                                 {
                                     error(loc, new BytePtr("`auto` can only be used as part of `auto ref` for template function parameters"));
-                                    expr(errors = true);
+                                    errors = true;
                                 }
                             }
                             fparam.storageClass &= -2685405189L;
@@ -1283,18 +1283,18 @@ public class typesem {
                 if (wildreturn && (wildparams == 0))
                 {
                     error(loc, new BytePtr("`inout` on `return` means `inout` must be on a parameter as well for `%s`"), mtype.toChars());
-                    expr(errors = true);
+                    errors = true;
                 }
                 tf.iswild = wildparams;
                 if (tf.isproperty && (tf.parameterList.varargs != VarArg.none) || (tf.parameterList.length() > 2))
                 {
                     error(loc, new BytePtr("properties can only have zero, one, or two parameter"));
-                    expr(errors = true);
+                    errors = true;
                 }
                 if ((tf.parameterList.varargs == VarArg.variadic) && (tf.linkage != LINK.d) && (tf.parameterList.length() == 0))
                 {
                     error(loc, new BytePtr("variadic functions with non-D linkage must have at least one parameter"));
-                    expr(errors = true);
+                    errors = true;
                 }
                 if (errors)
                     return error.invoke();
@@ -1422,7 +1422,7 @@ public class typesem {
                                 mtype.sym = ((ScopeExp)e).sds;
                                 break;
                             case 126:
-                                mtype.sym = new TupleDeclaration(e.loc, Identifier.generateId(new BytePtr("__aliastup")), (DArray<RootObject>)e.toTupleExp().exps);
+                                mtype.sym = new TupleDeclaration(e.loc, Identifier.generateId(new BytePtr("__aliastup")), ((DArray<RootObject>)e.toTupleExp().exps));
                                 break;
                             case 30:
                                 result = isType(((DotTypeExp)e).sym);
@@ -1636,7 +1636,7 @@ public class typesem {
                 StringValue sv = Type.stringtable.update(buf.extractSlice());
                 if ((sv).ptrvalue != null)
                 {
-                    Type t = (Type)(sv).ptrvalue;
+                    Type t = ((Type)(sv).ptrvalue);
                     assert(t.deco != null);
                     return t;
                 }
@@ -1680,7 +1680,7 @@ public class typesem {
                     e = mt.defaultInitLiteral(loc);
                     if (((tb.ty & 0xFF) == ENUMTY.Tstruct) && tb.needsNested())
                     {
-                        expr(e.isStructLiteralExp().useStaticInit = true);
+                        e.isStructLiteralExp().useStaticInit = true;
                     }
                 }
                 else if ((pequals(ident_ref.value, Id._mangleof)))
@@ -2680,7 +2680,7 @@ public class typesem {
                             e_ref.value = mt.defaultInitLiteral(e_ref.value.loc);
                             if (((tb.ty & 0xFF) == ENUMTY.Tstruct) && tb.needsNested())
                             {
-                                expr(e_ref.value.isStructLiteralExp().useStaticInit = true);
+                                e_ref.value.isStructLiteralExp().useStaticInit = true;
                             }
                             /*goto Lreturn*/throw Dispatch0.INSTANCE;
                         }
@@ -2930,8 +2930,8 @@ public class typesem {
                         typesem.visitAArrayfd_aaLen = FuncDeclaration.genCfunc(fparams, Type.tsize_t, Id.aaLen, 0L);
                         TypeFunction tf = typesem.visitAArrayfd_aaLen.type.toTypeFunction();
                         tf.purity = PURE.const_;
-                        expr(tf.isnothrow = true);
-                        expr(tf.isnogc = false);
+                        tf.isnothrow = true;
+                        tf.isnogc = false;
                     }
                     Expression ev = new VarExp(e_ref.value.loc, typesem.visitAArrayfd_aaLen, false);
                     e_ref.value = new CallExp(e_ref.value.loc, ev, e_ref.value);
@@ -3032,7 +3032,7 @@ public class typesem {
                         Expression exp = semanticY(die, sc, (gagError ? 1 : 0));
                         if (!gagError)
                         {
-                            expr(global.endGagging(errors));
+                            global.endGagging(errors);
                             if ((exp != null) && ((exp.op & 0xFF) == 127))
                                 exp = null;
                         }
@@ -3101,11 +3101,11 @@ public class typesem {
                     }
                     if (s.isFuncDeclaration() == null)
                     {
-                        expr(s.checkDeprecated(e_ref.value.loc, sc_ref.value));
+                        s.checkDeprecated(e_ref.value.loc, sc_ref.value);
                         {
                             Declaration d = s.isDeclaration();
                             if ((d) != null)
-                                expr(d.checkDisabled(e_ref.value.loc, sc_ref.value, false));
+                                d.checkDisabled(e_ref.value.loc, sc_ref.value, false);
                         }
                     }
                     s = s.toAlias();
@@ -3139,7 +3139,7 @@ public class typesem {
                                     e_ref.value.error(new BytePtr("circular initialization of %s `%s`"), v.kind(), v.toPrettyChars(false));
                                     return new ErrorExp();
                                 }
-                                expr(checkAccess(e_ref.value.loc, sc_ref.value, null, (Declaration)v));
+                                checkAccess(e_ref.value.loc, sc_ref.value, null, (Declaration)v);
                                 Expression ve = new VarExp(e_ref.value.loc, v, true);
                                 if (!isTrivialExp(e_ref.value))
                                 {
@@ -3232,7 +3232,7 @@ public class typesem {
                         }
                         if ((d.semanticRun == PASS.init))
                             dsymbolSemantic(d, null);
-                        expr(checkAccess(e_ref.value.loc, sc_ref.value, e_ref.value, d));
+                        checkAccess(e_ref.value.loc, sc_ref.value, e_ref.value, d);
                         VarExp ve = new VarExp(e_ref.value.loc, d, true);
                         if ((d.isVarDeclaration() != null) && d.needThis())
                             ve.type = d.type.addMod(e_ref.value.type.mod);
@@ -3241,7 +3241,7 @@ public class typesem {
                     boolean unreal = ((e_ref.value.op & 0xFF) == 26) && ((VarExp)e_ref.value).var.isField();
                     if (d.isDataseg() || unreal && d.isField())
                     {
-                        expr(checkAccess(e_ref.value.loc, sc_ref.value, e_ref.value, d));
+                        checkAccess(e_ref.value.loc, sc_ref.value, e_ref.value, d);
                         Expression ve = new VarExp(e_ref.value.loc, d, true);
                         e_ref.value = unreal ? ve : new CommaExp(e_ref.value.loc, e_ref.value, ve, true);
                         return expressionSemantic(e_ref.value, sc_ref.value);
@@ -3478,11 +3478,11 @@ public class typesem {
                     }
                     if (s.isFuncDeclaration() == null)
                     {
-                        expr(s.checkDeprecated(e_ref.value.loc, sc_ref.value));
+                        s.checkDeprecated(e_ref.value.loc, sc_ref.value);
                         {
                             Declaration d = s.isDeclaration();
                             if ((d) != null)
-                                expr(d.checkDisabled(e_ref.value.loc, sc_ref.value, false));
+                                d.checkDisabled(e_ref.value.loc, sc_ref.value, false);
                         }
                     }
                     s = s.toAlias();
@@ -3516,7 +3516,7 @@ public class typesem {
                                     e_ref.value.error(new BytePtr("circular initialization of %s `%s`"), v.kind(), v.toPrettyChars(false));
                                     return new ErrorExp();
                                 }
-                                expr(checkAccess(e_ref.value.loc, sc_ref.value, null, (Declaration)v));
+                                checkAccess(e_ref.value.loc, sc_ref.value, null, (Declaration)v);
                                 Expression ve = new VarExp(e_ref.value.loc, v, true);
                                 ve = expressionSemantic(ve, sc_ref.value);
                                 return ve;
@@ -3674,7 +3674,7 @@ public class typesem {
                                 d = (Declaration)mostVisibleOverload(fd, (sc_ref.value)._module);
                             }
                         }
-                        expr(checkAccess(e_ref.value.loc, sc_ref.value, e_ref.value, d));
+                        checkAccess(e_ref.value.loc, sc_ref.value, e_ref.value, d);
                         VarExp ve = new VarExp(e_ref.value.loc, d, true);
                         if ((d.isVarDeclaration() != null) && d.needThis())
                             ve.type = d.type.addMod(e_ref.value.type.mod);
@@ -3683,7 +3683,7 @@ public class typesem {
                     boolean unreal = ((e_ref.value.op & 0xFF) == 26) && ((VarExp)e_ref.value).var.isField();
                     if (d.isDataseg() || unreal && d.isField())
                     {
-                        expr(checkAccess(e_ref.value.loc, sc_ref.value, e_ref.value, d));
+                        checkAccess(e_ref.value.loc, sc_ref.value, e_ref.value, d);
                         Expression ve = new VarExp(e_ref.value.loc, d, true);
                         e_ref.value = unreal ? ve : new CommaExp(e_ref.value.loc, e_ref.value, ve, true);
                         e_ref.value = expressionSemantic(e_ref.value, sc_ref.value);

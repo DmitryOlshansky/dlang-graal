@@ -61,7 +61,7 @@ public class filecache {
                 if ((payload) != null)
                 {
                     if ((payload != null))
-                        return (FileAndLines)(payload).ptrvalue;
+                        return ((FileAndLines)(payload).ptrvalue);
                 }
             }
             FileAndLines lines = new FileAndLines(file);

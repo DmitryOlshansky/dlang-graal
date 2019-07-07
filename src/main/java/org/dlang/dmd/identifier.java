@@ -173,7 +173,7 @@ public class identifier {
 
         public static Identifier idPool(ByteSlice s) {
             StringValue sv = stringtable.update(s);
-            Identifier id = (Identifier)(sv).ptrvalue;
+            Identifier id = ((Identifier)(sv).ptrvalue);
             if (id == null)
             {
                 id = new Identifier((sv).asString(), 120);
@@ -223,7 +223,7 @@ public class identifier {
             StringValue sv = stringtable.lookup(s);
             if (sv == null)
                 return null;
-            return (Identifier)(sv).ptrvalue;
+            return ((Identifier)(sv).ptrvalue);
         }
 
         public static void initTable() {

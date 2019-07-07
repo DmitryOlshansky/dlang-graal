@@ -230,7 +230,7 @@ public class parse {
             this.scanloc = loc.copy();
             if (!writeMixin(input, this.scanloc) && (loc.filename != null))
             {
-                BytePtr filename = pcopy((BytePtr)Mem.xmalloc(strlen(loc.filename) + 7 + 12 + 1));
+                BytePtr filename = pcopy(((BytePtr)Mem.xmalloc(strlen(loc.filename) + 7 + 12 + 1)));
                 sprintf(filename, new BytePtr("%s-mixin-%d"), loc.filename, loc.linnum);
                 this.scanloc.filename = pcopy(filename);
             }
@@ -260,7 +260,7 @@ public class parse {
                         case 174:
                             if (isdeprecated)
                                 this.error(new BytePtr("there is only one deprecation attribute allowed for module declaration"));
-                            expr(isdeprecated = true);
+                            isdeprecated = true;
                             this.nextToken();
                             if (((this.token.value & 0xFF) == 1))
                             {
@@ -894,13 +894,13 @@ public class parse {
                                         else
                                             this.error(new BytePtr("redundant alignment attribute `align`"));
                                     }
-                                    expr((pAttrs).setAlignment = true);
+                                    (pAttrs).setAlignment = true;
                                     (pAttrs).ealign = e_1;
                                     a = this.parseBlock(pLastDecl, pAttrs);
                                     if ((pAttrs).setAlignment)
                                     {
                                         s = new ASTBase.AlignDeclaration(attrLoc, (pAttrs).ealign, a);
-                                        expr((pAttrs).setAlignment = false);
+                                        (pAttrs).setAlignment = false;
                                         (pAttrs).ealign = null;
                                     }
                                     break;
@@ -1117,7 +1117,7 @@ public class parse {
             {
                 OutBuffer buf = new OutBuffer();
                 try {
-                    expr(ASTBase.stcToBuffer(buf, stc));
+                    ASTBase.stcToBuffer(buf, stc);
                     this.error(new BytePtr("redundant attribute `%s`"), buf.peekChars());
                     return storageClass | stc;
                 }
@@ -1794,7 +1794,7 @@ public class parse {
 
         public  int parseLinkage(Ptr<DArray<Identifier>> pidents, Ptr<DArray<ASTBase.Expression>> pIdentExps, IntRef cppmangle, Ref<Boolean> cppMangleOnly) {
             cppmangle.value = CPPMANGLE.def;
-            expr(cppMangleOnly.value = false);
+            cppMangleOnly.value = false;
             DArray<Identifier> idents = null;
             DArray<ASTBase.Expression> identExps = null;
             cppmangle.value = CPPMANGLE.def;
@@ -1851,7 +1851,7 @@ public class parse {
                             }
                             else
                             {
-                                expr(cppMangleOnly.value = true);
+                                cppMangleOnly.value = true;
                                 identExps = new DArray<ASTBase.Expression>();
                                 for (; 1 != 0;){
                                     (identExps).push(this.parseCondExp());
@@ -2101,7 +2101,7 @@ public class parse {
                 {
                     OutBuffer buf = new OutBuffer();
                     try {
-                        expr(ASTBase.stcToBuffer(buf, modStc));
+                        ASTBase.stcToBuffer(buf, modStc);
                         this.error(loc, new BytePtr("static constructor cannot be `%s`"), buf.peekChars());
                     }
                     finally {
@@ -2134,7 +2134,7 @@ public class parse {
                 {
                     OutBuffer buf = new OutBuffer();
                     try {
-                        expr(ASTBase.stcToBuffer(buf, modStc));
+                        ASTBase.stcToBuffer(buf, modStc);
                         this.error(loc, new BytePtr("static destructor cannot be `%s`"), buf.peekChars());
                     }
                     finally {
@@ -2172,7 +2172,7 @@ public class parse {
                     {
                         OutBuffer buf = new OutBuffer();
                         try {
-                            expr(ASTBase.stcToBuffer(buf, modStc));
+                            ASTBase.stcToBuffer(buf, modStc);
                             this.error(loc, new BytePtr("shared static constructor cannot be `%s`"), buf.peekChars());
                         }
                         finally {
@@ -2207,7 +2207,7 @@ public class parse {
                     {
                         OutBuffer buf = new OutBuffer();
                         try {
-                            expr(ASTBase.stcToBuffer(buf, modStc));
+                            ASTBase.stcToBuffer(buf, modStc);
                             this.error(loc, new BytePtr("shared static destructor cannot be `%s`"), buf.peekChars());
                         }
                         finally {
@@ -2281,7 +2281,7 @@ public class parse {
                 int len = ((endPtr.value.minus(begPtr)));
                 if ((len > 0))
                 {
-                    docline = pcopy(((BytePtr)Mem.xmalloc(len + 2)));
+                    docline = pcopy((((BytePtr)Mem.xmalloc(len + 2))));
                     memcpy((BytePtr)(docline), (begPtr), len);
                     docline.set(len, (byte)10);
                     docline.set((len + 1), (byte)0);
@@ -2569,7 +2569,7 @@ public class parse {
                                                 {
                                                     OutBuffer buf = new OutBuffer();
                                                     try {
-                                                        expr(ASTBase.stcToBuffer(buf, _stc));
+                                                        ASTBase.stcToBuffer(buf, _stc);
                                                         this.error(new BytePtr("`%s` is not a valid attribute for enum members"), buf.peekChars());
                                                     }
                                                     finally {
@@ -3496,7 +3496,7 @@ public class parse {
                                 }
                                 if (sawLinkage)
                                     this.error(new BytePtr("redundant linkage declaration"));
-                                expr(sawLinkage = true);
+                                sawLinkage = true;
                                 Ref<DArray<Identifier>> idents = ref(null);
                                 Ref<DArray<ASTBase.Expression>> identExps = ref(null);
                                 IntRef cppmangle = ref(CPPMANGLE.def);
@@ -3513,7 +3513,7 @@ public class parse {
                                 continue L_outer11;
                             case 163:
                                 this.nextToken();
-                                expr(setAlignment.value = true);
+                                setAlignment.value = true;
                                 if (((this.token.value & 0xFF) == 1))
                                 {
                                     this.nextToken();
@@ -3570,11 +3570,11 @@ public class parse {
                             public Void invoke(){
                                 if (hasParsedAttributes.value)
                                     return null;
-                                expr(hasParsedAttributes.value = true);
+                                hasParsedAttributes.value = true;
                                 udas.value = null;
                                 storage_class.value = 0L;
                                 link.value = linkage;
-                                expr(setAlignment.value = false);
+                                setAlignment.value = false;
                                 ealign.value = null;
                                 parseStorageClasses(storage_class, link, setAlignment, ealign, udas);
                             }
@@ -3596,7 +3596,7 @@ public class parse {
                             parseAttributes.invoke();
                             if (udas.value != null)
                                 this.error(new BytePtr("user-defined attributes not allowed for `alias` declarations"));
-                            expr(attributesAppended = true);
+                            attributesAppended = true;
                             storage_class.value = this.appendStorageClass(storage_class.value, funcStc);
                             ASTBase.Type tf = new ASTBase.TypeFunction(pl, tret, link.value, storage_class.value);
                             v = new ASTBase.AliasDeclaration(loc, ident, tf);
@@ -3970,7 +3970,7 @@ public class parse {
                                     {
                                         OutBuffer buf = new OutBuffer();
                                         try {
-                                            expr(ASTBase.stcToBuffer(buf, modStc));
+                                            ASTBase.stcToBuffer(buf, modStc);
                                             this.error(new BytePtr("function literal cannot be `%s`"), buf.peekChars());
                                         }
                                         finally {
@@ -4076,12 +4076,12 @@ public class parse {
                                 this.check(TOK.rightParentheses);
                                 e = new ASTBase.AssertExp(loc, e, msg);
                                 (f.frequires).push(new ASTBase.ExpStatement(loc, e));
-                                expr(requireDo = false);
+                                requireDo = false;
                             }
                             else
                             {
                                 (f.frequires).push(this.parseStatement(6, null, null));
-                                expr(requireDo = true);
+                                requireDo = true;
                             }
                             /*goto L1*/continue L1;
                         case 176:
@@ -4120,14 +4120,14 @@ public class parse {
                                     this.check(TOK.rightParentheses);
                                     e_1 = new ASTBase.AssertExp(loc_1, e_1, msg_1);
                                     (f.fensures).push(new ASTBase.Ensure(id, new ASTBase.ExpStatement(loc_1, e_1)));
-                                    expr(requireDo = false);
-                                    /*goto L1*/throw Dispatch0.INSTANCE;
+                                    requireDo = false;
+                                    /*goto L1*/continue L1;
                                 }
                                 this.check(TOK.rightParentheses);
                             }
                             (f.fensures).push(new ASTBase.Ensure(id, this.parseStatement(6, null, null)));
-                            expr(requireDo = true);
-                            /*goto L1*/throw Dispatch0.INSTANCE;
+                            requireDo = true;
+                            /*goto L1*/continue L1;
                         case 9:
                             if (!literal)
                             {
@@ -4714,7 +4714,7 @@ public class parse {
                             if (((this.peekNext() & 0xFF) == 188))
                             {
                                 this.nextToken();
-                                expr(isfinal = true);
+                                isfinal = true;
                                 /*goto Lswitch*/{ __dispatch27 = -4; continue dispatched_27; }
                             }
                             /*goto Ldeclaration*/{ __dispatch27 = -1; continue dispatched_27; }
@@ -5146,7 +5146,7 @@ public class parse {
                             s = new ASTBase.PragmaStatement(loc, ident_1, args, _body_3);
                             break;
                         case 188:
-                            expr(isfinal = false);
+                            isfinal = false;
                             /*goto Lswitch*/{ __dispatch27 = -4; continue dispatched_27; }
                         /*Lswitch:*/
                         case -4:
@@ -6113,7 +6113,7 @@ public class parse {
                         t.value = this.peek(t.value);
                         if (!this.isParameters(ptr(t)))
                             return false;
-                        expr(this.skipAttributes(t.value, ptr(t)));
+                        this.skipAttributes(t.value, ptr(t));
                         continue;
                     default:
                     break;
@@ -6699,7 +6699,7 @@ public class parse {
                                     int len1 = len;
                                     int len2 = this.token.len;
                                     len = len1 + len2;
-                                    BytePtr s2 = pcopy((BytePtr)Mem.xmalloc(len));
+                                    BytePtr s2 = pcopy(((BytePtr)Mem.xmalloc(len)));
                                     memcpy((BytePtr)(s2), (s_2), (len1));
                                     memcpy((BytePtr)((s2.plus(len1))), (this.token.ustring), (len2));
                                     s_2 = pcopy(s2);
@@ -7764,7 +7764,7 @@ public class parse {
             this.scanloc = loc.copy();
             if (!writeMixin(input, this.scanloc) && (loc.filename != null))
             {
-                BytePtr filename = pcopy((BytePtr)Mem.xmalloc(strlen(loc.filename) + 7 + 12 + 1));
+                BytePtr filename = pcopy(((BytePtr)Mem.xmalloc(strlen(loc.filename) + 7 + 12 + 1)));
                 sprintf(filename, new BytePtr("%s-mixin-%d"), loc.filename, loc.linnum);
                 this.scanloc.filename = pcopy(filename);
             }
@@ -7794,7 +7794,7 @@ public class parse {
                         case 174:
                             if (isdeprecated)
                                 this.error(new BytePtr("there is only one deprecation attribute allowed for module declaration"));
-                            expr(isdeprecated = true);
+                            isdeprecated = true;
                             this.nextToken();
                             if (((this.token.value & 0xFF) == 1))
                             {
@@ -8426,13 +8426,13 @@ public class parse {
                                         else
                                             this.error(new BytePtr("redundant alignment attribute `align`"));
                                     }
-                                    expr((pAttrs).setAlignment = true);
+                                    (pAttrs).setAlignment = true;
                                     (pAttrs).ealign = e_1;
                                     a = this.parseBlock(pLastDecl, pAttrs);
                                     if ((pAttrs).setAlignment)
                                     {
                                         s = new AlignDeclaration(attrLoc, (pAttrs).ealign, a);
-                                        expr((pAttrs).setAlignment = false);
+                                        (pAttrs).setAlignment = false;
                                         (pAttrs).ealign = null;
                                     }
                                     break;
@@ -8649,7 +8649,7 @@ public class parse {
             {
                 OutBuffer buf = new OutBuffer();
                 try {
-                    expr(stcToBuffer(buf, stc));
+                    stcToBuffer(buf, stc);
                     this.error(new BytePtr("redundant attribute `%s`"), buf.peekChars());
                     return storageClass | stc;
                 }
@@ -9326,7 +9326,7 @@ public class parse {
 
         public  int parseLinkage(Ptr<DArray<Identifier>> pidents, Ptr<DArray<Expression>> pIdentExps, IntRef cppmangle, Ref<Boolean> cppMangleOnly) {
             cppmangle.value = CPPMANGLE.def;
-            expr(cppMangleOnly.value = false);
+            cppMangleOnly.value = false;
             DArray<Identifier> idents = null;
             DArray<Expression> identExps = null;
             cppmangle.value = CPPMANGLE.def;
@@ -9383,7 +9383,7 @@ public class parse {
                             }
                             else
                             {
-                                expr(cppMangleOnly.value = true);
+                                cppMangleOnly.value = true;
                                 identExps = new DArray<Expression>();
                                 for (; 1 != 0;){
                                     (identExps).push(this.parseCondExp());
@@ -9633,7 +9633,7 @@ public class parse {
                 {
                     OutBuffer buf = new OutBuffer();
                     try {
-                        expr(stcToBuffer(buf, modStc));
+                        stcToBuffer(buf, modStc);
                         this.error(loc, new BytePtr("static constructor cannot be `%s`"), buf.peekChars());
                     }
                     finally {
@@ -9666,7 +9666,7 @@ public class parse {
                 {
                     OutBuffer buf = new OutBuffer();
                     try {
-                        expr(stcToBuffer(buf, modStc));
+                        stcToBuffer(buf, modStc);
                         this.error(loc, new BytePtr("static destructor cannot be `%s`"), buf.peekChars());
                     }
                     finally {
@@ -9704,7 +9704,7 @@ public class parse {
                     {
                         OutBuffer buf = new OutBuffer();
                         try {
-                            expr(stcToBuffer(buf, modStc));
+                            stcToBuffer(buf, modStc);
                             this.error(loc, new BytePtr("shared static constructor cannot be `%s`"), buf.peekChars());
                         }
                         finally {
@@ -9739,7 +9739,7 @@ public class parse {
                     {
                         OutBuffer buf = new OutBuffer();
                         try {
-                            expr(stcToBuffer(buf, modStc));
+                            stcToBuffer(buf, modStc);
                             this.error(loc, new BytePtr("shared static destructor cannot be `%s`"), buf.peekChars());
                         }
                         finally {
@@ -9813,7 +9813,7 @@ public class parse {
                 int len = ((endPtr.value.minus(begPtr)));
                 if ((len > 0))
                 {
-                    docline = pcopy(((BytePtr)Mem.xmalloc(len + 2)));
+                    docline = pcopy((((BytePtr)Mem.xmalloc(len + 2))));
                     memcpy((BytePtr)(docline), (begPtr), len);
                     docline.set(len, (byte)10);
                     docline.set((len + 1), (byte)0);
@@ -10098,7 +10098,7 @@ public class parse {
                                                 {
                                                     OutBuffer buf = new OutBuffer();
                                                     try {
-                                                        expr(stcToBuffer(buf, _stc));
+                                                        stcToBuffer(buf, _stc);
                                                         this.error(new BytePtr("`%s` is not a valid attribute for enum members"), buf.peekChars());
                                                     }
                                                     finally {
@@ -11025,7 +11025,7 @@ public class parse {
                                 }
                                 if (sawLinkage)
                                     this.error(new BytePtr("redundant linkage declaration"));
-                                expr(sawLinkage = true);
+                                sawLinkage = true;
                                 Ref<DArray<Identifier>> idents = ref(null);
                                 Ref<DArray<Expression>> identExps = ref(null);
                                 IntRef cppmangle = ref(CPPMANGLE.def);
@@ -11042,7 +11042,7 @@ public class parse {
                                 continue L_outer33;
                             case 163:
                                 this.nextToken();
-                                expr(setAlignment.value = true);
+                                setAlignment.value = true;
                                 if (((this.token.value & 0xFF) == 1))
                                 {
                                     this.nextToken();
@@ -11099,11 +11099,11 @@ public class parse {
                             public Void invoke(){
                                 if (hasParsedAttributes.value)
                                     return null;
-                                expr(hasParsedAttributes.value = true);
+                                hasParsedAttributes.value = true;
                                 udas.value = null;
                                 storage_class.value = 0L;
                                 link.value = linkage;
-                                expr(setAlignment.value = false);
+                                setAlignment.value = false;
                                 ealign.value = null;
                                 parseStorageClasses(storage_class, link, setAlignment, ealign, udas);
                             }
@@ -11125,7 +11125,7 @@ public class parse {
                             parseAttributes.invoke();
                             if (udas.value != null)
                                 this.error(new BytePtr("user-defined attributes not allowed for `alias` declarations"));
-                            expr(attributesAppended = true);
+                            attributesAppended = true;
                             storage_class.value = this.appendStorageClass(storage_class.value, funcStc);
                             Type tf = new TypeFunction(pl, tret, link.value, storage_class.value);
                             v = new AliasDeclaration(loc, ident, tf);
@@ -11499,7 +11499,7 @@ public class parse {
                                     {
                                         OutBuffer buf = new OutBuffer();
                                         try {
-                                            expr(stcToBuffer(buf, modStc));
+                                            stcToBuffer(buf, modStc);
                                             this.error(new BytePtr("function literal cannot be `%s`"), buf.peekChars());
                                         }
                                         finally {
@@ -11604,12 +11604,12 @@ public class parse {
                                 this.check(TOK.rightParentheses);
                                 e = new AssertExp(loc, e, msg);
                                 (f.frequires).push(new ExpStatement(loc, e));
-                                expr(requireDo = false);
+                                requireDo = false;
                             }
                             else
                             {
                                 (f.frequires).push(this.parseStatement(6, null, null));
-                                expr(requireDo = true);
+                                requireDo = true;
                             }
                             /*goto L1*/throw Dispatch0.INSTANCE;
                         case 176:
@@ -11648,13 +11648,13 @@ public class parse {
                                     this.check(TOK.rightParentheses);
                                     e_1 = new AssertExp(loc_1, e_1, msg_1);
                                     (f.fensures).push(new Ensure(id, new ExpStatement(loc_1, e_1)));
-                                    expr(requireDo = false);
+                                    requireDo = false;
                                     /*goto L1*/throw Dispatch0.INSTANCE;
                                 }
                                 this.check(TOK.rightParentheses);
                             }
                             (f.fensures).push(new Ensure(id, this.parseStatement(6, null, null)));
-                            expr(requireDo = true);
+                            requireDo = true;
                             /*goto L1*/throw Dispatch0.INSTANCE;
                         case 9:
                             if (!literal)
@@ -12238,7 +12238,7 @@ public class parse {
                             if (((this.peekNext() & 0xFF) == 188))
                             {
                                 this.nextToken();
-                                expr(isfinal = true);
+                                isfinal = true;
                                 /*goto Lswitch*/{ __dispatch82 = -4; continue dispatched_82; }
                             }
                             /*goto Ldeclaration*/{ __dispatch82 = -1; continue dispatched_82; }
@@ -12671,7 +12671,7 @@ public class parse {
                             s = new PragmaStatement(loc, ident_1, args, _body_3);
                             break;
                         case 188:
-                            expr(isfinal = false);
+                            isfinal = false;
                             /*goto Lswitch*/{ __dispatch82 = -4; continue dispatched_82; }
                         /*Lswitch:*/
                         case -4:
@@ -13637,7 +13637,7 @@ public class parse {
                         t.value = this.peek(t.value);
                         if (!this.isParameters(ptr(t)))
                             return false;
-                        expr(this.skipAttributes(t.value, ptr(t)));
+                        this.skipAttributes(t.value, ptr(t));
                         continue;
                     default:
                     break;
@@ -14222,7 +14222,7 @@ public class parse {
                                     int len1 = len;
                                     int len2 = this.token.len;
                                     len = len1 + len2;
-                                    BytePtr s2 = pcopy((BytePtr)Mem.xmalloc(len));
+                                    BytePtr s2 = pcopy(((BytePtr)Mem.xmalloc(len)));
                                     memcpy((BytePtr)(s2), (s_2), (len1));
                                     memcpy((BytePtr)((s2.plus(len1))), (this.token.ustring), (len2));
                                     s_2 = pcopy(s2);

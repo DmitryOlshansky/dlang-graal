@@ -1145,7 +1145,7 @@ public class dcast {
                                 if (tocd.isBaseOf(t1cd, ptr(offset)))
                                     /*goto Lok*/throw Dispatch0.INSTANCE;
                             }
-                            expr(hasAliasThis = true);
+                            hasAliasThis = true;
                         }
                     }
                     else if (((tob.ty & 0xFF) == ENUMTY.Tvector) && ((t1b.ty & 0xFF) != ENUMTY.Tvector))
@@ -1409,7 +1409,7 @@ public class dcast {
                     int srcSize = e.len * (e.sz & 0xFF);
                     memcpy((BytePtr)s, (se.string), srcSize);
                     memset(((BytePtr)s).plus(srcSize), 0, fullSize - srcSize);
-                    se.string = pcopy(((BytePtr)s));
+                    se.string = pcopy((((BytePtr)s)));
                 }
                 this.result = se;
                 return ;
@@ -1603,7 +1603,7 @@ public class dcast {
                         Object s = pcopy(Mem.xmalloc((dim2 + 1) * newsz));
                         memcpy((BytePtr)s, (se.string), (d * newsz));
                         memset(((BytePtr)s).plus((d * newsz)), 0, (dim2 + 1 - d) * newsz);
-                        se.string = pcopy(((BytePtr)s));
+                        se.string = pcopy((((BytePtr)s)));
                         se.len = dim2;
                     }
                 }
@@ -1859,7 +1859,7 @@ public class dcast {
             {
                 this.result = e.copy();
                 this.result.type = this.t;
-                expr(((SymOffExp)this.result).hasOverloads = false);
+                ((SymOffExp)this.result).hasOverloads = false;
                 return ;
             }
             if (e.hasOverloads && ((typeb.ty & 0xFF) == ENUMTY.Tpointer) && ((typeb.nextOf().ty & 0xFF) == ENUMTY.Tfunction) && ((tb.ty & 0xFF) == ENUMTY.Tpointer) || ((tb.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
@@ -2532,8 +2532,8 @@ public class dcast {
                     if ((tf1.purity != tf2.purity))
                         d.purity = PURE.impure;
                     assert((d.purity != PURE.fwdref));
-                    expr(d.isnothrow = tf1.isnothrow && tf2.isnothrow);
-                    expr(d.isnogc = tf1.isnogc && tf2.isnogc);
+                    d.isnothrow = tf1.isnothrow && tf2.isnothrow;
+                    d.isnogc = tf1.isnogc && tf2.isnogc;
                     if ((tf1.trust == tf2.trust))
                         d.trust = tf1.trust;
                     else if ((tf1.trust <= TRUST.system) || (tf2.trust <= TRUST.system))

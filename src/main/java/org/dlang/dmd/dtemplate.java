@@ -62,7 +62,7 @@ public class dtemplate {
             this.dedtypes = dedtypes;
             this.wm = pcopy(wm);
             this.inferStart = inferStart;
-            expr(this.ignoreAliasThis = ignoreAliasThis);
+            this.ignoreAliasThis = ignoreAliasThis;
             this.result = MATCH.nomatch;
         }
 
@@ -1247,7 +1247,7 @@ public class dtemplate {
                     TemplateParameter tp = __r1219.get(__key1220);
                     if ((pequals(e.ident, tp.ident)))
                     {
-                        expr(this.result = true);
+                        this.result = true;
                         return ;
                     }
                 }
@@ -1326,7 +1326,7 @@ public class dtemplate {
         }
 
         public  void visit(TypeExp e) {
-            expr(this.result = reliesOnTemplateParameters(e.type, this.tparams));
+            this.result = reliesOnTemplateParameters(e.type, this.tparams);
         }
 
         public  void visit(NewExp e) {
@@ -1345,7 +1345,7 @@ public class dtemplate {
                     }
                 }
             }
-            expr(this.result = reliesOnTemplateParameters(e.newtype, this.tparams));
+            this.result = reliesOnTemplateParameters(e.newtype, this.tparams);
             if (!this.result && (e.arguments != null))
             {
                 {
@@ -1362,11 +1362,11 @@ public class dtemplate {
         }
 
         public  void visit(NewAnonClassExp e) {
-            expr(this.result = true);
+            this.result = true;
         }
 
         public  void visit(FuncExp e) {
-            expr(this.result = true);
+            this.result = true;
         }
 
         public  void visit(TypeidExp e) {
@@ -1377,7 +1377,7 @@ public class dtemplate {
                 else {
                     Type ta = isType(e.obj);
                     if ((ta) != null)
-                        expr(this.result = reliesOnTemplateParameters(ta, this.tparams));
+                        this.result = reliesOnTemplateParameters(ta, this.tparams);
                 }
             }
         }
@@ -1397,7 +1397,7 @@ public class dtemplate {
                             else {
                                 Type ta = isType(oa);
                                 if ((ta) != null)
-                                    expr(this.result = reliesOnTemplateParameters(ta, this.tparams));
+                                    this.result = reliesOnTemplateParameters(ta, this.tparams);
                             }
                         }
                         if (this.result)
@@ -1408,7 +1408,7 @@ public class dtemplate {
         }
 
         public  void visit(IsExp e) {
-            expr(this.result = reliesOnTemplateParameters(e.targ, this.tparams));
+            this.result = reliesOnTemplateParameters(e.targ, this.tparams);
         }
 
         public  void visit(UnaExp e) {
@@ -1431,7 +1431,7 @@ public class dtemplate {
                             else {
                                 Type ta = isType(oa);
                                 if ((ta) != null)
-                                    expr(this.result = reliesOnTemplateParameters(ta, this.tparams));
+                                    this.result = reliesOnTemplateParameters(ta, this.tparams);
                             }
                         }
                         if (this.result)
@@ -1461,7 +1461,7 @@ public class dtemplate {
         public  void visit(CastExp e) {
             this.visit((UnaExp)e);
             if (!this.result && (e.to != null))
-                expr(this.result = reliesOnTemplateParameters(e.to, this.tparams));
+                this.result = reliesOnTemplateParameters(e.to, this.tparams);
         }
 
         public  void visit(SliceExp e) {
@@ -1764,7 +1764,7 @@ public class dtemplate {
                 {
                     Type t1 = isType(o1);
                     if ((t1) != null)
-                        hash = mixHash(hash, (int)t1.deco);
+                        hash = mixHash(hash, ((int)t1.deco));
                     else {
                         Expression e1 = getExpression(o1);
                         if ((e1) != null)
@@ -1776,7 +1776,7 @@ public class dtemplate {
                                 FuncAliasDeclaration fa1 = s1.isFuncAliasDeclaration();
                                 if (fa1 != null)
                                     s1 = fa1.toAliasFunc();
-                                hash = mixHash(hash, mixHash((int)s1.getIdent(), (int)s1.parent));
+                                hash = mixHash(hash, mixHash(((int)s1.getIdent()), ((int)s1.parent)));
                             }
                             else {
                                 Tuple u1 = isTuple(o1);
@@ -1802,9 +1802,9 @@ public class dtemplate {
                 ComplexExp ce = (ComplexExp)e;
                 return mixHash(CTFloat.hash(ce.toReal()), CTFloat.hash(ce.toImaginary()));
             case 120:
-                return (int)((IdentifierExp)e).ident;
+                return ((int)((IdentifierExp)e).ident);
             case 13:
-                return (int)((NullExp)e).type;
+                return ((int)((NullExp)e).type);
             case 121:
                 StringExp se = (StringExp)e;
                 return calcHash(se.string, se.len * (se.sz & 0xFF));
@@ -1858,12 +1858,12 @@ public class dtemplate {
                 }
                 return hash_3;
             case 26:
-                return (int)((VarExp)e).var;
+                return ((int)((VarExp)e).var);
             case 161:
-                return (int)((FuncExp)e).fd;
+                return ((int)((FuncExp)e).fd);
             default:
             assert(((e.equals).funcptr == equals));
-            return (int)e;
+            return ((int)e);
         }
     }
 
@@ -1959,9 +1959,9 @@ public class dtemplate {
             this.origParameters = parameters;
             this.constraint = constraint;
             this.members = decldefs;
-            expr(this.literal = literal);
-            expr(this.ismixin = ismixin);
-            expr(this.isstatic = true);
+            this.literal = literal;
+            this.ismixin = ismixin;
+            this.isstatic = true;
             this.protection = new Prot(Prot.Kind.undefined);
             if ((this.members != null) && (ident != null))
             {
@@ -2130,7 +2130,7 @@ public class dtemplate {
                     fd.storage_class |= 1L;
                 FuncDeclaration.HiddenParameters hiddenParams = fd.declareThis(scx, fd.isThis()).copy();
                 fd.vthis = hiddenParams.vthis;
-                expr(fd.isThis2 = hiddenParams.isThis2);
+                fd.isThis2 = hiddenParams.isThis2;
                 fd.selectorParameter = hiddenParams.selectorParameter;
             }
             Expression e = this.constraint.syntaxCopy();
@@ -2229,7 +2229,7 @@ public class dtemplate {
                             TypeFunction tf = (TypeFunction)fd.type.syntaxCopy();
                             fd = new FuncDeclaration(fd.loc, fd.endloc, fd.ident, fd.storage_class, tf);
                             fd.parent = ti;
-                            expr(fd.inferRetType = true);
+                            fd.inferRetType = true;
                             {
                                 int i = 0;
                                 for (; (i < (tf.parameterList.parameters).length);i++) {
@@ -2237,7 +2237,7 @@ public class dtemplate {
                                 }
                             }
                             tf.next = null;
-                            expr(tf.incomplete = true);
+                            tf.incomplete = true;
                             tf.fargs = fargs;
                             int olderrors = global.startGagging();
                             fd.type = typeSemantic(tf, this.loc, paramscope);
@@ -2274,7 +2274,7 @@ public class dtemplate {
                     TemplateParameter tp = (this.parameters).get(i);
                     if (tp.dependent)
                         break;
-                    RootObject p = (RootObject)tp.dummyArg();
+                    RootObject p = ((RootObject)tp.dummyArg());
                     if (p == null)
                         break;
                     (tiargs).push(p);
@@ -2430,7 +2430,7 @@ public class dtemplate {
                                     TemplateThisParameter ttp = (this.parameters).get(i).isTemplateThisParameter();
                                     if (ttp != null)
                                     {
-                                        expr(hasttp = true);
+                                        hasttp = true;
                                         Type t = new TypeIdentifier(Loc.initial, ttp.ident);
                                         int m = deduceType(tthis, paramscope, t, this.parameters, dedtypes, null, 0, false);
                                         if ((m <= MATCH.nomatch))
@@ -2812,7 +2812,7 @@ public class dtemplate {
                                                                 sco = paramscope;
                                                                 resolve(taa.index, instLoc, sco, ptr(e), ptr(t), ptr(s), false);
                                                             }
-                                                            expr(global.endGagging(errors));
+                                                            global.endGagging(errors);
                                                             if (e.value == null)
                                                             {
                                                                 /*goto Lnomatch*/throw Dispatch1.INSTANCE;
@@ -3120,7 +3120,7 @@ public class dtemplate {
                         TemplateParameter tp = (this.parameters).get(i);
                         TemplateThisParameter ttp = tp.isTemplateThisParameter();
                         if (ttp != null)
-                            expr(hasttp = true);
+                            hasttp = true;
                     }
                 }
                 if (hasttp)
@@ -3136,7 +3136,7 @@ public class dtemplate {
                     (tf.parameterList.parameters).get(i).defaultArg = null;
                 }
             }
-            expr(tf.incomplete = true);
+            tf.incomplete = true;
             if (fd.isCtorDeclaration() != null)
             {
                 (scx).flags |= 1;
@@ -3156,7 +3156,7 @@ public class dtemplate {
                 }
                 tf.next = tret;
                 if ((ad != null) && (ad.isStructDeclaration() != null))
-                    expr(tf.isref = true);
+                    tf.isref = true;
             }
             else
                 tf.next = null;
@@ -3185,7 +3185,7 @@ public class dtemplate {
 
         public  void removeInstance(TemplateInstance ti) {
             TemplateInstanceBox tibox = tibox = new TemplateInstanceBox(ti);
-            expr(this.instances.remove(tibox));
+            this.instances.remove(tibox);
         }
 
         public  TemplateDeclaration isTemplateDeclaration() {
@@ -4929,8 +4929,8 @@ public class dtemplate {
             this.name = td.ident;
             this.tiargs = tiargs;
             this.tempdecl = td;
-            expr(this.semantictiargsdone = true);
-            expr(this.havetempdecl = true);
+            this.semantictiargsdone = true;
+            this.havetempdecl = true;
             assert(this.tempdecl._scope != null);
         }
 
@@ -4970,7 +4970,7 @@ public class dtemplate {
                 if (this.inst == null)
                 {
                     this.error(new BytePtr("cannot resolve forward reference"));
-                    expr(this.errors = true);
+                    this.errors = true;
                     return this;
                 }
             }
@@ -5032,7 +5032,7 @@ public class dtemplate {
                 {
                     TemplateInstance cur = this;
                     for (; cur != null;cur = cur.tinst){
-                        expr(cur.errors = true);
+                        cur.errors = true;
                         errorSupplemental(cur.loc, format, cur.toChars());
                     }
                 }
@@ -5043,7 +5043,7 @@ public class dtemplate {
                 {
                     TemplateInstance cur = this;
                     for (; cur != null;cur = cur.tinst){
-                        expr(cur.errors = true);
+                        cur.errors = true;
                         if ((cur.tinst != null) && (cur.tempdecl != null) && (cur.tinst.tempdecl != null) && cur.tempdecl.loc.equals(cur.tinst.tempdecl.loc))
                         {
                             recursionDepth += 1;
@@ -5065,7 +5065,7 @@ public class dtemplate {
                 {
                     TemplateInstance cur = this;
                     for (; cur != null;cur = cur.tinst){
-                        expr(cur.errors = true);
+                        cur.errors = true;
                         if ((i == 3))
                             errorSupplemental(cur.loc, new BytePtr("... (%d instantiations, -v to show) ..."), n_instantiations - 6);
                         if ((i < 3) || (i >= n_instantiations - 6 + 3))
@@ -5135,7 +5135,7 @@ public class dtemplate {
         public  int toHash() {
             if (this.hash == 0)
             {
-                this.hash = (int)this.enclosing;
+                this.hash = ((int)this.enclosing);
                 this.hash += arrayObjectHash(this.tdtypes);
                 this.hash += ((this.hash == 0) ? 1 : 0);
             }
@@ -5463,7 +5463,7 @@ public class dtemplate {
                             }
                             if (((ea.value.op & 0xFF) == 127))
                             {
-                                expr(err = true);
+                                err = true;
                                 continue L_outer20;
                             }
                             tiargs.set(j, ea.value);
@@ -5479,7 +5479,7 @@ public class dtemplate {
                             /*Ldsym:*/
                                 if (sa.value.errors)
                                 {
-                                    expr(err = true);
+                                    err = true;
                                     continue L_outer20;
                                 }
                                 TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
@@ -5509,7 +5509,7 @@ public class dtemplate {
                                 }
                                 FuncDeclaration fd = sa.value.isFuncDeclaration();
                                 if (fd != null)
-                                    expr(fd.functionSemantic());
+                                    fd.functionSemantic();
                             }
                             if (((ea.value.op & 0xFF) == 161))
                             {
@@ -5530,7 +5530,7 @@ public class dtemplate {
                             /*Ldsym:*/
                                 if (sa.value.errors)
                                 {
-                                    expr(err = true);
+                                    err = true;
                                     continue L_outer20;
                                 }
                                 TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
@@ -5560,7 +5560,7 @@ public class dtemplate {
                                 }
                                 FuncDeclaration fd = sa.value.isFuncDeclaration();
                                 if (fd != null)
-                                    expr(fd.functionSemantic());
+                                    fd.functionSemantic();
                             }
                             if (((ea.value.op & 0xFF) == 36))
                             {
@@ -5569,7 +5569,7 @@ public class dtemplate {
                             /*Ldsym:*/
                                 if (sa.value.errors)
                                 {
-                                    expr(err = true);
+                                    err = true;
                                     continue L_outer20;
                                 }
                                 TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
@@ -5599,7 +5599,7 @@ public class dtemplate {
                                 }
                                 FuncDeclaration fd = sa.value.isFuncDeclaration();
                                 if (fd != null)
-                                    expr(fd.functionSemantic());
+                                    fd.functionSemantic();
                             }
                             if (((ea.value.op & 0xFF) == 37) && ((flags & 1) == 0))
                             {
@@ -5608,7 +5608,7 @@ public class dtemplate {
                             /*Ldsym:*/
                                 if (sa.value.errors)
                                 {
-                                    expr(err = true);
+                                    err = true;
                                     continue L_outer20;
                                 }
                                 TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
@@ -5638,14 +5638,14 @@ public class dtemplate {
                                 }
                                 FuncDeclaration fd = sa.value.isFuncDeclaration();
                                 if (fd != null)
-                                    expr(fd.functionSemantic());
+                                    fd.functionSemantic();
                             }
                         if (sa.value != null)
                             /*goto Ldsym*//*unrolled goto*/
                         /*Ldsym:*/
                             if (sa.value.errors)
                             {
-                                expr(err = true);
+                                err = true;
                                 continue L_outer20;
                             }
                             TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
@@ -5675,7 +5675,7 @@ public class dtemplate {
                             }
                             FuncDeclaration fd = sa.value.isFuncDeclaration();
                             if (fd != null)
-                                expr(fd.functionSemantic());
+                                fd.functionSemantic();
                         if ((ta.value == null))
                         {
                             assert(global.errors != 0);
@@ -5706,7 +5706,7 @@ public class dtemplate {
                         }
                         if (((ta.value.ty & 0xFF) == ENUMTY.Terror))
                         {
-                            expr(err = true);
+                            err = true;
                             continue L_outer20;
                         }
                         tiargs.set(j, ta.value.merge2());
@@ -5760,7 +5760,7 @@ public class dtemplate {
                         }
                         if (((ea.value.op & 0xFF) == 127))
                         {
-                            expr(err = true);
+                            err = true;
                             continue L_outer20;
                         }
                         tiargs.set(j, ea.value);
@@ -5776,7 +5776,7 @@ public class dtemplate {
                         /*Ldsym:*/
                             if (sa.value.errors)
                             {
-                                expr(err = true);
+                                err = true;
                                 continue L_outer20;
                             }
                             TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
@@ -5806,7 +5806,7 @@ public class dtemplate {
                             }
                             FuncDeclaration fd = sa.value.isFuncDeclaration();
                             if (fd != null)
-                                expr(fd.functionSemantic());
+                                fd.functionSemantic();
                         }
                         if (((ea.value.op & 0xFF) == 161))
                         {
@@ -5827,7 +5827,7 @@ public class dtemplate {
                         /*Ldsym:*/
                             if (sa.value.errors)
                             {
-                                expr(err = true);
+                                err = true;
                                 continue L_outer20;
                             }
                             TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
@@ -5857,7 +5857,7 @@ public class dtemplate {
                             }
                             FuncDeclaration fd = sa.value.isFuncDeclaration();
                             if (fd != null)
-                                expr(fd.functionSemantic());
+                                fd.functionSemantic();
                         }
                         if (((ea.value.op & 0xFF) == 36))
                         {
@@ -5866,7 +5866,7 @@ public class dtemplate {
                         /*Ldsym:*/
                             if (sa.value.errors)
                             {
-                                expr(err = true);
+                                err = true;
                                 continue L_outer20;
                             }
                             TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
@@ -5896,7 +5896,7 @@ public class dtemplate {
                             }
                             FuncDeclaration fd = sa.value.isFuncDeclaration();
                             if (fd != null)
-                                expr(fd.functionSemantic());
+                                fd.functionSemantic();
                         }
                         if (((ea.value.op & 0xFF) == 37) && ((flags & 1) == 0))
                         {
@@ -5905,7 +5905,7 @@ public class dtemplate {
                         /*Ldsym:*/
                             if (sa.value.errors)
                             {
-                                expr(err = true);
+                                err = true;
                                 continue L_outer20;
                             }
                             TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
@@ -5935,7 +5935,7 @@ public class dtemplate {
                             }
                             FuncDeclaration fd = sa.value.isFuncDeclaration();
                             if (fd != null)
-                                expr(fd.functionSemantic());
+                                fd.functionSemantic();
                         }
                     }
                     else if (sa.value != null)
@@ -5943,7 +5943,7 @@ public class dtemplate {
                     /*Ldsym:*/
                         if (sa.value.errors)
                         {
-                            expr(err = true);
+                            err = true;
                             continue L_outer20;
                         }
                         TupleDeclaration d = sa.value.toAlias().isTupleDeclaration();
@@ -5973,7 +5973,7 @@ public class dtemplate {
                         }
                         FuncDeclaration fd = sa.value.isFuncDeclaration();
                         if (fd != null)
-                            expr(fd.functionSemantic());
+                            fd.functionSemantic();
                     }
                     else if (isParameter(o) != null)
                     {
@@ -5992,7 +5992,7 @@ public class dtemplate {
                 return true;
             if (semanticTiargs(this.loc, sc, this.tiargs, 0))
             {
-                expr(this.semantictiargsdone = true);
+                this.semantictiargsdone = true;
                 return true;
             }
             return false;
@@ -6268,7 +6268,7 @@ public class dtemplate {
                         this.semanticRun = PASS.semanticdone;
                         this.inst = this;
                     }
-                    expr(this.errors = true);
+                    this.errors = true;
                 }
                 return false;
             }
@@ -6341,7 +6341,7 @@ public class dtemplate {
                                             }
                                         }
                                         this.error(new BytePtr("`%s` is nested in both `%s` and `%s`"), this.toChars(), this.enclosing.toChars(), dparent.toChars());
-                                        expr(this.errors = true);
+                                        this.errors = true;
                                     }
                                 }
                                 catch(Dispatch0 __d){}
@@ -6394,7 +6394,7 @@ public class dtemplate {
                                             }
                                         }
                                         this.error(new BytePtr("`%s` is nested in both `%s` and `%s`"), this.toChars(), this.enclosing.toChars(), dparent.toChars());
-                                        expr(this.errors = true);
+                                        this.errors = true;
                                     }
                                 }
                                 catch(Dispatch0 __d){}
@@ -6450,7 +6450,7 @@ public class dtemplate {
                                             }
                                         }
                                         this.error(new BytePtr("`%s` is nested in both `%s` and `%s`"), this.toChars(), this.enclosing.toChars(), dparent.toChars());
-                                        expr(this.errors = true);
+                                        this.errors = true;
                                     }
                                 }
                                 catch(Dispatch0 __d){}
@@ -6461,7 +6461,7 @@ public class dtemplate {
                         if (((ea.op & 0xFF) != 135) && ((ea.op & 0xFF) != 140) && ((ea.op & 0xFF) != 147) && ((ea.op & 0xFF) != 13) && ((ea.op & 0xFF) != 121) && ((ea.op & 0xFF) != 47) && ((ea.op & 0xFF) != 48) && ((ea.op & 0xFF) != 49))
                         {
                             ea.error(new BytePtr("expression `%s` is not a valid template value argument"), ea.toChars());
-                            expr(this.errors = true);
+                            this.errors = true;
                         }
                     }
                     else if (sa != null)
@@ -6507,7 +6507,7 @@ public class dtemplate {
                                         }
                                     }
                                     this.error(new BytePtr("`%s` is nested in both `%s` and `%s`"), this.toChars(), this.enclosing.toChars(), dparent.toChars());
-                                    expr(this.errors = true);
+                                    this.errors = true;
                                 }
                             }
                             catch(Dispatch0 __d){}
@@ -6996,9 +6996,9 @@ public class dtemplate {
         public  boolean opEquals(TemplateInstanceBox s) {
             boolean res = null;
             if ((this.ti.inst != null) && (s.ti.inst != null))
-                expr(res = this.ti == s.ti);
+                res = this.ti == s.ti;
             else
-                expr(res = s.ti.equalsx(this.ti));
+                res = s.ti.equalsx(this.ti);
             return res;
         }
 

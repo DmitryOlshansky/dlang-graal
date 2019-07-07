@@ -64,14 +64,14 @@ public class dversion {
                 if (m == null)
                 {
                     this.error(new BytePtr("declaration must be at module level"));
-                    expr(this.errors = true);
+                    this.errors = true;
                 }
                 else
                 {
                     if (findCondition(m.debugidsNot, this.ident))
                     {
                         this.error(new BytePtr("defined after use"));
-                        expr(this.errors = true);
+                        this.errors = true;
                     }
                     if (m.debugids == null)
                         m.debugids = new DArray<Identifier>();
@@ -83,7 +83,7 @@ public class dversion {
                 if (m == null)
                 {
                     this.error(new BytePtr("level declaration must be at module level"));
-                    expr(this.errors = true);
+                    this.errors = true;
                 }
                 else
                     m.debuglevel = this.level;
@@ -162,14 +162,14 @@ public class dversion {
                 if (m == null)
                 {
                     this.error(new BytePtr("declaration must be at module level"));
-                    expr(this.errors = true);
+                    this.errors = true;
                 }
                 else
                 {
                     if (findCondition(m.versionidsNot, this.ident))
                     {
                         this.error(new BytePtr("defined after use"));
-                        expr(this.errors = true);
+                        this.errors = true;
                     }
                     if (m.versionids == null)
                         m.versionids = new DArray<Identifier>();
@@ -181,7 +181,7 @@ public class dversion {
                 if (m == null)
                 {
                     this.error(new BytePtr("level declaration must be at module level"));
-                    expr(this.errors = true);
+                    this.errors = true;
                 }
                 else
                     m.versionlevel = this.level;

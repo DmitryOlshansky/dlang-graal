@@ -164,7 +164,7 @@ public class dimport {
         public  void importAll(Scope sc) {
             if (this.mod != null)
                 return ;
-            expr(this.load(sc));
+            this.load(sc);
             if (this.mod == null)
                 return ;
             this.mod.importAll(null);
@@ -236,7 +236,7 @@ public class dimport {
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if (this.pkg == null)
             {
-                expr(this.load(null));
+                this.load(null);
                 this.mod.importAll(null);
                 dsymbolSemantic(this.mod, null);
             }

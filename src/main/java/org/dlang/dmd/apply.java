@@ -38,7 +38,7 @@ public class apply {
             {
                 int i = 0;
                 for (; (i < (e).length) && !this.stop;i++) {
-                    expr(this.doCond((e).get(i)));
+                    this.doCond((e).get(i));
                 }
             }
             return this.stop;
@@ -46,12 +46,12 @@ public class apply {
 
         public  boolean applyTo(Expression e) {
             e.accept(this.v);
-            expr(this.stop = this.v.stop);
+            this.stop = this.v.stop;
             return true;
         }
 
         public  void visit(Expression e) {
-            expr(this.applyTo(e));
+            this.applyTo(e);
         }
 
         public  void visit(NewExp e) {

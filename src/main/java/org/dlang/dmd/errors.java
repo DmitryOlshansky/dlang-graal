@@ -173,7 +173,7 @@ public class errors {
     }
 
     public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2) {
-        Console con = (Console)global.console;
+        Console con = ((Console)global.console);
         BytePtr p = pcopy(loc.toChars(global.params.showColumns));
         if (con != null)
             (con).setColorBright(true);
@@ -337,7 +337,7 @@ public class errors {
                     case 96:
                         if (inBacktick)
                         {
-                            expr(inBacktick = false);
+                            inBacktick = false;
                             OutBuffer codebuf = new OutBuffer();
                             try {
                                 codebuf.write((toBytePtr((buf).peekSlice()).plus(iCodeStart).plus(1)), i - (iCodeStart + 1));
@@ -353,7 +353,7 @@ public class errors {
                             finally {
                             }
                         }
-                        expr(inBacktick = true);
+                        inBacktick = true;
                         iCodeStart = i;
                         break;
                     default:
@@ -444,7 +444,7 @@ public class errors {
         res.writeByte(0);
         (buf).setsize(0);
         (buf).write(res);
-        expr(global.endGagging(gaggedErrorsSave));
+        global.endGagging(gaggedErrorsSave);
         errors.colorHighlightCodenested -= 1;
     }
 
@@ -460,18 +460,18 @@ public class errors {
                     if (((color & 0xFF) == 0))
                     {
                         (con).resetColor();
-                        expr(colors = false);
+                        colors = false;
                     }
                     else if (((color & 0xFF) == Color.white))
                     {
                         (con).resetColor();
                         (con).setColorBright(true);
-                        expr(colors = true);
+                        colors = true;
                     }
                     else
                     {
                         (con).setColor((int)color);
-                        expr(colors = true);
+                        colors = true;
                     }
                 }
                 else

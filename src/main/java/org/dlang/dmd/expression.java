@@ -824,7 +824,7 @@ public class expression {
         }
 
         public  Expression exp() {
-            return (Expression)this.u;
+            return ((Expression)this.u);
         }
 
         public static class __AnonStruct__u
@@ -1360,7 +1360,7 @@ public class expression {
                         if (((sc).flags & 256) != 0 ? ff.isPureBypassingInference() >= PURE.weak : ff.setImpure())
                         {
                             this.error(new BytePtr("`pure` %s `%s` cannot access mutable static data `%s`"), ff.kind(), ff.toPrettyChars(false), v.toChars());
-                            expr(err = true);
+                            err = true;
                             break;
                         }
                         if (ff.isInstantiated() != null)
@@ -1401,7 +1401,7 @@ public class expression {
                                         MODMatchToBuffer(ffbuf, ff.type.mod, v.type.mod);
                                         MODMatchToBuffer(vbuf, v.type.mod, ff.type.mod);
                                         this.error(new BytePtr("%s%s `%s` cannot access %sdata `%s`"), ffbuf.peekChars(), ff.kind(), ff.toPrettyChars(false), vbuf.peekChars(), v.toChars());
-                                        expr(err = true);
+                                        err = true;
                                         break;
                                     }
                                     finally {
@@ -1421,7 +1421,7 @@ public class expression {
                 if ((sc).func.setUnsafe())
                 {
                     this.error(new BytePtr("`@safe` %s `%s` cannot access `__gshared` data `%s`"), (sc).func.kind(), (sc).func.toChars(), v.toChars());
-                    expr(err = true);
+                    err = true;
                 }
             }
             return err;
@@ -1487,9 +1487,9 @@ public class expression {
                     {
                         if (sd.postblit.checkDisabled(this.loc, sc, false))
                             return true;
-                        expr(this.checkPurity(sc, sd.postblit));
-                        expr(this.checkSafety(sc, sd.postblit));
-                        expr(this.checkNogc(sc, sd.postblit));
+                        this.checkPurity(sc, sd.postblit);
+                        this.checkSafety(sc, sd.postblit);
+                        this.checkNogc(sc, sd.postblit);
                         return false;
                     }
                 }
@@ -2523,7 +2523,7 @@ public class expression {
         public  DsymbolExp(Loc loc, Dsymbol s, boolean hasOverloads) {
             super(loc, TOK.dSymbol, 29);
             this.s = s;
-            expr(this.hasOverloads = hasOverloads);
+            this.hasOverloads = hasOverloads;
         }
 
         public  boolean isLvalue() {
@@ -2702,14 +2702,14 @@ public class expression {
 
         public  StringExp(Loc loc, Object string, int len) {
             super(loc, TOK.string_, 36);
-            this.string = pcopy(((BytePtr)string));
+            this.string = pcopy((((BytePtr)string)));
             this.len = len;
             this.sz = (byte)1;
         }
 
         public  StringExp(Loc loc, Object string, int len, byte postfix) {
             super(loc, TOK.string_, 36);
-            this.string = pcopy(((BytePtr)string));
+            this.string = pcopy((((BytePtr)string)));
             this.len = len;
             this.postfix = postfix;
             this.sz = (byte)1;
@@ -2987,7 +2987,7 @@ public class expression {
 
         public  ByteSlice toStringz() {
             int nbytes = this.len * (this.sz & 0xFF);
-            BytePtr s = pcopy((BytePtr)Mem.xmalloc(nbytes + (this.sz & 0xFF)));
+            BytePtr s = pcopy(((BytePtr)Mem.xmalloc(nbytes + (this.sz & 0xFF))));
             this.writeTo(s, true, 0);
             return s.slice(0,nbytes);
         }
@@ -3414,7 +3414,7 @@ public class expression {
         }
 
         public static StructLiteralExp create(Loc loc, StructDeclaration sd, Object elements, Type stype) {
-            return new StructLiteralExp(loc, sd, (DArray<Expression>)elements, stype);
+            return new StructLiteralExp(loc, sd, ((DArray<Expression>)elements), stype);
         }
 
         public  boolean equals(RootObject o) {
@@ -3490,7 +3490,7 @@ public class expression {
                             StructLiteralExp se = e.isStructLiteralExp();
                             if ((se) != null)
                             {
-                                expr(se.useStaticInit = true);
+                                se.useStaticInit = true;
                             }
                         }
                 }
@@ -3815,7 +3815,7 @@ public class expression {
             super(loc, op, size);
             assert(var != null);
             this.var = var;
-            expr(this.hasOverloads = hasOverloads);
+            this.hasOverloads = hasOverloads;
         }
 
         public  void accept(Visitor v) {
@@ -3848,7 +3848,7 @@ public class expression {
                 {
                     if (v.needThis())
                         error(loc, new BytePtr("need `this` for address of `%s`"), v.toChars());
-                    expr(hasOverloads = false);
+                    hasOverloads = false;
                 }
             }
             super(loc, TOK.symbolOffset, 44, var, hasOverloads);
@@ -3884,7 +3884,7 @@ public class expression {
     {
         public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
             if (var.isVarDeclaration() != null)
-                expr(hasOverloads = false);
+                hasOverloads = false;
             super(loc, TOK.variable, 36, var, hasOverloads);
             this.type = var.type;
         }
@@ -4192,14 +4192,14 @@ public class expression {
             boolean convertMatch = (this.type.ty & 0xFF) != (to.ty & 0xFF);
             if (this.fd.inferRetType && (tfx.next.implicitConvTo(tof.next) == MATCH.convert))
             {
-                expr(convertMatch = true);
+                convertMatch = true;
                 TypeFunction tfy = new TypeFunction(tfx.parameterList, tof.next, tfx.linkage, 0L);
                 tfy.mod = tfx.mod;
-                expr(tfy.isnothrow = tfx.isnothrow);
-                expr(tfy.isnogc = tfx.isnogc);
+                tfy.isnothrow = tfx.isnothrow;
+                tfy.isnogc = tfx.isnogc;
                 tfy.purity = tfx.purity;
-                expr(tfy.isproperty = tfx.isproperty);
-                expr(tfy.isref = tfx.isref);
+                tfy.isproperty = tfx.isproperty;
+                tfy.isref = tfx.isref;
                 tfy.iswild = tfx.iswild;
                 tfy.deco = pcopy(merge(tfy).deco);
                 tfx = tfy;
@@ -4496,7 +4496,7 @@ public class expression {
             {
                 DotIdExp edi = this.e1.isDotIdExp();
                 if ((edi) != null)
-                    expr(edi.noderef = true);
+                    edi.noderef = true;
             }
         }
 
@@ -4695,12 +4695,12 @@ public class expression {
             {
                 DotIdExp edi = this.e1.isDotIdExp();
                 if ((edi) != null)
-                    expr(edi.noderef = true);
+                    edi.noderef = true;
             }
             {
                 DotIdExp edi = this.e2.isDotIdExp();
                 if ((edi) != null)
-                    expr(edi.noderef = true);
+                    edi.noderef = true;
             }
         }
 
@@ -4965,10 +4965,10 @@ public class expression {
         public boolean hasOverloads;
         public  DotVarExp(Loc loc, Expression e, Declaration var, boolean hasOverloads) {
             if (var.isVarDeclaration() != null)
-                expr(hasOverloads = false);
+                hasOverloads = false;
             super(loc, TOK.dotVariable, 37, e);
             this.var = var;
-            expr(this.hasOverloads = hasOverloads);
+            this.hasOverloads = hasOverloads;
         }
 
         public  int checkModifiable(Scope sc, int flag) {
@@ -4994,7 +4994,7 @@ public class expression {
                                         if (ts.sym.noDefaultCtor)
                                         {
                                             int modifyLevel = v.checkModify(this.loc, sc, dve.e1, flag);
-                                            expr(v.ctorinit = false);
+                                            v.ctorinit = false;
                                             if ((modifyLevel == Modifiable.initialization))
                                                 return Modifiable.yes;
                                             return modifyLevel;
@@ -5033,7 +5033,7 @@ public class expression {
                                     {
                                         if (((sc).ctorflow.fieldinit.get(i).csx & 1) == 0)
                                         {
-                                            expr(modifyFieldVar(this.loc, sc, vd, this.e1));
+                                            modifyFieldVar(this.loc, sc, vd, this.e1);
                                         }
                                         break;
                                     }
@@ -5147,7 +5147,7 @@ public class expression {
         public  DelegateExp(Loc loc, Expression e, FuncDeclaration f, boolean hasOverloads, VarDeclaration vthis2) {
             super(loc, TOK.delegate_, 44, e);
             this.func = f;
-            expr(this.hasOverloads = hasOverloads);
+            this.hasOverloads = hasOverloads;
             this.vthis2 = vthis2;
         }
 
@@ -5343,7 +5343,7 @@ public class expression {
                     if ((ve) != null)
                     {
                         if (hasOverloads != null)
-                            expr(hasOverloads.set(0, ve.hasOverloads));
+                            hasOverloads.set(0, ve.hasOverloads);
                         return ve.var.isFuncDeclaration();
                     }
                 }
@@ -5352,7 +5352,7 @@ public class expression {
                     if ((dve) != null)
                     {
                         if (hasOverloads != null)
-                            expr(hasOverloads.set(0, dve.hasOverloads));
+                            hasOverloads.set(0, dve.hasOverloads);
                         return dve.var.isFuncDeclaration();
                     }
                 }
@@ -5364,7 +5364,7 @@ public class expression {
                     if ((soe) != null)
                     {
                         if (hasOverloads != null)
-                            expr(hasOverloads.set(0, soe.hasOverloads));
+                            hasOverloads.set(0, soe.hasOverloads);
                         return soe.var.isFuncDeclaration();
                     }
                 }
@@ -5373,7 +5373,7 @@ public class expression {
                     if ((dge) != null)
                     {
                         if (hasOverloads != null)
-                            expr(hasOverloads.set(0, dge.hasOverloads));
+                            hasOverloads.set(0, dge.hasOverloads);
                         return dge.func.isFuncDeclaration();
                     }
                 }
@@ -5577,7 +5577,7 @@ public class expression {
         public boolean isRAII;
         public  DeleteExp(Loc loc, Expression e, boolean isRAII) {
             super(loc, TOK.delete_, 33, e);
-            expr(this.isRAII = isRAII);
+            this.isRAII = isRAII;
         }
 
         public  Expression toBoolean(Scope sc) {
@@ -5930,7 +5930,7 @@ public class expression {
         public boolean allowCommaExp;
         public  CommaExp(Loc loc, Expression e1, Expression e2, boolean generated) {
             super(loc, TOK.comma, 42, e1, e2);
-            expr(this.allowCommaExp = (this.isGenerated = generated));
+            this.allowCommaExp = (this.isGenerated = generated);
         }
 
         public  int checkModifiable(Scope sc, int flag) {
@@ -5978,7 +5978,7 @@ public class expression {
                 {
                     CommaExp ce = exp.isCommaExp();
                     if ((ce) != null)
-                        expr(ce.allowCommaExp = true);
+                        ce.allowCommaExp = true;
                 }
         }
 
@@ -6167,7 +6167,7 @@ public class expression {
                     this.error(new BytePtr("associative arrays can only be assigned values with immutable keys, not `%s`"), this.e2.type.toChars());
                     return new ErrorExp();
                 }
-                expr(this.modifiable = true);
+                this.modifiable = true;
                 {
                     IndexExp ie = this.e1.isIndexExp();
                     if ((ie) != null)
@@ -7386,10 +7386,10 @@ public class expression {
 
         public  void hookDtors(Scope sc) {
             DtorVisitor v = new DtorVisitor(sc, this);
-            expr(v.isThen = true);
-            expr(walkPostorder(this.e1, v));
-            expr(v.isThen = false);
-            expr(walkPostorder(this.e2, v));
+            v.isThen = true;
+            walkPostorder(this.e1, v);
+            v.isThen = false;
+            walkPostorder(this.e2, v);
         }
 
         public  void accept(Visitor v) {

@@ -91,7 +91,7 @@ public class clone {
                     f = resolveFuncCall(ad.loc, sc, assign, null, ad.type, a, FuncResolveFlag.quiet);
                 }
                 sc = (sc).pop();
-                expr(global.endGagging(errors));
+                global.endGagging(errors);
                 if (f != null)
                 {
                     if (f.errors)
@@ -150,7 +150,7 @@ public class clone {
             FuncDeclaration f = hasIdentityOpAssign(sd, sc);
             if ((f) != null)
             {
-                expr(sd.hasIdentityAssign = true);
+                sd.hasIdentityAssign = true;
                 return f;
             }
         }
@@ -188,7 +188,7 @@ public class clone {
         TypeFunction tf = new TypeFunction(new ParameterList(fparams, VarArg.none), sd.handleType(), LINK.d, stc | 2097152L);
         FuncDeclaration fop = new FuncDeclaration(declLoc, Loc.initial, Id.assign, stc, tf);
         fop.storage_class |= 70368744177664L;
-        expr(fop.generated = true);
+        fop.generated = true;
         Expression e = null;
         if ((stc & 137438953472L) != 0)
         {
@@ -230,11 +230,11 @@ public class clone {
             ThisExp er = new ThisExp(loc);
             Statement s2 = new ReturnStatement(loc, er);
             fop.fbody = new CompoundStatement(loc, slice(new Statement[]{s1, s2}));
-            expr(tf.isreturn = true);
+            tf.isreturn = true;
         }
         (sd.members).push(fop);
         fop.addMember(sc, sd);
-        expr(sd.hasIdentityAssign = true);
+        sd.hasIdentityAssign = true;
         int errors = global.startGagging();
         Scope sc2 = (sc).push();
         (sc2).stc = 0L;
@@ -353,7 +353,7 @@ public class clone {
                             }
                         }
                         sc = (sc).pop();
-                        expr(global.endGagging(errors));
+                        global.endGagging(errors);
                         if (f != null)
                         {
                             if (f.errors)
@@ -372,7 +372,7 @@ public class clone {
     public static FuncDeclaration buildOpEquals(StructDeclaration sd, Scope sc) {
         if (hasIdentityOpEquals(sd, sc) != null)
         {
-            expr(sd.hasIdentityEquals = true);
+            sd.hasIdentityEquals = true;
         }
         return null;
     }
@@ -422,7 +422,7 @@ public class clone {
         TypeFunction tf = new TypeFunction(new ParameterList(parameters, VarArg.none), Type.tbool, LINK.d, 0L);
         Identifier id = Id.xopEquals;
         FuncDeclaration fop = new FuncDeclaration(declLoc, Loc.initial, id, 1L, tf);
-        expr(fop.generated = true);
+        fop.generated = true;
         Expression e1 = new IdentifierExp(loc, Id.p);
         Expression e2 = new IdentifierExp(loc, Id.q);
         Expression e = new EqualExp(TOK.equal, loc, e1, e2);
@@ -487,7 +487,7 @@ public class clone {
         TypeFunction tf = new TypeFunction(new ParameterList(parameters, VarArg.none), Type.tint32, LINK.d, 0L);
         Identifier id = Id.xopCmp;
         FuncDeclaration fop = new FuncDeclaration(declLoc, Loc.initial, id, 1L, tf);
-        expr(fop.generated = true);
+        fop.generated = true;
         Expression e1 = new IdentifierExp(loc, Id.p);
         Expression e2 = new IdentifierExp(loc, Id.q);
         Expression e = new CallExp(loc, new DotIdExp(loc, e2, Id.cmp), e1);
@@ -585,7 +585,7 @@ public class clone {
         TypeFunction tf = new TypeFunction(new ParameterList(parameters, VarArg.none), Type.thash_t, LINK.d, 17213423616L);
         Identifier id = Id.xtoHash;
         FuncDeclaration fop = new FuncDeclaration(declLoc, Loc.initial, id, 1L, tf);
-        expr(fop.generated = true);
+        fop.generated = true;
         BytePtr code = pcopy(new BytePtr("size_t h = 0;foreach (i, T; typeof(p.tupleof))    static if(is(T* : const(.object.Object)*))         h = h * 33 + typeid(const(.object.Object)).getHash(cast(const void*)&p.tupleof[i]);    else         h = h * 33 + typeid(T).getHash(cast(const void*)&p.tupleof[i]);return h;"));
         fop.fbody = new CompileStatement(loc, new StringExp(loc, code));
         Scope sc2 = (sc).push();
@@ -621,7 +621,7 @@ public class clone {
                     StructDeclaration sdv = ((TypeStruct)tv).sym;
                     if (sdv.dtor == null)
                         continue;
-                    expr(sdv.dtor.functionSemantic());
+                    sdv.dtor.functionSemantic();
                     stc = mergeFuncAttrs(stc, sdv.dtor);
                     if ((stc & 137438953472L) != 0)
                     {
@@ -652,8 +652,8 @@ public class clone {
                         if ((stc & 8589934592L) != 0)
                             stc = stc & -8589934593L | 17179869184L;
                         ex = new SliceExp(loc, ex, new IntegerExp(loc, 0L, Type.tsize_t), new IntegerExp(loc, (long)n, Type.tsize_t));
-                        expr(((SliceExp)ex).upperIsInBounds = true);
-                        expr(((SliceExp)ex).lowerIsLessThanUpper = true);
+                        ((SliceExp)ex).upperIsInBounds = true;
+                        ((SliceExp)ex).lowerIsLessThanUpper = true;
                         ex = new CallExp(loc, new IdentifierExp(loc, Id.__ArrayDtor), ex);
                     }
                     e = Expression.combine(ex, e);
@@ -662,7 +662,7 @@ public class clone {
             ClassDeclaration cldec = ad.isClassDeclaration();
             if ((cldec != null) && (cldec.classKind == ClassKind.cpp) && (cldec.baseClass != null) && (cldec.baseClass.primaryDtor != null))
             {
-                expr(cldec.baseClass.dtor.functionSemantic());
+                cldec.baseClass.dtor.functionSemantic();
                 stc = mergeFuncAttrs(stc, cldec.baseClass.primaryDtor);
                 if ((stc & 137438953472L) == 0)
                 {
@@ -678,7 +678,7 @@ public class clone {
             if ((e != null) || ((stc & 137438953472L) != 0))
             {
                 DtorDeclaration dd = new DtorDeclaration(declLoc, Loc.initial, stc, Id.__fieldDtor);
-                expr(dd.generated = true);
+                dd.generated = true;
                 dd.storage_class |= 70368744177664L;
                 dd.fbody = new ExpStatement(loc, e);
                 ad.dtors.shift(dd);
@@ -717,7 +717,7 @@ public class clone {
                 }
             }
             DtorDeclaration dd = new DtorDeclaration(declLoc, Loc.initial, stc, Id.__aggrDtor);
-            expr(dd.generated = true);
+            dd.generated = true;
             dd.storage_class |= 70368744177664L;
             dd.fbody = new ExpStatement(loc, e);
             (ad.members).push(dd);
@@ -753,11 +753,11 @@ public class clone {
             Loc loc = dtor.loc.copy();
             DArray<Statement> stmts = new DArray<Statement>();
             CallExp call = new CallExp(loc, dtor, null);
-            expr(call.directcall = true);
+            call.directcall = true;
             (stmts).push(new ExpStatement(loc, call));
             (stmts).push(new ReturnStatement(loc, new CastExp(loc, new ThisExp(loc), Type.tvoidptr)));
             func.fbody = new CompoundStatement(loc, stmts);
-            expr(func.generated = true);
+            func.generated = true;
         }
         Scope sc2 = (sc).push();
         (sc2).stc &= -2L;
@@ -779,9 +779,9 @@ public class clone {
         DtorDeclaration func = new DtorDeclaration(dtor.loc, dtor.loc, dtor.storage_class, Id.ticppdtor);
         func.type = ftype;
         CallExp call = new CallExp(dtor.loc, dtor, null);
-        expr(call.directcall = true);
+        call.directcall = true;
         func.fbody = new ExpStatement(dtor.loc, call);
-        expr(func.generated = true);
+        func.generated = true;
         func.storage_class |= 70368744177664L;
         Scope sc2 = (sc).push();
         (sc2).stc &= -2L;
@@ -789,7 +789,7 @@ public class clone {
         (ad.members).push(func);
         func.addMember(sc2, ad);
         dsymbolSemantic(func, sc2);
-        expr(func.functionSemantic());
+        func.functionSemantic();
         (sc2).pop();
         return func;
     }

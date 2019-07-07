@@ -31,7 +31,7 @@ public class builtin {
         {
             StringValue sv = builtins.lookup(mangle, strlen(mangle));
             if ((sv) != null)
-                return (Function3<Loc,FuncDeclaration,DArray<Expression>,Expression>)(sv).ptrvalue;
+                return ((Function3<Loc,FuncDeclaration,DArray<Expression>,Expression>)(sv).ptrvalue);
         }
         return null;
     }

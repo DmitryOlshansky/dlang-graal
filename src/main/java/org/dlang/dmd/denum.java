@@ -73,7 +73,7 @@ public class denum {
                     }
                 }
             }
-            expr(this.added = true);
+            this.added = true;
         }
 
         public  void setScope(Scope sc) {
@@ -170,13 +170,13 @@ public class denum {
                         continue;
                     if (em.errors)
                     {
-                        expr(this.errors = true);
+                        this.errors = true;
                         continue;
                     }
                     if (first)
                     {
                         pval.value.set(0, em.value());
-                        expr(first = false);
+                        first = false;
                     }
                     else
                     {
@@ -188,7 +188,7 @@ public class denum {
                         ec = ec.ctfeInterpret();
                         if (((ec.op & 0xFF) == 127))
                         {
-                            expr(this.errors = true);
+                            this.errors = true;
                             continue;
                         }
                         if (ec.toInteger() != 0)
@@ -352,10 +352,10 @@ public class denum {
             dsymbolSemantic(this, sc);
             if (this.errors)
                 return new ErrorExp();
-            expr(this.checkDisabled(loc, sc, false));
+            this.checkDisabled(loc, sc, false);
             if ((this.depdecl != null) && (this.depdecl._scope == null))
                 this.depdecl._scope = sc;
-            expr(this.checkDeprecated(loc, sc));
+            this.checkDeprecated(loc, sc);
             if (this.errors)
                 return new ErrorExp();
             Expression e = new VarExp(loc, this, true);

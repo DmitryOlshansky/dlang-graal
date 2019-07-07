@@ -83,7 +83,7 @@ public class cond {
         public boolean needExpansion = false;
         public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
             super();
-            assert(!aggrfe == null ^ !rangefe == null);
+            assert(aggrfe != null ^ rangefe != null);
             this.loc = loc.copy();
             this.aggrfe = aggrfe;
             this.rangefe = rangefe;
@@ -221,7 +221,7 @@ public class cond {
                         res.set((i), this.createTuple(aloc, tplty, e));
                     }
                 }
-                expr(this.needExpansion = true);
+                this.needExpansion = true;
             }
             if (this.rangefe != null)
             {
@@ -259,7 +259,7 @@ public class cond {
             sc = (sc).endCTFE();
             aggr = aggr.optimize(0, false);
             aggr = aggr.ctfeInterpret();
-            assert(!this.aggrfe == null ^ !this.rangefe == null);
+            assert(this.aggrfe != null ^ this.rangefe != null);
             this.aggrfe = new ForeachStatement(this.loc, TOK.foreach_, pparams.get(2), aggr, this.aggrfe != null ? this.aggrfe._body : this.rangefe._body, this.aggrfe != null ? this.aggrfe.endloc : this.rangefe.endloc);
             this.rangefe = null;
             this.lowerArrayAggregate(sc);
@@ -362,7 +362,7 @@ public class cond {
                     if (findCondition(this.mod.debugids, this.ident))
                     {
                         this.inc = Include.yes;
-                        expr(definedInModule = true);
+                        definedInModule = true;
                     }
                     else if (findCondition(global.debugids, this.ident))
                         this.inc = Include.yes;
@@ -549,7 +549,7 @@ public class cond {
                     if (findCondition(this.mod.versionids, this.ident))
                     {
                         this.inc = Include.yes;
-                        expr(definedInModule = true);
+                        definedInModule = true;
                     }
                     else if (findCondition(global.versionids, this.ident))
                         this.inc = Include.yes;

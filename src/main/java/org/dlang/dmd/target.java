@@ -272,7 +272,7 @@ public class target {
                 this.realpad = 2;
                 this.realalignsize = 4;
                 this.c_longsize = 4;
-                expr(this.twoDtorInVtable = true);
+                this.twoDtorInVtable = true;
             }
             else if (params.isOSX)
             {
@@ -280,15 +280,15 @@ public class target {
                 this.realpad = 6;
                 this.realalignsize = 16;
                 this.c_longsize = 4;
-                expr(this.twoDtorInVtable = true);
+                this.twoDtorInVtable = true;
             }
             else if (params.isWindows)
             {
                 this.realsize = 10;
                 this.realpad = 0;
                 this.realalignsize = 2;
-                expr(this.reverseCppOverloads = true);
-                expr(this.twoDtorInVtable = false);
+                this.reverseCppOverloads = true;
+                this.twoDtorInVtable = false;
                 this.c_longsize = 4;
                 if ((this.ptrsize == 4))
                 {
@@ -315,7 +315,7 @@ public class target {
             if (params.is64bit && params.isWindows)
                 this.c_long_doublesize = 8;
             this.criticalSectionSize = getCriticalSectionSize(params);
-            expr(this.cppExceptions = params.isLinux || params.isFreeBSD || params.isDragonFlyBSD || params.isOSX);
+            this.cppExceptions = params.isLinux || params.isFreeBSD || params.isDragonFlyBSD || params.isOSX;
         }
 
         public  void deinitialize() {
@@ -454,7 +454,7 @@ public class target {
             {
                 case 8:
                     case 43:
-                        expr(supported = tvec.isscalar());
+                        supported = tvec.isscalar();
                         break;
                 case 54:
                     case 55:
@@ -464,7 +464,7 @@ public class target {
                                     case 59:
                                         case 60:
                                             case 61:
-                                                expr(supported = false);
+                                                supported = false;
                                                 break;
                 case 64:
                     case 66:
@@ -472,28 +472,28 @@ public class target {
                             case 67:
                                 case 68:
                                     case 69:
-                                        expr(supported = false);
+                                        supported = false;
                                         break;
                 case 74:
                     case 76:
                         case 75:
                             case 77:
-                                expr(supported = tvec.isscalar());
+                                supported = tvec.isscalar();
                                 break;
                 case 78:
                     case 81:
                         if (tvec.isfloating() || (tvec.elementType().size(Loc.initial) == 2L) || (global.params.cpu >= CPU.sse4_1) && (tvec.elementType().size(Loc.initial) == 4L))
-                            expr(supported = true);
+                            supported = true;
                         else
-                            expr(supported = false);
+                            supported = false;
                         break;
                 case 79:
                     case 82:
-                        expr(supported = tvec.isfloating());
+                        supported = tvec.isfloating();
                         break;
                 case 80:
                     case 83:
-                        expr(supported = false);
+                        supported = false;
                         break;
                 case 84:
                     case 87:
@@ -501,17 +501,17 @@ public class target {
                             case 88:
                                 case 86:
                                     case 89:
-                                        expr(supported = tvec.isintegral());
+                                        supported = tvec.isintegral();
                                         break;
                 case 91:
-                    expr(supported = false);
+                    supported = false;
                     break;
                 case 92:
-                    expr(supported = tvec.isintegral());
+                    supported = tvec.isintegral();
                     break;
                 case 226:
                     case 227:
-                        expr(supported = false);
+                        supported = false;
                         break;
                 default:
                 throw new AssertionError("Unreachable code!");

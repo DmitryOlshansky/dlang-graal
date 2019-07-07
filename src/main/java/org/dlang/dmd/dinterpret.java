@@ -53,7 +53,7 @@ public class dinterpret {
         public  void visit(ErrorExp e) {
             if ((global.gag != 0) && ((this.ccf).func != null))
             {
-                expr(this.stop = true);
+                this.stop = true;
                 return ;
             }
             error(e.loc, new BytePtr("CTFE internal error: ErrorExp in `%s`\n"), (this.ccf).func != null ? (this.ccf).func.loc.toChars(global.params.showColumns) : (this.ccf).callingloc.toChars(global.params.showColumns));
@@ -347,7 +347,7 @@ public class dinterpret {
         }
 
         public  void endFrame() {
-            int oldframe = (int)this.frames.get(this.frames.length - 1);
+            int oldframe = ((int)this.frames.get(this.frames.length - 1));
             this.localThis = this.savedThis.get(this.savedThis.length - 1);
             this.popAll(this.framepointer);
             this.framepointer = oldframe;
@@ -394,7 +394,7 @@ public class dinterpret {
             assert(!v.isDataseg() || v.isCTFE());
             assert((v.storage_class & 2101248L) == 0);
             int oldid = v.ctfeAdrOnStack;
-            v.ctfeAdrOnStack = (int)this.savedId.get(oldid);
+            v.ctfeAdrOnStack = ((int)this.savedId.get(oldid));
             if ((v.ctfeAdrOnStack == this.values.length - 1))
             {
                 this.values.pop();
@@ -411,7 +411,7 @@ public class dinterpret {
                 int i = stackpointer;
                 for (; (i < this.values.length);i += 1){
                     VarDeclaration v = this.vars.get(i);
-                    v.ctfeAdrOnStack = (int)this.savedId.get(i);
+                    v.ctfeAdrOnStack = ((int)this.savedId.get(i));
                 }
             }
             this.values.setDim(stackpointer);
@@ -518,7 +518,7 @@ public class dinterpret {
 
         public  void onExpression(Expression e) {
             VarWalker v = new VarWalker(this);
-            expr(walkPostorder(e, v));
+            walkPostorder(e, v);
         }
 
         public CompiledCtfeFunction(){
@@ -2567,7 +2567,7 @@ public class dinterpret {
                                 }
                             }
                         }
-                        expr(sd.fill(e.loc, exps, false));
+                        sd.fill(e.loc, exps, false);
                         StructLiteralExp se = new StructLiteralExp(e.loc, sd, exps, e.newtype);
                         se.type = e.newtype;
                         se.ownedByCtfe = OwnedBy.ctfe;
@@ -2975,7 +2975,7 @@ public class dinterpret {
                     tdst = ((TypeArray)tdst).next.toBasetype();
                     if (tsrc.equivalent(tdst))
                     {
-                        expr(isBlockAssignment = true);
+                        isBlockAssignment = true;
                         break;
                     }
                 }
@@ -3761,9 +3761,9 @@ public class dinterpret {
                     RecursiveBlock rb = new RecursiveBlock(null, null, false, false, false).copy();
                     rb.istate = this.istate;
                     rb.newval = newval;
-                    expr(rb.refCopy = wantRef || cow);
-                    expr(rb.needsPostblit = (sd != null) && (sd.postblit != null) && ((e.op & 0xFF) != 96) && e.e2.isLvalue());
-                    expr(rb.needsDtor = (sd != null) && (sd.dtor != null) && ((e.op & 0xFF) == 90));
+                    rb.refCopy = wantRef || cow;
+                    rb.needsPostblit = (sd != null) && (sd.postblit != null) && ((e.op & 0xFF) != 96) && e.e2.isLvalue();
+                    rb.needsDtor = (sd != null) && (sd.dtor != null) && ((e.op & 0xFF) == 90);
                     {
                         Expression ex = rb.assignTo(existingAE, (int)lowerbound, (int)upperbound);
                         if ((ex) != null)
@@ -3938,7 +3938,7 @@ public class dinterpret {
                     NotExp ne = ex.isNotExp();
                     if ((ne) != null)
                     {
-                        expr(nott = !nott);
+                        nott = !nott;
                         ex = ne.e1;
                     }
                     else
@@ -5042,7 +5042,7 @@ public class dinterpret {
                     }
                     if (((ultimatePointee.ty & 0xFF) == ENUMTY.Tsarray) && ultimatePointee.nextOf().equivalent(ultimateSrc))
                     {
-                        expr(castToSarrayPointer = true);
+                        castToSarrayPointer = true;
                     }
                     else if (((ultimatePointee.ty & 0xFF) != ENUMTY.Tvoid) && ((ultimateSrc.ty & 0xFF) != ENUMTY.Tvoid) && !isSafePointerCast(elemtype, pointee))
                     {
@@ -5051,7 +5051,7 @@ public class dinterpret {
                         return ;
                     }
                     if (((ultimateSrc.ty & 0xFF) == ENUMTY.Tvoid))
-                        expr(castBackFromVoid = true);
+                        castBackFromVoid = true;
                 }
                 {
                     SliceExp se = e1.isSliceExp();

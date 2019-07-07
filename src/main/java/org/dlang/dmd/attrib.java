@@ -727,7 +727,7 @@ public class attrib {
         public int anonalignsize;
         public  AnonDeclaration(Loc loc, boolean isunion, DArray<Dsymbol> decl) {
             super(loc, null, decl);
-            expr(this.isunion = isunion);
+            this.isunion = isunion;
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
@@ -1020,7 +1020,7 @@ public class attrib {
         public  DArray<Dsymbol> include(Scope sc) {
             if (this.errors || this.onStack)
                 return null;
-            expr(this.onStack = true);
+            this.onStack = true;
             try {
                 if ((sc != null) && (this.condition.inc == Include.notComputed))
                 {
@@ -1043,7 +1043,7 @@ public class attrib {
                             }
                         };
                         foreachDsymbol(d, __lambda3);
-                        expr(this.addisdone = true);
+                        this.addisdone = true;
                     }
                     return d;
                 }
@@ -1053,7 +1053,7 @@ public class attrib {
                 }
             }
             finally {
-                expr(this.onStack = false);
+                this.onStack = false;
             }
         }
 
@@ -1138,7 +1138,7 @@ public class attrib {
                 assert(!this.onStack);
                 return this.cache;
             }
-            expr(this.onStack = true);
+            this.onStack = true;
             try {
                 if (this._scope != null)
                 {
@@ -1166,12 +1166,12 @@ public class attrib {
                     };
                     foreachDsymbol(d, __lambda3);
                 }
-                expr(this.cached = true);
+                this.cached = true;
                 this.cache = d;
                 return d;
             }
             finally {
-                expr(this.onStack = false);
+                this.onStack = false;
             }
         }
 
@@ -1383,7 +1383,7 @@ public class attrib {
                 if ((sc) != null)
                 {
                     this._scope = null;
-                    expr(arrayExpressionSemantic(this.atts, sc, false));
+                    arrayExpressionSemantic(this.atts, sc, false);
                 }
             }
             DArray<Expression> exps = new DArray<Expression>();

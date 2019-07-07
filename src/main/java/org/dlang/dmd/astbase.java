@@ -777,7 +777,7 @@ public class astbase {
                 }
                 this.loc = loc.copy();
                 this.endloc = endloc.copy();
-                expr(this.inferRetType = (type != null) && (type.nextOf() == null));
+                this.inferRetType = (type != null) && (type.nextOf() == null);
             }
 
             public  FuncLiteralDeclaration isFuncLiteralDeclaration() {
@@ -1484,9 +1484,9 @@ public class astbase {
                 this.parameters = parameters;
                 this.origParameters = parameters;
                 this.members = decldefs;
-                expr(this.literal = literal);
-                expr(this.ismixin = ismixin);
-                expr(this.isstatic = true);
+                this.literal = literal;
+                this.ismixin = ismixin;
+                this.isstatic = true;
                 this.protection = new Prot(Prot.Kind.undefined, null).copy();
                 if ((this.members != null) && (this.ident != null))
                 {
@@ -1554,8 +1554,8 @@ public class astbase {
                 this.loc = loc.copy();
                 this.name = td.ident;
                 this.tempdecl = td;
-                expr(this.semantictiargsdone = true);
-                expr(this.havetempdecl = true);
+                this.semantictiargsdone = true;
+                this.havetempdecl = true;
             }
 
             public  TemplateInstance isTemplateInstance() {
@@ -1766,7 +1766,7 @@ public class astbase {
             public  AnonDeclaration(Loc loc, boolean isunion, DArray<Dsymbol> decl) {
                 super(decl);
                 this.loc = loc.copy();
-                expr(this.isunion = isunion);
+                this.isunion = isunion;
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -3114,7 +3114,7 @@ public class astbase {
                 super(loc);
                 this.condition = c;
                 this._body = b;
-                expr(this.isFinal = isFinal);
+                this.isFinal = isFinal;
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -4982,17 +4982,17 @@ public class astbase {
                 if ((stc & 67108864L) != 0)
                     this.purity = PURE.fwdref;
                 if ((stc & 33554432L) != 0)
-                    expr(this.isnothrow = true);
+                    this.isnothrow = true;
                 if ((stc & 4398046511104L) != 0)
-                    expr(this.isnogc = true);
+                    this.isnogc = true;
                 if ((stc & 4294967296L) != 0)
-                    expr(this.isproperty = true);
+                    this.isproperty = true;
                 if ((stc & 2097152L) != 0)
-                    expr(this.isref = true);
+                    this.isref = true;
                 if ((stc & 17592186044416L) != 0)
-                    expr(this.isreturn = true);
+                    this.isreturn = true;
                 if ((stc & 524288L) != 0)
-                    expr(this.isscope = true);
+                    this.isscope = true;
                 this.trust = TRUST.default_;
                 if ((stc & 8589934592L) != 0)
                     this.trust = TRUST.safe;
@@ -5007,13 +5007,13 @@ public class astbase {
                 DArray<Parameter> params = Parameter.arraySyntaxCopy(this.parameterList.parameters);
                 TypeFunction t = new TypeFunction(new ParameterList(params, this.parameterList.varargs), treturn, this.linkage, 0L);
                 t.mod = this.mod;
-                expr(t.isnothrow = this.isnothrow);
-                expr(t.isnogc = this.isnogc);
+                t.isnothrow = this.isnothrow;
+                t.isnogc = this.isnogc;
                 t.purity = this.purity;
-                expr(t.isproperty = this.isproperty);
-                expr(t.isref = this.isref);
-                expr(t.isreturn = this.isreturn);
-                expr(t.isscope = this.isscope);
+                t.isproperty = this.isproperty;
+                t.isref = this.isref;
+                t.isreturn = this.isreturn;
+                t.isscope = this.isscope;
                 t.iswild = this.iswild;
                 t.trust = this.trust;
                 t.fargs = this.fargs;
@@ -5930,14 +5930,14 @@ public class astbase {
 
             public  StringExp(Loc loc, Object string, int len) {
                 super(loc, TOK.string_, 34);
-                this.string = pcopy(((BytePtr)string));
+                this.string = pcopy((((BytePtr)string)));
                 this.len = len;
                 this.sz = (byte)1;
             }
 
             public  StringExp(Loc loc, Object string, int len, byte postfix) {
                 super(loc, TOK.string_, 34);
-                this.string = pcopy(((BytePtr)string));
+                this.string = pcopy((((BytePtr)string)));
                 this.len = len;
                 this.postfix = postfix;
                 this.sz = (byte)1;
@@ -5974,7 +5974,7 @@ public class astbase {
 
             public  ByteSlice toStringz() {
                 int nbytes = this.len * (this.sz & 0xFF);
-                BytePtr s = pcopy((BytePtr)Mem.xmalloc(nbytes + (this.sz & 0xFF)));
+                BytePtr s = pcopy(((BytePtr)Mem.xmalloc(nbytes + (this.sz & 0xFF))));
                 this.writeTo(s, true, 0);
                 return s.slice(0,nbytes);
             }
@@ -6330,7 +6330,7 @@ public class astbase {
             public  DsymbolExp(Loc loc, Dsymbol s, boolean hasOverloads) {
                 super(loc, TOK.dSymbol, 29);
                 this.s = s;
-                expr(this.hasOverloads = hasOverloads);
+                this.hasOverloads = hasOverloads;
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -6389,7 +6389,7 @@ public class astbase {
                 super(loc, op, size);
                 assert(var != null);
                 this.var = var;
-                expr(this.hasOverloads = hasOverloads);
+                this.hasOverloads = hasOverloads;
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -6414,9 +6414,7 @@ public class astbase {
         public static class VarExp extends SymbolExp
         {
             public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
-                if (var.isVarDeclaration() != null)
-                    expr(hasOverloads = false);
-                super(loc, TOK.variable, 29, var, hasOverloads);
+                super(loc, TOK.variable, 29, var, var.isVarDeclaration() == null && hasOverloads);
                 this.type = var.type;
             }
 
@@ -6794,7 +6792,7 @@ public class astbase {
             public boolean isRAII;
             public  DeleteExp(Loc loc, Expression e, boolean isRAII) {
                 super(loc, TOK.delete_, 29, e);
-                expr(this.isRAII = isRAII);
+                this.isRAII = isRAII;
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -7197,7 +7195,7 @@ public class astbase {
             public boolean allowCommaExp;
             public  CommaExp(Loc loc, Expression e1, Expression e2, boolean generated) {
                 super(loc, TOK.comma, 34, e1, e2);
-                expr(this.allowCommaExp = (this.isGenerated = generated));
+                this.allowCommaExp = (this.isGenerated = generated);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -8283,7 +8281,7 @@ public class astbase {
             public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
                 {
                     {
-                        assert(!aggrfe == null ^ !rangefe == null);
+                        assert(aggrfe != null ^ rangefe != null);
                     }
                 }
                 super();
@@ -8421,7 +8419,7 @@ public class astbase {
             }
 
             public  ExpInitializer isExpInitializer() {
-                return ((this.kind & 0xFF) == 4) ? (ExpInitializer)this : null;
+                return ((this.kind & 0xFF) == 4) ? ((ExpInitializer)this) : null;
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -8598,7 +8596,7 @@ public class astbase {
                 this.packages = packages;
                 this.id = id;
                 this.msg = msg;
-                expr(this.isdeprecated = isdeprecated);
+                this.isdeprecated = isdeprecated;
             }
 
             public  BytePtr toChars() {
@@ -8746,7 +8744,7 @@ public class astbase {
                 if (p == null)
                     break;
                 if (!result)
-                    expr(result = true);
+                    result = true;
                 else
                     (buf).writeByte(32);
                 (buf).writestring(p);

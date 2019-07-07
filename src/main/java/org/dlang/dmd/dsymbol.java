@@ -450,7 +450,7 @@ public class dsymbol {
                     complength += 1;
                 }
             }
-            Ptr<ByteSlice> compptr = pcopy((Ptr<ByteSlice>)malloc(complength * 8));
+            Ptr<ByteSlice> compptr = pcopy(((Ptr<ByteSlice>)malloc(complength * 8)));
             if (compptr == null)
                 Mem.error();
             Slice<ByteSlice> comp = compptr.slice(0,complength).copy();
@@ -466,7 +466,7 @@ public class dsymbol {
                     length += len + 1;
                 }
             }
-            BytePtr s = pcopy((BytePtr)Mem.xmalloc(length));
+            BytePtr s = pcopy(((BytePtr)Mem.xmalloc(length)));
             BytePtr q = pcopy(s.plus(length).minus(1));
             q.set(0, (byte)0);
             {
@@ -515,7 +515,7 @@ public class dsymbol {
                     if (!s2.overloadInsert(this))
                     {
                         ScopeDsymbol.multiplyDefined(Loc.initial, this, s2);
-                        expr(this.errors = true);
+                        this.errors = true;
                     }
                 }
                 if ((sds.isAggregateDeclaration() != null) || (sds.isEnumDeclaration() != null))
@@ -523,7 +523,7 @@ public class dsymbol {
                     if ((pequals(this.ident, Id.__sizeof)) || (pequals(this.ident, Id.__xalignof)) || (pequals(this.ident, Id._mangleof)))
                     {
                         this.error(new BytePtr("`.%s` property cannot be redefined"), this.ident.toChars());
-                        expr(this.errors = true);
+                        this.errors = true;
                     }
                 }
             }
@@ -1219,7 +1219,7 @@ public class dsymbol {
                     }
                 }
                 (this.importedScopes).push(s);
-                this.prots = pcopy(((IntPtr)Mem.xrealloc(this.prots, (this.importedScopes).length * 4)));
+                this.prots = pcopy((((IntPtr)Mem.xrealloc(this.prots, (this.importedScopes).length * 4))));
                 this.prots.set(((this.importedScopes).length - 1), protection.kind);
             }
         }
