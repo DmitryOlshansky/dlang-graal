@@ -726,7 +726,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     }
 
     override void visit(TemplateMixin mix) {
-        buf.fmt("// from template mixin %s", mix.toString);
+        buf.fmt("// from template mixin %s\n", mix.toString);
         noTiargs = true;
         scope(exit) noTiargs = false;
         auto _ = pushed(currentInst, mix);
@@ -1191,6 +1191,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(StructDeclaration d)
     {
+        if (nameOf(d) == "UnionExp") return;
         if (opts.funcs.length) return; // inner structs are done separately
         auto _ = pushed(opts.aggregates, d);
         auto gf = pushed(generatedFunctions, null);
@@ -1418,7 +1419,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     void printGlobalFunction(FuncDeclaration func) {
         opts.vararg = null;
         if (func.fbody is null && !func.isAbstract) return;
-        stderr.writefln("\tFunction %s", func.ident.toString);
+        //stderr.writefln("\tFunction %s", func.ident.toString);
         auto storage = (func.isStatic()  || opts.aggregates.length == 0) ? "static" : "";
         if (func.isAbstract && func.fbody is null) storage = "abstract";
         if (auto ctor = func.isCtorDeclaration())
@@ -1520,6 +1521,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     override void visit(FuncDeclaration func)  {
         if (func.funcName == "destroy") return;
         if (func.funcName == "opAssign") return;
+        if (func.funcName == "emplaceExp") return;
         if (func.funcName == "copy" && opts.aggregates.length > 0) return;
         if (func.isCtorDeclaration() && !func.parameters) hasEmptyCtor = true;
         if (opts.funcs.length > 0) opts.localFuncs[func] = true;

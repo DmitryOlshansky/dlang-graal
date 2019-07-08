@@ -21,7 +21,8 @@ public class transitivevisitor {
     // from template ParseTimeTransitiveVisitor!(ASTBase)
     public static class ParseTimeTransitiveVisitorASTBase extends PermissiveVisitorASTBase
     {
-        // from template mixin ParseVisitMethods!(ASTBase)// from template ParseVisitMethods!(ASTBase)
+        // from template mixin ParseVisitMethods!(ASTBase)
+        // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ExpStatement s) {
             if ((s.exp != null) && ((s.exp.op & 0xFF) == 38))
             {

@@ -965,6 +965,18 @@ public:
                 return;
             if (e.f && (e.f.ident.symbol == "va_start" || e.f.ident.symbol == "va_end"))
                 return;
+            // re-write emplaceExp for our own implementation of UnionExp
+            if (e.f && e.f.ident.symbol == "emplaceExp") {
+                auto ue = (*e.arguments)[0];
+                expToBuffer(ue, precedence[e.op], buf, opts);
+                auto tmpl = e.f in opts.templates;
+                buf.fmt(".emplace(new %s(", tmpl.types[0].toJava(opts));
+                auto args = e.arguments.copy();
+                if (args.length) args.remove(0);                
+                argsToBuffer(args, buf, opts, cast(FuncDeclaration)null);
+                buf.put("))");
+                return;
+            }
             if (e.f && e.f.ident.symbol == "memcpy" ) {
                 auto c1 = e.arguments[0][0].isCastExp();
                 auto c2 = e.arguments[0][1].isCastExp();

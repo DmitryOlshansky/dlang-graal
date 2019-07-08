@@ -134,20 +134,20 @@ public class compiler {
                     {
                         case 17:
                         case 18:
-                            emplaceExpIntegerExpLocIntegerType(pue, e.loc, u.int32value, type);
+                            (pue).emplace(new IntegerExp(e.loc, u.int32value, type));
                             break;
                         case 19:
                         case 20:
-                            emplaceExpIntegerExpLocLongType(pue, e.loc, u.int64value, type);
+                            (pue).emplace(new IntegerExp(e.loc, u.int64value, type));
                             break;
                         case 21:
                             r = (double)u.float32value;
-                            emplaceExpRealExpLocDoubleType(pue, e.loc, r, type);
+                            (pue).emplace(new RealExp(e.loc, r, type));
                             break;
                         case 22:
                             __dispatch1 = 0;
                             r = (double)u.float64value;
-                            emplaceExpRealExpLocDoubleType(pue, e.loc, r, type);
+                            (pue).emplace(new RealExp(e.loc, r, type));
                             break;
                         case 23:
                             assert((type.size() == 8L));

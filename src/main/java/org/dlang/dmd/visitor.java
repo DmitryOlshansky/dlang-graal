@@ -315,7 +315,8 @@ public class visitor {
     }
     public static class SemanticTimeTransitiveVisitor extends SemanticTimePermissiveVisitor
     {
-        // from template mixin ParseVisitMethods!(ASTCodegen)// from template ParseVisitMethods!(ASTCodegen)
+        // from template mixin ParseVisitMethods!(ASTCodegen)
+        // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ExpStatement s) {
             if ((s.exp != null) && ((s.exp.op & 0xFF) == 38))
             {
