@@ -302,6 +302,7 @@ public class tokens {
             }
             return 0;
         }
+
         public  void setString(BytePtr ptr, int length) {
             BytePtr s = pcopy(((BytePtr)Mem.xmalloc(length + 1)));
             memcpy((BytePtr)(s), (ptr), length);
@@ -310,14 +311,17 @@ public class tokens {
             this.len = length;
             this.postfix = (byte)0;
         }
+
         public  void setString(OutBuffer buf) {
             this.setString(toBytePtr(buf.data), buf.offset);
         }
+
         public  void setString() {
             this.ustring = pcopy(new BytePtr(""));
             this.len = 0;
             this.postfix = (byte)0;
         }
+
         public  BytePtr toChars() {
             BytePtr p = pcopy(ptr(tokens.toCharsbuffer));
             {
@@ -479,12 +483,15 @@ public class tokens {
             }
             return p;
         }
+
         public static BytePtr toChars(byte value) {
             return toBytePtr(asString(value));
         }
+
         public static ByteSlice asString(byte value) {
             return tochars.get((value & 0xFF));
         }
+
         public Token(){
             loc = new Loc();
         }

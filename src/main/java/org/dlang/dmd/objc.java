@@ -47,11 +47,13 @@ public class objc {
         public static void _init() {
             stringtable._init(0);
         }
+
         public  ObjcSelector(BytePtr sv, int len, int pcount) {
             this.stringvalue = pcopy(sv);
             this.stringlen = len;
             this.paramCount = pcount;
         }
+
         public static ObjcSelector lookup(BytePtr s) {
             int len = 0;
             int pcount = 0;
@@ -64,6 +66,7 @@ public class objc {
             }
             return lookup(s, len, pcount);
         }
+
         public static ObjcSelector lookup(BytePtr s, int len, int pcount) {
             StringValue sv = stringtable.update(s, len);
             ObjcSelector sel = ((ObjcSelector)(sv).ptrvalue);
@@ -74,6 +77,7 @@ public class objc {
             }
             return sel;
         }
+
         public static ObjcSelector create(FuncDeclaration fdecl) {
             OutBuffer buf = new OutBuffer();
             try {
@@ -117,9 +121,11 @@ public class objc {
             finally {
             }
         }
+
         public  ByteSlice asString() {
             return this.stringvalue.slice(0,this.stringlen);
         }
+
         public ObjcSelector(){
         }
         public ObjcSelector copy(){
@@ -140,6 +146,7 @@ public class objc {
     public static Objc objc() {
         return _objc;
     }
+
     public static class ObjcClassDeclaration
     {
         public boolean isMeta = false;
@@ -152,9 +159,11 @@ public class objc {
             this.classDeclaration = classDeclaration;
             this.methodList = new DArray<Dsymbol>();
         }
+
         public  boolean isRootClass() {
             return (this.classDeclaration.classKind == ClassKind.objc) && (this.metaclass == null) && (this.classDeclaration.baseClass == null);
         }
+
         public ObjcClassDeclaration(){
         }
         public ObjcClassDeclaration copy(){
@@ -185,44 +194,64 @@ public class objc {
             else
                 _objc = new Unsupported();
         }
+
         public static void deinitialize() {
             _objc = null;
         }
+
         public abstract void setObjc(ClassDeclaration cd);
+
 
         public abstract void setObjc(InterfaceDeclaration arg0);
 
+
         public abstract void deprecate(InterfaceDeclaration interfaceDeclaration);
+
 
         public abstract void setSelector(FuncDeclaration arg0, Scope sc);
 
+
         public abstract void validateSelector(FuncDeclaration fd);
+
 
         public abstract void checkLinkage(FuncDeclaration fd);
 
+
         public abstract boolean isVirtual(FuncDeclaration fd);
+
 
         public abstract ClassDeclaration getParent(FuncDeclaration fd, ClassDeclaration cd);
 
+
         public abstract void addToClassMethodList(FuncDeclaration fd, ClassDeclaration cd);
+
 
         public abstract AggregateDeclaration isThis(FuncDeclaration funcDeclaration);
 
+
         public abstract VarDeclaration createSelectorParameter(FuncDeclaration fd, Scope sc);
+
 
         public abstract void setMetaclass(InterfaceDeclaration interfaceDeclaration, Scope sc);
 
+
         public abstract void setMetaclass(ClassDeclaration classDeclaration, Scope sc);
+
 
         public abstract ClassDeclaration getRuntimeMetaclass(ClassDeclaration classDeclaration);
 
+
         public abstract void addSymbols(AttribDeclaration attribDeclaration, DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories);
+
 
         public abstract void addSymbols(ClassDeclaration classDeclaration, DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories);
 
+
         public abstract void checkOffsetof(Expression expression, AggregateDeclaration aggregateDeclaration);
 
+
         public abstract void checkTupleof(Expression expression, TypeClass type);
+
 
 
         public Objc() {}
@@ -234,49 +263,68 @@ public class objc {
         public  Unsupported() {
             ObjcGlue.initialize();
         }
+
         public  void setObjc(ClassDeclaration cd) {
             cd.error(new BytePtr("Objective-C classes not supported"));
         }
+
         public  void setObjc(InterfaceDeclaration id) {
             id.error(new BytePtr("Objective-C interfaces not supported"));
         }
+
         public  void deprecate(InterfaceDeclaration _param_0) {
         }
+
         public  void setSelector(FuncDeclaration _param_0, Scope _param_1) {
         }
+
         public  void validateSelector(FuncDeclaration _param_0) {
         }
+
         public  void checkLinkage(FuncDeclaration _param_0) {
         }
+
         public  boolean isVirtual(FuncDeclaration _param_0) {
             throw new AssertionError("Unreachable code!");
         }
+
         public  ClassDeclaration getParent(FuncDeclaration _param_0, ClassDeclaration cd) {
             return cd;
         }
+
         public  void addToClassMethodList(FuncDeclaration _param_0, ClassDeclaration _param_1) {
         }
+
         public  AggregateDeclaration isThis(FuncDeclaration funcDeclaration) {
             return null;
         }
+
         public  VarDeclaration createSelectorParameter(FuncDeclaration _param_0, Scope _param_1) {
             return null;
         }
+
         public  void setMetaclass(InterfaceDeclaration _param_0, Scope _param_1) {
         }
+
         public  void setMetaclass(ClassDeclaration _param_0, Scope _param_1) {
         }
+
         public  ClassDeclaration getRuntimeMetaclass(ClassDeclaration classDeclaration) {
             throw new AssertionError("Unreachable code!");
         }
+
         public  void addSymbols(AttribDeclaration attribDeclaration, DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories) {
         }
+
         public  void addSymbols(ClassDeclaration classDeclaration, DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories) {
         }
+
         public  void checkOffsetof(Expression expression, AggregateDeclaration aggregateDeclaration) {
         }
+
         public  void checkTupleof(Expression expression, TypeClass type) {
         }
+
 
         public Unsupported copy() {
             Unsupported that = new Unsupported();
@@ -290,20 +338,24 @@ public class objc {
             ObjcGlue.initialize();
             ObjcSelector._init();
         }
+
         public  void setObjc(ClassDeclaration cd) {
             cd.classKind = ClassKind.objc;
             cd.objc.isExtern = (cd.storage_class & 2L) > 0L;
         }
+
         public  void setObjc(InterfaceDeclaration id) {
             id.classKind = ClassKind.objc;
             id.objc.isExtern = true;
         }
+
         public  void deprecate(InterfaceDeclaration id) {
             if (id.objc.isMeta)
                 return ;
             id.deprecation(new BytePtr("Objective-C interfaces have been deprecated"));
             deprecationSupplemental(id.loc, new BytePtr("Representing an Objective-C class as a D interface has been deprecated. Please use `extern (Objective-C) extern class` instead"));
         }
+
         public  void setSelector(FuncDeclaration fd, Scope sc) {
             if (fd.userAttribDecl == null)
                 return ;
@@ -342,6 +394,7 @@ public class objc {
                 }
             }
         }
+
         public  void validateSelector(FuncDeclaration fd) {
             if (fd.selector == null)
                 return ;
@@ -351,13 +404,16 @@ public class objc {
             if ((fd.parent != null) && (fd.parent.isTemplateInstance() != null))
                 fd.error(new BytePtr("template cannot have an Objective-C selector attached"));
         }
+
         public  void checkLinkage(FuncDeclaration fd) {
             if ((fd.linkage != LINK.objc) && (fd.selector != null))
                 fd.error(new BytePtr("must have Objective-C linkage to attach a selector"));
         }
+
         public  boolean isVirtual(FuncDeclaration fd) {
             return !(((__withSym).kind == Prot.Kind.private_) || ((__withSym).kind == Prot.Kind.package_));
         }
+
         public  ClassDeclaration getParent(FuncDeclaration fd, ClassDeclaration cd) {
             Ref<ClassDeclaration> __result;
             Ref<FuncDeclaration> fd_ref = ref(fd);
@@ -385,6 +441,7 @@ public class objc {
             __ensure.invoke(__result, fd_ref, cd_ref);
             return __result.value;
         }
+
         public  void addToClassMethodList(FuncDeclaration fd, ClassDeclaration cd) {
             if ((cd.classKind != ClassKind.objc))
                 return ;
@@ -393,6 +450,7 @@ public class objc {
             assert(fd.isStatic() ? cd.objc.isMeta : !cd.objc.isMeta);
             (cd.objc.methodList).push(fd);
         }
+
         public  AggregateDeclaration isThis(FuncDeclaration funcDeclaration) {
             {
                 if (__withSym.selector == null)
@@ -406,6 +464,7 @@ public class objc {
                 return null;
             }
         }
+
         public  VarDeclaration createSelectorParameter(FuncDeclaration fd, Scope sc) {
             if (fd.selector == null)
                 return null;
@@ -417,6 +476,7 @@ public class objc {
             var.parent = fd;
             return var;
         }
+
         public  void setMetaclass(InterfaceDeclaration interfaceDeclaration, Scope sc) {
             Function2<Loc,DArray<BaseClass>,InterfaceDeclaration> newMetaclass = new Function2<Loc,DArray<BaseClass>,InterfaceDeclaration>(){
                 public InterfaceDeclaration invoke(Loc loc, DArray<BaseClass> metaBases) {
@@ -425,6 +485,7 @@ public class objc {
             };
             setMetaclass_newMetaclassInterfaceDeclaration(interfaceDeclaration, sc);
         }
+
         public  void setMetaclass(ClassDeclaration classDeclaration, Scope sc) {
             Function2<Loc,DArray<BaseClass>,ClassDeclaration> newMetaclass = new Function2<Loc,DArray<BaseClass>,ClassDeclaration>(){
                 public ClassDeclaration invoke(Loc loc, DArray<BaseClass> metaBases) {
@@ -433,6 +494,7 @@ public class objc {
             };
             setMetaclass_newMetaclassClassDeclaration.invoke(classDeclaration, sc);
         }
+
         public  ClassDeclaration getRuntimeMetaclass(ClassDeclaration classDeclaration) {
             if ((classDeclaration.objc.metaclass == null) && classDeclaration.objc.isMeta)
             {
@@ -444,6 +506,7 @@ public class objc {
             else
                 return classDeclaration.objc.metaclass;
         }
+
         public  void addSymbols(AttribDeclaration attribDeclaration, DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories) {
             DArray<Dsymbol> symbols = attribDeclaration.include(null);
             if (symbols == null)
@@ -457,10 +520,12 @@ public class objc {
                 }
             }
         }
+
         public  void addSymbols(ClassDeclaration classDeclaration, DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories) {
             if ((__withSym.classKind == ClassKind.objc) && !__withSym.objc.isExtern && !__withSym.objc.isMeta)
                 (classes).push(classDeclaration);
         }
+
         public  void checkOffsetof(Expression expression, AggregateDeclaration aggregateDeclaration) {
             if ((aggregateDeclaration.classKind != ClassKind.objc))
                 return ;
@@ -469,18 +534,21 @@ public class objc {
             expression.error(new BytePtr("no property `offsetof` for member `%s` of type `%s`"), expression.toChars(), expression.type.toChars());
             expression.errorSupplemental(new BytePtr("`offsetof` is not available for members of Objective-C classes. Please use the Objective-C runtime instead"));
         }
+
         public  void checkTupleof(Expression expression, TypeClass type) {
             if ((type.sym.classKind != ClassKind.objc))
                 return ;
             expression.error(new BytePtr("no property `tupleof` for type `%s`"), type.toChars());
             expression.errorSupplemental(new BytePtr("`tupleof` is not available for members of Objective-C classes. Please use the Objective-C runtime instead"));
         }
+
         public  boolean isUdaSelector(StructDeclaration sd) {
             if ((!pequals(sd.ident, Id.udaSelector)) || (sd.parent == null))
                 return false;
             dmodule.Module _module = sd.parent.isModule();
             return (_module != null) && _module.isCoreModule(Id.attribute);
         }
+
 
         public Supported copy() {
             Supported that = new Supported();
@@ -532,6 +600,7 @@ public class objc {
         }
     }
 
+
     // from template setMetaclass!(_newMetaclassInterfaceDeclaration)
     public static void setMetaclass_newMetaclassInterfaceDeclaration(InterfaceDeclaration classDeclaration, Scope sc) {
         ByteSlice errorType = new ByteSlice("interface");
@@ -576,5 +645,6 @@ public class objc {
             dsymbolSemantic(__withSym.objc.metaclass, sc);
         }
     }
+
 
 }

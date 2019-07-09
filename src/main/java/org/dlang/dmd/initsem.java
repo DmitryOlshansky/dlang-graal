@@ -67,6 +67,7 @@ public class initsem {
         error(ai.loc, new BytePtr("not an associative array initializer"));
         return new ErrorExp();
     }
+
     public static Initializer initializerSemantic(Initializer init, Scope sc, Type t, int needInterpret) {
         Ref<Scope> sc_ref = ref(sc);
         Ref<Type> t_ref = ref(t);
@@ -505,6 +506,7 @@ public class initsem {
             throw SwitchError.INSTANCE;
         }
     }
+
     public static Initializer inferType(Initializer init, Scope sc) {
         Ref<Scope> sc_ref = ref(sc);
         Function1<VoidInitializer,Initializer> visitVoid = new Function1<VoidInitializer,Initializer>(){
@@ -666,6 +668,7 @@ public class initsem {
             throw SwitchError.INSTANCE;
         }
     }
+
     public static Expression initializerToExpression(Initializer init, Type itype) {
         Ref<Type> itype_ref = ref(itype);
         Function1<VoidInitializer,Expression> visitVoid = new Function1<VoidInitializer,Expression>(){
@@ -873,4 +876,5 @@ public class initsem {
             throw SwitchError.INSTANCE;
         }
     }
+
 }

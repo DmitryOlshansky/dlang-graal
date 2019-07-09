@@ -128,6 +128,7 @@ public class func {
             }
         }
 
+
         public RetWalker() {}
     }
 
@@ -162,6 +163,7 @@ public class func {
                 this.replaceCurrent(s1);
             }
         }
+
         public  void visit(TryFinallyStatement s) {
             DtorExpStatement des = null;
             if (this.fd.nrvo_can && (s.finalbody != null) && ((des = s.finalbody.isDtorExpStatement()) != null) && (pequals(this.fd.nrvo_var, des.var)))
@@ -195,6 +197,7 @@ public class func {
                 this.visit(s);
         }
 
+
         public NrvoWalker() {}
 
         public NrvoWalker copy() {
@@ -226,6 +229,7 @@ public class func {
         public  Ensure syntaxCopy() {
             return new Ensure(this.id, this.ensure.syntaxCopy());
         }
+
         public static DArray<Ensure> arraySyntaxCopy(DArray<Ensure> a) {
             DArray<Ensure> b = null;
             if (a != null)
@@ -243,6 +247,7 @@ public class func {
             }
             return b;
         }
+
         public Ensure(){
         }
         public Ensure copy(){
@@ -358,9 +363,11 @@ public class func {
             this.endloc = endloc.copy();
             this.inferRetType = (type != null) && (type.nextOf() == null);
         }
+
         public static FuncDeclaration create(Loc loc, Loc endloc, Identifier id, long storage_class, Type type) {
             return new FuncDeclaration(loc, endloc, id, storage_class, type);
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             FuncDeclaration f = s != null ? (FuncDeclaration)s : new FuncDeclaration(this.loc, this.endloc, this.ident, this.storage_class, this.type.syntaxCopy());
             f.frequires = this.frequires != null ? Statement.arraySyntaxCopy(this.frequires) : null;
@@ -368,6 +375,7 @@ public class func {
             f.fbody = this.fbody != null ? this.fbody.syntaxCopy() : null;
             return f;
         }
+
         public  boolean functionSemantic() {
             if (this._scope == null)
                 return !this.errors;
@@ -402,6 +410,7 @@ public class func {
                 return this.functionSemantic3() || !this.errors;
             return !this.errors;
         }
+
         public  boolean functionSemantic3() {
             if ((this.semanticRun < PASS.semantic3) && (this._scope != null))
             {
@@ -419,6 +428,7 @@ public class func {
             }
             return !this.errors && !this.semantic3Errors;
         }
+
         public  boolean checkForwardRef(Loc loc) {
             if (!this.functionSemantic())
                 return true;
@@ -430,6 +440,7 @@ public class func {
             }
             return false;
         }
+
         public  HiddenParameters declareThis(Scope sc, AggregateDeclaration ad) {
             if ((!pequals(this.toParent2(), this.toParentLocal())))
             {
@@ -507,6 +518,7 @@ public class func {
             }
             return new HiddenParameters(null, false, null);
         }
+
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
                 return true;
@@ -539,6 +551,7 @@ public class func {
             }
             return false;
         }
+
         public  int overrides(FuncDeclaration fd) {
             int result = 0;
             if ((pequals(fd.ident, this.ident)))
@@ -554,6 +567,7 @@ public class func {
             }
             return result;
         }
+
         public  int findVtblIndex(DArray<Dsymbol> vtbl, int dim, boolean fix17349) {
             FuncDeclaration mismatch = null;
             long mismatchstc = 0L;
@@ -618,6 +632,7 @@ public class func {
             }
             return bestvi;
         }
+
         public  BaseClass overrideInterface() {
             {
                 ClassDeclaration cd = this.toParent2().isClassDeclaration();
@@ -637,6 +652,7 @@ public class func {
             }
             return null;
         }
+
         public  boolean overloadInsert(Dsymbol s) {
             assert((!pequals(s, this)));
             AliasDeclaration ad = s.isAliasDeclaration();
@@ -675,6 +691,7 @@ public class func {
             this.overnext = fd;
             return true;
         }
+
         public  FuncDeclaration overloadExactMatch(Type t) {
             FuncDeclaration fd = null;
             Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>(){
@@ -702,6 +719,7 @@ public class func {
             overloadApply(this, __lambda2, null);
             return fd;
         }
+
         public  FuncDeclaration overloadModMatch(Loc loc, Type tthis, Ref<Boolean> hasOverloads) {
             MatchAccumulator m = new MatchAccumulator();
             Function1<Dsymbol,Integer> __lambda4 = new Function1<Dsymbol,Integer>(){
@@ -792,6 +810,7 @@ public class func {
             }
             return m.lastf;
         }
+
         public  TemplateDeclaration findTemplateDeclRoot() {
             FuncDeclaration f = this;
             for (; (f != null) && (f.overnext != null);){
@@ -802,6 +821,7 @@ public class func {
             }
             return null;
         }
+
         public  boolean inUnittest() {
             Dsymbol f = this;
             do {
@@ -813,6 +833,7 @@ public class func {
             } while (f != null);
             return false;
         }
+
         public  int leastAsSpecialized(FuncDeclaration g) {
             int LOG_LEASTAS = 0;
             TypeFunction tf = this.type.toTypeFunction();
@@ -864,6 +885,7 @@ public class func {
             finally {
             }
         }
+
         public  LabelDsymbol searchLabel(Identifier ident) {
             Dsymbol s = null;
             if (this.labtab == null)
@@ -876,6 +898,7 @@ public class func {
             }
             return (LabelDsymbol)s;
         }
+
         public  int getLevel(FuncDeclaration fd, int intypeof) {
             Dsymbol fdparent = fd.toParent2();
             if ((pequals(fdparent, this)))
@@ -910,6 +933,7 @@ public class func {
             }
             return level;
         }
+
         public  int getLevelAndCheck(Loc loc, Scope sc, FuncDeclaration fd) {
             int level = this.getLevel(fd, (sc).intypeof);
             if ((level != -2))
@@ -922,6 +946,7 @@ public class func {
             }
             return 1;
         }
+
         public int LevelError = -2;
         public  BytePtr toPrettyChars(boolean QualifyTypes) {
             if (this.isMain())
@@ -929,6 +954,7 @@ public class func {
             else
                 return this.toPrettyChars(QualifyTypes);
         }
+
         public  BytePtr toFullSignature() {
             OutBuffer buf = new OutBuffer();
             try {
@@ -938,33 +964,43 @@ public class func {
             finally {
             }
         }
+
         public  boolean isMain() {
             return (pequals(this.ident, Id.main)) && (this.linkage != LINK.c) && (this.isMember() == null) && !this.isNested();
         }
+
         public  boolean isCMain() {
             return (pequals(this.ident, Id.main)) && (this.linkage == LINK.c) && (this.isMember() == null) && !this.isNested();
         }
+
         public  boolean isWinMain() {
             return (pequals(this.ident, Id.WinMain)) && (this.linkage != LINK.c) && (this.isMember() == null);
         }
+
         public  boolean isDllMain() {
             return (pequals(this.ident, Id.DllMain)) && (this.linkage != LINK.c) && (this.isMember() == null);
         }
+
         public  boolean isRtInit() {
             return (pequals(this.ident, Id.rt_init)) && (this.linkage == LINK.c) && (this.isMember() == null) && !this.isNested();
         }
+
         public  boolean isExport() {
             return this.protection.kind == Prot.Kind.export_;
         }
+
         public  boolean isImportedSymbol() {
             return (this.protection.kind == Prot.Kind.export_) && (this.fbody == null);
         }
+
         public  boolean isCodeseg() {
             return true;
         }
+
         public  boolean isOverloadable() {
             return true;
         }
+
         public  boolean isAbstract() {
             if ((this.storage_class & 16L) != 0)
                 return true;
@@ -981,6 +1017,7 @@ public class func {
             }
             return false;
         }
+
         public  boolean canInferAttributes(Scope sc) {
             if (this.fbody == null)
                 return false;
@@ -998,6 +1035,7 @@ public class func {
             }
             return false;
         }
+
         public  void initInferAttributes() {
             TypeFunction tf = this.type.toTypeFunction();
             if ((tf.purity == PURE.impure))
@@ -1013,6 +1051,7 @@ public class func {
             if (global.params.vsafe)
                 this.flags |= FUNCFLAG.inferScope;
         }
+
         public  int isPure() {
             TypeFunction tf = this.type.toTypeFunction();
             if ((this.flags & FUNCFLAG.purityInprocess) != 0)
@@ -1035,12 +1074,14 @@ public class func {
             tf.purity = purity;
             return purity;
         }
+
         public  int isPureBypassingInference() {
             if ((this.flags & FUNCFLAG.purityInprocess) != 0)
                 return PURE.fwdref;
             else
                 return this.isPure();
         }
+
         public  boolean setImpure() {
             if ((this.flags & FUNCFLAG.purityInprocess) != 0)
             {
@@ -1052,19 +1093,23 @@ public class func {
                 return true;
             return false;
         }
+
         public  boolean isSafe() {
             if ((this.flags & FUNCFLAG.safetyInprocess) != 0)
                 this.setUnsafe();
             return this.type.toTypeFunction().trust == TRUST.safe;
         }
+
         public  boolean isSafeBypassingInference() {
             return ((this.flags & FUNCFLAG.safetyInprocess) == 0) && this.isSafe();
         }
+
         public  boolean isTrusted() {
             if ((this.flags & FUNCFLAG.safetyInprocess) != 0)
                 this.setUnsafe();
             return this.type.toTypeFunction().trust == TRUST.trusted;
         }
+
         public  boolean setUnsafe() {
             if ((this.flags & FUNCFLAG.safetyInprocess) != 0)
             {
@@ -1077,14 +1122,17 @@ public class func {
                 return true;
             return false;
         }
+
         public  boolean isNogc() {
             if ((this.flags & FUNCFLAG.nogcInprocess) != 0)
                 this.setGC();
             return this.type.toTypeFunction().isnogc;
         }
+
         public  boolean isNogcBypassingInference() {
             return ((this.flags & FUNCFLAG.nogcInprocess) == 0) && this.isNogc();
         }
+
         public  boolean setGC() {
             if (((this.flags & FUNCFLAG.nogcInprocess) != 0) && (this.semanticRun < PASS.semantic3) && (this._scope != null))
             {
@@ -1102,6 +1150,7 @@ public class func {
                 return true;
             return false;
         }
+
         public  void printGCUsage(Loc loc, BytePtr warn) {
             if (!global.params.vgc)
                 return ;
@@ -1111,6 +1160,7 @@ public class func {
                 message(loc, new BytePtr("vgc: %s"), warn);
             }
         }
+
         public  boolean isReturnIsolated() {
             TypeFunction tf = this.type.toTypeFunction();
             assert(tf.next != null);
@@ -1119,6 +1169,7 @@ public class func {
                 return this.isTypeIsolatedIndirect(treti);
             return this.isTypeIsolated(treti);
         }
+
         public  boolean isTypeIsolated(Type t) {
             t = t.baseElemOf();
             switch ((t.ty & 0xFF))
@@ -1146,6 +1197,7 @@ public class func {
                 return true;
             }
         }
+
         public  boolean isTypeIsolatedIndirect(Type t) {
             assert(t != null);
             if ((this.isPureBypassingInference() == 0) || this.isNested())
@@ -1209,17 +1261,21 @@ public class func {
             }
             return true;
         }
+
         public  boolean isNested() {
             FuncDeclaration f = this.toAliasFunc();
             return ((f.storage_class & 1L) == 0L) && (f.linkage == LINK.d) && (f.toParent2().isFuncDeclaration() != null) || (f.toParent2() != f.toParentLocal());
         }
+
         public  AggregateDeclaration isThis() {
             AggregateDeclaration ad = (this.storage_class & 1L) != 0 ? objc().isThis(this) : this.isMemberLocal();
             return ad;
         }
+
         public  boolean needThis() {
             return this.toAliasFunc().isThis() != null;
         }
+
         public  boolean isVirtualMethod() {
             if ((!pequals(this.toAliasFunc(), this)))
                 return this.toAliasFunc().isVirtualMethod();
@@ -1231,6 +1287,7 @@ public class func {
             }
             return true;
         }
+
         public  boolean isVirtual() {
             if ((!pequals(this.toAliasFunc(), this)))
                 return this.toAliasFunc().isVirtual();
@@ -1241,6 +1298,7 @@ public class func {
                 return objc().isVirtual(this);
             return !(this.isStatic() || (this.protection.kind == Prot.Kind.private_) || (this.protection.kind == Prot.Kind.package_)) && !((p.isInterfaceDeclaration() != null) && this.isFinalFunc());
         }
+
         public  boolean isFinalFunc() {
             if ((!pequals(this.toAliasFunc(), this)))
                 return this.toAliasFunc().isFinalFunc();
@@ -1251,19 +1309,23 @@ public class func {
             ClassDeclaration cd = this.toParent().isClassDeclaration();
             return (cd != null) && ((cd.storage_class & 8L) != 0);
         }
+
         public  boolean addPreInvariant() {
             AggregateDeclaration ad = this.isThis();
             ClassDeclaration cd = ad != null ? ad.isClassDeclaration() : null;
             return (ad != null) && !((cd != null) && cd.isCPPclass()) && ((global.params.useInvariants & 0xFF) == 2) && (this.protection.kind == Prot.Kind.protected_) || (this.protection.kind == Prot.Kind.public_) || (this.protection.kind == Prot.Kind.export_) && !this.naked;
         }
+
         public  boolean addPostInvariant() {
             AggregateDeclaration ad = this.isThis();
             ClassDeclaration cd = ad != null ? ad.isClassDeclaration() : null;
             return (ad != null) && !((cd != null) && cd.isCPPclass()) && (ad.inv != null) && ((global.params.useInvariants & 0xFF) == 2) && (this.protection.kind == Prot.Kind.protected_) || (this.protection.kind == Prot.Kind.public_) || (this.protection.kind == Prot.Kind.export_) && !this.naked;
         }
+
         public  BytePtr kind() {
             return this.generated ? new BytePtr("generated function") : new BytePtr("function");
         }
+
         public  boolean isUnique() {
             boolean result = false;
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>(){
@@ -1286,6 +1348,7 @@ public class func {
             overloadApply(this, __lambda1, null);
             return result;
         }
+
         public  boolean checkNestedReference(Scope sc, Loc loc) {
             Ref<Scope> sc_ref = ref(sc);
             {
@@ -1354,6 +1417,7 @@ public class func {
             }
             return false;
         }
+
         public  boolean needsClosure() {
             try {
                 if (this.requiresClosure)
@@ -1394,6 +1458,7 @@ public class func {
         /*Lyes:*/
             return true;
         }
+
         public  boolean checkClosure() {
             if (!this.needsClosure())
                 return false;
@@ -1454,6 +1519,7 @@ public class func {
             finally {
             }
         }
+
         public  boolean hasNestedFrameRefs() {
             if (this.closureVars.length != 0)
                 return true;
@@ -1472,10 +1538,12 @@ public class func {
             }
             return false;
         }
+
         public  boolean canBuildResultVar() {
             TypeFunction f = (TypeFunction)this.type;
             return (f != null) && (f.nextOf() != null) && ((f.nextOf().toBasetype().ty & 0xFF) != ENUMTY.Tvoid);
         }
+
         public  void buildResultVar(Scope sc, Type tret) {
             if (this.vresult == null)
             {
@@ -1499,6 +1567,7 @@ public class func {
                 assert((pequals(this.vresult.parent, this)));
             }
         }
+
         public  Statement mergeFrequire(Statement sf, DArray<Expression> params) {
             {
                 Slice<FuncDeclaration> __r1403 = this.foverrides.opSlice().copy();
@@ -1531,6 +1600,7 @@ public class func {
             }
             return sf;
         }
+
         public static boolean needsFensure(FuncDeclaration fd) {
             if (fd.fensures != null)
                 return true;
@@ -1545,6 +1615,7 @@ public class func {
             }
             return false;
         }
+
         public  void buildEnsureRequire() {
             if (this.frequires != null)
             {
@@ -1678,6 +1749,7 @@ public class func {
                 this.fdensure = fd;
             }
         }
+
         public  Statement mergeFensure(Statement sf, Identifier oid, DArray<Expression> params) {
             {
                 Slice<FuncDeclaration> __r1415 = this.foverrides.opSlice().copy();
@@ -1724,6 +1796,7 @@ public class func {
             }
             return sf;
         }
+
         public  ParameterList getParameterList() {
             if (this.type != null)
             {
@@ -1732,9 +1805,11 @@ public class func {
             }
             return new ParameterList(null, VarArg.none);
         }
+
         public static FuncDeclaration genCfunc(DArray<Parameter> fparams, Type treturn, BytePtr name, long stc) {
             return genCfunc(fparams, treturn, Identifier.idPool(name, strlen(name)), stc);
         }
+
         public static FuncDeclaration genCfunc(DArray<Parameter> fparams, Type treturn, Identifier id, long stc) {
             FuncDeclaration fd = null;
             TypeFunction tf = null;
@@ -1758,6 +1833,7 @@ public class func {
             }
             return fd;
         }
+
         public  void checkDmain() {
             TypeFunction tf = this.type.toTypeFunction();
             int nparams = tf.parameterList.length();
@@ -1778,15 +1854,19 @@ public class func {
             else if ((tf.parameterList.varargs != 0) || (nparams >= 2) || argerr)
                 this.error(new BytePtr("parameters must be `main()` or `main(string[] args)`"));
         }
+
         public  FuncDeclaration isFuncDeclaration() {
             return this;
         }
+
         public  FuncDeclaration toAliasFunc() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public FuncDeclaration() {}
 
@@ -1895,6 +1975,7 @@ public class func {
         }
         return e;
     }
+
     public static int overloadApply(Dsymbol fstart, Function1<Dsymbol,Integer> dg, Scope sc) {
         Dsymbol next = null;
         {
@@ -2015,6 +2096,7 @@ public class func {
         }
         return 0;
     }
+
     public static Mismatches MODMatchToBuffer(OutBuffer buf, byte lhsMod, byte rhsMod) {
         Mismatches mismatches = new Mismatches();
         boolean bothMutable = ((lhsMod & 0xFF) & (rhsMod & 0xFF)) == 0;
@@ -2043,11 +2125,13 @@ public class func {
         }
         return mismatches;
     }
+
     public static BytePtr prependSpace(BytePtr str) {
         if ((str == null) || (str.get() == 0))
             return new BytePtr("");
         return toBytePtr((new ByteSlice(" ").concat(str.slice(0,strlen(str))).concat(new ByteSlice("\u0000"))));
     }
+
 
     public static class FuncResolveFlag 
     {
@@ -2198,6 +2282,7 @@ public class func {
         finally {
         }
     }
+
     // from template printCandidates!(FuncDeclaration)
     public static void printCandidatesFuncDeclaration(Loc loc, FuncDeclaration declaration) {
         int numToDisplay = 5;
@@ -2240,6 +2325,7 @@ public class func {
         };
         overloadApply(declaration, __lambda3, null);
     }
+
 
     // from template printCandidates!(TemplateDeclaration)
     public static void printCandidatesTemplateDeclaration(Loc loc, TemplateDeclaration declaration) {
@@ -2284,6 +2370,7 @@ public class func {
         overloadApply(declaration, __lambda3, null);
     }
 
+
     public static Type getIndirection(Type t) {
         t = t.baseElemOf();
         if (((t.ty & 0xFF) == ENUMTY.Tarray) || ((t.ty & 0xFF) == ENUMTY.Tpointer))
@@ -2294,6 +2381,7 @@ public class func {
             return t.hasPointers() ? t : null;
         return null;
     }
+
     public static boolean traverseIndirections(Type ta, Type tb) {
         Function4<Type,Type,Ctxt,Boolean,Boolean> traverse = new Function4<Type,Type,Ctxt,Boolean,Boolean>(){
             public Boolean invoke(Type ta, Type tb, Ctxt ctxt, Boolean reversePass) {
@@ -2354,6 +2442,7 @@ public class func {
         boolean result = traverse.invoke(ta, tb, null, false);
         return result;
     }
+
     public static void markAsNeedingClosure(Dsymbol f, FuncDeclaration outerFunc) {
         {
             Dsymbol sx = f;
@@ -2366,6 +2455,7 @@ public class func {
             }
         }
     }
+
     public static boolean checkEscapingSiblings(FuncDeclaration f, FuncDeclaration outerFunc, Object p) {
         PrevSibling ps = new PrevSibling();
         ps.p = ((PrevSibling)p);
@@ -2406,6 +2496,7 @@ public class func {
         }
         return bAnyClosures;
     }
+
     // from template followInstantiationContext!(AggregateDeclaration)
     public static boolean followInstantiationContextAggregateDeclaration(Dsymbol s, AggregateDeclaration _param_1) {
         Function1<Dsymbol,Boolean> has2ThisAggregateDeclaration = new Function1<Dsymbol,Boolean>(){
@@ -2456,6 +2547,7 @@ public class func {
         }
         return false;
     }
+
 
     // from template followInstantiationContext!(Dsymbol)
     public static boolean followInstantiationContextDsymbol(Dsymbol s, Dsymbol _param_1) {
@@ -2508,6 +2600,7 @@ public class func {
         return false;
     }
 
+
     // from template followInstantiationContext!(FuncDeclaration)
     public static boolean followInstantiationContextFuncDeclaration(Dsymbol s, FuncDeclaration _param_1) {
         Function1<Dsymbol,Boolean> has2ThisFuncDeclaration = new Function1<Dsymbol,Boolean>(){
@@ -2559,20 +2652,24 @@ public class func {
         return false;
     }
 
+
     // from template toParentP!(AggregateDeclaration)
     public static Dsymbol toParentPAggregateDeclaration(Dsymbol s, AggregateDeclaration _param_1) {
         return followInstantiationContextAggregateDeclaration(s, _param_1) ? s.toParent2() : s.toParentLocal();
     }
+
 
     // from template toParentP!(Dsymbol)
     public static Dsymbol toParentPDsymbol(Dsymbol s, Dsymbol _param_1) {
         return followInstantiationContextDsymbol(s, _param_1) ? s.toParent2() : s.toParentLocal();
     }
 
+
     // from template toParentP!(FuncDeclaration)
     public static Dsymbol toParentPFuncDeclaration(Dsymbol s, FuncDeclaration _param_1) {
         return followInstantiationContextFuncDeclaration(s, _param_1) ? s.toParent2() : s.toParentLocal();
     }
+
 
     public static class FuncAliasDeclaration extends FuncDeclaration
     {
@@ -2598,18 +2695,23 @@ public class func {
             }
             this.userAttribDecl = funcalias.userAttribDecl;
         }
+
         public  FuncAliasDeclaration isFuncAliasDeclaration() {
             return this;
         }
+
         public  BytePtr kind() {
             return new BytePtr("function alias");
         }
+
         public  FuncDeclaration toAliasFunc() {
             return this.funcalias.toAliasFunc();
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public FuncAliasDeclaration() {}
 
@@ -2709,27 +2811,34 @@ public class func {
             this.tok = tok;
             this.fes = fes;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             FuncLiteralDeclaration f = new FuncLiteralDeclaration(this.loc, this.endloc, this.type.syntaxCopy(), this.tok, this.fes, this.ident);
             f.treq = this.treq;
             return this.syntaxCopy(f);
         }
+
         public  boolean isNested() {
             return ((this.tok & 0xFF) != 161) && (this.isThis() == null);
         }
+
         public  AggregateDeclaration isThis() {
             return ((this.tok & 0xFF) == 160) ? super.isThis() : null;
         }
+
         public  boolean isVirtual() {
             return false;
         }
+
         public  boolean addPreInvariant() {
             return false;
         }
+
         public  boolean addPostInvariant() {
             return false;
         }
+
         public  void modifyReturns(Scope sc, Type tret) {
             if ((this.semanticRun < PASS.semantic3done))
                 return ;
@@ -2743,12 +2852,15 @@ public class func {
             if (this.inferRetType && (!pequals(this.type.nextOf(), tret)))
                 this.type.toTypeFunction().next = tret;
         }
+
         public  FuncLiteralDeclaration isFuncLiteralDeclaration() {
             return this;
         }
+
         public  BytePtr kind() {
             return ((this.tok & 0xFF) != 161) ? new BytePtr("delegate") : new BytePtr("function");
         }
+
         public  BytePtr toPrettyChars(boolean QualifyTypes) {
             if (this.parent != null)
             {
@@ -2758,9 +2870,11 @@ public class func {
             }
             return this.toPrettyChars(QualifyTypes);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public FuncLiteralDeclaration() {}
 
@@ -2857,32 +2971,41 @@ public class func {
             super(loc, endloc, Id.ctor, stc, type);
             this.isCpCtor = isCpCtor;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             CtorDeclaration f = new CtorDeclaration(this.loc, this.endloc, this.storage_class, this.type.syntaxCopy(), false);
             return this.syntaxCopy(f);
         }
+
         public  BytePtr kind() {
             return this.isCpCtor ? new BytePtr("copy constructor") : new BytePtr("constructor");
         }
+
         public  BytePtr toChars() {
             return new BytePtr("this");
         }
+
         public  boolean isVirtual() {
             return false;
         }
+
         public  boolean addPreInvariant() {
             return false;
         }
+
         public  boolean addPostInvariant() {
             return (this.isThis() != null) && (this.vthis != null) && ((global.params.useInvariants & 0xFF) == 2);
         }
+
         public  CtorDeclaration isCtorDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public CtorDeclaration() {}
 
@@ -2975,29 +3098,37 @@ public class func {
         public  PostBlitDeclaration(Loc loc, Loc endloc, long stc, Identifier id) {
             super(loc, endloc, id, stc, null);
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             PostBlitDeclaration dd = new PostBlitDeclaration(this.loc, this.endloc, this.storage_class, this.ident);
             return this.syntaxCopy(dd);
         }
+
         public  boolean isVirtual() {
             return false;
         }
+
         public  boolean addPreInvariant() {
             return false;
         }
+
         public  boolean addPostInvariant() {
             return (this.isThis() != null) && (this.vthis != null) && ((global.params.useInvariants & 0xFF) == 2);
         }
+
         public  boolean overloadInsert(Dsymbol s) {
             return false;
         }
+
         public  PostBlitDeclaration isPostBlitDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public PostBlitDeclaration() {}
 
@@ -3089,38 +3220,49 @@ public class func {
         public  DtorDeclaration(Loc loc, Loc endloc) {
             super(loc, endloc, Id.dtor, 0L, null);
         }
+
         public  DtorDeclaration(Loc loc, Loc endloc, long stc, Identifier id) {
             super(loc, endloc, id, stc, null);
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             DtorDeclaration dd = new DtorDeclaration(this.loc, this.endloc, this.storage_class, this.ident);
             return this.syntaxCopy(dd);
         }
+
         public  BytePtr kind() {
             return new BytePtr("destructor");
         }
+
         public  BytePtr toChars() {
             return new BytePtr("~this");
         }
+
         public  boolean isVirtual() {
             return this.vtblIndex != -1;
         }
+
         public  boolean addPreInvariant() {
             return (this.isThis() != null) && (this.vthis != null) && ((global.params.useInvariants & 0xFF) == 2);
         }
+
         public  boolean addPostInvariant() {
             return false;
         }
+
         public  boolean overloadInsert(Dsymbol s) {
             return false;
         }
+
         public  DtorDeclaration isDtorDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public DtorDeclaration() {}
 
@@ -3212,35 +3354,45 @@ public class func {
         public  StaticCtorDeclaration(Loc loc, Loc endloc, long stc) {
             super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("_staticCtor"), loc), 1L | stc, null);
         }
+
         public  StaticCtorDeclaration(Loc loc, Loc endloc, ByteSlice name, long stc) {
             super(loc, endloc, Identifier.generateIdWithLoc(name, loc), 1L | stc, null);
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             StaticCtorDeclaration scd = new StaticCtorDeclaration(this.loc, this.endloc, this.storage_class);
             return this.syntaxCopy(scd);
         }
+
         public  AggregateDeclaration isThis() {
             return null;
         }
+
         public  boolean isVirtual() {
             return false;
         }
+
         public  boolean addPreInvariant() {
             return false;
         }
+
         public  boolean addPostInvariant() {
             return false;
         }
+
         public  boolean hasStaticCtorOrDtor() {
             return true;
         }
+
         public  StaticCtorDeclaration isStaticCtorDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public StaticCtorDeclaration() {}
 
@@ -3332,17 +3484,21 @@ public class func {
         public  SharedStaticCtorDeclaration(Loc loc, Loc endloc, long stc) {
             super(loc, endloc, new ByteSlice("_sharedStaticCtor"), stc);
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             SharedStaticCtorDeclaration scd = new SharedStaticCtorDeclaration(this.loc, this.endloc, this.storage_class);
             return this.syntaxCopy(scd);
         }
+
         public  SharedStaticCtorDeclaration isSharedStaticCtorDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public SharedStaticCtorDeclaration() {}
 
@@ -3435,35 +3591,45 @@ public class func {
         public  StaticDtorDeclaration(Loc loc, Loc endloc, long stc) {
             super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("_staticDtor"), loc), 1L | stc, null);
         }
+
         public  StaticDtorDeclaration(Loc loc, Loc endloc, ByteSlice name, long stc) {
             super(loc, endloc, Identifier.generateIdWithLoc(name, loc), 1L | stc, null);
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             StaticDtorDeclaration sdd = new StaticDtorDeclaration(this.loc, this.endloc, this.storage_class);
             return this.syntaxCopy(sdd);
         }
+
         public  AggregateDeclaration isThis() {
             return null;
         }
+
         public  boolean isVirtual() {
             return false;
         }
+
         public  boolean hasStaticCtorOrDtor() {
             return true;
         }
+
         public  boolean addPreInvariant() {
             return false;
         }
+
         public  boolean addPostInvariant() {
             return false;
         }
+
         public  StaticDtorDeclaration isStaticDtorDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public StaticDtorDeclaration() {}
 
@@ -3556,17 +3722,21 @@ public class func {
         public  SharedStaticDtorDeclaration(Loc loc, Loc endloc, long stc) {
             super(loc, endloc, new ByteSlice("_sharedStaticDtor"), stc);
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             SharedStaticDtorDeclaration sdd = new SharedStaticDtorDeclaration(this.loc, this.endloc, this.storage_class);
             return this.syntaxCopy(sdd);
         }
+
         public  SharedStaticDtorDeclaration isSharedStaticDtorDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public SharedStaticDtorDeclaration() {}
 
@@ -3660,26 +3830,33 @@ public class func {
             super(loc, endloc, id != null ? id : Identifier.generateId(new BytePtr("__invariant")), stc, null);
             this.fbody = fbody;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             InvariantDeclaration id = new InvariantDeclaration(this.loc, this.endloc, this.storage_class, null, null);
             return this.syntaxCopy(id);
         }
+
         public  boolean isVirtual() {
             return false;
         }
+
         public  boolean addPreInvariant() {
             return false;
         }
+
         public  boolean addPostInvariant() {
             return false;
         }
+
         public  InvariantDeclaration isInvariantDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public InvariantDeclaration() {}
 
@@ -3774,29 +3951,37 @@ public class func {
             super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("__unittest"), loc), stc, null);
             this.codedoc = pcopy(codedoc);
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             UnitTestDeclaration utd = new UnitTestDeclaration(this.loc, this.endloc, this.storage_class, this.codedoc);
             return this.syntaxCopy(utd);
         }
+
         public  AggregateDeclaration isThis() {
             return null;
         }
+
         public  boolean isVirtual() {
             return false;
         }
+
         public  boolean addPreInvariant() {
             return false;
         }
+
         public  boolean addPostInvariant() {
             return false;
         }
+
         public  UnitTestDeclaration isUnitTestDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public UnitTestDeclaration() {}
 
@@ -3894,29 +4079,37 @@ public class func {
             this.parameters = fparams;
             this.varargs = varargs;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             NewDeclaration f = new NewDeclaration(this.loc, this.endloc, this.storage_class, Parameter.arraySyntaxCopy(this.parameters), this.varargs);
             return this.syntaxCopy(f);
         }
+
         public  BytePtr kind() {
             return new BytePtr("allocator");
         }
+
         public  boolean isVirtual() {
             return false;
         }
+
         public  boolean addPreInvariant() {
             return false;
         }
+
         public  boolean addPostInvariant() {
             return false;
         }
+
         public  NewDeclaration isNewDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public NewDeclaration() {}
 
@@ -4012,32 +4205,41 @@ public class func {
             super(loc, endloc, Id.classDelete, 1L | stc, null);
             this.parameters = fparams;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             DeleteDeclaration f = new DeleteDeclaration(this.loc, this.endloc, this.storage_class, Parameter.arraySyntaxCopy(this.parameters));
             return this.syntaxCopy(f);
         }
+
         public  BytePtr kind() {
             return new BytePtr("deallocator");
         }
+
         public  boolean isDelete() {
             return true;
         }
+
         public  boolean isVirtual() {
             return false;
         }
+
         public  boolean addPreInvariant() {
             return false;
         }
+
         public  boolean addPostInvariant() {
             return false;
         }
+
         public  DeleteDeclaration isDeleteDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public DeleteDeclaration() {}
 

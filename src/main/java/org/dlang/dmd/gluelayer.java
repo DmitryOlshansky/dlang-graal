@@ -29,26 +29,35 @@ public class gluelayer {
     public static class TYPE;
     public static void obj_write_deferred(Library library) {
     }
+
     public static void obj_start(BytePtr srcfile) {
     }
+
     public static void obj_end(Library library, BytePtr objfilename) {
     }
+
     public static void genObjFile(dmodule.Module m, boolean multiobj) {
     }
+
     public static void backend_init() {
     }
+
     public static void backend_term() {
     }
+
     public static Statement asmSemantic(AsmStatement s, Scope sc) {
         (sc).func.hasReturnExp = 8;
         return null;
     }
+
     public static void toObjFile(Dsymbol ds, boolean multiobj) {
     }
+
     public static abstract class ObjcGlue
     {
         public static void initialize() {
         }
+
 
         public ObjcGlue() {}
 

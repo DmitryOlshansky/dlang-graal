@@ -36,6 +36,7 @@ public class utf {
             return true;
         return false;
     }
+
     public static boolean isUniAlpha(int c) {
         int high = 244;
         int low = (c < (int)utf.isUniAlphaALPHA_TABLE.get(0).get(0)) || ((int)utf.isUniAlphaALPHA_TABLE.get(high).get(1) < c) ? high + 1 : 0;
@@ -53,6 +54,7 @@ public class utf {
         }
         return false;
     }
+
     public static int utf_codeLengthChar(int c) {
         if ((c <= 127))
             return 1;
@@ -64,9 +66,11 @@ public class utf {
             return 4;
         throw new AssertionError("Unreachable code!");
     }
+
     public static int utf_codeLengthWchar(int c) {
         return (c <= 65535) ? 1 : 2;
     }
+
     public static int utf_codeLength(int sz, int c) {
         if ((sz == 1))
             return utf_codeLengthChar(c);
@@ -75,6 +79,7 @@ public class utf {
         assert((sz == 4));
         return 1;
     }
+
     public static void utf_encodeChar(BytePtr s, int c) {
         assert((s != null));
         assert(utf_isValidDchar(c));
@@ -103,6 +108,7 @@ public class utf {
         else
             throw new AssertionError("Unreachable code!");
     }
+
     public static void utf_encodeWchar(CharPtr s, int c) {
         assert((s != null));
         assert(utf_isValidDchar(c));
@@ -116,6 +122,7 @@ public class utf {
             s.set(1, (char)((c - 65536 & 1023) + 56320));
         }
     }
+
     public static void utf_encode(int sz, Object s, int c) {
         if ((sz == 1))
             utf_encodeChar(((BytePtr)s), c);
@@ -127,6 +134,7 @@ public class utf {
             (((IntPtr)s)).set(0, c);
         }
     }
+
     public static BytePtr utf_decodeChar(BytePtr s, int len, IntRef ridx, IntRef rresult) {
         rresult.value = 0x0ffff;
         assert((s != null));
@@ -167,6 +175,12 @@ public class utf {
         rresult.value = c;
         return utf.utf_decodeCharUTF8_DECODE_OK;
     }
+
+    // defaulted all parameters starting with #4
+    public static BytePtr utf_decodeChar(BytePtr s, int len, IntRef ridx) {
+        utf_decodeChar(s, len, ridx, ref(0x0ffff));
+    }
+
     public static BytePtr utf_decodeWchar(CharPtr s, int len, IntRef ridx, IntRef rresult) {
         rresult.value = 0x0ffff;
         assert((s != null));
@@ -192,4 +206,10 @@ public class utf {
         rresult.value = u;
         return utf.utf_decodeWcharUTF16_DECODE_OK;
     }
+
+    // defaulted all parameters starting with #4
+    public static BytePtr utf_decodeWchar(CharPtr s, int len, IntRef ridx) {
+        utf_decodeWchar(s, len, ridx, ref(0x0ffff));
+    }
+
 }

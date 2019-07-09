@@ -77,6 +77,7 @@ public class mtype {
             return false;
         }
     }
+
     public static int MODmethodConv(byte modfrom, byte modto) {
         if (((modfrom & 0xFF) == (modto & 0xFF)))
             return MATCH.exact;
@@ -114,6 +115,7 @@ public class mtype {
             return MATCH.nomatch;
         }
     }
+
     public static byte MODmerge(byte mod1, byte mod2) {
         if (((mod1 & 0xFF) == (mod2 & 0xFF)))
             return mod1;
@@ -135,12 +137,15 @@ public class mtype {
         }
         return result;
     }
+
     public static void MODtoBuffer(OutBuffer buf, byte mod) {
         (buf).writestring(MODtoString(mod));
     }
+
     public static BytePtr MODtoChars(byte mod) {
         return toBytePtr(MODtoString(mod));
     }
+
     public static ByteSlice MODtoString(byte mod) {
         switch ((mod & 0xFF))
         {
@@ -166,6 +171,7 @@ public class mtype {
             throw SwitchError.INSTANCE;
         }
     }
+
     public static long ModToStc(int mod) {
         long stc = 0L;
         if ((mod & 4) != 0)
@@ -178,6 +184,7 @@ public class mtype {
             stc |= 536870912L;
         return stc;
     }
+
 
     public static class TFlags 
     {
@@ -345,13 +352,16 @@ public class mtype {
             super();
             this.ty = ty;
         }
+
         public  BytePtr kind() {
             throw new AssertionError("Unreachable code!");
         }
+
         public  Type syntaxCopy() {
             fprintf(stderr, new BytePtr("this = %s, ty = %d\n"), this.toChars(), (this.ty & 0xFF));
             throw new AssertionError("Unreachable code!");
         }
+
         public  boolean equals(RootObject o) {
             Type t = (Type)o;
             if ((pequals(this, o)) || (t != null) && (this.deco == t.deco) && (this.deco != null))
@@ -360,12 +370,15 @@ public class mtype {
             }
             return false;
         }
+
         public  boolean equivalent(Type t) {
             return this.immutableOf().equals(t.immutableOf());
         }
+
         public  int dyncast() {
             return DYNCAST.type;
         }
+
         public  int covariant(Type t, Ptr<Long> pstc, boolean fix17349) {
             if (pstc != null)
                 pstc.set(0, 0L);
@@ -542,6 +555,7 @@ public class mtype {
         /*Lnotcovariant:*/
             return 2;
         }
+
         public  BytePtr toChars() {
             OutBuffer buf = new OutBuffer();
             try {
@@ -554,6 +568,7 @@ public class mtype {
             finally {
             }
         }
+
         public  BytePtr toPrettyChars(boolean QualifyTypes) {
             OutBuffer buf = new OutBuffer();
             try {
@@ -566,6 +581,7 @@ public class mtype {
             finally {
             }
         }
+
         public static void _init() {
             stringtable._init(14000);
             {
@@ -616,19 +632,24 @@ public class mtype {
             tptrdiff_t = basic.get(isLP64 ? 19 : 17);
             thash_t = tsize_t;
         }
+
         public static void deinitialize() {
             stringtable.opAssign(new StringTable(null, 0, null, 0, 0, 0, 0));
         }
+
         public  long size() {
             return this.size(Loc.initial);
         }
+
         public  long size(Loc loc) {
             error(loc, new BytePtr("no size for type `%s`"), this.toChars());
             return -1L;
         }
+
         public  int alignsize() {
             return (int)this.size(Loc.initial);
         }
+
         public  Type trySemantic(Loc loc, Scope sc) {
             Type tcopy = this.syntaxCopy();
             int errors = global.startGagging();
@@ -644,6 +665,7 @@ public class mtype {
             }
             return t;
         }
+
         public  Type merge2() {
             Type t = this;
             assert(t != null);
@@ -659,6 +681,7 @@ public class mtype {
                 throw new AssertionError("Unreachable code!");
             return t;
         }
+
         public  void modToBuffer(OutBuffer buf) {
             if (this.mod != 0)
             {
@@ -666,6 +689,7 @@ public class mtype {
                 MODtoBuffer(buf, this.mod);
             }
         }
+
         public  BytePtr modToChars() {
             OutBuffer buf = new OutBuffer();
             try {
@@ -676,42 +700,55 @@ public class mtype {
             finally {
             }
         }
+
         public  boolean isintegral() {
             return false;
         }
+
         public  boolean isfloating() {
             return false;
         }
+
         public  boolean isreal() {
             return false;
         }
+
         public  boolean isimaginary() {
             return false;
         }
+
         public  boolean iscomplex() {
             return false;
         }
+
         public  boolean isscalar() {
             return false;
         }
+
         public  boolean isunsigned() {
             return false;
         }
+
         public  boolean ischar() {
             return false;
         }
+
         public  boolean isscope() {
             return false;
         }
+
         public  boolean isString() {
             return false;
         }
+
         public  boolean isAssignable() {
             return true;
         }
+
         public  boolean isBoolean() {
             return this.isscalar();
         }
+
         public  void checkDeprecated(Loc loc, Scope sc) {
             {
                 Dsymbol s = this.toDsymbol(sc);
@@ -721,33 +758,43 @@ public class mtype {
                 }
             }
         }
+
         public  boolean isConst() {
             return ((this.mod & 0xFF) & MODFlags.const_) != 0;
         }
+
         public  boolean isImmutable() {
             return ((this.mod & 0xFF) & MODFlags.immutable_) != 0;
         }
+
         public  boolean isMutable() {
             return ((this.mod & 0xFF) & 13) == 0;
         }
+
         public  boolean isShared() {
             return ((this.mod & 0xFF) & MODFlags.shared_) != 0;
         }
+
         public  boolean isSharedConst() {
             return ((this.mod & 0xFF) & 3) == 3;
         }
+
         public  boolean isWild() {
             return ((this.mod & 0xFF) & MODFlags.wild) != 0;
         }
+
         public  boolean isWildConst() {
             return ((this.mod & 0xFF) & MODFlags.wildconst) == MODFlags.wildconst;
         }
+
         public  boolean isSharedWild() {
             return ((this.mod & 0xFF) & 10) == 10;
         }
+
         public  boolean isNaked() {
             return (this.mod & 0xFF) == 0;
         }
+
         public  Type nullAttributes() {
             int sz = (sizeTy.get((this.ty & 0xFF)) & 0xFF);
             Type t = null;
@@ -772,6 +819,7 @@ public class mtype {
                 ((TypeClass)t).att = AliasThisRec.fwdref;
             return t;
         }
+
         public  Type constOf() {
             if (((this.mod & 0xFF) == MODFlags.const_))
                 return this;
@@ -785,6 +833,7 @@ public class mtype {
             t.fixTo(this);
             return t;
         }
+
         public  Type immutableOf() {
             if (this.isImmutable())
                 return this;
@@ -798,6 +847,7 @@ public class mtype {
             t.fixTo(this);
             return t;
         }
+
         public  Type mutableOf() {
             Type t = this;
             if (this.isImmutable())
@@ -842,6 +892,7 @@ public class mtype {
             assert(t.isMutable());
             return t;
         }
+
         public  Type sharedOf() {
             if (((this.mod & 0xFF) == MODFlags.shared_))
                 return this;
@@ -855,6 +906,7 @@ public class mtype {
             t.fixTo(this);
             return t;
         }
+
         public  Type sharedConstOf() {
             if (((this.mod & 0xFF) == 3))
                 return this;
@@ -868,6 +920,7 @@ public class mtype {
             t.fixTo(this);
             return t;
         }
+
         public  Type unSharedOf() {
             Type t = this;
             if (this.isShared())
@@ -901,6 +954,7 @@ public class mtype {
             assert(!t.isShared());
             return t;
         }
+
         public  Type wildOf() {
             if (((this.mod & 0xFF) == MODFlags.wild))
                 return this;
@@ -914,6 +968,7 @@ public class mtype {
             t.fixTo(this);
             return t;
         }
+
         public  Type wildConstOf() {
             if (((this.mod & 0xFF) == MODFlags.wildconst))
                 return this;
@@ -927,6 +982,7 @@ public class mtype {
             t.fixTo(this);
             return t;
         }
+
         public  Type sharedWildOf() {
             if (((this.mod & 0xFF) == 10))
                 return this;
@@ -940,6 +996,7 @@ public class mtype {
             t.fixTo(this);
             return t;
         }
+
         public  Type sharedWildConstOf() {
             if (((this.mod & 0xFF) == 11))
                 return this;
@@ -953,6 +1010,7 @@ public class mtype {
             t.fixTo(this);
             return t;
         }
+
         public  void fixTo(Type t) {
             Type mto = null;
             Type tn = this.nextOf();
@@ -1047,6 +1105,7 @@ public class mtype {
             this.check();
             t.check();
         }
+
         public  void check() {
             switch ((this.mod & 0xFF))
             {
@@ -1221,6 +1280,7 @@ public class mtype {
                 tn.check();
             }
         }
+
         public  Type addSTC(long stc) {
             Type t = this;
             if (t.isImmutable())
@@ -1286,6 +1346,7 @@ public class mtype {
             }
             return t;
         }
+
         public  Type castMod(byte mod) {
             Type t = null;
             switch ((mod & 0xFF))
@@ -1322,6 +1383,7 @@ public class mtype {
             }
             return t;
         }
+
         public  Type addMod(byte mod) {
             Type t = this;
             if (!t.isImmutable())
@@ -1408,6 +1470,7 @@ public class mtype {
             }
             return t;
         }
+
         public  Type addStorageClass(long stc) {
             byte mod = (byte)0;
             if ((stc & 1048576L) != 0)
@@ -1423,6 +1486,7 @@ public class mtype {
             }
             return this.addMod(mod);
         }
+
         public  Type pointerTo() {
             if (((this.ty & 0xFF) == ENUMTY.Terror))
                 return this;
@@ -1439,6 +1503,7 @@ public class mtype {
             }
             return this.pto;
         }
+
         public  Type referenceTo() {
             if (((this.ty & 0xFF) == ENUMTY.Terror))
                 return this;
@@ -1449,6 +1514,7 @@ public class mtype {
             }
             return this.rto;
         }
+
         public  Type arrayOf() {
             if (((this.ty & 0xFF) == ENUMTY.Terror))
                 return this;
@@ -1459,6 +1525,7 @@ public class mtype {
             }
             return this.arrayof;
         }
+
         public  Type sarrayOf(long dim) {
             assert(this.deco != null);
             Type t = new TypeSArray(this, new IntegerExp(Loc.initial, dim, tsize_t));
@@ -1466,6 +1533,7 @@ public class mtype {
             t = merge(t);
             return t;
         }
+
         public  Type aliasthisOf() {
             AggregateDeclaration ad = isAggregate(this);
             if ((ad == null) || (ad.aliasthis == null))
@@ -1531,6 +1599,7 @@ public class mtype {
             }
             return null;
         }
+
         public  boolean checkAliasThisRec() {
             Type tb = this.toBasetype();
             IntPtr pflag = null;
@@ -1549,6 +1618,7 @@ public class mtype {
             pflag.set(0, (flag | pflag.get() & -4));
             return flag == AliasThisRec.yes;
         }
+
         public  Type makeConst() {
             if (this.cto != null)
                 return this.cto;
@@ -1556,6 +1626,7 @@ public class mtype {
             t.mod = (byte)1;
             return t;
         }
+
         public  Type makeImmutable() {
             if (this.ito != null)
                 return this.ito;
@@ -1563,6 +1634,7 @@ public class mtype {
             t.mod = (byte)4;
             return t;
         }
+
         public  Type makeShared() {
             if (this.sto != null)
                 return this.sto;
@@ -1570,6 +1642,7 @@ public class mtype {
             t.mod = (byte)2;
             return t;
         }
+
         public  Type makeSharedConst() {
             if (this.scto != null)
                 return this.scto;
@@ -1577,6 +1650,7 @@ public class mtype {
             t.mod = (byte)3;
             return t;
         }
+
         public  Type makeWild() {
             if (this.wto != null)
                 return this.wto;
@@ -1584,6 +1658,7 @@ public class mtype {
             t.mod = (byte)8;
             return t;
         }
+
         public  Type makeWildConst() {
             if (this.wcto != null)
                 return this.wcto;
@@ -1591,6 +1666,7 @@ public class mtype {
             t.mod = (byte)9;
             return t;
         }
+
         public  Type makeSharedWild() {
             if (this.swto != null)
                 return this.swto;
@@ -1598,6 +1674,7 @@ public class mtype {
             t.mod = (byte)10;
             return t;
         }
+
         public  Type makeSharedWildConst() {
             if (this.swcto != null)
                 return this.swcto;
@@ -1605,25 +1682,31 @@ public class mtype {
             t.mod = (byte)11;
             return t;
         }
+
         public  Type makeMutable() {
             Type t = this.nullAttributes();
             t.mod = (byte)((this.mod & 0xFF) & MODFlags.shared_);
             return t;
         }
+
         public  Dsymbol toDsymbol(Scope sc) {
             return null;
         }
+
         public  Type toBasetype() {
             return this;
         }
+
         public  boolean isBaseOf(Type t, IntPtr poffset) {
             return false;
         }
+
         public  int implicitConvTo(Type to) {
             if (this.equals(to))
                 return MATCH.exact;
             return MATCH.nomatch;
         }
+
         public  int constConv(Type to) {
             if (this.equals(to))
                 return MATCH.exact;
@@ -1631,6 +1714,7 @@ public class mtype {
                 return MATCH.constant;
             return MATCH.nomatch;
         }
+
         public  byte deduceWild(Type t, boolean isRef) {
             if (t.isWild())
             {
@@ -1654,6 +1738,7 @@ public class mtype {
             }
             return (byte)0;
         }
+
         public  Type substWildTo(int mod) {
             Type t = null;
             try {
@@ -1732,6 +1817,7 @@ public class mtype {
                 t = t.addMod((byte)2);
             return t;
         }
+
         public  Type unqualify(int m) {
             Type t = this.mutableOf().unSharedOf();
             Type tn = ((this.ty & 0xFF) == ENUMTY.Tenum) ? null : this.nextOf();
@@ -1759,23 +1845,29 @@ public class mtype {
             t = t.addMod((byte)((this.mod & 0xFF) & ~m));
             return t;
         }
+
         public  Type toHeadMutable() {
             if (this.mod == 0)
                 return this;
             return this.mutableOf();
         }
+
         public  ClassDeclaration isClassHandle() {
             return null;
         }
+
         public  int alignment() {
             return -1;
         }
+
         public  Expression defaultInitLiteral(Loc loc) {
             return defaultInit(this, loc);
         }
+
         public  boolean isZeroInit(Loc loc) {
             return false;
         }
+
         public  Identifier getTypeInfoIdent() {
             OutBuffer buf = new OutBuffer();
             try {
@@ -1796,18 +1888,23 @@ public class mtype {
             finally {
             }
         }
+
         public  int hasWild() {
             return (this.mod & 0xFF) & MODFlags.wild;
         }
+
         public  boolean hasPointers() {
             return false;
         }
+
         public  boolean hasVoidInitPointers() {
             return false;
         }
+
         public  Type nextOf() {
             return null;
         }
+
         public  Type baseElemOf() {
             Type t = this.toBasetype();
             TypeSArray tsa = null;
@@ -1816,6 +1913,7 @@ public class mtype {
             }
             return t;
         }
+
         public  int numberOfElems(Loc loc) {
             long n = 1L;
             Type tb = this;
@@ -1831,6 +1929,7 @@ public class mtype {
             }
             return (int)n;
         }
+
         public  long sizemask() {
             long m = 0L;
             switch ((this.toBasetype().ty & 0xFF))
@@ -1862,12 +1961,15 @@ public class mtype {
             }
             return m;
         }
+
         public  boolean needsDestruction() {
             return false;
         }
+
         public  boolean needsNested() {
             return false;
         }
+
         public  boolean checkComplexTransition(Loc loc, Scope sc) {
             if ((sc).isDeprecated())
                 return false;
@@ -1910,74 +2012,97 @@ public class mtype {
             }
             return false;
         }
+
         public  TypeBasic isTypeBasic() {
             return null;
         }
+
         public  TypeError isTypeError() {
             return ((this.ty & 0xFF) == ENUMTY.Terror) ? (TypeError)this : null;
         }
+
         public  TypeVector isTypeVector() {
             return ((this.ty & 0xFF) == ENUMTY.Tvector) ? (TypeVector)this : null;
         }
+
         public  TypeSArray isTypeSArray() {
             return ((this.ty & 0xFF) == ENUMTY.Tsarray) ? (TypeSArray)this : null;
         }
+
         public  TypeDArray isTypeDArray() {
             return ((this.ty & 0xFF) == ENUMTY.Tarray) ? (TypeDArray)this : null;
         }
+
         public  TypeAArray isTypeAArray() {
             return ((this.ty & 0xFF) == ENUMTY.Taarray) ? (TypeAArray)this : null;
         }
+
         public  TypePointer isTypePointer() {
             return ((this.ty & 0xFF) == ENUMTY.Tpointer) ? (TypePointer)this : null;
         }
+
         public  TypeReference isTypeReference() {
             return ((this.ty & 0xFF) == ENUMTY.Treference) ? (TypeReference)this : null;
         }
+
         public  TypeFunction isTypeFunction() {
             return ((this.ty & 0xFF) == ENUMTY.Tfunction) ? (TypeFunction)this : null;
         }
+
         public  TypeDelegate isTypeDelegate() {
             return ((this.ty & 0xFF) == ENUMTY.Tdelegate) ? (TypeDelegate)this : null;
         }
+
         public  TypeIdentifier isTypeIdentifier() {
             return ((this.ty & 0xFF) == ENUMTY.Tident) ? (TypeIdentifier)this : null;
         }
+
         public  TypeInstance isTypeInstance() {
             return ((this.ty & 0xFF) == ENUMTY.Tinstance) ? (TypeInstance)this : null;
         }
+
         public  TypeTypeof isTypeTypeof() {
             return ((this.ty & 0xFF) == ENUMTY.Ttypeof) ? (TypeTypeof)this : null;
         }
+
         public  TypeReturn isTypeReturn() {
             return ((this.ty & 0xFF) == ENUMTY.Treturn) ? (TypeReturn)this : null;
         }
+
         public  TypeStruct isTypeStruct() {
             return ((this.ty & 0xFF) == ENUMTY.Tstruct) ? (TypeStruct)this : null;
         }
+
         public  TypeEnum isTypeEnum() {
             return ((this.ty & 0xFF) == ENUMTY.Tenum) ? (TypeEnum)this : null;
         }
+
         public  TypeClass isTypeClass() {
             return ((this.ty & 0xFF) == ENUMTY.Tclass) ? (TypeClass)this : null;
         }
+
         public  TypeTuple isTypeTuple() {
             return ((this.ty & 0xFF) == ENUMTY.Ttuple) ? (TypeTuple)this : null;
         }
+
         public  TypeSlice isTypeSlice() {
             return ((this.ty & 0xFF) == ENUMTY.Tslice) ? (TypeSlice)this : null;
         }
+
         public  TypeNull isTypeNull() {
             return ((this.ty & 0xFF) == ENUMTY.Tnull) ? (TypeNull)this : null;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
         public  TypeFunction toTypeFunction() {
             if (((this.ty & 0xFF) != ENUMTY.Tfunction))
                 throw new AssertionError("Unreachable code!");
             return (TypeFunction)this;
         }
+
 
         public Type() {}
 
@@ -1988,18 +2113,23 @@ public class mtype {
         public  TypeError() {
             super((byte)34);
         }
+
         public  Type syntaxCopy() {
             return this;
         }
+
         public  long size(Loc loc) {
             return -1L;
         }
+
         public  Expression defaultInitLiteral(Loc loc) {
             return new ErrorExp();
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeError copy() {
             TypeError that = new TypeError();
@@ -2029,11 +2159,13 @@ public class mtype {
             super(ty);
             this.next = next;
         }
+
         public  void checkDeprecated(Loc loc, Scope sc) {
             this.checkDeprecated(loc, sc);
             if (this.next != null)
                 this.next.checkDeprecated(loc, sc);
         }
+
         public  int hasWild() {
             if (((this.ty & 0xFF) == ENUMTY.Tfunction))
                 return 0;
@@ -2041,9 +2173,11 @@ public class mtype {
                 return this.hasWild();
             return (((((this.mod & 0xFF) & MODFlags.wild) != 0) || (this.next != null) && (this.next.hasWild() != 0)) ? 1 : 0);
         }
+
         public  Type nextOf() {
             return this.next;
         }
+
         public  Type makeConst() {
             if (this.cto != null)
             {
@@ -2070,6 +2204,7 @@ public class mtype {
             }
             return t;
         }
+
         public  Type makeImmutable() {
             if (this.ito != null)
             {
@@ -2083,6 +2218,7 @@ public class mtype {
             }
             return t;
         }
+
         public  Type makeShared() {
             if (this.sto != null)
             {
@@ -2109,6 +2245,7 @@ public class mtype {
             }
             return t;
         }
+
         public  Type makeSharedConst() {
             if (this.scto != null)
             {
@@ -2125,6 +2262,7 @@ public class mtype {
             }
             return t;
         }
+
         public  Type makeWild() {
             if (this.wto != null)
             {
@@ -2151,6 +2289,7 @@ public class mtype {
             }
             return t;
         }
+
         public  Type makeWildConst() {
             if (this.wcto != null)
             {
@@ -2167,6 +2306,7 @@ public class mtype {
             }
             return t;
         }
+
         public  Type makeSharedWild() {
             if (this.swto != null)
             {
@@ -2183,6 +2323,7 @@ public class mtype {
             }
             return t;
         }
+
         public  Type makeSharedWildConst() {
             if (this.swcto != null)
             {
@@ -2196,6 +2337,7 @@ public class mtype {
             }
             return t;
         }
+
         public  Type makeMutable() {
             TypeNext t = (TypeNext)this.makeMutable();
             if (((this.ty & 0xFF) == ENUMTY.Tsarray))
@@ -2204,6 +2346,7 @@ public class mtype {
             }
             return t;
         }
+
         public  int constConv(Type to) {
             if (this.equals(to))
                 return MATCH.exact;
@@ -2225,6 +2368,7 @@ public class mtype {
             }
             return m;
         }
+
         public  byte deduceWild(Type t, boolean isRef) {
             if (((this.ty & 0xFF) == ENUMTY.Tfunction))
                 return (byte)0;
@@ -2244,12 +2388,15 @@ public class mtype {
             }
             return wm;
         }
+
         public  void transitive() {
             this.next = this.next.addMod(this.mod);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeNext() {}
 
@@ -2369,12 +2516,15 @@ public class mtype {
             this.flags = flags;
             merge(this);
         }
+
         public  BytePtr kind() {
             return this.dstring;
         }
+
         public  Type syntaxCopy() {
             return this;
         }
+
         public  long size(Loc loc) {
             int size = 0;
             switch ((this.ty & 0xFF))
@@ -2434,33 +2584,43 @@ public class mtype {
             }
             return (long)size;
         }
+
         public  int alignsize() {
             return target.alignsize(this);
         }
+
         public  boolean isintegral() {
             return (this.flags & 1) != 0;
         }
+
         public  boolean isfloating() {
             return (this.flags & 2) != 0;
         }
+
         public  boolean isreal() {
             return (this.flags & 8) != 0;
         }
+
         public  boolean isimaginary() {
             return (this.flags & 16) != 0;
         }
+
         public  boolean iscomplex() {
             return (this.flags & 32) != 0;
         }
+
         public  boolean isscalar() {
             return (this.flags & 3) != 0;
         }
+
         public  boolean isunsigned() {
             return (this.flags & 4) != 0;
         }
+
         public  boolean ischar() {
             return (this.flags & 64) != 0;
         }
+
         public  int implicitConvTo(Type to) {
             if ((pequals(this, to)))
                 return MATCH.exact;
@@ -2528,6 +2688,7 @@ public class mtype {
             }
             return MATCH.convert;
         }
+
         public  boolean isZeroInit(Loc loc) {
             switch ((this.ty & 0xFF))
             {
@@ -2548,12 +2709,15 @@ public class mtype {
                 return true;
             }
         }
+
         public  TypeBasic isTypeBasic() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeBasic() {}
 
@@ -2587,36 +2751,47 @@ public class mtype {
             super((byte)41);
             this.basetype = basetype;
         }
+
         public static TypeVector create(Type basetype) {
             return new TypeVector(basetype);
         }
+
         public  BytePtr kind() {
             return new BytePtr("vector");
         }
+
         public  Type syntaxCopy() {
             return new TypeVector(this.basetype.syntaxCopy());
         }
+
         public  long size(Loc loc) {
             return this.basetype.size();
         }
+
         public  int alignsize() {
             return (int)this.basetype.size();
         }
+
         public  boolean isintegral() {
             return this.basetype.nextOf().isintegral();
         }
+
         public  boolean isfloating() {
             return this.basetype.nextOf().isfloating();
         }
+
         public  boolean isscalar() {
             return this.basetype.nextOf().isscalar();
         }
+
         public  boolean isunsigned() {
             return this.basetype.nextOf().isunsigned();
         }
+
         public  boolean isBoolean() {
             return false;
         }
+
         public  int implicitConvTo(Type to) {
             if ((pequals(this, to)))
                 return MATCH.exact;
@@ -2624,6 +2799,7 @@ public class mtype {
                 return MATCH.convert;
             return MATCH.nomatch;
         }
+
         public  Expression defaultInitLiteral(Loc loc) {
             assert(((this.basetype.ty & 0xFF) == ENUMTY.Tsarray));
             Expression e = this.basetype.defaultInitLiteral(loc);
@@ -2632,6 +2808,7 @@ public class mtype {
             ve.dim = (int)(this.basetype.size(loc) / this.elementType().size(loc));
             return ve;
         }
+
         public  TypeBasic elementType() {
             assert(((this.basetype.ty & 0xFF) == ENUMTY.Tsarray));
             TypeSArray t = (TypeSArray)this.basetype;
@@ -2639,12 +2816,15 @@ public class mtype {
             assert(tb != null);
             return tb;
         }
+
         public  boolean isZeroInit(Loc loc) {
             return this.basetype.isZeroInit(loc);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeVector() {}
 
@@ -2675,9 +2855,11 @@ public class mtype {
         public  TypeArray(byte ty, Type next) {
             super(ty, next);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeArray() {}
 
@@ -2692,9 +2874,11 @@ public class mtype {
             super((byte)1, t);
             this.dim = dim;
         }
+
         public  BytePtr kind() {
             return new BytePtr("sarray");
         }
+
         public  Type syntaxCopy() {
             Type t = this.next.syntaxCopy();
             Expression e = this.dim.syntaxCopy();
@@ -2702,6 +2886,7 @@ public class mtype {
             t.mod = this.mod;
             return t;
         }
+
         public  long size(Loc loc) {
             int n = this.numberOfElems(loc);
             long elemsize = this.baseElemOf().size(loc);
@@ -2715,19 +2900,24 @@ public class mtype {
             }
             return sz;
         }
+
         public  int alignsize() {
             return this.next.alignsize();
         }
+
         public  boolean isString() {
             byte nty = this.next.toBasetype().ty;
             return ((nty & 0xFF) == ENUMTY.Tchar) || ((nty & 0xFF) == ENUMTY.Twchar) || ((nty & 0xFF) == ENUMTY.Tdchar);
         }
+
         public  boolean isZeroInit(Loc loc) {
             return this.next.isZeroInit(loc);
         }
+
         public  int alignment() {
             return this.next.alignment();
         }
+
         public  int constConv(Type to) {
             {
                 TypeSArray tsa = to.isTypeSArray();
@@ -2739,6 +2929,7 @@ public class mtype {
             }
             return this.constConv(to);
         }
+
         public  int implicitConvTo(Type to) {
             {
                 TypeDArray ta = to.isTypeDArray();
@@ -2778,6 +2969,7 @@ public class mtype {
             }
             return MATCH.nomatch;
         }
+
         public  Expression defaultInitLiteral(Loc loc) {
             int d = (int)this.dim.toInteger();
             Expression elementinit = null;
@@ -2797,6 +2989,7 @@ public class mtype {
             ArrayLiteralExp ae = new ArrayLiteralExp(Loc.initial, this, elementinit, elements);
             return ae;
         }
+
         public  boolean hasPointers() {
             if (((this.next.ty & 0xFF) == ENUMTY.Tvoid))
             {
@@ -2805,15 +2998,19 @@ public class mtype {
             else
                 return this.next.hasPointers();
         }
+
         public  boolean needsDestruction() {
             return this.next.needsDestruction();
         }
+
         public  boolean needsNested() {
             return this.next.needsNested();
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeSArray() {}
 
@@ -2847,9 +3044,11 @@ public class mtype {
         public  TypeDArray(Type t) {
             super((byte)0, t);
         }
+
         public  BytePtr kind() {
             return new BytePtr("darray");
         }
+
         public  Type syntaxCopy() {
             Type t = this.next.syntaxCopy();
             if ((pequals(t, this.next)))
@@ -2861,22 +3060,28 @@ public class mtype {
             }
             return t;
         }
+
         public  long size(Loc loc) {
             return (long)(target.ptrsize * 2);
         }
+
         public  int alignsize() {
             return target.ptrsize;
         }
+
         public  boolean isString() {
             byte nty = this.next.toBasetype().ty;
             return ((nty & 0xFF) == ENUMTY.Tchar) || ((nty & 0xFF) == ENUMTY.Twchar) || ((nty & 0xFF) == ENUMTY.Tdchar);
         }
+
         public  boolean isZeroInit(Loc loc) {
             return true;
         }
+
         public  boolean isBoolean() {
             return true;
         }
+
         public  int implicitConvTo(Type to) {
             if (this.equals(to))
                 return MATCH.exact;
@@ -2901,12 +3106,15 @@ public class mtype {
             }
             return this.implicitConvTo(to);
         }
+
         public  boolean hasPointers() {
             return true;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeDArray() {}
 
@@ -2943,12 +3151,15 @@ public class mtype {
             super((byte)2, t);
             this.index = index;
         }
+
         public static TypeAArray create(Type t, Type index) {
             return new TypeAArray(t, index);
         }
+
         public  BytePtr kind() {
             return new BytePtr("aarray");
         }
+
         public  Type syntaxCopy() {
             Type t = this.next.syntaxCopy();
             Type ti = this.index.syntaxCopy();
@@ -2961,18 +3172,23 @@ public class mtype {
             }
             return t;
         }
+
         public  long size(Loc loc) {
             return (long)target.ptrsize;
         }
+
         public  boolean isZeroInit(Loc loc) {
             return true;
         }
+
         public  boolean isBoolean() {
             return true;
         }
+
         public  boolean hasPointers() {
             return true;
         }
+
         public  int implicitConvTo(Type to) {
             if (this.equals(to))
                 return MATCH.exact;
@@ -2994,6 +3210,7 @@ public class mtype {
             }
             return this.implicitConvTo(to);
         }
+
         public  int constConv(Type to) {
             {
                 TypeAArray taa = to.isTypeAArray();
@@ -3006,9 +3223,11 @@ public class mtype {
             }
             return this.constConv(to);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeAArray() {}
 
@@ -3044,12 +3263,15 @@ public class mtype {
         public  TypePointer(Type t) {
             super((byte)3, t);
         }
+
         public static TypePointer create(Type t) {
             return new TypePointer(t);
         }
+
         public  BytePtr kind() {
             return new BytePtr("pointer");
         }
+
         public  Type syntaxCopy() {
             Type t = this.next.syntaxCopy();
             if ((pequals(t, this.next)))
@@ -3061,9 +3283,11 @@ public class mtype {
             }
             return t;
         }
+
         public  long size(Loc loc) {
             return (long)target.ptrsize;
         }
+
         public  int implicitConvTo(Type to) {
             if (this.equals(to))
                 return MATCH.exact;
@@ -3120,6 +3344,7 @@ public class mtype {
             }
             return MATCH.nomatch;
         }
+
         public  int constConv(Type to) {
             if (((this.next.ty & 0xFF) == ENUMTY.Tfunction))
             {
@@ -3130,18 +3355,23 @@ public class mtype {
             }
             return this.constConv(to);
         }
+
         public  boolean isscalar() {
             return true;
         }
+
         public  boolean isZeroInit(Loc loc) {
             return true;
         }
+
         public  boolean hasPointers() {
             return true;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypePointer() {}
 
@@ -3174,9 +3404,11 @@ public class mtype {
         public  TypeReference(Type t) {
             super((byte)4, t);
         }
+
         public  BytePtr kind() {
             return new BytePtr("reference");
         }
+
         public  Type syntaxCopy() {
             Type t = this.next.syntaxCopy();
             if ((pequals(t, this.next)))
@@ -3188,15 +3420,19 @@ public class mtype {
             }
             return t;
         }
+
         public  long size(Loc loc) {
             return (long)target.ptrsize;
         }
+
         public  boolean isZeroInit(Loc loc) {
             return true;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeReference() {}
 
@@ -3306,12 +3542,15 @@ public class mtype {
             if ((stc & 17179869184L) != 0)
                 this.trust = TRUST.trusted;
         }
+
         public static TypeFunction create(DArray<Parameter> parameters, Type treturn, int varargs, int linkage, long stc) {
             return new TypeFunction(new ParameterList(parameters, varargs), treturn, linkage, stc);
         }
+
         public  BytePtr kind() {
             return new BytePtr("function");
         }
+
         public  Type syntaxCopy() {
             Type treturn = this.next != null ? this.next.syntaxCopy() : null;
             DArray<Parameter> params = Parameter.arraySyntaxCopy(this.parameterList.parameters);
@@ -3331,6 +3570,7 @@ public class mtype {
             t.fargs = this.fargs;
             return t;
         }
+
         public  void purityLevel() {
             TypeFunction tf = this;
             if ((tf.purity != PURE.fwdref))
@@ -3401,6 +3641,7 @@ public class mtype {
             }
             tf.purity = this.purity;
         }
+
         public  boolean hasLazyParameters() {
             int dim = this.parameterList.length();
             {
@@ -3413,11 +3654,13 @@ public class mtype {
             }
             return false;
         }
+
         public  boolean parameterEscapes(Type tthis, Parameter p) {
             if ((this.parameterStorageClass(tthis, p) & 532480L) != 0)
                 return false;
             return true;
         }
+
         public  long parameterStorageClass(Type tthis, Parameter p) {
             long stc = p.storageClass;
             if (!global.params.vsafe)
@@ -3487,6 +3730,7 @@ public class mtype {
             stc |= 524288L;
             return stc;
         }
+
         public  Type addStorageClass(long stc) {
             TypeFunction t = this.addStorageClass(stc).toTypeFunction();
             if (((stc & 67108864L) != 0) && (t.purity == 0) || ((stc & 33554432L) != 0) && !t.isnothrow || ((stc & 4398046511104L) != 0) && !t.isnogc || ((stc & 524288L) != 0) && !t.isscope || ((stc & 8589934592L) != 0) && (t.trust < TRUST.trusted))
@@ -3524,6 +3768,7 @@ public class mtype {
             }
             return t;
         }
+
         public  Type substWildTo(int _param_0) {
             if ((this.iswild == 0) && (((this.mod & 0xFF) & MODFlags.wild) == 0))
                 return this;
@@ -3563,6 +3808,7 @@ public class mtype {
             t.fargs = this.fargs;
             return merge(t);
         }
+
         public  BytePtr getParamError(Expression arg, Parameter par) {
             if ((global.gag != 0) && !global.params.showGaggedErrors)
                 return null;
@@ -3579,6 +3825,7 @@ public class mtype {
             finally {
             }
         }
+
         // from template getMatchError!(IntegerBytePtr)
         public  BytePtr getMatchErrorIntegerBytePtr(BytePtr format, int _param_1, BytePtr _param_2) {
             if ((global.gag != 0) && !global.params.showGaggedErrors)
@@ -3592,6 +3839,7 @@ public class mtype {
             }
         }
 
+
         // from template getMatchError!(IntegerInteger)
         public  BytePtr getMatchErrorIntegerInteger(BytePtr format, int _param_1, int _param_2) {
             if ((global.gag != 0) && !global.params.showGaggedErrors)
@@ -3604,6 +3852,7 @@ public class mtype {
             finally {
             }
         }
+
 
         public  int callMatch(Type tthis, Slice<Expression> args, int flag, Ptr<BytePtr> pMessage, Scope sc) {
             int match = MATCH.exact;
@@ -4060,6 +4309,7 @@ public class mtype {
         /*Nomatch:*/
             return MATCH.nomatch;
         }
+
         public  boolean checkRetType(Loc loc) {
             Type tb = this.next.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tfunction))
@@ -4090,9 +4340,11 @@ public class mtype {
                 return true;
             return false;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeFunction() {}
 
@@ -4142,12 +4394,15 @@ public class mtype {
             super((byte)5, t);
             this.ty = (byte)10;
         }
+
         public static TypeDelegate create(Type t) {
             return new TypeDelegate(t);
         }
+
         public  BytePtr kind() {
             return new BytePtr("delegate");
         }
+
         public  Type syntaxCopy() {
             Type t = this.next.syntaxCopy();
             if ((pequals(t, this.next)))
@@ -4159,6 +4414,7 @@ public class mtype {
             }
             return t;
         }
+
         public  Type addStorageClass(long stc) {
             TypeDelegate t = (TypeDelegate)this.addStorageClass(stc);
             if (!global.params.vsafe)
@@ -4174,12 +4430,15 @@ public class mtype {
             }
             return t;
         }
+
         public  long size(Loc loc) {
             return (long)(target.ptrsize * 2);
         }
+
         public  int alignsize() {
             return target.ptrsize;
         }
+
         public  int implicitConvTo(Type to) {
             if ((pequals(this, to)))
                 return MATCH.exact;
@@ -4197,18 +4456,23 @@ public class mtype {
             }
             return MATCH.nomatch;
         }
+
         public  boolean isZeroInit(Loc loc) {
             return true;
         }
+
         public  boolean isBoolean() {
             return true;
         }
+
         public  boolean hasPointers() {
             return true;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeDelegate() {}
 
@@ -4247,18 +4511,22 @@ public class mtype {
             this.loc = loc.copy();
             this.exp = exp;
         }
+
         public  Type syntaxCopy() {
             TraitsExp te = (TraitsExp)this.exp.syntaxCopy();
             TypeTraits tt = new TypeTraits(this.loc, te);
             tt.mod = this.mod;
             return tt;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
         public  long size(Loc loc) {
             return -1L;
         }
+
 
         public TypeTraits() {}
 
@@ -4295,6 +4563,7 @@ public class mtype {
             super(ty);
             this.loc = loc.copy();
         }
+
         public  void syntaxCopyHelper(TypeQualified t) {
             this.idents.setDim(t.idents.length);
             {
@@ -4323,22 +4592,28 @@ public class mtype {
                 }
             }
         }
+
         public  void addIdent(Identifier ident) {
             this.idents.push(ident);
         }
+
         public  void addInst(TemplateInstance inst) {
             this.idents.push(inst);
         }
+
         public  void addIndex(RootObject e) {
             this.idents.push(e);
         }
+
         public  long size(Loc loc) {
             error(this.loc, new BytePtr("size of type `%s` is not known"), this.toChars());
             return -1L;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeQualified() {}
 
@@ -4352,15 +4627,18 @@ public class mtype {
             super((byte)6, loc);
             this.ident = ident;
         }
+
         public  BytePtr kind() {
             return new BytePtr("identifier");
         }
+
         public  Type syntaxCopy() {
             TypeIdentifier t = new TypeIdentifier(this.loc, this.ident);
             t.syntaxCopyHelper(this);
             t.mod = this.mod;
             return t;
         }
+
         public  Dsymbol toDsymbol(Scope sc) {
             if (sc == null)
                 return null;
@@ -4374,9 +4652,11 @@ public class mtype {
                 s.value = getDsymbol(e.value);
             return s.value;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeIdentifier() {}
 
@@ -4412,15 +4692,18 @@ public class mtype {
             super((byte)35, loc);
             this.tempinst = tempinst;
         }
+
         public  BytePtr kind() {
             return new BytePtr("instance");
         }
+
         public  Type syntaxCopy() {
             TypeInstance t = new TypeInstance(this.loc, (TemplateInstance)this.tempinst.syntaxCopy(null));
             t.syntaxCopyHelper(this);
             t.mod = this.mod;
             return t;
         }
+
         public  Dsymbol toDsymbol(Scope sc) {
             Ref<Type> t = ref(null);
             Ref<Expression> e = ref(null);
@@ -4430,9 +4713,11 @@ public class mtype {
                 s.value = t.value.toDsymbol(sc);
             return s.value;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeInstance() {}
 
@@ -4468,15 +4753,18 @@ public class mtype {
             super((byte)36, loc);
             this.exp = exp;
         }
+
         public  BytePtr kind() {
             return new BytePtr("typeof");
         }
+
         public  Type syntaxCopy() {
             TypeTypeof t = new TypeTypeof(this.loc, this.exp.syntaxCopy());
             t.syntaxCopyHelper(this);
             t.mod = this.mod;
             return t;
         }
+
         public  Dsymbol toDsymbol(Scope sc) {
             Ref<Expression> e = ref(null);
             Ref<Type> t = ref(null);
@@ -4484,15 +4772,18 @@ public class mtype {
             resolve(this, this.loc, sc, ptr(e), ptr(t), ptr(s), false);
             return s.value;
         }
+
         public  long size(Loc loc) {
             if (this.exp.type != null)
                 return this.exp.type.size(loc);
             else
                 return this.size(loc);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeTypeof() {}
 
@@ -4526,15 +4817,18 @@ public class mtype {
         public  TypeReturn(Loc loc) {
             super((byte)39, loc);
         }
+
         public  BytePtr kind() {
             return new BytePtr("return");
         }
+
         public  Type syntaxCopy() {
             TypeReturn t = new TypeReturn(this.loc);
             t.syntaxCopyHelper(this);
             t.mod = this.mod;
             return t;
         }
+
         public  Dsymbol toDsymbol(Scope sc) {
             Ref<Expression> e = ref(null);
             Ref<Type> t = ref(null);
@@ -4542,9 +4836,11 @@ public class mtype {
             resolve(this, this.loc, sc, ptr(e), ptr(t), ptr(s), false);
             return s.value;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeReturn() {}
 
@@ -4591,30 +4887,38 @@ public class mtype {
             super((byte)8);
             this.sym = sym;
         }
+
         public static TypeStruct create(StructDeclaration sym) {
             return new TypeStruct(sym);
         }
+
         public  BytePtr kind() {
             return new BytePtr("struct");
         }
+
         public  long size(Loc loc) {
             return this.sym.size(loc);
         }
+
         public  int alignsize() {
             this.sym.size(Loc.initial);
             return this.sym.alignsize;
         }
+
         public  Type syntaxCopy() {
             return this;
         }
+
         public  Dsymbol toDsymbol(Scope sc) {
             return this.sym;
         }
+
         public  int alignment() {
             if ((this.sym.alignment == 0))
                 this.sym.size(this.sym.loc);
             return this.sym.alignment;
         }
+
         public  Expression defaultInitLiteral(Loc loc) {
             this.sym.size(loc);
             if ((this.sym.sizeok != Sizeok.done))
@@ -4657,9 +4961,11 @@ public class mtype {
             structinit.type = this;
             return structinit;
         }
+
         public  boolean isZeroInit(Loc loc) {
             return this.sym.zeroInit;
         }
+
         public  boolean isAssignable() {
             boolean assignable = true;
             int offset = -1;
@@ -4687,12 +4993,15 @@ public class mtype {
             }
             return assignable;
         }
+
         public  boolean isBoolean() {
             return false;
         }
+
         public  boolean needsDestruction() {
             return this.sym.dtor != null;
         }
+
         public  boolean needsNested() {
             if (this.sym.isNested())
                 return true;
@@ -4706,6 +5015,7 @@ public class mtype {
             }
             return false;
         }
+
         public  boolean hasPointers() {
             StructDeclaration s = this.sym;
             if ((this.sym.members != null) && !this.sym.determineFields() && (!pequals(this.sym.type, Type.terror)))
@@ -4721,6 +5031,7 @@ public class mtype {
             }
             return false;
         }
+
         public  boolean hasVoidInitPointers() {
             StructDeclaration s = this.sym;
             this.sym.size(Loc.initial);
@@ -4737,6 +5048,7 @@ public class mtype {
             }
             return false;
         }
+
         public  int implicitConvToWithoutAliasThis(Type to) {
             int m = MATCH.nomatch;
             if (((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, ((TypeStruct)to).sym)))
@@ -4783,6 +5095,7 @@ public class mtype {
             }
             return m;
         }
+
         public  int implicitConvToThroughAliasThis(Type to) {
             int m = MATCH.nomatch;
             if (!(((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, ((TypeStruct)to).sym))) && (this.sym.aliasthis != null) && ((this.att & AliasThisRec.tracing) == 0))
@@ -4801,10 +5114,12 @@ public class mtype {
             }
             return m;
         }
+
         public  int implicitConvTo(Type to) {
             int m = this.implicitConvToWithoutAliasThis(to);
             return m != 0 ? m : this.implicitConvToThroughAliasThis(to);
         }
+
         public  int constConv(Type to) {
             if (this.equals(to))
                 return MATCH.exact;
@@ -4812,6 +5127,7 @@ public class mtype {
                 return MATCH.constant;
             return MATCH.nomatch;
         }
+
         public  byte deduceWild(Type t, boolean isRef) {
             if (((this.ty & 0xFF) == (t.ty & 0xFF)) && (pequals(this.sym, ((TypeStruct)t).sym)))
                 return this.deduceWild(t, isRef);
@@ -4830,12 +5146,15 @@ public class mtype {
             }
             return wm;
         }
+
         public  Type toHeadMutable() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeStruct() {}
 
@@ -4870,66 +5189,86 @@ public class mtype {
             super((byte)9);
             this.sym = sym;
         }
+
         public  BytePtr kind() {
             return new BytePtr("enum");
         }
+
         public  Type syntaxCopy() {
             return this;
         }
+
         public  long size(Loc loc) {
             return this.sym.getMemtype(loc).size(loc);
         }
+
         public  Type memType(Loc loc) {
             return this.sym.getMemtype(loc);
         }
+
         public  int alignsize() {
             Type t = this.memType(Loc.initial);
             if (((t.ty & 0xFF) == ENUMTY.Terror))
                 return 4;
             return t.alignsize();
         }
+
         public  Dsymbol toDsymbol(Scope sc) {
             return this.sym;
         }
+
         public  boolean isintegral() {
             return this.memType(Loc.initial).isintegral();
         }
+
         public  boolean isfloating() {
             return this.memType(Loc.initial).isfloating();
         }
+
         public  boolean isreal() {
             return this.memType(Loc.initial).isreal();
         }
+
         public  boolean isimaginary() {
             return this.memType(Loc.initial).isimaginary();
         }
+
         public  boolean iscomplex() {
             return this.memType(Loc.initial).iscomplex();
         }
+
         public  boolean isscalar() {
             return this.memType(Loc.initial).isscalar();
         }
+
         public  boolean isunsigned() {
             return this.memType(Loc.initial).isunsigned();
         }
+
         public  boolean ischar() {
             return this.memType(Loc.initial).ischar();
         }
+
         public  boolean isBoolean() {
             return this.memType(Loc.initial).isBoolean();
         }
+
         public  boolean isString() {
             return this.memType(Loc.initial).isString();
         }
+
         public  boolean isAssignable() {
             return this.memType(Loc.initial).isAssignable();
         }
+
         public  boolean needsDestruction() {
             return this.memType(Loc.initial).needsDestruction();
         }
+
         public  boolean needsNested() {
             return this.memType(Loc.initial).needsNested();
         }
+
         public  int implicitConvTo(Type to) {
             int m = MATCH.nomatch;
             if (((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, ((TypeEnum)to).sym)))
@@ -4940,6 +5279,7 @@ public class mtype {
                 m = MATCH.nomatch;
             return m;
         }
+
         public  int constConv(Type to) {
             if (this.equals(to))
                 return MATCH.exact;
@@ -4947,27 +5287,34 @@ public class mtype {
                 return MATCH.constant;
             return MATCH.nomatch;
         }
+
         public  Type toBasetype() {
             if ((this.sym.members == null) && (this.sym.memtype == null))
                 return this;
             Type tb = this.sym.getMemtype(Loc.initial).toBasetype();
             return tb.castMod(this.mod);
         }
+
         public  boolean isZeroInit(Loc loc) {
             return this.sym.getDefaultValue(loc).isBool(false);
         }
+
         public  boolean hasPointers() {
             return this.memType(Loc.initial).hasPointers();
         }
+
         public  boolean hasVoidInitPointers() {
             return this.memType(Loc.initial).hasVoidInitPointers();
         }
+
         public  Type nextOf() {
             return this.memType(Loc.initial).nextOf();
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeEnum() {}
 
@@ -5002,21 +5349,27 @@ public class mtype {
             super((byte)7);
             this.sym = sym;
         }
+
         public  BytePtr kind() {
             return new BytePtr("class");
         }
+
         public  long size(Loc loc) {
             return (long)target.ptrsize;
         }
+
         public  Type syntaxCopy() {
             return this;
         }
+
         public  Dsymbol toDsymbol(Scope sc) {
             return this.sym;
         }
+
         public  ClassDeclaration isClassHandle() {
             return this.sym;
         }
+
         public  boolean isBaseOf(Type t, IntPtr poffset) {
             if ((t != null) && ((t.ty & 0xFF) == ENUMTY.Tclass))
             {
@@ -5026,6 +5379,7 @@ public class mtype {
             }
             return false;
         }
+
         public  int implicitConvToWithoutAliasThis(Type to) {
             int m = this.constConv(to);
             if ((m > MATCH.nomatch))
@@ -5044,6 +5398,7 @@ public class mtype {
             }
             return MATCH.nomatch;
         }
+
         public  int implicitConvToThroughAliasThis(Type to) {
             int m = MATCH.nomatch;
             if ((this.sym.aliasthis != null) && ((this.att & AliasThisRec.tracing) == 0))
@@ -5060,10 +5415,12 @@ public class mtype {
             }
             return m;
         }
+
         public  int implicitConvTo(Type to) {
             int m = this.implicitConvToWithoutAliasThis(to);
             return m != 0 ? m : this.implicitConvToThroughAliasThis(to);
         }
+
         public  int constConv(Type to) {
             if (this.equals(to))
                 return MATCH.exact;
@@ -5077,6 +5434,7 @@ public class mtype {
             }
             return MATCH.nomatch;
         }
+
         public  byte deduceWild(Type t, boolean isRef) {
             ClassDeclaration cd = t.isClassHandle();
             if ((cd != null) && (pequals(this.sym, cd)) || cd.isBaseOf(this.sym, null))
@@ -5096,24 +5454,31 @@ public class mtype {
             }
             return wm;
         }
+
         public  Type toHeadMutable() {
             return this;
         }
+
         public  boolean isZeroInit(Loc loc) {
             return true;
         }
+
         public  boolean isscope() {
             return this.sym.stack;
         }
+
         public  boolean isBoolean() {
             return true;
         }
+
         public  boolean hasPointers() {
             return true;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeClass() {}
 
@@ -5148,6 +5513,7 @@ public class mtype {
             super((byte)37);
             this.arguments = arguments;
         }
+
         public  TypeTuple(DArray<Expression> exps) {
             super((byte)37);
             DArray<Parameter> arguments = new DArray<Parameter>();
@@ -5167,33 +5533,40 @@ public class mtype {
             }
             this.arguments = arguments;
         }
+
         public static TypeTuple create(DArray<Parameter> arguments) {
             return new TypeTuple(arguments);
         }
+
         public  TypeTuple() {
             super((byte)37);
             this.arguments = new DArray<Parameter>();
         }
+
         public  TypeTuple(Type t1) {
             super((byte)37);
             this.arguments = new DArray<Parameter>();
             (this.arguments).push(new Parameter(0L, t1, null, null, null));
         }
+
         public  TypeTuple(Type t1, Type t2) {
             super((byte)37);
             this.arguments = new DArray<Parameter>();
             (this.arguments).push(new Parameter(0L, t1, null, null, null));
             (this.arguments).push(new Parameter(0L, t2, null, null, null));
         }
+
         public  BytePtr kind() {
             return new BytePtr("tuple");
         }
+
         public  Type syntaxCopy() {
             DArray<Parameter> args = Parameter.arraySyntaxCopy(this.arguments);
             Type t = new TypeTuple(args);
             t.mod = this.mod;
             return t;
         }
+
         public  boolean equals(RootObject o) {
             Type t = (Type)o;
             if ((pequals(this, t)))
@@ -5219,9 +5592,11 @@ public class mtype {
             }
             return false;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeTuple copy() {
             TypeTuple that = new TypeTuple();
@@ -5254,17 +5629,21 @@ public class mtype {
             this.lwr = lwr;
             this.upr = upr;
         }
+
         public  BytePtr kind() {
             return new BytePtr("slice");
         }
+
         public  Type syntaxCopy() {
             Type t = new TypeSlice(this.next.syntaxCopy(), this.lwr.syntaxCopy(), this.upr.syntaxCopy());
             t.mod = this.mod;
             return t;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeSlice() {}
 
@@ -5299,12 +5678,15 @@ public class mtype {
         public  TypeNull() {
             super((byte)40);
         }
+
         public  BytePtr kind() {
             return new BytePtr("null");
         }
+
         public  Type syntaxCopy() {
             return this;
         }
+
         public  int implicitConvTo(Type to) {
             int m = this.implicitConvTo(to);
             if ((m != MATCH.nomatch))
@@ -5316,18 +5698,23 @@ public class mtype {
             }
             return MATCH.nomatch;
         }
+
         public  boolean hasPointers() {
             return true;
         }
+
         public  boolean isBoolean() {
             return true;
         }
+
         public  long size(Loc loc) {
             return Type.tvoidptr.size(loc);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TypeNull copy() {
             TypeNull that = new TypeNull();
@@ -5357,9 +5744,11 @@ public class mtype {
         public  int length() {
             return Parameter.dim(this.parameters);
         }
+
         public  Parameter opIndex(int i) {
             return Parameter.getNth(this.parameters, i, null);
         }
+
         public ParameterList(){
         }
         public ParameterList copy(){
@@ -5394,12 +5783,15 @@ public class mtype {
             this.defaultArg = defaultArg;
             this.userAttribDecl = userAttribDecl;
         }
+
         public static Parameter create(long storageClass, Type type, Identifier ident, Expression defaultArg, UserAttributeDeclaration userAttribDecl) {
             return new Parameter(storageClass, type, ident, defaultArg, userAttribDecl);
         }
+
         public  Parameter syntaxCopy() {
             return new Parameter(this.storageClass, this.type != null ? this.type.syntaxCopy() : null, this.ident, this.defaultArg != null ? this.defaultArg.syntaxCopy() : null, this.userAttribDecl != null ? (UserAttributeDeclaration)this.userAttribDecl.syntaxCopy(null) : null);
         }
+
         public  Type isLazyArray() {
             Type tb = this.type.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tsarray) || ((tb.ty & 0xFF) == ENUMTY.Tarray))
@@ -5419,12 +5811,15 @@ public class mtype {
             }
             return null;
         }
+
         public  int dyncast() {
             return DYNCAST.parameter;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
         public static DArray<Parameter> arraySyntaxCopy(DArray<Parameter> parameters) {
             DArray<Parameter> params = null;
             if (parameters != null)
@@ -5439,6 +5834,7 @@ public class mtype {
             }
             return params;
         }
+
         public static int dim(DArray<Parameter> parameters) {
             IntRef nargs = ref(0);
             Function2<Integer,Parameter,Integer> dimDg = new Function2<Integer,Parameter,Integer>(){
@@ -5450,6 +5846,7 @@ public class mtype {
             _foreach(parameters, dimDg, null);
             return nargs.value;
         }
+
         public static Parameter getNth(DArray<Parameter> parameters, int nth, IntPtr pn) {
             IntRef nth_ref = ref(nth);
             Ref<Parameter> param = ref(null);
@@ -5466,6 +5863,7 @@ public class mtype {
             int res = _foreach(parameters, getNthParamDg, null);
             return res != 0 ? param.value : null;
         }
+
         public static int _foreach(DArray<Parameter> parameters, Function2<Integer,Parameter,Integer> dg, IntPtr pn) {
             assert(dg != null);
             if (parameters == null)
@@ -5496,15 +5894,18 @@ public class mtype {
                 pn.set(0, n.value);
             return result;
         }
+
         public  BytePtr toChars() {
             return this.ident != null ? this.ident.toChars() : new BytePtr("__anonymous_param");
         }
+
         public  boolean isCovariant(boolean returnByRef, Parameter p) {
             long stc = 2111488L;
             if (((this.storageClass & 2111488L) != (p.storageClass & 2111488L)))
                 return false;
             return isCovariantScope(returnByRef, this.storageClass, p.storageClass);
         }
+
         public static boolean isCovariantScope(boolean returnByRef, long from, long to) {
             if ((from == to))
                 return true;
@@ -5545,6 +5946,7 @@ public class mtype {
             return covariant.get(buildSR.invoke(returnByRef, from)).get(buildSR.invoke(returnByRef, to));
         }
 
+
         public static class SR 
         {
             public static final int None = 0;
@@ -5577,6 +5979,7 @@ public class mtype {
             covariant.get(7).set(4, true);
             return covariant;
         }
+
         public static Slice<Slice<Boolean>> covariant = slice(new Slice<Boolean>[]{slice(new boolean[]{true, false, false, false, false, false, false, false}), slice(new boolean[]{true, true, true, false, false, false, false, false}), slice(new boolean[]{true, false, true, false, false, false, false, false}), slice(new boolean[]{false, false, false, true, true, false, false, false}), slice(new boolean[]{false, false, false, false, true, false, false, false}), slice(new boolean[]{true, true, true, true, true, true, true, true}), slice(new boolean[]{false, false, false, false, true, false, true, false}), slice(new boolean[]{false, false, false, true, true, false, false, true})});
 
         public Parameter() {}
@@ -5601,6 +6004,7 @@ public class mtype {
         }
         return slice(new BytePtr[]{s1, s2});
     }
+
     public static void modifiersApply(TypeFunction tf, Function1<ByteSlice,Void> dg) {
         ByteSlice modsArr = slice(new byte[]{(byte)1, (byte)4, (byte)8, (byte)2});
         {
@@ -5615,6 +6019,7 @@ public class mtype {
             }
         }
     }
+
     public static void attributesApply(TypeFunction tf, Function1<ByteSlice,Void> dg, int trustFormat) {
         if (tf.purity != 0)
             dg.invoke(new ByteSlice("pure"));
@@ -5640,6 +6045,7 @@ public class mtype {
         }
         dg.invoke(trustToString(trustAttrib));
     }
+
     public static AggregateDeclaration isAggregate(Type t) {
         t = t.toBasetype();
         if (((t.ty & 0xFF) == ENUMTY.Tclass))
@@ -5648,10 +6054,12 @@ public class mtype {
             return ((TypeStruct)t).sym;
         return null;
     }
+
     public static boolean isIndexableNonAggregate(Type t) {
         t = t.toBasetype();
         return ((t.ty & 0xFF) == ENUMTY.Tpointer) || ((t.ty & 0xFF) == ENUMTY.Tsarray) || ((t.ty & 0xFF) == ENUMTY.Tarray) || ((t.ty & 0xFF) == ENUMTY.Taarray) || ((t.ty & 0xFF) == ENUMTY.Ttuple) || ((t.ty & 0xFF) == ENUMTY.Tvector);
     }
+
     public static boolean isCopyable(Type t) {
         {
             TypeStruct ts = t.isTypeStruct();
@@ -5663,4 +6071,5 @@ public class mtype {
         }
         return true;
     }
+
 }

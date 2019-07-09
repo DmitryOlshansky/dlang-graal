@@ -52,6 +52,7 @@ public class dstruct {
         }
         return fd;
     }
+
     public static void semanticTypeInfo(Scope sc, Type t) {
         Ref<Scope> sc_ref = ref(sc);
         if (sc_ref.value != null)
@@ -157,6 +158,7 @@ public class dstruct {
         }
     }
 
+
     public static class StructFlags 
     {
         public static final int none = 0;
@@ -201,13 +203,16 @@ public class dstruct {
                     dmodule.Module.moduleinfo = this;
             }
         }
+
         public static StructDeclaration create(Loc loc, Identifier id, boolean inObject) {
             return new StructDeclaration(loc, id, inObject);
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             StructDeclaration sd = s != null ? (StructDeclaration)s : new StructDeclaration(this.loc, this.ident, false);
             return this.syntaxCopy(sd);
         }
+
         public  void semanticTypeInfoMembers() {
             if ((this.xeq != null) && (this.xeq._scope != null) && (this.xeq.semanticRun < PASS.semantic3done))
             {
@@ -241,6 +246,7 @@ public class dstruct {
                 semantic3(this.dtor, this.dtor._scope);
             }
         }
+
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if ((this._scope != null) && (this.symtab == null))
                 dsymbolSemantic(this, this._scope);
@@ -251,9 +257,11 @@ public class dstruct {
             }
             return this.search(loc, ident, flags);
         }
+
         public  BytePtr kind() {
             return new BytePtr("struct");
         }
+
         public  void finalizeSize() {
             assert((this.sizeok != Sizeok.done));
             if ((this.sizeok == Sizeok.inProcess))
@@ -330,6 +338,7 @@ public class dstruct {
                     this.arg2type = (tt.arguments).get(1).type;
             }
         }
+
         public  boolean fit(Loc loc, Scope sc, DArray<Expression> elements, Type stype) {
             if (elements == null)
                 return true;
@@ -407,6 +416,7 @@ public class dstruct {
             }
             return true;
         }
+
         public  boolean isPOD() {
             if ((this.ispod != StructPOD.fwd))
                 return this.ispod == StructPOD.yes;
@@ -437,12 +447,15 @@ public class dstruct {
             }
             return this.ispod == StructPOD.yes;
         }
+
         public  StructDeclaration isStructDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public StructDeclaration() {}
 
@@ -580,25 +593,31 @@ public class dstruct {
             return false;
         }
     }
+
     public static class UnionDeclaration extends StructDeclaration
     {
         public  UnionDeclaration(Loc loc, Identifier id) {
             super(loc, id, false);
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             UnionDeclaration ud = new UnionDeclaration(this.loc, this.ident);
             return this.syntaxCopy(ud);
         }
+
         public  BytePtr kind() {
             return new BytePtr("union");
         }
+
         public  UnionDeclaration isUnionDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public UnionDeclaration() {}
 

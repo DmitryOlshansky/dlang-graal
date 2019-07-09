@@ -38,9 +38,11 @@ public class optimize {
             this.result = result;
             this.keepLvalue = keepLvalue;
         }
+
         public  void error() {
             this.ret = new ErrorExp();
         }
+
         public  boolean expOptimize(Ref<Expression> e, int flags, boolean keepLvalue) {
             if (e.value == null)
                 return false;
@@ -56,16 +58,20 @@ public class optimize {
                 return false;
             }
         }
+
         public  boolean unaOptimize(UnaExp e, int flags) {
             return this.expOptimize(e.e1, flags, false);
         }
+
         public  boolean binOptimize(BinExp e, int flags) {
             this.expOptimize(e.e1, flags, false);
             this.expOptimize(e.e2, flags, false);
             return (this.ret.op & 0xFF) == 127;
         }
+
         public  void visit(Expression e) {
         }
+
         public  void visit(VarExp e) {
             if (this.keepLvalue)
             {
@@ -75,6 +81,7 @@ public class optimize {
             }
             this.ret = fromConstInitializer(this.result, e);
         }
+
         public  void visit(TupleExp e) {
             this.expOptimize(e.e0, 0, false);
             {
@@ -84,6 +91,7 @@ public class optimize {
                 }
             }
         }
+
         public  void visit(ArrayLiteralExp e) {
             if (e.elements != null)
             {
@@ -96,6 +104,7 @@ public class optimize {
                 }
             }
         }
+
         public  void visit(AssocArrayLiteralExp e) {
             assert(((e.keys).length == (e.values).length));
             {
@@ -106,6 +115,7 @@ public class optimize {
                 }
             }
         }
+
         public  void visit(StructLiteralExp e) {
             if ((e.stageflags & 4) != 0)
                 return ;
@@ -122,10 +132,12 @@ public class optimize {
             }
             e.stageflags = old;
         }
+
         public  void visit(UnaExp e) {
             if (this.unaOptimize(e, this.result))
                 return ;
         }
+
         public  void visit(NegExp e) {
             if (this.unaOptimize(e, this.result))
                 return ;
@@ -134,6 +146,7 @@ public class optimize {
                 this.ret = Neg(e.type, e.e1).copy();
             }
         }
+
         public  void visit(ComExp e) {
             if (this.unaOptimize(e, this.result))
                 return ;
@@ -142,6 +155,7 @@ public class optimize {
                 this.ret = Com(e.type, e.e1).copy();
             }
         }
+
         public  void visit(NotExp e) {
             if (this.unaOptimize(e, this.result))
                 return ;
@@ -150,9 +164,11 @@ public class optimize {
                 this.ret = Not(e.type, e.e1).copy();
             }
         }
+
         public  void visit(SymOffExp e) {
             assert(e.var != null);
         }
+
         public  void visit(AddrExp e) {
             if (((e.e1.op & 0xFF) == 99))
             {
@@ -218,6 +234,7 @@ public class optimize {
                 }
             }
         }
+
         public  void visit(PtrExp e) {
             if (this.expOptimize(e.e1, this.result, false))
                 return ;
@@ -260,6 +277,7 @@ public class optimize {
                 }
             }
         }
+
         public  void visit(DotVarExp e) {
             if (this.expOptimize(e.e1, this.result, false))
                 return ;
@@ -287,6 +305,7 @@ public class optimize {
                 }
             }
         }
+
         public  void visit(NewExp e) {
             this.expOptimize(e.thisexp, 0, false);
             if (e.newargs != null)
@@ -308,6 +327,7 @@ public class optimize {
                 }
             }
         }
+
         public  void visit(CallExp e) {
             if (this.expOptimize(e.e1, this.result, false))
                 return ;
@@ -328,6 +348,7 @@ public class optimize {
                 }
             }
         }
+
         public  void visit(CastExp e) {
             assert(e.type != null);
             byte op1 = e.e1.op;
@@ -414,6 +435,7 @@ public class optimize {
                 }
             }
         }
+
         public  void visit(BinExp e) {
             boolean e2only = ((e.op & 0xFF) == 95) || ((e.op & 0xFF) == 96);
             if (e2only ? this.expOptimize(e.e2, this.result, false) : this.binOptimize(e, this.result))
@@ -435,6 +457,7 @@ public class optimize {
                 }
             }
         }
+
         public  void visit(AddExp e) {
             if (this.binOptimize(e, this.result))
                 return ;
@@ -445,6 +468,7 @@ public class optimize {
                 this.ret = Add(e.loc, e.type, e.e1, e.e2).copy();
             }
         }
+
         public  void visit(MinExp e) {
             if (this.binOptimize(e, this.result))
                 return ;
@@ -455,6 +479,7 @@ public class optimize {
                 this.ret = Min(e.loc, e.type, e.e1, e.e2).copy();
             }
         }
+
         public  void visit(MulExp e) {
             if (this.binOptimize(e, this.result))
                 return ;
@@ -463,6 +488,7 @@ public class optimize {
                 this.ret = Mul(e.loc, e.type, e.e1, e.e2).copy();
             }
         }
+
         public  void visit(DivExp e) {
             if (this.binOptimize(e, this.result))
                 return ;
@@ -471,6 +497,7 @@ public class optimize {
                 this.ret = Div(e.loc, e.type, e.e1, e.e2).copy();
             }
         }
+
         public  void visit(ModExp e) {
             if (this.binOptimize(e, this.result))
                 return ;
@@ -479,6 +506,7 @@ public class optimize {
                 this.ret = Mod(e.loc, e.type, e.e1, e.e2).copy();
             }
         }
+
         public  void shift_optimize(BinExp e, Function4<Loc,Type,Expression,Expression,UnionExp> shift) {
             if (this.binOptimize(e, this.result))
                 return ;
@@ -498,33 +526,40 @@ public class optimize {
                     this.ret = (shift).invoke(e.loc, e.type, e.e1, e.e2).copy();
             }
         }
+
         public  void visit(ShlExp e) {
             this.shift_optimize(e, optimize::Shl);
         }
+
         public  void visit(ShrExp e) {
             this.shift_optimize(e, optimize::Shr);
         }
+
         public  void visit(UshrExp e) {
             this.shift_optimize(e, optimize::Ushr);
         }
+
         public  void visit(AndExp e) {
             if (this.binOptimize(e, this.result))
                 return ;
             if ((e.e1.isConst() == 1) && (e.e2.isConst() == 1))
                 this.ret = And(e.loc, e.type, e.e1, e.e2).copy();
         }
+
         public  void visit(OrExp e) {
             if (this.binOptimize(e, this.result))
                 return ;
             if ((e.e1.isConst() == 1) && (e.e2.isConst() == 1))
                 this.ret = Or(e.loc, e.type, e.e1, e.e2).copy();
         }
+
         public  void visit(XorExp e) {
             if (this.binOptimize(e, this.result))
                 return ;
             if ((e.e1.isConst() == 1) && (e.e2.isConst() == 1))
                 this.ret = Xor(e.loc, e.type, e.e1, e.e2).copy();
         }
+
         public  void visit(PowExp e) {
             if (this.binOptimize(e, this.result))
                 return ;
@@ -598,6 +633,7 @@ public class optimize {
                 return ;
             }
         }
+
         public  void visit(CommaExp e) {
             this.expOptimize(e.e1, 0, false);
             this.expOptimize(e.e2, this.result, this.keepLvalue);
@@ -610,6 +646,7 @@ public class optimize {
                     this.ret.type = e.type;
             }
         }
+
         public  void visit(ArrayLengthExp e) {
             if (this.unaOptimize(e, 1))
                 return ;
@@ -630,6 +667,7 @@ public class optimize {
                 this.ret = ArrayLength(e.type, e.e1).copy();
             }
         }
+
         public  void visit(EqualExp e) {
             if (this.binOptimize(e, 0))
                 return ;
@@ -649,6 +687,7 @@ public class optimize {
             if (CTFEExp.isCantExp(this.ret))
                 this.ret = e;
         }
+
         public  void visit(IdentityExp e) {
             if (this.binOptimize(e, 0))
                 return ;
@@ -659,6 +698,7 @@ public class optimize {
                     this.ret = e;
             }
         }
+
         public  void visit(IndexExp e) {
             if (this.expOptimize(e.e1, this.result & 1, false))
                 return ;
@@ -672,6 +712,7 @@ public class optimize {
             if (CTFEExp.isCantExp(this.ret))
                 this.ret = e;
         }
+
         public  void visit(SliceExp e) {
             if (this.expOptimize(e.e1, this.result & 1, false))
                 return ;
@@ -707,6 +748,7 @@ public class optimize {
                 this.ret = e;
             }
         }
+
         public  void visit(LogicalExp e) {
             if (this.expOptimize(e.e1, 0, false))
                 return ;
@@ -745,6 +787,7 @@ public class optimize {
                 }
             }
         }
+
         public  void visit(CmpExp e) {
             if (this.binOptimize(e, 0))
                 return ;
@@ -754,6 +797,7 @@ public class optimize {
             if (CTFEExp.isCantExp(this.ret))
                 this.ret = e;
         }
+
         public  void visit(CatExp e) {
             if (this.binOptimize(e, this.result))
                 return ;
@@ -785,6 +829,7 @@ public class optimize {
             if (CTFEExp.isCantExp(this.ret))
                 this.ret = e;
         }
+
         public  void visit(CondExp e) {
             if (this.expOptimize(e.econd, 0, false))
                 return ;
@@ -798,6 +843,7 @@ public class optimize {
                 this.expOptimize(e.e2, this.result, this.keepLvalue);
             }
         }
+
 
         public OptimizeVisitor() {}
     }
@@ -904,6 +950,7 @@ public class optimize {
         }
         return nullReturn.invoke();
     }
+
     public static Expression fromConstInitializer(int result, Expression e1) {
         Expression e = e1;
         if (((e1.op & 0xFF) == 26))
@@ -929,6 +976,7 @@ public class optimize {
         }
         return e;
     }
+
     public static void setLengthVarIfKnown(VarDeclaration lengthVar, Expression arr) {
         if (lengthVar == null)
             return ;
@@ -951,6 +999,7 @@ public class optimize {
         lengthVar._init = new ExpInitializer(Loc.initial, dollar);
         lengthVar.storage_class |= 5L;
     }
+
     public static void setLengthVarIfKnown(VarDeclaration lengthVar, Type type) {
         if (lengthVar == null)
             return ;
@@ -966,6 +1015,7 @@ public class optimize {
         lengthVar._init = new ExpInitializer(Loc.initial, dollar);
         lengthVar.storage_class |= 5L;
     }
+
     public static Expression Expression_optimize(Expression e, int result, boolean keepLvalue) {
         OptimizeVisitor v = new OptimizeVisitor(e, result, keepLvalue);
         for (; 1 != 0;){
@@ -976,4 +1026,5 @@ public class optimize {
         }
         return v.ret;
     }
+
 }

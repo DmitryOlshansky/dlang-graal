@@ -261,6 +261,7 @@ public class dsymbolsem {
         }
         return xpostblit;
     }
+
     public static CtorDeclaration generateCopyCtorDeclaration(StructDeclaration sd, long paramStc, long funcStc) {
         DArray<Parameter> fparams = new DArray<Parameter>();
         Type structType = sd.type;
@@ -273,6 +274,7 @@ public class dsymbolsem {
         ccd.generated = true;
         return ccd;
     }
+
     public static Statement generateCopyCtorBody(StructDeclaration sd) {
         Loc loc = new Loc();
         Expression e = null;
@@ -288,6 +290,7 @@ public class dsymbolsem {
         Statement s1 = new ExpStatement(loc, e);
         return new CompoundStatement(loc, slice(new Statement[]{s1}));
     }
+
     public static boolean buildCopyCtor(StructDeclaration sd, Scope sc) {
         if (global.errors != 0)
             return false;
@@ -403,6 +406,7 @@ public class dsymbolsem {
         }
         return true;
     }
+
     public static int setMangleOverride(Dsymbol s, ByteSlice sym) {
         if ((s.isFuncDeclaration() != null) || (s.isVarDeclaration() != null))
         {
@@ -425,10 +429,12 @@ public class dsymbolsem {
         }
         return 0;
     }
+
     public static void dsymbolSemantic(Dsymbol dsym, Scope sc) {
         DsymbolSemanticVisitor v = new DsymbolSemanticVisitor(sc);
         dsym.accept(v);
     }
+
     public static int getAlignment(AlignDeclaration ad, Scope sc) {
         if ((ad.salign != 0))
             return ad.salign;
@@ -450,6 +456,7 @@ public class dsymbolsem {
         }
         return ad.salign = (int)n;
     }
+
     public static BytePtr getMessage(DeprecatedDeclaration dd) {
         {
             Scope sc = dd._scope;
@@ -472,6 +479,7 @@ public class dsymbolsem {
         }
         return dd.msgstr;
     }
+
     public static boolean allowsContractWithoutBody(FuncDeclaration funcdecl) {
         assert(funcdecl.fbody == null);
         Dsymbol parent = funcdecl.toParent();
@@ -484,19 +492,24 @@ public class dsymbolsem {
         }
         return true;
     }
+
     public static class DsymbolSemanticVisitor extends Visitor
     {
         public Scope sc;
         public  DsymbolSemanticVisitor(Scope sc) {
             this.sc = sc;
         }
+
         public  void visit(Dsymbol dsym) {
             dsym.error(new BytePtr("%p has no semantic routine"), dsym);
         }
+
         public  void visit(ScopeDsymbol _param_0) {
         }
+
         public  void visit(Declaration _param_0) {
         }
+
         public  void visit(AliasThis dsym) {
             if ((dsym.semanticRun != PASS.init))
                 return ;
@@ -550,6 +563,7 @@ public class dsymbolsem {
             ad.aliasthis = s;
             dsym.semanticRun = PASS.semanticdone;
         }
+
         public  void visit(AliasDeclaration dsym) {
             if ((dsym.semanticRun >= PASS.semanticdone))
                 return ;
@@ -561,6 +575,7 @@ public class dsymbolsem {
                 return ;
             aliasSemantic(dsym, this.sc);
         }
+
         public  void visit(VarDeclaration dsym) {
             if ((dsym.semanticRun >= PASS.semanticdone))
                 return ;
@@ -1217,9 +1232,11 @@ public class dsymbolsem {
                 }
             }
         }
+
         public  void visit(TypeInfoDeclaration dsym) {
             assert((dsym.linkage == LINK.c));
         }
+
         public  void visit(Import imp) {
             if ((imp.semanticRun > PASS.init))
                 return ;
@@ -1378,6 +1395,7 @@ public class dsymbolsem {
                 (ob).writenl();
             }
         }
+
         public  void attribSemantic(AttribDeclaration ad) {
             if ((ad.semanticRun != PASS.init))
                 return ;
@@ -1401,9 +1419,11 @@ public class dsymbolsem {
             }
             ad.semanticRun = PASS.semanticdone;
         }
+
         public  void visit(AttribDeclaration atd) {
             this.attribSemantic(atd);
         }
+
         public  void visit(AnonDeclaration scd) {
             assert((this.sc).parent != null);
             Dsymbol p = (this.sc).parent.pastMixin();
@@ -1430,6 +1450,7 @@ public class dsymbolsem {
                 this.sc = (this.sc).pop();
             }
         }
+
         public  void visit(PragmaDeclaration pd) {
             try {
                 try {
@@ -1680,12 +1701,15 @@ public class dsymbolsem {
                 /*goto Ldecl*/throw Dispatch0.INSTANCE;
             }
         }
+
         public  void visit(StaticIfDeclaration sid) {
             this.attribSemantic(sid);
         }
+
         public  void visit(StaticForeachDeclaration sfd) {
             this.attribSemantic(sfd);
         }
+
         public  DArray<Dsymbol> compileIt(CompileDeclaration cd) {
             OutBuffer buf = new OutBuffer();
             try {
@@ -1721,6 +1745,7 @@ public class dsymbolsem {
             finally {
             }
         }
+
         public  void visit(CompileDeclaration cd) {
             if (!cd.compiled)
             {
@@ -1740,6 +1765,7 @@ public class dsymbolsem {
             }
             this.attribSemantic(cd);
         }
+
         public  void visit(CPPNamespaceDeclaration ns) {
             Ref<CPPNamespaceDeclaration> ns_ref = ref(ns);
             Function1<StringExp,Identifier> identFromSE = new Function1<StringExp,Identifier>(){
@@ -1802,28 +1828,34 @@ public class dsymbolsem {
             if (ns_ref.value.ident != null)
                 this.attribSemantic(ns_ref.value);
         }
+
         public  void visit(UserAttributeDeclaration uad) {
             if ((uad.decl != null) && (uad._scope == null))
                 uad.setScope(this.sc);
             this.attribSemantic(uad);
             return ;
         }
+
         public  void visit(StaticAssert sa) {
             if ((sa.semanticRun < PASS.semanticdone))
                 sa.semanticRun = PASS.semanticdone;
         }
+
         public  void visit(DebugSymbol ds) {
             if ((ds.semanticRun < PASS.semanticdone))
                 ds.semanticRun = PASS.semanticdone;
         }
+
         public  void visit(VersionSymbol vs) {
             if ((vs.semanticRun < PASS.semanticdone))
                 vs.semanticRun = PASS.semanticdone;
         }
+
         public  void visit(dmodule.Package pkg) {
             if ((pkg.semanticRun < PASS.semanticdone))
                 pkg.semanticRun = PASS.semanticdone;
         }
+
         public  void visit(dmodule.Module m) {
             if ((m.semanticRun != PASS.init))
                 return ;
@@ -1851,6 +1883,7 @@ public class dsymbolsem {
             }
             m.semanticRun = PASS.semanticdone;
         }
+
         public  void visit(EnumDeclaration ed) {
             if ((ed.semanticRun >= PASS.semanticdone))
                 return ;
@@ -1995,6 +2028,7 @@ public class dsymbolsem {
             };
             foreachDsymbol(ed.members, __lambda5);
         }
+
         public  void visit(EnumMember em) {
             Ref<EnumMember> em_ref = ref(em);
             Function0<Void> errorReturn = new Function0<Void>(){
@@ -2197,6 +2231,7 @@ public class dsymbolsem {
             assert(em_ref.value.origValue != null);
             em_ref.value.semanticRun = PASS.semanticdone;
         }
+
         public  void visit(TemplateDeclaration tempdecl) {
             if ((tempdecl.semanticRun != PASS.init))
                 return ;
@@ -2315,9 +2350,11 @@ public class dsymbolsem {
             finally {
             }
         }
+
         public  void visit(TemplateInstance ti) {
             templateInstanceSemantic(ti, this.sc, null);
         }
+
         public  void visit(TemplateMixin tm) {
             if ((tm.semanticRun != PASS.init))
             {
@@ -2495,6 +2532,7 @@ public class dsymbolsem {
             (argscope).pop();
             (scy).pop();
         }
+
         public  void visit(Nspace ns) {
             if ((ns.semanticRun != PASS.init))
                 return ;
@@ -2601,6 +2639,7 @@ public class dsymbolsem {
             }
             ns.semanticRun = PASS.semanticdone;
         }
+
         public  void funcDeclarationSemantic(FuncDeclaration funcdecl) {
             TypeFunction f = null;
             AggregateDeclaration ad = null;
@@ -3249,9 +3288,11 @@ public class dsymbolsem {
                 }
             }
         }
+
         public  void visit(FuncDeclaration funcdecl) {
             this.funcDeclarationSemantic(funcdecl);
         }
+
         public  void visit(CtorDeclaration ctd) {
             if ((ctd.semanticRun >= PASS.semanticdone))
                 return ;
@@ -3331,6 +3372,7 @@ public class dsymbolsem {
                 }
             }
         }
+
         public  void visit(PostBlitDeclaration pbd) {
             if ((pbd.semanticRun >= PASS.semanticdone))
                 return ;
@@ -3359,6 +3401,7 @@ public class dsymbolsem {
             this.funcDeclarationSemantic(pbd);
             (this.sc).pop();
         }
+
         public  void visit(DtorDeclaration dd) {
             if ((dd.semanticRun >= PASS.semanticdone))
                 return ;
@@ -3411,6 +3454,7 @@ public class dsymbolsem {
             this.funcDeclarationSemantic(dd);
             (this.sc).pop();
         }
+
         public  void visit(StaticCtorDeclaration scd) {
             if ((scd.semanticRun >= PASS.semanticdone))
                 return ;
@@ -3456,6 +3500,7 @@ public class dsymbolsem {
                 m.needmoduleinfo = 1;
             }
         }
+
         public  void visit(StaticDtorDeclaration sdd) {
             if ((sdd.semanticRun >= PASS.semanticdone))
                 return ;
@@ -3502,6 +3547,7 @@ public class dsymbolsem {
                 m.needmoduleinfo = 1;
             }
         }
+
         public  void visit(InvariantDeclaration invd) {
             if ((invd.semanticRun >= PASS.semanticdone))
                 return ;
@@ -3532,6 +3578,7 @@ public class dsymbolsem {
             this.funcDeclarationSemantic(invd);
             (this.sc).pop();
         }
+
         public  void visit(UnitTestDeclaration utd) {
             if ((utd.semanticRun >= PASS.semanticdone))
                 return ;
@@ -3560,6 +3607,7 @@ public class dsymbolsem {
                 (sc2).pop();
             }
         }
+
         public  void visit(NewDeclaration nd) {
             if (!nd.isDisabled())
             {
@@ -3601,6 +3649,7 @@ public class dsymbolsem {
             }
             this.funcDeclarationSemantic(nd);
         }
+
         public  void visit(DeleteDeclaration deld) {
             error(deld.loc, new BytePtr("class deallocators are obsolete, consider moving the deallocation strategy outside of the class"));
             if ((deld.semanticRun >= PASS.semanticdone))
@@ -3635,6 +3684,7 @@ public class dsymbolsem {
             }
             this.funcDeclarationSemantic(deld);
         }
+
         public  void reinforceInvariant(AggregateDeclaration ad, Scope sc) {
             {
                 int i = 0;
@@ -3656,6 +3706,7 @@ public class dsymbolsem {
                 }
             }
         }
+
         public  void visit(StructDeclaration sd) {
             if ((sd.semanticRun >= PASS.semanticdone))
                 return ;
@@ -3838,6 +3889,7 @@ public class dsymbolsem {
             finally {
             }
         }
+
         public  void interfaceSemantic(ClassDeclaration cd) {
             cd.vtblInterfaces = new DArray<BaseClass>();
             (cd.vtblInterfaces).reserve(cd.interfaces.getLength());
@@ -3851,6 +3903,7 @@ public class dsymbolsem {
                 }
             }
         }
+
         public  void visit(ClassDeclaration cldec) {
             Ref<ClassDeclaration> cldec_ref = ref(cldec);
             if ((cldec_ref.value.semanticRun >= PASS.semanticdone))
@@ -4412,6 +4465,7 @@ public class dsymbolsem {
             finally {
             }
         }
+
         public  void visit(InterfaceDeclaration idec) {
             Function1<InterfaceDeclaration,Boolean> isAnonymousMetaclass = new Function1<InterfaceDeclaration,Boolean>(){
                 public Boolean invoke(InterfaceDeclaration idec) {
@@ -4728,6 +4782,7 @@ public class dsymbolsem {
             finally {
             }
         }
+
 
         public DsymbolSemanticVisitor() {}
 
@@ -5083,6 +5138,7 @@ public class dsymbolsem {
             tempdecl.instances.set(ti2, __aaval1184);
         }
     }
+
     public static void aliasSemantic(AliasDeclaration ds, Scope sc) {
         if ((ds.type != null) && ((ds.type.ty & 0xFF) == ENUMTY.TTraits))
         {
@@ -5215,4 +5271,5 @@ public class dsymbolsem {
         finally {
         }
     }
+
 }

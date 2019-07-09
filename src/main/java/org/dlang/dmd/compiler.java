@@ -92,6 +92,7 @@ public class compiler {
             finally {
             }
         }
+
         public static Expression paintAsType(UnionExp pue, Expression e, Type type) {
             U u = null;
             assert((e.type.size() == type.size()));
@@ -158,8 +159,10 @@ public class compiler {
             }
             return (pue).exp();
         }
+
         public static void loadModule(dmodule.Module m) {
         }
+
         public static boolean onImport(dmodule.Module m) {
             if (includeImports)
             {
@@ -178,6 +181,7 @@ public class compiler {
             }
             return false;
         }
+
         public Compiler(){
         }
         public Compiler copy(){
@@ -197,9 +201,11 @@ public class compiler {
         public  int totalLength() {
             return (this.packages).length + 1 + (this.isPackageFile ? 1 : 0);
         }
+
         public  boolean empty() {
             return this.index >= this.totalLength();
         }
+
         public  Identifier front() {
             if ((this.index < (this.packages).length))
                 return (this.packages).get(this.index);
@@ -208,9 +214,11 @@ public class compiler {
             else
                 return Identifier.idPool(new ByteSlice("package"));
         }
+
         public  void popFront() {
             this.index++;
         }
+
         public ModuleComponentRange(){
         }
         public ModuleComponentRange copy(){
@@ -269,6 +277,7 @@ public class compiler {
         assertMsg((nodeIndex == matchNodes.length), new ByteSlice("code bug"));
         return includeByDefault;
     }
+
     public static class MatcherNode
     {
         public int depth = 0;
@@ -277,10 +286,12 @@ public class compiler {
         public  MatcherNode(Identifier id) {
             this.id = id;
         }
+
         public  MatcherNode(boolean isExclude, int depth) {
             this.depth = depth;
             this.isExclude = isExclude;
         }
+
         public MatcherNode(){
         }
         public MatcherNode copy(){
@@ -337,6 +348,7 @@ public class compiler {
             }
         }
     }
+
     public static int parseModulePatternDepth(BytePtr modulePattern) {
         if (((modulePattern.get(0) & 0xFF) == 45))
             modulePattern.postInc();
@@ -351,6 +363,7 @@ public class compiler {
                 return depth;
         }
     }
+
     public static void parseModulePattern(BytePtr modulePattern, MatcherNode dst, int depth) {
         boolean isExclude = false;
         if (((modulePattern.get(0) & 0xFF) == 45))
@@ -386,4 +399,5 @@ public class compiler {
             }
         }
     }
+
 }

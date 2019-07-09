@@ -165,6 +165,7 @@ public class parse {
         return stc;
     }
 
+
     // from template getStorageClass!(ASTCodegen)
     public static long getStorageClassASTCodegen(PrefixAttributesASTCodegen pAttrs) {
         long stc = 0L;
@@ -175,6 +176,7 @@ public class parse {
         }
         return stc;
     }
+
 
     public static boolean writeMixin(ByteSlice s, Loc loc) {
         if (global.params.mixinOut == null)
@@ -212,6 +214,7 @@ public class parse {
         global.params.mixinLines++;
         return true;
     }
+
     // from template Parser!(ASTBase)
     public static class ParserASTBase extends Lexer
     {
@@ -234,11 +237,13 @@ public class parse {
             this.mod = _module;
             this.linkage = LINK.d;
         }
+
         public  ParserASTBase(ASTBase.Module _module, ByteSlice input, boolean doDocComment, DiagnosticReporter diagnosticReporter) {
             super(_module != null ? _module.srcfile.toChars() : null, toBytePtr(input), 0, input.getLength(), doDocComment, false, diagnosticReporter);
             this.mod = _module;
             this.linkage = LINK.d;
         }
+
         public  DArray<ASTBase.Dsymbol> parseModule() {
             BytePtr comment = pcopy(this.token.blockComment);
             boolean isdeprecated = false;
@@ -338,6 +343,7 @@ public class parse {
             this.nextToken();
             return new DArray<ASTBase.Dsymbol>();
         }
+
         public  long parseDeprecatedAttribute(Ref<ASTBase.Expression> msg) {
             if ((((this.peek(this.token)).value & 0xFF) != 1))
                 return 1024L;
@@ -352,6 +358,7 @@ public class parse {
             msg.value = e;
             return 0L;
         }
+
         public  DArray<ASTBase.Dsymbol> parseDeclDefs(int once, Ptr<ASTBase.Dsymbol> pLastDecl, PrefixAttributesASTBase pAttrs) {
             Ref<ASTBase.Dsymbol> lastDecl = ref(null);
             if (pLastDecl == null)
@@ -1024,6 +1031,7 @@ public class parse {
             this.linkage = linksave;
             return decldefs;
         }
+
         public  DArray<ASTBase.Dsymbol> parseAutoDeclarations(long storageClass, BytePtr comment) {
             DArray<ASTBase.Dsymbol> a = new DArray<ASTBase.Dsymbol>();
             for (; 1 != 0;){
@@ -1068,6 +1076,7 @@ public class parse {
             }
             return a;
         }
+
         public  DArray<ASTBase.Dsymbol> parseBlock(Ptr<ASTBase.Dsymbol> pLastDecl, PrefixAttributesASTBase pAttrs) {
             DArray<ASTBase.Dsymbol> a = null;
             switch ((this.token.value & 0xFF))
@@ -1102,6 +1111,7 @@ public class parse {
             }
             return a;
         }
+
         public  long appendStorageClass(long storageClass, long stc) {
             if (((storageClass & stc) != 0) || ((storageClass & 2048L) != 0) && ((stc & 524292L) != 0) || ((stc & 2048L) != 0) && ((storageClass & 524292L) != 0))
             {
@@ -1135,6 +1145,7 @@ public class parse {
             }
             return storageClass;
         }
+
         public  long parseAttribute(Ptr<DArray<ASTBase.Expression>> pudas) {
             this.nextToken();
             DArray<ASTBase.Expression> udas = null;
@@ -1188,6 +1199,7 @@ public class parse {
                 this.error(new BytePtr("valid attributes are `@property`, `@safe`, `@trusted`, `@system`, `@disable`, `@nogc`"));
             return stc;
         }
+
         public  long parsePostfix(long storageClass, Ptr<DArray<ASTBase.Expression>> pudas) {
             for (; 1 != 0;){
                 long stc = 0L;
@@ -1238,6 +1250,7 @@ public class parse {
                 this.nextToken();
             }
         }
+
         public  long parseTypeCtor() {
             long storageClass = 0L;
             for (; 1 != 0;){
@@ -1265,6 +1278,7 @@ public class parse {
                 this.nextToken();
             }
         }
+
         public  ASTBase.Expression parseConstraint() {
             ASTBase.Expression e = null;
             if (((this.token.value & 0xFF) == 183))
@@ -1276,6 +1290,7 @@ public class parse {
             }
             return e;
         }
+
         public  ASTBase.TemplateDeclaration parseTemplateDeclaration(boolean ismixin) {
             ASTBase.TemplateDeclaration tempdecl = null;
             Identifier id = null;
@@ -1309,6 +1324,7 @@ public class parse {
         /*Lerr:*/
             return null;
         }
+
         public  DArray<ASTBase.TemplateParameter> parseTemplateParameterList(int flag) {
             DArray<ASTBase.TemplateParameter> tpl = new DArray<ASTBase.TemplateParameter>();
             try {
@@ -1461,6 +1477,7 @@ public class parse {
         /*Lerr:*/
             return tpl;
         }
+
         public  ASTBase.Dsymbol parseMixin() {
             ASTBase.TemplateMixin tm = null;
             Identifier id = null;
@@ -1535,6 +1552,7 @@ public class parse {
             this.nextToken();
             return tm;
         }
+
         public  DArray<RootObject> parseTemplateArguments() {
             DArray<RootObject> tiargs = null;
             this.nextToken();
@@ -1567,6 +1585,7 @@ public class parse {
             }
             return tiargs;
         }
+
         public  DArray<RootObject> parseTemplateArgumentList() {
             DArray<RootObject> tiargs = new DArray<RootObject>();
             byte endtok = TOK.rightParentheses;
@@ -1590,6 +1609,7 @@ public class parse {
             this.check(endtok, new BytePtr("template argument list"));
             return tiargs;
         }
+
         public  DArray<RootObject> parseTemplateSingleArgument() {
             DArray<RootObject> tiargs = new DArray<RootObject>();
             ASTBase.Type ta = null;
@@ -1721,6 +1741,7 @@ public class parse {
             }
             return tiargs;
         }
+
         public  ASTBase.StaticAssert parseStaticAssert() {
             Loc loc = this.token.loc.copy();
             ASTBase.Expression exp = null;
@@ -1743,6 +1764,7 @@ public class parse {
             this.check(TOK.semicolon);
             return new ASTBase.StaticAssert(loc, exp, msg);
         }
+
         public  ASTBase.TypeQualified parseTypeof() {
             ASTBase.TypeQualified t = null;
             Loc loc = this.token.loc.copy();
@@ -1761,6 +1783,7 @@ public class parse {
             this.check(TOK.rightParentheses);
             return t;
         }
+
         public  ASTBase.Type parseVector() {
             this.nextToken();
             this.check(TOK.leftParentheses);
@@ -1768,6 +1791,7 @@ public class parse {
             this.check(TOK.rightParentheses);
             return new ASTBase.TypeVector(tb);
         }
+
         public  int parseLinkage(Ptr<DArray<Identifier>> pidents, Ptr<DArray<ASTBase.Expression>> pIdentExps, IntRef cppmangle, Ref<Boolean> cppMangleOnly) {
             cppmangle.value = CPPMANGLE.def;
             cppMangleOnly.value = false;
@@ -1873,6 +1897,17 @@ public class parse {
             pIdentExps.set(0, identExps);
             return link;
         }
+
+        // defaulted all parameters starting with #4
+        public  int parseLinkage(Ptr<DArray<Identifier>> pidents, Ptr<DArray<ASTBase.Expression>> pIdentExps, IntRef cppmangle) {
+            parseLinkage(pidents, pIdentExps, cppmangle, ref(false));
+        }
+
+        // defaulted all parameters starting with #3
+        public  int parseLinkage(Ptr<DArray<Identifier>> pidents, Ptr<DArray<ASTBase.Expression>> pIdentExps) {
+            parseLinkage(pidents, pIdentExps, ref(CPPMANGLE.def), ref(false));
+        }
+
         public  DArray<Identifier> parseQualifiedIdentifier(BytePtr entity) {
             DArray<Identifier> qualified = null;
             do {
@@ -1892,6 +1927,7 @@ public class parse {
             } while (((this.token.value & 0xFF) == 97));
             return qualified;
         }
+
         public  ASTBase.Condition parseDebugCondition() {
             int level = 1;
             Identifier id = null;
@@ -1909,6 +1945,7 @@ public class parse {
             }
             return new ASTBase.DebugCondition(this.mod, level, id);
         }
+
         public  ASTBase.Condition parseVersionCondition() {
             int level = 1;
             Identifier id = null;
@@ -1932,6 +1969,7 @@ public class parse {
                 this.error(new BytePtr("(condition) expected following `version`"));
             return new ASTBase.VersionCondition(this.mod, level, id);
         }
+
         public  ASTBase.Condition parseStaticIfCondition() {
             ASTBase.Expression exp = null;
             ASTBase.Condition condition = null;
@@ -1952,6 +1990,7 @@ public class parse {
             condition = new ASTBase.StaticIfCondition(loc, exp);
             return condition;
         }
+
         public  ASTBase.Dsymbol parseCtor(PrefixAttributesASTBase pAttrs) {
             Ref<DArray<ASTBase.Expression>> udas = ref(null);
             Loc loc = this.token.loc.copy();
@@ -2023,6 +2062,7 @@ public class parse {
             }
             return s;
         }
+
         public  ASTBase.Dsymbol parseDtor(PrefixAttributesASTBase pAttrs) {
             Ref<DArray<ASTBase.Expression>> udas = ref(null);
             Loc loc = this.token.loc.copy();
@@ -2052,6 +2092,7 @@ public class parse {
             }
             return s;
         }
+
         public  ASTBase.Dsymbol parseStaticCtor(PrefixAttributesASTBase pAttrs) {
             Loc loc = this.token.loc.copy();
             long stc = getStorageClassASTBase(pAttrs);
@@ -2082,6 +2123,7 @@ public class parse {
             ASTBase.Dsymbol s = this.parseContracts(f);
             return s;
         }
+
         public  ASTBase.Dsymbol parseStaticDtor(PrefixAttributesASTBase pAttrs) {
             Ref<DArray<ASTBase.Expression>> udas = ref(null);
             Loc loc = this.token.loc.copy();
@@ -2120,6 +2162,7 @@ public class parse {
             }
             return s;
         }
+
         public  ASTBase.Dsymbol parseSharedStaticCtor(PrefixAttributesASTBase pAttrs) {
             Loc loc = this.token.loc.copy();
             long stc = getStorageClassASTBase(pAttrs);
@@ -2152,6 +2195,7 @@ public class parse {
             ASTBase.Dsymbol s = this.parseContracts(f);
             return s;
         }
+
         public  ASTBase.Dsymbol parseSharedStaticDtor(PrefixAttributesASTBase pAttrs) {
             Ref<DArray<ASTBase.Expression>> udas = ref(null);
             Loc loc = this.token.loc.copy();
@@ -2192,6 +2236,7 @@ public class parse {
             }
             return s;
         }
+
         public  ASTBase.Dsymbol parseInvariant(PrefixAttributesASTBase pAttrs) {
             Loc loc = this.token.loc.copy();
             long stc = getStorageClassASTBase(pAttrs);
@@ -2226,6 +2271,7 @@ public class parse {
             ASTBase.InvariantDeclaration f = new ASTBase.InvariantDeclaration(loc, this.token.loc, stc, null, fbody);
             return f;
         }
+
         public  ASTBase.Dsymbol parseUnitTest(PrefixAttributesASTBase pAttrs) {
             Loc loc = this.token.loc.copy();
             long stc = getStorageClassASTBase(pAttrs);
@@ -2255,6 +2301,7 @@ public class parse {
             f.fbody = sbody;
             return f;
         }
+
         public  ASTBase.Dsymbol parseNew(PrefixAttributesASTBase pAttrs) {
             Loc loc = this.token.loc.copy();
             long stc = getStorageClassASTBase(pAttrs);
@@ -2265,6 +2312,7 @@ public class parse {
             ASTBase.Dsymbol s = this.parseContracts(f);
             return s;
         }
+
         public  ASTBase.Dsymbol parseDelete(PrefixAttributesASTBase pAttrs) {
             Loc loc = this.token.loc.copy();
             long stc = getStorageClassASTBase(pAttrs);
@@ -2277,6 +2325,7 @@ public class parse {
             ASTBase.Dsymbol s = this.parseContracts(f);
             return s;
         }
+
         public  DArray<ASTBase.Parameter> parseParameters(IntPtr pvarargs, Ptr<DArray<ASTBase.TemplateParameter>> tpl) {
             DArray<ASTBase.Parameter> parameters = new DArray<ASTBase.Parameter>();
             int varargs = ASTBase.VarArg.none;
@@ -2470,6 +2519,7 @@ public class parse {
             pvarargs.set(0, varargs);
             return parameters;
         }
+
         public  ASTBase.EnumDeclaration parseEnum() {
             ASTBase.EnumDeclaration e = null;
             Identifier id = null;
@@ -2636,6 +2686,7 @@ public class parse {
                 this.error(new BytePtr("enum declaration is invalid"));
             return e;
         }
+
         public  ASTBase.Dsymbol parseAggregate() {
             DArray<ASTBase.TemplateParameter> tpl = null;
             ASTBase.Expression constraint = null;
@@ -2754,6 +2805,7 @@ public class parse {
             }
             return a;
         }
+
         public  DArray<ASTBase.BaseClass> parseBaseClasses() {
             DArray<ASTBase.BaseClass> baseclasses = new DArray<ASTBase.BaseClass>();
             for (; 1 != 0;this.nextToken()){
@@ -2764,6 +2816,7 @@ public class parse {
             }
             return baseclasses;
         }
+
         public  DArray<ASTBase.Dsymbol> parseImport() {
             DArray<ASTBase.Dsymbol> decldefs = new DArray<ASTBase.Dsymbol>();
             Identifier aliasid = null;
@@ -2853,6 +2906,7 @@ public class parse {
             }
             return decldefs;
         }
+
         public  ASTBase.Type parseType(Ptr<Identifier> pident, Ptr<DArray<ASTBase.TemplateParameter>> ptpl) {
             long stc = 0L;
             for (; 1 != 0;){
@@ -2896,6 +2950,7 @@ public class parse {
             t = t.addSTC(stc);
             return t;
         }
+
         public  ASTBase.Type parseBasicType(boolean dontLookDotIdents) {
             ASTBase.Type t = null;
             Loc loc = new Loc();
@@ -3067,6 +3122,7 @@ public class parse {
             }
             return t;
         }
+
         public  ASTBase.Type parseBasicTypeStartingAt(ASTBase.TypeQualified tid, boolean dontLookDotIdents) {
             ASTBase.Type maybeArray = null;
             try {
@@ -3179,6 +3235,7 @@ public class parse {
         /*Lend:*/
             return maybeArray != null ? maybeArray : tid;
         }
+
         public  ASTBase.Type parseBasicType2(ASTBase.Type t) {
             for (; 1 != 0;){
                 switch ((this.token.value & 0xFF))
@@ -3242,6 +3299,7 @@ public class parse {
             }
             //throw new AssertionError("Unreachable code!");
         }
+
         public  ASTBase.Type parseDeclarator(ASTBase.Type t, IntPtr palt, Ptr<Identifier> pident, Ptr<DArray<ASTBase.TemplateParameter>> tpl, long storageClass, IntPtr pdisable, Ptr<DArray<ASTBase.Expression>> pudas) {
             t = this.parseBasicType2(t);
             Ref<ASTBase.Type> ts = ref(null);
@@ -3347,6 +3405,7 @@ public class parse {
             }
             return ts.value;
         }
+
         public  void parseStorageClasses(Ref<Long> storage_class, IntRef link, Ref<Boolean> setAlignment, Ref<ASTBase.Expression> ealign, Ref<DArray<ASTBase.Expression>> udas) {
             long stc = 0L;
             boolean sawLinkage = false;
@@ -3480,6 +3539,7 @@ public class parse {
                 break;
             }
         }
+
         public  DArray<ASTBase.Dsymbol> parseDeclarations(boolean autodecl, PrefixAttributesASTBase pAttrs, BytePtr comment) {
             Ref<Long> storage_class = ref(0L);
             byte tok = TOK.reserved;
@@ -3867,6 +3927,7 @@ public class parse {
             }
             return a;
         }
+
         public  ASTBase.Dsymbol parseFunctionLiteral() {
             Loc loc = this.token.loc.copy();
             Ref<DArray<ASTBase.TemplateParameter>> tpl = ref(null);
@@ -3970,6 +4031,7 @@ public class parse {
             }
             return fd;
         }
+
         public  ASTBase.FuncDeclaration parseContracts(ASTBase.FuncDeclaration f) {
             int linksave = this.linkage;
             boolean literal = f.isFuncLiteralDeclaration() != null;
@@ -4115,12 +4177,14 @@ public class parse {
             this.linkage = linksave;
             return f;
         }
+
         public  void checkDanglingElse(Loc elseloc) {
             if (((this.token.value & 0xFF) != 184) && ((this.token.value & 0xFF) != 198) && ((this.token.value & 0xFF) != 199) && (this.lookingForElse.linnum != 0))
             {
                 this.warning(elseloc, new BytePtr("else is dangling, add { } after condition at %s"), this.lookingForElse.toChars(global.params.showColumns));
             }
         }
+
         public  void checkCstyleTypeSyntax(Loc loc, ASTBase.Type t, int alt, Identifier ident) {
             if (alt == 0)
                 return ;
@@ -4128,6 +4192,7 @@ public class parse {
             BytePtr s = pcopy(ident == null ? new BytePtr("") : ident.toChars());
             this.error(loc, new BytePtr("instead of C-style syntax, use D-style `%s%s%s`"), t.toChars(), sp, s);
         }
+
         // from template ParseForeachArgs!(00)
         // from template Seq!()
 
@@ -4275,6 +4340,7 @@ public class parse {
             }
         }
 
+
         // from template parseForeach!(10)
         public  ASTBase.StaticForeachStatement parseForeach10(Loc loc) {
             this.nextToken();
@@ -4395,6 +4461,7 @@ public class parse {
                 return new ASTBase.StaticForeachStatement(loc, new ASTBase.StaticForeach(loc, aggrfe, null));
             }
         }
+
 
         // from template parseForeach!(11)
         public  ASTBase.StaticForeachDeclaration parseForeach11(Loc loc, Ptr<ASTBase.Dsymbol> _param_1) {
@@ -4517,6 +4584,7 @@ public class parse {
                 return new ASTBase.StaticForeachDeclaration(new ASTBase.StaticForeach(loc, aggrfe, null), this.parseBlock(pLastDecl, null));
             }
         }
+
 
         public  ASTBase.Statement parseStatement(int flags, Ptr<BytePtr> endPtr, Loc pEndloc) {
             ASTBase.Statement s = null;
@@ -5445,6 +5513,7 @@ public class parse {
                 pEndloc.opAssign(this.prevloc);
             return s;
         }
+
         public  ASTBase.Initializer parseInitializer() {
             ASTBase.StructInitializer _is = null;
             ASTBase.ArrayInitializer ia = null;
@@ -5676,6 +5745,7 @@ public class parse {
             }
             return null;
         }
+
         public  ASTBase.Expression parseDefaultInitExp() {
             ASTBase.Expression e = null;
             Token t = this.peek(this.token);
@@ -5719,23 +5789,28 @@ public class parse {
         /*LExp:*/
             return this.parseAssignExp();
         }
+
         public  void check(Loc loc, byte value) {
             if (((this.token.value & 0xFF) != (value & 0xFF)))
                 this.error(loc, new BytePtr("found `%s` when expecting `%s`"), this.token.toChars(), Token.toChars(value));
             this.nextToken();
         }
+
         public  void check(byte value) {
             this.check(this.token.loc, value);
         }
+
         public  void check(byte value, BytePtr string) {
             if (((this.token.value & 0xFF) != (value & 0xFF)))
                 this.error(new BytePtr("found `%s` when expecting `%s` following %s"), this.token.toChars(), Token.toChars(value), string);
             this.nextToken();
         }
+
         public  void checkParens(byte value, ASTBase.Expression e) {
             if ((precedence.get((e.op & 0xFF)) == PREC.rel) && (e.parens == 0))
                 this.error(e.loc, new BytePtr("`%s` must be surrounded by parentheses when next to operator `%s`"), e.toChars(), Token.toChars(value));
         }
+
 
         public static class NeedDeclaratorId
         {
@@ -5781,6 +5856,7 @@ public class parse {
         /*Lisnot:*/
             return false;
         }
+
         public  boolean isBasicType(Ptr<Token> pt) {
             Ref<Token> t = ref(pt.get());
             try {
@@ -5965,6 +6041,7 @@ public class parse {
         /*Lfalse:*/
             return false;
         }
+
         public  boolean isDeclarator(Ptr<Token> pt, IntPtr haveId, IntPtr haveTpl, byte endtok, boolean allowAltSyntax) {
             Ref<Token> t = ref(pt.get());
             int parens = 0;
@@ -6161,6 +6238,7 @@ public class parse {
             }
             //throw new AssertionError("Unreachable code!");
         }
+
         public  boolean isParameters(Ptr<Token> pt) {
             Ref<Token> t = ref(pt.get());
             if ((((t.value).value & 0xFF) != 1))
@@ -6242,6 +6320,7 @@ public class parse {
             pt.set(0, t.value);
             return true;
         }
+
         public  boolean isExpression(Ptr<Token> pt) {
             Token t = pt.get();
             int brnest = 0;
@@ -6293,6 +6372,7 @@ public class parse {
             pt.set(0, t);
             return true;
         }
+
         public  boolean skipParens(Token t, Ptr<Token> pt) {
             if ((((t).value & 0xFF) != 1))
                 return false;
@@ -6337,6 +6417,7 @@ public class parse {
         /*Lfalse:*/
             return false;
         }
+
         public  boolean skipParensIf(Token t, Ptr<Token> pt) {
             if ((((t).value & 0xFF) != 1))
             {
@@ -6346,12 +6427,14 @@ public class parse {
             }
             return this.skipParens(t, pt);
         }
+
         public  boolean hasOptionalParensThen(Token t, byte expected) {
             Ref<Token> tk = ref(null);
             if (!this.skipParensIf(t, ptr(tk)))
                 return false;
             return ((tk.value).value & 0xFF) == (expected & 0xFF);
         }
+
         public  boolean skipAttributes(Token t, Ptr<Token> pt) {
             Ref<Token> t_ref = ref(t);
             try {
@@ -6450,6 +6533,7 @@ public class parse {
         /*Lerror:*/
             return false;
         }
+
         public  ASTBase.Expression parseExpression() {
             Loc loc = this.token.loc.copy();
             ASTBase.Expression e = this.parseAssignExp();
@@ -6461,6 +6545,7 @@ public class parse {
             }
             return e;
         }
+
         public  ASTBase.Expression parsePrimaryExp() {
             ASTBase.Expression e = null;
             ASTBase.Type t = null;
@@ -6932,6 +7017,7 @@ public class parse {
             }
             return e;
         }
+
         public  ASTBase.Expression parseUnaryExp() {
             ASTBase.Expression e = null;
             Loc loc = this.token.loc.copy();
@@ -7177,6 +7263,7 @@ public class parse {
             }
             return e;
         }
+
         public  ASTBase.Expression parsePostExp(ASTBase.Expression e) {
             for (; 1 != 0;){
                 Loc loc = this.token.loc.copy();
@@ -7243,6 +7330,7 @@ public class parse {
                 this.nextToken();
             }
         }
+
         public  ASTBase.Expression parseMulExp() {
             Loc loc = this.token.loc.copy();
             ASTBase.Expression e = this.parseUnaryExp();
@@ -7271,6 +7359,7 @@ public class parse {
             }
             return e;
         }
+
         public  ASTBase.Expression parseAddExp() {
             Loc loc = this.token.loc.copy();
             ASTBase.Expression e = this.parseMulExp();
@@ -7299,6 +7388,7 @@ public class parse {
             }
             return e;
         }
+
         public  ASTBase.Expression parseShiftExp() {
             Loc loc = this.token.loc.copy();
             ASTBase.Expression e = this.parseAddExp();
@@ -7327,6 +7417,7 @@ public class parse {
             }
             return e;
         }
+
         public  ASTBase.Expression parseCmpExp() {
             Loc loc = this.token.loc.copy();
             ASTBase.Expression e = this.parseShiftExp();
@@ -7391,6 +7482,7 @@ public class parse {
             }
             return e;
         }
+
         public  ASTBase.Expression parseAndExp() {
             Loc loc = this.token.loc.copy();
             ASTBase.Expression e = this.parseCmpExp();
@@ -7404,6 +7496,7 @@ public class parse {
             }
             return e;
         }
+
         public  ASTBase.Expression parseXorExp() {
             Loc loc = this.token.loc.copy();
             ASTBase.Expression e = this.parseAndExp();
@@ -7416,6 +7509,7 @@ public class parse {
             }
             return e;
         }
+
         public  ASTBase.Expression parseOrExp() {
             Loc loc = this.token.loc.copy();
             ASTBase.Expression e = this.parseXorExp();
@@ -7428,6 +7522,7 @@ public class parse {
             }
             return e;
         }
+
         public  ASTBase.Expression parseAndAndExp() {
             Loc loc = this.token.loc.copy();
             ASTBase.Expression e = this.parseOrExp();
@@ -7438,6 +7533,7 @@ public class parse {
             }
             return e;
         }
+
         public  ASTBase.Expression parseOrOrExp() {
             Loc loc = this.token.loc.copy();
             ASTBase.Expression e = this.parseAndAndExp();
@@ -7448,6 +7544,7 @@ public class parse {
             }
             return e;
         }
+
         public  ASTBase.Expression parseCondExp() {
             Loc loc = this.token.loc.copy();
             ASTBase.Expression e = this.parseOrOrExp();
@@ -7461,6 +7558,7 @@ public class parse {
             }
             return e;
         }
+
         public  ASTBase.Expression parseAssignExp() {
             ASTBase.Expression e = null;
             e = this.parseCondExp();
@@ -7546,6 +7644,7 @@ public class parse {
             }
             return e;
         }
+
         public  DArray<ASTBase.Expression> parseArguments() {
             DArray<ASTBase.Expression> arguments = null;
             byte endtok = TOK.reserved;
@@ -7562,6 +7661,7 @@ public class parse {
             this.check(endtok);
             return arguments;
         }
+
         public  ASTBase.Expression parseNewExp(ASTBase.Expression thisexp) {
             Loc loc = this.token.loc.copy();
             this.nextToken();
@@ -7620,6 +7720,7 @@ public class parse {
             ASTBase.NewExp e = new ASTBase.NewExp(loc, thisexp, newargs, t, arguments);
             return e;
         }
+
         public  void addComment(ASTBase.Dsymbol s, BytePtr blockComment) {
             if ((s != null))
             {
@@ -7627,6 +7728,7 @@ public class parse {
                 this.token.lineComment = null;
             }
         }
+
 
         public ParserASTBase() {}
 
@@ -7679,11 +7781,13 @@ public class parse {
             this.mod = _module;
             this.linkage = LINK.d;
         }
+
         public  ParserASTCodegen(dmodule.Module _module, ByteSlice input, boolean doDocComment, DiagnosticReporter diagnosticReporter) {
             super(_module != null ? _module.srcfile.toChars() : null, toBytePtr(input), 0, input.getLength(), doDocComment, false, diagnosticReporter);
             this.mod = _module;
             this.linkage = LINK.d;
         }
+
         public  DArray<Dsymbol> parseModule() {
             BytePtr comment = pcopy(this.token.blockComment);
             boolean isdeprecated = false;
@@ -7783,6 +7887,7 @@ public class parse {
             this.nextToken();
             return new DArray<Dsymbol>();
         }
+
         public  long parseDeprecatedAttribute(Ref<Expression> msg) {
             if ((((this.peek(this.token)).value & 0xFF) != 1))
                 return 1024L;
@@ -7797,6 +7902,7 @@ public class parse {
             msg.value = e;
             return 0L;
         }
+
         public  DArray<Dsymbol> parseDeclDefs(int once, Ptr<Dsymbol> pLastDecl, PrefixAttributesASTCodegen pAttrs) {
             Ref<Dsymbol> lastDecl = ref(null);
             if (pLastDecl == null)
@@ -8467,6 +8573,7 @@ public class parse {
             this.linkage = linksave;
             return decldefs;
         }
+
         public  DArray<Dsymbol> parseAutoDeclarations(long storageClass, BytePtr comment) {
             DArray<Dsymbol> a = new DArray<Dsymbol>();
             for (; 1 != 0;){
@@ -8511,6 +8618,7 @@ public class parse {
             }
             return a;
         }
+
         public  DArray<Dsymbol> parseBlock(Ptr<Dsymbol> pLastDecl, PrefixAttributesASTCodegen pAttrs) {
             DArray<Dsymbol> a = null;
             switch ((this.token.value & 0xFF))
@@ -8545,6 +8653,7 @@ public class parse {
             }
             return a;
         }
+
         public  long appendStorageClass(long storageClass, long stc) {
             if (((storageClass & stc) != 0) || ((storageClass & 2048L) != 0) && ((stc & 524292L) != 0) || ((stc & 2048L) != 0) && ((storageClass & 524292L) != 0))
             {
@@ -8578,6 +8687,7 @@ public class parse {
             }
             return storageClass;
         }
+
         public  long parseAttribute(Ptr<DArray<Expression>> pudas) {
             this.nextToken();
             DArray<Expression> udas = null;
@@ -8631,6 +8741,7 @@ public class parse {
                 this.error(new BytePtr("valid attributes are `@property`, `@safe`, `@trusted`, `@system`, `@disable`, `@nogc`"));
             return stc;
         }
+
         public  long parsePostfix(long storageClass, Ptr<DArray<Expression>> pudas) {
             for (; 1 != 0;){
                 long stc = 0L;
@@ -8681,6 +8792,7 @@ public class parse {
                 this.nextToken();
             }
         }
+
         public  long parseTypeCtor() {
             long storageClass = 0L;
             for (; 1 != 0;){
@@ -8708,6 +8820,7 @@ public class parse {
                 this.nextToken();
             }
         }
+
         public  Expression parseConstraint() {
             Expression e = null;
             if (((this.token.value & 0xFF) == 183))
@@ -8719,6 +8832,7 @@ public class parse {
             }
             return e;
         }
+
         public  TemplateDeclaration parseTemplateDeclaration(boolean ismixin) {
             TemplateDeclaration tempdecl = null;
             Identifier id = null;
@@ -8752,6 +8866,7 @@ public class parse {
         /*Lerr:*/
             return null;
         }
+
         public  DArray<TemplateParameter> parseTemplateParameterList(int flag) {
             DArray<TemplateParameter> tpl = new DArray<TemplateParameter>();
             try {
@@ -8904,6 +9019,7 @@ public class parse {
         /*Lerr:*/
             return tpl;
         }
+
         public  Dsymbol parseMixin() {
             TemplateMixin tm = null;
             Identifier id = null;
@@ -8978,6 +9094,7 @@ public class parse {
             this.nextToken();
             return tm;
         }
+
         public  DArray<RootObject> parseTemplateArguments() {
             DArray<RootObject> tiargs = null;
             this.nextToken();
@@ -9010,6 +9127,7 @@ public class parse {
             }
             return tiargs;
         }
+
         public  DArray<RootObject> parseTemplateArgumentList() {
             DArray<RootObject> tiargs = new DArray<RootObject>();
             byte endtok = TOK.rightParentheses;
@@ -9033,6 +9151,7 @@ public class parse {
             this.check(endtok, new BytePtr("template argument list"));
             return tiargs;
         }
+
         public  DArray<RootObject> parseTemplateSingleArgument() {
             DArray<RootObject> tiargs = new DArray<RootObject>();
             Type ta = null;
@@ -9164,6 +9283,7 @@ public class parse {
             }
             return tiargs;
         }
+
         public  StaticAssert parseStaticAssert() {
             Loc loc = this.token.loc.copy();
             Expression exp = null;
@@ -9186,6 +9306,7 @@ public class parse {
             this.check(TOK.semicolon);
             return new StaticAssert(loc, exp, msg);
         }
+
         public  TypeQualified parseTypeof() {
             TypeQualified t = null;
             Loc loc = this.token.loc.copy();
@@ -9204,6 +9325,7 @@ public class parse {
             this.check(TOK.rightParentheses);
             return t;
         }
+
         public  Type parseVector() {
             this.nextToken();
             this.check(TOK.leftParentheses);
@@ -9211,6 +9333,7 @@ public class parse {
             this.check(TOK.rightParentheses);
             return new TypeVector(tb);
         }
+
         public  int parseLinkage(Ptr<DArray<Identifier>> pidents, Ptr<DArray<Expression>> pIdentExps, IntRef cppmangle, Ref<Boolean> cppMangleOnly) {
             cppmangle.value = CPPMANGLE.def;
             cppMangleOnly.value = false;
@@ -9316,6 +9439,17 @@ public class parse {
             pIdentExps.set(0, identExps);
             return link;
         }
+
+        // defaulted all parameters starting with #4
+        public  int parseLinkage(Ptr<DArray<Identifier>> pidents, Ptr<DArray<Expression>> pIdentExps, IntRef cppmangle) {
+            parseLinkage(pidents, pIdentExps, cppmangle, ref(false));
+        }
+
+        // defaulted all parameters starting with #3
+        public  int parseLinkage(Ptr<DArray<Identifier>> pidents, Ptr<DArray<Expression>> pIdentExps) {
+            parseLinkage(pidents, pIdentExps, ref(CPPMANGLE.def), ref(false));
+        }
+
         public  DArray<Identifier> parseQualifiedIdentifier(BytePtr entity) {
             DArray<Identifier> qualified = null;
             do {
@@ -9335,6 +9469,7 @@ public class parse {
             } while (((this.token.value & 0xFF) == 97));
             return qualified;
         }
+
         public  Condition parseDebugCondition() {
             int level = 1;
             Identifier id = null;
@@ -9352,6 +9487,7 @@ public class parse {
             }
             return new DebugCondition(this.mod, level, id);
         }
+
         public  Condition parseVersionCondition() {
             int level = 1;
             Identifier id = null;
@@ -9375,6 +9511,7 @@ public class parse {
                 this.error(new BytePtr("(condition) expected following `version`"));
             return new VersionCondition(this.mod, level, id);
         }
+
         public  Condition parseStaticIfCondition() {
             Expression exp = null;
             Condition condition = null;
@@ -9395,6 +9532,7 @@ public class parse {
             condition = new StaticIfCondition(loc, exp);
             return condition;
         }
+
         public  Dsymbol parseCtor(PrefixAttributesASTCodegen pAttrs) {
             Ref<DArray<Expression>> udas = ref(null);
             Loc loc = this.token.loc.copy();
@@ -9466,6 +9604,7 @@ public class parse {
             }
             return s;
         }
+
         public  Dsymbol parseDtor(PrefixAttributesASTCodegen pAttrs) {
             Ref<DArray<Expression>> udas = ref(null);
             Loc loc = this.token.loc.copy();
@@ -9495,6 +9634,7 @@ public class parse {
             }
             return s;
         }
+
         public  Dsymbol parseStaticCtor(PrefixAttributesASTCodegen pAttrs) {
             Loc loc = this.token.loc.copy();
             long stc = getStorageClassASTCodegen(pAttrs);
@@ -9525,6 +9665,7 @@ public class parse {
             Dsymbol s = this.parseContracts(f);
             return s;
         }
+
         public  Dsymbol parseStaticDtor(PrefixAttributesASTCodegen pAttrs) {
             Ref<DArray<Expression>> udas = ref(null);
             Loc loc = this.token.loc.copy();
@@ -9563,6 +9704,7 @@ public class parse {
             }
             return s;
         }
+
         public  Dsymbol parseSharedStaticCtor(PrefixAttributesASTCodegen pAttrs) {
             Loc loc = this.token.loc.copy();
             long stc = getStorageClassASTCodegen(pAttrs);
@@ -9595,6 +9737,7 @@ public class parse {
             Dsymbol s = this.parseContracts(f);
             return s;
         }
+
         public  Dsymbol parseSharedStaticDtor(PrefixAttributesASTCodegen pAttrs) {
             Ref<DArray<Expression>> udas = ref(null);
             Loc loc = this.token.loc.copy();
@@ -9635,6 +9778,7 @@ public class parse {
             }
             return s;
         }
+
         public  Dsymbol parseInvariant(PrefixAttributesASTCodegen pAttrs) {
             Loc loc = this.token.loc.copy();
             long stc = getStorageClassASTCodegen(pAttrs);
@@ -9669,6 +9813,7 @@ public class parse {
             InvariantDeclaration f = new InvariantDeclaration(loc, this.token.loc, stc, null, fbody);
             return f;
         }
+
         public  Dsymbol parseUnitTest(PrefixAttributesASTCodegen pAttrs) {
             Loc loc = this.token.loc.copy();
             long stc = getStorageClassASTCodegen(pAttrs);
@@ -9698,6 +9843,7 @@ public class parse {
             f.fbody = sbody;
             return f;
         }
+
         public  Dsymbol parseNew(PrefixAttributesASTCodegen pAttrs) {
             Loc loc = this.token.loc.copy();
             long stc = getStorageClassASTCodegen(pAttrs);
@@ -9708,6 +9854,7 @@ public class parse {
             Dsymbol s = this.parseContracts(f);
             return s;
         }
+
         public  Dsymbol parseDelete(PrefixAttributesASTCodegen pAttrs) {
             Loc loc = this.token.loc.copy();
             long stc = getStorageClassASTCodegen(pAttrs);
@@ -9720,6 +9867,7 @@ public class parse {
             Dsymbol s = this.parseContracts(f);
             return s;
         }
+
         public  DArray<Parameter> parseParameters(IntPtr pvarargs, Ptr<DArray<TemplateParameter>> tpl) {
             DArray<Parameter> parameters = new DArray<Parameter>();
             int varargs = VarArg.none;
@@ -9910,6 +10058,7 @@ public class parse {
             pvarargs.set(0, varargs);
             return parameters;
         }
+
         public  EnumDeclaration parseEnum() {
             EnumDeclaration e = null;
             Identifier id = null;
@@ -10076,6 +10225,7 @@ public class parse {
                 this.error(new BytePtr("enum declaration is invalid"));
             return e;
         }
+
         public  Dsymbol parseAggregate() {
             DArray<TemplateParameter> tpl = null;
             Expression constraint = null;
@@ -10194,6 +10344,7 @@ public class parse {
             }
             return a;
         }
+
         public  DArray<BaseClass> parseBaseClasses() {
             DArray<BaseClass> baseclasses = new DArray<BaseClass>();
             for (; 1 != 0;this.nextToken()){
@@ -10204,6 +10355,7 @@ public class parse {
             }
             return baseclasses;
         }
+
         public  DArray<Dsymbol> parseImport() {
             DArray<Dsymbol> decldefs = new DArray<Dsymbol>();
             Identifier aliasid = null;
@@ -10293,6 +10445,7 @@ public class parse {
             }
             return decldefs;
         }
+
         public  Type parseType(Ptr<Identifier> pident, Ptr<DArray<TemplateParameter>> ptpl) {
             long stc = 0L;
             for (; 1 != 0;){
@@ -10336,6 +10489,7 @@ public class parse {
             t = t.addSTC(stc);
             return t;
         }
+
         public  Type parseBasicType(boolean dontLookDotIdents) {
             Type t = null;
             Loc loc = new Loc();
@@ -10507,6 +10661,7 @@ public class parse {
             }
             return t;
         }
+
         public  Type parseBasicTypeStartingAt(TypeQualified tid, boolean dontLookDotIdents) {
             Type maybeArray = null;
             try {
@@ -10619,6 +10774,7 @@ public class parse {
         /*Lend:*/
             return maybeArray != null ? maybeArray : tid;
         }
+
         public  Type parseBasicType2(Type t) {
             for (; 1 != 0;){
                 switch ((this.token.value & 0xFF))
@@ -10682,6 +10838,7 @@ public class parse {
             }
             throw new AssertionError("Unreachable code!");
         }
+
         public  Type parseDeclarator(Type t, IntPtr palt, Ptr<Identifier> pident, Ptr<DArray<TemplateParameter>> tpl, long storageClass, IntPtr pdisable, Ptr<DArray<Expression>> pudas) {
             t = this.parseBasicType2(t);
             Ref<Type> ts = ref(null);
@@ -10787,6 +10944,7 @@ public class parse {
             }
             return ts.value;
         }
+
         public  void parseStorageClasses(Ref<Long> storage_class, IntRef link, Ref<Boolean> setAlignment, Ref<Expression> ealign, Ref<DArray<Expression>> udas) {
             long stc = 0L;
             boolean sawLinkage = false;
@@ -10920,6 +11078,7 @@ public class parse {
                 break;
             }
         }
+
         public  DArray<Dsymbol> parseDeclarations(boolean autodecl, PrefixAttributesASTCodegen pAttrs, BytePtr comment) {
             Ref<Long> storage_class = ref(0L);
             byte tok = TOK.reserved;
@@ -11307,6 +11466,7 @@ public class parse {
             }
             return a;
         }
+
         public  Dsymbol parseFunctionLiteral() {
             Loc loc = this.token.loc.copy();
             Ref<DArray<TemplateParameter>> tpl = ref(null);
@@ -11410,6 +11570,7 @@ public class parse {
             }
             return fd;
         }
+
         public  FuncDeclaration parseContracts(FuncDeclaration f) {
             int linksave = this.linkage;
             boolean literal = f.isFuncLiteralDeclaration() != null;
@@ -11553,12 +11714,14 @@ public class parse {
             this.linkage = linksave;
             return f;
         }
+
         public  void checkDanglingElse(Loc elseloc) {
             if (((this.token.value & 0xFF) != 184) && ((this.token.value & 0xFF) != 198) && ((this.token.value & 0xFF) != 199) && (this.lookingForElse.linnum != 0))
             {
                 this.warning(elseloc, new BytePtr("else is dangling, add { } after condition at %s"), this.lookingForElse.toChars(global.params.showColumns));
             }
         }
+
         public  void checkCstyleTypeSyntax(Loc loc, Type t, int alt, Identifier ident) {
             if (alt == 0)
                 return ;
@@ -11566,6 +11729,7 @@ public class parse {
             BytePtr s = pcopy(ident == null ? new BytePtr("") : ident.toChars());
             this.error(loc, new BytePtr("instead of C-style syntax, use D-style `%s%s%s`"), t.toChars(), sp, s);
         }
+
         // from template ParseForeachArgs!(00)
         // from template Seq!()
 
@@ -11713,6 +11877,7 @@ public class parse {
             }
         }
 
+
         // from template parseForeach!(10)
         public  StaticForeachStatement parseForeach10(Loc loc) {
             this.nextToken();
@@ -11833,6 +11998,7 @@ public class parse {
                 return new StaticForeachStatement(loc, new StaticForeach(loc, aggrfe, null));
             }
         }
+
 
         // from template parseForeach!(11)
         public  StaticForeachDeclaration parseForeach11(Loc loc, Ptr<Dsymbol> _param_1) {
@@ -11955,6 +12121,7 @@ public class parse {
                 return new StaticForeachDeclaration(new StaticForeach(loc, aggrfe, null), this.parseBlock(pLastDecl, null));
             }
         }
+
 
         public  Statement parseStatement(int flags, Ptr<BytePtr> endPtr, Loc pEndloc) {
             Statement s = null;
@@ -12881,6 +13048,7 @@ public class parse {
                 pEndloc.opAssign(this.prevloc);
             return s;
         }
+
         public  Initializer parseInitializer() {
             StructInitializer _is = null;
             ArrayInitializer ia = null;
@@ -13111,6 +13279,7 @@ public class parse {
                 } while(__dispatch85 != 0);
             }
         }
+
         public  Expression parseDefaultInitExp() {
             Expression e = null;
             Token t = this.peek(this.token);
@@ -13154,23 +13323,28 @@ public class parse {
         /*LExp:*/
             return this.parseAssignExp();
         }
+
         public  void check(Loc loc, byte value) {
             if (((this.token.value & 0xFF) != (value & 0xFF)))
                 this.error(loc, new BytePtr("found `%s` when expecting `%s`"), this.token.toChars(), Token.toChars(value));
             this.nextToken();
         }
+
         public  void check(byte value) {
             this.check(this.token.loc, value);
         }
+
         public  void check(byte value, BytePtr string) {
             if (((this.token.value & 0xFF) != (value & 0xFF)))
                 this.error(new BytePtr("found `%s` when expecting `%s` following %s"), this.token.toChars(), Token.toChars(value), string);
             this.nextToken();
         }
+
         public  void checkParens(byte value, Expression e) {
             if ((precedence.get((e.op & 0xFF)) == PREC.rel) && (e.parens == 0))
                 this.error(e.loc, new BytePtr("`%s` must be surrounded by parentheses when next to operator `%s`"), e.toChars(), Token.toChars(value));
         }
+
 
         public static class NeedDeclaratorId 
         {
@@ -13216,6 +13390,7 @@ public class parse {
         /*Lisnot:*/
             return false;
         }
+
         public  boolean isBasicType(Ptr<Token> pt) {
             Ref<Token> t = ref(pt.get());
             try {
@@ -13400,6 +13575,7 @@ public class parse {
         /*Lfalse:*/
             return false;
         }
+
         public  boolean isDeclarator(Ptr<Token> pt, IntPtr haveId, IntPtr haveTpl, byte endtok, boolean allowAltSyntax) {
             Ref<Token> t = ref(pt.get());
             int parens = 0;
@@ -13596,6 +13772,7 @@ public class parse {
             }
             throw new AssertionError("Unreachable code!");
         }
+
         public  boolean isParameters(Ptr<Token> pt) {
             Ref<Token> t = ref(pt.get());
             if ((((t.value).value & 0xFF) != 1))
@@ -13676,6 +13853,7 @@ public class parse {
             pt.set(0, t.value);
             return true;
         }
+
         public  boolean isExpression(Ptr<Token> pt) {
             Token t = pt.get();
             int brnest = 0;
@@ -13727,6 +13905,7 @@ public class parse {
             pt.set(0, t);
             return true;
         }
+
         public  boolean skipParens(Token t, Ptr<Token> pt) {
             if ((((t).value & 0xFF) != 1))
                 return false;
@@ -13771,6 +13950,7 @@ public class parse {
         /*Lfalse:*/
             return false;
         }
+
         public  boolean skipParensIf(Token t, Ptr<Token> pt) {
             if ((((t).value & 0xFF) != 1))
             {
@@ -13780,12 +13960,14 @@ public class parse {
             }
             return this.skipParens(t, pt);
         }
+
         public  boolean hasOptionalParensThen(Token t, byte expected) {
             Ref<Token> tk = ref(null);
             if (!this.skipParensIf(t, ptr(tk)))
                 return false;
             return ((tk.value).value & 0xFF) == (expected & 0xFF);
         }
+
         public  boolean skipAttributes(Token t, Ptr<Token> pt) {
             Ref<Token> t_ref = ref(t);
             try {
@@ -13884,6 +14066,7 @@ public class parse {
         /*Lerror:*/
             return false;
         }
+
         public  Expression parseExpression() {
             Loc loc = this.token.loc.copy();
             Expression e = this.parseAssignExp();
@@ -13895,6 +14078,7 @@ public class parse {
             }
             return e;
         }
+
         public  Expression parsePrimaryExp() {
             Expression e = null;
             Type t = null;
@@ -14366,6 +14550,7 @@ public class parse {
             }
             return e;
         }
+
         public  Expression parseUnaryExp() {
             Expression e = null;
             Loc loc = this.token.loc.copy();
@@ -14611,6 +14796,7 @@ public class parse {
             }
             return e;
         }
+
         public  Expression parsePostExp(Expression e) {
             for (; 1 != 0;){
                 Loc loc = this.token.loc.copy();
@@ -14677,6 +14863,7 @@ public class parse {
                 this.nextToken();
             }
         }
+
         public  Expression parseMulExp() {
             Loc loc = this.token.loc.copy();
             Expression e = this.parseUnaryExp();
@@ -14705,6 +14892,7 @@ public class parse {
             }
             return e;
         }
+
         public  Expression parseAddExp() {
             Loc loc = this.token.loc.copy();
             Expression e = this.parseMulExp();
@@ -14733,6 +14921,7 @@ public class parse {
             }
             return e;
         }
+
         public  Expression parseShiftExp() {
             Loc loc = this.token.loc.copy();
             Expression e = this.parseAddExp();
@@ -14761,6 +14950,7 @@ public class parse {
             }
             return e;
         }
+
         public  Expression parseCmpExp() {
             Loc loc = this.token.loc.copy();
             Expression e = this.parseShiftExp();
@@ -14825,6 +15015,7 @@ public class parse {
             }
             return e;
         }
+
         public  Expression parseAndExp() {
             Loc loc = this.token.loc.copy();
             Expression e = this.parseCmpExp();
@@ -14838,6 +15029,7 @@ public class parse {
             }
             return e;
         }
+
         public  Expression parseXorExp() {
             Loc loc = this.token.loc.copy();
             Expression e = this.parseAndExp();
@@ -14850,6 +15042,7 @@ public class parse {
             }
             return e;
         }
+
         public  Expression parseOrExp() {
             Loc loc = this.token.loc.copy();
             Expression e = this.parseXorExp();
@@ -14862,6 +15055,7 @@ public class parse {
             }
             return e;
         }
+
         public  Expression parseAndAndExp() {
             Loc loc = this.token.loc.copy();
             Expression e = this.parseOrExp();
@@ -14872,6 +15066,7 @@ public class parse {
             }
             return e;
         }
+
         public  Expression parseOrOrExp() {
             Loc loc = this.token.loc.copy();
             Expression e = this.parseAndAndExp();
@@ -14882,6 +15077,7 @@ public class parse {
             }
             return e;
         }
+
         public  Expression parseCondExp() {
             Loc loc = this.token.loc.copy();
             Expression e = this.parseOrOrExp();
@@ -14895,6 +15091,7 @@ public class parse {
             }
             return e;
         }
+
         public  Expression parseAssignExp() {
             Expression e = null;
             e = this.parseCondExp();
@@ -14980,6 +15177,7 @@ public class parse {
             }
             return e;
         }
+
         public  DArray<Expression> parseArguments() {
             DArray<Expression> arguments = null;
             byte endtok = TOK.reserved;
@@ -14996,6 +15194,7 @@ public class parse {
             this.check(endtok);
             return arguments;
         }
+
         public  Expression parseNewExp(Expression thisexp) {
             Loc loc = this.token.loc.copy();
             this.nextToken();
@@ -15054,6 +15253,7 @@ public class parse {
             NewExp e = new NewExp(loc, thisexp, newargs, t, arguments);
             return e;
         }
+
         public  void addComment(Dsymbol s, BytePtr blockComment) {
             if ((s != null))
             {
@@ -15061,6 +15261,7 @@ public class parse {
                 this.token.lineComment = null;
             }
         }
+
 
         public ParserASTCodegen() {}
 

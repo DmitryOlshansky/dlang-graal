@@ -69,14 +69,17 @@ public class semantic3 {
         Semantic3Visitor v = new Semantic3Visitor(sc);
         dsym.accept(v);
     }
+
     public static class Semantic3Visitor extends Visitor
     {
         public Scope sc;
         public  Semantic3Visitor(Scope sc) {
             this.sc = sc;
         }
+
         public  void visit(Dsymbol _param_0) {
         }
+
         public  void visit(TemplateInstance tempinst) {
             if ((tempinst.semanticRun >= PASS.semantic3))
                 return ;
@@ -121,6 +124,7 @@ public class semantic3 {
                 (this.sc).pop();
             }
         }
+
         public  void visit(TemplateMixin tmix) {
             if ((tmix.semanticRun >= PASS.semantic3))
                 return ;
@@ -140,6 +144,7 @@ public class semantic3 {
                 (this.sc).pop();
             }
         }
+
         public  void visit(dmodule.Module mod) {
             if ((mod.semanticRun != PASS.semantic2done))
                 return ;
@@ -161,6 +166,7 @@ public class semantic3 {
             (sc).pop();
             mod.semanticRun = PASS.semantic3done;
         }
+
         public  void visit(FuncDeclaration funcdecl) {
             Ref<FuncDeclaration> funcdecl_ref = ref(funcdecl);
             Function0<Boolean> addReturn0 = new Function0<Boolean>(){
@@ -1028,6 +1034,7 @@ public class semantic3 {
             if (((funcdecl_ref.value.type.ty & 0xFF) == ENUMTY.Terror))
                 funcdecl_ref.value.errors = true;
         }
+
         public  void visit(CtorDeclaration ctor) {
             if ((ctor.semanticRun >= PASS.semantic3))
                 return ;
@@ -1050,6 +1057,7 @@ public class semantic3 {
             }
             this.visit((FuncDeclaration)ctor);
         }
+
         public  void visit(Nspace ns) {
             if ((ns.semanticRun >= PASS.semantic3))
                 return ;
@@ -1069,6 +1077,7 @@ public class semantic3 {
                 (this.sc).pop();
             }
         }
+
         public  void visit(AttribDeclaration ad) {
             DArray<Dsymbol> d = ad.include(this.sc);
             if (d != null)
@@ -1085,6 +1094,7 @@ public class semantic3 {
                     (sc2).pop();
             }
         }
+
         public  void visit(AggregateDeclaration ad) {
             if (ad.members == null)
                 return ;
@@ -1127,6 +1137,7 @@ public class semantic3 {
             ad.semanticRun = PASS.semantic3done;
         }
 
+
         public Semantic3Visitor() {}
 
         public Semantic3Visitor copy() {
@@ -1143,6 +1154,7 @@ public class semantic3 {
             this.funcdecl = fd;
             this.sc = s;
         }
+
         public  void checkInContractOverrides() {
             if (this.funcdecl.frequires != null)
             {
@@ -1159,6 +1171,7 @@ public class semantic3 {
                 }
             }
         }
+
         public FuncDeclSem3(){
         }
         public FuncDeclSem3 copy(){

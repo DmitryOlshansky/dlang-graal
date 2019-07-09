@@ -115,6 +115,7 @@ public class expressionsem {
         }
         return false;
     }
+
     public static StringExp semanticString(Scope sc, Expression exp, BytePtr s) {
         sc = (sc).startCTFE();
         exp = expressionSemantic(exp, sc);
@@ -137,6 +138,7 @@ public class expressionsem {
         }
         return se;
     }
+
     public static Expression extractOpDollarSideEffect(Scope sc, UnaExp ue) {
         Ref<Expression> e0 = ref(null);
         Expression e1 = Expression.extractLast(ue.e1, e0);
@@ -150,6 +152,7 @@ public class expressionsem {
         ue.e1 = e1;
         return e0.value;
     }
+
     public static Expression resolveOpDollar(Scope sc, ArrayExp ae, Ptr<Expression> pe0) {
         assert(ae.lengthVar == null);
         pe0.set(0, null);
@@ -219,6 +222,7 @@ public class expressionsem {
         }
         return ae;
     }
+
     public static Expression resolveOpDollar(Scope sc, ArrayExp ae, IntervalExp ie, Ptr<Expression> pe0) {
         if (ie == null)
             return ae;
@@ -251,6 +255,7 @@ public class expressionsem {
         sc = (sc).pop();
         return ae;
     }
+
     public static boolean arrayExpressionSemantic(DArray<Expression> exps, Scope sc, boolean preserveErrors) {
         boolean err = false;
         if (exps != null)
@@ -273,6 +278,7 @@ public class expressionsem {
         }
         return err;
     }
+
     public static boolean checkPropertyCall(Expression e) {
         e = lastComma(e);
         if (((e.op & 0xFF) == 18))
@@ -299,6 +305,7 @@ public class expressionsem {
         }
         return false;
     }
+
     public static Expression searchUFCS(Scope sc, UnaExp ue, Identifier ident) {
         Ref<Scope> sc_ref = ref(sc);
         Ref<Identifier> ident_ref = ref(ident);
@@ -373,6 +380,7 @@ public class expressionsem {
             return new DsymbolExp(loc, s, true);
         }
     }
+
     public static Expression resolveUFCS(Scope sc, CallExp ce) {
         Loc loc = ce.loc.copy();
         Expression eleft = null;
@@ -482,6 +490,7 @@ public class expressionsem {
         (ce.arguments).shift(eleft);
         return null;
     }
+
     public static Expression resolveUFCSProperties(Scope sc, Expression e1, Expression e2) {
         Loc loc = e1.loc.copy();
         Expression eleft = null;
@@ -542,6 +551,7 @@ public class expressionsem {
             return expressionSemantic(e, sc);
         }
     }
+
     public static Expression resolvePropertiesOnly(Scope sc, Expression e1) {
         OverloadSet os = null;
         FuncDeclaration fd = null;
@@ -686,6 +696,7 @@ public class expressionsem {
         }
         return e1;
     }
+
     public static Expression symbolToExp(Dsymbol s, Loc loc, Scope sc, boolean hasOverloads) {
         while(true) try {
         /*Lagain:*/
@@ -889,6 +900,7 @@ public class expressionsem {
             break;
         } catch(Dispatch0 __d){}
     }
+
     public static Expression getRightThis(Loc loc, Scope sc, AggregateDeclaration ad, Expression e1, Dsymbol var, int flag) {
         while(true) try {
         /*L1:*/
@@ -945,6 +957,7 @@ public class expressionsem {
             break;
         } catch(Dispatch0 __d){}
     }
+
     public static Expression resolvePropertiesX(Scope sc, Expression e1, Expression e2) {
         Loc loc = e1.loc.copy();
         OverloadSet os = null;
@@ -1527,12 +1540,14 @@ public class expressionsem {
         error(loc, new BytePtr("%s is not an lvalue"), e1.toChars());
         return new ErrorExp();
     }
+
     public static Expression resolveProperties(Scope sc, Expression e) {
         e = resolvePropertiesX(sc, e, null);
         if (e.checkRightThis(sc))
             return new ErrorExp();
         return e;
     }
+
     public static boolean arrayExpressionToCommonType(Scope sc, DArray<Expression> exps, Ptr<Type> pt) {
         IntegerExp integerexp = literal0();
         CondExp condexp = new CondExp(Loc.initial, integerexp, null, null);
@@ -1616,6 +1631,7 @@ public class expressionsem {
             pt.set(0, t0);
         return pequals(t0, Type.terror);
     }
+
     public static Expression opAssignToOp(Loc loc, byte op, Expression e1, Expression e2) {
         Expression e = null;
         switch ((op & 0xFF))
@@ -1658,6 +1674,7 @@ public class expressionsem {
         }
         return e;
     }
+
     public static Expression rewriteOpAssign(BinExp exp) {
         Expression e = null;
         assert(((exp.e1.op & 0xFF) == 32));
@@ -1678,6 +1695,7 @@ public class expressionsem {
         }
         return e;
     }
+
     public static boolean preFunctionParameters(Scope sc, DArray<Expression> exps) {
         boolean err = false;
         if (exps != null)
@@ -1715,6 +1733,7 @@ public class expressionsem {
         }
         return err;
     }
+
     public static boolean checkDefCtor(Loc loc, Type t) {
         t = t.baseElemOf();
         if (((t.ty & 0xFF) == ENUMTY.Tstruct))
@@ -1728,6 +1747,7 @@ public class expressionsem {
         }
         return false;
     }
+
     public static boolean functionParameters(Loc loc, Scope sc, TypeFunction tf, Expression ethis, Type tthis, DArray<Expression> arguments, FuncDeclaration fd, Ptr<Type> prettype, Ptr<Expression> peprefix) {
         assert(arguments != null);
         assert((fd != null) || (tf.next != null));
@@ -2300,6 +2320,7 @@ public class expressionsem {
         peprefix.set(0, eprefix);
         return err || (olderrors != global.errors);
     }
+
     public static dmodule.Package resolveIsPackage(Dsymbol sym) {
         dmodule.Package pkg = null;
         {
@@ -2320,6 +2341,7 @@ public class expressionsem {
             pkg.resolvePKGunknown();
         return pkg;
     }
+
     public static dmodule.Module loadStdMath() {
         if (expressionsem.loadStdMathimpStdMath == null)
         {
@@ -2338,6 +2360,7 @@ public class expressionsem {
         }
         return expressionsem.loadStdMathimpStdMath.mod;
     }
+
     public static class ExpressionSemanticVisitor extends Visitor
     {
         public Scope sc;
@@ -2345,9 +2368,11 @@ public class expressionsem {
         public  ExpressionSemanticVisitor(Scope sc) {
             this.sc = sc;
         }
+
         public  void setError() {
             this.result = new ErrorExp();
         }
+
         public  void visit(Expression e) {
             if (e.type != null)
                 e.type = typeSemantic(e.type, e.loc, this.sc);
@@ -2355,6 +2380,7 @@ public class expressionsem {
                 e.type = Type.tvoid;
             this.result = e;
         }
+
         public  void visit(IntegerExp e) {
             assert(e.type != null);
             if (((e.type.ty & 0xFF) == ENUMTY.Terror))
@@ -2364,6 +2390,7 @@ public class expressionsem {
             e.setInteger(e.getInteger());
             this.result = e;
         }
+
         public  void visit(RealExp e) {
             if (e.type == null)
                 e.type = Type.tfloat64;
@@ -2371,6 +2398,7 @@ public class expressionsem {
                 e.type = typeSemantic(e.type, e.loc, this.sc);
             this.result = e;
         }
+
         public  void visit(ComplexExp e) {
             if (e.type == null)
                 e.type = Type.tcomplex80;
@@ -2378,6 +2406,7 @@ public class expressionsem {
                 e.type = typeSemantic(e.type, e.loc, this.sc);
             this.result = e;
         }
+
         public  void visit(IdentifierExp exp) {
             if (exp.type != null)
             {
@@ -2566,9 +2595,11 @@ public class expressionsem {
             }
             this.result = new ErrorExp();
         }
+
         public  void visit(DsymbolExp e) {
             this.result = symbolToExp(e.s, e.loc, this.sc, e.hasOverloads);
         }
+
         public  void visit(ThisExp e) {
             if (e.type != null)
             {
@@ -2627,6 +2658,7 @@ public class expressionsem {
             e.error(new BytePtr("`this` is only defined in non-static member functions, not `%s`"), (this.sc).parent.toChars());
             this.result = new ErrorExp();
         }
+
         public  void visit(SuperExp e) {
             if (e.type != null)
             {
@@ -2696,6 +2728,7 @@ public class expressionsem {
             e.error(new BytePtr("`super` is only allowed in non-static class member functions"));
             this.result = new ErrorExp();
         }
+
         public  void visit(NullExp e) {
             if (e.type != null)
             {
@@ -2705,6 +2738,7 @@ public class expressionsem {
             e.type = Type.tnull;
             this.result = e;
         }
+
         public  void visit(StringExp e) {
             if (e.type != null)
             {
@@ -2791,6 +2825,7 @@ public class expressionsem {
             finally {
             }
         }
+
         public  void visit(TupleExp exp) {
             if (exp.type != null)
             {
@@ -2824,6 +2859,7 @@ public class expressionsem {
             exp.type = typeSemantic(exp.type, exp.loc, this.sc);
             this.result = exp;
         }
+
         public  void visit(ArrayLiteralExp e) {
             if (e.type != null)
             {
@@ -2857,6 +2893,7 @@ public class expressionsem {
                 semanticTypeInfo(this.sc, e.type);
             this.result = e;
         }
+
         public  void visit(AssocArrayLiteralExp e) {
             if (e.type != null)
             {
@@ -2897,6 +2934,7 @@ public class expressionsem {
             }
             this.result = e;
         }
+
         public  void visit(StructLiteralExp e) {
             if (e.type != null)
             {
@@ -2926,6 +2964,7 @@ public class expressionsem {
             e.type = e.stype != null ? e.stype : e.sd.type;
             this.result = e;
         }
+
         public  void visit(TypeExp exp) {
             if (((exp.type.ty & 0xFF) == ENUMTY.Terror))
                 this.setError();
@@ -2953,6 +2992,7 @@ public class expressionsem {
                 exp.type.checkComplexTransition(exp.loc, this.sc);
             this.result = e.value;
         }
+
         public  void visit(ScopeExp exp) {
             if (exp.type != null)
             {
@@ -3080,6 +3120,7 @@ public class expressionsem {
             exp.type = Type.tvoid;
             this.result = exp;
         }
+
         public  void visit(NewExp exp) {
             if (exp.type != null)
             {
@@ -3520,6 +3561,7 @@ public class expressionsem {
             }
             this.result = exp;
         }
+
         public  void visit(NewAnonClassExp e) {
             Expression d = new DeclarationExp(e.loc, e.cd);
             this.sc = (this.sc).push();
@@ -3537,6 +3579,7 @@ public class expressionsem {
             Expression c = new CommaExp(e.loc, d, n, true);
             this.result = expressionSemantic(c, this.sc);
         }
+
         public  void visit(SymOffExp e) {
             if (e.type == null)
                 e.type = e.var.type.pointerTo();
@@ -3560,6 +3603,7 @@ public class expressionsem {
             }
             this.result = e;
         }
+
         public  void visit(VarExp e) {
             VarDeclaration vd = e.var.isVarDeclaration();
             FuncDeclaration fd = e.var.isFuncDeclaration();
@@ -3601,6 +3645,7 @@ public class expressionsem {
             }
             this.result = e;
         }
+
         public  void visit(FuncExp exp) {
             if (exp.type != null)
             {
@@ -3678,6 +3723,7 @@ public class expressionsem {
             this.sc = (this.sc).pop();
             this.result = e;
         }
+
         public  Expression callExpSemantic(FuncExp exp, Scope sc, DArray<Expression> arguments) {
             if ((exp.type == null) || (pequals(exp.type, Type.tvoid)) && (exp.td != null) && (arguments != null) && ((arguments).length != 0))
             {
@@ -3730,6 +3776,7 @@ public class expressionsem {
             }
             return expressionSemantic(exp, sc);
         }
+
         public  void visit(CallExp exp) {
             if (exp.type != null)
             {
@@ -4613,6 +4660,7 @@ public class expressionsem {
                 break;
             } catch(Dispatch1 __d){}
         }
+
         public  void visit(DeclarationExp e) {
             if (e.type != null)
             {
@@ -4701,6 +4749,7 @@ public class expressionsem {
             e.type = Type.tvoid;
             this.result = e;
         }
+
         public  void visit(TypeidExp exp) {
             Ref<Type> ta = ref(isType(exp.obj));
             Ref<Expression> ea = ref(isExpression(exp.obj));
@@ -4769,13 +4818,16 @@ public class expressionsem {
             }
             this.result = e;
         }
+
         public  void visit(TraitsExp e) {
             this.result = semanticTraits(e, this.sc);
         }
+
         public  void visit(HaltExp e) {
             e.type = Type.tvoid;
             this.result = e;
         }
+
         public  void visit(IsExp e) {
             if ((e.id != null) && (((this.sc).flags & 4) == 0))
             {
@@ -5052,6 +5104,7 @@ public class expressionsem {
         /*Lno:*/
             this.result = new IntegerExp(e.loc, 0L, Type.tbool);
         }
+
         public  void visit(BinAssignExp exp) {
             if (exp.type != null)
             {
@@ -5165,6 +5218,7 @@ public class expressionsem {
             assert(((e.op & 0xFF) == 90) || (pequals(e, exp)));
             this.result = ((BinExp)e).reorderSettingAAElem(this.sc);
         }
+
         public  Expression compileIt(CompileExp exp) {
             OutBuffer buf = new OutBuffer();
             try {
@@ -5200,6 +5254,7 @@ public class expressionsem {
             finally {
             }
         }
+
         public  void visit(CompileExp exp) {
             Expression e = this.compileIt(exp);
             if (e == null)
@@ -5207,6 +5262,7 @@ public class expressionsem {
                 return ;
             this.result = expressionSemantic(e, this.sc);
         }
+
         public  void visit(ImportExp e) {
             StringExp se = semanticString(this.sc, e.e1, new BytePtr("file name argument"));
             if (se == null)
@@ -5268,6 +5324,7 @@ public class expressionsem {
             }
             this.result = expressionSemantic(se, this.sc);
         }
+
         public  void visit(AssertExp exp) {
             BytePtr assertExpMsg = pcopy(exp.msg != null ? null : exp.toChars());
             {
@@ -5378,6 +5435,7 @@ public class expressionsem {
             exp.type = Type.tvoid;
             this.result = exp;
         }
+
         public  void visit(DotIdExp exp) {
             Expression e = semanticY(exp, this.sc, 1);
             if ((e != null) && isDotOpDispatch(e))
@@ -5398,6 +5456,7 @@ public class expressionsem {
             }
             this.result = e;
         }
+
         public  void visit(DotTemplateExp e) {
             {
                 Expression ex = unaSemantic(e, this.sc);
@@ -5409,6 +5468,7 @@ public class expressionsem {
             }
             this.result = e;
         }
+
         public  void visit(DotVarExp exp) {
             if (exp.type != null)
             {
@@ -5535,12 +5595,14 @@ public class expressionsem {
             }
             this.result = exp;
         }
+
         public  void visit(DotTemplateInstanceExp exp) {
             Expression e = semanticY(exp, this.sc, 1);
             if (e == null)
                 e = resolveUFCSProperties(this.sc, exp, null);
             this.result = e;
         }
+
         public  void visit(DelegateExp e) {
             if (e.type != null)
             {
@@ -5618,6 +5680,7 @@ public class expressionsem {
                 this.result = expressionSemantic(this.result, this.sc);
             }
         }
+
         public  void visit(DotTypeExp exp) {
             if (exp.type != null)
             {
@@ -5635,6 +5698,7 @@ public class expressionsem {
             exp.type = exp.sym.getType().addMod(exp.e1.type.mod);
             this.result = exp;
         }
+
         public  void visit(AddrExp exp) {
             if (exp.type != null)
             {
@@ -5864,6 +5928,7 @@ public class expressionsem {
             }
             this.result = exp.optimize(0, false);
         }
+
         public  void visit(PtrExp exp) {
             if (exp.type != null)
             {
@@ -5910,6 +5975,7 @@ public class expressionsem {
                 return ;
             this.result = exp;
         }
+
         public  void visit(NegExp exp) {
             if (exp.type != null)
             {
@@ -5948,6 +6014,7 @@ public class expressionsem {
                 return ;
             this.result = exp;
         }
+
         public  void visit(UAddExp exp) {
             assert(exp.type == null);
             Expression e = op_overload(exp, this.sc, null);
@@ -5970,6 +6037,7 @@ public class expressionsem {
                 return ;
             this.result = exp.e1;
         }
+
         public  void visit(ComExp exp) {
             if (exp.type != null)
             {
@@ -6008,6 +6076,7 @@ public class expressionsem {
                 return ;
             this.result = exp;
         }
+
         public  void visit(NotExp e) {
             if (e.type != null)
             {
@@ -6042,6 +6111,7 @@ public class expressionsem {
             e.type = Type.tbool;
             this.result = e;
         }
+
         public  void visit(DeleteExp exp) {
             if (!(this.sc).isDeprecated())
             {
@@ -6164,6 +6234,7 @@ public class expressionsem {
                 return ;
             this.result = exp;
         }
+
         public  void visit(CastExp exp) {
             if (exp.type != null)
             {
@@ -6328,6 +6399,7 @@ public class expressionsem {
             }
             this.result = ex;
         }
+
         public  void visit(VectorExp exp) {
             Ref<VectorExp> exp_ref = ref(exp);
             if (exp_ref.value.type != null)
@@ -6372,6 +6444,7 @@ public class expressionsem {
                 checkElem.invoke(exp_ref.value.e1);
             this.result = res ? new ErrorExp() : exp_ref.value;
         }
+
         public  void visit(VectorArrayExp e) {
             if (e.type == null)
             {
@@ -6387,6 +6460,7 @@ public class expressionsem {
             }
             this.result = e;
         }
+
         public  void visit(SliceExp exp) {
             if (exp.type != null)
             {
@@ -6658,6 +6732,7 @@ public class expressionsem {
             }
             this.result = exp;
         }
+
         public  void visit(ArrayLengthExp e) {
             if (e.type != null)
             {
@@ -6676,6 +6751,7 @@ public class expressionsem {
             e.type = Type.tsize_t;
             this.result = e;
         }
+
         public  void visit(ArrayExp exp) {
             assert(exp.type == null);
             Expression e = op_overload(exp, this.sc, null);
@@ -6694,6 +6770,7 @@ public class expressionsem {
                 exp.error(new BytePtr("cannot use `[]` operator on expression of type `%s`"), exp.e1.type.toChars());
             this.result = new ErrorExp();
         }
+
         public  void visit(DotExp exp) {
             exp.e1 = expressionSemantic(exp.e1, this.sc);
             exp.e2 = expressionSemantic(exp.e2, this.sc);
@@ -6718,6 +6795,7 @@ public class expressionsem {
                 exp.type = exp.e2.type;
             this.result = exp;
         }
+
         public  void visit(CommaExp e) {
             if (e.type != null)
             {
@@ -6746,6 +6824,7 @@ public class expressionsem {
                 e.error(new BytePtr("Using the result of a comma expression is not allowed"));
             this.result = e;
         }
+
         public  void visit(IntervalExp e) {
             if (e.type != null)
             {
@@ -6773,6 +6852,7 @@ public class expressionsem {
             e.type = Type.tvoid;
             this.result = e;
         }
+
         public  void visit(DelegatePtrExp e) {
             if (e.type == null)
             {
@@ -6787,6 +6867,7 @@ public class expressionsem {
             }
             this.result = e;
         }
+
         public  void visit(DelegateFuncptrExp e) {
             if (e.type == null)
             {
@@ -6801,6 +6882,7 @@ public class expressionsem {
             }
             this.result = e;
         }
+
         public  void visit(IndexExp exp) {
             if (exp.type != null)
             {
@@ -6981,6 +7063,7 @@ public class expressionsem {
             }
             this.result = exp;
         }
+
         public  void visit(PostExp exp) {
             if (exp.type != null)
             {
@@ -7057,6 +7140,7 @@ public class expressionsem {
             e.type = exp.e1.type;
             this.result = e;
         }
+
         public  void visit(PreExp exp) {
             Expression e = op_overload(exp, this.sc, null);
             if (e != null)
@@ -7070,6 +7154,7 @@ public class expressionsem {
                 e = new MinAssignExp(exp.loc, exp.e1, new IntegerExp(exp.loc, 1L, Type.tint32));
             this.result = expressionSemantic(e, this.sc);
         }
+
         public  Expression getInitExp(StructDeclaration sd, Loc loc, Scope sc, Type t) {
             if (sd.zeroInit && !sd.isNested())
             {
@@ -7087,6 +7172,7 @@ public class expressionsem {
             }
             return defaultInit(t, loc);
         }
+
         public  void visit(AssignExp exp) {
             Function2<Expression,Integer,Void> setResult = new Function2<Expression,Integer,Void>(){
                 public Void invoke(Expression e, Integer line) {
@@ -7939,6 +8025,7 @@ public class expressionsem {
             setResult.invoke(res, 9001);
             return ;
         }
+
         public  void visit(PowAssignExp exp) {
             if (exp.type != null)
             {
@@ -8014,6 +8101,7 @@ public class expressionsem {
             }
             this.result = exp.incompatibleTypes();
         }
+
         public  void visit(CatAssignExp exp) {
             if (exp.type != null)
             {
@@ -8134,6 +8222,7 @@ public class expressionsem {
                 checkAssignEscape(this.sc, res, false);
             this.result = res;
         }
+
         public  void visit(AddExp exp) {
             if (exp.type != null)
             {
@@ -8225,6 +8314,7 @@ public class expressionsem {
             }
             this.result = exp;
         }
+
         public  void visit(MinExp exp) {
             if (exp.type != null)
             {
@@ -8356,6 +8446,7 @@ public class expressionsem {
             this.result = exp;
             return ;
         }
+
         public  void visit(CatExp exp) {
             if (exp.type != null)
             {
@@ -8538,6 +8629,7 @@ public class expressionsem {
             }
             this.result = e;
         }
+
         public  void visit(MulExp exp) {
             if (exp.type != null)
             {
@@ -8632,6 +8724,7 @@ public class expressionsem {
             }
             this.result = exp;
         }
+
         public  void visit(DivExp exp) {
             if (exp.type != null)
             {
@@ -8728,6 +8821,7 @@ public class expressionsem {
             }
             this.result = exp;
         }
+
         public  void visit(ModExp exp) {
             if (exp.type != null)
             {
@@ -8787,6 +8881,7 @@ public class expressionsem {
             }
             this.result = exp;
         }
+
         public  void visit(PowExp exp) {
             if (exp.type != null)
             {
@@ -8879,6 +8974,7 @@ public class expressionsem {
             this.result = e;
             return ;
         }
+
         public  void visit(ShlExp exp) {
             if (exp.type != null)
             {
@@ -8913,6 +9009,7 @@ public class expressionsem {
             exp.type = exp.e1.type;
             this.result = exp;
         }
+
         public  void visit(ShrExp exp) {
             if (exp.type != null)
             {
@@ -8947,6 +9044,7 @@ public class expressionsem {
             exp.type = exp.e1.type;
             this.result = exp;
         }
+
         public  void visit(UshrExp exp) {
             if (exp.type != null)
             {
@@ -8981,6 +9079,7 @@ public class expressionsem {
             exp.type = exp.e1.type;
             this.result = exp;
         }
+
         public  void visit(AndExp exp) {
             if (exp.type != null)
             {
@@ -9036,6 +9135,7 @@ public class expressionsem {
                 return ;
             this.result = exp;
         }
+
         public  void visit(OrExp exp) {
             if (exp.type != null)
             {
@@ -9091,6 +9191,7 @@ public class expressionsem {
                 return ;
             this.result = exp;
         }
+
         public  void visit(XorExp exp) {
             if (exp.type != null)
             {
@@ -9146,6 +9247,7 @@ public class expressionsem {
                 return ;
             this.result = exp;
         }
+
         public  void visit(LogicalExp exp) {
             if (exp.type != null)
             {
@@ -9205,6 +9307,7 @@ public class expressionsem {
             exp.e2 = e2x;
             this.result = exp;
         }
+
         public  void visit(CmpExp exp) {
             if (exp.type != null)
             {
@@ -9335,6 +9438,7 @@ public class expressionsem {
             this.result = exp;
             return ;
         }
+
         public  void visit(InExp exp) {
             if (exp.type != null)
             {
@@ -9376,6 +9480,7 @@ public class expressionsem {
             }
             this.result = exp;
         }
+
         public  void visit(RemoveExp e) {
             {
                 Expression ex = binSemantic(e, this.sc);
@@ -9387,6 +9492,7 @@ public class expressionsem {
             }
             this.result = e;
         }
+
         public  void visit(EqualExp exp) {
             if (exp.type != null)
             {
@@ -9517,6 +9623,7 @@ public class expressionsem {
             }
             this.result = exp;
         }
+
         public  void visit(IdentityExp exp) {
             if (exp.type != null)
             {
@@ -9571,6 +9678,7 @@ public class expressionsem {
                 exp.deprecation(new BytePtr("identity comparison of static arrays implicitly coerces them to slices, which are compared by reference"));
             this.result = exp;
         }
+
         public  void visit(CondExp exp) {
             if (exp.type != null)
             {
@@ -9674,18 +9782,22 @@ public class expressionsem {
             exp.hookDtors(this.sc);
             this.result = exp;
         }
+
         public  void visit(FileInitExp e) {
             e.type = Type.tstring;
             this.result = e;
         }
+
         public  void visit(LineInitExp e) {
             e.type = Type.tint32;
             this.result = e;
         }
+
         public  void visit(ModuleInitExp e) {
             e.type = Type.tstring;
             this.result = e;
         }
+
         public  void visit(FuncInitExp e) {
             e.type = Type.tstring;
             if ((this.sc).func != null)
@@ -9695,6 +9807,7 @@ public class expressionsem {
             }
             this.result = e;
         }
+
         public  void visit(PrettyFuncInitExp e) {
             e.type = Type.tstring;
             if ((this.sc).func != null)
@@ -9704,6 +9817,7 @@ public class expressionsem {
             }
             this.result = e;
         }
+
 
         public ExpressionSemanticVisitor() {}
 
@@ -9723,6 +9837,7 @@ public class expressionsem {
         }
         return e;
     }
+
     public static Expression unaSemantic(UnaExp e, Scope sc) {
         Expression e1x = expressionSemantic(e.e1, sc);
         if (((e1x.op & 0xFF) == 127))
@@ -9730,6 +9845,7 @@ public class expressionsem {
         e.e1 = e1x;
         return null;
     }
+
     public static Expression binSemantic(BinExp e, Scope sc) {
         Expression e1x = expressionSemantic(e.e1, sc);
         Expression e2x = expressionSemantic(e.e2, sc);
@@ -9745,6 +9861,7 @@ public class expressionsem {
         e.e2 = e2x;
         return null;
     }
+
     public static Expression binSemanticProp(BinExp e, Scope sc) {
         {
             Expression ex = binSemantic(e, sc);
@@ -9761,11 +9878,13 @@ public class expressionsem {
         e.e2 = e2x;
         return null;
     }
+
     public static Expression expressionSemantic(Expression e, Scope sc) {
         ExpressionSemanticVisitor v = new ExpressionSemanticVisitor(sc);
         e.accept(v);
         return v.result;
     }
+
     public static Expression semanticX(DotIdExp exp, Scope sc) {
         {
             Expression ex = unaSemantic(exp, sc);
@@ -9876,6 +9995,7 @@ public class expressionsem {
         }
         return exp;
     }
+
     public static Expression semanticY(DotIdExp exp, Scope sc, int flag) {
         if (((exp.e1.op & 0xFF) == 123) || ((exp.e1.op & 0xFF) == 124) && (hasThis(sc) == null))
         {
@@ -10129,6 +10249,7 @@ public class expressionsem {
             return e;
         }
     }
+
     public static Expression semanticY(DotTemplateInstanceExp exp, Scope sc, int flag) {
         Function0<Expression> errorExp = new Function0<Expression>(){
             public Expression invoke() {
@@ -10293,6 +10414,7 @@ public class expressionsem {
         exp.error(new BytePtr("`%s` isn't a template"), e.toChars());
         return errorExp.invoke();
     }
+
     public static boolean checkAddressVar(Scope sc, UnaExp exp, VarDeclaration v) {
         if (v != null)
         {
@@ -10323,6 +10445,7 @@ public class expressionsem {
         }
         return true;
     }
+
     public static boolean checkFunctionAttributes(Expression exp, Scope sc, FuncDeclaration f) {
         {
             boolean error = __withSym.checkDisabled(sc, f);
@@ -10333,6 +10456,7 @@ public class expressionsem {
             return error;
         }
     }
+
     public static Expression getThisSkipNestedFuncs(Loc loc, Scope sc, Dsymbol s, AggregateDeclaration ad, Expression e1, Type t, Dsymbol var, boolean flag) {
         int n = 0;
         for (; (s != null) && (s.isFuncDeclaration() != null);){
@@ -10380,6 +10504,7 @@ public class expressionsem {
         e1.type = e1.type.addMod(t.mod);
         return e1;
     }
+
     public static VarDeclaration makeThis2Argument(Loc loc, Scope sc, FuncDeclaration fd) {
         Type tthis2 = Type.tvoidptr.sarrayOf(2L);
         VarDeclaration vthis2 = new VarDeclaration(loc, tthis2, Identifier.generateId(new BytePtr("__this")), null, 0L);
@@ -10391,6 +10516,7 @@ public class expressionsem {
         vthis2.nestedrefs.push(fd);
         return vthis2;
     }
+
     public static boolean verifyHookExist(Loc loc, Scope sc, Identifier id, ByteSlice description, Identifier module_) {
         Dsymbol rootSymbol = sc.search(loc, Id.empty, null, 0);
         {
@@ -10402,4 +10528,5 @@ public class expressionsem {
         error(loc, new BytePtr("`%s.%s` not found. The current runtime does not support %.*s, or the runtime is corrupt."), module_.toChars(), id.toChars(), description.getLength(), toBytePtr(description));
         return false;
     }
+
 }

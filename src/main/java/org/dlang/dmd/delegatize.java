@@ -36,12 +36,15 @@ public class delegatize {
             super();
             this.fd = fd;
         }
+
         public  void visit(Expression _param_0) {
         }
+
         public  void visit(DeclarationExp e) {
             e.declaration.parent = this.fd;
             e.declaration.accept(this);
         }
+
         public  void visit(IndexExp e) {
             if (e.lengthVar != null)
             {
@@ -49,6 +52,7 @@ public class delegatize {
                 e.lengthVar.accept(this);
             }
         }
+
         public  void visit(SliceExp e) {
             if (e.lengthVar != null)
             {
@@ -56,17 +60,22 @@ public class delegatize {
                 e.lengthVar.accept(this);
             }
         }
+
         public  void visit(Dsymbol _param_0) {
         }
+
         public  void visit(VarDeclaration v) {
             if (v._init != null)
                 v._init.accept(this);
         }
+
         public  void visit(Initializer _param_0) {
         }
+
         public  void visit(ExpInitializer ei) {
             walkPostorder(ei.exp, this);
         }
+
         public  void visit(StructInitializer si) {
             {
                 Slice<Identifier> __r924 = si.field.opSlice().copy();
@@ -82,6 +91,7 @@ public class delegatize {
                 }
             }
         }
+
         public  void visit(ArrayInitializer ai) {
             {
                 Slice<Expression> __r926 = ai.index.opSlice().copy();
@@ -100,6 +110,7 @@ public class delegatize {
             }
         }
 
+
         public LambdaSetParent() {}
     }
     private static class LambdaCheckForNestedRef extends StoppableVisitor
@@ -110,22 +121,27 @@ public class delegatize {
             super();
             this.sc = sc;
         }
+
         public  void visit(Expression _param_0) {
         }
+
         public  void visit(SymOffExp e) {
             VarDeclaration v = e.var.isVarDeclaration();
             if (v != null)
                 this.result = v.checkNestedReference(this.sc, Loc.initial);
         }
+
         public  void visit(VarExp e) {
             VarDeclaration v = e.var.isVarDeclaration();
             if (v != null)
                 this.result = v.checkNestedReference(this.sc, Loc.initial);
         }
+
         public  void visit(ThisExp e) {
             if (e.var != null)
                 this.result = e.var.checkNestedReference(this.sc, Loc.initial);
         }
+
         public  void visit(DeclarationExp e) {
             VarDeclaration v = e.declaration.isVarDeclaration();
             if (v != null)
@@ -140,6 +156,7 @@ public class delegatize {
                 }
             }
         }
+
 
         public LambdaCheckForNestedRef() {}
     }
@@ -167,15 +184,18 @@ public class delegatize {
         e = expressionSemantic(e, sc);
         return e;
     }
+
     public static void lambdaSetParent(Expression e, FuncDeclaration fd) {
         LambdaSetParent lsp = new LambdaSetParent(fd);
         walkPostorder(e, lsp);
     }
+
     public static boolean lambdaCheckForNestedRef(Expression e, Scope sc) {
         LambdaCheckForNestedRef v = new LambdaCheckForNestedRef(sc);
         walkPostorder(e, v);
         return v.result;
     }
+
     public static boolean ensureStaticLinkTo(Dsymbol s, Dsymbol p) {
         for (; s != null;){
             if ((pequals(s, p)))
@@ -205,4 +225,5 @@ public class delegatize {
         }
         return false;
     }
+
 }

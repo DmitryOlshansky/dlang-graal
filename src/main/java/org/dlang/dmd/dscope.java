@@ -104,6 +104,7 @@ public class dscope {
             }
             return new Scope(null, null, null, null, null, null, null, null, null, null, null, null, null, null, false, false, 0, null, null, null, new CtorFlow(CSX.none, new Slice<FieldInit>()), null, null, LINK.d, CPPMANGLE.def, PINLINE.default_, new Prot(Prot.Kind.public_, null), 0, 0L, null, 0, null, null, null, null);
         }
+
         public static Scope createGlobal(dmodule.Module _module) {
             Scope sc = alloc();
             sc.opAssign(new Scope(null, null, null, null, null, null, null, null, null, null, null, null, null, null, false, false, 0, null, null, null, new CtorFlow(CSX.none, new Slice<FieldInit>()), null, null, LINK.d, CPPMANGLE.def, PINLINE.default_, new Prot(Prot.Kind.public_, null), 0, 0L, null, 0, null, null, null, null));
@@ -121,6 +122,7 @@ public class dscope {
             (sc).parent = _module;
             return sc;
         }
+
         public  Scope push() {
             Scope s = this.copy();
             assert((this.flags & 32768) == 0);
@@ -134,11 +136,13 @@ public class dscope {
             assert((this != s));
             return s;
         }
+
         public  Scope push(ScopeDsymbol ss) {
             Scope s = this.push();
             (s).scopesym = ss;
             return s;
         }
+
         public  Scope pop() {
             if (this.enclosing != null)
                 (this.enclosing).ctorflow.OR(this.ctorflow);
@@ -152,20 +156,24 @@ public class dscope {
             }
             return enc;
         }
+
         public  void detach() {
             this.ctorflow.freeFieldinit();
             this.enclosing = null;
             this.pop();
         }
+
         public  Scope startCTFE() {
             Scope sc = this.push();
             (sc).flags = this.flags | 128;
             return sc;
         }
+
         public  Scope endCTFE() {
             assert((this.flags & 128) != 0);
             return this.pop();
         }
+
         public  void merge(Loc loc, CtorFlow ctorflow) {
             if (!mergeCallSuper(this.ctorflow.callSuper, ctorflow.callSuper))
                 error(loc, new BytePtr("one path skips constructor"));
@@ -196,9 +204,11 @@ public class dscope {
                 }
             }
         }
+
         public  dmodule.Module instantiatingModule() {
             return this.minst != null ? this.minst : this._module;
         }
+
         public  Dsymbol search(Loc loc, Identifier ident, Ptr<Dsymbol> pscopesym, int flags) {
             Ref<Identifier> ident_ref = ref(ident);
             Ref<Ptr<Dsymbol>> pscopesym_ref = ref(pscopesym);
@@ -332,6 +342,7 @@ public class dscope {
             }
             return s;
         }
+
         public  Dsymbol search_correct(Identifier ident) {
             if (global.gag != 0)
                 return null;
@@ -373,6 +384,7 @@ public class dscope {
             }
             return speller.invoke(ident.asString());
         }
+
         public static BytePtr search_correct_C(Identifier ident) {
             byte tok = TOK.reserved;
             if ((pequals(ident, Id.NULL)))
@@ -389,6 +401,7 @@ public class dscope {
                 return null;
             return Token.toChars(tok);
         }
+
         public  Dsymbol insert(Dsymbol s) {
             {
                 VarDeclaration vd = s.isVarDeclaration();
@@ -428,6 +441,7 @@ public class dscope {
             }
             throw new AssertionError("Unreachable code!");
         }
+
         public  ClassDeclaration getClassScope() {
             {
                 Scope sc = this;
@@ -441,6 +455,7 @@ public class dscope {
             }
             return null;
         }
+
         public  AggregateDeclaration getStructClassScope() {
             {
                 Scope sc = this;
@@ -457,6 +472,7 @@ public class dscope {
             }
             return null;
         }
+
         public  void setNoFree() {
             {
                 Scope sc = this;
@@ -466,6 +482,7 @@ public class dscope {
                 }
             }
         }
+
         public  Scope(Scope sc) {
             this._module = sc._module;
             this.scopesym = sc.scopesym;
@@ -502,12 +519,14 @@ public class dscope {
             this.prevAnchor = sc.prevAnchor;
             this.userAttribDecl = sc.userAttribDecl;
         }
+
         public  int alignment() {
             if (this.aligndecl != null)
                 return getAlignment(this.aligndecl, this);
             else
                 return -1;
         }
+
         public  boolean isDeprecated() {
             {
                 Ptr<Dsymbol> sp = pcopy(this.parent);
@@ -527,6 +546,7 @@ public class dscope {
             }
             return false;
         }
+
         public Scope(){
             ctorflow = new CtorFlow();
             protection = new Prot();

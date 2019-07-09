@@ -31,22 +31,28 @@ public class staticassert {
             this.exp = exp;
             this.msg = msg;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new StaticAssert(this.loc, this.exp.syntaxCopy(), this.msg != null ? this.msg.syntaxCopy() : null);
         }
+
         public  void addMember(Scope sc, ScopeDsymbol sds) {
         }
+
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             ps.set(0, null);
             return true;
         }
+
         public  BytePtr kind() {
             return new BytePtr("static assert");
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public StaticAssert() {}
 

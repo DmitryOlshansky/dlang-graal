@@ -56,6 +56,7 @@ public class mars {
     public static void logo() {
         printf(new BytePtr("DMD%llu D Compiler %.*s\n%.*s %.*s\n"), 32L, global._version.getLength() - 1, toBytePtr(global._version), global.copyright.getLength(), toBytePtr(global.copyright), global.written.getLength(), toBytePtr(global.written));
     }
+
     public static void printInternalFailure(_IO_FILE stream) {
         fputs(new BytePtr("---\nERROR: This is a compiler bug.\nPlease report it via https://issues.dlang.org/enter_bug.cgi\nwith, preferably, a reduced, reproducible example and the information below.\nDustMite (https://github.com/CyberShadow/DustMite/wiki) can help with the reduction.\n---\n"), stream);
         fprintf(stream, new BytePtr("DMD %.*s\n"), global._version.getLength() - 1, toBytePtr(global._version));
@@ -63,12 +64,14 @@ public class mars {
         printGlobalConfigs(stream);
         fputs(new BytePtr("---\n"), stream);
     }
+
     public static void usage() {
         logo();
         ByteSlice help = CLIUsage.usage().copy();
         ByteSlice inifileCanon = FileName.canonicalName(global.inifilename).copy();
         printf(new BytePtr("\nDocumentation: https://dlang.org/\nConfig file: %.*s\nUsage:\n  dmd [<option>...] <file>...\n  dmd [<option>...] -run <file> [<arg>...]\n\nWhere:\n  <file>           D source file\n  <arg>            Argument to pass when running the resulting program\n\n<option>:\n  @<cmdfile>       read arguments from cmdfile\n%.*s"), inifileCanon.getLength(), toBytePtr(inifileCanon), help.getLength(), help.get(0));
     }
+
     public static int tryMain(int argc, Ptr<BytePtr> argv, Param params) {
         DArray<BytePtr> files = new DArray<BytePtr>();
         try {
@@ -663,6 +666,7 @@ public class mars {
         finally {
         }
     }
+
     public static FileBuffer readFromStdin() {
         int bufIncrement = 131072;
         int pos = 0;
@@ -693,6 +697,7 @@ public class mars {
         }
         throw new AssertionError("Unreachable code!");
     }
+
     public static void generateJson(DArray<dmodule.Module> modules) {
         OutBuffer buf = new OutBuffer();
         try {
@@ -727,6 +732,7 @@ public class mars {
         finally {
         }
     }
+
 
     public static void getenv_setargv(BytePtr envvalue, DArray<BytePtr> args) {
         if (envvalue == null)
@@ -800,6 +806,7 @@ public class mars {
             }
         }
     }
+
     public static BytePtr parse_arch_arg(DArray<BytePtr> args, BytePtr arch) {
         {
             Slice<BytePtr> __r1553 = (args).opSlice().copy();
@@ -817,6 +824,7 @@ public class mars {
         }
         return arch;
     }
+
     public static ByteSlice parse_conf_arg(DArray<BytePtr> args) {
         ByteSlice conf = new ByteSlice();
         {
@@ -838,6 +846,7 @@ public class mars {
         }
         return conf;
     }
+
     public static void setDefaultLibrary() {
         if ((global.params.defaultlibname == new ByteSlice()))
         {
@@ -848,9 +857,11 @@ public class mars {
         if ((global.params.debuglibname == new ByteSlice()))
             global.params.debuglibname = global.params.defaultlibname.copy();
     }
+
     public static void setTarget(Param params) {
         params.isLinux = true;
     }
+
     public static void addDefaultVersionIdentifiers(Param params) {
         VersionCondition.addPredefinedGlobalIdent(new ByteSlice("DigitalMars"));
         if (params.isWindows)
@@ -970,6 +981,7 @@ public class mars {
         }
         VersionCondition.addPredefinedGlobalIdent(new ByteSlice("D_HardFloat"));
     }
+
     public static void printPredefinedVersions(_IO_FILE stream) {
         if (global.versionids != null)
         {
@@ -986,6 +998,7 @@ public class mars {
             fprintf(stream, new BytePtr("predefs  %s\n"), buf.peekChars());
         }
     }
+
     public static void printGlobalConfigs(_IO_FILE stream) {
         fprintf(stream, new BytePtr("binary    %.*s\n"), global.params.argv0.getLength(), toBytePtr(global.params.argv0));
         fprintf(stream, new BytePtr("version   %.*s\n"), global._version.getLength() - 1, toBytePtr(global._version));
@@ -1034,6 +1047,7 @@ public class mars {
             }
         }
     }
+
     public static void setTargetCPU(Param params) {
         if (target.isXmmSupported())
         {
@@ -1052,6 +1066,7 @@ public class mars {
         else
             params.cpu = CPU.x87;
     }
+
     public static void flushMixins() {
         if (global.params.mixinOut == null)
             return ;
@@ -1060,6 +1075,7 @@ public class mars {
         (global.params.mixinOut).destroy();
         global.params.mixinOut = null;
     }
+
     public static boolean parseCommandLine(DArray<BytePtr> arguments, int argc, Param params, DArray<BytePtr> files) {
         Ref<Boolean> errors = ref(false);
         Function2<BytePtr,BytePtr,Void> error = new Function2<BytePtr,BytePtr,Void>(){
@@ -2234,6 +2250,7 @@ public class mars {
         }
         return errors.value;
     }
+
     public static void reconcileCommands(Param params, int numSrcFiles) {
         if (params.lib && params.dll)
             error(Loc.initial, new BytePtr("cannot mix -lib and -shared"));
@@ -2323,6 +2340,7 @@ public class mars {
         if (params.noDIP25)
             params.useDIP25 = false;
     }
+
     public static DArray<dmodule.Module> createModules(DArray<BytePtr> files, DArray<BytePtr> libmodules) {
         DArray<dmodule.Module> modules = new DArray<dmodule.Module>();
         modules.reserve(files.length);
@@ -2405,4 +2423,5 @@ public class mars {
         }
         return modules;
     }
+
 }

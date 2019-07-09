@@ -70,11 +70,13 @@ public class typinf {
             torig.vtinfo = t.vtinfo;
         assert(torig.vtinfo != null);
     }
+
     public static Type getTypeInfoType(Loc loc, Type t, Scope sc) {
         assert(((t.ty & 0xFF) != ENUMTY.Terror));
         genTypeInfo(loc, t, sc);
         return t.vtinfo.type;
     }
+
     public static TypeInfoDeclaration getTypeInfoDeclaration(Type t) {
         switch ((t.ty & 0xFF))
         {
@@ -107,6 +109,7 @@ public class typinf {
             return TypeInfoDeclaration.create(t);
         }
     }
+
     public static boolean isSpeculativeType(Type t) {
         Function1<TypeVector,Boolean> visitVector = new Function1<TypeVector,Boolean>(){
             public Boolean invoke(TypeVector t) {
@@ -193,6 +196,7 @@ public class typinf {
             return isSpeculativeType(tb.nextOf());
         }
     }
+
     public static boolean builtinTypeInfo(Type t) {
         if ((t.isTypeBasic() != null) || ((t.ty & 0xFF) == ENUMTY.Tclass) || ((t.ty & 0xFF) == ENUMTY.Tnull))
             return t.mod == 0;
@@ -203,4 +207,5 @@ public class typinf {
         }
         return false;
     }
+
 }

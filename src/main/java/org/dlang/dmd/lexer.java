@@ -46,27 +46,35 @@ public class lexer {
     public static boolean isoctal(byte c) {
         return ((cmtable.get((c & 0xFF)) & 0xFF) & 1) != 0;
     }
+
     public static boolean ishex(byte c) {
         return ((cmtable.get((c & 0xFF)) & 0xFF) & 2) != 0;
     }
+
     public static boolean isidchar(byte c) {
         return ((cmtable.get((c & 0xFF)) & 0xFF) & 4) != 0;
     }
+
     public static boolean isZeroSecond(byte c) {
         return ((cmtable.get((c & 0xFF)) & 0xFF) & 8) != 0;
     }
+
     public static boolean isDigitSecond(byte c) {
         return ((cmtable.get((c & 0xFF)) & 0xFF) & 16) != 0;
     }
+
     public static boolean issinglechar(byte c) {
         return ((cmtable.get((c & 0xFF)) & 0xFF) & 32) != 0;
     }
+
     public static boolean c_isxdigit(int c) {
         return (c >= 48) && (c <= 57) || (c >= 97) && (c <= 102) || (c >= 65) && (c <= 70);
     }
+
     public static boolean c_isalnum(int c) {
         return (c >= 48) && (c <= 57) || (c >= 97) && (c <= 122) || (c >= 65) && (c <= 90);
     }
+
     public static class Lexer extends Object
     {
         public static OutBuffer stringbuffer = new OutBuffer();
@@ -121,9 +129,11 @@ public class lexer {
                 this.endOfLine();
             }
         }
+
         public  boolean errors() {
             return this.diagnosticReporter.errorCount() > 0;
         }
+
         public  Token allocateToken() {
             if (this.tokenFreelist != null)
             {
@@ -134,10 +144,12 @@ public class lexer {
             }
             return new Token();
         }
+
         public  void releaseToken(Token token) {
             (token).next = this.tokenFreelist;
             this.tokenFreelist = token;
         }
+
         public  byte nextToken() {
             this.prevloc = this.token.loc.copy();
             if (this.token.next != null)
@@ -152,13 +164,16 @@ public class lexer {
             }
             return this.token.value;
         }
+
         public  byte peekNext() {
             return (this.peek(this.token)).value;
         }
+
         public  byte peekNext2() {
             Token t = this.peek(this.token);
             return (this.peek(t)).value;
         }
+
         public  void scan(Token t) {
             int lastLine = this.scanloc.linnum;
             Loc startLoc = new Loc();
@@ -904,6 +919,7 @@ public class lexer {
                 }
             }
         }
+
         public  Token peek(Token ct) {
             Token t = null;
             if ((ct).next != null)
@@ -916,6 +932,7 @@ public class lexer {
             }
             return t;
         }
+
         public  Token peekPastParen(Token tk) {
             int parens = 1;
             int curlynest = 0;
@@ -951,9 +968,11 @@ public class lexer {
                 return tk;
             }
         }
+
         public  int escapeSequence() {
             return escapeSequence(this.token.loc, this.diagnosticReporter, this.p);
         }
+
         public static int escapeSequence(Loc loc, DiagnosticReporter handler, Ref<BytePtr> sequence) {
             {
                 {
@@ -1106,6 +1125,7 @@ public class lexer {
             finally {
             }
         }
+
         public  void wysiwygStringConstant(Token result) {
             (result).value = TOK.string_;
             Loc start = this.loc().copy();
@@ -1154,6 +1174,7 @@ public class lexer {
                 stringbuffer.writeByte(c);
             }
         }
+
         public  byte hexStringConstant(Token t) {
             Loc start = this.loc().copy();
             int n = 0;
@@ -1230,6 +1251,7 @@ public class lexer {
                 }
             }
         }
+
         public  void delimitedStringConstant(Token result) {
             (result).value = TOK.string_;
             Loc start = this.loc().copy();
@@ -1380,6 +1402,7 @@ public class lexer {
             (result).setString(stringbuffer);
             this.stringPostfix(result);
         }
+
         public  void tokenStringConstant(Token result) {
             (result).value = TOK.string_;
             int nest = 1;
@@ -1416,6 +1439,7 @@ public class lexer {
                 this.inTokenStringConstant--;
             }
         }
+
         public  void escapeStringConstant(Token t) {
             (t).value = TOK.string_;
             Loc start = this.loc().copy();
@@ -1477,6 +1501,7 @@ public class lexer {
                 stringbuffer.writeByte(c);
             }
         }
+
         public  byte charConstant(Token t) {
             byte tk = TOK.charLiteral;
             this.p.postInc();
@@ -1546,6 +1571,7 @@ public class lexer {
             this.p.postInc();
             return tk;
         }
+
         public  void stringPostfix(Token t) {
             switch ((this.p.get() & 0xFF))
             {
@@ -1560,6 +1586,7 @@ public class lexer {
                 break;
             }
         }
+
         public  byte number(Token t) {
             int base = 10;
             BytePtr start = pcopy(this.p);
@@ -1837,6 +1864,7 @@ public class lexer {
             (t).intvalue = n;
             return result;
         }
+
         public  byte inreal(Token t) {
             boolean isWellformedString = true;
             stringbuffer.reset();
@@ -1974,34 +2002,44 @@ public class lexer {
             }
             return result;
         }
+
         public  Loc loc() {
             this.scanloc.charnum = ((this.p.plus(1).minus(this.line)));
             return this.scanloc;
         }
+
         public  void error(BytePtr format, Object... args) {
             this.diagnosticReporter.error(this.token.loc, format, new Slice<>(args));
         }
+
         public  void error(Loc loc, BytePtr format, Object... args) {
             this.diagnosticReporter.error(loc, format, new Slice<>(args));
         }
+
         public  void errorSupplemental(Loc loc, BytePtr format, Object... args) {
             this.diagnosticReporter.errorSupplemental(loc, format, new Slice<>(args));
         }
+
         public  void warning(Loc loc, BytePtr format, Object... args) {
             this.diagnosticReporter.warning(loc, format, new Slice<>(args));
         }
+
         public  void warningSupplemental(Loc loc, BytePtr format, Object... args) {
             this.diagnosticReporter.warningSupplemental(loc, format, new Slice<>(args));
         }
+
         public  void deprecation(BytePtr format, Object... args) {
             this.diagnosticReporter.deprecation(this.token.loc, format, new Slice<>(args));
         }
+
         public  void deprecation(Loc loc, BytePtr format, Object... args) {
             this.diagnosticReporter.deprecation(loc, format, new Slice<>(args));
         }
+
         public  void deprecationSupplemental(Loc loc, BytePtr format, Object... args) {
             this.diagnosticReporter.deprecationSupplemental(loc, format, new Slice<>(args));
         }
+
         public  void poundLine() {
             int linnum = this.scanloc.linnum;
             BytePtr filespec = null;
@@ -2123,6 +2161,7 @@ public class lexer {
         /*Lerr:*/
             this.error(loc, new BytePtr("#line integer [\"filespec\"]\\n expected"));
         }
+
         public  int decodeUTF() {
             BytePtr s = pcopy(this.p);
             assert(((s.get() & 0xFF) & 128) != 0);
@@ -2142,6 +2181,7 @@ public class lexer {
             }
             return u.value;
         }
+
         public  void getDocComment(Token t, int lineComment, boolean newParagraph) {
             byte ct = (t).ptr.get(2);
             BytePtr q = pcopy((t).ptr.plus(3));
@@ -2255,6 +2295,7 @@ public class lexer {
             finally {
             }
         }
+
         public static BytePtr combineComments(BytePtr c1, BytePtr c2, boolean newParagraph) {
             BytePtr c = pcopy(c2);
             int newParagraphSize = newParagraph ? 1 : 0;
@@ -2284,10 +2325,12 @@ public class lexer {
             }
             return c;
         }
+
         public  void endOfLine() {
             this.scanloc.linnum++;
             this.line = pcopy(this.p);
         }
+
 
         public Lexer() {}
 

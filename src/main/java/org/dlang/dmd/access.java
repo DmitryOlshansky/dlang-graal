@@ -41,9 +41,11 @@ public class access {
         }
         return false;
     }
+
     public static boolean hasPackageAccess(Scope sc, Dsymbol s) {
         return hasPackageAccess((sc)._module, s);
     }
+
     public static boolean hasPackageAccess(dmodule.Module mod, Dsymbol s) {
         dmodule.Package pkg = null;
         if (s.prot().pkg != null)
@@ -91,6 +93,7 @@ public class access {
         }
         return false;
     }
+
     public static boolean hasProtectedAccess(Scope sc, Dsymbol s) {
         {
             ClassDeclaration cd = s.isClassMember();
@@ -110,6 +113,7 @@ public class access {
         }
         return pequals((sc)._module, s.getAccessModule());
     }
+
     public static boolean checkAccess(Loc loc, Scope sc, Expression e, Declaration d) {
         if (((sc).flags & 2) != 0)
             return false;
@@ -139,6 +143,7 @@ public class access {
         }
         return false;
     }
+
     public static boolean checkAccess(Loc loc, Scope sc, dmodule.Package p) {
         if ((pequals((sc)._module, p)))
             return false;
@@ -148,6 +153,7 @@ public class access {
         }
         return true;
     }
+
     public static boolean symbolIsVisible(dmodule.Module mod, Dsymbol s) {
         s = mostVisibleOverload(s, null);
         switch (s.prot().kind)
@@ -169,13 +175,16 @@ public class access {
             throw SwitchError.INSTANCE;
         }
     }
+
     public static boolean symbolIsVisible(Dsymbol origin, Dsymbol s) {
         return symbolIsVisible(origin.getAccessModule(), s);
     }
+
     public static boolean symbolIsVisible(Scope sc, Dsymbol s) {
         s = mostVisibleOverload(s, null);
         return checkSymbolAccess(sc, s);
     }
+
     public static boolean checkSymbolAccess(Scope sc, Dsymbol s) {
         switch (s.prot().kind)
         {
@@ -196,6 +205,7 @@ public class access {
             throw SwitchError.INSTANCE;
         }
     }
+
     public static Dsymbol mostVisibleOverload(Dsymbol s, dmodule.Module mod) {
         if (!s.isOverloadable())
             return s;
@@ -262,4 +272,5 @@ public class access {
         }
         return mostVisible;
     }
+
 }

@@ -47,6 +47,7 @@ public class dcast {
             this.sc = sc;
             this.t = t;
         }
+
         public  void visit(Expression e) {
             int match = e.implicitConvTo(this.t);
             if (match != 0)
@@ -113,6 +114,7 @@ public class dcast {
             }
             this.result = new ErrorExp();
         }
+
         public  void visit(StringExp e) {
             this.visit((Expression)e);
             if (((this.result.op & 0xFF) == 121))
@@ -120,9 +122,11 @@ public class dcast {
                 ((StringExp)this.result).committed = e.committed;
             }
         }
+
         public  void visit(ErrorExp e) {
             this.result = e;
         }
+
         public  void visit(FuncExp e) {
             Ref<FuncExp> fe = ref(null);
             if ((e.matchType(this.t, this.sc, ptr(fe), 0) > MATCH.nomatch))
@@ -132,12 +136,14 @@ public class dcast {
             }
             this.visit((Expression)e);
         }
+
         public  void visit(ArrayLiteralExp e) {
             this.visit((Expression)e);
             Type tb = this.result.type.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tarray) && global.params.useTypeInfo && (Type.dtypeinfo != null))
                 semanticTypeInfo(this.sc, ((TypeDArray)tb).next);
         }
+
         public  void visit(SliceExp e) {
             this.visit((Expression)e);
             if (((this.result.op & 0xFF) != 31))
@@ -155,6 +161,7 @@ public class dcast {
                 e.e1 = ale.implicitCastTo(this.sc, tx);
             }
         }
+
 
         public ImplicitCastTo() {}
     }
@@ -191,6 +198,7 @@ public class dcast {
             }
             return cd.baseClass != null ? convertible(loc, cd.baseClass, mod) : true;
         }
+
         public ClassCheck(){
         }
         public ClassCheck copy(){
@@ -209,6 +217,7 @@ public class dcast {
             this.t = t;
             this.result = MATCH.nomatch;
         }
+
         public  void visit(Expression e) {
             if ((pequals(this.t, Type.terror)))
                 return ;
@@ -245,6 +254,7 @@ public class dcast {
                 }
             }
         }
+
         public static int implicitMod(Expression e, Type t, byte mod) {
             Type tprime = null;
             if (((t.ty & 0xFF) == ENUMTY.Tpointer))
@@ -257,6 +267,7 @@ public class dcast {
                 tprime = t.castMod(mod);
             return e.implicitConvTo(tprime);
         }
+
         public static int implicitConvToAddMin(BinExp e, Type t) {
             Type tb = t.toBasetype();
             Type typeb = e.type.toBasetype();
@@ -276,16 +287,19 @@ public class dcast {
             }
             return MATCH.nomatch;
         }
+
         public  void visit(AddExp e) {
             this.visit((Expression)e);
             if ((this.result == MATCH.nomatch))
                 this.result = implicitConvToAddMin(e, this.t);
         }
+
         public  void visit(MinExp e) {
             this.visit((Expression)e);
             if ((this.result == MATCH.nomatch))
                 this.result = implicitConvToAddMin(e, this.t);
         }
+
         public  void visit(IntegerExp e) {
             int m = e.type.implicitConvTo(this.t);
             if ((m >= MATCH.constant))
@@ -440,8 +454,10 @@ public class dcast {
             }
             this.result = MATCH.convert;
         }
+
         public  void visit(ErrorExp e) {
         }
+
         public  void visit(NullExp e) {
             if (e.type.equals(this.t))
             {
@@ -455,6 +471,7 @@ public class dcast {
             }
             this.visit((Expression)e);
         }
+
         public  void visit(StructLiteralExp e) {
             this.visit((Expression)e);
             if ((this.result != MATCH.nomatch))
@@ -476,6 +493,7 @@ public class dcast {
                 }
             }
         }
+
         public  void visit(StringExp e) {
             if ((e.committed == 0) && ((this.t.ty & 0xFF) == ENUMTY.Tpointer) && ((this.t.nextOf().ty & 0xFF) == ENUMTY.Tvoid))
                 return ;
@@ -598,6 +616,7 @@ public class dcast {
             }
             this.visit((Expression)e);
         }
+
         public  void visit(ArrayLiteralExp e) {
             Type tb = this.t.toBasetype();
             Type typeb = e.type.toBasetype();
@@ -681,6 +700,7 @@ public class dcast {
             }
             this.visit((Expression)e);
         }
+
         public  void visit(AssocArrayLiteralExp e) {
             Type tb = this.t.toBasetype();
             Type typeb = e.type.toBasetype();
@@ -706,6 +726,7 @@ public class dcast {
                 }
             }
         }
+
         public  void visit(CallExp e) {
             boolean LOG = false;
             this.visit((Expression)e);
@@ -779,6 +800,7 @@ public class dcast {
             }
             this.result = MATCH.constant;
         }
+
         public  void visit(AddrExp e) {
             this.result = e.type.implicitConvTo(this.t);
             if ((this.result != MATCH.nomatch))
@@ -813,6 +835,7 @@ public class dcast {
                 throw new AssertionError("Unreachable code!");
             }
         }
+
         public  void visit(SymOffExp e) {
             this.result = e.type.implicitConvTo(this.t);
             if ((this.result != MATCH.nomatch))
@@ -837,6 +860,7 @@ public class dcast {
                 }
             }
         }
+
         public  void visit(DelegateExp e) {
             this.result = e.type.implicitConvTo(this.t);
             if ((this.result != MATCH.nomatch))
@@ -849,6 +873,7 @@ public class dcast {
                     this.result = MATCH.exact;
             }
         }
+
         public  void visit(FuncExp e) {
             int m = e.matchType(this.t, null, null, 1);
             if ((m > MATCH.nomatch))
@@ -858,6 +883,7 @@ public class dcast {
             }
             this.visit((Expression)e);
         }
+
         public  void visit(AndExp e) {
             this.visit((Expression)e);
             if ((this.result != MATCH.nomatch))
@@ -866,6 +892,7 @@ public class dcast {
             int m2 = e.e2.implicitConvTo(this.t);
             this.result = (m1 < m2) ? m1 : m2;
         }
+
         public  void visit(OrExp e) {
             this.visit((Expression)e);
             if ((this.result != MATCH.nomatch))
@@ -874,6 +901,7 @@ public class dcast {
             int m2 = e.e2.implicitConvTo(this.t);
             this.result = (m1 < m2) ? m1 : m2;
         }
+
         public  void visit(XorExp e) {
             this.visit((Expression)e);
             if ((this.result != MATCH.nomatch))
@@ -882,14 +910,17 @@ public class dcast {
             int m2 = e.e2.implicitConvTo(this.t);
             this.result = (m1 < m2) ? m1 : m2;
         }
+
         public  void visit(CondExp e) {
             int m1 = e.e1.implicitConvTo(this.t);
             int m2 = e.e2.implicitConvTo(this.t);
             this.result = (m1 < m2) ? m1 : m2;
         }
+
         public  void visit(CommaExp e) {
             e.e2.accept(this);
         }
+
         public  void visit(CastExp e) {
             this.result = e.type.implicitConvTo(this.t);
             if ((this.result != MATCH.nomatch))
@@ -899,6 +930,7 @@ public class dcast {
             else
                 this.visit((Expression)e);
         }
+
         public  void visit(NewExp e) {
             this.visit((Expression)e);
             if ((this.result != MATCH.nomatch))
@@ -1013,6 +1045,7 @@ public class dcast {
             }
             this.result = MATCH.constant;
         }
+
         public  void visit(SliceExp e) {
             this.visit((Expression)e);
             if ((this.result != MATCH.nomatch))
@@ -1048,6 +1081,7 @@ public class dcast {
                 e.e1.accept(this);
         }
 
+
         public ImplicitConvTo() {}
     }
     static BytePtr visitmsg = new BytePtr("cannot form delegate due to covariant return type");
@@ -1060,6 +1094,7 @@ public class dcast {
             this.sc = sc;
             this.t = t;
         }
+
         public  void visit(Expression e) {
             if (e.type.equals(this.t))
             {
@@ -1269,9 +1304,11 @@ public class dcast {
             this.result = new CastExp(e.loc, e, this.t);
             this.result.type = this.t;
         }
+
         public  void visit(ErrorExp e) {
             this.result = e;
         }
+
         public  void visit(RealExp e) {
             if (!e.type.equals(this.t))
             {
@@ -1286,6 +1323,7 @@ public class dcast {
             }
             this.result = e;
         }
+
         public  void visit(ComplexExp e) {
             if (!e.type.equals(this.t))
             {
@@ -1300,6 +1338,7 @@ public class dcast {
             }
             this.result = e;
         }
+
         public  void visit(NullExp e) {
             this.visit((Expression)e);
             if (((this.result.op & 0xFF) == 13))
@@ -1309,11 +1348,13 @@ public class dcast {
                 return ;
             }
         }
+
         public  void visit(StructLiteralExp e) {
             this.visit((Expression)e);
             if (((this.result.op & 0xFF) == 49))
                 ((StructLiteralExp)this.result).stype = this.t;
         }
+
         public  void visit(StringExp e) {
             int copied = 0;
             if ((e.committed == 0) && ((this.t.ty & 0xFF) == ENUMTY.Tpointer) && ((this.t.nextOf().ty & 0xFF) == ENUMTY.Tvoid))
@@ -1575,6 +1616,7 @@ public class dcast {
             this.result = new CastExp(e.loc, se, this.t);
             this.result.type = this.t;
         }
+
         public  void visit(AddrExp e) {
             this.result = e;
             Type tb = this.t.toBasetype();
@@ -1645,6 +1687,7 @@ public class dcast {
             }
             this.visit((Expression)e);
         }
+
         public  void visit(TupleExp e) {
             if (e.type.equals(this.t))
             {
@@ -1664,6 +1707,7 @@ public class dcast {
             }
             this.result = te;
         }
+
         public  void visit(ArrayLiteralExp e) {
             ArrayLiteralExp ae = e;
             Type tb = this.t.toBasetype();
@@ -1770,6 +1814,7 @@ public class dcast {
         /*L1:*/
             this.visit((Expression)ae);
         }
+
         public  void visit(AssocArrayLiteralExp e) {
             if ((pequals(e.type, this.t)))
             {
@@ -1801,6 +1846,7 @@ public class dcast {
             }
             this.visit((Expression)e);
         }
+
         public  void visit(SymOffExp e) {
             if ((pequals(e.type, this.t)) && !e.hasOverloads)
             {
@@ -1869,6 +1915,7 @@ public class dcast {
             }
             this.visit((Expression)e);
         }
+
         public  void visit(DelegateExp e) {
             Type tb = this.t.toBasetype();
             Type typeb = e.type.toBasetype();
@@ -1915,6 +1962,7 @@ public class dcast {
             }
             this.visit((Expression)e);
         }
+
         public  void visit(FuncExp e) {
             Ref<FuncExp> fe = ref(null);
             if ((e.matchType(this.t, this.sc, ptr(fe), 1) > MATCH.nomatch))
@@ -1924,6 +1972,7 @@ public class dcast {
             }
             this.visit((Expression)e);
         }
+
         public  void visit(CondExp e) {
             if (!e.type.equals(this.t))
             {
@@ -1933,6 +1982,7 @@ public class dcast {
             }
             this.result = e;
         }
+
         public  void visit(CommaExp e) {
             Expression e2c = e.e2.castTo(this.sc, this.t);
             if ((!pequals(e2c, e.e2)))
@@ -1946,6 +1996,7 @@ public class dcast {
                 this.result.type = e.e2.type;
             }
         }
+
         public  void visit(SliceExp e) {
             Type tb = this.t.toBasetype();
             Type typeb = e.type.toBasetype();
@@ -2001,6 +2052,7 @@ public class dcast {
             this.result = new ErrorExp();
         }
 
+
         public CastTo() {}
     }
     private static class InferType extends Visitor
@@ -2012,9 +2064,11 @@ public class dcast {
             this.t = t;
             this.flag = flag;
         }
+
         public  void visit(Expression e) {
             this.result = e;
         }
+
         public  void visit(ArrayLiteralExp ale) {
             Type tb = this.t.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
@@ -2036,6 +2090,7 @@ public class dcast {
             }
             this.result = ale;
         }
+
         public  void visit(AssocArrayLiteralExp aale) {
             Type tb = this.t.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Taarray))
@@ -2068,6 +2123,7 @@ public class dcast {
             }
             this.result = aale;
         }
+
         public  void visit(FuncExp fe) {
             if (((this.t.ty & 0xFF) == ENUMTY.Tdelegate) || ((this.t.ty & 0xFF) == ENUMTY.Tpointer) && ((this.t.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
@@ -2075,12 +2131,14 @@ public class dcast {
             }
             this.result = fe;
         }
+
         public  void visit(CondExp ce) {
             Type tb = this.t.toBasetype();
             ce.e1 = inferType(ce.e1, tb, this.flag);
             ce.e2 = inferType(ce.e2, tb, this.flag);
             this.result = ce;
         }
+
 
         public InferType() {}
     }
@@ -2090,32 +2148,39 @@ public class dcast {
         public  void visit(Expression e) {
             this.range = IntRange.fromType(e.type).copy();
         }
+
         public  void visit(IntegerExp e) {
             this.range = new IntRange(new SignExtendedNumber(e.getInteger(), false))._cast(e.type).copy();
         }
+
         public  void visit(CastExp e) {
             this.range = getIntRange(e.e1)._cast(e.type).copy();
         }
+
         public  void visit(AddExp e) {
             IntRange ir1 = getIntRange(e.e1).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
             this.range = ir1.opBinary_+(ir2)._cast(e.type).copy();
         }
+
         public  void visit(MinExp e) {
             IntRange ir1 = getIntRange(e.e1).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
             this.range = ir1.opBinary_-(ir2)._cast(e.type).copy();
         }
+
         public  void visit(DivExp e) {
             IntRange ir1 = getIntRange(e.e1).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
             this.range = ir1.opBinary_/(ir2)._cast(e.type).copy();
         }
+
         public  void visit(MulExp e) {
             IntRange ir1 = getIntRange(e.e1).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
             this.range = ir1.opBinary_*(ir2)._cast(e.type).copy();
         }
+
         public  void visit(ModExp e) {
             IntRange ir1 = getIntRange(e.e1).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
@@ -2126,6 +2191,7 @@ public class dcast {
             }
             this.range = ir1.opBinary_%(ir2)._cast(e.type).copy();
         }
+
         public  void visit(AndExp e) {
             IntRange result = new IntRange();
             Ref<Boolean> hasResult = ref(false);
@@ -2133,6 +2199,7 @@ public class dcast {
             assert(hasResult.value);
             this.range = result._cast(e.type).copy();
         }
+
         public  void visit(OrExp e) {
             IntRange result = new IntRange();
             Ref<Boolean> hasResult = ref(false);
@@ -2140,6 +2207,7 @@ public class dcast {
             assert(hasResult.value);
             this.range = result._cast(e.type).copy();
         }
+
         public  void visit(XorExp e) {
             IntRange result = new IntRange();
             Ref<Boolean> hasResult = ref(false);
@@ -2147,29 +2215,35 @@ public class dcast {
             assert(hasResult.value);
             this.range = result._cast(e.type).copy();
         }
+
         public  void visit(ShlExp e) {
             IntRange ir1 = getIntRange(e.e1).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
             this.range = ir1.opBinary_<<(ir2)._cast(e.type).copy();
         }
+
         public  void visit(ShrExp e) {
             IntRange ir1 = getIntRange(e.e1).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
             this.range = ir1.opBinary_>>(ir2)._cast(e.type).copy();
         }
+
         public  void visit(UshrExp e) {
             IntRange ir1 = getIntRange(e.e1).castUnsigned(e.e1.type).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
             this.range = ir1.opBinary_>>>(ir2)._cast(e.type).copy();
         }
+
         public  void visit(AssignExp e) {
             this.range = getIntRange(e.e2)._cast(e.type).copy();
         }
+
         public  void visit(CondExp e) {
             IntRange ir1 = getIntRange(e.e1).copy();
             IntRange ir2 = getIntRange(e.e2).copy();
             this.range = ir1.unionWith(ir2)._cast(e.type).copy();
         }
+
         public  void visit(VarExp e) {
             Expression ie = null;
             VarDeclaration vd = e.var.isVarDeclaration();
@@ -2180,17 +2254,21 @@ public class dcast {
             else
                 this.visit((Expression)e);
         }
+
         public  void visit(CommaExp e) {
             e.e2.accept(this);
         }
+
         public  void visit(ComExp e) {
             IntRange ir = getIntRange(e.e1).copy();
             this.range = new IntRange(new SignExtendedNumber(~ir.imax.value, !ir.imax.negative), new SignExtendedNumber(~ir.imin.value, !ir.imin.negative))._cast(e.type).copy();
         }
+
         public  void visit(NegExp e) {
             IntRange ir = getIntRange(e.e1).copy();
             this.range = ir.opUnary_-()._cast(e.type).copy();
         }
+
 
         public IntRangeVisitor() {}
     }
@@ -2201,11 +2279,13 @@ public class dcast {
         e.accept(v);
         return v.result;
     }
+
     public static int implicitConvTo(Expression e, Type t) {
         ImplicitConvTo v = new ImplicitConvTo(t);
         e.accept(v);
         return v.result;
     }
+
     public static Type toStaticArrayType(SliceExp e) {
         if ((e.lwr != null) && (e.upr != null))
         {
@@ -2225,6 +2305,7 @@ public class dcast {
         }
         return null;
     }
+
     public static Expression tryAliasThisCast(Expression e, Scope sc, Type tob, Type t1b, Type t) {
         Expression result = null;
         AggregateDeclaration t1ad = isAggregate(t1b);
@@ -2238,11 +2319,13 @@ public class dcast {
         result = result.castTo(sc, t);
         return global.endGagging(errors) ? null : result;
     }
+
     public static Expression castTo(Expression e, Scope sc, Type t) {
         CastTo v = new CastTo(sc, t);
         e.accept(v);
         return v.result;
     }
+
     public static Expression inferType(Expression e, Type t, int flag) {
         if (t == null)
             return e;
@@ -2250,6 +2333,7 @@ public class dcast {
         e.accept(v);
         return v.result;
     }
+
     public static Expression scaleFactor(BinExp be, Scope sc) {
         Type t1b = be.e1.type.toBasetype();
         Type t2b = be.e2.type.toBasetype();
@@ -2297,6 +2381,7 @@ public class dcast {
         }
         return be;
     }
+
     public static boolean isVoidArrayLiteral(Expression e, Type other) {
         for (; ((e.op & 0xFF) == 47) && ((e.type.ty & 0xFF) == ENUMTY.Tarray) && ((((ArrayLiteralExp)e).elements).length == 1);){
             ArrayLiteralExp ale = (ArrayLiteralExp)e;
@@ -2311,6 +2396,7 @@ public class dcast {
         Type t = e.type;
         return ((e.op & 0xFF) == 47) && ((t.ty & 0xFF) == ENUMTY.Tarray) && ((t.nextOf().ty & 0xFF) == ENUMTY.Tvoid) && ((((ArrayLiteralExp)e).elements).length == 0);
     }
+
     public static boolean typeMerge(Scope sc, byte op, Ptr<Type> pt, Ptr<Expression> pe1, Ptr<Expression> pe2) {
         Ref<Scope> sc_ref = ref(sc);
         Ref<Ptr<Type>> pt_ref = ref(pt);
@@ -2893,6 +2979,7 @@ public class dcast {
             break;
         } catch(Dispatch0 __d){}
     }
+
     public static Expression typeCombine(BinExp be, Scope sc) {
         Ref<BinExp> be_ref = ref(be);
         Function0<Expression> errorReturn = new Function0<Expression>(){
@@ -2922,6 +3009,7 @@ public class dcast {
             return be_ref.value.e2;
         return null;
     }
+
     public static Expression integralPromotions(Expression e, Scope sc) {
         switch ((e.type.toBasetype().ty & 0xFF))
         {
@@ -2945,6 +3033,7 @@ public class dcast {
         }
         return e;
     }
+
     public static Expression charPromotions(Expression e, Scope sc) {
         switch ((e.type.toBasetype().ty & 0xFF))
         {
@@ -2958,6 +3047,7 @@ public class dcast {
         }
         return e;
     }
+
     public static void fix16997(Scope sc, UnaExp ue) {
         if (global.params.fix16997)
             ue.e1 = integralPromotions(ue.e1, sc);
@@ -2979,6 +3069,7 @@ public class dcast {
             }
         }
     }
+
     public static boolean arrayTypeCompatible(Loc loc, Type t1, Type t2) {
         t1 = t1.toBasetype().merge2();
         t2 = t2.toBasetype().merge2();
@@ -2992,6 +3083,7 @@ public class dcast {
         }
         return false;
     }
+
     public static boolean arrayTypeCompatibleWithoutCasting(Type t1, Type t2) {
         t1 = t1.toBasetype();
         t2 = t2.toBasetype();
@@ -3002,9 +3094,11 @@ public class dcast {
         }
         return false;
     }
+
     public static IntRange getIntRange(Expression e) {
         IntRangeVisitor v = new IntRangeVisitor();
         e.accept(v);
         return v.range;
     }
+
 }

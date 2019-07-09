@@ -50,6 +50,7 @@ public class init {
             this.loc = loc.copy();
             this.kind = kind;
         }
+
         public  BytePtr toChars() {
             OutBuffer buf = new OutBuffer();
             try {
@@ -60,24 +61,31 @@ public class init {
             finally {
             }
         }
+
         public  ErrorInitializer isErrorInitializer() {
             return ((this.kind & 0xFF) == 1) ? ((ErrorInitializer)this) : null;
         }
+
         public  VoidInitializer isVoidInitializer() {
             return ((this.kind & 0xFF) == 0) ? ((VoidInitializer)this) : null;
         }
+
         public  StructInitializer isStructInitializer() {
             return ((this.kind & 0xFF) == 2) ? ((StructInitializer)this) : null;
         }
+
         public  ArrayInitializer isArrayInitializer() {
             return ((this.kind & 0xFF) == 3) ? ((ArrayInitializer)this) : null;
         }
+
         public  ExpInitializer isExpInitializer() {
             return ((this.kind & 0xFF) == 4) ? ((ExpInitializer)this) : null;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public Initializer() {}
 
@@ -94,9 +102,11 @@ public class init {
         public  VoidInitializer(Loc loc) {
             super(loc, InitKind.void_);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public VoidInitializer() {}
 
@@ -113,9 +123,11 @@ public class init {
         public  ErrorInitializer() {
             super(Loc.initial, InitKind.error);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ErrorInitializer copy() {
             ErrorInitializer that = new ErrorInitializer();
@@ -131,13 +143,16 @@ public class init {
         public  StructInitializer(Loc loc) {
             super(loc, InitKind.struct_);
         }
+
         public  void addInit(Identifier field, Initializer value) {
             this.field.push(field);
             this.value.push(value);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public StructInitializer() {}
 
@@ -160,12 +175,14 @@ public class init {
         public  ArrayInitializer(Loc loc) {
             super(loc, InitKind.array);
         }
+
         public  void addInit(Expression index, Initializer value) {
             this.index.push(index);
             this.value.push(value);
             this.dim = 0;
             this.type = null;
         }
+
         public  boolean isAssociativeArray() {
             {
                 Slice<Expression> __r1495 = this.index.opSlice().copy();
@@ -178,9 +195,11 @@ public class init {
             }
             return false;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ArrayInitializer() {}
 
@@ -204,9 +223,11 @@ public class init {
             super(loc, InitKind.exp);
             this.exp = exp;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ExpInitializer() {}
 
@@ -303,6 +324,7 @@ public class init {
         }
         return false;
     }
+
     public static Initializer syntaxCopy(Initializer inx) {
         Function1<StructInitializer,Initializer> copyStruct = new Function1<StructInitializer,Initializer>(){
             public Initializer invoke(StructInitializer vi) {
@@ -356,4 +378,5 @@ public class init {
             throw SwitchError.INSTANCE;
         }
     }
+
 }

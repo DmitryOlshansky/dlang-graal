@@ -711,6 +711,7 @@ public class id {
             unsigned = Identifier.idPool(new ByteSlice("unsigned"));
             wchar_t = Identifier.idPool(new ByteSlice("wchar_t"));
         }
+
         public static void deinitialize() {
             IUnknown = null;
             Object = null;
@@ -1058,6 +1059,7 @@ public class id {
             unsigned = null;
             wchar_t = null;
         }
+
         public Id(){
         }
         public Id copy(){
@@ -1076,6 +1078,7 @@ public class id {
         public  ByteSlice name() {
             return this.name_.getLength() != 0 ? this.name_ : this.ident;
         }
+
         public Msgtable(){
         }
         public Msgtable copy(){
@@ -1110,13 +1113,17 @@ public class id {
         }
         return code;
     }
+
     public static ByteSlice identifier(Msgtable m) {
         return new ByteSlice("Identifier ").concat(m.ident).concat(new ByteSlice(";"));
     }
+
     public static ByteSlice initializer(Msgtable m) {
         return m.ident.concat(new ByteSlice(" = Identifier.idPool(\"")).concat(m.name()).concat(new ByteSlice("\");"));
     }
+
     public static ByteSlice deinitializer(Msgtable m) {
         return m.ident.concat(new ByteSlice(" = Identifier.init;"));
     }
+
 }

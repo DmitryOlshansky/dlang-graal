@@ -50,62 +50,80 @@ public class statement {
     {
         public  void visit(Statement s) {
         }
+
         public  void visit(TryCatchStatement s) {
             this.stop = true;
         }
+
         public  void visit(TryFinallyStatement s) {
             this.stop = true;
         }
+
         public  void visit(ScopeGuardStatement s) {
             this.stop = true;
         }
+
         public  void visit(SynchronizedStatement s) {
             this.stop = true;
         }
+
         public  UsesEH() {
             super();
         }
+
     }
     private static class ComeFrom extends StoppableVisitor
     {
         public  void visit(Statement s) {
         }
+
         public  void visit(CaseStatement s) {
             this.stop = true;
         }
+
         public  void visit(DefaultStatement s) {
             this.stop = true;
         }
+
         public  void visit(LabelStatement s) {
             this.stop = true;
         }
+
         public  void visit(AsmStatement s) {
             this.stop = true;
         }
+
         public  ComeFrom() {
             super();
         }
+
     }
     private static class HasCode extends StoppableVisitor
     {
         public  void visit(Statement s) {
             this.stop = true;
         }
+
         public  void visit(ExpStatement s) {
             if ((s.exp != null))
             {
                 this.stop = s.exp.hasCode();
             }
         }
+
         public  void visit(CompoundStatement s) {
         }
+
         public  void visit(ScopeStatement s) {
         }
+
         public  void visit(ImportStatement s) {
         }
+
         public  HasCode() {
             super();
         }
+
     }
     private static class ToStmt extends Visitor
     {
@@ -124,10 +142,12 @@ public class statement {
             }
             return new CompoundStatement(loc, statements);
         }
+
         public  void visit(Dsymbol s) {
             error(Loc.initial, new BytePtr("Internal Compiler Error: cannot mixin %s `%s`\n"), s.kind(), s.toChars());
             this.result = new ErrorStatement();
         }
+
         public  void visit(TemplateMixin tm) {
             DArray<Statement> a = new DArray<Statement>();
             {
@@ -142,64 +162,84 @@ public class statement {
             }
             this.result = new CompoundStatement(tm.loc, a);
         }
+
         public  Statement declStmt(Dsymbol s) {
             DeclarationExp de = new DeclarationExp(s.loc, s);
             de.type = Type.tvoid;
             return new ExpStatement(s.loc, de);
         }
+
         public  void visit(VarDeclaration d) {
             this.result = this.declStmt(d);
         }
+
         public  void visit(AggregateDeclaration d) {
             this.result = this.declStmt(d);
         }
+
         public  void visit(FuncDeclaration d) {
             this.result = this.declStmt(d);
         }
+
         public  void visit(EnumDeclaration d) {
             this.result = this.declStmt(d);
         }
+
         public  void visit(AliasDeclaration d) {
             this.result = this.declStmt(d);
         }
+
         public  void visit(TemplateDeclaration d) {
             this.result = this.declStmt(d);
         }
+
         public  void visit(StorageClassDeclaration d) {
             this.result = this.visitMembers(d.loc, d.decl);
         }
+
         public  void visit(DeprecatedDeclaration d) {
             this.result = this.visitMembers(d.loc, d.decl);
         }
+
         public  void visit(LinkDeclaration d) {
             this.result = this.visitMembers(d.loc, d.decl);
         }
+
         public  void visit(ProtDeclaration d) {
             this.result = this.visitMembers(d.loc, d.decl);
         }
+
         public  void visit(AlignDeclaration d) {
             this.result = this.visitMembers(d.loc, d.decl);
         }
+
         public  void visit(UserAttributeDeclaration d) {
             this.result = this.visitMembers(d.loc, d.decl);
         }
+
         public  void visit(StaticAssert s) {
         }
+
         public  void visit(Import s) {
         }
+
         public  void visit(PragmaDeclaration d) {
         }
+
         public  void visit(ConditionalDeclaration d) {
             this.result = this.visitMembers(d.loc, d.include(null));
         }
+
         public  void visit(StaticForeachDeclaration d) {
             assert((d.sfe != null) && d.sfe.aggrfe != null ^ d.sfe.rangefe != null);
             (d.sfe.aggrfe != null ? d.sfe.aggrfe._body : d.sfe.rangefe._body).set(0, this.visitMembers(d.loc, d.decl));
             this.result = new StaticForeachStatement(d.loc, d.sfe);
         }
+
         public  void visit(CompileDeclaration d) {
             this.result = this.visitMembers(d.loc, d.include(null));
         }
+
 
         public ToStmt() {}
     }
@@ -210,25 +250,30 @@ public class statement {
         tid.addIdent(Id.Throwable);
         return tid;
     }
+
     public static TypeIdentifier getException() {
         TypeIdentifier tid = new TypeIdentifier(Loc.initial, Id.empty);
         tid.addIdent(Id.object);
         tid.addIdent(Id.Exception);
         return tid;
     }
+
     public static abstract class Statement extends ASTNode
     {
         public Loc loc = new Loc();
         public  int dyncast() {
             return DYNCAST.statement;
         }
+
         public  Statement(Loc loc) {
             super();
             this.loc = loc.copy();
         }
+
         public  Statement syntaxCopy() {
             throw new AssertionError("Unreachable code!");
         }
+
         public static DArray<Statement> arraySyntaxCopy(DArray<Statement> a) {
             DArray<Statement> b = null;
             if (a != null)
@@ -246,6 +291,7 @@ public class statement {
             }
             return b;
         }
+
         public  BytePtr toChars() {
             HdrGenState hgs = new HdrGenState();
             OutBuffer buf = new OutBuffer();
@@ -256,93 +302,121 @@ public class statement {
             finally {
             }
         }
+
         public  void error(BytePtr format, Object... ap) {
             verror(this.loc, format, new Slice<>(ap), null, null, new BytePtr("Error: "));
         }
+
         public  void warning(BytePtr format, Object... ap) {
             vwarning(this.loc, format, new Slice<>(ap));
         }
+
         public  void deprecation(BytePtr format, Object... ap) {
             vdeprecation(this.loc, format, new Slice<>(ap), null, null);
         }
+
         public  Statement getRelatedLabeled() {
             return this;
         }
+
         public  boolean hasBreak() {
             return false;
         }
+
         public  boolean hasContinue() {
             return false;
         }
+
         public  boolean usesEH() {
             UsesEH ueh = new UsesEH();
             return walkPostorder(this, ueh);
         }
+
         public  boolean comeFrom() {
             ComeFrom cf = new ComeFrom();
             return walkPostorder(this, cf);
         }
+
         public  boolean hasCode() {
             HasCode hc = new HasCode();
             return walkPostorder(this, hc);
         }
+
         public  Statement scopeCode(Scope sc, Ptr<Statement> sentry, Ptr<Statement> sexception, Ptr<Statement> sfinally) {
             sentry.set(0, null);
             sexception.set(0, null);
             sfinally.set(0, null);
             return this;
         }
+
         public  DArray<Statement> flatten(Scope sc) {
             return null;
         }
+
         public  Statement last() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
         public  ErrorStatement isErrorStatement() {
             return null;
         }
+
         public  ScopeStatement isScopeStatement() {
             return null;
         }
+
         public  ExpStatement isExpStatement() {
             return null;
         }
+
         public  CompoundStatement isCompoundStatement() {
             return null;
         }
+
         public  ReturnStatement isReturnStatement() {
             return null;
         }
+
         public  IfStatement isIfStatement() {
             return null;
         }
+
         public  CaseStatement isCaseStatement() {
             return null;
         }
+
         public  DefaultStatement isDefaultStatement() {
             return null;
         }
+
         public  LabelStatement isLabelStatement() {
             return null;
         }
+
         public  GotoDefaultStatement isGotoDefaultStatement() {
             return null;
         }
+
         public  GotoCaseStatement isGotoCaseStatement() {
             return null;
         }
+
         public  BreakStatement isBreakStatement() {
             return null;
         }
+
         public  DtorExpStatement isDtorExpStatement() {
             return null;
         }
+
         public  ForwardingStatement isForwardingStatement() {
             return null;
         }
+
 
         public Statement() {}
 
@@ -354,15 +428,19 @@ public class statement {
             super(Loc.initial);
             assert((global.gaggedErrors != 0) || (global.errors != 0));
         }
+
         public  Statement syntaxCopy() {
             return this;
         }
+
         public  ErrorStatement isErrorStatement() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ErrorStatement copy() {
             ErrorStatement that = new ErrorStatement();
@@ -377,9 +455,11 @@ public class statement {
             super(s.loc);
             this.s = s;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public PeelStatement() {}
 
@@ -397,6 +477,7 @@ public class statement {
         s.accept(v);
         return v.result;
     }
+
     public static class ExpStatement extends Statement
     {
         public Expression exp;
@@ -404,16 +485,20 @@ public class statement {
             super(loc);
             this.exp = exp;
         }
+
         public  ExpStatement(Loc loc, Dsymbol declaration) {
             super(loc);
             this.exp = new DeclarationExp(loc, declaration);
         }
+
         public static ExpStatement create(Loc loc, Expression exp) {
             return new ExpStatement(loc, exp);
         }
+
         public  Statement syntaxCopy() {
             return new ExpStatement(this.loc, this.exp != null ? this.exp.syntaxCopy() : null);
         }
+
         public  Statement scopeCode(Scope sc, Ptr<Statement> sentry, Ptr<Statement> sexception, Ptr<Statement> sfinally) {
             sentry.set(0, null);
             sexception.set(0, null);
@@ -433,6 +518,7 @@ public class statement {
             }
             return this;
         }
+
         public  DArray<Statement> flatten(Scope sc) {
             if ((this.exp != null) && ((this.exp.op & 0xFF) == 38))
             {
@@ -458,12 +544,15 @@ public class statement {
             }
             return null;
         }
+
         public  ExpStatement isExpStatement() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ExpStatement() {}
 
@@ -481,15 +570,19 @@ public class statement {
             super(loc, exp);
             this.var = var;
         }
+
         public  Statement syntaxCopy() {
             return new DtorExpStatement(this.loc, this.exp != null ? this.exp.syntaxCopy() : null, this.var);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
         public  DtorExpStatement isDtorExpStatement() {
             return this;
         }
+
 
         public DtorExpStatement() {}
 
@@ -509,13 +602,16 @@ public class statement {
             (exps).push(exp);
             this(loc, exps);
         }
+
         public  CompileStatement(Loc loc, DArray<Expression> exps) {
             super(loc);
             this.exps = exps;
         }
+
         public  Statement syntaxCopy() {
             return new CompileStatement(this.loc, Expression.arraySyntaxCopy(this.exps));
         }
+
         public  DArray<Statement> compileIt(Scope sc) {
             Function0<DArray<Statement>> errorStatements = new Function0<DArray<Statement>>(){
                 public DArray<Statement> invoke() {
@@ -557,12 +653,15 @@ public class statement {
             finally {
             }
         }
+
         public  DArray<Statement> flatten(Scope sc) {
             return this.compileIt(sc);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public CompileStatement() {}
 
@@ -580,6 +679,7 @@ public class statement {
             super(loc);
             this.statements = statements;
         }
+
         public  CompoundStatement(Loc loc, Slice<Statement> sts) {
             super(loc);
             this.statements = new DArray<Statement>();
@@ -593,15 +693,19 @@ public class statement {
                 }
             }
         }
+
         public static CompoundStatement create(Loc loc, Statement s1, Statement s2) {
             return new CompoundStatement(loc, slice(new Statement[]{s1, s2}));
         }
+
         public  Statement syntaxCopy() {
             return new CompoundStatement(this.loc, Statement.arraySyntaxCopy(this.statements));
         }
+
         public  DArray<Statement> flatten(Scope sc) {
             return this.statements;
         }
+
         public  ReturnStatement isReturnStatement() {
             ReturnStatement rs = null;
             {
@@ -619,6 +723,7 @@ public class statement {
             }
             return rs;
         }
+
         public  Statement last() {
             Statement s = null;
             {
@@ -635,12 +740,15 @@ public class statement {
             }
             return s;
         }
+
         public  CompoundStatement isCompoundStatement() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public CompoundStatement() {}
 
@@ -656,6 +764,7 @@ public class statement {
         public  CompoundDeclarationStatement(Loc loc, DArray<Statement> statements) {
             super(loc, statements);
         }
+
         public  Statement syntaxCopy() {
             DArray<Statement> a = new DArray<Statement>((this.statements).length);
             {
@@ -669,9 +778,11 @@ public class statement {
             }
             return new CompoundDeclarationStatement(this.loc, a);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public CompoundDeclarationStatement() {}
 
@@ -689,6 +800,7 @@ public class statement {
             super(loc);
             this.statements = statements;
         }
+
         public  Statement syntaxCopy() {
             DArray<Statement> a = new DArray<Statement>((this.statements).length);
             {
@@ -702,15 +814,19 @@ public class statement {
             }
             return new UnrolledLoopStatement(this.loc, a);
         }
+
         public  boolean hasBreak() {
             return true;
         }
+
         public  boolean hasContinue() {
             return true;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public UnrolledLoopStatement() {}
 
@@ -730,26 +846,33 @@ public class statement {
             this.statement = statement;
             this.endloc = endloc.copy();
         }
+
         public  Statement syntaxCopy() {
             return new ScopeStatement(this.loc, this.statement != null ? this.statement.syntaxCopy() : null, this.endloc);
         }
+
         public  ScopeStatement isScopeStatement() {
             return this;
         }
+
         public  ReturnStatement isReturnStatement() {
             if (this.statement != null)
                 return this.statement.isReturnStatement();
             return null;
         }
+
         public  boolean hasBreak() {
             return this.statement != null ? this.statement.hasBreak() : false;
         }
+
         public  boolean hasContinue() {
             return this.statement != null ? this.statement.hasContinue() : false;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ScopeStatement() {}
 
@@ -771,14 +894,17 @@ public class statement {
             assert(statement != null);
             this.statement = statement;
         }
+
         public  ForwardingStatement(Loc loc, Statement statement) {
             ForwardingScopeDsymbol sym = new ForwardingScopeDsymbol(null);
             sym.symtab = new DsymbolTable();
             this(loc, sym, statement);
         }
+
         public  Statement syntaxCopy() {
             return new ForwardingStatement(this.loc, this.statement.syntaxCopy());
         }
+
         public  DArray<Statement> flatten(Scope sc) {
             if (this.statement == null)
             {
@@ -803,12 +929,15 @@ public class statement {
             }
             return b;
         }
+
         public  ForwardingStatement isForwardingStatement() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ForwardingStatement() {}
 
@@ -831,18 +960,23 @@ public class statement {
             this._body = _body;
             this.endloc = endloc.copy();
         }
+
         public  Statement syntaxCopy() {
             return new WhileStatement(this.loc, this.condition.syntaxCopy(), this._body != null ? this._body.syntaxCopy() : null, this.endloc);
         }
+
         public  boolean hasBreak() {
             return true;
         }
+
         public  boolean hasContinue() {
             return true;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public WhileStatement() {}
 
@@ -866,18 +1000,23 @@ public class statement {
             this.condition = condition;
             this.endloc = endloc.copy();
         }
+
         public  Statement syntaxCopy() {
             return new DoStatement(this.loc, this._body != null ? this._body.syntaxCopy() : null, this.condition.syntaxCopy(), this.endloc);
         }
+
         public  boolean hasBreak() {
             return true;
         }
+
         public  boolean hasContinue() {
             return true;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public DoStatement() {}
 
@@ -906,25 +1045,32 @@ public class statement {
             this._body = _body;
             this.endloc = endloc.copy();
         }
+
         public  Statement syntaxCopy() {
             return new ForStatement(this.loc, this._init != null ? this._init.syntaxCopy() : null, this.condition != null ? this.condition.syntaxCopy() : null, this.increment != null ? this.increment.syntaxCopy() : null, this._body.syntaxCopy(), this.endloc);
         }
+
         public  Statement scopeCode(Scope sc, Ptr<Statement> sentry, Ptr<Statement> sexception, Ptr<Statement> sfinally) {
             this.scopeCode(sc, sentry, sexception, sfinally);
             return this;
         }
+
         public  Statement getRelatedLabeled() {
             return this.relatedLabeled != null ? this.relatedLabeled : this;
         }
+
         public  boolean hasBreak() {
             return true;
         }
+
         public  boolean hasContinue() {
             return true;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ForStatement() {}
 
@@ -960,18 +1106,23 @@ public class statement {
             this._body = _body;
             this.endloc = endloc.copy();
         }
+
         public  Statement syntaxCopy() {
             return new ForeachStatement(this.loc, this.op, Parameter.arraySyntaxCopy(this.parameters), this.aggr.syntaxCopy(), this._body != null ? this._body.syntaxCopy() : null, this.endloc);
         }
+
         public  boolean hasBreak() {
             return true;
         }
+
         public  boolean hasContinue() {
             return true;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ForeachStatement() {}
 
@@ -1009,18 +1160,23 @@ public class statement {
             this._body = _body;
             this.endloc = endloc.copy();
         }
+
         public  Statement syntaxCopy() {
             return new ForeachRangeStatement(this.loc, this.op, this.prm.syntaxCopy(), this.lwr.syntaxCopy(), this.upr.syntaxCopy(), this._body != null ? this._body.syntaxCopy() : null, this.endloc);
         }
+
         public  boolean hasBreak() {
             return true;
         }
+
         public  boolean hasContinue() {
             return true;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ForeachRangeStatement() {}
 
@@ -1053,15 +1209,19 @@ public class statement {
             this.elsebody = elsebody;
             this.endloc = endloc.copy();
         }
+
         public  Statement syntaxCopy() {
             return new IfStatement(this.loc, this.prm != null ? this.prm.syntaxCopy() : null, this.condition.syntaxCopy(), this.ifbody != null ? this.ifbody.syntaxCopy() : null, this.elsebody != null ? this.elsebody.syntaxCopy() : null, this.endloc);
         }
+
         public  IfStatement isIfStatement() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public IfStatement() {}
 
@@ -1088,9 +1248,11 @@ public class statement {
             this.ifbody = ifbody;
             this.elsebody = elsebody;
         }
+
         public  Statement syntaxCopy() {
             return new ConditionalStatement(this.loc, this.condition.syntaxCopy(), this.ifbody.syntaxCopy(), this.elsebody != null ? this.elsebody.syntaxCopy() : null);
         }
+
         public  DArray<Statement> flatten(Scope sc) {
             Statement s = null;
             if (this.condition.include(sc) != 0)
@@ -1107,9 +1269,11 @@ public class statement {
             (a).push(s);
             return a;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ConditionalStatement() {}
 
@@ -1129,9 +1293,11 @@ public class statement {
             super(loc);
             this.sfe = sfe;
         }
+
         public  Statement syntaxCopy() {
             return new StaticForeachStatement(this.loc, this.sfe.syntaxCopy());
         }
+
         public  DArray<Statement> flatten(Scope sc) {
             this.sfe.prepare(sc);
             if (this.sfe.ready())
@@ -1153,9 +1319,11 @@ public class statement {
                 return result;
             }
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public StaticForeachStatement() {}
 
@@ -1177,12 +1345,15 @@ public class statement {
             this.args = args;
             this._body = _body;
         }
+
         public  Statement syntaxCopy() {
             return new PragmaStatement(this.loc, this.ident, Expression.arraySyntaxCopy(this.args), this._body != null ? this._body.syntaxCopy() : null);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public PragmaStatement() {}
 
@@ -1202,12 +1373,15 @@ public class statement {
             super(sa.loc);
             this.sa = sa;
         }
+
         public  Statement syntaxCopy() {
             return new StaticAssertStatement((StaticAssert)this.sa.syntaxCopy(null));
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public StaticAssertStatement() {}
 
@@ -1236,12 +1410,15 @@ public class statement {
             this._body = _body;
             this.isFinal = isFinal;
         }
+
         public  Statement syntaxCopy() {
             return new SwitchStatement(this.loc, this.condition.syntaxCopy(), this._body.syntaxCopy(), this.isFinal);
         }
+
         public  boolean hasBreak() {
             return true;
         }
+
         public  boolean checkLabel() {
             Function1<VarDeclaration,Boolean> checkVar = new Function1<VarDeclaration,Boolean>(){
                 public Boolean invoke(VarDeclaration vd) {
@@ -1274,9 +1451,11 @@ public class statement {
             }
             return false;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public SwitchStatement() {}
 
@@ -1307,15 +1486,19 @@ public class statement {
             this.exp = exp;
             this.statement = statement;
         }
+
         public  Statement syntaxCopy() {
             return new CaseStatement(this.loc, this.exp.syntaxCopy(), this.statement.syntaxCopy());
         }
+
         public  CaseStatement isCaseStatement() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public CaseStatement() {}
 
@@ -1340,12 +1523,15 @@ public class statement {
             this.last = last;
             this.statement = statement;
         }
+
         public  Statement syntaxCopy() {
             return new CaseRangeStatement(this.loc, this.first.syntaxCopy(), this.last.syntaxCopy(), this.statement.syntaxCopy());
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public CaseRangeStatement() {}
 
@@ -1366,15 +1552,19 @@ public class statement {
             super(loc);
             this.statement = statement;
         }
+
         public  Statement syntaxCopy() {
             return new DefaultStatement(this.loc, this.statement.syntaxCopy());
         }
+
         public  DefaultStatement isDefaultStatement() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public DefaultStatement() {}
 
@@ -1392,15 +1582,19 @@ public class statement {
         public  GotoDefaultStatement(Loc loc) {
             super(loc);
         }
+
         public  Statement syntaxCopy() {
             return new GotoDefaultStatement(this.loc);
         }
+
         public  GotoDefaultStatement isGotoDefaultStatement() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public GotoDefaultStatement() {}
 
@@ -1419,15 +1613,19 @@ public class statement {
             super(loc);
             this.exp = exp;
         }
+
         public  Statement syntaxCopy() {
             return new GotoCaseStatement(this.loc, this.exp != null ? this.exp.syntaxCopy() : null);
         }
+
         public  GotoCaseStatement isGotoCaseStatement() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public GotoCaseStatement() {}
 
@@ -1445,13 +1643,16 @@ public class statement {
         public  SwitchErrorStatement(Loc loc) {
             super(loc);
         }
+
         public  SwitchErrorStatement(Loc loc, Expression exp) {
             super(loc);
             this.exp = exp;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public SwitchErrorStatement() {}
 
@@ -1470,15 +1671,19 @@ public class statement {
             super(loc);
             this.exp = exp;
         }
+
         public  Statement syntaxCopy() {
             return new ReturnStatement(this.loc, this.exp != null ? this.exp.syntaxCopy() : null);
         }
+
         public  ReturnStatement isReturnStatement() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ReturnStatement() {}
 
@@ -1497,15 +1702,19 @@ public class statement {
             super(loc);
             this.ident = ident;
         }
+
         public  Statement syntaxCopy() {
             return new BreakStatement(this.loc, this.ident);
         }
+
         public  BreakStatement isBreakStatement() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public BreakStatement() {}
 
@@ -1523,12 +1732,15 @@ public class statement {
             super(loc);
             this.ident = ident;
         }
+
         public  Statement syntaxCopy() {
             return new ContinueStatement(this.loc, this.ident);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ContinueStatement() {}
 
@@ -1548,18 +1760,23 @@ public class statement {
             this.exp = exp;
             this._body = _body;
         }
+
         public  Statement syntaxCopy() {
             return new SynchronizedStatement(this.loc, this.exp != null ? this.exp.syntaxCopy() : null, this._body != null ? this._body.syntaxCopy() : null);
         }
+
         public  boolean hasBreak() {
             return false;
         }
+
         public  boolean hasContinue() {
             return false;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public SynchronizedStatement() {}
 
@@ -1583,12 +1800,15 @@ public class statement {
             this._body = _body;
             this.endloc = endloc.copy();
         }
+
         public  Statement syntaxCopy() {
             return new WithStatement(this.loc, this.exp.syntaxCopy(), this._body != null ? this._body.syntaxCopy() : null, this.endloc);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public WithStatement() {}
 
@@ -1611,6 +1831,7 @@ public class statement {
             this._body = _body;
             this.catches = catches;
         }
+
         public  Statement syntaxCopy() {
             DArray<Catch> a = new DArray<Catch>((this.catches).length);
             {
@@ -1624,12 +1845,15 @@ public class statement {
             }
             return new TryCatchStatement(this.loc, this._body.syntaxCopy(), a);
         }
+
         public  boolean hasBreak() {
             return false;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TryCatchStatement() {}
 
@@ -1657,11 +1881,13 @@ public class statement {
             this.ident = ident;
             this.handler = handler;
         }
+
         public  Catch syntaxCopy() {
             Catch c = new Catch(this.loc, this.type != null ? this.type.syntaxCopy() : getThrowable(), this.ident, this.handler != null ? this.handler.syntaxCopy() : null);
             c.internalCatch = this.internalCatch;
             return c;
         }
+
 
         public Catch() {}
 
@@ -1688,21 +1914,27 @@ public class statement {
             this.finalbody = finalbody;
             this.bodyFallsThru = true;
         }
+
         public static TryFinallyStatement create(Loc loc, Statement _body, Statement finalbody) {
             return new TryFinallyStatement(loc, _body, finalbody);
         }
+
         public  Statement syntaxCopy() {
             return new TryFinallyStatement(this.loc, this._body.syntaxCopy(), this.finalbody.syntaxCopy());
         }
+
         public  boolean hasBreak() {
             return false;
         }
+
         public  boolean hasContinue() {
             return false;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public TryFinallyStatement() {}
 
@@ -1724,9 +1956,11 @@ public class statement {
             this.tok = tok;
             this.statement = statement;
         }
+
         public  Statement syntaxCopy() {
             return new ScopeGuardStatement(this.loc, this.tok, this.statement.syntaxCopy());
         }
+
         public  Statement scopeCode(Scope sc, Ptr<Statement> sentry, Ptr<Statement> sexception, Ptr<Statement> sfinally) {
             sentry.set(0, null);
             sexception.set(0, null);
@@ -1756,9 +1990,11 @@ public class statement {
             }
             return null;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ScopeGuardStatement() {}
 
@@ -1778,14 +2014,17 @@ public class statement {
             super(loc);
             this.exp = exp;
         }
+
         public  Statement syntaxCopy() {
             ThrowStatement s = new ThrowStatement(this.loc, this.exp.syntaxCopy());
             s.internalThrow = this.internalThrow;
             return s;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ThrowStatement() {}
 
@@ -1804,9 +2043,11 @@ public class statement {
             super(loc);
             this.statement = statement;
         }
+
         public  Statement syntaxCopy() {
             return new DebugStatement(this.loc, this.statement != null ? this.statement.syntaxCopy() : null);
         }
+
         public  DArray<Statement> flatten(Scope sc) {
             DArray<Statement> a = this.statement != null ? this.statement.flatten(sc) : null;
             if (a != null)
@@ -1822,9 +2063,11 @@ public class statement {
             }
             return a;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public DebugStatement() {}
 
@@ -1846,9 +2089,11 @@ public class statement {
             super(loc);
             this.ident = ident;
         }
+
         public  Statement syntaxCopy() {
             return new GotoStatement(this.loc, this.ident);
         }
+
         public  boolean checkLabel() {
             if (this.label.statement == null)
             {
@@ -1899,9 +2144,11 @@ public class statement {
             }
             return false;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public GotoStatement() {}
 
@@ -1930,9 +2177,11 @@ public class statement {
             this.ident = ident;
             this.statement = statement;
         }
+
         public  Statement syntaxCopy() {
             return new LabelStatement(this.loc, this.ident, this.statement != null ? this.statement.syntaxCopy() : null);
         }
+
         public  DArray<Statement> flatten(Scope sc) {
             DArray<Statement> a = null;
             if (this.statement != null)
@@ -1950,6 +2199,7 @@ public class statement {
             }
             return a;
         }
+
         public  Statement scopeCode(Scope sc, Ptr<Statement> sentry, Ptr<Statement> sexit, Ptr<Statement> sfinally) {
             if (this.statement != null)
                 this.statement = this.statement.scopeCode(sc, sentry, sexit, sfinally);
@@ -1961,12 +2211,15 @@ public class statement {
             }
             return this;
         }
+
         public  LabelStatement isLabelStatement() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public LabelStatement() {}
 
@@ -1989,15 +2242,19 @@ public class statement {
         public  LabelDsymbol(Identifier ident) {
             super(ident);
         }
+
         public static LabelDsymbol create(Identifier ident) {
             return new LabelDsymbol(ident);
         }
+
         public  LabelDsymbol isLabel() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public LabelDsymbol() {}
 
@@ -2028,12 +2285,15 @@ public class statement {
             super(loc);
             this.tokens = tokens;
         }
+
         public  Statement syntaxCopy() {
             return new AsmStatement(this.loc, this.tokens);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public AsmStatement() {}
 
@@ -2054,12 +2314,15 @@ public class statement {
         public  InlineAsmStatement(Loc loc, Token tokens) {
             super(loc, tokens);
         }
+
         public  Statement syntaxCopy() {
             return new InlineAsmStatement(this.loc, this.tokens);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public InlineAsmStatement() {}
 
@@ -2089,12 +2352,15 @@ public class statement {
         public  GccAsmStatement(Loc loc, Token tokens) {
             super(loc, tokens);
         }
+
         public  Statement syntaxCopy() {
             return new GccAsmStatement(this.loc, this.tokens);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public GccAsmStatement() {}
 
@@ -2121,6 +2387,7 @@ public class statement {
             super(loc, statements);
             this.stc = stc;
         }
+
         public  CompoundAsmStatement syntaxCopy() {
             DArray<Statement> a = new DArray<Statement>((this.statements).length);
             {
@@ -2134,12 +2401,15 @@ public class statement {
             }
             return (Statement)new CompoundAsmStatement(this.loc, a, this.stc);
         }
+
         public  DArray<Statement> flatten(Scope sc) {
             return null;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public CompoundAsmStatement() {}
 
@@ -2158,6 +2428,7 @@ public class statement {
             super(loc);
             this.imports = imports;
         }
+
         public  Statement syntaxCopy() {
             DArray<Dsymbol> m = new DArray<Dsymbol>((this.imports).length);
             {
@@ -2171,9 +2442,11 @@ public class statement {
             }
             return new ImportStatement(this.loc, m);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ImportStatement() {}
 

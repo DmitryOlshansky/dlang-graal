@@ -141,11 +141,13 @@ public class hdrgen {
         finally {
         }
     }
+
     public static void moduleToBuffer(OutBuffer buf, dmodule.Module m) {
         HdrGenState hgs = new HdrGenState();
         hgs.fullDump = true;
         toCBuffer((Dsymbol)m, buf, hgs);
     }
+
     public static void moduleToBuffer2(dmodule.Module m, OutBuffer buf, HdrGenState hgs) {
         if (m.md != null)
         {
@@ -181,10 +183,12 @@ public class hdrgen {
             }
         }
     }
+
     public static void statementToBuffer(Statement s, OutBuffer buf, HdrGenState hgs) {
         StatementPrettyPrintVisitor v = new StatementPrettyPrintVisitor(buf, hgs);
         s.accept(v);
     }
+
     public static class StatementPrettyPrintVisitor extends Visitor
     {
         public OutBuffer buf;
@@ -193,15 +197,18 @@ public class hdrgen {
             this.buf = buf;
             this.hgs = hgs;
         }
+
         public  void visit(Statement s) {
             (this.buf).writestring(new ByteSlice("Statement::toCBuffer()"));
             (this.buf).writenl();
             throw new AssertionError("Unreachable code!");
         }
+
         public  void visit(ErrorStatement s) {
             (this.buf).writestring(new ByteSlice("__error__"));
             (this.buf).writenl();
         }
+
         public  void visit(ExpStatement s) {
             if ((s.exp != null) && ((s.exp.op & 0xFF) == 38) && (((DeclarationExp)s.exp).declaration != null))
             {
@@ -214,6 +221,7 @@ public class hdrgen {
             if ((this.hgs).forStmtInit == 0)
                 (this.buf).writenl();
         }
+
         public  void visit(CompileStatement s) {
             (this.buf).writestring(new ByteSlice("mixin("));
             argsToBuffer(s.exps, this.buf, this.hgs, null);
@@ -221,6 +229,7 @@ public class hdrgen {
             if ((this.hgs).forStmtInit == 0)
                 (this.buf).writenl();
         }
+
         public  void visit(CompoundStatement s) {
             {
                 Slice<Statement> __r1421 = (s.statements).opSlice().copy();
@@ -232,6 +241,7 @@ public class hdrgen {
                 }
             }
         }
+
         public  void visit(CompoundDeclarationStatement s) {
             boolean anywritten = false;
             {
@@ -262,6 +272,7 @@ public class hdrgen {
             if ((this.hgs).forStmtInit == 0)
                 (this.buf).writenl();
         }
+
         public  void visit(UnrolledLoopStatement s) {
             (this.buf).writestring(new ByteSlice("/*unrolled*/ {"));
             (this.buf).writenl();
@@ -279,6 +290,7 @@ public class hdrgen {
             (this.buf).writeByte(125);
             (this.buf).writenl();
         }
+
         public  void visit(ScopeStatement s) {
             (this.buf).writeByte(123);
             (this.buf).writenl();
@@ -289,6 +301,7 @@ public class hdrgen {
             (this.buf).writeByte(125);
             (this.buf).writenl();
         }
+
         public  void visit(WhileStatement s) {
             (this.buf).writestring(new ByteSlice("while ("));
             expressionToBuffer(s.condition, this.buf, this.hgs);
@@ -297,6 +310,7 @@ public class hdrgen {
             if (s._body != null)
                 s._body.accept(this);
         }
+
         public  void visit(DoStatement s) {
             (this.buf).writestring(new ByteSlice("do"));
             (this.buf).writenl();
@@ -307,6 +321,7 @@ public class hdrgen {
             (this.buf).writestring(new ByteSlice(");"));
             (this.buf).writenl();
         }
+
         public  void visit(ForStatement s) {
             (this.buf).writestring(new ByteSlice("for ("));
             if (s._init != null)
@@ -339,6 +354,7 @@ public class hdrgen {
             (this.buf).writeByte(125);
             (this.buf).writenl();
         }
+
         public  void foreachWithoutBody(ForeachStatement s) {
             (this.buf).writestring(Token.asString(s.op));
             (this.buf).writestring(new ByteSlice(" ("));
@@ -363,6 +379,7 @@ public class hdrgen {
             (this.buf).writeByte(41);
             (this.buf).writenl();
         }
+
         public  void visit(ForeachStatement s) {
             this.foreachWithoutBody(s);
             (this.buf).writeByte(123);
@@ -374,6 +391,7 @@ public class hdrgen {
             (this.buf).writeByte(125);
             (this.buf).writenl();
         }
+
         public  void foreachRangeWithoutBody(ForeachRangeStatement s) {
             (this.buf).writestring(Token.asString(s.op));
             (this.buf).writestring(new ByteSlice(" ("));
@@ -388,6 +406,7 @@ public class hdrgen {
             (this.buf).writeByte(41);
             (this.buf).writenl();
         }
+
         public  void visit(ForeachRangeStatement s) {
             this.foreachRangeWithoutBody(s);
             (this.buf).writeByte(123);
@@ -399,6 +418,7 @@ public class hdrgen {
             (this.buf).writeByte(125);
             (this.buf).writenl();
         }
+
         public  void visit(StaticForeachStatement s) {
             (this.buf).writestring(new ByteSlice("static "));
             if (s.sfe.aggrfe != null)
@@ -411,6 +431,7 @@ public class hdrgen {
                 this.visit(s.sfe.rangefe);
             }
         }
+
         public  void visit(IfStatement s) {
             (this.buf).writestring(new ByteSlice("if ("));
             {
@@ -465,6 +486,7 @@ public class hdrgen {
                 }
             }
         }
+
         public  void visit(ConditionalStatement s) {
             conditionToBuffer(s.condition, this.buf, this.hgs);
             (this.buf).writenl();
@@ -489,6 +511,7 @@ public class hdrgen {
             }
             (this.buf).writenl();
         }
+
         public  void visit(PragmaStatement s) {
             (this.buf).writestring(new ByteSlice("pragma ("));
             (this.buf).writestring(s.ident.asString());
@@ -515,9 +538,11 @@ public class hdrgen {
                 (this.buf).writenl();
             }
         }
+
         public  void visit(StaticAssertStatement s) {
             dsymbolToBuffer(s.sa, this.buf, this.hgs);
         }
+
         public  void visit(SwitchStatement s) {
             (this.buf).writestring(s.isFinal ? new ByteSlice("final switch (") : new ByteSlice("switch ("));
             expressionToBuffer(s.condition, this.buf, this.hgs);
@@ -541,6 +566,7 @@ public class hdrgen {
                 }
             }
         }
+
         public  void visit(CaseStatement s) {
             (this.buf).writestring(new ByteSlice("case "));
             expressionToBuffer(s.exp, this.buf, this.hgs);
@@ -548,6 +574,7 @@ public class hdrgen {
             (this.buf).writenl();
             s.statement.accept(this);
         }
+
         public  void visit(CaseRangeStatement s) {
             (this.buf).writestring(new ByteSlice("case "));
             expressionToBuffer(s.first, this.buf, this.hgs);
@@ -557,15 +584,18 @@ public class hdrgen {
             (this.buf).writenl();
             s.statement.accept(this);
         }
+
         public  void visit(DefaultStatement s) {
             (this.buf).writestring(new ByteSlice("default:"));
             (this.buf).writenl();
             s.statement.accept(this);
         }
+
         public  void visit(GotoDefaultStatement s) {
             (this.buf).writestring(new ByteSlice("goto default;"));
             (this.buf).writenl();
         }
+
         public  void visit(GotoCaseStatement s) {
             (this.buf).writestring(new ByteSlice("goto case"));
             if (s.exp != null)
@@ -576,10 +606,12 @@ public class hdrgen {
             (this.buf).writeByte(59);
             (this.buf).writenl();
         }
+
         public  void visit(SwitchErrorStatement s) {
             (this.buf).writestring(new ByteSlice("SwitchErrorStatement::toCBuffer()"));
             (this.buf).writenl();
         }
+
         public  void visit(ReturnStatement s) {
             (this.buf).writestring(new ByteSlice("return "));
             if (s.exp != null)
@@ -587,6 +619,7 @@ public class hdrgen {
             (this.buf).writeByte(59);
             (this.buf).writenl();
         }
+
         public  void visit(BreakStatement s) {
             (this.buf).writestring(new ByteSlice("break"));
             if (s.ident != null)
@@ -597,6 +630,7 @@ public class hdrgen {
             (this.buf).writeByte(59);
             (this.buf).writenl();
         }
+
         public  void visit(ContinueStatement s) {
             (this.buf).writestring(new ByteSlice("continue"));
             if (s.ident != null)
@@ -607,6 +641,7 @@ public class hdrgen {
             (this.buf).writeByte(59);
             (this.buf).writenl();
         }
+
         public  void visit(SynchronizedStatement s) {
             (this.buf).writestring(new ByteSlice("synchronized"));
             if (s.exp != null)
@@ -621,6 +656,7 @@ public class hdrgen {
                 s._body.accept(this);
             }
         }
+
         public  void visit(WithStatement s) {
             (this.buf).writestring(new ByteSlice("with ("));
             expressionToBuffer(s.exp, this.buf, this.hgs);
@@ -629,6 +665,7 @@ public class hdrgen {
             if (s._body != null)
                 s._body.accept(this);
         }
+
         public  void visit(TryCatchStatement s) {
             (this.buf).writestring(new ByteSlice("try"));
             (this.buf).writenl();
@@ -654,6 +691,7 @@ public class hdrgen {
                 }
             }
         }
+
         public  void visit(TryFinallyStatement s) {
             (this.buf).writestring(new ByteSlice("try"));
             (this.buf).writenl();
@@ -677,30 +715,35 @@ public class hdrgen {
                 (this.buf).level--;
             }
         }
+
         public  void visit(ScopeGuardStatement s) {
             (this.buf).writestring(Token.asString(s.tok));
             (this.buf).writeByte(32);
             if (s.statement != null)
                 s.statement.accept(this);
         }
+
         public  void visit(ThrowStatement s) {
             (this.buf).writestring(new ByteSlice("throw "));
             expressionToBuffer(s.exp, this.buf, this.hgs);
             (this.buf).writeByte(59);
             (this.buf).writenl();
         }
+
         public  void visit(DebugStatement s) {
             if (s.statement != null)
             {
                 s.statement.accept(this);
             }
         }
+
         public  void visit(GotoStatement s) {
             (this.buf).writestring(new ByteSlice("goto "));
             (this.buf).writestring(s.ident.asString());
             (this.buf).writeByte(59);
             (this.buf).writenl();
         }
+
         public  void visit(LabelStatement s) {
             (this.buf).writestring(s.ident.asString());
             (this.buf).writeByte(58);
@@ -708,6 +751,7 @@ public class hdrgen {
             if (s.statement != null)
                 s.statement.accept(this);
         }
+
         public  void visit(AsmStatement s) {
             (this.buf).writestring(new ByteSlice("asm { "));
             Token t = s.tokens;
@@ -724,6 +768,7 @@ public class hdrgen {
             (this.buf).writestring(new ByteSlice("; }"));
             (this.buf).writenl();
         }
+
         public  void visit(ImportStatement s) {
             {
                 Slice<Dsymbol> __r1431 = (s.imports).opSlice().copy();
@@ -734,6 +779,7 @@ public class hdrgen {
                 }
             }
         }
+
         public  void visit(Catch c) {
             (this.buf).writestring(new ByteSlice("catch"));
             if (c.type != null)
@@ -753,6 +799,7 @@ public class hdrgen {
             (this.buf).writenl();
         }
 
+
         public StatementPrettyPrintVisitor() {}
 
         public StatementPrettyPrintVisitor copy() {
@@ -766,6 +813,7 @@ public class hdrgen {
         DsymbolPrettyPrintVisitor v = new DsymbolPrettyPrintVisitor(buf, hgs);
         s.accept(v);
     }
+
     public static class DsymbolPrettyPrintVisitor extends Visitor
     {
         public OutBuffer buf;
@@ -774,9 +822,11 @@ public class hdrgen {
             this.buf = buf;
             this.hgs = hgs;
         }
+
         public  void visit(Dsymbol s) {
             (this.buf).writestring(s.toChars());
         }
+
         public  void visit(StaticAssert s) {
             (this.buf).writestring(s.kind());
             (this.buf).writeByte(40);
@@ -789,6 +839,7 @@ public class hdrgen {
             (this.buf).writestring(new ByteSlice(");"));
             (this.buf).writenl();
         }
+
         public  void visit(DebugSymbol s) {
             (this.buf).writestring(new ByteSlice("debug = "));
             if (s.ident != null)
@@ -798,6 +849,7 @@ public class hdrgen {
             (this.buf).writeByte(59);
             (this.buf).writenl();
         }
+
         public  void visit(VersionSymbol s) {
             (this.buf).writestring(new ByteSlice("version = "));
             if (s.ident != null)
@@ -807,6 +859,7 @@ public class hdrgen {
             (this.buf).writeByte(59);
             (this.buf).writenl();
         }
+
         public  void visit(EnumMember em) {
             if (em.type != null)
                 typeToBuffer(em.type, em.ident, this.buf, this.hgs);
@@ -818,6 +871,7 @@ public class hdrgen {
                 expressionToBuffer(em.value(), this.buf, this.hgs);
             }
         }
+
         public  void visit(Import imp) {
             if ((this.hgs).hdrgen && (pequals(imp.id, Id.object)))
                 return ;
@@ -862,11 +916,13 @@ public class hdrgen {
             (this.buf).writeByte(59);
             (this.buf).writenl();
         }
+
         public  void visit(AliasThis d) {
             (this.buf).writestring(new ByteSlice("alias "));
             (this.buf).writestring(d.ident.asString());
             (this.buf).writestring(new ByteSlice(" this;\n"));
         }
+
         public  void visit(AttribDeclaration d) {
             if (d.decl == null)
             {
@@ -904,23 +960,27 @@ public class hdrgen {
             }
             (this.buf).writenl();
         }
+
         public  void visit(StorageClassDeclaration d) {
             if (stcToBuffer(this.buf, d.stc))
                 (this.buf).writeByte(32);
             this.visit((AttribDeclaration)d);
         }
+
         public  void visit(DeprecatedDeclaration d) {
             (this.buf).writestring(new ByteSlice("deprecated("));
             expressionToBuffer(d.msg, this.buf, this.hgs);
             (this.buf).writestring(new ByteSlice(") "));
             this.visit((AttribDeclaration)d);
         }
+
         public  void visit(LinkDeclaration d) {
             (this.buf).writestring(new ByteSlice("extern ("));
             (this.buf).writestring(linkageToString(d.linkage));
             (this.buf).writestring(new ByteSlice(") "));
             this.visit((AttribDeclaration)d);
         }
+
         public  void visit(CPPMangleDeclaration d) {
             ByteSlice s = new ByteSlice();
             switch (d.cppmangle)
@@ -941,6 +1001,7 @@ public class hdrgen {
             (this.buf).writestring(new ByteSlice(") "));
             this.visit((AttribDeclaration)d);
         }
+
         public  void visit(ProtDeclaration d) {
             protectionToBuffer(this.buf, d.protection);
             (this.buf).writeByte(32);
@@ -950,12 +1011,14 @@ public class hdrgen {
             else
                 this.visit((AttribDeclaration)d);
         }
+
         public  void visit(AlignDeclaration d) {
             (this.buf).writestring(new ByteSlice("align "));
             if (d.ealign != null)
                 (this.buf).printf(new BytePtr("(%s) "), d.ealign.toChars());
             this.visit((AttribDeclaration)d);
         }
+
         public  void visit(AnonDeclaration d) {
             (this.buf).writestring(d.isunion ? new ByteSlice("union") : new ByteSlice("struct"));
             (this.buf).writenl();
@@ -977,6 +1040,7 @@ public class hdrgen {
             (this.buf).writestring(new ByteSlice("}"));
             (this.buf).writenl();
         }
+
         public  void visit(PragmaDeclaration d) {
             (this.buf).writestring(new ByteSlice("pragma ("));
             (this.buf).writestring(d.ident.asString());
@@ -988,6 +1052,7 @@ public class hdrgen {
             (this.buf).writeByte(41);
             this.visit((AttribDeclaration)d);
         }
+
         public  void visit(ConditionalDeclaration d) {
             conditionToBuffer(d.condition, this.buf, this.hgs);
             if ((d.decl != null) || (d.elsedecl != null))
@@ -1033,6 +1098,7 @@ public class hdrgen {
                 (this.buf).writeByte(58);
             (this.buf).writenl();
         }
+
         public  void visit(StaticForeachDeclaration s) {
             Function1<ForeachStatement,Void> foreachWithoutBody = new Function1<ForeachStatement,Void>(){
                 public Void invoke(ForeachStatement s) {
@@ -1094,18 +1160,21 @@ public class hdrgen {
             (this.buf).writeByte(125);
             (this.buf).writenl();
         }
+
         public  void visit(CompileDeclaration d) {
             (this.buf).writestring(new ByteSlice("mixin("));
             argsToBuffer(d.exps, this.buf, this.hgs, null);
             (this.buf).writestring(new ByteSlice(");"));
             (this.buf).writenl();
         }
+
         public  void visit(UserAttributeDeclaration d) {
             (this.buf).writestring(new ByteSlice("@("));
             argsToBuffer(d.atts, this.buf, this.hgs, null);
             (this.buf).writeByte(41);
             this.visit((AttribDeclaration)d);
         }
+
         public  void visit(TemplateDeclaration d) {
             if ((this.hgs).hdrgen || (this.hgs).fullDump && this.visitEponymousMember(d))
                 return ;
@@ -1140,6 +1209,7 @@ public class hdrgen {
                 (this.hgs).tpltMember--;
             }
         }
+
         public  boolean visitEponymousMember(TemplateDeclaration d) {
             if ((d.members == null) || ((d.members).length != 1))
                 return false;
@@ -1229,6 +1299,7 @@ public class hdrgen {
             }
             return false;
         }
+
         public  void visitTemplateParameters(DArray<TemplateParameter> parameters) {
             if ((parameters == null) || ((parameters).length == 0))
                 return ;
@@ -1244,6 +1315,7 @@ public class hdrgen {
                 }
             }
         }
+
         public  void visitTemplateConstraint(Expression constraint) {
             if (constraint == null)
                 return ;
@@ -1251,6 +1323,7 @@ public class hdrgen {
             expressionToBuffer(constraint, this.buf, this.hgs);
             (this.buf).writeByte(41);
         }
+
         public  void visit(TemplateInstance ti) {
             (this.buf).writestring(ti.name.toChars());
             tiargsToBuffer(ti, this.buf, this.hgs);
@@ -1260,6 +1333,7 @@ public class hdrgen {
                 dumpTemplateInstance(ti, this.buf, this.hgs);
             }
         }
+
         public  void visit(TemplateMixin tm) {
             (this.buf).writestring(new ByteSlice("mixin "));
             typeToBuffer(tm.tqual, null, this.buf, this.hgs);
@@ -1274,6 +1348,7 @@ public class hdrgen {
             if ((this.hgs).fullDump)
                 dumpTemplateInstance(tm, this.buf, this.hgs);
         }
+
         public  void visit(EnumDeclaration d) {
             EnumDeclaration oldInEnumDecl = (this.hgs).inEnumDecl;
             try {
@@ -1319,6 +1394,7 @@ public class hdrgen {
                 (this.hgs).inEnumDecl = oldInEnumDecl;
             }
         }
+
         public  void visit(Nspace d) {
             (this.buf).writestring(new ByteSlice("extern (C++, "));
             (this.buf).writestring(d.ident.asString());
@@ -1339,6 +1415,7 @@ public class hdrgen {
             (this.buf).writeByte(125);
             (this.buf).writenl();
         }
+
         public  void visit(StructDeclaration d) {
             (this.buf).writestring(d.kind());
             (this.buf).writeByte(32);
@@ -1366,6 +1443,7 @@ public class hdrgen {
             (this.buf).writeByte(125);
             (this.buf).writenl();
         }
+
         public  void visit(ClassDeclaration d) {
             if (!d.isAnonymous())
             {
@@ -1395,6 +1473,7 @@ public class hdrgen {
                 (this.buf).writeByte(59);
             (this.buf).writenl();
         }
+
         public  void visitBaseClasses(ClassDeclaration d) {
             if ((d == null) || ((d.baseclasses).length == 0))
                 return ;
@@ -1412,6 +1491,7 @@ public class hdrgen {
                 }
             }
         }
+
         public  void visit(AliasDeclaration d) {
             if ((d.storage_class & 2251799813685248L) != 0)
                 return ;
@@ -1443,6 +1523,7 @@ public class hdrgen {
             (this.buf).writeByte(59);
             (this.buf).writenl();
         }
+
         public  void visit(VarDeclaration d) {
             if ((d.storage_class & 2251799813685248L) != 0)
                 return ;
@@ -1450,6 +1531,7 @@ public class hdrgen {
             (this.buf).writeByte(59);
             (this.buf).writenl();
         }
+
         public  void visitVarDecl(VarDeclaration v, boolean anywritten) {
             if (anywritten)
             {
@@ -1475,6 +1557,7 @@ public class hdrgen {
                     initializerToBuffer(v._init, this.buf, this.hgs);
             }
         }
+
         public  void visit(FuncDeclaration f) {
             if (stcToBuffer(this.buf, f.storage_class))
                 (this.buf).writeByte(32);
@@ -1499,6 +1582,7 @@ public class hdrgen {
             else
                 this.bodyToBuffer(f);
         }
+
         public  void bodyToBuffer(FuncDeclaration f) {
             if ((f.fbody == null) || (this.hgs).hdrgen && global.params.hdrStripPlainFunctions && ((this.hgs).autoMember == 0) && ((this.hgs).tpltMember == 0))
             {
@@ -1596,6 +1680,7 @@ public class hdrgen {
             (this.hgs).tpltMember = savetlpt;
             (this.hgs).autoMember = saveauto;
         }
+
         public  void visit(FuncLiteralDeclaration f) {
             if (((f.type.ty & 0xFF) == ENUMTY.Terror))
             {
@@ -1632,12 +1717,14 @@ public class hdrgen {
                 (this.hgs).tpltMember--;
             }
         }
+
         public  void visit(PostBlitDeclaration d) {
             if (stcToBuffer(this.buf, d.storage_class))
                 (this.buf).writeByte(32);
             (this.buf).writestring(new ByteSlice("this(this)"));
             this.bodyToBuffer(d);
         }
+
         public  void visit(DtorDeclaration d) {
             if ((d.storage_class & 17179869184L) != 0)
                 (this.buf).writestring(new ByteSlice("@trusted "));
@@ -1650,6 +1737,7 @@ public class hdrgen {
             (this.buf).writestring(new ByteSlice("~this()"));
             this.bodyToBuffer(d);
         }
+
         public  void visit(StaticCtorDeclaration d) {
             if (stcToBuffer(this.buf, d.storage_class & -2L))
                 (this.buf).writeByte(32);
@@ -1664,6 +1752,7 @@ public class hdrgen {
             else
                 this.bodyToBuffer(d);
         }
+
         public  void visit(StaticDtorDeclaration d) {
             if (stcToBuffer(this.buf, d.storage_class & -2L))
                 (this.buf).writeByte(32);
@@ -1678,6 +1767,7 @@ public class hdrgen {
             else
                 this.bodyToBuffer(d);
         }
+
         public  void visit(InvariantDeclaration d) {
             if ((this.hgs).hdrgen)
                 return ;
@@ -1700,6 +1790,7 @@ public class hdrgen {
                 }
             }
         }
+
         public  void visit(UnitTestDeclaration d) {
             if ((this.hgs).hdrgen)
                 return ;
@@ -1708,6 +1799,7 @@ public class hdrgen {
             (this.buf).writestring(new ByteSlice("unittest"));
             this.bodyToBuffer(d);
         }
+
         public  void visit(NewDeclaration d) {
             if (stcToBuffer(this.buf, d.storage_class & -2L))
                 (this.buf).writeByte(32);
@@ -1715,6 +1807,7 @@ public class hdrgen {
             parametersToBuffer(new ParameterList(d.parameters, d.varargs), this.buf, this.hgs);
             this.bodyToBuffer(d);
         }
+
         public  void visit(DeleteDeclaration d) {
             if (stcToBuffer(this.buf, d.storage_class & -2L))
                 (this.buf).writeByte(32);
@@ -1722,9 +1815,11 @@ public class hdrgen {
             parametersToBuffer(new ParameterList(d.parameters, VarArg.none), this.buf, this.hgs);
             this.bodyToBuffer(d);
         }
+
         public  void visit(dmodule.Module m) {
             moduleToBuffer2(m, this.buf, this.hgs);
         }
+
 
         public DsymbolPrettyPrintVisitor() {}
 
@@ -1743,9 +1838,11 @@ public class hdrgen {
             this.buf = buf;
             this.hgs = hgs;
         }
+
         public  void visit(Expression e) {
             (this.buf).writestring(Token.asString(e.op));
         }
+
         public  void visit(IntegerExp e) {
             long v = e.toInteger();
             if (e.type != null)
@@ -1854,12 +1951,15 @@ public class hdrgen {
             else
                 (this.buf).print(v);
         }
+
         public  void visit(ErrorExp e) {
             (this.buf).writestring(new ByteSlice("__error"));
         }
+
         public  void visit(VoidInitExp e) {
             (this.buf).writestring(new ByteSlice("__void"));
         }
+
         public  void floatToBuffer(Type type, double value) {
             int BUFFER_LEN = 58;
             ByteSlice buffer = (byte)255;
@@ -1894,9 +1994,11 @@ public class hdrgen {
                     (this.buf).writeByte(105);
             }
         }
+
         public  void visit(RealExp e) {
             this.floatToBuffer(e.type, e.value);
         }
+
         public  void visit(ComplexExp e) {
             (this.buf).writeByte(40);
             this.floatToBuffer(e.type, creall(e.value));
@@ -1904,24 +2006,30 @@ public class hdrgen {
             this.floatToBuffer(e.type, cimagl(e.value));
             (this.buf).writestring(new ByteSlice("i)"));
         }
+
         public  void visit(IdentifierExp e) {
             if ((this.hgs).hdrgen || (this.hgs).ddoc)
                 (this.buf).writestring(e.ident.toHChars2());
             else
                 (this.buf).writestring(e.ident.asString());
         }
+
         public  void visit(DsymbolExp e) {
             (this.buf).writestring(e.s.toChars());
         }
+
         public  void visit(ThisExp e) {
             (this.buf).writestring(new ByteSlice("this"));
         }
+
         public  void visit(SuperExp e) {
             (this.buf).writestring(new ByteSlice("super"));
         }
+
         public  void visit(NullExp e) {
             (this.buf).writestring(new ByteSlice("null"));
         }
+
         public  void visit(StringExp e) {
             (this.buf).writeByte(34);
             int o = (this.buf).offset;
@@ -1965,11 +2073,13 @@ public class hdrgen {
             if (e.postfix != 0)
                 (this.buf).writeByte((e.postfix & 0xFF));
         }
+
         public  void visit(ArrayLiteralExp e) {
             (this.buf).writeByte(91);
             argsToBuffer(e.elements, this.buf, this.hgs, e.basis);
             (this.buf).writeByte(93);
         }
+
         public  void visit(AssocArrayLiteralExp e) {
             (this.buf).writeByte(91);
             {
@@ -1988,6 +2098,7 @@ public class hdrgen {
             }
             (this.buf).writeByte(93);
         }
+
         public  void visit(StructLiteralExp e) {
             (this.buf).writestring(e.sd.toChars());
             (this.buf).writeByte(40);
@@ -2002,9 +2113,11 @@ public class hdrgen {
             }
             (this.buf).writeByte(41);
         }
+
         public  void visit(TypeExp e) {
             typeToBuffer(e.type, null, this.buf, this.hgs);
         }
+
         public  void visit(ScopeExp e) {
             if (e.sds.isTemplateInstance() != null)
             {
@@ -2027,9 +2140,11 @@ public class hdrgen {
                 (this.buf).writestring(e.sds.toChars());
             }
         }
+
         public  void visit(TemplateExp e) {
             (this.buf).writestring(e.td.toChars());
         }
+
         public  void visit(NewExp e) {
             if (e.thisexp != null)
             {
@@ -2051,6 +2166,7 @@ public class hdrgen {
                 (this.buf).writeByte(41);
             }
         }
+
         public  void visit(NewAnonClassExp e) {
             if (e.thisexp != null)
             {
@@ -2074,6 +2190,7 @@ public class hdrgen {
             if (e.cd != null)
                 dsymbolToBuffer(e.cd, this.buf, this.hgs);
         }
+
         public  void visit(SymOffExp e) {
             if (e.offset != 0)
                 (this.buf).printf(new BytePtr("(& %s+%u)"), e.var.toChars(), e.offset);
@@ -2082,12 +2199,15 @@ public class hdrgen {
             else
                 (this.buf).printf(new BytePtr("& %s"), e.var.toChars());
         }
+
         public  void visit(VarExp e) {
             (this.buf).writestring(e.var.toChars());
         }
+
         public  void visit(OverExp e) {
             (this.buf).writestring(e.vars.ident.asString());
         }
+
         public  void visit(TupleExp e) {
             if (e.e0 != null)
             {
@@ -2104,9 +2224,11 @@ public class hdrgen {
                 (this.buf).writeByte(41);
             }
         }
+
         public  void visit(FuncExp e) {
             dsymbolToBuffer(e.fd, this.buf, this.hgs);
         }
+
         public  void visit(DeclarationExp e) {
             if (e.declaration != null)
             {
@@ -2125,11 +2247,13 @@ public class hdrgen {
                 }
             }
         }
+
         public  void visit(TypeidExp e) {
             (this.buf).writestring(new ByteSlice("typeid("));
             objectToBuffer(e.obj, this.buf, this.hgs);
             (this.buf).writeByte(41);
         }
+
         public  void visit(TraitsExp e) {
             (this.buf).writestring(new ByteSlice("__traits("));
             if (e.ident != null)
@@ -2148,9 +2272,11 @@ public class hdrgen {
             }
             (this.buf).writeByte(41);
         }
+
         public  void visit(HaltExp e) {
             (this.buf).writestring(new ByteSlice("halt"));
         }
+
         public  void visit(IsExp e) {
             (this.buf).writestring(new ByteSlice("is("));
             typeToBuffer(e.targ, e.id, this.buf, this.hgs);
@@ -2174,10 +2300,12 @@ public class hdrgen {
             }
             (this.buf).writeByte(41);
         }
+
         public  void visit(UnaExp e) {
             (this.buf).writestring(Token.asString(e.op));
             expToBuffer(e.e1, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
         }
+
         public  void visit(BinExp e) {
             expToBuffer(e.e1, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
             (this.buf).writeByte(32);
@@ -2185,16 +2313,19 @@ public class hdrgen {
             (this.buf).writeByte(32);
             expToBuffer(e.e2, precedence.get((e.op & 0xFF)) + 1, this.buf, this.hgs);
         }
+
         public  void visit(CompileExp e) {
             (this.buf).writestring(new ByteSlice("mixin("));
             argsToBuffer(e.exps, this.buf, this.hgs, null);
             (this.buf).writeByte(41);
         }
+
         public  void visit(ImportExp e) {
             (this.buf).writestring(new ByteSlice("import("));
             expToBuffer(e.e1, PREC.assign, this.buf, this.hgs);
             (this.buf).writeByte(41);
         }
+
         public  void visit(AssertExp e) {
             (this.buf).writestring(new ByteSlice("assert("));
             expToBuffer(e.e1, PREC.assign, this.buf, this.hgs);
@@ -2205,26 +2336,31 @@ public class hdrgen {
             }
             (this.buf).writeByte(41);
         }
+
         public  void visit(DotIdExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
             (this.buf).writeByte(46);
             (this.buf).writestring(e.ident.asString());
         }
+
         public  void visit(DotTemplateExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
             (this.buf).writeByte(46);
             (this.buf).writestring(e.td.toChars());
         }
+
         public  void visit(DotVarExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
             (this.buf).writeByte(46);
             (this.buf).writestring(e.var.toChars());
         }
+
         public  void visit(DotTemplateInstanceExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
             (this.buf).writeByte(46);
             dsymbolToBuffer(e.ti, this.buf, this.hgs);
         }
+
         public  void visit(DelegateExp e) {
             (this.buf).writeByte(38);
             if (!e.func.isNested() || e.func.needThis())
@@ -2234,11 +2370,13 @@ public class hdrgen {
             }
             (this.buf).writestring(e.func.toChars());
         }
+
         public  void visit(DotTypeExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
             (this.buf).writeByte(46);
             (this.buf).writestring(e.sym.toChars());
         }
+
         public  void visit(CallExp e) {
             if (((e.e1.op & 0xFF) == 20))
             {
@@ -2250,14 +2388,17 @@ public class hdrgen {
             argsToBuffer(e.arguments, this.buf, this.hgs, null);
             (this.buf).writeByte(41);
         }
+
         public  void visit(PtrExp e) {
             (this.buf).writeByte(42);
             expToBuffer(e.e1, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
         }
+
         public  void visit(DeleteExp e) {
             (this.buf).writestring(new ByteSlice("delete "));
             expToBuffer(e.e1, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
         }
+
         public  void visit(CastExp e) {
             (this.buf).writestring(new ByteSlice("cast("));
             if (e.to != null)
@@ -2269,16 +2410,19 @@ public class hdrgen {
             (this.buf).writeByte(41);
             expToBuffer(e.e1, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
         }
+
         public  void visit(VectorExp e) {
             (this.buf).writestring(new ByteSlice("cast("));
             typeToBuffer(e.to, null, this.buf, this.hgs);
             (this.buf).writeByte(41);
             expToBuffer(e.e1, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
         }
+
         public  void visit(VectorArrayExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
             (this.buf).writestring(new ByteSlice(".array"));
         }
+
         public  void visit(SliceExp e) {
             expToBuffer(e.e1, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
             (this.buf).writeByte(91);
@@ -2296,54 +2440,65 @@ public class hdrgen {
             }
             (this.buf).writeByte(93);
         }
+
         public  void visit(ArrayLengthExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
             (this.buf).writestring(new ByteSlice(".length"));
         }
+
         public  void visit(IntervalExp e) {
             expToBuffer(e.lwr, PREC.assign, this.buf, this.hgs);
             (this.buf).writestring(new ByteSlice(".."));
             expToBuffer(e.upr, PREC.assign, this.buf, this.hgs);
         }
+
         public  void visit(DelegatePtrExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
             (this.buf).writestring(new ByteSlice(".ptr"));
         }
+
         public  void visit(DelegateFuncptrExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
             (this.buf).writestring(new ByteSlice(".funcptr"));
         }
+
         public  void visit(ArrayExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
             (this.buf).writeByte(91);
             argsToBuffer(e.arguments, this.buf, this.hgs, null);
             (this.buf).writeByte(93);
         }
+
         public  void visit(DotExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
             (this.buf).writeByte(46);
             expToBuffer(e.e2, PREC.primary, this.buf, this.hgs);
         }
+
         public  void visit(IndexExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
             (this.buf).writeByte(91);
             sizeToBuffer(e.e2, this.buf, this.hgs);
             (this.buf).writeByte(93);
         }
+
         public  void visit(PostExp e) {
             expToBuffer(e.e1, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
             (this.buf).writestring(Token.asString(e.op));
         }
+
         public  void visit(PreExp e) {
             (this.buf).writestring(Token.asString(e.op));
             expToBuffer(e.e1, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
         }
+
         public  void visit(RemoveExp e) {
             expToBuffer(e.e1, PREC.primary, this.buf, this.hgs);
             (this.buf).writestring(new ByteSlice(".remove("));
             expToBuffer(e.e2, PREC.assign, this.buf, this.hgs);
             (this.buf).writeByte(41);
         }
+
         public  void visit(CondExp e) {
             expToBuffer(e.econd, PREC.oror, this.buf, this.hgs);
             (this.buf).writestring(new ByteSlice(" ? "));
@@ -2351,12 +2506,15 @@ public class hdrgen {
             (this.buf).writestring(new ByteSlice(" : "));
             expToBuffer(e.e2, PREC.cond, this.buf, this.hgs);
         }
+
         public  void visit(DefaultInitExp e) {
             (this.buf).writestring(Token.asString(e.subop));
         }
+
         public  void visit(ClassReferenceExp e) {
             (this.buf).writestring(e.value.toChars());
         }
+
 
         public ExpressionPrettyPrintVisitor() {}
 
@@ -2371,6 +2529,7 @@ public class hdrgen {
         TemplateParameterPrettyPrintVisitor v = new TemplateParameterPrettyPrintVisitor(buf, hgs);
         tp.accept(v);
     }
+
     public static class TemplateParameterPrettyPrintVisitor extends Visitor
     {
         public OutBuffer buf;
@@ -2379,6 +2538,7 @@ public class hdrgen {
             this.buf = buf;
             this.hgs = hgs;
         }
+
         public  void visit(TemplateTypeParameter tp) {
             (this.buf).writestring(tp.ident.asString());
             if (tp.specType != null)
@@ -2392,10 +2552,12 @@ public class hdrgen {
                 typeToBuffer(tp.defaultType, null, this.buf, this.hgs);
             }
         }
+
         public  void visit(TemplateThisParameter tp) {
             (this.buf).writestring(new ByteSlice("this "));
             this.visit((TemplateTypeParameter)tp);
         }
+
         public  void visit(TemplateAliasParameter tp) {
             (this.buf).writestring(new ByteSlice("alias "));
             if (tp.specType != null)
@@ -2413,6 +2575,7 @@ public class hdrgen {
                 objectToBuffer(tp.defaultAlias, this.buf, this.hgs);
             }
         }
+
         public  void visit(TemplateValueParameter tp) {
             typeToBuffer(tp.valType, tp.ident, this.buf, this.hgs);
             if (tp.specValue != null)
@@ -2426,10 +2589,12 @@ public class hdrgen {
                 expressionToBuffer(tp.defaultValue, this.buf, this.hgs);
             }
         }
+
         public  void visit(TemplateTupleParameter tp) {
             (this.buf).writestring(tp.ident.asString());
             (this.buf).writestring(new ByteSlice("..."));
         }
+
 
         public TemplateParameterPrettyPrintVisitor() {}
 
@@ -2444,6 +2609,7 @@ public class hdrgen {
         ConditionPrettyPrintVisitor v = new ConditionPrettyPrintVisitor(buf, hgs);
         c.accept(v);
     }
+
     public static class ConditionPrettyPrintVisitor extends Visitor
     {
         public OutBuffer buf;
@@ -2452,6 +2618,7 @@ public class hdrgen {
             this.buf = buf;
             this.hgs = hgs;
         }
+
         public  void visit(DebugCondition c) {
             (this.buf).writestring(new ByteSlice("debug ("));
             if (c.ident != null)
@@ -2460,6 +2627,7 @@ public class hdrgen {
                 (this.buf).print((long)c.level);
             (this.buf).writeByte(41);
         }
+
         public  void visit(VersionCondition c) {
             (this.buf).writestring(new ByteSlice("version ("));
             if (c.ident != null)
@@ -2468,11 +2636,13 @@ public class hdrgen {
                 (this.buf).print((long)c.level);
             (this.buf).writeByte(41);
         }
+
         public  void visit(StaticIfCondition c) {
             (this.buf).writestring(new ByteSlice("static if ("));
             expressionToBuffer(c.exp, this.buf, this.hgs);
             (this.buf).writeByte(41);
         }
+
 
         public ConditionPrettyPrintVisitor() {}
 
@@ -2487,22 +2657,27 @@ public class hdrgen {
         StatementPrettyPrintVisitor v = new StatementPrettyPrintVisitor(buf, hgs);
         s.accept(v);
     }
+
     public static void toCBuffer(Type t, OutBuffer buf, Identifier ident, HdrGenState hgs) {
         typeToBuffer(t, ident, buf, hgs);
     }
+
     public static void toCBuffer(Dsymbol s, OutBuffer buf, HdrGenState hgs) {
         DsymbolPrettyPrintVisitor v = new DsymbolPrettyPrintVisitor(buf, hgs);
         s.accept(v);
     }
+
     public static void toCBufferInstance(TemplateInstance ti, OutBuffer buf, boolean qualifyTypes) {
         HdrGenState hgs = new HdrGenState();
         hgs.fullQual = qualifyTypes;
         DsymbolPrettyPrintVisitor v = new DsymbolPrettyPrintVisitor(buf, hgs);
         v.visit(ti);
     }
+
     public static void toCBuffer(Initializer iz, OutBuffer buf, HdrGenState hgs) {
         initializerToBuffer(iz, buf, hgs);
     }
+
     public static boolean stcToBuffer(OutBuffer buf, long stc) {
         Ref<Long> stc_ref = ref(stc);
         boolean result = false;
@@ -2521,6 +2696,7 @@ public class hdrgen {
         }
         return result;
     }
+
     public static ByteSlice stcToString(Ref<Long> stc) {
         {
             int i = 0;
@@ -2541,16 +2717,20 @@ public class hdrgen {
         }
         return new ByteSlice();
     }
+
     public static BytePtr stcToChars(Ref<Long> stc) {
         ByteSlice s = stcToString(stc).copy();
         return s.get(0);
     }
+
     public static void trustToBuffer(OutBuffer buf, int trust) {
         (buf).writestring(trustToString(trust));
     }
+
     public static BytePtr trustToChars(int trust) {
         return toBytePtr(trustToString(trust));
     }
+
     public static ByteSlice trustToString(int trust) {
         switch (trust)
         {
@@ -2566,6 +2746,7 @@ public class hdrgen {
             throw SwitchError.INSTANCE;
         }
     }
+
     public static void linkageToBuffer(OutBuffer buf, int linkage) {
         ByteSlice s = linkageToString(linkage).copy();
         if (s.getLength() != 0)
@@ -2575,9 +2756,11 @@ public class hdrgen {
             (buf).writeByte(41);
         }
     }
+
     public static BytePtr linkageToChars(int linkage) {
         return toBytePtr(linkageToString(linkage));
     }
+
     public static ByteSlice linkageToString(int linkage) {
         switch (linkage)
         {
@@ -2601,6 +2784,7 @@ public class hdrgen {
             throw SwitchError.INSTANCE;
         }
     }
+
     public static void protectionToBuffer(OutBuffer buf, Prot prot) {
         (buf).writestring(protectionToString(prot.kind));
         if ((prot.kind == Prot.Kind.package_) && (prot.pkg != null))
@@ -2610,9 +2794,11 @@ public class hdrgen {
             (buf).writeByte(41);
         }
     }
+
     public static BytePtr protectionToChars(int kind) {
         return toBytePtr(protectionToString(kind));
     }
+
     public static ByteSlice protectionToString(int kind) {
         switch (kind)
         {
@@ -2634,17 +2820,21 @@ public class hdrgen {
             throw SwitchError.INSTANCE;
         }
     }
+
     public static void functionToBufferFull(TypeFunction tf, OutBuffer buf, Identifier ident, HdrGenState hgs, TemplateDeclaration td) {
         visitFuncIdentWithPrefix(tf, ident, td, buf, hgs);
     }
+
     public static void functionToBufferWithIdent(TypeFunction tf, OutBuffer buf, BytePtr ident) {
         HdrGenState hgs = new HdrGenState();
         visitFuncIdentWithPostfix(tf, toDString(ident), buf, hgs);
     }
+
     public static void toCBuffer(Expression e, OutBuffer buf, HdrGenState hgs) {
         ExpressionPrettyPrintVisitor v = new ExpressionPrettyPrintVisitor(buf, hgs);
         e.accept(v);
     }
+
     public static void argExpTypesToCBuffer(OutBuffer buf, DArray<Expression> arguments) {
         if ((arguments == null) || ((arguments).length == 0))
             return ;
@@ -2661,10 +2851,12 @@ public class hdrgen {
             }
         }
     }
+
     public static void toCBuffer(TemplateParameter tp, OutBuffer buf, HdrGenState hgs) {
         TemplateParameterPrettyPrintVisitor v = new TemplateParameterPrettyPrintVisitor(buf, hgs);
         tp.accept(v);
     }
+
     public static void arrayObjectsToBuffer(OutBuffer buf, DArray<RootObject> objects) {
         if ((objects == null) || ((objects).length == 0))
             return ;
@@ -2681,6 +2873,7 @@ public class hdrgen {
             }
         }
     }
+
     public static BytePtr parametersTypeToChars(ParameterList pl) {
         OutBuffer buf = new OutBuffer();
         try {
@@ -2691,6 +2884,7 @@ public class hdrgen {
         finally {
         }
     }
+
     public static BytePtr parameterToChars(Parameter parameter, TypeFunction tf, boolean fullQual) {
         OutBuffer buf = new OutBuffer();
         try {
@@ -2706,6 +2900,7 @@ public class hdrgen {
         finally {
         }
     }
+
     public static void parametersToBuffer(ParameterList pl, OutBuffer buf, HdrGenState hgs) {
         (buf).writeByte(40);
         {
@@ -2742,6 +2937,7 @@ public class hdrgen {
         }
         (buf).writeByte(41);
     }
+
     public static void parameterToBuffer(Parameter p, OutBuffer buf, HdrGenState hgs) {
         if (p.userAttribDecl != null)
         {
@@ -2792,6 +2988,7 @@ public class hdrgen {
             expToBuffer(p.defaultArg, PREC.assign, buf, hgs);
         }
     }
+
     public static void argsToBuffer(DArray<Expression> expressions, OutBuffer buf, HdrGenState hgs, Expression basis) {
         if ((expressions == null) || ((expressions).length == 0))
             return ;
@@ -2810,6 +3007,7 @@ public class hdrgen {
             }
         }
     }
+
     public static void sizeToBuffer(Expression e, OutBuffer buf, HdrGenState hgs) {
         if ((pequals(e.type, Type.tsize_t)))
         {
@@ -2836,10 +3034,12 @@ public class hdrgen {
         }
         expToBuffer(e, PREC.assign, buf, hgs);
     }
+
     public static void expressionToBuffer(Expression e, OutBuffer buf, HdrGenState hgs) {
         ExpressionPrettyPrintVisitor v = new ExpressionPrettyPrintVisitor(buf, hgs);
         e.accept(v);
     }
+
     public static void expToBuffer(Expression e, int pr, OutBuffer buf, HdrGenState hgs) {
         assert((precedence.get((e.op & 0xFF)) != PREC.zero));
         assert((pr != PREC.zero));
@@ -2854,6 +3054,7 @@ public class hdrgen {
             expressionToBuffer(e, buf, hgs);
         }
     }
+
     public static void typeToBuffer(Type t, Identifier ident, OutBuffer buf, HdrGenState hgs) {
         {
             TypeFunction tf = t.isTypeFunction();
@@ -2870,6 +3071,7 @@ public class hdrgen {
             (buf).writestring(ident.asString());
         }
     }
+
     public static void visitWithMask(Type t, byte modMask, OutBuffer buf, HdrGenState hgs) {
         if (((modMask & 0xFF) == (t.mod & 0xFF)) || ((t.ty & 0xFF) == ENUMTY.Tfunction) || ((t.ty & 0xFF) == ENUMTY.Ttuple))
         {
@@ -2902,6 +3104,7 @@ public class hdrgen {
                 (buf).writeByte(41);
         }
     }
+
     public static void dumpTemplateInstance(TemplateInstance ti, OutBuffer buf, HdrGenState hgs) {
         (buf).writeByte(123);
         (buf).writenl();
@@ -2926,6 +3129,7 @@ public class hdrgen {
         (buf).writeByte(125);
         (buf).writenl();
     }
+
     public static void tiargsToBuffer(TemplateInstance ti, OutBuffer buf, HdrGenState hgs) {
         (buf).writeByte(33);
         if (ti.nest != 0)
@@ -2980,6 +3184,7 @@ public class hdrgen {
         ti.nest--;
         (buf).writeByte(41);
     }
+
     public static void objectToBuffer(RootObject oarg, OutBuffer buf, HdrGenState hgs) {
         {
             Type t = isType(oarg);
@@ -3032,6 +3237,7 @@ public class hdrgen {
             }
         }
     }
+
     public static void visitFuncIdentWithPostfix(TypeFunction t, ByteSlice ident, OutBuffer buf, HdrGenState hgs) {
         Ref<OutBuffer> buf_ref = ref(buf);
         if (t.inuse != 0)
@@ -3070,6 +3276,7 @@ public class hdrgen {
         attributesApply(t, dg, TRUSTformat.TRUSTformatDefault);
         t.inuse--;
     }
+
     public static void visitFuncIdentWithPrefix(TypeFunction t, Identifier ident, TemplateDeclaration td, OutBuffer buf, HdrGenState hgs) {
         Ref<Identifier> ident_ref = ref(ident);
         Ref<OutBuffer> buf_ref = ref(buf);
@@ -3137,6 +3344,7 @@ public class hdrgen {
         }
         t.inuse--;
     }
+
     public static void initializerToBuffer(Initializer inx, OutBuffer buf, HdrGenState hgs) {
         Ref<OutBuffer> buf_ref = ref(buf);
         Ref<HdrGenState> hgs_ref = ref(hgs);
@@ -3228,6 +3436,7 @@ public class hdrgen {
             throw SwitchError.INSTANCE;
         }
     }
+
     public static void typeToBufferx(Type t, OutBuffer buf, HdrGenState hgs) {
         Ref<OutBuffer> buf_ref = ref(buf);
         Ref<HdrGenState> hgs_ref = ref(hgs);
@@ -3492,4 +3701,5 @@ public class hdrgen {
                 return ;
         }
     }
+
 }

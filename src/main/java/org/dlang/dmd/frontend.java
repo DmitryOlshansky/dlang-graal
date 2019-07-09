@@ -44,9 +44,11 @@ public class frontend {
         public  boolean hasErrors() {
             return this.errors > 0;
         }
+
         public  boolean hasWarnings() {
             return this.warnings > 0;
         }
+
         public Diagnostics(){
         }
         public Diagnostics copy(){
@@ -138,6 +140,7 @@ public class frontend {
         FileCache._init();
         CTFloat.initialize();
     }
+
     public static void deinitializeDMD() {
         global.deinitialize();
         Type.deinitialize();
@@ -148,20 +151,24 @@ public class frontend {
         Objc.deinitialize();
         builtinDeinitialize();
     }
+
     public static void addImport(ByteSlice path) {
         if ((global.path == null))
             global.path = new DArray<BytePtr>();
         (global.path).push(toStringz(path));
     }
+
     public static void addStringImport(ByteSlice path) {
         if ((global.filePath == null))
             global.filePath = new DArray<BytePtr>();
         (global.filePath).push(toStringz(path));
     }
+
     public static ByteSlice findDMDConfig(ByteSlice dmdFilePath) {
         ByteSlice configFile = new ByteSlice("dmd.conf");
         return idup(findConfFile(dmdFilePath, new ByteSlice("dmd.conf")));
     }
+
     public static ByteSlice findLDCConfig(ByteSlice ldcFilePath) {
         ByteSlice execDir = dirName(ldcFilePath).copy();
         ByteSlice ldcConfig = new ByteSlice("ldc2.conf").copy();
@@ -170,6 +177,7 @@ public class frontend {
             return new ByteSlice();
         return ldcConfigs.front();
     }
+
     public static ByteSlice determineDefaultCompiler() {
         Slice<ByteSlice> compilers = slice(new ByteSlice[]{new ByteSlice("dmd"), new ByteSlice("gdc"), new ByteSlice("gdmd"), new ByteSlice("ldc2"), new ByteSlice("ldmd2")}).copy();
         if (opBinaryRight(new ByteSlice("DMD")))
@@ -178,9 +186,11 @@ public class frontend {
         FilterResultnothingResult res = filter(joiner(map.invoke(compilers))).copy();
         return !res.empty() ? res.front() : new ByteSlice();
     }
+
     public static MapResultnothingUniqResultnothingSortedRangeSlice<ByteSlice>nothing parseImportPathsFromConfig(ByteSlice iniFile, ByteSlice execDir) {
         return map(uniq(sort(array(joiner(map.invoke(new File(iniFile, new ByteSlice("r")).byLineCopy(Flag.no, (byte)10)))))));
     }
+
     public static MapResultnothingUniqResultnothingSortedRangeSlice<ByteSlice>nothing findImportPaths() {
         ByteSlice execFilePath = determineDefaultCompiler().copy();
         assertMsg((execFilePath != new ByteSlice()), new ByteSlice("No D compiler found. `Use parseImportsFromConfig` manually."));
@@ -193,6 +203,7 @@ public class frontend {
         assertMsg((iniFile != new ByteSlice()) && exists(iniFile), new ByteSlice("No valid config found."));
         return parseImportPathsFromConfig(toByteSlice(iniFile), toByteSlice(execDir));
     }
+
     public static void fullSemantic(dmodule.Module m) {
         m.importedFrom = m;
         m.importAll(null);
@@ -204,6 +215,7 @@ public class frontend {
         semantic3(m, null);
         dmodule.Module.runDeferredSemantic3();
     }
+
     public static ByteSlice prettyPrint(dmodule.Module m) {
         OutBuffer buf = new OutBuffer(null, 0, 0, 0, true, false).copy();
         try {
@@ -215,7 +227,9 @@ public class frontend {
         finally {
         }
     }
+
     public static DiagnosticReporter defaultDiagnosticReporter() {
         return new StderrDiagnosticReporter(global.params.useDeprecated);
     }
+
 }

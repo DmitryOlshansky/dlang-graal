@@ -25,11 +25,13 @@ public class apply {
             super();
             this.v = v;
         }
+
         public  boolean doCond(Expression e) {
             if (!this.stop && (e != null))
                 e.accept(this);
             return this.stop;
         }
+
         public  boolean doCond(DArray<Expression> e) {
             if (e == null)
                 return false;
@@ -41,47 +43,61 @@ public class apply {
             }
             return this.stop;
         }
+
         public  boolean applyTo(Expression e) {
             e.accept(this.v);
             this.stop = this.v.stop;
             return true;
         }
+
         public  void visit(Expression e) {
             this.applyTo(e);
         }
+
         public  void visit(NewExp e) {
             expr(this.doCond(e.thisexp) || this.doCond(e.newargs) || this.doCond(e.arguments) || this.applyTo(e));
         }
+
         public  void visit(NewAnonClassExp e) {
             expr(this.doCond(e.thisexp) || this.doCond(e.newargs) || this.doCond(e.arguments) || this.applyTo(e));
         }
+
         public  void visit(TypeidExp e) {
             expr(this.doCond(isExpression(e.obj)) || this.applyTo(e));
         }
+
         public  void visit(UnaExp e) {
             expr(this.doCond(e.e1) || this.applyTo(e));
         }
+
         public  void visit(BinExp e) {
             expr(this.doCond(e.e1) || this.doCond(e.e2) || this.applyTo(e));
         }
+
         public  void visit(AssertExp e) {
             expr(this.doCond(e.e1) || this.doCond(e.msg) || this.applyTo(e));
         }
+
         public  void visit(CallExp e) {
             expr(this.doCond(e.e1) || this.doCond(e.arguments) || this.applyTo(e));
         }
+
         public  void visit(ArrayExp e) {
             expr(this.doCond(e.e1) || this.doCond(e.arguments) || this.applyTo(e));
         }
+
         public  void visit(SliceExp e) {
             expr(this.doCond(e.e1) || this.doCond(e.lwr) || this.doCond(e.upr) || this.applyTo(e));
         }
+
         public  void visit(ArrayLiteralExp e) {
             expr(this.doCond(e.basis) || this.doCond(e.elements) || this.applyTo(e));
         }
+
         public  void visit(AssocArrayLiteralExp e) {
             expr(this.doCond(e.keys) || this.doCond(e.values) || this.applyTo(e));
         }
+
         public  void visit(StructLiteralExp e) {
             if ((e.stageflags & 8) != 0)
                 return ;
@@ -90,12 +106,15 @@ public class apply {
             expr(this.doCond(e.elements) || this.applyTo(e));
             e.stageflags = old;
         }
+
         public  void visit(TupleExp e) {
             expr(this.doCond(e.e0) || this.doCond(e.exps) || this.applyTo(e));
         }
+
         public  void visit(CondExp e) {
             expr(this.doCond(e.econd) || this.doCond(e.e1) || this.doCond(e.e2) || this.applyTo(e));
         }
+
 
         public PostorderExpressionVisitor() {}
 
@@ -111,4 +130,5 @@ public class apply {
         e.accept(pv);
         return v.stop;
     }
+
 }

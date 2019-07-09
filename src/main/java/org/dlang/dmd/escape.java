@@ -34,31 +34,38 @@ public class escape {
         public  EscapeVisitor(EscapeByResults er) {
             this.er = er;
         }
+
         public  void visit(Expression e) {
         }
+
         public  void visit(AddrExp e) {
             if (((e.e1.op & 0xFF) != 49))
                 escapeByRef(e.e1, this.er);
         }
+
         public  void visit(SymOffExp e) {
             VarDeclaration v = e.var.isVarDeclaration();
             if (v != null)
                 (this.er).byref.push(v);
         }
+
         public  void visit(VarExp e) {
             VarDeclaration v = e.var.isVarDeclaration();
             if (v != null)
                 (this.er).byvalue.push(v);
         }
+
         public  void visit(ThisExp e) {
             if (e.var != null)
                 (this.er).byvalue.push(e.var);
         }
+
         public  void visit(DotVarExp e) {
             Type t = e.e1.type.toBasetype();
             if (((t.ty & 0xFF) == ENUMTY.Tstruct))
                 e.e1.accept(this);
         }
+
         public  void visit(DelegateExp e) {
             Type t = e.e1.type.toBasetype();
             if (((t.ty & 0xFF) == ENUMTY.Tclass) || ((t.ty & 0xFF) == ENUMTY.Tpointer))
@@ -67,13 +74,16 @@ public class escape {
                 escapeByRef(e.e1, this.er);
             (this.er).byfunc.push(e.func);
         }
+
         public  void visit(FuncExp e) {
             if (((e.fd.tok & 0xFF) == 160))
                 (this.er).byfunc.push(e.fd);
         }
+
         public  void visit(TupleExp e) {
             throw new AssertionError("Unreachable code!");
         }
+
         public  void visit(ArrayLiteralExp e) {
             Type tb = e.type.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tsarray) || ((tb.ty & 0xFF) == ENUMTY.Tarray))
@@ -91,6 +101,7 @@ public class escape {
                 }
             }
         }
+
         public  void visit(StructLiteralExp e) {
             if (e.elements != null)
             {
@@ -105,6 +116,7 @@ public class escape {
                 }
             }
         }
+
         public  void visit(NewExp e) {
             Type tb = e.newtype.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tstruct) && (e.member == null) && (e.arguments != null))
@@ -120,6 +132,7 @@ public class escape {
                 }
             }
         }
+
         public  void visit(CastExp e) {
             Type tb = e.type.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tarray) && ((e.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
@@ -129,6 +142,7 @@ public class escape {
             else
                 e.e1.accept(this);
         }
+
         public  void visit(SliceExp e) {
             if (((e.e1.op & 0xFF) == 26))
             {
@@ -155,12 +169,14 @@ public class escape {
             else
                 e.e1.accept(this);
         }
+
         public  void visit(IndexExp e) {
             if (((e.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
             {
                 e.e1.accept(this);
             }
         }
+
         public  void visit(BinExp e) {
             Type tb = e.type.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tpointer))
@@ -169,19 +185,24 @@ public class escape {
                 e.e2.accept(this);
             }
         }
+
         public  void visit(BinAssignExp e) {
             e.e1.accept(this);
         }
+
         public  void visit(AssignExp e) {
             e.e1.accept(this);
         }
+
         public  void visit(CommaExp e) {
             e.e2.accept(this);
         }
+
         public  void visit(CondExp e) {
             e.e1.accept(this);
             e.e2.accept(this);
         }
+
         public  void visit(CallExp e) {
             Type t1 = e.e1.type.toBasetype();
             TypeFunction tf = null;
@@ -257,6 +278,7 @@ public class escape {
             }
         }
 
+
         public EscapeVisitor() {}
     }
     private static class EscapeRefVisitor extends Visitor
@@ -265,8 +287,10 @@ public class escape {
         public  EscapeRefVisitor(EscapeByResults er) {
             this.er = er;
         }
+
         public  void visit(Expression e) {
         }
+
         public  void visit(VarExp e) {
             VarDeclaration v = e.var.isVarDeclaration();
             if (v != null)
@@ -287,15 +311,18 @@ public class escape {
                     (this.er).byref.push(v);
             }
         }
+
         public  void visit(ThisExp e) {
             if ((e.var != null) && e.var.toParent2().isFuncDeclaration().isThis2)
                 escapeByValue(e, this.er);
             else if (e.var != null)
                 (this.er).byref.push(e.var);
         }
+
         public  void visit(PtrExp e) {
             escapeByValue(e.e1, this.er);
         }
+
         public  void visit(IndexExp e) {
             Type tb = e.e1.type.toBasetype();
             if (((e.e1.op & 0xFF) == 26))
@@ -319,6 +346,7 @@ public class escape {
                 escapeByValue(e.e1, this.er);
             }
         }
+
         public  void visit(StructLiteralExp e) {
             if (e.elements != null)
             {
@@ -334,6 +362,7 @@ public class escape {
             }
             (this.er).byexp.push(e);
         }
+
         public  void visit(DotVarExp e) {
             Type t1b = e.e1.type.toBasetype();
             if (((t1b.ty & 0xFF) == ENUMTY.Tclass))
@@ -341,19 +370,24 @@ public class escape {
             else
                 e.e1.accept(this);
         }
+
         public  void visit(BinAssignExp e) {
             e.e1.accept(this);
         }
+
         public  void visit(AssignExp e) {
             e.e1.accept(this);
         }
+
         public  void visit(CommaExp e) {
             e.e2.accept(this);
         }
+
         public  void visit(CondExp e) {
             e.e1.accept(this);
             e.e2.accept(this);
         }
+
         public  void visit(CallExp e) {
             Type t1 = e.e1.type.toBasetype();
             TypeFunction tf = null;
@@ -430,6 +464,7 @@ public class escape {
                 (this.er).byexp.push(e);
         }
 
+
         public EscapeRefVisitor() {}
     }
 
@@ -448,6 +483,7 @@ public class escape {
         }
         return errors;
     }
+
     public static boolean checkAssocArrayLiteralEscape(Scope sc, AssocArrayLiteralExp ae, boolean gag) {
         boolean errors = false;
         {
@@ -470,6 +506,7 @@ public class escape {
         }
         return errors;
     }
+
     public static boolean checkParamArgumentEscape(Scope sc, FuncDeclaration fdc, Parameter par, Expression arg, boolean gag) {
         Ref<Scope> sc_ref = ref(sc);
         Ref<FuncDeclaration> fdc_ref = ref(fdc);
@@ -594,6 +631,7 @@ public class escape {
         finally {
         }
     }
+
     public static boolean checkParamArgumentReturn(Scope sc, Expression firstArg, Expression arg, boolean gag) {
         boolean log = false;
         if (false)
@@ -603,6 +641,7 @@ public class escape {
         AssignExp e = new AssignExp(arg.loc, firstArg, arg);
         return checkAssignEscape(sc, e, gag);
     }
+
     public static boolean checkConstructorEscape(Scope sc, CallExp ce, boolean gag) {
         boolean log = false;
         if (false)
@@ -644,6 +683,7 @@ public class escape {
         }
         return false;
     }
+
     public static boolean checkAssignEscape(Scope sc, Expression e, boolean gag) {
         Ref<Scope> sc_ref = ref(sc);
         boolean log = false;
@@ -953,6 +993,7 @@ public class escape {
         finally {
         }
     }
+
     public static boolean checkThrowEscape(Scope sc, Expression e, boolean gag) {
         EscapeByResults er = new EscapeByResults();
         try {
@@ -991,6 +1032,7 @@ public class escape {
         finally {
         }
     }
+
     public static boolean checkNewEscape(Scope sc, Expression e, boolean gag) {
         Ref<Expression> e_ref = ref(e);
         Ref<Boolean> gag_ref = ref(gag);
@@ -1112,12 +1154,15 @@ public class escape {
         finally {
         }
     }
+
     public static boolean checkReturnEscape(Scope sc, Expression e, boolean gag) {
         return checkReturnEscapeImpl(sc, e, false, gag);
     }
+
     public static boolean checkReturnEscapeRef(Scope sc, Expression e, boolean gag) {
         return checkReturnEscapeImpl(sc, e, true, gag);
     }
+
     public static boolean checkReturnEscapeImpl(Scope sc, Expression e, boolean refs, boolean gag) {
         Ref<Expression> e_ref = ref(e);
         Ref<Boolean> gag_ref = ref(gag);
@@ -1265,6 +1310,7 @@ public class escape {
         finally {
         }
     }
+
     public static void inferReturn(FuncDeclaration fd, VarDeclaration v) {
         v.storage_class |= 4521191813414912L;
         TypeFunction tf = (TypeFunction)fd.type;
@@ -1298,14 +1344,17 @@ public class escape {
             }
         }
     }
+
     public static void escapeByValue(Expression e, EscapeByResults er) {
         EscapeVisitor v = new EscapeVisitor(er);
         e.accept(v);
     }
+
     public static void escapeByRef(Expression e, EscapeByResults er) {
         EscapeRefVisitor v = new EscapeRefVisitor(er);
         e.accept(v);
     }
+
     public static class EscapeByResults
     {
         public DArray<VarDeclaration> byref = new DArray<VarDeclaration>();
@@ -1370,9 +1419,11 @@ public class escape {
             }
         }
     }
+
     public static void notMaybeScope(VarDeclaration v) {
         v.storage_class &= -281474976710657L;
     }
+
     public static void eliminateMaybeScopes(Slice<VarDeclaration> array) {
         boolean log = false;
         if (false)
@@ -1415,4 +1466,5 @@ public class escape {
             }
         } while (changes);
     }
+
 }

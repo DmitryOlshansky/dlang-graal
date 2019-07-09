@@ -85,4 +85,5 @@ public class staticcond {
         errors.value = true;
         return false;
     }
+
 }

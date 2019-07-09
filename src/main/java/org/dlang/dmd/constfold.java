@@ -36,6 +36,7 @@ public class constfold {
         }
         return e;
     }
+
     public static int isConst(Expression e) {
         switch ((e.op & 0xFF))
         {
@@ -52,11 +53,18 @@ public class constfold {
         }
         throw new AssertionError("Unreachable code!");
     }
+
     public static void cantExp(UnionExp ue) {
         Ref<UnionExp> ue_ref = ref(ue);
         ue_ref.value = new UnionExp().copy();
         (ue_ref.value) = new UnionExp(new CTFEExp(TOK.cantExpression));
     }
+
+    // defaulted all parameters starting with #1
+    public static void cantExp() {
+        cantExp(ref(new UnionExp()));
+    }
+
     public static UnionExp Neg(Type type, Expression e1) {
         UnionExp ue = null;
         Loc loc = e1.loc.copy();
@@ -78,24 +86,28 @@ public class constfold {
         }
         return ue;
     }
+
     public static UnionExp Com(Type type, Expression e1) {
         UnionExp ue = null;
         Loc loc = e1.loc.copy();
         ue = new UnionExp(new IntegerExp(loc, ~e1.toInteger(), type));
         return ue;
     }
+
     public static UnionExp Not(Type type, Expression e1) {
         UnionExp ue = null;
         Loc loc = e1.loc.copy();
         ue = new UnionExp(new IntegerExp(loc, e1.isBool(false) ? 1 : 0, type));
         return ue;
     }
+
     public static UnionExp Bool(Type type, Expression e1) {
         UnionExp ue = null;
         Loc loc = e1.loc.copy();
         ue = new UnionExp(new IntegerExp(loc, e1.isBool(true) ? 1 : 0, type));
         return ue;
     }
+
     public static UnionExp Add(Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         if (type.isreal())
@@ -195,6 +207,7 @@ public class constfold {
             ue = new UnionExp(new IntegerExp(loc, e1.toInteger() + e2.toInteger(), type));
         return ue;
     }
+
     public static UnionExp Min(Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         if (type.isreal())
@@ -290,6 +303,7 @@ public class constfold {
         }
         return ue;
     }
+
     public static UnionExp Mul(Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         if (type.isfloating())
@@ -337,6 +351,7 @@ public class constfold {
         }
         return ue;
     }
+
     public static UnionExp Div(Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         if (type.isfloating())
@@ -408,6 +423,7 @@ public class constfold {
         }
         return ue;
     }
+
     public static UnionExp Mod(Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         if (type.isfloating())
@@ -470,6 +486,7 @@ public class constfold {
         }
         return ue;
     }
+
     public static UnionExp Pow(Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = new UnionExp().copy();
         if (e2.type.isintegral())
@@ -541,11 +558,13 @@ public class constfold {
             cantExp(ue);
         return ue;
     }
+
     public static UnionExp Shl(Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         ue = new UnionExp(new IntegerExp(loc, e1.toInteger() << (int)e2.toInteger(), type));
         return ue;
     }
+
     public static UnionExp Shr(Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         long value = e1.toInteger();
@@ -590,6 +609,7 @@ public class constfold {
         ue = new UnionExp(new IntegerExp(loc, value, type));
         return ue;
     }
+
     public static UnionExp Ushr(Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         long value = e1.toInteger();
@@ -626,21 +646,25 @@ public class constfold {
         ue = new UnionExp(new IntegerExp(loc, value, type));
         return ue;
     }
+
     public static UnionExp And(Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         ue = new UnionExp(new IntegerExp(loc, e1.toInteger() & e2.toInteger(), type));
         return ue;
     }
+
     public static UnionExp Or(Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         ue = new UnionExp(new IntegerExp(loc, e1.toInteger() | e2.toInteger(), type));
         return ue;
     }
+
     public static UnionExp Xor(Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         ue = new UnionExp(new IntegerExp(loc, e1.toInteger() ^ e2.toInteger(), type));
         return ue;
     }
+
     public static UnionExp Equal(byte op, Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         int cmp = 0;
@@ -878,6 +902,7 @@ public class constfold {
         ue = new UnionExp(new IntegerExp(loc, cmp, type));
         return ue;
     }
+
     public static UnionExp Identity(byte op, Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         int cmp = 0;
@@ -922,6 +947,7 @@ public class constfold {
         ue = new UnionExp(new IntegerExp(loc, cmp, type));
         return ue;
     }
+
     public static UnionExp Cmp(byte op, Loc loc, Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         long n = 0L;
@@ -979,6 +1005,7 @@ public class constfold {
         ue = new UnionExp(new IntegerExp(loc, n, type));
         return ue;
     }
+
     public static UnionExp Cast(Loc loc, Type type, Type to, Expression e1) {
         UnionExp ue = null;
         Type tb = to.toBasetype();
@@ -1134,6 +1161,7 @@ public class constfold {
         }
         return ue;
     }
+
     public static UnionExp ArrayLength(Type type, Expression e1) {
         UnionExp ue = null;
         Loc loc = e1.loc.copy();
@@ -1163,6 +1191,7 @@ public class constfold {
             cantExp(ue);
         return ue;
     }
+
     public static UnionExp Index(Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         Loc loc = e1.loc.copy();
@@ -1260,6 +1289,7 @@ public class constfold {
             cantExp(ue);
         return ue;
     }
+
     public static UnionExp Slice(Type type, Expression e1, Expression lwr, Expression upr) {
         UnionExp ue = null;
         Loc loc = e1.loc.copy();
@@ -1307,6 +1337,7 @@ public class constfold {
             cantExp(ue);
         return ue;
     }
+
     public static void sliceAssignArrayLiteralFromString(ArrayLiteralExp existingAE, StringExp newval, int firstIndex) {
         int len = newval.len;
         Type elemType = existingAE.type.nextOf();
@@ -1320,6 +1351,7 @@ public class constfold {
             }
         }
     }
+
     public static void sliceAssignStringFromArrayLiteral(StringExp existingSE, ArrayLiteralExp newae, int firstIndex) {
         assert(((existingSE.ownedByCtfe & 0xFF) != 0));
         {
@@ -1331,17 +1363,20 @@ public class constfold {
             }
         }
     }
+
     public static void sliceAssignStringFromString(StringExp existingSE, StringExp newstr, int firstIndex) {
         assert(((existingSE.ownedByCtfe & 0xFF) != 0));
         int sz = (existingSE.sz & 0xFF);
         assert((sz == (newstr.sz & 0xFF)));
         memcpy((BytePtr)((existingSE.string.plus((firstIndex * sz)))), (newstr.string), (sz * newstr.len));
     }
+
     public static int sliceCmpStringWithString(StringExp se1, StringExp se2, int lo1, int lo2, int len) {
         int sz = (se1.sz & 0xFF);
         assert((sz == (se2.sz & 0xFF)));
         return memcmp((se1.string.plus((sz * lo1))), (se2.string.plus((sz * lo2))), sz * len);
     }
+
     public static int sliceCmpStringWithArray(StringExp se1, ArrayLiteralExp ae2, int lo1, int lo2, int len) {
         {
             int __key848 = 0;
@@ -1357,6 +1392,7 @@ public class constfold {
         }
         return 0;
     }
+
     public static DArray<Expression> copyElements(Expression e1, Expression e2) {
         Ref<DArray<Expression>> elems = ref(new DArray<Expression>());
         Function1<ArrayLiteralExp,Void> append = new Function1<ArrayLiteralExp,Void>(){
@@ -1389,6 +1425,7 @@ public class constfold {
         }
         return elems.value;
     }
+
     public static UnionExp Cat(Type type, Expression e1, Expression e2) {
         UnionExp ue = null;
         Expression e = CTFEExp.cantexp;
@@ -1724,6 +1761,7 @@ public class constfold {
         assert(ue.exp().type != null);
         return ue;
     }
+
     public static UnionExp Ptr(Type type, Expression e1) {
         UnionExp ue = null;
         if (((e1.op & 0xFF) == 74))
@@ -1748,4 +1786,5 @@ public class constfold {
         cantExp(ue);
         return ue;
     }
+
 }

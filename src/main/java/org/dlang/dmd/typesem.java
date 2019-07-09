@@ -82,6 +82,7 @@ public class typesem {
         }
         return exp;
     }
+
     public static Expression semanticLength(Scope sc, TupleDeclaration tup, Expression exp) {
         ScopeDsymbol sym = new ArrayScopeSymbol(sc, tup);
         sym.parent = (sc).scopesym;
@@ -92,6 +93,7 @@ public class typesem {
         (sc).pop();
         return exp;
     }
+
     public static void resolveTupleIndex(Loc loc, Scope sc, Dsymbol s, Ptr<Expression> pe, Ptr<Type> pt, Ptr<Dsymbol> ps, RootObject oindex) {
         pt.set(0, null);
         ps.set(0, null);
@@ -144,6 +146,7 @@ public class typesem {
         if (pe.get() != null)
             resolveExp(pe.get(), pt, pe, ps);
     }
+
     public static void resolveHelper(TypeQualified mt, Loc loc, Scope sc, Dsymbol s, Dsymbol scopesym, Ptr<Expression> pe, Ptr<Type> pt, Ptr<Dsymbol> ps, boolean intypeid) {
         Ref<TypeQualified> mt_ref = ref(mt);
         Ref<Scope> sc_ref = ref(sc);
@@ -383,6 +386,7 @@ public class typesem {
             pt_ref.value.set(0, Type.terror);
         }
     }
+
     public static Type stripDefaultArgs(Type t) {
         Function1<DArray<Parameter>,DArray<Parameter>> stripParams = new Function1<DArray<Parameter>,DArray<Parameter>>(){
             public DArray<Parameter> invoke(DArray<Parameter> parameters) {
@@ -473,6 +477,7 @@ public class typesem {
             }
         }
     }
+
     public static Expression typeToExpression(Type t) {
         Function1<TypeSArray,Expression> visitSArray = new Function1<TypeSArray,Expression>(){
             public Expression invoke(TypeSArray t) {
@@ -524,6 +529,7 @@ public class typesem {
             return null;
         }
     }
+
     public static Expression typeToExpressionHelper(TypeQualified t, Expression e, int i) {
         {
             Slice<RootObject> __r1722 = t.idents.opSlice(i, t.idents.length).copy();
@@ -560,6 +566,7 @@ public class typesem {
         }
         return e;
     }
+
     public static Type typeSemantic(Type t, Loc loc, Scope sc) {
         Ref<Scope> sc_ref = ref(sc);
         Function0<Type> error = new Function0<Type>(){
@@ -1593,6 +1600,7 @@ public class typesem {
                 return visitSlice.invoke((TypeSlice)t);
         }
     }
+
     public static Type merge(Type type) {
         {
             int __dispatch10 = 0;
@@ -1645,6 +1653,7 @@ public class typesem {
         }
         return type;
     }
+
     public static Expression getProperty(Type t, Loc loc, Identifier ident, int flag) {
         Ref<Identifier> ident_ref = ref(ident);
         IntRef flag_ref = ref(flag);
@@ -2090,6 +2099,7 @@ public class typesem {
                 return visitTuple.invoke((TypeTuple)t);
         }
     }
+
     public static void resolveExp(Expression e, Ptr<Type> pt, Ptr<Expression> pe, Ptr<Dsymbol> ps) {
         pt.set(0, null);
         pe.set(0, null);
@@ -2133,6 +2143,7 @@ public class typesem {
         }
         ps.set(0, s);
     }
+
     public static void resolve(Type mt, Loc loc, Scope sc, Ptr<Expression> pe, Ptr<Type> pt, Ptr<Dsymbol> ps, boolean intypeid) {
         Ref<Scope> sc_ref = ref(sc);
         Ref<Ptr<Expression>> pe_ref = ref(pe);
@@ -2625,6 +2636,7 @@ public class typesem {
                 break;
         }
     }
+
     public static Expression dotExp(Type mt, Scope sc, Expression e, Identifier ident, int flag) {
         Ref<Scope> sc_ref = ref(sc);
         Ref<Expression> e_ref = ref(e);
@@ -3710,6 +3722,7 @@ public class typesem {
             return mt.isTypeBasic() != null ? visitBasic.invoke((TypeBasic)mt) : visitType.invoke(mt);
         }
     }
+
     public static Expression defaultInit(Type mt, Loc loc) {
         Function1<TypeBasic,Expression> visitBasic = new Function1<TypeBasic,Expression>(){
             public Expression invoke(TypeBasic mt) {
@@ -3834,4 +3847,5 @@ public class typesem {
             return mt.isTypeBasic() != null ? visitBasic.invoke((TypeBasic)mt) : null;
         }
     }
+
 }

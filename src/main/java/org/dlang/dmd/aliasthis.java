@@ -34,19 +34,24 @@ public class aliasthis {
             super(loc, null);
             this.ident = ident;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new AliasThis(this.loc, this.ident);
         }
+
         public  BytePtr kind() {
             return new BytePtr("alias this");
         }
+
         public  AliasThis isAliasThis() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public AliasThis() {}
 
@@ -134,4 +139,5 @@ public class aliasthis {
         }
         return e;
     }
+
 }

@@ -32,10 +32,12 @@ public class nspace {
             this.members = members;
             this.identExp = identExp;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             Nspace ns = new Nspace(this.loc, this.ident, this.identExp, null);
             return this.syntaxCopy(ns);
         }
+
         public  void addMember(Scope sc, ScopeDsymbol sds) {
             this.addMember(sc, sds);
             if (this.members != null)
@@ -67,6 +69,7 @@ public class nspace {
                 (sc).pop();
             }
         }
+
         public  void setScope(Scope sc) {
             this.setScope(sc);
             if (this.members != null)
@@ -85,9 +88,11 @@ public class nspace {
                 (sc).pop();
             }
         }
+
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             return this.oneMember(ps, ident);
         }
+
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if ((this._scope != null) && (this.symtab == null))
                 dsymbolSemantic(this, this._scope);
@@ -98,6 +103,7 @@ public class nspace {
             }
             return this.search(loc, ident, flags);
         }
+
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
             Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
                 public Integer invoke(Dsymbol s) {
@@ -106,6 +112,7 @@ public class nspace {
             };
             return foreachDsymbol(this.members, __lambda3);
         }
+
         public  boolean hasPointers() {
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>(){
                 public Integer invoke(Dsymbol s) {
@@ -114,6 +121,7 @@ public class nspace {
             };
             return foreachDsymbol(this.members, __lambda1) != 0;
         }
+
         public  void setFieldOffset(AggregateDeclaration ad, IntPtr poffset, boolean isunion) {
             if (this._scope != null)
                 dsymbolSemantic(this, null);
@@ -125,15 +133,19 @@ public class nspace {
             };
             foreachDsymbol(this.members, __lambda4);
         }
+
         public  BytePtr kind() {
             return new BytePtr("namespace");
         }
+
         public  Nspace isNspace() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public Nspace() {}
 

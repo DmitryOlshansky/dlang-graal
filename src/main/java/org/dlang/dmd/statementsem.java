@@ -73,6 +73,7 @@ public class statementsem {
         }
         return ident;
     }
+
     public static LabelStatement checkLabeledLoop(Scope sc, Statement statement) {
         if (((sc).slabel != null) && (pequals((sc).slabel.statement, statement)))
         {
@@ -80,6 +81,7 @@ public class statementsem {
         }
         return null;
     }
+
     public static Expression checkAssignmentAsCondition(Expression e) {
         Expression ec = lastComma(e);
         if (((ec.op & 0xFF) == 90))
@@ -89,11 +91,13 @@ public class statementsem {
         }
         return e;
     }
+
     public static Statement statementSemantic(Statement s, Scope sc) {
         StatementSemanticVisitor v = new StatementSemanticVisitor(sc);
         s.accept(v);
         return v.result;
     }
+
     public static class StatementSemanticVisitor extends Visitor
     {
         public Statement result;
@@ -101,18 +105,23 @@ public class statementsem {
         public  StatementSemanticVisitor(Scope sc) {
             this.sc = sc;
         }
+
         public  void setError() {
             this.result = new ErrorStatement();
         }
+
         public  void visit(Statement s) {
             this.result = s;
         }
+
         public  void visit(ErrorStatement s) {
             this.result = s;
         }
+
         public  void visit(PeelStatement s) {
             this.result = s.s;
         }
+
         public  void visit(ExpStatement s) {
             if (s.exp != null)
             {
@@ -140,6 +149,7 @@ public class statementsem {
             }
             this.result = s;
         }
+
         public  void visit(CompileStatement cs) {
             DArray<Statement> a = cs.flatten(this.sc);
             if (a == null)
@@ -147,6 +157,7 @@ public class statementsem {
             Statement s = new CompoundStatement(cs.loc, a);
             this.result = statementSemantic(s, this.sc);
         }
+
         public  void visit(CompoundStatement cs) {
             {
                 int i = 0;
@@ -307,6 +318,7 @@ public class statementsem {
             }
             this.result = cs;
         }
+
         public  void visit(UnrolledLoopStatement uls) {
             Scope scd = (this.sc).push();
             (scd).sbreak = uls;
@@ -329,6 +341,7 @@ public class statementsem {
             (scd).pop();
             this.result = serror != null ? serror : uls;
         }
+
         public  void visit(ScopeStatement ss) {
             if (ss.statement != null)
             {
@@ -366,6 +379,7 @@ public class statementsem {
             }
             this.result = ss;
         }
+
         public  void visit(ForwardingStatement ss) {
             assert(ss.sym != null);
             {
@@ -382,11 +396,13 @@ public class statementsem {
             this.sc = (this.sc).pop();
             this.result = ss.statement;
         }
+
         public  void visit(WhileStatement ws) {
             Statement s = new ForStatement(ws.loc, null, ws.condition, null, ws._body, ws.endloc);
             s = statementSemantic(s, this.sc);
             this.result = s;
         }
+
         public  void visit(DoStatement ds) {
             boolean inLoopSave = (this.sc).inLoop;
             (this.sc).inLoop = true;
@@ -413,6 +429,7 @@ public class statementsem {
             }
             this.result = ds;
         }
+
         public  void visit(ForStatement fs) {
             if (fs._init != null)
             {
@@ -474,6 +491,7 @@ public class statementsem {
                 return ;
             this.result = fs;
         }
+
         // from template MakeTupleForeachRet!(0)
 
         // from template MakeTupleForeachRet!(1)
@@ -698,6 +716,7 @@ public class statementsem {
                 res = new CompoundStatement(loc, slice(new Statement[]{new ExpStatement(te.value.e0.loc, te.value.e0), res}));
             this.result = res;
         }
+
 
         // from template makeTupleForeach!(10)
         public  void makeTupleForeach10(ForeachStatement fs, boolean _param_1) {
@@ -957,6 +976,7 @@ public class statementsem {
             this.result = res;
         }
 
+
         // from template makeTupleForeach!(11)
         public  DArray<Dsymbol> makeTupleForeach11(ForeachStatement fs, DArray<Dsymbol> _param_1, boolean _param_2) {
             Ref<ForeachStatement> fs_ref = ref(fs);
@@ -1204,6 +1224,7 @@ public class statementsem {
             DArray<Dsymbol> res = declarations;
             return res;
         }
+
 
         public  void visit(ForeachStatement fs) {
             Function1<ForeachStatement,Boolean> checkForArgTypes = new Function1<ForeachStatement,Boolean>(){
@@ -1966,6 +1987,7 @@ public class statementsem {
             (sc2).pop();
             this.result = s;
         }
+
         public static FuncExp foreachBodyToFunction(Scope sc, ForeachStatement fs, TypeFunction tfld) {
             DArray<Parameter> params = new DArray<Parameter>();
             {
@@ -2025,6 +2047,7 @@ public class statementsem {
                 return null;
             return (FuncExp)flde;
         }
+
         public  void visit(ForeachRangeStatement fs) {
             Loc loc = fs.loc.copy();
             fs.lwr = expressionSemantic(fs.lwr, this.sc);
@@ -2181,6 +2204,7 @@ public class statementsem {
             }
             this.result = statementSemantic(s, this.sc);
         }
+
         public  void visit(IfStatement ifs) {
             ifs.condition = checkAssignmentAsCondition(ifs.condition);
             ScopeDsymbol sym = new ScopeDsymbol();
@@ -2240,6 +2264,7 @@ public class statementsem {
             }
             this.result = ifs;
         }
+
         public  void visit(ConditionalStatement cs) {
             if (cs.condition.include(this.sc) != 0)
             {
@@ -2262,6 +2287,7 @@ public class statementsem {
                 this.result = cs.elsebody;
             }
         }
+
         public  void visit(PragmaStatement ps) {
             if ((pequals(ps.ident, Id.msg)))
             {
@@ -2393,9 +2419,11 @@ public class statementsem {
             }
             this.result = ps._body;
         }
+
         public  void visit(StaticAssertStatement s) {
             semantic2(s.sa, this.sc);
         }
+
         public  void visit(SwitchStatement ss) {
             ss.tf = (this.sc).tf;
             if (ss.cases != null)
@@ -2652,6 +2680,7 @@ public class statementsem {
             (this.sc).pop();
             this.result = ss;
         }
+
         public  void visit(CaseStatement cs) {
             SwitchStatement sw = (this.sc).sw;
             boolean errors = false;
@@ -2768,6 +2797,7 @@ public class statementsem {
             cs.lastVar = (this.sc).lastVar;
             this.result = cs;
         }
+
         public  void visit(CaseRangeStatement crs) {
             SwitchStatement sw = (this.sc).sw;
             if ((sw == null))
@@ -2835,6 +2865,7 @@ public class statementsem {
             s = statementSemantic(s, this.sc);
             this.result = s;
         }
+
         public  void visit(DefaultStatement ds) {
             boolean errors = false;
             if ((this.sc).sw != null)
@@ -2869,6 +2900,7 @@ public class statementsem {
             ds.lastVar = (this.sc).lastVar;
             this.result = ds;
         }
+
         public  void visit(GotoDefaultStatement gds) {
             gds.sw = (this.sc).sw;
             if (gds.sw == null)
@@ -2885,6 +2917,7 @@ public class statementsem {
             }
             this.result = gds;
         }
+
         public  void visit(GotoCaseStatement gcs) {
             if ((this.sc).sw == null)
             {
@@ -2904,6 +2937,7 @@ public class statementsem {
             (this.sc).sw.gotoCases.push(gcs);
             this.result = gcs;
         }
+
         public  void visit(ReturnStatement rs) {
             Ref<FuncDeclaration> fd = ref((this.sc).parent.isFuncDeclaration());
             if (fd.value.fes != null)
@@ -3186,6 +3220,7 @@ public class statementsem {
             }
             this.result = rs;
         }
+
         public  void visit(BreakStatement bs) {
             if (bs.ident != null)
             {
@@ -3249,6 +3284,7 @@ public class statementsem {
             }
             this.result = bs;
         }
+
         public  void visit(ContinueStatement cs) {
             if (cs.ident != null)
             {
@@ -3321,6 +3357,7 @@ public class statementsem {
             }
             this.result = cs;
         }
+
         public  void visit(SynchronizedStatement ss) {
             if (ss.exp != null)
             {
@@ -3408,6 +3445,7 @@ public class statementsem {
                 tmp.alignment = target.ptrsize;
             }
         }
+
         public  void visit(WithStatement ws) {
             ScopeDsymbol sym = null;
             Initializer _init = null;
@@ -3501,6 +3539,7 @@ public class statementsem {
             }
             this.result = ws;
         }
+
         public  void visit(TryCatchStatement tcs) {
             if (!global.params.useExceptions)
             {
@@ -3590,6 +3629,7 @@ public class statementsem {
             }
             this.result = tcs;
         }
+
         public  void visit(TryFinallyStatement tfs) {
             tfs._body = statementSemantic(tfs._body, this.sc);
             this.sc = (this.sc).push();
@@ -3619,6 +3659,7 @@ public class statementsem {
             tfs.bodyFallsThru = (blockexit & BE.fallthru) != 0;
             this.result = tfs;
         }
+
         public  void visit(ScopeGuardStatement oss) {
             if (((oss.tok & 0xFF) != 204))
             {
@@ -3652,6 +3693,7 @@ public class statementsem {
             }
             this.result = oss;
         }
+
         public  void visit(ThrowStatement ts) {
             if (!global.params.useExceptions)
             {
@@ -3688,6 +3730,7 @@ public class statementsem {
             }
             this.result = ts;
         }
+
         public  void visit(DebugStatement ds) {
             if (ds.statement != null)
             {
@@ -3698,6 +3741,7 @@ public class statementsem {
             }
             this.result = ds.statement;
         }
+
         public  void visit(GotoStatement gs) {
             FuncDeclaration fd = (this.sc).func;
             gs.ident = fixupLabelName(this.sc, gs.ident);
@@ -3723,6 +3767,7 @@ public class statementsem {
                 return ;
             this.result = gs;
         }
+
         public  void visit(LabelStatement ls) {
             FuncDeclaration fd = (this.sc).parent.isFuncDeclaration();
             ls.ident = fixupLabelName(this.sc, ls.ident);
@@ -3747,9 +3792,11 @@ public class statementsem {
             (this.sc).pop();
             this.result = ls;
         }
+
         public  void visit(AsmStatement s) {
             this.result = asmSemantic(s, this.sc);
         }
+
         public  void visit(CompoundAsmStatement cas) {
             this.sc = (this.sc).push();
             (this.sc).stc |= cas.stc;
@@ -3772,6 +3819,7 @@ public class statementsem {
             (this.sc).pop();
             this.result = cas;
         }
+
         public  void visit(ImportStatement imps) {
             {
                 int __key1712 = 0;
@@ -3813,6 +3861,7 @@ public class statementsem {
             }
             this.result = imps;
         }
+
 
         public StatementSemanticVisitor() {}
 
@@ -3907,6 +3956,7 @@ public class statementsem {
         }
         (sc).pop();
     }
+
     public static Statement semanticNoScope(Statement s, Scope sc) {
         if ((s.isCompoundStatement() == null) && (s.isScopeStatement() == null))
         {
@@ -3915,6 +3965,7 @@ public class statementsem {
         s = statementSemantic(s, sc);
         return s;
     }
+
     public static Statement semanticScope(Statement s, Scope sc, Statement sbreak, Statement scontinue) {
         ScopeDsymbol sym = new ScopeDsymbol();
         sym.parent = (sc).scopesym;
@@ -3927,6 +3978,7 @@ public class statementsem {
         (scd).pop();
         return s;
     }
+
     // from template TupleForeachArgs!(00)
     // from template Seq!()
 
@@ -3973,10 +4025,12 @@ public class statementsem {
         return v.result;
     }
 
+
     // from template makeTupleForeach!(11)
     public static DArray<Dsymbol> makeTupleForeach11(Scope sc, ForeachStatement fs, DArray<Dsymbol> _param_2, boolean _param_3) {
         StatementSemanticVisitor v = new StatementSemanticVisitor(sc);
         return v.makeTupleForeach11(fs, _param_2, _param_3);
     }
+
 
 }

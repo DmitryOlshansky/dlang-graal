@@ -1442,6 +1442,21 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         return renamedVars;
     }
 
+    VarDeclaration[] printGlobalFunctionHead(FuncDeclaration func, int numArgs = -1) {
+        auto storage = (func.isStatic()  || opts.aggregates.length == 0) ? "static" : "";
+        if (func.isAbstract && func.fbody is null) storage = "abstract";
+        if (auto ctor = func.isCtorDeclaration())
+            buf.fmt("public %s %s%s(", storage, typeOf(func.type.nextOf()), tiArgs.str);
+        else if(func.funcName == "main" && opts.aggregates.length == 0) {
+            buf.fmt("public %s void %s%s(", storage, func.funcName, tiArgs.str);
+        }
+        else
+            buf.fmt("public %s %s %s%s(", storage, typeOf(func.type.nextOf()), func.funcName, tiArgs.str);
+        VarDeclaration[] renamedVars = printParameters(func, Boxing.no, false, numArgs);
+        buf.put(")");
+        return renamedVars;
+    }
+
     void printLocalFunction(FuncDeclaration func, bool isLambda = false) {
         auto t = func.type.isTypeFunction();
         //stderr.writefln("\tLocal function %s", func.ident.toString);
@@ -1455,23 +1470,67 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put("\n};\n");
     }
 
+    void printDefaultArg(VarDeclaration var, ExprOpts opts) {
+        if (var in opts.refParams) buf.fmt("ref(");
+        if (var._init) {
+            ExpInitializer ie = var._init.isExpInitializer();
+            if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit)) {
+                auto assign = (cast(AssignExp)ie.exp);
+                buf.put(assign.e2.toJava(opts));
+            }
+            else 
+                initializerToBuffer(var._init, buf, opts);
+        }
+        else if (var.type.isintegral)
+            buf.put("0");
+        else if (var.type.ty == Tbool)
+            buf.put("false");
+        else if (var.type.ty == Tclass || var.type.ty == Tpointer)
+            buf.put("null");
+        else
+            buf.put("DEFAULT_ARG");
+        if (var in opts.refParams) buf.fmt(")");
+    }
+
     void printGlobalFunction(FuncDeclaration func) {
         opts.vararg = null;
         if (func.fbody is null && !func.isAbstract) return;
         //stderr.writefln("\tFunction %s", func.ident.toString);
-        auto storage = (func.isStatic()  || opts.aggregates.length == 0) ? "static" : "";
-        if (func.isAbstract && func.fbody is null) storage = "abstract";
-        if (auto ctor = func.isCtorDeclaration())
-            buf.fmt("public %s %s%s(", storage, typeOf(func.type.nextOf()), tiArgs.str);
-        else if(func.funcName == "main" && opts.aggregates.length == 0) {
-            buf.fmt("public %s void %s%s(", storage, func.funcName, tiArgs.str);
-        }
-        else
-            buf.fmt("public %s %s %s%s(", storage, typeOf(func.type.nextOf()), func.funcName, tiArgs.str);
-        VarDeclaration[] renamedVars = printParameters(func, Boxing.no, false);
-        buf.put(")");
+        VarDeclaration[] renamedVars = printGlobalFunctionHead(func);
         printFunctionBody(func, renamedVars);
-        buf.put("\n");
+        buf.put("\n\n");
+        stderr.writefln("Global func %s", func.funcName);
+        void printDefaulted(size_t split) {
+            foreach (j; 0..func.parameters.length) {
+                auto arg = (*func.parameters)[j];
+                if (j) buf.put(", ");
+                if (j < split) buf.put(arg.ident.symbol);
+                else printDefaultArg(arg, opts);
+            }
+        }
+        if (func.parameters) {
+            foreach_reverse (i, p; (*func.parameters)) {
+                stderr.writefln("\t%s.storage_class = 0x%x", p.ident.symbol, p.storage_class);
+                if (p._init) {
+                    buf.fmt("// defaulted all parameters starting with #%d\n", i+1);
+                    printGlobalFunctionHead(func, cast(int)i);
+                    buf.put(" {\n");
+                    buf.indent;
+                    if (func.isCtorDeclaration) {
+                        buf.fmt("this(");
+                        printDefaulted(i);
+                        buf.fmt(");\n");
+                    }
+                    else {
+                        buf.fmt("%s(", func.funcName);
+                        printDefaulted(i);
+                        buf.fmt(");\n");
+                    }
+                    buf.outdent;
+                    buf.put("}\n\n");
+                }
+            }
+        }
     }
 
     void hoistLocalAggregates(FuncDeclaration func) {

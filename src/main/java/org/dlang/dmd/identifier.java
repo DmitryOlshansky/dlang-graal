@@ -55,31 +55,39 @@ public class identifier {
             this.name = name.slice(0,length).copy();
             this.value = value;
         }
+
         public  Identifier(ByteSlice name, int value) {
             super();
             this.name = name.copy();
             this.value = value;
         }
+
         public  Identifier(BytePtr name) {
             this(name.slice(0,strlen(name)), 120);
         }
+
         public static Identifier anonymous() {
             if (identifier.anonymousanonymous != null)
                 return identifier.anonymousanonymous;
             return identifier.anonymousanonymous = new Identifier(new ByteSlice("__anonymous"), 120);
         }
+
         public static Identifier create(BytePtr name) {
             return new Identifier(name);
         }
+
         public  BytePtr toChars() {
             return toBytePtr(this.name);
         }
+
         public  ByteSlice asString() {
             return this.name;
         }
+
         public  int getValue() {
             return this.value;
         }
+
         public  BytePtr toHChars2() {
             BytePtr p = null;
             if ((pequals(this, Id.ctor)))
@@ -111,13 +119,16 @@ public class identifier {
             }
             return p;
         }
+
         public  int dyncast() {
             return DYNCAST.identifier;
         }
+
         public static StringTable stringtable = new StringTable();
         public static Identifier generateId(BytePtr prefix) {
             return generateId(prefix, identifier.generateIdi += 1);
         }
+
         public static Identifier generateId(BytePtr prefix, int i) {
             OutBuffer buf = new OutBuffer();
             try {
@@ -128,6 +139,7 @@ public class identifier {
             finally {
             }
         }
+
         public static Identifier generateIdWithLoc(ByteSlice prefix, Loc loc) {
             OutBuffer idBuf = new OutBuffer();
             try {
@@ -154,9 +166,11 @@ public class identifier {
             finally {
             }
         }
+
         public static Identifier idPool(BytePtr s, int len) {
             return idPool(s.slice(0,len));
         }
+
         public static Identifier idPool(ByteSlice s) {
             StringValue sv = stringtable.update(s);
             Identifier id = ((Identifier)(sv).ptrvalue);
@@ -167,9 +181,11 @@ public class identifier {
             }
             return id;
         }
+
         public static Identifier idPool(BytePtr s, int len, int value) {
             return idPool(s.slice(0,len), value);
         }
+
         public static Identifier idPool(ByteSlice s, int value) {
             StringValue sv = stringtable.insert(s, null);
             assert(sv != null);
@@ -177,9 +193,11 @@ public class identifier {
             (sv).ptrvalue = pcopy(((Object)id));
             return id;
         }
+
         public static boolean isValidIdentifier(BytePtr str) {
             return (str != null) && isValidIdentifier(toDString(str));
         }
+
         public static boolean isValidIdentifier(ByteSlice str) {
             if ((str.getLength() == 0) || ((str.get(0) & 0xFF) >= 48) && ((str.get(0) & 0xFF) <= 57))
             {
@@ -196,18 +214,22 @@ public class identifier {
             }
             return true;
         }
+
         public static Identifier lookup(BytePtr s, int len) {
             return lookup(s.slice(0,len));
         }
+
         public static Identifier lookup(ByteSlice s) {
             StringValue sv = stringtable.lookup(s);
             if (sv == null)
                 return null;
             return ((Identifier)(sv).ptrvalue);
         }
+
         public static void initTable() {
             stringtable._init(28000);
         }
+
 
         public Identifier() {}
 

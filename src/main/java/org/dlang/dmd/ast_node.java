@@ -19,9 +19,11 @@ public class ast_node {
     {
         public abstract void accept(Visitor v);
 
+
         public  ASTNode() {
             super();
         }
+
 
         public abstract ASTNode copy();
     }

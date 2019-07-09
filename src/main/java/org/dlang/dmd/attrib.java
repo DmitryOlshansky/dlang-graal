@@ -43,15 +43,18 @@ public class attrib {
             super();
             this.decl = decl;
         }
+
         public  AttribDeclaration(Loc loc, Identifier ident, DArray<Dsymbol> decl) {
             super(loc, ident);
             this.decl = decl;
         }
+
         public  DArray<Dsymbol> include(Scope sc) {
             if (this.errors)
                 return null;
             return this.decl;
         }
+
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
             Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
                 public Integer invoke(Dsymbol s) {
@@ -60,6 +63,7 @@ public class attrib {
             };
             return foreachDsymbol(this.include(this._scope), __lambda3);
         }
+
         public static Scope createNewScope(Scope sc, long stc, int linkage, int cppmangle, Prot protection, int explicitProtection, AlignDeclaration aligndecl, int inlining) {
             Scope sc2 = sc;
             if ((stc != (sc).stc) || (linkage != (sc).linkage) || (cppmangle != (sc).cppmangle) || !protection.isSubsetOf((sc).protection) || (explicitProtection != (sc).explicitProtection) || (aligndecl != (sc).aligndecl) || (inlining != (sc).inlining))
@@ -75,9 +79,11 @@ public class attrib {
             }
             return sc2;
         }
+
         public  Scope newScope(Scope sc) {
             return sc;
         }
+
         public  void addMember(Scope sc, ScopeDsymbol sds) {
             DArray<Dsymbol> d = this.include(sc);
             if (d != null)
@@ -94,6 +100,7 @@ public class attrib {
                     (sc2).pop();
             }
         }
+
         public  void setScope(Scope sc) {
             DArray<Dsymbol> d = this.include(sc);
             if (d != null)
@@ -110,6 +117,7 @@ public class attrib {
                     (sc2).pop();
             }
         }
+
         public  void importAll(Scope sc) {
             DArray<Dsymbol> d = this.include(sc);
             if (d != null)
@@ -126,6 +134,7 @@ public class attrib {
                     (sc2).pop();
             }
         }
+
         public  void addComment(BytePtr comment) {
             if (comment != null)
             {
@@ -138,13 +147,16 @@ public class attrib {
                 foreachDsymbol(this.include(null), __lambda2);
             }
         }
+
         public  BytePtr kind() {
             return new BytePtr("attribute");
         }
+
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             DArray<Dsymbol> d = this.include(null);
             return Dsymbol.oneMembers(d, ps, ident);
         }
+
         public  void setFieldOffset(AggregateDeclaration ad, IntPtr poffset, boolean isunion) {
             Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s) {
@@ -154,6 +166,7 @@ public class attrib {
             };
             foreachDsymbol(this.include(null), __lambda4);
         }
+
         public  boolean hasPointers() {
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>(){
                 public Integer invoke(Dsymbol s) {
@@ -162,6 +175,7 @@ public class attrib {
             };
             return foreachDsymbol(this.include(null), __lambda1) != 0;
         }
+
         public  boolean hasStaticCtorOrDtor() {
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>(){
                 public Integer invoke(Dsymbol s) {
@@ -170,6 +184,7 @@ public class attrib {
             };
             return foreachDsymbol(this.include(null), __lambda1) != 0;
         }
+
         public  void checkCtorConstInit() {
             Function1<Dsymbol,Void> __lambda1 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s) {
@@ -179,6 +194,7 @@ public class attrib {
             };
             foreachDsymbol(this.include(null), __lambda1);
         }
+
         public  void addLocalClass(DArray<ClassDeclaration> aclasses) {
             Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s) {
@@ -188,15 +204,19 @@ public class attrib {
             };
             foreachDsymbol(this.include(null), __lambda2);
         }
+
         public  void addObjcSymbols(DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories) {
             objc().addSymbols(this, classes, categories);
         }
+
         public  AttribDeclaration isAttribDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public AttribDeclaration() {}
 
@@ -209,10 +229,12 @@ public class attrib {
             super(decl);
             this.stc = stc;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new StorageClassDeclaration(this.stc, Dsymbol.arraySyntaxCopy(this.decl));
         }
+
         public  Scope newScope(Scope sc) {
             long scstc = (sc).stc;
             if ((this.stc & 8913155L) != 0)
@@ -228,6 +250,7 @@ public class attrib {
             scstc |= this.stc;
             return AttribDeclaration.createNewScope(sc, scstc, (sc).linkage, (sc).cppmangle, (sc).protection, (sc).explicitProtection, (sc).aligndecl, (sc).inlining);
         }
+
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             boolean t = Dsymbol.oneMembers(this.decl, ps, ident);
             if (t && (ps.get() != null))
@@ -240,6 +263,7 @@ public class attrib {
             }
             return t;
         }
+
         public  void addMember(Scope sc, ScopeDsymbol sds) {
             DArray<Dsymbol> d = this.include(sc);
             if (d != null)
@@ -269,12 +293,15 @@ public class attrib {
                     (sc2).pop();
             }
         }
+
         public  StorageClassDeclaration isStorageClassDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public StorageClassDeclaration() {}
 
@@ -307,10 +334,12 @@ public class attrib {
             super(1024L, decl);
             this.msg = msg;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new DeprecatedDeclaration(this.msg.syntaxCopy(), Dsymbol.arraySyntaxCopy(this.decl));
         }
+
         public  Scope newScope(Scope sc) {
             Scope scx = super.newScope(sc);
             if ((scx == sc))
@@ -318,15 +347,18 @@ public class attrib {
             (scx).depdecl = this;
             return scx;
         }
+
         public  void setScope(Scope sc) {
             if (this.decl != null)
                 this.setScope(sc);
             this.setScope(sc);
             return ;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public DeprecatedDeclaration() {}
 
@@ -360,25 +392,32 @@ public class attrib {
             super(decl);
             this.linkage = (linkage == LINK.system) ? target.systemLinkage() : linkage;
         }
+
         public static LinkDeclaration create(int p, DArray<Dsymbol> decl) {
             return new LinkDeclaration(p, decl);
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new LinkDeclaration(this.linkage, Dsymbol.arraySyntaxCopy(this.decl));
         }
+
         public  Scope newScope(Scope sc) {
             return AttribDeclaration.createNewScope(sc, (sc).stc, this.linkage, (sc).cppmangle, (sc).protection, (sc).explicitProtection, (sc).aligndecl, (sc).inlining);
         }
+
         public  BytePtr toChars() {
             return toBytePtr(this.asString());
         }
+
         public  ByteSlice asString() {
             return new ByteSlice("extern ()");
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public LinkDeclaration() {}
 
@@ -410,22 +449,28 @@ public class attrib {
             super(decl);
             this.cppmangle = cppmangle;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new CPPMangleDeclaration(this.cppmangle, Dsymbol.arraySyntaxCopy(this.decl));
         }
+
         public  Scope newScope(Scope sc) {
             return AttribDeclaration.createNewScope(sc, (sc).stc, LINK.cpp, this.cppmangle, (sc).protection, (sc).explicitProtection, (sc).aligndecl, (sc).inlining);
         }
+
         public  BytePtr toChars() {
             return toBytePtr(this.asString());
         }
+
         public  ByteSlice asString() {
             return new ByteSlice("extern ()");
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public CPPMangleDeclaration() {}
 
@@ -457,38 +502,47 @@ public class attrib {
             super(decl);
             this.ident = ident;
         }
+
         public  CPPNamespaceDeclaration(Expression exp, DArray<Dsymbol> decl) {
             super(decl);
             this.exp = exp;
         }
+
         public  CPPNamespaceDeclaration(Identifier ident, Expression exp, DArray<Dsymbol> decl, CPPNamespaceDeclaration parent) {
             super(decl);
             this.ident = ident;
             this.exp = exp;
             this.namespace = parent;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new CPPNamespaceDeclaration(this.ident, this.exp, Dsymbol.arraySyntaxCopy(this.decl), this.namespace);
         }
+
         public  Scope newScope(Scope sc) {
             Scope scx = (sc).copy();
             (scx).linkage = LINK.cpp;
             (scx).namespace = this;
             return scx;
         }
+
         public  BytePtr toChars() {
             return toBytePtr(this.asString());
         }
+
         public  ByteSlice asString() {
             return new ByteSlice("extern (C++, `namespace`)");
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
         public  CPPNamespaceDeclaration isCPPNamespaceDeclaration() {
             return this;
         }
+
 
         public CPPNamespaceDeclaration() {}
 
@@ -521,6 +575,7 @@ public class attrib {
             super(loc, null, decl);
             this.protection = protection.copy();
         }
+
         public  ProtDeclaration(Loc loc, DArray<Identifier> pkg_identifiers, DArray<Dsymbol> decl) {
             super(loc, null, decl);
             this.protection.kind = Prot.Kind.package_;
@@ -532,6 +587,7 @@ public class attrib {
                 this.protection.pkg = tmp.value != null ? tmp.value.isPackage() : null;
             }
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             if ((this.protection.kind == Prot.Kind.package_))
@@ -539,11 +595,13 @@ public class attrib {
             else
                 return new ProtDeclaration(this.loc, this.protection, Dsymbol.arraySyntaxCopy(this.decl));
         }
+
         public  Scope newScope(Scope sc) {
             if (this.pkg_identifiers != null)
                 dsymbolSemantic(this, sc);
             return AttribDeclaration.createNewScope(sc, (sc).stc, (sc).linkage, (sc).cppmangle, this.protection, 1, (sc).aligndecl, (sc).inlining);
         }
+
         public  void addMember(Scope sc, ScopeDsymbol sds) {
             if (this.pkg_identifiers != null)
             {
@@ -562,9 +620,11 @@ public class attrib {
             this.addMember(sc, sds);
             return ;
         }
+
         public  BytePtr kind() {
             return new BytePtr("protection attribute");
         }
+
         public  BytePtr toPrettyChars(boolean _param_0) {
             assert((this.protection.kind > Prot.Kind.undefined));
             OutBuffer buf = new OutBuffer();
@@ -575,12 +635,15 @@ public class attrib {
             finally {
             }
         }
+
         public  ProtDeclaration isProtDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ProtDeclaration() {}
 
@@ -615,16 +678,20 @@ public class attrib {
             super(loc, null, decl);
             this.ealign = ealign;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new AlignDeclaration(this.loc, this.ealign != null ? this.ealign.syntaxCopy() : null, Dsymbol.arraySyntaxCopy(this.decl));
         }
+
         public  Scope newScope(Scope sc) {
             return AttribDeclaration.createNewScope(sc, (sc).stc, (sc).linkage, (sc).cppmangle, (sc).protection, (sc).explicitProtection, this, (sc).inlining);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public AlignDeclaration() {}
 
@@ -662,16 +729,19 @@ public class attrib {
             super(loc, null, decl);
             this.isunion = isunion;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new AnonDeclaration(this.loc, this.isunion, Dsymbol.arraySyntaxCopy(this.decl));
         }
+
         public  void setScope(Scope sc) {
             if (this.decl != null)
                 this.setScope(sc);
             this.setScope(sc);
             return ;
         }
+
         public  void setFieldOffset(AggregateDeclaration ad, IntPtr poffset, boolean isunion) {
             if (this.decl != null)
             {
@@ -719,15 +789,19 @@ public class attrib {
                 }
             }
         }
+
         public  BytePtr kind() {
             return this.isunion ? new BytePtr("anonymous union") : new BytePtr("anonymous struct");
         }
+
         public  AnonDeclaration isAnonDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public AnonDeclaration() {}
 
@@ -763,10 +837,12 @@ public class attrib {
             super(loc, ident, decl);
             this.args = args;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new PragmaDeclaration(this.loc, this.ident, Expression.arraySyntaxCopy(this.args), Dsymbol.arraySyntaxCopy(this.decl));
         }
+
         public  Scope newScope(Scope sc) {
             if ((pequals(this.ident, Id.Pinline)))
             {
@@ -799,12 +875,15 @@ public class attrib {
             }
             return sc;
         }
+
         public  BytePtr kind() {
             return new BytePtr("pragma");
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public PragmaDeclaration() {}
 
@@ -838,10 +917,12 @@ public class attrib {
             this.condition = condition;
             this.elsedecl = elsedecl;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new ConditionalDeclaration(this.condition.syntaxCopy(), Dsymbol.arraySyntaxCopy(this.decl), Dsymbol.arraySyntaxCopy(this.elsedecl));
         }
+
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             if ((this.condition.inc != Include.notComputed))
             {
@@ -855,12 +936,14 @@ public class attrib {
                 return res;
             }
         }
+
         public  DArray<Dsymbol> include(Scope sc) {
             if (this.errors)
                 return null;
             assert(this.condition != null);
             return this.condition.include(this._scope != null ? this._scope : sc) != 0 ? this.decl : this.elsedecl;
         }
+
         public  void addComment(BytePtr comment) {
             if (comment != null)
             {
@@ -880,6 +963,7 @@ public class attrib {
                 foreachDsymbol(this.elsedecl, __lambda3);
             }
         }
+
         public  void setScope(Scope sc) {
             Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s) {
@@ -889,9 +973,11 @@ public class attrib {
             };
             foreachDsymbol(this.include(sc), __lambda2);
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public ConditionalDeclaration() {}
 
@@ -925,10 +1011,12 @@ public class attrib {
         public  StaticIfDeclaration(Condition condition, DArray<Dsymbol> decl, DArray<Dsymbol> elsedecl) {
             super(condition, decl, elsedecl);
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new StaticIfDeclaration(this.condition.syntaxCopy(), Dsymbol.arraySyntaxCopy(this.decl), Dsymbol.arraySyntaxCopy(this.elsedecl));
         }
+
         public  DArray<Dsymbol> include(Scope sc) {
             if (this.errors || this.onStack)
                 return null;
@@ -968,20 +1056,26 @@ public class attrib {
                 this.onStack = false;
             }
         }
+
         public  void addMember(Scope sc, ScopeDsymbol sds) {
             this.scopesym = sds;
         }
+
         public  void setScope(Scope sc) {
             this.setScope(sc);
         }
+
         public  void importAll(Scope sc) {
         }
+
         public  BytePtr kind() {
             return new BytePtr("static if");
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public StaticIfDeclaration() {}
 
@@ -1021,10 +1115,12 @@ public class attrib {
             super(decl);
             this.sfe = sfe;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new StaticForeachDeclaration(this.sfe.syntaxCopy(), Dsymbol.arraySyntaxCopy(this.decl));
         }
+
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             if (this.cached)
             {
@@ -1033,6 +1129,7 @@ public class attrib {
             ps.set(0, null);
             return false;
         }
+
         public  DArray<Dsymbol> include(Scope sc) {
             if (this.errors || this.onStack)
                 return null;
@@ -1077,22 +1174,29 @@ public class attrib {
                 this.onStack = false;
             }
         }
+
         public  void addMember(Scope sc, ScopeDsymbol sds) {
             this.scopesym = sds;
         }
+
         public  void addComment(BytePtr comment) {
         }
+
         public  void setScope(Scope sc) {
             this.setScope(sc);
         }
+
         public  void importAll(Scope sc) {
         }
+
         public  BytePtr kind() {
             return new BytePtr("static foreach");
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public StaticForeachDeclaration() {}
 
@@ -1129,17 +1233,21 @@ public class attrib {
             this.sym = new ForwardingScopeDsymbol(null);
             this.sym.symtab = new DsymbolTable();
         }
+
         public  Scope newScope(Scope sc) {
             return (sc).push(this.sym);
         }
+
         public  void addMember(Scope sc, ScopeDsymbol sds) {
             this.parent = (this.sym.parent = (this.sym.forward = sds));
             super.addMember(sc, this.sym);
             return ;
         }
+
         public  ForwardingAttribDeclaration isForwardingAttribDeclaration() {
             return this;
         }
+
 
         public ForwardingAttribDeclaration() {}
 
@@ -1173,24 +1281,31 @@ public class attrib {
             super(loc, null, null);
             this.exps = exps;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             return new CompileDeclaration(this.loc, Expression.arraySyntaxCopy(this.exps));
         }
+
         public  void addMember(Scope sc, ScopeDsymbol sds) {
             this.scopesym = sds;
         }
+
         public  void setScope(Scope sc) {
             this.setScope(sc);
         }
+
         public  BytePtr kind() {
             return new BytePtr("mixin");
         }
+
         public  CompileDeclaration isCompileDeclaration() {
             return this;
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public CompileDeclaration() {}
 
@@ -1224,10 +1339,12 @@ public class attrib {
             super(decl);
             this.atts = atts;
         }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new UserAttributeDeclaration(Expression.arraySyntaxCopy(this.atts), Dsymbol.arraySyntaxCopy(this.decl));
         }
+
         public  Scope newScope(Scope sc) {
             Scope sc2 = sc;
             if ((this.atts != null) && ((this.atts).length != 0))
@@ -1237,12 +1354,14 @@ public class attrib {
             }
             return sc2;
         }
+
         public  void setScope(Scope sc) {
             if (this.decl != null)
                 this.setScope(sc);
             this.setScope(sc);
             return ;
         }
+
         public static DArray<Expression> concat(DArray<Expression> udas1, DArray<Expression> udas2) {
             DArray<Expression> udas = null;
             if ((udas1 == null) || ((udas1).length == 0))
@@ -1257,6 +1376,7 @@ public class attrib {
             }
             return udas;
         }
+
         public  DArray<Expression> getAttributes() {
             {
                 Scope sc = this._scope;
@@ -1273,12 +1393,15 @@ public class attrib {
                 (exps).push(new TupleExp(Loc.initial, this.atts));
             return exps;
         }
+
         public  BytePtr kind() {
             return new BytePtr("UserAttribute");
         }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
+
 
         public UserAttributeDeclaration() {}
 

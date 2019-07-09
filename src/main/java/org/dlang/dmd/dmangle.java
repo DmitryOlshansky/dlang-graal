@@ -39,6 +39,7 @@ public class dmangle {
         if (((c & 0xFF) == 122))
             (buf).writeByte((ty == ENUMTY.Tint128) ? 105 : 107);
     }
+
     public static void MODtoDecoBuffer(OutBuffer buf, byte mod) {
         switch ((mod & 0xFF))
         {
@@ -72,6 +73,7 @@ public class dmangle {
             throw new AssertionError("Unreachable code!");
         }
     }
+
     public static class Mangler extends Visitor
     {
         public AssocArrayTypeInteger types = new AssocArrayTypeInteger();
@@ -80,6 +82,7 @@ public class dmangle {
         public  Mangler(OutBuffer buf) {
             this.buf = buf;
         }
+
         public  void writeBackRef(int pos) {
             (this.buf).writeByte(81);
             int base = 26;
@@ -95,6 +98,7 @@ public class dmangle {
             }
             (this.buf).writeByte((97 + ((byte)pos & 0xFF)));
         }
+
         public  boolean backrefType(Type t) {
             if (t.isTypeBasic() == null)
             {
@@ -108,6 +112,7 @@ public class dmangle {
             }
             return false;
         }
+
         public  boolean backrefIdentifier(Identifier id) {
             IntPtr p = pcopy(this.idents.getLvalue(id));
             if (p.get() != 0)
@@ -118,17 +123,21 @@ public class dmangle {
             p.set(0, (this.buf).offset);
             return false;
         }
+
         public  void mangleSymbol(Dsymbol s) {
             s.accept(this);
         }
+
         public  void mangleType(Type t) {
             if (!this.backrefType(t))
                 t.accept(this);
         }
+
         public  void mangleIdentifier(Identifier id, Dsymbol s) {
             if (!this.backrefIdentifier(id))
                 this.toBuffer(id.asString(), s);
         }
+
         public  void visitWithMask(Type t, byte modMask) {
             if (((modMask & 0xFF) != (t.mod & 0xFF)))
             {
@@ -136,17 +145,21 @@ public class dmangle {
             }
             this.mangleType(t);
         }
+
         public  void visit(Type t) {
             tyToDecoBuffer(this.buf, (t.ty & 0xFF));
         }
+
         public  void visit(TypeNext t) {
             this.visit((Type)t);
             this.visitWithMask(t.next, t.mod);
         }
+
         public  void visit(TypeVector t) {
             (this.buf).writestring(new ByteSlice("Nh"));
             this.visitWithMask(t.basetype, t.mod);
         }
+
         public  void visit(TypeSArray t) {
             this.visit((Type)t);
             if (t.dim != null)
@@ -154,19 +167,23 @@ public class dmangle {
             if (t.next != null)
                 this.visitWithMask(t.next, t.mod);
         }
+
         public  void visit(TypeDArray t) {
             this.visit((Type)t);
             if (t.next != null)
                 this.visitWithMask(t.next, t.mod);
         }
+
         public  void visit(TypeAArray t) {
             this.visit((Type)t);
             this.visitWithMask(t.index, (byte)0);
             this.visitWithMask(t.next, t.mod);
         }
+
         public  void visit(TypeFunction t) {
             this.mangleFuncType(t, t, t.mod, t.next);
         }
+
         public  void mangleFuncType(TypeFunction t, TypeFunction ta, byte modMask, Type tret) {
             if ((t.inuse != 0) && (tret != null))
             {
@@ -234,32 +251,39 @@ public class dmangle {
                 this.visitWithMask(tret, (byte)0);
             t.inuse--;
         }
+
         public  void visit(TypeIdentifier t) {
             this.visit((Type)t);
             ByteSlice name = t.ident.asString().copy();
             (this.buf).print((long)name.getLength());
             (this.buf).writestring(name);
         }
+
         public  void visit(TypeEnum t) {
             this.visit((Type)t);
             this.mangleSymbol(t.sym);
         }
+
         public  void visit(TypeStruct t) {
             this.visit((Type)t);
             this.mangleSymbol(t.sym);
         }
+
         public  void visit(TypeClass t) {
             this.visit((Type)t);
             this.mangleSymbol(t.sym);
         }
+
         public  void visit(TypeTuple t) {
             this.visit((Type)t);
             this.paramsToDecoBuffer(t.arguments);
             (this.buf).writeByte(90);
         }
+
         public  void visit(TypeNull t) {
             this.visit((Type)t);
         }
+
         public  void mangleDecl(Declaration sthis) {
             this.mangleParent(sthis);
             assert(sthis.ident != null);
@@ -278,6 +302,7 @@ public class dmangle {
                     throw new AssertionError("Unreachable code!");
             }
         }
+
         public  void mangleParent(Dsymbol s) {
             Dsymbol p = null;
             {
@@ -308,6 +333,7 @@ public class dmangle {
                     (this.buf).writeByte(48);
             }
         }
+
         public  void mangleFunc(FuncDeclaration fd, boolean inParent) {
             if (fd.needThis() || fd.isNested())
                 (this.buf).writeByte(77);
@@ -326,6 +352,7 @@ public class dmangle {
                 this.visitWithMask(fd.type, (byte)0);
             }
         }
+
         public  void toBuffer(ByteSlice id, Dsymbol s) {
             int len = id.getLength();
             if (((this.buf).offset + len >= 8388608))
@@ -336,6 +363,7 @@ public class dmangle {
                 (this.buf).writestring(id);
             }
         }
+
         public static ByteSlice externallyMangledIdentifier(Declaration d) {
             if ((d.parent == null) || (d.parent.isModule() != null) || (d.linkage == LINK.cpp))
             {
@@ -361,6 +389,7 @@ public class dmangle {
             }
             return new ByteSlice();
         }
+
         public  void visit(Declaration d) {
             {
                 ByteSlice id = externallyMangledIdentifier(d).copy();
@@ -373,12 +402,14 @@ public class dmangle {
             (this.buf).writestring(new ByteSlice("_D"));
             this.mangleDecl(d);
         }
+
         public  void visit(FuncDeclaration fd) {
             if (fd.isUnique())
                 this.mangleExact(fd);
             else
                 this.visit((Dsymbol)fd);
         }
+
         public  void visit(FuncAliasDeclaration fd) {
             FuncDeclaration f = fd.toAliasFunc();
             FuncAliasDeclaration fa = f.isFuncAliasDeclaration();
@@ -394,6 +425,7 @@ public class dmangle {
             }
             this.visit((Dsymbol)fd);
         }
+
         public  void visit(OverDeclaration od) {
             if (od.overnext != null)
             {
@@ -424,6 +456,7 @@ public class dmangle {
             }
             this.visit((Dsymbol)od);
         }
+
         public  void mangleExact(FuncDeclaration fd) {
             assert(fd.isFuncAliasDeclaration() == null);
             if (fd.mangleOverride.getLength() != 0)
@@ -443,6 +476,7 @@ public class dmangle {
             }
             this.visit((Declaration)fd);
         }
+
         public  void visit(VarDeclaration vd) {
             if (vd.mangleOverride.getLength() != 0)
             {
@@ -451,6 +485,7 @@ public class dmangle {
             }
             this.visit((Declaration)vd);
         }
+
         public  void visit(AggregateDeclaration ad) {
             ClassDeclaration cd = ad.isClassDeclaration();
             Dsymbol parentsave = ad.parent;
@@ -464,6 +499,7 @@ public class dmangle {
             this.visit((Dsymbol)ad);
             ad.parent = parentsave;
         }
+
         public  void visit(TemplateInstance ti) {
             if (ti.tempdecl == null)
                 ti.error(new BytePtr("is not defined"));
@@ -474,6 +510,7 @@ public class dmangle {
             else
                 this.mangleTemplateInstance(ti);
         }
+
         public  void mangleTemplateInstance(TemplateInstance ti) {
             TemplateDeclaration tempdecl = ti.tempdecl.isTemplateDeclaration();
             assert(tempdecl != null);
@@ -700,6 +737,7 @@ public class dmangle {
             }
             (this.buf).writeByte(90);
         }
+
         public  void visit(Dsymbol s) {
             this.mangleParent(s);
             if (s.ident != null)
@@ -707,9 +745,11 @@ public class dmangle {
             else
                 this.toBuffer(s.asString(), s);
         }
+
         public  void visit(Expression e) {
             e.error(new BytePtr("expression `%s` is not a valid template value argument"), e.toChars());
         }
+
         public  void visit(IntegerExp e) {
             long v = e.toInteger();
             if (((long)v < 0L))
@@ -723,10 +763,12 @@ public class dmangle {
                 (this.buf).print(v);
             }
         }
+
         public  void visit(RealExp e) {
             (this.buf).writeByte(101);
             this.realToMangleBuffer(e.value);
         }
+
         public  void realToMangleBuffer(double value) {
             if (CTFloat.isNaN(value))
             {
@@ -766,15 +808,18 @@ public class dmangle {
                 }
             }
         }
+
         public  void visit(ComplexExp e) {
             (this.buf).writeByte(99);
             this.realToMangleBuffer(e.toReal());
             (this.buf).writeByte(99);
             this.realToMangleBuffer(e.toImaginary());
         }
+
         public  void visit(NullExp e) {
             (this.buf).writeByte(110);
         }
+
         public  void visit(StringExp e) {
             byte m = (byte)255;
             OutBuffer tmp = new OutBuffer();
@@ -840,6 +885,7 @@ public class dmangle {
             finally {
             }
         }
+
         public  void visit(ArrayLiteralExp e) {
             int dim = e.elements != null ? (e.elements).length : 0;
             (this.buf).writeByte(65);
@@ -853,6 +899,7 @@ public class dmangle {
                 }
             }
         }
+
         public  void visit(AssocArrayLiteralExp e) {
             int dim = (e.keys).length;
             (this.buf).writeByte(65);
@@ -867,6 +914,7 @@ public class dmangle {
                 }
             }
         }
+
         public  void visit(StructLiteralExp e) {
             int dim = e.elements != null ? (e.elements).length : 0;
             (this.buf).writeByte(83);
@@ -884,6 +932,7 @@ public class dmangle {
                 }
             }
         }
+
         public  void paramsToDecoBuffer(DArray<Parameter> parameters) {
             Function2<Integer,Parameter,Integer> paramsToDecoBufferDg = new Function2<Integer,Parameter,Integer>(){
                 public Integer invoke(Integer n, Parameter p) {
@@ -893,6 +942,7 @@ public class dmangle {
             };
             Parameter._foreach(parameters, paramsToDecoBufferDg, null);
         }
+
         public  void visit(Parameter p) {
             if (((p.storageClass & 524288L) != 0) && ((p.storageClass & 562949953421312L) == 0))
                 (this.buf).writeByte(77);
@@ -918,6 +968,7 @@ public class dmangle {
             this.visitWithMask(p.type, (byte)0);
         }
 
+
         public Mangler() {}
 
         public Mangler copy() {
@@ -931,6 +982,7 @@ public class dmangle {
     public static boolean isValidMangling(int c) {
         return (c >= 65) && (c <= 90) || (c >= 97) && (c <= 122) || (c >= 48) && (c <= 57) || (c != 0) && (strchr(new BytePtr("$%().:?@[]_"), c) != null);
     }
+
     public static BytePtr mangleExact(FuncDeclaration fd) {
         if (fd.mangleString == null)
         {
@@ -945,6 +997,7 @@ public class dmangle {
         }
         return fd.mangleString;
     }
+
     public static void mangleToBuffer(Type t, OutBuffer buf) {
         if (t.deco != null)
             (buf).writestring(t.deco);
@@ -954,18 +1007,22 @@ public class dmangle {
             v.visitWithMask(t, (byte)0);
         }
     }
+
     public static void mangleToBuffer(Expression e, OutBuffer buf) {
         Mangler v = new Mangler(buf);
         e.accept(v);
     }
+
     public static void mangleToBuffer(Dsymbol s, OutBuffer buf) {
         Mangler v = new Mangler(buf);
         s.accept(v);
     }
+
     public static void mangleToBuffer(TemplateInstance ti, OutBuffer buf) {
         Mangler v = new Mangler(buf);
         v.mangleTemplateInstance(ti);
     }
+
     public static void mangleToFuncSignature(OutBuffer buf, FuncDeclaration fd) {
         Ref<OutBuffer> buf_ref = ref(buf);
         TypeFunction tf = fd.type.isTypeFunction();
@@ -974,4 +1031,5 @@ public class dmangle {
         v.paramsToDecoBuffer(tf.parameterList.parameters);
         buf_ref.value.writeByte((90 - tf.parameterList.varargs));
     }
+
 }
