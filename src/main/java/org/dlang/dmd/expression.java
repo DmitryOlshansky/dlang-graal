@@ -67,7 +67,7 @@ public class expression {
         private Scope sc;
         private CondExp ce;
         private VarDeclaration vcond;
-        private boolean isThen;
+        private boolean isThen = false;
         public  DtorVisitor(Scope sc, CondExp ce) {
             super();
             this.sc = sc;
@@ -618,9 +618,9 @@ public class expression {
     static int WANTexpand = 1;
     public static abstract class Expression extends ASTNode
     {
-        public byte op;
-        public byte size;
-        public byte parens;
+        public byte op = 0;
+        public byte size = 0;
+        public byte parens = 0;
         public Type type;
         public Loc loc = new Loc();
         public  Expression(Loc loc, byte op, int size) {
@@ -1716,7 +1716,7 @@ public class expression {
     }
     public static class IntegerExp extends Expression
     {
-        public long value;
+        public long value = 0;
         public  IntegerExp(Loc loc, long value, Type type) {
             super(loc, TOK.int64, 32);
             assert(type != null);
@@ -1741,7 +1741,7 @@ public class expression {
         }
 
         public static void emplace(UnionExp pue, Loc loc, long value, Type type) {
-            (pue).emplace(new IntegerExp(loc, value, type));
+            (pue) = new UnionExp(new IntegerExp(loc, value, type));
         }
 
         public  boolean equals(RootObject o) {
@@ -1980,7 +1980,7 @@ public class expression {
         }
 
         public static void emplace(UnionExp pue, Loc loc, double value, Type type) {
-            (pue).emplace(new RealExp(loc, value, type));
+            (pue) = new UnionExp(new RealExp(loc, value, type));
         }
 
         public  boolean equals(RootObject o) {
@@ -2055,7 +2055,7 @@ public class expression {
         }
 
         public static void emplace(UnionExp pue, Loc loc, complex_t value, Type type) {
-            (pue).emplace(new ComplexExp(loc, value, type));
+            (pue) = new UnionExp(new ComplexExp(loc, value, type));
         }
 
         public  boolean equals(RootObject o) {
@@ -2184,7 +2184,7 @@ public class expression {
     public static class DsymbolExp extends Expression
     {
         public Dsymbol s;
-        public boolean hasOverloads;
+        public boolean hasOverloads = false;
         public  DsymbolExp(Loc loc, Dsymbol s, boolean hasOverloads) {
             super(loc, TOK.dSymbol, 29);
             this.s = s;
@@ -2296,7 +2296,7 @@ public class expression {
     }
     public static class NullExp extends Expression
     {
-        public byte committed;
+        public byte committed = 0;
         public  NullExp(Loc loc, Type type) {
             super(loc, TOK.null_, 25);
             this.type = type;
@@ -2353,9 +2353,9 @@ public class expression {
         public BytePtr string;
         public CharPtr wstring;
         public IntPtr dstring;
-        public int len;
+        public int len = 0;
         public byte sz = (byte)1;
-        public byte committed;
+        public byte committed = 0;
         public byte postfix = (byte)0;
         public byte ownedByCtfe = OwnedBy.code;
         public  StringExp(Loc loc, BytePtr string) {
@@ -2389,11 +2389,11 @@ public class expression {
         }
 
         public static void emplace(UnionExp pue, Loc loc, BytePtr s) {
-            (pue).emplace(new StringExp(loc, s));
+            (pue) = new UnionExp(new StringExp(loc, s));
         }
 
         public static void emplace(UnionExp pue, Loc loc, Object string, int len) {
-            (pue).emplace(new StringExp(loc, string, len));
+            (pue) = new UnionExp(new StringExp(loc, string, len));
         }
 
         public  boolean equals(RootObject o) {
@@ -2837,7 +2837,7 @@ public class expression {
         }
 
         public static void emplace(UnionExp pue, Loc loc, DArray<Expression> elements) {
-            (pue).emplace(new ArrayLiteralExp(loc, null, elements));
+            (pue) = new UnionExp(new ArrayLiteralExp(loc, null, elements));
         }
 
         public  Expression syntaxCopy() {
@@ -3065,8 +3065,8 @@ public class expression {
         public Symbol sym;
         public StructLiteralExp origin;
         public StructLiteralExp inlinecopy;
-        public int stageflags;
-        public boolean useStaticInit;
+        public int stageflags = 0;
+        public boolean useStaticInit = false;
         public byte ownedByCtfe = OwnedBy.code;
         public  StructLiteralExp(Loc loc, StructDeclaration sd, DArray<Expression> elements, Type stype) {
             super(loc, TOK.structLiteral, 54);
@@ -3388,8 +3388,8 @@ public class expression {
         public Expression argprefix;
         public CtorDeclaration member;
         public NewDeclaration allocator;
-        public boolean onstack;
-        public boolean thrownew;
+        public boolean onstack = false;
+        public boolean thrownew = false;
         public  NewExp(Loc loc, Expression thisexp, DArray<Expression> newargs, Type newtype, DArray<Expression> arguments) {
             super(loc, TOK.new_, 54);
             this.thisexp = thisexp;
@@ -3474,7 +3474,7 @@ public class expression {
     public static class SymbolExp extends Expression
     {
         public Declaration var;
-        public boolean hasOverloads;
+        public boolean hasOverloads = false;
         public Dsymbol originalScope;
         public  SymbolExp(Loc loc, byte op, int size, Declaration var, boolean hasOverloads) {
             super(loc, op, size);
@@ -3505,7 +3505,7 @@ public class expression {
     }
     public static class SymOffExp extends SymbolExp
     {
-        public long offset;
+        public long offset = 0;
         public  SymOffExp(Loc loc, Declaration var, long offset, boolean hasOverloads) {
             {
                 VarDeclaration v = var.isVarDeclaration();
@@ -3682,7 +3682,7 @@ public class expression {
     {
         public FuncLiteralDeclaration fd;
         public TemplateDeclaration td;
-        public byte tok;
+        public byte tok = 0;
         public  FuncExp(Loc loc, Dsymbol s) {
             super(loc, TOK.function_, 33);
             this.td = s.isTemplateDeclaration();
@@ -4074,8 +4074,8 @@ public class expression {
         public Identifier id;
         public Type tspec;
         public DArray<TemplateParameter> parameters;
-        public byte tok;
-        public byte tok2;
+        public byte tok = 0;
+        public byte tok2 = 0;
         public  IsExp(Loc loc, Type targ, Identifier id, byte tok, Type tspec, byte tok2, DArray<TemplateParameter> parameters) {
             super(loc, TOK.is_, 42);
             this.targ = targ;
@@ -4563,8 +4563,8 @@ public class expression {
     public static class DotIdExp extends UnaExp
     {
         public Identifier ident;
-        public boolean noderef;
-        public boolean wantsym;
+        public boolean noderef = false;
+        public boolean wantsym = false;
         public  DotIdExp(Loc loc, Expression e, Identifier ident) {
             super(loc, TOK.dotIdentifier, 38, e);
             this.ident = ident;
@@ -4627,7 +4627,7 @@ public class expression {
     public static class DotVarExp extends UnaExp
     {
         public Declaration var;
-        public boolean hasOverloads;
+        public boolean hasOverloads = false;
         public  DotVarExp(Loc loc, Expression e, Declaration var, boolean hasOverloads) {
             if (var.isVarDeclaration() != null)
                 hasOverloads = false;
@@ -4807,7 +4807,7 @@ public class expression {
     public static class DelegateExp extends UnaExp
     {
         public FuncDeclaration func;
-        public boolean hasOverloads;
+        public boolean hasOverloads = false;
         public VarDeclaration vthis2;
         public  DelegateExp(Loc loc, Expression e, FuncDeclaration f, boolean hasOverloads, VarDeclaration vthis2) {
             super(loc, TOK.delegate_, 44, e);
@@ -4870,7 +4870,7 @@ public class expression {
     {
         public DArray<Expression> arguments;
         public FuncDeclaration f;
-        public boolean directcall;
+        public boolean directcall = false;
         public VarDeclaration vthis2;
         public  CallExp(Loc loc, Expression e, DArray<Expression> exps) {
             super(loc, TOK.call, 48, e);
@@ -5239,7 +5239,7 @@ public class expression {
     }
     public static class DeleteExp extends UnaExp
     {
-        public boolean isRAII;
+        public boolean isRAII = false;
         public  DeleteExp(Loc loc, Expression e, boolean isRAII) {
             super(loc, TOK.delete_, 33, e);
             this.isRAII = isRAII;
@@ -5341,7 +5341,7 @@ public class expression {
         }
 
         public static void emplace(UnionExp pue, Loc loc, Expression e, Type type) {
-            (pue).emplace(new VectorExp(loc, e, type));
+            (pue) = new UnionExp(new VectorExp(loc, e, type));
         }
 
         public  Expression syntaxCopy() {
@@ -5409,9 +5409,9 @@ public class expression {
         public Expression upr;
         public Expression lwr;
         public VarDeclaration lengthVar;
-        public boolean upperIsInBounds;
-        public boolean lowerIsLessThanUpper;
-        public boolean arrayop;
+        public boolean upperIsInBounds = false;
+        public boolean lowerIsLessThanUpper = false;
+        public boolean arrayop = false;
         public  SliceExp(Loc loc, Expression e1, IntervalExp ie) {
             super(loc, TOK.slice, 47, e1);
             this.upr = ie != null ? ie.upr : null;
@@ -5508,7 +5508,7 @@ public class expression {
     public static class ArrayExp extends UnaExp
     {
         public DArray<Expression> arguments;
-        public int currentDimension;
+        public int currentDimension = 0;
         public VarDeclaration lengthVar;
         public  ArrayExp(Loc loc, Expression e1, Expression index) {
             super(loc, TOK.array, 44, e1);
@@ -5591,8 +5591,8 @@ public class expression {
     }
     public static class CommaExp extends BinExp
     {
-        public boolean isGenerated;
-        public boolean allowCommaExp;
+        public boolean isGenerated = false;
+        public boolean allowCommaExp = false;
         public  CommaExp(Loc loc, Expression e1, Expression e2, boolean generated) {
             super(loc, TOK.comma, 42, e1, e2);
             this.allowCommaExp = (this.isGenerated = generated);
@@ -5789,7 +5789,7 @@ public class expression {
     {
         public VarDeclaration lengthVar;
         public boolean modifiable = false;
-        public boolean indexIsInBounds;
+        public boolean indexIsInBounds = false;
         public  IndexExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.index, 46, e1, e2);
         }
@@ -5934,7 +5934,7 @@ public class expression {
 
     public static class AssignExp extends BinExp
     {
-        public int memset;
+        public int memset = 0;
         public  AssignExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.assign, 44, e1, e2);
         }
@@ -7081,7 +7081,7 @@ public class expression {
     }
     public static class DefaultInitExp extends Expression
     {
-        public byte subop;
+        public byte subop = 0;
         public  DefaultInitExp(Loc loc, byte subop, int size) {
             super(loc, TOK.default_, size);
             this.subop = subop;

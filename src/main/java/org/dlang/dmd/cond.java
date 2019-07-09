@@ -45,7 +45,7 @@ public class cond {
     public static abstract class Condition extends ASTNode
     {
         public Loc loc = new Loc();
-        public int inc;
+        public int inc = 0;
         public  int dyncast() {
             return DYNCAST.condition;
         }
@@ -314,7 +314,7 @@ public class cond {
     }
     public static abstract class DVCondition extends Condition
     {
-        public int level;
+        public int level = 0;
         public Identifier ident;
         public dmodule.Module mod;
         public  DVCondition(dmodule.Module mod, int level, Identifier ident) {

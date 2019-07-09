@@ -30,7 +30,7 @@ public class ctorflow {
 
     public static class FieldInit
     {
-        public int csx;
+        public int csx = 0;
         public Loc loc = new Loc();
         public FieldInit(){
             loc = new Loc();
@@ -54,7 +54,7 @@ public class ctorflow {
     }
     public static class CtorFlow
     {
-        public int callSuper;
+        public int callSuper = 0;
         public Slice<FieldInit> fieldinit;
         public  void allocFieldinit(int dim) {
             this.fieldinit = (ptr(new FieldInit[dim])).slice(0,dim).copy();

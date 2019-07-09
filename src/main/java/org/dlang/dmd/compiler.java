@@ -30,8 +30,8 @@ import static org.dlang.dmd.tokens.*;
 public class compiler {
     private static class U
     {
-        private int int32value;
-        private long int64value;
+        private int int32value = 0;
+        private long int64value = 0;
         private float float32value;
         private double float64value;
         public U(){
@@ -134,20 +134,20 @@ public class compiler {
                     {
                         case 17:
                         case 18:
-                            (pue).emplace(new IntegerExp(e.loc, u.int32value, type));
+                            (pue) = new UnionExp(new IntegerExp(e.loc, u.int32value, type));
                             break;
                         case 19:
                         case 20:
-                            (pue).emplace(new IntegerExp(e.loc, u.int64value, type));
+                            (pue) = new UnionExp(new IntegerExp(e.loc, u.int64value, type));
                             break;
                         case 21:
                             r = (double)u.float32value;
-                            (pue).emplace(new RealExp(e.loc, r, type));
+                            (pue) = new UnionExp(new RealExp(e.loc, r, type));
                             break;
                         case 22:
                             __dispatch1 = 0;
                             r = (double)u.float64value;
-                            (pue).emplace(new RealExp(e.loc, r, type));
+                            (pue) = new UnionExp(new RealExp(e.loc, r, type));
                             break;
                         case 23:
                             assert((type.size() == 8L));
@@ -196,8 +196,8 @@ public class compiler {
     {
         public DArray<Identifier> packages;
         public Identifier name;
-        public boolean isPackageFile;
-        public int index;
+        public boolean isPackageFile = false;
+        public int index = 0;
         public  int totalLength() {
             return (this.packages).length + 1 + (this.isPackageFile ? 1 : 0);
         }
@@ -280,8 +280,8 @@ public class compiler {
 
     public static class MatcherNode
     {
-        public int depth;
-        public boolean isExclude;
+        public int depth = 0;
+        public boolean isExclude = false;
         public Identifier id;
         public  MatcherNode(Identifier id) {
             this.id = id;

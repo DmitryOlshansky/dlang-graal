@@ -58,7 +58,7 @@ public class typesem {
     static FuncDeclaration visitAArrayfhash = null;
     static Slice<BytePtr> visitTraitsctxt = slice(initializer_0);
     static FuncDeclaration visitAArrayfd_aaLen = null;
-    static int noMembernest;
+    static int noMembernest = 0;
 
     public static Expression semanticLength(Scope sc, Type t, Expression exp) {
         {

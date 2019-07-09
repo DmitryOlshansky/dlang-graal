@@ -112,9 +112,9 @@ public class dinterpret {
     {
         private InterState istate;
         private Expression newval;
-        private boolean refCopy;
-        private boolean needsPostblit;
-        private boolean needsDtor;
+        private boolean refCopy = false;
+        private boolean needsPostblit = false;
+        private boolean needsDtor = false;
         public  Expression assignTo(ArrayLiteralExp ae) {
             return this.assignTo(ae, 0, (ae.elements).length);
         }
@@ -324,8 +324,8 @@ public class dinterpret {
         public DArray<Object> frames = new DArray<Object>();
         public DArray<Expression> savedThis = new DArray<Expression>();
         public DArray<Expression> globalValues = new DArray<Expression>();
-        public int framepointer;
-        public int maxStackPointer;
+        public int framepointer = 0;
+        public int maxStackPointer = 0;
         public Expression localThis;
         public  int stackPointer() {
             return this.values.length;
@@ -506,7 +506,7 @@ public class dinterpret {
     public static class CompiledCtfeFunction
     {
         public FuncDeclaration func;
-        public int numVars;
+        public int numVars = 0;
         public Loc callingloc = new Loc();
         public  CompiledCtfeFunction(FuncDeclaration f) {
             this.func = f;
@@ -918,7 +918,7 @@ public class dinterpret {
     public static class Interpreter extends Visitor
     {
         public InterState istate;
-        public int goal;
+        public int goal = 0;
         public Expression result;
         public UnionExp pue;
         public  Interpreter(UnionExp pue, InterState istate, int goal) {
@@ -1770,7 +1770,7 @@ public class dinterpret {
                 long elemsize = elemtype.size();
                 if (((val.type.ty & 0xFF) == ENUMTY.Tsarray) && ((pointee.ty & 0xFF) == ENUMTY.Tarray) && (elemsize == pointee.nextOf().size()))
                 {
-                    (this.pue).emplace(new AddrExp(e.loc, val, e.type));
+                    (this.pue) = new UnionExp(new AddrExp(e.loc, val, e.type));
                     this.result = (this.pue).exp();
                     return ;
                 }
@@ -1781,7 +1781,7 @@ public class dinterpret {
                     Expression eupr = new IntegerExp(e.loc, e.offset / elemsize + (long)d, Type.tsize_t);
                     SliceExp se = new SliceExp(e.loc, val, elwr, eupr);
                     se.type = pointee;
-                    (this.pue).emplace(new AddrExp(e.loc, se, e.type));
+                    (this.pue) = new UnionExp(new AddrExp(e.loc, se, e.type));
                     this.result = (this.pue).exp();
                     return ;
                 }
@@ -1791,7 +1791,7 @@ public class dinterpret {
                     {
                         VarExp ve = new VarExp(e.loc, e.var, true);
                         ve.type = elemtype;
-                        (this.pue).emplace(new AddrExp(e.loc, ve, e.type));
+                        (this.pue) = new UnionExp(new AddrExp(e.loc, ve, e.type));
                         this.result = (this.pue).exp();
                         return ;
                     }
@@ -1822,7 +1822,7 @@ public class dinterpret {
                     IntegerExp ofs = new IntegerExp(e.loc, indx, Type.tsize_t);
                     IndexExp ei = new IndexExp(e.loc, aggregate, ofs);
                     ei.type = elemtype;
-                    (this.pue).emplace(new AddrExp(e.loc, ei, e.type));
+                    (this.pue) = new UnionExp(new AddrExp(e.loc, ei, e.type));
                     this.result = (this.pue).exp();
                     return ;
                 }
@@ -1831,7 +1831,7 @@ public class dinterpret {
             {
                 VarExp ve = new VarExp(e.loc, e.var, true);
                 ve.type = e.var.type;
-                (this.pue).emplace(new AddrExp(e.loc, ve, e.type));
+                (this.pue) = new UnionExp(new AddrExp(e.loc, ve, e.type));
                 this.result = (this.pue).exp();
                 return ;
             }
@@ -1853,7 +1853,7 @@ public class dinterpret {
                     }
                     if (decl.isDataseg())
                     {
-                        (this.pue).emplace(new SymOffExp(e.loc, ((VarExp)e.e1).var, 0));
+                        (this.pue) = new UnionExp(new SymOffExp(e.loc, ((VarExp)e.e1).var, 0));
                         this.result = (this.pue).exp();
                         this.result.type = e.type;
                         return ;
@@ -1869,7 +1869,7 @@ public class dinterpret {
             }
             if (this.exceptionOrCant(er))
                 return ;
-            (this.pue).emplace(new AddrExp(e.loc, er, e.type));
+            (this.pue) = new UnionExp(new AddrExp(e.loc, er, e.type));
             this.result = (this.pue).exp();
         }
 
@@ -1893,7 +1893,7 @@ public class dinterpret {
             else
             {
                 er = (pequals(er, (this.pue).exp())) ? (this.pue).copy() : er;
-                (this.pue).emplace(new DelegateExp(e.loc, er, e.func, false));
+                (this.pue) = new UnionExp(new DelegateExp(e.loc, er, e.func, false));
                 this.result = (this.pue).exp();
                 this.result.type = e.type;
             }
@@ -2210,7 +2210,7 @@ public class dinterpret {
                     }
                     ClassDeclaration cd = ((ClassReferenceExp)this.result).originalClass();
                     assert(cd != null);
-                    (this.pue).emplace(new TypeidExp(e.loc, cd.type));
+                    (this.pue) = new UnionExp(new TypeidExp(e.loc, cd.type));
                     this.result = (this.pue).exp();
                     this.result.type = e.type;
                     return ;
@@ -2249,7 +2249,7 @@ public class dinterpret {
             if ((expsx != e.exps))
             {
                 expandTuples(expsx);
-                (this.pue).emplace(new TupleExp(e.loc, expsx));
+                (this.pue) = new UnionExp(new TupleExp(e.loc, expsx));
                 this.result = (this.pue).exp();
                 this.result.type = new TypeTuple(expsx);
             }
@@ -2304,7 +2304,7 @@ public class dinterpret {
                     this.result = CTFEExp.cantexp;
                     return ;
                 }
-                (this.pue).emplace(new ArrayLiteralExp(e.loc, e.type, basis, expsx));
+                (this.pue) = new UnionExp(new ArrayLiteralExp(e.loc, e.type, basis, expsx));
                 ArrayLiteralExp ale = (ArrayLiteralExp)(this.pue).exp();
                 ale.ownedByCtfe = OwnedBy.ctfe;
                 this.result = ale;
@@ -2465,7 +2465,7 @@ public class dinterpret {
                     this.result = CTFEExp.cantexp;
                     return ;
                 }
-                (this.pue).emplace(new StructLiteralExp(e.loc, e.sd, expsx));
+                (this.pue) = new UnionExp(new StructLiteralExp(e.loc, e.sd, expsx));
                 StructLiteralExp sle = (StructLiteralExp)(this.pue).exp();
                 sle.type = e.type;
                 sle.ownedByCtfe = OwnedBy.ctfe;
@@ -2499,7 +2499,7 @@ public class dinterpret {
                         element = copyLiteral(elem).copy();
                     }
                 }
-                (pue).emplace(new ArrayLiteralExp(loc, newtype, elements));
+                (pue) = new UnionExp(new ArrayLiteralExp(loc, newtype, elements));
                 ArrayLiteralExp ae = (ArrayLiteralExp)(pue).exp();
                 ae.ownedByCtfe = OwnedBy.ctfe;
                 return ae;
@@ -2576,7 +2576,7 @@ public class dinterpret {
                     if (this.exceptionOrCant(this.result))
                         return ;
                     Expression ev = (pequals(this.result, (this.pue).exp())) ? (this.pue).copy() : this.result;
-                    (this.pue).emplace(new AddrExp(e.loc, ev, e.type));
+                    (this.pue) = new UnionExp(new AddrExp(e.loc, ev, e.type));
                     this.result = (this.pue).exp();
                     return ;
                 }
@@ -2630,7 +2630,7 @@ public class dinterpret {
                     }
                     StructLiteralExp se = new StructLiteralExp(e.loc, (StructDeclaration)cd, elems, e.newtype);
                     se.ownedByCtfe = OwnedBy.ctfe;
-                    (this.pue).emplace(new ClassReferenceExp(e.loc, se, e.type));
+                    (this.pue) = new UnionExp(new ClassReferenceExp(e.loc, se, e.type));
                     Expression eref = (this.pue).exp();
                     if (e.member != null)
                     {
@@ -2674,7 +2674,7 @@ public class dinterpret {
                 ae.ownedByCtfe = OwnedBy.ctfe;
                 IndexExp ei = new IndexExp(e.loc, ae, new IntegerExp(Loc.initial, 0L, Type.tsize_t));
                 ei.type = e.newtype;
-                (this.pue).emplace(new AddrExp(e.loc, ei, e.type));
+                (this.pue) = new UnionExp(new AddrExp(e.loc, ei, e.type));
                 this.result = (this.pue).exp();
                 return ;
             }
@@ -2835,7 +2835,7 @@ public class dinterpret {
                     this.result = CTFEExp.cantexp;
                     return ;
                 }
-                (this.pue).emplace(new IntegerExp(e.loc, cmp, e.type));
+                (this.pue) = new UnionExp(new IntegerExp(e.loc, cmp, e.type));
                 this.result = (this.pue).exp();
                 return ;
             }
@@ -2858,7 +2858,7 @@ public class dinterpret {
                 return ;
             }
             int cmp = (fp).invoke(e.loc, e.op, e1, e2);
-            (this.pue).emplace(new IntegerExp(e.loc, cmp, e.type));
+            (this.pue) = new UnionExp(new IntegerExp(e.loc, cmp, e.type));
             this.result = (this.pue).exp();
         }
 
@@ -3923,7 +3923,7 @@ public class dinterpret {
                 Expression agg4 = getAggregateFromPointer(p4.value, ptr(ofs4));
                 if ((dir1 == dir2) && pointToSameMemoryBlock(agg1, agg4) && pointToSameMemoryBlock(agg2, agg3) || (dir1 != dir2) && pointToSameMemoryBlock(agg1, agg3) && pointToSameMemoryBlock(agg2, agg4))
                 {
-                    (pue).emplace(new IntegerExp(e.loc, ((e.op & 0xFF) == 101) ? 0 : 1, e.type));
+                    (pue) = new UnionExp(new IntegerExp(e.loc, ((e.op & 0xFF) == 101) ? 0 : 1, e.type));
                     this.result = (pue).exp();
                     return ;
                 }
@@ -3975,7 +3975,7 @@ public class dinterpret {
                 this.result = interpret(pue, e.e2, this.istate, CtfeGoal.ctfeNeedRvalue);
                 return ;
             }
-            (pue).emplace(new IntegerExp(e.loc, ((e.op & 0xFF) == 101) ? 0 : 1, e.type));
+            (pue) = new UnionExp(new IntegerExp(e.loc, ((e.op & 0xFF) == 101) ? 0 : 1, e.type));
             this.result = (pue).exp();
         }
 
@@ -4021,7 +4021,7 @@ public class dinterpret {
             }
             if ((this.goal != CtfeGoal.ctfeNeedNothing))
             {
-                (this.pue).emplace(new IntegerExp(e.loc, res, e.type));
+                (this.pue) = new UnionExp(new IntegerExp(e.loc, res, e.type));
                 this.result = (this.pue).exp();
             }
         }
@@ -4297,7 +4297,7 @@ public class dinterpret {
             {
                 if (((econd.op & 0xFF) != 13))
                 {
-                    uecond.emplace(new IntegerExp(e.loc, 1, Type.tbool));
+                    uecond = new UnionExp(new IntegerExp(e.loc, 1, Type.tbool));
                     econd = uecond.exp();
                 }
             }
@@ -4324,7 +4324,7 @@ public class dinterpret {
                 this.result = CTFEExp.cantexp;
                 return ;
             }
-            (this.pue).emplace(new IntegerExp(e.loc, resolveArrayLength(e1), e.type));
+            (this.pue) = new UnionExp(new IntegerExp(e.loc, resolveArrayLength(e1), e.type));
             this.result = (this.pue).exp();
         }
 
@@ -4347,7 +4347,7 @@ public class dinterpret {
                 }
                 Type type = ((e.type.ty & 0xFF) == ENUMTY.Tvector) ? e.type.isTypeVector().basetype : e.type.isTypeSArray();
                 assert(type != null);
-                (pue).emplace(new ArrayLiteralExp(e.loc, type, elements));
+                (pue) = new UnionExp(new ArrayLiteralExp(e.loc, type, elements));
                 ArrayLiteralExp ale = (ArrayLiteralExp)(pue).exp();
                 ale.ownedByCtfe = OwnedBy.ctfe;
                 return ale;
@@ -4373,7 +4373,7 @@ public class dinterpret {
             }
             if ((pequals(e1, (this.pue).exp())))
                 e1 = (this.pue).copy();
-            (this.pue).emplace(new VectorExp(e.loc, e1, e.to));
+            (this.pue) = new UnionExp(new VectorExp(e.loc, e1, e.to));
             VectorExp ve = (VectorExp)(this.pue).exp();
             ve.type = e.type;
             ve.dim = e.dim;
@@ -4554,7 +4554,7 @@ public class dinterpret {
                 {
                     if ((this.goal == CtfeGoal.ctfeNeedLvalue))
                     {
-                        (this.pue).emplace(new IndexExp(e.loc, agg.value, new IntegerExp(e.e2.loc, indexToAccess.value, e.e2.type)));
+                        (this.pue) = new UnionExp(new IndexExp(e.loc, agg.value, new IntegerExp(e.e2.loc, indexToAccess.value, e.e2.type)));
                         this.result = (this.pue).exp();
                         this.result.type = e.type;
                         return ;
@@ -4596,7 +4596,7 @@ public class dinterpret {
                         this.result = e;
                     else
                     {
-                        (this.pue).emplace(new IndexExp(e.loc, e1, e2));
+                        (this.pue) = new UnionExp(new IndexExp(e.loc, e1, e2));
                         this.result = (this.pue).exp();
                         this.result.type = e.type;
                     }
@@ -4623,7 +4623,7 @@ public class dinterpret {
             if ((this.goal == CtfeGoal.ctfeNeedLvalue))
             {
                 Expression e2 = new IntegerExp(e.e2.loc, indexToAccess.value, Type.tsize_t);
-                (this.pue).emplace(new IndexExp(e.loc, agg.value, e2));
+                (this.pue) = new UnionExp(new IndexExp(e.loc, agg.value, e2));
                 this.result = (this.pue).exp();
                 this.result.type = e.type;
                 return ;
@@ -4702,7 +4702,7 @@ public class dinterpret {
                     lwr = new IntegerExp(e.loc, ilwr, lwr.type);
                     upr = new IntegerExp(e.loc, iupr, upr.type);
                 }
-                (this.pue).emplace(new SliceExp(e.loc, agg, lwr, upr));
+                (this.pue) = new UnionExp(new SliceExp(e.loc, agg, lwr, upr));
                 this.result = (this.pue).exp();
                 this.result.type = e.type;
                 return ;
@@ -4800,7 +4800,7 @@ public class dinterpret {
                     }
                     ilwr += lo1;
                     iupr += lo1;
-                    (this.pue).emplace(new SliceExp(e.loc, se.e1, new IntegerExp(e.loc, ilwr, lwr.type), new IntegerExp(e.loc, iupr, upr.type)));
+                    (this.pue) = new UnionExp(new SliceExp(e.loc, se.e1, new IntegerExp(e.loc, ilwr, lwr.type), new IntegerExp(e.loc, iupr, upr.type)));
                     this.result = (this.pue).exp();
                     this.result.type = e.type;
                     return ;
@@ -4815,7 +4815,7 @@ public class dinterpret {
                     return ;
                 }
             }
-            (this.pue).emplace(new SliceExp(e.loc, e1, lwr, upr));
+            (this.pue) = new UnionExp(new SliceExp(e.loc, e1, lwr, upr));
             this.result = (this.pue).exp();
             this.result.type = e.type;
         }
@@ -4829,7 +4829,7 @@ public class dinterpret {
                 return ;
             if (((e2.op & 0xFF) == 13))
             {
-                (this.pue).emplace(new NullExp(e.loc, e.type));
+                (this.pue) = new UnionExp(new NullExp(e.loc, e.type));
                 this.result = (this.pue).exp();
                 return ;
             }
@@ -4845,14 +4845,14 @@ public class dinterpret {
                 return ;
             if (this.result == null)
             {
-                (this.pue).emplace(new NullExp(e.loc, e.type));
+                (this.pue) = new UnionExp(new NullExp(e.loc, e.type));
                 this.result = (this.pue).exp();
             }
             else
             {
                 this.result = new IndexExp(e.loc, e2, e1);
                 this.result.type = e.type.nextOf();
-                (this.pue).emplace(new AddrExp(e.loc, this.result, e.type));
+                (this.pue) = new UnionExp(new AddrExp(e.loc, this.result, e.type));
                 this.result = (this.pue).exp();
             }
         }
@@ -5064,7 +5064,7 @@ public class dinterpret {
                         }
                         IndexExp ei = new IndexExp(e.loc, se.e1, se.lwr);
                         ei.type = e.type.nextOf();
-                        (this.pue).emplace(new AddrExp(e.loc, ei, e.type));
+                        (this.pue) = new UnionExp(new AddrExp(e.loc, ei, e.type));
                         this.result = (this.pue).exp();
                         return ;
                     }
@@ -5073,7 +5073,7 @@ public class dinterpret {
                 {
                     IndexExp ei = new IndexExp(e.loc, e1, new IntegerExp(e.loc, 0L, Type.tsize_t));
                     ei.type = e.type.nextOf();
-                    (this.pue).emplace(new AddrExp(e.loc, ei, e.type));
+                    (this.pue) = new UnionExp(new AddrExp(e.loc, ei, e.type));
                     this.result = (this.pue).exp();
                     return ;
                 }
@@ -5119,7 +5119,7 @@ public class dinterpret {
                             return ;
                         }
                     }
-                    (this.pue).emplace(new IndexExp(e1.loc, ie.e1, ie.e2));
+                    (this.pue) = new UnionExp(new IndexExp(e1.loc, ie.e1, ie.e2));
                     this.result = (this.pue).exp();
                     this.result.type = e.type;
                     return ;
@@ -5131,7 +5131,7 @@ public class dinterpret {
                         Type origType = ae.e1.type;
                         if (isSafePointerCast(origType, pointee))
                         {
-                            (this.pue).emplace(new AddrExp(e.loc, ae.e1, e.type));
+                            (this.pue) = new UnionExp(new AddrExp(e.loc, ae.e1, e.type));
                             this.result = (this.pue).exp();
                             return ;
                         }
@@ -5143,7 +5143,7 @@ public class dinterpret {
                             Expression upr = new IntegerExp(ie.e2.loc, ie.e2.toInteger() + dim, Type.tsize_t);
                             SliceExp er = new SliceExp(e.loc, ie.e1, lwr, upr);
                             er.type = pointee;
-                            (this.pue).emplace(new AddrExp(e.loc, er, e.type));
+                            (this.pue) = new UnionExp(new AddrExp(e.loc, er, e.type));
                             this.result = (this.pue).exp();
                             return ;
                         }
@@ -5161,9 +5161,9 @@ public class dinterpret {
                     {
                         VarExp ve = e1.isVarExp();
                         if ((ve) != null)
-                            (this.pue).emplace(new VarExp(e.loc, ve.var));
+                            (this.pue) = new UnionExp(new VarExp(e.loc, ve.var));
                         else
-                            (this.pue).emplace(new SymOffExp(e.loc, ((SymOffExp)e1).var, ((SymOffExp)e1).offset));
+                            (this.pue) = new UnionExp(new SymOffExp(e.loc, ((SymOffExp)e1).var, ((SymOffExp)e1).offset));
                     }
                     this.result = (this.pue).exp();
                     this.result.type = e.to;
@@ -5194,7 +5194,7 @@ public class dinterpret {
                     this.result = CTFEExp.cantexp;
                     return ;
                 }
-                (this.pue).emplace(new SliceExp(e1.loc, se.e1, se.lwr, se.upr));
+                (this.pue) = new UnionExp(new SliceExp(e1.loc, se.e1, se.lwr, se.upr));
                 this.result = (this.pue).exp();
                 this.result.type = e.to;
                 return ;
@@ -5209,7 +5209,7 @@ public class dinterpret {
                 e1 = resolveSlice(e1, null);
             if (((e.to.toBasetype().ty & 0xFF) == ENUMTY.Tbool) && ((e1.type.ty & 0xFF) == ENUMTY.Tpointer))
             {
-                (this.pue).emplace(new IntegerExp(e.loc, (e1.op & 0xFF) != 13, e.to));
+                (this.pue) = new UnionExp(new IntegerExp(e.loc, (e1.op & 0xFF) != 13, e.to));
                 this.result = (this.pue).exp();
                 return ;
             }
@@ -5344,7 +5344,7 @@ public class dinterpret {
                         this.result = e;
                     else
                     {
-                        (this.pue).emplace(new DotVarExp(e.loc, ex, f, false));
+                        (this.pue) = new UnionExp(new DotVarExp(e.loc, ex, f, false));
                         this.result = (this.pue).exp();
                         this.result.type = e.type;
                     }
@@ -5400,7 +5400,7 @@ public class dinterpret {
                     this.result = e;
                 else
                 {
-                    (this.pue).emplace(new DotVarExp(e.loc, ex, v));
+                    (this.pue) = new UnionExp(new DotVarExp(e.loc, ex, v));
                     this.result = (this.pue).exp();
                     this.result.type = e.type;
                 }
@@ -5481,7 +5481,7 @@ public class dinterpret {
             }
             (valuesx).length = (valuesx).length - removed;
             (keysx).length = (keysx).length - removed;
-            (this.pue).emplace(new IntegerExp(e.loc, removed != 0 ? 1 : 0, Type.tbool));
+            (this.pue) = new UnionExp(new IntegerExp(e.loc, removed != 0 ? 1 : 0, Type.tbool));
             this.result = (this.pue).exp();
         }
 
@@ -5829,7 +5829,7 @@ public class dinterpret {
             else
                 assert(((earg.op & 0xFF) == 13));
         }
-        (pue).emplace(new IntegerExp(earg.loc, len, Type.tsize_t));
+        (pue) = new UnionExp(new IntegerExp(earg.loc, len, Type.tsize_t));
         return (pue).exp();
     }
 
@@ -5839,7 +5839,7 @@ public class dinterpret {
             return earg;
         if (((earg.op & 0xFF) == 13))
         {
-            (pue).emplace(new NullExp(earg.loc, earg.type));
+            (pue) = new UnionExp(new NullExp(earg.loc, earg.type));
             return (pue).exp();
         }
         if (((earg.op & 0xFF) != 48) && ((earg.type.toBasetype().ty & 0xFF) != ENUMTY.Taarray))
@@ -5857,7 +5857,7 @@ public class dinterpret {
             return earg;
         if (((earg.op & 0xFF) == 13))
         {
-            (pue).emplace(new NullExp(earg.loc, earg.type));
+            (pue) = new UnionExp(new NullExp(earg.loc, earg.type));
             return (pue).exp();
         }
         if (((earg.op & 0xFF) != 48) && ((earg.type.toBasetype().ty & 0xFF) != ENUMTY.Taarray))
@@ -5875,7 +5875,7 @@ public class dinterpret {
             return earg;
         if (((earg.op & 0xFF) == 13))
         {
-            (pue).emplace(new NullExp(earg.loc, earg.type));
+            (pue) = new UnionExp(new NullExp(earg.loc, earg.type));
             return (pue).exp();
         }
         if (((earg.op & 0xFF) != 48) && ((earg.type.toBasetype().ty & 0xFF) != ENUMTY.Taarray))
@@ -5906,7 +5906,7 @@ public class dinterpret {
             return aa;
         if (((aa.op & 0xFF) != 48))
         {
-            (pue).emplace(new IntegerExp(deleg.loc, 0, Type.tsize_t));
+            (pue) = new UnionExp(new IntegerExp(deleg.loc, 0, Type.tsize_t));
             return (pue).exp();
         }
         FuncDeclaration fd = null;
@@ -5991,7 +5991,7 @@ public class dinterpret {
         int len = (int)resolveArrayLength(str);
         if ((len == 0))
         {
-            (pue).emplace(new IntegerExp(deleg.loc, 0, indexType));
+            (pue) = new UnionExp(new IntegerExp(deleg.loc, 0, indexType));
             return (pue).exp();
         }
         str = resolveSlice(str, null);

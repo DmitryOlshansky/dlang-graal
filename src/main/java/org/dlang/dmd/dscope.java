@@ -71,9 +71,9 @@ public class dscope {
         public ForeachStatement fes;
         public Scope callsc;
         public Dsymbol inunion;
-        public boolean nofree;
-        public boolean inLoop;
-        public int intypeof;
+        public boolean nofree = false;
+        public boolean inLoop = false;
+        public int intypeof = 0;
         public VarDeclaration lastVar;
         public dmodule.Module minst;
         public TemplateInstance tinst;
@@ -84,10 +84,10 @@ public class dscope {
         public int cppmangle = CPPMANGLE.def;
         public int inlining = PINLINE.default_;
         public Prot protection = new Prot(Prot.Kind.public_, null);
-        public int explicitProtection;
-        public long stc;
+        public int explicitProtection = 0;
+        public long stc = 0;
         public DeprecatedDeclaration depdecl;
-        public int flags;
+        public int flags = 0;
         public UserAttributeDeclaration userAttribDecl;
         public DocComment lastdc;
         public AA<Object,Integer> anchorCounts = new AA<Object,Integer>();

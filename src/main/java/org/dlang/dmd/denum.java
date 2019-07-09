@@ -38,9 +38,9 @@ public class denum {
         public Expression maxval;
         public Expression minval;
         public Expression defaultval;
-        public boolean isdeprecated;
-        public boolean added;
-        public int inuse;
+        public boolean isdeprecated = false;
+        public boolean added = false;
+        public int inuse = 0;
         public  EnumDeclaration(Loc loc, Identifier ident, Type memtype) {
             super(loc, ident);
             this.type = new TypeEnum(this);

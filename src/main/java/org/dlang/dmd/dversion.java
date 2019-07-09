@@ -25,7 +25,7 @@ public class dversion {
 
     public static class DebugSymbol extends Dsymbol
     {
-        public int level;
+        public int level = 0;
         public  DebugSymbol(Loc loc, Identifier ident) {
             super(loc, ident);
         }
@@ -123,7 +123,7 @@ public class dversion {
     }
     public static class VersionSymbol extends Dsymbol
     {
-        public int level;
+        public int level = 0;
         public  VersionSymbol(Loc loc, Identifier ident) {
             super(loc, ident);
         }

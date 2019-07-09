@@ -29,8 +29,8 @@ public class blockexit {
     private static class BlockExit extends Visitor
     {
         private FuncDeclaration func;
-        private boolean mustNotThrow;
-        private int result;
+        private boolean mustNotThrow = false;
+        private int result = 0;
         public  BlockExit(FuncDeclaration func, boolean mustNotThrow) {
             this.func = func;
             this.mustNotThrow = mustNotThrow;

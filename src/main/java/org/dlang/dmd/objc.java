@@ -42,8 +42,8 @@ public class objc {
         public static StringTable vTableDispatchSelectors = new StringTable();
         public static int incnum = 0;
         public BytePtr stringvalue;
-        public int stringlen;
-        public int paramCount;
+        public int stringlen = 0;
+        public int paramCount = 0;
         public static void _init() {
             stringtable._init(0);
         }
@@ -379,14 +379,15 @@ public class objc {
         }
 
         public  ClassDeclaration getParent(FuncDeclaration fd, ClassDeclaration cd) {
+            Ref<ClassDeclaration> __result;
             Ref<FuncDeclaration> fd_ref = ref(fd);
             Ref<ClassDeclaration> cd_ref = ref(cd);
             try {
                 if ((cd_ref.value.classKind == ClassKind.objc) && fd_ref.value.isStatic() && !cd_ref.value.objc.isMeta)
-                    __result = cd_ref.value.objc.metaclass;
+                    __result.value = cd_ref.value.objc.metaclass;
                     /*goto __returnLabel*/throw Dispatch0.INSTANCE;
                 else
-                    __result = cd_ref.value;
+                    __result.value = cd_ref.value;
                     /*goto __returnLabel*/throw Dispatch0.INSTANCE;
             }
             catch(Dispatch0 __d){}
@@ -402,7 +403,7 @@ public class objc {
                 }
             };
             __ensure.invoke(__result, fd_ref, cd_ref);
-            return __result;
+            return __result.value;
         }
 
         public  void addToClassMethodList(FuncDeclaration fd, ClassDeclaration cd) {

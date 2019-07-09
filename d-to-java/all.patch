@@ -64,38 +64,6 @@ index a5abe6a..b5ce756 100644
                  super();
                  this.loc = loc.copy();
                  this.aggrfe = aggrfe;
-diff --git a/src/main/java/org/dlang/dmd/globals.java b/src/main/java/org/dlang/dmd/globals.java
-index f45a1d8..eb2223f 100644
---- a/src/main/java/org/dlang/dmd/globals.java
-+++ b/src/main/java/org/dlang/dmd/globals.java
-@@ -257,7 +257,19 @@ public class globals {
-         public ByteSlice exefile;
-         public ByteSlice mapfile;
-         public  boolean isPOSIX() {
--            return (((((this.isLinux || this.isOSX) || this.isFreeBSD) || this.isOpenBSD) || this.isDragonFlyBSD) || this.isSolaris);
-+            try {
-+                __result = (((((this.isLinux || this.isOSX) || this.isFreeBSD) || this.isOpenBSD) || this.isDragonFlyBSD) || this.isSolaris);
-+                /*goto __returnLabel*/throw Dispatch0.INSTANCE;
-+            }
-+            catch(Dispatch0 __d){}
-+        /*__returnLabel:*/
-+            {
-+                boolean result = __result;
-+                {
-+                    assert((result || this.isWindows));
-+                }
-+            }
-+            return __result;
-         }
- 
-         public Param(){
-@@ -975,5 +987,5 @@ public class globals {
-         public static final int always = 2;
-     }
- 
--    public static Global global = new Global();
-+    static Global global = new Global();
- }
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
 index ba0e307..202cd9a 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java

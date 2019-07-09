@@ -28,7 +28,7 @@ public class nogc {
     public static class NOGCVisitor extends StoppableVisitor
     {
         public FuncDeclaration f;
-        public boolean err;
+        public boolean err = false;
         public  NOGCVisitor(FuncDeclaration f) {
             super();
             this.f = f;

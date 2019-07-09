@@ -23,13 +23,13 @@ import static org.dlang.dmd.utils.*;
 public class astbase {
     private static final byte[] initializer_0 = {(byte)12, (byte)13, (byte)14, (byte)15, (byte)16, (byte)17, (byte)18, (byte)19, (byte)20, (byte)42, (byte)43, (byte)21, (byte)22, (byte)23, (byte)24, (byte)25, (byte)26, (byte)27, (byte)28, (byte)29, (byte)30, (byte)31, (byte)32, (byte)33, (byte)34};
     private static final SCstring[] initializer_1 = {new SCstring(256L, TOK.auto_, null), new SCstring(524288L, TOK.scope_, null), new SCstring(1L, TOK.static_, null), new SCstring(2L, TOK.extern_, null), new SCstring(4L, TOK.const_, null), new SCstring(8L, TOK.final_, null), new SCstring(16L, TOK.abstract_, null), new SCstring(512L, TOK.synchronized_, null), new SCstring(1024L, TOK.deprecated_, null), new SCstring(128L, TOK.override_, null), new SCstring(8192L, TOK.lazy_, null), new SCstring(268435456L, TOK.alias_, null), new SCstring(4096L, TOK.out_, null), new SCstring(2048L, TOK.in_, null), new SCstring(8388608L, TOK.enum_, null), new SCstring(1048576L, TOK.immutable_, null), new SCstring(536870912L, TOK.shared_, null), new SCstring(33554432L, TOK.nothrow_, null), new SCstring(2147483648L, TOK.inout_, null), new SCstring(67108864L, TOK.pure_, null), new SCstring(2097152L, TOK.ref_, null), new SCstring(134217728L, TOK.reserved, null), new SCstring(1073741824L, TOK.gshared, null), new SCstring(4398046511104L, TOK.at, new BytePtr("@nogc")), new SCstring(4294967296L, TOK.at, new BytePtr("@property")), new SCstring(8589934592L, TOK.at, new BytePtr("@safe")), new SCstring(17179869184L, TOK.at, new BytePtr("@trusted")), new SCstring(34359738368L, TOK.at, new BytePtr("@system")), new SCstring(137438953472L, TOK.at, new BytePtr("@disable")), new SCstring(1125899906842624L, TOK.at, new BytePtr("@__future")), new SCstring(0L, TOK.reserved, null)};
-    static int __ctorpackageTag;
+    static int __ctorpackageTag = 0;
     static BytePtr __ctormsg = new BytePtr("only object.d can define this reserved class name");
     static ByteSlice _initbasetab = slice(initializer_0);
     private static class SCstring
     {
-        private long stc;
-        private byte tok;
+        private long stc = 0;
+        private byte tok = 0;
         private BytePtr id;
         public SCstring(){
         }
@@ -453,9 +453,9 @@ public class astbase {
         }
         public static abstract class Declaration extends Dsymbol
         {
-            public long storage_class;
+            public long storage_class = 0;
             public Prot protection = new Prot();
-            public int linkage;
+            public int linkage = 0;
             public Type type;
             public  Declaration(Identifier id) {
                 super(id);
@@ -510,7 +510,7 @@ public class astbase {
             public DArray<Identifier> packages;
             public Identifier id;
             public Identifier aliasId;
-            public int isstatic;
+            public int isstatic = 0;
             public Prot protection = new Prot();
             public DArray<Identifier> names = new DArray<Identifier>();
             public DArray<Identifier> aliases = new DArray<Identifier>();
@@ -620,7 +620,7 @@ public class astbase {
         }
         public static class DebugSymbol extends Dsymbol
         {
-            public int level;
+            public int level = 0;
             public  DebugSymbol(Loc loc, Identifier ident) {
                 super(ident);
                 this.loc = loc.copy();
@@ -653,7 +653,7 @@ public class astbase {
         }
         public static class VersionSymbol extends Dsymbol
         {
-            public int level;
+            public int level = 0;
             public  VersionSymbol(Loc loc, Identifier ident) {
                 super(ident);
                 this.loc = loc.copy();
@@ -688,10 +688,10 @@ public class astbase {
         {
             public Type type;
             public Initializer _init;
-            public long storage_class;
-            public int ctfeAdrOnStack;
-            public int sequenceNumber;
-            public static int nextSequenceNumber;
+            public long storage_class = 0;
+            public int ctfeAdrOnStack = 0;
+            public int sequenceNumber = 0;
+            public static int nextSequenceNumber = 0;
             public  VarDeclaration(Loc loc, Type type, Identifier id, Initializer _init, long st) {
                 super(id);
                 this.type = type;
@@ -762,9 +762,9 @@ public class astbase {
             public DArray<Statement> frequires;
             public DArray<Ensure> fensures;
             public Loc endloc = new Loc();
-            public long storage_class;
+            public long storage_class = 0;
             public Type type;
-            public boolean inferRetType;
+            public boolean inferRetType = false;
             public ForeachStatement fes;
             public FuncDeclaration overnext0;
             public  FuncDeclaration(Loc loc, Loc endloc, Identifier id, long storage_class, Type type) {
@@ -899,7 +899,7 @@ public class astbase {
         }
         public static class FuncLiteralDeclaration extends FuncDeclaration
         {
-            public byte tok;
+            public byte tok = 0;
             public  FuncLiteralDeclaration(Loc loc, Loc endloc, Type type, byte tok, ForeachStatement fes, Identifier id) {
                 super(loc, endloc, null, 0L, type);
                 this.ident = id != null ? id : Id.empty;
@@ -1139,7 +1139,7 @@ public class astbase {
         public static class NewDeclaration extends FuncDeclaration
         {
             public DArray<Parameter> parameters;
-            public int varargs;
+            public int varargs = 0;
             public  NewDeclaration(Loc loc, Loc endloc, long stc, DArray<Parameter> fparams, int varargs) {
                 super(loc, endloc, Id.classNew, 1L | stc, null);
                 this.parameters = fparams;
@@ -1379,8 +1379,8 @@ public class astbase {
         }
         public static class Package extends ScopeDsymbol
         {
-            public int isPkgMod;
-            public int tag;
+            public int isPkgMod = 0;
+            public int tag = 0;
             public  Package(Identifier ident) {
                 super(ident);
                 this.isPkgMod = PKG.unknown;
@@ -1446,7 +1446,7 @@ public class astbase {
         public static abstract class AggregateDeclaration extends ScopeDsymbol
         {
             public Prot protection = new Prot();
-            public int sizeok;
+            public int sizeok = 0;
             public Type type;
             public  AggregateDeclaration(Loc loc, Identifier id) {
                 super(id);
@@ -1473,9 +1473,9 @@ public class astbase {
             public DArray<TemplateParameter> parameters;
             public DArray<TemplateParameter> origParameters;
             public Expression constraint;
-            public boolean literal;
-            public boolean ismixin;
-            public boolean isstatic;
+            public boolean literal = false;
+            public boolean ismixin = false;
+            public boolean isstatic = false;
             public Prot protection = new Prot();
             public Dsymbol onemember;
             public  TemplateDeclaration(Loc loc, Identifier id, DArray<TemplateParameter> parameters, Expression constraint, DArray<Dsymbol> decldefs, boolean ismixin, boolean literal) {
@@ -1539,8 +1539,8 @@ public class astbase {
             public Identifier name;
             public DArray<RootObject> tiargs;
             public Dsymbol tempdecl;
-            public boolean semantictiargsdone;
-            public boolean havetempdecl;
+            public boolean semantictiargsdone = false;
+            public boolean havetempdecl = false;
             public TemplateInstance inst;
             public  TemplateInstance(Loc loc, Identifier ident, DArray<RootObject> tiargs) {
                 super(null);
@@ -1734,7 +1734,7 @@ public class astbase {
         }
         public static class LinkDeclaration extends AttribDeclaration
         {
-            public int linkage;
+            public int linkage = 0;
             public  LinkDeclaration(int p, DArray<Dsymbol> decl) {
                 super(decl);
                 this.linkage = p;
@@ -1762,7 +1762,7 @@ public class astbase {
         }
         public static class AnonDeclaration extends AttribDeclaration
         {
-            public boolean isunion;
+            public boolean isunion = false;
             public  AnonDeclaration(Loc loc, boolean isunion, DArray<Dsymbol> decl) {
                 super(decl);
                 this.loc = loc.copy();
@@ -1820,7 +1820,7 @@ public class astbase {
         }
         public static class CPPMangleDeclaration extends AttribDeclaration
         {
-            public int cppmangle;
+            public int cppmangle = 0;
             public  CPPMangleDeclaration(int p, DArray<Dsymbol> decl) {
                 super(decl);
                 this.cppmangle = p;
@@ -1950,7 +1950,7 @@ public class astbase {
         }
         public static class StorageClassDeclaration extends AttribDeclaration
         {
-            public long stc;
+            public long stc = 0;
             public  StorageClassDeclaration(long stc, DArray<Dsymbol> decl) {
                 super(decl);
                 this.stc = stc;
@@ -2176,8 +2176,8 @@ public class astbase {
         }
         public static class StructDeclaration extends AggregateDeclaration
         {
-            public int zeroInit;
-            public int ispod;
+            public int zeroInit = 0;
+            public int ispod = 0;
             public  StructDeclaration(Loc loc, Identifier id, boolean inObject) {
                 super(loc, id);
                 this.zeroInit = 0;
@@ -2252,7 +2252,7 @@ public class astbase {
             public static ClassDeclaration errorException;
             public static ClassDeclaration cpp_type_info_ptr;
             public DArray<BaseClass> baseclasses;
-            public int baseok;
+            public int baseok = 0;
             public  ClassDeclaration(Loc loc, Identifier id, DArray<BaseClass> baseclasses, DArray<Dsymbol> members, boolean inObject) {
                 if (id == null)
                     id = Identifier.generateId(new BytePtr("__anonclass"));
@@ -2525,7 +2525,7 @@ public class astbase {
         }
         public static class Parameter extends ASTNode
         {
-            public long storageClass;
+            public long storageClass = 0;
             public Type type;
             public Identifier ident;
             public Expression defaultArg;
@@ -2897,7 +2897,7 @@ public class astbase {
         }
         public static class ForeachRangeStatement extends Statement
         {
-            public byte op;
+            public byte op = 0;
             public Parameter prm;
             public Expression lwr;
             public Expression upr;
@@ -2934,7 +2934,7 @@ public class astbase {
         }
         public static class ForeachStatement extends Statement
         {
-            public byte op;
+            public byte op = 0;
             public DArray<Parameter> parameters;
             public Expression aggr;
             public Statement _body;
@@ -3004,7 +3004,7 @@ public class astbase {
         }
         public static class ScopeGuardStatement extends Statement
         {
-            public byte tok;
+            public byte tok = 0;
             public Statement statement;
             public  ScopeGuardStatement(Loc loc, byte tok, Statement statement) {
                 super(loc);
@@ -3109,7 +3109,7 @@ public class astbase {
         {
             public Expression condition;
             public Statement _body;
-            public boolean isFinal;
+            public boolean isFinal = false;
             public  SwitchStatement(Loc loc, Expression c, Statement b, boolean isFinal) {
                 super(loc);
                 this.condition = c;
@@ -3595,7 +3595,7 @@ public class astbase {
         }
         public static class CompoundAsmStatement extends CompoundStatement
         {
-            public long stc;
+            public long stc = 0;
             public  CompoundAsmStatement(Loc loc, DArray<Statement> s, long stc) {
                 super(loc, s);
                 this.stc = stc;
@@ -3644,8 +3644,8 @@ public class astbase {
         }
         public static abstract class Type extends ASTNode
         {
-            public byte ty;
-            public byte mod;
+            public byte ty = 0;
+            public byte mod = 0;
             public BytePtr deco;
             public static Type tvoid;
             public static Type tint8;
@@ -4316,7 +4316,7 @@ public class astbase {
         public static class TypeBasic extends Type
         {
             public BytePtr dstring;
-            public int flags;
+            public int flags = 0;
             public  TypeBasic(byte ty) {
                 super(ty);
                 BytePtr d = null;
@@ -4963,16 +4963,16 @@ public class astbase {
         public static class TypeFunction extends TypeNext implements LinkedNode<Type>
         {
             public ParameterList parameterList = new ParameterList();
-            public boolean isnothrow;
-            public boolean isnogc;
-            public boolean isproperty;
-            public boolean isref;
-            public boolean isreturn;
-            public boolean isscope;
-            public int linkage;
-            public int trust;
+            public boolean isnothrow = false;
+            public boolean isnogc = false;
+            public boolean isproperty = false;
+            public boolean isref = false;
+            public boolean isreturn = false;
+            public boolean isscope = false;
+            public int linkage = 0;
+            public int trust = 0;
             public int purity = PURE.impure;
-            public byte iswild;
+            public byte iswild = 0;
             public DArray<Expression> fargs;
             public  TypeFunction(ParameterList pl, Type treturn, int linkage, long stc) {
                 super((byte)5, treturn);
@@ -5349,7 +5349,7 @@ public class astbase {
         {
             public TraitsExp exp;
             public Loc loc = new Loc();
-            public boolean inAliasDeclaration;
+            public boolean inAliasDeclaration = false;
             public  TypeTraits(Loc loc, TraitsExp exp) {
                 super((byte)6);
                 this.loc = loc.copy();
@@ -5575,9 +5575,9 @@ public class astbase {
         }
         public static abstract class Expression extends ASTNode
         {
-            public byte op;
-            public byte size;
-            public byte parens;
+            public byte op = 0;
+            public byte size = 0;
+            public byte parens = 0;
             public Type type;
             public Loc loc = new Loc();
             public  Expression(Loc loc, byte op, int size) {
@@ -5639,7 +5639,7 @@ public class astbase {
         }
         public static class IntegerExp extends Expression
         {
-            public long value;
+            public long value = 0;
             public  IntegerExp(Loc loc, long value, Type type) {
                 super(loc, TOK.int64, 32);
                 assert(type != null);
@@ -5772,8 +5772,8 @@ public class astbase {
             public Identifier id;
             public Type tspec;
             public DArray<TemplateParameter> parameters;
-            public byte tok;
-            public byte tok2;
+            public byte tok = 0;
+            public byte tok2 = 0;
             public  IsExp(Loc loc, Type targ, Identifier id, byte tok, Type tspec, byte tok2, DArray<TemplateParameter> parameters) {
                 super(loc, TOK.is_, 42);
                 this.targ = targ;
@@ -5918,7 +5918,7 @@ public class astbase {
             public BytePtr string;
             public CharPtr wstring;
             public IntPtr dstring;
-            public int len;
+            public int len = 0;
             public byte sz = (byte)1;
             public byte postfix = (byte)0;
             public  StringExp(Loc loc, BytePtr string) {
@@ -6111,7 +6111,7 @@ public class astbase {
         {
             public FuncLiteralDeclaration fd;
             public TemplateDeclaration td;
-            public byte tok;
+            public byte tok = 0;
             public  FuncExp(Loc loc, Dsymbol s) {
                 super(loc, TOK.function_, 33);
                 this.td = s.isTemplateDeclaration();
@@ -6280,7 +6280,7 @@ public class astbase {
         }
         public static class DefaultInitExp extends Expression
         {
-            public byte subop;
+            public byte subop = 0;
             public  DefaultInitExp(Loc loc, byte subop, int size) {
                 super(loc, TOK.default_, size);
                 this.subop = subop;
@@ -6326,7 +6326,7 @@ public class astbase {
         public static class DsymbolExp extends Expression
         {
             public Dsymbol s;
-            public boolean hasOverloads;
+            public boolean hasOverloads = false;
             public  DsymbolExp(Loc loc, Dsymbol s, boolean hasOverloads) {
                 super(loc, TOK.dSymbol, 29);
                 this.s = s;
@@ -6384,7 +6384,7 @@ public class astbase {
         public static class SymbolExp extends Expression
         {
             public Declaration var;
-            public boolean hasOverloads;
+            public boolean hasOverloads = false;
             public  SymbolExp(Loc loc, byte op, int size, Declaration var, boolean hasOverloads) {
                 super(loc, op, size);
                 assert(var != null);
@@ -6789,7 +6789,7 @@ public class astbase {
         }
         public static class DeleteExp extends UnaExp
         {
-            public boolean isRAII;
+            public boolean isRAII = false;
             public  DeleteExp(Loc loc, Expression e, boolean isRAII) {
                 super(loc, TOK.delete_, 29, e);
                 this.isRAII = isRAII;
@@ -7191,8 +7191,8 @@ public class astbase {
         }
         public static class CommaExp extends BinExp
         {
-            public boolean isGenerated;
-            public boolean allowCommaExp;
+            public boolean isGenerated = false;
+            public boolean allowCommaExp = false;
             public  CommaExp(Loc loc, Expression e1, Expression e2, boolean generated) {
                 super(loc, TOK.comma, 34, e1, e2);
                 this.allowCommaExp = (this.isGenerated = generated);
@@ -8325,7 +8325,7 @@ public class astbase {
         }
         public static class DVCondition extends Condition
         {
-            public int level;
+            public int level = 0;
             public Identifier ident;
             public Module mod;
             public  DVCondition(Module mod, int level, Identifier ident) {
@@ -8407,7 +8407,7 @@ public class astbase {
         public static class Initializer extends ASTNode
         {
             public Loc loc = new Loc();
-            public byte kind;
+            public byte kind = 0;
             public  Initializer(Loc loc, byte kind) {
                 super();
                 this.loc = loc.copy();
@@ -8492,7 +8492,7 @@ public class astbase {
         {
             public DArray<Expression> index = new DArray<Expression>();
             public DArray<Initializer> value = new DArray<Initializer>();
-            public int dim;
+            public int dim = 0;
             public Type type;
             public  ArrayInitializer(Loc loc) {
                 super(loc, InitKind.array);
@@ -8589,7 +8589,7 @@ public class astbase {
             public Loc loc = new Loc();
             public Identifier id;
             public DArray<Identifier> packages;
-            public boolean isdeprecated;
+            public boolean isdeprecated = false;
             public Expression msg;
             public  ModuleDeclaration(Loc loc, DArray<Identifier> packages, Identifier id, Expression msg, boolean isdeprecated) {
                 this.loc = loc.copy();
@@ -8655,7 +8655,7 @@ public class astbase {
                 public static final int export_ = 6;
             }
 
-            public int kind;
+            public int kind = 0;
             public Package pkg;
             public Prot(){
             }
@@ -8803,7 +8803,7 @@ public class astbase {
 
         public static class Target
         {
-            public static int ptrsize;
+            public static int ptrsize = 0;
             public static Type va_listType() {
                 if (global.params.isWindows)
                 {

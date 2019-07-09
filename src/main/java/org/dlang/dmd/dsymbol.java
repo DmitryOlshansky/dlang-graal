@@ -78,7 +78,7 @@ public class dsymbol {
 
     public static class Ungag
     {
-        public int oldgag;
+        public int oldgag = 0;
         public  Ungag(int old) {
             this.oldgag = old;
         }
@@ -109,7 +109,7 @@ public class dsymbol {
             public static final int export_ = 6;
         }
 
-        public int kind;
+        public int kind = 0;
         public dmodule.Package pkg;
         public  Prot(int kind) {
             this.kind = kind;
@@ -197,7 +197,7 @@ public class dsymbol {
         public Loc loc = new Loc();
         public Scope _scope;
         public BytePtr prettystring;
-        public boolean errors;
+        public boolean errors = false;
         public int semanticRun = PASS.init;
         public DeprecatedDeclaration depdecl;
         public UserAttributeDeclaration userAttribDecl;
@@ -1033,7 +1033,7 @@ public class dsymbol {
     {
         public DArray<Dsymbol> members;
         public DsymbolTable symtab;
-        public int endlinnum;
+        public int endlinnum = 0;
         public DArray<Dsymbol> importedScopes;
         public IntPtr prots;
         public BitArray accessiblePackages = new BitArray();

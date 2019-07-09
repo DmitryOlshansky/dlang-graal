@@ -65,7 +65,7 @@ import static org.dlang.dmd.utils.*;
 import static org.dlang.dmd.visitor.*;
 
 public class dsymbolsem {
-    static int visitnest;
+    static int visitnest = 0;
     static boolean funcDeclarationSemanticprintedMain = false;
 
     static boolean LOG = false;

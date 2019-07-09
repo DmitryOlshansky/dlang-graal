@@ -1088,7 +1088,7 @@ public class statement {
     }
     public static class ForeachStatement extends Statement
     {
-        public byte op;
+        public byte op = 0;
         public DArray<Parameter> parameters;
         public Expression aggr;
         public Statement _body;
@@ -1144,7 +1144,7 @@ public class statement {
     }
     public static class ForeachRangeStatement extends Statement
     {
-        public byte op;
+        public byte op = 0;
         public Parameter prm;
         public Expression lwr;
         public Expression upr;
@@ -1396,13 +1396,13 @@ public class statement {
     {
         public Expression condition;
         public Statement _body;
-        public boolean isFinal;
+        public boolean isFinal = false;
         public DefaultStatement sdefault;
         public TryFinallyStatement tf;
         public DArray<GotoCaseStatement> gotoCases = new DArray<GotoCaseStatement>();
         public DArray<CaseStatement> cases;
-        public int hasNoDefault;
-        public int hasVars;
+        public int hasNoDefault = 0;
+        public int hasVars = 0;
         public VarDeclaration lastVar;
         public  SwitchStatement(Loc loc, Expression condition, Statement _body, boolean isFinal) {
             super(loc);
@@ -1479,7 +1479,7 @@ public class statement {
     {
         public Expression exp;
         public Statement statement;
-        public int index;
+        public int index = 0;
         public VarDeclaration lastVar;
         public  CaseStatement(Loc loc, Expression exp, Statement statement) {
             super(loc);
@@ -1666,7 +1666,7 @@ public class statement {
     public static class ReturnStatement extends Statement
     {
         public Expression exp;
-        public int caseDim;
+        public int caseDim = 0;
         public  ReturnStatement(Loc loc, Expression exp) {
             super(loc);
             this.exp = exp;
@@ -1872,8 +1872,8 @@ public class statement {
         public Identifier ident;
         public Statement handler;
         public VarDeclaration var;
-        public boolean errors;
-        public boolean internalCatch;
+        public boolean errors = false;
+        public boolean internalCatch = false;
         public  Catch(Loc loc, Type type, Identifier ident, Statement handler) {
             super();
             this.loc = loc.copy();
@@ -1907,7 +1907,7 @@ public class statement {
     {
         public Statement _body;
         public Statement finalbody;
-        public boolean bodyFallsThru;
+        public boolean bodyFallsThru = false;
         public  TryFinallyStatement(Loc loc, Statement _body, Statement finalbody) {
             super(loc);
             this._body = _body;
@@ -1949,7 +1949,7 @@ public class statement {
     }
     public static class ScopeGuardStatement extends Statement
     {
-        public byte tok;
+        public byte tok = 0;
         public Statement statement;
         public  ScopeGuardStatement(Loc loc, byte tok, Statement statement) {
             super(loc);
@@ -2009,7 +2009,7 @@ public class statement {
     public static class ThrowStatement extends Statement
     {
         public Expression exp;
-        public boolean internalThrow;
+        public boolean internalThrow = false;
         public  ThrowStatement(Loc loc, Expression exp) {
             super(loc);
             this.exp = exp;
@@ -2171,7 +2171,7 @@ public class statement {
         public ScopeGuardStatement os;
         public VarDeclaration lastVar;
         public Statement gotoTarget;
-        public boolean breaks;
+        public boolean breaks = false;
         public  LabelStatement(Loc loc, Identifier ident, Statement statement) {
             super(loc);
             this.ident = ident;
@@ -2307,10 +2307,10 @@ public class statement {
     public static class InlineAsmStatement extends AsmStatement
     {
         public code asmcode;
-        public int asmalign;
-        public int regs;
-        public boolean refparam;
-        public boolean naked;
+        public int asmalign = 0;
+        public int regs = 0;
+        public boolean refparam = false;
+        public boolean naked = false;
         public  InlineAsmStatement(Loc loc, Token tokens) {
             super(loc, tokens);
         }
@@ -2340,10 +2340,10 @@ public class statement {
     }
     public static class GccAsmStatement extends AsmStatement
     {
-        public long stc;
+        public long stc = 0;
         public Expression insn;
         public DArray<Expression> args;
-        public int outputargs;
+        public int outputargs = 0;
         public DArray<Identifier> names;
         public DArray<Expression> constraints;
         public DArray<Expression> clobbers;
@@ -2382,7 +2382,7 @@ public class statement {
     }
     public static class CompoundAsmStatement extends CompoundStatement
     {
-        public long stc;
+        public long stc = 0;
         public  CompoundAsmStatement(Loc loc, DArray<Statement> statements, long stc) {
             super(loc, statements);
             this.stc = stc;

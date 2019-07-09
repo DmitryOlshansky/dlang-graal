@@ -44,7 +44,7 @@ public class init {
     public static class Initializer extends ASTNode
     {
         public Loc loc = new Loc();
-        public byte kind;
+        public byte kind = 0;
         public  Initializer(Loc loc, byte kind) {
             super();
             this.loc = loc.copy();
@@ -169,9 +169,9 @@ public class init {
     {
         public DArray<Expression> index = new DArray<Expression>();
         public DArray<Initializer> value = new DArray<Initializer>();
-        public int dim;
+        public int dim = 0;
         public Type type;
-        public boolean sem;
+        public boolean sem = false;
         public  ArrayInitializer(Loc loc) {
             super(loc, InitKind.array);
         }
@@ -217,7 +217,7 @@ public class init {
     }
     public static class ExpInitializer extends Initializer
     {
-        public boolean expandTuples;
+        public boolean expandTuples = false;
         public Expression exp;
         public  ExpInitializer(Loc loc, Expression exp) {
             super(loc, InitKind.exp);

@@ -52,9 +52,9 @@ public class dtemplate {
         private DArray<TemplateParameter> parameters;
         private DArray<RootObject> dedtypes;
         private IntPtr wm;
-        private int inferStart;
-        private boolean ignoreAliasThis;
-        private int result;
+        private int inferStart = 0;
+        private boolean ignoreAliasThis = false;
+        private int result = 0;
         public  DeduceType(Scope sc, Type tparam, DArray<TemplateParameter> parameters, DArray<RootObject> dedtypes, IntPtr wm, int inferStart, boolean ignoreAliasThis) {
             this.sc = sc;
             this.tparam = tparam;
@@ -1231,7 +1231,7 @@ public class dtemplate {
     private static class ReliesOnTemplateParameters extends Visitor
     {
         private Slice<TemplateParameter> tparams;
-        private boolean result;
+        private boolean result = false;
         public  ReliesOnTemplateParameters(Slice<TemplateParameter> tparams) {
             this.tparams = tparams.copy();
         }
@@ -1508,8 +1508,8 @@ public class dtemplate {
 
         public ReliesOnTemplateParameters() {}
     }
-    static int tryExpandMembersnest;
-    static int trySemantic3nest;
+    static int tryExpandMembersnest = 0;
+    static int trySemantic3nest = 0;
 
     static boolean LOG = false;
     static int IDX_NOTFOUND = 305419896;
@@ -1947,11 +1947,11 @@ public class dtemplate {
         public TemplateDeclaration overroot;
         public FuncDeclaration funcroot;
         public Dsymbol onemember;
-        public boolean literal;
-        public boolean ismixin;
-        public boolean isstatic;
+        public boolean literal = false;
+        public boolean ismixin = false;
+        public boolean isstatic = false;
         public Prot protection = new Prot();
-        public int inuse;
+        public int inuse = 0;
         public TemplatePrevious previous;
         public  TemplateDeclaration(Loc loc, Identifier ident, DArray<TemplateParameter> parameters, Expression constraint, DArray<Dsymbol> decldefs, boolean ismixin, boolean literal) {
             super(loc, ident);
@@ -4151,7 +4151,7 @@ public class dtemplate {
     {
         public Loc loc = new Loc();
         public Identifier ident;
-        public boolean dependent;
+        public boolean dependent = false;
         public  TemplateParameter(Loc loc, Identifier ident) {
             super();
             this.loc = loc.copy();
@@ -4906,12 +4906,12 @@ public class dtemplate {
         public Dsymbol aliasdecl;
         public TemplateInstance inst;
         public ScopeDsymbol argsym;
-        public int inuse;
-        public int nest;
-        public boolean semantictiargsdone;
-        public boolean havetempdecl;
-        public boolean gagged;
-        public int hash;
+        public int inuse = 0;
+        public int nest = 0;
+        public boolean semantictiargsdone = false;
+        public boolean havetempdecl = false;
+        public boolean gagged = false;
+        public int hash = 0;
         public DArray<Expression> fargs;
         public DArray<TemplateInstance> deferred;
         public dmodule.Module memberOf;

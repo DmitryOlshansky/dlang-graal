@@ -85,11 +85,11 @@ public class lexer {
         public BytePtr base;
         public BytePtr end;
         public BytePtr line;
-        public boolean doDocComment;
-        public boolean anyToken;
-        public boolean commentToken;
-        public int inTokenStringConstant;
-        public int lastDocLine;
+        public boolean doDocComment = false;
+        public boolean anyToken = false;
+        public boolean commentToken = false;
+        public int inTokenStringConstant = 0;
+        public int lastDocLine = 0;
         public DiagnosticReporter diagnosticReporter;
         public Token tokenFreelist;
         public  Lexer(BytePtr filename, BytePtr base, int begoffset, int endoffset, boolean doDocComment, boolean commentToken, DiagnosticReporter diagnosticReporter) {

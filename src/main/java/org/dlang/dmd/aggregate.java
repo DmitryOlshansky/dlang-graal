@@ -81,15 +81,15 @@ public class aggregate {
     public static abstract class AggregateDeclaration extends ScopeDsymbol
     {
         public Type type;
-        public long storage_class;
+        public long storage_class = 0;
         public Prot protection = new Prot();
-        public int structsize;
-        public int alignsize;
+        public int structsize = 0;
+        public int alignsize = 0;
         public DArray<VarDeclaration> fields = new DArray<VarDeclaration>();
         public int sizeok = Sizeok.none;
         public Dsymbol deferred;
-        public boolean isdeprecated;
-        public int classKind;
+        public boolean isdeprecated = false;
+        public int classKind = 0;
         public Dsymbol enclosing;
         public VarDeclaration vthis;
         public VarDeclaration vthis2;
@@ -100,7 +100,7 @@ public class aggregate {
         public Dsymbol ctor;
         public CtorDeclaration defaultCtor;
         public Dsymbol aliasthis;
-        public boolean noDefaultCtor;
+        public boolean noDefaultCtor = false;
         public DArray<DtorDeclaration> dtors = new DArray<DtorDeclaration>();
         public DtorDeclaration dtor;
         public DtorDeclaration primaryDtor;

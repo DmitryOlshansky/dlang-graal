@@ -970,7 +970,7 @@ public:
                 auto ue = (*e.arguments)[0];
                 expToBuffer(ue, precedence[e.op], buf, opts);
                 auto tmpl = e.f in opts.templates;
-                buf.fmt(".emplace(new %s(", tmpl.types[0].toJava(opts));
+                buf.fmt(" = new UnionExp(new %s(", tmpl.types[0].toJava(opts));
                 auto args = e.arguments.copy();
                 if (args.length) args.remove(0);                
                 argsToBuffer(args, buf, opts, cast(FuncDeclaration)null);

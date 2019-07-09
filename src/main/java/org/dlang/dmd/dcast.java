@@ -212,7 +212,7 @@ public class dcast {
     private static class ImplicitConvTo extends Visitor
     {
         private Type t;
-        private int result;
+        private int result = 0;
         public  ImplicitConvTo(Type t) {
             this.t = t;
             this.result = MATCH.nomatch;
@@ -2058,7 +2058,7 @@ public class dcast {
     private static class InferType extends Visitor
     {
         private Type t;
-        private int flag;
+        private int flag = 0;
         private Expression result;
         public  InferType(Type t, int flag) {
             this.t = t;

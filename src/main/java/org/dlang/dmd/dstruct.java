@@ -175,23 +175,23 @@ public class dstruct {
 
     public static class StructDeclaration extends AggregateDeclaration
     {
-        public boolean zeroInit;
-        public boolean hasIdentityAssign;
-        public boolean hasIdentityEquals;
-        public boolean hasNoFields;
+        public boolean zeroInit = false;
+        public boolean hasIdentityAssign = false;
+        public boolean hasIdentityEquals = false;
+        public boolean hasNoFields = false;
         public DArray<FuncDeclaration> postblits = new DArray<FuncDeclaration>();
         public FuncDeclaration postblit;
-        public boolean hasCopyCtor;
+        public boolean hasCopyCtor = false;
         public FuncDeclaration xeq;
         public FuncDeclaration xcmp;
         public FuncDeclaration xhash;
         public static FuncDeclaration xerreq;
         public static FuncDeclaration xerrcmp;
-        public int alignment;
-        public int ispod;
+        public int alignment = 0;
+        public int ispod = 0;
         public Type arg1type;
         public Type arg2type;
-        public boolean requestTypeInfo;
+        public boolean requestTypeInfo = false;
         public  StructDeclaration(Loc loc, Identifier id, boolean inObject) {
             super(loc, id);
             this.zeroInit = false;

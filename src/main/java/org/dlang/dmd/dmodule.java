@@ -35,7 +35,7 @@ import static org.dlang.dmd.utils.*;
 import static org.dlang.dmd.visitor.*;
 
 public class dmodule {
-    static int __ctorpackageTag;
+    static int __ctorpackageTag = 0;
 
     private static class Endian 
     {
@@ -50,7 +50,7 @@ public class dmodule {
         public static final int utf32 = 1;
     }
 
-    static int runDeferredSemanticnested;
+    static int runDeferredSemanticnested = 0;
 
     public static ByteSlice lookForSourceFile(ByteSlice filename) {
         ByteSlice sdi = FileName.forceExt(filename, toByteSlice(global.hdr_ext)).copy();
@@ -209,7 +209,7 @@ public class dmodule {
     public static class Package extends ScopeDsymbol
     {
         public int isPkgMod = PKG.unknown;
-        public int tag;
+        public int tag = 0;
         public Module mod;
         public  Package(Loc loc, Identifier ident) {
             super(loc, ident);
@@ -363,7 +363,7 @@ public class dmodule {
         public static DArray<Dsymbol> deferred = new DArray<Dsymbol>();
         public static DArray<Dsymbol> deferred2 = new DArray<Dsymbol>();
         public static DArray<Dsymbol> deferred3 = new DArray<Dsymbol>();
-        public static int dprogress;
+        public static int dprogress = 0;
         public static void _init() {
             modules = new DsymbolTable();
         }
@@ -380,14 +380,14 @@ public class dmodule {
         public FileName hdrfile = new FileName();
         public FileName docfile = new FileName();
         public FileBuffer srcBuffer;
-        public int errors;
-        public int numlines;
-        public boolean isHdrFile;
-        public boolean isDocFile;
-        public boolean isPackageFile;
+        public int errors = 0;
+        public int numlines = 0;
+        public boolean isHdrFile = false;
+        public boolean isDocFile = false;
+        public boolean isPackageFile = false;
         public DArray<BytePtr> contentImportedFiles = new DArray<BytePtr>();
-        public int needmoduleinfo;
-        public int selfimports;
+        public int needmoduleinfo = 0;
+        public int selfimports = 0;
         public  boolean selfImports() {
             if ((this.selfimports == 0))
             {
@@ -408,7 +408,7 @@ public class dmodule {
             return this.selfimports == 2;
         }
 
-        public int rootimports;
+        public int rootimports = 0;
         public  boolean rootImports() {
             if ((this.rootimports == 0))
             {
@@ -440,23 +440,23 @@ public class dmodule {
             return this.rootimports == 2;
         }
 
-        public int insearch;
+        public int insearch = 0;
         public Identifier searchCacheIdent;
         public Dsymbol searchCacheSymbol;
-        public int searchCacheFlags;
+        public int searchCacheFlags = 0;
         public Module importedFrom;
         public DArray<Dsymbol> decldefs;
         public DArray<Module> aimports = new DArray<Module>();
-        public int debuglevel;
+        public int debuglevel = 0;
         public DArray<Identifier> debugids;
         public DArray<Identifier> debugidsNot;
-        public int versionlevel;
+        public int versionlevel = 0;
         public DArray<Identifier> versionids;
         public DArray<Identifier> versionidsNot;
         public Macro macrotable;
         public Escape escapetable;
-        public int nameoffset;
-        public int namelen;
+        public int nameoffset = 0;
+        public int namelen = 0;
         public  Module(Loc loc, ByteSlice filename, Identifier ident, int doDocComment, int doHdrGen) {
             super(loc, ident);
             ByteSlice srcfilename = new ByteSlice();
@@ -1247,7 +1247,7 @@ public class dmodule {
             return (pequals(this.ident, ident)) && (this.parent != null) && (pequals(this.parent.ident, Id.core)) && (this.parent.parent == null);
         }
 
-        public int doppelganger;
+        public int doppelganger = 0;
         public Symbol cov;
         public IntPtr covb;
         public Symbol sictor;
@@ -1356,7 +1356,7 @@ public class dmodule {
         public Loc loc = new Loc();
         public Identifier id;
         public DArray<Identifier> packages;
-        public boolean isdeprecated;
+        public boolean isdeprecated = false;
         public Expression msg;
         public  ModuleDeclaration(Loc loc, DArray<Identifier> packages, Identifier id, Expression msg, boolean isdeprecated) {
             this.loc = loc.copy();

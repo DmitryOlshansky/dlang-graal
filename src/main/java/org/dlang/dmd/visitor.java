@@ -1721,7 +1721,7 @@ public class visitor {
     }
     public static class StoppableVisitor extends Visitor
     {
-        public boolean stop;
+        public boolean stop = false;
         public  StoppableVisitor() {
         }
 

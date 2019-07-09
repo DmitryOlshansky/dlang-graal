@@ -31,8 +31,8 @@ public class optimize {
     private static class OptimizeVisitor extends Visitor
     {
         private Expression ret;
-        private int result;
-        private boolean keepLvalue;
+        private int result = 0;
+        private boolean keepLvalue = false;
         public  OptimizeVisitor(Expression e, int result, boolean keepLvalue) {
             this.ret = e;
             this.result = result;

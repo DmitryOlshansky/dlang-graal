@@ -42,7 +42,7 @@ import static org.dlang.dmd.visitor.*;
 public class doc {
     static Slice<ByteSlice> writetable = slice(new ByteSlice[]{new ByteSlice("AUTHORS"), new ByteSlice("BUGS"), new ByteSlice("COPYRIGHT"), new ByteSlice("DATE"), new ByteSlice("DEPRECATED"), new ByteSlice("EXAMPLES"), new ByteSlice("HISTORY"), new ByteSlice("LICENSE"), new ByteSlice("RETURNS"), new ByteSlice("SEE_ALSO"), new ByteSlice("STANDARDS"), new ByteSlice("THROWS"), new ByteSlice("VERSION")});
     static OutBuffer gendocfilembuf = new OutBuffer();
-    static int gendocfilembuf_done;
+    static int gendocfilembuf_done = 0;
     private static class EmitComment extends Visitor
     {
         private OutBuffer buf;
@@ -596,10 +596,10 @@ public class doc {
     public static class Section extends Object
     {
         public BytePtr name;
-        public int namelen;
+        public int namelen = 0;
         public BytePtr _body;
-        public int bodylen;
-        public int nooutput;
+        public int bodylen = 0;
+        public int nooutput = 0;
         public  void write(Loc loc, DocComment dc, Scope sc, DArray<Dsymbol> a, OutBuffer buf) {
             assert((a).length != 0);
             try {
@@ -2466,13 +2466,13 @@ public class doc {
 
     public static class MarkdownDelimiter
     {
-        public int iStart;
-        public int count;
-        public int macroLevel;
-        public boolean leftFlanking;
-        public boolean rightFlanking;
-        public boolean atParagraphStart;
-        public byte type;
+        public int iStart = 0;
+        public int count = 0;
+        public int macroLevel = 0;
+        public boolean leftFlanking = false;
+        public boolean rightFlanking = false;
+        public boolean atParagraphStart = false;
+        public byte type = 0;
         public  boolean isValid() {
             return this.count != 0;
         }
@@ -2518,12 +2518,12 @@ public class doc {
     public static class MarkdownList
     {
         public ByteSlice orderedStart;
-        public int iStart;
-        public int iContentStart;
-        public int delimiterIndent;
-        public int contentIndent;
-        public int macroLevel;
-        public byte type;
+        public int iStart = 0;
+        public int iContentStart = 0;
+        public int delimiterIndent = 0;
+        public int contentIndent = 0;
+        public int macroLevel = 0;
+        public byte type = 0;
         public  boolean isValid() {
             return (this.type & 0xFF) != 255;
         }
@@ -3137,7 +3137,7 @@ public class doc {
         public AA<ByteSlice,MarkdownLink> references = new AA<ByteSlice,MarkdownLink>();
         public AA<ByteSlice,MarkdownLink> symbols = new AA<ByteSlice,MarkdownLink>();
         public Scope _scope;
-        public boolean extractedAll;
+        public boolean extractedAll = false;
         public  MarkdownLink lookupReference(ByteSlice label, OutBuffer buf, int i, Loc loc) {
             ByteSlice lowercaseLabel = toLowercase(label).copy();
             if (lowercaseLabel in this.references == null)

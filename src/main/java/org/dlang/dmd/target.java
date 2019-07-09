@@ -32,18 +32,18 @@ public class target {
 
     public static class Target
     {
-        public int ptrsize;
-        public int realsize;
-        public int realpad;
-        public int realalignsize;
-        public int classinfosize;
-        public long maxStaticDataSize;
-        public int c_longsize;
-        public int c_long_doublesize;
-        public int criticalSectionSize;
-        public boolean reverseCppOverloads;
-        public boolean cppExceptions;
-        public boolean twoDtorInVtable;
+        public int ptrsize = 0;
+        public int realsize = 0;
+        public int realpad = 0;
+        public int realalignsize = 0;
+        public int classinfosize = 0;
+        public long maxStaticDataSize = 0;
+        public int c_longsize = 0;
+        public int c_long_doublesize = 0;
+        public int criticalSectionSize = 0;
+        public boolean reverseCppOverloads = false;
+        public boolean cppExceptions = false;
+        public boolean twoDtorInVtable = false;
         // from template FPTypeProperties!(Double)
         public static class FPTypePropertiesDouble
         {
@@ -52,12 +52,12 @@ public class target {
             public double nan;
             public double infinity;
             public double epsilon;
-            public long dig = 15L;
-            public long mant_dig = 53L;
-            public long max_exp = 1024L;
-            public long min_exp = -1021L;
-            public long max_10_exp = 308L;
-            public long min_10_exp = -307L;
+            public long dig = 18L;
+            public long mant_dig = 64L;
+            public long max_exp = 16384L;
+            public long min_exp = -16381L;
+            public long max_10_exp = 4932L;
+            public long min_10_exp = -4931L;
             public  void _init() {
                 this.max = double;
                 this.min_normal = double;
@@ -121,12 +121,12 @@ public class target {
             public double nan;
             public double infinity;
             public double epsilon;
-            public long dig = 18L;
-            public long mant_dig = 64L;
-            public long max_exp = 16384L;
-            public long min_exp = -16381L;
-            public long max_10_exp = 4932L;
-            public long min_10_exp = -4931L;
+            public long dig = 15L;
+            public long mant_dig = 53L;
+            public long max_exp = 1024L;
+            public long min_exp = -1021L;
+            public long max_10_exp = 308L;
+            public long min_10_exp = -307L;
             public  void _init() {
                 this.max = double;
                 this.min_normal = double;

@@ -31,7 +31,7 @@ public class canthrow {
     private static class CanThrow extends StoppableVisitor
     {
         private FuncDeclaration func;
-        private boolean mustNotThrow;
+        private boolean mustNotThrow = false;
         public  CanThrow(FuncDeclaration func, boolean mustNotThrow) {
             super();
             this.func = func;

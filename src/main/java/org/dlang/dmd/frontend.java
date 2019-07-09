@@ -39,8 +39,8 @@ public class frontend {
     static ByteSlice exe = new ByteSlice("");
     public static class Diagnostics
     {
-        public int errors;
-        public int warnings;
+        public int errors = 0;
+        public int warnings = 0;
         public  boolean hasErrors() {
             return this.errors > 0;
         }

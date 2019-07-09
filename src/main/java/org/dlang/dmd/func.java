@@ -48,8 +48,8 @@ public class func {
     static DsymbolTable genCfuncst = null;
     private static class Mismatches
     {
-        private boolean isNotShared;
-        private boolean isMutable;
+        private boolean isNotShared = false;
+        private boolean isMutable = false;
         public Mismatches(){
         }
         public Mismatches copy(){
@@ -272,7 +272,7 @@ public class func {
         public static class HiddenParameters
         {
             public VarDeclaration vthis;
-            public boolean isThis2;
+            public boolean isThis2 = false;
             public VarDeclaration selectorParameter;
             public HiddenParameters(){
             }
@@ -311,7 +311,7 @@ public class func {
         public LabelDsymbol returnLabel;
         public DsymbolTable localsymtab;
         public VarDeclaration vthis;
-        public boolean isThis2;
+        public boolean isThis2 = false;
         public VarDeclaration v_arguments;
         public ObjcSelector selector;
         public VarDeclaration selectorParameter;
@@ -322,36 +322,36 @@ public class func {
         public FuncDeclaration overnext0;
         public Loc endloc = new Loc();
         public int vtblIndex = -1;
-        public boolean naked;
-        public boolean generated;
-        public byte isCrtCtorDtor;
+        public boolean naked = false;
+        public boolean generated = false;
+        public byte isCrtCtorDtor = 0;
         public int inlineStatusStmt = ILS.uninitialized;
         public int inlineStatusExp = ILS.uninitialized;
         public int inlining = PINLINE.default_;
         public CompiledCtfeFunctionPimpl ctfeCode = new CompiledCtfeFunctionPimpl();
-        public int inlineNest;
-        public boolean isArrayOp;
-        public boolean eh_none;
-        public boolean semantic3Errors;
+        public int inlineNest = 0;
+        public boolean isArrayOp = false;
+        public boolean eh_none = false;
+        public boolean semantic3Errors = false;
         public ForeachStatement fes;
         public BaseClass interfaceVirtual;
-        public boolean introducing;
+        public boolean introducing = false;
         public Type tintro;
-        public boolean inferRetType;
-        public long storage_class2;
-        public int hasReturnExp;
+        public boolean inferRetType = false;
+        public long storage_class2 = 0;
+        public int hasReturnExp = 0;
         public boolean nrvo_can = true;
         public VarDeclaration nrvo_var;
         public Symbol shidden;
         public DArray<ReturnStatement> returns;
         public DArray<GotoStatement> gotos;
         public int builtin = BUILTIN.unknown;
-        public int tookAddressOf;
-        public boolean requiresClosure;
+        public int tookAddressOf = 0;
+        public boolean requiresClosure = false;
         public DArray<VarDeclaration> closureVars = new DArray<VarDeclaration>();
         public DArray<FuncDeclaration> siblingCallers = new DArray<FuncDeclaration>();
         public DArray<FuncDeclaration> inlinedNestedCallees;
-        public int flags;
+        public int flags = 0;
         public  FuncDeclaration(Loc loc, Loc endloc, Identifier ident, long storage_class, Type type) {
             super(loc, ident);
             this.storage_class = storage_class;
@@ -2674,7 +2674,7 @@ public class func {
     public static class FuncAliasDeclaration extends FuncDeclaration
     {
         public FuncDeclaration funcalias;
-        public boolean hasOverloads;
+        public boolean hasOverloads = false;
         public  FuncAliasDeclaration(Identifier ident, FuncDeclaration funcalias, boolean hasOverloads) {
             super(funcalias.loc, funcalias.endloc, ident, funcalias.storage_class, funcalias.type);
             assert((!pequals(funcalias, this)));
@@ -2802,9 +2802,9 @@ public class func {
     }
     public static class FuncLiteralDeclaration extends FuncDeclaration
     {
-        public byte tok;
+        public byte tok = 0;
         public Type treq;
-        public boolean deferToObj;
+        public boolean deferToObj = false;
         public  FuncLiteralDeclaration(Loc loc, Loc endloc, Type type, byte tok, ForeachStatement fes, Identifier id) {
             super(loc, endloc, null, 0L, type);
             this.ident = id != null ? id : Id.empty;
@@ -2966,7 +2966,7 @@ public class func {
     }
     public static class CtorDeclaration extends FuncDeclaration
     {
-        public boolean isCpCtor;
+        public boolean isCpCtor = false;
         public  CtorDeclaration(Loc loc, Loc endloc, long stc, Type type, boolean isCpCtor) {
             super(loc, endloc, Id.ctor, stc, type);
             this.isCpCtor = isCpCtor;
@@ -4073,7 +4073,7 @@ public class func {
     public static class NewDeclaration extends FuncDeclaration
     {
         public DArray<Parameter> parameters;
-        public int varargs;
+        public int varargs = 0;
         public  NewDeclaration(Loc loc, Loc endloc, long stc, DArray<Parameter> fparams, int varargs) {
             super(loc, endloc, Id.classNew, 1L | stc, null);
             this.parameters = fparams;

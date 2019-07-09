@@ -31,7 +31,7 @@ public class dimport {
         public DArray<Identifier> packages;
         public Identifier id;
         public Identifier aliasId;
-        public int isstatic;
+        public int isstatic = 0;
         public Prot protection = new Prot();
         public DArray<Identifier> names = new DArray<Identifier>();
         public DArray<Identifier> aliases = new DArray<Identifier>();

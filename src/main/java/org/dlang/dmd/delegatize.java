@@ -116,7 +116,7 @@ public class delegatize {
     private static class LambdaCheckForNestedRef extends StoppableVisitor
     {
         private Scope sc;
-        private boolean result;
+        private boolean result = false;
         public  LambdaCheckForNestedRef(Scope sc) {
             super();
             this.sc = sc;

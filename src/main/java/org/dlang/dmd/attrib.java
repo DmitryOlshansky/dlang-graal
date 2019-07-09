@@ -224,7 +224,7 @@ public class attrib {
     }
     public static class StorageClassDeclaration extends AttribDeclaration
     {
-        public long stc;
+        public long stc = 0;
         public  StorageClassDeclaration(long stc, DArray<Dsymbol> decl) {
             super(decl);
             this.stc = stc;
@@ -387,7 +387,7 @@ public class attrib {
     }
     public static class LinkDeclaration extends AttribDeclaration
     {
-        public int linkage;
+        public int linkage = 0;
         public  LinkDeclaration(int linkage, DArray<Dsymbol> decl) {
             super(decl);
             this.linkage = (linkage == LINK.system) ? target.systemLinkage() : linkage;
@@ -444,7 +444,7 @@ public class attrib {
     }
     public static class CPPMangleDeclaration extends AttribDeclaration
     {
-        public int cppmangle;
+        public int cppmangle = 0;
         public  CPPMangleDeclaration(int cppmangle, DArray<Dsymbol> decl) {
             super(decl);
             this.cppmangle = cppmangle;
@@ -720,11 +720,11 @@ public class attrib {
     }
     public static class AnonDeclaration extends AttribDeclaration
     {
-        public boolean isunion;
-        public int sem;
-        public int anonoffset;
-        public int anonstructsize;
-        public int anonalignsize;
+        public boolean isunion = false;
+        public int sem = 0;
+        public int anonoffset = 0;
+        public int anonstructsize = 0;
+        public int anonalignsize = 0;
         public  AnonDeclaration(Loc loc, boolean isunion, DArray<Dsymbol> decl) {
             super(loc, null, decl);
             this.isunion = isunion;
@@ -1276,7 +1276,7 @@ public class attrib {
     {
         public DArray<Expression> exps;
         public ScopeDsymbol scopesym;
-        public boolean compiled;
+        public boolean compiled = false;
         public  CompileDeclaration(Loc loc, DArray<Expression> exps) {
             super(loc, null, null);
             this.exps = exps;

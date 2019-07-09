@@ -19,7 +19,7 @@ import static org.dlang.dmd.utils.*;
 
 public class identifier {
     static Identifier anonymousanonymous;
-    static int generateIdi;
+    static int generateIdi = 0;
     private static class Key
     {
         private Loc loc = new Loc();
@@ -48,7 +48,7 @@ public class identifier {
 
     public static class Identifier extends RootObject
     {
-        public int value;
+        public int value = 0;
         public ByteSlice name;
         public  Identifier(BytePtr name, int length, int value) {
             super();

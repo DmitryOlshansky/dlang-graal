@@ -16,7 +16,7 @@ import static org.dlang.dmd.errors.*;
 import static org.dlang.dmd.globals.*;
 
 public class dmacro {
-    static int expandnest;
+    static int expandnest = 0;
     static int expandnestLimit = 1000;
 
     public static class Macro implements LinkedNode<Macro>
@@ -24,7 +24,7 @@ public class dmacro {
         public Macro next;
         public ByteSlice name;
         public ByteSlice text;
-        public int inuse;
+        public int inuse = 0;
         public  Macro(ByteSlice name, ByteSlice text) {
             this.name = name.copy();
             this.text = text.copy();

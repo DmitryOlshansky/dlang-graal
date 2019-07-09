@@ -11,11 +11,7 @@ public class UnionExp {
         this.e = e;
     }
 
-    void emplace(Expression e) {
-        this.e = e;
-    }
-
-    void emplace(UnionExp ue) {
+    public UnionExp(UnionExp ue) {
         this.e = ue.e;
     }
 

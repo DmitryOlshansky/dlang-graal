@@ -57,11 +57,11 @@ public class parse {
     // from template PrefixAttributes!(ASTBase)
     public static class PrefixAttributesASTBase
     {
-        public long storageClass;
+        public long storageClass = 0;
         public ASTBase.Expression depmsg;
-        public int link;
+        public int link = 0;
         public ASTBase.Prot protection = new ASTBase.Prot();
-        public boolean setAlignment;
+        public boolean setAlignment = false;
         public ASTBase.Expression ealign;
         public DArray<ASTBase.Expression> udas;
         public BytePtr comment;
@@ -107,11 +107,11 @@ public class parse {
     // from template PrefixAttributes!(ASTCodegen)
     public static class PrefixAttributesASTCodegen
     {
-        public long storageClass;
+        public long storageClass = 0;
         public Expression depmsg;
-        public int link;
+        public int link = 0;
         public Prot protection = new Prot();
-        public boolean setAlignment;
+        public boolean setAlignment = false;
         public Expression ealign;
         public DArray<Expression> udas;
         public BytePtr comment;
@@ -220,10 +220,10 @@ public class parse {
     {
         public ASTBase.ModuleDeclaration md;
         public ASTBase.Module mod;
-        public int linkage;
-        public int cppmangle;
+        public int linkage = 0;
+        public int cppmangle = 0;
         public Loc endloc = new Loc();
-        public int inBrackets;
+        public int inBrackets = 0;
         public Loc lookingForElse = new Loc();
         public  ParserASTBase(Loc loc, ASTBase.Module _module, ByteSlice input, boolean doDocComment, DiagnosticReporter diagnosticReporter) {
             super(_module != null ? _module.srcfile.toChars() : null, toBytePtr(input), 0, input.getLength(), doDocComment, false, diagnosticReporter);
@@ -7754,10 +7754,10 @@ public class parse {
     {
         public ModuleDeclaration md;
         public dmodule.Module mod;
-        public int linkage;
-        public int cppmangle;
+        public int linkage = 0;
+        public int cppmangle = 0;
         public Loc endloc = new Loc();
-        public int inBrackets;
+        public int inBrackets = 0;
         public Loc lookingForElse = new Loc();
         public  ParserASTCodegen(Loc loc, dmodule.Module _module, ByteSlice input, boolean doDocComment, DiagnosticReporter diagnosticReporter) {
             super(_module != null ? _module.srcfile.toChars() : null, toBytePtr(input), 0, input.getLength(), doDocComment, false, diagnosticReporter);

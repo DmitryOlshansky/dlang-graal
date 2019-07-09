@@ -425,6 +425,12 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         else if (var.type.ty == Tstruct || var.type.ty == Taarray) {
             sink.fmt(" = new %s()", typeOf(var.type));
         }
+        else if (var.type.ty == Tbool) {
+            sink.fmt(" = false");
+        }
+        else if(var.type.isintegral) {
+            sink.fmt(" = 0");
+        }
         sink.fmt(";\n");
     }
 
@@ -1471,6 +1477,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         else {
             buf.put(" {\n");
             buf.indent;
+            if (func.vresult) visit(func.vresult);
             foreach (var; renamedVars) {
                 buf.fmt("%s %s = ref(%s);\n", refType(var.type, opts), opts.renamed[var], var.ident.symbol);
             }

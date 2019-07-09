@@ -23,8 +23,8 @@ public class intrange {
 
     public static class SignExtendedNumber
     {
-        public long value;
-        public boolean negative;
+        public long value = 0;
+        public boolean negative = false;
         public static SignExtendedNumber fromInteger(long value_) {
             return new SignExtendedNumber(value_, (value_ >> 63 != 0));
         }

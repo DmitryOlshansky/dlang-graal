@@ -19,7 +19,7 @@ import static org.dlang.dmd.tokens.*;
 
 public class errors {
     static BytePtr vdeprecationheader = new BytePtr("Deprecation: ");
-    static int colorHighlightCodenested;
+    static int colorHighlightCodenested = 0;
 
     public static abstract class DiagnosticReporter extends Object
     {
@@ -63,10 +63,10 @@ public class errors {
     }
     public static class StderrDiagnosticReporter extends DiagnosticReporter
     {
-        public byte useDeprecated;
-        public int errorCount_;
-        public int warningCount_;
-        public int deprecationCount_;
+        public byte useDeprecated = 0;
+        public int errorCount_ = 0;
+        public int warningCount_ = 0;
+        public int deprecationCount_ = 0;
         public  StderrDiagnosticReporter(byte useDeprecated) {
             this.useDeprecated = useDeprecated;
         }

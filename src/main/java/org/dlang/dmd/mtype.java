@@ -276,8 +276,8 @@ public class mtype {
 
     public static abstract class Type extends ASTNode
     {
-        public byte ty;
-        public byte mod;
+        public byte ty = 0;
+        public byte mod = 0;
         public BytePtr deco;
         public Type cto;
         public Type ito;
@@ -2407,7 +2407,7 @@ public class mtype {
     public static class TypeBasic extends Type
     {
         public BytePtr dstring;
-        public int flags;
+        public int flags = 0;
         public  TypeBasic(byte ty) {
             super(ty);
             BytePtr d = null;
@@ -3496,21 +3496,21 @@ public class mtype {
     public static class TypeFunction extends TypeNext implements LinkedNode<Type>
     {
         public ParameterList parameterList = new ParameterList();
-        public boolean isnothrow;
-        public boolean isnogc;
-        public boolean isproperty;
-        public boolean isref;
-        public boolean isreturn;
-        public boolean isscope;
-        public boolean isreturninferred;
-        public boolean isscopeinferred;
-        public int linkage;
-        public int trust;
+        public boolean isnothrow = false;
+        public boolean isnogc = false;
+        public boolean isproperty = false;
+        public boolean isref = false;
+        public boolean isreturn = false;
+        public boolean isscope = false;
+        public boolean isreturninferred = false;
+        public boolean isscopeinferred = false;
+        public int linkage = 0;
+        public int trust = 0;
         public int purity = PURE.impure;
-        public byte iswild;
+        public byte iswild = 0;
         public DArray<Expression> fargs;
-        public int inuse;
-        public boolean incomplete;
+        public int inuse = 0;
+        public boolean incomplete = false;
         public  TypeFunction(ParameterList pl, Type treturn, int linkage, long stc) {
             super((byte)5, treturn);
             assert((VarArg.none <= pl.varargs) && (pl.varargs <= VarArg.typesafe));
@@ -4505,7 +4505,7 @@ public class mtype {
         public Loc loc = new Loc();
         public TraitsExp exp;
         public Dsymbol sym;
-        public boolean inAliasDeclaration;
+        public boolean inAliasDeclaration = false;
         public  TypeTraits(Loc loc, TraitsExp exp) {
             super((byte)44);
             this.loc = loc.copy();
@@ -4748,7 +4748,7 @@ public class mtype {
     public static class TypeTypeof extends TypeQualified
     {
         public Expression exp;
-        public int inuse;
+        public int inuse = 0;
         public  TypeTypeof(Loc loc, Expression exp) {
             super((byte)36, loc);
             this.exp = exp;
@@ -5770,7 +5770,7 @@ public class mtype {
     }
     public static class Parameter extends ASTNode
     {
-        public long storageClass;
+        public long storageClass = 0;
         public Type type;
         public Identifier ident;
         public Expression defaultArg;

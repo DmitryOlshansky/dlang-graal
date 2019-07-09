@@ -43,7 +43,7 @@ public class dclass {
     {
         public Type type;
         public ClassDeclaration sym;
-        public int offset;
+        public int offset = 0;
         public DArray<FuncDeclaration> vtbl = new DArray<FuncDeclaration>();
         public Slice<BaseClass> baseInterfaces;
         public  BaseClass(Type type) {
@@ -154,13 +154,13 @@ public class dclass {
         public Slice<BaseClass> interfaces;
         public DArray<BaseClass> vtblInterfaces;
         public TypeInfoClassDeclaration vclassinfo;
-        public boolean com;
-        public boolean stack;
+        public boolean com = false;
+        public boolean stack = false;
         public int cppDtorVtblIndex = -1;
-        public boolean inuse;
-        public boolean isActuallyAnonymous;
-        public int isabstract;
-        public int baseok;
+        public boolean inuse = false;
+        public boolean isActuallyAnonymous = false;
+        public int isabstract = 0;
+        public int baseok = 0;
         public ObjcClassDeclaration objc = new ObjcClassDeclaration();
         public Symbol cpp_type_info_ptr_sym;
         public  ClassDeclaration(Loc loc, Identifier id, DArray<BaseClass> baseclasses, DArray<Dsymbol> members, boolean inObject) {

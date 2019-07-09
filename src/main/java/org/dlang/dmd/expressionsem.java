@@ -67,7 +67,7 @@ import static org.dlang.dmd.visitor.*;
 
 public class expressionsem {
     static Import loadStdMathimpStdMath = null;
-    static int visitnest;
+    static int visitnest = 0;
     static ByteSlice visitcompMsg = new ByteSlice("==");
 
     static boolean LOGSEMANTIC = false;

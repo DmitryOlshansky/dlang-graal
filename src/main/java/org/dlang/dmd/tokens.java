@@ -269,14 +269,14 @@ public class tokens {
         public Token next;
         public Loc loc = new Loc();
         public BytePtr ptr;
-        public byte value;
+        public byte value = 0;
         public BytePtr blockComment;
         public BytePtr lineComment;
-        public long intvalue;
+        public long intvalue = 0;
         public double floatvalue;
         public BytePtr ustring;
-        public int len;
-        public byte postfix;
+        public int len = 0;
+        public byte postfix = 0;
         public Identifier ident;
         public static Slice<ByteSlice> tochars = slice(initializer_1);
         static {

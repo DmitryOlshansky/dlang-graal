@@ -237,7 +237,7 @@ public class declaration {
     static long STCStorageClass = 3399896090034079L;
     public static class MatchAccumulator
     {
-        public int count;
+        public int count = 0;
         public int last = MATCH.nomatch;
         public FuncDeclaration lastf;
         public FuncDeclaration nextf;
@@ -273,7 +273,7 @@ public class declaration {
         public long storage_class = 0L;
         public Prot protection = new Prot();
         public int linkage = LINK.default_;
-        public int inuse;
+        public int inuse = 0;
         public ByteSlice mangleOverride;
         public  Declaration(Identifier ident) {
             super(ident);
@@ -496,7 +496,7 @@ public class declaration {
     public static class TupleDeclaration extends Declaration
     {
         public DArray<RootObject> objects;
-        public boolean isexp;
+        public boolean isexp = false;
         public TypeTuple tupletype;
         public  TupleDeclaration(Loc loc, Identifier ident, DArray<RootObject> objects) {
             super(loc, ident);
@@ -878,7 +878,7 @@ public class declaration {
     {
         public Dsymbol overnext;
         public Dsymbol aliassym;
-        public boolean hasOverloads;
+        public boolean hasOverloads = false;
         public  OverDeclaration(Identifier ident, Dsymbol s, boolean hasOverloads) {
             super(ident);
             this.aliassym = s;
@@ -1020,29 +1020,29 @@ public class declaration {
     public static class VarDeclaration extends Declaration
     {
         public Initializer _init;
-        public int offset;
-        public int sequenceNumber;
-        public static int nextSequenceNumber;
+        public int offset = 0;
+        public int sequenceNumber = 0;
+        public static int nextSequenceNumber = 0;
         public DArray<FuncDeclaration> nestedrefs = new DArray<FuncDeclaration>();
-        public int alignment;
-        public boolean isargptr;
-        public boolean ctorinit;
-        public boolean iscatchvar;
-        public boolean onstack;
-        public boolean mynew;
-        public int canassign;
-        public boolean overlapped;
-        public boolean overlapUnsafe;
-        public boolean doNotInferScope;
-        public byte isdataseg;
+        public int alignment = 0;
+        public boolean isargptr = false;
+        public boolean ctorinit = false;
+        public boolean iscatchvar = false;
+        public boolean onstack = false;
+        public boolean mynew = false;
+        public int canassign = 0;
+        public boolean overlapped = false;
+        public boolean overlapUnsafe = false;
+        public boolean doNotInferScope = false;
+        public byte isdataseg = 0;
         public Dsymbol aliassym;
         public VarDeclaration lastVar;
-        public int endlinnum;
-        public int ctfeAdrOnStack;
+        public int endlinnum = 0;
+        public int ctfeAdrOnStack = 0;
         public Expression edtor;
         public IntRange range;
         public DArray<VarDeclaration> maybes;
-        public boolean _isAnonymous;
+        public boolean _isAnonymous = false;
         public  VarDeclaration(Loc loc, Type type, Identifier ident, Initializer _init, long storage_class) {
             if ((ident == Identifier.anonymous()))
             {
