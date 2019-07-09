@@ -279,6 +279,11 @@ public class expressionsem {
         return err;
     }
 
+    // defaulted all parameters starting with #3
+    public static boolean arrayExpressionSemantic(DArray<Expression> exps, Scope sc) {
+        arrayExpressionSemantic(exps, sc, false);
+    }
+
     public static boolean checkPropertyCall(Expression e) {
         e = lastComma(e);
         if (((e.op & 0xFF) == 18))
@@ -550,6 +555,11 @@ public class expressionsem {
             checkPropertyCall(e);
             return expressionSemantic(e, sc);
         }
+    }
+
+    // defaulted all parameters starting with #3
+    public static Expression resolveUFCSProperties(Scope sc, Expression e1) {
+        resolveUFCSProperties(sc, e1, null);
     }
 
     public static Expression resolvePropertiesOnly(Scope sc, Expression e1) {
@@ -956,6 +966,11 @@ public class expressionsem {
             return e1;
             break;
         } catch(Dispatch0 __d){}
+    }
+
+    // defaulted all parameters starting with #6
+    public static Expression getRightThis(Loc loc, Scope sc, AggregateDeclaration ad, Expression e1, Dsymbol var) {
+        getRightThis(loc, sc, ad, e1, var, 0);
     }
 
     public static Expression resolvePropertiesX(Scope sc, Expression e1, Expression e2) {
@@ -1539,6 +1554,11 @@ public class expressionsem {
     /*Leproplvalue:*/
         error(loc, new BytePtr("%s is not an lvalue"), e1.toChars());
         return new ErrorExp();
+    }
+
+    // defaulted all parameters starting with #3
+    public static Expression resolvePropertiesX(Scope sc, Expression e1) {
+        resolvePropertiesX(sc, e1, null);
     }
 
     public static Expression resolveProperties(Scope sc, Expression e) {
@@ -10505,6 +10525,11 @@ public class expressionsem {
         return e1;
     }
 
+    // defaulted all parameters starting with #8
+    public static Expression getThisSkipNestedFuncs(Loc loc, Scope sc, Dsymbol s, AggregateDeclaration ad, Expression e1, Type t, Dsymbol var) {
+        getThisSkipNestedFuncs(loc, sc, s, ad, e1, t, var, false);
+    }
+
     public static VarDeclaration makeThis2Argument(Loc loc, Scope sc, FuncDeclaration fd) {
         Type tthis2 = Type.tvoidptr.sarrayOf(2L);
         VarDeclaration vthis2 = new VarDeclaration(loc, tthis2, Identifier.generateId(new BytePtr("__this")), null, 0L);
@@ -10527,6 +10552,11 @@ public class expressionsem {
         }
         error(loc, new BytePtr("`%s.%s` not found. The current runtime does not support %.*s, or the runtime is corrupt."), module_.toChars(), id.toChars(), description.getLength(), toBytePtr(description));
         return false;
+    }
+
+    // defaulted all parameters starting with #5
+    public static boolean verifyHookExist(Loc loc, Scope sc, Identifier id, ByteSlice description) {
+        verifyHookExist(loc, sc, id, description, Id.object);
     }
 
 }

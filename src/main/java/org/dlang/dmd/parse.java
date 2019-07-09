@@ -1032,6 +1032,16 @@ public class parse {
             return decldefs;
         }
 
+        // defaulted all parameters starting with #3
+        public  DArray<ASTBase.Dsymbol> parseDeclDefs(int once, Ptr<ASTBase.Dsymbol> pLastDecl) {
+            parseDeclDefs(once, pLastDecl, null);
+        }
+
+        // defaulted all parameters starting with #2
+        public  DArray<ASTBase.Dsymbol> parseDeclDefs(int once) {
+            parseDeclDefs(once, null, null);
+        }
+
         public  DArray<ASTBase.Dsymbol> parseAutoDeclarations(long storageClass, BytePtr comment) {
             DArray<ASTBase.Dsymbol> a = new DArray<ASTBase.Dsymbol>();
             for (; 1 != 0;){
@@ -1110,6 +1120,11 @@ public class parse {
                 break;
             }
             return a;
+        }
+
+        // defaulted all parameters starting with #2
+        public  DArray<ASTBase.Dsymbol> parseBlock(Ptr<ASTBase.Dsymbol> pLastDecl) {
+            parseBlock(pLastDecl, null);
         }
 
         public  long appendStorageClass(long storageClass, long stc) {
@@ -1325,6 +1340,11 @@ public class parse {
             return null;
         }
 
+        // defaulted all parameters starting with #1
+        public  ASTBase.TemplateDeclaration parseTemplateDeclaration() {
+            parseTemplateDeclaration(false);
+        }
+
         public  DArray<ASTBase.TemplateParameter> parseTemplateParameterList(int flag) {
             DArray<ASTBase.TemplateParameter> tpl = new DArray<ASTBase.TemplateParameter>();
             try {
@@ -1476,6 +1496,11 @@ public class parse {
             catch(Dispatch0 __d){}
         /*Lerr:*/
             return tpl;
+        }
+
+        // defaulted all parameters starting with #1
+        public  DArray<ASTBase.TemplateParameter> parseTemplateParameterList() {
+            parseTemplateParameterList(0);
         }
 
         public  ASTBase.Dsymbol parseMixin() {
@@ -1896,16 +1921,6 @@ public class parse {
             pidents.set(0, idents);
             pIdentExps.set(0, identExps);
             return link;
-        }
-
-        // defaulted all parameters starting with #4
-        public  int parseLinkage(Ptr<DArray<Identifier>> pidents, Ptr<DArray<ASTBase.Expression>> pIdentExps, IntRef cppmangle) {
-            parseLinkage(pidents, pIdentExps, cppmangle, ref(false));
-        }
-
-        // defaulted all parameters starting with #3
-        public  int parseLinkage(Ptr<DArray<Identifier>> pidents, Ptr<DArray<ASTBase.Expression>> pIdentExps) {
-            parseLinkage(pidents, pIdentExps, ref(CPPMANGLE.def), ref(false));
         }
 
         public  DArray<Identifier> parseQualifiedIdentifier(BytePtr entity) {
@@ -2520,6 +2535,11 @@ public class parse {
             return parameters;
         }
 
+        // defaulted all parameters starting with #2
+        public  DArray<ASTBase.Parameter> parseParameters(IntPtr pvarargs) {
+            parseParameters(pvarargs, null);
+        }
+
         public  ASTBase.EnumDeclaration parseEnum() {
             ASTBase.EnumDeclaration e = null;
             Identifier id = null;
@@ -2951,6 +2971,16 @@ public class parse {
             return t;
         }
 
+        // defaulted all parameters starting with #2
+        public  ASTBase.Type parseType(Ptr<Identifier> pident) {
+            parseType(pident, null);
+        }
+
+        // defaulted all parameters starting with #1
+        public  ASTBase.Type parseType() {
+            parseType(null, null);
+        }
+
         public  ASTBase.Type parseBasicType(boolean dontLookDotIdents) {
             ASTBase.Type t = null;
             Loc loc = new Loc();
@@ -3121,6 +3151,11 @@ public class parse {
                 } while(__dispatch13 != 0);
             }
             return t;
+        }
+
+        // defaulted all parameters starting with #1
+        public  ASTBase.Type parseBasicType() {
+            parseBasicType(false);
         }
 
         public  ASTBase.Type parseBasicTypeStartingAt(ASTBase.TypeQualified tid, boolean dontLookDotIdents) {
@@ -3404,6 +3439,26 @@ public class parse {
                 break;
             }
             return ts.value;
+        }
+
+        // defaulted all parameters starting with #7
+        public  ASTBase.Type parseDeclarator(ASTBase.Type t, IntPtr palt, Ptr<Identifier> pident, Ptr<DArray<ASTBase.TemplateParameter>> tpl, long storageClass, IntPtr pdisable) {
+            parseDeclarator(t, palt, pident, tpl, storageClass, pdisable, null);
+        }
+
+        // defaulted all parameters starting with #6
+        public  ASTBase.Type parseDeclarator(ASTBase.Type t, IntPtr palt, Ptr<Identifier> pident, Ptr<DArray<ASTBase.TemplateParameter>> tpl, long storageClass) {
+            parseDeclarator(t, palt, pident, tpl, storageClass, null, null);
+        }
+
+        // defaulted all parameters starting with #5
+        public  ASTBase.Type parseDeclarator(ASTBase.Type t, IntPtr palt, Ptr<Identifier> pident, Ptr<DArray<ASTBase.TemplateParameter>> tpl) {
+            parseDeclarator(t, palt, pident, tpl, 0L, null, null);
+        }
+
+        // defaulted all parameters starting with #4
+        public  ASTBase.Type parseDeclarator(ASTBase.Type t, IntPtr palt, Ptr<Identifier> pident) {
+            parseDeclarator(t, palt, pident, null, 0L, null, null);
         }
 
         public  void parseStorageClasses(Ref<Long> storage_class, IntRef link, Ref<Boolean> setAlignment, Ref<ASTBase.Expression> ealign, Ref<DArray<ASTBase.Expression>> udas) {
@@ -5514,6 +5569,16 @@ public class parse {
             return s;
         }
 
+        // defaulted all parameters starting with #3
+        public  ASTBase.Statement parseStatement(int flags, Ptr<BytePtr> endPtr) {
+            parseStatement(flags, endPtr, null);
+        }
+
+        // defaulted all parameters starting with #2
+        public  ASTBase.Statement parseStatement(int flags) {
+            parseStatement(flags, null, null);
+        }
+
         public  ASTBase.Initializer parseInitializer() {
             ASTBase.StructInitializer _is = null;
             ASTBase.ArrayInitializer ia = null;
@@ -6237,6 +6302,11 @@ public class parse {
                 }
             }
             //throw new AssertionError("Unreachable code!");
+        }
+
+        // defaulted all parameters starting with #5
+        public  boolean isDeclarator(Ptr<Token> pt, IntPtr haveId, IntPtr haveTpl, byte endtok) {
+            isDeclarator(pt, haveId, haveTpl, endtok, true);
         }
 
         public  boolean isParameters(Ptr<Token> pt) {
@@ -8574,6 +8644,16 @@ public class parse {
             return decldefs;
         }
 
+        // defaulted all parameters starting with #3
+        public  DArray<Dsymbol> parseDeclDefs(int once, Ptr<Dsymbol> pLastDecl) {
+            parseDeclDefs(once, pLastDecl, null);
+        }
+
+        // defaulted all parameters starting with #2
+        public  DArray<Dsymbol> parseDeclDefs(int once) {
+            parseDeclDefs(once, null, null);
+        }
+
         public  DArray<Dsymbol> parseAutoDeclarations(long storageClass, BytePtr comment) {
             DArray<Dsymbol> a = new DArray<Dsymbol>();
             for (; 1 != 0;){
@@ -8652,6 +8732,11 @@ public class parse {
                 break;
             }
             return a;
+        }
+
+        // defaulted all parameters starting with #2
+        public  DArray<Dsymbol> parseBlock(Ptr<Dsymbol> pLastDecl) {
+            parseBlock(pLastDecl, null);
         }
 
         public  long appendStorageClass(long storageClass, long stc) {
@@ -8867,6 +8952,11 @@ public class parse {
             return null;
         }
 
+        // defaulted all parameters starting with #1
+        public  TemplateDeclaration parseTemplateDeclaration() {
+            parseTemplateDeclaration(false);
+        }
+
         public  DArray<TemplateParameter> parseTemplateParameterList(int flag) {
             DArray<TemplateParameter> tpl = new DArray<TemplateParameter>();
             try {
@@ -9018,6 +9108,11 @@ public class parse {
             catch(Dispatch0 __d){}
         /*Lerr:*/
             return tpl;
+        }
+
+        // defaulted all parameters starting with #1
+        public  DArray<TemplateParameter> parseTemplateParameterList() {
+            parseTemplateParameterList(0);
         }
 
         public  Dsymbol parseMixin() {
@@ -9438,16 +9533,6 @@ public class parse {
             pidents.set(0, idents);
             pIdentExps.set(0, identExps);
             return link;
-        }
-
-        // defaulted all parameters starting with #4
-        public  int parseLinkage(Ptr<DArray<Identifier>> pidents, Ptr<DArray<Expression>> pIdentExps, IntRef cppmangle) {
-            parseLinkage(pidents, pIdentExps, cppmangle, ref(false));
-        }
-
-        // defaulted all parameters starting with #3
-        public  int parseLinkage(Ptr<DArray<Identifier>> pidents, Ptr<DArray<Expression>> pIdentExps) {
-            parseLinkage(pidents, pIdentExps, ref(CPPMANGLE.def), ref(false));
         }
 
         public  DArray<Identifier> parseQualifiedIdentifier(BytePtr entity) {
@@ -10059,6 +10144,11 @@ public class parse {
             return parameters;
         }
 
+        // defaulted all parameters starting with #2
+        public  DArray<Parameter> parseParameters(IntPtr pvarargs) {
+            parseParameters(pvarargs, null);
+        }
+
         public  EnumDeclaration parseEnum() {
             EnumDeclaration e = null;
             Identifier id = null;
@@ -10490,6 +10580,16 @@ public class parse {
             return t;
         }
 
+        // defaulted all parameters starting with #2
+        public  Type parseType(Ptr<Identifier> pident) {
+            parseType(pident, null);
+        }
+
+        // defaulted all parameters starting with #1
+        public  Type parseType() {
+            parseType(null, null);
+        }
+
         public  Type parseBasicType(boolean dontLookDotIdents) {
             Type t = null;
             Loc loc = new Loc();
@@ -10660,6 +10760,11 @@ public class parse {
                 } while(__dispatch68 != 0);
             }
             return t;
+        }
+
+        // defaulted all parameters starting with #1
+        public  Type parseBasicType() {
+            parseBasicType(false);
         }
 
         public  Type parseBasicTypeStartingAt(TypeQualified tid, boolean dontLookDotIdents) {
@@ -10943,6 +11048,26 @@ public class parse {
                 break;
             }
             return ts.value;
+        }
+
+        // defaulted all parameters starting with #7
+        public  Type parseDeclarator(Type t, IntPtr palt, Ptr<Identifier> pident, Ptr<DArray<TemplateParameter>> tpl, long storageClass, IntPtr pdisable) {
+            parseDeclarator(t, palt, pident, tpl, storageClass, pdisable, null);
+        }
+
+        // defaulted all parameters starting with #6
+        public  Type parseDeclarator(Type t, IntPtr palt, Ptr<Identifier> pident, Ptr<DArray<TemplateParameter>> tpl, long storageClass) {
+            parseDeclarator(t, palt, pident, tpl, storageClass, null, null);
+        }
+
+        // defaulted all parameters starting with #5
+        public  Type parseDeclarator(Type t, IntPtr palt, Ptr<Identifier> pident, Ptr<DArray<TemplateParameter>> tpl) {
+            parseDeclarator(t, palt, pident, tpl, 0L, null, null);
+        }
+
+        // defaulted all parameters starting with #4
+        public  Type parseDeclarator(Type t, IntPtr palt, Ptr<Identifier> pident) {
+            parseDeclarator(t, palt, pident, null, 0L, null, null);
         }
 
         public  void parseStorageClasses(Ref<Long> storage_class, IntRef link, Ref<Boolean> setAlignment, Ref<Expression> ealign, Ref<DArray<Expression>> udas) {
@@ -13049,6 +13174,16 @@ public class parse {
             return s;
         }
 
+        // defaulted all parameters starting with #3
+        public  Statement parseStatement(int flags, Ptr<BytePtr> endPtr) {
+            parseStatement(flags, endPtr, null);
+        }
+
+        // defaulted all parameters starting with #2
+        public  Statement parseStatement(int flags) {
+            parseStatement(flags, null, null);
+        }
+
         public  Initializer parseInitializer() {
             StructInitializer _is = null;
             ArrayInitializer ia = null;
@@ -13771,6 +13906,11 @@ public class parse {
                 }
             }
             throw new AssertionError("Unreachable code!");
+        }
+
+        // defaulted all parameters starting with #5
+        public  boolean isDeclarator(Ptr<Token> pt, IntPtr haveId, IntPtr haveTpl, byte endtok) {
+            isDeclarator(pt, haveId, haveTpl, endtok, true);
         }
 
         public  boolean isParameters(Ptr<Token> pt) {

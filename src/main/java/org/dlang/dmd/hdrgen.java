@@ -2674,6 +2674,11 @@ public class hdrgen {
         v.visit(ti);
     }
 
+    // defaulted all parameters starting with #3
+    public static void toCBufferInstance(TemplateInstance ti, OutBuffer buf) {
+        toCBufferInstance(ti, buf, false);
+    }
+
     public static void toCBuffer(Initializer iz, OutBuffer buf, HdrGenState hgs) {
         initializerToBuffer(iz, buf, hgs);
     }
@@ -3006,6 +3011,11 @@ public class hdrgen {
                     expToBuffer(el, PREC.assign, buf, hgs);
             }
         }
+    }
+
+    // defaulted all parameters starting with #4
+    public static void argsToBuffer(DArray<Expression> expressions, OutBuffer buf, HdrGenState hgs) {
+        argsToBuffer(expressions, buf, hgs, null);
     }
 
     public static void sizeToBuffer(Expression e, OutBuffer buf, HdrGenState hgs) {

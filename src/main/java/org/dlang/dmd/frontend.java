@@ -141,6 +141,16 @@ public class frontend {
         CTFloat.initialize();
     }
 
+    // defaulted all parameters starting with #2
+    public static void initDMD(Slice<ByteSlice> versionIdentifiers) {
+        initDMD(versionIdentifiers, new ContractChecks(ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled));
+    }
+
+    // defaulted all parameters starting with #1
+    public static void initDMD() {
+        initDMD(slice(new ByteSlice[]{}), new ContractChecks(ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled));
+    }
+
     public static void deinitializeDMD() {
         global.deinitialize();
         Type.deinitialize();

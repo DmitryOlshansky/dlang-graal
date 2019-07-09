@@ -877,4 +877,9 @@ public class initsem {
         }
     }
 
+    // defaulted all parameters starting with #2
+    public static Expression initializerToExpression(Initializer init) {
+        initializerToExpression(init, null);
+    }
+
 }

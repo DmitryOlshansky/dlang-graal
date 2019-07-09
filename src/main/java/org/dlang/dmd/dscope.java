@@ -343,6 +343,11 @@ public class dscope {
             return s;
         }
 
+        // defaulted all parameters starting with #4
+        public  Dsymbol search(Loc loc, Identifier ident, Ptr<Dsymbol> pscopesym) {
+            search(loc, ident, pscopesym, 0);
+        }
+
         public  Dsymbol search_correct(Identifier ident) {
             if (global.gag != 0)
                 return null;

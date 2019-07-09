@@ -60,11 +60,6 @@ public class constfold {
         (ue_ref.value) = new UnionExp(new CTFEExp(TOK.cantExpression));
     }
 
-    // defaulted all parameters starting with #1
-    public static void cantExp() {
-        cantExp(ref(new UnionExp()));
-    }
-
     public static UnionExp Neg(Type type, Expression e1) {
         UnionExp ue = null;
         Loc loc = e1.loc.copy();
@@ -1424,6 +1419,11 @@ public class constfold {
                 (elems.value).push(e2);
         }
         return elems.value;
+    }
+
+    // defaulted all parameters starting with #2
+    public static DArray<Expression> copyElements(Expression e1) {
+        copyElements(e1, null);
     }
 
     public static UnionExp Cat(Type type, Expression e1, Expression e2) {

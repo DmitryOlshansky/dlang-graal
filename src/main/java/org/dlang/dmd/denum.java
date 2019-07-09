@@ -110,6 +110,11 @@ public class denum {
             return s;
         }
 
+        // defaulted all parameters starting with #3
+        public  Dsymbol search(Loc loc, Identifier ident) {
+            search(loc, ident, 8);
+        }
+
         public  boolean isDeprecated() {
             return this.isdeprecated;
         }

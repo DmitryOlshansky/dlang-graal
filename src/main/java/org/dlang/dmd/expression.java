@@ -455,6 +455,11 @@ public class expression {
         return -1;
     }
 
+    // defaulted all parameters starting with #2
+    public static int expandAliasThisTuples(DArray<Expression> exps) {
+        expandAliasThisTuples(exps, 0);
+    }
+
     public static TemplateDeclaration getFuncTemplateDecl(Dsymbol s) {
         FuncDeclaration f = s.isFuncDeclaration();
         if ((f != null) && (f.parent != null))
@@ -564,6 +569,11 @@ public class expression {
             }
         }
         return e;
+    }
+
+    // defaulted all parameters starting with #3
+    public static Expression doCopyOrMove(Scope sc, Expression e) {
+        doCopyOrMove(sc, e, null);
     }
 
     public static int RealIdentical(double x1, double x2) {
@@ -740,11 +750,6 @@ public class expression {
                 pce.set(0, ce.e1);
                 return ce.e2;
             }
-        }
-
-        // defaulted all parameters starting with #2
-        public static Expression extractLast(Expression e) {
-            extractLast(e, ref(null));
         }
 
         public static DArray<Expression> arraySyntaxCopy(DArray<Expression> exps) {
@@ -1202,8 +1207,18 @@ public class expression {
             return true;
         }
 
+        // defaulted all parameters starting with #2
+        public  boolean checkReadModifyWrite(byte rmwOp) {
+            checkReadModifyWrite(rmwOp, null);
+        }
+
         public  int checkModifiable(Scope sc, int flag) {
             return this.type != null ? Modifiable.yes : Modifiable.no;
+        }
+
+        // defaulted all parameters starting with #2
+        public  int checkModifiable(Scope sc) {
+            checkModifiable(sc, 0);
         }
 
         public  Expression toBoolean(Scope sc) {
@@ -1272,6 +1287,11 @@ public class expression {
 
         public  Expression optimize(int result, boolean keepLvalue) {
             return Expression_optimize(this, result, keepLvalue);
+        }
+
+        // defaulted all parameters starting with #2
+        public  Expression optimize(int result) {
+            optimize(result, false);
         }
 
         public  Expression ctfeInterpret() {
@@ -2196,6 +2216,11 @@ public class expression {
             this.hasOverloads = hasOverloads;
         }
 
+        // defaulted all parameters starting with #3
+        public  DsymbolExp(Loc loc, Dsymbol s) {
+            this(loc, s, true);
+        }
+
         public  boolean isLvalue() {
             return true;
         }
@@ -2305,6 +2330,11 @@ public class expression {
         public  NullExp(Loc loc, Type type) {
             super(loc, TOK.null_, 25);
             this.type = type;
+        }
+
+        // defaulted all parameters starting with #2
+        public  NullExp(Loc loc) {
+            this(loc, null);
         }
 
         public  boolean equals(RootObject o) {
@@ -2490,6 +2520,11 @@ public class expression {
             return result;
         }
 
+        // defaulted all parameters starting with #1
+        public  int numberOfCodeUnits() {
+            numberOfCodeUnits(0);
+        }
+
         public  void writeTo(Object dest, boolean zero, int tyto) {
             int encSize = 0;
             switch (tyto)
@@ -2517,6 +2552,11 @@ public class expression {
             }
             else
                 throw new AssertionError("Unreachable code!");
+        }
+
+        // defaulted all parameters starting with #3
+        public  void writeTo(Object dest, boolean zero) {
+            writeTo(dest, zero, 0);
         }
 
         public  int getCodeUnit(int i) {
@@ -3083,8 +3123,18 @@ public class expression {
             this.origin = this;
         }
 
+        // defaulted all parameters starting with #4
+        public  StructLiteralExp(Loc loc, StructDeclaration sd, DArray<Expression> elements) {
+            this(loc, sd, elements, null);
+        }
+
         public static StructLiteralExp create(Loc loc, StructDeclaration sd, Object elements, Type stype) {
             return new StructLiteralExp(loc, sd, ((DArray<Expression>)elements), stype);
+        }
+
+        // defaulted all parameters starting with #4
+        public static StructLiteralExp create(Loc loc, StructDeclaration sd, Object elements) {
+            create(loc, sd, elements, null);
         }
 
         public  boolean equals(RootObject o) {
@@ -3344,6 +3394,11 @@ public class expression {
             this.fd = fd;
         }
 
+        // defaulted all parameters starting with #3
+        public  TemplateExp(Loc loc, TemplateDeclaration td) {
+            this(loc, td, null);
+        }
+
         public  boolean isLvalue() {
             return this.fd != null;
         }
@@ -3525,6 +3580,11 @@ public class expression {
             this.offset = offset;
         }
 
+        // defaulted all parameters starting with #4
+        public  SymOffExp(Loc loc, Declaration var, long offset) {
+            this(loc, var, offset, true);
+        }
+
         public  boolean isBool(boolean result) {
             return result ? true : false;
         }
@@ -3559,8 +3619,18 @@ public class expression {
             this.type = var.type;
         }
 
+        // defaulted all parameters starting with #3
+        public  VarExp(Loc loc, Declaration var) {
+            this(loc, var, true);
+        }
+
         public static VarExp create(Loc loc, Declaration var, boolean hasOverloads) {
             return new VarExp(loc, var, hasOverloads);
+        }
+
+        // defaulted all parameters starting with #3
+        public static VarExp create(Loc loc, Declaration var) {
+            create(loc, var, true);
         }
 
         public  boolean equals(RootObject o) {
@@ -3902,6 +3972,11 @@ public class expression {
                 this.error(new BytePtr("cannot implicitly convert expression `%s` of type `%s` to `%s`"), this.toChars(), ts.get(0), ts.get(1));
             }
             return m;
+        }
+
+        // defaulted all parameters starting with #4
+        public  int matchType(Type to, Scope sc, Ptr<FuncExp> presult) {
+            matchType(to, sc, presult, 0);
         }
 
         public  BytePtr toChars() {
@@ -4541,6 +4616,11 @@ public class expression {
             this.msg = msg;
         }
 
+        // defaulted all parameters starting with #3
+        public  AssertExp(Loc loc, Expression e) {
+            this(loc, e, null);
+        }
+
         public  Expression syntaxCopy() {
             return new AssertExp(this.loc, this.e1.syntaxCopy(), this.msg != null ? this.msg.syntaxCopy() : null);
         }
@@ -4639,6 +4719,11 @@ public class expression {
             super(loc, TOK.dotVariable, 37, e);
             this.var = var;
             this.hasOverloads = hasOverloads;
+        }
+
+        // defaulted all parameters starting with #4
+        public  DotVarExp(Loc loc, Expression e, Declaration var) {
+            this(loc, e, var, true);
         }
 
         public  int checkModifiable(Scope sc, int flag) {
@@ -4819,6 +4904,16 @@ public class expression {
             this.func = f;
             this.hasOverloads = hasOverloads;
             this.vthis2 = vthis2;
+        }
+
+        // defaulted all parameters starting with #5
+        public  DelegateExp(Loc loc, Expression e, FuncDeclaration f, boolean hasOverloads) {
+            this(loc, e, f, hasOverloads, null);
+        }
+
+        // defaulted all parameters starting with #4
+        public  DelegateExp(Loc loc, Expression e, FuncDeclaration f) {
+            this(loc, e, f, true, null);
         }
 
         public  void accept(Visitor v) {
@@ -5050,6 +5145,11 @@ public class expression {
             }
         }
         return null;
+    }
+
+    // defaulted all parameters starting with #2
+    public static FuncDeclaration isFuncAddress(Expression e) {
+        isFuncAddress(e, null);
     }
 
     public static class AddrExp extends UnaExp
@@ -5522,6 +5622,11 @@ public class expression {
                 (this.arguments).push(index);
         }
 
+        // defaulted all parameters starting with #3
+        public  ArrayExp(Loc loc, Expression e1) {
+            this(loc, e1, null);
+        }
+
         public  ArrayExp(Loc loc, Expression e1, DArray<Expression> args) {
             super(loc, TOK.array, 44, e1);
             this.arguments = args;
@@ -5601,6 +5706,11 @@ public class expression {
         public  CommaExp(Loc loc, Expression e1, Expression e2, boolean generated) {
             super(loc, TOK.comma, 42, e1, e2);
             this.allowCommaExp = (this.isGenerated = generated);
+        }
+
+        // defaulted all parameters starting with #4
+        public  CommaExp(Loc loc, Expression e1, Expression e2) {
+            this(loc, e1, e2, true);
         }
 
         public  int checkModifiable(Scope sc, int flag) {

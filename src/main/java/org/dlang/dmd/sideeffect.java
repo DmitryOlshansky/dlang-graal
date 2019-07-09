@@ -259,4 +259,9 @@ public class sideeffect {
         return expressionSemantic(new VarExp(vd.loc, vd, true), sc);
     }
 
+    // defaulted all parameters starting with #5
+    public static Expression extractSideEffect(Scope sc, BytePtr name, Ref<Expression> e0, Expression e) {
+        extractSideEffect(sc, name, e0, e, false);
+    }
+
 }

@@ -633,6 +633,11 @@ public class func {
             return bestvi;
         }
 
+        // defaulted all parameters starting with #3
+        public  int findVtblIndex(DArray<Dsymbol> vtbl, int dim) {
+            findVtblIndex(vtbl, dim, true);
+        }
+
         public  BaseClass overrideInterface() {
             {
                 ClassDeclaration cd = this.toParent2().isClassDeclaration();
@@ -953,6 +958,11 @@ public class func {
                 return new BytePtr("D main");
             else
                 return this.toPrettyChars(QualifyTypes);
+        }
+
+        // defaulted all parameters starting with #1
+        public  BytePtr toPrettyChars() {
+            toPrettyChars(false);
         }
 
         public  BytePtr toFullSignature() {
@@ -1810,6 +1820,11 @@ public class func {
             return genCfunc(fparams, treturn, Identifier.idPool(name, strlen(name)), stc);
         }
 
+        // defaulted all parameters starting with #4
+        public static FuncDeclaration genCfunc(DArray<Parameter> fparams, Type treturn, BytePtr name) {
+            genCfunc(fparams, treturn, name, 0L);
+        }
+
         public static FuncDeclaration genCfunc(DArray<Parameter> fparams, Type treturn, Identifier id, long stc) {
             FuncDeclaration fd = null;
             TypeFunction tf = null;
@@ -1832,6 +1847,11 @@ public class func {
                 func.genCfuncst.insert((Dsymbol)fd);
             }
             return fd;
+        }
+
+        // defaulted all parameters starting with #4
+        public static FuncDeclaration genCfunc(DArray<Parameter> fparams, Type treturn, Identifier id) {
+            genCfunc(fparams, treturn, id, 0L);
         }
 
         public  void checkDmain() {
@@ -2095,6 +2115,11 @@ public class func {
             }
         }
         return 0;
+    }
+
+    // defaulted all parameters starting with #3
+    public static int overloadApply(Dsymbol fstart, Function1<Dsymbol,Integer> dg) {
+        overloadApply(fstart, dg, null);
     }
 
     public static Mismatches MODMatchToBuffer(OutBuffer buf, byte lhsMod, byte rhsMod) {
@@ -2497,6 +2522,11 @@ public class func {
         return bAnyClosures;
     }
 
+    // defaulted all parameters starting with #3
+    public static boolean checkEscapingSiblings(FuncDeclaration f, FuncDeclaration outerFunc) {
+        checkEscapingSiblings(f, outerFunc, null);
+    }
+
     // from template followInstantiationContext!(AggregateDeclaration)
     public static boolean followInstantiationContextAggregateDeclaration(Dsymbol s, AggregateDeclaration _param_1) {
         Function1<Dsymbol,Boolean> has2ThisAggregateDeclaration = new Function1<Dsymbol,Boolean>(){
@@ -2696,6 +2726,11 @@ public class func {
             this.userAttribDecl = funcalias.userAttribDecl;
         }
 
+        // defaulted all parameters starting with #3
+        public  FuncAliasDeclaration(Identifier ident, FuncDeclaration funcalias) {
+            this(ident, funcalias, true);
+        }
+
         public  FuncAliasDeclaration isFuncAliasDeclaration() {
             return this;
         }
@@ -2812,6 +2847,11 @@ public class func {
             this.fes = fes;
         }
 
+        // defaulted all parameters starting with #6
+        public  FuncLiteralDeclaration(Loc loc, Loc endloc, Type type, byte tok, ForeachStatement fes) {
+            this(loc, endloc, type, tok, fes, null);
+        }
+
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             FuncLiteralDeclaration f = new FuncLiteralDeclaration(this.loc, this.endloc, this.type.syntaxCopy(), this.tok, this.fes, this.ident);
@@ -2869,6 +2909,11 @@ public class func {
                     return ti.tempdecl.toPrettyChars(QualifyTypes);
             }
             return this.toPrettyChars(QualifyTypes);
+        }
+
+        // defaulted all parameters starting with #1
+        public  BytePtr toPrettyChars() {
+            toPrettyChars(false);
         }
 
         public  void accept(Visitor v) {
@@ -2970,6 +3015,11 @@ public class func {
         public  CtorDeclaration(Loc loc, Loc endloc, long stc, Type type, boolean isCpCtor) {
             super(loc, endloc, Id.ctor, stc, type);
             this.isCpCtor = isCpCtor;
+        }
+
+        // defaulted all parameters starting with #5
+        public  CtorDeclaration(Loc loc, Loc endloc, long stc, Type type) {
+            this(loc, endloc, stc, type, false);
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {

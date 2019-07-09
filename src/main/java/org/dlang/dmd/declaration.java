@@ -65,6 +65,11 @@ public class declaration {
         return result;
     }
 
+    // defaulted all parameters starting with #4
+    public static boolean checkFrameAccess(Loc loc, Scope sc, AggregateDeclaration ad) {
+        checkFrameAccess(loc, sc, ad, 0);
+    }
+
     public static boolean modifyFieldVar(Loc loc, Scope sc, VarDeclaration var, Expression e1) {
         Dsymbol s = (sc).func;
         for (; 1 != 0;){
@@ -326,6 +331,11 @@ public class declaration {
             return false;
         }
 
+        // defaulted all parameters starting with #3
+        public  boolean checkDisabled(Loc loc, Scope sc) {
+            checkDisabled(loc, sc, false);
+        }
+
         public  int checkModify(Loc loc, Scope sc, Expression e1, int flag) {
             VarDeclaration v = this.isVarDeclaration();
             if ((v != null) && (v.canassign != 0))
@@ -378,6 +388,11 @@ public class declaration {
                     s = s.search(loc, ident, flags);
             }
             return s;
+        }
+
+        // defaulted all parameters starting with #3
+        public  Dsymbol search(Loc loc, Identifier ident) {
+            search(loc, ident, 8);
         }
 
         public  boolean isStatic() {
@@ -897,6 +912,11 @@ public class declaration {
             }
         }
 
+        // defaulted all parameters starting with #3
+        public  OverDeclaration(Identifier ident, Dsymbol s) {
+            this(ident, s, true);
+        }
+
         public  BytePtr kind() {
             return new BytePtr("overload alias");
         }
@@ -1059,8 +1079,18 @@ public class declaration {
             this.sequenceNumber = (nextSequenceNumber += 1);
         }
 
+        // defaulted all parameters starting with #5
+        public  VarDeclaration(Loc loc, Type type, Identifier ident, Initializer _init) {
+            this(loc, type, ident, _init, 0L);
+        }
+
         public static VarDeclaration create(Loc loc, Type type, Identifier ident, Initializer _init, long storage_class) {
             return new VarDeclaration(loc, type, ident, _init, storage_class);
+        }
+
+        // defaulted all parameters starting with #5
+        public static VarDeclaration create(Loc loc, Type type, Identifier ident, Initializer _init) {
+            create(loc, type, ident, _init, 0L);
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
@@ -1304,6 +1334,11 @@ public class declaration {
             Expression e = initializerToExpression(this._init, needFullType ? this.type : null);
             global.gag = oldgag;
             return e;
+        }
+
+        // defaulted all parameters starting with #1
+        public  Expression getConstInitializer() {
+            getConstInitializer(true);
         }
 
         public  Expression expandInitializer(Loc loc) {

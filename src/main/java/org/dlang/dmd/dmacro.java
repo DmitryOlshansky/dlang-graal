@@ -364,9 +364,4 @@ public class dmacro {
         } catch(Dispatch0 __d){}
     }
 
-    // defaulted all parameters starting with #2
-    public static int extractArgN(ByteSlice buf) {
-        extractArgN(buf, new ByteSlice(), 0);
-    }
-
 }

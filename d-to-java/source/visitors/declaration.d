@@ -5,6 +5,7 @@ import core.stdc.string;
 import ds.buffer, ds.stack, ds.identity_map;
 
 import dmd.aggregate;
+import dmd.arraytypes;
 import dmd.attrib;
 import dmd.cond;
 import dmd.dclass;
@@ -1470,28 +1471,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put("\n};\n");
     }
 
-    void printDefaultArg(VarDeclaration var, ExprOpts opts) {
-        if (var in opts.refParams) buf.fmt("ref(");
-        if (var._init) {
-            ExpInitializer ie = var._init.isExpInitializer();
-            if (ie && (ie.exp.op == TOK.construct || ie.exp.op == TOK.blit)) {
-                auto assign = (cast(AssignExp)ie.exp);
-                buf.put(assign.e2.toJava(opts));
-            }
-            else 
-                initializerToBuffer(var._init, buf, opts);
-        }
-        else if (var.type.isintegral)
-            buf.put("0");
-        else if (var.type.ty == Tbool)
-            buf.put("false");
-        else if (var.type.ty == Tclass || var.type.ty == Tpointer)
-            buf.put("null");
-        else
-            buf.put("DEFAULT_ARG");
-        if (var in opts.refParams) buf.fmt(")");
-    }
-
+    
     void printGlobalFunction(FuncDeclaration func) {
         opts.vararg = null;
         if (func.fbody is null && !func.isAbstract) return;
@@ -1499,31 +1479,30 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         VarDeclaration[] renamedVars = printGlobalFunctionHead(func);
         printFunctionBody(func, renamedVars);
         buf.put("\n\n");
-        stderr.writefln("Global func %s", func.funcName);
-        void printDefaulted(size_t split) {
-            foreach (j; 0..func.parameters.length) {
-                auto arg = (*func.parameters)[j];
+        void printDefaulted(size_t split, Parameters* params) {
+            foreach (j; 0..params.length) {
+                auto p = (*params)[j];
                 if (j) buf.put(", ");
-                if (j < split) buf.put(arg.ident.symbol);
-                else printDefaultArg(arg, opts);
+                if (j < split) buf.put(p.ident.symbol);
+                else buf.put(p.defaultArg.toJava(opts));
             }
         }
         if (func.parameters) {
-            foreach_reverse (i, p; (*func.parameters)) {
-                stderr.writefln("\t%s.storage_class = 0x%x", p.ident.symbol, p.storage_class);
-                if (p._init) {
+            auto params = func.type.isTypeFunction.parameterList;
+            foreach_reverse (i, p; *params) {
+                if (p.defaultArg) {
                     buf.fmt("// defaulted all parameters starting with #%d\n", i+1);
                     printGlobalFunctionHead(func, cast(int)i);
                     buf.put(" {\n");
                     buf.indent;
                     if (func.isCtorDeclaration) {
                         buf.fmt("this(");
-                        printDefaulted(i);
+                        printDefaulted(i, params);
                         buf.fmt(");\n");
                     }
                     else {
                         buf.fmt("%s(", func.funcName);
-                        printDefaulted(i);
+                        printDefaulted(i, params);
                         buf.fmt(");\n");
                     }
                     buf.outdent;

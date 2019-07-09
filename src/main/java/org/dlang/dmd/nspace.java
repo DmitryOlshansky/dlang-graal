@@ -104,6 +104,11 @@ public class nspace {
             return this.search(loc, ident, flags);
         }
 
+        // defaulted all parameters starting with #3
+        public  Dsymbol search(Loc loc, Identifier ident) {
+            search(loc, ident, 8);
+        }
+
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
             Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
                 public Integer invoke(Dsymbol s) {

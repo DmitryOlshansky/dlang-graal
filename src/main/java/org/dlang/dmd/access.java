@@ -273,4 +273,9 @@ public class access {
         return mostVisible;
     }
 
+    // defaulted all parameters starting with #2
+    public static Dsymbol mostVisibleOverload(Dsymbol s) {
+        mostVisibleOverload(s, null);
+    }
+
 }

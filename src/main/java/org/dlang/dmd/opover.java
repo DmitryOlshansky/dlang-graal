@@ -1240,6 +1240,11 @@ public class opover {
         return v.result;
     }
 
+    // defaulted all parameters starting with #3
+    public static Expression op_overload(Expression e, Scope sc) {
+        op_overload(e, sc, null);
+    }
+
     public static Expression compare_overload(BinExp e, Scope sc, Identifier id, BytePtr pop) {
         AggregateDeclaration ad1 = isAggregate(e.e1.type);
         AggregateDeclaration ad2 = isAggregate(e.e2.type);
@@ -1420,11 +1425,6 @@ public class opover {
             return true;
         }
         throw new AssertionError("Unreachable code!");
-    }
-
-    // defaulted all parameters starting with #4
-    public static boolean inferForeachAggregate(Scope sc, boolean isForeach, Ref<Expression> feaggr) {
-        inferForeachAggregate(sc, isForeach, feaggr, ref(null));
     }
 
     public static boolean inferApplyArgTypes(ForeachStatement fes, Scope sc, Ref<Dsymbol> sapply) {

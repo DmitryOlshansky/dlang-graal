@@ -490,6 +490,11 @@ public class visitor {
             }
         }
 
+        // defaulted all parameters starting with #2
+        public  void visitArgs(DArray<Expression> expressions) {
+            visitArgs(expressions, null);
+        }
+
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(PragmaStatement s) {

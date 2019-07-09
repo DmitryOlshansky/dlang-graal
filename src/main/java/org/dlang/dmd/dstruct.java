@@ -258,6 +258,11 @@ public class dstruct {
             return this.search(loc, ident, flags);
         }
 
+        // defaulted all parameters starting with #3
+        public  Dsymbol search(Loc loc, Identifier ident) {
+            search(loc, ident, 8);
+        }
+
         public  BytePtr kind() {
             return new BytePtr("struct");
         }

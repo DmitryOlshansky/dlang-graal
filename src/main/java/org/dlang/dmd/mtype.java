@@ -556,6 +556,16 @@ public class mtype {
             return 2;
         }
 
+        // defaulted all parameters starting with #3
+        public  int covariant(Type t, Ptr<Long> pstc) {
+            covariant(t, pstc, true);
+        }
+
+        // defaulted all parameters starting with #2
+        public  int covariant(Type t) {
+            covariant(t, null, true);
+        }
+
         public  BytePtr toChars() {
             OutBuffer buf = new OutBuffer();
             try {
@@ -580,6 +590,11 @@ public class mtype {
             }
             finally {
             }
+        }
+
+        // defaulted all parameters starting with #1
+        public  BytePtr toPrettyChars() {
+            toPrettyChars(false);
         }
 
         public static void _init() {
@@ -3543,8 +3558,18 @@ public class mtype {
                 this.trust = TRUST.trusted;
         }
 
+        // defaulted all parameters starting with #4
+        public  TypeFunction(ParameterList pl, Type treturn, int linkage) {
+            this(pl, treturn, linkage, 0L);
+        }
+
         public static TypeFunction create(DArray<Parameter> parameters, Type treturn, int varargs, int linkage, long stc) {
             return new TypeFunction(new ParameterList(parameters, varargs), treturn, linkage, stc);
+        }
+
+        // defaulted all parameters starting with #5
+        public static TypeFunction create(DArray<Parameter> parameters, Type treturn, int varargs, int linkage) {
+            create(parameters, treturn, varargs, linkage, 0L);
         }
 
         public  BytePtr kind() {
@@ -4308,6 +4333,21 @@ public class mtype {
             catch(Dispatch1 __d){}
         /*Nomatch:*/
             return MATCH.nomatch;
+        }
+
+        // defaulted all parameters starting with #5
+        public  int callMatch(Type tthis, Slice<Expression> args, int flag, Ptr<BytePtr> pMessage) {
+            callMatch(tthis, args, flag, pMessage, null);
+        }
+
+        // defaulted all parameters starting with #4
+        public  int callMatch(Type tthis, Slice<Expression> args, int flag) {
+            callMatch(tthis, args, flag, null, null);
+        }
+
+        // defaulted all parameters starting with #3
+        public  int callMatch(Type tthis, Slice<Expression> args) {
+            callMatch(tthis, args, 0, null, null);
         }
 
         public  boolean checkRetType(Loc loc) {
@@ -5206,6 +5246,11 @@ public class mtype {
             return this.sym.getMemtype(loc);
         }
 
+        // defaulted all parameters starting with #1
+        public  Type memType() {
+            memType(Loc.initial);
+        }
+
         public  int alignsize() {
             Type t = this.memType(Loc.initial);
             if (((t.ty & 0xFF) == ENUMTY.Terror))
@@ -5864,6 +5909,11 @@ public class mtype {
             return res != 0 ? param.value : null;
         }
 
+        // defaulted all parameters starting with #3
+        public static Parameter getNth(DArray<Parameter> parameters, int nth) {
+            getNth(parameters, nth, null);
+        }
+
         public static int _foreach(DArray<Parameter> parameters, Function2<Integer,Parameter,Integer> dg, IntPtr pn) {
             assert(dg != null);
             if (parameters == null)
@@ -5893,6 +5943,11 @@ public class mtype {
             if (pn != null)
                 pn.set(0, n.value);
             return result;
+        }
+
+        // defaulted all parameters starting with #3
+        public static int _foreach(DArray<Parameter> parameters, Function2<Integer,Parameter,Integer> dg) {
+            _foreach(parameters, dg, null);
         }
 
         public  BytePtr toChars() {
@@ -6044,6 +6099,11 @@ public class mtype {
                 return ;
         }
         dg.invoke(trustToString(trustAttrib));
+    }
+
+    // defaulted all parameters starting with #3
+    public static void attributesApply(TypeFunction tf, Function1<ByteSlice,Void> dg) {
+        attributesApply(tf, dg, TRUSTformat.TRUSTformatDefault);
     }
 
     public static AggregateDeclaration isAggregate(Type t) {

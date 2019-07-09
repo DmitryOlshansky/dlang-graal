@@ -176,11 +176,6 @@ public class utf {
         return utf.utf_decodeCharUTF8_DECODE_OK;
     }
 
-    // defaulted all parameters starting with #4
-    public static BytePtr utf_decodeChar(BytePtr s, int len, IntRef ridx) {
-        utf_decodeChar(s, len, ridx, ref(0x0ffff));
-    }
-
     public static BytePtr utf_decodeWchar(CharPtr s, int len, IntRef ridx, IntRef rresult) {
         rresult.value = 0x0ffff;
         assert((s != null));
@@ -205,11 +200,6 @@ public class utf {
             return new BytePtr("Invalid code point decoded");
         rresult.value = u;
         return utf.utf_decodeWcharUTF16_DECODE_OK;
-    }
-
-    // defaulted all parameters starting with #4
-    public static BytePtr utf_decodeWchar(CharPtr s, int len, IntRef ridx) {
-        utf_decodeWchar(s, len, ridx, ref(0x0ffff));
     }
 
 }

@@ -489,6 +489,11 @@ public class dsymbol {
             return s;
         }
 
+        // defaulted all parameters starting with #1
+        public  BytePtr toPrettyChars() {
+            toPrettyChars(false);
+        }
+
         public  BytePtr kind() {
             return new BytePtr("symbol");
         }
@@ -544,6 +549,11 @@ public class dsymbol {
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             return null;
+        }
+
+        // defaulted all parameters starting with #3
+        public  Dsymbol search(Loc loc, Identifier ident) {
+            search(loc, ident, 0);
         }
 
         public  Dsymbol search_correct(Identifier ident) {
@@ -1145,6 +1155,11 @@ public class dsymbol {
             return null;
         }
 
+        // defaulted all parameters starting with #3
+        public  Dsymbol search(Loc loc, Identifier ident) {
+            search(loc, ident, 8);
+        }
+
         public  OverloadSet mergeOverloadSet(Identifier ident, OverloadSet os, Dsymbol s) {
             if (os == null)
             {
@@ -1249,6 +1264,11 @@ public class dsymbol {
             return false;
         }
 
+        // defaulted all parameters starting with #3
+        public  boolean isPackageAccessible(dmodule.Package p, Prot protection) {
+            isPackageAccessible(p, protection, 0);
+        }
+
         public  boolean isforwardRef() {
             return this.members == null;
         }
@@ -1338,6 +1358,11 @@ public class dsymbol {
             return result;
         }
 
+        // defaulted all parameters starting with #4
+        public static int _foreach(Scope sc, DArray<Dsymbol> members, Function2<Integer,Dsymbol,Integer> dg) {
+            _foreach(sc, members, dg, null);
+        }
+
         public  ScopeDsymbol isScopeDsymbol() {
             return this;
         }
@@ -1412,6 +1437,11 @@ public class dsymbol {
                 }
             }
             return null;
+        }
+
+        // defaulted all parameters starting with #3
+        public  Dsymbol search(Loc loc, Identifier ident) {
+            search(loc, ident, 8);
         }
 
         public  WithScopeSymbol isWithScopeSymbol() {
@@ -1615,6 +1645,11 @@ public class dsymbol {
             } catch(Dispatch0 __d){}
         }
 
+        // defaulted all parameters starting with #3
+        public  Dsymbol search(Loc loc, Identifier ident) {
+            search(loc, ident, 0);
+        }
+
         public  ArrayScopeSymbol isArrayScopeSymbol() {
             return this;
         }
@@ -1665,6 +1700,11 @@ public class dsymbol {
             {
                 this.a.pushSlice(os.a.opSlice());
             }
+        }
+
+        // defaulted all parameters starting with #2
+        public  OverloadSet(Identifier ident) {
+            this(ident, null);
         }
 
         public  void push(Dsymbol s) {

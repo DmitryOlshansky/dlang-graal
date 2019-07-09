@@ -519,6 +519,11 @@ public class target {
             return supported;
         }
 
+        // defaulted all parameters starting with #3
+        public  boolean isVectorOpSupported(Type type, byte op) {
+            isVectorOpSupported(type, op, null);
+        }
+
         public  BytePtr toCppMangle(Dsymbol s) {
             return toCppMangleItanium(s);
         }

@@ -140,4 +140,9 @@ public class aliasthis {
         return e;
     }
 
+    // defaulted all parameters starting with #3
+    public static Expression resolveAliasThis(Scope sc, Expression e) {
+        resolveAliasThis(sc, e, false);
+    }
+
 }

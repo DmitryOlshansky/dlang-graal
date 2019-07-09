@@ -3300,6 +3300,11 @@ public class dinterpret {
             return ;
         }
 
+        // defaulted all parameters starting with #3
+        public  void interpretAssignCommon(BinExp e, Function4<Loc,Type,Expression,Expression,UnionExp> fp) {
+            interpretAssignCommon(e, fp, 0);
+        }
+
         public  void stompOverlappedFields(StructLiteralExp sle, VarDeclaration v) {
             if (!v.overlapped)
                 return ;
@@ -5520,12 +5525,22 @@ public class dinterpret {
         return ex;
     }
 
+    // defaulted all parameters starting with #4
+    public static Expression interpret(UnionExp pue, Expression e, InterState istate) {
+        interpret(pue, e, istate, CtfeGoal.ctfeNeedRvalue);
+    }
+
     public static Expression interpret(Expression e, InterState istate, int goal) {
         UnionExp ue = null;
         Expression result = interpret(ue, e, istate, goal);
         if ((pequals(result, ue.exp())))
             result = ue.copy();
         return result;
+    }
+
+    // defaulted all parameters starting with #3
+    public static Expression interpret(Expression e, InterState istate) {
+        interpret(e, istate, CtfeGoal.ctfeNeedRvalue);
     }
 
     public static Expression interpret(UnionExp pue, Statement s, InterState istate) {

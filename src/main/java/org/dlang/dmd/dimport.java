@@ -243,6 +243,11 @@ public class dimport {
             return this.pkg.search(loc, ident, flags);
         }
 
+        // defaulted all parameters starting with #3
+        public  Dsymbol search(Loc loc, Identifier ident) {
+            search(loc, ident, 8);
+        }
+
         public  boolean overloadInsert(Dsymbol s) {
             assert((this.ident != null) && (pequals(this.ident, s.ident)));
             Import imp = null;

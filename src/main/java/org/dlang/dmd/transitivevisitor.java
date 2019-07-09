@@ -196,6 +196,11 @@ public class transitivevisitor {
             }
         }
 
+        // defaulted all parameters starting with #2
+        public  void visitArgs(DArray<ASTBase.Expression> expressions) {
+            visitArgs(expressions, null);
+        }
+
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.PragmaStatement s) {

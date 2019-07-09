@@ -284,6 +284,11 @@ public class ctfeexpr {
         return newelems;
     }
 
+    // defaulted all parameters starting with #2
+    public static DArray<Expression> copyLiteralArray(DArray<Expression> oldelems) {
+        copyLiteralArray(oldelems, null);
+    }
+
     public static UnionExp copyLiteral(Expression e) {
         UnionExp ue = null;
         if (((e.op & 0xFF) == 121))
@@ -496,6 +501,11 @@ public class ctfeexpr {
         }
         else
             return Slice(e.type, se.e1, se.lwr, se.upr).copy();
+    }
+
+    // defaulted all parameters starting with #2
+    public static Expression resolveSlice(Expression e) {
+        resolveSlice(e, null);
     }
 
     public static long resolveArrayLength(Expression e) {
@@ -1235,6 +1245,11 @@ public class ctfeexpr {
         throw new AssertionError("Unreachable code!");
     }
 
+    // defaulted all parameters starting with #4
+    public static int ctfeRawCmp(Loc loc, Expression e1, Expression e2) {
+        ctfeRawCmp(loc, e1, e2, false);
+    }
+
     public static int ctfeEqual(Loc loc, byte op, Expression e1, Expression e2) {
         return ((ctfeRawCmp(loc, e1, e2, false) == 0 ^ ((op & 0xFF) == 59)) ? 1 : 0);
     }
@@ -1856,6 +1871,11 @@ public class ctfeexpr {
                 }
             }
         }
+    }
+
+    // defaulted all parameters starting with #2
+    public static void showCtfeExpr(Expression e) {
+        showCtfeExpr(e, 0);
     }
 
     public static UnionExp voidInitLiteral(Type t, VarDeclaration var) {

@@ -59,6 +59,11 @@ public class optimize {
             }
         }
 
+        // defaulted all parameters starting with #3
+        public  boolean expOptimize(Ref<Expression> e, int flags) {
+            expOptimize(e, flags, false);
+        }
+
         public  boolean unaOptimize(UnaExp e, int flags) {
             return this.expOptimize(e.e1, flags, false);
         }

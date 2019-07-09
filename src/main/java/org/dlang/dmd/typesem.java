@@ -387,6 +387,11 @@ public class typesem {
         }
     }
 
+    // defaulted all parameters starting with #9
+    public static void resolveHelper(TypeQualified mt, Loc loc, Scope sc, Dsymbol s, Dsymbol scopesym, Ptr<Expression> pe, Ptr<Type> pt, Ptr<Dsymbol> ps) {
+        resolveHelper(mt, loc, sc, s, scopesym, pe, pt, ps, false);
+    }
+
     public static Type stripDefaultArgs(Type t) {
         Function1<DArray<Parameter>,DArray<Parameter>> stripParams = new Function1<DArray<Parameter>,DArray<Parameter>>(){
             public DArray<Parameter> invoke(DArray<Parameter> parameters) {
@@ -565,6 +570,11 @@ public class typesem {
             }
         }
         return e;
+    }
+
+    // defaulted all parameters starting with #3
+    public static Expression typeToExpressionHelper(TypeQualified t, Expression e) {
+        typeToExpressionHelper(t, e, 0);
     }
 
     public static Type typeSemantic(Type t, Loc loc, Scope sc) {
@@ -2635,6 +2645,11 @@ public class typesem {
                 visitSlice.invoke((TypeSlice)mt);
                 break;
         }
+    }
+
+    // defaulted all parameters starting with #7
+    public static void resolve(Type mt, Loc loc, Scope sc, Ptr<Expression> pe, Ptr<Type> pt, Ptr<Dsymbol> ps) {
+        resolve(mt, loc, sc, pe, pt, ps, false);
     }
 
     public static Expression dotExp(Type mt, Scope sc, Expression e, Identifier ident, int flag) {

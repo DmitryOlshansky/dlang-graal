@@ -244,6 +244,16 @@ public class errors {
         fflush(stderr);
     }
 
+    // defaulted all parameters starting with #7
+    public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Slice<Object> ap, BytePtr p1) {
+        verrorPrint(loc, headerColor, header, format, ap, p1, null);
+    }
+
+    // defaulted all parameters starting with #6
+    public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Slice<Object> ap) {
+        verrorPrint(loc, headerColor, header, format, ap, null, null);
+    }
+
     public static void verror(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2, BytePtr header) {
         global.errors++;
         if (global.gag == 0)
@@ -261,6 +271,21 @@ public class errors {
             }
             global.gaggedErrors++;
         }
+    }
+
+    // defaulted all parameters starting with #6
+    public static void verror(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2) {
+        verror(loc, format, ap, p1, p2, new BytePtr("Error: "));
+    }
+
+    // defaulted all parameters starting with #5
+    public static void verror(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1) {
+        verror(loc, format, ap, p1, null, new BytePtr("Error: "));
+    }
+
+    // defaulted all parameters starting with #4
+    public static void verror(Loc loc, BytePtr format, Slice<Object> ap) {
+        verror(loc, format, ap, null, null, new BytePtr("Error: "));
     }
 
     public static void verrorSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
@@ -311,6 +336,16 @@ public class errors {
                 global.gaggedWarnings++;
             }
         }
+    }
+
+    // defaulted all parameters starting with #5
+    public static void vdeprecation(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1) {
+        vdeprecation(loc, format, ap, p1, null);
+    }
+
+    // defaulted all parameters starting with #4
+    public static void vdeprecation(Loc loc, BytePtr format, Slice<Object> ap) {
+        vdeprecation(loc, format, ap, null, null);
     }
 
     public static void vmessage(Loc loc, BytePtr format, Slice<Object> ap) {

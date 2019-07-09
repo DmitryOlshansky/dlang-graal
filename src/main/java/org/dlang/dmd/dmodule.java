@@ -289,6 +289,11 @@ public class dmodule {
             return this.search(loc, ident, flags);
         }
 
+        // defaulted all parameters starting with #3
+        public  Dsymbol search(Loc loc, Identifier ident) {
+            search(loc, ident, 8);
+        }
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1100,6 +1105,11 @@ public class dmodule {
             return s;
         }
 
+        // defaulted all parameters starting with #3
+        public  Dsymbol search(Loc loc, Identifier ident) {
+            search(loc, ident, 8);
+        }
+
         public  boolean isPackageAccessible(Package p, Prot protection, int flags) {
             if (this.insearch != 0)
                 return false;
@@ -1112,6 +1122,11 @@ public class dmodule {
             finally {
                 this.insearch = 0;
             }
+        }
+
+        // defaulted all parameters starting with #3
+        public  boolean isPackageAccessible(Package p, Prot protection) {
+            isPackageAccessible(p, protection, 0);
         }
 
         public  Dsymbol symtabInsert(Dsymbol s) {

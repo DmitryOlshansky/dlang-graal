@@ -1309,6 +1309,11 @@ public class doc {
         }
     }
 
+    // defaulted all parameters starting with #4
+    public static void emitAnchor(OutBuffer buf, Dsymbol s, Scope sc) {
+        emitAnchor(buf, s, sc, false);
+    }
+
     public static int getCodeIndent(BytePtr src) {
         for (; (src != null) && ((src.get() & 0xFF) == 13) || ((src.get() & 0xFF) == 10);) {
             src.plusAssign(1);
@@ -2221,11 +2226,6 @@ public class doc {
         return i.value - i0;
     }
 
-    // defaulted all parameters starting with #5
-    public static int endAllListsAndQuotes(OutBuffer buf, IntRef i, Slice<MarkdownList> nestedLists, IntRef quoteLevel) {
-        endAllListsAndQuotes(buf, i, nestedLists, quoteLevel, ref(0));
-    }
-
     public static int replaceMarkdownEmphasis(OutBuffer buf, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters, int downToLevel) {
         Ref<OutBuffer> buf_ref = ref(buf);
         if (!global.params.markdown)
@@ -2290,6 +2290,11 @@ public class doc {
         }
         inlineDelimiters.getLength() = downToLevel;
         return delta;
+    }
+
+    // defaulted all parameters starting with #4
+    public static int replaceMarkdownEmphasis(OutBuffer buf, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters) {
+        replaceMarkdownEmphasis(buf, loc, inlineDelimiters, 0);
     }
 
     public static boolean isIdentifier(DArray<Dsymbol> a, BytePtr p, int len) {
@@ -3435,11 +3440,6 @@ public class doc {
         }
         columnAlignments_ref.value.getLength() = 0;
         return 0;
-    }
-
-    // defaulted all parameters starting with #7
-    public static int startTable(OutBuffer buf, int iStart, int iEnd, Loc loc, boolean inQuote, Slice<MarkdownDelimiter> inlineDelimiters) {
-        startTable(buf, iStart, iEnd, loc, inQuote, inlineDelimiters, ref(new IntSlice()));
     }
 
     public static int replaceTableRow(OutBuffer buf, int iStart, int iEnd, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters, IntSlice columnAlignments, boolean headerRow) {

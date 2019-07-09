@@ -2334,6 +2334,11 @@ public class dcast {
         return v.result;
     }
 
+    // defaulted all parameters starting with #3
+    public static Expression inferType(Expression e, Type t) {
+        inferType(e, t, 0);
+    }
+
     public static Expression scaleFactor(BinExp be, Scope sc) {
         Type t1b = be.e1.type.toBasetype();
         Type t2b = be.e2.type.toBasetype();

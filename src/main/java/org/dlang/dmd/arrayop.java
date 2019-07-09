@@ -147,6 +147,11 @@ public class arrayop {
         return false;
     }
 
+    // defaulted all parameters starting with #2
+    public static boolean checkNonAssignmentArrayOp(Expression e) {
+        checkNonAssignmentArrayOp(e, false);
+    }
+
     public static Expression arrayOp(BinExp e, Scope sc) {
         Type tb = e.type.toBasetype();
         assert(((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray));

@@ -704,6 +704,11 @@ public class astbase {
                 this.ctfeAdrOnStack = -1;
             }
 
+            // defaulted all parameters starting with #5
+            public  VarDeclaration(Loc loc, Type type, Identifier id, Initializer _init) {
+                this(loc, type, id, _init, 0L);
+            }
+
             public  VarDeclaration isVarDeclaration() {
                 return this;
             }
@@ -909,6 +914,11 @@ public class astbase {
                 this.fes = fes;
             }
 
+            // defaulted all parameters starting with #6
+            public  FuncLiteralDeclaration(Loc loc, Loc endloc, Type type, byte tok, ForeachStatement fes) {
+                this(loc, endloc, type, tok, fes, null);
+            }
+
             public  FuncLiteralDeclaration isFuncLiteralDeclaration() {
                 return this;
             }
@@ -986,6 +996,11 @@ public class astbase {
         {
             public  CtorDeclaration(Loc loc, Loc endloc, long stc, Type type, boolean isCopyCtor) {
                 super(loc, endloc, Id.ctor, stc, type);
+            }
+
+            // defaulted all parameters starting with #5
+            public  CtorDeclaration(Loc loc, Loc endloc, long stc, Type type) {
+                this(loc, endloc, stc, type, false);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -1499,6 +1514,16 @@ public class astbase {
                         s.value.parent = this;
                     }
                 }
+            }
+
+            // defaulted all parameters starting with #7
+            public  TemplateDeclaration(Loc loc, Identifier id, DArray<TemplateParameter> parameters, Expression constraint, DArray<Dsymbol> decldefs, boolean ismixin) {
+                this(loc, id, parameters, constraint, decldefs, ismixin, false);
+            }
+
+            // defaulted all parameters starting with #6
+            public  TemplateDeclaration(Loc loc, Identifier id, DArray<TemplateParameter> parameters, Expression constraint, DArray<Dsymbol> decldefs) {
+                this(loc, id, parameters, constraint, decldefs, false, false);
             }
 
             public  boolean isOverloadable() {
@@ -2570,6 +2595,11 @@ public class astbase {
                 return res != 0 ? param.value : null;
             }
 
+            // defaulted all parameters starting with #3
+            public static Parameter getNth(DArray<Parameter> parameters, int nth) {
+                getNth(parameters, nth, null);
+            }
+
             public static int _foreach(DArray<Parameter> parameters, Function2<Integer,Parameter,Integer> dg, IntPtr pn) {
                 assert(dg != null);
                 if (parameters == null)
@@ -2597,6 +2627,11 @@ public class astbase {
                 if (pn != null)
                     pn.set(0, n.value);
                 return result;
+            }
+
+            // defaulted all parameters starting with #3
+            public static int _foreach(DArray<Parameter> parameters, Function2<Integer,Parameter,Integer> dg) {
+                _foreach(parameters, dg, null);
             }
 
             public  Parameter syntaxCopy() {
@@ -5004,6 +5039,11 @@ public class astbase {
                     this.trust = TRUST.trusted;
             }
 
+            // defaulted all parameters starting with #4
+            public  TypeFunction(ParameterList pl, Type treturn, int linkage) {
+                this(pl, treturn, linkage, 0L);
+            }
+
             public  Type syntaxCopy() {
                 Type treturn = this.next != null ? this.next.syntaxCopy() : null;
                 DArray<Parameter> params = Parameter.arraySyntaxCopy(this.parameterList.parameters);
@@ -5336,6 +5376,11 @@ public class astbase {
                     }
                 }
                 return e;
+            }
+
+            // defaulted all parameters starting with #2
+            public  Expression toExpressionHelper(Expression e) {
+                toExpressionHelper(e, 0);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -5843,6 +5888,11 @@ public class astbase {
                 this.type = type;
             }
 
+            // defaulted all parameters starting with #2
+            public  NullExp(Loc loc) {
+                this(loc, null);
+            }
+
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5972,6 +6022,11 @@ public class astbase {
                 }
                 else
                     throw new AssertionError("Unreachable code!");
+            }
+
+            // defaulted all parameters starting with #3
+            public  void writeTo(Object dest, boolean zero) {
+                writeTo(dest, zero, 0);
             }
 
             public  ByteSlice toStringz() {
@@ -6335,6 +6390,11 @@ public class astbase {
                 this.hasOverloads = hasOverloads;
             }
 
+            // defaulted all parameters starting with #3
+            public  DsymbolExp(Loc loc, Dsymbol s) {
+                this(loc, s, true);
+            }
+
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6362,6 +6422,11 @@ public class astbase {
                 super(loc, TOK.template_, 32);
                 this.td = td;
                 this.fd = fd;
+            }
+
+            // defaulted all parameters starting with #3
+            public  TemplateExp(Loc loc, TemplateDeclaration td) {
+                this(loc, td, null);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -6418,6 +6483,11 @@ public class astbase {
             public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
                 super(loc, TOK.variable, 29, var, var.isVarDeclaration() == null && hasOverloads);
                 this.type = var.type;
+            }
+
+            // defaulted all parameters starting with #3
+            public  VarExp(Loc loc, Declaration var) {
+                this(loc, var, true);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -6936,6 +7006,11 @@ public class astbase {
                 this.msg = msg;
             }
 
+            // defaulted all parameters starting with #3
+            public  AssertExp(Loc loc, Expression e) {
+                this(loc, e, null);
+            }
+
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7045,6 +7120,11 @@ public class astbase {
                 this.arguments = new DArray<Expression>();
                 if (index != null)
                     (this.arguments).push(index);
+            }
+
+            // defaulted all parameters starting with #3
+            public  ArrayExp(Loc loc, Expression e1) {
+                this(loc, e1, null);
             }
 
             public  ArrayExp(Loc loc, Expression e1, DArray<Expression> args) {
@@ -7198,6 +7278,11 @@ public class astbase {
             public  CommaExp(Loc loc, Expression e1, Expression e2, boolean generated) {
                 super(loc, TOK.comma, 34, e1, e2);
                 this.allowCommaExp = (this.isGenerated = generated);
+            }
+
+            // defaulted all parameters starting with #4
+            public  CommaExp(Loc loc, Expression e1, Expression e2) {
+                this(loc, e1, e2, true);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -8418,6 +8503,11 @@ public class astbase {
 
             public  Expression toExpression(Type t) {
                 return null;
+            }
+
+            // defaulted all parameters starting with #1
+            public  Expression toExpression() {
+                toExpression(null);
             }
 
             public  ExpInitializer isExpInitializer() {

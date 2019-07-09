@@ -1974,6 +1974,16 @@ public class dtemplate {
             }
         }
 
+        // defaulted all parameters starting with #7
+        public  TemplateDeclaration(Loc loc, Identifier ident, DArray<TemplateParameter> parameters, Expression constraint, DArray<Dsymbol> decldefs, boolean ismixin) {
+            this(loc, ident, parameters, constraint, decldefs, ismixin, false);
+        }
+
+        // defaulted all parameters starting with #6
+        public  TemplateDeclaration(Loc loc, Identifier ident, DArray<TemplateParameter> parameters, Expression constraint, DArray<Dsymbol> decldefs) {
+            this(loc, ident, parameters, constraint, decldefs, false, false);
+        }
+
         public  Dsymbol syntaxCopy(Dsymbol _param_0) {
             DArray<TemplateParameter> p = null;
             if (this.parameters != null)
@@ -3770,6 +3780,11 @@ public class dtemplate {
         }
     }
 
+    // defaulted all parameters starting with #8
+    public static void functionResolve(MatchAccumulator m, Dsymbol dstart, Loc loc, Scope sc, DArray<RootObject> tiargs, Type tthis, DArray<Expression> fargs) {
+        functionResolve(m, dstart, loc, sc, tiargs, tthis, fargs, null);
+    }
+
     public static int templateIdentifierLookup(Identifier id, DArray<TemplateParameter> parameters) {
         {
             int i = 0;
@@ -4020,8 +4035,28 @@ public class dtemplate {
         return v.result;
     }
 
+    // defaulted all parameters starting with #8
+    public static int deduceType(RootObject o, Scope sc, Type tparam, DArray<TemplateParameter> parameters, DArray<RootObject> dedtypes, IntPtr wm, int inferStart) {
+        deduceType(o, sc, tparam, parameters, dedtypes, wm, inferStart, false);
+    }
+
+    // defaulted all parameters starting with #7
+    public static int deduceType(RootObject o, Scope sc, Type tparam, DArray<TemplateParameter> parameters, DArray<RootObject> dedtypes, IntPtr wm) {
+        deduceType(o, sc, tparam, parameters, dedtypes, wm, 0, false);
+    }
+
+    // defaulted all parameters starting with #6
+    public static int deduceType(RootObject o, Scope sc, Type tparam, DArray<TemplateParameter> parameters, DArray<RootObject> dedtypes) {
+        deduceType(o, sc, tparam, parameters, dedtypes, null, 0, false);
+    }
+
     public static boolean reliesOnTident(Type t, DArray<TemplateParameter> tparams, int iStart) {
         return reliesOnTemplateParameters(t, (tparams).opSlice(0, (tparams).length));
+    }
+
+    // defaulted all parameters starting with #3
+    public static boolean reliesOnTident(Type t, DArray<TemplateParameter> tparams) {
+        reliesOnTident(t, tparams, 0);
     }
 
     public static boolean reliesOnTemplateParameters(Type t, Slice<TemplateParameter> tparams) {
@@ -6290,6 +6325,11 @@ public class dtemplate {
             }
             finally {
             }
+        }
+
+        // defaulted all parameters starting with #2
+        public  boolean needsTypeInference(Scope sc) {
+            needsTypeInference(sc, 0);
         }
 
         public  boolean hasNestedArgs(DArray<RootObject> args, boolean isstatic) {

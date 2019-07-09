@@ -915,6 +915,11 @@ public class globals {
             }
         }
 
+        // defaulted all parameters starting with #1
+        public  BytePtr toChars() {
+            toChars(global.params.showColumns);
+        }
+
         public  boolean equals(Loc loc) {
             return !global.params.showColumns || (this.charnum == loc.charnum) && (this.linnum == loc.linnum) && FileName.equals(this.filename, loc.filename);
         }
