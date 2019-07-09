@@ -68,7 +68,6 @@ public class safe {
         }
         return false;
     }
-
     public static boolean isSafeCast(Expression e, Type tfrom, Type tto) {
         if (tfrom.implicitConvTo(tto) != 0)
             return true;
@@ -116,5 +115,4 @@ public class safe {
         }
         return false;
     }
-
 }

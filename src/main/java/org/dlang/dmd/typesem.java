@@ -82,7 +82,6 @@ public class typesem {
         }
         return exp;
     }
-
     public static Expression semanticLength(Scope sc, TupleDeclaration tup, Expression exp) {
         ScopeDsymbol sym = new ArrayScopeSymbol(sc, tup);
         sym.parent = (sc).scopesym;
@@ -93,7 +92,6 @@ public class typesem {
         (sc).pop();
         return exp;
     }
-
     public static void resolveTupleIndex(Loc loc, Scope sc, Dsymbol s, Ptr<Expression> pe, Ptr<Type> pt, Ptr<Dsymbol> ps, RootObject oindex) {
         pt.set(0, null);
         ps.set(0, null);
@@ -146,7 +144,6 @@ public class typesem {
         if (pe.get() != null)
             resolveExp(pe.get(), pt, pe, ps);
     }
-
     public static void resolveHelper(TypeQualified mt, Loc loc, Scope sc, Dsymbol s, Dsymbol scopesym, Ptr<Expression> pe, Ptr<Type> pt, Ptr<Dsymbol> ps, boolean intypeid) {
         Ref<TypeQualified> mt_ref = ref(mt);
         Ref<Scope> sc_ref = ref(sc);
@@ -208,7 +205,7 @@ public class typesem {
                         return ;
                     }
                     Function0<Void> helper3 = new Function0<Void>(){
-                        public Void invoke(){
+                        public Void invoke() {
                             Expression e = null;
                             VarDeclaration v = s_ref.value.isVarDeclaration();
                             FuncDeclaration f = s_ref.value.isFuncDeclaration();
@@ -386,12 +383,11 @@ public class typesem {
             pt_ref.value.set(0, Type.terror);
         }
     }
-
     public static Type stripDefaultArgs(Type t) {
         Function1<DArray<Parameter>,DArray<Parameter>> stripParams = new Function1<DArray<Parameter>,DArray<Parameter>>(){
-            public DArray<Parameter> invoke(DArray<Parameter> parameters){
+            public DArray<Parameter> invoke(DArray<Parameter> parameters) {
                 Function1<Parameter,Parameter> stripParameter = new Function1<Parameter,Parameter>(){
-                    public Parameter invoke(Parameter p){
+                    public Parameter invoke(Parameter p) {
                         Type t = stripDefaultArgs(p.type);
                         return (!pequals(t, p.type)) || (p.defaultArg != null) || (p.ident != null) || (p.userAttribDecl != null) ? new Parameter(p.storageClass, t, null, null, null) : null;
                     }
@@ -477,10 +473,9 @@ public class typesem {
             }
         }
     }
-
     public static Expression typeToExpression(Type t) {
         Function1<TypeSArray,Expression> visitSArray = new Function1<TypeSArray,Expression>(){
-            public Expression invoke(TypeSArray t){
+            public Expression invoke(TypeSArray t) {
                 {
                     Expression e = typeToExpression(t.next);
                     if ((e) != null)
@@ -490,7 +485,7 @@ public class typesem {
             }
         };
         Function1<TypeAArray,Expression> visitAArray = new Function1<TypeAArray,Expression>(){
-            public Expression invoke(TypeAArray t){
+            public Expression invoke(TypeAArray t) {
                 {
                     Expression e = typeToExpression(t.next);
                     if ((e) != null)
@@ -506,12 +501,12 @@ public class typesem {
             }
         };
         Function1<TypeIdentifier,Expression> visitIdentifier = new Function1<TypeIdentifier,Expression>(){
-            public Expression invoke(TypeIdentifier t){
+            public Expression invoke(TypeIdentifier t) {
                 return typeToExpressionHelper(t, new IdentifierExp(t.loc, t.ident), 0);
             }
         };
         Function1<TypeInstance,Expression> visitInstance = new Function1<TypeInstance,Expression>(){
-            public Expression invoke(TypeInstance t){
+            public Expression invoke(TypeInstance t) {
                 return typeToExpressionHelper(t, new ScopeExp(t.loc, t.tempinst), 0);
             }
         };
@@ -529,7 +524,6 @@ public class typesem {
             return null;
         }
     }
-
     public static Expression typeToExpressionHelper(TypeQualified t, Expression e, int i) {
         {
             Slice<RootObject> __r1722 = t.idents.opSlice(i, t.idents.length).copy();
@@ -566,16 +560,15 @@ public class typesem {
         }
         return e;
     }
-
     public static Type typeSemantic(Type t, Loc loc, Scope sc) {
         Ref<Scope> sc_ref = ref(sc);
         Function0<Type> error = new Function0<Type>(){
-            public Type invoke(){
+            public Type invoke() {
                 return Type.terror;
             }
         };
         Function1<Type,Type> visitType = new Function1<Type,Type>(){
-            public Type invoke(Type t){
+            public Type invoke(Type t) {
                 if (((t.ty & 0xFF) == ENUMTY.Tint128) || ((t.ty & 0xFF) == ENUMTY.Tuns128))
                 {
                     error(loc, new BytePtr("`cent` and `ucent` types not implemented"));
@@ -585,7 +578,7 @@ public class typesem {
             }
         };
         Function1<TypeVector,Type> visitVector = new Function1<TypeVector,Type>(){
-            public Type invoke(TypeVector mtype){
+            public Type invoke(TypeVector mtype) {
                 int errors = global.errors;
                 mtype.basetype = typeSemantic(mtype.basetype, loc, sc_ref.value);
                 if ((errors != global.errors))
@@ -618,7 +611,7 @@ public class typesem {
             }
         };
         Function1<TypeSArray,Type> visitSArray = new Function1<TypeSArray,Type>(){
-            public Type invoke(TypeSArray mtype){
+            public Type invoke(TypeSArray mtype) {
                 Ref<TypeSArray> mtype_ref = ref(mtype);
                 Ref<Type> t = ref(null);
                 Ref<Expression> e = ref(null);
@@ -688,7 +681,7 @@ public class typesem {
                     if (((mtype_ref.value.dim.op & 0xFF) == 127))
                         return error.invoke();
                     Function0<Type> overflowError = new Function0<Type>(){
-                        public Type invoke(){
+                        public Type invoke() {
                             error(loc, new BytePtr("`%s` size %llu * %llu exceeds 0x%llx size limit for static array"), mtype_ref.value.toChars(), tbn.value.size(loc), d1.value, target.maxStaticDataSize);
                             return error.invoke();
                         }
@@ -737,7 +730,7 @@ public class typesem {
             }
         };
         Function1<TypeDArray,Type> visitDArray = new Function1<TypeDArray,Type>(){
-            public Type invoke(TypeDArray mtype){
+            public Type invoke(TypeDArray mtype) {
                 Type tn = typeSemantic(mtype.next, loc, sc_ref.value);
                 Type tbn = tn.toBasetype();
                 switch ((tbn.ty & 0xFF))
@@ -764,7 +757,7 @@ public class typesem {
             }
         };
         Function1<TypeAArray,Type> visitAArray = new Function1<TypeAArray,Type>(){
-            public Type invoke(TypeAArray mtype){
+            public Type invoke(TypeAArray mtype) {
                 if (mtype.deco != null)
                 {
                     return mtype;
@@ -937,7 +930,7 @@ public class typesem {
             }
         };
         Function1<TypePointer,Type> visitPointer = new Function1<TypePointer,Type>(){
-            public Type invoke(TypePointer mtype){
+            public Type invoke(TypePointer mtype) {
                 if (mtype.deco != null)
                 {
                     return mtype;
@@ -975,7 +968,7 @@ public class typesem {
             }
         };
         Function1<TypeReference,Type> visitReference = new Function1<TypeReference,Type>(){
-            public Type invoke(TypeReference mtype){
+            public Type invoke(TypeReference mtype) {
                 Type n = typeSemantic(mtype.next, loc, sc_ref.value);
                 if ((!pequals(n, mtype.next)))
                     mtype.deco = null;
@@ -985,7 +978,7 @@ public class typesem {
             }
         };
         Function1<TypeFunction,Type> visitFunction = new Function1<TypeFunction,Type>(){
-            public Type invoke(TypeFunction mtype){
+            public Type invoke(TypeFunction mtype) {
                 if (mtype.deco != null)
                 {
                     return mtype;
@@ -1304,7 +1297,7 @@ public class typesem {
             }
         };
         Function1<TypeDelegate,Type> visitDelegate = new Function1<TypeDelegate,Type>(){
-            public Type invoke(TypeDelegate mtype){
+            public Type invoke(TypeDelegate mtype) {
                 if (mtype.deco != null)
                 {
                     return mtype;
@@ -1317,7 +1310,7 @@ public class typesem {
             }
         };
         Function1<TypeIdentifier,Type> visitIdentifier = new Function1<TypeIdentifier,Type>(){
-            public Type invoke(TypeIdentifier mtype){
+            public Type invoke(TypeIdentifier mtype) {
                 Ref<Type> t = ref(null);
                 Ref<Expression> e = ref(null);
                 Ref<Dsymbol> s = ref(null);
@@ -1343,7 +1336,7 @@ public class typesem {
             }
         };
         Function1<TypeInstance,Type> visitInstance = new Function1<TypeInstance,Type>(){
-            public Type invoke(TypeInstance mtype){
+            public Type invoke(TypeInstance mtype) {
                 Ref<Type> t = ref(null);
                 Ref<Expression> e = ref(null);
                 Ref<Dsymbol> s = ref(null);
@@ -1367,7 +1360,7 @@ public class typesem {
             }
         };
         Function1<TypeTypeof,Type> visitTypeof = new Function1<TypeTypeof,Type>(){
-            public Type invoke(TypeTypeof mtype){
+            public Type invoke(TypeTypeof mtype) {
                 Ref<Expression> e = ref(null);
                 Ref<Type> t = ref(null);
                 Ref<Dsymbol> s = ref(null);
@@ -1383,7 +1376,7 @@ public class typesem {
             }
         };
         Function1<TypeTraits,Type> visitTraits = new Function1<TypeTraits,Type>(){
-            public Type invoke(TypeTraits mtype){
+            public Type invoke(TypeTraits mtype) {
                 if (((mtype.ty & 0xFF) == ENUMTY.Terror))
                     return mtype;
                 if ((!pequals(mtype.exp.ident, Id.allMembers)) && (!pequals(mtype.exp.ident, Id.derivedMembers)) && (!pequals(mtype.exp.ident, Id.getMember)) && (!pequals(mtype.exp.ident, Id.parent)) && (!pequals(mtype.exp.ident, Id.getOverloads)) && (!pequals(mtype.exp.ident, Id.getVirtualFunctions)) && (!pequals(mtype.exp.ident, Id.getVirtualMethods)) && (!pequals(mtype.exp.ident, Id.getAttributes)) && (!pequals(mtype.exp.ident, Id.getUnitTests)) && (!pequals(mtype.exp.ident, Id.getAliasThis)))
@@ -1450,7 +1443,7 @@ public class typesem {
             }
         };
         Function1<TypeReturn,Type> visitReturn = new Function1<TypeReturn,Type>(){
-            public Type invoke(TypeReturn mtype){
+            public Type invoke(TypeReturn mtype) {
                 Ref<Expression> e = ref(null);
                 Ref<Type> t = ref(null);
                 Ref<Dsymbol> s = ref(null);
@@ -1466,7 +1459,7 @@ public class typesem {
             }
         };
         Function1<TypeStruct,Type> visitStruct = new Function1<TypeStruct,Type>(){
-            public Type invoke(TypeStruct mtype){
+            public Type invoke(TypeStruct mtype) {
                 if (mtype.deco != null)
                 {
                     if ((sc_ref.value != null) && ((sc_ref.value).cppmangle != CPPMANGLE.def))
@@ -1487,12 +1480,12 @@ public class typesem {
             }
         };
         Function1<TypeEnum,Type> visitEnum = new Function1<TypeEnum,Type>(){
-            public Type invoke(TypeEnum mtype){
+            public Type invoke(TypeEnum mtype) {
                 return mtype.deco != null ? mtype : merge(mtype);
             }
         };
         Function1<TypeClass,Type> visitClass = new Function1<TypeClass,Type>(){
-            public Type invoke(TypeClass mtype){
+            public Type invoke(TypeClass mtype) {
                 if (mtype.deco != null)
                 {
                     if ((sc_ref.value != null) && ((sc_ref.value).cppmangle != CPPMANGLE.def))
@@ -1513,14 +1506,14 @@ public class typesem {
             }
         };
         Function1<TypeTuple,Type> visitTuple = new Function1<TypeTuple,Type>(){
-            public Type invoke(TypeTuple mtype){
+            public Type invoke(TypeTuple mtype) {
                 if (mtype.deco == null)
                     mtype.deco = pcopy(merge(mtype).deco);
                 return mtype;
             }
         };
         Function1<TypeSlice,Type> visitSlice = new Function1<TypeSlice,Type>(){
-            public Type invoke(TypeSlice mtype){
+            public Type invoke(TypeSlice mtype) {
                 Type tn = typeSemantic(mtype.next, loc, sc_ref.value);
                 Type tbn = tn.toBasetype();
                 if (((tbn.ty & 0xFF) != ENUMTY.Ttuple))
@@ -1600,7 +1593,6 @@ public class typesem {
                 return visitSlice.invoke((TypeSlice)t);
         }
     }
-
     public static Type merge(Type type) {
         {
             int __dispatch10 = 0;
@@ -1653,12 +1645,11 @@ public class typesem {
         }
         return type;
     }
-
     public static Expression getProperty(Type t, Loc loc, Identifier ident, int flag) {
         Ref<Identifier> ident_ref = ref(ident);
         IntRef flag_ref = ref(flag);
         Function1<Type,Expression> visitType = new Function1<Type,Expression>(){
-            public Expression invoke(Type mt){
+            public Expression invoke(Type mt) {
                 Expression e = null;
                 if ((pequals(ident_ref.value, Id.__sizeof)))
                 {
@@ -1733,25 +1724,25 @@ public class typesem {
             }
         };
         Function1<TypeError,Expression> visitError = new Function1<TypeError,Expression>(){
-            public Expression invoke(TypeError _param_0){
+            public Expression invoke(TypeError _param_0) {
                 return new ErrorExp();
             }
         };
         Function1<TypeBasic,Expression> visitBasic = new Function1<TypeBasic,Expression>(){
-            public Expression invoke(TypeBasic mt){
+            public Expression invoke(TypeBasic mt) {
                 Ref<TypeBasic> mt_ref = ref(mt);
                 Function1<Long,Expression> integerValue = new Function1<Long,Expression>(){
-                    public Expression invoke(Long i){
+                    public Expression invoke(Long i) {
                         return new IntegerExp(loc, i, mt_ref.value);
                     }
                 };
                 Function1<Long,Expression> intValue = new Function1<Long,Expression>(){
-                    public Expression invoke(Long i){
+                    public Expression invoke(Long i) {
                         return new IntegerExp(loc, i, Type.tint32);
                     }
                 };
                 Function1<Double,Expression> floatValue = new Function1<Double,Expression>(){
-                    public Expression invoke(Double r){
+                    public Expression invoke(Double r) {
                         if (mt_ref.value.isreal() || mt_ref.value.isimaginary())
                             return new RealExp(loc, r, mt_ref.value);
                         else
@@ -2029,12 +2020,12 @@ public class typesem {
             }
         };
         Function1<TypeVector,Expression> visitVector = new Function1<TypeVector,Expression>(){
-            public Expression invoke(TypeVector mt){
+            public Expression invoke(TypeVector mt) {
                 return visitType.invoke(mt);
             }
         };
         Function1<TypeEnum,Expression> visitEnum = new Function1<TypeEnum,Expression>(){
-            public Expression invoke(TypeEnum mt){
+            public Expression invoke(TypeEnum mt) {
                 Expression e = null;
                 if ((pequals(ident_ref.value, Id.max)) || (pequals(ident_ref.value, Id.min)))
                 {
@@ -2063,7 +2054,7 @@ public class typesem {
             }
         };
         Function1<TypeTuple,Expression> visitTuple = new Function1<TypeTuple,Expression>(){
-            public Expression invoke(TypeTuple mt){
+            public Expression invoke(TypeTuple mt) {
                 Expression e = null;
                 if ((pequals(ident_ref.value, Id.length)))
                 {
@@ -2099,7 +2090,6 @@ public class typesem {
                 return visitTuple.invoke((TypeTuple)t);
         }
     }
-
     public static void resolveExp(Expression e, Ptr<Type> pt, Ptr<Expression> pe, Ptr<Dsymbol> ps) {
         pt.set(0, null);
         pe.set(0, null);
@@ -2143,7 +2133,6 @@ public class typesem {
         }
         ps.set(0, s);
     }
-
     public static void resolve(Type mt, Loc loc, Scope sc, Ptr<Expression> pe, Ptr<Type> pt, Ptr<Dsymbol> ps, boolean intypeid) {
         Ref<Scope> sc_ref = ref(sc);
         Ref<Ptr<Expression>> pe_ref = ref(pe);
@@ -2151,40 +2140,40 @@ public class typesem {
         Ref<Ptr<Dsymbol>> ps_ref = ref(ps);
         Ref<Boolean> intypeid_ref = ref(intypeid);
         Function1<Expression,Void> returnExp = new Function1<Expression,Void>(){
-            public Void invoke(Expression e){
+            public Void invoke(Expression e) {
                 pt_ref.value.set(0, null);
                 pe_ref.value.set(0, e);
                 ps_ref.value.set(0, null);
             }
         };
         Function1<Type,Void> returnType = new Function1<Type,Void>(){
-            public Void invoke(Type t){
+            public Void invoke(Type t) {
                 pt_ref.value.set(0, t);
                 pe_ref.value.set(0, null);
                 ps_ref.value.set(0, null);
             }
         };
         Function1<Dsymbol,Void> returnSymbol = new Function1<Dsymbol,Void>(){
-            public Void invoke(Dsymbol s){
+            public Void invoke(Dsymbol s) {
                 pt_ref.value.set(0, null);
                 pe_ref.value.set(0, null);
                 ps_ref.value.set(0, s);
             }
         };
         Function0<Void> returnError = new Function0<Void>(){
-            public Void invoke(){
+            public Void invoke() {
                 returnType.invoke(Type.terror);
             }
         };
         Function1<Type,Void> visitType = new Function1<Type,Void>(){
-            public Void invoke(Type mt){
+            public Void invoke(Type mt) {
                 Type t = typeSemantic(mt, loc, sc_ref.value);
                 assert(t != null);
                 returnType.invoke(t);
             }
         };
         Function1<TypeSArray,Void> visitSArray = new Function1<TypeSArray,Void>(){
-            public Void invoke(TypeSArray mt){
+            public Void invoke(TypeSArray mt) {
                 resolve(mt.next, loc, sc_ref.value, pe_ref.value, pt_ref.value, ps_ref.value, intypeid_ref.value);
                 if (pe_ref.value.get() != null)
                 {
@@ -2254,7 +2243,7 @@ public class typesem {
             }
         };
         Function1<TypeDArray,Void> visitDArray = new Function1<TypeDArray,Void>(){
-            public Void invoke(TypeDArray mt){
+            public Void invoke(TypeDArray mt) {
                 resolve(mt.next, loc, sc_ref.value, pe_ref.value, pt_ref.value, ps_ref.value, intypeid_ref.value);
                 if (pe_ref.value.get() != null)
                 {
@@ -2285,7 +2274,7 @@ public class typesem {
             }
         };
         Function1<TypeAArray,Void> visitAArray = new Function1<TypeAArray,Void>(){
-            public Void invoke(TypeAArray mt){
+            public Void invoke(TypeAArray mt) {
                 if (((mt.index.ty & 0xFF) == ENUMTY.Tident) || ((mt.index.ty & 0xFF) == ENUMTY.Tinstance) || ((mt.index.ty & 0xFF) == ENUMTY.Tsarray))
                 {
                     Ref<Expression> e = ref(null);
@@ -2308,13 +2297,13 @@ public class typesem {
             }
         };
         Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
-            public Void invoke(Dsymbol s){
+            public Void invoke(Dsymbol s) {
                 semanticOnMixin.invoke(s);
                 return null;
             }
         };
         Function1<TypeIdentifier,Void> visitIdentifier = new Function1<TypeIdentifier,Void>(){
-            public Void invoke(TypeIdentifier mt){
+            public Void invoke(TypeIdentifier mt) {
                 if (mt.ident.equals(Id._super) || mt.ident.equals(Id.This) && (hasThis(sc_ref.value) == null))
                 {
                     if (mt.ident.equals(Id._super))
@@ -2362,7 +2351,7 @@ public class typesem {
                     if ((sds != null) && (sds.members != null))
                     {
                         Function1<Dsymbol,Void> semanticOnMixin = new Function1<Dsymbol,Void>(){
-                            public Void invoke(Dsymbol member){
+                            public Void invoke(Dsymbol member) {
                                 {
                                     CompileDeclaration compileDecl = member.isCompileDeclaration();
                                     if ((compileDecl) != null)
@@ -2403,7 +2392,7 @@ public class typesem {
             }
         };
         Function1<TypeInstance,Void> visitInstance = new Function1<TypeInstance,Void>(){
-            public Void invoke(TypeInstance mt){
+            public Void invoke(TypeInstance mt) {
                 dsymbolSemantic(mt.tempinst, sc_ref.value);
                 if ((global.gag == 0) && mt.tempinst.errors)
                     returnError.invoke();
@@ -2414,7 +2403,7 @@ public class typesem {
             }
         };
         Function1<TypeTypeof,Void> visitTypeof = new Function1<TypeTypeof,Void>(){
-            public Void invoke(TypeTypeof mt){
+            public Void invoke(TypeTypeof mt) {
                 if ((sc_ref.value == null))
                 {
                     error(loc, new BytePtr("Invalid scope."));
@@ -2499,7 +2488,7 @@ public class typesem {
             }
         };
         Function1<TypeReturn,Void> visitReturn = new Function1<TypeReturn,Void>(){
-            public Void invoke(TypeReturn mt){
+            public Void invoke(TypeReturn mt) {
                 Type t = null;
                 {
                     FuncDeclaration func = (sc_ref.value).func;
@@ -2543,7 +2532,7 @@ public class typesem {
             }
         };
         Function1<TypeSlice,Void> visitSlice = new Function1<TypeSlice,Void>(){
-            public Void invoke(TypeSlice mt){
+            public Void invoke(TypeSlice mt) {
                 resolve(mt.next, loc, sc_ref.value, pe_ref.value, pt_ref.value, ps_ref.value, intypeid_ref.value);
                 if (pe_ref.value.get() != null)
                 {
@@ -2636,14 +2625,13 @@ public class typesem {
                 break;
         }
     }
-
     public static Expression dotExp(Type mt, Scope sc, Expression e, Identifier ident, int flag) {
         Ref<Scope> sc_ref = ref(sc);
         Ref<Expression> e_ref = ref(e);
         Ref<Identifier> ident_ref = ref(ident);
         IntRef flag_ref = ref(flag);
         Function1<Type,Expression> visitType = new Function1<Type,Expression>(){
-            public Expression invoke(Type mt){
+            public Expression invoke(Type mt) {
                 VarDeclaration v = null;
                 Expression ex = e_ref.value;
                 for (; ((ex.op & 0xFF) == 99);) {
@@ -2701,12 +2689,12 @@ public class typesem {
             }
         };
         Function1<TypeError,Expression> visitError = new Function1<TypeError,Expression>(){
-            public Expression invoke(TypeError _param_0){
+            public Expression invoke(TypeError _param_0) {
                 return new ErrorExp();
             }
         };
         Function1<TypeBasic,Expression> visitBasic = new Function1<TypeBasic,Expression>(){
-            public Expression invoke(TypeBasic mt){
+            public Expression invoke(TypeBasic mt) {
                 Type t = null;
                 if ((pequals(ident_ref.value, Id.re)))
                 {
@@ -2819,7 +2807,7 @@ public class typesem {
             }
         };
         Function1<TypeVector,Expression> visitVector = new Function1<TypeVector,Expression>(){
-            public Expression invoke(TypeVector mt){
+            public Expression invoke(TypeVector mt) {
                 if ((pequals(ident_ref.value, Id.ptr)) && ((e_ref.value.op & 0xFF) == 18))
                 {
                     e_ref.value = new AddrExp(e_ref.value.loc, e_ref.value);
@@ -2840,7 +2828,7 @@ public class typesem {
             }
         };
         Function1<TypeArray,Expression> visitArray = new Function1<TypeArray,Expression>(){
-            public Expression invoke(TypeArray mt){
+            public Expression invoke(TypeArray mt) {
                 e_ref.value = visitType.invoke(mt);
                 if (((flag_ref.value & 1) == 0) || (e_ref.value != null))
                     e_ref.value = expressionSemantic(e_ref.value, sc_ref.value);
@@ -2848,7 +2836,7 @@ public class typesem {
             }
         };
         Function1<TypeSArray,Expression> visitSArray = new Function1<TypeSArray,Expression>(){
-            public Expression invoke(TypeSArray mt){
+            public Expression invoke(TypeSArray mt) {
                 if ((pequals(ident_ref.value, Id.length)))
                 {
                     Loc oldLoc = e_ref.value.loc.copy();
@@ -2879,7 +2867,7 @@ public class typesem {
             }
         };
         Function1<TypeDArray,Expression> visitDArray = new Function1<TypeDArray,Expression>(){
-            public Expression invoke(TypeDArray mt){
+            public Expression invoke(TypeDArray mt) {
                 if (((e_ref.value.op & 0xFF) == 20) && (pequals(ident_ref.value, Id.length)) || (pequals(ident_ref.value, Id.ptr)))
                 {
                     e_ref.value.error(new BytePtr("`%s` is not an expression"), e_ref.value.toChars());
@@ -2920,7 +2908,7 @@ public class typesem {
             }
         };
         Function1<TypeAArray,Expression> visitAArray = new Function1<TypeAArray,Expression>(){
-            public Expression invoke(TypeAArray mt){
+            public Expression invoke(TypeAArray mt) {
                 if ((pequals(ident_ref.value, Id.length)))
                 {
                     if ((typesem.visitAArrayfd_aaLen == null))
@@ -2945,12 +2933,12 @@ public class typesem {
             }
         };
         Function1<TypeReference,Expression> visitReference = new Function1<TypeReference,Expression>(){
-            public Expression invoke(TypeReference mt){
+            public Expression invoke(TypeReference mt) {
                 return dotExp(mt.next, sc_ref.value, e_ref.value, ident_ref.value, flag_ref.value);
             }
         };
         Function1<TypeDelegate,Expression> visitDelegate = new Function1<TypeDelegate,Expression>(){
-            public Expression invoke(TypeDelegate mt){
+            public Expression invoke(TypeDelegate mt) {
                 if ((pequals(ident_ref.value, Id.ptr)))
                 {
                     e_ref.value = new DelegatePtrExp(e_ref.value.loc, e_ref.value);
@@ -2974,10 +2962,10 @@ public class typesem {
             }
         };
         Function5<Type,Scope,Expression,Identifier,Integer,Expression> noMember = new Function5<Type,Scope,Expression,Identifier,Integer,Expression>(){
-            public Expression invoke(Type mt, Scope sc, Expression e, Identifier ident, Integer flag){
+            public Expression invoke(Type mt, Scope sc, Expression e, Identifier ident, Integer flag) {
                 boolean gagError = ((flag & 1) != 0);
                 Function1<Expression,Expression> returnExp = new Function1<Expression,Expression>(){
-                    public Expression invoke(Expression e){
+                    public Expression invoke(Expression e) {
                         typesem.noMembernest -= 1;
                         return e;
                     }
@@ -3045,7 +3033,7 @@ public class typesem {
             }
         };
         Function1<TypeStruct,Expression> visitStruct = new Function1<TypeStruct,Expression>(){
-            public Expression invoke(TypeStruct mt){
+            public Expression invoke(TypeStruct mt) {
                 Dsymbol s = null;
                 assert(((e_ref.value.op & 0xFF) != 97));
                 if ((pequals(ident_ref.value, Id._mangleof)))
@@ -3253,7 +3241,7 @@ public class typesem {
             }
         };
         Function1<TypeEnum,Expression> visitEnum = new Function1<TypeEnum,Expression>(){
-            public Expression invoke(TypeEnum mt){
+            public Expression invoke(TypeEnum mt) {
                 if ((pequals(ident_ref.value, Id._mangleof)))
                 {
                     return getProperty(mt, e_ref.value.loc, ident_ref.value, flag_ref.value & 1);
@@ -3301,7 +3289,7 @@ public class typesem {
             }
         };
         Function1<TypeClass,Expression> visitClass = new Function1<TypeClass,Expression>(){
-            public Expression invoke(TypeClass mt){
+            public Expression invoke(TypeClass mt) {
                 Dsymbol s = null;
                 assert(((e_ref.value.op & 0xFF) != 97));
                 if ((pequals(ident_ref.value, Id.__sizeof)) || (pequals(ident_ref.value, Id.__xalignof)) || (pequals(ident_ref.value, Id._mangleof)))
@@ -3722,10 +3710,9 @@ public class typesem {
             return mt.isTypeBasic() != null ? visitBasic.invoke((TypeBasic)mt) : visitType.invoke(mt);
         }
     }
-
     public static Expression defaultInit(Type mt, Loc loc) {
         Function1<TypeBasic,Expression> visitBasic = new Function1<TypeBasic,Expression>(){
-            public Expression invoke(TypeBasic mt){
+            public Expression invoke(TypeBasic mt) {
                 long value = 0L;
                 switch ((mt.ty & 0xFF))
                 {
@@ -3758,7 +3745,7 @@ public class typesem {
             }
         };
         Function1<TypeVector,Expression> visitVector = new Function1<TypeVector,Expression>(){
-            public Expression invoke(TypeVector mt){
+            public Expression invoke(TypeVector mt) {
                 assert(((mt.basetype.ty & 0xFF) == ENUMTY.Tsarray));
                 Expression e = defaultInit(mt.basetype, loc);
                 VectorExp ve = new VectorExp(loc, e, mt);
@@ -3768,7 +3755,7 @@ public class typesem {
             }
         };
         Function1<TypeSArray,Expression> visitSArray = new Function1<TypeSArray,Expression>(){
-            public Expression invoke(TypeSArray mt){
+            public Expression invoke(TypeSArray mt) {
                 if (((mt.next.ty & 0xFF) == ENUMTY.Tvoid))
                     return defaultInit(Type.tuns8, loc);
                 else
@@ -3776,13 +3763,13 @@ public class typesem {
             }
         };
         Function1<TypeFunction,Expression> visitFunction = new Function1<TypeFunction,Expression>(){
-            public Expression invoke(TypeFunction mt){
+            public Expression invoke(TypeFunction mt) {
                 error(loc, new BytePtr("`function` does not have a default initializer"));
                 return new ErrorExp();
             }
         };
         Function1<TypeStruct,Expression> visitStruct = new Function1<TypeStruct,Expression>(){
-            public Expression invoke(TypeStruct mt){
+            public Expression invoke(TypeStruct mt) {
                 Declaration d = new SymbolDeclaration(mt.sym.loc, mt.sym);
                 assert(d != null);
                 d.type = mt;
@@ -3791,7 +3778,7 @@ public class typesem {
             }
         };
         Function1<TypeEnum,Expression> visitEnum = new Function1<TypeEnum,Expression>(){
-            public Expression invoke(TypeEnum mt){
+            public Expression invoke(TypeEnum mt) {
                 Expression e = mt.sym.getDefaultValue(loc);
                 e = e.copy();
                 e.loc = loc.copy();
@@ -3800,7 +3787,7 @@ public class typesem {
             }
         };
         Function1<TypeTuple,Expression> visitTuple = new Function1<TypeTuple,Expression>(){
-            public Expression invoke(TypeTuple mt){
+            public Expression invoke(TypeTuple mt) {
                 DArray<Expression> exps = new DArray<Expression>((mt.arguments).length);
                 {
                     int i = 0;
@@ -3847,5 +3834,4 @@ public class typesem {
             return mt.isTypeBasic() != null ? visitBasic.invoke((TypeBasic)mt) : null;
         }
     }
-
 }

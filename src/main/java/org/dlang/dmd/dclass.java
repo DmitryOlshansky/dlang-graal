@@ -49,7 +49,6 @@ public class dclass {
         public  BaseClass(Type type) {
             this.type = type;
         }
-
         public  boolean fillVtbl(ClassDeclaration cd, DArray<FuncDeclaration> vtbl, int newinstance) {
             boolean result = false;
             if (vtbl != null)
@@ -84,7 +83,6 @@ public class dclass {
             }
             return result;
         }
-
         public  void copyBaseInterfaces(DArray<BaseClass> vtblInterfaces) {
             BaseClass bc = ptr(new BaseClass[36u]);
             this.baseInterfaces = bc.slice(0,this.sym.interfaces.getLength()).copy();
@@ -101,7 +99,6 @@ public class dclass {
                 }
             }
         }
-
         public BaseClass(){
             vtbl = new DArray<FuncDeclaration>();
         }
@@ -318,11 +315,9 @@ public class dclass {
             }
             this.baseok = Baseok.none;
         }
-
         public static ClassDeclaration create(Loc loc, Identifier id, DArray<BaseClass> baseclasses, DArray<Dsymbol> members, boolean inObject) {
             return new ClassDeclaration(loc, id, baseclasses, members, inObject);
         }
-
         public  Dsymbol syntaxCopy(Dsymbol s) {
             ClassDeclaration cd = s != null ? (ClassDeclaration)s : new ClassDeclaration(this.loc, this.ident, null, null, false);
             cd.storage_class |= this.storage_class;
@@ -337,7 +332,6 @@ public class dclass {
             }
             return this.syntaxCopy(cd);
         }
-
         public  Scope newScope(Scope sc) {
             Scope sc2 = super.newScope(sc);
             if (this.isCOMclass())
@@ -346,7 +340,6 @@ public class dclass {
             }
             return sc2;
         }
-
         public  boolean isBaseOf2(ClassDeclaration cd) {
             if (cd == null)
                 return false;
@@ -360,7 +353,6 @@ public class dclass {
             }
             return false;
         }
-
         public int OFFSET_RUNTIME = 1985229328;
         public int OFFSET_FWDREF = 1985229329;
         public  boolean isBaseOf(ClassDeclaration cd, IntPtr poffset) {
@@ -379,11 +371,9 @@ public class dclass {
             }
             return false;
         }
-
         public  boolean isBaseInfoComplete() {
             return this.baseok >= Baseok.done;
         }
-
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if ((this._scope != null) && (this.baseok < Baseok.done))
             {
@@ -430,7 +420,6 @@ public class dclass {
             }
             return s;
         }
-
         public  ClassDeclaration searchBase(Identifier ident) {
             {
                 Slice<BaseClass> __r905 = (this.baseclasses).opSlice().copy();
@@ -449,7 +438,6 @@ public class dclass {
             }
             return null;
         }
-
         public  void finalizeSize() {
             assert((this.sizeok != Sizeok.done));
             if (this.baseClass != null)
@@ -477,7 +465,7 @@ public class dclass {
             }
             IntRef bi = ref(0);
             Function2<ClassDeclaration,Integer,Integer> membersPlace = new Function2<ClassDeclaration,Integer,Integer>(){
-                public Integer invoke(ClassDeclaration cd, Integer baseOffset){
+                public Integer invoke(ClassDeclaration cd, Integer baseOffset) {
                     IntRef offset = ref(baseOffset);
                     {
                         Slice<BaseClass> __r907 = cd.interfaces.copy();
@@ -532,15 +520,12 @@ public class dclass {
             this.sizeok = Sizeok.done;
             this.checkOverlappedFields();
         }
-
         public  boolean hasMonitor() {
             return this.classKind == ClassKind.d;
         }
-
         public  boolean isAnonymous() {
             return this.isActuallyAnonymous;
         }
-
         public  boolean isFuncHidden(FuncDeclaration fd) {
             Dsymbol s = this.search(Loc.initial, fd.ident, 6);
             if (s == null)
@@ -573,20 +558,19 @@ public class dclass {
                 }
             }
         }
-
         public  FuncDeclaration findFunc(Identifier ident, TypeFunction tf) {
             Ref<Identifier> ident_ref = ref(ident);
             Ref<TypeFunction> tf_ref = ref(tf);
             Ref<FuncDeclaration> fdmatch = ref(null);
             Ref<FuncDeclaration> fdambig = ref(null);
             Function1<FuncDeclaration,Void> updateBestMatch = new Function1<FuncDeclaration,Void>(){
-                public Void invoke(FuncDeclaration fd){
+                public Void invoke(FuncDeclaration fd) {
                     fdmatch.value = fd;
                     fdambig.value = null;
                 }
             };
             Function1<DArray<Dsymbol>,Void> searchVtbl = new Function1<DArray<Dsymbol>,Void>(){
-                public Void invoke(DArray<Dsymbol> vtbl){
+                public Void invoke(DArray<Dsymbol> vtbl) {
                     {
                         Slice<Dsymbol> __r913 = vtbl.opSlice().copy();
                         int __key914 = 0;
@@ -654,23 +638,18 @@ public class dclass {
                 this.error(new BytePtr("ambiguous virtual function `%s`"), fdambig.value.toChars());
             return fdmatch.value;
         }
-
         public  boolean isCOMclass() {
             return this.com;
         }
-
         public  boolean isCOMinterface() {
             return false;
         }
-
         public  boolean isCPPclass() {
             return this.classKind == ClassKind.cpp;
         }
-
         public  boolean isCPPinterface() {
             return false;
         }
-
         public  boolean isAbstract() {
             boolean log = false;
             if ((this.isabstract != Abstract.fwdref))
@@ -678,7 +657,7 @@ public class dclass {
             if (false)
                 printf(new BytePtr("isAbstract(%s)\n"), this.toChars());
             Function0<Boolean> no = new Function0<Boolean>(){
-                public Boolean invoke(){
+                public Boolean invoke() {
                     if (false)
                         printf(new BytePtr("no\n"));
                     isabstract = Abstract.no;
@@ -686,7 +665,7 @@ public class dclass {
                 }
             };
             Function0<Boolean> yes = new Function0<Boolean>(){
-                public Boolean invoke(){
+                public Boolean invoke() {
                     if (false)
                         printf(new BytePtr("yes\n"));
                     isabstract = Abstract.yes;
@@ -698,7 +677,7 @@ public class dclass {
             if (this.errors)
                 return no.invoke();
             Function2<Dsymbol,Object,Integer> func = new Function2<Dsymbol,Object,Integer>(){
-                public Integer invoke(Dsymbol s, Object param){
+                public Integer invoke(Dsymbol s, Object param) {
                     FuncDeclaration fd = s.isFuncDeclaration();
                     if (fd == null)
                         return 0;
@@ -724,7 +703,7 @@ public class dclass {
             dsymbolSemantic(this, null);
             {
                 Function2<Dsymbol,Object,Integer> virtualSemantic = new Function2<Dsymbol,Object,Integer>(){
-                    public Integer invoke(Dsymbol s, Object param){
+                    public Integer invoke(Dsymbol s, Object param) {
                         FuncDeclaration fd = s.isFuncDeclaration();
                         if ((fd != null) && ((fd.storage_class & 1L) == 0) && (fd.isUnitTestDeclaration() == null))
                             dsymbolSemantic(fd, null);
@@ -753,24 +732,19 @@ public class dclass {
             }
             return no.invoke();
         }
-
         public  int vtblOffset() {
             return (this.classKind == ClassKind.cpp) ? 0 : 1;
         }
-
         public  BytePtr kind() {
             return new BytePtr("class");
         }
-
         public  void addLocalClass(DArray<ClassDeclaration> aclasses) {
             if ((this.classKind != ClassKind.objc))
                 (aclasses).push(this);
         }
-
         public  void addObjcSymbols(DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories) {
             objc().addSymbols(this, classes, categories);
         }
-
         public Dsymbol vtblsym;
         public  Dsymbol vtblSymbol() {
             if (this.vtblsym == null)
@@ -785,15 +759,12 @@ public class dclass {
             }
             return this.vtblsym;
         }
-
         public  ClassDeclaration isClassDeclaration() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public ClassDeclaration() {}
 
@@ -883,12 +854,10 @@ public class dclass {
                 this.classKind = ClassKind.cpp;
             }
         }
-
         public  Dsymbol syntaxCopy(Dsymbol s) {
             InterfaceDeclaration id = s != null ? (InterfaceDeclaration)s : new InterfaceDeclaration(this.loc, this.ident, null);
             return this.syntaxCopy(id);
         }
-
         public  Scope newScope(Scope sc) {
             Scope sc2 = super.newScope(sc);
             if (this.com)
@@ -899,7 +868,6 @@ public class dclass {
                 (sc2).linkage = LINK.objc;
             return sc2;
         }
-
         public  boolean isBaseOf(ClassDeclaration cd, IntPtr poffset) {
             assert(this.baseClass == null);
             {
@@ -925,7 +893,6 @@ public class dclass {
                 poffset.set(0, 0);
             return false;
         }
-
         public  boolean isBaseOf(BaseClass bc, IntPtr poffset) {
             {
                 int j = 0;
@@ -949,33 +916,26 @@ public class dclass {
                 poffset.set(0, 0);
             return false;
         }
-
         public  BytePtr kind() {
             return new BytePtr("interface");
         }
-
         public  int vtblOffset() {
             if (this.isCOMinterface() || this.isCPPinterface())
                 return 0;
             return 1;
         }
-
         public  boolean isCPPinterface() {
             return this.classKind == ClassKind.cpp;
         }
-
         public  boolean isCOMinterface() {
             return this.com;
         }
-
         public  InterfaceDeclaration isInterfaceDeclaration() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public InterfaceDeclaration() {}
 

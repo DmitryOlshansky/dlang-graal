@@ -43,7 +43,7 @@ public class dimport {
             Ref<Identifier> id_ref = ref(id);
             Ref<Identifier> aliasId_ref = ref(aliasId);
             Function0<Identifier> selectIdent = new Function0<Identifier>(){
-                public Identifier invoke(){
+                public Identifier invoke() {
                     if (aliasId_ref.value != null)
                     {
                         return aliasId_ref.value;
@@ -66,7 +66,6 @@ public class dimport {
             this.isstatic = isstatic;
             this.protection = new Prot(Prot.Kind.private_);
         }
-
         public  void addAlias(Identifier name, Identifier _alias) {
             if (this.isstatic != 0)
                 this.error(new BytePtr("cannot have an import bind list"));
@@ -75,15 +74,12 @@ public class dimport {
             this.names.push(name);
             this.aliases.push(_alias);
         }
-
         public  BytePtr kind() {
             return this.isstatic != 0 ? new BytePtr("static import") : new BytePtr("import");
         }
-
         public  Prot prot() {
             return this.protection;
         }
-
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             Import si = new Import(this.loc, this.packages, this.id, this.aliasId, this.isstatic);
@@ -95,7 +91,6 @@ public class dimport {
             }
             return si;
         }
-
         public  boolean load(Scope sc) {
             int errors = global.errors;
             DsymbolTable dst = dmodule.Package.resolve(this.packages, null, this.pkg);
@@ -160,7 +155,6 @@ public class dimport {
                 this.pkg = this.mod;
             return global.errors != errors;
         }
-
         public  void importAll(Scope sc) {
             if (this.mod != null)
                 return ;
@@ -184,13 +178,11 @@ public class dimport {
             if ((this.isstatic == 0) && (this.aliasId == null) && (this.names.length == 0))
                 (sc).scopesym.importScope(this.mod, this.protection);
         }
-
         public  Dsymbol toAlias() {
             if (this.aliasId != null)
                 return this.mod;
             return this;
         }
-
         public  void addMember(Scope sc, ScopeDsymbol sd) {
             if ((this.names.length == 0))
                 this.addMember(sc, sd);
@@ -212,7 +204,6 @@ public class dimport {
                 }
             }
         }
-
         public  void setScope(Scope sc) {
             this.setScope(sc);
             if (this.aliasdecls.length != 0)
@@ -232,7 +223,6 @@ public class dimport {
                 sc = (sc).pop();
             }
         }
-
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if (this.pkg == null)
             {
@@ -242,7 +232,6 @@ public class dimport {
             }
             return this.pkg.search(loc, ident, flags);
         }
-
         public  boolean overloadInsert(Dsymbol s) {
             assert((this.ident != null) && (pequals(this.ident, s.ident)));
             Import imp = null;
@@ -251,15 +240,12 @@ public class dimport {
             else
                 return false;
         }
-
         public  Import isImport() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public Import() {}
 

@@ -69,17 +69,14 @@ public class semantic2 {
         Semantic2Visitor v = new Semantic2Visitor(sc);
         dsym.accept(v);
     }
-
     public static class Semantic2Visitor extends Visitor
     {
         public Scope sc;
         public  Semantic2Visitor(Scope sc) {
             this.sc = sc;
         }
-
         public  void visit(Dsymbol _param_0) {
         }
-
         public  void visit(StaticAssert sa) {
             ScopeDsymbol sds = new ScopeDsymbol();
             this.sc = (this.sc).push(sds);
@@ -120,7 +117,6 @@ public class semantic2 {
                     fatal();
             }
         }
-
         public  void visit(TemplateInstance tempinst) {
             if ((tempinst.semanticRun >= PASS.semantic2))
                 return ;
@@ -166,7 +162,6 @@ public class semantic2 {
                 (this.sc).pop();
             }
         }
-
         public  void visit(TemplateMixin tmix) {
             if ((tmix.semanticRun >= PASS.semantic2))
                 return ;
@@ -187,7 +182,6 @@ public class semantic2 {
                 (this.sc).pop();
             }
         }
-
         public  void visit(VarDeclaration vd) {
             if ((vd.semanticRun < PASS.semanticdone) && (vd.inuse != 0))
                 return ;
@@ -210,9 +204,9 @@ public class semantic2 {
                     if ((ei) != null)
                     {
                         Function1<Expression,Boolean> hasInvalidEnumInitializer = new Function1<Expression,Boolean>(){
-                            public Boolean invoke(Expression e){
+                            public Boolean invoke(Expression e) {
                                 Function1<DArray<Expression>,Boolean> arrayHasInvalidEnumInitializer = new Function1<DArray<Expression>,Boolean>(){
-                                    public Boolean invoke(DArray<Expression> elems){
+                                    public Boolean invoke(DArray<Expression> elems) {
                                         {
                                             Slice<Expression> __r1610 = (elems).opSlice().copy();
                                             int __key1611 = 0;
@@ -263,7 +257,6 @@ public class semantic2 {
             }
             vd.semanticRun = PASS.semantic2done;
         }
-
         public  void visit(dmodule.Module mod) {
             if ((mod.semanticRun != PASS.semanticdone))
                 return ;
@@ -284,7 +277,6 @@ public class semantic2 {
             (sc).pop();
             mod.semanticRun = PASS.semantic2done;
         }
-
         public  void visit(FuncDeclaration fd) {
             if ((fd.semanticRun >= PASS.semantic2done))
                 return ;
@@ -300,7 +292,7 @@ public class semantic2 {
                             FuncDeclaration f1 = fd;
                             mangleToFuncSignature(buf1, f1);
                             Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>(){
-                                public Integer invoke(Dsymbol s){
+                                public Integer invoke(Dsymbol s) {
                                     FuncDeclaration f2 = s.isFuncDeclaration();
                                     if ((f2 == null) || (pequals(f1, f2)) || f2.errors)
                                         return 0;
@@ -355,7 +347,6 @@ public class semantic2 {
                 }
             }
         }
-
         public  void visit(Import i) {
             if (i.mod != null)
             {
@@ -367,7 +358,6 @@ public class semantic2 {
                 }
             }
         }
-
         public  void visit(Nspace ns) {
             if ((ns.semanticRun >= PASS.semantic2))
                 return ;
@@ -388,7 +378,6 @@ public class semantic2 {
                 (this.sc).pop();
             }
         }
-
         public  void visit(AttribDeclaration ad) {
             DArray<Dsymbol> d = ad.include(this.sc);
             if (d != null)
@@ -405,22 +394,19 @@ public class semantic2 {
                     (sc2).pop();
             }
         }
-
         public  void visit(DeprecatedDeclaration dd) {
             getMessage(dd);
             this.visit((AttribDeclaration)dd);
         }
-
         public  void visit(AlignDeclaration ad) {
             getAlignment(ad, this.sc);
             this.visit((AttribDeclaration)ad);
         }
-
         public  void visit(UserAttributeDeclaration uad) {
             if ((uad.decl != null) && (uad.atts != null) && ((uad.atts).length != 0) && (uad._scope != null))
             {
                 Function2<Scope,DArray<Expression>,Void> eval = new Function2<Scope,DArray<Expression>,Void>(){
-                    public Void invoke(Scope sc, DArray<Expression> exps){
+                    public Void invoke(Scope sc, DArray<Expression> exps) {
                         {
                             Slice<Expression> __r1616 = (exps).opSlice().copy();
                             int __key1617 = 0;
@@ -446,7 +432,6 @@ public class semantic2 {
             }
             this.visit((AttribDeclaration)uad);
         }
-
         public  void visit(AggregateDeclaration ad) {
             if (ad.members == null)
                 return ;
@@ -466,7 +451,6 @@ public class semantic2 {
             }
             (sc2).pop();
         }
-
 
         public Semantic2Visitor() {}
 

@@ -47,13 +47,11 @@ public class denum {
             this.memtype = memtype;
             this.protection = new Prot(Prot.Kind.undefined);
         }
-
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             EnumDeclaration ed = new EnumDeclaration(this.loc, this.ident, this.memtype != null ? this.memtype.syntaxCopy() : null);
             return this.syntaxCopy(ed);
         }
-
         public  void addMember(Scope sc, ScopeDsymbol sds) {
             ScopeDsymbol scopesym = this.isAnonymous() ? sds : this;
             if (!this.isAnonymous())
@@ -75,27 +73,22 @@ public class denum {
             }
             this.added = true;
         }
-
         public  void setScope(Scope sc) {
             if ((this.semanticRun > PASS.init))
                 return ;
             this.setScope(sc);
         }
-
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             if (this.isAnonymous())
                 return Dsymbol.oneMembers(this.members, ps, ident);
             return this.oneMember(ps, ident);
         }
-
         public  Type getType() {
             return this.type;
         }
-
         public  BytePtr kind() {
             return new BytePtr("enum");
         }
-
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if (this._scope != null)
             {
@@ -109,18 +102,15 @@ public class denum {
             Dsymbol s = this.search(loc, ident, flags);
             return s;
         }
-
         public  boolean isDeprecated() {
             return this.isdeprecated;
         }
-
         public  Prot prot() {
             return this.protection;
         }
-
         public  Expression getMaxMinValue(Loc loc, Identifier id) {
             Function2<Expression,Loc,Expression> pvalToResult = new Function2<Expression,Loc,Expression>(){
-                public Expression invoke(Expression e, Loc loc){
+                public Expression invoke(Expression e, Loc loc) {
                     if (((e.op & 0xFF) != 127))
                     {
                         e = e.copy();
@@ -131,7 +121,7 @@ public class denum {
             };
             Ref<Ptr<Expression>> pval = ref(pcopy((pequals(id, Id.max)) ? this.maxval : this.minval));
             Function0<Expression> errorReturn = new Function0<Expression>(){
-                public Expression invoke(){
+                public Expression invoke() {
                     pval.value.set(0, (new ErrorExp()));
                     return pval.value.get();
                 }
@@ -198,14 +188,12 @@ public class denum {
             }
             return this.errors ? errorReturn.invoke() : pvalToResult.invoke(pval.value.get(), loc);
         }
-
         public  boolean isSpecial() {
             return isSpecialEnumIdent(this.ident) && (this.memtype != null);
         }
-
         public  Expression getDefaultValue(Loc loc) {
             Function0<Expression> handleErrors = new Function0<Expression>(){
-                public Expression invoke(){
+                public Expression invoke() {
                     defaultval = new ErrorExp();
                     return defaultval;
                 }
@@ -240,7 +228,6 @@ public class denum {
             }
             return handleErrors.invoke();
         }
-
         public  Type getMemtype(Loc loc) {
             if (this._scope != null)
             {
@@ -268,16 +255,13 @@ public class denum {
             }
             return this.memtype;
         }
-
         public  EnumDeclaration isEnumDeclaration() {
             return this;
         }
-
         public Symbol sinit;
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public EnumDeclaration() {}
 
@@ -322,7 +306,6 @@ public class denum {
         public  Expression value() {
             return ((ExpInitializer)this._init).exp;
         }
-
         public Expression origValue;
         public Type origType;
         public EnumDeclaration ed;
@@ -331,23 +314,19 @@ public class denum {
             this.origValue = value;
             this.origType = origType;
         }
-
         public  EnumMember(Loc loc, Identifier id, Expression value, Type memtype, long stc, UserAttributeDeclaration uad, DeprecatedDeclaration dd) {
             this(loc, id, value, memtype);
             this.storage_class = stc;
             this.userAttribDecl = uad;
             this.depdecl = dd;
         }
-
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new EnumMember(this.loc, this.ident, this.value() != null ? this.value().syntaxCopy() : null, this.origType != null ? this.origType.syntaxCopy() : null, this.storage_class, this.userAttribDecl != null ? (UserAttributeDeclaration)this.userAttribDecl.syntaxCopy(s) : null, this.depdecl != null ? (DeprecatedDeclaration)this.depdecl.syntaxCopy(s) : null);
         }
-
         public  BytePtr kind() {
             return new BytePtr("enum member");
         }
-
         public  Expression getVarExp(Loc loc, Scope sc) {
             dsymbolSemantic(this, sc);
             if (this.errors)
@@ -361,15 +340,12 @@ public class denum {
             Expression e = new VarExp(loc, this, true);
             return expressionSemantic(e, sc);
         }
-
         public  EnumMember isEnumMember() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public EnumMember() {}
 
@@ -428,5 +404,4 @@ public class denum {
     public static boolean isSpecialEnumIdent(Identifier ident) {
         return (pequals(ident, Id.__c_long)) || (pequals(ident, Id.__c_ulong)) || (pequals(ident, Id.__c_longlong)) || (pequals(ident, Id.__c_ulonglong)) || (pequals(ident, Id.__c_long_double)) || (pequals(ident, Id.__c_wchar_t));
     }
-
 }

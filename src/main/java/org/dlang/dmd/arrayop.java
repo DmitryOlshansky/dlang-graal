@@ -39,20 +39,16 @@ public class arrayop {
             this.tiargs = tiargs;
             this.args = args;
         }
-
         public  void visit(Expression e) {
             (this.tiargs).push(e.type);
             (this.args).push(e);
         }
-
         public  void visit(SliceExp e) {
             this.visit((Expression)e);
         }
-
         public  void visit(CastExp e) {
             this.visit((Expression)e);
         }
-
         public  void visit(UnaExp e) {
             Type tb = e.type.toBasetype();
             if (((tb.ty & 0xFF) != ENUMTY.Tarray) && ((tb.ty & 0xFF) != ENUMTY.Tsarray))
@@ -72,7 +68,6 @@ public class arrayop {
                 }
             }
         }
-
         public  void visit(BinExp e) {
             Type tb = e.type.toBasetype();
             if (((tb.ty & 0xFF) != ENUMTY.Tarray) && ((tb.ty & 0xFF) != ENUMTY.Tsarray))
@@ -86,7 +81,6 @@ public class arrayop {
                 (this.tiargs).push(expressionSemantic(new StringExp(Loc.initial, Token.toChars(e.op)), this.sc));
             }
         }
-
 
         public BuildArrayOpVisitor() {}
     }
@@ -123,7 +117,6 @@ public class arrayop {
         }
         return true;
     }
-
     public static boolean isNonAssignmentArrayOp(Expression e) {
         if (((e.op & 0xFF) == 31))
             return isNonAssignmentArrayOp(((SliceExp)e).e1);
@@ -134,7 +127,6 @@ public class arrayop {
         }
         return false;
     }
-
     public static boolean checkNonAssignmentArrayOp(Expression e, boolean suggestion) {
         if (isNonAssignmentArrayOp(e))
         {
@@ -146,7 +138,6 @@ public class arrayop {
         }
         return false;
     }
-
     public static Expression arrayOp(BinExp e, Scope sc) {
         Type tb = e.type.toBasetype();
         assert(((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray));
@@ -176,7 +167,6 @@ public class arrayop {
             return new ErrorExp();
         return expressionSemantic(new CallExp(e.loc, new VarExp(e.loc, fd, false), args), sc);
     }
-
     public static Expression arrayOp(BinAssignExp e, Scope sc) {
         Type tn = e.e1.type.toBasetype().nextOf();
         if ((tn != null) && !tn.isMutable() || !tn.isAssignable())
@@ -192,12 +182,10 @@ public class arrayop {
         }
         return arrayOp((BinExp)e, sc);
     }
-
     public static void buildArrayOp(Scope sc, Expression e, DArray<RootObject> tiargs, DArray<Expression> args) {
         BuildArrayOpVisitor v = new BuildArrayOpVisitor(sc, tiargs, args);
         e.accept(v);
     }
-
     public static boolean isUnaArrayOp(byte op) {
         switch ((op & 0xFF))
         {
@@ -209,7 +197,6 @@ public class arrayop {
         }
         return false;
     }
-
     public static boolean isBinArrayOp(byte op) {
         switch ((op & 0xFF))
         {
@@ -228,7 +215,6 @@ public class arrayop {
         }
         return false;
     }
-
     public static boolean isBinAssignArrayOp(byte op) {
         switch ((op & 0xFF))
         {
@@ -247,7 +233,6 @@ public class arrayop {
         }
         return false;
     }
-
     public static boolean isArrayOpOperand(Expression e) {
         if (((e.op & 0xFF) == 31))
             return true;
@@ -266,7 +251,6 @@ public class arrayop {
         }
         return false;
     }
-
     public static ErrorExp arrayOpInvalidError(Expression e) {
         e.error(new BytePtr("invalid array operation `%s` (possible missing [])"), e.toChars());
         if (((e.op & 0xFF) == 74))
@@ -275,7 +259,6 @@ public class arrayop {
             checkPossibleAddCatErrorAddAssignExpCatAssignExp(e.isAddAssignExp());
         return new ErrorExp();
     }
-
     // from template checkPossibleAddCatError!(AddAssignExpCatAssignExp)
     public static void checkPossibleAddCatErrorAddAssignExpCatAssignExp(AddAssignExp ae) {
         if ((ae.e2.type == null) || ((ae.e2.type.ty & 0xFF) != ENUMTY.Tarray) || (ae.e2.type.implicitConvTo(ae.e1.type) == 0))
@@ -284,7 +267,6 @@ public class arrayop {
         ae.errorSupplemental(new BytePtr("did you mean to concatenate (`%s`) instead ?"), ce.toChars());
     }
 
-
     // from template checkPossibleAddCatError!(AddExpCatExp)
     public static void checkPossibleAddCatErrorAddExpCatExp(AddExp ae) {
         if ((ae.e2.type == null) || ((ae.e2.type.ty & 0xFF) != ENUMTY.Tarray) || (ae.e2.type.implicitConvTo(ae.e1.type) == 0))
@@ -292,6 +274,5 @@ public class arrayop {
         CatExp ce = new CatExp(ae.loc, ae.e1, ae.e2);
         ae.errorSupplemental(new BytePtr("did you mean to concatenate (`%s`) instead ?"), ce.toChars());
     }
-
 
 }

@@ -29,19 +29,16 @@ public class dversion {
         public  DebugSymbol(Loc loc, Identifier ident) {
             super(loc, ident);
         }
-
         public  DebugSymbol(Loc loc, int level) {
             super(loc, null);
             this.level = level;
         }
-
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             DebugSymbol ds = new DebugSymbol(this.loc, this.ident);
             ds.level = this.level;
             return ds;
         }
-
         public  BytePtr toChars() {
             if (this.ident != null)
                 return this.ident.toChars();
@@ -56,7 +53,6 @@ public class dversion {
                 }
             }
         }
-
         public  void addMember(Scope sc, ScopeDsymbol sds) {
             dmodule.Module m = sds.isModule();
             if (this.ident != null)
@@ -89,15 +85,12 @@ public class dversion {
                     m.debuglevel = this.level;
             }
         }
-
         public  BytePtr kind() {
             return new BytePtr("debug");
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public DebugSymbol() {}
 
@@ -127,18 +120,15 @@ public class dversion {
         public  VersionSymbol(Loc loc, Identifier ident) {
             super(loc, ident);
         }
-
         public  VersionSymbol(Loc loc, int level) {
             super(loc, null);
             this.level = level;
         }
-
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             VersionSymbol ds = this.ident != null ? new VersionSymbol(this.loc, this.ident) : new VersionSymbol(this.loc, this.level);
             return ds;
         }
-
         public  BytePtr toChars() {
             if (this.ident != null)
                 return this.ident.toChars();
@@ -153,7 +143,6 @@ public class dversion {
                 }
             }
         }
-
         public  void addMember(Scope sc, ScopeDsymbol sds) {
             dmodule.Module m = sds.isModule();
             if (this.ident != null)
@@ -187,15 +176,12 @@ public class dversion {
                     m.versionlevel = this.level;
             }
         }
-
         public  BytePtr kind() {
             return new BytePtr("version");
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public VersionSymbol() {}
 

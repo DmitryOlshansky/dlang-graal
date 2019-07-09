@@ -67,24 +67,23 @@ public class initsem {
         error(ai.loc, new BytePtr("not an associative array initializer"));
         return new ErrorExp();
     }
-
     public static Initializer initializerSemantic(Initializer init, Scope sc, Type t, int needInterpret) {
         Ref<Scope> sc_ref = ref(sc);
         Ref<Type> t_ref = ref(t);
         IntRef needInterpret_ref = ref(needInterpret);
         Function1<VoidInitializer,Initializer> visitVoid = new Function1<VoidInitializer,Initializer>(){
-            public Initializer invoke(VoidInitializer i){
+            public Initializer invoke(VoidInitializer i) {
                 i.type = t_ref.value;
                 return i;
             }
         };
         Function1<ErrorInitializer,Initializer> visitError = new Function1<ErrorInitializer,Initializer>(){
-            public Initializer invoke(ErrorInitializer i){
+            public Initializer invoke(ErrorInitializer i) {
                 return i;
             }
         };
         Function1<StructInitializer,Initializer> visitStruct = new Function1<StructInitializer,Initializer>(){
-            public Initializer invoke(StructInitializer i){
+            public Initializer invoke(StructInitializer i) {
                 t_ref.value = t_ref.value.toBasetype();
                 if (((t_ref.value.ty & 0xFF) == ENUMTY.Tsarray) && ((t_ref.value.nextOf().toBasetype().ty & 0xFF) == ENUMTY.Tstruct))
                     t_ref.value = t_ref.value.nextOf().toBasetype();
@@ -220,7 +219,7 @@ public class initsem {
             }
         };
         Function1<ArrayInitializer,Initializer> visitArray = new Function1<ArrayInitializer,Initializer>(){
-            public Initializer invoke(ArrayInitializer i){
+            public Initializer invoke(ArrayInitializer i) {
                 int length = 0;
                 int amax = -2147483648;
                 boolean errors = false;
@@ -359,7 +358,7 @@ public class initsem {
             }
         };
         Function1<ExpInitializer,Initializer> visitExp = new Function1<ExpInitializer,Initializer>(){
-            public Initializer invoke(ExpInitializer i){
+            public Initializer invoke(ExpInitializer i) {
                 if (needInterpret_ref.value != 0)
                     sc_ref.value = (sc_ref.value).startCTFE();
                 i.exp = expressionSemantic(i.exp, sc_ref.value);
@@ -506,28 +505,27 @@ public class initsem {
             throw SwitchError.INSTANCE;
         }
     }
-
     public static Initializer inferType(Initializer init, Scope sc) {
         Ref<Scope> sc_ref = ref(sc);
         Function1<VoidInitializer,Initializer> visitVoid = new Function1<VoidInitializer,Initializer>(){
-            public Initializer invoke(VoidInitializer i){
+            public Initializer invoke(VoidInitializer i) {
                 error(i.loc, new BytePtr("cannot infer type from void initializer"));
                 return new ErrorInitializer();
             }
         };
         Function1<ErrorInitializer,Initializer> visitError = new Function1<ErrorInitializer,Initializer>(){
-            public Initializer invoke(ErrorInitializer i){
+            public Initializer invoke(ErrorInitializer i) {
                 return i;
             }
         };
         Function1<StructInitializer,Initializer> visitStruct = new Function1<StructInitializer,Initializer>(){
-            public Initializer invoke(StructInitializer i){
+            public Initializer invoke(StructInitializer i) {
                 error(i.loc, new BytePtr("cannot infer type from struct initializer"));
                 return new ErrorInitializer();
             }
         };
         Function1<ArrayInitializer,Initializer> visitArray = new Function1<ArrayInitializer,Initializer>(){
-            public Initializer invoke(ArrayInitializer init){
+            public Initializer invoke(ArrayInitializer init) {
                 DArray<Expression> keys = null;
                 DArray<Expression> values = null;
                 try {
@@ -601,7 +599,7 @@ public class initsem {
             }
         };
         Function1<ExpInitializer,Initializer> visitExp = new Function1<ExpInitializer,Initializer>(){
-            public Initializer invoke(ExpInitializer init){
+            public Initializer invoke(ExpInitializer init) {
                 init.exp = expressionSemantic(init.exp, sc_ref.value);
                 if (((init.exp.op & 0xFF) == 20))
                     init.exp = resolveAliasThis(sc_ref.value, init.exp, false);
@@ -668,26 +666,25 @@ public class initsem {
             throw SwitchError.INSTANCE;
         }
     }
-
     public static Expression initializerToExpression(Initializer init, Type itype) {
         Ref<Type> itype_ref = ref(itype);
         Function1<VoidInitializer,Expression> visitVoid = new Function1<VoidInitializer,Expression>(){
-            public Expression invoke(VoidInitializer _param_0){
+            public Expression invoke(VoidInitializer _param_0) {
                 return null;
             }
         };
         Function1<ErrorInitializer,Expression> visitError = new Function1<ErrorInitializer,Expression>(){
-            public Expression invoke(ErrorInitializer _param_0){
+            public Expression invoke(ErrorInitializer _param_0) {
                 return new ErrorExp();
             }
         };
         Function1<StructInitializer,Expression> visitStruct = new Function1<StructInitializer,Expression>(){
-            public Expression invoke(StructInitializer _param_0){
+            public Expression invoke(StructInitializer _param_0) {
                 return null;
             }
         };
         Function1<ArrayInitializer,Expression> visitArray = new Function1<ArrayInitializer,Expression>(){
-            public Expression invoke(ArrayInitializer init){
+            public Expression invoke(ArrayInitializer init) {
                 DArray<Expression> elements = null;
                 int edim = 0;
                 int amax = -2147483648;
@@ -837,7 +834,7 @@ public class initsem {
             }
         };
         Function1<ExpInitializer,Expression> visitExp = new Function1<ExpInitializer,Expression>(){
-            public Expression invoke(ExpInitializer i){
+            public Expression invoke(ExpInitializer i) {
                 if (itype_ref.value != null)
                 {
                     Type tb = itype_ref.value.toBasetype();
@@ -876,5 +873,4 @@ public class initsem {
             throw SwitchError.INSTANCE;
         }
     }
-
 }

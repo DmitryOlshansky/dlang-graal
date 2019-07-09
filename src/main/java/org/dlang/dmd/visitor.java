@@ -42,235 +42,177 @@ public class visitor {
         public  void visit(ErrorStatement s) {
             this.visit((Statement)s);
         }
-
         public  void visit(PeelStatement s) {
             this.visit((Statement)s);
         }
-
         public  void visit(UnrolledLoopStatement s) {
             this.visit((Statement)s);
         }
-
         public  void visit(SwitchErrorStatement s) {
             this.visit((Statement)s);
         }
-
         public  void visit(DebugStatement s) {
             this.visit((Statement)s);
         }
-
         public  void visit(DtorExpStatement s) {
             this.visit((ExpStatement)s);
         }
-
         public  void visit(ForwardingStatement s) {
             this.visit((Statement)s);
         }
-
         public  void visit(OverloadSet s) {
             this.visit((Dsymbol)s);
         }
-
         public  void visit(LabelDsymbol s) {
             this.visit((Dsymbol)s);
         }
-
         public  void visit(WithScopeSymbol s) {
             this.visit((ScopeDsymbol)s);
         }
-
         public  void visit(ArrayScopeSymbol s) {
             this.visit((ScopeDsymbol)s);
         }
-
         public  void visit(OverDeclaration s) {
             this.visit((Declaration)s);
         }
-
         public  void visit(SymbolDeclaration s) {
             this.visit((Declaration)s);
         }
-
         public  void visit(ThisDeclaration s) {
             this.visit((VarDeclaration)s);
         }
-
         public  void visit(TypeInfoDeclaration s) {
             this.visit((VarDeclaration)s);
         }
-
         public  void visit(TypeInfoStructDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(TypeInfoClassDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(TypeInfoInterfaceDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(TypeInfoPointerDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(TypeInfoArrayDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(TypeInfoStaticArrayDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(TypeInfoAssociativeArrayDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(TypeInfoEnumDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(TypeInfoFunctionDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(TypeInfoDelegateDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(TypeInfoTupleDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(TypeInfoConstDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(TypeInfoInvariantDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(TypeInfoSharedDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(TypeInfoWildDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(TypeInfoVectorDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
-
         public  void visit(FuncAliasDeclaration s) {
             this.visit((FuncDeclaration)s);
         }
-
         public  void visit(ErrorInitializer i) {
             this.visit((Initializer)i);
         }
-
         public  void visit(ErrorExp e) {
             this.visit((Expression)e);
         }
-
         public  void visit(ComplexExp e) {
             this.visit((Expression)e);
         }
-
         public  void visit(StructLiteralExp e) {
             this.visit((Expression)e);
         }
-
         public  void visit(ObjcClassReferenceExp e) {
             this.visit((Expression)e);
         }
-
         public  void visit(SymOffExp e) {
             this.visit((SymbolExp)e);
         }
-
         public  void visit(OverExp e) {
             this.visit((Expression)e);
         }
-
         public  void visit(HaltExp e) {
             this.visit((Expression)e);
         }
-
         public  void visit(DotTemplateExp e) {
             this.visit((UnaExp)e);
         }
-
         public  void visit(DotVarExp e) {
             this.visit((UnaExp)e);
         }
-
         public  void visit(DelegateExp e) {
             this.visit((UnaExp)e);
         }
-
         public  void visit(DotTypeExp e) {
             this.visit((UnaExp)e);
         }
-
         public  void visit(VectorExp e) {
             this.visit((UnaExp)e);
         }
-
         public  void visit(VectorArrayExp e) {
             this.visit((UnaExp)e);
         }
-
         public  void visit(SliceExp e) {
             this.visit((UnaExp)e);
         }
-
         public  void visit(ArrayLengthExp e) {
             this.visit((UnaExp)e);
         }
-
         public  void visit(DelegatePtrExp e) {
             this.visit((UnaExp)e);
         }
-
         public  void visit(DelegateFuncptrExp e) {
             this.visit((UnaExp)e);
         }
-
         public  void visit(DotExp e) {
             this.visit((BinExp)e);
         }
-
         public  void visit(IndexExp e) {
             this.visit((BinExp)e);
         }
-
         public  void visit(ConstructExp e) {
             this.visit((AssignExp)e);
         }
-
         public  void visit(BlitExp e) {
             this.visit((AssignExp)e);
         }
-
         public  void visit(RemoveExp e) {
             this.visit((BinExp)e);
         }
-
         public  void visit(ClassReferenceExp e) {
             this.visit((Expression)e);
         }
-
         public  void visit(VoidInitExp e) {
             this.visit((Expression)e);
         }
-
         public  void visit(ThrownExceptionExp e) {
             this.visit((Expression)e);
         }
-
 
         public Visitor() {}
 
@@ -283,28 +225,20 @@ public class visitor {
     {
         public  void visit(Dsymbol _param_0) {
         }
-
         public  void visit(Parameter _param_0) {
         }
-
         public  void visit(Statement _param_0) {
         }
-
         public  void visit(Type _param_0) {
         }
-
         public  void visit(Expression _param_0) {
         }
-
         public  void visit(TemplateParameter _param_0) {
         }
-
         public  void visit(Condition _param_0) {
         }
-
         public  void visit(Initializer _param_0) {
         }
-
 
         public SemanticTimePermissiveVisitor() {}
 
@@ -327,12 +261,10 @@ public class visitor {
                 s.exp.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(CompileStatement s) {
             this.visitArgs(s.exps, null);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(CompoundStatement s) {
@@ -347,7 +279,6 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visitVarDecl(VarDeclaration v) {
             if (v.type != null)
@@ -361,7 +292,6 @@ public class visitor {
                     v._init.accept(this);
             }
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(CompoundDeclarationStatement s) {
@@ -387,13 +317,11 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ScopeStatement s) {
             if (s.statement != null)
                 s.statement.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(WhileStatement s) {
@@ -402,14 +330,12 @@ public class visitor {
                 s._body.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(DoStatement s) {
             if (s._body != null)
                 s._body.accept(this);
             s.condition.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ForStatement s) {
@@ -422,7 +348,6 @@ public class visitor {
             if (s._body != null)
                 s._body.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ForeachStatement s) {
@@ -440,7 +365,6 @@ public class visitor {
                 s._body.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ForeachRangeStatement s) {
             if (s.prm.type != null)
@@ -450,7 +374,6 @@ public class visitor {
             if (s._body != null)
                 s._body.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(IfStatement s) {
@@ -462,7 +385,6 @@ public class visitor {
                 s.elsebody.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ConditionalStatement s) {
             s.condition.accept(this);
@@ -471,7 +393,6 @@ public class visitor {
             if (s.elsebody != null)
                 s.elsebody.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visitArgs(DArray<Expression> expressions, Expression basis) {
@@ -490,7 +411,6 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(PragmaStatement s) {
             if ((s.args != null) && ((s.args).length != 0))
@@ -499,12 +419,10 @@ public class visitor {
                 s._body.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(StaticAssertStatement s) {
             s.sa.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(SwitchStatement s) {
@@ -513,13 +431,11 @@ public class visitor {
                 s._body.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(CaseStatement s) {
             s.exp.accept(this);
             s.statement.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(CaseRangeStatement s) {
@@ -528,12 +444,10 @@ public class visitor {
             s.statement.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(DefaultStatement s) {
             s.statement.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(GotoCaseStatement s) {
@@ -541,13 +455,11 @@ public class visitor {
                 s.exp.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ReturnStatement s) {
             if (s.exp != null)
                 s.exp.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(SynchronizedStatement s) {
@@ -557,14 +469,12 @@ public class visitor {
                 s._body.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(WithStatement s) {
             s.exp.accept(this);
             if (s._body != null)
                 s._body.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TryCatchStatement s) {
@@ -580,32 +490,27 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TryFinallyStatement s) {
             s._body.accept(this);
             s.finalbody.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ScopeGuardStatement s) {
             s.statement.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ThrowStatement s) {
             s.exp.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(LabelStatement s) {
             if (s.statement != null)
                 s.statement.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ImportStatement s) {
@@ -619,7 +524,6 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(Catch c) {
             if (c.type != null)
@@ -627,7 +531,6 @@ public class visitor {
             if (c.handler != null)
                 c.handler.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visitType(Type t) {
@@ -641,7 +544,6 @@ public class visitor {
             else
                 t.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visitFunctionType(TypeFunction t, TemplateDeclaration td) {
@@ -661,7 +563,6 @@ public class visitor {
             this.visitParameters(t.parameterList.parameters);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visitParameters(DArray<Parameter> parameters) {
             if (parameters != null)
@@ -679,7 +580,6 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeVector t) {
             if (t.basetype == null)
@@ -687,25 +587,21 @@ public class visitor {
             t.basetype.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeSArray t) {
             t.next.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeDArray t) {
             t.next.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeAArray t) {
             t.next.accept(this);
             t.index.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypePointer t) {
@@ -717,24 +613,20 @@ public class visitor {
                 t.next.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeReference t) {
             t.next.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeFunction t) {
             this.visitFunctionType(t, null);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeDelegate t) {
             this.visitFunctionType((TypeFunction)t.next, null);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visitTypeQualified(TypeQualified t) {
@@ -753,12 +645,10 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeIdentifier t) {
             this.visitTypeQualified(t);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeInstance t) {
@@ -766,25 +656,21 @@ public class visitor {
             this.visitTypeQualified(t);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeTypeof t) {
             t.exp.accept(this);
             this.visitTypeQualified(t);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeReturn t) {
             this.visitTypeQualified(t);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeTuple t) {
             this.visitParameters(t.arguments);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeSlice t) {
@@ -793,12 +679,10 @@ public class visitor {
             t.upr.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeTraits t) {
             t.exp.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(StaticAssert s) {
@@ -807,7 +691,6 @@ public class visitor {
                 s.msg.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(EnumMember em) {
             if (em.type != null)
@@ -815,7 +698,6 @@ public class visitor {
             if (em.value() != null)
                 em.value().accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visitAttribDeclaration(AttribDeclaration d) {
@@ -830,18 +712,15 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(AttribDeclaration d) {
             this.visitAttribDeclaration(d);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(StorageClassDeclaration d) {
             this.visitAttribDeclaration(d);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(DeprecatedDeclaration d) {
@@ -849,36 +728,30 @@ public class visitor {
             this.visitAttribDeclaration(d);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(LinkDeclaration d) {
             this.visitAttribDeclaration(d);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(CPPMangleDeclaration d) {
             this.visitAttribDeclaration(d);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ProtDeclaration d) {
             this.visitAttribDeclaration(d);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(AlignDeclaration d) {
             this.visitAttribDeclaration(d);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(AnonDeclaration d) {
             this.visitAttribDeclaration(d);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(PragmaDeclaration d) {
@@ -886,7 +759,6 @@ public class visitor {
                 this.visitArgs(d.args, null);
             this.visitAttribDeclaration(d);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ConditionalDeclaration d) {
@@ -911,19 +783,16 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(CompileDeclaration d) {
             this.visitArgs(d.exps, null);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(UserAttributeDeclaration d) {
             this.visitArgs(d.atts, null);
             this.visitAttribDeclaration(d);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visitFuncBody(FuncDeclaration f) {
@@ -955,7 +824,6 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visitBaseClasses(ClassDeclaration d) {
             if ((d == null) || ((d.baseclasses).length == 0))
@@ -969,7 +837,6 @@ public class visitor {
                 }
             }
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  boolean visitEponymousMember(TemplateDeclaration d) {
@@ -1033,7 +900,6 @@ public class visitor {
             return false;
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visitTemplateParameters(DArray<TemplateParameter> parameters) {
             if ((parameters == null) || ((parameters).length == 0))
@@ -1047,7 +913,6 @@ public class visitor {
                 }
             }
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TemplateDeclaration d) {
@@ -1065,7 +930,6 @@ public class visitor {
                 }
             }
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visitObject(RootObject oarg) {
@@ -1100,7 +964,6 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visitTiargs(TemplateInstance ti) {
             if (ti.tiargs == null)
@@ -1115,19 +978,16 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TemplateInstance ti) {
             this.visitTiargs(ti);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TemplateMixin tm) {
             this.visitType(tm.tqual);
             this.visitTiargs(tm);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(EnumDeclaration d) {
@@ -1147,7 +1007,6 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(Nspace d) {
             {
@@ -1159,7 +1018,6 @@ public class visitor {
                 }
             }
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(StructDeclaration d) {
@@ -1175,7 +1033,6 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ClassDeclaration d) {
             this.visitBaseClasses(d);
@@ -1190,7 +1047,6 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(AliasDeclaration d) {
             if (d.aliassym != null)
@@ -1199,12 +1055,10 @@ public class visitor {
                 this.visitType(d.type);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(VarDeclaration d) {
             this.visitVarDecl(d);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(FuncDeclaration f) {
@@ -1212,7 +1066,6 @@ public class visitor {
             this.visitType(tf);
             this.visitFuncBody(f);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(FuncLiteralDeclaration f) {
@@ -1231,42 +1084,35 @@ public class visitor {
                 this.visitFuncBody(f);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(PostBlitDeclaration d) {
             this.visitFuncBody(d);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(DtorDeclaration d) {
             this.visitFuncBody(d);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(StaticCtorDeclaration d) {
             this.visitFuncBody(d);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(StaticDtorDeclaration d) {
             this.visitFuncBody(d);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(InvariantDeclaration d) {
             this.visitFuncBody(d);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(UnitTestDeclaration d) {
             this.visitFuncBody(d);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(NewDeclaration d) {
@@ -1274,13 +1120,11 @@ public class visitor {
             this.visitFuncBody(d);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(DeleteDeclaration d) {
             this.visitParameters(d.parameters);
             this.visitFuncBody(d);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(StructInitializer si) {
@@ -1298,7 +1142,6 @@ public class visitor {
                 }
             }
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ArrayInitializer ai) {
@@ -1319,18 +1162,15 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ExpInitializer ei) {
             ei.exp.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ArrayLiteralExp e) {
             this.visitArgs(e.elements, e.basis);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(AssocArrayLiteralExp e) {
@@ -1346,19 +1186,16 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeExp e) {
             this.visitType(e.type);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ScopeExp e) {
             if (e.sds.isTemplateInstance() != null)
                 e.sds.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(NewExp e) {
@@ -1370,7 +1207,6 @@ public class visitor {
             if ((e.arguments != null) && ((e.arguments).length != 0))
                 this.visitArgs(e.arguments, null);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(NewAnonClassExp e) {
@@ -1384,7 +1220,6 @@ public class visitor {
                 e.cd.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TupleExp e) {
             if (e.e0 != null)
@@ -1392,12 +1227,10 @@ public class visitor {
             this.visitArgs(e.exps, null);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(FuncExp e) {
             e.fd.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(DeclarationExp e) {
@@ -1410,12 +1243,10 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeidExp e) {
             this.visitObject(e.obj);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TraitsExp e) {
@@ -1430,7 +1261,6 @@ public class visitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(IsExp e) {
             this.visitType(e.targ);
@@ -1440,12 +1270,10 @@ public class visitor {
                 this.visitTemplateParameters(e.parameters);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(UnaExp e) {
             e.e1.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(BinExp e) {
@@ -1453,18 +1281,15 @@ public class visitor {
             e.e2.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(CompileExp e) {
             this.visitArgs(e.exps, null);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ImportExp e) {
             e.e1.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(AssertExp e) {
@@ -1473,12 +1298,10 @@ public class visitor {
                 e.msg.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(DotIdExp e) {
             e.e1.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(DotTemplateInstanceExp e) {
@@ -1486,25 +1309,21 @@ public class visitor {
             e.ti.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(CallExp e) {
             e.e1.accept(this);
             this.visitArgs(e.arguments, null);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(PtrExp e) {
             e.e1.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(DeleteExp e) {
             e.e1.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(CastExp e) {
@@ -1513,13 +1332,11 @@ public class visitor {
             e.e1.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(IntervalExp e) {
             e.lwr.accept(this);
             e.upr.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ArrayExp e) {
@@ -1527,12 +1344,10 @@ public class visitor {
             this.visitArgs(e.arguments, null);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(PostExp e) {
             e.e1.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(CondExp e) {
@@ -1540,7 +1355,6 @@ public class visitor {
             e.e1.accept(this);
             e.e2.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TemplateTypeParameter tp) {
@@ -1550,12 +1364,10 @@ public class visitor {
                 this.visitType(tp.defaultType);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TemplateThisParameter tp) {
             this.visit((TemplateTypeParameter)tp);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TemplateAliasParameter tp) {
@@ -1567,7 +1379,6 @@ public class visitor {
                 this.visitObject(tp.defaultAlias);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TemplateValueParameter tp) {
             this.visitType(tp.valType);
@@ -1577,12 +1388,10 @@ public class visitor {
                 tp.defaultValue.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(StaticIfCondition c) {
             c.exp.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(Parameter p) {
@@ -1590,7 +1399,6 @@ public class visitor {
             if (p.defaultArg != null)
                 p.defaultArg.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(dmodule.Module m) {
@@ -1604,12 +1412,10 @@ public class visitor {
             }
         }
 
-
         public  void visit(PeelStatement s) {
             if (s.s != null)
                 s.s.accept(this);
         }
-
         public  void visit(UnrolledLoopStatement s) {
             {
                 Slice<Statement> __r2992 = (s.statements).opSlice().copy();
@@ -1621,17 +1427,14 @@ public class visitor {
                 }
             }
         }
-
         public  void visit(DebugStatement s) {
             if (s.statement != null)
                 s.statement.accept(this);
         }
-
         public  void visit(ForwardingStatement s) {
             if (s.statement != null)
                 s.statement.accept(this);
         }
-
         public  void visit(StructLiteralExp e) {
             if ((e.stageflags & 32) == 0)
             {
@@ -1649,33 +1452,26 @@ public class visitor {
                 e.stageflags = old;
             }
         }
-
         public  void visit(DotTemplateExp e) {
             e.e1.accept(this);
         }
-
         public  void visit(DotVarExp e) {
             e.e1.accept(this);
         }
-
         public  void visit(DelegateExp e) {
             if (!e.func.isNested() || e.func.needThis())
                 e.e1.accept(this);
         }
-
         public  void visit(DotTypeExp e) {
             e.e1.accept(this);
         }
-
         public  void visit(VectorExp e) {
             this.visitType(e.to);
             e.e1.accept(this);
         }
-
         public  void visit(VectorArrayExp e) {
             e.e1.accept(this);
         }
-
         public  void visit(SliceExp e) {
             e.e1.accept(this);
             if (e.upr != null)
@@ -1683,34 +1479,27 @@ public class visitor {
             if (e.lwr != null)
                 e.lwr.accept(this);
         }
-
         public  void visit(ArrayLengthExp e) {
             e.e1.accept(this);
         }
-
         public  void visit(DelegatePtrExp e) {
             e.e1.accept(this);
         }
-
         public  void visit(DelegateFuncptrExp e) {
             e.e1.accept(this);
         }
-
         public  void visit(DotExp e) {
             e.e1.accept(this);
             e.e2.accept(this);
         }
-
         public  void visit(IndexExp e) {
             e.e1.accept(this);
             e.e2.accept(this);
         }
-
         public  void visit(RemoveExp e) {
             e.e1.accept(this);
             e.e2.accept(this);
         }
-
 
         public SemanticTimeTransitiveVisitor() {}
 
@@ -1724,7 +1513,6 @@ public class visitor {
         public boolean stop = false;
         public  StoppableVisitor() {
         }
-
 
         public StoppableVisitor copy() {
             StoppableVisitor that = new StoppableVisitor();

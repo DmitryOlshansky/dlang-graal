@@ -56,7 +56,6 @@ public class mars {
     public static void logo() {
         printf(new BytePtr("DMD%llu D Compiler %.*s\n%.*s %.*s\n"), 32L, global._version.getLength() - 1, toBytePtr(global._version), global.copyright.getLength(), toBytePtr(global.copyright), global.written.getLength(), toBytePtr(global.written));
     }
-
     public static void printInternalFailure(_IO_FILE stream) {
         fputs(new BytePtr("---\nERROR: This is a compiler bug.\nPlease report it via https://issues.dlang.org/enter_bug.cgi\nwith, preferably, a reduced, reproducible example and the information below.\nDustMite (https://github.com/CyberShadow/DustMite/wiki) can help with the reduction.\n---\n"), stream);
         fprintf(stream, new BytePtr("DMD %.*s\n"), global._version.getLength() - 1, toBytePtr(global._version));
@@ -64,14 +63,12 @@ public class mars {
         printGlobalConfigs(stream);
         fputs(new BytePtr("---\n"), stream);
     }
-
     public static void usage() {
         logo();
         ByteSlice help = CLIUsage.usage().copy();
         ByteSlice inifileCanon = FileName.canonicalName(global.inifilename).copy();
         printf(new BytePtr("\nDocumentation: https://dlang.org/\nConfig file: %.*s\nUsage:\n  dmd [<option>...] <file>...\n  dmd [<option>...] -run <file> [<arg>...]\n\nWhere:\n  <file>           D source file\n  <arg>            Argument to pass when running the resulting program\n\n<option>:\n  @<cmdfile>       read arguments from cmdfile\n%.*s"), inifileCanon.getLength(), toBytePtr(inifileCanon), help.getLength(), help.get(0));
     }
-
     public static int tryMain(int argc, Ptr<BytePtr> argv, Param params) {
         DArray<BytePtr> files = new DArray<BytePtr>();
         try {
@@ -158,13 +155,13 @@ public class mars {
                                     return 0;
                                 }
                                 Function1<ByteSlice,Integer> printHelpUsage = new Function1<ByteSlice,Integer>(){
-                                    public Integer invoke(ByteSlice help){
+                                    public Integer invoke(ByteSlice help) {
                                         printf(new BytePtr("%.*s"), help.getLength(), help.get(0));
                                         return global.errors != 0 ? 1 : 0;
                                     }
                                 };
                                 Function1<Slice<ByteSlice>,ByteSlice> generateUsageChecks = new Function1<Slice<ByteSlice>,ByteSlice>(){
-                                    public ByteSlice invoke(Slice<ByteSlice> params){
+                                    public ByteSlice invoke(Slice<ByteSlice> params) {
                                         ByteSlice s = new ByteSlice();
                                         {
                                             Slice<ByteSlice> __r1514 = params.copy();
@@ -253,7 +250,7 @@ public class mars {
                                     printGlobalConfigs(stdout);
                                 }
                                 Function1<DArray<BytePtr>,DArray<BytePtr>> buildPath = new Function1<DArray<BytePtr>,DArray<BytePtr>>(){
-                                    public DArray<BytePtr> invoke(DArray<BytePtr> imppath){
+                                    public DArray<BytePtr> invoke(DArray<BytePtr> imppath) {
                                         DArray<BytePtr> result = null;
                                         if (imppath != null)
                                         {
@@ -666,7 +663,6 @@ public class mars {
         finally {
         }
     }
-
     public static FileBuffer readFromStdin() {
         int bufIncrement = 131072;
         int pos = 0;
@@ -697,7 +693,6 @@ public class mars {
         }
         throw new AssertionError("Unreachable code!");
     }
-
     public static void generateJson(DArray<dmodule.Module> modules) {
         OutBuffer buf = new OutBuffer();
         try {
@@ -732,7 +727,6 @@ public class mars {
         finally {
         }
     }
-
 
     public static void getenv_setargv(BytePtr envvalue, DArray<BytePtr> args) {
         if (envvalue == null)
@@ -806,7 +800,6 @@ public class mars {
             }
         }
     }
-
     public static BytePtr parse_arch_arg(DArray<BytePtr> args, BytePtr arch) {
         {
             Slice<BytePtr> __r1553 = (args).opSlice().copy();
@@ -824,7 +817,6 @@ public class mars {
         }
         return arch;
     }
-
     public static ByteSlice parse_conf_arg(DArray<BytePtr> args) {
         ByteSlice conf = new ByteSlice();
         {
@@ -846,7 +838,6 @@ public class mars {
         }
         return conf;
     }
-
     public static void setDefaultLibrary() {
         if ((global.params.defaultlibname == new ByteSlice()))
         {
@@ -857,11 +848,9 @@ public class mars {
         if ((global.params.debuglibname == new ByteSlice()))
             global.params.debuglibname = global.params.defaultlibname.copy();
     }
-
     public static void setTarget(Param params) {
         params.isLinux = true;
     }
-
     public static void addDefaultVersionIdentifiers(Param params) {
         VersionCondition.addPredefinedGlobalIdent(new ByteSlice("DigitalMars"));
         if (params.isWindows)
@@ -981,7 +970,6 @@ public class mars {
         }
         VersionCondition.addPredefinedGlobalIdent(new ByteSlice("D_HardFloat"));
     }
-
     public static void printPredefinedVersions(_IO_FILE stream) {
         if (global.versionids != null)
         {
@@ -998,7 +986,6 @@ public class mars {
             fprintf(stream, new BytePtr("predefs  %s\n"), buf.peekChars());
         }
     }
-
     public static void printGlobalConfigs(_IO_FILE stream) {
         fprintf(stream, new BytePtr("binary    %.*s\n"), global.params.argv0.getLength(), toBytePtr(global.params.argv0));
         fprintf(stream, new BytePtr("version   %.*s\n"), global._version.getLength() - 1, toBytePtr(global._version));
@@ -1047,7 +1034,6 @@ public class mars {
             }
         }
     }
-
     public static void setTargetCPU(Param params) {
         if (target.isXmmSupported())
         {
@@ -1066,7 +1052,6 @@ public class mars {
         else
             params.cpu = CPU.x87;
     }
-
     public static void flushMixins() {
         if (global.params.mixinOut == null)
             return ;
@@ -1075,17 +1060,16 @@ public class mars {
         (global.params.mixinOut).destroy();
         global.params.mixinOut = null;
     }
-
     public static boolean parseCommandLine(DArray<BytePtr> arguments, int argc, Param params, DArray<BytePtr> files) {
         Ref<Boolean> errors = ref(false);
         Function2<BytePtr,BytePtr,Void> error = new Function2<BytePtr,BytePtr,Void>(){
-            public Void invoke(BytePtr format, BytePtr arg){
+            public Void invoke(BytePtr format, BytePtr arg) {
                 error(Loc.initial, format, arg);
                 errors.value = true;
             }
         };
         Function2<BytePtr,Integer,Integer> parseDigits = new Function2<BytePtr,Integer,Integer>(){
-            public Integer invoke(BytePtr p, Integer max){
+            public Integer invoke(BytePtr p, Integer max) {
                 int value = 0;
                 Ref<Boolean> overflow = ref(false);
                 {
@@ -1099,7 +1083,7 @@ public class mars {
             }
         };
         Function2<BytePtr,ByteSlice,Boolean> startsWith = new Function2<BytePtr,ByteSlice,Boolean>(){
-            public Boolean invoke(BytePtr p, ByteSlice s){
+            public Boolean invoke(BytePtr p, ByteSlice s) {
                 {
                     ByteSlice __r1563 = s.copy();
                     int __key1564 = 0;
@@ -1114,14 +1098,14 @@ public class mars {
             }
         };
         Function2<BytePtr,ByteSlice,Void> errorInvalidSwitch = new Function2<BytePtr,ByteSlice,Void>(){
-            public Void invoke(BytePtr p, ByteSlice availableOptions){
+            public Void invoke(BytePtr p, ByteSlice availableOptions) {
                 error.invoke(new BytePtr("Switch `%s` is invalid"), p);
                 if ((availableOptions != new ByteSlice()))
                     errorSupplemental(Loc.initial, new BytePtr("%.*s"), availableOptions.getLength(), toBytePtr(availableOptions));
             }
         };
         Function3<BytePtr,Boolean,ByteSlice,Integer> checkOptions = new Function3<BytePtr,Boolean,ByteSlice,Integer>(){
-            public Integer invoke(BytePtr p, Ref<Boolean> usageFlag, ByteSlice missingMsg){
+            public Integer invoke(BytePtr p, Ref<Boolean> usageFlag, ByteSlice missingMsg) {
                 if (((p.get() & 0xFF) == 0) || ((p.get() & 0xFF) == 61) && (p.get(1) == 0))
                 {
                     error(Loc.initial, new BytePtr("%.*s"), missingMsg.getLength(), toBytePtr(missingMsg));
@@ -1141,18 +1125,18 @@ public class mars {
             }
         };
         Function2<ByteSlice,ByteSlice,ByteSlice> checkOptionsMixin = new Function2<ByteSlice,ByteSlice,ByteSlice>(){
-            public ByteSlice invoke(ByteSlice usageFlag, ByteSlice missingMsg){
+            public ByteSlice invoke(ByteSlice usageFlag, ByteSlice missingMsg) {
                 return new ByteSlice("\n            final switch (checkOptions(p + len - 1, params.").concat(usageFlag).concat(new ByteSlice(",\"")).concat(missingMsg).concat(new ByteSlice("\"))\n            {\n                case CheckOptions.error:\n                    goto Lerror;\n                case CheckOptions.help:\n                    return false;\n                case CheckOptions.success:\n                    break;\n            }\n        "));
             }
         };
         // from template parseCLIOption!(_preview[Feature("dip25", "useDIP25", "implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)", true, false), Feature("dip1000", "vsafe", "implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)", true, false), Feature("dip1008", "ehnogc", "implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)", true, false), Feature("fieldwise", "fieldwise", "use fieldwise comparisons for struct equality", true, false), Feature("markdown", "markdown", "enable Markdown replacements in Ddoc", true, false), Feature("fixAliasThis", "fixAliasThis", "when a symbol is resolved, check alias this scope before going to upper scopes", true, false), Feature("intpromote", "fix16997", "fix integral promotions for unary + - ~ operators", true, false), Feature("dtorfields", "dtorFields", "destruct fields of partially constructed objects", true, false), Feature("rvaluerefparam", "rvalueRefParam", "enable rvalue arguments to ref parameters", true, false)])
         Function2<Param,BytePtr,Boolean> parseCLIOption_preview[Feature("dip25", "useDIP25", "implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)", true, false), Feature("dip1000", "vsafe", "implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)", true, false), Feature("dip1008", "ehnogc", "implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)", true, false), Feature("fieldwise", "fieldwise", "use fieldwise comparisons for struct equality", true, false), Feature("markdown", "markdown", "enable Markdown replacements in Ddoc", true, false), Feature("fixAliasThis", "fixAliasThis", "when a symbol is resolved, check alias this scope before going to upper scopes", true, false), Feature("intpromote", "fix16997", "fix integral promotions for unary + - ~ operators", true, false), Feature("dtorfields", "dtorFields", "destruct fields of partially constructed objects", true, false), Feature("rvaluerefparam", "rvalueRefParam", "enable rvalue arguments to ref parameters", true, false)] = new Function2<Param,BytePtr,Boolean>(){
-            public Boolean invoke(Param params, BytePtr p){
+            public Boolean invoke(Param params, BytePtr p) {
                 BytePtr ps = pcopy(p.plus(7).plus(1));
                 if (Identifier.isValidIdentifier(ps.plus(1)))
                 {
                     Function0<ByteSlice> generateTransitionsText_preview[Feature("dip25", "useDIP25", "implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)", true, false), Feature("dip1000", "vsafe", "implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)", true, false), Feature("dip1008", "ehnogc", "implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)", true, false), Feature("fieldwise", "fieldwise", "use fieldwise comparisons for struct equality", true, false), Feature("markdown", "markdown", "enable Markdown replacements in Ddoc", true, false), Feature("fixAliasThis", "fixAliasThis", "when a symbol is resolved, check alias this scope before going to upper scopes", true, false), Feature("intpromote", "fix16997", "fix integral promotions for unary + - ~ operators", true, false), Feature("dtorfields", "dtorFields", "destruct fields of partially constructed objects", true, false), Feature("rvaluerefparam", "rvalueRefParam", "enable rvalue arguments to ref parameters", true, false)] = new Function0<ByteSlice>(){
-                        public ByteSlice invoke(){
+                        public ByteSlice invoke() {
                             ByteSlice buf = new ByteSlice("case \"all\":").copy();
                             {
                                 Slice<Usage.Feature> __r1569 = slice(new Usage.Feature[]{new Usage.Feature(new ByteSlice("dip25"), new ByteSlice("useDIP25"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md (Sealed references)"), true, false), new Usage.Feature(new ByteSlice("dip1000"), new ByteSlice("vsafe"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/other/DIP1000.md (Scoped Pointers)"), true, false), new Usage.Feature(new ByteSlice("dip1008"), new ByteSlice("ehnogc"), new ByteSlice("implement https://github.com/dlang/DIPs/blob/master/DIPs/DIP1008.md (@nogc Throwable)"), true, false), new Usage.Feature(new ByteSlice("fieldwise"), new ByteSlice("fieldwise"), new ByteSlice("use fieldwise comparisons for struct equality"), true, false), new Usage.Feature(new ByteSlice("markdown"), new ByteSlice("markdown"), new ByteSlice("enable Markdown replacements in Ddoc"), true, false), new Usage.Feature(new ByteSlice("fixAliasThis"), new ByteSlice("fixAliasThis"), new ByteSlice("when a symbol is resolved, check alias this scope before going to upper scopes"), true, false), new Usage.Feature(new ByteSlice("intpromote"), new ByteSlice("fix16997"), new ByteSlice("fix integral promotions for unary + - ~ operators"), true, false), new Usage.Feature(new ByteSlice("dtorfields"), new ByteSlice("dtorFields"), new ByteSlice("destruct fields of partially constructed objects"), true, false), new Usage.Feature(new ByteSlice("rvaluerefparam"), new ByteSlice("rvalueRefParam"), new ByteSlice("enable rvalue arguments to ref parameters"), true, false)});
@@ -1230,12 +1214,12 @@ public class mars {
 
         // from template parseCLIOption!(_revert[Feature("dip25", "noDIP25", "revert DIP25 changes https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md", true, false), Feature("import", "bug10378", "revert to single phase name lookup", true, true)])
         Function2<Param,BytePtr,Boolean> parseCLIOption_revert[Feature("dip25", "noDIP25", "revert DIP25 changes https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md", true, false), Feature("import", "bug10378", "revert to single phase name lookup", true, true)] = new Function2<Param,BytePtr,Boolean>(){
-            public Boolean invoke(Param params, BytePtr p){
+            public Boolean invoke(Param params, BytePtr p) {
                 BytePtr ps = pcopy(p.plus(6).plus(1));
                 if (Identifier.isValidIdentifier(ps.plus(1)))
                 {
                     Function0<ByteSlice> generateTransitionsText_revert[Feature("dip25", "noDIP25", "revert DIP25 changes https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md", true, false), Feature("import", "bug10378", "revert to single phase name lookup", true, true)] = new Function0<ByteSlice>(){
-                        public ByteSlice invoke(){
+                        public ByteSlice invoke() {
                             ByteSlice buf = new ByteSlice("case \"all\":").copy();
                             {
                                 Slice<Usage.Feature> __r1573 = slice(new Usage.Feature[]{new Usage.Feature(new ByteSlice("dip25"), new ByteSlice("noDIP25"), new ByteSlice("revert DIP25 changes https://github.com/dlang/DIPs/blob/master/DIPs/archive/DIP25.md"), true, false), new Usage.Feature(new ByteSlice("import"), new ByteSlice("bug10378"), new ByteSlice("revert to single phase name lookup"), true, true)});
@@ -1285,12 +1269,12 @@ public class mars {
 
         // from template parseCLIOption!(_transition[Feature("field", "vfield", "list all non-mutable fields which occupy an object instance", true, false), Feature("checkimports", "check10378", "give deprecation messages about 10378 anomalies", true, true), Feature("complex", "vcomplex", "give deprecation messages about all usages of complex or imaginary types", true, false), Feature("tls", "vtls", "list all variables going into thread local storage", true, false), Feature("vmarkdown", "vmarkdown", "list instances of Markdown replacements in Ddoc", true, false)])
         Function2<Param,BytePtr,Boolean> parseCLIOption_transition[Feature("field", "vfield", "list all non-mutable fields which occupy an object instance", true, false), Feature("checkimports", "check10378", "give deprecation messages about 10378 anomalies", true, true), Feature("complex", "vcomplex", "give deprecation messages about all usages of complex or imaginary types", true, false), Feature("tls", "vtls", "list all variables going into thread local storage", true, false), Feature("vmarkdown", "vmarkdown", "list instances of Markdown replacements in Ddoc", true, false)] = new Function2<Param,BytePtr,Boolean>(){
-            public Boolean invoke(Param params, BytePtr p){
+            public Boolean invoke(Param params, BytePtr p) {
                 BytePtr ps = pcopy(p.plus(10).plus(1));
                 if (Identifier.isValidIdentifier(ps.plus(1)))
                 {
                     Function0<ByteSlice> generateTransitionsText_transition[Feature("field", "vfield", "list all non-mutable fields which occupy an object instance", true, false), Feature("checkimports", "check10378", "give deprecation messages about 10378 anomalies", true, true), Feature("complex", "vcomplex", "give deprecation messages about all usages of complex or imaginary types", true, false), Feature("tls", "vtls", "list all variables going into thread local storage", true, false), Feature("vmarkdown", "vmarkdown", "list instances of Markdown replacements in Ddoc", true, false)] = new Function0<ByteSlice>(){
-                        public ByteSlice invoke(){
+                        public ByteSlice invoke() {
                             ByteSlice buf = new ByteSlice("case \"all\":").copy();
                             {
                                 Slice<Usage.Feature> __r1565 = slice(new Usage.Feature[]{new Usage.Feature(new ByteSlice("field"), new ByteSlice("vfield"), new ByteSlice("list all non-mutable fields which occupy an object instance"), true, false), new Usage.Feature(new ByteSlice("checkimports"), new ByteSlice("check10378"), new ByteSlice("give deprecation messages about 10378 anomalies"), true, true), new Usage.Feature(new ByteSlice("complex"), new ByteSlice("vcomplex"), new ByteSlice("give deprecation messages about all usages of complex or imaginary types"), true, false), new Usage.Feature(new ByteSlice("tls"), new ByteSlice("vtls"), new ByteSlice("list all variables going into thread local storage"), true, false), new Usage.Feature(new ByteSlice("vmarkdown"), new ByteSlice("vmarkdown"), new ByteSlice("list instances of Markdown replacements in Ddoc"), true, false)});
@@ -1429,7 +1413,7 @@ public class mars {
                         } while(__dispatch7 != 0);
                     }
                     Function3<BytePtr,ByteSlice,Byte,Boolean> check = new Function3<BytePtr,ByteSlice,Byte,Boolean>(){
-                        public Boolean invoke(BytePtr p, ByteSlice name, Ref<Byte> ce){
+                        public Boolean invoke(BytePtr p, ByteSlice name, Ref<Byte> ce) {
                             p.plusAssign(7);
                             if (startsWith.invoke(p, name))
                             {
@@ -2250,7 +2234,6 @@ public class mars {
         }
         return errors.value;
     }
-
     public static void reconcileCommands(Param params, int numSrcFiles) {
         if (params.lib && params.dll)
             error(Loc.initial, new BytePtr("cannot mix -lib and -shared"));
@@ -2340,7 +2323,6 @@ public class mars {
         if (params.noDIP25)
             params.useDIP25 = false;
     }
-
     public static DArray<dmodule.Module> createModules(DArray<BytePtr> files, DArray<BytePtr> libmodules) {
         DArray<dmodule.Module> modules = new DArray<dmodule.Module>();
         modules.reserve(files.length);
@@ -2423,5 +2405,4 @@ public class mars {
         }
         return modules;
     }
-
 }

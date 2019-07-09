@@ -1385,15 +1385,27 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
     }
 
-    void printLocalFunction(FuncDeclaration func, bool isLambda = false) {
-        auto t = func.type.isTypeFunction();
-        //stderr.writefln("\tLocal function %s", func.ident.toString);
-        buf.fmt("%s %s%s = new %s(){\n", t.toJavaFunc(opts), func.funcName, tiArgs.str, t.toJavaFunc(opts));
-        buf.indent;
-        buf.fmt("public %s invoke(", typeOf(t.nextOf, Boxing.yes));
+    extern(D) void printFunctionBody(FuncDeclaration func, VarDeclaration[] renamedVars) {
+        if (func.fbody is null) 
+            buf.put(";\n");
+        else {
+            buf.put(" {\n");
+            buf.indent;
+            if (func.vresult) visit(func.vresult);
+            foreach (var; renamedVars) {
+                buf.fmt("%s %s = ref(%s);\n", refType(var.type, opts), opts.renamed[var], var.ident.symbol);
+            }
+            func.fbody.accept(this);
+            buf.outdent;
+            buf.put('}');
+        }
+    }
+
+    VarDeclaration[] printParameters(FuncDeclaration func, Boxing boxing, bool isLambda, int numArgs = -1) {
         VarDeclaration[] renamedVars;
         if (func.parameters) {
-            foreach(i, p; (*func.parameters)[]) {
+            numArgs = numArgs < 0 ? cast(int)func.parameters.length : numArgs;
+            foreach(i, p; (*func.parameters)[0..numArgs]) {
                 if (i != 0) buf.fmt(", ");
                 auto box = p.isRef || p.isOut;
                 if (box && !isLambda && !p.type.isTypeStruct && p.type.ty != Tarray) {
@@ -1401,51 +1413,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     buf.fmt("%s %s", refTypeOf(p.type), p.ident.symbol);
                 }
                 else {
-                    buf.fmt("%s %s", typeOf(p.type, Boxing.yes), p.ident.symbol);
-                    if (passedByRef(p, func)) {
-                        renamedVars ~= p;
-                        opts.refParams[p] = true;
-                        opts.renamed[p] = (p.ident.symbol ~ "_ref").dup;
-                    }
-                }
-            }
-        }
-        buf.put("){\n");
-        buf.indent;
-        foreach (var; renamedVars) {
-            buf.fmt("%s %s = ref(%s);\n", refTypeOf(var.type), opts.renamed[var], var.ident.symbol);
-        }
-        super.visit(func);
-        buf.outdent;
-        buf.fmt("}\n");
-        buf.outdent;
-        buf.fmt("};\n");
-    }
-
-    void printGlobalFunction(FuncDeclaration func) {
-        opts.vararg = null;
-        if (func.fbody is null && !func.isAbstract) return;
-        //stderr.writefln("\tFunction %s", func.ident.toString);
-        auto storage = (func.isStatic()  || opts.aggregates.length == 0) ? "static" : "";
-        if (func.isAbstract && func.fbody is null) storage = "abstract";
-        if (auto ctor = func.isCtorDeclaration())
-            buf.fmt("public %s %s%s(", storage, typeOf(func.type.nextOf()), tiArgs.str);
-        else if(func.funcName == "main" && opts.aggregates.length == 0) {
-            buf.fmt("public %s void %s%s(", storage, func.funcName, tiArgs.str);
-        }
-        else
-            buf.fmt("public %s %s %s%s(", storage, typeOf(func.type.nextOf()), func.funcName, tiArgs.str);
-        VarDeclaration[] renamedVars;
-        if (func.parameters) {
-            foreach(i, p; (*func.parameters)[]) {
-                if (i != 0) buf.fmt(", ");
-                auto box = p.isRef || p.isOut;
-                if (box && !p.type.isTypeStruct && p.type.ty != Tarray) {
-                    opts.refParams[p] = true;
-                    buf.fmt("%s %s", refTypeOf(p.type), p.ident.toString);
-                }
-                else {
-                    buf.fmt("%s %s", typeOf(p.type), p.ident.toString);
+                    buf.fmt("%s %s", typeOf(p.type, boxing), p.ident.symbol);
                     if (passedByRef(p, func)) {
                         renamedVars ~= p;
                         opts.refParams[p] = true;
@@ -1471,21 +1439,39 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     else buf.fmt("%s %s", typeOf(p.type), name);
                 }
         }
+        return renamedVars;
+    }
+
+    void printLocalFunction(FuncDeclaration func, bool isLambda = false) {
+        auto t = func.type.isTypeFunction();
+        //stderr.writefln("\tLocal function %s", func.ident.toString);
+        buf.fmt("%s %s%s = new %s(){\n", t.toJavaFunc(opts), func.funcName, tiArgs.str, t.toJavaFunc(opts));
+        buf.indent;
+        buf.fmt("public %s invoke(", typeOf(t.nextOf, Boxing.yes));
+        VarDeclaration[] renamedVars = printParameters(func, Boxing.yes, isLambda);
         buf.put(")");
-        if (func.fbody is null) 
-            buf.put(";\n");
-        else {
-            buf.put(" {\n");
-            buf.indent;
-            if (func.vresult) visit(func.vresult);
-            foreach (var; renamedVars) {
-                buf.fmt("%s %s = ref(%s);\n", refType(var.type, opts), opts.renamed[var], var.ident.symbol);
-            }
-            func.fbody.accept(this);
-            buf.outdent;
-            buf.put('}');
-            buf.put("\n\n");
+        printFunctionBody(func, renamedVars);
+        buf.outdent;
+        buf.put("\n};\n");
+    }
+
+    void printGlobalFunction(FuncDeclaration func) {
+        opts.vararg = null;
+        if (func.fbody is null && !func.isAbstract) return;
+        //stderr.writefln("\tFunction %s", func.ident.toString);
+        auto storage = (func.isStatic()  || opts.aggregates.length == 0) ? "static" : "";
+        if (func.isAbstract && func.fbody is null) storage = "abstract";
+        if (auto ctor = func.isCtorDeclaration())
+            buf.fmt("public %s %s%s(", storage, typeOf(func.type.nextOf()), tiArgs.str);
+        else if(func.funcName == "main" && opts.aggregates.length == 0) {
+            buf.fmt("public %s void %s%s(", storage, func.funcName, tiArgs.str);
         }
+        else
+            buf.fmt("public %s %s %s%s(", storage, typeOf(func.type.nextOf()), func.funcName, tiArgs.str);
+        VarDeclaration[] renamedVars = printParameters(func, Boxing.no, false);
+        buf.put(")");
+        printFunctionBody(func, renamedVars);
+        buf.put("\n");
     }
 
     void hoistLocalAggregates(FuncDeclaration func) {

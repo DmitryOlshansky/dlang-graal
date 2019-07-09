@@ -23,7 +23,6 @@ public class filecache {
             this.file = new FileName(filename);
             this.readAndSplit();
         }
-
         public  void readAndSplit() {
             File.ReadResult readResult = File.read((this.file).toChars()).copy();
             this.buffer = new FileBuffer(readResult.extractData());
@@ -40,7 +39,6 @@ public class filecache {
                 buf.postInc();
             }
         }
-
 
         public FileAndLines() {}
 
@@ -68,19 +66,16 @@ public class filecache {
             this.files.insert(file, lines);
             return lines;
         }
-
         public static FileCache fileCache = new FileCache(new StringTable(null, 0, null, 0, 0, 0, 0));
         public static void _init() {
             fileCache.initialize();
         }
-
         public  void initialize() {
             this.files._init(0);
         }
-
         public  void deinitialize() {
             Function1<StringValue,Integer> __foreachbody1 = new Function1<StringValue,Integer>(){
-                public Integer invoke(StringValue sv){
+                public Integer invoke(StringValue sv) {
                     Ref<StringValue> sv_ref = ref(sv);
                     destroy(sv_ref);
                     return 0;
@@ -89,7 +84,6 @@ public class filecache {
             this.files.opApply(__foreachbody1);
             this.files.reset(0);
         }
-
         public FileCache(){
             files = new StringTable();
         }

@@ -68,7 +68,6 @@ public class clone {
             stc |= 8589934592L;
         return stc;
     }
-
     public static FuncDeclaration hasIdentityOpAssign(AggregateDeclaration ad, Scope sc) {
         Dsymbol assign = search_function(ad, Id.assign);
         if (assign != null)
@@ -111,10 +110,9 @@ public class clone {
         }
         return null;
     }
-
     public static boolean needOpAssign(StructDeclaration sd) {
         Function0<Boolean> isNeeded = new Function0<Boolean>(){
-            public Boolean invoke(){
+            public Boolean invoke() {
                 return true;
             }
         };
@@ -144,7 +142,6 @@ public class clone {
         }
         return !isNeeded.invoke();
     }
-
     public static FuncDeclaration buildOpAssign(StructDeclaration sd, Scope sc) {
         {
             FuncDeclaration f = hasIdentityOpAssign(sd, sc);
@@ -249,7 +246,6 @@ public class clone {
         }
         return fop;
     }
-
     public static boolean needOpEquals(StructDeclaration sd) {
         try {
             try {
@@ -299,7 +295,6 @@ public class clone {
     /*Lneed:*/
         return true;
     }
-
     public static FuncDeclaration hasIdentityOpEquals(AggregateDeclaration ad, Scope sc) {
         Dsymbol eq = search_function(ad, Id.eq);
         if (eq != null)
@@ -368,7 +363,6 @@ public class clone {
         }
         return null;
     }
-
     public static FuncDeclaration buildOpEquals(StructDeclaration sd, Scope sc) {
         if (hasIdentityOpEquals(sd, sc) != null)
         {
@@ -376,7 +370,6 @@ public class clone {
         }
         return null;
     }
-
     public static FuncDeclaration buildXopEquals(StructDeclaration sd, Scope sc) {
         if (!needOpEquals(sd))
             return null;
@@ -438,7 +431,6 @@ public class clone {
             fop = StructDeclaration.xerreq;
         return fop;
     }
-
     public static FuncDeclaration buildXopCmp(StructDeclaration sd, Scope sc) {
         {
             Dsymbol cmp = search_function(sd, Id.cmp);
@@ -503,7 +495,6 @@ public class clone {
             fop = StructDeclaration.xerrcmp;
         return fop;
     }
-
     public static boolean needToHash(StructDeclaration sd) {
         try {
             try {
@@ -553,7 +544,6 @@ public class clone {
     /*Lneed:*/
         return true;
     }
-
     public static FuncDeclaration buildXtoHash(StructDeclaration sd, Scope sc) {
         {
             Dsymbol s = search_function(sd, Id.tohash);
@@ -596,7 +586,6 @@ public class clone {
         (sc2).pop();
         return fop;
     }
-
     public static DtorDeclaration buildDtor(AggregateDeclaration ad, Scope sc) {
         if (ad.isUnionDeclaration() != null)
             return null;
@@ -737,7 +726,6 @@ public class clone {
         }
         return xdtor;
     }
-
     public static DtorDeclaration buildWindowsCppDtor(AggregateDeclaration ad, DtorDeclaration dtor, Scope sc) {
         ClassDeclaration cldec = ad.isClassDeclaration();
         if ((cldec == null) || (cldec.cppDtorVtblIndex == -1))
@@ -768,7 +756,6 @@ public class clone {
         (sc2).pop();
         return func;
     }
-
     public static DtorDeclaration buildExternDDtor(AggregateDeclaration ad, Scope sc) {
         DtorDeclaration dtor = ad.primaryDtor;
         if (dtor == null)
@@ -793,7 +780,6 @@ public class clone {
         (sc2).pop();
         return func;
     }
-
     public static FuncDeclaration buildInv(AggregateDeclaration ad, Scope sc) {
         {
             int __dispatch2 = 0;
@@ -840,5 +826,4 @@ public class clone {
             } while(__dispatch2 != 0);
         }
     }
-
 }

@@ -64,7 +64,6 @@ public class declaration {
         }
         return result;
     }
-
     public static boolean modifyFieldVar(Loc loc, Scope sc, VarDeclaration var, Expression e1) {
         Dsymbol s = (sc).func;
         for (; 1 != 0;){
@@ -168,12 +167,10 @@ public class declaration {
         }
         return false;
     }
-
     public static void ObjectNotFound(Identifier id) {
         error(Loc.initial, new BytePtr("`%s` not found. object.d may be incorrectly installed or corrupt."), id.toChars());
         fatal();
     }
-
 
     public static class STC 
     {
@@ -279,21 +276,17 @@ public class declaration {
             super(ident);
             this.protection = new Prot(Prot.Kind.undefined);
         }
-
         public  Declaration(Loc loc, Identifier ident) {
             super(loc, ident);
             this.protection = new Prot(Prot.Kind.undefined);
         }
-
         public  BytePtr kind() {
             return new BytePtr("declaration");
         }
-
         public  long size(Loc loc) {
             assert(this.type != null);
             return this.type.size();
         }
-
         public  boolean checkDisabled(Loc loc, Scope sc, boolean isAliasedDeclaration) {
             if ((this.storage_class & 137438953472L) != 0)
             {
@@ -325,7 +318,6 @@ public class declaration {
             }
             return false;
         }
-
         public  int checkModify(Loc loc, Scope sc, Expression e1, int flag) {
             VarDeclaration v = this.isVarDeclaration();
             if ((v != null) && (v.canassign != 0))
@@ -368,7 +360,6 @@ public class declaration {
             }
             return Modifiable.yes;
         }
-
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             Dsymbol s = this.search(loc, ident, flags);
             if ((s == null) && (this.type != null))
@@ -379,115 +370,87 @@ public class declaration {
             }
             return s;
         }
-
         public  boolean isStatic() {
             return (this.storage_class & 1L) != 0L;
         }
-
         public  boolean isDelete() {
             return false;
         }
-
         public  boolean isDataseg() {
             return false;
         }
-
         public  boolean isThreadlocal() {
             return false;
         }
-
         public  boolean isCodeseg() {
             return false;
         }
-
         public  boolean isCtorinit() {
             return (this.storage_class & 131072L) != 0L;
         }
-
         public  boolean isFinal() {
             return (this.storage_class & 8L) != 0L;
         }
-
         public  boolean isAbstract() {
             return (this.storage_class & 16L) != 0L;
         }
-
         public  boolean isConst() {
             return (this.storage_class & 4L) != 0L;
         }
-
         public  boolean isImmutable() {
             return (this.storage_class & 1048576L) != 0L;
         }
-
         public  boolean isWild() {
             return (this.storage_class & 2147483648L) != 0L;
         }
-
         public  boolean isAuto() {
             return (this.storage_class & 256L) != 0L;
         }
-
         public  boolean isScope() {
             return (this.storage_class & 524288L) != 0L;
         }
-
         public  boolean isSynchronized() {
             return (this.storage_class & 512L) != 0L;
         }
-
         public  boolean isParameter() {
             return (this.storage_class & 32L) != 0L;
         }
-
         public  boolean isDeprecated() {
             return (this.storage_class & 1024L) != 0L;
         }
-
         public  boolean isDisabled() {
             return (this.storage_class & 137438953472L) != 0L;
         }
-
         public  boolean isOverride() {
             return (this.storage_class & 128L) != 0L;
         }
-
         public  boolean isResult() {
             return (this.storage_class & 274877906944L) != 0L;
         }
-
         public  boolean isField() {
             return (this.storage_class & 64L) != 0L;
         }
-
         public  boolean isIn() {
             return (this.storage_class & 2048L) != 0L;
         }
-
         public  boolean isOut() {
             return (this.storage_class & 4096L) != 0L;
         }
-
         public  boolean isRef() {
             return (this.storage_class & 2097152L) != 0L;
         }
-
         public  boolean isFuture() {
             return (this.storage_class & 1125899906842624L) != 0L;
         }
-
         public  Prot prot() {
             return this.protection;
         }
-
         public  Declaration isDeclaration() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public Declaration() {}
 
@@ -502,15 +465,12 @@ public class declaration {
             super(loc, ident);
             this.objects = objects;
         }
-
         public  Dsymbol syntaxCopy(Dsymbol s) {
             throw new AssertionError("Unreachable code!");
         }
-
         public  BytePtr kind() {
             return new BytePtr("tuple");
         }
-
         public  Type getType() {
             if (this.isexp)
                 return null;
@@ -550,7 +510,6 @@ public class declaration {
             }
             return this.tupletype;
         }
-
         public  Dsymbol toAlias2() {
             {
                 int i = 0;
@@ -568,7 +527,6 @@ public class declaration {
             }
             return this;
         }
-
         public  boolean needThis() {
             {
                 int i = 0;
@@ -591,15 +549,12 @@ public class declaration {
             }
             return false;
         }
-
         public  TupleDeclaration isTupleDeclaration() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TupleDeclaration() {}
 
@@ -642,25 +597,21 @@ public class declaration {
             this.type = type;
             assert(type != null);
         }
-
         public  AliasDeclaration(Loc loc, Identifier ident, Dsymbol s) {
             super(loc, ident);
             assert((!pequals(s, this)));
             this.aliassym = s;
             assert(s != null);
         }
-
         public static AliasDeclaration create(Loc loc, Identifier id, Type type) {
             return new AliasDeclaration(loc, id, type);
         }
-
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             AliasDeclaration sa = this.type != null ? new AliasDeclaration(this.loc, this.ident, this.type.syntaxCopy()) : new AliasDeclaration(this.loc, this.ident, this.aliassym.syntaxCopy(null));
             sa.storage_class = this.storage_class;
             return sa;
         }
-
         public  boolean overloadInsert(Dsymbol s) {
             if ((this.semanticRun >= PASS.semanticdone))
             {
@@ -726,17 +677,14 @@ public class declaration {
             this.overnext = s;
             return true;
         }
-
         public  BytePtr kind() {
             return new BytePtr("alias");
         }
-
         public  Type getType() {
             if (this.type != null)
                 return this.type;
             return this.toAlias().getType();
         }
-
         public  Dsymbol toAlias() {
             assert((!pequals(this, this.aliassym)));
             if ((this.inuse == 1) && (this.type != null) && (this._scope != null))
@@ -817,7 +765,6 @@ public class declaration {
             this.inuse = 0;
             return s;
         }
-
         public  Dsymbol toAlias2() {
             if (this.inuse != 0)
             {
@@ -829,19 +776,15 @@ public class declaration {
             this.inuse = 0;
             return s;
         }
-
         public  boolean isOverloadable() {
             return (this.semanticRun < PASS.semanticdone) || (this.aliassym != null) && this.aliassym.isOverloadable();
         }
-
         public  AliasDeclaration isAliasDeclaration() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public AliasDeclaration() {}
 
@@ -896,11 +839,9 @@ public class declaration {
                 assert(this.aliassym.isOverDeclaration() == null);
             }
         }
-
         public  BytePtr kind() {
             return new BytePtr("overload alias");
         }
-
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
                 return true;
@@ -936,7 +877,6 @@ public class declaration {
             }
             return false;
         }
-
         public  boolean overloadInsert(Dsymbol s) {
             if (this.overnext != null)
                 return this.overnext.overloadInsert(s);
@@ -945,11 +885,9 @@ public class declaration {
             this.overnext = s;
             return true;
         }
-
         public  boolean isOverloadable() {
             return true;
         }
-
         public  Dsymbol isUnique() {
             if (!this.hasOverloads)
             {
@@ -960,7 +898,7 @@ public class declaration {
             }
             Dsymbol result = null;
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>(){
-                public Integer invoke(Dsymbol s){
+                public Integer invoke(Dsymbol s) {
                     if (result != null)
                     {
                         result = null;
@@ -976,15 +914,12 @@ public class declaration {
             overloadApply(this.aliassym, __lambda1, null);
             return result;
         }
-
         public  OverDeclaration isOverDeclaration() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public OverDeclaration() {}
 
@@ -1058,17 +993,14 @@ public class declaration {
             this.storage_class = storage_class;
             this.sequenceNumber = (nextSequenceNumber += 1);
         }
-
         public static VarDeclaration create(Loc loc, Type type, Identifier ident, Initializer _init, long storage_class) {
             return new VarDeclaration(loc, type, ident, _init, storage_class);
         }
-
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             VarDeclaration v = new VarDeclaration(this.loc, this.type != null ? this.type.syntaxCopy() : null, this.ident, this._init != null ? syntaxCopy(this._init) : null, this.storage_class);
             return v;
         }
-
         public  void setFieldOffset(AggregateDeclaration ad, IntPtr poffset, boolean isunion) {
             if (this.aliassym != null)
             {
@@ -1131,11 +1063,9 @@ public class declaration {
             int memalignsize = target.fieldalign(t);
             this.offset = AggregateDeclaration.placeField(poffset, memsize, memalignsize, this.alignment, ad.structsize, ad.alignsize, isunion);
         }
-
         public  BytePtr kind() {
             return new BytePtr("variable");
         }
-
         public  AggregateDeclaration isThis() {
             if ((this.storage_class & 69936087043L) == 0)
             {
@@ -1152,25 +1082,20 @@ public class declaration {
             }
             return null;
         }
-
         public  boolean needThis() {
             return this.isField();
         }
-
         public  boolean isAnonymous() {
             return this._isAnonymous;
         }
-
         public  boolean isExport() {
             return this.protection.kind == Prot.Kind.export_;
         }
-
         public  boolean isImportedSymbol() {
             if ((this.protection.kind == Prot.Kind.export_) && (this._init == null) && ((this.storage_class & 1L) != 0) || (this.parent.isModule() != null))
                 return true;
             return false;
         }
-
         public  boolean isDataseg() {
             if (((this.isdataseg & 0xFF) == 0))
             {
@@ -1193,35 +1118,28 @@ public class declaration {
             }
             return (this.isdataseg & 0xFF) == 1;
         }
-
         public  boolean isThreadlocal() {
             boolean i = this.isDataseg() && ((this.storage_class & 1611661316L) == 0);
             return i;
         }
-
         public  boolean isCTFE() {
             return (this.storage_class & 68719476736L) != 0L;
         }
-
         public  boolean isOverlappedWith(VarDeclaration v) {
             long vsz = v.type.size();
             long tsz = this.type.size();
             assert((vsz != -1L) && (tsz != -1L));
             return ((long)this.offset < (long)v.offset + vsz) && ((long)v.offset < (long)this.offset + tsz);
         }
-
         public  boolean hasPointers() {
             return !this.isDataseg() && this.type.hasPointers();
         }
-
         public  boolean canTakeAddressOf() {
             return (this.storage_class & 8388608L) == 0;
         }
-
         public  boolean needsScopeDtor() {
             return (this.edtor != null) && ((this.storage_class & 16777216L) == 0);
         }
-
         public  Expression callScopeDtor(Scope sc) {
             if ((this.storage_class & 18878528L) != 0)
             {
@@ -1284,7 +1202,6 @@ public class declaration {
             }
             return e;
         }
-
         public  Expression getConstInitializer(boolean needFullType) {
             assert((this.type != null) && (this._init != null));
             int oldgag = global.gag;
@@ -1305,7 +1222,6 @@ public class declaration {
             global.gag = oldgag;
             return e;
         }
-
         public  Expression expandInitializer(Loc loc) {
             assert(((this.storage_class & 8388608L) != 0) && (this._init != null));
             Expression e = this.getConstInitializer(true);
@@ -1318,10 +1234,8 @@ public class declaration {
             e.loc = loc.copy();
             return e;
         }
-
         public  void checkCtorConstInit() {
         }
-
         public  boolean checkNestedReference(Scope sc, Loc loc) {
             if (((sc).intypeof == 1) || (((sc).flags & 128) != 0))
                 return false;
@@ -1387,7 +1301,6 @@ public class declaration {
             }
             return false;
         }
-
         public  Dsymbol toAlias() {
             if ((this.type == null) || (this.type.deco == null) && (this._scope != null))
                 dsymbolSemantic(this, this._scope);
@@ -1395,25 +1308,20 @@ public class declaration {
             Dsymbol s = this.aliassym != null ? this.aliassym.toAlias() : this;
             return s;
         }
-
         public  VarDeclaration isVarDeclaration() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
         public  boolean enclosesLifetimeOf(VarDeclaration v) {
             return this.sequenceNumber < v.sequenceNumber;
         }
-
         public  void addMaybe(VarDeclaration v) {
             if (this.maybes == null)
                 this.maybes = new DArray<VarDeclaration>();
             (this.maybes).push(v);
         }
-
 
         public VarDeclaration() {}
 
@@ -1474,15 +1382,12 @@ public class declaration {
             this.dsym = dsym;
             this.storage_class |= 4L;
         }
-
         public  SymbolDeclaration isSymbolDeclaration() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public SymbolDeclaration() {}
 
@@ -1524,15 +1429,12 @@ public class declaration {
             this.linkage = LINK.c;
             this.alignment = target.ptrsize;
         }
-
         public static TypeInfoDeclaration create(Type tinfo) {
             return new TypeInfoDeclaration(tinfo);
         }
-
         public  Dsymbol syntaxCopy(Dsymbol s) {
             throw new AssertionError("Unreachable code!");
         }
-
         public  BytePtr toChars() {
             OutBuffer buf = new OutBuffer();
             try {
@@ -1544,15 +1446,12 @@ public class declaration {
             finally {
             }
         }
-
         public  TypeInfoDeclaration isTypeInfoDeclaration() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoDeclaration() {}
 
@@ -1616,15 +1515,12 @@ public class declaration {
             }
             this.type = Type.typeinfostruct.type;
         }
-
         public static TypeInfoStructDeclaration create(Type tinfo) {
             return new TypeInfoStructDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoStructDeclaration() {}
 
@@ -1688,15 +1584,12 @@ public class declaration {
             }
             this.type = Type.typeinfoclass.type;
         }
-
         public static TypeInfoClassDeclaration create(Type tinfo) {
             return new TypeInfoClassDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoClassDeclaration() {}
 
@@ -1760,15 +1653,12 @@ public class declaration {
             }
             this.type = Type.typeinfointerface.type;
         }
-
         public static TypeInfoInterfaceDeclaration create(Type tinfo) {
             return new TypeInfoInterfaceDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoInterfaceDeclaration() {}
 
@@ -1832,15 +1722,12 @@ public class declaration {
             }
             this.type = Type.typeinfopointer.type;
         }
-
         public static TypeInfoPointerDeclaration create(Type tinfo) {
             return new TypeInfoPointerDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoPointerDeclaration() {}
 
@@ -1904,15 +1791,12 @@ public class declaration {
             }
             this.type = Type.typeinfoarray.type;
         }
-
         public static TypeInfoArrayDeclaration create(Type tinfo) {
             return new TypeInfoArrayDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoArrayDeclaration() {}
 
@@ -1976,15 +1860,12 @@ public class declaration {
             }
             this.type = Type.typeinfostaticarray.type;
         }
-
         public static TypeInfoStaticArrayDeclaration create(Type tinfo) {
             return new TypeInfoStaticArrayDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoStaticArrayDeclaration() {}
 
@@ -2048,15 +1929,12 @@ public class declaration {
             }
             this.type = Type.typeinfoassociativearray.type;
         }
-
         public static TypeInfoAssociativeArrayDeclaration create(Type tinfo) {
             return new TypeInfoAssociativeArrayDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoAssociativeArrayDeclaration() {}
 
@@ -2120,15 +1998,12 @@ public class declaration {
             }
             this.type = Type.typeinfoenum.type;
         }
-
         public static TypeInfoEnumDeclaration create(Type tinfo) {
             return new TypeInfoEnumDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoEnumDeclaration() {}
 
@@ -2192,15 +2067,12 @@ public class declaration {
             }
             this.type = Type.typeinfofunction.type;
         }
-
         public static TypeInfoFunctionDeclaration create(Type tinfo) {
             return new TypeInfoFunctionDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoFunctionDeclaration() {}
 
@@ -2264,15 +2136,12 @@ public class declaration {
             }
             this.type = Type.typeinfodelegate.type;
         }
-
         public static TypeInfoDelegateDeclaration create(Type tinfo) {
             return new TypeInfoDelegateDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoDelegateDeclaration() {}
 
@@ -2336,15 +2205,12 @@ public class declaration {
             }
             this.type = Type.typeinfotypelist.type;
         }
-
         public static TypeInfoTupleDeclaration create(Type tinfo) {
             return new TypeInfoTupleDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoTupleDeclaration() {}
 
@@ -2408,15 +2274,12 @@ public class declaration {
             }
             this.type = Type.typeinfoconst.type;
         }
-
         public static TypeInfoConstDeclaration create(Type tinfo) {
             return new TypeInfoConstDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoConstDeclaration() {}
 
@@ -2480,15 +2343,12 @@ public class declaration {
             }
             this.type = Type.typeinfoinvariant.type;
         }
-
         public static TypeInfoInvariantDeclaration create(Type tinfo) {
             return new TypeInfoInvariantDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoInvariantDeclaration() {}
 
@@ -2552,15 +2412,12 @@ public class declaration {
             }
             this.type = Type.typeinfoshared.type;
         }
-
         public static TypeInfoSharedDeclaration create(Type tinfo) {
             return new TypeInfoSharedDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoSharedDeclaration() {}
 
@@ -2624,15 +2481,12 @@ public class declaration {
             }
             this.type = Type.typeinfowild.type;
         }
-
         public static TypeInfoWildDeclaration create(Type tinfo) {
             return new TypeInfoWildDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoWildDeclaration() {}
 
@@ -2696,15 +2550,12 @@ public class declaration {
             }
             this.type = Type.typeinfovector.type;
         }
-
         public static TypeInfoVectorDeclaration create(Type tinfo) {
             return new TypeInfoVectorDeclaration(tinfo);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TypeInfoVectorDeclaration() {}
 
@@ -2764,19 +2615,15 @@ public class declaration {
             super(loc, t, Id.This, null, 0L);
             this.storage_class |= 16777216L;
         }
-
         public  Dsymbol syntaxCopy(Dsymbol s) {
             throw new AssertionError("Unreachable code!");
         }
-
         public  ThisDeclaration isThisDeclaration() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public ThisDeclaration() {}
 

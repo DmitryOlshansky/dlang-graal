@@ -49,26 +49,23 @@ public class cond {
         public  int dyncast() {
             return DYNCAST.condition;
         }
-
         public  Condition(Loc loc) {
             super();
             this.loc = loc.copy();
         }
-
         public abstract Condition syntaxCopy();
+
         public abstract int include(Scope sc);
+
         public  DebugCondition isDebugCondition() {
             return null;
         }
-
         public  VersionCondition isVersionCondition() {
             return null;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public Condition() {}
 
@@ -88,11 +85,9 @@ public class cond {
             this.aggrfe = aggrfe;
             this.rangefe = rangefe;
         }
-
         public  StaticForeach syntaxCopy() {
             return new StaticForeach(this.loc, this.aggrfe != null ? (ForeachStatement)this.aggrfe.syntaxCopy() : null, this.rangefe != null ? (ForeachRangeStatement)this.rangefe.syntaxCopy() : null);
         }
-
         public  void lowerArrayAggregate(Scope sc) {
             Expression aggr = this.aggrfe.aggr;
             Expression el = new ArrayLengthExp(aggr.loc, aggr);
@@ -124,7 +119,6 @@ public class cond {
                 this.aggrfe.aggr = new ErrorExp();
             }
         }
-
         public  Expression wrapAndCall(Loc loc, Statement s) {
             TypeFunction tf = new TypeFunction(new ParameterList(null, VarArg.none), null, LINK.default_, 0L);
             FuncLiteralDeclaration fd = new FuncLiteralDeclaration(loc, loc, tf, TOK.reserved, null, null);
@@ -133,7 +127,6 @@ public class cond {
             CallExp ce = new CallExp(loc, fe, new DArray<Expression>());
             return ce;
         }
-
         public  Statement createForeach(Loc loc, DArray<Parameter> parameters, Statement s) {
             if (this.aggrfe != null)
             {
@@ -145,7 +138,6 @@ public class cond {
                 return new ForeachRangeStatement(loc, this.rangefe.op, (parameters).get(0), this.rangefe.lwr.syntaxCopy(), this.rangefe.upr.syntaxCopy(), s, loc);
             }
         }
-
         public  TypeStruct createTupleType(Loc loc, DArray<Expression> e, Scope sc) {
             Identifier sid = Identifier.generateId(new BytePtr("Tuple"));
             StructDeclaration sdecl = new StructDeclaration(loc, sid, false);
@@ -158,11 +150,9 @@ public class cond {
             r.vtinfo = TypeInfoStructDeclaration.create(r);
             return r;
         }
-
         public  Expression createTuple(Loc loc, TypeStruct type, DArray<Expression> e) {
             return new CallExp(loc, new TypeExp(loc, type), e);
         }
-
         public  void lowerNonArrayAggregate(Scope sc) {
             int nvars = this.aggrfe != null ? (this.aggrfe.parameters).length : 1;
             Loc aloc = this.aggrfe != null ? this.aggrfe.aggr.loc : this.rangefe.lwr.loc.copy();
@@ -264,7 +254,6 @@ public class cond {
             this.rangefe = null;
             this.lowerArrayAggregate(sc);
         }
-
         public  void prepare(Scope sc) {
             assert(sc != null);
             if (this.aggrfe != null)
@@ -295,11 +284,9 @@ public class cond {
                 }
             }
         }
-
         public  boolean ready() {
             return (this.aggrfe != null) && (this.aggrfe.aggr != null) && (this.aggrfe.aggr.type != null) && ((this.aggrfe.aggr.type.toBasetype().ty & 0xFF) == ENUMTY.Ttuple);
         }
-
 
         public StaticForeach() {}
 
@@ -323,15 +310,12 @@ public class cond {
             this.level = level;
             this.ident = ident;
         }
-
         public  Condition syntaxCopy() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public DVCondition() {}
 
@@ -342,16 +326,13 @@ public class cond {
         public static void addGlobalIdent(BytePtr ident) {
             addGlobalIdent(ident.slice(0,strlen(ident)));
         }
-
         public static void addGlobalIdent(ByteSlice ident) {
             addGlobalIdent(toByteSlice(ident));
         }
-
         // removed duplicate function, [["void addGlobalIdentByteSlice", "void addGlobalIdentBytePtr"]] signature: void addGlobalIdentByteSlice
         public  DebugCondition(dmodule.Module mod, int level, Identifier ident) {
             super(mod, level, ident);
         }
-
         public  int include(Scope sc) {
             if ((this.inc == Include.notComputed))
             {
@@ -380,19 +361,15 @@ public class cond {
             }
             return ((this.inc == Include.yes) ? 1 : 0);
         }
-
         public  DebugCondition isDebugCondition() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
         public  BytePtr toChars() {
             return this.ident != null ? this.ident.toChars() : new BytePtr("debug");
         }
-
 
         public DebugCondition() {}
 
@@ -511,34 +488,27 @@ public class cond {
                 return (ident.getLength() >= 2) && __equals(ident.slice(0,2), new ByteSlice("D_"));
             }
         }
-
         public static void checkReserved(Loc loc, ByteSlice ident) {
             if (isReserved(ident))
                 error(loc, new BytePtr("version identifier `%s` is reserved and cannot be set"), toBytePtr(ident));
         }
-
         public static void addGlobalIdent(BytePtr ident) {
             addGlobalIdent(ident.slice(0,strlen(ident)));
         }
-
         public static void addGlobalIdent(ByteSlice ident) {
             addGlobalIdent(toByteSlice(ident));
         }
-
         // removed duplicate function, [["void checkReservedLoc, ByteSlice", "void addGlobalIdentByteSlice", "void addGlobalIdentBytePtr", "boolean isReservedByteSlice"]] signature: void addGlobalIdentByteSlice
         public static void addPredefinedGlobalIdent(BytePtr ident) {
             addPredefinedGlobalIdent(ident.slice(0,strlen(ident)));
         }
-
         public static void addPredefinedGlobalIdent(ByteSlice ident) {
             addPredefinedGlobalIdent(toByteSlice(ident));
         }
-
         // removed duplicate function, [["void checkReservedLoc, ByteSlice", "void addGlobalIdentByteSlice", "void addGlobalIdentBytePtr", "boolean isReservedByteSlice", "void addPredefinedGlobalIdentByteSlice", "void addPredefinedGlobalIdentBytePtr"]] signature: void addPredefinedGlobalIdentByteSlice
         public  VersionCondition(dmodule.Module mod, int level, Identifier ident) {
             super(mod, level, ident);
         }
-
         public  int include(Scope sc) {
             if ((this.inc == Include.notComputed))
             {
@@ -569,19 +539,15 @@ public class cond {
             }
             return ((this.inc == Include.yes) ? 1 : 0);
         }
-
         public  VersionCondition isVersionCondition() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
         public  BytePtr toChars() {
             return this.ident != null ? this.ident.toChars() : new BytePtr("version");
         }
-
 
         public VersionCondition() {}
 
@@ -602,14 +568,12 @@ public class cond {
             super(loc);
             this.exp = exp;
         }
-
         public  Condition syntaxCopy() {
             return new StaticIfCondition(this.loc, this.exp.syntaxCopy());
         }
-
         public  int include(Scope sc) {
             Function0<Integer> errorReturn = new Function0<Integer>(){
-                public Integer invoke(){
+                public Integer invoke() {
                     if (global.gag == 0)
                         inc = Include.no;
                     return 0;
@@ -636,15 +600,12 @@ public class cond {
             }
             return ((this.inc == Include.yes) ? 1 : 0);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
         public  BytePtr toChars() {
             return this.exp != null ? this.exp.toChars() : new BytePtr("static if");
         }
-
 
         public StaticIfCondition() {}
 
@@ -671,7 +632,6 @@ public class cond {
         }
         return false;
     }
-
     public static void printDepsConditional(Scope sc, DVCondition condition, ByteSlice depType) {
         if ((global.params.moduleDeps == null) || (global.params.moduleDepsFile.getLength() != 0))
             return ;
@@ -690,5 +650,4 @@ public class cond {
             (ob).print((long)condition.level);
         (ob).writeByte(10);
     }
-
 }

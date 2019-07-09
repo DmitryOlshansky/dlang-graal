@@ -21,28 +21,20 @@ public class permissivevisitor {
     {
         public  void visit(ASTBase.Dsymbol _param_0) {
         }
-
         public  void visit(ASTBase.Parameter _param_0) {
         }
-
         public  void visit(ASTBase.Statement _param_0) {
         }
-
         public  void visit(ASTBase.Type _param_0) {
         }
-
         public  void visit(ASTBase.Expression _param_0) {
         }
-
         public  void visit(ASTBase.TemplateParameter _param_0) {
         }
-
         public  void visit(ASTBase.Condition _param_0) {
         }
-
         public  void visit(ASTBase.Initializer _param_0) {
         }
-
 
         public PermissiveVisitorASTBase() {}
 

@@ -40,7 +40,6 @@ public class aggregate {
                 dsymbolSemantic(f, null);
             return 0;
         }
-
         public SearchCtor(){
         }
         public SearchCtor copy(){
@@ -111,7 +110,6 @@ public class aggregate {
             super(loc, id);
             this.protection = new Prot(Prot.Kind.public_);
         }
-
         public  Scope newScope(Scope sc) {
             Scope sc2 = (sc).push(this);
             (sc2).stc &= 60129542144L;
@@ -124,12 +122,10 @@ public class aggregate {
             (sc2).namespace = null;
             return sc2;
         }
-
         public  void setScope(Scope sc) {
             if ((this.semanticRun < PASS.semanticdone))
                 this.setScope(sc);
         }
-
         public  boolean determineFields() {
             if (this._scope != null)
                 dsymbolSemantic(this, null);
@@ -137,7 +133,7 @@ public class aggregate {
                 return true;
             this.fields.setDim(0);
             Function2<Dsymbol,Object,Integer> func = new Function2<Dsymbol,Object,Integer>(){
-                public Integer invoke(Dsymbol s, Object param){
+                public Integer invoke(Dsymbol s, Object param) {
                     VarDeclaration v = s.isVarDeclaration();
                     if (v == null)
                         return 0;
@@ -189,11 +185,9 @@ public class aggregate {
                 this.sizeok = Sizeok.fwd;
             return true;
         }
-
         public  int nonHiddenFields() {
             return this.fields.length - (this.isNested() ? 1 : 0) - ((this.vthis2 != null) ? 1 : 0);
         }
-
         public  boolean determineSize(Loc loc) {
             if (((this.type.ty & 0xFF) == ENUMTY.Terror))
                 return false;
@@ -236,13 +230,12 @@ public class aggregate {
             }
             return false;
         }
-
         public abstract void finalizeSize();
+
         public  long size(Loc loc) {
             boolean ok = this.determineSize(loc);
             return ok ? (long)this.structsize : -1L;
         }
-
         public  boolean checkOverlappedFields() {
             assert((this.sizeok == Sizeok.done));
             int nfields = this.fields.length;
@@ -305,7 +298,6 @@ public class aggregate {
             }
             return errors;
         }
-
         public  boolean fill(Loc loc, DArray<Expression> elements, boolean ctorinit) {
             assert((this.sizeok == Sizeok.done));
             assert(elements != null);
@@ -416,7 +408,6 @@ public class aggregate {
             }
             return !errors;
         }
-
         public static void alignmember(int alignment, int size, IntPtr poffset) {
             switch (alignment)
             {
@@ -432,7 +423,6 @@ public class aggregate {
                 break;
             }
         }
-
         public static int placeField(IntPtr nextoffset, int memsize, int memalignsize, int alignment, IntPtr paggsize, IntPtr paggalignsize, boolean isunion) {
             IntRef ofs = ref(nextoffset.get());
             int actualAlignment = (alignment == -1) ? memalignsize : alignment;
@@ -452,19 +442,15 @@ public class aggregate {
                 paggalignsize.set(0, actualAlignment);
             return memoffset;
         }
-
         public  Type getType() {
             return this.type;
         }
-
         public  boolean isDeprecated() {
             return this.isdeprecated;
         }
-
         public  boolean isNested() {
             return this.enclosing != null;
         }
-
         public  void makeNested() {
             if (this.enclosing != null)
                 return ;
@@ -527,7 +513,6 @@ public class aggregate {
                 this.makeNested2();
             }
         }
-
         public  void makeNested2() {
             if (this.vthis2 != null)
                 return ;
@@ -557,11 +542,9 @@ public class aggregate {
             if ((this.sizeok == Sizeok.fwd))
                 this.fields.push(this.vthis2);
         }
-
         public  boolean isExport() {
             return this.protection.kind == Prot.Kind.export_;
         }
-
         public  Dsymbol searchCtor() {
             Dsymbol s = this.search(Loc.initial, Id.ctor, 8);
             if (s != null)
@@ -587,25 +570,20 @@ public class aggregate {
             }
             return s;
         }
-
         public  Prot prot() {
             return this.protection;
         }
-
         public  Type handleType() {
             return this.type;
         }
-
         public Symbol stag;
         public Symbol sinit;
         public  AggregateDeclaration isAggregateDeclaration() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public AggregateDeclaration() {}
 

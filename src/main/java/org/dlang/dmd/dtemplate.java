@@ -65,7 +65,6 @@ public class dtemplate {
             this.ignoreAliasThis = ignoreAliasThis;
             this.result = MATCH.nomatch;
         }
-
         public  void visit(Type t) {
             try {
                 try {
@@ -327,7 +326,6 @@ public class dtemplate {
         /*Lconst:*/
             this.result = MATCH.constant;
         }
-
         public  void visit(TypeVector t) {
             if (((this.tparam.ty & 0xFF) == ENUMTY.Tvector))
             {
@@ -337,11 +335,9 @@ public class dtemplate {
             }
             this.visit((Type)t);
         }
-
         public  void visit(TypeDArray t) {
             this.visit((Type)t);
         }
-
         public  void visit(TypeSArray t) {
             if (this.tparam != null)
             {
@@ -390,7 +386,6 @@ public class dtemplate {
             }
             this.visit((Type)t);
         }
-
         public  void visit(TypeAArray t) {
             if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Taarray))
             {
@@ -403,7 +398,6 @@ public class dtemplate {
             }
             this.visit((Type)t);
         }
-
         public  void visit(TypeFunction t) {
             if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tfunction))
             {
@@ -519,7 +513,6 @@ public class dtemplate {
             }
             this.visit((Type)t);
         }
-
         public  void visit(TypeIdentifier t) {
             if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tident))
             {
@@ -539,7 +532,6 @@ public class dtemplate {
             }
             this.visit((Type)t);
         }
-
         public  void visit(TypeInstance t) {
             try {
                 if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tinstance) && (t.tempinst.tempdecl != null))
@@ -743,7 +735,6 @@ public class dtemplate {
         /*Lnomatch:*/
             this.result = MATCH.nomatch;
         }
-
         public  void visit(TypeStruct t) {
             TemplateInstance ti = t.sym.parent.isTemplateInstance();
             if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tinstance))
@@ -784,7 +775,6 @@ public class dtemplate {
             }
             this.visit((Type)t);
         }
-
         public  void visit(TypeEnum t) {
             if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tenum))
             {
@@ -803,7 +793,6 @@ public class dtemplate {
             }
             this.visit((Type)t);
         }
-
         public static void deduceBaseClassParameters(BaseClass b, Scope sc, Type tparam, DArray<TemplateParameter> parameters, DArray<RootObject> dedtypes, DArray<RootObject> best, IntRef numBaseClassMatches) {
             TemplateInstance parti = b.sym != null ? b.sym.parent.isTemplateInstance() : null;
             if (parti != null)
@@ -836,7 +825,6 @@ public class dtemplate {
                 }
             }
         }
-
         public  void visit(TypeClass t) {
             TemplateInstance ti = t.sym.parent.isTemplateInstance();
             if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tinstance))
@@ -907,7 +895,6 @@ public class dtemplate {
             }
             this.visit((Type)t);
         }
-
         public  void visit(Expression e) {
             int i = templateParameterLookup(this.tparam, this.parameters);
             if ((i == 305419896) || (((TypeIdentifier)this.tparam).idents.length > 0))
@@ -938,7 +925,7 @@ public class dtemplate {
                 }
             }
             Function1<Type,Boolean> isTopRef = new Function1<Type,Boolean>(){
-                public Boolean invoke(Type t){
+                public Boolean invoke(Type t) {
                     Type tb = t.baseElemOf();
                     return ((tb.ty & 0xFF) == ENUMTY.Tclass) || ((tb.ty & 0xFF) == ENUMTY.Taarray) || ((tb.ty & 0xFF) == ENUMTY.Tstruct) && tb.hasPointers();
                 }
@@ -1047,7 +1034,6 @@ public class dtemplate {
             }
             this.result = MATCH.nomatch;
         }
-
         public  int deduceEmptyArrayElement() {
             if (emptyArrayElement == null)
             {
@@ -1058,7 +1044,6 @@ public class dtemplate {
             Type tn = ((TypeNext)this.tparam).next;
             return deduceType(emptyArrayElement, this.sc, tn, this.parameters, this.dedtypes, this.wm, 0, false);
         }
-
         public  void visit(NullExp e) {
             if (((this.tparam.ty & 0xFF) == ENUMTY.Tarray) && ((e.type.ty & 0xFF) == ENUMTY.Tnull))
             {
@@ -1067,7 +1052,6 @@ public class dtemplate {
             }
             this.visit((Expression)e);
         }
-
         public  void visit(StringExp e) {
             Type taai = null;
             if (((e.type.ty & 0xFF) == ENUMTY.Tarray) && ((this.tparam.ty & 0xFF) == ENUMTY.Tsarray) || ((this.tparam.ty & 0xFF) == ENUMTY.Taarray) && (((taai = ((TypeAArray)this.tparam).index).ty & 0xFF) == ENUMTY.Tident) && (((TypeIdentifier)taai).idents.length == 0))
@@ -1077,7 +1061,6 @@ public class dtemplate {
             }
             this.visit((Expression)e);
         }
-
         public  void visit(ArrayLiteralExp e) {
             if ((e.elements == null) || ((e.elements).length == 0) && ((e.type.toBasetype().nextOf().ty & 0xFF) == ENUMTY.Tvoid) && ((this.tparam.ty & 0xFF) == ENUMTY.Tarray))
             {
@@ -1117,7 +1100,6 @@ public class dtemplate {
             }
             this.visit((Expression)e);
         }
-
         public  void visit(AssocArrayLiteralExp e) {
             if (((this.tparam.ty & 0xFF) == ENUMTY.Taarray) && (e.keys != null) && ((e.keys).length != 0))
             {
@@ -1142,7 +1124,6 @@ public class dtemplate {
             }
             this.visit((Expression)e);
         }
-
         public  void visit(FuncExp e) {
             if (e.td != null)
             {
@@ -1204,7 +1185,6 @@ public class dtemplate {
             }
             this.visit(t);
         }
-
         public  void visit(SliceExp e) {
             Type taai = null;
             if (((e.type.ty & 0xFF) == ENUMTY.Tarray) && ((this.tparam.ty & 0xFF) == ENUMTY.Tsarray) || ((this.tparam.ty & 0xFF) == ENUMTY.Taarray) && (((taai = ((TypeAArray)this.tparam).index).ty & 0xFF) == ENUMTY.Tident) && (((TypeIdentifier)taai).idents.length == 0))
@@ -1220,11 +1200,9 @@ public class dtemplate {
             }
             this.visit((Expression)e);
         }
-
         public  void visit(CommaExp e) {
             e.e2.accept(this);
         }
-
 
         public DeduceType() {}
     }
@@ -1235,10 +1213,8 @@ public class dtemplate {
         public  ReliesOnTemplateParameters(Slice<TemplateParameter> tparams) {
             this.tparams = tparams.copy();
         }
-
         public  void visit(Expression e) {
         }
-
         public  void visit(IdentifierExp e) {
             {
                 Slice<TemplateParameter> __r1219 = this.tparams.copy();
@@ -1253,7 +1229,6 @@ public class dtemplate {
                 }
             }
         }
-
         public  void visit(TupleExp e) {
             if (e.exps != null)
             {
@@ -1269,7 +1244,6 @@ public class dtemplate {
                 }
             }
         }
-
         public  void visit(ArrayLiteralExp e) {
             if (e.elements != null)
             {
@@ -1285,7 +1259,6 @@ public class dtemplate {
                 }
             }
         }
-
         public  void visit(AssocArrayLiteralExp e) {
             {
                 Slice<Expression> __r1225 = (e.keys).opSlice().copy();
@@ -1308,7 +1281,6 @@ public class dtemplate {
                 }
             }
         }
-
         public  void visit(StructLiteralExp e) {
             if (e.elements != null)
             {
@@ -1324,11 +1296,9 @@ public class dtemplate {
                 }
             }
         }
-
         public  void visit(TypeExp e) {
             this.result = reliesOnTemplateParameters(e.type, this.tparams);
         }
-
         public  void visit(NewExp e) {
             if (e.thisexp != null)
                 e.thisexp.accept(this);
@@ -1360,15 +1330,12 @@ public class dtemplate {
                 }
             }
         }
-
         public  void visit(NewAnonClassExp e) {
             this.result = true;
         }
-
         public  void visit(FuncExp e) {
             this.result = true;
         }
-
         public  void visit(TypeidExp e) {
             {
                 Expression ea = isExpression(e.obj);
@@ -1381,7 +1348,6 @@ public class dtemplate {
                 }
             }
         }
-
         public  void visit(TraitsExp e) {
             if (e.args != null)
             {
@@ -1406,15 +1372,12 @@ public class dtemplate {
                 }
             }
         }
-
         public  void visit(IsExp e) {
             this.result = reliesOnTemplateParameters(e.targ, this.tparams);
         }
-
         public  void visit(UnaExp e) {
             e.e1.accept(this);
         }
-
         public  void visit(DotTemplateInstanceExp e) {
             this.visit((UnaExp)e);
             if (!this.result && (e.ti.tiargs != null))
@@ -1440,7 +1403,6 @@ public class dtemplate {
                 }
             }
         }
-
         public  void visit(CallExp e) {
             this.visit((UnaExp)e);
             if (!this.result && (e.arguments != null))
@@ -1457,13 +1419,11 @@ public class dtemplate {
                 }
             }
         }
-
         public  void visit(CastExp e) {
             this.visit((UnaExp)e);
             if (!this.result && (e.to != null))
                 this.result = reliesOnTemplateParameters(e.to, this.tparams);
         }
-
         public  void visit(SliceExp e) {
             this.visit((UnaExp)e);
             if (!this.result && (e.lwr != null))
@@ -1471,13 +1431,11 @@ public class dtemplate {
             if (!this.result && (e.upr != null))
                 e.upr.accept(this);
         }
-
         public  void visit(IntervalExp e) {
             e.lwr.accept(this);
             if (!this.result)
                 e.upr.accept(this);
         }
-
         public  void visit(ArrayExp e) {
             this.visit((UnaExp)e);
             if (!this.result && (e.arguments != null))
@@ -1492,19 +1450,16 @@ public class dtemplate {
                 }
             }
         }
-
         public  void visit(BinExp e) {
             e.e1.accept(this);
             if (!this.result)
                 e.e2.accept(this);
         }
-
         public  void visit(CondExp e) {
             e.econd.accept(this);
             if (!this.result)
                 this.visit((BinExp)e);
         }
-
 
         public ReliesOnTemplateParameters() {}
     }
@@ -1518,37 +1473,31 @@ public class dtemplate {
             return null;
         return (Expression)o;
     }
-
     public static Dsymbol isDsymbol(RootObject o) {
         if ((o == null) || (o.dyncast() != DYNCAST.dsymbol))
             return null;
         return (Dsymbol)o;
     }
-
     public static Type isType(RootObject o) {
         if ((o == null) || (o.dyncast() != DYNCAST.type))
             return null;
         return (Type)o;
     }
-
     public static Tuple isTuple(RootObject o) {
         if ((o == null) || (o.dyncast() != DYNCAST.tuple))
             return null;
         return (Tuple)o;
     }
-
     public static Parameter isParameter(RootObject o) {
         if ((o == null) || (o.dyncast() != DYNCAST.parameter))
             return null;
         return (Parameter)o;
     }
-
     public static TemplateParameter isTemplateParameter(RootObject o) {
         if ((o == null) || (o.dyncast() != DYNCAST.templateparameter))
             return null;
         return (TemplateParameter)o;
     }
-
     public static boolean isError(RootObject o) {
         {
             Type t = isType(o);
@@ -1571,7 +1520,6 @@ public class dtemplate {
             return true;
         return s.parent != null ? isError(s.parent) : false;
     }
-
     public static boolean arrayObjectIsError(DArray<RootObject> args) {
         {
             Slice<RootObject> __r1186 = (args).opSlice().copy();
@@ -1584,7 +1532,6 @@ public class dtemplate {
         }
         return false;
     }
-
     public static Type getType(RootObject o) {
         Type t = isType(o);
         if (t == null)
@@ -1597,7 +1544,6 @@ public class dtemplate {
         }
         return t;
     }
-
     public static Dsymbol getDsymbol(RootObject oarg) {
         {
             Expression ea = isExpression(oarg);
@@ -1633,7 +1579,6 @@ public class dtemplate {
             }
         }
     }
-
     public static Expression getValue(Ref<Dsymbol> s) {
         if (s.value != null)
         {
@@ -1648,7 +1593,6 @@ public class dtemplate {
         }
         return null;
     }
-
     public static Expression getValue(Expression e) {
         if ((e != null) && ((e.op & 0xFF) == 26))
         {
@@ -1660,12 +1604,10 @@ public class dtemplate {
         }
         return e;
     }
-
     public static Expression getExpression(RootObject o) {
         Ref<Dsymbol> s = ref(isDsymbol(o));
         return s.value != null ? getValue(s) : getValue(isExpression(o));
     }
-
     public static boolean match(RootObject o1, RootObject o2) {
         boolean log = false;
         try {
@@ -1729,7 +1671,6 @@ public class dtemplate {
     /*Lnomatch:*/
         return false;
     }
-
     public static boolean arrayObjectMatch(DArray<RootObject> oa1, DArray<RootObject> oa2) {
         if ((oa1 == oa2))
             return true;
@@ -1753,7 +1694,6 @@ public class dtemplate {
         }
         return true;
     }
-
     public static int arrayObjectHash(DArray<RootObject> oa1) {
         int hash = 0;
         {
@@ -1790,7 +1730,6 @@ public class dtemplate {
         }
         return hash;
     }
-
     public static int expressionHash(Expression e) {
         switch ((e.op & 0xFF))
         {
@@ -1866,7 +1805,6 @@ public class dtemplate {
             return ((int)e);
         }
     }
-
     public static RootObject objectSyntaxCopy(RootObject o) {
         if (o == null)
             return null;
@@ -1882,27 +1820,22 @@ public class dtemplate {
         }
         return o;
     }
-
     public static class Tuple extends RootObject
     {
         public DArray<RootObject> objects = new DArray<RootObject>();
         public  Tuple() {
             super();
         }
-
         public  Tuple(int numObjects) {
             super();
             this.objects.setDim(numObjects);
         }
-
         public  int dyncast() {
             return DYNCAST.tuple;
         }
-
         public  BytePtr toChars() {
             return this.objects.toChars();
         }
-
 
         public Tuple copy() {
             Tuple that = new Tuple();
@@ -1973,7 +1906,6 @@ public class dtemplate {
                 }
             }
         }
-
         public  Dsymbol syntaxCopy(Dsymbol _param_0) {
             DArray<TemplateParameter> p = null;
             if (this.parameters != null)
@@ -1988,7 +1920,6 @@ public class dtemplate {
             }
             return new TemplateDeclaration(this.loc, this.ident, p, this.constraint != null ? this.constraint.syntaxCopy() : null, Dsymbol.arraySyntaxCopy(this.members), this.ismixin, this.literal);
         }
-
         public  boolean overloadInsert(Dsymbol s) {
             FuncDeclaration fd = s.isFuncDeclaration();
             if (fd != null)
@@ -2012,15 +1943,12 @@ public class dtemplate {
             ptd.set(0, td);
             return true;
         }
-
         public  boolean hasStaticCtorOrDtor() {
             return false;
         }
-
         public  BytePtr kind() {
             return (this.onemember != null) && (this.onemember.isAggregateDeclaration() != null) ? this.onemember.kind() : new BytePtr("template");
         }
-
         public  BytePtr toChars() {
             if (this.literal)
                 return this.toChars();
@@ -2059,11 +1987,9 @@ public class dtemplate {
             finally {
             }
         }
-
         public  Prot prot() {
             return this.protection;
         }
-
         public  boolean evaluateConstraint(TemplateInstance ti, Scope sc, Scope paramscope, DArray<RootObject> dedargs, FuncDeclaration fd) {
             {
                 TemplatePrevious p = this.previous;
@@ -2147,7 +2073,6 @@ public class dtemplate {
                 return false;
             return result;
         }
-
         public  Scope scopeForTemplateParameters(TemplateInstance ti, Scope sc) {
             ScopeDsymbol paramsym = new ScopeDsymbol();
             paramsym.parent = (this._scope).parent;
@@ -2158,7 +2083,6 @@ public class dtemplate {
             (paramscope).stc = 0L;
             return paramscope;
         }
-
         public  int matchWithInstance(Scope sc, TemplateInstance ti, DArray<RootObject> dedtypes, DArray<Expression> fargs, int flag) {
             int LOGM = 0;
             int m = MATCH.nomatch;
@@ -2263,7 +2187,6 @@ public class dtemplate {
             (paramscope).pop();
             return m;
         }
-
         public  int leastAsSpecialized(Scope sc, TemplateDeclaration td2, DArray<Expression> fargs) {
             int LOG_LEASTAS = 0;
             DArray<RootObject> tiargs = new DArray<RootObject>();
@@ -2300,7 +2223,6 @@ public class dtemplate {
             finally {
             }
         }
-
         public  int deduceFunctionTemplateMatch(TemplateInstance ti, Scope sc, Ref<FuncDeclaration> fd, Type tthis, DArray<Expression> fargs) {
             int nfparams = 0;
             int nfargs = 0;
@@ -3024,7 +2946,6 @@ public class dtemplate {
             (paramscope).pop();
             return MATCH.nomatch;
         }
-
         public  RootObject declareParameter(Scope sc, TemplateParameter tp, RootObject o) {
             Type ta = isType(o);
             Expression ea = isExpression(o);
@@ -3100,7 +3021,6 @@ public class dtemplate {
                 o = initializerToExpression(v._init, null);
             return o;
         }
-
         public  FuncDeclaration doHeaderInstantiation(TemplateInstance ti, Scope sc2, FuncDeclaration fd, Type tthis, DArray<Expression> fargs) {
             assert(fd != null);
             if (fd.isCtorDeclaration() != null)
@@ -3169,44 +3089,36 @@ public class dtemplate {
             fd.originalType = fd.type;
             return fd;
         }
-
         public  TemplateInstance findExistingInstance(TemplateInstance tithis, DArray<Expression> fargs) {
             tithis.fargs = fargs;
             TemplateInstanceBox tibox = tibox = new TemplateInstanceBox(tithis);
             Ptr<TemplateInstance> p = pcopy(tibox in this.instances);
             return p != null ? p.get() : null;
         }
-
         public  TemplateInstance addInstance(TemplateInstance ti) {
             TemplateInstanceBox tibox = tibox = new TemplateInstanceBox(ti);
             this.instances.set(tibox, __aaval1201);
             return ti;
         }
-
         public  void removeInstance(TemplateInstance ti) {
             TemplateInstanceBox tibox = tibox = new TemplateInstanceBox(ti);
             this.instances.remove(tibox);
         }
-
         public  TemplateDeclaration isTemplateDeclaration() {
             return this;
         }
-
         public  TemplateTupleParameter isVariadic() {
             int dim = (this.parameters).length;
             if ((dim == 0))
                 return null;
             return (this.parameters).get(dim - 1).isTemplateTupleParameter();
         }
-
         public  boolean isOverloadable() {
             return true;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TemplateDeclaration() {}
 
@@ -3261,18 +3173,15 @@ public class dtemplate {
             this.argexps.push(e);
             this.tparams.push(tparam);
         }
-
         public  void update(Expression e, Type tparam) {
             this.argexps.push(e);
             this.tparams.push(tparam);
         }
-
         public  void update(Type tt, Expression e, Type tparam) {
             this.tded = tt;
             this.argexps.push(e);
             this.tparams.push(tparam);
         }
-
         public  int matchAll(Type tt) {
             int match = MATCH.exact;
             {
@@ -3292,7 +3201,6 @@ public class dtemplate {
             }
             return match;
         }
-
 
         public TypeDeduced() {}
 
@@ -3334,7 +3242,7 @@ public class dtemplate {
         IntRef ta_last = ref((m.last != MATCH.nomatch) ? MATCH.exact : MATCH.nomatch);
         Ref<Type> tthis_best = ref(null);
         Function1<FuncDeclaration,Integer> applyFunction = new Function1<FuncDeclaration,Integer>(){
-            public Integer invoke(FuncDeclaration fd){
+            public Integer invoke(FuncDeclaration fd) {
                 if ((pequals(fd, m.lastf)))
                     return 0;
                 if ((tiargs_ref.value != null) && ((tiargs_ref.value).length > 0))
@@ -3459,7 +3367,7 @@ public class dtemplate {
             }
         };
         Function1<TemplateDeclaration,Integer> applyTemplate = new Function1<TemplateDeclaration,Integer>(){
-            public Integer invoke(TemplateDeclaration td){
+            public Integer invoke(TemplateDeclaration td) {
                 if (td.inuse != 0)
                 {
                     td.error(loc, new BytePtr("recursive template expansion"));
@@ -3703,7 +3611,7 @@ public class dtemplate {
         if ((td != null) && (td.funcroot != null))
             dstart = td.funcroot;
         Function1<Dsymbol,Integer> __lambda11 = new Function1<Dsymbol,Integer>(){
-            public Integer invoke(Dsymbol s){
+            public Integer invoke(Dsymbol s) {
                 if (s.errors)
                     return 0;
                 {
@@ -3769,7 +3677,6 @@ public class dtemplate {
             m.last = MATCH.nomatch;
         }
     }
-
     public static int templateIdentifierLookup(Identifier id, DArray<TemplateParameter> parameters) {
         {
             int i = 0;
@@ -3781,7 +3688,6 @@ public class dtemplate {
         }
         return 305419896;
     }
-
     public static int templateParameterLookup(Type tparam, DArray<TemplateParameter> parameters) {
         if (((tparam.ty & 0xFF) == ENUMTY.Tident))
         {
@@ -3790,21 +3696,20 @@ public class dtemplate {
         }
         return 305419896;
     }
-
     public static byte deduceWildHelper(Type t, Ptr<Type> at, Type tparam) {
         if ((((tparam.mod & 0xFF) & MODFlags.wild) == 0))
             return (byte)0;
         at.set(0, null);
         // from template X!(ByteByte)
         Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
-            public Integer invoke(Byte U, Byte T){
+            public Integer invoke(Byte U, Byte T) {
                 return (U & 0xFF) << 4 | (T & 0xFF);
             }
         };
 
         // from template X!(IntegerInteger)
         Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
-            public Integer invoke(Integer U, Integer T){
+            public Integer invoke(Integer U, Integer T) {
                 return U << 4 | T;
             }
         };
@@ -3854,7 +3759,6 @@ public class dtemplate {
             return (byte)0;
         }
     }
-
     public static Type rawTypeMerge(Type t1, Type t2) {
         if (t1.equals(t2))
             return t1;
@@ -3871,18 +3775,17 @@ public class dtemplate {
             return Type.basic.get((ty & 0xFF));
         return null;
     }
-
     public static int deduceTypeHelper(Type t, Ptr<Type> at, Type tparam) {
         // from template X!(ByteByte)
         Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
-            public Integer invoke(Byte U, Byte T){
+            public Integer invoke(Byte U, Byte T) {
                 return (U & 0xFF) << 4 | (T & 0xFF);
             }
         };
 
         // from template X!(IntegerInteger)
         Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
-            public Integer invoke(Integer U, Integer T){
+            public Integer invoke(Integer U, Integer T) {
                 return U << 4 | T;
             }
         };
@@ -3998,7 +3901,6 @@ public class dtemplate {
             throw new AssertionError("Unreachable code!");
         }
     }
-
     static Expression emptyArrayElement = null;
     public static int deduceType(RootObject o, Scope sc, Type tparam, DArray<TemplateParameter> parameters, DArray<RootObject> dedtypes, IntPtr wm, int inferStart, boolean ignoreAliasThis) {
         DeduceType v = new DeduceType(sc, tparam, parameters, dedtypes, wm, inferStart, ignoreAliasThis);
@@ -4019,25 +3921,23 @@ public class dtemplate {
         }
         return v.result;
     }
-
     public static boolean reliesOnTident(Type t, DArray<TemplateParameter> tparams, int iStart) {
         return reliesOnTemplateParameters(t, (tparams).opSlice(0, (tparams).length));
     }
-
     public static boolean reliesOnTemplateParameters(Type t, Slice<TemplateParameter> tparams) {
         Ref<Slice<TemplateParameter>> tparams_ref = ref(tparams);
         Function1<TypeVector,Boolean> visitVector = new Function1<TypeVector,Boolean>(){
-            public Boolean invoke(TypeVector t){
+            public Boolean invoke(TypeVector t) {
                 return reliesOnTemplateParameters(t.basetype, tparams_ref.value);
             }
         };
         Function1<TypeAArray,Boolean> visitAArray = new Function1<TypeAArray,Boolean>(){
-            public Boolean invoke(TypeAArray t){
+            public Boolean invoke(TypeAArray t) {
                 return reliesOnTemplateParameters(t.next, tparams_ref.value) || reliesOnTemplateParameters(t.index, tparams_ref.value);
             }
         };
         Function1<TypeFunction,Boolean> visitFunction = new Function1<TypeFunction,Boolean>(){
-            public Boolean invoke(TypeFunction t){
+            public Boolean invoke(TypeFunction t) {
                 {
                     int __key1209 = 0;
                     int __limit1210 = t.parameterList.length();
@@ -4052,7 +3952,7 @@ public class dtemplate {
             }
         };
         Function1<TypeIdentifier,Boolean> visitIdentifier = new Function1<TypeIdentifier,Boolean>(){
-            public Boolean invoke(TypeIdentifier t){
+            public Boolean invoke(TypeIdentifier t) {
                 {
                     Slice<TemplateParameter> __r1211 = tparams_ref.value.copy();
                     int __key1212 = 0;
@@ -4066,7 +3966,7 @@ public class dtemplate {
             }
         };
         Function1<TypeInstance,Boolean> visitInstance = new Function1<TypeInstance,Boolean>(){
-            public Boolean invoke(TypeInstance t){
+            public Boolean invoke(TypeInstance t) {
                 {
                     Slice<TemplateParameter> __r1213 = tparams_ref.value.copy();
                     int __key1214 = 0;
@@ -4096,12 +3996,12 @@ public class dtemplate {
             }
         };
         Function1<TypeTypeof,Boolean> visitTypeof = new Function1<TypeTypeof,Boolean>(){
-            public Boolean invoke(TypeTypeof t){
+            public Boolean invoke(TypeTypeof t) {
                 return reliesOnTemplateParameters(t.exp, tparams_ref.value);
             }
         };
         Function1<TypeTuple,Boolean> visitTuple = new Function1<TypeTuple,Boolean>(){
-            public Boolean invoke(TypeTuple t){
+            public Boolean invoke(TypeTuple t) {
                 if (t.arguments != null)
                 {
                     Slice<Parameter> __r1217 = (t.arguments).opSlice().copy();
@@ -4140,13 +4040,11 @@ public class dtemplate {
             return reliesOnTemplateParameters(tb.nextOf(), tparams_ref.value);
         }
     }
-
     public static boolean reliesOnTemplateParameters(Expression e, Slice<TemplateParameter> tparams) {
         ReliesOnTemplateParameters v = new ReliesOnTemplateParameters(tparams);
         e.accept(v);
         return v.result;
     }
-
     public static abstract class TemplateParameter extends ASTNode
     {
         public Loc loc = new Loc();
@@ -4157,41 +4055,39 @@ public class dtemplate {
             this.loc = loc.copy();
             this.ident = ident;
         }
-
         public  TemplateTypeParameter isTemplateTypeParameter() {
             return null;
         }
-
         public  TemplateValueParameter isTemplateValueParameter() {
             return null;
         }
-
         public  TemplateAliasParameter isTemplateAliasParameter() {
             return null;
         }
-
         public  TemplateThisParameter isTemplateThisParameter() {
             return null;
         }
-
         public  TemplateTupleParameter isTemplateTupleParameter() {
             return null;
         }
-
         public abstract TemplateParameter syntaxCopy();
+
         public abstract boolean declareParameter(Scope sc);
+
         public abstract void print(RootObject oarg, RootObject oded);
+
         public abstract RootObject specialization();
+
         public abstract RootObject defaultArg(Loc instLoc, Scope sc);
+
         public abstract boolean hasDefaultArg();
+
         public  BytePtr toChars() {
             return this.ident.toChars();
         }
-
         public  int dyncast() {
             return DYNCAST.templateparameter;
         }
-
         public  int matchArg(Loc instLoc, Scope sc, DArray<RootObject> tiargs, int i, DArray<TemplateParameter> parameters, DArray<RootObject> dedtypes, Ptr<Declaration> psparam) {
             RootObject oarg = null;
             try {
@@ -4216,13 +4112,13 @@ public class dtemplate {
                 psparam.set(0, null);
             return MATCH.nomatch;
         }
-
         public abstract int matchArg(Scope sc, RootObject oarg, int i, DArray<TemplateParameter> parameters, DArray<RootObject> dedtypes, Ptr<Declaration> psparam);
+
         public abstract Object dummyArg();
+
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TemplateParameter() {}
 
@@ -4238,21 +4134,17 @@ public class dtemplate {
             this.specType = specType;
             this.defaultType = defaultType;
         }
-
         public  TemplateTypeParameter isTemplateTypeParameter() {
             return this;
         }
-
         public  TemplateParameter syntaxCopy() {
             return new TemplateTypeParameter(this.loc, this.ident, this.specType != null ? this.specType.syntaxCopy() : null, this.defaultType != null ? this.defaultType.syntaxCopy() : null);
         }
-
         public  boolean declareParameter(Scope sc) {
             TypeIdentifier ti = new TypeIdentifier(this.loc, this.ident);
             Declaration ad = new AliasDeclaration(this.loc, this.ident, ti);
             return (sc).insert(ad) != null;
         }
-
         public  void print(RootObject oarg, RootObject oded) {
             printf(new BytePtr(" %s\n"), this.ident.toChars());
             Type t = isType(oarg);
@@ -4265,11 +4157,9 @@ public class dtemplate {
             printf(new BytePtr("\u0009Parameter:       %s\n"), t != null ? t.toChars() : new BytePtr("NULL"));
             printf(new BytePtr("\u0009Deduced Type:   %s\n"), ta.toChars());
         }
-
         public  RootObject specialization() {
             return this.specType;
         }
-
         public  RootObject defaultArg(Loc instLoc, Scope sc) {
             Type t = this.defaultType;
             if (t != null)
@@ -4279,11 +4169,9 @@ public class dtemplate {
             }
             return t;
         }
-
         public  boolean hasDefaultArg() {
             return this.defaultType != null;
         }
-
         public  int matchArg(Scope sc, RootObject oarg, int i, DArray<TemplateParameter> parameters, DArray<RootObject> dedtypes, Ptr<Declaration> psparam) {
             int m = MATCH.exact;
             Type ta = isType(oarg);
@@ -4337,7 +4225,6 @@ public class dtemplate {
                 psparam.set(0, null);
             return MATCH.nomatch;
         }
-
         public  Object dummyArg() {
             Type t = this.specType;
             if (t == null)
@@ -4348,11 +4235,9 @@ public class dtemplate {
             }
             return t;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TemplateTypeParameter() {}
 
@@ -4371,19 +4256,15 @@ public class dtemplate {
         public  TemplateThisParameter(Loc loc, Identifier ident, Type specType, Type defaultType) {
             super(loc, ident, specType, defaultType);
         }
-
         public  TemplateThisParameter isTemplateThisParameter() {
             return this;
         }
-
         public  TemplateParameter syntaxCopy() {
             return new TemplateThisParameter(this.loc, this.ident, this.specType != null ? this.specType.syntaxCopy() : null, this.defaultType != null ? this.defaultType.syntaxCopy() : null);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TemplateThisParameter() {}
 
@@ -4409,21 +4290,17 @@ public class dtemplate {
             this.specValue = specValue;
             this.defaultValue = defaultValue;
         }
-
         public  TemplateValueParameter isTemplateValueParameter() {
             return this;
         }
-
         public  TemplateParameter syntaxCopy() {
             return new TemplateValueParameter(this.loc, this.ident, this.valType.syntaxCopy(), this.specValue != null ? this.specValue.syntaxCopy() : null, this.defaultValue != null ? this.defaultValue.syntaxCopy() : null);
         }
-
         public  boolean declareParameter(Scope sc) {
             VarDeclaration v = new VarDeclaration(this.loc, this.valType, this.ident, null, 0L);
             v.storage_class = 262144L;
             return (sc).insert(v) != null;
         }
-
         public  void print(RootObject oarg, RootObject oded) {
             printf(new BytePtr(" %s\n"), this.ident.toChars());
             Expression ea = isExpression(oded);
@@ -4431,11 +4308,9 @@ public class dtemplate {
                 printf(new BytePtr("\u0009Specialization: %s\n"), this.specValue.toChars());
             printf(new BytePtr("\u0009Parameter Value: %s\n"), ea != null ? ea.toChars() : new BytePtr("NULL"));
         }
-
         public  RootObject specialization() {
             return this.specValue;
         }
-
         public  RootObject defaultArg(Loc instLoc, Scope sc) {
             Expression e = this.defaultValue;
             if (e != null)
@@ -4453,11 +4328,9 @@ public class dtemplate {
             }
             return e;
         }
-
         public  boolean hasDefaultArg() {
             return this.defaultValue != null;
         }
-
         public  int matchArg(Scope sc, RootObject oarg, int i, DArray<TemplateParameter> parameters, DArray<RootObject> dedtypes, Ptr<Declaration> psparam) {
             int m = MATCH.exact;
             Expression ei = isExpression(oarg);
@@ -4538,7 +4411,6 @@ public class dtemplate {
                 psparam.set(0, null);
             return MATCH.nomatch;
         }
-
         public  Object dummyArg() {
             Expression e = this.specValue;
             if (e == null)
@@ -4554,11 +4426,9 @@ public class dtemplate {
             }
             return e;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TemplateValueParameter() {}
 
@@ -4585,32 +4455,26 @@ public class dtemplate {
             this.specAlias = specAlias;
             this.defaultAlias = defaultAlias;
         }
-
         public  TemplateAliasParameter isTemplateAliasParameter() {
             return this;
         }
-
         public  TemplateParameter syntaxCopy() {
             return new TemplateAliasParameter(this.loc, this.ident, this.specType != null ? this.specType.syntaxCopy() : null, objectSyntaxCopy(this.specAlias), objectSyntaxCopy(this.defaultAlias));
         }
-
         public  boolean declareParameter(Scope sc) {
             TypeIdentifier ti = new TypeIdentifier(this.loc, this.ident);
             Declaration ad = new AliasDeclaration(this.loc, this.ident, ti);
             return (sc).insert(ad) != null;
         }
-
         public  void print(RootObject oarg, RootObject oded) {
             printf(new BytePtr(" %s\n"), this.ident.toChars());
             Dsymbol sa = isDsymbol(oded);
             assert(sa != null);
             printf(new BytePtr("\u0009Parameter alias: %s\n"), sa.toChars());
         }
-
         public  RootObject specialization() {
             return this.specAlias;
         }
-
         public  RootObject defaultArg(Loc instLoc, Scope sc) {
             RootObject da = this.defaultAlias;
             Type ta = isType(this.defaultAlias);
@@ -4624,11 +4488,9 @@ public class dtemplate {
             RootObject o = aliasParameterSemantic(this.loc, sc, da, null);
             return o;
         }
-
         public  boolean hasDefaultArg() {
             return this.defaultAlias != null;
         }
-
         public  int matchArg(Scope sc, RootObject oarg, int i, DArray<TemplateParameter> parameters, DArray<RootObject> dedtypes, Ptr<Declaration> psparam) {
             int m = MATCH.exact;
             Type ta = isType(oarg);
@@ -4742,7 +4604,6 @@ public class dtemplate {
                 psparam.set(0, null);
             return MATCH.nomatch;
         }
-
         public  Object dummyArg() {
             RootObject s = this.specAlias;
             if (s == null)
@@ -4753,11 +4614,9 @@ public class dtemplate {
             }
             return s;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TemplateAliasParameter() {}
 
@@ -4777,21 +4636,17 @@ public class dtemplate {
         public  TemplateTupleParameter(Loc loc, Identifier ident) {
             super(loc, ident);
         }
-
         public  TemplateTupleParameter isTemplateTupleParameter() {
             return this;
         }
-
         public  TemplateParameter syntaxCopy() {
             return new TemplateTupleParameter(this.loc, this.ident);
         }
-
         public  boolean declareParameter(Scope sc) {
             TypeIdentifier ti = new TypeIdentifier(this.loc, this.ident);
             Declaration ad = new AliasDeclaration(this.loc, this.ident, ti);
             return (sc).insert(ad) != null;
         }
-
         public  void print(RootObject oarg, RootObject oded) {
             printf(new BytePtr(" %s... ["), this.ident.toChars());
             Tuple v = isTuple(oded);
@@ -4816,19 +4671,15 @@ public class dtemplate {
             }
             printf(new BytePtr("]\n"));
         }
-
         public  RootObject specialization() {
             return null;
         }
-
         public  RootObject defaultArg(Loc instLoc, Scope sc) {
             return null;
         }
-
         public  boolean hasDefaultArg() {
             return false;
         }
-
         public  int matchArg(Loc instLoc, Scope sc, DArray<RootObject> tiargs, int i, DArray<TemplateParameter> parameters, DArray<RootObject> dedtypes, Ptr<Declaration> psparam) {
             assert((i + 1 == (dedtypes).length));
             Tuple ovar = null;
@@ -4857,7 +4708,6 @@ public class dtemplate {
             }
             return this.matchArg(sc, ovar, i, parameters, dedtypes, psparam);
         }
-
         public  int matchArg(Scope sc, RootObject oarg, int i, DArray<TemplateParameter> parameters, DArray<RootObject> dedtypes, Ptr<Declaration> psparam) {
             Tuple ovar = isTuple(oarg);
             if (ovar == null)
@@ -4875,15 +4725,12 @@ public class dtemplate {
                 psparam.set(0, (new TupleDeclaration(this.loc, this.ident, ovar.objects)));
             return this.dependent ? MATCH.exact : MATCH.convert;
         }
-
         public  Object dummyArg() {
             return null;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TemplateTupleParameter() {}
 
@@ -4923,7 +4770,6 @@ public class dtemplate {
             this.name = ident;
             this.tiargs = tiargs;
         }
-
         public  TemplateInstance(Loc loc, TemplateDeclaration td, DArray<RootObject> tiargs) {
             super(loc, null);
             this.name = td.ident;
@@ -4933,7 +4779,6 @@ public class dtemplate {
             this.havetempdecl = true;
             assert(this.tempdecl._scope != null);
         }
-
         public static DArray<RootObject> arraySyntaxCopy(DArray<RootObject> objs) {
             DArray<RootObject> a = null;
             if (objs != null)
@@ -4948,7 +4793,6 @@ public class dtemplate {
             }
             return a;
         }
-
         public  Dsymbol syntaxCopy(Dsymbol s) {
             TemplateInstance ti = s != null ? (TemplateInstance)s : new TemplateInstance(this.loc, this.name, null);
             ti.tiargs = arraySyntaxCopy(this.tiargs);
@@ -4959,7 +4803,6 @@ public class dtemplate {
                 this.syntaxCopy(ti);
             return ti;
         }
-
         public  Dsymbol toAlias() {
             if (this.inst == null)
             {
@@ -4982,16 +4825,13 @@ public class dtemplate {
             }
             return this.inst;
         }
-
         public  BytePtr kind() {
             return new BytePtr("template instance");
         }
-
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             ps.set(0, null);
             return true;
         }
-
         public  BytePtr toChars() {
             OutBuffer buf = new OutBuffer();
             try {
@@ -5001,7 +4841,6 @@ public class dtemplate {
             finally {
             }
         }
-
         public  BytePtr toPrettyCharsHelper() {
             OutBuffer buf = new OutBuffer();
             try {
@@ -5011,7 +4850,6 @@ public class dtemplate {
             finally {
             }
         }
-
         public  void printInstantiationTrace() {
             if (global.gag != 0)
                 return ;
@@ -5075,13 +4913,11 @@ public class dtemplate {
                 }
             }
         }
-
         public  Identifier getIdent() {
             if ((this.ident == null) && (this.inst != null) && !this.errors)
                 this.ident = this.genIdent(this.tiargs);
             return this.ident;
         }
-
         public  boolean equalsx(TemplateInstance ti) {
             assert((this.tdtypes.length == ti.tdtypes.length));
             try {
@@ -5131,7 +4967,6 @@ public class dtemplate {
         /*Lnotequals:*/
             return false;
         }
-
         public  int toHash() {
             if (this.hash == 0)
             {
@@ -5141,7 +4976,6 @@ public class dtemplate {
             }
             return this.hash;
         }
-
         public  boolean needsCodegen() {
             if (global.params.allInst)
             {
@@ -5236,7 +5070,6 @@ public class dtemplate {
                 return true;
             }
         }
-
         public  boolean findTempDecl(Scope sc, Ptr<WithScopeSymbol> pwithsym) {
             if (pwithsym != null)
                 pwithsym.set(0, null);
@@ -5284,7 +5117,7 @@ public class dtemplate {
                     int oi = __key1244;
                     Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl;
                     Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
-                        public Integer invoke(Dsymbol s){
+                        public Integer invoke(Dsymbol s) {
                             TemplateDeclaration td = s.isTemplateDeclaration();
                             if (td == null)
                                 return 0;
@@ -5315,7 +5148,6 @@ public class dtemplate {
             }
             return true;
         }
-
         public  boolean updateTempDecl(Scope sc, Dsymbol s) {
             if (s != null)
             {
@@ -5398,7 +5230,6 @@ public class dtemplate {
             }
             return this.tempdecl != null;
         }
-
         public static boolean semanticTiargs(Loc loc, Scope sc, DArray<RootObject> tiargs, int flags) {
             if (tiargs == null)
                 return true;
@@ -5986,7 +5817,6 @@ public class dtemplate {
             }
             return !err;
         }
-
         public  boolean semanticTiargs(Scope sc) {
             if (this.semantictiargsdone)
                 return true;
@@ -5997,7 +5827,6 @@ public class dtemplate {
             }
             return false;
         }
-
         public  boolean findBestMatch(Scope sc, DArray<Expression> fargs) {
             if (this.havetempdecl)
             {
@@ -6027,7 +5856,7 @@ public class dtemplate {
                         int m_best = MATCH.nomatch;
                         Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl;
                         Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
-                            public Integer invoke(Dsymbol s){
+                            public Integer invoke(Dsymbol s) {
                                 TemplateDeclaration td = s.isTemplateDeclaration();
                                 if (td == null)
                                     return 0;
@@ -6146,7 +5975,6 @@ public class dtemplate {
             finally {
             }
         }
-
         public  boolean needsTypeInference(Scope sc, int flag) {
             if ((this.semanticRun != PASS.init))
                 return false;
@@ -6162,7 +5990,7 @@ public class dtemplate {
                         int oi = __key1248;
                         Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl;
                         Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
-                            public Integer invoke(Dsymbol s){
+                            public Integer invoke(Dsymbol s) {
                                 TemplateDeclaration td = s.isTemplateDeclaration();
                                 if (td == null)
                                     return 0;
@@ -6275,7 +6103,6 @@ public class dtemplate {
             finally {
             }
         }
-
         public  boolean hasNestedArgs(DArray<RootObject> args, boolean isstatic) {
             int nested = 0;
             if (this.enclosing == null)
@@ -6523,7 +6350,6 @@ public class dtemplate {
             }
             return nested != 0;
         }
-
         public  DArray<Dsymbol> appendToModuleMember() {
             dmodule.Module mi = this.minst;
             if (global.params.useUnitTests || (global.params.debuglevel != 0))
@@ -6534,7 +6360,7 @@ public class dtemplate {
             if ((mi == null) || mi.isRoot())
             {
                 Function1<TemplateInstance,Dsymbol> getStrictEnclosing = new Function1<TemplateInstance,Dsymbol>(){
-                    public Dsymbol invoke(TemplateInstance ti){
+                    public Dsymbol invoke(TemplateInstance ti) {
                         do {
                             {
                                 if (ti.enclosing != null)
@@ -6567,7 +6393,6 @@ public class dtemplate {
                 dmodule.Module.addDeferredSemantic3(this);
             return a;
         }
-
         public  void declareParameters(Scope sc) {
             TemplateDeclaration tempdecl = this.tempdecl.isTemplateDeclaration();
             assert(tempdecl != null);
@@ -6580,7 +6405,6 @@ public class dtemplate {
                 }
             }
         }
-
         public  Identifier genIdent(DArray<RootObject> args) {
             assert((args == this.tiargs));
             OutBuffer buf = new OutBuffer();
@@ -6591,30 +6415,28 @@ public class dtemplate {
             finally {
             }
         }
-
         public  void expandMembers(Scope sc2) {
             Ref<Scope> sc2_ref = ref(sc2);
             Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s){
+                public Void invoke(Dsymbol s) {
                     s.setScope(sc2_ref.value);
                 }
             };
             foreachDsymbol(this.members, __lambda2);
             Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s){
+                public Void invoke(Dsymbol s) {
                     s.importAll(sc2_ref.value);
                 }
             };
             foreachDsymbol(this.members, __lambda3);
             Function1<Dsymbol,Void> symbolDg = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s){
+                public Void invoke(Dsymbol s) {
                     dsymbolSemantic(s, sc2_ref.value);
                     dmodule.Module.runDeferredSemantic();
                 }
             };
             foreachDsymbol(this.members, symbolDg);
         }
-
         public  void tryExpandMembers(Scope sc2) {
             if (((dtemplate.tryExpandMembersnest += 1) > 500))
             {
@@ -6625,7 +6447,6 @@ public class dtemplate {
             this.expandMembers(sc2);
             dtemplate.tryExpandMembersnest--;
         }
-
         public  void trySemantic3(Scope sc2) {
             if (((dtemplate.trySemantic3nest += 1) > 300))
             {
@@ -6636,15 +6457,12 @@ public class dtemplate {
             semantic3(this, sc2);
             dtemplate.trySemantic3nest -= 1;
         }
-
         public  TemplateInstance isTemplateInstance() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TemplateInstance() {}
 
@@ -6757,7 +6575,6 @@ public class dtemplate {
                 unSpeculative(sc, ti);
         }
     }
-
     public static boolean definitelyValueParameter(Expression e) {
         if (((e.op & 0xFF) == 126) || ((e.op & 0xFF) == 203) || ((e.op & 0xFF) == 20) || ((e.op & 0xFF) == 30) || ((e.op & 0xFF) == 36) || ((e.op & 0xFF) == 37) || ((e.op & 0xFF) == 161) || ((e.op & 0xFF) == 127) || ((e.op & 0xFF) == 123) || ((e.op & 0xFF) == 124))
             return false;
@@ -6782,7 +6599,6 @@ public class dtemplate {
             return true;
         return false;
     }
-
     public static class TemplateMixin extends TemplateInstance
     {
         public TypeQualified tqual;
@@ -6791,51 +6607,44 @@ public class dtemplate {
             this.ident = ident;
             this.tqual = tqual;
         }
-
         public  Dsymbol syntaxCopy(Dsymbol s) {
             TemplateMixin tm = new TemplateMixin(this.loc, this.ident, (TypeQualified)this.tqual.syntaxCopy(), this.tiargs);
             return this.syntaxCopy(tm);
         }
-
         public  BytePtr kind() {
             return new BytePtr("mixin");
         }
-
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             return this.oneMember(ps, ident);
         }
-
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
             if (this._scope != null)
                 dsymbolSemantic(this, null);
             Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
-                public Integer invoke(Dsymbol s){
+                public Integer invoke(Dsymbol s) {
                     return (((s != null) && (s.apply(fp, param) != 0)) ? 1 : 0);
                 }
             };
             return foreachDsymbol(this.members, __lambda3);
         }
-
         public  boolean hasPointers() {
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>(){
-                public Integer invoke(Dsymbol s){
+                public Integer invoke(Dsymbol s) {
                     return (s.hasPointers() ? 1 : 0);
                 }
             };
             return foreachDsymbol(this.members, __lambda1) != 0;
         }
-
         public  void setFieldOffset(AggregateDeclaration ad, IntPtr poffset, boolean isunion) {
             if (this._scope != null)
                 dsymbolSemantic(this, null);
             Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s){
+                public Void invoke(Dsymbol s) {
                     s.setFieldOffset(ad, poffset, isunion);
                 }
             };
             foreachDsymbol(this.members, __lambda4);
         }
-
         public  BytePtr toChars() {
             OutBuffer buf = new OutBuffer();
             try {
@@ -6845,7 +6654,6 @@ public class dtemplate {
             finally {
             }
         }
-
         public  boolean findTempDecl(Scope sc) {
             if (this.tempdecl == null)
             {
@@ -6895,7 +6703,7 @@ public class dtemplate {
                     int oi = __key1256;
                     Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl;
                     Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>(){
-                        public Integer invoke(Dsymbol s){
+                        public Integer invoke(Dsymbol s) {
                             TemplateDeclaration td = s.isTemplateDeclaration();
                             if (td == null)
                                 return 0;
@@ -6919,15 +6727,12 @@ public class dtemplate {
             }
             return true;
         }
-
         public  TemplateMixin isTemplateMixin() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
 
         public TemplateMixin() {}
 
@@ -6987,12 +6792,10 @@ public class dtemplate {
             this.ti.toHash();
             assert(this.ti.hash != 0);
         }
-
         public  int toHash() {
             assert(this.ti.hash != 0);
             return this.ti.hash;
         }
-
         public  boolean opEquals(TemplateInstanceBox s) {
             boolean res = null;
             if ((this.ti.inst != null) && (s.ti.inst != null))
@@ -7001,7 +6804,6 @@ public class dtemplate {
                 res = s.ti.equalsx(this.ti);
             return res;
         }
-
         public TemplateInstanceBox(){
         }
         public TemplateInstanceBox copy(){

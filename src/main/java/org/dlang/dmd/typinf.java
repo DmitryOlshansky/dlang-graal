@@ -70,13 +70,11 @@ public class typinf {
             torig.vtinfo = t.vtinfo;
         assert(torig.vtinfo != null);
     }
-
     public static Type getTypeInfoType(Loc loc, Type t, Scope sc) {
         assert(((t.ty & 0xFF) != ENUMTY.Terror));
         genTypeInfo(loc, t, sc);
         return t.vtinfo.type;
     }
-
     public static TypeInfoDeclaration getTypeInfoDeclaration(Type t) {
         switch ((t.ty & 0xFF))
         {
@@ -109,20 +107,19 @@ public class typinf {
             return TypeInfoDeclaration.create(t);
         }
     }
-
     public static boolean isSpeculativeType(Type t) {
         Function1<TypeVector,Boolean> visitVector = new Function1<TypeVector,Boolean>(){
-            public Boolean invoke(TypeVector t){
+            public Boolean invoke(TypeVector t) {
                 return isSpeculativeType(t.basetype);
             }
         };
         Function1<TypeAArray,Boolean> visitAArray = new Function1<TypeAArray,Boolean>(){
-            public Boolean invoke(TypeAArray t){
+            public Boolean invoke(TypeAArray t) {
                 return isSpeculativeType(t.index) || isSpeculativeType(t.next);
             }
         };
         Function1<TypeStruct,Boolean> visitStruct = new Function1<TypeStruct,Boolean>(){
-            public Boolean invoke(TypeStruct t){
+            public Boolean invoke(TypeStruct t) {
                 StructDeclaration sd = t.sym;
                 {
                     TemplateInstance ti = sd.isInstantiated();
@@ -143,7 +140,7 @@ public class typinf {
             }
         };
         Function1<TypeClass,Boolean> visitClass = new Function1<TypeClass,Boolean>(){
-            public Boolean invoke(TypeClass t){
+            public Boolean invoke(TypeClass t) {
                 ClassDeclaration sd = t.sym;
                 {
                     TemplateInstance ti = sd.isInstantiated();
@@ -159,7 +156,7 @@ public class typinf {
             }
         };
         Function1<TypeTuple,Boolean> visitTuple = new Function1<TypeTuple,Boolean>(){
-            public Boolean invoke(TypeTuple t){
+            public Boolean invoke(TypeTuple t) {
                 if (t.arguments != null)
                 {
                     {
@@ -196,7 +193,6 @@ public class typinf {
             return isSpeculativeType(tb.nextOf());
         }
     }
-
     public static boolean builtinTypeInfo(Type t) {
         if ((t.isTypeBasic() != null) || ((t.ty & 0xFF) == ENUMTY.Tclass) || ((t.ty & 0xFF) == ENUMTY.Tnull))
             return t.mod == 0;
@@ -207,5 +203,4 @@ public class typinf {
         }
         return false;
     }
-
 }

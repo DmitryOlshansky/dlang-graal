@@ -37,14 +37,11 @@ public class canthrow {
             this.func = func;
             this.mustNotThrow = mustNotThrow;
         }
-
         public  void visit(Expression _param_0) {
         }
-
         public  void visit(DeclarationExp de) {
             this.stop = Dsymbol_canThrow(de.declaration, this.func, this.mustNotThrow);
         }
-
         public  void visit(CallExp ce) {
             if ((global.errors != 0) && (ce.e1.type == null))
                 return ;
@@ -79,7 +76,6 @@ public class canthrow {
             }
             this.stop = true;
         }
-
         public  void visit(NewExp ne) {
             if (ne.member != null)
             {
@@ -106,7 +102,6 @@ public class canthrow {
                 }
             }
         }
-
         public  void visit(DeleteExp de) {
             Type tb = de.e1.type.toBasetype();
             AggregateDeclaration ad = null;
@@ -150,7 +145,6 @@ public class canthrow {
                 }
             }
         }
-
         public  void visit(AssignExp ae) {
             if (((ae.op & 0xFF) == 96))
                 return ;
@@ -187,11 +181,9 @@ public class canthrow {
                 this.stop = true;
             }
         }
-
         public  void visit(NewAnonClassExp _param_0) {
             throw new AssertionError("Unreachable code!");
         }
-
 
         public CanThrow() {}
     }
@@ -200,12 +192,11 @@ public class canthrow {
         CanThrow ct = new CanThrow(func, mustNotThrow);
         return walkPostorder(e, ct);
     }
-
     public static boolean Dsymbol_canThrow(Dsymbol s, FuncDeclaration func, boolean mustNotThrow) {
         Ref<FuncDeclaration> func_ref = ref(func);
         Ref<Boolean> mustNotThrow_ref = ref(mustNotThrow);
         Function1<Dsymbol,Integer> symbolDg = new Function1<Dsymbol,Integer>(){
-            public Integer invoke(Dsymbol s){
+            public Integer invoke(Dsymbol s) {
                 return (Dsymbol_canThrow(s, func_ref.value, mustNotThrow_ref.value) ? 1 : 0);
             }
         };
@@ -278,5 +269,4 @@ public class canthrow {
         }
         return false;
     }
-
 }

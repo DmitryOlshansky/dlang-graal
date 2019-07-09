@@ -30,7 +30,6 @@ public class sideeffect {
         public  IsTrivialExp() {
             super();
         }
-
         public  void visit(Expression e) {
             if (((e.op & 0xFF) == 18))
             {
@@ -39,30 +38,25 @@ public class sideeffect {
             }
             this.stop = lambdaHasSideEffect(e);
         }
-
     }
     private static class LambdaHasSideEffect extends StoppableVisitor
     {
         public  LambdaHasSideEffect() {
             super();
         }
-
         public  void visit(Expression e) {
             this.stop = lambdaHasSideEffect(e);
         }
-
     }
 
     public static boolean isTrivialExp(Expression e) {
         IsTrivialExp v = new IsTrivialExp();
         return (walkPostorder(e, v) ? 1 : 0) == 0;
     }
-
     public static boolean hasSideEffect(Expression e) {
         LambdaHasSideEffect v = new LambdaHasSideEffect();
         return walkPostorder(e, v);
     }
-
     public static int callSideEffectLevel(FuncDeclaration f) {
         if (f.isCtorDeclaration() != null)
             return 0;
@@ -78,7 +72,6 @@ public class sideeffect {
         }
         return 0;
     }
-
     public static int callSideEffectLevel(Type t) {
         t = t.toBasetype();
         TypeFunction tf = null;
@@ -106,7 +99,6 @@ public class sideeffect {
             return 1;
         return 0;
     }
-
     public static boolean lambdaHasSideEffect(Expression e) {
         switch ((e.op & 0xFF))
         {
@@ -163,7 +155,6 @@ public class sideeffect {
         }
         return false;
     }
-
     public static boolean discardValue(Expression e) {
         if (lambdaHasSideEffect(e))
             return false;
@@ -242,14 +233,12 @@ public class sideeffect {
         e.error(new BytePtr("`%s` has no effect"), e.toChars());
         return true;
     }
-
     public static VarDeclaration copyToTemp(long stc, BytePtr name, Expression e) {
         assert(((name.get(0) & 0xFF) == 95) && ((name.get(1) & 0xFF) == 95));
         VarDeclaration vd = new VarDeclaration(e.loc, e.type, Identifier.generateId(name), new ExpInitializer(e.loc, e), 0L);
         vd.storage_class = stc | 1099511627776L | 68719476736L;
         return vd;
     }
-
     public static Expression extractSideEffect(Scope sc, BytePtr name, Ref<Expression> e0, Expression e, boolean alwaysCopy) {
         if (!alwaysCopy && isTrivialExp(e))
             return e;
@@ -258,5 +247,4 @@ public class sideeffect {
         e0.value = Expression.combine(e0.value, expressionSemantic(new DeclarationExp(vd.loc, vd), sc));
         return expressionSemantic(new VarExp(vd.loc, vd, true), sc);
     }
-
 }

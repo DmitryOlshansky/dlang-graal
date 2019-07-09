@@ -51,31 +51,22 @@ public class doc {
             this.buf = buf;
             this.sc = sc;
         }
-
         public  void visit(Dsymbol _param_0) {
         }
-
         public  void visit(InvariantDeclaration _param_0) {
         }
-
         public  void visit(UnitTestDeclaration _param_0) {
         }
-
         public  void visit(PostBlitDeclaration _param_0) {
         }
-
         public  void visit(DtorDeclaration _param_0) {
         }
-
         public  void visit(StaticCtorDeclaration _param_0) {
         }
-
         public  void visit(StaticDtorDeclaration _param_0) {
         }
-
         public  void visit(TypeInfoDeclaration _param_0) {
         }
-
         public  void emit(Scope sc, Dsymbol s, BytePtr com) {
             if ((s != null) && ((sc).lastdc != null) && isDitto(com))
             {
@@ -136,13 +127,11 @@ public class doc {
                 (sc).lastdc = dc;
             }
         }
-
         public  void visit(Import imp) {
             if ((imp.prot().kind != Prot.Kind.public_) && ((this.sc).protection.kind != Prot.Kind.export_))
                 return ;
             this.emit(this.sc, imp, imp.comment);
         }
-
         public  void visit(Declaration d) {
             BytePtr com = pcopy(d.comment);
             {
@@ -173,7 +162,6 @@ public class doc {
                 return ;
             this.emit(this.sc, d, com);
         }
-
         public  void visit(AggregateDeclaration ad) {
             BytePtr com = pcopy(ad.comment);
             {
@@ -197,7 +185,6 @@ public class doc {
                 return ;
             this.emit(this.sc, ad, com);
         }
-
         public  void visit(TemplateDeclaration td) {
             if ((td.prot().kind == Prot.Kind.private_) || ((this.sc).protection.kind == Prot.Kind.private_))
                 return ;
@@ -213,7 +200,6 @@ public class doc {
             }
             this.emit(this.sc, td, td.comment);
         }
-
         public  void visit(EnumDeclaration ed) {
             if ((ed.prot().kind == Prot.Kind.private_) || ((this.sc).protection.kind == Prot.Kind.private_))
                 return ;
@@ -234,7 +220,6 @@ public class doc {
                 return ;
             this.emit(this.sc, ed, ed.comment);
         }
-
         public  void visit(EnumMember em) {
             if ((em.prot().kind == Prot.Kind.private_) || ((this.sc).protection.kind == Prot.Kind.private_))
                 return ;
@@ -242,7 +227,6 @@ public class doc {
                 return ;
             this.emit(this.sc, em, em.comment);
         }
-
         public  void visit(AttribDeclaration ad) {
             DArray<Dsymbol> d = ad.include(null);
             if (d != null)
@@ -256,7 +240,6 @@ public class doc {
                 }
             }
         }
-
         public  void visit(ProtDeclaration pd) {
             if (pd.decl != null)
             {
@@ -268,7 +251,6 @@ public class doc {
                 this.sc = (this.sc).pop();
             }
         }
-
         public  void visit(ConditionalDeclaration cd) {
             if ((cd.condition.inc != Include.notComputed))
             {
@@ -285,7 +267,6 @@ public class doc {
             }
         }
 
-
         public EmitComment() {}
     }
     private static class ToDocBuffer extends Visitor
@@ -296,13 +277,11 @@ public class doc {
             this.buf = buf;
             this.sc = sc;
         }
-
         public  void visit(Dsymbol s) {
             HdrGenState hgs = new HdrGenState();
             hgs.ddoc = true;
             toCBuffer(s, this.buf, hgs);
         }
-
         public  void prefix(Dsymbol s) {
             if (s.isDeprecated())
                 (this.buf).writestring(new ByteSlice("deprecated "));
@@ -338,14 +317,12 @@ public class doc {
                 }
             }
         }
-
         public  void visit(Import i) {
             HdrGenState hgs = new HdrGenState();
             hgs.ddoc = true;
             emitProtection(this.buf, i);
             toCBuffer((Dsymbol)i, this.buf, hgs);
         }
-
         public  void visit(Declaration d) {
             if (d.ident == null)
                 return ;
@@ -400,7 +377,6 @@ public class doc {
                 (this.buf).writestring(new ByteSlice(")"));
             (this.buf).writestring(new ByteSlice(";\n"));
         }
-
         public  void visit(AliasDeclaration ad) {
             if (ad.ident == null)
                 return ;
@@ -437,7 +413,6 @@ public class doc {
             }
             (this.buf).writestring(new ByteSlice(";\n"));
         }
-
         public  void parentToBuffer(Dsymbol s) {
             if ((s != null) && (s.isPackage() == null) && (s.isModule() == null))
             {
@@ -446,7 +421,6 @@ public class doc {
                 (this.buf).writestring(new ByteSlice("."));
             }
         }
-
         public static boolean inSameModule(Dsymbol s, Dsymbol p) {
             for (; s != null;s = s.parent){
                 if (s.isModule() != null)
@@ -458,7 +432,6 @@ public class doc {
             }
             return pequals(s, p);
         }
-
         public  void prettyPrintDsymbol(Dsymbol s, Dsymbol parent) {
             if ((s.parent != null) && (pequals(s.parent, parent)))
             {
@@ -476,14 +449,12 @@ public class doc {
                 (this.buf).writestring(s.toChars());
             }
         }
-
         public  void visit(AggregateDeclaration ad) {
             if (ad.ident == null)
                 return ;
             (this.buf).printf(new BytePtr("%s %s"), ad.kind(), ad.toChars());
             (this.buf).writestring(new ByteSlice(";\n"));
         }
-
         public  void visit(StructDeclaration sd) {
             if (sd.ident == null)
                 return ;
@@ -500,7 +471,6 @@ public class doc {
             }
             (this.buf).writestring(new ByteSlice(";\n"));
         }
-
         public  void visit(ClassDeclaration cd) {
             if (cd.ident == null)
                 return ;
@@ -544,7 +514,6 @@ public class doc {
             }
             (this.buf).writestring(new ByteSlice(";\n"));
         }
-
         public  void visit(EnumDeclaration ed) {
             if (ed.ident == null)
                 return ;
@@ -558,13 +527,11 @@ public class doc {
             }
             (this.buf).writestring(new ByteSlice(";\n"));
         }
-
         public  void visit(EnumMember em) {
             if (em.ident == null)
                 return ;
             (this.buf).writestring(em.toChars());
         }
-
 
         public ToDocBuffer() {}
     }
@@ -576,7 +543,6 @@ public class doc {
         public  ByteSlice escapeChar(byte c) {
             return this.strings.get((c & 0xFF));
         }
-
         public Escape(){
         }
         public Escape copy(){
@@ -644,7 +610,6 @@ public class doc {
             highlightText(sc, a, loc, buf, o);
             (buf).writestring(new ByteSlice(")"));
         }
-
 
         public Section() {}
 
@@ -818,7 +783,6 @@ public class doc {
             }
         }
 
-
         public ParamSection() {}
 
         public ParamSection copy() {
@@ -836,7 +800,6 @@ public class doc {
         public  void write(Loc loc, DocComment dc, Scope sc, DArray<Dsymbol> a, OutBuffer buf) {
             DocComment.parseMacros((dc).escapetable, (dc).pmacrotable, this._body, this.bodylen);
         }
-
 
         public MacroSection() {}
 
@@ -863,7 +826,6 @@ public class doc {
         }
         return false;
     }
-
     public static Dsymbol getEponymousMember(TemplateDeclaration td) {
         if (td.onemember == null)
             return null;
@@ -889,14 +851,12 @@ public class doc {
         }
         return null;
     }
-
     public static TemplateDeclaration getEponymousParent(Dsymbol s) {
         if (s.parent == null)
             return null;
         TemplateDeclaration td = s.parent.isTemplateDeclaration();
         return (td != null) && (getEponymousMember(td) != null) ? td : null;
     }
-
     static ByteSlice ddoc_default = new ByteSlice("LPAREN = (\nRPAREN = )\nBACKTICK = `\nDOLLAR = $\nCOMMA = ,\nQUOTE = &quot;\nLF =\n$(LF)\n\nESCAPES =\n  /</&lt;/\n  />/&gt;/\n  /&/&amp;/\n\nH1 = <h1>$0</h1>\nH2 = <h2>$0</h2>\nH3 = <h3>$0</h3>\nH4 = <h4>$0</h4>\nH5 = <h5>$0</h5>\nH6 = <h6>$0</h6>\nB = <b>$0</b>\nI = <i>$0</i>\nEM = <em>$0</em>\nSTRONG = <strong>$0</strong>\nU = <u>$0</u>\nP = <p>$0</p>\nDL = <dl>$0</dl>\nDT = <dt>$0</dt>\nDD = <dd>$0</dd>\nTABLE = <table>$0</table>\nTHEAD = <thead>$0</thead>\nTBODY = <tbody>$0</tbody>\nTR = <tr>$0</tr>\nTH = <th>$0</th>\nTD = <td>$0</td>\nTH_ALIGN = <th align=\"$1\">$+</th>\nTD_ALIGN = <td align=\"$1\">$+</td>\nOL = <ol>$0</ol>\nOL_START = <ol start=\"$1\">$2</ol>\nUL = <ul>$0</ul>\nLI = <li>$0</li>\nBIG = <span class=\"font_big\">$0</span>\nSMALL = <small>$0</small>\nBR = <br>\nHR = <hr />\nLINK = <a href=\"$0\">$0</a>\nLINK2 = <a href=\"$1\">$+</a>\nLINK_TITLE = <a href=\"$1\" title=\"$2\">$3</a>\nSYMBOL_LINK = <a href=\"$1\">$(DDOC_PSYMBOL $+)</a>\nPHOBOS_PATH = https://dlang.org/phobos/\nDOC_ROOT_std = $(PHOBOS_PATH)\nDOC_ROOT_core = $(PHOBOS_PATH)\nDOC_ROOT_etc = $(PHOBOS_PATH)\nDOC_ROOT_object = $(PHOBOS_PATH)\nDOC_EXTENSION = .html\nIMAGE = <img src=\"$1\" alt=\"$+\" />\nIMAGE_TITLE = <img src=\"$1\" alt=\"$3\" title=\"$2\" />\nBLOCKQUOTE = <blockquote>$0</blockquote>\nDEPRECATED = $0\n\nRED = <span class=\"color_red\">$0</span>\nBLUE = <span class=\"color_blue\">$0</span>\nGREEN = <span class=\"color_green\">$0</span>\nYELLOW = <span class=\"color_yellow\">$0</span>\nBLACK = <span class=\"color_black\">$0</span>\nWHITE = <span class=\"color_white\">$0</span>\n\nD_CODE =\n<section class=\"code_listing\">\n  <div class=\"code_sample\">\n    <div class=\"dlang\">\n      <ol class=\"code_lines\">\n        <li><code class=\"code\">$0</code></li>\n      </ol>\n    </div>\n  </div>\n</section>\n\nOTHER_CODE =\n<section class=\"code_listing\">\n  <div class=\"code_sample\">\n    <div class=\"dlang\">\n      <ol class=\"code_lines\">\n        <li><code class=\"code language-$1\">$+</code></li>\n      </ol>\n    </div>\n  </div>\n</section>\n\nD_INLINECODE = <code class=\"code\">$0</code>\nDDOC_BACKQUOTED = $(D_INLINECODE $0)\nD_COMMENT = <span class=\"comment\">$0</span>\nD_STRING = <span class=\"string_literal\">$0</span>\nD_KEYWORD = <span class=\"keyword\">$0</span>\nD_PSYMBOL = <span class=\"psymbol\">$0</span>\nD_PARAM = <span class=\"param\">$0</span>\n\nDDOC_BLANKLINE = <br><br>\nDDOC_COMMENT = <!-- $0 -->\n\nDDOC =\n<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset=\"UTF-8\">\n    <title>$(TITLE)</title>\n    <style type=\"text/css\" media=\"screen\">\n      html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p,\n      blockquote, pre, a, abbr, address, cite, code, del, dfn, em, figure,\n      img, ins, kbd, q, s, samp, small, strong, sub, sup, var, b, u, i, dl,\n      dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption,\n      tbody, tfoot, thead, tr, th, td {\n        background: transparent none repeat scroll 0 0;\n        border: 0 none;\n        font-size: 100%;\n        margin: 0;\n        outline: 0 none;\n        padding: 0;\n        vertical-align: baseline;\n      }\n\n      h1 { font-size: 200%; }\n      h2 { font-size: 160%; }\n      h3 { font-size: 120%; }\n      h4 { font-size: 100%; }\n      h5 { font-size: 80%; }\n      h6 { font-size: 80%; font-weight: normal; }\n\n      ul, ol {\n        margin: 1.4em 0;\n      }\n      ul ul, ol ol, ul ol, ol ul {\n        margin-top: 0;\n        margin-bottom: 0;\n      }\n      ul, ol {\n        margin-left: 2.8em;\n      }\n\n      ol {\n        list-style: decimal;\n      }\n      ol ol {\n        list-style: lower-alpha;\n      }\n      ol ol ol {\n        list-style: lower-roman;\n      }\n      ol ol ol ol {\n        list-style: decimal;\n      }\n\n      blockquote {\n        margin: 0.1em;\n        margin-left: 1em;\n        border-left: 2px solid #cccccc;\n        padding-left: 0.7em;\n      }\n\n      .color_red { color: #dc322f; }\n      .color_blue { color: #268bd2; }\n      .color_green { color: #859901; }\n      .color_yellow { color: #b58901; }\n      .color_black { color: black; }\n      .color_white { color: white; }\n\n      .font_big {\n        font-size: 1.2em;\n      }\n\n      .ddoc_section_h {\n        font-weight: bold;\n        font-size: 13px;\n        line-height: 19.5px;\n        margin-top: 11px;\n        display: block;\n      }\n\n      body.dlang .dlang {\n        display: inline-block;\n      }\n\n      body.dlang .declaration .dlang {\n          display: block;\n      }\n\n      body.dlang .ddoc_header_anchor a.dlang {\n        display: block;\n        color: rgba(0, 136, 204, 1);\n        text-decoration: none;\n      }\n\n      body.dlang .ddoc_header_anchor .code {\n        color: rgba(0, 136, 204, 1);\n      }\n\n      #ddoc_main .module {\n          border-color: currentColor rgba(233, 233, 233, 1) rgba(233, 233, 233, 1);\n          border-style: none solid solid;\n          border-width: 0 1px 1px;\n          overflow-x: hidden;\n          padding: 15px;\n      }\n\n      #ddoc_main .section .section {\n        margin-top: 0;\n      }\n\n      #ddoc_main .ddoc_module_members_section {\n          padding: 1px 0 0;\n          transition: transform 0.3s ease 0s;\n      }\n\n      #ddoc_main .ddoc_member, #ddoc_main .ddoc_module_members section.intro {\n          background: #fff none repeat scroll 0 0;\n          list-style-type: none;\n          width: 100%;\n      }\n\n      #ddoc_main .ddoc_header_anchor {\n          font-size: 1.4em;\n          transition: transform 0.3s ease 0s;\n      }\n\n      #ddoc_main .ddoc_header_anchor > .code {\n          display: inline-block;\n\n      }\n\n      #ddoc_main .ddoc_decl {\n        background-color: transparent;\n        height: 100%;\n        left: 0;\n        top: 0;\n        padding: 0;\n        padding-left: 15px;\n      }\n\n      #ddoc_main .ddoc_decl .section, #ddoc_main .section.ddoc_sections {\n        background: white none repeat scroll 0 0;\n        margin: 0;\n        padding: 5px;\n        position: relative;\n        border-radius: 5px;\n      }\n\n      #ddoc_main .ddoc_decl .section h4:first-of-type, #ddoc_main .section.ddoc_sections h4:first-of-type {\n        font-size: 13px;\n        line-height: 1.5;\n        margin-top: 21px;\n      }\n\n      #ddoc_main .section .declaration {\n          margin-top: 21px;\n      }\n\n      #ddoc_main .section .declaration .code {\n          color: rgba(0, 0, 0, 1);\n          margin-bottom: 15px;\n          padding-bottom: 6px;\n      }\n\n      #ddoc_main .declaration div .para {\n          margin-bottom: 0;\n      }\n\n      #ddoc_main .ddoc_params .graybox tr td:first-of-type {\n        padding: 7px;\n        text-align: right;\n        vertical-align: top;\n        word-break: normal;\n        white-space: nowrap;\n      }\n\n      #ddoc_main .ddoc_params .graybox {\n        border: 0 none;\n      }\n\n      #ddoc_main .ddoc_params .graybox td {\n        border-color: rgba(214, 214, 214, 1);\n      }\n\n      #ddoc_main .ddoc_params .graybox tr:first-child > td {\n        border-top: 0 none;\n      }\n\n      #ddoc_main .ddoc_params .graybox tr:last-child > td {\n        border-bottom: 0 none;\n      }\n\n      #ddoc_main .ddoc_params .graybox tr > td:first-child {\n        border-left: 0 none;\n      }\n\n      #ddoc_main .ddoc_params .graybox tr > td:last-child {\n        border-right: 0 none;\n        width: 100%;\n      }\n\n      #ddoc_main em.term, #ddoc_main em.term .code {\n        color: rgba(65, 65, 65, 1);\n        font-size: 12px;\n        font-style: italic;\n        line-height: 1.5;\n      }\n\n      #ddoc_main .see-also {\n        cursor: pointer;\n        font-family: Menlo,monospace;\n      }\n\n      #ddoc_main .ddoc_decl .section > div:last-of-type {\n        margin-bottom: 15px;\n      }\n\n      #ddoc_main .ddoc_member, #ddoc_main .ddoc_module_members {\n          transition: transform 0.3s ease 0s;\n      }\n\n      #ddoc_main .code_sample {\n        background: inherit;\n      }\n\n      #ddoc_main .declaration .code-line {\n          display: block;\n          font: 1em Menlo,monospace;\n      }\n\n      #ddoc_main a[name] {\n        margin: -112px 0 0;\n        padding-top: 112px;\n      }\n\n      #ddoc_main .ddoc_decl td {\n        max-width: inherit;\n      }\n\n      #ddoc_main .declaration a {\n        color: inherit;\n      }\n\n      #ddoc_main .declaration a:hover {\n          color: rgba(0, 136, 204, 1);\n          text-decoration: underline;\n      }\n\n      body.ddoc {\n        background-color: transparent;\n        color: rgba(0, 0, 0, 1);\n        font-family: Helvetica,Arial,sans-serif;\n        font-size: 62.5%;\n        margin: 0;\n        border: 0;\n        left: 0;\n        top: 0;\n        padding: 0;\n      }\n\n      .ddoc a[name] {\n        display: block;\n        height: 0;\n        margin: -85px 0 0;\n        padding-top: 85px;\n        width: 0;\n      }\n\n      .ddoc .module {\n          border-color: transparent;\n          background-color: rgba(255, 255, 255, 1);\n          border-color: currentColor rgba(233, 233, 233, 1) rgba(233, 233, 233, 1);\n          border-image: none;\n          border-style: none solid solid;\n          border-width: 0 1px 1px;\n          box-shadow: 0 0 1px rgba(0, 0, 0, 0.07);\n          display: block;\n          margin-left: 0;\n          min-height: calc(100% - 173px);\n          overflow: auto;\n          padding-bottom: 100px;\n      }\n\n      .ddoc .content_wrapper {\n          background-color: rgba(242, 242, 242, 1);\n          margin: 0 auto;\n          max-width: 980px;\n      }\n\n      .ddoc .section {\n        padding: 15px 25px 30px;\n      }\n\n      .ddoc .section .section {\n        margin: 30px 0 0;\n        padding: 0;\n      }\n\n      .ddoc .para {\n        color: rgba(65, 65, 65, 1);\n        font-size: 1.4em;\n        line-height: 145%;\n        margin-bottom: 15px;\n      }\n\n      .ddoc .ddoc_examples .para {\n        margin-bottom: 0;\n      }\n\n      .ddoc .module_name {\n          color: rgba(0, 0, 0, 1);\n          display: block;\n          font-family: Helvetica;\n          font-size: 2.8em;\n          font-weight: 100;\n          margin-bottom: 0;\n          padding: 15px 0;\n      }\n\n      .ddoc .module a {\n          color: rgba(0, 136, 204, 1);\n          text-decoration: none;\n      }\n\n      .ddoc .code {\n        color: rgba(128, 128, 128, 1);\n        font-family: Menlo,monospace;\n        font-size: 0.85em;\n        word-wrap: break-word;\n      }\n\n      .ddoc .code i {\n        font-style: normal;\n      }\n\n      .ddoc .code .code {\n        font-size: 1em;\n      }\n\n      .ddoc .code_sample {\n        background-clip: padding-box;\n        margin: 1px 0;\n        text-align: left;\n      }\n\n      .ddoc .code_sample {\n        display: block;\n        font-size: 1.4em;\n        margin-left: 21px;\n      }\n\n      .ddoc ol .code_sample {\n        font-size: 1em;\n      }\n\n      .ddoc .code_lines {\n        counter-reset: li;\n        line-height: 1.6em;\n        list-style: outside none none;\n        margin: 0;\n        padding: 0;\n      }\n\n      .ddoc .code_listing .code_sample div {\n        margin-left: 13px;\n        width: 93%;\n      }\n\n      .ddoc .code_listing .code_sample div .code_lines li {\n        list-style-type: none;\n        margin: 0;\n        padding-right: 10px;\n      }\n\n      .ddoc .code_sample div .code_lines li::before {\n        margin-left: -33px;\n        margin-right: 25px;\n      }\n\n      .ddoc .code_sample div .code_lines li:nth-child(n+10)::before {\n        margin-left: -39px;\n        margin-right: 25px;\n      }\n\n      .ddoc .code_sample div .code_lines li:nth-child(n+100)::before {\n        margin-left: -46px;\n        margin-right: 25px;\n      }\n\n      .ddoc .code_sample .code_lines .code {\n        color: #000;\n      }\n\n      .ddoc div.dlang {\n        margin: 10px 0 21px;\n        padding: 4px 0 2px 10px;\n      }\n\n      .ddoc div.dlang {\n          margin: 10px 0 21px;\n          padding: 4px 0 2px 10px;\n      }\n\n      .ddoc div.dlang {\n        border-left: 5px solid rgba(0, 155, 51, 0.2);\n      }\n\n      .ddoc .code_lines li::before {\n        color: rgba(128, 128, 128, 1);\n        content: counter(li, decimal);\n        counter-increment: li;\n        font-family: Menlo,monospace;\n        font-size: 0.9em;\n        margin-right: 16px;\n      }\n\n      .ddoc .code_lines li {\n        padding-left: 0;\n        white-space: pre-wrap;\n      }\n\n      .ddoc .code_lines li:only-of-type::before {\n        color: rgba(255, 255, 255, 1);\n        content: \" \";\n      }\n\n      .ddoc .code_lines li:only-of-type {\n        color: rgba(255, 255, 255, 1);\n        content: \" \";\n      }\n\n      .ddoc .code_lines li:nth-child(n+10) {\n        text-indent: -17px;\n      }\n\n      .ddoc .code_lines li:nth-child(n+10)::before {\n        margin-right: 12px;\n      }\n\n      .ddoc .graybox {\n        border: 1px solid rgba(233, 233, 233, 1);\n        border-collapse: collapse;\n        border-spacing: 0;\n        empty-cells: hide;\n        margin: 20px 0 36px;\n        text-align: left;\n      }\n\n      .ddoc .graybox p {\n        margin: 0;\n        min-width: 50px;\n      }\n\n      .ddoc th {\n        margin: 0;\n        max-width: 260px;\n        padding: 5px 10px 5px 10px;\n        vertical-align: bottom;\n      }\n\n      .ddoc td {\n        border: 1px solid rgba(233, 233, 233, 1);\n        margin: 0;\n        max-width: 260px;\n        padding: 5px 10px 5px 10px;\n        vertical-align: middle;\n      }\n\n      .punctuation {\n        color: rgba(0, 0, 0, 1);\n      }\n\n      .comment {\n        color: rgba(0, 131, 18, 1);\n      }\n\n      .operator {\n        color: #000;\n      }\n\n      .keyword {\n        color: rgba(170, 13, 145, 1);\n      }\n\n      .keyword_type {\n        color: rgba(170, 51, 145, 1);\n      }\n\n      .string_literal {\n        color: rgba(196, 26, 22, 1);\n      }\n\n      .ddoc_psuper_symbol {\n        color: rgba(92, 38, 153, 1);\n      }\n\n      .param {\n        color: rgba(0, 0, 0, 1);\n      }\n\n      .psymbol {\n        color: rgba(0, 0, 0, 1);\n      }\n\n      .ddoc_member_header .ddoc_header_anchor .code {\n        font-size: 1em;\n      }\n    </style>\n  </head>\n  <body id=\"ddoc_main\" class=\"ddoc dlang\">\n    <div class=\"content_wrapper\">\n      <article class=\"module\">\n        <h1 class=\"module_name\">$(TITLE)</h1>\n        <section id=\"module_content\">$(BODY)</section>\n      </article>\n    </div>\n  </body>\n</html>$(LF)\n\nDDOC_MODULE_MEMBERS = <section class=\"section ddoc_module_members_section\">\n  <div class=\"ddoc_module_members\">\n    $(DDOC_MEMBERS $0)\n  </div>\n</section>$(LF)\n\nDDOC_CLASS_MEMBERS = $(DDOC_MEMBERS $0)$(LF)\nDDOC_STRUCT_MEMBERS = $(DDOC_MEMBERS $0)$(LF)\nDDOC_ENUM_MEMBERS = $(DDOC_MEMBERS $0)$(LF)\nDDOC_TEMPLATE_MEMBERS = $(DDOC_MEMBERS $0)$(LF)\n\nDDOC_MEMBERS = <ul class=\"ddoc_members\">\n  $0\n</ul>\n\nDDOC_MEMBER = <li class=\"ddoc_member\">\n  $0\n</li>\n\nDDOC_MEMBER_HEADER = <div class=\"ddoc_member_header\">\n  $0\n</div>\n\nDDOC_HEADER_ANCHOR = <div class=\"ddoc_header_anchor\">\n  <a href=\"#$1\" id=\"$1\"><code class=\"code\">$2</code></a>\n</div>\n\nDDOC_DECL = <div class=\"ddoc_decl\">\n  <section class=\"section\">\n    <div class=\"declaration\">\n      <h4>Declaration</h4>\n      <div class=\"dlang\">\n        <p class=\"para\">\n          <code class=\"code\">\n            $0\n          </code>\n        </p>\n      </div>\n    </div>\n  </section>\n</div>\n\nDDOC_ANCHOR = <span class=\"ddoc_anchor\" id=\"$1\"></span>\n\nDDOC_DECL_DD = <div class=\"ddoc_decl\">\n  $0\n</div>\n\nDDOC_SECTIONS = <section class=\"section ddoc_sections\">\n  $0\n</section>$(LF)\n\nDDOC_SUMMARY = <div class=\"ddoc_summary\">\n  <p class=\"para\">\n    $0\n  </p>\n</div>$(LF)\n\nDDOC_DESCRIPTION = <div class=\"ddoc_description\">\n  <h4>Discussion</h4>\n  <p class=\"para\">\n    $0\n  </p>\n</div>$(LF)\n\nDDOC_EXAMPLES = <div class=\"ddoc_examples\">\n  <h4>Examples</h4>\n  <p class=\"para\">\n    $0\n  </p>\n</div>\n\nDDOC_RETURNS = <div class=\"ddoc_returns\">\n  <h4>Return Value</h4>\n  <p class=\"para\">\n    $0\n  </p>\n</div>$(LF)\n\nDDOC_PARAMS = <div class=\"ddoc_params\">\n  <h4>Parameters</h4>\n  <table cellspacing=\"0\" cellpadding=\"5\" border=\"0\" class=\"graybox\">\n    <tbody>\n      $0\n    </tbody>\n  </table>\n</div>$(LF)\n\nDDOC_PARAM_ROW = <tr class=\"ddoc_param_row\">\n  $0\n</tr>$(LF)\n\nDDOC_PARAM_ID = <td scope=\"ddoc_param_id\">\n  <code class=\"code\">\n    <em class=\"term\">$0</em>\n  </code>\n</td>$(LF)\n\nDDOC_PARAM_DESC = <td>\n  <div class=\"ddoc_param_desc\">\n    <p class=\"para\">\n      $0\n    </p>\n  </div>\n</td>\n\nDDOC_LICENSE = <div class=\"ddoc_license\">\n  <h4>License</h4>\n  <p class=\"para\">\n    $0\n  </p>\n</div>$(LF)\n\nDDOC_AUTHORS = <div class=\"ddoc_authors\">\n  <h4>Authors</h4>\n  <p class=\"para\">\n    $0\n  </p>\n</div>$(LF)\n\nDDOC_BUGS = <div class=\"ddoc_bugs\">\n  <h4>Bugs</h4>\n  <p class=\"para\">\n    $0\n  </p>\n</div>$(LF)\n\nDDOC_COPYRIGHT = <div class=\"ddoc_copyright\">\n  <h4>Copyright</h4>\n  <p class=\"para\">\n    $0\n  </p>\n</div>$(LF)\n\nDDOC_DATE = <div class=\"ddoc_date\">\n  <h4>Date</h4>\n  <p class=\"para\">\n    $0\n  </p>\n</div>$(LF)\n\nDDOC_DEPRECATED = <div class=\"ddoc_deprecated\">\n  <h4>Deprecated</h4>\n  <p class=\"para\">\n    $0\n  </p>\n</div>$(LF)\n\nDDOC_HISTORY = <div class=\"ddoc_history\">\n  <h4>History</h4>\n  <p class=\"para\">\n    $0\n  </p>\n</div>$(LF)\n\nDDOC_SEE_ALSO = <div class=\"ddoc_see_also\">\n  <h4>See Also</h4>\n  <p class=\"para\">\n    $0\n  </p>\n</div>$(LF)\n\nDDOC_STANDARDS = <div class=\"ddoc_standards\">\n  <h4>Standards</h4>\n  <p class=\"para\">\n    $0\n  </p>\n</div>\n\nDDOC_THROWS = <div class=\"ddoc_throws\">\n  <h4>Throws</h4>\n  <p class=\"para\">\n    $0\n  </p>\n</div>\n\nDDOC_VERSION = <div class=\"ddoc_version\">\n  <h4>Version</h4>\n  <p class=\"para\">\n    $0\n  </p>\n</div>\n\nDDOC_SECTION = <div class=\"ddoc_section\">\n  <p class=\"para\">\n    $0\n  </p>\n</div>$(LF)\n\nDDOC_SECTION_H = <span class=\"ddoc_section_h\">$0:</span>$(LF)\n\nDDOC_DITTO = <br>\n$0\n\nDDOC_PSYMBOL = <code class=\"code\">$0</code>\nDDOC_ENUM_BASETYPE = $0\nDDOC_PSUPER_SYMBOL = <span class=\"ddoc_psuper_symbol\">$0</span>\nDDOC_KEYWORD = <code class=\"code\">$0</code>\nDDOC_PARAM = <code class=\"code\">$0</code>\nDDOC_CONSTRAINT = $(DDOC_CONSTRAINT) if ($0)\nDDOC_OVERLOAD_SEPARATOR = $0\nDDOC_TEMPLATE_PARAM_LIST = $0\nDDOC_TEMPLATE_PARAM = $0\nDDOC_LINK_AUTODETECT = $(LINK $0)\nDDOC_AUTO_PSYMBOL = $(DDOC_PSYMBOL $0)\nDDOC_AUTO_KEYWORD = $(DDOC_KEYWORD $0)\nDDOC_AUTO_PARAM = $(DDOC_PARAM $0)\nDDOC_AUTO_PSYMBOL_SUPPRESS = $0\n");
     static ByteSlice ddoc_decl_s = new ByteSlice("$(DDOC_DECL ");
     static ByteSlice ddoc_decl_e = new ByteSlice(")\n");
@@ -1020,7 +980,6 @@ public class doc {
         finally {
         }
     }
-
     public static void escapeDdocString(OutBuffer buf, int start) {
         {
             int u = start;
@@ -1049,7 +1008,6 @@ public class doc {
             }
         }
     }
-
     public static void escapeStrayParenthesis(Loc loc, OutBuffer buf, int start, boolean respectBackslashEscapes) {
         int par_open = 0;
         byte inCode = (byte)0;
@@ -1157,14 +1115,12 @@ public class doc {
             }
         }
     }
-
     public static Scope skipNonQualScopes(Scope sc) {
         for (; (sc != null) && ((sc).scopesym == null);) {
             sc = (sc).enclosing;
         }
         return sc;
     }
-
     public static boolean emitAnchorName(OutBuffer buf, Dsymbol s, Scope sc, boolean includeParent) {
         if ((s == null) || (s.isPackage() != null) || (s.isModule() != null))
             return false;
@@ -1189,7 +1145,6 @@ public class doc {
         }
         return true;
     }
-
     public static void emitAnchor(OutBuffer buf, Dsymbol s, Scope sc, boolean forHeader) {
         Ref<OutBuffer> buf_ref = ref(buf);
         Identifier ident = null;
@@ -1257,7 +1212,7 @@ public class doc {
                     else
                     {
                         Function0<Void> printFullyQualifiedImport = new Function0<Void>(){
-                            public Void invoke(){
+                            public Void invoke() {
                                 if ((imp.value.packages != null) && ((imp.value.packages).length != 0))
                                 {
                                     {
@@ -1308,7 +1263,6 @@ public class doc {
             }
         }
     }
-
     public static int getCodeIndent(BytePtr src) {
         for (; (src != null) && ((src.get() & 0xFF) == 13) || ((src.get() & 0xFF) == 10);) {
             src.plusAssign(1);
@@ -1320,7 +1274,6 @@ public class doc {
         }
         return codeIndent;
     }
-
     public static void expandTemplateMixinComments(TemplateMixin tm, OutBuffer buf, Scope sc) {
         if (tm.semanticRun == 0)
             dsymbolSemantic(tm, sc);
@@ -1340,7 +1293,6 @@ public class doc {
             }
         }
     }
-
     public static void emitMemberComments(ScopeDsymbol sds, OutBuffer buf, Scope sc) {
         if (sds.members == null)
             return ;
@@ -1377,11 +1329,9 @@ public class doc {
         else
             (buf).writestring(new ByteSlice(")"));
     }
-
     public static void emitProtection(OutBuffer buf, Import i) {
         emitProtection(buf, i.protection);
     }
-
     public static void emitProtection(OutBuffer buf, Declaration d) {
         Prot prot = d.protection.copy();
         if ((prot.kind != Prot.Kind.undefined) && (prot.kind != Prot.Kind.public_))
@@ -1389,12 +1339,10 @@ public class doc {
             emitProtection(buf, prot);
         }
     }
-
     public static void emitProtection(OutBuffer buf, Prot prot) {
         protectionToBuffer(buf, prot);
         (buf).writeByte(32);
     }
-
     public static void emitComment(Dsymbol s, OutBuffer buf, Scope sc) {
         EmitComment v = new EmitComment(buf, sc);
         if (s == null)
@@ -1402,12 +1350,10 @@ public class doc {
         else
             s.accept(v);
     }
-
     public static void toDocBuffer(Dsymbol s, OutBuffer buf, Scope sc) {
         ToDocBuffer v = new ToDocBuffer(buf, sc);
         s.accept(v);
     }
-
     public static class DocComment
     {
         public DArray<Section> sections = new DArray<Section>();
@@ -1439,7 +1385,6 @@ public class doc {
             }
             return dc;
         }
-
         public static void parseMacros(Escape escapetable, Ptr<Macro> pmacrotable, BytePtr m, int mlen) {
             BytePtr p = pcopy(m);
             int len = mlen;
@@ -1554,7 +1499,6 @@ public class doc {
             if (namelen != 0)
                 /*goto L1*/throw Dispatch0.INSTANCE;
         }
-
         public static void parseEscapes(Escape escapetable, BytePtr textstart, int textlen) {
             if (escapetable == null)
             {
@@ -1590,7 +1534,6 @@ public class doc {
                 p.postInc();
             }
         }
-
         public  void parseSections(BytePtr comment) {
             BytePtr p = null;
             BytePtr pstart = null;
@@ -1718,7 +1661,6 @@ public class doc {
                 }
             }
         }
-
         public  void writeSections(Scope sc, DArray<Dsymbol> a, OutBuffer buf) {
             assert((a).length != 0);
             Loc loc = (a).get(0).loc.copy();
@@ -1798,7 +1740,6 @@ public class doc {
             else
                 (buf).writestring(new ByteSlice(")"));
         }
-
         public DocComment(){
             sections = new DArray<Section>();
             a = new DArray<Dsymbol>();
@@ -1844,11 +1785,9 @@ public class doc {
         }
         return false;
     }
-
     public static BytePtr skipwhitespace(BytePtr p) {
         return toBytePtr(skipwhitespace(toDString(p)));
     }
-
     public static ByteSlice skipwhitespace(ByteSlice p) {
         {
             ByteSlice __r1052 = p.copy();
@@ -1869,7 +1808,6 @@ public class doc {
         }
         return p.slice(p.getLength(),p.getLength());
     }
-
     public static int skipChars(OutBuffer buf, int i, ByteSlice chars) {
     /*Outer:*/
         {
@@ -1892,7 +1830,6 @@ public class doc {
         }
         return (buf).offset;
     }
-
     public static ByteSlice replaceChar(ByteSlice s, byte c, ByteSlice r) {
         int count = 0;
         {
@@ -1926,7 +1863,6 @@ public class doc {
         result.value.append(s.slice(start,s.getLength()));
         return toByteSlice(result.value);
     }
-
     public static ByteSlice toLowercase(ByteSlice s) {
         Ref<ByteSlice> lower = ref(new ByteSlice());
         {
@@ -1953,7 +1889,6 @@ public class doc {
             lower.value = s.copy();
         return lower.value;
     }
-
     public static int getMarkdownIndent(OutBuffer buf, int from, int to) {
         ByteSlice slice = (buf).peekSlice().copy();
         if ((to > slice.getLength()))
@@ -1969,7 +1904,6 @@ public class doc {
         }
         return indent;
     }
-
     public static int skiptoident(OutBuffer buf, int i) {
         IntRef i_ref = ref(i);
         ByteSlice slice = (buf).peekSlice().copy();
@@ -1992,7 +1926,6 @@ public class doc {
         }
         return i_ref.value;
     }
-
     public static int skippastident(OutBuffer buf, int i) {
         IntRef i_ref = ref(i);
         ByteSlice slice = (buf).peekSlice().copy();
@@ -2015,7 +1948,6 @@ public class doc {
         }
         return i_ref.value;
     }
-
     public static int skipPastIdentWithDots(OutBuffer buf, int i) {
         IntRef i_ref = ref(i);
         ByteSlice slice = (buf).peekSlice().copy();
@@ -2060,7 +1992,6 @@ public class doc {
             return i_ref.value - 1;
         return i_ref.value;
     }
-
     public static int skippastURL(OutBuffer buf, int i) {
         ByteSlice slice = (buf).peekSlice().slice(i,(buf).peekSlice().getLength()).copy();
         int j = 0;
@@ -2096,7 +2027,6 @@ public class doc {
     /*Lno:*/
         return i;
     }
-
     public static void removeBlankLineMacro(OutBuffer buf, IntRef iAt, IntRef i) {
         if (iAt.value == 0)
             return ;
@@ -2106,7 +2036,6 @@ public class doc {
             i.value -= 17;
         iAt.value = 0;
     }
-
     public static boolean replaceMarkdownThematicBreak(OutBuffer buf, IntRef i, int iLineStart, Loc loc) {
         if (!global.params.markdown)
             return false;
@@ -2136,7 +2065,6 @@ public class doc {
         }
         return false;
     }
-
     public static int detectAtxHeadingLevel(OutBuffer buf, int i) {
         if (!global.params.markdown)
             return 0;
@@ -2151,7 +2079,6 @@ public class doc {
             return 0;
         return headingLevel;
     }
-
     public static void removeAnyAtxHeadingSuffix(OutBuffer buf, int i) {
         int j = i;
         int iSuffixStart = 0;
@@ -2182,7 +2109,6 @@ public class doc {
         if (iSuffixStart != 0)
             (buf).remove(iWhitespaceStart, j - iWhitespaceStart);
     }
-
     public static void endMarkdownHeading(OutBuffer buf, int iStart, IntRef iEnd, Loc loc, IntRef headingLevel) {
         if (!global.params.markdown)
             return ;
@@ -2202,7 +2128,6 @@ public class doc {
         (buf).insert(iBeforeNewline, new ByteSlice(")"));
         headingLevel.value = 0;
     }
-
     public static int endAllMarkdownQuotes(OutBuffer buf, int i, IntRef quoteLevel) {
         int length = quoteLevel.value;
         for (; (quoteLevel.value > 0);quoteLevel.value -= 1) {
@@ -2210,7 +2135,6 @@ public class doc {
         }
         return length;
     }
-
     public static int endAllListsAndQuotes(OutBuffer buf, IntRef i, Slice<MarkdownList> nestedLists, IntRef quoteLevel, IntRef quoteMacroLevel) {
         Ref<Slice<MarkdownList>> nestedLists_ref = ref(nestedLists);
         quoteMacroLevel.value = 0;
@@ -2220,13 +2144,12 @@ public class doc {
         i.value += endAllMarkdownQuotes(buf, i.value, quoteLevel);
         return i.value - i0;
     }
-
     public static int replaceMarkdownEmphasis(OutBuffer buf, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters, int downToLevel) {
         Ref<OutBuffer> buf_ref = ref(buf);
         if (!global.params.markdown)
             return 0;
         Function2<MarkdownDelimiter,MarkdownDelimiter,Integer> replaceEmphasisPair = new Function2<MarkdownDelimiter,MarkdownDelimiter,Integer>(){
-            public Integer invoke(MarkdownDelimiter start, MarkdownDelimiter end){
+            public Integer invoke(MarkdownDelimiter start, MarkdownDelimiter end) {
                 int count = (start.count == 1) || (end.count == 1) ? 1 : 2;
                 int iStart = start.iStart;
                 int iEnd = end.iStart;
@@ -2286,7 +2209,6 @@ public class doc {
         inlineDelimiters.getLength() = downToLevel;
         return delta;
     }
-
     public static boolean isIdentifier(DArray<Dsymbol> a, BytePtr p, int len) {
         {
             Slice<Dsymbol> __r1065 = (a).opSlice().copy();
@@ -2331,7 +2253,6 @@ public class doc {
         }
         return false;
     }
-
     public static boolean isKeyword(BytePtr p, int len) {
         Slice<ByteSlice> table = slice(new ByteSlice[]{new ByteSlice("true"), new ByteSlice("false"), new ByteSlice("null")});
         {
@@ -2345,7 +2266,6 @@ public class doc {
         }
         return false;
     }
-
     public static TypeFunction isTypeFunction(Dsymbol s) {
         FuncDeclaration f = s.isFuncDeclaration();
         if ((f != null) && (f.type != null))
@@ -2356,7 +2276,6 @@ public class doc {
         }
         return null;
     }
-
     public static Parameter isFunctionParameter(Dsymbol s, BytePtr p, int len) {
         TypeFunction tf = isTypeFunction(s);
         if ((tf != null) && (tf.parameterList.parameters != null))
@@ -2375,7 +2294,6 @@ public class doc {
         }
         return null;
     }
-
     public static Parameter isFunctionParameter(DArray<Dsymbol> a, BytePtr p, int len) {
         {
             int i = 0;
@@ -2389,7 +2307,6 @@ public class doc {
         }
         return null;
     }
-
     public static Parameter isEponymousFunctionParameter(DArray<Dsymbol> a, BytePtr p, int len) {
         {
             int i = 0;
@@ -2423,7 +2340,6 @@ public class doc {
         }
         return null;
     }
-
     public static TemplateParameter isTemplateParameter(DArray<Dsymbol> a, BytePtr p, int len) {
         {
             int i = 0;
@@ -2449,7 +2365,6 @@ public class doc {
         }
         return null;
     }
-
     public static boolean isReservedName(ByteSlice str) {
         Slice<ByteSlice> table = slice(new ByteSlice[]{new ByteSlice("__ctor"), new ByteSlice("__dtor"), new ByteSlice("__postblit"), new ByteSlice("__invariant"), new ByteSlice("__unitTest"), new ByteSlice("__require"), new ByteSlice("__ensure"), new ByteSlice("__dollar"), new ByteSlice("__ctfe"), new ByteSlice("__withSym"), new ByteSlice("__result"), new ByteSlice("__returnLabel"), new ByteSlice("__vptr"), new ByteSlice("__monitor"), new ByteSlice("__gate"), new ByteSlice("__xopEquals"), new ByteSlice("__xopCmp"), new ByteSlice("__LINE__"), new ByteSlice("__FILE__"), new ByteSlice("__MODULE__"), new ByteSlice("__FUNCTION__"), new ByteSlice("__PRETTY_FUNCTION__"), new ByteSlice("__DATE__"), new ByteSlice("__TIME__"), new ByteSlice("__TIMESTAMP__"), new ByteSlice("__VENDOR__"), new ByteSlice("__VERSION__"), new ByteSlice("__EOF__"), new ByteSlice("__CXXLIB__"), new ByteSlice("__LOCAL_SIZE"), new ByteSlice("___tls_get_addr"), new ByteSlice("__entrypoint")}).copy();
         {
@@ -2463,7 +2378,6 @@ public class doc {
         }
         return false;
     }
-
     public static class MarkdownDelimiter
     {
         public int iStart = 0;
@@ -2476,11 +2390,9 @@ public class doc {
         public  boolean isValid() {
             return this.count != 0;
         }
-
         public  void invalidate() {
             this.count = 0;
         }
-
         public MarkdownDelimiter(){
         }
         public MarkdownDelimiter copy(){
@@ -2527,7 +2439,6 @@ public class doc {
         public  boolean isValid() {
             return (this.type & 0xFF) != 255;
         }
-
         public static MarkdownList parseItem(OutBuffer buf, int iLineStart, int i) {
             if (!global.params.markdown)
                 return new MarkdownList(new ByteSlice(), 0, 0, 0, 0, 0, (byte)255);
@@ -2536,14 +2447,12 @@ public class doc {
             else
                 return parseOrderedListItem(buf, iLineStart, i);
         }
-
         public  boolean isAtItemInThisList(OutBuffer buf, int iLineStart, int i) {
             MarkdownList item = ((this.type & 0xFF) == 46) || ((this.type & 0xFF) == 41) ? parseOrderedListItem(buf, iLineStart, i) : parseUnorderedListItem(buf, iLineStart, i).copy();
             if (((item.type & 0xFF) == (this.type & 0xFF)))
                 return (item.delimiterIndent < this.contentIndent) && (item.contentIndent > this.delimiterIndent);
             return false;
         }
-
         public  boolean startItem(OutBuffer buf, IntRef iLineStart, IntRef i, IntRef iPrecedingBlankLine, Slice<MarkdownList> nestedLists, Loc loc) {
             (buf).remove(this.iStart, this.iContentStart - this.iStart);
             if ((nestedLists.getLength() == 0) || (this.delimiterIndent >= nestedLists.get(nestedLists.getLength() - 1).contentIndent) || __equals((buf).data.slice(iLineStart.value - 4,iLineStart.value), new ByteSlice("$(LI")))
@@ -2583,7 +2492,6 @@ public class doc {
             }
             return true;
         }
-
         public static int endAllNestedLists(OutBuffer buf, int i, Slice<MarkdownList> nestedLists) {
             int iStart = i;
             for (; nestedLists.getLength() != 0;nestedLists.getLength() = nestedLists.getLength() - 1) {
@@ -2591,7 +2499,6 @@ public class doc {
             }
             return i - iStart;
         }
-
         public static void handleSiblingOrEndingList(OutBuffer buf, IntRef i, IntRef iParagraphStart, Slice<MarkdownList> nestedLists) {
             int iAfterSpaces = skipChars(buf, i.value + 1, new ByteSlice(" \u0009"));
             if (nestedLists.get(nestedLists.getLength() - 1).isAtItemInThisList(buf, i.value + 1, iAfterSpaces))
@@ -2615,7 +2522,6 @@ public class doc {
                 }
             }
         }
-
         public static MarkdownList parseUnorderedListItem(OutBuffer buf, int iLineStart, int i) {
             if ((i + 1 < (buf).offset) && (((buf).data.get(i) & 0xFF) == 45) || (((buf).data.get(i) & 0xFF) == 42) || (((buf).data.get(i) & 0xFF) == 43) && (((buf).data.get(i + 1) & 0xFF) == 32) || (((buf).data.get(i + 1) & 0xFF) == 9) || (((buf).data.get(i + 1) & 0xFF) == 13) || (((buf).data.get(i + 1) & 0xFF) == 10))
             {
@@ -2627,7 +2533,6 @@ public class doc {
             }
             return new MarkdownList(new ByteSlice(), 0, 0, 0, 0, 0, (byte)255);
         }
-
         public static MarkdownList parseOrderedListItem(OutBuffer buf, int iLineStart, int i) {
             int iAfterNumbers = skipChars(buf, i, new ByteSlice("0123456789"));
             if ((iAfterNumbers - i > 0) && (iAfterNumbers - i <= 9) && (iAfterNumbers + 1 < (buf).offset) && (((buf).data.get(iAfterNumbers) & 0xFF) == 46) && (((buf).data.get(iAfterNumbers + 1) & 0xFF) == 32) || (((buf).data.get(iAfterNumbers + 1) & 0xFF) == 9) || (((buf).data.get(iAfterNumbers + 1) & 0xFF) == 13) || (((buf).data.get(iAfterNumbers + 1) & 0xFF) == 10))
@@ -2645,7 +2550,6 @@ public class doc {
             }
             return new MarkdownList(new ByteSlice(), 0, 0, 0, 0, 0, (byte)255);
         }
-
         public MarkdownList(){
         }
         public MarkdownList copy(){
@@ -2725,7 +2629,6 @@ public class doc {
             link.replaceLink(buf, i, iEnd, delimiter);
             return true;
         }
-
         public static boolean replaceReferenceDefinition(OutBuffer buf, IntRef i, Slice<MarkdownDelimiter> inlineDelimiters, int delimiterIndex, MarkdownLinkReferences linkReferences, Loc loc) {
             MarkdownDelimiter delimiter = inlineDelimiters.get(delimiterIndex).copy();
             MarkdownLink link = new MarkdownLink();
@@ -2737,7 +2640,6 @@ public class doc {
             inlineDelimiters.getLength() = delimiterIndex;
             return true;
         }
-
         public  int parseInlineLink(OutBuffer buf, int i) {
             IntRef iEnd = ref(i + 1);
             if ((iEnd.value >= (buf).offset) || (((buf).data.get(iEnd.value) & 0xFF) != 40))
@@ -2755,7 +2657,6 @@ public class doc {
                 return i;
             return iEnd.value + 1;
         }
-
         public  int parseReferenceLink(OutBuffer buf, int i, MarkdownDelimiter delimiter) {
             IntRef iStart = ref(i + 1);
             int iEnd = iStart.value;
@@ -2772,7 +2673,6 @@ public class doc {
                 iEnd = iStart.value;
             return iEnd;
         }
-
         public  int parseReferenceDefinition(OutBuffer buf, int i, MarkdownDelimiter delimiter) {
             if (!delimiter.atParagraphStart || ((delimiter.type & 0xFF) != 91) || (i + 1 >= (buf).offset) || (((buf).data.get(i + 1) & 0xFF) != 58))
                 return i;
@@ -2802,7 +2702,6 @@ public class doc {
                 return i;
             return iEnd.value;
         }
-
         public  boolean parseLabel(OutBuffer buf, IntRef i) {
             if ((((buf).data.get(i.value) & 0xFF) != 91))
                 return false;
@@ -2862,7 +2761,6 @@ public class doc {
             this.label.getLength() = 0;
             return false;
         }
-
         public  boolean parseHref(OutBuffer buf, IntRef i) {
             int j = skipChars(buf, i.value, new ByteSlice(" \u0009"));
             int iHrefStart = j;
@@ -2928,7 +2826,6 @@ public class doc {
                 i.value += 1;
             return true;
         }
-
         public  boolean parseTitle(OutBuffer buf, IntRef i) {
             int j = skipChars(buf, i.value, new ByteSlice(" \u0009"));
             if ((j >= (buf).offset))
@@ -2988,7 +2885,6 @@ public class doc {
             i.value = j + 1;
             return true;
         }
-
         public  void replaceLink(OutBuffer buf, IntRef i, int iLinkEnd, MarkdownDelimiter delimiter) {
             int iAfterLink = i.value - delimiter.count;
             ByteSlice macroName = new ByteSlice();
@@ -3036,7 +2932,6 @@ public class doc {
             (buf).insert(iAfterLink, new ByteSlice(")"));
             i.value = iAfterLink;
         }
-
         public  void storeAndReplaceDefinition(OutBuffer buf, IntRef i, int iEnd, MarkdownLinkReferences linkReferences, Loc loc) {
             if (global.params.vmarkdown)
                 message(loc, new BytePtr("Ddoc: found link reference '%.*s' to '%.*s'"), this.label.getLength(), toBytePtr(this.label), this.href.getLength(), toBytePtr(this.href));
@@ -3047,7 +2942,6 @@ public class doc {
             if (lowercaseLabel in linkReferences.references == null)
                 linkReferences.references.set(lowercaseLabel, __aaval1080);
         }
-
         public static ByteSlice removeEscapeBackslashes(ByteSlice s) {
             if (s.getLength() == 0)
                 return s;
@@ -3074,10 +2968,9 @@ public class doc {
             s.getLength() = s.getLength() - (j - i);
             return s;
         }
-
         public static ByteSlice percentEncode(ByteSlice s) {
             Function1<Byte,Boolean> shouldEncode = new Function1<Byte,Boolean>(){
-                public Boolean invoke(Byte c){
+                public Boolean invoke(Byte c) {
                     return ((c & 0xFF) < 48) && ((c & 0xFF) != 33) && ((c & 0xFF) != 35) && ((c & 0xFF) != 36) && ((c & 0xFF) != 37) && ((c & 0xFF) != 38) && ((c & 0xFF) != 39) && ((c & 0xFF) != 40) && ((c & 0xFF) != 41) && ((c & 0xFF) != 42) && ((c & 0xFF) != 43) && ((c & 0xFF) != 44) && ((c & 0xFF) != 45) && ((c & 0xFF) != 46) && ((c & 0xFF) != 47) || ((c & 0xFF) > 57) && ((c & 0xFF) < 65) && ((c & 0xFF) != 58) && ((c & 0xFF) != 59) && ((c & 0xFF) != 61) && ((c & 0xFF) != 63) && ((c & 0xFF) != 64) || ((c & 0xFF) > 90) && ((c & 0xFF) < 97) && ((c & 0xFF) != 91) && ((c & 0xFF) != 93) && ((c & 0xFF) != 95) || ((c & 0xFF) > 122) && ((c & 0xFF) != 126);
                 }
             };
@@ -3095,7 +2988,6 @@ public class doc {
             }
             return s;
         }
-
         public static boolean skipOneNewline(OutBuffer buf, IntRef i) {
             if ((i.value < (buf).offset) && (((buf).data.get(i.value) & 0xFF) == 13))
                 i.value += 1;
@@ -3106,7 +2998,6 @@ public class doc {
             }
             return false;
         }
-
         public MarkdownLink(){
         }
         public MarkdownLink copy(){
@@ -3146,7 +3037,6 @@ public class doc {
                 return this.references.get(lowercaseLabel);
             return new MarkdownLink(new ByteSlice(), new ByteSlice(), new ByteSlice(), null);
         }
-
         public  MarkdownLink lookupSymbol(ByteSlice name) {
             if (name in this.symbols != null)
                 return this.symbols.get(name);
@@ -3170,11 +3060,10 @@ public class doc {
             this.symbols.set(name, __aaval1081);
             return link;
         }
-
         public  void extractReferences(OutBuffer buf, int i, Loc loc) {
             IntRef i_ref = ref(i);
             Function2<OutBuffer,Integer,Boolean> isFollowedBySpace = new Function2<OutBuffer,Integer,Boolean>(){
-                public Boolean invoke(OutBuffer buf, Integer i){
+                public Boolean invoke(OutBuffer buf, Integer i) {
                     return (i + 1 < (buf).offset) && (((buf).data.get(i + 1) & 0xFF) == 32) || (((buf).data.get(i + 1) & 0xFF) == 9);
                 }
             };
@@ -3282,7 +3171,6 @@ public class doc {
             }
             this.extractedAll = true;
         }
-
         public static Slice<ByteSlice> split(ByteSlice s, byte delimiter) {
             Slice<ByteSlice> result = new Slice<ByteSlice>();
             int iStart = 0;
@@ -3301,7 +3189,6 @@ public class doc {
             result.append(s.slice(iStart,s.getLength()));
             return result;
         }
-
         public  ByteSlice createHref(Dsymbol symbol) {
             Dsymbol root = symbol;
             ByteSlice lref = new ByteSlice();
@@ -3349,7 +3236,6 @@ public class doc {
             }
             return toByteSlice((path.concat((byte)35).concat(lref)));
         }
-
         public MarkdownLinkReferences(){
         }
         public MarkdownLinkReferences copy(){
@@ -3411,7 +3297,6 @@ public class doc {
             i += 1;
         return i;
     }
-
     public static int startTable(OutBuffer buf, int iStart, int iEnd, Loc loc, boolean inQuote, Slice<MarkdownDelimiter> inlineDelimiters, IntSlice columnAlignments) {
         Ref<Slice<MarkdownDelimiter>> inlineDelimiters_ref = ref(inlineDelimiters);
         Ref<IntSlice> columnAlignments_ref = ref(columnAlignments);
@@ -3431,7 +3316,6 @@ public class doc {
         columnAlignments_ref.value.getLength() = 0;
         return 0;
     }
-
     public static int replaceTableRow(OutBuffer buf, int iStart, int iEnd, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters, IntSlice columnAlignments, boolean headerRow) {
         Ref<OutBuffer> buf_ref = ref(buf);
         Ref<Slice<MarkdownDelimiter>> inlineDelimiters_ref = ref(inlineDelimiters);
@@ -3467,7 +3351,7 @@ public class doc {
         }
         IntRef delta = ref(0);
         Function4<Integer,Integer,Integer,Integer,Void> replaceTableCell = new Function4<Integer,Integer,Integer,Integer,Void>(){
-            public Void invoke(Integer iCellStart, Integer iCellEnd, Integer cellIndex, Integer di){
+            public Void invoke(Integer iCellStart, Integer iCellEnd, Integer cellIndex, Integer di) {
                 int eDelta = replaceMarkdownEmphasis(buf_ref.value, loc, inlineDelimiters_ref, di);
                 delta.value += eDelta;
                 iCellEnd += eDelta;
@@ -3558,7 +3442,6 @@ public class doc {
         }
         return delta.value;
     }
-
     public static int endTable(OutBuffer buf, int i, IntSlice columnAlignments) {
         if (columnAlignments.getLength() == 0)
             return 0;
@@ -3566,7 +3449,6 @@ public class doc {
         columnAlignments.getLength() = 0;
         return 2;
     }
-
     public static int endRowAndTable(OutBuffer buf, int iStart, int iEnd, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters, IntSlice columnAlignments) {
         Ref<Slice<MarkdownDelimiter>> inlineDelimiters_ref = ref(inlineDelimiters);
         Ref<IntSlice> columnAlignments_ref = ref(columnAlignments);
@@ -3574,7 +3456,6 @@ public class doc {
         delta += endTable(buf, iEnd + delta, columnAlignments_ref);
         return delta;
     }
-
     public static void highlightText(Scope sc, DArray<Dsymbol> a, Loc loc, OutBuffer buf, int offset) {
         int incrementLoc = (loc.linnum == 0) ? 1 : 0;
         loc.linnum += incrementLoc;
@@ -4326,7 +4207,6 @@ public class doc {
         i.value += replaceMarkdownEmphasis(buf, loc, inlineDelimiters, 0);
         endAllListsAndQuotes(buf, i, nestedLists, quoteLevel, quoteMacroLevel);
     }
-
     public static void highlightCode(Scope sc, Dsymbol s, OutBuffer buf, int offset) {
         Import imp = s.isImport();
         if ((imp != null) && (imp.aliases.length > 0))
@@ -4366,7 +4246,6 @@ public class doc {
             }
         }
     }
-
     public static void highlightCode(Scope sc, DArray<Dsymbol> a, OutBuffer buf, int offset) {
         boolean resolvedTemplateParameters = false;
         {
@@ -4477,7 +4356,6 @@ public class doc {
             }
         }
     }
-
     public static void highlightCode3(Scope sc, OutBuffer buf, BytePtr p, BytePtr pend) {
         for (; (p.lessThan(pend));p.postInc()){
             ByteSlice se = ((sc)._module.escapetable).escapeChar(p.get()).copy();
@@ -4487,7 +4365,6 @@ public class doc {
                 (buf).writeByte((p.get() & 0xFF));
         }
     }
-
     public static void highlightCode2(Scope sc, DArray<Dsymbol> a, OutBuffer buf, int offset) {
         int errorsave = global.startGagging();
         StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
@@ -4559,11 +4436,9 @@ public class doc {
         finally {
         }
     }
-
     public static boolean isCVariadicArg(ByteSlice p) {
         return (p.getLength() >= 3) && __equals(p.slice(0,3), new ByteSlice("..."));
     }
-
     public static boolean isIdStart(BytePtr p) {
         IntRef c = ref((p.get() & 0xFF));
         if ((isalpha(c.value) != 0) || (c.value == 95))
@@ -4578,7 +4453,6 @@ public class doc {
         }
         return false;
     }
-
     public static boolean isIdTail(BytePtr p) {
         IntRef c = ref((p.get() & 0xFF));
         if ((isalnum(c.value) != 0) || (c.value == 95))
@@ -4593,11 +4467,9 @@ public class doc {
         }
         return false;
     }
-
     public static boolean isIndentWS(BytePtr p) {
         return ((p.get() & 0xFF) == 32) || ((p.get() & 0xFF) == 9);
     }
-
     public static int utfStride(BytePtr p) {
         IntRef c = ref((p.get() & 0xFF));
         if ((c.value < 128))
@@ -4606,12 +4478,10 @@ public class doc {
         utf_decodeChar(p, 4, i, c);
         return i.value;
     }
-
     public static BytePtr stripLeadingNewlines(BytePtr s) {
         for (; (s != null) && ((s.get() & 0xFF) == 10) || ((s.get() & 0xFF) == 13);) {
             s.postInc();
         }
         return s;
     }
-
 }

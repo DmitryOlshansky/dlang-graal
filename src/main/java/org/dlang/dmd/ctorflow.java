@@ -59,17 +59,14 @@ public class ctorflow {
         public  void allocFieldinit(int dim) {
             this.fieldinit = (ptr(new FieldInit[dim])).slice(0,dim).copy();
         }
-
         public  void freeFieldinit() {
             if ((FieldInit)this.fieldinit != null)
                 Mem.xfree((FieldInit)this.fieldinit);
             this.fieldinit = new Slice<FieldInit>().copy();
         }
-
         public  CtorFlow clone() {
             return new CtorFlow(this.callSuper, arraydup(this.fieldinit));
         }
-
         public  void orCSX(int csx) {
             this.callSuper |= csx;
             {
@@ -81,7 +78,6 @@ public class ctorflow {
                 }
             }
         }
-
         public  void OR(CtorFlow ctorflow) {
             this.callSuper |= ctorflow.callSuper;
             if ((this.fieldinit.getLength() != 0) && (ctorflow.fieldinit.getLength() != 0))
@@ -101,7 +97,6 @@ public class ctorflow {
                 }
             }
         }
-
         public CtorFlow(){
         }
         public CtorFlow copy(){
@@ -158,7 +153,6 @@ public class ctorflow {
         }
         return true;
     }
-
     public static boolean mergeFieldInit(Ref<Integer> a, int b) {
         if ((b == a.value))
             return true;
@@ -199,5 +193,4 @@ public class ctorflow {
         }
         return ok;
     }
-
 }

@@ -65,7 +65,6 @@ public class target {
                 this.infinity = double;
                 this.epsilon = double;
             }
-
             public FPTypePropertiesDouble(){
             }
             public FPTypePropertiesDouble copy(){
@@ -134,7 +133,6 @@ public class target {
                 this.infinity = double;
                 this.epsilon = double;
             }
-
             public FPTypePropertiesDouble(){
             }
             public FPTypePropertiesDouble copy(){
@@ -203,7 +201,6 @@ public class target {
                 this.infinity = double;
                 this.epsilon = double;
             }
-
             public FPTypePropertiesFloat(){
             }
             public FPTypePropertiesFloat copy(){
@@ -317,11 +314,9 @@ public class target {
             this.criticalSectionSize = getCriticalSectionSize(params);
             this.cppExceptions = params.isLinux || params.isFreeBSD || params.isDragonFlyBSD || params.isOSX;
         }
-
         public  void deinitialize() {
             this = new Target(0, 0, 0, 0, 0, 0L, 0, 0, 0, false, false, false, new FPTypePropertiesFloat(double, double, double, double, double, 6L, 24L, 128L, -125L, 38L, -37L), new FPTypePropertiesDouble(double, double, double, double, double, 15L, 53L, 1024L, -1021L, 308L, -307L), new FPTypePropertiesDouble(double, double, double, double, double, 18L, 64L, 16384L, -16381L, 4932L, -4931L)).copy();
         }
-
         public  int alignsize(Type type) {
             assert(type.isTypeBasic() != null);
             switch ((type.ty & 0xFF))
@@ -347,18 +342,15 @@ public class target {
             }
             return (int)type.size(Loc.initial);
         }
-
         public  int fieldalign(Type type) {
             int size = type.alignsize();
             if (global.params.is64bit || global.params.isOSX && (size == 16) || (size == 32))
                 return size;
             return (8 < size) ? 8 : size;
         }
-
         public  int critsecsize() {
             return this.criticalSectionSize;
         }
-
         public static int getCriticalSectionSize(Param params) {
             if (params.isWindows)
             {
@@ -393,7 +385,6 @@ public class target {
             }
             throw new AssertionError("Unreachable code!");
         }
-
         public  Type va_listType() {
             if (global.params.isWindows)
             {
@@ -415,11 +406,9 @@ public class target {
                 throw new AssertionError("Unreachable code!");
             }
         }
-
         public  boolean isXmmSupported() {
             return global.params.is64bit || global.params.isOSX;
         }
-
         public  int isVectorTypeSupported(int sz, Type type) {
             if (!this.isXmmSupported())
                 return 1;
@@ -444,7 +433,6 @@ public class target {
                 return 3;
             return 0;
         }
-
         public  boolean isVectorOpSupported(Type type, byte op, Type t2) {
             if (((type.ty & 0xFF) != ENUMTY.Tvector))
                 return true;
@@ -518,19 +506,15 @@ public class target {
             }
             return supported;
         }
-
         public  BytePtr toCppMangle(Dsymbol s) {
             return toCppMangleItanium(s);
         }
-
         public  BytePtr cppTypeInfoMangle(ClassDeclaration cd) {
             return cppTypeInfoMangleItanium(cd);
         }
-
         public  BytePtr cppTypeMangle(Type t) {
             return null;
         }
-
         public  Type cppParameterType(Parameter p) {
             Type t = p.type.merge2();
             if ((p.storageClass & 2101248L) != 0)
@@ -543,21 +527,17 @@ public class target {
             }
             return t;
         }
-
         public  boolean cppFundamentalType(Type t, Ref<Boolean> isFundamental) {
             return false;
         }
-
         public  int systemLinkage() {
             return global.params.isWindows ? LINK.windows : LINK.c;
         }
-
         public  TypeTuple toArgTypes(Type t) {
             if (global.params.is64bit && global.params.isWindows)
                 return null;
             return toArgTypes(t);
         }
-
         public  boolean isReturnOnStack(TypeFunction tf, boolean needsThis) {
             if (tf.isref)
             {
@@ -676,7 +656,6 @@ public class target {
                 break;
             } catch(Dispatch0 __d){}
         }
-
         public  long parameterSize(Loc loc, Type t) {
             if (!global.params.is64bit && global.params.isFreeBSD || global.params.isOSX)
             {
@@ -691,7 +670,6 @@ public class target {
             return global.params.is64bit ? sz + 7L & -8L : sz + 3L & -4L;
         }
 
-
         public static class TargetInfoKeys 
         {
             public static final int cppRuntimeLibrary = 0;
@@ -702,7 +680,7 @@ public class target {
 
         public  Expression getTargetInfo(BytePtr name, Loc loc) {
             Function1<ByteSlice,StringExp> stringExp = new Function1<ByteSlice,StringExp>(){
-                public StringExp invoke(ByteSlice sval){
+                public StringExp invoke(ByteSlice sval) {
                     return new StringExp(loc, toBytePtr(sval), sval.getLength());
                 }
             };
@@ -731,7 +709,6 @@ public class target {
                 return null;
             }
         }
-
         public Target(){
             FloatProperties = new FPTypePropertiesFloat();
             DoubleProperties = new FPTypePropertiesDouble();

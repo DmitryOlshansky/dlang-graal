@@ -33,12 +33,10 @@ public class transitivevisitor {
                 s.exp.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.CompileStatement s) {
             this.visitArgs(s.exps, null);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.CompoundStatement s) {
@@ -53,7 +51,6 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visitVarDecl(ASTBase.VarDeclaration v) {
             if (v.type != null)
@@ -67,7 +64,6 @@ public class transitivevisitor {
                     v._init.accept(this);
             }
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.CompoundDeclarationStatement s) {
@@ -93,13 +89,11 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ScopeStatement s) {
             if (s.statement != null)
                 s.statement.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.WhileStatement s) {
@@ -108,14 +102,12 @@ public class transitivevisitor {
                 s._body.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.DoStatement s) {
             if (s._body != null)
                 s._body.accept(this);
             s.condition.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ForStatement s) {
@@ -128,7 +120,6 @@ public class transitivevisitor {
             if (s._body != null)
                 s._body.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ForeachStatement s) {
@@ -146,7 +137,6 @@ public class transitivevisitor {
                 s._body.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ForeachRangeStatement s) {
             if (s.prm.type != null)
@@ -156,7 +146,6 @@ public class transitivevisitor {
             if (s._body != null)
                 s._body.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.IfStatement s) {
@@ -168,7 +157,6 @@ public class transitivevisitor {
                 s.elsebody.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ConditionalStatement s) {
             s.condition.accept(this);
@@ -177,7 +165,6 @@ public class transitivevisitor {
             if (s.elsebody != null)
                 s.elsebody.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visitArgs(DArray<ASTBase.Expression> expressions, ASTBase.Expression basis) {
@@ -196,7 +183,6 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.PragmaStatement s) {
             if ((s.args != null) && ((s.args).length != 0))
@@ -205,12 +191,10 @@ public class transitivevisitor {
                 s._body.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.StaticAssertStatement s) {
             s.sa.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.SwitchStatement s) {
@@ -219,13 +203,11 @@ public class transitivevisitor {
                 s._body.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.CaseStatement s) {
             s.exp.accept(this);
             s.statement.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.CaseRangeStatement s) {
@@ -234,12 +216,10 @@ public class transitivevisitor {
             s.statement.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.DefaultStatement s) {
             s.statement.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.GotoCaseStatement s) {
@@ -247,13 +227,11 @@ public class transitivevisitor {
                 s.exp.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ReturnStatement s) {
             if (s.exp != null)
                 s.exp.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.SynchronizedStatement s) {
@@ -263,14 +241,12 @@ public class transitivevisitor {
                 s._body.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.WithStatement s) {
             s.exp.accept(this);
             if (s._body != null)
                 s._body.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TryCatchStatement s) {
@@ -286,32 +262,27 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TryFinallyStatement s) {
             s._body.accept(this);
             s.finalbody.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ScopeGuardStatement s) {
             s.statement.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ThrowStatement s) {
             s.exp.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.LabelStatement s) {
             if (s.statement != null)
                 s.statement.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ImportStatement s) {
@@ -325,7 +296,6 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.Catch c) {
             if (c.type != null)
@@ -333,7 +303,6 @@ public class transitivevisitor {
             if (c.handler != null)
                 c.handler.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visitType(ASTBase.Type t) {
@@ -347,7 +316,6 @@ public class transitivevisitor {
             else
                 t.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visitFunctionType(ASTBase.TypeFunction t, ASTBase.TemplateDeclaration td) {
@@ -367,7 +335,6 @@ public class transitivevisitor {
             this.visitParameters(t.parameterList.parameters);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visitParameters(DArray<ASTBase.Parameter> parameters) {
             if (parameters != null)
@@ -385,7 +352,6 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeVector t) {
             if (t.basetype == null)
@@ -393,25 +359,21 @@ public class transitivevisitor {
             t.basetype.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeSArray t) {
             t.next.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeDArray t) {
             t.next.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeAArray t) {
             t.next.accept(this);
             t.index.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypePointer t) {
@@ -423,24 +385,20 @@ public class transitivevisitor {
                 t.next.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeReference t) {
             t.next.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeFunction t) {
             this.visitFunctionType(t, null);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeDelegate t) {
             this.visitFunctionType((ASTBase.TypeFunction)t.next, null);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visitTypeQualified(ASTBase.TypeQualified t) {
@@ -459,12 +417,10 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeIdentifier t) {
             this.visitTypeQualified(t);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeInstance t) {
@@ -472,25 +428,21 @@ public class transitivevisitor {
             this.visitTypeQualified(t);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeTypeof t) {
             t.exp.accept(this);
             this.visitTypeQualified(t);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeReturn t) {
             this.visitTypeQualified(t);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeTuple t) {
             this.visitParameters(t.arguments);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeSlice t) {
@@ -499,12 +451,10 @@ public class transitivevisitor {
             t.upr.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeTraits t) {
             t.exp.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.StaticAssert s) {
@@ -513,7 +463,6 @@ public class transitivevisitor {
                 s.msg.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.EnumMember em) {
             if (em.type != null)
@@ -521,7 +470,6 @@ public class transitivevisitor {
             if (em.value() != null)
                 em.value().accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visitAttribDeclaration(ASTBase.AttribDeclaration d) {
@@ -536,18 +484,15 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.AttribDeclaration d) {
             this.visitAttribDeclaration(d);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.StorageClassDeclaration d) {
             this.visitAttribDeclaration(d);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.DeprecatedDeclaration d) {
@@ -555,36 +500,30 @@ public class transitivevisitor {
             this.visitAttribDeclaration(d);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.LinkDeclaration d) {
             this.visitAttribDeclaration(d);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.CPPMangleDeclaration d) {
             this.visitAttribDeclaration(d);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ProtDeclaration d) {
             this.visitAttribDeclaration(d);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.AlignDeclaration d) {
             this.visitAttribDeclaration(d);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.AnonDeclaration d) {
             this.visitAttribDeclaration(d);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.PragmaDeclaration d) {
@@ -592,7 +531,6 @@ public class transitivevisitor {
                 this.visitArgs(d.args, null);
             this.visitAttribDeclaration(d);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ConditionalDeclaration d) {
@@ -617,19 +555,16 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.CompileDeclaration d) {
             this.visitArgs(d.exps, null);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.UserAttributeDeclaration d) {
             this.visitArgs(d.atts, null);
             this.visitAttribDeclaration(d);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visitFuncBody(ASTBase.FuncDeclaration f) {
@@ -661,7 +596,6 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visitBaseClasses(ASTBase.ClassDeclaration d) {
             if ((d == null) || ((d.baseclasses).length == 0))
@@ -675,7 +609,6 @@ public class transitivevisitor {
                 }
             }
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  boolean visitEponymousMember(ASTBase.TemplateDeclaration d) {
@@ -739,7 +672,6 @@ public class transitivevisitor {
             return false;
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visitTemplateParameters(DArray<ASTBase.TemplateParameter> parameters) {
             if ((parameters == null) || ((parameters).length == 0))
@@ -753,7 +685,6 @@ public class transitivevisitor {
                 }
             }
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TemplateDeclaration d) {
@@ -771,7 +702,6 @@ public class transitivevisitor {
                 }
             }
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visitObject(RootObject oarg) {
@@ -806,7 +736,6 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visitTiargs(ASTBase.TemplateInstance ti) {
             if (ti.tiargs == null)
@@ -821,19 +750,16 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TemplateInstance ti) {
             this.visitTiargs(ti);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TemplateMixin tm) {
             this.visitType(tm.tqual);
             this.visitTiargs(tm);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.EnumDeclaration d) {
@@ -853,7 +779,6 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.Nspace d) {
             {
@@ -865,7 +790,6 @@ public class transitivevisitor {
                 }
             }
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.StructDeclaration d) {
@@ -881,7 +805,6 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ClassDeclaration d) {
             this.visitBaseClasses(d);
@@ -896,7 +819,6 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.AliasDeclaration d) {
             if (d.aliassym != null)
@@ -905,12 +827,10 @@ public class transitivevisitor {
                 this.visitType(d.type);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.VarDeclaration d) {
             this.visitVarDecl(d);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.FuncDeclaration f) {
@@ -918,7 +838,6 @@ public class transitivevisitor {
             this.visitType(tf);
             this.visitFuncBody(f);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.FuncLiteralDeclaration f) {
@@ -937,42 +856,35 @@ public class transitivevisitor {
                 this.visitFuncBody(f);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.PostBlitDeclaration d) {
             this.visitFuncBody(d);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.DtorDeclaration d) {
             this.visitFuncBody(d);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.StaticCtorDeclaration d) {
             this.visitFuncBody(d);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.StaticDtorDeclaration d) {
             this.visitFuncBody(d);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.InvariantDeclaration d) {
             this.visitFuncBody(d);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.UnitTestDeclaration d) {
             this.visitFuncBody(d);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.NewDeclaration d) {
@@ -980,13 +892,11 @@ public class transitivevisitor {
             this.visitFuncBody(d);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.DeleteDeclaration d) {
             this.visitParameters(d.parameters);
             this.visitFuncBody(d);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.StructInitializer si) {
@@ -1004,7 +914,6 @@ public class transitivevisitor {
                 }
             }
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ArrayInitializer ai) {
@@ -1025,18 +934,15 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ExpInitializer ei) {
             ei.exp.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ArrayLiteralExp e) {
             this.visitArgs(e.elements, e.basis);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.AssocArrayLiteralExp e) {
@@ -1052,19 +958,16 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeExp e) {
             this.visitType(e.type);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ScopeExp e) {
             if (e.sds.isTemplateInstance() != null)
                 e.sds.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.NewExp e) {
@@ -1076,7 +979,6 @@ public class transitivevisitor {
             if ((e.arguments != null) && ((e.arguments).length != 0))
                 this.visitArgs(e.arguments, null);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.NewAnonClassExp e) {
@@ -1090,7 +992,6 @@ public class transitivevisitor {
                 e.cd.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TupleExp e) {
             if (e.e0 != null)
@@ -1098,12 +999,10 @@ public class transitivevisitor {
             this.visitArgs(e.exps, null);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.FuncExp e) {
             e.fd.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.DeclarationExp e) {
@@ -1116,12 +1015,10 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeidExp e) {
             this.visitObject(e.obj);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TraitsExp e) {
@@ -1136,7 +1033,6 @@ public class transitivevisitor {
             }
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.IsExp e) {
             this.visitType(e.targ);
@@ -1146,12 +1042,10 @@ public class transitivevisitor {
                 this.visitTemplateParameters(e.parameters);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.UnaExp e) {
             e.e1.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.BinExp e) {
@@ -1159,18 +1053,15 @@ public class transitivevisitor {
             e.e2.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.CompileExp e) {
             this.visitArgs(e.exps, null);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ImportExp e) {
             e.e1.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.AssertExp e) {
@@ -1179,12 +1070,10 @@ public class transitivevisitor {
                 e.msg.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.DotIdExp e) {
             e.e1.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.DotTemplateInstanceExp e) {
@@ -1192,25 +1081,21 @@ public class transitivevisitor {
             e.ti.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.CallExp e) {
             e.e1.accept(this);
             this.visitArgs(e.arguments, null);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.PtrExp e) {
             e.e1.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.DeleteExp e) {
             e.e1.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.CastExp e) {
@@ -1219,13 +1104,11 @@ public class transitivevisitor {
             e.e1.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.IntervalExp e) {
             e.lwr.accept(this);
             e.upr.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ArrayExp e) {
@@ -1233,12 +1116,10 @@ public class transitivevisitor {
             this.visitArgs(e.arguments, null);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.PostExp e) {
             e.e1.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.CondExp e) {
@@ -1246,7 +1127,6 @@ public class transitivevisitor {
             e.e1.accept(this);
             e.e2.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TemplateTypeParameter tp) {
@@ -1256,12 +1136,10 @@ public class transitivevisitor {
                 this.visitType(tp.defaultType);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TemplateThisParameter tp) {
             this.visit((ASTBase.TemplateTypeParameter)tp);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TemplateAliasParameter tp) {
@@ -1273,7 +1151,6 @@ public class transitivevisitor {
                 this.visitObject(tp.defaultAlias);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TemplateValueParameter tp) {
             this.visitType(tp.valType);
@@ -1283,12 +1160,10 @@ public class transitivevisitor {
                 tp.defaultValue.accept(this);
         }
 
-
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.StaticIfCondition c) {
             c.exp.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.Parameter p) {
@@ -1296,7 +1171,6 @@ public class transitivevisitor {
             if (p.defaultArg != null)
                 p.defaultArg.accept(this);
         }
-
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.Module m) {
@@ -1309,7 +1183,6 @@ public class transitivevisitor {
                 }
             }
         }
-
 
 
         public ParseTimeTransitiveVisitorASTBase() {}

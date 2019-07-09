@@ -23,27 +23,22 @@ public class sapply {
             super();
             this.v = v;
         }
-
         public  boolean doCond(Statement s) {
             if (!this.stop && (s != null))
                 s.accept(this);
             return this.stop;
         }
-
         public  boolean applyTo(Statement s) {
             s.accept(this.v);
             this.stop = this.v.stop;
             return true;
         }
-
         public  void visit(Statement s) {
             this.applyTo(s);
         }
-
         public  void visit(PeelStatement s) {
             expr(this.doCond(s.s) || this.applyTo(s));
         }
-
         public  void visit(CompoundStatement s) {
             {
                 int i = 0;
@@ -54,7 +49,6 @@ public class sapply {
             }
             this.applyTo(s);
         }
-
         public  void visit(UnrolledLoopStatement s) {
             {
                 int i = 0;
@@ -65,59 +59,45 @@ public class sapply {
             }
             this.applyTo(s);
         }
-
         public  void visit(ScopeStatement s) {
             expr(this.doCond(s.statement) || this.applyTo(s));
         }
-
         public  void visit(WhileStatement s) {
             expr(this.doCond(s._body) || this.applyTo(s));
         }
-
         public  void visit(DoStatement s) {
             expr(this.doCond(s._body) || this.applyTo(s));
         }
-
         public  void visit(ForStatement s) {
             expr(this.doCond(s._init) || this.doCond(s._body) || this.applyTo(s));
         }
-
         public  void visit(ForeachStatement s) {
             expr(this.doCond(s._body) || this.applyTo(s));
         }
-
         public  void visit(ForeachRangeStatement s) {
             expr(this.doCond(s._body) || this.applyTo(s));
         }
-
         public  void visit(IfStatement s) {
             expr(this.doCond(s.ifbody) || this.doCond(s.elsebody) || this.applyTo(s));
         }
-
         public  void visit(PragmaStatement s) {
             expr(this.doCond(s._body) || this.applyTo(s));
         }
-
         public  void visit(SwitchStatement s) {
             expr(this.doCond(s._body) || this.applyTo(s));
         }
-
         public  void visit(CaseStatement s) {
             expr(this.doCond(s.statement) || this.applyTo(s));
         }
-
         public  void visit(DefaultStatement s) {
             expr(this.doCond(s.statement) || this.applyTo(s));
         }
-
         public  void visit(SynchronizedStatement s) {
             expr(this.doCond(s._body) || this.applyTo(s));
         }
-
         public  void visit(WithStatement s) {
             expr(this.doCond(s._body) || this.applyTo(s));
         }
-
         public  void visit(TryCatchStatement s) {
             if (this.doCond(s._body))
                 return ;
@@ -130,23 +110,18 @@ public class sapply {
             }
             this.applyTo(s);
         }
-
         public  void visit(TryFinallyStatement s) {
             expr(this.doCond(s._body) || this.doCond(s.finalbody) || this.applyTo(s));
         }
-
         public  void visit(ScopeGuardStatement s) {
             expr(this.doCond(s.statement) || this.applyTo(s));
         }
-
         public  void visit(DebugStatement s) {
             expr(this.doCond(s.statement) || this.applyTo(s));
         }
-
         public  void visit(LabelStatement s) {
             expr(this.doCond(s.statement) || this.applyTo(s));
         }
-
 
         public PostorderStatementVisitor() {}
 
@@ -162,5 +137,4 @@ public class sapply {
         s.accept(pv);
         return v.stop;
     }
-
 }

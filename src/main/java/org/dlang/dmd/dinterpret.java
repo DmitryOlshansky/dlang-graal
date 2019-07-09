@@ -46,10 +46,8 @@ public class dinterpret {
             super();
             this.ccf = ccf;
         }
-
         public  void visit(Expression e) {
         }
-
         public  void visit(ErrorExp e) {
             if ((global.gag != 0) && ((this.ccf).func != null))
             {
@@ -59,7 +57,6 @@ public class dinterpret {
             error(e.loc, new BytePtr("CTFE internal error: ErrorExp in `%s`\n"), (this.ccf).func != null ? (this.ccf).func.loc.toChars(global.params.showColumns) : (this.ccf).callingloc.toChars(global.params.showColumns));
             throw new AssertionError("Unreachable code!");
         }
-
         public  void visit(DeclarationExp e) {
             VarDeclaration v = e.declaration.isVarDeclaration();
             if (v == null)
@@ -94,17 +91,14 @@ public class dinterpret {
                     (this.ccf).onExpression(ie.exp);
             }
         }
-
         public  void visit(IndexExp e) {
             if (e.lengthVar != null)
                 (this.ccf).onDeclaration(e.lengthVar);
         }
-
         public  void visit(SliceExp e) {
             if (e.lengthVar != null)
                 (this.ccf).onDeclaration(e.lengthVar);
         }
-
 
         public VarWalker() {}
     }
@@ -118,7 +112,6 @@ public class dinterpret {
         public  Expression assignTo(ArrayLiteralExp ae) {
             return this.assignTo(ae, 0, (ae.elements).length);
         }
-
         public  Expression assignTo(ArrayLiteralExp ae, int lwr, int upr) {
             DArray<Expression> w = ae.elements;
             assert(((ae.type.ty & 0xFF) == ENUMTY.Tsarray) || ((ae.type.ty & 0xFF) == ENUMTY.Tarray));
@@ -168,7 +161,6 @@ public class dinterpret {
             }
             return null;
         }
-
         private Object this;
         public RecursiveBlock(){
         }
@@ -238,7 +230,6 @@ public class dinterpret {
             result = new ErrorExp();
         return result;
     }
-
     public static Expression ctfeInterpretForPragmaMsg(Expression e) {
         if (((e.op & 0xFF) == 127) || ((e.op & 0xFF) == 20))
             return e;
@@ -280,14 +271,11 @@ public class dinterpret {
         }
         return e;
     }
-
     public static Expression getValue(VarDeclaration vd) {
         return ctfeStack.getValue(vd);
     }
-
     public static void printCtfePerformanceStats() {
     }
-
     public static class CompiledCtfeFunctionPimpl
     {
         public CompiledCtfeFunction pimpl;
@@ -330,22 +318,18 @@ public class dinterpret {
         public  int stackPointer() {
             return this.values.length;
         }
-
         public  Expression getThis() {
             return this.localThis;
         }
-
         public  int maxStackUsage() {
             return this.maxStackPointer;
         }
-
         public  void startFrame(Expression thisexp) {
             this.frames.push(this.framepointer);
             this.savedThis.push(this.localThis);
             this.framepointer = this.stackPointer();
             this.localThis = thisexp;
         }
-
         public  void endFrame() {
             int oldframe = ((int)this.frames.get(this.frames.length - 1));
             this.localThis = this.savedThis.get(this.savedThis.length - 1);
@@ -354,13 +338,11 @@ public class dinterpret {
             this.frames.setDim(this.frames.length - 1);
             this.savedThis.setDim(this.savedThis.length - 1);
         }
-
         public  boolean isInCurrentFrame(VarDeclaration v) {
             if (v.isDataseg() && !v.isCTFE())
                 return false;
             return v.ctfeAdrOnStack >= this.framepointer;
         }
-
         public  Expression getValue(VarDeclaration v) {
             if (v.isDataseg() || ((v.storage_class & 8388608L) != 0) && !v.isCTFE())
             {
@@ -370,13 +352,11 @@ public class dinterpret {
             assert((v.ctfeAdrOnStack >= 0) && (v.ctfeAdrOnStack < this.stackPointer()));
             return this.values.get(v.ctfeAdrOnStack);
         }
-
         public  void setValue(VarDeclaration v, Expression e) {
             assert(!v.isDataseg() || v.isCTFE());
             assert((v.ctfeAdrOnStack >= 0) && (v.ctfeAdrOnStack < this.stackPointer()));
             this.values.set(v.ctfeAdrOnStack, e);
         }
-
         public  void push(VarDeclaration v) {
             assert(!v.isDataseg() || v.isCTFE());
             if ((v.ctfeAdrOnStack != -1) && (v.ctfeAdrOnStack >= this.framepointer))
@@ -389,7 +369,6 @@ public class dinterpret {
             this.vars.push(v);
             this.values.push(null);
         }
-
         public  void pop(VarDeclaration v) {
             assert(!v.isDataseg() || v.isCTFE());
             assert((v.storage_class & 2101248L) == 0);
@@ -402,7 +381,6 @@ public class dinterpret {
                 this.savedId.pop();
             }
         }
-
         public  void popAll(int stackpointer) {
             if ((this.stackPointer() > this.maxStackPointer))
                 this.maxStackPointer = this.stackPointer();
@@ -418,13 +396,11 @@ public class dinterpret {
             this.vars.setDim(stackpointer);
             this.savedId.setDim(stackpointer);
         }
-
         public  void saveGlobalConstant(VarDeclaration v, Expression e) {
             assert((v._init != null) && v.isConst() || v.isImmutable() || ((v.storage_class & 8388608L) != 0) && !v.isCTFE());
             v.ctfeAdrOnStack = this.globalValues.length;
             this.globalValues.push(e);
         }
-
         public CtfeStack(){
             values = new DArray<Expression>();
             vars = new DArray<VarDeclaration>();
@@ -511,16 +487,13 @@ public class dinterpret {
         public  CompiledCtfeFunction(FuncDeclaration f) {
             this.func = f;
         }
-
         public  void onDeclaration(VarDeclaration v) {
             this.numVars += 1;
         }
-
         public  void onExpression(Expression e) {
             VarWalker v = new VarWalker(this);
             walkPostorder(e, v);
         }
-
         public CompiledCtfeFunction(){
             callingloc = new Loc();
         }
@@ -544,16 +517,13 @@ public class dinterpret {
         public  CtfeCompiler(CompiledCtfeFunction ccf) {
             this.ccf = ccf;
         }
-
         public  void visit(Statement s) {
             throw new AssertionError("Unreachable code!");
         }
-
         public  void visit(ExpStatement s) {
             if (s.exp != null)
                 (this.ccf).onExpression(s.exp);
         }
-
         public  void visit(IfStatement s) {
             (this.ccf).onExpression(s.condition);
             if (s.ifbody != null)
@@ -561,21 +531,17 @@ public class dinterpret {
             if (s.elsebody != null)
                 this.ctfeCompile(s.elsebody);
         }
-
         public  void visit(ScopeGuardStatement s) {
             throw new AssertionError("Unreachable code!");
         }
-
         public  void visit(DoStatement s) {
             (this.ccf).onExpression(s.condition);
             if (s._body != null)
                 this.ctfeCompile(s._body);
         }
-
         public  void visit(WhileStatement s) {
             throw new AssertionError("Unreachable code!");
         }
-
         public  void visit(ForStatement s) {
             if (s._init != null)
                 this.ctfeCompile(s._init);
@@ -586,11 +552,9 @@ public class dinterpret {
             if (s._body != null)
                 this.ctfeCompile(s._body);
         }
-
         public  void visit(ForeachStatement s) {
             throw new AssertionError("Unreachable code!");
         }
-
         public  void visit(SwitchStatement s) {
             (this.ccf).onExpression(s.condition);
             {
@@ -604,32 +568,24 @@ public class dinterpret {
             if (s._body != null)
                 this.ctfeCompile(s._body);
         }
-
         public  void visit(CaseStatement s) {
             if (s.statement != null)
                 this.ctfeCompile(s.statement);
         }
-
         public  void visit(GotoDefaultStatement s) {
         }
-
         public  void visit(GotoCaseStatement s) {
         }
-
         public  void visit(SwitchErrorStatement s) {
         }
-
         public  void visit(ReturnStatement s) {
             if (s.exp != null)
                 (this.ccf).onExpression(s.exp);
         }
-
         public  void visit(BreakStatement s) {
         }
-
         public  void visit(ContinueStatement s) {
         }
-
         public  void visit(WithStatement s) {
             if (((s.exp.op & 0xFF) == 203) || ((s.exp.op & 0xFF) == 20))
             {
@@ -642,7 +598,6 @@ public class dinterpret {
             if (s._body != null)
                 this.ctfeCompile(s._body);
         }
-
         public  void visit(TryCatchStatement s) {
             if (s._body != null)
                 this.ctfeCompile(s._body);
@@ -658,28 +613,21 @@ public class dinterpret {
                 }
             }
         }
-
         public  void visit(ThrowStatement s) {
             (this.ccf).onExpression(s.exp);
         }
-
         public  void visit(GotoStatement s) {
         }
-
         public  void visit(ImportStatement s) {
         }
-
         public  void visit(ForeachRangeStatement s) {
             throw new AssertionError("Unreachable code!");
         }
-
         public  void visit(AsmStatement s) {
         }
-
         public  void ctfeCompile(Statement s) {
             s.accept(this);
         }
-
 
         public CtfeCompiler() {}
 
@@ -712,7 +660,6 @@ public class dinterpret {
         CtfeCompiler v = new CtfeCompiler(fd.ctfeCode.pimpl);
         v.ctfeCompile(fd.fbody);
     }
-
     public static Expression interpretFunction(UnionExp pue, FuncDeclaration fd, InterState istate, DArray<Expression> arguments, Expression thisarg) {
         assert(pue != null);
         if ((fd.semanticRun == PASS.semantic3))
@@ -914,7 +861,6 @@ public class dinterpret {
         finally {
         }
     }
-
     public static class Interpreter extends Visitor
     {
         public InterState istate;
@@ -926,7 +872,6 @@ public class dinterpret {
             this.istate = istate;
             this.goal = goal;
         }
-
         public  boolean exceptionOrCant(Expression e) {
             if (exceptionOrCantInterpret(e))
             {
@@ -935,7 +880,6 @@ public class dinterpret {
             }
             return false;
         }
-
         public static DArray<Expression> copyArrayOnWrite(DArray<Expression> exps, DArray<Expression> original) {
             if ((exps == original))
             {
@@ -947,7 +891,6 @@ public class dinterpret {
             }
             return exps;
         }
-
         public  void visit(Statement s) {
             if ((this.istate).start != null)
             {
@@ -958,7 +901,6 @@ public class dinterpret {
             s.error(new BytePtr("statement `%s` cannot be interpreted at compile time"), s.toChars());
             this.result = CTFEExp.cantexp;
         }
-
         public  void visit(ExpStatement s) {
             if ((this.istate).start != null)
             {
@@ -970,7 +912,6 @@ public class dinterpret {
             if (this.exceptionOrCant(e))
                 return ;
         }
-
         public  void visit(CompoundStatement s) {
             if ((pequals((this.istate).start, s)))
                 (this.istate).start = null;
@@ -987,7 +928,6 @@ public class dinterpret {
                 }
             }
         }
-
         public  void visit(UnrolledLoopStatement s) {
             if ((pequals((this.istate).start, s)))
                 (this.istate).start = null;
@@ -1029,7 +969,6 @@ public class dinterpret {
                 }
             }
         }
-
         public  void visit(IfStatement s) {
             if ((pequals((this.istate).start, s)))
                 (this.istate).start = null;
@@ -1056,13 +995,11 @@ public class dinterpret {
                 this.result = CTFEExp.cantexp;
             }
         }
-
         public  void visit(ScopeStatement s) {
             if ((pequals((this.istate).start, s)))
                 (this.istate).start = null;
             this.result = interpret(this.pue, s.statement, this.istate);
         }
-
         public static boolean stopPointersEscaping(Loc loc, Expression e) {
             if (!e.type.hasPointers())
                 return true;
@@ -1120,7 +1057,6 @@ public class dinterpret {
             }
             return true;
         }
-
         public static boolean stopPointersEscapingFromArray(Loc loc, DArray<Expression> elems) {
             {
                 Slice<Expression> __r946 = (elems).opSlice().copy();
@@ -1133,7 +1069,6 @@ public class dinterpret {
             }
             return true;
         }
-
         public  void visit(ReturnStatement s) {
             if ((this.istate).start != null)
             {
@@ -1171,7 +1106,6 @@ public class dinterpret {
                 e = copyLiteral(e).copy();
             this.result = e;
         }
-
         public static Statement findGotoTarget(InterState istate, Identifier ident) {
             Statement target = null;
             if (ident != null)
@@ -1183,7 +1117,6 @@ public class dinterpret {
             }
             return target;
         }
-
         public  void visit(BreakStatement s) {
             if ((this.istate).start != null)
             {
@@ -1194,7 +1127,6 @@ public class dinterpret {
             (this.istate).gotoTarget = findGotoTarget(this.istate, s.ident);
             this.result = CTFEExp.breakexp;
         }
-
         public  void visit(ContinueStatement s) {
             if ((this.istate).start != null)
             {
@@ -1205,11 +1137,9 @@ public class dinterpret {
             (this.istate).gotoTarget = findGotoTarget(this.istate, s.ident);
             this.result = CTFEExp.continueexp;
         }
-
         public  void visit(WhileStatement s) {
             throw new AssertionError("Unreachable code!");
         }
-
         public  void visit(DoStatement s) {
             if ((pequals((this.istate).start, s)))
                 (this.istate).start = null;
@@ -1260,7 +1190,6 @@ public class dinterpret {
             }
             assert((this.result == null));
         }
-
         public  void visit(ForStatement s) {
             if ((pequals((this.istate).start, s)))
                 (this.istate).start = null;
@@ -1318,15 +1247,12 @@ public class dinterpret {
             }
             assert((this.result == null));
         }
-
         public  void visit(ForeachStatement s) {
             throw new AssertionError("Unreachable code!");
         }
-
         public  void visit(ForeachRangeStatement s) {
             throw new AssertionError("Unreachable code!");
         }
-
         public  void visit(SwitchStatement s) {
             if ((pequals((this.istate).start, s)))
                 (this.istate).start = null;
@@ -1394,19 +1320,16 @@ public class dinterpret {
             }
             this.result = e;
         }
-
         public  void visit(CaseStatement s) {
             if ((pequals((this.istate).start, s)))
                 (this.istate).start = null;
             this.result = interpret(this.pue, s.statement, this.istate);
         }
-
         public  void visit(DefaultStatement s) {
             if ((pequals((this.istate).start, s)))
                 (this.istate).start = null;
             this.result = interpret(this.pue, s.statement, this.istate);
         }
-
         public  void visit(GotoStatement s) {
             if ((this.istate).start != null)
             {
@@ -1418,7 +1341,6 @@ public class dinterpret {
             (this.istate).gotoTarget = s.label.statement;
             this.result = CTFEExp.gotoexp;
         }
-
         public  void visit(GotoCaseStatement s) {
             if ((this.istate).start != null)
             {
@@ -1430,7 +1352,6 @@ public class dinterpret {
             (this.istate).gotoTarget = s.cs;
             this.result = CTFEExp.gotoexp;
         }
-
         public  void visit(GotoDefaultStatement s) {
             if ((this.istate).start != null)
             {
@@ -1442,13 +1363,11 @@ public class dinterpret {
             (this.istate).gotoTarget = s.sw.sdefault;
             this.result = CTFEExp.gotoexp;
         }
-
         public  void visit(LabelStatement s) {
             if ((pequals((this.istate).start, s)))
                 (this.istate).start = null;
             this.result = interpret(this.pue, s.statement, this.istate);
         }
-
         public  void visit(TryCatchStatement s) {
             if ((pequals((this.istate).start, s)))
                 (this.istate).start = null;
@@ -1506,11 +1425,9 @@ public class dinterpret {
             }
             this.result = e;
         }
-
         public static boolean isAnErrorException(ClassDeclaration cd) {
             return (pequals(cd, ClassDeclaration.errorException)) || ClassDeclaration.errorException.isBaseOf(cd, null);
         }
-
         public static ThrownExceptionExp chainExceptions(ThrownExceptionExp oldest, ThrownExceptionExp newest) {
             ClassReferenceExp boss = oldest.thrown;
             int next = 4;
@@ -1531,7 +1448,6 @@ public class dinterpret {
             boss.value.elements.set(4, collateral);
             return oldest;
         }
-
         public  void visit(TryFinallyStatement s) {
             if ((pequals((this.istate).start, s)))
                 (this.istate).start = null;
@@ -1580,7 +1496,6 @@ public class dinterpret {
             }
             this.result = ex;
         }
-
         public  void visit(ThrowStatement s) {
             if ((this.istate).start != null)
             {
@@ -1594,11 +1509,9 @@ public class dinterpret {
             assert(((e.op & 0xFF) == 50));
             this.result = new ThrownExceptionExp(s.loc, (ClassReferenceExp)e);
         }
-
         public  void visit(ScopeGuardStatement s) {
             throw new AssertionError("Unreachable code!");
         }
-
         public  void visit(WithStatement s) {
             if ((pequals((this.istate).start, s)))
                 (this.istate).start = null;
@@ -1637,7 +1550,6 @@ public class dinterpret {
             ctfeStack.pop(s.wthis);
             this.result = e;
         }
-
         public  void visit(AsmStatement s) {
             if ((this.istate).start != null)
             {
@@ -1648,7 +1560,6 @@ public class dinterpret {
             s.error(new BytePtr("`asm` statements cannot be interpreted at compile time"));
             this.result = CTFEExp.cantexp;
         }
-
         public  void visit(ImportStatement s) {
             if ((this.istate).start != null)
             {
@@ -1657,12 +1568,10 @@ public class dinterpret {
                 (this.istate).start = null;
             }
         }
-
         public  void visit(Expression e) {
             e.error(new BytePtr("cannot interpret `%s` at compile time"), e.toChars());
             this.result = CTFEExp.cantexp;
         }
-
         public  void visit(ThisExp e) {
             if ((this.goal == CtfeGoal.ctfeNeedLvalue))
             {
@@ -1702,31 +1611,24 @@ public class dinterpret {
             e.error(new BytePtr("value of `this` is not known at compile time"));
             this.result = CTFEExp.cantexp;
         }
-
         public  void visit(NullExp e) {
             this.result = e;
         }
-
         public  void visit(IntegerExp e) {
             this.result = e;
         }
-
         public  void visit(RealExp e) {
             this.result = e;
         }
-
         public  void visit(ComplexExp e) {
             this.result = e;
         }
-
         public  void visit(StringExp e) {
             this.result = e;
         }
-
         public  void visit(FuncExp e) {
             this.result = e;
         }
-
         public  void visit(SymOffExp e) {
             if ((e.var.isFuncDeclaration() != null) && (e.offset == 0L))
             {
@@ -1838,7 +1740,6 @@ public class dinterpret {
             e.error(new BytePtr("cannot convert `&%s` to `%s` at compile time"), e.var.type.toChars(), e.type.toChars());
             this.result = CTFEExp.cantexp;
         }
-
         public  void visit(AddrExp e) {
             {
                 VarExp ve = e.e1.isVarExp();
@@ -1872,7 +1773,6 @@ public class dinterpret {
             (this.pue) = new UnionExp(new AddrExp(e.loc, er, e.type));
             this.result = (this.pue).exp();
         }
-
         public  void visit(DelegateExp e) {
             {
                 VarExp ve1 = e.e1.isVarExp();
@@ -1898,7 +1798,6 @@ public class dinterpret {
                 this.result.type = e.type;
             }
         }
-
         public static Expression getVarExp(Loc loc, InterState istate, Declaration d, int goal) {
             Expression e = CTFEExp.cantexp;
             {
@@ -2022,7 +1921,6 @@ public class dinterpret {
             }
             return e;
         }
-
         public  void visit(VarExp e) {
             if (e.var.isFuncDeclaration() != null)
             {
@@ -2067,7 +1965,6 @@ public class dinterpret {
                 this.result = paintTypeOntoLiteral(this.pue, e.type, this.result);
             }
         }
-
         public  void visit(DeclarationExp e) {
             Dsymbol s = e.declaration;
             {
@@ -2179,7 +2076,6 @@ public class dinterpret {
             }
             this.result = null;
         }
-
         public  void visit(TypeidExp e) {
             {
                 Type t = isType(e.obj);
@@ -2218,7 +2114,6 @@ public class dinterpret {
             }
             this.visit((Expression)e);
         }
-
         public  void visit(TupleExp e) {
             if (this.exceptionOrCant(interpret(e.e0, this.istate, CtfeGoal.ctfeNeedNothing)))
                 return ;
@@ -2256,7 +2151,6 @@ public class dinterpret {
             else
                 this.result = e;
         }
-
         public  void visit(ArrayLiteralExp e) {
             if (((e.ownedByCtfe & 0xFF) >= 1))
             {
@@ -2319,7 +2213,6 @@ public class dinterpret {
                 this.result = (this.pue).exp();
             }
         }
-
         public  void visit(AssocArrayLiteralExp e) {
             if (((e.ownedByCtfe & 0xFF) >= 1))
             {
@@ -2394,7 +2287,6 @@ public class dinterpret {
                 this.result = (this.pue).exp();
             }
         }
-
         public  void visit(StructLiteralExp e) {
             if (((e.ownedByCtfe & 0xFF) >= 1))
             {
@@ -2478,7 +2370,6 @@ public class dinterpret {
                 this.result = (this.pue).exp();
             }
         }
-
         public static Expression recursivelyCreateArrayLiteral(UnionExp pue, Loc loc, Type newtype, InterState istate, DArray<Expression> arguments, int argnum) {
             Expression lenExpr = interpret(pue, (arguments).get(argnum), istate, CtfeGoal.ctfeNeedRvalue);
             if (exceptionOrCantInterpret(lenExpr))
@@ -2517,7 +2408,6 @@ public class dinterpret {
                 return createBlockDuplicatedArrayLiteral(pue, loc, newtype, el, len);
             }
         }
-
         public  void visit(NewExp e) {
             if (e.allocator != null)
             {
@@ -2681,7 +2571,6 @@ public class dinterpret {
             e.error(new BytePtr("cannot interpret `%s` at compile time"), e.toChars());
             this.result = CTFEExp.cantexp;
         }
-
         public  void visit(UnaExp e) {
             UnionExp ue = null;
             Expression e1 = interpret(ue, e.e1, this.istate, CtfeGoal.ctfeNeedRvalue);
@@ -2703,7 +2592,6 @@ public class dinterpret {
             }
             this.result = (this.pue).exp();
         }
-
         public  void visit(DotTypeExp e) {
             UnionExp ue = null;
             Expression e1 = interpret(ue, e.e1, this.istate, CtfeGoal.ctfeNeedRvalue);
@@ -2718,7 +2606,6 @@ public class dinterpret {
                 this.result = edt;
             }
         }
-
         public  void interpretCommon(BinExp e, Function4<Loc,Type,Expression,Expression,UnionExp> fp) {
             Ref<BinExp> e_ref = ref(e);
             if (((e_ref.value.e1.type.ty & 0xFF) == ENUMTY.Tpointer) && ((e_ref.value.e2.type.ty & 0xFF) == ENUMTY.Tpointer) && ((e_ref.value.op & 0xFF) == 75))
@@ -2770,7 +2657,7 @@ public class dinterpret {
                 return ;
             }
             Function3<UnionExp,Expression,Expression,Boolean> evalOperand = new Function3<UnionExp,Expression,Expression,Boolean>(){
-                public Boolean invoke(UnionExp pue, Expression ex, Ref<Expression> er){
+                public Boolean invoke(UnionExp pue, Expression ex, Ref<Expression> er) {
                     er.value = null;
                     er.value = interpret(pue, ex, istate, CtfeGoal.ctfeNeedRvalue);
                     if (exceptionOrCant(er.value))
@@ -2811,7 +2698,6 @@ public class dinterpret {
             if (CTFEExp.isCantExp(this.result))
                 e_ref.value.error(new BytePtr("`%s` cannot be interpreted at compile time"), e_ref.value.toChars());
         }
-
         public  void interpretCompareCommon(BinExp e, Function4<Loc,Byte,Expression,Expression,Integer> fp) {
             UnionExp ue1 = null;
             UnionExp ue2 = null;
@@ -2861,7 +2747,6 @@ public class dinterpret {
             (this.pue) = new UnionExp(new IntegerExp(e.loc, cmp, e.type));
             this.result = (this.pue).exp();
         }
-
         public  void visit(BinExp e) {
             switch ((e.op & 0xFF))
             {
@@ -2920,7 +2805,6 @@ public class dinterpret {
                 throw new AssertionError("Unreachable code!");
             }
         }
-
         public static VarDeclaration findParentVar(Expression e) {
             for (; ;){
                 {
@@ -2956,7 +2840,6 @@ public class dinterpret {
                 }
             }
         }
-
         public  void interpretAssignCommon(BinExp e, Function4<Loc,Type,Expression,Expression,UnionExp> fp, int post) {
             this.result = CTFEExp.cantexp;
             Expression e1 = e.e1;
@@ -3299,7 +3182,6 @@ public class dinterpret {
             }
             return ;
         }
-
         public  void stompOverlappedFields(StructLiteralExp sle, VarDeclaration v) {
             if (!v.overlapped)
                 return ;
@@ -3317,7 +3199,6 @@ public class dinterpret {
                 }
             }
         }
-
         public  Expression assignToLvalue(BinExp e, Expression e1, Expression newval) {
             VarDeclaration vd = null;
             Ptr<Expression> payload = null;
@@ -3472,7 +3353,6 @@ public class dinterpret {
                 return oldval;
             return null;
         }
-
         public  Expression interpretAssignToSlice(UnionExp pue, BinExp e, Expression e1, Expression newval, boolean isBlockAssignment) {
             long lowerbound = 0L;
             long upperbound = 0L;
@@ -3779,11 +3659,9 @@ public class dinterpret {
             e.error(new BytePtr("slice operation `%s = %s` cannot be evaluated at compile time"), e1.toChars(), newval.toChars());
             return CTFEExp.cantexp;
         }
-
         public  void visit(AssignExp e) {
             this.interpretAssignCommon(e, null, 0);
         }
-
         public  void visit(BinAssignExp e) {
             switch ((e.op & 0xFF))
             {
@@ -3832,14 +3710,12 @@ public class dinterpret {
                 throw new AssertionError("Unreachable code!");
             }
         }
-
         public  void visit(PostExp e) {
             if (((e.op & 0xFF) == 93))
                 this.interpretAssignCommon(e, dinterpret::Add, 1);
             else
                 this.interpretAssignCommon(e, dinterpret::Min, 1);
         }
-
         public static int isPointerCmpExp(Expression e, Ptr<Expression> p1, Ptr<Expression> p2) {
             int ret = 1;
             for (; ((e.op & 0xFF) == 91);){
@@ -3864,7 +3740,6 @@ public class dinterpret {
             }
             return ret;
         }
-
         public  void interpretFourPointerRelation(UnionExp pue, BinExp e) {
             assert(((e.op & 0xFF) == 101) || ((e.op & 0xFF) == 102));
             Ref<Expression> p1 = ref(null);
@@ -3946,7 +3821,7 @@ public class dinterpret {
                 }
             }
             Function1<Byte,Byte> negateRelation = new Function1<Byte,Byte>(){
-                public Byte invoke(Byte op){
+                public Byte invoke(Byte op) {
                     switch ((op & 0xFF))
                     {
                         case 57:
@@ -3978,7 +3853,6 @@ public class dinterpret {
             (pue) = new UnionExp(new IntegerExp(e.loc, ((e.op & 0xFF) == 101) ? 0 : 1, e.type));
             this.result = (pue).exp();
         }
-
         public  void visit(LogicalExp e) {
             this.interpretFourPointerRelation(this.pue, e);
             if (this.result != null)
@@ -4025,7 +3899,6 @@ public class dinterpret {
                 this.result = (this.pue).exp();
             }
         }
-
         public  void showCtfeBackTrace(CallExp callingExp, FuncDeclaration fd) {
             if ((CtfeStatus.stackTraceCallsToSuppress > 0))
             {
@@ -4068,7 +3941,6 @@ public class dinterpret {
             }
             CtfeStatus.stackTraceCallsToSuppress = numToSuppress;
         }
-
         public  void visit(CallExp e) {
             Expression pthis = null;
             FuncDeclaration fd = null;
@@ -4237,7 +4109,6 @@ public class dinterpret {
             else if (CTFEExp.isCantExp(this.result) && (global.gag == 0))
                 this.showCtfeBackTrace(e, fd);
         }
-
         public  void visit(CommaExp e) {
             InterState istateComma = new InterState();
             if ((this.istate == null) && ((firstComma(e.e1).op & 0xFF) == 38))
@@ -4246,7 +4117,7 @@ public class dinterpret {
                 this.istate = istateComma;
             }
             Function0<Void> endTempStackFrame = new Function0<Void>(){
-                public Void invoke(){
+                public Void invoke() {
                     if ((istate == istateComma))
                         ctfeStack.endFrame();
                 }
@@ -4286,7 +4157,6 @@ public class dinterpret {
             endTempStackFrame.invoke();
             return ;
         }
-
         public  void visit(CondExp e) {
             UnionExp uecond = null;
             Expression econd = null;
@@ -4311,7 +4181,6 @@ public class dinterpret {
                 this.result = CTFEExp.cantexp;
             }
         }
-
         public  void visit(ArrayLengthExp e) {
             UnionExp ue1 = new UnionExp().copy();
             Expression e1 = interpret(ue1, e.e1, this.istate, CtfeGoal.ctfeNeedRvalue);
@@ -4327,7 +4196,6 @@ public class dinterpret {
             (this.pue) = new UnionExp(new IntegerExp(e.loc, resolveArrayLength(e1), e.type));
             this.result = (this.pue).exp();
         }
-
         public static Expression interpretVectorToArray(UnionExp pue, VectorExp e) {
             {
                 ArrayLiteralExp ale = e.e1.isArrayLiteralExp();
@@ -4354,7 +4222,6 @@ public class dinterpret {
             }
             return e;
         }
-
         public  void visit(VectorExp e) {
             if (((e.ownedByCtfe & 0xFF) >= 1))
             {
@@ -4380,7 +4247,6 @@ public class dinterpret {
             ve.ownedByCtfe = OwnedBy.ctfe;
             this.result = ve;
         }
-
         public  void visit(VectorArrayExp e) {
             Expression e1 = interpret(this.pue, e.e1, this.istate, CtfeGoal.ctfeNeedRvalue);
             assert(e1 != null);
@@ -4398,7 +4264,6 @@ public class dinterpret {
             e.error(new BytePtr("`%s` cannot be evaluated at compile time"), e.toChars());
             this.result = CTFEExp.cantexp;
         }
-
         public  void visit(DelegatePtrExp e) {
             Expression e1 = interpret(this.pue, e.e1, this.istate, CtfeGoal.ctfeNeedRvalue);
             assert(e1 != null);
@@ -4407,7 +4272,6 @@ public class dinterpret {
             e.error(new BytePtr("`%s` cannot be evaluated at compile time"), e.toChars());
             this.result = CTFEExp.cantexp;
         }
-
         public  void visit(DelegateFuncptrExp e) {
             Expression e1 = interpret(this.pue, e.e1, this.istate, CtfeGoal.ctfeNeedRvalue);
             assert(e1 != null);
@@ -4416,7 +4280,6 @@ public class dinterpret {
             e.error(new BytePtr("`%s` cannot be evaluated at compile time"), e.toChars());
             this.result = CTFEExp.cantexp;
         }
-
         public static boolean resolveIndexing(IndexExp e, InterState istate, Ptr<Expression> pagg, Ptr<Long> pidx, boolean modify) {
             assert(((e.e1.type.toBasetype().ty & 0xFF) != ENUMTY.Taarray));
             if (((e.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tpointer))
@@ -4539,7 +4402,6 @@ public class dinterpret {
             }
             return true;
         }
-
         public  void visit(IndexExp e) {
             if (((e.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tpointer))
             {
@@ -4640,7 +4502,6 @@ public class dinterpret {
             }
             this.result = paintTypeOntoLiteral(e.type, this.result);
         }
-
         public  void visit(SliceExp e) {
             if (((e.e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tpointer))
             {
@@ -4819,7 +4680,6 @@ public class dinterpret {
             this.result = (this.pue).exp();
             this.result.type = e.type;
         }
-
         public  void visit(InExp e) {
             Expression e1 = interpret(e.e1, this.istate, CtfeGoal.ctfeNeedRvalue);
             if (this.exceptionOrCant(e1))
@@ -4856,7 +4716,6 @@ public class dinterpret {
                 this.result = (this.pue).exp();
             }
         }
-
         public  void visit(CatExp e) {
             UnionExp ue1 = null;
             Expression e1 = interpret(ue1, e.e1, this.istate, CtfeGoal.ctfeNeedRvalue);
@@ -4907,7 +4766,6 @@ public class dinterpret {
                 }
             }
         }
-
         public  void visit(DeleteExp e) {
             this.result = interpret(e.e1, this.istate, CtfeGoal.ctfeNeedRvalue);
             if (this.exceptionOrCant(this.result))
@@ -5006,7 +4864,6 @@ public class dinterpret {
             }
             this.result = CTFEExp.voidexp;
         }
-
         public  void visit(CastExp e) {
             Expression e1 = interpret(e.e1, this.istate, this.goal);
             if (this.exceptionOrCant(e1))
@@ -5215,7 +5072,6 @@ public class dinterpret {
             }
             this.result = ctfeCast(this.pue, e.loc, e.type, e.to, e1);
         }
-
         public  void visit(AssertExp e) {
             Expression e1 = interpret(this.pue, e.e1, this.istate, CtfeGoal.ctfeNeedRvalue);
             if (this.exceptionOrCant(e1))
@@ -5247,7 +5103,6 @@ public class dinterpret {
             this.result = e1;
             return ;
         }
-
         public  void visit(PtrExp e) {
             {
                 SymOffExp soe1 = e.e1.isSymOffExp();
@@ -5331,7 +5186,6 @@ public class dinterpret {
             if (this.exceptionOrCant(this.result))
                 return ;
         }
-
         public  void visit(DotVarExp e) {
             Expression ex = interpret(e.e1, this.istate, CtfeGoal.ctfeNeedRvalue);
             if (this.exceptionOrCant(ex))
@@ -5445,7 +5299,6 @@ public class dinterpret {
                 se.elements.set(i, this.result);
             }
         }
-
         public  void visit(RemoveExp e) {
             Expression agg = interpret(e.e1, this.istate, CtfeGoal.ctfeNeedRvalue);
             if (this.exceptionOrCant(agg))
@@ -5484,20 +5337,16 @@ public class dinterpret {
             (this.pue) = new UnionExp(new IntegerExp(e.loc, removed != 0 ? 1 : 0, Type.tbool));
             this.result = (this.pue).exp();
         }
-
         public  void visit(ClassReferenceExp e) {
             this.result = e;
         }
-
         public  void visit(VoidInitExp e) {
             e.error(new BytePtr("CTFE internal error: trying to read uninitialized variable"));
             throw new AssertionError("Unreachable code!");
         }
-
         public  void visit(ThrownExceptionExp e) {
             throw new AssertionError("Unreachable code!");
         }
-
 
         public Interpreter() {}
 
@@ -5519,7 +5368,6 @@ public class dinterpret {
         assert((goal == CtfeGoal.ctfeNeedNothing) || (ex != null));
         return ex;
     }
-
     public static Expression interpret(Expression e, InterState istate, int goal) {
         UnionExp ue = null;
         Expression result = interpret(ue, e, istate, goal);
@@ -5527,7 +5375,6 @@ public class dinterpret {
             result = ue.copy();
         return result;
     }
-
     public static Expression interpret(UnionExp pue, Statement s, InterState istate) {
         if (s == null)
             return null;
@@ -5535,7 +5382,6 @@ public class dinterpret {
         s.accept(v);
         return v.result;
     }
-
     public static Expression interpret(Statement s, InterState istate) {
         UnionExp ue = null;
         Expression result = interpret(ue, s, istate);
@@ -5543,14 +5389,13 @@ public class dinterpret {
             result = ue.copy();
         return result;
     }
-
     public static Expression scrubReturnValue(Loc loc, Expression e) {
         Function2<Expression,Boolean,Boolean> isVoid = new Function2<Expression,Boolean,Boolean>(){
-            public Boolean invoke(Expression e, Boolean checkArrayType){
+            public Boolean invoke(Expression e, Boolean checkArrayType) {
                 if (((e.op & 0xFF) == 128))
                     return true;
                 Function1<DArray<Expression>,Boolean> isEntirelyVoid = new Function1<DArray<Expression>,Boolean>(){
-                    public Boolean invoke(DArray<Expression> elems){
+                    public Boolean invoke(DArray<Expression> elems) {
                         {
                             Slice<Expression> __r988 = (elems).opSlice().copy();
                             int __key989 = 0;
@@ -5579,7 +5424,7 @@ public class dinterpret {
             }
         };
         Function2<DArray<Expression>,Boolean,Expression> scrubArray = new Function2<DArray<Expression>,Boolean,Expression>(){
-            public Expression invoke(DArray<Expression> elems, Boolean structlit){
+            public Expression invoke(DArray<Expression> elems, Boolean structlit) {
                 {
                     Slice<Expression> __r990 = (elems).opSlice().copy();
                     int __key991 = 0;
@@ -5603,7 +5448,7 @@ public class dinterpret {
             }
         };
         Function1<StructLiteralExp,Expression> scrubSE = new Function1<StructLiteralExp,Expression>(){
-            public Expression invoke(StructLiteralExp sle){
+            public Expression invoke(StructLiteralExp sle) {
                 sle.ownedByCtfe = OwnedBy.code;
                 if ((sle.stageflags & 1) == 0)
                 {
@@ -5706,12 +5551,11 @@ public class dinterpret {
         }
         return e;
     }
-
     public static Expression scrubCacheValue(Expression e) {
         if (e == null)
             return e;
         Function1<DArray<Expression>,Expression> scrubArrayCache = new Function1<DArray<Expression>,Expression>(){
-            public Expression invoke(DArray<Expression> elems){
+            public Expression invoke(DArray<Expression> elems) {
                 {
                     Slice<Expression> __r992 = (elems).opSlice().copy();
                     int __key993 = 0;
@@ -5724,7 +5568,7 @@ public class dinterpret {
             }
         };
         Function1<StructLiteralExp,Expression> scrubSE = new Function1<StructLiteralExp,Expression>(){
-            public Expression invoke(StructLiteralExp sle){
+            public Expression invoke(StructLiteralExp sle) {
                 sle.ownedByCtfe = OwnedBy.cache;
                 if ((sle.stageflags & 1) == 0)
                 {
@@ -5816,7 +5660,6 @@ public class dinterpret {
         }
         return e;
     }
-
     public static Expression interpret_length(UnionExp pue, InterState istate, Expression earg) {
         earg = interpret(pue, earg, istate, CtfeGoal.ctfeNeedRvalue);
         if (exceptionOrCantInterpret(earg))
@@ -5832,7 +5675,6 @@ public class dinterpret {
         (pue) = new UnionExp(new IntegerExp(earg.loc, len, Type.tsize_t));
         return (pue).exp();
     }
-
     public static Expression interpret_keys(UnionExp pue, InterState istate, Expression earg, Type returnType) {
         earg = interpret(pue, earg, istate, CtfeGoal.ctfeNeedRvalue);
         if (exceptionOrCantInterpret(earg))
@@ -5850,7 +5692,6 @@ public class dinterpret {
         pue.opAssign(copyLiteral(ae));
         return (pue).exp();
     }
-
     public static Expression interpret_values(UnionExp pue, InterState istate, Expression earg, Type returnType) {
         earg = interpret(pue, earg, istate, CtfeGoal.ctfeNeedRvalue);
         if (exceptionOrCantInterpret(earg))
@@ -5868,7 +5709,6 @@ public class dinterpret {
         pue.opAssign(copyLiteral(ae));
         return (pue).exp();
     }
-
     public static Expression interpret_dup(UnionExp pue, InterState istate, Expression earg) {
         earg = interpret(pue, earg, istate, CtfeGoal.ctfeNeedRvalue);
         if (exceptionOrCantInterpret(earg))
@@ -5899,7 +5739,6 @@ public class dinterpret {
         aae.type = earg.type.mutableOf();
         return aae;
     }
-
     public static Expression interpret_aaApply(UnionExp pue, InterState istate, Expression aa, Expression deleg) {
         aa = interpret(aa, istate, CtfeGoal.ctfeNeedRvalue);
         if (exceptionOrCantInterpret(aa))
@@ -5965,7 +5804,6 @@ public class dinterpret {
         finally {
         }
     }
-
     public static Expression foreachApplyUtf(UnionExp pue, InterState istate, Expression str, Expression deleg, boolean rvs) {
         FuncDeclaration fd = null;
         Expression pthis = null;
@@ -6194,7 +6032,6 @@ public class dinterpret {
         finally {
         }
     }
-
     public static Expression evaluateIfBuiltin(UnionExp pue, InterState istate, Loc loc, FuncDeclaration fd, DArray<Expression> arguments, Expression pthis) {
         Expression e = null;
         int nargs = arguments != null ? (arguments).length : 0;
@@ -6312,7 +6149,6 @@ public class dinterpret {
         }
         return e;
     }
-
     public static Expression evaluatePostblit(InterState istate, Expression e) {
         TypeStruct ts = e.type.baseElemOf().isTypeStruct();
         if (ts == null)
@@ -6351,7 +6187,6 @@ public class dinterpret {
         }
         throw new AssertionError("Unreachable code!");
     }
-
     public static Expression evaluateDtor(InterState istate, Expression e) {
         TypeStruct ts = e.type.baseElemOf().isTypeStruct();
         if (ts == null)
@@ -6388,20 +6223,16 @@ public class dinterpret {
         }
         return null;
     }
-
     public static boolean hasValue(VarDeclaration vd) {
         if ((vd.ctfeAdrOnStack == -1))
             return false;
         return null != getValue(vd);
     }
-
     public static void setValueWithoutChecking(VarDeclaration vd, Expression newval) {
         ctfeStack.setValue(vd, newval);
     }
-
     public static void setValue(VarDeclaration vd, Expression newval) {
         assert((vd.storage_class & 2101248L) != 0 ? isCtfeReferenceValid(newval) : isCtfeValueValid(newval));
         ctfeStack.setValue(vd, newval);
     }
-
 }

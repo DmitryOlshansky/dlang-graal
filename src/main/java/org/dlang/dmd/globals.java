@@ -272,7 +272,6 @@ public class globals {
             }
             return __result;
         }
-
         public Param(){
             modFileAliasStrings = new DArray<BytePtr>();
             ddocfiles = new DArray<BytePtr>();
@@ -723,7 +722,6 @@ public class globals {
             this.gaggedWarnings = 0;
             return this.gaggedErrors;
         }
-
         public  boolean endGagging(int oldGagged) {
             boolean anyErrs = this.gaggedErrors != oldGagged;
             this.gag -= 1;
@@ -731,13 +729,11 @@ public class globals {
             this.gaggedErrors = oldGagged;
             return anyErrs;
         }
-
         public  void increaseErrorCount() {
             if (this.gag != 0)
                 this.gaggedErrors += 1;
             this.errors += 1;
         }
-
         public  void _init() {
             this.obj_ext = new ByteSlice("o").copy();
             this.lib_ext = new ByteSlice("a").copy();
@@ -747,11 +743,9 @@ public class globals {
             this.vendor = new ByteSlice("Digital Mars D").copy();
             this.params.color = Console.detectTerminal();
         }
-
         public  void deinitialize() {
             this.opAssign(new Global(new ByteSlice(), new ByteSlice("d"), new ByteSlice(), new ByteSlice(), new ByteSlice(), new ByteSlice("html"), new ByteSlice("ddoc"), new ByteSlice("di"), new ByteSlice("json"), new ByteSlice("map"), false, new ByteSlice("Copyright (C) 1999-2019 by The D Language Foundation, All Rights Reserved"), new ByteSlice("written by Walter Bright"), null, null, new ByteSlice(), new ByteSlice(), new Param(true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, (byte)0, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, DiagnosticReporting.inform, false, false, false, false, false, false, false, DiagnosticReporting.off, PIC.fixed, false, false, (byte)0, false, false, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, CppStdRevision.cpp98, false, false, false, false, false, false, false, false, false, false, false, false, false, false, CPU.baseline, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKACTION.D, 20, new ByteSlice(), new DArray<BytePtr>(), null, null, new ByteSlice(), new ByteSlice(), new ByteSlice(), false, null, null, new DArray<BytePtr>(), false, new ByteSlice(), new ByteSlice(), true, false, new ByteSlice(), JsonFieldFlags.none, null, null, 0, 0, null, 0, null, new ByteSlice(), new ByteSlice(), new ByteSlice(), new ByteSlice(), null, false, false, false, false, false, false, false, new DArray<BytePtr>(), new DArray<BytePtr>(), new DArray<BytePtr>(), new DArray<BytePtr>(), new DArray<BytePtr>(), new ByteSlice(), new ByteSlice(), new ByteSlice(), new ByteSlice()), 0, 0, 0, 0, 0, null, null, null));
         }
-
         public  int versionNumber() {
             if ((globals.versionNumbercached == 0))
             {
@@ -782,11 +776,9 @@ public class globals {
             }
             return globals.versionNumbercached;
         }
-
         public  ByteSlice finalDefaultlibname() {
             return this.params.betterC ? new ByteSlice() : this.params.symdebug != 0 ? this.params.debuglibname : this.params.defaultlibname;
         }
-
         public Global(){
             params = new Param();
         }
@@ -890,7 +882,6 @@ public class globals {
             this.charnum = charnum;
             this.filename = pcopy(filename);
         }
-
         public  BytePtr toChars(boolean showColumns) {
             OutBuffer buf = new OutBuffer();
             try {
@@ -914,26 +905,21 @@ public class globals {
             finally {
             }
         }
-
         public  boolean equals(Loc loc) {
             return !global.params.showColumns || (this.charnum == loc.charnum) && (this.linnum == loc.linnum) && FileName.equals(this.filename, loc.filename);
         }
-
         public  boolean opEquals(Loc loc) {
             return (this.charnum == loc.charnum) && (this.linnum == loc.linnum) && (this.filename == loc.filename) || (this.filename != null) && (loc.filename != null) && (strcmp(this.filename, loc.filename) == 0);
         }
-
         public  int toHash() {
             int hash = hashOf(this.linnum);
             hash = hashOf(this.charnum, hash);
             hash = hashOf(toDString(this.filename), hash);
             return hash;
         }
-
         public  boolean isValid() {
             return this.filename != null;
         }
-
         public Loc(){
         }
         public Loc copy(){
@@ -988,5 +974,5 @@ public class globals {
         public static final int always = 2;
     }
 
-    public static Global global = new Global();
+    static Global global = new Global();
 }

@@ -29,7 +29,6 @@ public class dmacro {
             this.name = name.copy();
             this.text = text.copy();
         }
-
         public  Macro search(ByteSlice name) {
             Macro table = null;
             {
@@ -43,7 +42,6 @@ public class dmacro {
             }
             return table;
         }
-
         public static Macro define(Ptr<Macro> ptable, ByteSlice name, ByteSlice text) {
             Macro table = null;
             {
@@ -61,7 +59,6 @@ public class dmacro {
             ptable.set(0, table);
             return table;
         }
-
         public  void expand(OutBuffer buf, int start, IntPtr pend, ByteSlice arg) {
             if ((dmacro.expandnest > 1000))
             {
@@ -227,7 +224,6 @@ public class dmacro {
             pend.set(0, end);
             dmacro.expandnest--;
         }
-
         public Macro(){
         }
         public Macro copy(){
@@ -252,7 +248,6 @@ public class dmacro {
         int len = p.getLength();
         return (((BytePtr)memcpy((BytePtr)Mem.xmalloc(len), (toBytePtr(p)), len))).slice(0,len);
     }
-
     public static int extractArgN(ByteSlice buf, ByteSlice marg, int n) {
         marg = new ByteSlice().copy();
         int parens = 1;
@@ -363,5 +358,4 @@ public class dmacro {
             break;
         } catch(Dispatch0 __d){}
     }
-
 }

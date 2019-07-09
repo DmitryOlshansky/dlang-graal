@@ -24,38 +24,41 @@ public class errors {
     public static abstract class DiagnosticReporter extends Object
     {
         public abstract int errorCount();
+
         public abstract int warningCount();
+
         public abstract int deprecationCount();
+
         public  void error(Loc loc, BytePtr format, Object... args) {
             this.error(loc, format, new Slice<>(args));
         }
-
         public abstract void error(Loc loc, BytePtr format, Slice<Object> args);
+
         public  void errorSupplemental(Loc loc, BytePtr format, Object... args) {
             this.errorSupplemental(loc, format, new Slice<>(args));
         }
-
         public abstract void errorSupplemental(Loc loc, BytePtr format, Slice<Object> arg2);
+
         public  void warning(Loc loc, BytePtr format, Object... args) {
             this.warning(loc, format, new Slice<>(args));
         }
-
         public abstract void warning(Loc loc, BytePtr format, Slice<Object> args);
+
         public  void warningSupplemental(Loc loc, BytePtr format, Object... args) {
             this.warningSupplemental(loc, format, new Slice<>(args));
         }
-
         public abstract void warningSupplemental(Loc loc, BytePtr format, Slice<Object> arg2);
+
         public  void deprecation(Loc loc, BytePtr format, Object... args) {
             this.deprecation(loc, format, new Slice<>(args));
         }
-
         public abstract void deprecation(Loc loc, BytePtr format, Slice<Object> args);
+
         public  void deprecationSupplemental(Loc loc, BytePtr format, Object... args) {
             this.deprecationSupplemental(loc, format, new Slice<>(args));
         }
-
         public abstract void deprecationSupplemental(Loc loc, BytePtr format, Slice<Object> arg2);
+
 
         public DiagnosticReporter() {}
 
@@ -70,37 +73,29 @@ public class errors {
         public  StderrDiagnosticReporter(byte useDeprecated) {
             this.useDeprecated = useDeprecated;
         }
-
         public  int errorCount() {
             return this.errorCount_;
         }
-
         public  int warningCount() {
             return this.warningCount_;
         }
-
         public  int deprecationCount() {
             return this.deprecationCount_;
         }
-
         public  void error(Loc loc, BytePtr format, Slice<Object> args) {
             verror(loc, format, args, null, null, new BytePtr("Error: "));
             this.errorCount_++;
         }
-
         public  void errorSupplemental(Loc loc, BytePtr format, Slice<Object> args) {
             verrorSupplemental(loc, format, args);
         }
-
         public  void warning(Loc loc, BytePtr format, Slice<Object> args) {
             vwarning(loc, format, args);
             this.warningCount_++;
         }
-
         public  void warningSupplemental(Loc loc, BytePtr format, Slice<Object> args) {
             vwarningSupplemental(loc, format, args);
         }
-
         public  void deprecation(Loc loc, BytePtr format, Slice<Object> args) {
             vdeprecation(loc, format, args, null, null);
             if (((this.useDeprecated & 0xFF) == 0))
@@ -108,11 +103,9 @@ public class errors {
             else
                 this.deprecationCount_++;
         }
-
         public  void deprecationSupplemental(Loc loc, BytePtr format, Slice<Object> args) {
             vdeprecationSupplemental(loc, format, args);
         }
-
 
         public StderrDiagnosticReporter() {}
 
@@ -137,41 +130,32 @@ public class errors {
     public static void error(Loc loc, BytePtr format, Object... ap) {
         verror(loc, format, new Slice<>(ap), null, null, new BytePtr("Error: "));
     }
-
     // removed duplicate function, [["void errorLoc, BytePtr", "int isattyint"]] signature: void errorLoc, BytePtr
     public static void error(BytePtr filename, int linnum, int charnum, BytePtr format, Object... ap) {
         Loc loc = loc = new Loc(filename, linnum, charnum);
         verror(loc, format, new Slice<>(ap), null, null, new BytePtr("Error: "));
     }
-
     public static void errorSupplemental(Loc loc, BytePtr format, Object... ap) {
         verrorSupplemental(loc, format, new Slice<>(ap));
     }
-
     public static void warning(Loc loc, BytePtr format, Object... ap) {
         vwarning(loc, format, new Slice<>(ap));
     }
-
     public static void warningSupplemental(Loc loc, BytePtr format, Object... ap) {
         vwarningSupplemental(loc, format, new Slice<>(ap));
     }
-
     public static void deprecation(Loc loc, BytePtr format, Object... ap) {
         vdeprecation(loc, format, new Slice<>(ap), null, null);
     }
-
     public static void deprecationSupplemental(Loc loc, BytePtr format, Object... ap) {
         vdeprecationSupplemental(loc, format, new Slice<>(ap));
     }
-
     public static void message(Loc loc, BytePtr format, Object... ap) {
         vmessage(loc, format, new Slice<>(ap));
     }
-
     public static void message(BytePtr format, Object... ap) {
         vmessage(Loc.initial, format, new Slice<>(ap));
     }
-
     public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2) {
         Console con = ((Console)global.console);
         BytePtr p = pcopy(loc.toChars(global.params.showColumns));
@@ -225,7 +209,6 @@ public class errors {
         }
         fflush(stderr);
     }
-
     public static void verror(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2, BytePtr header) {
         global.errors++;
         if (global.gag == 0)
@@ -244,7 +227,6 @@ public class errors {
             global.gaggedErrors++;
         }
     }
-
     public static void verrorSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
         int color = Color.black;
         if (global.gag != 0)
@@ -257,7 +239,6 @@ public class errors {
             color = Color.brightRed;
         verrorPrint(loc, color, new BytePtr("       "), format, ap, null, null);
     }
-
     public static void vwarning(Loc loc, BytePtr format, Slice<Object> ap) {
         if (((global.params.warnings & 0xFF) != 2))
         {
@@ -273,12 +254,10 @@ public class errors {
             }
         }
     }
-
     public static void vwarningSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
         if (((global.params.warnings & 0xFF) != 2) && (global.gag == 0))
             verrorPrint(loc, Color.brightYellow, new BytePtr("       "), format, ap, null, null);
     }
-
     public static void vdeprecation(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2) {
         if (((global.params.useDeprecated & 0xFF) == 0))
             verror(loc, format, ap, p1, p2, errors.vdeprecationheader);
@@ -294,7 +273,6 @@ public class errors {
             }
         }
     }
-
     public static void vmessage(Loc loc, BytePtr format, Slice<Object> ap) {
         BytePtr p = pcopy(loc.toChars(global.params.showColumns));
         if (p.get() != 0)
@@ -308,22 +286,18 @@ public class errors {
         fputc(10, stdout);
         fflush(stdout);
     }
-
     public static void vdeprecationSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
         if (((global.params.useDeprecated & 0xFF) == 0))
             verrorSupplemental(loc, format, ap);
         else if (((global.params.useDeprecated & 0xFF) == 1) && (global.gag == 0))
             verrorPrint(loc, Color.brightCyan, new BytePtr("       "), format, ap, null, null);
     }
-
     public static void fatal() {
         exit(1);
     }
-
     public static void halt() {
         throw new AssertionError("Unreachable code!");
     }
-
     public static void colorSyntaxHighlight(OutBuffer buf) {
         boolean inBacktick = false;
         int iCodeStart = 0;
@@ -362,7 +336,6 @@ public class errors {
             }
         }
     }
-
 
     public static class HIGHLIGHT 
     {
@@ -447,7 +420,6 @@ public class errors {
         global.endGagging(gaggedErrorsSave);
         errors.colorHighlightCodenested -= 1;
     }
-
     public static void writeHighlights(Console con, OutBuffer buf) {
         boolean colors = false;
         {
@@ -483,5 +455,4 @@ public class errors {
                 (con).resetColor();
         }
     }
-
 }

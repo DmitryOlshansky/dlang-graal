@@ -41,155 +41,117 @@ public class opover {
         public  void visit(Expression e) {
             throw new AssertionError("Unreachable code!");
         }
-
         public  void visit(UAddExp e) {
             this.id = Id.uadd;
         }
-
         public  void visit(NegExp e) {
             this.id = Id.neg;
         }
-
         public  void visit(ComExp e) {
             this.id = Id.com;
         }
-
         public  void visit(CastExp e) {
             this.id = Id._cast;
         }
-
         public  void visit(InExp e) {
             this.id = Id.opIn;
         }
-
         public  void visit(PostExp e) {
             this.id = ((e.op & 0xFF) == 93) ? Id.postinc : Id.postdec;
         }
-
         public  void visit(AddExp e) {
             this.id = Id.add;
         }
-
         public  void visit(MinExp e) {
             this.id = Id.sub;
         }
-
         public  void visit(MulExp e) {
             this.id = Id.mul;
         }
-
         public  void visit(DivExp e) {
             this.id = Id.div;
         }
-
         public  void visit(ModExp e) {
             this.id = Id.mod;
         }
-
         public  void visit(PowExp e) {
             this.id = Id.pow;
         }
-
         public  void visit(ShlExp e) {
             this.id = Id.shl;
         }
-
         public  void visit(ShrExp e) {
             this.id = Id.shr;
         }
-
         public  void visit(UshrExp e) {
             this.id = Id.ushr;
         }
-
         public  void visit(AndExp e) {
             this.id = Id.iand;
         }
-
         public  void visit(OrExp e) {
             this.id = Id.ior;
         }
-
         public  void visit(XorExp e) {
             this.id = Id.ixor;
         }
-
         public  void visit(CatExp e) {
             this.id = Id.cat;
         }
-
         public  void visit(AssignExp e) {
             this.id = Id.assign;
         }
-
         public  void visit(AddAssignExp e) {
             this.id = Id.addass;
         }
-
         public  void visit(MinAssignExp e) {
             this.id = Id.subass;
         }
-
         public  void visit(MulAssignExp e) {
             this.id = Id.mulass;
         }
-
         public  void visit(DivAssignExp e) {
             this.id = Id.divass;
         }
-
         public  void visit(ModAssignExp e) {
             this.id = Id.modass;
         }
-
         public  void visit(AndAssignExp e) {
             this.id = Id.andass;
         }
-
         public  void visit(OrAssignExp e) {
             this.id = Id.orass;
         }
-
         public  void visit(XorAssignExp e) {
             this.id = Id.xorass;
         }
-
         public  void visit(ShlAssignExp e) {
             this.id = Id.shlass;
         }
-
         public  void visit(ShrAssignExp e) {
             this.id = Id.shrass;
         }
-
         public  void visit(UshrAssignExp e) {
             this.id = Id.ushrass;
         }
-
         public  void visit(CatAssignExp e) {
             this.id = Id.catass;
         }
-
         public  void visit(PowAssignExp e) {
             this.id = Id.powass;
         }
-
         public  void visit(EqualExp e) {
             this.id = Id.eq;
         }
-
         public  void visit(CmpExp e) {
             this.id = Id.cmp;
         }
-
         public  void visit(ArrayExp e) {
             this.id = Id.index;
         }
-
         public  void visit(PtrExp e) {
             this.id = Id.opStar;
         }
-
 
         public OpIdVisitor() {}
     }
@@ -199,63 +161,48 @@ public class opover {
         public  void visit(Expression e) {
             this.id = null;
         }
-
         public  void visit(InExp e) {
             this.id = Id.opIn_r;
         }
-
         public  void visit(AddExp e) {
             this.id = Id.add_r;
         }
-
         public  void visit(MinExp e) {
             this.id = Id.sub_r;
         }
-
         public  void visit(MulExp e) {
             this.id = Id.mul_r;
         }
-
         public  void visit(DivExp e) {
             this.id = Id.div_r;
         }
-
         public  void visit(ModExp e) {
             this.id = Id.mod_r;
         }
-
         public  void visit(PowExp e) {
             this.id = Id.pow_r;
         }
-
         public  void visit(ShlExp e) {
             this.id = Id.shl_r;
         }
-
         public  void visit(ShrExp e) {
             this.id = Id.shr_r;
         }
-
         public  void visit(UshrExp e) {
             this.id = Id.ushr_r;
         }
-
         public  void visit(AndExp e) {
             this.id = Id.iand_r;
         }
-
         public  void visit(OrExp e) {
             this.id = Id.ior_r;
         }
-
         public  void visit(XorExp e) {
             this.id = Id.ixor_r;
         }
-
         public  void visit(CatExp e) {
             this.id = Id.cat_r;
         }
-
 
         public OpIdRVisitor() {}
     }
@@ -268,11 +215,9 @@ public class opover {
             this.sc = sc;
             this.pop = pcopy(pop);
         }
-
         public  void visit(Expression e) {
             throw new AssertionError("Unreachable code!");
         }
-
         public  void visit(UnaExp e) {
             if (((e.e1.op & 0xFF) == 17))
             {
@@ -398,7 +343,6 @@ public class opover {
                 }
             }
         }
-
         public  void visit(ArrayExp ae) {
             ae.e1 = expressionSemantic(ae.e1, this.sc);
             ae.e1 = resolveProperties(this.sc, ae.e1);
@@ -502,7 +446,6 @@ public class opover {
             ae.e1 = ae1old;
             ae.lengthVar = null;
         }
-
         public  void visit(CastExp e) {
             AggregateDeclaration ad = isAggregate(e.e1.type);
             if (ad != null)
@@ -533,7 +476,6 @@ public class opover {
                 }
             }
         }
-
         public  void visit(BinExp e) {
             Identifier id = opId(e);
             Identifier id_r = opId_r(e);
@@ -763,14 +705,13 @@ public class opover {
             finally {
             }
         }
-
         public  void visit(EqualExp e) {
             Ref<Type> t1 = ref(e.e1.type.toBasetype());
             Ref<Type> t2 = ref(e.e2.type.toBasetype());
             if (((t1.value.ty & 0xFF) == ENUMTY.Tarray) || ((t1.value.ty & 0xFF) == ENUMTY.Tsarray) && ((t2.value.ty & 0xFF) == ENUMTY.Tarray) || ((t2.value.ty & 0xFF) == ENUMTY.Tsarray))
             {
                 Function0<Boolean> needsDirectEq = new Function0<Boolean>(){
-                    public Boolean invoke(){
+                    public Boolean invoke() {
                         Type t1n = t1.value.nextOf().toBasetype();
                         Type t2n = t2.value.nextOf().toBasetype();
                         if (((t1n.ty & 0xFF) == ENUMTY.Tchar) || ((t1n.ty & 0xFF) == ENUMTY.Twchar) || ((t1n.ty & 0xFF) == ENUMTY.Tdchar) && ((t2n.ty & 0xFF) == ENUMTY.Tchar) || ((t2n.ty & 0xFF) == ENUMTY.Twchar) || ((t2n.ty & 0xFF) == ENUMTY.Tdchar) || ((t1n.ty & 0xFF) == ENUMTY.Tvoid) || ((t2n.ty & 0xFF) == ENUMTY.Tvoid))
@@ -931,11 +872,9 @@ public class opover {
                 return ;
             }
         }
-
         public  void visit(CmpExp e) {
             this.result = compare_overload(e, this.sc, Id.cmp, this.pop);
         }
-
         public  void visit(BinAssignExp e) {
             if (((e.e1.op & 0xFF) == 17))
             {
@@ -1107,7 +1046,6 @@ public class opover {
             }
         }
 
-
         public OpOverload() {}
     }
 
@@ -1131,19 +1069,16 @@ public class opover {
         }
         return false;
     }
-
     public static Identifier opId(Expression e) {
         OpIdVisitor v = new OpIdVisitor();
         e.accept(v);
         return v.id;
     }
-
     public static Identifier opId_r(Expression e) {
         OpIdRVisitor v = new OpIdRVisitor();
         e.accept(v);
         return v.id;
     }
-
     public static DArray<RootObject> opToArg(Scope sc, byte op) {
         switch ((op & 0xFF))
         {
@@ -1195,7 +1130,6 @@ public class opover {
         (tiargs).push(e);
         return tiargs;
     }
-
     public static Expression checkAliasThisForLhs(AggregateDeclaration ad, Scope sc, BinExp e) {
         if ((ad == null) || (ad.aliasthis == null))
             return null;
@@ -1213,7 +1147,6 @@ public class opover {
             result = trySemantic(be, sc);
         return result;
     }
-
     public static Expression checkAliasThisForRhs(AggregateDeclaration ad, Scope sc, BinExp e) {
         if ((ad == null) || (ad.aliasthis == null))
             return null;
@@ -1231,7 +1164,6 @@ public class opover {
             result = trySemantic(be, sc);
         return result;
     }
-
     public static Expression op_overload(Expression e, Scope sc, BytePtr pop) {
         if (pop != null)
             pop.set(0, e.op);
@@ -1239,7 +1171,6 @@ public class opover {
         e.accept(v);
         return v.result;
     }
-
     public static Expression compare_overload(BinExp e, Scope sc, Identifier id, BytePtr pop) {
         AggregateDeclaration ad1 = isAggregate(e.e1.type);
         AggregateDeclaration ad2 = isAggregate(e.e2.type);
@@ -1321,7 +1252,6 @@ public class opover {
         Expression result = checkAliasThisForLhs(ad1, sc, e);
         return result != null ? result : checkAliasThisForRhs(isAggregate(e.e2.type), sc, e);
     }
-
     public static Expression build_overload(Loc loc, Scope sc, Expression ethis, Expression earg, Dsymbol d) {
         assert(d != null);
         Expression e = null;
@@ -1334,7 +1264,6 @@ public class opover {
         e = expressionSemantic(e, sc);
         return e;
     }
-
     public static Dsymbol search_function(ScopeDsymbol ad, Identifier funcid) {
         Dsymbol s = ad.search(Loc.initial, funcid, 8);
         if (s != null)
@@ -1349,7 +1278,6 @@ public class opover {
         }
         return null;
     }
-
     public static boolean inferForeachAggregate(Scope sc, boolean isForeach, Ref<Expression> feaggr, Ref<Dsymbol> sapply) {
         sapply.value = null;
         boolean sliced = false;
@@ -1421,7 +1349,6 @@ public class opover {
         }
         throw new AssertionError("Unreachable code!");
     }
-
     public static boolean inferApplyArgTypes(ForeachStatement fes, Scope sc, Ref<Dsymbol> sapply) {
         if ((fes.parameters == null) || ((fes.parameters).length == 0))
             return false;
@@ -1546,14 +1473,13 @@ public class opover {
         }
         return true;
     }
-
     public static FuncDeclaration findBestOpApplyMatch(Expression ethis, FuncDeclaration fstart, DArray<Parameter> parameters) {
         byte mod = ethis.type.mod;
         int match = MATCH.nomatch;
         FuncDeclaration fd_best = null;
         FuncDeclaration fd_ambig = null;
         Function1<Dsymbol,Integer> __lambda4 = new Function1<Dsymbol,Integer>(){
-            public Integer invoke(Dsymbol s){
+            public Integer invoke(Dsymbol s) {
                 FuncDeclaration f = s.isFuncDeclaration();
                 if (f == null)
                     return 0;
@@ -1591,7 +1517,6 @@ public class opover {
         }
         return fd_best;
     }
-
     public static boolean matchParamsToOpApply(TypeFunction tf, DArray<Parameter> parameters, boolean infer) {
         boolean nomatch = false;
         if ((tf.parameterList.length() != 1))
@@ -1625,7 +1550,6 @@ public class opover {
         }
         return true;
     }
-
     public static byte reverseRelation(byte op) {
         switch ((op & 0xFF))
         {
@@ -1646,5 +1570,4 @@ public class opover {
         }
         return op;
     }
-
 }

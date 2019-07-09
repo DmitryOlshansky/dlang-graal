@@ -21,40 +21,31 @@ public class complex {
         public  complex_t(double re) {
             this(re, CTFloat.zero);
         }
-
         public  complex_t(double re, double im) {
             this.re = re;
             this.im = im;
         }
-
         public  complex_t opAdd(complex_t y) {
             return new complex_t(this.re + y.re, this.im + y.im);
         }
-
         public  complex_t opSub(complex_t y) {
             return new complex_t(this.re - y.re, this.im - y.im);
         }
-
         public  complex_t opNeg() {
             return new complex_t(-this.re, -this.im);
         }
-
         public  complex_t opMul(complex_t y) {
             return new complex_t(this.re * y.re - this.im * y.im, this.im * y.re + this.re * y.im);
         }
-
         public  complex_t opMul_r(double x) {
             return new complex_t(x).opMul(this);
         }
-
         public  complex_t opMul(double y) {
             return this.opMul(new complex_t(y));
         }
-
         public  complex_t opDiv(double y) {
             return this.opDiv(new complex_t(y));
         }
-
         public  complex_t opDiv(complex_t y) {
             if ((CTFloat.fabs(y.re) < CTFloat.fabs(y.im)))
             {
@@ -69,17 +60,14 @@ public class complex {
                 return new complex_t((this.re + r * this.im) / den, (this.im - r * this.re) / den);
             }
         }
-
         // from template opCast!(Boolean)
         public  boolean opCastBoolean() {
             return (this.re != 0) || (this.im != 0);
         }
 
-
         public  int opEquals(complex_t y) {
             return (((this.re == y.re) && (this.im == y.im)) ? 1 : 0);
         }
-
         public complex_t(){
         }
         public complex_t copy(){
@@ -97,9 +85,7 @@ public class complex {
     public static double creall(complex_t x) {
         return x.re;
     }
-
     public static double cimagl(complex_t x) {
         return x.im;
     }
-
 }

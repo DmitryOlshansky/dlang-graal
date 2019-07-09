@@ -33,15 +33,12 @@ public class nogc {
             super();
             this.f = f;
         }
-
         public  void doCond(Expression exp) {
             if (exp != null)
                 walkPostorder(exp, this);
         }
-
         public  void visit(Expression e) {
         }
-
         public  void visit(DeclarationExp e) {
             VarDeclaration v = e.declaration.isVarDeclaration();
             if ((v != null) && ((v.storage_class & 8388608L) == 0) && !v.isDataseg() && (v._init != null))
@@ -55,10 +52,8 @@ public class nogc {
                 }
             }
         }
-
         public  void visit(CallExp e) {
         }
-
         public  void visit(ArrayLiteralExp e) {
             if (((e.type.ty & 0xFF) != ENUMTY.Tarray) || (e.elements == null) || ((e.elements).length == 0))
                 return ;
@@ -70,7 +65,6 @@ public class nogc {
             }
             this.f.printGCUsage(e.loc, new BytePtr("array literal may cause a GC allocation"));
         }
-
         public  void visit(AssocArrayLiteralExp e) {
             if ((e.keys).length == 0)
                 return ;
@@ -82,7 +76,6 @@ public class nogc {
             }
             this.f.printGCUsage(e.loc, new BytePtr("associative array literal may cause a GC allocation"));
         }
-
         public  void visit(NewExp e) {
             if ((e.member != null) && !e.member.isNogc() && this.f.setGC())
             {
@@ -102,7 +95,6 @@ public class nogc {
             }
             this.f.printGCUsage(e.loc, new BytePtr("`new` causes a GC allocation"));
         }
-
         public  void visit(DeleteExp e) {
             if (((e.e1.op & 0xFF) == 26))
             {
@@ -135,7 +127,6 @@ public class nogc {
             }
             this.f.printGCUsage(e.loc, new BytePtr("`delete` requires the GC"));
         }
-
         public  void visit(IndexExp e) {
             Type t1b = e.e1.type.toBasetype();
             if (((t1b.ty & 0xFF) == ENUMTY.Taarray))
@@ -149,7 +140,6 @@ public class nogc {
                 this.f.printGCUsage(e.loc, new BytePtr("indexing an associative array may cause a GC allocation"));
             }
         }
-
         public  void visit(AssignExp e) {
             if (((e.e1.op & 0xFF) == 32))
             {
@@ -162,7 +152,6 @@ public class nogc {
                 this.f.printGCUsage(e.loc, new BytePtr("setting `length` may cause a GC allocation"));
             }
         }
-
         public  void visit(CatAssignExp e) {
             if (this.f.setGC())
             {
@@ -172,7 +161,6 @@ public class nogc {
             }
             this.f.printGCUsage(e.loc, new BytePtr("operator `~=` may cause a GC allocation"));
         }
-
         public  void visit(CatExp e) {
             if (this.f.setGC())
             {
@@ -182,7 +170,6 @@ public class nogc {
             }
             this.f.printGCUsage(e.loc, new BytePtr("operator `~` may cause a GC allocation"));
         }
-
 
         public NOGCVisitor() {}
 
@@ -205,5 +192,4 @@ public class nogc {
         }
         return e;
     }
-
 }

@@ -18,10 +18,10 @@ public class ast_node {
     public static abstract class ASTNode extends RootObject
     {
         public abstract void accept(Visitor v);
+
         public  ASTNode() {
             super();
         }
-
 
         public abstract ASTNode copy();
     }

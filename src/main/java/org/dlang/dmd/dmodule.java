@@ -121,7 +121,6 @@ public class dmodule {
             FileName.free(toBytePtr(sdi));
         }
     }
-
     public static void semantic3OnDependencies(Module m) {
         if (m == null)
             return ;
@@ -137,7 +136,6 @@ public class dmodule {
             }
         }
     }
-
     public static ByteSlice getFilename(DArray<Identifier> packages, Identifier ident) {
         ByteSlice filename = ident.asString().copy();
         if ((packages == null) || ((packages).length == 0))
@@ -148,7 +146,7 @@ public class dmodule {
             try {
                 Ref<DArray<BytePtr>> modAliases = ref(global.params.modFileAliasStrings);
                 Function1<ByteSlice,Void> checkModFileAlias = new Function1<ByteSlice,Void>(){
-                    public Void invoke(ByteSlice p){
+                    public Void invoke(ByteSlice p) {
                         dotmods.writestring(p);
                         {
                             Slice<BytePtr> __r1020 = (modAliases.value).opSlice().copy();
@@ -198,7 +196,6 @@ public class dmodule {
         }
     }
 
-
     public static class PKG 
     {
         public static final int unknown = 0;
@@ -215,11 +212,9 @@ public class dmodule {
             super(loc, ident);
             this.tag = dmodule.__ctorpackageTag++;
         }
-
         public  BytePtr kind() {
             return new BytePtr("package");
         }
-
         public static DsymbolTable resolve(DArray<Identifier> packages, Ptr<Dsymbol> pparent, Ptr<Package> ppkg) {
             DsymbolTable dst = Module.modules;
             Dsymbol parent = null;
@@ -264,11 +259,9 @@ public class dmodule {
                 pparent.set(0, parent);
             return dst;
         }
-
         public  Package isPackage() {
             return this;
         }
-
         public  boolean isAncestorPackageOf(Package pkg) {
             if ((pequals(this, pkg)))
                 return true;
@@ -276,7 +269,6 @@ public class dmodule {
                 return false;
             return this.isAncestorPackageOf(pkg.parent.isPackage());
         }
-
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             flags &= -9;
             if ((this.isModule() == null) && (this.mod != null))
@@ -288,11 +280,9 @@ public class dmodule {
             }
             return this.search(loc, ident, flags);
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
         public  Module isPackageMod() {
             if ((this.isPkgMod == PKG.module_))
             {
@@ -300,7 +290,6 @@ public class dmodule {
             }
             return null;
         }
-
         public  void resolvePKGunknown() {
             if (this.isModule() != null)
                 return ;
@@ -322,7 +311,6 @@ public class dmodule {
             finally {
             }
         }
-
 
         public Package() {}
 
@@ -367,11 +355,9 @@ public class dmodule {
         public static void _init() {
             modules = new DsymbolTable();
         }
-
         public static void deinitialize() {
             modules = null;
         }
-
         public static AggregateDeclaration moduleinfo;
         public ByteSlice arg;
         public ModuleDeclaration md;
@@ -407,7 +393,6 @@ public class dmodule {
             }
             return this.selfimports == 2;
         }
-
         public int rootimports = 0;
         public  boolean rootImports() {
             if ((this.rootimports == 0))
@@ -439,7 +424,6 @@ public class dmodule {
             }
             return this.rootimports == 2;
         }
-
         public int insearch = 0;
         public Identifier searchCacheIdent;
         public Dsymbol searchCacheSymbol;
@@ -480,19 +464,15 @@ public class dmodule {
                 this.hdrfile = this.setOutfilename(global.params.hdrname, global.params.hdrdir, this.arg, toByteSlice(global.hdr_ext)).copy();
             this.escapetable = new Escape(new ByteSlice());
         }
-
         public  Module(ByteSlice filename, Identifier ident, int doDocComment, int doHdrGen) {
             this(Loc.initial, filename, ident, doDocComment, doHdrGen);
         }
-
         public static Module create(BytePtr filename, Identifier ident, int doDocComment, int doHdrGen) {
             return create(toDString(filename), ident, doDocComment, doHdrGen);
         }
-
         public static Module create(ByteSlice filename, Identifier ident, int doDocComment, int doHdrGen) {
             return new Module(Loc.initial, filename, ident, doDocComment, doHdrGen);
         }
-
         public static Module load(Loc loc, DArray<Identifier> packages, Identifier ident) {
             ByteSlice filename = getFilename(packages, ident).copy();
             {
@@ -530,15 +510,12 @@ public class dmodule {
             Compiler.loadModule(m);
             return m;
         }
-
         public  BytePtr kind() {
             return new BytePtr("module");
         }
-
         public  FileName setOutfilename(BytePtr name, BytePtr dir, BytePtr arg, BytePtr ext) {
             return this.setOutfilename(toDString(name), toDString(dir), toDString(arg), toDString(ext));
         }
-
         public  FileName setOutfilename(ByteSlice name, ByteSlice dir, ByteSlice arg, ByteSlice ext) {
             ByteSlice docfilename = new ByteSlice();
             if (name.getLength() != 0)
@@ -571,11 +548,9 @@ public class dmodule {
             }
             return new FileName(docfilename);
         }
-
         public  void setDocfile() {
             this.docfile = this.setOutfilename(toDString(global.params.docname), toDString(global.params.docdir), this.arg, toByteSlice(global.doc_ext)).copy();
         }
-
         public  boolean loadSourceBuffer(Loc loc, File.ReadResult readResult) {
             this.srcBuffer = new FileBuffer(readResult.extractData());
             if (readResult.success)
@@ -615,7 +590,6 @@ public class dmodule {
             }
             return false;
         }
-
         public  boolean read(Loc loc) {
             if (this.srcBuffer != null)
                 return true;
@@ -626,7 +600,6 @@ public class dmodule {
             finally {
             }
         }
-
         public  Module parse() {
             StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
             try {
@@ -635,12 +608,11 @@ public class dmodule {
             finally {
             }
         }
-
         // from template parse!(ASTCodegen)
         public  Module parseASTCodegen(DiagnosticReporter diagnosticReporter) {
             // from template UTF32ToUTF8!(0)
             Function1<ByteSlice,ByteSlice> UTF32ToUTF80 = new Function1<ByteSlice,ByteSlice>(){
-                public ByteSlice invoke(ByteSlice buf){
+                public ByteSlice invoke(ByteSlice buf) {
                     if ((buf.getLength() & 3) != 0)
                     {
                         error(new BytePtr("odd length of UTF-32 char source %u"), buf.getLength());
@@ -679,7 +651,7 @@ public class dmodule {
 
             // from template UTF32ToUTF8!(1)
             Function1<ByteSlice,ByteSlice> UTF32ToUTF81 = new Function1<ByteSlice,ByteSlice>(){
-                public ByteSlice invoke(ByteSlice buf){
+                public ByteSlice invoke(ByteSlice buf) {
                     if ((buf.getLength() & 3) != 0)
                     {
                         error(new BytePtr("odd length of UTF-32 char source %u"), buf.getLength());
@@ -718,7 +690,7 @@ public class dmodule {
 
             // from template UTF16ToUTF8!(0)
             Function1<ByteSlice,ByteSlice> UTF16ToUTF80 = new Function1<ByteSlice,ByteSlice>(){
-                public ByteSlice invoke(ByteSlice buf){
+                public ByteSlice invoke(ByteSlice buf) {
                     if ((buf.getLength() & 1) != 0)
                     {
                         error(new BytePtr("odd length of UTF-16 char source %u"), buf.getLength());
@@ -778,7 +750,7 @@ public class dmodule {
 
             // from template UTF16ToUTF8!(1)
             Function1<ByteSlice,ByteSlice> UTF16ToUTF81 = new Function1<ByteSlice,ByteSlice>(){
-                public ByteSlice invoke(ByteSlice buf){
+                public ByteSlice invoke(ByteSlice buf) {
                     if ((buf.getLength() & 1) != 0)
                     {
                         error(new BytePtr("odd length of UTF-16 char source %u"), buf.getLength());
@@ -1027,7 +999,6 @@ public class dmodule {
             return this;
         }
 
-
         public  void importAll(Scope prevsc) {
             if (this._scope != null)
                 return ;
@@ -1073,11 +1044,9 @@ public class dmodule {
             sc = (sc).pop();
             (sc).pop();
         }
-
         public  int needModuleInfo() {
             return (((this.needmoduleinfo != 0) || global.params.cov) ? 1 : 0);
         }
-
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if (this.insearch != 0)
                 return null;
@@ -1099,7 +1068,6 @@ public class dmodule {
             }
             return s;
         }
-
         public  boolean isPackageAccessible(Package p, Prot protection, int flags) {
             if (this.insearch != 0)
                 return false;
@@ -1113,31 +1081,25 @@ public class dmodule {
                 this.insearch = 0;
             }
         }
-
         public  Dsymbol symtabInsert(Dsymbol s) {
             this.searchCacheIdent = null;
             return this.symtabInsert(s);
         }
-
         public  void deleteObjFile() {
             if (global.params.obj)
                 File.remove(this.objfile.toChars());
             if (this.docfile.opCast())
                 File.remove(this.docfile.toChars());
         }
-
         public static void addDeferredSemantic(Dsymbol s) {
             deferred.push(s);
         }
-
         public static void addDeferredSemantic2(Dsymbol s) {
             deferred2.push(s);
         }
-
         public static void addDeferredSemantic3(Dsymbol s) {
             deferred3.push(s);
         }
-
         public static void runDeferredSemantic() {
             if ((dprogress == 0))
                 return ;
@@ -1179,7 +1141,6 @@ public class dmodule {
             } while ((deferred.length < len) || (dprogress != 0));
             dmodule.runDeferredSemanticnested--;
         }
-
         public static void runDeferredSemantic2() {
             runDeferredSemantic();
             DArray<Dsymbol> a = deferred2;
@@ -1194,7 +1155,6 @@ public class dmodule {
             }
             (a).setDim(0);
         }
-
         public static void runDeferredSemantic3() {
             runDeferredSemantic2();
             DArray<Dsymbol> a = deferred3;
@@ -1209,7 +1169,6 @@ public class dmodule {
             }
             (a).setDim(0);
         }
-
         public static void clearCache() {
             {
                 int i = 0;
@@ -1219,7 +1178,6 @@ public class dmodule {
                 }
             }
         }
-
         public  int imports(Module m) {
             {
                 int i = 0;
@@ -1238,15 +1196,12 @@ public class dmodule {
             }
             return 0;
         }
-
         public  boolean isRoot() {
             return pequals(this.importedFrom, this);
         }
-
         public  boolean isCoreModule(Identifier ident) {
             return (pequals(this.ident, ident)) && (this.parent != null) && (pequals(this.parent.ident, Id.core)) && (this.parent.parent == null);
         }
-
         public int doppelganger = 0;
         public Symbol cov;
         public IntPtr covb;
@@ -1260,11 +1215,9 @@ public class dmodule {
         public  Module isModule() {
             return this;
         }
-
         public  void accept(Visitor v) {
             v.visit(this);
         }
-
         public  void fullyQualifiedName(OutBuffer buf) {
             buf.writestring(this.ident.asString());
             {
@@ -1275,7 +1228,6 @@ public class dmodule {
                 }
             }
         }
-
 
         public Module() {}
 
@@ -1365,7 +1317,6 @@ public class dmodule {
             this.msg = msg;
             this.isdeprecated = isdeprecated;
         }
-
         public  BytePtr toChars() {
             OutBuffer buf = new OutBuffer();
             try {
@@ -1387,11 +1338,9 @@ public class dmodule {
             finally {
             }
         }
-
         public  ByteSlice asString() {
             return toDString(this.toChars());
         }
-
         public ModuleDeclaration(){
             loc = new Loc();
         }
