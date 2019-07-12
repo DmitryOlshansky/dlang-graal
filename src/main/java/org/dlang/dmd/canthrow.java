@@ -30,77 +30,82 @@ import static org.dlang.dmd.visitor.*;
 public class canthrow {
     private static class CanThrow extends StoppableVisitor
     {
-        private FuncDeclaration func;
+        private FuncDeclaration func = null;
         private boolean mustNotThrow = false;
         public  CanThrow(FuncDeclaration func, boolean mustNotThrow) {
+            Ref<FuncDeclaration> func_ref = ref(func);
+            Ref<Boolean> mustNotThrow_ref = ref(mustNotThrow);
             super();
-            this.func = func;
-            this.mustNotThrow = mustNotThrow;
+            this.func = func_ref.value;
+            this.mustNotThrow = mustNotThrow_ref.value;
         }
 
         public  void visit(Expression _param_0) {
         }
 
         public  void visit(DeclarationExp de) {
-            this.stop = Dsymbol_canThrow(de.declaration, this.func, this.mustNotThrow);
+            Ref<DeclarationExp> de_ref = ref(de);
+            this.stop = Dsymbol_canThrow(de_ref.value.declaration, this.func, this.mustNotThrow);
         }
 
         public  void visit(CallExp ce) {
-            if ((global.errors != 0) && (ce.e1.type == null))
+            Ref<CallExp> ce_ref = ref(ce);
+            if ((global.value.errors != 0) && (ce_ref.value.e1.type.value == null))
                 return ;
-            if ((ce.f != null) && (pequals(ce.f, this.func)))
+            if ((ce_ref.value.f != null) && (pequals(ce_ref.value.f, this.func)))
                 return ;
-            Type t = ce.e1.type.toBasetype();
-            TypeFunction tf = t.isTypeFunction();
-            if ((tf != null) && tf.isnothrow)
+            Ref<Type> t = ref(ce_ref.value.e1.type.value.toBasetype());
+            Ref<TypeFunction> tf = ref(t.value.isTypeFunction());
+            if ((tf.value != null) && tf.value.isnothrow)
                 return ;
             else
             {
-                TypeDelegate td = t.isTypeDelegate();
-                if ((td != null) && td.nextOf().isTypeFunction().isnothrow)
+                Ref<TypeDelegate> td = ref(t.value.isTypeDelegate());
+                if ((td.value != null) && td.value.nextOf().isTypeFunction().isnothrow)
                     return ;
             }
             if (this.mustNotThrow)
             {
-                if (ce.f != null)
+                if (ce_ref.value.f != null)
                 {
-                    ce.error(new BytePtr("%s `%s` is not `nothrow`"), ce.f.kind(), ce.f.toPrettyChars(false));
+                    ce_ref.value.error(new BytePtr("%s `%s` is not `nothrow`"), ce_ref.value.f.kind(), ce_ref.value.f.toPrettyChars(false));
                 }
                 else
                 {
-                    Expression e1 = ce.e1;
+                    Ref<Expression> e1 = ref(ce_ref.value.e1);
                     {
-                        PtrExp pe = e1.isPtrExp();
-                        if ((pe) != null)
-                            e1 = pe.e1;
+                        Ref<PtrExp> pe = ref(e1.value.isPtrExp());
+                        if ((pe.value) != null)
+                            e1.value = pe.value.e1;
                     }
-                    ce.error(new BytePtr("`%s` is not `nothrow`"), e1.toChars());
+                    ce_ref.value.error(new BytePtr("`%s` is not `nothrow`"), e1.value.toChars());
                 }
             }
             this.stop = true;
         }
 
         public  void visit(NewExp ne) {
-            if (ne.member != null)
+            Ref<NewExp> ne_ref = ref(ne);
+            if (ne_ref.value.member != null)
             {
-                if (ne.allocator != null)
+                if (ne_ref.value.allocator != null)
                 {
-                    TypeFunction tf = ne.allocator.type.toBasetype().isTypeFunction();
-                    if ((tf != null) && !tf.isnothrow)
+                    Ref<TypeFunction> tf = ref(ne_ref.value.allocator.type.toBasetype().isTypeFunction());
+                    if ((tf.value != null) && !tf.value.isnothrow)
                     {
                         if (this.mustNotThrow)
                         {
-                            ne.error(new BytePtr("%s `%s` is not `nothrow`"), ne.allocator.kind(), ne.allocator.toPrettyChars(false));
+                            ne_ref.value.error(new BytePtr("%s `%s` is not `nothrow`"), ne_ref.value.allocator.kind(), ne_ref.value.allocator.toPrettyChars(false));
                         }
                         this.stop = true;
                     }
                 }
-                TypeFunction tf = ne.member.type.toBasetype().isTypeFunction();
-                if ((tf != null) && !tf.isnothrow)
+                Ref<TypeFunction> tf = ref(ne_ref.value.member.type.toBasetype().isTypeFunction());
+                if ((tf.value != null) && !tf.value.isnothrow)
                 {
                     if (this.mustNotThrow)
                     {
-                        ne.error(new BytePtr("%s `%s` is not `nothrow`"), ne.member.kind(), ne.member.toPrettyChars(false));
+                        ne_ref.value.error(new BytePtr("%s `%s` is not `nothrow`"), ne_ref.value.member.kind(), ne_ref.value.member.toPrettyChars(false));
                     }
                     this.stop = true;
                 }
@@ -108,43 +113,44 @@ public class canthrow {
         }
 
         public  void visit(DeleteExp de) {
-            Type tb = de.e1.type.toBasetype();
-            AggregateDeclaration ad = null;
-            switch ((tb.ty & 0xFF))
+            Ref<DeleteExp> de_ref = ref(de);
+            Ref<Type> tb = ref(de_ref.value.e1.type.value.toBasetype());
+            Ref<AggregateDeclaration> ad = ref(null);
+            switch ((tb.value.ty & 0xFF))
             {
                 case 7:
-                    ad = tb.isTypeClass().sym;
+                    ad.value = tb.value.isTypeClass().sym;
                     break;
                 case 3:
                 case 0:
-                    TypeStruct ts = tb.nextOf().baseElemOf().isTypeStruct();
-                    if (ts == null)
+                    Ref<TypeStruct> ts = ref(tb.value.nextOf().baseElemOf().isTypeStruct());
+                    if (ts.value == null)
                         return ;
-                    ad = ts.sym;
+                    ad.value = ts.value.sym;
                     break;
                 default:
                 return ;
             }
-            if (ad.dtor != null)
+            if (ad.value.dtor != null)
             {
-                TypeFunction tf = ad.dtor.type.toBasetype().isTypeFunction();
-                if ((tf != null) && !tf.isnothrow)
+                Ref<TypeFunction> tf = ref(ad.value.dtor.type.toBasetype().isTypeFunction());
+                if ((tf.value != null) && !tf.value.isnothrow)
                 {
                     if (this.mustNotThrow)
                     {
-                        de.error(new BytePtr("%s `%s` is not `nothrow`"), ad.dtor.kind(), ad.dtor.toPrettyChars(false));
+                        de_ref.value.error(new BytePtr("%s `%s` is not `nothrow`"), ad.value.dtor.kind(), ad.value.dtor.toPrettyChars(false));
                     }
                     this.stop = true;
                 }
             }
-            if ((ad.aggDelete != null) && ((tb.ty & 0xFF) != ENUMTY.Tarray))
+            if ((ad.value.aggDelete != null) && ((tb.value.ty & 0xFF) != ENUMTY.Tarray))
             {
-                TypeFunction tf = ad.aggDelete.type.isTypeFunction();
-                if ((tf != null) && !tf.isnothrow)
+                Ref<TypeFunction> tf = ref(ad.value.aggDelete.type.isTypeFunction());
+                if ((tf.value != null) && !tf.value.isnothrow)
                 {
                     if (this.mustNotThrow)
                     {
-                        de.error(new BytePtr("%s `%s` is not `nothrow`"), ad.aggDelete.kind(), ad.aggDelete.toPrettyChars(false));
+                        de_ref.value.error(new BytePtr("%s `%s` is not `nothrow`"), ad.value.aggDelete.kind(), ad.value.aggDelete.toPrettyChars(false));
                     }
                     this.stop = true;
                 }
@@ -152,37 +158,38 @@ public class canthrow {
         }
 
         public  void visit(AssignExp ae) {
-            if (((ae.op & 0xFF) == 96))
+            Ref<AssignExp> ae_ref = ref(ae);
+            if (((ae_ref.value.op & 0xFF) == 96))
                 return ;
-            Type t = null;
-            if (((ae.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
+            Ref<Type> t = ref(null);
+            if (((ae_ref.value.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
             {
-                if (!ae.e2.isLvalue())
+                if (!ae_ref.value.e2.value.isLvalue())
                     return ;
-                t = ae.type;
+                t.value = ae_ref.value.type.value;
             }
             else {
-                SliceExp se = ae.e1.isSliceExp();
-                if ((se) != null)
-                    t = se.e1.type;
+                Ref<SliceExp> se = ref(ae_ref.value.e1.value.isSliceExp());
+                if ((se.value) != null)
+                    t.value = se.value.e1.type.value;
                 else
                     return ;
             }
-            TypeStruct ts = t.baseElemOf().isTypeStruct();
-            if (ts == null)
+            Ref<TypeStruct> ts = ref(t.value.baseElemOf().isTypeStruct());
+            if (ts.value == null)
                 return ;
-            StructDeclaration sd = ts.sym;
-            if (sd.postblit == null)
+            Ref<StructDeclaration> sd = ref(ts.value.sym);
+            if (sd.value.postblit == null)
                 return ;
-            TypeFunction tf = sd.postblit.type.isTypeFunction();
-            if ((tf == null) || tf.isnothrow)
+            Ref<TypeFunction> tf = ref(sd.value.postblit.type.isTypeFunction());
+            if ((tf.value == null) || tf.value.isnothrow)
             {
             }
             else
             {
                 if (this.mustNotThrow)
                 {
-                    ae.error(new BytePtr("%s `%s` is not `nothrow`"), sd.postblit.kind(), sd.postblit.toPrettyChars(false));
+                    ae_ref.value.error(new BytePtr("%s `%s` is not `nothrow`"), sd.value.postblit.kind(), sd.value.postblit.toPrettyChars(false));
                 }
                 this.stop = true;
             }
@@ -206,7 +213,8 @@ public class canthrow {
         Ref<Boolean> mustNotThrow_ref = ref(mustNotThrow);
         Function1<Dsymbol,Integer> symbolDg = new Function1<Dsymbol,Integer>(){
             public Integer invoke(Dsymbol s) {
-                return (Dsymbol_canThrow(s, func_ref.value, mustNotThrow_ref.value) ? 1 : 0);
+                Ref<Dsymbol> s_ref = ref(s);
+                return (Dsymbol_canThrow(s_ref.value, func_ref.value, mustNotThrow_ref.value) ? 1 : 0);
             }
         };
         {
@@ -255,8 +263,8 @@ public class canthrow {
                         {
                             {
                                 int i = 0;
-                                for (; (i < (td.objects).length);i++){
-                                    RootObject o = (td.objects).get(i);
+                                for (; (i < (td.objects.get()).length);i++){
+                                    RootObject o = (td.objects.get()).get(i);
                                     if ((o.dyncast() == DYNCAST.expression))
                                     {
                                         Expression eo = (Expression)o;

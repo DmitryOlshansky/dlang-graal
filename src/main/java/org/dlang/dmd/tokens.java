@@ -266,36 +266,36 @@ public class tokens {
     static ByteSlice keywords = slice(initializer_0);
     public static class Token implements LinkedNode<Token>
     {
-        public Token next;
+        public Ptr<Token> next = null;
         public Loc loc = new Loc();
-        public BytePtr ptr;
+        public BytePtr ptr = null;
         public byte value = 0;
-        public BytePtr blockComment;
-        public BytePtr lineComment;
+        public Ref<BytePtr> blockComment = ref(null);
+        public Ref<BytePtr> lineComment = ref(null);
         public long intvalue = 0;
-        public double floatvalue;
-        public BytePtr ustring;
+        public double floatvalue = ;
+        public BytePtr ustring = null;
         public int len = 0;
         public byte postfix = 0;
-        public Identifier ident;
+        public Identifier ident = null;
         public static Slice<ByteSlice> tochars = slice(initializer_1);
         static {
             Identifier.initTable();
             {
-                ByteSlice __r110 = keywords.copy();
-                int __key111 = 0;
-                for (; (__key111 < __r110.getLength());__key111 += 1) {
-                    byte kw = __r110.get(__key111);
+                ByteSlice __r108 = keywords.copy();
+                int __key109 = 0;
+                for (; (__key109 < __r108.getLength());__key109 += 1) {
+                    byte kw = __r108.get(__key109);
                     Identifier.idPool(toBytePtr(tochars.get((kw & 0xFF))), tochars.get((kw & 0xFF)).getLength(), (kw & 0xFF));
                 }
             }
         }
         public  int isKeyword() {
             {
-                ByteSlice __r112 = keywords.copy();
-                int __key113 = 0;
-                for (; (__key113 < __r112.getLength());__key113 += 1) {
-                    byte kw = __r112.get(__key113);
+                ByteSlice __r110 = keywords.copy();
+                int __key111 = 0;
+                for (; (__key111 < __r110.getLength());__key111 += 1) {
+                    byte kw = __r110.get(__key111);
                     if (((kw & 0xFF) == (this.value & 0xFF)))
                         return 1;
                 }
@@ -377,13 +377,13 @@ public class tokens {
                                         IntRef i = ref(0);
                                     L_outer1:
                                         for (; (i.value < this.len);){
-                                            IntRef c = ref(0x0ffff);
+                                            int c = 0x0ffff;
                                             utf_decodeChar(this.ustring, this.len, i, c);
                                             {
                                                 int __dispatch1 = 0;
                                                 dispatched_1:
                                                 do {
-                                                    switch (__dispatch1 != 0 ? __dispatch1 : c.value)
+                                                    switch (__dispatch1 != 0 ? __dispatch1 : c)
                                                     {
                                                         case 0:
                                                             break;
@@ -393,17 +393,17 @@ public class tokens {
                                                             /*goto default*/ { __dispatch1 = -1; continue dispatched_1; }
                                                         default:
                                                         __dispatch1 = 0;
-                                                        if ((c.value <= 127))
+                                                        if ((c <= 127))
                                                         {
-                                                            if (isprint(c.value) != 0)
-                                                                buf_1.writeByte(c.value);
+                                                            if (isprint(c) != 0)
+                                                                buf_1.writeByte(c);
                                                             else
-                                                                buf_1.printf(new BytePtr("\\x%02x"), c.value);
+                                                                buf_1.printf(new BytePtr("\\x%02x"), c);
                                                         }
-                                                        else if ((c.value <= 65535))
-                                                            buf_1.printf(new BytePtr("\\u%04x"), c.value);
+                                                        else if ((c <= 65535))
+                                                            buf_1.printf(new BytePtr("\\u%04x"), c);
                                                         else
-                                                            buf_1.printf(new BytePtr("\\U%08x"), c.value);
+                                                            buf_1.printf(new BytePtr("\\U%08x"), c);
                                                         continue L_outer1;
                                                     }
                                                 } while(__dispatch1 != 0);
@@ -426,10 +426,10 @@ public class tokens {
                                 buf.writeByte(120);
                                 buf.writeByte(34);
                                 {
-                                    int __key114 = 0;
-                                    int __limit115 = this.len;
-                                    for (; (__key114 < __limit115);__key114 += 1) {
-                                        int i_1 = __key114;
+                                    int __key112 = 0;
+                                    int __limit113 = this.len;
+                                    for (; (__key112 < __limit113);__key112 += 1) {
+                                        int i_1 = __key112;
                                         if (i_1 != 0)
                                             buf.writeByte(32);
                                         buf.printf(new BytePtr("%02x"), (this.ustring.get(i_1) & 0xFF));
@@ -526,7 +526,7 @@ public class tokens {
             this.ident = that.ident;
             return this;
         }
-        public void setNext(Token value) { next = value; }
-        public Token getNext() { return next; }
+        public void setNext(Ptr<Token> value) { next = value; }
+        public Ptr<Token> getNext() { return next; }
     }
 }

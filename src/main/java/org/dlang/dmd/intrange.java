@@ -65,8 +65,8 @@ public class intrange {
                 return 0;
         }
 
-        // from template opUnary!(_~)
-        public  SignExtendedNumber opUnary_~() {
+        // from template opUnary!(_invert)
+        public  SignExtendedNumber opUnary_invert() {
             if ((~this.value == 0L))
                 return new SignExtendedNumber(~this.value, false);
             else
@@ -74,8 +74,8 @@ public class intrange {
         }
 
 
-        // from template opUnary!(_-)
-        public  SignExtendedNumber opUnary_-() {
+        // from template opUnary!(_minus)
+        public  SignExtendedNumber opUnary_minus() {
             if ((this.value == 0L))
                 return new SignExtendedNumber(-(this.negative ? 1 : 0), false);
             else
@@ -83,8 +83,8 @@ public class intrange {
         }
 
 
-        // from template opBinary!(_+)
-        public  SignExtendedNumber opBinary_+(SignExtendedNumber rhs) {
+        // from template opBinary!(_plus)
+        public  SignExtendedNumber opBinary_plus(SignExtendedNumber rhs) {
             long sum = this.value + rhs.value;
             boolean carry = (sum < this.value) && (sum < rhs.value);
             if (((this.negative ? 1 : 0) != (rhs.negative ? 1 : 0)))
@@ -96,17 +96,17 @@ public class intrange {
         }
 
 
-        // from template opBinary!(_-)
-        public  SignExtendedNumber opBinary_-(SignExtendedNumber rhs) {
+        // from template opBinary!(_minus)
+        public  SignExtendedNumber opBinary_minus(SignExtendedNumber rhs) {
             if (rhs.isMinimum())
                 return this.negative ? new SignExtendedNumber(this.value, false) : max();
             else
-                return this.opBinary_+(rhs.opUnary_-());
+                return this.opBinary_plus(rhs.opUnary_minus());
         }
 
 
-        // from template opBinary!(_*)
-        public  SignExtendedNumber opBinary_*(SignExtendedNumber rhs) {
+        // from template opBinary!(_mul)
+        public  SignExtendedNumber opBinary_mul(SignExtendedNumber rhs) {
             if ((this.value == 0L))
             {
                 if (!this.negative)
@@ -117,7 +117,7 @@ public class intrange {
                     return (rhs.value == 0L) ? rhs : this;
             }
             else if ((rhs.value == 0L))
-                return rhs.opBinary_*(this);
+                return rhs.opBinary_mul(this);
             SignExtendedNumber rv = new SignExtendedNumber();
             long tAbs = copySign(this.value, this.negative);
             long aAbs = copySign(rhs.value, rhs.negative);
@@ -130,8 +130,8 @@ public class intrange {
         }
 
 
-        // from template opBinary!(_/)
-        public  SignExtendedNumber opBinary_/(SignExtendedNumber rhs) {
+        // from template opBinary!(_div)
+        public  SignExtendedNumber opBinary_div(SignExtendedNumber rhs) {
             if ((rhs.value == 0L))
             {
                 if (rhs.negative)
@@ -170,8 +170,8 @@ public class intrange {
         }
 
 
-        // from template opBinary!(_<<)
-        public  SignExtendedNumber opBinary_<<(SignExtendedNumber rhs) {
+        // from template opBinary!(_ll)
+        public  SignExtendedNumber opBinary_ll(SignExtendedNumber rhs) {
             if ((this.value == 0L))
                 return this;
             else if (rhs.negative)
@@ -202,8 +202,8 @@ public class intrange {
         }
 
 
-        // from template opBinary!(_>>)
-        public  SignExtendedNumber opBinary_>>(SignExtendedNumber rhs) {
+        // from template opBinary!(_rr)
+        public  SignExtendedNumber opBinary_rr(SignExtendedNumber rhs) {
             if (rhs.negative || (rhs.value > 63L))
                 return this.negative ? new SignExtendedNumber(-1L, true) : new SignExtendedNumber(0L, false);
             else if (this.isMinimum())
@@ -273,14 +273,14 @@ public class intrange {
             return new IntRange(lower, upper);
         }
 
-        public static IntRange fromNumbers2(SignExtendedNumber numbers) {
+        public static IntRange fromNumbers2(Ptr<SignExtendedNumber> numbers) {
             if ((numbers.get(0).opCmp(numbers.get(1)) < 0))
                 return new IntRange(numbers.get(0), numbers.get(1));
             else
                 return new IntRange(numbers.get(1), numbers.get(0));
         }
 
-        public static IntRange fromNumbers4(SignExtendedNumber numbers) {
+        public static IntRange fromNumbers4(Ptr<SignExtendedNumber> numbers) {
             IntRange ab = fromNumbers2(numbers).copy();
             IntRange cd = fromNumbers2(numbers.plus(24)).copy();
             if ((cd.imin.opCmp(ab.imin) < 0))
@@ -388,10 +388,10 @@ public class intrange {
             if (this.imax.negative)
                 return this;
             else if (!this.imin.negative)
-                return new IntRange(this.imax.opUnary_-(), this.imin.opUnary_-());
+                return new IntRange(this.imax.opUnary_minus(), this.imin.opUnary_minus());
             else
             {
-                SignExtendedNumber imaxAbsNeg = this.imax.opUnary_-().copy();
+                SignExtendedNumber imaxAbsNeg = this.imax.opUnary_minus().copy();
                 return new IntRange((imaxAbsNeg.opCmp(this.imin) < 0) ? imaxAbsNeg : this.imin, new SignExtendedNumber(0L, false));
             }
         }
@@ -428,20 +428,20 @@ public class intrange {
             }
         }
 
-        // from template opUnary!(_~)
-        public  IntRange opUnary_~() {
-            return new IntRange(this.imax.opUnary_~(), this.imin.opUnary_~());
+        // from template opUnary!(_invert)
+        public  IntRange opUnary_invert() {
+            return new IntRange(this.imax.opUnary_invert(), this.imin.opUnary_invert());
         }
 
 
-        // from template opUnary!(_-)
-        public  IntRange opUnary_-() {
-            return new IntRange(this.imax.opUnary_-(), this.imin.opUnary_-());
+        // from template opUnary!(_minus)
+        public  IntRange opUnary_minus() {
+            return new IntRange(this.imax.opUnary_minus(), this.imin.opUnary_minus());
         }
 
 
-        // from template opBinary!(_&)
-        public  IntRange opBinary_&(IntRange rhs) {
+        // from template opBinary!(__)
+        public  IntRange opBinary__(IntRange rhs) {
             if ((((this.imin.negative ^ this.imax.negative) ? 1 : 0) != 1) && (((rhs.imin.negative ^ rhs.imax.negative) ? 1 : 0) != 1))
             {
                 return new IntRange(minAnd(this, rhs), maxAnd(this, rhs));
@@ -475,72 +475,37 @@ public class intrange {
         }
 
 
-        // from template opBinary!(_|)
-        public  IntRange opBinary_|(IntRange rhs) {
-            if ((((this.imin.negative ^ this.imax.negative) ? 1 : 0) == 0) && (((rhs.imin.negative ^ rhs.imax.negative) ? 1 : 0) == 0))
-            {
-                return new IntRange(minOr(this, rhs), maxOr(this, rhs));
-            }
-            IntRange l = l = new IntRange(this);
-            IntRange r = r = new IntRange(rhs);
-            if ((((this.imin.negative ^ this.imax.negative) ? 1 : 0) == 1) && (((rhs.imin.negative ^ rhs.imax.negative) ? 1 : 0) == 1))
-            {
-                SignExtendedNumber min = (l.imin.value < r.imin.value) ? l.imin : r.imin.copy();
-                l.imin.value = 0L;
-                l.imin.negative = false;
-                r.imin.value = 0L;
-                r.imin.negative = false;
-                return new IntRange(min, maxOr(l, r));
-            }
-            else
-            {
-                if ((((this.imin.negative ^ this.imax.negative) ? 1 : 0) == 1))
-                {
-                    swap(l, r);
-                }
-                SignExtendedNumber minOrNeg = minOr(l, new IntRange(r.imin, new SignExtendedNumber(-1L, false))).copy();
-                SignExtendedNumber minOrPos = minOr(l, new IntRange(new SignExtendedNumber(0L, false), r.imax)).copy();
-                SignExtendedNumber maxOrNeg = maxOr(l, new IntRange(r.imin, new SignExtendedNumber(-1L, false))).copy();
-                SignExtendedNumber maxOrPos = maxOr(l, new IntRange(new SignExtendedNumber(0L, false), r.imax)).copy();
-                SignExtendedNumber min = (minOrNeg.opCmp(minOrPos) < 0) ? minOrNeg : minOrPos.copy();
-                SignExtendedNumber max = (maxOrNeg.opCmp(maxOrPos) > 0) ? maxOrNeg : maxOrPos.copy();
-                IntRange range = range = new IntRange(min, max);
-                return range;
-            }
+        // from template opBinary!(__)
+        // removed duplicate function, [["IntRange fromNumbers4Ptr<SignExtendedNumber>", "IntRange castUnsignedlong", "IntRange castDchar", "IntRange opBinaryIntRange__", "IntRange fromTypeType, boolean", "IntRange _castType", "IntRange opUnary_invert", "IntRange absNeg", "boolean containsIntRange", "IntRange widest", "IntRange fromTypeType", "IntRange __ctorSignExtendedNumber", "void splitBySignIntRange, Ref<Boolean>, IntRange, Ref<Boolean>", "IntRange __ctorSignExtendedNumber, SignExtendedNumber", "boolean containsZero", "IntRange castSignedlong", "IntRange castUnsignedType", "IntRange unionWithIntRange", "IntRange __ctorIntRange", "void unionOrAssignIntRange, Ref<Boolean>", "IntRange dumpBytePtr, Expression", "IntRange opUnary_minus", "IntRange fromNumbers2Ptr<SignExtendedNumber>"]] signature: IntRange opBinaryIntRange__
+
+        // from template opBinary!(__)
+        // removed duplicate function, [["IntRange fromNumbers4Ptr<SignExtendedNumber>", "IntRange castUnsignedlong", "IntRange castDchar", "IntRange opBinaryIntRange__", "IntRange fromTypeType, boolean", "IntRange _castType", "IntRange opUnary_invert", "IntRange absNeg", "boolean containsIntRange", "IntRange widest", "IntRange fromTypeType", "IntRange __ctorSignExtendedNumber", "void splitBySignIntRange, Ref<Boolean>, IntRange, Ref<Boolean>", "IntRange __ctorSignExtendedNumber, SignExtendedNumber", "boolean containsZero", "IntRange castSignedlong", "IntRange castUnsignedType", "IntRange unionWithIntRange", "IntRange __ctorIntRange", "void unionOrAssignIntRange, Ref<Boolean>", "IntRange dumpBytePtr, Expression", "IntRange opUnary_minus", "IntRange fromNumbers2Ptr<SignExtendedNumber>"]] signature: IntRange opBinaryIntRange__
+
+        // from template opBinary!(_plus)
+        public  IntRange opBinary_plus(IntRange rhs) {
+            return new IntRange(this.imin.opBinary_plus(rhs.imin), this.imax.opBinary_plus(rhs.imax));
         }
 
 
-        // from template opBinary!(_^)
-        public  IntRange opBinary_^(IntRange rhs) {
-            return this.opBinary_&(rhs.opUnary_~()).opBinary_|(this.opUnary_~().opBinary_&(rhs));
+        // from template opBinary!(_minus)
+        public  IntRange opBinary_minus(IntRange rhs) {
+            return new IntRange(this.imin.opBinary_minus(rhs.imax), this.imax.opBinary_minus(rhs.imin));
         }
 
 
-        // from template opBinary!(_+)
-        public  IntRange opBinary_+(IntRange rhs) {
-            return new IntRange(this.imin.opBinary_+(rhs.imin), this.imax.opBinary_+(rhs.imax));
-        }
-
-
-        // from template opBinary!(_-)
-        public  IntRange opBinary_-(IntRange rhs) {
-            return new IntRange(this.imin.opBinary_-(rhs.imax), this.imax.opBinary_-(rhs.imin));
-        }
-
-
-        // from template opBinary!(_*)
-        public  IntRange opBinary_*(IntRange rhs) {
-            Slice<SignExtendedNumber> bdy =  = new Slice<SignExtendedNumber>(new SignExtendedNumber[4]);
-            bdy.set(0, this.imin.opBinary_*(rhs.imin));
-            bdy.set(1, this.imin.opBinary_*(rhs.imax));
-            bdy.set(2, this.imax.opBinary_*(rhs.imin));
-            bdy.set(3, this.imax.opBinary_*(rhs.imax));
+        // from template opBinary!(_mul)
+        public  IntRange opBinary_mul(IntRange rhs) {
+            Slice<SignExtendedNumber> bdy = new Slice<SignExtendedNumber>(new SignExtendedNumber[4]);
+            bdy.set(0, this.imin.opBinary_mul(rhs.imin));
+            bdy.set(1, this.imin.opBinary_mul(rhs.imax));
+            bdy.set(2, this.imax.opBinary_mul(rhs.imin));
+            bdy.set(3, this.imax.opBinary_mul(rhs.imax));
             return fromNumbers4(ptr(bdy));
         }
 
 
-        // from template opBinary!(_/)
-        public  IntRange opBinary_/(IntRange rhs) {
+        // from template opBinary!(_div)
+        public  IntRange opBinary_div(IntRange rhs) {
             if ((rhs.imax.value == 0L) && (rhs.imin.value == 0L))
                 return widest();
             if ((rhs.imax.value == 0L))
@@ -553,26 +518,26 @@ public class intrange {
             }
             if (!this.imin.negative && !this.imax.negative && !rhs.imin.negative && !rhs.imax.negative)
             {
-                return new IntRange(this.imin.opBinary_/(rhs.imax), this.imax.opBinary_/(rhs.imin));
+                return new IntRange(this.imin.opBinary_div(rhs.imax), this.imax.opBinary_div(rhs.imin));
             }
             else
             {
-                Slice<SignExtendedNumber> bdy =  = new Slice<SignExtendedNumber>(new SignExtendedNumber[4]);
-                bdy.set(0, this.imin.opBinary_/(rhs.imin));
-                bdy.set(1, this.imin.opBinary_/(rhs.imax));
-                bdy.set(2, this.imax.opBinary_/(rhs.imin));
-                bdy.set(3, this.imax.opBinary_/(rhs.imax));
+                Slice<SignExtendedNumber> bdy = new Slice<SignExtendedNumber>(new SignExtendedNumber[4]);
+                bdy.set(0, this.imin.opBinary_div(rhs.imin));
+                bdy.set(1, this.imin.opBinary_div(rhs.imax));
+                bdy.set(2, this.imax.opBinary_div(rhs.imin));
+                bdy.set(3, this.imax.opBinary_div(rhs.imax));
                 return fromNumbers4(ptr(bdy));
             }
         }
 
 
-        // from template opBinary!(_%)
-        public  IntRange opBinary_%(IntRange rhs) {
+        // from template opBinary!(_mod)
+        public  IntRange opBinary_mod(IntRange rhs) {
             IntRange irNum = this.copy();
             IntRange irDen = rhs.absNeg().copy();
-            irDen.imin = irDen.imin.opBinary_+(new SignExtendedNumber(1L, false)).copy();
-            irDen.imax = irDen.imin.opUnary_-().copy();
+            irDen.imin = irDen.imin.opBinary_plus(new SignExtendedNumber(1L, false)).copy();
+            irDen.imax = irDen.imin.opUnary_minus().copy();
             if (!irNum.imin.negative)
             {
                 irNum.imin.value = 0L;
@@ -594,37 +559,37 @@ public class intrange {
         }
 
 
-        // from template opBinary!(_<<)
-        public  IntRange opBinary_<<(IntRange rhs) {
+        // from template opBinary!(_ll)
+        public  IntRange opBinary_ll(IntRange rhs) {
             if (rhs.imin.negative)
             {
                 rhs = new IntRange(new SignExtendedNumber(0L, false), new SignExtendedNumber(64L, false)).copy();
             }
-            SignExtendedNumber lower = this.imin.opBinary_<<(this.imin.negative ? rhs.imax : rhs.imin).copy();
-            SignExtendedNumber upper = this.imax.opBinary_<<(this.imax.negative ? rhs.imin : rhs.imax).copy();
+            SignExtendedNumber lower = this.imin.opBinary_ll(this.imin.negative ? rhs.imax : rhs.imin).copy();
+            SignExtendedNumber upper = this.imax.opBinary_ll(this.imax.negative ? rhs.imin : rhs.imax).copy();
             return new IntRange(lower, upper);
         }
 
 
-        // from template opBinary!(_>>)
-        public  IntRange opBinary_>>(IntRange rhs) {
+        // from template opBinary!(_rr)
+        public  IntRange opBinary_rr(IntRange rhs) {
             if (rhs.imin.negative)
             {
                 rhs = new IntRange(new SignExtendedNumber(0L, false), new SignExtendedNumber(64L, false)).copy();
             }
-            SignExtendedNumber lower = this.imin.opBinary_>>(this.imin.negative ? rhs.imin : rhs.imax).copy();
-            SignExtendedNumber upper = this.imax.opBinary_>>(this.imax.negative ? rhs.imax : rhs.imin).copy();
+            SignExtendedNumber lower = this.imin.opBinary_rr(this.imin.negative ? rhs.imin : rhs.imax).copy();
+            SignExtendedNumber upper = this.imax.opBinary_rr(this.imax.negative ? rhs.imax : rhs.imin).copy();
             return new IntRange(lower, upper);
         }
 
 
-        // from template opBinary!(_>>>)
-        public  IntRange opBinary_>>>(IntRange rhs) {
+        // from template opBinary!(_rrr)
+        public  IntRange opBinary_rrr(IntRange rhs) {
             if (rhs.imin.negative)
             {
                 rhs = new IntRange(new SignExtendedNumber(0L, false), new SignExtendedNumber(64L, false)).copy();
             }
-            return new IntRange(this.imin.opBinary_>>(rhs.imax), this.imax.opBinary_>>(rhs.imin));
+            return new IntRange(this.imin.opBinary_rr(rhs.imax), this.imax.opBinary_rr(rhs.imin));
         }
 
 
@@ -695,7 +660,7 @@ public class intrange {
         }
 
         public static SignExtendedNumber minOr(IntRange lhs, IntRange rhs) {
-            return maxAnd(lhs.opUnary_~(), rhs.opUnary_~()).opUnary_~();
+            return maxAnd(lhs.opUnary_invert(), rhs.opUnary_invert()).opUnary_invert();
         }
 
         public static SignExtendedNumber maxAnd(IntRange lhs, IntRange rhs) {
@@ -737,7 +702,7 @@ public class intrange {
         }
 
         public static SignExtendedNumber minAnd(IntRange lhs, IntRange rhs) {
-            return maxOr(lhs.opUnary_~(), rhs.opUnary_~()).opUnary_~();
+            return maxOr(lhs.opUnary_invert(), rhs.opUnary_invert()).opUnary_invert();
         }
 
         public static void swap(IntRange a, IntRange b) {

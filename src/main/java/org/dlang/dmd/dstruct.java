@@ -36,7 +36,7 @@ import static org.dlang.dmd.typinf.*;
 import static org.dlang.dmd.visitor.*;
 
 public class dstruct {
-    static TypeFunction search_toStringtftostring;
+    static TypeFunction search_toStringtftostring = null;
 
     public static FuncDeclaration search_toString(StructDeclaration sd) {
         Dsymbol s = search_function(sd, Id.tostring);
@@ -45,7 +45,7 @@ public class dstruct {
         {
             if (dstruct.search_toStringtftostring == null)
             {
-                dstruct.search_toStringtftostring = new TypeFunction(new ParameterList(null, VarArg.none), Type.tstring, LINK.d, 0L);
+                dstruct.search_toStringtftostring = new TypeFunction(new ParameterList(null, VarArg.none), Type.tstring.value, LINK.d, 0L);
                 dstruct.search_toStringtftostring = merge(dstruct.search_toStringtftostring).toTypeFunction();
             }
             fd = fd.overloadExactMatch(dstruct.search_toStringtftostring);
@@ -53,67 +53,70 @@ public class dstruct {
         return fd;
     }
 
-    public static void semanticTypeInfo(Scope sc, Type t) {
-        Ref<Scope> sc_ref = ref(sc);
+    public static void semanticTypeInfo(Ptr<Scope> sc, Type t) {
+        Ref<Ptr<Scope>> sc_ref = ref(sc);
         if (sc_ref.value != null)
         {
-            if ((sc_ref.value).func == null)
+            if ((sc_ref.value.get()).func == null)
                 return ;
-            if ((sc_ref.value).intypeof != 0)
+            if ((sc_ref.value.get()).intypeof != 0)
                 return ;
-            if (((sc_ref.value).flags & 384) != 0)
+            if (((sc_ref.value.get()).flags & 384) != 0)
                 return ;
         }
         if (t == null)
             return ;
         Function1<TypeVector,Void> visitVector = new Function1<TypeVector,Void>(){
             public Void invoke(TypeVector t) {
-                semanticTypeInfo(sc_ref.value, t.basetype);
+                Ref<TypeVector> t_ref = ref(t);
+                semanticTypeInfo(sc_ref.value, t_ref.value.basetype);
             }
         };
         Function1<TypeAArray,Void> visitAArray = new Function1<TypeAArray,Void>(){
             public Void invoke(TypeAArray t) {
-                semanticTypeInfo(sc_ref.value, t.index);
-                semanticTypeInfo(sc_ref.value, t.next);
+                Ref<TypeAArray> t_ref = ref(t);
+                semanticTypeInfo(sc_ref.value, t_ref.value.index);
+                semanticTypeInfo(sc_ref.value, t_ref.value.next);
             }
         };
         Function1<TypeStruct,Void> visitStruct = new Function1<TypeStruct,Void>(){
             public Void invoke(TypeStruct t) {
-                StructDeclaration sd = t.sym;
+                Ref<TypeStruct> t_ref = ref(t);
+                Ref<StructDeclaration> sd = ref(t_ref.value.sym);
                 if (sc_ref.value == null)
                 {
-                    Scope scx = new Scope().copy();
-                    scx._module = sd.getModule();
-                    getTypeInfoType(sd.loc, t, scx);
-                    sd.requestTypeInfo = true;
+                    Ref<Scope> scx = ref(new Scope().copy());
+                    scx.value._module = sd.value.getModule();
+                    getTypeInfoType(sd.value.loc, t_ref.value, ptr(scx));
+                    sd.value.requestTypeInfo = true;
                 }
-                else if ((sc_ref.value).minst == null)
+                else if ((sc_ref.value.get()).minst == null)
                 {
                 }
                 else
                 {
-                    getTypeInfoType(sd.loc, t, sc_ref.value);
-                    sd.requestTypeInfo = true;
+                    getTypeInfoType(sd.value.loc, t_ref.value, sc_ref.value);
+                    sd.value.requestTypeInfo = true;
                 }
-                if (sd.members == null)
+                if (sd.value.members == null)
                     return null;
-                if ((sd.xeq == null) && (sd.xcmp == null) && (sd.postblit == null) && (sd.dtor == null) && (sd.xhash == null) && (search_toString(sd) == null))
+                if ((sd.value.xeq == null) && (sd.value.xcmp == null) && (sd.value.postblit == null) && (sd.value.dtor == null) && (sd.value.xhash == null) && (search_toString(sd.value) == null))
                     return null;
-                if ((sd.semanticRun >= PASS.semantic3))
+                if ((sd.value.semanticRun >= PASS.semantic3))
                 {
                 }
                 else {
-                    TemplateInstance ti = sd.isInstantiated();
-                    if ((ti) != null)
+                    Ref<TemplateInstance> ti = ref(sd.value.isInstantiated());
+                    if ((ti.value) != null)
                     {
-                        if ((ti.minst != null) && !ti.minst.isRoot())
-                            dmodule.Module.addDeferredSemantic3(sd);
+                        if ((ti.value.minst != null) && !ti.value.minst.isRoot())
+                            dmodule.Module.addDeferredSemantic3(sd.value);
                     }
                     else
                     {
-                        if (sd.inNonRoot())
+                        if (sd.value.inNonRoot())
                         {
-                            dmodule.Module.addDeferredSemantic3(sd);
+                            dmodule.Module.addDeferredSemantic3(sd.value);
                         }
                     }
                 }
@@ -121,14 +124,15 @@ public class dstruct {
         };
         Function1<TypeTuple,Void> visitTuple = new Function1<TypeTuple,Void>(){
             public Void invoke(TypeTuple t) {
-                if (t.arguments != null)
+                Ref<TypeTuple> t_ref = ref(t);
+                if (t_ref.value.arguments != null)
                 {
                     {
-                        Slice<Parameter> __r1113 = (t.arguments).opSlice().copy();
-                        int __key1114 = 0;
-                        for (; (__key1114 < __r1113.getLength());__key1114 += 1) {
-                            Parameter arg = __r1113.get(__key1114);
-                            semanticTypeInfo(sc_ref.value, arg.type);
+                        Ref<Slice<Parameter>> __r1111 = ref((t_ref.value.arguments.get()).opSlice().copy());
+                        IntRef __key1112 = ref(0);
+                        for (; (__key1112.value < __r1111.value.getLength());__key1112.value += 1) {
+                            Ref<Parameter> arg = ref(__r1111.value.get(__key1112.value));
+                            semanticTypeInfo(sc_ref.value, arg.value.type);
                         }
                     }
                 }
@@ -180,17 +184,17 @@ public class dstruct {
         public boolean hasIdentityEquals = false;
         public boolean hasNoFields = false;
         public DArray<FuncDeclaration> postblits = new DArray<FuncDeclaration>();
-        public FuncDeclaration postblit;
+        public FuncDeclaration postblit = null;
         public boolean hasCopyCtor = false;
-        public FuncDeclaration xeq;
-        public FuncDeclaration xcmp;
-        public FuncDeclaration xhash;
-        public static FuncDeclaration xerreq;
-        public static FuncDeclaration xerrcmp;
+        public FuncDeclaration xeq = null;
+        public FuncDeclaration xcmp = null;
+        public FuncDeclaration xhash = null;
+        public static Ref<FuncDeclaration> xerreq = ref(null);
+        public static FuncDeclaration xerrcmp = null;
         public int alignment = 0;
         public int ispod = 0;
-        public Type arg1type;
-        public Type arg2type;
+        public Type arg1type = null;
+        public Type arg2type = null;
         public boolean requestTypeInfo = false;
         public  StructDeclaration(Loc loc, Identifier id, boolean inObject) {
             super(loc, id);
@@ -216,16 +220,16 @@ public class dstruct {
         public  void semanticTypeInfoMembers() {
             if ((this.xeq != null) && (this.xeq._scope != null) && (this.xeq.semanticRun < PASS.semantic3done))
             {
-                int errors = global.startGagging();
+                int errors = global.value.startGagging();
                 semantic3(this.xeq, this.xeq._scope);
-                if (global.endGagging(errors))
-                    this.xeq = xerreq;
+                if (global.value.endGagging(errors))
+                    this.xeq = xerreq.value;
             }
             if ((this.xcmp != null) && (this.xcmp._scope != null) && (this.xcmp.semanticRun < PASS.semantic3done))
             {
-                int errors = global.startGagging();
+                int errors = global.value.startGagging();
                 semantic3(this.xcmp, this.xcmp._scope);
-                if (global.endGagging(errors))
+                if (global.value.endGagging(errors))
                     this.xcmp = xerrcmp;
             }
             FuncDeclaration ftostr = search_toString(this);
@@ -260,7 +264,7 @@ public class dstruct {
 
         // defaulted all parameters starting with #3
         public  Dsymbol search(Loc loc, Identifier ident) {
-            search(loc, ident, 8);
+            return search(loc, ident, 8);
         }
 
         public  BytePtr kind() {
@@ -279,8 +283,8 @@ public class dstruct {
             boolean isunion = this.isUnionDeclaration() != null;
             {
                 int i = 0;
-                for (; (i < (this.members).length);i++){
-                    Dsymbol s = (this.members).get(i);
+                for (; (i < (this.members.get()).length);i++){
+                    Dsymbol s = (this.members.get()).get(i);
                     s.setFieldOffset(this, ptr(offset), isunion);
                 }
             }
@@ -289,16 +293,16 @@ public class dstruct {
                 this.errors = true;
                 return ;
             }
-            if ((this.structsize == 0))
+            if ((this.structsize.value == 0))
             {
                 this.hasNoFields = true;
-                this.structsize = 1;
-                this.alignsize = 1;
+                this.structsize.value = 1;
+                this.alignsize.value = 1;
             }
             if ((this.alignment == -1))
-                this.structsize = this.structsize + this.alignsize - 1 & ~(this.alignsize - 1);
+                this.structsize.value = this.structsize.value + this.alignsize.value - 1 & ~(this.alignsize.value - 1);
             else
-                this.structsize = this.structsize + this.alignment - 1 & ~(this.alignment - 1);
+                this.structsize.value = this.structsize.value + this.alignment - 1 & ~(this.alignment - 1);
             this.sizeok = Sizeok.done;
             if (this.errors)
                 return ;
@@ -309,10 +313,10 @@ public class dstruct {
             }
             this.zeroInit = true;
             {
-                Slice<VarDeclaration> __r1115 = this.fields.opSlice().copy();
-                int __key1116 = 0;
-                for (; (__key1116 < __r1115.getLength());__key1116 += 1) {
-                    VarDeclaration vd = __r1115.get(__key1116);
+                Slice<VarDeclaration> __r1113 = this.fields.opSlice().copy();
+                int __key1114 = 0;
+                for (; (__key1114 < __r1113.getLength());__key1114 += 1) {
+                    VarDeclaration vd = __r1113.get(__key1114);
                     if (vd._init != null)
                     {
                         if (vd._init.isVoidInitializer() != null)
@@ -333,18 +337,18 @@ public class dstruct {
                     }
                 }
             }
-            TypeTuple tt = target.toArgTypes(this.type);
-            int dim = tt != null ? (tt.arguments).length : 0;
+            TypeTuple tt = target.value.toArgTypes(this.type);
+            int dim = tt != null ? (tt.arguments.get()).length : 0;
             if ((dim >= 1))
             {
                 assert((dim <= 2));
-                this.arg1type = (tt.arguments).get(0).type;
+                this.arg1type = (tt.arguments.get()).get(0).type;
                 if ((dim == 2))
-                    this.arg2type = (tt.arguments).get(1).type;
+                    this.arg2type = (tt.arguments.get()).get(1).type;
             }
         }
 
-        public  boolean fit(Loc loc, Scope sc, DArray<Expression> elements, Type stype) {
+        public  boolean fit(Loc loc, Ptr<Scope> sc, Ptr<DArray<Expression>> elements, Type stype) {
             if (elements == null)
                 return true;
             int nfields = this.nonHiddenFields();
@@ -352,8 +356,8 @@ public class dstruct {
             {
                 int i = 0;
             L_outer1:
-                for (; (i < (elements).length);i++){
-                    Expression e = (elements).get(i);
+                for (; (i < (elements.get()).length);i++){
+                    Expression e = (elements.get()).get(i);
                     if (e == null)
                         continue L_outer1;
                     e = resolveProperties(sc, e);
@@ -386,7 +390,7 @@ public class dstruct {
                     boolean hasPointers = tb.hasPointers();
                     if (hasPointers)
                     {
-                        if ((stype.alignment() < target.ptrsize) || ((v.offset & target.ptrsize - 1) != 0) && ((sc).func != null) && (sc).func.setUnsafe())
+                        if ((stype.alignment() < target.value.ptrsize) || ((v.offset & target.value.ptrsize - 1) != 0) && ((sc.get()).func != null) && (sc.get()).func.setUnsafe())
                         {
                             error(loc, new BytePtr("field `%s.%s` cannot assign to misaligned pointers in `@safe` code"), this.toChars(), v.toChars());
                             return false;
@@ -396,7 +400,7 @@ public class dstruct {
                         if (((e.op & 0xFF) == 121) && ((tb.ty & 0xFF) == ENUMTY.Tsarray))
                         {
                             StringExp se = (StringExp)e;
-                            Type typeb = se.type.toBasetype();
+                            Type typeb = se.type.value.toBasetype();
                             byte tynto = tb.nextOf().ty;
                             if ((se.committed == 0) && ((typeb.ty & 0xFF) == ENUMTY.Tarray) || ((typeb.ty & 0xFF) == ENUMTY.Tsarray) && ((tynto & 0xFF) == ENUMTY.Tchar) || ((tynto & 0xFF) == ENUMTY.Twchar) || ((tynto & 0xFF) == ENUMTY.Tdchar) && ((long)se.numberOfCodeUnits((tynto & 0xFF)) < ((TypeSArray)tb).dim.toInteger()))
                             {
@@ -416,7 +420,7 @@ public class dstruct {
                 /*L1:*/
                     if (((e.op & 0xFF) == 127))
                         return false;
-                    elements.set(i, doCopyOrMove(sc, e, null));
+                    elements.get().set(i, doCopyOrMove(sc, e, null));
                 }
             }
             return true;
@@ -545,14 +549,14 @@ public class dstruct {
             case 49:
                 StructLiteralExp sle = (StructLiteralExp)exp;
                 {
-                    int __key1117 = 0;
-                    int __limit1118 = sle.sd.fields.length;
-                    for (; (__key1117 < __limit1118);__key1117 += 1) {
-                        int i = __key1117;
+                    int __key1115 = 0;
+                    int __limit1116 = sle.sd.fields.length;
+                    for (; (__key1115 < __limit1116);__key1115 += 1) {
+                        int i = __key1115;
                         VarDeclaration field = sle.sd.fields.get(i);
                         if (field.type.size(field.loc) != 0)
                         {
-                            Expression e = (sle.elements).get(i);
+                            Expression e = (sle.elements.get()).get(i);
                             if (e != null ? !_isZeroInit(e) : !field.type.isZeroInit(field.loc))
                                 return false;
                         }
@@ -561,14 +565,14 @@ public class dstruct {
                 return true;
             case 47:
                 ArrayLiteralExp ale = (ArrayLiteralExp)exp;
-                int dim = ale.elements != null ? (ale.elements).length : 0;
-                if (((ale.type.toBasetype().ty & 0xFF) == ENUMTY.Tarray))
+                int dim = ale.elements != null ? (ale.elements.get()).length : 0;
+                if (((ale.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tarray))
                     return dim == 0;
                 {
-                    int __key1119 = 0;
-                    int __limit1120 = dim;
-                    for (; (__key1119 < __limit1120);__key1119 += 1) {
-                        int i_1 = __key1119;
+                    int __key1117 = 0;
+                    int __limit1118 = dim;
+                    for (; (__key1117 < __limit1118);__key1117 += 1) {
+                        int i_1 = __key1117;
                         if (!_isZeroInit(ale.getElement(i_1)))
                             return false;
                     }
@@ -576,13 +580,13 @@ public class dstruct {
                 return true;
             case 121:
                 StringExp se = (StringExp)exp;
-                if (((se.type.toBasetype().ty & 0xFF) == ENUMTY.Tarray))
+                if (((se.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tarray))
                     return se.len == 0;
                 {
-                    int __key1121 = 0;
-                    int __limit1122 = se.len;
-                    for (; (__key1121 < __limit1122);__key1121 += 1) {
-                        int i_2 = __key1121;
+                    int __key1119 = 0;
+                    int __limit1120 = se.len;
+                    for (; (__key1119 < __limit1120);__key1119 += 1) {
+                        int i_2 = __key1119;
                         if (se.getCodeUnit(i_2) != 0)
                             return false;
                     }
@@ -593,7 +597,7 @@ public class dstruct {
                 return _isZeroInit(ve.e1);
             case 140:
             case 147:
-                return (exp.toReal() == CTFloat.zero) && (exp.toImaginary() == CTFloat.zero);
+                return (exp.toReal() == CTFloat.zero.value) && (exp.toImaginary() == CTFloat.zero.value);
             default:
             return false;
         }

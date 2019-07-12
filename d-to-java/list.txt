@@ -65,7 +65,7 @@ vendor/dmd/src/dmd/hdrgen.d
 vendor/dmd/src/dmd/init.d
 vendor/dmd/src/dmd/intrange.d
 vendor/dmd/src/dmd/initsem.d
-vendor/dmd/src/dmd/mars.d
+# vendor/dmd/src/dmd/mars.d # simpler to roll our own entry point + shims
 vendor/dmd/src/dmd/mtype.d
 vendor/dmd/src/dmd/nogc.d
 vendor/dmd/src/dmd/nspace.d

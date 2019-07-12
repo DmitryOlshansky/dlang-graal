@@ -117,23 +117,22 @@ public class frontend {
         }
     }
     public static void initDMD(Slice<ByteSlice> versionIdentifiers, ContractChecks contractChecks) {
-        Ref<Slice<ByteSlice>> versionIdentifiers_ref = ref(versionIdentifiers);
-        global._init();
+        global.value._init();
         {
-            (__withSym).useIn = contractChecks.precondition;
-            (__withSym).useInvariants = contractChecks.invariant_;
-            (__withSym).useOut = contractChecks.postcondition;
-            (__withSym).useArrayBounds = contractChecks.arrayBounds;
-            (__withSym).useAssert = contractChecks.assert_;
-            (__withSym).useSwitchError = contractChecks.switchError;
+            (__withSym.get()).useIn = contractChecks.precondition;
+            (__withSym.get()).useInvariants = contractChecks.invariant_;
+            (__withSym.get()).useOut = contractChecks.postcondition;
+            (__withSym.get()).useArrayBounds = contractChecks.arrayBounds;
+            (__withSym.get()).useAssert = contractChecks.assert_;
+            (__withSym.get()).useSwitchError = contractChecks.switchError;
         }
-        each(versionIdentifiers_ref);
-        setTarget(global.params);
-        addDefaultVersionIdentifiers(global.params);
+        each(versionIdentifiers);
+        setTarget(global.value.params);
+        addDefaultVersionIdentifiers(global.value.params);
         Type._init();
         Id.initialize();
         dmodule.Module._init();
-        target._init(global.params);
+        target.value._init(global.value.params);
         Expression._init();
         Objc._init();
         builtin_init();
@@ -143,35 +142,35 @@ public class frontend {
 
     // defaulted all parameters starting with #2
     public static void initDMD(Slice<ByteSlice> versionIdentifiers) {
-        initDMD(versionIdentifiers, new ContractChecks(ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled));
+        return initDMD(versionIdentifiers, new ContractChecks(ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled));
     }
 
     // defaulted all parameters starting with #1
     public static void initDMD() {
-        initDMD(slice(new ByteSlice[]{}), new ContractChecks(ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled));
+        return initDMD(slice(new ByteSlice[]{}), new ContractChecks(ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled));
     }
 
     public static void deinitializeDMD() {
-        global.deinitialize();
+        global.value.deinitialize();
         Type.deinitialize();
         Id.deinitialize();
         dmodule.Module.deinitialize();
-        target.deinitialize();
+        target.value.deinitialize();
         Expression.deinitialize();
         Objc.deinitialize();
         builtinDeinitialize();
     }
 
     public static void addImport(ByteSlice path) {
-        if ((global.path == null))
-            global.path = new DArray<BytePtr>();
-        (global.path).push(toStringz(path));
+        if ((global.value.path == null))
+            global.value.path = new DArray<BytePtr>();
+        (global.value.path.get()).push(toStringz(path));
     }
 
     public static void addStringImport(ByteSlice path) {
-        if ((global.filePath == null))
-            global.filePath = new DArray<BytePtr>();
-        (global.filePath).push(toStringz(path));
+        if ((global.value.filePath == null))
+            global.value.filePath = new DArray<BytePtr>();
+        (global.value.filePath.get()).push(toStringz(path));
     }
 
     public static ByteSlice findDMDConfig(ByteSlice dmdFilePath) {
@@ -205,7 +204,7 @@ public class frontend {
         ByteSlice execFilePath = determineDefaultCompiler().copy();
         assertMsg((execFilePath != new ByteSlice()), new ByteSlice("No D compiler found. `Use parseImportsFromConfig` manually."));
         ByteSlice execDir = dirName(execFilePath).copy();
-        ByteSlice iniFile = new ByteSlice();
+        ByteSlice iniFile = new ByteSlice().copy();
         if (endsWith(execFilePath, new ByteSlice("ldc"), new ByteSlice("ldc2"), new ByteSlice("ldmd"), new ByteSlice("ldmd2")) != 0)
             iniFile = findLDCConfig(toByteSlice(execFilePath)).copy();
         else
@@ -227,11 +226,11 @@ public class frontend {
     }
 
     public static ByteSlice prettyPrint(dmodule.Module m) {
-        OutBuffer buf = new OutBuffer(null, 0, 0, 0, true, false).copy();
+        Ref<OutBuffer> buf = ref(new OutBuffer(null, 0, 0, 0, true, false).copy());
         try {
-            HdrGenState hgs = new HdrGenState(false, false, true, false, 0, 0, 0, false, null).copy();
-            moduleToBuffer2(m, buf, hgs);
-            Ref<ByteSlice> generated = ref(replace(fromStringz(buf.extractData()), new ByteSlice("\u0009"), new ByteSlice("    ")).copy());
+            Ref<HdrGenState> hgs = ref(new HdrGenState(false, false, true, false, 0, 0, 0, false, null).copy());
+            moduleToBuffer2(m, ptr(buf), ptr(hgs));
+            Ref<ByteSlice> generated = ref(replace(fromStringz(buf.value.extractData()), new ByteSlice("\u0009"), new ByteSlice("    ")).copy());
             return assumeUnique(generated);
         }
         finally {
@@ -239,7 +238,7 @@ public class frontend {
     }
 
     public static DiagnosticReporter defaultDiagnosticReporter() {
-        return new StderrDiagnosticReporter(global.params.useDeprecated);
+        return new StderrDiagnosticReporter(global.value.params.useDeprecated);
     }
 
 }

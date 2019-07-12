@@ -38,10 +38,10 @@ import static org.dlang.dmd.visitor.*;
 
 public class declaration {
 
-    public static boolean checkFrameAccess(Loc loc, Scope sc, AggregateDeclaration ad, int iStart) {
+    public static boolean checkFrameAccess(Loc loc, Ptr<Scope> sc, AggregateDeclaration ad, int iStart) {
         Dsymbol sparent = ad.toParentLocal();
         Dsymbol sparent2 = ad.toParent2();
-        Dsymbol s = (sc).func;
+        Dsymbol s = (sc.get()).func;
         if (ad.isNested() && (s != null))
         {
             if (!ensureStaticLinkTo(s, sparent) || (!pequals(sparent, sparent2)) && !ensureStaticLinkTo(s, sparent2))
@@ -66,12 +66,12 @@ public class declaration {
     }
 
     // defaulted all parameters starting with #4
-    public static boolean checkFrameAccess(Loc loc, Scope sc, AggregateDeclaration ad) {
-        checkFrameAccess(loc, sc, ad, 0);
+    public static boolean checkFrameAccess(Loc loc, Ptr<Scope> sc, AggregateDeclaration ad) {
+        return checkFrameAccess(loc, sc, ad, 0);
     }
 
-    public static boolean modifyFieldVar(Loc loc, Scope sc, VarDeclaration var, Expression e1) {
-        Dsymbol s = (sc).func;
+    public static boolean modifyFieldVar(Loc loc, Ptr<Scope> sc, VarDeclaration var, Expression e1) {
+        Dsymbol s = (sc.get()).func;
         for (; 1 != 0;){
             FuncDeclaration fd = null;
             if (s != null)
@@ -80,11 +80,11 @@ public class declaration {
             {
                 boolean result = true;
                 var.ctorinit = true;
-                if (var.isField() && ((sc).ctorflow.fieldinit.getLength() != 0) && ((sc).intypeof == 0))
+                if (var.isField() && ((sc.get()).ctorflow.fieldinit.getLength() != 0) && ((sc.get()).intypeof == 0))
                 {
                     assert(e1 != null);
                     boolean mustInit = ((var.storage_class & 549755813888L) != 0L) || var.type.needsNested();
-                    int dim = (sc).ctorflow.fieldinit.getLength();
+                    int dim = (sc.get()).ctorflow.fieldinit.getLength();
                     AggregateDeclaration ad = fd.isMemberDecl();
                     assert(ad != null);
                     int i = 0;
@@ -96,15 +96,15 @@ public class declaration {
                         }
                     }
                     assert((i < dim));
-                    FieldInit fieldInit = (sc).ctorflow.fieldinit.get(i);
-                    int fi = (fieldInit).csx;
+                    Ptr<FieldInit> fieldInit = ptr((sc.get()).ctorflow.fieldinit.get(i));
+                    int fi = (fieldInit.get()).csx;
                     if ((fi & 1) != 0)
                     {
-                        if (var.type.isMutable() && e1.type.isMutable())
+                        if (var.type.isMutable() && e1.type.value.isMutable())
                             result = false;
                         else
                         {
-                            BytePtr modStr = pcopy(!var.type.isMutable() ? MODtoChars(var.type.mod) : MODtoChars(e1.type.mod));
+                            BytePtr modStr = pcopy(!var.type.isMutable() ? MODtoChars(var.type.mod) : MODtoChars(e1.type.value.mod));
                             if ((fi & 64) != 0)
                             {
                                 deprecation(loc, new BytePtr("%s field `%s` was initialized in a previous constructor call"), modStr, var.toChars());
@@ -112,43 +112,43 @@ public class declaration {
                             else
                             {
                                 error(loc, new BytePtr("%s field `%s` initialized multiple times"), modStr, var.toChars());
-                                errorSupplemental((fieldInit).loc, new BytePtr("Previous initialization is here."));
+                                errorSupplemental((fieldInit.get()).loc, new BytePtr("Previous initialization is here."));
                             }
                         }
                     }
-                    else if ((sc).inLoop || ((fi & 4) != 0))
+                    else if ((sc.get()).inLoop || ((fi & 4) != 0))
                     {
-                        if (!mustInit && var.type.isMutable() && e1.type.isMutable())
+                        if (!mustInit && var.type.isMutable() && e1.type.value.isMutable())
                             result = false;
                         else
                         {
-                            BytePtr modStr = pcopy(!var.type.isMutable() ? MODtoChars(var.type.mod) : MODtoChars(e1.type.mod));
+                            BytePtr modStr = pcopy(!var.type.isMutable() ? MODtoChars(var.type.mod) : MODtoChars(e1.type.value.mod));
                             error(loc, new BytePtr("%s field `%s` initialization is not allowed in loops or after labels"), modStr, var.toChars());
                         }
                     }
-                    (fieldInit).csx |= 1;
-                    (fieldInit).loc = e1.loc.copy();
+                    (fieldInit.get()).csx |= 1;
+                    (fieldInit.get()).loc = e1.loc.copy();
                     if (var.overlapped)
                     {
                         {
-                            Slice<VarDeclaration> __r920 = ad.fields.opSlice().copy();
-                            int __key919 = 0;
-                            for (; (__key919 < __r920.getLength());__key919 += 1) {
-                                VarDeclaration v = __r920.get(__key919);
-                                int j = __key919;
+                            Slice<VarDeclaration> __r918 = ad.fields.opSlice().copy();
+                            int __key917 = 0;
+                            for (; (__key917 < __r918.getLength());__key917 += 1) {
+                                VarDeclaration v = __r918.get(__key917);
+                                int j = __key917;
                                 if ((v == var) || !var.isOverlappedWith(v))
                                     continue;
                                 v.ctorinit = true;
-                                (sc).ctorflow.fieldinit.get(j).csx = CSX.this_ctor;
+                                (sc.get()).ctorflow.fieldinit.get(j).csx = CSX.this_ctor;
                             }
                         }
                     }
                 }
-                else if ((!pequals(fd, (sc).func)))
+                else if ((!pequals(fd, (sc.get()).func)))
                 {
                     if (var.type.isMutable())
                         result = false;
-                    else if ((sc).func.fes != null)
+                    else if ((sc.get()).func.fes != null)
                     {
                         BytePtr p = pcopy(var.isField() ? new BytePtr("field") : var.kind());
                         error(loc, new BytePtr("%s %s `%s` initialization is not allowed in foreach loop"), MODtoChars(var.type.mod), p, var.toChars());
@@ -156,7 +156,7 @@ public class declaration {
                     else
                     {
                         BytePtr p = pcopy(var.isField() ? new BytePtr("field") : var.kind());
-                        error(loc, new BytePtr("%s %s `%s` initialization is not allowed in nested function `%s`"), MODtoChars(var.type.mod), p, var.toChars(), (sc).func.toChars());
+                        error(loc, new BytePtr("%s %s `%s` initialization is not allowed in nested function `%s`"), MODtoChars(var.type.mod), p, var.toChars(), (sc.get()).func.toChars());
                     }
                 }
                 return result;
@@ -175,7 +175,7 @@ public class declaration {
     }
 
     public static void ObjectNotFound(Identifier id) {
-        error(Loc.initial, new BytePtr("`%s` not found. object.d may be incorrectly installed or corrupt."), id.toChars());
+        error(Loc.initial.value, new BytePtr("`%s` not found. object.d may be incorrectly installed or corrupt."), id.toChars());
         fatal();
     }
 
@@ -244,8 +244,8 @@ public class declaration {
     {
         public int count = 0;
         public int last = MATCH.nomatch;
-        public FuncDeclaration lastf;
-        public FuncDeclaration nextf;
+        public FuncDeclaration lastf = null;
+        public FuncDeclaration nextf = null;
         public MatchAccumulator(){
         }
         public MatchAccumulator copy(){
@@ -273,13 +273,13 @@ public class declaration {
     }
     public static abstract class Declaration extends Dsymbol
     {
-        public Type type;
-        public Type originalType;
+        public Type type = null;
+        public Type originalType = null;
         public long storage_class = 0L;
         public Prot protection = new Prot();
         public int linkage = LINK.default_;
         public int inuse = 0;
-        public ByteSlice mangleOverride;
+        public ByteSlice mangleOverride = new ByteSlice();
         public  Declaration(Identifier ident) {
             super(ident);
             this.protection = new Prot(Prot.Kind.undefined);
@@ -299,10 +299,10 @@ public class declaration {
             return this.type.size();
         }
 
-        public  boolean checkDisabled(Loc loc, Scope sc, boolean isAliasedDeclaration) {
+        public  boolean checkDisabled(Loc loc, Ptr<Scope> sc, boolean isAliasedDeclaration) {
             if ((this.storage_class & 137438953472L) != 0)
             {
-                if (!(((sc).func != null) && (((sc).func.storage_class & 137438953472L) != 0)))
+                if (!(((sc.get()).func != null) && (((sc.get()).func.storage_class & 137438953472L) != 0)))
                 {
                     Dsymbol p = this.toParent();
                     if ((p != null) && (this.isPostBlitDeclaration() != null))
@@ -332,22 +332,22 @@ public class declaration {
         }
 
         // defaulted all parameters starting with #3
-        public  boolean checkDisabled(Loc loc, Scope sc) {
-            checkDisabled(loc, sc, false);
+        public  boolean checkDisabled(Loc loc, Ptr<Scope> sc) {
+            return checkDisabled(loc, sc, false);
         }
 
-        public  int checkModify(Loc loc, Scope sc, Expression e1, int flag) {
+        public  int checkModify(Loc loc, Ptr<Scope> sc, Expression e1, int flag) {
             VarDeclaration v = this.isVarDeclaration();
             if ((v != null) && (v.canassign != 0))
                 return Modifiable.initialization;
             if (this.isParameter() || this.isResult())
             {
                 {
-                    Scope scx = sc;
-                    for (; scx != null;scx = (scx).enclosing){
-                        if ((pequals((scx).func, this.parent)) && (((scx).flags & 96) != 0))
+                    Ptr<Scope> scx = sc;
+                    for (; scx != null;scx = (scx.get()).enclosing){
+                        if ((pequals((scx.get()).func, this.parent.value)) && (((scx.get()).flags & 96) != 0))
                         {
-                            BytePtr s = pcopy(this.isParameter() && (!pequals(this.parent.ident, Id.ensure)) ? new BytePtr("parameter") : new BytePtr("result"));
+                            BytePtr s = pcopy(this.isParameter() && (!pequals(this.parent.value.ident, Id.ensure)) ? new BytePtr("parameter") : new BytePtr("result"));
                             if (flag == 0)
                                 this.error(loc, new BytePtr("cannot modify %s `%s` in contract"), s, this.toChars());
                             return Modifiable.initialization;
@@ -359,9 +359,9 @@ public class declaration {
             {
                 VarDeclaration vthis = ((ThisExp)e1).var;
                 {
-                    Scope scx = sc;
-                    for (; scx != null;scx = (scx).enclosing){
-                        if ((pequals((scx).func, vthis.parent)) && (((scx).flags & 96) != 0))
+                    Ptr<Scope> scx = sc;
+                    for (; scx != null;scx = (scx.get()).enclosing){
+                        if ((pequals((scx.get()).func, vthis.parent.value)) && (((scx.get()).flags & 96) != 0))
                         {
                             if (flag == 0)
                                 this.error(loc, new BytePtr("cannot modify parameter 'this' in contract"));
@@ -392,7 +392,7 @@ public class declaration {
 
         // defaulted all parameters starting with #3
         public  Dsymbol search(Loc loc, Identifier ident) {
-            search(loc, ident, 8);
+            return search(loc, ident, 8);
         }
 
         public  boolean isStatic() {
@@ -510,10 +510,10 @@ public class declaration {
     }
     public static class TupleDeclaration extends Declaration
     {
-        public DArray<RootObject> objects;
+        public Ptr<DArray<RootObject>> objects = null;
         public boolean isexp = false;
-        public TypeTuple tupletype;
-        public  TupleDeclaration(Loc loc, Identifier ident, DArray<RootObject> objects) {
+        public TypeTuple tupletype = null;
+        public  TupleDeclaration(Loc loc, Identifier ident, Ptr<DArray<RootObject>> objects) {
             super(loc, ident);
             this.objects = objects;
         }
@@ -533,32 +533,32 @@ public class declaration {
             {
                 {
                     int i = 0;
-                    for (; (i < (this.objects).length);i++){
-                        RootObject o = (this.objects).get(i);
+                    for (; (i < (this.objects.get()).length);i++){
+                        RootObject o = (this.objects.get()).get(i);
                         if ((o.dyncast() != DYNCAST.type))
                         {
                             return null;
                         }
                     }
                 }
-                DArray<Type> types = ((DArray<Type>)this.objects);
-                DArray<Parameter> args = new DArray<Parameter>((this.objects).length);
+                Ptr<DArray<Type>> types = ((Ptr<DArray<Type>>)this.objects);
+                Ptr<DArray<Parameter>> args = new DArray<Parameter>((this.objects.get()).length);
                 OutBuffer buf = new OutBuffer();
                 try {
                     int hasdeco = 1;
                     {
                         int i = 0;
-                        for (; (i < (types).length);i++){
-                            Type t = (types).get(i);
+                        for (; (i < (types.get()).length);i++){
+                            Type t = (types.get()).get(i);
                             Parameter arg = new Parameter(0L, t, null, null, null);
-                            args.set(i, arg);
+                            args.get().set(i, arg);
                             if (t.deco == null)
                                 hasdeco = 0;
                         }
                     }
                     this.tupletype = new TypeTuple(args);
                     if (hasdeco != 0)
-                        return typeSemantic(this.tupletype, Loc.initial, null);
+                        return typeSemantic(this.tupletype, Loc.initial.value, null);
                 }
                 finally {
                 }
@@ -569,14 +569,14 @@ public class declaration {
         public  Dsymbol toAlias2() {
             {
                 int i = 0;
-                for (; (i < (this.objects).length);i++){
-                    RootObject o = (this.objects).get(i);
+                for (; (i < (this.objects.get()).length);i++){
+                    RootObject o = (this.objects.get()).get(i);
                     {
                         Dsymbol s = isDsymbol(o);
                         if ((s) != null)
                         {
                             s = s.toAlias2();
-                            this.objects.set(i, s);
+                            this.objects.get().set(i, s);
                         }
                     }
                 }
@@ -587,8 +587,8 @@ public class declaration {
         public  boolean needThis() {
             {
                 int i = 0;
-                for (; (i < (this.objects).length);i++){
-                    RootObject o = (this.objects).get(i);
+                for (; (i < (this.objects.get()).length);i++){
+                    RootObject o = (this.objects.get()).get(i);
                     if ((o.dyncast() == DYNCAST.expression))
                     {
                         Expression e = (Expression)o;
@@ -649,9 +649,9 @@ public class declaration {
     }
     public static class AliasDeclaration extends Declaration
     {
-        public Dsymbol aliassym;
-        public Dsymbol overnext;
-        public Dsymbol _import;
+        public Dsymbol aliassym = null;
+        public Dsymbol overnext = null;
+        public Dsymbol _import = null;
         public  AliasDeclaration(Loc loc, Identifier ident, Type type) {
             super(loc, ident);
             this.type = type;
@@ -688,7 +688,7 @@ public class declaration {
                     {
                         FuncAliasDeclaration fa = new FuncAliasDeclaration(this.ident, fd, true);
                         fa.protection = this.protection.copy();
-                        fa.parent = this.parent;
+                        fa.parent.value = this.parent.value;
                         this.aliassym = fa;
                         return this.aliassym.overloadInsert(s);
                     }
@@ -699,7 +699,7 @@ public class declaration {
                     {
                         OverDeclaration od = new OverDeclaration(this.ident, td, true);
                         od.protection = this.protection.copy();
-                        od.parent = this.parent;
+                        od.parent.value = this.parent.value;
                         this.aliassym = od;
                         return this.aliassym.overloadInsert(s);
                     }
@@ -708,11 +708,11 @@ public class declaration {
                     OverDeclaration od = sa.isOverDeclaration();
                     if ((od) != null)
                     {
-                        if ((!pequals(sa.ident, this.ident)) || (!pequals(sa.parent, this.parent)))
+                        if ((!pequals(sa.ident, this.ident)) || (!pequals(sa.parent.value, this.parent.value)))
                         {
                             od = new OverDeclaration(this.ident, od, true);
                             od.protection = this.protection.copy();
-                            od.parent = this.parent;
+                            od.parent.value = this.parent.value;
                             this.aliassym = od;
                         }
                         return od.overloadInsert(s);
@@ -722,10 +722,10 @@ public class declaration {
                     OverloadSet os = sa.isOverloadSet();
                     if ((os) != null)
                     {
-                        if ((!pequals(sa.ident, this.ident)) || (!pequals(sa.parent, this.parent)))
+                        if ((!pequals(sa.ident, this.ident)) || (!pequals(sa.parent.value, this.parent.value)))
                         {
                             os = new OverloadSet(this.ident, os);
-                            os.parent = this.parent;
+                            os.parent.value = this.parent.value;
                             this.aliassym = os;
                         }
                         os.push(s);
@@ -757,26 +757,26 @@ public class declaration {
             if ((this.inuse == 1) && (this.type != null) && (this._scope != null))
             {
                 this.inuse = 2;
-                int olderrors = global.errors;
+                int olderrors = global.value.errors;
                 Dsymbol s = this.type.toDsymbol(this._scope);
-                if ((global.errors != olderrors))
+                if ((global.value.errors != olderrors))
                     /*goto Lerr*//*unrolled goto*/
                 /*Lerr:*/
-                    if (global.gag != 0)
+                    if (global.value.gag != 0)
                         return this;
-                    this.aliassym = new AliasDeclaration(this.loc, this.ident, Type.terror);
-                    this.type = Type.terror;
+                    this.aliassym = new AliasDeclaration(this.loc, this.ident, Type.terror.value);
+                    this.type = Type.terror.value;
                     return this.aliassym;
                 if (s != null)
                 {
                     s = s.toAlias();
-                    if ((global.errors != olderrors))
+                    if ((global.value.errors != olderrors))
                         /*goto Lerr*//*unrolled goto*/
                     /*Lerr:*/
-                        if (global.gag != 0)
+                        if (global.value.gag != 0)
                             return this;
-                        this.aliassym = new AliasDeclaration(this.loc, this.ident, Type.terror);
-                        this.type = Type.terror;
+                        this.aliassym = new AliasDeclaration(this.loc, this.ident, Type.terror.value);
+                        this.type = Type.terror.value;
                         return this.aliassym;
                     this.aliassym = s;
                     this.inuse = 0;
@@ -787,18 +787,18 @@ public class declaration {
                     if (((t.ty & 0xFF) == ENUMTY.Terror))
                         /*goto Lerr*//*unrolled goto*/
                     /*Lerr:*/
-                        if (global.gag != 0)
+                        if (global.value.gag != 0)
                             return this;
-                        this.aliassym = new AliasDeclaration(this.loc, this.ident, Type.terror);
-                        this.type = Type.terror;
+                        this.aliassym = new AliasDeclaration(this.loc, this.ident, Type.terror.value);
+                        this.type = Type.terror.value;
                         return this.aliassym;
-                    if ((global.errors != olderrors))
+                    if ((global.value.errors != olderrors))
                         /*goto Lerr*//*unrolled goto*/
                     /*Lerr:*/
-                        if (global.gag != 0)
+                        if (global.value.gag != 0)
                             return this;
-                        this.aliassym = new AliasDeclaration(this.loc, this.ident, Type.terror);
-                        this.type = Type.terror;
+                        this.aliassym = new AliasDeclaration(this.loc, this.ident, Type.terror.value);
+                        this.type = Type.terror.value;
                         return this.aliassym;
                     this.inuse = 0;
                 }
@@ -807,10 +807,10 @@ public class declaration {
             {
                 this.error(new BytePtr("recursive alias declaration"));
             /*Lerr:*/
-                if (global.gag != 0)
+                if (global.value.gag != 0)
                     return this;
-                this.aliassym = new AliasDeclaration(this.loc, this.ident, Type.terror);
-                this.type = Type.terror;
+                this.aliassym = new AliasDeclaration(this.loc, this.ident, Type.terror.value);
+                this.type = Type.terror.value;
                 return this.aliassym;
             }
             if ((this.semanticRun >= PASS.semanticdone))
@@ -891,8 +891,8 @@ public class declaration {
     }
     public static class OverDeclaration extends Declaration
     {
-        public Dsymbol overnext;
-        public Dsymbol aliassym;
+        public Dsymbol overnext = null;
+        public Dsymbol aliassym = null;
         public boolean hasOverloads = false;
         public  OverDeclaration(Identifier ident, Dsymbol s, boolean hasOverloads) {
             super(ident);
@@ -950,7 +950,7 @@ public class declaration {
                     TemplateDeclaration td = s.isTemplateDeclaration();
                     if ((td) != null)
                     {
-                        return td.overnext == null;
+                        return td.overnext.value == null;
                     }
                 }
             }
@@ -1039,7 +1039,7 @@ public class declaration {
     }
     public static class VarDeclaration extends Declaration
     {
-        public Initializer _init;
+        public Initializer _init = null;
         public int offset = 0;
         public int sequenceNumber = 0;
         public static int nextSequenceNumber = 0;
@@ -1055,13 +1055,13 @@ public class declaration {
         public boolean overlapUnsafe = false;
         public boolean doNotInferScope = false;
         public byte isdataseg = 0;
-        public Dsymbol aliassym;
-        public VarDeclaration lastVar;
+        public Dsymbol aliassym = null;
+        public VarDeclaration lastVar = null;
         public int endlinnum = 0;
         public int ctfeAdrOnStack = 0;
-        public Expression edtor;
-        public IntRange range;
-        public DArray<VarDeclaration> maybes;
+        public Expression edtor = null;
+        public Ptr<IntRange> range = null;
+        public Ptr<DArray<VarDeclaration>> maybes = null;
         public boolean _isAnonymous = false;
         public  VarDeclaration(Loc loc, Type type, Identifier ident, Initializer _init, long storage_class) {
             if ((ident == Identifier.anonymous()))
@@ -1090,7 +1090,7 @@ public class declaration {
 
         // defaulted all parameters starting with #5
         public static VarDeclaration create(Loc loc, Type type, Identifier ident, Initializer _init) {
-            create(loc, type, ident, _init, 0L);
+            return create(loc, type, ident, _init, 0L);
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
@@ -1106,8 +1106,8 @@ public class declaration {
                 assert(v2 != null);
                 {
                     int i = 0;
-                    for (; (i < (v2.objects).length);i++){
-                        RootObject o = (v2.objects).get(i);
+                    for (; (i < (v2.objects.get()).length);i++){
+                        RootObject o = (v2.objects.get()).get(i);
                         assert((o.dyncast() == DYNCAST.expression));
                         Expression e = (Expression)o;
                         assert(((e.op & 0xFF) == 41));
@@ -1122,7 +1122,7 @@ public class declaration {
             assert((this.storage_class & 134217763L) == 0);
             if (this.offset != 0)
             {
-                poffset.set(0, ad.structsize);
+                poffset.set(0, ad.structsize.value);
                 return ;
             }
             {
@@ -1130,7 +1130,7 @@ public class declaration {
                 for (; (i < ad.fields.length);i++){
                     if ((pequals(ad.fields.get(i), this)))
                     {
-                        poffset.set(0, ad.structsize);
+                        poffset.set(0, ad.structsize.value);
                         return ;
                     }
                 }
@@ -1138,7 +1138,7 @@ public class declaration {
             Type t = this.type.toBasetype();
             if ((this.storage_class & 2097152L) != 0)
             {
-                t = Type.tvoidptr;
+                t = Type.tvoidptr.value;
             }
             Type tv = t.baseElemOf();
             if (((tv.ty & 0xFF) == ENUMTY.Tstruct))
@@ -1147,7 +1147,7 @@ public class declaration {
                 assert((!pequals(ts.sym, ad)));
                 if (!ts.sym.determineSize(this.loc))
                 {
-                    this.type = Type.terror;
+                    this.type = Type.terror.value;
                     this.errors = true;
                     return ;
                 }
@@ -1158,8 +1158,8 @@ public class declaration {
             long sz = t.size(this.loc);
             assert((sz != -1L) && (sz < 4294967295L));
             int memsize = (int)sz;
-            int memalignsize = target.fieldalign(t);
-            this.offset = AggregateDeclaration.placeField(poffset, memsize, memalignsize, this.alignment, ad.structsize, ad.alignsize, isunion);
+            int memalignsize = target.value.fieldalign(t);
+            this.offset = AggregateDeclaration.placeField(poffset, memsize, memalignsize, this.alignment, ptr(ad.structsize.value), ptr(ad.alignsize.value), isunion);
         }
 
         public  BytePtr kind() {
@@ -1171,11 +1171,11 @@ public class declaration {
             {
                 {
                     Dsymbol s = this;
-                    for (; s != null;s = s.parent){
+                    for (; s != null;s = s.parent.value){
                         AggregateDeclaration ad = s.isMember();
                         if (ad != null)
                             return ad;
-                        if ((s.parent == null) || (s.parent.isTemplateMixin() == null))
+                        if ((s.parent.value == null) || (s.parent.value.isTemplateMixin() == null))
                             break;
                     }
                 }
@@ -1196,7 +1196,7 @@ public class declaration {
         }
 
         public  boolean isImportedSymbol() {
-            if ((this.protection.kind == Prot.Kind.export_) && (this._init == null) && ((this.storage_class & 1L) != 0) || (this.parent.isModule() != null))
+            if ((this.protection.kind == Prot.Kind.export_) && (this._init == null) && ((this.storage_class & 1L) != 0) || (this.parent.value.isModule() != null))
                 return true;
             return false;
         }
@@ -1213,7 +1213,7 @@ public class declaration {
                 if ((parent == null) && ((this.storage_class & 1L) == 0))
                 {
                     this.error(new BytePtr("forward referenced"));
-                    this.type = Type.terror;
+                    this.type = Type.terror.value;
                 }
                 else if (((this.storage_class & 1207959555L) != 0) || (parent.isModule() != null) || (parent.isTemplateInstance() != null) || (parent.isNspace() != null))
                 {
@@ -1252,7 +1252,7 @@ public class declaration {
             return (this.edtor != null) && ((this.storage_class & 16777216L) == 0);
         }
 
-        public  Expression callScopeDtor(Scope sc) {
+        public  Expression callScopeDtor(Ptr<Scope> sc) {
             if ((this.storage_class & 18878528L) != 0)
             {
                 return null;
@@ -1273,8 +1273,8 @@ public class declaration {
                 if (((this.type.toBasetype().ty & 0xFF) == ENUMTY.Tstruct))
                 {
                     e = new VarExp(this.loc, this, true);
-                    e.type = e.type.mutableOf();
-                    e.type = e.type.unSharedOf();
+                    e.type.value = e.type.value.mutableOf();
+                    e.type.value = e.type.value.unSharedOf();
                     e = new DotVarExp(this.loc, e, sd.dtor, false);
                     e = new CallExp(this.loc, e);
                 }
@@ -1284,10 +1284,10 @@ public class declaration {
                     long sdsz = sd.type.size();
                     assert((sdsz != -1L) && (sdsz != 0L));
                     long n = sz / sdsz;
-                    e = new SliceExp(this.loc, e, new IntegerExp(this.loc, 0L, Type.tsize_t), new IntegerExp(this.loc, n, Type.tsize_t));
+                    e = new SliceExp(this.loc, e, new IntegerExp(this.loc, 0L, Type.tsize_t.value), new IntegerExp(this.loc, n, Type.tsize_t.value));
                     ((SliceExp)e).upperIsInBounds = true;
                     ((SliceExp)e).lowerIsLessThanUpper = true;
-                    e.type = sd.type.arrayOf();
+                    e.type.value = sd.type.arrayOf();
                     e = new CallExp(this.loc, new IdentifierExp(this.loc, Id.__ArrayDtor), e);
                 }
                 return e;
@@ -1306,7 +1306,7 @@ public class declaration {
                             Expression ec = null;
                             ec = new VarExp(this.loc, this, true);
                             e = new DeleteExp(this.loc, ec, true);
-                            e.type = Type.tvoid;
+                            e.type.value = Type.tvoid.value;
                             break;
                         }
                     }
@@ -1317,12 +1317,12 @@ public class declaration {
 
         public  Expression getConstInitializer(boolean needFullType) {
             assert((this.type != null) && (this._init != null));
-            int oldgag = global.gag;
-            if (global.gag != 0)
+            int oldgag = global.value.gag;
+            if (global.value.gag != 0)
             {
                 Dsymbol sym = this.toParent().isAggregateDeclaration();
                 if ((sym != null) && (sym.isSpeculative() == null))
-                    global.gag = 0;
+                    global.value.gag = 0;
             }
             if (this._scope != null)
             {
@@ -1332,13 +1332,13 @@ public class declaration {
                 this.inuse--;
             }
             Expression e = initializerToExpression(this._init, needFullType ? this.type : null);
-            global.gag = oldgag;
+            global.value.gag = oldgag;
             return e;
         }
 
         // defaulted all parameters starting with #1
         public  Expression getConstInitializer() {
-            getConstInitializer(true);
+            return getConstInitializer(true);
         }
 
         public  Expression expandInitializer(Loc loc) {
@@ -1357,14 +1357,14 @@ public class declaration {
         public  void checkCtorConstInit() {
         }
 
-        public  boolean checkNestedReference(Scope sc, Loc loc) {
-            if (((sc).intypeof == 1) || (((sc).flags & 128) != 0))
+        public  boolean checkNestedReference(Ptr<Scope> sc, Loc loc) {
+            if (((sc.get()).intypeof == 1) || (((sc.get()).flags & 128) != 0))
                 return false;
-            if ((this.parent == null) || (pequals(this.parent, (sc).parent)))
+            if ((this.parent.value == null) || (pequals(this.parent.value, (sc.get()).parent.value)))
                 return false;
             if (this.isDataseg() || ((this.storage_class & 8388608L) != 0))
                 return false;
-            FuncDeclaration fdthis = (sc).parent.isFuncDeclaration();
+            FuncDeclaration fdthis = (sc.get()).parent.value.isFuncDeclaration();
             if (fdthis == null)
                 return false;
             Dsymbol p = this.toParent2();
@@ -1391,7 +1391,7 @@ public class declaration {
                 if ((fdthis.getLevelAndCheck(loc, sc, fdv) == -2))
                     return true;
             }
-            if (((sc).intypeof == 0) && (((sc).flags & 256) == 0) && ((fdv.flags & FUNCFLAG.compileTimeOnly) != 0) || ((fdthis.flags & FUNCFLAG.compileTimeOnly) == 0))
+            if (((sc.get()).intypeof == 0) && (((sc.get()).flags & 256) == 0) && ((fdv.flags & FUNCFLAG.compileTimeOnly) != 0) || ((fdthis.flags & FUNCFLAG.compileTimeOnly) == 0))
             {
                 {
                     int i = 0;
@@ -1411,13 +1411,13 @@ public class declaration {
                 error(loc, new BytePtr("cannnot use `$` inside a function literal"));
                 return true;
             }
-            if ((pequals(this.ident, Id.withSym)))
+            if ((pequals(this.ident, Id.withSym.value)))
             {
                 ExpInitializer ez = this._init.isExpInitializer();
                 assert(ez != null);
                 Expression e = ez.exp;
                 if (((e.op & 0xFF) == 95) || ((e.op & 0xFF) == 96))
-                    e = ((AssignExp)e).e2;
+                    e = ((AssignExp)e).e2.value;
                 return lambdaCheckForNestedRef(e, sc);
             }
             return false;
@@ -1446,7 +1446,7 @@ public class declaration {
         public  void addMaybe(VarDeclaration v) {
             if (this.maybes == null)
                 this.maybes = new DArray<VarDeclaration>();
-            (this.maybes).push(v);
+            (this.maybes.get()).push(v);
         }
 
 
@@ -1503,7 +1503,7 @@ public class declaration {
     }
     public static class SymbolDeclaration extends Declaration
     {
-        public StructDeclaration dsym;
+        public StructDeclaration dsym = null;
         public  SymbolDeclaration(Loc loc, StructDeclaration dsym) {
             super(loc, dsym.ident);
             this.dsym = dsym;
@@ -1550,14 +1550,14 @@ public class declaration {
     }
     public static class TypeInfoDeclaration extends VarDeclaration
     {
-        public Type tinfo;
+        public Type tinfo = null;
         public  TypeInfoDeclaration(Type tinfo) {
-            super(Loc.initial, Type.dtypeinfo.type, tinfo.getTypeInfoIdent(), null, 0L);
+            super(Loc.initial.value, Type.dtypeinfo.value.type, tinfo.getTypeInfoIdent(), null, 0L);
             this.tinfo = tinfo;
             this.storage_class = 1073741825L;
             this.protection = new Prot(Prot.Kind.public_).copy();
             this.linkage = LINK.c;
-            this.alignment = target.ptrsize;
+            this.alignment = target.value.ptrsize;
         }
 
         public static TypeInfoDeclaration create(Type tinfo) {
@@ -1717,11 +1717,11 @@ public class declaration {
     {
         public  TypeInfoClassDeclaration(Type tinfo) {
             super(tinfo);
-            if (Type.typeinfoclass == null)
+            if (Type.typeinfoclass.value == null)
             {
                 ObjectNotFound(Id.TypeInfo_Class);
             }
-            this.type = Type.typeinfoclass.type;
+            this.type = Type.typeinfoclass.value.type;
         }
 
         public static TypeInfoClassDeclaration create(Type tinfo) {
@@ -2796,7 +2796,7 @@ public class declaration {
     public static class ThisDeclaration extends VarDeclaration
     {
         public  ThisDeclaration(Loc loc, Type t) {
-            super(loc, t, Id.This, null, 0L);
+            super(loc, t, Id.This.value, null, 0L);
             this.storage_class |= 16777216L;
         }
 

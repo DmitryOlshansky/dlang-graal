@@ -28,18 +28,21 @@ import static org.dlang.dmd.visitor.*;
 public class blockexit {
     private static class BlockExit extends Visitor
     {
-        private FuncDeclaration func;
+        private FuncDeclaration func = null;
         private boolean mustNotThrow = false;
         private int result = 0;
         public  BlockExit(FuncDeclaration func, boolean mustNotThrow) {
-            this.func = func;
-            this.mustNotThrow = mustNotThrow;
+            Ref<FuncDeclaration> func_ref = ref(func);
+            Ref<Boolean> mustNotThrow_ref = ref(mustNotThrow);
+            this.func = func_ref.value;
+            this.mustNotThrow = mustNotThrow_ref.value;
             this.result = 0;
         }
 
         public  void visit(Statement s) {
-            printf(new BytePtr("Statement::blockExit(%p)\n"), s);
-            printf(new BytePtr("%s\n"), s.toChars());
+            Ref<Statement> s_ref = ref(s);
+            printf(new BytePtr("Statement::blockExit(%p)\n"), s_ref.value);
+            printf(new BytePtr("%s\n"), s_ref.value.toChars());
             throw new AssertionError("Unreachable code!");
         }
 
@@ -48,91 +51,94 @@ public class blockexit {
         }
 
         public  void visit(ExpStatement s) {
+            Ref<ExpStatement> s_ref = ref(s);
             this.result = 1;
-            if (s.exp != null)
+            if (s_ref.value.exp != null)
             {
-                if (((s.exp.op & 0xFF) == 125))
+                if (((s_ref.value.exp.op & 0xFF) == 125))
                 {
                     this.result = 16;
                     return ;
                 }
-                if (((s.exp.op & 0xFF) == 14))
+                if (((s_ref.value.exp.op & 0xFF) == 14))
                 {
-                    AssertExp a = (AssertExp)s.exp;
-                    if (a.e1.isBool(false))
+                    Ref<AssertExp> a = ref((AssertExp)s_ref.value.exp);
+                    if (a.value.e1.isBool(false))
                     {
                         this.result = 16;
                         return ;
                     }
                 }
-                if (canThrow(s.exp, this.func, this.mustNotThrow))
+                if (canThrow(s_ref.value.exp, this.func, this.mustNotThrow))
                     this.result |= BE.throw_;
             }
         }
 
         public  void visit(CompileStatement s) {
-            assert(global.errors != 0);
+            assert(global.value.errors != 0);
             this.result = 1;
         }
 
         public  void visit(CompoundStatement cs) {
+            Ref<CompoundStatement> cs_ref = ref(cs);
             this.result = 1;
-            Statement slast = null;
+            Ref<Statement> slast = ref(null);
             {
-                Slice<Statement> __r801 = (cs.statements).opSlice().copy();
-                int __key802 = 0;
-                for (; (__key802 < __r801.getLength());__key802 += 1) {
-                    Statement s = __r801.get(__key802);
-                    if (s != null)
+                Ref<Slice<Statement>> __r799 = ref((cs_ref.value.statements.get()).opSlice().copy());
+                IntRef __key800 = ref(0);
+                for (; (__key800.value < __r799.value.getLength());__key800.value += 1) {
+                    Ref<Statement> s = ref(__r799.value.get(__key800.value));
+                    if (s.value != null)
                     {
-                        if (((this.result & BE.fallthru) != 0) && (slast != null))
+                        if (((this.result & BE.fallthru) != 0) && (slast.value != null))
                         {
-                            slast = slast.last();
-                            if ((slast != null) && (slast.isCaseStatement() != null) || (slast.isDefaultStatement() != null) && (s.isCaseStatement() != null) || (s.isDefaultStatement() != null))
+                            slast.value = slast.value.last();
+                            if ((slast.value != null) && (slast.value.isCaseStatement() != null) || (slast.value.isDefaultStatement() != null) && (s.value.isCaseStatement() != null) || (s.value.isDefaultStatement() != null))
                             {
-                                CaseStatement sc = slast.isCaseStatement();
-                                DefaultStatement sd = slast.isDefaultStatement();
-                                if ((sc != null) && !sc.statement.hasCode() || (sc.statement.isCaseStatement() != null) || (sc.statement.isErrorStatement() != null))
+                                Ref<CaseStatement> sc = ref(slast.value.isCaseStatement());
+                                Ref<DefaultStatement> sd = ref(slast.value.isDefaultStatement());
+                                if ((sc.value != null) && !sc.value.statement.hasCode() || (sc.value.statement.isCaseStatement() != null) || (sc.value.statement.isErrorStatement() != null))
                                 {
                                 }
-                                else if ((sd != null) && !sd.statement.hasCode() || (sd.statement.isCaseStatement() != null) || (sd.statement.isErrorStatement() != null))
+                                else if ((sd.value != null) && !sd.value.statement.hasCode() || (sd.value.statement.isCaseStatement() != null) || (sd.value.statement.isErrorStatement() != null))
                                 {
                                 }
                                 else
                                 {
-                                    BytePtr gototype = pcopy(s.isCaseStatement() != null ? new BytePtr("case") : new BytePtr("default"));
-                                    s.deprecation(new BytePtr("switch case fallthrough - use 'goto %s;' if intended"), gototype);
+                                    Ref<BytePtr> gototype = ref(pcopy(s.value.isCaseStatement() != null ? new BytePtr("case") : new BytePtr("default")));
+                                    s.value.deprecation(new BytePtr("switch case fallthrough - use 'goto %s;' if intended"), gototype.value);
                                 }
                             }
                         }
-                        if (((this.result & BE.fallthru) == 0) && !s.comeFrom())
+                        if (((this.result & BE.fallthru) == 0) && !s.value.comeFrom())
                         {
-                            if ((blockExit(s, this.func, this.mustNotThrow) != BE.halt) && s.hasCode())
-                                s.warning(new BytePtr("statement is not reachable"));
+                            if ((blockExit(s.value, this.func, this.mustNotThrow) != BE.halt) && s.value.hasCode())
+                                s.value.warning(new BytePtr("statement is not reachable"));
                         }
                         else
                         {
                             this.result &= -2;
-                            this.result |= blockExit(s, this.func, this.mustNotThrow);
+                            this.result |= blockExit(s.value, this.func, this.mustNotThrow);
                         }
-                        slast = s;
+                        slast.value = s.value;
                     }
                 }
             }
         }
 
         public  void visit(UnrolledLoopStatement uls) {
+            Ref<UnrolledLoopStatement> uls_ref = ref(uls);
             this.result = 1;
             {
-                Slice<Statement> __r803 = (uls.statements).opSlice().copy();
-                int __key804 = 0;
-                for (; (__key804 < __r803.getLength());__key804 += 1) {
-                    Statement s = __r803.get(__key804);
-                    if (s != null)
+                Ref<Slice<Statement>> __r801 = ref((uls_ref.value.statements.get()).opSlice().copy());
+                IntRef __key802 = ref(0);
+                for (; (__key802.value < __r801.value.getLength());__key802.value += 1) {
+                    Ref<Statement> s = ref(__r801.value.get(__key802.value));
+                    if (s.value != null)
                     {
-                        int r = blockExit(s, this.func, this.mustNotThrow);
-                        this.result |= r & -98;
-                        if (((r & 97) == 0))
+                        IntRef r = ref(blockExit(s.value, this.func, this.mustNotThrow));
+                        this.result |= r.value & -98;
+                        if (((r.value & 97) == 0))
                             this.result &= -2;
                     }
                 }
@@ -140,18 +146,20 @@ public class blockexit {
         }
 
         public  void visit(ScopeStatement s) {
-            this.result = blockExit(s.statement, this.func, this.mustNotThrow);
+            Ref<ScopeStatement> s_ref = ref(s);
+            this.result = blockExit(s_ref.value.statement, this.func, this.mustNotThrow);
         }
 
         public  void visit(WhileStatement s) {
-            assert(global.errors != 0);
+            assert(global.value.errors != 0);
             this.result = 1;
         }
 
         public  void visit(DoStatement s) {
-            if (s._body != null)
+            Ref<DoStatement> s_ref = ref(s);
+            if (s_ref.value._body != null)
             {
-                this.result = blockExit(s._body, this.func, this.mustNotThrow);
+                this.result = blockExit(s_ref.value._body, this.func, this.mustNotThrow);
                 if ((this.result == BE.break_))
                 {
                     this.result = 1;
@@ -164,80 +172,84 @@ public class blockexit {
                 this.result = 1;
             if ((this.result & BE.fallthru) != 0)
             {
-                if (canThrow(s.condition, this.func, this.mustNotThrow))
+                if (canThrow(s_ref.value.condition, this.func, this.mustNotThrow))
                     this.result |= BE.throw_;
-                if (((this.result & BE.break_) == 0) && s.condition.isBool(true))
+                if (((this.result & BE.break_) == 0) && s_ref.value.condition.isBool(true))
                     this.result &= -2;
             }
             this.result &= -97;
         }
 
         public  void visit(ForStatement s) {
+            Ref<ForStatement> s_ref = ref(s);
             this.result = 1;
-            if (s._init != null)
+            if (s_ref.value._init != null)
             {
-                this.result = blockExit(s._init, this.func, this.mustNotThrow);
+                this.result = blockExit(s_ref.value._init, this.func, this.mustNotThrow);
                 if ((this.result & BE.fallthru) == 0)
                     return ;
             }
-            if (s.condition != null)
+            if (s_ref.value.condition != null)
             {
-                if (canThrow(s.condition, this.func, this.mustNotThrow))
+                if (canThrow(s_ref.value.condition, this.func, this.mustNotThrow))
                     this.result |= BE.throw_;
-                if (s.condition.isBool(true))
+                if (s_ref.value.condition.isBool(true))
                     this.result &= -2;
-                else if (s.condition.isBool(false))
+                else if (s_ref.value.condition.isBool(false))
                     return ;
             }
             else
                 this.result &= -2;
-            if (s._body != null)
+            if (s_ref.value._body != null)
             {
-                int r = blockExit(s._body, this.func, this.mustNotThrow);
-                if ((r & 40) != 0)
+                IntRef r = ref(blockExit(s_ref.value._body, this.func, this.mustNotThrow));
+                if ((r.value & 40) != 0)
                     this.result |= BE.fallthru;
-                this.result |= r & -98;
+                this.result |= r.value & -98;
             }
-            if ((s.increment != null) && canThrow(s.increment, this.func, this.mustNotThrow))
+            if ((s_ref.value.increment != null) && canThrow(s_ref.value.increment, this.func, this.mustNotThrow))
                 this.result |= BE.throw_;
         }
 
         public  void visit(ForeachStatement s) {
+            Ref<ForeachStatement> s_ref = ref(s);
             this.result = 1;
-            if (canThrow(s.aggr, this.func, this.mustNotThrow))
+            if (canThrow(s_ref.value.aggr, this.func, this.mustNotThrow))
                 this.result |= BE.throw_;
-            if (s._body != null)
-                this.result |= blockExit(s._body, this.func, this.mustNotThrow) & -97;
+            if (s_ref.value._body.value != null)
+                this.result |= blockExit(s_ref.value._body.value, this.func, this.mustNotThrow) & -97;
         }
 
         public  void visit(ForeachRangeStatement s) {
-            assert(global.errors != 0);
+            assert(global.value.errors != 0);
             this.result = 1;
         }
 
         public  void visit(IfStatement s) {
+            Ref<IfStatement> s_ref = ref(s);
             this.result = 0;
-            if (canThrow(s.condition, this.func, this.mustNotThrow))
+            if (canThrow(s_ref.value.condition, this.func, this.mustNotThrow))
                 this.result |= BE.throw_;
-            if (s.condition.isBool(true))
+            if (s_ref.value.condition.isBool(true))
             {
-                this.result |= blockExit(s.ifbody, this.func, this.mustNotThrow);
+                this.result |= blockExit(s_ref.value.ifbody, this.func, this.mustNotThrow);
             }
-            else if (s.condition.isBool(false))
+            else if (s_ref.value.condition.isBool(false))
             {
-                this.result |= blockExit(s.elsebody, this.func, this.mustNotThrow);
+                this.result |= blockExit(s_ref.value.elsebody, this.func, this.mustNotThrow);
             }
             else
             {
-                this.result |= blockExit(s.ifbody, this.func, this.mustNotThrow);
-                this.result |= blockExit(s.elsebody, this.func, this.mustNotThrow);
+                this.result |= blockExit(s_ref.value.ifbody, this.func, this.mustNotThrow);
+                this.result |= blockExit(s_ref.value.elsebody, this.func, this.mustNotThrow);
             }
         }
 
         public  void visit(ConditionalStatement s) {
-            this.result = blockExit(s.ifbody, this.func, this.mustNotThrow);
-            if (s.elsebody != null)
-                this.result |= blockExit(s.elsebody, this.func, this.mustNotThrow);
+            Ref<ConditionalStatement> s_ref = ref(s);
+            this.result = blockExit(s_ref.value.ifbody, this.func, this.mustNotThrow);
+            if (s_ref.value.elsebody != null)
+                this.result |= blockExit(s_ref.value.elsebody, this.func, this.mustNotThrow);
         }
 
         public  void visit(PragmaStatement s) {
@@ -249,12 +261,13 @@ public class blockexit {
         }
 
         public  void visit(SwitchStatement s) {
+            Ref<SwitchStatement> s_ref = ref(s);
             this.result = 0;
-            if (canThrow(s.condition, this.func, this.mustNotThrow))
+            if (canThrow(s_ref.value.condition, this.func, this.mustNotThrow))
                 this.result |= BE.throw_;
-            if (s._body != null)
+            if (s_ref.value._body != null)
             {
-                this.result |= blockExit(s._body, this.func, this.mustNotThrow);
+                this.result |= blockExit(s_ref.value._body, this.func, this.mustNotThrow);
                 if ((this.result & BE.break_) != 0)
                 {
                     this.result |= BE.fallthru;
@@ -266,11 +279,13 @@ public class blockexit {
         }
 
         public  void visit(CaseStatement s) {
-            this.result = blockExit(s.statement, this.func, this.mustNotThrow);
+            Ref<CaseStatement> s_ref = ref(s);
+            this.result = blockExit(s_ref.value.statement, this.func, this.mustNotThrow);
         }
 
         public  void visit(DefaultStatement s) {
-            this.result = blockExit(s.statement, this.func, this.mustNotThrow);
+            Ref<DefaultStatement> s_ref = ref(s);
+            this.result = blockExit(s_ref.value.statement, this.func, this.mustNotThrow);
         }
 
         public  void visit(GotoDefaultStatement s) {
@@ -286,86 +301,93 @@ public class blockexit {
         }
 
         public  void visit(ReturnStatement s) {
+            Ref<ReturnStatement> s_ref = ref(s);
             this.result = 4;
-            if ((s.exp != null) && canThrow(s.exp, this.func, this.mustNotThrow))
+            if ((s_ref.value.exp != null) && canThrow(s_ref.value.exp, this.func, this.mustNotThrow))
                 this.result |= BE.throw_;
         }
 
         public  void visit(BreakStatement s) {
-            this.result = s.ident != null ? 8 : 32;
+            Ref<BreakStatement> s_ref = ref(s);
+            this.result = s_ref.value.ident != null ? 8 : 32;
         }
 
         public  void visit(ContinueStatement s) {
-            this.result = s.ident != null ? 72 : 64;
+            Ref<ContinueStatement> s_ref = ref(s);
+            this.result = s_ref.value.ident != null ? 72 : 64;
         }
 
         public  void visit(SynchronizedStatement s) {
-            this.result = blockExit(s._body, this.func, this.mustNotThrow);
+            Ref<SynchronizedStatement> s_ref = ref(s);
+            this.result = blockExit(s_ref.value._body, this.func, this.mustNotThrow);
         }
 
         public  void visit(WithStatement s) {
+            Ref<WithStatement> s_ref = ref(s);
             this.result = 0;
-            if (canThrow(s.exp, this.func, this.mustNotThrow))
+            if (canThrow(s_ref.value.exp, this.func, this.mustNotThrow))
                 this.result = 2;
-            this.result |= blockExit(s._body, this.func, this.mustNotThrow);
+            this.result |= blockExit(s_ref.value._body, this.func, this.mustNotThrow);
         }
 
         public  void visit(TryCatchStatement s) {
-            assert(s._body != null);
-            this.result = blockExit(s._body, this.func, false);
-            int catchresult = 0;
+            Ref<TryCatchStatement> s_ref = ref(s);
+            assert(s_ref.value._body != null);
+            this.result = blockExit(s_ref.value._body, this.func, false);
+            IntRef catchresult = ref(0);
             {
-                Slice<Catch> __r805 = (s.catches).opSlice().copy();
-                int __key806 = 0;
-                for (; (__key806 < __r805.getLength());__key806 += 1) {
-                    Catch c = __r805.get(__key806);
-                    if ((pequals(c.type, Type.terror)))
+                Ref<Slice<Catch>> __r803 = ref((s_ref.value.catches.get()).opSlice().copy());
+                IntRef __key804 = ref(0);
+                for (; (__key804.value < __r803.value.getLength());__key804.value += 1) {
+                    Ref<Catch> c = ref(__r803.value.get(__key804.value));
+                    if ((pequals(c.value.type, Type.terror.value)))
                         continue;
-                    int cresult = blockExit(c.handler, this.func, this.mustNotThrow);
-                    Identifier id = c.type.toBasetype().isClassHandle().ident;
-                    if (c.internalCatch && ((cresult & BE.fallthru) != 0))
+                    IntRef cresult = ref(blockExit(c.value.handler, this.func, this.mustNotThrow));
+                    Ref<Identifier> id = ref(c.value.type.toBasetype().isClassHandle().ident);
+                    if (c.value.internalCatch && ((cresult.value & BE.fallthru) != 0))
                     {
-                        cresult &= -2;
+                        cresult.value &= -2;
                     }
-                    else if ((pequals(id, Id.Object)) || (pequals(id, Id.Throwable)))
+                    else if ((pequals(id.value, Id.Object.value)) || (pequals(id.value, Id.Throwable.value)))
                     {
                         this.result &= -131;
                     }
-                    else if ((pequals(id, Id.Exception)))
+                    else if ((pequals(id.value, Id.Exception.value)))
                     {
                         this.result &= -3;
                     }
-                    catchresult |= cresult;
+                    catchresult.value |= cresult.value;
                 }
             }
             if (this.mustNotThrow && ((this.result & BE.throw_) != 0))
             {
-                blockExit(s._body, this.func, this.mustNotThrow);
+                blockExit(s_ref.value._body, this.func, this.mustNotThrow);
             }
-            this.result |= catchresult;
+            this.result |= catchresult.value;
         }
 
         public  void visit(TryFinallyStatement s) {
+            Ref<TryFinallyStatement> s_ref = ref(s);
             this.result = 1;
-            if (s._body != null)
-                this.result = blockExit(s._body, this.func, false);
-            int finalresult = 1;
-            if (s.finalbody != null)
-                finalresult = blockExit(s.finalbody, this.func, false);
+            if (s_ref.value._body != null)
+                this.result = blockExit(s_ref.value._body, this.func, false);
+            IntRef finalresult = ref(1);
+            if (s_ref.value.finalbody != null)
+                finalresult.value = blockExit(s_ref.value.finalbody, this.func, false);
             if ((this.result == BE.halt))
-                finalresult = 0;
-            if ((finalresult == BE.halt))
+                finalresult.value = 0;
+            if ((finalresult.value == BE.halt))
                 this.result = 0;
             if (this.mustNotThrow)
             {
-                if ((s._body != null) && ((this.result & BE.throw_) != 0))
-                    blockExit(s._body, this.func, this.mustNotThrow);
-                if ((s.finalbody != null) && ((finalresult & BE.throw_) != 0))
-                    blockExit(s.finalbody, this.func, this.mustNotThrow);
+                if ((s_ref.value._body != null) && ((this.result & BE.throw_) != 0))
+                    blockExit(s_ref.value._body, this.func, this.mustNotThrow);
+                if ((s_ref.value.finalbody != null) && ((finalresult.value & BE.throw_) != 0))
+                    blockExit(s_ref.value.finalbody, this.func, this.mustNotThrow);
             }
-            if ((finalresult & BE.fallthru) == 0)
+            if ((finalresult.value & BE.fallthru) == 0)
                 this.result &= -2;
-            this.result |= finalresult & -2;
+            this.result |= finalresult.value & -2;
         }
 
         public  void visit(ScopeGuardStatement s) {
@@ -373,21 +395,22 @@ public class blockexit {
         }
 
         public  void visit(ThrowStatement s) {
-            if (s.internalThrow)
+            Ref<ThrowStatement> s_ref = ref(s);
+            if (s_ref.value.internalThrow)
             {
                 this.result = 1;
                 return ;
             }
-            Type t = s.exp.type.toBasetype();
-            ClassDeclaration cd = t.isClassHandle();
-            assert(cd != null);
-            if ((pequals(cd, ClassDeclaration.errorException)) || ClassDeclaration.errorException.isBaseOf(cd, null))
+            Ref<Type> t = ref(s_ref.value.exp.type.value.toBasetype());
+            Ref<ClassDeclaration> cd = ref(t.value.isClassHandle());
+            assert(cd.value != null);
+            if ((pequals(cd.value, ClassDeclaration.errorException.value)) || ClassDeclaration.errorException.value.isBaseOf(cd.value, null))
             {
                 this.result = 128;
                 return ;
             }
             if (this.mustNotThrow)
-                s.error(new BytePtr("`%s` is thrown but not caught"), s.exp.type.toChars());
+                s_ref.value.error(new BytePtr("`%s` is thrown but not caught"), s_ref.value.exp.type.value.toChars());
             this.result = 2;
         }
 
@@ -396,17 +419,19 @@ public class blockexit {
         }
 
         public  void visit(LabelStatement s) {
-            this.result = blockExit(s.statement, this.func, this.mustNotThrow);
-            if (s.breaks)
+            Ref<LabelStatement> s_ref = ref(s);
+            this.result = blockExit(s_ref.value.statement, this.func, this.mustNotThrow);
+            if (s_ref.value.breaks)
                 this.result |= BE.fallthru;
         }
 
         public  void visit(CompoundAsmStatement s) {
+            Ref<CompoundAsmStatement> s_ref = ref(s);
             this.result = 29;
-            if ((s.stc & 33554432L) == 0)
+            if ((s_ref.value.stc & 33554432L) == 0)
             {
-                if (this.mustNotThrow && ((s.stc & 33554432L) == 0))
-                    s.deprecation(new BytePtr("`asm` statement is assumed to throw - mark it with `nothrow` if it does not"));
+                if (this.mustNotThrow && ((s_ref.value.stc & 33554432L) == 0))
+                    s_ref.value.deprecation(new BytePtr("`asm` statement is assumed to throw - mark it with `nothrow` if it does not"));
                 else
                     this.result |= BE.throw_;
             }

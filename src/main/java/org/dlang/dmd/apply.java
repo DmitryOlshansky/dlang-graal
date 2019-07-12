@@ -20,7 +20,7 @@ public class apply {
 
     public static class PostorderExpressionVisitor extends StoppableVisitor
     {
-        public StoppableVisitor v;
+        public StoppableVisitor v = null;
         public  PostorderExpressionVisitor(StoppableVisitor v) {
             super();
             this.v = v;
@@ -32,13 +32,13 @@ public class apply {
             return this.stop;
         }
 
-        public  boolean doCond(DArray<Expression> e) {
+        public  boolean doCond(Ptr<DArray<Expression>> e) {
             if (e == null)
                 return false;
             {
                 int i = 0;
-                for (; (i < (e).length) && !this.stop;i++) {
-                    this.doCond((e).get(i));
+                for (; (i < (e.get()).length) && !this.stop;i++) {
+                    this.doCond((e.get()).get(i));
                 }
             }
             return this.stop;
@@ -71,7 +71,7 @@ public class apply {
         }
 
         public  void visit(BinExp e) {
-            expr(this.doCond(e.e1) || this.doCond(e.e2) || this.applyTo(e));
+            expr(this.doCond(e.e1.value) || this.doCond(e.e2.value) || this.applyTo(e));
         }
 
         public  void visit(AssertExp e) {
@@ -112,7 +112,7 @@ public class apply {
         }
 
         public  void visit(CondExp e) {
-            expr(this.doCond(e.econd) || this.doCond(e.e1) || this.doCond(e.e2) || this.applyTo(e));
+            expr(this.doCond(e.econd) || this.doCond(e.e1.value) || this.doCond(e.e2.value) || this.applyTo(e));
         }
 
 

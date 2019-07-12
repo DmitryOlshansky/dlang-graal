@@ -29,10 +29,10 @@ public class constfold {
 
     static boolean LOG = false;
     public static Expression expType(Type type, Expression e) {
-        if ((!pequals(type, e.type)))
+        if ((!pequals(type, e.type.value)))
         {
             e = e.copy();
-            e.type = type;
+            e.type.value = type;
         }
         return e;
     }
@@ -57,78 +57,78 @@ public class constfold {
     public static void cantExp(UnionExp ue) {
         Ref<UnionExp> ue_ref = ref(ue);
         ue_ref.value = new UnionExp().copy();
-        (ue_ref.value) = new UnionExp(new CTFEExp(TOK.cantExpression));
+        (ptr(ue_ref.value)) = new UnionExp(new CTFEExp(TOK.cantExpression));
     }
 
     public static UnionExp Neg(Type type, Expression e1) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
-        if (e1.type.isreal())
+        if (e1.type.value.isreal())
         {
-            ue = new UnionExp(new RealExp(loc, -e1.toReal(), type));
+            ptr(ue) = new UnionExp(new RealExp(loc, -e1.toReal(), type));
         }
-        else if (e1.type.isimaginary())
+        else if (e1.type.value.isimaginary())
         {
-            ue = new UnionExp(new RealExp(loc, -e1.toImaginary(), type));
+            ptr(ue) = new UnionExp(new RealExp(loc, -e1.toImaginary(), type));
         }
-        else if (e1.type.iscomplex())
+        else if (e1.type.value.iscomplex())
         {
-            ue = new UnionExp(new ComplexExp(loc, e1.toComplex().opNeg(), type));
+            ptr(ue) = new UnionExp(new ComplexExp(loc, e1.toComplex().opNeg(), type));
         }
         else
         {
-            ue = new UnionExp(new IntegerExp(loc, -e1.toInteger(), type));
+            ptr(ue) = new UnionExp(new IntegerExp(loc, -e1.toInteger(), type));
         }
-        return ue;
+        return ue.value;
     }
 
     public static UnionExp Com(Type type, Expression e1) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
-        ue = new UnionExp(new IntegerExp(loc, ~e1.toInteger(), type));
-        return ue;
+        ptr(ue) = new UnionExp(new IntegerExp(loc, ~e1.toInteger(), type));
+        return ue.value;
     }
 
     public static UnionExp Not(Type type, Expression e1) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
-        ue = new UnionExp(new IntegerExp(loc, e1.isBool(false) ? 1 : 0, type));
-        return ue;
+        ptr(ue) = new UnionExp(new IntegerExp(loc, e1.isBool(false) ? 1 : 0, type));
+        return ue.value;
     }
 
     public static UnionExp Bool(Type type, Expression e1) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
-        ue = new UnionExp(new IntegerExp(loc, e1.isBool(true) ? 1 : 0, type));
-        return ue;
+        ptr(ue) = new UnionExp(new IntegerExp(loc, e1.isBool(true) ? 1 : 0, type));
+        return ue.value;
     }
 
     public static UnionExp Add(Loc loc, Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         if (type.isreal())
         {
-            ue = new UnionExp(new RealExp(loc, e1.toReal() + e2.toReal(), type));
+            ptr(ue) = new UnionExp(new RealExp(loc, e1.toReal() + e2.toReal(), type));
         }
         else if (type.isimaginary())
         {
-            ue = new UnionExp(new RealExp(loc, e1.toImaginary() + e2.toImaginary(), type));
+            ptr(ue) = new UnionExp(new RealExp(loc, e1.toImaginary() + e2.toImaginary(), type));
         }
         else if (type.iscomplex())
         {
-            complex_t c1 = c1 = new complex_t(CTFloat.zero);
-            double r1 = CTFloat.zero;
-            double i1 = CTFloat.zero;
-            complex_t c2 = c2 = new complex_t(CTFloat.zero);
-            double r2 = CTFloat.zero;
-            double i2 = CTFloat.zero;
-            complex_t v = v = new complex_t(CTFloat.zero);
+            complex_t c1 = c1 = new complex_t(CTFloat.zero.value);
+            double r1 = CTFloat.zero.value;
+            double i1 = CTFloat.zero.value;
+            complex_t c2 = c2 = new complex_t(CTFloat.zero.value);
+            double r2 = CTFloat.zero.value;
+            double i2 = CTFloat.zero.value;
+            complex_t v = v = new complex_t(CTFloat.zero.value);
             int x = 0;
-            if (e1.type.isreal())
+            if (e1.type.value.isreal())
             {
                 r1 = e1.toReal();
                 x = 0;
             }
-            else if (e1.type.isimaginary())
+            else if (e1.type.value.isimaginary())
             {
                 i1 = e1.toImaginary();
                 x = 3;
@@ -138,11 +138,11 @@ public class constfold {
                 c1 = e1.toComplex().copy();
                 x = 6;
             }
-            if (e2.type.isreal())
+            if (e2.type.value.isreal())
             {
                 r2 = e2.toReal();
             }
-            else if (e2.type.isimaginary())
+            else if (e2.type.value.isimaginary())
             {
                 i2 = e2.toImaginary();
                 x += 1;
@@ -167,7 +167,7 @@ public class constfold {
                     v = new complex_t(r2, i1).copy();
                     break;
                 case 4:
-                    v = new complex_t(CTFloat.zero, i1 + i2).copy();
+                    v = new complex_t(CTFloat.zero.value, i1 + i2).copy();
                     break;
                 case 5:
                     v = new complex_t(creall(c2), i1 + cimagl(c2)).copy();
@@ -184,51 +184,51 @@ public class constfold {
                 default:
                 throw new AssertionError("Unreachable code!");
             }
-            ue = new UnionExp(new ComplexExp(loc, v, type));
+            ptr(ue) = new UnionExp(new ComplexExp(loc, v, type));
         }
         else if (((e1.op & 0xFF) == 25))
         {
             SymOffExp soe = (SymOffExp)e1;
-            ue = new UnionExp(new SymOffExp(loc, soe.var, soe.offset + e2.toInteger()));
-            ue.exp().type = type;
+            ptr(ue) = new UnionExp(new SymOffExp(loc, soe.var, soe.offset + e2.toInteger()));
+            ue.value.exp().type.value = type;
         }
         else if (((e2.op & 0xFF) == 25))
         {
             SymOffExp soe = (SymOffExp)e2;
-            ue = new UnionExp(new SymOffExp(loc, soe.var, soe.offset + e1.toInteger()));
-            ue.exp().type = type;
+            ptr(ue) = new UnionExp(new SymOffExp(loc, soe.var, soe.offset + e1.toInteger()));
+            ue.value.exp().type.value = type;
         }
         else
-            ue = new UnionExp(new IntegerExp(loc, e1.toInteger() + e2.toInteger(), type));
-        return ue;
+            ptr(ue) = new UnionExp(new IntegerExp(loc, e1.toInteger() + e2.toInteger(), type));
+        return ue.value;
     }
 
     public static UnionExp Min(Loc loc, Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         if (type.isreal())
         {
-            ue = new UnionExp(new RealExp(loc, e1.toReal() - e2.toReal(), type));
+            ptr(ue) = new UnionExp(new RealExp(loc, e1.toReal() - e2.toReal(), type));
         }
         else if (type.isimaginary())
         {
-            ue = new UnionExp(new RealExp(loc, e1.toImaginary() - e2.toImaginary(), type));
+            ptr(ue) = new UnionExp(new RealExp(loc, e1.toImaginary() - e2.toImaginary(), type));
         }
         else if (type.iscomplex())
         {
-            complex_t c1 = c1 = new complex_t(CTFloat.zero);
-            double r1 = CTFloat.zero;
-            double i1 = CTFloat.zero;
-            complex_t c2 = c2 = new complex_t(CTFloat.zero);
-            double r2 = CTFloat.zero;
-            double i2 = CTFloat.zero;
-            complex_t v = v = new complex_t(CTFloat.zero);
+            complex_t c1 = c1 = new complex_t(CTFloat.zero.value);
+            double r1 = CTFloat.zero.value;
+            double i1 = CTFloat.zero.value;
+            complex_t c2 = c2 = new complex_t(CTFloat.zero.value);
+            double r2 = CTFloat.zero.value;
+            double i2 = CTFloat.zero.value;
+            complex_t v = v = new complex_t(CTFloat.zero.value);
             int x = 0;
-            if (e1.type.isreal())
+            if (e1.type.value.isreal())
             {
                 r1 = e1.toReal();
                 x = 0;
             }
-            else if (e1.type.isimaginary())
+            else if (e1.type.value.isimaginary())
             {
                 i1 = e1.toImaginary();
                 x = 3;
@@ -238,11 +238,11 @@ public class constfold {
                 c1 = e1.toComplex().copy();
                 x = 6;
             }
-            if (e2.type.isreal())
+            if (e2.type.value.isreal())
             {
                 r2 = e2.toReal();
             }
-            else if (e2.type.isimaginary())
+            else if (e2.type.value.isimaginary())
             {
                 i2 = e2.toImaginary();
                 x += 1;
@@ -267,7 +267,7 @@ public class constfold {
                     v = new complex_t(-r2, i1).copy();
                     break;
                 case 4:
-                    v = new complex_t(CTFloat.zero, i1 - i2).copy();
+                    v = new complex_t(CTFloat.zero.value, i1 - i2).copy();
                     break;
                 case 5:
                     v = new complex_t(-creall(c2), i1 - cimagl(c2)).copy();
@@ -284,46 +284,46 @@ public class constfold {
                 default:
                 throw new AssertionError("Unreachable code!");
             }
-            ue = new UnionExp(new ComplexExp(loc, v, type));
+            ptr(ue) = new UnionExp(new ComplexExp(loc, v, type));
         }
         else if (((e1.op & 0xFF) == 25))
         {
             SymOffExp soe = (SymOffExp)e1;
-            ue = new UnionExp(new SymOffExp(loc, soe.var, soe.offset - e2.toInteger()));
-            ue.exp().type = type;
+            ptr(ue) = new UnionExp(new SymOffExp(loc, soe.var, soe.offset - e2.toInteger()));
+            ue.value.exp().type.value = type;
         }
         else
         {
-            ue = new UnionExp(new IntegerExp(loc, e1.toInteger() - e2.toInteger(), type));
+            ptr(ue) = new UnionExp(new IntegerExp(loc, e1.toInteger() - e2.toInteger(), type));
         }
-        return ue;
+        return ue.value;
     }
 
     public static UnionExp Mul(Loc loc, Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         if (type.isfloating())
         {
-            complex_t c = c = new complex_t(CTFloat.zero);
-            double r = CTFloat.zero;
-            if (e1.type.isreal())
+            complex_t c = c = new complex_t(CTFloat.zero.value);
+            double r = CTFloat.zero.value;
+            if (e1.type.value.isreal())
             {
                 r = e1.toReal();
                 c = e2.toComplex().copy();
                 c = new complex_t(r * creall(c), r * cimagl(c)).copy();
             }
-            else if (e1.type.isimaginary())
+            else if (e1.type.value.isimaginary())
             {
                 r = e1.toImaginary();
                 c = e2.toComplex().copy();
                 c = new complex_t(-r * cimagl(c), r * creall(c)).copy();
             }
-            else if (e2.type.isreal())
+            else if (e2.type.value.isreal())
             {
                 r = e2.toReal();
                 c = e1.toComplex().copy();
                 c = new complex_t(r * creall(c), r * cimagl(c)).copy();
             }
-            else if (e2.type.isimaginary())
+            else if (e2.type.value.isimaginary())
             {
                 r = e2.toImaginary();
                 c = e1.toComplex().copy();
@@ -332,38 +332,38 @@ public class constfold {
             else
                 c = e1.toComplex().opMul(e2.toComplex()).copy();
             if (type.isreal())
-                ue = new UnionExp(new RealExp(loc, creall(c), type));
+                ptr(ue) = new UnionExp(new RealExp(loc, creall(c), type));
             else if (type.isimaginary())
-                ue = new UnionExp(new RealExp(loc, cimagl(c), type));
+                ptr(ue) = new UnionExp(new RealExp(loc, cimagl(c), type));
             else if (type.iscomplex())
-                ue = new UnionExp(new ComplexExp(loc, c, type));
+                ptr(ue) = new UnionExp(new ComplexExp(loc, c, type));
             else
                 throw new AssertionError("Unreachable code!");
         }
         else
         {
-            ue = new UnionExp(new IntegerExp(loc, e1.toInteger() * e2.toInteger(), type));
+            ptr(ue) = new UnionExp(new IntegerExp(loc, e1.toInteger() * e2.toInteger(), type));
         }
-        return ue;
+        return ue.value;
     }
 
     public static UnionExp Div(Loc loc, Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         if (type.isfloating())
         {
-            complex_t c = c = new complex_t(CTFloat.zero);
-            if (e2.type.isreal())
+            complex_t c = c = new complex_t(CTFloat.zero.value);
+            if (e2.type.value.isreal())
             {
-                if (e1.type.isreal())
+                if (e1.type.value.isreal())
                 {
-                    ue = new UnionExp(new RealExp(loc, e1.toReal() / e2.toReal(), type));
-                    return ue;
+                    ptr(ue) = new UnionExp(new RealExp(loc, e1.toReal() / e2.toReal(), type));
+                    return ue.value;
                 }
                 double r = e2.toReal();
                 c = e1.toComplex().copy();
                 c = new complex_t(creall(c) / r, cimagl(c) / r).copy();
             }
-            else if (e2.type.isimaginary())
+            else if (e2.type.value.isimaginary())
             {
                 double r = e2.toImaginary();
                 c = e1.toComplex().copy();
@@ -374,11 +374,11 @@ public class constfold {
                 c = e1.toComplex().opDiv(e2.toComplex()).copy();
             }
             if (type.isreal())
-                ue = new UnionExp(new RealExp(loc, creall(c), type));
+                ptr(ue) = new UnionExp(new RealExp(loc, creall(c), type));
             else if (type.isimaginary())
-                ue = new UnionExp(new RealExp(loc, cimagl(c), type));
+                ptr(ue) = new UnionExp(new RealExp(loc, cimagl(c), type));
             else if (type.iscomplex())
-                ue = new UnionExp(new ComplexExp(loc, c, type));
+                ptr(ue) = new UnionExp(new ComplexExp(loc, c, type));
             else
                 throw new AssertionError("Unreachable code!");
         }
@@ -392,44 +392,44 @@ public class constfold {
             if ((n2 == 0L))
             {
                 e2.error(new BytePtr("divide by 0"));
-                ue = new UnionExp(new ErrorExp());
-                return ue;
+                ptr(ue) = new UnionExp(new ErrorExp());
+                return ue.value;
             }
             if ((n2 == -1L) && !type.isunsigned())
             {
                 if (((long)n1 == -2147483648L) && ((type.toBasetype().ty & 0xFF) != ENUMTY.Tint64))
                 {
                     e2.error(new BytePtr("integer overflow: `int.min / -1`"));
-                    ue = new UnionExp(new ErrorExp());
-                    return ue;
+                    ptr(ue) = new UnionExp(new ErrorExp());
+                    return ue.value;
                 }
                 else if (((long)n1 == -9223372036854775808L))
                 {
                     e2.error(new BytePtr("integer overflow: `long.min / -1L`"));
-                    ue = new UnionExp(new ErrorExp());
-                    return ue;
+                    ptr(ue) = new UnionExp(new ErrorExp());
+                    return ue.value;
                 }
             }
-            if (e1.type.isunsigned() || e2.type.isunsigned())
+            if (e1.type.value.isunsigned() || e2.type.value.isunsigned())
                 n = (long)((long)n1 / (long)n2);
             else
                 n = n1 / n2;
-            ue = new UnionExp(new IntegerExp(loc, n, type));
+            ptr(ue) = new UnionExp(new IntegerExp(loc, n, type));
         }
-        return ue;
+        return ue.value;
     }
 
     public static UnionExp Mod(Loc loc, Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         if (type.isfloating())
         {
-            complex_t c = c = new complex_t(CTFloat.zero);
-            if (e2.type.isreal())
+            complex_t c = c = new complex_t(CTFloat.zero.value);
+            if (e2.type.value.isreal())
             {
                 double r2 = e2.toReal();
                 c = new complex_t(e1.toReal() % r2, e1.toImaginary() % r2).copy();
             }
-            else if (e2.type.isimaginary())
+            else if (e2.type.value.isimaginary())
             {
                 double i2 = e2.toImaginary();
                 c = new complex_t(e1.toReal() % i2, e1.toImaginary() % i2).copy();
@@ -437,11 +437,11 @@ public class constfold {
             else
                 throw new AssertionError("Unreachable code!");
             if (type.isreal())
-                ue = new UnionExp(new RealExp(loc, creall(c), type));
+                ptr(ue) = new UnionExp(new RealExp(loc, creall(c), type));
             else if (type.isimaginary())
-                ue = new UnionExp(new RealExp(loc, cimagl(c), type));
+                ptr(ue) = new UnionExp(new RealExp(loc, cimagl(c), type));
             else if (type.iscomplex())
-                ue = new UnionExp(new ComplexExp(loc, c, type));
+                ptr(ue) = new UnionExp(new ComplexExp(loc, c, type));
             else
                 throw new AssertionError("Unreachable code!");
         }
@@ -455,118 +455,118 @@ public class constfold {
             if ((n2 == 0L))
             {
                 e2.error(new BytePtr("divide by 0"));
-                ue = new UnionExp(new ErrorExp());
-                return ue;
+                ptr(ue) = new UnionExp(new ErrorExp());
+                return ue.value;
             }
             if ((n2 == -1L) && !type.isunsigned())
             {
                 if (((long)n1 == -2147483648L) && ((type.toBasetype().ty & 0xFF) != ENUMTY.Tint64))
                 {
                     e2.error(new BytePtr("integer overflow: `int.min %% -1`"));
-                    ue = new UnionExp(new ErrorExp());
-                    return ue;
+                    ptr(ue) = new UnionExp(new ErrorExp());
+                    return ue.value;
                 }
                 else if (((long)n1 == -9223372036854775808L))
                 {
                     e2.error(new BytePtr("integer overflow: `long.min %% -1L`"));
-                    ue = new UnionExp(new ErrorExp());
-                    return ue;
+                    ptr(ue) = new UnionExp(new ErrorExp());
+                    return ue.value;
                 }
             }
-            if (e1.type.isunsigned() || e2.type.isunsigned())
+            if (e1.type.value.isunsigned() || e2.type.value.isunsigned())
                 n = (long)((long)n1 % (long)n2);
             else
                 n = n1 % n2;
-            ue = new UnionExp(new IntegerExp(loc, n, type));
+            ptr(ue) = new UnionExp(new IntegerExp(loc, n, type));
         }
-        return ue;
+        return ue.value;
     }
 
     public static UnionExp Pow(Loc loc, Type type, Expression e1, Expression e2) {
-        UnionExp ue = new UnionExp().copy();
-        if (e2.type.isintegral())
+        Ref<UnionExp> ue = ref(new UnionExp().copy());
+        if (e2.type.value.isintegral())
         {
             long n = e2.toInteger();
             boolean neg = false;
-            if (!e2.type.isunsigned() && ((long)n < 0L))
+            if (!e2.type.value.isunsigned() && ((long)n < 0L))
             {
-                if (e1.type.isintegral())
+                if (e1.type.value.isintegral())
                 {
                     cantExp(ue);
-                    return ue;
+                    return ue.value;
                 }
                 neg = true;
                 n = -n;
             }
             else
                 neg = false;
-            UnionExp ur = new UnionExp().copy();
-            UnionExp uv = new UnionExp().copy();
-            if (e1.type.iscomplex())
+            Ref<UnionExp> ur = ref(new UnionExp().copy());
+            Ref<UnionExp> uv = ref(new UnionExp().copy());
+            if (e1.type.value.iscomplex())
             {
-                ur = new UnionExp(new ComplexExp(loc, e1.toComplex(), e1.type));
-                uv = new UnionExp(new ComplexExp(loc, new complex_t(CTFloat.one), e1.type));
+                ptr(ur) = new UnionExp(new ComplexExp(loc, e1.toComplex(), e1.type.value));
+                ptr(uv) = new UnionExp(new ComplexExp(loc, new complex_t(CTFloat.one.value), e1.type.value));
             }
-            else if (e1.type.isfloating())
+            else if (e1.type.value.isfloating())
             {
-                ur = new UnionExp(new RealExp(loc, e1.toReal(), e1.type));
-                uv = new UnionExp(new RealExp(loc, CTFloat.one, e1.type));
+                ptr(ur) = new UnionExp(new RealExp(loc, e1.toReal(), e1.type.value));
+                ptr(uv) = new UnionExp(new RealExp(loc, CTFloat.one.value, e1.type.value));
             }
             else
             {
-                ur = new UnionExp(new IntegerExp(loc, e1.toInteger(), e1.type));
-                uv = new UnionExp(new IntegerExp(loc, 1, e1.type));
+                ptr(ur) = new UnionExp(new IntegerExp(loc, e1.toInteger(), e1.type.value));
+                ptr(uv) = new UnionExp(new IntegerExp(loc, 1, e1.type.value));
             }
-            Expression r = ur.exp();
-            Expression v = uv.exp();
+            Expression r = ur.value.exp();
+            Expression v = uv.value.exp();
             for (; (n != 0L);){
                 if ((n & 1L) != 0)
                 {
-                    uv = Mul(loc, v.type, v, r).copy();
+                    uv.value = Mul(loc, v.type.value, v, r).copy();
                 }
                 n >>= 1;
-                ur = Mul(loc, r.type, r, r).copy();
+                ur.value = Mul(loc, r.type.value, r, r).copy();
             }
             if (neg)
             {
-                UnionExp one = new UnionExp().copy();
-                one = new UnionExp(new RealExp(loc, CTFloat.one, v.type));
-                uv = Div(loc, v.type, one.exp(), v).copy();
+                Ref<UnionExp> one = ref(new UnionExp().copy());
+                ptr(one) = new UnionExp(new RealExp(loc, CTFloat.one.value, v.type.value));
+                uv.value = Div(loc, v.type.value, one.value.exp(), v).copy();
             }
             if (type.iscomplex())
-                ue = new UnionExp(new ComplexExp(loc, v.toComplex(), type));
+                ptr(ue) = new UnionExp(new ComplexExp(loc, v.toComplex(), type));
             else if (type.isintegral())
-                ue = new UnionExp(new IntegerExp(loc, v.toInteger(), type));
+                ptr(ue) = new UnionExp(new IntegerExp(loc, v.toInteger(), type));
             else
-                ue = new UnionExp(new RealExp(loc, v.toReal(), type));
+                ptr(ue) = new UnionExp(new RealExp(loc, v.toReal(), type));
         }
-        else if (e2.type.isfloating())
+        else if (e2.type.value.isfloating())
         {
-            if ((e1.toReal() < CTFloat.zero))
+            if ((e1.toReal() < CTFloat.zero.value))
             {
-                ue = new UnionExp(new RealExp(loc, target.RealProperties.nan, type));
+                ptr(ue) = new UnionExp(new RealExp(loc, target.value.RealProperties.nan, type));
             }
             else
                 cantExp(ue);
         }
         else
             cantExp(ue);
-        return ue;
+        return ue.value;
     }
 
     public static UnionExp Shl(Loc loc, Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
-        ue = new UnionExp(new IntegerExp(loc, e1.toInteger() << (int)e2.toInteger(), type));
-        return ue;
+        Ref<UnionExp> ue = ref(null);
+        ptr(ue) = new UnionExp(new IntegerExp(loc, e1.toInteger() << (int)e2.toInteger(), type));
+        return ue.value;
     }
 
     public static UnionExp Shr(Loc loc, Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         long value = e1.toInteger();
         long dcount = e2.toInteger();
         assert((dcount <= 4294967295L));
         int count = (int)dcount;
-        switch ((e1.type.toBasetype().ty & 0xFF))
+        switch ((e1.type.value.toBasetype().ty & 0xFF))
         {
             case 13:
                 value = (long)(((byte)value & 0xFF) >> count);
@@ -596,22 +596,22 @@ public class constfold {
                 value = value >> count;
                 break;
             case 34:
-                ue = new UnionExp(new ErrorExp());
-                return ue;
+                ptr(ue) = new UnionExp(new ErrorExp());
+                return ue.value;
             default:
             throw new AssertionError("Unreachable code!");
         }
-        ue = new UnionExp(new IntegerExp(loc, value, type));
-        return ue;
+        ptr(ue) = new UnionExp(new IntegerExp(loc, value, type));
+        return ue.value;
     }
 
     public static UnionExp Ushr(Loc loc, Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         long value = e1.toInteger();
         long dcount = e2.toInteger();
         assert((dcount <= 4294967295L));
         int count = (int)dcount;
-        switch ((e1.type.toBasetype().ty & 0xFF))
+        switch ((e1.type.value.toBasetype().ty & 0xFF))
         {
             case 13:
             case 14:
@@ -633,38 +633,38 @@ public class constfold {
                 value = value >> count;
                 break;
             case 34:
-                ue = new UnionExp(new ErrorExp());
-                return ue;
+                ptr(ue) = new UnionExp(new ErrorExp());
+                return ue.value;
             default:
             throw new AssertionError("Unreachable code!");
         }
-        ue = new UnionExp(new IntegerExp(loc, value, type));
-        return ue;
+        ptr(ue) = new UnionExp(new IntegerExp(loc, value, type));
+        return ue.value;
     }
 
     public static UnionExp And(Loc loc, Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
-        ue = new UnionExp(new IntegerExp(loc, e1.toInteger() & e2.toInteger(), type));
-        return ue;
+        Ref<UnionExp> ue = ref(null);
+        ptr(ue) = new UnionExp(new IntegerExp(loc, e1.toInteger() & e2.toInteger(), type));
+        return ue.value;
     }
 
     public static UnionExp Or(Loc loc, Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
-        ue = new UnionExp(new IntegerExp(loc, e1.toInteger() | e2.toInteger(), type));
-        return ue;
+        Ref<UnionExp> ue = ref(null);
+        ptr(ue) = new UnionExp(new IntegerExp(loc, e1.toInteger() | e2.toInteger(), type));
+        return ue.value;
     }
 
     public static UnionExp Xor(Loc loc, Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
-        ue = new UnionExp(new IntegerExp(loc, e1.toInteger() ^ e2.toInteger(), type));
-        return ue;
+        Ref<UnionExp> ue = ref(null);
+        ptr(ue) = new UnionExp(new IntegerExp(loc, e1.toInteger() ^ e2.toInteger(), type));
+        return ue.value;
     }
 
     public static UnionExp Equal(byte op, Loc loc, Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         int cmp = 0;
-        double r1 = CTFloat.zero;
-        double r2 = CTFloat.zero;
+        double r1 = CTFloat.zero.value;
+        double r2 = CTFloat.zero.value;
         assert(((op & 0xFF) == 58) || ((op & 0xFF) == 59));
         if (((e1.op & 0xFF) == 13))
         {
@@ -678,12 +678,12 @@ public class constfold {
             else if (((e2.op & 0xFF) == 47))
             {
                 ArrayLiteralExp es2 = (ArrayLiteralExp)e2;
-                cmp = (((es2.elements == null) || (0 == (es2.elements).length)) ? 1 : 0);
+                cmp = (((es2.elements == null) || (0 == (es2.elements.get()).length)) ? 1 : 0);
             }
             else
             {
                 cantExp(ue);
-                return ue;
+                return ue.value;
             }
         }
         else if (((e2.op & 0xFF) == 13))
@@ -696,12 +696,12 @@ public class constfold {
             else if (((e1.op & 0xFF) == 47))
             {
                 ArrayLiteralExp es1 = (ArrayLiteralExp)e1;
-                cmp = (((es1.elements == null) || (0 == (es1.elements).length)) ? 1 : 0);
+                cmp = (((es1.elements == null) || (0 == (es1.elements.get()).length)) ? 1 : 0);
             }
             else
             {
                 cantExp(ue);
-                return ue;
+                return ue.value;
             }
         }
         else if (((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 121))
@@ -710,9 +710,9 @@ public class constfold {
             StringExp es2 = (StringExp)e2;
             if (((es1.sz & 0xFF) != (es2.sz & 0xFF)))
             {
-                assert(global.errors != 0);
+                assert(global.value.errors != 0);
                 cantExp(ue);
-                return ue;
+                return ue.value;
             }
             if ((es1.len == es2.len) && (memcmp(es1.string, es2.string, (es1.sz & 0xFF) * es1.len) == 0))
                 cmp = 1;
@@ -723,23 +723,23 @@ public class constfold {
         {
             ArrayLiteralExp es1 = (ArrayLiteralExp)e1;
             ArrayLiteralExp es2 = (ArrayLiteralExp)e2;
-            if ((es1.elements == null) || ((es1.elements).length == 0) && (es2.elements == null) || ((es2.elements).length == 0))
+            if ((es1.elements == null) || ((es1.elements.get()).length == 0) && (es2.elements == null) || ((es2.elements.get()).length == 0))
                 cmp = 1;
             else if ((es1.elements == null) || (es2.elements == null))
                 cmp = 0;
-            else if (((es1.elements).length != (es2.elements).length))
+            else if (((es1.elements.get()).length != (es2.elements.get()).length))
                 cmp = 0;
             else
             {
                 {
                     int i = 0;
-                    for (; (i < (es1.elements).length);i++){
+                    for (; (i < (es1.elements.get()).length);i++){
                         Expression ee1 = es1.getElement(i);
                         Expression ee2 = es2.getElement(i);
-                        ue = Equal(TOK.equal, loc, Type.tint32, ee1, ee2).copy();
-                        if (CTFEExp.isCantExp(ue.exp()))
-                            return ue;
-                        cmp = (int)ue.exp().toInteger();
+                        ue.value = Equal(TOK.equal, loc, Type.tint32.value, ee1, ee2).copy();
+                        if (CTFEExp.isCantExp(ue.value.exp()))
+                            return ue.value;
+                        cmp = (int)ue.value.exp().toInteger();
                         if ((cmp == 0))
                             break;
                     }
@@ -756,7 +756,7 @@ public class constfold {
             StringExp es1 = (StringExp)e1;
             ArrayLiteralExp es2 = (ArrayLiteralExp)e2;
             int dim1 = es1.len;
-            int dim2 = es2.elements != null ? (es2.elements).length : 0;
+            int dim2 = es2.elements != null ? (es2.elements.get()).length : 0;
             if ((dim1 != dim2))
                 cmp = 0;
             else
@@ -770,7 +770,7 @@ public class constfold {
                         if ((ee2.isConst() != 1))
                         {
                             cantExp(ue);
-                            return ue;
+                            return ue.value;
                         }
                         cmp = ((c == ee2.toInteger()) ? 1 : 0);
                         if ((cmp == 0))
@@ -785,7 +785,7 @@ public class constfold {
             StringExp es1 = (StringExp)e1;
             ArrayLiteralExp es2 = (ArrayLiteralExp)e2;
             int dim1 = es1.len;
-            int dim2 = es2.elements != null ? (es2.elements).length : 0;
+            int dim2 = es2.elements != null ? (es2.elements.get()).length : 0;
             if ((dim1 != dim2))
                 cmp = 0;
             else
@@ -799,7 +799,7 @@ public class constfold {
                         if ((ee2.isConst() != 1))
                         {
                             cantExp(ue);
-                            return ue;
+                            return ue.value;
                         }
                         cmp = ((c == ee2.toInteger()) ? 1 : 0);
                         if ((cmp == 0))
@@ -814,20 +814,20 @@ public class constfold {
             StructLiteralExp es2 = (StructLiteralExp)e2;
             if ((!pequals(es1.sd, es2.sd)))
                 cmp = 0;
-            else if ((es1.elements == null) || ((es1.elements).length == 0) && (es2.elements == null) || ((es2.elements).length == 0))
+            else if ((es1.elements == null) || ((es1.elements.get()).length == 0) && (es2.elements == null) || ((es2.elements.get()).length == 0))
                 cmp = 1;
             else if ((es1.elements == null) || (es2.elements == null))
                 cmp = 0;
-            else if (((es1.elements).length != (es2.elements).length))
+            else if (((es1.elements.get()).length != (es2.elements.get()).length))
                 cmp = 0;
             else
             {
                 cmp = 1;
                 {
                     int i = 0;
-                    for (; (i < (es1.elements).length);i++){
-                        Expression ee1 = (es1.elements).get(i);
-                        Expression ee2 = (es2.elements).get(i);
+                    for (; (i < (es1.elements.get()).length);i++){
+                        Expression ee1 = (es1.elements.get()).get(i);
+                        Expression ee2 = (es2.elements.get()).get(i);
                         if ((pequals(ee1, ee2)))
                             continue;
                         if ((ee1 == null) || (ee2 == null))
@@ -835,10 +835,10 @@ public class constfold {
                             cmp = 0;
                             break;
                         }
-                        ue = Equal(TOK.equal, loc, Type.tint32, ee1, ee2).copy();
-                        if (((ue.exp().op & 0xFF) == 233))
-                            return ue;
-                        cmp = (int)ue.exp().toInteger();
+                        ue.value = Equal(TOK.equal, loc, Type.tint32.value, ee1, ee2).copy();
+                        if (((ue.value.exp().op & 0xFF) == 233))
+                            return ue.value;
+                        cmp = (int)ue.value.exp().toInteger();
                         if ((cmp == 0))
                             break;
                     }
@@ -848,9 +848,9 @@ public class constfold {
         else if ((e1.isConst() != 1) || (e2.isConst() != 1))
         {
             cantExp(ue);
-            return ue;
+            return ue.value;
         }
-        else if (e1.type.isreal())
+        else if (e1.type.value.isreal())
         {
             r1 = e1.toReal();
             r2 = e2.toReal();
@@ -865,7 +865,7 @@ public class constfold {
                 cmp = ((r1 == r2) ? 1 : 0);
             }
         }
-        else if (e1.type.isimaginary())
+        else if (e1.type.value.isimaginary())
         {
             r1 = e1.toImaginary();
             r2 = e2.toImaginary();
@@ -879,27 +879,27 @@ public class constfold {
                 cmp = ((r1 == r2) ? 1 : 0);
             }
         }
-        else if (e1.type.iscomplex())
+        else if (e1.type.value.iscomplex())
         {
             cmp = e1.toComplex().opEquals(e2.toComplex());
         }
-        else if (e1.type.isintegral() || ((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tpointer))
+        else if (e1.type.value.isintegral() || ((e1.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tpointer))
         {
             cmp = ((e1.toInteger() == e2.toInteger()) ? 1 : 0);
         }
         else
         {
             cantExp(ue);
-            return ue;
+            return ue.value;
         }
         if (((op & 0xFF) == 59))
             cmp ^= 1;
-        ue = new UnionExp(new IntegerExp(loc, cmp, type));
-        return ue;
+        ptr(ue) = new UnionExp(new IntegerExp(loc, cmp, type));
+        return ue.value;
     }
 
     public static UnionExp Identity(byte op, Loc loc, Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         int cmp = 0;
         if (((e1.op & 0xFF) == 13))
         {
@@ -917,15 +917,15 @@ public class constfold {
         }
         else
         {
-            if (e1.type.isreal())
+            if (e1.type.value.isreal())
             {
                 cmp = RealIdentical(e1.toReal(), e2.toReal());
             }
-            else if (e1.type.isimaginary())
+            else if (e1.type.value.isimaginary())
             {
                 cmp = RealIdentical(e1.toImaginary(), e2.toImaginary());
             }
-            else if (e1.type.iscomplex())
+            else if (e1.type.value.iscomplex())
             {
                 complex_t v1 = e1.toComplex().copy();
                 complex_t v2 = e2.toComplex().copy();
@@ -933,21 +933,21 @@ public class constfold {
             }
             else
             {
-                ue = Equal(((op & 0xFF) == 60) ? TOK.equal : TOK.notEqual, loc, type, e1, e2).copy();
-                return ue;
+                ue.value = Equal(((op & 0xFF) == 60) ? TOK.equal : TOK.notEqual, loc, type, e1, e2).copy();
+                return ue.value;
             }
         }
         if (((op & 0xFF) == 61))
             cmp ^= 1;
-        ue = new UnionExp(new IntegerExp(loc, cmp, type));
-        return ue;
+        ptr(ue) = new UnionExp(new IntegerExp(loc, cmp, type));
+        return ue.value;
     }
 
     public static UnionExp Cmp(byte op, Loc loc, Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         long n = 0L;
-        double r1 = CTFloat.zero;
-        double r2 = CTFloat.zero;
+        double r1 = CTFloat.zero.value;
+        double r2 = CTFloat.zero.value;
         if (((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 121))
         {
             StringExp es1 = (StringExp)e1;
@@ -965,9 +965,9 @@ public class constfold {
         else if ((e1.isConst() != 1) || (e2.isConst() != 1))
         {
             cantExp(ue);
-            return ue;
+            return ue.value;
         }
-        else if (e1.type.isreal())
+        else if (e1.type.value.isreal())
         {
             r1 = e1.toReal();
             r2 = e2.toReal();
@@ -975,14 +975,14 @@ public class constfold {
         /*L1:*/
             n = (long)realCmp(op, r1, r2);
         }
-        else if (e1.type.isimaginary())
+        else if (e1.type.value.isimaginary())
         {
             r1 = e1.toImaginary();
             r2 = e2.toImaginary();
         /*L1:*/
             n = (long)realCmp(op, r1, r2);
         }
-        else if (e1.type.iscomplex())
+        else if (e1.type.value.iscomplex())
         {
             throw new AssertionError("Unreachable code!");
         }
@@ -992,45 +992,45 @@ public class constfold {
             long n2 = 0L;
             n1 = (long)e1.toInteger();
             n2 = (long)e2.toInteger();
-            if (e1.type.isunsigned() || e2.type.isunsigned())
+            if (e1.type.value.isunsigned() || e2.type.value.isunsigned())
                 n = (long)intUnsignedCmp(op, (long)n1, (long)n2);
             else
                 n = (long)intSignedCmp(op, n1, n2);
         }
-        ue = new UnionExp(new IntegerExp(loc, n, type));
-        return ue;
+        ptr(ue) = new UnionExp(new IntegerExp(loc, n, type));
+        return ue.value;
     }
 
     public static UnionExp Cast(Loc loc, Type type, Type to, Expression e1) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         Type tb = to.toBasetype();
         Type typeb = type.toBasetype();
-        if (e1.type.equals(type) && type.equals(to))
+        if (e1.type.value.equals(type) && type.equals(to))
         {
-            ue = new UnionExp(new UnionExp(e1));
-            return ue;
+            ptr(ue) = new UnionExp(new UnionExp(e1));
+            return ue.value;
         }
-        if (((e1.op & 0xFF) == 229) && ((TypeVector)e1.type).basetype.equals(type) && type.equals(to))
+        if (((e1.op & 0xFF) == 229) && ((TypeVector)e1.type.value).basetype.equals(type) && type.equals(to))
         {
             Expression ex = ((VectorExp)e1).e1;
-            ue = new UnionExp(new UnionExp(ex));
-            return ue;
+            ptr(ue) = new UnionExp(new UnionExp(ex));
+            return ue.value;
         }
-        if ((e1.type.implicitConvTo(to) >= MATCH.constant) || (to.implicitConvTo(e1.type) >= MATCH.constant))
+        if ((e1.type.value.implicitConvTo(to) >= MATCH.constant) || (to.implicitConvTo(e1.type.value) >= MATCH.constant))
         {
             /*goto L1*//*unrolled goto*/
         /*L1:*/
             Expression ex = expType(to, e1);
-            ue = new UnionExp(new UnionExp(ex));
-            return ue;
+            ptr(ue) = new UnionExp(new UnionExp(ex));
+            return ue.value;
         }
-        if (((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tdelegate) && (e1.type.implicitConvTo(to) == MATCH.convert))
+        if (((e1.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tdelegate) && (e1.type.value.implicitConvTo(to) == MATCH.convert))
         {
             /*goto L1*//*unrolled goto*/
         /*L1:*/
             Expression ex = expType(to, e1);
-            ue = new UnionExp(new UnionExp(ex));
-            return ue;
+            ptr(ue) = new UnionExp(new UnionExp(ex));
+            return ue.value;
         }
         if (((e1.op & 0xFF) == 121))
         {
@@ -1039,16 +1039,16 @@ public class constfold {
                 /*goto L1*//*unrolled goto*/
             /*L1:*/
                 Expression ex = expType(to, e1);
-                ue = new UnionExp(new UnionExp(ex));
-                return ue;
+                ptr(ue) = new UnionExp(new UnionExp(ex));
+                return ue.value;
             }
         }
         if (((e1.op & 0xFF) == 47) && (pequals(typeb, tb)))
         {
         /*L1:*/
             Expression ex = expType(to, e1);
-            ue = new UnionExp(new UnionExp(ex));
-            return ue;
+            ptr(ue) = new UnionExp(new UnionExp(ex));
+            return ue.value;
         }
         if ((e1.isConst() != 1))
         {
@@ -1056,11 +1056,11 @@ public class constfold {
         }
         else if (((tb.ty & 0xFF) == ENUMTY.Tbool))
         {
-            ue = new UnionExp(new IntegerExp(loc, e1.toInteger() != 0L, type));
+            ptr(ue) = new UnionExp(new IntegerExp(loc, e1.toInteger() != 0L, type));
         }
         else if (type.isintegral())
         {
-            if (e1.type.isfloating())
+            if (e1.type.value.isfloating())
             {
                 long result = 0L;
                 double r = e1.toReal();
@@ -1096,31 +1096,31 @@ public class constfold {
                     default:
                     throw new AssertionError("Unreachable code!");
                 }
-                ue = new UnionExp(new IntegerExp(loc, result, type));
+                ptr(ue) = new UnionExp(new IntegerExp(loc, result, type));
             }
             else if (type.isunsigned())
-                ue = new UnionExp(new IntegerExp(loc, e1.toUInteger(), type));
+                ptr(ue) = new UnionExp(new IntegerExp(loc, e1.toUInteger(), type));
             else
-                ue = new UnionExp(new IntegerExp(loc, e1.toInteger(), type));
+                ptr(ue) = new UnionExp(new IntegerExp(loc, e1.toInteger(), type));
         }
         else if (tb.isreal())
         {
             double value = e1.toReal();
-            ue = new UnionExp(new RealExp(loc, value, type));
+            ptr(ue) = new UnionExp(new RealExp(loc, value, type));
         }
         else if (tb.isimaginary())
         {
             double value = e1.toImaginary();
-            ue = new UnionExp(new RealExp(loc, value, type));
+            ptr(ue) = new UnionExp(new RealExp(loc, value, type));
         }
         else if (tb.iscomplex())
         {
             complex_t value = e1.toComplex().copy();
-            ue = new UnionExp(new ComplexExp(loc, value, type));
+            ptr(ue) = new UnionExp(new ComplexExp(loc, value, type));
         }
         else if (tb.isscalar())
         {
-            ue = new UnionExp(new IntegerExp(loc, e1.toInteger(), type));
+            ptr(ue) = new UnionExp(new IntegerExp(loc, e1.toInteger(), type));
         }
         else if (((tb.ty & 0xFF) == ENUMTY.Tvoid))
         {
@@ -1130,67 +1130,67 @@ public class constfold {
         {
             StructDeclaration sd = tb.toDsymbol(null).isStructDeclaration();
             assert(sd != null);
-            DArray<Expression> elements = new DArray<Expression>();
+            Ptr<DArray<Expression>> elements = new DArray<Expression>();
             {
                 int i = 0;
                 for (; (i < sd.fields.length);i++){
                     VarDeclaration v = sd.fields.get(i);
-                    UnionExp zero = new UnionExp().copy();
-                    zero = new UnionExp(new IntegerExp(0));
-                    ue = Cast(loc, v.type, v.type, zero.exp()).copy();
-                    if (((ue.exp().op & 0xFF) == 233))
-                        return ue;
-                    (elements).push(ue.exp().copy());
+                    Ref<UnionExp> zero = ref(new UnionExp().copy());
+                    ptr(zero) = new UnionExp(new IntegerExp(0));
+                    ue.value = Cast(loc, v.type, v.type, zero.value.exp()).copy();
+                    if (((ue.value.exp().op & 0xFF) == 233))
+                        return ue.value;
+                    (elements.get()).push(ue.value.exp().copy());
                 }
             }
-            ue = new UnionExp(new StructLiteralExp(loc, sd, elements));
-            ue.exp().type = type;
+            ptr(ue) = new UnionExp(new StructLiteralExp(loc, sd, elements));
+            ue.value.exp().type.value = type;
         }
         else
         {
-            if ((!pequals(type, Type.terror)))
+            if ((!pequals(type, Type.terror.value)))
             {
-                error(loc, new BytePtr("cannot cast `%s` to `%s`"), e1.type.toChars(), type.toChars());
+                error(loc, new BytePtr("cannot cast `%s` to `%s`"), e1.type.value.toChars(), type.toChars());
             }
-            ue = new UnionExp(new ErrorExp());
+            ptr(ue) = new UnionExp(new ErrorExp());
         }
-        return ue;
+        return ue.value;
     }
 
     public static UnionExp ArrayLength(Type type, Expression e1) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
         if (((e1.op & 0xFF) == 121))
         {
             StringExp es1 = (StringExp)e1;
-            ue = new UnionExp(new IntegerExp(loc, es1.len, type));
+            ptr(ue) = new UnionExp(new IntegerExp(loc, es1.len, type));
         }
         else if (((e1.op & 0xFF) == 47))
         {
             ArrayLiteralExp ale = (ArrayLiteralExp)e1;
-            int dim = ale.elements != null ? (ale.elements).length : 0;
-            ue = new UnionExp(new IntegerExp(loc, dim, type));
+            int dim = ale.elements != null ? (ale.elements.get()).length : 0;
+            ptr(ue) = new UnionExp(new IntegerExp(loc, dim, type));
         }
         else if (((e1.op & 0xFF) == 48))
         {
             AssocArrayLiteralExp ale = (AssocArrayLiteralExp)e1;
-            int dim = (ale.keys).length;
-            ue = new UnionExp(new IntegerExp(loc, dim, type));
+            int dim = (ale.keys.get()).length;
+            ptr(ue) = new UnionExp(new IntegerExp(loc, dim, type));
         }
-        else if (((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
+        else if (((e1.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
         {
-            Expression e = ((TypeSArray)e1.type.toBasetype()).dim;
-            ue = new UnionExp(new UnionExp(e));
+            Expression e = ((TypeSArray)e1.type.value.toBasetype()).dim;
+            ptr(ue) = new UnionExp(new UnionExp(e));
         }
         else
             cantExp(ue);
-        return ue;
+        return ue.value;
     }
 
     public static UnionExp Index(Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
-        assert(e1.type != null);
+        assert(e1.type.value != null);
         if (((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 135))
         {
             StringExp es1 = (StringExp)e1;
@@ -1198,57 +1198,57 @@ public class constfold {
             if ((i >= (long)es1.len))
             {
                 e1.error(new BytePtr("string index %llu is out of bounds `[0 .. %llu]`"), i, (long)es1.len);
-                ue = new UnionExp(new ErrorExp());
+                ptr(ue) = new UnionExp(new ErrorExp());
             }
             else
             {
-                ue = new UnionExp(new IntegerExp(loc, es1.charAt(i), type));
+                ptr(ue) = new UnionExp(new IntegerExp(loc, es1.charAt(i), type));
             }
         }
-        else if (((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) && ((e2.op & 0xFF) == 135))
+        else if (((e1.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) && ((e2.op & 0xFF) == 135))
         {
-            TypeSArray tsa = (TypeSArray)e1.type.toBasetype();
+            TypeSArray tsa = (TypeSArray)e1.type.value.toBasetype();
             long length = tsa.dim.toInteger();
             long i = e2.toInteger();
             if ((i >= length))
             {
                 e1.error(new BytePtr("array index %llu is out of bounds `%s[0 .. %llu]`"), i, e1.toChars(), length);
-                ue = new UnionExp(new ErrorExp());
+                ptr(ue) = new UnionExp(new ErrorExp());
             }
             else if (((e1.op & 0xFF) == 47))
             {
                 ArrayLiteralExp ale = (ArrayLiteralExp)e1;
                 Expression e = ale.getElement((int)i);
-                e.type = type;
+                e.type.value = type;
                 e.loc = loc.copy();
                 if (hasSideEffect(e))
                     cantExp(ue);
                 else
-                    ue = new UnionExp(new UnionExp(e));
+                    ptr(ue) = new UnionExp(new UnionExp(e));
             }
             else
                 cantExp(ue);
         }
-        else if (((e1.type.toBasetype().ty & 0xFF) == ENUMTY.Tarray) && ((e2.op & 0xFF) == 135))
+        else if (((e1.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tarray) && ((e2.op & 0xFF) == 135))
         {
             long i = e2.toInteger();
             if (((e1.op & 0xFF) == 47))
             {
                 ArrayLiteralExp ale = (ArrayLiteralExp)e1;
-                if ((i >= (long)(ale.elements).length))
+                if ((i >= (long)(ale.elements.get()).length))
                 {
-                    e1.error(new BytePtr("array index %llu is out of bounds `%s[0 .. %u]`"), i, e1.toChars(), (ale.elements).length);
-                    ue = new UnionExp(new ErrorExp());
+                    e1.error(new BytePtr("array index %llu is out of bounds `%s[0 .. %u]`"), i, e1.toChars(), (ale.elements.get()).length);
+                    ptr(ue) = new UnionExp(new ErrorExp());
                 }
                 else
                 {
                     Expression e = ale.getElement((int)i);
-                    e.type = type;
+                    e.type.value = type;
                     e.loc = loc.copy();
                     if (hasSideEffect(e))
                         cantExp(ue);
                     else
-                        ue = new UnionExp(new UnionExp(e));
+                        ptr(ue) = new UnionExp(new UnionExp(e));
                 }
             }
             else
@@ -1258,23 +1258,23 @@ public class constfold {
         {
             AssocArrayLiteralExp ae = (AssocArrayLiteralExp)e1;
             {
-                int i = (ae.keys).length;
+                int i = (ae.keys.get()).length;
                 for (; i != 0;){
                     i--;
-                    Expression ekey = (ae.keys).get(i);
-                    ue = Equal(TOK.equal, loc, Type.tbool, ekey, e2).copy();
-                    if (CTFEExp.isCantExp(ue.exp()))
-                        return ue;
-                    if (ue.exp().isBool(true))
+                    Expression ekey = (ae.keys.get()).get(i);
+                    ue.value = Equal(TOK.equal, loc, Type.tbool.value, ekey, e2).copy();
+                    if (CTFEExp.isCantExp(ue.value.exp()))
+                        return ue.value;
+                    if (ue.value.exp().isBool(true))
                     {
-                        Expression e = (ae.values).get(i);
-                        e.type = type;
+                        Expression e = (ae.values.get()).get(i);
+                        e.type.value = type;
                         e.loc = loc.copy();
                         if (hasSideEffect(e))
                             cantExp(ue);
                         else
-                            ue = new UnionExp(new UnionExp(e));
-                        return ue;
+                            ptr(ue) = new UnionExp(new UnionExp(e));
+                        return ue.value;
                     }
                 }
             }
@@ -1282,16 +1282,20 @@ public class constfold {
         }
         else
             cantExp(ue);
-        return ue;
+        return ue.value;
     }
 
     public static UnionExp Slice(Type type, Expression e1, Expression lwr, Expression upr) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
         Function4<Long,Long,Long,Long,Boolean> sliceBoundsCheck = new Function4<Long,Long,Long,Long,Boolean>(){
             public Boolean invoke(Long lwr, Long upr, Long newlwr, Long newupr) {
-                assert((lwr <= upr));
-                return !((newlwr <= newupr) && (lwr <= newlwr) && (newupr <= upr));
+                Ref<Long> lwr_ref = ref(lwr);
+                Ref<Long> upr_ref = ref(upr);
+                Ref<Long> newlwr_ref = ref(newlwr);
+                Ref<Long> newupr_ref = ref(newupr);
+                assert((lwr_ref.value <= upr_ref.value));
+                return !((newlwr_ref.value <= newupr_ref.value) && (lwr_ref.value <= newlwr_ref.value) && (newupr_ref.value <= upr_ref.value));
             }
         };
         if (((e1.op & 0xFF) == 121) && ((lwr.op & 0xFF) == 135) && ((upr.op & 0xFF) == 135))
@@ -1307,11 +1311,11 @@ public class constfold {
                 byte sz = es1.sz;
                 Object s = pcopy(Mem.xmalloc(len * (sz & 0xFF)));
                 memcpy((BytePtr)s, ((es1.string.plus((int)(ilwr * (long)(sz & 0xFF))))), (len * (sz & 0xFF)));
-                ue = new UnionExp(new StringExp(loc, s, len, es1.postfix));
-                StringExp es = (StringExp)ue.exp();
+                ptr(ue) = new UnionExp(new StringExp(loc, s, len, es1.postfix));
+                StringExp es = (StringExp)ue.value.exp();
                 es.sz = sz;
                 es.committed = es1.committed;
-                es.type = type;
+                es.type.value = type;
             }
         }
         else if (((e1.op & 0xFF) == 47) && ((lwr.op & 0xFF) == 135) && ((upr.op & 0xFF) == 135) && !hasSideEffect(e1))
@@ -1319,30 +1323,30 @@ public class constfold {
             ArrayLiteralExp es1 = (ArrayLiteralExp)e1;
             long ilwr = lwr.toInteger();
             long iupr = upr.toInteger();
-            if (sliceBoundsCheck.invoke(0L, (long)(es1.elements).length, ilwr, iupr))
+            if (sliceBoundsCheck.invoke(0L, (long)(es1.elements.get()).length, ilwr, iupr))
                 cantExp(ue);
             else
             {
-                DArray<Expression> elements = new DArray<Expression>((int)(iupr - ilwr));
-                memcpy((BytePtr)((elements).tdata()), (((es1.elements).tdata().plus((int)ilwr * 4))), ((int)(iupr - ilwr) * 4));
-                ue = new UnionExp(new ArrayLiteralExp(e1.loc, type, elements));
+                Ptr<DArray<Expression>> elements = new DArray<Expression>((int)(iupr - ilwr));
+                memcpy((BytePtr)((elements.get()).tdata()), (((es1.elements.get()).tdata().plus((int)ilwr * 4))), ((int)(iupr - ilwr) * 4));
+                ptr(ue) = new UnionExp(new ArrayLiteralExp(e1.loc, type, elements));
             }
         }
         else
             cantExp(ue);
-        return ue;
+        return ue.value;
     }
 
     public static void sliceAssignArrayLiteralFromString(ArrayLiteralExp existingAE, StringExp newval, int firstIndex) {
         int len = newval.len;
-        Type elemType = existingAE.type.nextOf();
+        Type elemType = existingAE.type.value.nextOf();
         {
-            int __key844 = 0;
-            int __limit845 = len;
-            for (; (__key844 < __limit845);__key844 += 1) {
-                int j = __key844;
+            int __key842 = 0;
+            int __limit843 = len;
+            for (; (__key842 < __limit843);__key842 += 1) {
+                int j = __key842;
                 int val = newval.getCodeUnit(j);
-                existingAE.elements.set(j + firstIndex, new IntegerExp(newval.loc, (long)val, elemType));
+                existingAE.elements.get().set(j + firstIndex, new IntegerExp(newval.loc, (long)val, elemType));
             }
         }
     }
@@ -1350,10 +1354,10 @@ public class constfold {
     public static void sliceAssignStringFromArrayLiteral(StringExp existingSE, ArrayLiteralExp newae, int firstIndex) {
         assert(((existingSE.ownedByCtfe & 0xFF) != 0));
         {
-            int __key846 = 0;
-            int __limit847 = (newae.elements).length;
-            for (; (__key846 < __limit847);__key846 += 1) {
-                int j = __key846;
+            int __key844 = 0;
+            int __limit845 = (newae.elements.get()).length;
+            for (; (__key844 < __limit845);__key844 += 1) {
+                int j = __key844;
                 existingSE.setCodeUnit(firstIndex + j, (int)newae.getElement(j).toInteger());
             }
         }
@@ -1374,10 +1378,10 @@ public class constfold {
 
     public static int sliceCmpStringWithArray(StringExp se1, ArrayLiteralExp ae2, int lo1, int lo2, int len) {
         {
-            int __key848 = 0;
-            int __limit849 = len;
-            for (; (__key848 < __limit849);__key848 += 1) {
-                int j = __key848;
+            int __key846 = 0;
+            int __limit847 = len;
+            for (; (__key846 < __limit847);__key846 += 1) {
+                int j = __key846;
                 int val2 = (int)ae2.getElement(j + lo2).toInteger();
                 int val1 = se1.getCodeUnit(j + lo1);
                 int c = (val1 - val2);
@@ -1388,21 +1392,22 @@ public class constfold {
         return 0;
     }
 
-    public static DArray<Expression> copyElements(Expression e1, Expression e2) {
-        Ref<DArray<Expression>> elems = ref(new DArray<Expression>());
+    public static Ptr<DArray<Expression>> copyElements(Expression e1, Expression e2) {
+        Ref<Ptr<DArray<Expression>>> elems = ref(new DArray<Expression>());
         Function1<ArrayLiteralExp,Void> append = new Function1<ArrayLiteralExp,Void>(){
             public Void invoke(ArrayLiteralExp ale) {
-                if (ale.elements == null)
+                Ref<ArrayLiteralExp> ale_ref = ref(ale);
+                if (ale_ref.value.elements == null)
                     return null;
-                int d = (elems.value).length;
-                (elems.value).append(ale.elements);
+                IntRef d = ref((elems.value.get()).length);
+                (elems.value.get()).append(ale_ref.value.elements);
                 {
-                    Slice<Expression> __r850 = (elems.value).opSlice(d, (elems.value).length).copy();
-                    int __key851 = 0;
-                    for (; (__key851 < __r850.getLength());__key851 += 1) {
-                        Expression el = __r850.get(__key851);
-                        if (el == null)
-                            el = ale.basis;
+                    Ref<Slice<Expression>> __r848 = ref((elems.value.get()).opSlice(d.value, (elems.value.get()).length).copy());
+                    IntRef __key849 = ref(0);
+                    for (; (__key849.value < __r848.value.getLength());__key849.value += 1) {
+                        Ref<Expression> el = ref(__r848.value.get(__key849.value));
+                        if (el.value == null)
+                            el.value = ale_ref.value.basis;
                     }
                 }
             }
@@ -1410,36 +1415,36 @@ public class constfold {
         if (((e1.op & 0xFF) == 47))
             append.invoke((ArrayLiteralExp)e1);
         else
-            (elems.value).push(e1);
+            (elems.value.get()).push(e1);
         if (e2 != null)
         {
             if (((e2.op & 0xFF) == 47))
                 append.invoke((ArrayLiteralExp)e2);
             else
-                (elems.value).push(e2);
+                (elems.value.get()).push(e2);
         }
         return elems.value;
     }
 
     // defaulted all parameters starting with #2
-    public static DArray<Expression> copyElements(Expression e1) {
-        copyElements(e1, null);
+    public static Ptr<DArray<Expression>> copyElements(Expression e1) {
+        return copyElements(e1, null);
     }
 
     public static UnionExp Cat(Type type, Expression e1, Expression e2) {
-        UnionExp ue = null;
-        Expression e = CTFEExp.cantexp;
+        Ref<UnionExp> ue = ref(null);
+        Expression e = CTFEExp.cantexp.value;
         Loc loc = e1.loc.copy();
         Type t = null;
-        Type t1 = e1.type.toBasetype();
-        Type t2 = e2.type.toBasetype();
+        Type t1 = e1.type.value.toBasetype();
+        Type t2 = e2.type.value.toBasetype();
         if (((e1.op & 0xFF) == 13) && ((e2.op & 0xFF) == 135) || ((e2.op & 0xFF) == 49))
         {
             e = e2;
             t = t1;
             /*goto L2*//*unrolled goto*/
         /*L2:*/
-            Type tn = e.type.toBasetype();
+            Type tn = e.type.value.toBasetype();
             if (((tn.ty & 0xFF) == ENUMTY.Tchar) || ((tn.ty & 0xFF) == ENUMTY.Twchar) || ((tn.ty & 0xFF) == ENUMTY.Tdchar))
             {
                 if (t.nextOf() != null)
@@ -1452,27 +1457,27 @@ public class constfold {
                     Port.valcpy(s, v, (sz & 0xFF));
                 else
                     utf_encode((sz & 0xFF), s, (int)v);
-                ue = new UnionExp(new StringExp(loc, s, len));
-                StringExp es = (StringExp)ue.exp();
-                es.type = type;
+                ptr(ue) = new UnionExp(new StringExp(loc, s, len));
+                StringExp es = (StringExp)ue.value.exp();
+                es.type.value = type;
                 es.sz = sz;
                 es.committed = (byte)1;
             }
             else
             {
-                DArray<Expression> elements = new DArray<Expression>();
-                (elements).push(e);
-                ue = new UnionExp(new ArrayLiteralExp(e.loc, type, elements));
+                Ptr<DArray<Expression>> elements = new DArray<Expression>();
+                (elements.get()).push(e);
+                ptr(ue) = new UnionExp(new ArrayLiteralExp(e.loc, type, elements));
             }
-            assert(ue.exp().type != null);
-            return ue;
+            assert(ue.value.exp().type.value != null);
+            return ue.value;
         }
         else if (((e1.op & 0xFF) == 135) || ((e1.op & 0xFF) == 49) && ((e2.op & 0xFF) == 13))
         {
             e = e1;
             t = t2;
         /*L2:*/
-            Type tn = e.type.toBasetype();
+            Type tn = e.type.value.toBasetype();
             if (((tn.ty & 0xFF) == ENUMTY.Tchar) || ((tn.ty & 0xFF) == ENUMTY.Twchar) || ((tn.ty & 0xFF) == ENUMTY.Tdchar))
             {
                 if (t.nextOf() != null)
@@ -1485,47 +1490,47 @@ public class constfold {
                     Port.valcpy(s, v, (sz & 0xFF));
                 else
                     utf_encode((sz & 0xFF), s, (int)v);
-                ue = new UnionExp(new StringExp(loc, s, len));
-                StringExp es = (StringExp)ue.exp();
-                es.type = type;
+                ptr(ue) = new UnionExp(new StringExp(loc, s, len));
+                StringExp es = (StringExp)ue.value.exp();
+                es.type.value = type;
                 es.sz = sz;
                 es.committed = (byte)1;
             }
             else
             {
-                DArray<Expression> elements = new DArray<Expression>();
-                (elements).push(e);
-                ue = new UnionExp(new ArrayLiteralExp(e.loc, type, elements));
+                Ptr<DArray<Expression>> elements = new DArray<Expression>();
+                (elements.get()).push(e);
+                ptr(ue) = new UnionExp(new ArrayLiteralExp(e.loc, type, elements));
             }
-            assert(ue.exp().type != null);
-            return ue;
+            assert(ue.value.exp().type.value != null);
+            return ue.value;
         }
         else if (((e1.op & 0xFF) == 13) && ((e2.op & 0xFF) == 13))
         {
-            if ((pequals(type, e1.type)))
+            if ((pequals(type, e1.type.value)))
             {
                 if (((t1.ty & 0xFF) == ENUMTY.Tarray) && (pequals(t2, t1.nextOf())))
                 {
-                    ue = new UnionExp(new ArrayLiteralExp(e1.loc, type, e2));
-                    assert(ue.exp().type != null);
-                    return ue;
+                    ptr(ue) = new UnionExp(new ArrayLiteralExp(e1.loc, type, e2));
+                    assert(ue.value.exp().type.value != null);
+                    return ue.value;
                 }
                 else
                 {
-                    ue = new UnionExp(new UnionExp(e1));
-                    assert(ue.exp().type != null);
-                    return ue;
+                    ptr(ue) = new UnionExp(new UnionExp(e1));
+                    assert(ue.value.exp().type.value != null);
+                    return ue.value;
                 }
             }
-            if ((pequals(type, e2.type)))
+            if ((pequals(type, e2.type.value)))
             {
-                ue = new UnionExp(new UnionExp(e2));
-                assert(ue.exp().type != null);
-                return ue;
+                ptr(ue) = new UnionExp(new UnionExp(e2));
+                assert(ue.value.exp().type.value != null);
+                return ue.value;
             }
-            ue = new UnionExp(new NullExp(e1.loc, type));
-            assert(ue.exp().type != null);
-            return ue;
+            ptr(ue) = new UnionExp(new NullExp(e1.loc, type));
+            assert(ue.value.exp().type.value != null);
+            return ue.value;
         }
         else if (((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 121))
         {
@@ -1535,57 +1540,57 @@ public class constfold {
             byte sz = es1.sz;
             if (((sz & 0xFF) != (es2.sz & 0xFF)))
             {
-                assert(global.errors != 0);
+                assert(global.value.errors != 0);
                 cantExp(ue);
-                assert(ue.exp().type != null);
-                return ue;
+                assert(ue.value.exp().type.value != null);
+                return ue.value;
             }
             Object s = pcopy(Mem.xmalloc(len * (sz & 0xFF)));
             memcpy((BytePtr)(((BytePtr)s)), (es1.string), (es1.len * (sz & 0xFF)));
             memcpy((BytePtr)((((BytePtr)s).plus((es1.len * (sz & 0xFF))))), (es2.string), (es2.len * (sz & 0xFF)));
-            ue = new UnionExp(new StringExp(loc, s, len));
-            StringExp es = (StringExp)ue.exp();
+            ptr(ue) = new UnionExp(new StringExp(loc, s, len));
+            StringExp es = (StringExp)ue.value.exp();
             es.sz = sz;
             es.committed = (byte)((es1.committed & 0xFF) | (es2.committed & 0xFF));
-            es.type = type;
-            assert(ue.exp().type != null);
-            return ue;
+            es.type.value = type;
+            assert(ue.value.exp().type.value != null);
+            return ue.value;
         }
         else if (((e2.op & 0xFF) == 121) && ((e1.op & 0xFF) == 47) && t1.nextOf().isintegral())
         {
             StringExp es = (StringExp)e2;
             ArrayLiteralExp ea = (ArrayLiteralExp)e1;
-            int len = es.len + (ea.elements).length;
-            DArray<Expression> elems = new DArray<Expression>(len);
+            int len = es.len + (ea.elements.get()).length;
+            Ptr<DArray<Expression>> elems = new DArray<Expression>(len);
             {
                 int i = 0;
-                for (; (i < (ea.elements).length);i += 1){
-                    elems.set(i, ea.getElement(i));
+                for (; (i < (ea.elements.get()).length);i += 1){
+                    elems.get().set(i, ea.getElement(i));
                 }
             }
-            ue = new UnionExp(new ArrayLiteralExp(e1.loc, type, elems));
-            ArrayLiteralExp dest = (ArrayLiteralExp)ue.exp();
-            sliceAssignArrayLiteralFromString(dest, es, (ea.elements).length);
-            assert(ue.exp().type != null);
-            return ue;
+            ptr(ue) = new UnionExp(new ArrayLiteralExp(e1.loc, type, elems));
+            ArrayLiteralExp dest = (ArrayLiteralExp)ue.value.exp();
+            sliceAssignArrayLiteralFromString(dest, es, (ea.elements.get()).length);
+            assert(ue.value.exp().type.value != null);
+            return ue.value;
         }
         else if (((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 47) && t2.nextOf().isintegral())
         {
             StringExp es = (StringExp)e1;
             ArrayLiteralExp ea = (ArrayLiteralExp)e2;
-            int len = es.len + (ea.elements).length;
-            DArray<Expression> elems = new DArray<Expression>(len);
+            int len = es.len + (ea.elements.get()).length;
+            Ptr<DArray<Expression>> elems = new DArray<Expression>(len);
             {
                 int i = 0;
-                for (; (i < (ea.elements).length);i += 1){
-                    elems.set(es.len + i, ea.getElement(i));
+                for (; (i < (ea.elements.get()).length);i += 1){
+                    elems.get().set(es.len + i, ea.getElement(i));
                 }
             }
-            ue = new UnionExp(new ArrayLiteralExp(e1.loc, type, elems));
-            ArrayLiteralExp dest = (ArrayLiteralExp)ue.exp();
+            ptr(ue) = new UnionExp(new ArrayLiteralExp(e1.loc, type, elems));
+            ArrayLiteralExp dest = (ArrayLiteralExp)ue.value.exp();
             sliceAssignArrayLiteralFromString(dest, es, 0);
-            assert(ue.exp().type != null);
-            return ue;
+            assert(ue.value.exp().type.value != null);
+            return ue.value;
         }
         else if (((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 135))
         {
@@ -1602,13 +1607,13 @@ public class constfold {
                 Port.valcpy((((BytePtr)s).plus(((sz & 0xFF) * es1.len))), v, (sz & 0xFF));
             else
                 utf_encode((sz & 0xFF), (((BytePtr)s).plus(((sz & 0xFF) * es1.len))), (int)v);
-            ue = new UnionExp(new StringExp(loc, s, len));
-            es = (StringExp)ue.exp();
+            ptr(ue) = new UnionExp(new StringExp(loc, s, len));
+            es = (StringExp)ue.value.exp();
             es.sz = sz;
             es.committed = es1.committed;
-            es.type = type;
-            assert(ue.exp().type != null);
-            return ue;
+            es.type.value = type;
+            assert(ue.value.exp().type.value != null);
+            return ue.value;
         }
         else if (((e1.op & 0xFF) == 135) && ((e2.op & 0xFF) == 121))
         {
@@ -1619,172 +1624,172 @@ public class constfold {
             Object s = pcopy(Mem.xmalloc(len * (sz & 0xFF)));
             Port.valcpy(((BytePtr)s), v, (sz & 0xFF));
             memcpy((BytePtr)((((BytePtr)s).plus((sz & 0xFF)))), (es2.string), (es2.len * (sz & 0xFF)));
-            ue = new UnionExp(new StringExp(loc, s, len));
-            StringExp es = (StringExp)ue.exp();
+            ptr(ue) = new UnionExp(new StringExp(loc, s, len));
+            StringExp es = (StringExp)ue.value.exp();
             es.sz = sz;
             es.committed = es2.committed;
-            es.type = type;
-            assert(ue.exp().type != null);
-            return ue;
+            es.type.value = type;
+            assert(ue.value.exp().type.value != null);
+            return ue.value;
         }
         else if (((e1.op & 0xFF) == 47) && ((e2.op & 0xFF) == 47) && t1.nextOf().equals(t2.nextOf()))
         {
-            DArray<Expression> elems = copyElements(e1, e2);
-            ue = new UnionExp(new ArrayLiteralExp(e1.loc, null, elems));
-            e = ue.exp();
+            Ptr<DArray<Expression>> elems = copyElements(e1, e2);
+            ptr(ue) = new UnionExp(new ArrayLiteralExp(e1.loc, null, elems));
+            e = ue.value.exp();
             if (((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
             {
-                e.type = t1.nextOf().sarrayOf((long)(elems).length);
+                e.type.value = t1.nextOf().sarrayOf((long)(elems.get()).length);
             }
             else
-                e.type = type;
-            assert(ue.exp().type != null);
-            return ue;
+                e.type.value = type;
+            assert(ue.value.exp().type.value != null);
+            return ue.value;
         }
         else if (((e1.op & 0xFF) == 47) && ((e2.op & 0xFF) == 13) && t1.nextOf().equals(t2.nextOf()))
         {
             e = e1;
             /*goto L3*//*unrolled goto*/
         /*L3:*/
-            DArray<Expression> elems = copyElements(e, null);
-            ue = new UnionExp(new ArrayLiteralExp(e.loc, null, elems));
-            e = ue.exp();
+            Ptr<DArray<Expression>> elems = copyElements(e, null);
+            ptr(ue) = new UnionExp(new ArrayLiteralExp(e.loc, null, elems));
+            e = ue.value.exp();
             if (((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
             {
-                e.type = t1.nextOf().sarrayOf((long)(elems).length);
+                e.type.value = t1.nextOf().sarrayOf((long)(elems.get()).length);
             }
             else
-                e.type = type;
-            assert(ue.exp().type != null);
-            return ue;
+                e.type.value = type;
+            assert(ue.value.exp().type.value != null);
+            return ue.value;
         }
         else if (((e1.op & 0xFF) == 13) && ((e2.op & 0xFF) == 47) && t1.nextOf().equals(t2.nextOf()))
         {
             e = e2;
         /*L3:*/
-            DArray<Expression> elems = copyElements(e, null);
-            ue = new UnionExp(new ArrayLiteralExp(e.loc, null, elems));
-            e = ue.exp();
+            Ptr<DArray<Expression>> elems = copyElements(e, null);
+            ptr(ue) = new UnionExp(new ArrayLiteralExp(e.loc, null, elems));
+            e = ue.value.exp();
             if (((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
             {
-                e.type = t1.nextOf().sarrayOf((long)(elems).length);
+                e.type.value = t1.nextOf().sarrayOf((long)(elems.get()).length);
             }
             else
-                e.type = type;
-            assert(ue.exp().type != null);
-            return ue;
+                e.type.value = type;
+            assert(ue.value.exp().type.value != null);
+            return ue.value;
         }
-        else if (((e1.op & 0xFF) == 47) || ((e1.op & 0xFF) == 13) && (e1.type.toBasetype().nextOf() != null) && e1.type.toBasetype().nextOf().equals(e2.type))
+        else if (((e1.op & 0xFF) == 47) || ((e1.op & 0xFF) == 13) && (e1.type.value.toBasetype().nextOf() != null) && e1.type.value.toBasetype().nextOf().equals(e2.type.value))
         {
-            DArray<Expression> elems = ((e1.op & 0xFF) == 47) ? copyElements(e1, null) : new DArray<Expression>();
-            (elems).push(e2);
-            ue = new UnionExp(new ArrayLiteralExp(e1.loc, null, elems));
-            e = ue.exp();
+            Ptr<DArray<Expression>> elems = ((e1.op & 0xFF) == 47) ? copyElements(e1, null) : new DArray<Expression>();
+            (elems.get()).push(e2);
+            ptr(ue) = new UnionExp(new ArrayLiteralExp(e1.loc, null, elems));
+            e = ue.value.exp();
             if (((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
             {
-                e.type = e2.type.sarrayOf((long)(elems).length);
+                e.type.value = e2.type.value.sarrayOf((long)(elems.get()).length);
             }
             else
-                e.type = type;
-            assert(ue.exp().type != null);
-            return ue;
+                e.type.value = type;
+            assert(ue.value.exp().type.value != null);
+            return ue.value;
         }
-        else if (((e2.op & 0xFF) == 47) && e2.type.toBasetype().nextOf().equals(e1.type))
+        else if (((e2.op & 0xFF) == 47) && e2.type.value.toBasetype().nextOf().equals(e1.type.value))
         {
-            DArray<Expression> elems = copyElements(e1, e2);
-            ue = new UnionExp(new ArrayLiteralExp(e2.loc, null, elems));
-            e = ue.exp();
+            Ptr<DArray<Expression>> elems = copyElements(e1, e2);
+            ptr(ue) = new UnionExp(new ArrayLiteralExp(e2.loc, null, elems));
+            e = ue.value.exp();
             if (((type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
             {
-                e.type = e1.type.sarrayOf((long)(elems).length);
+                e.type.value = e1.type.value.sarrayOf((long)(elems.get()).length);
             }
             else
-                e.type = type;
-            assert(ue.exp().type != null);
-            return ue;
+                e.type.value = type;
+            assert(ue.value.exp().type.value != null);
+            return ue.value;
         }
         else if (((e1.op & 0xFF) == 13) && ((e2.op & 0xFF) == 121))
         {
-            t = e1.type;
+            t = e1.type.value;
             e = e2;
             /*goto L1*//*unrolled goto*/
         /*L1:*/
             Type tb = t.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray) && tb.nextOf().equivalent(e.type))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) && tb.nextOf().equivalent(e.type.value))
             {
-                DArray<Expression> expressions = new DArray<Expression>();
-                (expressions).push(e);
-                ue = new UnionExp(new ArrayLiteralExp(loc, t, expressions));
-                e = ue.exp();
+                Ptr<DArray<Expression>> expressions = new DArray<Expression>();
+                (expressions.get()).push(e);
+                ptr(ue) = new UnionExp(new ArrayLiteralExp(loc, t, expressions));
+                e = ue.value.exp();
             }
             else
             {
-                ue = new UnionExp(new UnionExp(e));
-                e = ue.exp();
+                ptr(ue) = new UnionExp(new UnionExp(e));
+                e = ue.value.exp();
             }
-            if (!e.type.equals(type))
+            if (!e.type.value.equals(type))
             {
                 StringExp se = (StringExp)e.copy();
                 e = se.castTo(null, type);
-                ue = new UnionExp(new UnionExp(e));
-                e = ue.exp();
+                ptr(ue) = new UnionExp(new UnionExp(e));
+                e = ue.value.exp();
             }
         }
         else if (((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 13))
         {
             e = e1;
-            t = e2.type;
+            t = e2.type.value;
         /*L1:*/
             Type tb = t.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray) && tb.nextOf().equivalent(e.type))
+            if (((tb.ty & 0xFF) == ENUMTY.Tarray) && tb.nextOf().equivalent(e.type.value))
             {
-                DArray<Expression> expressions = new DArray<Expression>();
-                (expressions).push(e);
-                ue = new UnionExp(new ArrayLiteralExp(loc, t, expressions));
-                e = ue.exp();
+                Ptr<DArray<Expression>> expressions = new DArray<Expression>();
+                (expressions.get()).push(e);
+                ptr(ue) = new UnionExp(new ArrayLiteralExp(loc, t, expressions));
+                e = ue.value.exp();
             }
             else
             {
-                ue = new UnionExp(new UnionExp(e));
-                e = ue.exp();
+                ptr(ue) = new UnionExp(new UnionExp(e));
+                e = ue.value.exp();
             }
-            if (!e.type.equals(type))
+            if (!e.type.value.equals(type))
             {
                 StringExp se = (StringExp)e.copy();
                 e = se.castTo(null, type);
-                ue = new UnionExp(new UnionExp(e));
-                e = ue.exp();
+                ptr(ue) = new UnionExp(new UnionExp(e));
+                e = ue.value.exp();
             }
         }
         else
             cantExp(ue);
-        assert(ue.exp().type != null);
-        return ue;
+        assert(ue.value.exp().type.value != null);
+        return ue.value;
     }
 
     public static UnionExp Ptr(Type type, Expression e1) {
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         if (((e1.op & 0xFF) == 74))
         {
             AddExp ae = (AddExp)e1;
-            if (((ae.e1.op & 0xFF) == 19) && ((ae.e2.op & 0xFF) == 135))
+            if (((ae.e1.value.op & 0xFF) == 19) && ((ae.e2.value.op & 0xFF) == 135))
             {
-                AddrExp ade = (AddrExp)ae.e1;
+                AddrExp ade = (AddrExp)ae.e1.value;
                 if (((ade.e1.op & 0xFF) == 49))
                 {
                     StructLiteralExp se = (StructLiteralExp)ade.e1;
-                    int offset = (int)ae.e2.toInteger();
+                    int offset = (int)ae.e2.value.toInteger();
                     Expression e = se.getField(type, offset);
                     if (e != null)
                     {
-                        ue = new UnionExp(new UnionExp(e));
-                        return ue;
+                        ptr(ue) = new UnionExp(new UnionExp(e));
+                        return ue.value;
                     }
                 }
             }
         }
         cantExp(ue);
-        return ue;
+        return ue.value;
     }
 
 }

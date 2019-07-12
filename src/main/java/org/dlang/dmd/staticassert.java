@@ -24,10 +24,10 @@ public class staticassert {
 
     public static class StaticAssert extends Dsymbol
     {
-        public Expression exp;
-        public Expression msg;
+        public Expression exp = null;
+        public Expression msg = null;
         public  StaticAssert(Loc loc, Expression exp, Expression msg) {
-            super(loc, Id.empty);
+            super(loc, Id.empty.value);
             this.exp = exp;
             this.msg = msg;
         }
@@ -37,7 +37,7 @@ public class staticassert {
             return new StaticAssert(this.loc, this.exp.syntaxCopy(), this.msg != null ? this.msg.syntaxCopy() : null);
         }
 
-        public  void addMember(Scope sc, ScopeDsymbol sds) {
+        public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
         }
 
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {

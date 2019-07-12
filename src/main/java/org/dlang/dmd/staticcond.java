@@ -27,11 +27,11 @@ import static org.dlang.dmd.utils.*;
 
 public class staticcond {
 
-    public static boolean evalStaticCondition(Scope sc, Expression exp, Expression e, Ref<Boolean> errors) {
+    public static boolean evalStaticCondition(Ptr<Scope> sc, Expression exp, Expression e, Ref<Boolean> errors) {
         if (((e.op & 0xFF) == 101) || ((e.op & 0xFF) == 102))
         {
             LogicalExp aae = (LogicalExp)e;
-            boolean result = evalStaticCondition(sc, exp, aae.e1, errors);
+            boolean result = evalStaticCondition(sc, exp, aae.e1.value, errors);
             if (errors.value)
                 return false;
             if (((e.op & 0xFF) == 101))
@@ -44,7 +44,7 @@ public class staticcond {
                 if (result)
                     return true;
             }
-            result = evalStaticCondition(sc, exp, aae.e2, errors);
+            result = evalStaticCondition(sc, exp, aae.e2.value, errors);
             return !errors.value && result;
         }
         if (((e.op & 0xFF) == 100))
@@ -53,26 +53,26 @@ public class staticcond {
             boolean result = evalStaticCondition(sc, exp, ce.econd, errors);
             if (errors.value)
                 return false;
-            Expression leg = result ? ce.e1 : ce.e2;
+            Expression leg = result ? ce.e1.value : ce.e2.value;
             result = evalStaticCondition(sc, exp, leg, errors);
             return !errors.value && result;
         }
-        int nerrors = global.errors;
-        sc = (sc).startCTFE();
-        (sc).flags |= 4;
+        int nerrors = global.value.errors;
+        sc = (sc.get()).startCTFE();
+        (sc.get()).flags |= 4;
         e = expressionSemantic(e, sc);
         e = resolveProperties(sc, e);
-        sc = (sc).endCTFE();
+        sc = (sc.get()).endCTFE();
         e = e.optimize(0, false);
-        if ((nerrors != global.errors) || ((e.op & 0xFF) == 127) || (pequals(e.type.toBasetype(), Type.terror)))
+        if ((nerrors != global.value.errors) || ((e.op & 0xFF) == 127) || (pequals(e.type.value.toBasetype(), Type.terror.value)))
         {
             errors.value = true;
             return false;
         }
         e = resolveAliasThis(sc, e, false);
-        if (!e.type.isBoolean())
+        if (!e.type.value.isBoolean())
         {
-            exp.error(new BytePtr("expression `%s` of type `%s` does not have a boolean value"), exp.toChars(), e.type.toChars());
+            exp.error(new BytePtr("expression `%s` of type `%s` does not have a boolean value"), exp.toChars(), e.type.value.toChars());
             errors.value = true;
             return false;
         }

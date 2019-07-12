@@ -18,7 +18,7 @@ public class sapply {
 
     public static class PostorderStatementVisitor extends StoppableVisitor
     {
-        public StoppableVisitor v;
+        public StoppableVisitor v = null;
         public  PostorderStatementVisitor(StoppableVisitor v) {
             super();
             this.v = v;
@@ -47,8 +47,8 @@ public class sapply {
         public  void visit(CompoundStatement s) {
             {
                 int i = 0;
-                for (; (i < (s.statements).length);i++) {
-                    if (this.doCond((s.statements).get(i)))
+                for (; (i < (s.statements.get()).length);i++) {
+                    if (this.doCond((s.statements.get()).get(i)))
                         return ;
                 }
             }
@@ -58,8 +58,8 @@ public class sapply {
         public  void visit(UnrolledLoopStatement s) {
             {
                 int i = 0;
-                for (; (i < (s.statements).length);i++) {
-                    if (this.doCond((s.statements).get(i)))
+                for (; (i < (s.statements.get()).length);i++) {
+                    if (this.doCond((s.statements.get()).get(i)))
                         return ;
                 }
             }
@@ -83,11 +83,11 @@ public class sapply {
         }
 
         public  void visit(ForeachStatement s) {
-            expr(this.doCond(s._body) || this.applyTo(s));
+            expr(this.doCond(s._body.value) || this.applyTo(s));
         }
 
         public  void visit(ForeachRangeStatement s) {
-            expr(this.doCond(s._body) || this.applyTo(s));
+            expr(this.doCond(s._body.value) || this.applyTo(s));
         }
 
         public  void visit(IfStatement s) {
@@ -123,8 +123,8 @@ public class sapply {
                 return ;
             {
                 int i = 0;
-                for (; (i < (s.catches).length);i++) {
-                    if (this.doCond((s.catches).get(i).handler))
+                for (; (i < (s.catches.get()).length);i++) {
+                    if (this.doCond((s.catches.get()).get(i).handler))
                         return ;
                 }
             }

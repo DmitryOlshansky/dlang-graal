@@ -26,8 +26,8 @@ public class nspace {
     static boolean LOG = false;
     public static class Nspace extends ScopeDsymbol
     {
-        public Expression identExp;
-        public  Nspace(Loc loc, Identifier ident, Expression identExp, DArray<Dsymbol> members) {
+        public Expression identExp = null;
+        public  Nspace(Loc loc, Identifier ident, Expression identExp, Ptr<DArray<Dsymbol>> members) {
             super(loc, ident);
             this.members = members;
             this.identExp = identExp;
@@ -38,16 +38,16 @@ public class nspace {
             return this.syntaxCopy(ns);
         }
 
-        public  void addMember(Scope sc, ScopeDsymbol sds) {
+        public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             this.addMember(sc, sds);
             if (this.members != null)
             {
                 if (this.symtab == null)
                     this.symtab = new DsymbolTable();
                 {
-                    Scope sce = sc;
-                    for (; 1 != 0;sce = (sce).enclosing){
-                        ScopeDsymbol sds2 = (sce).scopesym;
+                    Ptr<Scope> sce = sc;
+                    for (; 1 != 0;sce = (sce.get()).enclosing){
+                        ScopeDsymbol sds2 = (sce.get()).scopesym;
                         if (sds2 != null)
                         {
                             sds2.importScope(this, new Prot(Prot.Kind.public_));
@@ -56,9 +56,9 @@ public class nspace {
                     }
                 }
                 assert(sc != null);
-                sc = (sc).push(this);
-                (sc).linkage = LINK.cpp;
-                (sc).parent = this;
+                sc = (sc.get()).push(this);
+                (sc.get()).linkage = LINK.cpp;
+                (sc.get()).parent.value = this;
                 Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
                         s.addMember(sc, this);
@@ -66,18 +66,18 @@ public class nspace {
                     }
                 };
                 foreachDsymbol(this.members, __lambda3);
-                (sc).pop();
+                (sc.get()).pop();
             }
         }
 
-        public  void setScope(Scope sc) {
+        public  void setScope(Ptr<Scope> sc) {
             this.setScope(sc);
             if (this.members != null)
             {
                 assert(sc != null);
-                sc = (sc).push(this);
-                (sc).linkage = LINK.cpp;
-                (sc).parent = this;
+                sc = (sc.get()).push(this);
+                (sc.get()).linkage = LINK.cpp;
+                (sc.get()).parent.value = this;
                 Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
                         s.setScope(sc);
@@ -85,7 +85,7 @@ public class nspace {
                     }
                 };
                 foreachDsymbol(this.members, __lambda2);
-                (sc).pop();
+                (sc.get()).pop();
             }
         }
 
@@ -106,7 +106,7 @@ public class nspace {
 
         // defaulted all parameters starting with #3
         public  Dsymbol search(Loc loc, Identifier ident) {
-            search(loc, ident, 8);
+            return search(loc, ident, 8);
         }
 
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {

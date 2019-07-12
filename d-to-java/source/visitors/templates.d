@@ -18,7 +18,7 @@ import dmd.mtype;
 
 import visitors.expression;
 
-import std.algorithm, std.stdio;
+import std.algorithm, std.conv, std.string, std.digest.sha;
 
 struct Template {
     string str;
@@ -28,6 +28,28 @@ struct Template {
 
 
 Template tiArgs(TemplateInstance ti, ExprOpts opts) {
+    string subst(const(char)[] tiargs) {
+        return tiargs.map!((c){
+            switch(c) {
+                case '!': return "not";
+                case '~': return "invert";
+                case '>': return "r";
+                case '<': return "l";
+                case '+': return "plus";
+                case '-': return "minus";
+                case '*': return "mul";
+                case '/': return "div";
+                case '%': return "mod";
+                case 'a': .. case 'z':
+                case 'A': .. case 'Z':
+                case '0': .. case '9':
+                case '_':
+                    return c.to!string;
+                default:
+                    return "_";
+            }
+        }).join("").idup;
+    }
     if (ti is null || ti.tiargs is null) return Template.init;
     else {
         Type[] types;
@@ -35,17 +57,17 @@ Template tiArgs(TemplateInstance ti, ExprOpts opts) {
         foreach (arg; *ti.tiargs) {
             auto t = arg.isType();
             auto e = arg.isExpression();
-            if (e && e.type.toJava(opts) == "ByteSlice") temp.fmt("_%s", e.toString[1..$-1]);
+            if (e && e.type.toJava(opts) == "ByteSlice") temp.fmt("_%s", subst(e.toString[1..$-1]));
             else if(e && e.type.toJava(opts) == "boolean") temp.fmt("%d", e.toInteger());
             else if (t) temp.put(t.toJava(opts, Boxing.yes));
-            else if (e){
+            else if (e) {
                 if(auto em = e.type.isTypeEnum())
                     temp.fmt("%s", e.toInteger);
                 else 
-                    temp.fmt("%s", e.toString);
+                    temp.fmt("_%s", sha1Of(e.toString)[0..8].toHexString);
             }
             else
-                temp.fmt("_%s", arg.toString);
+                temp.fmt("_%s", sha1Of(arg.toString)[0..8].toHexString);
             if (t) types ~= t;
         }
         return Template(temp.data.dup, types);
@@ -99,26 +121,30 @@ extern(C++) class RegisterTemplates : SemanticTimeTransitiveVisitor {
     }
 
     override void visit(StructDeclaration d) {
-        if (!args.empty) templates[d] = args;
+        auto v = args;
+        if (!v.empty) templates[d] = v;
         auto _ = pushed(inst, null);
         super.visit(d);
     }
 
     override void visit(ClassDeclaration d) {
-        if (!args.empty) templates[d] = args;
+        auto v = args;
+        if (!v.empty) templates[d] = v;
         auto _ = pushed(inst, null);
         super.visit(d);
     }
 
     override void visit(FuncDeclaration func) {
         inFunc++;
-        if (!args.empty) templates[func] = args;
+        auto v = args;
+        if (!v.empty) templates[func] = v;
         super.visit(func);
         inFunc--;
     }
 
     override void visit(VarDeclaration var) {
-        if (!args.empty) templates[var] = args;
+        auto v = args;
+        if (!v.empty) templates[var] = v;
         super.visit(var);
     }
 }

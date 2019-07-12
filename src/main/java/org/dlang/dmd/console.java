@@ -39,8 +39,8 @@ public class console {
     public static class Console
     {
 
-        public _IO_FILE _fp;
-        public  _IO_FILE fp() {
+        public Ptr<_IO_FILE> _fp = null;
+        public  Ptr<_IO_FILE> fp() {
             return this._fp;
         }
 
@@ -49,9 +49,9 @@ public class console {
             return (isatty(2) != 0) && (term != null) && (term.get(0) != 0) && (strcmp(term, new BytePtr("dumb")) != 0);
         }
 
-        public static Console create(_IO_FILE fp) {
-            Console c = new Console(null);
-            (c)._fp = fp;
+        public static Ptr<Console> create(Ptr<_IO_FILE> fp) {
+            Ptr<Console> c = new Console(null);
+            (c.get())._fp = fp;
             return c;
         }
 
@@ -74,7 +74,7 @@ public class console {
             r._fp = _fp;
             return r;
         }
-        public Console(_IO_FILE _fp) {
+        public Console(Ptr<_IO_FILE> _fp) {
             this._fp = _fp;
         }
 

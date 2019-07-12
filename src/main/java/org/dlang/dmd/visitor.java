@@ -337,10 +337,10 @@ public class visitor {
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(CompoundStatement s) {
             {
-                Slice<Statement> __r2936 = (s.statements).opSlice().copy();
-                int __key2937 = 0;
-                for (; (__key2937 < __r2936.getLength());__key2937 += 1) {
-                    Statement sx = __r2936.get(__key2937);
+                Slice<Statement> __r2867 = (s.statements.get()).opSlice().copy();
+                int __key2868 = 0;
+                for (; (__key2868 < __r2867.getLength());__key2868 += 1) {
+                    Statement sx = __r2867.get(__key2868);
                     if (sx != null)
                         sx.accept(this);
                 }
@@ -356,7 +356,7 @@ public class visitor {
             {
                 ExpInitializer ie = v._init.isExpInitializer();
                 if ((ie != null) && ((ie.exp.op & 0xFF) == 95) || ((ie.exp.op & 0xFF) == 96))
-                    ((AssignExp)ie.exp).e2.accept(this);
+                    ((AssignExp)ie.exp).e2.value.accept(this);
                 else
                     v._init.accept(this);
             }
@@ -366,10 +366,10 @@ public class visitor {
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(CompoundDeclarationStatement s) {
             {
-                Slice<Statement> __r2942 = (s.statements).opSlice().copy();
-                int __key2943 = 0;
-                for (; (__key2943 < __r2942.getLength());__key2943 += 1) {
-                    Statement sx = __r2942.get(__key2943);
+                Slice<Statement> __r2873 = (s.statements.get()).opSlice().copy();
+                int __key2874 = 0;
+                for (; (__key2874 < __r2873.getLength());__key2874 += 1) {
+                    Statement sx = __r2873.get(__key2874);
                     ExpStatement ds = sx != null ? sx.isExpStatement() : null;
                     if ((ds != null) && ((ds.exp.op & 0xFF) == 38))
                     {
@@ -427,17 +427,17 @@ public class visitor {
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ForeachStatement s) {
             {
-                Slice<Parameter> __r2944 = (s.parameters).opSlice().copy();
-                int __key2945 = 0;
-                for (; (__key2945 < __r2944.getLength());__key2945 += 1) {
-                    Parameter p = __r2944.get(__key2945);
+                Slice<Parameter> __r2875 = (s.parameters.get()).opSlice().copy();
+                int __key2876 = 0;
+                for (; (__key2876 < __r2875.getLength());__key2876 += 1) {
+                    Parameter p = __r2875.get(__key2876);
                     if (p.type != null)
                         this.visitType(p.type);
                 }
             }
             s.aggr.accept(this);
-            if (s._body != null)
-                s._body.accept(this);
+            if (s._body.value != null)
+                s._body.value.accept(this);
         }
 
 
@@ -447,8 +447,8 @@ public class visitor {
                 this.visitType(s.prm.type);
             s.lwr.accept(this);
             s.upr.accept(this);
-            if (s._body != null)
-                s._body.accept(this);
+            if (s._body.value != null)
+                s._body.value.accept(this);
         }
 
 
@@ -474,14 +474,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
-        public  void visitArgs(DArray<Expression> expressions, Expression basis) {
-            if ((expressions == null) || ((expressions).length == 0))
+        public  void visitArgs(Ptr<DArray<Expression>> expressions, Expression basis) {
+            if ((expressions == null) || ((expressions.get()).length == 0))
                 return ;
             {
-                Slice<Expression> __r2934 = (expressions).opSlice().copy();
-                int __key2935 = 0;
-                for (; (__key2935 < __r2934.getLength());__key2935 += 1) {
-                    Expression el = __r2934.get(__key2935);
+                Slice<Expression> __r2865 = (expressions.get()).opSlice().copy();
+                int __key2866 = 0;
+                for (; (__key2866 < __r2865.getLength());__key2866 += 1) {
+                    Expression el = __r2865.get(__key2866);
                     if (el == null)
                         el = basis;
                     if (el != null)
@@ -491,14 +491,14 @@ public class visitor {
         }
 
         // defaulted all parameters starting with #2
-        public  void visitArgs(DArray<Expression> expressions) {
-            visitArgs(expressions, null);
+        public  void visitArgs(Ptr<DArray<Expression>> expressions) {
+            return visitArgs(expressions, null);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(PragmaStatement s) {
-            if ((s.args != null) && ((s.args).length != 0))
+            if ((s.args != null) && ((s.args.get()).length != 0))
                 this.visitArgs(s.args, null);
             if (s._body != null)
                 s._body.accept(this);
@@ -576,10 +576,10 @@ public class visitor {
             if (s._body != null)
                 s._body.accept(this);
             {
-                Slice<Catch> __r2946 = (s.catches).opSlice().copy();
-                int __key2947 = 0;
-                for (; (__key2947 < __r2946.getLength());__key2947 += 1) {
-                    Catch c = __r2946.get(__key2947);
+                Slice<Catch> __r2877 = (s.catches.get()).opSlice().copy();
+                int __key2878 = 0;
+                for (; (__key2878 < __r2877.getLength());__key2878 += 1) {
+                    Catch c = __r2877.get(__key2878);
                     this.visit(c);
                 }
             }
@@ -615,10 +615,10 @@ public class visitor {
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ImportStatement s) {
             {
-                Slice<Dsymbol> __r2948 = (s.imports).opSlice().copy();
-                int __key2949 = 0;
-                for (; (__key2949 < __r2948.getLength());__key2949 += 1) {
-                    Dsymbol imp = __r2948.get(__key2949);
+                Slice<Dsymbol> __r2879 = (s.imports.get()).opSlice().copy();
+                int __key2880 = 0;
+                for (; (__key2880 < __r2879.getLength());__key2880 += 1) {
+                    Dsymbol imp = __r2879.get(__key2880);
                     imp.accept(this);
                 }
             }
@@ -655,10 +655,10 @@ public class visitor {
             if (td != null)
             {
                 {
-                    Slice<TemplateParameter> __r2938 = (td.origParameters).opSlice().copy();
-                    int __key2939 = 0;
-                    for (; (__key2939 < __r2938.getLength());__key2939 += 1) {
-                        TemplateParameter p = __r2938.get(__key2939);
+                    Slice<TemplateParameter> __r2869 = (td.origParameters.get()).opSlice().copy();
+                    int __key2870 = 0;
+                    for (; (__key2870 < __r2869.getLength());__key2870 += 1) {
+                        TemplateParameter p = __r2869.get(__key2870);
                         p.accept(this);
                     }
                 }
@@ -668,15 +668,15 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
-        public  void visitParameters(DArray<Parameter> parameters) {
+        public  void visitParameters(Ptr<DArray<Parameter>> parameters) {
             if (parameters != null)
             {
                 int dim = Parameter.dim(parameters);
                 {
-                    int __key2940 = 0;
-                    int __limit2941 = dim;
-                    for (; (__key2940 < __limit2941);__key2940 += 1) {
-                        int i = __key2940;
+                    int __key2871 = 0;
+                    int __limit2872 = dim;
+                    for (; (__key2871 < __limit2872);__key2871 += 1) {
+                        int i = __key2871;
                         Parameter fparam = Parameter.getNth(parameters, i, null);
                         fparam.accept(this);
                     }
@@ -744,10 +744,10 @@ public class visitor {
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visitTypeQualified(TypeQualified t) {
             {
-                Slice<RootObject> __r2950 = t.idents.opSlice().copy();
-                int __key2951 = 0;
-                for (; (__key2951 < __r2950.getLength());__key2951 += 1) {
-                    RootObject id = __r2950.get(__key2951);
+                Slice<RootObject> __r2881 = t.idents.opSlice().copy();
+                int __key2882 = 0;
+                for (; (__key2882 < __r2881.getLength());__key2882 += 1) {
+                    RootObject id = __r2881.get(__key2882);
                     if ((id.dyncast() == DYNCAST.dsymbol))
                         ((TemplateInstance)id).accept(this);
                     else if ((id.dyncast() == DYNCAST.expression))
@@ -826,10 +826,10 @@ public class visitor {
         public  void visitAttribDeclaration(AttribDeclaration d) {
             if (d.decl != null)
             {
-                Slice<Dsymbol> __r2952 = (d.decl).opSlice().copy();
-                int __key2953 = 0;
-                for (; (__key2953 < __r2952.getLength());__key2953 += 1) {
-                    Dsymbol de = __r2952.get(__key2953);
+                Slice<Dsymbol> __r2883 = (d.decl.get()).opSlice().copy();
+                int __key2884 = 0;
+                for (; (__key2884 < __r2883.getLength());__key2884 += 1) {
+                    Dsymbol de = __r2883.get(__key2884);
                     de.accept(this);
                 }
             }
@@ -887,7 +887,7 @@ public class visitor {
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(PragmaDeclaration d) {
-            if ((d.args != null) && ((d.args).length != 0))
+            if ((d.args != null) && ((d.args.get()).length != 0))
                 this.visitArgs(d.args, null);
             this.visitAttribDeclaration(d);
         }
@@ -898,19 +898,19 @@ public class visitor {
             d.condition.accept(this);
             if (d.decl != null)
             {
-                Slice<Dsymbol> __r2954 = (d.decl).opSlice().copy();
-                int __key2955 = 0;
-                for (; (__key2955 < __r2954.getLength());__key2955 += 1) {
-                    Dsymbol de = __r2954.get(__key2955);
+                Slice<Dsymbol> __r2885 = (d.decl.get()).opSlice().copy();
+                int __key2886 = 0;
+                for (; (__key2886 < __r2885.getLength());__key2886 += 1) {
+                    Dsymbol de = __r2885.get(__key2886);
                     de.accept(this);
                 }
             }
             if (d.elsedecl != null)
             {
-                Slice<Dsymbol> __r2956 = (d.elsedecl).opSlice().copy();
-                int __key2957 = 0;
-                for (; (__key2957 < __r2956.getLength());__key2957 += 1) {
-                    Dsymbol de = __r2956.get(__key2957);
+                Slice<Dsymbol> __r2887 = (d.elsedecl.get()).opSlice().copy();
+                int __key2888 = 0;
+                for (; (__key2888 < __r2887.getLength());__key2888 += 1) {
+                    Dsymbol de = __r2887.get(__key2888);
                     de.accept(this);
                 }
             }
@@ -935,10 +935,10 @@ public class visitor {
             if (f.frequires != null)
             {
                 {
-                    Slice<Statement> __r2958 = (f.frequires).opSlice().copy();
-                    int __key2959 = 0;
-                    for (; (__key2959 < __r2958.getLength());__key2959 += 1) {
-                        Statement frequire = __r2958.get(__key2959);
+                    Slice<Statement> __r2889 = (f.frequires.get()).opSlice().copy();
+                    int __key2890 = 0;
+                    for (; (__key2890 < __r2889.getLength());__key2890 += 1) {
+                        Statement frequire = __r2889.get(__key2890);
                         frequire.accept(this);
                     }
                 }
@@ -946,10 +946,10 @@ public class visitor {
             if (f.fensures != null)
             {
                 {
-                    Slice<Ensure> __r2960 = (f.fensures).opSlice().copy();
-                    int __key2961 = 0;
-                    for (; (__key2961 < __r2960.getLength());__key2961 += 1) {
-                        Ensure fensure = __r2960.get(__key2961).copy();
+                    Slice<Ensure> __r2891 = (f.fensures.get()).opSlice().copy();
+                    int __key2892 = 0;
+                    for (; (__key2892 < __r2891.getLength());__key2892 += 1) {
+                        Ensure fensure = __r2891.get(__key2892).copy();
                         fensure.ensure.accept(this);
                     }
                 }
@@ -963,14 +963,14 @@ public class visitor {
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visitBaseClasses(ClassDeclaration d) {
-            if ((d == null) || ((d.baseclasses).length == 0))
+            if ((d == null) || ((d.baseclasses.get()).length == 0))
                 return ;
             {
-                Slice<BaseClass> __r2962 = (d.baseclasses).opSlice().copy();
-                int __key2963 = 0;
-                for (; (__key2963 < __r2962.getLength());__key2963 += 1) {
-                    BaseClass b = __r2962.get(__key2963);
-                    this.visitType((b).type);
+                Slice<Ptr<BaseClass>> __r2893 = (d.baseclasses.get()).opSlice().copy();
+                int __key2894 = 0;
+                for (; (__key2894 < __r2893.getLength());__key2894 += 1) {
+                    Ptr<BaseClass> b = __r2893.get(__key2894);
+                    this.visitType((b.get()).type);
                 }
             }
         }
@@ -978,9 +978,9 @@ public class visitor {
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  boolean visitEponymousMember(TemplateDeclaration d) {
-            if ((d.members == null) || ((d.members).length != 1))
+            if ((d.members == null) || ((d.members.get()).length != 1))
                 return false;
-            Dsymbol onemember = (d.members).get(0);
+            Dsymbol onemember = (d.members.get()).get(0);
             if ((!pequals(onemember.ident, d.ident)))
                 return false;
             {
@@ -1005,10 +1005,10 @@ public class visitor {
                     this.visitBaseClasses(ad.isClassDeclaration());
                     if (ad.members != null)
                     {
-                        Slice<Dsymbol> __r2966 = (ad.members).opSlice().copy();
-                        int __key2967 = 0;
-                        for (; (__key2967 < __r2966.getLength());__key2967 += 1) {
-                            Dsymbol s = __r2966.get(__key2967);
+                        Slice<Dsymbol> __r2897 = (ad.members.get()).opSlice().copy();
+                        int __key2898 = 0;
+                        for (; (__key2898 < __r2897.getLength());__key2898 += 1) {
+                            Dsymbol s = __r2897.get(__key2898);
                             s.accept(this);
                         }
                     }
@@ -1028,7 +1028,7 @@ public class visitor {
                     {
                         ExpInitializer ie = vd._init.isExpInitializer();
                         if ((ie != null) && ((ie.exp.op & 0xFF) == 95) || ((ie.exp.op & 0xFF) == 96))
-                            ((AssignExp)ie.exp).e2.accept(this);
+                            ((AssignExp)ie.exp).e2.value.accept(this);
                         else
                             vd._init.accept(this);
                         return true;
@@ -1040,14 +1040,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
-        public  void visitTemplateParameters(DArray<TemplateParameter> parameters) {
-            if ((parameters == null) || ((parameters).length == 0))
+        public  void visitTemplateParameters(Ptr<DArray<TemplateParameter>> parameters) {
+            if ((parameters == null) || ((parameters.get()).length == 0))
                 return ;
             {
-                Slice<TemplateParameter> __r2964 = (parameters).opSlice().copy();
-                int __key2965 = 0;
-                for (; (__key2965 < __r2964.getLength());__key2965 += 1) {
-                    TemplateParameter p = __r2964.get(__key2965);
+                Slice<TemplateParameter> __r2895 = (parameters.get()).opSlice().copy();
+                int __key2896 = 0;
+                for (; (__key2896 < __r2895.getLength());__key2896 += 1) {
+                    TemplateParameter p = __r2895.get(__key2896);
                     p.accept(this);
                 }
             }
@@ -1062,10 +1062,10 @@ public class visitor {
             if (d.constraint != null)
                 d.constraint.accept(this);
             {
-                Slice<Dsymbol> __r2968 = (d.members).opSlice().copy();
-                int __key2969 = 0;
-                for (; (__key2969 < __r2968.getLength());__key2969 += 1) {
-                    Dsymbol s = __r2968.get(__key2969);
+                Slice<Dsymbol> __r2899 = (d.members.get()).opSlice().copy();
+                int __key2900 = 0;
+                for (; (__key2900 < __r2899.getLength());__key2900 += 1) {
+                    Dsymbol s = __r2899.get(__key2900);
                     s.accept(this);
                 }
             }
@@ -1090,12 +1090,12 @@ public class visitor {
                         Tuple v = isTuple(oarg);
                         if ((v) != null)
                         {
-                            DArray<RootObject> args = v.objects;
+                            Ptr<DArray<RootObject>> args = ptr(v.objects.value);
                             {
-                                Slice<RootObject> __r2970 = (args).opSlice().copy();
-                                int __key2971 = 0;
-                                for (; (__key2971 < __r2970.getLength());__key2971 += 1) {
-                                    RootObject arg = __r2970.get(__key2971);
+                                Slice<RootObject> __r2901 = (args.get()).opSlice().copy();
+                                int __key2902 = 0;
+                                for (; (__key2902 < __r2901.getLength());__key2902 += 1) {
+                                    RootObject arg = __r2901.get(__key2902);
                                     this.visitObject(arg);
                                 }
                             }
@@ -1111,10 +1111,10 @@ public class visitor {
             if (ti.tiargs == null)
                 return ;
             {
-                Slice<RootObject> __r2972 = (ti.tiargs).opSlice().copy();
-                int __key2973 = 0;
-                for (; (__key2973 < __r2972.getLength());__key2973 += 1) {
-                    RootObject arg = __r2972.get(__key2973);
+                Slice<RootObject> __r2903 = (ti.tiargs.get()).opSlice().copy();
+                int __key2904 = 0;
+                for (; (__key2904 < __r2903.getLength());__key2904 += 1) {
+                    RootObject arg = __r2903.get(__key2904);
                     this.visitObject(arg);
                 }
             }
@@ -1141,10 +1141,10 @@ public class visitor {
             if (d.members == null)
                 return ;
             {
-                Slice<Dsymbol> __r2974 = (d.members).opSlice().copy();
-                int __key2975 = 0;
-                for (; (__key2975 < __r2974.getLength());__key2975 += 1) {
-                    Dsymbol em = __r2974.get(__key2975);
+                Slice<Dsymbol> __r2905 = (d.members.get()).opSlice().copy();
+                int __key2906 = 0;
+                for (; (__key2906 < __r2905.getLength());__key2906 += 1) {
+                    Dsymbol em = __r2905.get(__key2906);
                     if (em == null)
                         continue;
                     em.accept(this);
@@ -1156,10 +1156,10 @@ public class visitor {
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(Nspace d) {
             {
-                Slice<Dsymbol> __r2976 = (d.members).opSlice().copy();
-                int __key2977 = 0;
-                for (; (__key2977 < __r2976.getLength());__key2977 += 1) {
-                    Dsymbol s = __r2976.get(__key2977);
+                Slice<Dsymbol> __r2907 = (d.members.get()).opSlice().copy();
+                int __key2908 = 0;
+                for (; (__key2908 < __r2907.getLength());__key2908 += 1) {
+                    Dsymbol s = __r2907.get(__key2908);
                     s.accept(this);
                 }
             }
@@ -1171,10 +1171,10 @@ public class visitor {
             if (d.members == null)
                 return ;
             {
-                Slice<Dsymbol> __r2978 = (d.members).opSlice().copy();
-                int __key2979 = 0;
-                for (; (__key2979 < __r2978.getLength());__key2979 += 1) {
-                    Dsymbol s = __r2978.get(__key2979);
+                Slice<Dsymbol> __r2909 = (d.members.get()).opSlice().copy();
+                int __key2910 = 0;
+                for (; (__key2910 < __r2909.getLength());__key2910 += 1) {
+                    Dsymbol s = __r2909.get(__key2910);
                     s.accept(this);
                 }
             }
@@ -1186,10 +1186,10 @@ public class visitor {
             this.visitBaseClasses(d);
             if (d.members != null)
             {
-                Slice<Dsymbol> __r2980 = (d.members).opSlice().copy();
-                int __key2981 = 0;
-                for (; (__key2981 < __r2980.getLength());__key2981 += 1) {
-                    Dsymbol s = __r2980.get(__key2981);
+                Slice<Dsymbol> __r2911 = (d.members.get()).opSlice().copy();
+                int __key2912 = 0;
+                for (; (__key2912 < __r2911.getLength());__key2912 += 1) {
+                    Dsymbol s = __r2911.get(__key2912);
                     s.accept(this);
                 }
             }
@@ -1290,11 +1290,11 @@ public class visitor {
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(StructInitializer si) {
             {
-                Slice<Identifier> __r2983 = si.field.opSlice().copy();
-                int __key2982 = 0;
-                for (; (__key2982 < __r2983.getLength());__key2982 += 1) {
-                    Identifier id = __r2983.get(__key2982);
-                    int i = __key2982;
+                Slice<Identifier> __r2914 = si.field.opSlice().copy();
+                int __key2913 = 0;
+                for (; (__key2913 < __r2914.getLength());__key2913 += 1) {
+                    Identifier id = __r2914.get(__key2913);
+                    int i = __key2913;
                     {
                         Initializer iz = si.value.get(i);
                         if ((iz) != null)
@@ -1308,11 +1308,11 @@ public class visitor {
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(ArrayInitializer ai) {
             {
-                Slice<Expression> __r2985 = ai.index.opSlice().copy();
-                int __key2984 = 0;
-                for (; (__key2984 < __r2985.getLength());__key2984 += 1) {
-                    Expression ex = __r2985.get(__key2984);
-                    int i = __key2984;
+                Slice<Expression> __r2916 = ai.index.opSlice().copy();
+                int __key2915 = 0;
+                for (; (__key2915 < __r2916.getLength());__key2915 += 1) {
+                    Expression ex = __r2916.get(__key2915);
+                    int i = __key2915;
                     if (ex != null)
                         ex.accept(this);
                     {
@@ -1340,13 +1340,13 @@ public class visitor {
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(AssocArrayLiteralExp e) {
             {
-                Slice<Expression> __r2987 = (e.keys).opSlice().copy();
-                int __key2986 = 0;
-                for (; (__key2986 < __r2987.getLength());__key2986 += 1) {
-                    Expression key = __r2987.get(__key2986);
-                    int i = __key2986;
+                Slice<Expression> __r2918 = (e.keys.get()).opSlice().copy();
+                int __key2917 = 0;
+                for (; (__key2917 < __r2918.getLength());__key2917 += 1) {
+                    Expression key = __r2918.get(__key2917);
+                    int i = __key2917;
                     key.accept(this);
-                    (e.values).get(i).accept(this);
+                    (e.values.get()).get(i).accept(this);
                 }
             }
         }
@@ -1354,7 +1354,7 @@ public class visitor {
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(TypeExp e) {
-            this.visitType(e.type);
+            this.visitType(e.type.value);
         }
 
 
@@ -1369,10 +1369,10 @@ public class visitor {
         public  void visit(NewExp e) {
             if (e.thisexp != null)
                 e.thisexp.accept(this);
-            if ((e.newargs != null) && ((e.newargs).length != 0))
+            if ((e.newargs != null) && ((e.newargs.get()).length != 0))
                 this.visitArgs(e.newargs, null);
             this.visitType(e.newtype);
-            if ((e.arguments != null) && ((e.arguments).length != 0))
+            if ((e.arguments != null) && ((e.arguments.get()).length != 0))
                 this.visitArgs(e.arguments, null);
         }
 
@@ -1381,9 +1381,9 @@ public class visitor {
         public  void visit(NewAnonClassExp e) {
             if (e.thisexp != null)
                 e.thisexp.accept(this);
-            if ((e.newargs != null) && ((e.newargs).length != 0))
+            if ((e.newargs != null) && ((e.newargs.get()).length != 0))
                 this.visitArgs(e.newargs, null);
-            if ((e.arguments != null) && ((e.arguments).length != 0))
+            if ((e.arguments != null) && ((e.arguments.get()).length != 0))
                 this.visitArgs(e.arguments, null);
             if (e.cd != null)
                 e.cd.accept(this);
@@ -1426,10 +1426,10 @@ public class visitor {
         public  void visit(TraitsExp e) {
             if (e.args != null)
             {
-                Slice<RootObject> __r2988 = (e.args).opSlice().copy();
-                int __key2989 = 0;
-                for (; (__key2989 < __r2988.getLength());__key2989 += 1) {
-                    RootObject arg = __r2988.get(__key2989);
+                Slice<RootObject> __r2919 = (e.args.get()).opSlice().copy();
+                int __key2920 = 0;
+                for (; (__key2920 < __r2919.getLength());__key2920 += 1) {
+                    RootObject arg = __r2919.get(__key2920);
                     this.visitObject(arg);
                 }
             }
@@ -1441,7 +1441,7 @@ public class visitor {
             this.visitType(e.targ);
             if (e.tspec != null)
                 this.visitType(e.tspec);
-            if ((e.parameters != null) && ((e.parameters).length != 0))
+            if ((e.parameters != null) && ((e.parameters.get()).length != 0))
                 this.visitTemplateParameters(e.parameters);
         }
 
@@ -1454,8 +1454,8 @@ public class visitor {
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(BinExp e) {
-            e.e1.accept(this);
-            e.e2.accept(this);
+            e.e1.value.accept(this);
+            e.e2.value.accept(this);
         }
 
 
@@ -1521,8 +1521,8 @@ public class visitor {
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(IntervalExp e) {
-            e.lwr.accept(this);
-            e.upr.accept(this);
+            e.lwr.value.accept(this);
+            e.upr.value.accept(this);
         }
 
 
@@ -1535,15 +1535,15 @@ public class visitor {
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(PostExp e) {
-            e.e1.accept(this);
+            e.e1.value.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(CondExp e) {
             e.econd.accept(this);
-            e.e1.accept(this);
-            e.e2.accept(this);
+            e.e1.value.accept(this);
+            e.e2.value.accept(this);
         }
 
 
@@ -1600,10 +1600,10 @@ public class visitor {
         // from template ParseVisitMethods!(ASTCodegen)
         public  void visit(dmodule.Module m) {
             {
-                Slice<Dsymbol> __r2990 = (m.members).opSlice().copy();
-                int __key2991 = 0;
-                for (; (__key2991 < __r2990.getLength());__key2991 += 1) {
-                    Dsymbol s = __r2990.get(__key2991);
+                Slice<Dsymbol> __r2921 = (m.members.get()).opSlice().copy();
+                int __key2922 = 0;
+                for (; (__key2922 < __r2921.getLength());__key2922 += 1) {
+                    Dsymbol s = __r2921.get(__key2922);
                     s.accept(this);
                 }
             }
@@ -1617,10 +1617,10 @@ public class visitor {
 
         public  void visit(UnrolledLoopStatement s) {
             {
-                Slice<Statement> __r2992 = (s.statements).opSlice().copy();
-                int __key2993 = 0;
-                for (; (__key2993 < __r2992.getLength());__key2993 += 1) {
-                    Statement sx = __r2992.get(__key2993);
+                Slice<Statement> __r2923 = (s.statements.get()).opSlice().copy();
+                int __key2924 = 0;
+                for (; (__key2924 < __r2923.getLength());__key2924 += 1) {
+                    Statement sx = __r2923.get(__key2924);
                     if (sx != null)
                         sx.accept(this);
                 }
@@ -1643,10 +1643,10 @@ public class visitor {
                 int old = e.stageflags;
                 e.stageflags |= 32;
                 {
-                    Slice<Expression> __r2994 = (e.elements).opSlice().copy();
-                    int __key2995 = 0;
-                    for (; (__key2995 < __r2994.getLength());__key2995 += 1) {
-                        Expression el = __r2994.get(__key2995);
+                    Slice<Expression> __r2925 = (e.elements.get()).opSlice().copy();
+                    int __key2926 = 0;
+                    for (; (__key2926 < __r2925.getLength());__key2926 += 1) {
+                        Expression el = __r2925.get(__key2926);
                         if (el != null)
                             el.accept(this);
                     }
@@ -1702,18 +1702,18 @@ public class visitor {
         }
 
         public  void visit(DotExp e) {
-            e.e1.accept(this);
-            e.e2.accept(this);
+            e.e1.value.accept(this);
+            e.e2.value.accept(this);
         }
 
         public  void visit(IndexExp e) {
-            e.e1.accept(this);
-            e.e2.accept(this);
+            e.e1.value.accept(this);
+            e.e2.value.accept(this);
         }
 
         public  void visit(RemoveExp e) {
-            e.e1.accept(this);
-            e.e2.accept(this);
+            e.e1.value.accept(this);
+            e.e2.value.accept(this);
         }
 
 

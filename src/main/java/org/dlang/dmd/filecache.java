@@ -16,18 +16,18 @@ public class filecache {
 
     public static class FileAndLines extends Object
     {
-        public FileName file;
-        public FileBuffer buffer;
-        public Slice<ByteSlice> lines;
+        public Ptr<FileName> file = null;
+        public Ptr<FileBuffer> buffer = null;
+        public Slice<ByteSlice> lines = new Slice<ByteSlice>();
         public  FileAndLines(ByteSlice filename) {
             this.file = new FileName(filename);
             this.readAndSplit();
         }
 
         public  void readAndSplit() {
-            File.ReadResult readResult = File.read((this.file).toChars()).copy();
+            File.ReadResult readResult = File.read((this.file.get()).toChars()).copy();
             this.buffer = new FileBuffer(readResult.extractData());
-            BytePtr buf = pcopy(toBytePtr((this.buffer).data));
+            BytePtr buf = pcopy(toBytePtr((this.buffer.get()).data));
             for (; buf.get() != 0;){
                 BytePtr prevBuf = pcopy(buf);
                 for (; ((buf.get() & 0xFF) != 10) && ((buf.get() & 0xFF) != 13);buf.postInc()){
@@ -57,11 +57,11 @@ public class filecache {
         public StringTable files = new StringTable();
         public  FileAndLines addOrGetFile(ByteSlice file) {
             {
-                StringValue payload = this.files.lookup(file);
+                Ptr<StringValue> payload = this.files.lookup(file);
                 if ((payload) != null)
                 {
                     if ((payload != null))
-                        return ((FileAndLines)(payload).ptrvalue);
+                        return ((FileAndLines)(payload.get()).ptrvalue);
                 }
             }
             FileAndLines lines = new FileAndLines(file);
@@ -79,9 +79,9 @@ public class filecache {
         }
 
         public  void deinitialize() {
-            Function1<StringValue,Integer> __foreachbody1 = new Function1<StringValue,Integer>(){
-                public Integer invoke(StringValue sv) {
-                    Ref<StringValue> sv_ref = ref(sv);
+            Function1<Ptr<StringValue>,Integer> __foreachbody1 = new Function1<Ptr<StringValue>,Integer>(){
+                public Integer invoke(Ptr<StringValue> sv) {
+                    Ref<Ptr<StringValue>> sv_ref = ref(sv);
                     destroy(sv_ref);
                     return 0;
                 }

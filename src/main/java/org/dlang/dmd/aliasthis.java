@@ -29,7 +29,7 @@ public class aliasthis {
 
     public static class AliasThis extends Dsymbol
     {
-        public Identifier ident;
+        public Identifier ident = null;
         public  AliasThis(Loc loc, Identifier ident) {
             super(loc, null);
             this.ident = ident;
@@ -75,16 +75,16 @@ public class aliasthis {
             return that;
         }
     }
-    public static Expression resolveAliasThis(Scope sc, Expression e, boolean gag) {
+    public static Expression resolveAliasThis(Ptr<Scope> sc, Expression e, boolean gag) {
         {
-            AggregateDeclaration ad = isAggregate(e.type);
+            AggregateDeclaration ad = isAggregate(e.type.value);
         L_outer1:
             for (; ad != null;){
                 if (ad.aliasthis != null)
                 {
-                    int olderrors = gag ? global.startGagging() : 0;
+                    int olderrors = gag ? global.value.startGagging() : 0;
                     Loc loc = e.loc.copy();
-                    Type tthis = ((e.op & 0xFF) == 20) ? e.type : null;
+                    Type tthis = ((e.op & 0xFF) == 20) ? e.type.value : null;
                     e = new DotIdExp(loc, e, ad.aliasthis.ident);
                     e = expressionSemantic(e, sc);
                     if ((tthis != null) && ad.aliasthis.needThis())
@@ -104,7 +104,7 @@ public class aliasthis {
                                                 if (!hasOverloads.value)
                                                     fd = f;
                                                 e = new VarExp(loc, fd, hasOverloads.value);
-                                                e.type = f.type;
+                                                e.type.value = f.type;
                                                 e = new CallExp(loc, e);
                                                 /*goto L1*/throw Dispatch0.INSTANCE;
                                             }
@@ -113,10 +113,10 @@ public class aliasthis {
                                 }
                             }
                             {
-                                int save = (sc).intypeof;
-                                (sc).intypeof = 1;
+                                int save = (sc.get()).intypeof;
+                                (sc.get()).intypeof = 1;
                                 e = resolveProperties(sc, e);
-                                (sc).intypeof = save;
+                                (sc.get()).intypeof = save;
                             }
                         }
                         catch(Dispatch0 __d){}
@@ -125,11 +125,11 @@ public class aliasthis {
                         e = expressionSemantic(e, sc);
                     }
                     e = resolveProperties(sc, e);
-                    if (gag && global.endGagging(olderrors))
+                    if (gag && global.value.endGagging(olderrors))
                         e = null;
                 }
                 ClassDeclaration cd = ad.isClassDeclaration();
-                if ((e == null) || (ad.aliasthis == null) && (cd != null) && (cd.baseClass != null) && (!pequals(cd.baseClass, ClassDeclaration.object)))
+                if ((e == null) || (ad.aliasthis == null) && (cd != null) && (cd.baseClass != null) && (!pequals(cd.baseClass, ClassDeclaration.object.value)))
                 {
                     ad = cd.baseClass;
                     continue L_outer1;
@@ -141,8 +141,8 @@ public class aliasthis {
     }
 
     // defaulted all parameters starting with #3
-    public static Expression resolveAliasThis(Scope sc, Expression e) {
-        resolveAliasThis(sc, e, false);
+    public static Expression resolveAliasThis(Ptr<Scope> sc, Expression e) {
+        return resolveAliasThis(sc, e, false);
     }
 
 }

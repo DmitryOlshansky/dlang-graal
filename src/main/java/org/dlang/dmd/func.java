@@ -71,8 +71,8 @@ public class func {
     }
     private static class Ctxt
     {
-        private Ctxt prev;
-        private Type type;
+        private Ptr<Ctxt> prev = null;
+        private Type type = null;
         public Ctxt(){
         }
         public Ctxt copy(){
@@ -81,7 +81,7 @@ public class func {
             r.type = type;
             return r;
         }
-        public Ctxt(Ctxt prev, Type type) {
+        public Ctxt(Ptr<Ctxt> prev, Type type) {
             this.prev = prev;
             this.type = type;
         }
@@ -94,8 +94,8 @@ public class func {
     }
     private static class PrevSibling
     {
-        private PrevSibling p;
-        private FuncDeclaration f;
+        private Ptr<PrevSibling> p = null;
+        private FuncDeclaration f = null;
         public PrevSibling(){
         }
         public PrevSibling copy(){
@@ -104,7 +104,7 @@ public class func {
             r.f = f;
             return r;
         }
-        public PrevSibling(PrevSibling p, FuncDeclaration f) {
+        public PrevSibling(Ptr<PrevSibling> p, FuncDeclaration f) {
             this.p = p;
             this.f = f;
         }
@@ -117,14 +117,15 @@ public class func {
     }
     private static class RetWalker extends StatementRewriteWalker
     {
-        private Scope sc;
-        private Type tret;
-        private FuncLiteralDeclaration fld;
+        private Ptr<Scope> sc = null;
+        private Type tret = null;
+        private FuncLiteralDeclaration fld = null;
         public  void visit(ReturnStatement s) {
-            Expression exp = s.exp;
-            if ((exp != null) && !exp.type.equals(this.tret))
+            Ref<ReturnStatement> s_ref = ref(s);
+            Ref<Expression> exp = ref(s_ref.value.exp);
+            if ((exp.value != null) && !exp.value.type.value.equals(this.tret))
             {
-                s.exp = exp.castTo(this.sc, this.tret);
+                s_ref.value.exp = exp.value.castTo(this.sc, this.tret);
             }
         }
 
@@ -150,8 +151,8 @@ public class func {
 
     public static class NrvoWalker extends StatementRewriteWalker
     {
-        public FuncDeclaration fd;
-        public Scope sc;
+        public FuncDeclaration fd = null;
+        public Ptr<Scope> sc = null;
         public  void visit(ReturnStatement s) {
             if (this.fd.returnLabel != null)
             {
@@ -168,27 +169,27 @@ public class func {
             DtorExpStatement des = null;
             if (this.fd.nrvo_can && (s.finalbody != null) && ((des = s.finalbody.isDtorExpStatement()) != null) && (pequals(this.fd.nrvo_var, des.var)))
             {
-                if (!(global.params.useExceptions && (ClassDeclaration.throwable != null)))
+                if (!(global.value.params.useExceptions && (ClassDeclaration.throwable != null)))
                 {
                     this.replaceCurrent(s._body);
                     s._body.accept(this);
                     return ;
                 }
-                Statement sexception = new DtorExpStatement(Loc.initial, this.fd.nrvo_var.edtor, this.fd.nrvo_var);
+                Statement sexception = new DtorExpStatement(Loc.initial.value, this.fd.nrvo_var.edtor, this.fd.nrvo_var);
                 Identifier id = Identifier.generateId(new BytePtr("__o"));
                 Statement handler = new PeelStatement(sexception);
                 if ((blockExit(sexception, this.fd, false) & BE.fallthru) != 0)
                 {
-                    ThrowStatement ts = new ThrowStatement(Loc.initial, new IdentifierExp(Loc.initial, id));
+                    ThrowStatement ts = new ThrowStatement(Loc.initial.value, new IdentifierExp(Loc.initial.value, id));
                     ts.internalThrow = true;
-                    handler = new CompoundStatement(Loc.initial, slice(new Statement[]{handler, ts}));
+                    handler = new CompoundStatement(Loc.initial.value, slice(new Statement[]{handler, ts}));
                 }
-                DArray<Catch> catches = new DArray<Catch>();
-                Catch ctch = new Catch(Loc.initial, getThrowable(), id, handler);
+                Ptr<DArray<Catch>> catches = new DArray<Catch>();
+                Catch ctch = new Catch(Loc.initial.value, getThrowable(), id, handler);
                 ctch.internalCatch = true;
                 catchSemantic(ctch, this.sc);
-                (catches).push(ctch);
-                Statement s2 = new TryCatchStatement(Loc.initial, s._body, catches);
+                (catches.get()).push(ctch);
+                Statement s2 = new TryCatchStatement(Loc.initial.value, s._body, catches);
                 this.fd.eh_none = false;
                 this.replaceCurrent(s2);
                 s2.accept(this);
@@ -224,24 +225,24 @@ public class func {
 
     public static class Ensure
     {
-        public Identifier id;
-        public Statement ensure;
+        public Identifier id = null;
+        public Statement ensure = null;
         public  Ensure syntaxCopy() {
             return new Ensure(this.id, this.ensure.syntaxCopy());
         }
 
-        public static DArray<Ensure> arraySyntaxCopy(DArray<Ensure> a) {
-            DArray<Ensure> b = null;
+        public static Ptr<DArray<Ensure>> arraySyntaxCopy(Ptr<DArray<Ensure>> a) {
+            Ptr<DArray<Ensure>> b = null;
             if (a != null)
             {
-                b = (a).copy();
+                b = (a.get()).copy();
                 {
-                    Slice<Ensure> __r1387 = (a).opSlice().copy();
-                    int __key1386 = 0;
-                    for (; (__key1386 < __r1387.getLength());__key1386 += 1) {
-                        Ensure e = __r1387.get(__key1386).copy();
-                        int i = __key1386;
-                        b.set(i, e.syntaxCopy());
+                    Slice<Ensure> __r1385 = (a.get()).opSlice().copy();
+                    int __key1384 = 0;
+                    for (; (__key1384 < __r1385.getLength());__key1384 += 1) {
+                        Ensure e = __r1385.get(__key1384).copy();
+                        int i = __key1384;
+                        b.get().set(i, e.syntaxCopy());
                     }
                 }
             }
@@ -271,9 +272,9 @@ public class func {
     {
         public static class HiddenParameters
         {
-            public VarDeclaration vthis;
+            public VarDeclaration vthis = null;
             public boolean isThis2 = false;
-            public VarDeclaration selectorParameter;
+            public VarDeclaration selectorParameter = null;
             public HiddenParameters(){
             }
             public HiddenParameters copy(){
@@ -296,30 +297,30 @@ public class func {
                 return this;
             }
         }
-        public DArray<Statement> frequires;
-        public DArray<Ensure> fensures;
-        public Statement frequire;
-        public Statement fensure;
-        public Statement fbody;
+        public Ptr<DArray<Statement>> frequires = null;
+        public Ptr<DArray<Ensure>> fensures = null;
+        public Statement frequire = null;
+        public Statement fensure = null;
+        public Statement fbody = null;
         public DArray<FuncDeclaration> foverrides = new DArray<FuncDeclaration>();
-        public FuncDeclaration fdrequire;
-        public FuncDeclaration fdensure;
-        public DArray<Expression> fdrequireParams;
-        public DArray<Expression> fdensureParams;
-        public BytePtr mangleString;
-        public VarDeclaration vresult;
-        public LabelDsymbol returnLabel;
-        public DsymbolTable localsymtab;
-        public VarDeclaration vthis;
+        public FuncDeclaration fdrequire = null;
+        public FuncDeclaration fdensure = null;
+        public Ptr<DArray<Expression>> fdrequireParams = null;
+        public Ptr<DArray<Expression>> fdensureParams = null;
+        public BytePtr mangleString = null;
+        public VarDeclaration vresult = null;
+        public LabelDsymbol returnLabel = null;
+        public DsymbolTable localsymtab = null;
+        public VarDeclaration vthis = null;
         public boolean isThis2 = false;
-        public VarDeclaration v_arguments;
-        public ObjcSelector selector;
-        public VarDeclaration selectorParameter;
-        public VarDeclaration v_argptr;
-        public DArray<VarDeclaration> parameters;
-        public DsymbolTable labtab;
-        public Dsymbol overnext;
-        public FuncDeclaration overnext0;
+        public VarDeclaration v_arguments = null;
+        public Ptr<ObjcSelector> selector = null;
+        public VarDeclaration selectorParameter = null;
+        public VarDeclaration v_argptr = null;
+        public Ptr<DArray<VarDeclaration>> parameters = null;
+        public DsymbolTable labtab = null;
+        public Dsymbol overnext = null;
+        public FuncDeclaration overnext0 = null;
         public Loc endloc = new Loc();
         public int vtblIndex = -1;
         public boolean naked = false;
@@ -333,24 +334,24 @@ public class func {
         public boolean isArrayOp = false;
         public boolean eh_none = false;
         public boolean semantic3Errors = false;
-        public ForeachStatement fes;
-        public BaseClass interfaceVirtual;
+        public ForeachStatement fes = null;
+        public Ptr<BaseClass> interfaceVirtual = null;
         public boolean introducing = false;
-        public Type tintro;
+        public Type tintro = null;
         public boolean inferRetType = false;
         public long storage_class2 = 0;
         public int hasReturnExp = 0;
         public boolean nrvo_can = true;
-        public VarDeclaration nrvo_var;
-        public Symbol shidden;
-        public DArray<ReturnStatement> returns;
-        public DArray<GotoStatement> gotos;
+        public VarDeclaration nrvo_var = null;
+        public Ptr<Symbol> shidden = null;
+        public Ptr<DArray<ReturnStatement>> returns = null;
+        public Ptr<DArray<GotoStatement>> gotos = null;
         public int builtin = BUILTIN.unknown;
         public int tookAddressOf = 0;
         public boolean requiresClosure = false;
         public DArray<VarDeclaration> closureVars = new DArray<VarDeclaration>();
         public DArray<FuncDeclaration> siblingCallers = new DArray<FuncDeclaration>();
-        public DArray<FuncDeclaration> inlinedNestedCallees;
+        public Ptr<DArray<FuncDeclaration>> inlinedNestedCallees = null;
         public int flags = 0;
         public  FuncDeclaration(Loc loc, Loc endloc, Identifier ident, long storage_class, Type type) {
             super(loc, ident);
@@ -382,22 +383,22 @@ public class func {
             if (this.originalType == null)
             {
                 TemplateInstance spec = this.isSpeculative();
-                int olderrs = global.errors;
-                int oldgag = global.gag;
-                if ((global.gag != 0) && (spec == null))
-                    global.gag = 0;
+                int olderrs = global.value.errors;
+                int oldgag = global.value.gag;
+                if ((global.value.gag != 0) && (spec == null))
+                    global.value.gag = 0;
                 dsymbolSemantic(this, this._scope);
-                global.gag = oldgag;
-                if ((spec != null) && (global.errors != olderrs))
-                    spec.errors = global.errors - olderrs != 0;
-                if ((olderrs != global.errors))
+                global.value.gag = oldgag;
+                if ((spec != null) && (global.value.errors != olderrs))
+                    spec.errors = global.value.errors - olderrs != 0;
+                if ((olderrs != global.value.errors))
                     return false;
             }
-            this.namespace = (this._scope).namespace;
+            this.namespace = (this._scope.get()).namespace;
             if (this.inferRetType && (this.type != null) && (this.type.nextOf() == null))
                 return this.functionSemantic3();
             TemplateInstance ti = null;
-            if ((this.isInstantiated() != null) && !this.isVirtualMethod() && ((ti = this.parent.isTemplateInstance()) == null) || (ti.isTemplateMixin() != null) || (pequals(ti.tempdecl.ident, this.ident)))
+            if ((this.isInstantiated() != null) && !this.isVirtualMethod() && ((ti = this.parent.value.isTemplateInstance()) == null) || (ti.isTemplateMixin() != null) || (pequals(ti.tempdecl.ident, this.ident)))
             {
                 AggregateDeclaration ad = this.isMemberLocal();
                 if ((ad != null) && (ad.sizeok != Sizeok.done))
@@ -415,15 +416,15 @@ public class func {
             if ((this.semanticRun < PASS.semantic3) && (this._scope != null))
             {
                 TemplateInstance spec = this.isSpeculative();
-                int olderrs = global.errors;
-                int oldgag = global.gag;
-                if ((global.gag != 0) && (spec == null))
-                    global.gag = 0;
+                int olderrs = global.value.errors;
+                int oldgag = global.value.gag;
+                if ((global.value.gag != 0) && (spec == null))
+                    global.value.gag = 0;
                 semantic3(this, this._scope);
-                global.gag = oldgag;
-                if ((spec != null) && (global.errors != olderrs))
-                    spec.errors = global.errors - olderrs != 0;
-                if ((olderrs != global.errors))
+                global.value.gag = oldgag;
+                if ((spec != null) && (global.value.errors != olderrs))
+                    spec.errors = global.value.errors - olderrs != 0;
+                if ((olderrs != global.value.errors))
                     return false;
             }
             return !this.errors && !this.semantic3Errors;
@@ -441,10 +442,10 @@ public class func {
             return false;
         }
 
-        public  HiddenParameters declareThis(Scope sc, AggregateDeclaration ad) {
+        public  HiddenParameters declareThis(Ptr<Scope> sc, AggregateDeclaration ad) {
             if ((!pequals(this.toParent2(), this.toParentLocal())))
             {
-                Type tthis2 = Type.tvoidptr.sarrayOf(2L).pointerTo();
+                Type tthis2 = Type.tvoidptr.value.sarrayOf(2L).pointerTo();
                 tthis2 = tthis2.addMod(this.type.mod).addStorageClass(this.storage_class);
                 VarDeclaration v2 = new VarDeclaration(this.loc, tthis2, Id.this2, null, 0L);
                 v2.storage_class |= 16777248L;
@@ -461,9 +462,9 @@ public class func {
                 if (((this.flags & FUNCFLAG.inferScope) != 0) && ((v2.storage_class & 524288L) == 0))
                     v2.storage_class |= 281474976710656L;
                 dsymbolSemantic(v2, sc);
-                if ((sc).insert(v2) == null)
+                if ((sc.get()).insert(v2) == null)
                     throw new AssertionError("Unreachable code!");
-                v2.parent = this;
+                v2.parent.value = this;
                 return new HiddenParameters(v2, true, null);
             }
             if (ad != null)
@@ -491,14 +492,14 @@ public class func {
                 if (((this.flags & FUNCFLAG.inferScope) != 0) && ((v.storage_class & 524288L) == 0))
                     v.storage_class |= 281474976710656L;
                 dsymbolSemantic(v, sc);
-                if ((sc).insert(v) == null)
+                if ((sc.get()).insert(v) == null)
                     throw new AssertionError("Unreachable code!");
-                v.parent = this;
+                v.parent.value = this;
                 return new HiddenParameters(v, false, objc().createSelectorParameter(this, sc));
             }
             if (this.isNested())
             {
-                VarDeclaration v = new VarDeclaration(this.loc, Type.tvoid.pointerTo(), Id.capture, null, 0L);
+                VarDeclaration v = new VarDeclaration(this.loc, Type.tvoid.value.pointerTo(), Id.capture, null, 0L);
                 v.storage_class |= 16777248L;
                 if (((this.type.ty & 0xFF) == ENUMTY.Tfunction))
                 {
@@ -511,9 +512,9 @@ public class func {
                 if (((this.flags & FUNCFLAG.inferScope) != 0) && ((v.storage_class & 524288L) == 0))
                     v.storage_class |= 281474976710656L;
                 dsymbolSemantic(v, sc);
-                if ((sc).insert(v) == null)
+                if ((sc.get()).insert(v) == null)
                     throw new AssertionError("Unreachable code!");
-                v.parent = this;
+                v.parent.value = this;
                 return new HiddenParameters(v, false, null);
             }
             return new HiddenParameters(null, false, null);
@@ -568,7 +569,7 @@ public class func {
             return result;
         }
 
-        public  int findVtblIndex(DArray<Dsymbol> vtbl, int dim, boolean fix17349) {
+        public  int findVtblIndex(Ptr<DArray<Dsymbol>> vtbl, int dim, boolean fix17349) {
             FuncDeclaration mismatch = null;
             long mismatchstc = 0L;
             int mismatchvi = -1;
@@ -577,12 +578,12 @@ public class func {
             {
                 int vi = 0;
                 for (; (vi < dim);vi++){
-                    FuncDeclaration fdv = (vtbl).get(vi).isFuncDeclaration();
+                    FuncDeclaration fdv = (vtbl.get()).get(vi).isFuncDeclaration();
                     if ((fdv != null) && (pequals(fdv.ident, this.ident)))
                     {
                         if (this.type.equals(fdv.type))
                         {
-                            if (fdv.parent.isClassDeclaration() != null)
+                            if (fdv.parent.value.isClassDeclaration() != null)
                             {
                                 if (fdv.isFuture())
                                 {
@@ -634,21 +635,21 @@ public class func {
         }
 
         // defaulted all parameters starting with #3
-        public  int findVtblIndex(DArray<Dsymbol> vtbl, int dim) {
-            findVtblIndex(vtbl, dim, true);
+        public  int findVtblIndex(Ptr<DArray<Dsymbol>> vtbl, int dim) {
+            return findVtblIndex(vtbl, dim, true);
         }
 
-        public  BaseClass overrideInterface() {
+        public  Ptr<BaseClass> overrideInterface() {
             {
                 ClassDeclaration cd = this.toParent2().isClassDeclaration();
                 if ((cd) != null)
                 {
                     {
-                        Slice<BaseClass> __r1388 = cd.interfaces.copy();
-                        int __key1389 = 0;
-                        for (; (__key1389 < __r1388.getLength());__key1389 += 1) {
-                            BaseClass b = __r1388.get(__key1389);
-                            int v = this.findVtblIndex((b).sym.vtbl, (b).sym.vtbl.length, true);
+                        Slice<Ptr<BaseClass>> __r1386 = cd.interfaces.copy();
+                        int __key1387 = 0;
+                        for (; (__key1387 < __r1386.getLength());__key1387 += 1) {
+                            Ptr<BaseClass> b = __r1386.get(__key1387);
+                            int v = this.findVtblIndex(ptr((b.get()).sym.vtbl.value), (b.get()).sym.vtbl.value.length, true);
                             if ((v >= 0))
                                 return b;
                         }
@@ -798,13 +799,13 @@ public class func {
                 assert(tthis != null);
                 assert(!MODimplicitConv(tthis.mod, tf.mod));
                 {
-                    OutBuffer thisBuf = new OutBuffer();
+                    Ref<OutBuffer> thisBuf = ref(new OutBuffer());
                     try {
-                        OutBuffer funcBuf = new OutBuffer();
+                        Ref<OutBuffer> funcBuf = ref(new OutBuffer());
                         try {
-                            MODMatchToBuffer(thisBuf, tthis.mod, tf.mod);
-                            MODMatchToBuffer(funcBuf, tf.mod, tthis.mod);
-                            error(loc, new BytePtr("%smethod %s is not callable using a %sobject"), funcBuf.peekChars(), this.toPrettyChars(false), thisBuf.peekChars());
+                            MODMatchToBuffer(ptr(thisBuf), tthis.mod, tf.mod);
+                            MODMatchToBuffer(ptr(funcBuf), tf.mod, tthis.mod);
+                            error(loc, new BytePtr("%smethod %s is not callable using a %sobject"), funcBuf.value.peekChars(), this.toPrettyChars(false), thisBuf.value.peekChars());
                         }
                         finally {
                         }
@@ -866,11 +867,11 @@ public class func {
                         Expression e = null;
                         if ((p.storageClass & 2101248L) != 0)
                         {
-                            e = new IdentifierExp(Loc.initial, p.ident);
-                            e.type = p.type;
+                            e = new IdentifierExp(Loc.initial.value, p.ident);
+                            e.type.value = p.type;
                         }
                         else
-                            e = p.type.defaultInitLiteral(Loc.initial);
+                            e = p.type.defaultInitLiteral(Loc.initial.value);
                         args.set(u, e);
                     }
                 }
@@ -939,11 +940,11 @@ public class func {
             return level;
         }
 
-        public  int getLevelAndCheck(Loc loc, Scope sc, FuncDeclaration fd) {
-            int level = this.getLevel(fd, (sc).intypeof);
+        public  int getLevelAndCheck(Loc loc, Ptr<Scope> sc, FuncDeclaration fd) {
+            int level = this.getLevel(fd, (sc.get()).intypeof);
             if ((level != -2))
                 return level;
-            if (((sc).flags & 16) == 0)
+            if (((sc.get()).flags & 16) == 0)
             {
                 BytePtr xstatic = pcopy(this.isStatic() ? new BytePtr("static ") : new BytePtr(""));
                 error(loc, new BytePtr("%s%s %s cannot access frame of function %s"), xstatic, this.kind(), this.toPrettyChars(false), fd.toPrettyChars(false));
@@ -962,14 +963,14 @@ public class func {
 
         // defaulted all parameters starting with #1
         public  BytePtr toPrettyChars() {
-            toPrettyChars(false);
+            return toPrettyChars(false);
         }
 
         public  BytePtr toFullSignature() {
-            OutBuffer buf = new OutBuffer();
+            Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
-                functionToBufferWithIdent(this.type.toTypeFunction(), buf, this.toChars());
-                return buf.extractChars();
+                functionToBufferWithIdent(this.type.toTypeFunction(), ptr(buf), this.toChars());
+                return buf.value.extractChars();
             }
             finally {
             }
@@ -1018,9 +1019,9 @@ public class func {
                 return false;
             if (this._scope != null)
             {
-                if (((this._scope).stc & 16L) != 0)
+                if (((this._scope.get()).stc & 16L) != 0)
                     return true;
-                this.parent = (this._scope).parent;
+                this.parent.value = (this._scope.get()).parent.value;
                 Dsymbol parent = this.toParent();
                 if (parent.isInterfaceDeclaration() != null)
                     return true;
@@ -1028,18 +1029,18 @@ public class func {
             return false;
         }
 
-        public  boolean canInferAttributes(Scope sc) {
+        public  boolean canInferAttributes(Ptr<Scope> sc) {
             if (this.fbody == null)
                 return false;
             if (this.isVirtualMethod())
                 return false;
-            if (((sc).func != null) && (this.isMember() == null) || (sc).func.isSafeBypassingInference() && (this.isInstantiated() == null))
+            if (((sc.get()).func != null) && (this.isMember() == null) || (sc.get()).func.isSafeBypassingInference() && (this.isInstantiated() == null))
                 return true;
             if ((this.isFuncLiteralDeclaration() != null) || ((this.storage_class & 70368744177664L) != 0) || this.inferRetType && (this.isCtorDeclaration() == null))
                 return true;
             if (this.isInstantiated() != null)
             {
-                TemplateInstance ti = this.parent.isTemplateInstance();
+                TemplateInstance ti = this.parent.value.isTemplateInstance();
                 if ((ti == null) || (ti.isTemplateMixin() != null) || (pequals(ti.tempdecl.ident, this.ident)))
                     return true;
             }
@@ -1058,7 +1059,7 @@ public class func {
                 this.flags |= FUNCFLAG.nogcInprocess;
             if (!this.isVirtual() || this.introducing)
                 this.flags |= FUNCFLAG.returnInprocess;
-            if (global.params.vsafe)
+            if (global.value.params.vsafe)
                 this.flags |= FUNCFLAG.inferScope;
         }
 
@@ -1162,7 +1163,7 @@ public class func {
         }
 
         public  void printGCUsage(Loc loc, BytePtr warn) {
-            if (!global.params.vgc)
+            if (!global.value.params.vgc)
                 return ;
             dmodule.Module m = this.getModule();
             if ((m != null) && m.isRoot() && !this.inUnittest())
@@ -1193,10 +1194,10 @@ public class func {
                 case 8:
                     StructDeclaration sym = t.toDsymbol(null).isStructDeclaration();
                     {
-                        Slice<VarDeclaration> __r1393 = sym.fields.opSlice().copy();
-                        int __key1394 = 0;
-                        for (; (__key1394 < __r1393.getLength());__key1394 += 1) {
-                            VarDeclaration v = __r1393.get(__key1394);
+                        Slice<VarDeclaration> __r1391 = sym.fields.opSlice().copy();
+                        int __key1392 = 0;
+                        for (; (__key1392 < __r1391.getLength());__key1392 += 1) {
+                            VarDeclaration v = __r1391.get(__key1392);
                             Type tmi = v.type.addMod(t.mod);
                             if (!this.isTypeIsolated(tmi))
                                 return false;
@@ -1229,24 +1230,26 @@ public class func {
                     }
                     Function2<Type,Type,Boolean> traverse = new Function2<Type,Type,Boolean>(){
                         public Boolean invoke(Type tp, Type t) {
-                            tp = tp.baseElemOf();
-                            switch ((tp.ty & 0xFF))
+                            Ref<Type> tp_ref = ref(tp);
+                            Ref<Type> t_ref = ref(t);
+                            tp_ref.value = tp_ref.value.baseElemOf();
+                            switch ((tp_ref.value.ty & 0xFF))
                             {
                                 case 0:
                                 case 3:
-                                    return traverseIndirections(tp.nextOf(), t);
+                                    return traverseIndirections(tp_ref.value.nextOf(), t_ref.value);
                                 case 2:
                                 case 7:
-                                    return traverseIndirections(tp, t);
+                                    return traverseIndirections(tp_ref.value, t_ref.value);
                                 case 8:
-                                    StructDeclaration sym = tp.toDsymbol(null).isStructDeclaration();
+                                    Ref<StructDeclaration> sym = ref(tp_ref.value.toDsymbol(null).isStructDeclaration());
                                     {
-                                        Slice<VarDeclaration> __r1395 = sym.fields.opSlice().copy();
-                                        int __key1396 = 0;
-                                        for (; (__key1396 < __r1395.getLength());__key1396 += 1) {
-                                            VarDeclaration v = __r1395.get(__key1396);
-                                            Type tprmi = v.type.addMod(tp.mod);
-                                            if (!traverse.invoke(tprmi, t))
+                                        Ref<Slice<VarDeclaration>> __r1393 = ref(sym.value.fields.opSlice().copy());
+                                        IntRef __key1394 = ref(0);
+                                        for (; (__key1394.value < __r1393.value.getLength());__key1394.value += 1) {
+                                            Ref<VarDeclaration> v = ref(__r1393.value.get(__key1394.value));
+                                            Ref<Type> tprmi = ref(v.value.type.addMod(tp_ref.value.mod));
+                                            if (!traverse.invoke(tprmi.value, t_ref.value))
                                                 return false;
                                         }
                                     }
@@ -1323,13 +1326,13 @@ public class func {
         public  boolean addPreInvariant() {
             AggregateDeclaration ad = this.isThis();
             ClassDeclaration cd = ad != null ? ad.isClassDeclaration() : null;
-            return (ad != null) && !((cd != null) && cd.isCPPclass()) && ((global.params.useInvariants & 0xFF) == 2) && (this.protection.kind == Prot.Kind.protected_) || (this.protection.kind == Prot.Kind.public_) || (this.protection.kind == Prot.Kind.export_) && !this.naked;
+            return (ad != null) && !((cd != null) && cd.isCPPclass()) && ((global.value.params.useInvariants & 0xFF) == 2) && (this.protection.kind == Prot.Kind.protected_) || (this.protection.kind == Prot.Kind.public_) || (this.protection.kind == Prot.Kind.export_) && !this.naked;
         }
 
         public  boolean addPostInvariant() {
             AggregateDeclaration ad = this.isThis();
             ClassDeclaration cd = ad != null ? ad.isClassDeclaration() : null;
-            return (ad != null) && !((cd != null) && cd.isCPPclass()) && (ad.inv != null) && ((global.params.useInvariants & 0xFF) == 2) && (this.protection.kind == Prot.Kind.protected_) || (this.protection.kind == Prot.Kind.public_) || (this.protection.kind == Prot.Kind.export_) && !this.naked;
+            return (ad != null) && !((cd != null) && cd.isCPPclass()) && (ad.inv != null) && ((global.value.params.useInvariants & 0xFF) == 2) && (this.protection.kind == Prot.Kind.protected_) || (this.protection.kind == Prot.Kind.public_) || (this.protection.kind == Prot.Kind.export_) && !this.naked;
         }
 
         public  BytePtr kind() {
@@ -1359,8 +1362,8 @@ public class func {
             return result;
         }
 
-        public  boolean checkNestedReference(Scope sc, Loc loc) {
-            Ref<Scope> sc_ref = ref(sc);
+        public  boolean checkNestedReference(Ptr<Scope> sc, Loc loc) {
+            Ref<Ptr<Scope>> sc_ref = ref(sc);
             {
                 FuncLiteralDeclaration fld = this.isFuncLiteralDeclaration();
                 if ((fld) != null)
@@ -1372,13 +1375,13 @@ public class func {
                     }
                 }
             }
-            if ((this.parent == null) || (pequals(this.parent, (sc_ref.value).parent)))
+            if ((this.parent.value == null) || (pequals(this.parent.value, (sc_ref.value.get()).parent.value)))
                 return false;
             if ((pequals(this.ident, Id.require)) || (pequals(this.ident, Id.ensure)))
                 return false;
             if ((this.isThis() == null) && !this.isNested())
                 return false;
-            Ref<FuncDeclaration> fdthis = ref((sc_ref.value).parent.isFuncDeclaration());
+            Ref<FuncDeclaration> fdthis = ref((sc_ref.value.get()).parent.value.isFuncDeclaration());
             if (fdthis.value == null)
                 return false;
             Dsymbol p = this.toParentLocal();
@@ -1390,32 +1393,33 @@ public class func {
             {
                 Function1<FuncDeclaration,Boolean> checkEnclosing = new Function1<FuncDeclaration,Boolean>(){
                     public Boolean invoke(FuncDeclaration fdv) {
-                        if (fdv == null)
+                        Ref<FuncDeclaration> fdv_ref = ref(fdv);
+                        if (fdv_ref.value == null)
                             return false;
-                        if ((pequals(fdv, fdthis.value)))
+                        if ((pequals(fdv_ref.value, fdthis.value)))
                             return false;
                         if ((!pequals(fdthis.value, this)))
                         {
-                            boolean found = false;
+                            Ref<Boolean> found = ref(false);
                             {
-                                int i = 0;
-                                for (; (i < siblingCallers.length);i += 1){
-                                    if ((pequals(siblingCallers.get(i), fdthis.value)))
-                                        found = true;
+                                IntRef i = ref(0);
+                                for (; (i.value < siblingCallers.length);i.value += 1){
+                                    if ((pequals(siblingCallers.get(i.value), fdthis.value)))
+                                        found.value = true;
                                 }
                             }
-                            if (!found)
+                            if (!found.value)
                             {
-                                if (((sc_ref.value).intypeof == 0) && (((sc_ref.value).flags & 256) == 0))
+                                if (((sc_ref.value.get()).intypeof == 0) && (((sc_ref.value.get()).flags & 256) == 0))
                                     siblingCallers.push(fdthis.value);
                             }
                         }
-                        int lv = fdthis.value.getLevelAndCheck(loc, sc_ref.value, fdv);
-                        if ((lv == -2))
+                        IntRef lv = ref(fdthis.value.getLevelAndCheck(loc, sc_ref.value, fdv_ref.value));
+                        if ((lv.value == -2))
                             return true;
-                        if ((lv == -1))
+                        if ((lv.value == -1))
                             return false;
-                        if ((lv == 0))
+                        if ((lv.value == 0))
                             return false;
                         return false;
                     }
@@ -1475,7 +1479,7 @@ public class func {
             if (this.setGC())
             {
                 this.error(new BytePtr("is `@nogc` yet allocates closures with the GC"));
-                if (global.gag != 0)
+                if (global.value.gag != 0)
                     return true;
             }
             else
@@ -1486,15 +1490,15 @@ public class func {
             DArray<FuncDeclaration> a = new DArray<FuncDeclaration>();
             try {
                 {
-                    Slice<VarDeclaration> __r1397 = this.closureVars.opSlice().copy();
-                    int __key1398 = 0;
-                    for (; (__key1398 < __r1397.getLength());__key1398 += 1) {
-                        VarDeclaration v = __r1397.get(__key1398);
+                    Slice<VarDeclaration> __r1395 = this.closureVars.opSlice().copy();
+                    int __key1396 = 0;
+                    for (; (__key1396 < __r1395.getLength());__key1396 += 1) {
+                        VarDeclaration v = __r1395.get(__key1396);
                         {
-                            Slice<FuncDeclaration> __r1399 = v.nestedrefs.opSlice().copy();
-                            int __key1400 = 0;
-                            for (; (__key1400 < __r1399.getLength());__key1400 += 1) {
-                                FuncDeclaration f = __r1399.get(__key1400);
+                            Slice<FuncDeclaration> __r1397 = v.nestedrefs.opSlice().copy();
+                            int __key1398 = 0;
+                            for (; (__key1398 < __r1397.getLength());__key1398 += 1) {
+                                FuncDeclaration f = __r1397.get(__key1398);
                                 assert((f != this));
                             /*LcheckAncestorsOfANestedRef:*/
                                 {
@@ -1506,16 +1510,16 @@ public class func {
                                         if ((fx.isThis() != null) || (fx.tookAddressOf != 0) || checkEscapingSiblings(fx, this, null))
                                         {
                                             {
-                                                Slice<FuncDeclaration> __r1401 = a.opSlice().copy();
-                                                int __key1402 = 0;
-                                                for (; (__key1402 < __r1401.getLength());__key1402 += 1) {
-                                                    FuncDeclaration f2 = __r1401.get(__key1402);
+                                                Slice<FuncDeclaration> __r1399 = a.opSlice().copy();
+                                                int __key1400 = 0;
+                                                for (; (__key1400 < __r1399.getLength());__key1400 += 1) {
+                                                    FuncDeclaration f2 = __r1399.get(__key1400);
                                                     if ((pequals(f2, f)))
                                                         break LcheckAncestorsOfANestedRef;
                                                 }
                                             }
                                             a.push(f);
-                                            errorSupplemental(f.loc, new BytePtr("%s closes over variable %s at %s"), f.toPrettyChars(false), v.toChars(), v.loc.toChars(global.params.showColumns));
+                                            errorSupplemental(f.loc, new BytePtr("%s closes over variable %s at %s"), f.toPrettyChars(false), v.toChars(), v.loc.toChars(global.value.params.showColumns));
                                             break LcheckAncestorsOfANestedRef;
                                         }
                                     }
@@ -1554,7 +1558,7 @@ public class func {
             return (f != null) && (f.nextOf() != null) && ((f.nextOf().toBasetype().ty & 0xFF) != ENUMTY.Tvoid);
         }
 
-        public  void buildResultVar(Scope sc, Type tret) {
+        public  void buildResultVar(Ptr<Scope> sc, Type tret) {
             if (this.vresult == null)
             {
                 Loc loc = this.fensure != null ? this.fensure.loc : this.loc.copy();
@@ -1563,7 +1567,7 @@ public class func {
                 if (!this.isVirtual())
                     this.vresult.storage_class |= 4L;
                 this.vresult.storage_class |= 274877906944L;
-                this.vresult.parent = this;
+                this.vresult.parent.value = this;
             }
             if ((sc != null) && (this.vresult.semanticRun == PASS.init))
             {
@@ -1572,25 +1576,25 @@ public class func {
                     this.vresult.storage_class |= 2097152L;
                 this.vresult.type = tret;
                 dsymbolSemantic(this.vresult, sc);
-                if ((sc).insert(this.vresult) == null)
+                if ((sc.get()).insert(this.vresult) == null)
                     this.error(new BytePtr("out result %s is already defined"), this.vresult.toChars());
-                assert((pequals(this.vresult.parent, this)));
+                assert((pequals(this.vresult.parent.value, this)));
             }
         }
 
-        public  Statement mergeFrequire(Statement sf, DArray<Expression> params) {
+        public  Statement mergeFrequire(Statement sf, Ptr<DArray<Expression>> params) {
             {
-                Slice<FuncDeclaration> __r1403 = this.foverrides.opSlice().copy();
-                int __key1404 = 0;
-                for (; (__key1404 < __r1403.getLength());__key1404 += 1) {
-                    FuncDeclaration fdv = __r1403.get(__key1404);
+                Slice<FuncDeclaration> __r1401 = this.foverrides.opSlice().copy();
+                int __key1402 = 0;
+                for (; (__key1402 < __r1401.getLength());__key1402 += 1) {
+                    FuncDeclaration fdv = __r1401.get(__key1402);
                     if ((fdv.frequires != null) && (fdv.semanticRun != PASS.semantic3done))
                     {
                         assert(fdv._scope != null);
-                        Scope sc = (fdv._scope).push();
-                        (sc).stc &= -129L;
+                        Ptr<Scope> sc = (fdv._scope.get()).push();
+                        (sc.get()).stc &= -129L;
                         semantic3(fdv, sc);
-                        (sc).pop();
+                        (sc.get()).pop();
                     }
                     sf = fdv.mergeFrequire(sf, params);
                     if ((sf != null) && (fdv.fdrequire != null))
@@ -1600,8 +1604,8 @@ public class func {
                         Statement s2 = new ExpStatement(this.loc, e);
                         Catch c = new Catch(this.loc, getThrowable(), null, sf);
                         c.internalCatch = true;
-                        DArray<Catch> catches = new DArray<Catch>();
-                        (catches).push(c);
+                        Ptr<DArray<Catch>> catches = new DArray<Catch>();
+                        (catches.get()).push(c);
                         sf = new TryCatchStatement(this.loc, s2, catches);
                     }
                     else
@@ -1615,10 +1619,10 @@ public class func {
             if (fd.fensures != null)
                 return true;
             {
-                Slice<FuncDeclaration> __r1405 = fd.foverrides.opSlice().copy();
-                int __key1406 = 0;
-                for (; (__key1406 < __r1405.getLength());__key1406 += 1) {
-                    FuncDeclaration fdv = __r1405.get(__key1406);
+                Slice<FuncDeclaration> __r1403 = fd.foverrides.opSlice().copy();
+                int __key1404 = 0;
+                for (; (__key1404 < __r1403.getLength());__key1404 += 1) {
+                    FuncDeclaration fdv = __r1403.get(__key1404);
                     if (needsFensure(fdv))
                         return true;
                 }
@@ -1629,29 +1633,29 @@ public class func {
         public  void buildEnsureRequire() {
             if (this.frequires != null)
             {
-                assert((this.frequires).length != 0);
-                Loc loc = (this.frequires).get(0).loc.copy();
-                DArray<Statement> s = new DArray<Statement>();
+                assert((this.frequires.get()).length != 0);
+                Loc loc = (this.frequires.get()).get(0).loc.copy();
+                Ptr<DArray<Statement>> s = new DArray<Statement>();
                 {
-                    Slice<Statement> __r1407 = (this.frequires).opSlice().copy();
-                    int __key1408 = 0;
-                    for (; (__key1408 < __r1407.getLength());__key1408 += 1) {
-                        Statement r = __r1407.get(__key1408);
-                        (s).push(new ScopeStatement(r.loc, r, r.loc));
+                    Slice<Statement> __r1405 = (this.frequires.get()).opSlice().copy();
+                    int __key1406 = 0;
+                    for (; (__key1406 < __r1405.getLength());__key1406 += 1) {
+                        Statement r = __r1405.get(__key1406);
+                        (s.get()).push(new ScopeStatement(r.loc, r, r.loc));
                     }
                 }
                 this.frequire = new CompoundStatement(loc, s);
             }
             if (this.fensures != null)
             {
-                assert((this.fensures).length != 0);
-                Loc loc = (this.fensures).get(0).ensure.loc.copy();
-                DArray<Statement> s = new DArray<Statement>();
+                assert((this.fensures.get()).length != 0);
+                Loc loc = (this.fensures.get()).get(0).ensure.loc.copy();
+                Ptr<DArray<Statement>> s = new DArray<Statement>();
                 {
-                    Slice<Ensure> __r1409 = (this.fensures).opSlice().copy();
-                    int __key1410 = 0;
-                    for (; (__key1410 < __r1409.getLength());__key1410 += 1) {
-                        Ensure r = __r1409.get(__key1410).copy();
+                    Slice<Ensure> __r1407 = (this.fensures.get()).opSlice().copy();
+                    int __key1408 = 0;
+                    for (; (__key1408 < __r1407.getLength());__key1408 += 1) {
+                        Ensure r = __r1407.get(__key1408).copy();
                         if ((r.id != null) && this.canBuildResultVar())
                         {
                             Loc rloc = r.ensure.loc.copy();
@@ -1660,11 +1664,11 @@ public class func {
                             long stc = 1374391631872L;
                             VarDeclaration decl = new VarDeclaration(rloc, null, r.id, init, stc);
                             ExpStatement sdecl = new ExpStatement(rloc, decl);
-                            (s).push(new ScopeStatement(rloc, new CompoundStatement(rloc, slice(new Statement[]{sdecl, r.ensure})), rloc));
+                            (s.get()).push(new ScopeStatement(rloc, new CompoundStatement(rloc, slice(new Statement[]{sdecl, r.ensure})), rloc));
                         }
                         else
                         {
-                            (s).push(r.ensure);
+                            (s.get()).push(r.ensure);
                         }
                     }
                 }
@@ -1673,20 +1677,22 @@ public class func {
             if (!this.isVirtual())
                 return ;
             TypeFunction f = (TypeFunction)this.type;
-            Function1<DArray<Parameter>,DArray<Parameter>> toRefCopy = new Function1<DArray<Parameter>,DArray<Parameter>>(){
-                public DArray<Parameter> invoke(DArray<Parameter> params) {
-                    Ref<DArray<Parameter>> result = ref(new DArray<Parameter>());
+            Function1<Ptr<DArray<Parameter>>,Ptr<DArray<Parameter>>> toRefCopy = new Function1<Ptr<DArray<Parameter>>,Ptr<DArray<Parameter>>>(){
+                public Ptr<DArray<Parameter>> invoke(Ptr<DArray<Parameter>> params) {
+                    Ref<Ptr<DArray<Parameter>>> params_ref = ref(params);
+                    Ref<Ptr<DArray<Parameter>>> result = ref(new DArray<Parameter>());
                     Function2<Integer,Parameter,Integer> toRefDg = new Function2<Integer,Parameter,Integer>(){
                         public Integer invoke(Integer n, Parameter p) {
-                            p = p.syntaxCopy();
-                            if ((p.storageClass & 8192L) == 0)
-                                p.storageClass = (p.storageClass | 2097152L) & -4097L;
-                            p.defaultArg = null;
-                            (result.value).push(p);
+                            Ref<Parameter> p_ref = ref(p);
+                            p_ref.value = p_ref.value.syntaxCopy();
+                            if ((p_ref.value.storageClass & 8192L) == 0)
+                                p_ref.value.storageClass = (p_ref.value.storageClass | 2097152L) & -4097L;
+                            p_ref.value.defaultArg = null;
+                            (result.value.get()).push(p_ref.value);
                             return 0;
                         }
                     };
-                    Parameter._foreach(params, toRefDg, null);
+                    Parameter._foreach(params_ref.value, toRefDg, null);
                     return result.value;
                 }
             };
@@ -1697,17 +1703,17 @@ public class func {
                 if (this.parameters != null)
                 {
                     {
-                        Slice<VarDeclaration> __r1411 = (this.parameters).opSlice().copy();
-                        int __key1412 = 0;
-                        for (; (__key1412 < __r1411.getLength());__key1412 += 1) {
-                            VarDeclaration vd = __r1411.get(__key1412);
-                            (this.fdrequireParams).push(new VarExp(loc, vd, true));
+                        Slice<VarDeclaration> __r1409 = (this.parameters.get()).opSlice().copy();
+                        int __key1410 = 0;
+                        for (; (__key1410 < __r1409.getLength());__key1410 += 1) {
+                            VarDeclaration vd = __r1409.get(__key1410);
+                            (this.fdrequireParams.get()).push(new VarExp(loc, vd, true));
                         }
                     }
                 }
                 TypeFunction fo = this.originalType != null ? (TypeFunction)this.originalType : (TypeFunction)f;
-                DArray<Parameter> fparams = toRefCopy.invoke(fo.parameterList.parameters);
-                TypeFunction tf = new TypeFunction(new ParameterList(fparams, VarArg.none), Type.tvoid, LINK.d, 0L);
+                Ptr<DArray<Parameter>> fparams = toRefCopy.invoke(fo.parameterList.parameters);
+                TypeFunction tf = new TypeFunction(new ParameterList(fparams, VarArg.none), Type.tvoid.value, LINK.d, 0L);
                 tf.isnothrow = f.isnothrow;
                 tf.isnogc = f.isnogc;
                 tf.purity = f.purity;
@@ -1722,30 +1728,30 @@ public class func {
             }
             this.fdensureParams = new DArray<Expression>();
             if (this.canBuildResultVar())
-                (this.fdensureParams).push(new IdentifierExp(this.loc, Id.result));
+                (this.fdensureParams.get()).push(new IdentifierExp(this.loc, Id.result));
             if (this.parameters != null)
             {
                 {
-                    Slice<VarDeclaration> __r1413 = (this.parameters).opSlice().copy();
-                    int __key1414 = 0;
-                    for (; (__key1414 < __r1413.getLength());__key1414 += 1) {
-                        VarDeclaration vd = __r1413.get(__key1414);
-                        (this.fdensureParams).push(new VarExp(this.loc, vd, true));
+                    Slice<VarDeclaration> __r1411 = (this.parameters.get()).opSlice().copy();
+                    int __key1412 = 0;
+                    for (; (__key1412 < __r1411.getLength());__key1412 += 1) {
+                        VarDeclaration vd = __r1411.get(__key1412);
+                        (this.fdensureParams.get()).push(new VarExp(this.loc, vd, true));
                     }
                 }
             }
             if (this.fensure != null)
             {
                 Loc loc = this.fensure.loc.copy();
-                DArray<Parameter> fparams = new DArray<Parameter>();
+                Ptr<DArray<Parameter>> fparams = new DArray<Parameter>();
                 if (this.canBuildResultVar())
                 {
                     Parameter p = new Parameter(2097156L, f.nextOf(), Id.result, null, null);
-                    (fparams).push(p);
+                    (fparams.get()).push(p);
                 }
                 TypeFunction fo = this.originalType != null ? (TypeFunction)this.originalType : (TypeFunction)f;
-                (fparams).pushSlice((toRefCopy.invoke(fo.parameterList.parameters)).opSlice());
-                TypeFunction tf = new TypeFunction(new ParameterList(fparams, VarArg.none), Type.tvoid, LINK.d, 0L);
+                (fparams.get()).pushSlice((toRefCopy.invoke(fo.parameterList.parameters).get()).opSlice());
+                TypeFunction tf = new TypeFunction(new ParameterList(fparams, VarArg.none), Type.tvoid.value, LINK.d, 0L);
                 tf.isnothrow = f.isnothrow;
                 tf.isnogc = f.isnogc;
                 tf.purity = f.purity;
@@ -1760,19 +1766,19 @@ public class func {
             }
         }
 
-        public  Statement mergeFensure(Statement sf, Identifier oid, DArray<Expression> params) {
+        public  Statement mergeFensure(Statement sf, Identifier oid, Ptr<DArray<Expression>> params) {
             {
-                Slice<FuncDeclaration> __r1415 = this.foverrides.opSlice().copy();
-                int __key1416 = 0;
-                for (; (__key1416 < __r1415.getLength());__key1416 += 1) {
-                    FuncDeclaration fdv = __r1415.get(__key1416);
+                Slice<FuncDeclaration> __r1413 = this.foverrides.opSlice().copy();
+                int __key1414 = 0;
+                for (; (__key1414 < __r1413.getLength());__key1414 += 1) {
+                    FuncDeclaration fdv = __r1413.get(__key1414);
                     if (needsFensure(fdv) && (fdv.semanticRun != PASS.semantic3done))
                     {
                         assert(fdv._scope != null);
-                        Scope sc = (fdv._scope).push();
-                        (sc).stc &= -129L;
+                        Ptr<Scope> sc = (fdv._scope.get()).push();
+                        (sc.get()).stc &= -129L;
                         semantic3(fdv, sc);
-                        (sc).pop();
+                        (sc.get()).pop();
                     }
                     sf = fdv.mergeFensure(sf, oid, params);
                     if (fdv.fdensure != null)
@@ -1784,13 +1790,13 @@ public class func {
                             Type t2 = this.type.nextOf().toBasetype();
                             if (t1.isBaseOf(t2, null))
                             {
-                                Ptr<Expression> eresult = pcopy((params).get(0));
-                                ExpInitializer ei = new ExpInitializer(Loc.initial, eresult.get());
-                                VarDeclaration v = new VarDeclaration(Loc.initial, t1, Identifier.generateId(new BytePtr("__covres")), ei, 0L);
+                                Ptr<Expression> eresult = pcopy(ptr((params.get()).get(0)));
+                                ExpInitializer ei = new ExpInitializer(Loc.initial.value, eresult.get());
+                                VarDeclaration v = new VarDeclaration(Loc.initial.value, t1, Identifier.generateId(new BytePtr("__covres")), ei, 0L);
                                 v.storage_class |= 1099511627776L;
-                                DeclarationExp de = new DeclarationExp(Loc.initial, v);
-                                VarExp ve = new VarExp(Loc.initial, v, true);
-                                eresult.set(0, (new CommaExp(Loc.initial, de, ve, true)));
+                                DeclarationExp de = new DeclarationExp(Loc.initial.value, v);
+                                VarExp ve = new VarExp(Loc.initial.value, v, true);
+                                eresult.set(0, (new CommaExp(Loc.initial.value, de, ve, true)));
                             }
                         }
                         Expression e = new CallExp(this.loc, new VarExp(this.loc, fdv.fdensure, false), params);
@@ -1816,16 +1822,16 @@ public class func {
             return new ParameterList(null, VarArg.none);
         }
 
-        public static FuncDeclaration genCfunc(DArray<Parameter> fparams, Type treturn, BytePtr name, long stc) {
+        public static FuncDeclaration genCfunc(Ptr<DArray<Parameter>> fparams, Type treturn, BytePtr name, long stc) {
             return genCfunc(fparams, treturn, Identifier.idPool(name, strlen(name)), stc);
         }
 
         // defaulted all parameters starting with #4
-        public static FuncDeclaration genCfunc(DArray<Parameter> fparams, Type treturn, BytePtr name) {
-            genCfunc(fparams, treturn, name, 0L);
+        public static FuncDeclaration genCfunc(Ptr<DArray<Parameter>> fparams, Type treturn, BytePtr name) {
+            return genCfunc(fparams, treturn, name, 0L);
         }
 
-        public static FuncDeclaration genCfunc(DArray<Parameter> fparams, Type treturn, Identifier id, long stc) {
+        public static FuncDeclaration genCfunc(Ptr<DArray<Parameter>> fparams, Type treturn, Identifier id, long stc) {
             FuncDeclaration fd = null;
             TypeFunction tf = null;
             Dsymbol s = null;
@@ -1841,7 +1847,7 @@ public class func {
             else
             {
                 tf = new TypeFunction(new ParameterList(fparams, VarArg.none), treturn, LINK.c, stc);
-                fd = new FuncDeclaration(Loc.initial, Loc.initial, id, 1L, tf);
+                fd = new FuncDeclaration(Loc.initial.value, Loc.initial.value, id, 1L, tf);
                 fd.protection = new Prot(Prot.Kind.public_).copy();
                 fd.linkage = LINK.c;
                 func.genCfuncst.insert((Dsymbol)fd);
@@ -1850,8 +1856,8 @@ public class func {
         }
 
         // defaulted all parameters starting with #4
-        public static FuncDeclaration genCfunc(DArray<Parameter> fparams, Type treturn, Identifier id) {
-            genCfunc(fparams, treturn, id, 0L);
+        public static FuncDeclaration genCfunc(Ptr<DArray<Parameter>> fparams, Type treturn, Identifier id) {
+            return genCfunc(fparams, treturn, id, 0L);
         }
 
         public  void checkDmain() {
@@ -1973,7 +1979,7 @@ public class func {
             return that;
         }
     }
-    public static Expression addInvariant(Loc loc, Scope sc, AggregateDeclaration ad, VarDeclaration vthis) {
+    public static Expression addInvariant(Loc loc, Ptr<Scope> sc, AggregateDeclaration ad, VarDeclaration vthis) {
         Expression e = null;
         FuncDeclaration inv = ad.inv;
         ClassDeclaration cd = ad.isClassDeclaration();
@@ -1986,17 +1992,17 @@ public class func {
         if (inv != null)
         {
             inv.functionSemantic();
-            e = new ThisExp(Loc.initial);
-            e.type = ad.type.addMod(vthis.type.mod);
-            e = new DotVarExp(Loc.initial, e, inv, false);
-            e.type = inv.type;
-            e = new CallExp(Loc.initial, e);
-            e.type = Type.tvoid;
+            e = new ThisExp(Loc.initial.value);
+            e.type.value = ad.type.addMod(vthis.type.mod);
+            e = new DotVarExp(Loc.initial.value, e, inv, false);
+            e.type.value = inv.type;
+            e = new CallExp(Loc.initial.value, e);
+            e.type.value = Type.tvoid.value;
         }
         return e;
     }
 
-    public static int overloadApply(Dsymbol fstart, Function1<Dsymbol,Integer> dg, Scope sc) {
+    public static int overloadApply(Dsymbol fstart, Function1<Dsymbol,Integer> dg, Ptr<Scope> sc) {
         Dsymbol next = null;
         {
             Dsymbol d = fstart;
@@ -2089,7 +2095,7 @@ public class func {
                                         if ((r) != 0)
                                             return r;
                                     }
-                                    next = td.overnext;
+                                    next = td.overnext.value;
                                 }
                                 else {
                                     FuncDeclaration fd = d.isFuncDeclaration();
@@ -2119,33 +2125,33 @@ public class func {
 
     // defaulted all parameters starting with #3
     public static int overloadApply(Dsymbol fstart, Function1<Dsymbol,Integer> dg) {
-        overloadApply(fstart, dg, null);
+        return overloadApply(fstart, dg, null);
     }
 
-    public static Mismatches MODMatchToBuffer(OutBuffer buf, byte lhsMod, byte rhsMod) {
+    public static Mismatches MODMatchToBuffer(Ptr<OutBuffer> buf, byte lhsMod, byte rhsMod) {
         Mismatches mismatches = new Mismatches();
         boolean bothMutable = ((lhsMod & 0xFF) & (rhsMod & 0xFF)) == 0;
         boolean sharedMismatch = (((lhsMod & 0xFF) ^ (rhsMod & 0xFF)) & MODFlags.shared_) != 0;
         boolean sharedMismatchOnly = ((lhsMod & 0xFF) ^ (rhsMod & 0xFF)) == MODFlags.shared_;
         if (((lhsMod & 0xFF) & MODFlags.shared_) != 0)
-            (buf).writestring(new ByteSlice("`shared` "));
+            (buf.get()).writestring(new ByteSlice("`shared` "));
         else if (sharedMismatch && (((lhsMod & 0xFF) & MODFlags.immutable_) == 0))
         {
-            (buf).writestring(new ByteSlice("non-shared "));
+            (buf.get()).writestring(new ByteSlice("non-shared "));
             mismatches.isNotShared = true;
         }
         if (bothMutable && sharedMismatchOnly)
         {
         }
         else if (((lhsMod & 0xFF) & MODFlags.immutable_) != 0)
-            (buf).writestring(new ByteSlice("`immutable` "));
+            (buf.get()).writestring(new ByteSlice("`immutable` "));
         else if (((lhsMod & 0xFF) & MODFlags.const_) != 0)
-            (buf).writestring(new ByteSlice("`const` "));
+            (buf.get()).writestring(new ByteSlice("`const` "));
         else if (((lhsMod & 0xFF) & MODFlags.wild) != 0)
-            (buf).writestring(new ByteSlice("`inout` "));
+            (buf.get()).writestring(new ByteSlice("`inout` "));
         else
         {
-            (buf).writestring(new ByteSlice("mutable "));
+            (buf.get()).writestring(new ByteSlice("mutable "));
             mismatches.isMutable = true;
         }
         return mismatches;
@@ -2165,33 +2171,33 @@ public class func {
         public static final byte overloadOnly = (byte)2;
     }
 
-    public static FuncDeclaration resolveFuncCall(Loc loc, Scope sc, Dsymbol s, DArray<RootObject> tiargs, Type tthis, DArray<Expression> fargs, byte flags) {
+    public static FuncDeclaration resolveFuncCall(Loc loc, Ptr<Scope> sc, Dsymbol s, Ptr<DArray<RootObject>> tiargs, Type tthis, Ptr<DArray<Expression>> fargs, byte flags) {
         if (s == null)
             return null;
-        if ((tiargs != null) && arrayObjectIsError(tiargs) || (fargs != null) && arrayObjectIsError(((DArray<RootObject>)fargs)))
+        if ((tiargs != null) && arrayObjectIsError(tiargs) || (fargs != null) && arrayObjectIsError(((Ptr<DArray<RootObject>>)fargs)))
         {
             return null;
         }
-        MatchAccumulator m = new MatchAccumulator();
+        Ref<MatchAccumulator> m = ref(new MatchAccumulator());
         functionResolve(m, s, loc, sc, tiargs, tthis, fargs, null);
         Dsymbol orig_s = s;
-        if ((m.last > MATCH.nomatch) && (m.lastf != null))
+        if ((m.value.last > MATCH.nomatch) && (m.value.lastf != null))
         {
-            if ((m.count == 1))
+            if ((m.value.count == 1))
             {
                 if (((flags & 0xFF) & 1) == 0)
-                    m.lastf.functionSemantic();
-                return m.lastf;
+                    m.value.lastf.functionSemantic();
+                return m.value.lastf;
             }
-            if ((((flags & 0xFF) & 2) != 0) && (tthis == null) && m.lastf.needThis())
+            if ((((flags & 0xFF) & 2) != 0) && (tthis == null) && m.value.lastf.needThis())
             {
-                return m.lastf;
+                return m.value.lastf;
             }
         }
-        if ((m.last <= MATCH.nomatch))
+        if ((m.value.last <= MATCH.nomatch))
         {
-            if ((m.count == 1))
-                return m.lastf;
+            if ((m.value.count == 1))
+                return m.value.lastf;
             if (((flags & 0xFF) & 1) != 0)
                 return null;
         }
@@ -2200,30 +2206,30 @@ public class func {
         TemplateDeclaration td = s.isTemplateDeclaration();
         if ((td != null) && (td.funcroot != null))
             s = (fd = td.funcroot);
-        OutBuffer tiargsBuf = new OutBuffer();
+        Ref<OutBuffer> tiargsBuf = ref(new OutBuffer());
         try {
-            arrayObjectsToBuffer(tiargsBuf, tiargs);
-            OutBuffer fargsBuf = new OutBuffer();
+            arrayObjectsToBuffer(ptr(tiargsBuf), tiargs);
+            Ref<OutBuffer> fargsBuf = ref(new OutBuffer());
             try {
-                fargsBuf.writeByte(40);
-                argExpTypesToCBuffer(fargsBuf, fargs);
-                fargsBuf.writeByte(41);
+                fargsBuf.value.writeByte(40);
+                argExpTypesToCBuffer(ptr(fargsBuf), fargs);
+                fargsBuf.value.writeByte(41);
                 if (tthis != null)
-                    tthis.modToBuffer(fargsBuf);
+                    tthis.modToBuffer(ptr(fargsBuf));
                 int numOverloadsDisplay = 5;
-                if ((m.lastf == null) && (((flags & 0xFF) & 1) == 0))
+                if ((m.value.lastf == null) && (((flags & 0xFF) & 1) == 0))
                 {
                     if ((fd == null) && (td == null) && (od == null))
                     {
                     }
                     else if ((td != null) && (fd == null))
                     {
-                        error(loc, new BytePtr("%s `%s.%s` cannot deduce function from argument types `!(%s)%s`, candidates are:"), td.kind(), td.parent.toPrettyChars(false), td.ident.toChars(), tiargsBuf.peekChars(), fargsBuf.peekChars());
+                        error(loc, new BytePtr("%s `%s.%s` cannot deduce function from argument types `!(%s)%s`, candidates are:"), td.kind(), td.parent.value.toPrettyChars(false), td.ident.toChars(), tiargsBuf.value.peekChars(), fargsBuf.value.peekChars());
                         printCandidatesTemplateDeclaration(loc, td);
                     }
                     else if (od != null)
                     {
-                        error(loc, new BytePtr("none of the overloads of `%s` are callable using argument types `!(%s)%s`"), od.ident.toChars(), tiargsBuf.peekChars(), fargsBuf.peekChars());
+                        error(loc, new BytePtr("none of the overloads of `%s` are callable using argument types `!(%s)%s`"), od.ident.toChars(), tiargsBuf.value.peekChars(), fargsBuf.value.peekChars());
                     }
                     else
                     {
@@ -2234,15 +2240,15 @@ public class func {
                         TypeFunction tf = fd.type.toTypeFunction();
                         if ((tthis != null) && !MODimplicitConv(tthis.mod, tf.mod))
                         {
-                            OutBuffer thisBuf = new OutBuffer();
+                            Ref<OutBuffer> thisBuf = ref(new OutBuffer());
                             try {
-                                OutBuffer funcBuf = new OutBuffer();
+                                Ref<OutBuffer> funcBuf = ref(new OutBuffer());
                                 try {
-                                    MODMatchToBuffer(thisBuf, tthis.mod, tf.mod);
-                                    Mismatches mismatches = MODMatchToBuffer(funcBuf, tf.mod, tthis.mod).copy();
+                                    MODMatchToBuffer(ptr(thisBuf), tthis.mod, tf.mod);
+                                    Mismatches mismatches = MODMatchToBuffer(ptr(funcBuf), tf.mod, tthis.mod).copy();
                                     if (hasOverloads)
                                     {
-                                        error(loc, new BytePtr("none of the overloads of `%s` are callable using a %sobject, candidates are:"), fd.ident.toChars(), thisBuf.peekChars());
+                                        error(loc, new BytePtr("none of the overloads of `%s` are callable using a %sobject, candidates are:"), fd.ident.toChars(), thisBuf.value.peekChars());
                                     }
                                     else
                                     {
@@ -2250,13 +2256,13 @@ public class func {
                                         functionResolve(m, orig_s, loc, sc, tiargs, tthis, fargs, ptr(failMessage));
                                         if (failMessage.value != null)
                                         {
-                                            error(loc, new BytePtr("%s `%s%s%s` is not callable using argument types `%s`"), fd.kind(), fd.toPrettyChars(false), parametersTypeToChars(tf.parameterList), tf.modToChars(), fargsBuf.peekChars());
+                                            error(loc, new BytePtr("%s `%s%s%s` is not callable using argument types `%s`"), fd.kind(), fd.toPrettyChars(false), parametersTypeToChars(tf.parameterList), tf.modToChars(), fargsBuf.value.peekChars());
                                             errorSupplemental(loc, failMessage.value);
                                         }
                                         else
                                         {
                                             BytePtr fullFdPretty = pcopy(fd.toPrettyChars(false));
-                                            error(loc, new BytePtr("%smethod `%s` is not callable using a %sobject"), funcBuf.peekChars(), fullFdPretty, thisBuf.peekChars());
+                                            error(loc, new BytePtr("%smethod `%s` is not callable using a %sobject"), funcBuf.value.peekChars(), fullFdPretty, thisBuf.value.peekChars());
                                             if (mismatches.isNotShared)
                                                 errorSupplemental(loc, new BytePtr("Consider adding `shared` to %s"), fullFdPretty);
                                             else if (mismatches.isMutable)
@@ -2274,11 +2280,11 @@ public class func {
                         {
                             if (hasOverloads)
                             {
-                                error(loc, new BytePtr("none of the overloads of `%s` are callable using argument types `%s`, candidates are:"), fd.toChars(), fargsBuf.peekChars());
+                                error(loc, new BytePtr("none of the overloads of `%s` are callable using argument types `%s`, candidates are:"), fd.toChars(), fargsBuf.value.peekChars());
                             }
                             else
                             {
-                                error(loc, new BytePtr("%s `%s%s%s` is not callable using argument types `%s`"), fd.kind(), fd.toPrettyChars(false), parametersTypeToChars(tf.parameterList), tf.modToChars(), fargsBuf.peekChars());
+                                error(loc, new BytePtr("%s `%s%s%s` is not callable using argument types `%s`"), fd.kind(), fd.toPrettyChars(false), parametersTypeToChars(tf.parameterList), tf.modToChars(), fargsBuf.value.peekChars());
                                 Ref<BytePtr> failMessage = ref(null);
                                 functionResolve(m, orig_s, loc, sc, tiargs, tthis, fargs, ptr(failMessage));
                                 if (failMessage.value != null)
@@ -2289,15 +2295,15 @@ public class func {
                             printCandidatesFuncDeclaration(loc, fd);
                     }
                 }
-                else if (m.nextf != null)
+                else if (m.value.nextf != null)
                 {
-                    TypeFunction tf1 = m.lastf.type.toTypeFunction();
-                    TypeFunction tf2 = m.nextf.type.toTypeFunction();
+                    TypeFunction tf1 = m.value.lastf.type.toTypeFunction();
+                    TypeFunction tf2 = m.value.nextf.type.toTypeFunction();
                     BytePtr lastprms = pcopy(parametersTypeToChars(tf1.parameterList));
                     BytePtr nextprms = pcopy(parametersTypeToChars(tf2.parameterList));
                     BytePtr mod1 = pcopy(prependSpace(MODtoChars(tf1.mod)));
                     BytePtr mod2 = pcopy(prependSpace(MODtoChars(tf2.mod)));
-                    error(loc, new BytePtr("`%s.%s` called with argument types `%s` matches both:\n%s:     `%s%s%s`\nand:\n%s:     `%s%s%s`"), s.parent.toPrettyChars(false), s.ident.toChars(), fargsBuf.peekChars(), m.lastf.loc.toChars(global.params.showColumns), m.lastf.toPrettyChars(false), lastprms, mod1, m.nextf.loc.toChars(global.params.showColumns), m.nextf.toPrettyChars(false), nextprms, mod2);
+                    error(loc, new BytePtr("`%s.%s` called with argument types `%s` matches both:\n%s:     `%s%s%s`\nand:\n%s:     `%s%s%s`"), s.parent.value.toPrettyChars(false), s.ident.toChars(), fargsBuf.value.peekChars(), m.value.lastf.loc.toChars(global.value.params.showColumns), m.value.lastf.toPrettyChars(false), lastprms, mod1, m.value.nextf.loc.toChars(global.value.params.showColumns), m.value.nextf.toPrettyChars(false), nextprms, mod2);
                 }
                 return null;
             }
@@ -2329,11 +2335,11 @@ public class func {
                         if ((td) != null)
                         {
                             errorSupplemental(td.loc, new BytePtr("`%s`"), td.toPrettyChars(false));
-                            nextOverload = td.overnext;
+                            nextOverload = td.overnext.value;
                         }
                     }
                 }
-                if (global.params.verbose || ((numToDisplay -= 1) != 0))
+                if (global.value.params.verbose || ((numToDisplay -= 1) != 0))
                     return 0;
                 int num = 0;
                 Function1<Dsymbol,Integer> __lambda2FuncDeclaration = new Function1<Dsymbol,Integer>(){
@@ -2373,11 +2379,11 @@ public class func {
                         if ((td) != null)
                         {
                             errorSupplemental(td.loc, new BytePtr("`%s`"), td.toPrettyChars(false));
-                            nextOverload = td.overnext;
+                            nextOverload = td.overnext.value;
                         }
                     }
                 }
-                if (global.params.verbose || ((numToDisplay -= 1) != 0))
+                if (global.value.params.verbose || ((numToDisplay -= 1) != 0))
                     return 0;
                 int num = 0;
                 Function1<Dsymbol,Integer> __lambda2TemplateDeclaration = new Function1<Dsymbol,Integer>(){
@@ -2408,59 +2414,65 @@ public class func {
     }
 
     public static boolean traverseIndirections(Type ta, Type tb) {
-        Function4<Type,Type,Ctxt,Boolean,Boolean> traverse = new Function4<Type,Type,Ctxt,Boolean,Boolean>(){
-            public Boolean invoke(Type ta, Type tb, Ctxt ctxt, Boolean reversePass) {
-                ta = ta.baseElemOf();
-                tb = tb.baseElemOf();
+        Function4<Type,Type,Ptr<Ctxt>,Boolean,Boolean> traverse = new Function4<Type,Type,Ptr<Ctxt>,Boolean,Boolean>(){
+            public Boolean invoke(Type ta, Type tb, Ptr<Ctxt> ctxt, Boolean reversePass) {
+                Ref<Type> ta_ref = ref(ta);
+                Ref<Type> tb_ref = ref(tb);
+                Ref<Ptr<Ctxt>> ctxt_ref = ref(ctxt);
+                Ref<Boolean> reversePass_ref = ref(reversePass);
+                ta_ref.value = ta_ref.value.baseElemOf();
+                tb_ref.value = tb_ref.value.baseElemOf();
                 Function2<Type,Type,Boolean> mayAliasDirect = new Function2<Type,Type,Boolean>(){
                     public Boolean invoke(Type source, Type target) {
-                        return (source.constConv(target) != MATCH.nomatch) || ((target.ty & 0xFF) == ENUMTY.Tvoid) && MODimplicitConv(source.mod, target.mod);
+                        Ref<Type> source_ref = ref(source);
+                        Ref<Type> target_ref = ref(target);
+                        return (source_ref.value.constConv(target_ref.value) != MATCH.nomatch) || ((target_ref.value.ty & 0xFF) == ENUMTY.Tvoid) && MODimplicitConv(source_ref.value.mod, target_ref.value.mod);
                     }
                 };
-                if (mayAliasDirect.invoke(reversePass ? tb : ta, reversePass ? ta : tb))
+                if (mayAliasDirect.invoke(reversePass_ref.value ? tb_ref.value : ta_ref.value, reversePass_ref.value ? ta_ref.value : tb_ref.value))
                 {
                     return false;
                 }
-                if ((ta.nextOf() != null) && (pequals(ta.nextOf(), tb.nextOf())))
+                if ((ta_ref.value.nextOf() != null) && (pequals(ta_ref.value.nextOf(), tb_ref.value.nextOf())))
                 {
                     return true;
                 }
-                if (((tb.ty & 0xFF) == ENUMTY.Tclass) || ((tb.ty & 0xFF) == ENUMTY.Tstruct))
+                if (((tb_ref.value.ty & 0xFF) == ENUMTY.Tclass) || ((tb_ref.value.ty & 0xFF) == ENUMTY.Tstruct))
                 {
                     {
-                        Ctxt c = ctxt;
-                        for (; c != null;c = (c).prev) {
-                            if ((pequals(tb, (c).type)))
+                        Ref<Ptr<Ctxt>> c = ref(ctxt_ref.value);
+                        for (; c.value != null;c.value = (c.value.get()).prev) {
+                            if ((pequals(tb_ref.value, (c.value.get()).type)))
                                 return true;
                         }
                     }
-                    Ctxt c = new Ctxt();
-                    c.prev = ctxt;
-                    c.type = tb;
-                    AggregateDeclaration sym = tb.toDsymbol(null).isAggregateDeclaration();
+                    Ref<Ctxt> c = ref(new Ctxt());
+                    c.value.prev = ctxt_ref.value;
+                    c.value.type = tb_ref.value;
+                    Ref<AggregateDeclaration> sym = ref(tb_ref.value.toDsymbol(null).isAggregateDeclaration());
                     {
-                        Slice<VarDeclaration> __r1417 = sym.fields.opSlice().copy();
-                        int __key1418 = 0;
-                        for (; (__key1418 < __r1417.getLength());__key1418 += 1) {
-                            VarDeclaration v = __r1417.get(__key1418);
-                            Type tprmi = v.type.addMod(tb.mod);
-                            if (!traverse.invoke(ta, tprmi, c, reversePass))
+                        Ref<Slice<VarDeclaration>> __r1415 = ref(sym.value.fields.opSlice().copy());
+                        IntRef __key1416 = ref(0);
+                        for (; (__key1416.value < __r1415.value.getLength());__key1416.value += 1) {
+                            Ref<VarDeclaration> v = ref(__r1415.value.get(__key1416.value));
+                            Ref<Type> tprmi = ref(v.value.type.addMod(tb_ref.value.mod));
+                            if (!traverse.invoke(ta_ref.value, tprmi.value, ptr(c), reversePass_ref.value))
                                 return false;
                         }
                     }
                 }
-                else if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Taarray) || ((tb.ty & 0xFF) == ENUMTY.Tpointer))
+                else if (((tb_ref.value.ty & 0xFF) == ENUMTY.Tarray) || ((tb_ref.value.ty & 0xFF) == ENUMTY.Taarray) || ((tb_ref.value.ty & 0xFF) == ENUMTY.Tpointer))
                 {
-                    Type tind = tb.nextOf();
-                    if (!traverse.invoke(ta, tind, ctxt, reversePass))
+                    Ref<Type> tind = ref(tb_ref.value.nextOf());
+                    if (!traverse.invoke(ta_ref.value, tind.value, ctxt_ref.value, reversePass_ref.value))
                         return false;
                 }
-                else if (tb.hasPointers())
+                else if (tb_ref.value.hasPointers())
                 {
                     return false;
                 }
-                if (!reversePass)
-                    return traverse.invoke(tb, ta, ctxt, true);
+                if (!reversePass_ref.value)
+                    return traverse.invoke(tb_ref.value, ta_ref.value, ctxt_ref.value, true);
                 return true;
             }
         };
@@ -2482,9 +2494,9 @@ public class func {
     }
 
     public static boolean checkEscapingSiblings(FuncDeclaration f, FuncDeclaration outerFunc, Object p) {
-        PrevSibling ps = new PrevSibling();
-        ps.p = ((PrevSibling)p);
-        ps.f = f;
+        Ref<PrevSibling> ps = ref(new PrevSibling());
+        ps.value.p = ((Ptr<PrevSibling>)p);
+        ps.value.f = f;
         boolean bAnyClosures = false;
         {
             int i = 0;
@@ -2506,16 +2518,16 @@ public class func {
                         }
                     }
                 }
-                PrevSibling prev = ((PrevSibling)p);
+                Ptr<PrevSibling> prev = ((Ptr<PrevSibling>)p);
                 for (; 1 != 0;){
                     if (prev == null)
                     {
-                        (bAnyClosures ? 1 : 0) |= (checkEscapingSiblings(g, outerFunc, ps) ? 1 : 0);
+                        (bAnyClosures ? 1 : 0) |= (checkEscapingSiblings(g, outerFunc, ptr(ps)) ? 1 : 0);
                         break;
                     }
-                    if ((pequals((prev).f, g)))
+                    if ((pequals((prev.get()).f, g)))
                         break;
-                    prev = (prev).p;
+                    prev = (prev.get()).p;
                 }
             }
         }
@@ -2524,7 +2536,7 @@ public class func {
 
     // defaulted all parameters starting with #3
     public static boolean checkEscapingSiblings(FuncDeclaration f, FuncDeclaration outerFunc) {
-        checkEscapingSiblings(f, outerFunc, null);
+        return checkEscapingSiblings(f, outerFunc, null);
     }
 
     // from template followInstantiationContext!(AggregateDeclaration)
@@ -2554,10 +2566,10 @@ public class func {
                 if (ti == null)
                     break;
                 {
-                    Slice<RootObject> __r1364 = (ti.tiargs).opSlice().copy();
-                    int __key1365 = 0;
-                    for (; (__key1365 < __r1364.getLength());__key1365 += 1) {
-                        RootObject oarg = __r1364.get(__key1365);
+                    Slice<RootObject> __r1362 = (ti.tiargs.get()).opSlice().copy();
+                    int __key1363 = 0;
+                    for (; (__key1363 < __r1362.getLength());__key1363 += 1) {
+                        RootObject oarg = __r1362.get(__key1363);
                         Dsymbol sa = getDsymbol(oarg);
                         if (sa == null)
                             continue;
@@ -2606,10 +2618,10 @@ public class func {
                 if (ti == null)
                     break;
                 {
-                    Slice<RootObject> __r921 = (ti.tiargs).opSlice().copy();
-                    int __key922 = 0;
-                    for (; (__key922 < __r921.getLength());__key922 += 1) {
-                        RootObject oarg = __r921.get(__key922);
+                    Slice<RootObject> __r919 = (ti.tiargs.get()).opSlice().copy();
+                    int __key920 = 0;
+                    for (; (__key920 < __r919.getLength());__key920 += 1) {
+                        RootObject oarg = __r919.get(__key920);
                         Dsymbol sa = getDsymbol(oarg);
                         if (sa == null)
                             continue;
@@ -2658,10 +2670,10 @@ public class func {
                 if (ti == null)
                     break;
                 {
-                    Slice<RootObject> __r1391 = (ti.tiargs).opSlice().copy();
-                    int __key1392 = 0;
-                    for (; (__key1392 < __r1391.getLength());__key1392 += 1) {
-                        RootObject oarg = __r1391.get(__key1392);
+                    Slice<RootObject> __r1389 = (ti.tiargs.get()).opSlice().copy();
+                    int __key1390 = 0;
+                    for (; (__key1390 < __r1389.getLength());__key1390 += 1) {
+                        RootObject oarg = __r1389.get(__key1390);
                         Dsymbol sa = getDsymbol(oarg);
                         if (sa == null)
                             continue;
@@ -2703,7 +2715,7 @@ public class func {
 
     public static class FuncAliasDeclaration extends FuncDeclaration
     {
-        public FuncDeclaration funcalias;
+        public FuncDeclaration funcalias = null;
         public boolean hasOverloads = false;
         public  FuncAliasDeclaration(Identifier ident, FuncDeclaration funcalias, boolean hasOverloads) {
             super(funcalias.loc, funcalias.endloc, ident, funcalias.storage_class, funcalias.type);
@@ -2838,11 +2850,11 @@ public class func {
     public static class FuncLiteralDeclaration extends FuncDeclaration
     {
         public byte tok = 0;
-        public Type treq;
+        public Type treq = null;
         public boolean deferToObj = false;
         public  FuncLiteralDeclaration(Loc loc, Loc endloc, Type type, byte tok, ForeachStatement fes, Identifier id) {
             super(loc, endloc, null, 0L, type);
-            this.ident = id != null ? id : Id.empty;
+            this.ident = id != null ? id : Id.empty.value;
             this.tok = tok;
             this.fes = fes;
         }
@@ -2879,7 +2891,7 @@ public class func {
             return false;
         }
 
-        public  void modifyReturns(Scope sc, Type tret) {
+        public  void modifyReturns(Ptr<Scope> sc, Type tret) {
             if ((this.semanticRun < PASS.semantic3done))
                 return ;
             if (this.fes != null)
@@ -2902,9 +2914,9 @@ public class func {
         }
 
         public  BytePtr toPrettyChars(boolean QualifyTypes) {
-            if (this.parent != null)
+            if (this.parent.value != null)
             {
-                TemplateInstance ti = this.parent.isTemplateInstance();
+                TemplateInstance ti = this.parent.value.isTemplateInstance();
                 if (ti != null)
                     return ti.tempdecl.toPrettyChars(QualifyTypes);
             }
@@ -2913,7 +2925,7 @@ public class func {
 
         // defaulted all parameters starting with #1
         public  BytePtr toPrettyChars() {
-            toPrettyChars(false);
+            return toPrettyChars(false);
         }
 
         public  void accept(Visitor v) {
@@ -3013,7 +3025,7 @@ public class func {
     {
         public boolean isCpCtor = false;
         public  CtorDeclaration(Loc loc, Loc endloc, long stc, Type type, boolean isCpCtor) {
-            super(loc, endloc, Id.ctor, stc, type);
+            super(loc, endloc, Id.ctor.value, stc, type);
             this.isCpCtor = isCpCtor;
         }
 
@@ -3045,7 +3057,7 @@ public class func {
         }
 
         public  boolean addPostInvariant() {
-            return (this.isThis() != null) && (this.vthis != null) && ((global.params.useInvariants & 0xFF) == 2);
+            return (this.isThis() != null) && (this.vthis != null) && ((global.value.params.useInvariants & 0xFF) == 2);
         }
 
         public  CtorDeclaration isCtorDeclaration() {
@@ -3164,7 +3176,7 @@ public class func {
         }
 
         public  boolean addPostInvariant() {
-            return (this.isThis() != null) && (this.vthis != null) && ((global.params.useInvariants & 0xFF) == 2);
+            return (this.isThis() != null) && (this.vthis != null) && ((global.value.params.useInvariants & 0xFF) == 2);
         }
 
         public  boolean overloadInsert(Dsymbol s) {
@@ -3268,7 +3280,7 @@ public class func {
     public static class DtorDeclaration extends FuncDeclaration
     {
         public  DtorDeclaration(Loc loc, Loc endloc) {
-            super(loc, endloc, Id.dtor, 0L, null);
+            super(loc, endloc, Id.dtor.value, 0L, null);
         }
 
         public  DtorDeclaration(Loc loc, Loc endloc, long stc, Identifier id) {
@@ -3294,7 +3306,7 @@ public class func {
         }
 
         public  boolean addPreInvariant() {
-            return (this.isThis() != null) && (this.vthis != null) && ((global.params.useInvariants & 0xFF) == 2);
+            return (this.isThis() != null) && (this.vthis != null) && ((global.value.params.useInvariants & 0xFF) == 2);
         }
 
         public  boolean addPostInvariant() {
@@ -3637,7 +3649,7 @@ public class func {
     }
     public static class StaticDtorDeclaration extends FuncDeclaration
     {
-        public VarDeclaration vgate;
+        public VarDeclaration vgate = null;
         public  StaticDtorDeclaration(Loc loc, Loc endloc, long stc) {
             super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("_staticDtor"), loc), 1L | stc, null);
         }
@@ -3995,7 +4007,7 @@ public class func {
     }
     public static class UnitTestDeclaration extends FuncDeclaration
     {
-        public BytePtr codedoc;
+        public BytePtr codedoc = null;
         public DArray<FuncDeclaration> deferredNested = new DArray<FuncDeclaration>();
         public  UnitTestDeclaration(Loc loc, Loc endloc, long stc, BytePtr codedoc) {
             super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("__unittest"), loc), stc, null);
@@ -4122,9 +4134,9 @@ public class func {
     }
     public static class NewDeclaration extends FuncDeclaration
     {
-        public DArray<Parameter> parameters;
+        public Ptr<DArray<Parameter>> parameters = null;
         public int varargs = 0;
-        public  NewDeclaration(Loc loc, Loc endloc, long stc, DArray<Parameter> fparams, int varargs) {
+        public  NewDeclaration(Loc loc, Loc endloc, long stc, Ptr<DArray<Parameter>> fparams, int varargs) {
             super(loc, endloc, Id.classNew, 1L | stc, null);
             this.parameters = fparams;
             this.varargs = varargs;
@@ -4250,8 +4262,8 @@ public class func {
     }
     public static class DeleteDeclaration extends FuncDeclaration
     {
-        public DArray<Parameter> parameters;
-        public  DeleteDeclaration(Loc loc, Loc endloc, long stc, DArray<Parameter> fparams) {
+        public Ptr<DArray<Parameter>> parameters = null;
+        public  DeleteDeclaration(Loc loc, Loc endloc, long stc, Ptr<DArray<Parameter>> fparams) {
             super(loc, endloc, Id.classDelete, 1L | stc, null);
             this.parameters = fparams;
         }

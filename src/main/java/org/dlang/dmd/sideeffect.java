@@ -32,12 +32,13 @@ public class sideeffect {
         }
 
         public  void visit(Expression e) {
-            if (((e.op & 0xFF) == 18))
+            Ref<Expression> e_ref = ref(e);
+            if (((e_ref.value.op & 0xFF) == 18))
             {
                 this.stop = true;
                 return ;
             }
-            this.stop = lambdaHasSideEffect(e);
+            this.stop = lambdaHasSideEffect(e_ref.value);
         }
 
     }
@@ -48,7 +49,8 @@ public class sideeffect {
         }
 
         public  void visit(Expression e) {
-            this.stop = lambdaHasSideEffect(e);
+            Ref<Expression> e_ref = ref(e);
+            this.stop = lambdaHasSideEffect(e_ref.value);
         }
 
     }
@@ -141,12 +143,12 @@ public class sideeffect {
                 return true;
             case 18:
                 CallExp ce = (CallExp)e;
-                if (ce.e1.type != null)
+                if (ce.e1.type.value != null)
                 {
-                    Type t = ce.e1.type.toBasetype();
+                    Type t = ce.e1.type.value.toBasetype();
                     if (((t.ty & 0xFF) == ENUMTY.Tdelegate))
                         t = ((TypeDelegate)t).next;
-                    if (((t.ty & 0xFF) == ENUMTY.Tfunction) && ((ce.f != null ? callSideEffectLevel(ce.f) : callSideEffectLevel(ce.e1.type)) > 0))
+                    if (((t.ty & 0xFF) == ENUMTY.Tfunction) && ((ce.f != null ? callSideEffectLevel(ce.f) : callSideEffectLevel(ce.e1.type.value)) > 0))
                     {
                     }
                     else
@@ -155,7 +157,7 @@ public class sideeffect {
                 break;
             case 12:
                 CastExp ce_1 = (CastExp)e;
-                if (((ce_1.to.ty & 0xFF) == ENUMTY.Tclass) && ((ce_1.e1.op & 0xFF) == 18) && ((ce_1.e1.type.ty & 0xFF) == ENUMTY.Tclass))
+                if (((ce_1.to.ty & 0xFF) == ENUMTY.Tclass) && ((ce_1.e1.op & 0xFF) == 18) && ((ce_1.e1.type.value.ty & 0xFF) == ENUMTY.Tclass))
                     return true;
                 break;
             default:
@@ -171,7 +173,7 @@ public class sideeffect {
         {
             case 12:
                 CastExp ce = (CastExp)e;
-                if (ce.to.equals(Type.tvoid))
+                if (ce.to.equals(Type.tvoid.value))
                 {
                     return false;
                 }
@@ -186,18 +188,18 @@ public class sideeffect {
                 }
                 break;
             case 18:
-                if (((global.params.warnings & 0xFF) != 2) && (global.gag == 0))
+                if (((global.value.params.warnings & 0xFF) != 2) && (global.value.gag == 0))
                 {
                     CallExp ce_1 = (CallExp)e;
-                    if (((e.type.ty & 0xFF) == ENUMTY.Tvoid))
+                    if (((e.type.value.ty & 0xFF) == ENUMTY.Tvoid))
                     {
                     }
-                    else if (ce_1.e1.type != null)
+                    else if (ce_1.e1.type.value != null)
                     {
-                        Type t = ce_1.e1.type.toBasetype();
+                        Type t = ce_1.e1.type.value.toBasetype();
                         if (((t.ty & 0xFF) == ENUMTY.Tdelegate))
                             t = ((TypeDelegate)t).next;
-                        if (((t.ty & 0xFF) == ENUMTY.Tfunction) && ((ce_1.f != null ? callSideEffectLevel(ce_1.f) : callSideEffectLevel(ce_1.e1.type)) > 0))
+                        if (((t.ty & 0xFF) == ENUMTY.Tfunction) && ((ce_1.f != null ? callSideEffectLevel(ce_1.f) : callSideEffectLevel(ce_1.e1.type.value)) > 0))
                         {
                             BytePtr s = null;
                             if (ce_1.f != null)
@@ -208,7 +210,7 @@ public class sideeffect {
                             }
                             else
                                 s = pcopy(ce_1.e1.toChars());
-                            e.warning(new BytePtr("calling %s without side effects discards return value of type %s, prepend a cast(void) if intentional"), s, e.type.toChars());
+                            e.warning(new BytePtr("calling %s without side effects discards return value of type %s, prepend a cast(void) if intentional"), s, e.type.value.toChars());
                         }
                     }
                 }
@@ -216,22 +218,22 @@ public class sideeffect {
             case 101:
             case 102:
                 LogicalExp aae = (LogicalExp)e;
-                return discardValue(aae.e2);
+                return discardValue(aae.e2.value);
             case 100:
                 CondExp ce_2 = (CondExp)e;
-                if (!lambdaHasSideEffect(ce_2.e1) && !lambdaHasSideEffect(ce_2.e2))
+                if (!lambdaHasSideEffect(ce_2.e1.value) && !lambdaHasSideEffect(ce_2.e2.value))
                 {
-                    return discardValue(ce_2.e1) | discardValue(ce_2.e2);
+                    return discardValue(ce_2.e1.value) | discardValue(ce_2.e2.value);
                 }
                 return false;
             case 99:
                 CommaExp ce_3 = (CommaExp)e;
                 Expression fc = firstComma(ce_3);
-                if (((fc.op & 0xFF) == 38) && ((ce_3.e2.op & 0xFF) == 26) && (pequals(((DeclarationExp)fc).declaration, ((VarExp)ce_3.e2).var)))
+                if (((fc.op & 0xFF) == 38) && ((ce_3.e2.value.op & 0xFF) == 26) && (pequals(((DeclarationExp)fc).declaration, ((VarExp)ce_3.e2.value).var)))
                 {
                     return false;
                 }
-                return discardValue(ce_3.e2);
+                return discardValue(ce_3.e2.value);
             case 126:
                 if (!hasSideEffect(e))
                     break;
@@ -245,12 +247,12 @@ public class sideeffect {
 
     public static VarDeclaration copyToTemp(long stc, BytePtr name, Expression e) {
         assert(((name.get(0) & 0xFF) == 95) && ((name.get(1) & 0xFF) == 95));
-        VarDeclaration vd = new VarDeclaration(e.loc, e.type, Identifier.generateId(name), new ExpInitializer(e.loc, e), 0L);
+        VarDeclaration vd = new VarDeclaration(e.loc, e.type.value, Identifier.generateId(name), new ExpInitializer(e.loc, e), 0L);
         vd.storage_class = stc | 1099511627776L | 68719476736L;
         return vd;
     }
 
-    public static Expression extractSideEffect(Scope sc, BytePtr name, Ref<Expression> e0, Expression e, boolean alwaysCopy) {
+    public static Expression extractSideEffect(Ptr<Scope> sc, BytePtr name, Ref<Expression> e0, Expression e, boolean alwaysCopy) {
         if (!alwaysCopy && isTrivialExp(e))
             return e;
         VarDeclaration vd = copyToTemp(0L, name, e);
@@ -260,8 +262,8 @@ public class sideeffect {
     }
 
     // defaulted all parameters starting with #5
-    public static Expression extractSideEffect(Scope sc, BytePtr name, Ref<Expression> e0, Expression e) {
-        extractSideEffect(sc, name, e0, e, false);
+    public static Expression extractSideEffect(Ptr<Scope> sc, BytePtr name, Ref<Expression> e0, Expression e) {
+        return extractSideEffect(sc, name, e0, e, false);
     }
 
 }

@@ -28,18 +28,18 @@ public class dimport {
 
     public static class Import extends Dsymbol
     {
-        public DArray<Identifier> packages;
-        public Identifier id;
-        public Identifier aliasId;
+        public Ptr<DArray<Identifier>> packages = null;
+        public Identifier id = null;
+        public Identifier aliasId = null;
         public int isstatic = 0;
         public Prot protection = new Prot();
         public DArray<Identifier> names = new DArray<Identifier>();
         public DArray<Identifier> aliases = new DArray<Identifier>();
-        public dmodule.Module mod;
-        public dmodule.Package pkg;
+        public dmodule.Module mod = null;
+        public Ref<dmodule.Package> pkg = ref(null);
         public DArray<AliasDeclaration> aliasdecls = new DArray<AliasDeclaration>();
-        public  Import(Loc loc, DArray<Identifier> packages, Identifier id, Identifier aliasId, int isstatic) {
-            Ref<DArray<Identifier>> packages_ref = ref(packages);
+        public  Import(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Identifier aliasId, int isstatic) {
+            Ref<Ptr<DArray<Identifier>>> packages_ref = ref(packages);
             Ref<Identifier> id_ref = ref(id);
             Ref<Identifier> aliasId_ref = ref(aliasId);
             Function0<Identifier> selectIdent = new Function0<Identifier>(){
@@ -48,9 +48,9 @@ public class dimport {
                     {
                         return aliasId_ref.value;
                     }
-                    else if ((packages_ref.value != null) && ((packages_ref.value).length != 0))
+                    else if ((packages_ref.value != null) && ((packages_ref.value.get()).length != 0))
                     {
-                        return (packages_ref.value).get(0);
+                        return (packages_ref.value.get()).get(0);
                     }
                     else
                     {
@@ -96,9 +96,9 @@ public class dimport {
             return si;
         }
 
-        public  boolean load(Scope sc) {
-            int errors = global.errors;
-            DsymbolTable dst = dmodule.Package.resolve(this.packages, null, this.pkg);
+        public  boolean load(Ptr<Scope> sc) {
+            int errors = global.value.errors;
+            DsymbolTable dst = dmodule.Package.resolve(this.packages, null, ptr(this.pkg.value));
             Dsymbol s = dst.lookup(this.id);
             if (s != null)
             {
@@ -135,9 +135,9 @@ public class dimport {
                                 error(this.loc, new BytePtr("can only import from a module, not from package `%s.%s`"), p.toPrettyChars(false), this.id.toChars());
                             }
                         }
-                        else if (this.pkg != null)
+                        else if (this.pkg.value != null)
                         {
-                            error(this.loc, new BytePtr("can only import from a module, not from package `%s.%s`"), this.pkg.toPrettyChars(false), this.id.toChars());
+                            error(this.loc, new BytePtr("can only import from a module, not from package `%s.%s`"), this.pkg.value.toPrettyChars(false), this.id.toChars());
                         }
                         else
                         {
@@ -155,22 +155,22 @@ public class dimport {
                 }
             }
             if ((this.mod != null) && (this.mod.importedFrom == null))
-                this.mod.importedFrom = sc != null ? (sc)._module.importedFrom : dmodule.Module.rootModule;
-            if (this.pkg == null)
-                this.pkg = this.mod;
-            return global.errors != errors;
+                this.mod.importedFrom = sc != null ? (sc.get())._module.importedFrom : dmodule.Module.rootModule;
+            if (this.pkg.value == null)
+                this.pkg.value = this.mod;
+            return global.value.errors != errors;
         }
 
-        public  void importAll(Scope sc) {
+        public  void importAll(Ptr<Scope> sc) {
             if (this.mod != null)
                 return ;
             this.load(sc);
             if (this.mod == null)
                 return ;
             this.mod.importAll(null);
-            if ((this.mod.md != null) && (this.mod.md).isdeprecated)
+            if ((this.mod.md != null) && (this.mod.md.get()).isdeprecated)
             {
-                Expression msg = (this.mod.md).msg;
+                Expression msg = (this.mod.md.get()).msg;
                 {
                     StringExp se = msg != null ? msg.toStringExp() : null;
                     if ((se) != null)
@@ -179,10 +179,10 @@ public class dimport {
                         this.mod.deprecation(this.loc, new BytePtr("is deprecated"));
                 }
             }
-            if ((sc).explicitProtection != 0)
-                this.protection = (sc).protection.copy();
+            if ((sc.get()).explicitProtection != 0)
+                this.protection = (sc.get()).protection.copy();
             if ((this.isstatic == 0) && (this.aliasId == null) && (this.names.length == 0))
-                (sc).scopesym.importScope(this.mod, this.protection);
+                (sc.get()).scopesym.importScope(this.mod, this.protection);
         }
 
         public  Dsymbol toAlias() {
@@ -191,7 +191,7 @@ public class dimport {
             return this;
         }
 
-        public  void addMember(Scope sc, ScopeDsymbol sd) {
+        public  void addMember(Ptr<Scope> sc, ScopeDsymbol sd) {
             if ((this.names.length == 0))
                 this.addMember(sc, sd);
                 return ;
@@ -213,39 +213,39 @@ public class dimport {
             }
         }
 
-        public  void setScope(Scope sc) {
+        public  void setScope(Ptr<Scope> sc) {
             this.setScope(sc);
             if (this.aliasdecls.length != 0)
             {
                 if (this.mod == null)
                     this.importAll(sc);
-                sc = (sc).push(this.mod);
-                (sc).protection = this.protection.copy();
+                sc = (sc.get()).push(this.mod);
+                (sc.get()).protection = this.protection.copy();
                 {
-                    Slice<AliasDeclaration> __r929 = this.aliasdecls.opSlice().copy();
-                    int __key930 = 0;
-                    for (; (__key930 < __r929.getLength());__key930 += 1) {
-                        AliasDeclaration ad = __r929.get(__key930);
+                    Slice<AliasDeclaration> __r927 = this.aliasdecls.opSlice().copy();
+                    int __key928 = 0;
+                    for (; (__key928 < __r927.getLength());__key928 += 1) {
+                        AliasDeclaration ad = __r927.get(__key928);
                         ad.setScope(sc);
                     }
                 }
-                sc = (sc).pop();
+                sc = (sc.get()).pop();
             }
         }
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
-            if (this.pkg == null)
+            if (this.pkg.value == null)
             {
                 this.load(null);
                 this.mod.importAll(null);
                 dsymbolSemantic(this.mod, null);
             }
-            return this.pkg.search(loc, ident, flags);
+            return this.pkg.value.search(loc, ident, flags);
         }
 
         // defaulted all parameters starting with #3
         public  Dsymbol search(Loc loc, Identifier ident) {
-            search(loc, ident, 8);
+            return search(loc, ident, 8);
         }
 
         public  boolean overloadInsert(Dsymbol s) {

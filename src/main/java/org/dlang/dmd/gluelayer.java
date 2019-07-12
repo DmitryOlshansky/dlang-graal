@@ -45,8 +45,8 @@ public class gluelayer {
     public static void backend_term() {
     }
 
-    public static Statement asmSemantic(AsmStatement s, Scope sc) {
-        (sc).func.hasReturnExp = 8;
+    public static Statement asmSemantic(AsmStatement s, Ptr<Scope> sc) {
+        (sc.get()).func.hasReturnExp = 8;
         return null;
     }
 

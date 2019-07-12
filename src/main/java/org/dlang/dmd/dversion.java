@@ -57,7 +57,7 @@ public class dversion {
             }
         }
 
-        public  void addMember(Scope sc, ScopeDsymbol sds) {
+        public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             dmodule.Module m = sds.isModule();
             if (this.ident != null)
             {
@@ -75,7 +75,7 @@ public class dversion {
                     }
                     if (m.debugids == null)
                         m.debugids = new DArray<Identifier>();
-                    (m.debugids).push(this.ident);
+                    (m.debugids.get()).push(this.ident);
                 }
             }
             else
@@ -154,7 +154,7 @@ public class dversion {
             }
         }
 
-        public  void addMember(Scope sc, ScopeDsymbol sds) {
+        public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             dmodule.Module m = sds.isModule();
             if (this.ident != null)
             {
@@ -173,7 +173,7 @@ public class dversion {
                     }
                     if (m.versionids == null)
                         m.versionids = new DArray<Identifier>();
-                    (m.versionids).push(this.ident);
+                    (m.versionids.get()).push(this.ident);
                 }
             }
             else

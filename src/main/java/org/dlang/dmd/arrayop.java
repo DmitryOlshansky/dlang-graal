@@ -28,45 +28,52 @@ import static org.dlang.dmd.tokens.*;
 import static org.dlang.dmd.visitor.*;
 
 public class arrayop {
-    static TemplateDeclaration arrayOparrayOp;
+    static TemplateDeclaration arrayOparrayOp = null;
     private static class BuildArrayOpVisitor extends Visitor
     {
-        private Scope sc;
-        private DArray<RootObject> tiargs;
-        private DArray<Expression> args;
-        public  BuildArrayOpVisitor(Scope sc, DArray<RootObject> tiargs, DArray<Expression> args) {
-            this.sc = sc;
-            this.tiargs = tiargs;
-            this.args = args;
+        private Ptr<Scope> sc = null;
+        private Ptr<DArray<RootObject>> tiargs = null;
+        private Ptr<DArray<Expression>> args = null;
+        public  BuildArrayOpVisitor(Ptr<Scope> sc, Ptr<DArray<RootObject>> tiargs, Ptr<DArray<Expression>> args) {
+            Ref<Ptr<Scope>> sc_ref = ref(sc);
+            Ref<Ptr<DArray<RootObject>>> tiargs_ref = ref(tiargs);
+            Ref<Ptr<DArray<Expression>>> args_ref = ref(args);
+            this.sc = sc_ref.value;
+            this.tiargs = tiargs_ref.value;
+            this.args = args_ref.value;
         }
 
         public  void visit(Expression e) {
-            (this.tiargs).push(e.type);
-            (this.args).push(e);
+            Ref<Expression> e_ref = ref(e);
+            (this.tiargs.get()).push(e_ref.value.type.value);
+            (this.args.get()).push(e_ref.value);
         }
 
         public  void visit(SliceExp e) {
-            this.visit((Expression)e);
+            Ref<SliceExp> e_ref = ref(e);
+            this.visit((Expression)e_ref);
         }
 
         public  void visit(CastExp e) {
-            this.visit((Expression)e);
+            Ref<CastExp> e_ref = ref(e);
+            this.visit((Expression)e_ref);
         }
 
         public  void visit(UnaExp e) {
-            Type tb = e.type.toBasetype();
-            if (((tb.ty & 0xFF) != ENUMTY.Tarray) && ((tb.ty & 0xFF) != ENUMTY.Tsarray))
+            Ref<UnaExp> e_ref = ref(e);
+            Ref<Type> tb = ref(e_ref.value.type.value.toBasetype());
+            if (((tb.value.ty & 0xFF) != ENUMTY.Tarray) && ((tb.value.ty & 0xFF) != ENUMTY.Tsarray))
             {
-                this.visit((Expression)e);
+                this.visit((Expression)e_ref);
             }
             else
             {
-                OutBuffer buf = new OutBuffer();
+                Ref<OutBuffer> buf = ref(new OutBuffer());
                 try {
-                    buf.writestring(new ByteSlice("u"));
-                    buf.writestring(Token.asString(e.op));
-                    e.e1.accept(this);
-                    (this.tiargs).push(expressionSemantic(new StringExp(Loc.initial, buf.extractChars()), this.sc));
+                    buf.value.writestring(new ByteSlice("u"));
+                    buf.value.writestring(Token.asString(e_ref.value.op));
+                    e_ref.value.e1.accept(this);
+                    (this.tiargs.get()).push(expressionSemantic(new StringExp(Loc.initial.value, buf.value.extractChars()), this.sc));
                 }
                 finally {
                 }
@@ -74,16 +81,17 @@ public class arrayop {
         }
 
         public  void visit(BinExp e) {
-            Type tb = e.type.toBasetype();
-            if (((tb.ty & 0xFF) != ENUMTY.Tarray) && ((tb.ty & 0xFF) != ENUMTY.Tsarray))
+            Ref<BinExp> e_ref = ref(e);
+            Ref<Type> tb = ref(e_ref.value.type.value.toBasetype());
+            if (((tb.value.ty & 0xFF) != ENUMTY.Tarray) && ((tb.value.ty & 0xFF) != ENUMTY.Tsarray))
             {
-                this.visit((Expression)e);
+                this.visit((Expression)e_ref);
             }
             else
             {
-                e.e1.accept(this);
-                e.e2.accept(this);
-                (this.tiargs).push(expressionSemantic(new StringExp(Loc.initial, Token.toChars(e.op)), this.sc));
+                e_ref.value.e1.value.accept(this);
+                e_ref.value.e2.value.accept(this);
+                (this.tiargs.get()).push(expressionSemantic(new StringExp(Loc.initial.value, Token.toChars(e_ref.value.op)), this.sc));
             }
         }
 
@@ -96,13 +104,13 @@ public class arrayop {
             return true;
         if (((e.op & 0xFF) == 47))
         {
-            Type t = e.type.toBasetype();
+            Type t = e.type.value.toBasetype();
             for (; ((t.ty & 0xFF) == ENUMTY.Tarray) || ((t.ty & 0xFF) == ENUMTY.Tsarray);) {
                 t = t.nextOf().toBasetype();
             }
             return (t.ty & 0xFF) != ENUMTY.Tvoid;
         }
-        Type tb = e.type.toBasetype();
+        Type tb = e.type.value.toBasetype();
         if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
         {
             if (isUnaArrayOp(e.op))
@@ -112,12 +120,12 @@ public class arrayop {
             if (isBinArrayOp(e.op) || isBinAssignArrayOp(e.op) || ((e.op & 0xFF) == 90))
             {
                 BinExp be = (BinExp)e;
-                return isArrayOpValid(be.e1) && isArrayOpValid(be.e2);
+                return isArrayOpValid(be.e1.value) && isArrayOpValid(be.e2.value);
             }
             if (((e.op & 0xFF) == 95))
             {
                 BinExp be = (BinExp)e;
-                return ((be.e1.op & 0xFF) == 31) && isArrayOpValid(be.e2);
+                return ((be.e1.value.op & 0xFF) == 31) && isArrayOpValid(be.e2.value);
             }
             return false;
         }
@@ -127,7 +135,7 @@ public class arrayop {
     public static boolean isNonAssignmentArrayOp(Expression e) {
         if (((e.op & 0xFF) == 31))
             return isNonAssignmentArrayOp(((SliceExp)e).e1);
-        Type tb = e.type.toBasetype();
+        Type tb = e.type.value.toBasetype();
         if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
         {
             return isUnaArrayOp(e.op) || isBinArrayOp(e.op);
@@ -149,11 +157,11 @@ public class arrayop {
 
     // defaulted all parameters starting with #2
     public static boolean checkNonAssignmentArrayOp(Expression e) {
-        checkNonAssignmentArrayOp(e, false);
+        return checkNonAssignmentArrayOp(e, false);
     }
 
-    public static Expression arrayOp(BinExp e, Scope sc) {
-        Type tb = e.type.toBasetype();
+    public static Expression arrayOp(BinExp e, Ptr<Scope> sc) {
+        Type tb = e.type.value.toBasetype();
         assert(((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray));
         Type tbn = tb.nextOf().toBasetype();
         if (((tbn.ty & 0xFF) == ENUMTY.Tvoid))
@@ -163,13 +171,13 @@ public class arrayop {
         }
         if (!isArrayOpValid(e))
             return arrayOpInvalidError(e);
-        DArray<RootObject> tiargs = new DArray<RootObject>();
-        DArray<Expression> args = new DArray<Expression>();
+        Ptr<DArray<RootObject>> tiargs = new DArray<RootObject>();
+        Ptr<DArray<Expression>> args = new DArray<Expression>();
         buildArrayOp(sc, e, tiargs, args);
         if ((arrayop.arrayOparrayOp == null))
         {
-            Expression id = new IdentifierExp(e.loc, Id.empty);
-            id = new DotIdExp(e.loc, id, Id.object);
+            Expression id = new IdentifierExp(e.loc, Id.empty.value);
+            id = new DotIdExp(e.loc, id, Id.object.value);
             id = new DotIdExp(e.loc, id, Identifier.idPool(new ByteSlice("_arrayOp")));
             id = expressionSemantic(id, sc);
             if (((id.op & 0xFF) != 36))
@@ -182,23 +190,23 @@ public class arrayop {
         return expressionSemantic(new CallExp(e.loc, new VarExp(e.loc, fd, false), args), sc);
     }
 
-    public static Expression arrayOp(BinAssignExp e, Scope sc) {
-        Type tn = e.e1.type.toBasetype().nextOf();
+    public static Expression arrayOp(BinAssignExp e, Ptr<Scope> sc) {
+        Type tn = e.e1.value.type.value.toBasetype().nextOf();
         if ((tn != null) && !tn.isMutable() || !tn.isAssignable())
         {
-            e.error(new BytePtr("slice `%s` is not mutable"), e.e1.toChars());
+            e.error(new BytePtr("slice `%s` is not mutable"), e.e1.value.toChars());
             if (((e.op & 0xFF) == 76))
                 checkPossibleAddCatErrorAddAssignExpCatAssignExp(e.isAddAssignExp());
             return new ErrorExp();
         }
-        if (((e.e1.op & 0xFF) == 47))
+        if (((e.e1.value.op & 0xFF) == 47))
         {
-            return e.e1.modifiableLvalue(sc, e.e1);
+            return e.e1.value.modifiableLvalue(sc, e.e1.value);
         }
         return arrayOp((BinExp)e, sc);
     }
 
-    public static void buildArrayOp(Scope sc, Expression e, DArray<RootObject> tiargs, DArray<Expression> args) {
+    public static void buildArrayOp(Ptr<Scope> sc, Expression e, Ptr<DArray<RootObject>> tiargs, Ptr<DArray<Expression>> args) {
         BuildArrayOpVisitor v = new BuildArrayOpVisitor(sc, tiargs, args);
         e.accept(v);
     }
@@ -258,13 +266,13 @@ public class arrayop {
             return true;
         if (((e.op & 0xFF) == 47))
         {
-            Type t = e.type.toBasetype();
+            Type t = e.type.value.toBasetype();
             for (; ((t.ty & 0xFF) == ENUMTY.Tarray) || ((t.ty & 0xFF) == ENUMTY.Tsarray);) {
                 t = t.nextOf().toBasetype();
             }
             return (t.ty & 0xFF) != ENUMTY.Tvoid;
         }
-        Type tb = e.type.toBasetype();
+        Type tb = e.type.value.toBasetype();
         if (((tb.ty & 0xFF) == ENUMTY.Tarray))
         {
             return isUnaArrayOp(e.op) || isBinArrayOp(e.op) || isBinAssignArrayOp(e.op) || ((e.op & 0xFF) == 90);
@@ -283,18 +291,18 @@ public class arrayop {
 
     // from template checkPossibleAddCatError!(AddAssignExpCatAssignExp)
     public static void checkPossibleAddCatErrorAddAssignExpCatAssignExp(AddAssignExp ae) {
-        if ((ae.e2.type == null) || ((ae.e2.type.ty & 0xFF) != ENUMTY.Tarray) || (ae.e2.type.implicitConvTo(ae.e1.type) == 0))
+        if ((ae.e2.value.type.value == null) || ((ae.e2.value.type.value.ty & 0xFF) != ENUMTY.Tarray) || (ae.e2.value.type.value.implicitConvTo(ae.e1.value.type.value) == 0))
             return ;
-        CatAssignExp ce = new CatAssignExp(ae.loc, ae.e1, ae.e2);
+        CatAssignExp ce = new CatAssignExp(ae.loc, ae.e1.value, ae.e2.value);
         ae.errorSupplemental(new BytePtr("did you mean to concatenate (`%s`) instead ?"), ce.toChars());
     }
 
 
     // from template checkPossibleAddCatError!(AddExpCatExp)
     public static void checkPossibleAddCatErrorAddExpCatExp(AddExp ae) {
-        if ((ae.e2.type == null) || ((ae.e2.type.ty & 0xFF) != ENUMTY.Tarray) || (ae.e2.type.implicitConvTo(ae.e1.type) == 0))
+        if ((ae.e2.value.type.value == null) || ((ae.e2.value.type.value.ty & 0xFF) != ENUMTY.Tarray) || (ae.e2.value.type.value.implicitConvTo(ae.e1.value.type.value) == 0))
             return ;
-        CatExp ce = new CatExp(ae.loc, ae.e1, ae.e2);
+        CatExp ce = new CatExp(ae.loc, ae.e1.value, ae.e2.value);
         ae.errorSupplemental(new BytePtr("did you mean to concatenate (`%s`) instead ?"), ce.toChars());
     }
 

@@ -105,9 +105,10 @@ public class statement {
         }
 
         public  void visit(ExpStatement s) {
-            if ((s.exp != null))
+            Ref<ExpStatement> s_ref = ref(s);
+            if ((s_ref.value.exp != null))
             {
-                this.stop = s.exp.hasCode();
+                this.stop = s_ref.value.exp.hasCode();
             }
         }
 
@@ -127,94 +128,110 @@ public class statement {
     }
     private static class ToStmt extends Visitor
     {
-        private Statement result;
-        public  Statement visitMembers(Loc loc, DArray<Dsymbol> a) {
-            if (a == null)
+        private Statement result = null;
+        public  Statement visitMembers(Loc loc, Ptr<DArray<Dsymbol>> a) {
+            Ref<Ptr<DArray<Dsymbol>>> a_ref = ref(a);
+            if (a_ref.value == null)
                 return null;
-            DArray<Statement> statements = new DArray<Statement>();
+            Ref<Ptr<DArray<Statement>>> statements = ref(new DArray<Statement>());
             {
-                Slice<Dsymbol> __r1634 = (a).opSlice().copy();
-                int __key1635 = 0;
-                for (; (__key1635 < __r1634.getLength());__key1635 += 1) {
-                    Dsymbol s = __r1634.get(__key1635);
-                    (statements).push(toStatement(s));
+                Ref<Slice<Dsymbol>> __r1561 = ref((a_ref.value.get()).opSlice().copy());
+                IntRef __key1562 = ref(0);
+                for (; (__key1562.value < __r1561.value.getLength());__key1562.value += 1) {
+                    Ref<Dsymbol> s = ref(__r1561.value.get(__key1562.value));
+                    (statements.value.get()).push(toStatement(s.value));
                 }
             }
-            return new CompoundStatement(loc, statements);
+            return new CompoundStatement(loc, statements.value);
         }
 
         public  void visit(Dsymbol s) {
-            error(Loc.initial, new BytePtr("Internal Compiler Error: cannot mixin %s `%s`\n"), s.kind(), s.toChars());
+            Ref<Dsymbol> s_ref = ref(s);
+            error(Loc.initial.value, new BytePtr("Internal Compiler Error: cannot mixin %s `%s`\n"), s_ref.value.kind(), s_ref.value.toChars());
             this.result = new ErrorStatement();
         }
 
         public  void visit(TemplateMixin tm) {
-            DArray<Statement> a = new DArray<Statement>();
+            Ref<TemplateMixin> tm_ref = ref(tm);
+            Ref<Ptr<DArray<Statement>>> a = ref(new DArray<Statement>());
             {
-                Slice<Dsymbol> __r1636 = (tm.members).opSlice().copy();
-                int __key1637 = 0;
-                for (; (__key1637 < __r1636.getLength());__key1637 += 1) {
-                    Dsymbol m = __r1636.get(__key1637);
-                    Statement s = toStatement(m);
-                    if (s != null)
-                        (a).push(s);
+                Ref<Slice<Dsymbol>> __r1563 = ref((tm_ref.value.members.get()).opSlice().copy());
+                IntRef __key1564 = ref(0);
+                for (; (__key1564.value < __r1563.value.getLength());__key1564.value += 1) {
+                    Ref<Dsymbol> m = ref(__r1563.value.get(__key1564.value));
+                    Ref<Statement> s = ref(toStatement(m.value));
+                    if (s.value != null)
+                        (a.value.get()).push(s.value);
                 }
             }
-            this.result = new CompoundStatement(tm.loc, a);
+            this.result = new CompoundStatement(tm_ref.value.loc, a.value);
         }
 
         public  Statement declStmt(Dsymbol s) {
-            DeclarationExp de = new DeclarationExp(s.loc, s);
-            de.type = Type.tvoid;
-            return new ExpStatement(s.loc, de);
+            Ref<Dsymbol> s_ref = ref(s);
+            Ref<DeclarationExp> de = ref(new DeclarationExp(s_ref.value.loc, s_ref.value));
+            de.value.type.value = Type.tvoid.value;
+            return new ExpStatement(s_ref.value.loc, de.value);
         }
 
         public  void visit(VarDeclaration d) {
-            this.result = this.declStmt(d);
+            Ref<VarDeclaration> d_ref = ref(d);
+            this.result = this.declStmt(d_ref.value);
         }
 
         public  void visit(AggregateDeclaration d) {
-            this.result = this.declStmt(d);
+            Ref<AggregateDeclaration> d_ref = ref(d);
+            this.result = this.declStmt(d_ref.value);
         }
 
         public  void visit(FuncDeclaration d) {
-            this.result = this.declStmt(d);
+            Ref<FuncDeclaration> d_ref = ref(d);
+            this.result = this.declStmt(d_ref.value);
         }
 
         public  void visit(EnumDeclaration d) {
-            this.result = this.declStmt(d);
+            Ref<EnumDeclaration> d_ref = ref(d);
+            this.result = this.declStmt(d_ref.value);
         }
 
         public  void visit(AliasDeclaration d) {
-            this.result = this.declStmt(d);
+            Ref<AliasDeclaration> d_ref = ref(d);
+            this.result = this.declStmt(d_ref.value);
         }
 
         public  void visit(TemplateDeclaration d) {
-            this.result = this.declStmt(d);
+            Ref<TemplateDeclaration> d_ref = ref(d);
+            this.result = this.declStmt(d_ref.value);
         }
 
         public  void visit(StorageClassDeclaration d) {
-            this.result = this.visitMembers(d.loc, d.decl);
+            Ref<StorageClassDeclaration> d_ref = ref(d);
+            this.result = this.visitMembers(d_ref.value.loc, d_ref.value.decl);
         }
 
         public  void visit(DeprecatedDeclaration d) {
-            this.result = this.visitMembers(d.loc, d.decl);
+            Ref<DeprecatedDeclaration> d_ref = ref(d);
+            this.result = this.visitMembers(d_ref.value.loc, d_ref.value.decl);
         }
 
         public  void visit(LinkDeclaration d) {
-            this.result = this.visitMembers(d.loc, d.decl);
+            Ref<LinkDeclaration> d_ref = ref(d);
+            this.result = this.visitMembers(d_ref.value.loc, d_ref.value.decl);
         }
 
         public  void visit(ProtDeclaration d) {
-            this.result = this.visitMembers(d.loc, d.decl);
+            Ref<ProtDeclaration> d_ref = ref(d);
+            this.result = this.visitMembers(d_ref.value.loc, d_ref.value.decl);
         }
 
         public  void visit(AlignDeclaration d) {
-            this.result = this.visitMembers(d.loc, d.decl);
+            Ref<AlignDeclaration> d_ref = ref(d);
+            this.result = this.visitMembers(d_ref.value.loc, d_ref.value.decl);
         }
 
         public  void visit(UserAttributeDeclaration d) {
-            this.result = this.visitMembers(d.loc, d.decl);
+            Ref<UserAttributeDeclaration> d_ref = ref(d);
+            this.result = this.visitMembers(d_ref.value.loc, d_ref.value.decl);
         }
 
         public  void visit(StaticAssert s) {
@@ -227,17 +244,20 @@ public class statement {
         }
 
         public  void visit(ConditionalDeclaration d) {
-            this.result = this.visitMembers(d.loc, d.include(null));
+            Ref<ConditionalDeclaration> d_ref = ref(d);
+            this.result = this.visitMembers(d_ref.value.loc, d_ref.value.include(null));
         }
 
         public  void visit(StaticForeachDeclaration d) {
-            assert((d.sfe != null) && d.sfe.aggrfe != null ^ d.sfe.rangefe != null);
-            (d.sfe.aggrfe != null ? d.sfe.aggrfe._body : d.sfe.rangefe._body).set(0, this.visitMembers(d.loc, d.decl));
-            this.result = new StaticForeachStatement(d.loc, d.sfe);
+            Ref<StaticForeachDeclaration> d_ref = ref(d);
+            assert((d_ref.value.sfe != null) && d_ref.value.sfe.aggrfe != null ^ d_ref.value.sfe.rangefe != null);
+            (d_ref.value.sfe.aggrfe != null ? ptr(d_ref.value.sfe.aggrfe._body.value) : ptr(d_ref.value.sfe.rangefe._body.value)).set(0, this.visitMembers(d_ref.value.loc, d_ref.value.decl));
+            this.result = new StaticForeachStatement(d_ref.value.loc, d_ref.value.sfe);
         }
 
         public  void visit(CompileDeclaration d) {
-            this.result = this.visitMembers(d.loc, d.include(null));
+            Ref<CompileDeclaration> d_ref = ref(d);
+            this.result = this.visitMembers(d_ref.value.loc, d_ref.value.include(null));
         }
 
 
@@ -245,16 +265,16 @@ public class statement {
     }
 
     public static TypeIdentifier getThrowable() {
-        TypeIdentifier tid = new TypeIdentifier(Loc.initial, Id.empty);
-        tid.addIdent(Id.object);
-        tid.addIdent(Id.Throwable);
+        TypeIdentifier tid = new TypeIdentifier(Loc.initial.value, Id.empty.value);
+        tid.addIdent(Id.object.value);
+        tid.addIdent(Id.Throwable.value);
         return tid;
     }
 
     public static TypeIdentifier getException() {
-        TypeIdentifier tid = new TypeIdentifier(Loc.initial, Id.empty);
-        tid.addIdent(Id.object);
-        tid.addIdent(Id.Exception);
+        TypeIdentifier tid = new TypeIdentifier(Loc.initial.value, Id.empty.value);
+        tid.addIdent(Id.object.value);
+        tid.addIdent(Id.Exception.value);
         return tid;
     }
 
@@ -274,18 +294,18 @@ public class statement {
             throw new AssertionError("Unreachable code!");
         }
 
-        public static DArray<Statement> arraySyntaxCopy(DArray<Statement> a) {
-            DArray<Statement> b = null;
+        public static Ptr<DArray<Statement>> arraySyntaxCopy(Ptr<DArray<Statement>> a) {
+            Ptr<DArray<Statement>> b = null;
             if (a != null)
             {
-                b = (a).copy();
+                b = (a.get()).copy();
                 {
-                    Slice<Statement> __r1633 = (a).opSlice().copy();
-                    int __key1632 = 0;
-                    for (; (__key1632 < __r1633.getLength());__key1632 += 1) {
-                        Statement s = __r1633.get(__key1632);
-                        int i = __key1632;
-                        b.set(i, s != null ? s.syntaxCopy() : null);
+                    Slice<Statement> __r1560 = (a.get()).opSlice().copy();
+                    int __key1559 = 0;
+                    for (; (__key1559 < __r1560.getLength());__key1559 += 1) {
+                        Statement s = __r1560.get(__key1559);
+                        int i = __key1559;
+                        b.get().set(i, s != null ? s.syntaxCopy() : null);
                     }
                 }
             }
@@ -293,11 +313,11 @@ public class statement {
         }
 
         public  BytePtr toChars() {
-            HdrGenState hgs = new HdrGenState();
-            OutBuffer buf = new OutBuffer();
+            Ref<HdrGenState> hgs = ref(new HdrGenState());
+            Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
-                toCBuffer(this, buf, hgs);
-                return buf.extractChars();
+                toCBuffer(this, ptr(buf), ptr(hgs));
+                return buf.value.extractChars();
             }
             finally {
             }
@@ -342,14 +362,14 @@ public class statement {
             return walkPostorder(this, hc);
         }
 
-        public  Statement scopeCode(Scope sc, Ptr<Statement> sentry, Ptr<Statement> sexception, Ptr<Statement> sfinally) {
+        public  Statement scopeCode(Ptr<Scope> sc, Ptr<Statement> sentry, Ptr<Statement> sexception, Ptr<Statement> sfinally) {
             sentry.set(0, null);
             sexception.set(0, null);
             sfinally.set(0, null);
             return this;
         }
 
-        public  DArray<Statement> flatten(Scope sc) {
+        public  Ptr<DArray<Statement>> flatten(Ptr<Scope> sc) {
             return null;
         }
 
@@ -425,8 +445,8 @@ public class statement {
     public static class ErrorStatement extends Statement
     {
         public  ErrorStatement() {
-            super(Loc.initial);
-            assert((global.gaggedErrors != 0) || (global.errors != 0));
+            super(Loc.initial.value);
+            assert((global.value.gaggedErrors != 0) || (global.value.errors != 0));
         }
 
         public  Statement syntaxCopy() {
@@ -450,7 +470,7 @@ public class statement {
     }
     public static class PeelStatement extends Statement
     {
-        public Statement s;
+        public Statement s = null;
         public  PeelStatement(Statement s) {
             super(s.loc);
             this.s = s;
@@ -480,7 +500,7 @@ public class statement {
 
     public static class ExpStatement extends Statement
     {
-        public Expression exp;
+        public Expression exp = null;
         public  ExpStatement(Loc loc, Expression exp) {
             super(loc);
             this.exp = exp;
@@ -499,7 +519,7 @@ public class statement {
             return new ExpStatement(this.loc, this.exp != null ? this.exp.syntaxCopy() : null);
         }
 
-        public  Statement scopeCode(Scope sc, Ptr<Statement> sentry, Ptr<Statement> sexception, Ptr<Statement> sfinally) {
+        public  Statement scopeCode(Ptr<Scope> sc, Ptr<Statement> sentry, Ptr<Statement> sexception, Ptr<Statement> sfinally) {
             sentry.set(0, null);
             sexception.set(0, null);
             sfinally.set(0, null);
@@ -519,7 +539,7 @@ public class statement {
             return this;
         }
 
-        public  DArray<Statement> flatten(Scope sc) {
+        public  Ptr<DArray<Statement>> flatten(Ptr<Scope> sc) {
             if ((this.exp != null) && ((this.exp.op & 0xFF) == 38))
             {
                 Dsymbol d = ((DeclarationExp)this.exp).declaration;
@@ -530,14 +550,14 @@ public class statement {
                         Expression e = expressionSemantic(this.exp, sc);
                         if (((e.op & 0xFF) == 127) || tm.errors)
                         {
-                            DArray<Statement> a = new DArray<Statement>();
-                            (a).push(new ErrorStatement());
+                            Ptr<DArray<Statement>> a = new DArray<Statement>();
+                            (a.get()).push(new ErrorStatement());
                             return a;
                         }
                         assert(tm.members != null);
                         Statement s = toStatement(tm);
-                        DArray<Statement> a = new DArray<Statement>();
-                        (a).push(s);
+                        Ptr<DArray<Statement>> a = new DArray<Statement>();
+                        (a.get()).push(s);
                         return a;
                     }
                 }
@@ -565,7 +585,7 @@ public class statement {
     }
     public static class DtorExpStatement extends ExpStatement
     {
-        public VarDeclaration var;
+        public VarDeclaration var = null;
         public  DtorExpStatement(Loc loc, Expression exp, VarDeclaration var) {
             super(loc, exp);
             this.var = var;
@@ -596,14 +616,14 @@ public class statement {
     }
     public static class CompileStatement extends Statement
     {
-        public DArray<Expression> exps;
+        public Ptr<DArray<Expression>> exps = null;
         public  CompileStatement(Loc loc, Expression exp) {
-            DArray<Expression> exps = new DArray<Expression>();
-            (exps).push(exp);
+            Ptr<DArray<Expression>> exps = new DArray<Expression>();
+            (exps.get()).push(exp);
             this(loc, exps);
         }
 
-        public  CompileStatement(Loc loc, DArray<Expression> exps) {
+        public  CompileStatement(Loc loc, Ptr<DArray<Expression>> exps) {
             super(loc);
             this.exps = exps;
         }
@@ -612,35 +632,35 @@ public class statement {
             return new CompileStatement(this.loc, Expression.arraySyntaxCopy(this.exps));
         }
 
-        public  DArray<Statement> compileIt(Scope sc) {
-            Function0<DArray<Statement>> errorStatements = new Function0<DArray<Statement>>(){
-                public DArray<Statement> invoke() {
-                    DArray<Statement> a = new DArray<Statement>();
-                    (a).push(new ErrorStatement());
-                    return a;
+        public  Ptr<DArray<Statement>> compileIt(Ptr<Scope> sc) {
+            Function0<Ptr<DArray<Statement>>> errorStatements = new Function0<Ptr<DArray<Statement>>>(){
+                public Ptr<DArray<Statement>> invoke() {
+                    Ref<Ptr<DArray<Statement>>> a = ref(new DArray<Statement>());
+                    (a.value.get()).push(new ErrorStatement());
+                    return a.value;
                 }
             };
-            OutBuffer buf = new OutBuffer();
+            Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
                 if (expressionsToString(buf, sc, this.exps))
                     return errorStatements.invoke();
-                int errors = global.errors;
-                int len = buf.offset;
-                ByteSlice str = buf.extractChars().slice(0,len).copy();
-                StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
+                int errors = global.value.errors;
+                int len = buf.value.offset;
+                ByteSlice str = buf.value.extractChars().slice(0,len).copy();
+                StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.value.params.useDeprecated);
                 try {
-                    ParserASTCodegen p = new ParserASTCodegen(this.loc, (sc)._module, str, false, diagnosticReporter);
+                    ParserASTCodegen p = new ParserASTCodegen(this.loc, (sc.get())._module, str, false, diagnosticReporter);
                     try {
                         p.nextToken();
-                        DArray<Statement> a = new DArray<Statement>();
-                        for (; ((p.token.value & 0xFF) != 11);){
+                        Ptr<DArray<Statement>> a = new DArray<Statement>();
+                        for (; ((p.token.value.value & 0xFF) != 11);){
                             Statement s = p.parseStatement(9, null, null);
                             if ((s == null) || p.errors())
                             {
-                                assert(!p.errors() || (global.errors != errors));
+                                assert(!p.errors() || (global.value.errors != errors));
                                 return errorStatements.invoke();
                             }
-                            (a).push(s);
+                            (a.get()).push(s);
                         }
                         return a;
                     }
@@ -654,7 +674,7 @@ public class statement {
             }
         }
 
-        public  DArray<Statement> flatten(Scope sc) {
+        public  Ptr<DArray<Statement>> flatten(Ptr<Scope> sc) {
             return this.compileIt(sc);
         }
 
@@ -674,8 +694,8 @@ public class statement {
     }
     public static class CompoundStatement extends Statement
     {
-        public DArray<Statement> statements;
-        public  CompoundStatement(Loc loc, DArray<Statement> statements) {
+        public Ptr<DArray<Statement>> statements = null;
+        public  CompoundStatement(Loc loc, Ptr<DArray<Statement>> statements) {
             super(loc);
             this.statements = statements;
         }
@@ -683,13 +703,13 @@ public class statement {
         public  CompoundStatement(Loc loc, Slice<Statement> sts) {
             super(loc);
             this.statements = new DArray<Statement>();
-            (this.statements).reserve(sts.getLength());
+            (this.statements.get()).reserve(sts.getLength());
             {
-                Slice<Statement> __r1638 = sts.copy();
-                int __key1639 = 0;
-                for (; (__key1639 < __r1638.getLength());__key1639 += 1) {
-                    Statement s = __r1638.get(__key1639);
-                    (this.statements).push(s);
+                Slice<Statement> __r1565 = sts.copy();
+                int __key1566 = 0;
+                for (; (__key1566 < __r1565.getLength());__key1566 += 1) {
+                    Statement s = __r1565.get(__key1566);
+                    (this.statements.get()).push(s);
                 }
             }
         }
@@ -702,17 +722,17 @@ public class statement {
             return new CompoundStatement(this.loc, Statement.arraySyntaxCopy(this.statements));
         }
 
-        public  DArray<Statement> flatten(Scope sc) {
+        public  Ptr<DArray<Statement>> flatten(Ptr<Scope> sc) {
             return this.statements;
         }
 
         public  ReturnStatement isReturnStatement() {
             ReturnStatement rs = null;
             {
-                Slice<Statement> __r1640 = (this.statements).opSlice().copy();
-                int __key1641 = 0;
-                for (; (__key1641 < __r1640.getLength());__key1641 += 1) {
-                    Statement s = __r1640.get(__key1641);
+                Slice<Statement> __r1567 = (this.statements.get()).opSlice().copy();
+                int __key1568 = 0;
+                for (; (__key1568 < __r1567.getLength());__key1568 += 1) {
+                    Statement s = __r1567.get(__key1568);
                     if (s != null)
                     {
                         rs = s.isReturnStatement();
@@ -727,9 +747,9 @@ public class statement {
         public  Statement last() {
             Statement s = null;
             {
-                int i = (this.statements).length;
+                int i = (this.statements.get()).length;
                 for (; i != 0;i -= 1){
-                    s = (this.statements).get(i - 1);
+                    s = (this.statements.get()).get(i - 1);
                     if (s != null)
                     {
                         s = s.last();
@@ -761,19 +781,19 @@ public class statement {
     }
     public static class CompoundDeclarationStatement extends CompoundStatement
     {
-        public  CompoundDeclarationStatement(Loc loc, DArray<Statement> statements) {
+        public  CompoundDeclarationStatement(Loc loc, Ptr<DArray<Statement>> statements) {
             super(loc, statements);
         }
 
         public  Statement syntaxCopy() {
-            DArray<Statement> a = new DArray<Statement>((this.statements).length);
+            Ptr<DArray<Statement>> a = new DArray<Statement>((this.statements.get()).length);
             {
-                Slice<Statement> __r1643 = (this.statements).opSlice().copy();
-                int __key1642 = 0;
-                for (; (__key1642 < __r1643.getLength());__key1642 += 1) {
-                    Statement s = __r1643.get(__key1642);
-                    int i = __key1642;
-                    a.set(i, s != null ? s.syntaxCopy() : null);
+                Slice<Statement> __r1570 = (this.statements.get()).opSlice().copy();
+                int __key1569 = 0;
+                for (; (__key1569 < __r1570.getLength());__key1569 += 1) {
+                    Statement s = __r1570.get(__key1569);
+                    int i = __key1569;
+                    a.get().set(i, s != null ? s.syntaxCopy() : null);
                 }
             }
             return new CompoundDeclarationStatement(this.loc, a);
@@ -795,21 +815,21 @@ public class statement {
     }
     public static class UnrolledLoopStatement extends Statement
     {
-        public DArray<Statement> statements;
-        public  UnrolledLoopStatement(Loc loc, DArray<Statement> statements) {
+        public Ptr<DArray<Statement>> statements = null;
+        public  UnrolledLoopStatement(Loc loc, Ptr<DArray<Statement>> statements) {
             super(loc);
             this.statements = statements;
         }
 
         public  Statement syntaxCopy() {
-            DArray<Statement> a = new DArray<Statement>((this.statements).length);
+            Ptr<DArray<Statement>> a = new DArray<Statement>((this.statements.get()).length);
             {
-                Slice<Statement> __r1645 = (this.statements).opSlice().copy();
-                int __key1644 = 0;
-                for (; (__key1644 < __r1645.getLength());__key1644 += 1) {
-                    Statement s = __r1645.get(__key1644);
-                    int i = __key1644;
-                    a.set(i, s != null ? s.syntaxCopy() : null);
+                Slice<Statement> __r1572 = (this.statements.get()).opSlice().copy();
+                int __key1571 = 0;
+                for (; (__key1571 < __r1572.getLength());__key1571 += 1) {
+                    Statement s = __r1572.get(__key1571);
+                    int i = __key1571;
+                    a.get().set(i, s != null ? s.syntaxCopy() : null);
                 }
             }
             return new UnrolledLoopStatement(this.loc, a);
@@ -839,7 +859,7 @@ public class statement {
     }
     public static class ScopeStatement extends Statement
     {
-        public Statement statement;
+        public Statement statement = null;
         public Loc endloc = new Loc();
         public  ScopeStatement(Loc loc, Statement statement, Loc endloc) {
             super(loc);
@@ -887,7 +907,7 @@ public class statement {
     public static class ForwardingStatement extends Statement
     {
         public ForwardingScopeDsymbol sym = null;
-        public Statement statement;
+        public Statement statement = null;
         public  ForwardingStatement(Loc loc, ForwardingScopeDsymbol sym, Statement statement) {
             super(loc);
             this.sym = sym;
@@ -905,26 +925,26 @@ public class statement {
             return new ForwardingStatement(this.loc, this.statement.syntaxCopy());
         }
 
-        public  DArray<Statement> flatten(Scope sc) {
+        public  Ptr<DArray<Statement>> flatten(Ptr<Scope> sc) {
             if (this.statement == null)
             {
                 return null;
             }
-            sc = (sc).push(this.sym);
-            DArray<Statement> a = this.statement.flatten(sc);
-            sc = (sc).pop();
+            sc = (sc.get()).push(this.sym);
+            Ptr<DArray<Statement>> a = this.statement.flatten(sc);
+            sc = (sc.get()).pop();
             if (a == null)
             {
                 return a;
             }
-            DArray<Statement> b = new DArray<Statement>((a).length);
+            Ptr<DArray<Statement>> b = new DArray<Statement>((a.get()).length);
             {
-                Slice<Statement> __r1647 = (a).opSlice().copy();
-                int __key1646 = 0;
-                for (; (__key1646 < __r1647.getLength());__key1646 += 1) {
-                    Statement s = __r1647.get(__key1646);
-                    int i = __key1646;
-                    b.set(i, s != null ? new ForwardingStatement(s.loc, this.sym, s) : null);
+                Slice<Statement> __r1574 = (a.get()).opSlice().copy();
+                int __key1573 = 0;
+                for (; (__key1573 < __r1574.getLength());__key1573 += 1) {
+                    Statement s = __r1574.get(__key1573);
+                    int i = __key1573;
+                    b.get().set(i, s != null ? new ForwardingStatement(s.loc, this.sym, s) : null);
                 }
             }
             return b;
@@ -951,8 +971,8 @@ public class statement {
     }
     public static class WhileStatement extends Statement
     {
-        public Expression condition;
-        public Statement _body;
+        public Expression condition = null;
+        public Statement _body = null;
         public Loc endloc = new Loc();
         public  WhileStatement(Loc loc, Expression condition, Statement _body, Loc endloc) {
             super(loc);
@@ -991,8 +1011,8 @@ public class statement {
     }
     public static class DoStatement extends Statement
     {
-        public Statement _body;
-        public Expression condition;
+        public Statement _body = null;
+        public Expression condition = null;
         public Loc endloc = new Loc();
         public  DoStatement(Loc loc, Statement _body, Expression condition, Loc endloc) {
             super(loc);
@@ -1031,12 +1051,12 @@ public class statement {
     }
     public static class ForStatement extends Statement
     {
-        public Statement _init;
-        public Expression condition;
-        public Expression increment;
-        public Statement _body;
+        public Statement _init = null;
+        public Expression condition = null;
+        public Expression increment = null;
+        public Statement _body = null;
         public Loc endloc = new Loc();
-        public Statement relatedLabeled;
+        public Statement relatedLabeled = null;
         public  ForStatement(Loc loc, Statement _init, Expression condition, Expression increment, Statement _body, Loc endloc) {
             super(loc);
             this._init = _init;
@@ -1050,7 +1070,7 @@ public class statement {
             return new ForStatement(this.loc, this._init != null ? this._init.syntaxCopy() : null, this.condition != null ? this.condition.syntaxCopy() : null, this.increment != null ? this.increment.syntaxCopy() : null, this._body.syntaxCopy(), this.endloc);
         }
 
-        public  Statement scopeCode(Scope sc, Ptr<Statement> sentry, Ptr<Statement> sexception, Ptr<Statement> sfinally) {
+        public  Statement scopeCode(Ptr<Scope> sc, Ptr<Statement> sentry, Ptr<Statement> sexception, Ptr<Statement> sfinally) {
             this.scopeCode(sc, sentry, sexception, sfinally);
             return this;
         }
@@ -1089,26 +1109,26 @@ public class statement {
     public static class ForeachStatement extends Statement
     {
         public byte op = 0;
-        public DArray<Parameter> parameters;
-        public Expression aggr;
-        public Statement _body;
+        public Ptr<DArray<Parameter>> parameters = null;
+        public Expression aggr = null;
+        public Ref<Statement> _body = ref(null);
         public Loc endloc = new Loc();
-        public VarDeclaration key;
-        public VarDeclaration value;
-        public FuncDeclaration func;
-        public DArray<Statement> cases;
-        public DArray<ScopeStatement> gotos;
-        public  ForeachStatement(Loc loc, byte op, DArray<Parameter> parameters, Expression aggr, Statement _body, Loc endloc) {
+        public VarDeclaration key = null;
+        public VarDeclaration value = null;
+        public FuncDeclaration func = null;
+        public Ptr<DArray<Statement>> cases = null;
+        public Ptr<DArray<ScopeStatement>> gotos = null;
+        public  ForeachStatement(Loc loc, byte op, Ptr<DArray<Parameter>> parameters, Expression aggr, Statement _body, Loc endloc) {
             super(loc);
             this.op = op;
             this.parameters = parameters;
             this.aggr = aggr;
-            this._body = _body;
+            this._body.value = _body;
             this.endloc = endloc.copy();
         }
 
         public  Statement syntaxCopy() {
-            return new ForeachStatement(this.loc, this.op, Parameter.arraySyntaxCopy(this.parameters), this.aggr.syntaxCopy(), this._body != null ? this._body.syntaxCopy() : null, this.endloc);
+            return new ForeachStatement(this.loc, this.op, Parameter.arraySyntaxCopy(this.parameters), this.aggr.syntaxCopy(), this._body.value != null ? this._body.value.syntaxCopy() : null, this.endloc);
         }
 
         public  boolean hasBreak() {
@@ -1145,24 +1165,24 @@ public class statement {
     public static class ForeachRangeStatement extends Statement
     {
         public byte op = 0;
-        public Parameter prm;
-        public Expression lwr;
-        public Expression upr;
-        public Statement _body;
+        public Parameter prm = null;
+        public Expression lwr = null;
+        public Expression upr = null;
+        public Ref<Statement> _body = ref(null);
         public Loc endloc = new Loc();
-        public VarDeclaration key;
+        public VarDeclaration key = null;
         public  ForeachRangeStatement(Loc loc, byte op, Parameter prm, Expression lwr, Expression upr, Statement _body, Loc endloc) {
             super(loc);
             this.op = op;
             this.prm = prm;
             this.lwr = lwr;
             this.upr = upr;
-            this._body = _body;
+            this._body.value = _body;
             this.endloc = endloc.copy();
         }
 
         public  Statement syntaxCopy() {
-            return new ForeachRangeStatement(this.loc, this.op, this.prm.syntaxCopy(), this.lwr.syntaxCopy(), this.upr.syntaxCopy(), this._body != null ? this._body.syntaxCopy() : null, this.endloc);
+            return new ForeachRangeStatement(this.loc, this.op, this.prm.syntaxCopy(), this.lwr.syntaxCopy(), this.upr.syntaxCopy(), this._body.value != null ? this._body.value.syntaxCopy() : null, this.endloc);
         }
 
         public  boolean hasBreak() {
@@ -1195,11 +1215,11 @@ public class statement {
     }
     public static class IfStatement extends Statement
     {
-        public Parameter prm;
-        public Expression condition;
-        public Statement ifbody;
-        public Statement elsebody;
-        public VarDeclaration match;
+        public Parameter prm = null;
+        public Expression condition = null;
+        public Statement ifbody = null;
+        public Statement elsebody = null;
+        public VarDeclaration match = null;
         public Loc endloc = new Loc();
         public  IfStatement(Loc loc, Parameter prm, Expression condition, Statement ifbody, Statement elsebody, Loc endloc) {
             super(loc);
@@ -1239,9 +1259,9 @@ public class statement {
     }
     public static class ConditionalStatement extends Statement
     {
-        public Condition condition;
-        public Statement ifbody;
-        public Statement elsebody;
+        public Condition condition = null;
+        public Statement ifbody = null;
+        public Statement elsebody = null;
         public  ConditionalStatement(Loc loc, Condition condition, Statement ifbody, Statement elsebody) {
             super(loc);
             this.condition = condition;
@@ -1253,7 +1273,7 @@ public class statement {
             return new ConditionalStatement(this.loc, this.condition.syntaxCopy(), this.ifbody.syntaxCopy(), this.elsebody != null ? this.elsebody.syntaxCopy() : null);
         }
 
-        public  DArray<Statement> flatten(Scope sc) {
+        public  Ptr<DArray<Statement>> flatten(Ptr<Scope> sc) {
             Statement s = null;
             if (this.condition.include(sc) != 0)
             {
@@ -1265,8 +1285,8 @@ public class statement {
             }
             else
                 s = this.elsebody;
-            DArray<Statement> a = new DArray<Statement>();
-            (a).push(s);
+            Ptr<DArray<Statement>> a = new DArray<Statement>();
+            (a.get()).push(s);
             return a;
         }
 
@@ -1288,7 +1308,7 @@ public class statement {
     }
     public static class StaticForeachStatement extends Statement
     {
-        public StaticForeach sfe;
+        public StaticForeach sfe = null;
         public  StaticForeachStatement(Loc loc, StaticForeach sfe) {
             super(loc);
             this.sfe = sfe;
@@ -1298,24 +1318,24 @@ public class statement {
             return new StaticForeachStatement(this.loc, this.sfe.syntaxCopy());
         }
 
-        public  DArray<Statement> flatten(Scope sc) {
+        public  Ptr<DArray<Statement>> flatten(Ptr<Scope> sc) {
             this.sfe.prepare(sc);
             if (this.sfe.ready())
             {
                 Statement s = makeTupleForeach10(sc, this.sfe.aggrfe, this.sfe.needExpansion);
-                DArray<Statement> result = s.flatten(sc);
+                Ptr<DArray<Statement>> result = s.flatten(sc);
                 if (result != null)
                 {
                     return result;
                 }
                 result = new DArray<Statement>();
-                (result).push(s);
+                (result.get()).push(s);
                 return result;
             }
             else
             {
-                DArray<Statement> result = new DArray<Statement>();
-                (result).push(new ErrorStatement());
+                Ptr<DArray<Statement>> result = new DArray<Statement>();
+                (result.get()).push(new ErrorStatement());
                 return result;
             }
         }
@@ -1336,10 +1356,10 @@ public class statement {
     }
     public static class PragmaStatement extends Statement
     {
-        public Identifier ident;
-        public DArray<Expression> args;
-        public Statement _body;
-        public  PragmaStatement(Loc loc, Identifier ident, DArray<Expression> args, Statement _body) {
+        public Identifier ident = null;
+        public Ptr<DArray<Expression>> args = null;
+        public Statement _body = null;
+        public  PragmaStatement(Loc loc, Identifier ident, Ptr<DArray<Expression>> args, Statement _body) {
             super(loc);
             this.ident = ident;
             this.args = args;
@@ -1368,7 +1388,7 @@ public class statement {
     }
     public static class StaticAssertStatement extends Statement
     {
-        public StaticAssert sa;
+        public StaticAssert sa = null;
         public  StaticAssertStatement(StaticAssert sa) {
             super(sa.loc);
             this.sa = sa;
@@ -1394,16 +1414,16 @@ public class statement {
     }
     public static class SwitchStatement extends Statement
     {
-        public Expression condition;
-        public Statement _body;
+        public Expression condition = null;
+        public Statement _body = null;
         public boolean isFinal = false;
-        public DefaultStatement sdefault;
-        public TryFinallyStatement tf;
+        public DefaultStatement sdefault = null;
+        public TryFinallyStatement tf = null;
         public DArray<GotoCaseStatement> gotoCases = new DArray<GotoCaseStatement>();
-        public DArray<CaseStatement> cases;
+        public Ptr<DArray<CaseStatement>> cases = null;
         public int hasNoDefault = 0;
         public int hasVars = 0;
-        public VarDeclaration lastVar;
+        public VarDeclaration lastVar = null;
         public  SwitchStatement(Loc loc, Expression condition, Statement _body, boolean isFinal) {
             super(loc);
             this.condition = condition;
@@ -1422,15 +1442,16 @@ public class statement {
         public  boolean checkLabel() {
             Function1<VarDeclaration,Boolean> checkVar = new Function1<VarDeclaration,Boolean>(){
                 public Boolean invoke(VarDeclaration vd) {
+                    Ref<VarDeclaration> vd_ref = ref(vd);
                     {
-                        VarDeclaration v = vd;
-                        for (; (v != null) && (!pequals(v, lastVar));v = v.lastVar){
-                            if (v.isDataseg() || ((v.storage_class & 1099520016384L) != 0) || (v._init.isVoidInitializer() != null))
+                        Ref<VarDeclaration> v = ref(vd_ref.value);
+                        for (; (v.value != null) && (!pequals(v.value, lastVar));v.value = v.value.lastVar){
+                            if (v.value.isDataseg() || ((v.value.storage_class & 1099520016384L) != 0) || (v.value._init.isVoidInitializer() != null))
                                 continue;
-                            if ((pequals(vd.ident, Id.withSym)))
-                                error(new BytePtr("`switch` skips declaration of `with` temporary at %s"), v.loc.toChars(global.params.showColumns));
+                            if ((pequals(vd_ref.value.ident, Id.withSym.value)))
+                                error(new BytePtr("`switch` skips declaration of `with` temporary at %s"), v.value.loc.toChars(global.value.params.showColumns));
                             else
-                                error(new BytePtr("`switch` skips declaration of variable `%s` at %s"), v.toPrettyChars(false), v.loc.toChars(global.params.showColumns));
+                                error(new BytePtr("`switch` skips declaration of variable `%s` at %s"), v.value.toPrettyChars(false), v.value.loc.toChars(global.value.params.showColumns));
                             return true;
                         }
                     }
@@ -1441,10 +1462,10 @@ public class statement {
             if ((this.sdefault != null) && checkVar.invoke(this.sdefault.lastVar))
                 return false;
             {
-                Slice<CaseStatement> __r1652 = (this.cases).opSlice().copy();
-                int __key1653 = 0;
-                for (; (__key1653 < __r1652.getLength());__key1653 += 1) {
-                    CaseStatement scase = __r1652.get(__key1653);
+                Slice<CaseStatement> __r1579 = (this.cases.get()).opSlice().copy();
+                int __key1580 = 0;
+                for (; (__key1580 < __r1579.getLength());__key1580 += 1) {
+                    CaseStatement scase = __r1579.get(__key1580);
                     if ((scase != null) && checkVar.invoke(scase.lastVar))
                         return false;
                 }
@@ -1477,10 +1498,10 @@ public class statement {
     }
     public static class CaseStatement extends Statement
     {
-        public Expression exp;
-        public Statement statement;
+        public Expression exp = null;
+        public Statement statement = null;
         public int index = 0;
-        public VarDeclaration lastVar;
+        public VarDeclaration lastVar = null;
         public  CaseStatement(Loc loc, Expression exp, Statement statement) {
             super(loc);
             this.exp = exp;
@@ -1514,9 +1535,9 @@ public class statement {
     }
     public static class CaseRangeStatement extends Statement
     {
-        public Expression first;
-        public Expression last;
-        public Statement statement;
+        public Expression first = null;
+        public Expression last = null;
+        public Statement statement = null;
         public  CaseRangeStatement(Loc loc, Expression first, Expression last, Statement statement) {
             super(loc);
             this.first = first;
@@ -1546,8 +1567,8 @@ public class statement {
     }
     public static class DefaultStatement extends Statement
     {
-        public Statement statement;
-        public VarDeclaration lastVar;
+        public Statement statement = null;
+        public VarDeclaration lastVar = null;
         public  DefaultStatement(Loc loc, Statement statement) {
             super(loc);
             this.statement = statement;
@@ -1578,7 +1599,7 @@ public class statement {
     }
     public static class GotoDefaultStatement extends Statement
     {
-        public SwitchStatement sw;
+        public SwitchStatement sw = null;
         public  GotoDefaultStatement(Loc loc) {
             super(loc);
         }
@@ -1607,8 +1628,8 @@ public class statement {
     }
     public static class GotoCaseStatement extends Statement
     {
-        public Expression exp;
-        public CaseStatement cs;
+        public Expression exp = null;
+        public CaseStatement cs = null;
         public  GotoCaseStatement(Loc loc, Expression exp) {
             super(loc);
             this.exp = exp;
@@ -1639,7 +1660,7 @@ public class statement {
     }
     public static class SwitchErrorStatement extends Statement
     {
-        public Expression exp;
+        public Expression exp = null;
         public  SwitchErrorStatement(Loc loc) {
             super(loc);
         }
@@ -1665,7 +1686,7 @@ public class statement {
     }
     public static class ReturnStatement extends Statement
     {
-        public Expression exp;
+        public Expression exp = null;
         public int caseDim = 0;
         public  ReturnStatement(Loc loc, Expression exp) {
             super(loc);
@@ -1697,7 +1718,7 @@ public class statement {
     }
     public static class BreakStatement extends Statement
     {
-        public Identifier ident;
+        public Identifier ident = null;
         public  BreakStatement(Loc loc, Identifier ident) {
             super(loc);
             this.ident = ident;
@@ -1727,7 +1748,7 @@ public class statement {
     }
     public static class ContinueStatement extends Statement
     {
-        public Identifier ident;
+        public Identifier ident = null;
         public  ContinueStatement(Loc loc, Identifier ident) {
             super(loc);
             this.ident = ident;
@@ -1753,8 +1774,8 @@ public class statement {
     }
     public static class SynchronizedStatement extends Statement
     {
-        public Expression exp;
-        public Statement _body;
+        public Expression exp = null;
+        public Statement _body = null;
         public  SynchronizedStatement(Loc loc, Expression exp, Statement _body) {
             super(loc);
             this.exp = exp;
@@ -1790,9 +1811,9 @@ public class statement {
     }
     public static class WithStatement extends Statement
     {
-        public Expression exp;
-        public Statement _body;
-        public VarDeclaration wthis;
+        public Expression exp = null;
+        public Statement _body = null;
+        public VarDeclaration wthis = null;
         public Loc endloc = new Loc();
         public  WithStatement(Loc loc, Expression exp, Statement _body, Loc endloc) {
             super(loc);
@@ -1824,23 +1845,23 @@ public class statement {
     }
     public static class TryCatchStatement extends Statement
     {
-        public Statement _body;
-        public DArray<Catch> catches;
-        public  TryCatchStatement(Loc loc, Statement _body, DArray<Catch> catches) {
+        public Statement _body = null;
+        public Ptr<DArray<Catch>> catches = null;
+        public  TryCatchStatement(Loc loc, Statement _body, Ptr<DArray<Catch>> catches) {
             super(loc);
             this._body = _body;
             this.catches = catches;
         }
 
         public  Statement syntaxCopy() {
-            DArray<Catch> a = new DArray<Catch>((this.catches).length);
+            Ptr<DArray<Catch>> a = new DArray<Catch>((this.catches.get()).length);
             {
-                Slice<Catch> __r1655 = (this.catches).opSlice().copy();
-                int __key1654 = 0;
-                for (; (__key1654 < __r1655.getLength());__key1654 += 1) {
-                    Catch c = __r1655.get(__key1654);
-                    int i = __key1654;
-                    a.set(i, c.syntaxCopy());
+                Slice<Catch> __r1582 = (this.catches.get()).opSlice().copy();
+                int __key1581 = 0;
+                for (; (__key1581 < __r1582.getLength());__key1581 += 1) {
+                    Catch c = __r1582.get(__key1581);
+                    int i = __key1581;
+                    a.get().set(i, c.syntaxCopy());
                 }
             }
             return new TryCatchStatement(this.loc, this._body.syntaxCopy(), a);
@@ -1868,10 +1889,10 @@ public class statement {
     public static class Catch extends RootObject
     {
         public Loc loc = new Loc();
-        public Type type;
-        public Identifier ident;
-        public Statement handler;
-        public VarDeclaration var;
+        public Type type = null;
+        public Identifier ident = null;
+        public Statement handler = null;
+        public VarDeclaration var = null;
         public boolean errors = false;
         public boolean internalCatch = false;
         public  Catch(Loc loc, Type type, Identifier ident, Statement handler) {
@@ -1905,8 +1926,8 @@ public class statement {
     }
     public static class TryFinallyStatement extends Statement
     {
-        public Statement _body;
-        public Statement finalbody;
+        public Statement _body = null;
+        public Statement finalbody = null;
         public boolean bodyFallsThru = false;
         public  TryFinallyStatement(Loc loc, Statement _body, Statement finalbody) {
             super(loc);
@@ -1950,7 +1971,7 @@ public class statement {
     public static class ScopeGuardStatement extends Statement
     {
         public byte tok = 0;
-        public Statement statement;
+        public Statement statement = null;
         public  ScopeGuardStatement(Loc loc, byte tok, Statement statement) {
             super(loc);
             this.tok = tok;
@@ -1961,7 +1982,7 @@ public class statement {
             return new ScopeGuardStatement(this.loc, this.tok, this.statement.syntaxCopy());
         }
 
-        public  Statement scopeCode(Scope sc, Ptr<Statement> sentry, Ptr<Statement> sexception, Ptr<Statement> sfinally) {
+        public  Statement scopeCode(Ptr<Scope> sc, Ptr<Statement> sentry, Ptr<Statement> sexception, Ptr<Statement> sfinally) {
             sentry.set(0, null);
             sexception.set(0, null);
             sfinally.set(0, null);
@@ -1975,15 +1996,15 @@ public class statement {
                     sexception.set(0, s);
                     break;
                 case 206:
-                    VarDeclaration v = copyToTemp(0L, new BytePtr("__os"), new IntegerExp(Loc.initial, 0L, Type.tbool));
+                    VarDeclaration v = copyToTemp(0L, new BytePtr("__os"), new IntegerExp(Loc.initial.value, 0L, Type.tbool.value));
                     dsymbolSemantic(v, sc);
                     sentry.set(0, (new ExpStatement(this.loc, v)));
-                    Expression e = new IntegerExp(Loc.initial, 1L, Type.tbool);
-                    e = new AssignExp(Loc.initial, new VarExp(Loc.initial, v, true), e);
-                    sexception.set(0, (new ExpStatement(Loc.initial, e)));
-                    e = new VarExp(Loc.initial, v, true);
-                    e = new NotExp(Loc.initial, e);
-                    sfinally.set(0, (new IfStatement(Loc.initial, null, e, s, null, Loc.initial)));
+                    Expression e = new IntegerExp(Loc.initial.value, 1L, Type.tbool.value);
+                    e = new AssignExp(Loc.initial.value, new VarExp(Loc.initial.value, v, true), e);
+                    sexception.set(0, (new ExpStatement(Loc.initial.value, e)));
+                    e = new VarExp(Loc.initial.value, v, true);
+                    e = new NotExp(Loc.initial.value, e);
+                    sfinally.set(0, (new IfStatement(Loc.initial.value, null, e, s, null, Loc.initial.value)));
                     break;
                 default:
                 throw new AssertionError("Unreachable code!");
@@ -2008,7 +2029,7 @@ public class statement {
     }
     public static class ThrowStatement extends Statement
     {
-        public Expression exp;
+        public Expression exp = null;
         public boolean internalThrow = false;
         public  ThrowStatement(Loc loc, Expression exp) {
             super(loc);
@@ -2038,7 +2059,7 @@ public class statement {
     }
     public static class DebugStatement extends Statement
     {
-        public Statement statement;
+        public Statement statement = null;
         public  DebugStatement(Loc loc, Statement statement) {
             super(loc);
             this.statement = statement;
@@ -2048,15 +2069,15 @@ public class statement {
             return new DebugStatement(this.loc, this.statement != null ? this.statement.syntaxCopy() : null);
         }
 
-        public  DArray<Statement> flatten(Scope sc) {
-            DArray<Statement> a = this.statement != null ? this.statement.flatten(sc) : null;
+        public  Ptr<DArray<Statement>> flatten(Ptr<Scope> sc) {
+            Ptr<DArray<Statement>> a = this.statement != null ? this.statement.flatten(sc) : null;
             if (a != null)
             {
                 {
-                    Slice<Statement> __r1656 = (a).opSlice().copy();
-                    int __key1657 = 0;
-                    for (; (__key1657 < __r1656.getLength());__key1657 += 1) {
-                        Statement s = __r1656.get(__key1657);
+                    Slice<Statement> __r1583 = (a.get()).opSlice().copy();
+                    int __key1584 = 0;
+                    for (; (__key1584 < __r1583.getLength());__key1584 += 1) {
+                        Statement s = __r1583.get(__key1584);
                         s = new DebugStatement(this.loc, s);
                     }
                 }
@@ -2080,11 +2101,11 @@ public class statement {
     }
     public static class GotoStatement extends Statement
     {
-        public Identifier ident;
-        public LabelDsymbol label;
-        public TryFinallyStatement tf;
-        public ScopeGuardStatement os;
-        public VarDeclaration lastVar;
+        public Identifier ident = null;
+        public LabelDsymbol label = null;
+        public TryFinallyStatement tf = null;
+        public ScopeGuardStatement os = null;
+        public VarDeclaration lastVar = null;
         public  GotoStatement(Loc loc, Identifier ident) {
             super(loc);
             this.ident = ident;
@@ -2132,14 +2153,14 @@ public class statement {
             else if ((vd.storage_class & 140737488355328L) != 0)
             {
             }
-            else if ((pequals(vd.ident, Id.withSym)))
+            else if ((pequals(vd.ident, Id.withSym.value)))
             {
-                this.error(new BytePtr("`goto` skips declaration of `with` temporary at %s"), vd.loc.toChars(global.params.showColumns));
+                this.error(new BytePtr("`goto` skips declaration of `with` temporary at %s"), vd.loc.toChars(global.value.params.showColumns));
                 return true;
             }
             else
             {
-                this.error(new BytePtr("`goto` skips declaration of variable `%s` at %s"), vd.toPrettyChars(false), vd.loc.toChars(global.params.showColumns));
+                this.error(new BytePtr("`goto` skips declaration of variable `%s` at %s"), vd.toPrettyChars(false), vd.loc.toChars(global.value.params.showColumns));
                 return true;
             }
             return false;
@@ -2165,12 +2186,12 @@ public class statement {
     }
     public static class LabelStatement extends Statement
     {
-        public Identifier ident;
-        public Statement statement;
-        public TryFinallyStatement tf;
-        public ScopeGuardStatement os;
-        public VarDeclaration lastVar;
-        public Statement gotoTarget;
+        public Identifier ident = null;
+        public Statement statement = null;
+        public TryFinallyStatement tf = null;
+        public ScopeGuardStatement os = null;
+        public VarDeclaration lastVar = null;
+        public Statement gotoTarget = null;
         public boolean breaks = false;
         public  LabelStatement(Loc loc, Identifier ident, Statement statement) {
             super(loc);
@@ -2182,25 +2203,25 @@ public class statement {
             return new LabelStatement(this.loc, this.ident, this.statement != null ? this.statement.syntaxCopy() : null);
         }
 
-        public  DArray<Statement> flatten(Scope sc) {
-            DArray<Statement> a = null;
+        public  Ptr<DArray<Statement>> flatten(Ptr<Scope> sc) {
+            Ptr<DArray<Statement>> a = null;
             if (this.statement != null)
             {
                 a = this.statement.flatten(sc);
                 if (a != null)
                 {
-                    if ((a).length == 0)
+                    if ((a.get()).length == 0)
                     {
-                        (a).push(new ExpStatement(this.loc, null));
+                        (a.get()).push(new ExpStatement(this.loc, null));
                     }
-                    this.statement = (a).get(0);
-                    a.set(0, this);
+                    this.statement = (a.get()).get(0);
+                    a.get().set(0, this);
                 }
             }
             return a;
         }
 
-        public  Statement scopeCode(Scope sc, Ptr<Statement> sentry, Ptr<Statement> sexit, Ptr<Statement> sfinally) {
+        public  Statement scopeCode(Ptr<Scope> sc, Ptr<Statement> sentry, Ptr<Statement> sexit, Ptr<Statement> sfinally) {
             if (this.statement != null)
                 this.statement = this.statement.scopeCode(sc, sentry, sexit, sfinally);
             else
@@ -2238,7 +2259,7 @@ public class statement {
     }
     public static class LabelDsymbol extends Dsymbol
     {
-        public LabelStatement statement;
+        public LabelStatement statement = null;
         public  LabelDsymbol(Identifier ident) {
             super(ident);
         }
@@ -2280,8 +2301,8 @@ public class statement {
     }
     public static class AsmStatement extends Statement
     {
-        public Token tokens;
-        public  AsmStatement(Loc loc, Token tokens) {
+        public Ptr<Token> tokens = null;
+        public  AsmStatement(Loc loc, Ptr<Token> tokens) {
             super(loc);
             this.tokens = tokens;
         }
@@ -2306,12 +2327,12 @@ public class statement {
     }
     public static class InlineAsmStatement extends AsmStatement
     {
-        public code asmcode;
+        public Ptr<code> asmcode = null;
         public int asmalign = 0;
         public int regs = 0;
         public boolean refparam = false;
         public boolean naked = false;
-        public  InlineAsmStatement(Loc loc, Token tokens) {
+        public  InlineAsmStatement(Loc loc, Ptr<Token> tokens) {
             super(loc, tokens);
         }
 
@@ -2341,15 +2362,15 @@ public class statement {
     public static class GccAsmStatement extends AsmStatement
     {
         public long stc = 0;
-        public Expression insn;
-        public DArray<Expression> args;
+        public Expression insn = null;
+        public Ptr<DArray<Expression>> args = null;
         public int outputargs = 0;
-        public DArray<Identifier> names;
-        public DArray<Expression> constraints;
-        public DArray<Expression> clobbers;
-        public DArray<Identifier> labels;
-        public DArray<GotoStatement> gotos;
-        public  GccAsmStatement(Loc loc, Token tokens) {
+        public Ptr<DArray<Identifier>> names = null;
+        public Ptr<DArray<Expression>> constraints = null;
+        public Ptr<DArray<Expression>> clobbers = null;
+        public Ptr<DArray<Identifier>> labels = null;
+        public Ptr<DArray<GotoStatement>> gotos = null;
+        public  GccAsmStatement(Loc loc, Ptr<Token> tokens) {
             super(loc, tokens);
         }
 
@@ -2383,26 +2404,26 @@ public class statement {
     public static class CompoundAsmStatement extends CompoundStatement
     {
         public long stc = 0;
-        public  CompoundAsmStatement(Loc loc, DArray<Statement> statements, long stc) {
+        public  CompoundAsmStatement(Loc loc, Ptr<DArray<Statement>> statements, long stc) {
             super(loc, statements);
             this.stc = stc;
         }
 
         public  CompoundAsmStatement syntaxCopy() {
-            DArray<Statement> a = new DArray<Statement>((this.statements).length);
+            Ptr<DArray<Statement>> a = new DArray<Statement>((this.statements.get()).length);
             {
-                Slice<Statement> __r1659 = (this.statements).opSlice().copy();
-                int __key1658 = 0;
-                for (; (__key1658 < __r1659.getLength());__key1658 += 1) {
-                    Statement s = __r1659.get(__key1658);
-                    int i = __key1658;
-                    a.set(i, s != null ? s.syntaxCopy() : null);
+                Slice<Statement> __r1586 = (this.statements.get()).opSlice().copy();
+                int __key1585 = 0;
+                for (; (__key1585 < __r1586.getLength());__key1585 += 1) {
+                    Statement s = __r1586.get(__key1585);
+                    int i = __key1585;
+                    a.get().set(i, s != null ? s.syntaxCopy() : null);
                 }
             }
             return (Statement)new CompoundAsmStatement(this.loc, a, this.stc);
         }
 
-        public  DArray<Statement> flatten(Scope sc) {
+        public  Ptr<DArray<Statement>> flatten(Ptr<Scope> sc) {
             return null;
         }
 
@@ -2423,21 +2444,21 @@ public class statement {
     }
     public static class ImportStatement extends Statement
     {
-        public DArray<Dsymbol> imports;
-        public  ImportStatement(Loc loc, DArray<Dsymbol> imports) {
+        public Ptr<DArray<Dsymbol>> imports = null;
+        public  ImportStatement(Loc loc, Ptr<DArray<Dsymbol>> imports) {
             super(loc);
             this.imports = imports;
         }
 
         public  Statement syntaxCopy() {
-            DArray<Dsymbol> m = new DArray<Dsymbol>((this.imports).length);
+            Ptr<DArray<Dsymbol>> m = new DArray<Dsymbol>((this.imports.get()).length);
             {
-                Slice<Dsymbol> __r1661 = (this.imports).opSlice().copy();
-                int __key1660 = 0;
-                for (; (__key1660 < __r1661.getLength());__key1660 += 1) {
-                    Dsymbol s = __r1661.get(__key1660);
-                    int i = __key1660;
-                    m.set(i, s.syntaxCopy(null));
+                Slice<Dsymbol> __r1588 = (this.imports.get()).opSlice().copy();
+                int __key1587 = 0;
+                for (; (__key1587 < __r1588.getLength());__key1587 += 1) {
+                    Dsymbol s = __r1588.get(__key1587);
+                    int i = __key1587;
+                    m.get().set(i, s.syntaxCopy(null));
                 }
             }
             return new ImportStatement(this.loc, m);

@@ -55,14 +55,14 @@ public class ctorflow {
     public static class CtorFlow
     {
         public int callSuper = 0;
-        public Slice<FieldInit> fieldinit;
+        public Slice<FieldInit> fieldinit = new Slice<FieldInit>();
         public  void allocFieldinit(int dim) {
             this.fieldinit = (ptr(new FieldInit[dim])).slice(0,dim).copy();
         }
 
         public  void freeFieldinit() {
-            if ((FieldInit)this.fieldinit != null)
-                Mem.xfree((FieldInit)this.fieldinit);
+            if ((Ptr<FieldInit>)this.fieldinit != null)
+                Mem.xfree((Ptr<FieldInit>)this.fieldinit);
             this.fieldinit = new Slice<FieldInit>().copy();
         }
 
@@ -73,10 +73,10 @@ public class ctorflow {
         public  void orCSX(int csx) {
             this.callSuper |= csx;
             {
-                Slice<FieldInit> __r890 = this.fieldinit.copy();
-                int __key891 = 0;
-                for (; (__key891 < __r890.getLength());__key891 += 1) {
-                    FieldInit u = __r890.get(__key891).copy();
+                Slice<FieldInit> __r888 = this.fieldinit.copy();
+                int __key889 = 0;
+                for (; (__key889 < __r888.getLength());__key889 += 1) {
+                    FieldInit u = __r888.get(__key889).copy();
                     u.csx |= csx;
                 }
             }
@@ -88,15 +88,15 @@ public class ctorflow {
             {
                 assert((this.fieldinit.getLength() == ctorflow.fieldinit.getLength()));
                 {
-                    Slice<FieldInit> __r893 = ctorflow.fieldinit.copy();
-                    int __key892 = 0;
-                    for (; (__key892 < __r893.getLength());__key892 += 1) {
-                        FieldInit u = __r893.get(__key892).copy();
-                        int i = __key892;
-                        FieldInit fi = this.fieldinit.get(i);
-                        (fi).csx |= u.csx;
-                        if (((fi).loc == new Loc(null, 0, 0)))
-                            (fi).loc = u.loc.copy();
+                    Slice<FieldInit> __r891 = ctorflow.fieldinit.copy();
+                    int __key890 = 0;
+                    for (; (__key890 < __r891.getLength());__key890 += 1) {
+                        FieldInit u = __r891.get(__key890).copy();
+                        int i = __key890;
+                        Ptr<FieldInit> fi = ptr(this.fieldinit.get(i));
+                        (fi.get()).csx |= u.csx;
+                        if (((fi.get()).loc == new Loc(null, 0, 0)))
+                            (fi.get()).loc = u.loc.copy();
                     }
                 }
             }

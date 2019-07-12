@@ -4,11 +4,13 @@ import dmd.astcodegen : ASTCodegen;
 import dmd.dmodule : Module;
 import dmd.dsymbol : Dsymbol;
 import dmd.globals : Global;
+import dmd.declaration;
 
+import std.algorithm.sorting;
 import std.file : readFile = read, writeFile = write;
 import std.getopt, std.path, std.stdio;
 
-import visitors.declaration, visitors.templates;
+import visitors.declaration, visitors.templates, visitors.passed_by_ref;
 
 class DiagnosticsException : Exception
 {
@@ -118,6 +120,7 @@ void main(string[] args) {
         foreach(k; map.keys)
             v.opts.templates[k] = map[k];
     }
+    v.opts.refParams = passedByRef(mods);
     foreach(i, source; args[1..$]) {
         const modName = baseName(source);
         const java = modName[0..$-2] ~ ".java";

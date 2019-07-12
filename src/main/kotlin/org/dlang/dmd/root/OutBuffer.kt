@@ -251,6 +251,9 @@ class OutBuffer {
         vprintf(format, slice(temp))
     }
 
+    fun printf(format: BytePtr, vararg args: Any?) = printf(format.slice(0, strlen(format)), *args)
+
+
     private fun fmtOne(format: ByteSlice, j: Int, width: Int, padChar: Char, args: Slice<Any>, longPrefix: Boolean = false): Int {
         fun extent(): Int {
             var w = width

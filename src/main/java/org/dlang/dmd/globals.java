@@ -210,36 +210,36 @@ public class globals {
         public byte boundscheck = CHECKENABLE._default;
         public byte checkAction = CHECKACTION.D;
         public int errorLimit = 20;
-        public ByteSlice argv0;
-        public DArray<BytePtr> modFileAliasStrings = new DArray<BytePtr>();
-        public DArray<BytePtr> imppath;
-        public DArray<BytePtr> fileImppath;
-        public ByteSlice objdir;
-        public ByteSlice objname;
-        public ByteSlice libname;
+        public ByteSlice argv0 = new ByteSlice();
+        public Ref<DArray<BytePtr>> modFileAliasStrings = ref(new DArray<BytePtr>());
+        public Ptr<DArray<BytePtr>> imppath = null;
+        public Ptr<DArray<BytePtr>> fileImppath = null;
+        public ByteSlice objdir = new ByteSlice();
+        public ByteSlice objname = new ByteSlice();
+        public ByteSlice libname = new ByteSlice();
         public boolean doDocComments = false;
-        public BytePtr docdir;
-        public BytePtr docname;
+        public BytePtr docdir = null;
+        public BytePtr docname = null;
         public DArray<BytePtr> ddocfiles = new DArray<BytePtr>();
         public boolean doHdrGeneration = false;
-        public ByteSlice hdrdir;
-        public ByteSlice hdrname;
+        public ByteSlice hdrdir = new ByteSlice();
+        public ByteSlice hdrname = new ByteSlice();
         public boolean hdrStripPlainFunctions = true;
         public boolean doJsonGeneration = false;
-        public ByteSlice jsonfilename;
+        public ByteSlice jsonfilename = new ByteSlice();
         public int jsonFieldFlags = 0;
-        public OutBuffer mixinOut;
-        public BytePtr mixinFile;
+        public Ptr<OutBuffer> mixinOut = null;
+        public BytePtr mixinFile = null;
         public int mixinLines = 0;
         public int debuglevel = 0;
-        public DArray<BytePtr> debugids;
+        public Ptr<DArray<BytePtr>> debugids = null;
         public int versionlevel = 0;
-        public DArray<BytePtr> versionids;
-        public ByteSlice defaultlibname;
-        public ByteSlice debuglibname;
-        public ByteSlice mscrtlib;
-        public ByteSlice moduleDepsFile;
-        public OutBuffer moduleDeps;
+        public Ptr<DArray<BytePtr>> versionids = null;
+        public ByteSlice defaultlibname = new ByteSlice();
+        public ByteSlice debuglibname = new ByteSlice();
+        public ByteSlice mscrtlib = new ByteSlice();
+        public ByteSlice moduleDepsFile = new ByteSlice();
+        public Ptr<OutBuffer> moduleDeps = null;
         public boolean debugb = false;
         public boolean debugc = false;
         public boolean debugf = false;
@@ -252,10 +252,10 @@ public class globals {
         public DArray<BytePtr> linkswitches = new DArray<BytePtr>();
         public DArray<BytePtr> libfiles = new DArray<BytePtr>();
         public DArray<BytePtr> dllfiles = new DArray<BytePtr>();
-        public ByteSlice deffile;
-        public ByteSlice resfile;
-        public ByteSlice exefile;
-        public ByteSlice mapfile;
+        public ByteSlice deffile = new ByteSlice();
+        public ByteSlice resfile = new ByteSlice();
+        public ByteSlice exefile = new ByteSlice();
+        public ByteSlice mapfile = new ByteSlice();
         public  boolean isPOSIX() {
             boolean __result = false;
             try {
@@ -418,7 +418,7 @@ public class globals {
             r.mapfile = mapfile.copy();
             return r;
         }
-        public Param(boolean obj, boolean link, boolean dll, boolean lib, boolean multiobj, boolean oneobj, boolean trace, boolean tracegc, boolean verbose, boolean vcg_ast, boolean showColumns, boolean vtls, boolean vgc, boolean vfield, boolean vcomplex, byte symdebug, boolean symdebugref, boolean alwaysframe, boolean optimize, boolean map, boolean is64bit, boolean isLP64, boolean isLinux, boolean isOSX, boolean isWindows, boolean isFreeBSD, boolean isOpenBSD, boolean isDragonFlyBSD, boolean isSolaris, boolean hasObjectiveC, boolean mscoff, byte useDeprecated, boolean stackstomp, boolean useUnitTests, boolean useInline, boolean useDIP25, boolean noDIP25, boolean release, boolean preservePaths, byte warnings, byte pic, boolean color, boolean cov, byte covPercent, boolean nofloat, boolean ignoreUnsupportedPragmas, boolean useModuleInfo, boolean useTypeInfo, boolean useExceptions, boolean betterC, boolean addMain, boolean allInst, boolean check10378, boolean bug10378, boolean fix16997, boolean fixAliasThis, boolean vsafe, boolean ehnogc, boolean dtorFields, boolean fieldwise, boolean rvalueRefParam, int cplusplus, boolean markdown, boolean vmarkdown, boolean showGaggedErrors, boolean printErrorContext, boolean manual, boolean usage, boolean mcpuUsage, boolean transitionUsage, boolean checkUsage, boolean checkActionUsage, boolean revertUsage, boolean previewUsage, boolean externStdUsage, boolean logo, int cpu, byte useInvariants, byte useIn, byte useOut, byte useArrayBounds, byte useAssert, byte useSwitchError, byte boundscheck, byte checkAction, int errorLimit, ByteSlice argv0, DArray<BytePtr> modFileAliasStrings, DArray<BytePtr> imppath, DArray<BytePtr> fileImppath, ByteSlice objdir, ByteSlice objname, ByteSlice libname, boolean doDocComments, BytePtr docdir, BytePtr docname, DArray<BytePtr> ddocfiles, boolean doHdrGeneration, ByteSlice hdrdir, ByteSlice hdrname, boolean hdrStripPlainFunctions, boolean doJsonGeneration, ByteSlice jsonfilename, int jsonFieldFlags, OutBuffer mixinOut, BytePtr mixinFile, int mixinLines, int debuglevel, DArray<BytePtr> debugids, int versionlevel, DArray<BytePtr> versionids, ByteSlice defaultlibname, ByteSlice debuglibname, ByteSlice mscrtlib, ByteSlice moduleDepsFile, OutBuffer moduleDeps, boolean debugb, boolean debugc, boolean debugf, boolean debugr, boolean debugx, boolean debugy, boolean run, DArray<BytePtr> runargs, DArray<BytePtr> objfiles, DArray<BytePtr> linkswitches, DArray<BytePtr> libfiles, DArray<BytePtr> dllfiles, ByteSlice deffile, ByteSlice resfile, ByteSlice exefile, ByteSlice mapfile) {
+        public Param(boolean obj, boolean link, boolean dll, boolean lib, boolean multiobj, boolean oneobj, boolean trace, boolean tracegc, boolean verbose, boolean vcg_ast, boolean showColumns, boolean vtls, boolean vgc, boolean vfield, boolean vcomplex, byte symdebug, boolean symdebugref, boolean alwaysframe, boolean optimize, boolean map, boolean is64bit, boolean isLP64, boolean isLinux, boolean isOSX, boolean isWindows, boolean isFreeBSD, boolean isOpenBSD, boolean isDragonFlyBSD, boolean isSolaris, boolean hasObjectiveC, boolean mscoff, byte useDeprecated, boolean stackstomp, boolean useUnitTests, boolean useInline, boolean useDIP25, boolean noDIP25, boolean release, boolean preservePaths, byte warnings, byte pic, boolean color, boolean cov, byte covPercent, boolean nofloat, boolean ignoreUnsupportedPragmas, boolean useModuleInfo, boolean useTypeInfo, boolean useExceptions, boolean betterC, boolean addMain, boolean allInst, boolean check10378, boolean bug10378, boolean fix16997, boolean fixAliasThis, boolean vsafe, boolean ehnogc, boolean dtorFields, boolean fieldwise, boolean rvalueRefParam, int cplusplus, boolean markdown, boolean vmarkdown, boolean showGaggedErrors, boolean printErrorContext, boolean manual, boolean usage, boolean mcpuUsage, boolean transitionUsage, boolean checkUsage, boolean checkActionUsage, boolean revertUsage, boolean previewUsage, boolean externStdUsage, boolean logo, int cpu, byte useInvariants, byte useIn, byte useOut, byte useArrayBounds, byte useAssert, byte useSwitchError, byte boundscheck, byte checkAction, int errorLimit, ByteSlice argv0, DArray<BytePtr> modFileAliasStrings, Ptr<DArray<BytePtr>> imppath, Ptr<DArray<BytePtr>> fileImppath, ByteSlice objdir, ByteSlice objname, ByteSlice libname, boolean doDocComments, BytePtr docdir, BytePtr docname, DArray<BytePtr> ddocfiles, boolean doHdrGeneration, ByteSlice hdrdir, ByteSlice hdrname, boolean hdrStripPlainFunctions, boolean doJsonGeneration, ByteSlice jsonfilename, int jsonFieldFlags, Ptr<OutBuffer> mixinOut, BytePtr mixinFile, int mixinLines, int debuglevel, Ptr<DArray<BytePtr>> debugids, int versionlevel, Ptr<DArray<BytePtr>> versionids, ByteSlice defaultlibname, ByteSlice debuglibname, ByteSlice mscrtlib, ByteSlice moduleDepsFile, Ptr<OutBuffer> moduleDeps, boolean debugb, boolean debugc, boolean debugf, boolean debugr, boolean debugx, boolean debugy, boolean run, DArray<BytePtr> runargs, DArray<BytePtr> objfiles, DArray<BytePtr> linkswitches, DArray<BytePtr> libfiles, DArray<BytePtr> dllfiles, ByteSlice deffile, ByteSlice resfile, ByteSlice exefile, ByteSlice mapfile) {
             this.obj = obj;
             this.link = link;
             this.dll = dll;
@@ -692,11 +692,11 @@ public class globals {
     static int STRUCTALIGN_DEFAULT = -1;
     public static class Global
     {
-        public ByteSlice inifilename;
+        public ByteSlice inifilename = new ByteSlice();
         public ByteSlice mars_ext = new ByteSlice("d");
-        public ByteSlice obj_ext;
-        public ByteSlice lib_ext;
-        public ByteSlice dll_ext;
+        public ByteSlice obj_ext = new ByteSlice();
+        public ByteSlice lib_ext = new ByteSlice();
+        public ByteSlice dll_ext = new ByteSlice();
         public ByteSlice doc_ext = new ByteSlice("html");
         public ByteSlice ddoc_ext = new ByteSlice("ddoc");
         public ByteSlice hdr_ext = new ByteSlice("di");
@@ -705,19 +705,19 @@ public class globals {
         public boolean run_noext = false;
         public ByteSlice copyright = new ByteSlice("Copyright (C) 1999-2019 by The D Language Foundation, All Rights Reserved");
         public ByteSlice written = new ByteSlice("written by Walter Bright");
-        public DArray<BytePtr> path;
-        public DArray<BytePtr> filePath;
-        public ByteSlice _version;
-        public ByteSlice vendor;
+        public Ptr<DArray<BytePtr>> path = null;
+        public Ptr<DArray<BytePtr>> filePath = null;
+        public ByteSlice _version = new ByteSlice();
+        public ByteSlice vendor = new ByteSlice();
         public Param params = new Param();
         public int errors = 0;
         public int warnings = 0;
         public int gag = 0;
         public int gaggedErrors = 0;
         public int gaggedWarnings = 0;
-        public Object console;
-        public DArray<Identifier> versionids;
-        public DArray<Identifier> debugids;
+        public Object console = null;
+        public Ptr<DArray<Identifier>> versionids = null;
+        public Ptr<DArray<Identifier>> debugids = null;
         public  int startGagging() {
             this.gag += 1;
             this.gaggedWarnings = 0;
@@ -820,7 +820,7 @@ public class globals {
             r.debugids = debugids;
             return r;
         }
-        public Global(ByteSlice inifilename, ByteSlice mars_ext, ByteSlice obj_ext, ByteSlice lib_ext, ByteSlice dll_ext, ByteSlice doc_ext, ByteSlice ddoc_ext, ByteSlice hdr_ext, ByteSlice json_ext, ByteSlice map_ext, boolean run_noext, ByteSlice copyright, ByteSlice written, DArray<BytePtr> path, DArray<BytePtr> filePath, ByteSlice _version, ByteSlice vendor, Param params, int errors, int warnings, int gag, int gaggedErrors, int gaggedWarnings, Object console, DArray<Identifier> versionids, DArray<Identifier> debugids) {
+        public Global(ByteSlice inifilename, ByteSlice mars_ext, ByteSlice obj_ext, ByteSlice lib_ext, ByteSlice dll_ext, ByteSlice doc_ext, ByteSlice ddoc_ext, ByteSlice hdr_ext, ByteSlice json_ext, ByteSlice map_ext, boolean run_noext, ByteSlice copyright, ByteSlice written, Ptr<DArray<BytePtr>> path, Ptr<DArray<BytePtr>> filePath, ByteSlice _version, ByteSlice vendor, Param params, int errors, int warnings, int gag, int gaggedErrors, int gaggedWarnings, Object console, Ptr<DArray<Identifier>> versionids, Ptr<DArray<Identifier>> debugids) {
             this.inifilename = inifilename;
             this.mars_ext = mars_ext;
             this.obj_ext = obj_ext;
@@ -881,10 +881,10 @@ public class globals {
     }
     public static class Loc
     {
-        public BytePtr filename;
+        public BytePtr filename = null;
         public int linnum = 0;
         public int charnum = 0;
-        public static Loc initial = new Loc();
+        public static Ref<Loc> initial = ref(new Loc());
         public  Loc(BytePtr filename, int linnum, int charnum) {
             this.linnum = linnum;
             this.charnum = charnum;
@@ -917,11 +917,11 @@ public class globals {
 
         // defaulted all parameters starting with #1
         public  BytePtr toChars() {
-            toChars(global.params.showColumns);
+            return toChars(global.value.params.showColumns);
         }
 
         public  boolean equals(Loc loc) {
-            return !global.params.showColumns || (this.charnum == loc.charnum) && (this.linnum == loc.linnum) && FileName.equals(this.filename, loc.filename);
+            return !global.value.params.showColumns || (this.charnum == loc.charnum) && (this.linnum == loc.linnum) && FileName.equals(this.filename, loc.filename);
         }
 
         public  boolean opEquals(Loc loc) {
@@ -993,5 +993,5 @@ public class globals {
         public static final int always = 2;
     }
 
-    static Global global = new Global();
+    static Ref<Global> global = ref(new Global());
 }

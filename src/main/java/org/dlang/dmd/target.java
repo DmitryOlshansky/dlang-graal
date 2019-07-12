@@ -47,11 +47,11 @@ public class target {
         // from template FPTypeProperties!(Double)
         public static class FPTypePropertiesDouble
         {
-            public double max;
-            public double min_normal;
-            public double nan;
-            public double infinity;
-            public double epsilon;
+            public double max = ;
+            public double min_normal = ;
+            public double nan = ;
+            public double infinity = ;
+            public double epsilon = ;
             public long dig = 15L;
             public long mant_dig = 53L;
             public long max_exp = 1024L;
@@ -116,11 +116,11 @@ public class target {
         // from template FPTypeProperties!(Double)
         public static class FPTypePropertiesDouble
         {
-            public double max;
-            public double min_normal;
-            public double nan;
-            public double infinity;
-            public double epsilon;
+            public double max = ;
+            public double min_normal = ;
+            public double nan = ;
+            public double infinity = ;
+            public double epsilon = ;
             public long dig = 18L;
             public long mant_dig = 64L;
             public long max_exp = 16384L;
@@ -185,11 +185,11 @@ public class target {
         // from template FPTypeProperties!(Float)
         public static class FPTypePropertiesFloat
         {
-            public double max;
-            public double min_normal;
-            public double nan;
-            public double infinity;
-            public double epsilon;
+            public double max = ;
+            public double min_normal = ;
+            public double nan = ;
+            public double infinity = ;
+            public double epsilon = ;
             public long dig = 6L;
             public long mant_dig = 24L;
             public long max_exp = 128L;
@@ -329,9 +329,9 @@ public class target {
                 case 23:
                 case 26:
                 case 29:
-                    return target.realalignsize;
+                    return target.value.realalignsize;
                 case 27:
-                    if (global.params.isLinux || global.params.isOSX || global.params.isFreeBSD || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris)
+                    if (global.value.params.isLinux || global.value.params.isOSX || global.value.params.isFreeBSD || global.value.params.isOpenBSD || global.value.params.isDragonFlyBSD || global.value.params.isSolaris)
                         return 4;
                     break;
                 case 19:
@@ -339,18 +339,18 @@ public class target {
                 case 22:
                 case 25:
                 case 28:
-                    if (global.params.isLinux || global.params.isOSX || global.params.isFreeBSD || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris)
-                        return global.params.is64bit ? 8 : 4;
+                    if (global.value.params.isLinux || global.value.params.isOSX || global.value.params.isFreeBSD || global.value.params.isOpenBSD || global.value.params.isDragonFlyBSD || global.value.params.isSolaris)
+                        return global.value.params.is64bit ? 8 : 4;
                     break;
                 default:
                 break;
             }
-            return (int)type.size(Loc.initial);
+            return (int)type.size(Loc.initial.value);
         }
 
         public  int fieldalign(Type type) {
             int size = type.alignsize();
-            if (global.params.is64bit || global.params.isOSX && (size == 16) || (size == 32))
+            if (global.value.params.is64bit || global.value.params.isOSX && (size == 16) || (size == 32))
                 return size;
             return (8 < size) ? 8 : size;
         }
@@ -395,15 +395,15 @@ public class target {
         }
 
         public  Type va_listType() {
-            if (global.params.isWindows)
+            if (global.value.params.isWindows)
             {
                 return Type.tchar.pointerTo();
             }
-            else if (global.params.isLinux || global.params.isFreeBSD || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris || global.params.isOSX)
+            else if (global.value.params.isLinux || global.value.params.isFreeBSD || global.value.params.isOpenBSD || global.value.params.isDragonFlyBSD || global.value.params.isSolaris || global.value.params.isOSX)
             {
-                if (global.params.is64bit)
+                if (global.value.params.is64bit)
                 {
-                    return (new TypeIdentifier(Loc.initial, Identifier.idPool(new ByteSlice("__va_list_tag")))).pointerTo();
+                    return (new TypeIdentifier(Loc.initial.value, Identifier.idPool(new ByteSlice("__va_list_tag")))).pointerTo();
                 }
                 else
                 {
@@ -417,7 +417,7 @@ public class target {
         }
 
         public  boolean isXmmSupported() {
-            return global.params.is64bit || global.params.isOSX;
+            return global.value.params.is64bit || global.value.params.isOSX;
         }
 
         public  int isVectorTypeSupported(int sz, Type type) {
@@ -440,7 +440,7 @@ public class target {
                 default:
                 return 2;
             }
-            if ((sz != 16) && !((global.params.cpu >= CPU.avx) && (sz == 32)))
+            if ((sz != 16) && !((global.value.params.cpu >= CPU.avx) && (sz == 32)))
                 return 3;
             return 0;
         }
@@ -482,7 +482,7 @@ public class target {
                                 break;
                 case 78:
                     case 81:
-                        if (tvec.isfloating() || (tvec.elementType().size(Loc.initial) == 2L) || (global.params.cpu >= CPU.sse4_1) && (tvec.elementType().size(Loc.initial) == 4L))
+                        if (tvec.isfloating() || (tvec.elementType().size(Loc.initial.value) == 2L) || (global.value.params.cpu >= CPU.sse4_1) && (tvec.elementType().size(Loc.initial.value) == 4L))
                             supported = true;
                         else
                             supported = false;
@@ -521,7 +521,7 @@ public class target {
 
         // defaulted all parameters starting with #3
         public  boolean isVectorOpSupported(Type type, byte op) {
-            isVectorOpSupported(type, op, null);
+            return isVectorOpSupported(type, op, null);
         }
 
         public  BytePtr toCppMangle(Dsymbol s) {
@@ -554,11 +554,11 @@ public class target {
         }
 
         public  int systemLinkage() {
-            return global.params.isWindows ? LINK.windows : LINK.c;
+            return global.value.params.isWindows ? LINK.windows : LINK.c;
         }
 
         public  TypeTuple toArgTypes(Type t) {
-            if (global.params.is64bit && global.params.isWindows)
+            if (global.value.params.is64bit && global.value.params.isWindows)
                 return null;
             return toArgTypes(t);
         }
@@ -571,7 +571,7 @@ public class target {
             Type tn = tf.next.toBasetype();
             long sz = tn.size();
             Type tns = tn;
-            if (global.params.isWindows && global.params.is64bit)
+            if (global.value.params.isWindows && global.value.params.is64bit)
             {
                 if (((tns.ty & 0xFF) == ENUMTY.Tcomplex32))
                     return true;
@@ -592,7 +592,7 @@ public class target {
                     return false;
                 return true;
             }
-            else if (global.params.isWindows && global.params.mscoff)
+            else if (global.value.params.isWindows && global.value.params.mscoff)
             {
                 Type tb = tns.baseElemOf();
                 if (((tb.ty & 0xFF) == ENUMTY.Tstruct))
@@ -609,7 +609,7 @@ public class target {
                     if (((tns.ty & 0xFF) != ENUMTY.Tstruct))
                     {
                     /*L2:*/
-                        if (global.params.isLinux && (tf.linkage != LINK.d) && !global.params.is64bit)
+                        if (global.value.params.isLinux && (tf.linkage != LINK.d) && !global.value.params.is64bit)
                         {
                         }
                         else
@@ -631,11 +631,11 @@ public class target {
                 if (((tns.ty & 0xFF) == ENUMTY.Tstruct))
                 {
                     StructDeclaration sd = ((TypeStruct)tns).sym;
-                    if (global.params.isLinux && (tf.linkage != LINK.d) && !global.params.is64bit)
+                    if (global.value.params.isLinux && (tf.linkage != LINK.d) && !global.value.params.is64bit)
                     {
                         return true;
                     }
-                    if (global.params.isWindows && (tf.linkage == LINK.cpp) && !global.params.is64bit && sd.isPOD() && (sd.ctor != null))
+                    if (global.value.params.isWindows && (tf.linkage == LINK.cpp) && !global.value.params.is64bit && sd.isPOD() && (sd.ctor != null))
                     {
                         return true;
                     }
@@ -646,7 +646,7 @@ public class target {
                             /*goto L2*/throw Dispatch0.INSTANCE;
                         /*goto Lagain*/throw Dispatch0.INSTANCE;
                     }
-                    else if (global.params.is64bit && (sd.arg1type == null) && (sd.arg2type == null))
+                    else if (global.value.params.is64bit && (sd.arg1type == null) && (sd.arg2type == null))
                         return true;
                     else if (sd.isPOD())
                     {
@@ -658,7 +658,7 @@ public class target {
                             case 8L:
                                 return false;
                             case 16L:
-                                if (!global.params.isWindows && global.params.is64bit)
+                                if (!global.value.params.isWindows && global.value.params.is64bit)
                                     return false;
                                 break;
                             default:
@@ -667,7 +667,7 @@ public class target {
                     }
                     return true;
                 }
-                else if (global.params.isLinux || global.params.isOSX || global.params.isFreeBSD || global.params.isSolaris || global.params.isDragonFlyBSD && (tf.linkage == LINK.c) && tns.iscomplex())
+                else if (global.value.params.isLinux || global.value.params.isOSX || global.value.params.isFreeBSD || global.value.params.isSolaris || global.value.params.isDragonFlyBSD && (tf.linkage == LINK.c) && tns.iscomplex())
                 {
                     if (((tns.ty & 0xFF) == ENUMTY.Tcomplex32))
                         return false;
@@ -683,7 +683,7 @@ public class target {
         }
 
         public  long parameterSize(Loc loc, Type t) {
-            if (!global.params.is64bit && global.params.isFreeBSD || global.params.isOSX)
+            if (!global.value.params.is64bit && global.value.params.isFreeBSD || global.value.params.isOSX)
             {
                 if (((t.ty & 0xFF) == ENUMTY.Tstruct))
                 {
@@ -693,7 +693,7 @@ public class target {
                 }
             }
             long sz = t.size(loc);
-            return global.params.is64bit ? sz + 7L & -8L : sz + 3L & -4L;
+            return global.value.params.is64bit ? sz + 7L & -8L : sz + 3L & -4L;
         }
 
 
@@ -708,30 +708,31 @@ public class target {
         public  Expression getTargetInfo(BytePtr name, Loc loc) {
             Function1<ByteSlice,StringExp> stringExp = new Function1<ByteSlice,StringExp>(){
                 public StringExp invoke(ByteSlice sval) {
-                    return new StringExp(loc, toBytePtr(sval), sval.getLength());
+                    Ref<ByteSlice> sval_ref = ref(sval);
+                    return new StringExp(loc, toBytePtr(sval_ref.value), sval_ref.value.getLength());
                 }
             };
             switch (__switch(toDString(name)))
             {
                 case 2:
-                    if (global.params.isWindows)
-                        return stringExp.invoke(global.params.mscoff ? new ByteSlice("coff") : new ByteSlice("omf"));
-                    else if (global.params.isOSX)
+                    if (global.value.params.isWindows)
+                        return stringExp.invoke(global.value.params.mscoff ? new ByteSlice("coff") : new ByteSlice("omf"));
+                    else if (global.value.params.isOSX)
                         return stringExp.invoke(new ByteSlice("macho"));
                     else
                         return stringExp.invoke(new ByteSlice("elf"));
                 case 1:
                     return stringExp.invoke(new ByteSlice("hard"));
                 case 3:
-                    if (global.params.isWindows)
+                    if (global.value.params.isWindows)
                     {
-                        if (global.params.mscoff)
-                            return stringExp.invoke(global.params.mscrtlib);
+                        if (global.value.params.mscoff)
+                            return stringExp.invoke(global.value.params.mscrtlib);
                         return stringExp.invoke(new ByteSlice("snn"));
                     }
                     return stringExp.invoke(new ByteSlice(""));
                 case 0:
-                    return new IntegerExp((long)global.params.cplusplus);
+                    return new IntegerExp((long)global.value.params.cplusplus);
                 default:
                 return null;
             }
@@ -831,5 +832,5 @@ public class target {
             return this;
         }
     }
-    static Target target = new Target();
+    static Ref<Target> target = ref(new Target());
 }

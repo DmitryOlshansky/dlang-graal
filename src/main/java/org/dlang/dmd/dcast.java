@@ -40,125 +40,133 @@ import static org.dlang.dmd.visitor.*;
 public class dcast {
     private static class ImplicitCastTo extends Visitor
     {
-        private Type t;
-        private Scope sc;
-        private Expression result;
-        public  ImplicitCastTo(Scope sc, Type t) {
-            this.sc = sc;
-            this.t = t;
+        private Type t = null;
+        private Ptr<Scope> sc = null;
+        private Expression result = null;
+        public  ImplicitCastTo(Ptr<Scope> sc, Type t) {
+            Ref<Ptr<Scope>> sc_ref = ref(sc);
+            Ref<Type> t_ref = ref(t);
+            this.sc = sc_ref.value;
+            this.t = t_ref.value;
         }
 
         public  void visit(Expression e) {
-            int match = e.implicitConvTo(this.t);
-            if (match != 0)
+            Ref<Expression> e_ref = ref(e);
+            IntRef match = ref(e_ref.value.implicitConvTo(this.t));
+            if (match.value != 0)
             {
-                if ((match == MATCH.constant) && (e.type.constConv(this.t) != 0) || !e.isLvalue() && e.type.equivalent(this.t))
+                if ((match.value == MATCH.constant) && (e_ref.value.type.value.constConv(this.t) != 0) || !e_ref.value.isLvalue() && e_ref.value.type.value.equivalent(this.t))
                 {
-                    this.result = e.copy();
-                    this.result.type = this.t;
+                    this.result = e_ref.value.copy();
+                    this.result.type.value = this.t;
                     return ;
                 }
-                AggregateDeclaration ad = isAggregate(e.type);
-                if ((ad != null) && (ad.aliasthis != null))
+                Ref<AggregateDeclaration> ad = ref(isAggregate(e_ref.value.type.value));
+                if ((ad.value != null) && (ad.value.aliasthis != null))
                 {
-                    int adMatch = MATCH.nomatch;
-                    if (((ad.type.ty & 0xFF) == ENUMTY.Tstruct))
-                        adMatch = ((TypeStruct)ad.type).implicitConvToWithoutAliasThis(this.t);
+                    IntRef adMatch = ref(MATCH.nomatch);
+                    if (((ad.value.type.ty & 0xFF) == ENUMTY.Tstruct))
+                        adMatch.value = ((TypeStruct)ad.value.type).implicitConvToWithoutAliasThis(this.t);
                     else
-                        adMatch = ((TypeClass)ad.type).implicitConvToWithoutAliasThis(this.t);
-                    if (adMatch == 0)
+                        adMatch.value = ((TypeClass)ad.value.type).implicitConvToWithoutAliasThis(this.t);
+                    if (adMatch.value == 0)
                     {
-                        Type tob = this.t.toBasetype();
-                        Type t1b = e.type.toBasetype();
-                        AggregateDeclaration toad = isAggregate(tob);
-                        if ((!pequals(ad, toad)))
+                        Ref<Type> tob = ref(this.t.toBasetype());
+                        Ref<Type> t1b = ref(e_ref.value.type.value.toBasetype());
+                        Ref<AggregateDeclaration> toad = ref(isAggregate(tob.value));
+                        if ((!pequals(ad.value, toad.value)))
                         {
-                            if (((t1b.ty & 0xFF) == ENUMTY.Tclass) && ((tob.ty & 0xFF) == ENUMTY.Tclass))
+                            if (((t1b.value.ty & 0xFF) == ENUMTY.Tclass) && ((tob.value.ty & 0xFF) == ENUMTY.Tclass))
                             {
-                                ClassDeclaration t1cd = t1b.isClassHandle();
-                                ClassDeclaration tocd = tob.isClassHandle();
+                                Ref<ClassDeclaration> t1cd = ref(t1b.value.isClassHandle());
+                                Ref<ClassDeclaration> tocd = ref(tob.value.isClassHandle());
                                 IntRef offset = ref(0);
-                                if (tocd.isBaseOf(t1cd, ptr(offset)))
+                                if (tocd.value.isBaseOf(t1cd.value, ptr(offset)))
                                 {
-                                    this.result = new CastExp(e.loc, e, this.t);
-                                    this.result.type = this.t;
+                                    this.result = new CastExp(e_ref.value.loc, e_ref.value, this.t);
+                                    this.result.type.value = this.t;
                                     return ;
                                 }
                             }
-                            this.result = resolveAliasThis(this.sc, e, false);
+                            this.result = resolveAliasThis(this.sc, e_ref.value, false);
                             this.result = this.result.castTo(this.sc, this.t);
                             return ;
                         }
                     }
                 }
-                this.result = e.castTo(this.sc, this.t);
+                this.result = e_ref.value.castTo(this.sc, this.t);
                 return ;
             }
-            this.result = e.optimize(0, false);
-            if ((!pequals(this.result, e)))
+            this.result = e_ref.value.optimize(0, false);
+            if ((!pequals(this.result, e_ref.value)))
             {
                 this.result.accept(this);
                 return ;
             }
-            if (((this.t.ty & 0xFF) != ENUMTY.Terror) && ((e.type.ty & 0xFF) != ENUMTY.Terror))
+            if (((this.t.ty & 0xFF) != ENUMTY.Terror) && ((e_ref.value.type.value.ty & 0xFF) != ENUMTY.Terror))
             {
                 if (this.t.deco == null)
                 {
-                    e.error(new BytePtr("forward reference to type `%s`"), this.t.toChars());
+                    e_ref.value.error(new BytePtr("forward reference to type `%s`"), this.t.toChars());
                 }
                 else
                 {
-                    Slice<BytePtr> ts = toAutoQualChars(e.type, this.t);
-                    e.error(new BytePtr("cannot implicitly convert expression `%s` of type `%s` to `%s`"), e.toChars(), ts.get(0), ts.get(1));
+                    Slice<BytePtr> ts = toAutoQualChars(e_ref.value.type.value, this.t);
+                    e_ref.value.error(new BytePtr("cannot implicitly convert expression `%s` of type `%s` to `%s`"), e_ref.value.toChars(), ts.get(0), ts.get(1));
                 }
             }
             this.result = new ErrorExp();
         }
 
         public  void visit(StringExp e) {
-            this.visit((Expression)e);
+            Ref<StringExp> e_ref = ref(e);
+            this.visit((Expression)e_ref);
             if (((this.result.op & 0xFF) == 121))
             {
-                ((StringExp)this.result).committed = e.committed;
+                ((StringExp)this.result).committed = e_ref.value.committed;
             }
         }
 
         public  void visit(ErrorExp e) {
-            this.result = e;
+            Ref<ErrorExp> e_ref = ref(e);
+            this.result = e_ref.value;
         }
 
         public  void visit(FuncExp e) {
+            Ref<FuncExp> e_ref = ref(e);
             Ref<FuncExp> fe = ref(null);
-            if ((e.matchType(this.t, this.sc, ptr(fe), 0) > MATCH.nomatch))
+            if ((e_ref.value.matchType(this.t, this.sc, ptr(fe), 0) > MATCH.nomatch))
             {
                 this.result = fe.value;
                 return ;
             }
-            this.visit((Expression)e);
+            this.visit((Expression)e_ref);
         }
 
         public  void visit(ArrayLiteralExp e) {
-            this.visit((Expression)e);
-            Type tb = this.result.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray) && global.params.useTypeInfo && (Type.dtypeinfo != null))
-                semanticTypeInfo(this.sc, ((TypeDArray)tb).next);
+            Ref<ArrayLiteralExp> e_ref = ref(e);
+            this.visit((Expression)e_ref);
+            Ref<Type> tb = ref(this.result.type.value.toBasetype());
+            if (((tb.value.ty & 0xFF) == ENUMTY.Tarray) && global.value.params.useTypeInfo && (Type.dtypeinfo.value != null))
+                semanticTypeInfo(this.sc, ((TypeDArray)tb.value).next);
         }
 
         public  void visit(SliceExp e) {
-            this.visit((Expression)e);
+            Ref<SliceExp> e_ref = ref(e);
+            this.visit((Expression)e_ref);
             if (((this.result.op & 0xFF) != 31))
                 return ;
-            e = (SliceExp)this.result;
-            if (((e.e1.op & 0xFF) == 47))
+            e_ref.value = (SliceExp)this.result;
+            if (((e_ref.value.e1.op & 0xFF) == 47))
             {
-                ArrayLiteralExp ale = (ArrayLiteralExp)e.e1;
-                Type tb = this.t.toBasetype();
-                Type tx = null;
-                if (((tb.ty & 0xFF) == ENUMTY.Tsarray))
-                    tx = tb.nextOf().sarrayOf(ale.elements != null ? (long)(ale.elements).length : 0L);
+                Ref<ArrayLiteralExp> ale = ref((ArrayLiteralExp)e_ref.value.e1);
+                Ref<Type> tb = ref(this.t.toBasetype());
+                Ref<Type> tx = ref(null);
+                if (((tb.value.ty & 0xFF) == ENUMTY.Tsarray))
+                    tx.value = tb.value.nextOf().sarrayOf(ale.value.elements != null ? (long)(ale.value.elements.get()).length : 0L);
                 else
-                    tx = tb.nextOf().arrayOf();
-                e.e1 = ale.implicitCastTo(this.sc, tx);
+                    tx.value = tb.value.nextOf().arrayOf();
+                e_ref.value.e1 = ale.value.implicitCastTo(this.sc, tx.value);
             }
         }
 
@@ -168,22 +176,25 @@ public class dcast {
     private static class ClassCheck
     {
         public static boolean convertible(Loc loc, ClassDeclaration cd, byte mod) {
+            Ref<Loc> loc_ref = ref(loc);
+            Ref<ClassDeclaration> cd_ref = ref(cd);
+            Ref<Byte> mod_ref = ref(mod);
             {
-                int i = 0;
-                for (; (i < cd.fields.length);i++){
-                    VarDeclaration v = cd.fields.get(i);
-                    Initializer _init = v._init;
-                    if (_init != null)
+                IntRef i = ref(0);
+                for (; (i.value < cd_ref.value.fields.length);i.value++){
+                    Ref<VarDeclaration> v = ref(cd_ref.value.fields.get(i.value));
+                    Ref<Initializer> _init = ref(v.value._init);
+                    if (_init.value != null)
                     {
-                        if (_init.isVoidInitializer() != null)
+                        if (_init.value.isVoidInitializer() != null)
                         {
                         }
                         else {
-                            ExpInitializer ei = _init.isExpInitializer();
-                            if ((ei) != null)
+                            Ref<ExpInitializer> ei = ref(_init.value.isExpInitializer());
+                            if ((ei.value) != null)
                             {
-                                Type tb = v.type.toBasetype();
-                                if ((implicitMod(ei.exp, tb, mod) == MATCH.nomatch))
+                                Ref<Type> tb = ref(v.value.type.toBasetype());
+                                if ((implicitMod(ei.value.exp, tb.value, mod_ref.value) == MATCH.nomatch))
                                     return false;
                             }
                             else
@@ -192,11 +203,11 @@ public class dcast {
                             }
                         }
                     }
-                    else if (!v.type.isZeroInit(loc))
+                    else if (!v.value.type.isZeroInit(loc_ref.value))
                         return false;
                 }
             }
-            return cd.baseClass != null ? convertible(loc, cd.baseClass, mod) : true;
+            return cd_ref.value.baseClass != null ? convertible(loc_ref.value, cd_ref.value.baseClass, mod_ref.value) : true;
         }
 
         public ClassCheck(){
@@ -211,43 +222,45 @@ public class dcast {
     }
     private static class ImplicitConvTo extends Visitor
     {
-        private Type t;
+        private Type t = null;
         private int result = 0;
         public  ImplicitConvTo(Type t) {
-            this.t = t;
+            Ref<Type> t_ref = ref(t);
+            this.t = t_ref.value;
             this.result = MATCH.nomatch;
         }
 
         public  void visit(Expression e) {
-            if ((pequals(this.t, Type.terror)))
+            Ref<Expression> e_ref = ref(e);
+            if ((pequals(this.t, Type.terror.value)))
                 return ;
-            if (e.type == null)
+            if (e_ref.value.type.value == null)
             {
-                e.error(new BytePtr("`%s` is not an expression"), e.toChars());
-                e.type = Type.terror;
+                e_ref.value.error(new BytePtr("`%s` is not an expression"), e_ref.value.toChars());
+                e_ref.value.type.value = Type.terror.value;
             }
-            Expression ex = e.optimize(0, false);
-            if (ex.type.equals(this.t))
+            Ref<Expression> ex = ref(e_ref.value.optimize(0, false));
+            if (ex.value.type.value.equals(this.t))
             {
                 this.result = MATCH.exact;
                 return ;
             }
-            if ((!pequals(ex, e)))
+            if ((!pequals(ex.value, e_ref.value)))
             {
-                this.result = ex.implicitConvTo(this.t);
+                this.result = ex.value.implicitConvTo(this.t);
                 return ;
             }
-            int match = e.type.implicitConvTo(this.t);
-            if ((match != MATCH.nomatch))
+            IntRef match = ref(e_ref.value.type.value.implicitConvTo(this.t));
+            if ((match.value != MATCH.nomatch))
             {
-                this.result = match;
+                this.result = match.value;
                 return ;
             }
-            if (e.type.isintegral() && this.t.isintegral() && (e.type.isTypeBasic() != null) && (this.t.isTypeBasic() != null))
+            if (e_ref.value.type.value.isintegral() && this.t.isintegral() && (e_ref.value.type.value.isTypeBasic() != null) && (this.t.isTypeBasic() != null))
             {
-                IntRange src = getIntRange(e).copy();
-                IntRange target = IntRange.fromType(this.t).copy();
-                if (target.contains(src))
+                Ref<IntRange> src = ref(getIntRange(e_ref.value).copy());
+                Ref<IntRange> target = ref(IntRange.fromType(this.t).copy());
+                if (target.value.contains(src.value))
                 {
                     this.result = MATCH.convert;
                     return ;
@@ -256,71 +269,79 @@ public class dcast {
         }
 
         public static int implicitMod(Expression e, Type t, byte mod) {
-            Type tprime = null;
-            if (((t.ty & 0xFF) == ENUMTY.Tpointer))
-                tprime = t.nextOf().castMod(mod).pointerTo();
-            else if (((t.ty & 0xFF) == ENUMTY.Tarray))
-                tprime = t.nextOf().castMod(mod).arrayOf();
-            else if (((t.ty & 0xFF) == ENUMTY.Tsarray))
-                tprime = t.nextOf().castMod(mod).sarrayOf(t.size() / t.nextOf().size());
+            Ref<Expression> e_ref = ref(e);
+            Ref<Type> t_ref = ref(t);
+            Ref<Byte> mod_ref = ref(mod);
+            Ref<Type> tprime = ref(null);
+            if (((t_ref.value.ty & 0xFF) == ENUMTY.Tpointer))
+                tprime.value = t_ref.value.nextOf().castMod(mod_ref.value).pointerTo();
+            else if (((t_ref.value.ty & 0xFF) == ENUMTY.Tarray))
+                tprime.value = t_ref.value.nextOf().castMod(mod_ref.value).arrayOf();
+            else if (((t_ref.value.ty & 0xFF) == ENUMTY.Tsarray))
+                tprime.value = t_ref.value.nextOf().castMod(mod_ref.value).sarrayOf(t_ref.value.size() / t_ref.value.nextOf().size());
             else
-                tprime = t.castMod(mod);
-            return e.implicitConvTo(tprime);
+                tprime.value = t_ref.value.castMod(mod_ref.value);
+            return e_ref.value.implicitConvTo(tprime.value);
         }
 
         public static int implicitConvToAddMin(BinExp e, Type t) {
-            Type tb = t.toBasetype();
-            Type typeb = e.type.toBasetype();
-            if (((typeb.ty & 0xFF) != ENUMTY.Tpointer) || ((tb.ty & 0xFF) != ENUMTY.Tpointer))
+            Ref<BinExp> e_ref = ref(e);
+            Ref<Type> t_ref = ref(t);
+            Ref<Type> tb = ref(t_ref.value.toBasetype());
+            Ref<Type> typeb = ref(e_ref.value.type.value.toBasetype());
+            if (((typeb.value.ty & 0xFF) != ENUMTY.Tpointer) || ((tb.value.ty & 0xFF) != ENUMTY.Tpointer))
                 return MATCH.nomatch;
-            Type t1b = e.e1.type.toBasetype();
-            Type t2b = e.e2.type.toBasetype();
-            if (((t1b.ty & 0xFF) == ENUMTY.Tpointer) && t2b.isintegral() && t1b.equivalent(tb))
+            Ref<Type> t1b = ref(e_ref.value.e1.value.type.value.toBasetype());
+            Ref<Type> t2b = ref(e_ref.value.e2.value.type.value.toBasetype());
+            if (((t1b.value.ty & 0xFF) == ENUMTY.Tpointer) && t2b.value.isintegral() && t1b.value.equivalent(tb.value))
             {
-                int m = e.e1.implicitConvTo(t);
-                return (m > MATCH.constant) ? MATCH.constant : m;
+                IntRef m = ref(e_ref.value.e1.value.implicitConvTo(t_ref.value));
+                return (m.value > MATCH.constant) ? MATCH.constant : m.value;
             }
-            if (((t2b.ty & 0xFF) == ENUMTY.Tpointer) && t1b.isintegral() && t2b.equivalent(tb))
+            if (((t2b.value.ty & 0xFF) == ENUMTY.Tpointer) && t1b.value.isintegral() && t2b.value.equivalent(tb.value))
             {
-                int m = e.e2.implicitConvTo(t);
-                return (m > MATCH.constant) ? MATCH.constant : m;
+                IntRef m = ref(e_ref.value.e2.value.implicitConvTo(t_ref.value));
+                return (m.value > MATCH.constant) ? MATCH.constant : m.value;
             }
             return MATCH.nomatch;
         }
 
         public  void visit(AddExp e) {
-            this.visit((Expression)e);
+            Ref<AddExp> e_ref = ref(e);
+            this.visit((Expression)e_ref);
             if ((this.result == MATCH.nomatch))
-                this.result = implicitConvToAddMin(e, this.t);
+                this.result = implicitConvToAddMin(e_ref.value, this.t);
         }
 
         public  void visit(MinExp e) {
-            this.visit((Expression)e);
+            Ref<MinExp> e_ref = ref(e);
+            this.visit((Expression)e_ref);
             if ((this.result == MATCH.nomatch))
-                this.result = implicitConvToAddMin(e, this.t);
+                this.result = implicitConvToAddMin(e_ref.value, this.t);
         }
 
         public  void visit(IntegerExp e) {
-            int m = e.type.implicitConvTo(this.t);
-            if ((m >= MATCH.constant))
+            Ref<IntegerExp> e_ref = ref(e);
+            IntRef m = ref(e_ref.value.type.value.implicitConvTo(this.t));
+            if ((m.value >= MATCH.constant))
             {
-                this.result = m;
+                this.result = m.value;
                 return ;
             }
-            byte ty = e.type.toBasetype().ty;
-            byte toty = this.t.toBasetype().ty;
-            byte oldty = ty;
-            if ((m == MATCH.nomatch) && ((this.t.ty & 0xFF) == ENUMTY.Tenum))
+            Ref<Byte> ty = ref(e_ref.value.type.value.toBasetype().ty);
+            Ref<Byte> toty = ref(this.t.toBasetype().ty);
+            Ref<Byte> oldty = ref(ty.value);
+            if ((m.value == MATCH.nomatch) && ((this.t.ty & 0xFF) == ENUMTY.Tenum))
                 return ;
             if (((this.t.ty & 0xFF) == ENUMTY.Tvector))
             {
-                TypeVector tv = (TypeVector)this.t;
-                TypeBasic tb = tv.elementType();
-                if (((tb.ty & 0xFF) == ENUMTY.Tvoid))
+                Ref<TypeVector> tv = ref((TypeVector)this.t);
+                Ref<TypeBasic> tb = ref(tv.value.elementType());
+                if (((tb.value.ty & 0xFF) == ENUMTY.Tvoid))
                     return ;
-                toty = tb.ty;
+                toty.value = tb.value.ty;
             }
-            switch ((ty & 0xFF))
+            switch ((ty.value & 0xFF))
             {
                 case 30:
                 case 13:
@@ -329,25 +350,25 @@ public class dcast {
                 case 15:
                 case 16:
                 case 32:
-                    ty = (byte)17;
+                    ty.value = (byte)17;
                     break;
                 case 33:
-                    ty = (byte)18;
+                    ty.value = (byte)18;
                     break;
                 default:
                 break;
             }
-            long value = e.toInteger();
+            Ref<Long> value = ref(e_ref.value.toInteger());
             // from template isLosslesslyConvertibleToFP!(Double)
             Function0<Boolean> isLosslesslyConvertibleToFPDouble = new Function0<Boolean>(){
                 public Boolean invoke() {
-                    if (e.type.isunsigned())
+                    if (e_ref.value.type.value.isunsigned())
                     {
-                        double f = (double)value;
-                        return (long)f == value;
+                        double f = (double)value.value;
+                        return (long)f == value.value;
                     }
-                    double f = (double)(long)value;
-                    return (long)f == (long)value;
+                    double f = (double)(long)value.value;
+                    return (long)f == (long)value.value;
                 }
             };
 
@@ -357,13 +378,13 @@ public class dcast {
             // from template isLosslesslyConvertibleToFP!(Float)
             Function0<Boolean> isLosslesslyConvertibleToFPFloat = new Function0<Boolean>(){
                 public Boolean invoke() {
-                    if (e.type.isunsigned())
+                    if (e_ref.value.type.value.isunsigned())
                     {
-                        float f = (float)value;
-                        return (long)f == value;
+                        float f = (float)value.value;
+                        return (long)f == value.value;
                     }
-                    float f = (float)(long)value;
-                    return (long)f == (long)value;
+                    float f = (float)(long)value.value;
+                    return (long)f == (long)value.value;
                 }
             };
 
@@ -371,60 +392,60 @@ public class dcast {
                 int __dispatch1 = 0;
                 dispatched_1:
                 do {
-                    switch (__dispatch1 != 0 ? __dispatch1 : (toty & 0xFF))
+                    switch (__dispatch1 != 0 ? __dispatch1 : (toty.value & 0xFF))
                     {
                         case 30:
-                            if (((value & 1L) != value))
+                            if (((value.value & 1L) != value.value))
                                 return ;
                             break;
                         case 13:
-                            if (((ty & 0xFF) == ENUMTY.Tuns64) && ((value & 4294967168L) != 0))
+                            if (((ty.value & 0xFF) == ENUMTY.Tuns64) && ((value.value & 4294967168L) != 0))
                                 return ;
-                            else if (((long)((byte)value & 0xFF) != value))
+                            else if (((long)((byte)value.value & 0xFF) != value.value))
                                 return ;
                             break;
                         case 31:
-                            if (((oldty & 0xFF) == ENUMTY.Twchar) || ((oldty & 0xFF) == ENUMTY.Tdchar) && (value > 127L))
+                            if (((oldty.value & 0xFF) == ENUMTY.Twchar) || ((oldty.value & 0xFF) == ENUMTY.Tdchar) && (value.value > 127L))
                                 return ;
                             /*goto case*/{ __dispatch1 = 14; continue dispatched_1; }
                         case 14:
                             __dispatch1 = 0;
-                            if (((long)((byte)value & 0xFF) != value))
+                            if (((long)((byte)value.value & 0xFF) != value.value))
                                 return ;
                             break;
                         case 15:
-                            if (((ty & 0xFF) == ENUMTY.Tuns64) && ((value & 4294934528L) != 0))
+                            if (((ty.value & 0xFF) == ENUMTY.Tuns64) && ((value.value & 4294934528L) != 0))
                                 return ;
-                            else if (((long)(int)(int)value != value))
+                            else if (((long)(int)(int)value.value != value.value))
                                 return ;
                             break;
                         case 32:
-                            if (((oldty & 0xFF) == ENUMTY.Tdchar) && (value > 55295L) && (value < 57344L))
+                            if (((oldty.value & 0xFF) == ENUMTY.Tdchar) && (value.value > 55295L) && (value.value < 57344L))
                                 return ;
                             /*goto case*/{ __dispatch1 = 16; continue dispatched_1; }
                         case 16:
                             __dispatch1 = 0;
-                            if (((long)(int)(int)value != value))
+                            if (((long)(int)(int)value.value != value.value))
                                 return ;
                             break;
                         case 17:
-                            if (((ty & 0xFF) == ENUMTY.Tuns32))
+                            if (((ty.value & 0xFF) == ENUMTY.Tuns32))
                             {
                             }
-                            else if (((ty & 0xFF) == ENUMTY.Tuns64) && ((value & 2147483648L) != 0))
+                            else if (((ty.value & 0xFF) == ENUMTY.Tuns64) && ((value.value & 2147483648L) != 0))
                                 return ;
-                            else if (((long)(int)value != value))
+                            else if (((long)(int)value.value != value.value))
                                 return ;
                             break;
                         case 18:
-                            if (((ty & 0xFF) == ENUMTY.Tint32))
+                            if (((ty.value & 0xFF) == ENUMTY.Tint32))
                             {
                             }
-                            else if (((long)(int)value != value))
+                            else if (((long)(int)value.value != value.value))
                                 return ;
                             break;
                         case 33:
-                            if ((value > 1114111L))
+                            if ((value.value > 1114111L))
                                 return ;
                             break;
                         case 21:
@@ -440,14 +461,14 @@ public class dcast {
                                 return ;
                             break;
                         case 3:
-                            if (((ty & 0xFF) == ENUMTY.Tpointer) && ((e.type.toBasetype().nextOf().ty & 0xFF) == (this.t.toBasetype().nextOf().ty & 0xFF)))
+                            if (((ty.value & 0xFF) == ENUMTY.Tpointer) && ((e_ref.value.type.value.toBasetype().nextOf().ty & 0xFF) == (this.t.toBasetype().nextOf().ty & 0xFF)))
                             {
                                 break;
                             }
                             /*goto default*/ { __dispatch1 = -3; continue dispatched_1; }
                         default:
                         __dispatch1 = 0;
-                        this.visit((Expression)e);
+                        this.visit((Expression)e_ref);
                         return ;
                     }
                 } while(__dispatch1 != 0);
@@ -459,108 +480,111 @@ public class dcast {
         }
 
         public  void visit(NullExp e) {
-            if (e.type.equals(this.t))
+            Ref<NullExp> e_ref = ref(e);
+            if (e_ref.value.type.value.equals(this.t))
             {
                 this.result = MATCH.exact;
                 return ;
             }
-            if (this.t.equivalent(e.type))
+            if (this.t.equivalent(e_ref.value.type.value))
             {
                 this.result = MATCH.constant;
                 return ;
             }
-            this.visit((Expression)e);
+            this.visit((Expression)e_ref);
         }
 
         public  void visit(StructLiteralExp e) {
-            this.visit((Expression)e);
+            Ref<StructLiteralExp> e_ref = ref(e);
+            this.visit((Expression)e_ref);
             if ((this.result != MATCH.nomatch))
                 return ;
-            if (((e.type.ty & 0xFF) == (this.t.ty & 0xFF)) && ((e.type.ty & 0xFF) == ENUMTY.Tstruct) && (pequals(((TypeStruct)e.type).sym, ((TypeStruct)this.t).sym)))
+            if (((e_ref.value.type.value.ty & 0xFF) == (this.t.ty & 0xFF)) && ((e_ref.value.type.value.ty & 0xFF) == ENUMTY.Tstruct) && (pequals(((TypeStruct)e_ref.value.type.value).sym, ((TypeStruct)this.t).sym)))
             {
                 this.result = MATCH.constant;
                 {
-                    int i = 0;
-                    for (; (i < (e.elements).length);i++){
-                        Expression el = (e.elements).get(i);
-                        if (el == null)
+                    IntRef i = ref(0);
+                    for (; (i.value < (e_ref.value.elements.get()).length);i.value++){
+                        Ref<Expression> el = ref((e_ref.value.elements.get()).get(i.value));
+                        if (el.value == null)
                             continue;
-                        Type te = e.sd.fields.get(i).type.addMod(this.t.mod);
-                        int m2 = el.implicitConvTo(te);
-                        if ((m2 < this.result))
-                            this.result = m2;
+                        Ref<Type> te = ref(e_ref.value.sd.fields.get(i.value).type.addMod(this.t.mod));
+                        IntRef m2 = ref(el.value.implicitConvTo(te.value));
+                        if ((m2.value < this.result))
+                            this.result = m2.value;
                     }
                 }
             }
         }
 
         public  void visit(StringExp e) {
-            if ((e.committed == 0) && ((this.t.ty & 0xFF) == ENUMTY.Tpointer) && ((this.t.nextOf().ty & 0xFF) == ENUMTY.Tvoid))
+            Ref<StringExp> e_ref = ref(e);
+            if ((e_ref.value.committed == 0) && ((this.t.ty & 0xFF) == ENUMTY.Tpointer) && ((this.t.nextOf().ty & 0xFF) == ENUMTY.Tvoid))
                 return ;
-            if (!(((e.type.ty & 0xFF) == ENUMTY.Tsarray) || ((e.type.ty & 0xFF) == ENUMTY.Tarray) || ((e.type.ty & 0xFF) == ENUMTY.Tpointer)))
-                this.visit((Expression)e);
+            if (!(((e_ref.value.type.value.ty & 0xFF) == ENUMTY.Tsarray) || ((e_ref.value.type.value.ty & 0xFF) == ENUMTY.Tarray) || ((e_ref.value.type.value.ty & 0xFF) == ENUMTY.Tpointer)))
+                this.visit((Expression)e_ref);
                 return ;
-            byte tyn = e.type.nextOf().ty;
-            if (!(((tyn & 0xFF) == ENUMTY.Tchar) || ((tyn & 0xFF) == ENUMTY.Twchar) || ((tyn & 0xFF) == ENUMTY.Tdchar)))
-                this.visit((Expression)e);
+            Ref<Byte> tyn = ref(e_ref.value.type.value.nextOf().ty);
+            if (!(((tyn.value & 0xFF) == ENUMTY.Tchar) || ((tyn.value & 0xFF) == ENUMTY.Twchar) || ((tyn.value & 0xFF) == ENUMTY.Tdchar)))
+                this.visit((Expression)e_ref);
                 return ;
             switch ((this.t.ty & 0xFF))
             {
                 case 1:
-                    if (((e.type.ty & 0xFF) == ENUMTY.Tsarray))
+                    if (((e_ref.value.type.value.ty & 0xFF) == ENUMTY.Tsarray))
                     {
-                        byte tynto = this.t.nextOf().ty;
-                        if (((tynto & 0xFF) == (tyn & 0xFF)))
+                        Ref<Byte> tynto = ref(this.t.nextOf().ty);
+                        if (((tynto.value & 0xFF) == (tyn.value & 0xFF)))
                         {
-                            if ((((TypeSArray)e.type).dim.toInteger() == ((TypeSArray)this.t).dim.toInteger()))
+                            if ((((TypeSArray)e_ref.value.type.value).dim.toInteger() == ((TypeSArray)this.t).dim.toInteger()))
                             {
                                 this.result = MATCH.exact;
                             }
                             return ;
                         }
-                        if (((tynto & 0xFF) == ENUMTY.Tchar) || ((tynto & 0xFF) == ENUMTY.Twchar) || ((tynto & 0xFF) == ENUMTY.Tdchar))
+                        if (((tynto.value & 0xFF) == ENUMTY.Tchar) || ((tynto.value & 0xFF) == ENUMTY.Twchar) || ((tynto.value & 0xFF) == ENUMTY.Tdchar))
                         {
-                            if ((e.committed != 0) && ((tynto & 0xFF) != (tyn & 0xFF)))
+                            if ((e_ref.value.committed != 0) && ((tynto.value & 0xFF) != (tyn.value & 0xFF)))
                                 return ;
-                            int fromlen = e.numberOfCodeUnits((tynto & 0xFF));
-                            int tolen = (int)((TypeSArray)this.t).dim.toInteger();
-                            if ((tolen < fromlen))
+                            IntRef fromlen = ref(e_ref.value.numberOfCodeUnits((tynto.value & 0xFF)));
+                            IntRef tolen = ref((int)((TypeSArray)this.t).dim.toInteger());
+                            if ((tolen.value < fromlen.value))
                                 return ;
-                            if ((tolen != fromlen))
+                            if ((tolen.value != fromlen.value))
                             {
                                 this.result = MATCH.convert;
                                 return ;
                             }
                         }
-                        if ((e.committed == 0) && ((tynto & 0xFF) == ENUMTY.Tchar) || ((tynto & 0xFF) == ENUMTY.Twchar) || ((tynto & 0xFF) == ENUMTY.Tdchar))
+                        if ((e_ref.value.committed == 0) && ((tynto.value & 0xFF) == ENUMTY.Tchar) || ((tynto.value & 0xFF) == ENUMTY.Twchar) || ((tynto.value & 0xFF) == ENUMTY.Tdchar))
                         {
                             this.result = MATCH.exact;
                             return ;
                         }
                     }
-                    else if (((e.type.ty & 0xFF) == ENUMTY.Tarray))
+                    else if (((e_ref.value.type.value.ty & 0xFF) == ENUMTY.Tarray))
                     {
-                        byte tynto_1 = this.t.nextOf().ty;
-                        if (((tynto_1 & 0xFF) == ENUMTY.Tchar) || ((tynto_1 & 0xFF) == ENUMTY.Twchar) || ((tynto_1 & 0xFF) == ENUMTY.Tdchar))
+                        Ref<Byte> tynto_1 = ref(this.t.nextOf().ty);
+                        if (((tynto_1.value & 0xFF) == ENUMTY.Tchar) || ((tynto_1.value & 0xFF) == ENUMTY.Twchar) || ((tynto_1.value & 0xFF) == ENUMTY.Tdchar))
                         {
-                            if ((e.committed != 0) && ((tynto_1 & 0xFF) != (tyn & 0xFF)))
+                            if ((e_ref.value.committed != 0) && ((tynto_1.value & 0xFF) != (tyn.value & 0xFF)))
                                 return ;
-                            int fromlen_1 = e.numberOfCodeUnits((tynto_1 & 0xFF));
-                            int tolen_1 = (int)((TypeSArray)this.t).dim.toInteger();
-                            if ((tolen_1 < fromlen_1))
+                            IntRef fromlen_1 = ref(e_ref.value.numberOfCodeUnits((tynto_1.value & 0xFF)));
+                            IntRef tolen_1 = ref((int)((TypeSArray)this.t).dim.toInteger());
+                            if ((tolen_1.value < fromlen_1.value))
                                 return ;
-                            if ((tolen_1 != fromlen_1))
+                            if ((tolen_1.value != fromlen_1.value))
                             {
                                 this.result = MATCH.convert;
                                 return ;
                             }
                         }
-                        if (((tynto_1 & 0xFF) == (tyn & 0xFF)))
+                        if (((tynto_1.value & 0xFF) == (tyn.value & 0xFF)))
                         {
                             this.result = MATCH.exact;
                             return ;
                         }
-                        if ((e.committed == 0) && ((tynto_1 & 0xFF) == ENUMTY.Tchar) || ((tynto_1 & 0xFF) == ENUMTY.Twchar) || ((tynto_1 & 0xFF) == ENUMTY.Tdchar))
+                        if ((e_ref.value.committed == 0) && ((tynto_1.value & 0xFF) == ENUMTY.Tchar) || ((tynto_1.value & 0xFF) == ENUMTY.Twchar) || ((tynto_1.value & 0xFF) == ENUMTY.Tdchar))
                         {
                             this.result = MATCH.exact;
                             return ;
@@ -568,40 +592,40 @@ public class dcast {
                     }
                 case 0:
                 case 3:
-                    Type tn = this.t.nextOf();
-                    int m = MATCH.exact;
-                    if (((e.type.nextOf().mod & 0xFF) != (tn.mod & 0xFF)))
+                    Ref<Type> tn = ref(this.t.nextOf());
+                    IntRef m = ref(MATCH.exact);
+                    if (((e_ref.value.type.value.nextOf().mod & 0xFF) != (tn.value.mod & 0xFF)))
                     {
-                        if (!tn.isConst() && !tn.isImmutable())
+                        if (!tn.value.isConst() && !tn.value.isImmutable())
                             return ;
-                        m = MATCH.constant;
+                        m.value = MATCH.constant;
                     }
-                    if (e.committed == 0)
+                    if (e_ref.value.committed == 0)
                     {
-                        switch ((tn.ty & 0xFF))
+                        switch ((tn.value.ty & 0xFF))
                         {
                             case 31:
-                                if (((e.postfix & 0xFF) == 119) || ((e.postfix & 0xFF) == 100))
-                                    m = MATCH.convert;
-                                this.result = m;
+                                if (((e_ref.value.postfix & 0xFF) == 119) || ((e_ref.value.postfix & 0xFF) == 100))
+                                    m.value = MATCH.convert;
+                                this.result = m.value;
                                 return ;
                             case 32:
-                                if (((e.postfix & 0xFF) != 119))
-                                    m = MATCH.convert;
-                                this.result = m;
+                                if (((e_ref.value.postfix & 0xFF) != 119))
+                                    m.value = MATCH.convert;
+                                this.result = m.value;
                                 return ;
                             case 33:
-                                if (((e.postfix & 0xFF) != 100))
-                                    m = MATCH.convert;
-                                this.result = m;
+                                if (((e_ref.value.postfix & 0xFF) != 100))
+                                    m.value = MATCH.convert;
+                                this.result = m.value;
                                 return ;
                             case 9:
-                                if (((TypeEnum)tn).sym.isSpecial())
+                                if (((TypeEnum)tn.value).sym.isSpecial())
                                 {
                                     {
-                                        TypeBasic tob = tn.toBasetype().isTypeBasic();
-                                        if ((tob) != null)
-                                            this.result = tn.implicitConvTo(tob);
+                                        Ref<TypeBasic> tob = ref(tn.value.toBasetype().isTypeBasic());
+                                        if ((tob.value) != null)
+                                            this.result = tn.value.implicitConvTo(tob.value);
                                     }
                                     return ;
                                 }
@@ -614,113 +638,115 @@ public class dcast {
                 default:
                 break;
             }
-            this.visit((Expression)e);
+            this.visit((Expression)e_ref);
         }
 
         public  void visit(ArrayLiteralExp e) {
-            Type tb = this.t.toBasetype();
-            Type typeb = e.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray) && ((typeb.ty & 0xFF) == ENUMTY.Tarray) || ((typeb.ty & 0xFF) == ENUMTY.Tsarray))
+            Ref<ArrayLiteralExp> e_ref = ref(e);
+            Ref<Type> tb = ref(this.t.toBasetype());
+            Ref<Type> typeb = ref(e_ref.value.type.value.toBasetype());
+            if (((tb.value.ty & 0xFF) == ENUMTY.Tarray) || ((tb.value.ty & 0xFF) == ENUMTY.Tsarray) && ((typeb.value.ty & 0xFF) == ENUMTY.Tarray) || ((typeb.value.ty & 0xFF) == ENUMTY.Tsarray))
             {
                 this.result = MATCH.exact;
-                Type typen = typeb.nextOf().toBasetype();
-                if (((tb.ty & 0xFF) == ENUMTY.Tsarray))
+                Ref<Type> typen = ref(typeb.value.nextOf().toBasetype());
+                if (((tb.value.ty & 0xFF) == ENUMTY.Tsarray))
                 {
-                    TypeSArray tsa = (TypeSArray)tb;
-                    if (((long)(e.elements).length != tsa.dim.toInteger()))
+                    Ref<TypeSArray> tsa = ref((TypeSArray)tb.value);
+                    if (((long)(e_ref.value.elements.get()).length != tsa.value.dim.toInteger()))
                         this.result = MATCH.nomatch;
                 }
-                Type telement = tb.nextOf();
-                if ((e.elements).length == 0)
+                Ref<Type> telement = ref(tb.value.nextOf());
+                if ((e_ref.value.elements.get()).length == 0)
                 {
-                    if (((typen.ty & 0xFF) != ENUMTY.Tvoid))
-                        this.result = typen.implicitConvTo(telement);
+                    if (((typen.value.ty & 0xFF) != ENUMTY.Tvoid))
+                        this.result = typen.value.implicitConvTo(telement.value);
                 }
                 else
                 {
-                    if (e.basis != null)
+                    if (e_ref.value.basis != null)
                     {
-                        int m = e.basis.implicitConvTo(telement);
-                        if ((m < this.result))
-                            this.result = m;
+                        IntRef m = ref(e_ref.value.basis.implicitConvTo(telement.value));
+                        if ((m.value < this.result))
+                            this.result = m.value;
                     }
                     {
-                        int i = 0;
-                        for (; (i < (e.elements).length);i++){
-                            Expression el = (e.elements).get(i);
+                        IntRef i = ref(0);
+                        for (; (i.value < (e_ref.value.elements.get()).length);i.value++){
+                            Ref<Expression> el = ref((e_ref.value.elements.get()).get(i.value));
                             if ((this.result == MATCH.nomatch))
                                 break;
-                            if (el == null)
+                            if (el.value == null)
                                 continue;
-                            int m = el.implicitConvTo(telement);
-                            if ((m < this.result))
-                                this.result = m;
+                            IntRef m = ref(el.value.implicitConvTo(telement.value));
+                            if ((m.value < this.result))
+                                this.result = m.value;
                         }
                     }
                 }
                 if (this.result == 0)
-                    this.result = e.type.implicitConvTo(this.t);
+                    this.result = e_ref.value.type.value.implicitConvTo(this.t);
                 return ;
             }
-            else if (((tb.ty & 0xFF) == ENUMTY.Tvector) && ((typeb.ty & 0xFF) == ENUMTY.Tarray) || ((typeb.ty & 0xFF) == ENUMTY.Tsarray))
+            else if (((tb.value.ty & 0xFF) == ENUMTY.Tvector) && ((typeb.value.ty & 0xFF) == ENUMTY.Tarray) || ((typeb.value.ty & 0xFF) == ENUMTY.Tsarray))
             {
                 this.result = MATCH.exact;
-                TypeVector tv = (TypeVector)tb;
-                TypeSArray tbase = (TypeSArray)tv.basetype;
-                assert(((tbase.ty & 0xFF) == ENUMTY.Tsarray));
-                int edim = (e.elements).length;
-                long tbasedim = tbase.dim.toInteger();
-                if (((long)edim > tbasedim))
+                Ref<TypeVector> tv = ref((TypeVector)tb.value);
+                Ref<TypeSArray> tbase = ref((TypeSArray)tv.value.basetype);
+                assert(((tbase.value.ty & 0xFF) == ENUMTY.Tsarray));
+                IntRef edim = ref((e_ref.value.elements.get()).length);
+                Ref<Long> tbasedim = ref(tbase.value.dim.toInteger());
+                if (((long)edim.value > tbasedim.value))
                 {
                     this.result = MATCH.nomatch;
                     return ;
                 }
-                Type telement = tv.elementType();
-                if (((long)edim < tbasedim))
+                Ref<Type> telement = ref(tv.value.elementType());
+                if (((long)edim.value < tbasedim.value))
                 {
-                    Expression el = typeb.nextOf().defaultInitLiteral(e.loc);
-                    int m = el.implicitConvTo(telement);
-                    if ((m < this.result))
-                        this.result = m;
+                    Ref<Expression> el = ref(typeb.value.nextOf().defaultInitLiteral(e_ref.value.loc));
+                    IntRef m = ref(el.value.implicitConvTo(telement.value));
+                    if ((m.value < this.result))
+                        this.result = m.value;
                 }
                 {
-                    int __key899 = 0;
-                    int __limit900 = edim;
-                    for (; (__key899 < __limit900);__key899 += 1) {
-                        int i = __key899;
-                        Expression el = (e.elements).get(i);
-                        int m = el.implicitConvTo(telement);
-                        if ((m < this.result))
-                            this.result = m;
+                    IntRef __key897 = ref(0);
+                    IntRef __limit898 = ref(edim.value);
+                    for (; (__key897.value < __limit898.value);__key897.value += 1) {
+                        IntRef i = ref(__key897.value);
+                        Ref<Expression> el = ref((e_ref.value.elements.get()).get(i.value));
+                        IntRef m = ref(el.value.implicitConvTo(telement.value));
+                        if ((m.value < this.result))
+                            this.result = m.value;
                         if ((this.result == MATCH.nomatch))
                             break;
                     }
                 }
                 return ;
             }
-            this.visit((Expression)e);
+            this.visit((Expression)e_ref);
         }
 
         public  void visit(AssocArrayLiteralExp e) {
-            Type tb = this.t.toBasetype();
-            Type typeb = e.type.toBasetype();
-            if (!(((tb.ty & 0xFF) == ENUMTY.Taarray) && ((typeb.ty & 0xFF) == ENUMTY.Taarray)))
-                this.visit((Expression)e);
+            Ref<AssocArrayLiteralExp> e_ref = ref(e);
+            Ref<Type> tb = ref(this.t.toBasetype());
+            Ref<Type> typeb = ref(e_ref.value.type.value.toBasetype());
+            if (!(((tb.value.ty & 0xFF) == ENUMTY.Taarray) && ((typeb.value.ty & 0xFF) == ENUMTY.Taarray)))
+                this.visit((Expression)e_ref);
                 return ;
             this.result = MATCH.exact;
             {
-                int i = 0;
-                for (; (i < (e.keys).length);i++){
-                    Expression el = (e.keys).get(i);
-                    int m = el.implicitConvTo(((TypeAArray)tb).index);
-                    if ((m < this.result))
-                        this.result = m;
+                IntRef i = ref(0);
+                for (; (i.value < (e_ref.value.keys.get()).length);i.value++){
+                    Ref<Expression> el = ref((e_ref.value.keys.get()).get(i.value));
+                    IntRef m = ref(el.value.implicitConvTo(((TypeAArray)tb.value).index));
+                    if ((m.value < this.result))
+                        this.result = m.value;
                     if ((this.result == MATCH.nomatch))
                         break;
-                    el = (e.values).get(i);
-                    m = el.implicitConvTo(tb.nextOf());
-                    if ((m < this.result))
-                        this.result = m;
+                    el.value = (e_ref.value.values.get()).get(i.value);
+                    m.value = el.value.implicitConvTo(tb.value.nextOf());
+                    if ((m.value < this.result))
+                        this.result = m.value;
                     if ((this.result == MATCH.nomatch))
                         break;
                 }
@@ -728,73 +754,74 @@ public class dcast {
         }
 
         public  void visit(CallExp e) {
+            Ref<CallExp> e_ref = ref(e);
             boolean LOG = false;
-            this.visit((Expression)e);
+            this.visit((Expression)e_ref);
             if ((this.result != MATCH.nomatch))
                 return ;
-            if ((e.f != null) && e.f.isReturnIsolated() && !global.params.vsafe || (e.f.isPure() >= PURE.strong) || (pequals(e.f.ident, Id.dup)) && (pequals(e.f.toParent2(), ClassDeclaration.object.toParent())))
+            if ((e_ref.value.f != null) && e_ref.value.f.isReturnIsolated() && !global.value.params.vsafe || (e_ref.value.f.isPure() >= PURE.strong) || (pequals(e_ref.value.f.ident, Id.dup.value)) && (pequals(e_ref.value.f.toParent2(), ClassDeclaration.object.value.toParent())))
             {
-                this.result = e.type.immutableOf().implicitConvTo(this.t);
+                this.result = e_ref.value.type.value.immutableOf().implicitConvTo(this.t);
                 if ((this.result > MATCH.constant))
                     this.result = MATCH.constant;
                 return ;
             }
-            Type tx = e.f != null ? e.f.type : e.e1.type;
-            tx = tx.toBasetype();
-            if (((tx.ty & 0xFF) != ENUMTY.Tfunction))
+            Ref<Type> tx = ref(e_ref.value.f != null ? e_ref.value.f.type : e_ref.value.e1.type.value);
+            tx.value = tx.value.toBasetype();
+            if (((tx.value.ty & 0xFF) != ENUMTY.Tfunction))
                 return ;
-            TypeFunction tf = (TypeFunction)tx;
-            if ((tf.purity == PURE.impure))
+            Ref<TypeFunction> tf = ref((TypeFunction)tx.value);
+            if ((tf.value.purity == PURE.impure))
                 return ;
-            if ((e.f != null) && e.f.isNested())
+            if ((e_ref.value.f != null) && e_ref.value.f.isNested())
                 return ;
-            if ((e.type.immutableOf().implicitConvTo(this.t) < MATCH.constant) && (e.type.addMod((byte)2).implicitConvTo(this.t) < MATCH.constant) && (e.type.implicitConvTo(this.t.addMod((byte)2)) < MATCH.constant))
+            if ((e_ref.value.type.value.immutableOf().implicitConvTo(this.t) < MATCH.constant) && (e_ref.value.type.value.addMod((byte)2).implicitConvTo(this.t) < MATCH.constant) && (e_ref.value.type.value.implicitConvTo(this.t.addMod((byte)2)) < MATCH.constant))
             {
                 return ;
             }
-            Type tb = this.t.toBasetype();
-            byte mod = tb.mod;
-            if (tf.isref)
+            Ref<Type> tb = ref(this.t.toBasetype());
+            Ref<Byte> mod = ref(tb.value.mod);
+            if (tf.value.isref)
             {
             }
             else
             {
-                Type ti = getIndirection(this.t);
-                if (ti != null)
-                    mod = ti.mod;
+                Ref<Type> ti = ref(getIndirection(this.t));
+                if (ti.value != null)
+                    mod.value = ti.value.mod;
             }
-            if (((mod & 0xFF) & MODFlags.wild) != 0)
+            if (((mod.value & 0xFF) & MODFlags.wild) != 0)
                 return ;
-            int nparams = tf.parameterList.length();
-            int j = (((tf.linkage == LINK.d) && (tf.parameterList.varargs == VarArg.variadic)) ? 1 : 0);
-            if (((e.e1.op & 0xFF) == 27))
+            IntRef nparams = ref(tf.value.parameterList.length());
+            IntRef j = ref((((tf.value.linkage == LINK.d) && (tf.value.parameterList.varargs == VarArg.variadic)) ? 1 : 0));
+            if (((e_ref.value.e1.op & 0xFF) == 27))
             {
-                DotVarExp dve = (DotVarExp)e.e1;
-                Type targ = dve.e1.type;
-                if ((targ.constConv(targ.castMod(mod)) == MATCH.nomatch))
+                Ref<DotVarExp> dve = ref((DotVarExp)e_ref.value.e1);
+                Ref<Type> targ = ref(dve.value.e1.type.value);
+                if ((targ.value.constConv(targ.value.castMod(mod.value)) == MATCH.nomatch))
                     return ;
             }
             {
-                int i = j;
-                for (; (i < (e.arguments).length);i += 1){
-                    Expression earg = (e.arguments).get(i);
-                    Type targ = earg.type.toBasetype();
-                    if ((i - j < nparams))
+                IntRef i = ref(j.value);
+                for (; (i.value < (e_ref.value.arguments.get()).length);i.value += 1){
+                    Ref<Expression> earg = ref((e_ref.value.arguments.get()).get(i.value));
+                    Ref<Type> targ = ref(earg.value.type.value.toBasetype());
+                    if ((i.value - j.value < nparams.value))
                     {
-                        Parameter fparam = tf.parameterList.get(i - j);
-                        if ((fparam.storageClass & 8192L) != 0)
+                        Ref<Parameter> fparam = ref(tf.value.parameterList.get(i.value - j.value));
+                        if ((fparam.value.storageClass & 8192L) != 0)
                             return ;
-                        Type tparam = fparam.type;
-                        if (tparam == null)
+                        Ref<Type> tparam = ref(fparam.value.type);
+                        if (tparam.value == null)
                             continue;
-                        if ((fparam.storageClass & 2101248L) != 0)
+                        if ((fparam.value.storageClass & 2101248L) != 0)
                         {
-                            if ((targ.constConv(tparam.castMod(mod)) == MATCH.nomatch))
+                            if ((targ.value.constConv(tparam.value.castMod(mod.value)) == MATCH.nomatch))
                                 return ;
                             continue;
                         }
                     }
-                    if ((implicitMod(earg, targ, mod) == MATCH.nomatch))
+                    if ((implicitMod(earg.value, targ.value, mod.value) == MATCH.nomatch))
                         return ;
                 }
             }
@@ -802,56 +829,58 @@ public class dcast {
         }
 
         public  void visit(AddrExp e) {
-            this.result = e.type.implicitConvTo(this.t);
+            Ref<AddrExp> e_ref = ref(e);
+            this.result = e_ref.value.type.value.implicitConvTo(this.t);
             if ((this.result != MATCH.nomatch))
                 return ;
-            Type tb = this.t.toBasetype();
-            Type typeb = e.type.toBasetype();
-            if (((e.e1.op & 0xFF) == 214) && ((tb.ty & 0xFF) == ENUMTY.Tpointer) || ((tb.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
+            Ref<Type> tb = ref(this.t.toBasetype());
+            Ref<Type> typeb = ref(e_ref.value.type.value.toBasetype());
+            if (((e_ref.value.e1.op & 0xFF) == 214) && ((tb.value.ty & 0xFF) == ENUMTY.Tpointer) || ((tb.value.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.value.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
-                OverExp eo = (OverExp)e.e1;
-                FuncDeclaration f = null;
+                Ref<OverExp> eo = ref((OverExp)e_ref.value.e1);
+                Ref<FuncDeclaration> f = ref(null);
                 {
-                    int i = 0;
-                    for (; (i < eo.vars.a.length);i++){
-                        Dsymbol s = eo.vars.a.get(i);
-                        FuncDeclaration f2 = s.isFuncDeclaration();
-                        assert(f2 != null);
-                        if (f2.overloadExactMatch(tb.nextOf()) != null)
+                    IntRef i = ref(0);
+                    for (; (i.value < eo.value.vars.a.length);i.value++){
+                        Ref<Dsymbol> s = ref(eo.value.vars.a.get(i.value));
+                        Ref<FuncDeclaration> f2 = ref(s.value.isFuncDeclaration());
+                        assert(f2.value != null);
+                        if (f2.value.overloadExactMatch(tb.value.nextOf()) != null)
                         {
-                            if (f != null)
+                            if (f.value != null)
                             {
-                                ScopeDsymbol.multiplyDefined(e.loc, f, f2);
+                                ScopeDsymbol.multiplyDefined(e_ref.value.loc, f.value, f2.value);
                             }
                             else
-                                f = f2;
+                                f.value = f2.value;
                             this.result = MATCH.exact;
                         }
                     }
                 }
             }
-            if (((e.e1.op & 0xFF) == 26) && ((typeb.ty & 0xFF) == ENUMTY.Tpointer) && ((typeb.nextOf().ty & 0xFF) == ENUMTY.Tfunction) && ((tb.ty & 0xFF) == ENUMTY.Tpointer) && ((tb.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
+            if (((e_ref.value.e1.op & 0xFF) == 26) && ((typeb.value.ty & 0xFF) == ENUMTY.Tpointer) && ((typeb.value.nextOf().ty & 0xFF) == ENUMTY.Tfunction) && ((tb.value.ty & 0xFF) == ENUMTY.Tpointer) && ((tb.value.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
                 throw new AssertionError("Unreachable code!");
             }
         }
 
         public  void visit(SymOffExp e) {
-            this.result = e.type.implicitConvTo(this.t);
+            Ref<SymOffExp> e_ref = ref(e);
+            this.result = e_ref.value.type.value.implicitConvTo(this.t);
             if ((this.result != MATCH.nomatch))
                 return ;
-            Type tb = this.t.toBasetype();
-            Type typeb = e.type.toBasetype();
-            if (((typeb.ty & 0xFF) == ENUMTY.Tpointer) && ((typeb.nextOf().ty & 0xFF) == ENUMTY.Tfunction) && ((tb.ty & 0xFF) == ENUMTY.Tpointer) || ((tb.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
+            Ref<Type> tb = ref(this.t.toBasetype());
+            Ref<Type> typeb = ref(e_ref.value.type.value.toBasetype());
+            if (((typeb.value.ty & 0xFF) == ENUMTY.Tpointer) && ((typeb.value.nextOf().ty & 0xFF) == ENUMTY.Tfunction) && ((tb.value.ty & 0xFF) == ENUMTY.Tpointer) || ((tb.value.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.value.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
                 {
-                    FuncDeclaration f = e.var.isFuncDeclaration();
-                    if ((f) != null)
+                    Ref<FuncDeclaration> f = ref(e_ref.value.var.isFuncDeclaration());
+                    if ((f.value) != null)
                     {
-                        f = f.overloadExactMatch(tb.nextOf());
-                        if (f != null)
+                        f.value = f.value.overloadExactMatch(tb.value.nextOf());
+                        if (f.value != null)
                         {
-                            if (((tb.ty & 0xFF) == ENUMTY.Tdelegate) && f.needThis() || f.isNested() || ((tb.ty & 0xFF) == ENUMTY.Tpointer) && !(f.needThis() || f.isNested()))
+                            if (((tb.value.ty & 0xFF) == ENUMTY.Tdelegate) && f.value.needThis() || f.value.isNested() || ((tb.value.ty & 0xFF) == ENUMTY.Tpointer) && !(f.value.needThis() || f.value.isNested()))
                             {
                                 this.result = MATCH.exact;
                             }
@@ -862,327 +891,340 @@ public class dcast {
         }
 
         public  void visit(DelegateExp e) {
-            this.result = e.type.implicitConvTo(this.t);
+            Ref<DelegateExp> e_ref = ref(e);
+            this.result = e_ref.value.type.value.implicitConvTo(this.t);
             if ((this.result != MATCH.nomatch))
                 return ;
-            Type tb = this.t.toBasetype();
-            Type typeb = e.type.toBasetype();
-            if (((typeb.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.ty & 0xFF) == ENUMTY.Tdelegate))
+            Ref<Type> tb = ref(this.t.toBasetype());
+            Ref<Type> typeb = ref(e_ref.value.type.value.toBasetype());
+            if (((typeb.value.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.value.ty & 0xFF) == ENUMTY.Tdelegate))
             {
-                if ((e.func != null) && (e.func.overloadExactMatch(tb.nextOf()) != null))
+                if ((e_ref.value.func != null) && (e_ref.value.func.overloadExactMatch(tb.value.nextOf()) != null))
                     this.result = MATCH.exact;
             }
         }
 
         public  void visit(FuncExp e) {
-            int m = e.matchType(this.t, null, null, 1);
-            if ((m > MATCH.nomatch))
+            Ref<FuncExp> e_ref = ref(e);
+            IntRef m = ref(e_ref.value.matchType(this.t, null, null, 1));
+            if ((m.value > MATCH.nomatch))
             {
-                this.result = m;
+                this.result = m.value;
                 return ;
             }
-            this.visit((Expression)e);
+            this.visit((Expression)e_ref);
         }
 
         public  void visit(AndExp e) {
-            this.visit((Expression)e);
+            Ref<AndExp> e_ref = ref(e);
+            this.visit((Expression)e_ref);
             if ((this.result != MATCH.nomatch))
                 return ;
-            int m1 = e.e1.implicitConvTo(this.t);
-            int m2 = e.e2.implicitConvTo(this.t);
-            this.result = (m1 < m2) ? m1 : m2;
+            IntRef m1 = ref(e_ref.value.e1.value.implicitConvTo(this.t));
+            IntRef m2 = ref(e_ref.value.e2.value.implicitConvTo(this.t));
+            this.result = (m1.value < m2.value) ? m1.value : m2.value;
         }
 
         public  void visit(OrExp e) {
-            this.visit((Expression)e);
+            Ref<OrExp> e_ref = ref(e);
+            this.visit((Expression)e_ref);
             if ((this.result != MATCH.nomatch))
                 return ;
-            int m1 = e.e1.implicitConvTo(this.t);
-            int m2 = e.e2.implicitConvTo(this.t);
-            this.result = (m1 < m2) ? m1 : m2;
+            IntRef m1 = ref(e_ref.value.e1.value.implicitConvTo(this.t));
+            IntRef m2 = ref(e_ref.value.e2.value.implicitConvTo(this.t));
+            this.result = (m1.value < m2.value) ? m1.value : m2.value;
         }
 
         public  void visit(XorExp e) {
-            this.visit((Expression)e);
+            Ref<XorExp> e_ref = ref(e);
+            this.visit((Expression)e_ref);
             if ((this.result != MATCH.nomatch))
                 return ;
-            int m1 = e.e1.implicitConvTo(this.t);
-            int m2 = e.e2.implicitConvTo(this.t);
-            this.result = (m1 < m2) ? m1 : m2;
+            IntRef m1 = ref(e_ref.value.e1.value.implicitConvTo(this.t));
+            IntRef m2 = ref(e_ref.value.e2.value.implicitConvTo(this.t));
+            this.result = (m1.value < m2.value) ? m1.value : m2.value;
         }
 
         public  void visit(CondExp e) {
-            int m1 = e.e1.implicitConvTo(this.t);
-            int m2 = e.e2.implicitConvTo(this.t);
-            this.result = (m1 < m2) ? m1 : m2;
+            Ref<CondExp> e_ref = ref(e);
+            IntRef m1 = ref(e_ref.value.e1.value.implicitConvTo(this.t));
+            IntRef m2 = ref(e_ref.value.e2.value.implicitConvTo(this.t));
+            this.result = (m1.value < m2.value) ? m1.value : m2.value;
         }
 
         public  void visit(CommaExp e) {
-            e.e2.accept(this);
+            Ref<CommaExp> e_ref = ref(e);
+            e_ref.value.e2.value.accept(this);
         }
 
         public  void visit(CastExp e) {
-            this.result = e.type.implicitConvTo(this.t);
+            Ref<CastExp> e_ref = ref(e);
+            this.result = e_ref.value.type.value.implicitConvTo(this.t);
             if ((this.result != MATCH.nomatch))
                 return ;
-            if (this.t.isintegral() && e.e1.type.isintegral() && (e.e1.implicitConvTo(this.t) != MATCH.nomatch))
+            if (this.t.isintegral() && e_ref.value.e1.type.value.isintegral() && (e_ref.value.e1.implicitConvTo(this.t) != MATCH.nomatch))
                 this.result = MATCH.convert;
             else
-                this.visit((Expression)e);
+                this.visit((Expression)e_ref);
         }
 
         public  void visit(NewExp e) {
-            this.visit((Expression)e);
+            Ref<NewExp> e_ref = ref(e);
+            this.visit((Expression)e_ref);
             if ((this.result != MATCH.nomatch))
                 return ;
-            if ((e.type.immutableOf().implicitConvTo(this.t.immutableOf()) == MATCH.nomatch))
+            if ((e_ref.value.type.value.immutableOf().implicitConvTo(this.t.immutableOf()) == MATCH.nomatch))
                 return ;
-            Type tb = this.t.toBasetype();
-            byte mod = tb.mod;
+            Ref<Type> tb = ref(this.t.toBasetype());
+            Ref<Byte> mod = ref(tb.value.mod);
             {
-                Type ti = getIndirection(this.t);
-                if ((ti) != null)
-                    mod = ti.mod;
+                Ref<Type> ti = ref(getIndirection(this.t));
+                if ((ti.value) != null)
+                    mod.value = ti.value.mod;
             }
-            if (((mod & 0xFF) & MODFlags.wild) != 0)
+            if (((mod.value & 0xFF) & MODFlags.wild) != 0)
                 return ;
-            if (e.thisexp != null)
+            if (e_ref.value.thisexp != null)
             {
-                Type targ = e.thisexp.type;
-                if ((targ.constConv(targ.castMod(mod)) == MATCH.nomatch))
+                Ref<Type> targ = ref(e_ref.value.thisexp.type.value);
+                if ((targ.value.constConv(targ.value.castMod(mod.value)) == MATCH.nomatch))
                     return ;
             }
-            FuncDeclaration fd = e.allocator;
+            Ref<FuncDeclaration> fd = ref(e_ref.value.allocator);
             {
-                int count = 0;
-                for (; (count < 2);comma(count += 1, fd = e.member)){
-                    if (fd == null)
+                IntRef count = ref(0);
+                for (; (count.value < 2);comma(count.value += 1, fd.value = e_ref.value.member)){
+                    if (fd.value == null)
                         continue;
-                    if (fd.errors || ((fd.type.ty & 0xFF) != ENUMTY.Tfunction))
+                    if (fd.value.errors || ((fd.value.type.ty & 0xFF) != ENUMTY.Tfunction))
                         return ;
-                    TypeFunction tf = (TypeFunction)fd.type;
-                    if ((tf.purity == PURE.impure))
+                    Ref<TypeFunction> tf = ref((TypeFunction)fd.value.type);
+                    if ((tf.value.purity == PURE.impure))
                         return ;
-                    if ((pequals(fd, e.member)))
+                    if ((pequals(fd.value, e_ref.value.member)))
                     {
-                        if ((e.type.immutableOf().implicitConvTo(this.t) < MATCH.constant) && (e.type.addMod((byte)2).implicitConvTo(this.t) < MATCH.constant) && (e.type.implicitConvTo(this.t.addMod((byte)2)) < MATCH.constant))
+                        if ((e_ref.value.type.value.immutableOf().implicitConvTo(this.t) < MATCH.constant) && (e_ref.value.type.value.addMod((byte)2).implicitConvTo(this.t) < MATCH.constant) && (e_ref.value.type.value.implicitConvTo(this.t.addMod((byte)2)) < MATCH.constant))
                         {
                             return ;
                         }
                     }
-                    DArray<Expression> args = (pequals(fd, e.allocator)) ? e.newargs : e.arguments;
-                    int nparams = tf.parameterList.length();
-                    int j = (((tf.linkage == LINK.d) && (tf.parameterList.varargs == VarArg.variadic)) ? 1 : 0);
+                    Ref<Ptr<DArray<Expression>>> args = ref((pequals(fd.value, e_ref.value.allocator)) ? e_ref.value.newargs : e_ref.value.arguments);
+                    IntRef nparams = ref(tf.value.parameterList.length());
+                    IntRef j = ref((((tf.value.linkage == LINK.d) && (tf.value.parameterList.varargs == VarArg.variadic)) ? 1 : 0));
                     {
-                        int i = j;
-                        for (; (i < (e.arguments).length);i += 1){
-                            Expression earg = (args).get(i);
-                            Type targ = earg.type.toBasetype();
-                            if ((i - j < nparams))
+                        IntRef i = ref(j.value);
+                        for (; (i.value < (e_ref.value.arguments.get()).length);i.value += 1){
+                            Ref<Expression> earg = ref((args.value.get()).get(i.value));
+                            Ref<Type> targ = ref(earg.value.type.value.toBasetype());
+                            if ((i.value - j.value < nparams.value))
                             {
-                                Parameter fparam = tf.parameterList.get(i - j);
-                                if ((fparam.storageClass & 8192L) != 0)
+                                Ref<Parameter> fparam = ref(tf.value.parameterList.get(i.value - j.value));
+                                if ((fparam.value.storageClass & 8192L) != 0)
                                     return ;
-                                Type tparam = fparam.type;
-                                if (tparam == null)
+                                Ref<Type> tparam = ref(fparam.value.type);
+                                if (tparam.value == null)
                                     continue;
-                                if ((fparam.storageClass & 2101248L) != 0)
+                                if ((fparam.value.storageClass & 2101248L) != 0)
                                 {
-                                    if ((targ.constConv(tparam.castMod(mod)) == MATCH.nomatch))
+                                    if ((targ.value.constConv(tparam.value.castMod(mod.value)) == MATCH.nomatch))
                                         return ;
                                     continue;
                                 }
                             }
-                            if ((implicitMod(earg, targ, mod) == MATCH.nomatch))
+                            if ((implicitMod(earg.value, targ.value, mod.value) == MATCH.nomatch))
                                 return ;
                         }
                     }
                 }
             }
-            if ((e.member == null) && (e.arguments != null))
+            if ((e_ref.value.member == null) && (e_ref.value.arguments != null))
             {
                 {
-                    int i = 0;
-                    for (; (i < (e.arguments).length);i += 1){
-                        Expression earg = (e.arguments).get(i);
-                        if (earg == null)
+                    IntRef i = ref(0);
+                    for (; (i.value < (e_ref.value.arguments.get()).length);i.value += 1){
+                        Ref<Expression> earg = ref((e_ref.value.arguments.get()).get(i.value));
+                        if (earg.value == null)
                             continue;
-                        Type targ = earg.type.toBasetype();
-                        if ((implicitMod(earg, targ, mod) == MATCH.nomatch))
+                        Ref<Type> targ = ref(earg.value.type.value.toBasetype());
+                        if ((implicitMod(earg.value, targ.value, mod.value) == MATCH.nomatch))
                             return ;
                     }
                 }
             }
-            Type ntb = e.newtype.toBasetype();
-            if (((ntb.ty & 0xFF) == ENUMTY.Tarray))
-                ntb = ntb.nextOf().toBasetype();
-            if (((ntb.ty & 0xFF) == ENUMTY.Tstruct))
+            Ref<Type> ntb = ref(e_ref.value.newtype.toBasetype());
+            if (((ntb.value.ty & 0xFF) == ENUMTY.Tarray))
+                ntb.value = ntb.value.nextOf().toBasetype();
+            if (((ntb.value.ty & 0xFF) == ENUMTY.Tstruct))
             {
-                StructDeclaration sd = ((TypeStruct)ntb).sym;
-                sd.size(e.loc);
-                if (sd.isNested())
+                Ref<StructDeclaration> sd = ref(((TypeStruct)ntb.value).sym);
+                sd.value.size(e_ref.value.loc);
+                if (sd.value.isNested())
                     return ;
             }
-            if (ntb.isZeroInit(e.loc))
+            if (ntb.value.isZeroInit(e_ref.value.loc))
             {
-                if (((ntb.ty & 0xFF) == ENUMTY.Tclass))
+                if (((ntb.value.ty & 0xFF) == ENUMTY.Tclass))
                 {
-                    ClassDeclaration cd = ((TypeClass)ntb).sym;
-                    cd.size(e.loc);
-                    if (cd.isNested())
+                    Ref<ClassDeclaration> cd = ref(((TypeClass)ntb.value).sym);
+                    cd.value.size(e_ref.value.loc);
+                    if (cd.value.isNested())
                         return ;
-                    assert(cd.isInterfaceDeclaration() == null);
-                    if (!ClassCheck.convertible(e.loc, cd, mod))
+                    assert(cd.value.isInterfaceDeclaration() == null);
+                    if (!ClassCheck.convertible(e_ref.value.loc, cd.value, mod.value))
                         return ;
                 }
             }
             else
             {
-                Expression earg = e.newtype.defaultInitLiteral(e.loc);
-                Type targ = e.newtype.toBasetype();
-                if ((implicitMod(earg, targ, mod) == MATCH.nomatch))
+                Ref<Expression> earg = ref(e_ref.value.newtype.defaultInitLiteral(e_ref.value.loc));
+                Ref<Type> targ = ref(e_ref.value.newtype.toBasetype());
+                if ((implicitMod(earg.value, targ.value, mod.value) == MATCH.nomatch))
                     return ;
             }
             this.result = MATCH.constant;
         }
 
         public  void visit(SliceExp e) {
-            this.visit((Expression)e);
+            Ref<SliceExp> e_ref = ref(e);
+            this.visit((Expression)e_ref);
             if ((this.result != MATCH.nomatch))
                 return ;
-            Type tb = this.t.toBasetype();
-            Type typeb = e.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tsarray) && ((typeb.ty & 0xFF) == ENUMTY.Tarray))
+            Ref<Type> tb = ref(this.t.toBasetype());
+            Ref<Type> typeb = ref(e_ref.value.type.value.toBasetype());
+            if (((tb.value.ty & 0xFF) == ENUMTY.Tsarray) && ((typeb.value.ty & 0xFF) == ENUMTY.Tarray))
             {
-                typeb = toStaticArrayType(e);
-                if (typeb != null)
-                    this.result = typeb.implicitConvTo(this.t);
+                typeb.value = toStaticArrayType(e_ref.value);
+                if (typeb.value != null)
+                    this.result = typeb.value.implicitConvTo(this.t);
                 return ;
             }
-            Type t1b = e.e1.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray) && typeb.equivalent(tb))
+            Ref<Type> t1b = ref(e_ref.value.e1.type.value.toBasetype());
+            if (((tb.value.ty & 0xFF) == ENUMTY.Tarray) && typeb.value.equivalent(tb.value))
             {
-                Type tbn = tb.nextOf();
-                Type tx = null;
-                if (((t1b.ty & 0xFF) == ENUMTY.Tarray))
-                    tx = tbn.arrayOf();
-                if (((t1b.ty & 0xFF) == ENUMTY.Tpointer))
-                    tx = tbn.pointerTo();
-                if (((t1b.ty & 0xFF) == ENUMTY.Tsarray) && !e.e1.isLvalue())
-                    tx = tbn.sarrayOf(t1b.size() / tbn.size());
-                if (tx != null)
+                Ref<Type> tbn = ref(tb.value.nextOf());
+                Ref<Type> tx = ref(null);
+                if (((t1b.value.ty & 0xFF) == ENUMTY.Tarray))
+                    tx.value = tbn.value.arrayOf();
+                if (((t1b.value.ty & 0xFF) == ENUMTY.Tpointer))
+                    tx.value = tbn.value.pointerTo();
+                if (((t1b.value.ty & 0xFF) == ENUMTY.Tsarray) && !e_ref.value.e1.isLvalue())
+                    tx.value = tbn.value.sarrayOf(t1b.value.size() / tbn.value.size());
+                if (tx.value != null)
                 {
-                    this.result = e.e1.implicitConvTo(tx);
+                    this.result = e_ref.value.e1.implicitConvTo(tx.value);
                     if ((this.result > MATCH.constant))
                         this.result = MATCH.constant;
                 }
             }
-            if (((tb.ty & 0xFF) == ENUMTY.Tpointer) && ((e.e1.op & 0xFF) == 121))
-                e.e1.accept(this);
+            if (((tb.value.ty & 0xFF) == ENUMTY.Tpointer) && ((e_ref.value.e1.op & 0xFF) == 121))
+                e_ref.value.e1.accept(this);
         }
 
 
         public ImplicitConvTo() {}
     }
-    static BytePtr visitmsg = new BytePtr("cannot form delegate due to covariant return type");
+    static Ref<BytePtr> visitmsg = ref(new BytePtr("cannot form delegate due to covariant return type"));
     private static class CastTo extends Visitor
     {
-        private Type t;
-        private Scope sc;
-        private Expression result;
-        public  CastTo(Scope sc, Type t) {
-            this.sc = sc;
-            this.t = t;
+        private Type t = null;
+        private Ptr<Scope> sc = null;
+        private Expression result = null;
+        public  CastTo(Ptr<Scope> sc, Type t) {
+            Ref<Ptr<Scope>> sc_ref = ref(sc);
+            Ref<Type> t_ref = ref(t);
+            this.sc = sc_ref.value;
+            this.t = t_ref.value;
         }
 
         public  void visit(Expression e) {
-            if (e.type.equals(this.t))
+            Ref<Expression> e_ref = ref(e);
+            if (e_ref.value.type.value.equals(this.t))
             {
-                this.result = e;
+                this.result = e_ref.value;
                 return ;
             }
-            if (((e.op & 0xFF) == 26))
+            if (((e_ref.value.op & 0xFF) == 26))
             {
-                VarDeclaration v = ((VarExp)e).var.isVarDeclaration();
-                if ((v != null) && ((v.storage_class & 8388608L) != 0))
+                Ref<VarDeclaration> v = ref(((VarExp)e_ref.value).var.isVarDeclaration());
+                if ((v.value != null) && ((v.value.storage_class & 8388608L) != 0))
                 {
-                    this.result = e.ctfeInterpret();
-                    this.result.loc = e.loc.copy();
+                    this.result = e_ref.value.ctfeInterpret();
+                    this.result.loc = e_ref.value.loc.copy();
                     this.result = this.result.castTo(this.sc, this.t);
                     return ;
                 }
             }
-            Type tob = this.t.toBasetype();
-            Type t1b = e.type.toBasetype();
-            if (tob.equals(t1b))
+            Ref<Type> tob = ref(this.t.toBasetype());
+            Ref<Type> t1b = ref(e_ref.value.type.value.toBasetype());
+            if (tob.value.equals(t1b.value))
             {
-                this.result = e.copy();
-                this.result.type = this.t;
+                this.result = e_ref.value.copy();
+                this.result.type.value = this.t;
                 return ;
             }
-            boolean tob_isFV = ((tob.ty & 0xFF) == ENUMTY.Tstruct) || ((tob.ty & 0xFF) == ENUMTY.Tsarray);
-            boolean t1b_isFV = ((t1b.ty & 0xFF) == ENUMTY.Tstruct) || ((t1b.ty & 0xFF) == ENUMTY.Tsarray);
-            boolean tob_isFR = ((tob.ty & 0xFF) == ENUMTY.Tarray) || ((tob.ty & 0xFF) == ENUMTY.Tdelegate);
-            boolean t1b_isFR = ((t1b.ty & 0xFF) == ENUMTY.Tarray) || ((t1b.ty & 0xFF) == ENUMTY.Tdelegate);
-            boolean tob_isR = tob_isFR || ((tob.ty & 0xFF) == ENUMTY.Tpointer) || ((tob.ty & 0xFF) == ENUMTY.Taarray) || ((tob.ty & 0xFF) == ENUMTY.Tclass);
-            boolean t1b_isR = t1b_isFR || ((t1b.ty & 0xFF) == ENUMTY.Tpointer) || ((t1b.ty & 0xFF) == ENUMTY.Taarray) || ((t1b.ty & 0xFF) == ENUMTY.Tclass);
-            boolean tob_isA = tob.isintegral() || tob.isfloating();
-            boolean t1b_isA = t1b.isintegral() || t1b.isfloating();
-            boolean hasAliasThis = false;
+            boolean tob_isFV = ((tob.value.ty & 0xFF) == ENUMTY.Tstruct) || ((tob.value.ty & 0xFF) == ENUMTY.Tsarray);
+            boolean t1b_isFV = ((t1b.value.ty & 0xFF) == ENUMTY.Tstruct) || ((t1b.value.ty & 0xFF) == ENUMTY.Tsarray);
+            boolean tob_isFR = ((tob.value.ty & 0xFF) == ENUMTY.Tarray) || ((tob.value.ty & 0xFF) == ENUMTY.Tdelegate);
+            boolean t1b_isFR = ((t1b.value.ty & 0xFF) == ENUMTY.Tarray) || ((t1b.value.ty & 0xFF) == ENUMTY.Tdelegate);
+            boolean tob_isR = tob_isFR || ((tob.value.ty & 0xFF) == ENUMTY.Tpointer) || ((tob.value.ty & 0xFF) == ENUMTY.Taarray) || ((tob.value.ty & 0xFF) == ENUMTY.Tclass);
+            boolean t1b_isR = t1b_isFR || ((t1b.value.ty & 0xFF) == ENUMTY.Tpointer) || ((t1b.value.ty & 0xFF) == ENUMTY.Taarray) || ((t1b.value.ty & 0xFF) == ENUMTY.Tclass);
+            boolean tob_isA = tob.value.isintegral() || tob.value.isfloating();
+            boolean t1b_isA = t1b.value.isintegral() || t1b.value.isfloating();
+            Ref<Boolean> hasAliasThis = ref(false);
             try {
                 {
-                    AggregateDeclaration t1ad = isAggregate(t1b);
-                    if ((t1ad) != null)
+                    Ref<AggregateDeclaration> t1ad = ref(isAggregate(t1b.value));
+                    if ((t1ad.value) != null)
                     {
-                        AggregateDeclaration toad = isAggregate(tob);
-                        if ((!pequals(t1ad, toad)) && (t1ad.aliasthis != null))
+                        Ref<AggregateDeclaration> toad = ref(isAggregate(tob.value));
+                        if ((!pequals(t1ad.value, toad.value)) && (t1ad.value.aliasthis != null))
                         {
-                            if (((t1b.ty & 0xFF) == ENUMTY.Tclass) && ((tob.ty & 0xFF) == ENUMTY.Tclass))
+                            if (((t1b.value.ty & 0xFF) == ENUMTY.Tclass) && ((tob.value.ty & 0xFF) == ENUMTY.Tclass))
                             {
-                                ClassDeclaration t1cd = t1b.isClassHandle();
-                                ClassDeclaration tocd = tob.isClassHandle();
+                                Ref<ClassDeclaration> t1cd = ref(t1b.value.isClassHandle());
+                                Ref<ClassDeclaration> tocd = ref(tob.value.isClassHandle());
                                 IntRef offset = ref(0);
-                                if (tocd.isBaseOf(t1cd, ptr(offset)))
+                                if (tocd.value.isBaseOf(t1cd.value, ptr(offset)))
                                     /*goto Lok*/throw Dispatch0.INSTANCE;
                             }
-                            hasAliasThis = true;
+                            hasAliasThis.value = true;
                         }
                     }
-                    else if (((tob.ty & 0xFF) == ENUMTY.Tvector) && ((t1b.ty & 0xFF) != ENUMTY.Tvector))
+                    else if (((tob.value.ty & 0xFF) == ENUMTY.Tvector) && ((t1b.value.ty & 0xFF) != ENUMTY.Tvector))
                     {
-                        TypeVector tv = (TypeVector)tob;
-                        this.result = new CastExp(e.loc, e, tv.elementType());
-                        this.result = new VectorExp(e.loc, this.result, tob);
+                        Ref<TypeVector> tv = ref((TypeVector)tob.value);
+                        this.result = new CastExp(e_ref.value.loc, e_ref.value, tv.value.elementType());
+                        this.result = new VectorExp(e_ref.value.loc, this.result, tob.value);
                         this.result = expressionSemantic(this.result, this.sc);
                         return ;
                     }
-                    else if (((tob.ty & 0xFF) != ENUMTY.Tvector) && ((t1b.ty & 0xFF) == ENUMTY.Tvector))
+                    else if (((tob.value.ty & 0xFF) != ENUMTY.Tvector) && ((t1b.value.ty & 0xFF) == ENUMTY.Tvector))
                     {
-                        if (((tob.ty & 0xFF) == ENUMTY.Tsarray))
+                        if (((tob.value.ty & 0xFF) == ENUMTY.Tsarray))
                         {
-                            if ((t1b.size(e.loc) == tob.size(e.loc)))
+                            if ((t1b.value.size(e_ref.value.loc) == tob.value.size(e_ref.value.loc)))
                                 /*goto Lok*/throw Dispatch0.INSTANCE;
                         }
                         /*goto Lfail*//*unrolled goto*/
                     /*Lfail:*/
-                        if (hasAliasThis)
+                        if (hasAliasThis.value)
                         {
-                            this.result = tryAliasThisCast(e, this.sc, tob, t1b, this.t);
+                            this.result = tryAliasThisCast(e_ref.value, this.sc, tob.value, t1b.value, this.t);
                             if (this.result != null)
                                 return ;
                         }
-                        e.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e.toChars(), e.type.toChars(), this.t.toChars());
+                        e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e_ref.value.toChars(), e_ref.value.type.value.toChars(), this.t.toChars());
                         this.result = new ErrorExp();
                         return ;
                     }
-                    else if ((t1b.implicitConvTo(tob) == MATCH.constant) && this.t.equals(e.type.constOf()))
+                    else if ((t1b.value.implicitConvTo(tob.value) == MATCH.constant) && this.t.equals(e_ref.value.type.value.constOf()))
                     {
-                        this.result = e.copy();
-                        this.result.type = this.t;
+                        this.result = e_ref.value.copy();
+                        this.result.type.value = this.t;
                         return ;
                     }
                 }
-                if (tob_isA && t1b_isA || ((t1b.ty & 0xFF) == ENUMTY.Tpointer) || t1b_isA && tob_isA || ((tob.ty & 0xFF) == ENUMTY.Tpointer))
+                if (tob_isA && t1b_isA || ((t1b.value.ty & 0xFF) == ENUMTY.Tpointer) || t1b_isA && tob_isA || ((tob.value.ty & 0xFF) == ENUMTY.Tpointer))
                 {
                     /*goto Lok*/throw Dispatch0.INSTANCE;
                 }
@@ -1190,45 +1232,45 @@ public class dcast {
                 {
                     /*goto Lfail*//*unrolled goto*/
                 /*Lfail:*/
-                    if (hasAliasThis)
+                    if (hasAliasThis.value)
                     {
-                        this.result = tryAliasThisCast(e, this.sc, tob, t1b, this.t);
+                        this.result = tryAliasThisCast(e_ref.value, this.sc, tob.value, t1b.value, this.t);
                         if (this.result != null)
                             return ;
                     }
-                    e.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e.toChars(), e.type.toChars(), this.t.toChars());
+                    e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e_ref.value.toChars(), e_ref.value.type.value.toChars(), this.t.toChars());
                     this.result = new ErrorExp();
                     return ;
                 }
                 if (tob_isFV && t1b_isFV)
                 {
-                    if (hasAliasThis)
+                    if (hasAliasThis.value)
                     {
-                        this.result = tryAliasThisCast(e, this.sc, tob, t1b, this.t);
+                        this.result = tryAliasThisCast(e_ref.value, this.sc, tob.value, t1b.value, this.t);
                         if (this.result != null)
                             return ;
                     }
-                    if ((t1b.size(e.loc) == tob.size(e.loc)))
+                    if ((t1b.value.size(e_ref.value.loc) == tob.value.size(e_ref.value.loc)))
                         /*goto Lok*/throw Dispatch0.INSTANCE;
-                    Slice<BytePtr> ts = toAutoQualChars(e.type, this.t);
-                    e.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s` because of different sizes"), e.toChars(), ts.get(0), ts.get(1));
+                    Slice<BytePtr> ts = toAutoQualChars(e_ref.value.type.value, this.t);
+                    e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s` because of different sizes"), e_ref.value.toChars(), ts.get(0), ts.get(1));
                     this.result = new ErrorExp();
                     return ;
                 }
-                if (tob_isFV && ((t1b.ty & 0xFF) == ENUMTY.Tnull) || t1b_isR || t1b_isFV && ((tob.ty & 0xFF) == ENUMTY.Tnull) || tob_isR)
+                if (tob_isFV && ((t1b.value.ty & 0xFF) == ENUMTY.Tnull) || t1b_isR || t1b_isFV && ((tob.value.ty & 0xFF) == ENUMTY.Tnull) || tob_isR)
                 {
-                    if (((tob.ty & 0xFF) == ENUMTY.Tpointer) && ((t1b.ty & 0xFF) == ENUMTY.Tsarray))
+                    if (((tob.value.ty & 0xFF) == ENUMTY.Tpointer) && ((t1b.value.ty & 0xFF) == ENUMTY.Tsarray))
                     {
-                        this.result = new AddrExp(e.loc, e, this.t);
+                        this.result = new AddrExp(e_ref.value.loc, e_ref.value, this.t);
                         return ;
                     }
-                    if (((tob.ty & 0xFF) == ENUMTY.Tarray) && ((t1b.ty & 0xFF) == ENUMTY.Tsarray))
+                    if (((tob.value.ty & 0xFF) == ENUMTY.Tarray) && ((t1b.value.ty & 0xFF) == ENUMTY.Tsarray))
                     {
-                        long fsize = t1b.nextOf().size();
-                        long tsize = tob.nextOf().size();
-                        if ((((TypeSArray)t1b).dim.toInteger() * fsize % tsize != 0L))
+                        Ref<Long> fsize = ref(t1b.value.nextOf().size());
+                        Ref<Long> tsize = ref(tob.value.nextOf().size());
+                        if ((((TypeSArray)t1b.value).dim.toInteger() * fsize.value % tsize.value != 0L))
                         {
-                            e.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s` since sizes don't line up"), e.toChars(), e.type.toChars(), this.t.toChars());
+                            e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s` since sizes don't line up"), e_ref.value.toChars(), e_ref.value.type.value.toChars(), this.t.toChars());
                             this.result = new ErrorExp();
                             return ;
                         }
@@ -1236,218 +1278,224 @@ public class dcast {
                     }
                     /*goto Lfail*//*unrolled goto*/
                 /*Lfail:*/
-                    if (hasAliasThis)
+                    if (hasAliasThis.value)
                     {
-                        this.result = tryAliasThisCast(e, this.sc, tob, t1b, this.t);
+                        this.result = tryAliasThisCast(e_ref.value, this.sc, tob.value, t1b.value, this.t);
                         if (this.result != null)
                             return ;
                     }
-                    e.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e.toChars(), e.type.toChars(), this.t.toChars());
+                    e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e_ref.value.toChars(), e_ref.value.type.value.toChars(), this.t.toChars());
                     this.result = new ErrorExp();
                     return ;
                 }
-                if (((tob.ty & 0xFF) == (t1b.ty & 0xFF)) && tob_isR && t1b_isR)
+                if (((tob.value.ty & 0xFF) == (t1b.value.ty & 0xFF)) && tob_isR && t1b_isR)
                     /*goto Lok*/throw Dispatch0.INSTANCE;
-                if (((tob.ty & 0xFF) == ENUMTY.Tnull) && ((t1b.ty & 0xFF) != ENUMTY.Tnull))
+                if (((tob.value.ty & 0xFF) == ENUMTY.Tnull) && ((t1b.value.ty & 0xFF) != ENUMTY.Tnull))
                     /*goto Lfail*//*unrolled goto*/
                 /*Lfail:*/
-                    if (hasAliasThis)
+                    if (hasAliasThis.value)
                     {
-                        this.result = tryAliasThisCast(e, this.sc, tob, t1b, this.t);
+                        this.result = tryAliasThisCast(e_ref.value, this.sc, tob.value, t1b.value, this.t);
                         if (this.result != null)
                             return ;
                     }
-                    e.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e.toChars(), e.type.toChars(), this.t.toChars());
+                    e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e_ref.value.toChars(), e_ref.value.type.value.toChars(), this.t.toChars());
                     this.result = new ErrorExp();
                     return ;
-                if (((t1b.ty & 0xFF) == ENUMTY.Tnull) && ((tob.ty & 0xFF) != ENUMTY.Tnull))
+                if (((t1b.value.ty & 0xFF) == ENUMTY.Tnull) && ((tob.value.ty & 0xFF) != ENUMTY.Tnull))
                     /*goto Lok*/throw Dispatch0.INSTANCE;
                 if (tob_isFR && t1b_isR || t1b_isFR && tob_isR)
                 {
-                    if (((tob.ty & 0xFF) == ENUMTY.Tpointer) && ((t1b.ty & 0xFF) == ENUMTY.Tarray))
+                    if (((tob.value.ty & 0xFF) == ENUMTY.Tpointer) && ((t1b.value.ty & 0xFF) == ENUMTY.Tarray))
                     {
                         /*goto Lok*/throw Dispatch0.INSTANCE;
                     }
-                    if (((tob.ty & 0xFF) == ENUMTY.Tpointer) && ((t1b.ty & 0xFF) == ENUMTY.Tdelegate))
+                    if (((tob.value.ty & 0xFF) == ENUMTY.Tpointer) && ((t1b.value.ty & 0xFF) == ENUMTY.Tdelegate))
                     {
-                        e.deprecation(new BytePtr("casting from %s to %s is deprecated"), e.type.toChars(), this.t.toChars());
+                        e_ref.value.deprecation(new BytePtr("casting from %s to %s is deprecated"), e_ref.value.type.value.toChars(), this.t.toChars());
                         /*goto Lok*/throw Dispatch0.INSTANCE;
                     }
                     /*goto Lfail*//*unrolled goto*/
                 /*Lfail:*/
-                    if (hasAliasThis)
+                    if (hasAliasThis.value)
                     {
-                        this.result = tryAliasThisCast(e, this.sc, tob, t1b, this.t);
+                        this.result = tryAliasThisCast(e_ref.value, this.sc, tob.value, t1b.value, this.t);
                         if (this.result != null)
                             return ;
                     }
-                    e.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e.toChars(), e.type.toChars(), this.t.toChars());
+                    e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e_ref.value.toChars(), e_ref.value.type.value.toChars(), this.t.toChars());
                     this.result = new ErrorExp();
                     return ;
                 }
-                if (((t1b.ty & 0xFF) == ENUMTY.Tvoid) && ((tob.ty & 0xFF) != ENUMTY.Tvoid))
+                if (((t1b.value.ty & 0xFF) == ENUMTY.Tvoid) && ((tob.value.ty & 0xFF) != ENUMTY.Tvoid))
                 {
                 /*Lfail:*/
-                    if (hasAliasThis)
+                    if (hasAliasThis.value)
                     {
-                        this.result = tryAliasThisCast(e, this.sc, tob, t1b, this.t);
+                        this.result = tryAliasThisCast(e_ref.value, this.sc, tob.value, t1b.value, this.t);
                         if (this.result != null)
                             return ;
                     }
-                    e.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e.toChars(), e.type.toChars(), this.t.toChars());
+                    e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e_ref.value.toChars(), e_ref.value.type.value.toChars(), this.t.toChars());
                     this.result = new ErrorExp();
                     return ;
                 }
             }
             catch(Dispatch0 __d){}
         /*Lok:*/
-            this.result = new CastExp(e.loc, e, this.t);
-            this.result.type = this.t;
+            this.result = new CastExp(e_ref.value.loc, e_ref.value, this.t);
+            this.result.type.value = this.t;
         }
 
         public  void visit(ErrorExp e) {
-            this.result = e;
+            Ref<ErrorExp> e_ref = ref(e);
+            this.result = e_ref.value;
         }
 
         public  void visit(RealExp e) {
-            if (!e.type.equals(this.t))
+            Ref<RealExp> e_ref = ref(e);
+            if (!e_ref.value.type.value.equals(this.t))
             {
-                if (e.type.isreal() && this.t.isreal() || e.type.isimaginary() && this.t.isimaginary())
+                if (e_ref.value.type.value.isreal() && this.t.isreal() || e_ref.value.type.value.isimaginary() && this.t.isimaginary())
                 {
-                    this.result = e.copy();
-                    this.result.type = this.t;
+                    this.result = e_ref.value.copy();
+                    this.result.type.value = this.t;
                 }
                 else
-                    this.visit((Expression)e);
+                    this.visit((Expression)e_ref);
                 return ;
             }
-            this.result = e;
+            this.result = e_ref.value;
         }
 
         public  void visit(ComplexExp e) {
-            if (!e.type.equals(this.t))
+            Ref<ComplexExp> e_ref = ref(e);
+            if (!e_ref.value.type.value.equals(this.t))
             {
-                if (e.type.iscomplex() && this.t.iscomplex())
+                if (e_ref.value.type.value.iscomplex() && this.t.iscomplex())
                 {
-                    this.result = e.copy();
-                    this.result.type = this.t;
+                    this.result = e_ref.value.copy();
+                    this.result.type.value = this.t;
                 }
                 else
-                    this.visit((Expression)e);
+                    this.visit((Expression)e_ref);
                 return ;
             }
-            this.result = e;
+            this.result = e_ref.value;
         }
 
         public  void visit(NullExp e) {
-            this.visit((Expression)e);
+            Ref<NullExp> e_ref = ref(e);
+            this.visit((Expression)e_ref);
             if (((this.result.op & 0xFF) == 13))
             {
-                NullExp ex = (NullExp)this.result;
-                ex.committed = (byte)1;
+                Ref<NullExp> ex = ref((NullExp)this.result);
+                ex.value.committed = (byte)1;
                 return ;
             }
         }
 
         public  void visit(StructLiteralExp e) {
-            this.visit((Expression)e);
+            Ref<StructLiteralExp> e_ref = ref(e);
+            this.visit((Expression)e_ref);
             if (((this.result.op & 0xFF) == 49))
                 ((StructLiteralExp)this.result).stype = this.t;
         }
 
         public  void visit(StringExp e) {
-            int copied = 0;
-            if ((e.committed == 0) && ((this.t.ty & 0xFF) == ENUMTY.Tpointer) && ((this.t.nextOf().ty & 0xFF) == ENUMTY.Tvoid))
+            Ref<StringExp> e_ref = ref(e);
+            IntRef copied = ref(0);
+            if ((e_ref.value.committed == 0) && ((this.t.ty & 0xFF) == ENUMTY.Tpointer) && ((this.t.nextOf().ty & 0xFF) == ENUMTY.Tvoid))
             {
-                e.error(new BytePtr("cannot convert string literal to `void*`"));
+                e_ref.value.error(new BytePtr("cannot convert string literal to `void*`"));
                 this.result = new ErrorExp();
                 return ;
             }
-            StringExp se = e;
-            if (e.committed == 0)
+            Ref<StringExp> se = ref(e_ref.value);
+            if (e_ref.value.committed == 0)
             {
-                se = (StringExp)e.copy();
-                se.committed = (byte)1;
-                copied = 1;
+                se.value = (StringExp)e_ref.value.copy();
+                se.value.committed = (byte)1;
+                copied.value = 1;
             }
-            if (e.type.equals(this.t))
+            if (e_ref.value.type.value.equals(this.t))
             {
-                this.result = se;
+                this.result = se.value;
                 return ;
             }
-            Type tb = this.t.toBasetype();
-            Type typeb = e.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tdelegate) && ((typeb.ty & 0xFF) != ENUMTY.Tdelegate))
+            Ref<Type> tb = ref(this.t.toBasetype());
+            Ref<Type> typeb = ref(e_ref.value.type.value.toBasetype());
+            if (((tb.value.ty & 0xFF) == ENUMTY.Tdelegate) && ((typeb.value.ty & 0xFF) != ENUMTY.Tdelegate))
             {
-                this.visit((Expression)e);
+                this.visit((Expression)e_ref);
                 return ;
             }
-            if (typeb.equals(tb))
+            if (typeb.value.equals(tb.value))
             {
-                if (copied == 0)
+                if (copied.value == 0)
                 {
-                    se = (StringExp)e.copy();
-                    copied = 1;
+                    se.value = (StringExp)e_ref.value.copy();
+                    copied.value = 1;
                 }
-                se.type = this.t;
-                this.result = se;
+                se.value.type.value = this.t;
+                this.result = se.value;
                 return ;
             }
-            if ((e.committed != 0) && ((tb.ty & 0xFF) == ENUMTY.Tsarray) && ((typeb.ty & 0xFF) == ENUMTY.Tarray))
+            if ((e_ref.value.committed != 0) && ((tb.value.ty & 0xFF) == ENUMTY.Tsarray) && ((typeb.value.ty & 0xFF) == ENUMTY.Tarray))
             {
-                se = (StringExp)e.copy();
-                long szx = tb.nextOf().size();
-                assert((szx <= 255L));
-                se.sz = (byte)szx;
-                se.len = (int)((TypeSArray)tb).dim.toInteger();
-                se.committed = (byte)1;
-                se.type = this.t;
-                int fullSize = (se.len + 1) * (se.sz & 0xFF);
-                if ((fullSize > (e.len + 1) * (e.sz & 0xFF)))
+                se.value = (StringExp)e_ref.value.copy();
+                Ref<Long> szx = ref(tb.value.nextOf().size());
+                assert((szx.value <= 255L));
+                se.value.sz = (byte)szx.value;
+                se.value.len = (int)((TypeSArray)tb.value).dim.toInteger();
+                se.value.committed = (byte)1;
+                se.value.type.value = this.t;
+                IntRef fullSize = ref((se.value.len + 1) * (se.value.sz & 0xFF));
+                if ((fullSize.value > (e_ref.value.len + 1) * (e_ref.value.sz & 0xFF)))
                 {
-                    Object s = pcopy(Mem.xmalloc(fullSize));
-                    int srcSize = e.len * (e.sz & 0xFF);
-                    memcpy((BytePtr)s, (se.string), srcSize);
-                    memset(((BytePtr)s).plus(srcSize), 0, fullSize - srcSize);
-                    se.string = pcopy((((BytePtr)s)));
+                    Ref<Object> s = ref(pcopy(Mem.xmalloc(fullSize.value)));
+                    IntRef srcSize = ref(e_ref.value.len * (e_ref.value.sz & 0xFF));
+                    memcpy((BytePtr)s.value, (se.value.string), srcSize.value);
+                    memset(((BytePtr)s.value).plus(srcSize.value), 0, fullSize.value - srcSize.value);
+                    se.value.string = pcopy((((BytePtr)s.value)));
                 }
-                this.result = se;
+                this.result = se.value;
                 return ;
             }
             try {
                 try {
-                    if (((tb.ty & 0xFF) != ENUMTY.Tsarray) && ((tb.ty & 0xFF) != ENUMTY.Tarray) && ((tb.ty & 0xFF) != ENUMTY.Tpointer))
+                    if (((tb.value.ty & 0xFF) != ENUMTY.Tsarray) && ((tb.value.ty & 0xFF) != ENUMTY.Tarray) && ((tb.value.ty & 0xFF) != ENUMTY.Tpointer))
                     {
-                        if (copied == 0)
+                        if (copied.value == 0)
                         {
-                            se = (StringExp)e.copy();
-                            copied = 1;
+                            se.value = (StringExp)e_ref.value.copy();
+                            copied.value = 1;
                         }
                         /*goto Lcast*/throw Dispatch1.INSTANCE;
                     }
-                    if (((typeb.ty & 0xFF) != ENUMTY.Tsarray) && ((typeb.ty & 0xFF) != ENUMTY.Tarray) && ((typeb.ty & 0xFF) != ENUMTY.Tpointer))
+                    if (((typeb.value.ty & 0xFF) != ENUMTY.Tsarray) && ((typeb.value.ty & 0xFF) != ENUMTY.Tarray) && ((typeb.value.ty & 0xFF) != ENUMTY.Tpointer))
                     {
-                        if (copied == 0)
+                        if (copied.value == 0)
                         {
-                            se = (StringExp)e.copy();
-                            copied = 1;
+                            se.value = (StringExp)e_ref.value.copy();
+                            copied.value = 1;
                         }
                         /*goto Lcast*/throw Dispatch1.INSTANCE;
                     }
-                    if ((typeb.nextOf().size() == tb.nextOf().size()))
+                    if ((typeb.value.nextOf().size() == tb.value.nextOf().size()))
                     {
-                        if (copied == 0)
+                        if (copied.value == 0)
                         {
-                            se = (StringExp)e.copy();
-                            copied = 1;
+                            se.value = (StringExp)e_ref.value.copy();
+                            copied.value = 1;
                         }
-                        if (((tb.ty & 0xFF) == ENUMTY.Tsarray))
+                        if (((tb.value.ty & 0xFF) == ENUMTY.Tsarray))
                             /*goto L2*/throw Dispatch0.INSTANCE;
-                        se.type = this.t;
-                        this.result = se;
+                        se.value.type.value = this.t;
+                        this.result = se.value;
                         return ;
                     }
-                    if (e.committed != 0)
+                    if (e_ref.value.committed != 0)
                         /*goto Lcast*/throw Dispatch1.INSTANCE;
                     // from template X!(IntegerInteger)
                     Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
@@ -1460,16 +1508,16 @@ public class dcast {
                     // removed duplicate function, [["int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
 
                     {
-                        OutBuffer buffer = new OutBuffer();
+                        Ref<OutBuffer> buffer = ref(new OutBuffer());
                         try {
-                            int newlen = 0;
-                            int tfty = (typeb.nextOf().toBasetype().ty & 0xFF);
-                            int ttty = (tb.nextOf().toBasetype().ty & 0xFF);
+                            IntRef newlen = ref(0);
+                            IntRef tfty = ref((typeb.value.nextOf().toBasetype().ty & 0xFF));
+                            IntRef ttty = ref((tb.value.nextOf().toBasetype().ty & 0xFF));
                             {
                                 int __dispatch4 = 0;
                                 dispatched_4:
                                 do {
-                                    switch (__dispatch4 != 0 ? __dispatch4 : XIntegerInteger.invoke(tfty, ttty))
+                                    switch (__dispatch4 != 0 ? __dispatch4 : XIntegerInteger.invoke(tfty.value, ttty.value))
                                     {
                                         case 7967:
                                         case 8224:
@@ -1478,109 +1526,109 @@ public class dcast {
                                         case 7968:
                                             {
                                                 IntRef u = ref(0);
-                                                for (; (u.value < e.len);){
+                                                for (; (u.value < e_ref.value.len);){
                                                     IntRef c = ref(0x0ffff);
-                                                    BytePtr p = pcopy(utf_decodeChar(se.string, e.len, u, c));
-                                                    if (p != null)
-                                                        e.error(new BytePtr("%s"), p);
+                                                    Ref<BytePtr> p = ref(pcopy(utf_decodeChar(se.value.string, e_ref.value.len, u, c)));
+                                                    if (p.value != null)
+                                                        e_ref.value.error(new BytePtr("%s"), p.value);
                                                     else
-                                                        buffer.writeUTF16(c.value);
+                                                        buffer.value.writeUTF16(c.value);
                                                 }
                                             }
-                                            newlen = buffer.offset / 2;
-                                            buffer.writeUTF16(0);
+                                            newlen.value = buffer.value.offset / 2;
+                                            buffer.value.writeUTF16(0);
                                             /*goto L1*/{ __dispatch4 = -1; continue dispatched_4; }
                                         case 7969:
                                             {
                                                 IntRef u_1 = ref(0);
-                                                for (; (u_1.value < e.len);){
+                                                for (; (u_1.value < e_ref.value.len);){
                                                     IntRef c_1 = ref(0x0ffff);
-                                                    BytePtr p_1 = pcopy(utf_decodeChar(se.string, e.len, u_1, c_1));
-                                                    if (p_1 != null)
-                                                        e.error(new BytePtr("%s"), p_1);
-                                                    buffer.write4(c_1.value);
-                                                    newlen++;
+                                                    Ref<BytePtr> p_1 = ref(pcopy(utf_decodeChar(se.value.string, e_ref.value.len, u_1, c_1)));
+                                                    if (p_1.value != null)
+                                                        e_ref.value.error(new BytePtr("%s"), p_1.value);
+                                                    buffer.value.write4(c_1.value);
+                                                    newlen.value++;
                                                 }
                                             }
-                                            buffer.write4(0);
+                                            buffer.value.write4(0);
                                             /*goto L1*/{ __dispatch4 = -1; continue dispatched_4; }
                                         case 8223:
                                             {
                                                 IntRef u_2 = ref(0);
-                                                for (; (u_2.value < e.len);){
+                                                for (; (u_2.value < e_ref.value.len);){
                                                     IntRef c_2 = ref(0x0ffff);
-                                                    BytePtr p_2 = pcopy(utf_decodeWchar(se.wstring, e.len, u_2, c_2));
-                                                    if (p_2 != null)
-                                                        e.error(new BytePtr("%s"), p_2);
+                                                    Ref<BytePtr> p_2 = ref(pcopy(utf_decodeWchar(se.value.wstring, e_ref.value.len, u_2, c_2)));
+                                                    if (p_2.value != null)
+                                                        e_ref.value.error(new BytePtr("%s"), p_2.value);
                                                     else
-                                                        buffer.writeUTF8(c_2.value);
+                                                        buffer.value.writeUTF8(c_2.value);
                                                 }
                                             }
-                                            newlen = buffer.offset;
-                                            buffer.writeUTF8(0);
+                                            newlen.value = buffer.value.offset;
+                                            buffer.value.writeUTF8(0);
                                             /*goto L1*/{ __dispatch4 = -1; continue dispatched_4; }
                                         case 8225:
                                             {
                                                 IntRef u_3 = ref(0);
-                                                for (; (u_3.value < e.len);){
+                                                for (; (u_3.value < e_ref.value.len);){
                                                     IntRef c_3 = ref(0x0ffff);
-                                                    BytePtr p_3 = pcopy(utf_decodeWchar(se.wstring, e.len, u_3, c_3));
-                                                    if (p_3 != null)
-                                                        e.error(new BytePtr("%s"), p_3);
-                                                    buffer.write4(c_3.value);
-                                                    newlen++;
+                                                    Ref<BytePtr> p_3 = ref(pcopy(utf_decodeWchar(se.value.wstring, e_ref.value.len, u_3, c_3)));
+                                                    if (p_3.value != null)
+                                                        e_ref.value.error(new BytePtr("%s"), p_3.value);
+                                                    buffer.value.write4(c_3.value);
+                                                    newlen.value++;
                                                 }
                                             }
-                                            buffer.write4(0);
+                                            buffer.value.write4(0);
                                             /*goto L1*/{ __dispatch4 = -1; continue dispatched_4; }
                                         case 8479:
                                             {
-                                                int u_4 = 0;
-                                                for (; (u_4 < e.len);u_4++){
-                                                    int c_4 = se.dstring.get(u_4);
-                                                    if (!utf_isValidDchar(c_4))
-                                                        e.error(new BytePtr("invalid UCS-32 char \\U%08x"), c_4);
+                                                IntRef u_4 = ref(0);
+                                                for (; (u_4.value < e_ref.value.len);u_4.value++){
+                                                    IntRef c_4 = ref(se.value.dstring.get(u_4.value));
+                                                    if (!utf_isValidDchar(c_4.value))
+                                                        e_ref.value.error(new BytePtr("invalid UCS-32 char \\U%08x"), c_4.value);
                                                     else
-                                                        buffer.writeUTF8(c_4);
-                                                    newlen++;
+                                                        buffer.value.writeUTF8(c_4.value);
+                                                    newlen.value++;
                                                 }
                                             }
-                                            newlen = buffer.offset;
-                                            buffer.writeUTF8(0);
+                                            newlen.value = buffer.value.offset;
+                                            buffer.value.writeUTF8(0);
                                             /*goto L1*/{ __dispatch4 = -1; continue dispatched_4; }
                                         case 8480:
                                             {
-                                                int u_5 = 0;
-                                                for (; (u_5 < e.len);u_5++){
-                                                    int c_5 = se.dstring.get(u_5);
-                                                    if (!utf_isValidDchar(c_5))
-                                                        e.error(new BytePtr("invalid UCS-32 char \\U%08x"), c_5);
+                                                IntRef u_5 = ref(0);
+                                                for (; (u_5.value < e_ref.value.len);u_5.value++){
+                                                    IntRef c_5 = ref(se.value.dstring.get(u_5.value));
+                                                    if (!utf_isValidDchar(c_5.value))
+                                                        e_ref.value.error(new BytePtr("invalid UCS-32 char \\U%08x"), c_5.value);
                                                     else
-                                                        buffer.writeUTF16(c_5);
-                                                    newlen++;
+                                                        buffer.value.writeUTF16(c_5.value);
+                                                    newlen.value++;
                                                 }
                                             }
-                                            newlen = buffer.offset / 2;
-                                            buffer.writeUTF16(0);
+                                            newlen.value = buffer.value.offset / 2;
+                                            buffer.value.writeUTF16(0);
                                             /*goto L1*/{ __dispatch4 = -1; continue dispatched_4; }
                                         /*L1:*/
                                         case -1:
                                         __dispatch4 = 0;
-                                            if (copied == 0)
+                                            if (copied.value == 0)
                                             {
-                                                se = (StringExp)e.copy();
-                                                copied = 1;
+                                                se.value = (StringExp)e_ref.value.copy();
+                                                copied.value = 1;
                                             }
-                                            se.string = pcopy(buffer.extractData());
-                                            se.len = newlen;
+                                            se.value.string = pcopy(buffer.value.extractData());
+                                            se.value.len = newlen.value;
                                             {
-                                                long szx = tb.nextOf().size();
-                                                assert((szx <= 255L));
-                                                se.sz = (byte)szx;
+                                                Ref<Long> szx = ref(tb.value.nextOf().size());
+                                                assert((szx.value <= 255L));
+                                                se.value.sz = (byte)szx.value;
                                             }
                                             break;
                                         default:
-                                        assert((typeb.nextOf().size() != tb.nextOf().size()));
+                                        assert((typeb.value.nextOf().size() != tb.value.nextOf().size()));
                                         /*goto Lcast*/throw Dispatch1.INSTANCE;
                                     }
                                 } while(__dispatch4 != 0);
@@ -1592,221 +1640,224 @@ public class dcast {
                 }
                 catch(Dispatch0 __d){}
             /*L2:*/
-                assert(copied != 0);
-                if (((tb.ty & 0xFF) == ENUMTY.Tsarray))
+                assert(copied.value != 0);
+                if (((tb.value.ty & 0xFF) == ENUMTY.Tsarray))
                 {
-                    int dim2 = (int)((TypeSArray)tb).dim.toInteger();
-                    if ((dim2 != se.len))
+                    IntRef dim2 = ref((int)((TypeSArray)tb.value).dim.toInteger());
+                    if ((dim2.value != se.value.len))
                     {
-                        int newsz = (se.sz & 0xFF);
-                        int d = (dim2 < se.len) ? dim2 : se.len;
-                        Object s = pcopy(Mem.xmalloc((dim2 + 1) * newsz));
-                        memcpy((BytePtr)s, (se.string), (d * newsz));
-                        memset(((BytePtr)s).plus((d * newsz)), 0, (dim2 + 1 - d) * newsz);
-                        se.string = pcopy((((BytePtr)s)));
-                        se.len = dim2;
+                        IntRef newsz = ref((se.value.sz & 0xFF));
+                        IntRef d = ref((dim2.value < se.value.len) ? dim2.value : se.value.len);
+                        Ref<Object> s = ref(pcopy(Mem.xmalloc((dim2.value + 1) * newsz.value)));
+                        memcpy((BytePtr)s.value, (se.value.string), (d.value * newsz.value));
+                        memset(((BytePtr)s.value).plus((d.value * newsz.value)), 0, (dim2.value + 1 - d.value) * newsz.value);
+                        se.value.string = pcopy((((BytePtr)s.value)));
+                        se.value.len = dim2.value;
                     }
                 }
-                se.type = this.t;
-                this.result = se;
+                se.value.type.value = this.t;
+                this.result = se.value;
                 return ;
             }
             catch(Dispatch1 __d){}
         /*Lcast:*/
-            this.result = new CastExp(e.loc, se, this.t);
-            this.result.type = this.t;
+            this.result = new CastExp(e_ref.value.loc, se.value, this.t);
+            this.result.type.value = this.t;
         }
 
         public  void visit(AddrExp e) {
-            this.result = e;
-            Type tb = this.t.toBasetype();
-            Type typeb = e.type.toBasetype();
-            if (tb.equals(typeb))
+            Ref<AddrExp> e_ref = ref(e);
+            this.result = e_ref.value;
+            Ref<Type> tb = ref(this.t.toBasetype());
+            Ref<Type> typeb = ref(e_ref.value.type.value.toBasetype());
+            if (tb.value.equals(typeb.value))
             {
-                this.result = e.copy();
-                this.result.type = this.t;
+                this.result = e_ref.value.copy();
+                this.result.type.value = this.t;
                 return ;
             }
-            if (((e.e1.op & 0xFF) == 214) && ((tb.ty & 0xFF) == ENUMTY.Tpointer) || ((tb.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
+            if (((e_ref.value.e1.op & 0xFF) == 214) && ((tb.value.ty & 0xFF) == ENUMTY.Tpointer) || ((tb.value.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.value.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
-                OverExp eo = (OverExp)e.e1;
-                FuncDeclaration f = null;
+                Ref<OverExp> eo = ref((OverExp)e_ref.value.e1);
+                Ref<FuncDeclaration> f = ref(null);
                 {
-                    int i = 0;
-                    for (; (i < eo.vars.a.length);i++){
-                        Dsymbol s = eo.vars.a.get(i);
-                        FuncDeclaration f2 = s.isFuncDeclaration();
-                        assert(f2 != null);
-                        if (f2.overloadExactMatch(tb.nextOf()) != null)
+                    IntRef i = ref(0);
+                    for (; (i.value < eo.value.vars.a.length);i.value++){
+                        Ref<Dsymbol> s = ref(eo.value.vars.a.get(i.value));
+                        Ref<FuncDeclaration> f2 = ref(s.value.isFuncDeclaration());
+                        assert(f2.value != null);
+                        if (f2.value.overloadExactMatch(tb.value.nextOf()) != null)
                         {
-                            if (f != null)
+                            if (f.value != null)
                             {
-                                ScopeDsymbol.multiplyDefined(e.loc, f, f2);
+                                ScopeDsymbol.multiplyDefined(e_ref.value.loc, f.value, f2.value);
                             }
                             else
-                                f = f2;
+                                f.value = f2.value;
                         }
                     }
                 }
-                if (f != null)
+                if (f.value != null)
                 {
-                    f.tookAddressOf++;
-                    SymOffExp se = new SymOffExp(e.loc, f, 0L, false);
-                    expressionSemantic(se, this.sc);
-                    this.visit(se);
+                    f.value.tookAddressOf++;
+                    Ref<SymOffExp> se = ref(new SymOffExp(e_ref.value.loc, f.value, 0L, false));
+                    expressionSemantic(se.value, this.sc);
+                    this.visit(se.value);
                     return ;
                 }
             }
-            if (((e.e1.op & 0xFF) == 26) && ((typeb.ty & 0xFF) == ENUMTY.Tpointer) && ((typeb.nextOf().ty & 0xFF) == ENUMTY.Tfunction) && ((tb.ty & 0xFF) == ENUMTY.Tpointer) && ((tb.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
+            if (((e_ref.value.e1.op & 0xFF) == 26) && ((typeb.value.ty & 0xFF) == ENUMTY.Tpointer) && ((typeb.value.nextOf().ty & 0xFF) == ENUMTY.Tfunction) && ((tb.value.ty & 0xFF) == ENUMTY.Tpointer) && ((tb.value.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
-                VarExp ve = (VarExp)e.e1;
-                FuncDeclaration f = ve.var.isFuncDeclaration();
-                if (f != null)
+                Ref<VarExp> ve = ref((VarExp)e_ref.value.e1);
+                Ref<FuncDeclaration> f = ref(ve.value.var.isFuncDeclaration());
+                if (f.value != null)
                 {
-                    assert(f.isImportedSymbol());
-                    f = f.overloadExactMatch(tb.nextOf());
-                    if (f != null)
+                    assert(f.value.isImportedSymbol());
+                    f.value = f.value.overloadExactMatch(tb.value.nextOf());
+                    if (f.value != null)
                     {
-                        this.result = new VarExp(e.loc, f, false);
-                        this.result.type = f.type;
-                        this.result = new AddrExp(e.loc, this.result, this.t);
+                        this.result = new VarExp(e_ref.value.loc, f.value, false);
+                        this.result.type.value = f.value.type;
+                        this.result = new AddrExp(e_ref.value.loc, this.result, this.t);
                         return ;
                     }
                 }
             }
             {
-                FuncDeclaration f = isFuncAddress(e, null);
-                if ((f) != null)
+                Ref<FuncDeclaration> f = ref(isFuncAddress(e_ref.value, null));
+                if ((f.value) != null)
                 {
-                    if (f.checkForwardRef(e.loc))
+                    if (f.value.checkForwardRef(e_ref.value.loc))
                     {
                         this.result = new ErrorExp();
                         return ;
                     }
                 }
             }
-            this.visit((Expression)e);
+            this.visit((Expression)e_ref);
         }
 
         public  void visit(TupleExp e) {
-            if (e.type.equals(this.t))
+            Ref<TupleExp> e_ref = ref(e);
+            if (e_ref.value.type.value.equals(this.t))
             {
-                this.result = e;
+                this.result = e_ref.value;
                 return ;
             }
-            TupleExp te = (TupleExp)e.copy();
-            te.e0 = e.e0 != null ? e.e0.copy() : null;
-            te.exps = (e.exps).copy();
+            Ref<TupleExp> te = ref((TupleExp)e_ref.value.copy());
+            te.value.e0 = e_ref.value.e0 != null ? e_ref.value.e0.copy() : null;
+            te.value.exps = (e_ref.value.exps.get()).copy();
             {
-                int i = 0;
-                for (; (i < (te.exps).length);i++){
-                    Expression ex = (te.exps).get(i);
-                    ex = ex.castTo(this.sc, this.t);
-                    te.exps.set(i, ex);
+                IntRef i = ref(0);
+                for (; (i.value < (te.value.exps.get()).length);i.value++){
+                    Ref<Expression> ex = ref((te.value.exps.get()).get(i.value));
+                    ex.value = ex.value.castTo(this.sc, this.t);
+                    te.value.exps.get().set(i.value, ex.value);
                 }
             }
-            this.result = te;
+            this.result = te.value;
         }
 
         public  void visit(ArrayLiteralExp e) {
-            ArrayLiteralExp ae = e;
-            Type tb = this.t.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray) && global.params.vsafe)
+            Ref<ArrayLiteralExp> e_ref = ref(e);
+            Ref<ArrayLiteralExp> ae = ref(e_ref.value);
+            Ref<Type> tb = ref(this.t.toBasetype());
+            if (((tb.value.ty & 0xFF) == ENUMTY.Tarray) && global.value.params.vsafe)
             {
-                if (checkArrayLiteralEscape(this.sc, ae, false))
+                if (checkArrayLiteralEscape(this.sc, ae.value, false))
                 {
                     this.result = new ErrorExp();
                     return ;
                 }
             }
-            if ((pequals(e.type, this.t)))
+            if ((pequals(e_ref.value.type.value, this.t)))
             {
-                this.result = e;
+                this.result = e_ref.value;
                 return ;
             }
-            Type typeb = e.type.toBasetype();
+            Ref<Type> typeb = ref(e_ref.value.type.value.toBasetype());
             try {
-                if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray) && ((typeb.ty & 0xFF) == ENUMTY.Tarray) || ((typeb.ty & 0xFF) == ENUMTY.Tsarray))
+                if (((tb.value.ty & 0xFF) == ENUMTY.Tarray) || ((tb.value.ty & 0xFF) == ENUMTY.Tsarray) && ((typeb.value.ty & 0xFF) == ENUMTY.Tarray) || ((typeb.value.ty & 0xFF) == ENUMTY.Tsarray))
                 {
-                    if (((tb.nextOf().toBasetype().ty & 0xFF) == ENUMTY.Tvoid) && ((typeb.nextOf().toBasetype().ty & 0xFF) != ENUMTY.Tvoid))
+                    if (((tb.value.nextOf().toBasetype().ty & 0xFF) == ENUMTY.Tvoid) && ((typeb.value.nextOf().toBasetype().ty & 0xFF) != ENUMTY.Tvoid))
                     {
                     }
-                    else if (((typeb.ty & 0xFF) == ENUMTY.Tsarray) && ((typeb.nextOf().toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
+                    else if (((typeb.value.ty & 0xFF) == ENUMTY.Tsarray) && ((typeb.value.nextOf().toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
                     {
                     }
                     else
                     {
-                        if (((tb.ty & 0xFF) == ENUMTY.Tsarray))
+                        if (((tb.value.ty & 0xFF) == ENUMTY.Tsarray))
                         {
-                            TypeSArray tsa = (TypeSArray)tb;
-                            if (((long)(e.elements).length != tsa.dim.toInteger()))
+                            Ref<TypeSArray> tsa = ref((TypeSArray)tb.value);
+                            if (((long)(e_ref.value.elements.get()).length != tsa.value.dim.toInteger()))
                                 /*goto L1*/throw Dispatch0.INSTANCE;
                         }
-                        ae = (ArrayLiteralExp)e.copy();
-                        if (e.basis != null)
-                            ae.basis = e.basis.castTo(this.sc, tb.nextOf());
-                        ae.elements = (e.elements).copy();
+                        ae.value = (ArrayLiteralExp)e_ref.value.copy();
+                        if (e_ref.value.basis != null)
+                            ae.value.basis = e_ref.value.basis.castTo(this.sc, tb.value.nextOf());
+                        ae.value.elements = (e_ref.value.elements.get()).copy();
                         {
-                            int i = 0;
-                            for (; (i < (e.elements).length);i++){
-                                Expression ex = (e.elements).get(i);
-                                if (ex == null)
+                            IntRef i = ref(0);
+                            for (; (i.value < (e_ref.value.elements.get()).length);i.value++){
+                                Ref<Expression> ex = ref((e_ref.value.elements.get()).get(i.value));
+                                if (ex.value == null)
                                     continue;
-                                ex = ex.castTo(this.sc, tb.nextOf());
-                                ae.elements.set(i, ex);
+                                ex.value = ex.value.castTo(this.sc, tb.value.nextOf());
+                                ae.value.elements.get().set(i.value, ex.value);
                             }
                         }
-                        ae.type = this.t;
-                        this.result = ae;
+                        ae.value.type.value = this.t;
+                        this.result = ae.value;
                         return ;
                     }
                 }
-                else if (((tb.ty & 0xFF) == ENUMTY.Tpointer) && ((typeb.ty & 0xFF) == ENUMTY.Tsarray))
+                else if (((tb.value.ty & 0xFF) == ENUMTY.Tpointer) && ((typeb.value.ty & 0xFF) == ENUMTY.Tsarray))
                 {
-                    Type tp = typeb.nextOf().pointerTo();
-                    if (!tp.equals(ae.type))
+                    Ref<Type> tp = ref(typeb.value.nextOf().pointerTo());
+                    if (!tp.value.equals(ae.value.type.value))
                     {
-                        ae = (ArrayLiteralExp)e.copy();
-                        ae.type = tp;
+                        ae.value = (ArrayLiteralExp)e_ref.value.copy();
+                        ae.value.type.value = tp.value;
                     }
                 }
-                else if (((tb.ty & 0xFF) == ENUMTY.Tvector) && ((typeb.ty & 0xFF) == ENUMTY.Tarray) || ((typeb.ty & 0xFF) == ENUMTY.Tsarray))
+                else if (((tb.value.ty & 0xFF) == ENUMTY.Tvector) && ((typeb.value.ty & 0xFF) == ENUMTY.Tarray) || ((typeb.value.ty & 0xFF) == ENUMTY.Tsarray))
                 {
-                    TypeVector tv = (TypeVector)tb;
-                    TypeSArray tbase = (TypeSArray)tv.basetype;
-                    assert(((tbase.ty & 0xFF) == ENUMTY.Tsarray));
-                    int edim = (e.elements).length;
-                    long tbasedim = tbase.dim.toInteger();
-                    if (((long)edim > tbasedim))
+                    Ref<TypeVector> tv = ref((TypeVector)tb.value);
+                    Ref<TypeSArray> tbase = ref((TypeSArray)tv.value.basetype);
+                    assert(((tbase.value.ty & 0xFF) == ENUMTY.Tsarray));
+                    IntRef edim = ref((e_ref.value.elements.get()).length);
+                    Ref<Long> tbasedim = ref(tbase.value.dim.toInteger());
+                    if (((long)edim.value > tbasedim.value))
                         /*goto L1*/throw Dispatch0.INSTANCE;
-                    ae = (ArrayLiteralExp)e.copy();
-                    ae.type = tbase;
-                    ae.elements = (e.elements).copy();
-                    Type telement = tv.elementType();
+                    ae.value = (ArrayLiteralExp)e_ref.value.copy();
+                    ae.value.type.value = tbase.value;
+                    ae.value.elements = (e_ref.value.elements.get()).copy();
+                    Ref<Type> telement = ref(tv.value.elementType());
                     {
-                        int __key901 = 0;
-                        int __limit902 = edim;
-                        for (; (__key901 < __limit902);__key901 += 1) {
-                            int i = __key901;
-                            Expression ex = (e.elements).get(i);
-                            ex = ex.castTo(this.sc, telement);
-                            ae.elements.set(i, ex);
+                        IntRef __key899 = ref(0);
+                        IntRef __limit900 = ref(edim.value);
+                        for (; (__key899.value < __limit900.value);__key899.value += 1) {
+                            IntRef i = ref(__key899.value);
+                            Ref<Expression> ex = ref((e_ref.value.elements.get()).get(i.value));
+                            ex.value = ex.value.castTo(this.sc, telement.value);
+                            ae.value.elements.get().set(i.value, ex.value);
                         }
                     }
-                    (ae.elements).setDim((int)tbasedim);
+                    (ae.value.elements.get()).setDim((int)tbasedim.value);
                     {
-                        int __key903 = edim;
-                        int __limit904 = (int)tbasedim;
-                        for (; (__key903 < __limit904);__key903 += 1) {
-                            int i = __key903;
-                            Expression ex = typeb.nextOf().defaultInitLiteral(e.loc);
-                            ex = ex.castTo(this.sc, telement);
-                            ae.elements.set(i, ex);
+                        IntRef __key901 = ref(edim.value);
+                        IntRef __limit902 = ref((int)tbasedim.value);
+                        for (; (__key901.value < __limit902.value);__key901.value += 1) {
+                            IntRef i = ref(__key901.value);
+                            Ref<Expression> ex = ref(typeb.value.nextOf().defaultInitLiteral(e_ref.value.loc));
+                            ex.value = ex.value.castTo(this.sc, telement.value);
+                            ae.value.elements.get().set(i.value, ex.value);
                         }
                     }
-                    Expression ev = new VectorExp(e.loc, ae, tb);
-                    ev = expressionSemantic(ev, this.sc);
-                    this.result = ev;
+                    Ref<Expression> ev = ref(new VectorExp(e_ref.value.loc, ae.value, tb.value));
+                    ev.value = expressionSemantic(ev.value, this.sc);
+                    this.result = ev.value;
                     return ;
                 }
             }
@@ -1816,239 +1867,246 @@ public class dcast {
         }
 
         public  void visit(AssocArrayLiteralExp e) {
-            if ((pequals(e.type, this.t)))
+            Ref<AssocArrayLiteralExp> e_ref = ref(e);
+            if ((pequals(e_ref.value.type.value, this.t)))
             {
-                this.result = e;
+                this.result = e_ref.value;
                 return ;
             }
-            Type tb = this.t.toBasetype();
-            Type typeb = e.type.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Taarray) && ((typeb.ty & 0xFF) == ENUMTY.Taarray) && ((tb.nextOf().toBasetype().ty & 0xFF) != ENUMTY.Tvoid))
+            Ref<Type> tb = ref(this.t.toBasetype());
+            Ref<Type> typeb = ref(e_ref.value.type.value.toBasetype());
+            if (((tb.value.ty & 0xFF) == ENUMTY.Taarray) && ((typeb.value.ty & 0xFF) == ENUMTY.Taarray) && ((tb.value.nextOf().toBasetype().ty & 0xFF) != ENUMTY.Tvoid))
             {
-                AssocArrayLiteralExp ae = (AssocArrayLiteralExp)e.copy();
-                ae.keys = (e.keys).copy();
-                ae.values = (e.values).copy();
-                assert(((e.keys).length == (e.values).length));
+                Ref<AssocArrayLiteralExp> ae = ref((AssocArrayLiteralExp)e_ref.value.copy());
+                ae.value.keys = (e_ref.value.keys.get()).copy();
+                ae.value.values = (e_ref.value.values.get()).copy();
+                assert(((e_ref.value.keys.get()).length == (e_ref.value.values.get()).length));
                 {
-                    int i = 0;
-                    for (; (i < (e.keys).length);i++){
-                        Expression ex = (e.values).get(i);
-                        ex = ex.castTo(this.sc, tb.nextOf());
-                        ae.values.set(i, ex);
-                        ex = (e.keys).get(i);
-                        ex = ex.castTo(this.sc, ((TypeAArray)tb).index);
-                        ae.keys.set(i, ex);
+                    IntRef i = ref(0);
+                    for (; (i.value < (e_ref.value.keys.get()).length);i.value++){
+                        Ref<Expression> ex = ref((e_ref.value.values.get()).get(i.value));
+                        ex.value = ex.value.castTo(this.sc, tb.value.nextOf());
+                        ae.value.values.get().set(i.value, ex.value);
+                        ex.value = (e_ref.value.keys.get()).get(i.value);
+                        ex.value = ex.value.castTo(this.sc, ((TypeAArray)tb.value).index);
+                        ae.value.keys.get().set(i.value, ex.value);
                     }
                 }
-                ae.type = this.t;
-                this.result = ae;
+                ae.value.type.value = this.t;
+                this.result = ae.value;
                 return ;
             }
-            this.visit((Expression)e);
+            this.visit((Expression)e_ref);
         }
 
         public  void visit(SymOffExp e) {
-            if ((pequals(e.type, this.t)) && !e.hasOverloads)
+            Ref<SymOffExp> e_ref = ref(e);
+            if ((pequals(e_ref.value.type.value, this.t)) && !e_ref.value.hasOverloads)
             {
-                this.result = e;
+                this.result = e_ref.value;
                 return ;
             }
-            Type tb = this.t.toBasetype();
-            Type typeb = e.type.toBasetype();
-            if (tb.equals(typeb))
+            Ref<Type> tb = ref(this.t.toBasetype());
+            Ref<Type> typeb = ref(e_ref.value.type.value.toBasetype());
+            if (tb.value.equals(typeb.value))
             {
-                this.result = e.copy();
-                this.result.type = this.t;
+                this.result = e_ref.value.copy();
+                this.result.type.value = this.t;
                 ((SymOffExp)this.result).hasOverloads = false;
                 return ;
             }
-            if (e.hasOverloads && ((typeb.ty & 0xFF) == ENUMTY.Tpointer) && ((typeb.nextOf().ty & 0xFF) == ENUMTY.Tfunction) && ((tb.ty & 0xFF) == ENUMTY.Tpointer) || ((tb.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
+            if (e_ref.value.hasOverloads && ((typeb.value.ty & 0xFF) == ENUMTY.Tpointer) && ((typeb.value.nextOf().ty & 0xFF) == ENUMTY.Tfunction) && ((tb.value.ty & 0xFF) == ENUMTY.Tpointer) || ((tb.value.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.value.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
-                FuncDeclaration f = e.var.isFuncDeclaration();
-                f = f != null ? f.overloadExactMatch(tb.nextOf()) : null;
-                if (f != null)
+                Ref<FuncDeclaration> f = ref(e_ref.value.var.isFuncDeclaration());
+                f.value = f.value != null ? f.value.overloadExactMatch(tb.value.nextOf()) : null;
+                if (f.value != null)
                 {
-                    if (((tb.ty & 0xFF) == ENUMTY.Tdelegate))
+                    if (((tb.value.ty & 0xFF) == ENUMTY.Tdelegate))
                     {
-                        if (f.needThis() && (hasThis(this.sc) != null))
+                        if (f.value.needThis() && (hasThis(this.sc) != null))
                         {
-                            this.result = new DelegateExp(e.loc, new ThisExp(e.loc), f, false, null);
+                            this.result = new DelegateExp(e_ref.value.loc, new ThisExp(e_ref.value.loc), f.value, false, null);
                             this.result = expressionSemantic(this.result, this.sc);
                         }
-                        else if (f.needThis())
+                        else if (f.value.needThis())
                         {
-                            e.error(new BytePtr("no `this` to create delegate for `%s`"), f.toChars());
+                            e_ref.value.error(new BytePtr("no `this` to create delegate for `%s`"), f.value.toChars());
                             this.result = new ErrorExp();
                             return ;
                         }
-                        else if (f.isNested())
+                        else if (f.value.isNested())
                         {
-                            this.result = new DelegateExp(e.loc, literal0(), f, false, null);
+                            this.result = new DelegateExp(e_ref.value.loc, literal_B6589FC6AB0DC82C(), f.value, false, null);
                             this.result = expressionSemantic(this.result, this.sc);
                         }
                         else
                         {
-                            e.error(new BytePtr("cannot cast from function pointer to delegate"));
+                            e_ref.value.error(new BytePtr("cannot cast from function pointer to delegate"));
                             this.result = new ErrorExp();
                             return ;
                         }
                     }
                     else
                     {
-                        this.result = new SymOffExp(e.loc, f, 0L, false);
-                        this.result.type = this.t;
+                        this.result = new SymOffExp(e_ref.value.loc, f.value, 0L, false);
+                        this.result.type.value = this.t;
                     }
-                    f.tookAddressOf++;
+                    f.value.tookAddressOf++;
                     return ;
                 }
             }
             {
-                FuncDeclaration f = isFuncAddress(e, null);
-                if ((f) != null)
+                Ref<FuncDeclaration> f = ref(isFuncAddress(e_ref.value, null));
+                if ((f.value) != null)
                 {
-                    if (f.checkForwardRef(e.loc))
+                    if (f.value.checkForwardRef(e_ref.value.loc))
                     {
                         this.result = new ErrorExp();
                         return ;
                     }
                 }
             }
-            this.visit((Expression)e);
+            this.visit((Expression)e_ref);
         }
 
         public  void visit(DelegateExp e) {
-            Type tb = this.t.toBasetype();
-            Type typeb = e.type.toBasetype();
-            if (tb.equals(typeb) && !e.hasOverloads)
+            Ref<DelegateExp> e_ref = ref(e);
+            Ref<Type> tb = ref(this.t.toBasetype());
+            Ref<Type> typeb = ref(e_ref.value.type.value.toBasetype());
+            if (tb.value.equals(typeb.value) && !e_ref.value.hasOverloads)
             {
                 IntRef offset = ref(0);
-                e.func.tookAddressOf++;
-                if ((e.func.tintro != null) && e.func.tintro.nextOf().isBaseOf(e.func.type.nextOf(), ptr(offset)) && (offset.value != 0))
-                    e.error(new BytePtr("%s"), dcast.visitmsg);
-                this.result = e.copy();
-                this.result.type = this.t;
+                e_ref.value.func.tookAddressOf++;
+                if ((e_ref.value.func.tintro != null) && e_ref.value.func.tintro.nextOf().isBaseOf(e_ref.value.func.type.nextOf(), ptr(offset)) && (offset.value != 0))
+                    e_ref.value.error(new BytePtr("%s"), dcast.visitmsg.value);
+                this.result = e_ref.value.copy();
+                this.result.type.value = this.t;
                 return ;
             }
-            if (((typeb.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.ty & 0xFF) == ENUMTY.Tdelegate))
+            if (((typeb.value.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.value.ty & 0xFF) == ENUMTY.Tdelegate))
             {
-                if (e.func != null)
+                if (e_ref.value.func != null)
                 {
-                    FuncDeclaration f = e.func.overloadExactMatch(tb.nextOf());
-                    if (f != null)
+                    Ref<FuncDeclaration> f = ref(e_ref.value.func.overloadExactMatch(tb.value.nextOf()));
+                    if (f.value != null)
                     {
                         IntRef offset = ref(0);
-                        if ((f.tintro != null) && f.tintro.nextOf().isBaseOf(f.type.nextOf(), ptr(offset)) && (offset.value != 0))
-                            e.error(new BytePtr("%s"), dcast.visitmsg);
-                        if ((!pequals(f, e.func)))
-                            f.tookAddressOf++;
-                        this.result = new DelegateExp(e.loc, e.e1, f, false, e.vthis2);
-                        this.result.type = this.t;
+                        if ((f.value.tintro != null) && f.value.tintro.nextOf().isBaseOf(f.value.type.nextOf(), ptr(offset)) && (offset.value != 0))
+                            e_ref.value.error(new BytePtr("%s"), dcast.visitmsg.value);
+                        if ((!pequals(f.value, e_ref.value.func)))
+                            f.value.tookAddressOf++;
+                        this.result = new DelegateExp(e_ref.value.loc, e_ref.value.e1, f.value, false, e_ref.value.vthis2);
+                        this.result.type.value = this.t;
                         return ;
                     }
-                    if (e.func.tintro != null)
-                        e.error(new BytePtr("%s"), dcast.visitmsg);
+                    if (e_ref.value.func.tintro != null)
+                        e_ref.value.error(new BytePtr("%s"), dcast.visitmsg.value);
                 }
             }
             {
-                FuncDeclaration f = isFuncAddress(e, null);
-                if ((f) != null)
+                Ref<FuncDeclaration> f = ref(isFuncAddress(e_ref.value, null));
+                if ((f.value) != null)
                 {
-                    if (f.checkForwardRef(e.loc))
+                    if (f.value.checkForwardRef(e_ref.value.loc))
                     {
                         this.result = new ErrorExp();
                         return ;
                     }
                 }
             }
-            this.visit((Expression)e);
+            this.visit((Expression)e_ref);
         }
 
         public  void visit(FuncExp e) {
+            Ref<FuncExp> e_ref = ref(e);
             Ref<FuncExp> fe = ref(null);
-            if ((e.matchType(this.t, this.sc, ptr(fe), 1) > MATCH.nomatch))
+            if ((e_ref.value.matchType(this.t, this.sc, ptr(fe), 1) > MATCH.nomatch))
             {
                 this.result = fe.value;
                 return ;
             }
-            this.visit((Expression)e);
+            this.visit((Expression)e_ref);
         }
 
         public  void visit(CondExp e) {
-            if (!e.type.equals(this.t))
+            Ref<CondExp> e_ref = ref(e);
+            if (!e_ref.value.type.value.equals(this.t))
             {
-                this.result = new CondExp(e.loc, e.econd, e.e1.castTo(this.sc, this.t), e.e2.castTo(this.sc, this.t));
-                this.result.type = this.t;
+                this.result = new CondExp(e_ref.value.loc, e_ref.value.econd, e_ref.value.e1.value.castTo(this.sc, this.t), e_ref.value.e2.value.castTo(this.sc, this.t));
+                this.result.type.value = this.t;
                 return ;
             }
-            this.result = e;
+            this.result = e_ref.value;
         }
 
         public  void visit(CommaExp e) {
-            Expression e2c = e.e2.castTo(this.sc, this.t);
-            if ((!pequals(e2c, e.e2)))
+            Ref<CommaExp> e_ref = ref(e);
+            Ref<Expression> e2c = ref(e_ref.value.e2.value.castTo(this.sc, this.t));
+            if ((!pequals(e2c.value, e_ref.value.e2.value)))
             {
-                this.result = new CommaExp(e.loc, e.e1, e2c, true);
-                this.result.type = e2c.type;
+                this.result = new CommaExp(e_ref.value.loc, e_ref.value.e1.value, e2c.value, true);
+                this.result.type.value = e2c.value.type.value;
             }
             else
             {
-                this.result = e;
-                this.result.type = e.e2.type;
+                this.result = e_ref.value;
+                this.result.type.value = e_ref.value.e2.value.type.value;
             }
         }
 
         public  void visit(SliceExp e) {
-            Type tb = this.t.toBasetype();
-            Type typeb = e.type.toBasetype();
-            if (e.type.equals(this.t) || ((typeb.ty & 0xFF) != ENUMTY.Tarray) || ((tb.ty & 0xFF) != ENUMTY.Tarray) && ((tb.ty & 0xFF) != ENUMTY.Tsarray))
+            Ref<SliceExp> e_ref = ref(e);
+            Ref<Type> tb = ref(this.t.toBasetype());
+            Ref<Type> typeb = ref(e_ref.value.type.value.toBasetype());
+            if (e_ref.value.type.value.equals(this.t) || ((typeb.value.ty & 0xFF) != ENUMTY.Tarray) || ((tb.value.ty & 0xFF) != ENUMTY.Tarray) && ((tb.value.ty & 0xFF) != ENUMTY.Tsarray))
             {
-                this.visit((Expression)e);
+                this.visit((Expression)e_ref);
                 return ;
             }
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray))
+            if (((tb.value.ty & 0xFF) == ENUMTY.Tarray))
             {
-                if (typeb.nextOf().equivalent(tb.nextOf()))
+                if (typeb.value.nextOf().equivalent(tb.value.nextOf()))
                 {
-                    this.result = e.copy();
-                    this.result.type = this.t;
+                    this.result = e_ref.value.copy();
+                    this.result.type.value = this.t;
                 }
                 else
                 {
-                    this.visit((Expression)e);
+                    this.visit((Expression)e_ref);
                 }
                 return ;
             }
-            TypeSArray tsa = (TypeSArray)toStaticArrayType(e);
-            if ((tsa != null) && (tsa.size(e.loc) == tb.size(e.loc)))
+            Ref<TypeSArray> tsa = ref((TypeSArray)toStaticArrayType(e_ref.value));
+            if ((tsa.value != null) && (tsa.value.size(e_ref.value.loc) == tb.value.size(e_ref.value.loc)))
             {
-                this.result = e.copy();
-                this.result.type = this.t;
+                this.result = e_ref.value.copy();
+                this.result.type.value = this.t;
                 return ;
             }
-            if ((tsa != null) && tsa.dim.equals(((TypeSArray)tb).dim))
+            if ((tsa.value != null) && tsa.value.dim.equals(((TypeSArray)tb.value).dim))
             {
-                Type t1b = e.e1.type.toBasetype();
-                if (((t1b.ty & 0xFF) == ENUMTY.Tsarray))
-                    t1b = tb.nextOf().sarrayOf(((TypeSArray)t1b).dim.toInteger());
-                else if (((t1b.ty & 0xFF) == ENUMTY.Tarray))
-                    t1b = tb.nextOf().arrayOf();
-                else if (((t1b.ty & 0xFF) == ENUMTY.Tpointer))
-                    t1b = tb.nextOf().pointerTo();
+                Ref<Type> t1b = ref(e_ref.value.e1.type.value.toBasetype());
+                if (((t1b.value.ty & 0xFF) == ENUMTY.Tsarray))
+                    t1b.value = tb.value.nextOf().sarrayOf(((TypeSArray)t1b.value).dim.toInteger());
+                else if (((t1b.value.ty & 0xFF) == ENUMTY.Tarray))
+                    t1b.value = tb.value.nextOf().arrayOf();
+                else if (((t1b.value.ty & 0xFF) == ENUMTY.Tpointer))
+                    t1b.value = tb.value.nextOf().pointerTo();
                 else
                     throw new AssertionError("Unreachable code!");
-                if ((e.e1.implicitConvTo(t1b) > MATCH.nomatch))
+                if ((e_ref.value.e1.implicitConvTo(t1b.value) > MATCH.nomatch))
                 {
-                    Expression e1x = e.e1.implicitCastTo(this.sc, t1b);
-                    assert(((e1x.op & 0xFF) != 127));
-                    e = (SliceExp)e.copy();
-                    e.e1 = e1x;
-                    e.type = this.t;
-                    this.result = e;
+                    Ref<Expression> e1x = ref(e_ref.value.e1.implicitCastTo(this.sc, t1b.value));
+                    assert(((e1x.value.op & 0xFF) != 127));
+                    e_ref.value = (SliceExp)e_ref.value.copy();
+                    e_ref.value.e1 = e1x.value;
+                    e_ref.value.type.value = this.t;
+                    this.result = e_ref.value;
                     return ;
                 }
             }
-            Slice<BytePtr> ts = toAutoQualChars(tsa != null ? tsa : e.type, this.t);
-            e.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e.toChars(), ts.get(0), ts.get(1));
+            Slice<BytePtr> ts = toAutoQualChars(tsa.value != null ? tsa.value : e_ref.value.type.value, this.t);
+            e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e_ref.value.toChars(), ts.get(0), ts.get(1));
             this.result = new ErrorExp();
         }
 
@@ -2057,86 +2115,93 @@ public class dcast {
     }
     private static class InferType extends Visitor
     {
-        private Type t;
+        private Type t = null;
         private int flag = 0;
-        private Expression result;
+        private Expression result = null;
         public  InferType(Type t, int flag) {
-            this.t = t;
-            this.flag = flag;
+            Ref<Type> t_ref = ref(t);
+            IntRef flag_ref = ref(flag);
+            this.t = t_ref.value;
+            this.flag = flag_ref.value;
         }
 
         public  void visit(Expression e) {
-            this.result = e;
+            Ref<Expression> e_ref = ref(e);
+            this.result = e_ref.value;
         }
 
         public  void visit(ArrayLiteralExp ale) {
-            Type tb = this.t.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
+            Ref<ArrayLiteralExp> ale_ref = ref(ale);
+            Ref<Type> tb = ref(this.t.toBasetype());
+            if (((tb.value.ty & 0xFF) == ENUMTY.Tarray) || ((tb.value.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                Type tn = tb.nextOf();
-                if (ale.basis != null)
-                    ale.basis = inferType(ale.basis, tn, this.flag);
+                Ref<Type> tn = ref(tb.value.nextOf());
+                if (ale_ref.value.basis != null)
+                    ale_ref.value.basis = inferType(ale_ref.value.basis, tn.value, this.flag);
                 {
-                    int i = 0;
-                    for (; (i < (ale.elements).length);i++){
-                        Expression e = (ale.elements).get(i);
-                        if (e != null)
+                    IntRef i = ref(0);
+                    for (; (i.value < (ale_ref.value.elements.get()).length);i.value++){
+                        Ref<Expression> e = ref((ale_ref.value.elements.get()).get(i.value));
+                        if (e.value != null)
                         {
-                            e = inferType(e, tn, this.flag);
-                            ale.elements.set(i, e);
+                            e.value = inferType(e.value, tn.value, this.flag);
+                            ale_ref.value.elements.get().set(i.value, e.value);
                         }
                     }
                 }
             }
-            this.result = ale;
+            this.result = ale_ref.value;
         }
 
         public  void visit(AssocArrayLiteralExp aale) {
-            Type tb = this.t.toBasetype();
-            if (((tb.ty & 0xFF) == ENUMTY.Taarray))
+            Ref<AssocArrayLiteralExp> aale_ref = ref(aale);
+            Ref<Type> tb = ref(this.t.toBasetype());
+            if (((tb.value.ty & 0xFF) == ENUMTY.Taarray))
             {
-                TypeAArray taa = (TypeAArray)tb;
-                Type ti = taa.index;
-                Type tv = taa.nextOf();
+                Ref<TypeAArray> taa = ref((TypeAArray)tb.value);
+                Ref<Type> ti = ref(taa.value.index);
+                Ref<Type> tv = ref(taa.value.nextOf());
                 {
-                    int i = 0;
-                    for (; (i < (aale.keys).length);i++){
-                        Expression e = (aale.keys).get(i);
-                        if (e != null)
+                    IntRef i = ref(0);
+                    for (; (i.value < (aale_ref.value.keys.get()).length);i.value++){
+                        Ref<Expression> e = ref((aale_ref.value.keys.get()).get(i.value));
+                        if (e.value != null)
                         {
-                            e = inferType(e, ti, this.flag);
-                            aale.keys.set(i, e);
+                            e.value = inferType(e.value, ti.value, this.flag);
+                            aale_ref.value.keys.get().set(i.value, e.value);
                         }
                     }
                 }
                 {
-                    int i = 0;
-                    for (; (i < (aale.values).length);i++){
-                        Expression e = (aale.values).get(i);
-                        if (e != null)
+                    IntRef i = ref(0);
+                    for (; (i.value < (aale_ref.value.values.get()).length);i.value++){
+                        Ref<Expression> e = ref((aale_ref.value.values.get()).get(i.value));
+                        if (e.value != null)
                         {
-                            e = inferType(e, tv, this.flag);
-                            aale.values.set(i, e);
+                            e.value = inferType(e.value, tv.value, this.flag);
+                            aale_ref.value.values.get().set(i.value, e.value);
                         }
                     }
                 }
             }
-            this.result = aale;
+            this.result = aale_ref.value;
         }
 
         public  void visit(FuncExp fe) {
+            Ref<FuncExp> fe_ref = ref(fe);
             if (((this.t.ty & 0xFF) == ENUMTY.Tdelegate) || ((this.t.ty & 0xFF) == ENUMTY.Tpointer) && ((this.t.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
-                fe.fd.treq = this.t;
+                fe_ref.value.fd.treq = this.t;
             }
-            this.result = fe;
+            this.result = fe_ref.value;
         }
 
         public  void visit(CondExp ce) {
-            Type tb = this.t.toBasetype();
-            ce.e1 = inferType(ce.e1, tb, this.flag);
-            ce.e2 = inferType(ce.e2, tb, this.flag);
-            this.result = ce;
+            Ref<CondExp> ce_ref = ref(ce);
+            Ref<Type> tb = ref(this.t.toBasetype());
+            ce_ref.value.e1.value = inferType(ce_ref.value.e1.value, tb.value, this.flag);
+            ce_ref.value.e2.value = inferType(ce_ref.value.e2.value, tb.value, this.flag);
+            this.result = ce_ref.value;
         }
 
 
@@ -2146,127 +2211,147 @@ public class dcast {
     {
         private IntRange range = new IntRange();
         public  void visit(Expression e) {
-            this.range = IntRange.fromType(e.type).copy();
+            Ref<Expression> e_ref = ref(e);
+            this.range = IntRange.fromType(e_ref.value.type.value).copy();
         }
 
         public  void visit(IntegerExp e) {
-            this.range = new IntRange(new SignExtendedNumber(e.getInteger(), false))._cast(e.type).copy();
+            Ref<IntegerExp> e_ref = ref(e);
+            this.range = new IntRange(new SignExtendedNumber(e_ref.value.getInteger(), false))._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(CastExp e) {
-            this.range = getIntRange(e.e1)._cast(e.type).copy();
+            Ref<CastExp> e_ref = ref(e);
+            this.range = getIntRange(e_ref.value.e1)._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(AddExp e) {
-            IntRange ir1 = getIntRange(e.e1).copy();
-            IntRange ir2 = getIntRange(e.e2).copy();
-            this.range = ir1.opBinary_+(ir2)._cast(e.type).copy();
+            Ref<AddExp> e_ref = ref(e);
+            Ref<IntRange> ir1 = ref(getIntRange(e_ref.value.e1.value).copy());
+            Ref<IntRange> ir2 = ref(getIntRange(e_ref.value.e2.value).copy());
+            this.range = ir1.value.opBinary_plus(ir2.value)._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(MinExp e) {
-            IntRange ir1 = getIntRange(e.e1).copy();
-            IntRange ir2 = getIntRange(e.e2).copy();
-            this.range = ir1.opBinary_-(ir2)._cast(e.type).copy();
+            Ref<MinExp> e_ref = ref(e);
+            Ref<IntRange> ir1 = ref(getIntRange(e_ref.value.e1.value).copy());
+            Ref<IntRange> ir2 = ref(getIntRange(e_ref.value.e2.value).copy());
+            this.range = ir1.value.opBinary_minus(ir2.value)._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(DivExp e) {
-            IntRange ir1 = getIntRange(e.e1).copy();
-            IntRange ir2 = getIntRange(e.e2).copy();
-            this.range = ir1.opBinary_/(ir2)._cast(e.type).copy();
+            Ref<DivExp> e_ref = ref(e);
+            Ref<IntRange> ir1 = ref(getIntRange(e_ref.value.e1.value).copy());
+            Ref<IntRange> ir2 = ref(getIntRange(e_ref.value.e2.value).copy());
+            this.range = ir1.value.opBinary_div(ir2.value)._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(MulExp e) {
-            IntRange ir1 = getIntRange(e.e1).copy();
-            IntRange ir2 = getIntRange(e.e2).copy();
-            this.range = ir1.opBinary_*(ir2)._cast(e.type).copy();
+            Ref<MulExp> e_ref = ref(e);
+            Ref<IntRange> ir1 = ref(getIntRange(e_ref.value.e1.value).copy());
+            Ref<IntRange> ir2 = ref(getIntRange(e_ref.value.e2.value).copy());
+            this.range = ir1.value.opBinary_mul(ir2.value)._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(ModExp e) {
-            IntRange ir1 = getIntRange(e.e1).copy();
-            IntRange ir2 = getIntRange(e.e2).copy();
-            if (!ir2.absNeg().imin.negative)
+            Ref<ModExp> e_ref = ref(e);
+            Ref<IntRange> ir1 = ref(getIntRange(e_ref.value.e1.value).copy());
+            Ref<IntRange> ir2 = ref(getIntRange(e_ref.value.e2.value).copy());
+            if (!ir2.value.absNeg().imin.negative)
             {
-                this.visit((Expression)e);
+                this.visit((Expression)e_ref);
                 return ;
             }
-            this.range = ir1.opBinary_%(ir2)._cast(e.type).copy();
+            this.range = ir1.value.opBinary_mod(ir2.value)._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(AndExp e) {
-            IntRange result = new IntRange();
+            Ref<AndExp> e_ref = ref(e);
+            Ref<IntRange> result = ref(new IntRange());
             Ref<Boolean> hasResult = ref(false);
-            result.unionOrAssign(getIntRange(e.e1).opBinary_&(getIntRange(e.e2)), hasResult);
+            result.value.unionOrAssign(getIntRange(e_ref.value.e1.value).opBinary__(getIntRange(e_ref.value.e2.value)), hasResult);
             assert(hasResult.value);
-            this.range = result._cast(e.type).copy();
+            this.range = result.value._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(OrExp e) {
-            IntRange result = new IntRange();
+            Ref<OrExp> e_ref = ref(e);
+            Ref<IntRange> result = ref(new IntRange());
             Ref<Boolean> hasResult = ref(false);
-            result.unionOrAssign(getIntRange(e.e1).opBinary_|(getIntRange(e.e2)), hasResult);
+            result.value.unionOrAssign(getIntRange(e_ref.value.e1.value).opBinary__(getIntRange(e_ref.value.e2.value)), hasResult);
             assert(hasResult.value);
-            this.range = result._cast(e.type).copy();
+            this.range = result.value._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(XorExp e) {
-            IntRange result = new IntRange();
+            Ref<XorExp> e_ref = ref(e);
+            Ref<IntRange> result = ref(new IntRange());
             Ref<Boolean> hasResult = ref(false);
-            result.unionOrAssign(getIntRange(e.e1).opBinary_^(getIntRange(e.e2)), hasResult);
+            result.value.unionOrAssign(getIntRange(e_ref.value.e1.value).opBinary__(getIntRange(e_ref.value.e2.value)), hasResult);
             assert(hasResult.value);
-            this.range = result._cast(e.type).copy();
+            this.range = result.value._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(ShlExp e) {
-            IntRange ir1 = getIntRange(e.e1).copy();
-            IntRange ir2 = getIntRange(e.e2).copy();
-            this.range = ir1.opBinary_<<(ir2)._cast(e.type).copy();
+            Ref<ShlExp> e_ref = ref(e);
+            Ref<IntRange> ir1 = ref(getIntRange(e_ref.value.e1.value).copy());
+            Ref<IntRange> ir2 = ref(getIntRange(e_ref.value.e2.value).copy());
+            this.range = ir1.value.opBinary_ll(ir2.value)._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(ShrExp e) {
-            IntRange ir1 = getIntRange(e.e1).copy();
-            IntRange ir2 = getIntRange(e.e2).copy();
-            this.range = ir1.opBinary_>>(ir2)._cast(e.type).copy();
+            Ref<ShrExp> e_ref = ref(e);
+            Ref<IntRange> ir1 = ref(getIntRange(e_ref.value.e1.value).copy());
+            Ref<IntRange> ir2 = ref(getIntRange(e_ref.value.e2.value).copy());
+            this.range = ir1.value.opBinary_rr(ir2.value)._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(UshrExp e) {
-            IntRange ir1 = getIntRange(e.e1).castUnsigned(e.e1.type).copy();
-            IntRange ir2 = getIntRange(e.e2).copy();
-            this.range = ir1.opBinary_>>>(ir2)._cast(e.type).copy();
+            Ref<UshrExp> e_ref = ref(e);
+            Ref<IntRange> ir1 = ref(getIntRange(e_ref.value.e1.value).castUnsigned(e_ref.value.e1.value.type.value).copy());
+            Ref<IntRange> ir2 = ref(getIntRange(e_ref.value.e2.value).copy());
+            this.range = ir1.value.opBinary_rrr(ir2.value)._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(AssignExp e) {
-            this.range = getIntRange(e.e2)._cast(e.type).copy();
+            Ref<AssignExp> e_ref = ref(e);
+            this.range = getIntRange(e_ref.value.e2.value)._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(CondExp e) {
-            IntRange ir1 = getIntRange(e.e1).copy();
-            IntRange ir2 = getIntRange(e.e2).copy();
-            this.range = ir1.unionWith(ir2)._cast(e.type).copy();
+            Ref<CondExp> e_ref = ref(e);
+            Ref<IntRange> ir1 = ref(getIntRange(e_ref.value.e1.value).copy());
+            IntRange ir2 = getIntRange(e_ref.value.e2.value).copy();
+            this.range = ir1.value.unionWith(ir2)._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(VarExp e) {
-            Expression ie = null;
-            VarDeclaration vd = e.var.isVarDeclaration();
-            if ((vd != null) && (vd.range != null))
-                this.range = (vd.range)._cast(e.type).copy();
-            else if ((vd != null) && (vd._init != null) && !vd.type.isMutable() && ((ie = vd.getConstInitializer(true)) != null))
-                ie.accept(this);
+            Ref<VarExp> e_ref = ref(e);
+            Ref<Expression> ie = ref(null);
+            Ref<VarDeclaration> vd = ref(e_ref.value.var.isVarDeclaration());
+            if ((vd.value != null) && (vd.value.range != null))
+                this.range = (vd.value.range.get())._cast(e_ref.value.type.value).copy();
+            else if ((vd.value != null) && (vd.value._init != null) && !vd.value.type.isMutable() && ((ie.value = vd.value.getConstInitializer(true)) != null))
+                ie.value.accept(this);
             else
-                this.visit((Expression)e);
+                this.visit((Expression)e_ref);
         }
 
         public  void visit(CommaExp e) {
-            e.e2.accept(this);
+            Ref<CommaExp> e_ref = ref(e);
+            e_ref.value.e2.value.accept(this);
         }
 
         public  void visit(ComExp e) {
-            IntRange ir = getIntRange(e.e1).copy();
-            this.range = new IntRange(new SignExtendedNumber(~ir.imax.value, !ir.imax.negative), new SignExtendedNumber(~ir.imin.value, !ir.imin.negative))._cast(e.type).copy();
+            Ref<ComExp> e_ref = ref(e);
+            Ref<IntRange> ir = ref(getIntRange(e_ref.value.e1).copy());
+            this.range = new IntRange(new SignExtendedNumber(~ir.value.imax.value, !ir.value.imax.negative), new SignExtendedNumber(~ir.value.imin.value, !ir.value.imin.negative))._cast(e_ref.value.type.value).copy();
         }
 
         public  void visit(NegExp e) {
-            IntRange ir = getIntRange(e.e1).copy();
-            this.range = ir.opUnary_-()._cast(e.type).copy();
+            Ref<NegExp> e_ref = ref(e);
+            Ref<IntRange> ir = ref(getIntRange(e_ref.value.e1).copy());
+            this.range = ir.value.opUnary_minus()._cast(e_ref.value.type.value).copy();
         }
 
 
@@ -2274,7 +2359,7 @@ public class dcast {
     }
 
     static boolean LOG = false;
-    public static Expression implicitCastTo(Expression e, Scope sc, Type t) {
+    public static Expression implicitCastTo(Expression e, Ptr<Scope> sc, Type t) {
         ImplicitCastTo v = new ImplicitCastTo(sc, t);
         e.accept(v);
         return v.result;
@@ -2294,19 +2379,19 @@ public class dcast {
             if ((lwr.isConst() != 0) && (upr.isConst() != 0))
             {
                 int len = (int)(upr.toUInteger() - lwr.toUInteger());
-                return e.type.toBasetype().nextOf().sarrayOf((long)len);
+                return e.type.value.toBasetype().nextOf().sarrayOf((long)len);
             }
         }
         else
         {
-            Type t1b = e.e1.type.toBasetype();
+            Type t1b = e.e1.type.value.toBasetype();
             if (((t1b.ty & 0xFF) == ENUMTY.Tsarray))
                 return t1b;
         }
         return null;
     }
 
-    public static Expression tryAliasThisCast(Expression e, Scope sc, Type tob, Type t1b, Type t) {
+    public static Expression tryAliasThisCast(Expression e, Ptr<Scope> sc, Type tob, Type t1b, Type t) {
         Expression result = null;
         AggregateDeclaration t1ad = isAggregate(t1b);
         if (t1ad == null)
@@ -2315,12 +2400,12 @@ public class dcast {
         if ((pequals(t1ad, toad)) || (t1ad.aliasthis == null))
             return null;
         result = resolveAliasThis(sc, e, false);
-        int errors = global.startGagging();
+        int errors = global.value.startGagging();
         result = result.castTo(sc, t);
-        return global.endGagging(errors) ? null : result;
+        return global.value.endGagging(errors) ? null : result;
     }
 
-    public static Expression castTo(Expression e, Scope sc, Type t) {
+    public static Expression castTo(Expression e, Ptr<Scope> sc, Type t) {
         CastTo v = new CastTo(sc, t);
         e.accept(v);
         return v.result;
@@ -2336,23 +2421,23 @@ public class dcast {
 
     // defaulted all parameters starting with #3
     public static Expression inferType(Expression e, Type t) {
-        inferType(e, t, 0);
+        return inferType(e, t, 0);
     }
 
-    public static Expression scaleFactor(BinExp be, Scope sc) {
-        Type t1b = be.e1.type.toBasetype();
-        Type t2b = be.e2.type.toBasetype();
+    public static Expression scaleFactor(BinExp be, Ptr<Scope> sc) {
+        Type t1b = be.e1.value.type.value.toBasetype();
+        Type t2b = be.e2.value.type.value.toBasetype();
         Expression eoff = null;
         if (((t1b.ty & 0xFF) == ENUMTY.Tpointer) && t2b.isintegral())
         {
             Type t = Type.tptrdiff_t;
             long stride = t1b.nextOf().size(be.loc);
             if (!t.equals(t2b))
-                be.e2 = be.e2.castTo(sc, t);
-            eoff = be.e2;
-            be.e2 = new MulExp(be.loc, be.e2, new IntegerExp(Loc.initial, stride, t));
-            be.e2.type = t;
-            be.type = be.e1.type;
+                be.e2.value = be.e2.value.castTo(sc, t);
+            eoff = be.e2.value;
+            be.e2.value = new MulExp(be.loc, be.e2.value, new IntegerExp(Loc.initial.value, stride, t));
+            be.e2.value.type.value = t;
+            be.type.value = be.e1.value.type.value;
         }
         else if (((t2b.ty & 0xFF) == ENUMTY.Tpointer) && t1b.isintegral())
         {
@@ -2360,25 +2445,25 @@ public class dcast {
             Expression e = null;
             long stride = t2b.nextOf().size(be.loc);
             if (!t.equals(t1b))
-                e = be.e1.castTo(sc, t);
+                e = be.e1.value.castTo(sc, t);
             else
-                e = be.e1;
+                e = be.e1.value;
             eoff = e;
-            e = new MulExp(be.loc, e, new IntegerExp(Loc.initial, stride, t));
-            e.type = t;
-            be.type = be.e2.type;
-            be.e1 = be.e2;
-            be.e2 = e;
+            e = new MulExp(be.loc, e, new IntegerExp(Loc.initial.value, stride, t));
+            e.type.value = t;
+            be.type.value = be.e2.value.type.value;
+            be.e1.value = be.e2.value;
+            be.e2.value = e;
         }
         else
             throw new AssertionError("Unreachable code!");
-        if (((sc).func != null) && ((sc).intypeof == 0))
+        if (((sc.get()).func != null) && ((sc.get()).intypeof == 0))
         {
             eoff = eoff.optimize(0, false);
             if (((eoff.op & 0xFF) == 135) && (eoff.toInteger() == 0L))
             {
             }
-            else if ((sc).func.setUnsafe())
+            else if ((sc.get()).func.setUnsafe())
             {
                 be.error(new BytePtr("pointer arithmetic not allowed in @safe functions"));
                 return new ErrorExp();
@@ -2388,7 +2473,7 @@ public class dcast {
     }
 
     public static boolean isVoidArrayLiteral(Expression e, Type other) {
-        for (; ((e.op & 0xFF) == 47) && ((e.type.ty & 0xFF) == ENUMTY.Tarray) && ((((ArrayLiteralExp)e).elements).length == 1);){
+        for (; ((e.op & 0xFF) == 47) && ((e.type.value.ty & 0xFF) == ENUMTY.Tarray) && ((((ArrayLiteralExp)e).elements.get()).length == 1);){
             ArrayLiteralExp ale = (ArrayLiteralExp)e;
             e = ale.getElement(0);
             if (((other.ty & 0xFF) == ENUMTY.Tsarray) || ((other.ty & 0xFF) == ENUMTY.Tarray))
@@ -2398,22 +2483,22 @@ public class dcast {
         }
         if (((other.ty & 0xFF) != ENUMTY.Tsarray) && ((other.ty & 0xFF) != ENUMTY.Tarray))
             return false;
-        Type t = e.type;
-        return ((e.op & 0xFF) == 47) && ((t.ty & 0xFF) == ENUMTY.Tarray) && ((t.nextOf().ty & 0xFF) == ENUMTY.Tvoid) && ((((ArrayLiteralExp)e).elements).length == 0);
+        Type t = e.type.value;
+        return ((e.op & 0xFF) == 47) && ((t.ty & 0xFF) == ENUMTY.Tarray) && ((t.nextOf().ty & 0xFF) == ENUMTY.Tvoid) && ((((ArrayLiteralExp)e).elements.get()).length == 0);
     }
 
-    public static boolean typeMerge(Scope sc, byte op, Ptr<Type> pt, Ptr<Expression> pe1, Ptr<Expression> pe2) {
-        Ref<Scope> sc_ref = ref(sc);
+    public static boolean typeMerge(Ptr<Scope> sc, byte op, Ptr<Type> pt, Ptr<Expression> pe1, Ptr<Expression> pe2) {
+        Ref<Ptr<Scope>> sc_ref = ref(sc);
         Ref<Ptr<Type>> pt_ref = ref(pt);
         Ref<Ptr<Expression>> pe1_ref = ref(pe1);
         Ref<Ptr<Expression>> pe2_ref = ref(pe2);
         int m = MATCH.nomatch;
         Ref<Expression> e1 = ref(pe1_ref.value.get());
         Ref<Expression> e2 = ref(pe2_ref.value.get());
-        Ref<Type> t1 = ref(e1.value.type);
-        Ref<Type> t2 = ref(e2.value.type);
-        Type t1b = e1.value.type.toBasetype();
-        Type t2b = e2.value.type.toBasetype();
+        Ref<Type> t1 = ref(e1.value.type.value);
+        Ref<Type> t2 = ref(e2.value.type.value);
+        Type t1b = e1.value.type.value.toBasetype();
+        Type t2b = e2.value.type.value.toBasetype();
         Ref<Type> t = ref(null);
         Function0<Boolean> Lret = new Function0<Boolean>(){
             public Boolean invoke() {
@@ -2456,8 +2541,8 @@ public class dcast {
                 e2.value = integralPromotions(e2.value, sc_ref.value);
             }
         }
-        t1.value = e1.value.type;
-        t2.value = e2.value.type;
+        t1.value = e1.value.type.value;
+        t2.value = e2.value.type.value;
         assert(t1.value != null);
         t.value = t1.value;
         Type att1 = null;
@@ -2726,22 +2811,22 @@ public class dcast {
                     }
                     else if (((t1.value.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)t1.value).sym.aliasthis != null))
                     {
-                        if ((att1 != null) && (pequals(e1.value.type, att1)))
+                        if ((att1 != null) && (pequals(e1.value.type.value, att1)))
                             return Lincompatible.invoke();
-                        if ((att1 == null) && e1.value.type.checkAliasThisRec())
-                            att1 = e1.value.type;
+                        if ((att1 == null) && e1.value.type.value.checkAliasThisRec())
+                            att1 = e1.value.type.value;
                         e1.value = resolveAliasThis(sc_ref.value, e1.value, false);
-                        t1.value = e1.value.type;
+                        t1.value = e1.value.type.value;
                         continue;
                     }
                     else if (((t2.value.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)t2.value).sym.aliasthis != null))
                     {
-                        if ((att2 != null) && (pequals(e2.value.type, att2)))
+                        if ((att2 != null) && (pequals(e2.value.type.value, att2)))
                             return Lincompatible.invoke();
-                        if ((att2 == null) && e2.value.type.checkAliasThisRec())
-                            att2 = e2.value.type;
+                        if ((att2 == null) && e2.value.type.value.checkAliasThisRec())
+                            att2 = e2.value.type.value;
                         e2.value = resolveAliasThis(sc_ref.value, e2.value, false);
-                        t2.value = e2.value.type;
+                        t2.value = e2.value.type.value;
                         continue;
                     }
                     else
@@ -2772,19 +2857,19 @@ public class dcast {
                     Expression e2b = null;
                     if (ts2.sym.aliasthis != null)
                     {
-                        if ((att2 != null) && (pequals(e2.value.type, att2)))
+                        if ((att2 != null) && (pequals(e2.value.type.value, att2)))
                             return Lincompatible.invoke();
-                        if ((att2 == null) && e2.value.type.checkAliasThisRec())
-                            att2 = e2.value.type;
+                        if ((att2 == null) && e2.value.type.value.checkAliasThisRec())
+                            att2 = e2.value.type.value;
                         e2b = resolveAliasThis(sc_ref.value, e2.value, false);
                         i1 = e2b.implicitConvTo(t1.value);
                     }
                     if (ts1.sym.aliasthis != null)
                     {
-                        if ((att1 != null) && (pequals(e1.value.type, att1)))
+                        if ((att1 != null) && (pequals(e1.value.type.value, att1)))
                             return Lincompatible.invoke();
-                        if ((att1 == null) && e1.value.type.checkAliasThisRec())
-                            att1 = e1.value.type;
+                        if ((att1 == null) && e1.value.type.value.checkAliasThisRec())
+                            att1 = e1.value.type.value;
                         e1b = resolveAliasThis(sc_ref.value, e1.value, false);
                         i2 = e1b.implicitConvTo(t2.value);
                     }
@@ -2797,12 +2882,12 @@ public class dcast {
                     if (e1b != null)
                     {
                         e1.value = e1b;
-                        t1.value = e1b.type.toBasetype();
+                        t1.value = e1b.type.value.toBasetype();
                     }
                     if (e2b != null)
                     {
                         e2.value = e2b;
-                        t2.value = e2b.type.toBasetype();
+                        t2.value = e2b.type.value.toBasetype();
                     }
                     t.value = t1.value;
                     /*goto Lagain*/throw Dispatch0.INSTANCE;
@@ -2812,23 +2897,23 @@ public class dcast {
             {
                 if (((t1.value.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)t1.value).sym.aliasthis != null))
                 {
-                    if ((att1 != null) && (pequals(e1.value.type, att1)))
+                    if ((att1 != null) && (pequals(e1.value.type.value, att1)))
                         return Lincompatible.invoke();
-                    if ((att1 == null) && e1.value.type.checkAliasThisRec())
-                        att1 = e1.value.type;
+                    if ((att1 == null) && e1.value.type.value.checkAliasThisRec())
+                        att1 = e1.value.type.value;
                     e1.value = resolveAliasThis(sc_ref.value, e1.value, false);
-                    t1.value = e1.value.type;
+                    t1.value = e1.value.type.value;
                     t.value = t1.value;
                     /*goto Lagain*/throw Dispatch0.INSTANCE;
                 }
                 if (((t2.value.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)t2.value).sym.aliasthis != null))
                 {
-                    if ((att2 != null) && (pequals(e2.value.type, att2)))
+                    if ((att2 != null) && (pequals(e2.value.type.value, att2)))
                         return Lincompatible.invoke();
-                    if ((att2 == null) && e2.value.type.checkAliasThisRec())
-                        att2 = e2.value.type;
+                    if ((att2 == null) && e2.value.type.value.checkAliasThisRec())
+                        att2 = e2.value.type.value;
                     e2.value = resolveAliasThis(sc_ref.value, e2.value, false);
-                    t2.value = e2.value.type;
+                    t2.value = e2.value.type.value;
                     t.value = t2.value;
                     /*goto Lagain*/throw Dispatch0.INSTANCE;
                 }
@@ -2896,8 +2981,8 @@ public class dcast {
                         return Lincompatible.invoke();
                     e1.value = integralPromotions(e1.value, sc_ref.value);
                     e2.value = integralPromotions(e2.value, sc_ref.value);
-                    t1.value = e1.value.type;
-                    t2.value = e2.value.type;
+                    t1.value = e1.value.type.value;
+                    t2.value = e2.value.type.value;
                     /*goto Lagain*/throw Dispatch0.INSTANCE;
                 }
                 assert(((t1.value.ty & 0xFF) == (t2.value.ty & 0xFF)));
@@ -2935,9 +3020,9 @@ public class dcast {
                     e2.value = e2.value.castTo(sc_ref.value, t1.value.nextOf());
                     t.value = t1.value.nextOf().arrayOf();
                 }
-                else if (t1.value.nextOf().implicitConvTo(e2.value.type) != 0)
+                else if (t1.value.nextOf().implicitConvTo(e2.value.type.value) != 0)
                 {
-                    t.value = e2.value.type.arrayOf();
+                    t.value = e2.value.type.value.arrayOf();
                 }
                 else if (((t2.value.ty & 0xFF) == ENUMTY.Tarray) && isArrayOpOperand(e2.value))
                 {
@@ -2962,9 +3047,9 @@ public class dcast {
                     e1.value = e1.value.castTo(sc_ref.value, t2.value.nextOf());
                     t.value = t2.value.nextOf().arrayOf();
                 }
-                else if (t2.value.nextOf().implicitConvTo(e1.value.type) != 0)
+                else if (t2.value.nextOf().implicitConvTo(e1.value.type.value) != 0)
                 {
-                    t.value = e1.value.type.arrayOf();
+                    t.value = e1.value.type.value.arrayOf();
                 }
                 else
                     return Lincompatible.invoke();
@@ -2985,18 +3070,18 @@ public class dcast {
         } catch(Dispatch0 __d){}
     }
 
-    public static Expression typeCombine(BinExp be, Scope sc) {
+    public static Expression typeCombine(BinExp be, Ptr<Scope> sc) {
         Ref<BinExp> be_ref = ref(be);
         Function0<Expression> errorReturn = new Function0<Expression>(){
             public Expression invoke() {
-                Expression ex = be_ref.value.incompatibleTypes();
-                if (((ex.op & 0xFF) == 127))
-                    return ex;
+                Ref<Expression> ex = ref(be_ref.value.incompatibleTypes());
+                if (((ex.value.op & 0xFF) == 127))
+                    return ex.value;
                 return new ErrorExp();
             }
         };
-        Type t1 = be_ref.value.e1.type.toBasetype();
-        Type t2 = be_ref.value.e2.type.toBasetype();
+        Type t1 = be_ref.value.e1.value.type.value.toBasetype();
+        Type t2 = be_ref.value.e2.value.type.value.toBasetype();
         if (((be_ref.value.op & 0xFF) == 75) || ((be_ref.value.op & 0xFF) == 74))
         {
             if (((t1.ty & 0xFF) == ENUMTY.Tstruct) && ((t2.ty & 0xFF) == ENUMTY.Tstruct))
@@ -3006,17 +3091,17 @@ public class dcast {
             else if (((t1.ty & 0xFF) == ENUMTY.Taarray) && ((t2.ty & 0xFF) == ENUMTY.Taarray))
                 return errorReturn.invoke();
         }
-        if (!typeMerge(sc, be_ref.value.op, be_ref.value.type, be_ref.value.e1, be_ref.value.e2))
+        if (!typeMerge(sc, be_ref.value.op, ptr(be_ref.value.type.value), ptr(be_ref.value.e1.value), ptr(be_ref.value.e2.value)))
             return errorReturn.invoke();
-        if (((be_ref.value.e1.op & 0xFF) == 127))
-            return be_ref.value.e1;
-        if (((be_ref.value.e2.op & 0xFF) == 127))
-            return be_ref.value.e2;
+        if (((be_ref.value.e1.value.op & 0xFF) == 127))
+            return be_ref.value.e1.value;
+        if (((be_ref.value.e2.value.op & 0xFF) == 127))
+            return be_ref.value.e2.value;
         return null;
     }
 
-    public static Expression integralPromotions(Expression e, Scope sc) {
-        switch ((e.type.toBasetype().ty & 0xFF))
+    public static Expression integralPromotions(Expression e, Ptr<Scope> sc) {
+        switch ((e.type.value.toBasetype().ty & 0xFF))
         {
             case 12:
                 e.error(new BytePtr("void has no value"));
@@ -3028,7 +3113,7 @@ public class dcast {
             case 30:
             case 31:
             case 32:
-                e = e.castTo(sc, Type.tint32);
+                e = e.castTo(sc, Type.tint32.value);
                 break;
             case 33:
                 e = e.castTo(sc, Type.tuns32);
@@ -3039,8 +3124,8 @@ public class dcast {
         return e;
     }
 
-    public static Expression charPromotions(Expression e, Scope sc) {
-        switch ((e.type.toBasetype().ty & 0xFF))
+    public static Expression charPromotions(Expression e, Ptr<Scope> sc) {
+        switch ((e.type.value.toBasetype().ty & 0xFF))
         {
             case 31:
             case 32:
@@ -3053,12 +3138,12 @@ public class dcast {
         return e;
     }
 
-    public static void fix16997(Scope sc, UnaExp ue) {
-        if (global.params.fix16997)
+    public static void fix16997(Ptr<Scope> sc, UnaExp ue) {
+        if (global.value.params.fix16997)
             ue.e1 = integralPromotions(ue.e1, sc);
         else
         {
-            switch ((ue.e1.type.toBasetype().ty & 0xFF))
+            switch ((ue.e1.type.value.toBasetype().ty & 0xFF))
             {
                 case 13:
                 case 14:

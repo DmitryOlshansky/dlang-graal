@@ -27,7 +27,7 @@ public class nogc {
 
     public static class NOGCVisitor extends StoppableVisitor
     {
-        public FuncDeclaration f;
+        public FuncDeclaration f = null;
         public boolean err = false;
         public  NOGCVisitor(FuncDeclaration f) {
             super();
@@ -60,7 +60,7 @@ public class nogc {
         }
 
         public  void visit(ArrayLiteralExp e) {
-            if (((e.type.ty & 0xFF) != ENUMTY.Tarray) || (e.elements == null) || ((e.elements).length == 0))
+            if (((e.type.value.ty & 0xFF) != ENUMTY.Tarray) || (e.elements == null) || ((e.elements.get()).length == 0))
                 return ;
             if (this.f.setGC())
             {
@@ -72,7 +72,7 @@ public class nogc {
         }
 
         public  void visit(AssocArrayLiteralExp e) {
-            if ((e.keys).length == 0)
+            if ((e.keys.get()).length == 0)
                 return ;
             if (this.f.setGC())
             {
@@ -92,7 +92,7 @@ public class nogc {
                 return ;
             if (e.allocator != null)
                 return ;
-            if (global.params.ehnogc && e.thrownew)
+            if (global.value.params.ehnogc && e.thrownew)
                 return ;
             if (this.f.setGC())
             {
@@ -110,7 +110,7 @@ public class nogc {
                 if ((v != null) && v.onstack)
                     return ;
             }
-            Type tb = e.e1.type.toBasetype();
+            Type tb = e.e1.type.value.toBasetype();
             AggregateDeclaration ad = null;
             switch ((tb.ty & 0xFF))
             {
@@ -137,7 +137,7 @@ public class nogc {
         }
 
         public  void visit(IndexExp e) {
-            Type t1b = e.e1.type.toBasetype();
+            Type t1b = e.e1.value.type.value.toBasetype();
             if (((t1b.ty & 0xFF) == ENUMTY.Taarray))
             {
                 if (this.f.setGC())
@@ -151,7 +151,7 @@ public class nogc {
         }
 
         public  void visit(AssignExp e) {
-            if (((e.e1.op & 0xFF) == 32))
+            if (((e.e1.value.op & 0xFF) == 32))
             {
                 if (this.f.setGC())
                 {
@@ -194,9 +194,9 @@ public class nogc {
             return that;
         }
     }
-    public static Expression checkGC(Scope sc, Expression e) {
-        FuncDeclaration f = (sc).func;
-        if ((e != null) && ((e.op & 0xFF) != 127) && (f != null) && ((sc).intypeof != 1) && (((sc).flags & 128) == 0) && ((f.type.ty & 0xFF) == ENUMTY.Tfunction) && ((TypeFunction)f.type).isnogc || ((f.flags & FUNCFLAG.nogcInprocess) != 0) || global.params.vgc && (((sc).flags & 8) == 0))
+    public static Expression checkGC(Ptr<Scope> sc, Expression e) {
+        FuncDeclaration f = (sc.get()).func;
+        if ((e != null) && ((e.op & 0xFF) != 127) && (f != null) && ((sc.get()).intypeof != 1) && (((sc.get()).flags & 128) == 0) && ((f.type.ty & 0xFF) == ENUMTY.Tfunction) && ((TypeFunction)f.type).isnogc || ((f.flags & FUNCFLAG.nogcInprocess) != 0) || global.value.params.vgc && (((sc.get()).flags & 8) == 0))
         {
             NOGCVisitor gcv = new NOGCVisitor(f);
             walkPostorder(e, gcv);

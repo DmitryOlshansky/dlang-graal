@@ -22,7 +22,7 @@ import static org.dlang.dmd.tokens.*;
 
 public class safe {
 
-    public static boolean checkUnsafeAccess(Scope sc, Expression e, boolean readonly, boolean printmsg) {
+    public static boolean checkUnsafeAccess(Ptr<Scope> sc, Expression e, boolean readonly, boolean printmsg) {
         if (((e.op & 0xFF) != 27))
             return false;
         DotVarExp dve = (DotVarExp)e;
@@ -30,7 +30,7 @@ public class safe {
             VarDeclaration v = dve.var.isVarDeclaration();
             if ((v) != null)
             {
-                if (((sc).intypeof != 0) || ((sc).func == null) || !(sc).func.isSafeBypassingInference())
+                if (((sc.get()).intypeof != 0) || ((sc.get()).func == null) || !(sc.get()).func.isSafeBypassingInference())
                     return false;
                 AggregateDeclaration ad = v.toParent2().isAggregateDeclaration();
                 if (ad == null)
@@ -40,25 +40,25 @@ public class safe {
                 {
                     if ((ad.sizeok != Sizeok.done))
                         ad.determineSize(ad.loc);
-                    if (v.overlapped && (sc).func.setUnsafe())
+                    if (v.overlapped && (sc.get()).func.setUnsafe())
                     {
                         if (printmsg)
                             e.error(new BytePtr("field `%s.%s` cannot access pointers in `@safe` code that overlap other fields"), ad.toChars(), v.toChars());
                         return true;
                     }
                 }
-                if (readonly || !e.type.isMutable())
+                if (readonly || !e.type.value.isMutable())
                     return false;
                 if (hasPointers && ((v.type.toBasetype().ty & 0xFF) != ENUMTY.Tstruct))
                 {
-                    if ((ad.type.alignment() < target.ptrsize) || ((v.offset & target.ptrsize - 1) != 0) && (sc).func.setUnsafe())
+                    if ((ad.type.alignment() < target.value.ptrsize) || ((v.offset & target.value.ptrsize - 1) != 0) && (sc.get()).func.setUnsafe())
                     {
                         if (printmsg)
                             e.error(new BytePtr("field `%s.%s` cannot modify misaligned pointers in `@safe` code"), ad.toChars(), v.toChars());
                         return true;
                     }
                 }
-                if (v.overlapUnsafe && (sc).func.setUnsafe())
+                if (v.overlapUnsafe && (sc.get()).func.setUnsafe())
                 {
                     if (printmsg)
                         e.error(new BytePtr("field `%s.%s` cannot modify fields in `@safe` code that overlap fields with other storage classes"), ad.toChars(), v.toChars());

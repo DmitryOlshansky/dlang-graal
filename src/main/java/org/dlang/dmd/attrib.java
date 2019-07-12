@@ -38,18 +38,18 @@ public class attrib {
 
     public static abstract class AttribDeclaration extends Dsymbol
     {
-        public DArray<Dsymbol> decl;
-        public  AttribDeclaration(DArray<Dsymbol> decl) {
+        public Ptr<DArray<Dsymbol>> decl = null;
+        public  AttribDeclaration(Ptr<DArray<Dsymbol>> decl) {
             super();
             this.decl = decl;
         }
 
-        public  AttribDeclaration(Loc loc, Identifier ident, DArray<Dsymbol> decl) {
+        public  AttribDeclaration(Loc loc, Identifier ident, Ptr<DArray<Dsymbol>> decl) {
             super(loc, ident);
             this.decl = decl;
         }
 
-        public  DArray<Dsymbol> include(Scope sc) {
+        public  Ptr<DArray<Dsymbol>> include(Ptr<Scope> sc) {
             if (this.errors)
                 return null;
             return this.decl;
@@ -64,31 +64,31 @@ public class attrib {
             return foreachDsymbol(this.include(this._scope), __lambda3);
         }
 
-        public static Scope createNewScope(Scope sc, long stc, int linkage, int cppmangle, Prot protection, int explicitProtection, AlignDeclaration aligndecl, int inlining) {
-            Scope sc2 = sc;
-            if ((stc != (sc).stc) || (linkage != (sc).linkage) || (cppmangle != (sc).cppmangle) || !protection.isSubsetOf((sc).protection) || (explicitProtection != (sc).explicitProtection) || (aligndecl != (sc).aligndecl) || (inlining != (sc).inlining))
+        public static Ptr<Scope> createNewScope(Ptr<Scope> sc, long stc, int linkage, int cppmangle, Prot protection, int explicitProtection, AlignDeclaration aligndecl, int inlining) {
+            Ptr<Scope> sc2 = sc;
+            if ((stc != (sc.get()).stc) || (linkage != (sc.get()).linkage) || (cppmangle != (sc.get()).cppmangle) || !protection.isSubsetOf((sc.get()).protection) || (explicitProtection != (sc.get()).explicitProtection) || (aligndecl != (sc.get()).aligndecl) || (inlining != (sc.get()).inlining))
             {
-                sc2 = (sc).copy();
-                (sc2).stc = stc;
-                (sc2).linkage = linkage;
-                (sc2).cppmangle = cppmangle;
-                (sc2).protection = protection.copy();
-                (sc2).explicitProtection = explicitProtection;
-                (sc2).aligndecl = aligndecl;
-                (sc2).inlining = inlining;
+                sc2 = (sc.get()).copy();
+                (sc2.get()).stc = stc;
+                (sc2.get()).linkage = linkage;
+                (sc2.get()).cppmangle = cppmangle;
+                (sc2.get()).protection = protection.copy();
+                (sc2.get()).explicitProtection = explicitProtection;
+                (sc2.get()).aligndecl = aligndecl;
+                (sc2.get()).inlining = inlining;
             }
             return sc2;
         }
 
-        public  Scope newScope(Scope sc) {
+        public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             return sc;
         }
 
-        public  void addMember(Scope sc, ScopeDsymbol sds) {
-            DArray<Dsymbol> d = this.include(sc);
+        public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
+            Ptr<DArray<Dsymbol>> d = this.include(sc);
             if (d != null)
             {
-                Scope sc2 = this.newScope(sc);
+                Ptr<Scope> sc2 = this.newScope(sc);
                 Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
                         s.addMember(sc2, sds);
@@ -97,15 +97,15 @@ public class attrib {
                 };
                 foreachDsymbol(d, __lambda3);
                 if ((sc2 != sc))
-                    (sc2).pop();
+                    (sc2.get()).pop();
             }
         }
 
-        public  void setScope(Scope sc) {
-            DArray<Dsymbol> d = this.include(sc);
+        public  void setScope(Ptr<Scope> sc) {
+            Ptr<DArray<Dsymbol>> d = this.include(sc);
             if (d != null)
             {
-                Scope sc2 = this.newScope(sc);
+                Ptr<Scope> sc2 = this.newScope(sc);
                 Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
                         s.setScope(sc2);
@@ -114,15 +114,15 @@ public class attrib {
                 };
                 foreachDsymbol(d, __lambda2);
                 if ((sc2 != sc))
-                    (sc2).pop();
+                    (sc2.get()).pop();
             }
         }
 
-        public  void importAll(Scope sc) {
-            DArray<Dsymbol> d = this.include(sc);
+        public  void importAll(Ptr<Scope> sc) {
+            Ptr<DArray<Dsymbol>> d = this.include(sc);
             if (d != null)
             {
-                Scope sc2 = this.newScope(sc);
+                Ptr<Scope> sc2 = this.newScope(sc);
                 Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
                         s.importAll(sc2);
@@ -131,7 +131,7 @@ public class attrib {
                 };
                 foreachDsymbol(d, __lambda2);
                 if ((sc2 != sc))
-                    (sc2).pop();
+                    (sc2.get()).pop();
             }
         }
 
@@ -153,7 +153,7 @@ public class attrib {
         }
 
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
-            DArray<Dsymbol> d = this.include(null);
+            Ptr<DArray<Dsymbol>> d = this.include(null);
             return Dsymbol.oneMembers(d, ps, ident);
         }
 
@@ -195,7 +195,7 @@ public class attrib {
             foreachDsymbol(this.include(null), __lambda1);
         }
 
-        public  void addLocalClass(DArray<ClassDeclaration> aclasses) {
+        public  void addLocalClass(Ptr<DArray<ClassDeclaration>> aclasses) {
             Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s) {
                     s.addLocalClass(aclasses);
@@ -205,7 +205,7 @@ public class attrib {
             foreachDsymbol(this.include(null), __lambda2);
         }
 
-        public  void addObjcSymbols(DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories) {
+        public  void addObjcSymbols(Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
             objc().addSymbols(this, classes, categories);
         }
 
@@ -225,7 +225,7 @@ public class attrib {
     public static class StorageClassDeclaration extends AttribDeclaration
     {
         public long stc = 0;
-        public  StorageClassDeclaration(long stc, DArray<Dsymbol> decl) {
+        public  StorageClassDeclaration(long stc, Ptr<DArray<Dsymbol>> decl) {
             super(decl);
             this.stc = stc;
         }
@@ -235,8 +235,8 @@ public class attrib {
             return new StorageClassDeclaration(this.stc, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
-        public  Scope newScope(Scope sc) {
-            long scstc = (sc).stc;
+        public  Ptr<Scope> newScope(Ptr<Scope> sc) {
+            long scstc = (sc.get()).stc;
             if ((this.stc & 8913155L) != 0)
                 scstc &= -8913156L;
             if ((this.stc & 1216872705L) != 0)
@@ -248,7 +248,7 @@ public class attrib {
             if ((this.stc & 60129542144L) != 0)
                 scstc &= -60129542145L;
             scstc |= this.stc;
-            return AttribDeclaration.createNewScope(sc, scstc, (sc).linkage, (sc).cppmangle, (sc).protection, (sc).explicitProtection, (sc).aligndecl, (sc).inlining);
+            return AttribDeclaration.createNewScope(sc, scstc, (sc.get()).linkage, (sc.get()).cppmangle, (sc.get()).protection, (sc.get()).explicitProtection, (sc.get()).aligndecl, (sc.get()).inlining);
         }
 
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
@@ -264,11 +264,11 @@ public class attrib {
             return t;
         }
 
-        public  void addMember(Scope sc, ScopeDsymbol sds) {
-            DArray<Dsymbol> d = this.include(sc);
+        public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
+            Ptr<DArray<Dsymbol>> d = this.include(sc);
             if (d != null)
             {
-                Scope sc2 = this.newScope(sc);
+                Ptr<Scope> sc2 = this.newScope(sc);
                 Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
                         {
@@ -290,7 +290,7 @@ public class attrib {
                 };
                 foreachDsymbol(d, __lambda3);
                 if ((sc2 != sc))
-                    (sc2).pop();
+                    (sc2.get()).pop();
             }
         }
 
@@ -328,9 +328,9 @@ public class attrib {
     }
     public static class DeprecatedDeclaration extends StorageClassDeclaration
     {
-        public Expression msg;
-        public BytePtr msgstr;
-        public  DeprecatedDeclaration(Expression msg, DArray<Dsymbol> decl) {
+        public Expression msg = null;
+        public BytePtr msgstr = null;
+        public  DeprecatedDeclaration(Expression msg, Ptr<DArray<Dsymbol>> decl) {
             super(1024L, decl);
             this.msg = msg;
         }
@@ -340,15 +340,15 @@ public class attrib {
             return new DeprecatedDeclaration(this.msg.syntaxCopy(), Dsymbol.arraySyntaxCopy(this.decl));
         }
 
-        public  Scope newScope(Scope sc) {
-            Scope scx = super.newScope(sc);
+        public  Ptr<Scope> newScope(Ptr<Scope> sc) {
+            Ptr<Scope> scx = super.newScope(sc);
             if ((scx == sc))
-                scx = (sc).push();
-            (scx).depdecl = this;
+                scx = (sc.get()).push();
+            (scx.get()).depdecl = this;
             return scx;
         }
 
-        public  void setScope(Scope sc) {
+        public  void setScope(Ptr<Scope> sc) {
             if (this.decl != null)
                 this.setScope(sc);
             this.setScope(sc);
@@ -388,12 +388,12 @@ public class attrib {
     public static class LinkDeclaration extends AttribDeclaration
     {
         public int linkage = 0;
-        public  LinkDeclaration(int linkage, DArray<Dsymbol> decl) {
+        public  LinkDeclaration(int linkage, Ptr<DArray<Dsymbol>> decl) {
             super(decl);
-            this.linkage = (linkage == LINK.system) ? target.systemLinkage() : linkage;
+            this.linkage = (linkage == LINK.system) ? target.value.systemLinkage() : linkage;
         }
 
-        public static LinkDeclaration create(int p, DArray<Dsymbol> decl) {
+        public static LinkDeclaration create(int p, Ptr<DArray<Dsymbol>> decl) {
             return new LinkDeclaration(p, decl);
         }
 
@@ -402,8 +402,8 @@ public class attrib {
             return new LinkDeclaration(this.linkage, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
-        public  Scope newScope(Scope sc) {
-            return AttribDeclaration.createNewScope(sc, (sc).stc, this.linkage, (sc).cppmangle, (sc).protection, (sc).explicitProtection, (sc).aligndecl, (sc).inlining);
+        public  Ptr<Scope> newScope(Ptr<Scope> sc) {
+            return AttribDeclaration.createNewScope(sc, (sc.get()).stc, this.linkage, (sc.get()).cppmangle, (sc.get()).protection, (sc.get()).explicitProtection, (sc.get()).aligndecl, (sc.get()).inlining);
         }
 
         public  BytePtr toChars() {
@@ -445,7 +445,7 @@ public class attrib {
     public static class CPPMangleDeclaration extends AttribDeclaration
     {
         public int cppmangle = 0;
-        public  CPPMangleDeclaration(int cppmangle, DArray<Dsymbol> decl) {
+        public  CPPMangleDeclaration(int cppmangle, Ptr<DArray<Dsymbol>> decl) {
             super(decl);
             this.cppmangle = cppmangle;
         }
@@ -455,8 +455,8 @@ public class attrib {
             return new CPPMangleDeclaration(this.cppmangle, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
-        public  Scope newScope(Scope sc) {
-            return AttribDeclaration.createNewScope(sc, (sc).stc, LINK.cpp, this.cppmangle, (sc).protection, (sc).explicitProtection, (sc).aligndecl, (sc).inlining);
+        public  Ptr<Scope> newScope(Ptr<Scope> sc) {
+            return AttribDeclaration.createNewScope(sc, (sc.get()).stc, LINK.cpp, this.cppmangle, (sc.get()).protection, (sc.get()).explicitProtection, (sc.get()).aligndecl, (sc.get()).inlining);
         }
 
         public  BytePtr toChars() {
@@ -497,18 +497,18 @@ public class attrib {
     }
     public static class CPPNamespaceDeclaration extends AttribDeclaration
     {
-        public Expression exp;
-        public  CPPNamespaceDeclaration(Identifier ident, DArray<Dsymbol> decl) {
+        public Expression exp = null;
+        public  CPPNamespaceDeclaration(Identifier ident, Ptr<DArray<Dsymbol>> decl) {
             super(decl);
             this.ident = ident;
         }
 
-        public  CPPNamespaceDeclaration(Expression exp, DArray<Dsymbol> decl) {
+        public  CPPNamespaceDeclaration(Expression exp, Ptr<DArray<Dsymbol>> decl) {
             super(decl);
             this.exp = exp;
         }
 
-        public  CPPNamespaceDeclaration(Identifier ident, Expression exp, DArray<Dsymbol> decl, CPPNamespaceDeclaration parent) {
+        public  CPPNamespaceDeclaration(Identifier ident, Expression exp, Ptr<DArray<Dsymbol>> decl, CPPNamespaceDeclaration parent) {
             super(decl);
             this.ident = ident;
             this.exp = exp;
@@ -520,10 +520,10 @@ public class attrib {
             return new CPPNamespaceDeclaration(this.ident, this.exp, Dsymbol.arraySyntaxCopy(this.decl), this.namespace);
         }
 
-        public  Scope newScope(Scope sc) {
-            Scope scx = (sc).copy();
-            (scx).linkage = LINK.cpp;
-            (scx).namespace = this;
+        public  Ptr<Scope> newScope(Ptr<Scope> sc) {
+            Ptr<Scope> scx = (sc.get()).copy();
+            (scx.get()).linkage = LINK.cpp;
+            (scx.get()).namespace = this;
             return scx;
         }
 
@@ -570,17 +570,17 @@ public class attrib {
     public static class ProtDeclaration extends AttribDeclaration
     {
         public Prot protection = new Prot();
-        public DArray<Identifier> pkg_identifiers;
-        public  ProtDeclaration(Loc loc, Prot protection, DArray<Dsymbol> decl) {
+        public Ptr<DArray<Identifier>> pkg_identifiers = null;
+        public  ProtDeclaration(Loc loc, Prot protection, Ptr<DArray<Dsymbol>> decl) {
             super(loc, null, decl);
             this.protection = protection.copy();
         }
 
-        public  ProtDeclaration(Loc loc, DArray<Identifier> pkg_identifiers, DArray<Dsymbol> decl) {
+        public  ProtDeclaration(Loc loc, Ptr<DArray<Identifier>> pkg_identifiers, Ptr<DArray<Dsymbol>> decl) {
             super(loc, null, decl);
             this.protection.kind = Prot.Kind.package_;
             this.pkg_identifiers = pkg_identifiers;
-            if ((pkg_identifiers != null) && ((pkg_identifiers).length > 0))
+            if ((pkg_identifiers != null) && ((pkg_identifiers.get()).length > 0))
             {
                 Ref<Dsymbol> tmp = ref(null);
                 dmodule.Package.resolve(pkg_identifiers, ptr(tmp), null);
@@ -596,13 +596,13 @@ public class attrib {
                 return new ProtDeclaration(this.loc, this.protection, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
-        public  Scope newScope(Scope sc) {
+        public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             if (this.pkg_identifiers != null)
                 dsymbolSemantic(this, sc);
-            return AttribDeclaration.createNewScope(sc, (sc).stc, (sc).linkage, (sc).cppmangle, this.protection, 1, (sc).aligndecl, (sc).inlining);
+            return AttribDeclaration.createNewScope(sc, (sc.get()).stc, (sc.get()).linkage, (sc.get()).cppmangle, this.protection, 1, (sc.get()).aligndecl, (sc.get()).inlining);
         }
 
-        public  void addMember(Scope sc, ScopeDsymbol sds) {
+        public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             if (this.pkg_identifiers != null)
             {
                 Ref<Dsymbol> tmp = ref(null);
@@ -610,10 +610,10 @@ public class attrib {
                 this.protection.pkg = tmp.value != null ? tmp.value.isPackage() : null;
                 this.pkg_identifiers = null;
             }
-            if ((this.protection.kind == Prot.Kind.package_) && (this.protection.pkg != null) && ((sc)._module != null))
+            if ((this.protection.kind == Prot.Kind.package_) && (this.protection.pkg != null) && ((sc.get())._module != null))
             {
-                dmodule.Module m = (sc)._module;
-                dmodule.Package pkg = m.parent != null ? m.parent.isPackage() : null;
+                dmodule.Module m = (sc.get())._module;
+                dmodule.Package pkg = m.parent.value != null ? m.parent.value.isPackage() : null;
                 if ((pkg == null) || !this.protection.pkg.isAncestorPackageOf(pkg))
                     this.error(new BytePtr("does not bind to one of ancestor packages of module `%s`"), m.toPrettyChars(true));
             }
@@ -627,10 +627,10 @@ public class attrib {
 
         public  BytePtr toPrettyChars(boolean _param_0) {
             assert((this.protection.kind > Prot.Kind.undefined));
-            OutBuffer buf = new OutBuffer();
+            Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
-                protectionToBuffer(buf, this.protection);
-                return buf.extractChars();
+                protectionToBuffer(ptr(buf), this.protection);
+                return buf.value.extractChars();
             }
             finally {
             }
@@ -671,10 +671,10 @@ public class attrib {
     }
     public static class AlignDeclaration extends AttribDeclaration
     {
-        public Expression ealign;
+        public Expression ealign = null;
         public int UNKNOWN = 0;
         public int salign = 0;
-        public  AlignDeclaration(Loc loc, Expression ealign, DArray<Dsymbol> decl) {
+        public  AlignDeclaration(Loc loc, Expression ealign, Ptr<DArray<Dsymbol>> decl) {
             super(loc, null, decl);
             this.ealign = ealign;
         }
@@ -684,8 +684,8 @@ public class attrib {
             return new AlignDeclaration(this.loc, this.ealign != null ? this.ealign.syntaxCopy() : null, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
-        public  Scope newScope(Scope sc) {
-            return AttribDeclaration.createNewScope(sc, (sc).stc, (sc).linkage, (sc).cppmangle, (sc).protection, (sc).explicitProtection, this, (sc).inlining);
+        public  Ptr<Scope> newScope(Ptr<Scope> sc) {
+            return AttribDeclaration.createNewScope(sc, (sc.get()).stc, (sc.get()).linkage, (sc.get()).cppmangle, (sc.get()).protection, (sc.get()).explicitProtection, this, (sc.get()).inlining);
         }
 
         public  void accept(Visitor v) {
@@ -725,7 +725,7 @@ public class attrib {
         public int anonoffset = 0;
         public int anonstructsize = 0;
         public int anonalignsize = 0;
-        public  AnonDeclaration(Loc loc, boolean isunion, DArray<Dsymbol> decl) {
+        public  AnonDeclaration(Loc loc, boolean isunion, Ptr<DArray<Dsymbol>> decl) {
             super(loc, null, decl);
             this.isunion = isunion;
         }
@@ -735,7 +735,7 @@ public class attrib {
             return new AnonDeclaration(this.loc, this.isunion, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
-        public  void setScope(Scope sc) {
+        public  void setScope(Ptr<Scope> sc) {
             if (this.decl != null)
                 this.setScope(sc);
             this.setScope(sc);
@@ -746,10 +746,10 @@ public class attrib {
             if (this.decl != null)
             {
                 int fieldstart = ad.fields.length;
-                int savestructsize = ad.structsize;
-                int savealignsize = ad.alignsize;
-                ad.structsize = 0;
-                ad.alignsize = 0;
+                int savestructsize = ad.structsize.value;
+                int savealignsize = ad.alignsize.value;
+                ad.structsize.value = 0;
+                ad.alignsize.value = 0;
                 IntRef offset = ref(0);
                 Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
@@ -761,28 +761,28 @@ public class attrib {
                 foreachDsymbol(this.decl, __lambda4);
                 if ((fieldstart == ad.fields.length))
                 {
-                    ad.structsize = savestructsize;
-                    ad.alignsize = savealignsize;
-                    poffset.set(0, ad.structsize);
+                    ad.structsize.value = savestructsize;
+                    ad.alignsize.value = savealignsize;
+                    poffset.set(0, ad.structsize.value);
                     return ;
                 }
-                this.anonstructsize = ad.structsize;
-                this.anonalignsize = ad.alignsize;
-                ad.structsize = savestructsize;
-                ad.alignsize = savealignsize;
+                this.anonstructsize = ad.structsize.value;
+                this.anonalignsize = ad.alignsize.value;
+                ad.structsize.value = savestructsize;
+                ad.alignsize.value = savealignsize;
                 if ((this.anonstructsize == 0))
                 {
                     this.anonstructsize = 1;
                     this.anonalignsize = 1;
                 }
                 assert(this._scope != null);
-                int alignment = (this._scope).alignment();
-                this.anonoffset = AggregateDeclaration.placeField(poffset, this.anonstructsize, this.anonalignsize, alignment, ad.structsize, ad.alignsize, isunion);
+                int alignment = (this._scope.get()).alignment();
+                this.anonoffset = AggregateDeclaration.placeField(poffset, this.anonstructsize, this.anonalignsize, alignment, ptr(ad.structsize.value), ptr(ad.alignsize.value), isunion);
                 {
-                    int __key715 = fieldstart;
-                    int __limit716 = ad.fields.length;
-                    for (; (__key715 < __limit716);__key715 += 1) {
-                        int i = __key715;
+                    int __key713 = fieldstart;
+                    int __limit714 = ad.fields.length;
+                    for (; (__key713 < __limit714);__key713 += 1) {
+                        int i = __key713;
                         VarDeclaration v = ad.fields.get(i);
                         v.offset += this.anonoffset;
                     }
@@ -832,8 +832,8 @@ public class attrib {
     }
     public static class PragmaDeclaration extends AttribDeclaration
     {
-        public DArray<Expression> args;
-        public  PragmaDeclaration(Loc loc, Identifier ident, DArray<Expression> args, DArray<Dsymbol> decl) {
+        public Ptr<DArray<Expression>> args = null;
+        public  PragmaDeclaration(Loc loc, Identifier ident, Ptr<DArray<Expression>> args, Ptr<DArray<Dsymbol>> decl) {
             super(loc, ident, decl);
             this.args = args;
         }
@@ -843,27 +843,27 @@ public class attrib {
             return new PragmaDeclaration(this.loc, this.ident, Expression.arraySyntaxCopy(this.args), Dsymbol.arraySyntaxCopy(this.decl));
         }
 
-        public  Scope newScope(Scope sc) {
+        public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             if ((pequals(this.ident, Id.Pinline)))
             {
                 int inlining = PINLINE.default_;
-                if ((this.args == null) || ((this.args).length == 0))
+                if ((this.args == null) || ((this.args.get()).length == 0))
                     inlining = PINLINE.default_;
-                else if (((this.args).length != 1))
+                else if (((this.args.get()).length != 1))
                 {
-                    this.error(new BytePtr("one boolean expression expected for `pragma(inline)`, not %d"), (this.args).length);
-                    (this.args).setDim(1);
-                    this.args.set(0, new ErrorExp());
+                    this.error(new BytePtr("one boolean expression expected for `pragma(inline)`, not %d"), (this.args.get()).length);
+                    (this.args.get()).setDim(1);
+                    this.args.get().set(0, new ErrorExp());
                 }
                 else
                 {
-                    Expression e = (this.args).get(0);
-                    if (((e.op & 0xFF) != 135) || !e.type.equals(Type.tbool))
+                    Expression e = (this.args.get()).get(0);
+                    if (((e.op & 0xFF) != 135) || !e.type.value.equals(Type.tbool.value))
                     {
                         if (((e.op & 0xFF) != 127))
                         {
                             this.error(new BytePtr("pragma(`inline`, `true` or `false`) expected, not `%s`"), e.toChars());
-                            this.args.set(0, new ErrorExp());
+                            this.args.get().set(0, new ErrorExp());
                         }
                     }
                     else if (e.isBool(true))
@@ -871,7 +871,7 @@ public class attrib {
                     else if (e.isBool(false))
                         inlining = PINLINE.never;
                 }
-                return AttribDeclaration.createNewScope(sc, (sc).stc, (sc).linkage, (sc).cppmangle, (sc).protection, (sc).explicitProtection, (sc).aligndecl, inlining);
+                return AttribDeclaration.createNewScope(sc, (sc.get()).stc, (sc.get()).linkage, (sc.get()).cppmangle, (sc.get()).protection, (sc.get()).explicitProtection, (sc.get()).aligndecl, inlining);
             }
             return sc;
         }
@@ -910,9 +910,9 @@ public class attrib {
     }
     public static class ConditionalDeclaration extends AttribDeclaration
     {
-        public Condition condition;
-        public DArray<Dsymbol> elsedecl;
-        public  ConditionalDeclaration(Condition condition, DArray<Dsymbol> decl, DArray<Dsymbol> elsedecl) {
+        public Condition condition = null;
+        public Ptr<DArray<Dsymbol>> elsedecl = null;
+        public  ConditionalDeclaration(Condition condition, Ptr<DArray<Dsymbol>> decl, Ptr<DArray<Dsymbol>> elsedecl) {
             super(decl);
             this.condition = condition;
             this.elsedecl = elsedecl;
@@ -926,7 +926,7 @@ public class attrib {
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             if ((this.condition.inc != Include.notComputed))
             {
-                DArray<Dsymbol> d = this.condition.include(null) != 0 ? this.decl : this.elsedecl;
+                Ptr<DArray<Dsymbol>> d = this.condition.include(null) != 0 ? this.decl : this.elsedecl;
                 return Dsymbol.oneMembers(d, ps, ident);
             }
             else
@@ -937,7 +937,7 @@ public class attrib {
             }
         }
 
-        public  DArray<Dsymbol> include(Scope sc) {
+        public  Ptr<DArray<Dsymbol>> include(Ptr<Scope> sc) {
             if (this.errors)
                 return null;
             assert(this.condition != null);
@@ -964,7 +964,7 @@ public class attrib {
             }
         }
 
-        public  void setScope(Scope sc) {
+        public  void setScope(Ptr<Scope> sc) {
             Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s) {
                     s.setScope(sc);
@@ -1005,10 +1005,10 @@ public class attrib {
     }
     public static class StaticIfDeclaration extends ConditionalDeclaration
     {
-        public ScopeDsymbol scopesym;
+        public ScopeDsymbol scopesym = null;
         public boolean addisdone = false;
         public boolean onStack = false;
-        public  StaticIfDeclaration(Condition condition, DArray<Dsymbol> decl, DArray<Dsymbol> elsedecl) {
+        public  StaticIfDeclaration(Condition condition, Ptr<DArray<Dsymbol>> decl, Ptr<DArray<Dsymbol>> elsedecl) {
             super(condition, decl, elsedecl);
         }
 
@@ -1017,7 +1017,7 @@ public class attrib {
             return new StaticIfDeclaration(this.condition.syntaxCopy(), Dsymbol.arraySyntaxCopy(this.decl), Dsymbol.arraySyntaxCopy(this.elsedecl));
         }
 
-        public  DArray<Dsymbol> include(Scope sc) {
+        public  Ptr<DArray<Dsymbol>> include(Ptr<Scope> sc) {
             if (this.errors || this.onStack)
                 return null;
             this.onStack = true;
@@ -1026,7 +1026,7 @@ public class attrib {
                 {
                     assert(this.scopesym != null);
                     assert(this._scope != null);
-                    DArray<Dsymbol> d = this.include(this._scope);
+                    Ptr<DArray<Dsymbol>> d = this.include(this._scope);
                     if ((d != null) && !this.addisdone)
                     {
                         Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
@@ -1057,15 +1057,15 @@ public class attrib {
             }
         }
 
-        public  void addMember(Scope sc, ScopeDsymbol sds) {
+        public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             this.scopesym = sds;
         }
 
-        public  void setScope(Scope sc) {
+        public  void setScope(Ptr<Scope> sc) {
             this.setScope(sc);
         }
 
-        public  void importAll(Scope sc) {
+        public  void importAll(Ptr<Scope> sc) {
         }
 
         public  BytePtr kind() {
@@ -1106,12 +1106,12 @@ public class attrib {
     }
     public static class StaticForeachDeclaration extends AttribDeclaration
     {
-        public StaticForeach sfe;
-        public ScopeDsymbol scopesym;
+        public StaticForeach sfe = null;
+        public ScopeDsymbol scopesym = null;
         public boolean onStack = false;
         public boolean cached = false;
-        public DArray<Dsymbol> cache = null;
-        public  StaticForeachDeclaration(StaticForeach sfe, DArray<Dsymbol> decl) {
+        public Ptr<DArray<Dsymbol>> cache = null;
+        public  StaticForeachDeclaration(StaticForeach sfe, Ptr<DArray<Dsymbol>> decl) {
             super(decl);
             this.sfe = sfe;
         }
@@ -1130,7 +1130,7 @@ public class attrib {
             return false;
         }
 
-        public  DArray<Dsymbol> include(Scope sc) {
+        public  Ptr<DArray<Dsymbol>> include(Ptr<Scope> sc) {
             if (this.errors || this.onStack)
                 return null;
             if (this.cached)
@@ -1148,7 +1148,7 @@ public class attrib {
                 {
                     return null;
                 }
-                DArray<Dsymbol> d = makeTupleForeach11(this._scope, this.sfe.aggrfe, this.decl, this.sfe.needExpansion);
+                Ptr<DArray<Dsymbol>> d = makeTupleForeach11(this._scope, this.sfe.aggrfe, this.decl, this.sfe.needExpansion);
                 if (d != null)
                 {
                     Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
@@ -1175,18 +1175,18 @@ public class attrib {
             }
         }
 
-        public  void addMember(Scope sc, ScopeDsymbol sds) {
+        public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             this.scopesym = sds;
         }
 
         public  void addComment(BytePtr comment) {
         }
 
-        public  void setScope(Scope sc) {
+        public  void setScope(Ptr<Scope> sc) {
             this.setScope(sc);
         }
 
-        public  void importAll(Scope sc) {
+        public  void importAll(Ptr<Scope> sc) {
         }
 
         public  BytePtr kind() {
@@ -1228,18 +1228,18 @@ public class attrib {
     public static class ForwardingAttribDeclaration extends AttribDeclaration
     {
         public ForwardingScopeDsymbol sym = null;
-        public  ForwardingAttribDeclaration(DArray<Dsymbol> decl) {
+        public  ForwardingAttribDeclaration(Ptr<DArray<Dsymbol>> decl) {
             super(decl);
             this.sym = new ForwardingScopeDsymbol(null);
             this.sym.symtab = new DsymbolTable();
         }
 
-        public  Scope newScope(Scope sc) {
-            return (sc).push(this.sym);
+        public  Ptr<Scope> newScope(Ptr<Scope> sc) {
+            return (sc.get()).push(this.sym);
         }
 
-        public  void addMember(Scope sc, ScopeDsymbol sds) {
-            this.parent = (this.sym.parent = (this.sym.forward = sds));
+        public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
+            this.parent.value = (this.sym.parent.value = (this.sym.forward = sds));
             super.addMember(sc, this.sym);
             return ;
         }
@@ -1274,10 +1274,10 @@ public class attrib {
     }
     public static class CompileDeclaration extends AttribDeclaration
     {
-        public DArray<Expression> exps;
-        public ScopeDsymbol scopesym;
+        public Ptr<DArray<Expression>> exps = null;
+        public ScopeDsymbol scopesym = null;
         public boolean compiled = false;
-        public  CompileDeclaration(Loc loc, DArray<Expression> exps) {
+        public  CompileDeclaration(Loc loc, Ptr<DArray<Expression>> exps) {
             super(loc, null, null);
             this.exps = exps;
         }
@@ -1286,11 +1286,11 @@ public class attrib {
             return new CompileDeclaration(this.loc, Expression.arraySyntaxCopy(this.exps));
         }
 
-        public  void addMember(Scope sc, ScopeDsymbol sds) {
+        public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             this.scopesym = sds;
         }
 
-        public  void setScope(Scope sc) {
+        public  void setScope(Ptr<Scope> sc) {
             this.setScope(sc);
         }
 
@@ -1334,8 +1334,8 @@ public class attrib {
     }
     public static class UserAttributeDeclaration extends AttribDeclaration
     {
-        public DArray<Expression> atts;
-        public  UserAttributeDeclaration(DArray<Expression> atts, DArray<Dsymbol> decl) {
+        public Ptr<DArray<Expression>> atts = null;
+        public  UserAttributeDeclaration(Ptr<DArray<Expression>> atts, Ptr<DArray<Dsymbol>> decl) {
             super(decl);
             this.atts = atts;
         }
@@ -1345,52 +1345,52 @@ public class attrib {
             return new UserAttributeDeclaration(Expression.arraySyntaxCopy(this.atts), Dsymbol.arraySyntaxCopy(this.decl));
         }
 
-        public  Scope newScope(Scope sc) {
-            Scope sc2 = sc;
-            if ((this.atts != null) && ((this.atts).length != 0))
+        public  Ptr<Scope> newScope(Ptr<Scope> sc) {
+            Ptr<Scope> sc2 = sc;
+            if ((this.atts != null) && ((this.atts.get()).length != 0))
             {
-                sc2 = (sc).copy();
-                (sc2).userAttribDecl = this;
+                sc2 = (sc.get()).copy();
+                (sc2.get()).userAttribDecl = this;
             }
             return sc2;
         }
 
-        public  void setScope(Scope sc) {
+        public  void setScope(Ptr<Scope> sc) {
             if (this.decl != null)
                 this.setScope(sc);
             this.setScope(sc);
             return ;
         }
 
-        public static DArray<Expression> concat(DArray<Expression> udas1, DArray<Expression> udas2) {
-            DArray<Expression> udas = null;
-            if ((udas1 == null) || ((udas1).length == 0))
+        public static Ptr<DArray<Expression>> concat(Ptr<DArray<Expression>> udas1, Ptr<DArray<Expression>> udas2) {
+            Ptr<DArray<Expression>> udas = null;
+            if ((udas1 == null) || ((udas1.get()).length == 0))
                 udas = udas2;
-            else if ((udas2 == null) || ((udas2).length == 0))
+            else if ((udas2 == null) || ((udas2.get()).length == 0))
                 udas = udas1;
             else
             {
                 udas = new DArray<Expression>(2);
-                udas.set(0, new TupleExp(Loc.initial, udas1));
-                udas.set(1, new TupleExp(Loc.initial, udas2));
+                udas.get().set(0, new TupleExp(Loc.initial.value, udas1));
+                udas.get().set(1, new TupleExp(Loc.initial.value, udas2));
             }
             return udas;
         }
 
-        public  DArray<Expression> getAttributes() {
+        public  Ptr<DArray<Expression>> getAttributes() {
             {
-                Scope sc = this._scope;
+                Ptr<Scope> sc = this._scope;
                 if ((sc) != null)
                 {
                     this._scope = null;
                     arrayExpressionSemantic(this.atts, sc, false);
                 }
             }
-            DArray<Expression> exps = new DArray<Expression>();
+            Ptr<DArray<Expression>> exps = new DArray<Expression>();
             if (this.userAttribDecl != null)
-                (exps).push(new TupleExp(Loc.initial, this.userAttribDecl.getAttributes()));
-            if ((this.atts != null) && ((this.atts).length != 0))
-                (exps).push(new TupleExp(Loc.initial, this.atts));
+                (exps.get()).push(new TupleExp(Loc.initial.value, this.userAttribDecl.getAttributes()));
+            if ((this.atts != null) && ((this.atts.get()).length != 0))
+                (exps.get()).push(new TupleExp(Loc.initial.value, this.atts));
             return exps;
         }
 

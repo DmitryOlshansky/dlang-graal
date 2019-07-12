@@ -18,12 +18,12 @@ import static org.dlang.dmd.utf.*;
 import static org.dlang.dmd.utils.*;
 
 public class identifier {
-    static Identifier anonymousanonymous;
+    static Identifier anonymousanonymous = null;
     static int generateIdi = 0;
     private static class Key
     {
         private Loc loc = new Loc();
-        private ByteSlice prefix;
+        private ByteSlice prefix = new ByteSlice();
         public Key(){
             loc = new Loc();
         }
@@ -49,7 +49,7 @@ public class identifier {
     public static class Identifier extends RootObject
     {
         public int value = 0;
-        public ByteSlice name;
+        public ByteSlice name = new ByteSlice();
         public  Identifier(BytePtr name, int length, int value) {
             super();
             this.name = name.slice(0,length).copy();
@@ -90,15 +90,15 @@ public class identifier {
 
         public  BytePtr toHChars2() {
             BytePtr p = null;
-            if ((pequals(this, Id.ctor)))
+            if ((pequals(this, Id.ctor.value)))
                 p = pcopy(new BytePtr("this"));
-            else if ((pequals(this, Id.dtor)))
+            else if ((pequals(this, Id.dtor.value)))
                 p = pcopy(new BytePtr("~this"));
             else if ((pequals(this, Id.unitTest)))
                 p = pcopy(new BytePtr("unittest"));
             else if ((pequals(this, Id.dollar)))
                 p = pcopy(new BytePtr("$"));
-            else if ((pequals(this, Id.withSym)))
+            else if ((pequals(this, Id.withSym.value)))
                 p = pcopy(new BytePtr("with"));
             else if ((pequals(this, Id.result)))
                 p = pcopy(new BytePtr("result"));
@@ -172,12 +172,12 @@ public class identifier {
         }
 
         public static Identifier idPool(ByteSlice s) {
-            StringValue sv = stringtable.update(s);
-            Identifier id = ((Identifier)(sv).ptrvalue);
+            Ptr<StringValue> sv = stringtable.update(s);
+            Identifier id = ((Identifier)(sv.get()).ptrvalue);
             if (id == null)
             {
-                id = new Identifier((sv).asString(), 120);
-                (sv).ptrvalue = pcopy(((Object)id));
+                id = new Identifier((sv.get()).asString(), 120);
+                (sv.get()).ptrvalue = pcopy(((Object)id));
             }
             return id;
         }
@@ -187,10 +187,10 @@ public class identifier {
         }
 
         public static Identifier idPool(ByteSlice s, int value) {
-            StringValue sv = stringtable.insert(s, null);
+            Ptr<StringValue> sv = stringtable.insert(s, null);
             assert(sv != null);
-            Identifier id = new Identifier((sv).asString(), value);
-            (sv).ptrvalue = pcopy(((Object)id));
+            Identifier id = new Identifier((sv.get()).asString(), value);
+            (sv.get()).ptrvalue = pcopy(((Object)id));
             return id;
         }
 
@@ -205,9 +205,9 @@ public class identifier {
             }
             IntRef idx = ref(0);
             for (; (idx.value < str.getLength());){
-                IntRef dc = ref(0x0ffff);
+                int dc = 0x0ffff;
                 BytePtr q = pcopy(utf_decodeChar(toBytePtr(str), str.getLength(), idx, dc));
-                if ((q != null) || !((dc.value >= 128) && isUniAlpha(dc.value) || (isalnum(dc.value) != 0) || (dc.value == 95)))
+                if ((q != null) || !((dc >= 128) && isUniAlpha(dc) || (isalnum(dc) != 0) || (dc == 95)))
                 {
                     return false;
                 }
@@ -220,10 +220,10 @@ public class identifier {
         }
 
         public static Identifier lookup(ByteSlice s) {
-            StringValue sv = stringtable.lookup(s);
+            Ptr<StringValue> sv = stringtable.lookup(s);
             if (sv == null)
                 return null;
-            return ((Identifier)(sv).ptrvalue);
+            return ((Identifier)(sv.get()).ptrvalue);
         }
 
         public static void initTable() {

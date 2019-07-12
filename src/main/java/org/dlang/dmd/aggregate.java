@@ -35,9 +35,10 @@ public class aggregate {
     private static class SearchCtor
     {
         public static int fp(Dsymbol s, Object ctxt) {
-            CtorDeclaration f = s.isCtorDeclaration();
-            if ((f != null) && (f.semanticRun == PASS.init))
-                dsymbolSemantic(f, null);
+            Ref<Dsymbol> s_ref = ref(s);
+            Ref<CtorDeclaration> f = ref(s_ref.value.isCtorDeclaration());
+            if ((f.value != null) && (f.value.semanticRun == PASS.init))
+                dsymbolSemantic(f.value, null);
             return 0;
         }
 
@@ -80,52 +81,52 @@ public class aggregate {
 
     public static abstract class AggregateDeclaration extends ScopeDsymbol
     {
-        public Type type;
+        public Type type = null;
         public long storage_class = 0;
         public Prot protection = new Prot();
-        public int structsize = 0;
-        public int alignsize = 0;
+        public IntRef structsize = ref(0);
+        public IntRef alignsize = ref(0);
         public DArray<VarDeclaration> fields = new DArray<VarDeclaration>();
         public int sizeok = Sizeok.none;
-        public Dsymbol deferred;
+        public Dsymbol deferred = null;
         public boolean isdeprecated = false;
         public int classKind = 0;
-        public Dsymbol enclosing;
-        public VarDeclaration vthis;
-        public VarDeclaration vthis2;
+        public Dsymbol enclosing = null;
+        public VarDeclaration vthis = null;
+        public VarDeclaration vthis2 = null;
         public DArray<FuncDeclaration> invs = new DArray<FuncDeclaration>();
-        public FuncDeclaration inv;
-        public NewDeclaration aggNew;
-        public DeleteDeclaration aggDelete;
-        public Dsymbol ctor;
-        public CtorDeclaration defaultCtor;
-        public Dsymbol aliasthis;
+        public FuncDeclaration inv = null;
+        public NewDeclaration aggNew = null;
+        public DeleteDeclaration aggDelete = null;
+        public Dsymbol ctor = null;
+        public CtorDeclaration defaultCtor = null;
+        public Dsymbol aliasthis = null;
         public boolean noDefaultCtor = false;
         public DArray<DtorDeclaration> dtors = new DArray<DtorDeclaration>();
-        public DtorDeclaration dtor;
-        public DtorDeclaration primaryDtor;
-        public DtorDeclaration tidtor;
-        public FuncDeclaration fieldDtor;
-        public Expression getRTInfo;
+        public DtorDeclaration dtor = null;
+        public DtorDeclaration primaryDtor = null;
+        public DtorDeclaration tidtor = null;
+        public FuncDeclaration fieldDtor = null;
+        public Expression getRTInfo = null;
         public  AggregateDeclaration(Loc loc, Identifier id) {
             super(loc, id);
             this.protection = new Prot(Prot.Kind.public_);
         }
 
-        public  Scope newScope(Scope sc) {
-            Scope sc2 = (sc).push(this);
-            (sc2).stc &= 60129542144L;
-            (sc2).parent = this;
-            (sc2).inunion = this.isUnionDeclaration();
-            (sc2).protection = new Prot(Prot.Kind.public_).copy();
-            (sc2).explicitProtection = 0;
-            (sc2).aligndecl = null;
-            (sc2).userAttribDecl = null;
-            (sc2).namespace = null;
+        public  Ptr<Scope> newScope(Ptr<Scope> sc) {
+            Ptr<Scope> sc2 = (sc.get()).push(this);
+            (sc2.get()).stc &= 60129542144L;
+            (sc2.get()).parent.value = this;
+            (sc2.get()).inunion = this.isUnionDeclaration();
+            (sc2.get()).protection = new Prot(Prot.Kind.public_).copy();
+            (sc2.get()).explicitProtection = 0;
+            (sc2.get()).aligndecl = null;
+            (sc2.get()).userAttribDecl = null;
+            (sc2.get()).namespace = null;
             return sc2;
         }
 
-        public  void setScope(Scope sc) {
+        public  void setScope(Ptr<Scope> sc) {
             if ((this.semanticRun < PASS.semanticdone))
                 this.setScope(sc);
         }
@@ -138,34 +139,36 @@ public class aggregate {
             this.fields.setDim(0);
             Function2<Dsymbol,Object,Integer> func = new Function2<Dsymbol,Object,Integer>(){
                 public Integer invoke(Dsymbol s, Object param) {
-                    VarDeclaration v = s.isVarDeclaration();
-                    if (v == null)
+                    Ref<Dsymbol> s_ref = ref(s);
+                    Ref<Object> param_ref = ref(param);
+                    Ref<VarDeclaration> v = ref(s_ref.value.isVarDeclaration());
+                    if (v.value == null)
                         return 0;
-                    if ((v.storage_class & 8388608L) != 0)
+                    if ((v.value.storage_class & 8388608L) != 0)
                         return 0;
-                    AggregateDeclaration ad = ((AggregateDeclaration)param);
-                    if ((v.semanticRun < PASS.semanticdone))
-                        dsymbolSemantic(v, null);
-                    if ((ad.sizeok != Sizeok.none))
+                    Ref<AggregateDeclaration> ad = ref(((AggregateDeclaration)param_ref.value));
+                    if ((v.value.semanticRun < PASS.semanticdone))
+                        dsymbolSemantic(v.value, null);
+                    if ((ad.value.sizeok != Sizeok.none))
                         return 1;
-                    if (v.aliassym != null)
+                    if (v.value.aliassym != null)
                         return 0;
-                    if ((v.storage_class & 69936087043L) != 0)
+                    if ((v.value.storage_class & 69936087043L) != 0)
                         return 0;
-                    if (!v.isField() || (v.semanticRun < PASS.semanticdone))
+                    if (!v.value.isField() || (v.value.semanticRun < PASS.semanticdone))
                         return 1;
-                    ad.fields.push(v);
-                    if ((v.storage_class & 2097152L) != 0)
+                    ad.value.fields.push(v.value);
+                    if ((v.value.storage_class & 2097152L) != 0)
                         return 0;
-                    Type tv = v.type.baseElemOf();
-                    if (((tv.ty & 0xFF) != ENUMTY.Tstruct))
+                    Ref<Type> tv = ref(v.value.type.baseElemOf());
+                    if (((tv.value.ty & 0xFF) != ENUMTY.Tstruct))
                         return 0;
-                    if ((pequals(ad, ((TypeStruct)tv).sym)))
+                    if ((pequals(ad.value, ((TypeStruct)tv.value).sym)))
                     {
-                        BytePtr psz = pcopy(((v.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) ? new BytePtr("static array of ") : new BytePtr(""));
-                        ad.error(new BytePtr("cannot have field `%s` with %ssame struct type"), v.toChars(), psz);
-                        ad.type = Type.terror;
-                        ad.errors = true;
+                        Ref<BytePtr> psz = ref(pcopy(((v.value.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) ? new BytePtr("static array of ") : new BytePtr("")));
+                        ad.value.error(new BytePtr("cannot have field `%s` with %ssame struct type"), v.value.toChars(), psz.value);
+                        ad.value.type = Type.terror.value;
+                        ad.value.errors = true;
                         return 1;
                     }
                     return 0;
@@ -173,8 +176,8 @@ public class aggregate {
             };
             {
                 int i = 0;
-                for (; (i < (this.members).length);i++){
-                    Dsymbol s = (this.members).get(i);
+                for (; (i < (this.members.get()).length);i++){
+                    Dsymbol s = (this.members.get()).get(i);
                     if (s.apply(func, this) != 0)
                     {
                         if ((this.sizeok != Sizeok.none))
@@ -227,11 +230,11 @@ public class aggregate {
             }
             catch(Dispatch0 __d){}
         /*Lfail:*/
-            if ((!pequals(this.type, Type.terror)))
+            if ((!pequals(this.type, Type.terror.value)))
                 this.error(loc, new BytePtr("no size because of forward reference"));
-            if (global.gag == 0)
+            if (global.value.gag == 0)
             {
-                this.type = Type.terror;
+                this.type = Type.terror.value;
                 this.errors = true;
             }
             return false;
@@ -242,7 +245,7 @@ public class aggregate {
 
         public  long size(Loc loc) {
             boolean ok = this.determineSize(loc);
-            return ok ? (long)this.structsize : -1L;
+            return ok ? (long)this.structsize.value : -1L;
         }
 
         public  boolean checkOverlappedFields() {
@@ -258,10 +261,10 @@ public class aggregate {
             }
             boolean errors = false;
             {
-                int __key703 = 0;
-                int __limit704 = nfields;
-                for (; (__key703 < __limit704);__key703 += 1) {
-                    int i = __key703;
+                int __key701 = 0;
+                int __limit702 = nfields;
+                for (; (__key701 < __limit702);__key701 += 1) {
+                    int i = __key701;
                     VarDeclaration vd = this.fields.get(i);
                     if (vd.errors)
                     {
@@ -272,10 +275,10 @@ public class aggregate {
                     if ((vd._init != null) && (vd._init.isVoidInitializer() != null))
                         vx = null;
                     {
-                        int __key705 = 0;
-                        int __limit706 = nfields;
-                        for (; (__key705 < __limit706);__key705 += 1) {
-                            int j = __key705;
+                        int __key703 = 0;
+                        int __limit704 = nfields;
+                        for (; (__key703 < __limit704);__key703 += 1) {
+                            int j = __key703;
                             if ((i == j))
                                 continue;
                             VarDeclaration v2 = this.fields.get(j);
@@ -308,27 +311,27 @@ public class aggregate {
             return errors;
         }
 
-        public  boolean fill(Loc loc, DArray<Expression> elements, boolean ctorinit) {
+        public  boolean fill(Loc loc, Ptr<DArray<Expression>> elements, boolean ctorinit) {
             assert((this.sizeok == Sizeok.done));
             assert(elements != null);
             int nfields = this.nonHiddenFields();
             boolean errors = false;
-            int dim = (elements).length;
-            (elements).setDim(nfields);
+            int dim = (elements.get()).length;
+            (elements.get()).setDim(nfields);
             {
-                int __key707 = dim;
-                int __limit708 = nfields;
-                for (; (__key707 < __limit708);__key707 += 1) {
-                    int i = __key707;
-                    elements.set(i, null);
+                int __key705 = dim;
+                int __limit706 = nfields;
+                for (; (__key705 < __limit706);__key705 += 1) {
+                    int i = __key705;
+                    elements.get().set(i, null);
                 }
             }
             {
-                int __key709 = 0;
-                int __limit710 = nfields;
-                for (; (__key709 < __limit710);__key709 += 1) {
-                    int i = __key709;
-                    if ((elements).get(i) != null)
+                int __key707 = 0;
+                int __limit708 = nfields;
+                for (; (__key707 < __limit708);__key707 += 1) {
+                    int i = __key707;
+                    if ((elements.get()).get(i) != null)
                         continue;
                     VarDeclaration vd = this.fields.get(i);
                     VarDeclaration vx = vd;
@@ -336,16 +339,16 @@ public class aggregate {
                         vx = null;
                     int fieldi = i;
                     {
-                        int __key711 = 0;
-                        int __limit712 = nfields;
-                        for (; (__key711 < __limit712);__key711 += 1) {
-                            int j = __key711;
+                        int __key709 = 0;
+                        int __limit710 = nfields;
+                        for (; (__key709 < __limit710);__key709 += 1) {
+                            int j = __key709;
                             if ((i == j))
                                 continue;
                             VarDeclaration v2 = this.fields.get(j);
                             if (!vd.isOverlappedWith(v2))
                                 continue;
-                            if ((elements).get(j) != null)
+                            if ((elements.get()).get(j) != null)
                             {
                                 vx = null;
                                 break;
@@ -396,22 +399,22 @@ public class aggregate {
                                     telem = ((TypeSArray)telem.toBasetype()).next;
                                 }
                                 if (((telem.ty & 0xFF) == ENUMTY.Tvoid))
-                                    telem = Type.tuns8.addMod(telem.mod);
+                                    telem = Type.tuns8.value.addMod(telem.mod);
                             }
                             if (telem.needsNested() && ctorinit)
                                 e = defaultInit(telem, loc);
                             else
                                 e = telem.defaultInitLiteral(loc);
                         }
-                        elements.set(fieldi, e);
+                        elements.get().set(fieldi, e);
                     }
                 }
             }
             {
-                Slice<Expression> __r713 = (elements).opSlice().copy();
-                int __key714 = 0;
-                for (; (__key714 < __r713.getLength());__key714 += 1) {
-                    Expression e = __r713.get(__key714);
+                Slice<Expression> __r711 = (elements.get()).opSlice().copy();
+                int __key712 = 0;
+                for (; (__key712 < __r711.getLength());__key712 += 1) {
+                    Expression e = __r711.get(__key712);
                     if ((e != null) && ((e.op & 0xFF) == 127))
                         return false;
                 }
@@ -487,7 +490,7 @@ public class aggregate {
                 if ((fd) != null)
                 {
                     this.enclosing = fd;
-                    t = Type.tvoidptr;
+                    t = Type.tvoidptr.value;
                 }
                 else {
                     AggregateDeclaration ad = s.isAggregateDeclaration();
@@ -500,7 +503,7 @@ public class aggregate {
                         else if (this.isStructDeclaration() != null)
                         {
                             {
-                                TemplateInstance ti = ad.parent.isTemplateInstance();
+                                TemplateInstance ti = ad.parent.value.isTemplateInstance();
                                 if ((ti) != null)
                                 {
                                     this.enclosing = ti.enclosing;
@@ -515,12 +518,12 @@ public class aggregate {
             {
                 assert(t != null);
                 if (((t.ty & 0xFF) == ENUMTY.Tstruct))
-                    t = Type.tvoidptr;
+                    t = Type.tvoidptr.value;
                 assert(this.vthis == null);
                 this.vthis = new ThisDeclaration(this.loc, t);
-                (this.members).push(this.vthis);
+                (this.members.get()).push(this.vthis);
                 this.vthis.storage_class |= 64L;
-                this.vthis.parent = this;
+                this.vthis.parent.value = this;
                 this.vthis.protection = new Prot(Prot.Kind.public_).copy();
                 this.vthis.alignment = t.alignment();
                 this.vthis.semanticRun = PASS.semanticdone;
@@ -548,11 +551,11 @@ public class aggregate {
             if ((s == null) || (s0 == null) || (pequals(s, s0)))
                 return ;
             ClassDeclaration cd = s.isClassDeclaration();
-            Type t = cd != null ? cd.type : Type.tvoidptr;
+            Type t = cd != null ? cd.type : Type.tvoidptr.value;
             this.vthis2 = new ThisDeclaration(this.loc, t);
-            (this.members).push(this.vthis2);
+            (this.members.get()).push(this.vthis2);
             this.vthis2.storage_class |= 64L;
-            this.vthis2.parent = this;
+            this.vthis2.parent.value = this;
             this.vthis2.protection = new Prot(Prot.Kind.public_).copy();
             this.vthis2.alignment = t.alignment();
             this.vthis2.semanticRun = PASS.semanticdone;
@@ -565,7 +568,7 @@ public class aggregate {
         }
 
         public  Dsymbol searchCtor() {
-            Dsymbol s = this.search(Loc.initial, Id.ctor, 8);
+            Dsymbol s = this.search(Loc.initial.value, Id.ctor.value, 8);
             if (s != null)
             {
                 if (!((s.isCtorDeclaration() != null) || (s.isTemplateDeclaration() != null) || (s.isOverloadSet() != null)))
@@ -581,8 +584,8 @@ public class aggregate {
             {
                 {
                     int i = 0;
-                    for (; (i < (this.members).length);i++){
-                        Dsymbol sm = (this.members).get(i);
+                    for (; (i < (this.members.get()).length);i++){
+                        Dsymbol sm = (this.members.get()).get(i);
                         sm.apply(SearchCtor::fp, null);
                     }
                 }
@@ -598,8 +601,8 @@ public class aggregate {
             return this.type;
         }
 
-        public Symbol stag;
-        public Symbol sinit;
+        public Ptr<Symbol> stag = null;
+        public Ptr<Symbol> sinit = null;
         public  AggregateDeclaration isAggregateDeclaration() {
             return this;
         }

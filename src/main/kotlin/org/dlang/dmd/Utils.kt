@@ -57,7 +57,7 @@ object utils {
      */
     @JvmStatic
     fun writeFile(loc: Loc, filename: ByteSlice, data: ByteSlice) {
-        ensurePathToNameExists(Loc.initial, filename);
+        ensurePathToNameExists(Loc.initial.value, filename);
         if (!File.write(filename, data)) {
             error(loc, BytePtr("Error writing file '%*.s'"), filename.length, filename.ptr())
             fatal()

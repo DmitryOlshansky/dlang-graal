@@ -171,6 +171,30 @@ private bool isJavaByte(Type t) {
     return t.ty == Tchar || t.ty == Tint8 || t.ty == Tuns8;
 }
 
+
+string printParent(Dsymbol var, ExprOpts opts)
+{
+    TextBuffer buf = new TextBuffer;
+    AggregateDeclaration[] chain;
+    if (var.isThis) return "";
+    while(var) {
+        auto ds = var.parent.isAggregateDeclaration();
+        if (ds && !opts.aggregates[].canFind!(agg => agg is ds)) 
+            chain ~= ds;
+        else
+            break;
+        var = var.parent;
+    }
+    foreach_reverse (i, p; chain) {
+        if ((p.ident.symbol == "Module" || p.ident.symbol == "Package") && !(p.getModule is opts.currentMod)) {
+            buf.fmt("dmodule.%s.", p.ident.symbol);
+        }
+        else 
+            buf.fmt("%s.", p.ident.symbol);
+    }
+    return buf.data.dup;
+}
+
 ///
 extern (C++) final class toJavaExpressionVisitor : Visitor
 {
@@ -185,29 +209,6 @@ public:
     {
         this.buf = buf;
         this.opts  = opts;
-    }
-
-    string printParent(Dsymbol var)
-    {
-        TextBuffer buf = new TextBuffer;
-        AggregateDeclaration[] chain;
-        if (var.isThis) return "";
-        while(var) {
-            auto ds = var.parent.isAggregateDeclaration();
-            if (ds && !opts.aggregates[].canFind!(agg => agg is ds)) 
-                chain ~= ds;
-            else
-                break;
-            var = var.parent;
-        }
-        foreach_reverse (i, p; chain) {
-            if ((p.ident.symbol == "Module" || p.ident.symbol == "Package") && !(p.getModule is opts.currentMod)) {
-                buf.fmt("dmodule.%s.", p.ident.symbol);
-            }
-            else 
-                buf.fmt("%s.", p.ident.symbol);
-        }
-        return buf.data.dup;
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -237,7 +238,7 @@ public:
                             if (em.value.toInteger == v)
                             {
                                 auto s = symbol(sym.ident);
-                                buf.put(printParent(sym));
+                                buf.put(printParent(sym, opts));
                                 //if (auto agg = sym.parent.isAggregateDeclaration())
                                 //    buf.fmt("%s.", agg.ident.symbol);
                                 buf.fmt("%s.%s", s, em.ident.symbol);
@@ -509,12 +510,8 @@ public:
             buf.fmt("(%s.ptr().plus(%u))", e.var.ident.symbol, e.offset);
         else if (e.var.isTypeInfoDeclaration())
             buf.put(e.var.ident.symbol);
-        else if(e.var.type.ty == Tstruct) {
-            buf.put(printParent(e.var));
-            buf.fmt("%s", e.var.varName(opts));
-        }
         else if(e.var.type.isTypeFunction) {
-            auto parent = printParent(e.var);
+            auto parent = printParent(e.var, opts);
             if (parent.length) {
                 buf.fmt("%s::", parent[0..$-1]);
             }
@@ -523,7 +520,7 @@ public:
             buf.fmt("%s", e.var.varName(opts));
         }
         else {
-            buf.fmt("ptr(%s%s)", printParent(e.var), e.var.varName(opts));
+            buf.fmt("ptr(%s%s)", printParent(e.var, opts), e.var.varName(opts));
         }
     }
 
@@ -542,7 +539,7 @@ public:
             buf.put(")");
         }
         else {
-            buf.put(printParent(e.var));
+            buf.put(printParent(e.var, opts));
             buf.put(e.var.varName(opts));
             if (e.var in opts.refParams)
                 buf.put(".value");
@@ -711,7 +708,9 @@ public:
                     return;
                 }
             }
+            buf.put("ptr(");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
+            buf.put(")");
         }
         else if(e.op == TOK.not) {
             buf.put(e.toJavaBool(opts, precedence[e.op]));
@@ -911,7 +910,7 @@ public:
 
     override void visit(DotVarExp e)
     {
-        buf.put(printParent(e.var));
+        buf.put(printParent(e.var, opts));
         if (!(e.e1.isThisExp && opts.funcs.length > 1)) {
             expToBuffer(e.e1, PREC.primary, buf, opts);
             buf.put('.');
@@ -920,6 +919,8 @@ public:
             buf.put(un.ident.symbol);
         else
             buf.put(e.var.ident.symbol);
+        if (e.var in opts.refParams)
+            buf.put(".value");
     }
 
     override void visit(DotTemplateInstanceExp e)
@@ -1059,7 +1060,7 @@ public:
     override void visit(PtrExp e)
     {
         expToBuffer(e.e1, precedence[e.op], buf, opts);
-        if (e.e1.type.nextOf.ty != Tstruct && e.e1.type.nextOf.ty != Tfunction) 
+        if (e.e1.type.nextOf.ty != Tfunction) 
             buf.put(".get()");
     }
 
@@ -1514,7 +1515,7 @@ private void argsToBuffer(Expressions* expressions, TextBuffer buf, ExprOpts opt
             auto var = el.isVarExp();
             auto n = el.isNullExp();
 
-            auto refParam = fd && fd.parameters && i < fd.parameters.length
+            auto refParam = fd && fd.parameters && i < fd.parameters.length && !(*fd.parameters)[i].type.isConst
                 && ((*fd.parameters)[i].isRef() || (*fd.parameters)[i].isOut());
 
             if (fd && var && var.type.isTypeClass() && fd.parameters && i < fd.parameters.length
@@ -1522,9 +1523,11 @@ private void argsToBuffer(Expressions* expressions, TextBuffer buf, ExprOpts opt
                 tmp.put("(");
                 tmp.put((*fd.parameters)[i].type.toJava(opts));
                 tmp.put(")");
+                tmp.put(printParent(var.var, opts));
                 tmp.put(var.var.varName(opts));
             }
             else if (var && var.var in opts.refParams && refParam) {
+                tmp.put(printParent(var.var, opts));
                 tmp.put(var.var.varName(opts));
             }
             else if(n && n.type.ty == Tarray) {
@@ -1762,8 +1765,6 @@ private void typeToBufferx(Type t, TextBuffer buf, ExprOpts opts, Boxing boxing 
                 buf.put("IntPtr");
             else if (t.ty == Tint32 || t.ty == Tuns32)
                 buf.put("IntPtr");
-            else if (t.ty == Tstruct)
-                typeToBufferx(t, buf, opts, Boxing.yes);
             else {
                 buf.put("Ptr<");
                 typeToBufferx(t, buf, opts, Boxing.yes);

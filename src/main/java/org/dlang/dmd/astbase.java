@@ -30,7 +30,7 @@ public class astbase {
     {
         private long stc = 0;
         private byte tok = 0;
-        private BytePtr id;
+        private BytePtr id = null;
         public SCstring(){
         }
         public SCstring copy(){
@@ -145,7 +145,7 @@ public class astbase {
             public static final long FUNCATTR = 4462573780992L;
         }
 
-        public static long STCStorageClass = 22196369506207L;
+        public static long STCStorageClass = 1148096276348831L;
 
         public static class ENUMTY 
         {
@@ -277,11 +277,11 @@ public class astbase {
         public static class Dsymbol extends ASTNode
         {
             public Loc loc = new Loc();
-            public Identifier ident;
-            public UnitTestDeclaration ddocUnittest;
-            public UserAttributeDeclaration userAttribDecl;
-            public Dsymbol parent;
-            public BytePtr comment;
+            public Identifier ident = null;
+            public UnitTestDeclaration ddocUnittest = null;
+            public UserAttributeDeclaration userAttribDecl = null;
+            public Dsymbol parent = null;
+            public BytePtr comment = null;
             public  Dsymbol() {
                 super();
             }
@@ -427,7 +427,7 @@ public class astbase {
         }
         public static class AliasThis extends Dsymbol
         {
-            public Identifier ident;
+            public Identifier ident = null;
             public  AliasThis(Loc loc, Identifier ident) {
                 super(null);
                 this.loc = loc.copy();
@@ -458,7 +458,7 @@ public class astbase {
             public long storage_class = 0;
             public Prot protection = new Prot();
             public int linkage = 0;
-            public Type type;
+            public Type type = null;
             public  Declaration(Identifier id) {
                 super(id);
                 this.storage_class = 0L;
@@ -481,7 +481,7 @@ public class astbase {
         }
         public static class ScopeDsymbol extends Dsymbol
         {
-            public DArray<Dsymbol> members;
+            public Ptr<DArray<Dsymbol>> members = null;
             public  ScopeDsymbol() {
                 super();
             }
@@ -509,14 +509,14 @@ public class astbase {
         }
         public static class Import extends Dsymbol
         {
-            public DArray<Identifier> packages;
-            public Identifier id;
-            public Identifier aliasId;
+            public Ptr<DArray<Identifier>> packages = null;
+            public Identifier id = null;
+            public Identifier aliasId = null;
             public int isstatic = 0;
             public Prot protection = new Prot();
             public DArray<Identifier> names = new DArray<Identifier>();
             public DArray<Identifier> aliases = new DArray<Identifier>();
-            public  Import(Loc loc, DArray<Identifier> packages, Identifier id, Identifier aliasId, int isstatic) {
+            public  Import(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Identifier aliasId, int isstatic) {
                 super(null);
                 this.loc = loc.copy();
                 this.packages = packages;
@@ -528,9 +528,9 @@ public class astbase {
                 {
                     this.ident = aliasId;
                 }
-                else if ((packages != null) && ((packages).length != 0))
+                else if ((packages != null) && ((packages.get()).length != 0))
                 {
-                    this.ident = (packages).get(0);
+                    this.ident = (packages.get()).get(0);
                 }
                 else
                 {
@@ -574,8 +574,8 @@ public class astbase {
         }
         public static abstract class AttribDeclaration extends Dsymbol
         {
-            public DArray<Dsymbol> decl;
-            public  AttribDeclaration(DArray<Dsymbol> decl) {
+            public Ptr<DArray<Dsymbol>> decl = null;
+            public  AttribDeclaration(Ptr<DArray<Dsymbol>> decl) {
                 super();
                 this.decl = decl;
             }
@@ -595,10 +595,10 @@ public class astbase {
         }
         public static class StaticAssert extends Dsymbol
         {
-            public Expression exp;
-            public Expression msg;
+            public Expression exp = null;
+            public Expression msg = null;
             public  StaticAssert(Loc loc, Expression exp, Expression msg) {
-                super(Id.empty);
+                super(Id.empty.value);
                 this.loc = loc.copy();
                 this.exp = exp;
                 this.msg = msg;
@@ -688,8 +688,8 @@ public class astbase {
         }
         public static class VarDeclaration extends Declaration
         {
-            public Type type;
-            public Initializer _init;
+            public Type type = null;
+            public Initializer _init = null;
             public long storage_class = 0;
             public int ctfeAdrOnStack = 0;
             public int sequenceNumber = 0;
@@ -742,8 +742,8 @@ public class astbase {
         }
         public static class Ensure
         {
-            public Identifier id;
-            public Statement ensure;
+            public Identifier id = null;
+            public Statement ensure = null;
             public Ensure(){
             }
             public Ensure copy(){
@@ -765,15 +765,15 @@ public class astbase {
         }
         public static class FuncDeclaration extends Declaration
         {
-            public Statement fbody;
-            public DArray<Statement> frequires;
-            public DArray<Ensure> fensures;
+            public Statement fbody = null;
+            public Ptr<DArray<Statement>> frequires = null;
+            public Ptr<DArray<Ensure>> fensures = null;
             public Loc endloc = new Loc();
             public long storage_class = 0;
-            public Type type;
+            public Type type = null;
             public boolean inferRetType = false;
-            public ForeachStatement fes;
-            public FuncDeclaration overnext0;
+            public ForeachStatement fes = null;
+            public FuncDeclaration overnext0 = null;
             public  FuncDeclaration(Loc loc, Loc endloc, Identifier id, long storage_class, Type type) {
                 super(id);
                 this.storage_class = storage_class;
@@ -832,7 +832,7 @@ public class astbase {
         }
         public static class AliasDeclaration extends Declaration
         {
-            public Dsymbol aliassym;
+            public Dsymbol aliassym = null;
             public  AliasDeclaration(Loc loc, Identifier id, Dsymbol s) {
                 super(id);
                 this.loc = loc.copy();
@@ -874,8 +874,8 @@ public class astbase {
         }
         public static class TupleDeclaration extends Declaration
         {
-            public DArray<RootObject> objects;
-            public  TupleDeclaration(Loc loc, Identifier id, DArray<RootObject> objects) {
+            public Ptr<DArray<RootObject>> objects = null;
+            public  TupleDeclaration(Loc loc, Identifier id, Ptr<DArray<RootObject>> objects) {
                 super(id);
                 this.loc = loc.copy();
                 this.objects = objects;
@@ -909,7 +909,7 @@ public class astbase {
             public byte tok = 0;
             public  FuncLiteralDeclaration(Loc loc, Loc endloc, Type type, byte tok, ForeachStatement fes, Identifier id) {
                 super(loc, endloc, null, 0L, type);
-                this.ident = id != null ? id : Id.empty;
+                this.ident = id != null ? id : Id.empty.value;
                 this.tok = tok;
                 this.fes = fes;
             }
@@ -995,7 +995,7 @@ public class astbase {
         public static class CtorDeclaration extends FuncDeclaration
         {
             public  CtorDeclaration(Loc loc, Loc endloc, long stc, Type type, boolean isCopyCtor) {
-                super(loc, endloc, Id.ctor, stc, type);
+                super(loc, endloc, Id.ctor.value, stc, type);
             }
 
             // defaulted all parameters starting with #5
@@ -1037,7 +1037,7 @@ public class astbase {
         public static class DtorDeclaration extends FuncDeclaration
         {
             public  DtorDeclaration(Loc loc, Loc endloc) {
-                super(loc, endloc, Id.dtor, 0L, null);
+                super(loc, endloc, Id.dtor.value, 0L, null);
             }
 
             public  DtorDeclaration(Loc loc, Loc endloc, long stc, Identifier id) {
@@ -1115,7 +1115,7 @@ public class astbase {
         }
         public static class UnitTestDeclaration extends FuncDeclaration
         {
-            public BytePtr codedoc;
+            public BytePtr codedoc = null;
             public  UnitTestDeclaration(Loc loc, Loc endloc, long stc, BytePtr codedoc) {
                 super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("__unittest"), loc), stc, null);
                 this.codedoc = pcopy(codedoc);
@@ -1155,9 +1155,9 @@ public class astbase {
         }
         public static class NewDeclaration extends FuncDeclaration
         {
-            public DArray<Parameter> parameters;
+            public Ptr<DArray<Parameter>> parameters = null;
             public int varargs = 0;
-            public  NewDeclaration(Loc loc, Loc endloc, long stc, DArray<Parameter> fparams, int varargs) {
+            public  NewDeclaration(Loc loc, Loc endloc, long stc, Ptr<DArray<Parameter>> fparams, int varargs) {
                 super(loc, endloc, Id.classNew, 1L | stc, null);
                 this.parameters = fparams;
                 this.varargs = varargs;
@@ -1198,8 +1198,8 @@ public class astbase {
         }
         public static class DeleteDeclaration extends FuncDeclaration
         {
-            public DArray<Parameter> parameters;
-            public  DeleteDeclaration(Loc loc, Loc endloc, long stc, DArray<Parameter> fparams) {
+            public Ptr<DArray<Parameter>> parameters = null;
+            public  DeleteDeclaration(Loc loc, Loc endloc, long stc, Ptr<DArray<Parameter>> fparams) {
                 super(loc, endloc, Id.classDelete, 1L | stc, null);
                 this.parameters = fparams;
             }
@@ -1427,8 +1427,8 @@ public class astbase {
         }
         public static class EnumDeclaration extends ScopeDsymbol
         {
-            public Type type;
-            public Type memtype;
+            public Type type = null;
+            public Type memtype = null;
             public Prot protection = new Prot();
             public  EnumDeclaration(Loc loc, Identifier id, Type memtype) {
                 super(id);
@@ -1464,7 +1464,7 @@ public class astbase {
         {
             public Prot protection = new Prot();
             public int sizeok = 0;
-            public Type type;
+            public Type type = null;
             public  AggregateDeclaration(Loc loc, Identifier id) {
                 super(id);
                 this.loc = loc.copy();
@@ -1487,15 +1487,15 @@ public class astbase {
         }
         public static class TemplateDeclaration extends ScopeDsymbol
         {
-            public DArray<TemplateParameter> parameters;
-            public DArray<TemplateParameter> origParameters;
-            public Expression constraint;
+            public Ptr<DArray<TemplateParameter>> parameters = null;
+            public Ptr<DArray<TemplateParameter>> origParameters = null;
+            public Expression constraint = null;
             public boolean literal = false;
             public boolean ismixin = false;
             public boolean isstatic = false;
             public Prot protection = new Prot();
-            public Dsymbol onemember;
-            public  TemplateDeclaration(Loc loc, Identifier id, DArray<TemplateParameter> parameters, Expression constraint, DArray<Dsymbol> decldefs, boolean ismixin, boolean literal) {
+            public Dsymbol onemember = null;
+            public  TemplateDeclaration(Loc loc, Identifier id, Ptr<DArray<TemplateParameter>> parameters, Expression constraint, Ptr<DArray<Dsymbol>> decldefs, boolean ismixin, boolean literal) {
                 super(id);
                 this.loc = loc.copy();
                 this.parameters = parameters;
@@ -1508,7 +1508,7 @@ public class astbase {
                 if ((this.members != null) && (this.ident != null))
                 {
                     Ref<Dsymbol> s = ref(null);
-                    if (Dsymbol.oneMembers(this.members, ptr(s), this.ident) && (s.value != null))
+                    if (Dsymbol.oneMembers(this.members.get(), ptr(s), this.ident) && (s.value != null))
                     {
                         this.onemember = s.value;
                         s.value.parent = this;
@@ -1517,12 +1517,12 @@ public class astbase {
             }
 
             // defaulted all parameters starting with #7
-            public  TemplateDeclaration(Loc loc, Identifier id, DArray<TemplateParameter> parameters, Expression constraint, DArray<Dsymbol> decldefs, boolean ismixin) {
+            public  TemplateDeclaration(Loc loc, Identifier id, Ptr<DArray<TemplateParameter>> parameters, Expression constraint, Ptr<DArray<Dsymbol>> decldefs, boolean ismixin) {
                 this(loc, id, parameters, constraint, decldefs, ismixin, false);
             }
 
             // defaulted all parameters starting with #6
-            public  TemplateDeclaration(Loc loc, Identifier id, DArray<TemplateParameter> parameters, Expression constraint, DArray<Dsymbol> decldefs) {
+            public  TemplateDeclaration(Loc loc, Identifier id, Ptr<DArray<TemplateParameter>> parameters, Expression constraint, Ptr<DArray<Dsymbol>> decldefs) {
                 this(loc, id, parameters, constraint, decldefs, false, false);
             }
 
@@ -1563,20 +1563,20 @@ public class astbase {
         }
         public static class TemplateInstance extends ScopeDsymbol
         {
-            public Identifier name;
-            public DArray<RootObject> tiargs;
-            public Dsymbol tempdecl;
+            public Identifier name = null;
+            public Ptr<DArray<RootObject>> tiargs = null;
+            public Dsymbol tempdecl = null;
             public boolean semantictiargsdone = false;
             public boolean havetempdecl = false;
-            public TemplateInstance inst;
-            public  TemplateInstance(Loc loc, Identifier ident, DArray<RootObject> tiargs) {
+            public TemplateInstance inst = null;
+            public  TemplateInstance(Loc loc, Identifier ident, Ptr<DArray<RootObject>> tiargs) {
                 super(null);
                 this.loc = loc.copy();
                 this.name = ident;
                 this.tiargs = tiargs;
             }
 
-            public  TemplateInstance(Loc loc, TemplateDeclaration td, DArray<RootObject> tiargs) {
+            public  TemplateInstance(Loc loc, TemplateDeclaration td, Ptr<DArray<RootObject>> tiargs) {
                 super(null);
                 this.loc = loc.copy();
                 this.name = td.ident;
@@ -1589,16 +1589,16 @@ public class astbase {
                 return this;
             }
 
-            public  DArray<RootObject> arraySyntaxCopy(DArray<RootObject> objs) {
-                DArray<RootObject> a = null;
+            public  Ptr<DArray<RootObject>> arraySyntaxCopy(Ptr<DArray<RootObject>> objs) {
+                Ptr<DArray<RootObject>> a = null;
                 if (objs != null)
                 {
                     a = new DArray<RootObject>();
-                    (a).setDim((objs).length);
+                    (a.get()).setDim((objs.get()).length);
                     {
                         int i = 0;
-                        for (; (i < (objs).length);i++) {
-                            a.set(i, this.objectSyntaxCopy((objs).get(i)));
+                        for (; (i < (objs.get()).length);i++) {
+                            a.get().set(i, this.objectSyntaxCopy((objs.get()).get(i)));
                         }
                     }
                 }
@@ -1659,8 +1659,8 @@ public class astbase {
         }
         public static class Nspace extends ScopeDsymbol
         {
-            public Expression identExp;
-            public  Nspace(Loc loc, Identifier ident, Expression identExp, DArray<Dsymbol> members) {
+            public Expression identExp = null;
+            public  Nspace(Loc loc, Identifier ident, Expression identExp, Ptr<DArray<Dsymbol>> members) {
                 super(ident);
                 this.loc = loc.copy();
                 this.members = members;
@@ -1689,8 +1689,8 @@ public class astbase {
         }
         public static class CompileDeclaration extends AttribDeclaration
         {
-            public DArray<Expression> exps;
-            public  CompileDeclaration(Loc loc, DArray<Expression> exps) {
+            public Ptr<DArray<Expression>> exps = null;
+            public  CompileDeclaration(Loc loc, Ptr<DArray<Expression>> exps) {
                 super(null);
                 this.loc = loc.copy();
                 this.exps = exps;
@@ -1718,23 +1718,23 @@ public class astbase {
         }
         public static class UserAttributeDeclaration extends AttribDeclaration
         {
-            public DArray<Expression> atts;
-            public  UserAttributeDeclaration(DArray<Expression> atts, DArray<Dsymbol> decl) {
+            public Ptr<DArray<Expression>> atts = null;
+            public  UserAttributeDeclaration(Ptr<DArray<Expression>> atts, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.atts = atts;
             }
 
-            public static DArray<Expression> concat(DArray<Expression> udas1, DArray<Expression> udas2) {
-                DArray<Expression> udas = null;
-                if ((udas1 == null) || ((udas1).length == 0))
+            public static Ptr<DArray<Expression>> concat(Ptr<DArray<Expression>> udas1, Ptr<DArray<Expression>> udas2) {
+                Ptr<DArray<Expression>> udas = null;
+                if ((udas1 == null) || ((udas1.get()).length == 0))
                     udas = udas2;
-                else if ((udas2 == null) || ((udas2).length == 0))
+                else if ((udas2 == null) || ((udas2.get()).length == 0))
                     udas = udas1;
                 else
                 {
                     udas = new DArray<Expression>(2);
-                    udas.set(0, new TupleExp(Loc.initial, udas1));
-                    udas.set(1, new TupleExp(Loc.initial, udas2));
+                    udas.get().set(0, new TupleExp(Loc.initial.value, udas1));
+                    udas.get().set(1, new TupleExp(Loc.initial.value, udas2));
                 }
                 return udas;
             }
@@ -1762,7 +1762,7 @@ public class astbase {
         public static class LinkDeclaration extends AttribDeclaration
         {
             public int linkage = 0;
-            public  LinkDeclaration(int p, DArray<Dsymbol> decl) {
+            public  LinkDeclaration(int p, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.linkage = p;
             }
@@ -1790,7 +1790,7 @@ public class astbase {
         public static class AnonDeclaration extends AttribDeclaration
         {
             public boolean isunion = false;
-            public  AnonDeclaration(Loc loc, boolean isunion, DArray<Dsymbol> decl) {
+            public  AnonDeclaration(Loc loc, boolean isunion, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.loc = loc.copy();
                 this.isunion = isunion;
@@ -1818,8 +1818,8 @@ public class astbase {
         }
         public static class AlignDeclaration extends AttribDeclaration
         {
-            public Expression ealign;
-            public  AlignDeclaration(Loc loc, Expression ealign, DArray<Dsymbol> decl) {
+            public Expression ealign = null;
+            public  AlignDeclaration(Loc loc, Expression ealign, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.loc = loc.copy();
                 this.ealign = ealign;
@@ -1848,7 +1848,7 @@ public class astbase {
         public static class CPPMangleDeclaration extends AttribDeclaration
         {
             public int cppmangle = 0;
-            public  CPPMangleDeclaration(int p, DArray<Dsymbol> decl) {
+            public  CPPMangleDeclaration(int p, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.cppmangle = p;
             }
@@ -1875,13 +1875,13 @@ public class astbase {
         }
         public static class CPPNamespaceDeclaration extends AttribDeclaration
         {
-            public Expression exp;
-            public  CPPNamespaceDeclaration(Identifier ident, DArray<Dsymbol> decl) {
+            public Expression exp = null;
+            public  CPPNamespaceDeclaration(Identifier ident, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.ident = ident;
             }
 
-            public  CPPNamespaceDeclaration(Expression exp, DArray<Dsymbol> decl) {
+            public  CPPNamespaceDeclaration(Expression exp, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.exp = exp;
             }
@@ -1909,14 +1909,14 @@ public class astbase {
         public static class ProtDeclaration extends AttribDeclaration
         {
             public Prot protection = new Prot();
-            public DArray<Identifier> pkg_identifiers;
-            public  ProtDeclaration(Loc loc, Prot p, DArray<Dsymbol> decl) {
+            public Ptr<DArray<Identifier>> pkg_identifiers = null;
+            public  ProtDeclaration(Loc loc, Prot p, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.loc = loc.copy();
                 this.protection = p.copy();
             }
 
-            public  ProtDeclaration(Loc loc, DArray<Identifier> pkg_identifiers, DArray<Dsymbol> decl) {
+            public  ProtDeclaration(Loc loc, Ptr<DArray<Identifier>> pkg_identifiers, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.loc = loc.copy();
                 this.protection.kind = Prot.Kind.package_;
@@ -1947,8 +1947,8 @@ public class astbase {
         }
         public static class PragmaDeclaration extends AttribDeclaration
         {
-            public DArray<Expression> args;
-            public  PragmaDeclaration(Loc loc, Identifier ident, DArray<Expression> args, DArray<Dsymbol> decl) {
+            public Ptr<DArray<Expression>> args = null;
+            public  PragmaDeclaration(Loc loc, Identifier ident, Ptr<DArray<Expression>> args, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.loc = loc.copy();
                 this.ident = ident;
@@ -1978,7 +1978,7 @@ public class astbase {
         public static class StorageClassDeclaration extends AttribDeclaration
         {
             public long stc = 0;
-            public  StorageClassDeclaration(long stc, DArray<Dsymbol> decl) {
+            public  StorageClassDeclaration(long stc, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.stc = stc;
             }
@@ -2005,9 +2005,9 @@ public class astbase {
         }
         public static class ConditionalDeclaration extends AttribDeclaration
         {
-            public Condition condition;
-            public DArray<Dsymbol> elsedecl;
-            public  ConditionalDeclaration(Condition condition, DArray<Dsymbol> decl, DArray<Dsymbol> elsedecl) {
+            public Condition condition = null;
+            public Ptr<DArray<Dsymbol>> elsedecl = null;
+            public  ConditionalDeclaration(Condition condition, Ptr<DArray<Dsymbol>> decl, Ptr<DArray<Dsymbol>> elsedecl) {
                 super(decl);
                 this.condition = condition;
                 this.elsedecl = elsedecl;
@@ -2036,8 +2036,8 @@ public class astbase {
         }
         public static class DeprecatedDeclaration extends StorageClassDeclaration
         {
-            public Expression msg;
-            public  DeprecatedDeclaration(Expression msg, DArray<Dsymbol> decl) {
+            public Expression msg = null;
+            public  DeprecatedDeclaration(Expression msg, Ptr<DArray<Dsymbol>> decl) {
                 super(1024L, decl);
                 this.msg = msg;
             }
@@ -2065,7 +2065,7 @@ public class astbase {
         }
         public static class StaticIfDeclaration extends ConditionalDeclaration
         {
-            public  StaticIfDeclaration(Condition condition, DArray<Dsymbol> decl, DArray<Dsymbol> elsedecl) {
+            public  StaticIfDeclaration(Condition condition, Ptr<DArray<Dsymbol>> decl, Ptr<DArray<Dsymbol>> elsedecl) {
                 super(condition, decl, elsedecl);
             }
 
@@ -2092,8 +2092,8 @@ public class astbase {
         }
         public static class StaticForeachDeclaration extends AttribDeclaration
         {
-            public StaticForeach sfe;
-            public  StaticForeachDeclaration(StaticForeach sfe, DArray<Dsymbol> decl) {
+            public StaticForeach sfe = null;
+            public  StaticForeachDeclaration(StaticForeach sfe, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.sfe = sfe;
             }
@@ -2120,14 +2120,14 @@ public class astbase {
         }
         public static class EnumMember extends VarDeclaration
         {
-            public Expression origValue;
-            public Type origType;
+            public Expression origValue = null;
+            public Type origType = null;
             public  Expression value() {
                 return ((ExpInitializer)this._init).exp;
             }
 
             public  EnumMember(Loc loc, Identifier id, Expression value, Type origType) {
-                super(loc, null, id != null ? id : Id.empty, new ExpInitializer(loc, value), 0L);
+                super(loc, null, id != null ? id : Id.empty.value, new ExpInitializer(loc, value), 0L);
                 this.origValue = value;
                 this.origType = origType;
             }
@@ -2169,13 +2169,13 @@ public class astbase {
         }
         public static class Module extends Package
         {
-            public static AggregateDeclaration moduleinfo;
+            public static AggregateDeclaration moduleinfo = null;
             public FileName srcfile = new FileName();
-            public BytePtr arg;
+            public BytePtr arg = null;
             public  Module(BytePtr filename, Identifier ident, int doDocComment, int doHdrGen) {
                 super(ident);
                 this.arg = pcopy(filename);
-                this.srcfile = new FileName(FileName.defaultExt(toDString(filename), toByteSlice(global.mars_ext)));
+                this.srcfile = new FileName(FileName.defaultExt(toDString(filename), toByteSlice(global.value.mars_ext)));
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -2273,14 +2273,14 @@ public class astbase {
         }
         public static class ClassDeclaration extends AggregateDeclaration
         {
-            public static ClassDeclaration object;
-            public static ClassDeclaration throwable;
-            public static ClassDeclaration exception;
-            public static ClassDeclaration errorException;
-            public static ClassDeclaration cpp_type_info_ptr;
-            public DArray<BaseClass> baseclasses;
+            public static ClassDeclaration object = null;
+            public static ClassDeclaration throwable = null;
+            public static ClassDeclaration exception = null;
+            public static ClassDeclaration errorException = null;
+            public static ClassDeclaration cpp_type_info_ptr = null;
+            public Ptr<DArray<Ptr<BaseClass>>> baseclasses = null;
             public int baseok = 0;
-            public  ClassDeclaration(Loc loc, Identifier id, DArray<BaseClass> baseclasses, DArray<Dsymbol> members, boolean inObject) {
+            public  ClassDeclaration(Loc loc, Identifier id, Ptr<DArray<Ptr<BaseClass>>> baseclasses, Ptr<DArray<Dsymbol>> members, boolean inObject) {
                 if (id == null)
                     id = Identifier.generateId(new BytePtr("__anonclass"));
                 assert(id != null);
@@ -2290,12 +2290,12 @@ public class astbase {
                     this.baseclasses = baseclasses;
                 }
                 else
-                    this.baseclasses = new DArray<BaseClass>();
+                    this.baseclasses = new DArray<Ptr<BaseClass>>();
                 this.members = members;
                 this.type = new TypeClass(this);
                 if (id != null)
                 {
-                    if ((pequals(id, Id.__sizeof)) || (pequals(id, Id.__xalignof)) || (pequals(id, Id._mangleof)))
+                    if ((pequals(id, Id.__sizeof.value)) || (pequals(id, Id.__xalignof.value)) || (pequals(id, Id._mangleof.value)))
                         this.error(new BytePtr("illegal class name"));
                     if (((id.toChars().get(0) & 0xFF) == 84))
                     {
@@ -2400,19 +2400,19 @@ public class astbase {
                             Type.typeinfovector = this;
                         }
                     }
-                    if ((pequals(id, Id.Object)))
+                    if ((pequals(id, Id.Object.value)))
                     {
                         if (!inObject)
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
                         object = this;
                     }
-                    if ((pequals(id, Id.Throwable)))
+                    if ((pequals(id, Id.Throwable.value)))
                     {
                         if (!inObject)
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
                         throwable = this;
                     }
-                    if ((pequals(id, Id.Exception)))
+                    if ((pequals(id, Id.Exception.value)))
                     {
                         if (!inObject)
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
@@ -2464,7 +2464,7 @@ public class astbase {
         }
         public static class InterfaceDeclaration extends ClassDeclaration
         {
-            public  InterfaceDeclaration(Loc loc, Identifier id, DArray<BaseClass> baseclasses) {
+            public  InterfaceDeclaration(Loc loc, Identifier id, Ptr<DArray<Ptr<BaseClass>>> baseclasses) {
                 super(loc, id, baseclasses, null, false);
             }
 
@@ -2494,8 +2494,8 @@ public class astbase {
         }
         public static class TemplateMixin extends TemplateInstance
         {
-            public TypeQualified tqual;
-            public  TemplateMixin(Loc loc, Identifier ident, TypeQualified tqual, DArray<RootObject> tiargs) {
+            public TypeQualified tqual = null;
+            public  TemplateMixin(Loc loc, Identifier ident, TypeQualified tqual, Ptr<DArray<RootObject>> tiargs) {
                 super(loc, tqual.idents.length != 0 ? (Identifier)tqual.idents.get(tqual.idents.length - 1) : ((TypeIdentifier)tqual).ident, tiargs != null ? tiargs : new DArray<RootObject>());
                 this.ident = ident;
                 this.tqual = tqual;
@@ -2529,7 +2529,7 @@ public class astbase {
         }
         public static class ParameterList
         {
-            public DArray<Parameter> parameters;
+            public Ptr<DArray<Parameter>> parameters = null;
             public int varargs = VarArg.none;
             public ParameterList(){
             }
@@ -2539,7 +2539,7 @@ public class astbase {
                 r.varargs = varargs;
                 return r;
             }
-            public ParameterList(DArray<Parameter> parameters, int varargs) {
+            public ParameterList(Ptr<DArray<Parameter>> parameters, int varargs) {
                 this.parameters = parameters;
                 this.varargs = varargs;
             }
@@ -2553,10 +2553,10 @@ public class astbase {
         public static class Parameter extends ASTNode
         {
             public long storageClass = 0;
-            public Type type;
-            public Identifier ident;
-            public Expression defaultArg;
-            public UserAttributeDeclaration userAttribDecl;
+            public Type type = null;
+            public Identifier ident = null;
+            public Expression defaultArg = null;
+            public UserAttributeDeclaration userAttribDecl = null;
             public  Parameter(long storageClass, Type type, Identifier ident, Expression defaultArg, UserAttributeDeclaration userAttribDecl) {
                 super();
                 this.storageClass = storageClass;
@@ -2566,7 +2566,7 @@ public class astbase {
                 this.userAttribDecl = userAttribDecl;
             }
 
-            public static int dim(DArray<Parameter> parameters) {
+            public static int dim(Ptr<DArray<Parameter>> parameters) {
                 IntRef nargs = ref(0);
                 Function2<Integer,Parameter,Integer> dimDg = new Function2<Integer,Parameter,Integer>(){
                     public Integer invoke(Integer n, Parameter p) {
@@ -2578,14 +2578,16 @@ public class astbase {
                 return nargs.value;
             }
 
-            public static Parameter getNth(DArray<Parameter> parameters, int nth, IntPtr pn) {
+            public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth, IntPtr pn) {
                 IntRef nth_ref = ref(nth);
                 Ref<Parameter> param = ref(null);
                 Function2<Integer,Parameter,Integer> getNthParamDg = new Function2<Integer,Parameter,Integer>(){
                     public Integer invoke(Integer n, Parameter p) {
-                        if ((n == nth_ref.value))
+                        IntRef n_ref = ref(n);
+                        Ref<Parameter> p_ref = ref(p);
+                        if ((n_ref.value == nth_ref.value))
                         {
-                            param.value = p;
+                            param.value = p_ref.value;
                             return 1;
                         }
                         return 0;
@@ -2596,22 +2598,22 @@ public class astbase {
             }
 
             // defaulted all parameters starting with #3
-            public static Parameter getNth(DArray<Parameter> parameters, int nth) {
-                getNth(parameters, nth, null);
+            public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth) {
+                return getNth(parameters, nth, null);
             }
 
-            public static int _foreach(DArray<Parameter> parameters, Function2<Integer,Parameter,Integer> dg, IntPtr pn) {
+            public static int _foreach(Ptr<DArray<Parameter>> parameters, Function2<Integer,Parameter,Integer> dg, IntPtr pn) {
                 assert(dg != null);
                 if (parameters == null)
                     return 0;
                 IntRef n = ref(pn != null ? pn.get() : 0);
                 int result = 0;
                 {
-                    int __key126 = 0;
-                    int __limit127 = (parameters).length;
-                    for (; (__key126 < __limit127);__key126 += 1) {
-                        int i = __key126;
-                        Parameter p = (parameters).get(i);
+                    int __key124 = 0;
+                    int __limit125 = (parameters.get()).length;
+                    for (; (__key124 < __limit125);__key124 += 1) {
+                        int i = __key124;
+                        Parameter p = (parameters.get()).get(i);
                         Type t = p.type.toBasetype();
                         if (((t.ty & 0xFF) == ENUMTY.Ttuple))
                         {
@@ -2630,8 +2632,8 @@ public class astbase {
             }
 
             // defaulted all parameters starting with #3
-            public static int _foreach(DArray<Parameter> parameters, Function2<Integer,Parameter,Integer> dg) {
-                _foreach(parameters, dg, null);
+            public static int _foreach(Ptr<DArray<Parameter>> parameters, Function2<Integer,Parameter,Integer> dg) {
+                return _foreach(parameters, dg, null);
             }
 
             public  Parameter syntaxCopy() {
@@ -2642,16 +2644,16 @@ public class astbase {
                 v.visit(this);
             }
 
-            public static DArray<Parameter> arraySyntaxCopy(DArray<Parameter> parameters) {
-                DArray<Parameter> params = null;
+            public static Ptr<DArray<Parameter>> arraySyntaxCopy(Ptr<DArray<Parameter>> parameters) {
+                Ptr<DArray<Parameter>> params = null;
                 if (parameters != null)
                 {
                     params = new DArray<Parameter>();
-                    (params).setDim((parameters).length);
+                    (params.get()).setDim((parameters.get()).length);
                     {
                         int i = 0;
-                        for (; (i < (params).length);i++) {
-                            params.set(i, (parameters).get(i).syntaxCopy());
+                        for (; (i < (params.get()).length);i++) {
+                            params.get().set(i, (parameters.get()).get(i).syntaxCopy());
                         }
                     }
                 }
@@ -2702,8 +2704,8 @@ public class astbase {
         }
         public static class ImportStatement extends Statement
         {
-            public DArray<Dsymbol> imports;
-            public  ImportStatement(Loc loc, DArray<Dsymbol> imports) {
+            public Ptr<DArray<Dsymbol>> imports = null;
+            public  ImportStatement(Loc loc, Ptr<DArray<Dsymbol>> imports) {
                 super(loc);
                 this.imports = imports;
             }
@@ -2724,7 +2726,7 @@ public class astbase {
         }
         public static class ScopeStatement extends Statement
         {
-            public Statement statement;
+            public Statement statement = null;
             public Loc endloc = new Loc();
             public  ScopeStatement(Loc loc, Statement s, Loc endloc) {
                 super(loc);
@@ -2749,7 +2751,7 @@ public class astbase {
         }
         public static class ReturnStatement extends Statement
         {
-            public Expression exp;
+            public Expression exp = null;
             public  ReturnStatement(Loc loc, Expression exp) {
                 super(loc);
                 this.exp = exp;
@@ -2775,8 +2777,8 @@ public class astbase {
         }
         public static class LabelStatement extends Statement
         {
-            public Identifier ident;
-            public Statement statement;
+            public Identifier ident = null;
+            public Statement statement = null;
             public  LabelStatement(Loc loc, Identifier ident, Statement statement) {
                 super(loc);
                 this.ident = ident;
@@ -2800,7 +2802,7 @@ public class astbase {
         }
         public static class StaticAssertStatement extends Statement
         {
-            public StaticAssert sa;
+            public StaticAssert sa = null;
             public  StaticAssertStatement(StaticAssert sa) {
                 super(sa.loc);
                 this.sa = sa;
@@ -2822,8 +2824,8 @@ public class astbase {
         }
         public static class CompileStatement extends Statement
         {
-            public DArray<Expression> exps;
-            public  CompileStatement(Loc loc, DArray<Expression> exps) {
+            public Ptr<DArray<Expression>> exps = null;
+            public  CompileStatement(Loc loc, Ptr<DArray<Expression>> exps) {
                 super(loc);
                 this.exps = exps;
             }
@@ -2844,8 +2846,8 @@ public class astbase {
         }
         public static class WhileStatement extends Statement
         {
-            public Expression condition;
-            public Statement _body;
+            public Expression condition = null;
+            public Statement _body = null;
             public Loc endloc = new Loc();
             public  WhileStatement(Loc loc, Expression c, Statement b, Loc endloc) {
                 super(loc);
@@ -2872,10 +2874,10 @@ public class astbase {
         }
         public static class ForStatement extends Statement
         {
-            public Statement _init;
-            public Expression condition;
-            public Expression increment;
-            public Statement _body;
+            public Statement _init = null;
+            public Expression condition = null;
+            public Expression increment = null;
+            public Statement _body = null;
             public Loc endloc = new Loc();
             public  ForStatement(Loc loc, Statement _init, Expression condition, Expression increment, Statement _body, Loc endloc) {
                 super(loc);
@@ -2906,8 +2908,8 @@ public class astbase {
         }
         public static class DoStatement extends Statement
         {
-            public Statement _body;
-            public Expression condition;
+            public Statement _body = null;
+            public Expression condition = null;
             public Loc endloc = new Loc();
             public  DoStatement(Loc loc, Statement b, Expression c, Loc endloc) {
                 super(loc);
@@ -2935,10 +2937,10 @@ public class astbase {
         public static class ForeachRangeStatement extends Statement
         {
             public byte op = 0;
-            public Parameter prm;
-            public Expression lwr;
-            public Expression upr;
-            public Statement _body;
+            public Parameter prm = null;
+            public Expression lwr = null;
+            public Expression upr = null;
+            public Statement _body = null;
             public Loc endloc = new Loc();
             public  ForeachRangeStatement(Loc loc, byte op, Parameter prm, Expression lwr, Expression upr, Statement _body, Loc endloc) {
                 super(loc);
@@ -2972,11 +2974,11 @@ public class astbase {
         public static class ForeachStatement extends Statement
         {
             public byte op = 0;
-            public DArray<Parameter> parameters;
-            public Expression aggr;
-            public Statement _body;
+            public Ptr<DArray<Parameter>> parameters = null;
+            public Expression aggr = null;
+            public Statement _body = null;
             public Loc endloc = new Loc();
-            public  ForeachStatement(Loc loc, byte op, DArray<Parameter> parameters, Expression aggr, Statement _body, Loc endloc) {
+            public  ForeachStatement(Loc loc, byte op, Ptr<DArray<Parameter>> parameters, Expression aggr, Statement _body, Loc endloc) {
                 super(loc);
                 this.op = op;
                 this.parameters = parameters;
@@ -3005,11 +3007,11 @@ public class astbase {
         }
         public static class IfStatement extends Statement
         {
-            public Parameter prm;
-            public Expression condition;
-            public Statement ifbody;
-            public Statement elsebody;
-            public VarDeclaration match;
+            public Parameter prm = null;
+            public Expression condition = null;
+            public Statement ifbody = null;
+            public Statement elsebody = null;
+            public VarDeclaration match = null;
             public Loc endloc = new Loc();
             public  IfStatement(Loc loc, Parameter prm, Expression condition, Statement ifbody, Statement elsebody, Loc endloc) {
                 super(loc);
@@ -3042,7 +3044,7 @@ public class astbase {
         public static class ScopeGuardStatement extends Statement
         {
             public byte tok = 0;
-            public Statement statement;
+            public Statement statement = null;
             public  ScopeGuardStatement(Loc loc, byte tok, Statement statement) {
                 super(loc);
                 this.tok = tok;
@@ -3066,9 +3068,9 @@ public class astbase {
         }
         public static class ConditionalStatement extends Statement
         {
-            public Condition condition;
-            public Statement ifbody;
-            public Statement elsebody;
+            public Condition condition = null;
+            public Statement ifbody = null;
+            public Statement elsebody = null;
             public  ConditionalStatement(Loc loc, Condition condition, Statement ifbody, Statement elsebody) {
                 super(loc);
                 this.condition = condition;
@@ -3094,7 +3096,7 @@ public class astbase {
         }
         public static class StaticForeachStatement extends Statement
         {
-            public StaticForeach sfe;
+            public StaticForeach sfe = null;
             public  StaticForeachStatement(Loc loc, StaticForeach sfe) {
                 super(loc);
                 this.sfe = sfe;
@@ -3116,10 +3118,10 @@ public class astbase {
         }
         public static class PragmaStatement extends Statement
         {
-            public Identifier ident;
-            public DArray<Expression> args;
-            public Statement _body;
-            public  PragmaStatement(Loc loc, Identifier ident, DArray<Expression> args, Statement _body) {
+            public Identifier ident = null;
+            public Ptr<DArray<Expression>> args = null;
+            public Statement _body = null;
+            public  PragmaStatement(Loc loc, Identifier ident, Ptr<DArray<Expression>> args, Statement _body) {
                 super(loc);
                 this.ident = ident;
                 this.args = args;
@@ -3144,8 +3146,8 @@ public class astbase {
         }
         public static class SwitchStatement extends Statement
         {
-            public Expression condition;
-            public Statement _body;
+            public Expression condition = null;
+            public Statement _body = null;
             public boolean isFinal = false;
             public  SwitchStatement(Loc loc, Expression c, Statement b, boolean isFinal) {
                 super(loc);
@@ -3172,9 +3174,9 @@ public class astbase {
         }
         public static class CaseRangeStatement extends Statement
         {
-            public Expression first;
-            public Expression last;
-            public Statement statement;
+            public Expression first = null;
+            public Expression last = null;
+            public Statement statement = null;
             public  CaseRangeStatement(Loc loc, Expression first, Expression last, Statement s) {
                 super(loc);
                 this.first = first;
@@ -3200,8 +3202,8 @@ public class astbase {
         }
         public static class CaseStatement extends Statement
         {
-            public Expression exp;
-            public Statement statement;
+            public Expression exp = null;
+            public Statement statement = null;
             public  CaseStatement(Loc loc, Expression exp, Statement s) {
                 super(loc);
                 this.exp = exp;
@@ -3225,7 +3227,7 @@ public class astbase {
         }
         public static class DefaultStatement extends Statement
         {
-            public Statement statement;
+            public Statement statement = null;
             public  DefaultStatement(Loc loc, Statement s) {
                 super(loc);
                 this.statement = s;
@@ -3247,7 +3249,7 @@ public class astbase {
         }
         public static class BreakStatement extends Statement
         {
-            public Identifier ident;
+            public Identifier ident = null;
             public  BreakStatement(Loc loc, Identifier ident) {
                 super(loc);
                 this.ident = ident;
@@ -3269,7 +3271,7 @@ public class astbase {
         }
         public static class ContinueStatement extends Statement
         {
-            public Identifier ident;
+            public Identifier ident = null;
             public  ContinueStatement(Loc loc, Identifier ident) {
                 super(loc);
                 this.ident = ident;
@@ -3310,7 +3312,7 @@ public class astbase {
         }
         public static class GotoCaseStatement extends Statement
         {
-            public Expression exp;
+            public Expression exp = null;
             public  GotoCaseStatement(Loc loc, Expression exp) {
                 super(loc);
                 this.exp = exp;
@@ -3332,7 +3334,7 @@ public class astbase {
         }
         public static class GotoStatement extends Statement
         {
-            public Identifier ident;
+            public Identifier ident = null;
             public  GotoStatement(Loc loc, Identifier ident) {
                 super(loc);
                 this.ident = ident;
@@ -3354,8 +3356,8 @@ public class astbase {
         }
         public static class SynchronizedStatement extends Statement
         {
-            public Expression exp;
-            public Statement _body;
+            public Expression exp = null;
+            public Statement _body = null;
             public  SynchronizedStatement(Loc loc, Expression exp, Statement _body) {
                 super(loc);
                 this.exp = exp;
@@ -3379,8 +3381,8 @@ public class astbase {
         }
         public static class WithStatement extends Statement
         {
-            public Expression exp;
-            public Statement _body;
+            public Expression exp = null;
+            public Statement _body = null;
             public Loc endloc = new Loc();
             public  WithStatement(Loc loc, Expression exp, Statement _body, Loc endloc) {
                 super(loc);
@@ -3407,9 +3409,9 @@ public class astbase {
         }
         public static class TryCatchStatement extends Statement
         {
-            public Statement _body;
-            public DArray<Catch> catches;
-            public  TryCatchStatement(Loc loc, Statement _body, DArray<Catch> catches) {
+            public Statement _body = null;
+            public Ptr<DArray<Catch>> catches = null;
+            public  TryCatchStatement(Loc loc, Statement _body, Ptr<DArray<Catch>> catches) {
                 super(loc);
                 this._body = _body;
                 this.catches = catches;
@@ -3432,8 +3434,8 @@ public class astbase {
         }
         public static class TryFinallyStatement extends Statement
         {
-            public Statement _body;
-            public Statement finalbody;
+            public Statement _body = null;
+            public Statement finalbody = null;
             public  TryFinallyStatement(Loc loc, Statement _body, Statement finalbody) {
                 super(loc);
                 this._body = _body;
@@ -3457,7 +3459,7 @@ public class astbase {
         }
         public static class ThrowStatement extends Statement
         {
-            public Expression exp;
+            public Expression exp = null;
             public  ThrowStatement(Loc loc, Expression exp) {
                 super(loc);
                 this.exp = exp;
@@ -3479,8 +3481,8 @@ public class astbase {
         }
         public static class AsmStatement extends Statement
         {
-            public Token tokens;
-            public  AsmStatement(Loc loc, Token tokens) {
+            public Ptr<Token> tokens = null;
+            public  AsmStatement(Loc loc, Ptr<Token> tokens) {
                 super(loc);
                 this.tokens = tokens;
             }
@@ -3501,7 +3503,7 @@ public class astbase {
         }
         public static class InlineAsmStatement extends AsmStatement
         {
-            public  InlineAsmStatement(Loc loc, Token tokens) {
+            public  InlineAsmStatement(Loc loc, Ptr<Token> tokens) {
                 super(loc, tokens);
             }
 
@@ -3521,7 +3523,7 @@ public class astbase {
         }
         public static class GccAsmStatement extends AsmStatement
         {
-            public  GccAsmStatement(Loc loc, Token tokens) {
+            public  GccAsmStatement(Loc loc, Ptr<Token> tokens) {
                 super(loc, tokens);
             }
 
@@ -3541,7 +3543,7 @@ public class astbase {
         }
         public static class ExpStatement extends Statement
         {
-            public Expression exp;
+            public Expression exp = null;
             public  ExpStatement(Loc loc, Expression exp) {
                 super(loc);
                 this.exp = exp;
@@ -3572,8 +3574,8 @@ public class astbase {
         }
         public static class CompoundStatement extends Statement
         {
-            public DArray<Statement> statements;
-            public  CompoundStatement(Loc loc, DArray<Statement> statements) {
+            public Ptr<DArray<Statement>> statements = null;
+            public  CompoundStatement(Loc loc, Ptr<DArray<Statement>> statements) {
                 super(loc);
                 this.statements = statements;
             }
@@ -3581,13 +3583,13 @@ public class astbase {
             public  CompoundStatement(Loc loc, Slice<Statement> sts) {
                 super(loc);
                 this.statements = new DArray<Statement>();
-                (this.statements).reserve(sts.getLength());
+                (this.statements.get()).reserve(sts.getLength());
                 {
-                    Slice<Statement> __r128 = sts.copy();
-                    int __key129 = 0;
-                    for (; (__key129 < __r128.getLength());__key129 += 1) {
-                        Statement s = __r128.get(__key129);
-                        (this.statements).push(s);
+                    Slice<Statement> __r126 = sts.copy();
+                    int __key127 = 0;
+                    for (; (__key127 < __r126.getLength());__key127 += 1) {
+                        Statement s = __r126.get(__key127);
+                        (this.statements.get()).push(s);
                     }
                 }
             }
@@ -3612,7 +3614,7 @@ public class astbase {
         }
         public static class CompoundDeclarationStatement extends CompoundStatement
         {
-            public  CompoundDeclarationStatement(Loc loc, DArray<Statement> statements) {
+            public  CompoundDeclarationStatement(Loc loc, Ptr<DArray<Statement>> statements) {
                 super(loc, statements);
             }
 
@@ -3633,7 +3635,7 @@ public class astbase {
         public static class CompoundAsmStatement extends CompoundStatement
         {
             public long stc = 0;
-            public  CompoundAsmStatement(Loc loc, DArray<Statement> s, long stc) {
+            public  CompoundAsmStatement(Loc loc, Ptr<DArray<Statement>> s, long stc) {
                 super(loc, s);
                 this.stc = stc;
             }
@@ -3656,9 +3658,9 @@ public class astbase {
         public static class Catch extends RootObject
         {
             public Loc loc = new Loc();
-            public Type type;
-            public Identifier ident;
-            public Statement handler;
+            public Type type = null;
+            public Identifier ident = null;
+            public Statement handler = null;
             public  Catch(Loc loc, Type t, Identifier id, Statement handler) {
                 super();
                 this.loc = loc.copy();
@@ -3683,73 +3685,73 @@ public class astbase {
         {
             public byte ty = 0;
             public byte mod = 0;
-            public BytePtr deco;
-            public static Type tvoid;
-            public static Type tint8;
-            public static Type tuns8;
-            public static Type tint16;
-            public static Type tuns16;
-            public static Type tint32;
-            public static Type tuns32;
-            public static Type tint64;
-            public static Type tuns64;
-            public static Type tint128;
-            public static Type tuns128;
-            public static Type tfloat32;
-            public static Type tfloat64;
-            public static Type tfloat80;
-            public static Type timaginary32;
-            public static Type timaginary64;
-            public static Type timaginary80;
-            public static Type tcomplex32;
-            public static Type tcomplex64;
-            public static Type tcomplex80;
-            public static Type tbool;
-            public static Type tchar;
-            public static Type twchar;
-            public static Type tdchar;
+            public BytePtr deco = null;
+            public static Type tvoid = null;
+            public static Type tint8 = null;
+            public static Type tuns8 = null;
+            public static Type tint16 = null;
+            public static Type tuns16 = null;
+            public static Type tint32 = null;
+            public static Type tuns32 = null;
+            public static Type tint64 = null;
+            public static Type tuns64 = null;
+            public static Type tint128 = null;
+            public static Type tuns128 = null;
+            public static Type tfloat32 = null;
+            public static Type tfloat64 = null;
+            public static Type tfloat80 = null;
+            public static Type timaginary32 = null;
+            public static Type timaginary64 = null;
+            public static Type timaginary80 = null;
+            public static Type tcomplex32 = null;
+            public static Type tcomplex64 = null;
+            public static Type tcomplex80 = null;
+            public static Type tbool = null;
+            public static Type tchar = null;
+            public static Type twchar = null;
+            public static Type tdchar = null;
             public static Slice<Type> basic = new Slice<Type>(new Type[44]);
-            public static Type tshiftcnt;
-            public static Type tvoidptr;
-            public static Type tstring;
-            public static Type twstring;
-            public static Type tdstring;
-            public static Type tvalist;
-            public static Type terror;
-            public static Type tnull;
-            public static Type tsize_t;
-            public static Type tptrdiff_t;
-            public static Type thash_t;
-            public static ClassDeclaration dtypeinfo;
-            public static ClassDeclaration typeinfoclass;
-            public static ClassDeclaration typeinfointerface;
-            public static ClassDeclaration typeinfostruct;
-            public static ClassDeclaration typeinfopointer;
-            public static ClassDeclaration typeinfoarray;
-            public static ClassDeclaration typeinfostaticarray;
-            public static ClassDeclaration typeinfoassociativearray;
-            public static ClassDeclaration typeinfovector;
-            public static ClassDeclaration typeinfoenum;
-            public static ClassDeclaration typeinfofunction;
-            public static ClassDeclaration typeinfodelegate;
-            public static ClassDeclaration typeinfotypelist;
-            public static ClassDeclaration typeinfoconst;
-            public static ClassDeclaration typeinfoinvariant;
-            public static ClassDeclaration typeinfoshared;
-            public static ClassDeclaration typeinfowild;
+            public static Type tshiftcnt = null;
+            public static Type tvoidptr = null;
+            public static Type tstring = null;
+            public static Type twstring = null;
+            public static Type tdstring = null;
+            public static Type tvalist = null;
+            public static Type terror = null;
+            public static Type tnull = null;
+            public static Type tsize_t = null;
+            public static Type tptrdiff_t = null;
+            public static Type thash_t = null;
+            public static ClassDeclaration dtypeinfo = null;
+            public static ClassDeclaration typeinfoclass = null;
+            public static ClassDeclaration typeinfointerface = null;
+            public static ClassDeclaration typeinfostruct = null;
+            public static ClassDeclaration typeinfopointer = null;
+            public static ClassDeclaration typeinfoarray = null;
+            public static ClassDeclaration typeinfostaticarray = null;
+            public static ClassDeclaration typeinfoassociativearray = null;
+            public static ClassDeclaration typeinfovector = null;
+            public static ClassDeclaration typeinfoenum = null;
+            public static ClassDeclaration typeinfofunction = null;
+            public static ClassDeclaration typeinfodelegate = null;
+            public static ClassDeclaration typeinfotypelist = null;
+            public static ClassDeclaration typeinfoconst = null;
+            public static ClassDeclaration typeinfoinvariant = null;
+            public static ClassDeclaration typeinfoshared = null;
+            public static ClassDeclaration typeinfowild = null;
             public static StringTable stringtable = new StringTable();
             public static ByteSlice sizeTy = slice(new byte[]{(byte)60, (byte)64, (byte)76, (byte)60, (byte)60, (byte)96, (byte)88, (byte)64, (byte)64, (byte)60, (byte)60, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)64, (byte)56, (byte)88, (byte)88, (byte)60, (byte)68, (byte)84, (byte)56, (byte)60, (byte)64, (byte)64});
-            public Type cto;
-            public Type ito;
-            public Type sto;
-            public Type scto;
-            public Type wto;
-            public Type wcto;
-            public Type swto;
-            public Type swcto;
-            public Type pto;
-            public Type rto;
-            public Type arrayof;
+            public Type cto = null;
+            public Type ito = null;
+            public Type sto = null;
+            public Type scto = null;
+            public Type wto = null;
+            public Type wcto = null;
+            public Type swto = null;
+            public Type swcto = null;
+            public Type pto = null;
+            public Type rto = null;
+            public Type arrayof = null;
             public  Type(byte ty) {
                 super();
                 this.ty = ty;
@@ -3804,7 +3806,7 @@ public class astbase {
                 twstring = twchar.immutableOf().arrayOf();
                 tdstring = tdchar.immutableOf().arrayOf();
                 tvalist = Target.va_listType();
-                boolean isLP64 = global.params.isLP64;
+                boolean isLP64 = global.value.params.isLP64;
                 tsize_t = basic.get(isLP64 ? 20 : 18);
                 tptrdiff_t = basic.get(isLP64 ? 19 : 17);
                 thash_t = tsize_t;
@@ -4337,7 +4339,7 @@ public class astbase {
                 return this;
             }
 
-            public  Dsymbol toDsymbol(Scope sc) {
+            public  Dsymbol toDsymbol(Ptr<Scope> sc) {
                 return null;
             }
 
@@ -4352,7 +4354,7 @@ public class astbase {
         }
         public static class TypeBasic extends Type
         {
-            public BytePtr dstring;
+            public BytePtr dstring = null;
             public int flags = 0;
             public  TypeBasic(byte ty) {
                 super(ty);
@@ -4565,7 +4567,7 @@ public class astbase {
         }
         public static class TypeVector extends Type
         {
-            public Type basetype;
+            public Type basetype = null;
             public  TypeVector(Type baseType) {
                 super((byte)41);
                 this.basetype = this.basetype;
@@ -4604,7 +4606,7 @@ public class astbase {
         }
         public static class TypeEnum extends Type
         {
-            public EnumDeclaration sym;
+            public EnumDeclaration sym = null;
             public  TypeEnum(EnumDeclaration sym) {
                 super((byte)9);
                 this.sym = sym;
@@ -4643,26 +4645,26 @@ public class astbase {
         }
         public static class TypeTuple extends Type
         {
-            public DArray<Parameter> arguments;
-            public  TypeTuple(DArray<Parameter> arguments) {
+            public Ptr<DArray<Parameter>> arguments = null;
+            public  TypeTuple(Ptr<DArray<Parameter>> arguments) {
                 super((byte)37);
                 this.arguments = arguments;
             }
 
-            public  TypeTuple(DArray<Expression> exps, int tag) {
+            public  TypeTuple(Ptr<DArray<Expression>> exps) {
                 super((byte)37);
-                DArray<Parameter> arguments = new DArray<Parameter>();
+                Ptr<DArray<Parameter>> arguments = new DArray<Parameter>();
                 if (exps != null)
                 {
-                    (arguments).setDim((exps).length);
+                    (arguments.get()).setDim((exps.get()).length);
                     {
                         int i = 0;
-                        for (; (i < (exps).length);i++){
-                            Expression e = (exps).get(i);
+                        for (; (i < (exps.get()).length);i++){
+                            Expression e = (exps.get()).get(i);
                             if (((e.type.ty & 0xFF) == ENUMTY.Ttuple))
                                 e.error(new BytePtr("cannot form tuple of tuples"));
                             Parameter arg = new Parameter(0L, e.type, null, null, null);
-                            arguments.set(i, arg);
+                            arguments.get().set(i, arg);
                         }
                     }
                 }
@@ -4670,7 +4672,7 @@ public class astbase {
             }
 
             public  Type syntaxCopy() {
-                DArray<Parameter> args = Parameter.arraySyntaxCopy(this.arguments);
+                Ptr<DArray<Parameter>> args = Parameter.arraySyntaxCopy(this.arguments);
                 Type t = new TypeTuple(args);
                 t.mod = this.mod;
                 return t;
@@ -4705,7 +4707,7 @@ public class astbase {
         }
         public static class TypeClass extends Type
         {
-            public ClassDeclaration sym;
+            public ClassDeclaration sym = null;
             public int att = AliasThisRec.fwdref;
             public  TypeClass(ClassDeclaration sym) {
                 super((byte)7);
@@ -4746,7 +4748,7 @@ public class astbase {
         }
         public static class TypeStruct extends Type
         {
-            public StructDeclaration sym;
+            public StructDeclaration sym = null;
             public int att = AliasThisRec.fwdref;
             public  TypeStruct(StructDeclaration sym) {
                 super((byte)8);
@@ -4834,7 +4836,7 @@ public class astbase {
         }
         public static abstract class TypeNext extends Type implements LinkedNode<Type>
         {
-            public Type next;
+            public Type next = null;
             public  TypeNext(byte ty, Type next) {
                 super(ty);
                 this.next = next;
@@ -4857,8 +4859,8 @@ public class astbase {
         }
         public static class TypeSlice extends TypeNext implements LinkedNode<Type>
         {
-            public Expression lwr;
-            public Expression upr;
+            public Expression lwr = null;
+            public Expression upr = null;
             public  TypeSlice(Type next, Expression lwr, Expression upr) {
                 super((byte)38, next);
                 this.lwr = lwr;
@@ -5010,7 +5012,7 @@ public class astbase {
             public int trust = 0;
             public int purity = PURE.impure;
             public byte iswild = 0;
-            public DArray<Expression> fargs;
+            public Ptr<DArray<Expression>> fargs = null;
             public  TypeFunction(ParameterList pl, Type treturn, int linkage, long stc) {
                 super((byte)5, treturn);
                 assert((VarArg.none <= pl.varargs) && (pl.varargs <= VarArg.typesafe));
@@ -5046,7 +5048,7 @@ public class astbase {
 
             public  Type syntaxCopy() {
                 Type treturn = this.next != null ? this.next.syntaxCopy() : null;
-                DArray<Parameter> params = Parameter.arraySyntaxCopy(this.parameterList.parameters);
+                Ptr<DArray<Parameter>> params = Parameter.arraySyntaxCopy(this.parameterList.parameters);
                 TypeFunction t = new TypeFunction(new ParameterList(params, this.parameterList.varargs), treturn, this.linkage, 0L);
                 t.mod = this.mod;
                 t.isnothrow = this.isnothrow;
@@ -5187,7 +5189,7 @@ public class astbase {
         }
         public static class TypeAArray extends TypeArray implements LinkedNode<Type>
         {
-            public Type index;
+            public Type index = null;
             public Loc loc = new Loc();
             public  TypeAArray(Type t, Type index) {
                 super((byte)2, t);
@@ -5251,7 +5253,7 @@ public class astbase {
         }
         public static class TypeSArray extends TypeArray implements LinkedNode<Type>
         {
-            public Expression dim;
+            public Expression dim = null;
             public  TypeSArray(Type t, Expression dim) {
                 super((byte)1, t);
                 this.dim = dim;
@@ -5380,7 +5382,7 @@ public class astbase {
 
             // defaulted all parameters starting with #2
             public  Expression toExpressionHelper(Expression e) {
-                toExpressionHelper(e, 0);
+                return toExpressionHelper(e, 0);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -5394,7 +5396,7 @@ public class astbase {
         }
         public static class TypeTraits extends Type
         {
-            public TraitsExp exp;
+            public TraitsExp exp = null;
             public Loc loc = new Loc();
             public boolean inAliasDeclaration = false;
             public  TypeTraits(Loc loc, TraitsExp exp) {
@@ -5441,7 +5443,7 @@ public class astbase {
         }
         public static class TypeIdentifier extends TypeQualified
         {
-            public Identifier ident;
+            public Identifier ident = null;
             public  TypeIdentifier(Loc loc, Identifier ident) {
                 super((byte)6, loc);
                 this.ident = ident;
@@ -5530,7 +5532,7 @@ public class astbase {
         }
         public static class TypeTypeof extends TypeQualified
         {
-            public Expression exp;
+            public Expression exp = null;
             public  TypeTypeof(Loc loc, Expression exp) {
                 super((byte)36, loc);
                 this.exp = exp;
@@ -5574,7 +5576,7 @@ public class astbase {
         }
         public static class TypeInstance extends TypeQualified
         {
-            public TemplateInstance tempinst;
+            public TemplateInstance tempinst = null;
             public  TypeInstance(Loc loc, TemplateInstance tempinst) {
                 super((byte)35, loc);
                 this.tempinst = tempinst;
@@ -5625,7 +5627,7 @@ public class astbase {
             public byte op = 0;
             public byte size = 0;
             public byte parens = 0;
-            public Type type;
+            public Type type = null;
             public Loc loc = new Loc();
             public  Expression(Loc loc, byte op, int size) {
                 super();
@@ -5660,7 +5662,7 @@ public class astbase {
         }
         public static class DeclarationExp extends Expression
         {
-            public Dsymbol declaration;
+            public Dsymbol declaration = null;
             public  DeclarationExp(Loc loc, Dsymbol declaration) {
                 super(loc, TOK.declaration, 28);
                 this.declaration = declaration;
@@ -5780,11 +5782,11 @@ public class astbase {
         }
         public static class NewAnonClassExp extends Expression
         {
-            public Expression thisexp;
-            public DArray<Expression> newargs;
-            public ClassDeclaration cd;
-            public DArray<Expression> arguments;
-            public  NewAnonClassExp(Loc loc, Expression thisexp, DArray<Expression> newargs, ClassDeclaration cd, DArray<Expression> arguments) {
+            public Expression thisexp = null;
+            public Ptr<DArray<Expression>> newargs = null;
+            public ClassDeclaration cd = null;
+            public Ptr<DArray<Expression>> arguments = null;
+            public  NewAnonClassExp(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, ClassDeclaration cd, Ptr<DArray<Expression>> arguments) {
                 super(loc, TOK.newAnonymousClass, 40);
                 this.thisexp = thisexp;
                 this.newargs = newargs;
@@ -5815,13 +5817,13 @@ public class astbase {
         }
         public static class IsExp extends Expression
         {
-            public Type targ;
-            public Identifier id;
-            public Type tspec;
-            public DArray<TemplateParameter> parameters;
+            public Type targ = null;
+            public Identifier id = null;
+            public Type tspec = null;
+            public Ptr<DArray<TemplateParameter>> parameters = null;
             public byte tok = 0;
             public byte tok2 = 0;
-            public  IsExp(Loc loc, Type targ, Identifier id, byte tok, Type tspec, byte tok2, DArray<TemplateParameter> parameters) {
+            public  IsExp(Loc loc, Type targ, Identifier id, byte tok, Type tspec, byte tok2, Ptr<DArray<TemplateParameter>> parameters) {
                 super(loc, TOK.is_, 42);
                 this.targ = targ;
                 this.id = id;
@@ -5856,7 +5858,7 @@ public class astbase {
         }
         public static class RealExp extends Expression
         {
-            public double value;
+            public double value = ;
             public  RealExp(Loc loc, double value, Type type) {
                 super(loc, TOK.float64, 40);
                 this.value = value;
@@ -5912,7 +5914,7 @@ public class astbase {
         }
         public static class TypeidExp extends Expression
         {
-            public RootObject obj;
+            public RootObject obj = null;
             public  TypeidExp(Loc loc, RootObject o) {
                 super(loc, TOK.typeid_, 28);
                 this.obj = o;
@@ -5938,9 +5940,9 @@ public class astbase {
         }
         public static class TraitsExp extends Expression
         {
-            public Identifier ident;
-            public DArray<RootObject> args;
-            public  TraitsExp(Loc loc, Identifier ident, DArray<RootObject> args) {
+            public Identifier ident = null;
+            public Ptr<DArray<RootObject>> args = null;
+            public  TraitsExp(Loc loc, Identifier ident, Ptr<DArray<RootObject>> args) {
                 super(loc, TOK.traits, 32);
                 this.ident = ident;
                 this.args = args;
@@ -5967,9 +5969,9 @@ public class astbase {
         }
         public static class StringExp extends Expression
         {
-            public BytePtr string;
-            public CharPtr wstring;
-            public IntPtr dstring;
+            public BytePtr string = null;
+            public CharPtr wstring = null;
+            public IntPtr dstring = null;
             public int len = 0;
             public byte sz = (byte)1;
             public byte postfix = (byte)0;
@@ -6026,7 +6028,7 @@ public class astbase {
 
             // defaulted all parameters starting with #3
             public  void writeTo(Object dest, boolean zero) {
-                writeTo(dest, zero, 0);
+                return writeTo(dest, zero, 0);
             }
 
             public  ByteSlice toStringz() {
@@ -6061,11 +6063,11 @@ public class astbase {
         }
         public static class NewExp extends Expression
         {
-            public Expression thisexp;
-            public DArray<Expression> newargs;
-            public Type newtype;
-            public DArray<Expression> arguments;
-            public  NewExp(Loc loc, Expression thisexp, DArray<Expression> newargs, Type newtype, DArray<Expression> arguments) {
+            public Expression thisexp = null;
+            public Ptr<DArray<Expression>> newargs = null;
+            public Type newtype = null;
+            public Ptr<DArray<Expression>> arguments = null;
+            public  NewExp(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, Type newtype, Ptr<DArray<Expression>> arguments) {
                 super(loc, TOK.new_, 40);
                 this.thisexp = thisexp;
                 this.newargs = newargs;
@@ -6096,11 +6098,11 @@ public class astbase {
         }
         public static class AssocArrayLiteralExp extends Expression
         {
-            public DArray<Expression> keys;
-            public DArray<Expression> values;
-            public  AssocArrayLiteralExp(Loc loc, DArray<Expression> keys, DArray<Expression> values) {
+            public Ptr<DArray<Expression>> keys = null;
+            public Ptr<DArray<Expression>> values = null;
+            public  AssocArrayLiteralExp(Loc loc, Ptr<DArray<Expression>> keys, Ptr<DArray<Expression>> values) {
                 super(loc, TOK.assocArrayLiteral, 32);
-                assert(((keys).length == (values).length));
+                assert(((keys.get()).length == (values.get()).length));
                 this.keys = keys;
                 this.values = values;
             }
@@ -6126,9 +6128,9 @@ public class astbase {
         }
         public static class ArrayLiteralExp extends Expression
         {
-            public Expression basis;
-            public DArray<Expression> elements;
-            public  ArrayLiteralExp(Loc loc, DArray<Expression> elements) {
+            public Expression basis = null;
+            public Ptr<DArray<Expression>> elements = null;
+            public  ArrayLiteralExp(Loc loc, Ptr<DArray<Expression>> elements) {
                 super(loc, TOK.arrayLiteral, 32);
                 this.elements = elements;
             }
@@ -6136,10 +6138,10 @@ public class astbase {
             public  ArrayLiteralExp(Loc loc, Expression e) {
                 super(loc, TOK.arrayLiteral, 32);
                 this.elements = new DArray<Expression>();
-                (this.elements).push(e);
+                (this.elements.get()).push(e);
             }
 
-            public  ArrayLiteralExp(Loc loc, Expression basis, DArray<Expression> elements) {
+            public  ArrayLiteralExp(Loc loc, Expression basis, Ptr<DArray<Expression>> elements) {
                 super(loc, TOK.arrayLiteral, 32);
                 this.basis = basis;
                 this.elements = elements;
@@ -6166,8 +6168,8 @@ public class astbase {
         }
         public static class FuncExp extends Expression
         {
-            public FuncLiteralDeclaration fd;
-            public TemplateDeclaration td;
+            public FuncLiteralDeclaration fd = null;
+            public TemplateDeclaration td = null;
             public byte tok = 0;
             public  FuncExp(Loc loc, Dsymbol s) {
                 super(loc, TOK.function_, 33);
@@ -6176,8 +6178,8 @@ public class astbase {
                 if (this.td != null)
                 {
                     assert(this.td.literal);
-                    assert((this.td.members != null) && ((this.td.members).length == 1));
-                    this.fd = (this.td.members).get(0).isFuncLiteralDeclaration();
+                    assert((this.td.members != null) && ((this.td.members.get()).length == 1));
+                    this.fd = (this.td.members.get()).get(0).isFuncLiteralDeclaration();
                 }
                 this.tok = this.fd.tok;
                 assert(this.fd.fbody != null);
@@ -6205,8 +6207,8 @@ public class astbase {
         }
         public static class IntervalExp extends Expression
         {
-            public Expression lwr;
-            public Expression upr;
+            public Expression lwr = null;
+            public Expression upr = null;
             public  IntervalExp(Loc loc, Expression lwr, Expression upr) {
                 super(loc, TOK.interval, 32);
                 this.lwr = lwr;
@@ -6258,7 +6260,7 @@ public class astbase {
         }
         public static class ScopeExp extends Expression
         {
-            public ScopeDsymbol sds;
+            public ScopeDsymbol sds = null;
             public  ScopeExp(Loc loc, ScopeDsymbol sds) {
                 super(loc, TOK.scope_, 28);
                 this.sds = sds;
@@ -6285,7 +6287,7 @@ public class astbase {
         }
         public static class IdentifierExp extends Expression
         {
-            public Identifier ident;
+            public Identifier ident = null;
             public  IdentifierExp(Loc loc, Identifier ident) {
                 super(loc, TOK.identifier, 28);
                 this.ident = ident;
@@ -6311,7 +6313,7 @@ public class astbase {
         }
         public static class UnaExp extends Expression
         {
-            public Expression e1;
+            public Expression e1 = null;
             public  UnaExp(Loc loc, byte op, int size, Expression e1) {
                 super(loc, op, size);
                 this.e1 = e1;
@@ -6363,8 +6365,8 @@ public class astbase {
         }
         public static abstract class BinExp extends Expression
         {
-            public Expression e1;
-            public Expression e2;
+            public Expression e1 = null;
+            public Expression e2 = null;
             public  BinExp(Loc loc, byte op, int size, Expression e1, Expression e2) {
                 super(loc, op, size);
                 this.e1 = e1;
@@ -6382,7 +6384,7 @@ public class astbase {
         }
         public static class DsymbolExp extends Expression
         {
-            public Dsymbol s;
+            public Dsymbol s = null;
             public boolean hasOverloads = false;
             public  DsymbolExp(Loc loc, Dsymbol s, boolean hasOverloads) {
                 super(loc, TOK.dSymbol, 29);
@@ -6416,8 +6418,8 @@ public class astbase {
         }
         public static class TemplateExp extends Expression
         {
-            public TemplateDeclaration td;
-            public FuncDeclaration fd;
+            public TemplateDeclaration td = null;
+            public FuncDeclaration fd = null;
             public  TemplateExp(Loc loc, TemplateDeclaration td, FuncDeclaration fd) {
                 super(loc, TOK.template_, 32);
                 this.td = td;
@@ -6450,7 +6452,7 @@ public class astbase {
         }
         public static class SymbolExp extends Expression
         {
-            public Declaration var;
+            public Declaration var = null;
             public boolean hasOverloads = false;
             public  SymbolExp(Loc loc, byte op, int size, Declaration var, boolean hasOverloads) {
                 super(loc, op, size);
@@ -6511,15 +6513,15 @@ public class astbase {
         }
         public static class TupleExp extends Expression
         {
-            public Expression e0;
-            public DArray<Expression> exps;
-            public  TupleExp(Loc loc, Expression e0, DArray<Expression> exps) {
+            public Expression e0 = null;
+            public Ptr<DArray<Expression>> exps = null;
+            public  TupleExp(Loc loc, Expression e0, Ptr<DArray<Expression>> exps) {
                 super(loc, TOK.tuple, 32);
                 this.e0 = e0;
                 this.exps = exps;
             }
 
-            public  TupleExp(Loc loc, DArray<Expression> exps) {
+            public  TupleExp(Loc loc, Ptr<DArray<Expression>> exps) {
                 super(loc, TOK.tuple, 32);
                 this.exps = exps;
             }
@@ -6527,29 +6529,29 @@ public class astbase {
             public  TupleExp(Loc loc, TupleDeclaration tup) {
                 super(loc, TOK.tuple, 32);
                 this.exps = new DArray<Expression>();
-                (this.exps).reserve((tup.objects).length);
+                (this.exps.get()).reserve((tup.objects.get()).length);
                 {
                     int i = 0;
-                    for (; (i < (tup.objects).length);i++){
-                        RootObject o = (tup.objects).get(i);
+                    for (; (i < (tup.objects.get()).length);i++){
+                        RootObject o = (tup.objects.get()).get(i);
                         {
                             Dsymbol s = this.getDsymbol(o);
                             if ((s) != null)
                             {
                                 Expression e = new DsymbolExp(loc, s, true);
-                                (this.exps).push(e);
+                                (this.exps.get()).push(e);
                             }
                             else if ((o.dyncast() == DYNCAST.expression))
                             {
                                 Expression e = ((Expression)o).copy();
                                 e.loc = loc.copy();
-                                (this.exps).push(e);
+                                (this.exps.get()).push(e);
                             }
                             else if ((o.dyncast() == DYNCAST.type))
                             {
                                 Type t = (Type)o;
                                 Expression e = new TypeExp(loc, t);
-                                (this.exps).push(e);
+                                (this.exps.get()).push(e);
                             }
                             else
                             {
@@ -6888,7 +6890,7 @@ public class astbase {
         }
         public static class CastExp extends UnaExp
         {
-            public Type to;
+            public Type to = null;
             public byte mod = (byte)255;
             public  CastExp(Loc loc, Expression e, Type t) {
                 super(loc, TOK.cast_, 33, e);
@@ -6922,8 +6924,8 @@ public class astbase {
         }
         public static class CallExp extends UnaExp
         {
-            public DArray<Expression> arguments;
-            public  CallExp(Loc loc, Expression e, DArray<Expression> exps) {
+            public Ptr<DArray<Expression>> arguments = null;
+            public  CallExp(Loc loc, Expression e, Ptr<DArray<Expression>> exps) {
                 super(loc, TOK.call, 32, e);
                 this.arguments = exps;
             }
@@ -6934,21 +6936,21 @@ public class astbase {
 
             public  CallExp(Loc loc, Expression e, Expression earg1) {
                 super(loc, TOK.call, 32, e);
-                DArray<Expression> arguments = new DArray<Expression>();
+                Ptr<DArray<Expression>> arguments = new DArray<Expression>();
                 if (earg1 != null)
                 {
-                    (arguments).setDim(1);
-                    arguments.set(0, earg1);
+                    (arguments.get()).setDim(1);
+                    arguments.get().set(0, earg1);
                 }
                 this.arguments = arguments;
             }
 
             public  CallExp(Loc loc, Expression e, Expression earg1, Expression earg2) {
                 super(loc, TOK.call, 32, e);
-                DArray<Expression> arguments = new DArray<Expression>();
-                (arguments).setDim(2);
-                arguments.set(0, earg1);
-                arguments.set(1, earg2);
+                Ptr<DArray<Expression>> arguments = new DArray<Expression>();
+                (arguments.get()).setDim(2);
+                arguments.get().set(0, earg1);
+                arguments.get().set(1, earg2);
                 this.arguments = arguments;
             }
 
@@ -6973,7 +6975,7 @@ public class astbase {
         }
         public static class DotIdExp extends UnaExp
         {
-            public Identifier ident;
+            public Identifier ident = null;
             public  DotIdExp(Loc loc, Expression e, Identifier ident) {
                 super(loc, TOK.dotIdentifier, 32, e);
                 this.ident = ident;
@@ -7000,7 +7002,7 @@ public class astbase {
         }
         public static class AssertExp extends UnaExp
         {
-            public Expression msg;
+            public Expression msg = null;
             public  AssertExp(Loc loc, Expression e, Expression msg) {
                 super(loc, TOK.assert_, 32, e);
                 this.msg = msg;
@@ -7032,8 +7034,8 @@ public class astbase {
         }
         public static class CompileExp extends Expression
         {
-            public DArray<Expression> exps;
-            public  CompileExp(Loc loc, DArray<Expression> exps) {
+            public Ptr<DArray<Expression>> exps = null;
+            public  CompileExp(Loc loc, Ptr<DArray<Expression>> exps) {
                 super(loc, TOK.mixin_, 28);
                 this.exps = exps;
             }
@@ -7082,8 +7084,8 @@ public class astbase {
         }
         public static class DotTemplateInstanceExp extends UnaExp
         {
-            public TemplateInstance ti;
-            public  DotTemplateInstanceExp(Loc loc, Expression e, Identifier name, DArray<RootObject> tiargs) {
+            public TemplateInstance ti = null;
+            public  DotTemplateInstanceExp(Loc loc, Expression e, Identifier name, Ptr<DArray<RootObject>> tiargs) {
                 super(loc, TOK.dotTemplateInstance, 32, e);
                 this.ti = new TemplateInstance(loc, name, tiargs);
             }
@@ -7114,12 +7116,12 @@ public class astbase {
         }
         public static class ArrayExp extends UnaExp
         {
-            public DArray<Expression> arguments;
+            public Ptr<DArray<Expression>> arguments = null;
             public  ArrayExp(Loc loc, Expression e1, Expression index) {
                 super(loc, TOK.array, 32, e1);
                 this.arguments = new DArray<Expression>();
                 if (index != null)
-                    (this.arguments).push(index);
+                    (this.arguments.get()).push(index);
             }
 
             // defaulted all parameters starting with #3
@@ -7127,7 +7129,7 @@ public class astbase {
                 this(loc, e1, null);
             }
 
-            public  ArrayExp(Loc loc, Expression e1, DArray<Expression> args) {
+            public  ArrayExp(Loc loc, Expression e1, Ptr<DArray<Expression>> args) {
                 super(loc, TOK.array, 32, e1);
                 this.arguments = args;
             }
@@ -7784,7 +7786,7 @@ public class astbase {
         }
         public static class CondExp extends BinExp
         {
-            public Expression econd;
+            public Expression econd = null;
             public  CondExp(Loc loc, Expression econd, Expression e1, Expression e2) {
                 super(loc, TOK.question, 36, e1, e2);
                 this.econd = econd;
@@ -8188,7 +8190,7 @@ public class astbase {
         public static class TemplateParameter extends ASTNode
         {
             public Loc loc = new Loc();
-            public Identifier ident;
+            public Identifier ident = null;
             public  TemplateParameter(Loc loc, Identifier ident) {
                 super();
                 this.loc = loc.copy();
@@ -8215,9 +8217,9 @@ public class astbase {
         }
         public static class TemplateAliasParameter extends TemplateParameter
         {
-            public Type specType;
-            public RootObject specAlias;
-            public RootObject defaultAlias;
+            public Type specType = null;
+            public RootObject specAlias = null;
+            public RootObject defaultAlias = null;
             public  TemplateAliasParameter(Loc loc, Identifier ident, Type specType, RootObject specAlias, RootObject defaultAlias) {
                 super(loc, ident);
                 this.ident = ident;
@@ -8245,8 +8247,8 @@ public class astbase {
         }
         public static class TemplateTypeParameter extends TemplateParameter
         {
-            public Type specType;
-            public Type defaultType;
+            public Type specType = null;
+            public Type defaultType = null;
             public  TemplateTypeParameter(Loc loc, Identifier ident, Type specType, Type defaultType) {
                 super(loc, ident);
                 this.ident = ident;
@@ -8293,9 +8295,9 @@ public class astbase {
         }
         public static class TemplateValueParameter extends TemplateParameter
         {
-            public Type valType;
-            public Expression specValue;
-            public Expression defaultValue;
+            public Type valType = null;
+            public Expression specValue = null;
+            public Expression defaultValue = null;
             public  TemplateValueParameter(Loc loc, Identifier ident, Type valType, Expression specValue, Expression defaultValue) {
                 super(loc, ident);
                 this.ident = ident;
@@ -8363,8 +8365,8 @@ public class astbase {
         public static class StaticForeach extends RootObject
         {
             public Loc loc = new Loc();
-            public ForeachStatement aggrfe;
-            public ForeachRangeStatement rangefe;
+            public ForeachStatement aggrfe = null;
+            public ForeachRangeStatement rangefe = null;
             public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
                 {
                     {
@@ -8390,7 +8392,7 @@ public class astbase {
         }
         public static class StaticIfCondition extends Condition
         {
-            public Expression exp;
+            public Expression exp = null;
             public  StaticIfCondition(Loc loc, Expression exp) {
                 super(loc);
                 this.exp = exp;
@@ -8413,10 +8415,10 @@ public class astbase {
         public static class DVCondition extends Condition
         {
             public int level = 0;
-            public Identifier ident;
-            public Module mod;
+            public Identifier ident = null;
+            public Module mod = null;
             public  DVCondition(Module mod, int level, Identifier ident) {
-                super(Loc.initial);
+                super(Loc.initial.value);
                 this.mod = mod;
                 this.ident = ident;
             }
@@ -8507,7 +8509,7 @@ public class astbase {
 
             // defaulted all parameters starting with #1
             public  Expression toExpression() {
-                toExpression(null);
+                return toExpression(null);
             }
 
             public  ExpInitializer isExpInitializer() {
@@ -8530,7 +8532,7 @@ public class astbase {
         }
         public static class ExpInitializer extends Initializer
         {
-            public Expression exp;
+            public Expression exp = null;
             public  ExpInitializer(Loc loc, Expression exp) {
                 super(loc, InitKind.exp);
                 this.exp = exp;
@@ -8585,7 +8587,7 @@ public class astbase {
             public DArray<Expression> index = new DArray<Expression>();
             public DArray<Initializer> value = new DArray<Initializer>();
             public int dim = 0;
-            public Type type;
+            public Type type = null;
             public  ArrayInitializer(Loc loc) {
                 super(loc, InitKind.array);
             }
@@ -8659,7 +8661,7 @@ public class astbase {
         }
         public static class BaseClass
         {
-            public Type type;
+            public Type type = null;
             public BaseClass(){
             }
             public BaseClass copy(){
@@ -8679,11 +8681,11 @@ public class astbase {
         public static class ModuleDeclaration
         {
             public Loc loc = new Loc();
-            public Identifier id;
-            public DArray<Identifier> packages;
+            public Identifier id = null;
+            public Ptr<DArray<Identifier>> packages = null;
             public boolean isdeprecated = false;
-            public Expression msg;
-            public  ModuleDeclaration(Loc loc, DArray<Identifier> packages, Identifier id, Expression msg, boolean isdeprecated) {
+            public Expression msg = null;
+            public  ModuleDeclaration(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Expression msg, boolean isdeprecated) {
                 this.loc = loc.copy();
                 this.packages = packages;
                 this.id = id;
@@ -8694,12 +8696,12 @@ public class astbase {
             public  BytePtr toChars() {
                 OutBuffer buf = new OutBuffer();
                 try {
-                    if ((this.packages != null) && ((this.packages).length != 0))
+                    if ((this.packages != null) && ((this.packages.get()).length != 0))
                     {
                         {
                             int i = 0;
-                            for (; (i < (this.packages).length);i++){
-                                Identifier pid = (this.packages).get(i);
+                            for (; (i < (this.packages.get()).length);i++){
+                                Identifier pid = (this.packages.get()).get(i);
                                 buf.writestring(pid.asString());
                                 buf.writeByte(46);
                             }
@@ -8748,7 +8750,7 @@ public class astbase {
             }
 
             public int kind = 0;
-            public Package pkg;
+            public Package pkg = null;
             public Prot(){
             }
             public Prot copy(){
@@ -8826,7 +8828,7 @@ public class astbase {
             }
         }
 
-        public static boolean stcToBuffer(OutBuffer buf, long stc) {
+        public static boolean stcToBuffer(Ptr<OutBuffer> buf, long stc) {
             Ref<Long> stc_ref = ref(stc);
             boolean result = false;
             if (((stc_ref.value & 17592186568704L) == 17592186568704L))
@@ -8838,8 +8840,8 @@ public class astbase {
                 if (!result)
                     result = true;
                 else
-                    (buf).writeByte(32);
-                (buf).writestring(p);
+                    (buf.get()).writeByte(32);
+                (buf.get()).writestring(p);
             }
             return result;
         }
@@ -8853,7 +8855,7 @@ public class astbase {
                 int i = 0;
                 for (; astbase.stcToCharstable.get(i).stc != 0;i++){
                     long tbl = astbase.stcToCharstable.get(i).stc;
-                    assert((tbl & 22196369506207L) != 0);
+                    assert((tbl & 1148096276348831L) != 0);
                     if ((stc.value & tbl) != 0)
                     {
                         stc.value &= ~tbl;
@@ -8897,15 +8899,15 @@ public class astbase {
         {
             public static int ptrsize = 0;
             public static Type va_listType() {
-                if (global.params.isWindows)
+                if (global.value.params.isWindows)
                 {
                     return Type.tchar.pointerTo();
                 }
-                else if (global.params.isLinux || global.params.isFreeBSD || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris || global.params.isOSX)
+                else if (global.value.params.isLinux || global.value.params.isFreeBSD || global.value.params.isOpenBSD || global.value.params.isDragonFlyBSD || global.value.params.isSolaris || global.value.params.isOSX)
                 {
-                    if (global.params.is64bit)
+                    if (global.value.params.is64bit)
                     {
-                        return (new TypeIdentifier(Loc.initial, Identifier.idPool(new ByteSlice("__va_list_tag")))).pointerTo();
+                        return (new TypeIdentifier(Loc.initial.value, Identifier.idPool(new ByteSlice("__va_list_tag")))).pointerTo();
                     }
                     else
                     {

@@ -16,10 +16,10 @@ public class complex {
 
     public static class complex_t
     {
-        public double re;
-        public double im;
+        public double re = ;
+        public double im = ;
         public  complex_t(double re) {
-            this(re, CTFloat.zero);
+            this(re, CTFloat.zero.value);
         }
 
         public  complex_t(double re, double im) {
