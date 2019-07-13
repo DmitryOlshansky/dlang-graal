@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -19,7 +15,7 @@ public class complex {
         public double re = 0.0;
         public double im = 0.0;
         public  complex_t(double re) {
-            this(re, CTFloat.zero.value);
+            this(re, CTFloat.zero);
         }
 
         public  complex_t(double re, double im) {

@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -27,14 +23,14 @@ public class staticassert {
         public Expression exp = null;
         public Expression msg = null;
         public  StaticAssert(Loc loc, Expression exp, Expression msg) {
-            super(loc, Id.empty.value);
+            super(loc, Id.empty);
             this.exp = exp;
             this.msg = msg;
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            return new StaticAssert(this.loc.value, this.exp.syntaxCopy(), this.msg != null ? this.msg.syntaxCopy() : null);
+            return new StaticAssert(this.loc, this.exp.syntaxCopy(), this.msg != null ? this.msg.syntaxCopy() : null);
         }
 
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {

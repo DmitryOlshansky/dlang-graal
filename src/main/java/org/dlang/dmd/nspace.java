@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -29,18 +25,18 @@ public class nspace {
         public Expression identExp = null;
         public  Nspace(Loc loc, Identifier ident, Expression identExp, Ptr<DArray<Dsymbol>> members) {
             super(loc, ident);
-            this.members.value = members;
+            this.members = members;
             this.identExp = identExp;
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            Nspace ns = new Nspace(this.loc.value, this.ident.value, this.identExp, null);
+            Nspace ns = new Nspace(this.loc, this.ident, this.identExp, null);
             return this.syntaxCopy(ns);
         }
 
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             this.addMember(sc, sds);
-            if (this.members.value != null)
+            if (this.members != null)
             {
                 if (this.symtab == null)
                 {
@@ -48,8 +44,8 @@ public class nspace {
                 }
                 {
                     Ptr<Scope> sce = sc;
-                    for (; 1 != 0;sce = (sce.get()).enclosing.value){
-                        ScopeDsymbol sds2 = (sce.get()).scopesym.value;
+                    for (; 1 != 0;sce = (sce.get()).enclosing){
+                        ScopeDsymbol sds2 = (sce.get()).scopesym;
                         if (sds2 != null)
                         {
                             sds2.importScope(this, new Prot(Prot.Kind.public_));
@@ -59,7 +55,7 @@ public class nspace {
                 }
                 assert(sc != null);
                 sc = (sc.get()).push(this);
-                (sc.get()).linkage.value = LINK.cpp;
+                (sc.get()).linkage = LINK.cpp;
                 (sc.get()).parent.value = this;
                 Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
@@ -67,18 +63,18 @@ public class nspace {
                         return null;
                     }
                 };
-                foreachDsymbol(this.members.value, __lambda3);
+                foreachDsymbol(this.members, __lambda3);
                 (sc.get()).pop();
             }
         }
 
         public  void setScope(Ptr<Scope> sc) {
             this.setScope(sc);
-            if (this.members.value != null)
+            if (this.members != null)
             {
                 assert(sc != null);
                 sc = (sc.get()).push(this);
-                (sc.get()).linkage.value = LINK.cpp;
+                (sc.get()).linkage = LINK.cpp;
                 (sc.get()).parent.value = this;
                 Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
@@ -86,7 +82,7 @@ public class nspace {
                         return null;
                     }
                 };
-                foreachDsymbol(this.members.value, __lambda2);
+                foreachDsymbol(this.members, __lambda2);
                 (sc.get()).pop();
             }
         }
@@ -96,11 +92,11 @@ public class nspace {
         }
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
-            if ((this._scope.value != null) && (this.symtab == null))
+            if ((this._scope != null) && (this.symtab == null))
             {
-                dsymbolSemantic(this, this._scope.value);
+                dsymbolSemantic(this, this._scope);
             }
-            if ((this.members.value == null) || (this.symtab == null))
+            if ((this.members == null) || (this.symtab == null))
             {
                 this.error(new BytePtr("is forward referenced when looking for `%s`"), ident.toChars());
                 return null;
@@ -119,7 +115,7 @@ public class nspace {
                     return (((s != null) && (s.apply(fp, param) != 0)) ? 1 : 0);
                 }
             };
-            return foreachDsymbol(this.members.value, __lambda3);
+            return foreachDsymbol(this.members, __lambda3);
         }
 
         public  boolean hasPointers() {
@@ -128,11 +124,11 @@ public class nspace {
                     return (s.hasPointers() ? 1 : 0);
                 }
             };
-            return foreachDsymbol(this.members.value, __lambda1) != 0;
+            return foreachDsymbol(this.members, __lambda1) != 0;
         }
 
         public  void setFieldOffset(AggregateDeclaration ad, IntPtr poffset, boolean isunion) {
-            if (this._scope.value != null)
+            if (this._scope != null)
             {
                 dsymbolSemantic(this, null);
             }
@@ -142,7 +138,7 @@ public class nspace {
                     return null;
                 }
             };
-            foreachDsymbol(this.members.value, __lambda4);
+            foreachDsymbol(this.members, __lambda4);
         }
 
         public  BytePtr kind() {

@@ -1,36 +1,25 @@
 package org.dlang.dmd;
 
-import kotlin.jvm.functions.*;
-
 import org.dlang.dmd.root.*;
 
-import static org.dlang.dmd.root.filename.*;
-
-import static org.dlang.dmd.root.File.*;
-
+import static org.dlang.dmd.builtin.builtinDeinitialize;
+import static org.dlang.dmd.builtin.builtin_init;
+import static org.dlang.dmd.dsymbolsem.dsymbolSemantic;
+import static org.dlang.dmd.errors.DiagnosticReporter;
+import static org.dlang.dmd.errors.StderrDiagnosticReporter;
+import static org.dlang.dmd.expression.Expression;
+import static org.dlang.dmd.filecache.FileCache;
+import static org.dlang.dmd.globals.CHECKENABLE;
+import static org.dlang.dmd.globals.global;
+import static org.dlang.dmd.id.Id;
+import static org.dlang.dmd.mars.addDefaultVersionIdentifiers;
+import static org.dlang.dmd.mars.setTarget;
+import static org.dlang.dmd.mtype.Type;
+import static org.dlang.dmd.objc.Objc;
 import static org.dlang.dmd.root.ShimsKt.*;
-import static org.dlang.dmd.root.SliceKt.*;
-import static org.dlang.dmd.root.DArrayKt.*;
-import static org.dlang.dmd.arraytypes.*;
-import static org.dlang.dmd.astcodegen.*;
-import static org.dlang.dmd.builtin.*;
-import static org.dlang.dmd.cond.*;
-import static org.dlang.dmd.dinifile.*;
-import static org.dlang.dmd.dmodule.*;
-import static org.dlang.dmd.dsymbolsem.*;
-import static org.dlang.dmd.errors.*;
-import static org.dlang.dmd.expression.*;
-import static org.dlang.dmd.filecache.*;
-import static org.dlang.dmd.globals.*;
-import static org.dlang.dmd.hdrgen.*;
-import static org.dlang.dmd.id.*;
-import static org.dlang.dmd.identifier.*;
-import static org.dlang.dmd.mars.*;
-import static org.dlang.dmd.mtype.*;
-import static org.dlang.dmd.objc.*;
-import static org.dlang.dmd.semantic2.*;
-import static org.dlang.dmd.semantic3.*;
-import static org.dlang.dmd.target.*;
+import static org.dlang.dmd.semantic2.semantic2;
+import static org.dlang.dmd.semantic3.semantic3;
+import static org.dlang.dmd.target.target;
 
 public class frontend {
 
@@ -118,15 +107,15 @@ public class frontend {
     }
     public static void initDMD(Slice<ByteSlice> versionIdentifiers, ContractChecks contractChecks) {
         global._init();
-        {
-            (__withSym.get()).useIn = contractChecks.precondition;
-            (__withSym.get()).useInvariants = contractChecks.invariant_;
-            (__withSym.get()).useOut = contractChecks.postcondition;
-            (__withSym.get()).useArrayBounds = contractChecks.arrayBounds;
-            (__withSym.get()).useAssert = contractChecks.assert_;
-            (__withSym.get()).useSwitchError = contractChecks.switchError;
-        }
-        each(versionIdentifiers);
+        global.params.useIn = contractChecks.precondition;
+        global.params.useInvariants = contractChecks.invariant_;
+        global.params.useOut = contractChecks.postcondition;
+        global.params.useArrayBounds = contractChecks.arrayBounds;
+        global.params.useAssert = contractChecks.assert_;
+        global.params.useSwitchError = contractChecks.switchError;
+        DArray arr  = new DArray<ByteSlice>();
+        arr.pushSlice(versionIdentifiers);
+        global.versionids = refPtr(arr);
         setTarget(global.params);
         addDefaultVersionIdentifiers(global.params);
         Type._init();
@@ -142,12 +131,12 @@ public class frontend {
 
     // defaulted all parameters starting with #2
     public static void initDMD(Slice<ByteSlice> versionIdentifiers) {
-        return initDMD(versionIdentifiers, new ContractChecks(ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled));
+        initDMD(versionIdentifiers, new ContractChecks(ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled));
     }
 
     // defaulted all parameters starting with #1
     public static void initDMD() {
-        return initDMD(slice(new ByteSlice[]{}), new ContractChecks(ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled));
+        initDMD(slice(new ByteSlice[]{}), new ContractChecks(ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled, ContractChecking.enabled));
     }
 
     public static void deinitializeDMD() {
@@ -177,54 +166,6 @@ public class frontend {
         (global.filePath.get()).push(toStringz(path));
     }
 
-    public static ByteSlice findDMDConfig(ByteSlice dmdFilePath) {
-        ByteSlice configFile = new ByteSlice("dmd.conf");
-        return idup(findConfFile(dmdFilePath, new ByteSlice("dmd.conf")));
-    }
-
-    public static ByteSlice findLDCConfig(ByteSlice ldcFilePath) {
-        ByteSlice execDir = dirName(ldcFilePath).copy();
-        ByteSlice ldcConfig = new ByteSlice("ldc2.conf").copy();
-        FilterResultnothingSlice<ByteSlice> ldcConfigs = filter(slice(new ByteSlice[]{buildPath(slice(new ByteSlice[]{getcwd(), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{execDir, toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{dirName(execDir), new ByteSlice("etc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{new ByteSlice("~/.ldc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{execDir, new ByteSlice("etc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{execDir, new ByteSlice("etc"), new ByteSlice("ldc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{new ByteSlice("/etc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{new ByteSlice("/etc/ldc"), toByteSlice(ldcConfig)}))})).copy();
-        if (ldcConfigs.empty())
-        {
-            return new ByteSlice();
-        }
-        return ldcConfigs.front();
-    }
-
-    public static ByteSlice determineDefaultCompiler() {
-        Slice<ByteSlice> compilers = slice(new ByteSlice[]{new ByteSlice("dmd"), new ByteSlice("gdc"), new ByteSlice("gdmd"), new ByteSlice("ldc2"), new ByteSlice("ldmd2")}).copy();
-        if (opBinaryRight(new ByteSlice("DMD")))
-        {
-            compilers = (concat(slice(new ByteSlice[]{environment.get(new ByteSlice("DMD"), new ByteSlice())}), compilers)).copy();
-        }
-        Result paths = splitter(environment.get(new ByteSlice("PATH"), new ByteSlice("")), new ByteSlice(":")).copy();
-        FilterResultnothingResult res = filter(joiner(map.invoke(compilers))).copy();
-        return !res.empty() ? res.front() : new ByteSlice();
-    }
-
-    public static MapResultnothingUniqResultnothingSortedRangeSlice<ByteSlice>nothing parseImportPathsFromConfig(ByteSlice iniFile, ByteSlice execDir) {
-        return map(uniq(sort(array(joiner(map.invoke(new File(iniFile, new ByteSlice("r")).byLineCopy(Flag.no, (byte)10)))))));
-    }
-
-    public static MapResultnothingUniqResultnothingSortedRangeSlice<ByteSlice>nothing findImportPaths() {
-        ByteSlice execFilePath = determineDefaultCompiler().copy();
-        assertMsg((execFilePath != new ByteSlice()), new ByteSlice("No D compiler found. `Use parseImportsFromConfig` manually."));
-        ByteSlice execDir = dirName(execFilePath).copy();
-        ByteSlice iniFile = new ByteSlice().copy();
-        if (endsWith(execFilePath, new ByteSlice("ldc"), new ByteSlice("ldc2"), new ByteSlice("ldmd"), new ByteSlice("ldmd2")) != 0)
-        {
-            iniFile = findLDCConfig(toByteSlice(execFilePath)).copy();
-        }
-        else
-        {
-            iniFile = findDMDConfig(toByteSlice(execFilePath)).copy();
-        }
-        assertMsg((iniFile != new ByteSlice()) && exists(iniFile), new ByteSlice("No valid config found."));
-        return parseImportPathsFromConfig(toByteSlice(iniFile), toByteSlice(execDir));
-    }
-
     public static void fullSemantic(dmodule.Module m) {
         m.importedFrom = m;
         m.importAll(null);
@@ -235,18 +176,6 @@ public class frontend {
         dmodule.Module.runDeferredSemantic2();
         semantic3(m, null);
         dmodule.Module.runDeferredSemantic3();
-    }
-
-    public static ByteSlice prettyPrint(dmodule.Module m) {
-        Ref<OutBuffer> buf = ref(new OutBuffer(null, 0, 0, 0, true, false).copy());
-        try {
-            Ref<HdrGenState> hgs = ref(new HdrGenState(false, false, true, false, 0, 0, 0, false, null).copy());
-            moduleToBuffer2(m, ptr(buf), ptr(hgs));
-            Ref<ByteSlice> generated = ref(replace(fromStringz(buf.value.extractData()), new ByteSlice("\u0009"), new ByteSlice("    ")).copy());
-            return assumeUnique(generated);
-        }
-        finally {
-        }
     }
 
     public static DiagnosticReporter defaultDiagnosticReporter() {

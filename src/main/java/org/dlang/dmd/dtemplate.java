@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -47,94 +43,86 @@ import static org.dlang.dmd.visitor.*;
 public class dtemplate {
     private static class DeduceType extends Visitor
     {
-        private Ref<Ptr<Scope>> sc = ref(null);
-        private Ref<Type> tparam = ref(null);
-        private Ref<Ptr<DArray<TemplateParameter>>> parameters = ref(null);
-        private Ref<Ptr<DArray<RootObject>>> dedtypes = ref(null);
-        private Ref<IntPtr> wm = ref(null);
-        private IntRef inferStart = ref(0);
-        private Ref<Boolean> ignoreAliasThis = ref(false);
-        private IntRef result = ref(0);
+        private Ptr<Scope> sc = null;
+        private Type tparam = null;
+        private Ptr<DArray<TemplateParameter>> parameters = null;
+        private Ptr<DArray<RootObject>> dedtypes = null;
+        private IntPtr wm = null;
+        private int inferStart = 0;
+        private boolean ignoreAliasThis = false;
+        private int result = 0;
         public  DeduceType(Ptr<Scope> sc, Type tparam, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, IntPtr wm, int inferStart, boolean ignoreAliasThis) {
-            Ref<Ptr<Scope>> sc_ref = ref(sc);
-            Ref<Type> tparam_ref = ref(tparam);
-            Ref<Ptr<DArray<TemplateParameter>>> parameters_ref = ref(parameters);
-            Ref<Ptr<DArray<RootObject>>> dedtypes_ref = ref(dedtypes);
-            Ref<IntPtr> wm_ref = ref(wm);
-            IntRef inferStart_ref = ref(inferStart);
-            Ref<Boolean> ignoreAliasThis_ref = ref(ignoreAliasThis);
-            this.sc.value = sc_ref.value;
-            this.tparam.value = tparam_ref.value;
-            this.parameters.value = parameters_ref.value;
-            this.dedtypes.value = dedtypes_ref.value;
-            this.wm.value = pcopy(wm_ref.value);
-            this.inferStart.value = inferStart_ref.value;
-            this.ignoreAliasThis.value = ignoreAliasThis_ref.value;
-            this.result.value = MATCH.nomatch;
+            this.sc = sc;
+            this.tparam = tparam;
+            this.parameters = parameters;
+            this.dedtypes = dedtypes;
+            this.wm = pcopy(wm);
+            this.inferStart = inferStart;
+            this.ignoreAliasThis = ignoreAliasThis;
+            this.result = MATCH.nomatch;
         }
 
         public  void visit(Type t) {
-            Ref<Type> t_ref = ref(t);
             try {
                 try {
                     try {
-                        if (this.tparam.value == null)
+                        if (this.tparam == null)
                         {
                             /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                         }
-                        if ((pequals(t_ref.value, this.tparam.value)))
+                        if ((pequals(t, this.tparam)))
                         {
                             /*goto Lexact*/throw Dispatch0.INSTANCE;
                         }
-                        if (((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tident))
+                        if (((this.tparam.ty & 0xFF) == ENUMTY.Tident))
                         {
-                            IntRef i = ref(templateParameterLookup(this.tparam.value, this.parameters.value));
-                            if ((i.value == 305419896))
+                            int i = templateParameterLookup(this.tparam, this.parameters);
+                            if ((i == 305419896))
                             {
-                                if (this.sc.value == null)
+                                if (this.sc == null)
                                 {
                                     /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                 }
-                                Ref<Loc> loc = ref(new Loc());
-                                if ((this.parameters.value.get()).length.value != 0)
+                                Loc loc = new Loc();
+                                if ((this.parameters.get()).length != 0)
                                 {
-                                    TemplateParameter tp = (this.parameters.value.get()).get(0);
-                                    loc.value = tp.loc.value.copy();
+                                    TemplateParameter tp = (this.parameters.get()).get(0);
+                                    loc = tp.loc.copy();
                                 }
-                                this.tparam.value = typeSemantic(this.tparam.value, loc.value, this.sc.value);
-                                assert(((this.tparam.value.ty.value & 0xFF) != ENUMTY.Tident));
-                                this.result.value = deduceType(t_ref.value, this.sc.value, this.tparam.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false);
+                                this.tparam = typeSemantic(this.tparam, loc, this.sc);
+                                assert(((this.tparam.ty & 0xFF) != ENUMTY.Tident));
+                                this.result = deduceType(t, this.sc, this.tparam, this.parameters, this.dedtypes, this.wm, 0, false);
                                 return ;
                             }
-                            TemplateParameter tp = (this.parameters.value.get()).get(i.value);
-                            TypeIdentifier tident = (TypeIdentifier)this.tparam.value;
-                            if ((tident.idents.length.value > 0))
+                            TemplateParameter tp = (this.parameters.get()).get(i);
+                            TypeIdentifier tident = (TypeIdentifier)this.tparam;
+                            if ((tident.idents.length > 0))
                             {
-                                Ref<Dsymbol> s = ref(t_ref.value.toDsymbol(this.sc.value));
+                                Dsymbol s = t.toDsymbol(this.sc);
                                 {
-                                    IntRef j = ref(tident.idents.length.value);
+                                    int j = tident.idents.length;
                                 L_outer15:
-                                    for (; (j.value-- > 0);){
-                                        Ref<RootObject> id = ref(tident.idents.get(j.value));
-                                        if ((id.value.dyncast() == DYNCAST.identifier))
+                                    for (; (j-- > 0);){
+                                        RootObject id = tident.idents.get(j);
+                                        if ((id.dyncast() == DYNCAST.identifier))
                                         {
-                                            if ((s.value == null) || (s.value.parent.value == null))
+                                            if ((s == null) || (s.parent.value == null))
                                             {
                                                 /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                             }
-                                            Ref<Dsymbol> s2 = ref(s.value.parent.value.search(Loc.initial.value, (Identifier)id.value, 0));
-                                            if (s2.value == null)
+                                            Dsymbol s2 = s.parent.value.search(Loc.initial, (Identifier)id, 0);
+                                            if (s2 == null)
                                             {
                                                 /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                             }
-                                            s2.value = s2.value.toAlias();
-                                            if ((!pequals(s.value, s2.value)))
+                                            s2 = s2.toAlias();
+                                            if ((!pequals(s, s2)))
                                             {
                                                 {
-                                                    Ref<Type> tx = ref(s2.value.getType());
-                                                    if ((tx.value) != null)
+                                                    Type tx = s2.getType();
+                                                    if ((tx) != null)
                                                     {
-                                                        if ((!pequals(s.value, tx.value.toDsymbol(this.sc.value))))
+                                                        if ((!pequals(s, tx.toDsymbol(this.sc))))
                                                         {
                                                             /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                                         }
@@ -145,7 +133,7 @@ public class dtemplate {
                                                     }
                                                 }
                                             }
-                                            s.value = s.value.parent.value;
+                                            s = s.parent.value;
                                         }
                                         else
                                         {
@@ -155,28 +143,28 @@ public class dtemplate {
                                 }
                                 if (tp.isTemplateTypeParameter() != null)
                                 {
-                                    Ref<Type> tt = ref(s.value.getType());
-                                    if (tt.value == null)
+                                    Type tt = s.getType();
+                                    if (tt == null)
                                     {
                                         /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                     }
-                                    Ref<Type> at = ref((Type)(this.dedtypes.value.get()).get(i.value));
-                                    if ((at.value != null) && ((at.value.ty.value & 0xFF) == ENUMTY.Tnone))
+                                    Type at = (Type)(this.dedtypes.get()).get(i);
+                                    if ((at != null) && ((at.ty & 0xFF) == ENUMTY.Tnone))
                                     {
-                                        at.value = ((TypeDeduced)at.value).tded.value;
+                                        at = ((TypeDeduced)at).tded;
                                     }
-                                    if ((at.value == null) || tt.value.equals(at.value))
+                                    if ((at == null) || tt.equals(at))
                                     {
-                                        this.dedtypes.value.get().set(i.value, tt.value);
+                                        this.dedtypes.get().set(i, tt);
                                         /*goto Lexact*/throw Dispatch0.INSTANCE;
                                     }
                                 }
                                 if (tp.isTemplateAliasParameter() != null)
                                 {
-                                    Ref<Dsymbol> s2 = ref((Dsymbol)(this.dedtypes.value.get()).get(i.value));
-                                    if ((s2.value == null) || (pequals(s.value, s2.value)))
+                                    Dsymbol s2 = (Dsymbol)(this.dedtypes.get()).get(i);
+                                    if ((s2 == null) || (pequals(s, s2)))
                                     {
-                                        this.dedtypes.value.get().set(i.value, s.value);
+                                        this.dedtypes.get().set(i, s);
                                         /*goto Lexact*/throw Dispatch0.INSTANCE;
                                     }
                                 }
@@ -186,82 +174,82 @@ public class dtemplate {
                             {
                                 /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                             }
-                            Ref<Type> at = ref((Type)(this.dedtypes.value.get()).get(i.value));
+                            Type at = (Type)(this.dedtypes.get()).get(i);
                             Ref<Type> tt = ref(null);
                             {
-                                Ref<Byte> wx = ref(this.wm.value != null ? (byte)(deduceWildHelper(t_ref.value, ptr(tt), this.tparam.value) & 0xFF) : (byte)0);
-                                if ((wx.value) != 0)
+                                byte wx = this.wm != null ? (byte)(deduceWildHelper(t, ptr(tt), this.tparam) & 0xFF) : (byte)0;
+                                if ((wx) != 0)
                                 {
-                                    if (at.value == null)
+                                    if (at == null)
                                     {
-                                        this.dedtypes.value.get().set(i.value, tt.value);
-                                        this.wm.value.set(0, this.wm.value.get() | (wx.value & 0xFF));
-                                        this.result.value = MATCH.constant;
+                                        this.dedtypes.get().set(i, tt.value);
+                                        this.wm.set(0, this.wm.get() | (wx & 0xFF));
+                                        this.result = MATCH.constant;
                                         return ;
                                     }
-                                    if (((at.value.ty.value & 0xFF) == ENUMTY.Tnone))
+                                    if (((at.ty & 0xFF) == ENUMTY.Tnone))
                                     {
-                                        TypeDeduced xt = (TypeDeduced)at.value;
-                                        this.result.value = xt.matchAll(tt.value);
-                                        if ((this.result.value > MATCH.nomatch))
+                                        TypeDeduced xt = (TypeDeduced)at;
+                                        this.result = xt.matchAll(tt.value);
+                                        if ((this.result > MATCH.nomatch))
                                         {
-                                            this.dedtypes.value.get().set(i.value, tt.value);
-                                            if ((this.result.value > MATCH.constant))
+                                            this.dedtypes.get().set(i, tt.value);
+                                            if ((this.result > MATCH.constant))
                                             {
-                                                this.result.value = MATCH.constant;
+                                                this.result = MATCH.constant;
                                             }
                                         }
                                         return ;
                                     }
-                                    if (tt.value.equals(at.value))
+                                    if (tt.value.equals(at))
                                     {
-                                        this.dedtypes.value.get().set(i.value, tt.value);
+                                        this.dedtypes.get().set(i, tt.value);
                                         /*goto Lconst*/throw Dispatch2.INSTANCE;
                                     }
-                                    if (tt.value.implicitConvTo(at.value.constOf()) != 0)
+                                    if (tt.value.implicitConvTo(at.constOf()) != 0)
                                     {
-                                        this.dedtypes.value.get().set(i.value, at.value.constOf().mutableOf());
-                                        this.wm.value.set(0, this.wm.value.get() | 1);
+                                        this.dedtypes.get().set(i, at.constOf().mutableOf());
+                                        this.wm.set(0, this.wm.get() | 1);
                                         /*goto Lconst*/throw Dispatch2.INSTANCE;
                                     }
-                                    if (at.value.implicitConvTo(tt.value.constOf()) != 0)
+                                    if (at.implicitConvTo(tt.value.constOf()) != 0)
                                     {
-                                        this.dedtypes.value.get().set(i.value, tt.value.constOf().mutableOf());
-                                        this.wm.value.set(0, this.wm.value.get() | 1);
+                                        this.dedtypes.get().set(i, tt.value.constOf().mutableOf());
+                                        this.wm.set(0, this.wm.get() | 1);
                                         /*goto Lconst*/throw Dispatch2.INSTANCE;
                                     }
                                     /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                 }
                                 else {
-                                    IntRef m = ref(deduceTypeHelper(t_ref.value, ptr(tt), this.tparam.value));
-                                    if ((m.value) != 0)
+                                    int m = deduceTypeHelper(t, ptr(tt), this.tparam);
+                                    if ((m) != 0)
                                     {
-                                        if (at.value == null)
+                                        if (at == null)
                                         {
-                                            this.dedtypes.value.get().set(i.value, tt.value);
-                                            this.result.value = m.value;
+                                            this.dedtypes.get().set(i, tt.value);
+                                            this.result = m;
                                             return ;
                                         }
-                                        if (((at.value.ty.value & 0xFF) == ENUMTY.Tnone))
+                                        if (((at.ty & 0xFF) == ENUMTY.Tnone))
                                         {
-                                            TypeDeduced xt = (TypeDeduced)at.value;
-                                            this.result.value = xt.matchAll(tt.value);
-                                            if ((this.result.value > MATCH.nomatch))
+                                            TypeDeduced xt = (TypeDeduced)at;
+                                            this.result = xt.matchAll(tt.value);
+                                            if ((this.result > MATCH.nomatch))
                                             {
-                                                this.dedtypes.value.get().set(i.value, tt.value);
+                                                this.dedtypes.get().set(i, tt.value);
                                             }
                                             return ;
                                         }
-                                        if (tt.value.equals(at.value))
+                                        if (tt.value.equals(at))
                                         {
                                             /*goto Lexact*/throw Dispatch0.INSTANCE;
                                         }
-                                        if (((tt.value.ty.value & 0xFF) == ENUMTY.Tclass) && ((at.value.ty.value & 0xFF) == ENUMTY.Tclass))
+                                        if (((tt.value.ty & 0xFF) == ENUMTY.Tclass) && ((at.ty & 0xFF) == ENUMTY.Tclass))
                                         {
-                                            this.result.value = tt.value.implicitConvTo(at.value);
+                                            this.result = tt.value.implicitConvTo(at);
                                             return ;
                                         }
-                                        if (((tt.value.ty.value & 0xFF) == ENUMTY.Tsarray) && ((at.value.ty.value & 0xFF) == ENUMTY.Tarray) && (tt.value.nextOf().implicitConvTo(at.value.nextOf()) >= MATCH.constant))
+                                        if (((tt.value.ty & 0xFF) == ENUMTY.Tsarray) && ((at.ty & 0xFF) == ENUMTY.Tarray) && (tt.value.nextOf().implicitConvTo(at.nextOf()) >= MATCH.constant))
                                         {
                                             /*goto Lexact*/throw Dispatch0.INSTANCE;
                                         }
@@ -270,260 +258,255 @@ public class dtemplate {
                             }
                             /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                         }
-                        if (((this.tparam.value.ty.value & 0xFF) == ENUMTY.Ttypeof))
+                        if (((this.tparam.ty & 0xFF) == ENUMTY.Ttypeof))
                         {
-                            Ref<Loc> loc = ref(new Loc());
-                            if ((this.parameters.value.get()).length.value != 0)
+                            Loc loc = new Loc();
+                            if ((this.parameters.get()).length != 0)
                             {
-                                TemplateParameter tp = (this.parameters.value.get()).get(0);
-                                loc.value = tp.loc.value.copy();
+                                TemplateParameter tp = (this.parameters.get()).get(0);
+                                loc = tp.loc.copy();
                             }
-                            this.tparam.value = typeSemantic(this.tparam.value, loc.value, this.sc.value);
+                            this.tparam = typeSemantic(this.tparam, loc, this.sc);
                         }
-                        if (((t_ref.value.ty.value & 0xFF) != (this.tparam.value.ty.value & 0xFF)))
+                        if (((t.ty & 0xFF) != (this.tparam.ty & 0xFF)))
                         {
                             {
-                                Ref<Dsymbol> sym = ref(t_ref.value.toDsymbol(this.sc.value));
-                                if ((sym.value) != null)
+                                Dsymbol sym = t.toDsymbol(this.sc);
+                                if ((sym) != null)
                                 {
-                                    if (sym.value.isforwardRef() && (this.tparam.value.deco.value == null))
+                                    if (sym.isforwardRef() && (this.tparam.deco == null))
                                     {
                                         /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                     }
                                 }
                             }
-                            IntRef m = ref(t_ref.value.implicitConvTo(this.tparam.value));
-                            if ((m.value == MATCH.nomatch) && !this.ignoreAliasThis.value)
+                            int m = t.implicitConvTo(this.tparam);
+                            if ((m == MATCH.nomatch) && !this.ignoreAliasThis)
                             {
-                                if (((t_ref.value.ty.value & 0xFF) == ENUMTY.Tclass))
+                                if (((t.ty & 0xFF) == ENUMTY.Tclass))
                                 {
-                                    TypeClass tc = (TypeClass)t_ref.value;
-                                    if ((tc.sym.value.aliasthis.value != null) && ((tc.att.value & AliasThisRec.tracingDT) == 0))
+                                    TypeClass tc = (TypeClass)t;
+                                    if ((tc.sym.aliasthis != null) && ((tc.att.value & AliasThisRec.tracingDT) == 0))
                                     {
                                         {
-                                            Ref<Type> ato = ref(t_ref.value.aliasthisOf());
-                                            if ((ato.value) != null)
+                                            Type ato = t.aliasthisOf();
+                                            if ((ato) != null)
                                             {
                                                 tc.att.value = tc.att.value | AliasThisRec.tracingDT;
-                                                m.value = deduceType(ato.value, this.sc.value, this.tparam.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false);
+                                                m = deduceType(ato, this.sc, this.tparam, this.parameters, this.dedtypes, this.wm, 0, false);
                                                 tc.att.value = tc.att.value & -9;
                                             }
                                         }
                                     }
                                 }
-                                else if (((t_ref.value.ty.value & 0xFF) == ENUMTY.Tstruct))
+                                else if (((t.ty & 0xFF) == ENUMTY.Tstruct))
                                 {
-                                    TypeStruct ts = (TypeStruct)t_ref.value;
-                                    if ((ts.sym.value.aliasthis.value != null) && ((ts.att.value & AliasThisRec.tracingDT) == 0))
+                                    TypeStruct ts = (TypeStruct)t;
+                                    if ((ts.sym.aliasthis != null) && ((ts.att.value & AliasThisRec.tracingDT) == 0))
                                     {
                                         {
-                                            Ref<Type> ato = ref(t_ref.value.aliasthisOf());
-                                            if ((ato.value) != null)
+                                            Type ato = t.aliasthisOf();
+                                            if ((ato) != null)
                                             {
                                                 ts.att.value = ts.att.value | AliasThisRec.tracingDT;
-                                                m.value = deduceType(ato.value, this.sc.value, this.tparam.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false);
+                                                m = deduceType(ato, this.sc, this.tparam, this.parameters, this.dedtypes, this.wm, 0, false);
                                                 ts.att.value = ts.att.value & -9;
                                             }
                                         }
                                     }
                                 }
                             }
-                            this.result.value = m.value;
+                            this.result = m;
                             return ;
                         }
-                        if (t_ref.value.nextOf() != null)
+                        if (t.nextOf() != null)
                         {
-                            if ((this.tparam.value.deco.value != null) && (this.tparam.value.hasWild() == 0))
+                            if ((this.tparam.deco != null) && (this.tparam.hasWild() == 0))
                             {
-                                this.result.value = t_ref.value.implicitConvTo(this.tparam.value);
+                                this.result = t.implicitConvTo(this.tparam);
                                 return ;
                             }
-                            Ref<Type> tpn = ref(this.tparam.value.nextOf());
-                            if ((this.wm.value != null) && ((t_ref.value.ty.value & 0xFF) == ENUMTY.Taarray) && this.tparam.value.isWild())
+                            Type tpn = this.tparam.nextOf();
+                            if ((this.wm != null) && ((t.ty & 0xFF) == ENUMTY.Taarray) && this.tparam.isWild())
                             {
-                                tpn.value = tpn.value.substWildTo(16);
+                                tpn = tpn.substWildTo(16);
                             }
-                            this.result.value = deduceType(t_ref.value.nextOf(), this.sc.value, tpn.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false);
+                            this.result = deduceType(t.nextOf(), this.sc, tpn, this.parameters, this.dedtypes, this.wm, 0, false);
                             return ;
                         }
                     }
                     catch(Dispatch0 __d){}
                 /*Lexact:*/
-                    this.result.value = MATCH.exact;
+                    this.result = MATCH.exact;
                     return ;
                 }
                 catch(Dispatch1 __d){}
             /*Lnomatch:*/
-                this.result.value = MATCH.nomatch;
+                this.result = MATCH.nomatch;
                 return ;
             }
             catch(Dispatch2 __d){}
         /*Lconst:*/
-            this.result.value = MATCH.constant;
+            this.result = MATCH.constant;
         }
 
         public  void visit(TypeVector t) {
-            Ref<TypeVector> t_ref = ref(t);
-            if (((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tvector))
+            if (((this.tparam.ty & 0xFF) == ENUMTY.Tvector))
             {
-                TypeVector tp = (TypeVector)this.tparam.value;
-                this.result.value = deduceType(t_ref.value.basetype.value, this.sc.value, tp.basetype.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false);
+                TypeVector tp = (TypeVector)this.tparam;
+                this.result = deduceType(t.basetype, this.sc, tp.basetype, this.parameters, this.dedtypes, this.wm, 0, false);
                 return ;
             }
-            this.visit((Type)t_ref);
+            this.visit((Type)t);
         }
 
         public  void visit(TypeDArray t) {
-            Ref<TypeDArray> t_ref = ref(t);
-            this.visit((Type)t_ref);
+            this.visit((Type)t);
         }
 
         public  void visit(TypeSArray t) {
-            Ref<TypeSArray> t_ref = ref(t);
-            if (this.tparam.value != null)
+            if (this.tparam != null)
             {
-                if (((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tarray))
+                if (((this.tparam.ty & 0xFF) == ENUMTY.Tarray))
                 {
-                    IntRef m = ref(deduceType(t_ref.value.next.value, this.sc.value, this.tparam.value.nextOf(), this.parameters.value, this.dedtypes.value, this.wm.value, 0, false));
-                    this.result.value = (m.value >= MATCH.constant) ? MATCH.convert : MATCH.nomatch;
+                    int m = deduceType(t.next.value, this.sc, this.tparam.nextOf(), this.parameters, this.dedtypes, this.wm, 0, false);
+                    this.result = (m >= MATCH.constant) ? MATCH.convert : MATCH.nomatch;
                     return ;
                 }
-                Ref<TemplateParameter> tp = ref(null);
-                Ref<Expression> edim = ref(null);
-                IntRef i = ref(0);
-                if (((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tsarray))
+                TemplateParameter tp = null;
+                Expression edim = null;
+                int i = 0;
+                if (((this.tparam.ty & 0xFF) == ENUMTY.Tsarray))
                 {
-                    TypeSArray tsa = (TypeSArray)this.tparam.value;
-                    if (((tsa.dim.value.op.value & 0xFF) == 26) && ((((VarExp)tsa.dim.value).var.value.storage_class.value & 262144L) != 0))
+                    TypeSArray tsa = (TypeSArray)this.tparam;
+                    if (((tsa.dim.op & 0xFF) == 26) && ((((VarExp)tsa.dim).var.storage_class & 262144L) != 0))
                     {
-                        Ref<Identifier> id = ref(((VarExp)tsa.dim.value).var.value.ident.value);
-                        i.value = templateIdentifierLookup(id.value, this.parameters.value);
-                        assert((i.value != 305419896));
-                        tp.value = (this.parameters.value.get()).get(i.value);
+                        Identifier id = ((VarExp)tsa.dim).var.ident;
+                        i = templateIdentifierLookup(id, this.parameters);
+                        assert((i != 305419896));
+                        tp = (this.parameters.get()).get(i);
                     }
                     else
                     {
-                        edim.value = tsa.dim.value;
+                        edim = tsa.dim;
                     }
                 }
-                else if (((this.tparam.value.ty.value & 0xFF) == ENUMTY.Taarray))
+                else if (((this.tparam.ty & 0xFF) == ENUMTY.Taarray))
                 {
-                    TypeAArray taa = (TypeAArray)this.tparam.value;
-                    i.value = templateParameterLookup(taa.index.value, this.parameters.value);
-                    if ((i.value != 305419896))
+                    TypeAArray taa = (TypeAArray)this.tparam;
+                    i = templateParameterLookup(taa.index, this.parameters);
+                    if ((i != 305419896))
                     {
-                        tp.value = (this.parameters.value.get()).get(i.value);
+                        tp = (this.parameters.get()).get(i);
                     }
                     else
                     {
                         Ref<Expression> e = ref(null);
                         Ref<Type> tx = ref(null);
                         Ref<Dsymbol> s = ref(null);
-                        resolve(taa.index.value, Loc.initial.value, this.sc.value, ptr(e), ptr(tx), ptr(s), false);
-                        edim.value = s.value != null ? getValue(s) : getValue(e.value);
+                        resolve(taa.index, Loc.initial, this.sc, ptr(e), ptr(tx), ptr(s), false);
+                        edim = s.value != null ? getValue(s) : getValue(e.value);
                     }
                 }
-                if ((tp.value != null) && (tp.value.matchArg(this.sc.value, t_ref.value.dim.value, i.value, this.parameters.value, this.dedtypes.value, null) != 0) || (edim.value != null) && (edim.value.toInteger() == t_ref.value.dim.value.toInteger()))
+                if ((tp != null) && (tp.matchArg(this.sc, t.dim, i, this.parameters, this.dedtypes, null) != 0) || (edim != null) && (edim.toInteger() == t.dim.toInteger()))
                 {
-                    this.result.value = deduceType(t_ref.value.next.value, this.sc.value, this.tparam.value.nextOf(), this.parameters.value, this.dedtypes.value, this.wm.value, 0, false);
+                    this.result = deduceType(t.next.value, this.sc, this.tparam.nextOf(), this.parameters, this.dedtypes, this.wm, 0, false);
                     return ;
                 }
             }
-            this.visit((Type)t_ref);
+            this.visit((Type)t);
         }
 
         public  void visit(TypeAArray t) {
-            Ref<TypeAArray> t_ref = ref(t);
-            if ((this.tparam.value != null) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Taarray))
+            if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Taarray))
             {
-                TypeAArray tp = (TypeAArray)this.tparam.value;
-                if (deduceType(t_ref.value.index.value, this.sc.value, tp.index.value, this.parameters.value, this.dedtypes.value, null, 0, false) == 0)
+                TypeAArray tp = (TypeAArray)this.tparam;
+                if (deduceType(t.index, this.sc, tp.index, this.parameters, this.dedtypes, null, 0, false) == 0)
                 {
-                    this.result.value = MATCH.nomatch;
+                    this.result = MATCH.nomatch;
                     return ;
                 }
             }
-            this.visit((Type)t_ref);
+            this.visit((Type)t);
         }
 
         public  void visit(TypeFunction t) {
-            Ref<TypeFunction> t_ref = ref(t);
-            if ((this.tparam.value != null) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tfunction))
+            if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tfunction))
             {
-                TypeFunction tp = (TypeFunction)this.tparam.value;
-                if ((t_ref.value.parameterList.varargs.value != tp.parameterList.varargs.value) || (t_ref.value.linkage.value != tp.linkage.value))
+                TypeFunction tp = (TypeFunction)this.tparam;
+                if ((t.parameterList.varargs != tp.parameterList.varargs) || (t.linkage != tp.linkage))
                 {
-                    this.result.value = MATCH.nomatch;
+                    this.result = MATCH.nomatch;
                     return ;
                 }
                 {
-                    Ref<Slice<Parameter>> __r1203 = ref((tp.parameterList.parameters.value.get()).opSlice().copy());
-                    IntRef __key1204 = ref(0);
-                    for (; (__key1204.value < __r1203.value.getLength());__key1204.value += 1) {
-                        Parameter fparam = __r1203.value.get(__key1204.value);
-                        fparam.type.value = fparam.type.value.addStorageClass(fparam.storageClass.value);
-                        fparam.storageClass.value &= -2685405189L;
-                        if (!reliesOnTemplateParameters(fparam.type.value, (this.parameters.value.get()).opSlice(this.inferStart.value, (this.parameters.value.get()).length.value)))
+                    Slice<Parameter> __r1199 = (tp.parameterList.parameters.get()).opSlice().copy();
+                    int __key1200 = 0;
+                    for (; (__key1200 < __r1199.getLength());__key1200 += 1) {
+                        Parameter fparam = __r1199.get(__key1200);
+                        fparam.type = fparam.type.addStorageClass(fparam.storageClass);
+                        fparam.storageClass &= -2685405189L;
+                        if (!reliesOnTemplateParameters(fparam.type, (this.parameters.get()).opSlice(this.inferStart, (this.parameters.get()).length)))
                         {
-                            Ref<Type> tx = ref(typeSemantic(fparam.type.value, Loc.initial.value, this.sc.value));
-                            if (((tx.value.ty.value & 0xFF) == ENUMTY.Terror))
+                            Type tx = typeSemantic(fparam.type, Loc.initial, this.sc);
+                            if (((tx.ty & 0xFF) == ENUMTY.Terror))
                             {
-                                this.result.value = MATCH.nomatch;
+                                this.result = MATCH.nomatch;
                                 return ;
                             }
-                            fparam.type.value = tx.value;
+                            fparam.type = tx;
                         }
                     }
                 }
-                IntRef nfargs = ref(t_ref.value.parameterList.length());
-                IntRef nfparams = ref(tp.parameterList.length());
+                int nfargs = t.parameterList.length();
+                int nfparams = tp.parameterList.length();
                 try {
                     try {
-                        if ((nfparams.value > 0) && (nfargs.value >= nfparams.value - 1))
+                        if ((nfparams > 0) && (nfargs >= nfparams - 1))
                         {
-                            Ref<Parameter> fparam = ref(tp.parameterList.get(nfparams.value - 1));
-                            assert(fparam.value != null);
-                            assert(fparam.value.type.value != null);
-                            if (((fparam.value.type.value.ty.value & 0xFF) != ENUMTY.Tident))
+                            Parameter fparam = tp.parameterList.get(nfparams - 1);
+                            assert(fparam != null);
+                            assert(fparam.type != null);
+                            if (((fparam.type.ty & 0xFF) != ENUMTY.Tident))
                             {
                                 /*goto L1*/throw Dispatch0.INSTANCE;
                             }
-                            TypeIdentifier tid = (TypeIdentifier)fparam.value.type.value;
-                            if (tid.idents.length.value != 0)
+                            TypeIdentifier tid = (TypeIdentifier)fparam.type;
+                            if (tid.idents.length != 0)
                             {
                                 /*goto L1*/throw Dispatch0.INSTANCE;
                             }
-                            IntRef tupi = ref(0);
+                            int tupi = 0;
                         L_outer16:
-                            for (; 1 != 0;tupi.value++){
-                                if ((tupi.value == (this.parameters.value.get()).length.value))
+                            for (; 1 != 0;tupi++){
+                                if ((tupi == (this.parameters.get()).length))
                                 {
                                     /*goto L1*/throw Dispatch0.INSTANCE;
                                 }
-                                TemplateParameter tx = (this.parameters.value.get()).get(tupi.value);
-                                Ref<TemplateTupleParameter> tup = ref(tx.isTemplateTupleParameter());
-                                if ((tup.value != null) && tup.value.ident.value.equals(tid.ident.value))
+                                TemplateParameter tx = (this.parameters.get()).get(tupi);
+                                TemplateTupleParameter tup = tx.isTemplateTupleParameter();
+                                if ((tup != null) && tup.ident.equals(tid.ident))
                                 {
                                     break;
                                 }
                             }
-                            IntRef tuple_dim = ref(nfargs.value - (nfparams.value - 1));
-                            Ref<RootObject> o = ref((this.dedtypes.value.get()).get(tupi.value));
-                            if (o.value != null)
+                            int tuple_dim = nfargs - (nfparams - 1);
+                            RootObject o = (this.dedtypes.get()).get(tupi);
+                            if (o != null)
                             {
-                                Ref<Tuple> tup = ref(isTuple(o.value));
-                                if ((tup.value == null) || (tup.value.objects.value.length.value != tuple_dim.value))
+                                Tuple tup = isTuple(o);
+                                if ((tup == null) || (tup.objects.value.length != tuple_dim))
                                 {
-                                    this.result.value = MATCH.nomatch;
+                                    this.result = MATCH.nomatch;
                                     return ;
                                 }
                                 {
-                                    IntRef i = ref(0);
-                                    for (; (i.value < tuple_dim.value);i.value++){
-                                        Parameter arg = t_ref.value.parameterList.get(nfparams.value - 1 + i.value);
-                                        if (!arg.type.value.equals(tup.value.objects.value.get(i.value)))
+                                    int i = 0;
+                                    for (; (i < tuple_dim);i++){
+                                        Parameter arg = t.parameterList.get(nfparams - 1 + i);
+                                        if (!arg.type.equals(tup.objects.value.get(i)))
                                         {
-                                            this.result.value = MATCH.nomatch;
+                                            this.result = MATCH.nomatch;
                                             return ;
                                         }
                                     }
@@ -531,100 +514,98 @@ public class dtemplate {
                             }
                             else
                             {
-                                Ref<Tuple> tup = ref(new Tuple(tuple_dim.value));
+                                Tuple tup = new Tuple(tuple_dim);
                                 {
-                                    IntRef i = ref(0);
-                                    for (; (i.value < tuple_dim.value);i.value++){
-                                        Parameter arg = t_ref.value.parameterList.get(nfparams.value - 1 + i.value);
-                                        tup.value.objects.value.set(i.value, arg.type.value);
+                                    int i = 0;
+                                    for (; (i < tuple_dim);i++){
+                                        Parameter arg = t.parameterList.get(nfparams - 1 + i);
+                                        tup.objects.value.set(i, arg.type);
                                     }
                                 }
-                                this.dedtypes.value.get().set(tupi.value, tup.value);
+                                this.dedtypes.get().set(tupi, tup);
                             }
-                            nfparams.value--;
+                            nfparams--;
                             /*goto L2*/throw Dispatch1.INSTANCE;
                         }
                     }
                     catch(Dispatch0 __d){}
                 /*L1:*/
-                    if ((nfargs.value != nfparams.value))
+                    if ((nfargs != nfparams))
                     {
-                        this.result.value = MATCH.nomatch;
+                        this.result = MATCH.nomatch;
                         return ;
                     }
                 }
                 catch(Dispatch1 __d){}
             /*L2:*/
                 {
-                    IntRef i = ref(0);
-                    for (; (i.value < nfparams.value);i.value++){
-                        Parameter a = t_ref.value.parameterList.get(i.value);
-                        Parameter ap = tp.parameterList.get(i.value);
-                        if (!a.isCovariant(t_ref.value.isref.value, ap) || (deduceType(a.type.value, this.sc.value, ap.type.value, this.parameters.value, this.dedtypes.value, null, 0, false) == 0))
+                    int i = 0;
+                    for (; (i < nfparams);i++){
+                        Parameter a = t.parameterList.get(i);
+                        Parameter ap = tp.parameterList.get(i);
+                        if (!a.isCovariant(t.isref, ap) || (deduceType(a.type, this.sc, ap.type, this.parameters, this.dedtypes, null, 0, false) == 0))
                         {
-                            this.result.value = MATCH.nomatch;
+                            this.result = MATCH.nomatch;
                             return ;
                         }
                     }
                 }
             }
-            this.visit((Type)t_ref);
+            this.visit((Type)t);
         }
 
         public  void visit(TypeIdentifier t) {
-            Ref<TypeIdentifier> t_ref = ref(t);
-            if ((this.tparam.value != null) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tident))
+            if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tident))
             {
-                TypeIdentifier tp = (TypeIdentifier)this.tparam.value;
+                TypeIdentifier tp = (TypeIdentifier)this.tparam;
                 {
-                    IntRef i = ref(0);
-                    for (; (i.value < t_ref.value.idents.length.value);i.value++){
-                        RootObject id1 = t_ref.value.idents.get(i.value);
-                        Ref<RootObject> id2 = ref(tp.idents.get(i.value));
-                        if (!id1.equals(id2.value))
+                    int i = 0;
+                    for (; (i < t.idents.length);i++){
+                        RootObject id1 = t.idents.get(i);
+                        RootObject id2 = tp.idents.get(i);
+                        if (!id1.equals(id2))
                         {
-                            this.result.value = MATCH.nomatch;
+                            this.result = MATCH.nomatch;
                             return ;
                         }
                     }
                 }
             }
-            this.visit((Type)t_ref);
+            this.visit((Type)t);
         }
 
         public  void visit(TypeInstance t) {
-            Ref<TypeInstance> t_ref = ref(t);
             try {
-                if ((this.tparam.value != null) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tinstance) && (t_ref.value.tempinst.value.tempdecl.value != null))
+                if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tinstance) && (t.tempinst.tempdecl != null))
                 {
-                    Ref<TemplateDeclaration> tempdecl = ref(t_ref.value.tempinst.value.tempdecl.value.isTemplateDeclaration());
-                    assert(tempdecl.value != null);
-                    TypeInstance tp = (TypeInstance)this.tparam.value;
+                    TemplateDeclaration tempdecl = t.tempinst.tempdecl.isTemplateDeclaration();
+                    assert(tempdecl != null);
+                    TypeInstance tp = (TypeInstance)this.tparam;
                     try {
-                        if (tp.tempinst.value.tempdecl.value == null)
+                        if (tp.tempinst.tempdecl == null)
                         {
-                            IntRef i = ref(templateIdentifierLookup(tp.tempinst.value.name.value, this.parameters.value));
-                            if ((i.value == 305419896))
+                            int i = templateIdentifierLookup(tp.tempinst.name, this.parameters);
+                            if ((i == 305419896))
                             {
-                                Ref<TypeIdentifier> tid = ref(new TypeIdentifier(tp.loc, tp.tempinst.value.name.value));
+                                TypeIdentifier tid = new TypeIdentifier(tp.loc, tp.tempinst.name);
                                 Ref<Type> tx = ref(null);
                                 Ref<Expression> e = ref(null);
                                 Ref<Dsymbol> s = ref(null);
-                                resolve(tid.value, tp.loc, this.sc.value, ptr(e), ptr(tx), ptr(s), false);
+                                resolve(tid, tp.loc, this.sc, ptr(e), ptr(tx), ptr(s), false);
                                 if (tx.value != null)
                                 {
-                                    s.value = tx.value.toDsymbol(this.sc.value);
+                                    s.value = tx.value.toDsymbol(this.sc);
                                     {
-                                        Ref<TemplateInstance> ti = ref(s.value != null ? s.value.parent.value.isTemplateInstance() : null);
-                                        if ((ti.value) != null)
+                                        TemplateInstance ti = s.value != null ? s.value.parent.value.isTemplateInstance() : null;
+                                        if ((ti) != null)
                                         {
-                                            Ref<Dsymbol> p = ref((this.sc.value.get()).parent.value);
-                                            for (; (p.value != null) && (!pequals(p.value, ti.value));) {
-                                                p.value = p.value.parent.value;
+                                            Dsymbol p = (this.sc.get()).parent.value;
+                                            for (; (p != null) && (!pequals(p, ti));) {
+                                                p = p.parent.value;
                                             }
-                                            if (p.value != null)
+                                            if (p != null)
                                             {
-                                                s.value = ti.value.tempdecl.value;
+                                                s.value = ti.tempdecl;
                                             }
                                         }
                                     }
@@ -632,16 +613,16 @@ public class dtemplate {
                                 if (s.value != null)
                                 {
                                     s.value = s.value.toAlias();
-                                    Ref<TemplateDeclaration> td = ref(s.value.isTemplateDeclaration());
-                                    if (td.value != null)
+                                    TemplateDeclaration td = s.value.isTemplateDeclaration();
+                                    if (td != null)
                                     {
-                                        if (td.value.overroot.value != null)
+                                        if (td.overroot != null)
                                         {
-                                            td.value = td.value.overroot.value;
+                                            td = td.overroot;
                                         }
                                     L_outer17:
-                                        for (; td.value != null;td.value = td.value.overnext.value){
-                                            if ((pequals(td.value, tempdecl.value)))
+                                        for (; td != null;td = td.overnext.value){
+                                            if ((pequals(td, tempdecl)))
                                             {
                                                 /*goto L2*/throw Dispatch0.INSTANCE;
                                             }
@@ -650,13 +631,13 @@ public class dtemplate {
                                 }
                                 /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                             }
-                            TemplateParameter tpx = (this.parameters.value.get()).get(i.value);
-                            if (tpx.matchArg(this.sc.value, tempdecl.value, i.value, this.parameters.value, this.dedtypes.value, null) == 0)
+                            TemplateParameter tpx = (this.parameters.get()).get(i);
+                            if (tpx.matchArg(this.sc, tempdecl, i, this.parameters, this.dedtypes, null) == 0)
                             {
                                 /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                             }
                         }
-                        else if ((!pequals(tempdecl.value, tp.tempinst.value.tempdecl.value)))
+                        else if ((!pequals(tempdecl, tp.tempinst.tempdecl)))
                         {
                             /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                         }
@@ -664,142 +645,142 @@ public class dtemplate {
                     catch(Dispatch0 __d){}
                 /*L2:*/
                     {
-                        IntRef i = ref(0);
+                        int i = 0;
                     L_outer18:
-                        for (; 1 != 0;i.value++){
-                            Ref<RootObject> o1 = ref(null);
-                            if ((i.value < (t_ref.value.tempinst.value.tiargs.value.get()).length.value))
+                        for (; 1 != 0;i++){
+                            RootObject o1 = null;
+                            if ((i < (t.tempinst.tiargs.get()).length))
                             {
-                                o1.value = (t_ref.value.tempinst.value.tiargs.value.get()).get(i.value);
+                                o1 = (t.tempinst.tiargs.get()).get(i);
                             }
-                            else if ((i.value < t_ref.value.tempinst.value.tdtypes.value.length.value) && (i.value < (tp.tempinst.value.tiargs.value.get()).length.value))
+                            else if ((i < t.tempinst.tdtypes.value.length) && (i < (tp.tempinst.tiargs.get()).length))
                             {
-                                o1.value = t_ref.value.tempinst.value.tdtypes.value.get(i.value);
+                                o1 = t.tempinst.tdtypes.value.get(i);
                             }
-                            else if ((i.value >= (tp.tempinst.value.tiargs.value.get()).length.value))
+                            else if ((i >= (tp.tempinst.tiargs.get()).length))
                             {
                                 break;
                             }
-                            if ((i.value >= (tp.tempinst.value.tiargs.value.get()).length.value))
+                            if ((i >= (tp.tempinst.tiargs.get()).length))
                             {
-                                IntRef dim = ref((tempdecl.value.parameters.get()).length.value - (tempdecl.value.isVariadic() != null ? 1 : 0));
-                                for (; (i.value < dim.value) && (tempdecl.value.parameters.get()).get(i.value).dependent.value || (tempdecl.value.parameters.get()).get(i.value).hasDefaultArg();){
-                                    i.value++;
+                                int dim = (tempdecl.parameters.get()).length - (tempdecl.isVariadic() != null ? 1 : 0);
+                                for (; (i < dim) && (tempdecl.parameters.get()).get(i).dependent || (tempdecl.parameters.get()).get(i).hasDefaultArg();){
+                                    i++;
                                 }
-                                if ((i.value >= dim.value))
+                                if ((i >= dim))
                                 {
                                     break;
                                 }
                                 /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                             }
-                            Ref<RootObject> o2 = ref((tp.tempinst.value.tiargs.value.get()).get(i.value));
-                            Ref<Type> t2 = ref(isType(o2.value));
-                            IntRef j = ref((t2.value != null) && ((t2.value.ty.value & 0xFF) == ENUMTY.Tident) && (i.value == (tp.tempinst.value.tiargs.value.get()).length.value - 1) ? templateParameterLookup(t2.value, this.parameters.value) : 305419896);
-                            if ((j.value != 305419896) && (j.value == (this.parameters.value.get()).length.value - 1) && ((this.parameters.value.get()).get(j.value).isTemplateTupleParameter() != null))
+                            RootObject o2 = (tp.tempinst.tiargs.get()).get(i);
+                            Ref<Type> t2 = ref(isType(o2));
+                            int j = (t2.value != null) && ((t2.value.ty & 0xFF) == ENUMTY.Tident) && (i == (tp.tempinst.tiargs.get()).length - 1) ? templateParameterLookup(t2.value, this.parameters) : 305419896;
+                            if ((j != 305419896) && (j == (this.parameters.get()).length - 1) && ((this.parameters.get()).get(j).isTemplateTupleParameter() != null))
                             {
-                                IntRef vtdim = ref((tempdecl.value.isVariadic() != null ? (t_ref.value.tempinst.value.tiargs.value.get()).length.value : t_ref.value.tempinst.value.tdtypes.value.length.value) - i.value);
-                                Ref<Tuple> vt = ref(new Tuple(vtdim.value));
+                                int vtdim = (tempdecl.isVariadic() != null ? (t.tempinst.tiargs.get()).length : t.tempinst.tdtypes.value.length) - i;
+                                Tuple vt = new Tuple(vtdim);
                                 {
-                                    IntRef k = ref(0);
-                                    for (; (k.value < vtdim.value);k.value++){
-                                        Ref<RootObject> o = ref(null);
-                                        if ((k.value < (t_ref.value.tempinst.value.tiargs.value.get()).length.value))
+                                    int k = 0;
+                                    for (; (k < vtdim);k++){
+                                        RootObject o = null;
+                                        if ((k < (t.tempinst.tiargs.get()).length))
                                         {
-                                            o.value = (t_ref.value.tempinst.value.tiargs.value.get()).get(i.value + k.value);
+                                            o = (t.tempinst.tiargs.get()).get(i + k);
                                         }
                                         else
                                         {
-                                            o.value = t_ref.value.tempinst.value.tdtypes.value.get(i.value + k.value);
+                                            o = t.tempinst.tdtypes.value.get(i + k);
                                         }
-                                        vt.value.objects.value.set(k.value, o.value);
+                                        vt.objects.value.set(k, o);
                                     }
                                 }
-                                Ref<Tuple> v = ref((Tuple)(this.dedtypes.value.get()).get(j.value));
-                                if (v.value != null)
+                                Tuple v = (Tuple)(this.dedtypes.get()).get(j);
+                                if (v != null)
                                 {
-                                    if (!match(v.value, vt.value))
+                                    if (!match(v, vt))
                                     {
                                         /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                     }
                                 }
                                 else
                                 {
-                                    this.dedtypes.value.get().set(j.value, vt.value);
+                                    this.dedtypes.get().set(j, vt);
                                 }
                                 break;
                             }
-                            else if (o1.value == null)
+                            else if (o1 == null)
                             {
                                 break;
                             }
-                            Ref<Type> t1 = ref(isType(o1.value));
-                            Ref<Dsymbol> s1 = ref(isDsymbol(o1.value));
-                            Ref<Dsymbol> s2 = ref(isDsymbol(o2.value));
-                            Ref<Expression> e1 = ref(s1.value != null ? getValue(s1) : getValue(isExpression(o1.value)));
-                            Ref<Expression> e2 = ref(isExpression(o2.value));
-                            if ((t1.value != null) && (t2.value != null))
+                            Type t1 = isType(o1);
+                            Ref<Dsymbol> s1 = ref(isDsymbol(o1));
+                            Ref<Dsymbol> s2 = ref(isDsymbol(o2));
+                            Expression e1 = s1.value != null ? getValue(s1) : getValue(isExpression(o1));
+                            Ref<Expression> e2 = ref(isExpression(o2));
+                            if ((t1 != null) && (t2.value != null))
                             {
-                                if (deduceType(t1.value, this.sc.value, t2.value, this.parameters.value, this.dedtypes.value, null, 0, false) == 0)
+                                if (deduceType(t1, this.sc, t2.value, this.parameters, this.dedtypes, null, 0, false) == 0)
                                 {
                                     /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                 }
                             }
-                            else if ((e1.value != null) && (e2.value != null))
+                            else if ((e1 != null) && (e2.value != null))
                             {
                             /*Le:*/
-                                e1.value = e1.value.ctfeInterpret();
-                                if (((e2.value.op.value & 0xFF) == 26) && ((((VarExp)e2.value).var.value.storage_class.value & 262144L) != 0))
+                                e1 = e1.ctfeInterpret();
+                                if (((e2.value.op & 0xFF) == 26) && ((((VarExp)e2.value).var.storage_class & 262144L) != 0))
                                 {
-                                    j.value = templateIdentifierLookup(((VarExp)e2.value).var.value.ident.value, this.parameters.value);
-                                    if ((j.value != 305419896))
+                                    j = templateIdentifierLookup(((VarExp)e2.value).var.ident, this.parameters);
+                                    if ((j != 305419896))
                                     {
                                         /*goto L1*//*unrolled goto*/
                                     /*L1:*/
-                                        if ((j.value == 305419896))
+                                        if ((j == 305419896))
                                         {
-                                            resolve(t2.value, ((TypeIdentifier)t2.value).loc, this.sc.value, ptr(e2), ptr(t2), ptr(s2), false);
+                                            resolve(t2.value, ((TypeIdentifier)t2.value).loc, this.sc, ptr(e2), ptr(t2), ptr(s2), false);
                                             if (e2.value != null)
                                             {
                                                 /*goto Le*/throw Dispatch0.INSTANCE;
                                             }
                                             /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                         }
-                                        if ((this.parameters.value.get()).get(j.value).matchArg(this.sc.value, e1.value, j.value, this.parameters.value, this.dedtypes.value, null) == 0)
+                                        if ((this.parameters.get()).get(j).matchArg(this.sc, e1, j, this.parameters, this.dedtypes, null) == 0)
                                         {
                                             /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                         }
                                     }
                                 }
-                                e2.value = expressionSemantic(e2.value, this.sc.value);
+                                e2.value = expressionSemantic(e2.value, this.sc);
                                 e2.value = e2.value.ctfeInterpret();
-                                if (!e1.value.equals(e2.value))
+                                if (!e1.equals(e2.value))
                                 {
-                                    if (e2.value.implicitConvTo(e1.value.type.value) == 0)
+                                    if (e2.value.implicitConvTo(e1.type.value) == 0)
                                     {
                                         /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                     }
-                                    e2.value = e2.value.implicitCastTo(this.sc.value, e1.value.type.value);
+                                    e2.value = e2.value.implicitCastTo(this.sc, e1.type.value);
                                     e2.value = e2.value.ctfeInterpret();
-                                    if (!e1.value.equals(e2.value))
+                                    if (!e1.equals(e2.value))
                                     {
                                         /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                     }
                                 }
                             }
-                            else if ((e1.value != null) && (t2.value != null) && ((t2.value.ty.value & 0xFF) == ENUMTY.Tident))
+                            else if ((e1 != null) && (t2.value != null) && ((t2.value.ty & 0xFF) == ENUMTY.Tident))
                             {
-                                j.value = templateParameterLookup(t2.value, this.parameters.value);
+                                j = templateParameterLookup(t2.value, this.parameters);
                             /*L1:*/
-                                if ((j.value == 305419896))
+                                if ((j == 305419896))
                                 {
-                                    resolve(t2.value, ((TypeIdentifier)t2.value).loc, this.sc.value, ptr(e2), ptr(t2), ptr(s2), false);
+                                    resolve(t2.value, ((TypeIdentifier)t2.value).loc, this.sc, ptr(e2), ptr(t2), ptr(s2), false);
                                     if (e2.value != null)
                                     {
                                         /*goto Le*/throw Dispatch0.INSTANCE;
                                     }
                                     /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                 }
-                                if ((this.parameters.value.get()).get(j.value).matchArg(this.sc.value, e1.value, j.value, this.parameters.value, this.dedtypes.value, null) == 0)
+                                if ((this.parameters.get()).get(j).matchArg(this.sc, e1, j, this.parameters, this.dedtypes, null) == 0)
                                 {
                                     /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                 }
@@ -812,12 +793,12 @@ public class dtemplate {
                                     /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                 }
                             }
-                            else if ((s1.value != null) && (t2.value != null) && ((t2.value.ty.value & 0xFF) == ENUMTY.Tident))
+                            else if ((s1.value != null) && (t2.value != null) && ((t2.value.ty & 0xFF) == ENUMTY.Tident))
                             {
-                                j.value = templateParameterLookup(t2.value, this.parameters.value);
-                                if ((j.value == 305419896))
+                                j = templateParameterLookup(t2.value, this.parameters);
+                                if ((j == 305419896))
                                 {
-                                    resolve(t2.value, ((TypeIdentifier)t2.value).loc, this.sc.value, ptr(e2), ptr(t2), ptr(s2), false);
+                                    resolve(t2.value, ((TypeIdentifier)t2.value).loc, this.sc, ptr(e2), ptr(t2), ptr(s2), false);
                                     if (s2.value != null)
                                     {
                                         /*goto Ls*//*unrolled goto*/
@@ -829,7 +810,7 @@ public class dtemplate {
                                     }
                                     /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                 }
-                                if ((this.parameters.value.get()).get(j.value).matchArg(this.sc.value, s1.value, j.value, this.parameters.value, this.dedtypes.value, null) == 0)
+                                if ((this.parameters.get()).get(j).matchArg(this.sc, s1.value, j, this.parameters, this.dedtypes, null) == 0)
                                 {
                                     /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                 }
@@ -841,106 +822,99 @@ public class dtemplate {
                         }
                     }
                 }
-                this.visit((Type)t_ref);
+                this.visit((Type)t);
                 return ;
             }
             catch(Dispatch0 __d){}
         /*Lnomatch:*/
-            this.result.value = MATCH.nomatch;
+            this.result = MATCH.nomatch;
         }
 
         public  void visit(TypeStruct t) {
-            Ref<TypeStruct> t_ref = ref(t);
-            Ref<TemplateInstance> ti = ref(t_ref.value.sym.value.parent.value.isTemplateInstance());
-            if ((this.tparam.value != null) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tinstance))
+            TemplateInstance ti = t.sym.parent.value.isTemplateInstance();
+            if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tinstance))
             {
-                if ((ti.value != null) && (pequals(ti.value.toAlias(), t_ref.value.sym.value)))
+                if ((ti != null) && (pequals(ti.toAlias(), t.sym)))
                 {
-                    Ref<TypeInstance> tx = ref(new TypeInstance(Loc.initial.value, ti.value));
-                    this.result.value = deduceType(tx.value, this.sc.value, this.tparam.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false);
+                    TypeInstance tx = new TypeInstance(Loc.initial, ti);
+                    this.result = deduceType(tx, this.sc, this.tparam, this.parameters, this.dedtypes, this.wm, 0, false);
                     return ;
                 }
-                Ref<TypeInstance> tpi = ref((TypeInstance)this.tparam.value);
-                if (tpi.value.idents.length.value != 0)
+                TypeInstance tpi = (TypeInstance)this.tparam;
+                if (tpi.idents.length != 0)
                 {
-                    Ref<RootObject> id = ref(tpi.value.idents.get(tpi.value.idents.length.value - 1));
-                    if ((id.value.dyncast() == DYNCAST.identifier) && t_ref.value.sym.value.ident.value.equals((Identifier)id.value))
+                    RootObject id = tpi.idents.get(tpi.idents.length - 1);
+                    if ((id.dyncast() == DYNCAST.identifier) && t.sym.ident.equals((Identifier)id))
                     {
-                        Ref<Type> tparent = ref(t_ref.value.sym.value.parent.value.getType());
-                        if (tparent.value != null)
+                        Type tparent = t.sym.parent.value.getType();
+                        if (tparent != null)
                         {
-                            tpi.value.idents.length.value--;
-                            this.result.value = deduceType(tparent.value, this.sc.value, tpi.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false);
-                            tpi.value.idents.length.value++;
+                            tpi.idents.length--;
+                            this.result = deduceType(tparent, this.sc, tpi, this.parameters, this.dedtypes, this.wm, 0, false);
+                            tpi.idents.length++;
                             return ;
                         }
                     }
                 }
             }
-            if ((this.tparam.value != null) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tstruct))
+            if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tstruct))
             {
-                Ref<TypeStruct> tp = ref((TypeStruct)this.tparam.value);
-                if ((this.wm.value != null) && (t_ref.value.deduceWild(this.tparam.value, false) != 0))
+                TypeStruct tp = (TypeStruct)this.tparam;
+                if ((this.wm != null) && (t.deduceWild(this.tparam, false) != 0))
                 {
-                    this.result.value = MATCH.constant;
+                    this.result = MATCH.constant;
                     return ;
                 }
-                this.result.value = t_ref.value.implicitConvTo(tp.value);
+                this.result = t.implicitConvTo(tp);
                 return ;
             }
-            this.visit((Type)t_ref);
+            this.visit((Type)t);
         }
 
         public  void visit(TypeEnum t) {
-            Ref<TypeEnum> t_ref = ref(t);
-            if ((this.tparam.value != null) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tenum))
+            if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tenum))
             {
-                TypeEnum tp = (TypeEnum)this.tparam.value;
-                if ((pequals(t_ref.value.sym.value, tp.sym.value)))
+                TypeEnum tp = (TypeEnum)this.tparam;
+                if ((pequals(t.sym, tp.sym)))
                 {
-                    this.visit((Type)t_ref);
+                    this.visit((Type)t);
                 }
                 else
                 {
-                    this.result.value = MATCH.nomatch;
+                    this.result = MATCH.nomatch;
                 }
                 return ;
             }
-            Ref<Type> tb = ref(t_ref.value.toBasetype());
-            if (((tb.value.ty.value & 0xFF) == (this.tparam.value.ty.value & 0xFF)) || ((tb.value.ty.value & 0xFF) == ENUMTY.Tsarray) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Taarray))
+            Type tb = t.toBasetype();
+            if (((tb.ty & 0xFF) == (this.tparam.ty & 0xFF)) || ((tb.ty & 0xFF) == ENUMTY.Tsarray) && ((this.tparam.ty & 0xFF) == ENUMTY.Taarray))
             {
-                this.result.value = deduceType(tb.value, this.sc.value, this.tparam.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false);
+                this.result = deduceType(tb, this.sc, this.tparam, this.parameters, this.dedtypes, this.wm, 0, false);
                 return ;
             }
-            this.visit((Type)t_ref);
+            this.visit((Type)t);
         }
 
         public static void deduceBaseClassParameters(BaseClass b, Ptr<Scope> sc, Type tparam, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, Ptr<DArray<RootObject>> best, IntRef numBaseClassMatches) {
-            Ref<Ptr<Scope>> sc_ref = ref(sc);
-            Ref<Type> tparam_ref = ref(tparam);
-            Ref<Ptr<DArray<TemplateParameter>>> parameters_ref = ref(parameters);
-            Ref<Ptr<DArray<RootObject>>> dedtypes_ref = ref(dedtypes);
-            Ref<Ptr<DArray<RootObject>>> best_ref = ref(best);
-            Ref<TemplateInstance> parti = ref(b.sym.value != null ? b.sym.value.parent.value.isTemplateInstance() : null);
-            if (parti.value != null)
+            TemplateInstance parti = b.sym != null ? b.sym.parent.value.isTemplateInstance() : null;
+            if (parti != null)
             {
-                Ref<Ptr<DArray<RootObject>>> tmpdedtypes = ref(refPtr(new DArray<RootObject>((dedtypes_ref.value.get()).length.value)));
-                memcpy((BytePtr)((tmpdedtypes.value.get()).tdata()), ((dedtypes_ref.value.get()).tdata()), ((dedtypes_ref.value.get()).length.value * 4));
-                Ref<TypeInstance> t = ref(new TypeInstance(Loc.initial.value, parti.value));
-                IntRef m = ref(deduceType(t.value, sc_ref.value, tparam_ref.value, parameters_ref.value, tmpdedtypes.value, null, 0, false));
-                if ((m.value > MATCH.nomatch))
+                Ptr<DArray<RootObject>> tmpdedtypes = refPtr(new DArray<RootObject>((dedtypes.get()).length));
+                memcpy((BytePtr)((tmpdedtypes.get()).tdata()), ((dedtypes.get()).tdata()), ((dedtypes.get()).length * 4));
+                TypeInstance t = new TypeInstance(Loc.initial, parti);
+                int m = deduceType(t, sc, tparam, parameters, tmpdedtypes, null, 0, false);
+                if ((m > MATCH.nomatch))
                 {
                     if ((numBaseClassMatches.value == 0))
                     {
-                        memcpy((BytePtr)((best_ref.value.get()).tdata()), ((tmpdedtypes.value.get()).tdata()), ((tmpdedtypes.value.get()).length.value * 4));
+                        memcpy((BytePtr)((best.get()).tdata()), ((tmpdedtypes.get()).tdata()), ((tmpdedtypes.get()).length * 4));
                     }
                     else
                     {
-                        IntRef k = ref(0);
-                        for (; (k.value < (tmpdedtypes.value.get()).length.value);k.value += 1){
-                            if ((!pequals((tmpdedtypes.value.get()).get(k.value), (best_ref.value.get()).get(k.value))))
+                        int k = 0;
+                        for (; (k < (tmpdedtypes.get()).length);k += 1){
+                            if ((!pequals((tmpdedtypes.get()).get(k), (best.get()).get(k))))
                             {
-                                best_ref.value.get().set(k.value, (dedtypes_ref.value.get()).get(k.value));
+                                best.get().set(k, (dedtypes.get()).get(k));
                             }
                         }
                     }
@@ -948,146 +922,145 @@ public class dtemplate {
                 }
             }
             {
-                Ref<Slice<BaseClass>> __r1205 = ref(b.baseInterfaces.value.copy());
-                IntRef __key1206 = ref(0);
-                for (; (__key1206.value < __r1205.value.getLength());__key1206.value += 1) {
-                    Ref<BaseClass> bi = ref(__r1205.value.get(__key1206.value).copy());
-                    deduceBaseClassParameters(bi, sc_ref.value, tparam_ref.value, parameters_ref.value, dedtypes_ref.value, best_ref.value, numBaseClassMatches);
+                Slice<BaseClass> __r1201 = b.baseInterfaces.copy();
+                int __key1202 = 0;
+                for (; (__key1202 < __r1201.getLength());__key1202 += 1) {
+                    Ref<BaseClass> bi = ref(__r1201.get(__key1202).copy());
+                    deduceBaseClassParameters(bi, sc, tparam, parameters, dedtypes, best, numBaseClassMatches);
                 }
             }
         }
 
         public  void visit(TypeClass t) {
-            Ref<TypeClass> t_ref = ref(t);
-            Ref<TemplateInstance> ti = ref(t_ref.value.sym.value.parent.value.isTemplateInstance());
-            if ((this.tparam.value != null) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tinstance))
+            TemplateInstance ti = t.sym.parent.value.isTemplateInstance();
+            if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tinstance))
             {
-                if ((ti.value != null) && (pequals(ti.value.toAlias(), t_ref.value.sym.value)))
+                if ((ti != null) && (pequals(ti.toAlias(), t.sym)))
                 {
-                    Ref<TypeInstance> tx = ref(new TypeInstance(Loc.initial.value, ti.value));
-                    IntRef m = ref(deduceType(tx.value, this.sc.value, this.tparam.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false));
-                    if ((m.value != MATCH.nomatch))
+                    TypeInstance tx = new TypeInstance(Loc.initial, ti);
+                    int m = deduceType(tx, this.sc, this.tparam, this.parameters, this.dedtypes, this.wm, 0, false);
+                    if ((m != MATCH.nomatch))
                     {
-                        this.result.value = m.value;
+                        this.result = m;
                         return ;
                     }
                 }
-                Ref<TypeInstance> tpi = ref((TypeInstance)this.tparam.value);
-                if (tpi.value.idents.length.value != 0)
+                TypeInstance tpi = (TypeInstance)this.tparam;
+                if (tpi.idents.length != 0)
                 {
-                    Ref<RootObject> id = ref(tpi.value.idents.get(tpi.value.idents.length.value - 1));
-                    if ((id.value.dyncast() == DYNCAST.identifier) && t_ref.value.sym.value.ident.value.equals((Identifier)id.value))
+                    RootObject id = tpi.idents.get(tpi.idents.length - 1);
+                    if ((id.dyncast() == DYNCAST.identifier) && t.sym.ident.equals((Identifier)id))
                     {
-                        Ref<Type> tparent = ref(t_ref.value.sym.value.parent.value.getType());
-                        if (tparent.value != null)
+                        Type tparent = t.sym.parent.value.getType();
+                        if (tparent != null)
                         {
-                            tpi.value.idents.length.value--;
-                            this.result.value = deduceType(tparent.value, this.sc.value, tpi.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false);
-                            tpi.value.idents.length.value++;
+                            tpi.idents.length--;
+                            this.result = deduceType(tparent, this.sc, tpi, this.parameters, this.dedtypes, this.wm, 0, false);
+                            tpi.idents.length++;
                             return ;
                         }
                     }
                 }
-                this.visit((Type)t_ref);
-                if ((this.result.value != MATCH.nomatch))
+                this.visit((Type)t);
+                if ((this.result != MATCH.nomatch))
                 {
                     return ;
                 }
                 IntRef numBaseClassMatches = ref(0);
-                Ref<Ptr<DArray<RootObject>>> best = ref(refPtr(new DArray<RootObject>((this.dedtypes.value.get()).length.value)));
-                Ref<ClassDeclaration> s = ref(t_ref.value.sym.value);
-                for (; (s.value != null) && ((s.value.baseclasses.get()).length.value > 0);){
-                    deduceBaseClassParameters((s.value.baseclasses.get()).get(0).get(), this.sc.value, this.tparam.value, this.parameters.value, this.dedtypes.value, best.value, numBaseClassMatches);
+                Ptr<DArray<RootObject>> best = refPtr(new DArray<RootObject>((this.dedtypes.get()).length));
+                ClassDeclaration s = t.sym;
+                for (; (s != null) && ((s.baseclasses.get()).length > 0);){
+                    deduceBaseClassParameters((s.baseclasses.get()).get(0).get(), this.sc, this.tparam, this.parameters, this.dedtypes, best, numBaseClassMatches);
                     {
-                        Ref<Slice<Ptr<BaseClass>>> __r1207 = ref(s.value.interfaces.value.copy());
-                        IntRef __key1208 = ref(0);
-                        for (; (__key1208.value < __r1207.value.getLength());__key1208.value += 1) {
-                            Ref<Ptr<BaseClass>> b = ref(__r1207.value.get(__key1208.value));
-                            deduceBaseClassParameters(b.value.get(), this.sc.value, this.tparam.value, this.parameters.value, this.dedtypes.value, best.value, numBaseClassMatches);
+                        Slice<Ptr<BaseClass>> __r1203 = s.interfaces.copy();
+                        int __key1204 = 0;
+                        for (; (__key1204 < __r1203.getLength());__key1204 += 1) {
+                            Ptr<BaseClass> b = __r1203.get(__key1204);
+                            deduceBaseClassParameters(b.get(), this.sc, this.tparam, this.parameters, this.dedtypes, best, numBaseClassMatches);
                         }
                     }
-                    s.value = ((s.value.baseclasses.get()).get(0).get()).sym.value;
+                    s = ((s.baseclasses.get()).get(0).get()).sym;
                 }
                 if ((numBaseClassMatches.value == 0))
                 {
-                    this.result.value = MATCH.nomatch;
+                    this.result = MATCH.nomatch;
                     return ;
                 }
-                memcpy((BytePtr)((this.dedtypes.value.get()).tdata()), ((best.value.get()).tdata()), ((best.value.get()).length.value * 4));
-                this.result.value = MATCH.convert;
+                memcpy((BytePtr)((this.dedtypes.get()).tdata()), ((best.get()).tdata()), ((best.get()).length * 4));
+                this.result = MATCH.convert;
                 return ;
             }
-            if ((this.tparam.value != null) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tclass))
+            if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tclass))
             {
-                Ref<TypeClass> tp = ref((TypeClass)this.tparam.value);
-                if ((this.wm.value != null) && (t_ref.value.deduceWild(this.tparam.value, false) != 0))
+                TypeClass tp = (TypeClass)this.tparam;
+                if ((this.wm != null) && (t.deduceWild(this.tparam, false) != 0))
                 {
-                    this.result.value = MATCH.constant;
+                    this.result = MATCH.constant;
                     return ;
                 }
-                this.result.value = t_ref.value.implicitConvTo(tp.value);
+                this.result = t.implicitConvTo(tp);
                 return ;
             }
-            this.visit((Type)t_ref);
+            this.visit((Type)t);
         }
 
         public  void visit(Expression e) {
-            Ref<Expression> e_ref = ref(e);
-            IntRef i = ref(templateParameterLookup(this.tparam.value, this.parameters.value));
-            if ((i.value == 305419896) || (((TypeIdentifier)this.tparam.value).idents.length.value > 0))
+            int i = templateParameterLookup(this.tparam, this.parameters);
+            if ((i == 305419896) || (((TypeIdentifier)this.tparam).idents.length > 0))
             {
-                if ((pequals(e_ref.value, emptyArrayElement.value)) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tarray))
+                if ((pequals(e, emptyArrayElement)) && ((this.tparam.ty & 0xFF) == ENUMTY.Tarray))
                 {
-                    Ref<Type> tn = ref(((TypeNext)this.tparam.value).next.value);
-                    this.result.value = deduceType(emptyArrayElement.value, this.sc.value, tn.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false);
+                    Type tn = ((TypeNext)this.tparam).next.value;
+                    this.result = deduceType(emptyArrayElement, this.sc, tn, this.parameters, this.dedtypes, this.wm, 0, false);
                     return ;
                 }
-                e_ref.value.type.value.accept(this);
+                e.type.value.accept(this);
                 return ;
             }
-            Ref<TemplateTypeParameter> tp = ref((this.parameters.value.get()).get(i.value).isTemplateTypeParameter());
-            if (tp.value == null)
+            TemplateTypeParameter tp = (this.parameters.get()).get(i).isTemplateTypeParameter();
+            if (tp == null)
             {
                 return ;
             }
-            if ((pequals(e_ref.value, emptyArrayElement.value)))
+            if ((pequals(e, emptyArrayElement)))
             {
-                if ((this.dedtypes.value.get()).get(i.value) != null)
+                if ((this.dedtypes.get()).get(i) != null)
                 {
-                    this.result.value = MATCH.exact;
+                    this.result = MATCH.exact;
                     return ;
                 }
-                if (tp.value.defaultType.value != null)
+                if (tp.defaultType != null)
                 {
-                    tp.value.defaultType.value.accept(this);
+                    tp.defaultType.accept(this);
                     return ;
                 }
             }
             Function1<Type,Boolean> isTopRef = new Function1<Type,Boolean>(){
                 public Boolean invoke(Type t) {
-                    Type tb = t.baseElemOf();
-                    return ((tb.ty.value & 0xFF) == ENUMTY.Tclass) || ((tb.ty.value & 0xFF) == ENUMTY.Taarray) || ((tb.ty.value & 0xFF) == ENUMTY.Tstruct) && tb.hasPointers();
+                    Ref<Type> t_ref = ref(t);
+                    Ref<Type> tb = ref(t_ref.value.baseElemOf());
+                    return ((tb.value.ty & 0xFF) == ENUMTY.Tclass) || ((tb.value.ty & 0xFF) == ENUMTY.Taarray) || ((tb.value.ty & 0xFF) == ENUMTY.Tstruct) && tb.value.hasPointers();
                 }
             };
-            Ref<Type> at = ref((Type)(this.dedtypes.value.get()).get(i.value));
+            Type at = (Type)(this.dedtypes.get()).get(i);
             Ref<Type> tt = ref(null);
             {
-                Ref<Byte> wx = ref(deduceWildHelper(e_ref.value.type.value, ptr(tt), this.tparam.value));
-                if ((wx.value) != 0)
+                byte wx = deduceWildHelper(e.type.value, ptr(tt), this.tparam);
+                if ((wx) != 0)
                 {
-                    this.wm.value.set(0, this.wm.value.get() | (wx.value & 0xFF));
-                    this.result.value = MATCH.constant;
+                    this.wm.set(0, this.wm.get() | (wx & 0xFF));
+                    this.result = MATCH.constant;
                 }
                 else {
-                    IntRef m = ref(deduceTypeHelper(e_ref.value.type.value, ptr(tt), this.tparam.value));
-                    if ((m.value) != 0)
+                    int m = deduceTypeHelper(e.type.value, ptr(tt), this.tparam);
+                    if ((m) != 0)
                     {
-                        this.result.value = m.value;
+                        this.result = m;
                     }
-                    else if (!isTopRef.invoke(e_ref.value.type.value))
+                    else if (!isTopRef.invoke(e.type.value))
                     {
-                        tt.value = e_ref.value.type.value.mutableOf();
-                        this.result.value = MATCH.convert;
+                        tt.value = e.type.value.mutableOf();
+                        this.result = MATCH.convert;
                     }
                     else
                     {
@@ -1095,220 +1068,216 @@ public class dtemplate {
                     }
                 }
             }
-            if (at.value == null)
+            if (at == null)
             {
-                this.dedtypes.value.get().set(i.value, new TypeDeduced(tt.value, e_ref.value, this.tparam.value));
+                this.dedtypes.get().set(i, new TypeDeduced(tt.value, e, this.tparam));
                 return ;
             }
-            Ref<TypeDeduced> xt = ref(null);
-            if (((at.value.ty.value & 0xFF) == ENUMTY.Tnone))
+            TypeDeduced xt = null;
+            if (((at.ty & 0xFF) == ENUMTY.Tnone))
             {
-                xt.value = (TypeDeduced)at.value;
-                at.value = xt.value.tded.value;
+                xt = (TypeDeduced)at;
+                at = xt.tded;
             }
-            IntRef match1 = ref(xt.value != null ? xt.value.matchAll(tt.value) : MATCH.nomatch);
-            Ref<Type> pt = ref(at.value.addMod(this.tparam.value.mod.value));
-            if (this.wm.value.get() != 0)
+            int match1 = xt != null ? xt.matchAll(tt.value) : MATCH.nomatch;
+            Type pt = at.addMod(this.tparam.mod);
+            if (this.wm.get() != 0)
             {
-                pt.value = pt.value.substWildTo(this.wm.value.get());
+                pt = pt.substWildTo(this.wm.get());
             }
-            IntRef match2 = ref(e_ref.value.implicitConvTo(pt.value));
-            if ((match1.value > MATCH.nomatch) && (match2.value > MATCH.nomatch))
+            int match2 = e.implicitConvTo(pt);
+            if ((match1 > MATCH.nomatch) && (match2 > MATCH.nomatch))
             {
-                if ((at.value.implicitConvTo(tt.value) <= MATCH.nomatch))
+                if ((at.implicitConvTo(tt.value) <= MATCH.nomatch))
                 {
-                    match1.value = MATCH.nomatch;
+                    match1 = MATCH.nomatch;
                 }
-                else if ((tt.value.implicitConvTo(at.value) <= MATCH.nomatch))
+                else if ((tt.value.implicitConvTo(at) <= MATCH.nomatch))
                 {
-                    match2.value = MATCH.nomatch;
+                    match2 = MATCH.nomatch;
                 }
-                else if ((tt.value.isTypeBasic() != null) && ((tt.value.ty.value & 0xFF) == (at.value.ty.value & 0xFF)) && ((tt.value.mod.value & 0xFF) != (at.value.mod.value & 0xFF)))
+                else if ((tt.value.isTypeBasic() != null) && ((tt.value.ty & 0xFF) == (at.ty & 0xFF)) && ((tt.value.mod & 0xFF) != (at.mod & 0xFF)))
                 {
-                    if (!tt.value.isMutable() && !at.value.isMutable())
+                    if (!tt.value.isMutable() && !at.isMutable())
                     {
-                        tt.value = tt.value.mutableOf().addMod(MODmerge(tt.value.mod.value, at.value.mod.value));
+                        tt.value = tt.value.mutableOf().addMod(MODmerge(tt.value.mod, at.mod));
                     }
                     else if (tt.value.isMutable())
                     {
-                        if (((at.value.mod.value & 0xFF) == 0))
+                        if (((at.mod & 0xFF) == 0))
                         {
-                            match1.value = MATCH.nomatch;
+                            match1 = MATCH.nomatch;
                         }
                         else
                         {
-                            match2.value = MATCH.nomatch;
+                            match2 = MATCH.nomatch;
                         }
                     }
-                    else if (at.value.isMutable())
+                    else if (at.isMutable())
                     {
-                        if (((tt.value.mod.value & 0xFF) == 0))
+                        if (((tt.value.mod & 0xFF) == 0))
                         {
-                            match2.value = MATCH.nomatch;
+                            match2 = MATCH.nomatch;
                         }
                         else
                         {
-                            match1.value = MATCH.nomatch;
+                            match1 = MATCH.nomatch;
                         }
                     }
                 }
                 else
                 {
-                    match1.value = MATCH.nomatch;
-                    match2.value = MATCH.nomatch;
+                    match1 = MATCH.nomatch;
+                    match2 = MATCH.nomatch;
                 }
             }
-            if ((match1.value > MATCH.nomatch))
+            if ((match1 > MATCH.nomatch))
             {
-                if (xt.value != null)
+                if (xt != null)
                 {
-                    xt.value.update(tt.value, e_ref.value, this.tparam.value);
+                    xt.update(tt.value, e, this.tparam);
                 }
                 else
                 {
-                    this.dedtypes.value.get().set(i.value, tt.value);
+                    this.dedtypes.get().set(i, tt.value);
                 }
-                this.result.value = match1.value;
+                this.result = match1;
                 return ;
             }
-            if ((match2.value > MATCH.nomatch))
+            if ((match2 > MATCH.nomatch))
             {
-                if (xt.value != null)
+                if (xt != null)
                 {
-                    xt.value.update(e_ref.value, this.tparam.value);
+                    xt.update(e, this.tparam);
                 }
-                this.result.value = match2.value;
+                this.result = match2;
                 return ;
             }
             {
-                Ref<Type> t = ref(rawTypeMerge(at.value, tt.value));
-                if ((t.value) != null)
+                Type t = rawTypeMerge(at, tt.value);
+                if ((t) != null)
                 {
-                    if (xt.value != null)
+                    if (xt != null)
                     {
-                        xt.value.update(t.value, e_ref.value, this.tparam.value);
+                        xt.update(t, e, this.tparam);
                     }
                     else
                     {
-                        this.dedtypes.value.get().set(i.value, t.value);
+                        this.dedtypes.get().set(i, t);
                     }
-                    pt.value = tt.value.addMod(this.tparam.value.mod.value);
-                    if (this.wm.value.get() != 0)
+                    pt = tt.value.addMod(this.tparam.mod);
+                    if (this.wm.get() != 0)
                     {
-                        pt.value = pt.value.substWildTo(this.wm.value.get());
+                        pt = pt.substWildTo(this.wm.get());
                     }
-                    this.result.value = e_ref.value.implicitConvTo(pt.value);
+                    this.result = e.implicitConvTo(pt);
                     return ;
                 }
             }
-            this.result.value = MATCH.nomatch;
+            this.result = MATCH.nomatch;
         }
 
         public  int deduceEmptyArrayElement() {
-            if (emptyArrayElement.value == null)
+            if (emptyArrayElement == null)
             {
-                emptyArrayElement.value = new IdentifierExp(Loc.initial.value, Id.p.value);
-                emptyArrayElement.value.type.value = Type.tvoid.value;
+                emptyArrayElement = new IdentifierExp(Loc.initial, Id.p);
+                emptyArrayElement.type.value = Type.tvoid;
             }
-            assert(((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tarray));
-            Ref<Type> tn = ref(((TypeNext)this.tparam.value).next.value);
-            return deduceType(emptyArrayElement.value, this.sc.value, tn.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false);
+            assert(((this.tparam.ty & 0xFF) == ENUMTY.Tarray));
+            Type tn = ((TypeNext)this.tparam).next.value;
+            return deduceType(emptyArrayElement, this.sc, tn, this.parameters, this.dedtypes, this.wm, 0, false);
         }
 
         public  void visit(NullExp e) {
-            Ref<NullExp> e_ref = ref(e);
-            if (((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tarray) && ((e_ref.value.type.value.ty.value & 0xFF) == ENUMTY.Tnull))
+            if (((this.tparam.ty & 0xFF) == ENUMTY.Tarray) && ((e.type.value.ty & 0xFF) == ENUMTY.Tnull))
             {
-                this.result.value = this.deduceEmptyArrayElement();
+                this.result = this.deduceEmptyArrayElement();
                 return ;
             }
-            this.visit((Expression)e_ref);
+            this.visit((Expression)e);
         }
 
         public  void visit(StringExp e) {
-            Ref<StringExp> e_ref = ref(e);
             Type taai = null;
-            if (((e_ref.value.type.value.ty.value & 0xFF) == ENUMTY.Tarray) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tsarray) || ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Taarray) && (((taai = ((TypeAArray)this.tparam.value).index.value).ty.value & 0xFF) == ENUMTY.Tident) && (((TypeIdentifier)taai).idents.length.value == 0))
+            if (((e.type.value.ty & 0xFF) == ENUMTY.Tarray) && ((this.tparam.ty & 0xFF) == ENUMTY.Tsarray) || ((this.tparam.ty & 0xFF) == ENUMTY.Taarray) && (((taai = ((TypeAArray)this.tparam).index).ty & 0xFF) == ENUMTY.Tident) && (((TypeIdentifier)taai).idents.length == 0))
             {
-                e_ref.value.type.value.nextOf().sarrayOf((long)e_ref.value.len.value).accept(this);
+                e.type.value.nextOf().sarrayOf((long)e.len).accept(this);
                 return ;
             }
-            this.visit((Expression)e_ref);
+            this.visit((Expression)e);
         }
 
         public  void visit(ArrayLiteralExp e) {
-            Ref<ArrayLiteralExp> e_ref = ref(e);
-            if ((e_ref.value.elements.value == null) || ((e_ref.value.elements.value.get()).length.value == 0) && ((e_ref.value.type.value.toBasetype().nextOf().ty.value & 0xFF) == ENUMTY.Tvoid) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tarray))
+            if ((e.elements == null) || ((e.elements.get()).length == 0) && ((e.type.value.toBasetype().nextOf().ty & 0xFF) == ENUMTY.Tvoid) && ((this.tparam.ty & 0xFF) == ENUMTY.Tarray))
             {
-                this.result.value = this.deduceEmptyArrayElement();
+                this.result = this.deduceEmptyArrayElement();
                 return ;
             }
-            if (((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tarray) && (e_ref.value.elements.value != null) && ((e_ref.value.elements.value.get()).length.value != 0))
+            if (((this.tparam.ty & 0xFF) == ENUMTY.Tarray) && (e.elements != null) && ((e.elements.get()).length != 0))
             {
-                Ref<Type> tn = ref(((TypeDArray)this.tparam.value).next.value);
-                this.result.value = MATCH.exact;
-                if (e_ref.value.basis.value != null)
+                Type tn = ((TypeDArray)this.tparam).next.value;
+                this.result = MATCH.exact;
+                if (e.basis.value != null)
                 {
-                    IntRef m = ref(deduceType(e_ref.value.basis.value, this.sc.value, tn.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false));
-                    if ((m.value < this.result.value))
+                    int m = deduceType(e.basis.value, this.sc, tn, this.parameters, this.dedtypes, this.wm, 0, false);
+                    if ((m < this.result))
                     {
-                        this.result.value = m.value;
+                        this.result = m;
                     }
                 }
                 {
-                    IntRef i = ref(0);
-                    for (; (i.value < (e_ref.value.elements.value.get()).length.value);i.value++){
-                        if ((this.result.value <= MATCH.nomatch))
+                    int i = 0;
+                    for (; (i < (e.elements.get()).length);i++){
+                        if ((this.result <= MATCH.nomatch))
                         {
                             break;
                         }
-                        Ref<Expression> el = ref((e_ref.value.elements.value.get()).get(i.value));
-                        if (el.value == null)
+                        Expression el = (e.elements.get()).get(i);
+                        if (el == null)
                         {
                             continue;
                         }
-                        IntRef m = ref(deduceType(el.value, this.sc.value, tn.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false));
-                        if ((m.value < this.result.value))
+                        int m = deduceType(el, this.sc, tn, this.parameters, this.dedtypes, this.wm, 0, false);
+                        if ((m < this.result))
                         {
-                            this.result.value = m.value;
+                            this.result = m;
                         }
                     }
                 }
                 return ;
             }
             Type taai = null;
-            if (((e_ref.value.type.value.ty.value & 0xFF) == ENUMTY.Tarray) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tsarray) || ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Taarray) && (((taai = ((TypeAArray)this.tparam.value).index.value).ty.value & 0xFF) == ENUMTY.Tident) && (((TypeIdentifier)taai).idents.length.value == 0))
+            if (((e.type.value.ty & 0xFF) == ENUMTY.Tarray) && ((this.tparam.ty & 0xFF) == ENUMTY.Tsarray) || ((this.tparam.ty & 0xFF) == ENUMTY.Taarray) && (((taai = ((TypeAArray)this.tparam).index).ty & 0xFF) == ENUMTY.Tident) && (((TypeIdentifier)taai).idents.length == 0))
             {
-                e_ref.value.type.value.nextOf().sarrayOf((long)(e_ref.value.elements.value.get()).length.value).accept(this);
+                e.type.value.nextOf().sarrayOf((long)(e.elements.get()).length).accept(this);
                 return ;
             }
-            this.visit((Expression)e_ref);
+            this.visit((Expression)e);
         }
 
         public  void visit(AssocArrayLiteralExp e) {
-            Ref<AssocArrayLiteralExp> e_ref = ref(e);
-            if (((this.tparam.value.ty.value & 0xFF) == ENUMTY.Taarray) && (e_ref.value.keys.value != null) && ((e_ref.value.keys.value.get()).length.value != 0))
+            if (((this.tparam.ty & 0xFF) == ENUMTY.Taarray) && (e.keys != null) && ((e.keys.get()).length != 0))
             {
-                TypeAArray taa = (TypeAArray)this.tparam.value;
-                this.result.value = MATCH.exact;
+                TypeAArray taa = (TypeAArray)this.tparam;
+                this.result = MATCH.exact;
                 {
-                    IntRef i = ref(0);
-                    for (; (i.value < (e_ref.value.keys.value.get()).length.value);i.value++){
-                        IntRef m1 = ref(deduceType((e_ref.value.keys.value.get()).get(i.value), this.sc.value, taa.index.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false));
-                        if ((m1.value < this.result.value))
+                    int i = 0;
+                    for (; (i < (e.keys.get()).length);i++){
+                        int m1 = deduceType((e.keys.get()).get(i), this.sc, taa.index, this.parameters, this.dedtypes, this.wm, 0, false);
+                        if ((m1 < this.result))
                         {
-                            this.result.value = m1.value;
+                            this.result = m1;
                         }
-                        if ((this.result.value <= MATCH.nomatch))
+                        if ((this.result <= MATCH.nomatch))
                         {
                             break;
                         }
-                        IntRef m2 = ref(deduceType((e_ref.value.values.value.get()).get(i.value), this.sc.value, taa.next.value, this.parameters.value, this.dedtypes.value, this.wm.value, 0, false));
-                        if ((m2.value < this.result.value))
+                        int m2 = deduceType((e.values.get()).get(i), this.sc, taa.next.value, this.parameters, this.dedtypes, this.wm, 0, false);
+                        if ((m2 < this.result))
                         {
-                            this.result.value = m2.value;
+                            this.result = m2;
                         }
-                        if ((this.result.value <= MATCH.nomatch))
+                        if ((this.result <= MATCH.nomatch))
                         {
                             break;
                         }
@@ -1316,104 +1285,103 @@ public class dtemplate {
                 }
                 return ;
             }
-            this.visit((Expression)e_ref);
+            this.visit((Expression)e);
         }
 
         public  void visit(FuncExp e) {
-            if (e.td.value != null)
+            if (e.td != null)
             {
-                Type to = this.tparam.value;
-                if ((to.nextOf() == null) || ((to.nextOf().ty.value & 0xFF) != ENUMTY.Tfunction))
+                Type to = this.tparam;
+                if ((to.nextOf() == null) || ((to.nextOf().ty & 0xFF) != ENUMTY.Tfunction))
                 {
                     return ;
                 }
                 TypeFunction tof = (TypeFunction)to.nextOf();
-                assert(e.td.value._scope.value != null);
-                TypeFunction tf = (TypeFunction)e.fd.value.type.value;
-                IntRef dim = ref(tf.parameterList.length());
-                if ((tof.parameterList.length() != dim.value) || (tof.parameterList.varargs.value != tf.parameterList.varargs.value))
+                assert(e.td._scope != null);
+                TypeFunction tf = (TypeFunction)e.fd.type;
+                int dim = tf.parameterList.length();
+                if ((tof.parameterList.length() != dim) || (tof.parameterList.varargs != tf.parameterList.varargs))
                 {
                     return ;
                 }
-                Ref<Ptr<DArray<RootObject>>> tiargs = ref(refPtr(new DArray<RootObject>()));
-                (tiargs.value.get()).reserve((e.td.value.parameters.get()).length.value);
+                Ptr<DArray<RootObject>> tiargs = refPtr(new DArray<RootObject>());
+                (tiargs.get()).reserve((e.td.parameters.get()).length);
                 {
-                    IntRef i = ref(0);
-                    for (; (i.value < (e.td.value.parameters.get()).length.value);i.value++){
-                        TemplateParameter tp = (e.td.value.parameters.get()).get(i.value);
-                        IntRef u = ref(0);
-                        for (; (u.value < dim.value);u.value++){
-                            Parameter p = tf.parameterList.get(u.value);
-                            if (((p.type.value.ty.value & 0xFF) == ENUMTY.Tident) && (pequals(((TypeIdentifier)p.type.value).ident.value, tp.ident.value)))
+                    int i = 0;
+                    for (; (i < (e.td.parameters.get()).length);i++){
+                        TemplateParameter tp = (e.td.parameters.get()).get(i);
+                        int u = 0;
+                        for (; (u < dim);u++){
+                            Parameter p = tf.parameterList.get(u);
+                            if (((p.type.ty & 0xFF) == ENUMTY.Tident) && (pequals(((TypeIdentifier)p.type).ident, tp.ident)))
                             {
                                 break;
                             }
                         }
-                        assert((u.value < dim.value));
-                        Ref<Parameter> pto = ref(tof.parameterList.get(u.value));
-                        if (pto.value == null)
+                        assert((u < dim));
+                        Parameter pto = tof.parameterList.get(u);
+                        if (pto == null)
                         {
                             break;
                         }
-                        Ref<Type> t = ref(pto.value.type.value.syntaxCopy());
-                        if (reliesOnTemplateParameters(t.value, (this.parameters.value.get()).opSlice(this.inferStart.value, (this.parameters.value.get()).length.value)))
+                        Type t = pto.type.syntaxCopy();
+                        if (reliesOnTemplateParameters(t, (this.parameters.get()).opSlice(this.inferStart, (this.parameters.get()).length)))
                         {
                             return ;
                         }
-                        t.value = typeSemantic(t.value, e.loc.value, this.sc.value);
-                        if (((t.value.ty.value & 0xFF) == ENUMTY.Terror))
+                        t = typeSemantic(t, e.loc, this.sc);
+                        if (((t.ty & 0xFF) == ENUMTY.Terror))
                         {
                             return ;
                         }
-                        (tiargs.value.get()).push(t.value);
+                        (tiargs.get()).push(t);
                     }
                 }
                 if ((tf.next.value == null) && (tof.next.value != null))
                 {
-                    e.fd.value.treq.value = this.tparam.value;
+                    e.fd.treq = this.tparam;
                 }
-                Ref<TemplateInstance> ti = ref(new TemplateInstance(e.loc.value, e.td.value, tiargs.value));
-                Expression ex = expressionSemantic(new ScopeExp(e.loc.value, ti.value), e.td.value._scope.value);
-                e.fd.value.treq.value = null;
-                if (((ex.op.value & 0xFF) == 127))
+                TemplateInstance ti = new TemplateInstance(e.loc, e.td, tiargs);
+                Expression ex = expressionSemantic(new ScopeExp(e.loc, ti), e.td._scope);
+                e.fd.treq = null;
+                if (((ex.op & 0xFF) == 127))
                 {
                     return ;
                 }
-                if (((ex.op.value & 0xFF) != 161))
+                if (((ex.op & 0xFF) != 161))
                 {
                     return ;
                 }
                 this.visit(ex.type.value);
                 return ;
             }
-            Ref<Type> t = ref(e.type.value);
-            if (((t.value.ty.value & 0xFF) == ENUMTY.Tdelegate) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tpointer))
+            Type t = e.type.value;
+            if (((t.ty & 0xFF) == ENUMTY.Tdelegate) && ((this.tparam.ty & 0xFF) == ENUMTY.Tpointer))
             {
                 return ;
             }
-            if (((e.tok.value & 0xFF) == 0) && ((t.value.ty.value & 0xFF) == ENUMTY.Tpointer) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tdelegate))
+            if (((e.tok & 0xFF) == 0) && ((t.ty & 0xFF) == ENUMTY.Tpointer) && ((this.tparam.ty & 0xFF) == ENUMTY.Tdelegate))
             {
-                Ref<TypeFunction> tf = ref((TypeFunction)t.value.nextOf());
-                t.value = merge(new TypeDelegate(tf.value));
+                TypeFunction tf = (TypeFunction)t.nextOf();
+                t = merge(new TypeDelegate(tf));
             }
-            this.visit(t.value);
+            this.visit(t);
         }
 
         public  void visit(SliceExp e) {
-            Ref<SliceExp> e_ref = ref(e);
             Type taai = null;
-            if (((e_ref.value.type.value.ty.value & 0xFF) == ENUMTY.Tarray) && ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Tsarray) || ((this.tparam.value.ty.value & 0xFF) == ENUMTY.Taarray) && (((taai = ((TypeAArray)this.tparam.value).index.value).ty.value & 0xFF) == ENUMTY.Tident) && (((TypeIdentifier)taai).idents.length.value == 0))
+            if (((e.type.value.ty & 0xFF) == ENUMTY.Tarray) && ((this.tparam.ty & 0xFF) == ENUMTY.Tsarray) || ((this.tparam.ty & 0xFF) == ENUMTY.Taarray) && (((taai = ((TypeAArray)this.tparam).index).ty & 0xFF) == ENUMTY.Tident) && (((TypeIdentifier)taai).idents.length == 0))
             {
                 {
-                    Ref<Type> tsa = ref(toStaticArrayType(e_ref.value));
-                    if ((tsa.value) != null)
+                    Type tsa = toStaticArrayType(e);
+                    if ((tsa) != null)
                     {
-                        tsa.value.accept(this);
+                        tsa.accept(this);
                         return ;
                     }
                 }
             }
-            this.visit((Expression)e_ref);
+            this.visit((Expression)e);
         }
 
         public  void visit(CommaExp e) {
@@ -1425,11 +1393,10 @@ public class dtemplate {
     }
     private static class ReliesOnTemplateParameters extends Visitor
     {
-        private Ref<Slice<TemplateParameter>> tparams = ref(new Slice<TemplateParameter>());
-        private Ref<Boolean> result = ref(false);
+        private Slice<TemplateParameter> tparams = new Slice<TemplateParameter>();
+        private boolean result = false;
         public  ReliesOnTemplateParameters(Slice<TemplateParameter> tparams) {
-            Ref<Slice<TemplateParameter>> tparams_ref = ref(tparams);
-            this.tparams.value = tparams_ref.value.copy();
+            this.tparams = tparams.copy();
         }
 
         public  void visit(Expression e) {
@@ -1437,13 +1404,13 @@ public class dtemplate {
 
         public  void visit(IdentifierExp e) {
             {
-                Ref<Slice<TemplateParameter>> __r1219 = ref(this.tparams.value.copy());
-                IntRef __key1220 = ref(0);
-                for (; (__key1220.value < __r1219.value.getLength());__key1220.value += 1) {
-                    TemplateParameter tp = __r1219.value.get(__key1220.value);
-                    if ((pequals(e.ident.value, tp.ident.value)))
+                Slice<TemplateParameter> __r1215 = this.tparams.copy();
+                int __key1216 = 0;
+                for (; (__key1216 < __r1215.getLength());__key1216 += 1) {
+                    TemplateParameter tp = __r1215.get(__key1216);
+                    if ((pequals(e.ident, tp.ident)))
                     {
-                        this.result.value = true;
+                        this.result = true;
                         return ;
                     }
                 }
@@ -1451,15 +1418,15 @@ public class dtemplate {
         }
 
         public  void visit(TupleExp e) {
-            if (e.exps.value != null)
+            if (e.exps != null)
             {
                 {
-                    Ref<Slice<Expression>> __r1221 = ref((e.exps.value.get()).opSlice().copy());
-                    IntRef __key1222 = ref(0);
-                    for (; (__key1222.value < __r1221.value.getLength());__key1222.value += 1) {
-                        Expression ea = __r1221.value.get(__key1222.value);
+                    Slice<Expression> __r1217 = (e.exps.get()).opSlice().copy();
+                    int __key1218 = 0;
+                    for (; (__key1218 < __r1217.getLength());__key1218 += 1) {
+                        Expression ea = __r1217.get(__key1218);
                         ea.accept(this);
-                        if (this.result.value)
+                        if (this.result)
                         {
                             return ;
                         }
@@ -1469,15 +1436,15 @@ public class dtemplate {
         }
 
         public  void visit(ArrayLiteralExp e) {
-            if (e.elements.value != null)
+            if (e.elements != null)
             {
                 {
-                    Ref<Slice<Expression>> __r1223 = ref((e.elements.value.get()).opSlice().copy());
-                    IntRef __key1224 = ref(0);
-                    for (; (__key1224.value < __r1223.value.getLength());__key1224.value += 1) {
-                        Expression el = __r1223.value.get(__key1224.value);
+                    Slice<Expression> __r1219 = (e.elements.get()).opSlice().copy();
+                    int __key1220 = 0;
+                    for (; (__key1220 < __r1219.getLength());__key1220 += 1) {
+                        Expression el = __r1219.get(__key1220);
                         el.accept(this);
-                        if (this.result.value)
+                        if (this.result)
                         {
                             return ;
                         }
@@ -1488,24 +1455,24 @@ public class dtemplate {
 
         public  void visit(AssocArrayLiteralExp e) {
             {
-                Ref<Slice<Expression>> __r1225 = ref((e.keys.value.get()).opSlice().copy());
-                IntRef __key1226 = ref(0);
-                for (; (__key1226.value < __r1225.value.getLength());__key1226.value += 1) {
-                    Expression ek = __r1225.value.get(__key1226.value);
+                Slice<Expression> __r1221 = (e.keys.get()).opSlice().copy();
+                int __key1222 = 0;
+                for (; (__key1222 < __r1221.getLength());__key1222 += 1) {
+                    Expression ek = __r1221.get(__key1222);
                     ek.accept(this);
-                    if (this.result.value)
+                    if (this.result)
                     {
                         return ;
                     }
                 }
             }
             {
-                Ref<Slice<Expression>> __r1227 = ref((e.values.value.get()).opSlice().copy());
-                IntRef __key1228 = ref(0);
-                for (; (__key1228.value < __r1227.value.getLength());__key1228.value += 1) {
-                    Expression ev = __r1227.value.get(__key1228.value);
+                Slice<Expression> __r1223 = (e.values.get()).opSlice().copy();
+                int __key1224 = 0;
+                for (; (__key1224 < __r1223.getLength());__key1224 += 1) {
+                    Expression ev = __r1223.get(__key1224);
                     ev.accept(this);
-                    if (this.result.value)
+                    if (this.result)
                     {
                         return ;
                     }
@@ -1514,15 +1481,15 @@ public class dtemplate {
         }
 
         public  void visit(StructLiteralExp e) {
-            if (e.elements.value != null)
+            if (e.elements != null)
             {
                 {
-                    Ref<Slice<Expression>> __r1229 = ref((e.elements.value.get()).opSlice().copy());
-                    IntRef __key1230 = ref(0);
-                    for (; (__key1230.value < __r1229.value.getLength());__key1230.value += 1) {
-                        Expression ea = __r1229.value.get(__key1230.value);
+                    Slice<Expression> __r1225 = (e.elements.get()).opSlice().copy();
+                    int __key1226 = 0;
+                    for (; (__key1226 < __r1225.getLength());__key1226 += 1) {
+                        Expression ea = __r1225.get(__key1226);
                         ea.accept(this);
-                        if (this.result.value)
+                        if (this.result)
                         {
                             return ;
                         }
@@ -1532,7 +1499,7 @@ public class dtemplate {
         }
 
         public  void visit(TypeExp e) {
-            this.result.value = reliesOnTemplateParameters(e.type.value, this.tparams.value);
+            this.result = reliesOnTemplateParameters(e.type.value, this.tparams);
         }
 
         public  void visit(NewExp e) {
@@ -1540,31 +1507,31 @@ public class dtemplate {
             {
                 e.thisexp.value.accept(this);
             }
-            if (!this.result.value && (e.newargs.value != null))
+            if (!this.result && (e.newargs != null))
             {
                 {
-                    Ref<Slice<Expression>> __r1231 = ref((e.newargs.value.get()).opSlice().copy());
-                    IntRef __key1232 = ref(0);
-                    for (; (__key1232.value < __r1231.value.getLength());__key1232.value += 1) {
-                        Expression ea = __r1231.value.get(__key1232.value);
+                    Slice<Expression> __r1227 = (e.newargs.get()).opSlice().copy();
+                    int __key1228 = 0;
+                    for (; (__key1228 < __r1227.getLength());__key1228 += 1) {
+                        Expression ea = __r1227.get(__key1228);
                         ea.accept(this);
-                        if (this.result.value)
+                        if (this.result)
                         {
                             return ;
                         }
                     }
                 }
             }
-            this.result.value = reliesOnTemplateParameters(e.newtype.value, this.tparams.value);
-            if (!this.result.value && (e.arguments.value != null))
+            this.result = reliesOnTemplateParameters(e.newtype, this.tparams);
+            if (!this.result && (e.arguments != null))
             {
                 {
-                    Ref<Slice<Expression>> __r1233 = ref((e.arguments.value.get()).opSlice().copy());
-                    IntRef __key1234 = ref(0);
-                    for (; (__key1234.value < __r1233.value.getLength());__key1234.value += 1) {
-                        Expression ea = __r1233.value.get(__key1234.value);
+                    Slice<Expression> __r1229 = (e.arguments.get()).opSlice().copy();
+                    int __key1230 = 0;
+                    for (; (__key1230 < __r1229.getLength());__key1230 += 1) {
+                        Expression ea = __r1229.get(__key1230);
                         ea.accept(this);
-                        if (this.result.value)
+                        if (this.result)
                         {
                             return ;
                         }
@@ -1574,53 +1541,53 @@ public class dtemplate {
         }
 
         public  void visit(NewAnonClassExp e) {
-            this.result.value = true;
+            this.result = true;
         }
 
         public  void visit(FuncExp e) {
-            this.result.value = true;
+            this.result = true;
         }
 
         public  void visit(TypeidExp e) {
             {
-                Ref<Expression> ea = ref(isExpression(e.obj.value));
-                if ((ea.value) != null)
+                Expression ea = isExpression(e.obj);
+                if ((ea) != null)
                 {
-                    ea.value.accept(this);
+                    ea.accept(this);
                 }
                 else {
-                    Ref<Type> ta = ref(isType(e.obj.value));
-                    if ((ta.value) != null)
+                    Type ta = isType(e.obj);
+                    if ((ta) != null)
                     {
-                        this.result.value = reliesOnTemplateParameters(ta.value, this.tparams.value);
+                        this.result = reliesOnTemplateParameters(ta, this.tparams);
                     }
                 }
             }
         }
 
         public  void visit(TraitsExp e) {
-            if (e.args.value != null)
+            if (e.args != null)
             {
                 {
-                    Ref<Slice<RootObject>> __r1235 = ref((e.args.value.get()).opSlice().copy());
-                    IntRef __key1236 = ref(0);
-                    for (; (__key1236.value < __r1235.value.getLength());__key1236.value += 1) {
-                        Ref<RootObject> oa = ref(__r1235.value.get(__key1236.value));
+                    Slice<RootObject> __r1231 = (e.args.get()).opSlice().copy();
+                    int __key1232 = 0;
+                    for (; (__key1232 < __r1231.getLength());__key1232 += 1) {
+                        RootObject oa = __r1231.get(__key1232);
                         {
-                            Ref<Expression> ea = ref(isExpression(oa.value));
-                            if ((ea.value) != null)
+                            Expression ea = isExpression(oa);
+                            if ((ea) != null)
                             {
-                                ea.value.accept(this);
+                                ea.accept(this);
                             }
                             else {
-                                Ref<Type> ta = ref(isType(oa.value));
-                                if ((ta.value) != null)
+                                Type ta = isType(oa);
+                                if ((ta) != null)
                                 {
-                                    this.result.value = reliesOnTemplateParameters(ta.value, this.tparams.value);
+                                    this.result = reliesOnTemplateParameters(ta, this.tparams);
                                 }
                             }
                         }
-                        if (this.result.value)
+                        if (this.result)
                         {
                             return ;
                         }
@@ -1630,7 +1597,7 @@ public class dtemplate {
         }
 
         public  void visit(IsExp e) {
-            this.result.value = reliesOnTemplateParameters(e.targ.value, this.tparams.value);
+            this.result = reliesOnTemplateParameters(e.targ, this.tparams);
         }
 
         public  void visit(UnaExp e) {
@@ -1638,30 +1605,29 @@ public class dtemplate {
         }
 
         public  void visit(DotTemplateInstanceExp e) {
-            Ref<DotTemplateInstanceExp> e_ref = ref(e);
-            this.visit((UnaExp)e_ref);
-            if (!this.result.value && (e_ref.value.ti.tiargs.value != null))
+            this.visit((UnaExp)e);
+            if (!this.result && (e.ti.tiargs != null))
             {
                 {
-                    Ref<Slice<RootObject>> __r1237 = ref((e_ref.value.ti.tiargs.value.get()).opSlice().copy());
-                    IntRef __key1238 = ref(0);
-                    for (; (__key1238.value < __r1237.value.getLength());__key1238.value += 1) {
-                        Ref<RootObject> oa = ref(__r1237.value.get(__key1238.value));
+                    Slice<RootObject> __r1233 = (e.ti.tiargs.get()).opSlice().copy();
+                    int __key1234 = 0;
+                    for (; (__key1234 < __r1233.getLength());__key1234 += 1) {
+                        RootObject oa = __r1233.get(__key1234);
                         {
-                            Ref<Expression> ea = ref(isExpression(oa.value));
-                            if ((ea.value) != null)
+                            Expression ea = isExpression(oa);
+                            if ((ea) != null)
                             {
-                                ea.value.accept(this);
+                                ea.accept(this);
                             }
                             else {
-                                Ref<Type> ta = ref(isType(oa.value));
-                                if ((ta.value) != null)
+                                Type ta = isType(oa);
+                                if ((ta) != null)
                                 {
-                                    this.result.value = reliesOnTemplateParameters(ta.value, this.tparams.value);
+                                    this.result = reliesOnTemplateParameters(ta, this.tparams);
                                 }
                             }
                         }
-                        if (this.result.value)
+                        if (this.result)
                         {
                             return ;
                         }
@@ -1671,17 +1637,16 @@ public class dtemplate {
         }
 
         public  void visit(CallExp e) {
-            Ref<CallExp> e_ref = ref(e);
-            this.visit((UnaExp)e_ref);
-            if (!this.result.value && (e_ref.value.arguments.value != null))
+            this.visit((UnaExp)e);
+            if (!this.result && (e.arguments != null))
             {
                 {
-                    Ref<Slice<Expression>> __r1239 = ref((e_ref.value.arguments.value.get()).opSlice().copy());
-                    IntRef __key1240 = ref(0);
-                    for (; (__key1240.value < __r1239.value.getLength());__key1240.value += 1) {
-                        Expression ea = __r1239.value.get(__key1240.value);
+                    Slice<Expression> __r1235 = (e.arguments.get()).opSlice().copy();
+                    int __key1236 = 0;
+                    for (; (__key1236 < __r1235.getLength());__key1236 += 1) {
+                        Expression ea = __r1235.get(__key1236);
                         ea.accept(this);
-                        if (this.result.value)
+                        if (this.result)
                         {
                             return ;
                         }
@@ -1691,45 +1656,42 @@ public class dtemplate {
         }
 
         public  void visit(CastExp e) {
-            Ref<CastExp> e_ref = ref(e);
-            this.visit((UnaExp)e_ref);
-            if (!this.result.value && (e_ref.value.to.value != null))
+            this.visit((UnaExp)e);
+            if (!this.result && (e.to != null))
             {
-                this.result.value = reliesOnTemplateParameters(e_ref.value.to.value, this.tparams.value);
+                this.result = reliesOnTemplateParameters(e.to, this.tparams);
             }
         }
 
         public  void visit(SliceExp e) {
-            Ref<SliceExp> e_ref = ref(e);
-            this.visit((UnaExp)e_ref);
-            if (!this.result.value && (e_ref.value.lwr.value != null))
+            this.visit((UnaExp)e);
+            if (!this.result && (e.lwr.value != null))
             {
-                e_ref.value.lwr.value.accept(this);
+                e.lwr.value.accept(this);
             }
-            if (!this.result.value && (e_ref.value.upr.value != null))
+            if (!this.result && (e.upr.value != null))
             {
-                e_ref.value.upr.value.accept(this);
+                e.upr.value.accept(this);
             }
         }
 
         public  void visit(IntervalExp e) {
             e.lwr.value.accept(this);
-            if (!this.result.value)
+            if (!this.result)
             {
                 e.upr.value.accept(this);
             }
         }
 
         public  void visit(ArrayExp e) {
-            Ref<ArrayExp> e_ref = ref(e);
-            this.visit((UnaExp)e_ref);
-            if (!this.result.value && (e_ref.value.arguments.value != null))
+            this.visit((UnaExp)e);
+            if (!this.result && (e.arguments != null))
             {
                 {
-                    Ref<Slice<Expression>> __r1241 = ref((e_ref.value.arguments.value.get()).opSlice().copy());
-                    IntRef __key1242 = ref(0);
-                    for (; (__key1242.value < __r1241.value.getLength());__key1242.value += 1) {
-                        Expression ea = __r1241.value.get(__key1242.value);
+                    Slice<Expression> __r1237 = (e.arguments.get()).opSlice().copy();
+                    int __key1238 = 0;
+                    for (; (__key1238 < __r1237.getLength());__key1238 += 1) {
+                        Expression ea = __r1237.get(__key1238);
                         ea.accept(this);
                     }
                 }
@@ -1738,18 +1700,17 @@ public class dtemplate {
 
         public  void visit(BinExp e) {
             e.e1.value.accept(this);
-            if (!this.result.value)
+            if (!this.result)
             {
                 e.e2.value.accept(this);
             }
         }
 
         public  void visit(CondExp e) {
-            Ref<CondExp> e_ref = ref(e);
-            e_ref.value.econd.value.accept(this);
-            if (!this.result.value)
+            e.econd.value.accept(this);
+            if (!this.result)
             {
-                this.visit((BinExp)e_ref);
+                this.visit((BinExp)e);
             }
         }
 
@@ -1814,14 +1775,14 @@ public class dtemplate {
             Type t = isType(o);
             if ((t) != null)
             {
-                return (t.ty.value & 0xFF) == ENUMTY.Terror;
+                return (t.ty & 0xFF) == ENUMTY.Terror;
             }
         }
         {
             Expression e = isExpression(o);
             if ((e) != null)
             {
-                return ((e.op.value & 0xFF) == 127) || (e.type.value == null) || ((e.type.value.ty.value & 0xFF) == ENUMTY.Terror);
+                return ((e.op & 0xFF) == 127) || (e.type.value == null) || ((e.type.value.ty & 0xFF) == ENUMTY.Terror);
             }
         }
         {
@@ -1833,7 +1794,7 @@ public class dtemplate {
         }
         Dsymbol s = isDsymbol(o);
         assert(s != null);
-        if (s.errors.value)
+        if (s.errors)
         {
             return true;
         }
@@ -1842,10 +1803,10 @@ public class dtemplate {
 
     public static boolean arrayObjectIsError(Ptr<DArray<RootObject>> args) {
         {
-            Slice<RootObject> __r1186 = (args.get()).opSlice().copy();
-            int __key1187 = 0;
-            for (; (__key1187 < __r1186.getLength());__key1187 += 1) {
-                RootObject o = __r1186.get(__key1187);
+            Slice<RootObject> __r1182 = (args.get()).opSlice().copy();
+            int __key1183 = 0;
+            for (; (__key1183 < __r1182.getLength());__key1183 += 1) {
+                RootObject o = __r1182.get(__key1183);
                 if (isError(o))
                 {
                     return true;
@@ -1879,19 +1840,19 @@ public class dtemplate {
                     VarExp ve = ea.isVarExp();
                     if ((ve) != null)
                     {
-                        return ve.var.value;
+                        return ve.var;
                     }
                     else {
                         FuncExp fe = ea.isFuncExp();
                         if ((fe) != null)
                         {
-                            return fe.td.value != null ? fe.td.value : fe.fd.value;
+                            return fe.td != null ? fe.td : fe.fd;
                         }
                         else {
                             TemplateExp te = ea.isTemplateExp();
                             if ((te) != null)
                             {
-                                return te.td.value;
+                                return te.td;
                             }
                             else
                             {
@@ -1925,7 +1886,7 @@ public class dtemplate {
                 VarDeclaration v = s.value.isVarDeclaration();
                 if ((v) != null)
                 {
-                    if ((v.storage_class.value & 8388608L) != 0)
+                    if ((v.storage_class & 8388608L) != 0)
                     {
                         return v.getConstInitializer(true);
                     }
@@ -1936,10 +1897,10 @@ public class dtemplate {
     }
 
     public static Expression getValue(Expression e) {
-        if ((e != null) && ((e.op.value & 0xFF) == 26))
+        if ((e != null) && ((e.op & 0xFF) == 26))
         {
-            VarDeclaration v = ((VarExp)e).var.value.isVarDeclaration();
-            if ((v != null) && ((v.storage_class.value & 8388608L) != 0))
+            VarDeclaration v = ((VarExp)e).var.isVarDeclaration();
+            if ((v != null) && ((v.storage_class & 8388608L) != 0))
             {
                 e = v.getConstInitializer(true);
             }
@@ -2039,18 +2000,18 @@ public class dtemplate {
         {
             return true;
         }
-        if (((oa1.get()).length.value != (oa2.get()).length.value))
+        if (((oa1.get()).length != (oa2.get()).length))
         {
             return false;
         }
-        int oa1dim = (oa1.get()).length.value;
+        int oa1dim = (oa1.get()).length;
         Ptr<RootObject> oa1d = pcopy((oa1.get()).data);
         Ptr<RootObject> oa2d = pcopy((oa2.get()).data);
         {
-            int __key1188 = 0;
-            int __limit1189 = oa1dim;
-            for (; (__key1188 < __limit1189);__key1188 += 1) {
-                int j = __key1188;
+            int __key1184 = 0;
+            int __limit1185 = oa1dim;
+            for (; (__key1184 < __limit1185);__key1184 += 1) {
+                int j = __key1184;
                 RootObject o1 = oa1d.get(j);
                 RootObject o2 = oa2d.get(j);
                 if (!match(o1, o2))
@@ -2065,15 +2026,15 @@ public class dtemplate {
     public static int arrayObjectHash(Ptr<DArray<RootObject>> oa1) {
         int hash = 0;
         {
-            Slice<RootObject> __r1190 = (oa1.get()).opSlice().copy();
-            int __key1191 = 0;
-            for (; (__key1191 < __r1190.getLength());__key1191 += 1) {
-                RootObject o1 = __r1190.get(__key1191);
+            Slice<RootObject> __r1186 = (oa1.get()).opSlice().copy();
+            int __key1187 = 0;
+            for (; (__key1187 < __r1186.getLength());__key1187 += 1) {
+                RootObject o1 = __r1186.get(__key1187);
                 {
                     Type t1 = isType(o1);
                     if ((t1) != null)
                     {
-                        hash = mixHash(hash, ((int)t1.deco.value));
+                        hash = mixHash(hash, ((int)t1.deco));
                     }
                     else {
                         Expression e1 = getExpression(o1);
@@ -2108,7 +2069,7 @@ public class dtemplate {
     }
 
     public static int expressionHash(Expression e) {
-        switch ((e.op.value & 0xFF))
+        switch ((e.op & 0xFF))
         {
             case 135:
                 return (int)((IntegerExp)e).getInteger();
@@ -2118,21 +2079,21 @@ public class dtemplate {
                 ComplexExp ce = (ComplexExp)e;
                 return mixHash(CTFloat.hash(ce.toReal()), CTFloat.hash(ce.toImaginary()));
             case 120:
-                return ((int)((IdentifierExp)e).ident.value);
+                return ((int)((IdentifierExp)e).ident);
             case 13:
                 return ((int)((NullExp)e).type.value);
             case 121:
                 StringExp se = (StringExp)e;
-                return calcHash(se.string.value, se.len.value * (se.sz.value & 0xFF));
+                return calcHash(se.string, se.len * (se.sz & 0xFF));
             case 126:
                 TupleExp te = (TupleExp)e;
                 int hash = 0;
                 hash += te.e0.value != null ? expressionHash(te.e0.value) : 0;
                 {
-                    Slice<Expression> __r1192 = (te.exps.value.get()).opSlice().copy();
-                    int __key1193 = 0;
-                    for (; (__key1193 < __r1192.getLength());__key1193 += 1) {
-                        Expression elem = __r1192.get(__key1193);
+                    Slice<Expression> __r1188 = (te.exps.get()).opSlice().copy();
+                    int __key1189 = 0;
+                    for (; (__key1189 < __r1188.getLength());__key1189 += 1) {
+                        Expression elem = __r1188.get(__key1189);
                         hash = mixHash(hash, expressionHash(elem));
                     }
                 }
@@ -2141,10 +2102,10 @@ public class dtemplate {
                 ArrayLiteralExp ae = (ArrayLiteralExp)e;
                 int hash_1 = 0;
                 {
-                    int __key1194 = 0;
-                    int __limit1195 = (ae.elements.value.get()).length.value;
-                    for (; (__key1194 < __limit1195);__key1194 += 1) {
-                        int i = __key1194;
+                    int __key1190 = 0;
+                    int __limit1191 = (ae.elements.get()).length;
+                    for (; (__key1190 < __limit1191);__key1190 += 1) {
+                        int i = __key1190;
                         hash_1 = mixHash(hash_1, expressionHash(ae.getElement(i)));
                     }
                 }
@@ -2153,11 +2114,11 @@ public class dtemplate {
                 AssocArrayLiteralExp ae_1 = (AssocArrayLiteralExp)e;
                 int hash_2 = 0;
                 {
-                    int __key1196 = 0;
-                    int __limit1197 = (ae_1.keys.value.get()).length.value;
-                    for (; (__key1196 < __limit1197);__key1196 += 1) {
-                        int i_1 = __key1196;
-                        hash_2 ^= mixHash(expressionHash((ae_1.keys.value.get()).get(i_1)), expressionHash((ae_1.values.value.get()).get(i_1)));
+                    int __key1192 = 0;
+                    int __limit1193 = (ae_1.keys.get()).length;
+                    for (; (__key1192 < __limit1193);__key1192 += 1) {
+                        int i_1 = __key1192;
+                        hash_2 ^= mixHash(expressionHash((ae_1.keys.get()).get(i_1)), expressionHash((ae_1.values.get()).get(i_1)));
                     }
                 }
                 return hash_2;
@@ -2165,18 +2126,18 @@ public class dtemplate {
                 StructLiteralExp se_1 = (StructLiteralExp)e;
                 int hash_3 = 0;
                 {
-                    Slice<Expression> __r1198 = (se_1.elements.value.get()).opSlice().copy();
-                    int __key1199 = 0;
-                    for (; (__key1199 < __r1198.getLength());__key1199 += 1) {
-                        Expression elem_1 = __r1198.get(__key1199);
+                    Slice<Expression> __r1194 = (se_1.elements.get()).opSlice().copy();
+                    int __key1195 = 0;
+                    for (; (__key1195 < __r1194.getLength());__key1195 += 1) {
+                        Expression elem_1 = __r1194.get(__key1195);
                         hash_3 = mixHash(hash_3, elem_1 != null ? expressionHash(elem_1) : 0);
                     }
                 }
                 return hash_3;
             case 26:
-                return ((int)((VarExp)e).var.value);
+                return ((int)((VarExp)e).var);
             case 161:
-                return ((int)((FuncExp)e).fd.value);
+                return ((int)((FuncExp)e).fd);
             default:
             assert(((e.equals).funcptr == equals));
             return ((int)e);
@@ -2234,9 +2195,9 @@ public class dtemplate {
     }
     public static class TemplatePrevious
     {
-        public Ref<Ptr<TemplatePrevious>> prev = ref(null);
-        public Ref<Ptr<Scope>> sc = ref(null);
-        public Ref<Ptr<DArray<RootObject>>> dedargs = ref(null);
+        public Ptr<TemplatePrevious> prev = null;
+        public Ptr<Scope> sc = null;
+        public Ptr<DArray<RootObject>> dedargs = null;
         public TemplatePrevious(){
         }
         public TemplatePrevious copy(){
@@ -2262,35 +2223,35 @@ public class dtemplate {
     public static class TemplateDeclaration extends ScopeDsymbol
     {
         public Ptr<DArray<TemplateParameter>> parameters = null;
-        public Ref<Ptr<DArray<TemplateParameter>>> origParameters = ref(null);
-        public Ref<Expression> constraint = ref(null);
+        public Ptr<DArray<TemplateParameter>> origParameters = null;
+        public Expression constraint = null;
         public AA<TemplateInstanceBox,TemplateInstance> instances = new AA<TemplateInstanceBox,TemplateInstance>();
         public Ref<TemplateDeclaration> overnext = ref(null);
-        public Ref<TemplateDeclaration> overroot = ref(null);
+        public TemplateDeclaration overroot = null;
         public FuncDeclaration funcroot = null;
-        public Ref<Dsymbol> onemember = ref(null);
+        public Dsymbol onemember = null;
         public boolean literal = false;
         public boolean ismixin = false;
         public boolean isstatic = false;
         public Prot protection = new Prot();
-        public IntRef inuse = ref(0);
-        public Ref<Ptr<TemplatePrevious>> previous = ref(null);
+        public int inuse = 0;
+        public Ptr<TemplatePrevious> previous = null;
         public  TemplateDeclaration(Loc loc, Identifier ident, Ptr<DArray<TemplateParameter>> parameters, Expression constraint, Ptr<DArray<Dsymbol>> decldefs, boolean ismixin, boolean literal) {
             super(loc, ident);
             this.parameters = parameters;
-            this.origParameters.value = parameters;
-            this.constraint.value = constraint;
-            this.members.value = decldefs;
+            this.origParameters = parameters;
+            this.constraint = constraint;
+            this.members = decldefs;
             this.literal = literal;
             this.ismixin = ismixin;
             this.isstatic = true;
             this.protection = new Prot(Prot.Kind.undefined);
-            if ((this.members.value != null) && (ident != null))
+            if ((this.members != null) && (ident != null))
             {
                 Ref<Dsymbol> s = ref(null);
-                if (Dsymbol.oneMembers(this.members.value, ptr(s), ident) && (s.value != null))
+                if (Dsymbol.oneMembers(this.members, ptr(s), ident) && (s.value != null))
                 {
-                    this.onemember.value = s.value;
+                    this.onemember = s.value;
                     s.value.parent.value = this;
                 }
             }
@@ -2310,15 +2271,15 @@ public class dtemplate {
             Ptr<DArray<TemplateParameter>> p = null;
             if (this.parameters != null)
             {
-                p = refPtr(new DArray<TemplateParameter>((this.parameters.get()).length.value));
+                p = refPtr(new DArray<TemplateParameter>((this.parameters.get()).length));
                 {
                     int i = 0;
-                    for (; (i < (p.get()).length.value);i++) {
+                    for (; (i < (p.get()).length);i++) {
                         p.get().set(i, (this.parameters.get()).get(i).syntaxCopy());
                     }
                 }
             }
-            return new TemplateDeclaration(this.loc.value, this.ident.value, p, this.constraint.value != null ? this.constraint.value.syntaxCopy() : null, Dsymbol.arraySyntaxCopy(this.members.value), this.ismixin, this.literal);
+            return new TemplateDeclaration(this.loc, this.ident, p, this.constraint != null ? this.constraint.syntaxCopy() : null, Dsymbol.arraySyntaxCopy(this.members), this.ismixin, this.literal);
         }
 
         public  boolean overloadInsert(Dsymbol s) {
@@ -2344,7 +2305,7 @@ public class dtemplate {
                 for (; ptd.get() != null;ptd = pcopy((ptr(ptd.get().overnext)))){
                 }
             }
-            td.overroot.value = this;
+            td.overroot = this;
             ptd.set(0, td);
             return true;
         }
@@ -2354,7 +2315,7 @@ public class dtemplate {
         }
 
         public  BytePtr kind() {
-            return (this.onemember.value != null) && (this.onemember.value.isAggregateDeclaration() != null) ? this.onemember.value.kind() : new BytePtr("template");
+            return (this.onemember != null) && (this.onemember.isAggregateDeclaration() != null) ? this.onemember.kind() : new BytePtr("template");
         }
 
         public  BytePtr toChars() {
@@ -2365,11 +2326,11 @@ public class dtemplate {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
                 Ref<HdrGenState> hgs = ref(new HdrGenState());
-                buf.value.writestring(this.ident.value.asString());
+                buf.value.writestring(this.ident.asString());
                 buf.value.writeByte(40);
                 {
                     int i = 0;
-                    for (; (i < (this.parameters.get()).length.value);i++){
+                    for (; (i < (this.parameters.get()).length);i++){
                         TemplateParameter tp = (this.parameters.get()).get(i);
                         if (i != 0)
                         {
@@ -2379,19 +2340,19 @@ public class dtemplate {
                     }
                 }
                 buf.value.writeByte(41);
-                if (this.onemember.value != null)
+                if (this.onemember != null)
                 {
-                    FuncDeclaration fd = this.onemember.value.isFuncDeclaration();
-                    if ((fd != null) && (fd.type.value != null))
+                    FuncDeclaration fd = this.onemember.isFuncDeclaration();
+                    if ((fd != null) && (fd.type != null))
                     {
-                        TypeFunction tf = (TypeFunction)fd.type.value;
+                        TypeFunction tf = (TypeFunction)fd.type;
                         buf.value.writestring(parametersTypeToChars(tf.parameterList));
                     }
                 }
-                if (this.constraint.value != null)
+                if (this.constraint != null)
                 {
                     buf.value.writestring(new ByteSlice(" if ("));
-                    toCBuffer(this.constraint.value, ptr(buf), ptr(hgs));
+                    toCBuffer(this.constraint, ptr(buf), ptr(hgs));
                     buf.value.writeByte(41);
                 }
                 return buf.value.extractChars();
@@ -2406,14 +2367,14 @@ public class dtemplate {
 
         public  boolean evaluateConstraint(TemplateInstance ti, Ptr<Scope> sc, Ptr<Scope> paramscope, Ptr<DArray<RootObject>> dedargs, FuncDeclaration fd) {
             {
-                Ptr<TemplatePrevious> p = this.previous.value;
-                for (; p != null;p = (p.get()).prev.value){
-                    if (arrayObjectMatch((p.get()).dedargs.value, dedargs))
+                Ptr<TemplatePrevious> p = this.previous;
+                for (; p != null;p = (p.get()).prev){
+                    if (arrayObjectMatch((p.get()).dedargs, dedargs))
                     {
                         {
                             Ptr<Scope> scx = sc;
-                            for (; scx != null;scx = (scx.get()).enclosing.value){
-                                if ((scx == (p.get()).sc.value))
+                            for (; scx != null;scx = (scx.get()).enclosing){
+                                if ((scx == (p.get()).sc))
                                 {
                                     return false;
                                 }
@@ -2423,44 +2384,44 @@ public class dtemplate {
                 }
             }
             Ref<TemplatePrevious> pr = ref(new TemplatePrevious());
-            pr.value.prev.value = this.previous.value;
-            pr.value.sc.value = paramscope;
-            pr.value.dedargs.value = dedargs;
-            this.previous.value = ptr(pr);
+            pr.value.prev = this.previous;
+            pr.value.sc = paramscope;
+            pr.value.dedargs = dedargs;
+            this.previous = ptr(pr);
             Ptr<Scope> scx = (paramscope.get()).push(ti);
             (scx.get()).parent.value = ti;
             (scx.get()).tinst = null;
-            (scx.get()).minst.value = null;
+            (scx.get()).minst = null;
             assert(ti.symtab == null);
             if (fd != null)
             {
-                TypeFunction tf = (TypeFunction)fd.type.value;
-                assert(((tf.ty.value & 0xFF) == ENUMTY.Tfunction));
+                TypeFunction tf = (TypeFunction)fd.type;
+                assert(((tf.ty & 0xFF) == ENUMTY.Tfunction));
                 (scx.get()).parent.value = fd;
-                Ptr<DArray<Parameter>> fparameters = tf.parameterList.parameters.value;
+                Ptr<DArray<Parameter>> fparameters = tf.parameterList.parameters;
                 int nfparams = tf.parameterList.length();
                 {
                     int i = 0;
                     for (; (i < nfparams);i++){
                         Parameter fparam = tf.parameterList.get(i);
-                        fparam.storageClass.value &= 2704291852L;
-                        fparam.storageClass.value |= 32L;
-                        if ((tf.parameterList.varargs.value == VarArg.typesafe) && (i + 1 == nfparams))
+                        fparam.storageClass &= 2704291852L;
+                        fparam.storageClass |= 32L;
+                        if ((tf.parameterList.varargs == VarArg.typesafe) && (i + 1 == nfparams))
                         {
-                            fparam.storageClass.value |= 65536L;
+                            fparam.storageClass |= 65536L;
                         }
                     }
                 }
                 {
                     int i = 0;
-                    for (; (i < (fparameters.get()).length.value);i++){
+                    for (; (i < (fparameters.get()).length);i++){
                         Parameter fparam = (fparameters.get()).get(i);
-                        if (fparam.ident.value == null)
+                        if (fparam.ident == null)
                         {
                             continue;
                         }
-                        VarDeclaration v = new VarDeclaration(this.loc.value, fparam.type.value, fparam.ident.value, null, 0L);
-                        v.storage_class.value = fparam.storageClass.value;
+                        VarDeclaration v = new VarDeclaration(this.loc, fparam.type, fparam.ident, null, 0L);
+                        v.storage_class = fparam.storageClass;
                         dsymbolSemantic(v, scx);
                         if (ti.symtab == null)
                         {
@@ -2478,23 +2439,23 @@ public class dtemplate {
                 }
                 if (this.isstatic)
                 {
-                    fd.storage_class.value |= 1L;
+                    fd.storage_class |= 1L;
                 }
                 FuncDeclaration.HiddenParameters hiddenParams = fd.declareThis(scx, fd.isThis()).copy();
-                fd.vthis.value = hiddenParams.vthis;
-                fd.isThis2.value = hiddenParams.isThis2;
+                fd.vthis = hiddenParams.vthis;
+                fd.isThis2 = hiddenParams.isThis2;
                 fd.selectorParameter = hiddenParams.selectorParameter;
             }
-            Expression e = this.constraint.value.syntaxCopy();
-            assert((ti.inst.value == null));
-            ti.inst.value = ti;
-            (scx.get()).flags.value |= 16;
+            Expression e = this.constraint.syntaxCopy();
+            assert((ti.inst == null));
+            ti.inst = ti;
+            (scx.get()).flags |= 16;
             Ref<Boolean> errors = ref(false);
-            boolean result = evalStaticCondition(scx, this.constraint.value, e, errors);
-            ti.inst.value = null;
+            boolean result = evalStaticCondition(scx, this.constraint, e, errors);
+            ti.inst = null;
             ti.symtab = null;
             scx = (scx.get()).pop();
-            this.previous.value = pr.value.prev.value;
+            this.previous = pr.value.prev;
             if (errors.value)
             {
                 return false;
@@ -2504,33 +2465,33 @@ public class dtemplate {
 
         public  Ptr<Scope> scopeForTemplateParameters(TemplateInstance ti, Ptr<Scope> sc) {
             ScopeDsymbol paramsym = new ScopeDsymbol();
-            paramsym.parent.value = (this._scope.value.get()).parent.value;
-            Ptr<Scope> paramscope = (this._scope.value.get()).push(paramsym);
+            paramsym.parent.value = (this._scope.get()).parent.value;
+            Ptr<Scope> paramscope = (this._scope.get()).push(paramsym);
             (paramscope.get()).tinst = ti;
-            (paramscope.get()).minst.value = (sc.get()).minst.value;
+            (paramscope.get()).minst = (sc.get()).minst;
             (paramscope.get()).callsc = sc;
-            (paramscope.get()).stc.value = 0L;
+            (paramscope.get()).stc = 0L;
             return paramscope;
         }
 
         public  int matchWithInstance(Ptr<Scope> sc, TemplateInstance ti, Ptr<DArray<RootObject>> dedtypes, Ptr<DArray<Expression>> fargs, int flag) {
             int LOGM = 0;
             int m = MATCH.nomatch;
-            int dedtypes_dim = (dedtypes.get()).length.value;
+            int dedtypes_dim = (dedtypes.get()).length;
             (dedtypes.get()).zero();
-            if (this.errors.value)
+            if (this.errors)
             {
                 return MATCH.nomatch;
             }
-            int parameters_dim = (this.parameters.get()).length.value;
+            int parameters_dim = (this.parameters.get()).length;
             int variadic = ((this.isVariadic() != null) ? 1 : 0);
-            if (((ti.tiargs.value.get()).length.value > parameters_dim) && (variadic == 0))
+            if (((ti.tiargs.get()).length > parameters_dim) && (variadic == 0))
             {
                 return MATCH.nomatch;
             }
             assert((dedtypes_dim == parameters_dim));
-            assert((dedtypes_dim >= (ti.tiargs.value.get()).length.value) || (variadic != 0));
-            assert(this._scope.value != null);
+            assert((dedtypes_dim >= (ti.tiargs.get()).length) || (variadic != 0));
+            assert(this._scope != null);
             Ptr<Scope> paramscope = this.scopeForTemplateParameters(ti, sc);
             m = MATCH.exact;
             try {
@@ -2542,9 +2503,9 @@ public class dtemplate {
                             int m2 = MATCH.nomatch;
                             TemplateParameter tp = (this.parameters.get()).get(i);
                             Ref<Declaration> sparam = ref(null);
-                            this.inuse.value++;
-                            m2 = tp.matchArg(ti.loc.value, paramscope, ti.tiargs.value, i, this.parameters, dedtypes, ptr(sparam));
-                            this.inuse.value--;
+                            this.inuse++;
+                            m2 = tp.matchArg(ti.loc, paramscope, ti.tiargs, i, this.parameters, dedtypes, ptr(sparam));
+                            this.inuse--;
                             if ((m2 == MATCH.nomatch))
                             {
                                 /*goto Lnomatch*/throw Dispatch0.INSTANCE;
@@ -2570,48 +2531,48 @@ public class dtemplate {
                             for (; (i < dedtypes_dim);i++){
                                 if ((dedtypes.get()).get(i) == null)
                                 {
-                                    assert((i < (ti.tiargs.value.get()).length.value));
-                                    dedtypes.get().set(i, (Type)(ti.tiargs.value.get()).get(i));
+                                    assert((i < (ti.tiargs.get()).length));
+                                    dedtypes.get().set(i, (Type)(ti.tiargs.get()).get(i));
                                 }
                             }
                         }
                     }
-                    if ((m > MATCH.nomatch) && (this.constraint.value != null) && (flag == 0))
+                    if ((m > MATCH.nomatch) && (this.constraint != null) && (flag == 0))
                     {
-                        if (ti.hasNestedArgs(ti.tiargs.value, this.isstatic))
+                        if (ti.hasNestedArgs(ti.tiargs, this.isstatic))
                         {
-                            ti.parent.value = ti.enclosing.value;
+                            ti.parent.value = ti.enclosing;
                         }
                         else
                         {
                             ti.parent.value = this.parent.value;
                         }
-                        FuncDeclaration fd = this.onemember.value != null ? this.onemember.value.isFuncDeclaration() : null;
+                        FuncDeclaration fd = this.onemember != null ? this.onemember.isFuncDeclaration() : null;
                         if (fd != null)
                         {
-                            assert(((fd.type.value.ty.value & 0xFF) == ENUMTY.Tfunction));
-                            TypeFunction tf = (TypeFunction)fd.type.value.syntaxCopy();
-                            fd = new FuncDeclaration(fd.loc.value, fd.endloc.value, fd.ident.value, fd.storage_class.value, tf);
+                            assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
+                            TypeFunction tf = (TypeFunction)fd.type.syntaxCopy();
+                            fd = new FuncDeclaration(fd.loc, fd.endloc, fd.ident, fd.storage_class, tf);
                             fd.parent.value = ti;
                             fd.inferRetType = true;
                             {
                                 int i = 0;
-                                for (; (i < (tf.parameterList.parameters.value.get()).length.value);i++) {
-                                    (tf.parameterList.parameters.value.get()).get(i).defaultArg.value = null;
+                                for (; (i < (tf.parameterList.parameters.get()).length);i++) {
+                                    (tf.parameterList.parameters.get()).get(i).defaultArg = null;
                                 }
                             }
                             tf.next.value = null;
-                            tf.incomplete.value = true;
-                            tf.fargs.value = fargs;
-                            int olderrors = global.startGagging();
-                            fd.type.value = typeSemantic(tf, this.loc.value, paramscope);
-                            if (global.endGagging(olderrors))
+                            tf.incomplete = true;
+                            tf.fargs = fargs;
+                            int olderrors = global.value.startGagging();
+                            fd.type = typeSemantic(tf, this.loc, paramscope);
+                            if (global.value.endGagging(olderrors))
                             {
-                                assert(((fd.type.value.ty.value & 0xFF) != ENUMTY.Tfunction));
+                                assert(((fd.type.ty & 0xFF) != ENUMTY.Tfunction));
                                 /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                             }
-                            assert(((fd.type.value.ty.value & 0xFF) == ENUMTY.Tfunction));
-                            fd.originalType.value = fd.type.value;
+                            assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
+                            fd.originalType = fd.type;
                         }
                         if (!this.evaluateConstraint(ti, sc, paramscope, dedtypes, fd))
                         {
@@ -2633,12 +2594,12 @@ public class dtemplate {
         public  int leastAsSpecialized(Ptr<Scope> sc, TemplateDeclaration td2, Ptr<DArray<Expression>> fargs) {
             int LOG_LEASTAS = 0;
             Ptr<DArray<RootObject>> tiargs = refPtr(new DArray<RootObject>());
-            (tiargs.get()).reserve((this.parameters.get()).length.value);
+            (tiargs.get()).reserve((this.parameters.get()).length);
             {
                 int i = 0;
-                for (; (i < (this.parameters.get()).length.value);i++){
+                for (; (i < (this.parameters.get()).length);i++){
                     TemplateParameter tp = (this.parameters.get()).get(i);
-                    if (tp.dependent.value)
+                    if (tp.dependent)
                     {
                         break;
                     }
@@ -2650,15 +2611,15 @@ public class dtemplate {
                     (tiargs.get()).push(p);
                 }
             }
-            TemplateInstance ti = new TemplateInstance(Loc.initial.value, this.ident.value, tiargs);
-            Ref<DArray<RootObject>> dedtypes = ref(dedtypes.value = new DArray<RootObject>((td2.parameters.get()).length.value));
+            TemplateInstance ti = new TemplateInstance(Loc.initial, this.ident, tiargs);
+            Ref<DArray<RootObject>> dedtypes = ref(dedtypes.value = new DArray<RootObject>((td2.parameters.get()).length));
             try {
                 int m = td2.matchWithInstance(sc, ti, ptr(dedtypes), fargs, 1);
                 try {
                     if ((m > MATCH.nomatch))
                     {
                         TemplateTupleParameter tp = this.isVariadic();
-                        if ((tp != null) && !tp.dependent.value && (td2.isVariadic() == null))
+                        if ((tp != null) && !tp.dependent && (td2.isVariadic() == null))
                         {
                             /*goto L1*/throw Dispatch0.INSTANCE;
                         }
@@ -2684,16 +2645,16 @@ public class dtemplate {
             int fvarargs = VarArg.none;
             int wildmatch = 0;
             int inferStart = 0;
-            Loc instLoc = ti.loc.value.copy();
-            Ptr<DArray<RootObject>> tiargs = ti.tiargs.value;
+            Loc instLoc = ti.loc.copy();
+            Ptr<DArray<RootObject>> tiargs = ti.tiargs;
             Ptr<DArray<RootObject>> dedargs = refPtr(new DArray<RootObject>());
             Ptr<DArray<RootObject>> dedtypes = ptr(ti.tdtypes);
-            assert(this._scope.value != null);
-            (dedargs.get()).setDim((this.parameters.get()).length.value);
+            assert(this._scope != null);
+            (dedargs.get()).setDim((this.parameters.get()).length);
             (dedargs.get()).zero();
-            (dedtypes.get()).setDim((this.parameters.get()).length.value);
+            (dedtypes.get()).setDim((this.parameters.get()).length);
             (dedtypes.get()).zero();
-            if (this.errors.value || fd.value.errors.value)
+            if (this.errors || fd.value.errors)
             {
                 return MATCH.nomatch;
             }
@@ -2706,8 +2667,8 @@ public class dtemplate {
                     try {
                         if (tiargs != null)
                         {
-                            ntargs = (tiargs.get()).length.value;
-                            int n = (this.parameters.get()).length.value;
+                            ntargs = (tiargs.get()).length;
+                            int n = (this.parameters.get()).length;
                             if (tp != null)
                             {
                                 n--;
@@ -2719,11 +2680,11 @@ public class dtemplate {
                                     /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                 }
                                 Tuple t = new Tuple(ntargs - n);
-                                assert((this.parameters.get()).length.value != 0);
-                                dedargs.get().set((this.parameters.get()).length.value - 1, t);
+                                assert((this.parameters.get()).length != 0);
+                                dedargs.get().set((this.parameters.get()).length - 1, t);
                                 {
                                     int i = 0;
-                                    for (; (i < t.objects.value.length.value);i++){
+                                    for (; (i < t.objects.value.length);i++){
                                         t.objects.value.set(i, (tiargs.get()).get(n + i));
                                     }
                                 }
@@ -2739,7 +2700,7 @@ public class dtemplate {
                                 int i = 0;
                             L_outer2:
                                 for (; (i < n);i++){
-                                    assert((i < (this.parameters.get()).length.value));
+                                    assert((i < (this.parameters.get()).length));
                                     Ref<Declaration> sparam = ref(null);
                                     int m = (this.parameters.get()).get(i).matchArg(instLoc, paramscope, dedargs, i, this.parameters, dedtypes, ptr(sparam));
                                     if ((m <= MATCH.nomatch))
@@ -2757,18 +2718,18 @@ public class dtemplate {
                                     }
                                 }
                             }
-                            if ((n < (this.parameters.get()).length.value) && (declaredTuple == null))
+                            if ((n < (this.parameters.get()).length) && (declaredTuple == null))
                             {
                                 inferStart = n;
                             }
                             else
                             {
-                                inferStart = (this.parameters.get()).length.value;
+                                inferStart = (this.parameters.get()).length;
                             }
                         }
                         fparameters = fd.value.getParameterList().copy();
                         nfparams = fparameters.length();
-                        nfargs = fargs != null ? (fargs.get()).length.value : 0;
+                        nfargs = fargs != null ? (fargs.get()).length : 0;
                         if (tp != null)
                         {
                             matchTiargs = MATCH.convert;
@@ -2777,7 +2738,7 @@ public class dtemplate {
                                 if (declaredTuple == null)
                                 {
                                     Tuple t = new Tuple();
-                                    dedargs.get().set((this.parameters.get()).length.value - 1, t);
+                                    dedargs.get().set((this.parameters.get()).length - 1, t);
                                     this.declareParameter(paramscope, tp, t);
                                     declaredTuple = t;
                                 }
@@ -2789,17 +2750,17 @@ public class dtemplate {
                                         fptupindex = 0;
                                     L_outer3:
                                         for (; (fptupindex < nfparams);fptupindex++){
-                                            Parameter fparam = (fparameters.parameters.value.get()).get(fptupindex);
-                                            if (((fparam.type.value.ty.value & 0xFF) != ENUMTY.Tident))
+                                            Parameter fparam = (fparameters.parameters.get()).get(fptupindex);
+                                            if (((fparam.type.ty & 0xFF) != ENUMTY.Tident))
                                             {
                                                 continue L_outer3;
                                             }
-                                            TypeIdentifier tid = (TypeIdentifier)fparam.type.value;
-                                            if (!tp.ident.value.equals(tid.ident.value) || (tid.idents.length.value != 0))
+                                            TypeIdentifier tid = (TypeIdentifier)fparam.type;
+                                            if (!tp.ident.equals(tid.ident) || (tid.idents.length != 0))
                                             {
                                                 continue L_outer3;
                                             }
-                                            if ((fparameters.varargs.value != VarArg.none))
+                                            if ((fparameters.varargs != VarArg.none))
                                             {
                                                 /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                             }
@@ -2812,7 +2773,7 @@ public class dtemplate {
                             /*L1:*/
                             }
                         }
-                        if ((this.toParent().isModule() != null) || (((this._scope.value.get()).stc.value & 1L) != 0))
+                        if ((this.toParent().isModule() != null) || (((this._scope.get()).stc & 1L) != 0))
                         {
                             tthis = null;
                         }
@@ -2822,12 +2783,12 @@ public class dtemplate {
                             {
                                 int i = 0;
                             L_outer4:
-                                for (; (i < (this.parameters.get()).length.value);i++){
+                                for (; (i < (this.parameters.get()).length);i++){
                                     TemplateThisParameter ttp = (this.parameters.get()).get(i).isTemplateThisParameter();
                                     if (ttp != null)
                                     {
                                         hasttp = true;
-                                        Type t = new TypeIdentifier(Loc.initial.value, ttp.ident.value);
+                                        Type t = new TypeIdentifier(Loc.initial, ttp.ident);
                                         int m = deduceType(tthis, paramscope, t, this.parameters, dedtypes, null, 0, false);
                                         if ((m <= MATCH.nomatch))
                                         {
@@ -2840,9 +2801,9 @@ public class dtemplate {
                                     }
                                 }
                             }
-                            if ((fd.value.type.value != null) && (fd.value.isCtorDeclaration() == null))
+                            if ((fd.value.type != null) && (fd.value.isCtorDeclaration() == null))
                             {
-                                long stc = (this._scope.value.get()).stc.value | fd.value.storage_class2;
+                                long stc = (this._scope.get()).stc | fd.value.storage_class2;
                                 Dsymbol p = this.parent.value;
                                 for (; (p.isTemplateDeclaration() != null) || (p.isTemplateInstance() != null);) {
                                     p = p.parent.value;
@@ -2852,7 +2813,7 @@ public class dtemplate {
                                 {
                                     stc |= ad.storage_class;
                                 }
-                                byte mod = fd.value.type.value.mod.value;
+                                byte mod = fd.value.type.mod;
                                 if ((stc & 1048576L) != 0)
                                 {
                                     mod = (byte)4;
@@ -2872,7 +2833,7 @@ public class dtemplate {
                                         mod |= MODFlags.wild;
                                     }
                                 }
-                                byte thismod = tthis.mod.value;
+                                byte thismod = tthis.mod;
                                 if (hasttp)
                                 {
                                     mod = MODmerge(thismod, mod);
@@ -2896,29 +2857,29 @@ public class dtemplate {
                             L_outer5:
                                 for (; (parami < nfparams);parami++){
                                     Parameter fparam = fparameters.get(parami);
-                                    Type prmtype = fparam.type.value.addStorageClass(fparam.storageClass.value);
+                                    Type prmtype = fparam.type.addStorageClass(fparam.storageClass);
                                     Expression farg = null;
                                     if ((fptupindex != 305419896) && (parami == fptupindex))
                                     {
-                                        assert(((prmtype.ty.value & 0xFF) == ENUMTY.Tident));
+                                        assert(((prmtype.ty & 0xFF) == ENUMTY.Tident));
                                         TypeIdentifier tid = (TypeIdentifier)prmtype;
                                         if (declaredTuple == null)
                                         {
                                             declaredTuple = new Tuple();
-                                            dedargs.get().set((this.parameters.get()).length.value - 1, declaredTuple);
+                                            dedargs.get().set((this.parameters.get()).length - 1, declaredTuple);
                                             int rem = 0;
                                             {
                                                 int j = parami + 1;
                                                 for (; (j < nfparams);j++){
                                                     Parameter p = fparameters.get(j);
-                                                    if (p.defaultArg.value != null)
+                                                    if (p.defaultArg != null)
                                                     {
                                                         break;
                                                     }
-                                                    if (!reliesOnTemplateParameters(p.type.value, (this.parameters.get()).opSlice(inferStart, (this.parameters.get()).length.value)))
+                                                    if (!reliesOnTemplateParameters(p.type, (this.parameters.get()).opSlice(inferStart, (this.parameters.get()).length)))
                                                     {
-                                                        Type pt = typeSemantic(p.type.value.syntaxCopy(), fd.value.loc.value, paramscope);
-                                                        rem += ((pt.ty.value & 0xFF) == ENUMTY.Ttuple) ? (((TypeTuple)pt).arguments.value.get()).length.value : 1;
+                                                        Type pt = typeSemantic(p.type.syntaxCopy(), fd.value.loc, paramscope);
+                                                        rem += ((pt.ty & 0xFF) == ENUMTY.Ttuple) ? (((TypeTuple)pt).arguments.get()).length : 1;
                                                     }
                                                     else
                                                     {
@@ -2934,13 +2895,13 @@ public class dtemplate {
                                             {
                                                 int i = 0;
                                             L_outer6:
-                                                for (; (i < declaredTuple.objects.value.length.value);i++){
+                                                for (; (i < declaredTuple.objects.value.length);i++){
                                                     farg = (fargs.get()).get(argi + i);
-                                                    if (((farg.op.value & 0xFF) == 127) || ((farg.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+                                                    if (((farg.op & 0xFF) == 127) || ((farg.type.value.ty & 0xFF) == ENUMTY.Terror))
                                                     {
                                                         /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                                     }
-                                                    if (((fparam.storageClass.value & 8192L) == 0) && ((farg.type.value.ty.value & 0xFF) == ENUMTY.Tvoid))
+                                                    if (((fparam.storageClass & 8192L) == 0) && ((farg.type.value.ty & 0xFF) == ENUMTY.Tvoid))
                                                     {
                                                         /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                                     }
@@ -2966,7 +2927,7 @@ public class dtemplate {
                                                     {
                                                         match = m;
                                                     }
-                                                    if (((tt.value.ty.value & 0xFF) == ENUMTY.Tarray) || ((tt.value.ty.value & 0xFF) == ENUMTY.Tpointer) && !tt.value.isMutable() && ((fparam.storageClass.value & 2097152L) == 0) || ((fparam.storageClass.value & 256L) != 0) && !farg.isLvalue())
+                                                    if (((tt.value.ty & 0xFF) == ENUMTY.Tarray) || ((tt.value.ty & 0xFF) == ENUMTY.Tpointer) && !tt.value.isMutable() && ((fparam.storageClass & 2097152L) == 0) || ((fparam.storageClass & 256L) != 0) && !farg.isLvalue())
                                                     {
                                                         tt.value = tt.value.mutableOf();
                                                     }
@@ -2980,7 +2941,7 @@ public class dtemplate {
                                             {
                                                 int i = 0;
                                             L_outer7:
-                                                for (; (i < declaredTuple.objects.value.length.value);i++){
+                                                for (; (i < declaredTuple.objects.value.length);i++){
                                                     if (isType(declaredTuple.objects.value.get(i)) == null)
                                                     {
                                                         /*goto Lnomatch*/throw Dispatch1.INSTANCE;
@@ -2989,41 +2950,41 @@ public class dtemplate {
                                             }
                                         }
                                         assert(declaredTuple != null);
-                                        argi += declaredTuple.objects.value.length.value;
+                                        argi += declaredTuple.objects.value.length;
                                         continue L_outer5;
                                     }
                                     try {
-                                        if (!reliesOnTemplateParameters(prmtype, (this.parameters.get()).opSlice(inferStart, (this.parameters.get()).length.value)))
+                                        if (!reliesOnTemplateParameters(prmtype, (this.parameters.get()).opSlice(inferStart, (this.parameters.get()).length)))
                                         {
-                                            prmtype = typeSemantic(prmtype.syntaxCopy(), fd.value.loc.value, paramscope);
-                                            if (((prmtype.ty.value & 0xFF) == ENUMTY.Ttuple))
+                                            prmtype = typeSemantic(prmtype.syntaxCopy(), fd.value.loc, paramscope);
+                                            if (((prmtype.ty & 0xFF) == ENUMTY.Ttuple))
                                             {
                                                 TypeTuple tt = (TypeTuple)prmtype;
-                                                int tt_dim = (tt.arguments.value.get()).length.value;
+                                                int tt_dim = (tt.arguments.get()).length;
                                                 {
                                                     int j = 0;
                                                 L_outer8:
                                                     for (; (j < tt_dim);comma(j++, argi += 1)){
-                                                        Parameter p = (tt.arguments.value.get()).get(j);
-                                                        if ((j == tt_dim - 1) && (fparameters.varargs.value == VarArg.typesafe) && (parami + 1 == nfparams) && (argi < nfargs))
+                                                        Parameter p = (tt.arguments.get()).get(j);
+                                                        if ((j == tt_dim - 1) && (fparameters.varargs == VarArg.typesafe) && (parami + 1 == nfparams) && (argi < nfargs))
                                                         {
-                                                            prmtype = p.type.value;
+                                                            prmtype = p.type;
                                                             /*goto Lvarargs*/throw Dispatch0.INSTANCE;
                                                         }
                                                         if ((argi >= nfargs))
                                                         {
-                                                            if (p.defaultArg.value != null)
+                                                            if (p.defaultArg != null)
                                                             {
                                                                 continue L_outer8;
                                                             }
-                                                            if (fparam.defaultArg.value != null)
+                                                            if (fparam.defaultArg != null)
                                                             {
                                                                 break;
                                                             }
                                                             /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                                         }
                                                         farg = (fargs.get()).get(argi);
-                                                        if (farg.implicitConvTo(p.type.value) == 0)
+                                                        if (farg.implicitConvTo(p.type) == 0)
                                                         {
                                                             /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                                         }
@@ -3034,7 +2995,7 @@ public class dtemplate {
                                         }
                                         if ((argi >= nfargs))
                                         {
-                                            if (fparam.defaultArg.value == null)
+                                            if (fparam.defaultArg == null)
                                             {
                                                 /*goto Lvarargs*/throw Dispatch0.INSTANCE;
                                             }
@@ -3042,19 +3003,19 @@ public class dtemplate {
                                             {
                                                 {
                                                     int i = 0;
-                                                    for (; (i < (dedtypes.get()).length.value);i++){
+                                                    for (; (i < (dedtypes.get()).length);i++){
                                                         Type at = isType((dedtypes.get()).get(i));
-                                                        if ((at != null) && ((at.ty.value & 0xFF) == ENUMTY.Tnone))
+                                                        if ((at != null) && ((at.ty & 0xFF) == ENUMTY.Tnone))
                                                         {
                                                             TypeDeduced xt = (TypeDeduced)at;
-                                                            dedtypes.get().set(i, xt.tded.value);
+                                                            dedtypes.get().set(i, xt.tded);
                                                         }
                                                     }
                                                 }
                                                 {
                                                     int i = ntargs;
                                                 L_outer9:
-                                                    for (; (i < (dedargs.get()).length.value);i++){
+                                                    for (; (i < (dedargs.get()).length);i++){
                                                         TemplateParameter tparam = (this.parameters.get()).get(i);
                                                         RootObject oarg = (dedargs.get()).get(i);
                                                         RootObject oded = (dedtypes.get()).get(i);
@@ -3076,7 +3037,7 @@ public class dtemplate {
                                                                     }
                                                                     if (!(dedtypes.get()).get(i).equals(oded))
                                                                     {
-                                                                        this.error(new BytePtr("specialization not allowed for deduced parameter `%s`"), tparam.ident.value.toChars());
+                                                                        this.error(new BytePtr("specialization not allowed for deduced parameter `%s`"), tparam.ident.toChars());
                                                                     }
                                                                 }
                                                                 else
@@ -3090,9 +3051,9 @@ public class dtemplate {
                                                             }
                                                             else
                                                             {
-                                                                this.inuse.value++;
+                                                                this.inuse++;
                                                                 oded = tparam.defaultArg(instLoc, paramscope);
-                                                                this.inuse.value--;
+                                                                this.inuse--;
                                                                 if (oded != null)
                                                                 {
                                                                     dedargs.get().set(i, this.declareParameter(paramscope, tparam, oded));
@@ -3103,12 +3064,12 @@ public class dtemplate {
                                                 }
                                             }
                                             nfargs2 = argi + 1;
-                                            if ((prmtype.deco.value != null) || (prmtype.syntaxCopy().trySemantic(this.loc.value, paramscope) != null))
+                                            if ((prmtype.deco != null) || (prmtype.syntaxCopy().trySemantic(this.loc, paramscope) != null))
                                             {
                                                 argi += 1;
                                                 continue L_outer5;
                                             }
-                                            farg = fparam.defaultArg.value.syntaxCopy();
+                                            farg = fparam.defaultArg.syntaxCopy();
                                             farg = expressionSemantic(farg, paramscope);
                                             farg = resolveProperties(paramscope, farg);
                                         }
@@ -3117,7 +3078,7 @@ public class dtemplate {
                                             farg = (fargs.get()).get(argi);
                                         }
                                         {
-                                            if (((farg.op.value & 0xFF) == 127) || ((farg.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+                                            if (((farg.op & 0xFF) == 127) || ((farg.type.value.ty & 0xFF) == ENUMTY.Terror))
                                             {
                                                 /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                             }
@@ -3125,28 +3086,28 @@ public class dtemplate {
                                             while(true) try {
                                             /*Lretry:*/
                                                 Type argtype = farg.type.value;
-                                                if (((fparam.storageClass.value & 8192L) == 0) && ((argtype.ty.value & 0xFF) == ENUMTY.Tvoid) && ((farg.op.value & 0xFF) != 161))
+                                                if (((fparam.storageClass & 8192L) == 0) && ((argtype.ty & 0xFF) == ENUMTY.Tvoid) && ((farg.op & 0xFF) != 161))
                                                 {
                                                     /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                                 }
-                                                farg = farg.optimize(0, (fparam.storageClass.value & 2101248L) != 0L);
+                                                farg = farg.optimize(0, (fparam.storageClass & 2101248L) != 0L);
                                                 RootObject oarg = farg;
-                                                if (((fparam.storageClass.value & 2097152L) != 0) && ((fparam.storageClass.value & 256L) == 0) || farg.isLvalue())
+                                                if (((fparam.storageClass & 2097152L) != 0) && ((fparam.storageClass & 256L) == 0) || farg.isLvalue())
                                                 {
                                                     Type taai = null;
-                                                    if (((argtype.ty.value & 0xFF) == ENUMTY.Tarray) && ((prmtype.ty.value & 0xFF) == ENUMTY.Tsarray) || ((prmtype.ty.value & 0xFF) == ENUMTY.Taarray) && (((taai = ((TypeAArray)prmtype).index.value).ty.value & 0xFF) == ENUMTY.Tident) && (((TypeIdentifier)taai).idents.length.value == 0))
+                                                    if (((argtype.ty & 0xFF) == ENUMTY.Tarray) && ((prmtype.ty & 0xFF) == ENUMTY.Tsarray) || ((prmtype.ty & 0xFF) == ENUMTY.Taarray) && (((taai = ((TypeAArray)prmtype).index).ty & 0xFF) == ENUMTY.Tident) && (((TypeIdentifier)taai).idents.length == 0))
                                                     {
-                                                        if (((farg.op.value & 0xFF) == 121))
+                                                        if (((farg.op & 0xFF) == 121))
                                                         {
                                                             StringExp se = (StringExp)farg;
-                                                            argtype = se.type.value.nextOf().sarrayOf((long)se.len.value);
+                                                            argtype = se.type.value.nextOf().sarrayOf((long)se.len);
                                                         }
-                                                        else if (((farg.op.value & 0xFF) == 47))
+                                                        else if (((farg.op & 0xFF) == 47))
                                                         {
                                                             ArrayLiteralExp ae = (ArrayLiteralExp)farg;
-                                                            argtype = ae.type.value.nextOf().sarrayOf((long)(ae.elements.value.get()).length.value);
+                                                            argtype = ae.type.value.nextOf().sarrayOf((long)(ae.elements.get()).length);
                                                         }
-                                                        else if (((farg.op.value & 0xFF) == 31))
+                                                        else if (((farg.op & 0xFF) == 31))
                                                         {
                                                             SliceExp se = (SliceExp)farg;
                                                             {
@@ -3160,9 +3121,9 @@ public class dtemplate {
                                                     }
                                                     oarg = argtype;
                                                 }
-                                                else if (((fparam.storageClass.value & 4096L) == 0L) && ((argtype.ty.value & 0xFF) == ENUMTY.Tarray) || ((argtype.ty.value & 0xFF) == ENUMTY.Tpointer) && (templateParameterLookup(prmtype, this.parameters) != 305419896) && (((TypeIdentifier)prmtype).idents.length.value == 0))
+                                                else if (((fparam.storageClass & 4096L) == 0L) && ((argtype.ty & 0xFF) == ENUMTY.Tarray) || ((argtype.ty & 0xFF) == ENUMTY.Tpointer) && (templateParameterLookup(prmtype, this.parameters) != 305419896) && (((TypeIdentifier)prmtype).idents.length == 0))
                                                 {
-                                                    Type ta = argtype.castMod(prmtype.mod.value != 0 ? (byte)(argtype.nextOf().mod.value & 0xFF) : (byte)0);
+                                                    Type ta = argtype.castMod(prmtype.mod != 0 ? (byte)(argtype.nextOf().mod & 0xFF) : (byte)0);
                                                     if ((!pequals(ta, argtype)))
                                                     {
                                                         Expression ea = farg.copy();
@@ -3170,21 +3131,21 @@ public class dtemplate {
                                                         oarg = ea;
                                                     }
                                                 }
-                                                if ((fparameters.varargs.value == VarArg.typesafe) && (parami + 1 == nfparams) && (argi + 1 < nfargs))
+                                                if ((fparameters.varargs == VarArg.typesafe) && (parami + 1 == nfparams) && (argi + 1 < nfargs))
                                                 {
                                                     /*goto Lvarargs*/throw Dispatch0.INSTANCE;
                                                 }
                                                 IntRef wm = ref(0);
                                                 int m = deduceType(oarg, paramscope, prmtype, this.parameters, dedtypes, ptr(wm), inferStart, false);
                                                 wildmatch |= wm.value;
-                                                if ((m == MATCH.nomatch) && (prmtype.deco.value != null))
+                                                if ((m == MATCH.nomatch) && (prmtype.deco != null))
                                                 {
                                                     m = farg.implicitConvTo(prmtype);
                                                 }
                                                 if ((m == MATCH.nomatch))
                                                 {
                                                     AggregateDeclaration ad = isAggregate(farg.type.value);
-                                                    if ((ad != null) && (ad.aliasthis.value != null) && (!pequals(argtype, att)))
+                                                    if ((ad != null) && (ad.aliasthis != null) && (!pequals(argtype, att)))
                                                     {
                                                         if ((att == null) && argtype.checkAliasThisRec())
                                                         {
@@ -3200,11 +3161,11 @@ public class dtemplate {
                                                         }
                                                     }
                                                 }
-                                                if ((m > MATCH.nomatch) && ((fparam.storageClass.value & 2097408L) == 2097152L))
+                                                if ((m > MATCH.nomatch) && ((fparam.storageClass & 2097408L) == 2097152L))
                                                 {
                                                     if (!farg.isLvalue())
                                                     {
-                                                        if (((farg.op.value & 0xFF) == 121) || ((farg.op.value & 0xFF) == 31) && ((prmtype.ty.value & 0xFF) == ENUMTY.Tsarray) || ((prmtype.ty.value & 0xFF) == ENUMTY.Taarray))
+                                                        if (((farg.op & 0xFF) == 121) || ((farg.op & 0xFF) == 31) && ((prmtype.ty & 0xFF) == ENUMTY.Tsarray) || ((prmtype.ty & 0xFF) == ENUMTY.Taarray))
                                                         {
                                                         }
                                                         else
@@ -3213,7 +3174,7 @@ public class dtemplate {
                                                         }
                                                     }
                                                 }
-                                                if ((m > MATCH.nomatch) && ((fparam.storageClass.value & 4096L) != 0))
+                                                if ((m > MATCH.nomatch) && ((fparam.storageClass & 4096L) != 0))
                                                 {
                                                     if (!farg.isLvalue())
                                                     {
@@ -3224,7 +3185,7 @@ public class dtemplate {
                                                         /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                                     }
                                                 }
-                                                if ((m == MATCH.nomatch) && ((fparam.storageClass.value & 8192L) != 0) && ((prmtype.ty.value & 0xFF) == ENUMTY.Tvoid) && ((farg.type.value.ty.value & 0xFF) != ENUMTY.Tvoid))
+                                                if ((m == MATCH.nomatch) && ((fparam.storageClass & 8192L) != 0) && ((prmtype.ty & 0xFF) == ENUMTY.Tvoid) && ((farg.type.value.ty & 0xFF) != ENUMTY.Tvoid))
                                                 {
                                                     m = MATCH.convert;
                                                 }
@@ -3243,7 +3204,7 @@ public class dtemplate {
                                     }
                                     catch(Dispatch0 __d){}
                                 /*Lvarargs:*/
-                                    if (!((fparameters.varargs.value == VarArg.typesafe) && (parami + 1 == nfparams)))
+                                    if (!((fparameters.varargs == VarArg.typesafe) && (parami + 1 == nfparams)))
                                     {
                                         /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                     }
@@ -3252,45 +3213,45 @@ public class dtemplate {
                                         int __dispatch1 = 0;
                                         dispatched_1:
                                         do {
-                                            switch (__dispatch1 != 0 ? __dispatch1 : (tb.ty.value & 0xFF))
+                                            switch (__dispatch1 != 0 ? __dispatch1 : (tb.ty & 0xFF))
                                             {
                                                 case 1:
                                                 case 2:
-                                                    if (((tb.ty.value & 0xFF) == ENUMTY.Tsarray))
+                                                    if (((tb.ty & 0xFF) == ENUMTY.Tsarray))
                                                     {
                                                         TypeSArray tsa = (TypeSArray)tb;
-                                                        long sz = tsa.dim.value.toInteger();
+                                                        long sz = tsa.dim.toInteger();
                                                         if ((sz != (long)(nfargs - argi)))
                                                         {
                                                             /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                                         }
                                                     }
-                                                    else if (((tb.ty.value & 0xFF) == ENUMTY.Taarray))
+                                                    else if (((tb.ty & 0xFF) == ENUMTY.Taarray))
                                                     {
                                                         TypeAArray taa = (TypeAArray)tb;
-                                                        Expression dim = new IntegerExp(instLoc, (long)(nfargs - argi), Type.tsize_t.value);
-                                                        int i = templateParameterLookup(taa.index.value, this.parameters);
+                                                        Expression dim = new IntegerExp(instLoc, (long)(nfargs - argi), Type.tsize_t);
+                                                        int i = templateParameterLookup(taa.index, this.parameters);
                                                         if ((i == 305419896))
                                                         {
                                                             Ref<Expression> e = ref(null);
                                                             Ref<Type> t = ref(null);
                                                             Ref<Dsymbol> s = ref(null);
                                                             Ptr<Scope> sco = null;
-                                                            int errors = global.startGagging();
+                                                            int errors = global.value.startGagging();
                                                             sco = sc;
-                                                            resolve(taa.index.value, instLoc, sco, ptr(e), ptr(t), ptr(s), false);
+                                                            resolve(taa.index, instLoc, sco, ptr(e), ptr(t), ptr(s), false);
                                                             if (e.value == null)
                                                             {
                                                                 sco = paramscope;
-                                                                resolve(taa.index.value, instLoc, sco, ptr(e), ptr(t), ptr(s), false);
+                                                                resolve(taa.index, instLoc, sco, ptr(e), ptr(t), ptr(s), false);
                                                             }
-                                                            global.endGagging(errors);
+                                                            global.value.endGagging(errors);
                                                             if (e.value == null)
                                                             {
                                                                 /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                                             }
                                                             e.value = e.value.ctfeInterpret();
-                                                            e.value = e.value.implicitCastTo(sco, Type.tsize_t.value);
+                                                            e.value = e.value.implicitCastTo(sco, Type.tsize_t);
                                                             e.value = e.value.optimize(0, false);
                                                             if (!dim.equals(e.value))
                                                             {
@@ -3315,7 +3276,7 @@ public class dtemplate {
                                                             }
                                                             else
                                                             {
-                                                                Type vt = typeSemantic(tvp.valType, Loc.initial.value, sc);
+                                                                Type vt = typeSemantic(tvp.valType, Loc.initial, sc);
                                                                 int m = dim.implicitConvTo(vt);
                                                                 if ((m <= MATCH.nomatch))
                                                                 {
@@ -3346,7 +3307,7 @@ public class dtemplate {
                                                                 m_1 = arg.implicitConvTo(tret);
                                                                 if ((m_1 == MATCH.nomatch))
                                                                 {
-                                                                    if (((tret.toBasetype().ty.value & 0xFF) == ENUMTY.Tvoid))
+                                                                    if (((tret.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
                                                                     {
                                                                         m_1 = MATCH.convert;
                                                                     }
@@ -3380,7 +3341,7 @@ public class dtemplate {
                                     throw new AssertionError("Unreachable code!");
                                 }
                             }
-                            if ((argi != nfargs2) && (fparameters.varargs.value == VarArg.none))
+                            if ((argi != nfargs2) && (fparameters.varargs == VarArg.none))
                             {
                                 /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                             }
@@ -3390,14 +3351,14 @@ public class dtemplate {
                 /*Lmatch:*/
                     {
                         int i = 0;
-                        for (; (i < (dedtypes.get()).length.value);i++){
+                        for (; (i < (dedtypes.get()).length);i++){
                             Type at = isType((dedtypes.get()).get(i));
                             if (at != null)
                             {
-                                if (((at.ty.value & 0xFF) == ENUMTY.Tnone))
+                                if (((at.ty & 0xFF) == ENUMTY.Tnone))
                                 {
                                     TypeDeduced xt = (TypeDeduced)at;
-                                    at = xt.tded.value;
+                                    at = xt.tded;
                                 }
                                 dedtypes.get().set(i, at.merge2());
                             }
@@ -3406,7 +3367,7 @@ public class dtemplate {
                     {
                         int i = ntargs;
                     L_outer11:
-                        for (; (i < (dedargs.get()).length.value);i++){
+                        for (; (i < (dedargs.get()).length);i++){
                             TemplateParameter tparam = (this.parameters.get()).get(i);
                             RootObject oarg = (dedargs.get()).get(i);
                             RootObject oded = (dedtypes.get()).get(i);
@@ -3428,7 +3389,7 @@ public class dtemplate {
                                         }
                                         if (!(dedtypes.get()).get(i).equals(oded))
                                         {
-                                            this.error(new BytePtr("specialization not allowed for deduced parameter `%s`"), tparam.ident.value.toChars());
+                                            this.error(new BytePtr("specialization not allowed for deduced parameter `%s`"), tparam.ident.toChars());
                                         }
                                     }
                                     else
@@ -3441,12 +3402,12 @@ public class dtemplate {
                                 }
                                 else
                                 {
-                                    this.inuse.value++;
+                                    this.inuse++;
                                     oded = tparam.defaultArg(instLoc, paramscope);
-                                    this.inuse.value--;
+                                    this.inuse--;
                                     if (oded == null)
                                     {
-                                        if ((pequals(tparam, tp)) && (fptupindex == 305419896) && (ntargs <= (dedargs.get()).length.value - 1))
+                                        if ((pequals(tparam, tp)) && (fptupindex == 305419896) && (ntargs <= (dedargs.get()).length - 1))
                                         {
                                             oded = new Tuple();
                                         }
@@ -3474,7 +3435,7 @@ public class dtemplate {
                                         }
                                         if (!(dedtypes.get()).get(i).equals(oded))
                                         {
-                                            this.error(new BytePtr("specialization not allowed for deduced parameter `%s`"), tparam.ident.value.toChars());
+                                            this.error(new BytePtr("specialization not allowed for deduced parameter `%s`"), tparam.ident.toChars());
                                         }
                                     }
                                 }
@@ -3484,7 +3445,7 @@ public class dtemplate {
                         }
                     }
                     {
-                        int d = (dedargs.get()).length.value;
+                        int d = (dedargs.get()).length;
                         if ((d) != 0)
                         {
                             {
@@ -3497,15 +3458,15 @@ public class dtemplate {
                             }
                         }
                     }
-                    ti.tiargs.value = dedargs;
+                    ti.tiargs = dedargs;
                     {
-                        assert((paramscope.get()).scopesym.value != null);
-                        Ptr<Scope> sc2 = this._scope.value;
-                        sc2 = (sc2.get()).push((paramscope.get()).scopesym.value);
+                        assert((paramscope.get()).scopesym != null);
+                        Ptr<Scope> sc2 = this._scope;
+                        sc2 = (sc2.get()).push((paramscope.get()).scopesym);
                         sc2 = (sc2.get()).push(ti);
                         (sc2.get()).parent.value = ti;
                         (sc2.get()).tinst = ti;
-                        (sc2.get()).minst.value = (sc.get()).minst.value;
+                        (sc2.get()).minst = (sc.get()).minst;
                         fd.value = this.doHeaderInstantiation(ti, sc2, fd.value, tthis, fargs);
                         sc2 = (sc2.get()).pop();
                         sc2 = (sc2.get()).pop();
@@ -3514,7 +3475,7 @@ public class dtemplate {
                             /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                         }
                     }
-                    if (this.constraint.value != null)
+                    if (this.constraint != null)
                     {
                         if (!this.evaluateConstraint(ti, sc, paramscope, dedargs, fd.value))
                         {
@@ -3542,59 +3503,59 @@ public class dtemplate {
             Tuple va = isTuple(o);
             Declaration d = null;
             VarDeclaration v = null;
-            if ((ea != null) && ((ea.op.value & 0xFF) == 20))
+            if ((ea != null) && ((ea.op & 0xFF) == 20))
             {
                 ta = ea.type.value;
             }
-            else if ((ea != null) && ((ea.op.value & 0xFF) == 203))
+            else if ((ea != null) && ((ea.op & 0xFF) == 203))
             {
-                sa = ((ScopeExp)ea).sds.value;
+                sa = ((ScopeExp)ea).sds;
             }
-            else if ((ea != null) && ((ea.op.value & 0xFF) == 123) || ((ea.op.value & 0xFF) == 124))
+            else if ((ea != null) && ((ea.op & 0xFF) == 123) || ((ea.op & 0xFF) == 124))
             {
-                sa = ((ThisExp)ea).var.value;
+                sa = ((ThisExp)ea).var;
             }
-            else if ((ea != null) && ((ea.op.value & 0xFF) == 161))
+            else if ((ea != null) && ((ea.op & 0xFF) == 161))
             {
-                if (((FuncExp)ea).td.value != null)
+                if (((FuncExp)ea).td != null)
                 {
-                    sa = ((FuncExp)ea).td.value;
+                    sa = ((FuncExp)ea).td;
                 }
                 else
                 {
-                    sa = ((FuncExp)ea).fd.value;
+                    sa = ((FuncExp)ea).fd;
                 }
             }
             if (ta != null)
             {
-                d = new AliasDeclaration(Loc.initial.value, tp.ident.value, ta);
+                d = new AliasDeclaration(Loc.initial, tp.ident, ta);
             }
             else if (sa != null)
             {
-                d = new AliasDeclaration(Loc.initial.value, tp.ident.value, sa);
+                d = new AliasDeclaration(Loc.initial, tp.ident, sa);
             }
             else if (ea != null)
             {
-                Initializer _init = new ExpInitializer(this.loc.value, ea);
+                Initializer _init = new ExpInitializer(this.loc, ea);
                 TemplateValueParameter tvp = tp.isTemplateValueParameter();
                 Type t = tvp != null ? tvp.valType : null;
-                v = new VarDeclaration(this.loc.value, t, tp.ident.value, _init, 0L);
-                v.storage_class.value = 8650752L;
+                v = new VarDeclaration(this.loc, t, tp.ident, _init, 0L);
+                v.storage_class = 8650752L;
                 d = v;
             }
             else if (va != null)
             {
-                d = new TupleDeclaration(this.loc.value, tp.ident.value, ptr(va.objects));
+                d = new TupleDeclaration(this.loc, tp.ident, ptr(va.objects));
             }
             else
             {
                 throw new AssertionError("Unreachable code!");
             }
-            d.storage_class.value |= 262144L;
+            d.storage_class |= 262144L;
             if (ta != null)
             {
                 Type t = ta;
-                for (; ((t.ty.value & 0xFF) != ENUMTY.Tenum);){
+                for (; ((t.ty & 0xFF) != ENUMTY.Tenum);){
                     if (t.nextOf() == null)
                     {
                         break;
@@ -3607,7 +3568,7 @@ public class dtemplate {
                     {
                         if (s.isDeprecated())
                         {
-                            d.storage_class.value |= 1024L;
+                            d.storage_class |= 1024L;
                         }
                     }
                 }
@@ -3616,17 +3577,17 @@ public class dtemplate {
             {
                 if (sa.isDeprecated())
                 {
-                    d.storage_class.value |= 1024L;
+                    d.storage_class |= 1024L;
                 }
             }
             if ((sc.get()).insert(d) == null)
             {
-                this.error(new BytePtr("declaration `%s` is already defined"), tp.ident.value.toChars());
+                this.error(new BytePtr("declaration `%s` is already defined"), tp.ident.toChars());
             }
             dsymbolSemantic(d, sc);
             if (v != null)
             {
-                o = initializerToExpression(v._init.value, null);
+                o = initializerToExpression(v._init, null);
             }
             return o;
         }
@@ -3635,22 +3596,22 @@ public class dtemplate {
             assert(fd != null);
             if (fd.isCtorDeclaration() != null)
             {
-                fd = new CtorDeclaration(fd.loc.value, fd.endloc.value, fd.storage_class.value, fd.type.value.syntaxCopy(), false);
+                fd = new CtorDeclaration(fd.loc, fd.endloc, fd.storage_class, fd.type.syntaxCopy(), false);
             }
             else
             {
-                fd = new FuncDeclaration(fd.loc.value, fd.endloc.value, fd.ident.value, fd.storage_class.value, fd.type.value.syntaxCopy());
+                fd = new FuncDeclaration(fd.loc, fd.endloc, fd.ident, fd.storage_class, fd.type.syntaxCopy());
             }
             fd.parent.value = ti;
-            assert(((fd.type.value.ty.value & 0xFF) == ENUMTY.Tfunction));
-            TypeFunction tf = (TypeFunction)fd.type.value;
-            tf.fargs.value = fargs;
+            assert(((fd.type.ty & 0xFF) == ENUMTY.Tfunction));
+            TypeFunction tf = (TypeFunction)fd.type;
+            tf.fargs = fargs;
             if (tthis != null)
             {
                 boolean hasttp = false;
                 {
                     int i = 0;
-                    for (; (i < (this.parameters.get()).length.value);i++){
+                    for (; (i < (this.parameters.get()).length);i++){
                         TemplateParameter tp = (this.parameters.get()).get(i);
                         TemplateThisParameter ttp = tp.isTemplateThisParameter();
                         if (ttp != null)
@@ -3661,67 +3622,67 @@ public class dtemplate {
                 }
                 if (hasttp)
                 {
-                    tf = (TypeFunction)tf.addSTC(ModToStc((tthis.mod.value & 0xFF)));
-                    assert(tf.deco.value == null);
+                    tf = (TypeFunction)tf.addSTC(ModToStc((tthis.mod & 0xFF)));
+                    assert(tf.deco == null);
                 }
             }
             Ptr<Scope> scx = (sc2.get()).push();
             {
                 int i = 0;
-                for (; (i < (tf.parameterList.parameters.value.get()).length.value);i++) {
-                    (tf.parameterList.parameters.value.get()).get(i).defaultArg.value = null;
+                for (; (i < (tf.parameterList.parameters.get()).length);i++) {
+                    (tf.parameterList.parameters.get()).get(i).defaultArg = null;
                 }
             }
-            tf.incomplete.value = true;
+            tf.incomplete = true;
             if (fd.isCtorDeclaration() != null)
             {
-                (scx.get()).flags.value |= 1;
+                (scx.get()).flags |= 1;
                 Dsymbol parent = this.toParentDecl();
                 Type tret = null;
                 AggregateDeclaration ad = parent.isAggregateDeclaration();
                 if ((ad == null) || (parent.isUnionDeclaration() != null))
                 {
-                    tret = Type.tvoid.value;
+                    tret = Type.tvoid;
                 }
                 else
                 {
                     tret = ad.handleType();
                     assert(tret != null);
-                    tret = tret.addStorageClass(fd.storage_class.value | (scx.get()).stc.value);
-                    tret = tret.addMod(tf.mod.value);
+                    tret = tret.addStorageClass(fd.storage_class | (scx.get()).stc);
+                    tret = tret.addMod(tf.mod);
                 }
                 tf.next.value = tret;
                 if ((ad != null) && (ad.isStructDeclaration() != null))
                 {
-                    tf.isref.value = true;
+                    tf.isref = true;
                 }
             }
             else
             {
                 tf.next.value = null;
             }
-            fd.type.value = tf;
-            fd.type.value = fd.type.value.addSTC((scx.get()).stc.value);
-            fd.type.value = typeSemantic(fd.type.value, fd.loc.value, scx);
+            fd.type = tf;
+            fd.type = fd.type.addSTC((scx.get()).stc);
+            fd.type = typeSemantic(fd.type, fd.loc, scx);
             scx = (scx.get()).pop();
-            if (((fd.type.value.ty.value & 0xFF) != ENUMTY.Tfunction))
+            if (((fd.type.ty & 0xFF) != ENUMTY.Tfunction))
             {
                 return null;
             }
-            fd.originalType.value = fd.type.value;
+            fd.originalType = fd.type;
             return fd;
         }
 
         public  TemplateInstance findExistingInstance(TemplateInstance tithis, Ptr<DArray<Expression>> fargs) {
             tithis.fargs = fargs;
             TemplateInstanceBox tibox = tibox = new TemplateInstanceBox(tithis);
-            Ptr<TemplateInstance> p = pcopy(tibox in this.instances);
+            Ptr<TemplateInstance> p = pcopy(this.instances.getLvalue(tibox));
             return p != null ? p.get() : null;
         }
 
         public  TemplateInstance addInstance(TemplateInstance ti) {
             TemplateInstanceBox tibox = tibox = new TemplateInstanceBox(ti);
-            this.instances.set(tibox, __aaval1201);
+            this.instances.set(tibox, __aaval1197);
             return ti;
         }
 
@@ -3735,7 +3696,7 @@ public class dtemplate {
         }
 
         public  TemplateTupleParameter isVariadic() {
-            int dim = (this.parameters.get()).length.value;
+            int dim = (this.parameters.get()).length;
             if ((dim == 0))
             {
                 return null;
@@ -3796,12 +3757,12 @@ public class dtemplate {
     }
     public static class TypeDeduced extends Type
     {
-        public Ref<Type> tded = ref(null);
+        public Type tded = null;
         public DArray<Expression> argexps = new DArray<Expression>();
         public DArray<Type> tparams = new DArray<Type>();
         public  TypeDeduced(Type tt, Expression e, Type tparam) {
             super((byte)11);
-            this.tded.value = tt;
+            this.tded = tt;
             this.argexps.push(e);
             this.tparams.push(tparam);
         }
@@ -3812,7 +3773,7 @@ public class dtemplate {
         }
 
         public  void update(Type tt, Expression e, Type tparam) {
-            this.tded.value = tt;
+            this.tded = tt;
             this.argexps.push(e);
             this.tparams.push(tparam);
         }
@@ -3821,14 +3782,14 @@ public class dtemplate {
             int match = MATCH.exact;
             {
                 int j = 0;
-                for (; (j < this.argexps.length.value);j++){
+                for (; (j < this.argexps.length);j++){
                     Expression e = this.argexps.get(j);
                     assert(e != null);
-                    if ((pequals(e, emptyArrayElement.value)))
+                    if ((pequals(e, emptyArrayElement)))
                     {
                         continue;
                     }
-                    Type t = tt.addMod(this.tparams.get(j).mod.value).substWildTo(1);
+                    Type t = tt.addMod(this.tparams.get(j).mod).substWildTo(1);
                     int m = e.implicitConvTo(t);
                     if ((match > m))
                     {
@@ -3871,60 +3832,54 @@ public class dtemplate {
         }
     }
     public static void functionResolve(MatchAccumulator m, Dsymbol dstart, Loc loc, Ptr<Scope> sc, Ptr<DArray<RootObject>> tiargs, Type tthis, Ptr<DArray<Expression>> fargs, Ptr<BytePtr> pMessage) {
-        Ref<Ptr<Scope>> sc_ref = ref(sc);
-        Ref<Ptr<DArray<RootObject>>> tiargs_ref = ref(tiargs);
-        Ref<Type> tthis_ref = ref(tthis);
-        Ref<Ptr<DArray<Expression>>> fargs_ref = ref(fargs);
-        Ref<Ptr<BytePtr>> pMessage_ref = ref(pMessage);
-        Ref<Slice<Expression>> fargs_ = ref(peekSlice(fargs_ref.value).copy());
-        IntRef property = ref(0);
-        IntRef ov_index = ref(0);
-        Ref<TemplateDeclaration> td_best = ref(null);
-        Ref<TemplateInstance> ti_best = ref(null);
-        IntRef ta_last = ref((m.last.value != MATCH.nomatch) ? MATCH.exact : MATCH.nomatch);
-        Ref<Type> tthis_best = ref(null);
+        Slice<Expression> fargs_ = peekSlice(fargs).copy();
+        int property = 0;
+        int ov_index = 0;
+        TemplateDeclaration td_best = null;
+        TemplateInstance ti_best = null;
+        int ta_last = (m.last != MATCH.nomatch) ? MATCH.exact : MATCH.nomatch;
+        Type tthis_best = null;
         Function1<FuncDeclaration,Integer> applyFunction = new Function1<FuncDeclaration,Integer>(){
             public Integer invoke(FuncDeclaration fd) {
-                Ref<FuncDeclaration> fd_ref = ref(fd);
-                if ((pequals(fd_ref.value, m.lastf.value)))
+                if ((pequals(fd, m.lastf)))
                 {
                     return 0;
                 }
-                if ((tiargs_ref.value != null) && ((tiargs_ref.value.get()).length.value > 0))
+                if ((tiargs != null) && ((tiargs.get()).length > 0))
                 {
                     return 0;
                 }
-                if ((fd_ref.value.isCtorDeclaration() == null) && (fd_ref.value.semanticRun.value < PASS.semanticdone))
+                if ((fd.isCtorDeclaration() == null) && (fd.semanticRun < PASS.semanticdone))
                 {
-                    Ungag ungag = fd_ref.value.ungagSpeculative().copy();
+                    Ungag ungag = fd.ungagSpeculative().copy();
                     try {
-                        dsymbolSemantic(fd_ref.value, null);
+                        dsymbolSemantic(fd, null);
                     }
                     finally {
                     }
                 }
-                if ((fd_ref.value.semanticRun.value < PASS.semanticdone))
+                if ((fd.semanticRun < PASS.semanticdone))
                 {
-                    error(loc, new BytePtr("forward reference to template `%s`"), fd_ref.value.toChars());
+                    error(loc, new BytePtr("forward reference to template `%s`"), fd.toChars());
                     return 1;
                 }
-                TypeFunction tf = (TypeFunction)fd_ref.value.type.value;
-                IntRef prop = ref(tf.isproperty.value ? 1 : 2);
-                if ((property.value == 0))
+                TypeFunction tf = (TypeFunction)fd.type;
+                int prop = tf.isproperty ? 1 : 2;
+                if ((property == 0))
                 {
-                    property.value = prop.value;
+                    property = prop;
                 }
-                else if ((property.value != prop.value))
+                else if ((property != prop))
                 {
-                    error(fd_ref.value.loc.value, new BytePtr("cannot overload both property and non-property functions"));
+                    error(fd.loc, new BytePtr("cannot overload both property and non-property functions"));
                 }
-                Ref<Type> tthis_fd = ref(fd_ref.value.needThis() ? tthis_ref.value : null);
-                Ref<Boolean> isCtorCall = ref((tthis_fd.value != null) && (fd_ref.value.isCtorDeclaration() != null));
-                if (isCtorCall.value)
+                Type tthis_fd = fd.needThis() ? tthis : null;
+                boolean isCtorCall = (tthis_fd != null) && (fd.isCtorDeclaration() != null);
+                if (isCtorCall)
                 {
-                    if (MODimplicitConv(tf.mod.value, tthis_fd.value.mod.value) || tf.isWild() && ((tf.isShared() ? 1 : 0) == (tthis_fd.value.isShared() ? 1 : 0)) || fd_ref.value.isReturnIsolated())
+                    if (MODimplicitConv(tf.mod, tthis_fd.mod) || tf.isWild() && ((tf.isShared() ? 1 : 0) == (tthis_fd.isShared() ? 1 : 0)) || fd.isReturnIsolated())
                     {
-                        tthis_fd.value = null;
+                        tthis_fd = null;
                     }
                     else
                     {
@@ -3932,96 +3887,96 @@ public class dtemplate {
                     }
                 }
                 {
-                    Ref<DtorDeclaration> dt = ref(fd_ref.value.isDtorDeclaration());
-                    if ((dt.value) != null)
+                    DtorDeclaration dt = fd.isDtorDeclaration();
+                    if ((dt) != null)
                     {
-                        Ref<TypeFunction> dtmod = ref(dt.value.type.value.toTypeFunction());
-                        IntRef shared_dtor = ref((dtmod.value.mod.value & 0xFF) & MODFlags.shared_);
-                        IntRef shared_this = ref((tthis_fd.value != null) ? (tthis_fd.value.mod.value & 0xFF) & MODFlags.shared_ : 0);
-                        if ((shared_dtor.value != 0) && (shared_this.value == 0))
+                        TypeFunction dtmod = dt.type.toTypeFunction();
+                        int shared_dtor = (dtmod.mod & 0xFF) & MODFlags.shared_;
+                        int shared_this = (tthis_fd != null) ? (tthis_fd.mod & 0xFF) & MODFlags.shared_ : 0;
+                        if ((shared_dtor != 0) && (shared_this == 0))
                         {
-                            tthis_fd.value = dtmod.value;
+                            tthis_fd = dtmod;
                         }
-                        else if ((shared_this.value != 0) && (shared_dtor.value == 0) && (tthis_fd.value != null))
+                        else if ((shared_this != 0) && (shared_dtor == 0) && (tthis_fd != null))
                         {
-                            tf.mod.value = tthis_fd.value.mod.value;
+                            tf.mod = tthis_fd.mod;
                         }
                     }
                 }
-                IntRef mfa = ref(tf.callMatch(tthis_fd.value, fargs_.value, 0, pMessage_ref.value, sc_ref.value));
-                if ((mfa.value > MATCH.nomatch))
+                int mfa = tf.callMatch(tthis_fd, fargs_, 0, pMessage, sc);
+                if ((mfa > MATCH.nomatch))
                 {
                     try {
                         try {
-                            if ((mfa.value > m.last.value))
+                            if ((mfa > m.last))
                             {
                                 /*goto LfIsBetter*/throw Dispatch1.INSTANCE;
                             }
-                            if ((mfa.value < m.last.value))
+                            if ((mfa < m.last))
                             {
                                 /*goto LlastIsBetter*/throw Dispatch0.INSTANCE;
                             }
-                            assert(m.lastf.value != null);
-                            if (m.lastf.value.overrides(fd_ref.value) != 0)
+                            assert(m.lastf != null);
+                            if (m.lastf.overrides(fd) != 0)
                             {
                                 /*goto LlastIsBetter*/throw Dispatch0.INSTANCE;
                             }
-                            if (fd_ref.value.overrides(m.lastf.value) != 0)
+                            if (fd.overrides(m.lastf) != 0)
                             {
                                 /*goto LfIsBetter*/throw Dispatch1.INSTANCE;
                             }
                             {
-                                IntRef c1 = ref(fd_ref.value.leastAsSpecialized(m.lastf.value));
-                                IntRef c2 = ref(m.lastf.value.leastAsSpecialized(fd_ref.value));
-                                if ((c1.value > c2.value))
+                                int c1 = fd.leastAsSpecialized(m.lastf);
+                                int c2 = m.lastf.leastAsSpecialized(fd);
+                                if ((c1 > c2))
                                 {
                                     /*goto LfIsBetter*/throw Dispatch1.INSTANCE;
                                 }
-                                if ((c1.value < c2.value))
+                                if ((c1 < c2))
                                 {
                                     /*goto LlastIsBetter*/throw Dispatch0.INSTANCE;
                                 }
                             }
-                            if (!m.lastf.value.type.value.equals(fd_ref.value.type.value))
+                            if (!m.lastf.type.equals(fd.type))
                             {
-                                IntRef lastCovariant = ref(m.lastf.value.type.value.covariant(fd_ref.value.type.value, null, true));
-                                IntRef firstCovariant = ref(fd_ref.value.type.value.covariant(m.lastf.value.type.value, null, true));
-                                if ((lastCovariant.value == 1) || (lastCovariant.value == 2))
+                                int lastCovariant = m.lastf.type.covariant(fd.type, null, true);
+                                int firstCovariant = fd.type.covariant(m.lastf.type, null, true);
+                                if ((lastCovariant == 1) || (lastCovariant == 2))
                                 {
-                                    if ((firstCovariant.value != 1) && (firstCovariant.value != 2))
+                                    if ((firstCovariant != 1) && (firstCovariant != 2))
                                     {
                                         /*goto LlastIsBetter*/throw Dispatch0.INSTANCE;
                                     }
                                 }
-                                else if ((firstCovariant.value == 1) || (firstCovariant.value == 2))
+                                else if ((firstCovariant == 1) || (firstCovariant == 2))
                                 {
                                     /*goto LfIsBetter*/throw Dispatch1.INSTANCE;
                                 }
                             }
-                            if (tf.equals(m.lastf.value.type.value) && (fd_ref.value.storage_class.value == m.lastf.value.storage_class.value) && (pequals(fd_ref.value.parent.value, m.lastf.value.parent.value)) && fd_ref.value.protection.opEquals(m.lastf.value.protection) && (fd_ref.value.linkage.value == m.lastf.value.linkage.value))
+                            if (tf.equals(m.lastf.type) && (fd.storage_class == m.lastf.storage_class) && (pequals(fd.parent.value, m.lastf.parent.value)) && fd.protection.opEquals(m.lastf.protection) && (fd.linkage == m.lastf.linkage))
                             {
-                                if ((fd_ref.value.fbody.value != null) && (m.lastf.value.fbody.value == null))
+                                if ((fd.fbody != null) && (m.lastf.fbody == null))
                                 {
                                     /*goto LfIsBetter*/throw Dispatch1.INSTANCE;
                                 }
-                                if ((fd_ref.value.fbody.value == null) && (m.lastf.value.fbody.value != null))
+                                if ((fd.fbody == null) && (m.lastf.fbody != null))
                                 {
                                     /*goto LlastIsBetter*/throw Dispatch0.INSTANCE;
                                 }
                             }
-                            if (isCtorCall.value && ((tf.mod.value & 0xFF) != (m.lastf.value.type.value.mod.value & 0xFF)))
+                            if (isCtorCall && ((tf.mod & 0xFF) != (m.lastf.type.mod & 0xFF)))
                             {
-                                if (((tthis_ref.value.mod.value & 0xFF) == (tf.mod.value & 0xFF)))
+                                if (((tthis.mod & 0xFF) == (tf.mod & 0xFF)))
                                 {
                                     /*goto LfIsBetter*/throw Dispatch1.INSTANCE;
                                 }
-                                if (((tthis_ref.value.mod.value & 0xFF) == (m.lastf.value.type.value.mod.value & 0xFF)))
+                                if (((tthis.mod & 0xFF) == (m.lastf.type.mod & 0xFF)))
                                 {
                                     /*goto LlastIsBetter*/throw Dispatch0.INSTANCE;
                                 }
                             }
-                            m.nextf.value = fd_ref.value;
-                            m.count.value++;
+                            m.nextf = fd;
+                            m.count++;
                             return 0;
                         }
                         catch(Dispatch0 __d){}
@@ -4030,14 +3985,14 @@ public class dtemplate {
                     }
                     catch(Dispatch1 __d){}
                 /*LfIsBetter:*/
-                    td_best.value = null;
-                    ti_best.value = null;
-                    ta_last.value = MATCH.exact;
-                    m.last.value = mfa.value;
-                    m.lastf.value = fd_ref.value;
-                    tthis_best.value = tthis_fd.value;
-                    ov_index.value = 0;
-                    m.count.value = 1;
+                    td_best = null;
+                    ti_best = null;
+                    ta_last = MATCH.exact;
+                    m.last = mfa;
+                    m.lastf = fd;
+                    tthis_best = tthis_fd;
+                    ov_index = 0;
+                    m.count = 1;
                     return 0;
                 }
                 return 0;
@@ -4045,80 +4000,79 @@ public class dtemplate {
         };
         Function1<TemplateDeclaration,Integer> applyTemplate = new Function1<TemplateDeclaration,Integer>(){
             public Integer invoke(TemplateDeclaration td) {
-                Ref<TemplateDeclaration> td_ref = ref(td);
-                if (td_ref.value.inuse.value != 0)
+                if (td.inuse != 0)
                 {
-                    td_ref.value.error(loc, new BytePtr("recursive template expansion"));
+                    td.error(loc, new BytePtr("recursive template expansion"));
                     return 1;
                 }
-                if ((pequals(td_ref.value, td_best.value)))
+                if ((pequals(td, td_best)))
                 {
                     return 0;
                 }
-                if (sc_ref.value == null)
+                if (sc == null)
                 {
-                    sc_ref.value = td_ref.value._scope.value;
+                    sc = td._scope;
                 }
-                if ((td_ref.value.semanticRun.value == PASS.init) && (td_ref.value._scope.value != null))
+                if ((td.semanticRun == PASS.init) && (td._scope != null))
                 {
-                    Ungag ungag = td_ref.value.ungagSpeculative().copy();
+                    Ungag ungag = td.ungagSpeculative().copy();
                     try {
-                        dsymbolSemantic(td_ref.value, td_ref.value._scope.value);
+                        dsymbolSemantic(td, td._scope);
                     }
                     finally {
                     }
                 }
-                if ((td_ref.value.semanticRun.value == PASS.init))
+                if ((td.semanticRun == PASS.init))
                 {
-                    error(loc, new BytePtr("forward reference to template `%s`"), td_ref.value.toChars());
+                    error(loc, new BytePtr("forward reference to template `%s`"), td.toChars());
                 /*Lerror:*/
-                    m.lastf.value = null;
-                    m.count.value = 0;
-                    m.last.value = MATCH.nomatch;
+                    m.lastf = null;
+                    m.count = 0;
+                    m.last = MATCH.nomatch;
                     return 1;
                 }
-                Ref<FuncDeclaration> f = ref(td_ref.value.onemember.value != null ? td_ref.value.onemember.value.isFuncDeclaration() : null);
-                if (f.value == null)
+                FuncDeclaration f = td.onemember != null ? td.onemember.isFuncDeclaration() : null;
+                if (f == null)
                 {
-                    if (tiargs_ref.value == null)
+                    if (tiargs == null)
                     {
-                        tiargs_ref.value = refPtr(new DArray<RootObject>());
+                        tiargs = refPtr(new DArray<RootObject>());
                     }
-                    Ref<TemplateInstance> ti = ref(new TemplateInstance(loc, td_ref.value, tiargs_ref.value));
-                    Ref<DArray<RootObject>> dedtypes = ref(dedtypes.value = new DArray<RootObject>((td_ref.value.parameters.get()).length.value));
+                    TemplateInstance ti = new TemplateInstance(loc, td, tiargs);
+                    Ref<DArray<RootObject>> dedtypes = ref(dedtypes.value = new DArray<RootObject>((td.parameters.get()).length));
                     try {
-                        assert((td_ref.value.semanticRun.value != PASS.init));
-                        IntRef mta = ref(td_ref.value.matchWithInstance(sc_ref.value, ti.value, ptr(dedtypes), fargs_ref.value, 0));
-                        if ((mta.value <= MATCH.nomatch) || (mta.value < ta_last.value))
+                        assert((td.semanticRun != PASS.init));
+                        int mta = td.matchWithInstance(sc, ti, ptr(dedtypes), fargs, 0);
+                        if ((mta <= MATCH.nomatch) || (mta < ta_last))
                         {
                             return 0;
                         }
-                        templateInstanceSemantic(ti.value, sc_ref.value, fargs_ref.value);
-                        if (ti.value.inst.value == null)
+                        templateInstanceSemantic(ti, sc, fargs);
+                        if (ti.inst == null)
                         {
                             return 0;
                         }
-                        Ref<Dsymbol> s = ref(ti.value.inst.value.toAlias());
-                        Ref<FuncDeclaration> fd = ref(null);
+                        Dsymbol s = ti.inst.toAlias();
+                        FuncDeclaration fd = null;
                         {
-                            Ref<TemplateDeclaration> tdx = ref(s.value.isTemplateDeclaration());
-                            if ((tdx.value) != null)
+                            TemplateDeclaration tdx = s.isTemplateDeclaration();
+                            if ((tdx) != null)
                             {
                                 Ref<DArray<RootObject>> dedtypesX = ref(new DArray<RootObject>());
                                 try {
                                     {
-                                        Ref<Ptr<TemplatePrevious>> p = ref(tdx.value.previous.value);
+                                        Ptr<TemplatePrevious> p = tdx.previous;
                                     L_outer12:
-                                        for (; p.value != null;p.value = (p.value.get()).prev.value){
-                                            if (arrayObjectMatch((p.value.get()).dedargs.value, ptr(dedtypesX)))
+                                        for (; p != null;p = (p.get()).prev){
+                                            if (arrayObjectMatch((p.get()).dedargs, ptr(dedtypesX)))
                                             {
                                                 {
-                                                    Ref<Ptr<Scope>> scx = ref(sc_ref.value);
+                                                    Ptr<Scope> scx = sc;
                                                 L_outer13:
-                                                    for (; scx.value != null;scx.value = (scx.value.get()).enclosing.value){
-                                                        if ((scx.value == (p.value.get()).sc.value))
+                                                    for (; scx != null;scx = (scx.get()).enclosing){
+                                                        if ((scx == (p.get()).sc))
                                                         {
-                                                            error(loc, new BytePtr("recursive template expansion while looking for `%s.%s`"), ti.value.toChars(), tdx.value.toChars());
+                                                            error(loc, new BytePtr("recursive template expansion while looking for `%s.%s`"), ti.toChars(), tdx.toChars());
                                                             /*goto Lerror*/throw Dispatch0.INSTANCE;
                                                         }
                                                     }
@@ -4127,63 +4081,63 @@ public class dtemplate {
                                         }
                                     }
                                     Ref<TemplatePrevious> pr = ref(new TemplatePrevious());
-                                    pr.value.prev.value = tdx.value.previous.value;
-                                    pr.value.sc.value = sc_ref.value;
-                                    pr.value.dedargs.value = ptr(dedtypesX);
-                                    tdx.value.previous.value = ptr(pr);
-                                    fd.value = resolveFuncCall(loc, sc_ref.value, s.value, null, tthis_ref.value, fargs_ref.value, FuncResolveFlag.quiet);
-                                    tdx.value.previous.value = pr.value.prev.value;
+                                    pr.value.prev = tdx.previous;
+                                    pr.value.sc = sc;
+                                    pr.value.dedargs = ptr(dedtypesX);
+                                    tdx.previous = ptr(pr);
+                                    fd = resolveFuncCall(loc, sc, s, null, tthis, fargs, FuncResolveFlag.quiet);
+                                    tdx.previous = pr.value.prev;
                                 }
                                 finally {
                                 }
                             }
-                            else if (s.value.isFuncDeclaration() != null)
+                            else if (s.isFuncDeclaration() != null)
                             {
-                                fd.value = resolveFuncCall(loc, sc_ref.value, s.value, null, tthis_ref.value, fargs_ref.value, FuncResolveFlag.quiet);
+                                fd = resolveFuncCall(loc, sc, s, null, tthis, fargs, FuncResolveFlag.quiet);
                             }
                             else
                             {
                                 /*goto Lerror*/throw Dispatch0.INSTANCE;
                             }
                         }
-                        if (fd.value == null)
+                        if (fd == null)
                         {
                             return 0;
                         }
-                        if (((fd.value.type.value.ty.value & 0xFF) != ENUMTY.Tfunction))
+                        if (((fd.type.ty & 0xFF) != ENUMTY.Tfunction))
                         {
-                            m.lastf.value = fd.value;
-                            m.count.value = 1;
-                            m.last.value = MATCH.nomatch;
+                            m.lastf = fd;
+                            m.count = 1;
+                            m.last = MATCH.nomatch;
                             return 1;
                         }
-                        Ref<Type> tthis_fd = ref(fd.value.needThis() && (fd.value.isCtorDeclaration() == null) ? tthis_ref.value : null);
-                        TypeFunction tf = (TypeFunction)fd.value.type.value;
-                        IntRef mfa = ref(tf.callMatch(tthis_fd.value, fargs_.value, 0, null, sc_ref.value));
-                        if ((mfa.value < m.last.value))
+                        Type tthis_fd = fd.needThis() && (fd.isCtorDeclaration() == null) ? tthis : null;
+                        TypeFunction tf = (TypeFunction)fd.type;
+                        int mfa = tf.callMatch(tthis_fd, fargs_, 0, null, sc);
+                        if ((mfa < m.last))
                         {
                             return 0;
                         }
                         try {
                             try {
-                                if ((mta.value < ta_last.value))
+                                if ((mta < ta_last))
                                 {
                                     /*goto Ltd_best2*/throw Dispatch0.INSTANCE;
                                 }
-                                if ((mta.value > ta_last.value))
+                                if ((mta > ta_last))
                                 {
                                     /*goto Ltd2*/throw Dispatch1.INSTANCE;
                                 }
-                                if ((mfa.value < m.last.value))
+                                if ((mfa < m.last))
                                 {
                                     /*goto Ltd_best2*/throw Dispatch0.INSTANCE;
                                 }
-                                if ((mfa.value > m.last.value))
+                                if ((mfa > m.last))
                                 {
                                     /*goto Ltd2*/throw Dispatch1.INSTANCE;
                                 }
-                                m.nextf.value = fd.value;
-                                m.count.value++;
+                                m.nextf = fd;
+                                m.count++;
                                 return 0;
                             }
                             catch(Dispatch0 __d){}
@@ -4192,49 +4146,49 @@ public class dtemplate {
                         }
                         catch(Dispatch1 __d){}
                     /*Ltd2:*/
-                        assert(td_ref.value._scope.value != null);
-                        td_best.value = td_ref.value;
-                        ti_best.value = null;
-                        property.value = 0;
-                        ta_last.value = mta.value;
-                        m.last.value = mfa.value;
-                        m.lastf.value = fd.value;
-                        tthis_best.value = tthis_fd.value;
-                        ov_index.value = 0;
-                        m.nextf.value = null;
-                        m.count.value = 1;
+                        assert(td._scope != null);
+                        td_best = td;
+                        ti_best = null;
+                        property = 0;
+                        ta_last = mta;
+                        m.last = mfa;
+                        m.lastf = fd;
+                        tthis_best = tthis_fd;
+                        ov_index = 0;
+                        m.nextf = null;
+                        m.count = 1;
                         return 0;
                     }
                     finally {
                     }
                 }
                 {
-                    IntRef ovi = ref(0);
+                    int ovi = 0;
                 L_outer14:
-                    for (; f.value != null;comma(f.value = f.value.overnext0.value, ovi.value++)){
-                        if (((f.value.type.value.ty.value & 0xFF) != ENUMTY.Tfunction) || f.value.errors.value)
+                    for (; f != null;comma(f = f.overnext0, ovi++)){
+                        if (((f.type.ty & 0xFF) != ENUMTY.Tfunction) || f.errors)
                         {
                             /*goto Lerror*/throw Dispatch0.INSTANCE;
                         }
-                        Ref<TemplateInstance> ti = ref(new TemplateInstance(loc, td_ref.value, tiargs_ref.value));
-                        ti.value.parent.value = td_ref.value.parent.value;
-                        Ref<FuncDeclaration> fd = ref(f.value);
-                        IntRef x = ref(td_ref.value.deduceFunctionTemplateMatch(ti.value, sc_ref.value, fd, tthis_ref.value, fargs_ref.value));
-                        IntRef mta = ref(x.value >> 4);
-                        IntRef mfa = ref(x.value & 15);
-                        if ((fd.value == null) || (mfa.value == MATCH.nomatch))
+                        TemplateInstance ti = new TemplateInstance(loc, td, tiargs);
+                        ti.parent.value = td.parent.value;
+                        Ref<FuncDeclaration> fd = ref(f);
+                        int x = td.deduceFunctionTemplateMatch(ti, sc, fd, tthis, fargs);
+                        int mta = x >> 4;
+                        int mfa = x & 15;
+                        if ((fd.value == null) || (mfa == MATCH.nomatch))
                         {
                             continue L_outer14;
                         }
-                        Ref<Type> tthis_fd = ref(fd.value.needThis() ? tthis_ref.value : null);
-                        Ref<Boolean> isCtorCall = ref((tthis_fd.value != null) && (fd.value.isCtorDeclaration() != null));
-                        if (isCtorCall.value)
+                        Type tthis_fd = fd.value.needThis() ? tthis : null;
+                        boolean isCtorCall = (tthis_fd != null) && (fd.value.isCtorDeclaration() != null);
+                        if (isCtorCall)
                         {
-                            TypeFunction tf = (TypeFunction)fd.value.type.value;
+                            TypeFunction tf = (TypeFunction)fd.value.type;
                             assert(tf.next.value != null);
-                            if (MODimplicitConv(tf.mod.value, tthis_fd.value.mod.value) || tf.isWild() && ((tf.isShared() ? 1 : 0) == (tthis_fd.value.isShared() ? 1 : 0)) || fd.value.isReturnIsolated())
+                            if (MODimplicitConv(tf.mod, tthis_fd.mod) || tf.isWild() && ((tf.isShared() ? 1 : 0) == (tthis_fd.isShared() ? 1 : 0)) || fd.value.isReturnIsolated())
                             {
-                                tthis_fd.value = null;
+                                tthis_fd = null;
                             }
                             else
                             {
@@ -4243,77 +4197,77 @@ public class dtemplate {
                         }
                         try {
                             try {
-                                if ((mta.value < ta_last.value))
+                                if ((mta < ta_last))
                                 {
                                     /*goto Ltd_best*/throw Dispatch0.INSTANCE;
                                 }
-                                if ((mta.value > ta_last.value))
+                                if ((mta > ta_last))
                                 {
                                     /*goto Ltd*/throw Dispatch1.INSTANCE;
                                 }
-                                if ((mfa.value < m.last.value))
+                                if ((mfa < m.last))
                                 {
                                     /*goto Ltd_best*/throw Dispatch0.INSTANCE;
                                 }
-                                if ((mfa.value > m.last.value))
+                                if ((mfa > m.last))
                                 {
                                     /*goto Ltd*/throw Dispatch1.INSTANCE;
                                 }
-                                if (td_best.value != null)
+                                if (td_best != null)
                                 {
-                                    IntRef c1 = ref(td_ref.value.leastAsSpecialized(sc_ref.value, td_best.value, fargs_ref.value));
-                                    IntRef c2 = ref(td_best.value.leastAsSpecialized(sc_ref.value, td_ref.value, fargs_ref.value));
-                                    if ((c1.value > c2.value))
+                                    int c1 = td.leastAsSpecialized(sc, td_best, fargs);
+                                    int c2 = td_best.leastAsSpecialized(sc, td, fargs);
+                                    if ((c1 > c2))
                                     {
                                         /*goto Ltd*/throw Dispatch1.INSTANCE;
                                     }
-                                    if ((c1.value < c2.value))
+                                    if ((c1 < c2))
                                     {
                                         /*goto Ltd_best*/throw Dispatch0.INSTANCE;
                                     }
                                 }
-                                assert((fd.value != null) && (m.lastf.value != null));
+                                assert((fd.value != null) && (m.lastf != null));
                                 {
-                                    TypeFunction tf1 = (TypeFunction)fd.value.type.value;
-                                    assert(((tf1.ty.value & 0xFF) == ENUMTY.Tfunction));
-                                    TypeFunction tf2 = (TypeFunction)m.lastf.value.type.value;
-                                    assert(((tf2.ty.value & 0xFF) == ENUMTY.Tfunction));
-                                    IntRef c1 = ref(tf1.callMatch(tthis_fd.value, fargs_.value, 0, null, sc_ref.value));
-                                    IntRef c2 = ref(tf2.callMatch(tthis_best.value, fargs_.value, 0, null, sc_ref.value));
-                                    if ((c1.value > c2.value))
+                                    TypeFunction tf1 = (TypeFunction)fd.value.type;
+                                    assert(((tf1.ty & 0xFF) == ENUMTY.Tfunction));
+                                    TypeFunction tf2 = (TypeFunction)m.lastf.type;
+                                    assert(((tf2.ty & 0xFF) == ENUMTY.Tfunction));
+                                    int c1 = tf1.callMatch(tthis_fd, fargs_, 0, null, sc);
+                                    int c2 = tf2.callMatch(tthis_best, fargs_, 0, null, sc);
+                                    if ((c1 > c2))
                                     {
                                         /*goto Ltd*/throw Dispatch1.INSTANCE;
                                     }
-                                    if ((c1.value < c2.value))
+                                    if ((c1 < c2))
                                     {
                                         /*goto Ltd_best*/throw Dispatch0.INSTANCE;
                                     }
                                 }
                                 {
-                                    IntRef c1 = ref(fd.value.leastAsSpecialized(m.lastf.value));
-                                    IntRef c2 = ref(m.lastf.value.leastAsSpecialized(fd.value));
-                                    if ((c1.value > c2.value))
+                                    int c1 = fd.value.leastAsSpecialized(m.lastf);
+                                    int c2 = m.lastf.leastAsSpecialized(fd.value);
+                                    if ((c1 > c2))
                                     {
                                         /*goto Ltd*/throw Dispatch1.INSTANCE;
                                     }
-                                    if ((c1.value < c2.value))
+                                    if ((c1 < c2))
                                     {
                                         /*goto Ltd_best*/throw Dispatch0.INSTANCE;
                                     }
                                 }
-                                if (isCtorCall.value && ((fd.value.type.value.mod.value & 0xFF) != (m.lastf.value.type.value.mod.value & 0xFF)))
+                                if (isCtorCall && ((fd.value.type.mod & 0xFF) != (m.lastf.type.mod & 0xFF)))
                                 {
-                                    if (((tthis_ref.value.mod.value & 0xFF) == (fd.value.type.value.mod.value & 0xFF)))
+                                    if (((tthis.mod & 0xFF) == (fd.value.type.mod & 0xFF)))
                                     {
                                         /*goto Ltd*/throw Dispatch1.INSTANCE;
                                     }
-                                    if (((tthis_ref.value.mod.value & 0xFF) == (m.lastf.value.type.value.mod.value & 0xFF)))
+                                    if (((tthis.mod & 0xFF) == (m.lastf.type.mod & 0xFF)))
                                     {
                                         /*goto Ltd_best*/throw Dispatch0.INSTANCE;
                                     }
                                 }
-                                m.nextf.value = fd.value;
-                                m.count.value++;
+                                m.nextf = fd.value;
+                                m.count++;
                                 continue L_outer14;
                             }
                             catch(Dispatch0 __d){}
@@ -4322,17 +4276,17 @@ public class dtemplate {
                         }
                         catch(Dispatch1 __d){}
                     /*Ltd:*/
-                        assert(td_ref.value._scope.value != null);
-                        td_best.value = td_ref.value;
-                        ti_best.value = ti.value;
-                        property.value = 0;
-                        ta_last.value = mta.value;
-                        m.last.value = mfa.value;
-                        m.lastf.value = fd.value;
-                        tthis_best.value = tthis_fd.value;
-                        ov_index.value = ovi.value;
-                        m.nextf.value = null;
-                        m.count.value = 1;
+                        assert(td._scope != null);
+                        td_best = td;
+                        ti_best = ti;
+                        property = 0;
+                        ta_last = mta;
+                        m.last = mfa;
+                        m.lastf = fd.value;
+                        tthis_best = tthis_fd;
+                        ov_index = ovi;
+                        m.nextf = null;
+                        m.count = 1;
                         continue L_outer14;
                     }
                 }
@@ -4346,7 +4300,7 @@ public class dtemplate {
         }
         Function1<Dsymbol,Integer> __lambda11 = new Function1<Dsymbol,Integer>(){
             public Integer invoke(Dsymbol s) {
-                if (s.errors.value)
+                if (s.errors)
                 {
                     return 0;
                 }
@@ -4367,62 +4321,62 @@ public class dtemplate {
                 return 0;
             }
         };
-        overloadApply(dstart, __lambda11, sc_ref.value);
-        if ((td_best.value != null) && (ti_best.value != null) && (m.count.value == 1))
+        overloadApply(dstart, __lambda11, sc);
+        if ((td_best != null) && (ti_best != null) && (m.count == 1))
         {
-            assert((td_best.value.onemember.value != null) && (td_best.value.onemember.value.isFuncDeclaration() != null));
-            assert(td_best.value._scope.value != null);
-            if (sc_ref.value == null)
+            assert((td_best.onemember != null) && (td_best.onemember.isFuncDeclaration() != null));
+            assert(td_best._scope != null);
+            if (sc == null)
             {
-                sc_ref.value = td_best.value._scope.value;
+                sc = td_best._scope;
             }
-            TemplateInstance ti = new TemplateInstance(loc, td_best.value, ti_best.value.tiargs.value);
-            templateInstanceSemantic(ti, sc_ref.value, fargs_ref.value);
-            m.lastf.value = ti.toAlias().isFuncDeclaration();
-            if (m.lastf.value == null)
+            TemplateInstance ti = new TemplateInstance(loc, td_best, ti_best.tiargs);
+            templateInstanceSemantic(ti, sc, fargs);
+            m.lastf = ti.toAlias().isFuncDeclaration();
+            if (m.lastf == null)
             {
                 /*goto Lnomatch*//*unrolled goto*/
-                assert((m.count.value >= 1));
+                assert((m.count >= 1));
             }
-            if (ti.errors.value)
+            if (ti.errors)
             {
             /*Lerror:*/
-                m.count.value = 1;
-                assert(m.lastf.value != null);
-                m.last.value = MATCH.nomatch;
+                m.count = 1;
+                assert(m.lastf != null);
+                m.last = MATCH.nomatch;
                 return ;
             }
-            for (; ov_index.value-- != 0;){
-                m.lastf.value = m.lastf.value.overnext0.value;
-                assert(m.lastf.value != null);
+            for (; ov_index-- != 0;){
+                m.lastf = m.lastf.overnext0;
+                assert(m.lastf != null);
             }
-            tthis_best.value = m.lastf.value.needThis() && (m.lastf.value.isCtorDeclaration() == null) ? tthis_ref.value : null;
-            TypeFunction tf = (TypeFunction)m.lastf.value.type.value;
-            if (((tf.ty.value & 0xFF) == ENUMTY.Terror))
+            tthis_best = m.lastf.needThis() && (m.lastf.isCtorDeclaration() == null) ? tthis : null;
+            TypeFunction tf = (TypeFunction)m.lastf.type;
+            if (((tf.ty & 0xFF) == ENUMTY.Terror))
             {
                 /*goto Lerror*/throw Dispatch0.INSTANCE;
             }
-            assert(((tf.ty.value & 0xFF) == ENUMTY.Tfunction));
-            if (tf.callMatch(tthis_best.value, fargs_.value, 0, null, sc_ref.value) == 0)
+            assert(((tf.ty & 0xFF) == ENUMTY.Tfunction));
+            if (tf.callMatch(tthis_best, fargs_, 0, null, sc) == 0)
             {
                 /*goto Lnomatch*//*unrolled goto*/
-                assert((m.count.value >= 1));
+                assert((m.count >= 1));
             }
-            if ((tf.next.value != null) && !m.lastf.value.inferRetType)
+            if ((tf.next.value != null) && !m.lastf.inferRetType)
             {
-                m.lastf.value.type.value = typeSemantic(tf, loc, sc_ref.value);
+                m.lastf.type = typeSemantic(tf, loc, sc);
             }
         }
-        else if (m.lastf.value != null)
+        else if (m.lastf != null)
         {
-            assert((m.count.value >= 1));
+            assert((m.count >= 1));
         }
         else
         {
         /*Lnomatch:*/
-            m.count.value = 0;
-            m.lastf.value = null;
-            m.last.value = MATCH.nomatch;
+            m.count = 0;
+            m.lastf = null;
+            m.last = MATCH.nomatch;
         }
     }
 
@@ -4434,9 +4388,9 @@ public class dtemplate {
     public static int templateIdentifierLookup(Identifier id, Ptr<DArray<TemplateParameter>> parameters) {
         {
             int i = 0;
-            for (; (i < (parameters.get()).length.value);i++){
+            for (; (i < (parameters.get()).length);i++){
                 TemplateParameter tp = (parameters.get()).get(i);
-                if (tp.ident.value.equals(id))
+                if (tp.ident.equals(id))
                 {
                     return i;
                 }
@@ -4446,16 +4400,16 @@ public class dtemplate {
     }
 
     public static int templateParameterLookup(Type tparam, Ptr<DArray<TemplateParameter>> parameters) {
-        if (((tparam.ty.value & 0xFF) == ENUMTY.Tident))
+        if (((tparam.ty & 0xFF) == ENUMTY.Tident))
         {
             TypeIdentifier tident = (TypeIdentifier)tparam;
-            return templateIdentifierLookup(tident.ident.value, parameters);
+            return templateIdentifierLookup(tident.ident, parameters);
         }
         return 305419896;
     }
 
     public static byte deduceWildHelper(Type t, Ptr<Type> at, Type tparam) {
-        if ((((tparam.mod.value & 0xFF) & MODFlags.wild) == 0))
+        if ((((tparam.mod & 0xFF) & MODFlags.wild) == 0))
         {
             return (byte)0;
         }
@@ -4477,7 +4431,7 @@ public class dtemplate {
         // from template X!(IntegerInteger)
         // removed duplicate function, [["int Xbyte, byteByteByte", "int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
 
-        switch (XByteByte.invoke(tparam.mod.value, t.mod.value))
+        switch (XByteByte.invoke(tparam.mod, t.mod))
         {
             case 128:
             case 129:
@@ -4495,12 +4449,12 @@ public class dtemplate {
             case 178:
             case 179:
             case 180:
-                byte wm = (byte)((t.mod.value & 0xFF) & -3);
+                byte wm = (byte)((t.mod & 0xFF) & -3);
                 if (((wm & 0xFF) == 0))
                 {
                     wm = (byte)16;
                 }
-                byte m = (byte)((t.mod.value & 0xFF) & 5 | (tparam.mod.value & 0xFF) & (t.mod.value & 0xFF) & MODFlags.shared_);
+                byte m = (byte)((t.mod & 0xFF) & 5 | (tparam.mod & 0xFF) & (t.mod & 0xFF) & MODFlags.shared_);
                 at.set(0, t.unqualify((m & 0xFF)));
                 return wm;
             case 136:
@@ -4515,7 +4469,7 @@ public class dtemplate {
             case 171:
             case 186:
             case 187:
-                at.set(0, t.unqualify(((tparam.mod.value & 0xFF) & (t.mod.value & 0xFF))));
+                at.set(0, t.unqualify(((tparam.mod & 0xFF) & (t.mod & 0xFF))));
                 return (byte)8;
             default:
             return (byte)0;
@@ -4529,7 +4483,7 @@ public class dtemplate {
         }
         if (t1.equivalent(t2))
         {
-            return t1.castMod(MODmerge(t1.mod.value, t2.mod.value));
+            return t1.castMod(MODmerge(t1.mod, t2.mod));
         }
         Type t1b = t1.toBasetype();
         Type t2b = t2.toBasetype();
@@ -4539,9 +4493,9 @@ public class dtemplate {
         }
         if (t1b.equivalent(t2b))
         {
-            return t1b.castMod(MODmerge(t1b.mod.value, t2b.mod.value));
+            return t1b.castMod(MODmerge(t1b.mod, t2b.mod));
         }
-        byte ty = impcnvResult.get((t1b.ty.value & 0xFF)).get((t2b.ty.value & 0xFF));
+        byte ty = impcnvResult.get((t1b.ty & 0xFF)).get((t2b.ty & 0xFF));
         if (((ty & 0xFF) != ENUMTY.Terror))
         {
             return Type.basic.get((ty & 0xFF));
@@ -4573,7 +4527,7 @@ public class dtemplate {
         // from template X!(IntegerInteger)
         // removed duplicate function, [["int Xbyte, byteByteByte", "int Xint, intIntegerInteger"]] signature: int Xint, intIntegerInteger
 
-        switch (XByteByte.invoke(tparam.mod.value, t.mod.value))
+        switch (XByteByte.invoke(tparam.mod, t.mod))
         {
             case 0:
             case 1:
@@ -4676,7 +4630,7 @@ public class dtemplate {
         }
     }
 
-    static Ref<Expression> emptyArrayElement = ref(null);
+    static Expression emptyArrayElement = null;
     public static int deduceType(RootObject o, Ptr<Scope> sc, Type tparam, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, IntPtr wm, int inferStart, boolean ignoreAliasThis) {
         // skipping duplicate class DeduceType
         DeduceType v = new DeduceType(sc, tparam, parameters, dedtypes, wm, inferStart, ignoreAliasThis);
@@ -4699,7 +4653,7 @@ public class dtemplate {
                 }
             }
         }
-        return v.result.value;
+        return v.result;
     }
 
     // defaulted all parameters starting with #8
@@ -4718,7 +4672,7 @@ public class dtemplate {
     }
 
     public static boolean reliesOnTident(Type t, Ptr<DArray<TemplateParameter>> tparams, int iStart) {
-        return reliesOnTemplateParameters(t, (tparams.get()).opSlice(0, (tparams.get()).length.value));
+        return reliesOnTemplateParameters(t, (tparams.get()).opSlice(0, (tparams.get()).length));
     }
 
     // defaulted all parameters starting with #3
@@ -4727,42 +4681,41 @@ public class dtemplate {
     }
 
     public static boolean reliesOnTemplateParameters(Type t, Slice<TemplateParameter> tparams) {
-        Ref<Slice<TemplateParameter>> tparams_ref = ref(tparams);
         Function1<TypeVector,Boolean> visitVector = new Function1<TypeVector,Boolean>(){
             public Boolean invoke(TypeVector t) {
-                return reliesOnTemplateParameters(t.basetype.value, tparams_ref.value);
+                return reliesOnTemplateParameters(t.basetype, tparams);
             }
         };
         Function1<TypeAArray,Boolean> visitAArray = new Function1<TypeAArray,Boolean>(){
             public Boolean invoke(TypeAArray t) {
-                return reliesOnTemplateParameters(t.next.value, tparams_ref.value) || reliesOnTemplateParameters(t.index.value, tparams_ref.value);
+                return reliesOnTemplateParameters(t.next.value, tparams) || reliesOnTemplateParameters(t.index, tparams);
             }
         };
         Function1<TypeFunction,Boolean> visitFunction = new Function1<TypeFunction,Boolean>(){
             public Boolean invoke(TypeFunction t) {
                 {
-                    IntRef __key1209 = ref(0);
-                    IntRef __limit1210 = ref(t.parameterList.length());
-                    for (; (__key1209.value < __limit1210.value);__key1209.value += 1) {
-                        IntRef i = ref(__key1209.value);
-                        Parameter fparam = t.parameterList.get(i.value);
-                        if (reliesOnTemplateParameters(fparam.type.value, tparams_ref.value))
+                    int __key1205 = 0;
+                    int __limit1206 = t.parameterList.length();
+                    for (; (__key1205 < __limit1206);__key1205 += 1) {
+                        int i = __key1205;
+                        Parameter fparam = t.parameterList.get(i);
+                        if (reliesOnTemplateParameters(fparam.type, tparams))
                         {
                             return true;
                         }
                     }
                 }
-                return reliesOnTemplateParameters(t.next.value, tparams_ref.value);
+                return reliesOnTemplateParameters(t.next.value, tparams);
             }
         };
         Function1<TypeIdentifier,Boolean> visitIdentifier = new Function1<TypeIdentifier,Boolean>(){
             public Boolean invoke(TypeIdentifier t) {
                 {
-                    Ref<Slice<TemplateParameter>> __r1211 = ref(tparams_ref.value.copy());
-                    IntRef __key1212 = ref(0);
-                    for (; (__key1212.value < __r1211.value.getLength());__key1212.value += 1) {
-                        TemplateParameter tp = __r1211.value.get(__key1212.value);
-                        if (tp.ident.value.equals(t.ident.value))
+                    Slice<TemplateParameter> __r1207 = tparams.copy();
+                    int __key1208 = 0;
+                    for (; (__key1208 < __r1207.getLength());__key1208 += 1) {
+                        TemplateParameter tp = __r1207.get(__key1208);
+                        if (tp.ident.equals(t.ident))
                         {
                             return true;
                         }
@@ -4774,27 +4727,27 @@ public class dtemplate {
         Function1<TypeInstance,Boolean> visitInstance = new Function1<TypeInstance,Boolean>(){
             public Boolean invoke(TypeInstance t) {
                 {
-                    Ref<Slice<TemplateParameter>> __r1213 = ref(tparams_ref.value.copy());
-                    IntRef __key1214 = ref(0);
-                    for (; (__key1214.value < __r1213.value.getLength());__key1214.value += 1) {
-                        TemplateParameter tp = __r1213.value.get(__key1214.value);
-                        if ((pequals(t.tempinst.value.name.value, tp.ident.value)))
+                    Slice<TemplateParameter> __r1209 = tparams.copy();
+                    int __key1210 = 0;
+                    for (; (__key1210 < __r1209.getLength());__key1210 += 1) {
+                        TemplateParameter tp = __r1209.get(__key1210);
+                        if ((pequals(t.tempinst.name, tp.ident)))
                         {
                             return true;
                         }
                     }
                 }
-                if (t.tempinst.value.tiargs.value != null)
+                if (t.tempinst.tiargs != null)
                 {
-                    Ref<Slice<RootObject>> __r1215 = ref((t.tempinst.value.tiargs.value.get()).opSlice().copy());
-                    IntRef __key1216 = ref(0);
-                    for (; (__key1216.value < __r1215.value.getLength());__key1216.value += 1) {
-                        Ref<RootObject> arg = ref(__r1215.value.get(__key1216.value));
+                    Slice<RootObject> __r1211 = (t.tempinst.tiargs.get()).opSlice().copy();
+                    int __key1212 = 0;
+                    for (; (__key1212 < __r1211.getLength());__key1212 += 1) {
+                        RootObject arg = __r1211.get(__key1212);
                         {
-                            Ref<Type> ta = ref(isType(arg.value));
-                            if ((ta.value) != null)
+                            Type ta = isType(arg);
+                            if ((ta) != null)
                             {
-                                if (reliesOnTemplateParameters(ta.value, tparams_ref.value))
+                                if (reliesOnTemplateParameters(ta, tparams))
                                 {
                                     return true;
                                 }
@@ -4807,18 +4760,18 @@ public class dtemplate {
         };
         Function1<TypeTypeof,Boolean> visitTypeof = new Function1<TypeTypeof,Boolean>(){
             public Boolean invoke(TypeTypeof t) {
-                return reliesOnTemplateParameters(t.exp.value, tparams_ref.value);
+                return reliesOnTemplateParameters(t.exp, tparams);
             }
         };
         Function1<TypeTuple,Boolean> visitTuple = new Function1<TypeTuple,Boolean>(){
             public Boolean invoke(TypeTuple t) {
-                if (t.arguments.value != null)
+                if (t.arguments != null)
                 {
-                    Ref<Slice<Parameter>> __r1217 = ref((t.arguments.value.get()).opSlice().copy());
-                    IntRef __key1218 = ref(0);
-                    for (; (__key1218.value < __r1217.value.getLength());__key1218.value += 1) {
-                        Parameter arg = __r1217.value.get(__key1218.value);
-                        if (reliesOnTemplateParameters(arg.type.value, tparams_ref.value))
+                    Slice<Parameter> __r1213 = (t.arguments.get()).opSlice().copy();
+                    int __key1214 = 0;
+                    for (; (__key1214 < __r1213.getLength());__key1214 += 1) {
+                        Parameter arg = __r1213.get(__key1214);
+                        if (reliesOnTemplateParameters(arg.type, tparams))
                         {
                             return true;
                         }
@@ -4832,7 +4785,7 @@ public class dtemplate {
             return false;
         }
         Type tb = t.toBasetype();
-        switch ((tb.ty.value & 0xFF))
+        switch ((tb.ty & 0xFF))
         {
             case 41:
                 return visitVector.invoke(tb.isTypeVector());
@@ -4851,7 +4804,7 @@ public class dtemplate {
             case 9:
                 return false;
             default:
-            return reliesOnTemplateParameters(tb.nextOf(), tparams_ref.value);
+            return reliesOnTemplateParameters(tb.nextOf(), tparams);
         }
     }
 
@@ -4859,18 +4812,18 @@ public class dtemplate {
         // skipping duplicate class ReliesOnTemplateParameters
         ReliesOnTemplateParameters v = new ReliesOnTemplateParameters(tparams);
         e.accept(v);
-        return v.result.value;
+        return v.result;
     }
 
     public static abstract class TemplateParameter extends ASTNode
     {
-        public Ref<Loc> loc = ref(new Loc());
-        public Ref<Identifier> ident = ref(null);
-        public Ref<Boolean> dependent = ref(false);
+        public Loc loc = new Loc();
+        public Identifier ident = null;
+        public boolean dependent = false;
         public  TemplateParameter(Loc loc, Identifier ident) {
             super();
-            this.loc.value = loc.copy();
-            this.ident.value = ident;
+            this.loc = loc.copy();
+            this.ident = ident;
         }
 
         public  TemplateTypeParameter isTemplateTypeParameter() {
@@ -4912,7 +4865,7 @@ public class dtemplate {
 
 
         public  BytePtr toChars() {
-            return this.ident.value.toChars();
+            return this.ident.toChars();
         }
 
         public  int dyncast() {
@@ -4922,7 +4875,7 @@ public class dtemplate {
         public  int matchArg(Loc instLoc, Ptr<Scope> sc, Ptr<DArray<RootObject>> tiargs, int i, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, Ptr<Declaration> psparam) {
             RootObject oarg = null;
             try {
-                if ((i < (tiargs.get()).length.value))
+                if ((i < (tiargs.get()).length))
                 {
                     oarg = (tiargs.get()).get(i);
                 }
@@ -4931,7 +4884,7 @@ public class dtemplate {
                     oarg = this.defaultArg(instLoc, sc);
                     if (oarg == null)
                     {
-                        assert((i < (dedtypes.get()).length.value));
+                        assert((i < (dedtypes.get()).length));
                         oarg = (dedtypes.get()).get(i);
                         if (oarg == null)
                         {
@@ -4968,12 +4921,12 @@ public class dtemplate {
     public static class TemplateTypeParameter extends TemplateParameter
     {
         public Type specType = null;
-        public Ref<Type> defaultType = ref(null);
+        public Type defaultType = null;
         public static Type tdummy = null;
         public  TemplateTypeParameter(Loc loc, Identifier ident, Type specType, Type defaultType) {
             super(loc, ident);
             this.specType = specType;
-            this.defaultType.value = defaultType;
+            this.defaultType = defaultType;
         }
 
         public  TemplateTypeParameter isTemplateTypeParameter() {
@@ -4981,17 +4934,17 @@ public class dtemplate {
         }
 
         public  TemplateParameter syntaxCopy() {
-            return new TemplateTypeParameter(this.loc.value, this.ident.value, this.specType != null ? this.specType.syntaxCopy() : null, this.defaultType.value != null ? this.defaultType.value.syntaxCopy() : null);
+            return new TemplateTypeParameter(this.loc, this.ident, this.specType != null ? this.specType.syntaxCopy() : null, this.defaultType != null ? this.defaultType.syntaxCopy() : null);
         }
 
         public  boolean declareParameter(Ptr<Scope> sc) {
-            TypeIdentifier ti = new TypeIdentifier(this.loc.value, this.ident.value);
-            Declaration ad = new AliasDeclaration(this.loc.value, this.ident.value, ti);
+            TypeIdentifier ti = new TypeIdentifier(this.loc, this.ident);
+            Declaration ad = new AliasDeclaration(this.loc, this.ident, ti);
             return (sc.get()).insert(ad) != null;
         }
 
         public  void print(RootObject oarg, RootObject oded) {
-            printf(new BytePtr(" %s\n"), this.ident.value.toChars());
+            printf(new BytePtr(" %s\n"), this.ident.toChars());
             Type t = isType(oarg);
             Type ta = isType(oded);
             assert(ta != null);
@@ -4999,9 +4952,9 @@ public class dtemplate {
             {
                 printf(new BytePtr("\u0009Specialization: %s\n"), this.specType.toChars());
             }
-            if (this.defaultType.value != null)
+            if (this.defaultType != null)
             {
-                printf(new BytePtr("\u0009Default:        %s\n"), this.defaultType.value.toChars());
+                printf(new BytePtr("\u0009Default:        %s\n"), this.defaultType.toChars());
             }
             printf(new BytePtr("\u0009Parameter:       %s\n"), t != null ? t.toChars() : new BytePtr("NULL"));
             printf(new BytePtr("\u0009Deduced Type:   %s\n"), ta.toChars());
@@ -5012,17 +4965,17 @@ public class dtemplate {
         }
 
         public  RootObject defaultArg(Loc instLoc, Ptr<Scope> sc) {
-            Type t = this.defaultType.value;
+            Type t = this.defaultType;
             if (t != null)
             {
                 t = t.syntaxCopy();
-                t = typeSemantic(t, this.loc.value, sc);
+                t = typeSemantic(t, this.loc, sc);
             }
             return t;
         }
 
         public  boolean hasDefaultArg() {
-            return this.defaultType.value != null;
+            return this.defaultType != null;
         }
 
         public  int matchArg(Ptr<Scope> sc, RootObject oarg, int i, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, Ptr<Declaration> psparam) {
@@ -5051,7 +5004,7 @@ public class dtemplate {
                     if ((dedtypes.get()).get(i) != null)
                     {
                         Type t = (Type)(dedtypes.get()).get(i);
-                        if (this.dependent.value && !t.equals(ta))
+                        if (this.dependent && !t.equals(ta))
                         {
                             /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                         }
@@ -5076,9 +5029,9 @@ public class dtemplate {
                 dedtypes.get().set(i, ta);
                 if (psparam != null)
                 {
-                    psparam.set(0, (new AliasDeclaration(this.loc.value, this.ident.value, ta)));
+                    psparam.set(0, (new AliasDeclaration(this.loc, this.ident, ta)));
                 }
-                return this.dependent.value ? MATCH.exact : m;
+                return this.dependent ? MATCH.exact : m;
             }
             catch(Dispatch0 __d){}
         /*Lnomatch:*/
@@ -5095,7 +5048,7 @@ public class dtemplate {
             {
                 if (tdummy == null)
                 {
-                    tdummy = new TypeIdentifier(this.loc.value, this.ident.value);
+                    tdummy = new TypeIdentifier(this.loc, this.ident);
                 }
                 t = tdummy;
             }
@@ -5130,7 +5083,7 @@ public class dtemplate {
         }
 
         public  TemplateParameter syntaxCopy() {
-            return new TemplateThisParameter(this.loc.value, this.ident.value, this.specType != null ? this.specType.syntaxCopy() : null, this.defaultType.value != null ? this.defaultType.value.syntaxCopy() : null);
+            return new TemplateThisParameter(this.loc, this.ident, this.specType != null ? this.specType.syntaxCopy() : null, this.defaultType != null ? this.defaultType.syntaxCopy() : null);
         }
 
         public  void accept(Visitor v) {
@@ -5168,17 +5121,17 @@ public class dtemplate {
         }
 
         public  TemplateParameter syntaxCopy() {
-            return new TemplateValueParameter(this.loc.value, this.ident.value, this.valType.syntaxCopy(), this.specValue != null ? this.specValue.syntaxCopy() : null, this.defaultValue != null ? this.defaultValue.syntaxCopy() : null);
+            return new TemplateValueParameter(this.loc, this.ident, this.valType.syntaxCopy(), this.specValue != null ? this.specValue.syntaxCopy() : null, this.defaultValue != null ? this.defaultValue.syntaxCopy() : null);
         }
 
         public  boolean declareParameter(Ptr<Scope> sc) {
-            VarDeclaration v = new VarDeclaration(this.loc.value, this.valType, this.ident.value, null, 0L);
-            v.storage_class.value = 262144L;
+            VarDeclaration v = new VarDeclaration(this.loc, this.valType, this.ident, null, 0L);
+            v.storage_class = 262144L;
             return (sc.get()).insert(v) != null;
         }
 
         public  void print(RootObject oarg, RootObject oded) {
-            printf(new BytePtr(" %s\n"), this.ident.value.toChars());
+            printf(new BytePtr(" %s\n"), this.ident.toChars());
             Expression ea = isExpression(oded);
             if (this.specValue != null)
             {
@@ -5196,7 +5149,7 @@ public class dtemplate {
             if (e != null)
             {
                 e = e.syntaxCopy();
-                int olderrs = global.errors.value;
+                int olderrs = global.value.errors;
                 if (((e = expressionSemantic(e, sc)) == null))
                 {
                     return null;
@@ -5207,7 +5160,7 @@ public class dtemplate {
                 }
                 e = e.resolveLoc(instLoc, sc);
                 e = e.optimize(0, false);
-                if ((global.errors.value != olderrs))
+                if ((global.value.errors != olderrs))
                 {
                     e = new ErrorExp();
                 }
@@ -5228,26 +5181,26 @@ public class dtemplate {
                 {
                     Dsymbol si = isDsymbol(oarg);
                     FuncDeclaration f = si != null ? si.isFuncDeclaration() : null;
-                    if ((f == null) || (f.fbody.value == null) || f.needThis())
+                    if ((f == null) || (f.fbody == null) || f.needThis())
                     {
                         /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                     }
-                    ei = new VarExp(this.loc.value, f, true);
+                    ei = new VarExp(this.loc, f, true);
                     ei = expressionSemantic(ei, sc);
-                    int olderrors = global.startGagging();
+                    int olderrors = global.value.startGagging();
                     ei = resolveProperties(sc, ei);
                     ei = ei.ctfeInterpret();
-                    if (global.endGagging(olderrors) || ((ei.op.value & 0xFF) == 127))
+                    if (global.value.endGagging(olderrors) || ((ei.op & 0xFF) == 127))
                     {
                         /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                     }
                     m = MATCH.convert;
                 }
-                if ((ei != null) && ((ei.op.value & 0xFF) == 26))
+                if ((ei != null) && ((ei.op & 0xFF) == 26))
                 {
                     ei = ei.ctfeInterpret();
                 }
-                vt = typeSemantic(this.valType, this.loc.value, sc);
+                vt = typeSemantic(this.valType, this.loc, sc);
                 if (ei.type.value != null)
                 {
                     int m2 = ei.implicitConvTo(vt);
@@ -5264,7 +5217,7 @@ public class dtemplate {
                 }
                 if (this.specValue != null)
                 {
-                    if ((ei == null) || (ei.type.value in edummies != null) && (pequals(edummies.get(ei.type.value), ei)))
+                    if ((ei == null) || (edummies.getLvalue((ei.type.value)) != null) && (pequals(edummies.get(ei.type.value), ei)))
                     {
                         /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                     }
@@ -5300,12 +5253,12 @@ public class dtemplate {
                 dedtypes.get().set(i, ei);
                 if (psparam != null)
                 {
-                    Initializer _init = new ExpInitializer(this.loc.value, ei);
-                    Declaration sparam = new VarDeclaration(this.loc.value, vt, this.ident.value, _init, 0L);
-                    sparam.storage_class.value = 8388608L;
+                    Initializer _init = new ExpInitializer(this.loc, ei);
+                    Declaration sparam = new VarDeclaration(this.loc, vt, this.ident, _init, 0L);
+                    sparam.storage_class = 8388608L;
                     psparam.set(0, sparam);
                 }
-                return this.dependent.value ? MATCH.exact : m;
+                return this.dependent ? MATCH.exact : m;
             }
             catch(Dispatch0 __d){}
         /*Lnomatch:*/
@@ -5320,11 +5273,11 @@ public class dtemplate {
             Expression e = this.specValue;
             if (e == null)
             {
-                Ptr<Expression> pe = pcopy(this.valType in edummies);
+                Ptr<Expression> pe = pcopy(edummies.getLvalue((this.valType)));
                 if (pe == null)
                 {
-                    e = defaultInit(this.valType, Loc.initial.value);
-                    edummies.set((this.valType), __aaval1243);
+                    e = defaultInit(this.valType, Loc.initial);
+                    edummies.set((this.valType), __aaval1239);
                 }
                 else
                 {
@@ -5370,17 +5323,17 @@ public class dtemplate {
         }
 
         public  TemplateParameter syntaxCopy() {
-            return new TemplateAliasParameter(this.loc.value, this.ident.value, this.specType != null ? this.specType.syntaxCopy() : null, objectSyntaxCopy(this.specAlias), objectSyntaxCopy(this.defaultAlias));
+            return new TemplateAliasParameter(this.loc, this.ident, this.specType != null ? this.specType.syntaxCopy() : null, objectSyntaxCopy(this.specAlias), objectSyntaxCopy(this.defaultAlias));
         }
 
         public  boolean declareParameter(Ptr<Scope> sc) {
-            TypeIdentifier ti = new TypeIdentifier(this.loc.value, this.ident.value);
-            Declaration ad = new AliasDeclaration(this.loc.value, this.ident.value, ti);
+            TypeIdentifier ti = new TypeIdentifier(this.loc, this.ident);
+            Declaration ad = new AliasDeclaration(this.loc, this.ident, ti);
             return (sc.get()).insert(ad) != null;
         }
 
         public  void print(RootObject oarg, RootObject oded) {
-            printf(new BytePtr(" %s\n"), this.ident.value.toChars());
+            printf(new BytePtr(" %s\n"), this.ident.toChars());
             Dsymbol sa = isDsymbol(oded);
             assert(sa != null);
             printf(new BytePtr("\u0009Parameter alias: %s\n"), sa.toChars());
@@ -5395,12 +5348,12 @@ public class dtemplate {
             Type ta = isType(this.defaultAlias);
             if (ta != null)
             {
-                if (((ta.ty.value & 0xFF) == ENUMTY.Tinstance))
+                if (((ta.ty & 0xFF) == ENUMTY.Tinstance))
                 {
                     da = ta.syntaxCopy();
                 }
             }
-            RootObject o = aliasParameterSemantic(this.loc.value, sc, da, null);
+            RootObject o = aliasParameterSemantic(this.loc, sc, da, null);
             return o;
         }
 
@@ -5411,15 +5364,15 @@ public class dtemplate {
         public  int matchArg(Ptr<Scope> sc, RootObject oarg, int i, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, Ptr<Declaration> psparam) {
             int m = MATCH.exact;
             Type ta = isType(oarg);
-            RootObject sa = (ta != null) && (ta.deco.value == null) ? null : getDsymbol(oarg);
+            RootObject sa = (ta != null) && (ta.deco == null) ? null : getDsymbol(oarg);
             Expression ea = isExpression(oarg);
-            if ((ea != null) && ((ea.op.value & 0xFF) == 123) || ((ea.op.value & 0xFF) == 124))
+            if ((ea != null) && ((ea.op & 0xFF) == 123) || ((ea.op & 0xFF) == 124))
             {
-                sa = ((ThisExp)ea).var.value;
+                sa = ((ThisExp)ea).var;
             }
-            else if ((ea != null) && ((ea.op.value & 0xFF) == 203))
+            else if ((ea != null) && ((ea.op & 0xFF) == 203))
             {
-                sa = ((ScopeExp)ea).sds.value;
+                sa = ((ScopeExp)ea).sds;
             }
             try {
                 if (sa != null)
@@ -5435,7 +5388,7 @@ public class dtemplate {
                         {
                             /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                         }
-                        if (!d.type.value.equals(this.specType))
+                        if (!d.type.equals(this.specType))
                         {
                             /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                         }
@@ -5454,7 +5407,7 @@ public class dtemplate {
                             }
                         }
                     }
-                    else if ((ta != null) && ((ta.ty.value & 0xFF) == ENUMTY.Tinstance) && (this.specAlias == null))
+                    else if ((ta != null) && ((ta.ty & 0xFF) == ENUMTY.Tinstance) && (this.specAlias == null))
                     {
                     }
                     else if ((sa != null) && (pequals(sa, TemplateTypeParameter.tdummy)))
@@ -5487,7 +5440,7 @@ public class dtemplate {
                         if ((ti == null) && (sx.parent.value != null))
                         {
                             ti = sx.parent.value.isTemplateInstance();
-                            if ((ti != null) && (!pequals(ti.name.value, sx.ident.value)))
+                            if ((ti != null) && (!pequals(ti.name, sx.ident)))
                             {
                                 /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                             }
@@ -5496,7 +5449,7 @@ public class dtemplate {
                         {
                             /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                         }
-                        Type t = new TypeInstance(Loc.initial.value, ti);
+                        Type t = new TypeInstance(Loc.initial, ti);
                         int m2 = deduceType(t, sc, talias, parameters, dedtypes, null, 0, false);
                         if ((m2 <= MATCH.nomatch))
                         {
@@ -5519,27 +5472,27 @@ public class dtemplate {
                         Dsymbol s = isDsymbol(sa);
                         if ((s) != null)
                         {
-                            psparam.set(0, (new AliasDeclaration(this.loc.value, this.ident.value, s)));
+                            psparam.set(0, (new AliasDeclaration(this.loc, this.ident, s)));
                         }
                         else {
                             Type t = isType(sa);
                             if ((t) != null)
                             {
-                                psparam.set(0, (new AliasDeclaration(this.loc.value, this.ident.value, t)));
+                                psparam.set(0, (new AliasDeclaration(this.loc, this.ident, t)));
                             }
                             else
                             {
                                 assert(ea != null);
-                                Initializer _init = new ExpInitializer(this.loc.value, ea);
-                                VarDeclaration v = new VarDeclaration(this.loc.value, null, this.ident.value, _init, 0L);
-                                v.storage_class.value = 8388608L;
+                                Initializer _init = new ExpInitializer(this.loc, ea);
+                                VarDeclaration v = new VarDeclaration(this.loc, null, this.ident, _init, 0L);
+                                v.storage_class = 8388608L;
                                 dsymbolSemantic(v, sc);
                                 psparam.set(0, v);
                             }
                         }
                     }
                 }
-                return this.dependent.value ? MATCH.exact : m;
+                return this.dependent ? MATCH.exact : m;
             }
             catch(Dispatch0 __d){}
         /*Lnomatch:*/
@@ -5592,22 +5545,22 @@ public class dtemplate {
         }
 
         public  TemplateParameter syntaxCopy() {
-            return new TemplateTupleParameter(this.loc.value, this.ident.value);
+            return new TemplateTupleParameter(this.loc, this.ident);
         }
 
         public  boolean declareParameter(Ptr<Scope> sc) {
-            TypeIdentifier ti = new TypeIdentifier(this.loc.value, this.ident.value);
-            Declaration ad = new AliasDeclaration(this.loc.value, this.ident.value, ti);
+            TypeIdentifier ti = new TypeIdentifier(this.loc, this.ident);
+            Declaration ad = new AliasDeclaration(this.loc, this.ident, ti);
             return (sc.get()).insert(ad) != null;
         }
 
         public  void print(RootObject oarg, RootObject oded) {
-            printf(new BytePtr(" %s... ["), this.ident.value.toChars());
+            printf(new BytePtr(" %s... ["), this.ident.toChars());
             Tuple v = isTuple(oded);
             assert(v != null);
             {
                 int i = 0;
-                for (; (i < v.objects.value.length.value);i++){
+                for (; (i < v.objects.value.length);i++){
                     if (i != 0)
                     {
                         printf(new BytePtr(", "));
@@ -5647,7 +5600,7 @@ public class dtemplate {
         }
 
         public  int matchArg(Loc instLoc, Ptr<Scope> sc, Ptr<DArray<RootObject>> tiargs, int i, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, Ptr<Declaration> psparam) {
-            assert((i + 1 == (dedtypes.get()).length.value));
+            assert((i + 1 == (dedtypes.get()).length));
             Tuple ovar = null;
             {
                 Tuple u = isTuple((dedtypes.get()).get(i));
@@ -5655,19 +5608,19 @@ public class dtemplate {
                 {
                     ovar = u;
                 }
-                else if ((i + 1 == (tiargs.get()).length.value) && (isTuple((tiargs.get()).get(i)) != null))
+                else if ((i + 1 == (tiargs.get()).length) && (isTuple((tiargs.get()).get(i)) != null))
                 {
                     ovar = isTuple((tiargs.get()).get(i));
                 }
                 else
                 {
                     ovar = new Tuple();
-                    if ((i < (tiargs.get()).length.value))
+                    if ((i < (tiargs.get()).length))
                     {
-                        ovar.objects.value.setDim((tiargs.get()).length.value - i);
+                        ovar.objects.value.setDim((tiargs.get()).length - i);
                         {
                             int j = 0;
-                            for (; (j < ovar.objects.value.length.value);j++) {
+                            for (; (j < ovar.objects.value.length);j++) {
                                 ovar.objects.value.set(j, (tiargs.get()).get(i + j));
                             }
                         }
@@ -5698,9 +5651,9 @@ public class dtemplate {
             dedtypes.get().set(i, ovar);
             if (psparam != null)
             {
-                psparam.set(0, (new TupleDeclaration(this.loc.value, this.ident.value, ptr(ovar.objects))));
+                psparam.set(0, (new TupleDeclaration(this.loc, this.ident, ptr(ovar.objects))));
             }
-            return this.dependent.value ? MATCH.exact : MATCH.convert;
+            return this.dependent ? MATCH.exact : MATCH.convert;
         }
 
         public  Object dummyArg() {
@@ -5724,14 +5677,14 @@ public class dtemplate {
     }
     public static class TemplateInstance extends ScopeDsymbol
     {
-        public Ref<Identifier> name = ref(null);
-        public Ref<Ptr<DArray<RootObject>>> tiargs = ref(null);
+        public Identifier name = null;
+        public Ptr<DArray<RootObject>> tiargs = null;
         public Ref<DArray<RootObject>> tdtypes = ref(new DArray<RootObject>());
         public Ref<DArray<dmodule.Module>> importedModules = ref(new DArray<dmodule.Module>());
-        public Ref<Dsymbol> tempdecl = ref(null);
-        public Ref<Dsymbol> enclosing = ref(null);
-        public Ref<Dsymbol> aliasdecl = ref(null);
-        public Ref<TemplateInstance> inst = ref(null);
+        public Dsymbol tempdecl = null;
+        public Dsymbol enclosing = null;
+        public Dsymbol aliasdecl = null;
+        public TemplateInstance inst = null;
         public ScopeDsymbol argsym = null;
         public int inuse = 0;
         public int nest = 0;
@@ -5744,31 +5697,31 @@ public class dtemplate {
         public dmodule.Module memberOf = null;
         public TemplateInstance tinst = null;
         public TemplateInstance tnext = null;
-        public Ref<dmodule.Module> minst = ref(null);
+        public dmodule.Module minst = null;
         public  TemplateInstance(Loc loc, Identifier ident, Ptr<DArray<RootObject>> tiargs) {
             super(loc, null);
-            this.name.value = ident;
-            this.tiargs.value = tiargs;
+            this.name = ident;
+            this.tiargs = tiargs;
         }
 
         public  TemplateInstance(Loc loc, TemplateDeclaration td, Ptr<DArray<RootObject>> tiargs) {
             super(loc, null);
-            this.name.value = td.ident.value;
-            this.tiargs.value = tiargs;
-            this.tempdecl.value = td;
+            this.name = td.ident;
+            this.tiargs = tiargs;
+            this.tempdecl = td;
             this.semantictiargsdone = true;
             this.havetempdecl = true;
-            assert(this.tempdecl.value._scope.value != null);
+            assert(this.tempdecl._scope != null);
         }
 
         public static Ptr<DArray<RootObject>> arraySyntaxCopy(Ptr<DArray<RootObject>> objs) {
             Ptr<DArray<RootObject>> a = null;
             if (objs != null)
             {
-                a = refPtr(new DArray<RootObject>((objs.get()).length.value));
+                a = refPtr(new DArray<RootObject>((objs.get()).length));
                 {
                     int i = 0;
-                    for (; (i < (objs.get()).length.value);i++) {
+                    for (; (i < (objs.get()).length);i++) {
                         a.get().set(i, objectSyntaxCopy((objs.get()).get(i)));
                     }
                 }
@@ -5777,10 +5730,10 @@ public class dtemplate {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            TemplateInstance ti = s != null ? (TemplateInstance)s : new TemplateInstance(this.loc.value, this.name.value, null);
-            ti.tiargs.value = arraySyntaxCopy(this.tiargs.value);
+            TemplateInstance ti = s != null ? (TemplateInstance)s : new TemplateInstance(this.loc, this.name, null);
+            ti.tiargs = arraySyntaxCopy(this.tiargs);
             TemplateDeclaration td = null;
-            if ((this.inst.value != null) && (this.tempdecl.value != null) && ((td = this.tempdecl.value.isTemplateDeclaration()) != null))
+            if ((this.inst != null) && (this.tempdecl != null) && ((td = this.tempdecl.isTemplateDeclaration()) != null))
             {
                 td.syntaxCopy(ti);
             }
@@ -5792,28 +5745,28 @@ public class dtemplate {
         }
 
         public  Dsymbol toAlias() {
-            if (this.inst.value == null)
+            if (this.inst == null)
             {
-                if (this._scope.value != null)
+                if (this._scope != null)
                 {
-                    dsymbolSemantic(this, this._scope.value);
+                    dsymbolSemantic(this, this._scope);
                 }
-                if (this.inst.value == null)
+                if (this.inst == null)
                 {
                     this.error(new BytePtr("cannot resolve forward reference"));
-                    this.errors.value = true;
+                    this.errors = true;
                     return this;
                 }
             }
-            if ((!pequals(this.inst.value, this)))
+            if ((!pequals(this.inst, this)))
             {
-                return this.inst.value.toAlias();
+                return this.inst.toAlias();
             }
-            if (this.aliasdecl.value != null)
+            if (this.aliasdecl != null)
             {
-                return this.aliasdecl.value.toAlias();
+                return this.aliasdecl.toAlias();
             }
-            return this.inst.value;
+            return this.inst;
         }
 
         public  BytePtr kind() {
@@ -5846,7 +5799,7 @@ public class dtemplate {
         }
 
         public  void printInstantiationTrace() {
-            if (global.gag.value != 0)
+            if (global.value.gag != 0)
             {
                 return ;
             }
@@ -5858,19 +5811,19 @@ public class dtemplate {
                 TemplateInstance cur = this;
                 for (; cur != null;cur = cur.tinst){
                     n_instantiations += 1;
-                    if ((cur.tinst != null) && (cur.tempdecl.value != null) && (cur.tinst.tempdecl.value != null) && cur.tempdecl.value.loc.value.equals(cur.tinst.tempdecl.value.loc.value))
+                    if ((cur.tinst != null) && (cur.tempdecl != null) && (cur.tinst.tempdecl != null) && cur.tempdecl.loc.equals(cur.tinst.tempdecl.loc))
                     {
                         n_totalrecursions += 1;
                     }
                 }
             }
-            if ((n_instantiations <= 6) || global.params.verbose)
+            if ((n_instantiations <= 6) || global.value.params.verbose)
             {
                 {
                     TemplateInstance cur = this;
                     for (; cur != null;cur = cur.tinst){
-                        cur.errors.value = true;
-                        errorSupplemental(cur.loc.value, format, cur.toChars());
+                        cur.errors = true;
+                        errorSupplemental(cur.loc, format, cur.toChars());
                     }
                 }
             }
@@ -5880,8 +5833,8 @@ public class dtemplate {
                 {
                     TemplateInstance cur = this;
                     for (; cur != null;cur = cur.tinst){
-                        cur.errors.value = true;
-                        if ((cur.tinst != null) && (cur.tempdecl.value != null) && (cur.tinst.tempdecl.value != null) && cur.tempdecl.value.loc.value.equals(cur.tinst.tempdecl.value.loc.value))
+                        cur.errors = true;
+                        if ((cur.tinst != null) && (cur.tempdecl != null) && (cur.tinst.tempdecl != null) && cur.tempdecl.loc.equals(cur.tinst.tempdecl.loc))
                         {
                             recursionDepth += 1;
                         }
@@ -5889,11 +5842,11 @@ public class dtemplate {
                         {
                             if (recursionDepth != 0)
                             {
-                                errorSupplemental(cur.loc.value, new BytePtr("%d recursive instantiations from here: `%s`"), recursionDepth + 2, cur.toChars());
+                                errorSupplemental(cur.loc, new BytePtr("%d recursive instantiations from here: `%s`"), recursionDepth + 2, cur.toChars());
                             }
                             else
                             {
-                                errorSupplemental(cur.loc.value, format, cur.toChars());
+                                errorSupplemental(cur.loc, format, cur.toChars());
                             }
                             recursionDepth = 0;
                         }
@@ -5906,14 +5859,14 @@ public class dtemplate {
                 {
                     TemplateInstance cur = this;
                     for (; cur != null;cur = cur.tinst){
-                        cur.errors.value = true;
+                        cur.errors = true;
                         if ((i == 3))
                         {
-                            errorSupplemental(cur.loc.value, new BytePtr("... (%d instantiations, -v to show) ..."), n_instantiations - 6);
+                            errorSupplemental(cur.loc, new BytePtr("... (%d instantiations, -v to show) ..."), n_instantiations - 6);
                         }
                         if ((i < 3) || (i >= n_instantiations - 6 + 3))
                         {
-                            errorSupplemental(cur.loc.value, format, cur.toChars());
+                            errorSupplemental(cur.loc, format, cur.toChars());
                         }
                         i += 1;
                     }
@@ -5922,17 +5875,17 @@ public class dtemplate {
         }
 
         public  Identifier getIdent() {
-            if ((this.ident.value == null) && (this.inst.value != null) && !this.errors.value)
+            if ((this.ident == null) && (this.inst != null) && !this.errors)
             {
-                this.ident.value = this.genIdent(this.tiargs.value);
+                this.ident = this.genIdent(this.tiargs);
             }
-            return this.ident.value;
+            return this.ident;
         }
 
         public  boolean equalsx(TemplateInstance ti) {
-            assert((this.tdtypes.value.length.value == ti.tdtypes.value.length.value));
+            assert((this.tdtypes.value.length == ti.tdtypes.value.length));
             try {
-                if ((!pequals(this.enclosing.value, ti.enclosing.value)))
+                if ((!pequals(this.enclosing, ti.enclosing)))
                 {
                     /*goto Lnotequals*/throw Dispatch0.INSTANCE;
                 }
@@ -5944,7 +5897,7 @@ public class dtemplate {
                     FuncDeclaration fd = ti.toAlias().isFuncDeclaration();
                     if ((fd) != null)
                     {
-                        if (!fd.errors.value)
+                        if (!fd.errors)
                         {
                             ParameterList fparameters = fd.getParameterList().copy();
                             int nfparams = fparameters.length();
@@ -5953,23 +5906,23 @@ public class dtemplate {
                             L_outer19:
                                 for (; (j < nfparams);j++){
                                     Parameter fparam = fparameters.get(j);
-                                    if ((fparam.storageClass.value & 35184372088832L) != 0)
+                                    if ((fparam.storageClass & 35184372088832L) != 0)
                                     {
-                                        Expression farg = (this.fargs != null) && (j < (this.fargs.get()).length.value) ? (this.fargs.get()).get(j) : fparam.defaultArg.value;
+                                        Expression farg = (this.fargs != null) && (j < (this.fargs.get()).length) ? (this.fargs.get()).get(j) : fparam.defaultArg;
                                         if (farg == null)
                                         {
                                             /*goto Lnotequals*/throw Dispatch0.INSTANCE;
                                         }
                                         if (farg.isLvalue())
                                         {
-                                            if ((fparam.storageClass.value & 2097152L) == 0)
+                                            if ((fparam.storageClass & 2097152L) == 0)
                                             {
                                                 /*goto Lnotequals*/throw Dispatch0.INSTANCE;
                                             }
                                         }
                                         else
                                         {
-                                            if ((fparam.storageClass.value & 2097152L) != 0)
+                                            if ((fparam.storageClass & 2097152L) != 0)
                                             {
                                                 /*goto Lnotequals*/throw Dispatch0.INSTANCE;
                                             }
@@ -5990,7 +5943,7 @@ public class dtemplate {
         public  int toHash() {
             if (this.hash == 0)
             {
-                this.hash = ((int)this.enclosing.value);
+                this.hash = ((int)this.enclosing);
                 this.hash += arrayObjectHash(ptr(this.tdtypes));
                 this.hash += ((this.hash == 0) ? 1 : 0);
             }
@@ -5998,26 +5951,26 @@ public class dtemplate {
         }
 
         public  boolean needsCodegen() {
-            if (global.params.allInst)
+            if (global.value.params.allInst)
             {
-                if (this.enclosing.value != null)
+                if (this.enclosing != null)
                 {
-                    if (this.enclosing.value.isFuncDeclaration() == null)
+                    if (this.enclosing.isFuncDeclaration() == null)
                     {
                         return true;
                     }
                     {
-                        TemplateInstance ti = this.enclosing.value.isInstantiated();
+                        TemplateInstance ti = this.enclosing.isInstantiated();
                         if ((ti) != null)
                         {
                             return ti.needsCodegen();
                         }
                     }
-                    return !this.enclosing.value.inNonRoot();
+                    return !this.enclosing.inNonRoot();
                 }
                 return true;
             }
-            if (this.minst.value == null)
+            if (this.minst == null)
             {
                 TemplateInstance tnext = this.tnext;
                 TemplateInstance tinst = this.tinst;
@@ -6025,38 +5978,38 @@ public class dtemplate {
                 this.tinst = null;
                 if ((tinst != null) && tinst.needsCodegen())
                 {
-                    this.minst.value = tinst.minst.value;
-                    assert(this.minst.value != null);
-                    assert(this.minst.value.isRoot() || this.minst.value.rootImports());
+                    this.minst = tinst.minst;
+                    assert(this.minst != null);
+                    assert(this.minst.isRoot() || this.minst.rootImports());
                     return true;
                 }
-                if ((tnext != null) && tnext.needsCodegen() || (tnext.minst.value != null))
+                if ((tnext != null) && tnext.needsCodegen() || (tnext.minst != null))
                 {
-                    this.minst.value = tnext.minst.value;
-                    assert(this.minst.value != null);
-                    return this.minst.value.isRoot() || this.minst.value.rootImports();
+                    this.minst = tnext.minst;
+                    assert(this.minst != null);
+                    return this.minst.isRoot() || this.minst.rootImports();
                 }
                 return false;
             }
-            if ((this.enclosing.value != null) && this.enclosing.value.inNonRoot())
+            if ((this.enclosing != null) && this.enclosing.inNonRoot())
             {
                 if (this.tinst != null)
                 {
                     boolean r = this.tinst.needsCodegen();
-                    this.minst.value = this.tinst.minst.value;
+                    this.minst = this.tinst.minst;
                     return r;
                 }
                 if (this.tnext != null)
                 {
                     boolean r = this.tnext.needsCodegen();
-                    this.minst.value = this.tnext.minst.value;
+                    this.minst = this.tnext.minst;
                     return r;
                 }
                 return false;
             }
-            if (global.params.useUnitTests || (global.params.debuglevel != 0))
+            if (global.value.params.useUnitTests || (global.value.params.debuglevel != 0))
             {
-                if (this.minst.value.isRoot())
+                if (this.minst.isRoot())
                 {
                     return true;
                 }
@@ -6066,19 +6019,19 @@ public class dtemplate {
                 this.tinst = null;
                 if ((tinst != null) && tinst.needsCodegen())
                 {
-                    this.minst.value = tinst.minst.value;
-                    assert(this.minst.value != null);
-                    assert(this.minst.value.isRoot() || this.minst.value.rootImports());
+                    this.minst = tinst.minst;
+                    assert(this.minst != null);
+                    assert(this.minst.isRoot() || this.minst.rootImports());
                     return true;
                 }
                 if ((tnext != null) && tnext.needsCodegen())
                 {
-                    this.minst.value = tnext.minst.value;
-                    assert(this.minst.value != null);
-                    assert(this.minst.value.isRoot() || this.minst.value.rootImports());
+                    this.minst = tnext.minst;
+                    assert(this.minst != null);
+                    assert(this.minst.isRoot() || this.minst.rootImports());
                     return true;
                 }
-                if (this.minst.value.rootImports())
+                if (this.minst.rootImports())
                 {
                     return true;
                 }
@@ -6086,16 +6039,16 @@ public class dtemplate {
             }
             else
             {
-                if (!this.minst.value.isRoot() && !this.minst.value.rootImports())
+                if (!this.minst.isRoot() && !this.minst.rootImports())
                 {
                     return false;
                 }
                 TemplateInstance tnext = this.tnext;
                 this.tnext = null;
-                if ((tnext != null) && !tnext.needsCodegen() && (tnext.minst.value != null))
+                if ((tnext != null) && !tnext.needsCodegen() && (tnext.minst != null))
                 {
-                    this.minst.value = tnext.minst.value;
-                    assert(!this.minst.value.isRoot());
+                    this.minst = tnext.minst;
+                    assert(!this.minst.isRoot());
                     return false;
                 }
                 return true;
@@ -6111,11 +6064,11 @@ public class dtemplate {
             {
                 return true;
             }
-            if (this.tempdecl.value == null)
+            if (this.tempdecl == null)
             {
-                Identifier id = this.name.value;
+                Identifier id = this.name;
                 Ref<Dsymbol> scopesym = ref(null);
-                Dsymbol s = (sc.get()).search(this.loc.value, id, ptr(scopesym), 0);
+                Dsymbol s = (sc.get()).search(this.loc, id, ptr(scopesym), 0);
                 if (s == null)
                 {
                     s = (sc.get()).search_correct(id);
@@ -6136,13 +6089,13 @@ public class dtemplate {
                 TemplateInstance ti = null;
                 if ((s.parent.value != null) && ((ti = s.parent.value.isTemplateInstance()) != null))
                 {
-                    if ((ti.tempdecl.value != null) && (pequals(ti.tempdecl.value.ident.value, id)))
+                    if ((ti.tempdecl != null) && (pequals(ti.tempdecl.ident, id)))
                     {
-                        TemplateDeclaration td = ti.tempdecl.value.isTemplateDeclaration();
+                        TemplateDeclaration td = ti.tempdecl.isTemplateDeclaration();
                         assert(td != null);
-                        if (td.overroot.value != null)
+                        if (td.overroot != null)
                         {
-                            td = td.overroot.value;
+                            td = td.overroot;
                         }
                         s = td;
                     }
@@ -6152,14 +6105,14 @@ public class dtemplate {
                     return false;
                 }
             }
-            assert(this.tempdecl.value != null);
-            OverloadSet tovers = this.tempdecl.value.isOverloadSet();
+            assert(this.tempdecl != null);
+            OverloadSet tovers = this.tempdecl.isOverloadSet();
             {
-                int __key1244 = 0;
-                int __limit1245 = tovers != null ? tovers.a.length.value : 1;
-                for (; (__key1244 < __limit1245);__key1244 += 1) {
-                    int oi = __key1244;
-                    Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl.value;
+                int __key1240 = 0;
+                int __limit1241 = tovers != null ? tovers.a.length : 1;
+                for (; (__key1240 < __limit1241);__key1240 += 1) {
+                    int oi = __key1240;
+                    Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl;
                     Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
                         public Integer invoke(Dsymbol s) {
                             TemplateDeclaration td = s.isTemplateDeclaration();
@@ -6167,18 +6120,18 @@ public class dtemplate {
                             {
                                 return 0;
                             }
-                            if ((td.semanticRun.value == PASS.init))
+                            if ((td.semanticRun == PASS.init))
                             {
-                                if (td._scope.value != null)
+                                if (td._scope != null)
                                 {
                                     Ungag ungag = td.ungagSpeculative().copy();
                                     try {
-                                        dsymbolSemantic(td, td._scope.value);
+                                        dsymbolSemantic(td, td._scope);
                                     }
                                     finally {
                                     }
                                 }
-                                if ((td.semanticRun.value == PASS.init))
+                                if ((td.semanticRun == PASS.init))
                                 {
                                     error(new BytePtr("`%s` forward references template declaration `%s`"), toChars(), td.toChars());
                                     return 1;
@@ -6200,7 +6153,7 @@ public class dtemplate {
         public  boolean updateTempDecl(Ptr<Scope> sc, Dsymbol s) {
             if (s != null)
             {
-                Identifier id = this.name.value;
+                Identifier id = this.name;
                 s = s.toAlias();
                 OverloadSet os = s.isOverloadSet();
                 if (os != null)
@@ -6208,7 +6161,7 @@ public class dtemplate {
                     s = null;
                     {
                         int i = 0;
-                        for (; (i < os.a.length.value);i++){
+                        for (; (i < os.a.length);i++){
                             Dsymbol s2 = os.a.get(i);
                             {
                                 FuncDeclaration f = s2.isFuncDeclaration();
@@ -6225,7 +6178,7 @@ public class dtemplate {
                             {
                                 if (s != null)
                                 {
-                                    this.tempdecl.value = os;
+                                    this.tempdecl = os;
                                     return true;
                                 }
                                 s = s2;
@@ -6241,23 +6194,23 @@ public class dtemplate {
                 OverDeclaration od = s.isOverDeclaration();
                 if (od != null)
                 {
-                    this.tempdecl.value = od;
+                    this.tempdecl = od;
                     return true;
                 }
                 {
                     FuncDeclaration f = s.isFuncDeclaration();
                     if ((f) != null)
                     {
-                        this.tempdecl.value = f.findTemplateDeclRoot();
+                        this.tempdecl = f.findTemplateDeclRoot();
                     }
                     else
                     {
-                        this.tempdecl.value = s.isTemplateDeclaration();
+                        this.tempdecl = s.isTemplateDeclaration();
                     }
                 }
-                if (this.tempdecl.value == null)
+                if (this.tempdecl == null)
                 {
-                    if ((s.parent.value == null) && (global.errors.value != 0))
+                    if ((s.parent.value == null) && (global.value.errors != 0))
                     {
                         return false;
                     }
@@ -6266,21 +6219,21 @@ public class dtemplate {
                         Dsymbol s2 = s.getType().toDsymbol(sc);
                         if (s2 == null)
                         {
-                            error(this.loc.value, new BytePtr("`%s` is not a valid template instance, because `%s` is not a template declaration but a type (`%s == %s`)"), this.toChars(), id.toChars(), id.toChars(), s.getType().kind());
+                            error(this.loc, new BytePtr("`%s` is not a valid template instance, because `%s` is not a template declaration but a type (`%s == %s`)"), this.toChars(), id.toChars(), id.toChars(), s.getType().kind());
                             return false;
                         }
                         s = s2;
                     }
                     TemplateInstance ti = s.parent.value != null ? s.parent.value.isTemplateInstance() : null;
-                    if ((ti != null) && (pequals(ti.name.value, s.ident.value)) || (pequals(ti.toAlias().ident.value, s.ident.value)) && (ti.tempdecl.value != null))
+                    if ((ti != null) && (pequals(ti.name, s.ident)) || (pequals(ti.toAlias().ident, s.ident)) && (ti.tempdecl != null))
                     {
-                        TemplateDeclaration td = ti.tempdecl.value.isTemplateDeclaration();
+                        TemplateDeclaration td = ti.tempdecl.isTemplateDeclaration();
                         assert(td != null);
-                        if (td.overroot.value != null)
+                        if (td.overroot != null)
                         {
-                            td = td.overroot.value;
+                            td = td.overroot;
                         }
-                        this.tempdecl.value = td;
+                        this.tempdecl = td;
                     }
                     else
                     {
@@ -6289,7 +6242,7 @@ public class dtemplate {
                     }
                 }
             }
-            return this.tempdecl.value != null;
+            return this.tempdecl != null;
         }
 
         public static boolean semanticTiargs(Loc loc, Ptr<Scope> sc, Ptr<DArray<RootObject>> tiargs, int flags) {
@@ -6301,7 +6254,7 @@ public class dtemplate {
             {
                 int j = 0;
             L_outer20:
-                for (; (j < (tiargs.get()).length.value);j++){
+                for (; (j < (tiargs.get()).length);j++){
                     RootObject o = (tiargs.get()).get(j);
                     Ref<Type> ta = ref(isType(o));
                     Ref<Expression> ea = ref(isExpression(o));
@@ -6316,7 +6269,7 @@ public class dtemplate {
                             if ((flags & 1) != 0)
                             {
                                 ea.value = expressionSemantic(ea.value, sc);
-                                if (((ea.value.op.value & 0xFF) != 26) || ((((VarExp)ea.value).var.value.storage_class.value & 262144L) != 0))
+                                if (((ea.value.op & 0xFF) != 26) || ((((VarExp)ea.value).var.storage_class & 262144L) != 0))
                                 {
                                     ea.value = ea.value.optimize(0, false);
                                 }
@@ -6326,7 +6279,7 @@ public class dtemplate {
                                 sc = (sc.get()).startCTFE();
                                 ea.value = expressionSemantic(ea.value, sc);
                                 sc = (sc.get()).endCTFE();
-                                if (((ea.value.op.value & 0xFF) == 26))
+                                if (((ea.value.op & 0xFF) == 26))
                                 {
                                 }
                                 else if (definitelyValueParameter(ea.value))
@@ -6335,18 +6288,18 @@ public class dtemplate {
                                     {
                                         ea.value = new ErrorExp();
                                     }
-                                    int olderrs = global.errors.value;
+                                    int olderrs = global.value.errors;
                                     ea.value = ea.value.ctfeInterpret();
-                                    if ((global.errors.value != olderrs))
+                                    if ((global.value.errors != olderrs))
                                     {
                                         ea.value = new ErrorExp();
                                     }
                                 }
                             }
-                            if (((ea.value.op.value & 0xFF) == 126))
+                            if (((ea.value.op & 0xFF) == 126))
                             {
                                 TupleExp te = (TupleExp)ea.value;
-                                int dim = (te.exps.value.get()).length.value;
+                                int dim = (te.exps.get()).length;
                                 (tiargs.get()).remove(j);
                                 if (dim != 0)
                                 {
@@ -6354,30 +6307,30 @@ public class dtemplate {
                                     {
                                         int i = 0;
                                         for (; (i < dim);i++) {
-                                            (tiargs.get()).insert(j + i, (te.exps.value.get()).get(i));
+                                            (tiargs.get()).insert(j + i, (te.exps.get()).get(i));
                                         }
                                     }
                                 }
                                 j--;
                                 continue L_outer20;
                             }
-                            if (((ea.value.op.value & 0xFF) == 127))
+                            if (((ea.value.op & 0xFF) == 127))
                             {
                                 err = true;
                                 continue L_outer20;
                             }
                             tiargs.get().set(j, ea.value);
-                            if (((ea.value.op.value & 0xFF) == 20))
+                            if (((ea.value.op & 0xFF) == 20))
                             {
                                 ta.value = ea.value.type.value;
                                 /*goto Ltype*/throw Dispatch0.INSTANCE;
                             }
-                            if (((ea.value.op.value & 0xFF) == 203))
+                            if (((ea.value.op & 0xFF) == 203))
                             {
-                                sa.value = ((ScopeExp)ea.value).sds.value;
+                                sa.value = ((ScopeExp)ea.value).sds;
                                 /*goto Ldsym*//*unrolled goto*/
                             /*Ldsym:*/
-                                if (sa.value.errors.value)
+                                if (sa.value.errors)
                                 {
                                     err = true;
                                     continue L_outer20;
@@ -6386,7 +6339,7 @@ public class dtemplate {
                                 if (d != null)
                                 {
                                     (tiargs.get()).remove(j);
-                                    (tiargs.get()).insert(j, d.objects.value);
+                                    (tiargs.get()).insert(j, d.objects);
                                     j--;
                                     continue L_outer20;
                                 }
@@ -6403,7 +6356,7 @@ public class dtemplate {
                                 }
                                 tiargs.get().set(j, sa.value);
                                 TemplateDeclaration td = sa.value.isTemplateDeclaration();
-                                if ((td != null) && (td.semanticRun.value == PASS.init) && td.literal)
+                                if ((td != null) && (td.semanticRun == PASS.init) && td.literal)
                                 {
                                     dsymbolSemantic(td, sc);
                                 }
@@ -6413,24 +6366,24 @@ public class dtemplate {
                                     fd.functionSemantic();
                                 }
                             }
-                            if (((ea.value.op.value & 0xFF) == 161))
+                            if (((ea.value.op & 0xFF) == 161))
                             {
                                 FuncExp fe = (FuncExp)ea.value;
-                                if (((fe.fd.value.tok.value & 0xFF) == 0) && ((fe.type.value.ty.value & 0xFF) == ENUMTY.Tpointer))
+                                if (((fe.fd.tok & 0xFF) == 0) && ((fe.type.value.ty & 0xFF) == ENUMTY.Tpointer))
                                 {
-                                    fe.fd.value.tok.value = TOK.function_;
-                                    fe.fd.value.vthis.value = null;
+                                    fe.fd.tok = TOK.function_;
+                                    fe.fd.vthis = null;
                                 }
-                                else if (fe.td.value != null)
+                                else if (fe.td != null)
                                 {
                                 }
                             }
-                            if (((ea.value.op.value & 0xFF) == 27) && ((flags & 1) == 0))
+                            if (((ea.value.op & 0xFF) == 27) && ((flags & 1) == 0))
                             {
-                                sa.value = ((DotVarExp)ea.value).var.value;
+                                sa.value = ((DotVarExp)ea.value).var;
                                 /*goto Ldsym*//*unrolled goto*/
                             /*Ldsym:*/
-                                if (sa.value.errors.value)
+                                if (sa.value.errors)
                                 {
                                     err = true;
                                     continue L_outer20;
@@ -6439,7 +6392,7 @@ public class dtemplate {
                                 if (d != null)
                                 {
                                     (tiargs.get()).remove(j);
-                                    (tiargs.get()).insert(j, d.objects.value);
+                                    (tiargs.get()).insert(j, d.objects);
                                     j--;
                                     continue L_outer20;
                                 }
@@ -6456,7 +6409,7 @@ public class dtemplate {
                                 }
                                 tiargs.get().set(j, sa.value);
                                 TemplateDeclaration td = sa.value.isTemplateDeclaration();
-                                if ((td != null) && (td.semanticRun.value == PASS.init) && td.literal)
+                                if ((td != null) && (td.semanticRun == PASS.init) && td.literal)
                                 {
                                     dsymbolSemantic(td, sc);
                                 }
@@ -6466,12 +6419,12 @@ public class dtemplate {
                                     fd.functionSemantic();
                                 }
                             }
-                            if (((ea.value.op.value & 0xFF) == 36))
+                            if (((ea.value.op & 0xFF) == 36))
                             {
-                                sa.value = ((TemplateExp)ea.value).td.value;
+                                sa.value = ((TemplateExp)ea.value).td;
                                 /*goto Ldsym*//*unrolled goto*/
                             /*Ldsym:*/
-                                if (sa.value.errors.value)
+                                if (sa.value.errors)
                                 {
                                     err = true;
                                     continue L_outer20;
@@ -6480,7 +6433,7 @@ public class dtemplate {
                                 if (d != null)
                                 {
                                     (tiargs.get()).remove(j);
-                                    (tiargs.get()).insert(j, d.objects.value);
+                                    (tiargs.get()).insert(j, d.objects);
                                     j--;
                                     continue L_outer20;
                                 }
@@ -6497,7 +6450,7 @@ public class dtemplate {
                                 }
                                 tiargs.get().set(j, sa.value);
                                 TemplateDeclaration td = sa.value.isTemplateDeclaration();
-                                if ((td != null) && (td.semanticRun.value == PASS.init) && td.literal)
+                                if ((td != null) && (td.semanticRun == PASS.init) && td.literal)
                                 {
                                     dsymbolSemantic(td, sc);
                                 }
@@ -6507,12 +6460,12 @@ public class dtemplate {
                                     fd.functionSemantic();
                                 }
                             }
-                            if (((ea.value.op.value & 0xFF) == 37) && ((flags & 1) == 0))
+                            if (((ea.value.op & 0xFF) == 37) && ((flags & 1) == 0))
                             {
-                                sa.value = ((DotTemplateExp)ea.value).td.value;
+                                sa.value = ((DotTemplateExp)ea.value).td;
                                 /*goto Ldsym*//*unrolled goto*/
                             /*Ldsym:*/
-                                if (sa.value.errors.value)
+                                if (sa.value.errors)
                                 {
                                     err = true;
                                     continue L_outer20;
@@ -6521,7 +6474,7 @@ public class dtemplate {
                                 if (d != null)
                                 {
                                     (tiargs.get()).remove(j);
-                                    (tiargs.get()).insert(j, d.objects.value);
+                                    (tiargs.get()).insert(j, d.objects);
                                     j--;
                                     continue L_outer20;
                                 }
@@ -6538,7 +6491,7 @@ public class dtemplate {
                                 }
                                 tiargs.get().set(j, sa.value);
                                 TemplateDeclaration td = sa.value.isTemplateDeclaration();
-                                if ((td != null) && (td.semanticRun.value == PASS.init) && td.literal)
+                                if ((td != null) && (td.semanticRun == PASS.init) && td.literal)
                                 {
                                     dsymbolSemantic(td, sc);
                                 }
@@ -6553,7 +6506,7 @@ public class dtemplate {
                         {
                             /*goto Ldsym*//*unrolled goto*/
                         /*Ldsym:*/
-                            if (sa.value.errors.value)
+                            if (sa.value.errors)
                             {
                                 err = true;
                                 continue L_outer20;
@@ -6562,7 +6515,7 @@ public class dtemplate {
                             if (d != null)
                             {
                                 (tiargs.get()).remove(j);
-                                (tiargs.get()).insert(j, d.objects.value);
+                                (tiargs.get()).insert(j, d.objects);
                                 j--;
                                 continue L_outer20;
                             }
@@ -6579,7 +6532,7 @@ public class dtemplate {
                             }
                             tiargs.get().set(j, sa.value);
                             TemplateDeclaration td = sa.value.isTemplateDeclaration();
-                            if ((td != null) && (td.semanticRun.value == PASS.init) && td.literal)
+                            if ((td != null) && (td.semanticRun == PASS.init) && td.literal)
                             {
                                 dsymbolSemantic(td, sc);
                             }
@@ -6591,14 +6544,14 @@ public class dtemplate {
                         }
                         if ((ta.value == null))
                         {
-                            assert(global.errors.value != 0);
-                            ta.value = Type.terror.value;
+                            assert(global.value.errors != 0);
+                            ta.value = Type.terror;
                         }
                     /*Ltype:*/
-                        if (((ta.value.ty.value & 0xFF) == ENUMTY.Ttuple))
+                        if (((ta.value.ty & 0xFF) == ENUMTY.Ttuple))
                         {
                             TypeTuple tt = (TypeTuple)ta.value;
-                            int dim = (tt.arguments.value.get()).length.value;
+                            int dim = (tt.arguments.get()).length;
                             (tiargs.get()).remove(j);
                             if (dim != 0)
                             {
@@ -6606,14 +6559,14 @@ public class dtemplate {
                                 {
                                     int i = 0;
                                     for (; (i < dim);i++){
-                                        Parameter arg = (tt.arguments.value.get()).get(i);
-                                        if (((flags & 2) != 0) && (arg.ident.value != null) || (arg.userAttribDecl.value != null))
+                                        Parameter arg = (tt.arguments.get()).get(i);
+                                        if (((flags & 2) != 0) && (arg.ident != null) || (arg.userAttribDecl != null))
                                         {
                                             (tiargs.get()).insert(j + i, arg);
                                         }
                                         else
                                         {
-                                            (tiargs.get()).insert(j + i, arg.type.value);
+                                            (tiargs.get()).insert(j + i, arg.type);
                                         }
                                     }
                                 }
@@ -6621,7 +6574,7 @@ public class dtemplate {
                             j--;
                             continue L_outer20;
                         }
-                        if (((ta.value.ty.value & 0xFF) == ENUMTY.Terror))
+                        if (((ta.value.ty & 0xFF) == ENUMTY.Terror))
                         {
                             err = true;
                             continue L_outer20;
@@ -6634,7 +6587,7 @@ public class dtemplate {
                         if ((flags & 1) != 0)
                         {
                             ea.value = expressionSemantic(ea.value, sc);
-                            if (((ea.value.op.value & 0xFF) != 26) || ((((VarExp)ea.value).var.value.storage_class.value & 262144L) != 0))
+                            if (((ea.value.op & 0xFF) != 26) || ((((VarExp)ea.value).var.storage_class & 262144L) != 0))
                             {
                                 ea.value = ea.value.optimize(0, false);
                             }
@@ -6644,7 +6597,7 @@ public class dtemplate {
                             sc = (sc.get()).startCTFE();
                             ea.value = expressionSemantic(ea.value, sc);
                             sc = (sc.get()).endCTFE();
-                            if (((ea.value.op.value & 0xFF) == 26))
+                            if (((ea.value.op & 0xFF) == 26))
                             {
                             }
                             else if (definitelyValueParameter(ea.value))
@@ -6653,18 +6606,18 @@ public class dtemplate {
                                 {
                                     ea.value = new ErrorExp();
                                 }
-                                int olderrs = global.errors.value;
+                                int olderrs = global.value.errors;
                                 ea.value = ea.value.ctfeInterpret();
-                                if ((global.errors.value != olderrs))
+                                if ((global.value.errors != olderrs))
                                 {
                                     ea.value = new ErrorExp();
                                 }
                             }
                         }
-                        if (((ea.value.op.value & 0xFF) == 126))
+                        if (((ea.value.op & 0xFF) == 126))
                         {
                             TupleExp te = (TupleExp)ea.value;
-                            int dim = (te.exps.value.get()).length.value;
+                            int dim = (te.exps.get()).length;
                             (tiargs.get()).remove(j);
                             if (dim != 0)
                             {
@@ -6672,30 +6625,30 @@ public class dtemplate {
                                 {
                                     int i = 0;
                                     for (; (i < dim);i++) {
-                                        (tiargs.get()).insert(j + i, (te.exps.value.get()).get(i));
+                                        (tiargs.get()).insert(j + i, (te.exps.get()).get(i));
                                     }
                                 }
                             }
                             j--;
                             continue L_outer20;
                         }
-                        if (((ea.value.op.value & 0xFF) == 127))
+                        if (((ea.value.op & 0xFF) == 127))
                         {
                             err = true;
                             continue L_outer20;
                         }
                         tiargs.get().set(j, ea.value);
-                        if (((ea.value.op.value & 0xFF) == 20))
+                        if (((ea.value.op & 0xFF) == 20))
                         {
                             ta.value = ea.value.type.value;
                             /*goto Ltype*/throw Dispatch0.INSTANCE;
                         }
-                        if (((ea.value.op.value & 0xFF) == 203))
+                        if (((ea.value.op & 0xFF) == 203))
                         {
-                            sa.value = ((ScopeExp)ea.value).sds.value;
+                            sa.value = ((ScopeExp)ea.value).sds;
                             /*goto Ldsym*//*unrolled goto*/
                         /*Ldsym:*/
-                            if (sa.value.errors.value)
+                            if (sa.value.errors)
                             {
                                 err = true;
                                 continue L_outer20;
@@ -6704,7 +6657,7 @@ public class dtemplate {
                             if (d != null)
                             {
                                 (tiargs.get()).remove(j);
-                                (tiargs.get()).insert(j, d.objects.value);
+                                (tiargs.get()).insert(j, d.objects);
                                 j--;
                                 continue L_outer20;
                             }
@@ -6721,7 +6674,7 @@ public class dtemplate {
                             }
                             tiargs.get().set(j, sa.value);
                             TemplateDeclaration td = sa.value.isTemplateDeclaration();
-                            if ((td != null) && (td.semanticRun.value == PASS.init) && td.literal)
+                            if ((td != null) && (td.semanticRun == PASS.init) && td.literal)
                             {
                                 dsymbolSemantic(td, sc);
                             }
@@ -6731,24 +6684,24 @@ public class dtemplate {
                                 fd.functionSemantic();
                             }
                         }
-                        if (((ea.value.op.value & 0xFF) == 161))
+                        if (((ea.value.op & 0xFF) == 161))
                         {
                             FuncExp fe = (FuncExp)ea.value;
-                            if (((fe.fd.value.tok.value & 0xFF) == 0) && ((fe.type.value.ty.value & 0xFF) == ENUMTY.Tpointer))
+                            if (((fe.fd.tok & 0xFF) == 0) && ((fe.type.value.ty & 0xFF) == ENUMTY.Tpointer))
                             {
-                                fe.fd.value.tok.value = TOK.function_;
-                                fe.fd.value.vthis.value = null;
+                                fe.fd.tok = TOK.function_;
+                                fe.fd.vthis = null;
                             }
-                            else if (fe.td.value != null)
+                            else if (fe.td != null)
                             {
                             }
                         }
-                        if (((ea.value.op.value & 0xFF) == 27) && ((flags & 1) == 0))
+                        if (((ea.value.op & 0xFF) == 27) && ((flags & 1) == 0))
                         {
-                            sa.value = ((DotVarExp)ea.value).var.value;
+                            sa.value = ((DotVarExp)ea.value).var;
                             /*goto Ldsym*//*unrolled goto*/
                         /*Ldsym:*/
-                            if (sa.value.errors.value)
+                            if (sa.value.errors)
                             {
                                 err = true;
                                 continue L_outer20;
@@ -6757,7 +6710,7 @@ public class dtemplate {
                             if (d != null)
                             {
                                 (tiargs.get()).remove(j);
-                                (tiargs.get()).insert(j, d.objects.value);
+                                (tiargs.get()).insert(j, d.objects);
                                 j--;
                                 continue L_outer20;
                             }
@@ -6774,7 +6727,7 @@ public class dtemplate {
                             }
                             tiargs.get().set(j, sa.value);
                             TemplateDeclaration td = sa.value.isTemplateDeclaration();
-                            if ((td != null) && (td.semanticRun.value == PASS.init) && td.literal)
+                            if ((td != null) && (td.semanticRun == PASS.init) && td.literal)
                             {
                                 dsymbolSemantic(td, sc);
                             }
@@ -6784,12 +6737,12 @@ public class dtemplate {
                                 fd.functionSemantic();
                             }
                         }
-                        if (((ea.value.op.value & 0xFF) == 36))
+                        if (((ea.value.op & 0xFF) == 36))
                         {
-                            sa.value = ((TemplateExp)ea.value).td.value;
+                            sa.value = ((TemplateExp)ea.value).td;
                             /*goto Ldsym*//*unrolled goto*/
                         /*Ldsym:*/
-                            if (sa.value.errors.value)
+                            if (sa.value.errors)
                             {
                                 err = true;
                                 continue L_outer20;
@@ -6798,7 +6751,7 @@ public class dtemplate {
                             if (d != null)
                             {
                                 (tiargs.get()).remove(j);
-                                (tiargs.get()).insert(j, d.objects.value);
+                                (tiargs.get()).insert(j, d.objects);
                                 j--;
                                 continue L_outer20;
                             }
@@ -6815,7 +6768,7 @@ public class dtemplate {
                             }
                             tiargs.get().set(j, sa.value);
                             TemplateDeclaration td = sa.value.isTemplateDeclaration();
-                            if ((td != null) && (td.semanticRun.value == PASS.init) && td.literal)
+                            if ((td != null) && (td.semanticRun == PASS.init) && td.literal)
                             {
                                 dsymbolSemantic(td, sc);
                             }
@@ -6825,12 +6778,12 @@ public class dtemplate {
                                 fd.functionSemantic();
                             }
                         }
-                        if (((ea.value.op.value & 0xFF) == 37) && ((flags & 1) == 0))
+                        if (((ea.value.op & 0xFF) == 37) && ((flags & 1) == 0))
                         {
-                            sa.value = ((DotTemplateExp)ea.value).td.value;
+                            sa.value = ((DotTemplateExp)ea.value).td;
                             /*goto Ldsym*//*unrolled goto*/
                         /*Ldsym:*/
-                            if (sa.value.errors.value)
+                            if (sa.value.errors)
                             {
                                 err = true;
                                 continue L_outer20;
@@ -6839,7 +6792,7 @@ public class dtemplate {
                             if (d != null)
                             {
                                 (tiargs.get()).remove(j);
-                                (tiargs.get()).insert(j, d.objects.value);
+                                (tiargs.get()).insert(j, d.objects);
                                 j--;
                                 continue L_outer20;
                             }
@@ -6856,7 +6809,7 @@ public class dtemplate {
                             }
                             tiargs.get().set(j, sa.value);
                             TemplateDeclaration td = sa.value.isTemplateDeclaration();
-                            if ((td != null) && (td.semanticRun.value == PASS.init) && td.literal)
+                            if ((td != null) && (td.semanticRun == PASS.init) && td.literal)
                             {
                                 dsymbolSemantic(td, sc);
                             }
@@ -6870,7 +6823,7 @@ public class dtemplate {
                     else if (sa.value != null)
                     {
                     /*Ldsym:*/
-                        if (sa.value.errors.value)
+                        if (sa.value.errors)
                         {
                             err = true;
                             continue L_outer20;
@@ -6879,7 +6832,7 @@ public class dtemplate {
                         if (d != null)
                         {
                             (tiargs.get()).remove(j);
-                            (tiargs.get()).insert(j, d.objects.value);
+                            (tiargs.get()).insert(j, d.objects);
                             j--;
                             continue L_outer20;
                         }
@@ -6896,7 +6849,7 @@ public class dtemplate {
                         }
                         tiargs.get().set(j, sa.value);
                         TemplateDeclaration td = sa.value.isTemplateDeclaration();
-                        if ((td != null) && (td.semanticRun.value == PASS.init) && td.literal)
+                        if ((td != null) && (td.semanticRun == PASS.init) && td.literal)
                         {
                             dsymbolSemantic(td, sc);
                         }
@@ -6923,7 +6876,7 @@ public class dtemplate {
             {
                 return true;
             }
-            if (semanticTiargs(this.loc.value, sc, this.tiargs.value, 0))
+            if (semanticTiargs(this.loc, sc, this.tiargs, 0))
             {
                 this.semantictiargsdone = true;
                 return true;
@@ -6934,10 +6887,10 @@ public class dtemplate {
         public  boolean findBestMatch(Ptr<Scope> sc, Ptr<DArray<Expression>> fargs) {
             if (this.havetempdecl)
             {
-                TemplateDeclaration tempdecl = this.tempdecl.value.isTemplateDeclaration();
+                TemplateDeclaration tempdecl = this.tempdecl.isTemplateDeclaration();
                 assert(tempdecl != null);
-                assert(tempdecl._scope.value != null);
-                this.tdtypes.value.setDim((tempdecl.parameters.get()).length.value);
+                assert(tempdecl._scope != null);
+                this.tdtypes.value.setDim((tempdecl.parameters.get()).length);
                 if (tempdecl.matchWithInstance(sc, this, ptr(this.tdtypes), fargs, 2) == 0)
                 {
                     this.error(new BytePtr("incompatible arguments for template instantiation"));
@@ -6945,20 +6898,20 @@ public class dtemplate {
                 }
                 return true;
             }
-            int errs = global.errors.value;
+            int errs = global.value.errors;
             TemplateDeclaration td_last = null;
             Ref<DArray<RootObject>> dedtypes = ref(new DArray<RootObject>());
             try {
-                OverloadSet tovers = this.tempdecl.value.isOverloadSet();
+                OverloadSet tovers = this.tempdecl.isOverloadSet();
                 {
-                    int __key1246 = 0;
-                    int __limit1247 = tovers != null ? tovers.a.length.value : 1;
-                    for (; (__key1246 < __limit1247);__key1246 += 1) {
-                        int oi = __key1246;
+                    int __key1242 = 0;
+                    int __limit1243 = tovers != null ? tovers.a.length : 1;
+                    for (; (__key1242 < __limit1243);__key1242 += 1) {
+                        int oi = __key1242;
                         TemplateDeclaration td_best = null;
                         TemplateDeclaration td_ambig = null;
                         int m_best = MATCH.nomatch;
-                        Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl.value;
+                        Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl;
                         Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
                             public Integer invoke(Dsymbol s) {
                                 TemplateDeclaration td = s.isTemplateDeclaration();
@@ -6966,25 +6919,25 @@ public class dtemplate {
                                 {
                                     return 0;
                                 }
-                                if (td.inuse.value != 0)
+                                if (td.inuse != 0)
                                 {
-                                    td.error(loc.value, new BytePtr("recursive template expansion"));
+                                    td.error(loc, new BytePtr("recursive template expansion"));
                                     return 1;
                                 }
                                 if ((pequals(td, td_best)))
                                 {
                                     return 0;
                                 }
-                                if (((td.parameters.get()).length.value < (tiargs.value.get()).length.value))
+                                if (((td.parameters.get()).length < (tiargs.get()).length))
                                 {
                                     if (td.isVariadic() == null)
                                     {
                                         return 0;
                                     }
                                 }
-                                dedtypes.value.setDim((td.parameters.get()).length.value);
+                                dedtypes.value.setDim((td.parameters.get()).length);
                                 dedtypes.value.zero();
-                                assert((td.semanticRun.value != PASS.init));
+                                assert((td.semanticRun != PASS.init));
                                 int m = td.matchWithInstance(sc, this, ptr(dedtypes), fargs, 0);
                                 if ((m <= MATCH.nomatch))
                                 {
@@ -7025,15 +6978,15 @@ public class dtemplate {
                                 td_ambig = null;
                                 td_best = td;
                                 m_best = m;
-                                tdtypes.value.setDim(dedtypes.value.length.value);
-                                memcpy((BytePtr)(tdtypes.value.tdata()), (dedtypes.value.tdata()), (tdtypes.value.length.value * 4));
+                                tdtypes.value.setDim(dedtypes.value.length);
+                                memcpy((BytePtr)(tdtypes.value.tdata()), (dedtypes.value.tdata()), (tdtypes.value.length * 4));
                                 return 0;
                             }
                         };
                         overloadApply(dstart, __lambda3, null);
                         if (td_ambig != null)
                         {
-                            error(this.loc.value, new BytePtr("%s `%s.%s` matches more than one template declaration:\n%s:     `%s`\nand\n%s:     `%s`"), td_best.kind(), td_best.parent.value.toPrettyChars(false), td_best.ident.value.toChars(), td_best.loc.value.toChars(global.params.showColumns.value), td_best.toChars(), td_ambig.loc.value.toChars(global.params.showColumns.value), td_ambig.toChars());
+                            error(this.loc, new BytePtr("%s `%s.%s` matches more than one template declaration:\n%s:     `%s`\nand\n%s:     `%s`"), td_best.kind(), td_best.parent.value.toPrettyChars(false), td_best.ident.toChars(), td_best.loc.toChars(global.value.params.showColumns), td_best.toChars(), td_ambig.loc.toChars(global.value.params.showColumns), td_ambig.toChars());
                             return false;
                         }
                         if (td_best != null)
@@ -7044,7 +6997,7 @@ public class dtemplate {
                             }
                             else if ((!pequals(td_last, td_best)))
                             {
-                                ScopeDsymbol.multiplyDefined(this.loc.value, td_last, td_best);
+                                ScopeDsymbol.multiplyDefined(this.loc, td_last, td_best);
                                 return false;
                             }
                         }
@@ -7052,42 +7005,42 @@ public class dtemplate {
                 }
                 if (td_last != null)
                 {
-                    int dim = (td_last.parameters.get()).length.value - (td_last.isVariadic() != null ? 1 : 0);
+                    int dim = (td_last.parameters.get()).length - (td_last.isVariadic() != null ? 1 : 0);
                     {
                         int i = 0;
                         for (; (i < dim);i++){
-                            if (((this.tiargs.value.get()).length.value <= i))
+                            if (((this.tiargs.get()).length <= i))
                             {
-                                (this.tiargs.value.get()).push(this.tdtypes.value.get(i));
+                                (this.tiargs.get()).push(this.tdtypes.value.get(i));
                             }
-                            assert((i < (this.tiargs.value.get()).length.value));
+                            assert((i < (this.tiargs.get()).length));
                             TemplateValueParameter tvp = (td_last.parameters.get()).get(i).isTemplateValueParameter();
                             if (tvp == null)
                             {
                                 continue;
                             }
                             assert(this.tdtypes.value.get(i) != null);
-                            this.tiargs.value.get().set(i, this.tdtypes.value.get(i));
+                            this.tiargs.get().set(i, this.tdtypes.value.get(i));
                         }
                     }
-                    if ((td_last.isVariadic() != null) && ((this.tiargs.value.get()).length.value == dim) && (this.tdtypes.value.get(dim) != null))
+                    if ((td_last.isVariadic() != null) && ((this.tiargs.get()).length == dim) && (this.tdtypes.value.get(dim) != null))
                     {
                         Tuple va = isTuple(this.tdtypes.value.get(dim));
                         assert(va != null);
-                        (this.tiargs.value.get()).pushSlice(va.objects.value.opSlice());
+                        (this.tiargs.get()).pushSlice(va.objects.value.opSlice());
                     }
                 }
-                else if (this.errors.value && (this.inst.value != null))
+                else if (this.errors && (this.inst != null))
                 {
-                    assert(global.errors.value != 0);
+                    assert(global.value.errors != 0);
                     return false;
                 }
                 else
                 {
-                    TemplateDeclaration tdecl = this.tempdecl.value.isTemplateDeclaration();
-                    if ((errs != global.errors.value))
+                    TemplateDeclaration tdecl = this.tempdecl.isTemplateDeclaration();
+                    if ((errs != global.value.errors))
                     {
-                        errorSupplemental(this.loc.value, new BytePtr("while looking for match for `%s`"), this.toChars());
+                        errorSupplemental(this.loc, new BytePtr("while looking for match for `%s`"), this.toChars());
                     }
                     else if ((tdecl != null) && (tdecl.overnext.value == null))
                     {
@@ -7095,33 +7048,33 @@ public class dtemplate {
                     }
                     else
                     {
-                        error(this.loc.value, new BytePtr("%s `%s.%s` does not match any template declaration"), this.tempdecl.value.kind(), this.tempdecl.value.parent.value.toPrettyChars(false), this.tempdecl.value.ident.value.toChars());
+                        error(this.loc, new BytePtr("%s `%s.%s` does not match any template declaration"), this.tempdecl.kind(), this.tempdecl.parent.value.toPrettyChars(false), this.tempdecl.ident.toChars());
                     }
                     return false;
                 }
-                this.tempdecl.value = td_last;
-                return errs == global.errors.value;
+                this.tempdecl = td_last;
+                return errs == global.value.errors;
             }
             finally {
             }
         }
 
         public  boolean needsTypeInference(Ptr<Scope> sc, int flag) {
-            if ((this.semanticRun.value != PASS.init))
+            if ((this.semanticRun != PASS.init))
             {
                 return false;
             }
-            int olderrs = global.errors.value;
+            int olderrs = global.value.errors;
             Ref<DArray<RootObject>> dedtypes = ref(new DArray<RootObject>());
             try {
                 int count = 0;
-                OverloadSet tovers = this.tempdecl.value.isOverloadSet();
+                OverloadSet tovers = this.tempdecl.isOverloadSet();
                 {
-                    int __key1248 = 0;
-                    int __limit1249 = tovers != null ? tovers.a.length.value : 1;
-                    for (; (__key1248 < __limit1249);__key1248 += 1) {
-                        int oi = __key1248;
-                        Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl.value;
+                    int __key1244 = 0;
+                    int __limit1245 = tovers != null ? tovers.a.length : 1;
+                    for (; (__key1244 < __limit1245);__key1244 += 1) {
+                        int oi = __key1244;
+                        Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl;
                         Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
                             public Integer invoke(Dsymbol s) {
                                 TemplateDeclaration td = s.isTemplateDeclaration();
@@ -7129,63 +7082,63 @@ public class dtemplate {
                                 {
                                     return 0;
                                 }
-                                if (td.inuse.value != 0)
+                                if (td.inuse != 0)
                                 {
-                                    td.error(loc.value, new BytePtr("recursive template expansion"));
+                                    td.error(loc, new BytePtr("recursive template expansion"));
                                     return 1;
                                 }
-                                if (td.onemember.value == null)
+                                if (td.onemember == null)
                                 {
                                     return 0;
                                 }
                                 {
-                                    TemplateDeclaration td2 = td.onemember.value.isTemplateDeclaration();
+                                    TemplateDeclaration td2 = td.onemember.isTemplateDeclaration();
                                     if ((td2) != null)
                                     {
-                                        if ((td2.onemember.value == null) || (td2.onemember.value.isFuncDeclaration() == null))
+                                        if ((td2.onemember == null) || (td2.onemember.isFuncDeclaration() == null))
                                         {
                                             return 0;
                                         }
-                                        if (((tiargs.value.get()).length.value >= (td.parameters.get()).length.value - (td.isVariadic() != null ? 1 : 0)))
+                                        if (((tiargs.get()).length >= (td.parameters.get()).length - (td.isVariadic() != null ? 1 : 0)))
                                         {
                                             return 0;
                                         }
                                         return 1;
                                     }
                                 }
-                                FuncDeclaration fd = td.onemember.value.isFuncDeclaration();
-                                if ((fd == null) || ((fd.type.value.ty.value & 0xFF) != ENUMTY.Tfunction))
+                                FuncDeclaration fd = td.onemember.isFuncDeclaration();
+                                if ((fd == null) || ((fd.type.ty & 0xFF) != ENUMTY.Tfunction))
                                 {
                                     return 0;
                                 }
                                 {
-                                    Slice<TemplateParameter> __r1250 = (td.parameters.get()).opSlice().copy();
-                                    int __key1251 = 0;
-                                    for (; (__key1251 < __r1250.getLength());__key1251 += 1) {
-                                        TemplateParameter tp = __r1250.get(__key1251);
+                                    Slice<TemplateParameter> __r1246 = (td.parameters.get()).opSlice().copy();
+                                    int __key1247 = 0;
+                                    for (; (__key1247 < __r1246.getLength());__key1247 += 1) {
+                                        TemplateParameter tp = __r1246.get(__key1247);
                                         if (tp.isTemplateThisParameter() != null)
                                         {
                                             return 1;
                                         }
                                     }
                                 }
-                                TypeFunction tf = (TypeFunction)fd.type.value;
+                                TypeFunction tf = (TypeFunction)fd.type;
                                 {
                                     int dim = tf.parameterList.length();
                                     if ((dim) != 0)
                                     {
                                         TemplateTupleParameter tp = td.isVariadic();
-                                        if ((tp != null) && ((td.parameters.get()).length.value > 1))
+                                        if ((tp != null) && ((td.parameters.get()).length > 1))
                                         {
                                             return 1;
                                         }
-                                        if ((tp == null) && ((tiargs.value.get()).length.value < (td.parameters.get()).length.value))
+                                        if ((tp == null) && ((tiargs.get()).length < (td.parameters.get()).length))
                                         {
                                             {
-                                                int __key1252 = (tiargs.value.get()).length.value;
-                                                int __limit1253 = (td.parameters.get()).length.value;
-                                                for (; (__key1252 < __limit1253);__key1252 += 1) {
-                                                    int i = __key1252;
+                                                int __key1248 = (tiargs.get()).length;
+                                                int __limit1249 = (td.parameters.get()).length;
+                                                for (; (__key1248 < __limit1249);__key1248 += 1) {
+                                                    int i = __key1248;
                                                     if (!(td.parameters.get()).get(i).hasDefaultArg())
                                                     {
                                                         return 1;
@@ -7194,11 +7147,11 @@ public class dtemplate {
                                             }
                                         }
                                         {
-                                            int __key1254 = 0;
-                                            int __limit1255 = dim;
-                                            for (; (__key1254 < __limit1255);__key1254 += 1) {
-                                                int i = __key1254;
-                                                if ((tf.parameterList.get(i).storageClass.value & 256L) != 0)
+                                            int __key1250 = 0;
+                                            int __limit1251 = dim;
+                                            for (; (__key1250 < __limit1251);__key1250 += 1) {
+                                                int i = __key1250;
+                                                if ((tf.parameterList.get(i).storageClass & 256L) != 0)
                                                 {
                                                     return 1;
                                                 }
@@ -7208,20 +7161,20 @@ public class dtemplate {
                                 }
                                 if (flag == 0)
                                 {
-                                    dedtypes.value.setDim((td.parameters.get()).length.value);
+                                    dedtypes.value.setDim((td.parameters.get()).length);
                                     dedtypes.value.zero();
-                                    if ((td.semanticRun.value == PASS.init))
+                                    if ((td.semanticRun == PASS.init))
                                     {
-                                        if (td._scope.value != null)
+                                        if (td._scope != null)
                                         {
                                             Ungag ungag = td.ungagSpeculative().copy();
                                             try {
-                                                dsymbolSemantic(td, td._scope.value);
+                                                dsymbolSemantic(td, td._scope);
                                             }
                                             finally {
                                             }
                                         }
-                                        if ((td.semanticRun.value == PASS.init))
+                                        if ((td.semanticRun == PASS.init))
                                         {
                                             error(new BytePtr("`%s` forward references template declaration `%s`"), toChars(), td.toChars());
                                             return 1;
@@ -7243,15 +7196,15 @@ public class dtemplate {
                         }
                     }
                 }
-                if ((olderrs != global.errors.value))
+                if ((olderrs != global.value.errors))
                 {
-                    if (global.gag.value == 0)
+                    if (global.value.gag == 0)
                     {
-                        errorSupplemental(this.loc.value, new BytePtr("while looking for match for `%s`"), this.toChars());
-                        this.semanticRun.value = PASS.semanticdone;
-                        this.inst.value = this;
+                        errorSupplemental(this.loc, new BytePtr("while looking for match for `%s`"), this.toChars());
+                        this.semanticRun = PASS.semanticdone;
+                        this.inst = this;
                     }
-                    this.errors.value = true;
+                    this.errors = true;
                 }
                 return false;
             }
@@ -7266,29 +7219,29 @@ public class dtemplate {
 
         public  boolean hasNestedArgs(Ptr<DArray<RootObject>> args, boolean isstatic) {
             int nested = 0;
-            if (this.enclosing.value == null)
+            if (this.enclosing == null)
             {
                 {
-                    TemplateInstance ti = this.tempdecl.value.toParent().isTemplateInstance();
+                    TemplateInstance ti = this.tempdecl.toParent().isTemplateInstance();
                     if ((ti) != null)
                     {
-                        this.enclosing.value = ti.enclosing.value;
+                        this.enclosing = ti.enclosing;
                     }
                 }
             }
             {
                 int i = 0;
             L_outer21:
-                for (; (i < (args.get()).length.value);i++){
+                for (; (i < (args.get()).length);i++){
                     RootObject o = (args.get()).get(i);
                     Expression ea = isExpression(o);
                     Dsymbol sa = isDsymbol(o);
                     Tuple va = isTuple(o);
                     if (ea != null)
                     {
-                        if (((ea.op.value & 0xFF) == 26))
+                        if (((ea.op & 0xFF) == 26))
                         {
-                            sa = ((VarExp)ea).var.value;
+                            sa = ((VarExp)ea).var;
                             /*goto Lsa*//*unrolled goto*/
                         /*Lsa:*/
                             sa = sa.toAlias();
@@ -7296,14 +7249,14 @@ public class dtemplate {
                             if (td != null)
                             {
                                 TemplateInstance ti = sa.toParent().isTemplateInstance();
-                                if ((ti != null) && (ti.enclosing.value != null))
+                                if ((ti != null) && (ti.enclosing != null))
                                 {
                                     sa = ti;
                                 }
                             }
                             TemplateInstance ti = sa.isTemplateInstance();
                             Declaration d = sa.isDeclaration();
-                            if ((td != null) && td.literal || (ti != null) && (ti.enclosing.value != null) || (d != null) && !d.isDataseg() && ((d.storage_class.value & 8388608L) == 0) && (d.isFuncDeclaration() == null) || d.isFuncDeclaration().isNested() && (this.isTemplateMixin() == null))
+                            if ((td != null) && td.literal || (ti != null) && (ti.enclosing != null) || (d != null) && !d.isDataseg() && ((d.storage_class & 8388608L) == 0) && (d.isFuncDeclaration() == null) || d.isFuncDeclaration().isNested() && (this.isTemplateMixin() == null))
                             {
                                 Dsymbol dparent = sa.toParent2();
                                 try {
@@ -7311,14 +7264,14 @@ public class dtemplate {
                                     {
                                         /*goto L1*/throw Dispatch0.INSTANCE;
                                     }
-                                    else if (this.enclosing.value == null)
+                                    else if (this.enclosing == null)
                                     {
-                                        this.enclosing.value = dparent;
+                                        this.enclosing = dparent;
                                     }
-                                    else if ((!pequals(this.enclosing.value, dparent)))
+                                    else if ((!pequals(this.enclosing, dparent)))
                                     {
                                         {
-                                            Dsymbol p = this.enclosing.value;
+                                            Dsymbol p = this.enclosing;
                                         L_outer22:
                                             for (; p != null;p = p.parent.value){
                                                 if ((pequals(p, dparent)))
@@ -7331,15 +7284,15 @@ public class dtemplate {
                                             Dsymbol p = dparent;
                                         L_outer23:
                                             for (; p != null;p = p.parent.value){
-                                                if ((pequals(p, this.enclosing.value)))
+                                                if ((pequals(p, this.enclosing)))
                                                 {
-                                                    this.enclosing.value = dparent;
+                                                    this.enclosing = dparent;
                                                     /*goto L1*/throw Dispatch0.INSTANCE;
                                                 }
                                             }
                                         }
-                                        this.error(new BytePtr("`%s` is nested in both `%s` and `%s`"), this.toChars(), this.enclosing.value.toChars(), dparent.toChars());
-                                        this.errors.value = true;
+                                        this.error(new BytePtr("`%s` is nested in both `%s` and `%s`"), this.toChars(), this.enclosing.toChars(), dparent.toChars());
+                                        this.errors = true;
                                     }
                                 }
                                 catch(Dispatch0 __d){}
@@ -7347,9 +7300,9 @@ public class dtemplate {
                                 nested |= 1;
                             }
                         }
-                        if (((ea.op.value & 0xFF) == 123))
+                        if (((ea.op & 0xFF) == 123))
                         {
-                            sa = ((ThisExp)ea).var.value;
+                            sa = ((ThisExp)ea).var;
                             /*goto Lsa*//*unrolled goto*/
                         /*Lsa:*/
                             sa = sa.toAlias();
@@ -7357,14 +7310,14 @@ public class dtemplate {
                             if (td != null)
                             {
                                 TemplateInstance ti = sa.toParent().isTemplateInstance();
-                                if ((ti != null) && (ti.enclosing.value != null))
+                                if ((ti != null) && (ti.enclosing != null))
                                 {
                                     sa = ti;
                                 }
                             }
                             TemplateInstance ti = sa.isTemplateInstance();
                             Declaration d = sa.isDeclaration();
-                            if ((td != null) && td.literal || (ti != null) && (ti.enclosing.value != null) || (d != null) && !d.isDataseg() && ((d.storage_class.value & 8388608L) == 0) && (d.isFuncDeclaration() == null) || d.isFuncDeclaration().isNested() && (this.isTemplateMixin() == null))
+                            if ((td != null) && td.literal || (ti != null) && (ti.enclosing != null) || (d != null) && !d.isDataseg() && ((d.storage_class & 8388608L) == 0) && (d.isFuncDeclaration() == null) || d.isFuncDeclaration().isNested() && (this.isTemplateMixin() == null))
                             {
                                 Dsymbol dparent = sa.toParent2();
                                 try {
@@ -7372,14 +7325,14 @@ public class dtemplate {
                                     {
                                         /*goto L1*/throw Dispatch0.INSTANCE;
                                     }
-                                    else if (this.enclosing.value == null)
+                                    else if (this.enclosing == null)
                                     {
-                                        this.enclosing.value = dparent;
+                                        this.enclosing = dparent;
                                     }
-                                    else if ((!pequals(this.enclosing.value, dparent)))
+                                    else if ((!pequals(this.enclosing, dparent)))
                                     {
                                         {
-                                            Dsymbol p = this.enclosing.value;
+                                            Dsymbol p = this.enclosing;
                                         L_outer24:
                                             for (; p != null;p = p.parent.value){
                                                 if ((pequals(p, dparent)))
@@ -7392,15 +7345,15 @@ public class dtemplate {
                                             Dsymbol p = dparent;
                                         L_outer25:
                                             for (; p != null;p = p.parent.value){
-                                                if ((pequals(p, this.enclosing.value)))
+                                                if ((pequals(p, this.enclosing)))
                                                 {
-                                                    this.enclosing.value = dparent;
+                                                    this.enclosing = dparent;
                                                     /*goto L1*/throw Dispatch0.INSTANCE;
                                                 }
                                             }
                                         }
-                                        this.error(new BytePtr("`%s` is nested in both `%s` and `%s`"), this.toChars(), this.enclosing.value.toChars(), dparent.toChars());
-                                        this.errors.value = true;
+                                        this.error(new BytePtr("`%s` is nested in both `%s` and `%s`"), this.toChars(), this.enclosing.toChars(), dparent.toChars());
+                                        this.errors = true;
                                     }
                                 }
                                 catch(Dispatch0 __d){}
@@ -7408,15 +7361,15 @@ public class dtemplate {
                                 nested |= 1;
                             }
                         }
-                        if (((ea.op.value & 0xFF) == 161))
+                        if (((ea.op & 0xFF) == 161))
                         {
-                            if (((FuncExp)ea).td.value != null)
+                            if (((FuncExp)ea).td != null)
                             {
-                                sa = ((FuncExp)ea).td.value;
+                                sa = ((FuncExp)ea).td;
                             }
                             else
                             {
-                                sa = ((FuncExp)ea).fd.value;
+                                sa = ((FuncExp)ea).fd;
                             }
                             /*goto Lsa*//*unrolled goto*/
                         /*Lsa:*/
@@ -7425,14 +7378,14 @@ public class dtemplate {
                             if (td != null)
                             {
                                 TemplateInstance ti = sa.toParent().isTemplateInstance();
-                                if ((ti != null) && (ti.enclosing.value != null))
+                                if ((ti != null) && (ti.enclosing != null))
                                 {
                                     sa = ti;
                                 }
                             }
                             TemplateInstance ti = sa.isTemplateInstance();
                             Declaration d = sa.isDeclaration();
-                            if ((td != null) && td.literal || (ti != null) && (ti.enclosing.value != null) || (d != null) && !d.isDataseg() && ((d.storage_class.value & 8388608L) == 0) && (d.isFuncDeclaration() == null) || d.isFuncDeclaration().isNested() && (this.isTemplateMixin() == null))
+                            if ((td != null) && td.literal || (ti != null) && (ti.enclosing != null) || (d != null) && !d.isDataseg() && ((d.storage_class & 8388608L) == 0) && (d.isFuncDeclaration() == null) || d.isFuncDeclaration().isNested() && (this.isTemplateMixin() == null))
                             {
                                 Dsymbol dparent = sa.toParent2();
                                 try {
@@ -7440,14 +7393,14 @@ public class dtemplate {
                                     {
                                         /*goto L1*/throw Dispatch0.INSTANCE;
                                     }
-                                    else if (this.enclosing.value == null)
+                                    else if (this.enclosing == null)
                                     {
-                                        this.enclosing.value = dparent;
+                                        this.enclosing = dparent;
                                     }
-                                    else if ((!pequals(this.enclosing.value, dparent)))
+                                    else if ((!pequals(this.enclosing, dparent)))
                                     {
                                         {
-                                            Dsymbol p = this.enclosing.value;
+                                            Dsymbol p = this.enclosing;
                                         L_outer26:
                                             for (; p != null;p = p.parent.value){
                                                 if ((pequals(p, dparent)))
@@ -7460,15 +7413,15 @@ public class dtemplate {
                                             Dsymbol p = dparent;
                                         L_outer27:
                                             for (; p != null;p = p.parent.value){
-                                                if ((pequals(p, this.enclosing.value)))
+                                                if ((pequals(p, this.enclosing)))
                                                 {
-                                                    this.enclosing.value = dparent;
+                                                    this.enclosing = dparent;
                                                     /*goto L1*/throw Dispatch0.INSTANCE;
                                                 }
                                             }
                                         }
-                                        this.error(new BytePtr("`%s` is nested in both `%s` and `%s`"), this.toChars(), this.enclosing.value.toChars(), dparent.toChars());
-                                        this.errors.value = true;
+                                        this.error(new BytePtr("`%s` is nested in both `%s` and `%s`"), this.toChars(), this.enclosing.toChars(), dparent.toChars());
+                                        this.errors = true;
                                     }
                                 }
                                 catch(Dispatch0 __d){}
@@ -7476,10 +7429,10 @@ public class dtemplate {
                                 nested |= 1;
                             }
                         }
-                        if (((ea.op.value & 0xFF) != 135) && ((ea.op.value & 0xFF) != 140) && ((ea.op.value & 0xFF) != 147) && ((ea.op.value & 0xFF) != 13) && ((ea.op.value & 0xFF) != 121) && ((ea.op.value & 0xFF) != 47) && ((ea.op.value & 0xFF) != 48) && ((ea.op.value & 0xFF) != 49))
+                        if (((ea.op & 0xFF) != 135) && ((ea.op & 0xFF) != 140) && ((ea.op & 0xFF) != 147) && ((ea.op & 0xFF) != 13) && ((ea.op & 0xFF) != 121) && ((ea.op & 0xFF) != 47) && ((ea.op & 0xFF) != 48) && ((ea.op & 0xFF) != 49))
                         {
                             ea.error(new BytePtr("expression `%s` is not a valid template value argument"), ea.toChars());
-                            this.errors.value = true;
+                            this.errors = true;
                         }
                     }
                     else if (sa != null)
@@ -7490,14 +7443,14 @@ public class dtemplate {
                         if (td != null)
                         {
                             TemplateInstance ti = sa.toParent().isTemplateInstance();
-                            if ((ti != null) && (ti.enclosing.value != null))
+                            if ((ti != null) && (ti.enclosing != null))
                             {
                                 sa = ti;
                             }
                         }
                         TemplateInstance ti = sa.isTemplateInstance();
                         Declaration d = sa.isDeclaration();
-                        if ((td != null) && td.literal || (ti != null) && (ti.enclosing.value != null) || (d != null) && !d.isDataseg() && ((d.storage_class.value & 8388608L) == 0) && (d.isFuncDeclaration() == null) || d.isFuncDeclaration().isNested() && (this.isTemplateMixin() == null))
+                        if ((td != null) && td.literal || (ti != null) && (ti.enclosing != null) || (d != null) && !d.isDataseg() && ((d.storage_class & 8388608L) == 0) && (d.isFuncDeclaration() == null) || d.isFuncDeclaration().isNested() && (this.isTemplateMixin() == null))
                         {
                             Dsymbol dparent = sa.toParent2();
                             try {
@@ -7505,14 +7458,14 @@ public class dtemplate {
                                 {
                                     /*goto L1*/throw Dispatch0.INSTANCE;
                                 }
-                                else if (this.enclosing.value == null)
+                                else if (this.enclosing == null)
                                 {
-                                    this.enclosing.value = dparent;
+                                    this.enclosing = dparent;
                                 }
-                                else if ((!pequals(this.enclosing.value, dparent)))
+                                else if ((!pequals(this.enclosing, dparent)))
                                 {
                                     {
-                                        Dsymbol p = this.enclosing.value;
+                                        Dsymbol p = this.enclosing;
                                     L_outer28:
                                         for (; p != null;p = p.parent.value){
                                             if ((pequals(p, dparent)))
@@ -7525,15 +7478,15 @@ public class dtemplate {
                                         Dsymbol p = dparent;
                                     L_outer29:
                                         for (; p != null;p = p.parent.value){
-                                            if ((pequals(p, this.enclosing.value)))
+                                            if ((pequals(p, this.enclosing)))
                                             {
-                                                this.enclosing.value = dparent;
+                                                this.enclosing = dparent;
                                                 /*goto L1*/throw Dispatch0.INSTANCE;
                                             }
                                         }
                                     }
-                                    this.error(new BytePtr("`%s` is nested in both `%s` and `%s`"), this.toChars(), this.enclosing.value.toChars(), dparent.toChars());
-                                    this.errors.value = true;
+                                    this.error(new BytePtr("`%s` is nested in both `%s` and `%s`"), this.toChars(), this.enclosing.toChars(), dparent.toChars());
+                                    this.errors = true;
                                 }
                             }
                             catch(Dispatch0 __d){}
@@ -7551,8 +7504,8 @@ public class dtemplate {
         }
 
         public  Ptr<DArray<Dsymbol>> appendToModuleMember() {
-            dmodule.Module mi = this.minst.value;
-            if (global.params.useUnitTests || (global.params.debuglevel != 0))
+            dmodule.Module mi = this.minst;
+            if (global.value.params.useUnitTests || (global.value.params.debuglevel != 0))
             {
                 if ((mi != null) && !mi.isRoot())
                 {
@@ -7563,21 +7516,20 @@ public class dtemplate {
             {
                 Function1<TemplateInstance,Dsymbol> getStrictEnclosing = new Function1<TemplateInstance,Dsymbol>(){
                     public Dsymbol invoke(TemplateInstance ti) {
-                        Ref<TemplateInstance> ti_ref = ref(ti);
                         do {
                             {
-                                if (ti_ref.value.enclosing.value != null)
+                                if (ti.enclosing != null)
                                 {
-                                    return ti_ref.value.enclosing.value;
+                                    return ti.enclosing;
                                 }
-                                ti_ref.value = ti_ref.value.tempdecl.value.isInstantiated();
+                                ti = ti.tempdecl.isInstantiated();
                             }
-                        } while (ti_ref.value != null);
+                        } while (ti != null);
                         return null;
                     }
                 };
                 Dsymbol enc = getStrictEnclosing.invoke(this);
-                mi = (enc != null ? enc : this.tempdecl.value).getModule();
+                mi = (enc != null ? enc : this.tempdecl).getModule();
                 if (!mi.isRoot())
                 {
                     mi = mi.importedFrom;
@@ -7591,14 +7543,14 @@ public class dtemplate {
             {
                 return null;
             }
-            Ptr<DArray<Dsymbol>> a = mi.members.value;
+            Ptr<DArray<Dsymbol>> a = mi.members;
             (a.get()).push(this);
             this.memberOf = mi;
-            if ((mi.semanticRun.value >= PASS.semantic2done) && mi.isRoot())
+            if ((mi.semanticRun >= PASS.semantic2done) && mi.isRoot())
             {
                 dmodule.Module.addDeferredSemantic2(this);
             }
-            if ((mi.semanticRun.value >= PASS.semantic3done) && mi.isRoot())
+            if ((mi.semanticRun >= PASS.semantic3done) && mi.isRoot())
             {
                 dmodule.Module.addDeferredSemantic3(this);
             }
@@ -7606,11 +7558,11 @@ public class dtemplate {
         }
 
         public  void declareParameters(Ptr<Scope> sc) {
-            TemplateDeclaration tempdecl = this.tempdecl.value.isTemplateDeclaration();
+            TemplateDeclaration tempdecl = this.tempdecl.isTemplateDeclaration();
             assert(tempdecl != null);
             {
                 int i = 0;
-                for (; (i < this.tdtypes.value.length.value);i++){
+                for (; (i < this.tdtypes.value.length);i++){
                     TemplateParameter tp = (tempdecl.parameters.get()).get(i);
                     RootObject o = this.tdtypes.value.get(i);
                     tempdecl.declareParameter(sc, tp, o);
@@ -7619,7 +7571,7 @@ public class dtemplate {
         }
 
         public  Identifier genIdent(Ptr<DArray<RootObject>> args) {
-            assert((args == this.tiargs.value));
+            assert((args == this.tiargs));
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
                 mangleToBuffer(this, ptr(buf));
@@ -7630,36 +7582,34 @@ public class dtemplate {
         }
 
         public  void expandMembers(Ptr<Scope> sc2) {
-            Ref<Ptr<Scope>> sc2_ref = ref(sc2);
             Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s) {
-                    s.setScope(sc2_ref.value);
+                    s.setScope(sc2);
                     return null;
                 }
             };
-            foreachDsymbol(this.members.value, __lambda2);
+            foreachDsymbol(this.members, __lambda2);
             Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s) {
-                    s.importAll(sc2_ref.value);
+                    s.importAll(sc2);
                     return null;
                 }
             };
-            foreachDsymbol(this.members.value, __lambda3);
+            foreachDsymbol(this.members, __lambda3);
             Function1<Dsymbol,Void> symbolDg = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s) {
-                    Ref<Dsymbol> s_ref = ref(s);
-                    dsymbolSemantic(s_ref.value, sc2_ref.value);
+                    dsymbolSemantic(s, sc2);
                     dmodule.Module.runDeferredSemantic();
                     return null;
                 }
             };
-            foreachDsymbol(this.members.value, symbolDg);
+            foreachDsymbol(this.members, symbolDg);
         }
 
         public  void tryExpandMembers(Ptr<Scope> sc2) {
             if (((dtemplate.tryExpandMembersnest += 1) > 500))
             {
-                global.gag.value = 0;
+                global.value.gag = 0;
                 this.error(new BytePtr("recursive expansion"));
                 fatal();
             }
@@ -7670,7 +7620,7 @@ public class dtemplate {
         public  void trySemantic3(Ptr<Scope> sc2) {
             if (((dtemplate.trySemantic3nest += 1) > 300))
             {
-                global.gag.value = 0;
+                global.value.gag = 0;
                 this.error(new BytePtr("recursive expansion"));
                 fatal();
             }
@@ -7747,7 +7697,7 @@ public class dtemplate {
             {
                 {
                     int i = 0;
-                    for (; (i < tup.objects.value.length.value);i++){
+                    for (; (i < tup.objects.value.length);i++){
                         unSpeculative(sc, tup.objects.value.get(i));
                     }
                 }
@@ -7767,7 +7717,7 @@ public class dtemplate {
                     VarDeclaration vd = d.isVarDeclaration();
                     if ((vd) != null)
                     {
-                        o = vd.type.value;
+                        o = vd.type;
                     }
                     else {
                         AliasDeclaration ad = d.isAliasDeclaration();
@@ -7796,16 +7746,16 @@ public class dtemplate {
             TemplateInstance ti = s.isTemplateInstance();
             if ((ti) != null)
             {
-                if ((ti.minst.value != null) || ((sc.get()).minst.value == null))
+                if ((ti.minst != null) || ((sc.get()).minst == null))
                 {
                     return ;
                 }
-                ti.minst.value = (sc.get()).minst.value;
+                ti.minst = (sc.get()).minst;
                 if (ti.tinst == null)
                 {
                     ti.tinst = (sc.get()).tinst;
                 }
-                unSpeculative(sc, ti.tempdecl.value);
+                unSpeculative(sc, ti.tempdecl);
             }
         }
         {
@@ -7818,40 +7768,40 @@ public class dtemplate {
     }
 
     public static boolean definitelyValueParameter(Expression e) {
-        if (((e.op.value & 0xFF) == 126) || ((e.op.value & 0xFF) == 203) || ((e.op.value & 0xFF) == 20) || ((e.op.value & 0xFF) == 30) || ((e.op.value & 0xFF) == 36) || ((e.op.value & 0xFF) == 37) || ((e.op.value & 0xFF) == 161) || ((e.op.value & 0xFF) == 127) || ((e.op.value & 0xFF) == 123) || ((e.op.value & 0xFF) == 124))
+        if (((e.op & 0xFF) == 126) || ((e.op & 0xFF) == 203) || ((e.op & 0xFF) == 20) || ((e.op & 0xFF) == 30) || ((e.op & 0xFF) == 36) || ((e.op & 0xFF) == 37) || ((e.op & 0xFF) == 161) || ((e.op & 0xFF) == 127) || ((e.op & 0xFF) == 123) || ((e.op & 0xFF) == 124))
         {
             return false;
         }
-        if (((e.op.value & 0xFF) != 27))
+        if (((e.op & 0xFF) != 27))
         {
             return true;
         }
-        FuncDeclaration f = ((DotVarExp)e).var.value.isFuncDeclaration();
+        FuncDeclaration f = ((DotVarExp)e).var.isFuncDeclaration();
         if (f != null)
         {
             return false;
         }
-        for (; ((e.op.value & 0xFF) == 27);){
+        for (; ((e.op & 0xFF) == 27);){
             e = ((DotVarExp)e).e1.value;
         }
-        if (((e.op.value & 0xFF) == 123) || ((e.op.value & 0xFF) == 124))
+        if (((e.op & 0xFF) == 123) || ((e.op & 0xFF) == 124))
         {
             return false;
         }
-        if (((e.op.value & 0xFF) == 30))
+        if (((e.op & 0xFF) == 30))
         {
             return false;
         }
-        if (((e.op.value & 0xFF) != 26))
+        if (((e.op & 0xFF) != 26))
         {
             return true;
         }
-        VarDeclaration v = ((VarExp)e).var.value.isVarDeclaration();
+        VarDeclaration v = ((VarExp)e).var.isVarDeclaration();
         if (v == null)
         {
             return true;
         }
-        if ((v.storage_class.value & 8388608L) != 0)
+        if ((v.storage_class & 8388608L) != 0)
         {
             return true;
         }
@@ -7862,13 +7812,13 @@ public class dtemplate {
     {
         public TypeQualified tqual = null;
         public  TemplateMixin(Loc loc, Identifier ident, TypeQualified tqual, Ptr<DArray<RootObject>> tiargs) {
-            super(loc, tqual.idents.length.value != 0 ? (Identifier)tqual.idents.get(tqual.idents.length.value - 1) : ((TypeIdentifier)tqual).ident.value, tiargs != null ? tiargs : refPtr(new DArray<RootObject>()));
-            this.ident.value = ident;
+            super(loc, tqual.idents.length != 0 ? (Identifier)tqual.idents.get(tqual.idents.length - 1) : ((TypeIdentifier)tqual).ident, tiargs != null ? tiargs : refPtr(new DArray<RootObject>()));
+            this.ident = ident;
             this.tqual = tqual;
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            TemplateMixin tm = new TemplateMixin(this.loc.value, this.ident.value, (TypeQualified)this.tqual.syntaxCopy(), this.tiargs.value);
+            TemplateMixin tm = new TemplateMixin(this.loc, this.ident, (TypeQualified)this.tqual.syntaxCopy(), this.tiargs);
             return this.syntaxCopy(tm);
         }
 
@@ -7881,7 +7831,7 @@ public class dtemplate {
         }
 
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
-            if (this._scope.value != null)
+            if (this._scope != null)
             {
                 dsymbolSemantic(this, null);
             }
@@ -7890,7 +7840,7 @@ public class dtemplate {
                     return (((s != null) && (s.apply(fp, param) != 0)) ? 1 : 0);
                 }
             };
-            return foreachDsymbol(this.members.value, __lambda3);
+            return foreachDsymbol(this.members, __lambda3);
         }
 
         public  boolean hasPointers() {
@@ -7899,11 +7849,11 @@ public class dtemplate {
                     return (s.hasPointers() ? 1 : 0);
                 }
             };
-            return foreachDsymbol(this.members.value, __lambda1) != 0;
+            return foreachDsymbol(this.members, __lambda1) != 0;
         }
 
         public  void setFieldOffset(AggregateDeclaration ad, IntPtr poffset, boolean isunion) {
-            if (this._scope.value != null)
+            if (this._scope != null)
             {
                 dsymbolSemantic(this, null);
             }
@@ -7913,7 +7863,7 @@ public class dtemplate {
                     return null;
                 }
             };
-            foreachDsymbol(this.members.value, __lambda4);
+            foreachDsymbol(this.members, __lambda4);
         }
 
         public  BytePtr toChars() {
@@ -7927,32 +7877,32 @@ public class dtemplate {
         }
 
         public  boolean findTempDecl(Ptr<Scope> sc) {
-            if (this.tempdecl.value == null)
+            if (this.tempdecl == null)
             {
                 Ref<Expression> e = ref(null);
                 Ref<Type> t = ref(null);
                 Ref<Dsymbol> s = ref(null);
-                resolve(this.tqual, this.loc.value, sc, ptr(e), ptr(t), ptr(s), false);
+                resolve(this.tqual, this.loc, sc, ptr(e), ptr(t), ptr(s), false);
                 if (s.value == null)
                 {
                     this.error(new BytePtr("is not defined"));
                     return false;
                 }
                 s.value = s.value.toAlias();
-                this.tempdecl.value = s.value.isTemplateDeclaration();
+                this.tempdecl = s.value.isTemplateDeclaration();
                 OverloadSet os = s.value.isOverloadSet();
                 if (os != null)
                 {
                     Dsymbol ds = null;
                     {
                         int i = 0;
-                        for (; (i < os.a.length.value);i++){
+                        for (; (i < os.a.length);i++){
                             Dsymbol s2 = os.a.get(i).isTemplateDeclaration();
                             if (s2 != null)
                             {
                                 if (ds != null)
                                 {
-                                    this.tempdecl.value = os;
+                                    this.tempdecl = os;
                                     break;
                                 }
                                 ds = s2;
@@ -7960,20 +7910,20 @@ public class dtemplate {
                         }
                     }
                 }
-                if (this.tempdecl.value == null)
+                if (this.tempdecl == null)
                 {
                     this.error(new BytePtr("`%s` isn't a template"), s.value.toChars());
                     return false;
                 }
             }
-            assert(this.tempdecl.value != null);
-            OverloadSet tovers = this.tempdecl.value.isOverloadSet();
+            assert(this.tempdecl != null);
+            OverloadSet tovers = this.tempdecl.isOverloadSet();
             {
-                int __key1256 = 0;
-                int __limit1257 = tovers != null ? tovers.a.length.value : 1;
-                for (; (__key1256 < __limit1257);__key1256 += 1) {
-                    int oi = __key1256;
-                    Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl.value;
+                int __key1252 = 0;
+                int __limit1253 = tovers != null ? tovers.a.length : 1;
+                for (; (__key1252 < __limit1253);__key1252 += 1) {
+                    int oi = __key1252;
+                    Dsymbol dstart = tovers != null ? tovers.a.get(oi) : this.tempdecl;
                     Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>(){
                         public Integer invoke(Dsymbol s) {
                             TemplateDeclaration td = s.isTemplateDeclaration();
@@ -7981,15 +7931,15 @@ public class dtemplate {
                             {
                                 return 0;
                             }
-                            if ((td.semanticRun.value == PASS.init))
+                            if ((td.semanticRun == PASS.init))
                             {
-                                if (td._scope.value != null)
+                                if (td._scope != null)
                                 {
-                                    dsymbolSemantic(td, td._scope.value);
+                                    dsymbolSemantic(td, td._scope);
                                 }
                                 else
                                 {
-                                    semanticRun.value = PASS.init;
+                                    semanticRun = PASS.init;
                                     return 1;
                                 }
                             }
@@ -8081,7 +8031,7 @@ public class dtemplate {
 
         public  boolean opEquals(TemplateInstanceBox s) {
             boolean res = null;
-            if ((this.ti.inst.value != null) && (s.ti.inst.value != null))
+            if ((this.ti.inst != null) && (s.ti.inst != null))
             {
                 res = this.ti == s.ti;
             }

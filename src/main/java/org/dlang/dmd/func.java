@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -71,8 +67,8 @@ public class func {
     }
     private static class Ctxt
     {
-        private Ref<Ptr<Ctxt>> prev = ref(null);
-        private Ref<Type> type = ref(null);
+        private Ptr<Ctxt> prev = null;
+        private Type type = null;
         public Ctxt(){
         }
         public Ctxt copy(){
@@ -117,14 +113,14 @@ public class func {
     }
     private static class RetWalker extends StatementRewriteWalker
     {
-        private Ref<Ptr<Scope>> sc = ref(null);
-        private Ref<Type> tret = ref(null);
+        private Ptr<Scope> sc = null;
+        private Type tret = null;
         private FuncLiteralDeclaration fld = null;
         public  void visit(ReturnStatement s) {
-            Ref<Expression> exp = ref(s.exp.value);
-            if ((exp.value != null) && !exp.value.type.value.equals(this.tret.value))
+            Expression exp = s.exp;
+            if ((exp != null) && !exp.type.value.equals(this.tret))
             {
-                s.exp.value = exp.value.castTo(this.sc.value, this.tret.value);
+                s.exp = exp.castTo(this.sc, this.tret);
             }
         }
 
@@ -158,9 +154,9 @@ public class func {
                 GotoStatement gs = new GotoStatement(s.loc, Id.returnLabel);
                 gs.label = this.fd.returnLabel;
                 Statement s1 = gs;
-                if (s.exp.value != null)
+                if (s.exp != null)
                 {
-                    s1 = new CompoundStatement(s.loc, slice(new Statement[]{new ExpStatement(s.loc, s.exp.value), gs}));
+                    s1 = new CompoundStatement(s.loc, slice(new Statement[]{new ExpStatement(s.loc, s.exp), gs}));
                 }
                 this.replaceCurrent(s1);
             }
@@ -168,29 +164,29 @@ public class func {
 
         public  void visit(TryFinallyStatement s) {
             DtorExpStatement des = null;
-            if (this.fd.nrvo_can && (s.finalbody.value != null) && ((des = s.finalbody.value.isDtorExpStatement()) != null) && (pequals(this.fd.nrvo_var, des.var)))
+            if (this.fd.nrvo_can && (s.finalbody != null) && ((des = s.finalbody.isDtorExpStatement()) != null) && (pequals(this.fd.nrvo_var, des.var)))
             {
-                if (!(global.params.useExceptions && (ClassDeclaration.throwable != null)))
+                if (!(global.value.params.useExceptions && (ClassDeclaration.throwable != null)))
                 {
-                    this.replaceCurrent(s._body.value);
-                    s._body.value.accept(this);
+                    this.replaceCurrent(s._body);
+                    s._body.accept(this);
                     return ;
                 }
-                Statement sexception = new DtorExpStatement(Loc.initial.value, this.fd.nrvo_var.edtor.value, this.fd.nrvo_var);
+                Statement sexception = new DtorExpStatement(Loc.initial, this.fd.nrvo_var.edtor, this.fd.nrvo_var);
                 Identifier id = Identifier.generateId(new BytePtr("__o"));
                 Statement handler = new PeelStatement(sexception);
                 if ((blockExit(sexception, this.fd, false) & BE.fallthru) != 0)
                 {
-                    ThrowStatement ts = new ThrowStatement(Loc.initial.value, new IdentifierExp(Loc.initial.value, id));
-                    ts.internalThrow.value = true;
-                    handler = new CompoundStatement(Loc.initial.value, slice(new Statement[]{handler, ts}));
+                    ThrowStatement ts = new ThrowStatement(Loc.initial, new IdentifierExp(Loc.initial, id));
+                    ts.internalThrow = true;
+                    handler = new CompoundStatement(Loc.initial, slice(new Statement[]{handler, ts}));
                 }
                 Ptr<DArray<Catch>> catches = refPtr(new DArray<Catch>());
-                Catch ctch = new Catch(Loc.initial.value, getThrowable(), id, handler);
-                ctch.internalCatch.value = true;
+                Catch ctch = new Catch(Loc.initial, getThrowable(), id, handler);
+                ctch.internalCatch = true;
                 catchSemantic(ctch, this.sc);
                 (catches.get()).push(ctch);
-                Statement s2 = new TryCatchStatement(Loc.initial.value, s._body.value, catches);
+                Statement s2 = new TryCatchStatement(Loc.initial, s._body, catches);
                 this.fd.eh_none = false;
                 this.replaceCurrent(s2);
                 s2.accept(this);
@@ -240,11 +236,11 @@ public class func {
             {
                 b = (a.get()).copy();
                 {
-                    Slice<Ensure> __r1387 = (a.get()).opSlice().copy();
-                    int __key1386 = 0;
-                    for (; (__key1386 < __r1387.getLength());__key1386 += 1) {
-                        Ensure e = __r1387.get(__key1386).copy();
-                        int i = __key1386;
+                    Slice<Ensure> __r1383 = (a.get()).opSlice().copy();
+                    int __key1382 = 0;
+                    for (; (__key1382 < __r1383.getLength());__key1382 += 1) {
+                        Ensure e = __r1383.get(__key1382).copy();
+                        int i = __key1382;
                         b.get().set(i, e.syntaxCopy());
                     }
                 }
@@ -304,7 +300,7 @@ public class func {
         public Ptr<DArray<Ensure>> fensures = null;
         public Statement frequire = null;
         public Statement fensure = null;
-        public Ref<Statement> fbody = ref(null);
+        public Statement fbody = null;
         public DArray<FuncDeclaration> foverrides = new DArray<FuncDeclaration>();
         public FuncDeclaration fdrequire = null;
         public FuncDeclaration fdensure = null;
@@ -314,18 +310,18 @@ public class func {
         public VarDeclaration vresult = null;
         public LabelDsymbol returnLabel = null;
         public DsymbolTable localsymtab = null;
-        public Ref<VarDeclaration> vthis = ref(null);
-        public Ref<Boolean> isThis2 = ref(false);
+        public VarDeclaration vthis = null;
+        public boolean isThis2 = false;
         public VarDeclaration v_arguments = null;
-        public Ref<Ptr<ObjcSelector>> selector = ref(null);
+        public Ptr<ObjcSelector> selector = null;
         public VarDeclaration selectorParameter = null;
         public VarDeclaration v_argptr = null;
-        public Ref<Ptr<DArray<VarDeclaration>>> parameters = ref(null);
+        public Ptr<DArray<VarDeclaration>> parameters = null;
         public DsymbolTable labtab = null;
         public Dsymbol overnext = null;
-        public Ref<FuncDeclaration> overnext0 = ref(null);
-        public Ref<Loc> endloc = ref(new Loc());
-        public IntRef vtblIndex = ref(-1);
+        public FuncDeclaration overnext0 = null;
+        public Loc endloc = new Loc();
+        public int vtblIndex = -1;
         public boolean naked = false;
         public boolean generated = false;
         public byte isCrtCtorDtor = 0;
@@ -336,11 +332,11 @@ public class func {
         public int inlineNest = 0;
         public boolean isArrayOp = false;
         public boolean eh_none = false;
-        public Ref<Boolean> semantic3Errors = ref(false);
-        public Ref<ForeachStatement> fes = ref(null);
+        public boolean semantic3Errors = false;
+        public ForeachStatement fes = null;
         public Ptr<BaseClass> interfaceVirtual = null;
         public boolean introducing = false;
-        public Ref<Type> tintro = ref(null);
+        public Type tintro = null;
         public boolean inferRetType = false;
         public long storage_class2 = 0L;
         public int hasReturnExp = 0;
@@ -350,7 +346,7 @@ public class func {
         public Ptr<DArray<ReturnStatement>> returns = null;
         public Ptr<DArray<GotoStatement>> gotos = null;
         public int builtin = BUILTIN.unknown;
-        public IntRef tookAddressOf = ref(0);
+        public int tookAddressOf = 0;
         public boolean requiresClosure = false;
         public DArray<VarDeclaration> closureVars = new DArray<VarDeclaration>();
         public DArray<FuncDeclaration> siblingCallers = new DArray<FuncDeclaration>();
@@ -358,13 +354,13 @@ public class func {
         public int flags = 0;
         public  FuncDeclaration(Loc loc, Loc endloc, Identifier ident, long storage_class, Type type) {
             super(loc, ident);
-            this.storage_class.value = storage_class;
-            this.type.value = type;
+            this.storage_class = storage_class;
+            this.type = type;
             if (type != null)
             {
-                this.storage_class.value &= -4465259184133L;
+                this.storage_class &= -4465259184133L;
             }
-            this.endloc.value = endloc.copy();
+            this.endloc = endloc.copy();
             this.inferRetType = (type != null) && (type.nextOf() == null);
         }
 
@@ -373,84 +369,84 @@ public class func {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            FuncDeclaration f = s != null ? (FuncDeclaration)s : new FuncDeclaration(this.loc.value, this.endloc.value, this.ident.value, this.storage_class.value, this.type.value.syntaxCopy());
+            FuncDeclaration f = s != null ? (FuncDeclaration)s : new FuncDeclaration(this.loc, this.endloc, this.ident, this.storage_class, this.type.syntaxCopy());
             f.frequires = this.frequires != null ? Statement.arraySyntaxCopy(this.frequires) : null;
             f.fensures = this.fensures != null ? Ensure.arraySyntaxCopy(this.fensures) : null;
-            f.fbody.value = this.fbody.value != null ? this.fbody.value.syntaxCopy() : null;
+            f.fbody = this.fbody != null ? this.fbody.syntaxCopy() : null;
             return f;
         }
 
         public  boolean functionSemantic() {
-            if (this._scope.value == null)
+            if (this._scope == null)
             {
-                return !this.errors.value;
+                return !this.errors;
             }
-            if (this.originalType.value == null)
+            if (this.originalType == null)
             {
                 TemplateInstance spec = this.isSpeculative();
-                int olderrs = global.errors.value;
-                int oldgag = global.gag.value;
-                if ((global.gag.value != 0) && (spec == null))
+                int olderrs = global.value.errors;
+                int oldgag = global.value.gag;
+                if ((global.value.gag != 0) && (spec == null))
                 {
-                    global.gag.value = 0;
+                    global.value.gag = 0;
                 }
-                dsymbolSemantic(this, this._scope.value);
-                global.gag.value = oldgag;
-                if ((spec != null) && (global.errors.value != olderrs))
+                dsymbolSemantic(this, this._scope);
+                global.value.gag = oldgag;
+                if ((spec != null) && (global.value.errors != olderrs))
                 {
-                    spec.errors.value = global.errors.value - olderrs != 0;
+                    spec.errors = global.value.errors - olderrs != 0;
                 }
-                if ((olderrs != global.errors.value))
+                if ((olderrs != global.value.errors))
                 {
                     return false;
                 }
             }
-            this.namespace = (this._scope.value.get()).namespace;
-            if (this.inferRetType && (this.type.value != null) && (this.type.value.nextOf() == null))
+            this.namespace = (this._scope.get()).namespace;
+            if (this.inferRetType && (this.type != null) && (this.type.nextOf() == null))
             {
                 return this.functionSemantic3();
             }
             TemplateInstance ti = null;
-            if ((this.isInstantiated() != null) && !this.isVirtualMethod() && ((ti = this.parent.value.isTemplateInstance()) == null) || (ti.isTemplateMixin() != null) || (pequals(ti.tempdecl.value.ident.value, this.ident.value)))
+            if ((this.isInstantiated() != null) && !this.isVirtualMethod() && ((ti = this.parent.value.isTemplateInstance()) == null) || (ti.isTemplateMixin() != null) || (pequals(ti.tempdecl.ident, this.ident)))
             {
                 AggregateDeclaration ad = this.isMemberLocal();
-                if ((ad != null) && (ad.sizeok.value != Sizeok.done))
+                if ((ad != null) && (ad.sizeok != Sizeok.done))
                 {
                 }
                 else
                 {
-                    return this.functionSemantic3() || !this.errors.value;
+                    return this.functionSemantic3() || !this.errors;
                 }
             }
-            if ((this.storage_class.value & 70368744177664L) != 0)
+            if ((this.storage_class & 70368744177664L) != 0)
             {
-                return this.functionSemantic3() || !this.errors.value;
+                return this.functionSemantic3() || !this.errors;
             }
-            return !this.errors.value;
+            return !this.errors;
         }
 
         public  boolean functionSemantic3() {
-            if ((this.semanticRun.value < PASS.semantic3) && (this._scope.value != null))
+            if ((this.semanticRun < PASS.semantic3) && (this._scope != null))
             {
                 TemplateInstance spec = this.isSpeculative();
-                int olderrs = global.errors.value;
-                int oldgag = global.gag.value;
-                if ((global.gag.value != 0) && (spec == null))
+                int olderrs = global.value.errors;
+                int oldgag = global.value.gag;
+                if ((global.value.gag != 0) && (spec == null))
                 {
-                    global.gag.value = 0;
+                    global.value.gag = 0;
                 }
-                semantic3(this, this._scope.value);
-                global.gag.value = oldgag;
-                if ((spec != null) && (global.errors.value != olderrs))
+                semantic3(this, this._scope);
+                global.value.gag = oldgag;
+                if ((spec != null) && (global.value.errors != olderrs))
                 {
-                    spec.errors.value = global.errors.value - olderrs != 0;
+                    spec.errors = global.value.errors - olderrs != 0;
                 }
-                if ((olderrs != global.errors.value))
+                if ((olderrs != global.value.errors))
                 {
                     return false;
                 }
             }
-            return !this.errors.value && !this.semantic3Errors.value;
+            return !this.errors && !this.semantic3Errors;
         }
 
         public  boolean checkForwardRef(Loc loc) {
@@ -458,9 +454,9 @@ public class func {
             {
                 return true;
             }
-            if (this.type.value.deco.value == null)
+            if (this.type.deco == null)
             {
-                boolean inSemantic3 = this.inferRetType && (this.semanticRun.value >= PASS.semantic3);
+                boolean inSemantic3 = this.inferRetType && (this.semanticRun >= PASS.semantic3);
                 error(loc, new BytePtr("forward reference to %s`%s`"), inSemantic3 ? new BytePtr("inferred return type of function ") : new BytePtr(""), this.toChars());
                 return true;
             }
@@ -470,29 +466,29 @@ public class func {
         public  HiddenParameters declareThis(Ptr<Scope> sc, AggregateDeclaration ad) {
             if ((!pequals(this.toParent2(), this.toParentLocal())))
             {
-                Type tthis2 = Type.tvoidptr.value.sarrayOf(2L).pointerTo();
-                tthis2 = tthis2.addMod(this.type.value.mod.value).addStorageClass(this.storage_class.value);
-                VarDeclaration v2 = new VarDeclaration(this.loc.value, tthis2, Id.this2, null, 0L);
-                v2.storage_class.value |= 16777248L;
-                if (((this.type.value.ty.value & 0xFF) == ENUMTY.Tfunction))
+                Type tthis2 = Type.tvoidptr.sarrayOf(2L).pointerTo();
+                tthis2 = tthis2.addMod(this.type.mod).addStorageClass(this.storage_class);
+                VarDeclaration v2 = new VarDeclaration(this.loc, tthis2, Id.this2, null, 0L);
+                v2.storage_class |= 16777248L;
+                if (((this.type.ty & 0xFF) == ENUMTY.Tfunction))
                 {
-                    TypeFunction tf = (TypeFunction)this.type.value;
-                    if (tf.isreturn.value)
+                    TypeFunction tf = (TypeFunction)this.type;
+                    if (tf.isreturn)
                     {
-                        v2.storage_class.value |= 17592186044416L;
+                        v2.storage_class |= 17592186044416L;
                     }
-                    if (tf.isscope.value)
+                    if (tf.isscope)
                     {
-                        v2.storage_class.value |= 524288L;
+                        v2.storage_class |= 524288L;
                     }
-                    if (((tf.iswild.value & 0xFF) & 2) != 0)
+                    if (((tf.iswild & 0xFF) & 2) != 0)
                     {
-                        v2.storage_class.value |= 17592186044416L;
+                        v2.storage_class |= 17592186044416L;
                     }
                 }
-                if (((this.flags & FUNCFLAG.inferScope) != 0) && ((v2.storage_class.value & 524288L) == 0))
+                if (((this.flags & FUNCFLAG.inferScope) != 0) && ((v2.storage_class & 524288L) == 0))
                 {
-                    v2.storage_class.value |= 281474976710656L;
+                    v2.storage_class |= 281474976710656L;
                 }
                 dsymbolSemantic(v2, sc);
                 if ((sc.get()).insert(v2) == null)
@@ -506,33 +502,33 @@ public class func {
             {
                 Type thandle = ad.handleType();
                 assert(thandle != null);
-                thandle = thandle.addMod(this.type.value.mod.value);
-                thandle = thandle.addStorageClass(this.storage_class.value);
-                VarDeclaration v = new ThisDeclaration(this.loc.value, thandle);
-                v.storage_class.value |= 32L;
-                if (((thandle.ty.value & 0xFF) == ENUMTY.Tstruct))
+                thandle = thandle.addMod(this.type.mod);
+                thandle = thandle.addStorageClass(this.storage_class);
+                VarDeclaration v = new ThisDeclaration(this.loc, thandle);
+                v.storage_class |= 32L;
+                if (((thandle.ty & 0xFF) == ENUMTY.Tstruct))
                 {
-                    v.storage_class.value |= 2097152L;
-                    if (((this.type.value.ty.value & 0xFF) == ENUMTY.Tfunction) && (((((TypeFunction)this.type.value).iswild.value & 0xFF) & 2) != 0))
+                    v.storage_class |= 2097152L;
+                    if (((this.type.ty & 0xFF) == ENUMTY.Tfunction) && (((((TypeFunction)this.type).iswild & 0xFF) & 2) != 0))
                     {
-                        v.storage_class.value |= 17592186044416L;
+                        v.storage_class |= 17592186044416L;
                     }
                 }
-                if (((this.type.value.ty.value & 0xFF) == ENUMTY.Tfunction))
+                if (((this.type.ty & 0xFF) == ENUMTY.Tfunction))
                 {
-                    TypeFunction tf = (TypeFunction)this.type.value;
-                    if (tf.isreturn.value)
+                    TypeFunction tf = (TypeFunction)this.type;
+                    if (tf.isreturn)
                     {
-                        v.storage_class.value |= 17592186044416L;
+                        v.storage_class |= 17592186044416L;
                     }
-                    if (tf.isscope.value)
+                    if (tf.isscope)
                     {
-                        v.storage_class.value |= 524288L;
+                        v.storage_class |= 524288L;
                     }
                 }
-                if (((this.flags & FUNCFLAG.inferScope) != 0) && ((v.storage_class.value & 524288L) == 0))
+                if (((this.flags & FUNCFLAG.inferScope) != 0) && ((v.storage_class & 524288L) == 0))
                 {
-                    v.storage_class.value |= 281474976710656L;
+                    v.storage_class |= 281474976710656L;
                 }
                 dsymbolSemantic(v, sc);
                 if ((sc.get()).insert(v) == null)
@@ -544,23 +540,23 @@ public class func {
             }
             if (this.isNested())
             {
-                VarDeclaration v = new VarDeclaration(this.loc.value, Type.tvoid.value.pointerTo(), Id.capture, null, 0L);
-                v.storage_class.value |= 16777248L;
-                if (((this.type.value.ty.value & 0xFF) == ENUMTY.Tfunction))
+                VarDeclaration v = new VarDeclaration(this.loc, Type.tvoid.pointerTo(), Id.capture, null, 0L);
+                v.storage_class |= 16777248L;
+                if (((this.type.ty & 0xFF) == ENUMTY.Tfunction))
                 {
-                    TypeFunction tf = (TypeFunction)this.type.value;
-                    if (tf.isreturn.value)
+                    TypeFunction tf = (TypeFunction)this.type;
+                    if (tf.isreturn)
                     {
-                        v.storage_class.value |= 17592186044416L;
+                        v.storage_class |= 17592186044416L;
                     }
-                    if (tf.isscope.value)
+                    if (tf.isscope)
                     {
-                        v.storage_class.value |= 524288L;
+                        v.storage_class |= 524288L;
                     }
                 }
-                if (((this.flags & FUNCFLAG.inferScope) != 0) && ((v.storage_class.value & 524288L) == 0))
+                if (((this.flags & FUNCFLAG.inferScope) != 0) && ((v.storage_class & 524288L) == 0))
                 {
-                    v.storage_class.value |= 281474976710656L;
+                    v.storage_class |= 281474976710656L;
                 }
                 dsymbolSemantic(v, sc);
                 if ((sc.get()).insert(v) == null)
@@ -610,7 +606,7 @@ public class func {
                     {
                         return false;
                     }
-                    return faf1.toParent().equals(faf2.toParent()) && faf1.ident.value.equals(faf2.ident.value) && faf1.type.value.equals(faf2.type.value);
+                    return faf1.toParent().equals(faf2.toParent()) && faf1.ident.equals(faf2.ident) && faf1.type.equals(faf2.type);
                 }
             }
             return false;
@@ -618,9 +614,9 @@ public class func {
 
         public  int overrides(FuncDeclaration fd) {
             int result = 0;
-            if ((pequals(fd.ident.value, this.ident.value)))
+            if ((pequals(fd.ident, this.ident)))
             {
-                int cov = this.type.value.covariant(fd.type.value, null, true);
+                int cov = this.type.covariant(fd.type, null, true);
                 if (cov != 0)
                 {
                     ClassDeclaration cd1 = this.toParent().isClassDeclaration();
@@ -644,9 +640,9 @@ public class func {
                 int vi = 0;
                 for (; (vi < dim);vi++){
                     FuncDeclaration fdv = (vtbl.get()).get(vi).isFuncDeclaration();
-                    if ((fdv != null) && (pequals(fdv.ident.value, this.ident.value)))
+                    if ((fdv != null) && (pequals(fdv.ident, this.ident)))
                     {
-                        if (this.type.value.equals(fdv.type.value))
+                        if (this.type.equals(fdv.type))
                         {
                             if (fdv.parent.value.isClassDeclaration() != null)
                             {
@@ -667,7 +663,7 @@ public class func {
                             continue;
                         }
                         Ref<Long> stc = ref(0L);
-                        int cov = this.type.value.covariant(fdv.type.value, ptr(stc), fix17349);
+                        int cov = this.type.covariant(fdv.type, ptr(stc), fix17349);
                         switch (cov)
                         {
                             case 0:
@@ -692,7 +688,7 @@ public class func {
             {
                 if (mismatchstc != 0)
                 {
-                    this.type.value = this.type.value.addStorageClass(mismatchstc);
+                    this.type = this.type.addStorageClass(mismatchstc);
                     bestvi = mismatchvi;
                 }
             }
@@ -710,11 +706,11 @@ public class func {
                 if ((cd) != null)
                 {
                     {
-                        Slice<Ptr<BaseClass>> __r1388 = cd.interfaces.value.copy();
-                        int __key1389 = 0;
-                        for (; (__key1389 < __r1388.getLength());__key1389 += 1) {
-                            Ptr<BaseClass> b = __r1388.get(__key1389);
-                            int v = this.findVtblIndex(ptr((b.get()).sym.value.vtbl), (b.get()).sym.value.vtbl.value.length.value, true);
+                        Slice<Ptr<BaseClass>> __r1384 = cd.interfaces.copy();
+                        int __key1385 = 0;
+                        for (; (__key1385 < __r1384.getLength());__key1385 += 1) {
+                            Ptr<BaseClass> b = __r1384.get(__key1385);
+                            int v = this.findVtblIndex(ptr((b.get()).sym.vtbl), (b.get()).sym.vtbl.value.length, true);
                             if ((v >= 0))
                             {
                                 return b;
@@ -735,7 +731,7 @@ public class func {
                 {
                     return this.overnext.overloadInsert(ad);
                 }
-                if ((ad.aliassym.value == null) && ((ad.type.value.ty.value & 0xFF) != ENUMTY.Tident) && ((ad.type.value.ty.value & 0xFF) != ENUMTY.Tinstance) && ((ad.type.value.ty.value & 0xFF) != ENUMTY.Ttypeof))
+                if ((ad.aliassym == null) && ((ad.type.ty & 0xFF) != ENUMTY.Tident) && ((ad.type.ty & 0xFF) != ENUMTY.Tinstance) && ((ad.type.ty & 0xFF) != ENUMTY.Ttypeof))
                 {
                     return false;
                 }
@@ -786,14 +782,14 @@ public class func {
                     {
                         return 0;
                     }
-                    if (t.equals(f.type.value))
+                    if (t.equals(f.type))
                     {
                         fd = f;
                         return 1;
                     }
-                    if (((t.ty.value & 0xFF) == ENUMTY.Tfunction))
+                    if (((t.ty & 0xFF) == ENUMTY.Tfunction))
                     {
-                        TypeFunction tf = (TypeFunction)f.type.value;
+                        TypeFunction tf = (TypeFunction)f.type;
                         if ((tf.covariant(t, null, true) == 1) && (tf.nextOf().implicitConvTo(t.nextOf()) >= MATCH.constant))
                         {
                             fd = f;
@@ -812,17 +808,17 @@ public class func {
             Function1<Dsymbol,Integer> __lambda4 = new Function1<Dsymbol,Integer>(){
                 public Integer invoke(Dsymbol s) {
                     FuncDeclaration f = s.isFuncDeclaration();
-                    if ((f == null) || (pequals(f, m.lastf.value)))
+                    if ((f == null) || (pequals(f, m.lastf)))
                     {
                         return 0;
                     }
-                    TypeFunction tf = f.type.value.toTypeFunction();
+                    TypeFunction tf = f.type.toTypeFunction();
                     int match = MATCH.nomatch;
                     if (tthis != null)
                     {
                         if (f.needThis())
                         {
-                            match = f.isCtorDeclaration() != null ? MATCH.exact : MODmethodConv(tthis.mod.value, tf.mod.value);
+                            match = f.isCtorDeclaration() != null ? MATCH.exact : MODmethodConv(tthis.mod, tf.mod);
                         }
                         else
                         {
@@ -846,66 +842,66 @@ public class func {
                     }
                     try {
                         try {
-                            if ((match > m.last.value))
+                            if ((match > m.last))
                             {
                                 /*goto LcurrIsBetter*/throw Dispatch1.INSTANCE;
                             }
-                            if ((match < m.last.value))
+                            if ((match < m.last))
                             {
                                 /*goto LlastIsBetter*/throw Dispatch0.INSTANCE;
                             }
-                            if (m.lastf.value.overrides(f) != 0)
+                            if (m.lastf.overrides(f) != 0)
                             {
                                 /*goto LlastIsBetter*/throw Dispatch0.INSTANCE;
                             }
-                            if (f.overrides(m.lastf.value) != 0)
+                            if (f.overrides(m.lastf) != 0)
                             {
                                 /*goto LcurrIsBetter*/throw Dispatch1.INSTANCE;
                             }
-                            m.nextf.value = f;
-                            m.count.value++;
+                            m.nextf = f;
+                            m.count++;
                             return 0;
                         }
                         catch(Dispatch0 __d){}
                     /*LlastIsBetter:*/
-                        m.count.value++;
+                        m.count++;
                         return 0;
                     }
                     catch(Dispatch1 __d){}
                 /*LcurrIsBetter:*/
-                    if ((m.last.value <= MATCH.convert))
+                    if ((m.last <= MATCH.convert))
                     {
-                        m.nextf.value = null;
-                        m.count.value = 0;
+                        m.nextf = null;
+                        m.count = 0;
                     }
-                    m.last.value = match;
-                    m.lastf.value = f;
-                    m.count.value++;
+                    m.last = match;
+                    m.lastf = f;
+                    m.count++;
                     return 0;
                 }
             };
             overloadApply(this, __lambda4, null);
-            if ((m.count.value == 1))
+            if ((m.count == 1))
             {
                 hasOverloads.value = false;
             }
-            else if ((m.count.value > 1))
+            else if ((m.count > 1))
             {
                 hasOverloads.value = true;
             }
             else
             {
                 hasOverloads.value = true;
-                TypeFunction tf = this.type.value.toTypeFunction();
+                TypeFunction tf = this.type.toTypeFunction();
                 assert(tthis != null);
-                assert(!MODimplicitConv(tthis.mod.value, tf.mod.value));
+                assert(!MODimplicitConv(tthis.mod, tf.mod));
                 {
                     Ref<OutBuffer> thisBuf = ref(new OutBuffer());
                     try {
                         Ref<OutBuffer> funcBuf = ref(new OutBuffer());
                         try {
-                            MODMatchToBuffer(ptr(thisBuf), tthis.mod.value, tf.mod.value);
-                            MODMatchToBuffer(ptr(funcBuf), tf.mod.value, tthis.mod.value);
+                            MODMatchToBuffer(ptr(thisBuf), tthis.mod, tf.mod);
+                            MODMatchToBuffer(ptr(funcBuf), tf.mod, tthis.mod);
                             error(loc, new BytePtr("%smethod %s is not callable using a %sobject"), funcBuf.value.peekChars(), this.toPrettyChars(false), thisBuf.value.peekChars());
                         }
                         finally {
@@ -915,7 +911,7 @@ public class func {
                     }
                 }
             }
-            return m.lastf.value;
+            return m.lastf;
         }
 
         public  TemplateDeclaration findTemplateDeclRoot() {
@@ -947,21 +943,21 @@ public class func {
 
         public  int leastAsSpecialized(FuncDeclaration g) {
             int LOG_LEASTAS = 0;
-            TypeFunction tf = this.type.value.toTypeFunction();
-            TypeFunction tg = g.type.value.toTypeFunction();
+            TypeFunction tf = this.type.toTypeFunction();
+            TypeFunction tg = g.type.toTypeFunction();
             int nfparams = tf.parameterList.length();
-            if (this.needThis() && g.needThis() && ((tf.mod.value & 0xFF) != (tg.mod.value & 0xFF)))
+            if (this.needThis() && g.needThis() && ((tf.mod & 0xFF) != (tg.mod & 0xFF)))
             {
                 if (this.isCtorDeclaration() != null)
                 {
-                    if (!MODimplicitConv(tg.mod.value, tf.mod.value))
+                    if (!MODimplicitConv(tg.mod, tf.mod))
                     {
                         return MATCH.nomatch;
                     }
                 }
                 else
                 {
-                    if (!MODimplicitConv(tf.mod.value, tg.mod.value))
+                    if (!MODimplicitConv(tf.mod, tg.mod))
                     {
                         return MATCH.nomatch;
                     }
@@ -974,14 +970,14 @@ public class func {
                     for (; (u < nfparams);u++){
                         Parameter p = tf.parameterList.get(u);
                         Expression e = null;
-                        if ((p.storageClass.value & 2101248L) != 0)
+                        if ((p.storageClass & 2101248L) != 0)
                         {
-                            e = new IdentifierExp(Loc.initial.value, p.ident.value);
-                            e.type.value = p.type.value;
+                            e = new IdentifierExp(Loc.initial, p.ident);
+                            e.type.value = p.type;
                         }
                         else
                         {
-                            e = p.type.value.defaultInitLiteral(Loc.initial.value);
+                            e = p.type.defaultInitLiteral(Loc.initial);
                         }
                         args.set(u, e);
                     }
@@ -990,7 +986,7 @@ public class func {
                 try {
                     if ((m > MATCH.nomatch))
                     {
-                        if ((tf.parameterList.varargs.value != 0) && (tg.parameterList.varargs.value == 0))
+                        if ((tf.parameterList.varargs != 0) && (tg.parameterList.varargs == 0))
                         {
                             /*goto L1*/throw Dispatch0.INSTANCE;
                         }
@@ -1033,7 +1029,7 @@ public class func {
                     FuncDeclaration thisfd = s.isFuncDeclaration();
                     if ((thisfd) != null)
                     {
-                        if (!thisfd.isNested() && (thisfd.vthis.value == null) && (intypeof == 0))
+                        if (!thisfd.isNested() && (thisfd.vthis == null) && (intypeof == 0))
                         {
                             return -2;
                         }
@@ -1064,12 +1060,12 @@ public class func {
         }
 
         public  int getLevelAndCheck(Loc loc, Ptr<Scope> sc, FuncDeclaration fd) {
-            int level = this.getLevel(fd, (sc.get()).intypeof.value);
+            int level = this.getLevel(fd, (sc.get()).intypeof);
             if ((level != -2))
             {
                 return level;
             }
-            if (((sc.get()).flags.value & 16) == 0)
+            if (((sc.get()).flags & 16) == 0)
             {
                 BytePtr xstatic = pcopy(this.isStatic() ? new BytePtr("static ") : new BytePtr(""));
                 error(loc, new BytePtr("%s%s %s cannot access frame of function %s"), xstatic, this.kind(), this.toPrettyChars(false), fd.toPrettyChars(false));
@@ -1098,7 +1094,7 @@ public class func {
         public  BytePtr toFullSignature() {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
-                functionToBufferWithIdent(this.type.value.toTypeFunction(), ptr(buf), this.toChars());
+                functionToBufferWithIdent(this.type.toTypeFunction(), ptr(buf), this.toChars());
                 return buf.value.extractChars();
             }
             finally {
@@ -1106,31 +1102,31 @@ public class func {
         }
 
         public  boolean isMain() {
-            return (pequals(this.ident.value, Id.main)) && (this.linkage.value != LINK.c) && (this.isMember() == null) && !this.isNested();
+            return (pequals(this.ident, Id.main)) && (this.linkage != LINK.c) && (this.isMember() == null) && !this.isNested();
         }
 
         public  boolean isCMain() {
-            return (pequals(this.ident.value, Id.main)) && (this.linkage.value == LINK.c) && (this.isMember() == null) && !this.isNested();
+            return (pequals(this.ident, Id.main)) && (this.linkage == LINK.c) && (this.isMember() == null) && !this.isNested();
         }
 
         public  boolean isWinMain() {
-            return (pequals(this.ident.value, Id.WinMain)) && (this.linkage.value != LINK.c) && (this.isMember() == null);
+            return (pequals(this.ident, Id.WinMain)) && (this.linkage != LINK.c) && (this.isMember() == null);
         }
 
         public  boolean isDllMain() {
-            return (pequals(this.ident.value, Id.DllMain)) && (this.linkage.value != LINK.c) && (this.isMember() == null);
+            return (pequals(this.ident, Id.DllMain)) && (this.linkage != LINK.c) && (this.isMember() == null);
         }
 
         public  boolean isRtInit() {
-            return (pequals(this.ident.value, Id.rt_init)) && (this.linkage.value == LINK.c) && (this.isMember() == null) && !this.isNested();
+            return (pequals(this.ident, Id.rt_init)) && (this.linkage == LINK.c) && (this.isMember() == null) && !this.isNested();
         }
 
         public  boolean isExport() {
-            return this.protection.kind.value == Prot.Kind.export_;
+            return this.protection.kind == Prot.Kind.export_;
         }
 
         public  boolean isImportedSymbol() {
-            return (this.protection.kind.value == Prot.Kind.export_) && (this.fbody.value == null);
+            return (this.protection.kind == Prot.Kind.export_) && (this.fbody == null);
         }
 
         public  boolean isCodeseg() {
@@ -1142,21 +1138,21 @@ public class func {
         }
 
         public  boolean isAbstract() {
-            if ((this.storage_class.value & 16L) != 0)
+            if ((this.storage_class & 16L) != 0)
             {
                 return true;
             }
-            if ((this.semanticRun.value >= PASS.semanticdone))
+            if ((this.semanticRun >= PASS.semanticdone))
             {
                 return false;
             }
-            if (this._scope.value != null)
+            if (this._scope != null)
             {
-                if (((this._scope.value.get()).stc.value & 16L) != 0)
+                if (((this._scope.get()).stc & 16L) != 0)
                 {
                     return true;
                 }
-                this.parent.value = (this._scope.value.get()).parent.value;
+                this.parent.value = (this._scope.get()).parent.value;
                 Dsymbol parent = this.toParent();
                 if (parent.isInterfaceDeclaration() != null)
                 {
@@ -1167,7 +1163,7 @@ public class func {
         }
 
         public  boolean canInferAttributes(Ptr<Scope> sc) {
-            if (this.fbody.value == null)
+            if (this.fbody == null)
             {
                 return false;
             }
@@ -1175,18 +1171,18 @@ public class func {
             {
                 return false;
             }
-            if (((sc.get()).func.value != null) && (this.isMember() == null) || (sc.get()).func.value.isSafeBypassingInference() && (this.isInstantiated() == null))
+            if (((sc.get()).func != null) && (this.isMember() == null) || (sc.get()).func.isSafeBypassingInference() && (this.isInstantiated() == null))
             {
                 return true;
             }
-            if ((this.isFuncLiteralDeclaration() != null) || ((this.storage_class.value & 70368744177664L) != 0) || this.inferRetType && (this.isCtorDeclaration() == null))
+            if ((this.isFuncLiteralDeclaration() != null) || ((this.storage_class & 70368744177664L) != 0) || this.inferRetType && (this.isCtorDeclaration() == null))
             {
                 return true;
             }
             if (this.isInstantiated() != null)
             {
                 TemplateInstance ti = this.parent.value.isTemplateInstance();
-                if ((ti == null) || (ti.isTemplateMixin() != null) || (pequals(ti.tempdecl.value.ident.value, this.ident.value)))
+                if ((ti == null) || (ti.isTemplateMixin() != null) || (pequals(ti.tempdecl.ident, this.ident)))
                 {
                     return true;
                 }
@@ -1195,20 +1191,20 @@ public class func {
         }
 
         public  void initInferAttributes() {
-            TypeFunction tf = this.type.value.toTypeFunction();
-            if ((tf.purity.value == PURE.impure))
+            TypeFunction tf = this.type.toTypeFunction();
+            if ((tf.purity == PURE.impure))
             {
                 this.flags |= FUNCFLAG.purityInprocess;
             }
-            if ((tf.trust.value == TRUST.default_))
+            if ((tf.trust == TRUST.default_))
             {
                 this.flags |= FUNCFLAG.safetyInprocess;
             }
-            if (!tf.isnothrow.value)
+            if (!tf.isnothrow)
             {
                 this.flags |= FUNCFLAG.nothrowInprocess;
             }
-            if (!tf.isnogc.value)
+            if (!tf.isnogc)
             {
                 this.flags |= FUNCFLAG.nogcInprocess;
             }
@@ -1216,33 +1212,33 @@ public class func {
             {
                 this.flags |= FUNCFLAG.returnInprocess;
             }
-            if (global.params.vsafe.value)
+            if (global.value.params.vsafe)
             {
                 this.flags |= FUNCFLAG.inferScope;
             }
         }
 
         public  int isPure() {
-            TypeFunction tf = this.type.value.toTypeFunction();
+            TypeFunction tf = this.type.toTypeFunction();
             if ((this.flags & FUNCFLAG.purityInprocess) != 0)
             {
                 this.setImpure();
             }
-            if ((tf.purity.value == PURE.fwdref))
+            if ((tf.purity == PURE.fwdref))
             {
                 tf.purityLevel();
             }
-            int purity = tf.purity.value;
+            int purity = tf.purity;
             if ((purity > PURE.weak) && this.isNested())
             {
                 purity = PURE.weak;
             }
             if ((purity > PURE.weak) && this.needThis())
             {
-                if (((this.type.value.mod.value & 0xFF) & MODFlags.immutable_) != 0)
+                if (((this.type.mod & 0xFF) & MODFlags.immutable_) != 0)
                 {
                 }
-                else if ((((this.type.value.mod.value & 0xFF) & MODFlags.wildconst) != 0) && (purity >= PURE.const_))
+                else if ((((this.type.mod & 0xFF) & MODFlags.wildconst) != 0) && (purity >= PURE.const_))
                 {
                     purity = PURE.const_;
                 }
@@ -1251,7 +1247,7 @@ public class func {
                     purity = PURE.weak;
                 }
             }
-            tf.purity.value = purity;
+            tf.purity = purity;
             return purity;
         }
 
@@ -1270,9 +1266,9 @@ public class func {
             if ((this.flags & FUNCFLAG.purityInprocess) != 0)
             {
                 this.flags &= -2;
-                if (this.fes.value != null)
+                if (this.fes != null)
                 {
-                    this.fes.value.func.value.setImpure();
+                    this.fes.func.setImpure();
                 }
             }
             else if (this.isPure() != 0)
@@ -1287,7 +1283,7 @@ public class func {
             {
                 this.setUnsafe();
             }
-            return this.type.value.toTypeFunction().trust.value == TRUST.safe;
+            return this.type.toTypeFunction().trust == TRUST.safe;
         }
 
         public  boolean isSafeBypassingInference() {
@@ -1299,17 +1295,17 @@ public class func {
             {
                 this.setUnsafe();
             }
-            return this.type.value.toTypeFunction().trust.value == TRUST.trusted;
+            return this.type.toTypeFunction().trust == TRUST.trusted;
         }
 
         public  boolean setUnsafe() {
             if ((this.flags & FUNCFLAG.safetyInprocess) != 0)
             {
                 this.flags &= -3;
-                this.type.value.toTypeFunction().trust.value = TRUST.system;
-                if (this.fes.value != null)
+                this.type.toTypeFunction().trust = TRUST.system;
+                if (this.fes != null)
                 {
-                    this.fes.value.func.value.setUnsafe();
+                    this.fes.func.setUnsafe();
                 }
             }
             else if (this.isSafe())
@@ -1324,7 +1320,7 @@ public class func {
             {
                 this.setGC();
             }
-            return this.type.value.toTypeFunction().isnogc.value;
+            return this.type.toTypeFunction().isnogc;
         }
 
         public  boolean isNogcBypassingInference() {
@@ -1332,18 +1328,18 @@ public class func {
         }
 
         public  boolean setGC() {
-            if (((this.flags & FUNCFLAG.nogcInprocess) != 0) && (this.semanticRun.value < PASS.semantic3) && (this._scope.value != null))
+            if (((this.flags & FUNCFLAG.nogcInprocess) != 0) && (this.semanticRun < PASS.semantic3) && (this._scope != null))
             {
-                semantic2(this, this._scope.value);
-                semantic3(this, this._scope.value);
+                semantic2(this, this._scope);
+                semantic3(this, this._scope);
             }
             if ((this.flags & FUNCFLAG.nogcInprocess) != 0)
             {
                 this.flags &= -9;
-                this.type.value.toTypeFunction().isnogc.value = false;
-                if (this.fes.value != null)
+                this.type.toTypeFunction().isnogc = false;
+                if (this.fes != null)
                 {
-                    this.fes.value.func.value.setGC();
+                    this.fes.func.setGC();
                 }
             }
             else if (this.isNogc())
@@ -1354,7 +1350,7 @@ public class func {
         }
 
         public  void printGCUsage(Loc loc, BytePtr warn) {
-            if (!global.params.vgc)
+            if (!global.value.params.vgc)
             {
                 return ;
             }
@@ -1366,10 +1362,10 @@ public class func {
         }
 
         public  boolean isReturnIsolated() {
-            TypeFunction tf = this.type.value.toTypeFunction();
+            TypeFunction tf = this.type.toTypeFunction();
             assert(tf.next.value != null);
             Type treti = tf.next.value;
-            if (tf.isref.value)
+            if (tf.isref)
             {
                 return this.isTypeIsolatedIndirect(treti);
             }
@@ -1378,7 +1374,7 @@ public class func {
 
         public  boolean isTypeIsolated(Type t) {
             t = t.baseElemOf();
-            switch ((t.ty.value & 0xFF))
+            switch ((t.ty & 0xFF))
             {
                 case 0:
                 case 3:
@@ -1389,11 +1385,11 @@ public class func {
                 case 8:
                     StructDeclaration sym = t.toDsymbol(null).isStructDeclaration();
                     {
-                        Slice<VarDeclaration> __r1393 = sym.fields.opSlice().copy();
-                        int __key1394 = 0;
-                        for (; (__key1394 < __r1393.getLength());__key1394 += 1) {
-                            VarDeclaration v = __r1393.get(__key1394);
-                            Type tmi = v.type.value.addMod(t.mod.value);
+                        Slice<VarDeclaration> __r1389 = sym.fields.opSlice().copy();
+                        int __key1390 = 0;
+                        for (; (__key1390 < __r1389.getLength());__key1390 += 1) {
+                            VarDeclaration v = __r1389.get(__key1390);
+                            Type tmi = v.type.addMod(t.mod);
                             if (!this.isTypeIsolated(tmi))
                             {
                                 return false;
@@ -1412,18 +1408,18 @@ public class func {
             {
                 return false;
             }
-            TypeFunction tf = this.type.value.toTypeFunction();
+            TypeFunction tf = this.type.toTypeFunction();
             int dim = tf.parameterList.length();
             {
                 int i = 0;
                 for (; (i < dim);i++){
                     Parameter fparam = tf.parameterList.get(i);
-                    Type tp = fparam.type.value;
+                    Type tp = fparam.type;
                     if (tp == null)
                     {
                         continue;
                     }
-                    if ((fparam.storageClass.value & 2109440L) != 0)
+                    if ((fparam.storageClass & 2109440L) != 0)
                     {
                         if (!traverseIndirections(tp, t))
                         {
@@ -1433,26 +1429,24 @@ public class func {
                     }
                     Function2<Type,Type,Boolean> traverse = new Function2<Type,Type,Boolean>(){
                         public Boolean invoke(Type tp, Type t) {
-                            Ref<Type> tp_ref = ref(tp);
-                            Ref<Type> t_ref = ref(t);
-                            tp_ref.value = tp_ref.value.baseElemOf();
-                            switch ((tp_ref.value.ty.value & 0xFF))
+                            tp = tp.baseElemOf();
+                            switch ((tp.ty & 0xFF))
                             {
                                 case 0:
                                 case 3:
-                                    return traverseIndirections(tp_ref.value.nextOf(), t_ref.value);
+                                    return traverseIndirections(tp.nextOf(), t);
                                 case 2:
                                 case 7:
-                                    return traverseIndirections(tp_ref.value, t_ref.value);
+                                    return traverseIndirections(tp, t);
                                 case 8:
-                                    StructDeclaration sym = tp_ref.value.toDsymbol(null).isStructDeclaration();
+                                    StructDeclaration sym = tp.toDsymbol(null).isStructDeclaration();
                                     {
-                                        Ref<Slice<VarDeclaration>> __r1395 = ref(sym.fields.opSlice().copy());
-                                        IntRef __key1396 = ref(0);
-                                        for (; (__key1396.value < __r1395.value.getLength());__key1396.value += 1) {
-                                            VarDeclaration v = __r1395.value.get(__key1396.value);
-                                            Ref<Type> tprmi = ref(v.type.value.addMod(tp_ref.value.mod.value));
-                                            if (!traverse.invoke(tprmi.value, t_ref.value))
+                                        Slice<VarDeclaration> __r1391 = sym.fields.opSlice().copy();
+                                        int __key1392 = 0;
+                                        for (; (__key1392 < __r1391.getLength());__key1392 += 1) {
+                                            VarDeclaration v = __r1391.get(__key1392);
+                                            Type tprmi = v.type.addMod(tp.mod);
+                                            if (!traverse.invoke(tprmi, t))
                                             {
                                                 return false;
                                             }
@@ -1474,7 +1468,7 @@ public class func {
                 AggregateDeclaration ad = this.isCtorDeclaration() != null ? null : this.isThis();
                 if ((ad) != null)
                 {
-                    Type tthis = ad.getType().addMod(tf.mod.value);
+                    Type tthis = ad.getType().addMod(tf.mod);
                     if (!traverseIndirections(tthis, t))
                     {
                         return false;
@@ -1486,11 +1480,11 @@ public class func {
 
         public  boolean isNested() {
             FuncDeclaration f = this.toAliasFunc();
-            return ((f.storage_class.value & 1L) == 0L) && (f.linkage.value == LINK.d) && (f.toParent2().isFuncDeclaration() != null) || (f.toParent2() != f.toParentLocal());
+            return ((f.storage_class & 1L) == 0L) && (f.linkage == LINK.d) && (f.toParent2().isFuncDeclaration() != null) || (f.toParent2() != f.toParentLocal());
         }
 
         public  AggregateDeclaration isThis() {
-            AggregateDeclaration ad = (this.storage_class.value & 1L) != 0 ? objc().isThis(this) : this.isMemberLocal();
+            AggregateDeclaration ad = (this.storage_class & 1L) != 0 ? objc().isThis(this) : this.isMemberLocal();
             return ad;
         }
 
@@ -1507,7 +1501,7 @@ public class func {
             {
                 return false;
             }
-            if (this.isFinalFunc() && (this.foverrides.length.value == 0))
+            if (this.isFinalFunc() && (this.foverrides.length == 0))
             {
                 return false;
             }
@@ -1524,11 +1518,11 @@ public class func {
             {
                 return false;
             }
-            if ((p.isClassDeclaration().classKind.value == ClassKind.objc) && (p.isInterfaceDeclaration() == null))
+            if ((p.isClassDeclaration().classKind == ClassKind.objc) && (p.isInterfaceDeclaration() == null))
             {
                 return objc().isVirtual(this);
             }
-            return !(this.isStatic() || (this.protection.kind.value == Prot.Kind.private_) || (this.protection.kind.value == Prot.Kind.package_)) && !((p.isInterfaceDeclaration() != null) && this.isFinalFunc());
+            return !(this.isStatic() || (this.protection.kind == Prot.Kind.private_) || (this.protection.kind == Prot.Kind.package_)) && !((p.isInterfaceDeclaration() != null) && this.isFinalFunc());
         }
 
         public  boolean isFinalFunc() {
@@ -1551,13 +1545,13 @@ public class func {
         public  boolean addPreInvariant() {
             AggregateDeclaration ad = this.isThis();
             ClassDeclaration cd = ad != null ? ad.isClassDeclaration() : null;
-            return (ad != null) && !((cd != null) && cd.isCPPclass()) && ((global.params.useInvariants & 0xFF) == 2) && (this.protection.kind.value == Prot.Kind.protected_) || (this.protection.kind.value == Prot.Kind.public_) || (this.protection.kind.value == Prot.Kind.export_) && !this.naked;
+            return (ad != null) && !((cd != null) && cd.isCPPclass()) && ((global.value.params.useInvariants & 0xFF) == 2) && (this.protection.kind == Prot.Kind.protected_) || (this.protection.kind == Prot.Kind.public_) || (this.protection.kind == Prot.Kind.export_) && !this.naked;
         }
 
         public  boolean addPostInvariant() {
             AggregateDeclaration ad = this.isThis();
             ClassDeclaration cd = ad != null ? ad.isClassDeclaration() : null;
-            return (ad != null) && !((cd != null) && cd.isCPPclass()) && (ad.inv != null) && ((global.params.useInvariants & 0xFF) == 2) && (this.protection.kind.value == Prot.Kind.protected_) || (this.protection.kind.value == Prot.Kind.public_) || (this.protection.kind.value == Prot.Kind.export_) && !this.naked;
+            return (ad != null) && !((cd != null) && cd.isCPPclass()) && (ad.inv != null) && ((global.value.params.useInvariants & 0xFF) == 2) && (this.protection.kind == Prot.Kind.protected_) || (this.protection.kind == Prot.Kind.public_) || (this.protection.kind == Prot.Kind.export_) && !this.naked;
         }
 
         public  BytePtr kind() {
@@ -1590,23 +1584,22 @@ public class func {
         }
 
         public  boolean checkNestedReference(Ptr<Scope> sc, Loc loc) {
-            Ref<Ptr<Scope>> sc_ref = ref(sc);
             {
                 FuncLiteralDeclaration fld = this.isFuncLiteralDeclaration();
                 if ((fld) != null)
                 {
-                    if (((fld.tok.value & 0xFF) == 0))
+                    if (((fld.tok & 0xFF) == 0))
                     {
-                        fld.tok.value = TOK.function_;
-                        fld.vthis.value = null;
+                        fld.tok = TOK.function_;
+                        fld.vthis = null;
                     }
                 }
             }
-            if ((this.parent.value == null) || (pequals(this.parent.value, (sc_ref.value.get()).parent.value)))
+            if ((this.parent.value == null) || (pequals(this.parent.value, (sc.get()).parent.value)))
             {
                 return false;
             }
-            if ((pequals(this.ident.value, Id.require)) || (pequals(this.ident.value, Id.ensure)))
+            if ((pequals(this.ident, Id.require)) || (pequals(this.ident, Id.ensure)))
             {
                 return false;
             }
@@ -1614,61 +1607,60 @@ public class func {
             {
                 return false;
             }
-            Ref<FuncDeclaration> fdthis = ref((sc_ref.value.get()).parent.value.isFuncDeclaration());
-            if (fdthis.value == null)
+            FuncDeclaration fdthis = (sc.get()).parent.value.isFuncDeclaration();
+            if (fdthis == null)
             {
                 return false;
             }
             Dsymbol p = this.toParentLocal();
             Dsymbol p2 = this.toParent2();
-            ensureStaticLinkTo(fdthis.value, p);
+            ensureStaticLinkTo(fdthis, p);
             if ((!pequals(p, p2)))
             {
-                ensureStaticLinkTo(fdthis.value, p2);
+                ensureStaticLinkTo(fdthis, p2);
             }
             if (this.isNested())
             {
                 Function1<FuncDeclaration,Boolean> checkEnclosing = new Function1<FuncDeclaration,Boolean>(){
                     public Boolean invoke(FuncDeclaration fdv) {
-                        Ref<FuncDeclaration> fdv_ref = ref(fdv);
-                        if (fdv_ref.value == null)
+                        if (fdv == null)
                         {
                             return false;
                         }
-                        if ((pequals(fdv_ref.value, fdthis.value)))
+                        if ((pequals(fdv, fdthis)))
                         {
                             return false;
                         }
-                        if ((!pequals(fdthis.value, this)))
+                        if ((!pequals(fdthis, this)))
                         {
-                            Ref<Boolean> found = ref(false);
+                            boolean found = false;
                             {
-                                IntRef i = ref(0);
-                                for (; (i.value < siblingCallers.length.value);i.value += 1){
-                                    if ((pequals(siblingCallers.get(i.value), fdthis.value)))
+                                int i = 0;
+                                for (; (i < siblingCallers.length);i += 1){
+                                    if ((pequals(siblingCallers.get(i), fdthis)))
                                     {
-                                        found.value = true;
+                                        found = true;
                                     }
                                 }
                             }
-                            if (!found.value)
+                            if (!found)
                             {
-                                if (((sc_ref.value.get()).intypeof.value == 0) && (((sc_ref.value.get()).flags.value & 256) == 0))
+                                if (((sc.get()).intypeof == 0) && (((sc.get()).flags & 256) == 0))
                                 {
-                                    siblingCallers.push(fdthis.value);
+                                    siblingCallers.push(fdthis);
                                 }
                             }
                         }
-                        IntRef lv = ref(fdthis.value.getLevelAndCheck(loc, sc_ref.value, fdv_ref.value));
-                        if ((lv.value == -2))
+                        int lv = fdthis.getLevelAndCheck(loc, sc, fdv);
+                        if ((lv == -2))
                         {
                             return true;
                         }
-                        if ((lv.value == -1))
+                        if ((lv == -1))
                         {
                             return false;
                         }
-                        if ((lv.value == 0))
+                        if ((lv == 0))
                         {
                             return false;
                         }
@@ -1695,11 +1687,11 @@ public class func {
                 }
                 {
                     int i = 0;
-                    for (; (i < this.closureVars.length.value);i++){
+                    for (; (i < this.closureVars.length);i++){
                         VarDeclaration v = this.closureVars.get(i);
                         {
                             int j = 0;
-                            for (; (j < v.nestedrefs.length.value);j++){
+                            for (; (j < v.nestedrefs.length);j++){
                                 FuncDeclaration f = v.nestedrefs.get(j);
                                 assert((!pequals(f, this)));
                                 {
@@ -1710,7 +1702,7 @@ public class func {
                                         {
                                             continue;
                                         }
-                                        if ((fx.isThis() != null) || (fx.tookAddressOf.value != 0))
+                                        if ((fx.isThis() != null) || (fx.tookAddressOf != 0))
                                         {
                                             markAsNeedingClosure((pequals(fx, f)) ? toParentPFuncDeclaration(fx, this) : fx, this);
                                             this.requiresClosure = true;
@@ -1744,28 +1736,28 @@ public class func {
             if (this.setGC())
             {
                 this.error(new BytePtr("is `@nogc` yet allocates closures with the GC"));
-                if (global.gag.value != 0)
+                if (global.value.gag != 0)
                 {
                     return true;
                 }
             }
             else
             {
-                this.printGCUsage(this.loc.value, new BytePtr("using closure causes GC allocation"));
+                this.printGCUsage(this.loc, new BytePtr("using closure causes GC allocation"));
                 return false;
             }
             DArray<FuncDeclaration> a = new DArray<FuncDeclaration>();
             try {
                 {
-                    Slice<VarDeclaration> __r1397 = this.closureVars.opSlice().copy();
-                    int __key1398 = 0;
-                    for (; (__key1398 < __r1397.getLength());__key1398 += 1) {
-                        VarDeclaration v = __r1397.get(__key1398);
+                    Slice<VarDeclaration> __r1393 = this.closureVars.opSlice().copy();
+                    int __key1394 = 0;
+                    for (; (__key1394 < __r1393.getLength());__key1394 += 1) {
+                        VarDeclaration v = __r1393.get(__key1394);
                         {
-                            Slice<FuncDeclaration> __r1399 = v.nestedrefs.opSlice().copy();
-                            int __key1400 = 0;
-                            for (; (__key1400 < __r1399.getLength());__key1400 += 1) {
-                                FuncDeclaration f = __r1399.get(__key1400);
+                            Slice<FuncDeclaration> __r1395 = v.nestedrefs.opSlice().copy();
+                            int __key1396 = 0;
+                            for (; (__key1396 < __r1395.getLength());__key1396 += 1) {
+                                FuncDeclaration f = __r1395.get(__key1396);
                                 assert((f != this));
                             /*LcheckAncestorsOfANestedRef:*/
                                 {
@@ -1776,13 +1768,13 @@ public class func {
                                         {
                                             continue;
                                         }
-                                        if ((fx.isThis() != null) || (fx.tookAddressOf.value != 0) || checkEscapingSiblings(fx, this, null))
+                                        if ((fx.isThis() != null) || (fx.tookAddressOf != 0) || checkEscapingSiblings(fx, this, null))
                                         {
                                             {
-                                                Slice<FuncDeclaration> __r1401 = a.opSlice().copy();
-                                                int __key1402 = 0;
-                                                for (; (__key1402 < __r1401.getLength());__key1402 += 1) {
-                                                    FuncDeclaration f2 = __r1401.get(__key1402);
+                                                Slice<FuncDeclaration> __r1397 = a.opSlice().copy();
+                                                int __key1398 = 0;
+                                                for (; (__key1398 < __r1397.getLength());__key1398 += 1) {
+                                                    FuncDeclaration f2 = __r1397.get(__key1398);
                                                     if ((pequals(f2, f)))
                                                     {
                                                         break LcheckAncestorsOfANestedRef;
@@ -1790,7 +1782,7 @@ public class func {
                                                 }
                                             }
                                             a.push(f);
-                                            errorSupplemental(f.loc.value, new BytePtr("%s closes over variable %s at %s"), f.toPrettyChars(false), v.toChars(), v.loc.value.toChars(global.params.showColumns.value));
+                                            errorSupplemental(f.loc, new BytePtr("%s closes over variable %s at %s"), f.toPrettyChars(false), v.toChars(), v.loc.toChars(global.value.params.showColumns));
                                             break LcheckAncestorsOfANestedRef;
                                         }
                                     }
@@ -1806,7 +1798,7 @@ public class func {
         }
 
         public  boolean hasNestedFrameRefs() {
-            if (this.closureVars.length.value != 0)
+            if (this.closureVars.length != 0)
             {
                 return true;
             }
@@ -1814,11 +1806,11 @@ public class func {
             {
                 return true;
             }
-            if ((this.foverrides.length.value != 0) && this.isVirtualMethod())
+            if ((this.foverrides.length != 0) && this.isVirtualMethod())
             {
                 {
                     int i = 0;
-                    for (; (i < this.foverrides.length.value);i++){
+                    for (; (i < this.foverrides.length);i++){
                         FuncDeclaration fdv = this.foverrides.get(i);
                         if (fdv.hasNestedFrameRefs())
                         {
@@ -1831,31 +1823,31 @@ public class func {
         }
 
         public  boolean canBuildResultVar() {
-            TypeFunction f = (TypeFunction)this.type.value;
-            return (f != null) && (f.nextOf() != null) && ((f.nextOf().toBasetype().ty.value & 0xFF) != ENUMTY.Tvoid);
+            TypeFunction f = (TypeFunction)this.type;
+            return (f != null) && (f.nextOf() != null) && ((f.nextOf().toBasetype().ty & 0xFF) != ENUMTY.Tvoid);
         }
 
         public  void buildResultVar(Ptr<Scope> sc, Type tret) {
             if (this.vresult == null)
             {
-                Loc loc = this.fensure != null ? this.fensure.loc : this.loc.value.copy();
+                Loc loc = this.fensure != null ? this.fensure.loc : this.loc.copy();
                 this.vresult = new VarDeclaration(loc, tret, Id.result, null, 0L);
-                this.vresult.storage_class.value |= 1099528404992L;
+                this.vresult.storage_class |= 1099528404992L;
                 if (!this.isVirtual())
                 {
-                    this.vresult.storage_class.value |= 4L;
+                    this.vresult.storage_class |= 4L;
                 }
-                this.vresult.storage_class.value |= 274877906944L;
+                this.vresult.storage_class |= 274877906944L;
                 this.vresult.parent.value = this;
             }
-            if ((sc != null) && (this.vresult.semanticRun.value == PASS.init))
+            if ((sc != null) && (this.vresult.semanticRun == PASS.init))
             {
-                TypeFunction tf = this.type.value.toTypeFunction();
-                if (tf.isref.value)
+                TypeFunction tf = this.type.toTypeFunction();
+                if (tf.isref)
                 {
-                    this.vresult.storage_class.value |= 2097152L;
+                    this.vresult.storage_class |= 2097152L;
                 }
-                this.vresult.type.value = tret;
+                this.vresult.type = tret;
                 dsymbolSemantic(this.vresult, sc);
                 if ((sc.get()).insert(this.vresult) == null)
                 {
@@ -1867,15 +1859,15 @@ public class func {
 
         public  Statement mergeFrequire(Statement sf, Ptr<DArray<Expression>> params) {
             {
-                Slice<FuncDeclaration> __r1403 = this.foverrides.opSlice().copy();
-                int __key1404 = 0;
-                for (; (__key1404 < __r1403.getLength());__key1404 += 1) {
-                    FuncDeclaration fdv = __r1403.get(__key1404);
-                    if ((fdv.frequires != null) && (fdv.semanticRun.value != PASS.semantic3done))
+                Slice<FuncDeclaration> __r1399 = this.foverrides.opSlice().copy();
+                int __key1400 = 0;
+                for (; (__key1400 < __r1399.getLength());__key1400 += 1) {
+                    FuncDeclaration fdv = __r1399.get(__key1400);
+                    if ((fdv.frequires != null) && (fdv.semanticRun != PASS.semantic3done))
                     {
-                        assert(fdv._scope.value != null);
-                        Ptr<Scope> sc = (fdv._scope.value.get()).push();
-                        (sc.get()).stc.value &= -129L;
+                        assert(fdv._scope != null);
+                        Ptr<Scope> sc = (fdv._scope.get()).push();
+                        (sc.get()).stc &= -129L;
                         semantic3(fdv, sc);
                         (sc.get()).pop();
                     }
@@ -1883,13 +1875,13 @@ public class func {
                     if ((sf != null) && (fdv.fdrequire != null))
                     {
                         params = Expression.arraySyntaxCopy(params);
-                        Expression e = new CallExp(this.loc.value, new VarExp(this.loc.value, fdv.fdrequire, false), params);
-                        Statement s2 = new ExpStatement(this.loc.value, e);
-                        Catch c = new Catch(this.loc.value, getThrowable(), null, sf);
-                        c.internalCatch.value = true;
+                        Expression e = new CallExp(this.loc, new VarExp(this.loc, fdv.fdrequire, false), params);
+                        Statement s2 = new ExpStatement(this.loc, e);
+                        Catch c = new Catch(this.loc, getThrowable(), null, sf);
+                        c.internalCatch = true;
                         Ptr<DArray<Catch>> catches = refPtr(new DArray<Catch>());
                         (catches.get()).push(c);
-                        sf = new TryCatchStatement(this.loc.value, s2, catches);
+                        sf = new TryCatchStatement(this.loc, s2, catches);
                     }
                     else
                     {
@@ -1906,10 +1898,10 @@ public class func {
                 return true;
             }
             {
-                Slice<FuncDeclaration> __r1405 = fd.foverrides.opSlice().copy();
-                int __key1406 = 0;
-                for (; (__key1406 < __r1405.getLength());__key1406 += 1) {
-                    FuncDeclaration fdv = __r1405.get(__key1406);
+                Slice<FuncDeclaration> __r1401 = fd.foverrides.opSlice().copy();
+                int __key1402 = 0;
+                for (; (__key1402 < __r1401.getLength());__key1402 += 1) {
+                    FuncDeclaration fdv = __r1401.get(__key1402);
                     if (needsFensure(fdv))
                     {
                         return true;
@@ -1922,14 +1914,14 @@ public class func {
         public  void buildEnsureRequire() {
             if (this.frequires != null)
             {
-                assert((this.frequires.get()).length.value != 0);
+                assert((this.frequires.get()).length != 0);
                 Loc loc = (this.frequires.get()).get(0).loc.copy();
                 Ptr<DArray<Statement>> s = refPtr(new DArray<Statement>());
                 {
-                    Slice<Statement> __r1407 = (this.frequires.get()).opSlice().copy();
-                    int __key1408 = 0;
-                    for (; (__key1408 < __r1407.getLength());__key1408 += 1) {
-                        Statement r = __r1407.get(__key1408);
+                    Slice<Statement> __r1403 = (this.frequires.get()).opSlice().copy();
+                    int __key1404 = 0;
+                    for (; (__key1404 < __r1403.getLength());__key1404 += 1) {
+                        Statement r = __r1403.get(__key1404);
                         (s.get()).push(new ScopeStatement(r.loc, r, r.loc));
                     }
                 }
@@ -1941,10 +1933,10 @@ public class func {
                 Loc loc = (this.fensures.get()).get(0).ensure.loc.copy();
                 Ptr<DArray<Statement>> s = refPtr(new DArray<Statement>());
                 {
-                    Slice<Ensure> __r1409 = (this.fensures.get()).opSlice().copy();
-                    int __key1410 = 0;
-                    for (; (__key1410 < __r1409.getLength());__key1410 += 1) {
-                        Ensure r = __r1409.get(__key1410).copy();
+                    Slice<Ensure> __r1405 = (this.fensures.get()).opSlice().copy();
+                    int __key1406 = 0;
+                    for (; (__key1406 < __r1405.getLength());__key1406 += 1) {
+                        Ensure r = __r1405.get(__key1406).copy();
                         if ((r.id != null) && this.canBuildResultVar())
                         {
                             Loc rloc = r.ensure.loc.copy();
@@ -1967,25 +1959,24 @@ public class func {
             {
                 return ;
             }
-            TypeFunction f = (TypeFunction)this.type.value;
+            TypeFunction f = (TypeFunction)this.type;
             Function1<Ptr<DArray<Parameter>>,Ptr<DArray<Parameter>>> toRefCopy = new Function1<Ptr<DArray<Parameter>>,Ptr<DArray<Parameter>>>(){
                 public Ptr<DArray<Parameter>> invoke(Ptr<DArray<Parameter>> params) {
-                    Ref<Ptr<DArray<Parameter>>> params_ref = ref(params);
                     Ref<Ptr<DArray<Parameter>>> result = ref(refPtr(new DArray<Parameter>()));
                     Function2<Integer,Parameter,Integer> toRefDg = new Function2<Integer,Parameter,Integer>(){
                         public Integer invoke(Integer n, Parameter p) {
                             Ref<Parameter> p_ref = ref(p);
                             p_ref.value = p_ref.value.syntaxCopy();
-                            if ((p_ref.value.storageClass.value & 8192L) == 0)
+                            if ((p_ref.value.storageClass & 8192L) == 0)
                             {
-                                p_ref.value.storageClass.value = (p_ref.value.storageClass.value | 2097152L) & -4097L;
+                                p_ref.value.storageClass = (p_ref.value.storageClass | 2097152L) & -4097L;
                             }
-                            p_ref.value.defaultArg.value = null;
+                            p_ref.value.defaultArg = null;
                             (result.value.get()).push(p_ref.value);
                             return 0;
                         }
                     };
-                    Parameter._foreach(params_ref.value, toRefDg, null);
+                    Parameter._foreach(params, toRefDg, null);
                     return result.value;
                 }
             };
@@ -1993,26 +1984,26 @@ public class func {
             {
                 Loc loc = this.frequire.loc.copy();
                 this.fdrequireParams = refPtr(new DArray<Expression>());
-                if (this.parameters.value != null)
+                if (this.parameters != null)
                 {
                     {
-                        Slice<VarDeclaration> __r1411 = (this.parameters.value.get()).opSlice().copy();
-                        int __key1412 = 0;
-                        for (; (__key1412 < __r1411.getLength());__key1412 += 1) {
-                            VarDeclaration vd = __r1411.get(__key1412);
+                        Slice<VarDeclaration> __r1407 = (this.parameters.get()).opSlice().copy();
+                        int __key1408 = 0;
+                        for (; (__key1408 < __r1407.getLength());__key1408 += 1) {
+                            VarDeclaration vd = __r1407.get(__key1408);
                             (this.fdrequireParams.get()).push(new VarExp(loc, vd, true));
                         }
                     }
                 }
-                TypeFunction fo = this.originalType.value != null ? (TypeFunction)this.originalType.value : (TypeFunction)f;
-                Ptr<DArray<Parameter>> fparams = toRefCopy.invoke(fo.parameterList.parameters.value);
-                TypeFunction tf = new TypeFunction(new ParameterList(fparams, VarArg.none), Type.tvoid.value, LINK.d, 0L);
-                tf.isnothrow.value = f.isnothrow.value;
-                tf.isnogc.value = f.isnogc.value;
-                tf.purity.value = f.purity.value;
-                tf.trust.value = f.trust.value;
+                TypeFunction fo = this.originalType != null ? (TypeFunction)this.originalType : (TypeFunction)f;
+                Ptr<DArray<Parameter>> fparams = toRefCopy.invoke(fo.parameterList.parameters);
+                TypeFunction tf = new TypeFunction(new ParameterList(fparams, VarArg.none), Type.tvoid, LINK.d, 0L);
+                tf.isnothrow = f.isnothrow;
+                tf.isnogc = f.isnogc;
+                tf.purity = f.purity;
+                tf.trust = f.trust;
                 FuncDeclaration fd = new FuncDeclaration(loc, loc, Id.require, 0L, tf);
-                fd.fbody.value = this.frequire;
+                fd.fbody = this.frequire;
                 Statement s1 = new ExpStatement(loc, fd);
                 Expression e = new CallExp(loc, new VarExp(loc, fd, false), this.fdrequireParams);
                 Statement s2 = new ExpStatement(loc, e);
@@ -2022,16 +2013,16 @@ public class func {
             this.fdensureParams = refPtr(new DArray<Expression>());
             if (this.canBuildResultVar())
             {
-                (this.fdensureParams.get()).push(new IdentifierExp(this.loc.value, Id.result));
+                (this.fdensureParams.get()).push(new IdentifierExp(this.loc, Id.result));
             }
-            if (this.parameters.value != null)
+            if (this.parameters != null)
             {
                 {
-                    Slice<VarDeclaration> __r1413 = (this.parameters.value.get()).opSlice().copy();
-                    int __key1414 = 0;
-                    for (; (__key1414 < __r1413.getLength());__key1414 += 1) {
-                        VarDeclaration vd = __r1413.get(__key1414);
-                        (this.fdensureParams.get()).push(new VarExp(this.loc.value, vd, true));
+                    Slice<VarDeclaration> __r1409 = (this.parameters.get()).opSlice().copy();
+                    int __key1410 = 0;
+                    for (; (__key1410 < __r1409.getLength());__key1410 += 1) {
+                        VarDeclaration vd = __r1409.get(__key1410);
+                        (this.fdensureParams.get()).push(new VarExp(this.loc, vd, true));
                     }
                 }
             }
@@ -2044,15 +2035,15 @@ public class func {
                     Parameter p = new Parameter(2097156L, f.nextOf(), Id.result, null, null);
                     (fparams.get()).push(p);
                 }
-                TypeFunction fo = this.originalType.value != null ? (TypeFunction)this.originalType.value : (TypeFunction)f;
-                (fparams.get()).pushSlice((toRefCopy.invoke(fo.parameterList.parameters.value).get()).opSlice());
-                TypeFunction tf = new TypeFunction(new ParameterList(fparams, VarArg.none), Type.tvoid.value, LINK.d, 0L);
-                tf.isnothrow.value = f.isnothrow.value;
-                tf.isnogc.value = f.isnogc.value;
-                tf.purity.value = f.purity.value;
-                tf.trust.value = f.trust.value;
+                TypeFunction fo = this.originalType != null ? (TypeFunction)this.originalType : (TypeFunction)f;
+                (fparams.get()).pushSlice((toRefCopy.invoke(fo.parameterList.parameters).get()).opSlice());
+                TypeFunction tf = new TypeFunction(new ParameterList(fparams, VarArg.none), Type.tvoid, LINK.d, 0L);
+                tf.isnothrow = f.isnothrow;
+                tf.isnogc = f.isnogc;
+                tf.purity = f.purity;
+                tf.trust = f.trust;
                 FuncDeclaration fd = new FuncDeclaration(loc, loc, Id.ensure, 0L, tf);
-                fd.fbody.value = this.fensure;
+                fd.fbody = this.fensure;
                 Statement s1 = new ExpStatement(loc, fd);
                 Expression e = new CallExp(loc, new VarExp(loc, fd, false), this.fdensureParams);
                 Statement s2 = new ExpStatement(loc, e);
@@ -2063,15 +2054,15 @@ public class func {
 
         public  Statement mergeFensure(Statement sf, Identifier oid, Ptr<DArray<Expression>> params) {
             {
-                Slice<FuncDeclaration> __r1415 = this.foverrides.opSlice().copy();
-                int __key1416 = 0;
-                for (; (__key1416 < __r1415.getLength());__key1416 += 1) {
-                    FuncDeclaration fdv = __r1415.get(__key1416);
-                    if (needsFensure(fdv) && (fdv.semanticRun.value != PASS.semantic3done))
+                Slice<FuncDeclaration> __r1411 = this.foverrides.opSlice().copy();
+                int __key1412 = 0;
+                for (; (__key1412 < __r1411.getLength());__key1412 += 1) {
+                    FuncDeclaration fdv = __r1411.get(__key1412);
+                    if (needsFensure(fdv) && (fdv.semanticRun != PASS.semantic3done))
                     {
-                        assert(fdv._scope.value != null);
-                        Ptr<Scope> sc = (fdv._scope.value.get()).push();
-                        (sc.get()).stc.value &= -129L;
+                        assert(fdv._scope != null);
+                        Ptr<Scope> sc = (fdv._scope.get()).push();
+                        (sc.get()).stc &= -129L;
                         semantic3(fdv, sc);
                         (sc.get()).pop();
                     }
@@ -2081,21 +2072,21 @@ public class func {
                         params = Expression.arraySyntaxCopy(params);
                         if (this.canBuildResultVar())
                         {
-                            Type t1 = fdv.type.value.nextOf().toBasetype();
-                            Type t2 = this.type.value.nextOf().toBasetype();
+                            Type t1 = fdv.type.nextOf().toBasetype();
+                            Type t2 = this.type.nextOf().toBasetype();
                             if (t1.isBaseOf(t2, null))
                             {
                                 Ptr<Expression> eresult = pcopy(ptr((params.get()).get(0)));
-                                ExpInitializer ei = new ExpInitializer(Loc.initial.value, eresult.get());
-                                VarDeclaration v = new VarDeclaration(Loc.initial.value, t1, Identifier.generateId(new BytePtr("__covres")), ei, 0L);
-                                v.storage_class.value |= 1099511627776L;
-                                DeclarationExp de = new DeclarationExp(Loc.initial.value, v);
-                                VarExp ve = new VarExp(Loc.initial.value, v, true);
-                                eresult.set(0, (new CommaExp(Loc.initial.value, de, ve, true)));
+                                ExpInitializer ei = new ExpInitializer(Loc.initial, eresult.get());
+                                VarDeclaration v = new VarDeclaration(Loc.initial, t1, Identifier.generateId(new BytePtr("__covres")), ei, 0L);
+                                v.storage_class |= 1099511627776L;
+                                DeclarationExp de = new DeclarationExp(Loc.initial, v);
+                                VarExp ve = new VarExp(Loc.initial, v, true);
+                                eresult.set(0, (new CommaExp(Loc.initial, de, ve, true)));
                             }
                         }
-                        Expression e = new CallExp(this.loc.value, new VarExp(this.loc.value, fdv.fdensure, false), params);
-                        Statement s2 = new ExpStatement(this.loc.value, e);
+                        Expression e = new CallExp(this.loc, new VarExp(this.loc, fdv.fdensure, false), params);
+                        Statement s2 = new ExpStatement(this.loc, e);
                         if (sf != null)
                         {
                             sf = new CompoundStatement(sf.loc, slice(new Statement[]{s2, sf}));
@@ -2111,9 +2102,9 @@ public class func {
         }
 
         public  ParameterList getParameterList() {
-            if (this.type.value != null)
+            if (this.type != null)
             {
-                TypeFunction fdtype = this.type.value.isTypeFunction();
+                TypeFunction fdtype = this.type.isTypeFunction();
                 return fdtype.parameterList;
             }
             return new ParameterList(null, VarArg.none);
@@ -2141,14 +2132,14 @@ public class func {
             {
                 fd = s.isFuncDeclaration();
                 assert(fd != null);
-                assert(fd.type.value.nextOf().equals(treturn));
+                assert(fd.type.nextOf().equals(treturn));
             }
             else
             {
                 tf = new TypeFunction(new ParameterList(fparams, VarArg.none), treturn, LINK.c, stc);
-                fd = new FuncDeclaration(Loc.initial.value, Loc.initial.value, id, 1L, tf);
+                fd = new FuncDeclaration(Loc.initial, Loc.initial, id, 1L, tf);
                 fd.protection = new Prot(Prot.Kind.public_).copy();
-                fd.linkage.value = LINK.c;
+                fd.linkage = LINK.c;
                 func.genCfuncst.insert((Dsymbol)fd);
             }
             return fd;
@@ -2160,14 +2151,14 @@ public class func {
         }
 
         public  void checkDmain() {
-            TypeFunction tf = this.type.value.toTypeFunction();
+            TypeFunction tf = this.type.toTypeFunction();
             int nparams = tf.parameterList.length();
             boolean argerr = false;
             if ((nparams == 1))
             {
                 Parameter fparam0 = tf.parameterList.get(0);
-                Type t = fparam0.type.value.toBasetype();
-                if (((t.ty.value & 0xFF) != ENUMTY.Tarray) || ((t.nextOf().ty.value & 0xFF) != ENUMTY.Tarray) || ((t.nextOf().nextOf().ty.value & 0xFF) != ENUMTY.Tchar) || ((fparam0.storageClass.value & 2109440L) != 0))
+                Type t = fparam0.type.toBasetype();
+                if (((t.ty & 0xFF) != ENUMTY.Tarray) || ((t.nextOf().ty & 0xFF) != ENUMTY.Tarray) || ((t.nextOf().nextOf().ty & 0xFF) != ENUMTY.Tchar) || ((fparam0.storageClass & 2109440L) != 0))
                 {
                     argerr = true;
                 }
@@ -2176,11 +2167,11 @@ public class func {
             {
                 this.error(new BytePtr("must return `int` or `void`"));
             }
-            else if (((tf.nextOf().ty.value & 0xFF) != ENUMTY.Tint32) && ((tf.nextOf().ty.value & 0xFF) != ENUMTY.Tvoid))
+            else if (((tf.nextOf().ty & 0xFF) != ENUMTY.Tint32) && ((tf.nextOf().ty & 0xFF) != ENUMTY.Tvoid))
             {
                 this.error(new BytePtr("must return `int` or `void`, not `%s`"), tf.nextOf().toChars());
             }
-            else if ((tf.parameterList.varargs.value != 0) || (nparams >= 2) || argerr)
+            else if ((tf.parameterList.varargs != 0) || (nparams >= 2) || argerr)
             {
                 this.error(new BytePtr("parameters must be `main()` or `main(string[] args)`"));
             }
@@ -2289,7 +2280,7 @@ public class func {
         FuncDeclaration inv = ad.inv;
         ClassDeclaration cd = ad.isClassDeclaration();
         for (; (inv == null) && (cd != null);){
-            cd = cd.baseClass.value;
+            cd = cd.baseClass;
             if (cd == null)
             {
                 break;
@@ -2299,12 +2290,12 @@ public class func {
         if (inv != null)
         {
             inv.functionSemantic();
-            e = new ThisExp(Loc.initial.value);
-            e.type.value = ad.type.value.addMod(vthis.type.value.mod.value);
-            e = new DotVarExp(Loc.initial.value, e, inv, false);
-            e.type.value = inv.type.value;
-            e = new CallExp(Loc.initial.value, e);
-            e.type.value = Type.tvoid.value;
+            e = new ThisExp(Loc.initial);
+            e.type.value = ad.type.addMod(vthis.type.mod);
+            e = new DotVarExp(Loc.initial, e, inv, false);
+            e.type.value = inv.type;
+            e = new CallExp(Loc.initial, e);
+            e.type.value = Type.tvoid;
         }
         return e;
     }
@@ -2522,26 +2513,26 @@ public class func {
         Ref<MatchAccumulator> m = ref(new MatchAccumulator());
         functionResolve(m, s, loc, sc, tiargs, tthis, fargs, null);
         Dsymbol orig_s = s;
-        if ((m.value.last.value > MATCH.nomatch) && (m.value.lastf.value != null))
+        if ((m.value.last > MATCH.nomatch) && (m.value.lastf != null))
         {
-            if ((m.value.count.value == 1))
+            if ((m.value.count == 1))
             {
                 if (((flags & 0xFF) & 1) == 0)
                 {
-                    m.value.lastf.value.functionSemantic();
+                    m.value.lastf.functionSemantic();
                 }
-                return m.value.lastf.value;
+                return m.value.lastf;
             }
-            if ((((flags & 0xFF) & 2) != 0) && (tthis == null) && m.value.lastf.value.needThis())
+            if ((((flags & 0xFF) & 2) != 0) && (tthis == null) && m.value.lastf.needThis())
             {
-                return m.value.lastf.value;
+                return m.value.lastf;
             }
         }
-        if ((m.value.last.value <= MATCH.nomatch))
+        if ((m.value.last <= MATCH.nomatch))
         {
-            if ((m.value.count.value == 1))
+            if ((m.value.count == 1))
             {
-                return m.value.lastf.value;
+                return m.value.lastf;
             }
             if (((flags & 0xFF) & 1) != 0)
             {
@@ -2568,19 +2559,19 @@ public class func {
                     tthis.modToBuffer(ptr(fargsBuf));
                 }
                 int numOverloadsDisplay = 5;
-                if ((m.value.lastf.value == null) && (((flags & 0xFF) & 1) == 0))
+                if ((m.value.lastf == null) && (((flags & 0xFF) & 1) == 0))
                 {
                     if ((fd == null) && (td == null) && (od == null))
                     {
                     }
                     else if ((td != null) && (fd == null))
                     {
-                        error(loc, new BytePtr("%s `%s.%s` cannot deduce function from argument types `!(%s)%s`, candidates are:"), td.kind(), td.parent.value.toPrettyChars(false), td.ident.value.toChars(), tiargsBuf.value.peekChars(), fargsBuf.value.peekChars());
+                        error(loc, new BytePtr("%s `%s.%s` cannot deduce function from argument types `!(%s)%s`, candidates are:"), td.kind(), td.parent.value.toPrettyChars(false), td.ident.toChars(), tiargsBuf.value.peekChars(), fargsBuf.value.peekChars());
                         printCandidatesTemplateDeclaration(loc, td);
                     }
                     else if (od != null)
                     {
-                        error(loc, new BytePtr("none of the overloads of `%s` are callable using argument types `!(%s)%s`"), od.ident.value.toChars(), tiargsBuf.value.peekChars(), fargsBuf.value.peekChars());
+                        error(loc, new BytePtr("none of the overloads of `%s` are callable using argument types `!(%s)%s`"), od.ident.toChars(), tiargsBuf.value.peekChars(), fargsBuf.value.peekChars());
                     }
                     else
                     {
@@ -2590,18 +2581,18 @@ public class func {
                             return null;
                         }
                         boolean hasOverloads = fd.overnext != null;
-                        TypeFunction tf = fd.type.value.toTypeFunction();
-                        if ((tthis != null) && !MODimplicitConv(tthis.mod.value, tf.mod.value))
+                        TypeFunction tf = fd.type.toTypeFunction();
+                        if ((tthis != null) && !MODimplicitConv(tthis.mod, tf.mod))
                         {
                             Ref<OutBuffer> thisBuf = ref(new OutBuffer());
                             try {
                                 Ref<OutBuffer> funcBuf = ref(new OutBuffer());
                                 try {
-                                    MODMatchToBuffer(ptr(thisBuf), tthis.mod.value, tf.mod.value);
-                                    Mismatches mismatches = MODMatchToBuffer(ptr(funcBuf), tf.mod.value, tthis.mod.value).copy();
+                                    MODMatchToBuffer(ptr(thisBuf), tthis.mod, tf.mod);
+                                    Mismatches mismatches = MODMatchToBuffer(ptr(funcBuf), tf.mod, tthis.mod).copy();
                                     if (hasOverloads)
                                     {
-                                        error(loc, new BytePtr("none of the overloads of `%s` are callable using a %sobject, candidates are:"), fd.ident.value.toChars(), thisBuf.value.peekChars());
+                                        error(loc, new BytePtr("none of the overloads of `%s` are callable using a %sobject, candidates are:"), fd.ident.toChars(), thisBuf.value.peekChars());
                                     }
                                     else
                                     {
@@ -2656,15 +2647,15 @@ public class func {
                         }
                     }
                 }
-                else if (m.value.nextf.value != null)
+                else if (m.value.nextf != null)
                 {
-                    TypeFunction tf1 = m.value.lastf.value.type.value.toTypeFunction();
-                    TypeFunction tf2 = m.value.nextf.value.type.value.toTypeFunction();
+                    TypeFunction tf1 = m.value.lastf.type.toTypeFunction();
+                    TypeFunction tf2 = m.value.nextf.type.toTypeFunction();
                     BytePtr lastprms = pcopy(parametersTypeToChars(tf1.parameterList));
                     BytePtr nextprms = pcopy(parametersTypeToChars(tf2.parameterList));
-                    BytePtr mod1 = pcopy(prependSpace(MODtoChars(tf1.mod.value)));
-                    BytePtr mod2 = pcopy(prependSpace(MODtoChars(tf2.mod.value)));
-                    error(loc, new BytePtr("`%s.%s` called with argument types `%s` matches both:\n%s:     `%s%s%s`\nand:\n%s:     `%s%s%s`"), s.parent.value.toPrettyChars(false), s.ident.value.toChars(), fargsBuf.value.peekChars(), m.value.lastf.value.loc.value.toChars(global.params.showColumns.value), m.value.lastf.value.toPrettyChars(false), lastprms, mod1, m.value.nextf.value.loc.value.toChars(global.params.showColumns.value), m.value.nextf.value.toPrettyChars(false), nextprms, mod2);
+                    BytePtr mod1 = pcopy(prependSpace(MODtoChars(tf1.mod)));
+                    BytePtr mod2 = pcopy(prependSpace(MODtoChars(tf2.mod)));
+                    error(loc, new BytePtr("`%s.%s` called with argument types `%s` matches both:\n%s:     `%s%s%s`\nand:\n%s:     `%s%s%s`"), s.parent.value.toPrettyChars(false), s.ident.toChars(), fargsBuf.value.peekChars(), m.value.lastf.loc.toChars(global.value.params.showColumns), m.value.lastf.toPrettyChars(false), lastprms, mod1, m.value.nextf.loc.toChars(global.value.params.showColumns), m.value.nextf.toPrettyChars(false), nextprms, mod2);
                 }
                 return null;
             }
@@ -2685,24 +2676,24 @@ public class func {
                     FuncDeclaration fd = s.isFuncDeclaration();
                     if ((fd) != null)
                     {
-                        if (fd.errors.value || ((fd.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+                        if (fd.errors || ((fd.type.ty & 0xFF) == ENUMTY.Terror))
                         {
                             return 0;
                         }
-                        TypeFunction tf = (TypeFunction)fd.type.value;
-                        errorSupplemental(fd.loc.value, new BytePtr("`%s%s`"), fd.toPrettyChars(false), parametersTypeToChars(tf.parameterList));
+                        TypeFunction tf = (TypeFunction)fd.type;
+                        errorSupplemental(fd.loc, new BytePtr("`%s%s`"), fd.toPrettyChars(false), parametersTypeToChars(tf.parameterList));
                         nextOverload = fd.overnext;
                     }
                     else {
                         TemplateDeclaration td = s.isTemplateDeclaration();
                         if ((td) != null)
                         {
-                            errorSupplemental(td.loc.value, new BytePtr("`%s`"), td.toPrettyChars(false));
+                            errorSupplemental(td.loc, new BytePtr("`%s`"), td.toPrettyChars(false));
                             nextOverload = td.overnext.value;
                         }
                     }
                 }
-                if (global.params.verbose || ((numToDisplay -= 1) != 0))
+                if (global.value.params.verbose || ((numToDisplay -= 1) != 0))
                 {
                     return 0;
                 }
@@ -2735,24 +2726,24 @@ public class func {
                     FuncDeclaration fd = s.isFuncDeclaration();
                     if ((fd) != null)
                     {
-                        if (fd.errors.value || ((fd.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+                        if (fd.errors || ((fd.type.ty & 0xFF) == ENUMTY.Terror))
                         {
                             return 0;
                         }
-                        TypeFunction tf = (TypeFunction)fd.type.value;
-                        errorSupplemental(fd.loc.value, new BytePtr("`%s%s`"), fd.toPrettyChars(false), parametersTypeToChars(tf.parameterList));
+                        TypeFunction tf = (TypeFunction)fd.type;
+                        errorSupplemental(fd.loc, new BytePtr("`%s%s`"), fd.toPrettyChars(false), parametersTypeToChars(tf.parameterList));
                         nextOverload = fd.overnext;
                     }
                     else {
                         TemplateDeclaration td = s.isTemplateDeclaration();
                         if ((td) != null)
                         {
-                            errorSupplemental(td.loc.value, new BytePtr("`%s`"), td.toPrettyChars(false));
+                            errorSupplemental(td.loc, new BytePtr("`%s`"), td.toPrettyChars(false));
                             nextOverload = td.overnext.value;
                         }
                     }
                 }
-                if (global.params.verbose || ((numToDisplay -= 1) != 0))
+                if (global.value.params.verbose || ((numToDisplay -= 1) != 0))
                 {
                     return 0;
                 }
@@ -2777,15 +2768,15 @@ public class func {
 
     public static Type getIndirection(Type t) {
         t = t.baseElemOf();
-        if (((t.ty.value & 0xFF) == ENUMTY.Tarray) || ((t.ty.value & 0xFF) == ENUMTY.Tpointer))
+        if (((t.ty & 0xFF) == ENUMTY.Tarray) || ((t.ty & 0xFF) == ENUMTY.Tpointer))
         {
             return t.nextOf().toBasetype();
         }
-        if (((t.ty.value & 0xFF) == ENUMTY.Taarray) || ((t.ty.value & 0xFF) == ENUMTY.Tclass))
+        if (((t.ty & 0xFF) == ENUMTY.Taarray) || ((t.ty & 0xFF) == ENUMTY.Tclass))
         {
             return t;
         }
-        if (((t.ty.value & 0xFF) == ENUMTY.Tstruct))
+        if (((t.ty & 0xFF) == ENUMTY.Tstruct))
         {
             return t.hasPointers() ? t : null;
         }
@@ -2795,69 +2786,66 @@ public class func {
     public static boolean traverseIndirections(Type ta, Type tb) {
         Function4<Type,Type,Ptr<Ctxt>,Boolean,Boolean> traverse = new Function4<Type,Type,Ptr<Ctxt>,Boolean,Boolean>(){
             public Boolean invoke(Type ta, Type tb, Ptr<Ctxt> ctxt, Boolean reversePass) {
-                Ref<Type> ta_ref = ref(ta);
-                Ref<Type> tb_ref = ref(tb);
-                Ref<Ptr<Ctxt>> ctxt_ref = ref(ctxt);
-                Ref<Boolean> reversePass_ref = ref(reversePass);
-                ta_ref.value = ta_ref.value.baseElemOf();
-                tb_ref.value = tb_ref.value.baseElemOf();
+                ta = ta.baseElemOf();
+                tb = tb.baseElemOf();
                 Function2<Type,Type,Boolean> mayAliasDirect = new Function2<Type,Type,Boolean>(){
                     public Boolean invoke(Type source, Type target) {
+                        Ref<Type> source_ref = ref(source);
                         Ref<Type> target_ref = ref(target);
-                        return (source.constConv(target_ref.value) != MATCH.nomatch) || ((target_ref.value.ty.value & 0xFF) == ENUMTY.Tvoid) && MODimplicitConv(source.mod.value, target_ref.value.mod.value);
+                        return (source_ref.value.constConv(target_ref.value) != MATCH.nomatch) || ((target_ref.value.ty & 0xFF) == ENUMTY.Tvoid) && MODimplicitConv(source_ref.value.mod, target_ref.value.mod);
                     }
                 };
-                if (mayAliasDirect.invoke(reversePass_ref.value ? tb_ref.value : ta_ref.value, reversePass_ref.value ? ta_ref.value : tb_ref.value))
+                if (mayAliasDirect.invoke(reversePass ? tb : ta, reversePass ? ta : tb))
                 {
                     return false;
                 }
-                if ((ta_ref.value.nextOf() != null) && (pequals(ta_ref.value.nextOf(), tb_ref.value.nextOf())))
+                if ((ta.nextOf() != null) && (pequals(ta.nextOf(), tb.nextOf())))
                 {
                     return true;
                 }
-                if (((tb_ref.value.ty.value & 0xFF) == ENUMTY.Tclass) || ((tb_ref.value.ty.value & 0xFF) == ENUMTY.Tstruct))
+                if (((tb.ty & 0xFF) == ENUMTY.Tclass) || ((tb.ty & 0xFF) == ENUMTY.Tstruct))
                 {
                     {
-                        Ref<Ptr<Ctxt>> c = ref(ctxt_ref.value);
-                        for (; c.value != null;c.value = (c.value.get()).prev.value) {
-                            if ((pequals(tb_ref.value, (c.value.get()).type.value)))
+                        Ptr<Ctxt> c = ctxt;
+                        for (; c != null;c = (c.get()).prev) {
+                            if ((pequals(tb, (c.get()).type)))
                             {
                                 return true;
                             }
                         }
                     }
                     Ref<Ctxt> c = ref(new Ctxt());
-                    c.value.prev.value = ctxt_ref.value;
-                    c.value.type.value = tb_ref.value;
-                    AggregateDeclaration sym = tb_ref.value.toDsymbol(null).isAggregateDeclaration();
+                    c.value.prev = ctxt;
+                    c.value.type = tb;
+                    AggregateDeclaration sym = tb.toDsymbol(null).isAggregateDeclaration();
                     {
-                        Ref<Slice<VarDeclaration>> __r1417 = ref(sym.fields.opSlice().copy());
-                        IntRef __key1418 = ref(0);
-                        for (; (__key1418.value < __r1417.value.getLength());__key1418.value += 1) {
-                            VarDeclaration v = __r1417.value.get(__key1418.value);
-                            Ref<Type> tprmi = ref(v.type.value.addMod(tb_ref.value.mod.value));
-                            if (!traverse.invoke(ta_ref.value, tprmi.value, ptr(c), reversePass_ref.value))
+                        Slice<VarDeclaration> __r1413 = sym.fields.opSlice().copy();
+                        int __key1414 = 0;
+                        for (; (__key1414 < __r1413.getLength());__key1414 += 1) {
+                            VarDeclaration v = __r1413.get(__key1414);
+                            Type tprmi = v.type.addMod(tb.mod);
+                            if (!traverse.invoke(ta, tprmi, ptr(c), reversePass))
                             {
                                 return false;
                             }
                         }
                     }
                 }
-                else if (((tb_ref.value.ty.value & 0xFF) == ENUMTY.Tarray) || ((tb_ref.value.ty.value & 0xFF) == ENUMTY.Taarray) || ((tb_ref.value.ty.value & 0xFF) == ENUMTY.Tpointer))
+                else if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Taarray) || ((tb.ty & 0xFF) == ENUMTY.Tpointer))
                 {
-                    Ref<Type> tind = ref(tb_ref.value.nextOf());
-                    if (!traverse.invoke(ta_ref.value, tind.value, ctxt_ref.value, reversePass_ref.value))
+                    Type tind = tb.nextOf();
+                    if (!traverse.invoke(ta, tind, ctxt, reversePass))
                     {
                         return false;
                     }
                 }
-                else if (tb_ref.value.hasPointers())
+                else if (tb.hasPointers())
                 {
                     return false;
                 }
-                if (!reversePass_ref.value)
+                if (!reversePass)
                 {
-                    return traverse.invoke(tb_ref.value, ta_ref.value, ctxt_ref.value, true);
+                    return traverse.invoke(tb, ta, ctxt, true);
                 }
                 return true;
             }
@@ -2871,7 +2859,7 @@ public class func {
             Dsymbol sx = f;
             for (; (sx != null) && (!pequals(sx, outerFunc));sx = toParentPFuncDeclaration(sx, outerFunc)){
                 FuncDeclaration fy = sx.isFuncDeclaration();
-                if ((fy != null) && (fy.closureVars.length.value != 0))
+                if ((fy != null) && (fy.closureVars.length != 0))
                 {
                     fy.requiresClosure = true;
                 }
@@ -2886,9 +2874,9 @@ public class func {
         boolean bAnyClosures = false;
         {
             int i = 0;
-            for (; (i < f.siblingCallers.length.value);i += 1){
+            for (; (i < f.siblingCallers.length);i += 1){
                 FuncDeclaration g = f.siblingCallers.get(i);
-                if ((g.isThis() != null) || (g.tookAddressOf.value != 0))
+                if ((g.isThis() != null) || (g.tookAddressOf != 0))
                 {
                     markAsNeedingClosure(g, outerFunc);
                     bAnyClosures = true;
@@ -2897,7 +2885,7 @@ public class func {
                     Dsymbol parent = toParentPFuncDeclaration(g, outerFunc);
                     for (; (parent != null) && (parent != outerFunc);parent = toParentPFuncDeclaration(parent, outerFunc)){
                         FuncDeclaration parentFunc = parent.isFuncDeclaration();
-                        if ((parentFunc != null) && (parentFunc.tookAddressOf.value != 0))
+                        if ((parentFunc != null) && (parentFunc.tookAddressOf != 0))
                         {
                             markAsNeedingClosure(parentFunc, outerFunc);
                             bAnyClosures = true;
@@ -2935,14 +2923,14 @@ public class func {
                     FuncDeclaration f = s.isFuncDeclaration();
                     if ((f) != null)
                     {
-                        return f.isThis2.value;
+                        return f.isThis2;
                     }
                 }
                 {
                     AggregateDeclaration ad = s.isAggregateDeclaration();
                     if ((ad) != null)
                     {
-                        return ad.vthis2.value != null;
+                        return ad.vthis2 != null;
                     }
                 }
                 return false;
@@ -2960,10 +2948,10 @@ public class func {
                     break;
                 }
                 {
-                    Slice<RootObject> __r1364 = (ti.tiargs.value.get()).opSlice().copy();
-                    int __key1365 = 0;
-                    for (; (__key1365 < __r1364.getLength());__key1365 += 1) {
-                        RootObject oarg = __r1364.get(__key1365);
+                    Slice<RootObject> __r1360 = (ti.tiargs.get()).opSlice().copy();
+                    int __key1361 = 0;
+                    for (; (__key1361 < __r1360.getLength());__key1361 += 1) {
+                        RootObject oarg = __r1360.get(__key1361);
                         Dsymbol sa = getDsymbol(oarg);
                         if (sa == null)
                         {
@@ -2983,7 +2971,7 @@ public class func {
                         }
                     }
                 }
-                parent = ti.tempdecl.value.toParent();
+                parent = ti.tempdecl.toParent();
             }
             return false;
         }
@@ -2999,14 +2987,14 @@ public class func {
                     FuncDeclaration f = s.isFuncDeclaration();
                     if ((f) != null)
                     {
-                        return f.isThis2.value;
+                        return f.isThis2;
                     }
                 }
                 {
                     AggregateDeclaration ad = s.isAggregateDeclaration();
                     if ((ad) != null)
                     {
-                        return ad.vthis2.value != null;
+                        return ad.vthis2 != null;
                     }
                 }
                 return false;
@@ -3024,10 +3012,10 @@ public class func {
                     break;
                 }
                 {
-                    Slice<RootObject> __r921 = (ti.tiargs.value.get()).opSlice().copy();
-                    int __key922 = 0;
-                    for (; (__key922 < __r921.getLength());__key922 += 1) {
-                        RootObject oarg = __r921.get(__key922);
+                    Slice<RootObject> __r917 = (ti.tiargs.get()).opSlice().copy();
+                    int __key918 = 0;
+                    for (; (__key918 < __r917.getLength());__key918 += 1) {
+                        RootObject oarg = __r917.get(__key918);
                         Dsymbol sa = getDsymbol(oarg);
                         if (sa == null)
                         {
@@ -3047,7 +3035,7 @@ public class func {
                         }
                     }
                 }
-                parent = ti.tempdecl.value.toParent();
+                parent = ti.tempdecl.toParent();
             }
             return false;
         }
@@ -3063,14 +3051,14 @@ public class func {
                     FuncDeclaration f = s.isFuncDeclaration();
                     if ((f) != null)
                     {
-                        return f.isThis2.value;
+                        return f.isThis2;
                     }
                 }
                 {
                     AggregateDeclaration ad = s.isAggregateDeclaration();
                     if ((ad) != null)
                     {
-                        return ad.vthis2.value != null;
+                        return ad.vthis2 != null;
                     }
                 }
                 return false;
@@ -3088,10 +3076,10 @@ public class func {
                     break;
                 }
                 {
-                    Slice<RootObject> __r1391 = (ti.tiargs.value.get()).opSlice().copy();
-                    int __key1392 = 0;
-                    for (; (__key1392 < __r1391.getLength());__key1392 += 1) {
-                        RootObject oarg = __r1391.get(__key1392);
+                    Slice<RootObject> __r1387 = (ti.tiargs.get()).opSlice().copy();
+                    int __key1388 = 0;
+                    for (; (__key1388 < __r1387.getLength());__key1388 += 1) {
+                        RootObject oarg = __r1387.get(__key1388);
                         Dsymbol sa = getDsymbol(oarg);
                         if (sa == null)
                         {
@@ -3111,7 +3099,7 @@ public class func {
                         }
                     }
                 }
-                parent = ti.tempdecl.value.toParent();
+                parent = ti.tempdecl.toParent();
             }
             return false;
         }
@@ -3142,7 +3130,7 @@ public class func {
         public FuncDeclaration funcalias = null;
         public boolean hasOverloads = false;
         public  FuncAliasDeclaration(Identifier ident, FuncDeclaration funcalias, boolean hasOverloads) {
-            super(funcalias.loc.value, funcalias.endloc.value, ident, funcalias.storage_class.value, funcalias.type.value);
+            super(funcalias.loc, funcalias.endloc, ident, funcalias.storage_class, funcalias.type);
             assert((!pequals(funcalias, this)));
             this.funcalias = funcalias;
             this.hasOverloads = hasOverloads;
@@ -3275,14 +3263,14 @@ public class func {
     }
     public static class FuncLiteralDeclaration extends FuncDeclaration
     {
-        public Ref<Byte> tok = ref(0);
-        public Ref<Type> treq = ref(null);
+        public byte tok = 0;
+        public Type treq = null;
         public boolean deferToObj = false;
         public  FuncLiteralDeclaration(Loc loc, Loc endloc, Type type, byte tok, ForeachStatement fes, Identifier id) {
             super(loc, endloc, null, 0L, type);
-            this.ident.value = id != null ? id : Id.empty.value;
-            this.tok.value = tok;
-            this.fes.value = fes;
+            this.ident = id != null ? id : Id.empty;
+            this.tok = tok;
+            this.fes = fes;
         }
 
         // defaulted all parameters starting with #6
@@ -3292,17 +3280,17 @@ public class func {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            FuncLiteralDeclaration f = new FuncLiteralDeclaration(this.loc.value, this.endloc.value, this.type.value.syntaxCopy(), this.tok.value, this.fes.value, this.ident.value);
-            f.treq.value = this.treq.value;
+            FuncLiteralDeclaration f = new FuncLiteralDeclaration(this.loc, this.endloc, this.type.syntaxCopy(), this.tok, this.fes, this.ident);
+            f.treq = this.treq;
             return this.syntaxCopy(f);
         }
 
         public  boolean isNested() {
-            return ((this.tok.value & 0xFF) != 161) && (this.isThis() == null);
+            return ((this.tok & 0xFF) != 161) && (this.isThis() == null);
         }
 
         public  AggregateDeclaration isThis() {
-            return ((this.tok.value & 0xFF) == 160) ? super.isThis() : null;
+            return ((this.tok & 0xFF) == 160) ? super.isThis() : null;
         }
 
         public  boolean isVirtual() {
@@ -3319,22 +3307,22 @@ public class func {
 
         public  void modifyReturns(Ptr<Scope> sc, Type tret) {
             // skipping duplicate class RetWalker
-            if ((this.semanticRun.value < PASS.semantic3done))
+            if ((this.semanticRun < PASS.semantic3done))
             {
                 return ;
             }
-            if (this.fes.value != null)
+            if (this.fes != null)
             {
                 return ;
             }
             RetWalker w = new RetWalker();
-            w.sc.value = sc;
-            w.tret.value = tret;
+            w.sc = sc;
+            w.tret = tret;
             w.fld = this;
-            this.fbody.value.accept(w);
-            if (this.inferRetType && (!pequals(this.type.value.nextOf(), tret)))
+            this.fbody.accept(w);
+            if (this.inferRetType && (!pequals(this.type.nextOf(), tret)))
             {
-                this.type.value.toTypeFunction().next.value = tret;
+                this.type.toTypeFunction().next.value = tret;
             }
         }
 
@@ -3343,7 +3331,7 @@ public class func {
         }
 
         public  BytePtr kind() {
-            return ((this.tok.value & 0xFF) != 161) ? new BytePtr("delegate") : new BytePtr("function");
+            return ((this.tok & 0xFF) != 161) ? new BytePtr("delegate") : new BytePtr("function");
         }
 
         public  BytePtr toPrettyChars(boolean QualifyTypes) {
@@ -3352,7 +3340,7 @@ public class func {
                 TemplateInstance ti = this.parent.value.isTemplateInstance();
                 if (ti != null)
                 {
-                    return ti.tempdecl.value.toPrettyChars(QualifyTypes);
+                    return ti.tempdecl.toPrettyChars(QualifyTypes);
                 }
             }
             return this.toPrettyChars(QualifyTypes);
@@ -3460,7 +3448,7 @@ public class func {
     {
         public boolean isCpCtor = false;
         public  CtorDeclaration(Loc loc, Loc endloc, long stc, Type type, boolean isCpCtor) {
-            super(loc, endloc, Id.ctor.value, stc, type);
+            super(loc, endloc, Id.ctor, stc, type);
             this.isCpCtor = isCpCtor;
         }
 
@@ -3471,7 +3459,7 @@ public class func {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            CtorDeclaration f = new CtorDeclaration(this.loc.value, this.endloc.value, this.storage_class.value, this.type.value.syntaxCopy(), false);
+            CtorDeclaration f = new CtorDeclaration(this.loc, this.endloc, this.storage_class, this.type.syntaxCopy(), false);
             return this.syntaxCopy(f);
         }
 
@@ -3492,7 +3480,7 @@ public class func {
         }
 
         public  boolean addPostInvariant() {
-            return (this.isThis() != null) && (this.vthis.value != null) && ((global.params.useInvariants & 0xFF) == 2);
+            return (this.isThis() != null) && (this.vthis != null) && ((global.value.params.useInvariants & 0xFF) == 2);
         }
 
         public  CtorDeclaration isCtorDeclaration() {
@@ -3598,7 +3586,7 @@ public class func {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            PostBlitDeclaration dd = new PostBlitDeclaration(this.loc.value, this.endloc.value, this.storage_class.value, this.ident.value);
+            PostBlitDeclaration dd = new PostBlitDeclaration(this.loc, this.endloc, this.storage_class, this.ident);
             return this.syntaxCopy(dd);
         }
 
@@ -3611,7 +3599,7 @@ public class func {
         }
 
         public  boolean addPostInvariant() {
-            return (this.isThis() != null) && (this.vthis.value != null) && ((global.params.useInvariants & 0xFF) == 2);
+            return (this.isThis() != null) && (this.vthis != null) && ((global.value.params.useInvariants & 0xFF) == 2);
         }
 
         public  boolean overloadInsert(Dsymbol s) {
@@ -3715,7 +3703,7 @@ public class func {
     public static class DtorDeclaration extends FuncDeclaration
     {
         public  DtorDeclaration(Loc loc, Loc endloc) {
-            super(loc, endloc, Id.dtor.value, 0L, null);
+            super(loc, endloc, Id.dtor, 0L, null);
         }
 
         public  DtorDeclaration(Loc loc, Loc endloc, long stc, Identifier id) {
@@ -3724,7 +3712,7 @@ public class func {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            DtorDeclaration dd = new DtorDeclaration(this.loc.value, this.endloc.value, this.storage_class.value, this.ident.value);
+            DtorDeclaration dd = new DtorDeclaration(this.loc, this.endloc, this.storage_class, this.ident);
             return this.syntaxCopy(dd);
         }
 
@@ -3737,11 +3725,11 @@ public class func {
         }
 
         public  boolean isVirtual() {
-            return this.vtblIndex.value != -1;
+            return this.vtblIndex != -1;
         }
 
         public  boolean addPreInvariant() {
-            return (this.isThis() != null) && (this.vthis.value != null) && ((global.params.useInvariants & 0xFF) == 2);
+            return (this.isThis() != null) && (this.vthis != null) && ((global.value.params.useInvariants & 0xFF) == 2);
         }
 
         public  boolean addPostInvariant() {
@@ -3858,7 +3846,7 @@ public class func {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            StaticCtorDeclaration scd = new StaticCtorDeclaration(this.loc.value, this.endloc.value, this.storage_class.value);
+            StaticCtorDeclaration scd = new StaticCtorDeclaration(this.loc, this.endloc, this.storage_class);
             return this.syntaxCopy(scd);
         }
 
@@ -3984,7 +3972,7 @@ public class func {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            SharedStaticCtorDeclaration scd = new SharedStaticCtorDeclaration(this.loc.value, this.endloc.value, this.storage_class.value);
+            SharedStaticCtorDeclaration scd = new SharedStaticCtorDeclaration(this.loc, this.endloc, this.storage_class);
             return this.syntaxCopy(scd);
         }
 
@@ -4095,7 +4083,7 @@ public class func {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            StaticDtorDeclaration sdd = new StaticDtorDeclaration(this.loc.value, this.endloc.value, this.storage_class.value);
+            StaticDtorDeclaration sdd = new StaticDtorDeclaration(this.loc, this.endloc, this.storage_class);
             return this.syntaxCopy(sdd);
         }
 
@@ -4222,7 +4210,7 @@ public class func {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            SharedStaticDtorDeclaration sdd = new SharedStaticDtorDeclaration(this.loc.value, this.endloc.value, this.storage_class.value);
+            SharedStaticDtorDeclaration sdd = new SharedStaticDtorDeclaration(this.loc, this.endloc, this.storage_class);
             return this.syntaxCopy(sdd);
         }
 
@@ -4325,12 +4313,12 @@ public class func {
     {
         public  InvariantDeclaration(Loc loc, Loc endloc, long stc, Identifier id, Statement fbody) {
             super(loc, endloc, id != null ? id : Identifier.generateId(new BytePtr("__invariant")), stc, null);
-            this.fbody.value = fbody;
+            this.fbody = fbody;
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            InvariantDeclaration id = new InvariantDeclaration(this.loc.value, this.endloc.value, this.storage_class.value, null, null);
+            InvariantDeclaration id = new InvariantDeclaration(this.loc, this.endloc, this.storage_class, null, null);
             return this.syntaxCopy(id);
         }
 
@@ -4451,7 +4439,7 @@ public class func {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            UnitTestDeclaration utd = new UnitTestDeclaration(this.loc.value, this.endloc.value, this.storage_class.value, this.codedoc);
+            UnitTestDeclaration utd = new UnitTestDeclaration(this.loc, this.endloc, this.storage_class, this.codedoc);
             return this.syntaxCopy(utd);
         }
 
@@ -4579,7 +4567,7 @@ public class func {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            NewDeclaration f = new NewDeclaration(this.loc.value, this.endloc.value, this.storage_class.value, Parameter.arraySyntaxCopy(this.parameters), this.varargs);
+            NewDeclaration f = new NewDeclaration(this.loc, this.endloc, this.storage_class, Parameter.arraySyntaxCopy(this.parameters), this.varargs);
             return this.syntaxCopy(f);
         }
 
@@ -4705,7 +4693,7 @@ public class func {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            DeleteDeclaration f = new DeleteDeclaration(this.loc.value, this.endloc.value, this.storage_class.value, Parameter.arraySyntaxCopy(this.parameters));
+            DeleteDeclaration f = new DeleteDeclaration(this.loc, this.endloc, this.storage_class, Parameter.arraySyntaxCopy(this.parameters));
             return this.syntaxCopy(f);
         }
 

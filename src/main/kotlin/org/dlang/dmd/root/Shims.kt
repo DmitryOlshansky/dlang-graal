@@ -210,6 +210,10 @@ fun<A,B> comma(a: A?, b: B?) = b
 @Suppress("UNUSED_PARAMETER")
 fun expr(arg: Boolean) {}
 
+@Suppress("UNUSED_PARAMETER")
+fun expr(arg: Void) {}
+
+
 fun assertMsg(cond: Boolean, msg: ByteSlice) {
     require(cond){ msg }
 }
@@ -281,7 +285,7 @@ fun toIntPtr(any: Any): IntPtr =
 
 
 
-fun ref(v: Int) = IntRef(v)
+fun ref(v: Integer) = IntRef(v)
 
 fun<T> ref(v: T?) = Ref(v)
 

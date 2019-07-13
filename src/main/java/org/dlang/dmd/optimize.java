@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -30,36 +26,33 @@ import static org.dlang.dmd.visitor.*;
 public class optimize {
     private static class OptimizeVisitor extends Visitor
     {
-        private Ref<Expression> ret = ref(null);
-        private IntRef result = ref(0);
-        private Ref<Boolean> keepLvalue = ref(false);
+        private Expression ret = null;
+        private int result = 0;
+        private boolean keepLvalue = false;
         public  OptimizeVisitor(Expression e, int result, boolean keepLvalue) {
-            Ref<Expression> e_ref = ref(e);
-            this.ret.value = e_ref.value;
-            this.result.value = result;
-            this.keepLvalue.value = keepLvalue;
+            this.ret = e;
+            this.result = result;
+            this.keepLvalue = keepLvalue;
         }
 
         public  void error() {
-            this.ret.value = new ErrorExp();
+            this.ret = new ErrorExp();
         }
 
         public  boolean expOptimize(Ref<Expression> e, int flags, boolean keepLvalue) {
-            IntRef flags_ref = ref(flags);
-            Ref<Boolean> keepLvalue_ref = ref(keepLvalue);
             if (e.value == null)
             {
                 return false;
             }
-            Ref<Expression> ex = ref(Expression_optimize(e.value, flags_ref.value, keepLvalue_ref.value));
-            if (((ex.value.op.value & 0xFF) == 127))
+            Expression ex = Expression_optimize(e.value, flags, keepLvalue);
+            if (((ex.op & 0xFF) == 127))
             {
-                this.ret.value = ex.value;
+                this.ret = ex;
                 return true;
             }
             else
             {
-                e.value = ex.value;
+                e.value = ex;
                 return false;
             }
         }
@@ -70,198 +63,191 @@ public class optimize {
         }
 
         public  boolean unaOptimize(UnaExp e, int flags) {
-            IntRef flags_ref = ref(flags);
-            return this.expOptimize(e1, flags_ref.value, false);
+            return this.expOptimize(e1, flags, false);
         }
 
         public  boolean binOptimize(BinExp e, int flags) {
-            IntRef flags_ref = ref(flags);
-            this.expOptimize(e1, flags_ref.value, false);
-            this.expOptimize(e2, flags_ref.value, false);
-            return (this.ret.value.op.value & 0xFF) == 127;
+            this.expOptimize(e1, flags, false);
+            this.expOptimize(e2, flags, false);
+            return (this.ret.op & 0xFF) == 127;
         }
 
         public  void visit(Expression e) {
         }
 
         public  void visit(VarExp e) {
-            Ref<VarExp> e_ref = ref(e);
-            if (this.keepLvalue.value)
+            if (this.keepLvalue)
             {
-                Ref<VarDeclaration> v = ref(e_ref.value.var.value.isVarDeclaration());
-                if ((v.value != null) && ((v.value.storage_class.value & 8388608L) == 0))
+                VarDeclaration v = e.var.isVarDeclaration();
+                if ((v != null) && ((v.storage_class & 8388608L) == 0))
                 {
                     return ;
                 }
             }
-            this.ret.value = fromConstInitializer(this.result.value, e_ref.value);
+            this.ret = fromConstInitializer(this.result, e);
         }
 
         public  void visit(TupleExp e) {
             this.expOptimize(e0, 0, false);
             {
-                IntRef i = ref(0);
-                for (; (i.value < (e.exps.value.get()).length.value);i.value++){
-                    this.expOptimize((e.exps.value.get()).get(i.value), 0, false);
+                int i = 0;
+                for (; (i < (e.exps.get()).length);i++){
+                    this.expOptimize((e.exps.get()).get(i), 0, false);
                 }
             }
         }
 
         public  void visit(ArrayLiteralExp e) {
-            if (e.elements.value != null)
+            if (e.elements != null)
             {
-                this.expOptimize(basis, this.result.value & 1, false);
+                this.expOptimize(basis, this.result & 1, false);
                 {
-                    IntRef i = ref(0);
-                    for (; (i.value < (e.elements.value.get()).length.value);i.value++){
-                        this.expOptimize((e.elements.value.get()).get(i.value), this.result.value & 1, false);
+                    int i = 0;
+                    for (; (i < (e.elements.get()).length);i++){
+                        this.expOptimize((e.elements.get()).get(i), this.result & 1, false);
                     }
                 }
             }
         }
 
         public  void visit(AssocArrayLiteralExp e) {
-            assert(((e.keys.value.get()).length.value == (e.values.value.get()).length.value));
+            assert(((e.keys.get()).length == (e.values.get()).length));
             {
-                IntRef i = ref(0);
-                for (; (i.value < (e.keys.value.get()).length.value);i.value++){
-                    this.expOptimize((e.keys.value.get()).get(i.value), this.result.value & 1, false);
-                    this.expOptimize((e.values.value.get()).get(i.value), this.result.value & 1, false);
+                int i = 0;
+                for (; (i < (e.keys.get()).length);i++){
+                    this.expOptimize((e.keys.get()).get(i), this.result & 1, false);
+                    this.expOptimize((e.values.get()).get(i), this.result & 1, false);
                 }
             }
         }
 
         public  void visit(StructLiteralExp e) {
-            if ((e.stageflags.value & 4) != 0)
+            if ((e.stageflags & 4) != 0)
             {
                 return ;
             }
-            IntRef old = ref(e.stageflags.value);
-            e.stageflags.value |= 4;
-            if (e.elements.value != null)
+            int old = e.stageflags;
+            e.stageflags |= 4;
+            if (e.elements != null)
             {
                 {
-                    IntRef i = ref(0);
-                    for (; (i.value < (e.elements.value.get()).length.value);i.value++){
-                        this.expOptimize((e.elements.value.get()).get(i.value), this.result.value & 1, false);
+                    int i = 0;
+                    for (; (i < (e.elements.get()).length);i++){
+                        this.expOptimize((e.elements.get()).get(i), this.result & 1, false);
                     }
                 }
             }
-            e.stageflags.value = old.value;
+            e.stageflags = old;
         }
 
         public  void visit(UnaExp e) {
-            Ref<UnaExp> e_ref = ref(e);
-            if (this.unaOptimize(e_ref.value, this.result.value))
+            if (this.unaOptimize(e, this.result))
             {
                 return ;
             }
         }
 
         public  void visit(NegExp e) {
-            Ref<NegExp> e_ref = ref(e);
-            if (this.unaOptimize(e_ref.value, this.result.value))
+            if (this.unaOptimize(e, this.result))
             {
                 return ;
             }
-            if ((e_ref.value.e1.value.isConst() == 1))
+            if ((e.e1.value.isConst() == 1))
             {
-                this.ret.value = Neg(e_ref.value.type.value, e_ref.value.e1.value).copy();
+                this.ret = Neg(e.type.value, e.e1.value).copy();
             }
         }
 
         public  void visit(ComExp e) {
-            Ref<ComExp> e_ref = ref(e);
-            if (this.unaOptimize(e_ref.value, this.result.value))
+            if (this.unaOptimize(e, this.result))
             {
                 return ;
             }
-            if ((e_ref.value.e1.value.isConst() == 1))
+            if ((e.e1.value.isConst() == 1))
             {
-                this.ret.value = Com(e_ref.value.type.value, e_ref.value.e1.value).copy();
+                this.ret = Com(e.type.value, e.e1.value).copy();
             }
         }
 
         public  void visit(NotExp e) {
-            Ref<NotExp> e_ref = ref(e);
-            if (this.unaOptimize(e_ref.value, this.result.value))
+            if (this.unaOptimize(e, this.result))
             {
                 return ;
             }
-            if ((e_ref.value.e1.value.isConst() == 1))
+            if ((e.e1.value.isConst() == 1))
             {
-                this.ret.value = Not(e_ref.value.type.value, e_ref.value.e1.value).copy();
+                this.ret = Not(e.type.value, e.e1.value).copy();
             }
         }
 
         public  void visit(SymOffExp e) {
-            assert(e.var.value != null);
+            assert(e.var != null);
         }
 
         public  void visit(AddrExp e) {
-            if (((e.e1.value.op.value & 0xFF) == 99))
+            if (((e.e1.value.op & 0xFF) == 99))
             {
                 CommaExp ce = (CommaExp)e.e1.value;
-                Ref<AddrExp> ae = ref(new AddrExp(e.loc.value, ce.e2.value, e.type.value));
-                this.ret.value = new CommaExp(ce.loc.value, ce.e1.value, ae.value, true);
-                this.ret.value.type.value = e.type.value;
+                AddrExp ae = new AddrExp(e.loc, ce.e2.value, e.type.value);
+                this.ret = new CommaExp(ce.loc, ce.e1.value, ae, true);
+                this.ret.type.value = e.type.value;
                 return ;
             }
-            if (this.expOptimize(e1, this.result.value, true))
+            if (this.expOptimize(e1, this.result, true))
             {
                 return ;
             }
-            if (((e.e1.value.op.value & 0xFF) == 24))
+            if (((e.e1.value.op & 0xFF) == 24))
             {
-                Ref<Expression> ex = ref(((PtrExp)e.e1.value).e1.value);
-                if (e.type.value.equals(ex.value.type.value))
+                Expression ex = ((PtrExp)e.e1.value).e1.value;
+                if (e.type.value.equals(ex.type.value))
                 {
-                    this.ret.value = ex.value;
+                    this.ret = ex;
                 }
-                else if (e.type.value.toBasetype().equivalent(ex.value.type.value.toBasetype()))
+                else if (e.type.value.toBasetype().equivalent(ex.type.value.toBasetype()))
                 {
-                    this.ret.value = ex.value.copy();
-                    this.ret.value.type.value = e.type.value;
+                    this.ret = ex.copy();
+                    this.ret.type.value = e.type.value;
                 }
                 return ;
             }
-            if (((e.e1.value.op.value & 0xFF) == 26))
+            if (((e.e1.value.op & 0xFF) == 26))
             {
                 VarExp ve = (VarExp)e.e1.value;
-                if (!ve.var.value.isOut() && !ve.var.value.isRef() && !ve.var.value.isImportedSymbol())
+                if (!ve.var.isOut() && !ve.var.isRef() && !ve.var.isImportedSymbol())
                 {
-                    this.ret.value = new SymOffExp(e.loc.value, ve.var.value, 0L, ve.hasOverloads.value);
-                    this.ret.value.type.value = e.type.value;
+                    this.ret = new SymOffExp(e.loc, ve.var, 0L, ve.hasOverloads);
+                    this.ret.type.value = e.type.value;
                     return ;
                 }
             }
-            if (((e.e1.value.op.value & 0xFF) == 62))
+            if (((e.e1.value.op & 0xFF) == 62))
             {
                 IndexExp ae = (IndexExp)e.e1.value;
-                if (((ae.e2.value.op.value & 0xFF) == 135) && ((ae.e1.value.op.value & 0xFF) == 26))
+                if (((ae.e2.value.op & 0xFF) == 135) && ((ae.e1.value.op & 0xFF) == 26))
                 {
-                    Ref<Long> index = ref((long)ae.e2.value.toInteger());
+                    long index = (long)ae.e2.value.toInteger();
                     VarExp ve = (VarExp)ae.e1.value;
-                    if (((ve.type.value.ty.value & 0xFF) == ENUMTY.Tsarray) && !ve.var.value.isImportedSymbol())
+                    if (((ve.type.value.ty & 0xFF) == ENUMTY.Tsarray) && !ve.var.isImportedSymbol())
                     {
                         TypeSArray ts = (TypeSArray)ve.type.value;
-                        Ref<Long> dim = ref((long)ts.dim.value.toInteger());
-                        if ((index.value < 0L) || (index.value >= dim.value))
+                        long dim = (long)ts.dim.toInteger();
+                        if ((index < 0L) || (index >= dim))
                         {
-                            e.error(new BytePtr("array index %lld is out of bounds `[0..%lld]`"), index.value, dim.value);
+                            e.error(new BytePtr("array index %lld is out of bounds `[0..%lld]`"), index, dim);
                             this.error();
                             return ;
                         }
                         Ref<Boolean> overflow = ref(false);
-                        Ref<Long> offset = ref(mulu((long)index.value, ts.nextOf().size(e.loc.value), overflow));
+                        long offset = mulu((long)index, ts.nextOf().size(e.loc), overflow);
                         if (overflow.value)
                         {
                             e.error(new BytePtr("array offset overflow"));
                             this.error();
                             return ;
                         }
-                        this.ret.value = new SymOffExp(e.loc.value, ve.var.value, offset.value, true);
-                        this.ret.value.type.value = e.type.value;
+                        this.ret = new SymOffExp(e.loc, ve.var, offset, true);
+                        this.ret.type.value = e.type.value;
                         return ;
                     }
                 }
@@ -269,48 +255,48 @@ public class optimize {
         }
 
         public  void visit(PtrExp e) {
-            if (this.expOptimize(e1, this.result.value, false))
+            if (this.expOptimize(e1, this.result, false))
             {
                 return ;
             }
-            if (((e.e1.value.op.value & 0xFF) == 19))
+            if (((e.e1.value.op & 0xFF) == 19))
             {
-                Ref<Expression> ex = ref(((AddrExp)e.e1.value).e1.value);
-                if (e.type.value.equals(ex.value.type.value))
+                Expression ex = ((AddrExp)e.e1.value).e1.value;
+                if (e.type.value.equals(ex.type.value))
                 {
-                    this.ret.value = ex.value;
+                    this.ret = ex;
                 }
-                else if (e.type.value.toBasetype().equivalent(ex.value.type.value.toBasetype()))
+                else if (e.type.value.toBasetype().equivalent(ex.type.value.toBasetype()))
                 {
-                    this.ret.value = ex.value.copy();
-                    this.ret.value.type.value = e.type.value;
+                    this.ret = ex.copy();
+                    this.ret.type.value = e.type.value;
                 }
             }
-            if (this.keepLvalue.value)
+            if (this.keepLvalue)
             {
                 return ;
             }
-            if (((e.e1.value.op.value & 0xFF) == 74))
+            if (((e.e1.value.op & 0xFF) == 74))
             {
-                Ref<Expression> ex = ref(Ptr(e.type.value, e.e1.value).copy());
-                if (!CTFEExp.isCantExp(ex.value))
+                Expression ex = Ptr(e.type.value, e.e1.value).copy();
+                if (!CTFEExp.isCantExp(ex))
                 {
-                    this.ret.value = ex.value;
+                    this.ret = ex;
                     return ;
                 }
             }
-            if (((e.e1.value.op.value & 0xFF) == 25))
+            if (((e.e1.value.op & 0xFF) == 25))
             {
                 SymOffExp se = (SymOffExp)e.e1.value;
-                Ref<VarDeclaration> v = ref(se.var.value.isVarDeclaration());
-                Ref<Expression> ex = ref(expandVar(this.result.value, v.value));
-                if ((ex.value != null) && ((ex.value.op.value & 0xFF) == 49))
+                VarDeclaration v = se.var.isVarDeclaration();
+                Expression ex = expandVar(this.result, v);
+                if ((ex != null) && ((ex.op & 0xFF) == 49))
                 {
-                    StructLiteralExp sle = (StructLiteralExp)ex.value;
-                    ex.value = sle.getField(e.type.value, (int)se.offset.value);
-                    if ((ex.value != null) && !CTFEExp.isCantExp(ex.value))
+                    StructLiteralExp sle = (StructLiteralExp)ex;
+                    ex = sle.getField(e.type.value, (int)se.offset);
+                    if ((ex != null) && !CTFEExp.isCantExp(ex))
                     {
-                        this.ret.value = ex.value;
+                        this.ret = ex;
                         return ;
                     }
                 }
@@ -318,31 +304,31 @@ public class optimize {
         }
 
         public  void visit(DotVarExp e) {
-            if (this.expOptimize(e1, this.result.value, false))
+            if (this.expOptimize(e1, this.result, false))
             {
                 return ;
             }
-            if (this.keepLvalue.value)
+            if (this.keepLvalue)
             {
                 return ;
             }
-            Ref<Expression> ex = ref(e.e1.value);
-            if (((ex.value.op.value & 0xFF) == 26))
+            Expression ex = e.e1.value;
+            if (((ex.op & 0xFF) == 26))
             {
-                VarExp ve = (VarExp)ex.value;
-                Ref<VarDeclaration> v = ref(ve.var.value.isVarDeclaration());
-                ex.value = expandVar(this.result.value, v.value);
+                VarExp ve = (VarExp)ex;
+                VarDeclaration v = ve.var.isVarDeclaration();
+                ex = expandVar(this.result, v);
             }
-            if ((ex.value != null) && ((ex.value.op.value & 0xFF) == 49))
+            if ((ex != null) && ((ex.op & 0xFF) == 49))
             {
-                StructLiteralExp sle = (StructLiteralExp)ex.value;
-                Ref<VarDeclaration> vf = ref(e.var.value.isVarDeclaration());
-                if ((vf.value != null) && !vf.value.overlapped.value)
+                StructLiteralExp sle = (StructLiteralExp)ex;
+                VarDeclaration vf = e.var.isVarDeclaration();
+                if ((vf != null) && !vf.overlapped)
                 {
-                    ex.value = sle.getField(e.type.value, vf.value.offset.value);
-                    if ((ex.value != null) && !CTFEExp.isCantExp(ex.value))
+                    ex = sle.getField(e.type.value, vf.offset);
+                    if ((ex != null) && !CTFEExp.isCantExp(ex))
                     {
-                        this.ret.value = ex.value;
+                        this.ret = ex;
                         return ;
                     }
                 }
@@ -351,46 +337,46 @@ public class optimize {
 
         public  void visit(NewExp e) {
             this.expOptimize(thisexp, 0, false);
-            if (e.newargs.value != null)
+            if (e.newargs != null)
             {
                 {
-                    IntRef i = ref(0);
-                    for (; (i.value < (e.newargs.value.get()).length.value);i.value++){
-                        this.expOptimize((e.newargs.value.get()).get(i.value), 0, false);
+                    int i = 0;
+                    for (; (i < (e.newargs.get()).length);i++){
+                        this.expOptimize((e.newargs.get()).get(i), 0, false);
                     }
                 }
             }
-            if (e.arguments.value != null)
+            if (e.arguments != null)
             {
                 {
-                    IntRef i = ref(0);
-                    for (; (i.value < (e.arguments.value.get()).length.value);i.value++){
-                        this.expOptimize((e.arguments.value.get()).get(i.value), 0, false);
+                    int i = 0;
+                    for (; (i < (e.arguments.get()).length);i++){
+                        this.expOptimize((e.arguments.get()).get(i), 0, false);
                     }
                 }
             }
         }
 
         public  void visit(CallExp e) {
-            if (this.expOptimize(e1, this.result.value, false))
+            if (this.expOptimize(e1, this.result, false))
             {
                 return ;
             }
-            if (e.arguments.value != null)
+            if (e.arguments != null)
             {
-                Ref<Type> t1 = ref(e.e1.value.type.value.toBasetype());
-                if (((t1.value.ty.value & 0xFF) == ENUMTY.Tdelegate))
+                Type t1 = e.e1.value.type.value.toBasetype();
+                if (((t1.ty & 0xFF) == ENUMTY.Tdelegate))
                 {
-                    t1.value = t1.value.nextOf();
+                    t1 = t1.nextOf();
                 }
-                assert(((t1.value.ty.value & 0xFF) == ENUMTY.Tfunction));
-                TypeFunction tf = (TypeFunction)t1.value;
+                assert(((t1.ty & 0xFF) == ENUMTY.Tfunction));
+                TypeFunction tf = (TypeFunction)t1;
                 {
-                    IntRef i = ref(0);
-                    for (; (i.value < (e.arguments.value.get()).length.value);i.value++){
-                        Ref<Parameter> p = ref(tf.parameterList.get(i.value));
-                        Ref<Boolean> keep = ref((p.value != null) && ((p.value.storageClass.value & 2101248L) != 0L));
-                        this.expOptimize((e.arguments.value.get()).get(i.value), 0, keep.value);
+                    int i = 0;
+                    for (; (i < (e.arguments.get()).length);i++){
+                        Parameter p = tf.parameterList.get(i);
+                        boolean keep = (p != null) && ((p.storageClass & 2101248L) != 0L);
+                        this.expOptimize((e.arguments.get()).get(i), 0, keep);
                     }
                 }
             }
@@ -398,125 +384,124 @@ public class optimize {
 
         public  void visit(CastExp e) {
             assert(e.type.value != null);
-            Ref<Byte> op1 = ref(e.e1.value.op.value);
-            Ref<Expression> e1old = ref(e.e1.value);
-            if (this.expOptimize(e1, this.result.value, false))
+            byte op1 = e.e1.value.op;
+            Expression e1old = e.e1.value;
+            if (this.expOptimize(e1, this.result, false))
             {
                 return ;
             }
-            e.e1.value = fromConstInitializer(this.result.value, e.e1.value);
-            if ((pequals(e.e1.value, e1old.value)) && ((e.e1.value.op.value & 0xFF) == 47) && ((e.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tpointer) && ((e.e1.value.type.value.toBasetype().ty.value & 0xFF) != ENUMTY.Tsarray))
+            e.e1.value = fromConstInitializer(this.result, e.e1.value);
+            if ((pequals(e.e1.value, e1old)) && ((e.e1.value.op & 0xFF) == 47) && ((e.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tpointer) && ((e.e1.value.type.value.toBasetype().ty & 0xFF) != ENUMTY.Tsarray))
             {
                 return ;
             }
-            if (((e.e1.value.op.value & 0xFF) == 121) || ((e.e1.value.op.value & 0xFF) == 47) && ((e.type.value.ty.value & 0xFF) == ENUMTY.Tpointer) || ((e.type.value.ty.value & 0xFF) == ENUMTY.Tarray))
+            if (((e.e1.value.op & 0xFF) == 121) || ((e.e1.value.op & 0xFF) == 47) && ((e.type.value.ty & 0xFF) == ENUMTY.Tpointer) || ((e.type.value.ty & 0xFF) == ENUMTY.Tarray))
             {
-                Ref<Long> esz = ref(e.type.value.nextOf().size(e.loc.value));
-                Ref<Long> e1sz = ref(e.e1.value.type.value.toBasetype().nextOf().size(e.e1.value.loc.value));
-                if ((esz.value == -1L) || (e1sz.value == -1L))
+                long esz = e.type.value.nextOf().size(e.loc);
+                long e1sz = e.e1.value.type.value.toBasetype().nextOf().size(e.e1.value.loc);
+                if ((esz == -1L) || (e1sz == -1L))
                 {
                     this.error();
                     return ;
                 }
-                if ((e1sz.value == esz.value))
+                if ((e1sz == esz))
                 {
-                    if (((e.type.value.nextOf().ty.value & 0xFF) == ENUMTY.Tvoid))
+                    if (((e.type.value.nextOf().ty & 0xFF) == ENUMTY.Tvoid))
                     {
                         return ;
                     }
-                    this.ret.value = e.e1.value.castTo(null, e.type.value);
+                    this.ret = e.e1.value.castTo(null, e.type.value);
                     return ;
                 }
             }
-            if (((e.e1.value.op.value & 0xFF) == 49) && (e.e1.value.type.value.implicitConvTo(e.type.value) >= MATCH.constant))
+            if (((e.e1.value.op & 0xFF) == 49) && (e.e1.value.type.value.implicitConvTo(e.type.value) >= MATCH.constant))
             {
             /*L1:*/
-                this.ret.value = (pequals(e1old.value, e.e1.value)) ? e.e1.value.copy() : e.e1.value;
-                this.ret.value.type.value = e.type.value;
+                this.ret = (pequals(e1old, e.e1.value)) ? e.e1.value.copy() : e.e1.value;
+                this.ret.type.value = e.type.value;
                 return ;
             }
-            if (((op1.value & 0xFF) != 47) && ((e.e1.value.op.value & 0xFF) == 47))
+            if (((op1 & 0xFF) != 47) && ((e.e1.value.op & 0xFF) == 47))
             {
-                this.ret.value = e.e1.value.castTo(null, e.to.value);
+                this.ret = e.e1.value.castTo(null, e.to);
                 return ;
             }
-            if (((e.e1.value.op.value & 0xFF) == 13) && ((e.type.value.ty.value & 0xFF) == ENUMTY.Tpointer) || ((e.type.value.ty.value & 0xFF) == ENUMTY.Tclass) || ((e.type.value.ty.value & 0xFF) == ENUMTY.Tarray))
+            if (((e.e1.value.op & 0xFF) == 13) && ((e.type.value.ty & 0xFF) == ENUMTY.Tpointer) || ((e.type.value.ty & 0xFF) == ENUMTY.Tclass) || ((e.type.value.ty & 0xFF) == ENUMTY.Tarray))
             {
                 /*goto L1*/throw Dispatch0.INSTANCE;
             }
-            if (((e.type.value.ty.value & 0xFF) == ENUMTY.Tclass) && ((e.e1.value.type.value.ty.value & 0xFF) == ENUMTY.Tclass))
+            if (((e.type.value.ty & 0xFF) == ENUMTY.Tclass) && ((e.e1.value.type.value.ty & 0xFF) == ENUMTY.Tclass))
             {
-                Ref<ClassDeclaration> cdfrom = ref(e.e1.value.type.value.isClassHandle());
-                Ref<ClassDeclaration> cdto = ref(e.type.value.isClassHandle());
-                if ((pequals(cdto.value, ClassDeclaration.object.value)) && (cdfrom.value.isInterfaceDeclaration() == null))
+                ClassDeclaration cdfrom = e.e1.value.type.value.isClassHandle();
+                ClassDeclaration cdto = e.type.value.isClassHandle();
+                if ((pequals(cdto, ClassDeclaration.object)) && (cdfrom.isInterfaceDeclaration() == null))
                 {
                     /*goto L1*/throw Dispatch0.INSTANCE;
                 }
-                cdfrom.value.size(e.loc.value);
-                assert((cdfrom.value.sizeok.value == Sizeok.done));
-                assert((cdto.value.sizeok.value == Sizeok.done) || !cdto.value.isBaseOf(cdfrom.value, null));
+                cdfrom.size(e.loc);
+                assert((cdfrom.sizeok == Sizeok.done));
+                assert((cdto.sizeok == Sizeok.done) || !cdto.isBaseOf(cdfrom, null));
                 IntRef offset = ref(0);
-                if (cdto.value.isBaseOf(cdfrom.value, ptr(offset)) && (offset.value == 0))
+                if (cdto.isBaseOf(cdfrom, ptr(offset)) && (offset.value == 0))
                 {
                     /*goto L1*/throw Dispatch0.INSTANCE;
                 }
             }
-            if (e.to.value.mutableOf().constOf().equals(e.e1.value.type.value.mutableOf().constOf()))
+            if (e.to.mutableOf().constOf().equals(e.e1.value.type.value.mutableOf().constOf()))
             {
                 /*goto L1*/throw Dispatch0.INSTANCE;
             }
             if (e.e1.value.isConst() != 0)
             {
-                if (((e.e1.value.op.value & 0xFF) == 25))
+                if (((e.e1.value.op & 0xFF) == 25))
                 {
-                    if (((e.type.value.toBasetype().ty.value & 0xFF) != ENUMTY.Tsarray))
+                    if (((e.type.value.toBasetype().ty & 0xFF) != ENUMTY.Tsarray))
                     {
-                        Ref<Long> esz = ref(e.type.value.size(e.loc.value));
-                        Ref<Long> e1sz = ref(e.e1.value.type.value.size(e.e1.value.loc.value));
-                        if ((esz.value == -1L) || (e1sz.value == -1L))
+                        long esz = e.type.value.size(e.loc);
+                        long e1sz = e.e1.value.type.value.size(e.e1.value.loc);
+                        if ((esz == -1L) || (e1sz == -1L))
                         {
                             this.error();
                             return ;
                         }
-                        if ((esz.value == e1sz.value))
+                        if ((esz == e1sz))
                         {
                             /*goto L1*/throw Dispatch0.INSTANCE;
                         }
                     }
                     return ;
                 }
-                if (((e.to.value.toBasetype().ty.value & 0xFF) != ENUMTY.Tvoid))
+                if (((e.to.toBasetype().ty & 0xFF) != ENUMTY.Tvoid))
                 {
-                    if (e.e1.value.type.value.equals(e.type.value) && e.type.value.equals(e.to.value))
+                    if (e.e1.value.type.value.equals(e.type.value) && e.type.value.equals(e.to))
                     {
-                        this.ret.value = e.e1.value;
+                        this.ret = e.e1.value;
                     }
                     else
                     {
-                        this.ret.value = Cast(e.loc.value, e.type.value, e.to.value, e.e1.value).copy();
+                        this.ret = Cast(e.loc, e.type.value, e.to, e.e1.value).copy();
                     }
                 }
             }
         }
 
         public  void visit(BinExp e) {
-            Ref<BinExp> e_ref = ref(e);
-            Ref<Boolean> e2only = ref(((e_ref.value.op.value & 0xFF) == 95) || ((e_ref.value.op.value & 0xFF) == 96));
-            if (e2only.value ? this.expOptimize(e2, this.result.value, false) : this.binOptimize(e_ref.value, this.result.value))
+            boolean e2only = ((e.op & 0xFF) == 95) || ((e.op & 0xFF) == 96);
+            if (e2only ? this.expOptimize(e2, this.result, false) : this.binOptimize(e, this.result))
             {
                 return ;
             }
-            if (((e_ref.value.op.value & 0xFF) == 66) || ((e_ref.value.op.value & 0xFF) == 67) || ((e_ref.value.op.value & 0xFF) == 69))
+            if (((e.op & 0xFF) == 66) || ((e.op & 0xFF) == 67) || ((e.op & 0xFF) == 69))
             {
-                if ((e_ref.value.e2.value.isConst() == 1))
+                if ((e.e2.value.isConst() == 1))
                 {
-                    Ref<Long> i2 = ref((long)e_ref.value.e2.value.toInteger());
-                    Ref<Long> sz = ref(e_ref.value.e1.value.type.value.size(e_ref.value.e1.value.loc.value));
-                    assert((sz.value != -1L));
-                    sz.value *= 8L;
-                    if ((i2.value < 0L) || ((long)i2.value >= sz.value))
+                    long i2 = (long)e.e2.value.toInteger();
+                    long sz = e.e1.value.type.value.size(e.e1.value.loc);
+                    assert((sz != -1L));
+                    sz *= 8L;
+                    if ((i2 < 0L) || ((long)i2 >= sz))
                     {
-                        e_ref.value.error(new BytePtr("shift assign by %lld is outside the range `0..%llu`"), i2.value, sz.value - 1L);
+                        e.error(new BytePtr("shift assign by %lld is outside the range `0..%llu`"), i2, sz - 1L);
                         this.error();
                         return ;
                     }
@@ -525,381 +510,363 @@ public class optimize {
         }
 
         public  void visit(AddExp e) {
-            Ref<AddExp> e_ref = ref(e);
-            if (this.binOptimize(e_ref.value, this.result.value))
+            if (this.binOptimize(e, this.result))
             {
                 return ;
             }
-            if ((e_ref.value.e1.value.isConst() != 0) && (e_ref.value.e2.value.isConst() != 0))
+            if ((e.e1.value.isConst() != 0) && (e.e2.value.isConst() != 0))
             {
-                if (((e_ref.value.e1.value.op.value & 0xFF) == 25) && ((e_ref.value.e2.value.op.value & 0xFF) == 25))
+                if (((e.e1.value.op & 0xFF) == 25) && ((e.e2.value.op & 0xFF) == 25))
                 {
                     return ;
                 }
-                this.ret.value = Add(e_ref.value.loc.value, e_ref.value.type.value, e_ref.value.e1.value, e_ref.value.e2.value).copy();
+                this.ret = Add(e.loc, e.type.value, e.e1.value, e.e2.value).copy();
             }
         }
 
         public  void visit(MinExp e) {
-            Ref<MinExp> e_ref = ref(e);
-            if (this.binOptimize(e_ref.value, this.result.value))
+            if (this.binOptimize(e, this.result))
             {
                 return ;
             }
-            if ((e_ref.value.e1.value.isConst() != 0) && (e_ref.value.e2.value.isConst() != 0))
+            if ((e.e1.value.isConst() != 0) && (e.e2.value.isConst() != 0))
             {
-                if (((e_ref.value.e2.value.op.value & 0xFF) == 25))
+                if (((e.e2.value.op & 0xFF) == 25))
                 {
                     return ;
                 }
-                this.ret.value = Min(e_ref.value.loc.value, e_ref.value.type.value, e_ref.value.e1.value, e_ref.value.e2.value).copy();
+                this.ret = Min(e.loc, e.type.value, e.e1.value, e.e2.value).copy();
             }
         }
 
         public  void visit(MulExp e) {
-            Ref<MulExp> e_ref = ref(e);
-            if (this.binOptimize(e_ref.value, this.result.value))
+            if (this.binOptimize(e, this.result))
             {
                 return ;
             }
-            if ((e_ref.value.e1.value.isConst() == 1) && (e_ref.value.e2.value.isConst() == 1))
+            if ((e.e1.value.isConst() == 1) && (e.e2.value.isConst() == 1))
             {
-                this.ret.value = Mul(e_ref.value.loc.value, e_ref.value.type.value, e_ref.value.e1.value, e_ref.value.e2.value).copy();
+                this.ret = Mul(e.loc, e.type.value, e.e1.value, e.e2.value).copy();
             }
         }
 
         public  void visit(DivExp e) {
-            Ref<DivExp> e_ref = ref(e);
-            if (this.binOptimize(e_ref.value, this.result.value))
+            if (this.binOptimize(e, this.result))
             {
                 return ;
             }
-            if ((e_ref.value.e1.value.isConst() == 1) && (e_ref.value.e2.value.isConst() == 1))
+            if ((e.e1.value.isConst() == 1) && (e.e2.value.isConst() == 1))
             {
-                this.ret.value = Div(e_ref.value.loc.value, e_ref.value.type.value, e_ref.value.e1.value, e_ref.value.e2.value).copy();
+                this.ret = Div(e.loc, e.type.value, e.e1.value, e.e2.value).copy();
             }
         }
 
         public  void visit(ModExp e) {
-            Ref<ModExp> e_ref = ref(e);
-            if (this.binOptimize(e_ref.value, this.result.value))
+            if (this.binOptimize(e, this.result))
             {
                 return ;
             }
-            if ((e_ref.value.e1.value.isConst() == 1) && (e_ref.value.e2.value.isConst() == 1))
+            if ((e.e1.value.isConst() == 1) && (e.e2.value.isConst() == 1))
             {
-                this.ret.value = Mod(e_ref.value.loc.value, e_ref.value.type.value, e_ref.value.e1.value, e_ref.value.e2.value).copy();
+                this.ret = Mod(e.loc, e.type.value, e.e1.value, e.e2.value).copy();
             }
         }
 
         public  void shift_optimize(BinExp e, Function4<Loc,Type,Expression,Expression,UnionExp> shift) {
-            Ref<BinExp> e_ref = ref(e);
-            if (this.binOptimize(e_ref.value, this.result.value))
+            if (this.binOptimize(e, this.result))
             {
                 return ;
             }
-            if ((e_ref.value.e2.value.isConst() == 1))
+            if ((e.e2.value.isConst() == 1))
             {
-                Ref<Long> i2 = ref((long)e_ref.value.e2.value.toInteger());
-                Ref<Long> sz = ref(e_ref.value.e1.value.type.value.size(e_ref.value.e1.value.loc.value));
-                assert((sz.value != -1L));
-                sz.value *= 8L;
-                if ((i2.value < 0L) || ((long)i2.value >= sz.value))
+                long i2 = (long)e.e2.value.toInteger();
+                long sz = e.e1.value.type.value.size(e.e1.value.loc);
+                assert((sz != -1L));
+                sz *= 8L;
+                if ((i2 < 0L) || ((long)i2 >= sz))
                 {
-                    e_ref.value.error(new BytePtr("shift by %lld is outside the range `0..%llu`"), i2.value, sz.value - 1L);
+                    e.error(new BytePtr("shift by %lld is outside the range `0..%llu`"), i2, sz - 1L);
                     this.error();
                     return ;
                 }
-                if ((e_ref.value.e1.value.isConst() == 1))
+                if ((e.e1.value.isConst() == 1))
                 {
-                    this.ret.value = (shift).invoke(e_ref.value.loc.value, e_ref.value.type.value, e_ref.value.e1.value, e_ref.value.e2.value).copy();
+                    this.ret = (shift).invoke(e.loc, e.type.value, e.e1.value, e.e2.value).copy();
                 }
             }
         }
 
         public  void visit(ShlExp e) {
-            Ref<ShlExp> e_ref = ref(e);
-            this.shift_optimize(e_ref.value, optimize::Shl);
+            this.shift_optimize(e, optimize::Shl);
         }
 
         public  void visit(ShrExp e) {
-            Ref<ShrExp> e_ref = ref(e);
-            this.shift_optimize(e_ref.value, optimize::Shr);
+            this.shift_optimize(e, optimize::Shr);
         }
 
         public  void visit(UshrExp e) {
-            Ref<UshrExp> e_ref = ref(e);
-            this.shift_optimize(e_ref.value, optimize::Ushr);
+            this.shift_optimize(e, optimize::Ushr);
         }
 
         public  void visit(AndExp e) {
-            Ref<AndExp> e_ref = ref(e);
-            if (this.binOptimize(e_ref.value, this.result.value))
+            if (this.binOptimize(e, this.result))
             {
                 return ;
             }
-            if ((e_ref.value.e1.value.isConst() == 1) && (e_ref.value.e2.value.isConst() == 1))
+            if ((e.e1.value.isConst() == 1) && (e.e2.value.isConst() == 1))
             {
-                this.ret.value = And(e_ref.value.loc.value, e_ref.value.type.value, e_ref.value.e1.value, e_ref.value.e2.value).copy();
+                this.ret = And(e.loc, e.type.value, e.e1.value, e.e2.value).copy();
             }
         }
 
         public  void visit(OrExp e) {
-            Ref<OrExp> e_ref = ref(e);
-            if (this.binOptimize(e_ref.value, this.result.value))
+            if (this.binOptimize(e, this.result))
             {
                 return ;
             }
-            if ((e_ref.value.e1.value.isConst() == 1) && (e_ref.value.e2.value.isConst() == 1))
+            if ((e.e1.value.isConst() == 1) && (e.e2.value.isConst() == 1))
             {
-                this.ret.value = Or(e_ref.value.loc.value, e_ref.value.type.value, e_ref.value.e1.value, e_ref.value.e2.value).copy();
+                this.ret = Or(e.loc, e.type.value, e.e1.value, e.e2.value).copy();
             }
         }
 
         public  void visit(XorExp e) {
-            Ref<XorExp> e_ref = ref(e);
-            if (this.binOptimize(e_ref.value, this.result.value))
+            if (this.binOptimize(e, this.result))
             {
                 return ;
             }
-            if ((e_ref.value.e1.value.isConst() == 1) && (e_ref.value.e2.value.isConst() == 1))
+            if ((e.e1.value.isConst() == 1) && (e.e2.value.isConst() == 1))
             {
-                this.ret.value = Xor(e_ref.value.loc.value, e_ref.value.type.value, e_ref.value.e1.value, e_ref.value.e2.value).copy();
+                this.ret = Xor(e.loc, e.type.value, e.e1.value, e.e2.value).copy();
             }
         }
 
         public  void visit(PowExp e) {
-            Ref<PowExp> e_ref = ref(e);
-            if (this.binOptimize(e_ref.value, this.result.value))
+            if (this.binOptimize(e, this.result))
             {
                 return ;
             }
-            if (((e_ref.value.e1.value.op.value & 0xFF) == 135) && (e_ref.value.e1.value.toInteger() == 1L) || ((e_ref.value.e1.value.op.value & 0xFF) == 140) && (e_ref.value.e1.value.toReal() == CTFloat.one.value))
+            if (((e.e1.value.op & 0xFF) == 135) && (e.e1.value.toInteger() == 1L) || ((e.e1.value.op & 0xFF) == 140) && (e.e1.value.toReal() == CTFloat.one))
             {
-                this.ret.value = new CommaExp(e_ref.value.loc.value, e_ref.value.e2.value, e_ref.value.e1.value, true);
-                this.ret.value.type.value = e_ref.value.type.value;
+                this.ret = new CommaExp(e.loc, e.e2.value, e.e1.value, true);
+                this.ret.type.value = e.type.value;
                 return ;
             }
-            if (e_ref.value.e2.value.type.value.isintegral() && ((e_ref.value.e1.value.op.value & 0xFF) == 135) && ((long)e_ref.value.e1.value.toInteger() == -1L))
+            if (e.e2.value.type.value.isintegral() && ((e.e1.value.op & 0xFF) == 135) && ((long)e.e1.value.toInteger() == -1L))
             {
-                this.ret.value = new AndExp(e_ref.value.loc.value, e_ref.value.e2.value, new IntegerExp(e_ref.value.loc.value, 1L, e_ref.value.e2.value.type.value));
-                this.ret.value.type.value = e_ref.value.e2.value.type.value;
-                this.ret.value = new CondExp(e_ref.value.loc.value, this.ret.value, new IntegerExp(e_ref.value.loc.value, -1L, e_ref.value.type.value), new IntegerExp(e_ref.value.loc.value, 1L, e_ref.value.type.value));
-                this.ret.value.type.value = e_ref.value.type.value;
+                this.ret = new AndExp(e.loc, e.e2.value, new IntegerExp(e.loc, 1L, e.e2.value.type.value));
+                this.ret.type.value = e.e2.value.type.value;
+                this.ret = new CondExp(e.loc, this.ret, new IntegerExp(e.loc, -1L, e.type.value), new IntegerExp(e.loc, 1L, e.type.value));
+                this.ret.type.value = e.type.value;
                 return ;
             }
-            if (((e_ref.value.e2.value.op.value & 0xFF) == 135) && (e_ref.value.e2.value.toInteger() == 0L) || ((e_ref.value.e2.value.op.value & 0xFF) == 140) && (e_ref.value.e2.value.toReal() == CTFloat.zero.value))
+            if (((e.e2.value.op & 0xFF) == 135) && (e.e2.value.toInteger() == 0L) || ((e.e2.value.op & 0xFF) == 140) && (e.e2.value.toReal() == CTFloat.zero))
             {
-                if (e_ref.value.e1.value.type.value.isintegral())
+                if (e.e1.value.type.value.isintegral())
                 {
-                    this.ret.value = new IntegerExp(e_ref.value.loc.value, 1L, e_ref.value.e1.value.type.value);
+                    this.ret = new IntegerExp(e.loc, 1L, e.e1.value.type.value);
                 }
                 else
                 {
-                    this.ret.value = new RealExp(e_ref.value.loc.value, CTFloat.one.value, e_ref.value.e1.value.type.value);
+                    this.ret = new RealExp(e.loc, CTFloat.one, e.e1.value.type.value);
                 }
-                this.ret.value = new CommaExp(e_ref.value.loc.value, e_ref.value.e1.value, this.ret.value, true);
-                this.ret.value.type.value = e_ref.value.type.value;
+                this.ret = new CommaExp(e.loc, e.e1.value, this.ret, true);
+                this.ret.type.value = e.type.value;
                 return ;
             }
-            if (((e_ref.value.e2.value.op.value & 0xFF) == 135) && (e_ref.value.e2.value.toInteger() == 1L) || ((e_ref.value.e2.value.op.value & 0xFF) == 140) && (e_ref.value.e2.value.toReal() == CTFloat.one.value))
+            if (((e.e2.value.op & 0xFF) == 135) && (e.e2.value.toInteger() == 1L) || ((e.e2.value.op & 0xFF) == 140) && (e.e2.value.toReal() == CTFloat.one))
             {
-                this.ret.value = e_ref.value.e1.value;
+                this.ret = e.e1.value;
                 return ;
             }
-            if (((e_ref.value.e2.value.op.value & 0xFF) == 140) && (e_ref.value.e2.value.toReal() == CTFloat.minusone.value))
+            if (((e.e2.value.op & 0xFF) == 140) && (e.e2.value.toReal() == CTFloat.minusone))
             {
-                this.ret.value = new DivExp(e_ref.value.loc.value, new RealExp(e_ref.value.loc.value, CTFloat.one.value, e_ref.value.e2.value.type.value), e_ref.value.e1.value);
-                this.ret.value.type.value = e_ref.value.type.value;
+                this.ret = new DivExp(e.loc, new RealExp(e.loc, CTFloat.one, e.e2.value.type.value), e.e1.value);
+                this.ret.type.value = e.type.value;
                 return ;
             }
-            if (e_ref.value.e1.value.type.value.isintegral() && ((e_ref.value.e2.value.op.value & 0xFF) == 135) && ((long)e_ref.value.e2.value.toInteger() < 0L))
+            if (e.e1.value.type.value.isintegral() && ((e.e2.value.op & 0xFF) == 135) && ((long)e.e2.value.toInteger() < 0L))
             {
-                e_ref.value.error(new BytePtr("cannot raise `%s` to a negative integer power. Did you mean `(cast(real)%s)^^%s` ?"), e_ref.value.e1.value.type.value.toBasetype().toChars(), e_ref.value.e1.value.toChars(), e_ref.value.e2.value.toChars());
+                e.error(new BytePtr("cannot raise `%s` to a negative integer power. Did you mean `(cast(real)%s)^^%s` ?"), e.e1.value.type.value.toBasetype().toChars(), e.e1.value.toChars(), e.e2.value.toChars());
                 this.error();
                 return ;
             }
-            if (((e_ref.value.e2.value.op.value & 0xFF) == 140))
+            if (((e.e2.value.op & 0xFF) == 140))
             {
-                if ((e_ref.value.e2.value.toReal() == (double)(long)e_ref.value.e2.value.toReal()))
+                if ((e.e2.value.toReal() == (double)(long)e.e2.value.toReal()))
                 {
-                    e_ref.value.e2.value = new IntegerExp(e_ref.value.loc.value, e_ref.value.e2.value.toInteger(), Type.tint64.value);
+                    e.e2.value = new IntegerExp(e.loc, e.e2.value.toInteger(), Type.tint64);
                 }
             }
-            if ((e_ref.value.e1.value.isConst() == 1) && (e_ref.value.e2.value.isConst() == 1))
+            if ((e.e1.value.isConst() == 1) && (e.e2.value.isConst() == 1))
             {
-                Ref<Expression> ex = ref(Pow(e_ref.value.loc.value, e_ref.value.type.value, e_ref.value.e1.value, e_ref.value.e2.value).copy());
-                if (!CTFEExp.isCantExp(ex.value))
+                Expression ex = Pow(e.loc, e.type.value, e.e1.value, e.e2.value).copy();
+                if (!CTFEExp.isCantExp(ex))
                 {
-                    this.ret.value = ex.value;
+                    this.ret = ex;
                     return ;
                 }
             }
-            if (((e_ref.value.e1.value.op.value & 0xFF) == 135) && (e_ref.value.e1.value.toInteger() > 0L) && ((e_ref.value.e1.value.toInteger() - 1L & e_ref.value.e1.value.toInteger()) == 0) && e_ref.value.e2.value.type.value.isintegral() && e_ref.value.e2.value.type.value.isunsigned())
+            if (((e.e1.value.op & 0xFF) == 135) && (e.e1.value.toInteger() > 0L) && ((e.e1.value.toInteger() - 1L & e.e1.value.toInteger()) == 0) && e.e2.value.type.value.isintegral() && e.e2.value.type.value.isunsigned())
             {
-                Ref<Long> i = ref(e_ref.value.e1.value.toInteger());
-                Ref<Long> mul = ref(1L);
-                for (; ((i.value >>= 1) > 1L);) {
-                    mul.value++;
+                long i = e.e1.value.toInteger();
+                long mul = 1L;
+                for (; ((i >>= 1) > 1L);) {
+                    mul++;
                 }
-                Ref<Expression> shift = ref(new MulExp(e_ref.value.loc.value, e_ref.value.e2.value, new IntegerExp(e_ref.value.loc.value, mul.value, e_ref.value.e2.value.type.value)));
-                shift.value.type.value = e_ref.value.e2.value.type.value;
-                shift.value = shift.value.castTo(null, Type.tshiftcnt.value);
-                this.ret.value = new ShlExp(e_ref.value.loc.value, new IntegerExp(e_ref.value.loc.value, 1L, e_ref.value.e1.value.type.value), shift.value);
-                this.ret.value.type.value = e_ref.value.type.value;
+                Expression shift = new MulExp(e.loc, e.e2.value, new IntegerExp(e.loc, mul, e.e2.value.type.value));
+                shift.type.value = e.e2.value.type.value;
+                shift = shift.castTo(null, Type.tshiftcnt);
+                this.ret = new ShlExp(e.loc, new IntegerExp(e.loc, 1L, e.e1.value.type.value), shift);
+                this.ret.type.value = e.type.value;
                 return ;
             }
         }
 
         public  void visit(CommaExp e) {
             this.expOptimize(e1, 0, false);
-            this.expOptimize(e2, this.result.value, this.keepLvalue.value);
-            if (((this.ret.value.op.value & 0xFF) == 127))
+            this.expOptimize(e2, this.result, this.keepLvalue);
+            if (((this.ret.op & 0xFF) == 127))
             {
                 return ;
             }
-            if ((e.e1.value == null) || ((e.e1.value.op.value & 0xFF) == 135) || ((e.e1.value.op.value & 0xFF) == 140) || !hasSideEffect(e.e1.value))
+            if ((e.e1.value == null) || ((e.e1.value.op & 0xFF) == 135) || ((e.e1.value.op & 0xFF) == 140) || !hasSideEffect(e.e1.value))
             {
-                this.ret.value = e.e2.value;
-                if (this.ret.value != null)
+                this.ret = e.e2.value;
+                if (this.ret != null)
                 {
-                    this.ret.value.type.value = e.type.value;
+                    this.ret.type.value = e.type.value;
                 }
             }
         }
 
         public  void visit(ArrayLengthExp e) {
-            Ref<ArrayLengthExp> e_ref = ref(e);
-            if (this.unaOptimize(e_ref.value, 1))
+            if (this.unaOptimize(e, 1))
             {
                 return ;
             }
-            if (((e_ref.value.e1.value.op.value & 0xFF) == 26))
+            if (((e.e1.value.op & 0xFF) == 26))
             {
-                Ref<VarDeclaration> v = ref(((VarExp)e_ref.value.e1.value).var.value.isVarDeclaration());
-                if ((v.value != null) && ((v.value.storage_class.value & 1L) != 0) && ((v.value.storage_class.value & 1048576L) != 0) && (v.value._init.value != null))
+                VarDeclaration v = ((VarExp)e.e1.value).var.isVarDeclaration();
+                if ((v != null) && ((v.storage_class & 1L) != 0) && ((v.storage_class & 1048576L) != 0) && (v._init != null))
                 {
                     {
-                        Ref<Expression> ci = ref(v.value.getConstInitializer(true));
-                        if ((ci.value) != null)
+                        Expression ci = v.getConstInitializer(true);
+                        if ((ci) != null)
                         {
-                            e_ref.value.e1.value = ci.value;
+                            e.e1.value = ci;
                         }
                     }
                 }
             }
-            if (((e_ref.value.e1.value.op.value & 0xFF) == 121) || ((e_ref.value.e1.value.op.value & 0xFF) == 47) || ((e_ref.value.e1.value.op.value & 0xFF) == 48) || ((e_ref.value.e1.value.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tsarray))
+            if (((e.e1.value.op & 0xFF) == 121) || ((e.e1.value.op & 0xFF) == 47) || ((e.e1.value.op & 0xFF) == 48) || ((e.e1.value.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
             {
-                this.ret.value = ArrayLength(e_ref.value.type.value, e_ref.value.e1.value).copy();
+                this.ret = ArrayLength(e.type.value, e.e1.value).copy();
             }
         }
 
         public  void visit(EqualExp e) {
-            Ref<EqualExp> e_ref = ref(e);
-            if (this.binOptimize(e_ref.value, 0))
+            if (this.binOptimize(e, 0))
             {
                 return ;
             }
-            Ref<Expression> e1 = ref(fromConstInitializer(this.result.value, e_ref.value.e1.value));
-            Ref<Expression> e2 = ref(fromConstInitializer(this.result.value, e_ref.value.e2.value));
-            if (((e1.value.op.value & 0xFF) == 127))
+            Expression e1 = fromConstInitializer(this.result, e.e1.value);
+            Expression e2 = fromConstInitializer(this.result, e.e2.value);
+            if (((e1.op & 0xFF) == 127))
             {
-                this.ret.value = e1.value;
+                this.ret = e1;
                 return ;
             }
-            if (((e2.value.op.value & 0xFF) == 127))
+            if (((e2.op & 0xFF) == 127))
             {
-                this.ret.value = e2.value;
+                this.ret = e2;
                 return ;
             }
-            this.ret.value = Equal(e_ref.value.op.value, e_ref.value.loc.value, e_ref.value.type.value, e1.value, e2.value).copy();
-            if (CTFEExp.isCantExp(this.ret.value))
+            this.ret = Equal(e.op, e.loc, e.type.value, e1, e2).copy();
+            if (CTFEExp.isCantExp(this.ret))
             {
-                this.ret.value = e_ref.value;
+                this.ret = e;
             }
         }
 
         public  void visit(IdentityExp e) {
-            Ref<IdentityExp> e_ref = ref(e);
-            if (this.binOptimize(e_ref.value, 0))
+            if (this.binOptimize(e, 0))
             {
                 return ;
             }
-            if ((e_ref.value.e1.value.isConst() != 0) && (e_ref.value.e2.value.isConst() != 0) || ((e_ref.value.e1.value.op.value & 0xFF) == 13) && ((e_ref.value.e2.value.op.value & 0xFF) == 13))
+            if ((e.e1.value.isConst() != 0) && (e.e2.value.isConst() != 0) || ((e.e1.value.op & 0xFF) == 13) && ((e.e2.value.op & 0xFF) == 13))
             {
-                this.ret.value = Identity(e_ref.value.op.value, e_ref.value.loc.value, e_ref.value.type.value, e_ref.value.e1.value, e_ref.value.e2.value).copy();
-                if (CTFEExp.isCantExp(this.ret.value))
+                this.ret = Identity(e.op, e.loc, e.type.value, e.e1.value, e.e2.value).copy();
+                if (CTFEExp.isCantExp(this.ret))
                 {
-                    this.ret.value = e_ref.value;
+                    this.ret = e;
                 }
             }
         }
 
         public  void visit(IndexExp e) {
-            Ref<IndexExp> e_ref = ref(e);
-            if (this.expOptimize(e1, this.result.value & 1, false))
+            if (this.expOptimize(e1, this.result & 1, false))
             {
                 return ;
             }
-            Ref<Expression> ex = ref(fromConstInitializer(this.result.value, e_ref.value.e1.value));
-            setLengthVarIfKnown(e_ref.value.lengthVar.value, ex.value);
+            Expression ex = fromConstInitializer(this.result, e.e1.value);
+            setLengthVarIfKnown(e.lengthVar.value, ex);
             if (this.expOptimize(e2, 0, false))
             {
                 return ;
             }
-            if (this.keepLvalue.value)
+            if (this.keepLvalue)
             {
                 return ;
             }
-            this.ret.value = Index(e_ref.value.type.value, ex.value, e_ref.value.e2.value).copy();
-            if (CTFEExp.isCantExp(this.ret.value))
+            this.ret = Index(e.type.value, ex, e.e2.value).copy();
+            if (CTFEExp.isCantExp(this.ret))
             {
-                this.ret.value = e_ref.value;
+                this.ret = e;
             }
         }
 
         public  void visit(SliceExp e) {
-            Ref<SliceExp> e_ref = ref(e);
-            if (this.expOptimize(e1, this.result.value & 1, false))
+            if (this.expOptimize(e1, this.result & 1, false))
             {
                 return ;
             }
-            if (e_ref.value.lwr.value == null)
+            if (e.lwr.value == null)
             {
-                if (((e_ref.value.e1.value.op.value & 0xFF) == 121))
+                if (((e.e1.value.op & 0xFF) == 121))
                 {
-                    Type t = e_ref.value.e1.value.type.value.toBasetype();
+                    Type t = e.e1.value.type.value.toBasetype();
                     {
-                        Ref<Type> tn = ref(t.nextOf());
-                        if ((tn.value) != null)
+                        Type tn = t.nextOf();
+                        if ((tn) != null)
                         {
-                            this.ret.value = e_ref.value.e1.value.castTo(null, tn.value.arrayOf());
+                            this.ret = e.e1.value.castTo(null, tn.arrayOf());
                         }
                     }
                 }
             }
             else
             {
-                e_ref.value.e1.value = fromConstInitializer(this.result.value, e_ref.value.e1.value);
-                setLengthVarIfKnown(e_ref.value.lengthVar.value, e_ref.value.e1.value);
+                e.e1.value = fromConstInitializer(this.result, e.e1.value);
+                setLengthVarIfKnown(e.lengthVar.value, e.e1.value);
                 this.expOptimize(lwr, 0, false);
                 this.expOptimize(upr, 0, false);
-                if (((this.ret.value.op.value & 0xFF) == 127))
+                if (((this.ret.op & 0xFF) == 127))
                 {
                     return ;
                 }
-                this.ret.value = Slice(e_ref.value.type.value, e_ref.value.e1.value, e_ref.value.lwr.value, e_ref.value.upr.value).copy();
-                if (CTFEExp.isCantExp(this.ret.value))
+                this.ret = Slice(e.type.value, e.e1.value, e.lwr.value, e.upr.value).copy();
+                if (CTFEExp.isCantExp(this.ret))
                 {
-                    this.ret.value = e_ref.value;
+                    this.ret = e;
                 }
             }
-            if (((this.ret.value.op.value & 0xFF) == 121))
+            if (((this.ret.op & 0xFF) == 121))
             {
-                e_ref.value.e1.value = this.ret.value;
-                e_ref.value.lwr.value = null;
-                e_ref.value.upr.value = null;
-                this.ret.value = e_ref.value;
+                e.e1.value = this.ret;
+                e.lwr.value = null;
+                e.upr.value = null;
+                this.ret = e;
             }
         }
 
@@ -908,17 +875,17 @@ public class optimize {
             {
                 return ;
             }
-            Ref<Boolean> oror = ref((e.op.value & 0xFF) == 102);
-            if (e.e1.value.isBool(oror.value))
+            boolean oror = (e.op & 0xFF) == 102;
+            if (e.e1.value.isBool(oror))
             {
-                this.ret.value = new IntegerExp(e.loc.value, (oror.value ? 1 : 0), Type.tbool.value);
-                this.ret.value = Expression.combine(e.e1.value, this.ret.value);
-                if (((e.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tvoid))
+                this.ret = new IntegerExp(e.loc, (oror ? 1 : 0), Type.tbool);
+                this.ret = Expression.combine(e.e1.value, this.ret);
+                if (((e.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
                 {
-                    this.ret.value = new CastExp(e.loc.value, this.ret.value, Type.tvoid.value);
-                    this.ret.value.type.value = e.type.value;
+                    this.ret = new CastExp(e.loc, this.ret, Type.tvoid);
+                    this.ret.type.value = e.type.value;
                 }
-                this.ret.value = Expression_optimize(this.ret.value, this.result.value, false);
+                this.ret = Expression_optimize(this.ret, this.result, false);
                 return ;
             }
             if (this.expOptimize(e2, 0, false))
@@ -929,78 +896,76 @@ public class optimize {
             {
                 if (e.e2.value.isConst() != 0)
                 {
-                    Ref<Boolean> n1 = ref(e.e1.value.isBool(true));
-                    Ref<Boolean> n2 = ref(e.e2.value.isBool(true));
-                    this.ret.value = new IntegerExp(e.loc.value, oror.value ? ((n1.value || n2.value) ? 1 : 0) : ((n1.value && n2.value) ? 1 : 0), e.type.value);
+                    boolean n1 = e.e1.value.isBool(true);
+                    boolean n2 = e.e2.value.isBool(true);
+                    this.ret = new IntegerExp(e.loc, oror ? ((n1 || n2) ? 1 : 0) : ((n1 && n2) ? 1 : 0), e.type.value);
                 }
-                else if (e.e1.value.isBool(!oror.value))
+                else if (e.e1.value.isBool(!oror))
                 {
-                    if (((e.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tvoid))
+                    if (((e.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
                     {
-                        this.ret.value = e.e2.value;
+                        this.ret = e.e2.value;
                     }
                     else
                     {
-                        this.ret.value = new CastExp(e.loc.value, e.e2.value, e.type.value);
-                        this.ret.value.type.value = e.type.value;
+                        this.ret = new CastExp(e.loc, e.e2.value, e.type.value);
+                        this.ret.type.value = e.type.value;
                     }
                 }
             }
         }
 
         public  void visit(CmpExp e) {
-            Ref<CmpExp> e_ref = ref(e);
-            if (this.binOptimize(e_ref.value, 0))
+            if (this.binOptimize(e, 0))
             {
                 return ;
             }
-            Expression e1 = fromConstInitializer(this.result.value, e_ref.value.e1.value);
-            Expression e2 = fromConstInitializer(this.result.value, e_ref.value.e2.value);
-            this.ret.value = Cmp(e_ref.value.op.value, e_ref.value.loc.value, e_ref.value.type.value, e1, e2).copy();
-            if (CTFEExp.isCantExp(this.ret.value))
+            Expression e1 = fromConstInitializer(this.result, e.e1.value);
+            Expression e2 = fromConstInitializer(this.result, e.e2.value);
+            this.ret = Cmp(e.op, e.loc, e.type.value, e1, e2).copy();
+            if (CTFEExp.isCantExp(this.ret))
             {
-                this.ret.value = e_ref.value;
+                this.ret = e;
             }
         }
 
         public  void visit(CatExp e) {
-            Ref<CatExp> e_ref = ref(e);
-            if (this.binOptimize(e_ref.value, this.result.value))
+            if (this.binOptimize(e, this.result))
             {
                 return ;
             }
-            if (((e_ref.value.e1.value.op.value & 0xFF) == 70))
+            if (((e.e1.value.op & 0xFF) == 70))
             {
-                CatExp ce1 = (CatExp)e_ref.value.e1.value;
-                Ref<CatExp> cex = ref(new CatExp(e_ref.value.loc.value, ce1.e2.value, e_ref.value.e2.value));
-                cex.value.type.value = e_ref.value.type.value;
-                Ref<Expression> ex = ref(Expression_optimize(cex.value, this.result.value, false));
-                if ((!pequals(ex.value, cex.value)))
+                CatExp ce1 = (CatExp)e.e1.value;
+                CatExp cex = new CatExp(e.loc, ce1.e2.value, e.e2.value);
+                cex.type.value = e.type.value;
+                Expression ex = Expression_optimize(cex, this.result, false);
+                if ((!pequals(ex, cex)))
                 {
-                    e_ref.value.e1.value = ce1.e1.value;
-                    e_ref.value.e2.value = ex.value;
+                    e.e1.value = ce1.e1.value;
+                    e.e2.value = ex;
                 }
             }
-            if (((e_ref.value.e1.value.op.value & 0xFF) == 31))
+            if (((e.e1.value.op & 0xFF) == 31))
             {
-                SliceExp se1 = (SliceExp)e_ref.value.e1.value;
-                if (((se1.e1.value.op.value & 0xFF) == 121) && (se1.lwr.value == null))
+                SliceExp se1 = (SliceExp)e.e1.value;
+                if (((se1.e1.value.op & 0xFF) == 121) && (se1.lwr.value == null))
                 {
-                    e_ref.value.e1.value = se1.e1.value;
+                    e.e1.value = se1.e1.value;
                 }
             }
-            if (((e_ref.value.e2.value.op.value & 0xFF) == 31))
+            if (((e.e2.value.op & 0xFF) == 31))
             {
-                SliceExp se2 = (SliceExp)e_ref.value.e2.value;
-                if (((se2.e1.value.op.value & 0xFF) == 121) && (se2.lwr.value == null))
+                SliceExp se2 = (SliceExp)e.e2.value;
+                if (((se2.e1.value.op & 0xFF) == 121) && (se2.lwr.value == null))
                 {
-                    e_ref.value.e2.value = se2.e1.value;
+                    e.e2.value = se2.e1.value;
                 }
             }
-            this.ret.value = Cat(e_ref.value.type.value, e_ref.value.e1.value, e_ref.value.e2.value).copy();
-            if (CTFEExp.isCantExp(this.ret.value))
+            this.ret = Cat(e.type.value, e.e1.value, e.e2.value).copy();
+            if (CTFEExp.isCantExp(this.ret))
             {
-                this.ret.value = e_ref.value;
+                this.ret = e;
             }
         }
 
@@ -1011,16 +976,16 @@ public class optimize {
             }
             if (e.econd.value.isBool(true))
             {
-                this.ret.value = Expression_optimize(e.e1.value, this.result.value, this.keepLvalue.value);
+                this.ret = Expression_optimize(e.e1.value, this.result, this.keepLvalue);
             }
             else if (e.econd.value.isBool(false))
             {
-                this.ret.value = Expression_optimize(e.e2.value, this.result.value, this.keepLvalue.value);
+                this.ret = Expression_optimize(e.e2.value, this.result, this.keepLvalue);
             }
             else
             {
-                this.expOptimize(e1, this.result.value, this.keepLvalue.value);
-                this.expOptimize(e2, this.result.value, this.keepLvalue.value);
+                this.expOptimize(e1, this.result, this.keepLvalue);
+                this.expOptimize(e2, this.result, this.keepLvalue);
             }
         }
 
@@ -1029,18 +994,16 @@ public class optimize {
     }
 
     public static Expression expandVar(int result, VarDeclaration v) {
-        IntRef result_ref = ref(result);
         Function1<Expression,Expression> initializerReturn = new Function1<Expression,Expression>(){
             public Expression invoke(Expression e) {
-                Ref<Expression> e_ref = ref(e);
-                if ((!pequals(e_ref.value.type.value, v.type.value)))
+                if ((!pequals(e.type.value, v.type)))
                 {
-                    e_ref.value = e_ref.value.castTo(null, v.type.value);
+                    e = e.castTo(null, v.type);
                 }
-                v.inuse.value++;
-                e_ref.value = e_ref.value.optimize(result_ref.value, false);
-                v.inuse.value--;
-                return e_ref.value;
+                v.inuse++;
+                e = e.optimize(result, false);
+                v.inuse--;
+                return e;
             }
         };
         Function0<Expression> nullReturn = new Function0<Expression>(){
@@ -1057,20 +1020,20 @@ public class optimize {
         {
             return nullReturn.invoke();
         }
-        if ((v.originalType.value == null) && (v.semanticRun.value < PASS.semanticdone))
+        if ((v.originalType == null) && (v.semanticRun < PASS.semanticdone))
         {
             dsymbolSemantic(v, null);
         }
-        if ((v.type.value != null) && v.isConst() || v.isImmutable() || ((v.storage_class.value & 8388608L) != 0))
+        if ((v.type != null) && v.isConst() || v.isImmutable() || ((v.storage_class & 8388608L) != 0))
         {
-            Type tb = v.type.value.toBasetype();
-            if (((v.storage_class.value & 8388608L) != 0) || tb.isscalar() || ((result_ref.value & 1) != 0) && ((tb.ty.value & 0xFF) != ENUMTY.Tsarray) && ((tb.ty.value & 0xFF) != ENUMTY.Tstruct))
+            Type tb = v.type.toBasetype();
+            if (((v.storage_class & 8388608L) != 0) || tb.isscalar() || ((result & 1) != 0) && ((tb.ty & 0xFF) != ENUMTY.Tsarray) && ((tb.ty & 0xFF) != ENUMTY.Tstruct))
             {
-                if (v._init.value != null)
+                if (v._init != null)
                 {
-                    if (v.inuse.value != 0)
+                    if (v.inuse != 0)
                     {
-                        if ((v.storage_class.value & 8388608L) != 0)
+                        if ((v.storage_class & 8388608L) != 0)
                         {
                             v.error(new BytePtr("recursive initialization of constant"));
                             return errorReturn.invoke();
@@ -1080,23 +1043,23 @@ public class optimize {
                     Expression ei = v.getConstInitializer(true);
                     if (ei == null)
                     {
-                        if ((v.storage_class.value & 8388608L) != 0)
+                        if ((v.storage_class & 8388608L) != 0)
                         {
-                            v.error(new BytePtr("enum cannot be initialized with `%s`"), v._init.value.toChars());
+                            v.error(new BytePtr("enum cannot be initialized with `%s`"), v._init.toChars());
                             return errorReturn.invoke();
                         }
                         return nullReturn.invoke();
                     }
-                    if (((ei.op.value & 0xFF) == 95) || ((ei.op.value & 0xFF) == 96))
+                    if (((ei.op & 0xFF) == 95) || ((ei.op & 0xFF) == 96))
                     {
                         AssignExp ae = (AssignExp)ei;
                         ei = ae.e2.value;
                         if ((ei.isConst() == 1))
                         {
                         }
-                        else if (((ei.op.value & 0xFF) == 121))
+                        else if (((ei.op & 0xFF) == 121))
                         {
-                            if (((result_ref.value & 1) == 0) && ((ei.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tpointer))
+                            if (((result & 1) == 0) && ((ei.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tpointer))
                             {
                                 return nullReturn.invoke();
                             }
@@ -1105,12 +1068,12 @@ public class optimize {
                         {
                             return nullReturn.invoke();
                         }
-                        if ((pequals(ei.type.value, v.type.value)))
+                        if ((pequals(ei.type.value, v.type)))
                         {
                         }
-                        else if ((ei.implicitConvTo(v.type.value) >= MATCH.constant))
+                        else if ((ei.implicitConvTo(v.type) >= MATCH.constant))
                         {
-                            ei = ei.implicitCastTo(null, v.type.value);
+                            ei = ei.implicitCastTo(null, v.type);
                             ei = expressionSemantic(ei, null);
                         }
                         else
@@ -1118,7 +1081,7 @@ public class optimize {
                             return nullReturn.invoke();
                         }
                     }
-                    else if (((v.storage_class.value & 8388608L) == 0) && (ei.isConst() != 1) && ((ei.op.value & 0xFF) != 121) && ((ei.op.value & 0xFF) != 19))
+                    else if (((v.storage_class & 8388608L) == 0) && (ei.isConst() != 1) && ((ei.op & 0xFF) != 121) && ((ei.op & 0xFF) != 19))
                     {
                         return nullReturn.invoke();
                     }
@@ -1143,23 +1106,23 @@ public class optimize {
 
     public static Expression fromConstInitializer(int result, Expression e1) {
         Expression e = e1;
-        if (((e1.op.value & 0xFF) == 26))
+        if (((e1.op & 0xFF) == 26))
         {
             VarExp ve = (VarExp)e1;
-            VarDeclaration v = ve.var.value.isVarDeclaration();
+            VarDeclaration v = ve.var.isVarDeclaration();
             e = expandVar(result, v);
             if (e != null)
             {
-                if (((e.op.value & 0xFF) == 99) && ((((CommaExp)e).e1.value.op.value & 0xFF) == 38))
+                if (((e.op & 0xFF) == 99) && ((((CommaExp)e).e1.value.op & 0xFF) == 38))
                 {
                     e = e1;
                 }
-                else if ((!pequals(e.type.value, e1.type.value)) && (e1.type.value != null) && ((e1.type.value.ty.value & 0xFF) != ENUMTY.Tident))
+                else if ((!pequals(e.type.value, e1.type.value)) && (e1.type.value != null) && ((e1.type.value.ty & 0xFF) != ENUMTY.Tident))
                 {
                     e = e.copy();
                     e.type.value = e1.type.value;
                 }
-                e.loc.value = e1.loc.value.copy();
+                e.loc = e1.loc.copy();
             }
             else
             {
@@ -1174,34 +1137,34 @@ public class optimize {
         {
             return ;
         }
-        if ((lengthVar._init.value != null) && (lengthVar._init.value.isVoidInitializer() == null))
+        if ((lengthVar._init != null) && (lengthVar._init.isVoidInitializer() == null))
         {
             return ;
         }
         int len = 0;
-        if (((arr.op.value & 0xFF) == 121))
+        if (((arr.op & 0xFF) == 121))
         {
-            len = ((StringExp)arr).len.value;
+            len = ((StringExp)arr).len;
         }
-        else if (((arr.op.value & 0xFF) == 47))
+        else if (((arr.op & 0xFF) == 47))
         {
-            len = (((ArrayLiteralExp)arr).elements.value.get()).length.value;
+            len = (((ArrayLiteralExp)arr).elements.get()).length;
         }
         else
         {
             Type t = arr.type.value.toBasetype();
-            if (((t.ty.value & 0xFF) == ENUMTY.Tsarray))
+            if (((t.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                len = (int)((TypeSArray)t).dim.value.toInteger();
+                len = (int)((TypeSArray)t).dim.toInteger();
             }
             else
             {
                 return ;
             }
         }
-        Expression dollar = new IntegerExp(Loc.initial.value, (long)len, Type.tsize_t.value);
-        lengthVar._init.value = new ExpInitializer(Loc.initial.value, dollar);
-        lengthVar.storage_class.value |= 5L;
+        Expression dollar = new IntegerExp(Loc.initial, (long)len, Type.tsize_t);
+        lengthVar._init = new ExpInitializer(Loc.initial, dollar);
+        lengthVar.storage_class |= 5L;
     }
 
     public static void setLengthVarIfKnown(VarDeclaration lengthVar, Type type) {
@@ -1209,37 +1172,37 @@ public class optimize {
         {
             return ;
         }
-        if ((lengthVar._init.value != null) && (lengthVar._init.value.isVoidInitializer() == null))
+        if ((lengthVar._init != null) && (lengthVar._init.isVoidInitializer() == null))
         {
             return ;
         }
         int len = 0;
         Type t = type.toBasetype();
-        if (((t.ty.value & 0xFF) == ENUMTY.Tsarray))
+        if (((t.ty & 0xFF) == ENUMTY.Tsarray))
         {
-            len = (int)((TypeSArray)t).dim.value.toInteger();
+            len = (int)((TypeSArray)t).dim.toInteger();
         }
         else
         {
             return ;
         }
-        Expression dollar = new IntegerExp(Loc.initial.value, (long)len, Type.tsize_t.value);
-        lengthVar._init.value = new ExpInitializer(Loc.initial.value, dollar);
-        lengthVar.storage_class.value |= 5L;
+        Expression dollar = new IntegerExp(Loc.initial, (long)len, Type.tsize_t);
+        lengthVar._init = new ExpInitializer(Loc.initial, dollar);
+        lengthVar.storage_class |= 5L;
     }
 
     public static Expression Expression_optimize(Expression e, int result, boolean keepLvalue) {
         // skipping duplicate class OptimizeVisitor
         OptimizeVisitor v = new OptimizeVisitor(e, result, keepLvalue);
         for (; 1 != 0;){
-            Expression ex = v.ret.value;
+            Expression ex = v.ret;
             ex.accept(v);
-            if ((pequals(ex, v.ret.value)))
+            if ((pequals(ex, v.ret)))
             {
                 break;
             }
         }
-        return v.ret.value;
+        return v.ret;
     }
 
 }

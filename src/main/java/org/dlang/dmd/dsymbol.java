@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -51,7 +47,7 @@ public class dsymbol {
         {
             {
                 int i = 0;
-                for (; (i < (symbols.get()).length.value);i += 1){
+                for (; (i < (symbols.get()).length);i += 1){
                     Dsymbol s = (symbols.get()).get(i);
                     int result = dg.invoke(s);
                     if (result != 0)
@@ -70,7 +66,7 @@ public class dsymbol {
         {
             {
                 int i = 0;
-                for (; (i < (symbols.get()).length.value);i += 1){
+                for (; (i < (symbols.get()).length);i += 1){
                     Dsymbol s = (symbols.get()).get(i);
                     dg.invoke(s);
                 }
@@ -111,20 +107,20 @@ public class dsymbol {
             public static final int export_ = 6;
         }
 
-        public IntRef kind = ref(0);
+        public int kind = 0;
         public dmodule.Package pkg = null;
         public  Prot(int kind) {
-            this.kind.value = kind;
+            this.kind = kind;
         }
 
         public  boolean isMoreRestrictiveThan(Prot other) {
-            return this.kind.value < other.kind.value;
+            return this.kind < other.kind;
         }
 
         public  boolean opEquals(Prot other) {
-            if ((this.kind.value == other.kind.value))
+            if ((this.kind == other.kind))
             {
-                if ((this.kind.value == Kind.package_))
+                if ((this.kind == Kind.package_))
                 {
                     return pequals(this.pkg, other.pkg);
                 }
@@ -134,11 +130,11 @@ public class dsymbol {
         }
 
         public  boolean isSubsetOf(Prot parent) {
-            if ((this.kind.value != parent.kind.value))
+            if ((this.kind != parent.kind))
             {
                 return false;
             }
-            if ((this.kind.value == Kind.package_))
+            if ((this.kind == Kind.package_))
             {
                 if (this.pkg == null)
                 {
@@ -196,35 +192,35 @@ public class dsymbol {
     public static final int IgnoreSymbolVisibility = 128;
     public static class Dsymbol extends ASTNode
     {
-        public Ref<Identifier> ident = ref(null);
+        public Identifier ident = null;
         public Ref<Dsymbol> parent = ref(null);
         public CPPNamespaceDeclaration namespace = null;
         public Ptr<Symbol> csym = null;
         public Ptr<Symbol> isym = null;
-        public Ref<BytePtr> comment = ref(null);
-        public Ref<Loc> loc = ref(new Loc());
-        public Ref<Ptr<Scope>> _scope = ref(null);
+        public BytePtr comment = null;
+        public Loc loc = new Loc();
+        public Ptr<Scope> _scope = null;
         public BytePtr prettystring = null;
-        public Ref<Boolean> errors = ref(false);
-        public IntRef semanticRun = ref(PASS.init);
+        public boolean errors = false;
+        public int semanticRun = PASS.init;
         public DeprecatedDeclaration depdecl = null;
         public UserAttributeDeclaration userAttribDecl = null;
         public UnitTestDeclaration ddocUnittest = null;
         public  Dsymbol() {
             super();
-            this.loc.value = new Loc(null, 0, 0);
+            this.loc = new Loc(null, 0, 0);
         }
 
         public  Dsymbol(Identifier ident) {
             super();
-            this.loc.value = new Loc(null, 0, 0);
-            this.ident.value = ident;
+            this.loc = new Loc(null, 0, 0);
+            this.ident = ident;
         }
 
         public  Dsymbol(Loc loc, Identifier ident) {
             super();
-            this.loc.value = loc.copy();
-            this.ident.value = ident;
+            this.loc = loc.copy();
+            this.ident = ident;
         }
 
         public static Dsymbol create(Identifier ident) {
@@ -232,7 +228,7 @@ public class dsymbol {
         }
 
         public  BytePtr toChars() {
-            return this.ident.value != null ? this.ident.value.toChars() : new BytePtr("__anonymous");
+            return this.ident != null ? this.ident.toChars() : new BytePtr("__anonymous");
         }
 
         public  BytePtr toPrettyCharsHelper() {
@@ -240,7 +236,7 @@ public class dsymbol {
         }
 
         public  Loc getLoc() {
-            if (!this.loc.value.isValid())
+            if (!this.loc.isValid())
             {
                 {
                     dmodule.Module m = this.getModule();
@@ -250,11 +246,11 @@ public class dsymbol {
                     }
                 }
             }
-            return this.loc.value;
+            return this.loc;
         }
 
         public  BytePtr locToChars() {
-            return this.getLoc().toChars(global.params.showColumns.value);
+            return this.getLoc().toChars(global.value.params.showColumns);
         }
 
         public  boolean equals(RootObject o) {
@@ -267,7 +263,7 @@ public class dsymbol {
                 return false;
             }
             Dsymbol s = (Dsymbol)o;
-            if ((s != null) && (this.ident.value != null) && (s.ident.value != null) && this.ident.value.equals(s.ident.value))
+            if ((s != null) && (this.ident != null) && (s.ident != null) && this.ident.equals(s.ident))
             {
                 return true;
             }
@@ -275,7 +271,7 @@ public class dsymbol {
         }
 
         public  boolean isAnonymous() {
-            return this.ident.value == null;
+            return this.ident == null;
         }
 
         public  void error(Loc loc, BytePtr format, Object... ap) {
@@ -305,7 +301,7 @@ public class dsymbol {
         }
 
         public  boolean checkDeprecated(Loc loc, Ptr<Scope> sc) {
-            if (((global.params.useDeprecated & 0xFF) != 2) && this.isDeprecated())
+            if (((global.value.params.useDeprecated & 0xFF) != 2) && this.isDeprecated())
             {
                 if ((sc.get()).isDeprecated())
                 {
@@ -340,7 +336,7 @@ public class dsymbol {
                 TemplateInstance ti = this.isInstantiated();
                 if ((ti) != null)
                 {
-                    return ti.tempdecl.value.getModule();
+                    return ti.tempdecl.getModule();
                 }
             }
             Dsymbol s = this;
@@ -360,7 +356,7 @@ public class dsymbol {
                 TemplateInstance ti = this.isInstantiated();
                 if ((ti) != null)
                 {
-                    return ti.tempdecl.value.getAccessModule();
+                    return ti.tempdecl.getAccessModule();
                 }
             }
             Dsymbol s = this;
@@ -371,9 +367,9 @@ public class dsymbol {
                     return m;
                 }
                 TemplateInstance ti = s.isTemplateInstance();
-                if ((ti != null) && (ti.enclosing.value != null))
+                if ((ti != null) && (ti.enclosing != null))
                 {
-                    s = ti.tempdecl.value;
+                    s = ti.tempdecl;
                 }
                 else
                 {
@@ -422,9 +418,9 @@ public class dsymbol {
                 return p;
             }
             TemplateInstance ti = p.isTemplateInstance();
-            if ((ti.tempdecl.value != null) && !localOnly || !((TemplateDeclaration)ti.tempdecl.value).isstatic)
+            if ((ti.tempdecl != null) && !localOnly || !((TemplateDeclaration)ti.tempdecl).isstatic)
             {
-                return ti.tempdecl.value.toParentDeclImpl(localOnly);
+                return ti.tempdecl.toParentDeclImpl(localOnly);
             }
             return this.parent.value.toParentDeclImpl(localOnly);
         }
@@ -460,10 +456,10 @@ public class dsymbol {
         }
 
         public  Ungag ungagSpeculative() {
-            int oldgag = global.gag.value;
-            if ((global.gag.value != 0) && (this.isSpeculative() == null) && (this.toParent2().isFuncDeclaration() == null))
+            int oldgag = global.value.gag;
+            if ((global.value.gag != 0) && (this.isSpeculative() == null) && (this.toParent2().isFuncDeclaration() == null))
             {
-                global.gag.value = 0;
+                global.value.gag = 0;
             }
             return new Ungag(oldgag);
         }
@@ -479,7 +475,7 @@ public class dsymbol {
                 b = (a.get()).copy();
                 {
                     int i = 0;
-                    for (; (i < (b.get()).length.value);i++){
+                    for (; (i < (b.get()).length);i++){
                         b.get().set(i, (b.get()).get(i).syntaxCopy(null));
                     }
                 }
@@ -488,7 +484,7 @@ public class dsymbol {
         }
 
         public  Identifier getIdent() {
-            return this.ident.value;
+            return this.ident;
         }
 
         public  BytePtr toPrettyChars(boolean QualifyTypes) {
@@ -534,10 +530,10 @@ public class dsymbol {
             BytePtr q = pcopy(s.plus(length).minus(1));
             q.set(0, (byte)0);
             {
-                int __key1124 = 0;
-                int __limit1125 = complength;
-                for (; (__key1124 < __limit1125);__key1124 += 1) {
-                    int j = __key1124;
+                int __key1120 = 0;
+                int __limit1121 = complength;
+                for (; (__key1120 < __limit1121);__key1120 += 1) {
+                    int j = __key1120;
                     BytePtr t = pcopy(toBytePtr(comp.get(j)));
                     int len = comp.get(j).getLength();
                     q.minusAssign(len);
@@ -584,19 +580,19 @@ public class dsymbol {
             {
                 if (sds.symtabInsert(this) == null)
                 {
-                    Dsymbol s2 = sds.symtabLookup(this, this.ident.value);
+                    Dsymbol s2 = sds.symtabLookup(this, this.ident);
                     if (!s2.overloadInsert(this))
                     {
-                        ScopeDsymbol.multiplyDefined(Loc.initial.value, this, s2);
-                        this.errors.value = true;
+                        ScopeDsymbol.multiplyDefined(Loc.initial, this, s2);
+                        this.errors = true;
                     }
                 }
                 if ((sds.isAggregateDeclaration() != null) || (sds.isEnumDeclaration() != null))
                 {
-                    if ((pequals(this.ident.value, Id.__sizeof.value)) || (pequals(this.ident.value, Id.__xalignof.value)) || (pequals(this.ident.value, Id._mangleof.value)))
+                    if ((pequals(this.ident, Id.__sizeof)) || (pequals(this.ident, Id.__xalignof)) || (pequals(this.ident, Id._mangleof)))
                     {
-                        this.error(new BytePtr("`.%s` property cannot be redefined"), this.ident.value.toChars());
-                        this.errors.value = true;
+                        this.error(new BytePtr("`.%s` property cannot be redefined"), this.ident.toChars());
+                        this.errors = true;
                     }
                 }
             }
@@ -607,7 +603,7 @@ public class dsymbol {
             {
                 (sc.get()).setNoFree();
             }
-            this._scope.value = sc;
+            this._scope = sc;
             if ((sc.get()).depdecl != null)
             {
                 this.depdecl = (sc.get()).depdecl;
@@ -633,28 +629,27 @@ public class dsymbol {
         public  Dsymbol search_correct(Identifier ident) {
             Function2<ByteSlice,Integer,Dsymbol> symbol_search_fp = new Function2<ByteSlice,Integer,Dsymbol>(){
                 public Dsymbol invoke(ByteSlice seed, IntRef cost) {
-                    Ref<ByteSlice> seed_ref = ref(seed);
-                    if (seed_ref.value.getLength() == 0)
+                    if (seed.getLength() == 0)
                     {
                         return null;
                     }
-                    Ref<Identifier> id = ref(Identifier.lookup(seed_ref.value));
-                    if (id.value == null)
+                    Identifier id = Identifier.lookup(seed);
+                    if (id == null)
                     {
                         return null;
                     }
                     cost.value = 0;
                     Dsymbol s = this;
                     dmodule.Module.clearCache();
-                    return s.search(Loc.initial.value, id.value, 2);
+                    return s.search(Loc.initial, id, 2);
                 }
             };
-            if (global.gag.value != 0)
+            if (global.value.gag != 0)
             {
                 return null;
             }
             {
-                Dsymbol s = this.search(Loc.initial.value, ident, 2);
+                Dsymbol s = this.search(Loc.initial, ident, 2);
                 if ((s) != null)
                 {
                     return s;
@@ -670,7 +665,7 @@ public class dsymbol {
                 Declaration d = s.isDeclaration();
                 if ((d) != null)
                 {
-                    if (d.inuse.value != 0)
+                    if (d.inuse != 0)
                     {
                         error(loc, new BytePtr("circular reference to `%s`"), d.toPrettyChars(false));
                         return null;
@@ -685,17 +680,17 @@ public class dsymbol {
                 case DYNCAST.dsymbol:
                     Dsymbol st = (Dsymbol)id;
                     TemplateInstance ti = st.isTemplateInstance();
-                    sm = s.search(loc, ti.name.value, 0);
+                    sm = s.search(loc, ti.name, 0);
                     if (sm == null)
                     {
-                        sm = s.search_correct(ti.name.value);
+                        sm = s.search_correct(ti.name);
                         if (sm != null)
                         {
-                            error(loc, new BytePtr("template identifier `%s` is not a member of %s `%s`, did you mean %s `%s`?"), ti.name.value.toChars(), s.kind(), s.toPrettyChars(false), sm.kind(), sm.toChars());
+                            error(loc, new BytePtr("template identifier `%s` is not a member of %s `%s`, did you mean %s `%s`?"), ti.name.toChars(), s.kind(), s.toPrettyChars(false), sm.kind(), sm.toChars());
                         }
                         else
                         {
-                            error(loc, new BytePtr("template identifier `%s` is not a member of %s `%s`"), ti.name.value.toChars(), s.kind(), s.toPrettyChars(false));
+                            error(loc, new BytePtr("template identifier `%s` is not a member of %s `%s`"), ti.name.toChars(), s.kind(), s.toPrettyChars(false));
                         }
                         return null;
                     }
@@ -703,11 +698,11 @@ public class dsymbol {
                     TemplateDeclaration td = sm.isTemplateDeclaration();
                     if (td == null)
                     {
-                        error(loc, new BytePtr("`%s.%s` is not a template, it is a %s"), s.toPrettyChars(false), ti.name.value.toChars(), sm.kind());
+                        error(loc, new BytePtr("`%s.%s` is not a template, it is a %s"), s.toPrettyChars(false), ti.name.toChars(), sm.kind());
                         return null;
                     }
-                    ti.tempdecl.value = td;
-                    if (ti.semanticRun.value == 0)
+                    ti.tempdecl = td;
+                    if (ti.semanticRun == 0)
                     {
                         dsymbolSemantic(ti, sc);
                     }
@@ -811,7 +806,7 @@ public class dsymbol {
             {
                 {
                     int i = 0;
-                    for (; (i < (members.get()).length.value);i++){
+                    for (; (i < (members.get()).length);i++){
                         Dsymbol sx = (members.get()).get(i);
                         boolean x = sx.oneMember(ps, ident);
                         if (!x)
@@ -822,7 +817,7 @@ public class dsymbol {
                         if (ps.get() != null)
                         {
                             assert(ident != null);
-                            if (((ps.get()).ident.value == null) || !(ps.get()).ident.value.equals(ident))
+                            if (((ps.get()).ident == null) || !(ps.get()).ident.equals(ident))
                             {
                                 continue;
                             }
@@ -838,10 +833,10 @@ public class dsymbol {
                                 {
                                     assert(f1.isFuncAliasDeclaration() == null);
                                     assert(f2.isFuncAliasDeclaration() == null);
-                                    for (; (!pequals(f1, f2));f1 = f1.overnext0.value){
-                                        if ((f1.overnext0.value == null))
+                                    for (; (!pequals(f1, f2));f1 = f1.overnext0){
+                                        if ((f1.overnext0 == null))
                                         {
-                                            f1.overnext0.value = f2;
+                                            f1.overnext0 = f2;
                                             break;
                                         }
                                     }
@@ -881,13 +876,13 @@ public class dsymbol {
         }
 
         public  void addComment(BytePtr comment) {
-            if (this.comment.value == null)
+            if (this.comment == null)
             {
-                this.comment.value = pcopy(comment);
+                this.comment = pcopy(comment);
             }
-            else if ((comment != null) && (strcmp(comment, this.comment.value) != 0))
+            else if ((comment != null) && (strcmp(comment, this.comment) != 0))
             {
-                this.comment.value = pcopy(Lexer.combineComments(this.comment.value, comment, true));
+                this.comment = pcopy(Lexer.combineComments(this.comment, comment, true));
             }
         }
 
@@ -1138,7 +1133,7 @@ public class dsymbol {
     }
     public static class ScopeDsymbol extends Dsymbol
     {
-        public Ref<Ptr<DArray<Dsymbol>>> members = ref(null);
+        public Ptr<DArray<Dsymbol>> members = null;
         public DsymbolTable symtab = null;
         public int endlinnum = 0;
         public Ptr<DArray<Dsymbol>> importedScopes = null;
@@ -1158,8 +1153,8 @@ public class dsymbol {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            ScopeDsymbol sds = s != null ? (ScopeDsymbol)s : new ScopeDsymbol(this.ident.value);
-            sds.members.value = Dsymbol.arraySyntaxCopy(this.members.value);
+            ScopeDsymbol sds = s != null ? (ScopeDsymbol)s : new ScopeDsymbol(this.ident);
+            sds.members = Dsymbol.arraySyntaxCopy(this.members);
             sds.endlinnum = this.endlinnum;
             return sds;
         }
@@ -1181,7 +1176,7 @@ public class dsymbol {
             OverloadSet a = null;
             {
                 int i = 0;
-                for (; (i < (this.importedScopes.get()).length.value);i++){
+                for (; (i < (this.importedScopes.get()).length);i++){
                     if (((flags & 1) != 0) && (this.prots.get(i) == Prot.Kind.private_))
                     {
                         continue;
@@ -1220,7 +1215,7 @@ public class dsymbol {
                     {
                         if ((pequals(s.toAlias(), s2.toAlias())) || (pequals(s.getType(), s2.getType())) && (s.getType() != null))
                         {
-                            if (s.isDeprecated() || s.prot().isMoreRestrictiveThan(s2.prot()) && (s2.prot().kind.value != Prot.Kind.none))
+                            if (s.isDeprecated() || s.prot().isMoreRestrictiveThan(s2.prot()) && (s2.prot().kind != Prot.Kind.none))
                             {
                                 s = s2;
                             }
@@ -1229,7 +1224,7 @@ public class dsymbol {
                         {
                             Import i1 = s.isImport();
                             Import i2 = s2.isImport();
-                            if (!((i1 != null) && (i2 != null) && (pequals(i1.mod, i2.mod)) || (i1.parent.value.isImport() == null) && (i2.parent.value.isImport() == null) && i1.ident.value.equals(i2.ident.value)))
+                            if (!((i1 != null) && (i2 != null) && (pequals(i1.mod, i2.mod)) || (i1.parent.value.isImport() == null) && (i2.parent.value.isImport() == null) && i1.ident.equals(i2.ident)))
                             {
                                 s = s.toAlias();
                                 s2 = s2.toAlias();
@@ -1289,16 +1284,16 @@ public class dsymbol {
                 OverloadSet os2 = s.isOverloadSet();
                 if ((os2) != null)
                 {
-                    if ((os.a.length.value == 0))
+                    if ((os.a.length == 0))
                     {
-                        os.a.setDim(os2.a.length.value);
-                        memcpy((BytePtr)(os.a.tdata()), (os2.a.tdata()), (4 * os2.a.length.value));
+                        os.a.setDim(os2.a.length);
+                        memcpy((BytePtr)(os.a.tdata()), (os2.a.tdata()), (4 * os2.a.length));
                     }
                     else
                     {
                         {
                             int i = 0;
-                            for (; (i < os2.a.length.value);i++){
+                            for (; (i < os2.a.length);i++){
                                 os = this.mergeOverloadSet(ident, os, os2.a.get(i));
                             }
                         }
@@ -1311,11 +1306,11 @@ public class dsymbol {
                         {
                             int j = 0;
                         L_outer1:
-                            for (; (j < os.a.length.value);j++){
+                            for (; (j < os.a.length);j++){
                                 Dsymbol s2 = os.a.get(j);
                                 if ((pequals(s.toAlias(), s2.toAlias())))
                                 {
-                                    if (s2.isDeprecated() || s2.prot().isMoreRestrictiveThan(s.prot()) && (s.prot().kind.value != Prot.Kind.none))
+                                    if (s2.isDeprecated() || s2.prot().isMoreRestrictiveThan(s.prot()) && (s.prot().kind != Prot.Kind.none))
                                     {
                                         os.a.set(j, s);
                                     }
@@ -1343,13 +1338,13 @@ public class dsymbol {
                 {
                     {
                         int i = 0;
-                        for (; (i < (this.importedScopes.get()).length.value);i++){
+                        for (; (i < (this.importedScopes.get()).length);i++){
                             Dsymbol ss = (this.importedScopes.get()).get(i);
                             if ((pequals(ss, s)))
                             {
-                                if ((protection.kind.value > this.prots.get(i)))
+                                if ((protection.kind > this.prots.get(i)))
                                 {
-                                    this.prots.set(i, protection.kind.value);
+                                    this.prots.set(i, protection.kind);
                                 }
                                 return ;
                             }
@@ -1357,8 +1352,8 @@ public class dsymbol {
                     }
                 }
                 (this.importedScopes.get()).push(s);
-                this.prots = pcopy((((IntPtr)Mem.xrealloc(this.prots, (this.importedScopes.get()).length.value * 4))));
-                this.prots.set(((this.importedScopes.get()).length.value - 1), protection.kind.value);
+                this.prots = pcopy((((IntPtr)Mem.xrealloc(this.prots, (this.importedScopes.get()).length * 4))));
+                this.prots.set(((this.importedScopes.get()).length - 1), protection.kind);
             }
         }
 
@@ -1367,7 +1362,7 @@ public class dsymbol {
             {
                 return ;
             }
-            Ptr<BitArray> pary = (protection.kind.value == Prot.Kind.private_) ? ptr(this.privateAccessiblePackages) : ptr(this.accessiblePackages);
+            Ptr<BitArray> pary = (protection.kind == Prot.Kind.private_) ? ptr(this.privateAccessiblePackages) : ptr(this.accessiblePackages);
             if (((pary.get()).length() <= p.tag))
             {
                 (pary.get()).length(p.tag + 1);
@@ -1376,17 +1371,17 @@ public class dsymbol {
         }
 
         public  boolean isPackageAccessible(dmodule.Package p, Prot protection, int flags) {
-            if ((p.tag < this.accessiblePackages.value.length()) && this.accessiblePackages.value.get(p.tag) || (protection.kind.value == Prot.Kind.private_) && (p.tag < this.privateAccessiblePackages.value.length()) && this.privateAccessiblePackages.value.get(p.tag))
+            if ((p.tag < this.accessiblePackages.value.length()) && this.accessiblePackages.value.get(p.tag) || (protection.kind == Prot.Kind.private_) && (p.tag < this.privateAccessiblePackages.value.length()) && this.privateAccessiblePackages.value.get(p.tag))
             {
                 return true;
             }
             {
-                Slice<Dsymbol> __r1135 = (this.importedScopes != null ? (this.importedScopes.get()).opSlice() : new Slice<Dsymbol>()).copy();
-                int __key1134 = 0;
-                for (; (__key1134 < __r1135.getLength());__key1134 += 1) {
-                    Dsymbol ss = __r1135.get(__key1134);
-                    int i = __key1134;
-                    if ((protection.kind.value <= this.prots.get(i)) && ss.isScopeDsymbol().isPackageAccessible(p, protection, 1))
+                Slice<Dsymbol> __r1131 = (this.importedScopes != null ? (this.importedScopes.get()).opSlice() : new Slice<Dsymbol>()).copy();
+                int __key1130 = 0;
+                for (; (__key1130 < __r1131.getLength());__key1130 += 1) {
+                    Dsymbol ss = __r1131.get(__key1130);
+                    int i = __key1130;
+                    if ((protection.kind <= this.prots.get(i)) && ss.isScopeDsymbol().isPackageAccessible(p, protection, 1))
                     {
                         return true;
                     }
@@ -1401,7 +1396,7 @@ public class dsymbol {
         }
 
         public  boolean isforwardRef() {
-            return this.members.value == null;
+            return this.members == null;
         }
 
         public static void multiplyDefined(Loc loc, Dsymbol s1, Dsymbol s2) {
@@ -1411,7 +1406,7 @@ public class dsymbol {
             }
             else
             {
-                s1.error(s1.loc.value, new BytePtr("conflicts with %s `%s` at %s"), s2.kind(), s2.toPrettyChars(false), s2.locToChars());
+                s1.error(s1.loc, new BytePtr("conflicts with %s `%s` at %s"), s2.kind(), s2.toPrettyChars(false), s2.locToChars());
             }
         }
 
@@ -1438,12 +1433,12 @@ public class dsymbol {
         }
 
         public  boolean hasStaticCtorOrDtor() {
-            if (this.members.value != null)
+            if (this.members != null)
             {
                 {
                     int i = 0;
-                    for (; (i < (this.members.value.get()).length.value);i++){
-                        Dsymbol member = (this.members.value.get()).get(i);
+                    for (; (i < (this.members.get()).length);i++){
+                        Dsymbol member = (this.members.get()).get(i);
                         if (member.hasStaticCtorOrDtor())
                         {
                             return true;
@@ -1463,10 +1458,10 @@ public class dsymbol {
             IntRef n = ref(pn != null ? pn.get() : 0);
             int result = 0;
             {
-                int __key1136 = 0;
-                int __limit1137 = (members.get()).length.value;
-                for (; (__key1136 < __limit1137);__key1136 += 1) {
-                    int i = __key1136;
+                int __key1132 = 0;
+                int __limit1133 = (members.get()).length;
+                for (; (__key1132 < __limit1133);__key1132 += 1) {
+                    int i = __key1132;
                     Dsymbol s = (members.get()).get(i);
                     {
                         AttribDeclaration a = s.isAttribDeclaration();
@@ -1478,7 +1473,7 @@ public class dsymbol {
                             TemplateMixin tm = s.isTemplateMixin();
                             if ((tm) != null)
                             {
-                                result = _foreach(sc, tm.members.value, dg, ptr(n));
+                                result = _foreach(sc, tm.members, dg, ptr(n));
                             }
                             else if (s.isTemplateInstance() != null)
                             {
@@ -1561,13 +1556,13 @@ public class dsymbol {
             Dsymbol s = null;
             Expression eold = null;
             {
-                Expression e = this.withstate.exp.value;
-                for (; (!pequals(e, eold));e = resolveAliasThis(this._scope.value, e, false)){
-                    if (((e.op.value & 0xFF) == 203))
+                Expression e = this.withstate.exp;
+                for (; (!pequals(e, eold));e = resolveAliasThis(this._scope, e, false)){
+                    if (((e.op & 0xFF) == 203))
                     {
-                        s = ((ScopeExp)e).sds.value;
+                        s = ((ScopeExp)e).sds;
                     }
-                    else if (((e.op.value & 0xFF) == 20))
+                    else if (((e.op & 0xFF) == 20))
                     {
                         s = e.type.value.toDsymbol(null);
                     }
@@ -1640,8 +1635,8 @@ public class dsymbol {
         public TupleDeclaration td = null;
         public Ptr<Scope> sc = null;
         public  ArrayScopeSymbol(Ptr<Scope> sc, Expression exp) {
-            super(exp.loc.value, null);
-            assert(((exp.op.value & 0xFF) == 62) || ((exp.op.value & 0xFF) == 31) || ((exp.op.value & 0xFF) == 17));
+            super(exp.loc, null);
+            assert(((exp.op & 0xFF) == 62) || ((exp.op & 0xFF) == 31) || ((exp.op & 0xFF) == 17));
             this.exp = exp;
             this.sc = sc;
         }
@@ -1669,35 +1664,35 @@ public class dsymbol {
             /*L1:*/
                 if (this.td != null)
                 {
-                    VarDeclaration v = new VarDeclaration(loc, Type.tsize_t.value, Id.dollar, null, 0L);
-                    Expression e = new IntegerExp(Loc.initial.value, (long)(this.td.objects.value.get()).length.value, Type.tsize_t.value);
-                    v._init.value = new ExpInitializer(Loc.initial.value, e);
-                    v.storage_class.value |= 1099511627781L;
+                    VarDeclaration v = new VarDeclaration(loc, Type.tsize_t, Id.dollar, null, 0L);
+                    Expression e = new IntegerExp(Loc.initial, (long)(this.td.objects.get()).length, Type.tsize_t);
+                    v._init = new ExpInitializer(Loc.initial, e);
+                    v.storage_class |= 1099511627781L;
                     dsymbolSemantic(v, this.sc);
                     return v;
                 }
                 if (this.type != null)
                 {
-                    VarDeclaration v = new VarDeclaration(loc, Type.tsize_t.value, Id.dollar, null, 0L);
-                    Expression e = new IntegerExp(Loc.initial.value, (long)(this.type.arguments.value.get()).length.value, Type.tsize_t.value);
-                    v._init.value = new ExpInitializer(Loc.initial.value, e);
-                    v.storage_class.value |= 1099511627781L;
+                    VarDeclaration v = new VarDeclaration(loc, Type.tsize_t, Id.dollar, null, 0L);
+                    Expression e = new IntegerExp(Loc.initial, (long)(this.type.arguments.get()).length, Type.tsize_t);
+                    v._init = new ExpInitializer(Loc.initial, e);
+                    v.storage_class |= 1099511627781L;
                     dsymbolSemantic(v, this.sc);
                     return v;
                 }
-                if (((this.exp.op.value & 0xFF) == 62))
+                if (((this.exp.op & 0xFF) == 62))
                 {
                     IndexExp ie = (IndexExp)this.exp;
                     pvar = pcopy((ptr(ie.lengthVar)));
                     ce = ie.e1.value;
                 }
-                else if (((this.exp.op.value & 0xFF) == 31))
+                else if (((this.exp.op & 0xFF) == 31))
                 {
                     SliceExp se = (SliceExp)this.exp;
                     pvar = pcopy((ptr(se.lengthVar)));
                     ce = se.e1.value;
                 }
-                else if (((this.exp.op.value & 0xFF) == 17))
+                else if (((this.exp.op & 0xFF) == 17))
                 {
                     ArrayExp ae = (ArrayExp)this.exp;
                     pvar = pcopy((ptr(ae.lengthVar)));
@@ -1707,13 +1702,13 @@ public class dsymbol {
                 {
                     return null;
                 }
-                for (; ((ce.op.value & 0xFF) == 99);) {
+                for (; ((ce.op & 0xFF) == 99);) {
                     ce = ((CommaExp)ce).e2.value;
                 }
-                if (((ce.op.value & 0xFF) == 20))
+                if (((ce.op & 0xFF) == 20))
                 {
                     Type t = ((TypeExp)ce).type.value;
-                    if (((t.ty.value & 0xFF) == ENUMTY.Ttuple))
+                    if (((t.ty & 0xFF) == ENUMTY.Ttuple))
                     {
                         this.type = (TypeTuple)t;
                         /*goto L1*/throw Dispatch0.INSTANCE;
@@ -1723,15 +1718,15 @@ public class dsymbol {
                 {
                     VarDeclaration v = null;
                     Type t = null;
-                    if (((ce.op.value & 0xFF) == 126))
+                    if (((ce.op & 0xFF) == 126))
                     {
-                        Expression e = new IntegerExp(Loc.initial.value, (long)(((TupleExp)ce).exps.value.get()).length.value, Type.tsize_t.value);
-                        v = new VarDeclaration(loc, Type.tsize_t.value, Id.dollar, new ExpInitializer(Loc.initial.value, e), 0L);
-                        v.storage_class.value |= 1099511627781L;
+                        Expression e = new IntegerExp(Loc.initial, (long)(((TupleExp)ce).exps.get()).length, Type.tsize_t);
+                        v = new VarDeclaration(loc, Type.tsize_t, Id.dollar, new ExpInitializer(Loc.initial, e), 0L);
+                        v.storage_class |= 1099511627781L;
                     }
-                    else if ((ce.type.value != null) && ((t = ce.type.value.toBasetype()) != null) && ((t.ty.value & 0xFF) == ENUMTY.Tstruct) || ((t.ty.value & 0xFF) == ENUMTY.Tclass))
+                    else if ((ce.type.value != null) && ((t = ce.type.value.toBasetype()) != null) && ((t.ty & 0xFF) == ENUMTY.Tstruct) || ((t.ty & 0xFF) == ENUMTY.Tclass))
                     {
-                        assert(((this.exp.op.value & 0xFF) == 17) || ((this.exp.op.value & 0xFF) == 31));
+                        assert(((this.exp.op & 0xFF) == 17) || ((this.exp.op & 0xFF) == 31));
                         AggregateDeclaration ad = isAggregate(t);
                         assert(ad != null);
                         Dsymbol s = ad.search(loc, Id.opDollar, 8);
@@ -1746,11 +1741,11 @@ public class dsymbol {
                             if ((td) != null)
                             {
                                 long dim = 0L;
-                                if (((this.exp.op.value & 0xFF) == 17))
+                                if (((this.exp.op & 0xFF) == 17))
                                 {
                                     dim = (long)((ArrayExp)this.exp).currentDimension;
                                 }
-                                else if (((this.exp.op.value & 0xFF) == 31))
+                                else if (((this.exp.op & 0xFF) == 31))
                                 {
                                     dim = 0L;
                                 }
@@ -1759,14 +1754,14 @@ public class dsymbol {
                                     throw new AssertionError("Unreachable code!");
                                 }
                                 Ptr<DArray<RootObject>> tiargs = refPtr(new DArray<RootObject>());
-                                Expression edim = new IntegerExp(Loc.initial.value, dim, Type.tsize_t.value);
+                                Expression edim = new IntegerExp(Loc.initial, dim, Type.tsize_t);
                                 edim = expressionSemantic(edim, this.sc);
                                 (tiargs.get()).push(edim);
-                                e = new DotTemplateInstanceExp(loc, ce, td.ident.value, tiargs);
+                                e = new DotTemplateInstanceExp(loc, ce, td.ident, tiargs);
                             }
                             else
                             {
-                                if (((this.exp.op.value & 0xFF) == 17) && ((((ArrayExp)this.exp).arguments.value.get()).length.value != 1))
+                                if (((this.exp.op & 0xFF) == 17) && ((((ArrayExp)this.exp).arguments.get()).length != 1))
                                 {
                                     this.exp.error(new BytePtr("`%s` only defines opDollar for one dimension"), ad.toChars());
                                     return null;
@@ -1782,19 +1777,19 @@ public class dsymbol {
                             this.exp.error(new BytePtr("`%s` has no value"), e.toChars());
                         }
                         t = e.type.value.toBasetype();
-                        if ((t != null) && ((t.ty.value & 0xFF) == ENUMTY.Tfunction))
+                        if ((t != null) && ((t.ty & 0xFF) == ENUMTY.Tfunction))
                         {
-                            e = new CallExp(e.loc.value, e);
+                            e = new CallExp(e.loc, e);
                         }
-                        v = new VarDeclaration(loc, null, Id.dollar, new ExpInitializer(Loc.initial.value, e), 0L);
-                        v.storage_class.value |= 3367254360064L;
+                        v = new VarDeclaration(loc, null, Id.dollar, new ExpInitializer(Loc.initial, e), 0L);
+                        v.storage_class |= 3367254360064L;
                     }
                     else
                     {
-                        VoidInitializer e = new VoidInitializer(Loc.initial.value);
-                        e.type.value = Type.tsize_t.value;
-                        v = new VarDeclaration(loc, Type.tsize_t.value, Id.dollar, e, 0L);
-                        v.storage_class.value |= 1168231104512L;
+                        VoidInitializer e = new VoidInitializer(Loc.initial);
+                        e.type = Type.tsize_t;
+                        v = new VarDeclaration(loc, Type.tsize_t, Id.dollar, e, 0L);
+                        v.storage_class |= 1168231104512L;
                     }
                     pvar.set(0, v);
                 }
@@ -1919,7 +1914,7 @@ public class dsymbol {
                 Declaration d = s.isDeclaration();
                 if ((d) != null)
                 {
-                    if ((d.storage_class.value & 2251799813685248L) != 0)
+                    if ((d.storage_class & 2251799813685248L) != 0)
                     {
                         if (this.symtab == null)
                         {
@@ -1942,7 +1937,7 @@ public class dsymbol {
                 Declaration d = s.isDeclaration();
                 if ((d) != null)
                 {
-                    if ((d.storage_class.value & 2251799813685248L) != 0)
+                    if ((d.storage_class & 2251799813685248L) != 0)
                     {
                         if (this.symtab == null)
                         {
@@ -2044,11 +2039,11 @@ public class dsymbol {
         }
 
         public  Dsymbol insert(Dsymbol s) {
-            return this.insert(s.ident.value, s);
+            return this.insert(s.ident, s);
         }
 
         public  Dsymbol update(Dsymbol s) {
-            Identifier ident = s.ident.value;
+            Identifier ident = s.ident;
             Ptr<Dsymbol> ps = pcopy(this.tab.getLvalue(ident));
             ps.set(0, s);
             return s;

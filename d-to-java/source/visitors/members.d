@@ -78,7 +78,7 @@ Members collectMembers(Dsymbol agg, bool recurseBase = false) {
         override void visit(StaticAssert ) {}
         override void visit(VarDeclaration v) {
             if (!v.isStatic && !(v.storage_class & STC.gshared) && !v.ident.toString.startsWith("__")){
-                decls ~= v;
+                if (!v.isThisDeclaration) decls ~= v;
             }
         }
         override void visit(ExpStatement ) {}

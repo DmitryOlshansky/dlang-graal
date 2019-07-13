@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -21,9 +17,9 @@ import static org.dlang.dmd.utf.*;
 
 public class lexer {
     static boolean scaninitdone = false;
-    static ByteSlice scandate = new ByteSlice(new byte[12]);
-    static ByteSlice scantime = new ByteSlice(new byte[9]);
-    static ByteSlice scantimestamp = new ByteSlice(new byte[25]);
+    static Ref<ByteSlice> scandate = ref(new ByteSlice(new byte[12]));
+    static Ref<ByteSlice> scantime = ref(new ByteSlice(new byte[9]));
+    static Ref<ByteSlice> scantimestamp = ref(new ByteSlice(new byte[25]));
 
     private static class FLAGS 
     {
@@ -78,7 +74,7 @@ public class lexer {
     public static class Lexer extends Object
     {
         public static OutBuffer stringbuffer = new OutBuffer();
-        public Loc scanloc = new Loc();
+        public Ref<Loc> scanloc = ref(new Loc());
         public Loc prevloc = new Loc();
         public Ref<BytePtr> p = ref(null);
         public Ref<Token> token = ref(new Token());
@@ -99,7 +95,7 @@ public class lexer {
                 }
             }
             this.diagnosticReporter = diagnosticReporter;
-            this.scanloc = new Loc(filename, 1, 1);
+            this.scanloc.value = new Loc(filename, 1, 1);
             this.token.value = new Token().copy();
             this.base = pcopy(base);
             this.end = pcopy((base.plus(endoffset)));
@@ -138,23 +134,23 @@ public class lexer {
             if (this.tokenFreelist != null)
             {
                 Ptr<Token> t = this.tokenFreelist;
-                this.tokenFreelist = (t.get()).next;
-                (t.get()).next = null;
+                this.tokenFreelist = (t.get()).next.value;
+                (t.get()).next.value = null;
                 return t;
             }
             return refPtr(new Token());
         }
 
         public  void releaseToken(Ptr<Token> token) {
-            (token.get()).next = this.tokenFreelist;
+            (token.get()).next.value = this.tokenFreelist;
             this.tokenFreelist = token;
         }
 
         public  byte nextToken() {
             this.prevloc = this.token.value.loc.copy();
-            if (this.token.value.next != null)
+            if (this.token.value.next.value != null)
             {
-                Ptr<Token> t = this.token.value.next;
+                Ptr<Token> t = this.token.value.next.value;
                 (ptr(this.token)).set(0, (t));
                 this.releaseToken(t);
             }
@@ -175,7 +171,7 @@ public class lexer {
         }
 
         public  void scan(Ptr<Token> t) {
-            int lastLine = this.scanloc.linnum;
+            int lastLine = this.scanloc.value.linnum;
             Loc startLoc = new Loc();
             (t.get()).blockComment.value = null;
             (t.get()).lineComment.value = null;
@@ -405,7 +401,7 @@ public class lexer {
                                         }
                                         else if ((pequals(id, Id.VENDOR)))
                                         {
-                                            (t.get()).ustring = pcopy((toBytePtr(xarraydup(global.vendor))));
+                                            (t.get()).ustring = pcopy((toBytePtr(xarraydup(global.value.vendor))));
                                             /*goto Lstr*//*unrolled goto*/
                                         /*Lstr:*/
                                             (t.get()).value = TOK.string_;
@@ -423,7 +419,7 @@ public class lexer {
                                         else if ((pequals(id, Id.VERSIONX)))
                                         {
                                             (t.get()).value = TOK.int64Literal;
-                                            (t.get()).intvalue = (long)global.versionNumber();
+                                            (t.get()).intvalue = (long)global.value.versionNumber();
                                         }
                                         else if ((pequals(id, Id.EOFX)))
                                         {
@@ -500,7 +496,7 @@ public class lexer {
                                         else if (this.doDocComment && (((t.get()).ptr.get(2) & 0xFF) == 42) && (this.p.value.minus(4) != (t.get()).ptr))
                                         {
                                             this.getDocComment(t, ((lastLine == startLoc.linnum) ? 1 : 0), startLoc.linnum - this.lastDocLine > 1);
-                                            this.lastDocLine = this.scanloc.linnum;
+                                            this.lastDocLine = this.scanloc.value.linnum;
                                         }
                                         continue L_outer1;
                                     case 47:
@@ -529,7 +525,7 @@ public class lexer {
                                                     if (this.doDocComment && (((t.get()).ptr.get(2) & 0xFF) == 47))
                                                     {
                                                         this.getDocComment(t, ((lastLine == startLoc.linnum) ? 1 : 0), startLoc.linnum - this.lastDocLine > 1);
-                                                        this.lastDocLine = this.scanloc.linnum;
+                                                        this.lastDocLine = this.scanloc.value.linnum;
                                                     }
                                                     this.p.value = pcopy(this.end);
                                                     (t.get()).loc = this.loc().copy();
@@ -559,7 +555,7 @@ public class lexer {
                                         if (this.doDocComment && (((t.get()).ptr.get(2) & 0xFF) == 47))
                                         {
                                             this.getDocComment(t, ((lastLine == startLoc.linnum) ? 1 : 0), startLoc.linnum - this.lastDocLine > 1);
-                                            this.lastDocLine = this.scanloc.linnum;
+                                            this.lastDocLine = this.scanloc.value.linnum;
                                         }
                                         this.p.value.postInc();
                                         this.endOfLine();
@@ -633,7 +629,7 @@ public class lexer {
                                         if (this.doDocComment && (((t.get()).ptr.get(2) & 0xFF) == 43) && (this.p.value.minus(4) != (t.get()).ptr))
                                         {
                                             this.getDocComment(t, ((lastLine == startLoc.linnum) ? 1 : 0), startLoc.linnum - this.lastDocLine > 1);
-                                            this.lastDocLine = this.scanloc.linnum;
+                                            this.lastDocLine = this.scanloc.value.linnum;
                                         }
                                         continue L_outer1;
                                     default:
@@ -992,15 +988,15 @@ public class lexer {
 
         public  Ptr<Token> peek(Ptr<Token> ct) {
             Ptr<Token> t = null;
-            if ((ct.get()).next != null)
+            if ((ct.get()).next.value != null)
             {
-                t = (ct.get()).next;
+                t = (ct.get()).next.value;
             }
             else
             {
                 t = this.allocateToken();
                 this.scan(t);
-                (ct.get()).next = t;
+                (ct.get()).next.value = t;
             }
             return t;
         }
@@ -1241,7 +1237,7 @@ public class lexer {
                         break;
                     case 0:
                     case 26:
-                        this.error(new BytePtr("unterminated string constant starting at %s"), start.toChars(global.params.showColumns.value));
+                        this.error(new BytePtr("unterminated string constant starting at %s"), start.toChars(global.value.params.showColumns));
                         (result.get()).setString();
                         this.p.value.postDec();
                         return ;
@@ -1302,7 +1298,7 @@ public class lexer {
                                 continue L_outer2;
                             case 0:
                             case 26:
-                                this.error(new BytePtr("unterminated string constant starting at %s"), start.toChars(global.params.showColumns.value));
+                                this.error(new BytePtr("unterminated string constant starting at %s"), start.toChars(global.value.params.showColumns));
                                 (t.get()).setString();
                                 this.p.value.postDec();
                                 return TOK.hexadecimalString;
@@ -1361,6 +1357,7 @@ public class lexer {
                     } while(__dispatch10 != 0);
                 }
             }
+            throw new AssertionError("Unreachable code!");
         }
 
         public  void delimitedStringConstant(Ptr<Token> result) {
@@ -1411,7 +1408,7 @@ public class lexer {
                                     /*goto Lnextline*/{ __dispatch11 = -1; continue dispatched_11; }
                                 case 0:
                                 case 26:
-                                    this.error(new BytePtr("unterminated delimited string constant starting at %s"), start.toChars(global.params.showColumns.value));
+                                    this.error(new BytePtr("unterminated delimited string constant starting at %s"), start.toChars(global.value.params.showColumns));
                                     (result.get()).setString();
                                     this.p.value.postDec();
                                     return ;
@@ -1564,7 +1561,7 @@ public class lexer {
                             }
                             continue;
                         case 11:
-                            this.error(new BytePtr("unterminated token string constant starting at %s"), start.toChars(global.params.showColumns.value));
+                            this.error(new BytePtr("unterminated token string constant starting at %s"), start.toChars(global.value.params.showColumns));
                             (result.get()).setString();
                             return ;
                         default:
@@ -1618,7 +1615,7 @@ public class lexer {
                     case 0:
                     case 26:
                         this.p.value.postDec();
-                        this.error(new BytePtr("unterminated string constant starting at %s"), start.toChars(global.params.showColumns.value));
+                        this.error(new BytePtr("unterminated string constant starting at %s"), start.toChars(global.value.params.showColumns));
                         (t.get()).setString();
                         return ;
                     default:
@@ -2143,7 +2140,7 @@ public class lexer {
             BytePtr sbufptr = pcopy(toBytePtr(stringbuffer.data));
             byte result = TOK.reserved;
             Ref<Boolean> isOutOfRange = ref(false);
-            (t.get()).floatvalue = isWellformedString ? CTFloat.parse(sbufptr, ptr(isOutOfRange)) : CTFloat.zero.value;
+            (t.get()).floatvalue = isWellformedString ? CTFloat.parse(sbufptr, ptr(isOutOfRange)) : CTFloat.zero;
             {
                 int __dispatch22 = 0;
                 dispatched_22:
@@ -2203,14 +2200,14 @@ public class lexer {
             if (isOutOfRange.value && !isLong)
             {
                 BytePtr suffix = pcopy(((result & 0xFF) == 111) || ((result & 0xFF) == 114) ? new BytePtr("f") : new BytePtr(""));
-                this.error(this.scanloc, new BytePtr("number `%s%s` is not representable"), sbufptr, suffix);
+                this.error(this.scanloc.value, new BytePtr("number `%s%s` is not representable"), sbufptr, suffix);
             }
             return result;
         }
 
         public  Loc loc() {
-            this.scanloc.charnum = ((this.p.value.plus(1).minus(this.line)));
-            return this.scanloc;
+            this.scanloc.value.charnum = ((this.p.value.plus(1).minus(this.line)));
+            return this.scanloc.value;
         }
 
         public  void error(BytePtr format, Object... args) {
@@ -2246,7 +2243,7 @@ public class lexer {
         }
 
         public  void poundLine() {
-            int linnum = this.scanloc.linnum;
+            int linnum = this.scanloc.value.linnum;
             BytePtr filespec = null;
             Loc loc = this.loc().copy();
             Ref<Token> tok = ref(new Token().copy());
@@ -2287,10 +2284,10 @@ public class lexer {
                                 __dispatch24 = 0;
                                     if (this.inTokenStringConstant == 0)
                                     {
-                                        this.scanloc.linnum = linnum;
+                                        this.scanloc.value.linnum = linnum;
                                         if (filespec != null)
                                         {
-                                            this.scanloc.filename = pcopy(filespec);
+                                            this.scanloc.value.filename = pcopy(filespec);
                                         }
                                     }
                                     return ;
@@ -2312,7 +2309,7 @@ public class lexer {
                                     if ((memcmp(this.p.value, new BytePtr("__FILE__"), 8) == 0))
                                     {
                                         this.p.value.plusAssign(8);
-                                        filespec = pcopy(Mem.xstrdup(this.scanloc.filename));
+                                        filespec = pcopy(Mem.xstrdup(this.scanloc.value.filename));
                                         continue L_outer6;
                                     }
                                     /*goto Lerr*/throw Dispatch0.INSTANCE;
@@ -2453,11 +2450,11 @@ public class lexer {
                 Function0<Void> trimTrailingWhitespace = new Function0<Void>(){
                     public Void invoke() {
                         ByteSlice s = buf.peekSlice().copy();
-                        IntRef len = ref(s.getLength());
-                        for (; (len.value != 0) && ((s.get(len.value - 1) & 0xFF) == 32) || ((s.get(len.value - 1) & 0xFF) == 9);) {
-                            len.value -= 1;
+                        int len = s.getLength();
+                        for (; (len != 0) && ((s.get(len - 1) & 0xFF) == 32) || ((s.get(len - 1) & 0xFF) == 9);) {
+                            len -= 1;
                         }
-                        buf.setsize(len.value);
+                        buf.setsize(len);
                         return null;
                     }
                 };
@@ -2567,7 +2564,7 @@ public class lexer {
         }
 
         public  void endOfLine() {
-            this.scanloc.linnum++;
+            this.scanloc.value.linnum++;
             this.line = pcopy(this.p.value);
         }
 

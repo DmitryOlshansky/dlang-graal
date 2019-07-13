@@ -297,11 +297,11 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (gotos.length != 1) gotos.push(null);
 
         header.put("package org.dlang.dmd;\n");
-        header.put("\nimport kotlin.jvm.functions.*;\n");
+        header.put("import kotlin.jvm.functions.*;\n");
         header.put("\nimport org.dlang.dmd.root.*;\n");
-        header.put("\nimport static org.dlang.dmd.root.filename.*;\n");
-        header.put("\nimport static org.dlang.dmd.root.File.*;\n");
-        header.put("\nimport static org.dlang.dmd.root.ShimsKt.*;\n");
+        header.put("import static org.dlang.dmd.root.filename.*;\n");
+        header.put("import static org.dlang.dmd.root.File.*;\n");
+        header.put("import static org.dlang.dmd.root.ShimsKt.*;\n");
         header.put("import static org.dlang.dmd.root.SliceKt.*;\n");
         header.put("import static org.dlang.dmd.root.DArrayKt.*;\n");
         buf.indent;
@@ -495,9 +495,10 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         else if (s.exp) {
             auto text = s.exp.toJava(opts);
             if (text.length) {
-                if (s.exp.type.ty == Tbool && s.exp.op == TOK.orOr) buf.put("expr(");
+                bool needsWrap = (s.exp.type.ty == Tbool && s.exp.op == TOK.orOr) || s.exp.op == TOK.question;
+                if (needsWrap) buf.put("expr(");
                 buf.put(text);
-                if (s.exp.type.ty == Tbool && s.exp.op == TOK.orOr) buf.put(")");
+                if (needsWrap) buf.put(")");
                 buf.put(";\n");
             }
         }
@@ -1240,8 +1241,10 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put('{');
         buf.put('\n');
         buf.indent;
-        foreach (s; *d.members)
-            s.accept(this);
+        foreach (s; *d.members) {
+            if (!s.isThisDeclaration) // hidden this parameter for inner function?
+                s.accept(this);
+        }
         // .init ctor
         buf.fmt("public %s(){\n", nameOf(d));
         buf.indent;

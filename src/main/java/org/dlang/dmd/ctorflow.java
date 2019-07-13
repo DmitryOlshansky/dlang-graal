@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -75,10 +71,10 @@ public class ctorflow {
         public  void orCSX(int csx) {
             this.callSuper.value |= csx;
             {
-                Slice<FieldInit> __r890 = this.fieldinit.copy();
-                int __key891 = 0;
-                for (; (__key891 < __r890.getLength());__key891 += 1) {
-                    FieldInit u = __r890.get(__key891).copy();
+                Slice<FieldInit> __r886 = this.fieldinit.copy();
+                int __key887 = 0;
+                for (; (__key887 < __r886.getLength());__key887 += 1) {
+                    FieldInit u = __r886.get(__key887).copy();
                     u.csx.value |= csx;
                 }
             }
@@ -90,11 +86,11 @@ public class ctorflow {
             {
                 assert((this.fieldinit.getLength() == ctorflow.fieldinit.getLength()));
                 {
-                    Slice<FieldInit> __r893 = ctorflow.fieldinit.copy();
-                    int __key892 = 0;
-                    for (; (__key892 < __r893.getLength());__key892 += 1) {
-                        FieldInit u = __r893.get(__key892).copy();
-                        int i = __key892;
+                    Slice<FieldInit> __r889 = ctorflow.fieldinit.copy();
+                    int __key888 = 0;
+                    for (; (__key888 < __r889.getLength());__key888 += 1) {
+                        FieldInit u = __r889.get(__key888).copy();
+                        int i = __key888;
                         Ptr<FieldInit> fi = ptr(this.fieldinit.get(i));
                         (fi.get()).csx.value |= u.csx.value;
                         if (((fi.get()).loc == new Loc(null, 0, 0)))

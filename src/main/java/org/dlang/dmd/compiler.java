@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -68,25 +64,25 @@ public class compiler {
             ByteSlice cmaincode = new ByteSlice("\n            extern(C)\n            {\n                int _d_run_main(int argc, char **argv, void* mainFunc);\n                int _Dmain(char[][] args);\n                int main(int argc, char **argv)\n                {\n                    return _d_run_main(argc, argv, &_Dmain);\n                }\n                version (Solaris) int _main(int argc, char** argv) { return main(argc, argv); }\n            }\n        ").copy();
             Identifier id = Id.entrypoint;
             dmodule.Module m = new dmodule.Module(new ByteSlice("__entrypoint.d"), id, 0, 0);
-            StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
+            StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.value.params.useDeprecated);
             try {
                 ParserASTCodegen p = new ParserASTCodegen(m, toByteSlice(cmaincode), false, diagnosticReporter);
                 try {
-                    p.scanloc = Loc.initial.value.copy();
+                    p.scanloc.value = Loc.initial.copy();
                     p.nextToken();
-                    m.members.value = p.parseModule();
+                    m.members = p.parseModule();
                     assert(((p.token.value.value & 0xFF) == 11));
                     assert(!p.errors());
-                    boolean v = global.params.verbose;
-                    global.params.verbose = false;
+                    boolean v = global.value.params.verbose;
+                    global.value.params.verbose = false;
                     m.importedFrom = m;
                     m.importAll(null);
                     dsymbolSemantic(m, null);
                     semantic2(m, null);
                     semantic3(m, null);
-                    global.params.verbose = v;
+                    global.value.params.verbose = v;
                     entrypoint = m;
-                    rootHasMain = (sc.get())._module.value;
+                    rootHasMain = (sc.get())._module;
                 }
                 finally {
                 }
@@ -102,7 +98,7 @@ public class compiler {
                 int __dispatch0 = 0;
                 dispatched_0:
                 do {
-                    switch (__dispatch0 != 0 ? __dispatch0 : (e.type.value.ty.value & 0xFF))
+                    switch (__dispatch0 != 0 ? __dispatch0 : (e.type.value.ty & 0xFF))
                     {
                         case 17:
                         case 18:
@@ -132,24 +128,24 @@ public class compiler {
                 int __dispatch1 = 0;
                 dispatched_1:
                 do {
-                    switch (__dispatch1 != 0 ? __dispatch1 : (type.ty.value & 0xFF))
+                    switch (__dispatch1 != 0 ? __dispatch1 : (type.ty & 0xFF))
                     {
                         case 17:
                         case 18:
-                            (pue) = new UnionExp(new IntegerExp(e.loc.value, u.int32value, type));
+                            (pue) = new UnionExp(new IntegerExp(e.loc, u.int32value, type));
                             break;
                         case 19:
                         case 20:
-                            (pue) = new UnionExp(new IntegerExp(e.loc.value, u.int64value, type));
+                            (pue) = new UnionExp(new IntegerExp(e.loc, u.int64value, type));
                             break;
                         case 21:
                             r = (double)u.float32value;
-                            (pue) = new UnionExp(new RealExp(e.loc.value, r, type));
+                            (pue) = new UnionExp(new RealExp(e.loc, r, type));
                             break;
                         case 22:
                             __dispatch1 = 0;
                             r = (double)u.float64value;
-                            (pue) = new UnionExp(new RealExp(e.loc.value, r, type));
+                            (pue) = new UnionExp(new RealExp(e.loc, r, type));
                             break;
                         case 23:
                             assert((type.size() == 8L));
@@ -170,9 +166,9 @@ public class compiler {
             {
                 Ref<DArray<Identifier>> empty = ref(new DArray<Identifier>());
                 try {
-                    if (includeImportedModuleCheck(new ModuleComponentRange((m.md != null) && ((m.md.get()).packages != null) ? (m.md.get()).packages : ptr(empty), m.ident.value, m.isPackageFile, 0)))
+                    if (includeImportedModuleCheck(new ModuleComponentRange((m.md != null) && ((m.md.get()).packages != null) ? (m.md.get()).packages : ptr(empty), m.ident, m.isPackageFile, 0)))
                     {
-                        if (global.params.verbose)
+                        if (global.value.params.verbose)
                         {
                             message(new BytePtr("compileimport (%s)"), m.srcfile.toChars());
                         }
@@ -203,7 +199,7 @@ public class compiler {
         public boolean isPackageFile = false;
         public int index = 0;
         public  int totalLength() {
-            return (this.packages.get()).length.value + 1 + (this.isPackageFile ? 1 : 0);
+            return (this.packages.get()).length + 1 + (this.isPackageFile ? 1 : 0);
         }
 
         public  boolean empty() {
@@ -211,11 +207,11 @@ public class compiler {
         }
 
         public  Identifier front() {
-            if ((this.index < (this.packages.get()).length.value))
+            if ((this.index < (this.packages.get()).length))
             {
                 return (this.packages.get()).get(this.index);
             }
-            if ((this.index == (this.packages.get()).length.value))
+            if ((this.index == (this.packages.get()).length))
             {
                 return this.name;
             }
@@ -262,15 +258,15 @@ public class compiler {
         }
         createMatchNodes();
         int nodeIndex = 0;
-        for (; (nodeIndex < matchNodes.value.length.value);){
+        for (; (nodeIndex < matchNodes.value.length);){
             MatcherNode info = matchNodes.value.get(nodeIndex++).copy();
-            if (((int)info.depth.value <= components.totalLength()))
+            if (((int)info.depth <= components.totalLength()))
             {
                 int nodeOffset = 0;
                 {
                     ModuleComponentRange range = components.copy();
                     for (; ;range.popFront()){
-                        if (range.empty() || (nodeOffset >= (int)info.depth.value))
+                        if (range.empty() || (nodeOffset >= (int)info.depth))
                         {
                             return !info.isExclude;
                         }
@@ -282,15 +278,15 @@ public class compiler {
                     }
                 }
             }
-            nodeIndex += (int)info.depth.value;
+            nodeIndex += (int)info.depth;
         }
-        assertMsg((nodeIndex == matchNodes.value.length.value), new ByteSlice("code bug"));
+        assertMsg((nodeIndex == matchNodes.value.length), new ByteSlice("code bug"));
         return includeByDefault;
     }
 
     public static class MatcherNode
     {
-        public Ref<Integer> depth = ref(0);
+        public int depth = 0;
         public boolean isExclude = false;
         public Identifier id = null;
         public  MatcherNode(Identifier id) {
@@ -298,7 +294,7 @@ public class compiler {
         }
 
         public  MatcherNode(boolean isExclude, int depth) {
-            this.depth.value = depth;
+            this.depth = depth;
             this.isExclude = isExclude;
         }
 
@@ -323,26 +319,25 @@ public class compiler {
     public static void createMatchNodes() {
         Function1<Integer,Integer> findSortedIndexToAddForDepth = new Function1<Integer,Integer>(){
             public Integer invoke(Integer depth) {
-                IntRef depth_ref = ref(depth);
-                IntRef index = ref(0);
-                for (; (index.value < matchNodes.value.length.value);){
-                    MatcherNode info = matchNodes.value.get(index.value).copy();
-                    if ((depth_ref.value > (int)info.depth.value))
+                int index = 0;
+                for (; (index < matchNodes.value.length);){
+                    MatcherNode info = matchNodes.value.get(index).copy();
+                    if ((depth > (int)info.depth))
                     {
                         break;
                     }
-                    index.value += (1 + (int)info.depth.value);
+                    index += (1 + (int)info.depth);
                 }
-                return index.value;
+                return index;
             }
         };
-        if ((matchNodes.value.length.value == 0))
+        if ((matchNodes.value.length == 0))
         {
             {
-                Slice<BytePtr> __r837 = includeModulePatterns.opSlice().copy();
-                int __key838 = 0;
-                for (; (__key838 < __r837.getLength());__key838 += 1) {
-                    BytePtr modulePattern = pcopy(__r837.get(__key838));
+                Slice<BytePtr> __r833 = includeModulePatterns.opSlice().copy();
+                int __key834 = 0;
+                for (; (__key834 < __r833.getLength());__key834 += 1) {
+                    BytePtr modulePattern = pcopy(__r833.get(__key834));
                     int depth = parseModulePatternDepth(modulePattern);
                     int entryIndex = findSortedIndexToAddForDepth.invoke((int)depth);
                     split(matchNodes, entryIndex, ((int)depth + 1));
@@ -353,7 +348,7 @@ public class compiler {
                     }
                 }
             }
-            Slice<MatcherNode> defaultDepth1MatchNodes = slice(new MatcherNode[]{new MatcherNode(true, (int)1), new MatcherNode(Id.std), new MatcherNode(true, (int)1), new MatcherNode(Id.core), new MatcherNode(true, (int)1), new MatcherNode(Id.etc), new MatcherNode(true, (int)1), new MatcherNode(Id.object.value)});
+            Slice<MatcherNode> defaultDepth1MatchNodes = slice(new MatcherNode[]{new MatcherNode(true, (int)1), new MatcherNode(Id.std), new MatcherNode(true, (int)1), new MatcherNode(Id.core), new MatcherNode(true, (int)1), new MatcherNode(Id.etc), new MatcherNode(true, (int)1), new MatcherNode(Id.object)});
             {
                 int index = findSortedIndexToAddForDepth.invoke(1);
                 split(matchNodes, index, 8);

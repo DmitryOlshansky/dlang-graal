@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -43,11 +39,11 @@ public class init {
 
     public static class Initializer extends ASTNode
     {
-        public Ref<Loc> loc = ref(new Loc());
+        public Loc loc = new Loc();
         public byte kind = 0;
         public  Initializer(Loc loc, byte kind) {
             super();
-            this.loc.value = loc.copy();
+            this.loc = loc.copy();
             this.kind = kind;
         }
 
@@ -98,7 +94,7 @@ public class init {
     }
     public static class VoidInitializer extends Initializer
     {
-        public Ref<Type> type = ref(null);
+        public Type type = null;
         public  VoidInitializer(Loc loc) {
             super(loc, InitKind.void_);
         }
@@ -121,7 +117,7 @@ public class init {
     public static class ErrorInitializer extends Initializer
     {
         public  ErrorInitializer() {
-            super(Loc.initial.value, InitKind.error);
+            super(Loc.initial, InitKind.error);
         }
 
         public  void accept(Visitor v) {
@@ -169,9 +165,9 @@ public class init {
     {
         public DArray<Expression> index = new DArray<Expression>();
         public DArray<Initializer> value = new DArray<Initializer>();
-        public IntRef dim = ref(0);
-        public Ref<Type> type = ref(null);
-        public Ref<Boolean> sem = ref(false);
+        public int dim = 0;
+        public Type type = null;
+        public boolean sem = false;
         public  ArrayInitializer(Loc loc) {
             super(loc, InitKind.array);
         }
@@ -179,16 +175,16 @@ public class init {
         public  void addInit(Expression index, Initializer value) {
             this.index.push(index);
             this.value.push(value);
-            this.dim.value = 0;
-            this.type.value = null;
+            this.dim = 0;
+            this.type = null;
         }
 
         public  boolean isAssociativeArray() {
             {
-                Slice<Expression> __r1495 = this.index.opSlice().copy();
-                int __key1496 = 0;
-                for (; (__key1496 < __r1495.getLength());__key1496 += 1) {
-                    Expression idx = __r1495.get(__key1496);
+                Slice<Expression> __r1491 = this.index.opSlice().copy();
+                int __key1492 = 0;
+                for (; (__key1492 < __r1491.getLength());__key1492 += 1) {
+                    Expression idx = __r1491.get(__key1492);
                     if (idx != null)
                     {
                         return true;
@@ -219,11 +215,11 @@ public class init {
     }
     public static class ExpInitializer extends Initializer
     {
-        public Ref<Boolean> expandTuples = ref(false);
-        public Ref<Expression> exp = ref(null);
+        public boolean expandTuples = false;
+        public Expression exp = null;
         public  ExpInitializer(Loc loc, Expression exp) {
             super(loc, InitKind.exp);
-            this.exp.value = exp;
+            this.exp = exp;
         }
 
         public  void accept(Visitor v) {
@@ -247,11 +243,11 @@ public class init {
         Function1<Ptr<DArray<Expression>>,Boolean> checkArray = new Function1<Ptr<DArray<Expression>>,Boolean>(){
             public Boolean invoke(Ptr<DArray<Expression>> elems) {
                 {
-                    Ref<Slice<Expression>> __r1497 = ref((elems.get()).opSlice().copy());
-                    IntRef __key1498 = ref(0);
-                    for (; (__key1498.value < __r1497.value.getLength());__key1498.value += 1) {
-                        Ref<Expression> e = ref(__r1497.value.get(__key1498.value));
-                        if ((e.value != null) && hasNonConstPointers(e.value))
+                    Slice<Expression> __r1493 = (elems.get()).opSlice().copy();
+                    int __key1494 = 0;
+                    for (; (__key1494 < __r1493.getLength());__key1494 += 1) {
+                        Expression e = __r1493.get(__key1494);
+                        if ((e != null) && hasNonConstPointers(e))
                         {
                             return true;
                         }
@@ -260,11 +256,11 @@ public class init {
                 return false;
             }
         };
-        if (((e.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+        if (((e.type.value.ty & 0xFF) == ENUMTY.Terror))
         {
             return false;
         }
-        if (((e.op.value & 0xFF) == 13))
+        if (((e.op & 0xFF) == 13))
         {
             return false;
         }
@@ -272,7 +268,7 @@ public class init {
             StructLiteralExp se = e.isStructLiteralExp();
             if ((se) != null)
             {
-                return checkArray.invoke(se.elements.value);
+                return checkArray.invoke(se.elements);
             }
         }
         {
@@ -283,20 +279,20 @@ public class init {
                 {
                     return false;
                 }
-                return checkArray.invoke(ae.elements.value);
+                return checkArray.invoke(ae.elements);
             }
         }
         {
             AssocArrayLiteralExp ae = e.isAssocArrayLiteralExp();
             if ((ae) != null)
             {
-                if (ae.type.value.nextOf().hasPointers() && checkArray.invoke(ae.values.value))
+                if (ae.type.value.nextOf().hasPointers() && checkArray.invoke(ae.values))
                 {
                     return true;
                 }
-                if (((TypeAArray)ae.type.value).index.value.hasPointers())
+                if (((TypeAArray)ae.type.value).index.hasPointers())
                 {
-                    return checkArray.invoke(ae.keys.value);
+                    return checkArray.invoke(ae.keys);
                 }
                 return false;
             }
@@ -309,12 +305,12 @@ public class init {
                     StructLiteralExp se = ae.e1.value.isStructLiteralExp();
                     if ((se) != null)
                     {
-                        if ((se.stageflags.value & 2) == 0)
+                        if ((se.stageflags & 2) == 0)
                         {
-                            int old = se.stageflags.value;
-                            se.stageflags.value |= 2;
-                            boolean ret = checkArray.invoke(se.elements.value);
-                            se.stageflags.value = old;
+                            int old = se.stageflags;
+                            se.stageflags |= 2;
+                            boolean ret = checkArray.invoke(se.elements);
+                            se.stageflags = old;
                             return ret;
                         }
                         else
@@ -326,17 +322,17 @@ public class init {
                 return true;
             }
         }
-        if (((e.type.value.ty.value & 0xFF) == ENUMTY.Tpointer) && ((e.type.value.nextOf().ty.value & 0xFF) != ENUMTY.Tfunction))
+        if (((e.type.value.ty & 0xFF) == ENUMTY.Tpointer) && ((e.type.value.nextOf().ty & 0xFF) != ENUMTY.Tfunction))
         {
-            if (((e.op.value & 0xFF) == 25))
+            if (((e.op & 0xFF) == 25))
             {
                 return false;
             }
-            if (((e.op.value & 0xFF) == 135))
+            if (((e.op & 0xFF) == 135))
             {
                 return false;
             }
-            if (((e.op.value & 0xFF) == 121))
+            if (((e.op & 0xFF) == 121))
             {
                 return false;
             }
@@ -348,44 +344,44 @@ public class init {
     public static Initializer syntaxCopy(Initializer inx) {
         Function1<StructInitializer,Initializer> copyStruct = new Function1<StructInitializer,Initializer>(){
             public Initializer invoke(StructInitializer vi) {
-                Ref<StructInitializer> si = ref(new StructInitializer(vi.loc.value));
-                assert((vi.field.length.value == vi.value.length.value));
-                si.value.field.setDim(vi.field.length.value);
-                si.value.value.setDim(vi.value.length.value);
+                StructInitializer si = new StructInitializer(vi.loc);
+                assert((vi.field.length == vi.value.length));
+                si.field.setDim(vi.field.length);
+                si.value.setDim(vi.value.length);
                 {
-                    IntRef __key1499 = ref(0);
-                    IntRef __limit1500 = ref(vi.field.length.value);
-                    for (; (__key1499.value < __limit1500.value);__key1499.value += 1) {
-                        IntRef i = ref(__key1499.value);
-                        si.value.field.set(i.value, vi.field.get(i.value));
-                        si.value.value.set(i.value, syntaxCopy(vi.value.get(i.value)));
+                    int __key1495 = 0;
+                    int __limit1496 = vi.field.length;
+                    for (; (__key1495 < __limit1496);__key1495 += 1) {
+                        int i = __key1495;
+                        si.field.set(i, vi.field.get(i));
+                        si.value.set(i, syntaxCopy(vi.value.get(i)));
                     }
                 }
-                return si.value;
+                return si;
             }
         };
         Function1<ArrayInitializer,Initializer> copyArray = new Function1<ArrayInitializer,Initializer>(){
             public Initializer invoke(ArrayInitializer vi) {
-                Ref<ArrayInitializer> ai = ref(new ArrayInitializer(vi.loc.value));
-                assert((vi.index.length.value == vi.value.length.value));
-                ai.value.index.setDim(vi.index.length.value);
-                ai.value.value.setDim(vi.value.length.value);
+                ArrayInitializer ai = new ArrayInitializer(vi.loc);
+                assert((vi.index.length == vi.value.length));
+                ai.index.setDim(vi.index.length);
+                ai.value.setDim(vi.value.length);
                 {
-                    IntRef __key1501 = ref(0);
-                    IntRef __limit1502 = ref(vi.value.length.value);
-                    for (; (__key1501.value < __limit1502.value);__key1501.value += 1) {
-                        IntRef i = ref(__key1501.value);
-                        ai.value.index.set(i.value, vi.index.get(i.value) != null ? vi.index.get(i.value).syntaxCopy() : null);
-                        ai.value.value.set(i.value, syntaxCopy(vi.value.get(i.value)));
+                    int __key1497 = 0;
+                    int __limit1498 = vi.value.length;
+                    for (; (__key1497 < __limit1498);__key1497 += 1) {
+                        int i = __key1497;
+                        ai.index.set(i, vi.index.get(i) != null ? vi.index.get(i).syntaxCopy() : null);
+                        ai.value.set(i, syntaxCopy(vi.value.get(i)));
                     }
                 }
-                return ai.value;
+                return ai;
             }
         };
         switch ((inx.kind & 0xFF))
         {
             case 0:
-                return new VoidInitializer(inx.loc.value);
+                return new VoidInitializer(inx.loc);
             case 1:
                 return inx;
             case 2:
@@ -393,7 +389,7 @@ public class init {
             case 3:
                 return copyArray.invoke((ArrayInitializer)inx);
             case 4:
-                return new ExpInitializer(inx.loc.value, ((ExpInitializer)inx).exp.value.syntaxCopy());
+                return new ExpInitializer(inx.loc, ((ExpInitializer)inx).exp.syntaxCopy());
             default:
             throw SwitchError.INSTANCE;
         }

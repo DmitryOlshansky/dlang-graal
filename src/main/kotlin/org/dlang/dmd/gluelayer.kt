@@ -5,11 +5,13 @@ import org.dlang.dmd.root.Ptr
 
 object gluelayer {
 
+    interface TYPE
+    interface Symbol
+
     fun asmSemantic(s: statement.AsmStatement, sc: Ptr<dscope.Scope>): statement.Statement? {
-        sc.get()!!.func.value.hasReturnExp = 8
+        sc.get()!!.func.hasReturnExp = 8
         return null
     }
-
 
     abstract class ObjcGlue {
 

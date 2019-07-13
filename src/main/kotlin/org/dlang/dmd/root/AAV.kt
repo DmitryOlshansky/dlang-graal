@@ -22,10 +22,14 @@ class AA<K,V> {
         val v = table[key]
         if (v !== null) return v as Ptr<V?>
         else {
-            val newValue = RawPtr<Any?>(arrayOfNulls(1))
+            val newValue = refPtr(v as Any?)
             table[key] = newValue
             return newValue as Ptr<V?>
         }
+    }
+
+    fun set(key: K, value: V) {
+        table[key] = refPtr(value as Any?)
     }
 
     /**
@@ -37,5 +41,5 @@ class AA<K,V> {
 
     Returns: the value associated with `key` if present, otherwise, null.
      */
-    fun opIndex(key: K): Ptr<V?>?  = table[key] as Ptr<V?>?
+    fun get(key: K): Ptr<V?>?  = table[key] as Ptr<V?>?
 }

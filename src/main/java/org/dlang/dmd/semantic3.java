@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -81,56 +77,56 @@ public class semantic3 {
         }
 
         public  void visit(TemplateInstance tempinst) {
-            if ((tempinst.semanticRun.value >= PASS.semantic3))
+            if ((tempinst.semanticRun >= PASS.semantic3))
             {
                 return ;
             }
-            tempinst.semanticRun.value = PASS.semantic3;
-            if (!tempinst.errors.value && (tempinst.members.value != null))
+            tempinst.semanticRun = PASS.semantic3;
+            if (!tempinst.errors && (tempinst.members != null))
             {
-                TemplateDeclaration tempdecl = tempinst.tempdecl.value.isTemplateDeclaration();
+                TemplateDeclaration tempdecl = tempinst.tempdecl.isTemplateDeclaration();
                 assert(tempdecl != null);
-                this.sc = tempdecl._scope.value;
+                this.sc = tempdecl._scope;
                 this.sc = (this.sc.get()).push(tempinst.argsym);
                 this.sc = (this.sc.get()).push(tempinst);
                 (this.sc.get()).tinst = tempinst;
-                (this.sc.get()).minst.value = tempinst.minst.value;
-                int needGagging = ((tempinst.gagged && (global.gag.value == 0)) ? 1 : 0);
-                int olderrors = global.errors.value;
+                (this.sc.get()).minst = tempinst.minst;
+                int needGagging = ((tempinst.gagged && (global.value.gag == 0)) ? 1 : 0);
+                int olderrors = global.value.errors;
                 int oldGaggedErrors = -1;
                 if (needGagging != 0)
                 {
-                    oldGaggedErrors = global.startGagging();
+                    oldGaggedErrors = global.value.startGagging();
                 }
                 {
                     int i = 0;
-                    for (; (i < (tempinst.members.value.get()).length.value);i++){
-                        Dsymbol s = (tempinst.members.value.get()).get(i);
+                    for (; (i < (tempinst.members.get()).length);i++){
+                        Dsymbol s = (tempinst.members.get()).get(i);
                         semantic3(s, this.sc);
-                        if (tempinst.gagged && (global.errors.value != olderrors))
+                        if (tempinst.gagged && (global.value.errors != olderrors))
                         {
                             break;
                         }
                     }
                 }
-                if ((global.errors.value != olderrors))
+                if ((global.value.errors != olderrors))
                 {
-                    if (!tempinst.errors.value)
+                    if (!tempinst.errors)
                     {
                         if (!tempdecl.literal)
                         {
-                            tempinst.error(tempinst.loc.value, new BytePtr("error instantiating"));
+                            tempinst.error(tempinst.loc, new BytePtr("error instantiating"));
                         }
                         if (tempinst.tinst != null)
                         {
                             tempinst.tinst.printInstantiationTrace();
                         }
                     }
-                    tempinst.errors.value = true;
+                    tempinst.errors = true;
                 }
                 if (needGagging != 0)
                 {
-                    global.endGagging(oldGaggedErrors);
+                    global.value.endGagging(oldGaggedErrors);
                 }
                 this.sc = (this.sc.get()).pop();
                 (this.sc.get()).pop();
@@ -138,19 +134,19 @@ public class semantic3 {
         }
 
         public  void visit(TemplateMixin tmix) {
-            if ((tmix.semanticRun.value >= PASS.semantic3))
+            if ((tmix.semanticRun >= PASS.semantic3))
             {
                 return ;
             }
-            tmix.semanticRun.value = PASS.semantic3;
-            if (tmix.members.value != null)
+            tmix.semanticRun = PASS.semantic3;
+            if (tmix.members != null)
             {
                 this.sc = (this.sc.get()).push(tmix.argsym);
                 this.sc = (this.sc.get()).push(tmix);
                 {
                     int i = 0;
-                    for (; (i < (tmix.members.value.get()).length.value);i++){
-                        Dsymbol s = (tmix.members.value.get()).get(i);
+                    for (; (i < (tmix.members.get()).length);i++){
+                        Dsymbol s = (tmix.members.get()).get(i);
                         semantic3(s, this.sc);
                     }
                 }
@@ -160,16 +156,16 @@ public class semantic3 {
         }
 
         public  void visit(dmodule.Module mod) {
-            if ((mod.semanticRun.value != PASS.semantic2done))
+            if ((mod.semanticRun != PASS.semantic2done))
             {
                 return ;
             }
-            mod.semanticRun.value = PASS.semantic3;
+            mod.semanticRun = PASS.semantic3;
             Ptr<Scope> sc = Scope.createGlobal(mod);
             {
                 int i = 0;
-                for (; (i < (mod.members.value.get()).length.value);i++){
-                    Dsymbol s = (mod.members.value.get()).get(i);
+                for (; (i < (mod.members.get()).length);i++){
+                    Dsymbol s = (mod.members.get()).get(i);
                     semantic3(s, sc);
                     dmodule.Module.runDeferredSemantic2();
                 }
@@ -180,111 +176,111 @@ public class semantic3 {
             }
             sc = (sc.get()).pop();
             (sc.get()).pop();
-            mod.semanticRun.value = PASS.semantic3done;
+            mod.semanticRun = PASS.semantic3done;
         }
 
         public  void visit(FuncDeclaration funcdecl) {
             Function0<Boolean> addReturn0 = new Function0<Boolean>(){
                 public Boolean invoke() {
-                    TypeFunction f = (TypeFunction)funcdecl.type.value;
-                    return ((f.next.value.ty.value & 0xFF) == ENUMTY.Tvoid) && funcdecl.isMain() || global.params.betterC.value && funcdecl.isCMain();
+                    TypeFunction f = (TypeFunction)funcdecl.type;
+                    return ((f.next.value.ty & 0xFF) == ENUMTY.Tvoid) && funcdecl.isMain() || global.value.params.betterC && funcdecl.isCMain();
                 }
             };
             VarDeclaration _arguments = null;
             if (funcdecl.parent.value == null)
             {
-                if (global.errors.value != 0)
+                if (global.value.errors != 0)
                 {
                     return ;
                 }
                 throw new AssertionError("Unreachable code!");
             }
-            if (funcdecl.errors.value || isError(funcdecl.parent.value))
+            if (funcdecl.errors || isError(funcdecl.parent.value))
             {
-                funcdecl.errors.value = true;
+                funcdecl.errors = true;
                 return ;
             }
-            if ((pequals(funcdecl.ident.value, Id.assign.value)) && (funcdecl.inuse.value == 0))
+            if ((pequals(funcdecl.ident, Id.assign)) && (funcdecl.inuse == 0))
             {
-                if ((funcdecl.storage_class.value & 70368744177664L) != 0)
+                if ((funcdecl.storage_class & 70368744177664L) != 0)
                 {
-                    int oldErrors = global.startGagging();
-                    funcdecl.inuse.value += 1;
+                    int oldErrors = global.value.startGagging();
+                    funcdecl.inuse += 1;
                     semantic3(funcdecl, this.sc);
-                    funcdecl.inuse.value -= 1;
-                    if (global.endGagging(oldErrors))
+                    funcdecl.inuse -= 1;
+                    if (global.value.endGagging(oldErrors))
                     {
-                        funcdecl.storage_class.value |= 137438953472L;
-                        funcdecl.fbody.value = null;
-                        funcdecl.semantic3Errors.value = false;
+                        funcdecl.storage_class |= 137438953472L;
+                        funcdecl.fbody = null;
+                        funcdecl.semantic3Errors = false;
                     }
                     return ;
                 }
             }
-            if ((funcdecl.semanticRun.value >= PASS.semantic3))
+            if ((funcdecl.semanticRun >= PASS.semantic3))
             {
                 return ;
             }
-            funcdecl.semanticRun.value = PASS.semantic3;
-            funcdecl.semantic3Errors.value = false;
-            if ((funcdecl.type.value == null) || ((funcdecl.type.value.ty.value & 0xFF) != ENUMTY.Tfunction))
+            funcdecl.semanticRun = PASS.semantic3;
+            funcdecl.semantic3Errors = false;
+            if ((funcdecl.type == null) || ((funcdecl.type.ty & 0xFF) != ENUMTY.Tfunction))
             {
                 return ;
             }
-            TypeFunction f = (TypeFunction)funcdecl.type.value;
-            if (!funcdecl.inferRetType && ((f.next.value.ty.value & 0xFF) == ENUMTY.Terror))
+            TypeFunction f = (TypeFunction)funcdecl.type;
+            if (!funcdecl.inferRetType && ((f.next.value.ty & 0xFF) == ENUMTY.Terror))
             {
                 return ;
             }
-            if ((funcdecl.fbody.value == null) && funcdecl.inferRetType && (f.next.value == null))
+            if ((funcdecl.fbody == null) && funcdecl.inferRetType && (f.next.value == null))
             {
                 funcdecl.error(new BytePtr("has no function body with return type inference"));
                 return ;
             }
-            int oldErrors = global.errors.value;
+            int oldErrors = global.value.errors;
             FuncDeclSem3 fds = fds = new FuncDeclSem3(funcdecl, this.sc);
             fds.checkInContractOverrides();
             boolean needEnsure = FuncDeclaration.needsFensure(funcdecl);
-            if ((funcdecl.fbody.value != null) || (funcdecl.frequires != null) || needEnsure)
+            if ((funcdecl.fbody != null) || (funcdecl.frequires != null) || needEnsure)
             {
                 funcdecl.localsymtab = new DsymbolTable();
-                ScopeDsymbol ss = new ScopeDsymbol(funcdecl.loc.value, null);
+                ScopeDsymbol ss = new ScopeDsymbol(funcdecl.loc, null);
                 {
                     Ptr<Scope> scx = this.sc;
-                    for (; ;scx = (scx.get()).enclosing.value){
-                        if ((scx.get()).scopesym.value != null)
+                    for (; ;scx = (scx.get()).enclosing){
+                        if ((scx.get()).scopesym != null)
                         {
-                            ss.parent.value = (scx.get()).scopesym.value;
+                            ss.parent.value = (scx.get()).scopesym;
                             break;
                         }
                     }
                 }
-                ss.endlinnum = funcdecl.endloc.value.linnum;
+                ss.endlinnum = funcdecl.endloc.linnum;
                 Ptr<Scope> sc2 = (this.sc.get()).push(ss);
-                (sc2.get()).func.value = funcdecl;
+                (sc2.get()).func = funcdecl;
                 (sc2.get()).parent.value = funcdecl;
                 (sc2.get()).ctorflow.callSuper.value = CSX.none;
                 (sc2.get()).sbreak = null;
                 (sc2.get()).scontinue = null;
                 (sc2.get()).sw = null;
-                (sc2.get()).fes = funcdecl.fes.value;
-                (sc2.get()).linkage.value = LINK.d;
-                (sc2.get()).stc.value &= -17660607202720L;
-                (sc2.get()).protection.value = new Prot(Prot.Kind.public_).copy();
+                (sc2.get()).fes = funcdecl.fes;
+                (sc2.get()).linkage = LINK.d;
+                (sc2.get()).stc &= -17660607202720L;
+                (sc2.get()).protection = new Prot(Prot.Kind.public_).copy();
                 (sc2.get()).explicitProtection = 0;
                 (sc2.get()).aligndecl = null;
-                if ((!pequals(funcdecl.ident.value, Id.require)) && (!pequals(funcdecl.ident.value, Id.ensure)))
+                if ((!pequals(funcdecl.ident, Id.require)) && (!pequals(funcdecl.ident, Id.ensure)))
                 {
-                    (sc2.get()).flags.value = (this.sc.get()).flags.value & -97;
+                    (sc2.get()).flags = (this.sc.get()).flags & -97;
                 }
-                (sc2.get()).flags.value &= -257;
+                (sc2.get()).flags &= -257;
                 (sc2.get()).tf = null;
                 (sc2.get()).os = null;
                 (sc2.get()).inLoop = false;
                 (sc2.get()).userAttribDecl = null;
-                if (((sc2.get()).intypeof.value == 1))
+                if (((sc2.get()).intypeof == 1))
                 {
-                    (sc2.get()).intypeof.value = 2;
+                    (sc2.get()).intypeof = 2;
                 }
                 (sc2.get()).ctorflow.fieldinit = new Slice<FieldInit>().copy();
                 {
@@ -295,22 +291,22 @@ public class semantic3 {
                             AggregateDeclaration ad = funcdecl.isMember2();
                             if ((ad) != null)
                             {
-                                if ((this.sc.get()).intypeof.value == 0)
+                                if ((this.sc.get()).intypeof == 0)
                                 {
-                                    if (((fld.tok.value & 0xFF) == 160))
+                                    if (((fld.tok & 0xFF) == 160))
                                     {
                                         funcdecl.error(new BytePtr("cannot be %s members"), ad.kind());
                                     }
                                     else
                                     {
-                                        fld.tok.value = TOK.function_;
+                                        fld.tok = TOK.function_;
                                     }
                                 }
                                 else
                                 {
-                                    if (((fld.tok.value & 0xFF) != 161))
+                                    if (((fld.tok & 0xFF) != 161))
                                     {
-                                        fld.tok.value = TOK.delegate_;
+                                        fld.tok = TOK.delegate_;
                                     }
                                 }
                             }
@@ -319,16 +315,16 @@ public class semantic3 {
                 }
                 AggregateDeclaration ad = funcdecl.isThis();
                 FuncDeclaration.HiddenParameters hiddenParams = funcdecl.declareThis(sc2, ad).copy();
-                funcdecl.vthis.value = hiddenParams.vthis;
-                funcdecl.isThis2.value = hiddenParams.isThis2;
+                funcdecl.vthis = hiddenParams.vthis;
+                funcdecl.isThis2 = hiddenParams.isThis2;
                 funcdecl.selectorParameter = hiddenParams.selectorParameter;
-                if ((f.parameterList.varargs.value == VarArg.variadic))
+                if ((f.parameterList.varargs == VarArg.variadic))
                 {
-                    if ((f.linkage.value == LINK.d))
+                    if ((f.linkage == LINK.d))
                     {
-                        if (!global.params.useTypeInfo.value || (Type.dtypeinfo.value == null) || (Type.typeinfotypelist == null))
+                        if (!global.value.params.useTypeInfo || (Type.dtypeinfo.value == null) || (Type.typeinfotypelist == null))
                         {
-                            if (!global.params.useTypeInfo.value)
+                            if (!global.value.params.useTypeInfo)
                             {
                                 funcdecl.error(new BytePtr("D-style variadic functions cannot be used with -betterC"));
                             }
@@ -342,23 +338,23 @@ public class semantic3 {
                             }
                             fatal();
                         }
-                        funcdecl.v_arguments = new VarDeclaration(funcdecl.loc.value, Type.typeinfotypelist.type.value, Id._arguments_typeinfo, null, 0L);
-                        funcdecl.v_arguments.storage_class.value |= 1099511627808L;
+                        funcdecl.v_arguments = new VarDeclaration(funcdecl.loc, Type.typeinfotypelist.type, Id._arguments_typeinfo, null, 0L);
+                        funcdecl.v_arguments.storage_class |= 1099511627808L;
                         dsymbolSemantic(funcdecl.v_arguments, sc2);
                         (sc2.get()).insert(funcdecl.v_arguments);
                         funcdecl.v_arguments.parent.value = funcdecl;
-                        Type t = Type.dtypeinfo.value.type.value.arrayOf();
-                        _arguments = new VarDeclaration(funcdecl.loc.value, t, Id._arguments, null, 0L);
-                        _arguments.storage_class.value |= 1099511627776L;
+                        Type t = Type.dtypeinfo.value.type.arrayOf();
+                        _arguments = new VarDeclaration(funcdecl.loc, t, Id._arguments, null, 0L);
+                        _arguments.storage_class |= 1099511627776L;
                         dsymbolSemantic(_arguments, sc2);
                         (sc2.get()).insert(_arguments);
                         _arguments.parent.value = funcdecl;
                     }
-                    if ((f.linkage.value == LINK.d) || (f.parameterList.length() != 0))
+                    if ((f.linkage == LINK.d) || (f.parameterList.length() != 0))
                     {
                         Type t = Type.tvalist;
-                        funcdecl.v_argptr = new VarDeclaration(funcdecl.loc.value, t, Id._argptr, new VoidInitializer(funcdecl.loc.value), 0L);
-                        funcdecl.v_argptr.storage_class.value |= 1099511627776L;
+                        funcdecl.v_argptr = new VarDeclaration(funcdecl.loc, t, Id._argptr, new VoidInitializer(funcdecl.loc), 0L);
+                        funcdecl.v_argptr.storage_class |= 1099511627776L;
                         dsymbolSemantic(funcdecl.v_argptr, sc2);
                         (sc2.get()).insert(funcdecl.v_argptr);
                         funcdecl.v_argptr.parent.value = funcdecl;
@@ -367,84 +363,84 @@ public class semantic3 {
                 int nparams = f.parameterList.length();
                 if (nparams != 0)
                 {
-                    funcdecl.parameters.value = refPtr(new DArray<VarDeclaration>());
-                    (funcdecl.parameters.value.get()).reserve(nparams);
+                    funcdecl.parameters = refPtr(new DArray<VarDeclaration>());
+                    (funcdecl.parameters.get()).reserve(nparams);
                     {
                         int i = 0;
                         for (; (i < nparams);i++){
                             Parameter fparam = f.parameterList.get(i);
-                            Identifier id = fparam.ident.value;
+                            Identifier id = fparam.ident;
                             long stc = 0L;
                             if (id == null)
                             {
-                                fparam.ident.value = (id = Identifier.generateId(new BytePtr("_param_"), i));
+                                fparam.ident = (id = Identifier.generateId(new BytePtr("_param_"), i));
                                 stc |= 1099511627776L;
                             }
-                            Type vtype = fparam.type.value;
-                            VarDeclaration v = new VarDeclaration(funcdecl.loc.value, vtype, id, null, 0L);
+                            Type vtype = fparam.type;
+                            VarDeclaration v = new VarDeclaration(funcdecl.loc, vtype, id, null, 0L);
                             stc |= 32L;
-                            if ((f.parameterList.varargs.value == VarArg.typesafe) && (i + 1 == nparams))
+                            if ((f.parameterList.varargs == VarArg.typesafe) && (i + 1 == nparams))
                             {
                                 stc |= 65536L;
                                 Type vtypeb = vtype.toBasetype();
-                                if (((vtypeb.ty.value & 0xFF) == ENUMTY.Tarray))
+                                if (((vtypeb.ty & 0xFF) == ENUMTY.Tarray))
                                 {
                                     stc |= 524288L;
                                 }
                             }
-                            if (((funcdecl.flags & FUNCFLAG.inferScope) != 0) && ((fparam.storageClass.value & 524288L) == 0))
+                            if (((funcdecl.flags & FUNCFLAG.inferScope) != 0) && ((fparam.storageClass & 524288L) == 0))
                             {
                                 stc |= 281474976710656L;
                             }
-                            stc |= fparam.storageClass.value & 17594890860556L;
-                            v.storage_class.value = stc;
+                            stc |= fparam.storageClass & 17594890860556L;
+                            v.storage_class = stc;
                             dsymbolSemantic(v, sc2);
                             if ((sc2.get()).insert(v) == null)
                             {
                                 funcdecl.error(new BytePtr("parameter `%s.%s` is already defined"), funcdecl.toChars(), v.toChars());
-                                funcdecl.errors.value = true;
+                                funcdecl.errors = true;
                             }
                             else
                             {
-                                (funcdecl.parameters.value.get()).push(v);
+                                (funcdecl.parameters.get()).push(v);
                             }
                             funcdecl.localsymtab.insert((Dsymbol)v);
                             v.parent.value = funcdecl;
-                            if (fparam.userAttribDecl.value != null)
+                            if (fparam.userAttribDecl != null)
                             {
-                                v.userAttribDecl = fparam.userAttribDecl.value;
+                                v.userAttribDecl = fparam.userAttribDecl;
                             }
                         }
                     }
                 }
-                if (f.parameterList.parameters.value != null)
+                if (f.parameterList.parameters != null)
                 {
                     {
                         int i = 0;
-                        for (; (i < (f.parameterList.parameters.value.get()).length.value);i++){
-                            Parameter fparam = (f.parameterList.parameters.value.get()).get(i);
-                            if (fparam.ident.value == null)
+                        for (; (i < (f.parameterList.parameters.get()).length);i++){
+                            Parameter fparam = (f.parameterList.parameters.get()).get(i);
+                            if (fparam.ident == null)
                             {
                                 continue;
                             }
-                            if (((fparam.type.value.ty.value & 0xFF) == ENUMTY.Ttuple))
+                            if (((fparam.type.ty & 0xFF) == ENUMTY.Ttuple))
                             {
-                                TypeTuple t = (TypeTuple)fparam.type.value;
-                                int dim = Parameter.dim(t.arguments.value);
+                                TypeTuple t = (TypeTuple)fparam.type;
+                                int dim = Parameter.dim(t.arguments);
                                 Ptr<DArray<RootObject>> exps = refPtr(new DArray<RootObject>(dim));
                                 {
                                     int j = 0;
                                     for (; (j < dim);j++){
-                                        Parameter narg = Parameter.getNth(t.arguments.value, j, null);
-                                        assert(narg.ident.value != null);
-                                        VarDeclaration v = (sc2.get()).search(Loc.initial.value, narg.ident.value, null, 0).isVarDeclaration();
+                                        Parameter narg = Parameter.getNth(t.arguments, j, null);
+                                        assert(narg.ident != null);
+                                        VarDeclaration v = (sc2.get()).search(Loc.initial, narg.ident, null, 0).isVarDeclaration();
                                         assert(v != null);
-                                        Expression e = new VarExp(v.loc.value, v, true);
+                                        Expression e = new VarExp(v.loc, v, true);
                                         exps.get().set(j, e);
                                     }
                                 }
-                                assert(fparam.ident.value != null);
-                                TupleDeclaration v = new TupleDeclaration(funcdecl.loc.value, fparam.ident.value, exps);
+                                assert(fparam.ident != null);
+                                TupleDeclaration v = new TupleDeclaration(funcdecl.loc, fparam.ident, exps);
                                 v.isexp = true;
                                 if ((sc2.get()).insert(v) == null)
                                 {
@@ -459,29 +455,29 @@ public class semantic3 {
                 Statement fpreinv = null;
                 if (funcdecl.addPreInvariant())
                 {
-                    Expression e = addInvariant(funcdecl.loc.value, this.sc, ad, funcdecl.vthis.value);
+                    Expression e = addInvariant(funcdecl.loc, this.sc, ad, funcdecl.vthis);
                     if (e != null)
                     {
-                        fpreinv = new ExpStatement(Loc.initial.value, e);
+                        fpreinv = new ExpStatement(Loc.initial, e);
                     }
                 }
                 Statement fpostinv = null;
                 if (funcdecl.addPostInvariant())
                 {
-                    Expression e = addInvariant(funcdecl.loc.value, this.sc, ad, funcdecl.vthis.value);
+                    Expression e = addInvariant(funcdecl.loc, this.sc, ad, funcdecl.vthis);
                     if (e != null)
                     {
-                        fpostinv = new ExpStatement(Loc.initial.value, e);
+                        fpostinv = new ExpStatement(Loc.initial, e);
                     }
                 }
-                if (funcdecl.fbody.value == null)
+                if (funcdecl.fbody == null)
                 {
                     funcdecl.buildEnsureRequire();
                 }
                 Ptr<Scope> scout = null;
                 if (needEnsure || funcdecl.addPostInvariant())
                 {
-                    int fensure_endlin = funcdecl.endloc.value.linnum;
+                    int fensure_endlin = funcdecl.endloc.linnum;
                     if (funcdecl.fensure != null)
                     {
                         {
@@ -492,73 +488,73 @@ public class semantic3 {
                             }
                         }
                     }
-                    if (needEnsure && ((global.params.useOut & 0xFF) == 2) || (fpostinv != null))
+                    if (needEnsure && ((global.value.params.useOut & 0xFF) == 2) || (fpostinv != null))
                     {
                         funcdecl.returnLabel = new LabelDsymbol(Id.returnLabel);
                     }
-                    ScopeDsymbol sym = new ScopeDsymbol(funcdecl.loc.value, null);
-                    sym.parent.value = (sc2.get()).scopesym.value;
+                    ScopeDsymbol sym = new ScopeDsymbol(funcdecl.loc, null);
+                    sym.parent.value = (sc2.get()).scopesym;
                     sym.endlinnum = fensure_endlin;
                     scout = (sc2.get()).push(sym);
                 }
-                if (funcdecl.fbody.value != null)
+                if (funcdecl.fbody != null)
                 {
-                    ScopeDsymbol sym = new ScopeDsymbol(funcdecl.loc.value, null);
-                    sym.parent.value = (sc2.get()).scopesym.value;
-                    sym.endlinnum = funcdecl.endloc.value.linnum;
+                    ScopeDsymbol sym = new ScopeDsymbol(funcdecl.loc, null);
+                    sym.parent.value = (sc2.get()).scopesym;
+                    sym.endlinnum = funcdecl.endloc.linnum;
                     sc2 = (sc2.get()).push(sym);
                     AggregateDeclaration ad2 = funcdecl.isMemberLocal();
                     if ((ad2 != null) && (funcdecl.isCtorDeclaration() != null))
                     {
-                        (sc2.get()).ctorflow.allocFieldinit(ad2.fields.length.value);
+                        (sc2.get()).ctorflow.allocFieldinit(ad2.fields.length);
                         {
-                            Slice<VarDeclaration> __r1547 = ad2.fields.opSlice().copy();
-                            int __key1548 = 0;
-                            for (; (__key1548 < __r1547.getLength());__key1548 += 1) {
-                                VarDeclaration v = __r1547.get(__key1548);
+                            Slice<VarDeclaration> __r1543 = ad2.fields.opSlice().copy();
+                            int __key1544 = 0;
+                            for (; (__key1544 < __r1543.getLength());__key1544 += 1) {
+                                VarDeclaration v = __r1543.get(__key1544);
                                 v.ctorinit = false;
                             }
                         }
                     }
-                    if (!funcdecl.inferRetType && !target.isReturnOnStack(f, funcdecl.needThis()))
+                    if (!funcdecl.inferRetType && !target.value.isReturnOnStack(f, funcdecl.needThis()))
                     {
                         funcdecl.nrvo_can = false;
                     }
-                    boolean inferRef = f.isref.value && ((funcdecl.storage_class.value & 256L) != 0);
-                    funcdecl.fbody.value = statementSemantic(funcdecl.fbody.value, sc2);
-                    if (funcdecl.fbody.value == null)
+                    boolean inferRef = f.isref && ((funcdecl.storage_class & 256L) != 0);
+                    funcdecl.fbody = statementSemantic(funcdecl.fbody, sc2);
+                    if (funcdecl.fbody == null)
                     {
-                        funcdecl.fbody.value = new CompoundStatement(Loc.initial.value, refPtr(new DArray<Statement>()));
+                        funcdecl.fbody = new CompoundStatement(Loc.initial, refPtr(new DArray<Statement>()));
                     }
                     if (funcdecl.naked)
                     {
                         fpreinv = null;
                         fpostinv = null;
                     }
-                    assert((pequals(funcdecl.type.value, f)) || ((funcdecl.type.value.ty.value & 0xFF) == ENUMTY.Tfunction) && (f.purity.value == PURE.impure) && (((TypeFunction)funcdecl.type.value).purity.value >= PURE.fwdref));
-                    f = (TypeFunction)funcdecl.type.value;
+                    assert((pequals(funcdecl.type, f)) || ((funcdecl.type.ty & 0xFF) == ENUMTY.Tfunction) && (f.purity == PURE.impure) && (((TypeFunction)funcdecl.type).purity >= PURE.fwdref));
+                    f = (TypeFunction)funcdecl.type;
                     if (funcdecl.inferRetType)
                     {
                         if (f.next.value == null)
                         {
-                            f.next.value = Type.tvoid.value;
+                            f.next.value = Type.tvoid;
                         }
-                        if (f.checkRetType(funcdecl.loc.value))
+                        if (f.checkRetType(funcdecl.loc))
                         {
-                            funcdecl.fbody.value = new ErrorStatement();
+                            funcdecl.fbody = new ErrorStatement();
                         }
                     }
-                    if (global.params.vcomplex && (f.next.value != null))
+                    if (global.value.params.vcomplex && (f.next.value != null))
                     {
-                        f.next.value.checkComplexTransition(funcdecl.loc.value, this.sc);
+                        f.next.value.checkComplexTransition(funcdecl.loc, this.sc);
                     }
-                    if ((funcdecl.returns != null) && (funcdecl.fbody.value.isErrorStatement() == null))
+                    if ((funcdecl.returns != null) && (funcdecl.fbody.isErrorStatement() == null))
                     {
                         {
                             int i = 0;
                             for (; (i < (funcdecl.returns.get()).length);){
-                                Expression exp = (funcdecl.returns.get()).get(i).exp.value;
-                                if (((exp.op.value & 0xFF) == 26) && (pequals(((VarExp)exp).var.value, funcdecl.vresult)))
+                                Expression exp = (funcdecl.returns.get()).get(i).exp;
+                                if (((exp.op & 0xFF) == 26) && (pequals(((VarExp)exp).var, funcdecl.vresult)))
                                 {
                                     if (addReturn0.invoke())
                                     {
@@ -571,26 +567,26 @@ public class semantic3 {
                                     (funcdecl.returns.get()).remove(i);
                                     continue;
                                 }
-                                if (inferRef && f.isref.value && (exp.type.value.constConv(f.next.value) == 0))
+                                if (inferRef && f.isref && (exp.type.value.constConv(f.next.value) == 0))
                                 {
-                                    f.isref.value = false;
+                                    f.isref = false;
                                 }
                                 i++;
                             }
                         }
                     }
-                    if (f.isref.value)
+                    if (f.isref)
                     {
-                        if ((funcdecl.storage_class.value & 256L) != 0)
+                        if ((funcdecl.storage_class & 256L) != 0)
                         {
-                            funcdecl.storage_class.value &= -257L;
+                            funcdecl.storage_class &= -257L;
                         }
                     }
-                    if (!target.isReturnOnStack(f, funcdecl.needThis()))
+                    if (!target.value.isReturnOnStack(f, funcdecl.needThis()))
                     {
                         funcdecl.nrvo_can = false;
                     }
-                    if (funcdecl.fbody.value.isErrorStatement() != null)
+                    if (funcdecl.fbody.isErrorStatement() != null)
                     {
                     }
                     else if (funcdecl.isStaticCtorDeclaration() != null)
@@ -598,8 +594,8 @@ public class semantic3 {
                         ScopeDsymbol pd = funcdecl.toParent().isScopeDsymbol();
                         {
                             int i = 0;
-                            for (; (i < (pd.members.value.get()).length.value);i++){
-                                Dsymbol s = (pd.members.value.get()).get(i);
+                            for (; (i < (pd.members.get()).length);i++){
+                                Dsymbol s = (pd.members.get()).get(i);
                                 s.checkCtorConstInit();
                             }
                         }
@@ -610,33 +606,33 @@ public class semantic3 {
                         if (((sc2.get()).ctorflow.callSuper.value & 1) == 0)
                         {
                             {
-                                Slice<VarDeclaration> __r1550 = ad2.fields.opSlice().copy();
-                                int __key1549 = 0;
-                                for (; (__key1549 < __r1550.getLength());__key1549 += 1) {
-                                    VarDeclaration v = __r1550.get(__key1549);
-                                    int i = __key1549;
+                                Slice<VarDeclaration> __r1546 = ad2.fields.opSlice().copy();
+                                int __key1545 = 0;
+                                for (; (__key1545 < __r1546.getLength());__key1545 += 1) {
+                                    VarDeclaration v = __r1546.get(__key1545);
+                                    int i = __key1545;
                                     if (v.isThisDeclaration() != null)
                                     {
                                         continue;
                                     }
                                     if (((v.ctorinit ? 1 : 0) == 0))
                                     {
-                                        if (v.isCtorinit() && !v.type.value.isMutable() && (cd != null))
+                                        if (v.isCtorinit() && !v.type.isMutable() && (cd != null))
                                         {
-                                            funcdecl.error(new BytePtr("missing initializer for %s field `%s`"), MODtoChars(v.type.value.mod.value), v.toChars());
+                                            funcdecl.error(new BytePtr("missing initializer for %s field `%s`"), MODtoChars(v.type.mod), v.toChars());
                                         }
-                                        else if ((v.storage_class.value & 549755813888L) != 0)
+                                        else if ((v.storage_class & 549755813888L) != 0)
                                         {
-                                            error(funcdecl.loc.value, new BytePtr("field `%s` must be initialized in constructor"), v.toChars());
+                                            error(funcdecl.loc, new BytePtr("field `%s` must be initialized in constructor"), v.toChars());
                                         }
-                                        else if (v.type.value.needsNested())
+                                        else if (v.type.needsNested())
                                         {
-                                            error(funcdecl.loc.value, new BytePtr("field `%s` must be initialized in constructor, because it is nested struct"), v.toChars());
+                                            error(funcdecl.loc, new BytePtr("field `%s` must be initialized in constructor, because it is nested struct"), v.toChars());
                                         }
                                     }
                                     else
                                     {
-                                        boolean mustInit = ((v.storage_class.value & 549755813888L) != 0) || v.type.value.needsNested();
+                                        boolean mustInit = ((v.storage_class & 549755813888L) != 0) || v.type.needsNested();
                                         if (mustInit && (((sc2.get()).ctorflow.fieldinit.get(i).csx.value & 1) == 0))
                                         {
                                             funcdecl.error(new BytePtr("field `%s` must be initialized but skipped"), v.toChars());
@@ -646,34 +642,34 @@ public class semantic3 {
                             }
                         }
                         (sc2.get()).ctorflow.freeFieldinit();
-                        if ((cd != null) && (((sc2.get()).ctorflow.callSuper.value & 16) == 0) && (cd.baseClass.value != null) && (cd.baseClass.value.ctor.value != null))
+                        if ((cd != null) && (((sc2.get()).ctorflow.callSuper.value & 16) == 0) && (cd.baseClass != null) && (cd.baseClass.ctor != null))
                         {
                             (sc2.get()).ctorflow.callSuper.value = CSX.none;
-                            Type tthis = ad2.type.value.addMod(funcdecl.vthis.value.type.value.mod.value);
-                            FuncDeclaration fd = resolveFuncCall(Loc.initial.value, sc2, cd.baseClass.value.ctor.value, null, tthis, null, FuncResolveFlag.quiet);
+                            Type tthis = ad2.type.addMod(funcdecl.vthis.type.mod);
+                            FuncDeclaration fd = resolveFuncCall(Loc.initial, sc2, cd.baseClass.ctor, null, tthis, null, FuncResolveFlag.quiet);
                             if (fd == null)
                             {
                                 funcdecl.error(new BytePtr("no match for implicit `super()` call in constructor"));
                             }
-                            else if ((fd.storage_class.value & 137438953472L) != 0)
+                            else if ((fd.storage_class & 137438953472L) != 0)
                             {
                                 funcdecl.error(new BytePtr("cannot call `super()` implicitly because it is annotated with `@disable`"));
                             }
                             else
                             {
-                                Expression e1 = new SuperExp(Loc.initial.value);
-                                Expression e = new CallExp(Loc.initial.value, e1);
+                                Expression e1 = new SuperExp(Loc.initial);
+                                Expression e = new CallExp(Loc.initial, e1);
                                 e = expressionSemantic(e, sc2);
-                                Statement s = new ExpStatement(Loc.initial.value, e);
-                                funcdecl.fbody.value = new CompoundStatement(Loc.initial.value, slice(new Statement[]{s, funcdecl.fbody.value}));
+                                Statement s = new ExpStatement(Loc.initial, e);
+                                funcdecl.fbody = new CompoundStatement(Loc.initial, slice(new Statement[]{s, funcdecl.fbody}));
                             }
                         }
                     }
                     funcdecl.buildEnsureRequire();
-                    int blockexit = blockExit(funcdecl.fbody.value, funcdecl, f.isnothrow.value);
-                    if (f.isnothrow.value && ((blockexit & 2) != 0))
+                    int blockexit = blockExit(funcdecl.fbody, funcdecl, f.isnothrow);
+                    if (f.isnothrow && ((blockexit & 2) != 0))
                     {
-                        error(funcdecl.loc.value, new BytePtr("`nothrow` %s `%s` may throw"), funcdecl.kind(), funcdecl.toPrettyChars(false));
+                        error(funcdecl.loc, new BytePtr("`nothrow` %s `%s` may throw"), funcdecl.kind(), funcdecl.toPrettyChars(false));
                     }
                     if (!(((blockexit & 18) != 0) || ((funcdecl.flags & FUNCFLAG.hasCatches) != 0)))
                     {
@@ -681,32 +677,32 @@ public class semantic3 {
                     }
                     if ((funcdecl.flags & FUNCFLAG.nothrowInprocess) != 0)
                     {
-                        if ((pequals(funcdecl.type.value, f)))
+                        if ((pequals(funcdecl.type, f)))
                         {
                             f = (TypeFunction)f.copy();
                         }
-                        f.isnothrow.value = (blockexit & 2) == 0;
+                        f.isnothrow = (blockexit & 2) == 0;
                     }
-                    if (funcdecl.fbody.value.isErrorStatement() != null)
+                    if (funcdecl.fbody.isErrorStatement() != null)
                     {
                     }
                     else if ((ad2 != null) && (funcdecl.isCtorDeclaration() != null))
                     {
                         if ((blockexit & 1) != 0)
                         {
-                            Statement s = new ReturnStatement(funcdecl.loc.value, null);
+                            Statement s = new ReturnStatement(funcdecl.loc, null);
                             s = statementSemantic(s, sc2);
-                            funcdecl.fbody.value = new CompoundStatement(funcdecl.loc.value, slice(new Statement[]{funcdecl.fbody.value, s}));
+                            funcdecl.fbody = new CompoundStatement(funcdecl.loc, slice(new Statement[]{funcdecl.fbody, s}));
                             funcdecl.hasReturnExp |= (funcdecl.hasReturnExp & 1) != 0 ? 16 : 1;
                         }
                     }
-                    else if (funcdecl.fes.value != null)
+                    else if (funcdecl.fes != null)
                     {
                         if ((blockexit & 1) != 0)
                         {
                             Expression e = literal_B6589FC6AB0DC82C();
-                            Statement s = new ReturnStatement(Loc.initial.value, e);
-                            funcdecl.fbody.value = new CompoundStatement(Loc.initial.value, slice(new Statement[]{funcdecl.fbody.value, s}));
+                            Statement s = new ReturnStatement(Loc.initial, e);
+                            funcdecl.fbody = new CompoundStatement(Loc.initial, slice(new Statement[]{funcdecl.fbody, s}));
                             funcdecl.hasReturnExp |= (funcdecl.hasReturnExp & 1) != 0 ? 16 : 1;
                         }
                         assert(funcdecl.returnLabel == null);
@@ -714,7 +710,7 @@ public class semantic3 {
                     else
                     {
                         boolean inlineAsm = (funcdecl.hasReturnExp & 8) != 0;
-                        if (((blockexit & 1) != 0) && ((f.next.value.ty.value & 0xFF) != ENUMTY.Tvoid) && !inlineAsm)
+                        if (((blockexit & 1) != 0) && ((f.next.value.ty & 0xFF) != ENUMTY.Tvoid) && !inlineAsm)
                         {
                             Expression e = null;
                             if (funcdecl.hasReturnExp == 0)
@@ -725,25 +721,25 @@ public class semantic3 {
                             {
                                 funcdecl.error(new BytePtr("no `return exp;` or `assert(0);` at end of function"));
                             }
-                            if (((global.params.useAssert & 0xFF) == 2) && !global.params.useInline)
+                            if (((global.value.params.useAssert & 0xFF) == 2) && !global.value.params.useInline)
                             {
-                                e = new AssertExp(funcdecl.endloc.value, literal_B6589FC6AB0DC82C(), new StringExp(funcdecl.loc.value, new BytePtr("missing return expression")));
+                                e = new AssertExp(funcdecl.endloc, literal_B6589FC6AB0DC82C(), new StringExp(funcdecl.loc, new BytePtr("missing return expression")));
                             }
                             else
                             {
-                                e = new HaltExp(funcdecl.endloc.value);
+                                e = new HaltExp(funcdecl.endloc);
                             }
-                            e = new CommaExp(Loc.initial.value, e, defaultInit(f.next.value, Loc.initial.value), true);
+                            e = new CommaExp(Loc.initial, e, defaultInit(f.next.value, Loc.initial), true);
                             e = expressionSemantic(e, sc2);
-                            Statement s = new ExpStatement(Loc.initial.value, e);
-                            funcdecl.fbody.value = new CompoundStatement(Loc.initial.value, slice(new Statement[]{funcdecl.fbody.value, s}));
+                            Statement s = new ExpStatement(Loc.initial, e);
+                            funcdecl.fbody = new CompoundStatement(Loc.initial, slice(new Statement[]{funcdecl.fbody, s}));
                         }
                     }
                     if (funcdecl.returns != null)
                     {
                         boolean implicit0 = addReturn0.invoke();
                         Type tret = implicit0 ? Type.tint32.value : f.next.value;
-                        assert(((tret.ty.value & 0xFF) != ENUMTY.Tvoid));
+                        assert(((tret.ty & 0xFF) != ENUMTY.Tvoid));
                         if ((funcdecl.vresult != null) || (funcdecl.returnLabel != null))
                         {
                             funcdecl.buildResultVar(scout != null ? scout : sc2, tret);
@@ -752,12 +748,12 @@ public class semantic3 {
                             int i = 0;
                             for (; (i < (funcdecl.returns.get()).length);i++){
                                 ReturnStatement rs = (funcdecl.returns.get()).get(i);
-                                Expression exp = rs.exp.value;
-                                if (((exp.op.value & 0xFF) == 127))
+                                Expression exp = rs.exp;
+                                if (((exp.op & 0xFF) == 127))
                                 {
                                     continue;
                                 }
-                                if (((tret.ty.value & 0xFF) == ENUMTY.Terror))
+                                if (((tret.ty & 0xFF) == ENUMTY.Terror))
                                 {
                                     exp = checkGC(sc2, exp);
                                     continue;
@@ -773,19 +769,19 @@ public class semantic3 {
                                         exp = exp.castTo(sc2, exp.type.value.wildOf());
                                     }
                                 }
-                                boolean hasCopyCtor = ((exp.type.value.ty.value & 0xFF) == ENUMTY.Tstruct) && ((TypeStruct)exp.type.value).sym.value.hasCopyCtor;
+                                boolean hasCopyCtor = ((exp.type.value.ty & 0xFF) == ENUMTY.Tstruct) && ((TypeStruct)exp.type.value).sym.hasCopyCtor;
                                 if (!hasCopyCtor)
                                 {
-                                    if (f.isref.value && !MODimplicitConv(exp.type.value.mod.value, tret.mod.value) && (tret.isTypeSArray() == null))
+                                    if (f.isref && !MODimplicitConv(exp.type.value.mod, tret.mod) && (tret.isTypeSArray() == null))
                                     {
-                                        error(exp.loc.value, new BytePtr("expression `%s` of type `%s` is not implicitly convertible to return type `ref %s`"), exp.toChars(), exp.type.value.toChars(), tret.toChars());
+                                        error(exp.loc, new BytePtr("expression `%s` of type `%s` is not implicitly convertible to return type `ref %s`"), exp.toChars(), exp.type.value.toChars(), tret.toChars());
                                     }
                                     else
                                     {
                                         exp = exp.implicitCastTo(sc2, tret);
                                     }
                                 }
-                                if (f.isref.value)
+                                if (f.isref)
                                 {
                                     exp = exp.toLvalue(sc2, exp);
                                     checkReturnEscapeRef(sc2, exp, false);
@@ -806,17 +802,17 @@ public class semantic3 {
                                 if (funcdecl.vresult != null)
                                 {
                                     exp = new BlitExp(rs.loc, funcdecl.vresult, exp);
-                                    exp.type.value = funcdecl.vresult.type.value;
+                                    exp.type.value = funcdecl.vresult.type;
                                     if (rs.caseDim != 0)
                                     {
                                         exp = Expression.combine(exp, new IntegerExp((long)rs.caseDim));
                                     }
                                 }
-                                else if ((funcdecl.tintro.value != null) && !tret.equals(funcdecl.tintro.value.nextOf()))
+                                else if ((funcdecl.tintro != null) && !tret.equals(funcdecl.tintro.nextOf()))
                                 {
-                                    exp = exp.implicitCastTo(sc2, funcdecl.tintro.value.nextOf());
+                                    exp = exp.implicitCastTo(sc2, funcdecl.tintro.nextOf());
                                 }
-                                rs.exp.value = exp;
+                                rs.exp = exp;
                             }
                         }
                     }
@@ -825,7 +821,7 @@ public class semantic3 {
                         NrvoWalker nw = new NrvoWalker();
                         nw.fd = funcdecl;
                         nw.sc = sc2;
-                        nw.visitStmt(funcdecl.fbody.value);
+                        nw.visitStmt(funcdecl.fbody);
                     }
                     sc2 = (sc2.get()).pop();
                 }
@@ -835,29 +831,29 @@ public class semantic3 {
                 Statement fens = funcdecl.fensure;
                 if (freq != null)
                 {
-                    ScopeDsymbol sym = new ScopeDsymbol(funcdecl.loc.value, null);
-                    sym.parent.value = (sc2.get()).scopesym.value;
-                    sym.endlinnum = funcdecl.endloc.value.linnum;
+                    ScopeDsymbol sym = new ScopeDsymbol(funcdecl.loc, null);
+                    sym.parent.value = (sc2.get()).scopesym;
+                    sym.endlinnum = funcdecl.endloc.linnum;
                     sc2 = (sc2.get()).push(sym);
-                    (sc2.get()).flags.value = (sc2.get()).flags.value & -97 | 64;
+                    (sc2.get()).flags = (sc2.get()).flags & -97 | 64;
                     freq = statementSemantic(freq, sc2);
                     blockExit(freq, funcdecl, false);
                     funcdecl.eh_none = false;
                     sc2 = (sc2.get()).pop();
-                    if (((global.params.useIn & 0xFF) == 1))
+                    if (((global.value.params.useIn & 0xFF) == 1))
                     {
                         freq = null;
                     }
                 }
                 if (fens != null)
                 {
-                    if (((f.next.value.ty.value & 0xFF) == ENUMTY.Tvoid) && (funcdecl.fensures != null))
+                    if (((f.next.value.ty & 0xFF) == ENUMTY.Tvoid) && (funcdecl.fensures != null))
                     {
                         {
-                            Slice<Ensure> __r1551 = (funcdecl.fensures.get()).opSlice().copy();
-                            int __key1552 = 0;
-                            for (; (__key1552 < __r1551.getLength());__key1552 += 1) {
-                                Ensure e = __r1551.get(__key1552).copy();
+                            Slice<Ensure> __r1547 = (funcdecl.fensures.get()).opSlice().copy();
+                            int __key1548 = 0;
+                            for (; (__key1548 < __r1547.getLength());__key1548 += 1) {
+                                Ensure e = __r1547.get(__key1548).copy();
                                 if (e.id != null)
                                 {
                                     funcdecl.error(e.ensure.loc, new BytePtr("`void` functions have no result"));
@@ -866,8 +862,8 @@ public class semantic3 {
                         }
                     }
                     sc2 = scout;
-                    (sc2.get()).flags.value = (sc2.get()).flags.value & -97 | 96;
-                    if ((funcdecl.fensure != null) && ((f.next.value.ty.value & 0xFF) != ENUMTY.Tvoid))
+                    (sc2.get()).flags = (sc2.get()).flags & -97 | 96;
+                    if ((funcdecl.fensure != null) && ((f.next.value.ty & 0xFF) != ENUMTY.Tvoid))
                     {
                         funcdecl.buildResultVar(scout, f.next.value);
                     }
@@ -875,55 +871,55 @@ public class semantic3 {
                     blockExit(fens, funcdecl, false);
                     funcdecl.eh_none = false;
                     sc2 = (sc2.get()).pop();
-                    if (((global.params.useOut & 0xFF) == 1))
+                    if (((global.value.params.useOut & 0xFF) == 1))
                     {
                         fens = null;
                     }
                 }
-                if ((funcdecl.fbody.value != null) && (funcdecl.fbody.value.isErrorStatement() != null))
+                if ((funcdecl.fbody != null) && (funcdecl.fbody.isErrorStatement() != null))
                 {
                 }
                 else
                 {
                     Ptr<DArray<Statement>> a = refPtr(new DArray<Statement>());
-                    if (funcdecl.parameters.value != null)
+                    if (funcdecl.parameters != null)
                     {
                         {
                             int i = 0;
-                            for (; (i < (funcdecl.parameters.value.get()).length.value);i++){
-                                VarDeclaration v = (funcdecl.parameters.value.get()).get(i);
-                                if ((v.storage_class.value & 4096L) != 0)
+                            for (; (i < (funcdecl.parameters.get()).length);i++){
+                                VarDeclaration v = (funcdecl.parameters.get()).get(i);
+                                if ((v.storage_class & 4096L) != 0)
                                 {
-                                    if (v._init.value == null)
+                                    if (v._init == null)
                                     {
                                         v.error(new BytePtr("Zero-length `out` parameters are not allowed."));
                                         return ;
                                     }
-                                    ExpInitializer ie = v._init.value.isExpInitializer();
+                                    ExpInitializer ie = v._init.isExpInitializer();
                                     assert(ie != null);
                                     {
-                                        ConstructExp iec = ie.exp.value.isConstructExp();
+                                        ConstructExp iec = ie.exp.isConstructExp();
                                         if ((iec) != null)
                                         {
-                                            AssignExp ec = new AssignExp(iec.loc.value, iec.e1.value, iec.e2.value);
+                                            AssignExp ec = new AssignExp(iec.loc, iec.e1.value, iec.e2.value);
                                             ec.type.value = iec.type.value;
-                                            ie.exp.value = ec;
+                                            ie.exp = ec;
                                         }
                                     }
-                                    (a.get()).push(new ExpStatement(Loc.initial.value, ie.exp.value));
+                                    (a.get()).push(new ExpStatement(Loc.initial, ie.exp));
                                 }
                             }
                         }
                     }
                     if (_arguments != null)
                     {
-                        Expression e = new VarExp(Loc.initial.value, funcdecl.v_arguments, true);
-                        e = new DotIdExp(Loc.initial.value, e, Id.elements);
-                        e = new ConstructExp(Loc.initial.value, _arguments, e);
+                        Expression e = new VarExp(Loc.initial, funcdecl.v_arguments, true);
+                        e = new DotIdExp(Loc.initial, e, Id.elements);
+                        e = new ConstructExp(Loc.initial, _arguments, e);
                         e = expressionSemantic(e, sc2);
-                        _arguments._init.value = new ExpInitializer(Loc.initial.value, e);
-                        DeclarationExp de = new DeclarationExp(Loc.initial.value, _arguments);
-                        (a.get()).push(new ExpStatement(Loc.initial.value, de));
+                        _arguments._init = new ExpInitializer(Loc.initial, e);
+                        DeclarationExp de = new DeclarationExp(Loc.initial, _arguments);
+                        (a.get()).push(new ExpStatement(Loc.initial, de));
                     }
                     if ((freq != null) || (fpreinv != null))
                     {
@@ -933,13 +929,13 @@ public class semantic3 {
                         }
                         else if (fpreinv != null)
                         {
-                            freq = new CompoundStatement(Loc.initial.value, slice(new Statement[]{freq, fpreinv}));
+                            freq = new CompoundStatement(Loc.initial, slice(new Statement[]{freq, fpreinv}));
                         }
                         (a.get()).push(freq);
                     }
-                    if (funcdecl.fbody.value != null)
+                    if (funcdecl.fbody != null)
                     {
-                        (a.get()).push(funcdecl.fbody.value);
+                        (a.get()).push(funcdecl.fbody);
                     }
                     if ((fens != null) || (fpostinv != null))
                     {
@@ -949,66 +945,66 @@ public class semantic3 {
                         }
                         else if (fpostinv != null)
                         {
-                            fens = new CompoundStatement(Loc.initial.value, slice(new Statement[]{fpostinv, fens}));
+                            fens = new CompoundStatement(Loc.initial, slice(new Statement[]{fpostinv, fens}));
                         }
-                        LabelStatement ls = new LabelStatement(Loc.initial.value, Id.returnLabel, fens);
+                        LabelStatement ls = new LabelStatement(Loc.initial, Id.returnLabel, fens);
                         funcdecl.returnLabel.statement = ls;
                         (a.get()).push(funcdecl.returnLabel.statement);
-                        if (((f.next.value.ty.value & 0xFF) != ENUMTY.Tvoid) && (funcdecl.vresult != null))
+                        if (((f.next.value.ty & 0xFF) != ENUMTY.Tvoid) && (funcdecl.vresult != null))
                         {
-                            Expression e = new VarExp(Loc.initial.value, funcdecl.vresult, true);
-                            if (funcdecl.tintro.value != null)
+                            Expression e = new VarExp(Loc.initial, funcdecl.vresult, true);
+                            if (funcdecl.tintro != null)
                             {
-                                e = e.implicitCastTo(this.sc, funcdecl.tintro.value.nextOf());
+                                e = e.implicitCastTo(this.sc, funcdecl.tintro.nextOf());
                                 e = expressionSemantic(e, this.sc);
                             }
-                            ReturnStatement s = new ReturnStatement(Loc.initial.value, e);
+                            ReturnStatement s = new ReturnStatement(Loc.initial, e);
                             (a.get()).push(s);
                         }
                     }
                     if (addReturn0.invoke())
                     {
-                        Statement s = new ReturnStatement(Loc.initial.value, literal_B6589FC6AB0DC82C());
+                        Statement s = new ReturnStatement(Loc.initial, literal_B6589FC6AB0DC82C());
                         (a.get()).push(s);
                     }
-                    Statement sbody = new CompoundStatement(Loc.initial.value, a);
-                    if (funcdecl.parameters.value != null)
+                    Statement sbody = new CompoundStatement(Loc.initial, a);
+                    if (funcdecl.parameters != null)
                     {
                         {
-                            Slice<VarDeclaration> __r1553 = (funcdecl.parameters.value.get()).opSlice().copy();
-                            int __key1554 = 0;
-                            for (; (__key1554 < __r1553.getLength());__key1554 += 1) {
-                                VarDeclaration v = __r1553.get(__key1554);
-                                if ((v.storage_class.value & 2109440L) != 0)
+                            Slice<VarDeclaration> __r1549 = (funcdecl.parameters.get()).opSlice().copy();
+                            int __key1550 = 0;
+                            for (; (__key1550 < __r1549.getLength());__key1550 += 1) {
+                                VarDeclaration v = __r1549.get(__key1550);
+                                if ((v.storage_class & 2109440L) != 0)
                                 {
                                     continue;
                                 }
                                 if (v.needsScopeDtor())
                                 {
-                                    Statement s = new DtorExpStatement(Loc.initial.value, v.edtor.value, v);
-                                    v.storage_class.value |= 16777216L;
+                                    Statement s = new DtorExpStatement(Loc.initial, v.edtor, v);
+                                    v.storage_class |= 16777216L;
                                     s = statementSemantic(s, sc2);
-                                    boolean isnothrow = f.isnothrow.value & (funcdecl.flags & FUNCFLAG.nothrowInprocess) == 0;
+                                    boolean isnothrow = f.isnothrow & (funcdecl.flags & FUNCFLAG.nothrowInprocess) == 0;
                                     int blockexit = blockExit(s, funcdecl, isnothrow);
                                     if ((blockexit & 2) != 0)
                                     {
                                         funcdecl.eh_none = false;
                                     }
-                                    if (f.isnothrow.value && isnothrow && ((blockexit & 2) != 0))
+                                    if (f.isnothrow && isnothrow && ((blockexit & 2) != 0))
                                     {
-                                        error(funcdecl.loc.value, new BytePtr("`nothrow` %s `%s` may throw"), funcdecl.kind(), funcdecl.toPrettyChars(false));
+                                        error(funcdecl.loc, new BytePtr("`nothrow` %s `%s` may throw"), funcdecl.kind(), funcdecl.toPrettyChars(false));
                                     }
                                     if (((funcdecl.flags & FUNCFLAG.nothrowInprocess) != 0) && ((blockexit & 2) != 0))
                                     {
-                                        f.isnothrow.value = false;
+                                        f.isnothrow = false;
                                     }
-                                    if ((blockExit(sbody, funcdecl, f.isnothrow.value) == BE.fallthru))
+                                    if ((blockExit(sbody, funcdecl, f.isnothrow) == BE.fallthru))
                                     {
-                                        sbody = new CompoundStatement(Loc.initial.value, slice(new Statement[]{sbody, s}));
+                                        sbody = new CompoundStatement(Loc.initial, slice(new Statement[]{sbody, s}));
                                     }
                                     else
                                     {
-                                        sbody = new TryFinallyStatement(Loc.initial.value, sbody, s);
+                                        sbody = new TryFinallyStatement(Loc.initial, sbody, s);
                                     }
                                 }
                             }
@@ -1020,7 +1016,7 @@ public class semantic3 {
                         ClassDeclaration cd = funcdecl.toParentDecl().isClassDeclaration();
                         if (cd != null)
                         {
-                            if (!global.params.is64bit && global.params.isWindows && !funcdecl.isStatic() && !sbody.usesEH() && !global.params.trace)
+                            if (!global.value.params.is64bit && global.value.params.isWindows && !funcdecl.isStatic() && !sbody.usesEH() && !global.value.params.trace)
                             {
                             }
                             else
@@ -1028,19 +1024,19 @@ public class semantic3 {
                                 Expression vsync = null;
                                 if (funcdecl.isStatic())
                                 {
-                                    vsync = new DotIdExp(funcdecl.loc.value, symbolToExp(cd, funcdecl.loc.value, sc2, false), Id.classinfo.value);
+                                    vsync = new DotIdExp(funcdecl.loc, symbolToExp(cd, funcdecl.loc, sc2, false), Id.classinfo);
                                 }
                                 else
                                 {
-                                    vsync = new VarExp(funcdecl.loc.value, funcdecl.vthis.value, true);
-                                    if (funcdecl.isThis2.value)
+                                    vsync = new VarExp(funcdecl.loc, funcdecl.vthis, true);
+                                    if (funcdecl.isThis2)
                                     {
-                                        vsync = new PtrExp(funcdecl.loc.value, vsync);
-                                        vsync = new IndexExp(funcdecl.loc.value, vsync, literal_B6589FC6AB0DC82C());
+                                        vsync = new PtrExp(funcdecl.loc, vsync);
+                                        vsync = new IndexExp(funcdecl.loc, vsync, literal_B6589FC6AB0DC82C());
                                     }
                                 }
                                 sbody = new PeelStatement(sbody);
-                                sbody = new SynchronizedStatement(funcdecl.loc.value, vsync, sbody);
+                                sbody = new SynchronizedStatement(funcdecl.loc, vsync, sbody);
                                 sbody = statementSemantic(sbody, sc2);
                             }
                         }
@@ -1049,9 +1045,9 @@ public class semantic3 {
                             funcdecl.error(new BytePtr("synchronized function `%s` must be a member of a class"), funcdecl.toChars());
                         }
                     }
-                    if ((funcdecl.fbody.value != null) || allowsContractWithoutBody(funcdecl))
+                    if ((funcdecl.fbody != null) || allowsContractWithoutBody(funcdecl))
                     {
-                        funcdecl.fbody.value = sbody;
+                        funcdecl.fbody = sbody;
                     }
                 }
                 if (funcdecl.gotos != null)
@@ -1076,43 +1072,43 @@ public class semantic3 {
             if ((funcdecl.flags & FUNCFLAG.purityInprocess) != 0)
             {
                 funcdecl.flags &= -2;
-                if ((pequals(funcdecl.type.value, f)))
+                if ((pequals(funcdecl.type, f)))
                 {
                     f = (TypeFunction)f.copy();
                 }
-                f.purity.value = PURE.fwdref;
+                f.purity = PURE.fwdref;
             }
             if ((funcdecl.flags & FUNCFLAG.safetyInprocess) != 0)
             {
                 funcdecl.flags &= -3;
-                if ((pequals(funcdecl.type.value, f)))
+                if ((pequals(funcdecl.type, f)))
                 {
                     f = (TypeFunction)f.copy();
                 }
-                f.trust.value = TRUST.safe;
+                f.trust = TRUST.safe;
             }
             if ((funcdecl.flags & FUNCFLAG.nogcInprocess) != 0)
             {
                 funcdecl.flags &= -9;
-                if ((pequals(funcdecl.type.value, f)))
+                if ((pequals(funcdecl.type, f)))
                 {
                     f = (TypeFunction)f.copy();
                 }
-                f.isnogc.value = true;
+                f.isnogc = true;
             }
             if ((funcdecl.flags & FUNCFLAG.returnInprocess) != 0)
             {
                 funcdecl.flags &= -17;
-                if ((funcdecl.storage_class.value & 17592186044416L) != 0)
+                if ((funcdecl.storage_class & 17592186044416L) != 0)
                 {
-                    if ((pequals(funcdecl.type.value, f)))
+                    if ((pequals(funcdecl.type, f)))
                     {
                         f = (TypeFunction)f.copy();
                     }
-                    f.isreturn.value = true;
-                    if ((funcdecl.storage_class.value & 4503599627370496L) != 0)
+                    f.isreturn = true;
+                    if ((funcdecl.storage_class & 4503599627370496L) != 0)
                     {
-                        f.isreturninferred.value = true;
+                        f.isreturninferred = true;
                     }
                 }
             }
@@ -1120,7 +1116,7 @@ public class semantic3 {
             {
                 Slice<VarDeclaration> array = null;
                 Slice<VarDeclaration> tmp = new Slice<VarDeclaration>(new VarDeclaration[10]);
-                int dim = ((funcdecl.vthis.value != null) ? 1 : 0) + (funcdecl.parameters.value != null ? (funcdecl.parameters.value.get()).length.value : 0);
+                int dim = ((funcdecl.vthis != null) ? 1 : 0) + (funcdecl.parameters != null ? (funcdecl.parameters.get()).length : 0);
                 if ((dim <= 10))
                 {
                     array = tmp.slice(0,dim).copy();
@@ -1131,17 +1127,17 @@ public class semantic3 {
                     array = ptr.slice(0,dim).copy();
                 }
                 int n = 0;
-                if (funcdecl.vthis.value != null)
+                if (funcdecl.vthis != null)
                 {
-                    array.set(n++, funcdecl.vthis.value);
+                    array.set(n++, funcdecl.vthis);
                 }
-                if (funcdecl.parameters.value != null)
+                if (funcdecl.parameters != null)
                 {
                     {
-                        Slice<VarDeclaration> __r1555 = (funcdecl.parameters.value.get()).opSlice().copy();
-                        int __key1556 = 0;
-                        for (; (__key1556 < __r1555.getLength());__key1556 += 1) {
-                            VarDeclaration v = __r1555.get(__key1556);
+                        Slice<VarDeclaration> __r1551 = (funcdecl.parameters.get()).opSlice().copy();
+                        int __key1552 = 0;
+                        for (; (__key1552 < __r1551.getLength());__key1552 += 1) {
+                            VarDeclaration v = __r1551.get(__key1552);
                             array.set(n++, v);
                         }
                     }
@@ -1152,98 +1148,98 @@ public class semantic3 {
                     Mem.xfree(toPtr<VarDeclaration>(array));
                 }
             }
-            if ((funcdecl.parameters.value != null) && !funcdecl.errors.value)
+            if ((funcdecl.parameters != null) && !funcdecl.errors)
             {
                 int nfparams = f.parameterList.length();
-                assert((nfparams == (funcdecl.parameters.value.get()).length.value));
+                assert((nfparams == (funcdecl.parameters.get()).length));
                 {
-                    Slice<VarDeclaration> __r1558 = (funcdecl.parameters.value.get()).opSlice().copy();
-                    int __key1557 = 0;
-                    for (; (__key1557 < __r1558.getLength());__key1557 += 1) {
-                        VarDeclaration v = __r1558.get(__key1557);
-                        int u = __key1557;
-                        if ((v.storage_class.value & 281474976710656L) != 0)
+                    Slice<VarDeclaration> __r1554 = (funcdecl.parameters.get()).opSlice().copy();
+                    int __key1553 = 0;
+                    for (; (__key1553 < __r1554.getLength());__key1553 += 1) {
+                        VarDeclaration v = __r1554.get(__key1553);
+                        int u = __key1553;
+                        if ((v.storage_class & 281474976710656L) != 0)
                         {
                             Parameter p = f.parameterList.get(u);
                             notMaybeScope(v);
-                            v.storage_class.value |= 562949953945600L;
-                            p.storageClass.value |= 562949953945600L;
-                            assert((p.storageClass.value & 281474976710656L) == 0);
+                            v.storage_class |= 562949953945600L;
+                            p.storageClass |= 562949953945600L;
+                            assert((p.storageClass & 281474976710656L) == 0);
                         }
                     }
                 }
             }
-            if ((funcdecl.vthis.value != null) && ((funcdecl.vthis.value.storage_class.value & 281474976710656L) != 0))
+            if ((funcdecl.vthis != null) && ((funcdecl.vthis.storage_class & 281474976710656L) != 0))
             {
-                notMaybeScope(funcdecl.vthis.value);
-                funcdecl.vthis.value.storage_class.value |= 562949953945600L;
-                f.isscope.value = true;
-                f.isscopeinferred.value = true;
+                notMaybeScope(funcdecl.vthis);
+                funcdecl.vthis.storage_class |= 562949953945600L;
+                f.isscope = true;
+                f.isscopeinferred = true;
             }
-            if ((!pequals(f, funcdecl.type.value)))
+            if ((!pequals(f, funcdecl.type)))
             {
-                f.deco.value = null;
+                f.deco = null;
             }
-            if ((f.deco.value == null) && (!pequals(funcdecl.ident.value, Id.xopEquals)) && (!pequals(funcdecl.ident.value, Id.xopCmp)))
+            if ((f.deco == null) && (!pequals(funcdecl.ident, Id.xopEquals)) && (!pequals(funcdecl.ident, Id.xopCmp)))
             {
                 this.sc = (this.sc.get()).push();
                 if (funcdecl.isCtorDeclaration() != null)
                 {
-                    (this.sc.get()).flags.value |= 1;
+                    (this.sc.get()).flags |= 1;
                 }
-                (this.sc.get()).stc.value = 0L;
-                (this.sc.get()).linkage.value = funcdecl.linkage.value;
-                funcdecl.type.value = typeSemantic(f, funcdecl.loc.value, this.sc);
+                (this.sc.get()).stc = 0L;
+                (this.sc.get()).linkage = funcdecl.linkage;
+                funcdecl.type = typeSemantic(f, funcdecl.loc, this.sc);
                 this.sc = (this.sc.get()).pop();
             }
-            funcdecl.semanticRun.value = PASS.semantic3done;
-            funcdecl.semantic3Errors.value = (global.errors.value != oldErrors) || (funcdecl.fbody.value != null) && (funcdecl.fbody.value.isErrorStatement() != null);
-            if (((funcdecl.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+            funcdecl.semanticRun = PASS.semantic3done;
+            funcdecl.semantic3Errors = (global.value.errors != oldErrors) || (funcdecl.fbody != null) && (funcdecl.fbody.isErrorStatement() != null);
+            if (((funcdecl.type.ty & 0xFF) == ENUMTY.Terror))
             {
-                funcdecl.errors.value = true;
+                funcdecl.errors = true;
             }
         }
 
         public  void visit(CtorDeclaration ctor) {
-            if ((ctor.semanticRun.value >= PASS.semantic3))
+            if ((ctor.semanticRun >= PASS.semantic3))
             {
                 return ;
             }
             AggregateDeclaration ad = ctor.isMemberDecl();
-            if ((ad != null) && (ad.fieldDtor != null) && global.params.dtorFields)
+            if ((ad != null) && (ad.fieldDtor != null) && global.value.params.dtorFields)
             {
-                Expression e = new ThisExp(ctor.loc.value);
-                e.type.value = ad.type.value.mutableOf();
-                e = new DotVarExp(ctor.loc.value, e, ad.fieldDtor, false);
-                e = new CallExp(ctor.loc.value, e);
-                ExpStatement sexp = new ExpStatement(ctor.loc.value, e);
-                ScopeStatement ss = new ScopeStatement(ctor.loc.value, sexp, ctor.loc.value);
+                Expression e = new ThisExp(ctor.loc);
+                e.type.value = ad.type.mutableOf();
+                e = new DotVarExp(ctor.loc, e, ad.fieldDtor, false);
+                e = new CallExp(ctor.loc, e);
+                ExpStatement sexp = new ExpStatement(ctor.loc, e);
+                ScopeStatement ss = new ScopeStatement(ctor.loc, sexp, ctor.loc);
                 Identifier id = Identifier.generateId(new BytePtr("__o"));
-                ThrowStatement ts = new ThrowStatement(ctor.loc.value, new IdentifierExp(ctor.loc.value, id));
-                CompoundStatement handler = new CompoundStatement(ctor.loc.value, slice(new Statement[]{ss, ts}));
+                ThrowStatement ts = new ThrowStatement(ctor.loc, new IdentifierExp(ctor.loc, id));
+                CompoundStatement handler = new CompoundStatement(ctor.loc, slice(new Statement[]{ss, ts}));
                 Ptr<DArray<Catch>> catches = refPtr(new DArray<Catch>());
-                Catch ctch = new Catch(ctor.loc.value, getException(), id, handler);
+                Catch ctch = new Catch(ctor.loc, getException(), id, handler);
                 (catches.get()).push(ctch);
-                ctor.fbody.value = new TryCatchStatement(ctor.loc.value, ctor.fbody.value, catches);
+                ctor.fbody = new TryCatchStatement(ctor.loc, ctor.fbody, catches);
             }
             this.visit((FuncDeclaration)ctor);
         }
 
         public  void visit(Nspace ns) {
-            if ((ns.semanticRun.value >= PASS.semantic3))
+            if ((ns.semanticRun >= PASS.semantic3))
             {
                 return ;
             }
-            ns.semanticRun.value = PASS.semantic3;
-            if (ns.members.value != null)
+            ns.semanticRun = PASS.semantic3;
+            if (ns.members != null)
             {
                 this.sc = (this.sc.get()).push(ns);
-                (this.sc.get()).linkage.value = LINK.cpp;
+                (this.sc.get()).linkage = LINK.cpp;
                 {
-                    Slice<Dsymbol> __r1559 = (ns.members.value.get()).opSlice().copy();
-                    int __key1560 = 0;
-                    for (; (__key1560 < __r1559.getLength());__key1560 += 1) {
-                        Dsymbol s = __r1559.get(__key1560);
+                    Slice<Dsymbol> __r1555 = (ns.members.get()).opSlice().copy();
+                    int __key1556 = 0;
+                    for (; (__key1556 < __r1555.getLength());__key1556 += 1) {
+                        Dsymbol s = __r1555.get(__key1556);
                         semantic3(s, this.sc);
                     }
                 }
@@ -1258,7 +1254,7 @@ public class semantic3 {
                 Ptr<Scope> sc2 = ad.newScope(this.sc);
                 {
                     int i = 0;
-                    for (; (i < (d.get()).length.value);i++){
+                    for (; (i < (d.get()).length);i++){
                         Dsymbol s = (d.get()).get(i);
                         semantic3(s, sc2);
                     }
@@ -1271,7 +1267,7 @@ public class semantic3 {
         }
 
         public  void visit(AggregateDeclaration ad) {
-            if (ad.members.value == null)
+            if (ad.members == null)
             {
                 return ;
             }
@@ -1285,28 +1281,28 @@ public class semantic3 {
             Ptr<Scope> sc2 = ad.newScope(this.sc);
             {
                 int i = 0;
-                for (; (i < (ad.members.value.get()).length.value);i++){
-                    Dsymbol s = (ad.members.value.get()).get(i);
+                for (; (i < (ad.members.get()).length);i++){
+                    Dsymbol s = (ad.members.get()).get(i);
                     semantic3(s, sc2);
                 }
             }
             (sc2.get()).pop();
-            if ((ad.getRTInfo == null) && (Type.rtinfo != null) && !ad.isDeprecated() || ((global.params.useDeprecated & 0xFF) != 0) && (ad.type.value != null) && ((ad.type.value.ty.value & 0xFF) != ENUMTY.Terror))
+            if ((ad.getRTInfo == null) && (Type.rtinfo != null) && !ad.isDeprecated() || ((global.value.params.useDeprecated & 0xFF) != 0) && (ad.type != null) && ((ad.type.ty & 0xFF) != ENUMTY.Terror))
             {
                 Ptr<DArray<RootObject>> tiargs = refPtr(new DArray<RootObject>());
-                (tiargs.get()).push(ad.type.value);
-                TemplateInstance ti = new TemplateInstance(ad.loc.value, Type.rtinfo, tiargs);
-                Ptr<Scope> sc3 = (ti.tempdecl.value._scope.value.get()).startCTFE();
+                (tiargs.get()).push(ad.type);
+                TemplateInstance ti = new TemplateInstance(ad.loc, Type.rtinfo, tiargs);
+                Ptr<Scope> sc3 = (ti.tempdecl._scope.get()).startCTFE();
                 (sc3.get()).tinst = (this.sc.get()).tinst;
-                (sc3.get()).minst.value = (this.sc.get()).minst.value;
+                (sc3.get()).minst = (this.sc.get()).minst;
                 if (ad.isDeprecated())
                 {
-                    (sc3.get()).stc.value |= 1024L;
+                    (sc3.get()).stc |= 1024L;
                 }
                 dsymbolSemantic(ti, sc3);
                 semantic2(ti, sc3);
                 semantic3(ti, sc3);
-                Expression e = symbolToExp(ti.toAlias(), Loc.initial.value, sc3, false);
+                Expression e = symbolToExp(ti.toAlias(), Loc.initial, sc3, false);
                 (sc3.get()).endCTFE();
                 e = e.ctfeInterpret();
                 ad.getRTInfo = e;
@@ -1315,7 +1311,7 @@ public class semantic3 {
             {
                 sd.semanticTypeInfoMembers();
             }
-            ad.semanticRun.value = PASS.semantic3done;
+            ad.semanticRun = PASS.semantic3done;
         }
 
 
@@ -1341,9 +1337,9 @@ public class semantic3 {
             {
                 {
                     int i = 0;
-                    for (; (i < this.funcdecl.foverrides.length.value);i++){
+                    for (; (i < this.funcdecl.foverrides.length);i++){
                         FuncDeclaration fdv = this.funcdecl.foverrides.get(i);
-                        if ((fdv.fbody.value != null) && (fdv.frequires == null))
+                        if ((fdv.fbody != null) && (fdv.frequires == null))
                         {
                             this.funcdecl.error(new BytePtr("cannot have an in contract when overridden function `%s` does not have an in contract"), fdv.toPrettyChars(false));
                             break;

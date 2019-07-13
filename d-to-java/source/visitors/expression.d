@@ -728,7 +728,14 @@ public:
 
     override void visit(BinExp e)
     {
-        if (e.e1.type && (e.op == TOK.equal || e.op == TOK.notEqual)
+        if (e.op == TOK.in_ && e.e2.type.isTypeAArray) {
+            expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
+            buf.put(".getLvalue(");
+            expToBuffer(e.e1, PREC.primary, buf, opts);
+            buf.put(")");
+            return;
+        }
+        else if (e.e1.type && (e.op == TOK.equal || e.op == TOK.notEqual)
         && !e.e1.type.isTypePointer && !e.e1.type.isTypeClass && !e.e1.type.isTypeBasic && !e.e1.type.isTypeEnum) {
             if (e.op == TOK.notEqual) buf.put("!");
             expToBuffer(e.e1, cast(PREC)(precedence[e.op] + 1), buf, opts);

@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -45,10 +41,10 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.CompoundStatement s) {
             {
-                Slice<ASTBase.Statement> __r576 = (s.statements.get()).opSlice().copy();
-                int __key577 = 0;
-                for (; (__key577 < __r576.getLength());__key577 += 1) {
-                    ASTBase.Statement sx = __r576.get(__key577);
+                Slice<ASTBase.Statement> __r572 = (s.statements.get()).opSlice().copy();
+                int __key573 = 0;
+                for (; (__key573 < __r572.getLength());__key573 += 1) {
+                    ASTBase.Statement sx = __r572.get(__key573);
                     if (sx != null)
                     {
                         sx.accept(this);
@@ -82,10 +78,10 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.CompoundDeclarationStatement s) {
             {
-                Slice<ASTBase.Statement> __r582 = (s.statements.get()).opSlice().copy();
-                int __key583 = 0;
-                for (; (__key583 < __r582.getLength());__key583 += 1) {
-                    ASTBase.Statement sx = __r582.get(__key583);
+                Slice<ASTBase.Statement> __r578 = (s.statements.get()).opSlice().copy();
+                int __key579 = 0;
+                for (; (__key579 < __r578.getLength());__key579 += 1) {
+                    ASTBase.Statement sx = __r578.get(__key579);
                     ASTBase.ExpStatement ds = sx != null ? sx.isExpStatement() : null;
                     if ((ds != null) && ((ds.exp.op & 0xFF) == 38))
                     {
@@ -161,10 +157,10 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ForeachStatement s) {
             {
-                Slice<ASTBase.Parameter> __r584 = (s.parameters.get()).opSlice().copy();
-                int __key585 = 0;
-                for (; (__key585 < __r584.getLength());__key585 += 1) {
-                    ASTBase.Parameter p = __r584.get(__key585);
+                Slice<ASTBase.Parameter> __r580 = (s.parameters.get()).opSlice().copy();
+                int __key581 = 0;
+                for (; (__key581 < __r580.getLength());__key581 += 1) {
+                    ASTBase.Parameter p = __r580.get(__key581);
                     if (p.type != null)
                     {
                         this.visitType(p.type);
@@ -230,10 +226,10 @@ public class transitivevisitor {
                 return ;
             }
             {
-                Slice<ASTBase.Expression> __r574 = (expressions.get()).opSlice().copy();
-                int __key575 = 0;
-                for (; (__key575 < __r574.getLength());__key575 += 1) {
-                    ASTBase.Expression el = __r574.get(__key575);
+                Slice<ASTBase.Expression> __r570 = (expressions.get()).opSlice().copy();
+                int __key571 = 0;
+                for (; (__key571 < __r570.getLength());__key571 += 1) {
+                    ASTBase.Expression el = __r570.get(__key571);
                     if (el == null)
                     {
                         el = basis;
@@ -350,10 +346,10 @@ public class transitivevisitor {
                 s._body.accept(this);
             }
             {
-                Slice<ASTBase.Catch> __r586 = (s.catches.get()).opSlice().copy();
-                int __key587 = 0;
-                for (; (__key587 < __r586.getLength());__key587 += 1) {
-                    ASTBase.Catch c = __r586.get(__key587);
+                Slice<ASTBase.Catch> __r582 = (s.catches.get()).opSlice().copy();
+                int __key583 = 0;
+                for (; (__key583 < __r582.getLength());__key583 += 1) {
+                    ASTBase.Catch c = __r582.get(__key583);
                     this.visit(c);
                 }
             }
@@ -391,10 +387,10 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ImportStatement s) {
             {
-                Slice<ASTBase.Dsymbol> __r588 = (s.imports.get()).opSlice().copy();
-                int __key589 = 0;
-                for (; (__key589 < __r588.getLength());__key589 += 1) {
-                    ASTBase.Dsymbol imp = __r588.get(__key589);
+                Slice<ASTBase.Dsymbol> __r584 = (s.imports.get()).opSlice().copy();
+                int __key585 = 0;
+                for (; (__key585 < __r584.getLength());__key585 += 1) {
+                    ASTBase.Dsymbol imp = __r584.get(__key585);
                     imp.accept(this);
                 }
             }
@@ -434,17 +430,17 @@ public class transitivevisitor {
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visitFunctionType(ASTBase.TypeFunction t, ASTBase.TemplateDeclaration td) {
-            if (t.next != null)
+            if (t.next.value != null)
             {
-                this.visitType(t.next);
+                this.visitType(t.next.value);
             }
             if (td != null)
             {
                 {
-                    Slice<ASTBase.TemplateParameter> __r578 = (td.origParameters.get()).opSlice().copy();
-                    int __key579 = 0;
-                    for (; (__key579 < __r578.getLength());__key579 += 1) {
-                        ASTBase.TemplateParameter p = __r578.get(__key579);
+                    Slice<ASTBase.TemplateParameter> __r574 = (td.origParameters.get()).opSlice().copy();
+                    int __key575 = 0;
+                    for (; (__key575 < __r574.getLength());__key575 += 1) {
+                        ASTBase.TemplateParameter p = __r574.get(__key575);
                         p.accept(this);
                     }
                 }
@@ -459,10 +455,10 @@ public class transitivevisitor {
             {
                 int dim = ASTBase.Parameter.dim(parameters);
                 {
-                    int __key580 = 0;
-                    int __limit581 = dim;
-                    for (; (__key580 < __limit581);__key580 += 1) {
-                        int i = __key580;
+                    int __key576 = 0;
+                    int __limit577 = dim;
+                    for (; (__key576 < __limit577);__key576 += 1) {
+                        int i = __key576;
                         ASTBase.Parameter fparam = ASTBase.Parameter.getNth(parameters, i, null);
                         fparam.accept(this);
                     }
@@ -483,39 +479,39 @@ public class transitivevisitor {
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeSArray t) {
-            t.next.accept(this);
+            t.next.value.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeDArray t) {
-            t.next.accept(this);
+            t.next.value.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeAArray t) {
-            t.next.accept(this);
+            t.next.value.accept(this);
             t.index.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypePointer t) {
-            if (((t.next.ty & 0xFF) == ASTBase.ENUMTY.Tfunction))
+            if (((t.next.value.ty & 0xFF) == ASTBase.ENUMTY.Tfunction))
             {
-                this.visitFunctionType((ASTBase.TypeFunction)t.next, null);
+                this.visitFunctionType((ASTBase.TypeFunction)t.next.value, null);
             }
             else
             {
-                t.next.accept(this);
+                t.next.value.accept(this);
             }
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeReference t) {
-            t.next.accept(this);
+            t.next.value.accept(this);
         }
 
 
@@ -527,17 +523,17 @@ public class transitivevisitor {
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeDelegate t) {
-            this.visitFunctionType((ASTBase.TypeFunction)t.next, null);
+            this.visitFunctionType((ASTBase.TypeFunction)t.next.value, null);
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visitTypeQualified(ASTBase.TypeQualified t) {
             {
-                Slice<RootObject> __r590 = t.idents.opSlice().copy();
-                int __key591 = 0;
-                for (; (__key591 < __r590.getLength());__key591 += 1) {
-                    RootObject id = __r590.get(__key591);
+                Slice<RootObject> __r586 = t.idents.opSlice().copy();
+                int __key587 = 0;
+                for (; (__key587 < __r586.getLength());__key587 += 1) {
+                    RootObject id = __r586.get(__key587);
                     if ((id.dyncast() == DYNCAST.dsymbol))
                     {
                         ((ASTBase.TemplateInstance)id).accept(this);
@@ -589,7 +585,7 @@ public class transitivevisitor {
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeSlice t) {
-            t.next.accept(this);
+            t.next.value.accept(this);
             t.lwr.accept(this);
             t.upr.accept(this);
         }
@@ -628,10 +624,10 @@ public class transitivevisitor {
         public  void visitAttribDeclaration(ASTBase.AttribDeclaration d) {
             if (d.decl != null)
             {
-                Slice<ASTBase.Dsymbol> __r592 = (d.decl.get()).opSlice().copy();
-                int __key593 = 0;
-                for (; (__key593 < __r592.getLength());__key593 += 1) {
-                    ASTBase.Dsymbol de = __r592.get(__key593);
+                Slice<ASTBase.Dsymbol> __r588 = (d.decl.get()).opSlice().copy();
+                int __key589 = 0;
+                for (; (__key589 < __r588.getLength());__key589 += 1) {
+                    ASTBase.Dsymbol de = __r588.get(__key589);
                     de.accept(this);
                 }
             }
@@ -702,19 +698,19 @@ public class transitivevisitor {
             d.condition.accept(this);
             if (d.decl != null)
             {
-                Slice<ASTBase.Dsymbol> __r594 = (d.decl.get()).opSlice().copy();
-                int __key595 = 0;
-                for (; (__key595 < __r594.getLength());__key595 += 1) {
-                    ASTBase.Dsymbol de = __r594.get(__key595);
+                Slice<ASTBase.Dsymbol> __r590 = (d.decl.get()).opSlice().copy();
+                int __key591 = 0;
+                for (; (__key591 < __r590.getLength());__key591 += 1) {
+                    ASTBase.Dsymbol de = __r590.get(__key591);
                     de.accept(this);
                 }
             }
             if (d.elsedecl != null)
             {
-                Slice<ASTBase.Dsymbol> __r596 = (d.elsedecl.get()).opSlice().copy();
-                int __key597 = 0;
-                for (; (__key597 < __r596.getLength());__key597 += 1) {
-                    ASTBase.Dsymbol de = __r596.get(__key597);
+                Slice<ASTBase.Dsymbol> __r592 = (d.elsedecl.get()).opSlice().copy();
+                int __key593 = 0;
+                for (; (__key593 < __r592.getLength());__key593 += 1) {
+                    ASTBase.Dsymbol de = __r592.get(__key593);
                     de.accept(this);
                 }
             }
@@ -739,10 +735,10 @@ public class transitivevisitor {
             if (f.frequires != null)
             {
                 {
-                    Slice<ASTBase.Statement> __r598 = (f.frequires.get()).opSlice().copy();
-                    int __key599 = 0;
-                    for (; (__key599 < __r598.getLength());__key599 += 1) {
-                        ASTBase.Statement frequire = __r598.get(__key599);
+                    Slice<ASTBase.Statement> __r594 = (f.frequires.get()).opSlice().copy();
+                    int __key595 = 0;
+                    for (; (__key595 < __r594.getLength());__key595 += 1) {
+                        ASTBase.Statement frequire = __r594.get(__key595);
                         frequire.accept(this);
                     }
                 }
@@ -750,10 +746,10 @@ public class transitivevisitor {
             if (f.fensures != null)
             {
                 {
-                    Slice<ASTBase.Ensure> __r600 = (f.fensures.get()).opSlice().copy();
-                    int __key601 = 0;
-                    for (; (__key601 < __r600.getLength());__key601 += 1) {
-                        ASTBase.Ensure fensure = __r600.get(__key601).copy();
+                    Slice<ASTBase.Ensure> __r596 = (f.fensures.get()).opSlice().copy();
+                    int __key597 = 0;
+                    for (; (__key597 < __r596.getLength());__key597 += 1) {
+                        ASTBase.Ensure fensure = __r596.get(__key597).copy();
                         fensure.ensure.accept(this);
                     }
                 }
@@ -772,10 +768,10 @@ public class transitivevisitor {
                 return ;
             }
             {
-                Slice<Ptr<ASTBase.BaseClass>> __r602 = (d.baseclasses.get()).opSlice().copy();
-                int __key603 = 0;
-                for (; (__key603 < __r602.getLength());__key603 += 1) {
-                    Ptr<ASTBase.BaseClass> b = __r602.get(__key603);
+                Slice<Ptr<ASTBase.BaseClass>> __r598 = (d.baseclasses.get()).opSlice().copy();
+                int __key599 = 0;
+                for (; (__key599 < __r598.getLength());__key599 += 1) {
+                    Ptr<ASTBase.BaseClass> b = __r598.get(__key599);
                     this.visitType((b.get()).type);
                 }
             }
@@ -819,10 +815,10 @@ public class transitivevisitor {
                     this.visitBaseClasses(ad.isClassDeclaration());
                     if (ad.members != null)
                     {
-                        Slice<ASTBase.Dsymbol> __r606 = (ad.members.get()).opSlice().copy();
-                        int __key607 = 0;
-                        for (; (__key607 < __r606.getLength());__key607 += 1) {
-                            ASTBase.Dsymbol s = __r606.get(__key607);
+                        Slice<ASTBase.Dsymbol> __r602 = (ad.members.get()).opSlice().copy();
+                        int __key603 = 0;
+                        for (; (__key603 < __r602.getLength());__key603 += 1) {
+                            ASTBase.Dsymbol s = __r602.get(__key603);
                             s.accept(this);
                         }
                     }
@@ -868,10 +864,10 @@ public class transitivevisitor {
                 return ;
             }
             {
-                Slice<ASTBase.TemplateParameter> __r604 = (parameters.get()).opSlice().copy();
-                int __key605 = 0;
-                for (; (__key605 < __r604.getLength());__key605 += 1) {
-                    ASTBase.TemplateParameter p = __r604.get(__key605);
+                Slice<ASTBase.TemplateParameter> __r600 = (parameters.get()).opSlice().copy();
+                int __key601 = 0;
+                for (; (__key601 < __r600.getLength());__key601 += 1) {
+                    ASTBase.TemplateParameter p = __r600.get(__key601);
                     p.accept(this);
                 }
             }
@@ -890,10 +886,10 @@ public class transitivevisitor {
                 d.constraint.accept(this);
             }
             {
-                Slice<ASTBase.Dsymbol> __r608 = (d.members.get()).opSlice().copy();
-                int __key609 = 0;
-                for (; (__key609 < __r608.getLength());__key609 += 1) {
-                    ASTBase.Dsymbol s = __r608.get(__key609);
+                Slice<ASTBase.Dsymbol> __r604 = (d.members.get()).opSlice().copy();
+                int __key605 = 0;
+                for (; (__key605 < __r604.getLength());__key605 += 1) {
+                    ASTBase.Dsymbol s = __r604.get(__key605);
                     s.accept(this);
                 }
             }
@@ -920,10 +916,10 @@ public class transitivevisitor {
                         {
                             Ptr<DArray<RootObject>> args = ptr(v.objects);
                             {
-                                Slice<RootObject> __r610 = (args.get()).opSlice().copy();
-                                int __key611 = 0;
-                                for (; (__key611 < __r610.getLength());__key611 += 1) {
-                                    RootObject arg = __r610.get(__key611);
+                                Slice<RootObject> __r606 = (args.get()).opSlice().copy();
+                                int __key607 = 0;
+                                for (; (__key607 < __r606.getLength());__key607 += 1) {
+                                    RootObject arg = __r606.get(__key607);
                                     this.visitObject(arg);
                                 }
                             }
@@ -941,10 +937,10 @@ public class transitivevisitor {
                 return ;
             }
             {
-                Slice<RootObject> __r612 = (ti.tiargs.get()).opSlice().copy();
-                int __key613 = 0;
-                for (; (__key613 < __r612.getLength());__key613 += 1) {
-                    RootObject arg = __r612.get(__key613);
+                Slice<RootObject> __r608 = (ti.tiargs.get()).opSlice().copy();
+                int __key609 = 0;
+                for (; (__key609 < __r608.getLength());__key609 += 1) {
+                    RootObject arg = __r608.get(__key609);
                     this.visitObject(arg);
                 }
             }
@@ -975,10 +971,10 @@ public class transitivevisitor {
                 return ;
             }
             {
-                Slice<ASTBase.Dsymbol> __r614 = (d.members.get()).opSlice().copy();
-                int __key615 = 0;
-                for (; (__key615 < __r614.getLength());__key615 += 1) {
-                    ASTBase.Dsymbol em = __r614.get(__key615);
+                Slice<ASTBase.Dsymbol> __r610 = (d.members.get()).opSlice().copy();
+                int __key611 = 0;
+                for (; (__key611 < __r610.getLength());__key611 += 1) {
+                    ASTBase.Dsymbol em = __r610.get(__key611);
                     if (em == null)
                     {
                         continue;
@@ -992,10 +988,10 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.Nspace d) {
             {
-                Slice<ASTBase.Dsymbol> __r616 = (d.members.get()).opSlice().copy();
-                int __key617 = 0;
-                for (; (__key617 < __r616.getLength());__key617 += 1) {
-                    ASTBase.Dsymbol s = __r616.get(__key617);
+                Slice<ASTBase.Dsymbol> __r612 = (d.members.get()).opSlice().copy();
+                int __key613 = 0;
+                for (; (__key613 < __r612.getLength());__key613 += 1) {
+                    ASTBase.Dsymbol s = __r612.get(__key613);
                     s.accept(this);
                 }
             }
@@ -1009,10 +1005,10 @@ public class transitivevisitor {
                 return ;
             }
             {
-                Slice<ASTBase.Dsymbol> __r618 = (d.members.get()).opSlice().copy();
-                int __key619 = 0;
-                for (; (__key619 < __r618.getLength());__key619 += 1) {
-                    ASTBase.Dsymbol s = __r618.get(__key619);
+                Slice<ASTBase.Dsymbol> __r614 = (d.members.get()).opSlice().copy();
+                int __key615 = 0;
+                for (; (__key615 < __r614.getLength());__key615 += 1) {
+                    ASTBase.Dsymbol s = __r614.get(__key615);
                     s.accept(this);
                 }
             }
@@ -1024,10 +1020,10 @@ public class transitivevisitor {
             this.visitBaseClasses(d);
             if (d.members != null)
             {
-                Slice<ASTBase.Dsymbol> __r620 = (d.members.get()).opSlice().copy();
-                int __key621 = 0;
-                for (; (__key621 < __r620.getLength());__key621 += 1) {
-                    ASTBase.Dsymbol s = __r620.get(__key621);
+                Slice<ASTBase.Dsymbol> __r616 = (d.members.get()).opSlice().copy();
+                int __key617 = 0;
+                for (; (__key617 < __r616.getLength());__key617 += 1) {
+                    ASTBase.Dsymbol s = __r616.get(__key617);
                     s.accept(this);
                 }
             }
@@ -1068,9 +1064,9 @@ public class transitivevisitor {
                 return ;
             }
             ASTBase.TypeFunction tf = (ASTBase.TypeFunction)f.type;
-            if (!f.inferRetType && (tf.next != null))
+            if (!f.inferRetType && (tf.next.value != null))
             {
-                this.visitType(tf.next);
+                this.visitType(tf.next.value);
             }
             this.visitParameters(tf.parameterList.parameters);
             ASTBase.CompoundStatement cs = f.fbody.isCompoundStatement();
@@ -1140,11 +1136,11 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.StructInitializer si) {
             {
-                Slice<Identifier> __r623 = si.field.opSlice().copy();
-                int __key622 = 0;
-                for (; (__key622 < __r623.getLength());__key622 += 1) {
-                    Identifier id = __r623.get(__key622);
-                    int i = __key622;
+                Slice<Identifier> __r619 = si.field.opSlice().copy();
+                int __key618 = 0;
+                for (; (__key618 < __r619.getLength());__key618 += 1) {
+                    Identifier id = __r619.get(__key618);
+                    int i = __key618;
                     {
                         ASTBase.Initializer iz = si.value.get(i);
                         if ((iz) != null)
@@ -1160,11 +1156,11 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ArrayInitializer ai) {
             {
-                Slice<ASTBase.Expression> __r625 = ai.index.opSlice().copy();
-                int __key624 = 0;
-                for (; (__key624 < __r625.getLength());__key624 += 1) {
-                    ASTBase.Expression ex = __r625.get(__key624);
-                    int i = __key624;
+                Slice<ASTBase.Expression> __r621 = ai.index.opSlice().copy();
+                int __key620 = 0;
+                for (; (__key620 < __r621.getLength());__key620 += 1) {
+                    ASTBase.Expression ex = __r621.get(__key620);
+                    int i = __key620;
                     if (ex != null)
                     {
                         ex.accept(this);
@@ -1196,11 +1192,11 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.AssocArrayLiteralExp e) {
             {
-                Slice<ASTBase.Expression> __r627 = (e.keys.get()).opSlice().copy();
-                int __key626 = 0;
-                for (; (__key626 < __r627.getLength());__key626 += 1) {
-                    ASTBase.Expression key = __r627.get(__key626);
-                    int i = __key626;
+                Slice<ASTBase.Expression> __r623 = (e.keys.get()).opSlice().copy();
+                int __key622 = 0;
+                for (; (__key622 < __r623.getLength());__key622 += 1) {
+                    ASTBase.Expression key = __r623.get(__key622);
+                    int i = __key622;
                     key.accept(this);
                     (e.values.get()).get(i).accept(this);
                 }
@@ -1304,10 +1300,10 @@ public class transitivevisitor {
         public  void visit(ASTBase.TraitsExp e) {
             if (e.args != null)
             {
-                Slice<RootObject> __r628 = (e.args.get()).opSlice().copy();
-                int __key629 = 0;
-                for (; (__key629 < __r628.getLength());__key629 += 1) {
-                    RootObject arg = __r628.get(__key629);
+                Slice<RootObject> __r624 = (e.args.get()).opSlice().copy();
+                int __key625 = 0;
+                for (; (__key625 < __r624.getLength());__key625 += 1) {
+                    RootObject arg = __r624.get(__key625);
                     this.visitObject(arg);
                 }
             }
@@ -1502,10 +1498,10 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.Module m) {
             {
-                Slice<ASTBase.Dsymbol> __r630 = (m.members.get()).opSlice().copy();
-                int __key631 = 0;
-                for (; (__key631 < __r630.getLength());__key631 += 1) {
-                    ASTBase.Dsymbol s = __r630.get(__key631);
+                Slice<ASTBase.Dsymbol> __r626 = (m.members.get()).opSlice().copy();
+                int __key627 = 0;
+                for (; (__key627 < __r626.getLength());__key627 += 1) {
+                    ASTBase.Dsymbol s = __r626.get(__key627);
                     s.accept(this);
                 }
             }

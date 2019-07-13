@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -27,11 +23,11 @@ public class apply {
         }
 
         public  boolean doCond(Expression e) {
-            if (!this.stop.value && (e != null))
+            if (!this.stop && (e != null))
             {
                 e.accept(this);
             }
-            return this.stop.value;
+            return this.stop;
         }
 
         public  boolean doCond(Ptr<DArray<Expression>> e) {
@@ -41,16 +37,16 @@ public class apply {
             }
             {
                 int i = 0;
-                for (; (i < (e.get()).length.value) && !this.stop.value;i++) {
+                for (; (i < (e.get()).length) && !this.stop;i++) {
                     this.doCond((e.get()).get(i));
                 }
             }
-            return this.stop.value;
+            return this.stop;
         }
 
         public  boolean applyTo(Expression e) {
             e.accept(this.v);
-            this.stop.value = this.v.stop.value;
+            this.stop = this.v.stop;
             return true;
         }
 
@@ -59,7 +55,7 @@ public class apply {
         }
 
         public  void visit(NewExp e) {
-            expr(this.doCond(e.thisexp.value) || this.doCond(e.newargs.value) || this.doCond(e.arguments.value) || this.applyTo(e));
+            expr(this.doCond(e.thisexp.value) || this.doCond(e.newargs) || this.doCond(e.arguments) || this.applyTo(e));
         }
 
         public  void visit(NewAnonClassExp e) {
@@ -67,7 +63,7 @@ public class apply {
         }
 
         public  void visit(TypeidExp e) {
-            expr(this.doCond(isExpression(e.obj.value)) || this.applyTo(e));
+            expr(this.doCond(isExpression(e.obj)) || this.applyTo(e));
         }
 
         public  void visit(UnaExp e) {
@@ -83,11 +79,11 @@ public class apply {
         }
 
         public  void visit(CallExp e) {
-            expr(this.doCond(e.e1.value) || this.doCond(e.arguments.value) || this.applyTo(e));
+            expr(this.doCond(e.e1.value) || this.doCond(e.arguments) || this.applyTo(e));
         }
 
         public  void visit(ArrayExp e) {
-            expr(this.doCond(e.e1.value) || this.doCond(e.arguments.value) || this.applyTo(e));
+            expr(this.doCond(e.e1.value) || this.doCond(e.arguments) || this.applyTo(e));
         }
 
         public  void visit(SliceExp e) {
@@ -95,26 +91,26 @@ public class apply {
         }
 
         public  void visit(ArrayLiteralExp e) {
-            expr(this.doCond(e.basis.value) || this.doCond(e.elements.value) || this.applyTo(e));
+            expr(this.doCond(e.basis.value) || this.doCond(e.elements) || this.applyTo(e));
         }
 
         public  void visit(AssocArrayLiteralExp e) {
-            expr(this.doCond(e.keys.value) || this.doCond(e.values.value) || this.applyTo(e));
+            expr(this.doCond(e.keys) || this.doCond(e.values) || this.applyTo(e));
         }
 
         public  void visit(StructLiteralExp e) {
-            if ((e.stageflags.value & 8) != 0)
+            if ((e.stageflags & 8) != 0)
             {
                 return ;
             }
-            int old = e.stageflags.value;
-            e.stageflags.value |= 8;
-            expr(this.doCond(e.elements.value) || this.applyTo(e));
-            e.stageflags.value = old;
+            int old = e.stageflags;
+            e.stageflags |= 8;
+            expr(this.doCond(e.elements) || this.applyTo(e));
+            e.stageflags = old;
         }
 
         public  void visit(TupleExp e) {
-            expr(this.doCond(e.e0.value) || this.doCond(e.exps.value) || this.applyTo(e));
+            expr(this.doCond(e.e0.value) || this.doCond(e.exps) || this.applyTo(e));
         }
 
         public  void visit(CondExp e) {
@@ -134,7 +130,7 @@ public class apply {
     public static boolean walkPostorder(Expression e, StoppableVisitor v) {
         PostorderExpressionVisitor pv = new PostorderExpressionVisitor(v);
         e.accept(pv);
-        return v.stop.value;
+        return v.stop;
     }
 
 }

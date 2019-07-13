@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -65,13 +61,13 @@ public class dmacro {
         public  void expand(Ptr<OutBuffer> buf, int start, IntPtr pend, ByteSlice arg) {
             if ((dmacro.expandnest > 1000))
             {
-                error(Loc.initial.value, new BytePtr("DDoc macro expansion limit exceeded; more than %d expansions."), 1000);
+                error(Loc.initial, new BytePtr("DDoc macro expansion limit exceeded; more than %d expansions."), 1000);
                 return ;
             }
             dmacro.expandnest++;
             int end = pend.get();
             assert((start <= end));
-            assert((end <= (buf.get()).offset.value));
+            assert((end <= (buf.get()).offset));
             arg = memdup(arg).copy();
             {
                 int u = start;
@@ -114,8 +110,8 @@ public class dmacro {
                         }
                         else
                         {
-                            (buf.get()).data.value.set(u, (byte)255);
-                            (buf.get()).data.value.set((u + 1), (byte)123);
+                            (buf.get()).data.set(u, (byte)255);
+                            (buf.get()).data.set((u + 1), (byte)123);
                             (buf.get()).insert(u + 2, marg.value);
                             (buf.get()).insert(u + 2 + marg.value.getLength(), new ByteSlice("\u00ff}"));
                             end += 0 + marg.value.getLength() + 2;
@@ -196,11 +192,11 @@ public class dmacro {
                                 {
                                     marg.value = memdup(marg.value).copy();
                                     (buf.get()).spread(v + 1, 2 + (m.get()).text.getLength() + 2);
-                                    (buf.get()).data.value.set((v + 1), (byte)255);
-                                    (buf.get()).data.value.set((v + 2), (byte)123);
-                                    (buf.get()).data.value.slice(v + 3,v + 3 + (m.get()).text.getLength()) = (toByteSlice((m.get()).text)).copy();
-                                    (buf.get()).data.value.set((v + 3 + (m.get()).text.getLength()), (byte)255);
-                                    (buf.get()).data.value.set((v + 3 + (m.get()).text.getLength() + 1), (byte)125);
+                                    (buf.get()).data.set((v + 1), (byte)255);
+                                    (buf.get()).data.set((v + 2), (byte)123);
+                                    (buf.get()).data.slice(v + 3,v + 3 + (m.get()).text.getLength()) = (toByteSlice((m.get()).text)).copy();
+                                    (buf.get()).data.set((v + 3 + (m.get()).text.getLength()), (byte)255);
+                                    (buf.get()).data.set((v + 3 + (m.get()).text.getLength() + 1), (byte)125);
                                     end += 2 + (m.get()).text.getLength() + 2;
                                     (m.get()).inuse++;
                                     IntRef mend = ref(v + 1 + 2 + (m.get()).text.getLength() + 2);

@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -31,25 +27,24 @@ import static org.dlang.dmd.visitor.*;
 public class delegatize {
     private static class LambdaSetParent extends StoppableVisitor
     {
-        private Ref<FuncDeclaration> fd = ref(null);
+        private FuncDeclaration fd = null;
         public  LambdaSetParent(FuncDeclaration fd) {
-            Ref<FuncDeclaration> fd_ref = ref(fd);
             super();
-            this.fd.value = fd_ref.value;
+            this.fd = fd;
         }
 
         public  void visit(Expression _param_0) {
         }
 
         public  void visit(DeclarationExp e) {
-            e.declaration.value.parent.value = this.fd.value;
-            e.declaration.value.accept(this);
+            e.declaration.parent.value = this.fd;
+            e.declaration.accept(this);
         }
 
         public  void visit(IndexExp e) {
             if (e.lengthVar.value != null)
             {
-                e.lengthVar.value.parent.value = this.fd.value;
+                e.lengthVar.value.parent.value = this.fd;
                 e.lengthVar.value.accept(this);
             }
         }
@@ -57,7 +52,7 @@ public class delegatize {
         public  void visit(SliceExp e) {
             if (e.lengthVar.value != null)
             {
-                e.lengthVar.value.parent.value = this.fd.value;
+                e.lengthVar.value.parent.value = this.fd;
                 e.lengthVar.value.accept(this);
             }
         }
@@ -66,9 +61,9 @@ public class delegatize {
         }
 
         public  void visit(VarDeclaration v) {
-            if (v._init.value != null)
+            if (v._init != null)
             {
-                v._init.value.accept(this);
+                v._init.accept(this);
             }
         }
 
@@ -76,21 +71,21 @@ public class delegatize {
         }
 
         public  void visit(ExpInitializer ei) {
-            walkPostorder(ei.exp.value, this);
+            walkPostorder(ei.exp, this);
         }
 
         public  void visit(StructInitializer si) {
             {
-                Ref<Slice<Identifier>> __r924 = ref(si.field.opSlice().copy());
-                IntRef __key923 = ref(0);
-                for (; (__key923.value < __r924.value.getLength());__key923.value += 1) {
-                    Identifier id = __r924.value.get(__key923.value);
-                    IntRef i = ref(__key923.value);
+                Slice<Identifier> __r920 = si.field.opSlice().copy();
+                int __key919 = 0;
+                for (; (__key919 < __r920.getLength());__key919 += 1) {
+                    Identifier id = __r920.get(__key919);
+                    int i = __key919;
                     {
-                        Ref<Initializer> iz = ref(si.value.get(i.value));
-                        if ((iz.value) != null)
+                        Initializer iz = si.value.get(i);
+                        if ((iz) != null)
                         {
-                            iz.value.accept(this);
+                            iz.accept(this);
                         }
                     }
                 }
@@ -99,20 +94,20 @@ public class delegatize {
 
         public  void visit(ArrayInitializer ai) {
             {
-                Ref<Slice<Expression>> __r926 = ref(ai.index.opSlice().copy());
-                IntRef __key925 = ref(0);
-                for (; (__key925.value < __r926.value.getLength());__key925.value += 1) {
-                    Ref<Expression> ex = ref(__r926.value.get(__key925.value));
-                    IntRef i = ref(__key925.value);
-                    if (ex.value != null)
+                Slice<Expression> __r922 = ai.index.opSlice().copy();
+                int __key921 = 0;
+                for (; (__key921 < __r922.getLength());__key921 += 1) {
+                    Expression ex = __r922.get(__key921);
+                    int i = __key921;
+                    if (ex != null)
                     {
-                        walkPostorder(ex.value, this);
+                        walkPostorder(ex, this);
                     }
                     {
-                        Ref<Initializer> iz = ref(ai.value.get(i.value));
-                        if ((iz.value) != null)
+                        Initializer iz = ai.value.get(i);
+                        if ((iz) != null)
                         {
-                            iz.value.accept(this);
+                            iz.accept(this);
                         }
                     }
                 }
@@ -124,53 +119,52 @@ public class delegatize {
     }
     private static class LambdaCheckForNestedRef extends StoppableVisitor
     {
-        private Ref<Ptr<Scope>> sc = ref(null);
-        private Ref<Boolean> result = ref(false);
+        private Ptr<Scope> sc = null;
+        private boolean result = false;
         public  LambdaCheckForNestedRef(Ptr<Scope> sc) {
-            Ref<Ptr<Scope>> sc_ref = ref(sc);
             super();
-            this.sc.value = sc_ref.value;
+            this.sc = sc;
         }
 
         public  void visit(Expression _param_0) {
         }
 
         public  void visit(SymOffExp e) {
-            Ref<VarDeclaration> v = ref(e.var.value.isVarDeclaration());
-            if (v.value != null)
+            VarDeclaration v = e.var.isVarDeclaration();
+            if (v != null)
             {
-                this.result.value = v.value.checkNestedReference(this.sc.value, Loc.initial.value);
+                this.result = v.checkNestedReference(this.sc, Loc.initial);
             }
         }
 
         public  void visit(VarExp e) {
-            Ref<VarDeclaration> v = ref(e.var.value.isVarDeclaration());
-            if (v.value != null)
+            VarDeclaration v = e.var.isVarDeclaration();
+            if (v != null)
             {
-                this.result.value = v.value.checkNestedReference(this.sc.value, Loc.initial.value);
+                this.result = v.checkNestedReference(this.sc, Loc.initial);
             }
         }
 
         public  void visit(ThisExp e) {
-            if (e.var.value != null)
+            if (e.var != null)
             {
-                this.result.value = e.var.value.checkNestedReference(this.sc.value, Loc.initial.value);
+                this.result = e.var.checkNestedReference(this.sc, Loc.initial);
             }
         }
 
         public  void visit(DeclarationExp e) {
-            Ref<VarDeclaration> v = ref(e.declaration.value.isVarDeclaration());
-            if (v.value != null)
+            VarDeclaration v = e.declaration.isVarDeclaration();
+            if (v != null)
             {
-                this.result.value = v.value.checkNestedReference(this.sc.value, Loc.initial.value);
-                if (this.result.value)
+                this.result = v.checkNestedReference(this.sc, Loc.initial);
+                if (this.result)
                 {
                     return ;
                 }
-                if ((v.value._init.value != null) && (v.value._init.value.isExpInitializer() != null))
+                if ((v._init != null) && (v._init.isExpInitializer() != null))
                 {
-                    Ref<Expression> ie = ref(initializerToExpression(v.value._init.value, null));
-                    this.result.value = lambdaCheckForNestedRef(ie.value, this.sc.value);
+                    Expression ie = initializerToExpression(v._init, null);
+                    this.result = lambdaCheckForNestedRef(ie, this.sc);
                 }
             }
         }
@@ -180,11 +174,11 @@ public class delegatize {
     }
 
     public static Expression toDelegate(Expression e, Type t, Ptr<Scope> sc) {
-        Loc loc = e.loc.value.copy();
+        Loc loc = e.loc.copy();
         TypeFunction tf = new TypeFunction(new ParameterList(null, VarArg.none), t, LINK.d, 0L);
         if (t.hasWild() != 0)
         {
-            tf.mod.value = (byte)8;
+            tf.mod = (byte)8;
         }
         FuncLiteralDeclaration fld = new FuncLiteralDeclaration(loc, loc, tf, TOK.delegate_, null, null);
         lambdaSetParent(e, fld);
@@ -197,7 +191,7 @@ public class delegatize {
             return new ErrorExp();
         }
         Statement s = null;
-        if (((t.ty.value & 0xFF) == ENUMTY.Tvoid))
+        if (((t.ty & 0xFF) == ENUMTY.Tvoid))
         {
             s = new ExpStatement(loc, e);
         }
@@ -205,7 +199,7 @@ public class delegatize {
         {
             s = new ReturnStatement(loc, e);
         }
-        fld.fbody.value = s;
+        fld.fbody = s;
         e = new FuncExp(loc, fld);
         e = expressionSemantic(e, sc);
         return e;
@@ -221,7 +215,7 @@ public class delegatize {
         // skipping duplicate class LambdaCheckForNestedRef
         LambdaCheckForNestedRef v = new LambdaCheckForNestedRef(sc);
         walkPostorder(e, v);
-        return v.result.value;
+        return v.result;
     }
 
     public static boolean ensureStaticLinkTo(Dsymbol s, Dsymbol p) {
@@ -242,7 +236,7 @@ public class delegatize {
                         FuncLiteralDeclaration fld = fd.isFuncLiteralDeclaration();
                         if ((fld) != null)
                         {
-                            fld.tok.value = TOK.delegate_;
+                            fld.tok = TOK.delegate_;
                         }
                     }
                 }

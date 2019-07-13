@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -536,7 +532,7 @@ public class astbase {
                 {
                     this.ident = aliasId;
                 }
-                else if ((packages != null) && ((packages.get()).length.value != 0))
+                else if ((packages != null) && ((packages.get()).length != 0))
                 {
                     this.ident = (packages.get()).get(0);
                 }
@@ -610,7 +606,7 @@ public class astbase {
             public Expression exp = null;
             public Expression msg = null;
             public  StaticAssert(Loc loc, Expression exp, Expression msg) {
-                super(Id.empty.value);
+                super(Id.empty);
                 this.loc = loc.copy();
                 this.exp = exp;
                 this.msg = msg;
@@ -921,7 +917,7 @@ public class astbase {
             public byte tok = 0;
             public  FuncLiteralDeclaration(Loc loc, Loc endloc, Type type, byte tok, ForeachStatement fes, Identifier id) {
                 super(loc, endloc, null, 0L, type);
-                this.ident = id != null ? id : Id.empty.value;
+                this.ident = id != null ? id : Id.empty;
                 this.tok = tok;
                 this.fes = fes;
             }
@@ -1007,7 +1003,7 @@ public class astbase {
         public static class CtorDeclaration extends FuncDeclaration
         {
             public  CtorDeclaration(Loc loc, Loc endloc, long stc, Type type, boolean isCopyCtor) {
-                super(loc, endloc, Id.ctor.value, stc, type);
+                super(loc, endloc, Id.ctor, stc, type);
             }
 
             // defaulted all parameters starting with #5
@@ -1049,7 +1045,7 @@ public class astbase {
         public static class DtorDeclaration extends FuncDeclaration
         {
             public  DtorDeclaration(Loc loc, Loc endloc) {
-                super(loc, endloc, Id.dtor.value, 0L, null);
+                super(loc, endloc, Id.dtor, 0L, null);
             }
 
             public  DtorDeclaration(Loc loc, Loc endloc, long stc, Identifier id) {
@@ -1606,10 +1602,10 @@ public class astbase {
                 if (objs != null)
                 {
                     a = refPtr(new DArray<RootObject>());
-                    (a.get()).setDim((objs.get()).length.value);
+                    (a.get()).setDim((objs.get()).length);
                     {
                         int i = 0;
-                        for (; (i < (objs.get()).length.value);i++) {
+                        for (; (i < (objs.get()).length);i++) {
                             a.get().set(i, this.objectSyntaxCopy((objs.get()).get(i)));
                         }
                     }
@@ -1759,8 +1755,8 @@ public class astbase {
                 else
                 {
                     udas = refPtr(new DArray<Expression>(2));
-                    udas.get().set(0, new TupleExp(Loc.initial.value, udas1));
-                    udas.get().set(1, new TupleExp(Loc.initial.value, udas2));
+                    udas.get().set(0, new TupleExp(Loc.initial, udas1));
+                    udas.get().set(1, new TupleExp(Loc.initial, udas2));
                 }
                 return udas;
             }
@@ -2153,7 +2149,7 @@ public class astbase {
             }
 
             public  EnumMember(Loc loc, Identifier id, Expression value, Type origType) {
-                super(loc, null, id != null ? id : Id.empty.value, new ExpInitializer(loc, value), 0L);
+                super(loc, null, id != null ? id : Id.empty, new ExpInitializer(loc, value), 0L);
                 this.origValue = value;
                 this.origType = origType;
             }
@@ -2201,7 +2197,7 @@ public class astbase {
             public  Module(BytePtr filename, Identifier ident, int doDocComment, int doHdrGen) {
                 super(ident);
                 this.arg = pcopy(filename);
-                this.srcfile = new FileName(FileName.defaultExt(toDString(filename), toByteSlice(global.mars_ext)));
+                this.srcfile = new FileName(FileName.defaultExt(toDString(filename), toByteSlice(global.value.mars_ext)));
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -2327,7 +2323,7 @@ public class astbase {
                 this.type = new TypeClass(this);
                 if (id != null)
                 {
-                    if ((pequals(id, Id.__sizeof.value)) || (pequals(id, Id.__xalignof.value)) || (pequals(id, Id._mangleof.value)))
+                    if ((pequals(id, Id.__sizeof)) || (pequals(id, Id.__xalignof)) || (pequals(id, Id._mangleof)))
                     {
                         this.error(new BytePtr("illegal class name"));
                     }
@@ -2466,7 +2462,7 @@ public class astbase {
                             Type.typeinfovector = this;
                         }
                     }
-                    if ((pequals(id, Id.Object.value)))
+                    if ((pequals(id, Id.Object)))
                     {
                         if (!inObject)
                         {
@@ -2474,7 +2470,7 @@ public class astbase {
                         }
                         object = this;
                     }
-                    if ((pequals(id, Id.Throwable.value)))
+                    if ((pequals(id, Id.Throwable)))
                     {
                         if (!inObject)
                         {
@@ -2482,7 +2478,7 @@ public class astbase {
                         }
                         throwable = this;
                     }
-                    if ((pequals(id, Id.Exception.value)))
+                    if ((pequals(id, Id.Exception)))
                     {
                         if (!inObject)
                         {
@@ -2572,7 +2568,7 @@ public class astbase {
         {
             public TypeQualified tqual = null;
             public  TemplateMixin(Loc loc, Identifier ident, TypeQualified tqual, Ptr<DArray<RootObject>> tiargs) {
-                super(loc, tqual.idents.length.value != 0 ? (Identifier)tqual.idents.get(tqual.idents.length.value - 1) : ((TypeIdentifier)tqual).ident, tiargs != null ? tiargs : refPtr(new DArray<RootObject>()));
+                super(loc, tqual.idents.length != 0 ? (Identifier)tqual.idents.get(tqual.idents.length - 1) : ((TypeIdentifier)tqual).ident, tiargs != null ? tiargs : refPtr(new DArray<RootObject>()));
                 this.ident = ident;
                 this.tqual = tqual;
             }
@@ -2643,34 +2639,31 @@ public class astbase {
             }
 
             public static int dim(Ptr<DArray<Parameter>> parameters) {
-                IntRef nargs = ref(0);
+                int nargs = 0;
                 Function2<Integer,Parameter,Integer> dimDg = new Function2<Integer,Parameter,Integer>(){
                     public Integer invoke(Integer n, Parameter p) {
-                        nargs.value += 1;
+                        nargs += 1;
                         return 0;
                     }
                 };
                 _foreach(parameters, dimDg, null);
-                return nargs.value;
+                return nargs;
             }
 
             public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth, IntPtr pn) {
-                IntRef nth_ref = ref(nth);
-                Ref<Parameter> param = ref(null);
+                Parameter param = null;
                 Function2<Integer,Parameter,Integer> getNthParamDg = new Function2<Integer,Parameter,Integer>(){
                     public Integer invoke(Integer n, Parameter p) {
-                        IntRef n_ref = ref(n);
-                        Ref<Parameter> p_ref = ref(p);
-                        if ((n_ref.value == nth_ref.value))
+                        if ((n == nth))
                         {
-                            param.value = p_ref.value;
+                            param = p;
                             return 1;
                         }
                         return 0;
                     }
                 };
                 int res = _foreach(parameters, getNthParamDg, null);
-                return res != 0 ? param.value : null;
+                return res != 0 ? param : null;
             }
 
             // defaulted all parameters starting with #3
@@ -2687,10 +2680,10 @@ public class astbase {
                 IntRef n = ref(pn != null ? pn.get() : 0);
                 int result = 0;
                 {
-                    int __key124 = 0;
-                    int __limit125 = (parameters.get()).length;
-                    for (; (__key124 < __limit125);__key124 += 1) {
-                        int i = __key124;
+                    int __key120 = 0;
+                    int __limit121 = (parameters.get()).length;
+                    for (; (__key120 < __limit121);__key120 += 1) {
+                        int i = __key120;
                         Parameter p = (parameters.get()).get(i);
                         Type t = p.type.toBasetype();
                         if (((t.ty & 0xFF) == ENUMTY.Ttuple))
@@ -3669,10 +3662,10 @@ public class astbase {
                 this.statements = refPtr(new DArray<Statement>());
                 (this.statements.get()).reserve(sts.getLength());
                 {
-                    Slice<Statement> __r126 = sts.copy();
-                    int __key127 = 0;
-                    for (; (__key127 < __r126.getLength());__key127 += 1) {
-                        Statement s = __r126.get(__key127);
+                    Slice<Statement> __r122 = sts.copy();
+                    int __key123 = 0;
+                    for (; (__key123 < __r122.getLength());__key123 += 1) {
+                        Statement s = __r122.get(__key123);
                         (this.statements.get()).push(s);
                     }
                 }
@@ -3890,7 +3883,7 @@ public class astbase {
                 twstring = twchar.immutableOf().arrayOf();
                 tdstring = tdchar.immutableOf().arrayOf();
                 tvalist = Target.va_listType();
-                boolean isLP64 = global.params.isLP64.value;
+                boolean isLP64 = global.value.params.isLP64;
                 tsize_t = basic.get(isLP64 ? 20 : 18);
                 tptrdiff_t = basic.get(isLP64 ? 19 : 17);
                 thash_t = tsize_t;
@@ -5008,8 +5001,8 @@ public class astbase {
             }
 
             public  Type syntaxCopy() {
-                Type t = this.next.syntaxCopy();
-                if ((pequals(t, this.next)))
+                Type t = this.next.value.syntaxCopy();
+                if ((pequals(t, this.next.value)))
                 {
                     t = this;
                 }
@@ -5050,14 +5043,14 @@ public class astbase {
         }
         public static abstract class TypeNext extends Type
         {
-            public Type next = null;
+            public Ref<Type> next = ref(null);
             public  TypeNext(byte ty, Type next) {
                 super(ty);
-                this.next = next;
+                this.next.value = next;
             }
 
             public  Type nextOf() {
-                return this.next;
+                return this.next.value;
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -5080,7 +5073,7 @@ public class astbase {
             }
 
             public  Type syntaxCopy() {
-                Type t = new TypeSlice(this.next.syntaxCopy(), this.lwr.syntaxCopy(), this.upr.syntaxCopy());
+                Type t = new TypeSlice(this.next.value.syntaxCopy(), this.lwr.syntaxCopy(), this.upr.syntaxCopy());
                 t.mod = this.mod;
                 return t;
             }
@@ -5122,8 +5115,8 @@ public class astbase {
             }
 
             public  Type syntaxCopy() {
-                Type t = this.next.syntaxCopy();
-                if ((pequals(t, this.next)))
+                Type t = this.next.value.syntaxCopy();
+                if ((pequals(t, this.next.value)))
                 {
                     t = this;
                 }
@@ -5169,8 +5162,8 @@ public class astbase {
             }
 
             public  Type syntaxCopy() {
-                Type t = this.next.syntaxCopy();
-                if ((pequals(t, this.next)))
+                Type t = this.next.value.syntaxCopy();
+                if ((pequals(t, this.next.value)))
                 {
                     t = this;
                 }
@@ -5277,7 +5270,7 @@ public class astbase {
             }
 
             public  Type syntaxCopy() {
-                Type treturn = this.next != null ? this.next.syntaxCopy() : null;
+                Type treturn = this.next.value != null ? this.next.value.syntaxCopy() : null;
                 Ptr<DArray<Parameter>> params = Parameter.arraySyntaxCopy(this.parameterList.parameters);
                 TypeFunction t = new TypeFunction(new ParameterList(params, this.parameterList.varargs), treturn, this.linkage, 0L);
                 t.mod = this.mod;
@@ -5373,8 +5366,8 @@ public class astbase {
             }
 
             public  Type syntaxCopy() {
-                Type t = this.next.syntaxCopy();
-                if ((pequals(t, this.next)))
+                Type t = this.next.value.syntaxCopy();
+                if ((pequals(t, this.next.value)))
                 {
                     t = this;
                 }
@@ -5423,9 +5416,9 @@ public class astbase {
             }
 
             public  Type syntaxCopy() {
-                Type t = this.next.syntaxCopy();
+                Type t = this.next.value.syntaxCopy();
                 Type ti = this.index.syntaxCopy();
-                if ((pequals(t, this.next)) && (pequals(ti, this.index)))
+                if ((pequals(t, this.next.value)) && (pequals(ti, this.index)))
                 {
                     t = this;
                 }
@@ -5438,7 +5431,7 @@ public class astbase {
             }
 
             public  Expression toExpression() {
-                Expression e = this.next.toExpression();
+                Expression e = this.next.value.toExpression();
                 if (e != null)
                 {
                     Expression ei = this.index.toExpression();
@@ -5488,7 +5481,7 @@ public class astbase {
             }
 
             public  Type syntaxCopy() {
-                Type t = this.next.syntaxCopy();
+                Type t = this.next.value.syntaxCopy();
                 Expression e = this.dim.syntaxCopy();
                 t = new TypeSArray(t, e);
                 t.mod = this.mod;
@@ -5496,7 +5489,7 @@ public class astbase {
             }
 
             public  Expression toExpression() {
-                Expression e = this.next.toExpression();
+                Expression e = this.next.value.toExpression();
                 if (e != null)
                 {
                     e = new ArrayExp(this.dim.loc, e, this.dim);
@@ -5554,10 +5547,10 @@ public class astbase {
             }
 
             public  void syntaxCopyHelper(TypeQualified t) {
-                this.idents.setDim(t.idents.length.value);
+                this.idents.setDim(t.idents.length);
                 {
                     int i = 0;
-                    for (; (i < this.idents.length.value);i++){
+                    for (; (i < this.idents.length);i++){
                         RootObject id = t.idents.get(i);
                         if ((id.dyncast() == DYNCAST.dsymbol))
                         {
@@ -5583,7 +5576,7 @@ public class astbase {
             }
 
             public  Expression toExpressionHelper(Expression e, int i) {
-                for (; (i < this.idents.length.value);i++){
+                for (; (i < this.idents.length);i++){
                     RootObject id = this.idents.get(i);
                     switch (id.dyncast())
                     {
@@ -5952,7 +5945,7 @@ public class astbase {
                                 break;
                             case 31:
                             case 14:
-                                this.value = (long)(int)this.value;
+                                this.value = (long)(byte)this.value;
                                 break;
                             case 15:
                                 this.value = (long)(int)this.value;
@@ -6773,10 +6766,10 @@ public class astbase {
             public  TupleExp(Loc loc, TupleDeclaration tup) {
                 super(loc, TOK.tuple, 32);
                 this.exps = refPtr(new DArray<Expression>());
-                (this.exps.get()).reserve((tup.objects.get()).length.value);
+                (this.exps.get()).reserve((tup.objects.get()).length);
                 {
                     int i = 0;
-                    for (; (i < (tup.objects.get()).length.value);i++){
+                    for (; (i < (tup.objects.get()).length);i++){
                         RootObject o = (tup.objects.get()).get(i);
                         {
                             Dsymbol s = this.getDsymbol(o);
@@ -8680,7 +8673,7 @@ public class astbase {
             public Identifier ident = null;
             public Module mod = null;
             public  DVCondition(Module mod, int level, Identifier ident) {
-                super(Loc.initial.value);
+                super(Loc.initial);
                 this.mod = mod;
                 this.ident = ident;
             }
@@ -8958,11 +8951,11 @@ public class astbase {
             public  BytePtr toChars() {
                 OutBuffer buf = new OutBuffer();
                 try {
-                    if ((this.packages != null) && ((this.packages.get()).length.value != 0))
+                    if ((this.packages != null) && ((this.packages.get()).length != 0))
                     {
                         {
                             int i = 0;
-                            for (; (i < (this.packages.get()).length.value);i++){
+                            for (; (i < (this.packages.get()).length);i++){
                                 Identifier pid = (this.packages.get()).get(i);
                                 buf.writestring(pid.asString());
                                 buf.writeByte(46);
@@ -9183,15 +9176,15 @@ public class astbase {
         {
             public static int ptrsize = 0;
             public static Type va_listType() {
-                if (global.params.isWindows)
+                if (global.value.params.isWindows)
                 {
                     return Type.tchar.pointerTo();
                 }
-                else if (global.params.isLinux || global.params.isFreeBSD.value || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris || global.params.isOSX)
+                else if (global.value.params.isLinux || global.value.params.isFreeBSD || global.value.params.isOpenBSD || global.value.params.isDragonFlyBSD || global.value.params.isSolaris || global.value.params.isOSX)
                 {
-                    if (global.params.is64bit)
+                    if (global.value.params.is64bit)
                     {
-                        return (new TypeIdentifier(Loc.initial.value, Identifier.idPool(new ByteSlice("__va_list_tag")))).pointerTo();
+                        return (new TypeIdentifier(Loc.initial, Identifier.idPool(new ByteSlice("__va_list_tag")))).pointerTo();
                     }
                     else
                     {

@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -134,7 +130,7 @@ public class globals {
         public boolean tracegc = false;
         public boolean verbose = false;
         public boolean vcg_ast = false;
-        public Ref<Boolean> showColumns = ref(false);
+        public boolean showColumns = false;
         public boolean vtls = false;
         public boolean vgc = false;
         public boolean vfield = false;
@@ -145,11 +141,11 @@ public class globals {
         public boolean optimize = false;
         public boolean map = false;
         public boolean is64bit = false;
-        public Ref<Boolean> isLP64 = ref(false);
+        public boolean isLP64 = false;
         public boolean isLinux = false;
         public boolean isOSX = false;
         public boolean isWindows = false;
-        public Ref<Boolean> isFreeBSD = ref(false);
+        public boolean isFreeBSD = false;
         public boolean isOpenBSD = false;
         public boolean isDragonFlyBSD = false;
         public boolean isSolaris = false;
@@ -171,23 +167,23 @@ public class globals {
         public boolean nofloat = false;
         public boolean ignoreUnsupportedPragmas = false;
         public boolean useModuleInfo = true;
-        public Ref<Boolean> useTypeInfo = ref(true);
+        public boolean useTypeInfo = true;
         public boolean useExceptions = true;
-        public Ref<Boolean> betterC = ref(false);
+        public boolean betterC = false;
         public boolean addMain = false;
         public boolean allInst = false;
         public boolean check10378 = false;
         public boolean bug10378 = false;
         public boolean fix16997 = false;
-        public Ref<Boolean> fixAliasThis = ref(false);
-        public Ref<Boolean> vsafe = ref(false);
+        public boolean fixAliasThis = false;
+        public boolean vsafe = false;
         public boolean ehnogc = false;
         public boolean dtorFields = false;
-        public Ref<Boolean> fieldwise = ref(false);
+        public boolean fieldwise = false;
         public boolean rvalueRefParam = false;
         public int cplusplus = CppStdRevision.cpp98;
         public boolean markdown = false;
-        public Ref<Boolean> vmarkdown = ref(false);
+        public boolean vmarkdown = false;
         public boolean showGaggedErrors = false;
         public boolean printErrorContext = false;
         public boolean manual = false;
@@ -259,7 +255,7 @@ public class globals {
         public  boolean isPOSIX() {
             boolean __result = false;
             try {
-                __result = this.isLinux || this.isOSX || this.isFreeBSD.value || this.isOpenBSD || this.isDragonFlyBSD || this.isSolaris;
+                __result = this.isLinux || this.isOSX || this.isFreeBSD || this.isOpenBSD || this.isDragonFlyBSD || this.isSolaris;
                 /*goto __returnLabel*/throw Dispatch0.INSTANCE;
             }
             catch(Dispatch0 __d){}
@@ -710,34 +706,34 @@ public class globals {
         public ByteSlice _version = new ByteSlice();
         public ByteSlice vendor = new ByteSlice();
         public Param params = new Param();
-        public IntRef errors = ref(0);
+        public int errors = 0;
         public int warnings = 0;
-        public IntRef gag = ref(0);
+        public int gag = 0;
         public int gaggedErrors = 0;
         public int gaggedWarnings = 0;
         public Object console = null;
         public Ptr<DArray<Identifier>> versionids = null;
         public Ptr<DArray<Identifier>> debugids = null;
         public  int startGagging() {
-            this.gag.value += 1;
+            this.gag += 1;
             this.gaggedWarnings = 0;
             return this.gaggedErrors;
         }
 
         public  boolean endGagging(int oldGagged) {
             boolean anyErrs = this.gaggedErrors != oldGagged;
-            this.gag.value -= 1;
-            this.errors.value -= this.gaggedErrors - oldGagged;
+            this.gag -= 1;
+            this.errors -= this.gaggedErrors - oldGagged;
             this.gaggedErrors = oldGagged;
             return anyErrs;
         }
 
         public  void increaseErrorCount() {
-            if (this.gag.value != 0)
+            if (this.gag != 0)
             {
                 this.gaggedErrors += 1;
             }
-            this.errors.value += 1;
+            this.errors += 1;
         }
 
         public  void _init() {
@@ -790,7 +786,7 @@ public class globals {
         }
 
         public  ByteSlice finalDefaultlibname() {
-            return this.params.betterC.value ? new ByteSlice() : this.params.symdebug != 0 ? this.params.debuglibname : this.params.defaultlibname;
+            return this.params.betterC ? new ByteSlice() : this.params.symdebug != 0 ? this.params.debuglibname : this.params.defaultlibname;
         }
 
         public Global(){
@@ -890,7 +886,7 @@ public class globals {
         public BytePtr filename = null;
         public int linnum = 0;
         public int charnum = 0;
-        public static Ref<Loc> initial = ref(new Loc());
+        public static Loc initial = new Loc();
         public  Loc(BytePtr filename, int linnum, int charnum) {
             this.linnum = linnum;
             this.charnum = charnum;
@@ -923,11 +919,11 @@ public class globals {
 
         // defaulted all parameters starting with #1
         public  BytePtr toChars() {
-            return toChars(global.params.showColumns.value);
+            return toChars(global.value.params.showColumns);
         }
 
         public  boolean equals(Loc loc) {
-            return !global.params.showColumns.value || (this.charnum == loc.charnum) && (this.linnum == loc.linnum) && FileName.equals(this.filename, loc.filename);
+            return !global.value.params.showColumns || (this.charnum == loc.charnum) && (this.linnum == loc.linnum) && FileName.equals(this.filename, loc.filename);
         }
 
         public  boolean opEquals(Loc loc) {
@@ -999,5 +995,5 @@ public class globals {
         public static final int always = 2;
     }
 
-    static Global global = new Global();
+    static Ref<Global> global = ref(new Global());
 }

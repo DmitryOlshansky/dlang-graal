@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -34,16 +30,16 @@ public class access {
         {
             return false;
         }
-        if (!symbolIsVisible(sc, smember) && (((sc.get()).flags.value & 1024) == 0) || (sc.get()).func.value.setUnsafe())
+        if (!symbolIsVisible(sc, smember) && (((sc.get()).flags & 1024) == 0) || (sc.get()).func.setUnsafe())
         {
-            ad.error(loc, new BytePtr("member `%s` is not accessible%s"), smember.toChars(), ((sc.get()).flags.value & 1024) != 0 ? new BytePtr(" from `@safe` code") : new BytePtr(""));
+            ad.error(loc, new BytePtr("member `%s` is not accessible%s"), smember.toChars(), ((sc.get()).flags & 1024) != 0 ? new BytePtr(" from `@safe` code") : new BytePtr(""));
             return true;
         }
         return false;
     }
 
     public static boolean hasPackageAccess(Ptr<Scope> sc, Dsymbol s) {
-        return hasPackageAccess((sc.get())._module.value, s);
+        return hasPackageAccess((sc.get())._module, s);
     }
 
     public static boolean hasPackageAccess(dmodule.Module mod, Dsymbol s) {
@@ -61,7 +57,7 @@ public class access {
                     {
                         DsymbolTable dst = dmodule.Package.resolve(m.md != null ? (m.md.get()).packages : null, null, null);
                         assert(dst != null);
-                        Dsymbol s2 = dst.lookup(m.ident.value);
+                        Dsymbol s2 = dst.lookup(m.ident);
                         assert(s2 != null);
                         dmodule.Package p = s2.isPackage();
                         if ((p != null) && (p.isPackageMod() != null))
@@ -105,12 +101,12 @@ public class access {
             {
                 {
                     Ptr<Scope> scx = sc;
-                    for (; scx != null;scx = (scx.get()).enclosing.value){
-                        if ((scx.get()).scopesym.value == null)
+                    for (; scx != null;scx = (scx.get()).enclosing){
+                        if ((scx.get()).scopesym == null)
                         {
                             continue;
                         }
-                        ClassDeclaration cd2 = (scx.get()).scopesym.value.isClassDeclaration();
+                        ClassDeclaration cd2 = (scx.get()).scopesym.isClassDeclaration();
                         if ((cd2 != null) && cd.isBaseOf(cd2, null))
                         {
                             return true;
@@ -119,11 +115,11 @@ public class access {
                 }
             }
         }
-        return pequals((sc.get())._module.value, s.getAccessModule());
+        return pequals((sc.get())._module, s.getAccessModule());
     }
 
     public static boolean checkAccess(Loc loc, Ptr<Scope> sc, Expression e, Declaration d) {
-        if (((sc.get()).flags.value & 2) != 0)
+        if (((sc.get()).flags & 2) != 0)
         {
             return false;
         }
@@ -135,13 +131,13 @@ public class access {
         {
             return false;
         }
-        if (((e.type.value.ty.value & 0xFF) == ENUMTY.Tclass))
+        if (((e.type.value.ty & 0xFF) == ENUMTY.Tclass))
         {
-            ClassDeclaration cd = ((TypeClass)e.type.value).sym.value;
-            if (((e.op.value & 0xFF) == 124))
+            ClassDeclaration cd = ((TypeClass)e.type.value).sym;
+            if (((e.op & 0xFF) == 124))
             {
                 {
-                    ClassDeclaration cd2 = (sc.get()).func.value.toParent().isClassDeclaration();
+                    ClassDeclaration cd2 = (sc.get()).func.toParent().isClassDeclaration();
                     if ((cd2) != null)
                     {
                         cd = cd2;
@@ -150,21 +146,21 @@ public class access {
             }
             return checkAccess((AggregateDeclaration)cd, loc, sc, (Dsymbol)d);
         }
-        else if (((e.type.value.ty.value & 0xFF) == ENUMTY.Tstruct))
+        else if (((e.type.value.ty & 0xFF) == ENUMTY.Tstruct))
         {
-            StructDeclaration cd = ((TypeStruct)e.type.value).sym.value;
+            StructDeclaration cd = ((TypeStruct)e.type.value).sym;
             return checkAccess((AggregateDeclaration)cd, loc, sc, (Dsymbol)d);
         }
         return false;
     }
 
     public static boolean checkAccess(Loc loc, Ptr<Scope> sc, dmodule.Package p) {
-        if ((pequals((sc.get())._module.value, p)))
+        if ((pequals((sc.get())._module, p)))
         {
             return false;
         }
-        for (; sc != null;sc = (sc.get()).enclosing.value){
-            if (((sc.get()).scopesym.value != null) && (sc.get()).scopesym.value.isPackageAccessible(p, new Prot(Prot.Kind.private_), 0))
+        for (; sc != null;sc = (sc.get()).enclosing){
+            if (((sc.get()).scopesym != null) && (sc.get()).scopesym.isPackageAccessible(p, new Prot(Prot.Kind.private_), 0))
             {
                 return false;
             }
@@ -174,7 +170,7 @@ public class access {
 
     public static boolean symbolIsVisible(dmodule.Module mod, Dsymbol s) {
         s = mostVisibleOverload(s, null);
-        switch (s.prot().kind.value)
+        switch (s.prot().kind)
         {
             case Prot.Kind.undefined:
                 return true;
@@ -204,16 +200,16 @@ public class access {
     }
 
     public static boolean checkSymbolAccess(Ptr<Scope> sc, Dsymbol s) {
-        switch (s.prot().kind.value)
+        switch (s.prot().kind)
         {
             case Prot.Kind.undefined:
                 return true;
             case Prot.Kind.none:
                 return false;
             case Prot.Kind.private_:
-                return pequals((sc.get())._module.value, s.getAccessModule());
+                return pequals((sc.get())._module, s.getAccessModule());
             case Prot.Kind.package_:
-                return (pequals((sc.get())._module.value, s.getAccessModule())) || hasPackageAccess((sc.get())._module.value, s);
+                return (pequals((sc.get())._module, s.getAccessModule())) || hasPackageAccess((sc.get())._module, s);
             case Prot.Kind.protected_:
                 return hasProtectedAccess(sc, s);
             case Prot.Kind.public_:
@@ -261,8 +257,8 @@ public class access {
                                 AliasDeclaration ad = s.isAliasDeclaration();
                                 if ((ad) != null)
                                 {
-                                    assertMsg(ad.isOverloadable() || (ad.type.value != null) && ((ad.type.value.ty.value & 0xFF) == ENUMTY.Terror), new ByteSlice("Non overloadable Aliasee in overload list"));
-                                    if ((ad.semanticRun.value < PASS.semanticdone))
+                                    assertMsg(ad.isOverloadable() || (ad.type != null) && ((ad.type.ty & 0xFF) == ENUMTY.Terror), new ByteSlice("Non overloadable Aliasee in overload list"));
+                                    if ((ad.semanticRun < PASS.semanticdone))
                                     {
                                         next = ad.overnext;
                                     }
@@ -293,14 +289,12 @@ public class access {
             }
             Function2<Dsymbol,dmodule.Module,Prot> protectionSeenFromModule = new Function2<Dsymbol,dmodule.Module,Prot>(){
                 public Prot invoke(Dsymbol d, dmodule.Module mod) {
-                    Ref<Dsymbol> d_ref = ref(d);
-                    Ref<dmodule.Module> mod_ref = ref(mod);
-                    Ref<Prot> prot = ref(d_ref.value.prot().copy());
-                    if ((mod_ref.value != null) && (prot.value.kind.value == Prot.Kind.package_))
+                    Prot prot = d.prot().copy();
+                    if ((mod != null) && (prot.kind == Prot.Kind.package_))
                     {
-                        return hasPackageAccess(mod_ref.value, d_ref.value) ? new Prot(Prot.Kind.public_) : new Prot(Prot.Kind.private_);
+                        return hasPackageAccess(mod, d) ? new Prot(Prot.Kind.public_) : new Prot(Prot.Kind.private_);
                     }
-                    return prot.value;
+                    return prot;
                 }
             };
             if ((next != null) && protectionSeenFromModule.invoke(mostVisible, mod).isMoreRestrictiveThan(protectionSeenFromModule.invoke(next, mod)))

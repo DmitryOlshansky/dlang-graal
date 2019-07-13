@@ -5,6 +5,7 @@ import ds.identity_map;
 import dmd.expression;
 import dmd.declaration;
 import dmd.dmodule;
+import dmd.dtemplate;
 import dmd.func;
 import dmd.mtype;
 import dmd.visitor : SemanticTimeTransitiveVisitor;
@@ -12,6 +13,9 @@ import dmd.statement;
 import dmd.tokens;
 
 import std.stdio;
+
+
+extern(C) void foobar();
 
 ///
 IdentityMap!bool passedByRef(Module[] mods) {
@@ -34,12 +38,26 @@ private extern(C++) class PassedByRef : SemanticTimeTransitiveVisitor {
 
     override void visit(FuncDeclaration func) {
         depth++;
-        super.visit(func);
+        if (func.fbody) func.fbody.accept(this);
         depth--;
     }
 
+    override void visit(TemplateDeclaration td)
+    {
+        if (td.instances) {
+            foreach(ti; td.instances.values) {
+                ti.accept(this);
+            }
+        }
+    }
+
+    override void visit(TemplateInstance ti) 
+    {
+        if (ti.members)
+            foreach(m ; *ti.members) m.accept(this);
+    }
+
     override void visit(UnaExp una) {
-        super.visit(una);
         if(una.op == TOK.address && una.e1.isVarExp()) {
             auto var = una.e1.isVarExp().var;
             if (allowed(var.type)) passed[var] = true;
@@ -48,22 +66,21 @@ private extern(C++) class PassedByRef : SemanticTimeTransitiveVisitor {
             auto var = una.e1.isDotVarExp().var;
             if (allowed(var.type))passed[var] = true;
         }
+        else
+            una.e1.accept(this);
     }
 
     override void visit(SymOffExp symoff) {
         super.visit(symoff);
-        if (allowed(symoff.var.type)) passed[symoff.var] = true;
-    }
-
-    override void visit(VarExp var) {
-        if (allowed(var.type) && depth > 1) {
-            //stderr.writefln("Deep reference %s\n", var.var.ident.toString);
-            passed[var.var] = true;
+        if (symoff.var.isVarDeclaration) {
+            if (allowed(symoff.type)) {
+                passed[symoff.var.isVarDeclaration] = true;
+            }
         }
     }
 
-    override void visit(DotVarExp var) {
-        if (allowed(var.type) && depth > 1) {
+    override void visit(VarExp var) {
+        if (allowed(var.type) && depth > 2) {
             //stderr.writefln("Deep reference %s\n", var.var.ident.toString);
             passed[var.var] = true;
         }

@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -92,11 +88,11 @@ public class identifier {
 
         public  BytePtr toHChars2() {
             BytePtr p = null;
-            if ((pequals(this, Id.ctor.value)))
+            if ((pequals(this, Id.ctor)))
             {
                 p = pcopy(new BytePtr("this"));
             }
-            else if ((pequals(this, Id.dtor.value)))
+            else if ((pequals(this, Id.dtor)))
             {
                 p = pcopy(new BytePtr("~this"));
             }
@@ -108,7 +104,7 @@ public class identifier {
             {
                 p = pcopy(new BytePtr("$"));
             }
-            else if ((pequals(this, Id.withSym.value)))
+            else if ((pequals(this, Id.withSym)))
             {
                 p = pcopy(new BytePtr("with"));
             }

@@ -86,7 +86,7 @@ vendor/dmd/src/dmd/target.d
 vendor/dmd/src/dmd/typesem.d
 vendor/dmd/src/dmd/typinf.d
 # entry point, rewrite to something less fancy w/o Phobos templates
-vendor/dmd/src/dmd/frontend.d
+# vendor/dmd/src/dmd/frontend.d
 #
 vendor/dmd/src/dmd/visitor.d
 

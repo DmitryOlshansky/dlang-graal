@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -23,16 +19,16 @@ import static org.dlang.dmd.tokens.*;
 public class safe {
 
     public static boolean checkUnsafeAccess(Ptr<Scope> sc, Expression e, boolean readonly, boolean printmsg) {
-        if (((e.op.value & 0xFF) != 27))
+        if (((e.op & 0xFF) != 27))
         {
             return false;
         }
         DotVarExp dve = (DotVarExp)e;
         {
-            VarDeclaration v = dve.var.value.isVarDeclaration();
+            VarDeclaration v = dve.var.isVarDeclaration();
             if ((v) != null)
             {
-                if (((sc.get()).intypeof.value != 0) || ((sc.get()).func.value == null) || !(sc.get()).func.value.isSafeBypassingInference())
+                if (((sc.get()).intypeof != 0) || ((sc.get()).func == null) || !(sc.get()).func.isSafeBypassingInference())
                 {
                     return false;
                 }
@@ -41,14 +37,14 @@ public class safe {
                 {
                     return false;
                 }
-                boolean hasPointers = v.type.value.hasPointers();
+                boolean hasPointers = v.type.hasPointers();
                 if (hasPointers)
                 {
-                    if ((ad.sizeok.value != Sizeok.done))
+                    if ((ad.sizeok != Sizeok.done))
                     {
-                        ad.determineSize(ad.loc.value);
+                        ad.determineSize(ad.loc);
                     }
-                    if (v.overlapped.value && (sc.get()).func.value.setUnsafe())
+                    if (v.overlapped && (sc.get()).func.setUnsafe())
                     {
                         if (printmsg)
                         {
@@ -61,9 +57,9 @@ public class safe {
                 {
                     return false;
                 }
-                if (hasPointers && ((v.type.value.toBasetype().ty.value & 0xFF) != ENUMTY.Tstruct))
+                if (hasPointers && ((v.type.toBasetype().ty & 0xFF) != ENUMTY.Tstruct))
                 {
-                    if ((ad.type.value.alignment() < target.ptrsize.value) || ((v.offset.value & target.ptrsize.value - 1) != 0) && (sc.get()).func.value.setUnsafe())
+                    if ((ad.type.alignment() < target.value.ptrsize) || ((v.offset & target.value.ptrsize - 1) != 0) && (sc.get()).func.setUnsafe())
                     {
                         if (printmsg)
                         {
@@ -72,7 +68,7 @@ public class safe {
                         return true;
                     }
                 }
-                if (v.overlapUnsafe && (sc.get()).func.value.setUnsafe())
+                if (v.overlapUnsafe && (sc.get()).func.setUnsafe())
                 {
                     if (printmsg)
                     {
@@ -96,12 +92,12 @@ public class safe {
         }
         Type tfromb = tfrom.toBasetype();
         Type ttob = tto.toBasetype();
-        if (((ttob.ty.value & 0xFF) == ENUMTY.Tclass) && ((tfromb.ty.value & 0xFF) == ENUMTY.Tclass))
+        if (((ttob.ty & 0xFF) == ENUMTY.Tclass) && ((tfromb.ty & 0xFF) == ENUMTY.Tclass))
         {
             ClassDeclaration cdfrom = tfromb.isClassHandle();
             ClassDeclaration cdto = ttob.isClassHandle();
             IntRef offset = ref(0);
-            if (!cdfrom.isBaseOf(cdto, ptr(offset)) && !((cdfrom.isInterfaceDeclaration() != null) || (cdto.isInterfaceDeclaration() != null) && (cdfrom.classKind.value == ClassKind.d) && (cdto.classKind.value == ClassKind.d)))
+            if (!cdfrom.isBaseOf(cdto, ptr(offset)) && !((cdfrom.isInterfaceDeclaration() != null) || (cdto.isInterfaceDeclaration() != null) && (cdfrom.classKind == ClassKind.d) && (cdto.classKind == ClassKind.d)))
             {
                 return false;
             }
@@ -109,29 +105,29 @@ public class safe {
             {
                 return false;
             }
-            if (!MODimplicitConv(tfromb.mod.value, ttob.mod.value))
+            if (!MODimplicitConv(tfromb.mod, ttob.mod))
             {
                 return false;
             }
             return true;
         }
-        if (((ttob.ty.value & 0xFF) == ENUMTY.Tarray) && ((tfromb.ty.value & 0xFF) == ENUMTY.Tsarray))
+        if (((ttob.ty & 0xFF) == ENUMTY.Tarray) && ((tfromb.ty & 0xFF) == ENUMTY.Tsarray))
         {
             tfromb = tfromb.nextOf().arrayOf();
         }
-        if (((ttob.ty.value & 0xFF) == ENUMTY.Tarray) && ((tfromb.ty.value & 0xFF) == ENUMTY.Tarray) || ((ttob.ty.value & 0xFF) == ENUMTY.Tpointer) && ((tfromb.ty.value & 0xFF) == ENUMTY.Tpointer))
+        if (((ttob.ty & 0xFF) == ENUMTY.Tarray) && ((tfromb.ty & 0xFF) == ENUMTY.Tarray) || ((ttob.ty & 0xFF) == ENUMTY.Tpointer) && ((tfromb.ty & 0xFF) == ENUMTY.Tpointer))
         {
             Type ttobn = ttob.nextOf().toBasetype();
             Type tfromn = tfromb.nextOf().toBasetype();
-            if (((tfromn.ty.value & 0xFF) == ENUMTY.Tvoid) && ttobn.isMutable())
+            if (((tfromn.ty & 0xFF) == ENUMTY.Tvoid) && ttobn.isMutable())
             {
-                if (((ttob.ty.value & 0xFF) == ENUMTY.Tarray) && ((e.op.value & 0xFF) == 47))
+                if (((ttob.ty & 0xFF) == ENUMTY.Tarray) && ((e.op & 0xFF) == 47))
                 {
                     return true;
                 }
                 return false;
             }
-            if (((ttobn.ty.value & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)ttobn).sym.value.members.value == null) || ((tfromn.ty.value & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)tfromn).sym.value.members.value == null))
+            if (((ttobn.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)ttobn).sym.members == null) || ((tfromn.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)tfromn).sym.members == null))
             {
                 return false;
             }
@@ -145,7 +141,7 @@ public class safe {
             {
                 return false;
             }
-            if (!topointers && ((ttobn.ty.value & 0xFF) != ENUMTY.Tfunction) && ((tfromn.ty.value & 0xFF) != ENUMTY.Tfunction) && ((ttob.ty.value & 0xFF) == ENUMTY.Tarray) || (ttobn.size() <= tfromn.size()) && MODimplicitConv(tfromn.mod.value, ttobn.mod.value))
+            if (!topointers && ((ttobn.ty & 0xFF) != ENUMTY.Tfunction) && ((tfromn.ty & 0xFF) != ENUMTY.Tfunction) && ((ttob.ty & 0xFF) == ENUMTY.Tarray) || (ttobn.size() <= tfromn.size()) && MODimplicitConv(tfromn.mod, ttobn.mod))
             {
                 return true;
             }

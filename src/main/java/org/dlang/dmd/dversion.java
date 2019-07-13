@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -37,15 +33,15 @@ public class dversion {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            DebugSymbol ds = new DebugSymbol(this.loc.value, this.ident.value);
+            DebugSymbol ds = new DebugSymbol(this.loc, this.ident);
             ds.level = this.level;
             return ds;
         }
 
         public  BytePtr toChars() {
-            if (this.ident.value != null)
+            if (this.ident != null)
             {
-                return this.ident.value.toChars();
+                return this.ident.toChars();
             }
             else
             {
@@ -61,25 +57,25 @@ public class dversion {
 
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             dmodule.Module m = sds.isModule();
-            if (this.ident.value != null)
+            if (this.ident != null)
             {
                 if (m == null)
                 {
                     this.error(new BytePtr("declaration must be at module level"));
-                    this.errors.value = true;
+                    this.errors = true;
                 }
                 else
                 {
-                    if (findCondition(m.debugidsNot, this.ident.value))
+                    if (findCondition(m.debugidsNot, this.ident))
                     {
                         this.error(new BytePtr("defined after use"));
-                        this.errors.value = true;
+                        this.errors = true;
                     }
                     if (m.debugids == null)
                     {
                         m.debugids = refPtr(new DArray<Identifier>());
                     }
-                    (m.debugids.get()).push(this.ident.value);
+                    (m.debugids.get()).push(this.ident);
                 }
             }
             else
@@ -87,7 +83,7 @@ public class dversion {
                 if (m == null)
                 {
                     this.error(new BytePtr("level declaration must be at module level"));
-                    this.errors.value = true;
+                    this.errors = true;
                 }
                 else
                 {
@@ -141,14 +137,14 @@ public class dversion {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            VersionSymbol ds = this.ident.value != null ? new VersionSymbol(this.loc.value, this.ident.value) : new VersionSymbol(this.loc.value, this.level);
+            VersionSymbol ds = this.ident != null ? new VersionSymbol(this.loc, this.ident) : new VersionSymbol(this.loc, this.level);
             return ds;
         }
 
         public  BytePtr toChars() {
-            if (this.ident.value != null)
+            if (this.ident != null)
             {
-                return this.ident.value.toChars();
+                return this.ident.toChars();
             }
             else
             {
@@ -164,26 +160,26 @@ public class dversion {
 
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             dmodule.Module m = sds.isModule();
-            if (this.ident.value != null)
+            if (this.ident != null)
             {
-                VersionCondition.checkReserved(this.loc.value, this.ident.value.asString());
+                VersionCondition.checkReserved(this.loc, this.ident.asString());
                 if (m == null)
                 {
                     this.error(new BytePtr("declaration must be at module level"));
-                    this.errors.value = true;
+                    this.errors = true;
                 }
                 else
                 {
-                    if (findCondition(m.versionidsNot, this.ident.value))
+                    if (findCondition(m.versionidsNot, this.ident))
                     {
                         this.error(new BytePtr("defined after use"));
-                        this.errors.value = true;
+                        this.errors = true;
                     }
                     if (m.versionids == null)
                     {
                         m.versionids = refPtr(new DArray<Identifier>());
                     }
-                    (m.versionids.get()).push(this.ident.value);
+                    (m.versionids.get()).push(this.ident);
                 }
             }
             else
@@ -191,7 +187,7 @@ public class dversion {
                 if (m == null)
                 {
                     this.error(new BytePtr("level declaration must be at module level"));
-                    this.errors.value = true;
+                    this.errors = true;
                 }
                 else
                 {

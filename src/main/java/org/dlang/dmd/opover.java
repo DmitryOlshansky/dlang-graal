@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -37,157 +33,157 @@ import static org.dlang.dmd.visitor.*;
 public class opover {
     private static class OpIdVisitor extends Visitor
     {
-        private Ref<Identifier> id = ref(null);
+        private Identifier id = null;
         public  void visit(Expression e) {
             throw new AssertionError("Unreachable code!");
         }
 
         public  void visit(UAddExp e) {
-            this.id.value = Id.uadd.value;
+            this.id = Id.uadd;
         }
 
         public  void visit(NegExp e) {
-            this.id.value = Id.neg.value;
+            this.id = Id.neg;
         }
 
         public  void visit(ComExp e) {
-            this.id.value = Id.com.value;
+            this.id = Id.com;
         }
 
         public  void visit(CastExp e) {
-            this.id.value = Id._cast.value;
+            this.id = Id._cast;
         }
 
         public  void visit(InExp e) {
-            this.id.value = Id.opIn.value;
+            this.id = Id.opIn;
         }
 
         public  void visit(PostExp e) {
-            this.id.value = ((e.op.value & 0xFF) == 93) ? Id.postinc.value : Id.postdec.value;
+            this.id = ((e.op & 0xFF) == 93) ? Id.postinc : Id.postdec;
         }
 
         public  void visit(AddExp e) {
-            this.id.value = Id.add.value;
+            this.id = Id.add;
         }
 
         public  void visit(MinExp e) {
-            this.id.value = Id.sub.value;
+            this.id = Id.sub;
         }
 
         public  void visit(MulExp e) {
-            this.id.value = Id.mul.value;
+            this.id = Id.mul;
         }
 
         public  void visit(DivExp e) {
-            this.id.value = Id.div.value;
+            this.id = Id.div;
         }
 
         public  void visit(ModExp e) {
-            this.id.value = Id.mod.value;
+            this.id = Id.mod;
         }
 
         public  void visit(PowExp e) {
-            this.id.value = Id.pow.value;
+            this.id = Id.pow;
         }
 
         public  void visit(ShlExp e) {
-            this.id.value = Id.shl.value;
+            this.id = Id.shl;
         }
 
         public  void visit(ShrExp e) {
-            this.id.value = Id.shr.value;
+            this.id = Id.shr;
         }
 
         public  void visit(UshrExp e) {
-            this.id.value = Id.ushr.value;
+            this.id = Id.ushr;
         }
 
         public  void visit(AndExp e) {
-            this.id.value = Id.iand.value;
+            this.id = Id.iand;
         }
 
         public  void visit(OrExp e) {
-            this.id.value = Id.ior.value;
+            this.id = Id.ior;
         }
 
         public  void visit(XorExp e) {
-            this.id.value = Id.ixor.value;
+            this.id = Id.ixor;
         }
 
         public  void visit(CatExp e) {
-            this.id.value = Id.cat.value;
+            this.id = Id.cat;
         }
 
         public  void visit(AssignExp e) {
-            this.id.value = Id.assign.value;
+            this.id = Id.assign;
         }
 
         public  void visit(AddAssignExp e) {
-            this.id.value = Id.addass.value;
+            this.id = Id.addass;
         }
 
         public  void visit(MinAssignExp e) {
-            this.id.value = Id.subass.value;
+            this.id = Id.subass;
         }
 
         public  void visit(MulAssignExp e) {
-            this.id.value = Id.mulass.value;
+            this.id = Id.mulass;
         }
 
         public  void visit(DivAssignExp e) {
-            this.id.value = Id.divass.value;
+            this.id = Id.divass;
         }
 
         public  void visit(ModAssignExp e) {
-            this.id.value = Id.modass.value;
+            this.id = Id.modass;
         }
 
         public  void visit(AndAssignExp e) {
-            this.id.value = Id.andass.value;
+            this.id = Id.andass;
         }
 
         public  void visit(OrAssignExp e) {
-            this.id.value = Id.orass.value;
+            this.id = Id.orass;
         }
 
         public  void visit(XorAssignExp e) {
-            this.id.value = Id.xorass.value;
+            this.id = Id.xorass;
         }
 
         public  void visit(ShlAssignExp e) {
-            this.id.value = Id.shlass.value;
+            this.id = Id.shlass;
         }
 
         public  void visit(ShrAssignExp e) {
-            this.id.value = Id.shrass.value;
+            this.id = Id.shrass;
         }
 
         public  void visit(UshrAssignExp e) {
-            this.id.value = Id.ushrass.value;
+            this.id = Id.ushrass;
         }
 
         public  void visit(CatAssignExp e) {
-            this.id.value = Id.catass.value;
+            this.id = Id.catass;
         }
 
         public  void visit(PowAssignExp e) {
-            this.id.value = Id.powass.value;
+            this.id = Id.powass;
         }
 
         public  void visit(EqualExp e) {
-            this.id.value = Id.eq.value;
+            this.id = Id.eq;
         }
 
         public  void visit(CmpExp e) {
-            this.id.value = Id.cmp.value;
+            this.id = Id.cmp;
         }
 
         public  void visit(ArrayExp e) {
-            this.id.value = Id.index.value;
+            this.id = Id.index;
         }
 
         public  void visit(PtrExp e) {
-            this.id.value = Id.opStar.value;
+            this.id = Id.opStar;
         }
 
 
@@ -195,65 +191,65 @@ public class opover {
     }
     private static class OpIdRVisitor extends Visitor
     {
-        private Ref<Identifier> id = ref(null);
+        private Identifier id = null;
         public  void visit(Expression e) {
-            this.id.value = null;
+            this.id = null;
         }
 
         public  void visit(InExp e) {
-            this.id.value = Id.opIn_r.value;
+            this.id = Id.opIn_r;
         }
 
         public  void visit(AddExp e) {
-            this.id.value = Id.add_r.value;
+            this.id = Id.add_r;
         }
 
         public  void visit(MinExp e) {
-            this.id.value = Id.sub_r.value;
+            this.id = Id.sub_r;
         }
 
         public  void visit(MulExp e) {
-            this.id.value = Id.mul_r.value;
+            this.id = Id.mul_r;
         }
 
         public  void visit(DivExp e) {
-            this.id.value = Id.div_r.value;
+            this.id = Id.div_r;
         }
 
         public  void visit(ModExp e) {
-            this.id.value = Id.mod_r.value;
+            this.id = Id.mod_r;
         }
 
         public  void visit(PowExp e) {
-            this.id.value = Id.pow_r.value;
+            this.id = Id.pow_r;
         }
 
         public  void visit(ShlExp e) {
-            this.id.value = Id.shl_r.value;
+            this.id = Id.shl_r;
         }
 
         public  void visit(ShrExp e) {
-            this.id.value = Id.shr_r.value;
+            this.id = Id.shr_r;
         }
 
         public  void visit(UshrExp e) {
-            this.id.value = Id.ushr_r.value;
+            this.id = Id.ushr_r;
         }
 
         public  void visit(AndExp e) {
-            this.id.value = Id.iand_r.value;
+            this.id = Id.iand_r;
         }
 
         public  void visit(OrExp e) {
-            this.id.value = Id.ior_r.value;
+            this.id = Id.ior_r;
         }
 
         public  void visit(XorExp e) {
-            this.id.value = Id.ixor_r.value;
+            this.id = Id.ixor_r;
         }
 
         public  void visit(CatExp e) {
-            this.id.value = Id.cat_r.value;
+            this.id = Id.cat_r;
         }
 
 
@@ -261,14 +257,12 @@ public class opover {
     }
     private static class OpOverload extends Visitor
     {
-        private Ref<Ptr<Scope>> sc = ref(null);
-        private Ref<BytePtr> pop = ref(null);
-        private Ref<Expression> result = ref(null);
+        private Ptr<Scope> sc = null;
+        private BytePtr pop = null;
+        private Expression result = null;
         public  OpOverload(Ptr<Scope> sc, BytePtr pop) {
-            Ref<Ptr<Scope>> sc_ref = ref(sc);
-            Ref<BytePtr> pop_ref = ref(pop);
-            this.sc.value = sc_ref.value;
-            this.pop.value = pcopy(pop_ref.value);
+            this.sc = sc;
+            this.pop = pcopy(pop);
         }
 
         public  void visit(Expression e) {
@@ -276,542 +270,539 @@ public class opover {
         }
 
         public  void visit(UnaExp e) {
-            Ref<UnaExp> e_ref = ref(e);
-            if (((e_ref.value.e1.value.op.value & 0xFF) == 17))
+            if (((e.e1.value.op & 0xFF) == 17))
             {
-                Ref<ArrayExp> ae = ref((ArrayExp)e_ref.value.e1.value);
-                ae.value.e1.value = expressionSemantic(ae.value.e1.value, this.sc.value);
-                ae.value.e1.value = resolveProperties(this.sc.value, ae.value.e1.value);
-                Ref<Expression> ae1old = ref(ae.value.e1.value);
-                boolean maybeSlice = ((ae.value.arguments.value.get()).length.value == 0) || ((ae.value.arguments.value.get()).length.value == 1) && (((ae.value.arguments.value.get()).get(0).op.value & 0xFF) == 231);
-                Ref<IntervalExp> ie = ref(null);
-                if (maybeSlice && ((ae.value.arguments.value.get()).length.value != 0))
+                ArrayExp ae = (ArrayExp)e.e1.value;
+                ae.e1.value = expressionSemantic(ae.e1.value, this.sc);
+                ae.e1.value = resolveProperties(this.sc, ae.e1.value);
+                Expression ae1old = ae.e1.value;
+                boolean maybeSlice = ((ae.arguments.get()).length == 0) || ((ae.arguments.get()).length == 1) && (((ae.arguments.get()).get(0).op & 0xFF) == 231);
+                IntervalExp ie = null;
+                if (maybeSlice && ((ae.arguments.get()).length != 0))
                 {
-                    assert((((ae.value.arguments.value.get()).get(0).op.value & 0xFF) == 231));
-                    ie.value = (IntervalExp)(ae.value.arguments.value.get()).get(0);
+                    assert((((ae.arguments.get()).get(0).op & 0xFF) == 231));
+                    ie = (IntervalExp)(ae.arguments.get()).get(0);
                 }
             L_outer1:
                 for (; true;){
-                    if (((ae.value.e1.value.op.value & 0xFF) == 127))
+                    if (((ae.e1.value.op & 0xFF) == 127))
                     {
-                        this.result.value = ae.value.e1.value;
+                        this.result = ae.e1.value;
                         return ;
                     }
                     Ref<Expression> e0 = ref(null);
-                    Ref<Expression> ae1save = ref(ae.value.e1.value);
-                    ae.value.lengthVar.value = null;
-                    Ref<Type> t1b = ref(ae.value.e1.value.type.value.toBasetype());
-                    Ref<AggregateDeclaration> ad = ref(isAggregate(t1b.value));
-                    if (ad.value == null)
+                    Expression ae1save = ae.e1.value;
+                    ae.lengthVar.value = null;
+                    Type t1b = ae.e1.value.type.value.toBasetype();
+                    AggregateDeclaration ad = isAggregate(t1b);
+                    if (ad == null)
                     {
                         break;
                     }
                     try {
-                        if (search_function(ad.value, Id.opIndexUnary.value) != null)
+                        if (search_function(ad, Id.opIndexUnary) != null)
                         {
-                            this.result.value = resolveOpDollar(this.sc.value, ae.value, ptr(e0));
-                            if (this.result.value == null)
+                            this.result = resolveOpDollar(this.sc, ae, ptr(e0));
+                            if (this.result == null)
                             {
                                 /*goto Lfallback*/throw Dispatch0.INSTANCE;
                             }
-                            if (((this.result.value.op.value & 0xFF) == 127))
+                            if (((this.result.op & 0xFF) == 127))
                             {
                                 return ;
                             }
-                            Ref<Ptr<DArray<Expression>>> a = ref((ae.value.arguments.value.get()).copy());
-                            Ref<Ptr<DArray<RootObject>>> tiargs = ref(opToArg(this.sc.value, e_ref.value.op.value));
-                            this.result.value = new DotTemplateInstanceExp(e_ref.value.loc.value, ae.value.e1.value, Id.opIndexUnary.value, tiargs.value);
-                            this.result.value = new CallExp(e_ref.value.loc.value, this.result.value, a.value);
+                            Ptr<DArray<Expression>> a = (ae.arguments.get()).copy();
+                            Ptr<DArray<RootObject>> tiargs = opToArg(this.sc, e.op);
+                            this.result = new DotTemplateInstanceExp(e.loc, ae.e1.value, Id.opIndexUnary, tiargs);
+                            this.result = new CallExp(e.loc, this.result, a);
                             if (maybeSlice)
                             {
-                                this.result.value = trySemantic(this.result.value, this.sc.value);
+                                this.result = trySemantic(this.result, this.sc);
                             }
                             else
                             {
-                                this.result.value = expressionSemantic(this.result.value, this.sc.value);
+                                this.result = expressionSemantic(this.result, this.sc);
                             }
-                            if (this.result.value != null)
+                            if (this.result != null)
                             {
-                                this.result.value = Expression.combine(e0.value, this.result.value);
+                                this.result = Expression.combine(e0.value, this.result);
                                 return ;
                             }
                         }
                     }
                     catch(Dispatch0 __d){}
                 /*Lfallback:*/
-                    if (maybeSlice && (search_function(ad.value, Id.opSliceUnary.value) != null))
+                    if (maybeSlice && (search_function(ad, Id.opSliceUnary) != null))
                     {
-                        this.result.value = resolveOpDollar(this.sc.value, ae.value, ie.value, ptr(e0));
-                        if (((this.result.value.op.value & 0xFF) == 127))
+                        this.result = resolveOpDollar(this.sc, ae, ie, ptr(e0));
+                        if (((this.result.op & 0xFF) == 127))
                         {
                             return ;
                         }
-                        Ref<Ptr<DArray<Expression>>> a = ref(refPtr(new DArray<Expression>()));
-                        if (ie.value != null)
+                        Ptr<DArray<Expression>> a = refPtr(new DArray<Expression>());
+                        if (ie != null)
                         {
-                            (a.value.get()).push(ie.value.lwr.value);
-                            (a.value.get()).push(ie.value.upr.value);
+                            (a.get()).push(ie.lwr.value);
+                            (a.get()).push(ie.upr.value);
                         }
-                        Ref<Ptr<DArray<RootObject>>> tiargs = ref(opToArg(this.sc.value, e_ref.value.op.value));
-                        this.result.value = new DotTemplateInstanceExp(e_ref.value.loc.value, ae.value.e1.value, Id.opSliceUnary.value, tiargs.value);
-                        this.result.value = new CallExp(e_ref.value.loc.value, this.result.value, a.value);
-                        this.result.value = expressionSemantic(this.result.value, this.sc.value);
-                        this.result.value = Expression.combine(e0.value, this.result.value);
+                        Ptr<DArray<RootObject>> tiargs = opToArg(this.sc, e.op);
+                        this.result = new DotTemplateInstanceExp(e.loc, ae.e1.value, Id.opSliceUnary, tiargs);
+                        this.result = new CallExp(e.loc, this.result, a);
+                        this.result = expressionSemantic(this.result, this.sc);
+                        this.result = Expression.combine(e0.value, this.result);
                         return ;
                     }
-                    if ((ad.value.aliasthis.value != null) && (!pequals(t1b.value, ae.value.att1.value)))
+                    if ((ad.aliasthis != null) && (!pequals(t1b, ae.att1)))
                     {
-                        if ((ae.value.att1.value == null) && t1b.value.checkAliasThisRec())
+                        if ((ae.att1 == null) && t1b.checkAliasThisRec())
                         {
-                            ae.value.att1.value = t1b.value;
+                            ae.att1 = t1b;
                         }
-                        ae.value.e1.value = resolveAliasThis(this.sc.value, ae1save.value, true);
-                        if (ae.value.e1.value != null)
+                        ae.e1.value = resolveAliasThis(this.sc, ae1save, true);
+                        if (ae.e1.value != null)
                         {
                             continue L_outer1;
                         }
                     }
                     break;
                 }
-                ae.value.e1.value = ae1old.value;
-                ae.value.lengthVar.value = null;
+                ae.e1.value = ae1old;
+                ae.lengthVar.value = null;
             }
-            e_ref.value.e1.value = expressionSemantic(e_ref.value.e1.value, this.sc.value);
-            e_ref.value.e1.value = resolveProperties(this.sc.value, e_ref.value.e1.value);
-            if (((e_ref.value.e1.value.op.value & 0xFF) == 127))
+            e.e1.value = expressionSemantic(e.e1.value, this.sc);
+            e.e1.value = resolveProperties(this.sc, e.e1.value);
+            if (((e.e1.value.op & 0xFF) == 127))
             {
-                this.result.value = e_ref.value.e1.value;
+                this.result = e.e1.value;
                 return ;
             }
-            Ref<AggregateDeclaration> ad = ref(isAggregate(e_ref.value.e1.value.type.value));
-            if (ad.value != null)
+            AggregateDeclaration ad = isAggregate(e.e1.value.type.value);
+            if (ad != null)
             {
-                Ref<Dsymbol> fd = ref(null);
-                if (((e_ref.value.op.value & 0xFF) != 103) && ((e_ref.value.op.value & 0xFF) != 104))
+                Dsymbol fd = null;
+                if (((e.op & 0xFF) != 103) && ((e.op & 0xFF) != 104))
                 {
-                    fd.value = search_function(ad.value, opId(e_ref.value));
-                    if (fd.value != null)
+                    fd = search_function(ad, opId(e));
+                    if (fd != null)
                     {
-                        this.result.value = build_overload(e_ref.value.loc.value, this.sc.value, e_ref.value.e1.value, null, fd.value);
+                        this.result = build_overload(e.loc, this.sc, e.e1.value, null, fd);
                         return ;
                     }
                 }
-                fd.value = search_function(ad.value, Id.opUnary.value);
-                if (fd.value != null)
+                fd = search_function(ad, Id.opUnary);
+                if (fd != null)
                 {
-                    Ref<Ptr<DArray<RootObject>>> tiargs = ref(opToArg(this.sc.value, e_ref.value.op.value));
-                    this.result.value = new DotTemplateInstanceExp(e_ref.value.loc.value, e_ref.value.e1.value, fd.value.ident.value, tiargs.value);
-                    this.result.value = new CallExp(e_ref.value.loc.value, this.result.value);
-                    this.result.value = expressionSemantic(this.result.value, this.sc.value);
+                    Ptr<DArray<RootObject>> tiargs = opToArg(this.sc, e.op);
+                    this.result = new DotTemplateInstanceExp(e.loc, e.e1.value, fd.ident, tiargs);
+                    this.result = new CallExp(e.loc, this.result);
+                    this.result = expressionSemantic(this.result, this.sc);
                     return ;
                 }
-                if ((ad.value.aliasthis.value != null) && (!pequals(e_ref.value.e1.value.type.value, e_ref.value.att1.value)))
+                if ((ad.aliasthis != null) && (!pequals(e.e1.value.type.value, e.att1)))
                 {
-                    Ref<Expression> e1 = ref(new DotIdExp(e_ref.value.loc.value, e_ref.value.e1.value, ad.value.aliasthis.value.ident.value));
-                    Ref<UnaExp> ue = ref((UnaExp)e_ref.value.copy());
-                    if ((ue.value.att1.value == null) && e_ref.value.e1.value.type.value.checkAliasThisRec())
+                    Expression e1 = new DotIdExp(e.loc, e.e1.value, ad.aliasthis.ident);
+                    UnaExp ue = (UnaExp)e.copy();
+                    if ((ue.att1 == null) && e.e1.value.type.value.checkAliasThisRec())
                     {
-                        ue.value.att1.value = e_ref.value.e1.value.type.value;
+                        ue.att1 = e.e1.value.type.value;
                     }
-                    ue.value.e1.value = e1.value;
-                    this.result.value = trySemantic(ue.value, this.sc.value);
+                    ue.e1.value = e1;
+                    this.result = trySemantic(ue, this.sc);
                     return ;
                 }
             }
         }
 
         public  void visit(ArrayExp ae) {
-            Ref<ArrayExp> ae_ref = ref(ae);
-            ae_ref.value.e1.value = expressionSemantic(ae_ref.value.e1.value, this.sc.value);
-            ae_ref.value.e1.value = resolveProperties(this.sc.value, ae_ref.value.e1.value);
-            Ref<Expression> ae1old = ref(ae_ref.value.e1.value);
-            boolean maybeSlice = ((ae_ref.value.arguments.value.get()).length.value == 0) || ((ae_ref.value.arguments.value.get()).length.value == 1) && (((ae_ref.value.arguments.value.get()).get(0).op.value & 0xFF) == 231);
-            Ref<IntervalExp> ie = ref(null);
-            if (maybeSlice && ((ae_ref.value.arguments.value.get()).length.value != 0))
+            ae.e1.value = expressionSemantic(ae.e1.value, this.sc);
+            ae.e1.value = resolveProperties(this.sc, ae.e1.value);
+            Expression ae1old = ae.e1.value;
+            boolean maybeSlice = ((ae.arguments.get()).length == 0) || ((ae.arguments.get()).length == 1) && (((ae.arguments.get()).get(0).op & 0xFF) == 231);
+            IntervalExp ie = null;
+            if (maybeSlice && ((ae.arguments.get()).length != 0))
             {
-                assert((((ae_ref.value.arguments.value.get()).get(0).op.value & 0xFF) == 231));
-                ie.value = (IntervalExp)(ae_ref.value.arguments.value.get()).get(0);
+                assert((((ae.arguments.get()).get(0).op & 0xFF) == 231));
+                ie = (IntervalExp)(ae.arguments.get()).get(0);
             }
         L_outer2:
             for (; true;){
-                if (((ae_ref.value.e1.value.op.value & 0xFF) == 127))
+                if (((ae.e1.value.op & 0xFF) == 127))
                 {
-                    this.result.value = ae_ref.value.e1.value;
+                    this.result = ae.e1.value;
                     return ;
                 }
                 Ref<Expression> e0 = ref(null);
-                Ref<Expression> ae1save = ref(ae_ref.value.e1.value);
-                ae_ref.value.lengthVar.value = null;
-                Ref<Type> t1b = ref(ae_ref.value.e1.value.type.value.toBasetype());
-                Ref<AggregateDeclaration> ad = ref(isAggregate(t1b.value));
-                if (ad.value == null)
+                Expression ae1save = ae.e1.value;
+                ae.lengthVar.value = null;
+                Type t1b = ae.e1.value.type.value.toBasetype();
+                AggregateDeclaration ad = isAggregate(t1b);
+                if (ad == null)
                 {
-                    if (isIndexableNonAggregate(t1b.value) || ((ae_ref.value.e1.value.op.value & 0xFF) == 20))
+                    if (isIndexableNonAggregate(t1b) || ((ae.e1.value.op & 0xFF) == 20))
                     {
                         if (maybeSlice)
                         {
-                            this.result.value = new SliceExp(ae_ref.value.loc.value, ae_ref.value.e1.value, ie.value);
-                            this.result.value = expressionSemantic(this.result.value, this.sc.value);
+                            this.result = new SliceExp(ae.loc, ae.e1.value, ie);
+                            this.result = expressionSemantic(this.result, this.sc);
                             return ;
                         }
-                        if (((ae_ref.value.arguments.value.get()).length.value == 1))
+                        if (((ae.arguments.get()).length == 1))
                         {
-                            this.result.value = new IndexExp(ae_ref.value.loc.value, ae_ref.value.e1.value, (ae_ref.value.arguments.value.get()).get(0));
-                            this.result.value = expressionSemantic(this.result.value, this.sc.value);
+                            this.result = new IndexExp(ae.loc, ae.e1.value, (ae.arguments.get()).get(0));
+                            this.result = expressionSemantic(this.result, this.sc);
                             return ;
                         }
                     }
                     break;
                 }
                 try {
-                    if (search_function(ad.value, Id.index.value) != null)
+                    if (search_function(ad, Id.index) != null)
                     {
-                        this.result.value = resolveOpDollar(this.sc.value, ae_ref.value, ptr(e0));
-                        if (this.result.value == null)
+                        this.result = resolveOpDollar(this.sc, ae, ptr(e0));
+                        if (this.result == null)
                         {
                             /*goto Lfallback*/throw Dispatch0.INSTANCE;
                         }
-                        if (((this.result.value.op.value & 0xFF) == 127))
+                        if (((this.result.op & 0xFF) == 127))
                         {
                             return ;
                         }
-                        Ref<Ptr<DArray<Expression>>> a = ref((ae_ref.value.arguments.value.get()).copy());
-                        this.result.value = new DotIdExp(ae_ref.value.loc.value, ae_ref.value.e1.value, Id.index.value);
-                        this.result.value = new CallExp(ae_ref.value.loc.value, this.result.value, a.value);
+                        Ptr<DArray<Expression>> a = (ae.arguments.get()).copy();
+                        this.result = new DotIdExp(ae.loc, ae.e1.value, Id.index);
+                        this.result = new CallExp(ae.loc, this.result, a);
                         if (maybeSlice)
                         {
-                            this.result.value = trySemantic(this.result.value, this.sc.value);
+                            this.result = trySemantic(this.result, this.sc);
                         }
                         else
                         {
-                            this.result.value = expressionSemantic(this.result.value, this.sc.value);
+                            this.result = expressionSemantic(this.result, this.sc);
                         }
-                        if (this.result.value != null)
+                        if (this.result != null)
                         {
-                            this.result.value = Expression.combine(e0.value, this.result.value);
+                            this.result = Expression.combine(e0.value, this.result);
                             return ;
                         }
                     }
                 }
                 catch(Dispatch0 __d){}
             /*Lfallback:*/
-                if (maybeSlice && ((ae_ref.value.e1.value.op.value & 0xFF) == 20))
+                if (maybeSlice && ((ae.e1.value.op & 0xFF) == 20))
                 {
-                    this.result.value = new SliceExp(ae_ref.value.loc.value, ae_ref.value.e1.value, ie.value);
-                    this.result.value = expressionSemantic(this.result.value, this.sc.value);
-                    this.result.value = Expression.combine(e0.value, this.result.value);
+                    this.result = new SliceExp(ae.loc, ae.e1.value, ie);
+                    this.result = expressionSemantic(this.result, this.sc);
+                    this.result = Expression.combine(e0.value, this.result);
                     return ;
                 }
-                if (maybeSlice && (search_function(ad.value, Id.slice.value) != null))
+                if (maybeSlice && (search_function(ad, Id.slice) != null))
                 {
-                    this.result.value = resolveOpDollar(this.sc.value, ae_ref.value, ie.value, ptr(e0));
-                    if (((this.result.value.op.value & 0xFF) == 127))
+                    this.result = resolveOpDollar(this.sc, ae, ie, ptr(e0));
+                    if (((this.result.op & 0xFF) == 127))
                     {
                         return ;
                     }
-                    Ref<Ptr<DArray<Expression>>> a = ref(refPtr(new DArray<Expression>()));
-                    if (ie.value != null)
+                    Ptr<DArray<Expression>> a = refPtr(new DArray<Expression>());
+                    if (ie != null)
                     {
-                        (a.value.get()).push(ie.value.lwr.value);
-                        (a.value.get()).push(ie.value.upr.value);
+                        (a.get()).push(ie.lwr.value);
+                        (a.get()).push(ie.upr.value);
                     }
-                    this.result.value = new DotIdExp(ae_ref.value.loc.value, ae_ref.value.e1.value, Id.slice.value);
-                    this.result.value = new CallExp(ae_ref.value.loc.value, this.result.value, a.value);
-                    this.result.value = expressionSemantic(this.result.value, this.sc.value);
-                    this.result.value = Expression.combine(e0.value, this.result.value);
+                    this.result = new DotIdExp(ae.loc, ae.e1.value, Id.slice);
+                    this.result = new CallExp(ae.loc, this.result, a);
+                    this.result = expressionSemantic(this.result, this.sc);
+                    this.result = Expression.combine(e0.value, this.result);
                     return ;
                 }
-                if ((ad.value.aliasthis.value != null) && (!pequals(t1b.value, ae_ref.value.att1.value)))
+                if ((ad.aliasthis != null) && (!pequals(t1b, ae.att1)))
                 {
-                    if ((ae_ref.value.att1.value == null) && t1b.value.checkAliasThisRec())
+                    if ((ae.att1 == null) && t1b.checkAliasThisRec())
                     {
-                        ae_ref.value.att1.value = t1b.value;
+                        ae.att1 = t1b;
                     }
-                    ae_ref.value.e1.value = resolveAliasThis(this.sc.value, ae1save.value, true);
-                    if (ae_ref.value.e1.value != null)
+                    ae.e1.value = resolveAliasThis(this.sc, ae1save, true);
+                    if (ae.e1.value != null)
                     {
                         continue L_outer2;
                     }
                 }
                 break;
             }
-            ae_ref.value.e1.value = ae1old.value;
-            ae_ref.value.lengthVar.value = null;
+            ae.e1.value = ae1old;
+            ae.lengthVar.value = null;
         }
 
         public  void visit(CastExp e) {
-            Ref<AggregateDeclaration> ad = ref(isAggregate(e.e1.value.type.value));
-            if (ad.value != null)
+            AggregateDeclaration ad = isAggregate(e.e1.value.type.value);
+            if (ad != null)
             {
-                Ref<Dsymbol> fd = ref(null);
-                fd.value = search_function(ad.value, Id._cast.value);
-                if (fd.value != null)
+                Dsymbol fd = null;
+                fd = search_function(ad, Id._cast);
+                if (fd != null)
                 {
-                    if (fd.value.isFuncDeclaration() != null)
+                    if (fd.isFuncDeclaration() != null)
                     {
-                        this.result.value = build_overload(e.loc.value, this.sc.value, e.e1.value, null, fd.value);
+                        this.result = build_overload(e.loc, this.sc, e.e1.value, null, fd);
                         return ;
                     }
-                    Ref<Ptr<DArray<RootObject>>> tiargs = ref(refPtr(new DArray<RootObject>()));
-                    (tiargs.value.get()).push(e.to.value);
-                    this.result.value = new DotTemplateInstanceExp(e.loc.value, e.e1.value, fd.value.ident.value, tiargs.value);
-                    this.result.value = new CallExp(e.loc.value, this.result.value);
-                    this.result.value = expressionSemantic(this.result.value, this.sc.value);
+                    Ptr<DArray<RootObject>> tiargs = refPtr(new DArray<RootObject>());
+                    (tiargs.get()).push(e.to);
+                    this.result = new DotTemplateInstanceExp(e.loc, e.e1.value, fd.ident, tiargs);
+                    this.result = new CallExp(e.loc, this.result);
+                    this.result = expressionSemantic(this.result, this.sc);
                     return ;
                 }
-                if (ad.value.aliasthis.value != null)
+                if (ad.aliasthis != null)
                 {
-                    Ref<Expression> e1 = ref(resolveAliasThis(this.sc.value, e.e1.value, false));
-                    this.result.value = e.copy();
-                    ((UnaExp)this.result.value).e1.value = e1.value;
-                    this.result.value = op_overload(this.result.value, this.sc.value, null);
+                    Expression e1 = resolveAliasThis(this.sc, e.e1.value, false);
+                    this.result = e.copy();
+                    ((UnaExp)this.result).e1.value = e1;
+                    this.result = op_overload(this.result, this.sc, null);
                     return ;
                 }
             }
         }
 
         public  void visit(BinExp e) {
-            Ref<BinExp> e_ref = ref(e);
-            Ref<Identifier> id = ref(opId(e_ref.value));
-            Ref<Identifier> id_r = ref(opId_r(e_ref.value));
+            Identifier id = opId(e);
+            Identifier id_r = opId_r(e);
             Ref<DArray<Expression>> args1 = ref(new DArray<Expression>());
             try {
                 Ref<DArray<Expression>> args2 = ref(new DArray<Expression>());
                 try {
-                    IntRef argsset = ref(0);
-                    Ref<AggregateDeclaration> ad1 = ref(isAggregate(e_ref.value.e1.value.type.value));
-                    Ref<AggregateDeclaration> ad2 = ref(isAggregate(e_ref.value.e2.value.type.value));
-                    if (((e_ref.value.op.value & 0xFF) == 90) && (pequals(ad1.value, ad2.value)))
+                    int argsset = 0;
+                    AggregateDeclaration ad1 = isAggregate(e.e1.value.type.value);
+                    AggregateDeclaration ad2 = isAggregate(e.e2.value.type.value);
+                    if (((e.op & 0xFF) == 90) && (pequals(ad1, ad2)))
                     {
-                        Ref<StructDeclaration> sd = ref(ad1.value.isStructDeclaration());
-                        if ((sd.value != null) && !sd.value.hasIdentityAssign.value)
+                        StructDeclaration sd = ad1.isStructDeclaration();
+                        if ((sd != null) && !sd.hasIdentityAssign)
                         {
                             return ;
                         }
                     }
-                    Ref<Dsymbol> s = ref(null);
-                    Ref<Dsymbol> s_r = ref(null);
-                    if ((ad1.value != null) && (id.value != null))
+                    Dsymbol s = null;
+                    Dsymbol s_r = null;
+                    if ((ad1 != null) && (id != null))
                     {
-                        s.value = search_function(ad1.value, id.value);
+                        s = search_function(ad1, id);
                     }
-                    if ((ad2.value != null) && (id_r.value != null))
+                    if ((ad2 != null) && (id_r != null))
                     {
-                        s_r.value = search_function(ad2.value, id_r.value);
-                        if ((s_r.value != null) && (pequals(s_r.value, s.value)))
+                        s_r = search_function(ad2, id_r);
+                        if ((s_r != null) && (pequals(s_r, s)))
                         {
-                            s_r.value = null;
+                            s_r = null;
                         }
                     }
-                    Ref<Ptr<DArray<RootObject>>> tiargs = ref(null);
-                    if (((e_ref.value.op.value & 0xFF) == 93) || ((e_ref.value.op.value & 0xFF) == 94))
+                    Ptr<DArray<RootObject>> tiargs = null;
+                    if (((e.op & 0xFF) == 93) || ((e.op & 0xFF) == 94))
                     {
-                        if ((ad1.value != null) && (search_function(ad1.value, Id.opUnary.value) != null))
+                        if ((ad1 != null) && (search_function(ad1, Id.opUnary) != null))
                         {
                             return ;
                         }
                     }
-                    if ((s.value == null) && (s_r.value == null) && ((e_ref.value.op.value & 0xFF) != 58) && ((e_ref.value.op.value & 0xFF) != 59) && ((e_ref.value.op.value & 0xFF) != 90) && ((e_ref.value.op.value & 0xFF) != 93) && ((e_ref.value.op.value & 0xFF) != 94))
+                    if ((s == null) && (s_r == null) && ((e.op & 0xFF) != 58) && ((e.op & 0xFF) != 59) && ((e.op & 0xFF) != 90) && ((e.op & 0xFF) != 93) && ((e.op & 0xFF) != 94))
                     {
-                        if (ad1.value != null)
+                        if (ad1 != null)
                         {
-                            s.value = search_function(ad1.value, Id.opBinary.value);
-                            if ((s.value != null) && (s.value.isTemplateDeclaration() == null))
+                            s = search_function(ad1, Id.opBinary);
+                            if ((s != null) && (s.isTemplateDeclaration() == null))
                             {
-                                e_ref.value.e1.value.error(new BytePtr("`%s.opBinary` isn't a template"), e_ref.value.e1.value.toChars());
-                                this.result.value = new ErrorExp();
+                                e.e1.value.error(new BytePtr("`%s.opBinary` isn't a template"), e.e1.value.toChars());
+                                this.result = new ErrorExp();
                                 return ;
                             }
                         }
-                        if (ad2.value != null)
+                        if (ad2 != null)
                         {
-                            s_r.value = search_function(ad2.value, Id.opBinaryRight.value);
-                            if ((s_r.value != null) && (s_r.value.isTemplateDeclaration() == null))
+                            s_r = search_function(ad2, Id.opBinaryRight);
+                            if ((s_r != null) && (s_r.isTemplateDeclaration() == null))
                             {
-                                e_ref.value.e2.value.error(new BytePtr("`%s.opBinaryRight` isn't a template"), e_ref.value.e2.value.toChars());
-                                this.result.value = new ErrorExp();
+                                e.e2.value.error(new BytePtr("`%s.opBinaryRight` isn't a template"), e.e2.value.toChars());
+                                this.result = new ErrorExp();
                                 return ;
                             }
-                            if ((s_r.value != null) && (pequals(s_r.value, s.value)))
+                            if ((s_r != null) && (pequals(s_r, s)))
                             {
-                                s_r.value = null;
+                                s_r = null;
                             }
                         }
-                        if ((s.value != null) || (s_r.value != null))
+                        if ((s != null) || (s_r != null))
                         {
-                            id.value = Id.opBinary.value;
-                            id_r.value = Id.opBinaryRight.value;
-                            tiargs.value = opToArg(this.sc.value, e_ref.value.op.value);
+                            id = Id.opBinary;
+                            id_r = Id.opBinaryRight;
+                            tiargs = opToArg(this.sc, e.op);
                         }
                     }
                     try {
-                        if ((s.value != null) || (s_r.value != null))
+                        if ((s != null) || (s_r != null))
                         {
                             args1.value.setDim(1);
-                            args1.value.set(0, e_ref.value.e1.value);
+                            args1.value.set(0, e.e1.value);
                             expandTuples(ptr(args1));
                             args2.value.setDim(1);
-                            args2.value.set(0, e_ref.value.e2.value);
+                            args2.value.set(0, e.e2.value);
                             expandTuples(ptr(args2));
-                            argsset.value = 1;
+                            argsset = 1;
                             Ref<MatchAccumulator> m = ref(new MatchAccumulator());
-                            if (s.value != null)
+                            if (s != null)
                             {
-                                functionResolve(m, s.value, e_ref.value.loc.value, this.sc.value, tiargs.value, e_ref.value.e1.value.type.value, ptr(args2), null);
-                                if ((m.value.lastf.value != null) && m.value.lastf.value.errors.value || m.value.lastf.value.semantic3Errors.value)
+                                functionResolve(m, s, e.loc, this.sc, tiargs, e.e1.value.type.value, ptr(args2), null);
+                                if ((m.value.lastf != null) && m.value.lastf.errors || m.value.lastf.semantic3Errors)
                                 {
-                                    this.result.value = new ErrorExp();
+                                    this.result = new ErrorExp();
                                     return ;
                                 }
                             }
-                            Ref<FuncDeclaration> lastf = ref(m.value.lastf.value);
-                            if (s_r.value != null)
+                            FuncDeclaration lastf = m.value.lastf;
+                            if (s_r != null)
                             {
-                                functionResolve(m, s_r.value, e_ref.value.loc.value, this.sc.value, tiargs.value, e_ref.value.e2.value.type.value, ptr(args1), null);
-                                if ((m.value.lastf.value != null) && m.value.lastf.value.errors.value || m.value.lastf.value.semantic3Errors.value)
+                                functionResolve(m, s_r, e.loc, this.sc, tiargs, e.e2.value.type.value, ptr(args1), null);
+                                if ((m.value.lastf != null) && m.value.lastf.errors || m.value.lastf.semantic3Errors)
                                 {
-                                    this.result.value = new ErrorExp();
+                                    this.result = new ErrorExp();
                                     return ;
                                 }
                             }
-                            if ((m.value.count.value > 1))
+                            if ((m.value.count > 1))
                             {
-                                e_ref.value.error(new BytePtr("overloads `%s` and `%s` both match argument list for `%s`"), m.value.lastf.value.type.value.toChars(), m.value.nextf.value.type.value.toChars(), m.value.lastf.value.toChars());
+                                e.error(new BytePtr("overloads `%s` and `%s` both match argument list for `%s`"), m.value.lastf.type.toChars(), m.value.nextf.type.toChars(), m.value.lastf.toChars());
                             }
-                            else if ((m.value.last.value <= MATCH.nomatch))
+                            else if ((m.value.last <= MATCH.nomatch))
                             {
-                                if (tiargs.value != null)
+                                if (tiargs != null)
                                 {
                                     /*goto L1*/throw Dispatch0.INSTANCE;
                                 }
-                                m.value.lastf.value = null;
+                                m.value.lastf = null;
                             }
-                            if (((e_ref.value.op.value & 0xFF) == 93) || ((e_ref.value.op.value & 0xFF) == 94))
+                            if (((e.op & 0xFF) == 93) || ((e.op & 0xFF) == 94))
                             {
-                                this.result.value = build_overload(e_ref.value.loc.value, this.sc.value, e_ref.value.e1.value, null, m.value.lastf.value != null ? m.value.lastf.value : s.value);
+                                this.result = build_overload(e.loc, this.sc, e.e1.value, null, m.value.lastf != null ? m.value.lastf : s);
                             }
-                            else if ((lastf.value != null) && (pequals(m.value.lastf.value, lastf.value)) || (s_r.value == null) && (m.value.last.value <= MATCH.nomatch))
+                            else if ((lastf != null) && (pequals(m.value.lastf, lastf)) || (s_r == null) && (m.value.last <= MATCH.nomatch))
                             {
-                                this.result.value = build_overload(e_ref.value.loc.value, this.sc.value, e_ref.value.e1.value, e_ref.value.e2.value, m.value.lastf.value != null ? m.value.lastf.value : s.value);
+                                this.result = build_overload(e.loc, this.sc, e.e1.value, e.e2.value, m.value.lastf != null ? m.value.lastf : s);
                             }
                             else
                             {
-                                this.result.value = build_overload(e_ref.value.loc.value, this.sc.value, e_ref.value.e2.value, e_ref.value.e1.value, m.value.lastf.value != null ? m.value.lastf.value : s_r.value);
+                                this.result = build_overload(e.loc, this.sc, e.e2.value, e.e1.value, m.value.lastf != null ? m.value.lastf : s_r);
                             }
                             return ;
                         }
                     }
                     catch(Dispatch0 __d){}
                 /*L1:*/
-                    if (isCommutative(e_ref.value.op.value) && (tiargs.value == null))
+                    if (isCommutative(e.op) && (tiargs == null))
                     {
-                        s.value = null;
-                        s_r.value = null;
-                        if ((ad1.value != null) && (id_r.value != null))
+                        s = null;
+                        s_r = null;
+                        if ((ad1 != null) && (id_r != null))
                         {
-                            s_r.value = search_function(ad1.value, id_r.value);
+                            s_r = search_function(ad1, id_r);
                         }
-                        if ((ad2.value != null) && (id.value != null))
+                        if ((ad2 != null) && (id != null))
                         {
-                            s.value = search_function(ad2.value, id.value);
-                            if ((s.value != null) && (pequals(s.value, s_r.value)))
+                            s = search_function(ad2, id);
+                            if ((s != null) && (pequals(s, s_r)))
                             {
-                                s.value = null;
+                                s = null;
                             }
                         }
-                        if ((s.value != null) || (s_r.value != null))
+                        if ((s != null) || (s_r != null))
                         {
-                            if (argsset.value == 0)
+                            if (argsset == 0)
                             {
                                 args1.value.setDim(1);
-                                args1.value.set(0, e_ref.value.e1.value);
+                                args1.value.set(0, e.e1.value);
                                 expandTuples(ptr(args1));
                                 args2.value.setDim(1);
-                                args2.value.set(0, e_ref.value.e2.value);
+                                args2.value.set(0, e.e2.value);
                                 expandTuples(ptr(args2));
                             }
                             Ref<MatchAccumulator> m = ref(new MatchAccumulator());
-                            if (s_r.value != null)
+                            if (s_r != null)
                             {
-                                functionResolve(m, s_r.value, e_ref.value.loc.value, this.sc.value, tiargs.value, e_ref.value.e1.value.type.value, ptr(args2), null);
-                                if ((m.value.lastf.value != null) && m.value.lastf.value.errors.value || m.value.lastf.value.semantic3Errors.value)
+                                functionResolve(m, s_r, e.loc, this.sc, tiargs, e.e1.value.type.value, ptr(args2), null);
+                                if ((m.value.lastf != null) && m.value.lastf.errors || m.value.lastf.semantic3Errors)
                                 {
-                                    this.result.value = new ErrorExp();
+                                    this.result = new ErrorExp();
                                     return ;
                                 }
                             }
-                            Ref<FuncDeclaration> lastf = ref(m.value.lastf.value);
-                            if (s.value != null)
+                            FuncDeclaration lastf = m.value.lastf;
+                            if (s != null)
                             {
-                                functionResolve(m, s.value, e_ref.value.loc.value, this.sc.value, tiargs.value, e_ref.value.e2.value.type.value, ptr(args1), null);
-                                if ((m.value.lastf.value != null) && m.value.lastf.value.errors.value || m.value.lastf.value.semantic3Errors.value)
+                                functionResolve(m, s, e.loc, this.sc, tiargs, e.e2.value.type.value, ptr(args1), null);
+                                if ((m.value.lastf != null) && m.value.lastf.errors || m.value.lastf.semantic3Errors)
                                 {
-                                    this.result.value = new ErrorExp();
+                                    this.result = new ErrorExp();
                                     return ;
                                 }
                             }
-                            if ((m.value.count.value > 1))
+                            if ((m.value.count > 1))
                             {
-                                e_ref.value.error(new BytePtr("overloads `%s` and `%s` both match argument list for `%s`"), m.value.lastf.value.type.value.toChars(), m.value.nextf.value.type.value.toChars(), m.value.lastf.value.toChars());
+                                e.error(new BytePtr("overloads `%s` and `%s` both match argument list for `%s`"), m.value.lastf.type.toChars(), m.value.nextf.type.toChars(), m.value.lastf.toChars());
                             }
-                            else if ((m.value.last.value <= MATCH.nomatch))
+                            else if ((m.value.last <= MATCH.nomatch))
                             {
-                                m.value.lastf.value = null;
+                                m.value.lastf = null;
                             }
-                            if ((lastf.value != null) && (pequals(m.value.lastf.value, lastf.value)) || (s.value == null) && (m.value.last.value <= MATCH.nomatch))
+                            if ((lastf != null) && (pequals(m.value.lastf, lastf)) || (s == null) && (m.value.last <= MATCH.nomatch))
                             {
-                                this.result.value = build_overload(e_ref.value.loc.value, this.sc.value, e_ref.value.e1.value, e_ref.value.e2.value, m.value.lastf.value != null ? m.value.lastf.value : s_r.value);
+                                this.result = build_overload(e.loc, this.sc, e.e1.value, e.e2.value, m.value.lastf != null ? m.value.lastf : s_r);
                             }
                             else
                             {
-                                this.result.value = build_overload(e_ref.value.loc.value, this.sc.value, e_ref.value.e2.value, e_ref.value.e1.value, m.value.lastf.value != null ? m.value.lastf.value : s.value);
+                                this.result = build_overload(e.loc, this.sc, e.e2.value, e.e1.value, m.value.lastf != null ? m.value.lastf : s);
                             }
-                            if (this.pop.value != null)
+                            if (this.pop != null)
                             {
-                                this.pop.value.set(0, reverseRelation(e_ref.value.op.value));
+                                this.pop.set(0, reverseRelation(e.op));
                             }
                             return ;
                         }
                     }
-                    Ref<Expression> tempResult = ref(null);
-                    if (!(((e_ref.value.op.value & 0xFF) == 90) && (ad2.value != null) && (pequals(ad1.value, ad2.value))))
+                    Expression tempResult = null;
+                    if (!(((e.op & 0xFF) == 90) && (ad2 != null) && (pequals(ad1, ad2))))
                     {
-                        this.result.value = checkAliasThisForLhs(ad1.value, this.sc.value, e_ref.value);
-                        if (this.result.value != null)
+                        this.result = checkAliasThisForLhs(ad1, this.sc, e);
+                        if (this.result != null)
                         {
-                            if (((e_ref.value.op.value & 0xFF) != 90) || ((e_ref.value.e1.value.op.value & 0xFF) == 20))
+                            if (((e.op & 0xFF) != 90) || ((e.e1.value.op & 0xFF) == 20))
                             {
                                 return ;
                             }
-                            if ((ad1.value.fields.length.value == 1) || (ad1.value.fields.length.value == 2) && (ad1.value.vthis.value != null))
+                            if ((ad1.fields.length == 1) || (ad1.fields.length == 2) && (ad1.vthis != null))
                             {
-                                Ref<VarDeclaration> var = ref(ad1.value.aliasthis.value.isVarDeclaration());
-                                if ((var.value != null) && (pequals(var.value.type.value, ad1.value.fields.get(0).type.value)))
+                                VarDeclaration var = ad1.aliasthis.isVarDeclaration();
+                                if ((var != null) && (pequals(var.type, ad1.fields.get(0).type)))
                                 {
                                     return ;
                                 }
-                                FuncDeclaration func = ad1.value.aliasthis.value.isFuncDeclaration();
-                                TypeFunction tf = (TypeFunction)func.type.value;
-                                if (tf.isref.value && (pequals(ad1.value.fields.get(0).type.value, tf.next.value)))
+                                FuncDeclaration func = ad1.aliasthis.isFuncDeclaration();
+                                TypeFunction tf = (TypeFunction)func.type;
+                                if (tf.isref && (pequals(ad1.fields.get(0).type, tf.next.value)))
                                 {
                                     return ;
                                 }
                             }
-                            tempResult.value = this.result.value;
+                            tempResult = this.result;
                         }
                     }
-                    if (!(((e_ref.value.op.value & 0xFF) == 90) && (ad1.value != null) && (pequals(ad1.value, ad2.value))))
+                    if (!(((e.op & 0xFF) == 90) && (ad1 != null) && (pequals(ad1, ad2))))
                     {
-                        this.result.value = checkAliasThisForRhs(ad2.value, this.sc.value, e_ref.value);
-                        if (this.result.value != null)
+                        this.result = checkAliasThisForRhs(ad2, this.sc, e);
+                        if (this.result != null)
                         {
                             return ;
                         }
                     }
-                    if (tempResult.value != null)
+                    if (tempResult != null)
                     {
-                        e_ref.value.deprecation(new BytePtr("Cannot use `alias this` to partially initialize variable `%s` of type `%s`. Use `%s`"), e_ref.value.e1.value.toChars(), ad1.value.toChars(), ((BinExp)tempResult.value).e1.value.toChars());
-                        this.result.value = tempResult.value;
+                        e.deprecation(new BytePtr("Cannot use `alias this` to partially initialize variable `%s` of type `%s`. Use `%s`"), e.e1.value.toChars(), ad1.toChars(), ((BinExp)tempResult).e1.value.toChars());
+                        this.result = tempResult;
                     }
                 }
                 finally {
@@ -822,20 +813,19 @@ public class opover {
         }
 
         public  void visit(EqualExp e) {
-            Ref<EqualExp> e_ref = ref(e);
-            Ref<Type> t1 = ref(e_ref.value.e1.value.type.value.toBasetype());
-            Ref<Type> t2 = ref(e_ref.value.e2.value.type.value.toBasetype());
-            if (((t1.value.ty.value & 0xFF) == ENUMTY.Tarray) || ((t1.value.ty.value & 0xFF) == ENUMTY.Tsarray) && ((t2.value.ty.value & 0xFF) == ENUMTY.Tarray) || ((t2.value.ty.value & 0xFF) == ENUMTY.Tsarray))
+            Ref<Type> t1 = ref(e.e1.value.type.value.toBasetype());
+            Ref<Type> t2 = ref(e.e2.value.type.value.toBasetype());
+            if (((t1.value.ty & 0xFF) == ENUMTY.Tarray) || ((t1.value.ty & 0xFF) == ENUMTY.Tsarray) && ((t2.value.ty & 0xFF) == ENUMTY.Tarray) || ((t2.value.ty & 0xFF) == ENUMTY.Tsarray))
             {
                 Function0<Boolean> needsDirectEq = new Function0<Boolean>(){
                     public Boolean invoke() {
                         Ref<Type> t1n = ref(t1.value.nextOf().toBasetype());
-                        Type t2n = t2.value.nextOf().toBasetype();
-                        if (((t1n.value.ty.value & 0xFF) == ENUMTY.Tchar) || ((t1n.value.ty.value & 0xFF) == ENUMTY.Twchar) || ((t1n.value.ty.value & 0xFF) == ENUMTY.Tdchar) && ((t2n.ty.value & 0xFF) == ENUMTY.Tchar) || ((t2n.ty.value & 0xFF) == ENUMTY.Twchar) || ((t2n.ty.value & 0xFF) == ENUMTY.Tdchar) || ((t1n.value.ty.value & 0xFF) == ENUMTY.Tvoid) || ((t2n.ty.value & 0xFF) == ENUMTY.Tvoid))
+                        Ref<Type> t2n = ref(t2.value.nextOf().toBasetype());
+                        if (((t1n.value.ty & 0xFF) == ENUMTY.Tchar) || ((t1n.value.ty & 0xFF) == ENUMTY.Twchar) || ((t1n.value.ty & 0xFF) == ENUMTY.Tdchar) && ((t2n.value.ty & 0xFF) == ENUMTY.Tchar) || ((t2n.value.ty & 0xFF) == ENUMTY.Twchar) || ((t2n.value.ty & 0xFF) == ENUMTY.Tdchar) || ((t1n.value.ty & 0xFF) == ENUMTY.Tvoid) || ((t2n.value.ty & 0xFF) == ENUMTY.Tvoid))
                         {
                             return false;
                         }
-                        if ((!pequals(t1n.value.constOf(), t2n.constOf())))
+                        if ((!pequals(t1n.value.constOf(), t2n.value.constOf())))
                         {
                             return true;
                         }
@@ -843,383 +833,381 @@ public class opover {
                         for (; t.value.toBasetype().nextOf() != null;) {
                             t.value = t.value.nextOf().toBasetype();
                         }
-                        if (((t.value.ty.value & 0xFF) != ENUMTY.Tstruct))
+                        if (((t.value.ty & 0xFF) != ENUMTY.Tstruct))
                         {
                             return false;
                         }
-                        if (global.params.useTypeInfo.value && (Type.dtypeinfo.value != null))
+                        if (global.value.params.useTypeInfo && (Type.dtypeinfo.value != null))
                         {
-                            semanticTypeInfo(sc.value, t.value);
+                            semanticTypeInfo(sc, t.value);
                         }
-                        return ((TypeStruct)t.value).sym.value.hasIdentityEquals.value;
+                        return ((TypeStruct)t.value).sym.hasIdentityEquals;
                     }
                 };
-                if (needsDirectEq.invoke() && !(((t1.value.ty.value & 0xFF) == ENUMTY.Tarray) && ((t2.value.ty.value & 0xFF) == ENUMTY.Tarray)))
+                if (needsDirectEq.invoke() && !(((t1.value.ty & 0xFF) == ENUMTY.Tarray) && ((t2.value.ty & 0xFF) == ENUMTY.Tarray)))
                 {
-                    Ref<Expression> eeq = ref(new IdentifierExp(e_ref.value.loc.value, Id.__ArrayEq.value));
-                    this.result.value = new CallExp(e_ref.value.loc.value, eeq.value, e_ref.value.e1.value, e_ref.value.e2.value);
-                    if (((e_ref.value.op.value & 0xFF) == 59))
+                    Expression eeq = new IdentifierExp(e.loc, Id.__ArrayEq);
+                    this.result = new CallExp(e.loc, eeq, e.e1.value, e.e2.value);
+                    if (((e.op & 0xFF) == 59))
                     {
-                        this.result.value = new NotExp(e_ref.value.loc.value, this.result.value);
+                        this.result = new NotExp(e.loc, this.result);
                     }
-                    this.result.value = trySemantic(this.result.value, this.sc.value);
-                    if (this.result.value == null)
+                    this.result = trySemantic(this.result, this.sc);
+                    if (this.result == null)
                     {
-                        e_ref.value.error(new BytePtr("cannot compare `%s` and `%s`"), t1.value.toChars(), t2.value.toChars());
-                        this.result.value = new ErrorExp();
+                        e.error(new BytePtr("cannot compare `%s` and `%s`"), t1.value.toChars(), t2.value.toChars());
+                        this.result = new ErrorExp();
                     }
                     return ;
                 }
             }
-            if (((t1.value.ty.value & 0xFF) == ENUMTY.Tclass) && ((e_ref.value.e2.value.op.value & 0xFF) == 13) || ((t2.value.ty.value & 0xFF) == ENUMTY.Tclass) && ((e_ref.value.e1.value.op.value & 0xFF) == 13))
+            if (((t1.value.ty & 0xFF) == ENUMTY.Tclass) && ((e.e2.value.op & 0xFF) == 13) || ((t2.value.ty & 0xFF) == ENUMTY.Tclass) && ((e.e1.value.op & 0xFF) == 13))
             {
-                e_ref.value.error(new BytePtr("use `%s` instead of `%s` when comparing with `null`"), Token.toChars(((e_ref.value.op.value & 0xFF) == 58) ? TOK.identity : TOK.notIdentity), Token.toChars(e_ref.value.op.value));
-                this.result.value = new ErrorExp();
+                e.error(new BytePtr("use `%s` instead of `%s` when comparing with `null`"), Token.toChars(((e.op & 0xFF) == 58) ? TOK.identity : TOK.notIdentity), Token.toChars(e.op));
+                this.result = new ErrorExp();
                 return ;
             }
-            if (((t1.value.ty.value & 0xFF) == ENUMTY.Tclass) && ((t2.value.ty.value & 0xFF) == ENUMTY.Tnull) || ((t1.value.ty.value & 0xFF) == ENUMTY.Tnull) && ((t2.value.ty.value & 0xFF) == ENUMTY.Tclass))
+            if (((t1.value.ty & 0xFF) == ENUMTY.Tclass) && ((t2.value.ty & 0xFF) == ENUMTY.Tnull) || ((t1.value.ty & 0xFF) == ENUMTY.Tnull) && ((t2.value.ty & 0xFF) == ENUMTY.Tclass))
             {
                 return ;
             }
-            if (((t1.value.ty.value & 0xFF) == ENUMTY.Tclass) && ((t2.value.ty.value & 0xFF) == ENUMTY.Tclass))
+            if (((t1.value.ty & 0xFF) == ENUMTY.Tclass) && ((t2.value.ty & 0xFF) == ENUMTY.Tclass))
             {
                 ClassDeclaration cd1 = t1.value.isClassHandle();
                 ClassDeclaration cd2 = t2.value.isClassHandle();
-                if (!((cd1.classKind.value == ClassKind.cpp) || (cd2.classKind.value == ClassKind.cpp)))
+                if (!((cd1.classKind == ClassKind.cpp) || (cd2.classKind == ClassKind.cpp)))
                 {
-                    Ref<Expression> e1x = ref(e_ref.value.e1.value);
-                    Ref<Expression> e2x = ref(e_ref.value.e2.value);
-                    Ref<Type> to = ref(ClassDeclaration.object.value.getType());
+                    Expression e1x = e.e1.value;
+                    Expression e2x = e.e2.value;
+                    Type to = ClassDeclaration.object.getType();
                     if (cd1.isInterfaceDeclaration() != null)
                     {
-                        e1x.value = new CastExp(e_ref.value.loc.value, e_ref.value.e1.value, t1.value.isMutable() ? to.value : to.value.constOf());
+                        e1x = new CastExp(e.loc, e.e1.value, t1.value.isMutable() ? to : to.constOf());
                     }
                     if (cd2.isInterfaceDeclaration() != null)
                     {
-                        e2x.value = new CastExp(e_ref.value.loc.value, e_ref.value.e2.value, t2.value.isMutable() ? to.value : to.value.constOf());
+                        e2x = new CastExp(e.loc, e.e2.value, t2.value.isMutable() ? to : to.constOf());
                     }
-                    this.result.value = new IdentifierExp(e_ref.value.loc.value, Id.empty.value);
-                    this.result.value = new DotIdExp(e_ref.value.loc.value, this.result.value, Id.object.value);
-                    this.result.value = new DotIdExp(e_ref.value.loc.value, this.result.value, Id.eq.value);
-                    this.result.value = new CallExp(e_ref.value.loc.value, this.result.value, e1x.value, e2x.value);
-                    if (((e_ref.value.op.value & 0xFF) == 59))
+                    this.result = new IdentifierExp(e.loc, Id.empty);
+                    this.result = new DotIdExp(e.loc, this.result, Id.object);
+                    this.result = new DotIdExp(e.loc, this.result, Id.eq);
+                    this.result = new CallExp(e.loc, this.result, e1x, e2x);
+                    if (((e.op & 0xFF) == 59))
                     {
-                        this.result.value = new NotExp(e_ref.value.loc.value, this.result.value);
+                        this.result = new NotExp(e.loc, this.result);
                     }
-                    this.result.value = expressionSemantic(this.result.value, this.sc.value);
+                    this.result = expressionSemantic(this.result, this.sc);
                     return ;
                 }
             }
-            this.result.value = compare_overload(e_ref.value, this.sc.value, Id.eq.value, null);
-            if (this.result.value != null)
+            this.result = compare_overload(e, this.sc, Id.eq, null);
+            if (this.result != null)
             {
-                if (((this.result.value.op.value & 0xFF) == 18) && ((e_ref.value.op.value & 0xFF) == 59))
+                if (((this.result.op & 0xFF) == 18) && ((e.op & 0xFF) == 59))
                 {
-                    this.result.value = new NotExp(this.result.value.loc.value, this.result.value);
-                    this.result.value = expressionSemantic(this.result.value, this.sc.value);
+                    this.result = new NotExp(this.result.loc, this.result);
+                    this.result = expressionSemantic(this.result, this.sc);
                 }
                 return ;
             }
-            if (((t1.value.ty.value & 0xFF) == ENUMTY.Tarray) && ((t2.value.ty.value & 0xFF) == ENUMTY.Tarray))
+            if (((t1.value.ty & 0xFF) == ENUMTY.Tarray) && ((t2.value.ty & 0xFF) == ENUMTY.Tarray))
             {
                 return ;
             }
-            if (((t1.value.ty.value & 0xFF) == ENUMTY.Tpointer) || ((t2.value.ty.value & 0xFF) == ENUMTY.Tpointer))
+            if (((t1.value.ty & 0xFF) == ENUMTY.Tpointer) || ((t2.value.ty & 0xFF) == ENUMTY.Tpointer))
             {
-                Ref<Byte> op2 = ref(((e_ref.value.op.value & 0xFF) == 58) ? TOK.identity : TOK.notIdentity);
-                this.result.value = new IdentityExp(op2.value, e_ref.value.loc.value, e_ref.value.e1.value, e_ref.value.e2.value);
-                this.result.value = expressionSemantic(this.result.value, this.sc.value);
+                byte op2 = ((e.op & 0xFF) == 58) ? TOK.identity : TOK.notIdentity;
+                this.result = new IdentityExp(op2, e.loc, e.e1.value, e.e2.value);
+                this.result = expressionSemantic(this.result, this.sc);
                 return ;
             }
-            if (((t1.value.ty.value & 0xFF) == ENUMTY.Tstruct) && ((t2.value.ty.value & 0xFF) == ENUMTY.Tstruct))
+            if (((t1.value.ty & 0xFF) == ENUMTY.Tstruct) && ((t2.value.ty & 0xFF) == ENUMTY.Tstruct))
             {
-                Ref<StructDeclaration> sd = ref(((TypeStruct)t1.value).sym.value);
-                if ((!pequals(sd.value, ((TypeStruct)t2.value).sym.value)))
+                StructDeclaration sd = ((TypeStruct)t1.value).sym;
+                if ((!pequals(sd, ((TypeStruct)t2.value).sym)))
                 {
                     return ;
                 }
-                if (!global.params.fieldwise.value && !needOpEquals(sd.value))
+                if (!global.value.params.fieldwise && !needOpEquals(sd))
                 {
-                    Ref<Byte> op2 = ref(((e_ref.value.op.value & 0xFF) == 58) ? TOK.identity : TOK.notIdentity);
-                    this.result.value = new IdentityExp(op2.value, e_ref.value.loc.value, e_ref.value.e1.value, e_ref.value.e2.value);
-                    this.result.value = expressionSemantic(this.result.value, this.sc.value);
+                    byte op2 = ((e.op & 0xFF) == 58) ? TOK.identity : TOK.notIdentity;
+                    this.result = new IdentityExp(op2, e.loc, e.e1.value, e.e2.value);
+                    this.result = expressionSemantic(this.result, this.sc);
                     return ;
                 }
-                if ((e_ref.value.att1.value != null) && (pequals(t1.value, e_ref.value.att1.value)))
-                {
-                    return ;
-                }
-                if ((e_ref.value.att2.value != null) && (pequals(t2.value, e_ref.value.att2.value)))
+                if ((e.att1 != null) && (pequals(t1.value, e.att1)))
                 {
                     return ;
                 }
-                e_ref.value = (EqualExp)e_ref.value.copy();
-                if (e_ref.value.att1.value == null)
+                if ((e.att2 != null) && (pequals(t2.value, e.att2)))
                 {
-                    e_ref.value.att1.value = t1.value;
+                    return ;
                 }
-                if (e_ref.value.att2.value == null)
+                e = (EqualExp)e.copy();
+                if (e.att1 == null)
                 {
-                    e_ref.value.att2.value = t2.value;
+                    e.att1 = t1.value;
                 }
-                e_ref.value.e1.value = new DotIdExp(e_ref.value.loc.value, e_ref.value.e1.value, Id._tupleof.value);
-                e_ref.value.e2.value = new DotIdExp(e_ref.value.loc.value, e_ref.value.e2.value, Id._tupleof.value);
-                Ref<Ptr<Scope>> sc2 = ref((this.sc.value.get()).push());
-                (sc2.value.get()).flags.value = (sc2.value.get()).flags.value & -1025 | 2;
-                this.result.value = expressionSemantic(e_ref.value, sc2.value);
-                (sc2.value.get()).pop();
-                if (((this.result.value.op.value & 0xFF) == (e_ref.value.op.value & 0xFF)) && (pequals(((EqualExp)this.result.value).e1.value.type.value.toBasetype(), t1.value)))
+                if (e.att2 == null)
                 {
-                    e_ref.value.error(new BytePtr("cannot compare `%s` because its auto generated member-wise equality has recursive definition"), t1.value.toChars());
-                    this.result.value = new ErrorExp();
+                    e.att2 = t2.value;
+                }
+                e.e1.value = new DotIdExp(e.loc, e.e1.value, Id._tupleof);
+                e.e2.value = new DotIdExp(e.loc, e.e2.value, Id._tupleof);
+                Ptr<Scope> sc2 = (this.sc.get()).push();
+                (sc2.get()).flags = (sc2.get()).flags & -1025 | 2;
+                this.result = expressionSemantic(e, sc2);
+                (sc2.get()).pop();
+                if (((this.result.op & 0xFF) == (e.op & 0xFF)) && (pequals(((EqualExp)this.result).e1.value.type.value.toBasetype(), t1.value)))
+                {
+                    e.error(new BytePtr("cannot compare `%s` because its auto generated member-wise equality has recursive definition"), t1.value.toChars());
+                    this.result = new ErrorExp();
                 }
                 return ;
             }
-            if (((e_ref.value.e1.value.op.value & 0xFF) == 126) && ((e_ref.value.e2.value.op.value & 0xFF) == 126))
+            if (((e.e1.value.op & 0xFF) == 126) && ((e.e2.value.op & 0xFF) == 126))
             {
-                TupleExp tup1 = (TupleExp)e_ref.value.e1.value;
-                TupleExp tup2 = (TupleExp)e_ref.value.e2.value;
-                IntRef dim = ref((tup1.exps.value.get()).length.value);
-                if ((dim.value != (tup2.exps.value.get()).length.value))
+                TupleExp tup1 = (TupleExp)e.e1.value;
+                TupleExp tup2 = (TupleExp)e.e2.value;
+                int dim = (tup1.exps.get()).length;
+                if ((dim != (tup2.exps.get()).length))
                 {
-                    e_ref.value.error(new BytePtr("mismatched tuple lengths, `%d` and `%d`"), dim.value, (tup2.exps.value.get()).length.value);
-                    this.result.value = new ErrorExp();
+                    e.error(new BytePtr("mismatched tuple lengths, `%d` and `%d`"), dim, (tup2.exps.get()).length);
+                    this.result = new ErrorExp();
                     return ;
                 }
-                if ((dim.value == 0))
+                if ((dim == 0))
                 {
-                    this.result.value = new IntegerExp(e_ref.value.loc.value, (((e_ref.value.op.value & 0xFF) == 58) ? 1 : 0), Type.tbool.value);
+                    this.result = new IntegerExp(e.loc, (((e.op & 0xFF) == 58) ? 1 : 0), Type.tbool);
                 }
                 else
                 {
                     {
-                        IntRef i = ref(0);
-                        for (; (i.value < dim.value);i.value++){
-                            Ref<Expression> ex1 = ref((tup1.exps.value.get()).get(i.value));
-                            Ref<Expression> ex2 = ref((tup2.exps.value.get()).get(i.value));
-                            Ref<EqualExp> eeq = ref(new EqualExp(e_ref.value.op.value, e_ref.value.loc.value, ex1.value, ex2.value));
-                            eeq.value.att1.value = e_ref.value.att1.value;
-                            eeq.value.att2.value = e_ref.value.att2.value;
-                            if (this.result.value == null)
+                        int i = 0;
+                        for (; (i < dim);i++){
+                            Expression ex1 = (tup1.exps.get()).get(i);
+                            Expression ex2 = (tup2.exps.get()).get(i);
+                            EqualExp eeq = new EqualExp(e.op, e.loc, ex1, ex2);
+                            eeq.att1 = e.att1;
+                            eeq.att2 = e.att2;
+                            if (this.result == null)
                             {
-                                this.result.value = eeq.value;
+                                this.result = eeq;
                             }
-                            else if (((e_ref.value.op.value & 0xFF) == 58))
+                            else if (((e.op & 0xFF) == 58))
                             {
-                                this.result.value = new LogicalExp(e_ref.value.loc.value, TOK.andAnd, this.result.value, eeq.value);
+                                this.result = new LogicalExp(e.loc, TOK.andAnd, this.result, eeq);
                             }
                             else
                             {
-                                this.result.value = new LogicalExp(e_ref.value.loc.value, TOK.orOr, this.result.value, eeq.value);
+                                this.result = new LogicalExp(e.loc, TOK.orOr, this.result, eeq);
                             }
                         }
                     }
-                    assert(this.result.value != null);
+                    assert(this.result != null);
                 }
-                this.result.value = Expression.combine(tup1.e0.value, tup2.e0.value, this.result.value);
-                this.result.value = expressionSemantic(this.result.value, this.sc.value);
+                this.result = Expression.combine(tup1.e0.value, tup2.e0.value, this.result);
+                this.result = expressionSemantic(this.result, this.sc);
                 return ;
             }
         }
 
         public  void visit(CmpExp e) {
-            Ref<CmpExp> e_ref = ref(e);
-            this.result.value = compare_overload(e_ref.value, this.sc.value, Id.cmp.value, this.pop.value);
+            this.result = compare_overload(e, this.sc, Id.cmp, this.pop);
         }
 
         public  void visit(BinAssignExp e) {
-            Ref<BinAssignExp> e_ref = ref(e);
-            if (((e_ref.value.e1.value.op.value & 0xFF) == 17))
+            if (((e.e1.value.op & 0xFF) == 17))
             {
-                Ref<ArrayExp> ae = ref((ArrayExp)e_ref.value.e1.value);
-                ae.value.e1.value = expressionSemantic(ae.value.e1.value, this.sc.value);
-                ae.value.e1.value = resolveProperties(this.sc.value, ae.value.e1.value);
-                Ref<Expression> ae1old = ref(ae.value.e1.value);
-                boolean maybeSlice = ((ae.value.arguments.value.get()).length.value == 0) || ((ae.value.arguments.value.get()).length.value == 1) && (((ae.value.arguments.value.get()).get(0).op.value & 0xFF) == 231);
-                Ref<IntervalExp> ie = ref(null);
-                if (maybeSlice && ((ae.value.arguments.value.get()).length.value != 0))
+                ArrayExp ae = (ArrayExp)e.e1.value;
+                ae.e1.value = expressionSemantic(ae.e1.value, this.sc);
+                ae.e1.value = resolveProperties(this.sc, ae.e1.value);
+                Expression ae1old = ae.e1.value;
+                boolean maybeSlice = ((ae.arguments.get()).length == 0) || ((ae.arguments.get()).length == 1) && (((ae.arguments.get()).get(0).op & 0xFF) == 231);
+                IntervalExp ie = null;
+                if (maybeSlice && ((ae.arguments.get()).length != 0))
                 {
-                    assert((((ae.value.arguments.value.get()).get(0).op.value & 0xFF) == 231));
-                    ie.value = (IntervalExp)(ae.value.arguments.value.get()).get(0);
+                    assert((((ae.arguments.get()).get(0).op & 0xFF) == 231));
+                    ie = (IntervalExp)(ae.arguments.get()).get(0);
                 }
             L_outer3:
                 for (; true;){
-                    if (((ae.value.e1.value.op.value & 0xFF) == 127))
+                    if (((ae.e1.value.op & 0xFF) == 127))
                     {
-                        this.result.value = ae.value.e1.value;
+                        this.result = ae.e1.value;
                         return ;
                     }
                     Ref<Expression> e0 = ref(null);
-                    Ref<Expression> ae1save = ref(ae.value.e1.value);
-                    ae.value.lengthVar.value = null;
-                    Ref<Type> t1b = ref(ae.value.e1.value.type.value.toBasetype());
-                    Ref<AggregateDeclaration> ad = ref(isAggregate(t1b.value));
-                    if (ad.value == null)
+                    Expression ae1save = ae.e1.value;
+                    ae.lengthVar.value = null;
+                    Type t1b = ae.e1.value.type.value.toBasetype();
+                    AggregateDeclaration ad = isAggregate(t1b);
+                    if (ad == null)
                     {
                         break;
                     }
                     try {
-                        if (search_function(ad.value, Id.opIndexOpAssign.value) != null)
+                        if (search_function(ad, Id.opIndexOpAssign) != null)
                         {
-                            this.result.value = resolveOpDollar(this.sc.value, ae.value, ptr(e0));
-                            if (this.result.value == null)
+                            this.result = resolveOpDollar(this.sc, ae, ptr(e0));
+                            if (this.result == null)
                             {
                                 /*goto Lfallback*/throw Dispatch0.INSTANCE;
                             }
-                            if (((this.result.value.op.value & 0xFF) == 127))
+                            if (((this.result.op & 0xFF) == 127))
                             {
                                 return ;
                             }
-                            this.result.value = expressionSemantic(e_ref.value.e2.value, this.sc.value);
-                            if (((this.result.value.op.value & 0xFF) == 127))
+                            this.result = expressionSemantic(e.e2.value, this.sc);
+                            if (((this.result.op & 0xFF) == 127))
                             {
                                 return ;
                             }
-                            e_ref.value.e2.value = this.result.value;
-                            Ref<Ptr<DArray<Expression>>> a = ref((ae.value.arguments.value.get()).copy());
-                            (a.value.get()).insert(0, e_ref.value.e2.value);
-                            Ref<Ptr<DArray<RootObject>>> tiargs = ref(opToArg(this.sc.value, e_ref.value.op.value));
-                            this.result.value = new DotTemplateInstanceExp(e_ref.value.loc.value, ae.value.e1.value, Id.opIndexOpAssign.value, tiargs.value);
-                            this.result.value = new CallExp(e_ref.value.loc.value, this.result.value, a.value);
+                            e.e2.value = this.result;
+                            Ptr<DArray<Expression>> a = (ae.arguments.get()).copy();
+                            (a.get()).insert(0, e.e2.value);
+                            Ptr<DArray<RootObject>> tiargs = opToArg(this.sc, e.op);
+                            this.result = new DotTemplateInstanceExp(e.loc, ae.e1.value, Id.opIndexOpAssign, tiargs);
+                            this.result = new CallExp(e.loc, this.result, a);
                             if (maybeSlice)
                             {
-                                this.result.value = trySemantic(this.result.value, this.sc.value);
+                                this.result = trySemantic(this.result, this.sc);
                             }
                             else
                             {
-                                this.result.value = expressionSemantic(this.result.value, this.sc.value);
+                                this.result = expressionSemantic(this.result, this.sc);
                             }
-                            if (this.result.value != null)
+                            if (this.result != null)
                             {
-                                this.result.value = Expression.combine(e0.value, this.result.value);
+                                this.result = Expression.combine(e0.value, this.result);
                                 return ;
                             }
                         }
                     }
                     catch(Dispatch0 __d){}
                 /*Lfallback:*/
-                    if (maybeSlice && (search_function(ad.value, Id.opSliceOpAssign.value) != null))
+                    if (maybeSlice && (search_function(ad, Id.opSliceOpAssign) != null))
                     {
-                        this.result.value = resolveOpDollar(this.sc.value, ae.value, ie.value, ptr(e0));
-                        if (((this.result.value.op.value & 0xFF) == 127))
+                        this.result = resolveOpDollar(this.sc, ae, ie, ptr(e0));
+                        if (((this.result.op & 0xFF) == 127))
                         {
                             return ;
                         }
-                        this.result.value = expressionSemantic(e_ref.value.e2.value, this.sc.value);
-                        if (((this.result.value.op.value & 0xFF) == 127))
+                        this.result = expressionSemantic(e.e2.value, this.sc);
+                        if (((this.result.op & 0xFF) == 127))
                         {
                             return ;
                         }
-                        e_ref.value.e2.value = this.result.value;
-                        Ref<Ptr<DArray<Expression>>> a = ref(refPtr(new DArray<Expression>()));
-                        (a.value.get()).push(e_ref.value.e2.value);
-                        if (ie.value != null)
+                        e.e2.value = this.result;
+                        Ptr<DArray<Expression>> a = refPtr(new DArray<Expression>());
+                        (a.get()).push(e.e2.value);
+                        if (ie != null)
                         {
-                            (a.value.get()).push(ie.value.lwr.value);
-                            (a.value.get()).push(ie.value.upr.value);
+                            (a.get()).push(ie.lwr.value);
+                            (a.get()).push(ie.upr.value);
                         }
-                        Ref<Ptr<DArray<RootObject>>> tiargs = ref(opToArg(this.sc.value, e_ref.value.op.value));
-                        this.result.value = new DotTemplateInstanceExp(e_ref.value.loc.value, ae.value.e1.value, Id.opSliceOpAssign.value, tiargs.value);
-                        this.result.value = new CallExp(e_ref.value.loc.value, this.result.value, a.value);
-                        this.result.value = expressionSemantic(this.result.value, this.sc.value);
-                        this.result.value = Expression.combine(e0.value, this.result.value);
+                        Ptr<DArray<RootObject>> tiargs = opToArg(this.sc, e.op);
+                        this.result = new DotTemplateInstanceExp(e.loc, ae.e1.value, Id.opSliceOpAssign, tiargs);
+                        this.result = new CallExp(e.loc, this.result, a);
+                        this.result = expressionSemantic(this.result, this.sc);
+                        this.result = Expression.combine(e0.value, this.result);
                         return ;
                     }
-                    if ((ad.value.aliasthis.value != null) && (!pequals(t1b.value, ae.value.att1.value)))
+                    if ((ad.aliasthis != null) && (!pequals(t1b, ae.att1)))
                     {
-                        if ((ae.value.att1.value == null) && t1b.value.checkAliasThisRec())
+                        if ((ae.att1 == null) && t1b.checkAliasThisRec())
                         {
-                            ae.value.att1.value = t1b.value;
+                            ae.att1 = t1b;
                         }
-                        ae.value.e1.value = resolveAliasThis(this.sc.value, ae1save.value, true);
-                        if (ae.value.e1.value != null)
+                        ae.e1.value = resolveAliasThis(this.sc, ae1save, true);
+                        if (ae.e1.value != null)
                         {
                             continue L_outer3;
                         }
                     }
                     break;
                 }
-                ae.value.e1.value = ae1old.value;
-                ae.value.lengthVar.value = null;
+                ae.e1.value = ae1old;
+                ae.lengthVar.value = null;
             }
-            this.result.value = binSemanticProp(e_ref.value, this.sc.value);
-            if (this.result.value != null)
+            this.result = binSemanticProp(e, this.sc);
+            if (this.result != null)
             {
                 return ;
             }
-            if (((e_ref.value.e1.value.type.value.ty.value & 0xFF) == ENUMTY.Terror) || ((e_ref.value.e2.value.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+            if (((e.e1.value.type.value.ty & 0xFF) == ENUMTY.Terror) || ((e.e2.value.type.value.ty & 0xFF) == ENUMTY.Terror))
             {
-                this.result.value = new ErrorExp();
+                this.result = new ErrorExp();
                 return ;
             }
-            Ref<Identifier> id = ref(opId(e_ref.value));
+            Identifier id = opId(e);
             Ref<DArray<Expression>> args2 = ref(new DArray<Expression>());
             try {
-                Ref<AggregateDeclaration> ad1 = ref(isAggregate(e_ref.value.e1.value.type.value));
-                Ref<Dsymbol> s = ref(null);
-                if ((ad1.value != null) && (id.value != null))
+                AggregateDeclaration ad1 = isAggregate(e.e1.value.type.value);
+                Dsymbol s = null;
+                if ((ad1 != null) && (id != null))
                 {
-                    s.value = search_function(ad1.value, id.value);
+                    s = search_function(ad1, id);
                 }
-                Ref<Ptr<DArray<RootObject>>> tiargs = ref(null);
-                if (s.value == null)
+                Ptr<DArray<RootObject>> tiargs = null;
+                if (s == null)
                 {
-                    if (ad1.value != null)
+                    if (ad1 != null)
                     {
-                        s.value = search_function(ad1.value, Id.opOpAssign.value);
-                        if ((s.value != null) && (s.value.isTemplateDeclaration() == null))
+                        s = search_function(ad1, Id.opOpAssign);
+                        if ((s != null) && (s.isTemplateDeclaration() == null))
                         {
-                            e_ref.value.error(new BytePtr("`%s.opOpAssign` isn't a template"), e_ref.value.e1.value.toChars());
-                            this.result.value = new ErrorExp();
+                            e.error(new BytePtr("`%s.opOpAssign` isn't a template"), e.e1.value.toChars());
+                            this.result = new ErrorExp();
                             return ;
                         }
                     }
-                    if (s.value != null)
+                    if (s != null)
                     {
-                        id.value = Id.opOpAssign.value;
-                        tiargs.value = opToArg(this.sc.value, e_ref.value.op.value);
+                        id = Id.opOpAssign;
+                        tiargs = opToArg(this.sc, e.op);
                     }
                 }
                 try {
-                    if (s.value != null)
+                    if (s != null)
                     {
                         args2.value.setDim(1);
-                        args2.value.set(0, e_ref.value.e2.value);
+                        args2.value.set(0, e.e2.value);
                         expandTuples(ptr(args2));
                         Ref<MatchAccumulator> m = ref(new MatchAccumulator());
-                        if (s.value != null)
+                        if (s != null)
                         {
-                            functionResolve(m, s.value, e_ref.value.loc.value, this.sc.value, tiargs.value, e_ref.value.e1.value.type.value, ptr(args2), null);
-                            if ((m.value.lastf.value != null) && m.value.lastf.value.errors.value || m.value.lastf.value.semantic3Errors.value)
+                            functionResolve(m, s, e.loc, this.sc, tiargs, e.e1.value.type.value, ptr(args2), null);
+                            if ((m.value.lastf != null) && m.value.lastf.errors || m.value.lastf.semantic3Errors)
                             {
-                                this.result.value = new ErrorExp();
+                                this.result = new ErrorExp();
                                 return ;
                             }
                         }
-                        if ((m.value.count.value > 1))
+                        if ((m.value.count > 1))
                         {
-                            e_ref.value.error(new BytePtr("overloads `%s` and `%s` both match argument list for `%s`"), m.value.lastf.value.type.value.toChars(), m.value.nextf.value.type.value.toChars(), m.value.lastf.value.toChars());
+                            e.error(new BytePtr("overloads `%s` and `%s` both match argument list for `%s`"), m.value.lastf.type.toChars(), m.value.nextf.type.toChars(), m.value.lastf.toChars());
                         }
-                        else if ((m.value.last.value <= MATCH.nomatch))
+                        else if ((m.value.last <= MATCH.nomatch))
                         {
-                            if (tiargs.value != null)
+                            if (tiargs != null)
                             {
                                 /*goto L1*/throw Dispatch0.INSTANCE;
                             }
-                            m.value.lastf.value = null;
+                            m.value.lastf = null;
                         }
-                        this.result.value = build_overload(e_ref.value.loc.value, this.sc.value, e_ref.value.e1.value, e_ref.value.e2.value, m.value.lastf.value != null ? m.value.lastf.value : s.value);
+                        this.result = build_overload(e.loc, this.sc, e.e1.value, e.e2.value, m.value.lastf != null ? m.value.lastf : s);
                         return ;
                     }
                 }
                 catch(Dispatch0 __d){}
             /*L1:*/
-                this.result.value = checkAliasThisForLhs(ad1.value, this.sc.value, e_ref.value);
-                if ((this.result.value != null) || (s.value == null))
+                this.result = checkAliasThisForLhs(ad1, this.sc, e);
+                if ((this.result != null) || (s == null))
                 {
                     return ;
                 }
-                this.result.value = checkAliasThisForRhs(isAggregate(e_ref.value.e2.value.type.value), this.sc.value, e_ref.value);
+                this.result = checkAliasThisForRhs(isAggregate(e.e2.value.type.value), this.sc, e);
             }
             finally {
             }
@@ -1254,14 +1242,14 @@ public class opover {
         // skipping duplicate class OpIdVisitor
         OpIdVisitor v = new OpIdVisitor();
         e.accept(v);
-        return v.id.value;
+        return v.id;
     }
 
     public static Identifier opId_r(Expression e) {
         // skipping duplicate class OpIdRVisitor
         OpIdRVisitor v = new OpIdRVisitor();
         e.accept(v);
-        return v.id.value;
+        return v.id;
     }
 
     public static Ptr<DArray<RootObject>> opToArg(Ptr<Scope> sc, byte op) {
@@ -1309,7 +1297,7 @@ public class opover {
             default:
             break;
         }
-        Expression e = new StringExp(Loc.initial.value, Token.toChars(op));
+        Expression e = new StringExp(Loc.initial, Token.toChars(op));
         e = expressionSemantic(e, sc);
         Ptr<DArray<RootObject>> tiargs = refPtr(new DArray<RootObject>());
         (tiargs.get()).push(e);
@@ -1317,23 +1305,23 @@ public class opover {
     }
 
     public static Expression checkAliasThisForLhs(AggregateDeclaration ad, Ptr<Scope> sc, BinExp e) {
-        if ((ad == null) || (ad.aliasthis.value == null))
+        if ((ad == null) || (ad.aliasthis == null))
         {
             return null;
         }
-        if ((e.att1.value != null) && (pequals(e.e1.value.type.value, e.att1.value)))
+        if ((e.att1 != null) && (pequals(e.e1.value.type.value, e.att1)))
         {
             return null;
         }
-        Expression e1 = new DotIdExp(e.loc.value, e.e1.value, ad.aliasthis.value.ident.value);
+        Expression e1 = new DotIdExp(e.loc, e.e1.value, ad.aliasthis.ident);
         BinExp be = (BinExp)e.copy();
-        if ((be.att1.value == null) && e.e1.value.type.value.checkAliasThisRec())
+        if ((be.att1 == null) && e.e1.value.type.value.checkAliasThisRec())
         {
-            be.att1.value = e.e1.value.type.value;
+            be.att1 = e.e1.value.type.value;
         }
         be.e1.value = e1;
         Expression result = null;
-        if (((be.op.value & 0xFF) == 71))
+        if (((be.op & 0xFF) == 71))
         {
             result = op_overload(be, sc, null);
         }
@@ -1345,23 +1333,23 @@ public class opover {
     }
 
     public static Expression checkAliasThisForRhs(AggregateDeclaration ad, Ptr<Scope> sc, BinExp e) {
-        if ((ad == null) || (ad.aliasthis.value == null))
+        if ((ad == null) || (ad.aliasthis == null))
         {
             return null;
         }
-        if ((e.att2.value != null) && (pequals(e.e2.value.type.value, e.att2.value)))
+        if ((e.att2 != null) && (pequals(e.e2.value.type.value, e.att2)))
         {
             return null;
         }
-        Expression e2 = new DotIdExp(e.loc.value, e.e2.value, ad.aliasthis.value.ident.value);
+        Expression e2 = new DotIdExp(e.loc, e.e2.value, ad.aliasthis.ident);
         BinExp be = (BinExp)e.copy();
-        if ((be.att2.value == null) && e.e2.value.type.value.checkAliasThisRec())
+        if ((be.att2 == null) && e.e2.value.type.value.checkAliasThisRec())
         {
-            be.att2.value = e.e2.value.type.value;
+            be.att2 = e.e2.value.type.value;
         }
         be.e2.value = e2;
         Expression result = null;
-        if (((be.op.value & 0xFF) == 71))
+        if (((be.op & 0xFF) == 71))
         {
             result = op_overload(be, sc, null);
         }
@@ -1376,11 +1364,11 @@ public class opover {
         // skipping duplicate class OpOverload
         if (pop != null)
         {
-            pop.set(0, e.op.value);
+            pop.set(0, e.op);
         }
         OpOverload v = new OpOverload(sc, pop);
         e.accept(v);
-        return v.result.value;
+        return v.result;
     }
 
     // defaulted all parameters starting with #3
@@ -1424,44 +1412,44 @@ public class opover {
                     }
                     if (s != null)
                     {
-                        functionResolve(m, s, e.loc.value, sc, tiargs, e.e1.value.type.value, ptr(args2), null);
-                        if ((m.value.lastf.value != null) && m.value.lastf.value.errors.value || m.value.lastf.value.semantic3Errors.value)
+                        functionResolve(m, s, e.loc, sc, tiargs, e.e1.value.type.value, ptr(args2), null);
+                        if ((m.value.lastf != null) && m.value.lastf.errors || m.value.lastf.semantic3Errors)
                         {
                             return new ErrorExp();
                         }
                     }
-                    FuncDeclaration lastf = m.value.lastf.value;
-                    int count = m.value.count.value;
+                    FuncDeclaration lastf = m.value.lastf;
+                    int count = m.value.count;
                     if (s_r != null)
                     {
-                        functionResolve(m, s_r, e.loc.value, sc, tiargs, e.e2.value.type.value, ptr(args1), null);
-                        if ((m.value.lastf.value != null) && m.value.lastf.value.errors.value || m.value.lastf.value.semantic3Errors.value)
+                        functionResolve(m, s_r, e.loc, sc, tiargs, e.e2.value.type.value, ptr(args1), null);
+                        if ((m.value.lastf != null) && m.value.lastf.errors || m.value.lastf.semantic3Errors)
                         {
                             return new ErrorExp();
                         }
                     }
-                    if ((m.value.count.value > 1))
+                    if ((m.value.count > 1))
                     {
-                        if (!((pequals(m.value.lastf.value, lastf)) && (m.value.count.value == 2) && (count == 1)))
+                        if (!((pequals(m.value.lastf, lastf)) && (m.value.count == 2) && (count == 1)))
                         {
-                            e.error(new BytePtr("overloads `%s` and `%s` both match argument list for `%s`"), m.value.lastf.value.type.value.toChars(), m.value.nextf.value.type.value.toChars(), m.value.lastf.value.toChars());
+                            e.error(new BytePtr("overloads `%s` and `%s` both match argument list for `%s`"), m.value.lastf.type.toChars(), m.value.nextf.type.toChars(), m.value.lastf.toChars());
                         }
                     }
-                    else if ((m.value.last.value <= MATCH.nomatch))
+                    else if ((m.value.last <= MATCH.nomatch))
                     {
-                        m.value.lastf.value = null;
+                        m.value.lastf = null;
                     }
                     Expression result = null;
-                    if ((lastf != null) && (pequals(m.value.lastf.value, lastf)) || (s_r == null) && (m.value.last.value <= MATCH.nomatch))
+                    if ((lastf != null) && (pequals(m.value.lastf, lastf)) || (s_r == null) && (m.value.last <= MATCH.nomatch))
                     {
-                        result = build_overload(e.loc.value, sc, e.e1.value, e.e2.value, m.value.lastf.value != null ? m.value.lastf.value : s);
+                        result = build_overload(e.loc, sc, e.e1.value, e.e2.value, m.value.lastf != null ? m.value.lastf : s);
                     }
                     else
                     {
-                        result = build_overload(e.loc.value, sc, e.e2.value, e.e1.value, m.value.lastf.value != null ? m.value.lastf.value : s_r);
+                        result = build_overload(e.loc, sc, e.e2.value, e.e1.value, m.value.lastf != null ? m.value.lastf : s_r);
                         if (pop != null)
                         {
-                            pop.set(0, reverseRelation(e.op.value));
+                            pop.set(0, reverseRelation(e.op));
                         }
                     }
                     return result;
@@ -1472,7 +1460,7 @@ public class opover {
             finally {
             }
         }
-        if (((e.op.value & 0xFF) == 58) || ((e.op.value & 0xFF) == 59) && (pequals(ad1, ad2)))
+        if (((e.op & 0xFF) == 58) || ((e.op & 0xFF) == 59) && (pequals(ad1, ad2)))
         {
             return null;
         }
@@ -1490,7 +1478,7 @@ public class opover {
         }
         else
         {
-            e = new DotIdExp(loc, ethis, d.ident.value);
+            e = new DotIdExp(loc, ethis, d.ident);
         }
         e = new CallExp(loc, e, earg);
         e = expressionSemantic(e, sc);
@@ -1498,12 +1486,12 @@ public class opover {
     }
 
     public static Dsymbol search_function(ScopeDsymbol ad, Identifier funcid) {
-        Dsymbol s = ad.search(Loc.initial.value, funcid, 8);
+        Dsymbol s = ad.search(Loc.initial, funcid, 8);
         if (s != null)
         {
             Dsymbol s2 = s.toAlias();
             FuncDeclaration fd = s2.isFuncDeclaration();
-            if ((fd != null) && ((fd.type.value.ty.value & 0xFF) == ENUMTY.Tfunction))
+            if ((fd != null) && ((fd.type.ty & 0xFF) == ENUMTY.Tfunction))
             {
                 return fd;
             }
@@ -1525,12 +1513,12 @@ public class opover {
             aggr = expressionSemantic(aggr, sc);
             aggr = resolveProperties(sc, aggr);
             aggr = aggr.optimize(0, false);
-            if ((aggr.type.value == null) || ((aggr.op.value & 0xFF) == 127))
+            if ((aggr.type.value == null) || ((aggr.op & 0xFF) == 127))
             {
                 return false;
             }
             Type tab = aggr.type.value.toBasetype();
-            switch ((tab.ty.value & 0xFF))
+            switch ((tab.ty & 0xFF))
             {
                 case 0:
                 case 1:
@@ -1539,7 +1527,7 @@ public class opover {
                     break;
                 case 7:
                 case 8:
-                    AggregateDeclaration ad = ((tab.ty.value & 0xFF) == ENUMTY.Tclass) ? ((TypeClass)tab).sym.value : ((TypeStruct)tab).sym.value;
+                    AggregateDeclaration ad = ((tab.ty & 0xFF) == ENUMTY.Tclass) ? ((TypeClass)tab).sym : ((TypeStruct)tab).sym;
                     if (!sliced)
                     {
                         sapply.value = search_function(ad, isForeach ? Id.apply : Id.applyReverse);
@@ -1547,9 +1535,9 @@ public class opover {
                         {
                             break;
                         }
-                        if (((feaggr.value.op.value & 0xFF) != 20))
+                        if (((feaggr.value.op & 0xFF) != 20))
                         {
-                            Expression rinit = new ArrayExp(aggr.loc.value, feaggr.value, null);
+                            Expression rinit = new ArrayExp(aggr.loc, feaggr.value, null);
                             rinit = trySemantic(rinit, sc);
                             if (rinit != null)
                             {
@@ -1559,11 +1547,11 @@ public class opover {
                             }
                         }
                     }
-                    if (ad.search(Loc.initial.value, isForeach ? Id.Ffront : Id.Fback, 8) != null)
+                    if (ad.search(Loc.initial, isForeach ? Id.Ffront : Id.Fback, 8) != null)
                     {
                         break;
                     }
-                    if (ad.aliasthis.value != null)
+                    if (ad.aliasthis != null)
                     {
                         if ((pequals(att, tab)))
                         {
@@ -1578,9 +1566,9 @@ public class opover {
                     }
                     return false;
                 case 10:
-                    if (((aggr.op.value & 0xFF) == 160))
+                    if (((aggr.op & 0xFF) == 160))
                     {
-                        sapply.value = ((DelegateExp)aggr).func.value;
+                        sapply.value = ((DelegateExp)aggr).func;
                     }
                     break;
                 case 34:
@@ -1595,33 +1583,33 @@ public class opover {
     }
 
     public static boolean inferApplyArgTypes(ForeachStatement fes, Ptr<Scope> sc, Ref<Dsymbol> sapply) {
-        if ((fes.parameters == null) || ((fes.parameters.get()).length.value == 0))
+        if ((fes.parameters == null) || ((fes.parameters.get()).length == 0))
         {
             return false;
         }
         if (sapply.value != null)
         {
             {
-                Slice<Parameter> __r1535 = (fes.parameters.get()).opSlice().copy();
-                int __key1536 = 0;
-                for (; (__key1536 < __r1535.getLength());__key1536 += 1) {
-                    Parameter p = __r1535.get(__key1536);
-                    if (p.type.value != null)
+                Slice<Parameter> __r1531 = (fes.parameters.get()).opSlice().copy();
+                int __key1532 = 0;
+                for (; (__key1532 < __r1531.getLength());__key1532 += 1) {
+                    Parameter p = __r1531.get(__key1532);
+                    if (p.type != null)
                     {
-                        p.type.value = typeSemantic(p.type.value, fes.loc, sc);
-                        p.type.value = p.type.value.addStorageClass(p.storageClass.value);
+                        p.type = typeSemantic(p.type, fes.loc, sc);
+                        p.type = p.type.addStorageClass(p.storageClass);
                     }
                 }
             }
             Expression ethis = null;
             Type tab = fes.aggr.value.type.value.toBasetype();
-            if (((tab.ty.value & 0xFF) == ENUMTY.Tclass) || ((tab.ty.value & 0xFF) == ENUMTY.Tstruct))
+            if (((tab.ty & 0xFF) == ENUMTY.Tclass) || ((tab.ty & 0xFF) == ENUMTY.Tstruct))
             {
                 ethis = fes.aggr.value;
             }
             else
             {
-                assert(((tab.ty.value & 0xFF) == ENUMTY.Tdelegate) && ((fes.aggr.value.op.value & 0xFF) == 160));
+                assert(((tab.ty & 0xFF) == ENUMTY.Tdelegate) && ((fes.aggr.value.op & 0xFF) == 160));
                 ethis = ((DelegateExp)fes.aggr.value).e1.value;
             }
             {
@@ -1631,7 +1619,7 @@ public class opover {
                     FuncDeclaration fdapply = findBestOpApplyMatch(ethis, fd, fes.parameters);
                     if (fdapply != null)
                     {
-                        matchParamsToOpApply((TypeFunction)fdapply.type.value, fes.parameters, true);
+                        matchParamsToOpApply((TypeFunction)fdapply.type, fes.parameters, true);
                         sapply.value = fdapply;
                         return true;
                     }
@@ -1644,64 +1632,64 @@ public class opover {
         Type taggr = fes.aggr.value.type.value;
         assert(taggr != null);
         Type tab = taggr.toBasetype();
-        switch ((tab.ty.value & 0xFF))
+        switch ((tab.ty & 0xFF))
         {
             case 0:
             case 1:
             case 37:
-                if (((fes.parameters.get()).length.value == 2))
+                if (((fes.parameters.get()).length == 2))
                 {
-                    if (p.type.value == null)
+                    if (p.type == null)
                     {
-                        p.type.value = Type.tsize_t.value;
-                        p.type.value = p.type.value.addStorageClass(p.storageClass.value);
+                        p.type = Type.tsize_t;
+                        p.type = p.type.addStorageClass(p.storageClass);
                     }
                     p = (fes.parameters.get()).get(1);
                 }
-                if ((p.type.value == null) && ((tab.ty.value & 0xFF) != ENUMTY.Ttuple))
+                if ((p.type == null) && ((tab.ty & 0xFF) != ENUMTY.Ttuple))
                 {
-                    p.type.value = tab.nextOf();
-                    p.type.value = p.type.value.addStorageClass(p.storageClass.value);
+                    p.type = tab.nextOf();
+                    p.type = p.type.addStorageClass(p.storageClass);
                 }
                 break;
             case 2:
                 TypeAArray taa = (TypeAArray)tab;
-                if (((fes.parameters.get()).length.value == 2))
+                if (((fes.parameters.get()).length == 2))
                 {
-                    if (p.type.value == null)
+                    if (p.type == null)
                     {
-                        p.type.value = taa.index.value;
-                        p.type.value = p.type.value.addStorageClass(p.storageClass.value);
-                        if ((p.storageClass.value & 2097152L) != 0)
+                        p.type = taa.index;
+                        p.type = p.type.addStorageClass(p.storageClass);
+                        if ((p.storageClass & 2097152L) != 0)
                         {
-                            p.type.value = p.type.value.addMod((byte)1);
+                            p.type = p.type.addMod((byte)1);
                         }
                     }
                     p = (fes.parameters.get()).get(1);
                 }
-                if (p.type.value == null)
+                if (p.type == null)
                 {
-                    p.type.value = taa.next.value;
-                    p.type.value = p.type.value.addStorageClass(p.storageClass.value);
+                    p.type = taa.next.value;
+                    p.type = p.type.addStorageClass(p.storageClass);
                 }
                 break;
             case 7:
             case 8:
-                AggregateDeclaration ad = ((tab.ty.value & 0xFF) == ENUMTY.Tclass) ? ((TypeClass)tab).sym.value : ((TypeStruct)tab).sym.value;
-                if (((fes.parameters.get()).length.value == 1))
+                AggregateDeclaration ad = ((tab.ty & 0xFF) == ENUMTY.Tclass) ? ((TypeClass)tab).sym : ((TypeStruct)tab).sym;
+                if (((fes.parameters.get()).length == 1))
                 {
-                    if (p.type.value == null)
+                    if (p.type == null)
                     {
-                        Identifier id = ((fes.op.value & 0xFF) == 201) ? Id.Ffront : Id.Fback;
-                        Dsymbol s = ad.search(Loc.initial.value, id, 8);
+                        Identifier id = ((fes.op & 0xFF) == 201) ? Id.Ffront : Id.Fback;
+                        Dsymbol s = ad.search(Loc.initial, id, 8);
                         FuncDeclaration fd = s != null ? s.isFuncDeclaration() : null;
                         if (fd != null)
                         {
-                            p.type.value = fd.type.value.nextOf();
-                            if (p.type.value != null)
+                            p.type = fd.type.nextOf();
+                            if (p.type != null)
                             {
-                                p.type.value = p.type.value.substWildTo((tab.mod.value & 0xFF));
-                                p.type.value = p.type.value.addStorageClass(p.storageClass.value);
+                                p.type = p.type.substWildTo((tab.mod & 0xFF));
+                                p.type = p.type.addStorageClass(p.storageClass);
                             }
                         }
                         else if ((s != null) && (s.isTemplateDeclaration() != null))
@@ -1709,7 +1697,7 @@ public class opover {
                         }
                         else if ((s != null) && (s.isDeclaration() != null))
                         {
-                            p.type.value = ((Declaration)s).type.value;
+                            p.type = ((Declaration)s).type;
                         }
                         else
                         {
@@ -1732,7 +1720,7 @@ public class opover {
     }
 
     public static FuncDeclaration findBestOpApplyMatch(Expression ethis, FuncDeclaration fstart, Ptr<DArray<Parameter>> parameters) {
-        byte mod = ethis.type.value.mod.value;
+        byte mod = ethis.type.value.mod;
         int match = MATCH.nomatch;
         FuncDeclaration fd_best = null;
         FuncDeclaration fd_ambig = null;
@@ -1743,15 +1731,15 @@ public class opover {
                 {
                     return 0;
                 }
-                TypeFunction tf = (TypeFunction)f.type.value;
+                TypeFunction tf = (TypeFunction)f.type;
                 int m = MATCH.exact;
                 if (f.isThis() != null)
                 {
-                    if (!MODimplicitConv(mod, tf.mod.value))
+                    if (!MODimplicitConv(mod, tf.mod))
                     {
                         m = MATCH.nomatch;
                     }
-                    else if (((mod & 0xFF) != (tf.mod.value & 0xFF)))
+                    else if (((mod & 0xFF) != (tf.mod & 0xFF)))
                     {
                         m = MATCH.constant;
                     }
@@ -1769,7 +1757,7 @@ public class opover {
                 else if ((m == match) && (m > MATCH.nomatch))
                 {
                     assert(fd_best != null);
-                    if ((tf.covariant(fd_best.type.value, null, true) != 1) && (fd_best.type.value.covariant(tf, null, true) != 1))
+                    if ((tf.covariant(fd_best.type, null, true) != 1) && (fd_best.type.covariant(tf, null, true) != 1))
                     {
                         fd_ambig = f;
                     }
@@ -1780,7 +1768,7 @@ public class opover {
         overloadApply(fstart, __lambda4, null);
         if (fd_ambig != null)
         {
-            error(ethis.loc.value, new BytePtr("`%s.%s` matches more than one declaration:\n`%s`:     `%s`\nand:\n`%s`:     `%s`"), ethis.toChars(), fstart.ident.value.toChars(), fd_best.loc.value.toChars(global.params.showColumns.value), fd_best.type.value.toChars(), fd_ambig.loc.value.toChars(global.params.showColumns.value), fd_ambig.type.value.toChars());
+            error(ethis.loc, new BytePtr("`%s.%s` matches more than one declaration:\n`%s`:     `%s`\nand:\n`%s`:     `%s`"), ethis.toChars(), fstart.ident.toChars(), fd_best.loc.toChars(global.value.params.showColumns), fd_best.type.toChars(), fd_ambig.loc.toChars(global.value.params.showColumns), fd_ambig.type.toChars());
             return null;
         }
         return fd_best;
@@ -1793,35 +1781,35 @@ public class opover {
             return false;
         }
         Parameter p0 = tf.parameterList.get(0);
-        if (((p0.type.value.ty.value & 0xFF) != ENUMTY.Tdelegate))
+        if (((p0.type.ty & 0xFF) != ENUMTY.Tdelegate))
         {
             return false;
         }
-        TypeFunction tdg = (TypeFunction)p0.type.value.nextOf();
-        assert(((tdg.ty.value & 0xFF) == ENUMTY.Tfunction));
+        TypeFunction tdg = (TypeFunction)p0.type.nextOf();
+        assert(((tdg.ty & 0xFF) == ENUMTY.Tfunction));
         int nparams = tdg.parameterList.length();
-        if ((nparams == 0) || (nparams != (parameters.get()).length.value) || (tdg.parameterList.varargs.value != VarArg.none))
+        if ((nparams == 0) || (nparams != (parameters.get()).length) || (tdg.parameterList.varargs != VarArg.none))
         {
             return false;
         }
         {
-            Slice<Parameter> __r1538 = (parameters.get()).opSlice().copy();
-            int __key1537 = 0;
-            for (; (__key1537 < __r1538.getLength());__key1537 += 1) {
-                Parameter p = __r1538.get(__key1537);
-                int u = __key1537;
+            Slice<Parameter> __r1534 = (parameters.get()).opSlice().copy();
+            int __key1533 = 0;
+            for (; (__key1533 < __r1534.getLength());__key1533 += 1) {
+                Parameter p = __r1534.get(__key1533);
+                int u = __key1533;
                 Parameter param = tdg.parameterList.get(u);
-                if (p.type.value != null)
+                if (p.type != null)
                 {
-                    if (!p.type.value.equals(param.type.value))
+                    if (!p.type.equals(param.type))
                     {
                         return false;
                     }
                 }
                 else if (infer)
                 {
-                    p.type.value = param.type.value;
-                    p.type.value = p.type.value.addStorageClass(p.storageClass.value);
+                    p.type = param.type;
+                    p.type = p.type.addStorageClass(p.storageClass);
                 }
             }
         }

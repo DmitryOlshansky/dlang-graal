@@ -1,13 +1,9 @@
 package org.dlang.dmd;
-
 import kotlin.jvm.functions.*;
 
 import org.dlang.dmd.root.*;
-
 import static org.dlang.dmd.root.filename.*;
-
 import static org.dlang.dmd.root.File.*;
-
 import static org.dlang.dmd.root.ShimsKt.*;
 import static org.dlang.dmd.root.SliceKt.*;
 import static org.dlang.dmd.root.DArrayKt.*;
@@ -35,10 +31,10 @@ public class aggregate {
     private static class SearchCtor
     {
         public static int fp(Dsymbol s, Object ctxt) {
-            Ref<CtorDeclaration> f = ref(s.isCtorDeclaration());
-            if ((f.value != null) && (f.value.semanticRun.value == PASS.init))
+            CtorDeclaration f = s.isCtorDeclaration();
+            if ((f != null) && (f.semanticRun == PASS.init))
             {
-                dsymbolSemantic(f.value, null);
+                dsymbolSemantic(f, null);
             }
             return 0;
         }
@@ -82,29 +78,29 @@ public class aggregate {
 
     public static abstract class AggregateDeclaration extends ScopeDsymbol
     {
-        public Ref<Type> type = ref(null);
+        public Type type = null;
         public long storage_class = 0L;
         public Prot protection = new Prot();
         public IntRef structsize = ref(0);
         public IntRef alignsize = ref(0);
         public DArray<VarDeclaration> fields = new DArray<VarDeclaration>();
-        public IntRef sizeok = ref(Sizeok.none);
+        public int sizeok = Sizeok.none;
         public Dsymbol deferred = null;
         public boolean isdeprecated = false;
-        public IntRef classKind = ref(0);
+        public int classKind = 0;
         public Dsymbol enclosing = null;
-        public Ref<VarDeclaration> vthis = ref(null);
-        public Ref<VarDeclaration> vthis2 = ref(null);
+        public VarDeclaration vthis = null;
+        public VarDeclaration vthis2 = null;
         public DArray<FuncDeclaration> invs = new DArray<FuncDeclaration>();
         public FuncDeclaration inv = null;
         public NewDeclaration aggNew = null;
-        public Ref<DeleteDeclaration> aggDelete = ref(null);
-        public Ref<Dsymbol> ctor = ref(null);
+        public DeleteDeclaration aggDelete = null;
+        public Dsymbol ctor = null;
         public CtorDeclaration defaultCtor = null;
-        public Ref<Dsymbol> aliasthis = ref(null);
-        public Ref<Boolean> noDefaultCtor = ref(false);
+        public Dsymbol aliasthis = null;
+        public boolean noDefaultCtor = false;
         public DArray<DtorDeclaration> dtors = new DArray<DtorDeclaration>();
-        public Ref<DtorDeclaration> dtor = ref(null);
+        public DtorDeclaration dtor = null;
         public DtorDeclaration primaryDtor = null;
         public DtorDeclaration tidtor = null;
         public FuncDeclaration fieldDtor = null;
@@ -116,10 +112,10 @@ public class aggregate {
 
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             Ptr<Scope> sc2 = (sc.get()).push(this);
-            (sc2.get()).stc.value &= 60129542144L;
+            (sc2.get()).stc &= 60129542144L;
             (sc2.get()).parent.value = this;
             (sc2.get()).inunion = this.isUnionDeclaration();
-            (sc2.get()).protection.value = new Prot(Prot.Kind.public_).copy();
+            (sc2.get()).protection = new Prot(Prot.Kind.public_).copy();
             (sc2.get()).explicitProtection = 0;
             (sc2.get()).aligndecl = null;
             (sc2.get()).userAttribDecl = null;
@@ -128,71 +124,70 @@ public class aggregate {
         }
 
         public  void setScope(Ptr<Scope> sc) {
-            if ((this.semanticRun.value < PASS.semanticdone))
+            if ((this.semanticRun < PASS.semanticdone))
             {
                 this.setScope(sc);
             }
         }
 
         public  boolean determineFields() {
-            if (this._scope.value != null)
+            if (this._scope != null)
             {
                 dsymbolSemantic(this, null);
             }
-            if ((this.sizeok.value != Sizeok.none))
+            if ((this.sizeok != Sizeok.none))
             {
                 return true;
             }
             this.fields.setDim(0);
             Function2<Dsymbol,Object,Integer> func = new Function2<Dsymbol,Object,Integer>(){
                 public Integer invoke(Dsymbol s, Object param) {
-                    Ref<Object> param_ref = ref(param);
-                    Ref<VarDeclaration> v = ref(s.isVarDeclaration());
-                    if (v.value == null)
+                    VarDeclaration v = s.isVarDeclaration();
+                    if (v == null)
                     {
                         return 0;
                     }
-                    if ((v.value.storage_class.value & 8388608L) != 0)
+                    if ((v.storage_class & 8388608L) != 0)
                     {
                         return 0;
                     }
-                    Ref<AggregateDeclaration> ad = ref(((AggregateDeclaration)param_ref.value));
-                    if ((v.value.semanticRun.value < PASS.semanticdone))
+                    AggregateDeclaration ad = ((AggregateDeclaration)param);
+                    if ((v.semanticRun < PASS.semanticdone))
                     {
-                        dsymbolSemantic(v.value, null);
+                        dsymbolSemantic(v, null);
                     }
-                    if ((ad.value.sizeok.value != Sizeok.none))
+                    if ((ad.sizeok != Sizeok.none))
                     {
                         return 1;
                     }
-                    if (v.value.aliassym.value != null)
+                    if (v.aliassym != null)
                     {
                         return 0;
                     }
-                    if ((v.value.storage_class.value & 69936087043L) != 0)
+                    if ((v.storage_class & 69936087043L) != 0)
                     {
                         return 0;
                     }
-                    if (!v.value.isField() || (v.value.semanticRun.value < PASS.semanticdone))
+                    if (!v.isField() || (v.semanticRun < PASS.semanticdone))
                     {
                         return 1;
                     }
-                    ad.value.fields.push(v.value);
-                    if ((v.value.storage_class.value & 2097152L) != 0)
+                    ad.fields.push(v);
+                    if ((v.storage_class & 2097152L) != 0)
                     {
                         return 0;
                     }
-                    Type tv = v.value.type.value.baseElemOf();
-                    if (((tv.ty.value & 0xFF) != ENUMTY.Tstruct))
+                    Type tv = v.type.baseElemOf();
+                    if (((tv.ty & 0xFF) != ENUMTY.Tstruct))
                     {
                         return 0;
                     }
-                    if ((pequals(ad.value, ((TypeStruct)tv).sym.value)))
+                    if ((pequals(ad, ((TypeStruct)tv).sym)))
                     {
-                        Ref<BytePtr> psz = ref(pcopy(((v.value.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tsarray) ? new BytePtr("static array of ") : new BytePtr("")));
-                        ad.value.error(new BytePtr("cannot have field `%s` with %ssame struct type"), v.value.toChars(), psz.value);
-                        ad.value.type.value = Type.terror.value;
-                        ad.value.errors.value = true;
+                        BytePtr psz = pcopy(((v.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) ? new BytePtr("static array of ") : new BytePtr(""));
+                        ad.error(new BytePtr("cannot have field `%s` with %ssame struct type"), v.toChars(), psz);
+                        ad.type = Type.terror;
+                        ad.errors = true;
                         return 1;
                     }
                     return 0;
@@ -200,11 +195,11 @@ public class aggregate {
             };
             {
                 int i = 0;
-                for (; (i < (this.members.value.get()).length.value);i++){
-                    Dsymbol s = (this.members.value.get()).get(i);
+                for (; (i < (this.members.get()).length);i++){
+                    Dsymbol s = (this.members.get()).get(i);
                     if (s.apply(func, this) != 0)
                     {
-                        if ((this.sizeok.value != Sizeok.none))
+                        if ((this.sizeok != Sizeok.none))
                         {
                             return true;
                         }
@@ -212,32 +207,32 @@ public class aggregate {
                     }
                 }
             }
-            if ((this.sizeok.value != Sizeok.done))
+            if ((this.sizeok != Sizeok.done))
             {
-                this.sizeok.value = Sizeok.fwd;
+                this.sizeok = Sizeok.fwd;
             }
             return true;
         }
 
         public  int nonHiddenFields() {
-            return this.fields.length.value - (this.isNested() ? 1 : 0) - ((this.vthis2.value != null) ? 1 : 0);
+            return this.fields.length - (this.isNested() ? 1 : 0) - ((this.vthis2 != null) ? 1 : 0);
         }
 
         public  boolean determineSize(Loc loc) {
-            if (((this.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+            if (((this.type.ty & 0xFF) == ENUMTY.Terror))
             {
                 return false;
             }
-            if ((this.sizeok.value == Sizeok.done))
+            if ((this.sizeok == Sizeok.done))
             {
                 return true;
             }
-            if (this.members.value == null)
+            if (this.members == null)
             {
                 this.error(loc, new BytePtr("unknown size"));
                 return false;
             }
-            if (this._scope.value != null)
+            if (this._scope != null)
             {
                 dsymbolSemantic(this, null);
             }
@@ -246,7 +241,7 @@ public class aggregate {
                     ClassDeclaration cd = this.isClassDeclaration();
                     if ((cd) != null)
                     {
-                        cd = cd.baseClass.value;
+                        cd = cd.baseClass;
                         if ((cd != null) && !cd.determineSize(loc))
                         {
                             /*goto Lfail*/throw Dispatch0.INSTANCE;
@@ -257,29 +252,29 @@ public class aggregate {
                 {
                     /*goto Lfail*/throw Dispatch0.INSTANCE;
                 }
-                if ((this.sizeok.value != Sizeok.done))
+                if ((this.sizeok != Sizeok.done))
                 {
                     this.finalizeSize();
                 }
-                if (((this.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+                if (((this.type.ty & 0xFF) == ENUMTY.Terror))
                 {
                     return false;
                 }
-                if ((this.sizeok.value == Sizeok.done))
+                if ((this.sizeok == Sizeok.done))
                 {
                     return true;
                 }
             }
             catch(Dispatch0 __d){}
         /*Lfail:*/
-            if ((!pequals(this.type.value, Type.terror.value)))
+            if ((!pequals(this.type, Type.terror)))
             {
                 this.error(loc, new BytePtr("no size because of forward reference"));
             }
-            if (global.gag.value == 0)
+            if (global.value.gag == 0)
             {
-                this.type.value = Type.terror.value;
-                this.errors.value = true;
+                this.type = Type.terror;
+                this.errors = true;
             }
             return false;
         }
@@ -293,48 +288,48 @@ public class aggregate {
         }
 
         public  boolean checkOverlappedFields() {
-            assert((this.sizeok.value == Sizeok.done));
-            int nfields = this.fields.length.value;
+            assert((this.sizeok == Sizeok.done));
+            int nfields = this.fields.length;
             if (this.isNested())
             {
                 ClassDeclaration cd = this.isClassDeclaration();
-                if ((cd == null) || (cd.baseClass.value == null) || !cd.baseClass.value.isNested())
+                if ((cd == null) || (cd.baseClass == null) || !cd.baseClass.isNested())
                 {
                     nfields--;
                 }
-                if ((this.vthis2.value != null) && !((cd != null) && (cd.baseClass.value != null) && (cd.baseClass.value.vthis2.value != null)))
+                if ((this.vthis2 != null) && !((cd != null) && (cd.baseClass != null) && (cd.baseClass.vthis2 != null)))
                 {
                     nfields--;
                 }
             }
             boolean errors = false;
             {
-                int __key701 = 0;
-                int __limit702 = nfields;
-                for (; (__key701 < __limit702);__key701 += 1) {
-                    int i = __key701;
+                int __key697 = 0;
+                int __limit698 = nfields;
+                for (; (__key697 < __limit698);__key697 += 1) {
+                    int i = __key697;
                     VarDeclaration vd = this.fields.get(i);
-                    if (vd.errors.value)
+                    if (vd.errors)
                     {
                         errors = true;
                         continue;
                     }
                     VarDeclaration vx = vd;
-                    if ((vd._init.value != null) && (vd._init.value.isVoidInitializer() != null))
+                    if ((vd._init != null) && (vd._init.isVoidInitializer() != null))
                     {
                         vx = null;
                     }
                     {
-                        int __key703 = 0;
-                        int __limit704 = nfields;
-                        for (; (__key703 < __limit704);__key703 += 1) {
-                            int j = __key703;
+                        int __key699 = 0;
+                        int __limit700 = nfields;
+                        for (; (__key699 < __limit700);__key699 += 1) {
+                            int j = __key699;
                             if ((i == j))
                             {
                                 continue;
                             }
                             VarDeclaration v2 = this.fields.get(j);
-                            if (v2.errors.value)
+                            if (v2.errors)
                             {
                                 errors = true;
                                 continue;
@@ -343,13 +338,13 @@ public class aggregate {
                             {
                                 continue;
                             }
-                            vd.overlapped.value = true;
-                            v2.overlapped.value = true;
-                            if (!MODimplicitConv(vd.type.value.mod.value, v2.type.value.mod.value))
+                            vd.overlapped = true;
+                            v2.overlapped = true;
+                            if (!MODimplicitConv(vd.type.mod, v2.type.mod))
                             {
                                 v2.overlapUnsafe = true;
                             }
-                            if (!MODimplicitConv(v2.type.value.mod.value, vd.type.value.mod.value))
+                            if (!MODimplicitConv(v2.type.mod, vd.type.mod))
                             {
                                 vd.overlapUnsafe = true;
                             }
@@ -357,13 +352,13 @@ public class aggregate {
                             {
                                 continue;
                             }
-                            if ((v2._init.value != null) && (v2._init.value.isVoidInitializer() != null))
+                            if ((v2._init != null) && (v2._init.isVoidInitializer() != null))
                             {
                                 continue;
                             }
-                            if ((vx._init.value != null) && (v2._init.value != null))
+                            if ((vx._init != null) && (v2._init != null))
                             {
-                                error(this.loc.value, new BytePtr("overlapping default initialization for field `%s` and `%s`"), v2.toChars(), vd.toChars());
+                                error(this.loc, new BytePtr("overlapping default initialization for field `%s` and `%s`"), v2.toChars(), vd.toChars());
                                 errors = true;
                             }
                         }
@@ -374,41 +369,41 @@ public class aggregate {
         }
 
         public  boolean fill(Loc loc, Ptr<DArray<Expression>> elements, boolean ctorinit) {
-            assert((this.sizeok.value == Sizeok.done));
+            assert((this.sizeok == Sizeok.done));
             assert(elements != null);
             int nfields = this.nonHiddenFields();
             boolean errors = false;
-            int dim = (elements.get()).length.value;
+            int dim = (elements.get()).length;
             (elements.get()).setDim(nfields);
             {
-                int __key705 = dim;
-                int __limit706 = nfields;
-                for (; (__key705 < __limit706);__key705 += 1) {
-                    int i = __key705;
+                int __key701 = dim;
+                int __limit702 = nfields;
+                for (; (__key701 < __limit702);__key701 += 1) {
+                    int i = __key701;
                     elements.get().set(i, null);
                 }
             }
             {
-                int __key707 = 0;
-                int __limit708 = nfields;
-                for (; (__key707 < __limit708);__key707 += 1) {
-                    int i = __key707;
+                int __key703 = 0;
+                int __limit704 = nfields;
+                for (; (__key703 < __limit704);__key703 += 1) {
+                    int i = __key703;
                     if ((elements.get()).get(i) != null)
                     {
                         continue;
                     }
                     VarDeclaration vd = this.fields.get(i);
                     VarDeclaration vx = vd;
-                    if ((vd._init.value != null) && (vd._init.value.isVoidInitializer() != null))
+                    if ((vd._init != null) && (vd._init.isVoidInitializer() != null))
                     {
                         vx = null;
                     }
                     int fieldi = i;
                     {
-                        int __key709 = 0;
-                        int __limit710 = nfields;
-                        for (; (__key709 < __limit710);__key709 += 1) {
-                            int j = __key709;
+                        int __key705 = 0;
+                        int __limit706 = nfields;
+                        for (; (__key705 < __limit706);__key705 += 1) {
+                            int j = __key705;
                             if ((i == j))
                             {
                                 continue;
@@ -423,7 +418,7 @@ public class aggregate {
                                 vx = null;
                                 break;
                             }
-                            if ((v2._init.value != null) && (v2._init.value.isVoidInitializer() != null))
+                            if ((v2._init != null) && (v2._init.isVoidInitializer() != null))
                             {
                                 continue;
                             }
@@ -432,7 +427,7 @@ public class aggregate {
                                 vx = v2;
                                 fieldi = j;
                             }
-                            else if (v2._init.value != null)
+                            else if (v2._init != null)
                             {
                                 error(loc, new BytePtr("overlapping initialization for field `%s` and `%s`"), v2.toChars(), vd.toChars());
                                 errors = true;
@@ -442,14 +437,14 @@ public class aggregate {
                     if (vx != null)
                     {
                         Expression e = null;
-                        if ((vx.type.value.size() == 0L))
+                        if ((vx.type.size() == 0L))
                         {
                             e = null;
                         }
-                        else if (vx._init.value != null)
+                        else if (vx._init != null)
                         {
-                            assert(vx._init.value.isVoidInitializer() == null);
-                            if (vx.inuse.value != 0)
+                            assert(vx._init.isVoidInitializer() == null);
+                            if (vx.inuse != 0)
                             {
                                 vx.error(loc, new BytePtr("recursive initialization of field"));
                                 errors = true;
@@ -461,20 +456,20 @@ public class aggregate {
                         }
                         else
                         {
-                            if (((vx.storage_class.value & 549755813888L) != 0) && !ctorinit)
+                            if (((vx.storage_class & 549755813888L) != 0) && !ctorinit)
                             {
-                                error(loc, new BytePtr("field `%s.%s` must be initialized because it has no default constructor"), this.type.value.toChars(), vx.toChars());
+                                error(loc, new BytePtr("field `%s.%s` must be initialized because it has no default constructor"), this.type.toChars(), vx.toChars());
                                 errors = true;
                             }
-                            Type telem = vx.type.value;
-                            if (((telem.ty.value & 0xFF) == ENUMTY.Tsarray))
+                            Type telem = vx.type;
+                            if (((telem.ty & 0xFF) == ENUMTY.Tsarray))
                             {
-                                for (; ((telem.toBasetype().ty.value & 0xFF) == ENUMTY.Tsarray);) {
+                                for (; ((telem.toBasetype().ty & 0xFF) == ENUMTY.Tsarray);) {
                                     telem = ((TypeSArray)telem.toBasetype()).next.value;
                                 }
-                                if (((telem.ty.value & 0xFF) == ENUMTY.Tvoid))
+                                if (((telem.ty & 0xFF) == ENUMTY.Tvoid))
                                 {
-                                    telem = Type.tuns8.value.addMod(telem.mod.value);
+                                    telem = Type.tuns8.addMod(telem.mod);
                                 }
                             }
                             if (telem.needsNested() && ctorinit)
@@ -491,11 +486,11 @@ public class aggregate {
                 }
             }
             {
-                Slice<Expression> __r711 = (elements.get()).opSlice().copy();
-                int __key712 = 0;
-                for (; (__key712 < __r711.getLength());__key712 += 1) {
-                    Expression e = __r711.get(__key712);
-                    if ((e != null) && ((e.op.value & 0xFF) == 127))
+                Slice<Expression> __r707 = (elements.get()).opSlice().copy();
+                int __key708 = 0;
+                for (; (__key708 < __r707.getLength());__key708 += 1) {
+                    Expression e = __r707.get(__key708);
+                    if ((e != null) && ((e.op & 0xFF) == 127))
                     {
                         return false;
                     }
@@ -549,7 +544,7 @@ public class aggregate {
         }
 
         public  Type getType() {
-            return this.type.value;
+            return this.type;
         }
 
         public  boolean isDeprecated() {
@@ -565,7 +560,7 @@ public class aggregate {
             {
                 return ;
             }
-            if ((this.sizeok.value == Sizeok.done))
+            if ((this.sizeok == Sizeok.done))
             {
                 return ;
             }
@@ -592,7 +587,7 @@ public class aggregate {
                 if ((fd) != null)
                 {
                     this.enclosing = fd;
-                    t = Type.tvoidptr.value;
+                    t = Type.tvoidptr;
                 }
                 else {
                     AggregateDeclaration ad = s.isAggregateDeclaration();
@@ -608,7 +603,7 @@ public class aggregate {
                                 TemplateInstance ti = ad.parent.value.isTemplateInstance();
                                 if ((ti) != null)
                                 {
-                                    this.enclosing = ti.enclosing.value;
+                                    this.enclosing = ti.enclosing;
                                 }
                             }
                         }
@@ -619,40 +614,40 @@ public class aggregate {
             if (this.enclosing != null)
             {
                 assert(t != null);
-                if (((t.ty.value & 0xFF) == ENUMTY.Tstruct))
+                if (((t.ty & 0xFF) == ENUMTY.Tstruct))
                 {
-                    t = Type.tvoidptr.value;
+                    t = Type.tvoidptr;
                 }
-                assert(this.vthis.value == null);
-                this.vthis.value = new ThisDeclaration(this.loc.value, t);
-                (this.members.value.get()).push(this.vthis.value);
-                this.vthis.value.storage_class.value |= 64L;
-                this.vthis.value.parent.value = this;
-                this.vthis.value.protection = new Prot(Prot.Kind.public_).copy();
-                this.vthis.value.alignment = t.alignment();
-                this.vthis.value.semanticRun.value = PASS.semanticdone;
-                if ((this.sizeok.value == Sizeok.fwd))
+                assert(this.vthis == null);
+                this.vthis = new ThisDeclaration(this.loc, t);
+                (this.members.get()).push(this.vthis);
+                this.vthis.storage_class |= 64L;
+                this.vthis.parent.value = this;
+                this.vthis.protection = new Prot(Prot.Kind.public_).copy();
+                this.vthis.alignment = t.alignment();
+                this.vthis.semanticRun = PASS.semanticdone;
+                if ((this.sizeok == Sizeok.fwd))
                 {
-                    this.fields.push(this.vthis.value);
+                    this.fields.push(this.vthis);
                 }
                 this.makeNested2();
             }
         }
 
         public  void makeNested2() {
-            if (this.vthis2.value != null)
+            if (this.vthis2 != null)
             {
                 return ;
             }
-            if (this.vthis.value == null)
+            if (this.vthis == null)
             {
                 this.makeNested();
             }
-            if (this.vthis.value == null)
+            if (this.vthis == null)
             {
                 return ;
             }
-            if ((this.sizeok.value == Sizeok.done))
+            if ((this.sizeok == Sizeok.done))
             {
                 return ;
             }
@@ -671,32 +666,32 @@ public class aggregate {
                 return ;
             }
             ClassDeclaration cd = s.isClassDeclaration();
-            Type t = cd != null ? cd.type.value : Type.tvoidptr.value;
-            this.vthis2.value = new ThisDeclaration(this.loc.value, t);
-            (this.members.value.get()).push(this.vthis2.value);
-            this.vthis2.value.storage_class.value |= 64L;
-            this.vthis2.value.parent.value = this;
-            this.vthis2.value.protection = new Prot(Prot.Kind.public_).copy();
-            this.vthis2.value.alignment = t.alignment();
-            this.vthis2.value.semanticRun.value = PASS.semanticdone;
-            if ((this.sizeok.value == Sizeok.fwd))
+            Type t = cd != null ? cd.type : Type.tvoidptr;
+            this.vthis2 = new ThisDeclaration(this.loc, t);
+            (this.members.get()).push(this.vthis2);
+            this.vthis2.storage_class |= 64L;
+            this.vthis2.parent.value = this;
+            this.vthis2.protection = new Prot(Prot.Kind.public_).copy();
+            this.vthis2.alignment = t.alignment();
+            this.vthis2.semanticRun = PASS.semanticdone;
+            if ((this.sizeok == Sizeok.fwd))
             {
-                this.fields.push(this.vthis2.value);
+                this.fields.push(this.vthis2);
             }
         }
 
         public  boolean isExport() {
-            return this.protection.kind.value == Prot.Kind.export_;
+            return this.protection.kind == Prot.Kind.export_;
         }
 
         public  Dsymbol searchCtor() {
-            Dsymbol s = this.search(Loc.initial.value, Id.ctor.value, 8);
+            Dsymbol s = this.search(Loc.initial, Id.ctor, 8);
             if (s != null)
             {
                 if (!((s.isCtorDeclaration() != null) || (s.isTemplateDeclaration() != null) || (s.isOverloadSet() != null)))
                 {
                     s.error(new BytePtr("is not a constructor; identifiers starting with `__` are reserved for the implementation"));
-                    this.errors.value = true;
+                    this.errors = true;
                     s = null;
                 }
             }
@@ -708,8 +703,8 @@ public class aggregate {
             {
                 {
                     int i = 0;
-                    for (; (i < (this.members.value.get()).length.value);i++){
-                        Dsymbol sm = (this.members.value.get()).get(i);
+                    for (; (i < (this.members.get()).length);i++){
+                        Dsymbol sm = (this.members.get()).get(i);
                         sm.apply(SearchCtor::fp, null);
                     }
                 }
@@ -722,7 +717,7 @@ public class aggregate {
         }
 
         public  Type handleType() {
-            return this.type.value;
+            return this.type;
         }
 
         public Ptr<Symbol> stag = null;
