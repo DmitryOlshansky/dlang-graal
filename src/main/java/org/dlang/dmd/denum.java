@@ -60,7 +60,9 @@ public class denum {
             {
                 this.addMember(sc, sds);
                 if (this.symtab == null)
+                {
                     this.symtab = new DsymbolTable();
+                }
             }
             if (this.members.value != null)
             {
@@ -78,13 +80,17 @@ public class denum {
 
         public  void setScope(Ptr<Scope> sc) {
             if ((this.semanticRun.value > PASS.init))
+            {
                 return ;
+            }
             this.setScope(sc);
         }
 
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             if (this.isAnonymous())
+            {
                 return Dsymbol.oneMembers(this.members.value, ps, ident);
+            }
             return this.oneMember(ps, ident);
         }
 
@@ -149,11 +155,17 @@ public class denum {
                 return errorReturn.invoke();
             }
             if (pval.value.get() != null)
+            {
                 return pvalToResult.invoke(pval.value.get(), loc);
+            }
             if (this._scope.value != null)
+            {
                 dsymbolSemantic(this, this._scope.value);
+            }
             if (this.errors.value)
+            {
                 return errorReturn.invoke();
+            }
             if ((this.semanticRun.value == PASS.init) || (this.members.value == null))
             {
                 if (this.isSpecial())
@@ -174,7 +186,9 @@ public class denum {
                 for (; (i < (this.members.value.get()).length.value);i++){
                     EnumMember em = (this.members.value.get()).get(i).isEnumMember();
                     if (em == null)
+                    {
                         continue;
+                    }
                     if (em.errors.value)
                     {
                         this.errors.value = true;
@@ -199,7 +213,9 @@ public class denum {
                             continue;
                         }
                         if (ec.toInteger() != 0)
+                        {
                             pval.value.set(0, e);
+                        }
                     }
                 }
             }
@@ -218,11 +234,17 @@ public class denum {
                 }
             };
             if (this.defaultval.value != null)
+            {
                 return this.defaultval.value;
+            }
             if (this._scope.value != null)
+            {
                 dsymbolSemantic(this, this._scope.value);
+            }
             if (this.errors.value)
+            {
                 return handleErrors.invoke();
+            }
             if ((this.semanticRun.value == PASS.init) || (this.members.value == null))
             {
                 if (this.isSpecial())
@@ -233,10 +255,10 @@ public class denum {
                 return handleErrors.invoke();
             }
             {
-                int __key925 = 0;
-                int __limit926 = (this.members.value.get()).length.value;
-                for (; (__key925 < __limit926);__key925 += 1) {
-                    int i = __key925;
+                int __key927 = 0;
+                int __limit928 = (this.members.value.get()).length.value;
+                for (; (__key927 < __limit928);__key927 += 1) {
+                    int i = __key927;
                     EnumMember em = (this.members.value.get()).get(i).isEnumMember();
                     if (em != null)
                     {
@@ -259,13 +281,17 @@ public class denum {
                 else
                 {
                     if (!this.isAnonymous() && (this.members.value != null))
+                    {
                         this.memtype.value = Type.tint32.value;
+                    }
                 }
             }
             if (this.memtype.value == null)
             {
                 if (!this.isAnonymous() && (this.members.value != null))
+                {
                     this.memtype.value = Type.tint32.value;
+                }
                 else
                 {
                     Loc locx = loc.isValid() ? loc : this.loc.value.copy();
@@ -358,13 +384,19 @@ public class denum {
         public  Expression getVarExp(Loc loc, Ptr<Scope> sc) {
             dsymbolSemantic(this, sc);
             if (this.errors.value)
+            {
                 return new ErrorExp();
+            }
             this.checkDisabled(loc, sc, false);
             if ((this.depdecl != null) && (this.depdecl._scope.value == null))
+            {
                 this.depdecl._scope.value = sc;
+            }
             this.checkDeprecated(loc, sc);
             if (this.errors.value)
+            {
                 return new ErrorExp();
+            }
             Expression e = new VarExp(loc, this, true);
             return expressionSemantic(e, sc);
         }

@@ -43,15 +43,25 @@ public class typinf {
         if (t.vtinfo == null)
         {
             if (t.isShared())
+            {
                 t.vtinfo = TypeInfoSharedDeclaration.create(t);
+            }
             else if (t.isConst())
+            {
                 t.vtinfo = TypeInfoConstDeclaration.create(t);
+            }
             else if (t.isImmutable())
+            {
                 t.vtinfo = TypeInfoInvariantDeclaration.create(t);
+            }
             else if (t.isWild())
+            {
                 t.vtinfo = TypeInfoWildDeclaration.create(t);
+            }
             else
+            {
                 t.vtinfo = getTypeInfoDeclaration(t);
+            }
             assert(t.vtinfo != null);
             if (!builtinTypeInfo(t))
             {
@@ -67,7 +77,9 @@ public class typinf {
             }
         }
         if (torig.vtinfo == null)
+        {
             torig.vtinfo = t.vtinfo;
+        }
         assert(torig.vtinfo != null);
     }
 
@@ -102,9 +114,13 @@ public class typinf {
                 return TypeInfoTupleDeclaration.create(t);
             case 7:
                 if (((TypeClass)t).sym.value.isInterfaceDeclaration() != null)
+                {
                     return TypeInfoInterfaceDeclaration.create(t);
+                }
                 else
+                {
                     return TypeInfoClassDeclaration.create(t);
+                }
             default:
             return TypeInfoDeclaration.create(t);
         }
@@ -131,7 +147,9 @@ public class typinf {
                         if (!ti.value.needsCodegen())
                         {
                             if ((ti.value.minst.value != null) || sd.requestTypeInfo.value)
+                            {
                                 return false;
+                            }
                             return true;
                         }
                     }
@@ -163,12 +181,14 @@ public class typinf {
                 if (t.arguments.value != null)
                 {
                     {
-                        Ref<Slice<Parameter>> __r1653 = ref((t.arguments.value.get()).opSlice().copy());
-                        IntRef __key1654 = ref(0);
-                        for (; (__key1654.value < __r1653.value.getLength());__key1654.value += 1) {
-                            Parameter arg = __r1653.value.get(__key1654.value);
+                        Ref<Slice<Parameter>> __r1655 = ref((t.arguments.value.get()).opSlice().copy());
+                        IntRef __key1656 = ref(0);
+                        for (; (__key1656.value < __r1655.value.getLength());__key1656.value += 1) {
+                            Parameter arg = __r1655.value.get(__key1656.value);
                             if (isSpeculativeType(arg.type.value))
+                            {
                                 return true;
+                            }
                         }
                     }
                 }
@@ -176,7 +196,9 @@ public class typinf {
             }
         };
         if (t == null)
+        {
             return false;
+        }
         Type tb = t.toBasetype();
         switch ((tb.ty.value & 0xFF))
         {
@@ -199,7 +221,9 @@ public class typinf {
 
     public static boolean builtinTypeInfo(Type t) {
         if ((t.isTypeBasic() != null) || ((t.ty.value & 0xFF) == ENUMTY.Tclass) || ((t.ty.value & 0xFF) == ENUMTY.Tnull))
+        {
             return t.mod.value == 0;
+        }
         if (((t.ty.value & 0xFF) == ENUMTY.Tarray))
         {
             Type next = t.nextOf();

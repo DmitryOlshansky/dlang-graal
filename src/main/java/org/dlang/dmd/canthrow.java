@@ -49,18 +49,26 @@ public class canthrow {
 
         public  void visit(CallExp ce) {
             if ((global.errors.value != 0) && (ce.e1.value.type.value == null))
+            {
                 return ;
+            }
             if ((ce.f.value != null) && (pequals(ce.f.value, this.func.value)))
+            {
                 return ;
+            }
             Type t = ce.e1.value.type.value.toBasetype();
             Ref<TypeFunction> tf = ref(t.isTypeFunction());
             if ((tf.value != null) && tf.value.isnothrow.value)
+            {
                 return ;
+            }
             else
             {
                 Ref<TypeDelegate> td = ref(t.isTypeDelegate());
                 if ((td.value != null) && td.value.nextOf().isTypeFunction().isnothrow.value)
+                {
                     return ;
+                }
             }
             if (this.mustNotThrow.value)
             {
@@ -74,7 +82,9 @@ public class canthrow {
                     {
                         Ref<PtrExp> pe = ref(e1.value.isPtrExp());
                         if ((pe.value) != null)
+                        {
                             e1.value = pe.value.e1.value;
+                        }
                     }
                     ce.error(new BytePtr("`%s` is not `nothrow`"), e1.value.toChars());
                 }
@@ -121,7 +131,9 @@ public class canthrow {
                 case 0:
                     Ref<TypeStruct> ts = ref(tb.nextOf().baseElemOf().isTypeStruct());
                     if (ts.value == null)
+                    {
                         return ;
+                    }
                     ad.value = ts.value.sym.value;
                     break;
                 default:
@@ -155,27 +167,39 @@ public class canthrow {
 
         public  void visit(AssignExp ae) {
             if (((ae.op.value & 0xFF) == 96))
+            {
                 return ;
+            }
             Ref<Type> t = ref(null);
             if (((ae.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tsarray))
             {
                 if (!ae.e2.value.isLvalue())
+                {
                     return ;
+                }
                 t.value = ae.type.value;
             }
             else {
                 Ref<SliceExp> se = ref(ae.e1.value.isSliceExp());
                 if ((se.value) != null)
+                {
                     t.value = se.value.e1.value.type.value;
+                }
                 else
+                {
                     return ;
+                }
             }
             Ref<TypeStruct> ts = ref(t.value.baseElemOf().isTypeStruct());
             if (ts.value == null)
+            {
                 return ;
+            }
             StructDeclaration sd = ts.value.sym.value;
             if (sd.postblit.value == null)
+            {
                 return ;
+            }
             Ref<TypeFunction> tf = ref(sd.postblit.value.type.value.isTypeFunction());
             if ((tf.value == null) || tf.value.isnothrow.value)
             {
@@ -199,6 +223,7 @@ public class canthrow {
     }
 
     public static boolean canThrow(Expression e, FuncDeclaration func, boolean mustNotThrow) {
+        // skipping duplicate class CanThrow
         CanThrow ct = new CanThrow(func, mustNotThrow);
         return walkPostorder(e, ct);
     }
@@ -218,7 +243,9 @@ public class canthrow {
             {
                 s = s.toAlias();
                 if ((!pequals(s, vd)))
+                {
                     return Dsymbol_canThrow(s, func_ref.value, mustNotThrow_ref.value);
+                }
                 if ((vd.storage_class.value & 8388608L) != 0)
                 {
                 }
@@ -232,12 +259,18 @@ public class canthrow {
                         {
                             ExpInitializer ie = vd._init.value.isExpInitializer();
                             if ((ie) != null)
+                            {
                                 if (canThrow(ie.exp.value, func_ref.value, mustNotThrow_ref.value))
+                                {
                                     return true;
+                                }
+                            }
                         }
                     }
                     if (vd.needsScopeDtor())
+                    {
                         return canThrow(vd.edtor.value, func_ref.value, mustNotThrow_ref.value);
+                    }
                 }
             }
             else {
@@ -268,7 +301,9 @@ public class canthrow {
                                             if ((se) != null)
                                             {
                                                 if (Dsymbol_canThrow(se.s.value, func_ref.value, mustNotThrow_ref.value))
+                                                {
                                                     return true;
+                                                }
                                             }
                                         }
                                     }

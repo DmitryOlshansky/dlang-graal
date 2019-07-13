@@ -43,7 +43,9 @@ public class nspace {
             if (this.members.value != null)
             {
                 if (this.symtab == null)
+                {
                     this.symtab = new DsymbolTable();
+                }
                 {
                     Ptr<Scope> sce = sc;
                     for (; 1 != 0;sce = (sce.get()).enclosing.value){
@@ -95,7 +97,9 @@ public class nspace {
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if ((this._scope.value != null) && (this.symtab == null))
+            {
                 dsymbolSemantic(this, this._scope.value);
+            }
             if ((this.members.value == null) || (this.symtab == null))
             {
                 this.error(new BytePtr("is forward referenced when looking for `%s`"), ident.toChars());
@@ -129,7 +133,9 @@ public class nspace {
 
         public  void setFieldOffset(AggregateDeclaration ad, IntPtr poffset, boolean isunion) {
             if (this._scope.value != null)
+            {
                 dsymbolSemantic(this, null);
+            }
             Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s) {
                     s.setFieldOffset(ad, poffset, isunion);

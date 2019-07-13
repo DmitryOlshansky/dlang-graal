@@ -56,27 +56,35 @@ public class sideeffect {
     }
 
     public static boolean isTrivialExp(Expression e) {
+        // skipping duplicate class IsTrivialExp
         IsTrivialExp v = new IsTrivialExp();
         return (walkPostorder(e, v) ? 1 : 0) == 0;
     }
 
     public static boolean hasSideEffect(Expression e) {
+        // skipping duplicate class LambdaHasSideEffect
         LambdaHasSideEffect v = new LambdaHasSideEffect();
         return walkPostorder(e, v);
     }
 
     public static int callSideEffectLevel(FuncDeclaration f) {
         if (f.isCtorDeclaration() != null)
+        {
             return 0;
+        }
         assert(((f.type.value.ty.value & 0xFF) == ENUMTY.Tfunction));
         TypeFunction tf = (TypeFunction)f.type.value;
         if (tf.isnothrow.value)
         {
             int purity = f.isPure();
             if ((purity == PURE.strong))
+            {
                 return 2;
+            }
             if ((purity == PURE.const_))
+            {
                 return 1;
+            }
         }
         return 0;
     }
@@ -85,27 +93,39 @@ public class sideeffect {
         t = t.toBasetype();
         TypeFunction tf = null;
         if (((t.ty.value & 0xFF) == ENUMTY.Tdelegate))
+        {
             tf = (TypeFunction)((TypeDelegate)t).next.value;
+        }
         else
         {
             assert(((t.ty.value & 0xFF) == ENUMTY.Tfunction));
             tf = (TypeFunction)t;
         }
         if (!tf.isnothrow.value)
+        {
             return 0;
+        }
         tf.purityLevel();
         int purity = tf.purity.value;
         if (((t.ty.value & 0xFF) == ENUMTY.Tdelegate) && (purity > PURE.weak))
         {
             if (tf.isMutable())
+            {
                 purity = PURE.weak;
+            }
             else if (!tf.isImmutable())
+            {
                 purity = PURE.const_;
+            }
         }
         if ((purity == PURE.strong))
+        {
             return 2;
+        }
         if ((purity == PURE.const_))
+        {
             return 1;
+        }
         return 0;
     }
 
@@ -147,18 +167,24 @@ public class sideeffect {
                 {
                     Type t = ce.e1.value.type.value.toBasetype();
                     if (((t.ty.value & 0xFF) == ENUMTY.Tdelegate))
+                    {
                         t = ((TypeDelegate)t).next.value;
+                    }
                     if (((t.ty.value & 0xFF) == ENUMTY.Tfunction) && ((ce.f.value != null ? callSideEffectLevel(ce.f.value) : callSideEffectLevel(ce.e1.value.type.value)) > 0))
                     {
                     }
                     else
+                    {
                         return true;
+                    }
                 }
                 break;
             case 12:
                 CastExp ce_1 = (CastExp)e;
                 if (((ce_1.to.value.ty.value & 0xFF) == ENUMTY.Tclass) && ((ce_1.e1.value.op.value & 0xFF) == 18) && ((ce_1.e1.value.type.value.ty.value & 0xFF) == ENUMTY.Tclass))
+                {
                     return true;
+                }
                 break;
             default:
             break;
@@ -168,7 +194,9 @@ public class sideeffect {
 
     public static boolean discardValue(Expression e) {
         if (lambdaHasSideEffect(e))
+        {
             return false;
+        }
         switch ((e.op.value & 0xFF))
         {
             case 12:
@@ -198,18 +226,24 @@ public class sideeffect {
                     {
                         Type t = ce_1.e1.value.type.value.toBasetype();
                         if (((t.ty.value & 0xFF) == ENUMTY.Tdelegate))
+                        {
                             t = ((TypeDelegate)t).next.value;
+                        }
                         if (((t.ty.value & 0xFF) == ENUMTY.Tfunction) && ((ce_1.f.value != null ? callSideEffectLevel(ce_1.f.value) : callSideEffectLevel(ce_1.e1.value.type.value)) > 0))
                         {
                             BytePtr s = null;
                             if (ce_1.f.value != null)
+                            {
                                 s = pcopy(ce_1.f.value.toPrettyChars(false));
+                            }
                             else if (((ce_1.e1.value.op.value & 0xFF) == 24))
                             {
                                 s = pcopy(((PtrExp)ce_1.e1.value).e1.value.toChars());
                             }
                             else
+                            {
                                 s = pcopy(ce_1.e1.value.toChars());
+                            }
                             e.warning(new BytePtr("calling %s without side effects discards return value of type %s, prepend a cast(void) if intentional"), s, e.type.value.toChars());
                         }
                     }
@@ -236,7 +270,9 @@ public class sideeffect {
                 return discardValue(ce_3.e2.value);
             case 126:
                 if (!hasSideEffect(e))
+                {
                     break;
+                }
                 return false;
             default:
             break;
@@ -254,7 +290,9 @@ public class sideeffect {
 
     public static Expression extractSideEffect(Ptr<Scope> sc, BytePtr name, Ref<Expression> e0, Expression e, boolean alwaysCopy) {
         if (!alwaysCopy && isTrivialExp(e))
+        {
             return e;
+        }
         VarDeclaration vd = copyToTemp(0L, name, e);
         vd.storage_class.value |= e.isLvalue() ? 2097152L : 2199023255552L;
         e0.value = Expression.combine(e0.value, expressionSemantic(new DeclarationExp(vd.loc.value, vd), sc));

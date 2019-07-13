@@ -105,18 +105,26 @@ public class typesem {
         if (tup == null)
         {
             if (tindex.value != null)
+            {
                 eindex.value = new TypeExp(loc, tindex.value);
+            }
             else if (sindex.value != null)
+            {
                 eindex.value = symbolToExp(sindex.value, loc, sc, false);
+            }
             Expression e = new IndexExp(loc, symbolToExp(s, loc, sc, false), eindex.value);
             e = expressionSemantic(e, sc);
             resolveExp(e, pt, pe, ps);
             return ;
         }
         if (tindex.value != null)
+        {
             resolve(tindex.value, loc, sc, ptr(eindex), ptr(tindex), ptr(sindex), false);
+        }
         if (sindex.value != null)
+        {
             eindex.value = symbolToExp(sindex.value, loc, sc, false);
+        }
         if (eindex.value == null)
         {
             error(loc, new BytePtr("index `%s` is not an expression"), oindex.toChars());
@@ -142,9 +150,13 @@ public class typesem {
         ps.set(0, isDsymbol(o));
         pe.set(0, isExpression(o));
         if (pt.get() != null)
+        {
             pt.set(0, typeSemantic(pt.get(), loc, sc));
+        }
         if (pe.get() != null)
+        {
             resolveExp(pe.get(), pt, pe, ps);
+        }
     }
 
     public static void resolveHelper(TypeQualified mt, Loc loc, Ptr<Scope> sc, Dsymbol s, Dsymbol scopesym, Ptr<Expression> pe, Ptr<Type> pt, Ptr<Dsymbol> ps, boolean intypeid) {
@@ -162,12 +174,16 @@ public class typesem {
         {
             Declaration d = s_ref.value.isDeclaration();
             if ((d != null) && ((d.storage_class.value & 262144L) != 0))
+            {
                 s_ref.value = s_ref.value.toAlias();
+            }
             else
             {
                 s_ref.value.checkDeprecated(loc, sc_ref.value);
                 if (d != null)
+                {
                     d.checkDisabled(loc, sc_ref.value, true);
+                }
             }
             s_ref.value = s_ref.value.toAlias();
             {
@@ -186,7 +202,9 @@ public class typesem {
                             continue;
                         }
                         if (tx.value != null)
+                        {
                             ex.value = new TypeExp(loc, tx.value);
+                        }
                         assert(ex.value != null);
                         ex.value = typeToExpressionHelper(mt_ref.value, ex.value, i.value + 1);
                         ex.value = expressionSemantic(ex.value, sc_ref.value);
@@ -213,28 +231,39 @@ public class typesem {
                             Ref<VarDeclaration> v = ref(s_ref.value.isVarDeclaration());
                             Ref<FuncDeclaration> f = ref(s_ref.value.isFuncDeclaration());
                             if (intypeid_ref.value || (v.value == null) && (f.value == null))
+                            {
                                 e.value = symbolToExp(s_ref.value, loc, sc_ref.value, true);
+                            }
                             else
+                            {
                                 e.value = new VarExp(loc, s_ref.value.isDeclaration(), true);
+                            }
                             e.value = typeToExpressionHelper(mt_ref.value, e.value, i.value);
                             e.value = expressionSemantic(e.value, sc_ref.value);
                             resolveExp(e.value, pt_ref.value, pe_ref.value, ps_ref.value);
+                            return null;
                         }
                     };
                     if (intypeid_ref.value && (t == null) && (sm != null) && sm.needThis())
+                    {
                         helper3.invoke();
                         return ;
+                    }
                     {
                         VarDeclaration v = s_ref.value.isVarDeclaration();
                         if ((v) != null)
                         {
                             if ((v.type.value == null))
+                            {
                                 dsymbolSemantic(v, sc_ref.value);
+                            }
                             if (((v.storage_class.value & 9437188L) != 0) || v.type.value.isConst() || v.type.value.isImmutable())
                             {
                                 if (v.isThisDeclaration() == null)
+                                {
                                     helper3.invoke();
                                     return ;
+                                }
                             }
                         }
                     }
@@ -246,8 +275,10 @@ public class typesem {
                             {
                                 t = s_ref.value.isDeclaration().type.value;
                                 if ((t == null) && (s_ref.value.isTupleDeclaration() != null))
+                                {
                                     helper3.invoke();
                                     return ;
+                                }
                             }
                             else if ((s_ref.value.isTemplateInstance() != null) || (s_ref.value.isImport() != null) || (s_ref.value.isPackage() != null) || (s_ref.value.isModule() != null))
                             {
@@ -262,12 +293,16 @@ public class typesem {
                             {
                                 sm = sm.search(loc, (Identifier)id, 1);
                                 if (sm == null)
+                                {
                                     helper3.invoke();
                                     return ;
+                                }
                             }
                             else
+                            {
                                 helper3.invoke();
                                 return ;
+                            }
                         }
                         else
                         {
@@ -280,9 +315,13 @@ public class typesem {
                                 assert((id.dyncast() == DYNCAST.identifier));
                                 sm = s_ref.value.search_correct((Identifier)id);
                                 if (sm != null)
+                                {
                                     error(loc, new BytePtr("identifier `%s` of `%s` is not defined, did you mean %s `%s`?"), id.toChars(), mt_ref.value.toChars(), sm.kind(), sm.toChars());
+                                }
                                 else
+                                {
                                     error(loc, new BytePtr("identifier `%s` of `%s` is not defined"), id.toChars(), mt_ref.value.toChars());
+                                }
                             }
                             pe_ref.value.set(0, (new ErrorExp()));
                             return ;
@@ -306,16 +345,24 @@ public class typesem {
                     if ((v.type.value == null) || (v.type.value.deco.value == null) && (v.inuse.value != 0))
                     {
                         if (v.inuse.value != 0)
+                        {
                             error(loc, new BytePtr("circular reference to %s `%s`"), v.kind(), v.toPrettyChars(false));
+                        }
                         else
+                        {
                             error(loc, new BytePtr("forward reference to %s `%s`"), v.kind(), v.toPrettyChars(false));
+                        }
                         pt_ref.value.set(0, Type.terror.value);
                         return ;
                     }
                     if (((v.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+                    {
                         pt_ref.value.set(0, Type.terror.value);
+                    }
                     else
+                    {
                         pe_ref.value.set(0, (new VarExp(loc, v, true)));
+                    }
                     return ;
                 }
             }
@@ -332,14 +379,18 @@ public class typesem {
             for (; 1 != 0;){
                 t = s_ref.value.getType();
                 if (t != null)
+                {
                     break;
+                }
                 {
                     Import si = s_ref.value.isImport();
                     if ((si) != null)
                     {
                         s_ref.value = si.search(loc, s_ref.value.ident.value, 8);
                         if ((s_ref.value != null) && (!pequals(s_ref.value, si)))
+                        {
                             continue;
+                        }
                         s_ref.value = si;
                     }
                 }
@@ -349,18 +400,26 @@ public class typesem {
             {
                 TypeInstance ti = t.isTypeInstance();
                 if ((ti) != null)
+                {
                     if ((!pequals(ti, mt_ref.value)) && (ti.deco.value == null))
                     {
                         if (!ti.tempinst.value.errors.value)
+                        {
                             error(loc, new BytePtr("forward reference to `%s`"), ti.toChars());
+                        }
                         pt_ref.value.set(0, Type.terror.value);
                         return ;
                     }
+                }
             }
             if (((t.ty.value & 0xFF) == ENUMTY.Ttuple))
+            {
                 pt_ref.value.set(0, t);
+            }
             else
+            {
                 pt_ref.value.set(0, merge(t));
+            }
         }
         if (s_ref.value == null)
         {
@@ -369,17 +428,25 @@ public class typesem {
             {
                 ByteSlice n = importHint(id.asString()).copy();
                 if ((n).getLength() != 0)
+                {
                     error(loc, new BytePtr("`%s` is not defined, perhaps `import %.*s;` ?"), p, n.getLength(), toBytePtr(n));
+                }
                 else {
                     Dsymbol s2 = (sc_ref.value.get()).search_correct(id);
                     if ((s2) != null)
+                    {
                         error(loc, new BytePtr("undefined identifier `%s`, did you mean %s `%s`?"), p, s2.kind(), s2.toChars());
+                    }
                     else {
                         BytePtr q = pcopy(Scope.search_correct_C(id));
                         if ((q) != null)
+                        {
                             error(loc, new BytePtr("undefined identifier `%s`, did you mean `%s`?"), p, q);
+                        }
                         else
+                        {
                             error(loc, new BytePtr("undefined identifier `%s`"), p);
+                        }
                     }
                 }
             }
@@ -405,26 +472,30 @@ public class typesem {
                 if (parameters_ref.value != null)
                 {
                     {
-                        Ref<Slice<Parameter>> __r1646 = ref((parameters_ref.value.get()).opSlice().copy());
-                        IntRef __key1645 = ref(0);
-                        for (; (__key1645.value < __r1646.value.getLength());__key1645.value += 1) {
-                            Ref<Parameter> p = ref(__r1646.value.get(__key1645.value));
-                            IntRef i = ref(__key1645.value);
+                        Ref<Slice<Parameter>> __r1648 = ref((parameters_ref.value.get()).opSlice().copy());
+                        IntRef __key1647 = ref(0);
+                        for (; (__key1647.value < __r1648.value.getLength());__key1647.value += 1) {
+                            Ref<Parameter> p = ref(__r1648.value.get(__key1647.value));
+                            IntRef i = ref(__key1647.value);
                             Ref<Parameter> ps = ref(stripParameter.invoke(p.value));
                             if (ps.value != null)
                             {
                                 Ref<Ptr<DArray<Parameter>>> nparams = ref(refPtr(new DArray<Parameter>((parameters_ref.value.get()).length.value)));
                                 {
-                                    Ref<Slice<Parameter>> __r1648 = ref((nparams.value.get()).opSlice().copy());
-                                    IntRef __key1647 = ref(0);
-                                    for (; (__key1647.value < __r1648.value.getLength());__key1647.value += 1) {
-                                        Ref<Parameter> np = ref(__r1648.value.get(__key1647.value));
-                                        IntRef j = ref(__key1647.value);
+                                    Ref<Slice<Parameter>> __r1650 = ref((nparams.value.get()).opSlice().copy());
+                                    IntRef __key1649 = ref(0);
+                                    for (; (__key1649.value < __r1650.value.getLength());__key1649.value += 1) {
+                                        Ref<Parameter> np = ref(__r1650.value.get(__key1649.value));
+                                        IntRef j = ref(__key1649.value);
                                         Ref<Parameter> pj = ref((parameters_ref.value.get()).get(j.value));
                                         if ((j.value < i.value))
+                                        {
                                             np.value = pj.value;
+                                        }
                                         else if ((j.value == i.value))
+                                        {
                                             np.value = ps.value;
+                                        }
                                         else
                                         {
                                             Ref<Parameter> nps = ref(stripParameter.invoke(pj.value));
@@ -441,7 +512,9 @@ public class typesem {
             }
         };
         if ((t == null))
+        {
             return t;
+        }
         {
             TypeFunction tf = t.isTypeFunction();
             if ((tf) != null)
@@ -449,7 +522,9 @@ public class typesem {
                 Type tret = stripDefaultArgs(tf.next.value);
                 Ptr<DArray<Parameter>> params = stripParams.invoke(tf.parameterList.parameters.value);
                 if ((pequals(tret, tf.next.value)) && (params == tf.parameterList.parameters.value))
+                {
                     return t;
+                }
                 TypeFunction tr = (TypeFunction)tf.copy();
                 tr.parameterList.parameters.value = params;
                 tr.next.value = tret;
@@ -461,7 +536,9 @@ public class typesem {
                 {
                     Ptr<DArray<Parameter>> args = stripParams.invoke(tt.arguments.value);
                     if ((args == tt.arguments.value))
+                    {
                         return t;
+                    }
                     TypeTuple tr = (TypeTuple)t.copy();
                     tr.arguments.value = args;
                     return tr;
@@ -475,7 +552,9 @@ public class typesem {
                     Type tn = t.nextOf();
                     Type n = stripDefaultArgs(tn);
                     if ((pequals(n, tn)))
+                    {
                         return t;
+                    }
                     TypeNext tr = (TypeNext)t.copy();
                     tr.next.value = n;
                     return tr;
@@ -490,7 +569,9 @@ public class typesem {
                 {
                     Ref<Expression> e = ref(typeToExpression(t.next.value));
                     if ((e.value) != null)
+                    {
                         return new ArrayExp(t.dim.value.loc.value, e.value, t.dim.value);
+                    }
                 }
                 return null;
             }
@@ -504,7 +585,9 @@ public class typesem {
                         {
                             Ref<Expression> ei = ref(typeToExpression(t.index.value));
                             if ((ei.value) != null)
+                            {
                                 return new ArrayExp(t.loc.value, e.value, ei.value);
+                            }
                         }
                     }
                 }
@@ -540,10 +623,10 @@ public class typesem {
 
     public static Expression typeToExpressionHelper(TypeQualified t, Expression e, int i) {
         {
-            Slice<RootObject> __r1649 = t.idents.opSlice(i, t.idents.length.value).copy();
-            int __key1650 = 0;
-            for (; (__key1650 < __r1649.getLength());__key1650 += 1) {
-                RootObject id = __r1649.get(__key1650);
+            Slice<RootObject> __r1651 = t.idents.opSlice(i, t.idents.length.value).copy();
+            int __key1652 = 0;
+            for (; (__key1652 < __r1651.getLength());__key1652 += 1) {
+                RootObject id = __r1651.get(__key1652);
                 switch (id.dyncast())
                 {
                     case DYNCAST.identifier:
@@ -605,7 +688,9 @@ public class typesem {
                 IntRef errors = ref(global.errors.value);
                 mtype_ref.value.basetype.value = typeSemantic(mtype_ref.value.basetype.value, loc_ref.value, sc_ref.value);
                 if ((errors.value != global.errors.value))
+                {
                     return error.invoke();
+                }
                 mtype_ref.value.basetype.value = mtype_ref.value.basetype.value.toBasetype().mutableOf();
                 if (((mtype_ref.value.basetype.value.ty.value & 0xFF) != ENUMTY.Tsarray))
                 {
@@ -646,7 +731,9 @@ public class typesem {
                         mtype.dim.value = semanticLength(sc_ref.value, tup.value, mtype.dim.value);
                         mtype.dim.value = mtype.dim.value.ctfeInterpret();
                         if (((mtype.dim.value.op.value & 0xFF) == 127))
+                        {
                             return error.invoke();
+                        }
                         Ref<Long> d = ref(mtype.dim.value.toUInteger());
                         if ((d.value >= (long)(tup.value.objects.value.get()).length.value))
                         {
@@ -664,7 +751,9 @@ public class typesem {
                 }
                 Ref<Type> tn = ref(typeSemantic(mtype.next.value, loc_ref.value, sc_ref.value));
                 if (((tn.value.ty.value & 0xFF) == ENUMTY.Terror))
+                {
                     return error.invoke();
+                }
                 Ref<Type> tbn = ref(tn.value.toBasetype());
                 if (mtype.dim.value != null)
                 {
@@ -676,32 +765,46 @@ public class typesem {
                             {
                                 Ref<FuncDeclaration> fd = ref(vd.value.toAlias().isFuncDeclaration());
                                 if (fd.value != null)
+                                {
                                     mtype.dim.value = new CallExp(loc_ref.value, fd.value, null);
+                                }
                             }
                         }
                     }
                     IntRef errors = ref(global.errors.value);
                     mtype.dim.value = semanticLength(sc_ref.value, tbn.value, mtype.dim.value);
                     if ((errors.value != global.errors.value))
+                    {
                         return error.invoke();
+                    }
                     mtype.dim.value = mtype.dim.value.optimize(0, false);
                     mtype.dim.value = mtype.dim.value.ctfeInterpret();
                     if (((mtype.dim.value.op.value & 0xFF) == 127))
+                    {
                         return error.invoke();
+                    }
                     errors.value = global.errors.value;
                     Ref<Long> d1 = ref(mtype.dim.value.toInteger());
                     if ((errors.value != global.errors.value))
+                    {
                         return error.invoke();
+                    }
                     mtype.dim.value = mtype.dim.value.implicitCastTo(sc_ref.value, Type.tsize_t.value);
                     mtype.dim.value = mtype.dim.value.optimize(0, false);
                     if (((mtype.dim.value.op.value & 0xFF) == 127))
+                    {
                         return error.invoke();
+                    }
                     errors.value = global.errors.value;
                     Ref<Long> d2 = ref(mtype.dim.value.toInteger());
                     if ((errors.value != global.errors.value))
+                    {
                         return error.invoke();
+                    }
                     if (((mtype.dim.value.op.value & 0xFF) == 127))
+                    {
                         return error.invoke();
+                    }
                     Function0<Type> overflowError = new Function0<Type>(){
                         public Type invoke() {
                             error(loc_ref.value, new BytePtr("`%s` size %llu * %llu exceeds 0x%llx size limit for static array"), mtype.toChars(), tbn.value.size(loc_ref.value), d1.value, target.maxStaticDataSize.value);
@@ -709,7 +812,9 @@ public class typesem {
                         }
                     };
                     if ((d1.value != d2.value))
+                    {
                         return overflowError.invoke();
+                    }
                     Type tbx = tbn.value.baseElemOf();
                     if (((tbx.ty.value & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)tbx).sym.value.members.value == null) || ((tbx.ty.value & 0xFF) == ENUMTY.Tenum) && (((TypeEnum)tbx).sym.value.members.value == null))
                     {
@@ -718,7 +823,9 @@ public class typesem {
                     {
                         Ref<Boolean> overflow = ref(false);
                         if ((mulu(tbn.value.size(loc_ref.value), d2.value, overflow) >= target.maxStaticDataSize.value) || overflow.value)
+                        {
                             return overflowError.invoke();
+                        }
                     }
                 }
                 switch ((tbn.value.ty.value & 0xFF))
@@ -789,7 +896,9 @@ public class typesem {
                 mtype_ref.value.loc.value = loc_ref.value.copy();
                 mtype_ref.value.sc.value = sc_ref.value;
                 if (sc_ref.value != null)
+                {
                     (sc_ref.value.get()).setNoFree();
+                }
                 if (((mtype_ref.value.index.value.ty.value & 0xFF) == ENUMTY.Tident) || ((mtype_ref.value.index.value.ty.value & 0xFF) == ENUMTY.Tinstance) || ((mtype_ref.value.index.value.ty.value & 0xFF) == ENUMTY.Tsarray) || ((mtype_ref.value.index.value.ty.value & 0xFF) == ENUMTY.Ttypeof) || ((mtype_ref.value.index.value.ty.value & 0xFF) == ENUMTY.Treturn))
                 {
                     Ref<Expression> e = ref(null);
@@ -801,7 +910,9 @@ public class typesem {
                         {
                             Ref<FuncDeclaration> fd = ref(s.value.toAlias().isFuncDeclaration());
                             if ((fd.value) != null)
+                            {
                                 e.value = new CallExp(loc_ref.value, fd.value, null);
+                            }
                         }
                     }
                     if (e.value != null)
@@ -810,7 +921,9 @@ public class typesem {
                         return typeSemantic(tsa.value, loc_ref.value, sc_ref.value);
                     }
                     else if (t.value != null)
+                    {
                         mtype_ref.value.index.value = typeSemantic(t.value, loc_ref.value, sc_ref.value);
+                    }
                     else
                     {
                         error(loc_ref.value, new BytePtr("index is not a type or an expression"));
@@ -818,7 +931,9 @@ public class typesem {
                     }
                 }
                 else
+                {
                     mtype_ref.value.index.value = typeSemantic(mtype_ref.value.index.value, loc_ref.value, sc_ref.value);
+                }
                 mtype_ref.value.index.value = mtype_ref.value.index.value.merge2();
                 if ((mtype_ref.value.index.value.nextOf() != null) && !mtype_ref.value.index.value.nextOf().isImmutable())
                 {
@@ -854,13 +969,17 @@ public class typesem {
                     {
                         Ref<StructDeclaration> sd = ref(ts.value.sym.value);
                         if ((sd.value.semanticRun.value < PASS.semanticdone))
+                        {
                             dsymbolSemantic(sd.value, null);
+                        }
                         if ((sd.value.xeq.value != null) && (sd.value.xeq.value._scope.value != null) && (sd.value.xeq.value.semanticRun.value < PASS.semantic3done))
                         {
                             IntRef errors = ref(global.startGagging());
                             semantic3(sd.value.xeq.value, sd.value.xeq.value._scope.value);
                             if (global.endGagging(errors.value))
+                            {
                                 sd.value.xeq.value = StructDeclaration.xerreq.value;
+                            }
                         }
                         Ref<BytePtr> s = ref(pcopy(((mtype_ref.value.index.value.toBasetype().ty.value & 0xFF) != ENUMTY.Tstruct) ? new BytePtr("bottom of ") : new BytePtr("")));
                         if (sd.value.xeq.value == null)
@@ -899,18 +1018,26 @@ public class typesem {
                     {
                         Ref<ClassDeclaration> cd = ref(((TypeClass)tbase.value).sym.value);
                         if ((cd.value.semanticRun.value < PASS.semanticdone))
+                        {
                             dsymbolSemantic(cd.value, null);
+                        }
                         if (ClassDeclaration.object.value == null)
                         {
                             error(Loc.initial.value, new BytePtr("missing or corrupt object.d"));
                             fatal();
                         }
                         if (typesem.visitAArrayfeq.value == null)
+                        {
                             typesem.visitAArrayfeq.value = search_function(ClassDeclaration.object.value, Id.eq.value).isFuncDeclaration();
+                        }
                         if (typesem.visitAArrayfcmp.value == null)
+                        {
                             typesem.visitAArrayfcmp.value = search_function(ClassDeclaration.object.value, Id.cmp.value).isFuncDeclaration();
+                        }
                         if (typesem.visitAArrayfhash.value == null)
+                        {
                             typesem.visitAArrayfhash.value = search_function(ClassDeclaration.object.value, Id.tohash).isFuncDeclaration();
+                        }
                         assert((typesem.visitAArrayfcmp.value != null) && (typesem.visitAArrayfeq.value != null) && (typesem.visitAArrayfhash.value != null));
                         if ((typesem.visitAArrayfeq.value.vtblIndex.value < cd.value.vtbl.value.length.value) && (pequals(cd.value.vtbl.value.get(typesem.visitAArrayfeq.value.vtblIndex.value), typesem.visitAArrayfeq.value)))
                         {
@@ -997,7 +1124,9 @@ public class typesem {
                 Ref<TypeReference> mtype_ref = ref(mtype);
                 Ref<Type> n = ref(typeSemantic(mtype_ref.value.next.value, loc_ref.value, sc_ref.value));
                 if ((!pequals(n.value, mtype_ref.value.next.value)))
+                {
                     mtype_ref.value.deco.value = null;
+                }
                 mtype_ref.value.next.value = n.value;
                 mtype_ref.value.transitive();
                 return merge(mtype_ref.value);
@@ -1031,32 +1160,56 @@ public class typesem {
                     }
                 }
                 if (((sc_ref.value.get()).stc.value & 67108864L) != 0)
+                {
                     tf.value.purity.value = PURE.fwdref;
+                }
                 if (((sc_ref.value.get()).stc.value & 33554432L) != 0)
+                {
                     tf.value.isnothrow.value = true;
+                }
                 if (((sc_ref.value.get()).stc.value & 4398046511104L) != 0)
+                {
                     tf.value.isnogc.value = true;
+                }
                 if (((sc_ref.value.get()).stc.value & 2097152L) != 0)
+                {
                     tf.value.isref.value = true;
+                }
                 if (((sc_ref.value.get()).stc.value & 17592186044416L) != 0)
+                {
                     tf.value.isreturn.value = true;
+                }
                 if (((sc_ref.value.get()).stc.value & 4503599627370496L) != 0)
+                {
                     tf.value.isreturninferred.value = true;
+                }
                 if (((sc_ref.value.get()).stc.value & 524288L) != 0)
+                {
                     tf.value.isscope.value = true;
+                }
                 if (((sc_ref.value.get()).stc.value & 562949953421312L) != 0)
+                {
                     tf.value.isscopeinferred.value = true;
+                }
                 if ((tf.value.trust.value == TRUST.default_))
                 {
                     if (((sc_ref.value.get()).stc.value & 8589934592L) != 0)
+                    {
                         tf.value.trust.value = TRUST.safe;
+                    }
                     else if (((sc_ref.value.get()).stc.value & 34359738368L) != 0)
+                    {
                         tf.value.trust.value = TRUST.system;
+                    }
                     else if (((sc_ref.value.get()).stc.value & 17179869184L) != 0)
+                    {
                         tf.value.trust.value = TRUST.trusted;
+                    }
                 }
                 if (((sc_ref.value.get()).stc.value & 4294967296L) != 0)
+                {
                     tf.value.isproperty.value = true;
+                }
                 tf.value.linkage.value = (sc_ref.value.get()).linkage.value;
                 Ref<Boolean> wildreturn = ref(false);
                 if (tf.value.next.value != null)
@@ -1072,7 +1225,9 @@ public class typesem {
                         errors.value = true;
                     }
                     if (tf.value.next.value.hasWild() != 0)
+                    {
                         wildreturn.value = true;
+                    }
                     if (tf.value.isreturn.value && !tf.value.isref.value && !tf.value.next.value.hasPointers())
                     {
                         tf.value.isreturn.value = false;
@@ -1102,7 +1257,9 @@ public class typesem {
                             if ((fparam.storageClass.value & 268435713L) != 0)
                             {
                                 if (fparam.type.value == null)
+                                {
                                     continue;
+                                }
                             }
                             Type t = fparam.type.value.toBasetype();
                             if (((t.ty.value & 0xFF) == ENUMTY.Tfunction))
@@ -1142,7 +1299,9 @@ public class typesem {
                                 else
                                 {
                                     if ((fparam.storageClass.value & 524288L) == 0)
+                                    {
                                         fparam.storageClass.value |= 562949953945600L;
+                                    }
                                     if (tf.value.isref.value)
                                     {
                                     }
@@ -1179,7 +1338,9 @@ public class typesem {
                             {
                                 fparam.storageClass.value &= -524289L;
                                 if (!tf.value.isref.value || (((sc_ref.value.get()).flags.value & 1) != 0))
+                                {
                                     fparam.storageClass.value &= -17592186044417L;
+                                }
                             }
                             if (t.hasWild() != 0)
                             {
@@ -1216,10 +1377,14 @@ public class typesem {
                                 }
                                 e.value = e.value.implicitCastTo(argsc.value, fparam.type.value);
                                 if ((isRefOrOut != 0) && (isAuto == 0))
+                                {
                                     e.value = e.value.toLvalue(argsc.value, e.value);
+                                }
                                 fparam.defaultArg.value = e.value;
                                 if (((e.value.op.value & 0xFF) == 127))
+                                {
                                     errors.value = true;
+                                }
                             }
                             {
                                 Ref<TypeTuple> tt = ref(t.isTypeTuple());
@@ -1257,7 +1422,9 @@ public class typesem {
                                                 Ref<Expression> paramDefaultArg = ref(narg.defaultArg.value);
                                                 Ref<TupleExp> te = ref(fparam.defaultArg.value != null ? fparam.defaultArg.value.isTupleExp() : null);
                                                 if ((te.value != null) && (te.value.exps.value != null) && ((te.value.exps.value.get()).length.value != 0))
+                                                {
                                                     paramDefaultArg.value = (te.value.exps.value.get()).get(j.value);
+                                                }
                                                 newparams.value.get().set(j.value, new Parameter(stc.value, narg.type.value, narg.ident.value, paramDefaultArg.value, narg.userAttribDecl.value));
                                             }
                                         }
@@ -1278,7 +1445,9 @@ public class typesem {
                                     {
                                     }
                                     else
+                                    {
                                         fparam.storageClass.value &= -2097153L;
+                                    }
                                     fparam.storageClass.value &= -257L;
                                     fparam.storageClass.value |= 35184372088832L;
                                 }
@@ -1299,7 +1468,9 @@ public class typesem {
                     (argsc.value.get()).pop();
                 }
                 if (tf.value.isWild())
+                {
                     wildparams.value |= 2;
+                }
                 if (wildreturn.value && (wildparams.value == 0))
                 {
                     error(loc_ref.value, new BytePtr("`inout` on `return` means `inout` must be on a parameter as well for `%s`"), mtype_ref.value.toChars());
@@ -1317,9 +1488,13 @@ public class typesem {
                     errors.value = true;
                 }
                 if (errors.value)
+                {
                     return error.invoke();
+                }
                 if (tf.value.next.value != null)
+                {
                     tf.value.deco.value = pcopy(merge(tf.value).deco.value);
+                }
                 return tf.value;
             }
         };
@@ -1332,7 +1507,9 @@ public class typesem {
                 }
                 mtype_ref.value.next.value = typeSemantic(mtype_ref.value.next.value, loc_ref.value, sc_ref.value);
                 if (((mtype_ref.value.next.value.ty.value & 0xFF) != ENUMTY.Tfunction))
+                {
                     return error.invoke();
+                }
                 mtype_ref.value.deco.value = pcopy(merge(mtype_ref.value).deco.value);
                 return mtype_ref.value;
             }
@@ -1354,12 +1531,18 @@ public class typesem {
                     {
                         Ref<TemplateDeclaration> td = ref(s.value.isTemplateDeclaration());
                         if ((td.value != null) && (td.value.onemember.value != null) && (td.value.onemember.value.isAggregateDeclaration() != null))
+                        {
                             error(loc_ref.value, new BytePtr("template %s `%s` is used as a type without instantiation; to instantiate it use `%s!(arguments)`"), s.value.kind(), s.value.toPrettyChars(false), s.value.ident.value.toChars());
+                        }
                         else
+                        {
                             error(loc_ref.value, new BytePtr("%s `%s` is used as a type"), s.value.kind(), s.value.toPrettyChars(false));
+                        }
                     }
                     else
+                    {
                         error(loc_ref.value, new BytePtr("`%s` is used as a type"), mtype_ref.value.toChars());
+                    }
                     return error.invoke();
                 }
             }
@@ -1374,7 +1557,9 @@ public class typesem {
                     IntRef errors = ref(global.errors.value);
                     resolve(mtype_ref.value, loc_ref.value, sc_ref.value, ptr(e), ptr(t), ptr(s), false);
                     if ((t.value == null) && (errors.value != global.errors.value))
+                    {
                         return error.invoke();
+                    }
                 }
                 if (t.value == null)
                 {
@@ -1383,7 +1568,9 @@ public class typesem {
                         error(loc_ref.value, new BytePtr("`%s` had previous errors"), mtype_ref.value.toChars());
                     }
                     else
+                    {
                         error(loc_ref.value, new BytePtr("`%s` is used as a type"), mtype_ref.value.toChars());
+                    }
                     return error.invoke();
                 }
                 return t.value;
@@ -1397,7 +1584,9 @@ public class typesem {
                 Ref<Dsymbol> s = ref(null);
                 resolve(mtype_ref.value, loc_ref.value, sc_ref.value, ptr(e), ptr(t), ptr(s), false);
                 if ((s.value != null) && ((t.value = s.value.getType()) != null))
+                {
                     t.value = t.value.addMod(mtype_ref.value.mod.value);
+                }
                 if (t.value == null)
                 {
                     error(loc_ref.value, new BytePtr("`%s` is used as a type"), mtype_ref.value.toChars());
@@ -1410,7 +1599,9 @@ public class typesem {
             public Type invoke(TypeTraits mtype) {
                 Ref<TypeTraits> mtype_ref = ref(mtype);
                 if (((mtype_ref.value.ty.value & 0xFF) == ENUMTY.Terror))
+                {
                     return mtype_ref.value;
+                }
                 if ((!pequals(mtype_ref.value.exp.value.ident.value, Id.allMembers.value)) && (!pequals(mtype_ref.value.exp.value.ident.value, Id.derivedMembers.value)) && (!pequals(mtype_ref.value.exp.value.ident.value, Id.getMember.value)) && (!pequals(mtype_ref.value.exp.value.ident.value, Id.parent.value)) && (!pequals(mtype_ref.value.exp.value.ident.value, Id.getOverloads.value)) && (!pequals(mtype_ref.value.exp.value.ident.value, Id.getVirtualFunctions.value)) && (!pequals(mtype_ref.value.exp.value.ident.value, Id.getVirtualMethods.value)) && (!pequals(mtype_ref.value.exp.value.ident.value, Id.getAttributes.value)) && (!pequals(mtype_ref.value.exp.value.ident.value, Id.getUnitTests.value)) && (!pequals(mtype_ref.value.exp.value.ident.value, Id.getAliasThis.value)))
                 {
                     error(mtype_ref.value.loc, new BytePtr("trait `%s` is either invalid or not supported %s"), mtype_ref.value.exp.value.ident.value.toChars(), typesem.visitTraitsctxt.get((mtype_ref.value.inAliasDeclaration.value ? 1 : 0)));
@@ -1464,11 +1655,15 @@ public class typesem {
                     }
                 }
                 if (result.value != null)
+                {
                     result.value = result.value.addMod(mtype_ref.value.mod.value);
+                }
                 if (!mtype_ref.value.inAliasDeclaration.value && (result.value == null))
                 {
                     if (global.errors.value == 0)
+                    {
                         error(mtype_ref.value.loc, new BytePtr("`%s` does not give a valid type"), mtype_ref.value.toChars());
+                    }
                     return error.invoke();
                 }
                 return result.value;
@@ -1482,7 +1677,9 @@ public class typesem {
                 Ref<Dsymbol> s = ref(null);
                 resolve(mtype_ref.value, loc_ref.value, sc_ref.value, ptr(e), ptr(t), ptr(s), false);
                 if ((s.value != null) && ((t.value = s.value.getType()) != null))
+                {
                     t.value = t.value.addMod(mtype_ref.value.mod.value);
+                }
                 if (t.value == null)
                 {
                     error(loc_ref.value, new BytePtr("`%s` is used as a type"), mtype_ref.value.toChars());
@@ -1499,17 +1696,25 @@ public class typesem {
                     if ((sc_ref.value != null) && ((sc_ref.value.get()).cppmangle.value != CPPMANGLE.def))
                     {
                         if ((mtype_ref.value.cppmangle.value == CPPMANGLE.def))
+                        {
                             mtype_ref.value.cppmangle.value = (sc_ref.value.get()).cppmangle.value;
+                        }
                     }
                     return mtype_ref.value;
                 }
                 assert(mtype_ref.value.sym.value.parent.value != null);
                 if (((mtype_ref.value.sym.value.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+                {
                     return error.invoke();
+                }
                 if ((sc_ref.value != null) && ((sc_ref.value.get()).cppmangle.value != CPPMANGLE.def))
+                {
                     mtype_ref.value.cppmangle.value = (sc_ref.value.get()).cppmangle.value;
+                }
                 else
+                {
                     mtype_ref.value.cppmangle.value = CPPMANGLE.asStruct;
+                }
                 return merge(mtype_ref.value);
             }
         };
@@ -1527,17 +1732,25 @@ public class typesem {
                     if ((sc_ref.value != null) && ((sc_ref.value.get()).cppmangle.value != CPPMANGLE.def))
                     {
                         if ((mtype_ref.value.cppmangle.value == CPPMANGLE.def))
+                        {
                             mtype_ref.value.cppmangle.value = (sc_ref.value.get()).cppmangle.value;
+                        }
                     }
                     return mtype_ref.value;
                 }
                 assert(mtype_ref.value.sym.value.parent.value != null);
                 if (((mtype_ref.value.sym.value.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+                {
                     return error.invoke();
+                }
                 if ((sc_ref.value != null) && ((sc_ref.value.get()).cppmangle.value != CPPMANGLE.def))
+                {
                     mtype_ref.value.cppmangle.value = (sc_ref.value.get()).cppmangle.value;
+                }
                 else
+                {
                     mtype_ref.value.cppmangle.value = CPPMANGLE.asClass;
+                }
                 return merge(mtype_ref.value);
             }
         };
@@ -1545,7 +1758,9 @@ public class typesem {
             public Type invoke(TypeTuple mtype) {
                 Ref<TypeTuple> mtype_ref = ref(mtype);
                 if (mtype_ref.value.deco.value == null)
+                {
                     mtype_ref.value.deco.value = pcopy(merge(mtype_ref.value).deco.value);
+                }
                 return mtype_ref.value;
             }
         };
@@ -1564,7 +1779,9 @@ public class typesem {
                 mtype.lwr.value = mtype.lwr.value.ctfeInterpret();
                 mtype.upr.value = mtype.upr.value.ctfeInterpret();
                 if (((mtype.lwr.value.op.value & 0xFF) == 127) || ((mtype.upr.value.op.value & 0xFF) == 127))
+                {
                     return error.invoke();
+                }
                 Ref<Long> i1 = ref(mtype.lwr.value.toUInteger());
                 Ref<Long> i2 = ref(mtype.upr.value.toUInteger());
                 if (!((i1.value <= i2.value) && (i2.value <= (long)(tt.arguments.value.get()).length.value)))
@@ -1577,10 +1794,10 @@ public class typesem {
                 Ref<Ptr<DArray<Parameter>>> args = ref(refPtr(new DArray<Parameter>()));
                 (args.value.get()).reserve((int)(i2.value - i1.value));
                 {
-                    Ref<Slice<Parameter>> __r1651 = ref((tt.arguments.value.get()).opSlice((int)i1.value, (int)i2.value).copy());
-                    IntRef __key1652 = ref(0);
-                    for (; (__key1652.value < __r1651.value.getLength());__key1652.value += 1) {
-                        Ref<Parameter> arg = ref(__r1651.value.get(__key1652.value));
+                    Ref<Slice<Parameter>> __r1653 = ref((tt.arguments.value.get()).opSlice((int)i1.value, (int)i2.value).copy());
+                    IntRef __key1654 = ref(0);
+                    for (; (__key1654.value < __r1653.value.getLength());__key1654.value += 1) {
+                        Ref<Parameter> arg = ref(__r1653.value.get(__key1654.value));
                         (args.value.get()).push(arg.value);
                     }
                 }
@@ -1647,12 +1864,16 @@ public class typesem {
                         break;
                     case 2:
                         if (merge(((TypeAArray)type).index.value).deco.value == null)
+                        {
                             return type;
+                        }
                         /*goto default*/ { __dispatch10 = -1; continue dispatched_10; }
                     default:
                     __dispatch10 = 0;
                     if ((type.nextOf() != null) && (type.nextOf().deco.value == null))
+                    {
                         return type;
+                    }
                     break;
                 }
             } while(__dispatch10 != 0);
@@ -1695,7 +1916,9 @@ public class typesem {
                 {
                     Ref<Long> sz = ref(mt_ref.value.size(loc));
                     if ((sz.value == -1L))
+                    {
                         return new ErrorExp();
+                    }
                     e.value = new IntegerExp(loc, sz.value, Type.tsize_t.value);
                 }
                 else if ((pequals(ident_ref.value, Id.__xalignof.value)))
@@ -1743,19 +1966,29 @@ public class typesem {
                 {
                     Ref<Dsymbol> s = ref(null);
                     if (((mt_ref.value.ty.value & 0xFF) == ENUMTY.Tstruct) || ((mt_ref.value.ty.value & 0xFF) == ENUMTY.Tclass) || ((mt_ref.value.ty.value & 0xFF) == ENUMTY.Tenum))
+                    {
                         s.value = mt_ref.value.toDsymbol(null);
+                    }
                     if (s.value != null)
+                    {
                         s.value = s.value.search_correct(ident_ref.value);
+                    }
                     if ((!pequals(mt_ref.value, Type.terror.value)))
                     {
                         if (s.value != null)
+                        {
                             error(loc, new BytePtr("no property `%s` for type `%s`, did you mean `%s`?"), ident_ref.value.toChars(), mt_ref.value.toChars(), s.value.toPrettyChars(false));
+                        }
                         else
                         {
                             if ((pequals(ident_ref.value, Id.call.value)) && ((mt_ref.value.ty.value & 0xFF) == ENUMTY.Tclass))
+                            {
                                 error(loc, new BytePtr("no property `%s` for type `%s`, did you mean `new %s`?"), ident_ref.value.toChars(), mt_ref.value.toChars(), mt_ref.value.toPrettyChars(false));
+                            }
                             else
+                            {
                                 error(loc, new BytePtr("no property `%s` for type `%s`"), ident_ref.value.toChars(), mt_ref.value.toChars());
+                            }
                         }
                     }
                     e.value = new ErrorExp();
@@ -1787,7 +2020,9 @@ public class typesem {
                     public Expression invoke(Double r) {
                         Ref<Double> r_ref = ref(r);
                         if (mt_ref.value.isreal() || mt_ref.value.isimaginary())
+                        {
                             return new RealExp(loc, r_ref.value, mt_ref.value);
+                        }
                         else
                         {
                             return new ComplexExp(loc, new complex_t(r_ref.value, r_ref.value), mt_ref.value);
@@ -2156,7 +2391,9 @@ public class typesem {
                     case 26:
                         s = ((VarExp)e).var.value;
                         if (s.isVarDeclaration() != null)
+                        {
                             /*goto default*/ { __dispatch24 = -1; continue dispatched_24; }
+                        }
                         break;
                     case 36:
                         s = ((TemplateExp)e).td.value;
@@ -2193,6 +2430,7 @@ public class typesem {
                 pt_ref.value.set(0, null);
                 pe_ref.value.set(0, e_ref.value);
                 ps_ref.value.set(0, null);
+                return null;
             }
         };
         Function1<Type,Void> returnType = new Function1<Type,Void>(){
@@ -2201,6 +2439,7 @@ public class typesem {
                 pt_ref.value.set(0, t_ref.value);
                 pe_ref.value.set(0, null);
                 ps_ref.value.set(0, null);
+                return null;
             }
         };
         Function1<Dsymbol,Void> returnSymbol = new Function1<Dsymbol,Void>(){
@@ -2209,11 +2448,13 @@ public class typesem {
                 pt_ref.value.set(0, null);
                 pe_ref.value.set(0, null);
                 ps_ref.value.set(0, s_ref.value);
+                return null;
             }
         };
         Function0<Void> returnError = new Function0<Void>(){
             public Void invoke() {
                 returnType.invoke(Type.terror.value);
+                return null;
             }
         };
         Function1<Type,Void> visitType = new Function1<Type,Void>(){
@@ -2222,6 +2463,7 @@ public class typesem {
                 Ref<Type> t = ref(typeSemantic(mt_ref.value, loc_ref.value, sc_ref.value));
                 assert(t.value != null);
                 returnType.invoke(t.value);
+                return null;
             }
         };
         Function1<TypeSArray,Void> visitSArray = new Function1<TypeSArray,Void>(){
@@ -2233,7 +2475,9 @@ public class typesem {
                     {
                         Ref<Dsymbol> s = ref(getDsymbol(pe_ref.value.get()));
                         if ((s.value) != null)
+                        {
                             pe_ref.value.set(0, (new DsymbolExp(loc_ref.value, s.value, true)));
+                        }
                     }
                     returnExp.invoke(new ArrayExp(loc_ref.value, pe_ref.value.get(), mt_ref.value.dim.value));
                 }
@@ -2247,8 +2491,10 @@ public class typesem {
                             mt_ref.value.dim.value = semanticLength(sc_ref.value, tup.value, mt_ref.value.dim.value);
                             mt_ref.value.dim.value = mt_ref.value.dim.value.ctfeInterpret();
                             if (((mt_ref.value.dim.value.op.value & 0xFF) == 127))
+                            {
                                 returnError.invoke();
                                 return null;
+                            }
                             Ref<Long> d = ref(mt_ref.value.dim.value.toUInteger());
                             if ((d.value >= (long)(tup.value.objects.value.get()).length.value))
                             {
@@ -2266,11 +2512,15 @@ public class typesem {
                             {
                                 Ref<Expression> e = ref((Expression)o.value);
                                 if (((e.value.op.value & 0xFF) == 41))
+                                {
                                     returnSymbol.invoke(((DsymbolExp)e.value).s.value);
                                     return null;
+                                }
                                 else
+                                {
                                     returnExp.invoke(e.value);
                                     return null;
+                                }
                             }
                             if ((o.value.dyncast() == DYNCAST.type))
                             {
@@ -2283,14 +2533,18 @@ public class typesem {
                             return null;
                         }
                         else
+                        {
                             visitType.invoke(mt_ref.value);
                             return null;
+                        }
                     }
                 }
                 else
                 {
                     if ((((pt_ref.value.get()).ty.value & 0xFF) != ENUMTY.Terror))
+                    {
                         mt_ref.value.next.value = pt_ref.value.get();
+                    }
                     visitType.invoke(mt_ref.value);
                 }
             }
@@ -2304,7 +2558,9 @@ public class typesem {
                     {
                         Ref<Dsymbol> s = ref(getDsymbol(pe_ref.value.get()));
                         if ((s.value) != null)
+                        {
                             pe_ref.value.set(0, (new DsymbolExp(loc_ref.value, s.value, true)));
+                        }
                     }
                     returnExp.invoke(new ArrayExp(loc_ref.value, pe_ref.value.get(), null));
                 }
@@ -2316,15 +2572,20 @@ public class typesem {
                         {
                         }
                         else
+                        {
                             visitType.invoke(mt_ref.value);
+                        }
                     }
                 }
                 else
                 {
                     if ((((pt_ref.value.get()).ty.value & 0xFF) != ENUMTY.Terror))
+                    {
                         mt_ref.value.next.value = pt_ref.value.get();
+                    }
                     visitType.invoke(mt_ref.value);
                 }
+                return null;
             }
         };
         Function1<TypeAArray,Void> visitAArray = new Function1<TypeAArray,Void>(){
@@ -2344,9 +2605,13 @@ public class typesem {
                         return null;
                     }
                     else if (t.value != null)
+                    {
                         mt_ref.value.index.value = t.value;
+                    }
                     else
+                    {
                         error(loc_ref.value, new BytePtr("index is not a type or an expression"));
+                    }
                 }
                 visitType.invoke(mt_ref.value);
             }
@@ -2380,15 +2645,21 @@ public class typesem {
                                 if ((cd.value) != null)
                                 {
                                     if (mt_ref.value.ident.value.equals(Id.This.value))
+                                    {
                                         mt_ref.value.ident.value = cd.value.ident.value;
+                                    }
                                     else if ((cd.value.baseClass.value != null) && mt_ref.value.ident.value.equals(Id._super.value))
+                                    {
                                         mt_ref.value.ident.value = cd.value.baseClass.value.ident.value;
+                                    }
                                 }
                                 else
                                 {
                                     Ref<StructDeclaration> sd = ref(ad.value.isStructDeclaration());
                                     if ((sd.value != null) && mt_ref.value.ident.value.equals(Id.This.value))
+                                    {
                                         mt_ref.value.ident.value = sd.value.ident.value;
+                                    }
                                 }
                             }
                         }
@@ -2412,13 +2683,18 @@ public class typesem {
                                 {
                                     Ref<CompileDeclaration> compileDecl = ref(member.isCompileDeclaration());
                                     if ((compileDecl.value) != null)
+                                    {
                                         dsymbolSemantic(compileDecl.value, sc_ref.value);
+                                    }
                                     else {
                                         Ref<TemplateMixin> mixinTempl = ref(member.isTemplateMixin());
                                         if ((mixinTempl.value) != null)
+                                        {
                                             dsymbolSemantic(mixinTempl.value, sc_ref.value);
+                                        }
                                     }
                                 }
+                                return null;
                             }
                         };
                         foreachDsymbol(sds.value.members.value, __lambda3);
@@ -2436,7 +2712,9 @@ public class typesem {
                                 if ((td.value) != null)
                                 {
                                     if (td.value.overroot.value != null)
+                                    {
                                         td.value = td.value.overroot.value;
+                                    }
                                     s.value = td.value;
                                 }
                             }
@@ -2445,7 +2723,9 @@ public class typesem {
                 }
                 resolveHelper(mt_ref.value, loc_ref.value, sc_ref.value, s.value, scopesym.value, pe_ref.value, pt_ref.value, ps_ref.value, intypeid_ref.value);
                 if (pt_ref.value.get() != null)
+                {
                     pt_ref.value.set(0, (pt_ref.value.get()).addMod(mt_ref.value.mod.value));
+                }
             }
         };
         Function1<TypeInstance,Void> visitInstance = new Function1<TypeInstance,Void>(){
@@ -2453,11 +2733,15 @@ public class typesem {
                 Ref<TypeInstance> mt_ref = ref(mt);
                 dsymbolSemantic(mt_ref.value.tempinst.value, sc_ref.value);
                 if ((global.gag.value == 0) && mt_ref.value.tempinst.value.errors.value)
+                {
                     returnError.invoke();
                     return null;
+                }
                 resolveHelper(mt_ref.value, loc_ref.value, sc_ref.value, mt_ref.value.tempinst.value, null, pe_ref.value, pt_ref.value, ps_ref.value, intypeid_ref.value);
                 if (pt_ref.value.get() != null)
+                {
                     pt_ref.value.set(0, (pt_ref.value.get()).addMod(mt_ref.value.mod.value));
+                }
             }
         };
         Function1<TypeTypeof,Void> visitTypeof = new Function1<TypeTypeof,Void>(){
@@ -2487,21 +2771,27 @@ public class typesem {
                 if (((exp2.value.op.value & 0xFF) == 127))
                 {
                     if (global.gag.value == 0)
+                    {
                         mt_ref.value.exp.value = exp2.value;
+                    }
                     /*goto Lerr*/throw Dispatch0.INSTANCE;
                 }
                 mt_ref.value.exp.value = exp2.value;
                 if (((mt_ref.value.exp.value.op.value & 0xFF) == 20) || ((mt_ref.value.exp.value.op.value & 0xFF) == 203))
                 {
                     if (mt_ref.value.exp.value.checkType())
+                    {
                         /*goto Lerr*/throw Dispatch0.INSTANCE;
+                    }
                 }
                 {
                     Ref<FuncDeclaration> f = ref(((mt_ref.value.exp.value.op.value & 0xFF) == 26) ? ((VarExp)mt_ref.value.exp.value).var.value.isFuncDeclaration() : ((mt_ref.value.exp.value.op.value & 0xFF) == 27) ? ((DotVarExp)mt_ref.value.exp.value).var.value.isFuncDeclaration() : null);
                     if ((f.value) != null)
                     {
                         if (f.value.checkForwardRef(loc_ref.value))
+                        {
                             /*goto Lerr*/throw Dispatch0.INSTANCE;
+                        }
                     }
                 }
                 {
@@ -2509,7 +2799,9 @@ public class typesem {
                     if ((f.value) != null)
                     {
                         if (f.value.checkForwardRef(loc_ref.value))
+                        {
                             /*goto Lerr*/throw Dispatch0.INSTANCE;
+                        }
                     }
                 }
                 Ref<Type> t = ref(mt_ref.value.exp.value.type.value);
@@ -2532,7 +2824,9 @@ public class typesem {
                     {
                         Ref<Dsymbol> s = ref(t.value.toDsymbol(sc_ref.value));
                         if ((s.value) != null)
+                        {
                             resolveHelper(mt_ref.value, loc_ref.value, sc_ref.value, s.value, null, pe_ref.value, pt_ref.value, ps_ref.value, intypeid_ref.value);
+                        }
                         else
                         {
                             Ref<Expression> e = ref(typeToExpressionHelper(mt_ref.value, new TypeExp(loc_ref.value, t.value), 0));
@@ -2541,7 +2835,9 @@ public class typesem {
                         }
                     }
                     if (pt_ref.value.get() != null)
+                    {
                         pt_ref.value.set(0, (pt_ref.value.get()).addMod(mt_ref.value.mod.value));
+                    }
                 }
                 mt_ref.value.inuse.value--;
             }
@@ -2559,7 +2855,9 @@ public class typesem {
                         return null;
                     }
                     if (func.value.fes.value != null)
+                    {
                         func.value = func.value.fes.value.func.value;
+                    }
                     t.value = func.value.type.value.nextOf();
                     if (t.value == null)
                     {
@@ -2578,7 +2876,9 @@ public class typesem {
                     {
                         Ref<Dsymbol> s = ref(t.value.toDsymbol(sc_ref.value));
                         if ((s.value) != null)
+                        {
                             resolveHelper(mt_ref.value, loc_ref.value, sc_ref.value, s.value, null, pe_ref.value, pt_ref.value, ps_ref.value, intypeid_ref.value);
+                        }
                         else
                         {
                             Ref<Expression> e = ref(typeToExpressionHelper(mt_ref.value, new TypeExp(loc_ref.value, t.value), 0));
@@ -2587,7 +2887,9 @@ public class typesem {
                         }
                     }
                     if (pt_ref.value.get() != null)
+                    {
                         pt_ref.value.set(0, (pt_ref.value.get()).addMod(mt_ref.value.mod.value));
+                    }
                 }
             }
         };
@@ -2600,7 +2902,9 @@ public class typesem {
                     {
                         Ref<Dsymbol> s = ref(getDsymbol(pe_ref.value.get()));
                         if ((s.value) != null)
+                        {
                             pe_ref.value.set(0, (new DsymbolExp(loc_ref.value, s.value, true)));
+                        }
                     }
                     returnExp.invoke(new ArrayExp(loc_ref.value, pe_ref.value.get(), new IntervalExp(loc_ref.value, mt_ref.value.lwr.value, mt_ref.value.upr.value)));
                     return null;
@@ -2645,12 +2949,16 @@ public class typesem {
                         return null;
                     }
                     else
+                    {
                         visitType.invoke(mt_ref.value);
+                    }
                 }
                 else
                 {
                     if ((((pt_ref.value.get()).ty.value & 0xFF) != ENUMTY.Terror))
+                    {
                         mt_ref.value.next.value = pt_ref.value.get();
+                    }
                     visitType.invoke(mt_ref.value);
                 }
             }
@@ -2726,7 +3034,9 @@ public class typesem {
                                 objc().checkOffsetof(e_ref.value, ad.value);
                                 ad.value.size(e_ref.value.loc.value);
                                 if ((ad.value.sizeok.value != Sizeok.done))
+                                {
                                     return new ErrorExp();
+                                }
                                 return new IntegerExp(e_ref.value.loc.value, (long)v.value.offset.value, Type.tsize_t.value);
                             }
                         }
@@ -2747,12 +3057,16 @@ public class typesem {
                         e_ref.value = new StringExp(e_ref.value.loc.value, s.value);
                     }
                     else
+                    {
                         e_ref.value = getProperty(mt_ref.value, e_ref.value.loc.value, ident_ref.value, flag_ref.value & DotExpFlag.gag);
+                    }
                 }
                 catch(Dispatch0 __d){}
             /*Lreturn:*/
                 if (e_ref.value != null)
+                {
                     e_ref.value = expressionSemantic(e_ref.value, sc_ref.value);
+                }
                 return e_ref.value;
             }
         };
@@ -2871,7 +3185,9 @@ public class typesem {
                     return visitType.invoke(mt_ref.value);
                 }
                 if (((flag_ref.value & 1) == 0) || (e_ref.value != null))
+                {
                     e_ref.value = expressionSemantic(e_ref.value, sc_ref.value);
+                }
                 return e_ref.value;
             }
         };
@@ -2902,7 +3218,9 @@ public class typesem {
                 Ref<TypeArray> mt_ref = ref(mt);
                 e_ref.value = visitType.invoke(mt_ref.value);
                 if (((flag_ref.value & 1) == 0) || (e_ref.value != null))
+                {
                     e_ref.value = expressionSemantic(e_ref.value, sc_ref.value);
+                }
                 return e_ref.value;
             }
         };
@@ -2934,7 +3252,9 @@ public class typesem {
                     e_ref.value = visitArray.invoke(mt_ref.value);
                 }
                 if (((flag_ref.value & 1) == 0) || (e_ref.value != null))
+                {
                     e_ref.value = expressionSemantic(e_ref.value, sc_ref.value);
+                }
                 return e_ref.value;
             }
         };
@@ -3089,7 +3409,9 @@ public class typesem {
                             IntRef errors = ref(gagError.value ? global.startGagging() : 0);
                             e_ref.value = semanticY(dti.value, sc_ref.value, 0);
                             if (gagError.value && global.endGagging(errors.value))
+                            {
                                 e_ref.value = null;
+                            }
                             return returnExp.invoke(e_ref.value);
                         }
                     }
@@ -3103,10 +3425,14 @@ public class typesem {
                         {
                             global.endGagging(errors.value);
                             if ((exp.value != null) && ((exp.value.op.value & 0xFF) == 127))
+                            {
                                 exp.value = null;
+                            }
                         }
                         if ((exp.value != null) && gagError.value)
+                        {
                             resolveAliasThis(sc_ref.value, e_ref.value, false);
+                        }
                         return returnExp.invoke(exp.value);
                     }
                 }
@@ -3132,7 +3458,9 @@ public class typesem {
                     Ref<Expression> e0 = ref(null);
                     Ref<Expression> ev = ref(((e_ref.value.op.value & 0xFF) == 20) ? null : e_ref.value);
                     if (ev.value != null)
+                    {
                         ev.value = extractSideEffect(sc_ref.value, new BytePtr("__tup"), e0, ev.value, false);
+                    }
                     Ref<Ptr<DArray<Expression>>> exps = ref(refPtr(new DArray<Expression>()));
                     (exps.value.get()).reserve(mt_ref.value.sym.value.fields.length.value);
                     {
@@ -3141,7 +3469,9 @@ public class typesem {
                             Ref<VarDeclaration> v = ref(mt_ref.value.sym.value.fields.get(i.value));
                             Ref<Expression> ex = ref(null);
                             if (ev.value != null)
+                            {
                                 ex.value = new DotVarExp(e_ref.value.loc.value, ev.value, v.value, true);
+                            }
                             else
                             {
                                 ex.value = new VarExp(e_ref.value.loc.value, v.value, true);
@@ -3175,7 +3505,9 @@ public class typesem {
                         {
                             Ref<Declaration> d = ref(s.value.isDeclaration());
                             if ((d.value) != null)
+                            {
                                 d.value.checkDisabled(e_ref.value.loc.value, sc_ref.value, false);
+                            }
                         }
                     }
                     s.value = s.value.toAlias();
@@ -3193,9 +3525,13 @@ public class typesem {
                             if ((v.value.type.value == null) || (v.value.type.value.deco.value == null) && (v.value.inuse.value != 0))
                             {
                                 if (v.value.inuse.value != 0)
+                                {
                                     e_ref.value.error(new BytePtr("circular reference to %s `%s`"), v.value.kind(), v.value.toPrettyChars(false));
+                                }
                                 else
+                                {
                                     e_ref.value.error(new BytePtr("forward reference to %s `%s`"), v.value.kind(), v.value.toPrettyChars(false));
+                                }
                                 return new ErrorExp();
                             }
                             if (((v.value.type.value.ty.value & 0xFF) == ENUMTY.Terror))
@@ -3237,9 +3573,13 @@ public class typesem {
                     if (td.value != null)
                     {
                         if (((e_ref.value.op.value & 0xFF) == 20))
+                        {
                             e_ref.value = new TemplateExp(e_ref.value.loc.value, td.value, null);
+                        }
                         else
+                        {
                             e_ref.value = new DotTemplateExp(e_ref.value.loc.value, e_ref.value, td.value);
+                        }
                         return expressionSemantic(e_ref.value, sc_ref.value);
                     }
                     Ref<TemplateInstance> ti = ref(s.value.isTemplateInstance());
@@ -3255,11 +3595,17 @@ public class typesem {
                         }
                         s.value = ti.value.inst.value.toAlias();
                         if (s.value.isTemplateInstance() == null)
+                        {
                             /*goto L1*/throw Dispatch0.INSTANCE;
+                        }
                         if (((e_ref.value.op.value & 0xFF) == 20))
+                        {
                             e_ref.value = new ScopeExp(e_ref.value.loc.value, ti.value);
+                        }
                         else
+                        {
                             e_ref.value = new DotExp(e_ref.value.loc.value, e_ref.value, new ScopeExp(e_ref.value.loc.value, ti.value));
+                        }
                         return expressionSemantic(e_ref.value, sc_ref.value);
                     }
                     if ((s.value.isImport() != null) || (s.value.isModule() != null) || (s.value.isPackage() != null))
@@ -3301,11 +3647,15 @@ public class typesem {
                             }
                         }
                         if ((d.value.semanticRun.value == PASS.init))
+                        {
                             dsymbolSemantic(d.value, null);
+                        }
                         checkAccess(e_ref.value.loc.value, sc_ref.value, e_ref.value, d.value);
                         Ref<VarExp> ve = ref(new VarExp(e_ref.value.loc.value, d.value, true));
                         if ((d.value.isVarDeclaration() != null) && d.value.needThis())
+                        {
                             ve.value.type.value = d.value.type.value.addMod(e_ref.value.type.value.mod.value);
+                        }
                         return ve.value;
                     }
                     Ref<Boolean> unreal = ref(((e_ref.value.op.value & 0xFF) == 26) && ((VarExp)e_ref.value).var.value.isField());
@@ -3330,7 +3680,9 @@ public class typesem {
                     return getProperty(mt_ref.value, e_ref.value.loc.value, ident_ref.value, flag_ref.value & 1);
                 }
                 if ((mt_ref.value.sym.value.semanticRun.value < PASS.semanticdone))
+                {
                     dsymbolSemantic(mt_ref.value.sym.value, null);
+                }
                 if (mt_ref.value.sym.value.members.value == null)
                 {
                     if (mt_ref.value.sym.value.isSpecial())
@@ -3343,7 +3695,9 @@ public class typesem {
                         e_ref.value = new ErrorExp();
                     }
                     else
+                    {
                         e_ref.value = null;
+                    }
                     return e_ref.value;
                 }
                 Ref<Dsymbol> s = ref(mt_ref.value.sym.value.search(e_ref.value.loc.value, ident_ref.value, 8));
@@ -3359,9 +3713,13 @@ public class typesem {
                         {
                             Ref<Dsymbol> ns = ref(mt_ref.value.sym.value.search_correct(ident_ref.value));
                             if ((ns.value) != null)
+                            {
                                 e_ref.value.error(new BytePtr("no property `%s` for type `%s`. Did you mean `%s.%s` ?"), ident_ref.value.toChars(), mt_ref.value.toChars(), mt_ref.value.toChars(), ns.value.toChars());
+                            }
                             else
+                            {
                                 e_ref.value.error(new BytePtr("no property `%s` for type `%s`"), ident_ref.value.toChars(), mt_ref.value.toChars());
+                            }
                         }
                         return new ErrorExp();
                     }
@@ -3388,7 +3746,9 @@ public class typesem {
                     Ref<Expression> e0 = ref(null);
                     Ref<Expression> ev = ref(((e_ref.value.op.value & 0xFF) == 20) ? null : e_ref.value);
                     if (ev.value != null)
+                    {
                         ev.value = extractSideEffect(sc_ref.value, new BytePtr("__tup"), e0, ev.value, false);
+                    }
                     Ref<Ptr<DArray<Expression>>> exps = ref(refPtr(new DArray<Expression>()));
                     (exps.value.get()).reserve(mt_ref.value.sym.value.fields.length.value);
                     {
@@ -3396,10 +3756,14 @@ public class typesem {
                         for (; (i.value < mt_ref.value.sym.value.fields.length.value);i.value++){
                             Ref<VarDeclaration> v = ref(mt_ref.value.sym.value.fields.get(i.value));
                             if (v.value.isThisDeclaration() != null)
+                            {
                                 continue;
+                            }
                             Ref<Expression> ex = ref(null);
                             if (ev.value != null)
+                            {
                                 ex.value = new DotVarExp(e_ref.value.loc.value, ev.value, v.value, true);
+                            }
                             else
                             {
                                 ex.value = new VarExp(e_ref.value.loc.value, v.value, true);
@@ -3442,9 +3806,13 @@ public class typesem {
                                 {
                                     Ref<InterfaceDeclaration> ifbase = ref(cbase.value.isInterfaceDeclaration());
                                     if ((ifbase.value) != null)
+                                    {
                                         e_ref.value = new CastExp(e_ref.value.loc.value, e_ref.value, ifbase.value.type.value);
+                                    }
                                     else
+                                    {
                                         e_ref.value = new DotTypeExp(e_ref.value.loc.value, e_ref.value, cbase.value);
+                                    }
                                 }
                                 e_ref.value = expressionSemantic(e_ref.value, sc_ref.value);
                                 return e_ref.value;
@@ -3461,7 +3829,9 @@ public class typesem {
                             if (((e_ref.value.op.value & 0xFF) == 20) || ((e_ref.value.op.value & 0xFF) == 30))
                             {
                                 if (mt_ref.value.sym.value.vclassinfo.value == null)
+                                {
                                     mt_ref.value.sym.value.vclassinfo.value = new TypeInfoClassDeclaration(mt_ref.value.sym.value.type.value);
+                                }
                                 e_ref.value = new VarExp(e_ref.value.loc.value, mt_ref.value.sym.value.vclassinfo.value, true);
                                 e_ref.value = e_ref.value.addressOf();
                                 e_ref.value.type.value = t.value;
@@ -3486,14 +3856,14 @@ public class typesem {
                         }
                         if ((pequals(ident_ref.value, Id.__vptr.value)))
                         {
-                            e_ref.value = e_ref.value.castTo(sc_ref.value, Type.tvoidptr.immutableOf().pointerTo().pointerTo());
+                            e_ref.value = e_ref.value.castTo(sc_ref.value, Type.tvoidptr.value.immutableOf().pointerTo().pointerTo());
                             e_ref.value = new PtrExp(e_ref.value.loc.value, e_ref.value);
                             e_ref.value = expressionSemantic(e_ref.value, sc_ref.value);
                             return e_ref.value;
                         }
                         if ((pequals(ident_ref.value, Id.__monitor.value)) && mt_ref.value.sym.value.hasMonitor())
                         {
-                            e_ref.value = e_ref.value.castTo(sc_ref.value, Type.tvoidptr.pointerTo());
+                            e_ref.value = e_ref.value.castTo(sc_ref.value, Type.tvoidptr.value.pointerTo());
                             e_ref.value = new AddExp(e_ref.value.loc.value, e_ref.value, literal_356A192B7913B04C());
                             e_ref.value = new PtrExp(e_ref.value.loc.value, e_ref.value);
                             e_ref.value = expressionSemantic(e_ref.value, sc_ref.value);
@@ -3502,7 +3872,9 @@ public class typesem {
                         if ((pequals(ident_ref.value, Id.outer.value)) && (mt_ref.value.sym.value.vthis.value != null))
                         {
                             if ((mt_ref.value.sym.value.vthis.value.semanticRun.value == PASS.init))
+                            {
                                 dsymbolSemantic(mt_ref.value.sym.value.vthis.value, null);
+                            }
                             {
                                 Ref<ClassDeclaration> cdp = ref(mt_ref.value.sym.value.toParentLocal().isClassDeclaration());
                                 if ((cdp.value) != null)
@@ -3517,12 +3889,18 @@ public class typesem {
                                 for (; p.value != null;p.value = p.value.toParentLocal()){
                                     Ref<FuncDeclaration> fd = ref(p.value.isFuncDeclaration());
                                     if (fd.value == null)
+                                    {
                                         break;
+                                    }
                                     Ref<AggregateDeclaration> ad = ref(fd.value.isThis());
                                     if ((ad.value == null) && fd.value.isNested())
+                                    {
                                         continue;
+                                    }
                                     if (ad.value == null)
+                                    {
                                         break;
+                                    }
                                     {
                                         Ref<ClassDeclaration> cdp = ref(ad.value.isClassDeclaration());
                                         if ((cdp.value) != null)
@@ -3554,7 +3932,9 @@ public class typesem {
                         {
                             Ref<Declaration> d = ref(s.value.isDeclaration());
                             if ((d.value) != null)
+                            {
                                 d.value.checkDisabled(e_ref.value.loc.value, sc_ref.value, false);
+                            }
                         }
                     }
                     s.value = s.value.toAlias();
@@ -3572,9 +3952,13 @@ public class typesem {
                             if ((v.value.type.value == null) || (v.value.type.value.deco.value == null) && (v.value.inuse.value != 0))
                             {
                                 if (v.value.inuse.value != 0)
+                                {
                                     e_ref.value.error(new BytePtr("circular reference to %s `%s`"), v.value.kind(), v.value.toPrettyChars(false));
+                                }
                                 else
+                                {
                                     e_ref.value.error(new BytePtr("forward reference to %s `%s`"), v.value.kind(), v.value.toPrettyChars(false));
+                                }
                                 return new ErrorExp();
                             }
                             if (((v.value.type.value.ty.value & 0xFF) == ENUMTY.Terror))
@@ -3613,9 +3997,13 @@ public class typesem {
                     if (td.value != null)
                     {
                         if (((e_ref.value.op.value & 0xFF) == 20))
+                        {
                             e_ref.value = new TemplateExp(e_ref.value.loc.value, td.value, null);
+                        }
                         else
+                        {
                             e_ref.value = new DotTemplateExp(e_ref.value.loc.value, e_ref.value, td.value);
+                        }
                         e_ref.value = expressionSemantic(e_ref.value, sc_ref.value);
                         return e_ref.value;
                     }
@@ -3632,11 +4020,17 @@ public class typesem {
                         }
                         s.value = ti.value.inst.value.toAlias();
                         if (s.value.isTemplateInstance() == null)
+                        {
                             /*goto L1*/throw Dispatch0.INSTANCE;
+                        }
                         if (((e_ref.value.op.value & 0xFF) == 20))
+                        {
                             e_ref.value = new ScopeExp(e_ref.value.loc.value, ti.value);
+                        }
                         else
+                        {
                             e_ref.value = new DotExp(e_ref.value.loc.value, e_ref.value, new ScopeExp(e_ref.value.loc.value, ti.value));
+                        }
                         return expressionSemantic(e_ref.value, sc_ref.value);
                     }
                     if ((s.value.isImport() != null) || (s.value.isModule() != null) || (s.value.isPackage() != null))
@@ -3738,7 +4132,9 @@ public class typesem {
                             }
                         }
                         if ((d.value.semanticRun.value == PASS.init))
+                        {
                             dsymbolSemantic(d.value, null);
+                        }
                         {
                             Ref<FuncDeclaration> fd = ref(d.value.isFuncDeclaration());
                             if ((fd.value) != null)
@@ -3749,7 +4145,9 @@ public class typesem {
                         checkAccess(e_ref.value.loc.value, sc_ref.value, e_ref.value, d.value);
                         Ref<VarExp> ve = ref(new VarExp(e_ref.value.loc.value, d.value, true));
                         if ((d.value.isVarDeclaration() != null) && d.value.needThis())
+                        {
                             ve.value.type.value = d.value.type.value.addMod(e_ref.value.type.value.mod.value);
+                        }
                         return ve.value;
                     }
                     Ref<Boolean> unreal = ref(((e_ref.value.op.value & 0xFF) == 26) && ((VarExp)e_ref.value).var.value.isField());
@@ -3845,9 +4243,13 @@ public class typesem {
         Function1<TypeSArray,Expression> visitSArray = new Function1<TypeSArray,Expression>(){
             public Expression invoke(TypeSArray mt) {
                 if (((mt.next.value.ty.value & 0xFF) == ENUMTY.Tvoid))
+                {
                     return defaultInit(Type.tuns8.value, loc_ref.value);
+                }
                 else
+                {
                     return defaultInit(mt.next.value, loc_ref.value);
+                }
             }
         };
         Function1<TypeFunction,Expression> visitFunction = new Function1<TypeFunction,Expression>(){

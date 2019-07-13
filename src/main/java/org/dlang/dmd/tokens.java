@@ -272,8 +272,8 @@ public class tokens {
         public byte value = 0;
         public Ref<BytePtr> blockComment = ref(null);
         public Ref<BytePtr> lineComment = ref(null);
-        public long intvalue = 0;
-        public double floatvalue = 0;
+        public long intvalue = 0L;
+        public double floatvalue = 0.0;
         public BytePtr ustring = null;
         public int len = 0;
         public byte postfix = 0;
@@ -297,7 +297,9 @@ public class tokens {
                 for (; (__key111 < __r110.getLength());__key111 += 1) {
                     byte kw = __r110.get(__key111);
                     if (((kw & 0xFF) == (this.value & 0xFF)))
+                    {
                         return 1;
+                    }
                 }
             }
             return 0;
@@ -396,14 +398,22 @@ public class tokens {
                                                         if ((c <= 127))
                                                         {
                                                             if (isprint(c) != 0)
+                                                            {
                                                                 buf_1.writeByte(c);
+                                                            }
                                                             else
+                                                            {
                                                                 buf_1.printf(new BytePtr("\\x%02x"), c);
+                                                            }
                                                         }
                                                         else if ((c <= 65535))
+                                                        {
                                                             buf_1.printf(new BytePtr("\\u%04x"), c);
+                                                        }
                                                         else
+                                                        {
                                                             buf_1.printf(new BytePtr("\\U%08x"), c);
+                                                        }
                                                         continue L_outer1;
                                                     }
                                                 } while(__dispatch1 != 0);
@@ -413,7 +423,9 @@ public class tokens {
                                     }
                                     buf_1.writeByte(34);
                                     if (this.postfix != 0)
+                                    {
                                         buf_1.writeByte((this.postfix & 0xFF));
+                                    }
                                     p = pcopy(buf_1.extractChars());
                                 }
                                 finally {
@@ -431,13 +443,17 @@ public class tokens {
                                     for (; (__key112 < __limit113);__key112 += 1) {
                                         int i_1 = __key112;
                                         if (i_1 != 0)
+                                        {
                                             buf.writeByte(32);
+                                        }
                                         buf.printf(new BytePtr("%02x"), (this.ustring.get(i_1) & 0xFF));
                                     }
                                 }
                                 buf.writeByte(34);
                                 if (this.postfix != 0)
+                                {
                                     buf.writeByte((this.postfix & 0xFF));
+                                }
                                 buf.writeByte(0);
                                 p = pcopy(buf.extractData());
                                 break;

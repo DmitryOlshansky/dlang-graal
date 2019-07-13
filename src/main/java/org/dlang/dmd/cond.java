@@ -110,10 +110,10 @@ public class cond {
                 long length = el.toInteger();
                 Ptr<DArray<Expression>> es = refPtr(new DArray<Expression>());
                 {
-                    long __key817 = 0L;
-                    long __limit818 = length;
-                    for (; (__key817 < __limit818);__key817 += 1L) {
-                        long i = __key817;
+                    long __key819 = 0L;
+                    long __limit820 = length;
+                    for (; (__key819 < __limit820);__key819 += 1L) {
+                        long i = __key819;
                         IntegerExp index = new IntegerExp(this.loc, i, Type.tsize_t.value);
                         IndexExp value = new IndexExp(aggr.loc.value, aggr, index);
                         (es.get()).push(value);
@@ -172,15 +172,15 @@ public class cond {
             Loc aloc = this.aggrfe.value != null ? this.aggrfe.value.aggr.value.loc.value : this.rangefe.value.lwr.value.loc.value.copy();
             Slice<Ptr<DArray<Parameter>>> pparams = slice(new Ptr<DArray<Parameter>>[]{refPtr(new DArray<Parameter>()), refPtr(new DArray<Parameter>()), refPtr(new DArray<Parameter>())});
             {
-                int __key819 = 0;
-                int __limit820 = nvars;
-                for (; (__key819 < __limit820);__key819 += 1) {
-                    int i = __key819;
+                int __key821 = 0;
+                int __limit822 = nvars;
+                for (; (__key821 < __limit822);__key821 += 1) {
+                    int i = __key821;
                     {
-                        Slice<Ptr<DArray<Parameter>>> __r821 = pparams.copy();
-                        int __key822 = 0;
-                        for (; (__key822 < __r821.getLength());__key822 += 1) {
-                            Ptr<DArray<Parameter>> params = __r821.get(__key822);
+                        Slice<Ptr<DArray<Parameter>>> __r823 = pparams.copy();
+                        int __key824 = 0;
+                        for (; (__key824 < __r823.getLength());__key824 += 1) {
+                            Ptr<DArray<Parameter>> params = __r823.get(__key824);
                             Parameter p = this.aggrfe.value != null ? (this.aggrfe.value.parameters.get()).get(i) : this.rangefe.value.prm;
                             (params.get()).push(new Parameter(p.storageClass.value, p.type.value, p.ident.value, null, null));
                         }
@@ -192,10 +192,10 @@ public class cond {
             if ((nvars == 1))
             {
                 {
-                    int __key823 = 0;
-                    int __limit824 = 2;
-                    for (; (__key823 < __limit824);__key823 += 1) {
-                        int i = __key823;
+                    int __key825 = 0;
+                    int __limit826 = 2;
+                    for (; (__key825 < __limit826);__key825 += 1) {
+                        int i = __key825;
                         res.set((i), new IdentifierExp(aloc, (pparams.get(i).get()).get(0).ident.value));
                     }
                 }
@@ -203,17 +203,17 @@ public class cond {
             else
             {
                 {
-                    int __key825 = 0;
-                    int __limit826 = 2;
-                    for (; (__key825 < __limit826);__key825 += 1) {
-                        int i = __key825;
+                    int __key827 = 0;
+                    int __limit828 = 2;
+                    for (; (__key827 < __limit828);__key827 += 1) {
+                        int i = __key827;
                         Ptr<DArray<Expression>> e = refPtr(new DArray<Expression>((pparams.get(0).get()).length.value));
                         {
-                            Slice<Expression> __r828 = (e.get()).opSlice().copy();
-                            int __key827 = 0;
-                            for (; (__key827 < __r828.getLength());__key827 += 1) {
-                                Expression elem = __r828.get(__key827);
-                                int j = __key827;
+                            Slice<Expression> __r830 = (e.get()).opSlice().copy();
+                            int __key829 = 0;
+                            for (; (__key829 < __r830.getLength());__key829 += 1) {
+                                Expression elem = __r830.get(__key829);
+                                int j = __key829;
                                 Parameter p = (pparams.get(i).get()).get(j);
                                 elem = new IdentifierExp(aloc, p.ident.value);
                             }
@@ -243,7 +243,9 @@ public class cond {
             Ptr<DArray<Statement>> s1 = refPtr(new DArray<Statement>());
             Ptr<DArray<Statement>> sfe = refPtr(new DArray<Statement>());
             if (tplty != null)
+            {
                 (sfe.get()).push(new ExpStatement(this.loc, tplty.sym.value));
+            }
             (sfe.get()).push(new ReturnStatement(aloc, res.get(0)));
             (s1.get()).push(this.createForeach(aloc, pparams.get(0), new CompoundStatement(aloc, sfe)));
             (s1.get()).push(new ExpStatement(aloc, new AssertExp(aloc, new IntegerExp(aloc, 0L, Type.tint32.value), null)));
@@ -369,18 +371,26 @@ public class cond {
                         definedInModule = true;
                     }
                     else if (findCondition(global.debugids, this.ident))
+                    {
                         this.inc.value = Include.yes;
+                    }
                     else
                     {
                         if (this.mod.debugidsNot == null)
+                        {
                             this.mod.debugidsNot = refPtr(new DArray<Identifier>());
+                        }
                         (this.mod.debugidsNot.get()).push(this.ident);
                     }
                 }
                 else if ((this.level <= global.params.debuglevel) || (this.level <= this.mod.debuglevel))
+                {
                     this.inc.value = Include.yes;
+                }
                 if (!definedInModule)
+                {
                     printDepsConditional(sc, this, new ByteSlice("depsDebug "));
+                }
             }
             return ((this.inc.value == Include.yes) ? 1 : 0);
         }
@@ -518,7 +528,9 @@ public class cond {
 
         public static void checkReserved(Loc loc, ByteSlice ident) {
             if (isReserved(ident))
+            {
                 error(loc, new BytePtr("version identifier `%s` is reserved and cannot be set"), toBytePtr(ident));
+            }
         }
 
         public static void addGlobalIdent(BytePtr ident) {
@@ -556,16 +568,22 @@ public class cond {
                         definedInModule = true;
                     }
                     else if (findCondition(global.versionids, this.ident))
+                    {
                         this.inc.value = Include.yes;
+                    }
                     else
                     {
                         if (this.mod.versionidsNot == null)
+                        {
                             this.mod.versionidsNot = refPtr(new DArray<Identifier>());
+                        }
                         (this.mod.versionidsNot.get()).push(this.ident);
                     }
                 }
                 else if ((this.level <= global.params.versionlevel) || (this.level <= this.mod.versionlevel))
+                {
                     this.inc.value = Include.yes;
+                }
                 if (!definedInModule && (this.ident == null) || !isReserved(this.ident.asString()) && (!pequals(this.ident, Id._unittest)) && (!pequals(this.ident, Id._assert)))
                 {
                     printDepsConditional(sc, this, new ByteSlice("depsVersion "));
@@ -615,7 +633,9 @@ public class cond {
             Function0<Integer> errorReturn = new Function0<Integer>(){
                 public Integer invoke() {
                     if (global.gag.value == 0)
+                    {
                         inc.value = Include.no;
+                    }
                     return 0;
                 }
             };
@@ -630,13 +650,21 @@ public class cond {
                 Ref<Boolean> errors = ref(false);
                 boolean result = evalStaticCondition(sc, this.exp, this.exp, errors);
                 if ((this.inc.value != Include.notComputed))
+                {
                     return ((this.inc.value == Include.yes) ? 1 : 0);
+                }
                 if (errors.value)
+                {
                     return errorReturn.invoke();
+                }
                 if (result)
+                {
                     this.inc.value = Include.yes;
+                }
                 else
+                {
                     this.inc.value = Include.no;
+                }
             }
             return ((this.inc.value == Include.yes) ? 1 : 0);
         }
@@ -664,12 +692,14 @@ public class cond {
         if (ids != null)
         {
             {
-                Slice<Identifier> __r831 = (ids.get()).opSlice().copy();
-                int __key832 = 0;
-                for (; (__key832 < __r831.getLength());__key832 += 1) {
-                    Identifier id = __r831.get(__key832);
+                Slice<Identifier> __r833 = (ids.get()).opSlice().copy();
+                int __key834 = 0;
+                for (; (__key834 < __r833.getLength());__key834 += 1) {
+                    Identifier id = __r833.get(__key834);
                     if ((pequals(id, ident)))
+                    {
                         return true;
+                    }
                 }
             }
         }
@@ -678,20 +708,28 @@ public class cond {
 
     public static void printDepsConditional(Ptr<Scope> sc, DVCondition condition, ByteSlice depType) {
         if ((global.params.moduleDeps == null) || (global.params.moduleDepsFile.getLength() != 0))
+        {
             return ;
+        }
         Ptr<OutBuffer> ob = global.params.moduleDeps;
         dmodule.Module imod = sc != null ? (sc.get()).instantiatingModule() : condition.mod;
         if (imod == null)
+        {
             return ;
+        }
         (ob.get()).writestring(depType);
         (ob.get()).writestring(imod.toPrettyChars(false));
         (ob.get()).writestring(new ByteSlice(" ("));
         escapePath(ob, imod.srcfile.toChars());
         (ob.get()).writestring(new ByteSlice(") : "));
         if (condition.ident != null)
+        {
             (ob.get()).writestring(condition.ident.asString());
+        }
         else
+        {
             (ob.get()).print((long)condition.level);
+        }
         (ob.get()).writeByte(10);
     }
 

@@ -121,13 +121,15 @@ public class ctfeexpr {
     }
     public static int findFieldIndexByName(StructDeclaration sd, VarDeclaration v) {
         {
-            Slice<VarDeclaration> __r851 = sd.fields.opSlice().copy();
-            int __key850 = 0;
-            for (; (__key850 < __r851.getLength());__key850 += 1) {
-                VarDeclaration field = __r851.get(__key850);
-                int i = __key850;
+            Slice<VarDeclaration> __r853 = sd.fields.opSlice().copy();
+            int __key852 = 0;
+            for (; (__key852 < __r853.getLength());__key852 += 1) {
+                VarDeclaration field = __r853.get(__key852);
+                int i = __key852;
                 if ((pequals(field, v)))
+                {
                     return i;
+                }
             }
         }
         return -1;
@@ -152,7 +154,9 @@ public class ctfeexpr {
             StringExp se = e.toStringExp();
             this.thrown.error(new BytePtr("uncaught CTFE exception `%s(%s)`"), this.thrown.type.value.toChars(), se != null ? se.toChars() : e.toChars());
             if (this.loc.value.isValid() && !this.loc.value.equals(this.thrown.loc.value))
+            {
                 errorSupplemental(this.loc.value, new BytePtr("thrown from here"));
+            }
         }
 
         public  void accept(Visitor v) {
@@ -269,15 +273,17 @@ public class ctfeexpr {
 
     public static Ptr<DArray<Expression>> copyLiteralArray(Ptr<DArray<Expression>> oldelems, Expression basis) {
         if (oldelems == null)
+        {
             return oldelems;
+        }
         CtfeStatus.numArrayAllocs++;
         Ptr<DArray<Expression>> newelems = refPtr(new DArray<Expression>((oldelems.get()).length.value));
         {
-            Slice<Expression> __r853 = (oldelems.get()).opSlice().copy();
-            int __key852 = 0;
-            for (; (__key852 < __r853.getLength());__key852 += 1) {
-                Expression el = __r853.get(__key852);
-                int i = __key852;
+            Slice<Expression> __r855 = (oldelems.get()).opSlice().copy();
+            int __key854 = 0;
+            for (; (__key854 < __r855.getLength());__key854 += 1) {
+                Expression el = __r855.get(__key854);
+                int i = __key854;
                 newelems.get().set(i, copyLiteral(el != null ? el : basis).copy());
             }
         }
@@ -329,15 +335,17 @@ public class ctfeexpr {
             Ptr<DArray<Expression>> oldelems = sle.elements.value;
             Ptr<DArray<Expression>> newelems = refPtr(new DArray<Expression>((oldelems.get()).length.value));
             {
-                Slice<Expression> __r855 = (newelems.get()).opSlice().copy();
-                int __key854 = 0;
-                for (; (__key854 < __r855.getLength());__key854 += 1) {
-                    Expression el = __r855.get(__key854);
-                    int i = __key854;
+                Slice<Expression> __r857 = (newelems.get()).opSlice().copy();
+                int __key856 = 0;
+                for (; (__key856 < __r857.getLength());__key856 += 1) {
+                    Expression el = __r857.get(__key856);
+                    int i = __key856;
                     VarDeclaration v = sle.sd.fields.get(i);
                     Expression m = (oldelems.get()).get(i);
                     if (m == null)
+                    {
                         m = voidInitLiteral(v.type.value, v).copy();
+                    }
                     if (((v.type.value.ty.value & 0xFF) == ENUMTY.Tarray) || ((v.type.value.ty.value & 0xFF) == ENUMTY.Taarray))
                     {
                     }
@@ -351,7 +359,9 @@ public class ctfeexpr {
                             Ref<UnionExp> uex = ref(null);
                             m = createBlockDuplicatedArrayLiteral(ptr(uex), e.loc.value, v.type.value, m, len);
                             if ((pequals(m, uex.value.exp())))
+                            {
                                 m = uex.value.copy();
+                            }
                         }
                     }
                     el = m;
@@ -399,15 +409,21 @@ public class ctfeexpr {
         if (isPointer(e.type.value))
         {
             if (((e.op.value & 0xFF) == 19))
+            {
                 ptr(ue) = new UnionExp(new AddrExp(e.loc.value, ((AddrExp)e).e1.value));
+            }
             else if (((e.op.value & 0xFF) == 62))
+            {
                 ptr(ue) = new UnionExp(new IndexExp(e.loc.value, ((IndexExp)e).e1.value, ((IndexExp)e).e2.value));
+            }
             else if (((e.op.value & 0xFF) == 27))
             {
                 ptr(ue) = new UnionExp(new DotVarExp(e.loc.value, ((DotVarExp)e).e1.value, ((DotVarExp)e).var.value, ((DotVarExp)e).hasOverloads));
             }
             else
+            {
                 throw new AssertionError("Unreachable code!");
+            }
             Expression r = ue.value.exp();
             r.type.value = e.type.value;
             return ue.value;
@@ -428,13 +444,17 @@ public class ctfeexpr {
 
     public static Expression paintTypeOntoLiteral(Type type, Expression lit) {
         if (lit.type.value.equals(type))
+        {
             return lit;
+        }
         return paintTypeOntoLiteralCopy(type, lit).copy();
     }
 
     public static Expression paintTypeOntoLiteral(Ptr<UnionExp> pue, Type type, Expression lit) {
         if (lit.type.value.equals(type))
+        {
             return lit;
+        }
         pue.set(0, paintTypeOntoLiteralCopy(type, lit));
         return (pue.get()).exp();
     }
@@ -481,7 +501,9 @@ public class ctfeexpr {
         else
         {
             if (((lit.op.value & 0xFF) == 49) && isPointer(type))
+            {
                 lit.error(new BytePtr("CTFE internal error: painting `%s`"), type.toChars());
+            }
             ue.value = copyLiteral(lit).copy();
         }
         ue.value.exp().type.value = type;
@@ -490,17 +512,23 @@ public class ctfeexpr {
 
     public static Expression resolveSlice(Expression e, Ptr<UnionExp> pue) {
         if (((e.op.value & 0xFF) != 31))
+        {
             return e;
+        }
         SliceExp se = (SliceExp)e;
         if (((se.e1.value.op.value & 0xFF) == 13))
+        {
             return se.e1.value;
+        }
         if (pue != null)
         {
             pue.set(0, Slice(e.type.value, se.e1.value, se.lwr.value, se.upr.value));
             return (pue.get()).exp();
         }
         else
+        {
             return Slice(e.type.value, se.e1.value, se.lwr.value, se.upr.value).copy();
+        }
     }
 
     // defaulted all parameters starting with #2
@@ -540,17 +568,19 @@ public class ctfeexpr {
             Ref<UnionExp> ue = ref(null);
             elem = createBlockDuplicatedArrayLiteral(ptr(ue), loc, type.nextOf(), elem, len);
             if ((pequals(elem, ue.value.exp())))
+            {
                 elem = ue.value.copy();
+            }
         }
         Type tb = elem.type.value.toBasetype();
         boolean mustCopy = ((tb.ty.value & 0xFF) == ENUMTY.Tstruct) || ((tb.ty.value & 0xFF) == ENUMTY.Tsarray);
         Ptr<DArray<Expression>> elements = refPtr(new DArray<Expression>(dim));
         {
-            Slice<Expression> __r857 = (elements.get()).opSlice().copy();
-            int __key856 = 0;
-            for (; (__key856 < __r857.getLength());__key856 += 1) {
-                Expression el = __r857.get(__key856);
-                int i = __key856;
+            Slice<Expression> __r859 = (elements.get()).opSlice().copy();
+            int __key858 = 0;
+            for (; (__key858 < __r859.getLength());__key858 += 1) {
+                Expression el = __r859.get(__key858);
+                int i = __key858;
                 el = mustCopy && (i != 0) ? copyLiteral(elem).copy() : elem;
             }
         }
@@ -563,10 +593,10 @@ public class ctfeexpr {
     public static StringExp createBlockDuplicatedStringLiteral(Ptr<UnionExp> pue, Loc loc, Type type, int value, int dim, byte sz) {
         BytePtr s = pcopy(ptr(new byte[(sz & 0xFF)]));
         {
-            int __key858 = 0;
-            int __limit859 = dim;
-            for (; (__key858 < __limit859);__key858 += 1) {
-                int elemi = __key858;
+            int __key860 = 0;
+            int __limit861 = dim;
+            for (; (__key860 < __limit861);__key860 += 1) {
+                int elemi = __key860;
                 switch ((sz & 0xFF))
                 {
                     case 1:
@@ -595,14 +625,18 @@ public class ctfeexpr {
     public static boolean isAssocArray(Type t) {
         t = t.toBasetype();
         if (((t.ty.value & 0xFF) == ENUMTY.Taarray))
+        {
             return true;
+        }
         return false;
     }
 
     public static TypeAArray toBuiltinAAType(Type t) {
         t = t.toBasetype();
         if (((t.ty.value & 0xFF) == ENUMTY.Taarray))
+        {
             return (TypeAArray)t;
+        }
         throw new AssertionError("Unreachable code!");
     }
 
@@ -625,17 +659,27 @@ public class ctfeexpr {
             destPointee = destPointee.nextOf();
         }
         if (srcPointee.constConv(destPointee) != 0)
+        {
             return true;
+        }
         if (((srcPointee.ty.value & 0xFF) == ENUMTY.Tfunction) && ((destPointee.ty.value & 0xFF) == ENUMTY.Tfunction))
+        {
             return srcPointee.covariant(destPointee, null, true) == 1;
+        }
         if (((destPointee.ty.value & 0xFF) == ENUMTY.Tvoid))
+        {
             return true;
-        if (((srcPointee.ty.value & 0xFF) == ENUMTY.Taarray) && (pequals(destPointee, Type.tvoidptr)))
+        }
+        if (((srcPointee.ty.value & 0xFF) == ENUMTY.Taarray) && (pequals(destPointee, Type.tvoidptr.value)))
+        {
             return true;
+        }
         if (((srcPointee.ty.value & 0xFF) == ENUMTY.Tsarray) && ((destPointee.ty.value & 0xFF) == ENUMTY.Tsarray))
         {
             if ((srcPointee.size() != destPointee.size()))
+            {
                 return false;
+            }
             srcPointee = srcPointee.baseElemOf();
             destPointee = destPointee.baseElemOf();
         }
@@ -645,9 +689,13 @@ public class ctfeexpr {
     public static Expression getAggregateFromPointer(Expression e, Ptr<Long> ofs) {
         ofs.set(0, 0L);
         if (((e.op.value & 0xFF) == 19))
+        {
             e = ((AddrExp)e).e1.value;
+        }
         if (((e.op.value & 0xFF) == 25))
+        {
             ofs.set(0, ((SymOffExp)e).offset.value);
+        }
         if (((e.op.value & 0xFF) == 27))
         {
             Expression ex = ((DotVarExp)e).e1.value;
@@ -680,7 +728,9 @@ public class ctfeexpr {
 
     public static boolean pointToSameMemoryBlock(Expression agg1, Expression agg2) {
         if ((pequals(agg1, agg2)))
+        {
             return true;
+        }
         if (((agg1.op.value & 0xFF) == 135) && ((agg2.op.value & 0xFF) == 135) && (agg1.toInteger() == agg2.toInteger()))
         {
             return true;
@@ -736,7 +786,9 @@ public class ctfeexpr {
             return ue.value;
         }
         if (((eptr.op.value & 0xFF) == 19))
+        {
             eptr = ((AddrExp)eptr).e1.value;
+        }
         Ref<Long> ofs1 = ref(0L);
         Expression agg1 = getAggregateFromPointer(eptr, ptr(ofs1));
         if (((agg1.op.value & 0xFF) == 25))
@@ -770,9 +822,13 @@ public class ctfeexpr {
             len = dollar.toInteger();
         }
         if (((op & 0xFF) == 74) || ((op & 0xFF) == 76) || ((op & 0xFF) == 93))
+        {
             (long)indx += ofs2 / sz;
+        }
         else if (((op & 0xFF) == 75) || ((op & 0xFF) == 77) || ((op & 0xFF) == 94))
+        {
             (long)indx -= ofs2 / sz;
+        }
         else
         {
             error(loc, new BytePtr("CTFE internal error: bad pointer operation"));
@@ -887,7 +943,9 @@ public class ctfeexpr {
             }
         }
         if (((op & 0xFF) == 61) || ((op & 0xFF) == 59))
+        {
             cmp ^= 1;
+        }
         return cmp;
     }
 
@@ -897,14 +955,18 @@ public class ctfeexpr {
 
     public static Expression paintFloatInt(Ptr<UnionExp> pue, Expression fromVal, Type to) {
         if (exceptionOrCantInterpret(fromVal))
+        {
             return fromVal;
+        }
         assert((to.size() == 4L) || (to.size() == 8L));
         return Compiler.paintAsType(pue, fromVal, to);
     }
 
     public static boolean isCtfeComparable(Expression e) {
         if (((e.op.value & 0xFF) == 31))
+        {
             e = ((SliceExp)e).e1.value;
+        }
         if ((e.isConst() != 1))
         {
             if (((e.op.value & 0xFF) == 13) || ((e.op.value & 0xFF) == 121) || ((e.op.value & 0xFF) == 161) || ((e.op.value & 0xFF) == 160) || ((e.op.value & 0xFF) == 47) || ((e.op.value & 0xFF) == 49) || ((e.op.value & 0xFF) == 48) || ((e.op.value & 0xFF) == 50))
@@ -912,7 +974,9 @@ public class ctfeexpr {
                 return true;
             }
             if (((e.op.value & 0xFF) == 42))
+            {
                 return true;
+            }
             return false;
         }
         return true;
@@ -973,7 +1037,7 @@ public class ctfeexpr {
 
 
     // from template numCmp!(Long)
-    // removed duplicate function, [["Expression eval_bswapLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Ptr<DArray<Expression>> copyLiteralArrayPtr<DArray<Expression>>, Expression", "DtorDeclaration buildExternDDtorAggregateDeclaration, Ptr<Scope>", "StringExp createBlockDuplicatedStringLiteralPtr<UnionExp>, Loc, Type, int, int, byte", "TypeAArray toBuiltinAATypeType", "void createMatchNodes", "UnionExp ArrayLengthType, Expression", "void writeHighlightsPtr<Console>, Ptr<OutBuffer>", "boolean isFloatIntPaintType, Type", "Function3<Loc,FuncDeclaration,Ptr<DArray<Expression>>,Expression> builtin_lookupBytePtr", "int mainSlice<ByteSlice>", "void printDepsConditionalPtr<Scope>, DVCondition, ByteSlice", "Expression paintFloatIntPtr<UnionExp>, Expression, Type", "Expression eval_bsfLoc, FuncDeclaration, Ptr<DArray<Expression>>", "boolean numCmpbyte, int, intInteger", "boolean isUnaArrayOpbyte", "boolean exceptionOrCantInterpretExpression", "void deprecationLoc, BytePtr", "void messageLoc, BytePtr", "boolean checkSymbolAccessPtr<Scope>, Dsymbol", "FuncDeclaration buildOpAssignStructDeclaration, Ptr<Scope>", "UnionExp ModLoc, Type, Expression, Expression", "boolean isArrayOpOperandExpression", "boolean isZeroSecondbyte", "double creallcomplex_t", "boolean checkAccessLoc, Ptr<Scope>, Expression, Declaration", "void warningSupplementalLoc, BytePtr", "boolean canThrowExpression, FuncDeclaration, boolean", "Expression eval_ceilLoc, FuncDeclaration, Ptr<DArray<Expression>>", "void add_builtinBytePtr, Function3<Loc,FuncDeclaration,Ptr<DArray<Expression>>,Expression>", "UnionExp DivLoc, Type, Expression, Expression", "long getStorageClassPtr<PrefixAttributesASTBase>ASTBase", "Expression eval_isnanLoc, FuncDeclaration, Ptr<DArray<Expression>>", "void cantExpUnionExp", "boolean pointToSameMemoryBlockExpression, Expression", "UnionExp ComType, Expression", "ByteSlice initializerMsgtable", "ErrorExp arrayOpInvalidErrorExpression", "boolean isDigitSecondbyte", "Expression eval_fmaLoc, FuncDeclaration, Ptr<DArray<Expression>>", "UnionExp MulLoc, Type, Expression, Expression", "void processFileByteSlice, ByteSlice, BytePtr_24239CC9FAA32FB7", "boolean isTrueBoolExpression", "void builtin_init", "void errorSupplementalLoc, BytePtr", "long resolveArrayLengthExpression", "void checkPossibleAddCatErrorAddExpAddExpCatExp", "void builtinDeinitialize", "void parseModulePatternBytePtr, Ptr<MatcherNode>, int", "boolean checkAccessLoc, Ptr<Scope>, dmodule.Package", "Dsymbol mostVisibleOverloadDsymbol, dmodule.Module", "void errorLoc, BytePtr", "boolean utf_isValidDcharint", "UnionExp pointerDifferenceLoc, Type, Expression, Expression", "void fatal", "UnionExp NegType, Expression", "boolean isidcharbyte", "int utf_codeLengthWcharint", "int isConstExpression", "boolean isBinArrayOpbyte", "BytePtr linkToCharsint", "void colorSyntaxHighlightPtr<OutBuffer>", "int utf_codeLengthint, int", "UnionExp SliceType, Expression, Expression, Expression", "boolean isUniAlphaint", "Expression eval_powLoc, FuncDeclaration, Ptr<DArray<Expression>>", "int blockExitStatement, FuncDeclaration, boolean", "UnionExp Cmpbyte, Loc, Type, Expression, Expression", "UnionExp OrLoc, Type, Expression, Expression", "int sliceCmpStringWithArrayStringExp, ArrayLiteralExp, int, int, int", "void errorBytePtr, int, int, BytePtr", "Expression eval_log10Loc, FuncDeclaration, Ptr<DArray<Expression>>", "UnionExp PtrType, Expression", "void utf_encodeWcharCharPtr, int", "void vwarningSupplementalLoc, BytePtr, Ptr<Slice<Object>>", "Expression eval_sqrtLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_builtinLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_roundLoc, FuncDeclaration, Ptr<DArray<Expression>>", "UnionExp ShrLoc, Type, Expression, Expression", "Expression eval_isinfinityLoc, FuncDeclaration, Ptr<DArray<Expression>>", "ArrayLiteralExp createBlockDuplicatedArrayLiteralPtr<UnionExp>, Loc, Type, Expression, int", "boolean needOpEqualsStructDeclaration", "Expression getAggregateFromPointerExpression, Ptr<Long>", "UnionExp CastLoc, Type, Type, Expression", "UnionExp ShlLoc, Type, Expression, Expression", "UnionExp IndexType, Expression, Expression", "Expression eval_fabsLoc, FuncDeclaration, Ptr<DArray<Expression>>", "boolean symbolIsVisibledmodule.Module, Dsymbol", "void utf_encodeint, Object, int", "boolean issinglecharbyte", "void checkPossibleAddCatErrorAddAssignExpAddAssignExpCatAssignExp", "Expression eval_copysignLoc, FuncDeclaration, Ptr<DArray<Expression>>", "BytePtr utf_decodeCharBytePtr, int, IntRef, IntRef", "FuncDeclaration buildXopCmpStructDeclaration, Ptr<Scope>", "Expression eval_logLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_fminLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression arrayOpBinAssignExp, Ptr<Scope>", "boolean isCtfeComparableExpression", "int sliceCmpStringWithStringStringExp, StringExp, int, int, int", "long getStorageClassPtr<PrefixAttributesASTCodegen>ASTCodegen", "ByteSlice lexBytePtr, ByteSlice", "boolean isPointerType", "boolean needToCopyLiteralExpression", "boolean checkNonAssignmentArrayOpExpression, boolean", "void vwarningLoc, BytePtr, Ptr<Slice<Object>>", "int utf_codeLengthCharint", "Expression eval_yl2xLoc, FuncDeclaration, Ptr<DArray<Expression>>", "long mergeFuncAttrslong, FuncDeclaration", "Expression eval_yl2xp1Loc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_isfiniteLoc, FuncDeclaration, Ptr<DArray<Expression>>", "void deprecationSupplementalLoc, BytePtr", "UnionExp UshrLoc, Type, Expression, Expression", "UnionExp Identitybyte, Loc, Type, Expression, Expression", "BytePtr modToCharsint", "UnionExp PowLoc, Type, Expression, Expression", "int findFieldIndexByNameStructDeclaration, VarDeclaration", "int isattyint", "FuncDeclaration buildOpEqualsStructDeclaration, Ptr<Scope>", "boolean isBinAssignArrayOpbyte", "boolean findConditionPtr<DArray<Identifier>>, Identifier", "void vdeprecationLoc, BytePtr, Ptr<Slice<Object>>, BytePtr, BytePtr", "void vdeprecationSupplementalLoc, BytePtr, Ptr<Slice<Object>>", "DtorDeclaration buildWindowsCppDtorAggregateDeclaration, DtorDeclaration, Ptr<Scope>", "FuncDeclaration hasIdentityOpEqualsAggregateDeclaration, Ptr<Scope>", "void sliceAssignStringFromArrayLiteralStringExp, ArrayLiteralExp, int", "Expression eval_bsrLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_expLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_expm1Loc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_unimpLoc, FuncDeclaration, Ptr<DArray<Expression>>", "boolean c_isalnumint", "void verrorSupplementalLoc, BytePtr, Ptr<Slice<Object>>", "Expression eval_exp2Loc, FuncDeclaration, Ptr<DArray<Expression>>", "boolean symbolIsVisibleDsymbol, Dsymbol", "boolean isNonAssignmentArrayOpExpression", "Expression resolveSliceExpression, Ptr<UnionExp>", "boolean isArrayOpValidExpression", "void warningLoc, BytePtr", "UnionExp BoolType, Expression", "Expression paintTypeOntoLiteralType, Expression", "boolean isoctalbyte", "Expression eval_floorLoc, FuncDeclaration, Ptr<DArray<Expression>>", "boolean needToHashStructDeclaration", "Ptr<DArray<Expression>> copyElementsExpression, Expression", "Expression eval_cosLoc, FuncDeclaration, Ptr<DArray<Expression>>", "UnionExp AddLoc, Type, Expression, Expression", "UnionExp XorLoc, Type, Expression, Expression", "UnionExp MinLoc, Type, Expression, Expression", "boolean checkAccessAggregateDeclaration, Loc, Ptr<Scope>, Dsymbol", "void colorHighlightCodePtr<OutBuffer>", "double cimaglcomplex_t", "Expression resolveAliasThisPtr<Scope>, Expression, boolean", "void buildArrayOpPtr<Scope>, Expression, Ptr<DArray<RootObject>>, Ptr<DArray<Expression>>", "UnionExp AndLoc, Type, Expression, Expression", "int parseModulePatternDepthBytePtr", "boolean hasPackageAccessdmodule.Module, Dsymbol", "boolean hasProtectedAccessPtr<Scope>, Dsymbol", "boolean isTypeInfo_ClassType", "UnionExp Equalbyte, Loc, Type, Expression, Expression", "ByteSlice generateSlice<Msgtable>, Function1<Msgtable,ByteSlice>", "Expression arrayOpBinExp, Ptr<Scope>", "int isBuiltinFuncDeclaration", "void sliceAssignStringFromStringStringExp, StringExp, int", "Expression eval_log2Loc, FuncDeclaration, Ptr<DArray<Expression>>", "void vmessageLoc, BytePtr, Ptr<Slice<Object>>", "void messageBytePtr", "boolean needOpAssignStructDeclaration", "UnionExp NotType, Expression", "DtorDeclaration buildDtorAggregateDeclaration, Ptr<Scope>", "UnionExp pointerArithmeticLoc, byte, Type, Expression, Expression", "void verrorLoc, BytePtr, Ptr<Slice<Object>>, BytePtr, BytePtr, BytePtr", "ByteSlice lispyBytePtr, ByteSlice", "boolean walkPostorderExpression, StoppableVisitor", "Expression paintTypeOntoLiteralPtr<UnionExp>, Type, Expression", "Expression expTypeType, Expression", "FuncDeclaration hasIdentityOpAssignAggregateDeclaration, Ptr<Scope>", "boolean Dsymbol_canThrowDsymbol, FuncDeclaration, boolean", "boolean c_isxdigitint", "BytePtr utf_decodeWcharCharPtr, int, IntRef, IntRef", "ByteSlice deinitializerMsgtable", "void processFileByteSlice, ByteSlice, BytePtr_D1F3732A9A6A6D5A", "void utf_encodeCharBytePtr, int", "UnionExp copyLiteralExpression", "UnionExp paintTypeOntoLiteralCopyType, Expression", "Expression eval_ldexpLoc, FuncDeclaration, Ptr<DArray<Expression>>", "FuncDeclaration buildXtoHashStructDeclaration, Ptr<Scope>", "Expression eval_popcntLoc, FuncDeclaration, Ptr<DArray<Expression>>", "UnionExp CatType, Expression, Expression", "int comparePointersbyte, Expression, long, Expression, long", "FuncDeclaration buildXopEqualsStructDeclaration, Ptr<Scope>", "boolean isAssocArrayType", "boolean numCmpbyte, double, doubleDouble", "boolean isSafePointerCastType, Type", "ByteSlice identifierMsgtable", "boolean ishexbyte", "void halt", "boolean symbolIsVisiblePtr<Scope>, Dsymbol", "Expression eval_fmaxLoc, FuncDeclaration, Ptr<DArray<Expression>>", "boolean numCmpbyte, long, longLong", "Expression eval_truncLoc, FuncDeclaration, Ptr<DArray<Expression>>", "FuncDeclaration buildInvAggregateDeclaration, Ptr<Scope>", "Expression eval_tanLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_sinLoc, FuncDeclaration, Ptr<DArray<Expression>>", "boolean hasPackageAccessPtr<Scope>, Dsymbol", "void verrorPrintLoc, int, BytePtr, BytePtr, Ptr<Slice<Object>>, BytePtr, BytePtr", "boolean includeImportedModuleCheckModuleComponentRange", "void sliceAssignArrayLiteralFromStringArrayLiteralExp, StringExp, int", "boolean writeMixinByteSlice, Loc"]] signature: boolean numCmpbyte, long, longLong
+    // removed duplicate function, [["Expression eval_bswapLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Ptr<DArray<Expression>> copyLiteralArrayPtr<DArray<Expression>>, Expression", "DtorDeclaration buildExternDDtorAggregateDeclaration, Ptr<Scope>", "StringExp createBlockDuplicatedStringLiteralPtr<UnionExp>, Loc, Type, int, int, byte", "TypeAArray toBuiltinAATypeType", "void createMatchNodes", "UnionExp ArrayLengthType, Expression", "void writeHighlightsPtr<Console>, Ptr<OutBuffer>", "boolean isFloatIntPaintType, Type", "Function3<Loc,FuncDeclaration,Ptr<DArray<Expression>>,Expression> builtin_lookupBytePtr", "int mainSlice<ByteSlice>", "void printDepsConditionalPtr<Scope>, DVCondition, ByteSlice", "Expression paintFloatIntPtr<UnionExp>, Expression, Type", "Expression eval_bsfLoc, FuncDeclaration, Ptr<DArray<Expression>>", "boolean numCmpbyte, int, intInteger", "boolean isUnaArrayOpbyte", "boolean exceptionOrCantInterpretExpression", "void deprecationLoc, BytePtr", "void messageLoc, BytePtr", "boolean checkSymbolAccessPtr<Scope>, Dsymbol", "FuncDeclaration buildOpAssignStructDeclaration, Ptr<Scope>", "UnionExp ModLoc, Type, Expression, Expression", "boolean isArrayOpOperandExpression", "boolean isZeroSecondbyte", "double creallcomplex_t", "boolean checkAccessLoc, Ptr<Scope>, Expression, Declaration", "void warningSupplementalLoc, BytePtr", "boolean canThrowExpression, FuncDeclaration, boolean", "Expression eval_ceilLoc, FuncDeclaration, Ptr<DArray<Expression>>", "void add_builtinBytePtr, Function3<Loc,FuncDeclaration,Ptr<DArray<Expression>>,Expression>", "UnionExp DivLoc, Type, Expression, Expression", "long getStorageClassPtr<PrefixAttributesASTBase>ASTBase", "Expression eval_isnanLoc, FuncDeclaration, Ptr<DArray<Expression>>", "void cantExpUnionExp", "boolean pointToSameMemoryBlockExpression, Expression", "UnionExp ComType, Expression", "ByteSlice initializerMsgtable", "ErrorExp arrayOpInvalidErrorExpression", "boolean isDigitSecondbyte", "Expression eval_fmaLoc, FuncDeclaration, Ptr<DArray<Expression>>", "UnionExp MulLoc, Type, Expression, Expression", "void processFileByteSlice, ByteSlice, BytePtr_24239CC9FAA32FB7", "boolean isTrueBoolExpression", "void builtin_init", "void errorSupplementalLoc, BytePtr", "long resolveArrayLengthExpression", "void checkPossibleAddCatErrorAddExpAddExpCatExp", "void builtinDeinitialize", "void parseModulePatternBytePtr, Ptr<MatcherNode>, int", "boolean checkAccessLoc, Ptr<Scope>, dmodule.Package", "Dsymbol mostVisibleOverloadDsymbol, dmodule.Module", "void errorLoc, BytePtr", "boolean utf_isValidDcharint", "UnionExp pointerDifferenceLoc, Type, Expression, Expression", "void fatal", "UnionExp NegType, Expression", "boolean isidcharbyte", "int utf_codeLengthWcharint", "int isConstExpression", "boolean isBinArrayOpbyte", "BytePtr linkToCharsint", "void colorSyntaxHighlightPtr<OutBuffer>", "int utf_codeLengthint, int", "UnionExp SliceType, Expression, Expression, Expression", "TypeTuple toArgTypesType", "boolean isUniAlphaint", "Expression eval_powLoc, FuncDeclaration, Ptr<DArray<Expression>>", "int blockExitStatement, FuncDeclaration, boolean", "UnionExp Cmpbyte, Loc, Type, Expression, Expression", "UnionExp OrLoc, Type, Expression, Expression", "int sliceCmpStringWithArrayStringExp, ArrayLiteralExp, int, int, int", "void errorBytePtr, int, int, BytePtr", "Expression eval_log10Loc, FuncDeclaration, Ptr<DArray<Expression>>", "UnionExp PtrType, Expression", "void utf_encodeWcharCharPtr, int", "void vwarningSupplementalLoc, BytePtr, Ptr<Slice<Object>>", "Expression eval_sqrtLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_builtinLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_roundLoc, FuncDeclaration, Ptr<DArray<Expression>>", "UnionExp ShrLoc, Type, Expression, Expression", "Expression eval_isinfinityLoc, FuncDeclaration, Ptr<DArray<Expression>>", "ArrayLiteralExp createBlockDuplicatedArrayLiteralPtr<UnionExp>, Loc, Type, Expression, int", "boolean needOpEqualsStructDeclaration", "Expression getAggregateFromPointerExpression, Ptr<Long>", "UnionExp CastLoc, Type, Type, Expression", "UnionExp ShlLoc, Type, Expression, Expression", "UnionExp IndexType, Expression, Expression", "Expression eval_fabsLoc, FuncDeclaration, Ptr<DArray<Expression>>", "boolean symbolIsVisibledmodule.Module, Dsymbol", "void utf_encodeint, Object, int", "boolean issinglecharbyte", "void checkPossibleAddCatErrorAddAssignExpAddAssignExpCatAssignExp", "Expression eval_copysignLoc, FuncDeclaration, Ptr<DArray<Expression>>", "BytePtr utf_decodeCharBytePtr, int, IntRef, IntRef", "FuncDeclaration buildXopCmpStructDeclaration, Ptr<Scope>", "Expression eval_logLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_fminLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression arrayOpBinAssignExp, Ptr<Scope>", "boolean isCtfeComparableExpression", "int sliceCmpStringWithStringStringExp, StringExp, int, int, int", "long getStorageClassPtr<PrefixAttributesASTCodegen>ASTCodegen", "ByteSlice lexBytePtr, ByteSlice", "boolean isPointerType", "boolean needToCopyLiteralExpression", "boolean checkNonAssignmentArrayOpExpression, boolean", "void vwarningLoc, BytePtr, Ptr<Slice<Object>>", "int utf_codeLengthCharint", "Expression eval_yl2xLoc, FuncDeclaration, Ptr<DArray<Expression>>", "long mergeFuncAttrslong, FuncDeclaration", "Expression eval_yl2xp1Loc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_isfiniteLoc, FuncDeclaration, Ptr<DArray<Expression>>", "void deprecationSupplementalLoc, BytePtr", "UnionExp UshrLoc, Type, Expression, Expression", "UnionExp Identitybyte, Loc, Type, Expression, Expression", "BytePtr modToCharsint", "UnionExp PowLoc, Type, Expression, Expression", "int findFieldIndexByNameStructDeclaration, VarDeclaration", "int isattyint", "FuncDeclaration buildOpEqualsStructDeclaration, Ptr<Scope>", "boolean isBinAssignArrayOpbyte", "boolean findConditionPtr<DArray<Identifier>>, Identifier", "void vdeprecationLoc, BytePtr, Ptr<Slice<Object>>, BytePtr, BytePtr", "void vdeprecationSupplementalLoc, BytePtr, Ptr<Slice<Object>>", "DtorDeclaration buildWindowsCppDtorAggregateDeclaration, DtorDeclaration, Ptr<Scope>", "FuncDeclaration hasIdentityOpEqualsAggregateDeclaration, Ptr<Scope>", "void sliceAssignStringFromArrayLiteralStringExp, ArrayLiteralExp, int", "Expression eval_bsrLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_expLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_expm1Loc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_unimpLoc, FuncDeclaration, Ptr<DArray<Expression>>", "boolean c_isalnumint", "void verrorSupplementalLoc, BytePtr, Ptr<Slice<Object>>", "Expression eval_exp2Loc, FuncDeclaration, Ptr<DArray<Expression>>", "boolean symbolIsVisibleDsymbol, Dsymbol", "boolean isNonAssignmentArrayOpExpression", "Expression resolveSliceExpression, Ptr<UnionExp>", "boolean isArrayOpValidExpression", "void warningLoc, BytePtr", "UnionExp BoolType, Expression", "Expression paintTypeOntoLiteralType, Expression", "boolean isoctalbyte", "Expression eval_floorLoc, FuncDeclaration, Ptr<DArray<Expression>>", "boolean needToHashStructDeclaration", "boolean isDMDx64Target", "Ptr<DArray<Expression>> copyElementsExpression, Expression", "Expression eval_cosLoc, FuncDeclaration, Ptr<DArray<Expression>>", "UnionExp AddLoc, Type, Expression, Expression", "UnionExp XorLoc, Type, Expression, Expression", "UnionExp MinLoc, Type, Expression, Expression", "boolean checkAccessAggregateDeclaration, Loc, Ptr<Scope>, Dsymbol", "void colorHighlightCodePtr<OutBuffer>", "double cimaglcomplex_t", "Expression resolveAliasThisPtr<Scope>, Expression, boolean", "void buildArrayOpPtr<Scope>, Expression, Ptr<DArray<RootObject>>, Ptr<DArray<Expression>>", "UnionExp AndLoc, Type, Expression, Expression", "int parseModulePatternDepthBytePtr", "boolean hasPackageAccessdmodule.Module, Dsymbol", "boolean hasProtectedAccessPtr<Scope>, Dsymbol", "boolean isTypeInfo_ClassType", "UnionExp Equalbyte, Loc, Type, Expression, Expression", "ByteSlice generateSlice<Msgtable>, Function1<Msgtable,ByteSlice>", "Expression arrayOpBinExp, Ptr<Scope>", "int isBuiltinFuncDeclaration", "void sliceAssignStringFromStringStringExp, StringExp, int", "Expression eval_log2Loc, FuncDeclaration, Ptr<DArray<Expression>>", "void vmessageLoc, BytePtr, Ptr<Slice<Object>>", "void messageBytePtr", "boolean needOpAssignStructDeclaration", "UnionExp NotType, Expression", "DtorDeclaration buildDtorAggregateDeclaration, Ptr<Scope>", "UnionExp pointerArithmeticLoc, byte, Type, Expression, Expression", "void verrorLoc, BytePtr, Ptr<Slice<Object>>, BytePtr, BytePtr, BytePtr", "ByteSlice lispyBytePtr, ByteSlice", "boolean walkPostorderExpression, StoppableVisitor", "Expression paintTypeOntoLiteralPtr<UnionExp>, Type, Expression", "Expression expTypeType, Expression", "FuncDeclaration hasIdentityOpAssignAggregateDeclaration, Ptr<Scope>", "boolean Dsymbol_canThrowDsymbol, FuncDeclaration, boolean", "boolean c_isxdigitint", "BytePtr utf_decodeWcharCharPtr, int, IntRef, IntRef", "ByteSlice deinitializerMsgtable", "void processFileByteSlice, ByteSlice, BytePtr_D1F3732A9A6A6D5A", "void utf_encodeCharBytePtr, int", "UnionExp copyLiteralExpression", "UnionExp paintTypeOntoLiteralCopyType, Expression", "Expression eval_ldexpLoc, FuncDeclaration, Ptr<DArray<Expression>>", "FuncDeclaration buildXtoHashStructDeclaration, Ptr<Scope>", "Expression eval_popcntLoc, FuncDeclaration, Ptr<DArray<Expression>>", "UnionExp CatType, Expression, Expression", "int comparePointersbyte, Expression, long, Expression, long", "FuncDeclaration buildXopEqualsStructDeclaration, Ptr<Scope>", "boolean isAssocArrayType", "boolean numCmpbyte, double, doubleDouble", "boolean isSafePointerCastType, Type", "ByteSlice identifierMsgtable", "boolean ishexbyte", "void halt", "boolean symbolIsVisiblePtr<Scope>, Dsymbol", "Expression eval_fmaxLoc, FuncDeclaration, Ptr<DArray<Expression>>", "boolean numCmpbyte, long, longLong", "Expression eval_truncLoc, FuncDeclaration, Ptr<DArray<Expression>>", "FuncDeclaration buildInvAggregateDeclaration, Ptr<Scope>", "Expression eval_tanLoc, FuncDeclaration, Ptr<DArray<Expression>>", "Expression eval_sinLoc, FuncDeclaration, Ptr<DArray<Expression>>", "boolean hasPackageAccessPtr<Scope>, Dsymbol", "void verrorPrintLoc, int, BytePtr, BytePtr, Ptr<Slice<Object>>, BytePtr, BytePtr", "boolean includeImportedModuleCheckModuleComponentRange", "void sliceAssignArrayLiteralFromStringArrayLiteralExp, StringExp, int", "boolean writeMixinByteSlice, Loc"]] signature: boolean numCmpbyte, long, longLong
 
     public static int specificCmp(byte op, int rawCmp) {
         return (numCmpInteger(op, rawCmp, 0) ? 1 : 0);
@@ -1027,32 +1091,44 @@ public class ctfeexpr {
         StringExp se2 = ((x.op.value & 0xFF) == 121) ? (StringExp)x : null;
         ArrayLiteralExp ae2 = ((x.op.value & 0xFF) == 47) ? (ArrayLiteralExp)x : null;
         if ((se1 != null) && (se2 != null))
+        {
             return sliceCmpStringWithString(se1, se2, (int)lo1, (int)lo2, (int)len);
+        }
         if ((se1 != null) && (ae2 != null))
+        {
             return sliceCmpStringWithArray(se1, ae2, (int)lo1, (int)lo2, (int)len);
+        }
         if ((se2 != null) && (ae1 != null))
+        {
             return -sliceCmpStringWithArray(se2, ae1, (int)lo2, (int)lo1, (int)len);
+        }
         assert((ae1 != null) && (ae2 != null));
         boolean needCmp = ae1.type.value.nextOf().isintegral();
         {
-            int __key860 = 0;
-            int __limit861 = (int)len;
-            for (; (__key860 < __limit861);__key860 += 1) {
-                int i = __key860;
+            int __key862 = 0;
+            int __limit863 = (int)len;
+            for (; (__key862 < __limit863);__key862 += 1) {
+                int i = __key862;
                 Expression ee1 = (ae1.elements.value.get()).get((int)(lo1 + (long)i));
                 Expression ee2 = (ae2.elements.value.get()).get((int)(lo2 + (long)i));
                 if (needCmp)
                 {
                     long c = (long)(ee1.toInteger() - ee2.toInteger());
                     if ((c > 0L))
+                    {
                         return 1;
+                    }
                     if ((c < 0L))
+                    {
                         return -1;
+                    }
                 }
                 else
                 {
                     if (ctfeRawCmp(loc, ee1, ee2, false) != 0)
+                    {
                         return 1;
+                    }
                 }
             }
         }
@@ -1062,9 +1138,13 @@ public class ctfeexpr {
     public static FuncDeclaration funcptrOf(Expression e) {
         assert(((e.type.value.ty.value & 0xFF) == ENUMTY.Tdelegate));
         if (((e.op.value & 0xFF) == 160))
+        {
             return ((DelegateExp)e).func.value;
+        }
         if (((e.op.value & 0xFF) == 161))
+        {
             return ((FuncExp)e).fd.value;
+        }
         assert(((e.op.value & 0xFF) == 13));
         return null;
     }
@@ -1077,7 +1157,9 @@ public class ctfeexpr {
         if (((e1.op.value & 0xFF) == 50) || ((e2.op.value & 0xFF) == 50))
         {
             if (((e1.op.value & 0xFF) == 50) && ((e2.op.value & 0xFF) == 50) && (pequals(((ClassReferenceExp)e1).value, ((ClassReferenceExp)e2).value)))
+            {
                 return 0;
+            }
             return 1;
         }
         if (((e1.op.value & 0xFF) == 42) && ((e2.op.value & 0xFF) == 42))
@@ -1089,7 +1171,9 @@ public class ctfeexpr {
             return ((!pequals(t1, t2)) ? 1 : 0);
         }
         if (((e1.op.value & 0xFF) == 13) && ((e2.op.value & 0xFF) == 13))
+        {
             return 0;
+        }
         if (((e1.type.value.ty.value & 0xFF) == ENUMTY.Tpointer) && ((e2.type.value.ty.value & 0xFF) == ENUMTY.Tpointer))
         {
             Ref<Long> ofs1 = ref(0L);
@@ -1099,16 +1183,22 @@ public class ctfeexpr {
             if ((pequals(agg1, agg2)) || ((agg1.op.value & 0xFF) == 26) && ((agg2.op.value & 0xFF) == 26) && (pequals(((VarExp)agg1).var.value, ((VarExp)agg2).var.value)))
             {
                 if ((ofs1.value == ofs2.value))
+                {
                     return 0;
+                }
             }
             return 1;
         }
         if (((e1.type.value.ty.value & 0xFF) == ENUMTY.Tdelegate) && ((e2.type.value.ty.value & 0xFF) == ENUMTY.Tdelegate))
         {
             if ((!pequals(funcptrOf(e1), funcptrOf(e2))))
+            {
                 return 1;
+            }
             if (((e1.op.value & 0xFF) == 161) && ((e2.op.value & 0xFF) == 161))
+            {
                 return 0;
+            }
             assert(((e1.op.value & 0xFF) == 160) && ((e2.op.value & 0xFF) == 160));
             Expression ptr1 = ((DelegateExp)e1).e1.value;
             Expression ptr2 = ((DelegateExp)e2).e1.value;
@@ -1131,7 +1221,9 @@ public class ctfeexpr {
                 long len = (len1 < len2) ? len1 : len2;
                 int res = ctfeCmpArrays(loc, e1, e2, len);
                 if ((res != 0))
+                {
                     return res;
+                }
             }
             return (int)(len1 - len2);
         }
@@ -1144,7 +1236,9 @@ public class ctfeexpr {
             double r1 = e1.type.value.isreal() ? e1.toReal() : e1.toImaginary();
             double r2 = e1.type.value.isreal() ? e2.toReal() : e2.toImaginary();
             if (identity)
+            {
                 return (RealIdentical(r1, r2) == 0 ? 1 : 0);
+            }
             if (CTFloat.isNaN(r1) || CTFloat.isNaN(r2))
             {
                 return 1;
@@ -1169,31 +1263,47 @@ public class ctfeexpr {
             StructLiteralExp es1 = (StructLiteralExp)e1;
             StructLiteralExp es2 = (StructLiteralExp)e2;
             if ((!pequals(es1.sd, es2.sd)))
+            {
                 return 1;
+            }
             else if ((es1.elements.value == null) || ((es1.elements.value.get()).length.value == 0) && (es2.elements.value == null) || ((es2.elements.value.get()).length.value == 0))
+            {
                 return 0;
+            }
             else if ((es1.elements.value == null) || (es2.elements.value == null))
+            {
                 return 1;
+            }
             else if (((es1.elements.value.get()).length.value != (es2.elements.value.get()).length.value))
+            {
                 return 1;
+            }
             else
             {
                 {
-                    int __key862 = 0;
-                    int __limit863 = (es1.elements.value.get()).length.value;
-                    for (; (__key862 < __limit863);__key862 += 1) {
-                        int i = __key862;
+                    int __key864 = 0;
+                    int __limit865 = (es1.elements.value.get()).length.value;
+                    for (; (__key864 < __limit865);__key864 += 1) {
+                        int i = __key864;
                         Expression ee1 = (es1.elements.value.get()).get(i);
                         Expression ee2 = (es2.elements.value.get()).get(i);
                         if (((ee1.op.value & 0xFF) == 128) && ((ee2.op.value & 0xFF) == 128))
+                        {
                             continue;
+                        }
                         if ((pequals(ee1, ee2)))
+                        {
                             continue;
+                        }
                         if ((ee1 == null) || (ee2 == null))
+                        {
                             return 1;
+                        }
                         int cmp = ctfeRawCmp(loc, ee1, ee2, identity);
                         if (cmp != 0)
+                        {
                             return 1;
+                        }
                     }
                 }
                 return 0;
@@ -1205,27 +1315,33 @@ public class ctfeexpr {
             AssocArrayLiteralExp es2 = (AssocArrayLiteralExp)e2;
             int dim = (es1.keys.value.get()).length.value;
             if (((es2.keys.value.get()).length.value != dim))
+            {
                 return 1;
+            }
             Ptr<Boolean> used = pcopy(((Ptr<Boolean>)Mem.xmalloc(1 * dim)));
             memset(used, 0, 1 * dim);
             {
-                int __key864 = 0;
-                int __limit865 = dim;
-                for (; (__key864 < __limit865);__key864 += 1) {
-                    int i = __key864;
+                int __key866 = 0;
+                int __limit867 = dim;
+                for (; (__key866 < __limit867);__key866 += 1) {
+                    int i = __key866;
                     Expression k1 = (es1.keys.value.get()).get(i);
                     Expression v1 = (es1.values.value.get()).get(i);
                     Expression v2 = null;
                     {
-                        int __key866 = 0;
-                        int __limit867 = dim;
-                        for (; (__key866 < __limit867);__key866 += 1) {
-                            int j = __key866;
+                        int __key868 = 0;
+                        int __limit869 = dim;
+                        for (; (__key868 < __limit869);__key868 += 1) {
+                            int j = __key868;
                             if (used.get(j))
+                            {
                                 continue;
+                            }
                             Expression k2 = (es2.keys.value.get()).get(j);
                             if (ctfeRawCmp(loc, k1, k2, identity) != 0)
+                            {
                                 continue;
+                            }
                             used.set(j, true);
                             v2 = (es2.values.value.get()).get(j);
                             break;
@@ -1271,9 +1387,13 @@ public class ctfeexpr {
             cmp = (((pequals(es1.var.value, es2.var.value)) && (es1.offset.value == es2.offset.value)) ? 1 : 0);
         }
         else if (e1.type.value.isreal())
+        {
             cmp = RealIdentical(e1.toReal(), e2.toReal());
+        }
         else if (e1.type.value.isimaginary())
+        {
             cmp = RealIdentical(e1.toImaginary(), e2.toImaginary());
+        }
         else if (e1.type.value.iscomplex())
         {
             complex_t v1 = e1.toComplex().copy();
@@ -1285,7 +1405,9 @@ public class ctfeexpr {
             cmp = (ctfeRawCmp(loc, e1, e2, true) == 0 ? 1 : 0);
         }
         if (((op & 0xFF) == 61) || ((op & 0xFF) == 59))
+        {
             cmp ^= 1;
+        }
         return cmp;
     }
 
@@ -1293,15 +1415,25 @@ public class ctfeexpr {
         Type t1 = e1.type.value.toBasetype();
         Type t2 = e2.type.value.toBasetype();
         if (t1.isString() && t2.isString())
+        {
             return specificCmp(op, ctfeRawCmp(loc, e1, e2, false));
+        }
         else if (t1.isreal())
+        {
             return realCmp(op, e1.toReal(), e2.toReal());
+        }
         else if (t1.isimaginary())
+        {
             return realCmp(op, e1.toImaginary(), e2.toImaginary());
+        }
         else if (t1.isunsigned() || t2.isunsigned())
+        {
             return intUnsignedCmp(op, e1.toInteger(), e2.toInteger());
+        }
         else
+        {
             return intSignedCmp(op, (long)e1.toInteger(), (long)e2.toInteger());
+        }
     }
 
     public static UnionExp ctfeCat(Loc loc, Type type, Expression e1, Expression e2) {
@@ -1317,10 +1449,10 @@ public class ctfeexpr {
             Object s = pcopy(Mem.xmalloc((len + 1) * (sz & 0xFF)));
             memcpy((BytePtr)((((BytePtr)s).plus(((sz & 0xFF) * (es2.elements.value.get()).length.value)))), (es1.string.value), (es1.len.value * (sz & 0xFF)));
             {
-                int __key868 = 0;
-                int __limit869 = (es2.elements.value.get()).length.value;
-                for (; (__key868 < __limit869);__key868 += 1) {
-                    int i = __key868;
+                int __key870 = 0;
+                int __limit871 = (es2.elements.value.get()).length.value;
+                for (; (__key870 < __limit871);__key870 += 1) {
+                    int i = __key870;
                     Expression es2e = (es2.elements.value.get()).get(i);
                     if (((es2e.op.value & 0xFF) != 135))
                     {
@@ -1348,10 +1480,10 @@ public class ctfeexpr {
             Object s = pcopy(Mem.xmalloc((len + 1) * (sz & 0xFF)));
             memcpy((BytePtr)s, (es1.string.value), (es1.len.value * (sz & 0xFF)));
             {
-                int __key870 = 0;
-                int __limit871 = (es2.elements.value.get()).length.value;
-                for (; (__key870 < __limit871);__key870 += 1) {
-                    int i = __key870;
+                int __key872 = 0;
+                int __limit873 = (es2.elements.value.get()).length.value;
+                for (; (__key872 < __limit873);__key872 += 1) {
+                    int i = __key872;
                     Expression es2e = (es2.elements.value.get()).get(i);
                     if (((es2e.op.value & 0xFF) != 135))
                     {
@@ -1444,12 +1576,16 @@ public class ctfeexpr {
             }
         };
         if (((e_ref.value.op.value & 0xFF) == 13))
+        {
             return paint.invoke();
+        }
         if (((e_ref.value.op.value & 0xFF) == 50))
         {
             ClassDeclaration originalClass = ((ClassReferenceExp)e_ref.value).originalClass();
             if (originalClass.type.value.implicitConvTo(to_ref.value.mutableOf()) != 0)
+            {
                 return paint.invoke();
+            }
             else
             {
                 (pue_ref.value) = new UnionExp(new NullExp(loc, to_ref.value));
@@ -1457,9 +1593,13 @@ public class ctfeexpr {
             }
         }
         if (isTypeInfo_Class(e_ref.value.type.value) && (e_ref.value.type.value.implicitConvTo(to_ref.value) != 0))
+        {
             return paint.invoke();
+        }
         if (((e_ref.value.op.value & 0xFF) == 49) && (pequals(e_ref.value.type.value.toBasetype().castMod((byte)0), to_ref.value.toBasetype().castMod((byte)0))))
+        {
             return paint.invoke();
+        }
         Expression r = null;
         if (e_ref.value.type.value.equals(type) && type.equals(to_ref.value))
         {
@@ -1475,16 +1615,22 @@ public class ctfeexpr {
             r = (pue_ref.value.get()).exp();
         }
         if (CTFEExp.isCantExp(r))
+        {
             error(loc, new BytePtr("cannot cast `%s` to `%s` at compile time"), e_ref.value.toChars(), to_ref.value.toChars());
+        }
         {
             ArrayLiteralExp ae = e_ref.value.isArrayLiteralExp();
             if ((ae) != null)
+            {
                 ae.ownedByCtfe = OwnedBy.ctfe;
+            }
         }
         {
             StringExp se = e_ref.value.isStringExp();
             if ((se) != null)
+            {
                 se.ownedByCtfe = OwnedBy.ctfe;
+            }
         }
         return r;
     }
@@ -1503,10 +1649,10 @@ public class ctfeexpr {
             int nvthis = sd.fields.length.value - nfields;
             if ((nvthis != 0) && ((oldelems.get()).length.value >= nfields) && ((oldelems.get()).length.value < (newelems.get()).length.value))
             {
-                int __key872 = 0;
-                int __limit873 = (newelems.get()).length.value - (oldelems.get()).length.value;
-                for (; (__key872 < __limit873);__key872 += 1) {
-                    int __ = __key872;
+                int __key874 = 0;
+                int __limit875 = (newelems.get()).length.value - (oldelems.get()).length.value;
+                for (; (__key874 < __limit875);__key874 += 1) {
+                    int __ = __key874;
                     (oldelems.get()).push(null);
                 }
             }
@@ -1532,13 +1678,15 @@ public class ctfeexpr {
             return ;
         }
         else
+        {
             throw new AssertionError("Unreachable code!");
+        }
         assert(((oldelems.get()).length.value == (newelems.get()).length.value));
         {
-            int __key874 = 0;
-            int __limit875 = (oldelems.get()).length.value;
-            for (; (__key874 < __limit875);__key874 += 1) {
-                int i = __key874;
+            int __key876 = 0;
+            int __limit877 = (oldelems.get()).length.value;
+            for (; (__key876 < __limit877);__key876 += 1) {
+                int i = __key876;
                 Expression e = (newelems.get()).get(i);
                 Expression o = (oldelems.get()).get(i);
                 if (((e.op.value & 0xFF) == 49))
@@ -1603,10 +1751,10 @@ public class ctfeexpr {
             memcpy((BytePtr)s, (oldse.string.value), (copylen * (oldse.sz.value & 0xFF)));
             int defaultValue = (int)defaultElem.toInteger();
             {
-                int __key876 = copylen;
-                int __limit877 = newlen;
-                for (; (__key876 < __limit877);__key876 += 1) {
-                    int elemi = __key876;
+                int __key878 = copylen;
+                int __limit879 = newlen;
+                for (; (__key878 < __limit879);__key878 += 1) {
+                    int elemi = __key878;
                     switch ((oldse.sz.value & 0xFF))
                     {
                         case 1:
@@ -1637,10 +1785,10 @@ public class ctfeexpr {
                 assert(((oldval.op.value & 0xFF) == 47));
                 ArrayLiteralExp ae = (ArrayLiteralExp)oldval;
                 {
-                    int __key878 = 0;
-                    int __limit879 = copylen;
-                    for (; (__key878 < __limit879);__key878 += 1) {
-                        int i = __key878;
+                    int __key880 = 0;
+                    int __limit881 = copylen;
+                    for (; (__key880 < __limit881);__key880 += 1) {
+                        int i = __key880;
                         elements.get().set(i, (ae.elements.value.get()).get(indxlo + i));
                     }
                 }
@@ -1648,10 +1796,10 @@ public class ctfeexpr {
             if (((elemType.ty.value & 0xFF) == ENUMTY.Tstruct) || ((elemType.ty.value & 0xFF) == ENUMTY.Tsarray))
             {
                 {
-                    int __key880 = copylen;
-                    int __limit881 = newlen;
-                    for (; (__key880 < __limit881);__key880 += 1) {
-                        int i = __key880;
+                    int __key882 = copylen;
+                    int __limit883 = newlen;
+                    for (; (__key882 < __limit883);__key882 += 1) {
+                        int i = __key882;
                         elements.get().set(i, copyLiteral(defaultElem).copy());
                     }
                 }
@@ -1659,10 +1807,10 @@ public class ctfeexpr {
             else
             {
                 {
-                    int __key882 = copylen;
-                    int __limit883 = newlen;
-                    for (; (__key882 < __limit883);__key882 += 1) {
-                        int i = __key882;
+                    int __key884 = copylen;
+                    int __limit885 = newlen;
+                    for (; (__key884 < __limit885);__key884 += 1) {
+                        int i = __key884;
                         elements.get().set(i, defaultElem);
                     }
                 }
@@ -1685,19 +1833,33 @@ public class ctfeexpr {
             return ((tb.ty.value & 0xFF) == ENUMTY.Tnull) || ((tb.ty.value & 0xFF) == ENUMTY.Tpointer) || ((tb.ty.value & 0xFF) == ENUMTY.Tarray) || ((tb.ty.value & 0xFF) == ENUMTY.Taarray) || ((tb.ty.value & 0xFF) == ENUMTY.Tclass) || ((tb.ty.value & 0xFF) == ENUMTY.Tdelegate);
         }
         if (((newval.op.value & 0xFF) == 121))
+        {
             return true;
+        }
         if (((newval.op.value & 0xFF) == 47))
+        {
             return true;
+        }
         if (((newval.op.value & 0xFF) == 48))
+        {
             return true;
+        }
         if (((newval.op.value & 0xFF) == 49))
+        {
             return true;
+        }
         if (((newval.op.value & 0xFF) == 50))
+        {
             return true;
+        }
         if (((newval.op.value & 0xFF) == 229))
+        {
             return true;
+        }
         if (((newval.op.value & 0xFF) == 161))
+        {
             return true;
+        }
         if (((newval.op.value & 0xFF) == 160))
         {
             Expression ethis = ((DelegateExp)newval).e1.value;
@@ -1725,14 +1887,18 @@ public class ctfeexpr {
             return ((tb.ty.value & 0xFF) == ENUMTY.Tarray) || ((tb.ty.value & 0xFF) == ENUMTY.Tsarray) && ((se.e1.value.op.value & 0xFF) == 121) || ((se.e1.value.op.value & 0xFF) == 47);
         }
         if (((newval.op.value & 0xFF) == 128))
+        {
             return true;
+        }
         newval.error(new BytePtr("CTFE internal error: illegal CTFE value `%s`"), newval.toChars());
         return false;
     }
 
     public static boolean isCtfeReferenceValid(Expression newval) {
         if (((newval.op.value & 0xFF) == 123))
+        {
             return true;
+        }
         if (((newval.op.value & 0xFF) == 26))
         {
             VarDeclaration v = ((VarExp)newval).var.value.isVarDeclaration();
@@ -1797,14 +1963,18 @@ public class ctfeexpr {
             printf(new BytePtr("VAR %p %s\n"), e, e.toChars());
             VarDeclaration v = ((VarExp)e).var.value.isVarDeclaration();
             if ((v != null) && (getValue(v) != null))
+            {
                 showCtfeExpr(getValue(v), level + 1);
+            }
         }
         else if (((e.op.value & 0xFF) == 19))
         {
             printf(new BytePtr("POINTER %p to %p: %s\n"), e, ((AddrExp)e).e1.value, e.toChars());
         }
         else
+        {
             printf(new BytePtr("VALUE %p: %s\n"), e, e.toChars());
+        }
         if (elements != null)
         {
             int fieldsSoFar = 0;
@@ -1888,12 +2058,14 @@ public class ctfeexpr {
             int d = (int)tsa.dim.value.toInteger();
             Ptr<DArray<Expression>> elements = refPtr(new DArray<Expression>(d));
             {
-                int __key884 = 0;
-                int __limit885 = d;
-                for (; (__key884 < __limit885);__key884 += 1) {
-                    int i = __key884;
+                int __key886 = 0;
+                int __limit887 = d;
+                for (; (__key886 < __limit887);__key886 += 1) {
+                    int i = __key886;
                     if (mustCopy && (i > 0))
+                    {
                         elem = copyLiteral(elem).copy();
+                    }
                     elements.get().set(i, elem);
                 }
             }
@@ -1906,10 +2078,10 @@ public class ctfeexpr {
             TypeStruct ts = (TypeStruct)t;
             Ptr<DArray<Expression>> exps = refPtr(new DArray<Expression>(ts.sym.value.fields.length.value));
             {
-                int __key886 = 0;
-                int __limit887 = ts.sym.value.fields.length.value;
-                for (; (__key886 < __limit887);__key886 += 1) {
-                    int i = __key886;
+                int __key888 = 0;
+                int __limit889 = ts.sym.value.fields.length.value;
+                for (; (__key888 < __limit889);__key888 += 1) {
+                    int i = __key888;
                     exps.get().set(i, voidInitLiteral(ts.sym.value.fields.get(i).type.value, ts.sym.value.fields.get(i)).copy());
                 }
             }
@@ -1919,7 +2091,9 @@ public class ctfeexpr {
             se.ownedByCtfe.value = OwnedBy.ctfe;
         }
         else
+        {
             ptr(ue) = new UnionExp(new VoidInitExp(var));
+        }
         return ue.value;
     }
 

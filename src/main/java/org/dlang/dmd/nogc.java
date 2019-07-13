@@ -36,7 +36,9 @@ public class nogc {
 
         public  void doCond(Expression exp) {
             if (exp != null)
+            {
                 walkPostorder(exp, this);
+            }
         }
 
         public  void visit(Expression e) {
@@ -61,7 +63,9 @@ public class nogc {
 
         public  void visit(ArrayLiteralExp e) {
             if (((e.type.value.ty.value & 0xFF) != ENUMTY.Tarray) || (e.elements.value == null) || ((e.elements.value.get()).length.value == 0))
+            {
                 return ;
+            }
             if (this.f.setGC())
             {
                 e.error(new BytePtr("array literal in `@nogc` %s `%s` may cause a GC allocation"), this.f.kind(), this.f.toPrettyChars(false));
@@ -73,7 +77,9 @@ public class nogc {
 
         public  void visit(AssocArrayLiteralExp e) {
             if ((e.keys.value.get()).length.value == 0)
+            {
                 return ;
+            }
             if (this.f.setGC())
             {
                 e.error(new BytePtr("associative array literal in `@nogc` %s `%s` may cause a GC allocation"), this.f.kind(), this.f.toPrettyChars(false));
@@ -89,11 +95,17 @@ public class nogc {
                 return ;
             }
             if (e.onstack)
+            {
                 return ;
+            }
             if (e.allocator.value != null)
+            {
                 return ;
+            }
             if (global.params.ehnogc && e.thrownew)
+            {
                 return ;
+            }
             if (this.f.setGC())
             {
                 e.error(new BytePtr("cannot use `new` in `@nogc` %s `%s`"), this.f.kind(), this.f.toPrettyChars(false));
@@ -108,7 +120,9 @@ public class nogc {
             {
                 VarDeclaration v = ((VarExp)e.e1.value).var.value.isVarDeclaration();
                 if ((v != null) && v.onstack)
+                {
                     return ;
+                }
             }
             Type tb = e.e1.value.type.value.toBasetype();
             AggregateDeclaration ad = null;
@@ -120,13 +134,17 @@ public class nogc {
                 case 3:
                     tb = ((TypePointer)tb).next.value.toBasetype();
                     if (((tb.ty.value & 0xFF) == ENUMTY.Tstruct))
+                    {
                         ad = ((TypeStruct)tb).sym.value;
+                    }
                     break;
                 default:
                 break;
             }
             if ((ad != null) && (ad.aggDelete.value != null))
+            {
                 return ;
+            }
             if (this.f.setGC())
             {
                 e.error(new BytePtr("cannot use `delete` in `@nogc` %s `%s`"), this.f.kind(), this.f.toPrettyChars(false));
@@ -201,7 +219,9 @@ public class nogc {
             NOGCVisitor gcv = new NOGCVisitor(f);
             walkPostorder(e, gcv);
             if (gcv.err)
+            {
                 return new ErrorExp();
+            }
         }
         return e;
     }

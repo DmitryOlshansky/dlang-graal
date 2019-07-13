@@ -109,21 +109,31 @@ public class semantic2 {
                             error(sa.loc.value, new BytePtr("static assert:  \"%.*s\""), se.len.value, se.string.value);
                         }
                         else
+                        {
                             error(sa.loc.value, new BytePtr("static assert:  %s"), sa.msg.toChars());
+                        }
                     }
                 }
                 else
+                {
                     error(sa.loc.value, new BytePtr("static assert:  `%s` is false"), sa.exp.toChars());
+                }
                 if ((this.sc.get()).tinst != null)
+                {
                     (this.sc.get()).tinst.printInstantiationTrace();
+                }
                 if (global.gag.value == 0)
+                {
                     fatal();
+                }
             }
         }
 
         public  void visit(TemplateInstance tempinst) {
             if ((tempinst.semanticRun.value >= PASS.semantic2))
+            {
                 return ;
+            }
             tempinst.semanticRun.value = PASS.semantic2;
             if (!tempinst.errors.value && (tempinst.members.value != null))
             {
@@ -139,14 +149,18 @@ public class semantic2 {
                 int olderrors = global.errors.value;
                 int oldGaggedErrors = -1;
                 if (needGagging != 0)
+                {
                     oldGaggedErrors = global.startGagging();
+                }
                 {
                     int i = 0;
                     for (; (i < (tempinst.members.value.get()).length.value);i++){
                         Dsymbol s = (tempinst.members.value.get()).get(i);
                         semantic2(s, this.sc);
                         if (tempinst.gagged && (global.errors.value != olderrors))
+                        {
                             break;
+                        }
                     }
                 }
                 if ((global.errors.value != olderrors))
@@ -154,14 +168,20 @@ public class semantic2 {
                     if (!tempinst.errors.value)
                     {
                         if (!tempdecl.literal)
+                        {
                             tempinst.error(tempinst.loc.value, new BytePtr("error instantiating"));
+                        }
                         if (tempinst.tinst != null)
+                        {
                             tempinst.tinst.printInstantiationTrace();
+                        }
                     }
                     tempinst.errors.value = true;
                 }
                 if (needGagging != 0)
+                {
                     global.endGagging(oldGaggedErrors);
+                }
                 this.sc = (this.sc.get()).pop();
                 (this.sc.get()).pop();
             }
@@ -169,7 +189,9 @@ public class semantic2 {
 
         public  void visit(TemplateMixin tmix) {
             if ((tmix.semanticRun.value >= PASS.semantic2))
+            {
                 return ;
+            }
             tmix.semanticRun.value = PASS.semantic2;
             if (tmix.members.value != null)
             {
@@ -190,7 +212,9 @@ public class semantic2 {
 
         public  void visit(VarDeclaration vd) {
             if ((vd.semanticRun.value < PASS.semanticdone) && (vd.inuse.value != 0))
+            {
                 return ;
+            }
             if (vd.aliassym.value != null)
             {
                 vd.aliassym.value.accept(this);
@@ -215,25 +239,35 @@ public class semantic2 {
                                 Function1<Ptr<DArray<Expression>>,Boolean> arrayHasInvalidEnumInitializer = new Function1<Ptr<DArray<Expression>>,Boolean>(){
                                     public Boolean invoke(Ptr<DArray<Expression>> elems) {
                                         {
-                                            Ref<Slice<Expression>> __r1537 = ref((elems.get()).opSlice().copy());
-                                            IntRef __key1538 = ref(0);
-                                            for (; (__key1538.value < __r1537.value.getLength());__key1538.value += 1) {
-                                                Ref<Expression> e = ref(__r1537.value.get(__key1538.value));
+                                            Ref<Slice<Expression>> __r1539 = ref((elems.get()).opSlice().copy());
+                                            IntRef __key1540 = ref(0);
+                                            for (; (__key1540.value < __r1539.value.getLength());__key1540.value += 1) {
+                                                Ref<Expression> e = ref(__r1539.value.get(__key1540.value));
                                                 if ((e.value != null) && hasInvalidEnumInitializer.invoke(e.value))
+                                                {
                                                     return true;
+                                                }
                                             }
                                         }
                                         return false;
                                     }
                                 };
                                 if (((e_ref.value.op.value & 0xFF) == 50))
+                                {
                                     return true;
+                                }
                                 if (((e_ref.value.op.value & 0xFF) == 19) && ((((AddrExp)e_ref.value).e1.value.op.value & 0xFF) == 49))
+                                {
                                     return true;
+                                }
                                 if (((e_ref.value.op.value & 0xFF) == 47))
+                                {
                                     return arrayHasInvalidEnumInitializer.invoke(((ArrayLiteralExp)e_ref.value).elements.value);
+                                }
                                 if (((e_ref.value.op.value & 0xFF) == 49))
+                                {
                                     return arrayHasInvalidEnumInitializer.invoke(((StructLiteralExp)e_ref.value).elements.value);
+                                }
                                 if (((e_ref.value.op.value & 0xFF) == 48))
                                 {
                                     AssocArrayLiteralExp ae = (AssocArrayLiteralExp)e_ref.value;
@@ -243,7 +277,9 @@ public class semantic2 {
                             }
                         };
                         if (hasInvalidEnumInitializer.invoke(ei.exp.value))
+                        {
                             vd.error(new BytePtr(": Unable to initialize enum with class or pointer to struct. Use static const variable instead."));
+                        }
                     }
                 }
             }
@@ -253,13 +289,17 @@ public class semantic2 {
                 {
                     ExpInitializer ei = vd._init.value.isExpInitializer();
                     if ((ei != null) && ((ei.exp.value.op.value & 0xFF) == 50))
+                    {
                         vd.error(new BytePtr("is a thread-local class and cannot have a static initializer. Use `static this()` to initialize instead."));
+                    }
                 }
                 else if (((vd.type.value.ty.value & 0xFF) == ENUMTY.Tpointer) && ((vd.type.value.nextOf().ty.value & 0xFF) == ENUMTY.Tstruct) && vd.type.value.nextOf().isMutable() && !vd.type.value.nextOf().isShared())
                 {
                     ExpInitializer ei = vd._init.value.isExpInitializer();
                     if ((ei != null) && ((ei.exp.value.op.value & 0xFF) == 19) && ((((AddrExp)ei.exp.value).e1.value.op.value & 0xFF) == 49))
+                    {
                         vd.error(new BytePtr("is a thread-local pointer to struct and cannot have a static initializer. Use `static this()` to initialize instead."));
+                    }
                 }
             }
             vd.semanticRun.value = PASS.semantic2done;
@@ -267,7 +307,9 @@ public class semantic2 {
 
         public  void visit(dmodule.Module mod) {
             if ((mod.semanticRun.value != PASS.semanticdone))
+            {
                 return ;
+            }
             mod.semanticRun.value = PASS.semantic2;
             Ptr<Scope> sc = Scope.createGlobal(mod);
             {
@@ -288,10 +330,13 @@ public class semantic2 {
 
         public  void visit(FuncDeclaration fd) {
             if ((fd.semanticRun.value >= PASS.semantic2done))
+            {
                 return ;
+            }
             assert((fd.semanticRun.value <= PASS.semantic2));
             fd.semanticRun.value = PASS.semantic2;
             if (0 != 0)
+            {
                 if ((fd.overnext != null) && !fd.errors.value)
                 {
                     Ref<OutBuffer> buf1 = ref(new OutBuffer());
@@ -304,15 +349,23 @@ public class semantic2 {
                                 public Integer invoke(Dsymbol s) {
                                     FuncDeclaration f2 = s.isFuncDeclaration();
                                     if ((f2 == null) || (pequals(f1, f2)) || f2.errors.value)
+                                    {
                                         return 0;
+                                    }
                                     if ((((f1.fbody.value != null) ? 1 : 0) != ((f2.fbody.value != null) ? 1 : 0)))
+                                    {
                                         return 0;
+                                    }
                                     if (f1.overrides(f2) != 0)
+                                    {
                                         return 0;
+                                    }
                                     if ((pequals(f1.ident.value, f2.ident.value)) && (pequals(f1.toParent2(), f2.toParent2())) && (f1.linkage.value != LINK.d) && (f1.linkage.value != LINK.cpp) && (f2.linkage.value != LINK.d) && (f2.linkage.value != LINK.cpp))
                                     {
                                         if ((f1.fbody.value == null) || (f2.fbody.value == null))
+                                        {
                                             return 0;
+                                        }
                                         TypeFunction tf1 = (TypeFunction)f1.type.value;
                                         TypeFunction tf2 = (TypeFunction)f2.type.value;
                                         error(f2.loc.value, new BytePtr("%s `%s%s` cannot be overloaded with %s`extern(%s)` function at %s"), f2.kind(), f2.toPrettyChars(false), parametersTypeToChars(tf2.parameterList), (f1.linkage.value == f2.linkage.value) ? new BytePtr("another ") : new BytePtr(""), linkageToChars(f1.linkage.value), f1.loc.value.toChars(global.params.showColumns.value));
@@ -342,17 +395,22 @@ public class semantic2 {
                     finally {
                     }
                 }
+            }
             if ((fd.type.value == null) || ((fd.type.value.ty.value & 0xFF) != ENUMTY.Tfunction))
+            {
                 return ;
+            }
             TypeFunction f = (TypeFunction)fd.type.value;
             {
-                int __key1539 = 0;
-                int __limit1540 = f.parameterList.length();
-                for (; (__key1539 < __limit1540);__key1539 += 1) {
-                    int i = __key1539;
+                int __key1541 = 0;
+                int __limit1542 = f.parameterList.length();
+                for (; (__key1541 < __limit1542);__key1541 += 1) {
+                    int i = __key1541;
                     Parameter param = f.parameterList.get(i);
                     if ((param != null) && (param.userAttribDecl.value != null))
+                    {
                         semantic2(param.userAttribDecl.value, this.sc);
+                    }
                 }
             }
         }
@@ -364,14 +422,18 @@ public class semantic2 {
                 if (i.mod.needmoduleinfo != 0)
                 {
                     if (this.sc != null)
+                    {
                         (this.sc.get())._module.value.needmoduleinfo = 1;
+                    }
                 }
             }
         }
 
         public  void visit(Nspace ns) {
             if ((ns.semanticRun.value >= PASS.semantic2))
+            {
                 return ;
+            }
             ns.semanticRun.value = PASS.semantic2;
             if (ns.members.value != null)
             {
@@ -379,10 +441,10 @@ public class semantic2 {
                 this.sc = (this.sc.get()).push(ns);
                 (this.sc.get()).linkage.value = LINK.cpp;
                 {
-                    Slice<Dsymbol> __r1541 = (ns.members.value.get()).opSlice().copy();
-                    int __key1542 = 0;
-                    for (; (__key1542 < __r1541.getLength());__key1542 += 1) {
-                        Dsymbol s = __r1541.get(__key1542);
+                    Slice<Dsymbol> __r1543 = (ns.members.value.get()).opSlice().copy();
+                    int __key1544 = 0;
+                    for (; (__key1544 < __r1543.getLength());__key1544 += 1) {
+                        Dsymbol s = __r1543.get(__key1544);
                         semantic2(s, this.sc);
                     }
                 }
@@ -403,7 +465,9 @@ public class semantic2 {
                     }
                 }
                 if ((sc2 != this.sc))
+                {
                     (sc2.get()).pop();
+                }
             }
         }
 
@@ -424,15 +488,17 @@ public class semantic2 {
                     public Void invoke(Ptr<Scope> sc, Ptr<DArray<Expression>> exps) {
                         Ref<Ptr<Scope>> sc_ref = ref(sc);
                         {
-                            Ref<Slice<Expression>> __r1543 = ref((exps.get()).opSlice().copy());
-                            IntRef __key1544 = ref(0);
-                            for (; (__key1544.value < __r1543.value.getLength());__key1544.value += 1) {
-                                Ref<Expression> e = ref(__r1543.value.get(__key1544.value));
+                            Ref<Slice<Expression>> __r1545 = ref((exps.get()).opSlice().copy());
+                            IntRef __key1546 = ref(0);
+                            for (; (__key1546.value < __r1545.value.getLength());__key1546.value += 1) {
+                                Ref<Expression> e = ref(__r1545.value.get(__key1546.value));
                                 if (e.value != null)
                                 {
                                     e.value = expressionSemantic(e.value, sc_ref.value);
                                     if (definitelyValueParameter(e.value))
+                                    {
                                         e.value = e.value.ctfeInterpret();
+                                    }
                                     if (((e.value.op.value & 0xFF) == 126))
                                     {
                                         TupleExp te = (TupleExp)e.value;
@@ -441,6 +507,7 @@ public class semantic2 {
                                 }
                             }
                         }
+                        return null;
                     }
                 };
                 uad._scope.value = null;
@@ -451,7 +518,9 @@ public class semantic2 {
 
         public  void visit(AggregateDeclaration ad) {
             if (ad.members.value == null)
+            {
                 return ;
+            }
             if (ad._scope.value != null)
             {
                 ad.error(new BytePtr("has forward references"));

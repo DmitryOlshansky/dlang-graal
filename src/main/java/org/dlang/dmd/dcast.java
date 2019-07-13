@@ -66,9 +66,13 @@ public class dcast {
                 {
                     IntRef adMatch = ref(MATCH.nomatch);
                     if (((ad.value.type.value.ty.value & 0xFF) == ENUMTY.Tstruct))
+                    {
                         adMatch.value = ((TypeStruct)ad.value.type.value).implicitConvToWithoutAliasThis(this.t.value);
+                    }
                     else
+                    {
                         adMatch.value = ((TypeClass)ad.value.type.value).implicitConvToWithoutAliasThis(this.t.value);
+                    }
                     if (adMatch.value == 0)
                     {
                         Ref<Type> tob = ref(this.t.value.toBasetype());
@@ -148,14 +152,18 @@ public class dcast {
             this.visit((Expression)e_ref);
             Type tb = this.result.value.type.value.toBasetype();
             if (((tb.ty.value & 0xFF) == ENUMTY.Tarray) && global.params.useTypeInfo.value && (Type.dtypeinfo.value != null))
+            {
                 semanticTypeInfo(this.sc.value, ((TypeDArray)tb).next.value);
+            }
         }
 
         public  void visit(SliceExp e) {
             Ref<SliceExp> e_ref = ref(e);
             this.visit((Expression)e_ref);
             if (((this.result.value.op.value & 0xFF) != 31))
+            {
                 return ;
+            }
             e_ref.value = (SliceExp)this.result.value;
             if (((e_ref.value.e1.value.op.value & 0xFF) == 47))
             {
@@ -163,9 +171,13 @@ public class dcast {
                 Type tb = this.t.value.toBasetype();
                 Ref<Type> tx = ref(null);
                 if (((tb.ty.value & 0xFF) == ENUMTY.Tsarray))
+                {
                     tx.value = tb.nextOf().sarrayOf(ale.elements.value != null ? (long)(ale.elements.value.get()).length.value : 0L);
+                }
                 else
+                {
                     tx.value = tb.nextOf().arrayOf();
+                }
                 e_ref.value.e1.value = ale.implicitCastTo(this.sc.value, tx.value);
             }
         }
@@ -194,7 +206,9 @@ public class dcast {
                             {
                                 Ref<Type> tb = ref(v.type.value.toBasetype());
                                 if ((implicitMod(ei.value.exp.value, tb.value, mod_ref.value) == MATCH.nomatch))
+                                {
                                     return false;
+                                }
                             }
                             else
                             {
@@ -203,7 +217,9 @@ public class dcast {
                         }
                     }
                     else if (!v.type.value.isZeroInit(loc_ref.value))
+                    {
                         return false;
+                    }
                 }
             }
             return cd.baseClass.value != null ? convertible(loc_ref.value, cd.baseClass.value, mod_ref.value) : true;
@@ -232,7 +248,9 @@ public class dcast {
         public  void visit(Expression e) {
             Ref<Expression> e_ref = ref(e);
             if ((pequals(this.t.value, Type.terror.value)))
+            {
                 return ;
+            }
             if (e_ref.value.type.value == null)
             {
                 e_ref.value.error(new BytePtr("`%s` is not an expression"), e_ref.value.toChars());
@@ -271,13 +289,21 @@ public class dcast {
             Ref<Byte> mod_ref = ref(mod);
             Ref<Type> tprime = ref(null);
             if (((t.ty.value & 0xFF) == ENUMTY.Tpointer))
+            {
                 tprime.value = t.nextOf().castMod(mod_ref.value).pointerTo();
+            }
             else if (((t.ty.value & 0xFF) == ENUMTY.Tarray))
+            {
                 tprime.value = t.nextOf().castMod(mod_ref.value).arrayOf();
+            }
             else if (((t.ty.value & 0xFF) == ENUMTY.Tsarray))
+            {
                 tprime.value = t.nextOf().castMod(mod_ref.value).sarrayOf(t.size() / t.nextOf().size());
+            }
             else
+            {
                 tprime.value = t.castMod(mod_ref.value);
+            }
             return e.implicitConvTo(tprime.value);
         }
 
@@ -286,7 +312,9 @@ public class dcast {
             Ref<Type> tb = ref(t_ref.value.toBasetype());
             Type typeb = e.type.value.toBasetype();
             if (((typeb.ty.value & 0xFF) != ENUMTY.Tpointer) || ((tb.value.ty.value & 0xFF) != ENUMTY.Tpointer))
+            {
                 return MATCH.nomatch;
+            }
             Type t1b = e.e1.value.type.value.toBasetype();
             Type t2b = e.e2.value.type.value.toBasetype();
             if (((t1b.ty.value & 0xFF) == ENUMTY.Tpointer) && t2b.isintegral() && t1b.equivalent(tb.value))
@@ -306,14 +334,18 @@ public class dcast {
             Ref<AddExp> e_ref = ref(e);
             this.visit((Expression)e_ref);
             if ((this.result.value == MATCH.nomatch))
+            {
                 this.result.value = implicitConvToAddMin(e_ref.value, this.t.value);
+            }
         }
 
         public  void visit(MinExp e) {
             Ref<MinExp> e_ref = ref(e);
             this.visit((Expression)e_ref);
             if ((this.result.value == MATCH.nomatch))
+            {
                 this.result.value = implicitConvToAddMin(e_ref.value, this.t.value);
+            }
         }
 
         public  void visit(IntegerExp e) {
@@ -328,13 +360,17 @@ public class dcast {
             Ref<Byte> toty = ref(this.t.value.toBasetype().ty.value);
             Ref<Byte> oldty = ref(ty.value);
             if ((m.value == MATCH.nomatch) && ((this.t.value.ty.value & 0xFF) == ENUMTY.Tenum))
+            {
                 return ;
+            }
             if (((this.t.value.ty.value & 0xFF) == ENUMTY.Tvector))
             {
                 TypeVector tv = (TypeVector)this.t.value;
                 TypeBasic tb = tv.elementType();
                 if (((tb.ty.value & 0xFF) == ENUMTY.Tvoid))
+                {
                     return ;
+                }
                 toty.value = tb.ty.value;
             }
             switch ((ty.value & 0xFF))
@@ -392,69 +428,101 @@ public class dcast {
                     {
                         case 30:
                             if (((value.value & 1L) != value.value))
+                            {
                                 return ;
+                            }
                             break;
                         case 13:
                             if (((ty.value & 0xFF) == ENUMTY.Tuns64) && ((value.value & 4294967168L) != 0))
+                            {
                                 return ;
+                            }
                             else if (((long)((byte)value.value & 0xFF) != value.value))
+                            {
                                 return ;
+                            }
                             break;
                         case 31:
                             if (((oldty.value & 0xFF) == ENUMTY.Twchar) || ((oldty.value & 0xFF) == ENUMTY.Tdchar) && (value.value > 127L))
+                            {
                                 return ;
+                            }
                             /*goto case*/{ __dispatch1 = 14; continue dispatched_1; }
                         case 14:
                             __dispatch1 = 0;
                             if (((long)((byte)value.value & 0xFF) != value.value))
+                            {
                                 return ;
+                            }
                             break;
                         case 15:
                             if (((ty.value & 0xFF) == ENUMTY.Tuns64) && ((value.value & 4294934528L) != 0))
+                            {
                                 return ;
+                            }
                             else if (((long)(int)(int)value.value != value.value))
+                            {
                                 return ;
+                            }
                             break;
                         case 32:
                             if (((oldty.value & 0xFF) == ENUMTY.Tdchar) && (value.value > 55295L) && (value.value < 57344L))
+                            {
                                 return ;
+                            }
                             /*goto case*/{ __dispatch1 = 16; continue dispatched_1; }
                         case 16:
                             __dispatch1 = 0;
                             if (((long)(int)(int)value.value != value.value))
+                            {
                                 return ;
+                            }
                             break;
                         case 17:
                             if (((ty.value & 0xFF) == ENUMTY.Tuns32))
                             {
                             }
                             else if (((ty.value & 0xFF) == ENUMTY.Tuns64) && ((value.value & 2147483648L) != 0))
+                            {
                                 return ;
+                            }
                             else if (((long)(int)value.value != value.value))
+                            {
                                 return ;
+                            }
                             break;
                         case 18:
                             if (((ty.value & 0xFF) == ENUMTY.Tint32))
                             {
                             }
                             else if (((long)(int)value.value != value.value))
+                            {
                                 return ;
+                            }
                             break;
                         case 33:
                             if ((value.value > 1114111L))
+                            {
                                 return ;
+                            }
                             break;
                         case 21:
                             if (!isLosslesslyConvertibleToFPFloat.invoke())
+                            {
                                 return ;
+                            }
                             break;
                         case 22:
                             if (!isLosslesslyConvertibleToFPDouble.invoke())
+                            {
                                 return ;
+                            }
                             break;
                         case 23:
                             if (!isLosslesslyConvertibleToFPDouble.invoke())
+                            {
                                 return ;
+                            }
                             break;
                         case 3:
                             if (((ty.value & 0xFF) == ENUMTY.Tpointer) && ((e_ref.value.type.value.toBasetype().nextOf().ty.value & 0xFF) == (this.t.value.toBasetype().nextOf().ty.value & 0xFF)))
@@ -494,7 +562,9 @@ public class dcast {
             Ref<StructLiteralExp> e_ref = ref(e);
             this.visit((Expression)e_ref);
             if ((this.result.value != MATCH.nomatch))
+            {
                 return ;
+            }
             if (((e_ref.value.type.value.ty.value & 0xFF) == (this.t.value.ty.value & 0xFF)) && ((e_ref.value.type.value.ty.value & 0xFF) == ENUMTY.Tstruct) && (pequals(((TypeStruct)e_ref.value.type.value).sym.value, ((TypeStruct)this.t.value).sym.value)))
             {
                 this.result.value = MATCH.constant;
@@ -503,11 +573,15 @@ public class dcast {
                     for (; (i.value < (e_ref.value.elements.value.get()).length.value);i.value++){
                         Ref<Expression> el = ref((e_ref.value.elements.value.get()).get(i.value));
                         if (el.value == null)
+                        {
                             continue;
+                        }
                         Ref<Type> te = ref(e_ref.value.sd.fields.get(i.value).type.value.addMod(this.t.value.mod.value));
                         IntRef m2 = ref(el.value.implicitConvTo(te.value));
                         if ((m2.value < this.result.value))
+                        {
                             this.result.value = m2.value;
+                        }
                     }
                 }
             }
@@ -516,14 +590,20 @@ public class dcast {
         public  void visit(StringExp e) {
             Ref<StringExp> e_ref = ref(e);
             if ((e_ref.value.committed.value == 0) && ((this.t.value.ty.value & 0xFF) == ENUMTY.Tpointer) && ((this.t.value.nextOf().ty.value & 0xFF) == ENUMTY.Tvoid))
+            {
                 return ;
+            }
             if (!(((e_ref.value.type.value.ty.value & 0xFF) == ENUMTY.Tsarray) || ((e_ref.value.type.value.ty.value & 0xFF) == ENUMTY.Tarray) || ((e_ref.value.type.value.ty.value & 0xFF) == ENUMTY.Tpointer)))
+            {
                 this.visit((Expression)e_ref);
                 return ;
+            }
             Ref<Byte> tyn = ref(e_ref.value.type.value.nextOf().ty.value);
             if (!(((tyn.value & 0xFF) == ENUMTY.Tchar) || ((tyn.value & 0xFF) == ENUMTY.Twchar) || ((tyn.value & 0xFF) == ENUMTY.Tdchar)))
+            {
                 this.visit((Expression)e_ref);
                 return ;
+            }
             switch ((this.t.value.ty.value & 0xFF))
             {
                 case 1:
@@ -541,11 +621,15 @@ public class dcast {
                         if (((tynto.value & 0xFF) == ENUMTY.Tchar) || ((tynto.value & 0xFF) == ENUMTY.Twchar) || ((tynto.value & 0xFF) == ENUMTY.Tdchar))
                         {
                             if ((e_ref.value.committed.value != 0) && ((tynto.value & 0xFF) != (tyn.value & 0xFF)))
+                            {
                                 return ;
+                            }
                             IntRef fromlen = ref(e_ref.value.numberOfCodeUnits((tynto.value & 0xFF)));
                             IntRef tolen = ref((int)((TypeSArray)this.t.value).dim.value.toInteger());
                             if ((tolen.value < fromlen.value))
+                            {
                                 return ;
+                            }
                             if ((tolen.value != fromlen.value))
                             {
                                 this.result.value = MATCH.convert;
@@ -564,11 +648,15 @@ public class dcast {
                         if (((tynto_1.value & 0xFF) == ENUMTY.Tchar) || ((tynto_1.value & 0xFF) == ENUMTY.Twchar) || ((tynto_1.value & 0xFF) == ENUMTY.Tdchar))
                         {
                             if ((e_ref.value.committed.value != 0) && ((tynto_1.value & 0xFF) != (tyn.value & 0xFF)))
+                            {
                                 return ;
+                            }
                             IntRef fromlen_1 = ref(e_ref.value.numberOfCodeUnits((tynto_1.value & 0xFF)));
                             IntRef tolen_1 = ref((int)((TypeSArray)this.t.value).dim.value.toInteger());
                             if ((tolen_1.value < fromlen_1.value))
+                            {
                                 return ;
+                            }
                             if ((tolen_1.value != fromlen_1.value))
                             {
                                 this.result.value = MATCH.convert;
@@ -593,7 +681,9 @@ public class dcast {
                     if (((e_ref.value.type.value.nextOf().mod.value & 0xFF) != (tn.mod.value & 0xFF)))
                     {
                         if (!tn.isConst() && !tn.isImmutable())
+                        {
                             return ;
+                        }
                         m.value = MATCH.constant;
                     }
                     if (e_ref.value.committed.value == 0)
@@ -602,17 +692,23 @@ public class dcast {
                         {
                             case 31:
                                 if (((e_ref.value.postfix.value & 0xFF) == 119) || ((e_ref.value.postfix.value & 0xFF) == 100))
+                                {
                                     m.value = MATCH.convert;
+                                }
                                 this.result.value = m.value;
                                 return ;
                             case 32:
                                 if (((e_ref.value.postfix.value & 0xFF) != 119))
+                                {
                                     m.value = MATCH.convert;
+                                }
                                 this.result.value = m.value;
                                 return ;
                             case 33:
                                 if (((e_ref.value.postfix.value & 0xFF) != 100))
+                                {
                                     m.value = MATCH.convert;
+                                }
                                 this.result.value = m.value;
                                 return ;
                             case 9:
@@ -621,7 +717,9 @@ public class dcast {
                                     {
                                         Ref<TypeBasic> tob = ref(tn.toBasetype().isTypeBasic());
                                         if ((tob.value) != null)
+                                        {
                                             this.result.value = tn.implicitConvTo(tob.value);
+                                        }
                                     }
                                     return ;
                                 }
@@ -649,13 +747,17 @@ public class dcast {
                 {
                     TypeSArray tsa = (TypeSArray)tb.value;
                     if (((long)(e_ref.value.elements.value.get()).length.value != tsa.dim.value.toInteger()))
+                    {
                         this.result.value = MATCH.nomatch;
+                    }
                 }
                 Ref<Type> telement = ref(tb.value.nextOf());
                 if ((e_ref.value.elements.value.get()).length.value == 0)
                 {
                     if (((typen.ty.value & 0xFF) != ENUMTY.Tvoid))
+                    {
                         this.result.value = typen.implicitConvTo(telement.value);
+                    }
                 }
                 else
                 {
@@ -663,24 +765,34 @@ public class dcast {
                     {
                         IntRef m = ref(e_ref.value.basis.value.implicitConvTo(telement.value));
                         if ((m.value < this.result.value))
+                        {
                             this.result.value = m.value;
+                        }
                     }
                     {
                         IntRef i = ref(0);
                         for (; (i.value < (e_ref.value.elements.value.get()).length.value);i.value++){
                             Ref<Expression> el = ref((e_ref.value.elements.value.get()).get(i.value));
                             if ((this.result.value == MATCH.nomatch))
+                            {
                                 break;
+                            }
                             if (el.value == null)
+                            {
                                 continue;
+                            }
                             IntRef m = ref(el.value.implicitConvTo(telement.value));
                             if ((m.value < this.result.value))
+                            {
                                 this.result.value = m.value;
+                            }
                         }
                     }
                 }
                 if (this.result.value == 0)
+                {
                     this.result.value = e_ref.value.type.value.implicitConvTo(this.t.value);
+                }
                 return ;
             }
             else if (((tb.value.ty.value & 0xFF) == ENUMTY.Tvector) && ((typeb.ty.value & 0xFF) == ENUMTY.Tarray) || ((typeb.ty.value & 0xFF) == ENUMTY.Tsarray))
@@ -702,19 +814,25 @@ public class dcast {
                     Expression el = typeb.nextOf().defaultInitLiteral(e_ref.value.loc.value);
                     IntRef m = ref(el.implicitConvTo(telement.value));
                     if ((m.value < this.result.value))
+                    {
                         this.result.value = m.value;
+                    }
                 }
                 {
-                    IntRef __key897 = ref(0);
-                    IntRef __limit898 = ref(edim.value);
-                    for (; (__key897.value < __limit898.value);__key897.value += 1) {
-                        IntRef i = ref(__key897.value);
+                    IntRef __key899 = ref(0);
+                    IntRef __limit900 = ref(edim.value);
+                    for (; (__key899.value < __limit900.value);__key899.value += 1) {
+                        IntRef i = ref(__key899.value);
                         Expression el = (e_ref.value.elements.value.get()).get(i.value);
                         IntRef m = ref(el.implicitConvTo(telement.value));
                         if ((m.value < this.result.value))
+                        {
                             this.result.value = m.value;
+                        }
                         if ((this.result.value == MATCH.nomatch))
+                        {
                             break;
+                        }
                     }
                 }
                 return ;
@@ -727,8 +845,10 @@ public class dcast {
             Type tb = this.t.value.toBasetype();
             Type typeb = e_ref.value.type.value.toBasetype();
             if (!(((tb.ty.value & 0xFF) == ENUMTY.Taarray) && ((typeb.ty.value & 0xFF) == ENUMTY.Taarray)))
+            {
                 this.visit((Expression)e_ref);
                 return ;
+            }
             this.result.value = MATCH.exact;
             {
                 IntRef i = ref(0);
@@ -736,15 +856,23 @@ public class dcast {
                     Ref<Expression> el = ref((e_ref.value.keys.value.get()).get(i.value));
                     IntRef m = ref(el.value.implicitConvTo(((TypeAArray)tb).index.value));
                     if ((m.value < this.result.value))
+                    {
                         this.result.value = m.value;
+                    }
                     if ((this.result.value == MATCH.nomatch))
+                    {
                         break;
+                    }
                     el.value = (e_ref.value.values.value.get()).get(i.value);
                     m.value = el.value.implicitConvTo(tb.nextOf());
                     if ((m.value < this.result.value))
+                    {
                         this.result.value = m.value;
+                    }
                     if ((this.result.value == MATCH.nomatch))
+                    {
                         break;
+                    }
                 }
             }
         }
@@ -754,23 +882,33 @@ public class dcast {
             boolean LOG = false;
             this.visit((Expression)e_ref);
             if ((this.result.value != MATCH.nomatch))
+            {
                 return ;
+            }
             if ((e_ref.value.f.value != null) && e_ref.value.f.value.isReturnIsolated() && !global.params.vsafe.value || (e_ref.value.f.value.isPure() >= PURE.strong) || (pequals(e_ref.value.f.value.ident.value, Id.dup.value)) && (pequals(e_ref.value.f.value.toParent2(), ClassDeclaration.object.value.toParent())))
             {
                 this.result.value = e_ref.value.type.value.immutableOf().implicitConvTo(this.t.value);
                 if ((this.result.value > MATCH.constant))
+                {
                     this.result.value = MATCH.constant;
+                }
                 return ;
             }
             Ref<Type> tx = ref(e_ref.value.f.value != null ? e_ref.value.f.value.type.value : e_ref.value.e1.value.type.value);
             tx.value = tx.value.toBasetype();
             if (((tx.value.ty.value & 0xFF) != ENUMTY.Tfunction))
+            {
                 return ;
+            }
             TypeFunction tf = (TypeFunction)tx.value;
             if ((tf.purity.value == PURE.impure))
+            {
                 return ;
+            }
             if ((e_ref.value.f.value != null) && e_ref.value.f.value.isNested())
+            {
                 return ;
+            }
             if ((e_ref.value.type.value.immutableOf().implicitConvTo(this.t.value) < MATCH.constant) && (e_ref.value.type.value.addMod((byte)2).implicitConvTo(this.t.value) < MATCH.constant) && (e_ref.value.type.value.implicitConvTo(this.t.value.addMod((byte)2)) < MATCH.constant))
             {
                 return ;
@@ -784,10 +922,14 @@ public class dcast {
             {
                 Ref<Type> ti = ref(getIndirection(this.t.value));
                 if (ti.value != null)
+                {
                     mod.value = ti.value.mod.value;
+                }
             }
             if (((mod.value & 0xFF) & MODFlags.wild) != 0)
+            {
                 return ;
+            }
             IntRef nparams = ref(tf.parameterList.length());
             IntRef j = ref((((tf.linkage.value == LINK.d) && (tf.parameterList.varargs.value == VarArg.variadic)) ? 1 : 0));
             if (((e_ref.value.e1.value.op.value & 0xFF) == 27))
@@ -795,7 +937,9 @@ public class dcast {
                 DotVarExp dve = (DotVarExp)e_ref.value.e1.value;
                 Type targ = dve.e1.value.type.value;
                 if ((targ.constConv(targ.castMod(mod.value)) == MATCH.nomatch))
+                {
                     return ;
+                }
             }
             {
                 IntRef i = ref(j.value);
@@ -806,19 +950,27 @@ public class dcast {
                     {
                         Parameter fparam = tf.parameterList.get(i.value - j.value);
                         if ((fparam.storageClass.value & 8192L) != 0)
+                        {
                             return ;
+                        }
                         Ref<Type> tparam = ref(fparam.type.value);
                         if (tparam.value == null)
+                        {
                             continue;
+                        }
                         if ((fparam.storageClass.value & 2101248L) != 0)
                         {
                             if ((targ.value.constConv(tparam.value.castMod(mod.value)) == MATCH.nomatch))
+                            {
                                 return ;
+                            }
                             continue;
                         }
                     }
                     if ((implicitMod(earg.value, targ.value, mod.value) == MATCH.nomatch))
+                    {
                         return ;
+                    }
                 }
             }
             this.result.value = MATCH.constant;
@@ -827,7 +979,9 @@ public class dcast {
         public  void visit(AddrExp e) {
             this.result.value = e.type.value.implicitConvTo(this.t.value);
             if ((this.result.value != MATCH.nomatch))
+            {
                 return ;
+            }
             Type tb = this.t.value.toBasetype();
             Type typeb = e.type.value.toBasetype();
             if (((e.e1.value.op.value & 0xFF) == 214) && ((tb.ty.value & 0xFF) == ENUMTY.Tpointer) || ((tb.ty.value & 0xFF) == ENUMTY.Tdelegate) && ((tb.nextOf().ty.value & 0xFF) == ENUMTY.Tfunction))
@@ -847,7 +1001,9 @@ public class dcast {
                                 ScopeDsymbol.multiplyDefined(e.loc.value, f.value, f2.value);
                             }
                             else
+                            {
                                 f.value = f2.value;
+                            }
                             this.result.value = MATCH.exact;
                         }
                     }
@@ -862,7 +1018,9 @@ public class dcast {
         public  void visit(SymOffExp e) {
             this.result.value = e.type.value.implicitConvTo(this.t.value);
             if ((this.result.value != MATCH.nomatch))
+            {
                 return ;
+            }
             Type tb = this.t.value.toBasetype();
             Type typeb = e.type.value.toBasetype();
             if (((typeb.ty.value & 0xFF) == ENUMTY.Tpointer) && ((typeb.nextOf().ty.value & 0xFF) == ENUMTY.Tfunction) && ((tb.ty.value & 0xFF) == ENUMTY.Tpointer) || ((tb.ty.value & 0xFF) == ENUMTY.Tdelegate) && ((tb.nextOf().ty.value & 0xFF) == ENUMTY.Tfunction))
@@ -887,13 +1045,17 @@ public class dcast {
         public  void visit(DelegateExp e) {
             this.result.value = e.type.value.implicitConvTo(this.t.value);
             if ((this.result.value != MATCH.nomatch))
+            {
                 return ;
+            }
             Type tb = this.t.value.toBasetype();
             Type typeb = e.type.value.toBasetype();
             if (((typeb.ty.value & 0xFF) == ENUMTY.Tdelegate) && ((tb.ty.value & 0xFF) == ENUMTY.Tdelegate))
             {
                 if ((e.func.value != null) && (e.func.value.overloadExactMatch(tb.nextOf()) != null))
+                {
                     this.result.value = MATCH.exact;
+                }
             }
         }
 
@@ -912,7 +1074,9 @@ public class dcast {
             Ref<AndExp> e_ref = ref(e);
             this.visit((Expression)e_ref);
             if ((this.result.value != MATCH.nomatch))
+            {
                 return ;
+            }
             IntRef m1 = ref(e_ref.value.e1.value.implicitConvTo(this.t.value));
             IntRef m2 = ref(e_ref.value.e2.value.implicitConvTo(this.t.value));
             this.result.value = (m1.value < m2.value) ? m1.value : m2.value;
@@ -922,7 +1086,9 @@ public class dcast {
             Ref<OrExp> e_ref = ref(e);
             this.visit((Expression)e_ref);
             if ((this.result.value != MATCH.nomatch))
+            {
                 return ;
+            }
             IntRef m1 = ref(e_ref.value.e1.value.implicitConvTo(this.t.value));
             IntRef m2 = ref(e_ref.value.e2.value.implicitConvTo(this.t.value));
             this.result.value = (m1.value < m2.value) ? m1.value : m2.value;
@@ -932,7 +1098,9 @@ public class dcast {
             Ref<XorExp> e_ref = ref(e);
             this.visit((Expression)e_ref);
             if ((this.result.value != MATCH.nomatch))
+            {
                 return ;
+            }
             IntRef m1 = ref(e_ref.value.e1.value.implicitConvTo(this.t.value));
             IntRef m2 = ref(e_ref.value.e2.value.implicitConvTo(this.t.value));
             this.result.value = (m1.value < m2.value) ? m1.value : m2.value;
@@ -952,46 +1120,68 @@ public class dcast {
             Ref<CastExp> e_ref = ref(e);
             this.result.value = e_ref.value.type.value.implicitConvTo(this.t.value);
             if ((this.result.value != MATCH.nomatch))
+            {
                 return ;
+            }
             if (this.t.value.isintegral() && e_ref.value.e1.value.type.value.isintegral() && (e_ref.value.e1.value.implicitConvTo(this.t.value) != MATCH.nomatch))
+            {
                 this.result.value = MATCH.convert;
+            }
             else
+            {
                 this.visit((Expression)e_ref);
+            }
         }
 
         public  void visit(NewExp e) {
             Ref<NewExp> e_ref = ref(e);
             this.visit((Expression)e_ref);
             if ((this.result.value != MATCH.nomatch))
+            {
                 return ;
+            }
             if ((e_ref.value.type.value.immutableOf().implicitConvTo(this.t.value.immutableOf()) == MATCH.nomatch))
+            {
                 return ;
+            }
             Type tb = this.t.value.toBasetype();
             Ref<Byte> mod = ref(tb.mod.value);
             {
                 Ref<Type> ti = ref(getIndirection(this.t.value));
                 if ((ti.value) != null)
+                {
                     mod.value = ti.value.mod.value;
+                }
             }
             if (((mod.value & 0xFF) & MODFlags.wild) != 0)
+            {
                 return ;
+            }
             if (e_ref.value.thisexp.value != null)
             {
                 Type targ = e_ref.value.thisexp.value.type.value;
                 if ((targ.constConv(targ.castMod(mod.value)) == MATCH.nomatch))
+                {
                     return ;
+                }
             }
             Ref<FuncDeclaration> fd = ref(e_ref.value.allocator.value);
             {
                 IntRef count = ref(0);
                 for (; (count.value < 2);comma(count.value += 1, fd.value = e_ref.value.member.value)){
                     if (fd.value == null)
+                    {
                         continue;
+                    }
                     if (fd.value.errors.value || ((fd.value.type.value.ty.value & 0xFF) != ENUMTY.Tfunction))
+                    {
                         return ;
+                    }
                     TypeFunction tf = (TypeFunction)fd.value.type.value;
                     if ((tf.purity.value == PURE.impure))
+                    {
                         return ;
+                    }
                     if ((pequals(fd.value, e_ref.value.member.value)))
                     {
                         if ((e_ref.value.type.value.immutableOf().implicitConvTo(this.t.value) < MATCH.constant) && (e_ref.value.type.value.addMod((byte)2).implicitConvTo(this.t.value) < MATCH.constant) && (e_ref.value.type.value.implicitConvTo(this.t.value.addMod((byte)2)) < MATCH.constant))
@@ -1011,19 +1201,27 @@ public class dcast {
                             {
                                 Parameter fparam = tf.parameterList.get(i.value - j.value);
                                 if ((fparam.storageClass.value & 8192L) != 0)
+                                {
                                     return ;
+                                }
                                 Ref<Type> tparam = ref(fparam.type.value);
                                 if (tparam.value == null)
+                                {
                                     continue;
+                                }
                                 if ((fparam.storageClass.value & 2101248L) != 0)
                                 {
                                     if ((targ.value.constConv(tparam.value.castMod(mod.value)) == MATCH.nomatch))
+                                    {
                                         return ;
+                                    }
                                     continue;
                                 }
                             }
                             if ((implicitMod(earg.value, targ.value, mod.value) == MATCH.nomatch))
+                            {
                                 return ;
+                            }
                         }
                     }
                 }
@@ -1035,22 +1233,30 @@ public class dcast {
                     for (; (i.value < (e_ref.value.arguments.value.get()).length.value);i.value += 1){
                         Ref<Expression> earg = ref((e_ref.value.arguments.value.get()).get(i.value));
                         if (earg.value == null)
+                        {
                             continue;
+                        }
                         Ref<Type> targ = ref(earg.value.type.value.toBasetype());
                         if ((implicitMod(earg.value, targ.value, mod.value) == MATCH.nomatch))
+                        {
                             return ;
+                        }
                     }
                 }
             }
             Ref<Type> ntb = ref(e_ref.value.newtype.value.toBasetype());
             if (((ntb.value.ty.value & 0xFF) == ENUMTY.Tarray))
+            {
                 ntb.value = ntb.value.nextOf().toBasetype();
+            }
             if (((ntb.value.ty.value & 0xFF) == ENUMTY.Tstruct))
             {
                 StructDeclaration sd = ((TypeStruct)ntb.value).sym.value;
                 sd.size(e_ref.value.loc.value);
                 if (sd.isNested())
+                {
                     return ;
+                }
             }
             if (ntb.value.isZeroInit(e_ref.value.loc.value))
             {
@@ -1059,10 +1265,14 @@ public class dcast {
                     Ref<ClassDeclaration> cd = ref(((TypeClass)ntb.value).sym.value);
                     cd.value.size(e_ref.value.loc.value);
                     if (cd.value.isNested())
+                    {
                         return ;
+                    }
                     assert(cd.value.isInterfaceDeclaration() == null);
                     if (!ClassCheck.convertible(e_ref.value.loc.value, cd.value, mod.value))
+                    {
                         return ;
+                    }
                 }
             }
             else
@@ -1070,7 +1280,9 @@ public class dcast {
                 Ref<Expression> earg = ref(e_ref.value.newtype.value.defaultInitLiteral(e_ref.value.loc.value));
                 Ref<Type> targ = ref(e_ref.value.newtype.value.toBasetype());
                 if ((implicitMod(earg.value, targ.value, mod.value) == MATCH.nomatch))
+                {
                     return ;
+                }
             }
             this.result.value = MATCH.constant;
         }
@@ -1079,14 +1291,18 @@ public class dcast {
             Ref<SliceExp> e_ref = ref(e);
             this.visit((Expression)e_ref);
             if ((this.result.value != MATCH.nomatch))
+            {
                 return ;
+            }
             Ref<Type> tb = ref(this.t.value.toBasetype());
             Ref<Type> typeb = ref(e_ref.value.type.value.toBasetype());
             if (((tb.value.ty.value & 0xFF) == ENUMTY.Tsarray) && ((typeb.value.ty.value & 0xFF) == ENUMTY.Tarray))
             {
                 typeb.value = toStaticArrayType(e_ref.value);
                 if (typeb.value != null)
+                {
                     this.result.value = typeb.value.implicitConvTo(this.t.value);
+                }
                 return ;
             }
             Type t1b = e_ref.value.e1.value.type.value.toBasetype();
@@ -1095,20 +1311,30 @@ public class dcast {
                 Type tbn = tb.value.nextOf();
                 Ref<Type> tx = ref(null);
                 if (((t1b.ty.value & 0xFF) == ENUMTY.Tarray))
+                {
                     tx.value = tbn.arrayOf();
+                }
                 if (((t1b.ty.value & 0xFF) == ENUMTY.Tpointer))
+                {
                     tx.value = tbn.pointerTo();
+                }
                 if (((t1b.ty.value & 0xFF) == ENUMTY.Tsarray) && !e_ref.value.e1.value.isLvalue())
+                {
                     tx.value = tbn.sarrayOf(t1b.size() / tbn.size());
+                }
                 if (tx.value != null)
                 {
                     this.result.value = e_ref.value.e1.value.implicitConvTo(tx.value);
                     if ((this.result.value > MATCH.constant))
+                    {
                         this.result.value = MATCH.constant;
+                    }
                 }
             }
             if (((tb.value.ty.value & 0xFF) == ENUMTY.Tpointer) && ((e_ref.value.e1.value.op.value & 0xFF) == 121))
+            {
                 e_ref.value.e1.value.accept(this);
+            }
         }
 
 
@@ -1176,7 +1402,9 @@ public class dcast {
                                 ClassDeclaration tocd = tob.value.isClassHandle();
                                 IntRef offset = ref(0);
                                 if (tocd.isBaseOf(t1cd.value, ptr(offset)))
+                                {
                                     /*goto Lok*/throw Dispatch0.INSTANCE;
+                                }
                             }
                             hasAliasThis.value = true;
                         }
@@ -1194,7 +1422,9 @@ public class dcast {
                         if (((tob.value.ty.value & 0xFF) == ENUMTY.Tsarray))
                         {
                             if ((t1b.value.size(e_ref.value.loc.value) == tob.value.size(e_ref.value.loc.value)))
+                            {
                                 /*goto Lok*/throw Dispatch0.INSTANCE;
+                            }
                         }
                         /*goto Lfail*//*unrolled goto*/
                     /*Lfail:*/
@@ -1202,7 +1432,9 @@ public class dcast {
                         {
                             this.result.value = tryAliasThisCast(e_ref.value, this.sc.value, tob.value, t1b.value, this.t.value);
                             if (this.result.value != null)
+                            {
                                 return ;
+                            }
                         }
                         e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e_ref.value.toChars(), e_ref.value.type.value.toChars(), this.t.value.toChars());
                         this.result.value = new ErrorExp();
@@ -1227,7 +1459,9 @@ public class dcast {
                     {
                         this.result.value = tryAliasThisCast(e_ref.value, this.sc.value, tob.value, t1b.value, this.t.value);
                         if (this.result.value != null)
+                        {
                             return ;
+                        }
                     }
                     e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e_ref.value.toChars(), e_ref.value.type.value.toChars(), this.t.value.toChars());
                     this.result.value = new ErrorExp();
@@ -1239,10 +1473,14 @@ public class dcast {
                     {
                         this.result.value = tryAliasThisCast(e_ref.value, this.sc.value, tob.value, t1b.value, this.t.value);
                         if (this.result.value != null)
+                        {
                             return ;
+                        }
                     }
                     if ((t1b.value.size(e_ref.value.loc.value) == tob.value.size(e_ref.value.loc.value)))
+                    {
                         /*goto Lok*/throw Dispatch0.INSTANCE;
+                    }
                     Slice<BytePtr> ts = toAutoQualChars(e_ref.value.type.value, this.t.value);
                     e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s` because of different sizes"), e_ref.value.toChars(), ts.get(0), ts.get(1));
                     this.result.value = new ErrorExp();
@@ -1273,28 +1511,38 @@ public class dcast {
                     {
                         this.result.value = tryAliasThisCast(e_ref.value, this.sc.value, tob.value, t1b.value, this.t.value);
                         if (this.result.value != null)
+                        {
                             return ;
+                        }
                     }
                     e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e_ref.value.toChars(), e_ref.value.type.value.toChars(), this.t.value.toChars());
                     this.result.value = new ErrorExp();
                     return ;
                 }
                 if (((tob.value.ty.value & 0xFF) == (t1b.value.ty.value & 0xFF)) && tob_isR && t1b_isR)
+                {
                     /*goto Lok*/throw Dispatch0.INSTANCE;
+                }
                 if (((tob.value.ty.value & 0xFF) == ENUMTY.Tnull) && ((t1b.value.ty.value & 0xFF) != ENUMTY.Tnull))
+                {
                     /*goto Lfail*//*unrolled goto*/
                 /*Lfail:*/
                     if (hasAliasThis.value)
                     {
                         this.result.value = tryAliasThisCast(e_ref.value, this.sc.value, tob.value, t1b.value, this.t.value);
                         if (this.result.value != null)
+                        {
                             return ;
+                        }
                     }
                     e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e_ref.value.toChars(), e_ref.value.type.value.toChars(), this.t.value.toChars());
                     this.result.value = new ErrorExp();
                     return ;
+                }
                 if (((t1b.value.ty.value & 0xFF) == ENUMTY.Tnull) && ((tob.value.ty.value & 0xFF) != ENUMTY.Tnull))
+                {
                     /*goto Lok*/throw Dispatch0.INSTANCE;
+                }
                 if (tob_isFR && t1b_isR || t1b_isFR && tob_isR)
                 {
                     if (((tob.value.ty.value & 0xFF) == ENUMTY.Tpointer) && ((t1b.value.ty.value & 0xFF) == ENUMTY.Tarray))
@@ -1312,7 +1560,9 @@ public class dcast {
                     {
                         this.result.value = tryAliasThisCast(e_ref.value, this.sc.value, tob.value, t1b.value, this.t.value);
                         if (this.result.value != null)
+                        {
                             return ;
+                        }
                     }
                     e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e_ref.value.toChars(), e_ref.value.type.value.toChars(), this.t.value.toChars());
                     this.result.value = new ErrorExp();
@@ -1325,7 +1575,9 @@ public class dcast {
                     {
                         this.result.value = tryAliasThisCast(e_ref.value, this.sc.value, tob.value, t1b.value, this.t.value);
                         if (this.result.value != null)
+                        {
                             return ;
+                        }
                     }
                     e_ref.value.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s`"), e_ref.value.toChars(), e_ref.value.type.value.toChars(), this.t.value.toChars());
                     this.result.value = new ErrorExp();
@@ -1353,7 +1605,9 @@ public class dcast {
                     this.result.value.type.value = this.t.value;
                 }
                 else
+                {
                     this.visit((Expression)e_ref);
+                }
                 return ;
             }
             this.result.value = e_ref.value;
@@ -1369,7 +1623,9 @@ public class dcast {
                     this.result.value.type.value = this.t.value;
                 }
                 else
+                {
                     this.visit((Expression)e_ref);
+                }
                 return ;
             }
             this.result.value = e_ref.value;
@@ -1390,7 +1646,9 @@ public class dcast {
             Ref<StructLiteralExp> e_ref = ref(e);
             this.visit((Expression)e_ref);
             if (((this.result.value.op.value & 0xFF) == 49))
+            {
                 ((StructLiteralExp)this.result.value).stype.value = this.t.value;
+            }
         }
 
         public  void visit(StringExp e) {
@@ -1481,13 +1739,17 @@ public class dcast {
                             copied.value = 1;
                         }
                         if (((tb.value.ty.value & 0xFF) == ENUMTY.Tsarray))
+                        {
                             /*goto L2*/throw Dispatch0.INSTANCE;
+                        }
                         se.value.type.value = this.t.value;
                         this.result.value = se.value;
                         return ;
                     }
                     if (e_ref.value.committed.value != 0)
+                    {
                         /*goto Lcast*/throw Dispatch1.INSTANCE;
+                    }
                     // from template X!(IntegerInteger)
                     Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
                         public Integer invoke(Integer tf, Integer tt) {
@@ -1521,9 +1783,13 @@ public class dcast {
                                                     IntRef c = ref(0x0ffff);
                                                     Ref<BytePtr> p = ref(pcopy(utf_decodeChar(se.value.string.value, e_ref.value.len.value, u, c)));
                                                     if (p.value != null)
+                                                    {
                                                         e_ref.value.error(new BytePtr("%s"), p.value);
+                                                    }
                                                     else
+                                                    {
                                                         buffer.writeUTF16(c.value);
+                                                    }
                                                 }
                                             }
                                             newlen.value = buffer.offset.value / 2;
@@ -1536,7 +1802,9 @@ public class dcast {
                                                     IntRef c_1 = ref(0x0ffff);
                                                     Ref<BytePtr> p_1 = ref(pcopy(utf_decodeChar(se.value.string.value, e_ref.value.len.value, u_1, c_1)));
                                                     if (p_1.value != null)
+                                                    {
                                                         e_ref.value.error(new BytePtr("%s"), p_1.value);
+                                                    }
                                                     buffer.write4(c_1.value);
                                                     newlen.value++;
                                                 }
@@ -1550,9 +1818,13 @@ public class dcast {
                                                     IntRef c_2 = ref(0x0ffff);
                                                     Ref<BytePtr> p_2 = ref(pcopy(utf_decodeWchar(se.value.wstring.value, e_ref.value.len.value, u_2, c_2)));
                                                     if (p_2.value != null)
+                                                    {
                                                         e_ref.value.error(new BytePtr("%s"), p_2.value);
+                                                    }
                                                     else
+                                                    {
                                                         buffer.writeUTF8(c_2.value);
+                                                    }
                                                 }
                                             }
                                             newlen.value = buffer.offset.value;
@@ -1565,7 +1837,9 @@ public class dcast {
                                                     IntRef c_3 = ref(0x0ffff);
                                                     Ref<BytePtr> p_3 = ref(pcopy(utf_decodeWchar(se.value.wstring.value, e_ref.value.len.value, u_3, c_3)));
                                                     if (p_3.value != null)
+                                                    {
                                                         e_ref.value.error(new BytePtr("%s"), p_3.value);
+                                                    }
                                                     buffer.write4(c_3.value);
                                                     newlen.value++;
                                                 }
@@ -1578,9 +1852,13 @@ public class dcast {
                                                 for (; (u_4.value < e_ref.value.len.value);u_4.value++){
                                                     IntRef c_4 = ref(se.value.dstring.value.get(u_4.value));
                                                     if (!utf_isValidDchar(c_4.value))
+                                                    {
                                                         e_ref.value.error(new BytePtr("invalid UCS-32 char \\U%08x"), c_4.value);
+                                                    }
                                                     else
+                                                    {
                                                         buffer.writeUTF8(c_4.value);
+                                                    }
                                                     newlen.value++;
                                                 }
                                             }
@@ -1593,9 +1871,13 @@ public class dcast {
                                                 for (; (u_5.value < e_ref.value.len.value);u_5.value++){
                                                     IntRef c_5 = ref(se.value.dstring.value.get(u_5.value));
                                                     if (!utf_isValidDchar(c_5.value))
+                                                    {
                                                         e_ref.value.error(new BytePtr("invalid UCS-32 char \\U%08x"), c_5.value);
+                                                    }
                                                     else
+                                                    {
                                                         buffer.writeUTF16(c_5.value);
+                                                    }
                                                     newlen.value++;
                                                 }
                                             }
@@ -1684,7 +1966,9 @@ public class dcast {
                                 ScopeDsymbol.multiplyDefined(e_ref.value.loc.value, f.value, f2.value);
                             }
                             else
+                            {
                                 f.value = f2.value;
+                            }
                         }
                     }
                 }
@@ -1782,18 +2066,24 @@ public class dcast {
                         {
                             TypeSArray tsa = (TypeSArray)tb.value;
                             if (((long)(e_ref.value.elements.value.get()).length.value != tsa.dim.value.toInteger()))
+                            {
                                 /*goto L1*/throw Dispatch0.INSTANCE;
+                            }
                         }
                         ae.value = (ArrayLiteralExp)e_ref.value.copy();
                         if (e_ref.value.basis.value != null)
+                        {
                             ae.value.basis.value = e_ref.value.basis.value.castTo(this.sc.value, tb.value.nextOf());
+                        }
                         ae.value.elements.value = (e_ref.value.elements.value.get()).copy();
                         {
                             IntRef i = ref(0);
                             for (; (i.value < (e_ref.value.elements.value.get()).length.value);i.value++){
                                 Ref<Expression> ex = ref((e_ref.value.elements.value.get()).get(i.value));
                                 if (ex.value == null)
+                                {
                                     continue;
+                                }
                                 ex.value = ex.value.castTo(this.sc.value, tb.value.nextOf());
                                 ae.value.elements.value.get().set(i.value, ex.value);
                             }
@@ -1820,16 +2110,18 @@ public class dcast {
                     IntRef edim = ref((e_ref.value.elements.value.get()).length.value);
                     Ref<Long> tbasedim = ref(tbase.value.dim.value.toInteger());
                     if (((long)edim.value > tbasedim.value))
+                    {
                         /*goto L1*/throw Dispatch0.INSTANCE;
+                    }
                     ae.value = (ArrayLiteralExp)e_ref.value.copy();
                     ae.value.type.value = tbase.value;
                     ae.value.elements.value = (e_ref.value.elements.value.get()).copy();
                     Ref<Type> telement = ref(tv.elementType());
                     {
-                        IntRef __key899 = ref(0);
-                        IntRef __limit900 = ref(edim.value);
-                        for (; (__key899.value < __limit900.value);__key899.value += 1) {
-                            IntRef i = ref(__key899.value);
+                        IntRef __key901 = ref(0);
+                        IntRef __limit902 = ref(edim.value);
+                        for (; (__key901.value < __limit902.value);__key901.value += 1) {
+                            IntRef i = ref(__key901.value);
                             Ref<Expression> ex = ref((e_ref.value.elements.value.get()).get(i.value));
                             ex.value = ex.value.castTo(this.sc.value, telement.value);
                             ae.value.elements.value.get().set(i.value, ex.value);
@@ -1837,10 +2129,10 @@ public class dcast {
                     }
                     (ae.value.elements.value.get()).setDim((int)tbasedim.value);
                     {
-                        IntRef __key901 = ref(edim.value);
-                        IntRef __limit902 = ref((int)tbasedim.value);
-                        for (; (__key901.value < __limit902.value);__key901.value += 1) {
-                            IntRef i = ref(__key901.value);
+                        IntRef __key903 = ref(edim.value);
+                        IntRef __limit904 = ref((int)tbasedim.value);
+                        for (; (__key903.value < __limit904.value);__key903.value += 1) {
+                            IntRef i = ref(__key903.value);
                             Ref<Expression> ex = ref(typeb.nextOf().defaultInitLiteral(e_ref.value.loc.value));
                             ex.value = ex.value.castTo(this.sc.value, telement.value);
                             ae.value.elements.value.get().set(i.value, ex.value);
@@ -1969,7 +2261,9 @@ public class dcast {
                 IntRef offset = ref(0);
                 e_ref.value.func.value.tookAddressOf.value++;
                 if ((e_ref.value.func.value.tintro.value != null) && e_ref.value.func.value.tintro.value.nextOf().isBaseOf(e_ref.value.func.value.type.value.nextOf(), ptr(offset)) && (offset.value != 0))
+                {
                     e_ref.value.error(new BytePtr("%s"), dcast.visitmsg.value);
+                }
                 this.result.value = e_ref.value.copy();
                 this.result.value.type.value = this.t.value;
                 return ;
@@ -1983,15 +2277,21 @@ public class dcast {
                     {
                         IntRef offset = ref(0);
                         if ((f.value.tintro.value != null) && f.value.tintro.value.nextOf().isBaseOf(f.value.type.value.nextOf(), ptr(offset)) && (offset.value != 0))
+                        {
                             e_ref.value.error(new BytePtr("%s"), dcast.visitmsg.value);
+                        }
                         if ((!pequals(f.value, e_ref.value.func.value)))
+                        {
                             f.value.tookAddressOf.value++;
+                        }
                         this.result.value = new DelegateExp(e_ref.value.loc.value, e_ref.value.e1.value, f.value, false, e_ref.value.vthis2.value);
                         this.result.value.type.value = this.t.value;
                         return ;
                     }
                     if (e_ref.value.func.value.tintro.value != null)
+                    {
                         e_ref.value.error(new BytePtr("%s"), dcast.visitmsg.value);
+                    }
                 }
             }
             {
@@ -2078,13 +2378,21 @@ public class dcast {
             {
                 Ref<Type> t1b = ref(e_ref.value.e1.value.type.value.toBasetype());
                 if (((t1b.value.ty.value & 0xFF) == ENUMTY.Tsarray))
+                {
                     t1b.value = tb.nextOf().sarrayOf(((TypeSArray)t1b.value).dim.value.toInteger());
+                }
                 else if (((t1b.value.ty.value & 0xFF) == ENUMTY.Tarray))
+                {
                     t1b.value = tb.nextOf().arrayOf();
+                }
                 else if (((t1b.value.ty.value & 0xFF) == ENUMTY.Tpointer))
+                {
                     t1b.value = tb.nextOf().pointerTo();
+                }
                 else
+                {
                     throw new AssertionError("Unreachable code!");
+                }
                 if ((e_ref.value.e1.value.implicitConvTo(t1b.value) > MATCH.nomatch))
                 {
                     Ref<Expression> e1x = ref(e_ref.value.e1.value.implicitCastTo(this.sc.value, t1b.value));
@@ -2128,7 +2436,9 @@ public class dcast {
             {
                 Ref<Type> tn = ref(tb.nextOf());
                 if (ale_ref.value.basis.value != null)
+                {
                     ale_ref.value.basis.value = inferType(ale_ref.value.basis.value, tn.value, this.flag.value);
+                }
                 {
                     IntRef i = ref(0);
                     for (; (i.value < (ale_ref.value.elements.value.get()).length.value);i.value++){
@@ -2306,11 +2616,17 @@ public class dcast {
             Ref<Expression> ie = ref(null);
             Ref<VarDeclaration> vd = ref(e_ref.value.var.value.isVarDeclaration());
             if ((vd.value != null) && (vd.value.range.value != null))
+            {
                 this.range.value = (vd.value.range.value.get())._cast(e_ref.value.type.value).copy();
+            }
             else if ((vd.value != null) && (vd.value._init.value != null) && !vd.value.type.value.isMutable() && ((ie.value = vd.value.getConstInitializer(true)) != null))
+            {
                 ie.value.accept(this);
+            }
             else
+            {
                 this.visit((Expression)e_ref);
+            }
         }
 
         public  void visit(CommaExp e) {
@@ -2333,12 +2649,14 @@ public class dcast {
 
     static boolean LOG = false;
     public static Expression implicitCastTo(Expression e, Ptr<Scope> sc, Type t) {
+        // skipping duplicate class ImplicitCastTo
         ImplicitCastTo v = new ImplicitCastTo(sc, t);
         e.accept(v);
         return v.result.value;
     }
 
     public static int implicitConvTo(Expression e, Type t) {
+        // skipping duplicate class ImplicitConvTo
         ImplicitConvTo v = new ImplicitConvTo(t);
         e.accept(v);
         return v.result.value;
@@ -2359,7 +2677,9 @@ public class dcast {
         {
             Type t1b = e.e1.value.type.value.toBasetype();
             if (((t1b.ty.value & 0xFF) == ENUMTY.Tsarray))
+            {
                 return t1b;
+            }
         }
         return null;
     }
@@ -2368,10 +2688,14 @@ public class dcast {
         Expression result = null;
         AggregateDeclaration t1ad = isAggregate(t1b);
         if (t1ad == null)
+        {
             return null;
+        }
         AggregateDeclaration toad = isAggregate(tob);
         if ((pequals(t1ad, toad)) || (t1ad.aliasthis.value == null))
+        {
             return null;
+        }
         result = resolveAliasThis(sc, e, false);
         int errors = global.startGagging();
         result = result.castTo(sc, t);
@@ -2379,14 +2703,18 @@ public class dcast {
     }
 
     public static Expression castTo(Expression e, Ptr<Scope> sc, Type t) {
+        // skipping duplicate class CastTo
         CastTo v = new CastTo(sc, t);
         e.accept(v);
         return v.result.value;
     }
 
     public static Expression inferType(Expression e, Type t, int flag) {
+        // skipping duplicate class InferType
         if (t == null)
+        {
             return e;
+        }
         InferType v = new InferType(t, flag);
         e.accept(v);
         return v.result.value;
@@ -2406,7 +2734,9 @@ public class dcast {
             Type t = Type.tptrdiff_t;
             long stride = t1b.nextOf().size(be.loc.value);
             if (!t.equals(t2b))
+            {
                 be.e2.value = be.e2.value.castTo(sc, t);
+            }
             eoff = be.e2.value;
             be.e2.value = new MulExp(be.loc.value, be.e2.value, new IntegerExp(Loc.initial.value, stride, t));
             be.e2.value.type.value = t;
@@ -2418,9 +2748,13 @@ public class dcast {
             Expression e = null;
             long stride = t2b.nextOf().size(be.loc.value);
             if (!t.equals(t1b))
+            {
                 e = be.e1.value.castTo(sc, t);
+            }
             else
+            {
                 e = be.e1.value;
+            }
             eoff = e;
             e = new MulExp(be.loc.value, e, new IntegerExp(Loc.initial.value, stride, t));
             e.type.value = t;
@@ -2429,7 +2763,9 @@ public class dcast {
             be.e2.value = e;
         }
         else
+        {
             throw new AssertionError("Unreachable code!");
+        }
         if (((sc.get()).func.value != null) && ((sc.get()).intypeof.value == 0))
         {
             eoff = eoff.optimize(0, false);
@@ -2450,12 +2786,18 @@ public class dcast {
             ArrayLiteralExp ale = (ArrayLiteralExp)e;
             e = ale.getElement(0);
             if (((other.ty.value & 0xFF) == ENUMTY.Tsarray) || ((other.ty.value & 0xFF) == ENUMTY.Tarray))
+            {
                 other = other.nextOf();
+            }
             else
+            {
                 return false;
+            }
         }
         if (((other.ty.value & 0xFF) != ENUMTY.Tsarray) && ((other.ty.value & 0xFF) != ENUMTY.Tarray))
+        {
             return false;
+        }
         Type t = e.type.value;
         return ((e.op.value & 0xFF) == 47) && ((t.ty.value & 0xFF) == ENUMTY.Tarray) && ((t.nextOf().ty.value & 0xFF) == ENUMTY.Tvoid) && ((((ArrayLiteralExp)e).elements.value.get()).length.value == 0);
     }
@@ -2476,7 +2818,9 @@ public class dcast {
         Function0<Boolean> Lret = new Function0<Boolean>(){
             public Boolean invoke() {
                 if (pt_ref.value.get() == null)
+                {
                     pt_ref.value.set(0, t.value);
+                }
                 pe1_ref.value.set(0, e1.value);
                 pe2_ref.value.set(0, e2.value);
                 return true;
@@ -2559,11 +2903,15 @@ public class dcast {
             t1.value = t1b;
             t2.value = t2b;
             if (((t1.value.ty.value & 0xFF) == ENUMTY.Ttuple) || ((t2.value.ty.value & 0xFF) == ENUMTY.Ttuple))
+            {
                 return Lincompatible.invoke();
+            }
             if (t1.value.equals(t2.value))
             {
                 if (((t.value.ty.value & 0xFF) == ENUMTY.Tenum))
+                {
                     t.value = t1b;
+                }
             }
             else if (((t1.value.ty.value & 0xFF) == ENUMTY.Tpointer) && ((t2.value.ty.value & 0xFF) == ENUMTY.Tpointer) || ((t1.value.ty.value & 0xFF) == ENUMTY.Tdelegate) && ((t2.value.ty.value & 0xFF) == ENUMTY.Tdelegate))
             {
@@ -2573,7 +2921,9 @@ public class dcast {
                 {
                 }
                 else if (((t1n.ty.value & 0xFF) == ENUMTY.Tvoid))
+                {
                     t.value = t2.value;
+                }
                 else if (((t2n.ty.value & 0xFF) == ENUMTY.Tvoid))
                 {
                 }
@@ -2593,23 +2943,33 @@ public class dcast {
                     tf2.purityLevel();
                     TypeFunction d = (TypeFunction)tf1.syntaxCopy();
                     if ((tf1.purity.value != tf2.purity.value))
+                    {
                         d.purity.value = PURE.impure;
+                    }
                     assert((d.purity.value != PURE.fwdref));
                     d.isnothrow.value = tf1.isnothrow.value && tf2.isnothrow.value;
                     d.isnogc.value = tf1.isnogc.value && tf2.isnogc.value;
                     if ((tf1.trust.value == tf2.trust.value))
+                    {
                         d.trust.value = tf1.trust.value;
+                    }
                     else if ((tf1.trust.value <= TRUST.system) || (tf2.trust.value <= TRUST.system))
+                    {
                         d.trust.value = TRUST.system;
+                    }
                     else
+                    {
                         d.trust.value = TRUST.trusted;
+                    }
                     Type tx = null;
                     if (((t1.value.ty.value & 0xFF) == ENUMTY.Tdelegate))
                     {
                         tx = new TypeDelegate(d);
                     }
                     else
+                    {
                         tx = d.pointerTo();
+                    }
                     tx = typeSemantic(tx, e1.value.loc.value, sc_ref.value);
                     if ((t1.value.implicitConvTo(tx) != 0) && (t2.value.implicitConvTo(tx) != 0))
                     {
@@ -2623,7 +2983,9 @@ public class dcast {
                 else if (((t1n.mod.value & 0xFF) != (t2n.mod.value & 0xFF)))
                 {
                     if (!t1n.isImmutable() && !t2n.isImmutable() && ((t1n.isShared() ? 1 : 0) != (t2n.isShared() ? 1 : 0)))
+                    {
                         return Lincompatible.invoke();
+                    }
                     byte mod = MODmerge(t1n.mod.value, t2n.mod.value);
                     t1.value = t1n.castMod(mod).pointerTo();
                     t2.value = t2n.castMod(mod).pointerTo();
@@ -2638,16 +3000,22 @@ public class dcast {
                     if (cd1.isBaseOf(cd2, ptr(offset)))
                     {
                         if (offset.value != 0)
+                        {
                             e2.value = e2.value.castTo(sc_ref.value, t.value);
+                        }
                     }
                     else if (cd2.isBaseOf(cd1, ptr(offset)))
                     {
                         t.value = t2.value;
                         if (offset.value != 0)
+                        {
                             e1.value = e1.value.castTo(sc_ref.value, t.value);
+                        }
                     }
                     else
+                    {
                         return Lincompatible.invoke();
+                    }
                 }
                 else
                 {
@@ -2683,7 +3051,9 @@ public class dcast {
             else if (((t1.value.ty.value & 0xFF) == ENUMTY.Tsarray) || ((t1.value.ty.value & 0xFF) == ENUMTY.Tarray) && ((m = t1.value.implicitConvTo(t2.value)) != MATCH.nomatch))
             {
                 if (((t1.value.ty.value & 0xFF) == ENUMTY.Tsarray) && ((e2.value.op.value & 0xFF) == 47) && ((op & 0xFF) != 70))
+                {
                     return Lt1.invoke();
+                }
                 if ((m == MATCH.constant) && ((op & 0xFF) == 76) || ((op & 0xFF) == 77) || ((op & 0xFF) == 81) || ((op & 0xFF) == 82) || ((op & 0xFF) == 83) || ((op & 0xFF) == 227) || ((op & 0xFF) == 87) || ((op & 0xFF) == 88) || ((op & 0xFF) == 89))
                 {
                     t.value = t2.value;
@@ -2694,7 +3064,9 @@ public class dcast {
             else if (((t2.value.ty.value & 0xFF) == ENUMTY.Tsarray) || ((t2.value.ty.value & 0xFF) == ENUMTY.Tarray) && (t2.value.implicitConvTo(t1.value) != 0))
             {
                 if (((t2.value.ty.value & 0xFF) == ENUMTY.Tsarray) && ((e1.value.op.value & 0xFF) == 47) && ((op & 0xFF) != 70))
+                {
                     return Lt2.invoke();
+                }
                 return Lt1.invoke();
             }
             else if (((t1.value.ty.value & 0xFF) == ENUMTY.Tsarray) || ((t1.value.ty.value & 0xFF) == ENUMTY.Tarray) || ((t1.value.ty.value & 0xFF) == ENUMTY.Tpointer) && ((t2.value.ty.value & 0xFF) == ENUMTY.Tsarray) || ((t2.value.ty.value & 0xFF) == ENUMTY.Tarray) || ((t2.value.ty.value & 0xFF) == ENUMTY.Tpointer) && ((t1.value.nextOf().mod.value & 0xFF) != (t2.value.nextOf().mod.value & 0xFF)))
@@ -2703,21 +3075,37 @@ public class dcast {
                 Type t2n = t2.value.nextOf();
                 byte mod = (byte)0;
                 if (((e1.value.op.value & 0xFF) == 13) && ((e2.value.op.value & 0xFF) != 13))
+                {
                     mod = t2n.mod.value;
+                }
                 else if (((e1.value.op.value & 0xFF) != 13) && ((e2.value.op.value & 0xFF) == 13))
+                {
                     mod = t1n.mod.value;
+                }
                 else if (!t1n.isImmutable() && !t2n.isImmutable() && ((t1n.isShared() ? 1 : 0) != (t2n.isShared() ? 1 : 0)))
+                {
                     return Lincompatible.invoke();
+                }
                 else
+                {
                     mod = MODmerge(t1n.mod.value, t2n.mod.value);
+                }
                 if (((t1.value.ty.value & 0xFF) == ENUMTY.Tpointer))
+                {
                     t1.value = t1n.castMod(mod).pointerTo();
+                }
                 else
+                {
                     t1.value = t1n.castMod(mod).arrayOf();
+                }
                 if (((t2.value.ty.value & 0xFF) == ENUMTY.Tpointer))
+                {
                     t2.value = t2n.castMod(mod).pointerTo();
+                }
                 else
+                {
                     t2.value = t2n.castMod(mod).arrayOf();
+                }
                 t.value = t1.value;
                 /*goto Lagain*/throw Dispatch0.INSTANCE;
             }
@@ -2727,13 +3115,21 @@ public class dcast {
                 {
                     byte mod = (byte)0;
                     if (((e1.value.op.value & 0xFF) == 13) && ((e2.value.op.value & 0xFF) != 13))
+                    {
                         mod = t2.value.mod.value;
+                    }
                     else if (((e1.value.op.value & 0xFF) != 13) && ((e2.value.op.value & 0xFF) == 13))
+                    {
                         mod = t1.value.mod.value;
+                    }
                     else if (!t1.value.isImmutable() && !t2.value.isImmutable() && ((t1.value.isShared() ? 1 : 0) != (t2.value.isShared() ? 1 : 0)))
+                    {
                         return Lincompatible.invoke();
+                    }
                     else
+                    {
                         mod = MODmerge(t1.value.mod.value, t2.value.mod.value);
+                    }
                     t1.value = t1.value.castMod(mod);
                     t2.value = t2.value.castMod(mod);
                     t.value = t1.value;
@@ -2750,9 +3146,13 @@ public class dcast {
                     if ((i1 != 0) && (i2 != 0))
                     {
                         if (((t1.value.ty.value & 0xFF) == ENUMTY.Tpointer))
+                        {
                             i1 = MATCH.nomatch;
+                        }
                         else if (((t2.value.ty.value & 0xFF) == ENUMTY.Tpointer))
+                        {
                             i2 = MATCH.nomatch;
+                        }
                     }
                     if (i2 != 0)
                     {
@@ -2776,18 +3176,28 @@ public class dcast {
                             t2.value = cd2.type.value.castMod(t2.value.mod.value);
                         }
                         else if (cd1 != null)
+                        {
                             t1.value = cd1.type.value;
+                        }
                         else if (cd2 != null)
+                        {
                             t2.value = cd2.type.value;
+                        }
                         else
+                        {
                             return Lincompatible.invoke();
+                        }
                     }
                     else if (((t1.value.ty.value & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)t1.value).sym.value.aliasthis.value != null))
                     {
                         if ((att1 != null) && (pequals(e1.value.type.value, att1)))
+                        {
                             return Lincompatible.invoke();
+                        }
                         if ((att1 == null) && e1.value.type.value.checkAliasThisRec())
+                        {
                             att1 = e1.value.type.value;
+                        }
                         e1.value = resolveAliasThis(sc_ref.value, e1.value, false);
                         t1.value = e1.value.type.value;
                         continue;
@@ -2795,15 +3205,21 @@ public class dcast {
                     else if (((t2.value.ty.value & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)t2.value).sym.value.aliasthis.value != null))
                     {
                         if ((att2 != null) && (pequals(e2.value.type.value, att2)))
+                        {
                             return Lincompatible.invoke();
+                        }
                         if ((att2 == null) && e2.value.type.value.checkAliasThisRec())
+                        {
                             att2 = e2.value.type.value;
+                        }
                         e2.value = resolveAliasThis(sc_ref.value, e2.value, false);
                         t2.value = e2.value.type.value;
                         continue;
                     }
                     else
+                    {
                         return Lincompatible.invoke();
+                    }
                 }
             }
             else if (((t1.value.ty.value & 0xFF) == ENUMTY.Tstruct) && ((t2.value.ty.value & 0xFF) == ENUMTY.Tstruct))
@@ -2811,7 +3227,9 @@ public class dcast {
                 if (((t1.value.mod.value & 0xFF) != (t2.value.mod.value & 0xFF)))
                 {
                     if (!t1.value.isImmutable() && !t2.value.isImmutable() && ((t1.value.isShared() ? 1 : 0) != (t2.value.isShared() ? 1 : 0)))
+                    {
                         return Lincompatible.invoke();
+                    }
                     byte mod = MODmerge(t1.value.mod.value, t2.value.mod.value);
                     t1.value = t1.value.castMod(mod);
                     t2.value = t2.value.castMod(mod);
@@ -2823,7 +3241,9 @@ public class dcast {
                 if ((!pequals(ts1.sym.value, ts2.sym.value)))
                 {
                     if ((ts1.sym.value.aliasthis.value == null) && (ts2.sym.value.aliasthis.value == null))
+                    {
                         return Lincompatible.invoke();
+                    }
                     int i1 = MATCH.nomatch;
                     int i2 = MATCH.nomatch;
                     Expression e1b = null;
@@ -2831,27 +3251,41 @@ public class dcast {
                     if (ts2.sym.value.aliasthis.value != null)
                     {
                         if ((att2 != null) && (pequals(e2.value.type.value, att2)))
+                        {
                             return Lincompatible.invoke();
+                        }
                         if ((att2 == null) && e2.value.type.value.checkAliasThisRec())
+                        {
                             att2 = e2.value.type.value;
+                        }
                         e2b = resolveAliasThis(sc_ref.value, e2.value, false);
                         i1 = e2b.implicitConvTo(t1.value);
                     }
                     if (ts1.sym.value.aliasthis.value != null)
                     {
                         if ((att1 != null) && (pequals(e1.value.type.value, att1)))
+                        {
                             return Lincompatible.invoke();
+                        }
                         if ((att1 == null) && e1.value.type.value.checkAliasThisRec())
+                        {
                             att1 = e1.value.type.value;
+                        }
                         e1b = resolveAliasThis(sc_ref.value, e1.value, false);
                         i2 = e1b.implicitConvTo(t2.value);
                     }
                     if ((i1 != 0) && (i2 != 0))
+                    {
                         return Lincompatible.invoke();
+                    }
                     if (i1 != 0)
+                    {
                         return Lt1.invoke();
+                    }
                     else if (i2 != 0)
+                    {
                         return Lt2.invoke();
+                    }
                     if (e1b != null)
                     {
                         e1.value = e1b;
@@ -2871,9 +3305,13 @@ public class dcast {
                 if (((t1.value.ty.value & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)t1.value).sym.value.aliasthis.value != null))
                 {
                     if ((att1 != null) && (pequals(e1.value.type.value, att1)))
+                    {
                         return Lincompatible.invoke();
+                    }
                     if ((att1 == null) && e1.value.type.value.checkAliasThisRec())
+                    {
                         att1 = e1.value.type.value;
+                    }
                     e1.value = resolveAliasThis(sc_ref.value, e1.value, false);
                     t1.value = e1.value.type.value;
                     t.value = t1.value;
@@ -2882,9 +3320,13 @@ public class dcast {
                 if (((t2.value.ty.value & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)t2.value).sym.value.aliasthis.value != null))
                 {
                     if ((att2 != null) && (pequals(e2.value.type.value, att2)))
+                    {
                         return Lincompatible.invoke();
+                    }
                     if ((att2 == null) && e2.value.type.value.checkAliasThisRec())
+                    {
                         att2 = e2.value.type.value;
+                    }
                     e2.value = resolveAliasThis(sc_ref.value, e2.value, false);
                     t2.value = e2.value.type.value;
                     t.value = t2.value;
@@ -2919,11 +3361,15 @@ public class dcast {
                 TypeVector tv1 = (TypeVector)t1.value;
                 TypeVector tv2 = (TypeVector)t2.value;
                 if (!tv1.basetype.value.equals(tv2.basetype.value))
+                {
                     return Lincompatible.invoke();
+                }
                 /*goto LmodCompare*//*unrolled goto*/
             /*LmodCompare:*/
                 if (!t1.value.isImmutable() && !t2.value.isImmutable() && ((t1.value.isShared() ? 1 : 0) != (t2.value.isShared() ? 1 : 0)))
+                {
                     return Lincompatible.invoke();
+                }
                 byte mod = MODmerge(t1.value.mod.value, t2.value.mod.value);
                 t1.value = t1.value.castMod(mod);
                 t2.value = t2.value.castMod(mod);
@@ -2951,7 +3397,9 @@ public class dcast {
                 if (((t1.value.ty.value & 0xFF) != (t2.value.ty.value & 0xFF)))
                 {
                     if (((t1.value.ty.value & 0xFF) == ENUMTY.Tvector) || ((t2.value.ty.value & 0xFF) == ENUMTY.Tvector))
+                    {
                         return Lincompatible.invoke();
+                    }
                     e1.value = integralPromotions(e1.value, sc_ref.value);
                     e2.value = integralPromotions(e2.value, sc_ref.value);
                     t1.value = e1.value.type.value;
@@ -2961,7 +3409,9 @@ public class dcast {
                 assert(((t1.value.ty.value & 0xFF) == (t2.value.ty.value & 0xFF)));
             /*LmodCompare:*/
                 if (!t1.value.isImmutable() && !t2.value.isImmutable() && ((t1.value.isShared() ? 1 : 0) != (t2.value.isShared() ? 1 : 0)))
+                {
                     return Lincompatible.invoke();
+                }
                 byte mod = MODmerge(t1.value.mod.value, t2.value.mod.value);
                 t1.value = t1.value.castMod(mod);
                 t2.value = t2.value.castMod(mod);
@@ -3008,10 +3458,14 @@ public class dcast {
                         t.value = t1.value.nextOf().arrayOf();
                     }
                     else
+                    {
                         return Lincompatible.invoke();
+                    }
                 }
                 else
+                {
                     return Lincompatible.invoke();
+                }
             }
             else if (((t2.value.ty.value & 0xFF) == ENUMTY.Tarray) && isBinArrayOp(op) && isArrayOpOperand(e2.value))
             {
@@ -3025,7 +3479,9 @@ public class dcast {
                     t.value = e1.value.type.value.arrayOf();
                 }
                 else
+                {
                     return Lincompatible.invoke();
+                }
                 e1.value = e1.value.optimize(0, false);
                 if (isCommutative(op) && (e1.value.isConst() != 0))
                 {
@@ -3048,7 +3504,9 @@ public class dcast {
             public Expression invoke() {
                 Ref<Expression> ex = ref(be.incompatibleTypes());
                 if (((ex.value.op.value & 0xFF) == 127))
+                {
                     return ex.value;
+                }
                 return new ErrorExp();
             }
         };
@@ -3057,18 +3515,30 @@ public class dcast {
         if (((be.op.value & 0xFF) == 75) || ((be.op.value & 0xFF) == 74))
         {
             if (((t1.ty.value & 0xFF) == ENUMTY.Tstruct) && ((t2.ty.value & 0xFF) == ENUMTY.Tstruct))
+            {
                 return errorReturn.invoke();
+            }
             else if (((t1.ty.value & 0xFF) == ENUMTY.Tclass) && ((t2.ty.value & 0xFF) == ENUMTY.Tclass))
+            {
                 return errorReturn.invoke();
+            }
             else if (((t1.ty.value & 0xFF) == ENUMTY.Taarray) && ((t2.ty.value & 0xFF) == ENUMTY.Taarray))
+            {
                 return errorReturn.invoke();
+            }
         }
         if (!typeMerge(sc, be.op.value, ptr(be.type), ptr(be.e1), ptr(be.e2)))
+        {
             return errorReturn.invoke();
+        }
         if (((be.e1.value.op.value & 0xFF) == 127))
+        {
             return be.e1.value;
+        }
         if (((be.e2.value.op.value & 0xFF) == 127))
+        {
             return be.e2.value;
+        }
         return null;
     }
 
@@ -3088,7 +3558,7 @@ public class dcast {
                 e = e.castTo(sc, Type.tint32.value);
                 break;
             case 33:
-                e = e.castTo(sc, Type.tuns32);
+                e = e.castTo(sc, Type.tuns32.value);
                 break;
             default:
             break;
@@ -3112,7 +3582,9 @@ public class dcast {
 
     public static void fix16997(Ptr<Scope> sc, UnaExp ue) {
         if (global.params.fix16997)
+        {
             ue.e1.value = integralPromotions(ue.e1.value, sc);
+        }
         else
         {
             switch ((ue.e1.value.type.value.toBasetype().ty.value & 0xFF))
@@ -3152,12 +3624,15 @@ public class dcast {
         if (((t1.ty.value & 0xFF) == ENUMTY.Tarray) || ((t1.ty.value & 0xFF) == ENUMTY.Tsarray) || ((t1.ty.value & 0xFF) == ENUMTY.Tpointer) && ((t2.ty.value & 0xFF) == (t1.ty.value & 0xFF)))
         {
             if ((t1.nextOf().implicitConvTo(t2.nextOf()) >= MATCH.constant) || (t2.nextOf().implicitConvTo(t1.nextOf()) >= MATCH.constant))
+            {
                 return true;
+            }
         }
         return false;
     }
 
     public static IntRange getIntRange(Expression e) {
+        // skipping duplicate class IntRangeVisitor
         IntRangeVisitor v = new IntRangeVisitor();
         e.accept(v);
         return v.range.value;

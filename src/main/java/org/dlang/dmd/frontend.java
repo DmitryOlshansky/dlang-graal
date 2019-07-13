@@ -163,13 +163,17 @@ public class frontend {
 
     public static void addImport(ByteSlice path) {
         if ((global.path == null))
+        {
             global.path = refPtr(new DArray<BytePtr>());
+        }
         (global.path.get()).push(toStringz(path));
     }
 
     public static void addStringImport(ByteSlice path) {
         if ((global.filePath == null))
+        {
             global.filePath = refPtr(new DArray<BytePtr>());
+        }
         (global.filePath.get()).push(toStringz(path));
     }
 
@@ -183,14 +187,18 @@ public class frontend {
         ByteSlice ldcConfig = new ByteSlice("ldc2.conf").copy();
         FilterResultnothingSlice<ByteSlice> ldcConfigs = filter(slice(new ByteSlice[]{buildPath(slice(new ByteSlice[]{getcwd(), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{execDir, toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{dirName(execDir), new ByteSlice("etc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{new ByteSlice("~/.ldc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{execDir, new ByteSlice("etc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{execDir, new ByteSlice("etc"), new ByteSlice("ldc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{new ByteSlice("/etc"), toByteSlice(ldcConfig)})), buildPath(slice(new ByteSlice[]{new ByteSlice("/etc/ldc"), toByteSlice(ldcConfig)}))})).copy();
         if (ldcConfigs.empty())
+        {
             return new ByteSlice();
+        }
         return ldcConfigs.front();
     }
 
     public static ByteSlice determineDefaultCompiler() {
         Slice<ByteSlice> compilers = slice(new ByteSlice[]{new ByteSlice("dmd"), new ByteSlice("gdc"), new ByteSlice("gdmd"), new ByteSlice("ldc2"), new ByteSlice("ldmd2")}).copy();
         if (opBinaryRight(new ByteSlice("DMD")))
+        {
             compilers = (concat(slice(new ByteSlice[]{environment.get(new ByteSlice("DMD"), new ByteSlice())}), compilers)).copy();
+        }
         Result paths = splitter(environment.get(new ByteSlice("PATH"), new ByteSlice("")), new ByteSlice(":")).copy();
         FilterResultnothingResult res = filter(joiner(map.invoke(compilers))).copy();
         return !res.empty() ? res.front() : new ByteSlice();
@@ -206,9 +214,13 @@ public class frontend {
         ByteSlice execDir = dirName(execFilePath).copy();
         ByteSlice iniFile = new ByteSlice().copy();
         if (endsWith(execFilePath, new ByteSlice("ldc"), new ByteSlice("ldc2"), new ByteSlice("ldmd"), new ByteSlice("ldmd2")) != 0)
+        {
             iniFile = findLDCConfig(toByteSlice(execFilePath)).copy();
+        }
         else
+        {
             iniFile = findDMDConfig(toByteSlice(execFilePath)).copy();
+        }
         assertMsg((iniFile != new ByteSlice()) && exists(iniFile), new ByteSlice("No valid config found."));
         return parseImportPathsFromConfig(toByteSlice(iniFile), toByteSlice(execDir));
     }

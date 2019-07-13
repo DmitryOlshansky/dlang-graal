@@ -48,14 +48,20 @@ public class initsem {
                 for (; (i < dim);i++){
                     e = ai.index.get(i);
                     if (e == null)
+                    {
                         /*goto Lno*/throw Dispatch0.INSTANCE;
+                    }
                     keys.get().set(i, e);
                     Initializer iz = ai.value.get(i);
                     if (iz == null)
+                    {
                         /*goto Lno*/throw Dispatch0.INSTANCE;
+                    }
                     e = initializerToExpression(iz, null);
                     if (e == null)
+                    {
                         /*goto Lno*/throw Dispatch0.INSTANCE;
+                    }
                     values.get().set(i, e);
                 }
             }
@@ -89,7 +95,9 @@ public class initsem {
             public Initializer invoke(StructInitializer i) {
                 t_ref.value = t_ref.value.toBasetype();
                 if (((t_ref.value.ty.value & 0xFF) == ENUMTY.Tsarray) && ((t_ref.value.nextOf().toBasetype().ty.value & 0xFF) == ENUMTY.Tstruct))
+                {
                     t_ref.value = t_ref.value.nextOf().toBasetype();
+                }
                 if (((t_ref.value.ty.value & 0xFF) == ENUMTY.Tstruct))
                 {
                     Ref<StructDeclaration> sd = ref(((TypeStruct)t_ref.value).sym.value);
@@ -126,9 +134,13 @@ public class initsem {
                                         s.value = sd.value.search_correct(id.value);
                                         Loc initLoc = i.value.get(j.value).loc.value.copy();
                                         if (s.value != null)
+                                        {
                                             error(initLoc, new BytePtr("`%s` is not a member of `%s`, did you mean %s `%s`?"), id.value.toChars(), sd.value.toChars(), s.value.kind(), s.value.toChars());
+                                        }
                                         else
+                                        {
                                             error(initLoc, new BytePtr("`%s` is not a member of `%s`"), id.value.toChars(), sd.value.toChars());
+                                        }
                                         return new ErrorInitializer();
                                     }
                                     s.value = s.value.toAlias();
@@ -141,7 +153,9 @@ public class initsem {
                                                 return new ErrorInitializer();
                                             }
                                             if ((pequals(s.value, sd.value.fields.get(fieldi.value))))
+                                            {
                                                 break;
+                                            }
                                         }
                                     }
                                 }
@@ -217,7 +231,9 @@ public class initsem {
                     return initializerSemantic(ie.value, sc_ref.value, t_ref.value, needInterpret_ref.value);
                 }
                 if (((t_ref.value.ty.value & 0xFF) != ENUMTY.Terror))
+                {
                     error(i.loc.value, new BytePtr("a struct is not a valid initializer for a `%s`"), t_ref.value.toChars());
+                }
                 return new ErrorInitializer();
             }
         };
@@ -250,9 +266,13 @@ public class initsem {
                                 case 8:
                                     Ref<Expression> e = ref(null);
                                     if (((t_ref.value.ty.value & 0xFF) == ENUMTY.Taarray) || i_ref.value.isAssociativeArray())
+                                    {
                                         e.value = toAssocArrayLiteral(i_ref.value);
+                                    }
                                     else
+                                    {
                                         e.value = initializerToExpression(i_ref.value, null);
+                                    }
                                     if (e.value == null)
                                     {
                                         error(i_ref.value.loc.value, new BytePtr("cannot use array to initialize `%s`"), t_ref.value.toChars());
@@ -262,7 +282,9 @@ public class initsem {
                                     return initializerSemantic(ei.value, sc_ref.value, t_ref.value, needInterpret_ref.value);
                                 case 3:
                                     if (((t_ref.value.nextOf().ty.value & 0xFF) != ENUMTY.Tfunction))
+                                    {
                                         break;
+                                    }
                                     /*goto default*/ { __dispatch0 = -2; continue dispatched_0; }
                                 default:
                                 __dispatch0 = 0;
@@ -293,15 +315,21 @@ public class initsem {
                                 }
                                 length.value = (int)idxvalue.value;
                                 if (((idx.value.op.value & 0xFF) == 127))
+                                {
                                     errors.value = true;
+                                }
                             }
                             Ref<Initializer> val = ref(i_ref.value.value.get(j.value));
                             Ref<ExpInitializer> ei = ref(val.value.isExpInitializer());
                             if ((ei.value != null) && (idx.value == null))
+                            {
                                 ei.value.expandTuples.value = true;
+                            }
                             val.value = initializerSemantic(val.value, sc_ref.value, t_ref.value.nextOf(), needInterpret_ref.value);
                             if (val.value.isErrorInitializer() != null)
+                            {
                                 errors.value = true;
+                            }
                             ei.value = val.value.isExpInitializer();
                             if ((ei.value != null) && ((ei.value.exp.value.op.value & 0xFF) == 126))
                             {
@@ -330,7 +358,9 @@ public class initsem {
                                 /*goto Lerr*/throw Dispatch0.INSTANCE;
                             }
                             if ((length.value > i_ref.value.dim.value))
+                            {
                                 i_ref.value.dim.value = length.value;
+                            }
                         }
                     }
                     if (((t_ref.value.ty.value & 0xFF) == ENUMTY.Tsarray))
@@ -343,7 +373,9 @@ public class initsem {
                         }
                     }
                     if (errors.value)
+                    {
                         /*goto Lerr*/throw Dispatch0.INSTANCE;
+                    }
                     {
                         Ref<Long> sz = ref(t_ref.value.nextOf().size());
                         Ref<Boolean> overflow = ref(false);
@@ -365,11 +397,15 @@ public class initsem {
             public Initializer invoke(ExpInitializer i) {
                 Ref<ExpInitializer> i_ref = ref(i);
                 if (needInterpret_ref.value != 0)
+                {
                     sc_ref.value = (sc_ref.value.get()).startCTFE();
+                }
                 i_ref.value.exp.value = expressionSemantic(i_ref.value.exp.value, sc_ref.value);
                 i_ref.value.exp.value = resolveProperties(sc_ref.value, i_ref.value.exp.value);
                 if (needInterpret_ref.value != 0)
+                {
                     sc_ref.value = (sc_ref.value.get()).endCTFE();
+                }
                 if (((i_ref.value.exp.value.op.value & 0xFF) == 127))
                 {
                     return new ErrorInitializer();
@@ -387,7 +423,9 @@ public class initsem {
                     }
                     i_ref.value.exp.value = i_ref.value.exp.value.ctfeInterpret();
                     if (((i_ref.value.exp.value.op.value & 0xFF) == 232))
+                    {
                         error(i_ref.value.loc.value, new BytePtr("variables cannot be initialized with an expression of type `void`. Use `void` initialization instead."));
+                    }
                 }
                 else
                 {
@@ -442,9 +480,13 @@ public class initsem {
                             e.value = new CallExp(i_ref.value.loc.value, e.value, i_ref.value.exp.value);
                             e.value = expressionSemantic(e.value, sc_ref.value);
                             if (needInterpret_ref.value != 0)
+                            {
                                 i_ref.value.exp.value = e.value.ctfeInterpret();
+                            }
                             else
+                            {
                                 i_ref.value.exp.value = e.value.optimize(0, false);
+                            }
                         }
                     }
                     if (((tb.ty.value & 0xFF) == ENUMTY.Tsarray) && !tb.nextOf().equals(ti.toBasetype().nextOf()) && (i_ref.value.exp.value.implicitConvTo(tb.nextOf()) != 0))
@@ -470,7 +512,9 @@ public class initsem {
                             {
                                 Ref<Type> tx = ref(toStaticArrayType((SliceExp)i_ref.value.exp.value));
                                 if (tx.value != null)
+                                {
                                     dim2.value = ((TypeSArray)tx.value).dim.value.toInteger();
+                                }
                             }
                             if ((dim1.value != dim2.value))
                             {
@@ -488,9 +532,13 @@ public class initsem {
                     return i_ref.value;
                 }
                 if (needInterpret_ref.value != 0)
+                {
                     i_ref.value.exp.value = i_ref.value.exp.value.ctfeInterpret();
+                }
                 else
+                {
                     i_ref.value.exp.value = i_ref.value.exp.value.optimize(0, false);
+                }
                 return i_ref.value;
             }
         };
@@ -546,11 +594,15 @@ public class initsem {
                             for (; (i.value < init.value.length.value);i.value++){
                                 Ref<Expression> e = ref(init.index.get(i.value));
                                 if (e.value == null)
+                                {
                                     /*goto Lno*/throw Dispatch0.INSTANCE;
+                                }
                                 keys.value.get().set(i.value, e.value);
                                 Ref<Initializer> iz = ref(init.value.get(i.value));
                                 if (iz.value == null)
+                                {
                                     /*goto Lno*/throw Dispatch0.INSTANCE;
+                                }
                                 iz.value = inferType(iz.value, sc_ref.value);
                                 if (iz.value.isErrorInitializer() != null)
                                 {
@@ -576,7 +628,9 @@ public class initsem {
                                 assert(init.index.get(i.value) == null);
                                 Ref<Initializer> iz = ref(init.value.get(i.value));
                                 if (iz.value == null)
+                                {
                                     /*goto Lno*/throw Dispatch0.INSTANCE;
+                                }
                                 iz.value = inferType(iz.value, sc_ref.value);
                                 if (iz.value.isErrorInitializer() != null)
                                 {
@@ -610,16 +664,22 @@ public class initsem {
                 Ref<ExpInitializer> init_ref = ref(init);
                 init_ref.value.exp.value = expressionSemantic(init_ref.value.exp.value, sc_ref.value);
                 if (((init_ref.value.exp.value.op.value & 0xFF) == 20))
+                {
                     init_ref.value.exp.value = resolveAliasThis(sc_ref.value, init_ref.value.exp.value, false);
+                }
                 init_ref.value.exp.value = resolveProperties(sc_ref.value, init_ref.value.exp.value);
                 if (((init_ref.value.exp.value.op.value & 0xFF) == 203))
                 {
                     ScopeExp se = (ScopeExp)init_ref.value.exp.value;
                     Ref<TemplateInstance> ti = ref(se.sds.value.isTemplateInstance());
                     if ((ti.value != null) && (ti.value.semanticRun.value == PASS.semantic) && (ti.value.aliasdecl.value == null))
+                    {
                         se.error(new BytePtr("cannot infer type from %s `%s`, possible circular dependency"), se.sds.value.kind(), se.toChars());
+                    }
                     else
+                    {
                         se.error(new BytePtr("cannot infer type from %s `%s`"), se.sds.value.kind(), se.toChars());
+                    }
                     return new ErrorInitializer();
                 }
                 Ref<Boolean> hasOverloads = ref(false);
@@ -719,7 +779,9 @@ public class initsem {
                                         __dispatch3 = 0;
                                         Ref<Long> adim = ref(((TypeSArray)t.value).dim.value.toInteger());
                                         if ((adim.value >= 2147483648L))
+                                        {
                                             /*goto Lno*/throw Dispatch0.INSTANCE;
+                                        }
                                         edim.value = (int)adim.value;
                                         break;
                                     case 3:
@@ -746,14 +808,20 @@ public class initsem {
                                     {
                                         Ref<Long> idxval = ref(init.index.get(i.value).toInteger());
                                         if ((idxval.value >= 2147483648L))
+                                        {
                                             /*goto Lno*/throw Dispatch0.INSTANCE;
+                                        }
                                         j.value = (int)idxval.value;
                                     }
                                     else
+                                    {
                                         /*goto Lno*/throw Dispatch0.INSTANCE;
+                                    }
                                 }
                                 if ((j.value >= edim.value))
+                                {
                                     edim.value = j.value + 1;
+                                }
                             }
                         }
                     }
@@ -765,11 +833,15 @@ public class initsem {
                     L_outer6:
                         for (; (i.value < init.value.length.value);comma(i.value++, j.value++)){
                             if (init.index.get(i.value) != null)
+                            {
                                 j.value = (int)init.index.get(i.value).toInteger();
+                            }
                             assert((j.value < edim.value));
                             Ref<Initializer> iz = ref(init.value.get(i.value));
                             if (iz.value == null)
+                            {
                                 /*goto Lno*/throw Dispatch0.INSTANCE;
+                            }
                             Ref<Expression> ex = ref(initializerToExpression(iz.value, null));
                             if (ex.value == null)
                             {
@@ -787,9 +859,13 @@ public class initsem {
                                 if ((elements.value.get()).get(i.value) == null)
                                 {
                                     if (init.type.value == null)
+                                    {
                                         /*goto Lno*/throw Dispatch0.INSTANCE;
+                                    }
                                     if (_init.value == null)
+                                    {
                                         _init.value = defaultInit(((TypeNext)t.value).next.value, Loc.initial.value);
+                                    }
                                     elements.value.get().set(i.value, _init.value);
                                 }
                             }
@@ -802,18 +878,18 @@ public class initsem {
                                 IntRef dim = ref((int)((TypeSArray)tn.value).dim.value.toInteger());
                                 Type te = tn.value.nextOf().toBasetype();
                                 {
-                                    Ref<Slice<Expression>> __r1501 = ref((elements.value.get()).opSlice().copy());
-                                    IntRef __key1502 = ref(0);
-                                    for (; (__key1502.value < __r1501.value.getLength());__key1502.value += 1) {
-                                        Ref<Expression> e = ref(__r1501.value.get(__key1502.value));
+                                    Ref<Slice<Expression>> __r1503 = ref((elements.value.get()).opSlice().copy());
+                                    IntRef __key1504 = ref(0);
+                                    for (; (__key1504.value < __r1503.value.getLength());__key1504.value += 1) {
+                                        Ref<Expression> e = ref(__r1503.value.get(__key1504.value));
                                         if (te.equals(e.value.type.value))
                                         {
                                             Ref<Ptr<DArray<Expression>>> elements2 = ref(refPtr(new DArray<Expression>(dim.value)));
                                             {
-                                                Ref<Slice<Expression>> __r1503 = ref((elements2.value.get()).opSlice().copy());
-                                                IntRef __key1504 = ref(0);
-                                                for (; (__key1504.value < __r1503.value.getLength());__key1504.value += 1) {
-                                                    Ref<Expression> e2 = ref(__r1503.value.get(__key1504.value));
+                                                Ref<Slice<Expression>> __r1505 = ref((elements2.value.get()).opSlice().copy());
+                                                IntRef __key1506 = ref(0);
+                                                for (; (__key1506.value < __r1505.value.getLength());__key1506.value += 1) {
+                                                    Ref<Expression> e2 = ref(__r1505.value.get(__key1506.value));
                                                     e2.value = e.value;
                                                 }
                                             }

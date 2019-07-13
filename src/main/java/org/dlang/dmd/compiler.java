@@ -31,9 +31,9 @@ public class compiler {
     private static class U
     {
         private int int32value = 0;
-        private long int64value = 0;
-        private float float32value = 0;
-        private double float64value = 0;
+        private long int64value = 0L;
+        private float float32value = 0.0;
+        private double float64value = 0.0;
         public U(){
         }
         public U copy(){
@@ -62,7 +62,9 @@ public class compiler {
     {
         public static void genCmain(Ptr<Scope> sc) {
             if (entrypoint != null)
+            {
                 return ;
+            }
             ByteSlice cmaincode = new ByteSlice("\n            extern(C)\n            {\n                int _d_run_main(int argc, char **argv, void* mainFunc);\n                int _Dmain(char[][] args);\n                int main(int argc, char **argv)\n                {\n                    return _d_run_main(argc, argv, &_Dmain);\n                }\n                version (Solaris) int _main(int argc, char** argv) { return main(argc, argv); }\n            }\n        ").copy();
             Identifier id = Id.entrypoint;
             dmodule.Module m = new dmodule.Module(new ByteSlice("__entrypoint.d"), id, 0, 0);
@@ -171,7 +173,9 @@ public class compiler {
                     if (includeImportedModuleCheck(new ModuleComponentRange((m.md != null) && ((m.md.get()).packages != null) ? (m.md.get()).packages : ptr(empty), m.ident.value, m.isPackageFile, 0)))
                     {
                         if (global.params.verbose)
+                        {
                             message(new BytePtr("compileimport (%s)"), m.srcfile.toChars());
+                        }
                         compiledImports.push(m);
                         return true;
                     }
@@ -208,11 +212,17 @@ public class compiler {
 
         public  Identifier front() {
             if ((this.index < (this.packages.get()).length.value))
+            {
                 return (this.packages.get()).get(this.index);
+            }
             if ((this.index == (this.packages.get()).length.value))
+            {
                 return this.name;
+            }
             else
+            {
                 return Identifier.idPool(new ByteSlice("package"));
+            }
         }
 
         public  void popFront() {
@@ -318,7 +328,9 @@ public class compiler {
                 for (; (index.value < matchNodes.value.length.value);){
                     MatcherNode info = matchNodes.value.get(index.value).copy();
                     if ((depth_ref.value > (int)info.depth.value))
+                    {
                         break;
+                    }
                     index.value += (1 + (int)info.depth.value);
                 }
                 return index.value;
@@ -327,10 +339,10 @@ public class compiler {
         if ((matchNodes.value.length.value == 0))
         {
             {
-                Slice<BytePtr> __r835 = includeModulePatterns.opSlice().copy();
-                int __key836 = 0;
-                for (; (__key836 < __r835.getLength());__key836 += 1) {
-                    BytePtr modulePattern = pcopy(__r835.get(__key836));
+                Slice<BytePtr> __r837 = includeModulePatterns.opSlice().copy();
+                int __key838 = 0;
+                for (; (__key838 < __r837.getLength());__key838 += 1) {
+                    BytePtr modulePattern = pcopy(__r837.get(__key838));
                     int depth = parseModulePatternDepth(modulePattern);
                     int entryIndex = findSortedIndexToAddForDepth.invoke((int)depth);
                     split(matchNodes, entryIndex, ((int)depth + 1));
@@ -352,16 +364,24 @@ public class compiler {
 
     public static int parseModulePatternDepth(BytePtr modulePattern) {
         if (((modulePattern.get(0) & 0xFF) == 45))
+        {
             modulePattern.postInc();
+        }
         if (((modulePattern.get(0) & 0xFF) == 46) && ((modulePattern.get(1) & 0xFF) == 0))
+        {
             return (int)0;
+        }
         int depth = (int)1;
         for (; ;modulePattern.postInc()){
             byte c = modulePattern.get();
             if (((c & 0xFF) == 46))
+            {
                 depth++;
+            }
             if (((c & 0xFF) == 0))
+            {
                 return depth;
+            }
         }
     }
 

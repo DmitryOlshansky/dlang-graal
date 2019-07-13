@@ -145,11 +145,11 @@ public class globals {
         public boolean optimize = false;
         public boolean map = false;
         public boolean is64bit = false;
-        public boolean isLP64 = false;
+        public Ref<Boolean> isLP64 = ref(false);
         public boolean isLinux = false;
         public boolean isOSX = false;
         public boolean isWindows = false;
-        public boolean isFreeBSD = false;
+        public Ref<Boolean> isFreeBSD = ref(false);
         public boolean isOpenBSD = false;
         public boolean isDragonFlyBSD = false;
         public boolean isSolaris = false;
@@ -259,7 +259,7 @@ public class globals {
         public  boolean isPOSIX() {
             boolean __result = false;
             try {
-                __result = this.isLinux || this.isOSX || this.isFreeBSD || this.isOpenBSD || this.isDragonFlyBSD || this.isSolaris;
+                __result = this.isLinux || this.isOSX || this.isFreeBSD.value || this.isOpenBSD || this.isDragonFlyBSD || this.isSolaris;
                 /*goto __returnLabel*/throw Dispatch0.INSTANCE;
             }
             catch(Dispatch0 __d){}
@@ -734,7 +734,9 @@ public class globals {
 
         public  void increaseErrorCount() {
             if (this.gag.value != 0)
+            {
                 this.gaggedErrors += 1;
+            }
             this.errors.value += 1;
         }
 
@@ -769,13 +771,17 @@ public class globals {
                         else if (((c & 0xFF) == 46))
                         {
                             if (point)
+                            {
                                 break;
+                            }
                             point = true;
                             major = minor;
                             minor = 0;
                         }
                         else
+                        {
                             break;
+                        }
                     }
                 }
                 globals.versionNumbercached = major * 1000 + minor;

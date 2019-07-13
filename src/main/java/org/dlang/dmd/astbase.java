@@ -28,7 +28,7 @@ public class astbase {
     static ByteSlice _initbasetab = slice(initializer_0);
     private static class SCstring
     {
-        private long stc = 0;
+        private long stc = 0L;
         private byte tok = 0;
         private BytePtr id = null;
         public SCstring(){
@@ -293,9 +293,13 @@ public class astbase {
 
             public  void addComment(BytePtr comment) {
                 if (this.comment == null)
+                {
                     this.comment = pcopy(comment);
+                }
                 else if ((comment != null) && (strcmp(comment, this.comment) != 0))
+                {
                     this.comment = pcopy(Lexer.combineComments(this.comment, comment, true));
+                }
             }
 
             public  BytePtr toChars() {
@@ -323,9 +327,13 @@ public class astbase {
                         {
                             assert(ident != null);
                             if (((ps.get()).ident == null) || !(ps.get()).ident.equals(ident))
+                            {
                                 continue;
+                            }
                             if (s == null)
+                            {
                                 s = ps.get();
+                            }
                             else if (s.isOverloadable() && (ps.get()).isOverloadable())
                             {
                                 FuncDeclaration f1 = s.isFuncDeclaration();
@@ -362,7 +370,7 @@ public class astbase {
             }
 
             public  void error(BytePtr format, Object... ap) {
-                verror(this.loc, format, new Slice<>(ap), this.kind(), new BytePtr(""), new BytePtr("Error: "));
+                verror(this.loc, format, new RawSlice<>(ap), this.kind(), new BytePtr(""), new BytePtr("Error: "));
             }
 
             public  AttribDeclaration isAttribDeclaration() {
@@ -455,7 +463,7 @@ public class astbase {
         }
         public static abstract class Declaration extends Dsymbol
         {
-            public long storage_class = 0;
+            public long storage_class = 0L;
             public Prot protection = new Prot();
             public int linkage = 0;
             public Type type = null;
@@ -540,9 +548,13 @@ public class astbase {
 
             public  void addAlias(Identifier name, Identifier _alias) {
                 if (this.isstatic != 0)
+                {
                     this.error(new BytePtr("cannot have an import bind list"));
+                }
                 if (this.aliasId == null)
+                {
                     this.ident = null;
+                }
                 this.names.push(name);
                 this.aliases.push(_alias);
             }
@@ -690,7 +702,7 @@ public class astbase {
         {
             public Type type = null;
             public Initializer _init = null;
-            public long storage_class = 0;
+            public long storage_class = 0L;
             public int ctfeAdrOnStack = 0;
             public int sequenceNumber = 0;
             public static int nextSequenceNumber = 0;
@@ -769,7 +781,7 @@ public class astbase {
             public Ptr<DArray<Statement>> frequires = null;
             public Ptr<DArray<Ensure>> fensures = null;
             public Loc endloc = new Loc();
-            public long storage_class = 0;
+            public long storage_class = 0L;
             public Type type = null;
             public boolean inferRetType = false;
             public ForeachStatement fes = null;
@@ -1607,16 +1619,22 @@ public class astbase {
 
             public  RootObject objectSyntaxCopy(RootObject o) {
                 if (o == null)
+                {
                     return null;
+                }
                 {
                     Type t = isType(o);
                     if ((t) != null)
+                    {
                         return t.syntaxCopy();
+                    }
                 }
                 {
                     Expression e = isExpression(o);
                     if ((e) != null)
+                    {
                         return e.syntaxCopy();
+                    }
                 }
                 return o;
             }
@@ -1626,9 +1644,13 @@ public class astbase {
                 ti.tiargs = this.arraySyntaxCopy(this.tiargs);
                 TemplateDeclaration td = null;
                 if ((this.inst != null) && (this.tempdecl != null) && ((td = this.tempdecl.isTemplateDeclaration()) != null))
+                {
                     td.syntaxCopy(ti);
+                }
                 else
+                {
                     this.syntaxCopy(ti);
+                }
                 return ti;
             }
 
@@ -1727,9 +1749,13 @@ public class astbase {
             public static Ptr<DArray<Expression>> concat(Ptr<DArray<Expression>> udas1, Ptr<DArray<Expression>> udas2) {
                 Ptr<DArray<Expression>> udas = null;
                 if ((udas1 == null) || ((udas1.get()).length == 0))
+                {
                     udas = udas2;
+                }
                 else if ((udas2 == null) || ((udas2.get()).length == 0))
+                {
                     udas = udas1;
+                }
                 else
                 {
                     udas = refPtr(new DArray<Expression>(2));
@@ -1977,7 +2003,7 @@ public class astbase {
         }
         public static class StorageClassDeclaration extends AttribDeclaration
         {
-            public long stc = 0;
+            public long stc = 0L;
             public  StorageClassDeclaration(long stc, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.stc = stc;
@@ -2213,7 +2239,9 @@ public class astbase {
                 if (inObject)
                 {
                     if ((pequals(id, Id.ModuleInfo)) && (Module.moduleinfo == null))
+                    {
                         Module.moduleinfo = this;
+                    }
                 }
             }
 
@@ -2282,7 +2310,9 @@ public class astbase {
             public int baseok = 0;
             public  ClassDeclaration(Loc loc, Identifier id, Ptr<DArray<Ptr<BaseClass>>> baseclasses, Ptr<DArray<Dsymbol>> members, boolean inObject) {
                 if (id == null)
+                {
                     id = Identifier.generateId(new BytePtr("__anonclass"));
+                }
                 assert(id != null);
                 super(loc, id);
                 if (baseclasses != null)
@@ -2290,49 +2320,65 @@ public class astbase {
                     this.baseclasses = baseclasses;
                 }
                 else
+                {
                     this.baseclasses = refPtr(new DArray<Ptr<BaseClass>>());
+                }
                 this.members = members;
                 this.type = new TypeClass(this);
                 if (id != null)
                 {
                     if ((pequals(id, Id.__sizeof.value)) || (pequals(id, Id.__xalignof.value)) || (pequals(id, Id._mangleof.value)))
+                    {
                         this.error(new BytePtr("illegal class name"));
+                    }
                     if (((id.toChars().get(0) & 0xFF) == 84))
                     {
                         if ((pequals(id, Id.TypeInfo)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.dtypeinfo = this;
                         }
                         if ((pequals(id, Id.TypeInfo_Class)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.typeinfoclass = this;
                         }
                         if ((pequals(id, Id.TypeInfo_Interface)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.typeinfointerface = this;
                         }
                         if ((pequals(id, Id.TypeInfo_Struct)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.typeinfostruct = this;
                         }
                         if ((pequals(id, Id.TypeInfo_Pointer)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.typeinfopointer = this;
                         }
                         if ((pequals(id, Id.TypeInfo_Array)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.typeinfoarray = this;
                         }
                         if ((pequals(id, Id.TypeInfo_StaticArray)))
@@ -2342,92 +2388,122 @@ public class astbase {
                         if ((pequals(id, Id.TypeInfo_AssociativeArray)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.typeinfoassociativearray = this;
                         }
                         if ((pequals(id, Id.TypeInfo_Enum)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.typeinfoenum = this;
                         }
                         if ((pequals(id, Id.TypeInfo_Function)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.typeinfofunction = this;
                         }
                         if ((pequals(id, Id.TypeInfo_Delegate)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.typeinfodelegate = this;
                         }
                         if ((pequals(id, Id.TypeInfo_Tuple)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.typeinfotypelist = this;
                         }
                         if ((pequals(id, Id.TypeInfo_Const)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.typeinfoconst = this;
                         }
                         if ((pequals(id, Id.TypeInfo_Invariant)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.typeinfoinvariant = this;
                         }
                         if ((pequals(id, Id.TypeInfo_Shared)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.typeinfoshared = this;
                         }
                         if ((pequals(id, Id.TypeInfo_Wild)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.typeinfowild = this;
                         }
                         if ((pequals(id, Id.TypeInfo_Vector)))
                         {
                             if (!inObject)
+                            {
                                 this.error(new BytePtr("%s"), astbase.__ctormsg);
+                            }
                             Type.typeinfovector = this;
                         }
                     }
                     if ((pequals(id, Id.Object.value)))
                     {
                         if (!inObject)
+                        {
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
+                        }
                         object = this;
                     }
                     if ((pequals(id, Id.Throwable.value)))
                     {
                         if (!inObject)
+                        {
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
+                        }
                         throwable = this;
                     }
                     if ((pequals(id, Id.Exception.value)))
                     {
                         if (!inObject)
+                        {
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
+                        }
                         exception = this;
                     }
                     if ((pequals(id, Id.Error)))
                     {
                         if (!inObject)
+                        {
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
+                        }
                         errorException = this;
                     }
                     if ((pequals(id, Id.cpp_type_info_ptr)))
                     {
                         if (!inObject)
+                        {
                             this.error(new BytePtr("%s"), astbase.__ctormsg);
+                        }
                         cpp_type_info_ptr = this;
                     }
                 }
@@ -2552,7 +2628,7 @@ public class astbase {
         }
         public static class Parameter extends ASTNode
         {
-            public long storageClass = 0;
+            public long storageClass = 0L;
             public Type type = null;
             public Identifier ident = null;
             public Expression defaultArg = null;
@@ -2605,7 +2681,9 @@ public class astbase {
             public static int _foreach(Ptr<DArray<Parameter>> parameters, Function2<Integer,Parameter,Integer> dg, IntPtr pn) {
                 assert(dg != null);
                 if (parameters == null)
+                {
                     return 0;
+                }
                 IntRef n = ref(pn != null ? pn.get() : 0);
                 int result = 0;
                 {
@@ -2621,13 +2699,19 @@ public class astbase {
                             result = _foreach(tu.arguments, dg, ptr(n));
                         }
                         else
+                        {
                             result = dg.invoke(n.value++, p);
+                        }
                         if (result != 0)
+                        {
                             break;
+                        }
                     }
                 }
                 if (pn != null)
+                {
                     pn.set(0, n.value);
+                }
                 return result;
             }
 
@@ -3634,7 +3718,7 @@ public class astbase {
         }
         public static class CompoundAsmStatement extends CompoundStatement
         {
-            public long stc = 0;
+            public long stc = 0L;
             public  CompoundAsmStatement(Loc loc, Ptr<DArray<Statement>> s, long stc) {
                 super(loc, s);
                 this.stc = stc;
@@ -3806,7 +3890,7 @@ public class astbase {
                 twstring = twchar.immutableOf().arrayOf();
                 tdstring = tdchar.immutableOf().arrayOf();
                 tvalist = Target.va_listType();
-                boolean isLP64 = global.params.isLP64;
+                boolean isLP64 = global.params.isLP64.value;
                 tsize_t = basic.get(isLP64 ? 20 : 18);
                 tptrdiff_t = basic.get(isLP64 ? 19 : 17);
                 thash_t = tsize_t;
@@ -3814,7 +3898,9 @@ public class astbase {
 
             public  Type pointerTo() {
                 if (((this.ty & 0xFF) == ENUMTY.Terror))
+                {
                     return this;
+                }
                 if (this.pto == null)
                 {
                     Type t = new TypePointer(this);
@@ -3824,14 +3910,18 @@ public class astbase {
                         this.pto = t;
                     }
                     else
+                    {
                         this.pto = t.merge();
+                    }
                 }
                 return this.pto;
             }
 
             public  Type arrayOf() {
                 if (((this.ty & 0xFF) == ENUMTY.Terror))
+                {
                     return this;
+                }
                 if (this.arrayof == null)
                 {
                     Type t = new TypeDArray(this);
@@ -3861,15 +3951,21 @@ public class astbase {
                 t.swto = null;
                 t.swcto = null;
                 if (((t.ty & 0xFF) == ENUMTY.Tstruct))
+                {
                     ((TypeStruct)t).att = AliasThisRec.fwdref;
+                }
                 if (((t.ty & 0xFF) == ENUMTY.Tclass))
+                {
                     ((TypeClass)t).att = AliasThisRec.fwdref;
+                }
                 return t;
             }
 
             public  Type makeConst() {
                 if (this.cto != null)
+                {
                     return this.cto;
+                }
                 Type t = this.nullAttributes();
                 t.mod = (byte)1;
                 return t;
@@ -3877,7 +3973,9 @@ public class astbase {
 
             public  Type makeWildConst() {
                 if (this.wcto != null)
+                {
                     return this.wcto;
+                }
                 Type t = this.nullAttributes();
                 t.mod = (byte)9;
                 return t;
@@ -3885,7 +3983,9 @@ public class astbase {
 
             public  Type makeShared() {
                 if (this.sto != null)
+                {
                     return this.sto;
+                }
                 Type t = this.nullAttributes();
                 t.mod = (byte)2;
                 return t;
@@ -3893,7 +3993,9 @@ public class astbase {
 
             public  Type makeSharedConst() {
                 if (this.scto != null)
+                {
                     return this.scto;
+                }
                 Type t = this.nullAttributes();
                 t.mod = (byte)3;
                 return t;
@@ -3901,7 +4003,9 @@ public class astbase {
 
             public  Type makeImmutable() {
                 if (this.ito != null)
+                {
                     return this.ito;
+                }
                 Type t = this.nullAttributes();
                 t.mod = (byte)4;
                 return t;
@@ -3909,7 +4013,9 @@ public class astbase {
 
             public  Type makeWild() {
                 if (this.wto != null)
+                {
                     return this.wto;
+                }
                 Type t = this.nullAttributes();
                 t.mod = (byte)8;
                 return t;
@@ -3917,7 +4023,9 @@ public class astbase {
 
             public  Type makeSharedWildConst() {
                 if (this.swcto != null)
+                {
                     return this.swcto;
+                }
                 Type t = this.nullAttributes();
                 t.mod = (byte)11;
                 return t;
@@ -3925,7 +4033,9 @@ public class astbase {
 
             public  Type makeSharedWild() {
                 if (this.swto != null)
+                {
                     return this.swto;
+                }
                 Type t = this.nullAttributes();
                 t.mod = (byte)10;
                 return t;
@@ -3933,17 +4043,29 @@ public class astbase {
 
             public  Type merge() {
                 if (((this.ty & 0xFF) == ENUMTY.Terror))
+                {
                     return this;
+                }
                 if (((this.ty & 0xFF) == ENUMTY.Ttypeof))
+                {
                     return this;
+                }
                 if (((this.ty & 0xFF) == ENUMTY.Tident))
+                {
                     return this;
+                }
                 if (((this.ty & 0xFF) == ENUMTY.Tinstance))
+                {
                     return this;
+                }
                 if (((this.ty & 0xFF) == ENUMTY.Taarray) && (((TypeAArray)this).index.merge().deco == null))
+                {
                     return this;
+                }
                 if (((this.ty & 0xFF) != ENUMTY.Tenum) && (this.nextOf() != null) && (this.nextOf().deco == null))
+                {
                     return this;
+                }
                 Type t = this;
                 assert(t != null);
                 return t;
@@ -3965,16 +4087,24 @@ public class astbase {
                         if (t.isWild())
                         {
                             if (t.isConst())
+                            {
                                 t = t.makeSharedWildConst();
+                            }
                             else
+                            {
                                 t = t.makeSharedWild();
+                            }
                         }
                         else
                         {
                             if (t.isConst())
+                            {
                                 t = t.makeSharedConst();
+                            }
                             else
+                            {
                                 t = t.makeShared();
+                            }
                         }
                     }
                     if (((stc & 4L) != 0) && !t.isConst())
@@ -3982,16 +4112,24 @@ public class astbase {
                         if (t.isShared())
                         {
                             if (t.isWild())
+                            {
                                 t = t.makeSharedWildConst();
+                            }
                             else
+                            {
                                 t = t.makeSharedConst();
+                            }
                         }
                         else
                         {
                             if (t.isWild())
+                            {
                                 t = t.makeWildConst();
+                            }
                             else
+                            {
                                 t = t.makeConst();
+                            }
                         }
                     }
                     if (((stc & 2147483648L) != 0) && !t.isWild())
@@ -3999,16 +4137,24 @@ public class astbase {
                         if (t.isShared())
                         {
                             if (t.isConst())
+                            {
                                 t = t.makeSharedWildConst();
+                            }
                             else
+                            {
                                 t = t.makeSharedWild();
+                            }
                         }
                         else
                         {
                             if (t.isConst())
+                            {
                                 t = t.makeWildConst();
+                            }
                             else
+                            {
                                 t = t.makeWild();
+                            }
                         }
                     }
                 }
@@ -4025,7 +4171,9 @@ public class astbase {
 
             public  Type sharedWildConstOf() {
                 if (((this.mod & 0xFF) == 11))
+                {
                     return this;
+                }
                 if (this.swcto != null)
                 {
                     assert(((this.swcto.mod & 0xFF) == 11));
@@ -4039,7 +4187,9 @@ public class astbase {
 
             public  Type sharedConstOf() {
                 if (((this.mod & 0xFF) == 3))
+                {
                     return this;
+                }
                 if (this.scto != null)
                 {
                     assert(((this.scto.mod & 0xFF) == 3));
@@ -4053,7 +4203,9 @@ public class astbase {
 
             public  Type wildConstOf() {
                 if (((this.mod & 0xFF) == MODFlags.wildconst))
+                {
                     return this;
+                }
                 if (this.wcto != null)
                 {
                     assert(((this.wcto.mod & 0xFF) == MODFlags.wildconst));
@@ -4067,7 +4219,9 @@ public class astbase {
 
             public  Type constOf() {
                 if (((this.mod & 0xFF) == MODFlags.const_))
+                {
                     return this;
+                }
                 if (this.cto != null)
                 {
                     assert(((this.cto.mod & 0xFF) == MODFlags.const_));
@@ -4081,7 +4235,9 @@ public class astbase {
 
             public  Type sharedWildOf() {
                 if (((this.mod & 0xFF) == 10))
+                {
                     return this;
+                }
                 if (this.swto != null)
                 {
                     assert(((this.swto.mod & 0xFF) == 10));
@@ -4095,7 +4251,9 @@ public class astbase {
 
             public  Type wildOf() {
                 if (((this.mod & 0xFF) == MODFlags.wild))
+                {
                     return this;
+                }
                 if (this.wto != null)
                 {
                     assert(((this.wto.mod & 0xFF) == MODFlags.wild));
@@ -4109,7 +4267,9 @@ public class astbase {
 
             public  Type sharedOf() {
                 if (((this.mod & 0xFF) == MODFlags.shared_))
+                {
                     return this;
+                }
                 if (this.sto != null)
                 {
                     assert(((this.sto.mod & 0xFF) == MODFlags.shared_));
@@ -4123,7 +4283,9 @@ public class astbase {
 
             public  Type immutableOf() {
                 if (this.isImmutable())
+                {
                     return this;
+                }
                 if (this.ito != null)
                 {
                     assert(this.ito.isImmutable());
@@ -4209,19 +4371,33 @@ public class astbase {
                     case 4:
                         t.ito = this;
                         if (t.cto != null)
+                        {
                             t.cto.ito = this;
+                        }
                         if (t.sto != null)
+                        {
                             t.sto.ito = this;
+                        }
                         if (t.scto != null)
+                        {
                             t.scto.ito = this;
+                        }
                         if (t.wto != null)
+                        {
                             t.wto.ito = this;
+                        }
                         if (t.wcto != null)
+                        {
                             t.wcto.ito = this;
+                        }
                         if (t.swto != null)
+                        {
                             t.swto.ito = this;
+                        }
                         if (t.swcto != null)
+                        {
                             t.swcto.ito = this;
+                        }
                         break;
                     default:
                     throw new AssertionError("Unreachable code!");
@@ -4240,67 +4416,103 @@ public class astbase {
                             if (this.isShared())
                             {
                                 if (this.isWild())
+                                {
                                     t = this.sharedWildConstOf();
+                                }
                                 else
+                                {
                                     t = this.sharedConstOf();
+                                }
                             }
                             else
                             {
                                 if (this.isWild())
+                                {
                                     t = this.wildConstOf();
+                                }
                                 else
+                                {
                                     t = this.constOf();
+                                }
                             }
                             break;
                         case 8:
                             if (this.isShared())
                             {
                                 if (this.isConst())
+                                {
                                     t = this.sharedWildConstOf();
+                                }
                                 else
+                                {
                                     t = this.sharedWildOf();
+                                }
                             }
                             else
                             {
                                 if (this.isConst())
+                                {
                                     t = this.wildConstOf();
+                                }
                                 else
+                                {
                                     t = this.wildOf();
+                                }
                             }
                             break;
                         case 9:
                             if (this.isShared())
+                            {
                                 t = this.sharedWildConstOf();
+                            }
                             else
+                            {
                                 t = this.wildConstOf();
+                            }
                             break;
                         case 2:
                             if (this.isWild())
                             {
                                 if (this.isConst())
+                                {
                                     t = this.sharedWildConstOf();
+                                }
                                 else
+                                {
                                     t = this.sharedWildOf();
+                                }
                             }
                             else
                             {
                                 if (this.isConst())
+                                {
                                     t = this.sharedConstOf();
+                                }
                                 else
+                                {
                                     t = this.sharedOf();
+                                }
                             }
                             break;
                         case 3:
                             if (this.isWild())
+                            {
                                 t = this.sharedWildConstOf();
+                            }
                             else
+                            {
                                 t = this.sharedConstOf();
+                            }
                             break;
                         case 10:
                             if (this.isConst())
+                            {
                                 t = this.sharedWildConstOf();
+                            }
                             else
+                            {
                                 t = this.sharedWildOf();
+                            }
                             break;
                         case 11:
                             t = this.sharedWildConstOf();
@@ -4662,7 +4874,9 @@ public class astbase {
                         for (; (i < (exps.get()).length);i++){
                             Expression e = (exps.get()).get(i);
                             if (((e.type.ty & 0xFF) == ENUMTY.Ttuple))
+                            {
                                 e.error(new BytePtr("cannot form tuple of tuples"));
+                            }
                             Parameter arg = new Parameter(0L, e.type, null, null, null);
                             arguments.get().set(i, arg);
                         }
@@ -4796,7 +5010,9 @@ public class astbase {
             public  Type syntaxCopy() {
                 Type t = this.next.syntaxCopy();
                 if ((pequals(t, this.next)))
+                {
                     t = this;
+                }
                 else
                 {
                     t = new TypeReference(t);
@@ -4908,7 +5124,9 @@ public class astbase {
             public  Type syntaxCopy() {
                 Type t = this.next.syntaxCopy();
                 if ((pequals(t, this.next)))
+                {
                     t = this;
+                }
                 else
                 {
                     t = new TypeDelegate(t);
@@ -4953,7 +5171,9 @@ public class astbase {
             public  Type syntaxCopy() {
                 Type t = this.next.syntaxCopy();
                 if ((pequals(t, this.next)))
+                {
                     t = this;
+                }
                 else
                 {
                     t = new TypePointer(t);
@@ -5009,26 +5229,46 @@ public class astbase {
                 this.parameterList = pl.copy();
                 this.linkage = linkage;
                 if ((stc & 67108864L) != 0)
+                {
                     this.purity = PURE.fwdref;
+                }
                 if ((stc & 33554432L) != 0)
+                {
                     this.isnothrow = true;
+                }
                 if ((stc & 4398046511104L) != 0)
+                {
                     this.isnogc = true;
+                }
                 if ((stc & 4294967296L) != 0)
+                {
                     this.isproperty = true;
+                }
                 if ((stc & 2097152L) != 0)
+                {
                     this.isref = true;
+                }
                 if ((stc & 17592186044416L) != 0)
+                {
                     this.isreturn = true;
+                }
                 if ((stc & 524288L) != 0)
+                {
                     this.isscope = true;
+                }
                 this.trust = TRUST.default_;
                 if ((stc & 8589934592L) != 0)
+                {
                     this.trust = TRUST.safe;
+                }
                 if ((stc & 34359738368L) != 0)
+                {
                     this.trust = TRUST.system;
+                }
                 if ((stc & 17179869184L) != 0)
+                {
                     this.trust = TRUST.trusted;
+                }
             }
 
             // defaulted all parameters starting with #4
@@ -5135,7 +5375,9 @@ public class astbase {
             public  Type syntaxCopy() {
                 Type t = this.next.syntaxCopy();
                 if ((pequals(t, this.next)))
+                {
                     t = this;
+                }
                 else
                 {
                     t = new TypeDArray(t);
@@ -5184,7 +5426,9 @@ public class astbase {
                 Type t = this.next.syntaxCopy();
                 Type ti = this.index.syntaxCopy();
                 if ((pequals(t, this.next)) && (pequals(ti, this.index)))
+                {
                     t = this;
+                }
                 else
                 {
                     t = new TypeAArray(t, ti);
@@ -5199,7 +5443,9 @@ public class astbase {
                 {
                     Expression ei = this.index.toExpression();
                     if (ei != null)
+                    {
                         return new ArrayExp(this.loc, e, ei);
+                    }
                 }
                 return null;
             }
@@ -5252,7 +5498,9 @@ public class astbase {
             public  Expression toExpression() {
                 Expression e = this.next.toExpression();
                 if (e != null)
+                {
                     e = new ArrayExp(this.dim.loc, e, this.dim);
+                }
                 return e;
             }
 
@@ -5623,7 +5871,7 @@ public class astbase {
             public  void error(BytePtr format, Object... ap) {
                 if ((!pequals(this.type, Type.terror)))
                 {
-                    verror(this.loc, format, new Slice<>(ap), null, null, new BytePtr("Error: "));
+                    verror(this.loc, format, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
                 }
             }
 
@@ -5668,14 +5916,16 @@ public class astbase {
         }
         public static class IntegerExp extends Expression
         {
-            public long value = 0;
+            public long value = 0L;
             public  IntegerExp(Loc loc, long value, Type type) {
                 super(loc, TOK.int64, 32);
                 assert(type != null);
                 if (!type.isscalar())
                 {
                     if (((type.ty & 0xFF) != ENUMTY.Terror))
+                    {
                         this.error(new BytePtr("integral constant must be scalar type, not %s"), type.toChars());
+                    }
                     type = Type.terror;
                 }
                 this.type = type;
@@ -5729,11 +5979,17 @@ public class astbase {
                                 break;
                             case 3:
                                 if ((Target.ptrsize == 8))
+                                {
                                     /*goto case*/{ __dispatch5 = 20; continue dispatched_5; }
+                                }
                                 if ((Target.ptrsize == 4))
+                                {
                                     /*goto case*/{ __dispatch5 = 18; continue dispatched_5; }
+                                }
                                 if ((Target.ptrsize == 2))
+                                {
                                     /*goto case*/{ __dispatch5 = 16; continue dispatched_5; }
+                                }
                                 throw new AssertionError("Unreachable code!");
                             default:
                             break;
@@ -5838,7 +6094,7 @@ public class astbase {
         }
         public static class RealExp extends Expression
         {
-            public double value = 0;
+            public double value = 0.0;
             public  RealExp(Loc loc, double value, Type type) {
                 super(loc, TOK.float64, 40);
                 this.value = value;
@@ -6000,10 +6256,14 @@ public class astbase {
                 {
                     memcpy((BytePtr)dest, (this.string), (this.len * (this.sz & 0xFF)));
                     if (zero)
+                    {
                         memset(((BytePtr)dest).plus((this.len * (this.sz & 0xFF))), 0, (this.sz & 0xFF));
+                    }
                 }
                 else
+                {
                     throw new AssertionError("Unreachable code!");
+                }
             }
 
             // defaulted all parameters starting with #3
@@ -6463,7 +6723,11 @@ public class astbase {
         public static class VarExp extends SymbolExp
         {
             public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
-                super(loc, TOK.variable, 29, var, var.isVarDeclaration() == null && hasOverloads);
+                if (var.isVarDeclaration() != null)
+                {
+                    hasOverloads = false;
+                }
+                super(loc, TOK.variable, 29, var, hasOverloads);
                 this.type = var.type;
             }
 
@@ -6544,7 +6808,9 @@ public class astbase {
 
             public  Dsymbol isDsymbol(RootObject o) {
                 if ((o == null) || (o.dyncast() != 0) || (DYNCAST.dsymbol != 0))
+                {
                     return null;
+                }
                 return (Dsymbol)o;
             }
 
@@ -6554,26 +6820,40 @@ public class astbase {
                 if (ea != null)
                 {
                     if (((ea.op & 0xFF) == 26))
+                    {
                         sa = ((VarExp)ea).var;
+                    }
                     else if (((ea.op & 0xFF) == 161))
                     {
                         if (((FuncExp)ea).td != null)
+                        {
                             sa = ((FuncExp)ea).td;
+                        }
                         else
+                        {
                             sa = ((FuncExp)ea).fd;
+                        }
                     }
                     else if (((ea.op & 0xFF) == 36))
+                    {
                         sa = ((TemplateExp)ea).td;
+                    }
                     else
+                    {
                         sa = null;
+                    }
                 }
                 else
                 {
                     Type ta = isType(oarg);
                     if (ta != null)
+                    {
                         sa = ta.toDsymbol(null);
+                    }
                     else
+                    {
                         sa = this.isDsymbol(oarg);
+                    }
                 }
                 return sa;
             }
@@ -7101,7 +7381,9 @@ public class astbase {
                 super(loc, TOK.array, 32, e1);
                 this.arguments = refPtr(new DArray<Expression>());
                 if (index != null)
+                {
                     (this.arguments.get()).push(index);
+                }
             }
 
             // defaulted all parameters starting with #3
@@ -8764,25 +9046,33 @@ public class astbase {
         }
         public static Tuple isTuple(RootObject o) {
             if ((o == null) || (o.dyncast() != DYNCAST.tuple))
+            {
                 return null;
+            }
             return (Tuple)o;
         }
 
         public static Type isType(RootObject o) {
             if ((o == null) || (o.dyncast() != DYNCAST.type))
+            {
                 return null;
+            }
             return (Type)o;
         }
 
         public static Expression isExpression(RootObject o) {
             if ((o == null) || (o.dyncast() != DYNCAST.expression))
+            {
                 return null;
+            }
             return (Expression)o;
         }
 
         public static TemplateParameter isTemplateParameter(RootObject o) {
             if ((o == null) || (o.dyncast() != DYNCAST.templateparameter))
+            {
                 return null;
+            }
             return (TemplateParameter)o;
         }
 
@@ -8812,15 +9102,23 @@ public class astbase {
             Ref<Long> stc_ref = ref(stc);
             boolean result = false;
             if (((stc_ref.value & 17592186568704L) == 17592186568704L))
+            {
                 stc_ref.value &= -524289L;
+            }
             for (; stc_ref.value != 0;){
                 BytePtr p = pcopy(stcToChars(stc_ref));
                 if (p == null)
+                {
                     break;
+                }
                 if (!result)
+                {
                     result = true;
+                }
                 else
+                {
                     (buf.get()).writeByte(32);
+                }
                 (buf.get()).writestring(p);
             }
             return result;
@@ -8840,12 +9138,18 @@ public class astbase {
                     {
                         stc.value &= ~tbl;
                         if ((tbl == 134217728L))
+                        {
                             return new BytePtr("__thread");
+                        }
                         byte tok = astbase.stcToCharstable.get(i).tok;
                         if (((tok & 0xFF) == 225))
+                        {
                             return astbase.stcToCharstable.get(i).id;
+                        }
                         else
+                        {
                             return Token.toChars(tok);
+                        }
                     }
                 }
             }
@@ -8883,7 +9187,7 @@ public class astbase {
                 {
                     return Type.tchar.pointerTo();
                 }
-                else if (global.params.isLinux || global.params.isFreeBSD || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris || global.params.isOSX)
+                else if (global.params.isLinux || global.params.isFreeBSD.value || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris || global.params.isOSX)
                 {
                     if (global.params.is64bit)
                     {

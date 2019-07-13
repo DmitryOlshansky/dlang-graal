@@ -44,7 +44,9 @@ public class dversion {
 
         public  BytePtr toChars() {
             if (this.ident.value != null)
+            {
                 return this.ident.value.toChars();
+            }
             else
             {
                 OutBuffer buf = new OutBuffer();
@@ -74,7 +76,9 @@ public class dversion {
                         this.errors.value = true;
                     }
                     if (m.debugids == null)
+                    {
                         m.debugids = refPtr(new DArray<Identifier>());
+                    }
                     (m.debugids.get()).push(this.ident.value);
                 }
             }
@@ -86,7 +90,9 @@ public class dversion {
                     this.errors.value = true;
                 }
                 else
+                {
                     m.debuglevel = this.level;
+                }
             }
         }
 
@@ -141,7 +147,9 @@ public class dversion {
 
         public  BytePtr toChars() {
             if (this.ident.value != null)
+            {
                 return this.ident.value.toChars();
+            }
             else
             {
                 OutBuffer buf = new OutBuffer();
@@ -172,7 +180,9 @@ public class dversion {
                         this.errors.value = true;
                     }
                     if (m.versionids == null)
+                    {
                         m.versionids = refPtr(new DArray<Identifier>());
+                    }
                     (m.versionids.get()).push(this.ident.value);
                 }
             }
@@ -184,7 +194,9 @@ public class dversion {
                     this.errors.value = true;
                 }
                 else
+                {
                     m.versionlevel = this.level;
+                }
             }
         }
 

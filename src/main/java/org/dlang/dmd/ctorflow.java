@@ -62,7 +62,9 @@ public class ctorflow {
 
         public  void freeFieldinit() {
             if ((Ptr<FieldInit>)this.fieldinit != null)
+            {
                 Mem.xfree((Ptr<FieldInit>)this.fieldinit);
+            }
             this.fieldinit = new Slice<FieldInit>().copy();
         }
 
@@ -73,10 +75,10 @@ public class ctorflow {
         public  void orCSX(int csx) {
             this.callSuper.value |= csx;
             {
-                Slice<FieldInit> __r888 = this.fieldinit.copy();
-                int __key889 = 0;
-                for (; (__key889 < __r888.getLength());__key889 += 1) {
-                    FieldInit u = __r888.get(__key889).copy();
+                Slice<FieldInit> __r890 = this.fieldinit.copy();
+                int __key891 = 0;
+                for (; (__key891 < __r890.getLength());__key891 += 1) {
+                    FieldInit u = __r890.get(__key891).copy();
                     u.csx.value |= csx;
                 }
             }
@@ -88,15 +90,17 @@ public class ctorflow {
             {
                 assert((this.fieldinit.getLength() == ctorflow.fieldinit.getLength()));
                 {
-                    Slice<FieldInit> __r891 = ctorflow.fieldinit.copy();
-                    int __key890 = 0;
-                    for (; (__key890 < __r891.getLength());__key890 += 1) {
-                        FieldInit u = __r891.get(__key890).copy();
-                        int i = __key890;
+                    Slice<FieldInit> __r893 = ctorflow.fieldinit.copy();
+                    int __key892 = 0;
+                    for (; (__key892 < __r893.getLength());__key892 += 1) {
+                        FieldInit u = __r893.get(__key892).copy();
+                        int i = __key892;
                         Ptr<FieldInit> fi = ptr(this.fieldinit.get(i));
                         (fi.get()).csx.value |= u.csx.value;
                         if (((fi.get()).loc == new Loc(null, 0, 0)))
+                        {
                             (fi.get()).loc = u.loc.copy();
+                        }
                     }
                 }
             }
@@ -123,7 +127,9 @@ public class ctorflow {
     }
     public static boolean mergeCallSuper(Ref<Integer> a, int b) {
         if ((b == a.value))
+        {
             return true;
+        }
         boolean aAll = (a.value & 3) != 0;
         boolean bAll = (b & 3) != 0;
         boolean aAny = (a.value & 16) != 0;
@@ -149,11 +155,15 @@ public class ctorflow {
             a.value = (int)(b | a.value & 20);
         }
         else if (((aAll ? 1 : 0) != (bAll ? 1 : 0)))
+        {
             return false;
+        }
         else
         {
             if (bRet && !bAny)
+            {
                 a.value |= 8;
+            }
             a.value |= b & 20;
         }
         return true;
@@ -161,7 +171,9 @@ public class ctorflow {
 
     public static boolean mergeFieldInit(Ref<Integer> a, int b) {
         if ((b == a.value))
+        {
             return true;
+        }
         boolean aRet = (a.value & 8) != 0;
         boolean bRet = (b & 8) != 0;
         boolean aHalt = (a.value & 32) != 0;

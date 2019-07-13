@@ -1107,7 +1107,9 @@ public class id {
                 Msgtable m = __r88.get(__key87).copy();
                 int i = __key87;
                 if ((i != 0))
+                {
                     code.append((byte)10);
+                }
                 code.append((dg).invoke(m));
             }
         }

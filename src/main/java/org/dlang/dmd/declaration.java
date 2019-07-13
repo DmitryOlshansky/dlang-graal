@@ -75,7 +75,9 @@ public class declaration {
         for (; 1 != 0;){
             FuncDeclaration fd = null;
             if (s != null)
+            {
                 fd = s.isFuncDeclaration();
+            }
             if ((fd != null) && (fd.isCtorDeclaration() != null) && var.isField() || (fd.isStaticCtorDeclaration() != null) && !var.isField() && (pequals(fd.toParentDecl(), var.toParent2())) && (e1 == null) || ((e1.op.value & 0xFF) == 123))
             {
                 boolean result = true;
@@ -92,7 +94,9 @@ public class declaration {
                         i = 0;
                         for (; (i < dim);i++){
                             if ((pequals(ad.fields.get(i), var)))
+                            {
                                 break;
+                            }
                         }
                     }
                     assert((i < dim));
@@ -101,7 +105,9 @@ public class declaration {
                     if ((fi & 1) != 0)
                     {
                         if (var.type.value.isMutable() && e1.type.value.isMutable())
+                        {
                             result = false;
+                        }
                         else
                         {
                             BytePtr modStr = pcopy(!var.type.value.isMutable() ? MODtoChars(var.type.value.mod.value) : MODtoChars(e1.type.value.mod.value));
@@ -119,7 +125,9 @@ public class declaration {
                     else if ((sc.get()).inLoop || ((fi & 4) != 0))
                     {
                         if (!mustInit && var.type.value.isMutable() && e1.type.value.isMutable())
+                        {
                             result = false;
+                        }
                         else
                         {
                             BytePtr modStr = pcopy(!var.type.value.isMutable() ? MODtoChars(var.type.value.mod.value) : MODtoChars(e1.type.value.mod.value));
@@ -131,13 +139,15 @@ public class declaration {
                     if (var.overlapped.value)
                     {
                         {
-                            Slice<VarDeclaration> __r918 = ad.fields.opSlice().copy();
-                            int __key917 = 0;
-                            for (; (__key917 < __r918.getLength());__key917 += 1) {
-                                VarDeclaration v = __r918.get(__key917);
-                                int j = __key917;
+                            Slice<VarDeclaration> __r920 = ad.fields.opSlice().copy();
+                            int __key919 = 0;
+                            for (; (__key919 < __r920.getLength());__key919 += 1) {
+                                VarDeclaration v = __r920.get(__key919);
+                                int j = __key919;
                                 if ((v == var) || !var.isOverlappedWith(v))
+                                {
                                     continue;
+                                }
                                 v.ctorinit = true;
                                 (sc.get()).ctorflow.fieldinit.get(j).csx.value = CSX.this_ctor;
                             }
@@ -147,7 +157,9 @@ public class declaration {
                 else if ((!pequals(fd, (sc.get()).func.value)))
                 {
                     if (var.type.value.isMutable())
+                    {
                         result = false;
+                    }
                     else if ((sc.get()).func.value.fes.value != null)
                     {
                         BytePtr p = pcopy(var.isField() ? new BytePtr("field") : var.kind());
@@ -306,7 +318,9 @@ public class declaration {
                 {
                     Dsymbol p = this.toParent();
                     if ((p != null) && (this.isPostBlitDeclaration() != null))
+                    {
                         p.error(loc, new BytePtr("is not copyable because it is annotated with `@disable`"));
+                    }
                     else
                     {
                         if (isAliasedDeclaration)
@@ -318,7 +332,9 @@ public class declaration {
                                     FuncDeclaration ovl = fd;
                                     for (; ovl != null;ovl = (FuncDeclaration)ovl.overnext) {
                                         if ((ovl.storage_class.value & 137438953472L) == 0)
+                                        {
                                             return false;
+                                        }
                                     }
                                 }
                             }
@@ -339,7 +355,9 @@ public class declaration {
         public  int checkModify(Loc loc, Ptr<Scope> sc, Expression e1, int flag) {
             VarDeclaration v = this.isVarDeclaration();
             if ((v != null) && (v.canassign != 0))
+            {
                 return Modifiable.initialization;
+            }
             if (this.isParameter() || this.isResult())
             {
                 {
@@ -349,7 +367,9 @@ public class declaration {
                         {
                             BytePtr s = pcopy(this.isParameter() && (!pequals(this.parent.value.ident.value, Id.ensure)) ? new BytePtr("parameter") : new BytePtr("result"));
                             if (flag == 0)
+                            {
                                 this.error(loc, new BytePtr("cannot modify %s `%s` in contract"), s, this.toChars());
+                            }
                             return Modifiable.initialization;
                         }
                     }
@@ -364,7 +384,9 @@ public class declaration {
                         if ((pequals((scx.get()).func.value, vthis.parent.value)) && (((scx.get()).flags.value & 96) != 0))
                         {
                             if (flag == 0)
+                            {
                                 this.error(loc, new BytePtr("cannot modify parameter 'this' in contract"));
+                            }
                             return Modifiable.initialization;
                         }
                     }
@@ -373,7 +395,9 @@ public class declaration {
             if ((v != null) && this.isCtorinit() || this.isField())
             {
                 if (((this.storage_class.value & 2113536L) == 2113536L))
+                {
                     return Modifiable.initialization;
+                }
                 return modifyFieldVar(loc, sc, v, e1) ? Modifiable.initialization : Modifiable.yes;
             }
             return Modifiable.yes;
@@ -385,7 +409,9 @@ public class declaration {
             {
                 s = this.type.value.toDsymbol(this._scope.value);
                 if (s != null)
+                {
                     s = s.search(loc, ident, flags);
+                }
             }
             return s;
         }
@@ -528,7 +554,9 @@ public class declaration {
 
         public  Type getType() {
             if (this.isexp)
+            {
                 return null;
+            }
             if (this.tupletype == null)
             {
                 {
@@ -553,12 +581,16 @@ public class declaration {
                             Parameter arg = new Parameter(0L, t, null, null, null);
                             args.get().set(i, arg);
                             if (t.deco.value == null)
+                            {
                                 hasdeco = 0;
+                            }
                         }
                     }
                     this.tupletype = new TypeTuple(args);
                     if (hasdeco != 0)
+                    {
                         return typeSemantic(this.tupletype, Loc.initial.value, null);
+                    }
                 }
                 finally {
                 }
@@ -680,7 +712,9 @@ public class declaration {
             if ((this.semanticRun.value >= PASS.semanticdone))
             {
                 if (this.type.value != null)
+                {
                     return false;
+                }
                 Dsymbol sa = this.aliassym.value.toAlias();
                 {
                     FuncDeclaration fd = sa.isFuncDeclaration();
@@ -735,9 +769,13 @@ public class declaration {
                 return false;
             }
             if (this.overnext != null)
+            {
                 return this.overnext.overloadInsert(s);
+            }
             if ((s == this))
+            {
                 return true;
+            }
             this.overnext = s;
             return true;
         }
@@ -748,7 +786,9 @@ public class declaration {
 
         public  Type getType() {
             if (this.type.value != null)
+            {
                 return this.type.value;
+            }
             return this.toAlias().getType();
         }
 
@@ -760,24 +800,32 @@ public class declaration {
                 int olderrors = global.errors.value;
                 Dsymbol s = this.type.value.toDsymbol(this._scope.value);
                 if ((global.errors.value != olderrors))
+                {
                     /*goto Lerr*//*unrolled goto*/
                 /*Lerr:*/
                     if (global.gag.value != 0)
+                    {
                         return this;
+                    }
                     this.aliassym.value = new AliasDeclaration(this.loc.value, this.ident.value, Type.terror.value);
                     this.type.value = Type.terror.value;
                     return this.aliassym.value;
+                }
                 if (s != null)
                 {
                     s = s.toAlias();
                     if ((global.errors.value != olderrors))
+                    {
                         /*goto Lerr*//*unrolled goto*/
                     /*Lerr:*/
                         if (global.gag.value != 0)
+                        {
                             return this;
+                        }
                         this.aliassym.value = new AliasDeclaration(this.loc.value, this.ident.value, Type.terror.value);
                         this.type.value = Type.terror.value;
                         return this.aliassym.value;
+                    }
                     this.aliassym.value = s;
                     this.inuse.value = 0;
                 }
@@ -785,21 +833,29 @@ public class declaration {
                 {
                     Type t = typeSemantic(this.type.value, this.loc.value, this._scope.value);
                     if (((t.ty.value & 0xFF) == ENUMTY.Terror))
+                    {
                         /*goto Lerr*//*unrolled goto*/
                     /*Lerr:*/
                         if (global.gag.value != 0)
+                        {
                             return this;
+                        }
                         this.aliassym.value = new AliasDeclaration(this.loc.value, this.ident.value, Type.terror.value);
                         this.type.value = Type.terror.value;
                         return this.aliassym.value;
+                    }
                     if ((global.errors.value != olderrors))
+                    {
                         /*goto Lerr*//*unrolled goto*/
                     /*Lerr:*/
                         if (global.gag.value != 0)
+                        {
                             return this;
+                        }
                         this.aliassym.value = new AliasDeclaration(this.loc.value, this.ident.value, Type.terror.value);
                         this.type.value = Type.terror.value;
                         return this.aliassym.value;
+                    }
                     this.inuse.value = 0;
                 }
             }
@@ -808,7 +864,9 @@ public class declaration {
                 this.error(new BytePtr("recursive alias declaration"));
             /*Lerr:*/
                 if (global.gag.value != 0)
+                {
                     return this;
+                }
                 this.aliassym.value = new AliasDeclaration(this.loc.value, this.ident.value, Type.terror.value);
                 this.type.value = Type.terror.value;
                 return this.aliassym.value;
@@ -903,7 +961,9 @@ public class declaration {
                 {
                     OverDeclaration od = this.aliassym.isOverDeclaration();
                     if ((od) != null)
+                    {
                         this.hasOverloads = od.hasOverloads;
+                    }
                 }
             }
             else
@@ -923,10 +983,14 @@ public class declaration {
 
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
+            {
                 return true;
+            }
             Dsymbol s = isDsymbol(o);
             if (s == null)
+            {
                 return false;
+            }
             OverDeclaration od1 = this;
             {
                 OverDeclaration od2 = s.isOverDeclaration();
@@ -938,7 +1002,9 @@ public class declaration {
             if ((pequals(this.aliassym, s)))
             {
                 if (this.hasOverloads)
+                {
                     return true;
+                }
                 {
                     FuncDeclaration fd = s.isFuncDeclaration();
                     if ((fd) != null)
@@ -959,9 +1025,13 @@ public class declaration {
 
         public  boolean overloadInsert(Dsymbol s) {
             if (this.overnext != null)
+            {
                 return this.overnext.overloadInsert(s);
+            }
             if ((pequals(s, this)))
+            {
                 return true;
+            }
             this.overnext = s;
             return true;
         }
@@ -1118,7 +1188,9 @@ public class declaration {
                 return ;
             }
             if (!this.isField())
+            {
                 return ;
+            }
             assert((this.storage_class.value & 134217763L) == 0);
             if (this.offset.value != 0)
             {
@@ -1138,7 +1210,7 @@ public class declaration {
             Type t = this.type.value.toBasetype();
             if ((this.storage_class.value & 2097152L) != 0)
             {
-                t = Type.tvoidptr;
+                t = Type.tvoidptr.value;
             }
             Type tv = t.baseElemOf();
             if (((tv.ty.value & 0xFF) == ENUMTY.Tstruct))
@@ -1154,7 +1226,9 @@ public class declaration {
             }
             ad.fields.push(this);
             if (((t.ty.value & 0xFF) == ENUMTY.Terror))
+            {
                 return ;
+            }
             long sz = t.size(this.loc.value);
             assert((sz != -1L) && (sz < 4294967295L));
             int memsize = (int)sz;
@@ -1174,9 +1248,13 @@ public class declaration {
                     for (; s != null;s = s.parent.value){
                         AggregateDeclaration ad = s.isMember();
                         if (ad != null)
+                        {
                             return ad;
+                        }
                         if ((s.parent.value == null) || (s.parent.value.isTemplateMixin() == null))
+                        {
                             break;
+                        }
                     }
                 }
             }
@@ -1197,7 +1275,9 @@ public class declaration {
 
         public  boolean isImportedSymbol() {
             if ((this.protection.kind.value == Prot.Kind.export_) && (this._init.value == null) && ((this.storage_class.value & 1L) != 0) || (this.parent.value.isModule() != null))
+            {
                 return true;
+            }
             return false;
         }
 
@@ -1258,18 +1338,24 @@ public class declaration {
                 return null;
             }
             if (this.iscatchvar)
+            {
                 return null;
+            }
             Expression e = null;
             Type tv = this.type.value.baseElemOf();
             if (((tv.ty.value & 0xFF) == ENUMTY.Tstruct))
             {
                 StructDeclaration sd = ((TypeStruct)tv).sym.value;
                 if ((sd.dtor.value == null) || sd.errors.value)
+                {
                     return null;
+                }
                 long sz = this.type.value.size();
                 assert((sz != -1L));
                 if (sz == 0)
+                {
                     return null;
+                }
                 if (((this.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tstruct))
                 {
                     e = new VarExp(this.loc.value, this, true);
@@ -1322,7 +1408,9 @@ public class declaration {
             {
                 Dsymbol sym = this.toParent().isAggregateDeclaration();
                 if ((sym != null) && (sym.isSpeculative() == null))
+                {
                     global.gag.value = 0;
+                }
             }
             if (this._scope.value != null)
             {
@@ -1359,19 +1447,29 @@ public class declaration {
 
         public  boolean checkNestedReference(Ptr<Scope> sc, Loc loc) {
             if (((sc.get()).intypeof.value == 1) || (((sc.get()).flags.value & 128) != 0))
+            {
                 return false;
+            }
             if ((this.parent.value == null) || (pequals(this.parent.value, (sc.get()).parent.value)))
+            {
                 return false;
+            }
             if (this.isDataseg() || ((this.storage_class.value & 8388608L) != 0))
+            {
                 return false;
+            }
             FuncDeclaration fdthis = (sc.get()).parent.value.isFuncDeclaration();
             if (fdthis == null)
+            {
                 return false;
+            }
             Dsymbol p = this.toParent2();
             ensureStaticLinkTo(fdthis, p);
             FuncDeclaration fdv = p.isFuncDeclaration();
             if ((fdv == null) || (pequals(fdv, fdthis)))
+            {
                 return false;
+            }
             {
                 int i = 0;
                 for (; 1 != 0;i++){
@@ -1381,15 +1479,21 @@ public class declaration {
                         break;
                     }
                     if ((pequals(this.nestedrefs.get(i), fdthis)))
+                    {
                         break;
+                    }
                 }
             }
             if ((pequals(fdthis.ident.value, Id.require)) || (pequals(fdthis.ident.value, Id.ensure)))
+            {
                 return false;
+            }
             if (loc.isValid())
             {
                 if ((fdthis.getLevelAndCheck(loc, sc, fdv) == -2))
+                {
                     return true;
+                }
             }
             if (((sc.get()).intypeof.value == 0) && (((sc.get()).flags.value & 256) == 0) && ((fdv.flags & FUNCFLAG.compileTimeOnly) != 0) || ((fdthis.flags & FUNCFLAG.compileTimeOnly) == 0))
             {
@@ -1402,7 +1506,9 @@ public class declaration {
                             break;
                         }
                         if ((pequals(fdv.closureVars.get(i), this)))
+                        {
                             break;
+                        }
                     }
                 }
             }
@@ -1417,7 +1523,9 @@ public class declaration {
                 assert(ez != null);
                 Expression e = ez.exp.value;
                 if (((e.op.value & 0xFF) == 95) || ((e.op.value & 0xFF) == 96))
+                {
                     e = ((AssignExp)e).e2.value;
+                }
                 return lambdaCheckForNestedRef(e, sc);
             }
             return false;
@@ -1425,7 +1533,9 @@ public class declaration {
 
         public  Dsymbol toAlias() {
             if ((this.type.value == null) || (this.type.value.deco.value == null) && (this._scope.value != null))
+            {
                 dsymbolSemantic(this, this._scope.value);
+            }
             assert((!pequals(this, this.aliassym.value)));
             Dsymbol s = this.aliassym.value != null ? this.aliassym.value.toAlias() : this;
             return s;
@@ -1445,7 +1555,9 @@ public class declaration {
 
         public  void addMaybe(VarDeclaration v) {
             if (this.maybes == null)
+            {
                 this.maybes = refPtr(new DArray<VarDeclaration>());
+            }
             (this.maybes.get()).push(v);
         }
 

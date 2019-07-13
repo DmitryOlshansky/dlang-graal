@@ -32,10 +32,14 @@ public class filecache {
                 BytePtr prevBuf = pcopy(buf);
                 for (; ((buf.get() & 0xFF) != 10) && ((buf.get() & 0xFF) != 13);buf.postInc()){
                     if (buf.get() == 0)
+                    {
                         break;
+                    }
                 }
                 if (((buf.get() & 0xFF) == 13) && (((buf.plus(1)).get() & 0xFF) == 10))
+                {
                     buf.postInc();
+                }
                 this.lines.value.append(toByteSlice(prevBuf.slice(0,((buf.minus(prevBuf))))));
                 buf.postInc();
             }
@@ -61,7 +65,9 @@ public class filecache {
                 if ((payload) != null)
                 {
                     if ((payload != null))
+                    {
                         return ((FileAndLines)(payload.get()).ptrvalue);
+                    }
                 }
             }
             FileAndLines lines = new FileAndLines(file);

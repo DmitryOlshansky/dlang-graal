@@ -131,13 +131,15 @@ public class statement {
         public  Statement visitMembers(Loc loc, Ptr<DArray<Dsymbol>> a) {
             Ref<Ptr<DArray<Dsymbol>>> a_ref = ref(a);
             if (a_ref.value == null)
+            {
                 return null;
+            }
             Ref<Ptr<DArray<Statement>>> statements = ref(refPtr(new DArray<Statement>()));
             {
-                Ref<Slice<Dsymbol>> __r1561 = ref((a_ref.value.get()).opSlice().copy());
-                IntRef __key1562 = ref(0);
-                for (; (__key1562.value < __r1561.value.getLength());__key1562.value += 1) {
-                    Ref<Dsymbol> s = ref(__r1561.value.get(__key1562.value));
+                Ref<Slice<Dsymbol>> __r1563 = ref((a_ref.value.get()).opSlice().copy());
+                IntRef __key1564 = ref(0);
+                for (; (__key1564.value < __r1563.value.getLength());__key1564.value += 1) {
+                    Ref<Dsymbol> s = ref(__r1563.value.get(__key1564.value));
                     (statements.value.get()).push(toStatement(s.value));
                 }
             }
@@ -152,13 +154,15 @@ public class statement {
         public  void visit(TemplateMixin tm) {
             Ref<Ptr<DArray<Statement>>> a = ref(refPtr(new DArray<Statement>()));
             {
-                Ref<Slice<Dsymbol>> __r1563 = ref((tm.members.value.get()).opSlice().copy());
-                IntRef __key1564 = ref(0);
-                for (; (__key1564.value < __r1563.value.getLength());__key1564.value += 1) {
-                    Ref<Dsymbol> m = ref(__r1563.value.get(__key1564.value));
+                Ref<Slice<Dsymbol>> __r1565 = ref((tm.members.value.get()).opSlice().copy());
+                IntRef __key1566 = ref(0);
+                for (; (__key1566.value < __r1565.value.getLength());__key1566.value += 1) {
+                    Ref<Dsymbol> m = ref(__r1565.value.get(__key1566.value));
                     Ref<Statement> s = ref(toStatement(m.value));
                     if (s.value != null)
+                    {
                         (a.value.get()).push(s.value);
+                    }
                 }
             }
             this.result.value = new CompoundStatement(tm.loc.value, a.value);
@@ -288,11 +292,11 @@ public class statement {
             {
                 b = (a.get()).copy();
                 {
-                    Slice<Statement> __r1560 = (a.get()).opSlice().copy();
-                    int __key1559 = 0;
-                    for (; (__key1559 < __r1560.getLength());__key1559 += 1) {
-                        Statement s = __r1560.get(__key1559);
-                        int i = __key1559;
+                    Slice<Statement> __r1562 = (a.get()).opSlice().copy();
+                    int __key1561 = 0;
+                    for (; (__key1561 < __r1562.getLength());__key1561 += 1) {
+                        Statement s = __r1562.get(__key1561);
+                        int i = __key1561;
                         b.get().set(i, s != null ? s.syntaxCopy() : null);
                     }
                 }
@@ -312,15 +316,15 @@ public class statement {
         }
 
         public  void error(BytePtr format, Object... ap) {
-            verror(this.loc, format, new Slice<>(ap), null, null, new BytePtr("Error: "));
+            verror(this.loc, format, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
         }
 
         public  void warning(BytePtr format, Object... ap) {
-            vwarning(this.loc, format, new Slice<>(ap));
+            vwarning(this.loc, format, new RawSlice<>(ap));
         }
 
         public  void deprecation(BytePtr format, Object... ap) {
-            vdeprecation(this.loc, format, new Slice<>(ap), null, null);
+            vdeprecation(this.loc, format, new RawSlice<>(ap), null, null);
         }
 
         public  Statement getRelatedLabeled() {
@@ -336,16 +340,19 @@ public class statement {
         }
 
         public  boolean usesEH() {
+            // skipping duplicate class UsesEH
             UsesEH ueh = new UsesEH();
             return walkPostorder(this, ueh);
         }
 
         public  boolean comeFrom() {
+            // skipping duplicate class ComeFrom
             ComeFrom cf = new ComeFrom();
             return walkPostorder(this, cf);
         }
 
         public  boolean hasCode() {
+            // skipping duplicate class HasCode
             HasCode hc = new HasCode();
             return walkPostorder(this, hc);
         }
@@ -479,8 +486,11 @@ public class statement {
         }
     }
     public static Statement toStatement(Dsymbol s) {
+        // skipping duplicate class ToStmt
         if (s == null)
+        {
             return null;
+        }
         ToStmt v = new ToStmt();
         s.accept(v);
         return v.result.value;
@@ -631,7 +641,9 @@ public class statement {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
                 if (expressionsToString(buf, sc, this.exps))
+                {
                     return errorStatements.invoke();
+                }
                 int errors = global.errors.value;
                 int len = buf.value.offset.value;
                 ByteSlice str = buf.value.extractChars().slice(0,len).copy();
@@ -693,10 +705,10 @@ public class statement {
             this.statements = refPtr(new DArray<Statement>());
             (this.statements.get()).reserve(sts.getLength());
             {
-                Slice<Statement> __r1565 = sts.copy();
-                int __key1566 = 0;
-                for (; (__key1566 < __r1565.getLength());__key1566 += 1) {
-                    Statement s = __r1565.get(__key1566);
+                Slice<Statement> __r1567 = sts.copy();
+                int __key1568 = 0;
+                for (; (__key1568 < __r1567.getLength());__key1568 += 1) {
+                    Statement s = __r1567.get(__key1568);
                     (this.statements.get()).push(s);
                 }
             }
@@ -717,15 +729,17 @@ public class statement {
         public  ReturnStatement isReturnStatement() {
             ReturnStatement rs = null;
             {
-                Slice<Statement> __r1567 = (this.statements.get()).opSlice().copy();
-                int __key1568 = 0;
-                for (; (__key1568 < __r1567.getLength());__key1568 += 1) {
-                    Statement s = __r1567.get(__key1568);
+                Slice<Statement> __r1569 = (this.statements.get()).opSlice().copy();
+                int __key1570 = 0;
+                for (; (__key1570 < __r1569.getLength());__key1570 += 1) {
+                    Statement s = __r1569.get(__key1570);
                     if (s != null)
                     {
                         rs = s.isReturnStatement();
                         if (rs != null)
+                        {
                             break;
+                        }
                     }
                 }
             }
@@ -742,7 +756,9 @@ public class statement {
                     {
                         s = s.last();
                         if (s != null)
+                        {
                             break;
+                        }
                     }
                 }
             }
@@ -776,11 +792,11 @@ public class statement {
         public  Statement syntaxCopy() {
             Ptr<DArray<Statement>> a = refPtr(new DArray<Statement>((this.statements.get()).length.value));
             {
-                Slice<Statement> __r1570 = (this.statements.get()).opSlice().copy();
-                int __key1569 = 0;
-                for (; (__key1569 < __r1570.getLength());__key1569 += 1) {
-                    Statement s = __r1570.get(__key1569);
-                    int i = __key1569;
+                Slice<Statement> __r1572 = (this.statements.get()).opSlice().copy();
+                int __key1571 = 0;
+                for (; (__key1571 < __r1572.getLength());__key1571 += 1) {
+                    Statement s = __r1572.get(__key1571);
+                    int i = __key1571;
                     a.get().set(i, s != null ? s.syntaxCopy() : null);
                 }
             }
@@ -812,11 +828,11 @@ public class statement {
         public  Statement syntaxCopy() {
             Ptr<DArray<Statement>> a = refPtr(new DArray<Statement>((this.statements.get()).length.value));
             {
-                Slice<Statement> __r1572 = (this.statements.get()).opSlice().copy();
-                int __key1571 = 0;
-                for (; (__key1571 < __r1572.getLength());__key1571 += 1) {
-                    Statement s = __r1572.get(__key1571);
-                    int i = __key1571;
+                Slice<Statement> __r1574 = (this.statements.get()).opSlice().copy();
+                int __key1573 = 0;
+                for (; (__key1573 < __r1574.getLength());__key1573 += 1) {
+                    Statement s = __r1574.get(__key1573);
+                    int i = __key1573;
                     a.get().set(i, s != null ? s.syntaxCopy() : null);
                 }
             }
@@ -865,7 +881,9 @@ public class statement {
 
         public  ReturnStatement isReturnStatement() {
             if (this.statement.value != null)
+            {
                 return this.statement.value.isReturnStatement();
+            }
             return null;
         }
 
@@ -927,11 +945,11 @@ public class statement {
             }
             Ptr<DArray<Statement>> b = refPtr(new DArray<Statement>((a.get()).length.value));
             {
-                Slice<Statement> __r1574 = (a.get()).opSlice().copy();
-                int __key1573 = 0;
-                for (; (__key1573 < __r1574.getLength());__key1573 += 1) {
-                    Statement s = __r1574.get(__key1573);
-                    int i = __key1573;
+                Slice<Statement> __r1576 = (a.get()).opSlice().copy();
+                int __key1575 = 0;
+                for (; (__key1575 < __r1576.getLength());__key1575 += 1) {
+                    Statement s = __r1576.get(__key1575);
+                    int i = __key1575;
                     b.get().set(i, s != null ? new ForwardingStatement(s.loc, this.sym, s) : null);
                 }
             }
@@ -1267,12 +1285,18 @@ public class statement {
             {
                 DebugCondition dc = this.condition.isDebugCondition();
                 if (dc != null)
+                {
                     s = new DebugStatement(this.loc, this.ifbody.value);
+                }
                 else
+                {
                     s = this.ifbody.value;
+                }
             }
             else
+            {
                 s = this.elsebody.value;
+            }
             Ptr<DArray<Statement>> a = refPtr(new DArray<Statement>());
             (a.get()).push(s);
             return a;
@@ -1435,11 +1459,17 @@ public class statement {
                         Ref<VarDeclaration> v = ref(vd_ref.value);
                         for (; (v.value != null) && (!pequals(v.value, lastVar.value));v.value = v.value.lastVar.value){
                             if (v.value.isDataseg() || ((v.value.storage_class.value & 1099520016384L) != 0) || (v.value._init.value.isVoidInitializer() != null))
+                            {
                                 continue;
+                            }
                             if ((pequals(vd_ref.value.ident.value, Id.withSym.value)))
+                            {
                                 error(new BytePtr("`switch` skips declaration of `with` temporary at %s"), v.value.loc.value.toChars(global.params.showColumns.value));
+                            }
                             else
+                            {
                                 error(new BytePtr("`switch` skips declaration of variable `%s` at %s"), v.value.toPrettyChars(false), v.value.loc.value.toChars(global.params.showColumns.value));
+                            }
                             return true;
                         }
                     }
@@ -1448,14 +1478,18 @@ public class statement {
             };
             boolean error = true;
             if ((this.sdefault != null) && checkVar.invoke(this.sdefault.lastVar))
-                return false;
             {
-                Slice<CaseStatement> __r1579 = (this.cases.get()).opSlice().copy();
-                int __key1580 = 0;
-                for (; (__key1580 < __r1579.getLength());__key1580 += 1) {
-                    CaseStatement scase = __r1579.get(__key1580);
+                return false;
+            }
+            {
+                Slice<CaseStatement> __r1581 = (this.cases.get()).opSlice().copy();
+                int __key1582 = 0;
+                for (; (__key1582 < __r1581.getLength());__key1582 += 1) {
+                    CaseStatement scase = __r1581.get(__key1582);
                     if ((scase != null) && checkVar.invoke(scase.lastVar))
+                    {
                         return false;
+                    }
                 }
             }
             return false;
@@ -1844,11 +1878,11 @@ public class statement {
         public  Statement syntaxCopy() {
             Ptr<DArray<Catch>> a = refPtr(new DArray<Catch>((this.catches.get()).length));
             {
-                Slice<Catch> __r1582 = (this.catches.get()).opSlice().copy();
-                int __key1581 = 0;
-                for (; (__key1581 < __r1582.getLength());__key1581 += 1) {
-                    Catch c = __r1582.get(__key1581);
-                    int i = __key1581;
+                Slice<Catch> __r1584 = (this.catches.get()).opSlice().copy();
+                int __key1583 = 0;
+                for (; (__key1583 < __r1584.getLength());__key1583 += 1) {
+                    Catch c = __r1584.get(__key1583);
+                    int i = __key1583;
                     a.get().set(i, c.syntaxCopy());
                 }
             }
@@ -2062,10 +2096,10 @@ public class statement {
             if (a != null)
             {
                 {
-                    Slice<Statement> __r1583 = (a.get()).opSlice().copy();
-                    int __key1584 = 0;
-                    for (; (__key1584 < __r1583.getLength());__key1584 += 1) {
-                        Statement s = __r1583.get(__key1584);
+                    Slice<Statement> __r1585 = (a.get()).opSlice().copy();
+                    int __key1586 = 0;
+                    for (; (__key1586 < __r1585.getLength());__key1586 += 1) {
+                        Statement s = __r1585.get(__key1586);
                         s = new DebugStatement(this.loc, s);
                     }
                 }
@@ -2117,9 +2151,13 @@ public class statement {
                 else
                 {
                     if (this.label.statement.os != null)
+                    {
                         this.error(new BytePtr("cannot `goto` in to `%s` block"), Token.toChars(this.label.statement.os.tok));
+                    }
                     else
+                    {
                         this.error(new BytePtr("cannot `goto` out of `%s` block"), Token.toChars(this.os.tok));
+                    }
                     return true;
                 }
             }
@@ -2130,7 +2168,9 @@ public class statement {
             }
             VarDeclaration vd = this.label.statement.lastVar;
             if ((vd == null) || vd.isDataseg() || ((vd.storage_class.value & 8388608L) != 0))
+            {
                 return false;
+            }
             VarDeclaration last = this.lastVar;
             for (; (last != null) && (!pequals(last, vd));) {
                 last = last.lastVar.value;
@@ -2211,7 +2251,9 @@ public class statement {
 
         public  Statement scopeCode(Ptr<Scope> sc, Ptr<Statement> sentry, Ptr<Statement> sexit, Ptr<Statement> sfinally) {
             if (this.statement.value != null)
+            {
                 this.statement.value = this.statement.value.scopeCode(sc, sentry, sexit, sfinally);
+            }
             else
             {
                 sentry.set(0, null);
@@ -2349,7 +2391,7 @@ public class statement {
     }
     public static class GccAsmStatement extends AsmStatement
     {
-        public long stc = 0;
+        public long stc = 0L;
         public Expression insn = null;
         public Ptr<DArray<Expression>> args = null;
         public int outputargs = 0;
@@ -2391,7 +2433,7 @@ public class statement {
     }
     public static class CompoundAsmStatement extends CompoundStatement
     {
-        public Ref<Long> stc = ref(0);
+        public Ref<Long> stc = ref(0L);
         public  CompoundAsmStatement(Loc loc, Ptr<DArray<Statement>> statements, long stc) {
             super(loc, statements);
             this.stc.value = stc;
@@ -2400,11 +2442,11 @@ public class statement {
         public  CompoundAsmStatement syntaxCopy() {
             Ptr<DArray<Statement>> a = refPtr(new DArray<Statement>((this.statements.get()).length.value));
             {
-                Slice<Statement> __r1586 = (this.statements.get()).opSlice().copy();
-                int __key1585 = 0;
-                for (; (__key1585 < __r1586.getLength());__key1585 += 1) {
-                    Statement s = __r1586.get(__key1585);
-                    int i = __key1585;
+                Slice<Statement> __r1588 = (this.statements.get()).opSlice().copy();
+                int __key1587 = 0;
+                for (; (__key1587 < __r1588.getLength());__key1587 += 1) {
+                    Statement s = __r1588.get(__key1587);
+                    int i = __key1587;
                     a.get().set(i, s != null ? s.syntaxCopy() : null);
                 }
             }
@@ -2441,11 +2483,11 @@ public class statement {
         public  Statement syntaxCopy() {
             Ptr<DArray<Dsymbol>> m = refPtr(new DArray<Dsymbol>((this.imports.get()).length.value));
             {
-                Slice<Dsymbol> __r1588 = (this.imports.get()).opSlice().copy();
-                int __key1587 = 0;
-                for (; (__key1587 < __r1588.getLength());__key1587 += 1) {
-                    Dsymbol s = __r1588.get(__key1587);
-                    int i = __key1587;
+                Slice<Dsymbol> __r1590 = (this.imports.get()).opSlice().copy();
+                int __key1589 = 0;
+                for (; (__key1589 < __r1590.getLength());__key1589 += 1) {
+                    Dsymbol s = __r1590.get(__key1589);
+                    int i = __key1589;
                     m.get().set(i, s.syntaxCopy(null));
                 }
             }

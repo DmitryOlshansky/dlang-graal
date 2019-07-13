@@ -58,23 +58,33 @@ public class dstruct {
         if (sc_ref.value != null)
         {
             if ((sc_ref.value.get()).func.value == null)
+            {
                 return ;
+            }
             if ((sc_ref.value.get()).intypeof.value != 0)
+            {
                 return ;
+            }
             if (((sc_ref.value.get()).flags.value & 384) != 0)
+            {
                 return ;
+            }
         }
         if (t == null)
+        {
             return ;
+        }
         Function1<TypeVector,Void> visitVector = new Function1<TypeVector,Void>(){
             public Void invoke(TypeVector t) {
                 semanticTypeInfo(sc_ref.value, t.basetype.value);
+                return null;
             }
         };
         Function1<TypeAArray,Void> visitAArray = new Function1<TypeAArray,Void>(){
             public Void invoke(TypeAArray t) {
                 semanticTypeInfo(sc_ref.value, t.index.value);
                 semanticTypeInfo(sc_ref.value, t.next.value);
+                return null;
             }
         };
         Function1<TypeStruct,Void> visitStruct = new Function1<TypeStruct,Void>(){
@@ -97,9 +107,13 @@ public class dstruct {
                     sd.value.requestTypeInfo.value = true;
                 }
                 if (sd.value.members.value == null)
+                {
                     return null;
+                }
                 if ((sd.value.xeq.value == null) && (sd.value.xcmp.value == null) && (sd.value.postblit.value == null) && (sd.value.dtor.value == null) && (sd.value.xhash.value == null) && (search_toString(sd.value) == null))
+                {
                     return null;
+                }
                 if ((sd.value.semanticRun.value >= PASS.semantic3))
                 {
                 }
@@ -108,7 +122,9 @@ public class dstruct {
                     if ((ti.value) != null)
                     {
                         if ((ti.value.minst.value != null) && !ti.value.minst.value.isRoot())
+                        {
                             dmodule.Module.addDeferredSemantic3(sd.value);
+                        }
                     }
                     else
                     {
@@ -118,6 +134,7 @@ public class dstruct {
                         }
                     }
                 }
+                return null;
             }
         };
         Function1<TypeTuple,Void> visitTuple = new Function1<TypeTuple,Void>(){
@@ -125,14 +142,15 @@ public class dstruct {
                 if (t.arguments.value != null)
                 {
                     {
-                        Ref<Slice<Parameter>> __r1111 = ref((t.arguments.value.get()).opSlice().copy());
-                        IntRef __key1112 = ref(0);
-                        for (; (__key1112.value < __r1111.value.getLength());__key1112.value += 1) {
-                            Parameter arg = __r1111.value.get(__key1112.value);
+                        Ref<Slice<Parameter>> __r1113 = ref((t.arguments.value.get()).opSlice().copy());
+                        IntRef __key1114 = ref(0);
+                        for (; (__key1114.value < __r1113.value.getLength());__key1114.value += 1) {
+                            Parameter arg = __r1113.value.get(__key1114.value);
                             semanticTypeInfo(sc_ref.value, arg.type.value);
                         }
                     }
                 }
+                return null;
             }
         };
         Type tb = t.toBasetype();
@@ -201,7 +219,9 @@ public class dstruct {
             if (inObject)
             {
                 if ((pequals(id, Id.ModuleInfo)) && (dmodule.Module.moduleinfo == null))
+                {
                     dmodule.Module.moduleinfo = this;
+                }
             }
         }
 
@@ -220,14 +240,18 @@ public class dstruct {
                 int errors = global.startGagging();
                 semantic3(this.xeq.value, this.xeq.value._scope.value);
                 if (global.endGagging(errors))
+                {
                     this.xeq.value = xerreq.value;
+                }
             }
             if ((this.xcmp.value != null) && (this.xcmp.value._scope.value != null) && (this.xcmp.value.semanticRun.value < PASS.semantic3done))
             {
                 int errors = global.startGagging();
                 semantic3(this.xcmp.value, this.xcmp.value._scope.value);
                 if (global.endGagging(errors))
+                {
                     this.xcmp.value = xerrcmp;
+                }
             }
             FuncDeclaration ftostr = search_toString(this);
             if ((ftostr != null) && (ftostr._scope.value != null) && (ftostr.semanticRun.value < PASS.semantic3done))
@@ -250,7 +274,9 @@ public class dstruct {
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if ((this._scope.value != null) && (this.symtab == null))
+            {
                 dsymbolSemantic(this, this._scope.value);
+            }
             if ((this.members.value == null) || (this.symtab == null))
             {
                 this.error(new BytePtr("is forward referenced when looking for `%s`"), ident.toChars());
@@ -297,12 +323,18 @@ public class dstruct {
                 this.alignsize.value = 1;
             }
             if ((this.alignment == -1))
+            {
                 this.structsize.value = this.structsize.value + this.alignsize.value - 1 & ~(this.alignsize.value - 1);
+            }
             else
+            {
                 this.structsize.value = this.structsize.value + this.alignment - 1 & ~(this.alignment - 1);
+            }
             this.sizeok.value = Sizeok.done;
             if (this.errors.value)
+            {
                 return ;
+            }
             if (this.checkOverlappedFields())
             {
                 this.errors.value = true;
@@ -310,16 +342,20 @@ public class dstruct {
             }
             this.zeroInit = true;
             {
-                Slice<VarDeclaration> __r1113 = this.fields.opSlice().copy();
-                int __key1114 = 0;
-                for (; (__key1114 < __r1113.getLength());__key1114 += 1) {
-                    VarDeclaration vd = __r1113.get(__key1114);
+                Slice<VarDeclaration> __r1115 = this.fields.opSlice().copy();
+                int __key1116 = 0;
+                for (; (__key1116 < __r1115.getLength());__key1116 += 1) {
+                    VarDeclaration vd = __r1115.get(__key1116);
                     if (vd._init.value != null)
                     {
                         if (vd._init.value.isVoidInitializer() != null)
+                        {
                             continue;
+                        }
                         if ((vd.type.value.size(vd.loc.value) == 0L))
+                        {
                             continue;
+                        }
                         Expression exp = vd.getConstInitializer(true);
                         if ((exp == null) || !_isZeroInit(exp))
                         {
@@ -341,13 +377,17 @@ public class dstruct {
                 assert((dim <= 2));
                 this.arg1type = (tt.arguments.value.get()).get(0).type.value;
                 if ((dim == 2))
+                {
                     this.arg2type = (tt.arguments.value.get()).get(1).type.value;
+                }
             }
         }
 
         public  boolean fit(Loc loc, Ptr<Scope> sc, Ptr<DArray<Expression>> elements, Type stype) {
             if (elements == null)
+            {
                 return true;
+            }
             int nfields = this.nonHiddenFields();
             int offset = 0;
             {
@@ -356,7 +396,9 @@ public class dstruct {
                 for (; (i < (elements.get()).length.value);i++){
                     Expression e = (elements.get()).get(i);
                     if (e == null)
+                    {
                         continue L_outer1;
+                    }
                     e = resolveProperties(sc, e);
                     if ((i >= nfields))
                     {
@@ -381,7 +423,9 @@ public class dstruct {
                     offset = (int)((long)v.offset.value + v.type.value.size());
                     Type t = v.type.value;
                     if (stype != null)
+                    {
                         t = t.addMod(stype.mod.value);
+                    }
                     Type origType = t;
                     Type tb = t.toBasetype();
                     boolean hasPointers = tb.hasPointers();
@@ -410,13 +454,17 @@ public class dstruct {
                             tb = t.toBasetype();
                         }
                         if (e.implicitConvTo(t) == 0)
+                        {
                             t = origType;
+                        }
                         e = e.implicitCastTo(sc, t);
                     }
                     catch(Dispatch0 __d){}
                 /*L1:*/
                     if (((e.op.value & 0xFF) == 127))
+                    {
                         return false;
+                    }
                     elements.get().set(i, doCopyOrMove(sc, e, null));
                 }
             }
@@ -425,10 +473,14 @@ public class dstruct {
 
         public  boolean isPOD() {
             if ((this.ispod != StructPOD.fwd))
+            {
                 return this.ispod == StructPOD.yes;
+            }
             this.ispod = StructPOD.yes;
             if ((this.enclosing != null) || (this.postblit.value != null) || (this.dtor.value != null) || this.hasCopyCtor)
+            {
                 this.ispod = StructPOD.no;
+            }
             {
                 int i = 0;
                 for (; (i < this.fields.length.value);i++){
@@ -546,16 +598,18 @@ public class dstruct {
             case 49:
                 StructLiteralExp sle = (StructLiteralExp)exp;
                 {
-                    int __key1115 = 0;
-                    int __limit1116 = sle.sd.fields.length.value;
-                    for (; (__key1115 < __limit1116);__key1115 += 1) {
-                        int i = __key1115;
+                    int __key1117 = 0;
+                    int __limit1118 = sle.sd.fields.length.value;
+                    for (; (__key1117 < __limit1118);__key1117 += 1) {
+                        int i = __key1117;
                         VarDeclaration field = sle.sd.fields.get(i);
                         if (field.type.value.size(field.loc.value) != 0)
                         {
                             Expression e = (sle.elements.value.get()).get(i);
                             if (e != null ? !_isZeroInit(e) : !field.type.value.isZeroInit(field.loc.value))
+                            {
                                 return false;
+                            }
                         }
                     }
                 }
@@ -564,28 +618,36 @@ public class dstruct {
                 ArrayLiteralExp ale = (ArrayLiteralExp)exp;
                 int dim = ale.elements.value != null ? (ale.elements.value.get()).length.value : 0;
                 if (((ale.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tarray))
-                    return dim == 0;
                 {
-                    int __key1117 = 0;
-                    int __limit1118 = dim;
-                    for (; (__key1117 < __limit1118);__key1117 += 1) {
-                        int i_1 = __key1117;
+                    return dim == 0;
+                }
+                {
+                    int __key1119 = 0;
+                    int __limit1120 = dim;
+                    for (; (__key1119 < __limit1120);__key1119 += 1) {
+                        int i_1 = __key1119;
                         if (!_isZeroInit(ale.getElement(i_1)))
+                        {
                             return false;
+                        }
                     }
                 }
                 return true;
             case 121:
                 StringExp se = (StringExp)exp;
                 if (((se.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tarray))
-                    return se.len.value == 0;
                 {
-                    int __key1119 = 0;
-                    int __limit1120 = se.len.value;
-                    for (; (__key1119 < __limit1120);__key1119 += 1) {
-                        int i_2 = __key1119;
+                    return se.len.value == 0;
+                }
+                {
+                    int __key1121 = 0;
+                    int __limit1122 = se.len.value;
+                    for (; (__key1121 < __limit1122);__key1121 += 1) {
+                        int i_2 = __key1121;
                         if (se.getCodeUnit(i_2) != 0)
+                        {
                             return false;
+                        }
                     }
                 }
                 return true;

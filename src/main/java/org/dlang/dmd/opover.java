@@ -303,23 +303,33 @@ public class opover {
                     Ref<Type> t1b = ref(ae.value.e1.value.type.value.toBasetype());
                     Ref<AggregateDeclaration> ad = ref(isAggregate(t1b.value));
                     if (ad.value == null)
+                    {
                         break;
+                    }
                     try {
                         if (search_function(ad.value, Id.opIndexUnary.value) != null)
                         {
                             this.result.value = resolveOpDollar(this.sc.value, ae.value, ptr(e0));
                             if (this.result.value == null)
+                            {
                                 /*goto Lfallback*/throw Dispatch0.INSTANCE;
+                            }
                             if (((this.result.value.op.value & 0xFF) == 127))
+                            {
                                 return ;
+                            }
                             Ref<Ptr<DArray<Expression>>> a = ref((ae.value.arguments.value.get()).copy());
                             Ref<Ptr<DArray<RootObject>>> tiargs = ref(opToArg(this.sc.value, e_ref.value.op.value));
                             this.result.value = new DotTemplateInstanceExp(e_ref.value.loc.value, ae.value.e1.value, Id.opIndexUnary.value, tiargs.value);
                             this.result.value = new CallExp(e_ref.value.loc.value, this.result.value, a.value);
                             if (maybeSlice)
+                            {
                                 this.result.value = trySemantic(this.result.value, this.sc.value);
+                            }
                             else
+                            {
                                 this.result.value = expressionSemantic(this.result.value, this.sc.value);
+                            }
                             if (this.result.value != null)
                             {
                                 this.result.value = Expression.combine(e0.value, this.result.value);
@@ -333,7 +343,9 @@ public class opover {
                     {
                         this.result.value = resolveOpDollar(this.sc.value, ae.value, ie.value, ptr(e0));
                         if (((this.result.value.op.value & 0xFF) == 127))
+                        {
                             return ;
+                        }
                         Ref<Ptr<DArray<Expression>>> a = ref(refPtr(new DArray<Expression>()));
                         if (ie.value != null)
                         {
@@ -350,10 +362,14 @@ public class opover {
                     if ((ad.value.aliasthis.value != null) && (!pequals(t1b.value, ae.value.att1.value)))
                     {
                         if ((ae.value.att1.value == null) && t1b.value.checkAliasThisRec())
+                        {
                             ae.value.att1.value = t1b.value;
+                        }
                         ae.value.e1.value = resolveAliasThis(this.sc.value, ae1save.value, true);
                         if (ae.value.e1.value != null)
+                        {
                             continue L_outer1;
+                        }
                     }
                     break;
                 }
@@ -394,7 +410,9 @@ public class opover {
                     Ref<Expression> e1 = ref(new DotIdExp(e_ref.value.loc.value, e_ref.value.e1.value, ad.value.aliasthis.value.ident.value));
                     Ref<UnaExp> ue = ref((UnaExp)e_ref.value.copy());
                     if ((ue.value.att1.value == null) && e_ref.value.e1.value.type.value.checkAliasThisRec())
+                    {
                         ue.value.att1.value = e_ref.value.e1.value.type.value;
+                    }
                     ue.value.e1.value = e1.value;
                     this.result.value = trySemantic(ue.value, this.sc.value);
                     return ;
@@ -450,16 +468,24 @@ public class opover {
                     {
                         this.result.value = resolveOpDollar(this.sc.value, ae_ref.value, ptr(e0));
                         if (this.result.value == null)
+                        {
                             /*goto Lfallback*/throw Dispatch0.INSTANCE;
+                        }
                         if (((this.result.value.op.value & 0xFF) == 127))
+                        {
                             return ;
+                        }
                         Ref<Ptr<DArray<Expression>>> a = ref((ae_ref.value.arguments.value.get()).copy());
                         this.result.value = new DotIdExp(ae_ref.value.loc.value, ae_ref.value.e1.value, Id.index.value);
                         this.result.value = new CallExp(ae_ref.value.loc.value, this.result.value, a.value);
                         if (maybeSlice)
+                        {
                             this.result.value = trySemantic(this.result.value, this.sc.value);
+                        }
                         else
+                        {
                             this.result.value = expressionSemantic(this.result.value, this.sc.value);
+                        }
                         if (this.result.value != null)
                         {
                             this.result.value = Expression.combine(e0.value, this.result.value);
@@ -480,7 +506,9 @@ public class opover {
                 {
                     this.result.value = resolveOpDollar(this.sc.value, ae_ref.value, ie.value, ptr(e0));
                     if (((this.result.value.op.value & 0xFF) == 127))
+                    {
                         return ;
+                    }
                     Ref<Ptr<DArray<Expression>>> a = ref(refPtr(new DArray<Expression>()));
                     if (ie.value != null)
                     {
@@ -496,10 +524,14 @@ public class opover {
                 if ((ad.value.aliasthis.value != null) && (!pequals(t1b.value, ae_ref.value.att1.value)))
                 {
                     if ((ae_ref.value.att1.value == null) && t1b.value.checkAliasThisRec())
+                    {
                         ae_ref.value.att1.value = t1b.value;
+                    }
                     ae_ref.value.e1.value = resolveAliasThis(this.sc.value, ae1save.value, true);
                     if (ae_ref.value.e1.value != null)
+                    {
                         continue L_outer2;
+                    }
                 }
                 break;
             }
@@ -567,13 +599,17 @@ public class opover {
                     {
                         s_r.value = search_function(ad2.value, id_r.value);
                         if ((s_r.value != null) && (pequals(s_r.value, s.value)))
+                        {
                             s_r.value = null;
+                        }
                     }
                     Ref<Ptr<DArray<RootObject>>> tiargs = ref(null);
                     if (((e_ref.value.op.value & 0xFF) == 93) || ((e_ref.value.op.value & 0xFF) == 94))
                     {
                         if ((ad1.value != null) && (search_function(ad1.value, Id.opUnary.value) != null))
+                        {
                             return ;
+                        }
                     }
                     if ((s.value == null) && (s_r.value == null) && ((e_ref.value.op.value & 0xFF) != 58) && ((e_ref.value.op.value & 0xFF) != 59) && ((e_ref.value.op.value & 0xFF) != 90) && ((e_ref.value.op.value & 0xFF) != 93) && ((e_ref.value.op.value & 0xFF) != 94))
                     {
@@ -597,7 +633,9 @@ public class opover {
                                 return ;
                             }
                             if ((s_r.value != null) && (pequals(s_r.value, s.value)))
+                            {
                                 s_r.value = null;
+                            }
                         }
                         if ((s.value != null) || (s_r.value != null))
                         {
@@ -643,7 +681,9 @@ public class opover {
                             else if ((m.value.last.value <= MATCH.nomatch))
                             {
                                 if (tiargs.value != null)
+                                {
                                     /*goto L1*/throw Dispatch0.INSTANCE;
+                                }
                                 m.value.lastf.value = null;
                             }
                             if (((e_ref.value.op.value & 0xFF) == 93) || ((e_ref.value.op.value & 0xFF) == 94))
@@ -675,7 +715,9 @@ public class opover {
                         {
                             s.value = search_function(ad2.value, id.value);
                             if ((s.value != null) && (pequals(s.value, s_r.value)))
+                            {
                                 s.value = null;
+                            }
                         }
                         if ((s.value != null) || (s_r.value != null))
                         {
@@ -725,7 +767,9 @@ public class opover {
                                 this.result.value = build_overload(e_ref.value.loc.value, this.sc.value, e_ref.value.e2.value, e_ref.value.e1.value, m.value.lastf.value != null ? m.value.lastf.value : s.value);
                             }
                             if (this.pop.value != null)
+                            {
                                 this.pop.value.set(0, reverseRelation(e_ref.value.op.value));
+                            }
                             return ;
                         }
                     }
@@ -736,16 +780,22 @@ public class opover {
                         if (this.result.value != null)
                         {
                             if (((e_ref.value.op.value & 0xFF) != 90) || ((e_ref.value.e1.value.op.value & 0xFF) == 20))
+                            {
                                 return ;
+                            }
                             if ((ad1.value.fields.length.value == 1) || (ad1.value.fields.length.value == 2) && (ad1.value.vthis.value != null))
                             {
                                 Ref<VarDeclaration> var = ref(ad1.value.aliasthis.value.isVarDeclaration());
                                 if ((var.value != null) && (pequals(var.value.type.value, ad1.value.fields.get(0).type.value)))
+                                {
                                     return ;
+                                }
                                 FuncDeclaration func = ad1.value.aliasthis.value.isFuncDeclaration();
                                 TypeFunction tf = (TypeFunction)func.type.value;
                                 if (tf.isref.value && (pequals(ad1.value.fields.get(0).type.value, tf.next.value)))
+                                {
                                     return ;
+                                }
                             }
                             tempResult.value = this.result.value;
                         }
@@ -754,7 +804,9 @@ public class opover {
                     {
                         this.result.value = checkAliasThisForRhs(ad2.value, this.sc.value, e_ref.value);
                         if (this.result.value != null)
+                        {
                             return ;
+                        }
                     }
                     if (tempResult.value != null)
                     {
@@ -784,15 +836,21 @@ public class opover {
                             return false;
                         }
                         if ((!pequals(t1n.value.constOf(), t2n.constOf())))
+                        {
                             return true;
+                        }
                         Ref<Type> t = ref(t1n.value);
                         for (; t.value.toBasetype().nextOf() != null;) {
                             t.value = t.value.nextOf().toBasetype();
                         }
                         if (((t.value.ty.value & 0xFF) != ENUMTY.Tstruct))
+                        {
                             return false;
+                        }
                         if (global.params.useTypeInfo.value && (Type.dtypeinfo.value != null))
+                        {
                             semanticTypeInfo(sc.value, t.value);
+                        }
                         return ((TypeStruct)t.value).sym.value.hasIdentityEquals.value;
                     }
                 };
@@ -801,7 +859,9 @@ public class opover {
                     Ref<Expression> eeq = ref(new IdentifierExp(e_ref.value.loc.value, Id.__ArrayEq.value));
                     this.result.value = new CallExp(e_ref.value.loc.value, eeq.value, e_ref.value.e1.value, e_ref.value.e2.value);
                     if (((e_ref.value.op.value & 0xFF) == 59))
+                    {
                         this.result.value = new NotExp(e_ref.value.loc.value, this.result.value);
+                    }
                     this.result.value = trySemantic(this.result.value, this.sc.value);
                     if (this.result.value == null)
                     {
@@ -831,15 +891,21 @@ public class opover {
                     Ref<Expression> e2x = ref(e_ref.value.e2.value);
                     Ref<Type> to = ref(ClassDeclaration.object.value.getType());
                     if (cd1.isInterfaceDeclaration() != null)
+                    {
                         e1x.value = new CastExp(e_ref.value.loc.value, e_ref.value.e1.value, t1.value.isMutable() ? to.value : to.value.constOf());
+                    }
                     if (cd2.isInterfaceDeclaration() != null)
+                    {
                         e2x.value = new CastExp(e_ref.value.loc.value, e_ref.value.e2.value, t2.value.isMutable() ? to.value : to.value.constOf());
+                    }
                     this.result.value = new IdentifierExp(e_ref.value.loc.value, Id.empty.value);
                     this.result.value = new DotIdExp(e_ref.value.loc.value, this.result.value, Id.object.value);
                     this.result.value = new DotIdExp(e_ref.value.loc.value, this.result.value, Id.eq.value);
                     this.result.value = new CallExp(e_ref.value.loc.value, this.result.value, e1x.value, e2x.value);
                     if (((e_ref.value.op.value & 0xFF) == 59))
+                    {
                         this.result.value = new NotExp(e_ref.value.loc.value, this.result.value);
+                    }
                     this.result.value = expressionSemantic(this.result.value, this.sc.value);
                     return ;
                 }
@@ -855,7 +921,9 @@ public class opover {
                 return ;
             }
             if (((t1.value.ty.value & 0xFF) == ENUMTY.Tarray) && ((t2.value.ty.value & 0xFF) == ENUMTY.Tarray))
+            {
                 return ;
+            }
             if (((t1.value.ty.value & 0xFF) == ENUMTY.Tpointer) || ((t2.value.ty.value & 0xFF) == ENUMTY.Tpointer))
             {
                 Ref<Byte> op2 = ref(((e_ref.value.op.value & 0xFF) == 58) ? TOK.identity : TOK.notIdentity);
@@ -867,7 +935,9 @@ public class opover {
             {
                 Ref<StructDeclaration> sd = ref(((TypeStruct)t1.value).sym.value);
                 if ((!pequals(sd.value, ((TypeStruct)t2.value).sym.value)))
+                {
                     return ;
+                }
                 if (!global.params.fieldwise.value && !needOpEquals(sd.value))
                 {
                     Ref<Byte> op2 = ref(((e_ref.value.op.value & 0xFF) == 58) ? TOK.identity : TOK.notIdentity);
@@ -876,14 +946,22 @@ public class opover {
                     return ;
                 }
                 if ((e_ref.value.att1.value != null) && (pequals(t1.value, e_ref.value.att1.value)))
+                {
                     return ;
+                }
                 if ((e_ref.value.att2.value != null) && (pequals(t2.value, e_ref.value.att2.value)))
+                {
                     return ;
+                }
                 e_ref.value = (EqualExp)e_ref.value.copy();
                 if (e_ref.value.att1.value == null)
+                {
                     e_ref.value.att1.value = t1.value;
+                }
                 if (e_ref.value.att2.value == null)
+                {
                     e_ref.value.att2.value = t2.value;
+                }
                 e_ref.value.e1.value = new DotIdExp(e_ref.value.loc.value, e_ref.value.e1.value, Id._tupleof.value);
                 e_ref.value.e2.value = new DotIdExp(e_ref.value.loc.value, e_ref.value.e2.value, Id._tupleof.value);
                 Ref<Ptr<Scope>> sc2 = ref((this.sc.value.get()).push());
@@ -923,11 +1001,17 @@ public class opover {
                             eeq.value.att1.value = e_ref.value.att1.value;
                             eeq.value.att2.value = e_ref.value.att2.value;
                             if (this.result.value == null)
+                            {
                                 this.result.value = eeq.value;
+                            }
                             else if (((e_ref.value.op.value & 0xFF) == 58))
+                            {
                                 this.result.value = new LogicalExp(e_ref.value.loc.value, TOK.andAnd, this.result.value, eeq.value);
+                            }
                             else
+                            {
                                 this.result.value = new LogicalExp(e_ref.value.loc.value, TOK.orOr, this.result.value, eeq.value);
+                            }
                         }
                     }
                     assert(this.result.value != null);
@@ -971,18 +1055,26 @@ public class opover {
                     Ref<Type> t1b = ref(ae.value.e1.value.type.value.toBasetype());
                     Ref<AggregateDeclaration> ad = ref(isAggregate(t1b.value));
                     if (ad.value == null)
+                    {
                         break;
+                    }
                     try {
                         if (search_function(ad.value, Id.opIndexOpAssign.value) != null)
                         {
                             this.result.value = resolveOpDollar(this.sc.value, ae.value, ptr(e0));
                             if (this.result.value == null)
+                            {
                                 /*goto Lfallback*/throw Dispatch0.INSTANCE;
+                            }
                             if (((this.result.value.op.value & 0xFF) == 127))
+                            {
                                 return ;
+                            }
                             this.result.value = expressionSemantic(e_ref.value.e2.value, this.sc.value);
                             if (((this.result.value.op.value & 0xFF) == 127))
+                            {
                                 return ;
+                            }
                             e_ref.value.e2.value = this.result.value;
                             Ref<Ptr<DArray<Expression>>> a = ref((ae.value.arguments.value.get()).copy());
                             (a.value.get()).insert(0, e_ref.value.e2.value);
@@ -990,9 +1082,13 @@ public class opover {
                             this.result.value = new DotTemplateInstanceExp(e_ref.value.loc.value, ae.value.e1.value, Id.opIndexOpAssign.value, tiargs.value);
                             this.result.value = new CallExp(e_ref.value.loc.value, this.result.value, a.value);
                             if (maybeSlice)
+                            {
                                 this.result.value = trySemantic(this.result.value, this.sc.value);
+                            }
                             else
+                            {
                                 this.result.value = expressionSemantic(this.result.value, this.sc.value);
+                            }
                             if (this.result.value != null)
                             {
                                 this.result.value = Expression.combine(e0.value, this.result.value);
@@ -1006,10 +1102,14 @@ public class opover {
                     {
                         this.result.value = resolveOpDollar(this.sc.value, ae.value, ie.value, ptr(e0));
                         if (((this.result.value.op.value & 0xFF) == 127))
+                        {
                             return ;
+                        }
                         this.result.value = expressionSemantic(e_ref.value.e2.value, this.sc.value);
                         if (((this.result.value.op.value & 0xFF) == 127))
+                        {
                             return ;
+                        }
                         e_ref.value.e2.value = this.result.value;
                         Ref<Ptr<DArray<Expression>>> a = ref(refPtr(new DArray<Expression>()));
                         (a.value.get()).push(e_ref.value.e2.value);
@@ -1028,10 +1128,14 @@ public class opover {
                     if ((ad.value.aliasthis.value != null) && (!pequals(t1b.value, ae.value.att1.value)))
                     {
                         if ((ae.value.att1.value == null) && t1b.value.checkAliasThisRec())
+                        {
                             ae.value.att1.value = t1b.value;
+                        }
                         ae.value.e1.value = resolveAliasThis(this.sc.value, ae1save.value, true);
                         if (ae.value.e1.value != null)
+                        {
                             continue L_outer3;
+                        }
                     }
                     break;
                 }
@@ -1040,7 +1144,9 @@ public class opover {
             }
             this.result.value = binSemanticProp(e_ref.value, this.sc.value);
             if (this.result.value != null)
+            {
                 return ;
+            }
             if (((e_ref.value.e1.value.type.value.ty.value & 0xFF) == ENUMTY.Terror) || ((e_ref.value.e2.value.type.value.ty.value & 0xFF) == ENUMTY.Terror))
             {
                 this.result.value = new ErrorExp();
@@ -1097,7 +1203,9 @@ public class opover {
                         else if ((m.value.last.value <= MATCH.nomatch))
                         {
                             if (tiargs.value != null)
+                            {
                                 /*goto L1*/throw Dispatch0.INSTANCE;
+                            }
                             m.value.lastf.value = null;
                         }
                         this.result.value = build_overload(e_ref.value.loc.value, this.sc.value, e_ref.value.e1.value, e_ref.value.e2.value, m.value.lastf.value != null ? m.value.lastf.value : s.value);
@@ -1108,7 +1216,9 @@ public class opover {
             /*L1:*/
                 this.result.value = checkAliasThisForLhs(ad1.value, this.sc.value, e_ref.value);
                 if ((this.result.value != null) || (s.value == null))
+                {
                     return ;
+                }
                 this.result.value = checkAliasThisForRhs(isAggregate(e_ref.value.e2.value.type.value), this.sc.value, e_ref.value);
             }
             finally {
@@ -1141,12 +1251,14 @@ public class opover {
     }
 
     public static Identifier opId(Expression e) {
+        // skipping duplicate class OpIdVisitor
         OpIdVisitor v = new OpIdVisitor();
         e.accept(v);
         return v.id.value;
     }
 
     public static Identifier opId_r(Expression e) {
+        // skipping duplicate class OpIdRVisitor
         OpIdRVisitor v = new OpIdRVisitor();
         e.accept(v);
         return v.id.value;
@@ -1206,43 +1318,66 @@ public class opover {
 
     public static Expression checkAliasThisForLhs(AggregateDeclaration ad, Ptr<Scope> sc, BinExp e) {
         if ((ad == null) || (ad.aliasthis.value == null))
+        {
             return null;
+        }
         if ((e.att1.value != null) && (pequals(e.e1.value.type.value, e.att1.value)))
+        {
             return null;
+        }
         Expression e1 = new DotIdExp(e.loc.value, e.e1.value, ad.aliasthis.value.ident.value);
         BinExp be = (BinExp)e.copy();
         if ((be.att1.value == null) && e.e1.value.type.value.checkAliasThisRec())
+        {
             be.att1.value = e.e1.value.type.value;
+        }
         be.e1.value = e1;
         Expression result = null;
         if (((be.op.value & 0xFF) == 71))
+        {
             result = op_overload(be, sc, null);
+        }
         else
+        {
             result = trySemantic(be, sc);
+        }
         return result;
     }
 
     public static Expression checkAliasThisForRhs(AggregateDeclaration ad, Ptr<Scope> sc, BinExp e) {
         if ((ad == null) || (ad.aliasthis.value == null))
+        {
             return null;
+        }
         if ((e.att2.value != null) && (pequals(e.e2.value.type.value, e.att2.value)))
+        {
             return null;
+        }
         Expression e2 = new DotIdExp(e.loc.value, e.e2.value, ad.aliasthis.value.ident.value);
         BinExp be = (BinExp)e.copy();
         if ((be.att2.value == null) && e.e2.value.type.value.checkAliasThisRec())
+        {
             be.att2.value = e.e2.value.type.value;
+        }
         be.e2.value = e2;
         Expression result = null;
         if (((be.op.value & 0xFF) == 71))
+        {
             result = op_overload(be, sc, null);
+        }
         else
+        {
             result = trySemantic(be, sc);
+        }
         return result;
     }
 
     public static Expression op_overload(Expression e, Ptr<Scope> sc, BytePtr pop) {
+        // skipping duplicate class OpOverload
         if (pop != null)
+        {
             pop.set(0, e.op.value);
+        }
         OpOverload v = new OpOverload(sc, pop);
         e.accept(v);
         return v.result.value;
@@ -1266,7 +1401,9 @@ public class opover {
         {
             s_r = search_function(ad2, id);
             if ((pequals(s, s_r)))
+            {
                 s_r = null;
+            }
         }
         Ptr<DArray<RootObject>> tiargs = null;
         if ((s != null) || (s_r != null))
@@ -1289,7 +1426,9 @@ public class opover {
                     {
                         functionResolve(m, s, e.loc.value, sc, tiargs, e.e1.value.type.value, ptr(args2), null);
                         if ((m.value.lastf.value != null) && m.value.lastf.value.errors.value || m.value.lastf.value.semantic3Errors.value)
+                        {
                             return new ErrorExp();
+                        }
                     }
                     FuncDeclaration lastf = m.value.lastf.value;
                     int count = m.value.count.value;
@@ -1297,7 +1436,9 @@ public class opover {
                     {
                         functionResolve(m, s_r, e.loc.value, sc, tiargs, e.e2.value.type.value, ptr(args1), null);
                         if ((m.value.lastf.value != null) && m.value.lastf.value.errors.value || m.value.lastf.value.semantic3Errors.value)
+                        {
                             return new ErrorExp();
+                        }
                     }
                     if ((m.value.count.value > 1))
                     {
@@ -1319,7 +1460,9 @@ public class opover {
                     {
                         result = build_overload(e.loc.value, sc, e.e2.value, e.e1.value, m.value.lastf.value != null ? m.value.lastf.value : s_r);
                         if (pop != null)
+                        {
                             pop.set(0, reverseRelation(e.op.value));
+                        }
                     }
                     return result;
                 }
@@ -1330,7 +1473,9 @@ public class opover {
             }
         }
         if (((e.op.value & 0xFF) == 58) || ((e.op.value & 0xFF) == 59) && (pequals(ad1, ad2)))
+        {
             return null;
+        }
         Expression result = checkAliasThisForLhs(ad1, sc, e);
         return result != null ? result : checkAliasThisForRhs(isAggregate(e.e2.value.type.value), sc, e);
     }
@@ -1340,9 +1485,13 @@ public class opover {
         Expression e = null;
         Declaration decl = d.isDeclaration();
         if (decl != null)
+        {
             e = new DotVarExp(loc, ethis, decl, false);
+        }
         else
+        {
             e = new DotIdExp(loc, ethis, d.ident.value);
+        }
         e = new CallExp(loc, e, earg);
         e = expressionSemantic(e, sc);
         return e;
@@ -1355,10 +1504,14 @@ public class opover {
             Dsymbol s2 = s.toAlias();
             FuncDeclaration fd = s2.isFuncDeclaration();
             if ((fd != null) && ((fd.type.value.ty.value & 0xFF) == ENUMTY.Tfunction))
+            {
                 return fd;
+            }
             TemplateDeclaration td = s2.isTemplateDeclaration();
             if (td != null)
+            {
                 return td;
+            }
         }
         return null;
     }
@@ -1373,7 +1526,9 @@ public class opover {
             aggr = resolveProperties(sc, aggr);
             aggr = aggr.optimize(0, false);
             if ((aggr.type.value == null) || ((aggr.op.value & 0xFF) == 127))
+            {
                 return false;
+            }
             Type tab = aggr.type.value.toBasetype();
             switch ((tab.ty.value & 0xFF))
             {
@@ -1411,9 +1566,13 @@ public class opover {
                     if (ad.aliasthis.value != null)
                     {
                         if ((pequals(att, tab)))
+                        {
                             return false;
+                        }
                         if ((att == null) && tab.checkAliasThisRec())
+                        {
                             att = tab;
+                        }
                         aggr = resolveAliasThis(sc, aggr, false);
                         continue;
                     }
@@ -1437,14 +1596,16 @@ public class opover {
 
     public static boolean inferApplyArgTypes(ForeachStatement fes, Ptr<Scope> sc, Ref<Dsymbol> sapply) {
         if ((fes.parameters == null) || ((fes.parameters.get()).length.value == 0))
+        {
             return false;
+        }
         if (sapply.value != null)
         {
             {
-                Slice<Parameter> __r1533 = (fes.parameters.get()).opSlice().copy();
-                int __key1534 = 0;
-                for (; (__key1534 < __r1533.getLength());__key1534 += 1) {
-                    Parameter p = __r1533.get(__key1534);
+                Slice<Parameter> __r1535 = (fes.parameters.get()).opSlice().copy();
+                int __key1536 = 0;
+                for (; (__key1536 < __r1535.getLength());__key1536 += 1) {
+                    Parameter p = __r1535.get(__key1536);
                     if (p.type.value != null)
                     {
                         p.type.value = typeSemantic(p.type.value, fes.loc, sc);
@@ -1455,7 +1616,9 @@ public class opover {
             Expression ethis = null;
             Type tab = fes.aggr.value.type.value.toBasetype();
             if (((tab.ty.value & 0xFF) == ENUMTY.Tclass) || ((tab.ty.value & 0xFF) == ENUMTY.Tstruct))
+            {
                 ethis = fes.aggr.value;
+            }
             else
             {
                 assert(((tab.ty.value & 0xFF) == ENUMTY.Tdelegate) && ((fes.aggr.value.op.value & 0xFF) == 160));
@@ -1510,7 +1673,9 @@ public class opover {
                         p.type.value = taa.index.value;
                         p.type.value = p.type.value.addStorageClass(p.storageClass.value);
                         if ((p.storageClass.value & 2097152L) != 0)
+                        {
                             p.type.value = p.type.value.addMod((byte)1);
+                        }
                     }
                     p = (fes.parameters.get()).get(1);
                 }
@@ -1543,16 +1708,22 @@ public class opover {
                         {
                         }
                         else if ((s != null) && (s.isDeclaration() != null))
+                        {
                             p.type.value = ((Declaration)s).type.value;
+                        }
                         else
+                        {
                             break;
+                        }
                     }
                     break;
                 }
                 break;
             case 10:
                 if (!matchParamsToOpApply((TypeFunction)tab.nextOf(), fes.parameters, true))
+                {
                     return false;
+                }
                 break;
             default:
             break;
@@ -1569,18 +1740,26 @@ public class opover {
             public Integer invoke(Dsymbol s) {
                 FuncDeclaration f = s.isFuncDeclaration();
                 if (f == null)
+                {
                     return 0;
+                }
                 TypeFunction tf = (TypeFunction)f.type.value;
                 int m = MATCH.exact;
                 if (f.isThis() != null)
                 {
                     if (!MODimplicitConv(mod, tf.mod.value))
+                    {
                         m = MATCH.nomatch;
+                    }
                     else if (((mod & 0xFF) != (tf.mod.value & 0xFF)))
+                    {
                         m = MATCH.constant;
+                    }
                 }
                 if (!matchParamsToOpApply(tf, parameters, false))
+                {
                     m = MATCH.nomatch;
+                }
                 if ((m > match))
                 {
                     fd_best = f;
@@ -1591,7 +1770,9 @@ public class opover {
                 {
                     assert(fd_best != null);
                     if ((tf.covariant(fd_best.type.value, null, true) != 1) && (fd_best.type.value.covariant(tf, null, true) != 1))
+                    {
                         fd_ambig = f;
+                    }
                 }
                 return 0;
             }
@@ -1608,26 +1789,34 @@ public class opover {
     public static boolean matchParamsToOpApply(TypeFunction tf, Ptr<DArray<Parameter>> parameters, boolean infer) {
         boolean nomatch = false;
         if ((tf.parameterList.length() != 1))
+        {
             return false;
+        }
         Parameter p0 = tf.parameterList.get(0);
         if (((p0.type.value.ty.value & 0xFF) != ENUMTY.Tdelegate))
+        {
             return false;
+        }
         TypeFunction tdg = (TypeFunction)p0.type.value.nextOf();
         assert(((tdg.ty.value & 0xFF) == ENUMTY.Tfunction));
         int nparams = tdg.parameterList.length();
         if ((nparams == 0) || (nparams != (parameters.get()).length.value) || (tdg.parameterList.varargs.value != VarArg.none))
-            return false;
         {
-            Slice<Parameter> __r1536 = (parameters.get()).opSlice().copy();
-            int __key1535 = 0;
-            for (; (__key1535 < __r1536.getLength());__key1535 += 1) {
-                Parameter p = __r1536.get(__key1535);
-                int u = __key1535;
+            return false;
+        }
+        {
+            Slice<Parameter> __r1538 = (parameters.get()).opSlice().copy();
+            int __key1537 = 0;
+            for (; (__key1537 < __r1538.getLength());__key1537 += 1) {
+                Parameter p = __r1538.get(__key1537);
+                int u = __key1537;
                 Parameter param = tdg.parameterList.get(u);
                 if (p.type.value != null)
                 {
                     if (!p.type.value.equals(param.type.value))
+                    {
                         return false;
+                    }
                 }
                 else if (infer)
                 {

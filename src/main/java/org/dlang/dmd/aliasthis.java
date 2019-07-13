@@ -102,7 +102,9 @@ public class aliasthis {
                                             if ((f) != null)
                                             {
                                                 if (!hasOverloads.value)
+                                                {
                                                     fd = f;
+                                                }
                                                 e = new VarExp(loc, fd, hasOverloads.value);
                                                 e.type.value = f.type.value;
                                                 e = new CallExp(loc, e);
@@ -126,7 +128,9 @@ public class aliasthis {
                     }
                     e = resolveProperties(sc, e);
                     if (gag && global.endGagging(olderrors))
+                    {
                         e = null;
+                    }
                 }
                 ClassDeclaration cd = ad.isClassDeclaration();
                 if ((e == null) || (ad.aliasthis.value == null) && (cd != null) && (cd.baseClass.value != null) && (!pequals(cd.baseClass.value, ClassDeclaration.object.value)))

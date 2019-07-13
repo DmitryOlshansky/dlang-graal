@@ -22,10 +22,11 @@ dtool.d
 vendor/dmd/src/dmd/access.d
 vendor/dmd/src/dmd/aggregate.d
 vendor/dmd/src/dmd/aliasthis.d
-vendor/dmd/src/dmd/attrib.d
+vendor/dmd/src/dmd/argtypes.d
 vendor/dmd/src/dmd/arraytypes.d
 vendor/dmd/src/dmd/arrayop.d
 vendor/dmd/src/dmd/apply.d
+vendor/dmd/src/dmd/attrib.d
 vendor/dmd/src/dmd/ast_node.d
 vendor/dmd/src/dmd/astcodegen.d
 vendor/dmd/src/dmd/blockexit.d

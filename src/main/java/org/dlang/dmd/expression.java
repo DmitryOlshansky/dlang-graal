@@ -88,7 +88,9 @@ public class expression {
                     {
                         Ref<ExpInitializer> ei = ref(v.value._init.value.isExpInitializer());
                         if ((ei.value) != null)
+                        {
                             ei.value.exp.value.accept(this);
+                        }
                     }
                 }
                 if (v.value.needsScopeDtor())
@@ -104,9 +106,13 @@ public class expression {
                     }
                     Ref<Expression> ve = ref(new VarExp(this.vcond.value.loc.value, this.vcond.value, true));
                     if (this.isThen.value)
+                    {
                         v.value.edtor.value = new LogicalExp(v.value.edtor.value.loc.value, TOK.andAnd, ve.value, v.value.edtor.value);
+                    }
                     else
+                    {
                         v.value.edtor.value = new LogicalExp(v.value.edtor.value.loc.value, TOK.orOr, ve.value, v.value.edtor.value);
+                    }
                     v.value.edtor.value = expressionSemantic(v.value.edtor.value, this.sc.value);
                 }
             }
@@ -282,16 +288,24 @@ public class expression {
                 return null;
             }
             if (!fd.isNested() || (fd.isThis() != null) || fd.isThis2.value && (fd.isMember2() != null))
+            {
                 break;
+            }
             Dsymbol parent = fd.parent.value;
             for (; 1 != 0;){
                 if (parent == null)
+                {
                     return null;
+                }
                 TemplateInstance ti = parent.isTemplateInstance();
                 if (ti != null)
+                {
                     parent = ti.parent.value;
+                }
                 else
+                {
                     break;
+                }
             }
             fd = parent.isFuncDeclaration();
         }
@@ -305,10 +319,14 @@ public class expression {
 
     public static boolean isNeedThisScope(Ptr<Scope> sc, Declaration d) {
         if (((sc.get()).intypeof.value == 1))
+        {
             return false;
+        }
         AggregateDeclaration ad = d.isThis();
         if (ad == null)
+        {
             return false;
+        }
         {
             Dsymbol s = (sc.get()).parent.value;
             for (; s != null;s = s.toParentLocal()){
@@ -317,11 +335,17 @@ public class expression {
                     if ((ad2) != null)
                     {
                         if ((pequals(ad2, ad)))
+                        {
                             return false;
+                        }
                         else if (ad2.isNested())
+                        {
                             continue;
+                        }
                         else
+                        {
                             return true;
+                        }
                     }
                 }
                 {
@@ -329,7 +353,9 @@ public class expression {
                     if ((f) != null)
                     {
                         if (f.isMemberLocal() != null)
+                        {
                             break;
+                        }
                     }
                 }
             }
@@ -341,20 +367,26 @@ public class expression {
         {
             DotTemplateInstanceExp dtie = e.isDotTemplateInstanceExp();
             if ((dtie) != null)
+            {
                 return pequals(dtie.ti.name.value, Id.opDispatch.value);
+            }
         }
         return false;
     }
 
     public static void expandTuples(Ptr<DArray<Expression>> exps) {
         if ((exps == null))
+        {
             return ;
+        }
         {
             int i = 0;
             for (; (i < (exps.get()).length.value);i++){
                 Expression arg = (exps.get()).get(i);
                 if (arg == null)
+                {
                     continue;
+                }
                 {
                     TypeExp e = arg.isTypeExp();
                     if ((e) != null)
@@ -367,7 +399,9 @@ public class expression {
                                 {
                                     (exps.get()).remove(i);
                                     if ((i == (exps.get()).length.value))
+                                    {
                                         return ;
+                                    }
                                     i--;
                                     continue;
                                 }
@@ -380,7 +414,9 @@ public class expression {
                     (exps.get()).remove(i);
                     (exps.get()).insert(i, te.exps.value);
                     if ((i == (exps.get()).length.value))
+                    {
                         return ;
+                    }
                     exps.get().set(i, Expression.combine(te.e0.value, (exps.get()).get(i)));
                     arg = (exps.get()).get(i);
                 }
@@ -390,7 +426,9 @@ public class expression {
 
     public static TupleDeclaration isAliasThisTuple(Expression e) {
         if (e.type.value == null)
+        {
             return null;
+        }
         Type t = e.type.value.toBasetype();
         for (; true;){
             {
@@ -406,7 +444,9 @@ public class expression {
                             {
                                 TupleDeclaration td = s.isVarDeclaration().toAlias().isTupleDeclaration();
                                 if ((td != null) && td.isexp)
+                                {
                                     return td;
+                                }
                             }
                             {
                                 Type att = t.aliasthisOf();
@@ -426,7 +466,9 @@ public class expression {
 
     public static int expandAliasThisTuples(Ptr<DArray<Expression>> exps, int starti) {
         if ((exps == null) || ((exps.get()).length.value == 0))
+        {
             return -1;
+        }
         {
             int u = starti;
             for (; (u < (exps.get()).length.value);u++){
@@ -437,11 +479,11 @@ public class expression {
                     {
                         (exps.get()).remove(u);
                         {
-                            Slice<RootObject> __r1317 = (td.objects.value.get()).opSlice().copy();
-                            int __key1316 = 0;
-                            for (; (__key1316 < __r1317.getLength());__key1316 += 1) {
-                                RootObject o = __r1317.get(__key1316);
-                                int i = __key1316;
+                            Slice<RootObject> __r1319 = (td.objects.value.get()).opSlice().copy();
+                            int __key1318 = 0;
+                            for (; (__key1318 < __r1319.getLength());__key1318 += 1) {
+                                RootObject o = __r1319.get(__key1318);
+                                int i = __key1318;
                                 Declaration d = isExpression(o).isDsymbolExp().s.value.isDeclaration();
                                 DotVarExp e = new DotVarExp(exp.loc.value, exp, d, true);
                                 assert(d.type.value != null);
@@ -543,7 +585,9 @@ public class expression {
                 {
                     VarDeclaration tmp = copyToTemp(2199023255552L, new BytePtr("__copytmp"), e);
                     if (sd.hasCopyCtor && (destinationType != null))
+                    {
                         tmp.type.value = destinationType;
+                    }
                     tmp.storage_class.value |= 16777216L;
                     dsymbolSemantic(tmp, sc);
                     Expression de = new DeclarationExp(e.loc.value, tmp);
@@ -600,14 +644,18 @@ public class expression {
                     e = ei.e1.value;
                     Type ti = e.type.value.toBasetype();
                     if (((ti.ty.value & 0xFF) == ENUMTY.Tsarray))
+                    {
                         continue;
+                    }
                     return null;
                 case 31:
                     SliceExp ei_1 = (SliceExp)e;
                     e = ei_1.e1.value;
                     Type ti_1 = e.type.value.toBasetype();
                     if (((ti_1.ty.value & 0xFF) == ENUMTY.Tsarray))
+                    {
                         continue;
+                    }
                     return null;
                 case 123:
                 case 124:
@@ -682,27 +730,29 @@ public class expression {
         public  void error(BytePtr format, Object... ap) {
             if ((!pequals(this.type.value, Type.terror.value)))
             {
-                verror(this.loc.value, format, new Slice<>(ap), null, null, new BytePtr("Error: "));
+                verror(this.loc.value, format, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
             }
         }
 
         public  void errorSupplemental(BytePtr format, Object... ap) {
             if ((pequals(this.type.value, Type.terror.value)))
+            {
                 return ;
-            verrorSupplemental(this.loc.value, format, new Slice<>(ap));
+            }
+            verrorSupplemental(this.loc.value, format, new RawSlice<>(ap));
         }
 
         public  void warning(BytePtr format, Object... ap) {
             if ((!pequals(this.type.value, Type.terror.value)))
             {
-                vwarning(this.loc.value, format, new Slice<>(ap));
+                vwarning(this.loc.value, format, new RawSlice<>(ap));
             }
         }
 
         public  void deprecation(BytePtr format, Object... ap) {
             if ((!pequals(this.type.value, Type.terror.value)))
             {
-                vdeprecation(this.loc.value, format, new Slice<>(ap), null, null);
+                vdeprecation(this.loc.value, format, new RawSlice<>(ap), null, null);
             }
         }
 
@@ -716,7 +766,9 @@ public class expression {
                 }
             }
             else
+            {
                 e1 = e2;
+            }
             return e1;
         }
 
@@ -760,11 +812,11 @@ public class expression {
             {
                 a = refPtr(new DArray<Expression>((exps.get()).length.value));
                 {
-                    Slice<Expression> __r1319 = (exps.get()).opSlice().copy();
-                    int __key1318 = 0;
-                    for (; (__key1318 < __r1319.getLength());__key1318 += 1) {
-                        Expression e = __r1319.get(__key1318);
-                        int i = __key1318;
+                    Slice<Expression> __r1321 = (exps.get()).opSlice().copy();
+                    int __key1320 = 0;
+                    for (; (__key1320 < __r1321.getLength());__key1320 += 1) {
+                        Expression e = __r1321.get(__key1320);
+                        int i = __key1320;
                         a.get().set(i, e != null ? e.syntaxCopy() : null);
                     }
                 }
@@ -810,13 +862,21 @@ public class expression {
 
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             if (e == null)
+            {
                 e = this;
+            }
             else if (!this.loc.value.isValid())
+            {
                 this.loc.value = e.loc.value.copy();
+            }
             if (((e.op.value & 0xFF) == 20))
+            {
                 this.error(new BytePtr("`%s` is a `%s` definition and cannot be modified"), e.type.value.toChars(), e.type.value.kind());
+            }
             else
+            {
                 this.error(new BytePtr("`%s` is not an lvalue and cannot be modified"), e.toChars());
+            }
             return new ErrorExp();
         }
 
@@ -836,7 +896,9 @@ public class expression {
                                 for (; s != null;s = s.toParentLocal()){
                                     FuncDeclaration ff = s.isFuncDeclaration();
                                     if (ff == null)
+                                    {
                                         break;
+                                    }
                                     if (!ff.type.value.isMutable())
                                     {
                                         this.error(new BytePtr("cannot modify `%s` in `%s` function"), this.toChars(), MODtoChars(this.type.value.mod.value));
@@ -884,7 +946,9 @@ public class expression {
             {
                 this.error(new BytePtr("expression `%s` is `void` and has no value"), this.toChars());
                 if (global.gag.value == 0)
+                {
                     this.type.value = Type.terror.value;
+                }
                 return true;
             }
             return false;
@@ -892,9 +956,13 @@ public class expression {
 
         public  boolean checkScalar() {
             if (((this.op.value & 0xFF) == 127))
+            {
                 return true;
+            }
             if (((this.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Terror))
+            {
                 return true;
+            }
             if (!this.type.value.isscalar())
             {
                 this.error(new BytePtr("`%s` is not a scalar, it is a `%s`"), this.toChars(), this.type.value.toChars());
@@ -905,9 +973,13 @@ public class expression {
 
         public  boolean checkNoBool() {
             if (((this.op.value & 0xFF) == 127))
+            {
                 return true;
+            }
             if (((this.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Terror))
+            {
                 return true;
+            }
             if (((this.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tbool))
             {
                 this.error(new BytePtr("operation not allowed on `bool` `%s`"), this.toChars());
@@ -918,9 +990,13 @@ public class expression {
 
         public  boolean checkIntegral() {
             if (((this.op.value & 0xFF) == 127))
+            {
                 return true;
+            }
             if (((this.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Terror))
+            {
                 return true;
+            }
             if (!this.type.value.isintegral())
             {
                 this.error(new BytePtr("`%s` is not of integral type, it is a `%s`"), this.toChars(), this.type.value.toChars());
@@ -931,9 +1007,13 @@ public class expression {
 
         public  boolean checkArithmetic() {
             if (((this.op.value & 0xFF) == 127))
+            {
                 return true;
+            }
             if (((this.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Terror))
+            {
                 return true;
+            }
             if (!this.type.value.isintegral() && !this.type.value.isfloating())
             {
                 this.error(new BytePtr("`%s` is not of arithmetic type, it is a `%s`"), this.toChars(), this.type.value.toChars());
@@ -959,13 +1039,21 @@ public class expression {
 
         public  boolean checkPurity(Ptr<Scope> sc, FuncDeclaration f) {
             if ((sc.get()).func.value == null)
+            {
                 return false;
+            }
             if ((pequals((sc.get()).func.value, f)))
+            {
                 return false;
+            }
             if (((sc.get()).intypeof.value == 1))
+            {
                 return false;
+            }
             if (((sc.get()).flags.value & 136) != 0)
+            {
                 return false;
+            }
             FuncDeclaration outerfunc = (sc.get()).func.value;
             FuncDeclaration calledparent = f;
             if (outerfunc.isInstantiated() != null)
@@ -982,12 +1070,16 @@ public class expression {
                 for (; (outerfunc.toParent2() != null) && (outerfunc.isPureBypassingInference() == PURE.impure) && (outerfunc.toParent2().isFuncDeclaration() != null);){
                     outerfunc = outerfunc.toParent2().isFuncDeclaration();
                     if (((outerfunc.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+                    {
                         return true;
+                    }
                 }
                 for (; (calledparent.toParent2() != null) && (calledparent.isPureBypassingInference() == PURE.impure) && (calledparent.toParent2().isFuncDeclaration() != null);){
                     calledparent = calledparent.toParent2().isFuncDeclaration();
                     if (((calledparent.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+                    {
                         return true;
+                    }
                 }
             }
             if ((f.isPure() == 0) && (!pequals(calledparent, outerfunc)))
@@ -1004,36 +1096,56 @@ public class expression {
 
         public  boolean checkPurity(Ptr<Scope> sc, VarDeclaration v) {
             if ((sc.get()).func.value == null)
+            {
                 return false;
+            }
             if (((sc.get()).intypeof.value == 1))
+            {
                 return false;
+            }
             if (((sc.get()).flags.value & 136) != 0)
+            {
                 return false;
+            }
             if ((pequals(v.ident.value, Id.ctfe.value)))
+            {
                 return false;
+            }
             if (v.isImmutable())
+            {
                 return false;
+            }
             if (v.isConst() && !v.isRef() && v.isDataseg() || v.isParameter() && (v.type.value.implicitConvTo(v.type.value.immutableOf()) != 0))
+            {
                 return false;
+            }
             if ((v.storage_class.value & 8388608L) != 0)
+            {
                 return false;
+            }
             if (((v.type.value.ty.value & 0xFF) == ENUMTY.Tstruct))
             {
                 StructDeclaration sd = ((TypeStruct)v.type.value).sym.value;
                 if (sd.hasNoFields)
+                {
                     return false;
+                }
             }
             boolean err = false;
             if (v.isDataseg())
             {
                 if ((pequals(v.ident.value, Id.gate)))
+                {
                     return false;
+                }
                 {
                     Dsymbol s = (sc.get()).func.value;
                     for (; s != null;s = s.toParent2()){
                         FuncDeclaration ff = s.isFuncDeclaration();
                         if (ff == null)
+                        {
                             break;
+                        }
                         if (((sc.get()).flags.value & 256) != 0 ? ff.isPureBypassingInference() >= PURE.weak : ff.setImpure())
                         {
                             this.error(new BytePtr("`pure` %s `%s` cannot access mutable static data `%s`"), ff.kind(), ff.toPrettyChars(false), v.toChars());
@@ -1041,9 +1153,13 @@ public class expression {
                             break;
                         }
                         if (ff.isInstantiated() != null)
+                        {
                             break;
+                        }
                         if (ff.isFuncLiteralDeclaration() != null)
+                        {
                             break;
+                        }
                     }
                 }
             }
@@ -1054,19 +1170,25 @@ public class expression {
                     Dsymbol s = (sc.get()).func.value;
                     for (; !err && (s != null);s = toParentPDsymbol(s, vparent)){
                         if ((pequals(s, vparent)))
+                        {
                             break;
+                        }
                         {
                             AggregateDeclaration ad = s.isAggregateDeclaration();
                             if ((ad) != null)
                             {
                                 if (ad.isNested())
+                                {
                                     continue;
+                                }
                                 break;
                             }
                         }
                         FuncDeclaration ff = s.isFuncDeclaration();
                         if (ff == null)
+                        {
                             break;
+                        }
                         if (ff.isNested() || (ff.isThis() != null))
                         {
                             if (ff.type.value.isImmutable() || ff.type.value.isShared() && !MODimplicitConv(ff.type.value.mod.value, v.type.value.mod.value))
@@ -1106,19 +1228,29 @@ public class expression {
 
         public  boolean checkSafety(Ptr<Scope> sc, FuncDeclaration f) {
             if ((sc.get()).func.value == null)
+            {
                 return false;
+            }
             if ((pequals((sc.get()).func.value, f)))
+            {
                 return false;
+            }
             if (((sc.get()).intypeof.value == 1))
+            {
                 return false;
+            }
             if (((sc.get()).flags.value & 128) != 0)
+            {
                 return false;
+            }
             if (!f.isSafe() && !f.isTrusted())
             {
                 if (((sc.get()).flags.value & 256) != 0 ? (sc.get()).func.value.isSafeBypassingInference() : (sc.get()).func.value.setUnsafe() && (((sc.get()).flags.value & 8) == 0))
                 {
                     if (!this.loc.value.isValid())
+                    {
                         this.loc.value = (sc.get()).func.value.loc.value.copy();
+                    }
                     BytePtr prettyChars = pcopy(f.toPrettyChars(false));
                     this.error(new BytePtr("`@safe` %s `%s` cannot call `@system` %s `%s`"), (sc.get()).func.value.kind(), (sc.get()).func.value.toPrettyChars(false), f.kind(), prettyChars);
                     errorSupplemental(f.loc.value, new BytePtr("`%s` is declared here"), prettyChars);
@@ -1130,19 +1262,29 @@ public class expression {
 
         public  boolean checkNogc(Ptr<Scope> sc, FuncDeclaration f) {
             if ((sc.get()).func.value == null)
+            {
                 return false;
+            }
             if ((pequals((sc.get()).func.value, f)))
+            {
                 return false;
+            }
             if (((sc.get()).intypeof.value == 1))
+            {
                 return false;
+            }
             if (((sc.get()).flags.value & 128) != 0)
+            {
                 return false;
+            }
             if (!f.isNogc())
             {
                 if (((sc.get()).flags.value & 256) != 0 ? (sc.get()).func.value.isNogcBypassingInference() : (sc.get()).func.value.setGC() && (((sc.get()).flags.value & 8) == 0))
                 {
                     if ((this.loc.value.linnum == 0))
+                    {
                         this.loc.value = (sc.get()).func.value.loc.value.copy();
+                    }
                     this.error(new BytePtr("`@nogc` %s `%s` cannot call non-@nogc %s `%s`"), (sc.get()).func.value.kind(), (sc.get()).func.value.toPrettyChars(false), f.kind(), f.toPrettyChars(false));
                     return true;
                 }
@@ -1163,7 +1305,9 @@ public class expression {
                     if (sd.postblit.value != null)
                     {
                         if (sd.postblit.value.checkDisabled(this.loc.value, sc, false))
+                        {
                             return true;
+                        }
                         this.checkPurity(sc, sd.postblit.value);
                         this.checkSafety(sc, sd.postblit.value);
                         this.checkNogc(sc, sd.postblit.value);
@@ -1176,7 +1320,9 @@ public class expression {
 
         public  boolean checkRightThis(Ptr<Scope> sc) {
             if (((this.op.value & 0xFF) == 127))
+            {
                 return true;
+            }
             if (((this.op.value & 0xFF) == 26) && ((this.type.value.ty.value & 0xFF) != ENUMTY.Terror))
             {
                 VarExp ve = (VarExp)this;
@@ -1191,7 +1337,9 @@ public class expression {
 
         public  boolean checkReadModifyWrite(byte rmwOp, Expression ex) {
             if ((this.type.value == null) || !this.type.value.isShared())
+            {
                 return false;
+            }
             switch ((rmwOp & 0xFF))
             {
                 case 93:
@@ -1246,7 +1394,9 @@ public class expression {
                         if ((ad.aliasthis.value != null) && (!pequals(tb, att)))
                         {
                             if ((att == null) && tb.checkAliasThisRec())
+                            {
                                 att = tb;
+                            }
                             e = resolveAliasThis(sc, e, false);
                             t = e.type.value;
                             tb = e.type.value.toBasetype();
@@ -1259,7 +1409,9 @@ public class expression {
             if (!t.isBoolean())
             {
                 if ((!pequals(tb, Type.terror.value)))
+                {
                     this.error(new BytePtr("expression `%s` of type `%s` does not have a boolean value"), this.toChars(), t.toChars());
+                }
                 return new ErrorExp();
             }
             return e;
@@ -1276,6 +1428,7 @@ public class expression {
 
         public  Expression deref() {
             if (this.type.value != null)
+            {
                 {
                     TypeReference tr = this.type.value.isTypeReference();
                     if ((tr) != null)
@@ -1284,6 +1437,7 @@ public class expression {
                         return e;
                     }
                 }
+            }
             return this;
         }
 
@@ -1743,14 +1897,16 @@ public class expression {
     }
     public static class IntegerExp extends Expression
     {
-        public long value = 0;
+        public long value = 0L;
         public  IntegerExp(Loc loc, long value, Type type) {
             super(loc, TOK.int64, 32);
             assert(type != null);
             if (!type.isscalar())
             {
                 if (((type.ty.value & 0xFF) != ENUMTY.Terror))
+                {
                     this.error(new BytePtr("integral constant must be scalar type, not `%s`"), type.toChars());
+                }
                 type = Type.terror.value;
             }
             this.type.value = type;
@@ -1773,7 +1929,9 @@ public class expression {
 
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
+            {
                 return true;
+            }
             {
                 IntegerExp ne = ((Expression)o).isIntegerExp();
                 if ((ne) != null)
@@ -1813,9 +1971,13 @@ public class expression {
 
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             if (e == null)
+            {
                 e = this;
+            }
             else if (!this.loc.value.isValid())
+            {
                 this.loc.value = e.loc.value.copy();
+            }
             e.error(new BytePtr("cannot modify constant `%s`"), e.toChars());
             return new ErrorExp();
         }
@@ -1875,11 +2037,17 @@ public class expression {
                             break;
                         case 3:
                             if ((target.ptrsize.value == 8))
+                            {
                                 /*goto case*/{ __dispatch2 = 20; continue dispatched_2; }
+                            }
                             if ((target.ptrsize.value == 4))
+                            {
                                 /*goto case*/{ __dispatch2 = 18; continue dispatched_2; }
+                            }
                             if ((target.ptrsize.value == 2))
+                            {
                                 /*goto case*/{ __dispatch2 = 16; continue dispatched_2; }
+                            }
                             throw new AssertionError("Unreachable code!");
                         default:
                         break;
@@ -1896,7 +2064,9 @@ public class expression {
         // from template literal!(_356A192B7913B04C)
         public static IntegerExp literal_356A192B7913B04C() {
             if (expression.literaltheConstant == null)
+            {
                 expression.literaltheConstant = new IntegerExp(1L);
+            }
             return expression.literaltheConstant;
         }
 
@@ -1904,7 +2074,9 @@ public class expression {
         // from template literal!(_7984B0A0E139CABA)
         public static IntegerExp literal_7984B0A0E139CABA() {
             if (expression.literaltheConstant == null)
+            {
                 expression.literaltheConstant = new IntegerExp(-1L);
+            }
             return expression.literaltheConstant;
         }
 
@@ -1912,7 +2084,9 @@ public class expression {
         // from template literal!(_B6589FC6AB0DC82C)
         public static IntegerExp literal_B6589FC6AB0DC82C() {
             if (expression.literaltheConstant == null)
+            {
                 expression.literaltheConstant = new IntegerExp(0L);
+            }
             return expression.literaltheConstant;
         }
 
@@ -1995,7 +2169,7 @@ public class expression {
     }
     public static class RealExp extends Expression
     {
-        public double value = 0;
+        public double value = 0.0;
         public  RealExp(Loc loc, double value, Type type) {
             super(loc, TOK.float64, 40);
             this.value = value;
@@ -2012,7 +2186,9 @@ public class expression {
 
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
+            {
                 return true;
+            }
             {
                 RealExp ne = ((Expression)o).isRealExp();
                 if ((ne) != null)
@@ -2087,7 +2263,9 @@ public class expression {
 
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
+            {
                 return true;
+            }
             {
                 ComplexExp ne = ((Expression)o).isComplexExp();
                 if ((ne) != null)
@@ -2123,9 +2301,13 @@ public class expression {
 
         public  boolean isBool(boolean result) {
             if (result)
+            {
                 return this.value.opCastBoolean();
+            }
             else
+            {
                 return !this.value.opCastBoolean();
+            }
         }
 
         public  void accept(Visitor v) {
@@ -2469,7 +2651,9 @@ public class expression {
                 throw new AssertionError("Unreachable code!");
             }
             if (((this.sz.value & 0xFF) == encSize))
+            {
                 return this.len.value;
+            }
             int result = 0;
             int c = 0x0ffff;
             switch ((this.sz.value & 0xFF))
@@ -2508,10 +2692,10 @@ public class expression {
                     break;
                 case 4:
                     {
-                        int __key1320 = 0;
-                        int __limit1321 = this.len.value;
-                        for (; (__key1320 < __limit1321);__key1320 += 1) {
-                            int u_2 = __key1320;
+                        int __key1322 = 0;
+                        int __limit1323 = this.len.value;
+                        for (; (__key1322 < __limit1323);__key1322 += 1) {
+                            int u_2 = __key1322;
                             result += utf_codeLength(encSize, this.dstring.value.get(u_2));
                         }
                     }
@@ -2550,10 +2734,14 @@ public class expression {
             {
                 memcpy((BytePtr)dest, (this.string.value), (this.len.value * (this.sz.value & 0xFF)));
                 if (zero)
+                {
                     memset(((BytePtr)dest).plus((this.len.value * (this.sz.value & 0xFF))), 0, (this.sz.value & 0xFF));
+                }
             }
             else
+            {
                 throw new AssertionError("Unreachable code!");
+            }
         }
 
         // defaulted all parameters starting with #3
@@ -2629,12 +2817,14 @@ public class expression {
                             CharPtr s1 = pcopy(toCharPtr(this.string));
                             CharPtr s2_1 = pcopy(toCharPtr(se2.string));
                             {
-                                int __key1322 = 0;
-                                int __limit1323 = this.len.value;
-                                for (; (__key1322 < __limit1323);__key1322 += 1) {
-                                    int u = __key1322;
+                                int __key1324 = 0;
+                                int __limit1325 = this.len.value;
+                                for (; (__key1324 < __limit1325);__key1324 += 1) {
+                                    int u = __key1324;
                                     if (((int)s1.get(u) != (int)s2_1.get(u)))
+                                    {
                                         return (int)s1.get(u) - (int)s2_1.get(u);
+                                    }
                                 }
                             }
                         }
@@ -2644,12 +2834,14 @@ public class expression {
                             IntPtr s1_1 = pcopy(toIntPtr(this.string));
                             IntPtr s2 = pcopy(toIntPtr(se2.string));
                             {
-                                int __key1324 = 0;
-                                int __limit1325 = this.len.value;
-                                for (; (__key1324 < __limit1325);__key1324 += 1) {
-                                    int u_1 = __key1324;
+                                int __key1326 = 0;
+                                int __limit1327 = this.len.value;
+                                for (; (__key1326 < __limit1327);__key1326 += 1) {
+                                    int u_1 = __key1326;
                                     if ((s1_1.get(u_1) != s2.get(u_1)))
+                                    {
                                         return (s1_1.get(u_1) - s2.get(u_1));
+                                    }
                                 }
                             }
                         }
@@ -2754,10 +2946,10 @@ public class expression {
             this.exps.value = refPtr(new DArray<Expression>());
             (this.exps.value.get()).reserve((tup.objects.value.get()).length.value);
             {
-                Slice<RootObject> __r1326 = (tup.objects.value.get()).opSlice().copy();
-                int __key1327 = 0;
-                for (; (__key1327 < __r1326.getLength());__key1327 += 1) {
-                    RootObject o = __r1326.get(__key1327);
+                Slice<RootObject> __r1328 = (tup.objects.value.get()).opSlice().copy();
+                int __key1329 = 0;
+                for (; (__key1329 < __r1328.getLength());__key1329 += 1) {
+                    RootObject o = __r1328.get(__key1329);
                     {
                         Dsymbol s = getDsymbol(o);
                         if ((s) != null)
@@ -2805,32 +2997,42 @@ public class expression {
 
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
+            {
                 return true;
+            }
             {
                 Expression e = isExpression(o);
                 if ((e) != null)
+                {
                     {
                         TupleExp te = e.isTupleExp();
                         if ((te) != null)
                         {
                             if (((this.exps.value.get()).length.value != (te.exps.value.get()).length.value))
-                                return false;
-                            if ((this.e0.value != null) && !this.e0.value.equals(te.e0.value) || (this.e0.value == null) && (te.e0.value != null))
-                                return false;
                             {
-                                Slice<Expression> __r1329 = (this.exps.value.get()).opSlice().copy();
-                                int __key1328 = 0;
-                                for (; (__key1328 < __r1329.getLength());__key1328 += 1) {
-                                    Expression e1 = __r1329.get(__key1328);
-                                    int i = __key1328;
+                                return false;
+                            }
+                            if ((this.e0.value != null) && !this.e0.value.equals(te.e0.value) || (this.e0.value == null) && (te.e0.value != null))
+                            {
+                                return false;
+                            }
+                            {
+                                Slice<Expression> __r1331 = (this.exps.value.get()).opSlice().copy();
+                                int __key1330 = 0;
+                                for (; (__key1330 < __r1331.getLength());__key1330 += 1) {
+                                    Expression e1 = __r1331.get(__key1330);
+                                    int i = __key1330;
                                     Expression e2 = (te.exps.value.get()).get(i);
                                     if (!e1.equals(e2))
+                                    {
                                         return false;
+                                    }
                                 }
                             }
                             return true;
                         }
                     }
+                }
             }
             return false;
         }
@@ -2893,33 +3095,45 @@ public class expression {
 
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
+            {
                 return true;
+            }
             Expression e = isExpression(o);
             if (e == null)
+            {
                 return false;
+            }
             {
                 ArrayLiteralExp ae = e.isArrayLiteralExp();
                 if ((ae) != null)
                 {
                     if (((this.elements.value.get()).length.value != (ae.elements.value.get()).length.value))
+                    {
                         return false;
+                    }
                     if (((this.elements.value.get()).length.value == 0) && !this.type.value.equals(ae.type.value))
                     {
                         return false;
                     }
                     {
-                        Slice<Expression> __r1331 = (this.elements.value.get()).opSlice().copy();
-                        int __key1330 = 0;
-                        for (; (__key1330 < __r1331.getLength());__key1330 += 1) {
-                            Expression e1 = __r1331.get(__key1330);
-                            int i = __key1330;
+                        Slice<Expression> __r1333 = (this.elements.value.get()).opSlice().copy();
+                        int __key1332 = 0;
+                        for (; (__key1332 < __r1333.getLength());__key1332 += 1) {
+                            Expression e1 = __r1333.get(__key1332);
+                            int i = __key1332;
                             Expression e2 = (ae.elements.value.get()).get(i);
                             if (e1 == null)
+                            {
                                 e1 = this.basis.value;
+                            }
                             if (e2 == null)
+                            {
                                 e2 = ae.basis.value;
+                            }
                             if ((!pequals(e1, e2)) && (e1 == null) || (e2 == null) || !e1.equals(e2))
+                            {
                                 return false;
+                            }
                         }
                     }
                     return true;
@@ -2944,27 +3158,39 @@ public class expression {
             {
                 byte sz = (byte)1;
                 if (((telem & 0xFF) == ENUMTY.Twchar))
+                {
                     sz = (byte)2;
+                }
                 else if (((telem & 0xFF) == ENUMTY.Tdchar))
+                {
                     sz = (byte)4;
+                }
                 OutBuffer buf = new OutBuffer();
                 try {
                     if (this.elements.value != null)
                     {
                         {
-                            int __key1332 = 0;
-                            int __limit1333 = (this.elements.value.get()).length.value;
-                            for (; (__key1332 < __limit1333);__key1332 += 1) {
-                                int i = __key1332;
+                            int __key1334 = 0;
+                            int __limit1335 = (this.elements.value.get()).length.value;
+                            for (; (__key1334 < __limit1335);__key1334 += 1) {
+                                int i = __key1334;
                                 Expression ch = this.getElement(i);
                                 if (((ch.op.value & 0xFF) != 135))
+                                {
                                     return null;
+                                }
                                 if (((sz & 0xFF) == 1))
+                                {
                                     buf.writeByte((int)ch.toInteger());
+                                }
                                 else if (((sz & 0xFF) == 2))
+                                {
                                     buf.writeword((int)ch.toInteger());
+                                }
                                 else
+                                {
                                     buf.write4((int)ch.toInteger());
+                                }
                             }
                         }
                     }
@@ -3030,33 +3256,41 @@ public class expression {
 
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
+            {
                 return true;
+            }
             Expression e = isExpression(o);
             if (e == null)
+            {
                 return false;
+            }
             {
                 AssocArrayLiteralExp ae = e.isAssocArrayLiteralExp();
                 if ((ae) != null)
                 {
                     if (((this.keys.value.get()).length.value != (ae.keys.value.get()).length.value))
+                    {
                         return false;
+                    }
                     int count = 0;
                     {
-                        Slice<Expression> __r1335 = (this.keys.value.get()).opSlice().copy();
-                        int __key1334 = 0;
-                        for (; (__key1334 < __r1335.getLength());__key1334 += 1) {
-                            Expression key = __r1335.get(__key1334);
-                            int i = __key1334;
+                        Slice<Expression> __r1337 = (this.keys.value.get()).opSlice().copy();
+                        int __key1336 = 0;
+                        for (; (__key1336 < __r1337.getLength());__key1336 += 1) {
+                            Expression key = __r1337.get(__key1336);
+                            int i = __key1336;
                             {
-                                Slice<Expression> __r1337 = (ae.keys.value.get()).opSlice().copy();
-                                int __key1336 = 0;
-                                for (; (__key1336 < __r1337.getLength());__key1336 += 1) {
-                                    Expression akey = __r1337.get(__key1336);
-                                    int j = __key1336;
+                                Slice<Expression> __r1339 = (ae.keys.value.get()).opSlice().copy();
+                                int __key1338 = 0;
+                                for (; (__key1338 < __r1339.getLength());__key1338 += 1) {
+                                    Expression akey = __r1339.get(__key1338);
+                                    int j = __key1338;
                                     if (key.equals(akey))
                                     {
                                         if (!(this.values.value.get()).get(i).equals((ae.values.value.get()).get(j)))
+                                        {
                                             return false;
+                                        }
                                         count += 1;
                                     }
                                 }
@@ -3119,7 +3353,9 @@ public class expression {
             super(loc, TOK.structLiteral, 54);
             this.sd = sd;
             if (elements == null)
+            {
                 elements = refPtr(new DArray<Expression>());
+            }
             this.elements.value = elements;
             this.stype.value = stype;
             this.origin = this;
@@ -3141,27 +3377,37 @@ public class expression {
 
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
+            {
                 return true;
+            }
             Expression e = isExpression(o);
             if (e == null)
+            {
                 return false;
+            }
             {
                 StructLiteralExp se = e.isStructLiteralExp();
                 if ((se) != null)
                 {
                     if (!this.type.value.equals(se.type.value))
-                        return false;
-                    if (((this.elements.value.get()).length.value != (se.elements.value.get()).length.value))
-                        return false;
                     {
-                        Slice<Expression> __r1339 = (this.elements.value.get()).opSlice().copy();
-                        int __key1338 = 0;
-                        for (; (__key1338 < __r1339.getLength());__key1338 += 1) {
-                            Expression e1 = __r1339.get(__key1338);
-                            int i = __key1338;
+                        return false;
+                    }
+                    if (((this.elements.value.get()).length.value != (se.elements.value.get()).length.value))
+                    {
+                        return false;
+                    }
+                    {
+                        Slice<Expression> __r1341 = (this.elements.value.get()).opSlice().copy();
+                        int __key1340 = 0;
+                        for (; (__key1340 < __r1341.getLength());__key1340 += 1) {
+                            Expression e1 = __r1341.get(__key1340);
+                            int i = __key1340;
                             Expression e2 = (se.elements.value.get()).get(i);
                             if ((!pequals(e1, e2)) && (e1 == null) || (e2 == null) || !e1.equals(e2))
+                            {
                                 return false;
+                            }
                         }
                     }
                     return true;
@@ -3182,7 +3428,9 @@ public class expression {
             if ((i != -1))
             {
                 if ((i >= this.sd.nonHiddenFields()))
+                {
                     return null;
+                }
                 assert((i < (this.elements.value.get()).length.value));
                 e = (this.elements.value.get()).get(i);
                 if (e != null)
@@ -3193,10 +3441,10 @@ public class expression {
                         int length = (int)tsa.dim.value.toInteger();
                         Ptr<DArray<Expression>> z = refPtr(new DArray<Expression>(length));
                         {
-                            Slice<Expression> __r1340 = (z.get()).opSlice().copy();
-                            int __key1341 = 0;
-                            for (; (__key1341 < __r1340.getLength());__key1341 += 1) {
-                                Expression q = __r1340.get(__key1341);
+                            Slice<Expression> __r1342 = (z.get()).opSlice().copy();
+                            int __key1343 = 0;
+                            for (; (__key1343 < __r1342.getLength());__key1343 += 1) {
+                                Expression q = __r1342.get(__key1343);
                                 q = e.copy();
                             }
                         }
@@ -3208,6 +3456,7 @@ public class expression {
                         e.type.value = type;
                     }
                     if (this.useStaticInit.value && e.type.value.needsNested())
+                    {
                         {
                             StructLiteralExp se = e.isStructLiteralExp();
                             if ((se) != null)
@@ -3215,6 +3464,7 @@ public class expression {
                                 se.useStaticInit.value = true;
                             }
                         }
+                    }
                 }
             }
             return e;
@@ -3224,15 +3474,17 @@ public class expression {
             if ((this.elements.value.get()).length.value != 0)
             {
                 {
-                    Slice<VarDeclaration> __r1343 = this.sd.fields.opSlice().copy();
-                    int __key1342 = 0;
-                    for (; (__key1342 < __r1343.getLength());__key1342 += 1) {
-                        VarDeclaration v = __r1343.get(__key1342);
-                        int i = __key1342;
+                    Slice<VarDeclaration> __r1345 = this.sd.fields.opSlice().copy();
+                    int __key1344 = 0;
+                    for (; (__key1344 < __r1345.getLength());__key1344 += 1) {
+                        VarDeclaration v = __r1345.get(__key1344);
+                        int i = __key1344;
                         if ((offset == v.offset.value) && (type.size() == v.type.value.size()))
                         {
                             if ((i >= this.sd.nonHiddenFields()))
+                            {
                                 return i;
+                            }
                             {
                                 Expression e = (this.elements.value.get()).get(i);
                                 if ((e) != null)
@@ -3407,7 +3659,9 @@ public class expression {
 
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             if (this.fd == null)
+            {
                 return this.toLvalue(sc, e);
+            }
             assert(sc != null);
             return symbolToExp(this.fd, this.loc.value, sc, true);
         }
@@ -3567,14 +3821,16 @@ public class expression {
     }
     public static class SymOffExp extends SymbolExp
     {
-        public Ref<Long> offset = ref(0);
+        public Ref<Long> offset = ref(0L);
         public  SymOffExp(Loc loc, Declaration var, long offset, boolean hasOverloads) {
             {
                 VarDeclaration v = var.isVarDeclaration();
                 if ((v) != null)
                 {
                     if (v.needThis())
+                    {
                         error(loc, new BytePtr("need `this` for address of `%s`"), v.toChars());
+                    }
                     hasOverloads = false;
                 }
             }
@@ -3616,7 +3872,9 @@ public class expression {
     {
         public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
             if (var.isVarDeclaration() != null)
+            {
                 hasOverloads = false;
+            }
             super(loc, TOK.variable, 36, var, hasOverloads);
             this.type.value = var.type.value;
         }
@@ -3637,7 +3895,9 @@ public class expression {
 
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
+            {
                 return true;
+            }
             {
                 VarExp ne = isExpression(o).isVarExp();
                 if ((ne) != null)
@@ -3658,7 +3918,9 @@ public class expression {
 
         public  boolean isLvalue() {
             if ((this.var.value.storage_class.value & 2199031652352L) != 0)
+            {
                 return false;
+            }
             return true;
         }
 
@@ -3776,10 +4038,14 @@ public class expression {
 
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
+            {
                 return true;
+            }
             Expression e = isExpression(o);
             if (e == null)
+            {
                 return false;
+            }
             {
                 FuncExp fe = e.isFuncExp();
                 if ((fe) != null)
@@ -3795,13 +4061,21 @@ public class expression {
             {
                 BytePtr s = null;
                 if (this.fd.value.fes.value != null)
+                {
                     s = pcopy(new BytePtr("__foreachbody"));
+                }
                 else if (((this.fd.value.tok.value & 0xFF) == 0))
+                {
                     s = pcopy(new BytePtr("__lambda"));
+                }
                 else if (((this.fd.value.tok.value & 0xFF) == 160))
+                {
                     s = pcopy(new BytePtr("__dgliteral"));
+                }
                 else
+                {
                     s = pcopy(new BytePtr("__funcliteral"));
+                }
                 DsymbolTable symtab = null;
                 {
                     FuncDeclaration func = (sc.get()).parent.value.isFuncDeclaration();
@@ -3828,18 +4102,26 @@ public class expression {
                 Identifier id = Identifier.generateId(s, symtab.len() + 1);
                 this.fd.value.ident.value = id;
                 if (this.td.value != null)
+                {
                     this.td.value.ident.value = id;
+                }
                 symtab.insert(this.td.value != null ? this.td.value : this.fd.value);
             }
         }
 
         public  Expression syntaxCopy() {
             if (this.td.value != null)
+            {
                 return new FuncExp(this.loc.value, this.td.value.syntaxCopy(null));
+            }
             else if ((this.fd.value.semanticRun.value == PASS.init))
+            {
                 return new FuncExp(this.loc.value, this.fd.value.syntaxCopy(null));
+            }
             else
+            {
                 return new FuncExp(this.loc.value, this.fd.value);
+            }
         }
 
         public  int matchType(Type to, Ptr<Scope> sc, Ptr<FuncExp> presult, int flag) {
@@ -3847,19 +4129,25 @@ public class expression {
                 public Integer invoke(Expression e, Type to, Integer flag) {
                     IntRef flag_ref = ref(flag);
                     if (flag_ref.value == 0)
+                    {
                         e.error(new BytePtr("cannot infer parameter types from `%s`"), to.toChars());
+                    }
                     return MATCH.nomatch;
                 }
             };
             if (presult != null)
+            {
                 presult.set(0, null);
+            }
             TypeFunction tof = null;
             if (((to.ty.value & 0xFF) == ENUMTY.Tdelegate))
             {
                 if (((this.tok.value & 0xFF) == 161))
                 {
                     if (flag == 0)
+                    {
                         this.error(new BytePtr("cannot match function literal to delegate type `%s`"), to.toChars());
+                    }
                     return MATCH.nomatch;
                 }
                 tof = (TypeFunction)to.nextOf();
@@ -3869,7 +4157,9 @@ public class expression {
                 if (((this.tok.value & 0xFF) == 160))
                 {
                     if (flag == 0)
+                    {
                         this.error(new BytePtr("cannot match delegate literal to function pointer type `%s`"), to.toChars());
+                    }
                     return MATCH.nomatch;
                 }
             }
@@ -3883,54 +4173,72 @@ public class expression {
                 TypeFunction tf = this.fd.value.type.value.isTypeFunction();
                 int dim = tf.parameterList.length();
                 if ((tof.parameterList.length() != dim) || (tof.parameterList.varargs.value != tf.parameterList.varargs.value))
+                {
                     return cannotInfer.invoke(this, to, flag);
+                }
                 Ptr<DArray<RootObject>> tiargs = refPtr(new DArray<RootObject>());
                 (tiargs.get()).reserve((this.td.value.parameters.get()).length.value);
                 {
-                    Slice<TemplateParameter> __r1344 = (this.td.value.parameters.get()).opSlice().copy();
-                    int __key1345 = 0;
-                    for (; (__key1345 < __r1344.getLength());__key1345 += 1) {
-                        TemplateParameter tp = __r1344.get(__key1345);
+                    Slice<TemplateParameter> __r1346 = (this.td.value.parameters.get()).opSlice().copy();
+                    int __key1347 = 0;
+                    for (; (__key1347 < __r1346.getLength());__key1347 += 1) {
+                        TemplateParameter tp = __r1346.get(__key1347);
                         int u = 0;
                         for (; (u < dim);u++){
                             Parameter p = tf.parameterList.get(u);
                             {
                                 TypeIdentifier ti = p.type.value.isTypeIdentifier();
                                 if ((ti) != null)
+                                {
                                     if ((ti != null) && (pequals(ti.ident.value, tp.ident.value)))
                                     {
                                         break;
                                     }
+                                }
                             }
                         }
                         assert((u < dim));
                         Parameter pto = tof.parameterList.get(u);
                         Type t = pto.type.value;
                         if (((t.ty.value & 0xFF) == ENUMTY.Terror))
+                        {
                             return cannotInfer.invoke(this, to, flag);
+                        }
                         (tiargs.get()).push(t);
                     }
                 }
                 if ((tf.next.value == null) && (tof.next.value != null))
+                {
                     this.fd.value.treq.value = to;
+                }
                 TemplateInstance ti = new TemplateInstance(this.loc.value, this.td.value, tiargs);
                 Expression ex = expressionSemantic(new ScopeExp(this.loc.value, ti), this.td.value._scope.value);
                 this.fd.value.treq.value = null;
                 if (((ex.op.value & 0xFF) == 127))
+                {
                     return MATCH.nomatch;
+                }
                 {
                     FuncExp ef = ex.isFuncExp();
                     if ((ef) != null)
+                    {
                         return ef.matchType(to, sc, presult, flag);
+                    }
                     else
+                    {
                         return cannotInfer.invoke(this, to, flag);
+                    }
                 }
             }
             if ((tof == null) || (tof.next.value == null))
+            {
                 return MATCH.nomatch;
+            }
             assert((this.type.value != null) && (!pequals(this.type.value, Type.tvoid.value)));
             if (((this.fd.value.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+            {
                 return MATCH.nomatch;
+            }
             TypeFunction tfx = this.fd.value.type.value.isTypeFunction();
             boolean convertMatch = (this.type.value.ty.value & 0xFF) != (to.ty.value & 0xFF);
             if (this.fd.value.inferRetType && (tfx.next.value.implicitConvTo(tof.next.value) == MATCH.convert))
@@ -4175,11 +4483,11 @@ public class expression {
             {
                 p = refPtr(new DArray<TemplateParameter>((this.parameters.get()).length.value));
                 {
-                    Slice<TemplateParameter> __r1347 = (this.parameters.get()).opSlice().copy();
-                    int __key1346 = 0;
-                    for (; (__key1346 < __r1347.getLength());__key1346 += 1) {
-                        TemplateParameter el = __r1347.get(__key1346);
-                        int i = __key1346;
+                    Slice<TemplateParameter> __r1349 = (this.parameters.get()).opSlice().copy();
+                    int __key1348 = 0;
+                    for (; (__key1348 < __r1349.getLength());__key1348 += 1) {
+                        TemplateParameter el = __r1349.get(__key1348);
+                        int i = __key1348;
                         p.get().set(i, el.syntaxCopy());
                     }
                 }
@@ -4228,7 +4536,9 @@ public class expression {
 
         public  Expression incompatibleTypes() {
             if ((pequals(this.e1.value.type.value.toBasetype(), Type.terror.value)))
+            {
                 return this.e1.value;
+            }
             if (((this.e1.value.op.value & 0xFF) == 20))
             {
                 this.error(new BytePtr("incompatible type for `%s(%s)`: cannot use `%s` with types"), Token.toChars(this.op.value), this.e1.value.toChars(), Token.toChars(this.op.value));
@@ -4244,7 +4554,9 @@ public class expression {
             {
                 DotIdExp edi = this.e1.value.isDotIdExp();
                 if ((edi) != null)
+                {
                     edi.noderef = true;
+                }
             }
         }
 
@@ -4284,9 +4596,13 @@ public class expression {
 
         public  Expression incompatibleTypes() {
             if ((pequals(this.e1.value.type.value.toBasetype(), Type.terror.value)))
+            {
                 return this.e1.value;
+            }
             if ((pequals(this.e2.value.type.value.toBasetype(), Type.terror.value)))
+            {
                 return this.e2.value;
+            }
             byte thisOp = ((this.op.value & 0xFF) == 100) ? TOK.colon : (byte)(this.op.value & 0xFF);
             if (((this.e1.value.op.value & 0xFF) == 20) || ((this.e2.value.op.value & 0xFF) == 20))
             {
@@ -4443,12 +4759,16 @@ public class expression {
             {
                 DotIdExp edi = this.e1.value.isDotIdExp();
                 if ((edi) != null)
+                {
                     edi.noderef = true;
+                }
             }
             {
                 DotIdExp edi = this.e2.value.isDotIdExp();
                 if ((edi) != null)
+                {
                     edi.noderef = true;
+                }
             }
         }
 
@@ -4456,9 +4776,13 @@ public class expression {
             BinExp be = this;
             IndexExp ie = be.e1.value.isIndexExp();
             if (ie == null)
+            {
                 return be;
+            }
             if (((ie.e1.value.type.value.toBasetype().ty.value & 0xFF) != ENUMTY.Taarray))
+            {
                 return be;
+            }
             Ref<Expression> e0 = ref(null);
             for (; 1 != 0;){
                 Ref<Expression> de = ref(null);
@@ -4541,25 +4865,33 @@ public class expression {
 
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
+            {
                 return true;
+            }
             Expression e = isExpression(o);
             if (e == null)
+            {
                 return false;
+            }
             {
                 CompileExp ce = e.isCompileExp();
                 if ((ce) != null)
                 {
                     if (((this.exps.get()).length.value != (ce.exps.get()).length.value))
-                        return false;
                     {
-                        Slice<Expression> __r1349 = (this.exps.get()).opSlice().copy();
-                        int __key1348 = 0;
-                        for (; (__key1348 < __r1349.getLength());__key1348 += 1) {
-                            Expression e1 = __r1349.get(__key1348);
-                            int i = __key1348;
+                        return false;
+                    }
+                    {
+                        Slice<Expression> __r1351 = (this.exps.get()).opSlice().copy();
+                        int __key1350 = 0;
+                        for (; (__key1350 < __r1351.getLength());__key1350 += 1) {
+                            Expression e1 = __r1351.get(__key1350);
+                            int i = __key1350;
                             Expression e2 = (ce.exps.get()).get(i);
                             if ((!pequals(e1, e2)) && (e1 == null) || (e2 == null) || !e1.equals(e2))
+                            {
                                 return false;
+                            }
                         }
                     }
                     return true;
@@ -4718,7 +5050,9 @@ public class expression {
         public boolean hasOverloads = false;
         public  DotVarExp(Loc loc, Expression e, Declaration var, boolean hasOverloads) {
             if (var.isVarDeclaration() != null)
+            {
                 hasOverloads = false;
+            }
             super(loc, TOK.dotVariable, 37, e);
             this.var.value = var;
             this.hasOverloads = hasOverloads;
@@ -4731,9 +5065,13 @@ public class expression {
 
         public  int checkModifiable(Ptr<Scope> sc, int flag) {
             if (checkUnsafeAccess(sc, this, false, flag == 0))
+            {
                 return Modifiable.initialization;
+            }
             if (((this.e1.value.op.value & 0xFF) == 123))
+            {
                 return this.var.value.checkModify(this.loc.value, sc, this.e1.value, flag);
+            }
             if (((sc.get()).func.value != null) && ((sc.get()).func.value.isCtorDeclaration() != null))
             {
                 {
@@ -4754,7 +5092,9 @@ public class expression {
                                             int modifyLevel = v.checkModify(this.loc.value, sc, dve.e1.value, flag);
                                             v.ctorinit = false;
                                             if ((modifyLevel == Modifiable.initialization))
+                                            {
                                                 return Modifiable.yes;
+                                            }
                                             return modifyLevel;
                                         }
                                     }
@@ -4782,11 +5122,11 @@ public class expression {
                         if ((ad != null) && (ad.fields.length.value == (sc.get()).ctorflow.fieldinit.getLength()))
                         {
                             {
-                                Slice<VarDeclaration> __r1351 = ad.fields.opSlice().copy();
-                                int __key1350 = 0;
-                                for (; (__key1350 < __r1351.getLength());__key1350 += 1) {
-                                    VarDeclaration f = __r1351.get(__key1350);
-                                    int i = __key1350;
+                                Slice<VarDeclaration> __r1353 = ad.fields.opSlice().copy();
+                                int __key1352 = 0;
+                                for (; (__key1352 < __r1353.getLength());__key1352 += 1) {
+                                    VarDeclaration f = __r1353.get(__key1352);
+                                    int i = __key1352;
                                     if ((pequals(f, vd)))
                                     {
                                         if (((sc.get()).ctorflow.fieldinit.get(i).csx.value & 1) == 0)
@@ -4848,11 +5188,15 @@ public class expression {
 
         public  boolean findTempDecl(Ptr<Scope> sc) {
             if (this.ti.tempdecl.value != null)
+            {
                 return true;
+            }
             Expression e = new DotIdExp(this.loc.value, this.e1.value, this.ti.name.value);
             e = expressionSemantic(e, sc);
             if (((e.op.value & 0xFF) == 97))
+            {
                 e = ((DotExp)e).e2.value;
+            }
             Dsymbol s = null;
             switch ((e.op.value & 0xFF))
             {
@@ -4988,7 +5332,9 @@ public class expression {
             super(loc, TOK.call, 48, e);
             this.arguments.value = refPtr(new DArray<Expression>());
             if (earg1 != null)
+            {
                 (this.arguments.value.get()).push(earg1);
+            }
         }
 
         public  CallExp(Loc loc, Expression e, Expression earg1, Expression earg2) {
@@ -5027,15 +5373,21 @@ public class expression {
         public  boolean isLvalue() {
             Type tb = this.e1.value.type.value.toBasetype();
             if (((tb.ty.value & 0xFF) == ENUMTY.Tdelegate) || ((tb.ty.value & 0xFF) == ENUMTY.Tpointer))
+            {
                 tb = tb.nextOf();
+            }
             TypeFunction tf = tb.isTypeFunction();
             if ((tf != null) && tf.isref.value)
             {
                 {
                     DotVarExp dve = this.e1.value.isDotVarExp();
                     if ((dve) != null)
+                    {
                         if (dve.var.value.isCtorDeclaration() != null)
+                        {
                             return false;
+                        }
+                    }
                 }
                 return true;
             }
@@ -5044,7 +5396,9 @@ public class expression {
 
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             if (this.isLvalue())
+            {
                 return this;
+            }
             return this.toLvalue(sc, e);
         }
 
@@ -5054,7 +5408,9 @@ public class expression {
                 if ((tf) != null)
                 {
                     if (tf.isref.value)
+                    {
                         return this;
+                    }
                 }
             }
             Type tv = this.type.value.baseElemOf();
@@ -5111,7 +5467,9 @@ public class expression {
                     if ((ve) != null)
                     {
                         if (hasOverloads != null)
+                        {
                             hasOverloads.set(0, ve.hasOverloads.value);
+                        }
                         return ve.var.value.isFuncDeclaration();
                     }
                 }
@@ -5120,7 +5478,9 @@ public class expression {
                     if ((dve) != null)
                     {
                         if (hasOverloads != null)
+                        {
                             hasOverloads.set(0, dve.hasOverloads);
+                        }
                         return dve.var.value.isFuncDeclaration();
                     }
                 }
@@ -5132,7 +5492,9 @@ public class expression {
                     if ((soe) != null)
                     {
                         if (hasOverloads != null)
+                        {
                             hasOverloads.set(0, soe.hasOverloads.value);
+                        }
                         return soe.var.value.isFuncDeclaration();
                     }
                 }
@@ -5141,7 +5503,9 @@ public class expression {
                     if ((dge) != null)
                     {
                         if (hasOverloads != null)
+                        {
                             hasOverloads.set(0, dge.hasOverloads.value);
+                        }
                         return dge.func.value.isFuncDeclaration();
                     }
                 }
@@ -5402,13 +5766,17 @@ public class expression {
 
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             if (this.isLvalue())
+            {
                 return this;
+            }
             return this.toLvalue(sc, e);
         }
 
         public  Expression addDtorHook(Ptr<Scope> sc) {
             if (((this.to.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tvoid))
+            {
                 this.e1.value = this.e1.value.addDtorHook(sc);
+            }
             return this;
         }
 
@@ -5622,7 +5990,9 @@ public class expression {
             super(loc, TOK.array, 44, e1);
             this.arguments.value = refPtr(new DArray<Expression>());
             if (index != null)
+            {
                 (this.arguments.value.get()).push(index);
+            }
         }
 
         // defaulted all parameters starting with #3
@@ -5643,13 +6013,17 @@ public class expression {
 
         public  boolean isLvalue() {
             if ((this.type.value != null) && ((this.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tvoid))
+            {
                 return false;
+            }
             return true;
         }
 
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             if ((this.type.value != null) && ((this.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tvoid))
+            {
                 this.error(new BytePtr("`void`s have no value"));
+            }
             return this;
         }
 
@@ -5741,7 +6115,9 @@ public class expression {
         public  Expression toBoolean(Ptr<Scope> sc) {
             Expression ex2 = this.e2.value.toBoolean(sc);
             if (((ex2.op.value & 0xFF) == 127))
+            {
                 return ex2;
+            }
             this.e2.value = ex2;
             this.type.value = this.e2.value.type.value;
             return this;
@@ -5758,11 +6134,15 @@ public class expression {
 
         public static void allow(Expression exp) {
             if (exp != null)
+            {
                 {
                     CommaExp ce = exp.isCommaExp();
                     if ((ce) != null)
+                    {
                         ce.allowCommaExp = true;
+                    }
                 }
+            }
         }
 
 
@@ -5937,7 +6317,9 @@ public class expression {
         public  Expression modifiableLvalue(Ptr<Scope> sc, Expression e) {
             Expression ex = this.markSettingAAElem();
             if (((ex.op.value & 0xFF) == 127))
+            {
                 return ex;
+            }
             return this.modifiableLvalue(sc, e);
         }
 
@@ -5957,7 +6339,9 @@ public class expression {
                     {
                         Expression ex = ie.markSettingAAElem();
                         if (((ex.op.value & 0xFF) == 127))
+                        {
                             return ex;
+                        }
                         assert((pequals(ex, this.e1.value)));
                     }
                 }
@@ -6115,7 +6499,9 @@ public class expression {
             assert((v.type.value != null) && (ve.type.value != null));
             super(loc, TOK.construct, ve, e2);
             if ((v.storage_class.value & 2101248L) != 0)
+            {
                 this.memset |= MemorySet.referenceInit;
+            }
         }
 
         public  void accept(Visitor v) {
@@ -6151,7 +6537,9 @@ public class expression {
             assert((v.type.value != null) && (ve.type.value != null));
             super(loc, TOK.blit, ve, e2);
             if ((v.storage_class.value & 2101248L) != 0)
+            {
                 this.memset |= MemorySet.referenceInit;
+            }
         }
 
         public  void accept(Visitor v) {
@@ -6954,7 +7342,9 @@ public class expression {
         public  Expression toBoolean(Ptr<Scope> sc) {
             Expression ex2 = this.e2.value.toBoolean(sc);
             if (((ex2.op.value & 0xFF) == 127))
+            {
                 return ex2;
+            }
             this.e2.value = ex2;
             return this;
         }
@@ -7133,7 +7523,9 @@ public class expression {
 
         public  int checkModifiable(Ptr<Scope> sc, int flag) {
             if ((this.e1.value.checkModifiable(sc, flag) != Modifiable.no) && (this.e2.value.checkModifiable(sc, flag) != Modifiable.no))
+            {
                 return Modifiable.yes;
+            }
             return Modifiable.no;
         }
 
@@ -7159,15 +7551,20 @@ public class expression {
             Expression ex1 = this.e1.value.toBoolean(sc);
             Expression ex2 = this.e2.value.toBoolean(sc);
             if (((ex1.op.value & 0xFF) == 127))
+            {
                 return ex1;
+            }
             if (((ex2.op.value & 0xFF) == 127))
+            {
                 return ex2;
+            }
             this.e1.value = ex1;
             this.e2.value = ex2;
             return this;
         }
 
         public  void hookDtors(Ptr<Scope> sc) {
+            // skipping duplicate class DtorVisitor
             DtorVisitor v = new DtorVisitor(sc, this);
             v.isThen.value = true;
             walkPostorder(this.e1.value, v);
@@ -7232,9 +7629,13 @@ public class expression {
         public  Expression resolveLoc(Loc loc, Ptr<Scope> sc) {
             BytePtr s = null;
             if (((this.subop & 0xFF) == 220))
+            {
                 s = pcopy(FileName.toAbsolute(loc.isValid() ? loc.filename : (sc.get())._module.value.srcfile.toChars(), null));
+            }
             else
+            {
                 s = pcopy((loc.isValid() ? loc.filename : (sc.get())._module.value.ident.value.toChars()));
+            }
             Expression e = new StringExp(loc, s);
             e = expressionSemantic(e, sc);
             e = e.castTo(sc, this.type.value);
@@ -7330,11 +7731,17 @@ public class expression {
         public  Expression resolveLoc(Loc loc, Ptr<Scope> sc) {
             BytePtr s = null;
             if (((sc.get()).callsc != null) && (((sc.get()).callsc.get()).func.value != null))
+            {
                 s = pcopy(((sc.get()).callsc.get()).func.value.toPrettyChars(false));
+            }
             else if ((sc.get()).func.value != null)
+            {
                 s = pcopy((sc.get()).func.value.toPrettyChars(false));
+            }
             else
+            {
                 s = pcopy(new BytePtr(""));
+            }
             Expression e = new StringExp(loc, s);
             e = expressionSemantic(e, sc);
             e.type.value = Type.tstring.value;

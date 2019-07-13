@@ -49,7 +49,9 @@ public class access {
     public static boolean hasPackageAccess(dmodule.Module mod, Dsymbol s) {
         dmodule.Package pkg = null;
         if (s.prot().pkg != null)
+        {
             pkg = s.prot().pkg;
+        }
         else
         {
             for (; s != null;s = s.parent.value){
@@ -69,7 +71,9 @@ public class access {
                         }
                     }
                     else if (((pkg = s.isPackage()) != null))
+                    {
                         break;
+                    }
                 }
             }
         }
@@ -103,10 +107,14 @@ public class access {
                     Ptr<Scope> scx = sc;
                     for (; scx != null;scx = (scx.get()).enclosing.value){
                         if ((scx.get()).scopesym.value == null)
+                        {
                             continue;
+                        }
                         ClassDeclaration cd2 = (scx.get()).scopesym.value.isClassDeclaration();
                         if ((cd2 != null) && cd.isBaseOf(cd2, null))
+                        {
                             return true;
+                        }
                     }
                 }
             }
@@ -116,13 +124,17 @@ public class access {
 
     public static boolean checkAccess(Loc loc, Ptr<Scope> sc, Expression e, Declaration d) {
         if (((sc.get()).flags.value & 2) != 0)
+        {
             return false;
+        }
         if (d.isUnitTestDeclaration() != null)
         {
             return false;
         }
         if (e == null)
+        {
             return false;
+        }
         if (((e.type.value.ty.value & 0xFF) == ENUMTY.Tclass))
         {
             ClassDeclaration cd = ((TypeClass)e.type.value).sym.value;
@@ -131,7 +143,9 @@ public class access {
                 {
                     ClassDeclaration cd2 = (sc.get()).func.value.toParent().isClassDeclaration();
                     if ((cd2) != null)
+                    {
                         cd = cd2;
+                    }
                 }
             }
             return checkAccess((AggregateDeclaration)cd, loc, sc, (Dsymbol)d);
@@ -146,10 +160,14 @@ public class access {
 
     public static boolean checkAccess(Loc loc, Ptr<Scope> sc, dmodule.Package p) {
         if ((pequals((sc.get())._module.value, p)))
+        {
             return false;
+        }
         for (; sc != null;sc = (sc.get()).enclosing.value){
             if (((sc.get()).scopesym.value != null) && (sc.get()).scopesym.value.isPackageAccessible(p, new Prot(Prot.Kind.private_), 0))
+            {
                 return false;
+            }
         }
         return true;
     }
@@ -208,7 +226,9 @@ public class access {
 
     public static Dsymbol mostVisibleOverload(Dsymbol s, dmodule.Module mod) {
         if (!s.isOverloadable())
+        {
             return s;
+        }
         Dsymbol next = null;
         Dsymbol fstart = s;
         Dsymbol mostVisible = s;
@@ -216,31 +236,43 @@ public class access {
             {
                 FuncDeclaration fd = s.isFuncDeclaration();
                 if ((fd) != null)
+                {
                     next = fd.overnext;
+                }
                 else {
                     TemplateDeclaration td = s.isTemplateDeclaration();
                     if ((td) != null)
+                    {
                         next = td.overnext.value;
+                    }
                     else {
                         FuncAliasDeclaration fa = s.isFuncAliasDeclaration();
                         if ((fa) != null)
+                        {
                             next = fa.overnext;
+                        }
                         else {
                             OverDeclaration od = s.isOverDeclaration();
                             if ((od) != null)
+                            {
                                 next = od.overnext;
+                            }
                             else {
                                 AliasDeclaration ad = s.isAliasDeclaration();
                                 if ((ad) != null)
                                 {
                                     assertMsg(ad.isOverloadable() || (ad.type.value != null) && ((ad.type.value.ty.value & 0xFF) == ENUMTY.Terror), new ByteSlice("Non overloadable Aliasee in overload list"));
                                     if ((ad.semanticRun.value < PASS.semanticdone))
+                                    {
                                         next = ad.overnext;
+                                    }
                                     else
                                     {
                                         Dsymbol aliasee = ad.toAlias();
                                         if ((aliasee.isFuncAliasDeclaration() != null) || (aliasee.isOverDeclaration() != null))
+                                        {
                                             next = aliasee;
+                                        }
                                         else
                                         {
                                             assertMsg((ad.overnext == null), new ByteSlice("Unresolved overload of alias"));
@@ -251,7 +283,9 @@ public class access {
                                     assert((next != fstart));
                                 }
                                 else
+                                {
                                     break;
+                                }
                             }
                         }
                     }
@@ -270,7 +304,9 @@ public class access {
                 }
             };
             if ((next != null) && protectionSeenFromModule.invoke(mostVisible, mod).isMoreRestrictiveThan(protectionSeenFromModule.invoke(next, mod)))
+            {
                 mostVisible = next;
+            }
         }
         return mostVisible;
     }

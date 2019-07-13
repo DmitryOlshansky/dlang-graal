@@ -33,16 +33,22 @@ public class staticcond {
             LogicalExp aae = (LogicalExp)e;
             boolean result = evalStaticCondition(sc, exp, aae.e1.value, errors);
             if (errors.value)
+            {
                 return false;
+            }
             if (((e.op.value & 0xFF) == 101))
             {
                 if (!result)
+                {
                     return false;
+                }
             }
             else
             {
                 if (result)
+                {
                     return true;
+                }
             }
             result = evalStaticCondition(sc, exp, aae.e2.value, errors);
             return !errors.value && result;
@@ -52,7 +58,9 @@ public class staticcond {
             CondExp ce = (CondExp)e;
             boolean result = evalStaticCondition(sc, exp, ce.econd.value, errors);
             if (errors.value)
+            {
                 return false;
+            }
             Expression leg = result ? ce.e1.value : ce.e2.value;
             result = evalStaticCondition(sc, exp, leg, errors);
             return !errors.value && result;
@@ -78,9 +86,13 @@ public class staticcond {
         }
         e = e.ctfeInterpret();
         if (e.isBool(true))
+        {
             return true;
+        }
         else if (e.isBool(false))
+        {
             return false;
+        }
         e.error(new BytePtr("expression `%s` is not constant"), e.toChars());
         errors.value = true;
         return false;

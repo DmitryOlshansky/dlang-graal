@@ -26,7 +26,9 @@ public class sapply {
 
         public  boolean doCond(Statement s) {
             if (!this.stop.value && (s != null))
+            {
                 s.accept(this);
+            }
             return this.stop.value;
         }
 
@@ -49,7 +51,9 @@ public class sapply {
                 int i = 0;
                 for (; (i < (s.statements.get()).length.value);i++) {
                     if (this.doCond((s.statements.get()).get(i)))
+                    {
                         return ;
+                    }
                 }
             }
             this.applyTo(s);
@@ -60,7 +64,9 @@ public class sapply {
                 int i = 0;
                 for (; (i < (s.statements.get()).length.value);i++) {
                     if (this.doCond((s.statements.get()).get(i)))
+                    {
                         return ;
+                    }
                 }
             }
             this.applyTo(s);
@@ -120,12 +126,16 @@ public class sapply {
 
         public  void visit(TryCatchStatement s) {
             if (this.doCond(s._body.value))
+            {
                 return ;
+            }
             {
                 int i = 0;
                 for (; (i < (s.catches.get()).length);i++) {
                     if (this.doCond((s.catches.get()).get(i).handler.value))
+                    {
                         return ;
+                    }
                 }
             }
             this.applyTo(s);

@@ -30,7 +30,9 @@ public class transitivevisitor {
                 return ;
             }
             if (s.exp != null)
+            {
                 s.exp.accept(this);
+            }
         }
 
 
@@ -48,7 +50,9 @@ public class transitivevisitor {
                 for (; (__key577 < __r576.getLength());__key577 += 1) {
                     ASTBase.Statement sx = __r576.get(__key577);
                     if (sx != null)
+                    {
                         sx.accept(this);
+                    }
                 }
             }
         }
@@ -57,14 +61,20 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visitVarDecl(ASTBase.VarDeclaration v) {
             if (v.type != null)
+            {
                 this.visitType(v.type);
+            }
             if (v._init != null)
             {
                 ASTBase.ExpInitializer ie = v._init.isExpInitializer();
                 if ((ie != null) && ((ie.exp.op & 0xFF) == 95) || ((ie.exp.op & 0xFF) == 96))
+                {
                     ((ASTBase.AssignExp)ie.exp).e2.accept(this);
+                }
                 else
+                {
                     v._init.accept(this);
+                }
             }
         }
 
@@ -84,9 +94,13 @@ public class transitivevisitor {
                         {
                             ASTBase.VarDeclaration v = d.isVarDeclaration();
                             if ((v) != null)
+                            {
                                 this.visitVarDecl(v);
+                            }
                             else
+                            {
                                 d.accept(this);
+                            }
                         }
                     }
                 }
@@ -97,7 +111,9 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ScopeStatement s) {
             if (s.statement != null)
+            {
                 s.statement.accept(this);
+            }
         }
 
 
@@ -105,14 +121,18 @@ public class transitivevisitor {
         public  void visit(ASTBase.WhileStatement s) {
             s.condition.accept(this);
             if (s._body != null)
+            {
                 s._body.accept(this);
+            }
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.DoStatement s) {
             if (s._body != null)
+            {
                 s._body.accept(this);
+            }
             s.condition.accept(this);
         }
 
@@ -120,13 +140,21 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ForStatement s) {
             if (s._init != null)
+            {
                 s._init.accept(this);
+            }
             if (s.condition != null)
+            {
                 s.condition.accept(this);
+            }
             if (s.increment != null)
+            {
                 s.increment.accept(this);
+            }
             if (s._body != null)
+            {
                 s._body.accept(this);
+            }
         }
 
 
@@ -138,34 +166,46 @@ public class transitivevisitor {
                 for (; (__key585 < __r584.getLength());__key585 += 1) {
                     ASTBase.Parameter p = __r584.get(__key585);
                     if (p.type != null)
+                    {
                         this.visitType(p.type);
+                    }
                 }
             }
             s.aggr.accept(this);
             if (s._body != null)
+            {
                 s._body.accept(this);
+            }
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ForeachRangeStatement s) {
             if (s.prm.type != null)
+            {
                 this.visitType(s.prm.type);
+            }
             s.lwr.accept(this);
             s.upr.accept(this);
             if (s._body != null)
+            {
                 s._body.accept(this);
+            }
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.IfStatement s) {
             if ((s.prm != null) && (s.prm.type != null))
+            {
                 this.visitType(s.prm.type);
+            }
             s.condition.accept(this);
             s.ifbody.accept(this);
             if (s.elsebody != null)
+            {
                 s.elsebody.accept(this);
+            }
         }
 
 
@@ -173,25 +213,35 @@ public class transitivevisitor {
         public  void visit(ASTBase.ConditionalStatement s) {
             s.condition.accept(this);
             if (s.ifbody != null)
+            {
                 s.ifbody.accept(this);
+            }
             if (s.elsebody != null)
+            {
                 s.elsebody.accept(this);
+            }
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visitArgs(Ptr<DArray<ASTBase.Expression>> expressions, ASTBase.Expression basis) {
             if ((expressions == null) || ((expressions.get()).length == 0))
+            {
                 return ;
+            }
             {
                 Slice<ASTBase.Expression> __r574 = (expressions.get()).opSlice().copy();
                 int __key575 = 0;
                 for (; (__key575 < __r574.getLength());__key575 += 1) {
                     ASTBase.Expression el = __r574.get(__key575);
                     if (el == null)
+                    {
                         el = basis;
+                    }
                     if (el != null)
+                    {
                         el.accept(this);
+                    }
                 }
             }
         }
@@ -205,9 +255,13 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.PragmaStatement s) {
             if ((s.args != null) && ((s.args.get()).length != 0))
+            {
                 this.visitArgs(s.args, null);
+            }
             if (s._body != null)
+            {
                 s._body.accept(this);
+            }
         }
 
 
@@ -221,7 +275,9 @@ public class transitivevisitor {
         public  void visit(ASTBase.SwitchStatement s) {
             s.condition.accept(this);
             if (s._body != null)
+            {
                 s._body.accept(this);
+            }
         }
 
 
@@ -249,23 +305,31 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.GotoCaseStatement s) {
             if (s.exp != null)
+            {
                 s.exp.accept(this);
+            }
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ReturnStatement s) {
             if (s.exp != null)
+            {
                 s.exp.accept(this);
+            }
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.SynchronizedStatement s) {
             if (s.exp != null)
+            {
                 s.exp.accept(this);
+            }
             if (s._body != null)
+            {
                 s._body.accept(this);
+            }
         }
 
 
@@ -273,14 +337,18 @@ public class transitivevisitor {
         public  void visit(ASTBase.WithStatement s) {
             s.exp.accept(this);
             if (s._body != null)
+            {
                 s._body.accept(this);
+            }
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TryCatchStatement s) {
             if (s._body != null)
+            {
                 s._body.accept(this);
+            }
             {
                 Slice<ASTBase.Catch> __r586 = (s.catches.get()).opSlice().copy();
                 int __key587 = 0;
@@ -314,7 +382,9 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.LabelStatement s) {
             if (s.statement != null)
+            {
                 s.statement.accept(this);
+            }
         }
 
 
@@ -334,30 +404,40 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.Catch c) {
             if (c.type != null)
+            {
                 this.visitType(c.type);
+            }
             if (c.handler != null)
+            {
                 c.handler.accept(this);
+            }
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visitType(ASTBase.Type t) {
             if (t == null)
+            {
                 return ;
+            }
             if (((t.ty & 0xFF) == ASTBase.ENUMTY.Tfunction))
             {
                 this.visitFunctionType((ASTBase.TypeFunction)t, null);
                 return ;
             }
             else
+            {
                 t.accept(this);
+            }
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visitFunctionType(ASTBase.TypeFunction t, ASTBase.TemplateDeclaration td) {
             if (t.next != null)
+            {
                 this.visitType(t.next);
+            }
             if (td != null)
             {
                 {
@@ -394,7 +474,9 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TypeVector t) {
             if (t.basetype == null)
+            {
                 return ;
+            }
             t.basetype.accept(this);
         }
 
@@ -425,7 +507,9 @@ public class transitivevisitor {
                 this.visitFunctionType((ASTBase.TypeFunction)t.next, null);
             }
             else
+            {
                 t.next.accept(this);
+            }
         }
 
 
@@ -455,11 +539,17 @@ public class transitivevisitor {
                 for (; (__key591 < __r590.getLength());__key591 += 1) {
                     RootObject id = __r590.get(__key591);
                     if ((id.dyncast() == DYNCAST.dsymbol))
+                    {
                         ((ASTBase.TemplateInstance)id).accept(this);
+                    }
                     else if ((id.dyncast() == DYNCAST.expression))
+                    {
                         ((ASTBase.Expression)id).accept(this);
+                    }
                     else if ((id.dyncast() == DYNCAST.type))
+                    {
                         ((ASTBase.Type)id).accept(this);
+                    }
                 }
             }
         }
@@ -515,16 +605,22 @@ public class transitivevisitor {
         public  void visit(ASTBase.StaticAssert s) {
             s.exp.accept(this);
             if (s.msg != null)
+            {
                 s.msg.accept(this);
+            }
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.EnumMember em) {
             if (em.type != null)
+            {
                 this.visitType(em.type);
+            }
             if (em.value() != null)
+            {
                 em.value().accept(this);
+            }
         }
 
 
@@ -594,7 +690,9 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.PragmaDeclaration d) {
             if ((d.args != null) && ((d.args.get()).length != 0))
+            {
                 this.visitArgs(d.args, null);
+            }
             this.visitAttribDeclaration(d);
         }
 
@@ -670,7 +768,9 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visitBaseClasses(ASTBase.ClassDeclaration d) {
             if ((d == null) || ((d.baseclasses.get()).length == 0))
+            {
                 return ;
+            }
             {
                 Slice<Ptr<ASTBase.BaseClass>> __r602 = (d.baseclasses.get()).opSlice().copy();
                 int __key603 = 0;
@@ -685,10 +785,14 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  boolean visitEponymousMember(ASTBase.TemplateDeclaration d) {
             if ((d.members == null) || ((d.members.get()).length != 1))
+            {
                 return false;
+            }
             ASTBase.Dsymbol onemember = (d.members.get()).get(0);
             if ((!pequals(onemember.ident, d.ident)))
+            {
                 return false;
+            }
             {
                 ASTBase.FuncDeclaration fd = onemember.isFuncDeclaration();
                 if ((fd) != null)
@@ -696,7 +800,9 @@ public class transitivevisitor {
                     assert(fd.type != null);
                     this.visitFunctionType((ASTBase.TypeFunction)fd.type, d);
                     if (d.constraint != null)
+                    {
                         d.constraint.accept(this);
+                    }
                     this.visitFuncBody(fd);
                     return true;
                 }
@@ -707,7 +813,9 @@ public class transitivevisitor {
                 {
                     this.visitTemplateParameters(d.parameters);
                     if (d.constraint != null)
+                    {
                         d.constraint.accept(this);
+                    }
                     this.visitBaseClasses(ad.isClassDeclaration());
                     if (ad.members != null)
                     {
@@ -726,17 +834,25 @@ public class transitivevisitor {
                 if ((vd) != null)
                 {
                     if (d.constraint != null)
+                    {
                         return false;
+                    }
                     if (vd.type != null)
+                    {
                         this.visitType(vd.type);
+                    }
                     this.visitTemplateParameters(d.parameters);
                     if (vd._init != null)
                     {
                         ASTBase.ExpInitializer ie = vd._init.isExpInitializer();
                         if ((ie != null) && ((ie.exp.op & 0xFF) == 95) || ((ie.exp.op & 0xFF) == 96))
+                        {
                             ((ASTBase.AssignExp)ie.exp).e2.accept(this);
+                        }
                         else
+                        {
                             vd._init.accept(this);
+                        }
                         return true;
                     }
                 }
@@ -748,7 +864,9 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visitTemplateParameters(Ptr<DArray<ASTBase.TemplateParameter>> parameters) {
             if ((parameters == null) || ((parameters.get()).length == 0))
+            {
                 return ;
+            }
             {
                 Slice<ASTBase.TemplateParameter> __r604 = (parameters.get()).opSlice().copy();
                 int __key605 = 0;
@@ -763,10 +881,14 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TemplateDeclaration d) {
             if (this.visitEponymousMember(d))
+            {
                 return ;
+            }
             this.visitTemplateParameters(d.parameters);
             if (d.constraint != null)
+            {
                 d.constraint.accept(this);
+            }
             {
                 Slice<ASTBase.Dsymbol> __r608 = (d.members.get()).opSlice().copy();
                 int __key609 = 0;
@@ -815,7 +937,9 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visitTiargs(ASTBase.TemplateInstance ti) {
             if (ti.tiargs == null)
+            {
                 return ;
+            }
             {
                 Slice<RootObject> __r612 = (ti.tiargs.get()).opSlice().copy();
                 int __key613 = 0;
@@ -843,16 +967,22 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.EnumDeclaration d) {
             if (d.memtype != null)
+            {
                 this.visitType(d.memtype);
+            }
             if (d.members == null)
+            {
                 return ;
+            }
             {
                 Slice<ASTBase.Dsymbol> __r614 = (d.members.get()).opSlice().copy();
                 int __key615 = 0;
                 for (; (__key615 < __r614.getLength());__key615 += 1) {
                     ASTBase.Dsymbol em = __r614.get(__key615);
                     if (em == null)
+                    {
                         continue;
+                    }
                     em.accept(this);
                 }
             }
@@ -875,7 +1005,9 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.StructDeclaration d) {
             if (d.members == null)
+            {
                 return ;
+            }
             {
                 Slice<ASTBase.Dsymbol> __r618 = (d.members.get()).opSlice().copy();
                 int __key619 = 0;
@@ -905,9 +1037,13 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.AliasDeclaration d) {
             if (d.aliassym != null)
+            {
                 d.aliassym.accept(this);
+            }
             else
+            {
                 this.visitType(d.type);
+            }
         }
 
 
@@ -928,18 +1064,26 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.FuncLiteralDeclaration f) {
             if (((f.type.ty & 0xFF) == ASTBase.ENUMTY.Terror))
+            {
                 return ;
+            }
             ASTBase.TypeFunction tf = (ASTBase.TypeFunction)f.type;
             if (!f.inferRetType && (tf.next != null))
+            {
                 this.visitType(tf.next);
+            }
             this.visitParameters(tf.parameterList.parameters);
             ASTBase.CompoundStatement cs = f.fbody.isCompoundStatement();
             ASTBase.Statement s = cs == null ? f.fbody : null;
             ASTBase.ReturnStatement rs = s != null ? s.isReturnStatement() : null;
             if ((rs != null) && (rs.exp != null))
+            {
                 rs.exp.accept(this);
+            }
             else
+            {
                 this.visitFuncBody(f);
+            }
         }
 
 
@@ -1004,7 +1148,9 @@ public class transitivevisitor {
                     {
                         ASTBase.Initializer iz = si.value.get(i);
                         if ((iz) != null)
+                        {
                             iz.accept(this);
+                        }
                     }
                 }
             }
@@ -1020,11 +1166,15 @@ public class transitivevisitor {
                     ASTBase.Expression ex = __r625.get(__key624);
                     int i = __key624;
                     if (ex != null)
+                    {
                         ex.accept(this);
+                    }
                     {
                         ASTBase.Initializer iz = ai.value.get(i);
                         if ((iz) != null)
+                        {
                             iz.accept(this);
+                        }
                     }
                 }
             }
@@ -1067,39 +1217,57 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.ScopeExp e) {
             if (e.sds.isTemplateInstance() != null)
+            {
                 e.sds.accept(this);
+            }
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.NewExp e) {
             if (e.thisexp != null)
+            {
                 e.thisexp.accept(this);
+            }
             if ((e.newargs != null) && ((e.newargs.get()).length != 0))
+            {
                 this.visitArgs(e.newargs, null);
+            }
             this.visitType(e.newtype);
             if ((e.arguments != null) && ((e.arguments.get()).length != 0))
+            {
                 this.visitArgs(e.arguments, null);
+            }
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.NewAnonClassExp e) {
             if (e.thisexp != null)
+            {
                 e.thisexp.accept(this);
+            }
             if ((e.newargs != null) && ((e.newargs.get()).length != 0))
+            {
                 this.visitArgs(e.newargs, null);
+            }
             if ((e.arguments != null) && ((e.arguments.get()).length != 0))
+            {
                 this.visitArgs(e.arguments, null);
+            }
             if (e.cd != null)
+            {
                 e.cd.accept(this);
+            }
         }
 
 
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TupleExp e) {
             if (e.e0 != null)
+            {
                 e.e0.accept(this);
+            }
             this.visitArgs(e.exps, null);
         }
 
@@ -1115,9 +1283,13 @@ public class transitivevisitor {
             {
                 ASTBase.VarDeclaration v = e.declaration.isVarDeclaration();
                 if ((v) != null)
+                {
                     this.visitVarDecl(v);
+                }
                 else
+                {
                     e.declaration.accept(this);
+                }
             }
         }
 
@@ -1146,9 +1318,13 @@ public class transitivevisitor {
         public  void visit(ASTBase.IsExp e) {
             this.visitType(e.targ);
             if (e.tspec != null)
+            {
                 this.visitType(e.tspec);
+            }
             if ((e.parameters != null) && ((e.parameters.get()).length != 0))
+            {
                 this.visitTemplateParameters(e.parameters);
+            }
         }
 
 
@@ -1181,7 +1357,9 @@ public class transitivevisitor {
         public  void visit(ASTBase.AssertExp e) {
             e.e1.accept(this);
             if (e.msg != null)
+            {
                 e.msg.accept(this);
+            }
         }
 
 
@@ -1220,7 +1398,9 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.CastExp e) {
             if (e.to != null)
+            {
                 this.visitType(e.to);
+            }
             e.e1.accept(this);
         }
 
@@ -1256,9 +1436,13 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TemplateTypeParameter tp) {
             if (tp.specType != null)
+            {
                 this.visitType(tp.specType);
+            }
             if (tp.defaultType != null)
+            {
                 this.visitType(tp.defaultType);
+            }
         }
 
 
@@ -1271,11 +1455,17 @@ public class transitivevisitor {
         // from template ParseVisitMethods!(ASTBase)
         public  void visit(ASTBase.TemplateAliasParameter tp) {
             if (tp.specType != null)
+            {
                 this.visitType(tp.specType);
+            }
             if (tp.specAlias != null)
+            {
                 this.visitObject(tp.specAlias);
+            }
             if (tp.defaultAlias != null)
+            {
                 this.visitObject(tp.defaultAlias);
+            }
         }
 
 
@@ -1283,9 +1473,13 @@ public class transitivevisitor {
         public  void visit(ASTBase.TemplateValueParameter tp) {
             this.visitType(tp.valType);
             if (tp.specValue != null)
+            {
                 tp.specValue.accept(this);
+            }
             if (tp.defaultValue != null)
+            {
                 tp.defaultValue.accept(this);
+            }
         }
 
 
@@ -1299,7 +1493,9 @@ public class transitivevisitor {
         public  void visit(ASTBase.Parameter p) {
             this.visitType(p.type);
             if (p.defaultArg != null)
+            {
                 p.defaultArg.accept(this);
+            }
         }
 
 

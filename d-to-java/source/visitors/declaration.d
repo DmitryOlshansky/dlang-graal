@@ -182,6 +182,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     TextBuffer header;
     string defAccess = "public";
     Stack!(bool[string]) generatedFunctions;
+    bool[string] generatedClasses;
     string moduleName;
     string[] constants; // all local static vars are collected here
     bool[string] imports; // all imports for deduplication
@@ -292,6 +293,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             generatedFunctions.clear;
             generatedFunctions.push(null);
         }
+        generatedClasses = null;
         if (gotos.length != 1) gotos.push(null);
 
         header.put("package org.dlang.dmd;\n");
@@ -427,8 +429,14 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         else if (var.type.ty == Tbool) {
             sink.fmt("false");
         }
-        else if(var.type.isintegral || var.type.isfloating) {
+        else if (var.type.ty == Tint64 || var.type.ty == Tuns64) {
+            sink.fmt("0L");
+        }
+        else if(var.type.isintegral) {
             sink.fmt("0");
+        }
+        else if(var.type.isfloating) {
+            sink.fmt("0.0");
         }
         if (refVar) sink.fmt(")");
         sink.fmt(";\n");
@@ -703,9 +711,11 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
         else
         {
+            buf.put("{\n");
             buf.indent;
             s.ifbody.accept(this);
             buf.outdent;
+            buf.put("}\n");
         }
         if (s.elsebody)
         {
@@ -724,9 +734,11 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             }
             else
             {
+                buf.put("{\n");
                 buf.indent;
                 s.elsebody.accept(this);
                 buf.outdent;
+                buf.put("}\n");
             }
         }
     }
@@ -1203,6 +1215,11 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     {
         if (nameOf(d) == "UnionExp") return;
         if (opts.funcs.length) return; // inner structs are done separately
+        if (nameOf(d) in generatedClasses) {
+            buf.fmt("// skipping duplicate class %s\n", nameOf(d));
+            return;
+        }
+        generatedClasses[nameOf(d)] = true;
         auto _ = pushed(opts.aggregates, d);
         auto gf = pushed(generatedFunctions, null);
         auto guard = handleTiAggregate(d);
@@ -1290,6 +1307,11 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     
     override void visit(ClassDeclaration d)
     {
+        if (nameOf(d) in generatedClasses) {
+            buf.fmt("// skipping duplicate class %s\n", nameOf(d));
+            return;
+        }
+        generatedClasses[nameOf(d)] = true;
         if (opts.funcs.length) return; // inner classes are done separately
         auto gf = pushed(generatedFunctions, null);
         auto agg = pushed(opts.aggregates, d);
@@ -1382,6 +1404,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 buf.fmt("%s %s = ref(%s);\n", refType(var.type, opts), opts.renamed[var], var.ident.symbol);
             }
             func.fbody.accept(this);
+            if (!func.hasReturnExp && opts.funcs.length > 1 && func.type.nextOf.ty == Tvoid)
+                buf.put("return null;\n");
             buf.outdent;
             buf.put('}');
         }

@@ -28,13 +28,17 @@ public class apply {
 
         public  boolean doCond(Expression e) {
             if (!this.stop.value && (e != null))
+            {
                 e.accept(this);
+            }
             return this.stop.value;
         }
 
         public  boolean doCond(Ptr<DArray<Expression>> e) {
             if (e == null)
+            {
                 return false;
+            }
             {
                 int i = 0;
                 for (; (i < (e.get()).length.value) && !this.stop.value;i++) {
@@ -100,7 +104,9 @@ public class apply {
 
         public  void visit(StructLiteralExp e) {
             if ((e.stageflags.value & 8) != 0)
+            {
                 return ;
+            }
             int old = e.stageflags.value;
             e.stageflags.value |= 8;
             expr(this.doCond(e.elements.value) || this.applyTo(e));

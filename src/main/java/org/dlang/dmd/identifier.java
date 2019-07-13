@@ -68,7 +68,9 @@ public class identifier {
 
         public static Identifier anonymous() {
             if (identifier.anonymousanonymous != null)
+            {
                 return identifier.anonymousanonymous;
+            }
             return identifier.anonymousanonymous = new Identifier(new ByteSlice("__anonymous"), 120);
         }
 
@@ -91,30 +93,50 @@ public class identifier {
         public  BytePtr toHChars2() {
             BytePtr p = null;
             if ((pequals(this, Id.ctor.value)))
+            {
                 p = pcopy(new BytePtr("this"));
+            }
             else if ((pequals(this, Id.dtor.value)))
+            {
                 p = pcopy(new BytePtr("~this"));
+            }
             else if ((pequals(this, Id.unitTest)))
+            {
                 p = pcopy(new BytePtr("unittest"));
+            }
             else if ((pequals(this, Id.dollar)))
+            {
                 p = pcopy(new BytePtr("$"));
+            }
             else if ((pequals(this, Id.withSym.value)))
+            {
                 p = pcopy(new BytePtr("with"));
+            }
             else if ((pequals(this, Id.result)))
+            {
                 p = pcopy(new BytePtr("result"));
+            }
             else if ((pequals(this, Id.returnLabel)))
+            {
                 p = pcopy(new BytePtr("return"));
+            }
             else
             {
                 p = pcopy(this.toChars());
                 if (((p.get() & 0xFF) == 95))
                 {
                     if ((strncmp(p, new BytePtr("_staticCtor"), 11) == 0))
+                    {
                         p = pcopy(new BytePtr("static this"));
+                    }
                     else if ((strncmp(p, new BytePtr("_staticDtor"), 11) == 0))
+                    {
                         p = pcopy(new BytePtr("static ~this"));
+                    }
                     else if ((strncmp(p, new BytePtr("__invariant"), 11) == 0))
+                    {
                         p = pcopy(new BytePtr("invariant"));
+                    }
                 }
             }
             return p;
@@ -222,7 +244,9 @@ public class identifier {
         public static Identifier lookup(ByteSlice s) {
             Ptr<StringValue> sv = stringtable.lookup(s);
             if (sv == null)
+            {
                 return null;
+            }
             return ((Identifier)(sv.get()).ptrvalue);
         }
 

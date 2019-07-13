@@ -61,7 +61,9 @@ public class objc {
             for (; ((i.get() & 0xFF) != 0);){
                 len += 1;
                 if (((i.get() & 0xFF) == 58))
+                {
                     pcount += 1;
+                }
                 i.plusAssign(1);
             }
             return lookup(s, len, pcount);
@@ -89,7 +91,9 @@ public class objc {
                     {
                         byte firstChar = id.get(0);
                         if (((firstChar & 0xFF) >= 97) && ((firstChar & 0xFF) <= 122))
+                        {
                             firstChar = (byte)((firstChar & 0xFF) - 97 + 65);
+                        }
                         buf.value.writestring(new ByteSlice("set"));
                         buf.value.writeByte((firstChar & 0xFF));
                         buf.value.write((toBytePtr(id).plus(1)), id.getLength() - 1);
@@ -190,9 +194,13 @@ public class objc {
     {
         public static void _init() {
             if (global.params.isOSX && global.params.is64bit)
+            {
                 _objc = new Supported();
+            }
             else
+            {
                 _objc = new Unsupported();
+            }
         }
 
         public static void deinitialize() {
@@ -351,14 +359,18 @@ public class objc {
 
         public  void deprecate(InterfaceDeclaration id) {
             if (id.objc.isMeta.value)
+            {
                 return ;
+            }
             id.deprecation(new BytePtr("Objective-C interfaces have been deprecated"));
             deprecationSupplemental(id.loc.value, new BytePtr("Representing an Objective-C class as a D interface has been deprecated. Please use `extern (Objective-C) extern class` instead"));
         }
 
         public  void setSelector(FuncDeclaration fd, Ptr<Scope> sc) {
             if (fd.userAttribDecl == null)
+            {
                 return ;
+            }
             Ptr<DArray<Expression>> udas = fd.userAttribDecl.getAttributes();
             arrayExpressionSemantic(udas, sc, true);
             {
@@ -367,7 +379,9 @@ public class objc {
                     Expression uda = (udas.get()).get(i);
                     assert(uda != null);
                     if (((uda.op.value & 0xFF) != 126))
+                    {
                         continue;
+                    }
                     Ptr<DArray<Expression>> exps = ((TupleExp)uda).exps.value;
                     {
                         int j = 0;
@@ -375,11 +389,15 @@ public class objc {
                             Expression e = (exps.get()).get(j);
                             assert(e != null);
                             if (((e.op.value & 0xFF) != 49))
+                            {
                                 continue;
+                            }
                             StructLiteralExp literal = (StructLiteralExp)e;
                             assert(literal.sd != null);
                             if (!this.isUdaSelector(literal.sd))
+                            {
                                 continue;
+                            }
                             if (fd.selector.value != null)
                             {
                                 fd.error(new BytePtr("can only have one Objective-C selector per method"));
@@ -397,17 +415,25 @@ public class objc {
 
         public  void validateSelector(FuncDeclaration fd) {
             if (fd.selector.value == null)
+            {
                 return ;
+            }
             TypeFunction tf = (TypeFunction)fd.type.value;
             if (((fd.selector.value.get()).paramCount != (tf.parameterList.parameters.value.get()).length.value))
+            {
                 fd.error(new BytePtr("number of colons in Objective-C selector must match number of parameters"));
+            }
             if ((fd.parent.value != null) && (fd.parent.value.isTemplateInstance() != null))
+            {
                 fd.error(new BytePtr("template cannot have an Objective-C selector attached"));
+            }
         }
 
         public  void checkLinkage(FuncDeclaration fd) {
             if ((fd.linkage.value != LINK.objc) && (fd.selector.value != null))
+            {
                 fd.error(new BytePtr("must have Objective-C linkage to attach a selector"));
+            }
         }
 
         public  boolean isVirtual(FuncDeclaration fd) {
@@ -419,11 +445,15 @@ public class objc {
             Ref<FuncDeclaration> fd_ref = ref(fd);
             try {
                 if ((cd.classKind.value == ClassKind.objc) && fd_ref.value.isStatic() && !cd.objc.isMeta.value)
+                {
                     __result = cd.objc.metaclass;
                     /*goto __returnLabel*/throw Dispatch0.INSTANCE;
+                }
                 else
+                {
                     __result = cd;
                     /*goto __returnLabel*/throw Dispatch0.INSTANCE;
+                }
             }
             catch(Dispatch0 __d){}
         /*__returnLabel:*/
@@ -435,6 +465,7 @@ public class objc {
                             assert(metaclass != null);
                         }
                     }
+                    return null;
                 }
             };
             __ensure.invoke(__result, fd_ref, cd);
@@ -443,9 +474,13 @@ public class objc {
 
         public  void addToClassMethodList(FuncDeclaration fd, ClassDeclaration cd) {
             if ((cd.classKind.value != ClassKind.objc))
+            {
                 return ;
+            }
             if (fd.selector.value == null)
+            {
                 return ;
+            }
             assert(fd.isStatic() ? cd.objc.isMeta.value : !cd.objc.isMeta.value);
             (cd.objc.methodList.get()).push(fd);
         }
@@ -453,12 +488,16 @@ public class objc {
         public  AggregateDeclaration isThis(FuncDeclaration funcDeclaration) {
             {
                 if (__withSym.selector.value == null)
+                {
                     return null;
+                }
                 ClassDeclaration cd = __withSym.isMember2().isClassDeclaration();
                 if ((cd.classKind.value == ClassKind.objc))
                 {
                     if (!cd.objc.isMeta.value)
+                    {
                         return cd.objc.metaclass;
+                    }
                 }
                 return null;
             }
@@ -466,12 +505,16 @@ public class objc {
 
         public  VarDeclaration createSelectorParameter(FuncDeclaration fd, Ptr<Scope> sc) {
             if (fd.selector.value == null)
+            {
                 return null;
-            VarDeclaration var = new VarDeclaration(fd.loc.value, Type.tvoidptr, Identifier.anonymous(), null, 0L);
+            }
+            VarDeclaration var = new VarDeclaration(fd.loc.value, Type.tvoidptr.value, Identifier.anonymous(), null, 0L);
             var.storage_class.value |= 32L;
             dsymbolSemantic(var, sc);
             if ((sc.get()).insert(var) == null)
+            {
                 throw new AssertionError("Unreachable code!");
+            }
             var.parent.value = fd;
             return var;
         }
@@ -500,23 +543,31 @@ public class objc {
             if ((classDeclaration.objc.metaclass == null) && classDeclaration.objc.isMeta.value)
             {
                 if (classDeclaration.baseClass.value != null)
+                {
                     return this.getRuntimeMetaclass(classDeclaration.baseClass.value);
+                }
                 else
+                {
                     return classDeclaration;
+                }
             }
             else
+            {
                 return classDeclaration.objc.metaclass;
+            }
         }
 
         public  void addSymbols(AttribDeclaration attribDeclaration, Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
             Ptr<DArray<Dsymbol>> symbols = attribDeclaration.include(null);
             if (symbols == null)
-                return ;
             {
-                Slice<Dsymbol> __r1529 = (symbols.get()).opSlice().copy();
-                int __key1530 = 0;
-                for (; (__key1530 < __r1529.getLength());__key1530 += 1) {
-                    Dsymbol symbol = __r1529.get(__key1530);
+                return ;
+            }
+            {
+                Slice<Dsymbol> __r1531 = (symbols.get()).opSlice().copy();
+                int __key1532 = 0;
+                for (; (__key1532 < __r1531.getLength());__key1532 += 1) {
+                    Dsymbol symbol = __r1531.get(__key1532);
                     symbol.addObjcSymbols(classes, categories);
                 }
             }
@@ -524,12 +575,16 @@ public class objc {
 
         public  void addSymbols(ClassDeclaration classDeclaration, Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
             if ((__withSym.classKind.value == ClassKind.objc) && !__withSym.objc.isExtern && !__withSym.objc.isMeta.value)
+            {
                 (classes.get()).push(classDeclaration);
+            }
         }
 
         public  void checkOffsetof(Expression expression, AggregateDeclaration aggregateDeclaration) {
             if ((aggregateDeclaration.classKind.value != ClassKind.objc))
+            {
                 return ;
+            }
             ByteSlice errorMessage = new ByteSlice("no property `offsetof` for member `%s` of type `%s`");
             ByteSlice supplementalMessage = new ByteSlice("`offsetof` is not available for members of Objective-C classes. Please use the Objective-C runtime instead");
             expression.error(new BytePtr("no property `offsetof` for member `%s` of type `%s`"), expression.toChars(), expression.type.value.toChars());
@@ -538,14 +593,18 @@ public class objc {
 
         public  void checkTupleof(Expression expression, TypeClass type) {
             if ((type.sym.value.classKind.value != ClassKind.objc))
+            {
                 return ;
+            }
             expression.error(new BytePtr("no property `tupleof` for type `%s`"), type.toChars());
             expression.errorSupplemental(new BytePtr("`tupleof` is not available for members of Objective-C classes. Please use the Objective-C runtime instead"));
         }
 
         public  boolean isUdaSelector(StructDeclaration sd) {
             if ((!pequals(sd.ident.value, Id.udaSelector)) || (sd.parent.value == null))
+            {
                 return false;
+            }
             dmodule.Module _module = sd.parent.value.isModule();
             return (_module != null) && _module.isCoreModule(Id.attribute);
         }
@@ -561,15 +620,19 @@ public class objc {
         ByteSlice errorType = new ByteSlice("class");
         {
             if ((__withSym.classKind.value != ClassKind.objc) || __withSym.objc.isMeta.value || (__withSym.objc.metaclass != null))
+            {
                 return ;
+            }
             if (__withSym.objc.identifier == null)
+            {
                 __withSym.objc.identifier = classDeclaration.ident.value;
+            }
             Ptr<DArray<Ptr<BaseClass>>> metaBases = refPtr(new DArray<Ptr<BaseClass>>());
             {
-                Slice<Ptr<BaseClass>> __r1527 = (__withSym.baseclasses.get()).opSlice().copy();
-                int __key1528 = 0;
-                for (; (__key1528 < __r1527.getLength());__key1528 += 1) {
-                    Ptr<BaseClass> base = __r1527.get(__key1528);
+                Slice<Ptr<BaseClass>> __r1529 = (__withSym.baseclasses.get()).opSlice().copy();
+                int __key1530 = 0;
+                for (; (__key1530 < __r1529.getLength());__key1530 += 1) {
+                    Ptr<BaseClass> base = __r1529.get(__key1530);
                     ClassDeclaration baseCd = (base.get()).sym.value;
                     assert(baseCd != null);
                     if ((baseCd.classKind.value == ClassKind.objc))
@@ -594,7 +657,9 @@ public class objc {
             __withSym.objc.metaclass.objc.isExtern = __withSym.objc.isExtern;
             __withSym.objc.metaclass.objc.identifier = __withSym.objc.identifier;
             if (__withSym.baseClass.value != null)
+            {
                 __withSym.objc.metaclass.baseClass.value = __withSym.baseClass.value.objc.metaclass;
+            }
             (__withSym.members.value.get()).push(__withSym.objc.metaclass);
             __withSym.objc.metaclass.addMember(sc, classDeclaration);
             dsymbolSemantic(__withSym.objc.metaclass, sc);
@@ -607,15 +672,19 @@ public class objc {
         ByteSlice errorType = new ByteSlice("interface");
         {
             if ((__withSym.classKind.value != ClassKind.objc) || __withSym.objc.isMeta.value || (__withSym.objc.metaclass != null))
+            {
                 return ;
+            }
             if (__withSym.objc.identifier == null)
+            {
                 __withSym.objc.identifier = classDeclaration.ident.value;
+            }
             Ptr<DArray<Ptr<BaseClass>>> metaBases = refPtr(new DArray<Ptr<BaseClass>>());
             {
-                Slice<Ptr<BaseClass>> __r1525 = (__withSym.baseclasses.get()).opSlice().copy();
-                int __key1526 = 0;
-                for (; (__key1526 < __r1525.getLength());__key1526 += 1) {
-                    Ptr<BaseClass> base = __r1525.get(__key1526);
+                Slice<Ptr<BaseClass>> __r1527 = (__withSym.baseclasses.get()).opSlice().copy();
+                int __key1528 = 0;
+                for (; (__key1528 < __r1527.getLength());__key1528 += 1) {
+                    Ptr<BaseClass> base = __r1527.get(__key1528);
                     ClassDeclaration baseCd = (base.get()).sym.value;
                     assert(baseCd != null);
                     if ((baseCd.classKind.value == ClassKind.objc))
@@ -640,7 +709,9 @@ public class objc {
             __withSym.objc.metaclass.objc.isExtern = __withSym.objc.isExtern;
             __withSym.objc.metaclass.objc.identifier = __withSym.objc.identifier;
             if (__withSym.baseClass.value != null)
+            {
                 __withSym.objc.metaclass.baseClass.value = __withSym.baseClass.value.objc.metaclass;
+            }
             (__withSym.members.value.get()).push(__withSym.objc.metaclass);
             __withSym.objc.metaclass.addMember(sc, classDeclaration);
             dsymbolSemantic(__withSym.objc.metaclass, sc);

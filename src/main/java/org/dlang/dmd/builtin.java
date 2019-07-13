@@ -31,7 +31,9 @@ public class builtin {
         {
             Ptr<StringValue> sv = builtins.lookup(mangle, strlen(mangle));
             if ((sv) != null)
+            {
                 return ((Function3<Loc,FuncDeclaration,Ptr<DArray<Expression>>,Expression>)(sv.get()).ptrvalue);
+            }
         }
         return null;
     }
@@ -204,7 +206,9 @@ public class builtin {
         assert(((arg0.op.value & 0xFF) == 135));
         long n = arg0.toInteger();
         if ((n == 0L))
+        {
             error(loc, new BytePtr("`bsf(0)` is undefined"));
+        }
         return new IntegerExp(loc, (long)bsf(n), Type.tint32.value);
     }
 
@@ -213,7 +217,9 @@ public class builtin {
         assert(((arg0.op.value & 0xFF) == 135));
         long n = arg0.toInteger();
         if ((n == 0L))
+        {
             error(loc, new BytePtr("`bsr(0)` is undefined"));
+        }
         return new IntegerExp(loc, (long)bsr(n), Type.tint32.value);
     }
 
@@ -223,9 +229,13 @@ public class builtin {
         long n = arg0.toInteger();
         byte ty = arg0.type.value.toBasetype().ty.value;
         if (((ty & 0xFF) == ENUMTY.Tint64) || ((ty & 0xFF) == ENUMTY.Tuns64))
+        {
             return new IntegerExp(loc, bswap(n), arg0.type.value);
+        }
         else
+        {
             return new IntegerExp(loc, (long)bswap((int)n), arg0.type.value);
+        }
     }
 
     public static Expression eval_popcnt(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
@@ -340,7 +350,9 @@ public class builtin {
         add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNfkZi"), builtin::eval_popcnt);
         add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNftZt"), builtin::eval_popcnt);
         if (global.params.is64bit)
+        {
             add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNfmZi"), builtin::eval_popcnt);
+        }
     }
 
     public static void builtinDeinitialize() {

@@ -185,12 +185,14 @@ public class init {
 
         public  boolean isAssociativeArray() {
             {
-                Slice<Expression> __r1493 = this.index.opSlice().copy();
-                int __key1494 = 0;
-                for (; (__key1494 < __r1493.getLength());__key1494 += 1) {
-                    Expression idx = __r1493.get(__key1494);
+                Slice<Expression> __r1495 = this.index.opSlice().copy();
+                int __key1496 = 0;
+                for (; (__key1496 < __r1495.getLength());__key1496 += 1) {
+                    Expression idx = __r1495.get(__key1496);
                     if (idx != null)
+                    {
                         return true;
+                    }
                 }
             }
             return false;
@@ -245,21 +247,27 @@ public class init {
         Function1<Ptr<DArray<Expression>>,Boolean> checkArray = new Function1<Ptr<DArray<Expression>>,Boolean>(){
             public Boolean invoke(Ptr<DArray<Expression>> elems) {
                 {
-                    Ref<Slice<Expression>> __r1495 = ref((elems.get()).opSlice().copy());
-                    IntRef __key1496 = ref(0);
-                    for (; (__key1496.value < __r1495.value.getLength());__key1496.value += 1) {
-                        Ref<Expression> e = ref(__r1495.value.get(__key1496.value));
+                    Ref<Slice<Expression>> __r1497 = ref((elems.get()).opSlice().copy());
+                    IntRef __key1498 = ref(0);
+                    for (; (__key1498.value < __r1497.value.getLength());__key1498.value += 1) {
+                        Ref<Expression> e = ref(__r1497.value.get(__key1498.value));
                         if ((e.value != null) && hasNonConstPointers(e.value))
+                        {
                             return true;
+                        }
                     }
                 }
                 return false;
             }
         };
         if (((e.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+        {
             return false;
+        }
         if (((e.op.value & 0xFF) == 13))
+        {
             return false;
+        }
         {
             StructLiteralExp se = e.isStructLiteralExp();
             if ((se) != null)
@@ -272,7 +280,9 @@ public class init {
             if ((ae) != null)
             {
                 if (!ae.type.value.nextOf().hasPointers())
+                {
                     return false;
+                }
                 return checkArray.invoke(ae.elements.value);
             }
         }
@@ -281,9 +291,13 @@ public class init {
             if ((ae) != null)
             {
                 if (ae.type.value.nextOf().hasPointers() && checkArray.invoke(ae.values.value))
+                {
                     return true;
+                }
                 if (((TypeAArray)ae.type.value).index.value.hasPointers())
+                {
                     return checkArray.invoke(ae.keys.value);
+                }
                 return false;
             }
         }
@@ -315,11 +329,17 @@ public class init {
         if (((e.type.value.ty.value & 0xFF) == ENUMTY.Tpointer) && ((e.type.value.nextOf().ty.value & 0xFF) != ENUMTY.Tfunction))
         {
             if (((e.op.value & 0xFF) == 25))
+            {
                 return false;
+            }
             if (((e.op.value & 0xFF) == 135))
+            {
                 return false;
+            }
             if (((e.op.value & 0xFF) == 121))
+            {
                 return false;
+            }
             return true;
         }
         return false;
@@ -333,10 +353,10 @@ public class init {
                 si.value.field.setDim(vi.field.length.value);
                 si.value.value.setDim(vi.value.length.value);
                 {
-                    IntRef __key1497 = ref(0);
-                    IntRef __limit1498 = ref(vi.field.length.value);
-                    for (; (__key1497.value < __limit1498.value);__key1497.value += 1) {
-                        IntRef i = ref(__key1497.value);
+                    IntRef __key1499 = ref(0);
+                    IntRef __limit1500 = ref(vi.field.length.value);
+                    for (; (__key1499.value < __limit1500.value);__key1499.value += 1) {
+                        IntRef i = ref(__key1499.value);
                         si.value.field.set(i.value, vi.field.get(i.value));
                         si.value.value.set(i.value, syntaxCopy(vi.value.get(i.value)));
                     }
@@ -351,10 +371,10 @@ public class init {
                 ai.value.index.setDim(vi.index.length.value);
                 ai.value.value.setDim(vi.value.length.value);
                 {
-                    IntRef __key1499 = ref(0);
-                    IntRef __limit1500 = ref(vi.value.length.value);
-                    for (; (__key1499.value < __limit1500.value);__key1499.value += 1) {
-                        IntRef i = ref(__key1499.value);
+                    IntRef __key1501 = ref(0);
+                    IntRef __limit1502 = ref(vi.value.length.value);
+                    for (; (__key1501.value < __limit1502.value);__key1501.value += 1) {
+                        IntRef i = ref(__key1501.value);
                         ai.value.index.set(i.value, vi.index.get(i.value) != null ? vi.index.get(i.value).syntaxCopy() : null);
                         ai.value.value.set(i.value, syntaxCopy(vi.value.get(i.value)));
                     }

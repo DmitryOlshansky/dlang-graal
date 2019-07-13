@@ -36,7 +36,7 @@ import dmd.utils;
 import dmd.visitor;
 import dmd.root.rootobject;
 
-import std.algorithm, std.format, std.stdio, std.string;
+import std.algorithm, std.math, std.format, std.stdio, std.string;
 
 import visitors.members, visitors.templates;
 
@@ -230,6 +230,17 @@ public:
         buf.put(Token.toString(e.op));
     }
 
+    override void visit(RealExp r)
+    {
+        if (r.value.isNaN)
+            buf.fmt("0.0/0.0");
+        else if(r.value.isInfinity) {
+            buf.fmt("1.0/0.0");
+        }
+        else
+            buf.fmt("%g", r.value);
+    }
+
     override void visit(IntegerExp e)
     {
         const dinteger_t v = e.toInteger();
@@ -340,12 +351,13 @@ public:
     override void visit(IdentifierExp e)
     {
         //stderr.writefln("ID %s\n", e.toString());
+        buf.fmt("ID");
         buf.put(e.ident.symbol);
     }
 
     override void visit(DsymbolExp e)
     {
-        //stderr.writefln("DSymbol %s\n", e.toString());
+        buf.put("DSymbol");
         buf.put(e.s.toString());
     }
 
@@ -446,6 +458,7 @@ public:
 
     override void visit(TypeExp e)
     {
+        buf.put("HERE!");
         typeToBuffer(e.type, buf, opts);
     }
 
@@ -465,7 +478,7 @@ public:
 
     override void visit(TemplateExp e)
     {
-        stderr.writefln("TEMPLATE EXP %s\n", e.toString);
+        buf.fmt("TEMPLATE EXP %s\n", e.toString);
         buf.put(e.td.toString());
     }
 
@@ -549,7 +562,7 @@ public:
             buf.fmt("new %s()", e.var.ident.symbol);
         }
         else if(e.var is opts.vararg) {
-            buf.put("new Slice<>(");
+            buf.put("new RawSlice<>(");
             buf.put(e.var.ident.symbol);
             buf.put(")");
         }
@@ -898,7 +911,7 @@ public:
         expToBuffer(e.e1, PREC.primary, buf, opts);
         buf.put('.');
         buf.put(e.td.toString());
-        stderr.writefln("DOT TEMPLATE %s\n", e.td.toString());
+        buf.fmt("DOT TEMPLATE %s\n", e.td.toString());
     }
 
     override void visit(DotVarExp e)

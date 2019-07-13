@@ -55,27 +55,39 @@ public class dmodule {
     public static ByteSlice lookForSourceFile(ByteSlice filename) {
         ByteSlice sdi = FileName.forceExt(filename, toByteSlice(global.hdr_ext)).copy();
         if ((FileName.exists(sdi) == 1))
+        {
             return sdi;
+        }
         try {
             ByteSlice sd = FileName.forceExt(filename, toByteSlice(global.mars_ext)).copy();
             if ((FileName.exists(sd) == 1))
+            {
                 return sd;
+            }
             try {
                 if ((FileName.exists(filename) == 2))
                 {
                     ByteSlice ni = FileName.combine(filename, new ByteSlice("package.di")).copy();
                     if ((FileName.exists(ni) == 1))
+                    {
                         return ni;
+                    }
                     FileName.free(toBytePtr(ni));
                     ByteSlice n = FileName.combine(filename, new ByteSlice("package.d")).copy();
                     if ((FileName.exists(n) == 1))
+                    {
                         return n;
+                    }
                     FileName.free(toBytePtr(n));
                 }
                 if (FileName.absolute(filename))
+                {
                     return new ByteSlice();
+                }
                 if (global.path == null)
+                {
                     return new ByteSlice();
+                }
                 {
                     int i = 0;
                     for (; (i < (global.path.get()).length);i++){
@@ -99,7 +111,9 @@ public class dmodule {
                         {
                             ByteSlice n2i = FileName.combine(n, new ByteSlice("package.di")).copy();
                             if ((FileName.exists(n2i) == 1))
+                            {
                                 return n2i;
+                            }
                             FileName.free(toBytePtr(n2i));
                             ByteSlice n2 = FileName.combine(n, new ByteSlice("package.d")).copy();
                             if ((FileName.exists(n2) == 1))
@@ -124,15 +138,19 @@ public class dmodule {
 
     public static void semantic3OnDependencies(Module m) {
         if (m == null)
+        {
             return ;
+        }
         if ((m.semanticRun.value > PASS.semantic3))
+        {
             return ;
+        }
         semantic3(m, null);
         {
-            int __key1016 = 1;
-            int __limit1017 = m.aimports.length;
-            for (; (__key1016 < __limit1017);__key1016 += 1) {
-                int i = __key1016;
+            int __key1018 = 1;
+            int __limit1019 = m.aimports.length;
+            for (; (__key1018 < __limit1019);__key1018 += 1) {
+                int i = __key1018;
                 semantic3OnDependencies(m.aimports.get(i));
             }
         }
@@ -141,7 +159,9 @@ public class dmodule {
     public static ByteSlice getFilename(Ptr<DArray<Identifier>> packages, Identifier ident) {
         ByteSlice filename = ident.asString().copy();
         if ((packages == null) || ((packages.get()).length.value == 0))
+        {
             return filename;
+        }
         OutBuffer buf = new OutBuffer();
         try {
             OutBuffer dotmods = new OutBuffer();
@@ -152,10 +172,10 @@ public class dmodule {
                         Ref<ByteSlice> p_ref = ref(p);
                         dotmods.writestring(p_ref.value);
                         {
-                            Ref<Slice<BytePtr>> __r1018 = ref((modAliases.get()).opSlice().copy());
-                            IntRef __key1019 = ref(__r1018.value.getLength());
-                            for (; __key1019.value-- != 0;) {
-                                Ref<BytePtr> m = ref(pcopy(__r1018.value.get(__key1019.value)));
+                            Ref<Slice<BytePtr>> __r1020 = ref((modAliases.get()).opSlice().copy());
+                            IntRef __key1021 = ref(__r1020.value.getLength());
+                            for (; __key1021.value-- != 0;) {
+                                Ref<BytePtr> m = ref(pcopy(__r1020.value.get(__key1021.value)));
                                 BytePtr q = pcopy(strchr(m.value, 61));
                                 assert(q != null);
                                 if ((dotmods.offset.value == ((q.minus(m.value)))) && (memcmp(dotmods.peekChars(), m.value, ((q.minus(m.value)))) == 0))
@@ -163,31 +183,38 @@ public class dmodule {
                                     buf.reset();
                                     Ref<ByteSlice> rhs = ref(q.slice(1,strlen(q)).copy());
                                     if ((rhs.value.getLength() > 0) && ((rhs.value.get(rhs.value.getLength() - 1) & 0xFF) == 47) || ((rhs.value.get(rhs.value.getLength() - 1) & 0xFF) == 92))
+                                    {
                                         rhs.value = rhs.value.slice(0,rhs.value.getLength() - 1).copy();
+                                    }
                                     buf.writestring(rhs.value);
                                     break;
                                 }
                             }
                         }
                         dotmods.writeByte(46);
+                        return null;
                     }
                 };
                 {
-                    Slice<Identifier> __r1020 = (packages.get()).opSlice().copy();
-                    int __key1021 = 0;
-                    for (; (__key1021 < __r1020.getLength());__key1021 += 1) {
-                        Identifier pid = __r1020.get(__key1021);
+                    Slice<Identifier> __r1022 = (packages.get()).opSlice().copy();
+                    int __key1023 = 0;
+                    for (; (__key1023 < __r1022.getLength());__key1023 += 1) {
+                        Identifier pid = __r1022.get(__key1023);
                         ByteSlice p = pid.asString().copy();
                         buf.writestring(p);
                         if ((modAliases.get()).length != 0)
+                        {
                             checkModFileAlias.invoke(p);
+                        }
                         byte FileSeparator = (byte)47;
                         buf.writeByte(47);
                     }
                 }
                 buf.writestring(filename);
                 if ((modAliases.get()).length != 0)
+                {
                     checkModFileAlias.invoke(filename);
+                }
                 buf.writeByte(0);
                 filename = buf.extractSlice().slice(0,buf.extractSlice().getLength() - 1).copy();
                 return filename;
@@ -225,7 +252,9 @@ public class dmodule {
             DsymbolTable dst = Module.modules;
             Dsymbol parent = null;
             if (ppkg != null)
+            {
                 ppkg.set(0, null);
+            }
             if (packages != null)
             {
                 {
@@ -246,23 +275,31 @@ public class dmodule {
                             pkg = p.isPackage();
                             assert(pkg != null);
                             if (pkg.symtab == null)
+                            {
                                 pkg.symtab = new DsymbolTable();
+                            }
                         }
                         parent = pkg;
                         dst = pkg.symtab;
                         if ((ppkg != null) && (ppkg.get() == null))
+                        {
                             ppkg.set(0, pkg);
+                        }
                         if (pkg.isModule() != null)
                         {
                             if (ppkg != null)
+                            {
                                 ppkg.set(0, ((Package)p));
+                            }
                             break;
                         }
                     }
                 }
             }
             if (pparent != null)
+            {
                 pparent.set(0, parent);
+            }
             return dst;
         }
 
@@ -272,9 +309,13 @@ public class dmodule {
 
         public  boolean isAncestorPackageOf(Package pkg) {
             if ((pequals(this, pkg)))
+            {
                 return true;
+            }
             if ((pkg == null) || (pkg.parent.value == null))
+            {
                 return false;
+            }
             return this.isAncestorPackageOf(pkg.parent.value.isPackage());
         }
 
@@ -284,7 +325,9 @@ public class dmodule {
             {
                 Dsymbol s = this.symtab != null ? this.symtab.lookup(ident) : null;
                 if (s != null)
+                {
                     return s;
+                }
                 return this.mod.search(loc, ident, flags);
             }
             return this.search(loc, ident, flags);
@@ -309,9 +352,13 @@ public class dmodule {
 
         public  void resolvePKGunknown() {
             if (this.isModule() != null)
+            {
                 return ;
+            }
             if ((this.isPkgMod != PKG.unknown))
+            {
                 return ;
+            }
             Ref<DArray<Identifier>> packages = ref(new DArray<Identifier>());
             try {
                 {
@@ -321,9 +368,13 @@ public class dmodule {
                     }
                 }
                 if (lookForSourceFile(getFilename(ptr(packages), this.ident.value)).getLength() != 0)
+                {
                     Module.load(new Loc(null, 0, 0), ptr(packages), this.ident.value);
+                }
                 else
+                {
                     this.isPkgMod = PKG.package_;
+                }
             }
             finally {
             }
@@ -481,9 +532,13 @@ public class dmodule {
             this.srcfile = new FileName(srcfilename);
             this.objfile = this.setOutfilename(global.params.objname, global.params.objdir, filename, global.obj_ext).copy();
             if (doDocComment != 0)
+            {
                 this.setDocfile();
+            }
             if (doHdrGen != 0)
+            {
                 this.hdrfile = this.setOutfilename(global.params.hdrname, global.params.hdrdir, this.arg, toByteSlice(global.hdr_ext)).copy();
+            }
             this.escapetable = refPtr(new Escape(new ByteSlice()));
         }
 
@@ -504,21 +559,25 @@ public class dmodule {
             {
                 ByteSlice result = lookForSourceFile(filename).copy();
                 if ((result).getLength() != 0)
+                {
                     filename = result.copy();
+                }
             }
             Module m = new Module(loc, filename, ident, 0, 0);
             if (!m.read(loc))
+            {
                 return null;
+            }
             if (global.params.verbose)
             {
                 OutBuffer buf = new OutBuffer();
                 if (packages != null)
                 {
                     {
-                        Slice<Identifier> __r1022 = (packages.get()).opSlice().copy();
-                        int __key1023 = 0;
-                        for (; (__key1023 < __r1022.getLength());__key1023 += 1) {
-                            Identifier pid = __r1022.get(__key1023);
+                        Slice<Identifier> __r1024 = (packages.get()).opSlice().copy();
+                        int __key1025 = 0;
+                        for (; (__key1025 < __r1024.getLength());__key1025 += 1) {
+                            Identifier pid = __r1024.get(__key1025);
                             buf.writestring(pid.asString());
                             buf.writeByte(46);
                         }
@@ -561,9 +620,13 @@ public class dmodule {
                     arg = buf.peekSlice().copy();
                 }
                 if (global.params.preservePaths)
+                {
                     argdoc = arg.copy();
+                }
                 else
+                {
                     argdoc = FileName.name(arg).copy();
+                }
                 if (!FileName.absolute(argdoc))
                 {
                     argdoc = FileName.combine(dir, argdoc).copy();
@@ -585,7 +648,9 @@ public class dmodule {
         public  boolean loadSourceBuffer(Loc loc, File.ReadResult readResult) {
             this.srcBuffer = refPtr(new FileBuffer(readResult.extractData()));
             if (readResult.success)
+            {
                 return true;
+            }
             if (FileName.equals(this.srcfile.asString(), new ByteSlice("object.d")))
             {
                 error(loc, new BytePtr("cannot find source code for runtime library file 'object.d'"));
@@ -597,26 +662,32 @@ public class dmodule {
             {
                 boolean isPackageMod = (strcmp(this.toChars(), new BytePtr("package")) != 0) && (strcmp(this.srcfile.name(), new BytePtr("package.d")) == 0) || (strcmp(this.srcfile.name(), new BytePtr("package.di")) == 0);
                 if (isPackageMod)
+                {
                     error(loc, new BytePtr("importing package '%s' requires a 'package.d' file which cannot be found in '%s'"), this.toChars(), this.srcfile.toChars());
+                }
                 else
+                {
                     this.error(loc, new BytePtr("is in file '%s' which cannot be read"), this.srcfile.toChars());
+                }
             }
             if (global.gag.value == 0)
             {
                 if (global.path != null)
                 {
                     {
-                        Slice<BytePtr> __r1025 = (global.path.get()).opSlice().copy();
-                        int __key1024 = 0;
-                        for (; (__key1024 < __r1025.getLength());__key1024 += 1) {
-                            BytePtr p = pcopy(__r1025.get(__key1024));
-                            int i = __key1024;
+                        Slice<BytePtr> __r1027 = (global.path.get()).opSlice().copy();
+                        int __key1026 = 0;
+                        for (; (__key1026 < __r1027.getLength());__key1026 += 1) {
+                            BytePtr p = pcopy(__r1027.get(__key1026));
+                            int i = __key1026;
                             fprintf(stderr, new BytePtr("import path[%llu] = %s\n"), (long)i, p);
                         }
                     }
                 }
                 else
+                {
                     fprintf(stderr, new BytePtr("Specify path to file '%s' with -I switch\n"), this.srcfile.toChars());
+                }
                 fatal();
             }
             return false;
@@ -624,7 +695,9 @@ public class dmodule {
 
         public  boolean read(Loc loc) {
             if (this.srcBuffer != null)
+            {
                 return true;
+            }
             Ref<File.ReadResult> readResult = ref(File.read(this.srcfile.toChars()).copy());
             try {
                 return this.loadSourceBuffer(loc, readResult);
@@ -657,10 +730,10 @@ public class dmodule {
                     try {
                         dbuf.reserve(eBuf.getLength());
                         {
-                            int __key1036 = 0;
-                            int __limit1037 = eBuf.getLength();
-                            for (; (__key1036 < __limit1037);__key1036 += 1) {
-                                int i = __key1036;
+                            int __key1038 = 0;
+                            int __limit1039 = eBuf.getLength();
+                            for (; (__key1038 < __limit1039);__key1038 += 1) {
+                                int i = __key1038;
                                 int u = Port.readlongLE0(ptr(eBuf.get(i)));
                                 if ((u & -128) != 0)
                                 {
@@ -672,7 +745,9 @@ public class dmodule {
                                     dbuf.writeUTF8(u);
                                 }
                                 else
+                                {
                                     dbuf.writeByte(u);
+                                }
                             }
                         }
                         dbuf.writeByte(0);
@@ -696,10 +771,10 @@ public class dmodule {
                     try {
                         dbuf.reserve(eBuf.getLength());
                         {
-                            int __key1038 = 0;
-                            int __limit1039 = eBuf.getLength();
-                            for (; (__key1038 < __limit1039);__key1038 += 1) {
-                                int i = __key1038;
+                            int __key1040 = 0;
+                            int __limit1041 = eBuf.getLength();
+                            for (; (__key1040 < __limit1041);__key1040 += 1) {
+                                int i = __key1040;
                                 int u = Port.readlongBE1(ptr(eBuf.get(i)));
                                 if ((u & -128) != 0)
                                 {
@@ -711,7 +786,9 @@ public class dmodule {
                                     dbuf.writeUTF8(u);
                                 }
                                 else
+                                {
                                     dbuf.writeByte(u);
+                                }
                             }
                         }
                         dbuf.writeByte(0);
@@ -735,21 +812,21 @@ public class dmodule {
                     try {
                         dbuf.reserve(eBuf.getLength());
                         {
-                            int __key1032 = 0;
-                            int __limit1033 = eBuf.getLength();
-                            for (; (__key1032 < __limit1033);__key1032 += 1) {
-                                int u = Port.readwordLE0(ptr(eBuf.get(__key1032)));
+                            int __key1034 = 0;
+                            int __limit1035 = eBuf.getLength();
+                            for (; (__key1034 < __limit1035);__key1034 += 1) {
+                                int u = Port.readwordLE0(ptr(eBuf.get(__key1034)));
                                 if ((u & -128) != 0)
                                 {
                                     if ((55296 <= u) && (u < 56320))
                                     {
-                                        __key1032++;
-                                        if ((__key1032 >= eBuf.getLength()))
+                                        __key1034++;
+                                        if ((__key1034 >= eBuf.getLength()))
                                         {
                                             error(new BytePtr("surrogate UTF-16 high value %04x at end of file"), u);
                                             fatal();
                                         }
-                                        int u2 = Port.readwordLE0(ptr(eBuf.get(__key1032)));
+                                        int u2 = Port.readwordLE0(ptr(eBuf.get(__key1034)));
                                         if ((u2 < 56320) || (57344 <= u2))
                                         {
                                             error(new BytePtr("surrogate UTF-16 low value %04x out of range"), u2);
@@ -771,7 +848,9 @@ public class dmodule {
                                     dbuf.writeUTF8(u);
                                 }
                                 else
+                                {
                                     dbuf.writeByte(u);
+                                }
                             }
                         }
                         dbuf.writeByte(0);
@@ -795,21 +874,21 @@ public class dmodule {
                     try {
                         dbuf.reserve(eBuf.getLength());
                         {
-                            int __key1034 = 0;
-                            int __limit1035 = eBuf.getLength();
-                            for (; (__key1034 < __limit1035);__key1034 += 1) {
-                                int u = Port.readwordBE1(ptr(eBuf.get(__key1034)));
+                            int __key1036 = 0;
+                            int __limit1037 = eBuf.getLength();
+                            for (; (__key1036 < __limit1037);__key1036 += 1) {
+                                int u = Port.readwordBE1(ptr(eBuf.get(__key1036)));
                                 if ((u & -128) != 0)
                                 {
                                     if ((55296 <= u) && (u < 56320))
                                     {
-                                        __key1034++;
-                                        if ((__key1034 >= eBuf.getLength()))
+                                        __key1036++;
+                                        if ((__key1036 >= eBuf.getLength()))
                                         {
                                             error(new BytePtr("surrogate UTF-16 high value %04x at end of file"), u);
                                             fatal();
                                         }
-                                        int u2 = Port.readwordBE1(ptr(eBuf.get(__key1034)));
+                                        int u2 = Port.readwordBE1(ptr(eBuf.get(__key1036)));
                                         if ((u2 < 56320) || (57344 <= u2))
                                         {
                                             error(new BytePtr("surrogate UTF-16 low value %04x out of range"), u2);
@@ -831,7 +910,9 @@ public class dmodule {
                                     dbuf.writeUTF8(u);
                                 }
                                 else
+                                {
                                     dbuf.writeByte(u);
+                                }
                             }
                         }
                         dbuf.writeByte(0);
@@ -906,15 +987,23 @@ public class dmodule {
                 if (hasBOM)
                 {
                     if (!needsReencoding)
+                    {
                         buf = buf.slice(3,buf.getLength()).copy();
+                    }
                     else if ((sourceEncoding == SourceEncoding.utf32))
+                    {
                         buf = buf.slice(4,buf.getLength()).copy();
+                    }
                     else
+                    {
                         buf = buf.slice(2,buf.getLength()).copy();
+                    }
                 }
             }
             else if ((buf.getLength() >= 1) && ((buf.get(0) & 0xFF) == 0) || ((buf.get(0) & 0xFF) == 26))
+            {
                 needsReencoding = false;
+            }
             if (needsReencoding)
             {
                 if ((sourceEncoding == SourceEncoding.utf16))
@@ -931,7 +1020,9 @@ public class dmodule {
                 this.comment.value = pcopy((toBytePtr(buf).plus(4)));
                 this.isDocFile = true;
                 if (!this.docfile.opCast())
+                {
                     this.setDocfile();
+                }
                 return this;
             }
             if (FileName.equalsExt(this.arg, new ByteSlice("dd")))
@@ -939,7 +1030,9 @@ public class dmodule {
                 this.comment.value = pcopy((toBytePtr(buf)));
                 this.isDocFile = true;
                 if (!this.docfile.opCast())
+                {
                     this.setDocfile();
+                }
                 return this;
             }
             if (FileName.equalsExt(this.arg, new ByteSlice("di")))
@@ -954,7 +1047,9 @@ public class dmodule {
                     this.md = p.md;
                     this.numlines = p.scanloc.linnum;
                     if (p.errors())
+                    {
                         global.errors.value += 1;
+                    }
                 }
                 finally {
                 }
@@ -978,7 +1073,9 @@ public class dmodule {
             {
                 dst = modules;
                 if (!Identifier.isValidIdentifier(this.ident.value.toChars()))
+                {
                     this.error(new BytePtr("has non-identifier characters in filename, use module declaration instead"));
+                }
             }
             Dsymbol s = this;
             if (this.isPackageFile)
@@ -1000,11 +1097,17 @@ public class dmodule {
                     if ((mprev) != null)
                     {
                         if (!FileName.equals(srcname, mprev.srcfile.toChars()))
+                        {
                             this.error(this.loc.value, new BytePtr("from file %s conflicts with another module %s from file %s"), srcname, mprev.toChars(), mprev.srcfile.toChars());
+                        }
                         else if (this.isRoot() && mprev.isRoot())
+                        {
                             this.error(this.loc.value, new BytePtr("from file %s is specified twice on the command line"), srcname);
+                        }
                         else
+                        {
                             this.error(this.loc.value, new BytePtr("from file %s must be imported with 'import %s;'"), srcname, this.toPrettyChars(false));
+                        }
                         return mprev;
                     }
                     else {
@@ -1019,10 +1122,14 @@ public class dmodule {
                                 amodules.push(this);
                             }
                             else
+                            {
                                 this.error((this.md != null ? ptr(this.md.get().loc) : ptr(this.loc)).get(), new BytePtr("from file %s conflicts with package name %s"), srcname, pkg.toChars());
+                            }
                         }
                         else
+                        {
                             assert(global.errors.value != 0);
+                        }
                     }
                 }
             }
@@ -1036,7 +1143,9 @@ public class dmodule {
 
         public  void importAll(Ptr<Scope> prevsc) {
             if (this._scope.value != null)
+            {
                 return ;
+            }
             if (this.isDocFile)
             {
                 this.error(new BytePtr("is a Ddoc file, cannot import it"));
@@ -1044,7 +1153,9 @@ public class dmodule {
             }
             Ptr<Scope> sc = Scope.createGlobal(this);
             if ((this.md != null) && ((this.md.get()).msg != null))
+            {
                 (this.md.get()).msg = semanticString(sc, (this.md.get()).msg, new BytePtr("deprecation message"));
+            }
             if (((this.members.value.get()).length.value == 0) || (!pequals((this.members.value.get()).get(0).ident.value, Id.object.value)) || ((this.members.value.get()).get(0).isImport() == null))
             {
                 Import im = new Import(Loc.initial.value, null, Id.object.value, null, 0);
@@ -1086,9 +1197,13 @@ public class dmodule {
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if (this.insearch != 0)
+            {
                 return null;
+            }
             if ((flags & 32) == 0)
+            {
                 flags &= -41;
+            }
             if ((pequals(this.searchCacheIdent, ident)) && (this.searchCacheFlags == flags))
             {
                 return this.searchCacheSymbol;
@@ -1113,11 +1228,15 @@ public class dmodule {
 
         public  boolean isPackageAccessible(Package p, Prot protection, int flags) {
             if (this.insearch != 0)
+            {
                 return false;
+            }
             this.insearch = 1;
             try {
                 if ((flags & 1) != 0)
+                {
                     protection = new Prot(Prot.Kind.public_).copy();
+                }
                 return super.isPackageAccessible(p, protection, 0);
             }
             finally {
@@ -1137,9 +1256,13 @@ public class dmodule {
 
         public  void deleteObjFile() {
             if (global.params.obj)
+            {
                 File.remove(this.objfile.toChars());
+            }
             if (this.docfile.opCast())
+            {
                 File.remove(this.docfile.toChars());
+            }
         }
 
         public static void addDeferredSemantic(Dsymbol s) {
@@ -1156,9 +1279,13 @@ public class dmodule {
 
         public static void runDeferredSemantic() {
             if ((dprogress == 0))
+            {
                 return ;
+            }
             if (dmodule.runDeferredSemanticnested != 0)
+            {
                 return ;
+            }
             dmodule.runDeferredSemanticnested++;
             int len = 0;
             do {
@@ -1166,7 +1293,9 @@ public class dmodule {
                     dprogress = 0;
                     len = deferred.length.value;
                     if (len == 0)
+                    {
                         break;
+                    }
                     Ptr<Dsymbol> todo = null;
                     Ptr<Dsymbol> todoalloc = null;
                     Ref<Dsymbol> tmp = ref(null);
@@ -1190,7 +1319,9 @@ public class dmodule {
                         }
                     }
                     if (todoalloc != null)
+                    {
                         free(todoalloc);
+                    }
                 }
             } while ((deferred.length.value < len) || (dprogress != 0));
             dmodule.runDeferredSemanticnested--;
@@ -1205,7 +1336,9 @@ public class dmodule {
                     Dsymbol s = (a.get()).get(i);
                     semantic2(s, null);
                     if (global.errors.value != 0)
+                    {
                         break;
+                    }
                 }
             }
             (a.get()).setDim(0);
@@ -1220,7 +1353,9 @@ public class dmodule {
                     Dsymbol s = (a.get()).get(i);
                     semantic3(s, null);
                     if (global.errors.value != 0)
+                    {
                         break;
+                    }
                 }
             }
             (a.get()).setDim(0);
@@ -1242,13 +1377,17 @@ public class dmodule {
                 for (; (i < this.aimports.length);i++){
                     Module mi = this.aimports.get(i);
                     if ((pequals(mi, m)))
+                    {
                         return 1;
+                    }
                     if (mi.insearch == 0)
                     {
                         mi.insearch = 1;
                         int r = mi.imports(m);
                         if (r != 0)
+                        {
                             return r;
+                        }
                     }
                 }
             }
@@ -1388,10 +1527,10 @@ public class dmodule {
                 if ((this.packages != null) && ((this.packages.get()).length.value != 0))
                 {
                     {
-                        Slice<Identifier> __r1040 = (this.packages.get()).opSlice().copy();
-                        int __key1041 = 0;
-                        for (; (__key1041 < __r1040.getLength());__key1041 += 1) {
-                            Identifier pid = __r1040.get(__key1041);
+                        Slice<Identifier> __r1042 = (this.packages.get()).opSlice().copy();
+                        int __key1043 = 0;
+                        for (; (__key1043 < __r1042.getLength());__key1043 += 1) {
+                            Identifier pid = __r1042.get(__key1043);
                             buf.writestring(pid.asString());
                             buf.writeByte(46);
                         }

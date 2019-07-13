@@ -37,7 +37,7 @@ public class target {
         public int realpad = 0;
         public int realalignsize = 0;
         public int classinfosize = 0;
-        public Ref<Long> maxStaticDataSize = ref(0);
+        public Ref<Long> maxStaticDataSize = ref(0L);
         public int c_longsize = 0;
         public int c_long_doublesize = 0;
         public int criticalSectionSize = 0;
@@ -47,11 +47,11 @@ public class target {
         // from template FPTypeProperties!(Double)
         public static class FPTypePropertiesDouble
         {
-            public Ref<Double> max = ref(0);
-            public Ref<Double> min_normal = ref(0);
-            public double nan = 0;
-            public double infinity = 0;
-            public Ref<Double> epsilon = ref(0);
+            public Ref<Double> max = ref(0.0);
+            public Ref<Double> min_normal = ref(0.0);
+            public double nan = 0.0;
+            public double infinity = 0.0;
+            public Ref<Double> epsilon = ref(0.0);
             public Ref<Long> dig = ref(15L);
             public Ref<Long> mant_dig = ref(53L);
             public Ref<Long> max_exp = ref(1024L);
@@ -59,11 +59,11 @@ public class target {
             public Ref<Long> max_10_exp = ref(308L);
             public Ref<Long> min_10_exp = ref(-307L);
             public  void _init() {
-                this.max.value = double;
-                this.min_normal.value = double;
-                this.nan = double;
-                this.infinity = double;
-                this.epsilon.value = double;
+                this.max.value = 1.79769e+308;
+                this.min_normal.value = 2.22507e-308;
+                this.nan = 0.0/0.0;
+                this.infinity = 1.0/0.0;
+                this.epsilon.value = 2.22045e-16;
             }
 
             public FPTypePropertiesDouble(){
@@ -114,82 +114,16 @@ public class target {
         }
 
         // from template FPTypeProperties!(Double)
-        public static class FPTypePropertiesDouble
-        {
-            public Ref<Double> max = ref(0);
-            public Ref<Double> min_normal = ref(0);
-            public Ref<Double> nan = ref(0);
-            public Ref<Double> infinity = ref(0);
-            public Ref<Double> epsilon = ref(0);
-            public Ref<Long> dig = ref(18L);
-            public Ref<Long> mant_dig = ref(64L);
-            public Ref<Long> max_exp = ref(16384L);
-            public Ref<Long> min_exp = ref(-16381L);
-            public Ref<Long> max_10_exp = ref(4932L);
-            public Ref<Long> min_10_exp = ref(-4931L);
-            public  void _init() {
-                this.max.value = double;
-                this.min_normal.value = double;
-                this.nan.value = double;
-                this.infinity.value = double;
-                this.epsilon.value = double;
-            }
-
-            public FPTypePropertiesDouble(){
-            }
-            public FPTypePropertiesDouble copy(){
-                FPTypePropertiesDouble r = new FPTypePropertiesDouble();
-                r.max = max;
-                r.min_normal = min_normal;
-                r.nan = nan;
-                r.infinity = infinity;
-                r.epsilon = epsilon;
-                r.dig = dig;
-                r.mant_dig = mant_dig;
-                r.max_exp = max_exp;
-                r.min_exp = min_exp;
-                r.max_10_exp = max_10_exp;
-                r.min_10_exp = min_10_exp;
-                return r;
-            }
-            public FPTypePropertiesDouble(double max, double min_normal, double nan, double infinity, double epsilon, long dig, long mant_dig, long max_exp, long min_exp, long max_10_exp, long min_10_exp) {
-                this.max = max;
-                this.min_normal = min_normal;
-                this.nan = nan;
-                this.infinity = infinity;
-                this.epsilon = epsilon;
-                this.dig = dig;
-                this.mant_dig = mant_dig;
-                this.max_exp = max_exp;
-                this.min_exp = min_exp;
-                this.max_10_exp = max_10_exp;
-                this.min_10_exp = min_10_exp;
-            }
-
-            public FPTypePropertiesDouble opAssign(FPTypePropertiesDouble that) {
-                this.max = that.max;
-                this.min_normal = that.min_normal;
-                this.nan = that.nan;
-                this.infinity = that.infinity;
-                this.epsilon = that.epsilon;
-                this.dig = that.dig;
-                this.mant_dig = that.mant_dig;
-                this.max_exp = that.max_exp;
-                this.min_exp = that.min_exp;
-                this.max_10_exp = that.max_10_exp;
-                this.min_10_exp = that.min_10_exp;
-                return this;
-            }
-        }
+        // skipping duplicate class FPTypePropertiesDouble
 
         // from template FPTypeProperties!(Float)
         public static class FPTypePropertiesFloat
         {
-            public Ref<Double> max = ref(0);
-            public Ref<Double> min_normal = ref(0);
-            public double nan = 0;
-            public double infinity = 0;
-            public Ref<Double> epsilon = ref(0);
+            public Ref<Double> max = ref(0.0);
+            public Ref<Double> min_normal = ref(0.0);
+            public double nan = 0.0;
+            public double infinity = 0.0;
+            public Ref<Double> epsilon = ref(0.0);
             public Ref<Long> dig = ref(6L);
             public Ref<Long> mant_dig = ref(24L);
             public Ref<Long> max_exp = ref(128L);
@@ -197,11 +131,11 @@ public class target {
             public Ref<Long> max_10_exp = ref(38L);
             public Ref<Long> min_10_exp = ref(-37L);
             public  void _init() {
-                this.max.value = double;
-                this.min_normal.value = double;
-                this.nan = double;
-                this.infinity = double;
-                this.epsilon.value = double;
+                this.max.value = 3.40282e+38;
+                this.min_normal.value = 1.17549e-38;
+                this.nan = 0.0/0.0;
+                this.infinity = 1.0/0.0;
+                this.epsilon.value = 1.19209e-07;
             }
 
             public FPTypePropertiesFloat(){
@@ -261,12 +195,12 @@ public class target {
             this.ptrsize.value = 4;
             this.classinfosize = 76;
             this.maxStaticDataSize.value = 2147483647L;
-            if (params.isLP64)
+            if (params.isLP64.value)
             {
                 this.ptrsize.value = 8;
                 this.classinfosize = 152;
             }
-            if (params.isLinux || params.isFreeBSD || params.isOpenBSD || params.isDragonFlyBSD || params.isSolaris)
+            if (params.isLinux || params.isFreeBSD.value || params.isOpenBSD || params.isDragonFlyBSD || params.isSolaris)
             {
                 this.realsize = 12;
                 this.realpad = 2;
@@ -296,10 +230,12 @@ public class target {
                 }
             }
             else
+            {
                 throw new AssertionError("Unreachable code!");
+            }
             if (params.is64bit)
             {
-                if (params.isLinux || params.isFreeBSD || params.isDragonFlyBSD || params.isSolaris)
+                if (params.isLinux || params.isFreeBSD.value || params.isDragonFlyBSD || params.isSolaris)
                 {
                     this.realsize = 16;
                     this.realpad = 6;
@@ -313,13 +249,15 @@ public class target {
             }
             this.c_long_doublesize = this.realsize;
             if (params.is64bit && params.isWindows)
+            {
                 this.c_long_doublesize = 8;
+            }
             this.criticalSectionSize = getCriticalSectionSize(params);
-            this.cppExceptions = params.isLinux || params.isFreeBSD || params.isDragonFlyBSD || params.isOSX;
+            this.cppExceptions = params.isLinux || params.isFreeBSD.value || params.isDragonFlyBSD || params.isOSX;
         }
 
         public  void deinitialize() {
-            this = new Target(0, 0, 0, 0, 0, 0L, 0, 0, 0, false, false, false, new FPTypePropertiesFloat(double, double, double, double, double, 6L, 24L, 128L, -125L, 38L, -37L), new FPTypePropertiesDouble(double, double, double, double, double, 15L, 53L, 1024L, -1021L, 308L, -307L), new FPTypePropertiesDouble(double, double, double, double, double, 18L, 64L, 16384L, -16381L, 4932L, -4931L)).copy();
+            this = new Target(0, 0, 0, 0, 0, 0L, 0, 0, 0, false, false, false, new FPTypePropertiesFloat(0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 6L, 24L, 128L, -125L, 38L, -37L), new FPTypePropertiesDouble(0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 15L, 53L, 1024L, -1021L, 308L, -307L), new FPTypePropertiesDouble(0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 18L, 64L, 16384L, -16381L, 4932L, -4931L)).copy();
         }
 
         public  int alignsize(Type type) {
@@ -331,16 +269,20 @@ public class target {
                 case 29:
                     return target.realalignsize;
                 case 27:
-                    if (global.params.isLinux || global.params.isOSX || global.params.isFreeBSD || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris)
+                    if (global.params.isLinux || global.params.isOSX || global.params.isFreeBSD.value || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris)
+                    {
                         return 4;
+                    }
                     break;
                 case 19:
                 case 20:
                 case 22:
                 case 25:
                 case 28:
-                    if (global.params.isLinux || global.params.isOSX || global.params.isFreeBSD || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris)
+                    if (global.params.isLinux || global.params.isOSX || global.params.isFreeBSD.value || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris)
+                    {
                         return global.params.is64bit ? 8 : 4;
+                    }
                     break;
                 default:
                 break;
@@ -351,7 +293,9 @@ public class target {
         public  int fieldalign(Type type) {
             int size = type.alignsize();
             if (global.params.is64bit || global.params.isOSX && (size == 16) || (size == 32))
+            {
                 return size;
+            }
             return (8 < size) ? 8 : size;
         }
 
@@ -362,30 +306,34 @@ public class target {
         public static int getCriticalSectionSize(Param params) {
             if (params.isWindows)
             {
-                return params.isLP64 ? 40 : 24;
+                return params.isLP64.value ? 40 : 24;
             }
             else if (params.isLinux)
             {
                 if (params.is64bit)
-                    return params.isLP64 ? 40 : 32;
+                {
+                    return params.isLP64.value ? 40 : 32;
+                }
                 else
-                    return params.isLP64 ? 40 : 24;
+                {
+                    return params.isLP64.value ? 40 : 24;
+                }
             }
-            else if (params.isFreeBSD)
+            else if (params.isFreeBSD.value)
             {
-                return params.isLP64 ? 8 : 4;
+                return params.isLP64.value ? 8 : 4;
             }
             else if (params.isOpenBSD)
             {
-                return params.isLP64 ? 8 : 4;
+                return params.isLP64.value ? 8 : 4;
             }
             else if (params.isDragonFlyBSD)
             {
-                return params.isLP64 ? 8 : 4;
+                return params.isLP64.value ? 8 : 4;
             }
             else if (params.isOSX)
             {
-                return params.isLP64 ? 64 : 44;
+                return params.isLP64.value ? 64 : 44;
             }
             else if (params.isSolaris)
             {
@@ -399,7 +347,7 @@ public class target {
             {
                 return Type.tchar.pointerTo();
             }
-            else if (global.params.isLinux || global.params.isFreeBSD || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris || global.params.isOSX)
+            else if (global.params.isLinux || global.params.isFreeBSD.value || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris || global.params.isOSX)
             {
                 if (global.params.is64bit)
                 {
@@ -422,7 +370,9 @@ public class target {
 
         public  int isVectorTypeSupported(int sz, Type type) {
             if (!this.isXmmSupported())
+            {
                 return 1;
+            }
             switch ((type.ty.value & 0xFF))
             {
                 case 12:
@@ -441,13 +391,17 @@ public class target {
                 return 2;
             }
             if ((sz != 16) && !((global.params.cpu >= CPU.avx) && (sz == 32)))
+            {
                 return 3;
+            }
             return 0;
         }
 
         public  boolean isVectorOpSupported(Type type, byte op, Type t2) {
             if (((type.ty.value & 0xFF) != ENUMTY.Tvector))
+            {
                 return true;
+            }
             TypeVector tvec = (TypeVector)type;
             boolean supported = false;
             switch ((op & 0xFF))
@@ -483,9 +437,13 @@ public class target {
                 case 78:
                     case 81:
                         if (tvec.isfloating() || (tvec.elementType().size(Loc.initial.value) == 2L) || (global.params.cpu >= CPU.sse4_1) && (tvec.elementType().size(Loc.initial.value) == 4L))
+                        {
                             supported = true;
+                        }
                         else
+                        {
                             supported = false;
+                        }
                         break;
                 case 79:
                     case 82:
@@ -539,7 +497,9 @@ public class target {
         public  Type cppParameterType(Parameter p) {
             Type t = p.type.value.merge2();
             if ((p.storageClass.value & 2101248L) != 0)
+            {
                 t = t.referenceTo();
+            }
             else if ((p.storageClass.value & 8192L) != 0)
             {
                 Type td = new TypeFunction(new ParameterList(null, VarArg.none), t, LINK.d, 0L);
@@ -559,7 +519,9 @@ public class target {
 
         public  TypeTuple toArgTypes(Type t) {
             if (global.params.is64bit && global.params.isWindows)
+            {
                 return null;
+            }
             return toArgTypes(t);
         }
 
@@ -574,22 +536,34 @@ public class target {
             if (global.params.isWindows && global.params.is64bit)
             {
                 if (((tns.ty.value & 0xFF) == ENUMTY.Tcomplex32))
+                {
                     return true;
+                }
                 if (tns.isscalar())
+                {
                     return false;
+                }
                 tns = tns.baseElemOf();
                 if (((tns.ty.value & 0xFF) == ENUMTY.Tstruct))
                 {
                     StructDeclaration sd = ((TypeStruct)tns).sym.value;
                     if ((tf.linkage.value == LINK.cpp) && needsThis)
+                    {
                         return true;
+                    }
                     if (!sd.isPOD() || (sz > 8L))
+                    {
                         return true;
+                    }
                     if ((sd.fields.length.value == 0))
+                    {
                         return true;
+                    }
                 }
                 if ((sz <= 16L) && ((sz & sz - 1L) == 0))
+                {
                     return false;
+                }
                 return true;
             }
             else if (global.params.isWindows && global.params.mscoff)
@@ -598,7 +572,9 @@ public class target {
                 if (((tb.ty.value & 0xFF) == ENUMTY.Tstruct))
                 {
                     if ((tf.linkage.value == LINK.cpp) && needsThis)
+                    {
                         return true;
+                    }
                 }
             }
             while(true) try {
@@ -643,11 +619,15 @@ public class target {
                     {
                         tns = sd.arg1type;
                         if (((tns.ty.value & 0xFF) != ENUMTY.Tstruct))
+                        {
                             /*goto L2*/throw Dispatch0.INSTANCE;
+                        }
                         /*goto Lagain*/throw Dispatch0.INSTANCE;
                     }
                     else if (global.params.is64bit && (sd.arg1type == null) && (sd.arg2type == null))
+                    {
                         return true;
+                    }
                     else if (sd.isPOD())
                     {
                         switch (sz)
@@ -659,7 +639,9 @@ public class target {
                                 return false;
                             case 16L:
                                 if (!global.params.isWindows && global.params.is64bit)
+                                {
                                     return false;
+                                }
                                 break;
                             default:
                             break;
@@ -667,12 +649,16 @@ public class target {
                     }
                     return true;
                 }
-                else if (global.params.isLinux || global.params.isOSX || global.params.isFreeBSD || global.params.isSolaris || global.params.isDragonFlyBSD && (tf.linkage.value == LINK.c) && tns.iscomplex())
+                else if (global.params.isLinux || global.params.isOSX || global.params.isFreeBSD.value || global.params.isSolaris || global.params.isDragonFlyBSD && (tf.linkage.value == LINK.c) && tns.iscomplex())
                 {
                     if (((tns.ty.value & 0xFF) == ENUMTY.Tcomplex32))
+                    {
                         return false;
+                    }
                     else
+                    {
                         return true;
+                    }
                 }
                 else
                 {
@@ -683,13 +669,15 @@ public class target {
         }
 
         public  long parameterSize(Loc loc, Type t) {
-            if (!global.params.is64bit && global.params.isFreeBSD || global.params.isOSX)
+            if (!global.params.is64bit && global.params.isFreeBSD.value || global.params.isOSX)
             {
                 if (((t.ty.value & 0xFF) == ENUMTY.Tstruct))
                 {
                     TypeStruct ts = (TypeStruct)t;
                     if (ts.sym.value.hasNoFields)
+                    {
                         return 0L;
+                    }
                 }
             }
             long sz = t.size(loc);
@@ -716,18 +704,26 @@ public class target {
             {
                 case 2:
                     if (global.params.isWindows)
+                    {
                         return stringExp.invoke(global.params.mscoff ? new ByteSlice("coff") : new ByteSlice("omf"));
+                    }
                     else if (global.params.isOSX)
+                    {
                         return stringExp.invoke(new ByteSlice("macho"));
+                    }
                     else
+                    {
                         return stringExp.invoke(new ByteSlice("elf"));
+                    }
                 case 1:
                     return stringExp.invoke(new ByteSlice("hard"));
                 case 3:
                     if (global.params.isWindows)
                     {
                         if (global.params.mscoff)
+                        {
                             return stringExp.invoke(global.params.mscrtlib);
+                        }
                         return stringExp.invoke(new ByteSlice("snn"));
                     }
                     return stringExp.invoke(new ByteSlice(""));

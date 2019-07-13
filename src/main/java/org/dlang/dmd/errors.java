@@ -33,42 +33,42 @@ public class errors {
 
 
         public  void error(Loc loc, BytePtr format, Object... args) {
-            this.error(loc, format, new Slice<>(args));
+            this.error(loc, format, new RawSlice<>(args));
         }
 
         public abstract void error(Loc loc, BytePtr format, Ptr<Slice<Object>> args);
 
 
         public  void errorSupplemental(Loc loc, BytePtr format, Object... args) {
-            this.errorSupplemental(loc, format, new Slice<>(args));
+            this.errorSupplemental(loc, format, new RawSlice<>(args));
         }
 
         public abstract void errorSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> arg2);
 
 
         public  void warning(Loc loc, BytePtr format, Object... args) {
-            this.warning(loc, format, new Slice<>(args));
+            this.warning(loc, format, new RawSlice<>(args));
         }
 
         public abstract void warning(Loc loc, BytePtr format, Ptr<Slice<Object>> args);
 
 
         public  void warningSupplemental(Loc loc, BytePtr format, Object... args) {
-            this.warningSupplemental(loc, format, new Slice<>(args));
+            this.warningSupplemental(loc, format, new RawSlice<>(args));
         }
 
         public abstract void warningSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> arg2);
 
 
         public  void deprecation(Loc loc, BytePtr format, Object... args) {
-            this.deprecation(loc, format, new Slice<>(args));
+            this.deprecation(loc, format, new RawSlice<>(args));
         }
 
         public abstract void deprecation(Loc loc, BytePtr format, Ptr<Slice<Object>> args);
 
 
         public  void deprecationSupplemental(Loc loc, BytePtr format, Object... args) {
-            this.deprecationSupplemental(loc, format, new Slice<>(args));
+            this.deprecationSupplemental(loc, format, new RawSlice<>(args));
         }
 
         public abstract void deprecationSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> arg2);
@@ -122,9 +122,13 @@ public class errors {
         public  void deprecation(Loc loc, BytePtr format, Ptr<Slice<Object>> args) {
             vdeprecation(loc, format, args, null, null);
             if (((this.useDeprecated & 0xFF) == 0))
+            {
                 this.errorCount_++;
+            }
             else
+            {
                 this.deprecationCount_++;
+            }
         }
 
         public  void deprecationSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> args) {
@@ -153,62 +157,72 @@ public class errors {
     }
 
     public static void error(Loc loc, BytePtr format, Object... ap) {
-        verror(loc, format, new Slice<>(ap), null, null, new BytePtr("Error: "));
+        verror(loc, format, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
     }
 
     // removed duplicate function, [["void errorLoc, BytePtr", "int isattyint"]] signature: void errorLoc, BytePtr
     public static void error(BytePtr filename, int linnum, int charnum, BytePtr format, Object... ap) {
         Loc loc = loc = new Loc(filename, linnum, charnum);
-        verror(loc, format, new Slice<>(ap), null, null, new BytePtr("Error: "));
+        verror(loc, format, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
     }
 
     public static void errorSupplemental(Loc loc, BytePtr format, Object... ap) {
-        verrorSupplemental(loc, format, new Slice<>(ap));
+        verrorSupplemental(loc, format, new RawSlice<>(ap));
     }
 
     public static void warning(Loc loc, BytePtr format, Object... ap) {
-        vwarning(loc, format, new Slice<>(ap));
+        vwarning(loc, format, new RawSlice<>(ap));
     }
 
     public static void warningSupplemental(Loc loc, BytePtr format, Object... ap) {
-        vwarningSupplemental(loc, format, new Slice<>(ap));
+        vwarningSupplemental(loc, format, new RawSlice<>(ap));
     }
 
     public static void deprecation(Loc loc, BytePtr format, Object... ap) {
-        vdeprecation(loc, format, new Slice<>(ap), null, null);
+        vdeprecation(loc, format, new RawSlice<>(ap), null, null);
     }
 
     public static void deprecationSupplemental(Loc loc, BytePtr format, Object... ap) {
-        vdeprecationSupplemental(loc, format, new Slice<>(ap));
+        vdeprecationSupplemental(loc, format, new RawSlice<>(ap));
     }
 
     public static void message(Loc loc, BytePtr format, Object... ap) {
-        vmessage(loc, format, new Slice<>(ap));
+        vmessage(loc, format, new RawSlice<>(ap));
     }
 
     public static void message(BytePtr format, Object... ap) {
-        vmessage(Loc.initial.value, format, new Slice<>(ap));
+        vmessage(Loc.initial.value, format, new RawSlice<>(ap));
     }
 
     public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Ptr<Slice<Object>> ap, BytePtr p1, BytePtr p2) {
         Ptr<Console> con = ((Ptr<Console>)global.console);
         BytePtr p = pcopy(loc.toChars(global.params.showColumns.value));
         if (con != null)
+        {
             (con.get()).setColorBright(true);
+        }
         if (p.get() != 0)
         {
             fprintf(stderr, new BytePtr("%s: "), p);
             Mem.xfree(p);
         }
         if (con != null)
+        {
             (con.get()).setColor(headerColor);
+        }
         fputs(header, stderr);
         if (con != null)
+        {
             (con.get()).resetColor();
+        }
         if (p1 != null)
+        {
             fprintf(stderr, new BytePtr("%s "), p1);
+        }
         if (p2 != null)
+        {
             fprintf(stderr, new BytePtr("%s "), p2);
+        }
         Ref<OutBuffer> tmp = ref(new OutBuffer());
         tmp.value.vprintf(format, ap);
         if ((con != null) && (strchr(tmp.value.peekChars(), 96) != null))
@@ -217,7 +231,9 @@ public class errors {
             writeHighlights(con, ptr(tmp));
         }
         else
+        {
             fputs(tmp.value.peekChars(), stderr);
+        }
         fputc(10, stderr);
         if (global.params.printErrorContext && !loc.opEquals(Loc.initial.value) && (strstr(loc.filename, new BytePtr(".d-mixin-")) == null) && (global.params.mixinOut == null))
         {
@@ -260,7 +276,9 @@ public class errors {
         {
             verrorPrint(loc, Color.brightRed, header, format, ap, p1, p2);
             if ((global.params.errorLimit != 0) && (global.errors.value >= global.params.errorLimit))
+            {
                 fatal();
+            }
         }
         else
         {
@@ -293,11 +311,15 @@ public class errors {
         if (global.gag.value != 0)
         {
             if (!global.params.showGaggedErrors)
+            {
                 return ;
+            }
             color = Color.brightBlue;
         }
         else
+        {
             color = Color.brightRed;
+        }
         verrorPrint(loc, color, new BytePtr("       "), format, ap, null, null);
     }
 
@@ -308,7 +330,9 @@ public class errors {
             {
                 verrorPrint(loc, Color.brightYellow, new BytePtr("Warning: "), format, ap, null, null);
                 if (((global.params.warnings & 0xFF) == 0))
+                {
                     global.warnings++;
+                }
             }
             else
             {
@@ -319,12 +343,16 @@ public class errors {
 
     public static void vwarningSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> ap) {
         if (((global.params.warnings & 0xFF) != 2) && (global.gag.value == 0))
+        {
             verrorPrint(loc, Color.brightYellow, new BytePtr("       "), format, ap, null, null);
+        }
     }
 
     public static void vdeprecation(Loc loc, BytePtr format, Ptr<Slice<Object>> ap, BytePtr p1, BytePtr p2) {
         if (((global.params.useDeprecated & 0xFF) == 0))
+        {
             verror(loc, format, ap, p1, p2, errors.vdeprecationheader);
+        }
         else if (((global.params.useDeprecated & 0xFF) == 1))
         {
             if (global.gag.value == 0)
@@ -364,9 +392,13 @@ public class errors {
 
     public static void vdeprecationSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> ap) {
         if (((global.params.useDeprecated & 0xFF) == 0))
+        {
             verrorSupplemental(loc, format, ap);
+        }
         else if (((global.params.useDeprecated & 0xFF) == 1) && (global.gag.value == 0))
+        {
             verrorPrint(loc, Color.brightCyan, new BytePtr("       "), format, ap, null, null);
+        }
     }
 
     public static void fatal() {
@@ -476,7 +508,9 @@ public class errors {
                     break;
                 default:
                 if (tok.value.isKeyword() != 0)
+                {
                     highlight = HIGHLIGHT.Identifier;
+                }
                 break;
             }
             if (((highlight & 0xFF) != 0))
@@ -488,9 +522,13 @@ public class errors {
                 res.value.writeByte(6);
             }
             else
+            {
                 res.value.writestring(tok.value.ptr.slice(0,((lex.p.value.minus(tok.value.ptr)))));
+            }
             if (((tok.value.value & 0xFF) == 11))
+            {
                 break;
+            }
             lastp = pcopy(lex.p.value);
         }
         res.value.writeByte(255);
@@ -528,12 +566,16 @@ public class errors {
                     }
                 }
                 else
+                {
                     fputc((c & 0xFF), (con.get()).fp());
+                }
             }
         }
         {
             if (colors)
+            {
                 (con.get()).resetColor();
+            }
         }
     }
 
