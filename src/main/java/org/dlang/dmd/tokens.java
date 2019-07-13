@@ -264,7 +264,7 @@ public class tokens {
     }
 
     static ByteSlice keywords = slice(initializer_0);
-    public static class Token implements LinkedNode<Token>
+    public static class Token
     {
         public Ptr<Token> next = null;
         public Loc loc = new Loc();
@@ -273,7 +273,7 @@ public class tokens {
         public Ref<BytePtr> blockComment = ref(null);
         public Ref<BytePtr> lineComment = ref(null);
         public long intvalue = 0;
-        public double floatvalue = ;
+        public double floatvalue = 0;
         public BytePtr ustring = null;
         public int len = 0;
         public byte postfix = 0;
@@ -313,7 +313,7 @@ public class tokens {
         }
 
         public  void setString(OutBuffer buf) {
-            this.setString(toBytePtr(buf.data), buf.offset);
+            this.setString(toBytePtr(buf.data), buf.offset.value);
         }
 
         public  void setString() {
@@ -526,7 +526,5 @@ public class tokens {
             this.ident = that.ident;
             return this;
         }
-        public void setNext(Ptr<Token> value) { next = value; }
-        public Ptr<Token> getNext() { return next; }
     }
 }

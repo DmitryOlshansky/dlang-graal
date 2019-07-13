@@ -28,13 +28,13 @@ import static org.dlang.dmd.utils.*;
 public class staticcond {
 
     public static boolean evalStaticCondition(Ptr<Scope> sc, Expression exp, Expression e, Ref<Boolean> errors) {
-        if (((e.op & 0xFF) == 101) || ((e.op & 0xFF) == 102))
+        if (((e.op.value & 0xFF) == 101) || ((e.op.value & 0xFF) == 102))
         {
             LogicalExp aae = (LogicalExp)e;
             boolean result = evalStaticCondition(sc, exp, aae.e1.value, errors);
             if (errors.value)
                 return false;
-            if (((e.op & 0xFF) == 101))
+            if (((e.op.value & 0xFF) == 101))
             {
                 if (!result)
                     return false;
@@ -47,24 +47,24 @@ public class staticcond {
             result = evalStaticCondition(sc, exp, aae.e2.value, errors);
             return !errors.value && result;
         }
-        if (((e.op & 0xFF) == 100))
+        if (((e.op.value & 0xFF) == 100))
         {
             CondExp ce = (CondExp)e;
-            boolean result = evalStaticCondition(sc, exp, ce.econd, errors);
+            boolean result = evalStaticCondition(sc, exp, ce.econd.value, errors);
             if (errors.value)
                 return false;
             Expression leg = result ? ce.e1.value : ce.e2.value;
             result = evalStaticCondition(sc, exp, leg, errors);
             return !errors.value && result;
         }
-        int nerrors = global.value.errors;
+        int nerrors = global.errors.value;
         sc = (sc.get()).startCTFE();
-        (sc.get()).flags |= 4;
+        (sc.get()).flags.value |= 4;
         e = expressionSemantic(e, sc);
         e = resolveProperties(sc, e);
         sc = (sc.get()).endCTFE();
         e = e.optimize(0, false);
-        if ((nerrors != global.value.errors) || ((e.op & 0xFF) == 127) || (pequals(e.type.value.toBasetype(), Type.terror.value)))
+        if ((nerrors != global.errors.value) || ((e.op.value & 0xFF) == 127) || (pequals(e.type.value.toBasetype(), Type.terror.value)))
         {
             errors.value = true;
             return false;

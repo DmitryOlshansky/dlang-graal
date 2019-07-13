@@ -41,33 +41,33 @@ public class dclass {
 
     public static class BaseClass
     {
-        public Type type = null;
-        public ClassDeclaration sym = null;
-        public int offset = 0;
+        public Ref<Type> type = ref(null);
+        public Ref<ClassDeclaration> sym = ref(null);
+        public IntRef offset = ref(0);
         public DArray<FuncDeclaration> vtbl = new DArray<FuncDeclaration>();
-        public Slice<BaseClass> baseInterfaces = new Slice<BaseClass>();
+        public Ref<Slice<BaseClass>> baseInterfaces = ref(new Slice<BaseClass>());
         public  BaseClass(Type type) {
-            this.type = type;
+            this.type.value = type;
         }
 
         public  boolean fillVtbl(ClassDeclaration cd, Ptr<DArray<FuncDeclaration>> vtbl, int newinstance) {
             boolean result = false;
             if (vtbl != null)
-                (vtbl.get()).setDim(this.sym.vtbl.value.length);
+                (vtbl.get()).setDim(this.sym.value.vtbl.value.length.value);
             {
-                int j = this.sym.vtblOffset();
-                for (; (j < this.sym.vtbl.value.length);j++){
-                    FuncDeclaration ifd = this.sym.vtbl.value.get(j).isFuncDeclaration();
+                int j = this.sym.value.vtblOffset();
+                for (; (j < this.sym.value.vtbl.value.length.value);j++){
+                    FuncDeclaration ifd = this.sym.value.vtbl.value.get(j).isFuncDeclaration();
                     FuncDeclaration fd = null;
                     TypeFunction tf = null;
                     assert(ifd != null);
-                    tf = ifd.type.toTypeFunction();
-                    fd = cd.findFunc(ifd.ident, tf);
+                    tf = ifd.type.value.toTypeFunction();
+                    fd = cd.findFunc(ifd.ident.value, tf);
                     if ((fd != null) && !fd.isAbstract())
                     {
-                        if ((fd.linkage != ifd.linkage))
+                        if ((fd.linkage.value != ifd.linkage.value))
                             fd.error(new BytePtr("linkage doesn't match interface function"));
-                        if ((newinstance != 0) && (!pequals(fd.toParent(), cd)) && (pequals(ifd.toParent(), this.sym)))
+                        if ((newinstance != 0) && (!pequals(fd.toParent(), cd)) && (pequals(ifd.toParent(), this.sym.value)))
                             cd.error(new BytePtr("interface function `%s` is not implemented"), ifd.toFullSignature());
                         if ((pequals(fd.toParent(), cd)))
                             result = true;
@@ -86,15 +86,15 @@ public class dclass {
         }
 
         public  void copyBaseInterfaces(Ptr<DArray<Ptr<BaseClass>>> vtblInterfaces) {
-            Ptr<BaseClass> bc = ptr(new BaseClass[36u]);
-            this.baseInterfaces = bc.slice(0,this.sym.interfaces.getLength()).copy();
+            Ptr<BaseClass> bc = ptr(new BaseClass[36]);
+            this.baseInterfaces.value = bc.slice(0,this.sym.value.interfaces.value.getLength()).copy();
             {
                 int i = 0;
-                for (; (i < this.baseInterfaces.getLength());i++){
-                    Ptr<BaseClass> b = ptr(this.baseInterfaces.get(i));
-                    Ptr<BaseClass> b2 = this.sym.interfaces.get(i);
-                    assert(((b2.get()).vtbl.length == 0));
-                    (b).opAssign((b2));
+                for (; (i < this.baseInterfaces.value.getLength());i++){
+                    Ptr<BaseClass> b = ptr(this.baseInterfaces.value.get(i));
+                    Ptr<BaseClass> b2 = this.sym.value.interfaces.value.get(i);
+                    assert(((b2.get()).vtbl.length.value == 0));
+                    (b).set(0, (b2));
                     if (i != 0)
                         (vtblInterfaces.get()).push(b);
                     (b.get()).copyBaseInterfaces(vtblInterfaces);
@@ -145,21 +145,21 @@ public class dclass {
         public static ClassDeclaration exception = null;
         public static Ref<ClassDeclaration> errorException = ref(null);
         public static ClassDeclaration cpp_type_info_ptr = null;
-        public ClassDeclaration baseClass = null;
+        public Ref<ClassDeclaration> baseClass = ref(null);
         public FuncDeclaration staticCtor = null;
         public FuncDeclaration staticDtor = null;
         public Ref<DArray<Dsymbol>> vtbl = ref(new DArray<Dsymbol>());
-        public DArray<Dsymbol> vtblFinal = new DArray<Dsymbol>();
+        public Ref<DArray<Dsymbol>> vtblFinal = ref(new DArray<Dsymbol>());
         public Ptr<DArray<Ptr<BaseClass>>> baseclasses = null;
-        public Slice<Ptr<BaseClass>> interfaces = new Slice<Ptr<BaseClass>>();
+        public Ref<Slice<Ptr<BaseClass>>> interfaces = ref(new Slice<Ptr<BaseClass>>());
         public Ptr<DArray<Ptr<BaseClass>>> vtblInterfaces = null;
-        public TypeInfoClassDeclaration vclassinfo = null;
+        public Ref<TypeInfoClassDeclaration> vclassinfo = ref(null);
         public boolean com = false;
         public boolean stack = false;
         public int cppDtorVtblIndex = -1;
         public boolean inuse = false;
         public boolean isActuallyAnonymous = false;
-        public int isabstract = 0;
+        public IntRef isabstract = ref(0);
         public int baseok = 0;
         public ObjcClassDeclaration objc = new ObjcClassDeclaration();
         public Ptr<Symbol> cpp_type_info_ptr_sym = null;
@@ -175,9 +175,9 @@ public class dclass {
                 this.baseclasses = baseclasses;
             }
             else
-                this.baseclasses = new DArray<Ptr<BaseClass>>();
-            this.members = members;
-            this.type = new TypeClass(this);
+                this.baseclasses = refPtr(new DArray<Ptr<BaseClass>>());
+            this.members.value = members;
+            this.type.value = new TypeClass(this);
             if (id != null)
             {
                 if ((pequals(id, Id.__sizeof.value)) || (pequals(id, Id.__xalignof.value)) || (pequals(id, Id._mangleof.value)))
@@ -324,14 +324,14 @@ public class dclass {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            ClassDeclaration cd = s != null ? (ClassDeclaration)s : new ClassDeclaration(this.loc, this.ident, null, null, false);
+            ClassDeclaration cd = s != null ? (ClassDeclaration)s : new ClassDeclaration(this.loc.value, this.ident.value, null, null, false);
             cd.storage_class |= this.storage_class;
-            (cd.baseclasses.get()).setDim((this.baseclasses.get()).length);
+            (cd.baseclasses.get()).setDim((this.baseclasses.get()).length.value);
             {
                 int i = 0;
-                for (; (i < (cd.baseclasses.get()).length);i++){
+                for (; (i < (cd.baseclasses.get()).length.value);i++){
                     Ptr<BaseClass> b = (this.baseclasses.get()).get(i);
-                    Ptr<BaseClass> b2 = new BaseClass((b.get()).type.syntaxCopy());
+                    Ptr<BaseClass> b2 = refPtr(new BaseClass((b.get()).type.value.syntaxCopy()));
                     cd.baseclasses.get().set(i, b2);
                 }
             }
@@ -342,7 +342,7 @@ public class dclass {
             Ptr<Scope> sc2 = super.newScope(sc);
             if (this.isCOMclass())
             {
-                (sc2.get()).linkage = target.value.systemLinkage();
+                (sc2.get()).linkage.value = target.systemLinkage();
             }
             return sc2;
         }
@@ -352,9 +352,9 @@ public class dclass {
                 return false;
             {
                 int i = 0;
-                for (; (i < (cd.baseclasses.get()).length);i++){
+                for (; (i < (cd.baseclasses.get()).length.value);i++){
                     Ptr<BaseClass> b = (cd.baseclasses.get()).get(i);
-                    if ((pequals((b.get()).sym, this)) || this.isBaseOf2((b.get()).sym))
+                    if ((pequals((b.get()).sym.value, this)) || this.isBaseOf2((b.get()).sym.value))
                         return true;
                 }
             }
@@ -367,15 +367,15 @@ public class dclass {
             if (poffset != null)
                 poffset.set(0, 0);
             for (; cd != null;){
-                if ((cd.baseClass == null) && (cd.semanticRun < PASS.semanticdone) && (cd.isInterfaceDeclaration() == null))
+                if ((cd.baseClass.value == null) && (cd.semanticRun.value < PASS.semanticdone) && (cd.isInterfaceDeclaration() == null))
                 {
                     dsymbolSemantic(cd, null);
-                    if ((cd.baseClass == null) && (cd.semanticRun < PASS.semanticdone))
+                    if ((cd.baseClass.value == null) && (cd.semanticRun.value < PASS.semanticdone))
                         cd.error(new BytePtr("base class is forward referenced by `%s`"), this.toChars());
                 }
-                if ((pequals(this, cd.baseClass)))
+                if ((pequals(this, cd.baseClass.value)))
                     return true;
-                cd = cd.baseClass;
+                cd = cd.baseClass.value;
             }
             return false;
         }
@@ -385,7 +385,7 @@ public class dclass {
         }
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
-            if ((this._scope != null) && (this.baseok < Baseok.done))
+            if ((this._scope.value != null) && (this.baseok < Baseok.done))
             {
                 if (!this.inuse)
                 {
@@ -394,7 +394,7 @@ public class dclass {
                     this.inuse = false;
                 }
             }
-            if ((this.members == null) || (this.symtab == null))
+            if ((this.members.value == null) || (this.symtab == null))
             {
                 this.error(new BytePtr("is forward referenced when looking for `%s`"), ident.toChars());
                 return null;
@@ -406,20 +406,20 @@ public class dclass {
             {
                 {
                     int i = 0;
-                    for (; (i < (this.baseclasses.get()).length);i++){
+                    for (; (i < (this.baseclasses.get()).length.value);i++){
                         Ptr<BaseClass> b = (this.baseclasses.get()).get(i);
-                        if ((b.get()).sym != null)
+                        if ((b.get()).sym.value != null)
                         {
-                            if ((b.get()).sym.symtab == null)
-                                this.error(new BytePtr("base `%s` is forward referenced"), (b.get()).sym.ident.toChars());
+                            if ((b.get()).sym.value.symtab == null)
+                                this.error(new BytePtr("base `%s` is forward referenced"), (b.get()).sym.value.ident.value.toChars());
                             else
                             {
-                                s = (b.get()).sym.search(loc, ident, flags);
+                                s = (b.get()).sym.value.search(loc, ident, flags);
                                 if (s == null)
                                     continue;
                                 else if ((pequals(s, this)))
                                     s = null;
-                                else if (((flags & 128) == 0) && !(s.prot().kind == Prot.Kind.protected_) && !symbolIsVisible(this, s))
+                                else if (((flags & 128) == 0) && !(s.prot().kind.value == Prot.Kind.protected_) && !symbolIsVisible(this, s))
                                     s = null;
                                 else
                                     break;
@@ -442,10 +442,10 @@ public class dclass {
                 int __key904 = 0;
                 for (; (__key904 < __r903.getLength());__key904 += 1) {
                     Ptr<BaseClass> b = __r903.get(__key904);
-                    ClassDeclaration cdb = (b.get()).type.isClassHandle();
+                    ClassDeclaration cdb = (b.get()).type.value.isClassHandle();
                     if (cdb == null)
                         return null;
-                    if (cdb.ident.equals(ident))
+                    if (cdb.ident.value.equals(ident))
                         return cdb;
                     ClassDeclaration result = cdb.searchBase(ident);
                     if (result != null)
@@ -456,65 +456,64 @@ public class dclass {
         }
 
         public  void finalizeSize() {
-            assert((this.sizeok != Sizeok.done));
-            if (this.baseClass != null)
+            assert((this.sizeok.value != Sizeok.done));
+            if (this.baseClass.value != null)
             {
-                assert((this.baseClass.sizeok == Sizeok.done));
-                this.alignsize.value = this.baseClass.alignsize.value;
-                this.structsize.value = this.baseClass.structsize.value;
-                if ((this.classKind == ClassKind.cpp) && global.value.params.isWindows)
+                assert((this.baseClass.value.sizeok.value == Sizeok.done));
+                this.alignsize.value = this.baseClass.value.alignsize.value;
+                this.structsize.value = this.baseClass.value.structsize.value;
+                if ((this.classKind.value == ClassKind.cpp) && global.params.isWindows)
                     this.structsize.value = this.structsize.value + this.alignsize.value - 1 & ~(this.alignsize.value - 1);
             }
             else if (this.isInterfaceDeclaration() != null)
             {
-                if ((this.interfaces.getLength() == 0))
+                if ((this.interfaces.value.getLength() == 0))
                 {
-                    this.alignsize.value = target.value.ptrsize;
-                    this.structsize.value = target.value.ptrsize;
+                    this.alignsize.value = target.ptrsize.value;
+                    this.structsize.value = target.ptrsize.value;
                 }
             }
             else
             {
-                this.alignsize.value = target.value.ptrsize;
-                this.structsize.value = target.value.ptrsize;
+                this.alignsize.value = target.ptrsize.value;
+                this.structsize.value = target.ptrsize.value;
                 if (this.hasMonitor())
-                    this.structsize.value += target.value.ptrsize;
+                    this.structsize.value += target.ptrsize.value;
             }
             IntRef bi = ref(0);
             Function2<ClassDeclaration,Integer,Integer> membersPlace = new Function2<ClassDeclaration,Integer,Integer>(){
                 public Integer invoke(ClassDeclaration cd, Integer baseOffset) {
-                    Ref<ClassDeclaration> cd_ref = ref(cd);
                     IntRef baseOffset_ref = ref(baseOffset);
                     IntRef offset = ref(baseOffset_ref.value);
                     {
-                        Ref<Slice<Ptr<BaseClass>>> __r905 = ref(cd_ref.value.interfaces.copy());
+                        Ref<Slice<Ptr<BaseClass>>> __r905 = ref(cd.interfaces.value.copy());
                         IntRef __key906 = ref(0);
                         for (; (__key906.value < __r905.value.getLength());__key906.value += 1) {
-                            Ref<Ptr<BaseClass>> b = ref(__r905.value.get(__key906.value));
-                            if (((b.value.get()).sym.sizeok != Sizeok.done))
-                                (b.value.get()).sym.finalizeSize();
-                            assert(((b.value.get()).sym.sizeok == Sizeok.done));
-                            if ((b.value.get()).sym.alignsize.value == 0)
-                                (b.value.get()).sym.alignsize.value = target.value.ptrsize;
-                            AggregateDeclaration.alignmember((b.value.get()).sym.alignsize.value, (b.value.get()).sym.alignsize.value, ptr(offset));
-                            assert((bi.value < (vtblInterfaces.get()).length));
+                            Ptr<BaseClass> b = __r905.value.get(__key906.value);
+                            if (((b.get()).sym.value.sizeok.value != Sizeok.done))
+                                (b.get()).sym.value.finalizeSize();
+                            assert(((b.get()).sym.value.sizeok.value == Sizeok.done));
+                            if ((b.get()).sym.value.alignsize.value == 0)
+                                (b.get()).sym.value.alignsize.value = target.ptrsize.value;
+                            AggregateDeclaration.alignmember((b.get()).sym.value.alignsize.value, (b.get()).sym.value.alignsize.value, ptr(offset));
+                            assert((bi.value < (vtblInterfaces.get()).length.value));
                             Ref<Ptr<BaseClass>> bv = ref((vtblInterfaces.get()).get(bi.value));
-                            if (((b.value.get()).sym.interfaces.getLength() == 0))
+                            if (((b.get()).sym.value.interfaces.value.getLength() == 0))
                             {
-                                (bv.value.get()).offset = offset.value;
+                                (bv.value.get()).offset.value = offset.value;
                                 bi.value += 1;
                                 {
                                     Ref<Ptr<BaseClass>> b2 = ref(bv.value);
-                                    for (; (b2.value.get()).baseInterfaces.getLength() != 0;){
-                                        b2.value = ptr((b2.value.get()).baseInterfaces.get(0));
-                                        (b2.value.get()).offset = offset.value;
+                                    for (; (b2.value.get()).baseInterfaces.value.getLength() != 0;){
+                                        b2.value = ptr((b2.value.get()).baseInterfaces.value.get(0));
+                                        (b2.value.get()).offset.value = offset.value;
                                     }
                                 }
                             }
-                            membersPlace.invoke((b.value.get()).sym, offset.value);
-                            offset.value += (b.value.get()).sym.structsize.value;
-                            if ((alignsize.value < (b.value.get()).sym.alignsize.value))
-                                alignsize.value = (b.value.get()).sym.alignsize.value;
+                            membersPlace.invoke((b.get()).sym.value, offset.value);
+                            offset.value += (b.get()).sym.value.structsize.value;
+                            if ((alignsize.value < (b.get()).sym.value.alignsize.value))
+                                alignsize.value = (b.get()).sym.value.alignsize.value;
                         }
                     }
                     return offset.value - baseOffset_ref.value;
@@ -523,25 +522,25 @@ public class dclass {
             this.structsize.value += membersPlace.invoke(this, this.structsize.value);
             if (this.isInterfaceDeclaration() != null)
             {
-                this.sizeok = Sizeok.done;
+                this.sizeok.value = Sizeok.done;
                 return ;
             }
             this.fields.setDim(0);
             IntRef offset = ref(this.structsize.value);
             {
-                Slice<Dsymbol> __r907 = (this.members.get()).opSlice().copy();
+                Slice<Dsymbol> __r907 = (this.members.value.get()).opSlice().copy();
                 int __key908 = 0;
                 for (; (__key908 < __r907.getLength());__key908 += 1) {
                     Dsymbol s = __r907.get(__key908);
                     s.setFieldOffset(this, ptr(offset), false);
                 }
             }
-            this.sizeok = Sizeok.done;
+            this.sizeok.value = Sizeok.done;
             this.checkOverlappedFields();
         }
 
         public  boolean hasMonitor() {
-            return this.classKind == ClassKind.d;
+            return this.classKind.value == ClassKind.d;
         }
 
         public  boolean isAnonymous() {
@@ -549,7 +548,7 @@ public class dclass {
         }
 
         public  boolean isFuncHidden(FuncDeclaration fd) {
-            Dsymbol s = this.search(Loc.initial.value, fd.ident, 6);
+            Dsymbol s = this.search(Loc.initial.value, fd.ident.value, 6);
             if (s == null)
             {
                 return false;
@@ -595,16 +594,15 @@ public class dclass {
             };
             Function1<DArray<Dsymbol>,Void> searchVtbl = new Function1<DArray<Dsymbol>,Void>(){
                 public Void invoke(DArray<Dsymbol> vtbl) {
-                    Ref<DArray<Dsymbol>> vtbl_ref = ref(vtbl);
                     {
-                        Ref<Slice<Dsymbol>> __r911 = ref(vtbl_ref.value.opSlice().copy());
+                        Ref<Slice<Dsymbol>> __r911 = ref(vtbl.opSlice().copy());
                         IntRef __key912 = ref(0);
                         for (; (__key912.value < __r911.value.getLength());__key912.value += 1) {
-                            Ref<Dsymbol> s = ref(__r911.value.get(__key912.value));
-                            Ref<FuncDeclaration> fd = ref(s.value.isFuncDeclaration());
+                            Dsymbol s = __r911.value.get(__key912.value);
+                            Ref<FuncDeclaration> fd = ref(s.isFuncDeclaration());
                             if (fd.value == null)
                                 continue;
-                            if ((pequals(ident_ref.value, fd.value.ident)) && (fd.value.type.covariant(tf_ref.value, null, true) == 1))
+                            if ((pequals(ident_ref.value, fd.value.ident.value)) && (fd.value.type.value.covariant(tf_ref.value, null, true) == 1))
                             {
                                 if (fdmatch.value == null)
                                 {
@@ -614,8 +612,8 @@ public class dclass {
                                 if ((pequals(fd.value, fdmatch.value)))
                                     continue;
                                 {
-                                    IntRef m1 = ref(tf_ref.value.equals(fd.value.type) ? MATCH.exact : MATCH.nomatch);
-                                    IntRef m2 = ref(tf_ref.value.equals(fdmatch.value.type) ? MATCH.exact : MATCH.nomatch);
+                                    IntRef m1 = ref(tf_ref.value.equals(fd.value.type.value) ? MATCH.exact : MATCH.nomatch);
+                                    IntRef m2 = ref(tf_ref.value.equals(fdmatch.value.type.value) ? MATCH.exact : MATCH.nomatch);
                                     if ((m1.value > m2.value))
                                     {
                                         updateBestMatch.invoke(fd.value);
@@ -625,8 +623,8 @@ public class dclass {
                                         continue;
                                 }
                                 {
-                                    IntRef m1 = ref(((tf_ref.value.mod & 0xFF) == (fd.value.type.mod & 0xFF)) ? MATCH.exact : MATCH.nomatch);
-                                    IntRef m2 = ref(((tf_ref.value.mod & 0xFF) == (fdmatch.value.type.mod & 0xFF)) ? MATCH.exact : MATCH.nomatch);
+                                    IntRef m1 = ref(((tf_ref.value.mod.value & 0xFF) == (fd.value.type.value.mod.value & 0xFF)) ? MATCH.exact : MATCH.nomatch);
+                                    IntRef m2 = ref(((tf_ref.value.mod.value & 0xFF) == (fdmatch.value.type.value.mod.value & 0xFF)) ? MATCH.exact : MATCH.nomatch);
                                     if ((m1.value > m2.value))
                                     {
                                         updateBestMatch.invoke(fd.value);
@@ -652,11 +650,11 @@ public class dclass {
                     }
                 }
             };
-            searchVtbl.invoke(this.vtbl.value);
+            searchVtbl.invoke(vtbl);
             {
                 ClassDeclaration cd = this;
-                for (; cd != null;cd = cd.baseClass){
-                    searchVtbl.invoke(cd.vtblFinal);
+                for (; cd != null;cd = cd.baseClass.value){
+                    searchVtbl.invoke(vtblFinal);
                 }
             }
             if (fdambig.value != null)
@@ -673,7 +671,7 @@ public class dclass {
         }
 
         public  boolean isCPPclass() {
-            return this.classKind == ClassKind.cpp;
+            return this.classKind.value == ClassKind.cpp;
         }
 
         public  boolean isCPPinterface() {
@@ -682,15 +680,15 @@ public class dclass {
 
         public  boolean isAbstract() {
             boolean log = false;
-            if ((this.isabstract != Abstract.fwdref))
-                return this.isabstract == Abstract.yes;
+            if ((this.isabstract.value != Abstract.fwdref))
+                return this.isabstract.value == Abstract.yes;
             if (false)
                 printf(new BytePtr("isAbstract(%s)\n"), this.toChars());
             Function0<Boolean> no = new Function0<Boolean>(){
                 public Boolean invoke() {
                     if (false)
                         printf(new BytePtr("no\n"));
-                    isabstract = Abstract.no;
+                    isabstract.value = Abstract.no;
                     return false;
                 }
             };
@@ -698,21 +696,20 @@ public class dclass {
                 public Boolean invoke() {
                     if (false)
                         printf(new BytePtr("yes\n"));
-                    isabstract = Abstract.yes;
+                    isabstract.value = Abstract.yes;
                     return true;
                 }
             };
-            if (((this.storage_class & 16L) != 0) || (this._scope != null) && (((this._scope.get()).stc & 16L) != 0))
+            if (((this.storage_class & 16L) != 0) || (this._scope.value != null) && (((this._scope.value.get()).stc.value & 16L) != 0))
                 return yes.invoke();
-            if (this.errors)
+            if (this.errors.value)
                 return no.invoke();
             Function2<Dsymbol,Object,Integer> func = new Function2<Dsymbol,Object,Integer>(){
                 public Integer invoke(Dsymbol s, Object param) {
-                    Ref<Dsymbol> s_ref = ref(s);
-                    Ref<FuncDeclaration> fd = ref(s_ref.value.isFuncDeclaration());
+                    Ref<FuncDeclaration> fd = ref(s.isFuncDeclaration());
                     if (fd.value == null)
                         return 0;
-                    if ((fd.value.storage_class & 1L) != 0)
+                    if ((fd.value.storage_class.value & 1L) != 0)
                         return 0;
                     if (fd.value.isAbstract())
                         return 1;
@@ -721,38 +718,37 @@ public class dclass {
             };
             {
                 int i = 0;
-                for (; (i < (this.members.get()).length);i++){
-                    Dsymbol s = (this.members.get()).get(i);
+                for (; (i < (this.members.value.get()).length.value);i++){
+                    Dsymbol s = (this.members.value.get()).get(i);
                     if (s.apply(func, this) != 0)
                     {
                         return yes.invoke();
                     }
                 }
             }
-            if ((this.isInterfaceDeclaration() == null) && (this.baseClass == null) || !this.baseClass.isAbstract())
+            if ((this.isInterfaceDeclaration() == null) && (this.baseClass.value == null) || !this.baseClass.value.isAbstract())
                 return no.invoke();
             dsymbolSemantic(this, null);
             {
                 Function2<Dsymbol,Object,Integer> virtualSemantic = new Function2<Dsymbol,Object,Integer>(){
                     public Integer invoke(Dsymbol s, Object param) {
-                        Ref<Dsymbol> s_ref = ref(s);
-                        Ref<FuncDeclaration> fd = ref(s_ref.value.isFuncDeclaration());
-                        if ((fd.value != null) && ((fd.value.storage_class & 1L) == 0) && (fd.value.isUnitTestDeclaration() == null))
+                        Ref<FuncDeclaration> fd = ref(s.isFuncDeclaration());
+                        if ((fd.value != null) && ((fd.value.storage_class.value & 1L) == 0) && (fd.value.isUnitTestDeclaration() == null))
                             dsymbolSemantic(fd.value, null);
                         return 0;
                     }
                 };
                 {
                     int i = 0;
-                    for (; (i < (this.members.get()).length);i++){
-                        Dsymbol s = (this.members.get()).get(i);
+                    for (; (i < (this.members.value.get()).length.value);i++){
+                        Dsymbol s = (this.members.value.get()).get(i);
                         s.apply(virtualSemantic, this);
                     }
                 }
             }
             {
                 int __key913 = 1;
-                int __limit914 = this.vtbl.value.length;
+                int __limit914 = this.vtbl.value.length.value;
                 for (; (__key913 < __limit914);__key913 += 1) {
                     int i = __key913;
                     FuncDeclaration fd = this.vtbl.value.get(i).isFuncDeclaration();
@@ -766,7 +762,7 @@ public class dclass {
         }
 
         public  int vtblOffset() {
-            return (this.classKind == ClassKind.cpp) ? 0 : 1;
+            return (this.classKind.value == ClassKind.cpp) ? 0 : 1;
         }
 
         public  BytePtr kind() {
@@ -774,7 +770,7 @@ public class dclass {
         }
 
         public  void addLocalClass(Ptr<DArray<ClassDeclaration>> aclasses) {
-            if ((this.classKind != ClassKind.objc))
+            if ((this.classKind.value != ClassKind.objc))
                 (aclasses.get()).push(this);
         }
 
@@ -786,12 +782,12 @@ public class dclass {
         public  Dsymbol vtblSymbol() {
             if (this.vtblsym == null)
             {
-                Type vtype = Type.tvoidptr.value.immutableOf().sarrayOf((long)this.vtbl.value.length);
-                VarDeclaration var = new VarDeclaration(this.loc, vtype, Identifier.idPool(new ByteSlice("__vtbl")), null, 1048577L);
+                Type vtype = Type.tvoidptr.immutableOf().sarrayOf((long)this.vtbl.value.length.value);
+                VarDeclaration var = new VarDeclaration(this.loc.value, vtype, Identifier.idPool(new ByteSlice("__vtbl")), null, 1048577L);
                 var.addMember(null, this);
                 var.isdataseg = (byte)1;
-                var.linkage = LINK.d;
-                var.semanticRun = PASS.semanticdone;
+                var.linkage.value = LINK.d;
+                var.semanticRun.value = PASS.semanticdone;
                 this.vtblsym = var;
             }
             return this.vtblsym;
@@ -891,38 +887,38 @@ public class dclass {
             if ((pequals(id, Id.IUnknown)))
             {
                 this.com = true;
-                this.classKind = ClassKind.cpp;
+                this.classKind.value = ClassKind.cpp;
             }
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            InterfaceDeclaration id = s != null ? (InterfaceDeclaration)s : new InterfaceDeclaration(this.loc, this.ident, null);
+            InterfaceDeclaration id = s != null ? (InterfaceDeclaration)s : new InterfaceDeclaration(this.loc.value, this.ident.value, null);
             return this.syntaxCopy(id);
         }
 
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             Ptr<Scope> sc2 = super.newScope(sc);
             if (this.com)
-                (sc2.get()).linkage = LINK.windows;
-            else if ((this.classKind == ClassKind.cpp))
-                (sc2.get()).linkage = LINK.cpp;
-            else if ((this.classKind == ClassKind.objc))
-                (sc2.get()).linkage = LINK.objc;
+                (sc2.get()).linkage.value = LINK.windows;
+            else if ((this.classKind.value == ClassKind.cpp))
+                (sc2.get()).linkage.value = LINK.cpp;
+            else if ((this.classKind.value == ClassKind.objc))
+                (sc2.get()).linkage.value = LINK.objc;
             return sc2;
         }
 
         public  boolean isBaseOf(ClassDeclaration cd, IntPtr poffset) {
-            assert(this.baseClass == null);
+            assert(this.baseClass.value == null);
             {
-                Slice<Ptr<BaseClass>> __r915 = cd.interfaces.copy();
+                Slice<Ptr<BaseClass>> __r915 = cd.interfaces.value.copy();
                 int __key916 = 0;
                 for (; (__key916 < __r915.getLength());__key916 += 1) {
                     Ptr<BaseClass> b = __r915.get(__key916);
-                    if ((pequals(this, (b.get()).sym)))
+                    if ((pequals(this, (b.get()).sym.value)))
                     {
                         if (poffset != null)
                         {
-                            poffset.set(0, ((cd.sizeok == Sizeok.done) ? (b.get()).offset : 1985229329));
+                            poffset.set(0, ((cd.sizeok.value == Sizeok.done) ? (b.get()).offset.value : 1985229329));
                         }
                         return true;
                     }
@@ -930,7 +926,7 @@ public class dclass {
                         return true;
                 }
             }
-            if ((cd.baseClass != null) && this.isBaseOf(cd.baseClass, poffset))
+            if ((cd.baseClass.value != null) && this.isBaseOf(cd.baseClass.value, poffset))
                 return true;
             if (poffset != null)
                 poffset.set(0, 0);
@@ -940,13 +936,13 @@ public class dclass {
         public  boolean isBaseOf(Ptr<BaseClass> bc, IntPtr poffset) {
             {
                 int j = 0;
-                for (; (j < (bc.get()).baseInterfaces.getLength());j++){
-                    Ptr<BaseClass> b = ptr((bc.get()).baseInterfaces.get(j));
-                    if ((pequals(this, (b.get()).sym)))
+                for (; (j < (bc.get()).baseInterfaces.value.getLength());j++){
+                    Ptr<BaseClass> b = ptr((bc.get()).baseInterfaces.value.get(j));
+                    if ((pequals(this, (b.get()).sym.value)))
                     {
                         if (poffset != null)
                         {
-                            poffset.set(0, ((b.get()).offset));
+                            poffset.set(0, ((b.get()).offset.value));
                         }
                         return true;
                     }
@@ -972,7 +968,7 @@ public class dclass {
         }
 
         public  boolean isCPPinterface() {
-            return this.classKind == ClassKind.cpp;
+            return this.classKind.value == ClassKind.cpp;
         }
 
         public  boolean isCOMinterface() {

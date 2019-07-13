@@ -57,59 +57,57 @@ public class dstruct {
         Ref<Ptr<Scope>> sc_ref = ref(sc);
         if (sc_ref.value != null)
         {
-            if ((sc_ref.value.get()).func == null)
+            if ((sc_ref.value.get()).func.value == null)
                 return ;
-            if ((sc_ref.value.get()).intypeof != 0)
+            if ((sc_ref.value.get()).intypeof.value != 0)
                 return ;
-            if (((sc_ref.value.get()).flags & 384) != 0)
+            if (((sc_ref.value.get()).flags.value & 384) != 0)
                 return ;
         }
         if (t == null)
             return ;
         Function1<TypeVector,Void> visitVector = new Function1<TypeVector,Void>(){
             public Void invoke(TypeVector t) {
-                Ref<TypeVector> t_ref = ref(t);
-                semanticTypeInfo(sc_ref.value, t_ref.value.basetype);
+                semanticTypeInfo(sc_ref.value, t.basetype.value);
             }
         };
         Function1<TypeAArray,Void> visitAArray = new Function1<TypeAArray,Void>(){
             public Void invoke(TypeAArray t) {
-                Ref<TypeAArray> t_ref = ref(t);
-                semanticTypeInfo(sc_ref.value, t_ref.value.index);
-                semanticTypeInfo(sc_ref.value, t_ref.value.next);
+                semanticTypeInfo(sc_ref.value, t.index.value);
+                semanticTypeInfo(sc_ref.value, t.next.value);
             }
         };
         Function1<TypeStruct,Void> visitStruct = new Function1<TypeStruct,Void>(){
             public Void invoke(TypeStruct t) {
                 Ref<TypeStruct> t_ref = ref(t);
-                Ref<StructDeclaration> sd = ref(t_ref.value.sym);
+                Ref<StructDeclaration> sd = ref(t_ref.value.sym.value);
                 if (sc_ref.value == null)
                 {
                     Ref<Scope> scx = ref(new Scope().copy());
-                    scx.value._module = sd.value.getModule();
-                    getTypeInfoType(sd.value.loc, t_ref.value, ptr(scx));
-                    sd.value.requestTypeInfo = true;
+                    scx.value._module.value = sd.value.getModule();
+                    getTypeInfoType(sd.value.loc.value, t_ref.value, ptr(scx));
+                    sd.value.requestTypeInfo.value = true;
                 }
-                else if ((sc_ref.value.get()).minst == null)
+                else if ((sc_ref.value.get()).minst.value == null)
                 {
                 }
                 else
                 {
-                    getTypeInfoType(sd.value.loc, t_ref.value, sc_ref.value);
-                    sd.value.requestTypeInfo = true;
+                    getTypeInfoType(sd.value.loc.value, t_ref.value, sc_ref.value);
+                    sd.value.requestTypeInfo.value = true;
                 }
-                if (sd.value.members == null)
+                if (sd.value.members.value == null)
                     return null;
-                if ((sd.value.xeq == null) && (sd.value.xcmp == null) && (sd.value.postblit == null) && (sd.value.dtor == null) && (sd.value.xhash == null) && (search_toString(sd.value) == null))
+                if ((sd.value.xeq.value == null) && (sd.value.xcmp.value == null) && (sd.value.postblit.value == null) && (sd.value.dtor.value == null) && (sd.value.xhash.value == null) && (search_toString(sd.value) == null))
                     return null;
-                if ((sd.value.semanticRun >= PASS.semantic3))
+                if ((sd.value.semanticRun.value >= PASS.semantic3))
                 {
                 }
                 else {
                     Ref<TemplateInstance> ti = ref(sd.value.isInstantiated());
                     if ((ti.value) != null)
                     {
-                        if ((ti.value.minst != null) && !ti.value.minst.isRoot())
+                        if ((ti.value.minst.value != null) && !ti.value.minst.value.isRoot())
                             dmodule.Module.addDeferredSemantic3(sd.value);
                     }
                     else
@@ -124,22 +122,21 @@ public class dstruct {
         };
         Function1<TypeTuple,Void> visitTuple = new Function1<TypeTuple,Void>(){
             public Void invoke(TypeTuple t) {
-                Ref<TypeTuple> t_ref = ref(t);
-                if (t_ref.value.arguments != null)
+                if (t.arguments.value != null)
                 {
                     {
-                        Ref<Slice<Parameter>> __r1111 = ref((t_ref.value.arguments.get()).opSlice().copy());
+                        Ref<Slice<Parameter>> __r1111 = ref((t.arguments.value.get()).opSlice().copy());
                         IntRef __key1112 = ref(0);
                         for (; (__key1112.value < __r1111.value.getLength());__key1112.value += 1) {
-                            Ref<Parameter> arg = ref(__r1111.value.get(__key1112.value));
-                            semanticTypeInfo(sc_ref.value, arg.value.type);
+                            Parameter arg = __r1111.value.get(__key1112.value);
+                            semanticTypeInfo(sc_ref.value, arg.type.value);
                         }
                     }
                 }
             }
         };
         Type tb = t.toBasetype();
-        switch ((tb.ty & 0xFF))
+        switch ((tb.ty.value & 0xFF))
         {
             case 41:
                 visitVector.invoke(tb.isTypeVector());
@@ -180,27 +177,27 @@ public class dstruct {
     public static class StructDeclaration extends AggregateDeclaration
     {
         public boolean zeroInit = false;
-        public boolean hasIdentityAssign = false;
-        public boolean hasIdentityEquals = false;
+        public Ref<Boolean> hasIdentityAssign = ref(false);
+        public Ref<Boolean> hasIdentityEquals = ref(false);
         public boolean hasNoFields = false;
         public DArray<FuncDeclaration> postblits = new DArray<FuncDeclaration>();
-        public FuncDeclaration postblit = null;
+        public Ref<FuncDeclaration> postblit = ref(null);
         public boolean hasCopyCtor = false;
-        public FuncDeclaration xeq = null;
-        public FuncDeclaration xcmp = null;
-        public FuncDeclaration xhash = null;
+        public Ref<FuncDeclaration> xeq = ref(null);
+        public Ref<FuncDeclaration> xcmp = ref(null);
+        public Ref<FuncDeclaration> xhash = ref(null);
         public static Ref<FuncDeclaration> xerreq = ref(null);
         public static FuncDeclaration xerrcmp = null;
         public int alignment = 0;
         public int ispod = 0;
         public Type arg1type = null;
         public Type arg2type = null;
-        public boolean requestTypeInfo = false;
+        public Ref<Boolean> requestTypeInfo = ref(false);
         public  StructDeclaration(Loc loc, Identifier id, boolean inObject) {
             super(loc, id);
             this.zeroInit = false;
             this.ispod = StructPOD.fwd;
-            this.type = new TypeStruct(this);
+            this.type.value = new TypeStruct(this);
             if (inObject)
             {
                 if ((pequals(id, Id.ModuleInfo)) && (dmodule.Module.moduleinfo == null))
@@ -213,48 +210,48 @@ public class dstruct {
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            StructDeclaration sd = s != null ? (StructDeclaration)s : new StructDeclaration(this.loc, this.ident, false);
+            StructDeclaration sd = s != null ? (StructDeclaration)s : new StructDeclaration(this.loc.value, this.ident.value, false);
             return this.syntaxCopy(sd);
         }
 
         public  void semanticTypeInfoMembers() {
-            if ((this.xeq != null) && (this.xeq._scope != null) && (this.xeq.semanticRun < PASS.semantic3done))
+            if ((this.xeq.value != null) && (this.xeq.value._scope.value != null) && (this.xeq.value.semanticRun.value < PASS.semantic3done))
             {
-                int errors = global.value.startGagging();
-                semantic3(this.xeq, this.xeq._scope);
-                if (global.value.endGagging(errors))
-                    this.xeq = xerreq.value;
+                int errors = global.startGagging();
+                semantic3(this.xeq.value, this.xeq.value._scope.value);
+                if (global.endGagging(errors))
+                    this.xeq.value = xerreq.value;
             }
-            if ((this.xcmp != null) && (this.xcmp._scope != null) && (this.xcmp.semanticRun < PASS.semantic3done))
+            if ((this.xcmp.value != null) && (this.xcmp.value._scope.value != null) && (this.xcmp.value.semanticRun.value < PASS.semantic3done))
             {
-                int errors = global.value.startGagging();
-                semantic3(this.xcmp, this.xcmp._scope);
-                if (global.value.endGagging(errors))
-                    this.xcmp = xerrcmp;
+                int errors = global.startGagging();
+                semantic3(this.xcmp.value, this.xcmp.value._scope.value);
+                if (global.endGagging(errors))
+                    this.xcmp.value = xerrcmp;
             }
             FuncDeclaration ftostr = search_toString(this);
-            if ((ftostr != null) && (ftostr._scope != null) && (ftostr.semanticRun < PASS.semantic3done))
+            if ((ftostr != null) && (ftostr._scope.value != null) && (ftostr.semanticRun.value < PASS.semantic3done))
             {
-                semantic3(ftostr, ftostr._scope);
+                semantic3(ftostr, ftostr._scope.value);
             }
-            if ((this.xhash != null) && (this.xhash._scope != null) && (this.xhash.semanticRun < PASS.semantic3done))
+            if ((this.xhash.value != null) && (this.xhash.value._scope.value != null) && (this.xhash.value.semanticRun.value < PASS.semantic3done))
             {
-                semantic3(this.xhash, this.xhash._scope);
+                semantic3(this.xhash.value, this.xhash.value._scope.value);
             }
-            if ((this.postblit != null) && (this.postblit._scope != null) && (this.postblit.semanticRun < PASS.semantic3done))
+            if ((this.postblit.value != null) && (this.postblit.value._scope.value != null) && (this.postblit.value.semanticRun.value < PASS.semantic3done))
             {
-                semantic3(this.postblit, this.postblit._scope);
+                semantic3(this.postblit.value, this.postblit.value._scope.value);
             }
-            if ((this.dtor != null) && (this.dtor._scope != null) && (this.dtor.semanticRun < PASS.semantic3done))
+            if ((this.dtor.value != null) && (this.dtor.value._scope.value != null) && (this.dtor.value.semanticRun.value < PASS.semantic3done))
             {
-                semantic3(this.dtor, this.dtor._scope);
+                semantic3(this.dtor.value, this.dtor.value._scope.value);
             }
         }
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
-            if ((this._scope != null) && (this.symtab == null))
-                dsymbolSemantic(this, this._scope);
-            if ((this.members == null) || (this.symtab == null))
+            if ((this._scope.value != null) && (this.symtab == null))
+                dsymbolSemantic(this, this._scope.value);
+            if ((this.members.value == null) || (this.symtab == null))
             {
                 this.error(new BytePtr("is forward referenced when looking for `%s`"), ident.toChars());
                 return null;
@@ -272,25 +269,25 @@ public class dstruct {
         }
 
         public  void finalizeSize() {
-            assert((this.sizeok != Sizeok.done));
-            if ((this.sizeok == Sizeok.inProcess))
+            assert((this.sizeok.value != Sizeok.done));
+            if ((this.sizeok.value == Sizeok.inProcess))
             {
                 return ;
             }
-            this.sizeok = Sizeok.inProcess;
+            this.sizeok.value = Sizeok.inProcess;
             this.fields.setDim(0);
             IntRef offset = ref(0);
             boolean isunion = this.isUnionDeclaration() != null;
             {
                 int i = 0;
-                for (; (i < (this.members.get()).length);i++){
-                    Dsymbol s = (this.members.get()).get(i);
+                for (; (i < (this.members.value.get()).length.value);i++){
+                    Dsymbol s = (this.members.value.get()).get(i);
                     s.setFieldOffset(this, ptr(offset), isunion);
                 }
             }
-            if (((this.type.ty & 0xFF) == ENUMTY.Terror))
+            if (((this.type.value.ty.value & 0xFF) == ENUMTY.Terror))
             {
-                this.errors = true;
+                this.errors.value = true;
                 return ;
             }
             if ((this.structsize.value == 0))
@@ -303,12 +300,12 @@ public class dstruct {
                 this.structsize.value = this.structsize.value + this.alignsize.value - 1 & ~(this.alignsize.value - 1);
             else
                 this.structsize.value = this.structsize.value + this.alignment - 1 & ~(this.alignment - 1);
-            this.sizeok = Sizeok.done;
-            if (this.errors)
+            this.sizeok.value = Sizeok.done;
+            if (this.errors.value)
                 return ;
             if (this.checkOverlappedFields())
             {
-                this.errors = true;
+                this.errors.value = true;
                 return ;
             }
             this.zeroInit = true;
@@ -317,11 +314,11 @@ public class dstruct {
                 int __key1114 = 0;
                 for (; (__key1114 < __r1113.getLength());__key1114 += 1) {
                     VarDeclaration vd = __r1113.get(__key1114);
-                    if (vd._init != null)
+                    if (vd._init.value != null)
                     {
-                        if (vd._init.isVoidInitializer() != null)
+                        if (vd._init.value.isVoidInitializer() != null)
                             continue;
-                        if ((vd.type.size(vd.loc) == 0L))
+                        if ((vd.type.value.size(vd.loc.value) == 0L))
                             continue;
                         Expression exp = vd.getConstInitializer(true);
                         if ((exp == null) || !_isZeroInit(exp))
@@ -330,21 +327,21 @@ public class dstruct {
                             break;
                         }
                     }
-                    else if (!vd.type.isZeroInit(this.loc))
+                    else if (!vd.type.value.isZeroInit(this.loc.value))
                     {
                         this.zeroInit = false;
                         break;
                     }
                 }
             }
-            TypeTuple tt = target.value.toArgTypes(this.type);
-            int dim = tt != null ? (tt.arguments.get()).length : 0;
+            TypeTuple tt = target.toArgTypes(this.type.value);
+            int dim = tt != null ? (tt.arguments.value.get()).length.value : 0;
             if ((dim >= 1))
             {
                 assert((dim <= 2));
-                this.arg1type = (tt.arguments.get()).get(0).type;
+                this.arg1type = (tt.arguments.value.get()).get(0).type.value;
                 if ((dim == 2))
-                    this.arg2type = (tt.arguments.get()).get(1).type;
+                    this.arg2type = (tt.arguments.value.get()).get(1).type.value;
             }
         }
 
@@ -356,14 +353,14 @@ public class dstruct {
             {
                 int i = 0;
             L_outer1:
-                for (; (i < (elements.get()).length);i++){
+                for (; (i < (elements.get()).length.value);i++){
                     Expression e = (elements.get()).get(i);
                     if (e == null)
                         continue L_outer1;
                     e = resolveProperties(sc, e);
                     if ((i >= nfields))
                     {
-                        if ((i <= this.fields.length) && ((e.op & 0xFF) == 13))
+                        if ((i <= this.fields.length.value) && ((e.op.value & 0xFF) == 13))
                         {
                             continue L_outer1;
                         }
@@ -371,7 +368,7 @@ public class dstruct {
                         return false;
                     }
                     VarDeclaration v = this.fields.get(i);
-                    if ((v.offset < offset))
+                    if ((v.offset.value < offset))
                     {
                         error(loc, new BytePtr("overlapping initialization for `%s`"), v.toChars());
                         if (this.isUnionDeclaration() == null)
@@ -381,34 +378,34 @@ public class dstruct {
                         }
                         return false;
                     }
-                    offset = (int)((long)v.offset + v.type.size());
-                    Type t = v.type;
+                    offset = (int)((long)v.offset.value + v.type.value.size());
+                    Type t = v.type.value;
                     if (stype != null)
-                        t = t.addMod(stype.mod);
+                        t = t.addMod(stype.mod.value);
                     Type origType = t;
                     Type tb = t.toBasetype();
                     boolean hasPointers = tb.hasPointers();
                     if (hasPointers)
                     {
-                        if ((stype.alignment() < target.value.ptrsize) || ((v.offset & target.value.ptrsize - 1) != 0) && ((sc.get()).func != null) && (sc.get()).func.setUnsafe())
+                        if ((stype.alignment() < target.ptrsize.value) || ((v.offset.value & target.ptrsize.value - 1) != 0) && ((sc.get()).func.value != null) && (sc.get()).func.value.setUnsafe())
                         {
                             error(loc, new BytePtr("field `%s.%s` cannot assign to misaligned pointers in `@safe` code"), this.toChars(), v.toChars());
                             return false;
                         }
                     }
                     try {
-                        if (((e.op & 0xFF) == 121) && ((tb.ty & 0xFF) == ENUMTY.Tsarray))
+                        if (((e.op.value & 0xFF) == 121) && ((tb.ty.value & 0xFF) == ENUMTY.Tsarray))
                         {
                             StringExp se = (StringExp)e;
                             Type typeb = se.type.value.toBasetype();
-                            byte tynto = tb.nextOf().ty;
-                            if ((se.committed == 0) && ((typeb.ty & 0xFF) == ENUMTY.Tarray) || ((typeb.ty & 0xFF) == ENUMTY.Tsarray) && ((tynto & 0xFF) == ENUMTY.Tchar) || ((tynto & 0xFF) == ENUMTY.Twchar) || ((tynto & 0xFF) == ENUMTY.Tdchar) && ((long)se.numberOfCodeUnits((tynto & 0xFF)) < ((TypeSArray)tb).dim.toInteger()))
+                            byte tynto = tb.nextOf().ty.value;
+                            if ((se.committed.value == 0) && ((typeb.ty.value & 0xFF) == ENUMTY.Tarray) || ((typeb.ty.value & 0xFF) == ENUMTY.Tsarray) && ((tynto & 0xFF) == ENUMTY.Tchar) || ((tynto & 0xFF) == ENUMTY.Twchar) || ((tynto & 0xFF) == ENUMTY.Tdchar) && ((long)se.numberOfCodeUnits((tynto & 0xFF)) < ((TypeSArray)tb).dim.value.toInteger()))
                             {
                                 e = se.castTo(sc, t);
                                 /*goto L1*/throw Dispatch0.INSTANCE;
                             }
                         }
-                        for (; (e.implicitConvTo(t) == 0) && ((tb.ty & 0xFF) == ENUMTY.Tsarray);){
+                        for (; (e.implicitConvTo(t) == 0) && ((tb.ty.value & 0xFF) == ENUMTY.Tsarray);){
                             t = tb.nextOf();
                             tb = t.toBasetype();
                         }
@@ -418,7 +415,7 @@ public class dstruct {
                     }
                     catch(Dispatch0 __d){}
                 /*L1:*/
-                    if (((e.op & 0xFF) == 127))
+                    if (((e.op.value & 0xFF) == 127))
                         return false;
                     elements.get().set(i, doCopyOrMove(sc, e, null));
                 }
@@ -430,22 +427,22 @@ public class dstruct {
             if ((this.ispod != StructPOD.fwd))
                 return this.ispod == StructPOD.yes;
             this.ispod = StructPOD.yes;
-            if ((this.enclosing != null) || (this.postblit != null) || (this.dtor != null) || this.hasCopyCtor)
+            if ((this.enclosing != null) || (this.postblit.value != null) || (this.dtor.value != null) || this.hasCopyCtor)
                 this.ispod = StructPOD.no;
             {
                 int i = 0;
-                for (; (i < this.fields.length);i++){
+                for (; (i < this.fields.length.value);i++){
                     VarDeclaration v = this.fields.get(i);
-                    if ((v.storage_class & 2097152L) != 0)
+                    if ((v.storage_class.value & 2097152L) != 0)
                     {
                         this.ispod = StructPOD.no;
                         break;
                     }
-                    Type tv = v.type.baseElemOf();
-                    if (((tv.ty & 0xFF) == ENUMTY.Tstruct))
+                    Type tv = v.type.value.baseElemOf();
+                    if (((tv.ty.value & 0xFF) == ENUMTY.Tstruct))
                     {
                         TypeStruct ts = (TypeStruct)tv;
-                        StructDeclaration sd = ts.sym;
+                        StructDeclaration sd = ts.sym.value;
                         if (!sd.isPOD())
                         {
                             this.ispod = StructPOD.no;
@@ -539,7 +536,7 @@ public class dstruct {
         }
     }
     public static boolean _isZeroInit(Expression exp) {
-        switch ((exp.op & 0xFF))
+        switch ((exp.op.value & 0xFF))
         {
             case 135:
                 return exp.toInteger() == 0L;
@@ -550,14 +547,14 @@ public class dstruct {
                 StructLiteralExp sle = (StructLiteralExp)exp;
                 {
                     int __key1115 = 0;
-                    int __limit1116 = sle.sd.fields.length;
+                    int __limit1116 = sle.sd.fields.length.value;
                     for (; (__key1115 < __limit1116);__key1115 += 1) {
                         int i = __key1115;
                         VarDeclaration field = sle.sd.fields.get(i);
-                        if (field.type.size(field.loc) != 0)
+                        if (field.type.value.size(field.loc.value) != 0)
                         {
-                            Expression e = (sle.elements.get()).get(i);
-                            if (e != null ? !_isZeroInit(e) : !field.type.isZeroInit(field.loc))
+                            Expression e = (sle.elements.value.get()).get(i);
+                            if (e != null ? !_isZeroInit(e) : !field.type.value.isZeroInit(field.loc.value))
                                 return false;
                         }
                     }
@@ -565,8 +562,8 @@ public class dstruct {
                 return true;
             case 47:
                 ArrayLiteralExp ale = (ArrayLiteralExp)exp;
-                int dim = ale.elements != null ? (ale.elements.get()).length : 0;
-                if (((ale.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tarray))
+                int dim = ale.elements.value != null ? (ale.elements.value.get()).length.value : 0;
+                if (((ale.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tarray))
                     return dim == 0;
                 {
                     int __key1117 = 0;
@@ -580,11 +577,11 @@ public class dstruct {
                 return true;
             case 121:
                 StringExp se = (StringExp)exp;
-                if (((se.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tarray))
-                    return se.len == 0;
+                if (((se.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tarray))
+                    return se.len.value == 0;
                 {
                     int __key1119 = 0;
-                    int __limit1120 = se.len;
+                    int __limit1120 = se.len.value;
                     for (; (__key1119 < __limit1120);__key1119 += 1) {
                         int i_2 = __key1119;
                         if (se.getCodeUnit(i_2) != 0)
@@ -594,7 +591,7 @@ public class dstruct {
                 return true;
             case 229:
                 VectorExp ve = (VectorExp)exp;
-                return _isZeroInit(ve.e1);
+                return _isZeroInit(ve.e1.value);
             case 140:
             case 147:
                 return (exp.toReal() == CTFloat.zero.value) && (exp.toImaginary() == CTFloat.zero.value);
@@ -611,7 +608,7 @@ public class dstruct {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            UnionDeclaration ud = new UnionDeclaration(this.loc, this.ident);
+            UnionDeclaration ud = new UnionDeclaration(this.loc.value, this.ident.value);
             return this.syntaxCopy(ud);
         }
 

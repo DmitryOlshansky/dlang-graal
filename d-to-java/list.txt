@@ -60,7 +60,7 @@ vendor/dmd/src/dmd/escape.d
 vendor/dmd/src/dmd/expression.d
 vendor/dmd/src/dmd/expressionsem.d
 vendor/dmd/src/dmd/func.d
-vendor/dmd/src/dmd/gluelayer.d
+# vendor/dmd/src/dmd/gluelayer.d
 vendor/dmd/src/dmd/hdrgen.d
 vendor/dmd/src/dmd/init.d
 vendor/dmd/src/dmd/intrange.d

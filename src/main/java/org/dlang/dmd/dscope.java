@@ -57,10 +57,10 @@ public class dscope {
     static int SCOPEpush = 2042;
     public static class Scope
     {
-        public Ptr<Scope> enclosing = null;
-        public dmodule.Module _module = null;
-        public ScopeDsymbol scopesym = null;
-        public FuncDeclaration func = null;
+        public Ref<Ptr<Scope>> enclosing = ref(null);
+        public Ref<dmodule.Module> _module = ref(null);
+        public Ref<ScopeDsymbol> scopesym = ref(null);
+        public Ref<FuncDeclaration> func = ref(null);
         public Ref<Dsymbol> parent = ref(null);
         public LabelStatement slabel = null;
         public SwitchStatement sw = null;
@@ -73,23 +73,23 @@ public class dscope {
         public Dsymbol inunion = null;
         public boolean nofree = false;
         public boolean inLoop = false;
-        public int intypeof = 0;
+        public IntRef intypeof = ref(0);
         public VarDeclaration lastVar = null;
-        public dmodule.Module minst = null;
+        public Ref<dmodule.Module> minst = ref(null);
         public TemplateInstance tinst = null;
         public CtorFlow ctorflow = new CtorFlow();
         public AlignDeclaration aligndecl = null;
         public CPPNamespaceDeclaration namespace = null;
-        public int linkage = LINK.d;
-        public int cppmangle = CPPMANGLE.def;
+        public IntRef linkage = ref(LINK.d);
+        public IntRef cppmangle = ref(CPPMANGLE.def);
         public int inlining = PINLINE.default_;
-        public Prot protection = new Prot(Prot.Kind.public_, null);
+        public Ref<Prot> protection = ref(new Prot(Prot.Kind.public_, null));
         public int explicitProtection = 0;
-        public long stc = 0;
+        public Ref<Long> stc = ref(0);
         public DeprecatedDeclaration depdecl = null;
-        public int flags = 0;
+        public IntRef flags = ref(0);
         public UserAttributeDeclaration userAttribDecl = null;
-        public Ptr<DocComment> lastdc = null;
+        public Ref<Ptr<DocComment>> lastdc = ref(null);
         public AA<Object,Integer> anchorCounts = new AA<Object,Integer>();
         public Identifier prevAnchor = null;
         public static Ptr<Scope> freelist = null;
@@ -97,26 +97,26 @@ public class dscope {
             if (freelist != null)
             {
                 Ptr<Scope> s = freelist;
-                freelist = (s.get()).enclosing;
-                assert(((s.get()).flags & 32768) != 0);
-                (s.get()).flags &= -32769;
+                freelist = (s.get()).enclosing.value;
+                assert(((s.get()).flags.value & 32768) != 0);
+                (s.get()).flags.value &= -32769;
                 return s;
             }
-            return new Scope(null, null, null, null, null, null, null, null, null, null, null, null, null, null, false, false, 0, null, null, null, new CtorFlow(CSX.none, new Slice<FieldInit>()), null, null, LINK.d, CPPMANGLE.def, PINLINE.default_, new Prot(Prot.Kind.public_, null), 0, 0L, null, 0, null, null, null, null);
+            return refPtr(new Scope(null, null, null, null, null, null, null, null, null, null, null, null, null, null, false, false, 0, null, null, null, new CtorFlow(CSX.none, new Slice<FieldInit>()), null, null, LINK.d, CPPMANGLE.def, PINLINE.default_, new Prot(Prot.Kind.public_, null), 0, 0L, null, 0, null, null, null, null));
         }
 
         public static Ptr<Scope> createGlobal(dmodule.Module _module) {
             Ptr<Scope> sc = alloc();
-            sc.opAssign(new Scope(null, null, null, null, null, null, null, null, null, null, null, null, null, null, false, false, 0, null, null, null, new CtorFlow(CSX.none, new Slice<FieldInit>()), null, null, LINK.d, CPPMANGLE.def, PINLINE.default_, new Prot(Prot.Kind.public_, null), 0, 0L, null, 0, null, null, null, null));
-            (sc.get())._module = _module;
-            (sc.get()).minst = _module;
-            (sc.get()).scopesym = new ScopeDsymbol();
-            (sc.get()).scopesym.symtab = new DsymbolTable();
+            sc.set(0, new Scope(null, null, null, null, null, null, null, null, null, null, null, null, null, null, false, false, 0, null, null, null, new CtorFlow(CSX.none, new Slice<FieldInit>()), null, null, LINK.d, CPPMANGLE.def, PINLINE.default_, new Prot(Prot.Kind.public_, null), 0, 0L, null, 0, null, null, null, null));
+            (sc.get())._module.value = _module;
+            (sc.get()).minst.value = _module;
+            (sc.get()).scopesym.value = new ScopeDsymbol();
+            (sc.get()).scopesym.value.symtab = new DsymbolTable();
             Dsymbol m = _module;
             for (; m.parent.value != null;) {
                 m = m.parent.value;
             }
-            m.addMember(null, (sc.get()).scopesym);
+            m.addMember(null, (sc.get()).scopesym.value);
             m.parent.value = null;
             sc = (sc.get()).push(_module);
             (sc.get()).parent.value = _module;
@@ -125,64 +125,64 @@ public class dscope {
 
         public  Ptr<Scope> push() {
             Ptr<Scope> s = this.copy();
-            assert((this.flags & 32768) == 0);
-            (s.get()).scopesym = null;
-            (s.get()).enclosing = ptr(this);
+            assert((this.flags.value & 32768) == 0);
+            (s.get()).scopesym.value = null;
+            (s.get()).enclosing.value = ptr(this);
             (s.get()).slabel = null;
             (s.get()).nofree = false;
             (s.get()).ctorflow.fieldinit = arraydup(this.ctorflow.fieldinit).copy();
-            (s.get()).flags = this.flags & 2042;
-            (s.get()).lastdc = null;
+            (s.get()).flags.value = this.flags.value & 2042;
+            (s.get()).lastdc.value = null;
             assert((ptr(this) != s));
             return s;
         }
 
         public  Ptr<Scope> push(ScopeDsymbol ss) {
             Ptr<Scope> s = this.push();
-            (s.get()).scopesym = ss;
+            (s.get()).scopesym.value = ss;
             return s;
         }
 
         public  Ptr<Scope> pop() {
-            if (this.enclosing != null)
-                (this.enclosing.get()).ctorflow.OR(this.ctorflow);
+            if (this.enclosing.value != null)
+                (this.enclosing.value.get()).ctorflow.OR(this.ctorflow);
             this.ctorflow.freeFieldinit();
-            Ptr<Scope> enc = this.enclosing;
+            Ptr<Scope> enc = this.enclosing.value;
             if (!this.nofree)
             {
-                this.enclosing = freelist;
+                this.enclosing.value = freelist;
                 freelist = ptr(this);
-                this.flags |= 32768;
+                this.flags.value |= 32768;
             }
             return enc;
         }
 
         public  void detach() {
             this.ctorflow.freeFieldinit();
-            this.enclosing = null;
+            this.enclosing.value = null;
             this.pop();
         }
 
         public  Ptr<Scope> startCTFE() {
             Ptr<Scope> sc = this.push();
-            (sc.get()).flags = this.flags | 128;
+            (sc.get()).flags.value = this.flags.value | 128;
             return sc;
         }
 
         public  Ptr<Scope> endCTFE() {
-            assert((this.flags & 128) != 0);
+            assert((this.flags.value & 128) != 0);
             return this.pop();
         }
 
         public  void merge(Loc loc, CtorFlow ctorflow) {
-            if (!mergeCallSuper(this.ctorflow.callSuper, ctorflow.callSuper))
+            if (!mergeCallSuper(callSuper, ctorflow.callSuper.value))
                 error(loc, new BytePtr("one path skips constructor"));
             Slice<FieldInit> fies = ctorflow.fieldinit.copy();
             if ((this.ctorflow.fieldinit.getLength() != 0) && (fies.getLength() != 0))
             {
-                FuncDeclaration f = this.func;
+                FuncDeclaration f = this.func.value;
                 if (this.fes != null)
-                    f = this.fes.func;
+                    f = this.fes.func.value;
                 AggregateDeclaration ad = f.isMemberDecl();
                 assert(ad != null);
                 {
@@ -191,12 +191,12 @@ public class dscope {
                     for (; (__key1101 < __r1102.getLength());__key1101 += 1) {
                         VarDeclaration v = __r1102.get(__key1101);
                         int i = __key1101;
-                        boolean mustInit = ((v.storage_class & 549755813888L) != 0) || v.type.needsNested();
+                        boolean mustInit = ((v.storage_class.value & 549755813888L) != 0) || v.type.value.needsNested();
                         Ptr<FieldInit> fieldInit = ptr(this.ctorflow.fieldinit.get(i));
                         FieldInit fiesCurrent = fies.get(i).copy();
                         if (((fieldInit.get()).loc == new Loc(null, 0, 0)))
                             (fieldInit.get()).loc = fiesCurrent.loc.copy();
-                        if (!mergeFieldInit(this.ctorflow.fieldinit.get(i).csx, fiesCurrent.csx) && mustInit)
+                        if (!mergeFieldInit(csx, fiesCurrent.csx.value) && mustInit)
                         {
                             error(loc, new BytePtr("one path skips field `%s`"), v.toChars());
                         }
@@ -206,7 +206,7 @@ public class dscope {
         }
 
         public  dmodule.Module instantiatingModule() {
-            return this.minst != null ? this.minst : this._module;
+            return this.minst.value != null ? this.minst.value : this._module.value;
         }
 
         public  Dsymbol search(Loc loc, Identifier ident, Ptr<Dsymbol> pscopesym, int flags) {
@@ -217,16 +217,16 @@ public class dscope {
             {
                 {
                     Ptr<Scope> sc = ptr(this);
-                    for (; sc != null;sc = (sc.get()).enclosing){
-                        assert((sc != (sc.get()).enclosing));
-                        if ((sc.get()).scopesym == null)
+                    for (; sc != null;sc = (sc.get()).enclosing.value){
+                        assert((sc != (sc.get()).enclosing.value));
+                        if ((sc.get()).scopesym.value == null)
                             continue;
                         {
-                            Dsymbol s = (sc.get()).scopesym.isModule();
+                            Dsymbol s = (sc.get()).scopesym.value.isModule();
                             if ((s) != null)
                             {
                                 if (pscopesym_ref.value != null)
-                                    pscopesym_ref.value.set(0, (sc.get()).scopesym);
+                                    pscopesym_ref.value.set(0, (sc.get()).scopesym.value);
                                 return s;
                             }
                         }
@@ -240,30 +240,30 @@ public class dscope {
                     Ref<Identifier> ident_ref = ref(ident);
                     IntRef flags_ref = ref(flags);
                     Ref<Ptr<Expression>> exp_ref = ref(exp);
-                    if ((ad_ref.value == null) || (ad_ref.value.aliasthis == null))
+                    if ((ad_ref.value == null) || (ad_ref.value.aliasthis.value == null))
                         return null;
-                    Ref<Declaration> decl = ref(ad_ref.value.aliasthis.isDeclaration());
+                    Ref<Declaration> decl = ref(ad_ref.value.aliasthis.value.isDeclaration());
                     if (decl.value == null)
                         return null;
-                    Ref<Type> t = ref(decl.value.type);
+                    Ref<Type> t = ref(decl.value.type.value);
                     Ref<ScopeDsymbol> sds = ref(null);
                     Ref<TypeClass> tc = ref(null);
                     Ref<TypeStruct> ts = ref(null);
-                    switch ((t.value.ty & 0xFF))
+                    switch ((t.value.ty.value & 0xFF))
                     {
                         case 8:
                             ts.value = (TypeStruct)t.value;
-                            sds.value = ts.value.sym;
+                            sds.value = ts.value.sym.value;
                             break;
                         case 7:
                             tc.value = (TypeClass)t.value;
-                            sds.value = tc.value.sym;
+                            sds.value = tc.value.sym.value;
                             break;
                         case 35:
-                            sds.value = ((TypeInstance)t.value).tempinst;
+                            sds.value = ((TypeInstance)t.value).tempinst.value;
                             break;
                         case 9:
-                            sds.value = ((TypeEnum)t.value).sym;
+                            sds.value = ((TypeEnum)t.value).sym.value;
                             break;
                         default:
                         break;
@@ -273,14 +273,14 @@ public class dscope {
                     Ref<Dsymbol> ret = ref(sds.value.search(loc, ident_ref.value, flags_ref.value));
                     if (ret.value != null)
                     {
-                        exp_ref.value.set(0, (new DotIdExp(loc, exp_ref.value.get(), ad_ref.value.aliasthis.ident)));
+                        exp_ref.value.set(0, (new DotIdExp(loc, exp_ref.value.get(), ad_ref.value.aliasthis.value.ident.value)));
                         exp_ref.value.set(0, (new DotIdExp(loc, exp_ref.value.get(), ident_ref.value)));
                         return ret.value;
                     }
                     if ((ts.value == null) && (tc.value == null))
                         return null;
                     Ref<Dsymbol> s = ref(null);
-                    exp_ref.value.set(0, (new DotIdExp(loc, exp_ref.value.get(), ad_ref.value.aliasthis.ident)));
+                    exp_ref.value.set(0, (new DotIdExp(loc, exp_ref.value.get(), ad_ref.value.aliasthis.value.ident.value)));
                     if ((ts.value != null) && ((ts.value.att.value & AliasThisRec.tracing) == 0))
                     {
                         ts.value.att.value = ts.value.att.value | AliasThisRec.tracing;
@@ -301,29 +301,29 @@ public class dscope {
                     IntRef flags_ref = ref(flags);
                     {
                         Ref<Ptr<Scope>> sc = ref(ptr(this));
-                        for (; sc.value != null;sc.value = (sc.value.get()).enclosing){
-                            assert((sc.value != (sc.value.get()).enclosing));
-                            if ((sc.value.get()).scopesym == null)
+                        for (; sc.value != null;sc.value = (sc.value.get()).enclosing.value){
+                            assert((sc.value != (sc.value.get()).enclosing.value));
+                            if ((sc.value.get()).scopesym.value == null)
                                 continue;
-                            if ((sc.value.get()).scopesym.isModule() != null)
+                            if ((sc.value.get()).scopesym.value.isModule() != null)
                                 flags_ref.value |= 32;
                             {
-                                Ref<Dsymbol> s = ref((sc.value.get()).scopesym.search(loc, ident_ref.value, flags_ref.value));
+                                Ref<Dsymbol> s = ref((sc.value.get()).scopesym.value.search(loc, ident_ref.value, flags_ref.value));
                                 if ((s.value) != null)
                                 {
-                                    if (((flags_ref.value & 18) == 0) && (pequals(ident_ref.value, Id.length.value)) && ((sc.value.get()).scopesym.isArrayScopeSymbol() != null) && ((sc.value.get()).enclosing != null) && (((sc.value.get()).enclosing.get()).search(loc, ident_ref.value, null, flags_ref.value) != null))
+                                    if (((flags_ref.value & 18) == 0) && (pequals(ident_ref.value, Id.length.value)) && ((sc.value.get()).scopesym.value.isArrayScopeSymbol() != null) && ((sc.value.get()).enclosing.value != null) && (((sc.value.get()).enclosing.value.get()).search(loc, ident_ref.value, null, flags_ref.value) != null))
                                     {
-                                        warning(s.value.loc, new BytePtr("array `length` hides other `length` name in outer scope"));
+                                        warning(s.value.loc.value, new BytePtr("array `length` hides other `length` name in outer scope"));
                                     }
                                     if (pscopesym_ref.value != null)
-                                        pscopesym_ref.value.set(0, (sc.value.get()).scopesym);
+                                        pscopesym_ref.value.set(0, (sc.value.get()).scopesym.value);
                                     return s.value;
                                 }
                             }
-                            if (global.value.params.fixAliasThis)
+                            if (global.params.fixAliasThis.value)
                             {
                                 Ref<Expression> exp = ref(new ThisExp(loc));
-                                Ref<Dsymbol> aliasSym = ref(checkAliasThis.invoke((sc.value.get()).scopesym.isAggregateDeclaration(), ident_ref.value, flags_ref.value, ptr(exp)));
+                                Ref<Dsymbol> aliasSym = ref(checkAliasThis.invoke((sc.value.get()).scopesym.value.isAggregateDeclaration(), ident_ref.value, flags_ref.value, ptr(exp)));
                                 if (aliasSym.value != null)
                                 {
                                     if (pscopesym_ref.value != null)
@@ -331,14 +331,14 @@ public class dscope {
                                     return aliasSym.value;
                                 }
                             }
-                            if (((sc.value.get()).scopesym.isModule() != null) && !(((sc.value.get()).enclosing != null) && (((sc.value.get()).enclosing.get()).enclosing == null)))
+                            if (((sc.value.get()).scopesym.value.isModule() != null) && !(((sc.value.get()).enclosing.value != null) && (((sc.value.get()).enclosing.value.get()).enclosing.value == null)))
                                 break;
                         }
                     }
                     return null;
                 }
             };
-            if ((this.flags & 512) != 0)
+            if ((this.flags.value & 512) != 0)
                 flags |= 128;
             Dsymbol s = searchScopes.invoke(flags | 8);
             if (s == null)
@@ -354,7 +354,7 @@ public class dscope {
         }
 
         public  Dsymbol search_correct(Identifier ident) {
-            if (global.value.gag != 0)
+            if (global.gag.value != 0)
                 return null;
             Function2<ByteSlice,Integer,Dsymbol> scope_search_fp = new Function2<ByteSlice,Integer,Dsymbol>(){
                 public Dsymbol invoke(ByteSlice seed, IntRef cost) {
@@ -372,15 +372,15 @@ public class dscope {
                     {
                         {
                             cost.value = 0;
-                            for (; sc.value != null;comma(sc.value = (sc.value.get()).enclosing, cost.value += 1)) {
-                                if ((pequals((sc.value.get()).scopesym, scopesym.value)))
+                            for (; sc.value != null;comma(sc.value = (sc.value.get()).enclosing.value, cost.value += 1)) {
+                                if ((pequals((sc.value.get()).scopesym.value, scopesym.value)))
                                     break;
                             }
                         }
                         if ((!pequals(scopesym.value, s.value.parent.value)))
                         {
                             cost.value += 1;
-                            if ((s.value.prot().kind == Prot.Kind.private_))
+                            if ((s.value.prot().kind.value == Prot.Kind.private_))
                                 return null;
                         }
                     }
@@ -407,7 +407,7 @@ public class dscope {
             else if ((pequals(ident, Id.unsigned)))
                 tok = TOK.uns32;
             else if ((pequals(ident, Id.wchar_t)))
-                tok = global.value.params.isWindows ? TOK.wchar_ : TOK.dchar_;
+                tok = global.params.isWindows ? TOK.wchar_ : TOK.dchar_;
             else
                 return null;
             return Token.toChars(tok);
@@ -419,7 +419,7 @@ public class dscope {
                 if ((vd) != null)
                 {
                     if (this.lastVar != null)
-                        vd.lastVar = this.lastVar;
+                        vd.lastVar.value = this.lastVar;
                     this.lastVar = vd;
                 }
                 else {
@@ -431,7 +431,7 @@ public class dscope {
                             if ((vd) != null)
                             {
                                 if (this.lastVar != null)
-                                    vd.lastVar = this.lastVar;
+                                    vd.lastVar.value = this.lastVar;
                                 this.lastVar = vd;
                             }
                         }
@@ -441,12 +441,12 @@ public class dscope {
             }
             {
                 Ptr<Scope> sc = ptr(this);
-                for (; sc != null;sc = (sc.get()).enclosing){
-                    if ((sc.get()).scopesym != null)
+                for (; sc != null;sc = (sc.get()).enclosing.value){
+                    if ((sc.get()).scopesym.value != null)
                     {
-                        if ((sc.get()).scopesym.symtab == null)
-                            (sc.get()).scopesym.symtab = new DsymbolTable();
-                        return (sc.get()).scopesym.symtabInsert(s);
+                        if ((sc.get()).scopesym.value.symtab == null)
+                            (sc.get()).scopesym.value.symtab = new DsymbolTable();
+                        return (sc.get()).scopesym.value.symtabInsert(s);
                     }
                 }
             }
@@ -456,10 +456,10 @@ public class dscope {
         public  ClassDeclaration getClassScope() {
             {
                 Ptr<Scope> sc = ptr(this);
-                for (; sc != null;sc = (sc.get()).enclosing){
-                    if ((sc.get()).scopesym == null)
+                for (; sc != null;sc = (sc.get()).enclosing.value){
+                    if ((sc.get()).scopesym.value == null)
                         continue;
-                    ClassDeclaration cd = (sc.get()).scopesym.isClassDeclaration();
+                    ClassDeclaration cd = (sc.get()).scopesym.value.isClassDeclaration();
                     if (cd != null)
                         return cd;
                 }
@@ -470,13 +470,13 @@ public class dscope {
         public  AggregateDeclaration getStructClassScope() {
             {
                 Ptr<Scope> sc = ptr(this);
-                for (; sc != null;sc = (sc.get()).enclosing){
-                    if ((sc.get()).scopesym == null)
+                for (; sc != null;sc = (sc.get()).enclosing.value){
+                    if ((sc.get()).scopesym.value == null)
                         continue;
-                    AggregateDeclaration ad = (sc.get()).scopesym.isClassDeclaration();
+                    AggregateDeclaration ad = (sc.get()).scopesym.value.isClassDeclaration();
                     if (ad != null)
                         return ad;
-                    ad = (sc.get()).scopesym.isStructDeclaration();
+                    ad = (sc.get()).scopesym.value.isStructDeclaration();
                     if (ad != null)
                         return ad;
                 }
@@ -487,45 +487,45 @@ public class dscope {
         public  void setNoFree() {
             {
                 Ptr<Scope> sc = ptr(this);
-                for (; sc != null;sc = (sc.get()).enclosing){
+                for (; sc != null;sc = (sc.get()).enclosing.value){
                     (sc.get()).nofree = true;
-                    assert((this.flags & 32768) == 0);
+                    assert((this.flags.value & 32768) == 0);
                 }
             }
         }
 
         public  Scope(Scope sc) {
-            this._module = sc._module;
-            this.scopesym = sc.scopesym;
-            this.enclosing = sc.enclosing;
+            this._module.value = sc._module.value;
+            this.scopesym.value = sc.scopesym.value;
+            this.enclosing.value = sc.enclosing.value;
             this.parent.value = sc.parent.value;
             this.sw = sc.sw;
             this.tf = sc.tf;
             this.os = sc.os;
             this.tinst = sc.tinst;
-            this.minst = sc.minst;
+            this.minst.value = sc.minst.value;
             this.sbreak = sc.sbreak;
             this.scontinue = sc.scontinue;
             this.fes = sc.fes;
             this.callsc = sc.callsc;
             this.aligndecl = sc.aligndecl;
-            this.func = sc.func;
+            this.func.value = sc.func.value;
             this.slabel = sc.slabel;
-            this.linkage = sc.linkage;
-            this.cppmangle = sc.cppmangle;
+            this.linkage.value = sc.linkage.value;
+            this.cppmangle.value = sc.cppmangle.value;
             this.inlining = sc.inlining;
-            this.protection = sc.protection.copy();
+            this.protection.value = sc.protection.value.copy();
             this.explicitProtection = sc.explicitProtection;
-            this.stc = sc.stc;
+            this.stc.value = sc.stc.value;
             this.depdecl = sc.depdecl;
             this.inunion = sc.inunion;
             this.nofree = sc.nofree;
             this.inLoop = sc.inLoop;
-            this.intypeof = sc.intypeof;
+            this.intypeof.value = sc.intypeof.value;
             this.lastVar = sc.lastVar;
             this.ctorflow = sc.ctorflow.copy();
-            this.flags = sc.flags;
-            this.lastdc = sc.lastdc;
+            this.flags.value = sc.flags.value;
+            this.lastdc.value = sc.lastdc.value;
             this.anchorCounts = sc.anchorCounts;
             this.prevAnchor = sc.prevAnchor;
             this.userAttribDecl = sc.userAttribDecl;
@@ -540,18 +540,18 @@ public class dscope {
 
         public  boolean isDeprecated() {
             {
-                Ptr<Dsymbol> sp = pcopy(ptr(this.parent.value));
-                for (; sp.get() != null;sp = pcopy((ptr((sp.get()).parent.value)))){
+                Ptr<Dsymbol> sp = pcopy(ptr(this.parent));
+                for (; sp.get() != null;sp = pcopy((ptr(sp.get().parent)))){
                     if ((sp.get()).isDeprecated())
                         return true;
                 }
             }
             {
                 Ptr<Scope> sc2 = ptr(this);
-                for (; sc2 != null;sc2 = (sc2.get()).enclosing){
-                    if (((sc2.get()).scopesym != null) && (sc2.get()).scopesym.isDeprecated())
+                for (; sc2 != null;sc2 = (sc2.get()).enclosing.value){
+                    if (((sc2.get()).scopesym.value != null) && (sc2.get()).scopesym.value.isDeprecated())
                         return true;
-                    if (((sc2.get()).stc & 1024L) != 0)
+                    if (((sc2.get()).stc.value & 1024L) != 0)
                         return true;
                 }
             }

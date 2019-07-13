@@ -134,7 +134,7 @@ public class globals {
         public boolean tracegc = false;
         public boolean verbose = false;
         public boolean vcg_ast = false;
-        public boolean showColumns = false;
+        public Ref<Boolean> showColumns = ref(false);
         public boolean vtls = false;
         public boolean vgc = false;
         public boolean vfield = false;
@@ -171,23 +171,23 @@ public class globals {
         public boolean nofloat = false;
         public boolean ignoreUnsupportedPragmas = false;
         public boolean useModuleInfo = true;
-        public boolean useTypeInfo = true;
+        public Ref<Boolean> useTypeInfo = ref(true);
         public boolean useExceptions = true;
-        public boolean betterC = false;
+        public Ref<Boolean> betterC = ref(false);
         public boolean addMain = false;
         public boolean allInst = false;
         public boolean check10378 = false;
         public boolean bug10378 = false;
         public boolean fix16997 = false;
-        public boolean fixAliasThis = false;
-        public boolean vsafe = false;
+        public Ref<Boolean> fixAliasThis = ref(false);
+        public Ref<Boolean> vsafe = ref(false);
         public boolean ehnogc = false;
         public boolean dtorFields = false;
-        public boolean fieldwise = false;
+        public Ref<Boolean> fieldwise = ref(false);
         public boolean rvalueRefParam = false;
         public int cplusplus = CppStdRevision.cpp98;
         public boolean markdown = false;
-        public boolean vmarkdown = false;
+        public Ref<Boolean> vmarkdown = ref(false);
         public boolean showGaggedErrors = false;
         public boolean printErrorContext = false;
         public boolean manual = false;
@@ -710,32 +710,32 @@ public class globals {
         public ByteSlice _version = new ByteSlice();
         public ByteSlice vendor = new ByteSlice();
         public Param params = new Param();
-        public int errors = 0;
+        public IntRef errors = ref(0);
         public int warnings = 0;
-        public int gag = 0;
+        public IntRef gag = ref(0);
         public int gaggedErrors = 0;
         public int gaggedWarnings = 0;
         public Object console = null;
         public Ptr<DArray<Identifier>> versionids = null;
         public Ptr<DArray<Identifier>> debugids = null;
         public  int startGagging() {
-            this.gag += 1;
+            this.gag.value += 1;
             this.gaggedWarnings = 0;
             return this.gaggedErrors;
         }
 
         public  boolean endGagging(int oldGagged) {
             boolean anyErrs = this.gaggedErrors != oldGagged;
-            this.gag -= 1;
-            this.errors -= this.gaggedErrors - oldGagged;
+            this.gag.value -= 1;
+            this.errors.value -= this.gaggedErrors - oldGagged;
             this.gaggedErrors = oldGagged;
             return anyErrs;
         }
 
         public  void increaseErrorCount() {
-            if (this.gag != 0)
+            if (this.gag.value != 0)
                 this.gaggedErrors += 1;
-            this.errors += 1;
+            this.errors.value += 1;
         }
 
         public  void _init() {
@@ -784,7 +784,7 @@ public class globals {
         }
 
         public  ByteSlice finalDefaultlibname() {
-            return this.params.betterC ? new ByteSlice() : this.params.symdebug != 0 ? this.params.debuglibname : this.params.defaultlibname;
+            return this.params.betterC.value ? new ByteSlice() : this.params.symdebug != 0 ? this.params.debuglibname : this.params.defaultlibname;
         }
 
         public Global(){
@@ -917,11 +917,11 @@ public class globals {
 
         // defaulted all parameters starting with #1
         public  BytePtr toChars() {
-            return toChars(global.value.params.showColumns);
+            return toChars(global.params.showColumns.value);
         }
 
         public  boolean equals(Loc loc) {
-            return !global.value.params.showColumns || (this.charnum == loc.charnum) && (this.linnum == loc.linnum) && FileName.equals(this.filename, loc.filename);
+            return !global.params.showColumns.value || (this.charnum == loc.charnum) && (this.linnum == loc.linnum) && FileName.equals(this.filename, loc.filename);
         }
 
         public  boolean opEquals(Loc loc) {
@@ -993,5 +993,5 @@ public class globals {
         public static final int always = 2;
     }
 
-    static Ref<Global> global = ref(new Global());
+    static Global global = new Global();
 }

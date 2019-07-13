@@ -427,7 +427,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         else if (var.type.ty == Tbool) {
             sink.fmt("false");
         }
-        else if(var.type.isintegral) {
+        else if(var.type.isintegral || var.type.isfloating) {
             sink.fmt("0");
         }
         if (refVar) sink.fmt(")");
@@ -815,9 +815,9 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         auto oldInEnumDecl = opts.inEnumDecl;
         scope(exit) opts.inEnumDecl = oldInEnumDecl;
         opts.inEnumDecl = d;
-        buf.fmt("\n%s static class ", defAccess);
         if (d.ident)
         {
+            buf.fmt("\n%s static class ", defAccess);
             buf.put(symbol(d.ident));
             buf.put(' ');
         }
@@ -828,17 +828,21 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             return;
         }
         buf.put('\n');
-        buf.put('{');
-        buf.put('\n');
-        buf.indent;
+        if (d.ident) {
+            buf.put('{');
+            buf.put('\n');
+            buf.indent;
+        }
         foreach (em; *d.members)
         {
             if (!em)
                 continue;
             em.accept(this);
         }
-        buf.outdent;
-        buf.put("}\n\n");
+        if (d.ident) {
+            buf.outdent;
+            buf.put("}\n\n");
+        }
         if (opts.funcs.length) {
             constants ~= buf.data.dup;
             buf = old;
@@ -1205,13 +1209,9 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
         stderr.writefln("Struct %s", d);
         auto members = collectMembers(d);
-        auto linkedNode = members.all.countUntil!(var => var.ident.symbol == "next" && (var.type.ty == Tpointer || var.type.ty == Tclass));
         buf.fmt("%s static class ", defAccess);
         if (!d.isAnonymous()) {
             buf.put(nameOf(d));
-        }
-        if (linkedNode >= 0) {
-            buf.fmt(" implements LinkedNode<%s>", nameOf(d));
         }
         if (!d.members)
         {
@@ -1283,10 +1283,6 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         buf.put("return this;\n");
         buf.outdent;
         buf.put("}\n");
-        if (linkedNode >= 0) {
-            buf.fmt("public void setNext(%s value) { next = value; }\n", typeOf(members.all[linkedNode].type));
-            buf.fmt("public %s getNext() { return next; }\n", typeOf(members.all[linkedNode].type));
-        }
         buf.outdent;
         buf.put('}');
         buf.put('\n');
@@ -1302,16 +1298,12 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
         stderr.writefln("Class %s", d);
         auto members = collectMembers(d, true);
-        auto linkedNode = members.all.countUntil!(var => var.ident.symbol == "next" && (var.type.ty == Tpointer || var.type.ty == Tclass));
         if (!d.isAnonymous())
         {
             auto abs =  d.isAbstract ? "abstract " : "";
             buf.fmt("%s static %sclass %s", defAccess, abs, nameOf(d));
         }
         visitBase(d);
-        if (linkedNode >= 0) {
-            buf.fmt(" implements LinkedNode<%s>", typeOf(members.all[linkedNode].type));
-        }
         if (d.members)
         {
             buf.put("\n{\n");
@@ -1342,12 +1334,6 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     buf.outdent;
                     buf.fmt("}\n");
                 }
-            }
-
-            // linked node getters/setters
-            if (linkedNode >= 0) {
-                buf.fmt("public void setNext(%s value) { next = value; }\n", typeOf(members.all[linkedNode].type));
-                buf.fmt("public %s getNext() { return next; }\n", typeOf(members.all[linkedNode].type));
             }
 
             buf.outdent;

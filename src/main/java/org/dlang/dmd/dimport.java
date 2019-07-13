@@ -28,7 +28,7 @@ public class dimport {
 
     public static class Import extends Dsymbol
     {
-        public Ptr<DArray<Identifier>> packages = null;
+        public Ref<Ptr<DArray<Identifier>>> packages = ref(null);
         public Identifier id = null;
         public Identifier aliasId = null;
         public int isstatic = 0;
@@ -48,7 +48,7 @@ public class dimport {
                     {
                         return aliasId_ref.value;
                     }
-                    else if ((packages_ref.value != null) && ((packages_ref.value.get()).length != 0))
+                    else if ((packages_ref.value != null) && ((packages_ref.value.get()).length.value != 0))
                     {
                         return (packages_ref.value.get()).get(0);
                     }
@@ -60,7 +60,7 @@ public class dimport {
             };
             super(loc, selectIdent.invoke());
             assert(id_ref.value != null);
-            this.packages = packages_ref.value;
+            this.packages.value = packages_ref.value;
             this.id = id_ref.value;
             this.aliasId = aliasId_ref.value;
             this.isstatic = isstatic;
@@ -71,7 +71,7 @@ public class dimport {
             if (this.isstatic != 0)
                 this.error(new BytePtr("cannot have an import bind list"));
             if (this.aliasId == null)
-                this.ident = null;
+                this.ident.value = null;
             this.names.push(name);
             this.aliases.push(_alias);
         }
@@ -86,10 +86,10 @@ public class dimport {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            Import si = new Import(this.loc, this.packages, this.id, this.aliasId, this.isstatic);
+            Import si = new Import(this.loc.value, this.packages.value, this.id, this.aliasId, this.isstatic);
             {
                 int i = 0;
-                for (; (i < this.names.length);i++){
+                for (; (i < this.names.length.value);i++){
                     si.addAlias(this.names.get(i), this.aliases.get(i));
                 }
             }
@@ -97,8 +97,8 @@ public class dimport {
         }
 
         public  boolean load(Ptr<Scope> sc) {
-            int errors = global.value.errors;
-            DsymbolTable dst = dmodule.Package.resolve(this.packages, null, ptr(this.pkg.value));
+            int errors = global.errors.value;
+            DsymbolTable dst = dmodule.Package.resolve(this.packages.value, null, ptr(this.pkg));
             Dsymbol s = dst.lookup(this.id);
             if (s != null)
             {
@@ -108,7 +108,7 @@ public class dimport {
                 {
                     if (s.isAliasDeclaration() != null)
                     {
-                        error(this.loc, new BytePtr("%s `%s` conflicts with `%s`"), s.kind(), s.toPrettyChars(false), this.id.toChars());
+                        error(this.loc.value, new BytePtr("%s `%s` conflicts with `%s`"), s.kind(), s.toPrettyChars(false), this.id.toChars());
                     }
                     else {
                         dmodule.Package p = s.isPackage();
@@ -116,7 +116,7 @@ public class dimport {
                         {
                             if ((p.isPkgMod == PKG.unknown))
                             {
-                                this.mod = dmodule.Module.load(this.loc, this.packages, this.id);
+                                this.mod = dmodule.Module.load(this.loc.value, this.packages.value, this.id);
                                 if (this.mod == null)
                                     p.isPkgMod = PKG.package_;
                                 else
@@ -132,33 +132,33 @@ public class dimport {
                             }
                             if (this.mod == null)
                             {
-                                error(this.loc, new BytePtr("can only import from a module, not from package `%s.%s`"), p.toPrettyChars(false), this.id.toChars());
+                                error(this.loc.value, new BytePtr("can only import from a module, not from package `%s.%s`"), p.toPrettyChars(false), this.id.toChars());
                             }
                         }
                         else if (this.pkg.value != null)
                         {
-                            error(this.loc, new BytePtr("can only import from a module, not from package `%s.%s`"), this.pkg.value.toPrettyChars(false), this.id.toChars());
+                            error(this.loc.value, new BytePtr("can only import from a module, not from package `%s.%s`"), this.pkg.value.toPrettyChars(false), this.id.toChars());
                         }
                         else
                         {
-                            error(this.loc, new BytePtr("can only import from a module, not from package `%s`"), this.id.toChars());
+                            error(this.loc.value, new BytePtr("can only import from a module, not from package `%s`"), this.id.toChars());
                         }
                     }
                 }
             }
             if (this.mod == null)
             {
-                this.mod = dmodule.Module.load(this.loc, this.packages, this.id);
+                this.mod = dmodule.Module.load(this.loc.value, this.packages.value, this.id);
                 if (this.mod != null)
                 {
                     dst.insert(this.id, this.mod);
                 }
             }
             if ((this.mod != null) && (this.mod.importedFrom == null))
-                this.mod.importedFrom = sc != null ? (sc.get())._module.importedFrom : dmodule.Module.rootModule;
+                this.mod.importedFrom = sc != null ? (sc.get())._module.value.importedFrom : dmodule.Module.rootModule;
             if (this.pkg.value == null)
                 this.pkg.value = this.mod;
-            return global.value.errors != errors;
+            return global.errors.value != errors;
         }
 
         public  void importAll(Ptr<Scope> sc) {
@@ -174,15 +174,15 @@ public class dimport {
                 {
                     StringExp se = msg != null ? msg.toStringExp() : null;
                     if ((se) != null)
-                        this.mod.deprecation(this.loc, new BytePtr("is deprecated - %s"), se.string);
+                        this.mod.deprecation(this.loc.value, new BytePtr("is deprecated - %s"), se.string.value);
                     else
-                        this.mod.deprecation(this.loc, new BytePtr("is deprecated"));
+                        this.mod.deprecation(this.loc.value, new BytePtr("is deprecated"));
                 }
             }
             if ((sc.get()).explicitProtection != 0)
-                this.protection = (sc.get()).protection.copy();
-            if ((this.isstatic == 0) && (this.aliasId == null) && (this.names.length == 0))
-                (sc.get()).scopesym.importScope(this.mod, this.protection);
+                this.protection = (sc.get()).protection.value.copy();
+            if ((this.isstatic == 0) && (this.aliasId == null) && (this.names.length.value == 0))
+                (sc.get()).scopesym.value.importScope(this.mod, this.protection);
         }
 
         public  Dsymbol toAlias() {
@@ -192,21 +192,21 @@ public class dimport {
         }
 
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sd) {
-            if ((this.names.length == 0))
+            if ((this.names.length.value == 0))
                 this.addMember(sc, sd);
                 return ;
             if (this.aliasId != null)
                 this.addMember(sc, sd);
             {
                 int i = 0;
-                for (; (i < this.names.length);i++){
+                for (; (i < this.names.length.value);i++){
                     Identifier name = this.names.get(i);
                     Identifier _alias = this.aliases.get(i);
                     if (_alias == null)
                         _alias = name;
-                    TypeIdentifier tname = new TypeIdentifier(this.loc, name);
-                    AliasDeclaration ad = new AliasDeclaration(this.loc, _alias, tname);
-                    ad._import = this;
+                    TypeIdentifier tname = new TypeIdentifier(this.loc.value, name);
+                    AliasDeclaration ad = new AliasDeclaration(this.loc.value, _alias, tname);
+                    ad._import.value = this;
                     ad.addMember(sc, sd);
                     this.aliasdecls.push(ad);
                 }
@@ -220,7 +220,7 @@ public class dimport {
                 if (this.mod == null)
                     this.importAll(sc);
                 sc = (sc.get()).push(this.mod);
-                (sc.get()).protection = this.protection.copy();
+                (sc.get()).protection.value = this.protection.copy();
                 {
                     Slice<AliasDeclaration> __r927 = this.aliasdecls.opSlice().copy();
                     int __key928 = 0;
@@ -249,7 +249,7 @@ public class dimport {
         }
 
         public  boolean overloadInsert(Dsymbol s) {
-            assert((this.ident != null) && (pequals(this.ident, s.ident)));
+            assert((this.ident.value != null) && (pequals(this.ident.value, s.ident.value)));
             Import imp = null;
             if ((this.aliasId == null) && ((imp = s.isImport()) != null) && (imp.aliasId == null))
                 return true;

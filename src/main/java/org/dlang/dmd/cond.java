@@ -45,7 +45,7 @@ public class cond {
     public static abstract class Condition extends ASTNode
     {
         public Loc loc = new Loc();
-        public int inc = 0;
+        public IntRef inc = ref(0);
         public  int dyncast() {
             return DYNCAST.condition;
         }
@@ -82,71 +82,71 @@ public class cond {
     {
         public static ByteSlice tupleFieldName = new ByteSlice("tuple");
         public Loc loc = new Loc();
-        public ForeachStatement aggrfe = null;
-        public ForeachRangeStatement rangefe = null;
+        public Ref<ForeachStatement> aggrfe = ref(null);
+        public Ref<ForeachRangeStatement> rangefe = ref(null);
         public boolean needExpansion = false;
         public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
             super();
             assert(aggrfe != null ^ rangefe != null);
             this.loc = loc.copy();
-            this.aggrfe = aggrfe;
-            this.rangefe = rangefe;
+            this.aggrfe.value = aggrfe;
+            this.rangefe.value = rangefe;
         }
 
         public  StaticForeach syntaxCopy() {
-            return new StaticForeach(this.loc, this.aggrfe != null ? (ForeachStatement)this.aggrfe.syntaxCopy() : null, this.rangefe != null ? (ForeachRangeStatement)this.rangefe.syntaxCopy() : null);
+            return new StaticForeach(this.loc, this.aggrfe.value != null ? (ForeachStatement)this.aggrfe.value.syntaxCopy() : null, this.rangefe.value != null ? (ForeachRangeStatement)this.rangefe.value.syntaxCopy() : null);
         }
 
         public  void lowerArrayAggregate(Ptr<Scope> sc) {
-            Expression aggr = this.aggrfe.aggr;
-            Expression el = new ArrayLengthExp(aggr.loc, aggr);
+            Expression aggr = this.aggrfe.value.aggr.value;
+            Expression el = new ArrayLengthExp(aggr.loc.value, aggr);
             sc = (sc.get()).startCTFE();
             el = expressionSemantic(el, sc);
             sc = (sc.get()).endCTFE();
             el = el.optimize(0, false);
             el = el.ctfeInterpret();
-            if (((el.op & 0xFF) == 135))
+            if (((el.op.value & 0xFF) == 135))
             {
                 long length = el.toInteger();
-                Ptr<DArray<Expression>> es = new DArray<Expression>();
+                Ptr<DArray<Expression>> es = refPtr(new DArray<Expression>());
                 {
                     long __key817 = 0L;
                     long __limit818 = length;
                     for (; (__key817 < __limit818);__key817 += 1L) {
                         long i = __key817;
                         IntegerExp index = new IntegerExp(this.loc, i, Type.tsize_t.value);
-                        IndexExp value = new IndexExp(aggr.loc, aggr, index);
+                        IndexExp value = new IndexExp(aggr.loc.value, aggr, index);
                         (es.get()).push(value);
                     }
                 }
-                this.aggrfe.aggr = new TupleExp(aggr.loc, es);
-                this.aggrfe.aggr = expressionSemantic(this.aggrfe.aggr, sc);
-                this.aggrfe.aggr = this.aggrfe.aggr.optimize(0, false);
+                this.aggrfe.value.aggr.value = new TupleExp(aggr.loc.value, es);
+                this.aggrfe.value.aggr.value = expressionSemantic(this.aggrfe.value.aggr.value, sc);
+                this.aggrfe.value.aggr.value = this.aggrfe.value.aggr.value.optimize(0, false);
             }
             else
             {
-                this.aggrfe.aggr = new ErrorExp();
+                this.aggrfe.value.aggr.value = new ErrorExp();
             }
         }
 
         public  Expression wrapAndCall(Loc loc, Statement s) {
             TypeFunction tf = new TypeFunction(new ParameterList(null, VarArg.none), null, LINK.default_, 0L);
             FuncLiteralDeclaration fd = new FuncLiteralDeclaration(loc, loc, tf, TOK.reserved, null, null);
-            fd.fbody = s;
+            fd.fbody.value = s;
             FuncExp fe = new FuncExp(loc, fd);
-            CallExp ce = new CallExp(loc, fe, new DArray<Expression>());
+            CallExp ce = new CallExp(loc, fe, refPtr(new DArray<Expression>()));
             return ce;
         }
 
         public  Statement createForeach(Loc loc, Ptr<DArray<Parameter>> parameters, Statement s) {
-            if (this.aggrfe != null)
+            if (this.aggrfe.value != null)
             {
-                return new ForeachStatement(loc, this.aggrfe.op, parameters, this.aggrfe.aggr.syntaxCopy(), s, loc);
+                return new ForeachStatement(loc, this.aggrfe.value.op.value, parameters, this.aggrfe.value.aggr.value.syntaxCopy(), s, loc);
             }
             else
             {
-                assert((this.rangefe != null) && ((parameters.get()).length == 1));
-                return new ForeachRangeStatement(loc, this.rangefe.op, (parameters.get()).get(0), this.rangefe.lwr.syntaxCopy(), this.rangefe.upr.syntaxCopy(), s, loc);
+                assert((this.rangefe.value != null) && ((parameters.get()).length.value == 1));
+                return new ForeachRangeStatement(loc, this.rangefe.value.op.value, (parameters.get()).get(0), this.rangefe.value.lwr.value.syntaxCopy(), this.rangefe.value.upr.value.syntaxCopy(), s, loc);
             }
         }
 
@@ -154,11 +154,11 @@ public class cond {
             Identifier sid = Identifier.generateId(new BytePtr("Tuple"));
             StructDeclaration sdecl = new StructDeclaration(loc, sid, false);
             sdecl.storage_class |= 1L;
-            sdecl.members = new DArray<Dsymbol>();
+            sdecl.members.value = refPtr(new DArray<Dsymbol>());
             Identifier fid = Identifier.idPool(toBytePtr(tupleFieldName), 5);
             TypeTypeof ty = new TypeTypeof(loc, new TupleExp(loc, e));
-            (sdecl.members.get()).push(new VarDeclaration(loc, ty, fid, null, 0L));
-            TypeStruct r = (TypeStruct)sdecl.type;
+            (sdecl.members.value.get()).push(new VarDeclaration(loc, ty, fid, null, 0L));
+            TypeStruct r = (TypeStruct)sdecl.type.value;
             r.vtinfo = TypeInfoStructDeclaration.create(r);
             return r;
         }
@@ -168,9 +168,9 @@ public class cond {
         }
 
         public  void lowerNonArrayAggregate(Ptr<Scope> sc) {
-            int nvars = this.aggrfe != null ? (this.aggrfe.parameters.get()).length : 1;
-            Loc aloc = this.aggrfe != null ? this.aggrfe.aggr.loc : this.rangefe.lwr.loc.copy();
-            Slice<Ptr<DArray<Parameter>>> pparams = slice(new Ptr<DArray<Parameter>>[]{new DArray<Parameter>(), new DArray<Parameter>(), new DArray<Parameter>()});
+            int nvars = this.aggrfe.value != null ? (this.aggrfe.value.parameters.get()).length.value : 1;
+            Loc aloc = this.aggrfe.value != null ? this.aggrfe.value.aggr.value.loc.value : this.rangefe.value.lwr.value.loc.value.copy();
+            Slice<Ptr<DArray<Parameter>>> pparams = slice(new Ptr<DArray<Parameter>>[]{refPtr(new DArray<Parameter>()), refPtr(new DArray<Parameter>()), refPtr(new DArray<Parameter>())});
             {
                 int __key819 = 0;
                 int __limit820 = nvars;
@@ -181,8 +181,8 @@ public class cond {
                         int __key822 = 0;
                         for (; (__key822 < __r821.getLength());__key822 += 1) {
                             Ptr<DArray<Parameter>> params = __r821.get(__key822);
-                            Parameter p = this.aggrfe != null ? (this.aggrfe.parameters.get()).get(i) : this.rangefe.prm;
-                            (params.get()).push(new Parameter(p.storageClass, p.type, p.ident, null, null));
+                            Parameter p = this.aggrfe.value != null ? (this.aggrfe.value.parameters.get()).get(i) : this.rangefe.value.prm;
+                            (params.get()).push(new Parameter(p.storageClass.value, p.type.value, p.ident.value, null, null));
                         }
                     }
                 }
@@ -196,7 +196,7 @@ public class cond {
                     int __limit824 = 2;
                     for (; (__key823 < __limit824);__key823 += 1) {
                         int i = __key823;
-                        res.set((i), new IdentifierExp(aloc, (pparams.get(i).get()).get(0).ident));
+                        res.set((i), new IdentifierExp(aloc, (pparams.get(i).get()).get(0).ident.value));
                     }
                 }
             }
@@ -207,7 +207,7 @@ public class cond {
                     int __limit826 = 2;
                     for (; (__key825 < __limit826);__key825 += 1) {
                         int i = __key825;
-                        Ptr<DArray<Expression>> e = new DArray<Expression>((pparams.get(0).get()).length);
+                        Ptr<DArray<Expression>> e = refPtr(new DArray<Expression>((pparams.get(0).get()).length.value));
                         {
                             Slice<Expression> __r828 = (e.get()).opSlice().copy();
                             int __key827 = 0;
@@ -215,7 +215,7 @@ public class cond {
                                 Expression elem = __r828.get(__key827);
                                 int j = __key827;
                                 Parameter p = (pparams.get(i).get()).get(j);
-                                elem = new IdentifierExp(aloc, p.ident);
+                                elem = new IdentifierExp(aloc, p.ident.value);
                             }
                         }
                         if (tplty == null)
@@ -227,23 +227,23 @@ public class cond {
                 }
                 this.needExpansion = true;
             }
-            if (this.rangefe != null)
+            if (this.rangefe.value != null)
             {
                 sc = (sc.get()).startCTFE();
-                this.rangefe.lwr = expressionSemantic(this.rangefe.lwr, sc);
-                this.rangefe.lwr = resolveProperties(sc, this.rangefe.lwr);
-                this.rangefe.upr = expressionSemantic(this.rangefe.upr, sc);
-                this.rangefe.upr = resolveProperties(sc, this.rangefe.upr);
+                this.rangefe.value.lwr.value = expressionSemantic(this.rangefe.value.lwr.value, sc);
+                this.rangefe.value.lwr.value = resolveProperties(sc, this.rangefe.value.lwr.value);
+                this.rangefe.value.upr.value = expressionSemantic(this.rangefe.value.upr.value, sc);
+                this.rangefe.value.upr.value = resolveProperties(sc, this.rangefe.value.upr.value);
                 sc = (sc.get()).endCTFE();
-                this.rangefe.lwr = this.rangefe.lwr.optimize(0, false);
-                this.rangefe.lwr = this.rangefe.lwr.ctfeInterpret();
-                this.rangefe.upr = this.rangefe.upr.optimize(0, false);
-                this.rangefe.upr = this.rangefe.upr.ctfeInterpret();
+                this.rangefe.value.lwr.value = this.rangefe.value.lwr.value.optimize(0, false);
+                this.rangefe.value.lwr.value = this.rangefe.value.lwr.value.ctfeInterpret();
+                this.rangefe.value.upr.value = this.rangefe.value.upr.value.optimize(0, false);
+                this.rangefe.value.upr.value = this.rangefe.value.upr.value.ctfeInterpret();
             }
-            Ptr<DArray<Statement>> s1 = new DArray<Statement>();
-            Ptr<DArray<Statement>> sfe = new DArray<Statement>();
+            Ptr<DArray<Statement>> s1 = refPtr(new DArray<Statement>());
+            Ptr<DArray<Statement>> sfe = refPtr(new DArray<Statement>());
             if (tplty != null)
-                (sfe.get()).push(new ExpStatement(this.loc, tplty.sym));
+                (sfe.get()).push(new ExpStatement(this.loc, tplty.sym.value));
             (sfe.get()).push(new ReturnStatement(aloc, res.get(0)));
             (s1.get()).push(this.createForeach(aloc, pparams.get(0), new CompoundStatement(aloc, sfe)));
             (s1.get()).push(new ExpStatement(aloc, new AssertExp(aloc, new IntegerExp(aloc, 0L, Type.tint32.value), null)));
@@ -251,7 +251,7 @@ public class cond {
             Type aty = ety.arrayOf();
             Identifier idres = Identifier.generateId(new BytePtr("__res"));
             VarDeclaration vard = new VarDeclaration(aloc, aty, idres, null, 0L);
-            Ptr<DArray<Statement>> s2 = new DArray<Statement>();
+            Ptr<DArray<Statement>> s2 = refPtr(new DArray<Statement>());
             (s2.get()).push(new ExpStatement(aloc, vard));
             CatAssignExp catass = new CatAssignExp(aloc, new IdentifierExp(aloc, idres), res.get(1));
             (s2.get()).push(this.createForeach(aloc, pparams.get(1), new ExpStatement(aloc, catass)));
@@ -263,33 +263,33 @@ public class cond {
             sc = (sc.get()).endCTFE();
             aggr = aggr.optimize(0, false);
             aggr = aggr.ctfeInterpret();
-            assert(this.aggrfe != null ^ this.rangefe != null);
-            this.aggrfe = new ForeachStatement(this.loc, TOK.foreach_, pparams.get(2), aggr, this.aggrfe != null ? this.aggrfe._body.value : this.rangefe._body.value, this.aggrfe != null ? this.aggrfe.endloc : this.rangefe.endloc);
-            this.rangefe = null;
+            assert(this.aggrfe.value != null ^ this.rangefe.value != null);
+            this.aggrfe.value = new ForeachStatement(this.loc, TOK.foreach_, pparams.get(2), aggr, this.aggrfe.value != null ? this.aggrfe.value._body.value : this.rangefe.value._body.value, this.aggrfe.value != null ? this.aggrfe.value.endloc : this.rangefe.value.endloc);
+            this.rangefe.value = null;
             this.lowerArrayAggregate(sc);
         }
 
         public  void prepare(Ptr<Scope> sc) {
             assert(sc != null);
-            if (this.aggrfe != null)
+            if (this.aggrfe.value != null)
             {
                 sc = (sc.get()).startCTFE();
-                this.aggrfe.aggr = expressionSemantic(this.aggrfe.aggr, sc);
+                this.aggrfe.value.aggr.value = expressionSemantic(this.aggrfe.value.aggr.value, sc);
                 sc = (sc.get()).endCTFE();
-                this.aggrfe.aggr = this.aggrfe.aggr.optimize(0, false);
-                Type tab = this.aggrfe.aggr.type.value.toBasetype();
-                if (((tab.ty & 0xFF) != ENUMTY.Ttuple))
+                this.aggrfe.value.aggr.value = this.aggrfe.value.aggr.value.optimize(0, false);
+                Type tab = this.aggrfe.value.aggr.value.type.value.toBasetype();
+                if (((tab.ty.value & 0xFF) != ENUMTY.Ttuple))
                 {
-                    this.aggrfe.aggr = this.aggrfe.aggr.ctfeInterpret();
+                    this.aggrfe.value.aggr.value = this.aggrfe.value.aggr.value.ctfeInterpret();
                 }
             }
-            if ((this.aggrfe != null) && ((this.aggrfe.aggr.type.value.toBasetype().ty & 0xFF) == ENUMTY.Terror))
+            if ((this.aggrfe.value != null) && ((this.aggrfe.value.aggr.value.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Terror))
             {
                 return ;
             }
             if (!this.ready())
             {
-                if ((this.aggrfe != null) && ((this.aggrfe.aggr.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tarray))
+                if ((this.aggrfe.value != null) && ((this.aggrfe.value.aggr.value.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tarray))
                 {
                     this.lowerArrayAggregate(sc);
                 }
@@ -301,7 +301,7 @@ public class cond {
         }
 
         public  boolean ready() {
-            return (this.aggrfe != null) && (this.aggrfe.aggr != null) && (this.aggrfe.aggr.type.value != null) && ((this.aggrfe.aggr.type.value.toBasetype().ty & 0xFF) == ENUMTY.Ttuple);
+            return (this.aggrfe.value != null) && (this.aggrfe.value.aggr.value != null) && (this.aggrfe.value.aggr.value.type.value != null) && ((this.aggrfe.value.aggr.value.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Ttuple);
         }
 
 
@@ -357,32 +357,32 @@ public class cond {
         }
 
         public  int include(Ptr<Scope> sc) {
-            if ((this.inc == Include.notComputed))
+            if ((this.inc.value == Include.notComputed))
             {
-                this.inc = Include.no;
+                this.inc.value = Include.no;
                 boolean definedInModule = false;
                 if (this.ident != null)
                 {
                     if (findCondition(this.mod.debugids, this.ident))
                     {
-                        this.inc = Include.yes;
+                        this.inc.value = Include.yes;
                         definedInModule = true;
                     }
-                    else if (findCondition(global.value.debugids, this.ident))
-                        this.inc = Include.yes;
+                    else if (findCondition(global.debugids, this.ident))
+                        this.inc.value = Include.yes;
                     else
                     {
                         if (this.mod.debugidsNot == null)
-                            this.mod.debugidsNot = new DArray<Identifier>();
+                            this.mod.debugidsNot = refPtr(new DArray<Identifier>());
                         (this.mod.debugidsNot.get()).push(this.ident);
                     }
                 }
-                else if ((this.level <= global.value.params.debuglevel) || (this.level <= this.mod.debuglevel))
-                    this.inc = Include.yes;
+                else if ((this.level <= global.params.debuglevel) || (this.level <= this.mod.debuglevel))
+                    this.inc.value = Include.yes;
                 if (!definedInModule)
                     printDepsConditional(sc, this, new ByteSlice("depsDebug "));
             }
-            return ((this.inc == Include.yes) ? 1 : 0);
+            return ((this.inc.value == Include.yes) ? 1 : 0);
         }
 
         public  DebugCondition isDebugCondition() {
@@ -544,34 +544,34 @@ public class cond {
         }
 
         public  int include(Ptr<Scope> sc) {
-            if ((this.inc == Include.notComputed))
+            if ((this.inc.value == Include.notComputed))
             {
-                this.inc = Include.no;
+                this.inc.value = Include.no;
                 boolean definedInModule = false;
                 if (this.ident != null)
                 {
                     if (findCondition(this.mod.versionids, this.ident))
                     {
-                        this.inc = Include.yes;
+                        this.inc.value = Include.yes;
                         definedInModule = true;
                     }
-                    else if (findCondition(global.value.versionids, this.ident))
-                        this.inc = Include.yes;
+                    else if (findCondition(global.versionids, this.ident))
+                        this.inc.value = Include.yes;
                     else
                     {
                         if (this.mod.versionidsNot == null)
-                            this.mod.versionidsNot = new DArray<Identifier>();
+                            this.mod.versionidsNot = refPtr(new DArray<Identifier>());
                         (this.mod.versionidsNot.get()).push(this.ident);
                     }
                 }
-                else if ((this.level <= global.value.params.versionlevel) || (this.level <= this.mod.versionlevel))
-                    this.inc = Include.yes;
+                else if ((this.level <= global.params.versionlevel) || (this.level <= this.mod.versionlevel))
+                    this.inc.value = Include.yes;
                 if (!definedInModule && (this.ident == null) || !isReserved(this.ident.asString()) && (!pequals(this.ident, Id._unittest)) && (!pequals(this.ident, Id._assert)))
                 {
                     printDepsConditional(sc, this, new ByteSlice("depsVersion "));
                 }
             }
-            return ((this.inc == Include.yes) ? 1 : 0);
+            return ((this.inc.value == Include.yes) ? 1 : 0);
         }
 
         public  VersionCondition isVersionCondition() {
@@ -614,31 +614,31 @@ public class cond {
         public  int include(Ptr<Scope> sc) {
             Function0<Integer> errorReturn = new Function0<Integer>(){
                 public Integer invoke() {
-                    if (global.value.gag == 0)
-                        inc = Include.no;
+                    if (global.gag.value == 0)
+                        inc.value = Include.no;
                     return 0;
                 }
             };
-            if ((this.inc == Include.notComputed))
+            if ((this.inc.value == Include.notComputed))
             {
                 if (sc == null)
                 {
                     error(this.loc, new BytePtr("`static if` conditional cannot be at global scope"));
-                    this.inc = Include.no;
+                    this.inc.value = Include.no;
                     return 0;
                 }
                 Ref<Boolean> errors = ref(false);
                 boolean result = evalStaticCondition(sc, this.exp, this.exp, errors);
-                if ((this.inc != Include.notComputed))
-                    return ((this.inc == Include.yes) ? 1 : 0);
+                if ((this.inc.value != Include.notComputed))
+                    return ((this.inc.value == Include.yes) ? 1 : 0);
                 if (errors.value)
                     return errorReturn.invoke();
                 if (result)
-                    this.inc = Include.yes;
+                    this.inc.value = Include.yes;
                 else
-                    this.inc = Include.no;
+                    this.inc.value = Include.no;
             }
-            return ((this.inc == Include.yes) ? 1 : 0);
+            return ((this.inc.value == Include.yes) ? 1 : 0);
         }
 
         public  void accept(Visitor v) {
@@ -677,9 +677,9 @@ public class cond {
     }
 
     public static void printDepsConditional(Ptr<Scope> sc, DVCondition condition, ByteSlice depType) {
-        if ((global.value.params.moduleDeps == null) || (global.value.params.moduleDepsFile.getLength() != 0))
+        if ((global.params.moduleDeps == null) || (global.params.moduleDepsFile.getLength() != 0))
             return ;
-        Ptr<OutBuffer> ob = global.value.params.moduleDeps;
+        Ptr<OutBuffer> ob = global.params.moduleDeps;
         dmodule.Module imod = sc != null ? (sc.get()).instantiatingModule() : condition.mod;
         if (imod == null)
             return ;

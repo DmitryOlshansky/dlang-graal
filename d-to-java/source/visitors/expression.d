@@ -204,6 +204,19 @@ public:
     TextBuffer buf;
     private ExprOpts opts;
 
+    void refExpr(Expression e1, PREC prec) {
+        if (auto var = e1.isVarExp) {
+            buf.put(printParent(var.var, opts));
+            buf.put(var.var.varName(opts));
+        }
+        else if (auto var = e1.isDotVarExp) {
+            expToBuffer(var.e1, precedence[var.e1.op], buf, opts);
+            buf.put(".");
+            buf.put(var.var.varName(opts));
+        }
+        else
+            expToBuffer(e1, prec, buf, opts);
+    }
 
     extern (D) this(TextBuffer buf, ExprOpts opts)
     {
@@ -308,8 +321,8 @@ public:
         else if (v & 0x8000000000000000L)
             buf.fmt("0x%x", cast(long)v);
         else {
-            stderr.writefln("No type for %d\n", cast(int)v);
-            buf.fmt("%s", v);
+            stderr.writefln("No type for %d\n", cast(long)v);
+            buf.fmt("%d", cast(long)v);
         }
     }
 
@@ -463,6 +476,7 @@ public:
             expToBuffer(e.thisexp, PREC.primary, buf, opts);
             buf.put('.');
         }
+        if (e.type.isTypePointer) buf.put("refPtr(");
         buf.put("new ");
         typeToBuffer(e.newtype, buf, opts);
         buf.put('(');
@@ -477,6 +491,7 @@ public:
             argsToBuffer(e.arguments, buf, opts, null);
         }
         buf.put(')');
+        if (e.type.isTypePointer) buf.put(")");
     }
 
     override void visit(NewAnonClassExp e)
@@ -571,7 +586,6 @@ public:
 
     override void visit(FuncExp e)
     {
-        stderr.writefln("Func exp %s\n", e.toString());
         buf.put(e.fd.funcName);
     }
     
@@ -675,21 +689,8 @@ public:
                 if (e.e1.type.isTypeFunction)
                     expToBuffer(e.e1, precedence[e.op], buf, opts);
                 else {
-                    if (auto var = e.e1.isDotVarExp) {
-                        if (var.var.ident.symbol == "next") {
-                            //stderr.writefln("Took address of %s %s", e.e1.toString, var.var);
-                            buf.put("new PtrToNext(");
-                            expToBuffer(var.e1, precedence[e.op], buf, opts);
-                            buf.put(")");
-                            return;
-                        }
-                    }
                     buf.put("ptr(");
-                    if (auto var = e.e1.isVarExp) {
-                        buf.put(var.var.varName(opts));
-                    }
-                    else
-                        expToBuffer(e.e1, precedence[e.op], buf, opts);
+                    refExpr(e.e1, precedence[e.op]);
                     buf.put(")");
                 }
             }
@@ -699,17 +700,8 @@ public:
             }
         }
         else if(e.op == TOK.address) {
-            if (auto var = e.e1.isDotVarExp) {
-                if (var.var.ident.symbol == "next") {
-                    //stderr.writefln("Took address of %s %s", e.e1.toString, var.var);
-                    buf.put("new PtrToNext(");
-                    expToBuffer(var.e1, precedence[e.op], buf, opts);
-                    buf.put(")");
-                    return;
-                }
-            }
             buf.put("ptr(");
-            expToBuffer(e.e1, precedence[e.op], buf, opts);
+            refExpr(e.e1, precedence[e.op]);
             buf.put(")");
         }
         else if(e.op == TOK.not) {
@@ -750,9 +742,10 @@ public:
             return;
         }
         else if(e.op == TOK.concatenate) {
+            buf.put("concat(");
             expToBuffer(e.e1, precedence[e.op], buf, opts);
-            buf.put(".concat(");
-            expToBuffer(e.e2, cast(PREC)(precedence[e.op] + 1), buf, opts);
+            buf.put(", ");
+            expToBuffer(e.e2, cast(PREC)(precedence[e.op]), buf, opts);
             buf.put(")");
             return;
         }
@@ -973,7 +966,7 @@ public:
                 auto tmpl = e.f in opts.templates;
                 buf.fmt(" = new UnionExp(new %s(", tmpl.types[0].toJava(opts));
                 auto args = e.arguments.copy();
-                if (args.length) args.remove(0);                
+                if (args.length) args.remove(0);
                 argsToBuffer(args, buf, opts, cast(FuncDeclaration)null);
                 buf.put("))");
                 return;
@@ -985,7 +978,7 @@ public:
                 if (c1 && c2 && c1.e1.type.ty == Tpointer && c2.e1.type.ty == Tpointer
                 && c1.e1.type.nextOf.ty == Tstruct && c2.e1.type.nextOf.ty == Tstruct) {
                     expToBuffer(e.arguments[0][0], precedence[e.op], buf, opts);
-                    buf.put(".opAssign(");
+                    buf.put(".set(0, ");
                     expToBuffer(e.arguments[0][1], precedence[e.op], buf, opts);
                     buf.put(")");
                     return;
@@ -1187,8 +1180,10 @@ public:
         else if(fromVoidPtr) {
             if(auto call = e.e1.isCallExp) {
                 if (call.f && call.f.funcName == "xcalloc") {
-                    buf.fmt("ptr(new %s[%s])", 
-                        e.to.nextOf.toJava(opts),(*call.arguments)[1]);
+                    buf.fmt("ptr(new %s[", 
+                        e.to.nextOf.toJava(opts));
+                    sizeToBuffer((*call.arguments)[1], buf, opts);
+                    buf.put("])");
                     return;
                 }
             }
@@ -1202,7 +1197,7 @@ public:
             buf.put("to");
             typeToBuffer(e.to, buf, opts);
             buf.put("(");
-            expToBuffer(e.e1, precedence[e.op], buf, opts);
+            refExpr(e.e1, precedence[e.op]);
             buf.put(")");
             return;
         }
@@ -1324,13 +1319,6 @@ public:
             buf.put(')');
         }
         else if(auto pt = e.e1.isPtrExp()) {
-            if (pt.e1.type.nextOf.ty == Tstruct) {
-                expToBuffer(pt.e1, PREC.primary, buf, opts);
-                buf.put(".opAssign(");
-                expToBuffer(e.e2, PREC.primary, buf, opts);
-                buf.put(')');
-                return;
-            }
             expToBuffer(pt.e1, PREC.primary, buf, opts);
             buf.put(".set(0, ");
             expToBuffer(e.e2, PREC.primary, buf, opts);
@@ -1513,6 +1501,7 @@ private void argsToBuffer(Expressions* expressions, TextBuffer buf, ExprOpts opt
             el = basis;
         if (el) {
             auto var = el.isVarExp();
+            auto dotVar = el.isDotVarExp();
             auto n = el.isNullExp();
 
             auto refParam = fd && fd.parameters && i < fd.parameters.length && !(*fd.parameters)[i].type.isConst
@@ -1529,6 +1518,10 @@ private void argsToBuffer(Expressions* expressions, TextBuffer buf, ExprOpts opt
             else if (var && var.var in opts.refParams && refParam) {
                 tmp.put(printParent(var.var, opts));
                 tmp.put(var.var.varName(opts));
+            }
+            else if (dotVar && dotVar.var in opts.refParams && refParam) {
+                tmp.put(printParent(dotVar.var, opts));
+                tmp.put(dotVar.var.varName(opts));
             }
             else if(n && n.type.ty == Tarray) {
                 tmp.put("new ");

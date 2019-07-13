@@ -37,7 +37,7 @@ public class aliasthis {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            return new AliasThis(this.loc, this.ident);
+            return new AliasThis(this.loc.value, this.ident);
         }
 
         public  BytePtr kind() {
@@ -80,20 +80,20 @@ public class aliasthis {
             AggregateDeclaration ad = isAggregate(e.type.value);
         L_outer1:
             for (; ad != null;){
-                if (ad.aliasthis != null)
+                if (ad.aliasthis.value != null)
                 {
-                    int olderrors = gag ? global.value.startGagging() : 0;
-                    Loc loc = e.loc.copy();
-                    Type tthis = ((e.op & 0xFF) == 20) ? e.type.value : null;
-                    e = new DotIdExp(loc, e, ad.aliasthis.ident);
+                    int olderrors = gag ? global.startGagging() : 0;
+                    Loc loc = e.loc.value.copy();
+                    Type tthis = ((e.op.value & 0xFF) == 20) ? e.type.value : null;
+                    e = new DotIdExp(loc, e, ad.aliasthis.value.ident.value);
                     e = expressionSemantic(e, sc);
-                    if ((tthis != null) && ad.aliasthis.needThis())
+                    if ((tthis != null) && ad.aliasthis.value.needThis())
                     {
                         try {
-                            if (((e.op & 0xFF) == 26))
+                            if (((e.op.value & 0xFF) == 26))
                             {
                                 {
-                                    FuncDeclaration fd = ((VarExp)e).var.isFuncDeclaration();
+                                    FuncDeclaration fd = ((VarExp)e).var.value.isFuncDeclaration();
                                     if ((fd) != null)
                                     {
                                         Ref<Boolean> hasOverloads = ref(false);
@@ -104,7 +104,7 @@ public class aliasthis {
                                                 if (!hasOverloads.value)
                                                     fd = f;
                                                 e = new VarExp(loc, fd, hasOverloads.value);
-                                                e.type.value = f.type;
+                                                e.type.value = f.type.value;
                                                 e = new CallExp(loc, e);
                                                 /*goto L1*/throw Dispatch0.INSTANCE;
                                             }
@@ -113,10 +113,10 @@ public class aliasthis {
                                 }
                             }
                             {
-                                int save = (sc.get()).intypeof;
-                                (sc.get()).intypeof = 1;
+                                int save = (sc.get()).intypeof.value;
+                                (sc.get()).intypeof.value = 1;
                                 e = resolveProperties(sc, e);
-                                (sc.get()).intypeof = save;
+                                (sc.get()).intypeof.value = save;
                             }
                         }
                         catch(Dispatch0 __d){}
@@ -125,13 +125,13 @@ public class aliasthis {
                         e = expressionSemantic(e, sc);
                     }
                     e = resolveProperties(sc, e);
-                    if (gag && global.value.endGagging(olderrors))
+                    if (gag && global.endGagging(olderrors))
                         e = null;
                 }
                 ClassDeclaration cd = ad.isClassDeclaration();
-                if ((e == null) || (ad.aliasthis == null) && (cd != null) && (cd.baseClass != null) && (!pequals(cd.baseClass, ClassDeclaration.object.value)))
+                if ((e == null) || (ad.aliasthis.value == null) && (cd != null) && (cd.baseClass.value != null) && (!pequals(cd.baseClass.value, ClassDeclaration.object.value)))
                 {
-                    ad = cd.baseClass;
+                    ad = cd.baseClass.value;
                     continue L_outer1;
                 }
                 break;

@@ -30,7 +30,7 @@ public class ctorflow {
 
     public static class FieldInit
     {
-        public int csx = 0;
+        public Ref<Integer> csx = ref(0);
         public Loc loc = new Loc();
         public FieldInit(){
             loc = new Loc();
@@ -54,7 +54,7 @@ public class ctorflow {
     }
     public static class CtorFlow
     {
-        public int callSuper = 0;
+        public Ref<Integer> callSuper = ref(0);
         public Slice<FieldInit> fieldinit = new Slice<FieldInit>();
         public  void allocFieldinit(int dim) {
             this.fieldinit = (ptr(new FieldInit[dim])).slice(0,dim).copy();
@@ -67,23 +67,23 @@ public class ctorflow {
         }
 
         public  CtorFlow clone() {
-            return new CtorFlow(this.callSuper, arraydup(this.fieldinit));
+            return new CtorFlow(this.callSuper.value, arraydup(this.fieldinit));
         }
 
         public  void orCSX(int csx) {
-            this.callSuper |= csx;
+            this.callSuper.value |= csx;
             {
                 Slice<FieldInit> __r888 = this.fieldinit.copy();
                 int __key889 = 0;
                 for (; (__key889 < __r888.getLength());__key889 += 1) {
                     FieldInit u = __r888.get(__key889).copy();
-                    u.csx |= csx;
+                    u.csx.value |= csx;
                 }
             }
         }
 
         public  void OR(CtorFlow ctorflow) {
-            this.callSuper |= ctorflow.callSuper;
+            this.callSuper.value |= ctorflow.callSuper.value;
             if ((this.fieldinit.getLength() != 0) && (ctorflow.fieldinit.getLength() != 0))
             {
                 assert((this.fieldinit.getLength() == ctorflow.fieldinit.getLength()));
@@ -94,7 +94,7 @@ public class ctorflow {
                         FieldInit u = __r891.get(__key890).copy();
                         int i = __key890;
                         Ptr<FieldInit> fi = ptr(this.fieldinit.get(i));
-                        (fi.get()).csx |= u.csx;
+                        (fi.get()).csx.value |= u.csx.value;
                         if (((fi.get()).loc == new Loc(null, 0, 0)))
                             (fi.get()).loc = u.loc.copy();
                     }

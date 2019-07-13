@@ -53,11 +53,11 @@ public class dmodule {
     static int runDeferredSemanticnested = 0;
 
     public static ByteSlice lookForSourceFile(ByteSlice filename) {
-        ByteSlice sdi = FileName.forceExt(filename, toByteSlice(global.value.hdr_ext)).copy();
+        ByteSlice sdi = FileName.forceExt(filename, toByteSlice(global.hdr_ext)).copy();
         if ((FileName.exists(sdi) == 1))
             return sdi;
         try {
-            ByteSlice sd = FileName.forceExt(filename, toByteSlice(global.value.mars_ext)).copy();
+            ByteSlice sd = FileName.forceExt(filename, toByteSlice(global.mars_ext)).copy();
             if ((FileName.exists(sd) == 1))
                 return sd;
             try {
@@ -74,12 +74,12 @@ public class dmodule {
                 }
                 if (FileName.absolute(filename))
                     return new ByteSlice();
-                if (global.value.path == null)
+                if (global.path == null)
                     return new ByteSlice();
                 {
                     int i = 0;
-                    for (; (i < (global.value.path.get()).length);i++){
-                        ByteSlice p = toDString((global.value.path.get()).get(i)).copy();
+                    for (; (i < (global.path.get()).length);i++){
+                        ByteSlice p = toDString((global.path.get()).get(i)).copy();
                         ByteSlice n = FileName.combine(p, sdi).copy();
                         if ((FileName.exists(n) == 1))
                         {
@@ -125,7 +125,7 @@ public class dmodule {
     public static void semantic3OnDependencies(Module m) {
         if (m == null)
             return ;
-        if ((m.semanticRun > PASS.semantic3))
+        if ((m.semanticRun.value > PASS.semantic3))
             return ;
         semantic3(m, null);
         {
@@ -140,36 +140,36 @@ public class dmodule {
 
     public static ByteSlice getFilename(Ptr<DArray<Identifier>> packages, Identifier ident) {
         ByteSlice filename = ident.asString().copy();
-        if ((packages == null) || ((packages.get()).length == 0))
+        if ((packages == null) || ((packages.get()).length.value == 0))
             return filename;
-        Ref<OutBuffer> buf = ref(new OutBuffer());
+        OutBuffer buf = new OutBuffer();
         try {
-            Ref<OutBuffer> dotmods = ref(new OutBuffer());
+            OutBuffer dotmods = new OutBuffer();
             try {
-                Ref<Ptr<DArray<BytePtr>>> modAliases = ref(ptr(global.value.params.modFileAliasStrings.value));
+                Ptr<DArray<BytePtr>> modAliases = ptr(global.params.modFileAliasStrings);
                 Function1<ByteSlice,Void> checkModFileAlias = new Function1<ByteSlice,Void>(){
                     public Void invoke(ByteSlice p) {
                         Ref<ByteSlice> p_ref = ref(p);
-                        dotmods.value.writestring(p_ref.value);
+                        dotmods.writestring(p_ref.value);
                         {
-                            Ref<Slice<BytePtr>> __r1018 = ref((modAliases.value.get()).opSlice().copy());
+                            Ref<Slice<BytePtr>> __r1018 = ref((modAliases.get()).opSlice().copy());
                             IntRef __key1019 = ref(__r1018.value.getLength());
                             for (; __key1019.value-- != 0;) {
                                 Ref<BytePtr> m = ref(pcopy(__r1018.value.get(__key1019.value)));
                                 BytePtr q = pcopy(strchr(m.value, 61));
                                 assert(q != null);
-                                if ((dotmods.value.offset == ((q.minus(m.value)))) && (memcmp(dotmods.value.peekChars(), m.value, ((q.minus(m.value)))) == 0))
+                                if ((dotmods.offset.value == ((q.minus(m.value)))) && (memcmp(dotmods.peekChars(), m.value, ((q.minus(m.value)))) == 0))
                                 {
-                                    buf.value.reset();
+                                    buf.reset();
                                     Ref<ByteSlice> rhs = ref(q.slice(1,strlen(q)).copy());
                                     if ((rhs.value.getLength() > 0) && ((rhs.value.get(rhs.value.getLength() - 1) & 0xFF) == 47) || ((rhs.value.get(rhs.value.getLength() - 1) & 0xFF) == 92))
                                         rhs.value = rhs.value.slice(0,rhs.value.getLength() - 1).copy();
-                                    buf.value.writestring(rhs.value);
+                                    buf.writestring(rhs.value);
                                     break;
                                 }
                             }
                         }
-                        dotmods.value.writeByte(46);
+                        dotmods.writeByte(46);
                     }
                 };
                 {
@@ -178,18 +178,18 @@ public class dmodule {
                     for (; (__key1021 < __r1020.getLength());__key1021 += 1) {
                         Identifier pid = __r1020.get(__key1021);
                         ByteSlice p = pid.asString().copy();
-                        buf.value.writestring(p);
-                        if ((modAliases.value.get()).length != 0)
+                        buf.writestring(p);
+                        if ((modAliases.get()).length != 0)
                             checkModFileAlias.invoke(p);
                         byte FileSeparator = (byte)47;
-                        buf.value.writeByte(47);
+                        buf.writeByte(47);
                     }
                 }
-                buf.value.writestring(filename);
-                if ((modAliases.value.get()).length != 0)
+                buf.writestring(filename);
+                if ((modAliases.get()).length != 0)
                     checkModFileAlias.invoke(filename);
-                buf.value.writeByte(0);
-                filename = buf.value.extractSlice().slice(0,buf.value.extractSlice().getLength() - 1).copy();
+                buf.writeByte(0);
+                filename = buf.extractSlice().slice(0,buf.extractSlice().getLength() - 1).copy();
                 return filename;
             }
             finally {
@@ -230,7 +230,7 @@ public class dmodule {
             {
                 {
                     int i = 0;
-                    for (; (i < (packages.get()).length);i++){
+                    for (; (i < (packages.get()).length.value);i++){
                         Identifier pid = (packages.get()).get(i);
                         Package pkg = null;
                         Dsymbol p = dst.lookup(pid);
@@ -317,11 +317,11 @@ public class dmodule {
                 {
                     Dsymbol s = this.parent.value;
                     for (; s != null;s = s.parent.value) {
-                        packages.value.insert(0, s.ident);
+                        packages.value.insert(0, s.ident.value);
                     }
                 }
-                if (lookForSourceFile(getFilename(ptr(packages), this.ident)).getLength() != 0)
-                    Module.load(new Loc(null, 0, 0), ptr(packages), this.ident);
+                if (lookForSourceFile(getFilename(ptr(packages), this.ident.value)).getLength() != 0)
+                    Module.load(new Loc(null, 0, 0), ptr(packages), this.ident.value);
                 else
                     this.isPkgMod = PKG.package_;
             }
@@ -467,24 +467,24 @@ public class dmodule {
             super(loc, ident);
             ByteSlice srcfilename = new ByteSlice().copy();
             this.arg = filename.copy();
-            srcfilename = FileName.defaultExt(filename, toByteSlice(global.value.mars_ext)).copy();
-            if (global.value.run_noext && global.value.params.run && (FileName.ext(filename).getLength() == 0) && (FileName.exists(srcfilename) == 0) && (FileName.exists(filename) == 1))
+            srcfilename = FileName.defaultExt(filename, toByteSlice(global.mars_ext)).copy();
+            if (global.run_noext && global.params.run && (FileName.ext(filename).getLength() == 0) && (FileName.exists(srcfilename) == 0) && (FileName.exists(filename) == 1))
             {
                 FileName.free(toBytePtr(srcfilename));
                 srcfilename = FileName.removeExt(filename).copy();
             }
-            else if (!FileName.equalsExt(srcfilename, toByteSlice(global.value.mars_ext)) && !FileName.equalsExt(srcfilename, toByteSlice(global.value.hdr_ext)) && !FileName.equalsExt(srcfilename, new ByteSlice("dd")))
+            else if (!FileName.equalsExt(srcfilename, toByteSlice(global.mars_ext)) && !FileName.equalsExt(srcfilename, toByteSlice(global.hdr_ext)) && !FileName.equalsExt(srcfilename, new ByteSlice("dd")))
             {
-                this.error(new BytePtr("source file name '%.*s' must have .%.*s extension"), srcfilename.getLength(), toBytePtr(srcfilename), global.value.mars_ext.getLength(), toBytePtr(global.value.mars_ext));
+                this.error(new BytePtr("source file name '%.*s' must have .%.*s extension"), srcfilename.getLength(), toBytePtr(srcfilename), global.mars_ext.getLength(), toBytePtr(global.mars_ext));
                 fatal();
             }
             this.srcfile = new FileName(srcfilename);
-            this.objfile = this.setOutfilename(global.value.params.objname, global.value.params.objdir, filename, global.value.obj_ext).copy();
+            this.objfile = this.setOutfilename(global.params.objname, global.params.objdir, filename, global.obj_ext).copy();
             if (doDocComment != 0)
                 this.setDocfile();
             if (doHdrGen != 0)
-                this.hdrfile = this.setOutfilename(global.value.params.hdrname, global.value.params.hdrdir, this.arg, toByteSlice(global.value.hdr_ext)).copy();
-            this.escapetable = new Escape(new ByteSlice());
+                this.hdrfile = this.setOutfilename(global.params.hdrname, global.params.hdrdir, this.arg, toByteSlice(global.hdr_ext)).copy();
+            this.escapetable = refPtr(new Escape(new ByteSlice()));
         }
 
         public  Module(ByteSlice filename, Identifier ident, int doDocComment, int doHdrGen) {
@@ -509,7 +509,7 @@ public class dmodule {
             Module m = new Module(loc, filename, ident, 0, 0);
             if (!m.read(loc))
                 return null;
-            if (global.value.params.verbose)
+            if (global.params.verbose)
             {
                 OutBuffer buf = new OutBuffer();
                 if (packages != null)
@@ -560,7 +560,7 @@ public class dmodule {
                     buf.printf(new BytePtr("__stdin_%d.d"), getpid());
                     arg = buf.peekSlice().copy();
                 }
-                if (global.value.params.preservePaths)
+                if (global.params.preservePaths)
                     argdoc = arg.copy();
                 else
                     argdoc = FileName.name(arg).copy();
@@ -579,18 +579,18 @@ public class dmodule {
         }
 
         public  void setDocfile() {
-            this.docfile = this.setOutfilename(toDString(global.value.params.docname), toDString(global.value.params.docdir), this.arg, toByteSlice(global.value.doc_ext)).copy();
+            this.docfile = this.setOutfilename(toDString(global.params.docname), toDString(global.params.docdir), this.arg, toByteSlice(global.doc_ext)).copy();
         }
 
         public  boolean loadSourceBuffer(Loc loc, File.ReadResult readResult) {
-            this.srcBuffer = new FileBuffer(readResult.extractData());
+            this.srcBuffer = refPtr(new FileBuffer(readResult.extractData()));
             if (readResult.success)
                 return true;
             if (FileName.equals(this.srcfile.asString(), new ByteSlice("object.d")))
             {
                 error(loc, new BytePtr("cannot find source code for runtime library file 'object.d'"));
                 errorSupplemental(loc, new BytePtr("dmd might not be correctly installed. Run 'dmd -man' for installation instructions."));
-                ByteSlice dmdConfFile = global.value.inifilename.getLength() != 0 ? FileName.canonicalName(global.value.inifilename) : new ByteSlice("not found").copy();
+                ByteSlice dmdConfFile = global.inifilename.getLength() != 0 ? FileName.canonicalName(global.inifilename) : new ByteSlice("not found").copy();
                 errorSupplemental(loc, new BytePtr("config file: %.*s"), dmdConfFile.getLength(), toBytePtr(dmdConfFile));
             }
             else
@@ -601,12 +601,12 @@ public class dmodule {
                 else
                     this.error(loc, new BytePtr("is in file '%s' which cannot be read"), this.srcfile.toChars());
             }
-            if (global.value.gag == 0)
+            if (global.gag.value == 0)
             {
-                if (global.value.path != null)
+                if (global.path != null)
                 {
                     {
-                        Slice<BytePtr> __r1025 = (global.value.path.get()).opSlice().copy();
+                        Slice<BytePtr> __r1025 = (global.path.get()).opSlice().copy();
                         int __key1024 = 0;
                         for (; (__key1024 < __r1025.getLength());__key1024 += 1) {
                             BytePtr p = pcopy(__r1025.get(__key1024));
@@ -634,7 +634,7 @@ public class dmodule {
         }
 
         public  Module parse() {
-            StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.value.params.useDeprecated);
+            StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
             try {
                 return this.parseASTCodegen(diagnosticReporter);
             }
@@ -844,7 +844,7 @@ public class dmodule {
 
             BytePtr srcname = pcopy(this.srcfile.toChars());
             this.isPackageFile = (strcmp(this.srcfile.name(), new BytePtr("package.d")) == 0) || (strcmp(this.srcfile.name(), new BytePtr("package.di")) == 0);
-            ByteSlice buf = toByteSlice((this.srcBuffer.get()).data).copy();
+            ByteSlice buf = toByteSlice(this.srcBuffer.get().data).copy();
             boolean needsReencoding = true;
             boolean hasBOM = true;
             int endian = Endian.little;
@@ -928,7 +928,7 @@ public class dmodule {
             }
             if ((buf.getLength() >= 4) && __equals(buf.slice(0,4), new ByteSlice("Ddoc")))
             {
-                this.comment = pcopy((toBytePtr(buf).plus(4)));
+                this.comment.value = pcopy((toBytePtr(buf).plus(4)));
                 this.isDocFile = true;
                 if (!this.docfile.opCast())
                     this.setDocfile();
@@ -936,7 +936,7 @@ public class dmodule {
             }
             if (FileName.equalsExt(this.arg, new ByteSlice("dd")))
             {
-                this.comment = pcopy((toBytePtr(buf)));
+                this.comment.value = pcopy((toBytePtr(buf)));
                 this.isDocFile = true;
                 if (!this.docfile.opCast())
                     this.setDocfile();
@@ -950,11 +950,11 @@ public class dmodule {
                 ParserASTCodegen p = new ParserASTCodegen(this, buf, this.docfile.opCast(), diagnosticReporter);
                 try {
                     p.nextToken();
-                    this.members = p.parseModule();
+                    this.members.value = p.parseModule();
                     this.md = p.md;
                     this.numlines = p.scanloc.linnum;
                     if (p.errors())
-                        global.value.errors += 1;
+                        global.errors.value += 1;
                 }
                 finally {
                 }
@@ -964,9 +964,9 @@ public class dmodule {
             DsymbolTable dst = null;
             if (this.md != null)
             {
-                this.ident = (this.md.get()).id;
+                this.ident.value = (this.md.get()).id;
                 Package ppack = null;
-                dst = Package.resolve((this.md.get()).packages, ptr(this.parent.value), ptr(ppack));
+                dst = Package.resolve((this.md.get()).packages, ptr(this.parent), ptr(ppack));
                 assert(dst != null);
                 Module m = ppack != null ? ppack.isModule() : null;
                 if ((m != null) && (strcmp(m.srcfile.name(), new BytePtr("package.d")) != 0) && (strcmp(m.srcfile.name(), new BytePtr("package.di")) != 0))
@@ -977,13 +977,13 @@ public class dmodule {
             else
             {
                 dst = modules;
-                if (!Identifier.isValidIdentifier(this.ident.toChars()))
+                if (!Identifier.isValidIdentifier(this.ident.value.toChars()))
                     this.error(new BytePtr("has non-identifier characters in filename, use module declaration instead"));
             }
             Dsymbol s = this;
             if (this.isPackageFile)
             {
-                Package p = new Package(Loc.initial.value, this.ident);
+                Package p = new Package(Loc.initial.value, this.ident.value);
                 p.parent.value = this.parent.value;
                 p.isPkgMod = PKG.module_;
                 p.mod = this;
@@ -993,18 +993,18 @@ public class dmodule {
             }
             if (dst.insert(s) == null)
             {
-                Dsymbol prev = dst.lookup(this.ident);
+                Dsymbol prev = dst.lookup(this.ident.value);
                 assert(prev != null);
                 {
                     Module mprev = prev.isModule();
                     if ((mprev) != null)
                     {
                         if (!FileName.equals(srcname, mprev.srcfile.toChars()))
-                            this.error(this.loc, new BytePtr("from file %s conflicts with another module %s from file %s"), srcname, mprev.toChars(), mprev.srcfile.toChars());
+                            this.error(this.loc.value, new BytePtr("from file %s conflicts with another module %s from file %s"), srcname, mprev.toChars(), mprev.srcfile.toChars());
                         else if (this.isRoot() && mprev.isRoot())
-                            this.error(this.loc, new BytePtr("from file %s is specified twice on the command line"), srcname);
+                            this.error(this.loc.value, new BytePtr("from file %s is specified twice on the command line"), srcname);
                         else
-                            this.error(this.loc, new BytePtr("from file %s must be imported with 'import %s;'"), srcname, this.toPrettyChars(false));
+                            this.error(this.loc.value, new BytePtr("from file %s must be imported with 'import %s;'"), srcname, this.toPrettyChars(false));
                         return mprev;
                     }
                     else {
@@ -1019,10 +1019,10 @@ public class dmodule {
                                 amodules.push(this);
                             }
                             else
-                                this.error((this.md != null ? ptr((this.md.get()).loc.value) : ptr(this.loc)).get(), new BytePtr("from file %s conflicts with package name %s"), srcname, pkg.toChars());
+                                this.error((this.md != null ? ptr(this.md.get().loc) : ptr(this.loc)).get(), new BytePtr("from file %s conflicts with package name %s"), srcname, pkg.toChars());
                         }
                         else
-                            assert(global.value.errors != 0);
+                            assert(global.errors.value != 0);
                     }
                 }
             }
@@ -1035,7 +1035,7 @@ public class dmodule {
 
 
         public  void importAll(Ptr<Scope> prevsc) {
-            if (this._scope != null)
+            if (this._scope.value != null)
                 return ;
             if (this.isDocFile)
             {
@@ -1045,34 +1045,34 @@ public class dmodule {
             Ptr<Scope> sc = Scope.createGlobal(this);
             if ((this.md != null) && ((this.md.get()).msg != null))
                 (this.md.get()).msg = semanticString(sc, (this.md.get()).msg, new BytePtr("deprecation message"));
-            if (((this.members.get()).length == 0) || (!pequals((this.members.get()).get(0).ident, Id.object.value)) || ((this.members.get()).get(0).isImport() == null))
+            if (((this.members.value.get()).length.value == 0) || (!pequals((this.members.value.get()).get(0).ident.value, Id.object.value)) || ((this.members.value.get()).get(0).isImport() == null))
             {
                 Import im = new Import(Loc.initial.value, null, Id.object.value, null, 0);
-                (this.members.get()).shift(im);
+                (this.members.value.get()).shift(im);
             }
             if (this.symtab == null)
             {
                 this.symtab = new DsymbolTable();
                 {
                     int i = 0;
-                    for (; (i < (this.members.get()).length);i++){
-                        Dsymbol s = (this.members.get()).get(i);
-                        s.addMember(sc, (sc.get()).scopesym);
+                    for (; (i < (this.members.value.get()).length.value);i++){
+                        Dsymbol s = (this.members.value.get()).get(i);
+                        s.addMember(sc, (sc.get()).scopesym.value);
                     }
                 }
             }
             this.setScope(sc);
             {
                 int i = 0;
-                for (; (i < (this.members.get()).length);i++){
-                    Dsymbol s = (this.members.get()).get(i);
+                for (; (i < (this.members.value.get()).length.value);i++){
+                    Dsymbol s = (this.members.value.get()).get(i);
                     s.setScope(sc);
                 }
             }
             {
                 int i = 0;
-                for (; (i < (this.members.get()).length);i++){
-                    Dsymbol s = (this.members.get()).get(i);
+                for (; (i < (this.members.value.get()).length.value);i++){
+                    Dsymbol s = (this.members.value.get()).get(i);
                     s.importAll(sc);
                 }
             }
@@ -1081,7 +1081,7 @@ public class dmodule {
         }
 
         public  int needModuleInfo() {
-            return (((this.needmoduleinfo != 0) || global.value.params.cov) ? 1 : 0);
+            return (((this.needmoduleinfo != 0) || global.params.cov) ? 1 : 0);
         }
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
@@ -1093,11 +1093,11 @@ public class dmodule {
             {
                 return this.searchCacheSymbol;
             }
-            int errors = global.value.errors;
+            int errors = global.errors.value;
             this.insearch = 1;
             Dsymbol s = this.search(loc, ident, flags);
             this.insearch = 0;
-            if ((errors == global.value.errors))
+            if ((errors == global.errors.value))
             {
                 this.searchCacheIdent = ident;
                 this.searchCacheSymbol = s;
@@ -1136,7 +1136,7 @@ public class dmodule {
         }
 
         public  void deleteObjFile() {
-            if (global.value.params.obj)
+            if (global.params.obj)
                 File.remove(this.objfile.toChars());
             if (this.docfile.opCast())
                 File.remove(this.docfile.toChars());
@@ -1164,7 +1164,7 @@ public class dmodule {
             do {
                 {
                     dprogress = 0;
-                    len = deferred.length;
+                    len = deferred.length.value;
                     if (len == 0)
                         break;
                     Ptr<Dsymbol> todo = null;
@@ -1192,7 +1192,7 @@ public class dmodule {
                     if (todoalloc != null)
                         free(todoalloc);
                 }
-            } while ((deferred.length < len) || (dprogress != 0));
+            } while ((deferred.length.value < len) || (dprogress != 0));
             dmodule.runDeferredSemanticnested--;
         }
 
@@ -1201,10 +1201,10 @@ public class dmodule {
             Ptr<DArray<Dsymbol>> a = ptr(deferred2);
             {
                 int i = 0;
-                for (; (i < (a.get()).length);i++){
+                for (; (i < (a.get()).length.value);i++){
                     Dsymbol s = (a.get()).get(i);
                     semantic2(s, null);
-                    if (global.value.errors != 0)
+                    if (global.errors.value != 0)
                         break;
                 }
             }
@@ -1216,10 +1216,10 @@ public class dmodule {
             Ptr<DArray<Dsymbol>> a = ptr(deferred3);
             {
                 int i = 0;
-                for (; (i < (a.get()).length);i++){
+                for (; (i < (a.get()).length.value);i++){
                     Dsymbol s = (a.get()).get(i);
                     semantic3(s, null);
-                    if (global.value.errors != 0)
+                    if (global.errors.value != 0)
                         break;
                 }
             }
@@ -1260,7 +1260,7 @@ public class dmodule {
         }
 
         public  boolean isCoreModule(Identifier ident) {
-            return (pequals(this.ident, ident)) && (this.parent.value != null) && (pequals(this.parent.value.ident, Id.core)) && (this.parent.value.parent.value == null);
+            return (pequals(this.ident.value, ident)) && (this.parent.value != null) && (pequals(this.parent.value.ident.value, Id.core)) && (this.parent.value.parent.value == null);
         }
 
         public int doppelganger = 0;
@@ -1282,12 +1282,12 @@ public class dmodule {
         }
 
         public  void fullyQualifiedName(OutBuffer buf) {
-            buf.writestring(this.ident.asString());
+            buf.writestring(this.ident.value.asString());
             {
                 Dsymbol package_ = this.parent.value;
                 for (; (package_ != null);package_ = package_.parent.value){
                     buf.prependstring(new BytePtr("."));
-                    buf.prependstring(package_.ident.toChars());
+                    buf.prependstring(package_.ident.value.toChars());
                 }
             }
         }
@@ -1385,7 +1385,7 @@ public class dmodule {
         public  BytePtr toChars() {
             OutBuffer buf = new OutBuffer();
             try {
-                if ((this.packages != null) && ((this.packages.get()).length != 0))
+                if ((this.packages != null) && ((this.packages.get()).length.value != 0))
                 {
                     {
                         Slice<Identifier> __r1040 = (this.packages.get()).opSlice().copy();

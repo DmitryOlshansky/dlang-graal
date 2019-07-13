@@ -34,7 +34,7 @@ public class staticassert {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            return new StaticAssert(this.loc, this.exp.syntaxCopy(), this.msg != null ? this.msg.syntaxCopy() : null);
+            return new StaticAssert(this.loc.value, this.exp.syntaxCopy(), this.msg != null ? this.msg.syntaxCopy() : null);
         }
 
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {

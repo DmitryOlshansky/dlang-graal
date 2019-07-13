@@ -70,36 +70,35 @@ public class dsymbolsem {
 
     static boolean LOG = false;
     public static FuncDeclaration buildPostBlit(StructDeclaration sd, Ptr<Scope> sc) {
-        Ref<StructDeclaration> sd_ref = ref(sd);
-        if (sd_ref.value.isUnionDeclaration() != null)
+        if (sd.isUnionDeclaration() != null)
             return null;
         Ref<Long> stc = ref(4406737108992L);
-        Loc declLoc = sd_ref.value.postblits.length != 0 ? sd_ref.value.postblits.get(0).loc : sd_ref.value.loc.copy();
+        Loc declLoc = sd.postblits.length.value != 0 ? sd.postblits.get(0).loc.value : sd.loc.value.copy();
         Loc loc = new Loc();
         {
             int i = 0;
-            for (; (i < sd_ref.value.postblits.length);i++){
-                stc.value |= sd_ref.value.postblits.get(i).storage_class & 137438953472L;
+            for (; (i < sd.postblits.length.value);i++){
+                stc.value |= sd.postblits.get(i).storage_class.value & 137438953472L;
             }
         }
         Slice<VarDeclaration> fieldsToDestroy = new Slice<VarDeclaration>().copy();
-        Ptr<DArray<Statement>> postblitCalls = new DArray<Statement>();
+        Ptr<DArray<Statement>> postblitCalls = refPtr(new DArray<Statement>());
         {
             int i = 0;
-            for (; (i < sd_ref.value.fields.length) && ((stc.value & 137438953472L) == 0);i++){
-                VarDeclaration structField = sd_ref.value.fields.get(i);
-                if ((structField.storage_class & 2097152L) != 0)
+            for (; (i < sd.fields.length.value) && ((stc.value & 137438953472L) == 0);i++){
+                VarDeclaration structField = sd.fields.get(i);
+                if ((structField.storage_class.value & 2097152L) != 0)
                     continue;
-                if (structField.overlapped)
+                if (structField.overlapped.value)
                     continue;
-                Type tv = structField.type.baseElemOf();
-                if (((tv.ty & 0xFF) != ENUMTY.Tstruct))
+                Type tv = structField.type.value.baseElemOf();
+                if (((tv.ty.value & 0xFF) != ENUMTY.Tstruct))
                     continue;
-                StructDeclaration sdv = ((TypeStruct)tv).sym;
-                if (sdv.postblit == null)
+                StructDeclaration sdv = ((TypeStruct)tv).sym.value;
+                if (sdv.postblit.value == null)
                     continue;
                 assert(sdv.isUnionDeclaration() == null);
-                if ((fieldsToDestroy.getLength() > 0) && !((TypeFunction)sdv.postblit.type).isnothrow)
+                if ((fieldsToDestroy.getLength() > 0) && !((TypeFunction)sdv.postblit.value.type.value).isnothrow.value)
                 {
                     Slice<Expression> dtorCalls = new Slice<Expression>().copy();
                     {
@@ -108,18 +107,18 @@ public class dsymbolsem {
                         for (; (__key1137 < __r1136.getLength());__key1137 += 1) {
                             VarDeclaration sf = __r1136.get(__key1137);
                             Expression ex = null;
-                            tv = sf.type.toBasetype();
-                            if (((tv.ty & 0xFF) == ENUMTY.Tstruct))
+                            tv = sf.type.value.toBasetype();
+                            if (((tv.ty.value & 0xFF) == ENUMTY.Tstruct))
                             {
                                 ex = new ThisExp(loc);
                                 ex = new DotVarExp(loc, ex, sf, true);
                                 ex = new AddrExp(loc, ex);
-                                ex = new CastExp(loc, ex, sf.type.mutableOf().pointerTo());
+                                ex = new CastExp(loc, ex, sf.type.value.mutableOf().pointerTo());
                                 ex = new PtrExp(loc, ex);
                                 if ((stc.value & 8589934592L) != 0)
                                     stc.value = stc.value & -8589934593L | 17179869184L;
-                                StructDeclaration sfv = ((TypeStruct)sf.type.baseElemOf()).sym;
-                                ex = new DotVarExp(loc, ex, sfv.dtor, false);
+                                StructDeclaration sfv = ((TypeStruct)sf.type.value.baseElemOf()).sym.value;
+                                ex = new DotVarExp(loc, ex, sfv.dtor.value, false);
                                 ex = new CallExp(loc, ex);
                                 dtorCalls.append(ex);
                             }
@@ -129,7 +128,7 @@ public class dsymbolsem {
                                 ex = new ThisExp(loc);
                                 ex = new DotVarExp(loc, ex, sf, true);
                                 ex = new DotIdExp(loc, ex, Id.ptr.value);
-                                ex = new CastExp(loc, ex, sdv.type.pointerTo());
+                                ex = new CastExp(loc, ex, sdv.type.value.pointerTo());
                                 if ((stc.value & 8589934592L) != 0)
                                     stc.value = stc.value & -8589934593L | 17179869184L;
                                 SliceExp se = new SliceExp(loc, ex, new IntegerExp(loc, 0L, Type.tsize_t.value), new IntegerExp(loc, (long)length, Type.tsize_t.value));
@@ -141,7 +140,7 @@ public class dsymbolsem {
                         }
                     }
                     fieldsToDestroy = slice(new VarDeclaration[]{}).copy();
-                    Ptr<DArray<Statement>> dtors = new DArray<Statement>();
+                    Ptr<DArray<Statement>> dtors = refPtr(new DArray<Statement>());
                     {
                         Slice<Expression> __r1138 = dtorCalls.copy();
                         int __key1139 = __r1138.getLength();
@@ -152,26 +151,26 @@ public class dsymbolsem {
                     }
                     (postblitCalls.get()).push(new ScopeGuardStatement(loc, TOK.onScopeFailure, new CompoundStatement(loc, dtors)));
                 }
-                sdv.postblit.functionSemantic();
-                stc.value = mergeFuncAttrs(stc.value, sdv.postblit);
-                stc.value = mergeFuncAttrs(stc.value, sdv.dtor);
+                sdv.postblit.value.functionSemantic();
+                stc.value = mergeFuncAttrs(stc.value, sdv.postblit.value);
+                stc.value = mergeFuncAttrs(stc.value, sdv.dtor.value);
                 if ((stc.value & 137438953472L) != 0)
                 {
                     (postblitCalls.get()).setDim(0);
                     break;
                 }
                 Expression ex = null;
-                tv = structField.type.toBasetype();
-                if (((tv.ty & 0xFF) == ENUMTY.Tstruct))
+                tv = structField.type.value.toBasetype();
+                if (((tv.ty.value & 0xFF) == ENUMTY.Tstruct))
                 {
                     ex = new ThisExp(loc);
                     ex = new DotVarExp(loc, ex, structField, true);
                     ex = new AddrExp(loc, ex);
-                    ex = new CastExp(loc, ex, structField.type.mutableOf().pointerTo());
+                    ex = new CastExp(loc, ex, structField.type.value.mutableOf().pointerTo());
                     ex = new PtrExp(loc, ex);
                     if ((stc.value & 8589934592L) != 0)
                         stc.value = stc.value & -8589934593L | 17179869184L;
-                    ex = new DotVarExp(loc, ex, sdv.postblit, false);
+                    ex = new DotVarExp(loc, ex, sdv.postblit.value, false);
                     ex = new CallExp(loc, ex);
                 }
                 else
@@ -182,7 +181,7 @@ public class dsymbolsem {
                     ex = new ThisExp(loc);
                     ex = new DotVarExp(loc, ex, structField, true);
                     ex = new DotIdExp(loc, ex, Id.ptr.value);
-                    ex = new CastExp(loc, ex, sdv.type.pointerTo());
+                    ex = new CastExp(loc, ex, sdv.type.value.pointerTo());
                     if ((stc.value & 8589934592L) != 0)
                         stc.value = stc.value & -8589934593L | 17179869184L;
                     SliceExp se = new SliceExp(loc, ex, new IntegerExp(loc, 0L, Type.tsize_t.value), new IntegerExp(loc, (long)length, Type.tsize_t.value));
@@ -191,45 +190,45 @@ public class dsymbolsem {
                     ex = new CallExp(loc, new IdentifierExp(loc, Id.__ArrayPostblit), se);
                 }
                 (postblitCalls.get()).push(new ExpStatement(loc, ex));
-                if (sdv.dtor != null)
+                if (sdv.dtor.value != null)
                 {
-                    sdv.dtor.functionSemantic();
+                    sdv.dtor.value.functionSemantic();
                     fieldsToDestroy.append(structField);
                 }
             }
         }
         Function0<Void> checkShared = new Function0<Void>(){
             public Void invoke() {
-                if (sd_ref.value.type.isShared())
+                if (sd.type.value.isShared())
                     stc.value |= 536870912L;
             }
         };
-        if (((postblitCalls.get()).length != 0) || ((stc.value & 137438953472L) != 0))
+        if (((postblitCalls.get()).length.value != 0) || ((stc.value & 137438953472L) != 0))
         {
             checkShared.invoke();
             PostBlitDeclaration dd = new PostBlitDeclaration(declLoc, Loc.initial.value, stc.value, Id.__fieldPostblit);
             dd.generated = true;
-            dd.storage_class |= 70368744177664L;
-            dd.fbody = (stc.value & 137438953472L) != 0 ? null : new CompoundStatement(loc, postblitCalls);
-            sd_ref.value.postblits.shift(dd);
-            (sd_ref.value.members.get()).push(dd);
+            dd.storage_class.value |= 70368744177664L;
+            dd.fbody.value = (stc.value & 137438953472L) != 0 ? null : new CompoundStatement(loc, postblitCalls);
+            sd.postblits.shift(dd);
+            (sd.members.value.get()).push(dd);
             dsymbolSemantic(dd, sc);
         }
         FuncDeclaration xpostblit = null;
-        switch (sd_ref.value.postblits.length)
+        switch (sd.postblits.length.value)
         {
             case 0:
                 break;
             case 1:
-                xpostblit = sd_ref.value.postblits.get(0);
+                xpostblit = sd.postblits.get(0);
                 break;
             default:
             Expression e = null;
             stc.value = 4406737108992L;
             {
                 int i = 0;
-                for (; (i < sd_ref.value.postblits.length);i++){
-                    FuncDeclaration fd = sd_ref.value.postblits.get(i);
+                for (; (i < sd.postblits.length.value);i++){
+                    FuncDeclaration fd = sd.postblits.get(i);
                     stc.value = mergeFuncAttrs(stc.value, fd);
                     if ((stc.value & 137438953472L) != 0)
                     {
@@ -245,9 +244,9 @@ public class dsymbolsem {
             checkShared.invoke();
             PostBlitDeclaration dd = new PostBlitDeclaration(declLoc, Loc.initial.value, stc.value, Id.__aggrPostblit);
             dd.generated = true;
-            dd.storage_class |= 70368744177664L;
-            dd.fbody = new ExpStatement(loc, e);
-            (sd_ref.value.members.get()).push(dd);
+            dd.storage_class.value |= 70368744177664L;
+            dd.fbody.value = new ExpStatement(loc, e);
+            (sd.members.value.get()).push(dd);
             dsymbolSemantic(dd, sc);
             xpostblit = dd;
             break;
@@ -256,21 +255,21 @@ public class dsymbolsem {
         {
             AliasDeclaration _alias = new AliasDeclaration(Loc.initial.value, Id.__xpostblit.value, xpostblit);
             dsymbolSemantic(_alias, sc);
-            (sd_ref.value.members.get()).push(_alias);
-            _alias.addMember(sc, sd_ref.value);
+            (sd.members.value.get()).push(_alias);
+            _alias.addMember(sc, sd);
         }
         return xpostblit;
     }
 
     public static CtorDeclaration generateCopyCtorDeclaration(StructDeclaration sd, long paramStc, long funcStc) {
-        Ptr<DArray<Parameter>> fparams = new DArray<Parameter>();
-        Type structType = sd.type;
+        Ptr<DArray<Parameter>> fparams = refPtr(new DArray<Parameter>());
+        Type structType = sd.type.value;
         (fparams.get()).push(new Parameter(paramStc | 2097152L | 17592186044416L | 524288L, structType, Id.p.value, null, null));
         ParameterList pList = new ParameterList(fparams, VarArg.none).copy();
         TypeFunction tf = new TypeFunction(pList, structType, LINK.d, 2097152L);
-        CtorDeclaration ccd = new CtorDeclaration(sd.loc, Loc.initial.value, 2097152L, tf, true);
-        ccd.storage_class |= funcStc;
-        ccd.storage_class |= 70368744177664L;
+        CtorDeclaration ccd = new CtorDeclaration(sd.loc.value, Loc.initial.value, 2097152L, tf, true);
+        ccd.storage_class.value |= funcStc;
+        ccd.storage_class.value |= 70368744177664L;
         ccd.generated = true;
         return ccd;
     }
@@ -292,12 +291,12 @@ public class dsymbolsem {
     }
 
     public static boolean buildCopyCtor(StructDeclaration sd, Ptr<Scope> sc) {
-        if (global.value.errors != 0)
+        if (global.errors.value != 0)
             return false;
         boolean hasPostblit = false;
-        if (sd.postblit != null)
+        if (sd.postblit.value != null)
             hasPostblit = true;
-        Dsymbol ctor = sd.search(sd.loc, Id.ctor.value, 8);
+        Dsymbol ctor = sd.search(sd.loc.value, Id.ctor.value, 8);
         CtorDeclaration cpCtor = null;
         CtorDeclaration rvalueCtor = null;
         if (ctor != null)
@@ -325,12 +324,12 @@ public class dsymbolsem {
                             cpCtor = ctorDecl;
                         return 0;
                     }
-                    TypeFunction tf = ctorDecl.type.toTypeFunction();
-                    int dim = Parameter.dim(tf.parameterList.parameters);
+                    TypeFunction tf = ctorDecl.type.value.toTypeFunction();
+                    int dim = Parameter.dim(tf.parameterList.parameters.value);
                     if ((dim == 1))
                     {
-                        Parameter param = Parameter.getNth(tf.parameterList.parameters, 0, null);
-                        if ((pequals(param.type.mutableOf().unSharedOf(), sd.type.mutableOf().unSharedOf())))
+                        Parameter param = Parameter.getNth(tf.parameterList.parameters.value, 0, null);
+                        if ((pequals(param.type.value.mutableOf().unSharedOf(), sd.type.value.mutableOf().unSharedOf())))
                         {
                             rvalueCtor = ctorDecl;
                         }
@@ -341,9 +340,9 @@ public class dsymbolsem {
             overloadApply(ctor, __lambda3, null);
             if ((cpCtor != null) && (rvalueCtor != null))
             {
-                error(sd.loc, new BytePtr("`struct %s` may not define both a rvalue constructor and a copy constructor"), sd.toChars());
-                errorSupplemental(rvalueCtor.loc, new BytePtr("rvalue constructor defined here"));
-                errorSupplemental(cpCtor.loc, new BytePtr("copy constructor defined here"));
+                error(sd.loc.value, new BytePtr("`struct %s` may not define both a rvalue constructor and a copy constructor"), sd.toChars());
+                errorSupplemental(rvalueCtor.loc.value, new BytePtr("rvalue constructor defined here"));
+                errorSupplemental(cpCtor.loc.value, new BytePtr("copy constructor defined here"));
                 return true;
             }
             else if (cpCtor != null)
@@ -359,14 +358,14 @@ public class dsymbolsem {
             int __key1143 = 0;
             for (; (__key1143 < __r1142.getLength());__key1143 += 1) {
                 VarDeclaration v = __r1142.get(__key1143);
-                if ((v.storage_class & 2097152L) != 0)
+                if ((v.storage_class.value & 2097152L) != 0)
                     continue;
-                if (v.overlapped)
+                if (v.overlapped.value)
                     continue;
-                TypeStruct ts = v.type.baseElemOf().isTypeStruct();
+                TypeStruct ts = v.type.value.baseElemOf().isTypeStruct();
                 if (ts == null)
                     continue;
-                if (ts.sym.hasCopyCtor)
+                if (ts.sym.value.hasCopyCtor)
                 {
                     fieldWithCpCtor = v;
                     break;
@@ -375,9 +374,9 @@ public class dsymbolsem {
         }
         if ((fieldWithCpCtor != null) && (rvalueCtor != null))
         {
-            error(sd.loc, new BytePtr("`struct %s` may not define a rvalue constructor and have fields with copy constructors"), sd.toChars());
-            errorSupplemental(rvalueCtor.loc, new BytePtr("rvalue constructor defined here"));
-            errorSupplemental(fieldWithCpCtor.loc, new BytePtr("field with copy constructor defined here"));
+            error(sd.loc.value, new BytePtr("`struct %s` may not define a rvalue constructor and have fields with copy constructors"), sd.toChars());
+            errorSupplemental(rvalueCtor.loc.value, new BytePtr("rvalue constructor defined here"));
+            errorSupplemental(fieldWithCpCtor.loc.value, new BytePtr("field with copy constructor defined here"));
             return false;
         }
         else if (fieldWithCpCtor == null)
@@ -388,21 +387,21 @@ public class dsymbolsem {
         byte funcMod = (byte)8;
         CtorDeclaration ccd = generateCopyCtorDeclaration(sd, ModToStc(8), ModToStc(8));
         Statement copyCtorBody = generateCopyCtorBody(sd);
-        ccd.fbody = copyCtorBody;
-        (sd.members.get()).push(ccd);
+        ccd.fbody.value = copyCtorBody;
+        (sd.members.value.get()).push(ccd);
         ccd.addMember(sc, sd);
-        int errors = global.value.startGagging();
+        int errors = global.startGagging();
         Ptr<Scope> sc2 = (sc.get()).push();
-        (sc2.get()).stc = 0L;
-        (sc2.get()).linkage = LINK.d;
+        (sc2.get()).stc.value = 0L;
+        (sc2.get()).linkage.value = LINK.d;
         dsymbolSemantic(ccd, sc2);
         semantic2(ccd, sc2);
         semantic3(ccd, sc2);
         (sc2.get()).pop();
-        if (global.value.endGagging(errors))
+        if (global.endGagging(errors))
         {
-            ccd.storage_class |= 137438953472L;
-            ccd.fbody = null;
+            ccd.storage_class.value |= 137438953472L;
+            ccd.fbody.value = null;
         }
         return true;
     }
@@ -445,13 +444,13 @@ public class dsymbolsem {
         ad.ealign = resolveProperties(sc, ad.ealign);
         sc = (sc.get()).endCTFE();
         ad.ealign = ad.ealign.ctfeInterpret();
-        if (((ad.ealign.op & 0xFF) == 127))
+        if (((ad.ealign.op.value & 0xFF) == 127))
             return ad.salign = -1;
         Type tb = ad.ealign.type.value.toBasetype();
         long n = ad.ealign.toInteger();
         if ((n < 1L) || ((n & n - 1L) != 0) || (4294967295L < n) || !tb.isintegral())
         {
-            error(ad.loc, new BytePtr("alignment must be an integer positive power of 2, not %s"), ad.ealign.toChars());
+            error(ad.loc.value, new BytePtr("alignment must be an integer positive power of 2, not %s"), ad.ealign.toChars());
             return ad.salign = -1;
         }
         return ad.salign = (int)n;
@@ -459,10 +458,10 @@ public class dsymbolsem {
 
     public static BytePtr getMessage(DeprecatedDeclaration dd) {
         {
-            Ptr<Scope> sc = dd._scope;
+            Ptr<Scope> sc = dd._scope.value;
             if ((sc) != null)
             {
-                dd._scope = null;
+                dd._scope.value = null;
                 sc = (sc.get()).startCTFE();
                 dd.msg = expressionSemantic(dd.msg, sc);
                 dd.msg = resolveProperties(sc, dd.msg);
@@ -481,7 +480,7 @@ public class dsymbolsem {
     }
 
     public static boolean allowsContractWithoutBody(FuncDeclaration funcdecl) {
-        assert(funcdecl.fbody == null);
+        assert(funcdecl.fbody.value == null);
         Dsymbol parent = funcdecl.toParent();
         InterfaceDeclaration id = parent.isInterfaceDeclaration();
         if (!funcdecl.isAbstract() && (funcdecl.fensures != null) || (funcdecl.frequires != null) && !((id != null) && funcdecl.isVirtual()))
@@ -511,217 +510,217 @@ public class dsymbolsem {
         }
 
         public  void visit(AliasThis dsym) {
-            if ((dsym.semanticRun != PASS.init))
+            if ((dsym.semanticRun.value != PASS.init))
                 return ;
-            if (dsym._scope != null)
+            if (dsym._scope.value != null)
             {
-                this.sc = dsym._scope;
-                dsym._scope = null;
+                this.sc = dsym._scope.value;
+                dsym._scope.value = null;
             }
             if (this.sc == null)
                 return ;
-            dsym.semanticRun = PASS.semantic;
+            dsym.semanticRun.value = PASS.semantic;
             Dsymbol p = (this.sc.get()).parent.value.pastMixin();
             AggregateDeclaration ad = p.isAggregateDeclaration();
             if (ad == null)
             {
-                error(dsym.loc, new BytePtr("alias this can only be a member of aggregate, not %s `%s`"), p.kind(), p.toChars());
+                error(dsym.loc.value, new BytePtr("alias this can only be a member of aggregate, not %s `%s`"), p.kind(), p.toChars());
                 return ;
             }
-            assert(ad.members != null);
-            Dsymbol s = ad.search(dsym.loc, dsym.ident, 8);
+            assert(ad.members.value != null);
+            Dsymbol s = ad.search(dsym.loc.value, dsym.ident, 8);
             if (s == null)
             {
-                s = (this.sc.get()).search(dsym.loc, dsym.ident, null, 0);
+                s = (this.sc.get()).search(dsym.loc.value, dsym.ident, null, 0);
                 if (s != null)
-                    error(dsym.loc, new BytePtr("`%s` is not a member of `%s`"), s.toChars(), ad.toChars());
+                    error(dsym.loc.value, new BytePtr("`%s` is not a member of `%s`"), s.toChars(), ad.toChars());
                 else
-                    error(dsym.loc, new BytePtr("undefined identifier `%s`"), dsym.ident.toChars());
+                    error(dsym.loc.value, new BytePtr("undefined identifier `%s`"), dsym.ident.toChars());
                 return ;
             }
-            if ((ad.aliasthis != null) && (!pequals(s, ad.aliasthis)))
+            if ((ad.aliasthis.value != null) && (!pequals(s, ad.aliasthis.value)))
             {
-                error(dsym.loc, new BytePtr("there can be only one alias this"));
+                error(dsym.loc.value, new BytePtr("there can be only one alias this"));
                 return ;
             }
-            ad.aliasthis = null;
+            ad.aliasthis.value = null;
             Dsymbol sx = s;
             if (sx.isAliasDeclaration() != null)
                 sx = sx.toAlias();
             Declaration d = sx.isDeclaration();
             if ((d != null) && (d.isTupleDeclaration() == null))
             {
-                if (d.type == null)
+                if (d.type.value == null)
                     dsymbolSemantic(d, this.sc);
-                Type t = d.type;
+                Type t = d.type.value;
                 assert(t != null);
-                if ((ad.type.implicitConvTo(t) > MATCH.nomatch))
+                if ((ad.type.value.implicitConvTo(t) > MATCH.nomatch))
                 {
-                    error(dsym.loc, new BytePtr("alias this is not reachable as `%s` already converts to `%s`"), ad.toChars(), t.toChars());
+                    error(dsym.loc.value, new BytePtr("alias this is not reachable as `%s` already converts to `%s`"), ad.toChars(), t.toChars());
                 }
             }
-            ad.aliasthis = s;
-            dsym.semanticRun = PASS.semanticdone;
+            ad.aliasthis.value = s;
+            dsym.semanticRun.value = PASS.semanticdone;
         }
 
         public  void visit(AliasDeclaration dsym) {
-            if ((dsym.semanticRun >= PASS.semanticdone))
+            if ((dsym.semanticRun.value >= PASS.semanticdone))
                 return ;
-            assert((dsym.semanticRun <= PASS.semantic));
-            dsym.storage_class |= (this.sc.get()).stc & 1024L;
-            dsym.protection = (this.sc.get()).protection.copy();
+            assert((dsym.semanticRun.value <= PASS.semantic));
+            dsym.storage_class.value |= (this.sc.get()).stc.value & 1024L;
+            dsym.protection = (this.sc.get()).protection.value.copy();
             dsym.userAttribDecl = (this.sc.get()).userAttribDecl;
-            if (((this.sc.get()).func == null) && dsym.inNonRoot())
+            if (((this.sc.get()).func.value == null) && dsym.inNonRoot())
                 return ;
             aliasSemantic(dsym, this.sc);
         }
 
         public  void visit(VarDeclaration dsym) {
-            if ((dsym.semanticRun >= PASS.semanticdone))
+            if ((dsym.semanticRun.value >= PASS.semanticdone))
                 return ;
             if ((this.sc != null) && ((this.sc.get()).inunion != null) && ((this.sc.get()).inunion.isAnonDeclaration() != null))
-                dsym.overlapped = true;
+                dsym.overlapped.value = true;
             Ptr<Scope> scx = null;
-            if (dsym._scope != null)
+            if (dsym._scope.value != null)
             {
-                this.sc = dsym._scope;
+                this.sc = dsym._scope.value;
                 scx = this.sc;
-                dsym._scope = null;
+                dsym._scope.value = null;
             }
             if (this.sc == null)
                 return ;
-            dsym.semanticRun = PASS.semantic;
-            dsym.storage_class |= (this.sc.get()).stc & -665L;
-            if (((dsym.storage_class & 2L) != 0) && (dsym._init != null))
+            dsym.semanticRun.value = PASS.semantic;
+            dsym.storage_class.value |= (this.sc.get()).stc.value & -665L;
+            if (((dsym.storage_class.value & 2L) != 0) && (dsym._init.value != null))
                 dsym.error(new BytePtr("extern symbols cannot have initializers"));
             dsym.userAttribDecl = (this.sc.get()).userAttribDecl;
             dsym.namespace = (this.sc.get()).namespace;
             AggregateDeclaration ad = dsym.isThis();
             if (ad != null)
-                dsym.storage_class |= ad.storage_class & 2685403140L;
+                dsym.storage_class.value |= ad.storage_class & 2685403140L;
             int inferred = 0;
-            if (dsym.type == null)
+            if (dsym.type.value == null)
             {
-                dsym.inuse++;
-                boolean needctfe = (dsym.storage_class & 8388609L) != 0L;
+                dsym.inuse.value++;
+                boolean needctfe = (dsym.storage_class.value & 8388609L) != 0L;
                 if (needctfe)
                     this.sc = (this.sc.get()).startCTFE();
-                dsym._init = inferType(dsym._init, this.sc);
-                dsym.type = initializerToExpression(dsym._init, null).type.value;
+                dsym._init.value = inferType(dsym._init.value, this.sc);
+                dsym.type.value = initializerToExpression(dsym._init.value, null).type.value;
                 if (needctfe)
                     this.sc = (this.sc.get()).endCTFE();
-                dsym.inuse--;
+                dsym.inuse.value--;
                 inferred = 1;
-                dsym.storage_class &= -257L;
-                dsym.originalType = dsym.type.syntaxCopy();
+                dsym.storage_class.value &= -257L;
+                dsym.originalType.value = dsym.type.value.syntaxCopy();
             }
             else
             {
-                if (dsym.originalType == null)
-                    dsym.originalType = dsym.type.syntaxCopy();
+                if (dsym.originalType.value == null)
+                    dsym.originalType.value = dsym.type.value.syntaxCopy();
                 Ptr<Scope> sc2 = (this.sc.get()).push();
-                (sc2.get()).stc |= dsym.storage_class & 4462573780992L;
-                dsym.inuse++;
-                dsym.type = typeSemantic(dsym.type, dsym.loc, sc2);
-                dsym.inuse--;
+                (sc2.get()).stc.value |= dsym.storage_class.value & 4462573780992L;
+                dsym.inuse.value++;
+                dsym.type.value = typeSemantic(dsym.type.value, dsym.loc.value, sc2);
+                dsym.inuse.value--;
                 (sc2.get()).pop();
             }
-            if (((dsym.type.ty & 0xFF) == ENUMTY.Terror))
-                dsym.errors = true;
-            dsym.type.checkDeprecated(dsym.loc, this.sc);
-            dsym.linkage = (this.sc.get()).linkage;
+            if (((dsym.type.value.ty.value & 0xFF) == ENUMTY.Terror))
+                dsym.errors.value = true;
+            dsym.type.value.checkDeprecated(dsym.loc.value, this.sc);
+            dsym.linkage.value = (this.sc.get()).linkage.value;
             dsym.parent.value = (this.sc.get()).parent.value;
-            dsym.protection = (this.sc.get()).protection.copy();
+            dsym.protection = (this.sc.get()).protection.value.copy();
             dsym.alignment = (this.sc.get()).alignment();
             if ((dsym.alignment == -1))
-                dsym.alignment = dsym.type.alignment();
-            if (global.value.params.vcomplex)
-                dsym.type.checkComplexTransition(dsym.loc, this.sc);
-            if (((this.sc.get()).func != null) && ((this.sc.get()).intypeof == 0))
+                dsym.alignment = dsym.type.value.alignment();
+            if (global.params.vcomplex)
+                dsym.type.value.checkComplexTransition(dsym.loc.value, this.sc);
+            if (((this.sc.get()).func.value != null) && ((this.sc.get()).intypeof.value == 0))
             {
-                if (((dsym.storage_class & 1073741824L) != 0) && (dsym.isMember() == null))
+                if (((dsym.storage_class.value & 1073741824L) != 0) && (dsym.isMember() == null))
                 {
-                    if ((this.sc.get()).func.setUnsafe())
+                    if ((this.sc.get()).func.value.setUnsafe())
                         dsym.error(new BytePtr("__gshared not allowed in safe functions; use shared"));
                 }
             }
             Dsymbol parent = dsym.toParent();
-            Type tb = dsym.type.toBasetype();
+            Type tb = dsym.type.value.toBasetype();
             Type tbn = tb.baseElemOf();
-            if (((tb.ty & 0xFF) == ENUMTY.Tvoid) && ((dsym.storage_class & 8192L) == 0))
+            if (((tb.ty.value & 0xFF) == ENUMTY.Tvoid) && ((dsym.storage_class.value & 8192L) == 0))
             {
                 if (inferred != 0)
                 {
-                    dsym.error(new BytePtr("type `%s` is inferred from initializer `%s`, and variables cannot be of type `void`"), dsym.type.toChars(), dsym._init.toChars());
+                    dsym.error(new BytePtr("type `%s` is inferred from initializer `%s`, and variables cannot be of type `void`"), dsym.type.value.toChars(), dsym._init.value.toChars());
                 }
                 else
                     dsym.error(new BytePtr("variables cannot be of type `void`"));
-                dsym.type = Type.terror.value;
-                tb = dsym.type;
+                dsym.type.value = Type.terror.value;
+                tb = dsym.type.value;
             }
-            if (((tb.ty & 0xFF) == ENUMTY.Tfunction))
+            if (((tb.ty.value & 0xFF) == ENUMTY.Tfunction))
             {
                 dsym.error(new BytePtr("cannot be declared to be a function"));
-                dsym.type = Type.terror.value;
-                tb = dsym.type;
+                dsym.type.value = Type.terror.value;
+                tb = dsym.type.value;
             }
             {
                 TypeStruct ts = tb.isTypeStruct();
                 if ((ts) != null)
                 {
-                    if (ts.sym.members == null)
+                    if (ts.sym.value.members.value == null)
                     {
                         dsym.error(new BytePtr("no definition of struct `%s`"), ts.toChars());
                     }
                 }
             }
-            if (((dsym.storage_class & 256L) != 0) && (inferred == 0))
+            if (((dsym.storage_class.value & 256L) != 0) && (inferred == 0))
                 dsym.error(new BytePtr("storage class `auto` has no effect if type is not inferred, did you mean `scope`?"));
             {
                 TypeTuple tt = tb.isTypeTuple();
                 if ((tt) != null)
                 {
-                    int nelems = Parameter.dim(tt.arguments);
-                    Expression ie = (dsym._init != null) && (dsym._init.isVoidInitializer() == null) ? initializerToExpression(dsym._init, null) : null;
+                    int nelems = Parameter.dim(tt.arguments.value);
+                    Expression ie = (dsym._init.value != null) && (dsym._init.value.isVoidInitializer() == null) ? initializerToExpression(dsym._init.value, null) : null;
                     if (ie != null)
                         ie = expressionSemantic(ie, this.sc);
                     try {
                         if ((nelems > 0) && (ie != null))
                         {
-                            Ptr<DArray<Expression>> iexps = new DArray<Expression>();
+                            Ptr<DArray<Expression>> iexps = refPtr(new DArray<Expression>());
                             (iexps.get()).push(ie);
-                            Ptr<DArray<Expression>> exps = new DArray<Expression>();
+                            Ptr<DArray<Expression>> exps = refPtr(new DArray<Expression>());
                             {
                                 int pos = 0;
                             L_outer1:
-                                for (; (pos < (iexps.get()).length);pos++){
+                                for (; (pos < (iexps.get()).length.value);pos++){
                                     while(true) try {
                                     /*Lexpand1:*/
                                         Expression e = (iexps.get()).get(pos);
-                                        Parameter arg = Parameter.getNth(tt.arguments, pos, null);
-                                        arg.type = typeSemantic(arg.type, dsym.loc, this.sc);
+                                        Parameter arg = Parameter.getNth(tt.arguments.value, pos, null);
+                                        arg.type.value = typeSemantic(arg.type.value, dsym.loc.value, this.sc);
                                         if ((!pequals(e, ie)))
                                         {
-                                            if (((iexps.get()).length > nelems))
+                                            if (((iexps.get()).length.value > nelems))
                                                 /*goto Lnomatch*/throw Dispatch0.INSTANCE;
-                                            if (e.type.value.implicitConvTo(arg.type) != 0)
+                                            if (e.type.value.implicitConvTo(arg.type.value) != 0)
                                                 continue L_outer1;
                                         }
-                                        if (((e.op & 0xFF) == 126))
+                                        if (((e.op.value & 0xFF) == 126))
                                         {
                                             TupleExp te = (TupleExp)e;
-                                            if (((iexps.get()).length - 1 + (te.exps.get()).length > nelems))
+                                            if (((iexps.get()).length.value - 1 + (te.exps.value.get()).length.value > nelems))
                                                 /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                             (iexps.get()).remove(pos);
-                                            (iexps.get()).insert(pos, te.exps);
-                                            iexps.get().set(pos, Expression.combine(te.e0, (iexps.get()).get(pos)));
+                                            (iexps.get()).insert(pos, te.exps.value);
+                                            iexps.get().set(pos, Expression.combine(te.e0.value, (iexps.get()).get(pos)));
                                             /*goto Lexpand1*/throw Dispatch0.INSTANCE;
                                         }
                                         else if (isAliasThisTuple(e) != null)
                                         {
                                             VarDeclaration v = copyToTemp(0L, new BytePtr("__tup"), e);
                                             dsymbolSemantic(v, this.sc);
-                                            VarExp ve = new VarExp(dsym.loc, v, true);
+                                            VarExp ve = new VarExp(dsym.loc.value, v, true);
                                             ve.type.value = e.type.value;
                                             (exps.get()).setDim(1);
                                             exps.get().set(0, ve);
@@ -729,16 +728,16 @@ public class dsymbolsem {
                                             {
                                                 int u = 0;
                                             L_outer2:
-                                                for (; (u < (exps.get()).length);u++){
+                                                for (; (u < (exps.get()).length.value);u++){
                                                     while(true) try {
                                                     /*Lexpand2:*/
                                                         Expression ee = (exps.get()).get(u);
-                                                        arg = Parameter.getNth(tt.arguments, pos + u, null);
-                                                        arg.type = typeSemantic(arg.type, dsym.loc, this.sc);
-                                                        int iexps_dim = (iexps.get()).length - 1 + (exps.get()).length;
+                                                        arg = Parameter.getNth(tt.arguments.value, pos + u, null);
+                                                        arg.type.value = typeSemantic(arg.type.value, dsym.loc.value, this.sc);
+                                                        int iexps_dim = (iexps.get()).length.value - 1 + (exps.get()).length.value;
                                                         if ((iexps_dim > nelems))
                                                             /*goto Lnomatch*/throw Dispatch0.INSTANCE;
-                                                        if (ee.type.value.implicitConvTo(arg.type) != 0)
+                                                        if (ee.type.value.implicitConvTo(arg.type.value) != 0)
                                                             continue L_outer2;
                                                         if ((expandAliasThisTuples(exps, u) != -1))
                                                             /*goto Lexpand2*/throw Dispatch0.INSTANCE;
@@ -749,7 +748,7 @@ public class dsymbolsem {
                                             if ((!pequals((exps.get()).get(0), ve)))
                                             {
                                                 Expression e0 = (exps.get()).get(0);
-                                                exps.get().set(0, new CommaExp(dsym.loc, new DeclarationExp(dsym.loc, v), e0, true));
+                                                exps.get().set(0, new CommaExp(dsym.loc.value, new DeclarationExp(dsym.loc.value, v), e0, true));
                                                 (exps.get()).get(0).type.value = e0.type.value;
                                                 (iexps.get()).remove(pos);
                                                 (iexps.get()).insert(pos, exps);
@@ -760,92 +759,92 @@ public class dsymbolsem {
                                     } catch(Dispatch0 __d){}
                                 }
                             }
-                            if (((iexps.get()).length < nelems))
+                            if (((iexps.get()).length.value < nelems))
                                 /*goto Lnomatch*/throw Dispatch0.INSTANCE;
-                            ie = new TupleExp(dsym._init.loc, iexps);
+                            ie = new TupleExp(dsym._init.value.loc.value, iexps);
                         }
                     }
                     catch(Dispatch0 __d){}
                 /*Lnomatch:*/
-                    if ((ie != null) && ((ie.op & 0xFF) == 126))
+                    if ((ie != null) && ((ie.op.value & 0xFF) == 126))
                     {
                         TupleExp te = (TupleExp)ie;
-                        int tedim = (te.exps.get()).length;
+                        int tedim = (te.exps.value.get()).length.value;
                         if ((tedim != nelems))
                         {
-                            error(dsym.loc, new BytePtr("tuple of %d elements cannot be assigned to tuple of %d elements"), tedim, nelems);
+                            error(dsym.loc.value, new BytePtr("tuple of %d elements cannot be assigned to tuple of %d elements"), tedim, nelems);
                             {
                                 int u = tedim;
                                 for (; (u < nelems);u++) {
-                                    (te.exps.get()).push(new ErrorExp());
+                                    (te.exps.value.get()).push(new ErrorExp());
                                 }
                             }
                         }
                     }
-                    Ptr<DArray<RootObject>> exps = new DArray<RootObject>(nelems);
+                    Ptr<DArray<RootObject>> exps = refPtr(new DArray<RootObject>(nelems));
                     {
                         int i = 0;
                         for (; (i < nelems);i++){
-                            Parameter arg = Parameter.getNth(tt.arguments, i, null);
+                            Parameter arg = Parameter.getNth(tt.arguments.value, i, null);
                             OutBuffer buf = new OutBuffer();
                             try {
-                                buf.printf(new BytePtr("__%s_field_%llu"), dsym.ident.toChars(), (long)i);
+                                buf.printf(new BytePtr("__%s_field_%llu"), dsym.ident.value.toChars(), (long)i);
                                 Identifier id = Identifier.idPool(buf.peekSlice());
                                 Initializer ti = null;
                                 if (ie != null)
                                 {
                                     Expression einit = ie;
-                                    if (((ie.op & 0xFF) == 126))
+                                    if (((ie.op.value & 0xFF) == 126))
                                     {
                                         TupleExp te = (TupleExp)ie;
-                                        einit = (te.exps.get()).get(i);
+                                        einit = (te.exps.value.get()).get(i);
                                         if ((i == 0))
-                                            einit = Expression.combine(te.e0, einit);
+                                            einit = Expression.combine(te.e0.value, einit);
                                     }
-                                    ti = new ExpInitializer(einit.loc, einit);
+                                    ti = new ExpInitializer(einit.loc.value, einit);
                                 }
                                 else
-                                    ti = dsym._init != null ? syntaxCopy(dsym._init) : null;
-                                long storage_class = 1099511627776L | dsym.storage_class;
-                                if ((arg.storageClass & 32L) != 0)
-                                    storage_class |= arg.storageClass;
-                                VarDeclaration v = new VarDeclaration(dsym.loc, arg.type, id, ti, storage_class);
+                                    ti = dsym._init.value != null ? syntaxCopy(dsym._init.value) : null;
+                                long storage_class = 1099511627776L | dsym.storage_class.value;
+                                if ((arg.storageClass.value & 32L) != 0)
+                                    storage_class |= arg.storageClass.value;
+                                VarDeclaration v = new VarDeclaration(dsym.loc.value, arg.type.value, id, ti, storage_class);
                                 dsymbolSemantic(v, this.sc);
-                                if ((this.sc.get()).scopesym != null)
+                                if ((this.sc.get()).scopesym.value != null)
                                 {
-                                    if ((this.sc.get()).scopesym.members != null)
-                                        ((this.sc.get()).scopesym.members.get()).push(v);
+                                    if ((this.sc.get()).scopesym.value.members.value != null)
+                                        ((this.sc.get()).scopesym.value.members.value.get()).push(v);
                                 }
-                                Expression e = new DsymbolExp(dsym.loc, v, true);
+                                Expression e = new DsymbolExp(dsym.loc.value, v, true);
                                 exps.get().set(i, e);
                             }
                             finally {
                             }
                         }
                     }
-                    TupleDeclaration v2 = new TupleDeclaration(dsym.loc, dsym.ident, exps);
+                    TupleDeclaration v2 = new TupleDeclaration(dsym.loc.value, dsym.ident.value, exps);
                     v2.parent.value = dsym.parent.value;
                     v2.isexp = true;
-                    dsym.aliassym = v2;
-                    dsym.semanticRun = PASS.semanticdone;
+                    dsym.aliassym.value = v2;
+                    dsym.semanticRun.value = PASS.semanticdone;
                     return ;
                 }
             }
-            dsym.type = dsym.type.addStorageClass(dsym.storage_class);
-            if (dsym.type.isConst())
+            dsym.type.value = dsym.type.value.addStorageClass(dsym.storage_class.value);
+            if (dsym.type.value.isConst())
             {
-                dsym.storage_class |= 4L;
-                if (dsym.type.isShared())
-                    dsym.storage_class |= 536870912L;
+                dsym.storage_class.value |= 4L;
+                if (dsym.type.value.isShared())
+                    dsym.storage_class.value |= 536870912L;
             }
-            else if (dsym.type.isImmutable())
-                dsym.storage_class |= 1048576L;
-            else if (dsym.type.isShared())
-                dsym.storage_class |= 536870912L;
-            else if (dsym.type.isWild())
-                dsym.storage_class |= 2147483648L;
+            else if (dsym.type.value.isImmutable())
+                dsym.storage_class.value |= 1048576L;
+            else if (dsym.type.value.isShared())
+                dsym.storage_class.value |= 536870912L;
+            else if (dsym.type.value.isWild())
+                dsym.storage_class.value |= 2147483648L;
             {
-                long stc = dsym.storage_class & 664L;
+                long stc = dsym.storage_class.value & 664L;
                 if ((stc) != 0)
                 {
                     if ((stc == 8L))
@@ -860,12 +859,12 @@ public class dsymbolsem {
                         finally {
                         }
                     }
-                    dsym.storage_class &= ~stc;
+                    dsym.storage_class.value &= ~stc;
                 }
             }
-            if ((dsym.storage_class & 524288L) != 0)
+            if ((dsym.storage_class.value & 524288L) != 0)
             {
-                long stc = dsym.storage_class & 1216348163L;
+                long stc = dsym.storage_class.value & 1216348163L;
                 if (stc != 0)
                 {
                     Ref<OutBuffer> buf = ref(new OutBuffer());
@@ -880,12 +879,12 @@ public class dsymbolsem {
                 {
                     dsym.error(new BytePtr("field cannot be `scope`"));
                 }
-                else if (!dsym.type.hasPointers())
+                else if (!dsym.type.value.hasPointers())
                 {
-                    dsym.storage_class &= -524289L;
+                    dsym.storage_class.value &= -524289L;
                 }
             }
-            if ((dsym.storage_class & 69936087043L) != 0)
+            if ((dsym.storage_class.value & 69936087043L) != 0)
             {
             }
             else
@@ -893,19 +892,19 @@ public class dsymbolsem {
                 AggregateDeclaration aad = parent.isAggregateDeclaration();
                 if (aad != null)
                 {
-                    if (global.value.params.vfield && ((dsym.storage_class & 1048580L) != 0) && (dsym._init != null) && (dsym._init.isVoidInitializer() == null))
+                    if (global.params.vfield && ((dsym.storage_class.value & 1048580L) != 0) && (dsym._init.value != null) && (dsym._init.value.isVoidInitializer() == null))
                     {
-                        BytePtr s = pcopy((dsym.storage_class & 1048576L) != 0 ? new BytePtr("immutable") : new BytePtr("const"));
-                        message(dsym.loc, new BytePtr("`%s.%s` is `%s` field"), ad.toPrettyChars(false), dsym.toChars(), s);
+                        BytePtr s = pcopy((dsym.storage_class.value & 1048576L) != 0 ? new BytePtr("immutable") : new BytePtr("const"));
+                        message(dsym.loc.value, new BytePtr("`%s.%s` is `%s` field"), ad.toPrettyChars(false), dsym.toChars(), s);
                     }
-                    dsym.storage_class |= 64L;
+                    dsym.storage_class.value |= 64L;
                     {
                         TypeStruct ts = tbn.isTypeStruct();
                         if ((ts) != null)
-                            if (ts.sym.noDefaultCtor)
+                            if (ts.sym.value.noDefaultCtor.value)
                             {
-                                if ((dsym.isThisDeclaration() == null) && (dsym._init == null))
-                                    aad.noDefaultCtor = true;
+                                if ((dsym.isThisDeclaration() == null) && (dsym._init.value == null))
+                                    aad.noDefaultCtor.value = true;
                             }
                     }
                 }
@@ -914,7 +913,7 @@ public class dsymbolsem {
                 {
                     dsym.error(new BytePtr("field not allowed in interface"));
                 }
-                else if ((aad != null) && (aad.sizeok == Sizeok.done))
+                else if ((aad != null) && (aad.sizeok.value == Sizeok.done))
                 {
                     dsym.error(new BytePtr("cannot be further field because it will change the determined %s size"), aad.toChars());
                 }
@@ -922,38 +921,38 @@ public class dsymbolsem {
                 if (ti != null)
                 {
                     for (; 1 != 0;){
-                        TemplateInstance ti2 = ti.tempdecl.parent.value.isTemplateInstance();
+                        TemplateInstance ti2 = ti.tempdecl.value.parent.value.isTemplateInstance();
                         if (ti2 == null)
                             break;
                         ti = ti2;
                     }
-                    AggregateDeclaration ad2 = ti.tempdecl.isMember();
-                    if ((ad2 != null) && (dsym.storage_class != 0L))
+                    AggregateDeclaration ad2 = ti.tempdecl.value.isMember();
+                    if ((ad2 != null) && (dsym.storage_class.value != 0L))
                     {
                         dsym.error(new BytePtr("cannot use template to add field to aggregate `%s`"), ad2.toChars());
                     }
                 }
             }
-            if (((dsym.storage_class & 1374391648288L) == 2097152L) && (!pequals(dsym.ident, Id.This.value)))
+            if (((dsym.storage_class.value & 1374391648288L) == 2097152L) && (!pequals(dsym.ident.value, Id.This.value)))
             {
                 dsym.error(new BytePtr("only parameters or `foreach` declarations can be `ref`"));
             }
-            if (dsym.type.hasWild() != 0)
+            if (dsym.type.value.hasWild() != 0)
             {
-                if (((dsym.storage_class & 1216348227L) != 0) || dsym.isDataseg())
+                if (((dsym.storage_class.value & 1216348227L) != 0) || dsym.isDataseg())
                 {
                     dsym.error(new BytePtr("only parameters or stack based variables can be `inout`"));
                 }
-                FuncDeclaration func = (this.sc.get()).func;
+                FuncDeclaration func = (this.sc.get()).func.value;
                 if (func != null)
                 {
-                    if (func.fes != null)
-                        func = func.fes.func;
+                    if (func.fes.value != null)
+                        func = func.fes.value.func.value;
                     boolean isWild = false;
                     {
                         FuncDeclaration fd = func;
                         for (; fd != null;fd = fd.toParentDecl().isFuncDeclaration()){
-                            if (((TypeFunction)fd.type).iswild != 0)
+                            if (((TypeFunction)fd.type.value).iswild.value != 0)
                             {
                                 isWild = true;
                                 break;
@@ -966,160 +965,160 @@ public class dsymbolsem {
                     }
                 }
             }
-            if (((dsym.storage_class & 343599480832L) == 0) && ((tbn.ty & 0xFF) == ENUMTY.Tstruct) && ((TypeStruct)tbn).sym.noDefaultCtor)
+            if (((dsym.storage_class.value & 343599480832L) == 0) && ((tbn.ty.value & 0xFF) == ENUMTY.Tstruct) && ((TypeStruct)tbn).sym.value.noDefaultCtor.value)
             {
-                if (dsym._init == null)
+                if (dsym._init.value == null)
                 {
                     if (dsym.isField())
                     {
-                        dsym.storage_class |= 549755813888L;
+                        dsym.storage_class.value |= 549755813888L;
                     }
-                    else if ((dsym.storage_class & 32L) != 0)
+                    else if ((dsym.storage_class.value & 32L) != 0)
                     {
                     }
                     else
-                        dsym.error(new BytePtr("default construction is disabled for type `%s`"), dsym.type.toChars());
+                        dsym.error(new BytePtr("default construction is disabled for type `%s`"), dsym.type.value.toChars());
                 }
             }
             FuncDeclaration fd = parent.isFuncDeclaration();
-            if (dsym.type.isscope() && ((dsym.storage_class & 16777216L) == 0))
+            if (dsym.type.value.isscope() && ((dsym.storage_class.value & 16777216L) == 0))
             {
-                if (((dsym.storage_class & 1218449473L) != 0) || (fd == null))
+                if (((dsym.storage_class.value & 1218449473L) != 0) || (fd == null))
                 {
                     dsym.error(new BytePtr("globals, statics, fields, manifest constants, ref and out parameters cannot be `scope`"));
                 }
-                if ((dsym.storage_class & 524288L) == 0)
+                if ((dsym.storage_class.value & 524288L) == 0)
                 {
-                    if (((dsym.storage_class & 32L) == 0) && (!pequals(dsym.ident, Id.withSym.value)))
+                    if (((dsym.storage_class.value & 32L) == 0) && (!pequals(dsym.ident.value, Id.withSym.value)))
                         dsym.error(new BytePtr("reference to `scope class` must be `scope`"));
                 }
             }
-            if (((this.sc.get()).func != null) && ((this.sc.get()).intypeof == 0))
+            if (((this.sc.get()).func.value != null) && ((this.sc.get()).intypeof.value == 0))
             {
-                if ((dsym._init != null) && (dsym._init.isVoidInitializer() != null) && dsym.type.hasPointers())
+                if ((dsym._init.value != null) && (dsym._init.value.isVoidInitializer() != null) && dsym.type.value.hasPointers())
                 {
-                    if ((this.sc.get()).func.setUnsafe())
+                    if ((this.sc.get()).func.value.setUnsafe())
                         dsym.error(new BytePtr("`void` initializers for pointers not allowed in safe functions"));
                 }
-                else if ((dsym._init == null) && ((dsym.storage_class & 1216348259L) == 0) && dsym.type.hasVoidInitPointers())
+                else if ((dsym._init.value == null) && ((dsym.storage_class.value & 1216348259L) == 0) && dsym.type.value.hasVoidInitPointers())
                 {
-                    if ((this.sc.get()).func.setUnsafe())
+                    if ((this.sc.get()).func.value.setUnsafe())
                         dsym.error(new BytePtr("`void` initializers for pointers not allowed in safe functions"));
                 }
             }
-            if ((dsym._init == null) || (dsym._init.isVoidInitializer() != null) && (fd == null))
+            if ((dsym._init.value == null) || (dsym._init.value.isVoidInitializer() != null) && (fd == null))
             {
-                dsym.storage_class |= 131072L;
+                dsym.storage_class.value |= 131072L;
             }
-            if (dsym._init != null)
-                dsym.storage_class |= 4194304L;
-            else if ((dsym.storage_class & 8388608L) != 0)
+            if (dsym._init.value != null)
+                dsym.storage_class.value |= 4194304L;
+            else if ((dsym.storage_class.value & 8388608L) != 0)
                 dsym.error(new BytePtr("manifest constants must have initializers"));
             boolean isBlit = false;
             long sz = 0L;
             try {
-                if ((dsym._init == null) && ((dsym.storage_class & 1073741827L) == 0) && (fd != null) && ((dsym.storage_class & 274877925472L) == 0) || ((dsym.storage_class & 4096L) != 0) && ((sz = dsym.type.size()) != 0L))
+                if ((dsym._init.value == null) && ((dsym.storage_class.value & 1073741827L) == 0) && (fd != null) && ((dsym.storage_class.value & 274877925472L) == 0) || ((dsym.storage_class.value & 4096L) != 0) && ((sz = dsym.type.value.size()) != 0L))
                 {
-                    if ((sz == -1L) && ((dsym.type.ty & 0xFF) != ENUMTY.Terror))
-                        dsym.error(new BytePtr("size of type `%s` is invalid"), dsym.type.toChars());
-                    Type tv = dsym.type;
-                    for (; ((tv.ty & 0xFF) == ENUMTY.Tsarray);) {
+                    if ((sz == -1L) && ((dsym.type.value.ty.value & 0xFF) != ENUMTY.Terror))
+                        dsym.error(new BytePtr("size of type `%s` is invalid"), dsym.type.value.toChars());
+                    Type tv = dsym.type.value;
+                    for (; ((tv.ty.value & 0xFF) == ENUMTY.Tsarray);) {
                         tv = tv.nextOf();
                     }
                     if (tv.needsNested())
                     {
-                        assert(((tbn.ty & 0xFF) == ENUMTY.Tstruct));
-                        checkFrameAccess(dsym.loc, this.sc, tbn.isTypeStruct().sym, 0);
-                        Expression e = tv.defaultInitLiteral(dsym.loc);
-                        e = new BlitExp(dsym.loc, new VarExp(dsym.loc, dsym, true), e);
+                        assert(((tbn.ty.value & 0xFF) == ENUMTY.Tstruct));
+                        checkFrameAccess(dsym.loc.value, this.sc, tbn.isTypeStruct().sym.value, 0);
+                        Expression e = tv.defaultInitLiteral(dsym.loc.value);
+                        e = new BlitExp(dsym.loc.value, new VarExp(dsym.loc.value, dsym, true), e);
                         e = expressionSemantic(e, this.sc);
-                        dsym._init = new ExpInitializer(dsym.loc, e);
+                        dsym._init.value = new ExpInitializer(dsym.loc.value, e);
                         /*goto Ldtor*/throw Dispatch0.INSTANCE;
                     }
-                    if (((tv.ty & 0xFF) == ENUMTY.Tstruct) && ((TypeStruct)tv).sym.zeroInit)
+                    if (((tv.ty.value & 0xFF) == ENUMTY.Tstruct) && ((TypeStruct)tv).sym.value.zeroInit)
                     {
-                        Expression e = new IntegerExp(dsym.loc, 0L, Type.tint32.value);
-                        e = new BlitExp(dsym.loc, new VarExp(dsym.loc, dsym, true), e);
-                        e.type.value = dsym.type;
-                        dsym._init = new ExpInitializer(dsym.loc, e);
+                        Expression e = new IntegerExp(dsym.loc.value, 0L, Type.tint32.value);
+                        e = new BlitExp(dsym.loc.value, new VarExp(dsym.loc.value, dsym, true), e);
+                        e.type.value = dsym.type.value;
+                        dsym._init.value = new ExpInitializer(dsym.loc.value, e);
                         /*goto Ldtor*/throw Dispatch0.INSTANCE;
                     }
-                    if (((dsym.type.baseElemOf().ty & 0xFF) == ENUMTY.Tvoid))
+                    if (((dsym.type.value.baseElemOf().ty.value & 0xFF) == ENUMTY.Tvoid))
                     {
-                        dsym.error(new BytePtr("`%s` does not have a default initializer"), dsym.type.toChars());
+                        dsym.error(new BytePtr("`%s` does not have a default initializer"), dsym.type.value.toChars());
                     }
                     else {
-                        Expression e = defaultInit(dsym.type, dsym.loc);
+                        Expression e = defaultInit(dsym.type.value, dsym.loc.value);
                         if ((e) != null)
                         {
-                            dsym._init = new ExpInitializer(dsym.loc, e);
+                            dsym._init.value = new ExpInitializer(dsym.loc.value, e);
                         }
                     }
                     isBlit = true;
                 }
-                if (dsym._init != null)
+                if (dsym._init.value != null)
                 {
                     this.sc = (this.sc.get()).push();
-                    (this.sc.get()).stc &= -4538273628165L;
-                    ExpInitializer ei = dsym._init.isExpInitializer();
+                    (this.sc.get()).stc.value &= -4538273628165L;
+                    ExpInitializer ei = dsym._init.value.isExpInitializer();
                     if (ei != null)
-                        ei.exp = inferType(ei.exp, dsym.type, 0);
-                    if (((this.sc.get()).func != null) || ((this.sc.get()).intypeof == 1))
+                        ei.exp.value = inferType(ei.exp.value, dsym.type.value, 0);
+                    if (((this.sc.get()).func.value != null) || ((this.sc.get()).intypeof.value == 1))
                     {
-                        if ((fd != null) && ((dsym.storage_class & 1216348163L) == 0) && (dsym._init.isVoidInitializer() == null))
+                        if ((fd != null) && ((dsym.storage_class.value & 1216348163L) == 0) && (dsym._init.value.isVoidInitializer() == null))
                         {
                             if (ei == null)
                             {
-                                ArrayInitializer ai = dsym._init.isArrayInitializer();
+                                ArrayInitializer ai = dsym._init.value.isArrayInitializer();
                                 Expression e = null;
-                                if ((ai != null) && ((tb.ty & 0xFF) == ENUMTY.Taarray))
+                                if ((ai != null) && ((tb.ty.value & 0xFF) == ENUMTY.Taarray))
                                     e = toAssocArrayLiteral(ai);
                                 else
-                                    e = initializerToExpression(dsym._init, null);
+                                    e = initializerToExpression(dsym._init.value, null);
                                 if (e == null)
                                 {
-                                    dsym._init = initializerSemantic(dsym._init, this.sc, dsym.type, NeedInterpret.INITnointerpret);
-                                    e = initializerToExpression(dsym._init, null);
+                                    dsym._init.value = initializerSemantic(dsym._init.value, this.sc, dsym.type.value, NeedInterpret.INITnointerpret);
+                                    e = initializerToExpression(dsym._init.value, null);
                                     if (e == null)
                                     {
                                         dsym.error(new BytePtr("is not a static and cannot have static initializer"));
                                         e = new ErrorExp();
                                     }
                                 }
-                                ei = new ExpInitializer(dsym._init.loc, e);
-                                dsym._init = ei;
+                                ei = new ExpInitializer(dsym._init.value.loc.value, e);
+                                dsym._init.value = ei;
                             }
-                            Expression exp = ei.exp;
-                            Expression e1 = new VarExp(dsym.loc, dsym, true);
+                            Expression exp = ei.exp.value;
+                            Expression e1 = new VarExp(dsym.loc.value, dsym, true);
                             if (isBlit)
-                                exp = new BlitExp(dsym.loc, e1, exp);
+                                exp = new BlitExp(dsym.loc.value, e1, exp);
                             else
-                                exp = new ConstructExp(dsym.loc, e1, exp);
+                                exp = new ConstructExp(dsym.loc.value, e1, exp);
                             dsym.canassign++;
                             exp = expressionSemantic(exp, this.sc);
                             dsym.canassign--;
                             exp = exp.optimize(0, false);
-                            if (((exp.op & 0xFF) == 127))
+                            if (((exp.op.value & 0xFF) == 127))
                             {
-                                dsym._init = new ErrorInitializer();
+                                dsym._init.value = new ErrorInitializer();
                                 ei = null;
                             }
                             else
-                                ei.exp = exp;
+                                ei.exp.value = exp;
                             if ((ei != null) && dsym.isScope())
                             {
-                                Expression ex = ei.exp;
-                                for (; ((ex.op & 0xFF) == 99);) {
+                                Expression ex = ei.exp.value;
+                                for (; ((ex.op.value & 0xFF) == 99);) {
                                     ex = ((CommaExp)ex).e2.value;
                                 }
-                                if (((ex.op & 0xFF) == 96) || ((ex.op & 0xFF) == 95))
+                                if (((ex.op.value & 0xFF) == 96) || ((ex.op.value & 0xFF) == 95))
                                     ex = ((AssignExp)ex).e2.value;
-                                if (((ex.op & 0xFF) == 22))
+                                if (((ex.op.value & 0xFF) == 22))
                                 {
                                     NewExp ne = (NewExp)ex;
-                                    if (((dsym.type.toBasetype().ty & 0xFF) == ENUMTY.Tclass))
+                                    if (((dsym.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Tclass))
                                     {
-                                        if ((ne.newargs != null) && ((ne.newargs.get()).length > 1))
+                                        if ((ne.newargs.value != null) && ((ne.newargs.value.get()).length.value > 1))
                                         {
                                             dsym.mynew = true;
                                         }
@@ -1130,72 +1129,72 @@ public class dsymbolsem {
                                         }
                                     }
                                 }
-                                else if (((ex.op & 0xFF) == 161))
+                                else if (((ex.op.value & 0xFF) == 161))
                                 {
-                                    FuncDeclaration f = ((FuncExp)ex).fd;
-                                    f.tookAddressOf--;
+                                    FuncDeclaration f = ((FuncExp)ex).fd.value;
+                                    f.tookAddressOf.value--;
                                 }
                             }
                         }
                         else
                         {
-                            dsym._init = initializerSemantic(dsym._init, this.sc, dsym.type, ((this.sc.get()).intypeof == 1) ? NeedInterpret.INITnointerpret : NeedInterpret.INITinterpret);
-                            ExpInitializer init_err = dsym._init.isExpInitializer();
-                            if ((init_err != null) && ((init_err.exp.op & 0xFF) == 234))
+                            dsym._init.value = initializerSemantic(dsym._init.value, this.sc, dsym.type.value, ((this.sc.get()).intypeof.value == 1) ? NeedInterpret.INITnointerpret : NeedInterpret.INITinterpret);
+                            ExpInitializer init_err = dsym._init.value.isExpInitializer();
+                            if ((init_err != null) && ((init_err.exp.value.op.value & 0xFF) == 234))
                             {
-                                errorSupplemental(dsym.loc, new BytePtr("compile time context created here"));
+                                errorSupplemental(dsym.loc.value, new BytePtr("compile time context created here"));
                             }
                         }
                     }
                     else if (parent.isAggregateDeclaration() != null)
                     {
-                        dsym._scope = scx != null ? scx : (this.sc.get()).copy();
-                        (dsym._scope.get()).setNoFree();
+                        dsym._scope.value = scx != null ? scx : (this.sc.get()).copy();
+                        (dsym._scope.value.get()).setNoFree();
                     }
-                    else if (((dsym.storage_class & 9437188L) != 0) || dsym.type.isConst() || dsym.type.isImmutable())
+                    else if (((dsym.storage_class.value & 9437188L) != 0) || dsym.type.value.isConst() || dsym.type.value.isImmutable())
                     {
                         if (inferred == 0)
                         {
-                            int errors = global.value.errors;
-                            dsym.inuse++;
+                            int errors = global.errors.value;
+                            dsym.inuse.value++;
                             if (ei != null)
                             {
-                                Expression exp = ei.exp.syntaxCopy();
-                                boolean needctfe = dsym.isDataseg() || ((dsym.storage_class & 8388608L) != 0);
+                                Expression exp = ei.exp.value.syntaxCopy();
+                                boolean needctfe = dsym.isDataseg() || ((dsym.storage_class.value & 8388608L) != 0);
                                 if (needctfe)
                                     this.sc = (this.sc.get()).startCTFE();
                                 exp = expressionSemantic(exp, this.sc);
                                 exp = resolveProperties(this.sc, exp);
                                 if (needctfe)
                                     this.sc = (this.sc.get()).endCTFE();
-                                Type tb2 = dsym.type.toBasetype();
+                                Type tb2 = dsym.type.value.toBasetype();
                                 Type ti = exp.type.value.toBasetype();
                                 {
                                     TypeStruct ts = ti.isTypeStruct();
                                     if ((ts) != null)
                                     {
-                                        StructDeclaration sd = ts.sym;
-                                        if ((sd.postblit != null) && (pequals(tb2.toDsymbol(null), sd)))
+                                        StructDeclaration sd = ts.sym.value;
+                                        if ((sd.postblit.value != null) && (pequals(tb2.toDsymbol(null), sd)))
                                         {
                                             if (exp.isLvalue())
                                                 dsym.error(new BytePtr("of type struct `%s` uses `this(this)`, which is not allowed in static initialization"), tb2.toChars());
                                         }
                                     }
                                 }
-                                ei.exp = exp;
+                                ei.exp.value = exp;
                             }
-                            dsym._init = initializerSemantic(dsym._init, this.sc, dsym.type, NeedInterpret.INITinterpret);
-                            dsym.inuse--;
-                            if ((global.value.errors > errors))
+                            dsym._init.value = initializerSemantic(dsym._init.value, this.sc, dsym.type.value, NeedInterpret.INITinterpret);
+                            dsym.inuse.value--;
+                            if ((global.errors.value > errors))
                             {
-                                dsym._init = new ErrorInitializer();
-                                dsym.type = Type.terror.value;
+                                dsym._init.value = new ErrorInitializer();
+                                dsym.type.value = Type.terror.value;
                             }
                         }
                         else
                         {
-                            dsym._scope = scx != null ? scx : (this.sc.get()).copy();
-                            (dsym._scope.get()).setNoFree();
+                            dsym._scope.value = scx != null ? scx : (this.sc.get()).copy();
+                            (dsym._scope.value.get()).setNoFree();
                         }
                     }
                     this.sc = (this.sc.get()).pop();
@@ -1203,29 +1202,29 @@ public class dsymbolsem {
             }
             catch(Dispatch0 __d){}
         /*Ldtor:*/
-            dsym.edtor = dsym.callScopeDtor(this.sc);
-            if (dsym.edtor != null)
+            dsym.edtor.value = dsym.callScopeDtor(this.sc);
+            if (dsym.edtor.value != null)
             {
-                if (global.value.params.vsafe && ((dsym.storage_class & 1374397941856L) == 0) && !dsym.isDataseg() && !dsym.doNotInferScope && dsym.type.hasPointers())
+                if (global.params.vsafe.value && ((dsym.storage_class.value & 1374397941856L) == 0) && !dsym.isDataseg() && !dsym.doNotInferScope && dsym.type.value.hasPointers())
                 {
-                    Type tv = dsym.type.baseElemOf();
-                    if (((tv.ty & 0xFF) == ENUMTY.Tstruct) && ((((TypeStruct)tv).sym.dtor.storage_class & 524288L) != 0))
+                    Type tv = dsym.type.value.baseElemOf();
+                    if (((tv.ty.value & 0xFF) == ENUMTY.Tstruct) && ((((TypeStruct)tv).sym.value.dtor.value.storage_class.value & 524288L) != 0))
                     {
-                        dsym.storage_class |= 524288L;
+                        dsym.storage_class.value |= 524288L;
                     }
                 }
-                if (((this.sc.get()).func != null) && ((dsym.storage_class & 1073741825L) != 0))
-                    dsym.edtor = expressionSemantic(dsym.edtor, (this.sc.get())._module._scope);
+                if (((this.sc.get()).func.value != null) && ((dsym.storage_class.value & 1073741825L) != 0))
+                    dsym.edtor.value = expressionSemantic(dsym.edtor.value, (this.sc.get())._module.value._scope.value);
                 else
-                    dsym.edtor = expressionSemantic(dsym.edtor, this.sc);
+                    dsym.edtor.value = expressionSemantic(dsym.edtor.value, this.sc);
             }
-            dsym.semanticRun = PASS.semanticdone;
-            if (((dsym.type.toBasetype().ty & 0xFF) == ENUMTY.Terror))
-                dsym.errors = true;
-            if (((this.sc.get()).scopesym != null) && ((this.sc.get()).scopesym.isAggregateDeclaration() == null))
+            dsym.semanticRun.value = PASS.semanticdone;
+            if (((dsym.type.value.toBasetype().ty.value & 0xFF) == ENUMTY.Terror))
+                dsym.errors.value = true;
+            if (((this.sc.get()).scopesym.value != null) && ((this.sc.get()).scopesym.value.isAggregateDeclaration() == null))
             {
                 {
-                    ScopeDsymbol sym = (this.sc.get()).scopesym;
+                    ScopeDsymbol sym = (this.sc.get()).scopesym.value;
                     for (; (sym != null) && (dsym.endlinnum == 0);sym = sym.parent.value != null ? sym.parent.value.isScopeDsymbol() : null) {
                         dsym.endlinnum = sym.endlinnum;
                     }
@@ -1234,20 +1233,20 @@ public class dsymbolsem {
         }
 
         public  void visit(TypeInfoDeclaration dsym) {
-            assert((dsym.linkage == LINK.c));
+            assert((dsym.linkage.value == LINK.c));
         }
 
         public  void visit(Import imp) {
-            if ((imp.semanticRun > PASS.init))
+            if ((imp.semanticRun.value > PASS.init))
                 return ;
-            if (imp._scope != null)
+            if (imp._scope.value != null)
             {
-                this.sc = imp._scope;
-                imp._scope = null;
+                this.sc = imp._scope.value;
+                imp._scope.value = null;
             }
             if (this.sc == null)
                 return ;
-            imp.semanticRun = PASS.semantic;
+            imp.semanticRun.value = PASS.semantic;
             boolean loadErrored = false;
             if (imp.mod == null)
             {
@@ -1257,26 +1256,26 @@ public class dsymbolsem {
             }
             if (imp.mod != null)
             {
-                if (((this.sc.get()).minst != null) && ((this.sc.get()).tinst != null))
+                if (((this.sc.get()).minst.value != null) && ((this.sc.get()).tinst != null))
                 {
                     (this.sc.get()).tinst.importedModules.value.push(imp.mod);
-                    (this.sc.get()).minst.aimports.push(imp.mod);
+                    (this.sc.get()).minst.value.aimports.push(imp.mod);
                 }
                 else
                 {
-                    (this.sc.get())._module.aimports.push(imp.mod);
+                    (this.sc.get())._module.value.aimports.push(imp.mod);
                 }
                 if ((this.sc.get()).explicitProtection != 0)
-                    imp.protection = (this.sc.get()).protection.copy();
-                if ((imp.aliasId == null) && (imp.names.length == 0))
+                    imp.protection = (this.sc.get()).protection.value.copy();
+                if ((imp.aliasId == null) && (imp.names.length.value == 0))
                 {
                     ScopeDsymbol scopesym = null;
                     {
                         Ptr<Scope> scd = this.sc;
-                        for (; scd != null;scd = (scd.get()).enclosing){
-                            if ((scd.get()).scopesym == null)
+                        for (; scd != null;scd = (scd.get()).enclosing.value){
+                            if ((scd.get()).scopesym.value == null)
                                 continue;
-                            scopesym = (scd.get()).scopesym;
+                            scopesym = (scd.get()).scopesym.value;
                             break;
                         }
                     }
@@ -1284,12 +1283,12 @@ public class dsymbolsem {
                     {
                         scopesym.importScope(imp.mod, imp.protection);
                     }
-                    if (imp.packages != null)
+                    if (imp.packages.value != null)
                     {
                         dmodule.Package p = imp.pkg.value;
                         scopesym.addAccessiblePackage(p, imp.protection);
                         {
-                            Slice<Identifier> __r1144 = (imp.packages.get()).opSlice(1, (imp.packages.get()).length).copy();
+                            Slice<Identifier> __r1144 = (imp.packages.value.get()).opSlice(1, (imp.packages.value.get()).length.value).copy();
                             int __key1145 = 0;
                             for (; (__key1145 < __r1144.getLength());__key1145 += 1) {
                                 Identifier id = __r1144.get(__key1145);
@@ -1306,40 +1305,40 @@ public class dsymbolsem {
                 }
                 if (imp.mod.needmoduleinfo != 0)
                 {
-                    (this.sc.get())._module.needmoduleinfo = 1;
+                    (this.sc.get())._module.value.needmoduleinfo = 1;
                 }
                 this.sc = (this.sc.get()).push(imp.mod);
-                (this.sc.get()).protection = imp.protection.copy();
+                (this.sc.get()).protection.value = imp.protection.copy();
                 {
                     int i = 0;
                     for (; (i < imp.aliasdecls.length);i++){
                         AliasDeclaration ad = imp.aliasdecls.get(i);
-                        Dsymbol sym = imp.mod.search(imp.loc, imp.names.get(i), 1);
+                        Dsymbol sym = imp.mod.search(imp.loc.value, imp.names.get(i), 1);
                         if (sym != null)
                         {
                             if (!symbolIsVisible(this.sc, sym))
-                                imp.mod.error(imp.loc, new BytePtr("member `%s` is not visible from module `%s`"), imp.names.get(i).toChars(), (this.sc.get())._module.toChars());
+                                imp.mod.error(imp.loc.value, new BytePtr("member `%s` is not visible from module `%s`"), imp.names.get(i).toChars(), (this.sc.get())._module.value.toChars());
                             dsymbolSemantic(ad, this.sc);
                         }
                         else
                         {
                             Dsymbol s = imp.mod.search_correct(imp.names.get(i));
                             if (s != null)
-                                imp.mod.error(imp.loc, new BytePtr("import `%s` not found, did you mean %s `%s`?"), imp.names.get(i).toChars(), s.kind(), s.toPrettyChars(false));
+                                imp.mod.error(imp.loc.value, new BytePtr("import `%s` not found, did you mean %s `%s`?"), imp.names.get(i).toChars(), s.kind(), s.toPrettyChars(false));
                             else
-                                imp.mod.error(imp.loc, new BytePtr("import `%s` not found"), imp.names.get(i).toChars());
-                            ad.type = Type.terror.value;
+                                imp.mod.error(imp.loc.value, new BytePtr("import `%s` not found"), imp.names.get(i).toChars());
+                            ad.type.value = Type.terror.value;
                         }
                     }
                 }
                 this.sc = (this.sc.get()).pop();
             }
-            imp.semanticRun = PASS.semanticdone;
-            if ((global.value.params.moduleDeps != null) && !((pequals(imp.id, Id.object.value)) && (pequals((this.sc.get())._module.ident, Id.object.value))) && (!pequals((this.sc.get())._module.ident, Id.entrypoint)) && (strcmp((this.sc.get())._module.ident.toChars(), new BytePtr("__main")) != 0))
+            imp.semanticRun.value = PASS.semanticdone;
+            if ((global.params.moduleDeps != null) && !((pequals(imp.id, Id.object.value)) && (pequals((this.sc.get())._module.value.ident.value, Id.object.value))) && (!pequals((this.sc.get())._module.value.ident.value, Id.entrypoint)) && (strcmp((this.sc.get())._module.value.ident.value.toChars(), new BytePtr("__main")) != 0))
             {
-                Ptr<OutBuffer> ob = global.value.params.moduleDeps;
+                Ptr<OutBuffer> ob = global.params.moduleDeps;
                 dmodule.Module imod = (this.sc.get()).instantiatingModule();
-                if (global.value.params.moduleDepsFile.getLength() == 0)
+                if (global.params.moduleDepsFile.getLength() == 0)
                     (ob.get()).writestring(new ByteSlice("depsImport "));
                 (ob.get()).writestring(imod.toPrettyChars(false));
                 (ob.get()).writestring(new ByteSlice(" ("));
@@ -1353,12 +1352,12 @@ public class dsymbolsem {
                     (ob.get()).writeByte(32);
                 }
                 (ob.get()).writestring(new ByteSlice(": "));
-                if (imp.packages != null)
+                if (imp.packages.value != null)
                 {
                     {
                         int i = 0;
-                        for (; (i < (imp.packages.get()).length);i++){
-                            Identifier pid = (imp.packages.get()).get(i);
+                        for (; (i < (imp.packages.value.get()).length.value);i++){
+                            Identifier pid = (imp.packages.value.get()).get(i);
                             (ob.get()).printf(new BytePtr("%s."), pid.toChars());
                         }
                     }
@@ -1397,9 +1396,9 @@ public class dsymbolsem {
         }
 
         public  void attribSemantic(AttribDeclaration ad) {
-            if ((ad.semanticRun != PASS.init))
+            if ((ad.semanticRun.value != PASS.init))
                 return ;
-            ad.semanticRun = PASS.semantic;
+            ad.semanticRun.value = PASS.semantic;
             Ptr<DArray<Dsymbol>> d = ad.include(this.sc);
             if (d != null)
             {
@@ -1407,17 +1406,17 @@ public class dsymbolsem {
                 boolean errors = false;
                 {
                     int i = 0;
-                    for (; (i < (d.get()).length);i++){
+                    for (; (i < (d.get()).length.value);i++){
                         Dsymbol s = (d.get()).get(i);
                         dsymbolSemantic(s, sc2);
-                        (errors ? 1 : 0) |= (s.errors ? 1 : 0);
+                        (errors ? 1 : 0) |= (s.errors.value ? 1 : 0);
                     }
                 }
-                (ad.errors ? 1 : 0) |= (errors ? 1 : 0);
+                (ad.errors.value ? 1 : 0) |= (errors ? 1 : 0);
                 if ((sc2 != this.sc))
                     (sc2.get()).pop();
             }
-            ad.semanticRun = PASS.semanticdone;
+            ad.semanticRun.value = PASS.semanticdone;
         }
 
         public  void visit(AttribDeclaration atd) {
@@ -1430,20 +1429,20 @@ public class dsymbolsem {
             AggregateDeclaration ad = p.isAggregateDeclaration();
             if (ad == null)
             {
-                error(scd.loc, new BytePtr("%s can only be a part of an aggregate, not %s `%s`"), scd.kind(), p.kind(), p.toChars());
-                scd.errors = true;
+                error(scd.loc.value, new BytePtr("%s can only be a part of an aggregate, not %s `%s`"), scd.kind(), p.kind(), p.toChars());
+                scd.errors.value = true;
                 return ;
             }
-            if (scd.decl != null)
+            if (scd.decl.value != null)
             {
                 this.sc = (this.sc.get()).push();
-                (this.sc.get()).stc &= -1208484098L;
+                (this.sc.get()).stc.value &= -1208484098L;
                 (this.sc.get()).inunion = scd.isunion ? scd : null;
-                (this.sc.get()).flags = 0;
+                (this.sc.get()).flags.value = 0;
                 {
                     int i = 0;
-                    for (; (i < (scd.decl.get()).length);i++){
-                        Dsymbol s = (scd.decl.get()).get(i);
+                    for (; (i < (scd.decl.value.get()).length.value);i++){
+                        Dsymbol s = (scd.decl.value.get()).get(i);
                         dsymbolSemantic(s, this.sc);
                     }
                 }
@@ -1454,11 +1453,11 @@ public class dsymbolsem {
         public  void visit(PragmaDeclaration pd) {
             try {
                 try {
-                    if (global.value.params.mscoff)
+                    if (global.params.mscoff)
                     {
-                        if ((pequals(pd.ident, Id.linkerDirective)))
+                        if ((pequals(pd.ident.value, Id.linkerDirective)))
                         {
-                            if ((pd.args == null) || ((pd.args.get()).length != 1))
+                            if ((pd.args == null) || ((pd.args.get()).length.value != 1))
                                 pd.error(new BytePtr("one string argument expected for pragma(linkerDirective)"));
                             else
                             {
@@ -1466,40 +1465,40 @@ public class dsymbolsem {
                                 if (se == null)
                                     /*goto Lnodecl*/throw Dispatch1.INSTANCE;
                                 pd.args.get().set(0, se);
-                                if (global.value.params.verbose)
-                                    message(new BytePtr("linkopt   %.*s"), se.len, se.string);
+                                if (global.params.verbose)
+                                    message(new BytePtr("linkopt   %.*s"), se.len.value, se.string.value);
                             }
                             /*goto Lnodecl*/throw Dispatch1.INSTANCE;
                         }
                     }
-                    if ((pequals(pd.ident, Id.msg)))
+                    if ((pequals(pd.ident.value, Id.msg)))
                     {
                         if (pd.args != null)
                         {
                             {
                                 int i = 0;
-                                for (; (i < (pd.args.get()).length);i++){
+                                for (; (i < (pd.args.get()).length.value);i++){
                                     Expression e = (pd.args.get()).get(i);
                                     this.sc = (this.sc.get()).startCTFE();
                                     e = expressionSemantic(e, this.sc);
                                     e = resolveProperties(this.sc, e);
                                     this.sc = (this.sc.get()).endCTFE();
-                                    if ((e.type.value != null) && ((e.type.value.ty & 0xFF) == ENUMTY.Tvoid))
+                                    if ((e.type.value != null) && ((e.type.value.ty.value & 0xFF) == ENUMTY.Tvoid))
                                     {
-                                        error(pd.loc, new BytePtr("Cannot pass argument `%s` to `pragma msg` because it is `void`"), e.toChars());
+                                        error(pd.loc.value, new BytePtr("Cannot pass argument `%s` to `pragma msg` because it is `void`"), e.toChars());
                                         return ;
                                     }
                                     e = ctfeInterpretForPragmaMsg(e);
-                                    if (((e.op & 0xFF) == 127))
+                                    if (((e.op.value & 0xFF) == 127))
                                     {
-                                        errorSupplemental(pd.loc, new BytePtr("while evaluating `pragma(msg, %s)`"), (pd.args.get()).get(i).toChars());
+                                        errorSupplemental(pd.loc.value, new BytePtr("while evaluating `pragma(msg, %s)`"), (pd.args.get()).get(i).toChars());
                                         return ;
                                     }
                                     StringExp se = e.toStringExp();
                                     if (se != null)
                                     {
                                         se = se.toUTF8(this.sc);
-                                        fprintf(stderr, new BytePtr("%.*s"), se.len, se.string);
+                                        fprintf(stderr, new BytePtr("%.*s"), se.len.value, se.string.value);
                                     }
                                     else
                                         fprintf(stderr, new BytePtr("%s"), e.toChars());
@@ -1509,9 +1508,9 @@ public class dsymbolsem {
                         }
                         /*goto Lnodecl*/throw Dispatch1.INSTANCE;
                     }
-                    else if ((pequals(pd.ident, Id.lib)))
+                    else if ((pequals(pd.ident.value, Id.lib)))
                     {
-                        if ((pd.args == null) || ((pd.args.get()).length != 1))
+                        if ((pd.args == null) || ((pd.args.get()).length.value != 1))
                             pd.error(new BytePtr("string expected for library name"));
                         else
                         {
@@ -1519,12 +1518,12 @@ public class dsymbolsem {
                             if (se == null)
                                 /*goto Lnodecl*/throw Dispatch1.INSTANCE;
                             pd.args.get().set(0, se);
-                            ByteSlice name = xarraydup(se.string.slice(0,se.len)).copy();
-                            if (global.value.params.verbose)
+                            ByteSlice name = xarraydup(se.string.value.slice(0,se.len.value)).copy();
+                            if (global.params.verbose)
                                 message(new BytePtr("library   %s"), toBytePtr(name));
-                            if ((global.value.params.moduleDeps != null) && (global.value.params.moduleDepsFile.getLength() == 0))
+                            if ((global.params.moduleDeps != null) && (global.params.moduleDepsFile.getLength() == 0))
                             {
-                                Ptr<OutBuffer> ob = global.value.params.moduleDeps;
+                                Ptr<OutBuffer> ob = global.params.moduleDeps;
                                 dmodule.Module imod = (this.sc.get()).instantiatingModule();
                                 (ob.get()).writestring(new ByteSlice("depsLib "));
                                 (ob.get()).writestring(imod.toPrettyChars(false));
@@ -1538,9 +1537,9 @@ public class dsymbolsem {
                         }
                         /*goto Lnodecl*/throw Dispatch1.INSTANCE;
                     }
-                    else if ((pequals(pd.ident, Id.startaddress)))
+                    else if ((pequals(pd.ident.value, Id.startaddress)))
                     {
-                        if ((pd.args == null) || ((pd.args.get()).length != 1))
+                        if ((pd.args == null) || ((pd.args.get()).length.value != 1))
                             pd.error(new BytePtr("function name expected for start address"));
                         else
                         {
@@ -1555,15 +1554,15 @@ public class dsymbolsem {
                         }
                         /*goto Lnodecl*/throw Dispatch1.INSTANCE;
                     }
-                    else if ((pequals(pd.ident, Id.Pinline)))
+                    else if ((pequals(pd.ident.value, Id.Pinline)))
                     {
                         /*goto Ldecl*/throw Dispatch0.INSTANCE;
                     }
-                    else if ((pequals(pd.ident, Id.mangle)))
+                    else if ((pequals(pd.ident.value, Id.mangle)))
                     {
                         if (pd.args == null)
-                            pd.args = new DArray<Expression>();
-                        if (((pd.args.get()).length != 1))
+                            pd.args = refPtr(new DArray<Expression>());
+                        if (((pd.args.get()).length.value != 1))
                         {
                             pd.error(new BytePtr("string expected for mangled name"));
                             (pd.args.get()).setDim(1);
@@ -1574,20 +1573,20 @@ public class dsymbolsem {
                         if (se == null)
                             /*goto Ldecl*/throw Dispatch0.INSTANCE;
                         pd.args.get().set(0, se);
-                        if (se.len == 0)
+                        if (se.len.value == 0)
                         {
                             pd.error(new BytePtr("zero-length string not allowed for mangled name"));
                             /*goto Ldecl*/throw Dispatch0.INSTANCE;
                         }
-                        if (((se.sz & 0xFF) != 1))
+                        if (((se.sz.value & 0xFF) != 1))
                         {
                             pd.error(new BytePtr("mangled name characters can only be of type `char`"));
                             /*goto Ldecl*/throw Dispatch0.INSTANCE;
                         }
                         {
                             IntRef i = ref(0);
-                            for (; (i.value < se.len);){
-                                BytePtr p = pcopy(se.string);
+                            for (; (i.value < se.len.value);){
+                                BytePtr p = pcopy(se.string.value);
                                 int c = (p.get(i.value) & 0xFF);
                                 if ((c < 128))
                                 {
@@ -1603,7 +1602,7 @@ public class dsymbolsem {
                                     }
                                 }
                                 {
-                                    BytePtr msg = pcopy(utf_decodeChar(se.string, se.len, i, c));
+                                    BytePtr msg = pcopy(utf_decodeChar(se.string.value, se.len.value, i, c));
                                     if ((msg) != null)
                                     {
                                         pd.error(new BytePtr("%s"), msg);
@@ -1618,24 +1617,24 @@ public class dsymbolsem {
                             }
                         }
                     }
-                    else if ((pequals(pd.ident, Id.crt_constructor)) || (pequals(pd.ident, Id.crt_destructor)))
+                    else if ((pequals(pd.ident.value, Id.crt_constructor)) || (pequals(pd.ident.value, Id.crt_destructor)))
                     {
-                        if ((pd.args != null) && ((pd.args.get()).length != 0))
+                        if ((pd.args != null) && ((pd.args.get()).length.value != 0))
                             pd.error(new BytePtr("takes no argument"));
                         /*goto Ldecl*/throw Dispatch0.INSTANCE;
                     }
-                    else if (global.value.params.ignoreUnsupportedPragmas)
+                    else if (global.params.ignoreUnsupportedPragmas)
                     {
-                        if (global.value.params.verbose)
+                        if (global.params.verbose)
                         {
                             OutBuffer buf = new OutBuffer();
                             try {
-                                buf.writestring(pd.ident.asString());
+                                buf.writestring(pd.ident.value.asString());
                                 if (pd.args != null)
                                 {
                                     {
                                         int i = 0;
-                                        for (; (i < (pd.args.get()).length);i++){
+                                        for (; (i < (pd.args.get()).length.value);i++){
                                             Expression e = (pd.args.get()).get(i);
                                             this.sc = (this.sc.get()).startCTFE();
                                             e = expressionSemantic(e, this.sc);
@@ -1649,7 +1648,7 @@ public class dsymbolsem {
                                             buf.writestring(e.toChars());
                                         }
                                     }
-                                    if ((pd.args.get()).length != 0)
+                                    if ((pd.args.get()).length.value != 0)
                                         buf.writeByte(41);
                                 }
                                 message(new BytePtr("pragma    %s"), buf.peekChars());
@@ -1660,26 +1659,26 @@ public class dsymbolsem {
                         /*goto Lnodecl*/throw Dispatch1.INSTANCE;
                     }
                     else
-                        error(pd.loc, new BytePtr("unrecognized `pragma(%s)`"), pd.ident.toChars());
+                        error(pd.loc.value, new BytePtr("unrecognized `pragma(%s)`"), pd.ident.value.toChars());
                 }
                 catch(Dispatch0 __d){}
             /*Ldecl:*/
-                if (pd.decl != null)
+                if (pd.decl.value != null)
                 {
                     Ptr<Scope> sc2 = pd.newScope(this.sc);
                     {
                         int i = 0;
-                        for (; (i < (pd.decl.get()).length);i++){
-                            Dsymbol s = (pd.decl.get()).get(i);
+                        for (; (i < (pd.decl.value.get()).length.value);i++){
+                            Dsymbol s = (pd.decl.value.get()).get(i);
                             dsymbolSemantic(s, sc2);
-                            if ((pequals(pd.ident, Id.mangle)))
+                            if ((pequals(pd.ident.value, Id.mangle)))
                             {
-                                assert((pd.args != null) && ((pd.args.get()).length == 1));
+                                assert((pd.args != null) && ((pd.args.get()).length.value == 1));
                                 {
                                     StringExp se = (pd.args.get()).get(0).toStringExp();
                                     if ((se) != null)
                                     {
-                                        ByteSlice name = xarraydup(se.string.slice(0,se.len)).copy();
+                                        ByteSlice name = xarraydup(se.string.value.slice(0,se.len.value)).copy();
                                         int cnt = setMangleOverride(s, name);
                                         if ((cnt > 1))
                                             pd.error(new BytePtr("can only apply to a single declaration"));
@@ -1695,7 +1694,7 @@ public class dsymbolsem {
             }
             catch(Dispatch1 __d){}
         /*Lnodecl:*/
-            if (pd.decl != null)
+            if (pd.decl.value != null)
             {
                 pd.error(new BytePtr("is missing a terminating `;`"));
                 /*goto Ldecl*/throw Dispatch0.INSTANCE;
@@ -1715,18 +1714,18 @@ public class dsymbolsem {
             try {
                 if (expressionsToString(buf, this.sc, cd.exps))
                     return null;
-                int errors = global.value.errors;
-                int len = buf.value.offset;
+                int errors = global.errors.value;
+                int len = buf.value.offset.value;
                 ByteSlice str = buf.value.extractChars().slice(0,len).copy();
-                StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.value.params.useDeprecated);
+                StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
                 try {
-                    ParserASTCodegen p = new ParserASTCodegen(cd.loc, (this.sc.get())._module, str, false, diagnosticReporter);
+                    ParserASTCodegen p = new ParserASTCodegen(cd.loc.value, (this.sc.get())._module.value, str, false, diagnosticReporter);
                     try {
                         p.nextToken();
                         Ptr<DArray<Dsymbol>> d = p.parseDeclDefs(0, null, null);
                         if (p.errors())
                         {
-                            assert((global.value.errors != errors));
+                            assert((global.errors.value != errors));
                             return null;
                         }
                         if (((p.token.value.value & 0xFF) != 11))
@@ -1749,16 +1748,16 @@ public class dsymbolsem {
         public  void visit(CompileDeclaration cd) {
             if (!cd.compiled)
             {
-                cd.decl = this.compileIt(cd);
+                cd.decl.value = this.compileIt(cd);
                 cd.addMember(this.sc, cd.scopesym);
                 cd.compiled = true;
-                if ((cd._scope != null) && (cd.decl != null))
+                if ((cd._scope.value != null) && (cd.decl.value != null))
                 {
                     {
                         int i = 0;
-                        for (; (i < (cd.decl.get()).length);i++){
-                            Dsymbol s = (cd.decl.get()).get(i);
-                            s.setScope(cd._scope);
+                        for (; (i < (cd.decl.value.get()).length.value);i++){
+                            Dsymbol s = (cd.decl.value.get()).get(i);
+                            s.setScope(cd._scope.value);
                         }
                     }
                 }
@@ -1767,101 +1766,99 @@ public class dsymbolsem {
         }
 
         public  void visit(CPPNamespaceDeclaration ns) {
-            Ref<CPPNamespaceDeclaration> ns_ref = ref(ns);
             Function1<StringExp,Identifier> identFromSE = new Function1<StringExp,Identifier>(){
                 public Identifier invoke(StringExp se) {
-                    Ref<StringExp> se_ref = ref(se);
-                    Ref<ByteSlice> sident = ref(se_ref.value.toStringz().copy());
+                    Ref<ByteSlice> sident = ref(se.toStringz().copy());
                     if ((sident.value.getLength() == 0) || !Identifier.isValidIdentifier(sident.value))
                     {
-                        ns_ref.value.exp.error(new BytePtr("expected valid identifer for C++ namespace but got `%.*s`"), sident.value.getLength(), toBytePtr(sident.value));
+                        ns.exp.error(new BytePtr("expected valid identifer for C++ namespace but got `%.*s`"), sident.value.getLength(), toBytePtr(sident));
                         return null;
                     }
                     else
                         return Identifier.idPool(sident.value);
                 }
             };
-            if ((ns_ref.value.ident == null))
+            if ((ns.ident.value == null))
             {
-                ns_ref.value.namespace = (this.sc.get()).namespace;
+                ns.namespace = (this.sc.get()).namespace;
                 this.sc = (this.sc.get()).startCTFE();
-                ns_ref.value.exp = expressionSemantic(ns_ref.value.exp, this.sc);
-                ns_ref.value.exp = resolveProperties(this.sc, ns_ref.value.exp);
+                ns.exp = expressionSemantic(ns.exp, this.sc);
+                ns.exp = resolveProperties(this.sc, ns.exp);
                 this.sc = (this.sc.get()).endCTFE();
-                ns_ref.value.exp = ns_ref.value.exp.ctfeInterpret();
+                ns.exp = ns.exp.ctfeInterpret();
                 {
-                    TupleExp te = ns_ref.value.exp.isTupleExp();
+                    TupleExp te = ns.exp.isTupleExp();
                     if ((te) != null)
                     {
-                        expandTuples(te.exps);
-                        CPPNamespaceDeclaration current = ns_ref.value.namespace;
+                        expandTuples(te.exps.value);
+                        CPPNamespaceDeclaration current = ns.namespace;
                         {
                             int d = 0;
-                            for (; (d < (te.exps.get()).length);d += 1){
-                                Expression exp = (te.exps.get()).get(d);
-                                CPPNamespaceDeclaration prev = d != 0 ? current : ns_ref.value.namespace;
-                                current = (d + 1 != (te.exps.get()).length) ? new CPPNamespaceDeclaration(exp, null) : ns_ref.value;
+                            for (; (d < (te.exps.value.get()).length.value);d += 1){
+                                Expression exp = (te.exps.value.get()).get(d);
+                                CPPNamespaceDeclaration prev = d != 0 ? current : ns.namespace;
+                                current = (d + 1 != (te.exps.value.get()).length.value) ? new CPPNamespaceDeclaration(exp, null) : ns;
                                 current.exp = exp;
                                 current.namespace = prev;
                                 {
                                     StringExp se = exp.toStringExp();
                                     if ((se) != null)
                                     {
-                                        current.ident = identFromSE.invoke(se);
-                                        if ((current.ident == null))
+                                        current.ident.value = identFromSE.invoke(se);
+                                        if ((current.ident.value == null))
                                             return ;
                                     }
                                     else
-                                        ns_ref.value.exp.error(new BytePtr("`%s`: index %d is not a string constant, it is a `%s`"), ns_ref.value.exp.toChars(), d, ns_ref.value.exp.type.value.toChars());
+                                        ns.exp.error(new BytePtr("`%s`: index %d is not a string constant, it is a `%s`"), ns.exp.toChars(), d, ns.exp.type.value.toChars());
                                 }
                             }
                         }
                     }
                     else {
-                        StringExp se = ns_ref.value.exp.toStringExp();
+                        StringExp se = ns.exp.toStringExp();
                         if ((se) != null)
-                            ns_ref.value.ident = identFromSE.invoke(se);
+                            ns.ident.value = identFromSE.invoke(se);
                         else
-                            ns_ref.value.exp.error(new BytePtr("compile time string constant (or tuple) expected, not `%s`"), ns_ref.value.exp.toChars());
+                            ns.exp.error(new BytePtr("compile time string constant (or tuple) expected, not `%s`"), ns.exp.toChars());
                     }
                 }
             }
-            if (ns_ref.value.ident != null)
-                this.attribSemantic(ns_ref.value);
+            if (ns.ident.value != null)
+                this.attribSemantic(ns);
         }
 
         public  void visit(UserAttributeDeclaration uad) {
-            if ((uad.decl != null) && (uad._scope == null))
+            if ((uad.decl.value != null) && (uad._scope.value == null))
                 uad.setScope(this.sc);
             this.attribSemantic(uad);
             return ;
         }
 
         public  void visit(StaticAssert sa) {
-            if ((sa.semanticRun < PASS.semanticdone))
-                sa.semanticRun = PASS.semanticdone;
+            if ((sa.semanticRun.value < PASS.semanticdone))
+                sa.semanticRun.value = PASS.semanticdone;
         }
 
         public  void visit(DebugSymbol ds) {
-            if ((ds.semanticRun < PASS.semanticdone))
-                ds.semanticRun = PASS.semanticdone;
+            if ((ds.semanticRun.value < PASS.semanticdone))
+                ds.semanticRun.value = PASS.semanticdone;
         }
 
         public  void visit(VersionSymbol vs) {
-            if ((vs.semanticRun < PASS.semanticdone))
-                vs.semanticRun = PASS.semanticdone;
+            if ((vs.semanticRun.value < PASS.semanticdone))
+                vs.semanticRun.value = PASS.semanticdone;
         }
 
         public  void visit(dmodule.Package pkg) {
-            if ((pkg.semanticRun < PASS.semanticdone))
-                pkg.semanticRun = PASS.semanticdone;
+            if ((pkg.semanticRun.value < PASS.semanticdone))
+                pkg.semanticRun.value = PASS.semanticdone;
         }
 
         public  void visit(dmodule.Module m) {
-            if ((m.semanticRun != PASS.init))
+            if ((m.semanticRun.value != PASS.init))
                 return ;
-            m.semanticRun = PASS.semantic;
-            Ptr<Scope> sc = m._scope;
+            m.semanticRun.value = PASS.semantic;
+            Ptr<Scope> sc = m._scope.value;
             if (sc == null)
             {
                 Scope.createGlobal(m);
@@ -1872,98 +1869,98 @@ public class dsymbolsem {
                     dmodule.Module.runDeferredSemantic();
                 }
             };
-            foreachDsymbol(m.members, __lambda2);
+            foreachDsymbol(m.members.value, __lambda2);
             if (m.userAttribDecl != null)
             {
                 dsymbolSemantic(m.userAttribDecl, sc);
             }
-            if (m._scope == null)
+            if (m._scope.value == null)
             {
                 sc = (sc.get()).pop();
                 (sc.get()).pop();
             }
-            m.semanticRun = PASS.semanticdone;
+            m.semanticRun.value = PASS.semanticdone;
         }
 
         public  void visit(EnumDeclaration ed) {
-            if ((ed.semanticRun >= PASS.semanticdone))
+            if ((ed.semanticRun.value >= PASS.semanticdone))
                 return ;
-            if ((ed.semanticRun == PASS.semantic))
+            if ((ed.semanticRun.value == PASS.semantic))
             {
-                assert(ed.memtype != null);
-                error(ed.loc, new BytePtr("circular reference to enum base type `%s`"), ed.memtype.toChars());
-                ed.errors = true;
-                ed.semanticRun = PASS.semanticdone;
+                assert(ed.memtype.value != null);
+                error(ed.loc.value, new BytePtr("circular reference to enum base type `%s`"), ed.memtype.value.toChars());
+                ed.errors.value = true;
+                ed.semanticRun.value = PASS.semanticdone;
                 return ;
             }
             int dprogress_save = dmodule.Module.dprogress;
             Ptr<Scope> scx = null;
-            if (ed._scope != null)
+            if (ed._scope.value != null)
             {
-                this.sc = ed._scope;
-                scx = ed._scope;
-                ed._scope = null;
+                this.sc = ed._scope.value;
+                scx = ed._scope.value;
+                ed._scope.value = null;
             }
             if (this.sc == null)
                 return ;
             ed.parent.value = (this.sc.get()).parent.value;
-            ed.type = typeSemantic(ed.type, ed.loc, this.sc);
-            ed.protection = (this.sc.get()).protection.copy();
-            if (((this.sc.get()).stc & 1024L) != 0)
+            ed.type = typeSemantic(ed.type, ed.loc.value, this.sc);
+            ed.protection = (this.sc.get()).protection.value.copy();
+            if (((this.sc.get()).stc.value & 1024L) != 0)
                 ed.isdeprecated = true;
             ed.userAttribDecl = (this.sc.get()).userAttribDecl;
-            ed.semanticRun = PASS.semantic;
-            if ((ed.members == null) && (ed.memtype == null))
+            ed.semanticRun.value = PASS.semantic;
+            if ((ed.members.value == null) && (ed.memtype.value == null))
             {
-                ed.semanticRun = PASS.semanticdone;
+                ed.semanticRun.value = PASS.semanticdone;
                 return ;
             }
             if (ed.symtab == null)
                 ed.symtab = new DsymbolTable();
-            if (ed.memtype != null)
+            if (ed.memtype.value != null)
             {
-                ed.memtype = typeSemantic(ed.memtype, ed.loc, this.sc);
+                ed.memtype.value = typeSemantic(ed.memtype.value, ed.loc.value, this.sc);
                 {
-                    TypeEnum te = ed.memtype.isTypeEnum();
+                    TypeEnum te = ed.memtype.value.isTypeEnum();
                     if ((te) != null)
                     {
                         EnumDeclaration sym = (EnumDeclaration)te.toDsymbol(this.sc);
-                        if ((sym.memtype == null) || (sym.members == null) || (sym.symtab == null) || (sym._scope != null))
+                        if ((sym.memtype.value == null) || (sym.members.value == null) || (sym.symtab == null) || (sym._scope.value != null))
                         {
-                            ed._scope = scx != null ? scx : (this.sc.get()).copy();
-                            (ed._scope.get()).setNoFree();
+                            ed._scope.value = scx != null ? scx : (this.sc.get()).copy();
+                            (ed._scope.value.get()).setNoFree();
                             dmodule.Module.addDeferredSemantic(ed);
                             dmodule.Module.dprogress = dprogress_save;
-                            ed.semanticRun = PASS.init;
+                            ed.semanticRun.value = PASS.init;
                             return ;
                         }
                     }
                 }
-                if (((ed.memtype.ty & 0xFF) == ENUMTY.Tvoid))
+                if (((ed.memtype.value.ty.value & 0xFF) == ENUMTY.Tvoid))
                 {
                     ed.error(new BytePtr("base type must not be `void`"));
-                    ed.memtype = Type.terror.value;
+                    ed.memtype.value = Type.terror.value;
                 }
-                if (((ed.memtype.ty & 0xFF) == ENUMTY.Terror))
+                if (((ed.memtype.value.ty.value & 0xFF) == ENUMTY.Terror))
                 {
-                    ed.errors = true;
+                    ed.errors.value = true;
                     Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                         public Void invoke(Dsymbol s) {
-                            s.errors = true;
+                            s.errors.value = true;
                         }
                     };
-                    foreachDsymbol(ed.members, __lambda2);
-                    ed.semanticRun = PASS.semanticdone;
+                    foreachDsymbol(ed.members.value, __lambda2);
+                    ed.semanticRun.value = PASS.semanticdone;
                     return ;
                 }
             }
-            ed.semanticRun = PASS.semanticdone;
-            if (ed.members == null)
+            ed.semanticRun.value = PASS.semanticdone;
+            if (ed.members.value == null)
                 return ;
-            if (((ed.members.get()).length == 0))
+            if (((ed.members.value.get()).length.value == 0))
             {
                 ed.error(new BytePtr("enum `%s` must have at least one member"), ed.toChars());
-                ed.errors = true;
+                ed.errors.value = true;
                 return ;
             }
             dmodule.Module.dprogress++;
@@ -1981,10 +1978,10 @@ public class dsymbolsem {
                 public Void invoke(Dsymbol s) {
                     EnumMember em = s.isEnumMember();
                     if (em != null)
-                        em._scope = sce;
+                        em._scope.value = sce;
                 }
             };
-            foreachDsymbol(ed.members, __lambda3);
+            foreachDsymbol(ed.members.value, __lambda3);
             if (!ed.added)
             {
                 ScopeDsymbol scopesym = null;
@@ -1992,13 +1989,13 @@ public class dsymbolsem {
                 {
                     {
                         Ptr<Scope> sct = sce;
-                        for (; 1 != 0;sct = (sct.get()).enclosing){
+                        for (; 1 != 0;sct = (sct.get()).enclosing.value){
                             assert(sct != null);
-                            if ((sct.get()).scopesym != null)
+                            if ((sct.get()).scopesym.value != null)
                             {
-                                scopesym = (sct.get()).scopesym;
-                                if ((sct.get()).scopesym.symtab == null)
-                                    (sct.get()).scopesym.symtab = new DsymbolTable();
+                                scopesym = (sct.get()).scopesym.value;
+                                if ((sct.get()).scopesym.value.symtab == null)
+                                    (sct.get()).scopesym.value.symtab = new DsymbolTable();
                                 break;
                             }
                         }
@@ -2018,147 +2015,146 @@ public class dsymbolsem {
                         }
                     }
                 };
-                foreachDsymbol(ed.members, __lambda4);
+                foreachDsymbol(ed.members.value, __lambda4);
             }
             Function1<Dsymbol,Void> __lambda5 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s) {
                     EnumMember em = s.isEnumMember();
                     if (em != null)
-                        dsymbolSemantic(em, em._scope);
+                        dsymbolSemantic(em, em._scope.value);
                 }
             };
-            foreachDsymbol(ed.members, __lambda5);
+            foreachDsymbol(ed.members.value, __lambda5);
         }
 
         public  void visit(EnumMember em) {
-            Ref<EnumMember> em_ref = ref(em);
             Function0<Void> errorReturn = new Function0<Void>(){
                 public Void invoke() {
-                    em_ref.value.errors = true;
-                    em_ref.value.semanticRun = PASS.semanticdone;
+                    em.errors.value = true;
+                    em.semanticRun.value = PASS.semanticdone;
                 }
             };
-            if (em_ref.value.errors || (em_ref.value.semanticRun >= PASS.semanticdone))
+            if (em.errors.value || (em.semanticRun.value >= PASS.semanticdone))
                 return ;
-            if ((em_ref.value.semanticRun == PASS.semantic))
+            if ((em.semanticRun.value == PASS.semantic))
             {
-                em_ref.value.error(new BytePtr("circular reference to `enum` member"));
+                em.error(new BytePtr("circular reference to `enum` member"));
                 errorReturn.invoke();
                 return ;
             }
-            assert(em_ref.value.ed != null);
-            dsymbolSemantic(em_ref.value.ed, this.sc);
-            if (em_ref.value.ed.errors)
+            assert(em.ed != null);
+            dsymbolSemantic(em.ed, this.sc);
+            if (em.ed.errors.value)
                 errorReturn.invoke();
                 return ;
-            if (em_ref.value.errors || (em_ref.value.semanticRun >= PASS.semanticdone))
+            if (em.errors.value || (em.semanticRun.value >= PASS.semanticdone))
                 return ;
-            if (em_ref.value._scope != null)
-                this.sc = em_ref.value._scope;
+            if (em._scope.value != null)
+                this.sc = em._scope.value;
             if (this.sc == null)
                 return ;
-            em_ref.value.semanticRun = PASS.semantic;
-            em_ref.value.protection = (em_ref.value.ed.isAnonymous() ? em_ref.value.ed.protection : new Prot(Prot.Kind.public_)).copy();
-            em_ref.value.linkage = LINK.d;
-            em_ref.value.storage_class |= 8388608L;
-            if (em_ref.value.ed.isAnonymous())
+            em.semanticRun.value = PASS.semantic;
+            em.protection = (em.ed.isAnonymous() ? em.ed.protection : new Prot(Prot.Kind.public_)).copy();
+            em.linkage.value = LINK.d;
+            em.storage_class.value |= 8388608L;
+            if (em.ed.isAnonymous())
             {
-                if (em_ref.value.userAttribDecl != null)
-                    em_ref.value.userAttribDecl.userAttribDecl = em_ref.value.ed.userAttribDecl;
+                if (em.userAttribDecl != null)
+                    em.userAttribDecl.userAttribDecl = em.ed.userAttribDecl;
                 else
-                    em_ref.value.userAttribDecl = em_ref.value.ed.userAttribDecl;
+                    em.userAttribDecl = em.ed.userAttribDecl;
             }
-            boolean first = pequals(em_ref.value, (em_ref.value.ed.members.get()).get(0));
-            if (em_ref.value.origType != null)
+            boolean first = pequals(em, (em.ed.members.value.get()).get(0));
+            if (em.origType != null)
             {
-                em_ref.value.origType = typeSemantic(em_ref.value.origType, em_ref.value.loc, this.sc);
-                em_ref.value.type = em_ref.value.origType;
-                assert(em_ref.value.value() != null);
+                em.origType = typeSemantic(em.origType, em.loc.value, this.sc);
+                em.type.value = em.origType;
+                assert(em.value() != null);
             }
-            if (em_ref.value.value() != null)
+            if (em.value() != null)
             {
-                Expression e = em_ref.value.value();
+                Expression e = em.value();
                 assert((e.dyncast() == DYNCAST.expression));
                 e = expressionSemantic(e, this.sc);
                 e = resolveProperties(this.sc, e);
                 e = e.ctfeInterpret();
-                if (((e.op & 0xFF) == 127))
+                if (((e.op.value & 0xFF) == 127))
                     errorReturn.invoke();
                     return ;
-                if (first && (em_ref.value.ed.memtype == null) && !em_ref.value.ed.isAnonymous())
+                if (first && (em.ed.memtype.value == null) && !em.ed.isAnonymous())
                 {
-                    em_ref.value.ed.memtype = e.type.value;
-                    if (((em_ref.value.ed.memtype.ty & 0xFF) == ENUMTY.Terror))
+                    em.ed.memtype.value = e.type.value;
+                    if (((em.ed.memtype.value.ty.value & 0xFF) == ENUMTY.Terror))
                     {
-                        em_ref.value.ed.errors = true;
+                        em.ed.errors.value = true;
                         errorReturn.invoke();
                         return ;
                     }
-                    if (((em_ref.value.ed.memtype.ty & 0xFF) != ENUMTY.Terror))
+                    if (((em.ed.memtype.value.ty.value & 0xFF) != ENUMTY.Terror))
                     {
                         Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
                             public Void invoke(Dsymbol s) {
                                 EnumMember enm = s.isEnumMember();
-                                if ((enm == null) || (pequals(enm, em_ref.value)) || (enm.semanticRun < PASS.semanticdone) || (enm.origType != null))
+                                if ((enm == null) || (pequals(enm, em)) || (enm.semanticRun.value < PASS.semanticdone) || (enm.origType != null))
                                     return null;
                                 Expression ev = enm.value();
-                                ev = ev.implicitCastTo(sc, em_ref.value.ed.memtype);
+                                ev = ev.implicitCastTo(sc, em.ed.memtype.value);
                                 ev = ev.ctfeInterpret();
-                                ev = ev.castTo(sc, em_ref.value.ed.type);
-                                if (((ev.op & 0xFF) == 127))
-                                    em_ref.value.ed.errors = true;
+                                ev = ev.castTo(sc, em.ed.type);
+                                if (((ev.op.value & 0xFF) == 127))
+                                    em.ed.errors.value = true;
                                 enm.value() = ev;
                             }
                         };
-                        foreachDsymbol(em_ref.value.ed.members, __lambda3);
-                        if (em_ref.value.ed.errors)
+                        foreachDsymbol(em.ed.members.value, __lambda3);
+                        if (em.ed.errors.value)
                         {
-                            em_ref.value.ed.memtype = Type.terror.value;
+                            em.ed.memtype.value = Type.terror.value;
                             errorReturn.invoke();
                             return ;
                         }
                     }
                 }
-                if ((em_ref.value.ed.memtype != null) && (em_ref.value.origType == null))
+                if ((em.ed.memtype.value != null) && (em.origType == null))
                 {
-                    e = e.implicitCastTo(this.sc, em_ref.value.ed.memtype);
+                    e = e.implicitCastTo(this.sc, em.ed.memtype.value);
                     e = e.ctfeInterpret();
-                    em_ref.value.origValue = e;
-                    if (!em_ref.value.ed.isAnonymous())
+                    em.origValue = e;
+                    if (!em.ed.isAnonymous())
                     {
-                        e = e.castTo(this.sc, em_ref.value.ed.type.addMod(e.type.value.mod));
+                        e = e.castTo(this.sc, em.ed.type.addMod(e.type.value.mod.value));
                         e = e.ctfeInterpret();
                     }
                 }
-                else if (em_ref.value.origType != null)
+                else if (em.origType != null)
                 {
-                    e = e.implicitCastTo(this.sc, em_ref.value.origType);
+                    e = e.implicitCastTo(this.sc, em.origType);
                     e = e.ctfeInterpret();
-                    assert(em_ref.value.ed.isAnonymous());
-                    em_ref.value.origValue = e;
+                    assert(em.ed.isAnonymous());
+                    em.origValue = e;
                 }
-                em_ref.value.value() = e;
+                em.value() = e;
             }
             else if (first)
             {
                 Type t = null;
-                if (em_ref.value.ed.memtype != null)
-                    t = em_ref.value.ed.memtype;
+                if (em.ed.memtype.value != null)
+                    t = em.ed.memtype.value;
                 else
                 {
                     t = Type.tint32.value;
-                    if (!em_ref.value.ed.isAnonymous())
-                        em_ref.value.ed.memtype = t;
+                    if (!em.ed.isAnonymous())
+                        em.ed.memtype.value = t;
                 }
-                Expression e = new IntegerExp(em_ref.value.loc, 0L, t);
+                Expression e = new IntegerExp(em.loc.value, 0L, t);
                 e = e.ctfeInterpret();
-                em_ref.value.origValue = e;
-                if (!em_ref.value.ed.isAnonymous())
+                em.origValue = e;
+                if (!em.ed.isAnonymous())
                 {
-                    e = e.castTo(this.sc, em_ref.value.ed.type);
+                    e = e.castTo(this.sc, em.ed.type);
                     e = e.ctfeInterpret();
                 }
-                em_ref.value.value() = e;
+                em.value() = e;
             }
             else
             {
@@ -2169,7 +2165,7 @@ public class dsymbolsem {
                             EnumMember enm = s.isEnumMember();
                             if ((enm) != null)
                             {
-                                if ((pequals(enm, em_ref.value)))
+                                if ((pequals(enm, em)))
                                     return 1;
                                 emprev = enm;
                             }
@@ -2177,87 +2173,87 @@ public class dsymbolsem {
                         return 0;
                     }
                 };
-                foreachDsymbol(em_ref.value.ed.members, __lambda4);
+                foreachDsymbol(em.ed.members.value, __lambda4);
                 assert(emprev != null);
-                if ((emprev.semanticRun < PASS.semanticdone))
-                    dsymbolSemantic(emprev, emprev._scope);
-                if (emprev.errors)
+                if ((emprev.semanticRun.value < PASS.semanticdone))
+                    dsymbolSemantic(emprev, emprev._scope.value);
+                if (emprev.errors.value)
                     errorReturn.invoke();
                     return ;
                 Expression eprev = emprev.value();
-                Type tprev = eprev.type.value.toHeadMutable().equals(em_ref.value.ed.type.toHeadMutable()) ? em_ref.value.ed.memtype : eprev.type.value;
-                Expression emax = getProperty(tprev, em_ref.value.ed.loc, Id.max.value, 0);
+                Type tprev = eprev.type.value.toHeadMutable().equals(em.ed.type.toHeadMutable()) ? em.ed.memtype.value : eprev.type.value;
+                Expression emax = getProperty(tprev, em.ed.loc.value, Id.max.value, 0);
                 emax = expressionSemantic(emax, this.sc);
                 emax = emax.ctfeInterpret();
                 assert(eprev != null);
-                Expression e = new EqualExp(TOK.equal, em_ref.value.loc, eprev, emax);
+                Expression e = new EqualExp(TOK.equal, em.loc.value, eprev, emax);
                 e = expressionSemantic(e, this.sc);
                 e = e.ctfeInterpret();
                 if (e.toInteger() != 0)
                 {
-                    em_ref.value.error(new BytePtr("initialization with `%s.%s+1` causes overflow for type `%s`"), emprev.ed.toChars(), emprev.toChars(), em_ref.value.ed.memtype.toChars());
+                    em.error(new BytePtr("initialization with `%s.%s+1` causes overflow for type `%s`"), emprev.ed.toChars(), emprev.toChars(), em.ed.memtype.value.toChars());
                     errorReturn.invoke();
                     return ;
                 }
-                e = new AddExp(em_ref.value.loc, eprev, new IntegerExp(em_ref.value.loc, 1L, Type.tint32.value));
+                e = new AddExp(em.loc.value, eprev, new IntegerExp(em.loc.value, 1L, Type.tint32.value));
                 e = expressionSemantic(e, this.sc);
                 e = e.castTo(this.sc, eprev.type.value);
                 e = e.ctfeInterpret();
-                if (((e.op & 0xFF) != 127))
+                if (((e.op.value & 0xFF) != 127))
                 {
                     assert(emprev.origValue != null);
-                    em_ref.value.origValue = new AddExp(em_ref.value.loc, emprev.origValue, new IntegerExp(em_ref.value.loc, 1L, Type.tint32.value));
-                    em_ref.value.origValue = expressionSemantic(em_ref.value.origValue, this.sc);
-                    em_ref.value.origValue = em_ref.value.origValue.ctfeInterpret();
+                    em.origValue = new AddExp(em.loc.value, emprev.origValue, new IntegerExp(em.loc.value, 1L, Type.tint32.value));
+                    em.origValue = expressionSemantic(em.origValue, this.sc);
+                    em.origValue = em.origValue.ctfeInterpret();
                 }
-                if (((e.op & 0xFF) == 127))
+                if (((e.op.value & 0xFF) == 127))
                     errorReturn.invoke();
                     return ;
                 if (e.type.value.isfloating())
                 {
-                    Expression etest = new EqualExp(TOK.equal, em_ref.value.loc, e, eprev);
+                    Expression etest = new EqualExp(TOK.equal, em.loc.value, e, eprev);
                     etest = expressionSemantic(etest, this.sc);
                     etest = etest.ctfeInterpret();
                     if (etest.toInteger() != 0)
                     {
-                        em_ref.value.error(new BytePtr("has inexact value due to loss of precision"));
+                        em.error(new BytePtr("has inexact value due to loss of precision"));
                         errorReturn.invoke();
                         return ;
                     }
                 }
-                em_ref.value.value() = e;
+                em.value() = e;
             }
-            if (em_ref.value.origType == null)
-                em_ref.value.type = em_ref.value.value().type.value;
-            assert(em_ref.value.origValue != null);
-            em_ref.value.semanticRun = PASS.semanticdone;
+            if (em.origType == null)
+                em.type.value = em.value().type.value;
+            assert(em.origValue != null);
+            em.semanticRun.value = PASS.semanticdone;
         }
 
         public  void visit(TemplateDeclaration tempdecl) {
-            if ((tempdecl.semanticRun != PASS.init))
+            if ((tempdecl.semanticRun.value != PASS.init))
                 return ;
-            if (tempdecl._scope != null)
+            if (tempdecl._scope.value != null)
             {
-                this.sc = tempdecl._scope;
-                tempdecl._scope = null;
+                this.sc = tempdecl._scope.value;
+                tempdecl._scope.value = null;
             }
             if (this.sc == null)
                 return ;
-            if (((this.sc.get())._module != null) && (pequals((this.sc.get())._module.ident, Id.object.value)))
+            if (((this.sc.get())._module.value != null) && (pequals((this.sc.get())._module.value.ident.value, Id.object.value)))
             {
-                if ((pequals(tempdecl.ident, Id.RTInfo)))
+                if ((pequals(tempdecl.ident.value, Id.RTInfo)))
                     Type.rtinfo = tempdecl;
             }
-            if (tempdecl._scope == null)
+            if (tempdecl._scope.value == null)
             {
-                tempdecl._scope = (this.sc.get()).copy();
-                (tempdecl._scope.get()).setNoFree();
+                tempdecl._scope.value = (this.sc.get()).copy();
+                (tempdecl._scope.value.get()).setNoFree();
             }
-            tempdecl.semanticRun = PASS.semantic;
+            tempdecl.semanticRun.value = PASS.semantic;
             tempdecl.parent.value = (this.sc.get()).parent.value;
-            tempdecl.protection = (this.sc.get()).protection.copy();
+            tempdecl.protection = (this.sc.get()).protection.value.copy();
             tempdecl.namespace = (this.sc.get()).namespace;
-            tempdecl.isstatic = (tempdecl.toParent().isModule() != null) || (((tempdecl._scope.get()).stc & 1L) != 0);
+            tempdecl.isstatic = (tempdecl.toParent().isModule() != null) || (((tempdecl._scope.value.get()).stc.value & 1L) != 0);
             if (!tempdecl.isstatic)
             {
                 {
@@ -2269,35 +2265,35 @@ public class dsymbolsem {
             ScopeDsymbol paramsym = new ScopeDsymbol();
             paramsym.parent.value = tempdecl.parent.value;
             Ptr<Scope> paramscope = (this.sc.get()).push(paramsym);
-            (paramscope.get()).stc = 0L;
-            if (global.value.params.doDocComments)
+            (paramscope.get()).stc.value = 0L;
+            if (global.params.doDocComments)
             {
-                tempdecl.origParameters = new DArray<TemplateParameter>((tempdecl.parameters.get()).length);
+                tempdecl.origParameters.value = refPtr(new DArray<TemplateParameter>((tempdecl.parameters.get()).length.value));
                 {
                     int i = 0;
-                    for (; (i < (tempdecl.parameters.get()).length);i++){
+                    for (; (i < (tempdecl.parameters.get()).length.value);i++){
                         TemplateParameter tp = (tempdecl.parameters.get()).get(i);
-                        tempdecl.origParameters.get().set(i, tp.syntaxCopy());
+                        tempdecl.origParameters.value.get().set(i, tp.syntaxCopy());
                     }
                 }
             }
             {
                 int i = 0;
-                for (; (i < (tempdecl.parameters.get()).length);i++){
+                for (; (i < (tempdecl.parameters.get()).length.value);i++){
                     TemplateParameter tp = (tempdecl.parameters.get()).get(i);
                     if (!tp.declareParameter(paramscope))
                     {
-                        error(tp.loc, new BytePtr("parameter `%s` multiply defined"), tp.ident.toChars());
-                        tempdecl.errors = true;
+                        error(tp.loc.value, new BytePtr("parameter `%s` multiply defined"), tp.ident.value.toChars());
+                        tempdecl.errors.value = true;
                     }
                     if (!tpsemantic(tp, paramscope, tempdecl.parameters))
                     {
-                        tempdecl.errors = true;
+                        tempdecl.errors.value = true;
                     }
-                    if ((i + 1 != (tempdecl.parameters.get()).length) && (tp.isTemplateTupleParameter() != null))
+                    if ((i + 1 != (tempdecl.parameters.get()).length.value) && (tp.isTemplateTupleParameter() != null))
                     {
                         tempdecl.error(new BytePtr("template tuple parameter must be last one"));
-                        tempdecl.errors = true;
+                        tempdecl.errors.value = true;
                     }
                 }
             }
@@ -2305,12 +2301,12 @@ public class dsymbolsem {
             try {
                 {
                     int i = 0;
-                    for (; (i < (tempdecl.parameters.get()).length);i++){
+                    for (; (i < (tempdecl.parameters.get()).length.value);i++){
                         TemplateParameter tp = (tempdecl.parameters.get()).get(i);
                         tparams.value.set(0, tp);
                         {
                             int j = 0;
-                            for (; (j < (tempdecl.parameters.get()).length);j++){
+                            for (; (j < (tempdecl.parameters.get()).length.value);j++){
                                 if ((i == j))
                                     continue;
                                 {
@@ -2318,7 +2314,7 @@ public class dsymbolsem {
                                     if ((ttp) != null)
                                     {
                                         if (reliesOnTident(ttp.specType, ptr(tparams), 0))
-                                            tp.dependent = true;
+                                            tp.dependent.value = true;
                                     }
                                     else {
                                         TemplateAliasParameter tap = (tempdecl.parameters.get()).get(j).isTemplateAliasParameter();
@@ -2326,7 +2322,7 @@ public class dsymbolsem {
                                         {
                                             if (reliesOnTident(tap.specType, ptr(tparams), 0) || reliesOnTident(isType(tap.specAlias), ptr(tparams), 0))
                                             {
-                                                tp.dependent = true;
+                                                tp.dependent.value = true;
                                             }
                                         }
                                     }
@@ -2336,17 +2332,17 @@ public class dsymbolsem {
                     }
                 }
                 (paramscope.get()).pop();
-                tempdecl.onemember = null;
-                if (tempdecl.members != null)
+                tempdecl.onemember.value = null;
+                if (tempdecl.members.value != null)
                 {
                     Ref<Dsymbol> s = ref(null);
-                    if (Dsymbol.oneMembers(tempdecl.members, ptr(s), tempdecl.ident) && (s.value != null))
+                    if (Dsymbol.oneMembers(tempdecl.members.value, ptr(s), tempdecl.ident.value) && (s.value != null))
                     {
-                        tempdecl.onemember = s.value;
+                        tempdecl.onemember.value = s.value;
                         s.value.parent.value = tempdecl;
                     }
                 }
-                tempdecl.semanticRun = PASS.semanticdone;
+                tempdecl.semanticRun.value = PASS.semanticdone;
             }
             finally {
             }
@@ -2357,34 +2353,34 @@ public class dsymbolsem {
         }
 
         public  void visit(TemplateMixin tm) {
-            if ((tm.semanticRun != PASS.init))
+            if ((tm.semanticRun.value != PASS.init))
             {
                 return ;
             }
-            tm.semanticRun = PASS.semantic;
+            tm.semanticRun.value = PASS.semantic;
             Ptr<Scope> scx = null;
-            if (tm._scope != null)
+            if (tm._scope.value != null)
             {
-                this.sc = tm._scope;
-                scx = tm._scope;
-                tm._scope = null;
+                this.sc = tm._scope.value;
+                scx = tm._scope.value;
+                tm._scope.value = null;
             }
             if (!tm.findTempDecl(this.sc) || !tm.semanticTiargs(this.sc) || !tm.findBestMatch(this.sc, null))
             {
-                if ((tm.semanticRun == PASS.init))
+                if ((tm.semanticRun.value == PASS.init))
                 {
-                    tm._scope = scx != null ? scx : (this.sc.get()).copy();
-                    (tm._scope.get()).setNoFree();
+                    tm._scope.value = scx != null ? scx : (this.sc.get()).copy();
+                    (tm._scope.value.get()).setNoFree();
                     dmodule.Module.addDeferredSemantic(tm);
                     return ;
                 }
-                tm.inst = tm;
-                tm.errors = true;
+                tm.inst.value = tm;
+                tm.errors.value = true;
                 return ;
             }
-            TemplateDeclaration tempdecl = tm.tempdecl.isTemplateDeclaration();
+            TemplateDeclaration tempdecl = tm.tempdecl.value.isTemplateDeclaration();
             assert(tempdecl != null);
-            if (tm.ident == null)
+            if (tm.ident.value == null)
             {
                 BytePtr s = pcopy(new BytePtr("__mixin"));
                 {
@@ -2402,32 +2398,32 @@ public class dsymbolsem {
                         tm.symtab = (this.sc.get()).parent.value.isScopeDsymbol().symtab;
                     /*L1:*/
                         assert(tm.symtab != null);
-                        tm.ident = Identifier.generateId(s, tm.symtab.len() + 1);
+                        tm.ident.value = Identifier.generateId(s, tm.symtab.len() + 1);
                         tm.symtab.insert((Dsymbol)tm);
                     }
                 }
             }
-            tm.inst = tm;
+            tm.inst.value = tm;
             tm.parent.value = (this.sc.get()).parent.value;
             {
                 Dsymbol s = tm.parent.value;
             L_outer3:
                 for (; s != null;s = s.parent.value){
                     TemplateMixin tmix = s.isTemplateMixin();
-                    if ((tmix == null) || (!pequals(tempdecl, tmix.tempdecl)))
+                    if ((tmix == null) || (!pequals(tempdecl, tmix.tempdecl.value)))
                         continue L_outer3;
-                    if (((tm.tiargs.get()).length != (tmix.tiargs.get()).length))
+                    if (((tm.tiargs.value.get()).length.value != (tmix.tiargs.value.get()).length.value))
                         continue L_outer3;
                     try {
                         {
                             int i = 0;
                         L_outer4:
-                            for (; (i < (tm.tiargs.get()).length);i++){
-                                RootObject o = (tm.tiargs.get()).get(i);
+                            for (; (i < (tm.tiargs.value.get()).length.value);i++){
+                                RootObject o = (tm.tiargs.value.get()).get(i);
                                 Type ta = isType(o);
                                 Expression ea = isExpression(o);
                                 Dsymbol sa = isDsymbol(o);
-                                RootObject tmo = (tmix.tiargs.get()).get(i);
+                                RootObject tmo = (tmix.tiargs.value.get()).get(i);
                                 if (ta != null)
                                 {
                                     Type tmta = isType(tmo);
@@ -2460,14 +2456,14 @@ public class dsymbolsem {
                     continue L_outer3;
                 }
             }
-            tm.members = Dsymbol.arraySyntaxCopy(tempdecl.members);
-            if (tm.members == null)
+            tm.members.value = Dsymbol.arraySyntaxCopy(tempdecl.members.value);
+            if (tm.members.value == null)
                 return ;
             tm.symtab = new DsymbolTable();
             {
                 Ptr<Scope> sce = this.sc;
-                for (; 1 != 0;sce = (sce.get()).enclosing){
-                    ScopeDsymbol sds = (sce.get()).scopesym;
+                for (; 1 != 0;sce = (sce.get()).enclosing.value){
+                    ScopeDsymbol sds = (sce.get()).scopesym.value;
                     if (sds != null)
                     {
                         sds.importScope(tm, new Prot(Prot.Kind.public_));
@@ -2480,7 +2476,7 @@ public class dsymbolsem {
             tm.argsym = new ScopeDsymbol();
             tm.argsym.parent.value = (scy.get()).parent.value;
             Ptr<Scope> argscope = (scy.get()).push(tm.argsym);
-            int errorsave = global.value.errors;
+            int errorsave = global.errors.value;
             tm.declareParameters(argscope);
             Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s) {
@@ -2488,11 +2484,11 @@ public class dsymbolsem {
                     return null;
                 }
             };
-            foreachDsymbol(tm.members, __lambda2);
+            foreachDsymbol(tm.members.value, __lambda2);
             Ptr<Scope> sc2 = (argscope.get()).push(tm);
             if (((dsymbolsem.visitnest += 1) > 500))
             {
-                global.value.gag = 0;
+                global.gag.value = 0;
                 tm.error(new BytePtr("recursive expansion"));
                 fatal();
             }
@@ -2502,32 +2498,32 @@ public class dsymbolsem {
                     return null;
                 }
             };
-            foreachDsymbol(tm.members, __lambda4);
+            foreachDsymbol(tm.members.value, __lambda4);
             Function1<Dsymbol,Void> __lambda5 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s) {
                     s.importAll(sc2);
                     return null;
                 }
             };
-            foreachDsymbol(tm.members, __lambda5);
+            foreachDsymbol(tm.members.value, __lambda5);
             Function1<Dsymbol,Void> __lambda6 = new Function1<Dsymbol,Void>(){
                 public Void invoke(Dsymbol s) {
                     dsymbolSemantic(s, sc2);
                     return null;
                 }
             };
-            foreachDsymbol(tm.members, __lambda6);
+            foreachDsymbol(tm.members.value, __lambda6);
             dsymbolsem.visitnest--;
             AggregateDeclaration ad = tm.toParent().isAggregateDeclaration();
-            if (((this.sc.get()).func != null) && (ad == null))
+            if (((this.sc.get()).func.value != null) && (ad == null))
             {
                 semantic2(tm, sc2);
                 semantic3(tm, sc2);
             }
-            if ((global.value.errors != errorsave))
+            if ((global.errors.value != errorsave))
             {
                 tm.error(new BytePtr("error instantiating"));
-                tm.errors = true;
+                tm.errors.value = true;
             }
             (sc2.get()).pop();
             (argscope.get()).pop();
@@ -2535,12 +2531,12 @@ public class dsymbolsem {
         }
 
         public  void visit(Nspace ns) {
-            if ((ns.semanticRun != PASS.init))
+            if ((ns.semanticRun.value != PASS.init))
                 return ;
-            if (ns._scope != null)
+            if (ns._scope.value != null)
             {
-                this.sc = ns._scope;
-                ns._scope = null;
+                this.sc = ns._scope.value;
+                ns._scope.value = null;
             }
             if (this.sc == null)
                 return ;
@@ -2556,7 +2552,7 @@ public class dsymbolsem {
                 TupleExp tup = name != null ? null : resolved.toTupleExp();
                 if ((tup == null) && (name == null))
                 {
-                    error(ns.loc, new BytePtr("expected string expression for namespace name, got `%s`"), ns.identExp.toChars());
+                    error(ns.loc.value, new BytePtr("expected string expression for namespace name, got `%s`"), ns.identExp.toChars());
                     return ;
                 }
                 ns.identExp = resolved;
@@ -2565,16 +2561,16 @@ public class dsymbolsem {
                     ByteSlice ident = name.toStringz().copy();
                     if ((ident.getLength() == 0) || !Identifier.isValidIdentifier(ident))
                     {
-                        error(ns.loc, new BytePtr("expected valid identifer for C++ namespace but got `%.*s`"), ident.getLength(), toBytePtr(ident));
+                        error(ns.loc.value, new BytePtr("expected valid identifer for C++ namespace but got `%.*s`"), ident.getLength(), toBytePtr(ident));
                         return ;
                     }
-                    ns.ident = Identifier.idPool(ident);
+                    ns.ident.value = Identifier.idPool(ident);
                 }
                 else
                 {
                     Nspace parentns = ns;
                     {
-                        Slice<Expression> __r1150 = (tup.exps.get()).opSlice().copy();
+                        Slice<Expression> __r1150 = (tup.exps.value.get()).opSlice().copy();
                         int __key1149 = 0;
                         for (; (__key1149 < __r1150.getLength());__key1149 += 1) {
                             Expression exp = __r1150.get(__key1149);
@@ -2582,24 +2578,24 @@ public class dsymbolsem {
                             name = exp.toStringExp();
                             if (name == null)
                             {
-                                error(ns.loc, new BytePtr("expected string expression for namespace name, got `%s`"), exp.toChars());
+                                error(ns.loc.value, new BytePtr("expected string expression for namespace name, got `%s`"), exp.toChars());
                                 return ;
                             }
                             ByteSlice ident = name.toStringz().copy();
                             if ((ident.getLength() == 0) || !Identifier.isValidIdentifier(ident))
                             {
-                                error(ns.loc, new BytePtr("expected valid identifer for C++ namespace but got `%.*s`"), ident.getLength(), toBytePtr(ident));
+                                error(ns.loc.value, new BytePtr("expected valid identifer for C++ namespace but got `%.*s`"), ident.getLength(), toBytePtr(ident));
                                 return ;
                             }
                             if ((i == 0))
                             {
-                                ns.ident = Identifier.idPool(ident);
+                                ns.ident.value = Identifier.idPool(ident);
                             }
                             else
                             {
-                                Nspace childns = new Nspace(ns.loc, Identifier.idPool(ident), null, parentns.members);
-                                parentns.members = new DArray<Dsymbol>();
-                                (parentns.members.get()).push(childns);
+                                Nspace childns = new Nspace(ns.loc.value, Identifier.idPool(ident), null, parentns.members.value);
+                                parentns.members.value = refPtr(new DArray<Dsymbol>());
+                                (parentns.members.value.get()).push(childns);
                                 parentns = childns;
                                 repopulateMembers = true;
                             }
@@ -2607,29 +2603,29 @@ public class dsymbolsem {
                     }
                 }
             }
-            ns.semanticRun = PASS.semantic;
+            ns.semanticRun.value = PASS.semantic;
             ns.parent.value = (this.sc.get()).parent.value;
-            if (ns.members != null)
+            if (ns.members.value != null)
             {
                 assert(this.sc != null);
                 this.sc = (this.sc.get()).push(ns);
-                (this.sc.get()).linkage = LINK.cpp;
+                (this.sc.get()).linkage.value = LINK.cpp;
                 (this.sc.get()).parent.value = ns;
                 {
-                    Slice<Dsymbol> __r1151 = (ns.members.get()).opSlice().copy();
+                    Slice<Dsymbol> __r1151 = (ns.members.value.get()).opSlice().copy();
                     int __key1152 = 0;
                     for (; (__key1152 < __r1151.getLength());__key1152 += 1) {
                         Dsymbol s = __r1151.get(__key1152);
                         if (repopulateMembers)
                         {
-                            s.addMember(this.sc, (this.sc.get()).scopesym);
+                            s.addMember(this.sc, (this.sc.get()).scopesym.value);
                             s.setScope(this.sc);
                         }
                         s.importAll(this.sc);
                     }
                 }
                 {
-                    Slice<Dsymbol> __r1153 = (ns.members.get()).opSlice().copy();
+                    Slice<Dsymbol> __r1153 = (ns.members.value.get()).opSlice().copy();
                     int __key1154 = 0;
                     for (; (__key1154 < __r1153.getLength());__key1154 += 1) {
                         Dsymbol s = __r1153.get(__key1154);
@@ -2638,83 +2634,83 @@ public class dsymbolsem {
                 }
                 (this.sc.get()).pop();
             }
-            ns.semanticRun = PASS.semanticdone;
+            ns.semanticRun.value = PASS.semanticdone;
         }
 
         public  void funcDeclarationSemantic(FuncDeclaration funcdecl) {
             TypeFunction f = null;
             AggregateDeclaration ad = null;
             InterfaceDeclaration id = null;
-            if ((funcdecl.semanticRun != PASS.init) && (funcdecl.isFuncLiteralDeclaration() != null))
+            if ((funcdecl.semanticRun.value != PASS.init) && (funcdecl.isFuncLiteralDeclaration() != null))
             {
                 return ;
             }
-            if ((funcdecl.semanticRun >= PASS.semanticdone))
+            if ((funcdecl.semanticRun.value >= PASS.semanticdone))
                 return ;
-            assert((funcdecl.semanticRun <= PASS.semantic));
-            funcdecl.semanticRun = PASS.semantic;
-            if (funcdecl._scope != null)
+            assert((funcdecl.semanticRun.value <= PASS.semantic));
+            funcdecl.semanticRun.value = PASS.semantic;
+            if (funcdecl._scope.value != null)
             {
-                this.sc = funcdecl._scope;
-                funcdecl._scope = null;
+                this.sc = funcdecl._scope.value;
+                funcdecl._scope.value = null;
             }
-            if ((this.sc == null) || funcdecl.errors)
+            if ((this.sc == null) || funcdecl.errors.value)
                 return ;
             funcdecl.namespace = (this.sc.get()).namespace;
             funcdecl.parent.value = (this.sc.get()).parent.value;
             Dsymbol parent = funcdecl.toParent();
             funcdecl.foverrides.setDim(0);
-            funcdecl.storage_class |= (this.sc.get()).stc & -2097153L;
+            funcdecl.storage_class.value |= (this.sc.get()).stc.value & -2097153L;
             ad = funcdecl.isThis();
             if ((ad != null) && !funcdecl.generated)
             {
-                funcdecl.storage_class |= ad.storage_class & 2685403652L;
+                funcdecl.storage_class.value |= ad.storage_class & 2685403652L;
                 ad.makeNested();
             }
-            if ((this.sc.get()).func != null)
-                funcdecl.storage_class |= (this.sc.get()).func.storage_class & 137438953472L;
-            if (((funcdecl.storage_class & 2685403140L) != 0) && !((ad != null) || funcdecl.isNested()))
-                funcdecl.storage_class &= -2685403141L;
-            if (((this.sc.get()).flags & 256) != 0)
+            if ((this.sc.get()).func.value != null)
+                funcdecl.storage_class.value |= (this.sc.get()).func.value.storage_class.value & 137438953472L;
+            if (((funcdecl.storage_class.value & 2685403140L) != 0) && !((ad != null) || funcdecl.isNested()))
+                funcdecl.storage_class.value &= -2685403141L;
+            if (((this.sc.get()).flags.value & 256) != 0)
                 funcdecl.flags |= FUNCFLAG.compileTimeOnly;
             FuncLiteralDeclaration fld = funcdecl.isFuncLiteralDeclaration();
-            if ((fld != null) && (fld.treq != null))
+            if ((fld != null) && (fld.treq.value != null))
             {
-                Type treq = fld.treq;
-                assert(((treq.nextOf().ty & 0xFF) == ENUMTY.Tfunction));
-                if (((treq.ty & 0xFF) == ENUMTY.Tdelegate))
-                    fld.tok = TOK.delegate_;
-                else if (((treq.ty & 0xFF) == ENUMTY.Tpointer) && ((treq.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
-                    fld.tok = TOK.function_;
+                Type treq = fld.treq.value;
+                assert(((treq.nextOf().ty.value & 0xFF) == ENUMTY.Tfunction));
+                if (((treq.ty.value & 0xFF) == ENUMTY.Tdelegate))
+                    fld.tok.value = TOK.delegate_;
+                else if (((treq.ty.value & 0xFF) == ENUMTY.Tpointer) && ((treq.nextOf().ty.value & 0xFF) == ENUMTY.Tfunction))
+                    fld.tok.value = TOK.function_;
                 else
                     throw new AssertionError("Unreachable code!");
-                funcdecl.linkage = treq.nextOf().toTypeFunction().linkage;
+                funcdecl.linkage.value = treq.nextOf().toTypeFunction().linkage.value;
             }
             else
-                funcdecl.linkage = (this.sc.get()).linkage;
+                funcdecl.linkage.value = (this.sc.get()).linkage.value;
             funcdecl.inlining = (this.sc.get()).inlining;
-            funcdecl.protection = (this.sc.get()).protection.copy();
+            funcdecl.protection = (this.sc.get()).protection.value.copy();
             funcdecl.userAttribDecl = (this.sc.get()).userAttribDecl;
-            if (funcdecl.originalType == null)
-                funcdecl.originalType = funcdecl.type.syntaxCopy();
-            if (((funcdecl.type.ty & 0xFF) != ENUMTY.Tfunction))
+            if (funcdecl.originalType.value == null)
+                funcdecl.originalType.value = funcdecl.type.value.syntaxCopy();
+            if (((funcdecl.type.value.ty.value & 0xFF) != ENUMTY.Tfunction))
             {
-                if (((funcdecl.type.ty & 0xFF) != ENUMTY.Terror))
+                if (((funcdecl.type.value.ty.value & 0xFF) != ENUMTY.Terror))
                 {
-                    funcdecl.error(new BytePtr("`%s` must be a function instead of `%s`"), funcdecl.toChars(), funcdecl.type.toChars());
-                    funcdecl.type = Type.terror.value;
+                    funcdecl.error(new BytePtr("`%s` must be a function instead of `%s`"), funcdecl.toChars(), funcdecl.type.value.toChars());
+                    funcdecl.type.value = Type.terror.value;
                 }
-                funcdecl.errors = true;
+                funcdecl.errors.value = true;
                 return ;
             }
-            if (funcdecl.type.deco == null)
+            if (funcdecl.type.value.deco.value == null)
             {
                 this.sc = (this.sc.get()).push();
-                (this.sc.get()).stc |= funcdecl.storage_class & 137438954496L;
-                TypeFunction tf = funcdecl.type.toTypeFunction();
-                if ((this.sc.get()).func != null)
+                (this.sc.get()).stc.value |= funcdecl.storage_class.value & 137438954496L;
+                TypeFunction tf = funcdecl.type.value.toTypeFunction();
+                if ((this.sc.get()).func.value != null)
                 {
-                    if ((tf.purity == PURE.impure) && funcdecl.isNested() || (funcdecl.isThis() != null))
+                    if ((tf.purity.value == PURE.impure) && funcdecl.isNested() || (funcdecl.isThis() != null))
                     {
                         FuncDeclaration fd = null;
                         {
@@ -2735,127 +2731,127 @@ public class dsymbolsem {
                         }
                         if ((fd != null) && (fd.isPureBypassingInference() >= PURE.weak) && (funcdecl.isInstantiated() == null))
                         {
-                            tf.purity = PURE.fwdref;
+                            tf.purity.value = PURE.fwdref;
                         }
                     }
                 }
-                if (tf.isref)
-                    (this.sc.get()).stc |= 2097152L;
-                if (tf.isscope)
-                    (this.sc.get()).stc |= 524288L;
-                if (tf.isnothrow)
-                    (this.sc.get()).stc |= 33554432L;
-                if (tf.isnogc)
-                    (this.sc.get()).stc |= 4398046511104L;
-                if (tf.isproperty)
-                    (this.sc.get()).stc |= 4294967296L;
-                if ((tf.purity == PURE.fwdref))
-                    (this.sc.get()).stc |= 67108864L;
-                if ((tf.trust != TRUST.default_))
-                    (this.sc.get()).stc &= -60129542145L;
-                if ((tf.trust == TRUST.safe))
-                    (this.sc.get()).stc |= 8589934592L;
-                if ((tf.trust == TRUST.system))
-                    (this.sc.get()).stc |= 34359738368L;
-                if ((tf.trust == TRUST.trusted))
-                    (this.sc.get()).stc |= 17179869184L;
+                if (tf.isref.value)
+                    (this.sc.get()).stc.value |= 2097152L;
+                if (tf.isscope.value)
+                    (this.sc.get()).stc.value |= 524288L;
+                if (tf.isnothrow.value)
+                    (this.sc.get()).stc.value |= 33554432L;
+                if (tf.isnogc.value)
+                    (this.sc.get()).stc.value |= 4398046511104L;
+                if (tf.isproperty.value)
+                    (this.sc.get()).stc.value |= 4294967296L;
+                if ((tf.purity.value == PURE.fwdref))
+                    (this.sc.get()).stc.value |= 67108864L;
+                if ((tf.trust.value != TRUST.default_))
+                    (this.sc.get()).stc.value &= -60129542145L;
+                if ((tf.trust.value == TRUST.safe))
+                    (this.sc.get()).stc.value |= 8589934592L;
+                if ((tf.trust.value == TRUST.system))
+                    (this.sc.get()).stc.value |= 34359738368L;
+                if ((tf.trust.value == TRUST.trusted))
+                    (this.sc.get()).stc.value |= 17179869184L;
                 if (funcdecl.isCtorDeclaration() != null)
                 {
-                    (this.sc.get()).flags |= 1;
+                    (this.sc.get()).flags.value |= 1;
                     Type tret = ad.handleType();
                     assert(tret != null);
-                    tret = tret.addStorageClass(funcdecl.storage_class | (this.sc.get()).stc);
-                    tret = tret.addMod(funcdecl.type.mod);
-                    tf.next = tret;
+                    tret = tret.addStorageClass(funcdecl.storage_class.value | (this.sc.get()).stc.value);
+                    tret = tret.addMod(funcdecl.type.value.mod.value);
+                    tf.next.value = tret;
                     if (ad.isStructDeclaration() != null)
-                        (this.sc.get()).stc |= 2097152L;
+                        (this.sc.get()).stc.value |= 2097152L;
                 }
-                if ((ad != null) && (ad.isClassDeclaration() != null) && tf.isreturn || (((this.sc.get()).stc & 17592186044416L) != 0) && (((this.sc.get()).stc & 1L) == 0))
-                    (this.sc.get()).stc |= 524288L;
-                if ((((this.sc.get()).stc & 524288L) != 0) && (ad != null) && (ad.isStructDeclaration() != null) && !ad.type.hasPointers())
+                if ((ad != null) && (ad.isClassDeclaration() != null) && tf.isreturn.value || (((this.sc.get()).stc.value & 17592186044416L) != 0) && (((this.sc.get()).stc.value & 1L) == 0))
+                    (this.sc.get()).stc.value |= 524288L;
+                if ((((this.sc.get()).stc.value & 524288L) != 0) && (ad != null) && (ad.isStructDeclaration() != null) && !ad.type.value.hasPointers())
                 {
-                    (this.sc.get()).stc &= -524289L;
-                    tf.isscope = false;
+                    (this.sc.get()).stc.value &= -524289L;
+                    tf.isscope.value = false;
                 }
-                (this.sc.get()).linkage = funcdecl.linkage;
+                (this.sc.get()).linkage.value = funcdecl.linkage.value;
                 if (!tf.isNaked() && !((funcdecl.isThis() != null) || funcdecl.isNested()))
                 {
                     Ref<OutBuffer> buf = ref(new OutBuffer());
                     try {
-                        MODtoBuffer(ptr(buf), tf.mod);
+                        MODtoBuffer(ptr(buf), tf.mod.value);
                         funcdecl.error(new BytePtr("without `this` cannot be `%s`"), buf.value.peekChars());
-                        tf.mod = (byte)0;
+                        tf.mod.value = (byte)0;
                     }
                     finally {
                     }
                 }
-                long stc = funcdecl.storage_class;
-                if (funcdecl.type.isImmutable())
+                long stc = funcdecl.storage_class.value;
+                if (funcdecl.type.value.isImmutable())
                     stc |= 1048576L;
-                if (funcdecl.type.isConst())
+                if (funcdecl.type.value.isConst())
                     stc |= 4L;
-                if (funcdecl.type.isShared() || ((funcdecl.storage_class & 512L) != 0))
+                if (funcdecl.type.value.isShared() || ((funcdecl.storage_class.value & 512L) != 0))
                     stc |= 536870912L;
-                if (funcdecl.type.isWild())
+                if (funcdecl.type.value.isWild())
                     stc |= 2147483648L;
-                funcdecl.type = funcdecl.type.addSTC(stc);
-                funcdecl.type = typeSemantic(funcdecl.type, funcdecl.loc, this.sc);
+                funcdecl.type.value = funcdecl.type.value.addSTC(stc);
+                funcdecl.type.value = typeSemantic(funcdecl.type.value, funcdecl.loc.value, this.sc);
                 this.sc = (this.sc.get()).pop();
             }
-            if (((funcdecl.type.ty & 0xFF) != ENUMTY.Tfunction))
+            if (((funcdecl.type.value.ty.value & 0xFF) != ENUMTY.Tfunction))
             {
-                if (((funcdecl.type.ty & 0xFF) != ENUMTY.Terror))
+                if (((funcdecl.type.value.ty.value & 0xFF) != ENUMTY.Terror))
                 {
-                    funcdecl.error(new BytePtr("`%s` must be a function instead of `%s`"), funcdecl.toChars(), funcdecl.type.toChars());
-                    funcdecl.type = Type.terror.value;
+                    funcdecl.error(new BytePtr("`%s` must be a function instead of `%s`"), funcdecl.toChars(), funcdecl.type.value.toChars());
+                    funcdecl.type.value = Type.terror.value;
                 }
-                funcdecl.errors = true;
+                funcdecl.errors.value = true;
                 return ;
             }
             else
             {
-                TypeFunction tfo = funcdecl.originalType.toTypeFunction();
-                TypeFunction tfx = funcdecl.type.toTypeFunction();
-                tfo.mod = tfx.mod;
-                tfo.isscope = tfx.isscope;
-                tfo.isreturninferred = tfx.isreturninferred;
-                tfo.isscopeinferred = tfx.isscopeinferred;
-                tfo.isref = tfx.isref;
-                tfo.isnothrow = tfx.isnothrow;
-                tfo.isnogc = tfx.isnogc;
-                tfo.isproperty = tfx.isproperty;
-                tfo.purity = tfx.purity;
-                tfo.trust = tfx.trust;
-                funcdecl.storage_class &= -4465259184133L;
+                TypeFunction tfo = funcdecl.originalType.value.toTypeFunction();
+                TypeFunction tfx = funcdecl.type.value.toTypeFunction();
+                tfo.mod.value = tfx.mod.value;
+                tfo.isscope.value = tfx.isscope.value;
+                tfo.isreturninferred.value = tfx.isreturninferred.value;
+                tfo.isscopeinferred.value = tfx.isscopeinferred.value;
+                tfo.isref.value = tfx.isref.value;
+                tfo.isnothrow.value = tfx.isnothrow.value;
+                tfo.isnogc.value = tfx.isnogc.value;
+                tfo.isproperty.value = tfx.isproperty.value;
+                tfo.purity.value = tfx.purity.value;
+                tfo.trust.value = tfx.trust.value;
+                funcdecl.storage_class.value &= -4465259184133L;
             }
-            f = (TypeFunction)funcdecl.type;
-            if (((funcdecl.storage_class & 256L) != 0) && !f.isref && !funcdecl.inferRetType)
+            f = (TypeFunction)funcdecl.type.value;
+            if (((funcdecl.storage_class.value & 256L) != 0) && !f.isref.value && !funcdecl.inferRetType)
                 funcdecl.error(new BytePtr("storage class `auto` has no effect if return type is not inferred"));
-            if (f.isscope && !funcdecl.isNested() && (ad == null))
+            if (f.isscope.value && !funcdecl.isNested() && (ad == null))
             {
                 funcdecl.error(new BytePtr("functions cannot be `scope`"));
             }
-            if (f.isreturn && !funcdecl.needThis() && !funcdecl.isNested())
+            if (f.isreturn.value && !funcdecl.needThis() && !funcdecl.isNested())
             {
-                if (((this.sc.get()).scopesym != null) && ((this.sc.get()).scopesym.isAggregateDeclaration() != null))
+                if (((this.sc.get()).scopesym.value != null) && ((this.sc.get()).scopesym.value.isAggregateDeclaration() != null))
                     funcdecl.error(new BytePtr("`static` member has no `this` to which `return` can apply"));
                 else
-                    error(funcdecl.loc, new BytePtr("Top-level function `%s` has no `this` to which `return` can apply"), funcdecl.toChars());
+                    error(funcdecl.loc.value, new BytePtr("Top-level function `%s` has no `this` to which `return` can apply"), funcdecl.toChars());
             }
             if (funcdecl.isAbstract() && !funcdecl.isVirtual())
             {
                 BytePtr sfunc = null;
                 if (funcdecl.isStatic())
                     sfunc = pcopy(new BytePtr("static"));
-                else if ((funcdecl.protection.kind == Prot.Kind.private_) || (funcdecl.protection.kind == Prot.Kind.package_))
-                    sfunc = pcopy(protectionToChars(funcdecl.protection.kind));
+                else if ((funcdecl.protection.kind.value == Prot.Kind.private_) || (funcdecl.protection.kind.value == Prot.Kind.package_))
+                    sfunc = pcopy(protectionToChars(funcdecl.protection.kind.value));
                 else
                     sfunc = pcopy(new BytePtr("final"));
                 funcdecl.error(new BytePtr("`%s` functions cannot be `abstract`"), sfunc);
             }
             if (funcdecl.isOverride() && !funcdecl.isVirtual() && (funcdecl.isFuncLiteralDeclaration() == null))
             {
-                int kind = funcdecl.prot().kind;
+                int kind = funcdecl.prot().kind.value;
                 if ((kind == Prot.Kind.private_) || (kind == Prot.Kind.package_) && (funcdecl.isMember() != null))
                     funcdecl.error(new BytePtr("`%s` method is not virtual and cannot override"), protectionToChars(kind));
                 else
@@ -2866,10 +2862,10 @@ public class dsymbolsem {
             id = parent.isInterfaceDeclaration();
             if (id != null)
             {
-                funcdecl.storage_class |= 16L;
+                funcdecl.storage_class.value |= 16L;
                 if ((funcdecl.isCtorDeclaration() != null) || (funcdecl.isPostBlitDeclaration() != null) || (funcdecl.isDtorDeclaration() != null) || (funcdecl.isInvariantDeclaration() != null) || (funcdecl.isNewDeclaration() != null) || funcdecl.isDelete())
                     funcdecl.error(new BytePtr("constructors, destructors, postblits, invariants, new and delete functions are not allowed in interface `%s`"), id.toChars());
-                if ((funcdecl.fbody != null) && funcdecl.isVirtual())
+                if ((funcdecl.fbody.value != null) && funcdecl.isVirtual())
                     funcdecl.error(new BytePtr("function body only allowed in `final` functions in interface `%s`"), id.toChars());
             }
             {
@@ -2900,29 +2896,29 @@ public class dsymbolsem {
                         {
                             /*goto Ldone*/throw Dispatch0.INSTANCE;
                         }
-                        if ((funcdecl.storage_class & 16L) != 0)
-                            cd.isabstract = Abstract.yes;
+                        if ((funcdecl.storage_class.value & 16L) != 0)
+                            cd.isabstract.value = Abstract.yes;
                         if (!funcdecl.isVirtual())
                         {
                             /*goto Ldone*/throw Dispatch0.INSTANCE;
                         }
-                        if ((pequals(funcdecl.type.nextOf(), Type.terror.value)))
+                        if ((pequals(funcdecl.type.value.nextOf(), Type.terror.value)))
                             /*goto Ldone*/throw Dispatch0.INSTANCE;
                         boolean may_override = false;
                         {
                             int i = 0;
                         L_outer5:
-                            for (; (i < (cd.baseclasses.get()).length);i++){
+                            for (; (i < (cd.baseclasses.get()).length.value);i++){
                                 Ptr<BaseClass> b = (cd.baseclasses.get()).get(i);
-                                ClassDeclaration cbd = (b.get()).type.toBasetype().isClassHandle();
+                                ClassDeclaration cbd = (b.get()).type.value.toBasetype().isClassHandle();
                                 if (cbd == null)
                                     continue L_outer5;
                                 {
                                     int j = 0;
                                 L_outer6:
-                                    for (; (j < cbd.vtbl.value.length);j++){
+                                    for (; (j < cbd.vtbl.value.length.value);j++){
                                         FuncDeclaration f2 = cbd.vtbl.value.get(j).isFuncDeclaration();
-                                        if ((f2 == null) || (!pequals(f2.ident, funcdecl.ident)))
+                                        if ((f2 == null) || (!pequals(f2.ident.value, funcdecl.ident.value)))
                                             continue L_outer6;
                                         if ((cbd.parent.value != null) && (cbd.parent.value.isTemplateInstance() != null))
                                         {
@@ -2934,11 +2930,11 @@ public class dsymbolsem {
                                 }
                             }
                         }
-                        if (may_override && (funcdecl.type.nextOf() == null))
+                        if (may_override && (funcdecl.type.value.nextOf() == null))
                         {
                             funcdecl.error(new BytePtr("return type inference is not supported if may override base class function"));
                         }
-                        int vi = cd.baseClass != null ? funcdecl.findVtblIndex(ptr(cd.baseClass.vtbl.value), cd.baseClass.vtbl.value.length, true) : -1;
+                        int vi = cd.baseClass.value != null ? funcdecl.findVtblIndex(ptr(cd.baseClass.value.vtbl), cd.baseClass.value.vtbl.value.length.value, true) : -1;
                         boolean doesoverride = false;
                         try {
                             try {
@@ -2952,39 +2948,39 @@ public class dsymbolsem {
                                             /*Lintro:*/
                                             case -1:
                                             __dispatch1 = 0;
-                                                if (cd.baseClass != null)
+                                                if (cd.baseClass.value != null)
                                                 {
-                                                    Dsymbol s = cd.baseClass.search(funcdecl.loc, funcdecl.ident, 8);
+                                                    Dsymbol s = cd.baseClass.value.search(funcdecl.loc.value, funcdecl.ident.value, 8);
                                                     if (s != null)
                                                     {
                                                         FuncDeclaration f2 = s.isFuncDeclaration();
                                                         if (f2 != null)
                                                         {
-                                                            f2 = f2.overloadExactMatch(funcdecl.type);
-                                                            if ((f2 != null) && f2.isFinalFunc() && (f2.prot().kind != Prot.Kind.private_))
+                                                            f2 = f2.overloadExactMatch(funcdecl.type.value);
+                                                            if ((f2 != null) && f2.isFinalFunc() && (f2.prot().kind.value != Prot.Kind.private_))
                                                                 funcdecl.error(new BytePtr("cannot override `final` function `%s`"), f2.toPrettyChars(false));
                                                         }
                                                     }
                                                 }
-                                                if (global.value.params.mscoff && (cd.classKind == ClassKind.cpp) && (cd.baseClass != null) && (cd.baseClass.vtbl.value.length != 0))
+                                                if (global.params.mscoff && (cd.classKind.value == ClassKind.cpp) && (cd.baseClass.value != null) && (cd.baseClass.value.vtbl.value.length.value != 0))
                                                 {
                                                     funcdecl.interfaceVirtual = funcdecl.overrideInterface();
                                                     if (funcdecl.interfaceVirtual != null)
                                                     {
-                                                        cd.vtblFinal.push(funcdecl);
+                                                        cd.vtblFinal.value.push(funcdecl);
                                                         /*goto Linterfaces*/throw Dispatch0.INSTANCE;
                                                     }
                                                 }
                                                 if (funcdecl.isFinalFunc())
                                                 {
-                                                    cd.vtblFinal.push(funcdecl);
+                                                    cd.vtblFinal.value.push(funcdecl);
                                                 }
                                                 else
                                                 {
                                                     funcdecl.introducing = true;
-                                                    if ((cd.classKind == ClassKind.cpp) && target.value.reverseCppOverloads)
+                                                    if ((cd.classKind.value == ClassKind.cpp) && target.reverseCppOverloads)
                                                     {
-                                                        funcdecl.vtblIndex = cd.vtbl.value.length;
+                                                        funcdecl.vtblIndex.value = cd.vtbl.value.length.value;
                                                         boolean found = false;
                                                         {
                                                             Slice<Dsymbol> __r1156 = cd.vtbl.value.opSlice().copy();
@@ -2993,30 +2989,30 @@ public class dsymbolsem {
                                                                 Dsymbol s_1 = __r1156.get(__key1155);
                                                                 int i = __key1155;
                                                                 if (found)
-                                                                    s_1.isFuncDeclaration().vtblIndex += 1;
-                                                                else if ((pequals(s_1.ident, funcdecl.ident)) && (pequals(s_1.parent.value, parent)))
+                                                                    s_1.isFuncDeclaration().vtblIndex.value += 1;
+                                                                else if ((pequals(s_1.ident.value, funcdecl.ident.value)) && (pequals(s_1.parent.value, parent)))
                                                                 {
-                                                                    funcdecl.vtblIndex = i;
+                                                                    funcdecl.vtblIndex.value = i;
                                                                     found = true;
-                                                                    s_1.isFuncDeclaration().vtblIndex += 1;
+                                                                    s_1.isFuncDeclaration().vtblIndex.value += 1;
                                                                 }
                                                             }
                                                         }
-                                                        cd.vtbl.value.insert(funcdecl.vtblIndex, funcdecl);
+                                                        cd.vtbl.value.insert(funcdecl.vtblIndex.value, funcdecl);
                                                     }
                                                     else
                                                     {
-                                                        vi = cd.vtbl.value.length;
+                                                        vi = cd.vtbl.value.length.value;
                                                         cd.vtbl.value.push(funcdecl);
-                                                        funcdecl.vtblIndex = vi;
+                                                        funcdecl.vtblIndex.value = vi;
                                                     }
                                                 }
                                                 break;
                                             case -2:
-                                                funcdecl.errors = true;
+                                                funcdecl.errors.value = true;
                                                 return ;
                                             default:
-                                            FuncDeclaration fdv = cd.baseClass.vtbl.value.get(vi).isFuncDeclaration();
+                                            FuncDeclaration fdv = cd.baseClass.value.vtbl.value.get(vi).isFuncDeclaration();
                                             FuncDeclaration fdc = cd.vtbl.value.get(vi).isFuncDeclaration();
                                             if ((pequals(fdc, funcdecl)))
                                             {
@@ -3025,27 +3021,27 @@ public class dsymbolsem {
                                             }
                                             if ((pequals(fdc.toParent(), parent)))
                                             {
-                                                if (((fdc.type.mod & 0xFF) == (fdv.type.mod & 0xFF)) && ((funcdecl.type.mod & 0xFF) != (fdv.type.mod & 0xFF)))
+                                                if (((fdc.type.value.mod.value & 0xFF) == (fdv.type.value.mod.value & 0xFF)) && ((funcdecl.type.value.mod.value & 0xFF) != (fdv.type.value.mod.value & 0xFF)))
                                                     /*goto Lintro*/{ __dispatch1 = -1; continue dispatched_1; }
                                             }
                                             if (fdv.isDeprecated())
-                                                deprecation(funcdecl.loc, new BytePtr("`%s` is overriding the deprecated method `%s`"), funcdecl.toPrettyChars(false), fdv.toPrettyChars(false));
+                                                deprecation(funcdecl.loc.value, new BytePtr("`%s` is overriding the deprecated method `%s`"), funcdecl.toPrettyChars(false), fdv.toPrettyChars(false));
                                             if (fdv.isFinalFunc())
                                                 funcdecl.error(new BytePtr("cannot override `final` function `%s`"), fdv.toPrettyChars(false));
                                             if (!funcdecl.isOverride())
                                             {
                                                 if (fdv.isFuture())
                                                 {
-                                                    deprecation(funcdecl.loc, new BytePtr("`@__future` base class method `%s` is being overridden by `%s`; rename the latter"), fdv.toPrettyChars(false), funcdecl.toPrettyChars(false));
+                                                    deprecation(funcdecl.loc.value, new BytePtr("`@__future` base class method `%s` is being overridden by `%s`; rename the latter"), fdv.toPrettyChars(false), funcdecl.toPrettyChars(false));
                                                     /*goto Lintro*/{ __dispatch1 = -1; continue dispatched_1; }
                                                 }
                                                 else
                                                 {
-                                                    int vi2 = funcdecl.findVtblIndex(ptr(cd.baseClass.vtbl.value), cd.baseClass.vtbl.value.length, false);
+                                                    int vi2 = funcdecl.findVtblIndex(ptr(cd.baseClass.value.vtbl), cd.baseClass.value.vtbl.value.length.value, false);
                                                     if ((vi2 < 0))
-                                                        deprecation(funcdecl.loc, new BytePtr("cannot implicitly override base class method `%s` with `%s`; add `override` attribute"), fdv.toPrettyChars(false), funcdecl.toPrettyChars(false));
+                                                        deprecation(funcdecl.loc.value, new BytePtr("cannot implicitly override base class method `%s` with `%s`; add `override` attribute"), fdv.toPrettyChars(false), funcdecl.toPrettyChars(false));
                                                     else
-                                                        error(funcdecl.loc, new BytePtr("cannot implicitly override base class method `%s` with `%s`; add `override` attribute"), fdv.toPrettyChars(false), funcdecl.toPrettyChars(false));
+                                                        error(funcdecl.loc.value, new BytePtr("cannot implicitly override base class method `%s` with `%s`; add `override` attribute"), fdv.toPrettyChars(false), funcdecl.toPrettyChars(false));
                                                 }
                                             }
                                             doesoverride = true;
@@ -3059,15 +3055,15 @@ public class dsymbolsem {
                                                 }
                                                 else if (thismixin)
                                                 {
-                                                    int vitmp = cd.vtbl.value.length;
+                                                    int vitmp = cd.vtbl.value.length.value;
                                                     cd.vtbl.value.push(fdc);
-                                                    fdc.vtblIndex = vitmp;
+                                                    fdc.vtblIndex.value = vitmp;
                                                 }
                                                 else if (fdcmixin)
                                                 {
-                                                    int vitmp_1 = cd.vtbl.value.length;
+                                                    int vitmp_1 = cd.vtbl.value.length.value;
                                                     cd.vtbl.value.push(funcdecl);
-                                                    funcdecl.vtblIndex = vitmp_1;
+                                                    funcdecl.vtblIndex.value = vitmp_1;
                                                     break;
                                                 }
                                                 else
@@ -3076,16 +3072,16 @@ public class dsymbolsem {
                                                 }
                                             }
                                             cd.vtbl.value.set(vi, funcdecl);
-                                            funcdecl.vtblIndex = vi;
+                                            funcdecl.vtblIndex.value = vi;
                                             funcdecl.foverrides.push(fdv);
-                                            if (fdv.tintro != null)
-                                                funcdecl.tintro = fdv.tintro;
-                                            else if (!funcdecl.type.equals(fdv.type))
+                                            if (fdv.tintro.value != null)
+                                                funcdecl.tintro.value = fdv.tintro.value;
+                                            else if (!funcdecl.type.value.equals(fdv.type.value))
                                             {
                                                 IntRef offset = ref(0);
-                                                if (fdv.type.nextOf().isBaseOf(funcdecl.type.nextOf(), ptr(offset)))
+                                                if (fdv.type.value.nextOf().isBaseOf(funcdecl.type.value.nextOf(), ptr(offset)))
                                                 {
-                                                    funcdecl.tintro = fdv.type;
+                                                    funcdecl.tintro.value = fdv.type.value;
                                                 }
                                             }
                                             break;
@@ -3097,45 +3093,45 @@ public class dsymbolsem {
                         /*Linterfaces:*/
                             boolean foundVtblMatch = false;
                             {
-                                Slice<Ptr<BaseClass>> __r1157 = cd.interfaces.copy();
+                                Slice<Ptr<BaseClass>> __r1157 = cd.interfaces.value.copy();
                                 int __key1158 = 0;
                                 for (; (__key1158 < __r1157.getLength());__key1158 += 1) {
                                     Ptr<BaseClass> b = __r1157.get(__key1158);
-                                    vi = funcdecl.findVtblIndex(ptr((b.get()).sym.vtbl.value), (b.get()).sym.vtbl.value.length, true);
+                                    vi = funcdecl.findVtblIndex(ptr((b.get()).sym.value.vtbl), (b.get()).sym.value.vtbl.value.length.value, true);
                                     switch (vi)
                                     {
                                         case -1:
                                             break;
                                         case -2:
-                                            funcdecl.errors = true;
+                                            funcdecl.errors.value = true;
                                             return ;
                                         default:
-                                        FuncDeclaration fdv = (FuncDeclaration)(b.get()).sym.vtbl.value.get(vi);
+                                        FuncDeclaration fdv = (FuncDeclaration)(b.get()).sym.value.vtbl.value.get(vi);
                                         Type ti = null;
                                         foundVtblMatch = true;
                                         funcdecl.foverrides.push(fdv);
-                                        if (fdv.tintro != null)
-                                            ti = fdv.tintro;
-                                        else if (!funcdecl.type.equals(fdv.type))
+                                        if (fdv.tintro.value != null)
+                                            ti = fdv.tintro.value;
+                                        else if (!funcdecl.type.value.equals(fdv.type.value))
                                         {
                                             IntRef offset = ref(0);
-                                            if (fdv.type.nextOf().isBaseOf(funcdecl.type.nextOf(), ptr(offset)))
+                                            if (fdv.type.value.nextOf().isBaseOf(funcdecl.type.value.nextOf(), ptr(offset)))
                                             {
-                                                ti = fdv.type;
+                                                ti = fdv.type.value;
                                             }
                                         }
                                         if (ti != null)
                                         {
-                                            if (funcdecl.tintro != null)
+                                            if (funcdecl.tintro.value != null)
                                             {
-                                                if (!funcdecl.tintro.nextOf().equals(ti.nextOf()) && !funcdecl.tintro.nextOf().isBaseOf(ti.nextOf(), null) && !ti.nextOf().isBaseOf(funcdecl.tintro.nextOf(), null))
+                                                if (!funcdecl.tintro.value.nextOf().equals(ti.nextOf()) && !funcdecl.tintro.value.nextOf().isBaseOf(ti.nextOf(), null) && !ti.nextOf().isBaseOf(funcdecl.tintro.value.nextOf(), null))
                                                 {
-                                                    funcdecl.error(new BytePtr("incompatible covariant types `%s` and `%s`"), funcdecl.tintro.toChars(), ti.toChars());
+                                                    funcdecl.error(new BytePtr("incompatible covariant types `%s` and `%s`"), funcdecl.tintro.value.toChars(), ti.toChars());
                                                 }
                                             }
                                             else
                                             {
-                                                funcdecl.tintro = ti;
+                                                funcdecl.tintro.value = ti;
                                             }
                                         }
                                     }
@@ -3145,15 +3141,15 @@ public class dsymbolsem {
                             {
                                 /*goto L2*/throw Dispatch1.INSTANCE;
                             }
-                            if (!doesoverride && funcdecl.isOverride() && (funcdecl.type.nextOf() != null) || !may_override)
+                            if (!doesoverride && funcdecl.isOverride() && (funcdecl.type.value.nextOf() != null) || !may_override)
                             {
                                 Ptr<BaseClass> bc = null;
                                 Dsymbol s = null;
                                 {
                                     int i = 0;
-                                    for (; (i < (cd.baseclasses.get()).length);i++){
+                                    for (; (i < (cd.baseclasses.get()).length.value);i++){
                                         bc = (cd.baseclasses.get()).get(i);
-                                        s = (bc.get()).sym.search_correct(funcdecl.ident);
+                                        s = (bc.get()).sym.value.search_correct(funcdecl.ident.value);
                                         if (s != null)
                                             break;
                                     }
@@ -3164,22 +3160,22 @@ public class dsymbolsem {
                                     Ref<OutBuffer> buf = ref(new OutBuffer());
                                     try {
                                         FuncDeclaration fd = s.isFuncDeclaration();
-                                        functionToBufferFull((TypeFunction)funcdecl.type, ptr(buf), new Identifier(funcdecl.toPrettyChars(false)), ptr(hgs), null);
+                                        functionToBufferFull((TypeFunction)funcdecl.type.value, ptr(buf), new Identifier(funcdecl.toPrettyChars(false)), ptr(hgs), null);
                                         BytePtr funcdeclToChars = pcopy(buf.value.peekChars());
                                         if (fd != null)
                                         {
                                             Ref<OutBuffer> buf1 = ref(new OutBuffer());
                                             try {
-                                                functionToBufferFull((TypeFunction)fd.type, ptr(buf1), new Identifier(fd.toPrettyChars(false)), ptr(hgs), null);
-                                                error(funcdecl.loc, new BytePtr("function `%s` does not override any function, did you mean to override `%s`?"), funcdeclToChars, buf1.value.peekChars());
+                                                functionToBufferFull((TypeFunction)fd.type.value, ptr(buf1), new Identifier(fd.toPrettyChars(false)), ptr(hgs), null);
+                                                error(funcdecl.loc.value, new BytePtr("function `%s` does not override any function, did you mean to override `%s`?"), funcdeclToChars, buf1.value.peekChars());
                                             }
                                             finally {
                                             }
                                         }
                                         else
                                         {
-                                            error(funcdecl.loc, new BytePtr("function `%s` does not override any function, did you mean to override %s `%s`?"), funcdeclToChars, s.kind(), s.toPrettyChars(false));
-                                            errorSupplemental(funcdecl.loc, new BytePtr("Functions are the only declarations that may be overriden"));
+                                            error(funcdecl.loc.value, new BytePtr("function `%s` does not override any function, did you mean to override %s `%s`?"), funcdeclToChars, s.kind(), s.toPrettyChars(false));
+                                            errorSupplemental(funcdecl.loc.value, new BytePtr("Functions are the only declarations that may be overriden"));
                                         }
                                     }
                                     finally {
@@ -3195,21 +3191,21 @@ public class dsymbolsem {
                         objc().checkLinkage(funcdecl);
                         objc().addToClassMethodList(funcdecl, cd);
                         {
-                            Slice<Ptr<BaseClass>> __r1159 = cd.interfaces.copy();
+                            Slice<Ptr<BaseClass>> __r1159 = cd.interfaces.value.copy();
                             int __key1160 = 0;
                             for (; (__key1160 < __r1159.getLength());__key1160 += 1) {
                                 Ptr<BaseClass> b = __r1159.get(__key1160);
-                                if ((b.get()).sym != null)
+                                if ((b.get()).sym.value != null)
                                 {
-                                    Dsymbol s = search_function((b.get()).sym, funcdecl.ident);
+                                    Dsymbol s = search_function((b.get()).sym.value, funcdecl.ident.value);
                                     if (s != null)
                                     {
                                         FuncDeclaration f2 = s.isFuncDeclaration();
                                         if (f2 != null)
                                         {
-                                            f2 = f2.overloadExactMatch(funcdecl.type);
-                                            if ((f2 != null) && f2.isFinalFunc() && (f2.prot().kind != Prot.Kind.private_))
-                                                funcdecl.error(new BytePtr("cannot override `final` function `%s.%s`"), (b.get()).sym.toChars(), f2.toPrettyChars(false));
+                                            f2 = f2.overloadExactMatch(funcdecl.type.value);
+                                            if ((f2 != null) && f2.isFinalFunc() && (f2.prot().kind.value != Prot.Kind.private_))
+                                                funcdecl.error(new BytePtr("cannot override `final` function `%s.%s`"), (b.get()).sym.value.toChars(), f2.toPrettyChars(false));
                                         }
                                     }
                                 }
@@ -3217,10 +3213,10 @@ public class dsymbolsem {
                         }
                         if (funcdecl.isOverride())
                         {
-                            if ((funcdecl.storage_class & 137438953472L) != 0)
-                                deprecation(funcdecl.loc, new BytePtr("`%s` cannot be annotated with `@disable` because it is overriding a function in the base class"), funcdecl.toPrettyChars(false));
+                            if ((funcdecl.storage_class.value & 137438953472L) != 0)
+                                deprecation(funcdecl.loc.value, new BytePtr("`%s` cannot be annotated with `@disable` because it is overriding a function in the base class"), funcdecl.toPrettyChars(false));
                             if (funcdecl.isDeprecated())
-                                deprecation(funcdecl.loc, new BytePtr("`%s` cannot be marked as `deprecated` because it is overriding a function in the base class"), funcdecl.toPrettyChars(false));
+                                deprecation(funcdecl.loc.value, new BytePtr("`%s` cannot be marked as `deprecated` because it is overriding a function in the base class"), funcdecl.toPrettyChars(false));
                         }
                     }
                     else if (funcdecl.isOverride() && (parent.isTemplateInstance() == null))
@@ -3232,11 +3228,11 @@ public class dsymbolsem {
                         objc().setSelector(funcdecl, this.sc);
                 }
                 objc().validateSelector(funcdecl);
-                f = funcdecl.type.toTypeFunction();
+                f = funcdecl.type.value.toTypeFunction();
             }
             catch(Dispatch0 __d){}
         /*Ldone:*/
-            if ((funcdecl.fbody == null) && !allowsContractWithoutBody(funcdecl))
+            if ((funcdecl.fbody.value == null) && !allowsContractWithoutBody(funcdecl))
                 funcdecl.error(new BytePtr("`in` and `out` contracts can only appear without a body when they are virtual interface functions or abstract"));
             if (funcdecl.isVirtual())
             {
@@ -3244,12 +3240,12 @@ public class dsymbolsem {
                 if (ti != null)
                 {
                     for (; 1 != 0;){
-                        TemplateInstance ti2 = ti.tempdecl.parent.value.isTemplateInstance();
+                        TemplateInstance ti2 = ti.tempdecl.value.parent.value.isTemplateInstance();
                         if (ti2 == null)
                             break;
                         ti = ti2;
                     }
-                    ClassDeclaration cd = ti.tempdecl.isClassMember();
+                    ClassDeclaration cd = ti.tempdecl.value.isClassMember();
                     if (cd != null)
                     {
                         funcdecl.error(new BytePtr("cannot use template to add virtual function to class `%s`"), cd.toChars());
@@ -3261,31 +3257,31 @@ public class dsymbolsem {
             if (funcdecl.canInferAttributes(this.sc))
                 funcdecl.initInferAttributes();
             dmodule.Module.dprogress++;
-            funcdecl.semanticRun = PASS.semanticdone;
-            funcdecl._scope = (this.sc.get()).copy();
-            (funcdecl._scope.get()).setNoFree();
-            if (global.value.params.verbose && !dsymbolsem.funcDeclarationSemanticprintedMain)
+            funcdecl.semanticRun.value = PASS.semanticdone;
+            funcdecl._scope.value = (this.sc.get()).copy();
+            (funcdecl._scope.value.get()).setNoFree();
+            if (global.params.verbose && !dsymbolsem.funcDeclarationSemanticprintedMain)
             {
                 BytePtr type = pcopy(funcdecl.isMain() ? new BytePtr("main") : funcdecl.isWinMain() ? new BytePtr("winmain") : funcdecl.isDllMain() ? new BytePtr("dllmain") : null);
-                dmodule.Module mod = (this.sc.get())._module;
+                dmodule.Module mod = (this.sc.get())._module.value;
                 if ((type != null) && (mod != null))
                 {
                     dsymbolsem.funcDeclarationSemanticprintedMain = true;
-                    BytePtr name = pcopy(FileName.searchPath(global.value.path, mod.srcfile.toChars(), true));
+                    BytePtr name = pcopy(FileName.searchPath(global.path, mod.srcfile.toChars(), true));
                     message(new BytePtr("entry     %-10s\u0009%s"), type, name);
                 }
             }
-            if ((funcdecl.fbody != null) && funcdecl.isMain() && (this.sc.get())._module.isRoot())
+            if ((funcdecl.fbody.value != null) && funcdecl.isMain() && (this.sc.get())._module.value.isRoot())
                 Compiler.genCmain(this.sc);
-            assert(((funcdecl.type.ty & 0xFF) != ENUMTY.Terror) || funcdecl.errors);
+            assert(((funcdecl.type.value.ty.value & 0xFF) != ENUMTY.Terror) || funcdecl.errors.value);
             {
                 int __key1161 = 0;
                 int __limit1162 = f.parameterList.length();
                 for (; (__key1161 < __limit1162);__key1161 += 1) {
                     int i = __key1161;
                     Parameter param = f.parameterList.get(i);
-                    if ((param != null) && (param.userAttribDecl != null))
-                        dsymbolSemantic(param.userAttribDecl, this.sc);
+                    if ((param != null) && (param.userAttribDecl.value != null))
+                        dsymbolSemantic(param.userAttribDecl.value, this.sc);
                 }
             }
         }
@@ -3295,38 +3291,38 @@ public class dsymbolsem {
         }
 
         public  void visit(CtorDeclaration ctd) {
-            if ((ctd.semanticRun >= PASS.semanticdone))
+            if ((ctd.semanticRun.value >= PASS.semanticdone))
                 return ;
-            if (ctd._scope != null)
+            if (ctd._scope.value != null)
             {
-                this.sc = ctd._scope;
-                ctd._scope = null;
+                this.sc = ctd._scope.value;
+                ctd._scope.value = null;
             }
             ctd.parent.value = (this.sc.get()).parent.value;
             Dsymbol p = ctd.toParentDecl();
             AggregateDeclaration ad = p.isAggregateDeclaration();
             if (ad == null)
             {
-                error(ctd.loc, new BytePtr("constructor can only be a member of aggregate, not %s `%s`"), p.kind(), p.toChars());
-                ctd.type = Type.terror.value;
-                ctd.errors = true;
+                error(ctd.loc.value, new BytePtr("constructor can only be a member of aggregate, not %s `%s`"), p.kind(), p.toChars());
+                ctd.type.value = Type.terror.value;
+                ctd.errors.value = true;
                 return ;
             }
             this.sc = (this.sc.get()).push();
-            if (((this.sc.get()).stc & 1L) != 0)
+            if (((this.sc.get()).stc.value & 1L) != 0)
             {
-                if (((this.sc.get()).stc & 536870912L) != 0)
-                    deprecation(ctd.loc, new BytePtr("`shared static` has no effect on a constructor inside a `shared static` block. Use `shared static this()`"));
+                if (((this.sc.get()).stc.value & 536870912L) != 0)
+                    deprecation(ctd.loc.value, new BytePtr("`shared static` has no effect on a constructor inside a `shared static` block. Use `shared static this()`"));
                 else
-                    deprecation(ctd.loc, new BytePtr("`static` has no effect on a constructor inside a `static` block. Use `static this()`"));
+                    deprecation(ctd.loc.value, new BytePtr("`static` has no effect on a constructor inside a `static` block. Use `static this()`"));
             }
-            (this.sc.get()).stc &= -2L;
-            (this.sc.get()).flags |= 1;
+            (this.sc.get()).stc.value &= -2L;
+            (this.sc.get()).flags.value |= 1;
             this.funcDeclarationSemantic(ctd);
             (this.sc.get()).pop();
-            if (ctd.errors)
+            if (ctd.errors.value)
                 return ;
-            TypeFunction tf = ctd.type.toTypeFunction();
+            TypeFunction tf = ctd.type.value.toTypeFunction();
             if ((ad != null) && (ctd.parent.value.isTemplateInstance() == null) || (ctd.parent.value.isTemplateMixin() != null))
             {
                 int dim = tf.parameterList.length();
@@ -3334,39 +3330,39 @@ public class dsymbolsem {
                     StructDeclaration sd = ad.isStructDeclaration();
                     if ((sd) != null)
                     {
-                        if ((dim == 0) && (tf.parameterList.varargs == VarArg.none))
+                        if ((dim == 0) && (tf.parameterList.varargs.value == VarArg.none))
                         {
-                            if ((ctd.fbody != null) || ((ctd.storage_class & 137438953472L) == 0))
+                            if ((ctd.fbody.value != null) || ((ctd.storage_class.value & 137438953472L) == 0))
                             {
                                 ctd.error(new BytePtr("default constructor for structs only allowed with `@disable`, no body, and no parameters"));
-                                ctd.storage_class |= 137438953472L;
-                                ctd.fbody = null;
+                                ctd.storage_class.value |= 137438953472L;
+                                ctd.fbody.value = null;
                             }
-                            sd.noDefaultCtor = true;
+                            sd.noDefaultCtor.value = true;
                         }
-                        else if ((dim == 0) && (tf.parameterList.varargs != VarArg.none))
+                        else if ((dim == 0) && (tf.parameterList.varargs.value != VarArg.none))
                         {
                         }
-                        else if ((dim != 0) && (tf.parameterList.get(0).defaultArg != null))
+                        else if ((dim != 0) && (tf.parameterList.get(0).defaultArg.value != null))
                         {
-                            if ((ctd.storage_class & 137438953472L) != 0)
+                            if ((ctd.storage_class.value & 137438953472L) != 0)
                             {
                                 ctd.error(new BytePtr("is marked `@disable`, so it cannot have default arguments for all parameters."));
-                                errorSupplemental(ctd.loc, new BytePtr("Use `@disable this();` if you want to disable default initialization."));
+                                errorSupplemental(ctd.loc.value, new BytePtr("Use `@disable this();` if you want to disable default initialization."));
                             }
                             else
                                 ctd.error(new BytePtr("all parameters have default arguments, but structs cannot have default constructors."));
                         }
-                        else if ((dim == 1) || (dim > 1) && (tf.parameterList.get(1).defaultArg != null))
+                        else if ((dim == 1) || (dim > 1) && (tf.parameterList.get(1).defaultArg.value != null))
                         {
-                            Parameter param = Parameter.getNth(tf.parameterList.parameters, 0, null);
-                            if (((param.storageClass & 2097152L) != 0) && (pequals(param.type.mutableOf().unSharedOf(), sd.type.mutableOf().unSharedOf())))
+                            Parameter param = Parameter.getNth(tf.parameterList.parameters.value, 0, null);
+                            if (((param.storageClass.value & 2097152L) != 0) && (pequals(param.type.value.mutableOf().unSharedOf(), sd.type.value.mutableOf().unSharedOf())))
                             {
                                 ctd.isCpCtor = true;
                             }
                         }
                     }
-                    else if ((dim == 0) && (tf.parameterList.varargs == VarArg.none))
+                    else if ((dim == 0) && (tf.parameterList.varargs.value == VarArg.none))
                     {
                         ad.defaultCtor = ctd;
                     }
@@ -3375,73 +3371,73 @@ public class dsymbolsem {
         }
 
         public  void visit(PostBlitDeclaration pbd) {
-            if ((pbd.semanticRun >= PASS.semanticdone))
+            if ((pbd.semanticRun.value >= PASS.semanticdone))
                 return ;
-            if (pbd._scope != null)
+            if (pbd._scope.value != null)
             {
-                this.sc = pbd._scope;
-                pbd._scope = null;
+                this.sc = pbd._scope.value;
+                pbd._scope.value = null;
             }
             pbd.parent.value = (this.sc.get()).parent.value;
             Dsymbol p = pbd.toParent2();
             StructDeclaration ad = p.isStructDeclaration();
             if (ad == null)
             {
-                error(pbd.loc, new BytePtr("postblit can only be a member of struct, not %s `%s`"), p.kind(), p.toChars());
-                pbd.type = Type.terror.value;
-                pbd.errors = true;
+                error(pbd.loc.value, new BytePtr("postblit can only be a member of struct, not %s `%s`"), p.kind(), p.toChars());
+                pbd.type.value = Type.terror.value;
+                pbd.errors.value = true;
                 return ;
             }
-            if ((pequals(pbd.ident, Id.postblit.value)) && (pbd.semanticRun < PASS.semantic))
+            if ((pequals(pbd.ident.value, Id.postblit.value)) && (pbd.semanticRun.value < PASS.semantic))
                 ad.postblits.push(pbd);
-            if (pbd.type == null)
-                pbd.type = new TypeFunction(new ParameterList(null, VarArg.none), Type.tvoid.value, LINK.d, pbd.storage_class);
+            if (pbd.type.value == null)
+                pbd.type.value = new TypeFunction(new ParameterList(null, VarArg.none), Type.tvoid.value, LINK.d, pbd.storage_class.value);
             this.sc = (this.sc.get()).push();
-            (this.sc.get()).stc &= -2L;
-            (this.sc.get()).linkage = LINK.d;
+            (this.sc.get()).stc.value &= -2L;
+            (this.sc.get()).linkage.value = LINK.d;
             this.funcDeclarationSemantic(pbd);
             (this.sc.get()).pop();
         }
 
         public  void visit(DtorDeclaration dd) {
-            if ((dd.semanticRun >= PASS.semanticdone))
+            if ((dd.semanticRun.value >= PASS.semanticdone))
                 return ;
-            if (dd._scope != null)
+            if (dd._scope.value != null)
             {
-                this.sc = dd._scope;
-                dd._scope = null;
+                this.sc = dd._scope.value;
+                dd._scope.value = null;
             }
             dd.parent.value = (this.sc.get()).parent.value;
             Dsymbol p = dd.toParent2();
             AggregateDeclaration ad = p.isAggregateDeclaration();
             if (ad == null)
             {
-                error(dd.loc, new BytePtr("destructor can only be a member of aggregate, not %s `%s`"), p.kind(), p.toChars());
-                dd.type = Type.terror.value;
-                dd.errors = true;
+                error(dd.loc.value, new BytePtr("destructor can only be a member of aggregate, not %s `%s`"), p.kind(), p.toChars());
+                dd.type.value = Type.terror.value;
+                dd.errors.value = true;
                 return ;
             }
-            if ((pequals(dd.ident, Id.dtor.value)) && (dd.semanticRun < PASS.semantic))
+            if ((pequals(dd.ident.value, Id.dtor.value)) && (dd.semanticRun.value < PASS.semantic))
                 ad.dtors.push(dd);
-            if (dd.type == null)
+            if (dd.type.value == null)
             {
-                dd.type = new TypeFunction(new ParameterList(null, VarArg.none), Type.tvoid.value, LINK.d, dd.storage_class);
-                if ((ad.classKind == ClassKind.cpp) && (pequals(dd.ident, Id.dtor.value)))
+                dd.type.value = new TypeFunction(new ParameterList(null, VarArg.none), Type.tvoid.value, LINK.d, dd.storage_class.value);
+                if ((ad.classKind.value == ClassKind.cpp) && (pequals(dd.ident.value, Id.dtor.value)))
                 {
                     {
                         ClassDeclaration cldec = ad.isClassDeclaration();
                         if ((cldec) != null)
                         {
                             assert((cldec.cppDtorVtblIndex == -1));
-                            if ((cldec.baseClass != null) && (cldec.baseClass.cppDtorVtblIndex != -1))
+                            if ((cldec.baseClass.value != null) && (cldec.baseClass.value.cppDtorVtblIndex != -1))
                             {
-                                cldec.cppDtorVtblIndex = cldec.baseClass.cppDtorVtblIndex;
+                                cldec.cppDtorVtblIndex = cldec.baseClass.value.cppDtorVtblIndex;
                             }
                             else if (!dd.isFinal())
                             {
-                                cldec.cppDtorVtblIndex = cldec.vtbl.value.length;
+                                cldec.cppDtorVtblIndex = cldec.vtbl.value.length.value;
                                 cldec.vtbl.value.push(dd);
-                                if (target.value.twoDtorInVtable)
+                                if (target.twoDtorInVtable)
                                     cldec.vtbl.value.push(dd);
                             }
                         }
@@ -3449,53 +3445,53 @@ public class dsymbolsem {
                 }
             }
             this.sc = (this.sc.get()).push();
-            (this.sc.get()).stc &= -2L;
-            if (((this.sc.get()).linkage != LINK.cpp))
-                (this.sc.get()).linkage = LINK.d;
+            (this.sc.get()).stc.value &= -2L;
+            if (((this.sc.get()).linkage.value != LINK.cpp))
+                (this.sc.get()).linkage.value = LINK.d;
             this.funcDeclarationSemantic(dd);
             (this.sc.get()).pop();
         }
 
         public  void visit(StaticCtorDeclaration scd) {
-            if ((scd.semanticRun >= PASS.semanticdone))
+            if ((scd.semanticRun.value >= PASS.semanticdone))
                 return ;
-            if (scd._scope != null)
+            if (scd._scope.value != null)
             {
-                this.sc = scd._scope;
-                scd._scope = null;
+                this.sc = scd._scope.value;
+                scd._scope.value = null;
             }
             scd.parent.value = (this.sc.get()).parent.value;
             Dsymbol p = scd.parent.value.pastMixin();
             if (p.isScopeDsymbol() == null)
             {
                 BytePtr s = pcopy(scd.isSharedStaticCtorDeclaration() != null ? new BytePtr("shared ") : new BytePtr(""));
-                error(scd.loc, new BytePtr("`%sstatic` constructor can only be member of module/aggregate/template, not %s `%s`"), s, p.kind(), p.toChars());
-                scd.type = Type.terror.value;
-                scd.errors = true;
+                error(scd.loc.value, new BytePtr("`%sstatic` constructor can only be member of module/aggregate/template, not %s `%s`"), s, p.kind(), p.toChars());
+                scd.type.value = Type.terror.value;
+                scd.errors.value = true;
                 return ;
             }
-            if (scd.type == null)
-                scd.type = new TypeFunction(new ParameterList(null, VarArg.none), Type.tvoid.value, LINK.d, scd.storage_class);
-            if ((scd.isInstantiated() != null) && (scd.semanticRun < PASS.semantic))
+            if (scd.type.value == null)
+                scd.type.value = new TypeFunction(new ParameterList(null, VarArg.none), Type.tvoid.value, LINK.d, scd.storage_class.value);
+            if ((scd.isInstantiated() != null) && (scd.semanticRun.value < PASS.semantic))
             {
                 VarDeclaration v = new VarDeclaration(Loc.initial.value, Type.tint32.value, Id.gate, null, 0L);
-                v.storage_class = (STC.temp | (scd.isSharedStaticCtorDeclaration() != null ? STC.static_ : STC.tls));
-                Ptr<DArray<Statement>> sa = new DArray<Statement>();
+                v.storage_class.value = (STC.temp | (scd.isSharedStaticCtorDeclaration() != null ? STC.static_ : STC.tls));
+                Ptr<DArray<Statement>> sa = refPtr(new DArray<Statement>());
                 Statement s = new ExpStatement(Loc.initial.value, v);
                 (sa.get()).push(s);
-                Expression e = new IdentifierExp(Loc.initial.value, v.ident);
+                Expression e = new IdentifierExp(Loc.initial.value, v.ident.value);
                 e = new AddAssignExp(Loc.initial.value, e, literal_356A192B7913B04C());
                 e = new EqualExp(TOK.notEqual, Loc.initial.value, e, literal_356A192B7913B04C());
                 s = new IfStatement(Loc.initial.value, null, e, new ReturnStatement(Loc.initial.value, null), null, Loc.initial.value);
                 (sa.get()).push(s);
-                if (scd.fbody != null)
-                    (sa.get()).push(scd.fbody);
-                scd.fbody = new CompoundStatement(Loc.initial.value, sa);
+                if (scd.fbody.value != null)
+                    (sa.get()).push(scd.fbody.value);
+                scd.fbody.value = new CompoundStatement(Loc.initial.value, sa);
             }
             this.funcDeclarationSemantic(scd);
             dmodule.Module m = scd.getModule();
             if (m == null)
-                m = (this.sc.get())._module;
+                m = (this.sc.get())._module.value;
             if (m != null)
             {
                 m.needmoduleinfo = 1;
@@ -3503,46 +3499,46 @@ public class dsymbolsem {
         }
 
         public  void visit(StaticDtorDeclaration sdd) {
-            if ((sdd.semanticRun >= PASS.semanticdone))
+            if ((sdd.semanticRun.value >= PASS.semanticdone))
                 return ;
-            if (sdd._scope != null)
+            if (sdd._scope.value != null)
             {
-                this.sc = sdd._scope;
-                sdd._scope = null;
+                this.sc = sdd._scope.value;
+                sdd._scope.value = null;
             }
             sdd.parent.value = (this.sc.get()).parent.value;
             Dsymbol p = sdd.parent.value.pastMixin();
             if (p.isScopeDsymbol() == null)
             {
                 BytePtr s = pcopy(sdd.isSharedStaticDtorDeclaration() != null ? new BytePtr("shared ") : new BytePtr(""));
-                error(sdd.loc, new BytePtr("`%sstatic` destructor can only be member of module/aggregate/template, not %s `%s`"), s, p.kind(), p.toChars());
-                sdd.type = Type.terror.value;
-                sdd.errors = true;
+                error(sdd.loc.value, new BytePtr("`%sstatic` destructor can only be member of module/aggregate/template, not %s `%s`"), s, p.kind(), p.toChars());
+                sdd.type.value = Type.terror.value;
+                sdd.errors.value = true;
                 return ;
             }
-            if (sdd.type == null)
-                sdd.type = new TypeFunction(new ParameterList(null, VarArg.none), Type.tvoid.value, LINK.d, sdd.storage_class);
-            if ((sdd.isInstantiated() != null) && (sdd.semanticRun < PASS.semantic))
+            if (sdd.type.value == null)
+                sdd.type.value = new TypeFunction(new ParameterList(null, VarArg.none), Type.tvoid.value, LINK.d, sdd.storage_class.value);
+            if ((sdd.isInstantiated() != null) && (sdd.semanticRun.value < PASS.semantic))
             {
                 VarDeclaration v = new VarDeclaration(Loc.initial.value, Type.tint32.value, Id.gate, null, 0L);
-                v.storage_class = (STC.temp | (sdd.isSharedStaticDtorDeclaration() != null ? STC.static_ : STC.tls));
-                Ptr<DArray<Statement>> sa = new DArray<Statement>();
+                v.storage_class.value = (STC.temp | (sdd.isSharedStaticDtorDeclaration() != null ? STC.static_ : STC.tls));
+                Ptr<DArray<Statement>> sa = refPtr(new DArray<Statement>());
                 Statement s = new ExpStatement(Loc.initial.value, v);
                 (sa.get()).push(s);
-                Expression e = new IdentifierExp(Loc.initial.value, v.ident);
+                Expression e = new IdentifierExp(Loc.initial.value, v.ident.value);
                 e = new AddAssignExp(Loc.initial.value, e, literal_7984B0A0E139CABA());
                 e = new EqualExp(TOK.notEqual, Loc.initial.value, e, literal_B6589FC6AB0DC82C());
                 s = new IfStatement(Loc.initial.value, null, e, new ReturnStatement(Loc.initial.value, null), null, Loc.initial.value);
                 (sa.get()).push(s);
-                if (sdd.fbody != null)
-                    (sa.get()).push(sdd.fbody);
-                sdd.fbody = new CompoundStatement(Loc.initial.value, sa);
+                if (sdd.fbody.value != null)
+                    (sa.get()).push(sdd.fbody.value);
+                sdd.fbody.value = new CompoundStatement(Loc.initial.value, sa);
                 sdd.vgate = v;
             }
             this.funcDeclarationSemantic(sdd);
             dmodule.Module m = sdd.getModule();
             if (m == null)
-                m = (this.sc.get())._module;
+                m = (this.sc.get())._module.value;
             if (m != null)
             {
                 m.needmoduleinfo = 1;
@@ -3550,60 +3546,60 @@ public class dsymbolsem {
         }
 
         public  void visit(InvariantDeclaration invd) {
-            if ((invd.semanticRun >= PASS.semanticdone))
+            if ((invd.semanticRun.value >= PASS.semanticdone))
                 return ;
-            if (invd._scope != null)
+            if (invd._scope.value != null)
             {
-                this.sc = invd._scope;
-                invd._scope = null;
+                this.sc = invd._scope.value;
+                invd._scope.value = null;
             }
             invd.parent.value = (this.sc.get()).parent.value;
             Dsymbol p = invd.parent.value.pastMixin();
             AggregateDeclaration ad = p.isAggregateDeclaration();
             if (ad == null)
             {
-                error(invd.loc, new BytePtr("`invariant` can only be a member of aggregate, not %s `%s`"), p.kind(), p.toChars());
-                invd.type = Type.terror.value;
-                invd.errors = true;
+                error(invd.loc.value, new BytePtr("`invariant` can only be a member of aggregate, not %s `%s`"), p.kind(), p.toChars());
+                invd.type.value = Type.terror.value;
+                invd.errors.value = true;
                 return ;
             }
-            if ((!pequals(invd.ident, Id.classInvariant)) && (invd.semanticRun < PASS.semantic) && (ad.isUnionDeclaration() == null))
+            if ((!pequals(invd.ident.value, Id.classInvariant)) && (invd.semanticRun.value < PASS.semantic) && (ad.isUnionDeclaration() == null))
                 ad.invs.push(invd);
-            if (invd.type == null)
-                invd.type = new TypeFunction(new ParameterList(null, VarArg.none), Type.tvoid.value, LINK.d, invd.storage_class);
+            if (invd.type.value == null)
+                invd.type.value = new TypeFunction(new ParameterList(null, VarArg.none), Type.tvoid.value, LINK.d, invd.storage_class.value);
             this.sc = (this.sc.get()).push();
-            (this.sc.get()).stc &= -2L;
-            (this.sc.get()).stc |= 4L;
-            (this.sc.get()).flags = (this.sc.get()).flags & -97 | 32;
-            (this.sc.get()).linkage = LINK.d;
+            (this.sc.get()).stc.value &= -2L;
+            (this.sc.get()).stc.value |= 4L;
+            (this.sc.get()).flags.value = (this.sc.get()).flags.value & -97 | 32;
+            (this.sc.get()).linkage.value = LINK.d;
             this.funcDeclarationSemantic(invd);
             (this.sc.get()).pop();
         }
 
         public  void visit(UnitTestDeclaration utd) {
-            if ((utd.semanticRun >= PASS.semanticdone))
+            if ((utd.semanticRun.value >= PASS.semanticdone))
                 return ;
-            if (utd._scope != null)
+            if (utd._scope.value != null)
             {
-                this.sc = utd._scope;
-                utd._scope = null;
+                this.sc = utd._scope.value;
+                utd._scope.value = null;
             }
-            utd.protection = (this.sc.get()).protection.copy();
+            utd.protection = (this.sc.get()).protection.value.copy();
             utd.parent.value = (this.sc.get()).parent.value;
             Dsymbol p = utd.parent.value.pastMixin();
             if (p.isScopeDsymbol() == null)
             {
-                error(utd.loc, new BytePtr("`unittest` can only be a member of module/aggregate/template, not %s `%s`"), p.kind(), p.toChars());
-                utd.type = Type.terror.value;
-                utd.errors = true;
+                error(utd.loc.value, new BytePtr("`unittest` can only be a member of module/aggregate/template, not %s `%s`"), p.kind(), p.toChars());
+                utd.type.value = Type.terror.value;
+                utd.errors.value = true;
                 return ;
             }
-            if (global.value.params.useUnitTests)
+            if (global.params.useUnitTests)
             {
-                if (utd.type == null)
-                    utd.type = new TypeFunction(new ParameterList(null, VarArg.none), Type.tvoid.value, LINK.d, utd.storage_class);
+                if (utd.type.value == null)
+                    utd.type.value = new TypeFunction(new ParameterList(null, VarArg.none), Type.tvoid.value, LINK.d, utd.storage_class.value);
                 Ptr<Scope> sc2 = (this.sc.get()).push();
-                (sc2.get()).linkage = LINK.d;
+                (sc2.get()).linkage.value = LINK.d;
                 this.funcDeclarationSemantic(utd);
                 (sc2.get()).pop();
             }
@@ -3612,31 +3608,31 @@ public class dsymbolsem {
         public  void visit(NewDeclaration nd) {
             if (!nd.isDisabled())
             {
-                error(nd.loc, new BytePtr("class allocators are obsolete, consider moving the allocation strategy outside of the class"));
+                error(nd.loc.value, new BytePtr("class allocators are obsolete, consider moving the allocation strategy outside of the class"));
             }
-            if ((nd.semanticRun >= PASS.semanticdone))
+            if ((nd.semanticRun.value >= PASS.semanticdone))
                 return ;
-            if (nd._scope != null)
+            if (nd._scope.value != null)
             {
-                this.sc = nd._scope;
-                nd._scope = null;
+                this.sc = nd._scope.value;
+                nd._scope.value = null;
             }
             nd.parent.value = (this.sc.get()).parent.value;
             Dsymbol p = nd.parent.value.pastMixin();
             if (p.isAggregateDeclaration() == null)
             {
-                error(nd.loc, new BytePtr("allocator can only be a member of aggregate, not %s `%s`"), p.kind(), p.toChars());
-                nd.type = Type.terror.value;
-                nd.errors = true;
+                error(nd.loc.value, new BytePtr("allocator can only be a member of aggregate, not %s `%s`"), p.kind(), p.toChars());
+                nd.type.value = Type.terror.value;
+                nd.errors.value = true;
                 return ;
             }
             Type tret = Type.tvoid.value.pointerTo();
-            if (nd.type == null)
-                nd.type = new TypeFunction(new ParameterList(nd.parameters, nd.varargs), tret, LINK.d, nd.storage_class);
-            nd.type = typeSemantic(nd.type, nd.loc, this.sc);
+            if (nd.type.value == null)
+                nd.type.value = new TypeFunction(new ParameterList(nd.parameters, nd.varargs), tret, LINK.d, nd.storage_class.value);
+            nd.type.value = typeSemantic(nd.type.value, nd.loc.value, this.sc);
             if (!nd.isDisabled())
             {
-                TypeFunction tf = nd.type.toTypeFunction();
+                TypeFunction tf = nd.type.value.toTypeFunction();
                 if ((tf.parameterList.length() < 1))
                 {
                     nd.error(new BytePtr("at least one argument of type `size_t` expected"));
@@ -3644,35 +3640,35 @@ public class dsymbolsem {
                 else
                 {
                     Parameter fparam = tf.parameterList.get(0);
-                    if (!fparam.type.equals(Type.tsize_t.value))
-                        nd.error(new BytePtr("first argument must be type `size_t`, not `%s`"), fparam.type.toChars());
+                    if (!fparam.type.value.equals(Type.tsize_t.value))
+                        nd.error(new BytePtr("first argument must be type `size_t`, not `%s`"), fparam.type.value.toChars());
                 }
             }
             this.funcDeclarationSemantic(nd);
         }
 
         public  void visit(DeleteDeclaration deld) {
-            error(deld.loc, new BytePtr("class deallocators are obsolete, consider moving the deallocation strategy outside of the class"));
-            if ((deld.semanticRun >= PASS.semanticdone))
+            error(deld.loc.value, new BytePtr("class deallocators are obsolete, consider moving the deallocation strategy outside of the class"));
+            if ((deld.semanticRun.value >= PASS.semanticdone))
                 return ;
-            if (deld._scope != null)
+            if (deld._scope.value != null)
             {
-                this.sc = deld._scope;
-                deld._scope = null;
+                this.sc = deld._scope.value;
+                deld._scope.value = null;
             }
             deld.parent.value = (this.sc.get()).parent.value;
             Dsymbol p = deld.parent.value.pastMixin();
             if (p.isAggregateDeclaration() == null)
             {
-                error(deld.loc, new BytePtr("deallocator can only be a member of aggregate, not %s `%s`"), p.kind(), p.toChars());
-                deld.type = Type.terror.value;
-                deld.errors = true;
+                error(deld.loc.value, new BytePtr("deallocator can only be a member of aggregate, not %s `%s`"), p.kind(), p.toChars());
+                deld.type.value = Type.terror.value;
+                deld.errors.value = true;
                 return ;
             }
-            if (deld.type == null)
-                deld.type = new TypeFunction(new ParameterList(deld.parameters, VarArg.none), Type.tvoid.value, LINK.d, deld.storage_class);
-            deld.type = typeSemantic(deld.type, deld.loc, this.sc);
-            TypeFunction tf = deld.type.toTypeFunction();
+            if (deld.type.value == null)
+                deld.type.value = new TypeFunction(new ParameterList(deld.parameters, VarArg.none), Type.tvoid.value, LINK.d, deld.storage_class.value);
+            deld.type.value = typeSemantic(deld.type.value, deld.loc.value, this.sc);
+            TypeFunction tf = deld.type.value.toTypeFunction();
             if ((tf.parameterList.length() != 1))
             {
                 deld.error(new BytePtr("one argument of type `void*` expected"));
@@ -3680,8 +3676,8 @@ public class dsymbolsem {
             else
             {
                 Parameter fparam = tf.parameterList.get(0);
-                if (!fparam.type.equals(Type.tvoid.value.pointerTo()))
-                    deld.error(new BytePtr("one argument of type `void*` expected, not `%s`"), fparam.type.toChars());
+                if (!fparam.type.value.equals(Type.tvoid.value.pointerTo()))
+                    deld.error(new BytePtr("one argument of type `void*` expected, not `%s`"), fparam.type.value.toChars());
             }
             this.funcDeclarationSemantic(deld);
         }
@@ -3689,79 +3685,79 @@ public class dsymbolsem {
         public  void reinforceInvariant(AggregateDeclaration ad, Ptr<Scope> sc) {
             {
                 int i = 0;
-                for (; (i < (ad.members.get()).length);i++){
-                    if ((ad.members.get()).get(i) == null)
+                for (; (i < (ad.members.value.get()).length.value);i++){
+                    if ((ad.members.value.get()).get(i) == null)
                         continue;
-                    FuncDeclaration fd = (ad.members.get()).get(i).isFuncDeclaration();
-                    if ((fd == null) || fd.generated || (fd.semanticRun != PASS.semantic3done))
+                    FuncDeclaration fd = (ad.members.value.get()).get(i).isFuncDeclaration();
+                    if ((fd == null) || fd.generated || (fd.semanticRun.value != PASS.semantic3done))
                         continue;
                     FuncDeclaration fd_temp = fd.syntaxCopy(null).isFuncDeclaration();
-                    fd_temp.storage_class &= -257L;
+                    fd_temp.storage_class.value &= -257L;
                     {
                         ClassDeclaration cd = ad.isClassDeclaration();
                         if ((cd) != null)
-                            cd.vtbl.value.remove(fd.vtblIndex);
+                            cd.vtbl.value.remove(fd.vtblIndex.value);
                     }
                     dsymbolSemantic(fd_temp, sc);
-                    ad.members.get().set(i, fd_temp);
+                    ad.members.value.get().set(i, fd_temp);
                 }
             }
         }
 
         public  void visit(StructDeclaration sd) {
-            if ((sd.semanticRun >= PASS.semanticdone))
+            if ((sd.semanticRun.value >= PASS.semanticdone))
                 return ;
-            int errors = global.value.errors;
+            int errors = global.errors.value;
             Ptr<Scope> scx = null;
-            if (sd._scope != null)
+            if (sd._scope.value != null)
             {
-                this.sc = sd._scope;
-                scx = sd._scope;
-                sd._scope = null;
+                this.sc = sd._scope.value;
+                scx = sd._scope.value;
+                sd._scope.value = null;
             }
             if (sd.parent.value == null)
             {
-                assert(((this.sc.get()).parent.value != null) && ((this.sc.get()).func != null));
+                assert(((this.sc.get()).parent.value != null) && ((this.sc.get()).func.value != null));
                 sd.parent.value = (this.sc.get()).parent.value;
             }
             assert((sd.parent.value != null) && !sd.isAnonymous());
-            if (sd.errors)
-                sd.type = Type.terror.value;
-            if ((sd.semanticRun == PASS.init))
-                sd.type = sd.type.addSTC((this.sc.get()).stc | sd.storage_class);
-            sd.type = typeSemantic(sd.type, sd.loc, this.sc);
+            if (sd.errors.value)
+                sd.type.value = Type.terror.value;
+            if ((sd.semanticRun.value == PASS.init))
+                sd.type.value = sd.type.value.addSTC((this.sc.get()).stc.value | sd.storage_class);
+            sd.type.value = typeSemantic(sd.type.value, sd.loc.value, this.sc);
             {
-                TypeStruct ts = sd.type.isTypeStruct();
+                TypeStruct ts = sd.type.value.isTypeStruct();
                 if ((ts) != null)
-                    if ((!pequals(ts.sym, sd)))
+                    if ((!pequals(ts.sym.value, sd)))
                     {
-                        TemplateInstance ti = ts.sym.isInstantiated();
+                        TemplateInstance ti = ts.sym.value.isInstantiated();
                         if ((ti != null) && isError(ti))
-                            ts.sym = sd;
+                            ts.sym.value = sd;
                     }
             }
             Ungag ungag = sd.ungagSpeculative().copy();
             try {
-                if ((sd.semanticRun == PASS.init))
+                if ((sd.semanticRun.value == PASS.init))
                 {
-                    sd.protection = (this.sc.get()).protection.copy();
+                    sd.protection = (this.sc.get()).protection.value.copy();
                     sd.alignment = (this.sc.get()).alignment();
-                    sd.storage_class |= (this.sc.get()).stc;
+                    sd.storage_class |= (this.sc.get()).stc.value;
                     if ((sd.storage_class & 1024L) != 0)
                         sd.isdeprecated = true;
                     if ((sd.storage_class & 16L) != 0)
                         sd.error(new BytePtr("structs, unions cannot be `abstract`"));
                     sd.userAttribDecl = (this.sc.get()).userAttribDecl;
-                    if (((this.sc.get()).linkage == LINK.cpp))
-                        sd.classKind = ClassKind.cpp;
+                    if (((this.sc.get()).linkage.value == LINK.cpp))
+                        sd.classKind.value = ClassKind.cpp;
                     sd.namespace = (this.sc.get()).namespace;
                 }
                 else if ((sd.symtab != null) && (scx == null))
                     return ;
-                sd.semanticRun = PASS.semantic;
-                if (sd.members == null)
+                sd.semanticRun.value = PASS.semantic;
+                if (sd.members.value == null)
                 {
-                    sd.semanticRun = PASS.semanticdone;
+                    sd.semanticRun.value = PASS.semanticdone;
                     return ;
                 }
                 if (sd.symtab == null)
@@ -3773,7 +3769,7 @@ public class dsymbolsem {
                             return null;
                         }
                     };
-                    foreachDsymbol(sd.members, __lambda2);
+                    foreachDsymbol(sd.members.value, __lambda2);
                 }
                 Ptr<Scope> sc2 = sd.newScope(this.sc);
                 Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
@@ -3782,33 +3778,33 @@ public class dsymbolsem {
                         return null;
                     }
                 };
-                foreachDsymbol(sd.members, __lambda3);
+                foreachDsymbol(sd.members.value, __lambda3);
                 Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
                         s.importAll(sc2);
                         return null;
                     }
                 };
-                foreachDsymbol(sd.members, __lambda4);
+                foreachDsymbol(sd.members.value, __lambda4);
                 Function1<Dsymbol,Void> __lambda5 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
                         dsymbolSemantic(s, sc2);
-                        (sd.errors ? 1 : 0) |= (s.errors ? 1 : 0);
+                        (sd.errors.value ? 1 : 0) |= (s.errors.value ? 1 : 0);
                     }
                 };
-                foreachDsymbol(sd.members, __lambda5);
-                if (sd.errors)
-                    sd.type = Type.terror.value;
+                foreachDsymbol(sd.members.value, __lambda5);
+                if (sd.errors.value)
+                    sd.type.value = Type.terror.value;
                 if (!sd.determineFields())
                 {
-                    if (((sd.type.ty & 0xFF) != ENUMTY.Terror))
+                    if (((sd.type.value.ty.value & 0xFF) != ENUMTY.Terror))
                     {
-                        sd.error(sd.loc, new BytePtr("circular or forward reference"));
-                        sd.errors = true;
-                        sd.type = Type.terror.value;
+                        sd.error(sd.loc.value, new BytePtr("circular or forward reference"));
+                        sd.errors.value = true;
+                        sd.type.value = Type.terror.value;
                     }
                     (sc2.get()).pop();
-                    sd.semanticRun = PASS.semanticdone;
+                    sd.semanticRun.value = PASS.semanticdone;
                     return ;
                 }
                 {
@@ -3816,72 +3812,72 @@ public class dsymbolsem {
                     int __key1164 = 0;
                     for (; (__key1164 < __r1163.getLength());__key1164 += 1) {
                         VarDeclaration v = __r1163.get(__key1164);
-                        Type tb = v.type.baseElemOf();
-                        if (((tb.ty & 0xFF) != ENUMTY.Tstruct))
+                        Type tb = v.type.value.baseElemOf();
+                        if (((tb.ty.value & 0xFF) != ENUMTY.Tstruct))
                             continue;
-                        StructDeclaration sdec = ((TypeStruct)tb).sym;
-                        if ((sdec.semanticRun >= PASS.semanticdone))
+                        StructDeclaration sdec = ((TypeStruct)tb).sym.value;
+                        if ((sdec.semanticRun.value >= PASS.semanticdone))
                             continue;
                         (sc2.get()).pop();
-                        sd._scope = scx != null ? scx : (this.sc.get()).copy();
-                        (sd._scope.get()).setNoFree();
+                        sd._scope.value = scx != null ? scx : (this.sc.get()).copy();
+                        (sd._scope.value.get()).setNoFree();
                         dmodule.Module.addDeferredSemantic(sd);
                         return ;
                     }
                 }
                 sd.aggNew = (NewDeclaration)sd.search(Loc.initial.value, Id.classNew, 8);
-                sd.aggDelete = (DeleteDeclaration)sd.search(Loc.initial.value, Id.classDelete, 8);
-                sd.ctor = sd.searchCtor();
-                sd.dtor = buildDtor(sd, sc2);
+                sd.aggDelete.value = (DeleteDeclaration)sd.search(Loc.initial.value, Id.classDelete, 8);
+                sd.ctor.value = sd.searchCtor();
+                sd.dtor.value = buildDtor(sd, sc2);
                 sd.tidtor = buildExternDDtor(sd, sc2);
-                sd.postblit = buildPostBlit(sd, sc2);
+                sd.postblit.value = buildPostBlit(sd, sc2);
                 sd.hasCopyCtor = buildCopyCtor(sd, sc2);
                 buildOpAssign(sd, sc2);
                 buildOpEquals(sd, sc2);
-                if (global.value.params.useTypeInfo && (Type.dtypeinfo.value != null))
+                if (global.params.useTypeInfo.value && (Type.dtypeinfo.value != null))
                 {
-                    sd.xeq = buildXopEquals(sd, sc2);
-                    sd.xcmp = buildXopCmp(sd, sc2);
-                    sd.xhash = buildXtoHash(sd, sc2);
+                    sd.xeq.value = buildXopEquals(sd, sc2);
+                    sd.xcmp.value = buildXopCmp(sd, sc2);
+                    sd.xhash.value = buildXtoHash(sd, sc2);
                 }
                 sd.inv = buildInv(sd, sc2);
                 if (sd.inv != null)
                     this.reinforceInvariant(sd, sc2);
                 dmodule.Module.dprogress++;
-                sd.semanticRun = PASS.semanticdone;
+                sd.semanticRun.value = PASS.semanticdone;
                 (sc2.get()).pop();
-                if (sd.ctor != null)
+                if (sd.ctor.value != null)
                 {
                     Dsymbol scall = sd.search(Loc.initial.value, Id.call.value, 8);
                     if (scall != null)
                     {
-                        int xerrors = global.value.startGagging();
+                        int xerrors = global.startGagging();
                         this.sc = (this.sc.get()).push();
                         (this.sc.get()).tinst = null;
-                        (this.sc.get()).minst = null;
-                        FuncDeclaration fcall = resolveFuncCall(sd.loc, this.sc, scall, null, null, null, FuncResolveFlag.quiet);
+                        (this.sc.get()).minst.value = null;
+                        FuncDeclaration fcall = resolveFuncCall(sd.loc.value, this.sc, scall, null, null, null, FuncResolveFlag.quiet);
                         this.sc = (this.sc.get()).pop();
-                        global.value.endGagging(xerrors);
+                        global.endGagging(xerrors);
                         if ((fcall != null) && fcall.isStatic())
                         {
-                            sd.error(fcall.loc, new BytePtr("`static opCall` is hidden by constructors and can never be called"));
-                            errorSupplemental(fcall.loc, new BytePtr("Please use a factory method instead, or replace all constructors with `static opCall`."));
+                            sd.error(fcall.loc.value, new BytePtr("`static opCall` is hidden by constructors and can never be called"));
+                            errorSupplemental(fcall.loc.value, new BytePtr("Please use a factory method instead, or replace all constructors with `static opCall`."));
                         }
                     }
                 }
-                if (((sd.type.ty & 0xFF) == ENUMTY.Tstruct) && (!pequals(((TypeStruct)sd.type).sym, sd)))
+                if (((sd.type.value.ty.value & 0xFF) == ENUMTY.Tstruct) && (!pequals(((TypeStruct)sd.type.value).sym.value, sd)))
                 {
-                    StructDeclaration sym = ((TypeStruct)sd.type).sym;
-                    sd.error(new BytePtr("already exists at %s. Perhaps in another function with the same name?"), sym.loc.toChars(global.value.params.showColumns));
+                    StructDeclaration sym = ((TypeStruct)sd.type.value).sym.value;
+                    sd.error(new BytePtr("already exists at %s. Perhaps in another function with the same name?"), sym.loc.value.toChars(global.params.showColumns.value));
                 }
-                if ((global.value.errors != errors))
+                if ((global.errors.value != errors))
                 {
-                    sd.type = Type.terror.value;
-                    sd.errors = true;
+                    sd.type.value = Type.terror.value;
+                    sd.errors.value = true;
                     if (sd.deferred != null)
-                        sd.deferred.errors = true;
+                        sd.deferred.errors.value = true;
                 }
-                if ((sd.deferred != null) && (global.value.gag == 0))
+                if ((sd.deferred != null) && (global.gag.value == 0))
                 {
                     semantic2(sd.deferred, this.sc);
                     semantic3(sd.deferred, this.sc);
@@ -3892,10 +3888,10 @@ public class dsymbolsem {
         }
 
         public  void interfaceSemantic(ClassDeclaration cd) {
-            cd.vtblInterfaces = new DArray<Ptr<BaseClass>>();
-            (cd.vtblInterfaces.get()).reserve(cd.interfaces.getLength());
+            cd.vtblInterfaces = refPtr(new DArray<Ptr<BaseClass>>());
+            (cd.vtblInterfaces.get()).reserve(cd.interfaces.value.getLength());
             {
-                Slice<Ptr<BaseClass>> __r1165 = cd.interfaces.copy();
+                Slice<Ptr<BaseClass>> __r1165 = cd.interfaces.value.copy();
                 int __key1166 = 0;
                 for (; (__key1166 < __r1165.getLength());__key1166 += 1) {
                     Ptr<BaseClass> b = __r1165.get(__key1166);
@@ -3906,63 +3902,62 @@ public class dsymbolsem {
         }
 
         public  void visit(ClassDeclaration cldec) {
-            Ref<ClassDeclaration> cldec_ref = ref(cldec);
-            if ((cldec_ref.value.semanticRun >= PASS.semanticdone))
+            if ((cldec.semanticRun.value >= PASS.semanticdone))
                 return ;
-            int errors = global.value.errors;
+            int errors = global.errors.value;
             Ptr<Scope> scx = null;
-            if (cldec_ref.value._scope != null)
+            if (cldec._scope.value != null)
             {
-                this.sc = cldec_ref.value._scope;
-                scx = cldec_ref.value._scope;
-                cldec_ref.value._scope = null;
+                this.sc = cldec._scope.value;
+                scx = cldec._scope.value;
+                cldec._scope.value = null;
             }
-            if (cldec_ref.value.parent.value == null)
+            if (cldec.parent.value == null)
             {
                 assert((this.sc.get()).parent.value != null);
-                cldec_ref.value.parent.value = (this.sc.get()).parent.value;
+                cldec.parent.value = (this.sc.get()).parent.value;
             }
-            if (cldec_ref.value.errors)
-                cldec_ref.value.type = Type.terror.value;
-            cldec_ref.value.type = typeSemantic(cldec_ref.value.type, cldec_ref.value.loc, this.sc);
+            if (cldec.errors.value)
+                cldec.type.value = Type.terror.value;
+            cldec.type.value = typeSemantic(cldec.type.value, cldec.loc.value, this.sc);
             {
-                TypeClass tc = cldec_ref.value.type.isTypeClass();
+                TypeClass tc = cldec.type.value.isTypeClass();
                 if ((tc) != null)
-                    if ((!pequals(tc.sym, cldec_ref.value)))
+                    if ((!pequals(tc.sym.value, cldec)))
                     {
-                        TemplateInstance ti = tc.sym.isInstantiated();
+                        TemplateInstance ti = tc.sym.value.isInstantiated();
                         if ((ti != null) && isError(ti))
-                            tc.sym = cldec_ref.value;
+                            tc.sym.value = cldec;
                     }
             }
-            Ungag ungag = cldec_ref.value.ungagSpeculative().copy();
+            Ungag ungag = cldec.ungagSpeculative().copy();
             try {
-                if ((cldec_ref.value.semanticRun == PASS.init))
+                if ((cldec.semanticRun.value == PASS.init))
                 {
-                    cldec_ref.value.protection = (this.sc.get()).protection.copy();
-                    cldec_ref.value.storage_class |= (this.sc.get()).stc;
-                    if ((cldec_ref.value.storage_class & 1024L) != 0)
-                        cldec_ref.value.isdeprecated = true;
-                    if ((cldec_ref.value.storage_class & 256L) != 0)
-                        cldec_ref.value.error(new BytePtr("storage class `auto` is invalid when declaring a class, did you mean to use `scope`?"));
-                    if ((cldec_ref.value.storage_class & 524288L) != 0)
-                        cldec_ref.value.stack = true;
-                    if ((cldec_ref.value.storage_class & 16L) != 0)
-                        cldec_ref.value.isabstract = Abstract.yes;
-                    cldec_ref.value.userAttribDecl = (this.sc.get()).userAttribDecl;
-                    if (((this.sc.get()).linkage == LINK.cpp))
-                        cldec_ref.value.classKind = ClassKind.cpp;
-                    cldec_ref.value.namespace = (this.sc.get()).namespace;
-                    if (((this.sc.get()).linkage == LINK.objc))
-                        objc().setObjc(cldec_ref.value);
+                    cldec.protection = (this.sc.get()).protection.value.copy();
+                    cldec.storage_class |= (this.sc.get()).stc.value;
+                    if ((cldec.storage_class & 1024L) != 0)
+                        cldec.isdeprecated = true;
+                    if ((cldec.storage_class & 256L) != 0)
+                        cldec.error(new BytePtr("storage class `auto` is invalid when declaring a class, did you mean to use `scope`?"));
+                    if ((cldec.storage_class & 524288L) != 0)
+                        cldec.stack = true;
+                    if ((cldec.storage_class & 16L) != 0)
+                        cldec.isabstract.value = Abstract.yes;
+                    cldec.userAttribDecl = (this.sc.get()).userAttribDecl;
+                    if (((this.sc.get()).linkage.value == LINK.cpp))
+                        cldec.classKind.value = ClassKind.cpp;
+                    cldec.namespace = (this.sc.get()).namespace;
+                    if (((this.sc.get()).linkage.value == LINK.objc))
+                        objc().setObjc(cldec);
                 }
-                else if ((cldec_ref.value.symtab != null) && (scx == null))
+                else if ((cldec.symtab != null) && (scx == null))
                 {
                     return ;
                 }
-                cldec_ref.value.semanticRun = PASS.semantic;
+                cldec.semanticRun.value = PASS.semantic;
                 try {
-                    if ((cldec_ref.value.baseok < Baseok.done))
+                    if ((cldec.baseok < Baseok.done))
                     {
                         // from template resolveBase!(Type)
                         Function1<Type,Type> resolveBaseType = new Function1<Type,Type>(){
@@ -3972,9 +3967,9 @@ public class dsymbolsem {
                                     scx = (sc.get()).copy();
                                     (scx.get()).setNoFree();
                                 }
-                                cldec_ref.value._scope = scx;
+                                cldec._scope.value = scx;
                                 Type r = exp.invoke();
-                                cldec_ref.value._scope = null;
+                                cldec._scope.value = null;
                                 return r;
                             }
                         };
@@ -3987,36 +3982,36 @@ public class dsymbolsem {
                                     scx = (sc.get()).copy();
                                     (scx.get()).setNoFree();
                                 }
-                                cldec_ref.value._scope = scx;
+                                cldec._scope.value = scx;
                                 exp.invoke();
-                                cldec_ref.value._scope = null;
+                                cldec._scope.value = null;
                             }
                         };
 
-                        cldec_ref.value.baseok = Baseok.start;
+                        cldec.baseok = Baseok.start;
                         {
                             int i = 0;
-                            for (; (i < (cldec_ref.value.baseclasses.get()).length);){
-                                Ptr<BaseClass> b = (cldec_ref.value.baseclasses.get()).get(i);
+                            for (; (i < (cldec.baseclasses.get()).length.value);){
+                                Ptr<BaseClass> b = (cldec.baseclasses.get()).get(i);
                                 Function0<Type> __dgliteral2 = new Function0<Type>(){
                                     public Type invoke() {
-                                        return typeSemantic((b.get()).type, cldec_ref.value.loc, sc);
+                                        return typeSemantic((b.get()).type.value, cldec.loc.value, sc);
                                     }
                                 };
-                                (b.get()).type = resolveBaseType.invoke(__dgliteral2);
-                                Type tb = (b.get()).type.toBasetype();
+                                (b.get()).type.value = resolveBaseType.invoke(__dgliteral2);
+                                Type tb = (b.get()).type.value.toBasetype();
                                 {
                                     TypeTuple tup = tb.isTypeTuple();
                                     if ((tup) != null)
                                     {
-                                        (cldec_ref.value.baseclasses.get()).remove(i);
-                                        int dim = Parameter.dim(tup.arguments);
+                                        (cldec.baseclasses.get()).remove(i);
+                                        int dim = Parameter.dim(tup.arguments.value);
                                         {
                                             int j = 0;
                                             for (; (j < dim);j++){
-                                                Parameter arg = Parameter.getNth(tup.arguments, j, null);
-                                                b = new BaseClass(arg.type);
-                                                (cldec_ref.value.baseclasses.get()).insert(i + j, b);
+                                                Parameter arg = Parameter.getNth(tup.arguments.value, j, null);
+                                                b = refPtr(new BaseClass(arg.type.value));
+                                                (cldec.baseclasses.get()).insert(i + j, b);
                                             }
                                         }
                                     }
@@ -4025,61 +4020,62 @@ public class dsymbolsem {
                                 }
                             }
                         }
-                        if ((cldec_ref.value.baseok >= Baseok.done))
+                        if ((cldec.baseok >= Baseok.done))
                         {
-                            if ((cldec_ref.value.semanticRun >= PASS.semanticdone))
+                            if ((cldec.semanticRun.value >= PASS.semanticdone))
                                 return ;
                             /*goto Lancestorsdone*/throw Dispatch0.INSTANCE;
                         }
-                        if ((cldec_ref.value.baseclasses.get()).length != 0)
+                        if ((cldec.baseclasses.get()).length.value != 0)
                         {
-                            Ptr<BaseClass> b = (cldec_ref.value.baseclasses.get()).get(0);
-                            Type tb = (b.get()).type.toBasetype();
+                            Ptr<BaseClass> b = (cldec.baseclasses.get()).get(0);
+                            Type tb = (b.get()).type.value.toBasetype();
                             TypeClass tc = tb.isTypeClass();
                             try {
                                 if (tc == null)
                                 {
-                                    if ((!pequals((b.get()).type, Type.terror.value)))
-                                        cldec_ref.value.error(new BytePtr("base type must be `class` or `interface`, not `%s`"), (b.get()).type.toChars());
-                                    (cldec_ref.value.baseclasses.get()).remove(0);
+                                    if ((!pequals((b.get()).type.value, Type.terror.value)))
+                                        cldec.error(new BytePtr("base type must be `class` or `interface`, not `%s`"), (b.get()).type.value.toChars());
+                                    (cldec.baseclasses.get()).remove(0);
                                     /*goto L7*/throw Dispatch0.INSTANCE;
                                 }
-                                if (tc.sym.isDeprecated())
+                                if (tc.sym.value.isDeprecated())
                                 {
-                                    if (!cldec_ref.value.isDeprecated())
+                                    if (!cldec.isDeprecated())
                                     {
-                                        cldec_ref.value.isdeprecated = true;
-                                        tc.checkDeprecated(cldec_ref.value.loc, this.sc);
+                                        cldec.isdeprecated = true;
+                                        tc.checkDeprecated(cldec.loc.value, this.sc);
                                     }
                                 }
-                                if (tc.sym.isInterfaceDeclaration() != null)
+                                if (tc.sym.value.isInterfaceDeclaration() != null)
                                     /*goto L7*/throw Dispatch0.INSTANCE;
                                 {
-                                    ClassDeclaration cdb = tc.sym;
+                                    ClassDeclaration cdb = tc.sym.value;
                                 L_outer7:
-                                    for (; cdb != null;cdb = cdb.baseClass){
-                                        if ((pequals(cdb, cldec_ref.value)))
+                                    for (; cdb != null;cdb = cdb.baseClass.value){
+                                        if ((pequals(cdb, cldec)))
                                         {
-                                            cldec_ref.value.error(new BytePtr("circular inheritance"));
-                                            (cldec_ref.value.baseclasses.get()).remove(0);
+                                            cldec.error(new BytePtr("circular inheritance"));
+                                            (cldec.baseclasses.get()).remove(0);
                                             /*goto L7*/throw Dispatch0.INSTANCE;
                                         }
                                     }
                                 }
-                                cldec_ref.value.baseClass = tc.sym;
-                                (b.get()).sym = cldec_ref.value.baseClass;
-                                if ((tc.sym.baseok < Baseok.done))
-                                    Function0<Void> __dgliteral3 = new Function0<Void>(){
+                                cldec.baseClass.value = tc.sym.value;
+                                (b.get()).sym.value = cldec.baseClass.value;
+                                if ((tc.sym.value.baseok < Baseok.done)) {
+                                    Function0<Void> __dgliteral3 = new Function0<Void>() {
                                         public Void invoke() {
-                                            dsymbolSemantic(tc.sym, null);
+                                            dsymbolSemantic(tc.sym.value, null);
                                         }
                                     };
                                     resolveBaseVoid.invoke(__dgliteral3);
-                                if ((tc.sym.baseok < Baseok.done))
+                                }
+                                if ((tc.sym.value.baseok < Baseok.done))
                                 {
-                                    if (tc.sym._scope != null)
-                                        dmodule.Module.addDeferredSemantic(tc.sym);
-                                    cldec_ref.value.baseok = Baseok.none;
+                                    if (tc.sym.value._scope.value != null)
+                                        dmodule.Module.addDeferredSemantic(tc.sym.value);
+                                    cldec.baseok = Baseok.none;
                                 }
                             }
                             catch(Dispatch0 __d){}
@@ -4087,381 +4083,381 @@ public class dsymbolsem {
                         }
                         boolean multiClassError = false;
                         {
-                            int i = cldec_ref.value.baseClass != null ? 1 : 0;
-                            for (; (i < (cldec_ref.value.baseclasses.get()).length);){
-                                Ptr<BaseClass> b = (cldec_ref.value.baseclasses.get()).get(i);
-                                Type tb = (b.get()).type.toBasetype();
+                            int i = cldec.baseClass.value != null ? 1 : 0;
+                            for (; (i < (cldec.baseclasses.get()).length.value);){
+                                Ptr<BaseClass> b = (cldec.baseclasses.get()).get(i);
+                                Type tb = (b.get()).type.value.toBasetype();
                                 TypeClass tc = tb.isTypeClass();
-                                if ((tc == null) || (tc.sym.isInterfaceDeclaration() == null))
+                                if ((tc == null) || (tc.sym.value.isInterfaceDeclaration() == null))
                                 {
                                     if (tc != null)
                                     {
                                         if (!multiClassError)
                                         {
-                                            error(cldec_ref.value.loc, new BytePtr("`%s`: multiple class inheritance is not supported. Use multiple interface inheritance and/or composition."), cldec_ref.value.toPrettyChars(false));
+                                            error(cldec.loc.value, new BytePtr("`%s`: multiple class inheritance is not supported. Use multiple interface inheritance and/or composition."), cldec.toPrettyChars(false));
                                             multiClassError = true;
                                         }
-                                        if (tc.sym.fields.length != 0)
-                                            errorSupplemental(cldec_ref.value.loc, new BytePtr("`%s` has fields, consider making it a member of `%s`"), (b.get()).type.toChars(), cldec_ref.value.type.toChars());
+                                        if (tc.sym.value.fields.length.value != 0)
+                                            errorSupplemental(cldec.loc.value, new BytePtr("`%s` has fields, consider making it a member of `%s`"), (b.get()).type.value.toChars(), cldec.type.value.toChars());
                                         else
-                                            errorSupplemental(cldec_ref.value.loc, new BytePtr("`%s` has no fields, consider making it an `interface`"), (b.get()).type.toChars());
+                                            errorSupplemental(cldec.loc.value, new BytePtr("`%s` has no fields, consider making it an `interface`"), (b.get()).type.value.toChars());
                                     }
-                                    else if ((!pequals((b.get()).type, Type.terror.value)))
+                                    else if ((!pequals((b.get()).type.value, Type.terror.value)))
                                     {
-                                        error(cldec_ref.value.loc, new BytePtr("`%s`: base type must be `interface`, not `%s`"), cldec_ref.value.toPrettyChars(false), (b.get()).type.toChars());
+                                        error(cldec.loc.value, new BytePtr("`%s`: base type must be `interface`, not `%s`"), cldec.toPrettyChars(false), (b.get()).type.value.toChars());
                                     }
-                                    (cldec_ref.value.baseclasses.get()).remove(i);
+                                    (cldec.baseclasses.get()).remove(i);
                                     continue;
                                 }
                                 {
-                                    int j = cldec_ref.value.baseClass != null ? 1 : 0;
+                                    int j = cldec.baseClass.value != null ? 1 : 0;
                                     for (; (j < i);j++){
-                                        Ptr<BaseClass> b2 = (cldec_ref.value.baseclasses.get()).get(j);
-                                        if ((pequals((b2.get()).sym, tc.sym)))
+                                        Ptr<BaseClass> b2 = (cldec.baseclasses.get()).get(j);
+                                        if ((pequals((b2.get()).sym.value, tc.sym.value)))
                                         {
-                                            cldec_ref.value.error(new BytePtr("inherits from duplicate interface `%s`"), (b2.get()).sym.toChars());
-                                            (cldec_ref.value.baseclasses.get()).remove(i);
+                                            cldec.error(new BytePtr("inherits from duplicate interface `%s`"), (b2.get()).sym.value.toChars());
+                                            (cldec.baseclasses.get()).remove(i);
                                             continue;
                                         }
                                     }
                                 }
-                                if (tc.sym.isDeprecated())
+                                if (tc.sym.value.isDeprecated())
                                 {
-                                    if (!cldec_ref.value.isDeprecated())
+                                    if (!cldec.isDeprecated())
                                     {
-                                        cldec_ref.value.isdeprecated = true;
-                                        tc.checkDeprecated(cldec_ref.value.loc, this.sc);
+                                        cldec.isdeprecated = true;
+                                        tc.checkDeprecated(cldec.loc.value, this.sc);
                                     }
                                 }
-                                (b.get()).sym = tc.sym;
-                                if ((tc.sym.baseok < Baseok.done))
+                                (b.get()).sym.value = tc.sym.value;
+                                if ((tc.sym.value.baseok < Baseok.done))
                                     Function0<Void> __dgliteral4 = new Function0<Void>(){
                                         public Void invoke() {
-                                            dsymbolSemantic(tc.sym, null);
+                                            dsymbolSemantic(tc.sym.value, null);
                                         }
                                     };
                                     resolveBaseVoid.invoke(__dgliteral4);
-                                if ((tc.sym.baseok < Baseok.done))
+                                if ((tc.sym.value.baseok < Baseok.done))
                                 {
-                                    if (tc.sym._scope != null)
-                                        dmodule.Module.addDeferredSemantic(tc.sym);
-                                    cldec_ref.value.baseok = Baseok.none;
+                                    if (tc.sym.value._scope.value != null)
+                                        dmodule.Module.addDeferredSemantic(tc.sym.value);
+                                    cldec.baseok = Baseok.none;
                                 }
                                 i++;
                             }
                         }
-                        if ((cldec_ref.value.baseok == Baseok.none))
+                        if ((cldec.baseok == Baseok.none))
                         {
-                            cldec_ref.value._scope = scx != null ? scx : (this.sc.get()).copy();
-                            (cldec_ref.value._scope.get()).setNoFree();
-                            dmodule.Module.addDeferredSemantic(cldec_ref.value);
+                            cldec._scope.value = scx != null ? scx : (this.sc.get()).copy();
+                            (cldec._scope.value.get()).setNoFree();
+                            dmodule.Module.addDeferredSemantic(cldec);
                             return ;
                         }
-                        cldec_ref.value.baseok = Baseok.done;
-                        if ((cldec_ref.value.classKind == ClassKind.objc) || (cldec_ref.value.baseClass != null) && (cldec_ref.value.baseClass.classKind == ClassKind.objc))
-                            cldec_ref.value.classKind = ClassKind.objc;
-                        if ((cldec_ref.value.baseClass == null) && (!pequals(cldec_ref.value.ident, Id.Object.value)) && (ClassDeclaration.object.value != null) && (cldec_ref.value.classKind == ClassKind.d))
+                        cldec.baseok = Baseok.done;
+                        if ((cldec.classKind.value == ClassKind.objc) || (cldec.baseClass.value != null) && (cldec.baseClass.value.classKind.value == ClassKind.objc))
+                            cldec.classKind.value = ClassKind.objc;
+                        if ((cldec.baseClass.value == null) && (!pequals(cldec.ident.value, Id.Object.value)) && (ClassDeclaration.object.value != null) && (cldec.classKind.value == ClassKind.d))
                         {
                             Function0<Void> badObjectDotD = new Function0<Void>(){
                                 public Void invoke() {
-                                    cldec_ref.value.error(new BytePtr("missing or corrupt object.d"));
+                                    cldec.error(new BytePtr("missing or corrupt object.d"));
                                     fatal();
                                 }
                             };
-                            if ((ClassDeclaration.object.value == null) || ClassDeclaration.object.value.errors)
+                            if ((ClassDeclaration.object.value == null) || ClassDeclaration.object.value.errors.value)
                                 badObjectDotD.invoke();
-                            Type t = ClassDeclaration.object.value.type;
-                            t = typeSemantic(t, cldec_ref.value.loc, this.sc).toBasetype();
-                            if (((t.ty & 0xFF) == ENUMTY.Terror))
+                            Type t = ClassDeclaration.object.value.type.value;
+                            t = typeSemantic(t, cldec.loc.value, this.sc).toBasetype();
+                            if (((t.ty.value & 0xFF) == ENUMTY.Terror))
                                 badObjectDotD.invoke();
                             TypeClass tc = t.isTypeClass();
                             assert(tc != null);
-                            Ptr<BaseClass> b = new BaseClass(tc);
-                            (cldec_ref.value.baseclasses.get()).shift(b);
-                            cldec_ref.value.baseClass = tc.sym;
-                            assert(cldec_ref.value.baseClass.isInterfaceDeclaration() == null);
-                            (b.get()).sym = cldec_ref.value.baseClass;
+                            Ptr<BaseClass> b = refPtr(new BaseClass(tc));
+                            (cldec.baseclasses.get()).shift(b);
+                            cldec.baseClass.value = tc.sym.value;
+                            assert(cldec.baseClass.value.isInterfaceDeclaration() == null);
+                            (b.get()).sym.value = cldec.baseClass.value;
                         }
-                        if (cldec_ref.value.baseClass != null)
+                        if (cldec.baseClass.value != null)
                         {
-                            if ((cldec_ref.value.baseClass.storage_class & 8L) != 0)
-                                cldec_ref.value.error(new BytePtr("cannot inherit from class `%s` because it is `final`"), cldec_ref.value.baseClass.toChars());
-                            if (cldec_ref.value.baseClass.isCOMclass())
-                                cldec_ref.value.com = true;
-                            if (cldec_ref.value.baseClass.isCPPclass())
-                                cldec_ref.value.classKind = ClassKind.cpp;
-                            if (cldec_ref.value.baseClass.stack)
-                                cldec_ref.value.stack = true;
-                            cldec_ref.value.enclosing = cldec_ref.value.baseClass.enclosing;
-                            cldec_ref.value.storage_class |= cldec_ref.value.baseClass.storage_class & 2685403140L;
+                            if ((cldec.baseClass.value.storage_class & 8L) != 0)
+                                cldec.error(new BytePtr("cannot inherit from class `%s` because it is `final`"), cldec.baseClass.value.toChars());
+                            if (cldec.baseClass.value.isCOMclass())
+                                cldec.com = true;
+                            if (cldec.baseClass.value.isCPPclass())
+                                cldec.classKind.value = ClassKind.cpp;
+                            if (cldec.baseClass.value.stack)
+                                cldec.stack = true;
+                            cldec.enclosing = cldec.baseClass.value.enclosing;
+                            cldec.storage_class |= cldec.baseClass.value.storage_class & 2685403140L;
                         }
-                        cldec_ref.value.interfaces = (cldec_ref.value.baseclasses.get()).tdata().slice(cldec_ref.value.baseClass != null ? 1 : 0,(cldec_ref.value.baseclasses.get()).length).copy();
+                        cldec.interfaces.value = (cldec.baseclasses.get()).tdata().slice(cldec.baseClass.value != null ? 1 : 0,(cldec.baseclasses.get()).length.value).copy();
                         {
-                            Slice<Ptr<BaseClass>> __r1167 = cldec_ref.value.interfaces.copy();
+                            Slice<Ptr<BaseClass>> __r1167 = cldec.interfaces.value.copy();
                             int __key1168 = 0;
                             for (; (__key1168 < __r1167.getLength());__key1168 += 1) {
                                 Ptr<BaseClass> b = __r1167.get(__key1168);
-                                if ((b.get()).sym.isCOMinterface())
-                                    cldec_ref.value.com = true;
-                                if ((cldec_ref.value.classKind == ClassKind.cpp) && !(b.get()).sym.isCPPinterface())
+                                if ((b.get()).sym.value.isCOMinterface())
+                                    cldec.com = true;
+                                if ((cldec.classKind.value == ClassKind.cpp) && !(b.get()).sym.value.isCPPinterface())
                                 {
-                                    error(cldec_ref.value.loc, new BytePtr("C++ class `%s` cannot implement D interface `%s`"), cldec_ref.value.toPrettyChars(false), (b.get()).sym.toPrettyChars(false));
+                                    error(cldec.loc.value, new BytePtr("C++ class `%s` cannot implement D interface `%s`"), cldec.toPrettyChars(false), (b.get()).sym.value.toPrettyChars(false));
                                 }
                             }
                         }
-                        this.interfaceSemantic(cldec_ref.value);
+                        this.interfaceSemantic(cldec);
                     }
                 }
                 catch(Dispatch0 __d){}
             /*Lancestorsdone:*/
-                if (cldec_ref.value.members == null)
+                if (cldec.members.value == null)
                 {
-                    cldec_ref.value.semanticRun = PASS.semanticdone;
+                    cldec.semanticRun.value = PASS.semanticdone;
                     return ;
                 }
-                if (cldec_ref.value.symtab == null)
+                if (cldec.symtab == null)
                 {
-                    cldec_ref.value.symtab = new DsymbolTable();
+                    cldec.symtab = new DsymbolTable();
                     Function1<Dsymbol,Void> __lambda6 = new Function1<Dsymbol,Void>(){
                         public Void invoke(Dsymbol s) {
-                            s.addMember(sc, cldec_ref.value);
+                            s.addMember(sc, cldec);
                             return null;
                         }
                     };
-                    foreachDsymbol(cldec_ref.value.members, __lambda6);
-                    Ptr<Scope> sc2 = cldec_ref.value.newScope(this.sc);
+                    foreachDsymbol(cldec.members.value, __lambda6);
+                    Ptr<Scope> sc2 = cldec.newScope(this.sc);
                     Function1<Dsymbol,Void> __lambda7 = new Function1<Dsymbol,Void>(){
                         public Void invoke(Dsymbol s) {
                             s.setScope(sc2);
                             return null;
                         }
                     };
-                    foreachDsymbol(cldec_ref.value.members, __lambda7);
+                    foreachDsymbol(cldec.members.value, __lambda7);
                     (sc2.get()).pop();
                 }
                 {
                     int i = 0;
-                    for (; (i < (cldec_ref.value.baseclasses.get()).length);i++){
-                        Ptr<BaseClass> b = (cldec_ref.value.baseclasses.get()).get(i);
-                        Type tb = (b.get()).type.toBasetype();
+                    for (; (i < (cldec.baseclasses.get()).length.value);i++){
+                        Ptr<BaseClass> b = (cldec.baseclasses.get()).get(i);
+                        Type tb = (b.get()).type.value.toBasetype();
                         TypeClass tc = tb.isTypeClass();
-                        if ((tc.sym.semanticRun < PASS.semanticdone))
+                        if ((tc.sym.value.semanticRun.value < PASS.semanticdone))
                         {
-                            cldec_ref.value._scope = scx != null ? scx : (this.sc.get()).copy();
-                            (cldec_ref.value._scope.get()).setNoFree();
-                            if (tc.sym._scope != null)
-                                dmodule.Module.addDeferredSemantic(tc.sym);
-                            dmodule.Module.addDeferredSemantic(cldec_ref.value);
+                            cldec._scope.value = scx != null ? scx : (this.sc.get()).copy();
+                            (cldec._scope.value.get()).setNoFree();
+                            if (tc.sym.value._scope.value != null)
+                                dmodule.Module.addDeferredSemantic(tc.sym.value);
+                            dmodule.Module.addDeferredSemantic(cldec);
                             return ;
                         }
                     }
                 }
-                if ((cldec_ref.value.baseok == Baseok.done))
+                if ((cldec.baseok == Baseok.done))
                 {
-                    cldec_ref.value.baseok = Baseok.semanticdone;
-                    objc().setMetaclass(cldec_ref.value, this.sc);
-                    if (cldec_ref.value.baseClass != null)
+                    cldec.baseok = Baseok.semanticdone;
+                    objc().setMetaclass(cldec, this.sc);
+                    if (cldec.baseClass.value != null)
                     {
-                        if ((cldec_ref.value.classKind == ClassKind.cpp) && (cldec_ref.value.baseClass.vtbl.value.length == 0))
+                        if ((cldec.classKind.value == ClassKind.cpp) && (cldec.baseClass.value.vtbl.value.length.value == 0))
                         {
-                            cldec_ref.value.error(new BytePtr("C++ base class `%s` needs at least one virtual function"), cldec_ref.value.baseClass.toChars());
+                            cldec.error(new BytePtr("C++ base class `%s` needs at least one virtual function"), cldec.baseClass.value.toChars());
                         }
-                        cldec_ref.value.vtbl.value.setDim(cldec_ref.value.baseClass.vtbl.value.length);
-                        memcpy((BytePtr)(cldec_ref.value.vtbl.value.tdata()), (cldec_ref.value.baseClass.vtbl.value.tdata()), (4 * cldec_ref.value.vtbl.value.length));
-                        cldec_ref.value.vthis = cldec_ref.value.baseClass.vthis;
-                        cldec_ref.value.vthis2 = cldec_ref.value.baseClass.vthis2;
+                        cldec.vtbl.value.setDim(cldec.baseClass.value.vtbl.value.length.value);
+                        memcpy((BytePtr)(cldec.vtbl.value.tdata()), (cldec.baseClass.value.vtbl.value.tdata()), (4 * cldec.vtbl.value.length.value));
+                        cldec.vthis.value = cldec.baseClass.value.vthis.value;
+                        cldec.vthis2.value = cldec.baseClass.value.vthis2.value;
                     }
                     else
                     {
-                        cldec_ref.value.vtbl.value.setDim(0);
-                        if (cldec_ref.value.vtblOffset() != 0)
-                            cldec_ref.value.vtbl.value.push(cldec_ref.value);
+                        cldec.vtbl.value.setDim(0);
+                        if (cldec.vtblOffset() != 0)
+                            cldec.vtbl.value.push(cldec);
                     }
-                    if (cldec_ref.value.vthis != null)
+                    if (cldec.vthis.value != null)
                     {
-                        if ((cldec_ref.value.storage_class & 1L) != 0)
-                            cldec_ref.value.error(new BytePtr("static class cannot inherit from nested class `%s`"), cldec_ref.value.baseClass.toChars());
-                        if ((!pequals(cldec_ref.value.toParentLocal(), cldec_ref.value.baseClass.toParentLocal())) && (cldec_ref.value.toParentLocal() == null) || (cldec_ref.value.baseClass.toParentLocal().getType() == null) || !cldec_ref.value.baseClass.toParentLocal().getType().isBaseOf(cldec_ref.value.toParentLocal().getType(), null))
+                        if ((cldec.storage_class & 1L) != 0)
+                            cldec.error(new BytePtr("static class cannot inherit from nested class `%s`"), cldec.baseClass.value.toChars());
+                        if ((!pequals(cldec.toParentLocal(), cldec.baseClass.value.toParentLocal())) && (cldec.toParentLocal() == null) || (cldec.baseClass.value.toParentLocal().getType() == null) || !cldec.baseClass.value.toParentLocal().getType().isBaseOf(cldec.toParentLocal().getType(), null))
                         {
-                            if (cldec_ref.value.toParentLocal() != null)
+                            if (cldec.toParentLocal() != null)
                             {
-                                cldec_ref.value.error(new BytePtr("is nested within `%s`, but super class `%s` is nested within `%s`"), cldec_ref.value.toParentLocal().toChars(), cldec_ref.value.baseClass.toChars(), cldec_ref.value.baseClass.toParentLocal().toChars());
+                                cldec.error(new BytePtr("is nested within `%s`, but super class `%s` is nested within `%s`"), cldec.toParentLocal().toChars(), cldec.baseClass.value.toChars(), cldec.baseClass.value.toParentLocal().toChars());
                             }
                             else
                             {
-                                cldec_ref.value.error(new BytePtr("is not nested, but super class `%s` is nested within `%s`"), cldec_ref.value.baseClass.toChars(), cldec_ref.value.baseClass.toParentLocal().toChars());
+                                cldec.error(new BytePtr("is not nested, but super class `%s` is nested within `%s`"), cldec.baseClass.value.toChars(), cldec.baseClass.value.toParentLocal().toChars());
                             }
-                            cldec_ref.value.enclosing = null;
+                            cldec.enclosing = null;
                         }
-                        if (cldec_ref.value.vthis2 != null)
+                        if (cldec.vthis2.value != null)
                         {
-                            if ((!pequals(cldec_ref.value.toParent2(), cldec_ref.value.baseClass.toParent2())) && (cldec_ref.value.toParent2() == null) || (cldec_ref.value.baseClass.toParent2().getType() == null) || !cldec_ref.value.baseClass.toParent2().getType().isBaseOf(cldec_ref.value.toParent2().getType(), null))
+                            if ((!pequals(cldec.toParent2(), cldec.baseClass.value.toParent2())) && (cldec.toParent2() == null) || (cldec.baseClass.value.toParent2().getType() == null) || !cldec.baseClass.value.toParent2().getType().isBaseOf(cldec.toParent2().getType(), null))
                             {
-                                if ((cldec_ref.value.toParent2() != null) && (!pequals(cldec_ref.value.toParent2(), cldec_ref.value.toParentLocal())))
+                                if ((cldec.toParent2() != null) && (!pequals(cldec.toParent2(), cldec.toParentLocal())))
                                 {
-                                    cldec_ref.value.error(new BytePtr("needs the frame pointer of `%s`, but super class `%s` needs the frame pointer of `%s`"), cldec_ref.value.toParent2().toChars(), cldec_ref.value.baseClass.toChars(), cldec_ref.value.baseClass.toParent2().toChars());
+                                    cldec.error(new BytePtr("needs the frame pointer of `%s`, but super class `%s` needs the frame pointer of `%s`"), cldec.toParent2().toChars(), cldec.baseClass.value.toChars(), cldec.baseClass.value.toParent2().toChars());
                                 }
                                 else
                                 {
-                                    cldec_ref.value.error(new BytePtr("doesn't need a frame pointer, but super class `%s` needs the frame pointer of `%s`"), cldec_ref.value.baseClass.toChars(), cldec_ref.value.baseClass.toParent2().toChars());
+                                    cldec.error(new BytePtr("doesn't need a frame pointer, but super class `%s` needs the frame pointer of `%s`"), cldec.baseClass.value.toChars(), cldec.baseClass.value.toParent2().toChars());
                                 }
                             }
                         }
                         else
-                            cldec_ref.value.makeNested2();
+                            cldec.makeNested2();
                     }
                     else
-                        cldec_ref.value.makeNested();
+                        cldec.makeNested();
                 }
-                Ptr<Scope> sc2 = cldec_ref.value.newScope(this.sc);
+                Ptr<Scope> sc2 = cldec.newScope(this.sc);
                 Function1<Dsymbol,Void> __lambda8 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
                         s.importAll(sc2);
                         return null;
                     }
                 };
-                foreachDsymbol(cldec_ref.value.members, __lambda8);
+                foreachDsymbol(cldec.members.value, __lambda8);
                 Function1<Dsymbol,Void> __lambda9 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
                         dsymbolSemantic(s, sc2);
                         return null;
                     }
                 };
-                foreachDsymbol(cldec_ref.value.members, __lambda9);
-                if (!cldec_ref.value.determineFields())
+                foreachDsymbol(cldec.members.value, __lambda9);
+                if (!cldec.determineFields())
                 {
-                    assert((pequals(cldec_ref.value.type, Type.terror.value)));
+                    assert((pequals(cldec.type.value, Type.terror.value)));
                     (sc2.get()).pop();
                     return ;
                 }
                 {
-                    Slice<VarDeclaration> __r1169 = cldec_ref.value.fields.opSlice().copy();
+                    Slice<VarDeclaration> __r1169 = cldec.fields.opSlice().copy();
                     int __key1170 = 0;
                     for (; (__key1170 < __r1169.getLength());__key1170 += 1) {
                         VarDeclaration v = __r1169.get(__key1170);
-                        Type tb = v.type.baseElemOf();
-                        if (((tb.ty & 0xFF) != ENUMTY.Tstruct))
+                        Type tb = v.type.value.baseElemOf();
+                        if (((tb.ty.value & 0xFF) != ENUMTY.Tstruct))
                             continue;
-                        StructDeclaration sd = ((TypeStruct)tb).sym;
-                        if ((sd.semanticRun >= PASS.semanticdone))
+                        StructDeclaration sd = ((TypeStruct)tb).sym.value;
+                        if ((sd.semanticRun.value >= PASS.semanticdone))
                             continue;
                         (sc2.get()).pop();
-                        cldec_ref.value._scope = scx != null ? scx : (this.sc.get()).copy();
-                        (cldec_ref.value._scope.get()).setNoFree();
-                        dmodule.Module.addDeferredSemantic(cldec_ref.value);
+                        cldec._scope.value = scx != null ? scx : (this.sc.get()).copy();
+                        (cldec._scope.value.get()).setNoFree();
+                        dmodule.Module.addDeferredSemantic(cldec);
                         return ;
                     }
                 }
-                cldec_ref.value.aggNew = (NewDeclaration)cldec_ref.value.search(Loc.initial.value, Id.classNew, 8);
-                cldec_ref.value.aggDelete = (DeleteDeclaration)cldec_ref.value.search(Loc.initial.value, Id.classDelete, 8);
-                cldec_ref.value.ctor = cldec_ref.value.searchCtor();
-                if ((cldec_ref.value.ctor == null) && cldec_ref.value.noDefaultCtor)
+                cldec.aggNew = (NewDeclaration)cldec.search(Loc.initial.value, Id.classNew, 8);
+                cldec.aggDelete.value = (DeleteDeclaration)cldec.search(Loc.initial.value, Id.classDelete, 8);
+                cldec.ctor.value = cldec.searchCtor();
+                if ((cldec.ctor.value == null) && cldec.noDefaultCtor.value)
                 {
                     {
-                        Slice<VarDeclaration> __r1171 = cldec_ref.value.fields.opSlice().copy();
+                        Slice<VarDeclaration> __r1171 = cldec.fields.opSlice().copy();
                         int __key1172 = 0;
                         for (; (__key1172 < __r1171.getLength());__key1172 += 1) {
                             VarDeclaration v = __r1171.get(__key1172);
-                            if ((v.storage_class & 549755813888L) != 0)
-                                error(v.loc, new BytePtr("field `%s` must be initialized in constructor"), v.toChars());
+                            if ((v.storage_class.value & 549755813888L) != 0)
+                                error(v.loc.value, new BytePtr("field `%s` must be initialized in constructor"), v.toChars());
                         }
                     }
                 }
-                if ((cldec_ref.value.ctor == null) && (cldec_ref.value.baseClass != null) && (cldec_ref.value.baseClass.ctor != null))
+                if ((cldec.ctor.value == null) && (cldec.baseClass.value != null) && (cldec.baseClass.value.ctor.value != null))
                 {
-                    FuncDeclaration fd = resolveFuncCall(cldec_ref.value.loc, sc2, cldec_ref.value.baseClass.ctor, null, cldec_ref.value.type, null, FuncResolveFlag.quiet);
+                    FuncDeclaration fd = resolveFuncCall(cldec.loc.value, sc2, cldec.baseClass.value.ctor.value, null, cldec.type.value, null, FuncResolveFlag.quiet);
                     if (fd == null)
-                        fd = resolveFuncCall(cldec_ref.value.loc, sc2, cldec_ref.value.baseClass.ctor, null, cldec_ref.value.type.sharedOf(), null, FuncResolveFlag.quiet);
-                    if ((fd != null) && !fd.errors)
+                        fd = resolveFuncCall(cldec.loc.value, sc2, cldec.baseClass.value.ctor.value, null, cldec.type.value.sharedOf(), null, FuncResolveFlag.quiet);
+                    if ((fd != null) && !fd.errors.value)
                     {
-                        TypeFunction btf = fd.type.toTypeFunction();
-                        TypeFunction tf = new TypeFunction(new ParameterList(null, VarArg.none), null, LINK.d, fd.storage_class);
-                        tf.mod = btf.mod;
-                        tf.purity = btf.purity;
-                        tf.isnothrow = btf.isnothrow;
-                        tf.isnogc = btf.isnogc;
-                        tf.trust = btf.trust;
-                        CtorDeclaration ctor = new CtorDeclaration(cldec_ref.value.loc, Loc.initial.value, 0L, tf, false);
-                        ctor.fbody = new CompoundStatement(Loc.initial.value, new DArray<Statement>());
-                        (cldec_ref.value.members.get()).push(ctor);
-                        ctor.addMember(this.sc, cldec_ref.value);
+                        TypeFunction btf = fd.type.value.toTypeFunction();
+                        TypeFunction tf = new TypeFunction(new ParameterList(null, VarArg.none), null, LINK.d, fd.storage_class.value);
+                        tf.mod.value = btf.mod.value;
+                        tf.purity.value = btf.purity.value;
+                        tf.isnothrow.value = btf.isnothrow.value;
+                        tf.isnogc.value = btf.isnogc.value;
+                        tf.trust.value = btf.trust.value;
+                        CtorDeclaration ctor = new CtorDeclaration(cldec.loc.value, Loc.initial.value, 0L, tf, false);
+                        ctor.fbody.value = new CompoundStatement(Loc.initial.value, refPtr(new DArray<Statement>()));
+                        (cldec.members.value.get()).push(ctor);
+                        ctor.addMember(this.sc, cldec);
                         dsymbolSemantic(ctor, sc2);
-                        cldec_ref.value.ctor = ctor;
-                        cldec_ref.value.defaultCtor = ctor;
+                        cldec.ctor.value = ctor;
+                        cldec.defaultCtor = ctor;
                     }
                     else
                     {
-                        cldec_ref.value.error(new BytePtr("cannot implicitly generate a default constructor when base class `%s` is missing a default constructor"), cldec_ref.value.baseClass.toPrettyChars(false));
+                        cldec.error(new BytePtr("cannot implicitly generate a default constructor when base class `%s` is missing a default constructor"), cldec.baseClass.value.toPrettyChars(false));
                     }
                 }
-                cldec_ref.value.dtor = buildDtor(cldec_ref.value, sc2);
-                cldec_ref.value.tidtor = buildExternDDtor(cldec_ref.value, sc2);
-                if ((cldec_ref.value.classKind == ClassKind.cpp) && (cldec_ref.value.cppDtorVtblIndex != -1))
+                cldec.dtor.value = buildDtor(cldec, sc2);
+                cldec.tidtor = buildExternDDtor(cldec, sc2);
+                if ((cldec.classKind.value == ClassKind.cpp) && (cldec.cppDtorVtblIndex != -1))
                 {
-                    cldec_ref.value.dtor.vtblIndex = cldec_ref.value.cppDtorVtblIndex;
-                    cldec_ref.value.vtbl.value.set(cldec_ref.value.cppDtorVtblIndex, cldec_ref.value.dtor);
-                    if (target.value.twoDtorInVtable)
+                    cldec.dtor.value.vtblIndex.value = cldec.cppDtorVtblIndex;
+                    cldec.vtbl.value.set(cldec.cppDtorVtblIndex, cldec.dtor.value);
+                    if (target.twoDtorInVtable)
                     {
-                        cldec_ref.value.vtbl.value.set((cldec_ref.value.cppDtorVtblIndex + 1), cldec_ref.value.dtor);
+                        cldec.vtbl.value.set((cldec.cppDtorVtblIndex + 1), cldec.dtor.value);
                     }
                 }
                 {
-                    FuncDeclaration f = hasIdentityOpAssign(cldec_ref.value, sc2);
+                    FuncDeclaration f = hasIdentityOpAssign(cldec, sc2);
                     if ((f) != null)
                     {
-                        if ((f.storage_class & 137438953472L) == 0)
-                            cldec_ref.value.error(f.loc, new BytePtr("identity assignment operator overload is illegal"));
+                        if ((f.storage_class.value & 137438953472L) == 0)
+                            cldec.error(f.loc.value, new BytePtr("identity assignment operator overload is illegal"));
                     }
                 }
-                cldec_ref.value.inv = buildInv(cldec_ref.value, sc2);
-                if (cldec_ref.value.inv != null)
-                    this.reinforceInvariant(cldec_ref.value, sc2);
+                cldec.inv = buildInv(cldec, sc2);
+                if (cldec.inv != null)
+                    this.reinforceInvariant(cldec, sc2);
                 dmodule.Module.dprogress++;
-                cldec_ref.value.semanticRun = PASS.semanticdone;
+                cldec.semanticRun.value = PASS.semanticdone;
                 (sc2.get()).pop();
-                if ((cldec_ref.value.isabstract != Abstract.fwdref))
+                if ((cldec.isabstract.value != Abstract.fwdref))
                 {
-                    int isabstractsave = cldec_ref.value.isabstract;
-                    cldec_ref.value.isabstract = Abstract.fwdref;
-                    cldec_ref.value.isAbstract();
-                    if ((cldec_ref.value.isabstract != isabstractsave))
+                    int isabstractsave = cldec.isabstract.value;
+                    cldec.isabstract.value = Abstract.fwdref;
+                    cldec.isAbstract();
+                    if ((cldec.isabstract.value != isabstractsave))
                     {
-                        cldec_ref.value.error(new BytePtr("cannot infer `abstract` attribute due to circular dependencies"));
+                        cldec.error(new BytePtr("cannot infer `abstract` attribute due to circular dependencies"));
                     }
                 }
-                if (((cldec_ref.value.type.ty & 0xFF) == ENUMTY.Tclass) && (!pequals(((TypeClass)cldec_ref.value.type).sym, cldec_ref.value)))
+                if (((cldec.type.value.ty.value & 0xFF) == ENUMTY.Tclass) && (!pequals(((TypeClass)cldec.type.value).sym.value, cldec)))
                 {
-                    ClassDeclaration cd = ((TypeClass)cldec_ref.value.type).sym;
-                    cldec_ref.value.error(new BytePtr("already exists at %s. Perhaps in another function with the same name?"), cd.loc.toChars(global.value.params.showColumns));
+                    ClassDeclaration cd = ((TypeClass)cldec.type.value).sym.value;
+                    cldec.error(new BytePtr("already exists at %s. Perhaps in another function with the same name?"), cd.loc.value.toChars(global.params.showColumns.value));
                 }
-                if ((global.value.errors != errors))
+                if ((global.errors.value != errors))
                 {
-                    cldec_ref.value.type = Type.terror.value;
-                    cldec_ref.value.errors = true;
-                    if (cldec_ref.value.deferred != null)
-                        cldec_ref.value.deferred.errors = true;
+                    cldec.type.value = Type.terror.value;
+                    cldec.errors.value = true;
+                    if (cldec.deferred != null)
+                        cldec.deferred.errors.value = true;
                 }
-                if ((cldec_ref.value.storage_class & 512L) != 0)
+                if ((cldec.storage_class & 512L) != 0)
                 {
                     {
-                        Slice<VarDeclaration> __r1173 = cldec_ref.value.fields.opSlice().copy();
+                        Slice<VarDeclaration> __r1173 = cldec.fields.opSlice().copy();
                         int __key1174 = 0;
                         for (; (__key1174 < __r1173.getLength());__key1174 += 1) {
                             VarDeclaration vd = __r1173.get(__key1174);
                             if ((vd.isThisDeclaration() == null) && !vd.prot().isMoreRestrictiveThan(new Prot(Prot.Kind.public_)))
                             {
-                                vd.error(new BytePtr("Field members of a `synchronized` class cannot be `%s`"), protectionToChars(vd.prot().kind));
+                                vd.error(new BytePtr("Field members of a `synchronized` class cannot be `%s`"), protectionToChars(vd.prot().kind.value));
                             }
                         }
                     }
                 }
-                if ((cldec_ref.value.deferred != null) && (global.value.gag == 0))
+                if ((cldec.deferred != null) && (global.gag.value == 0))
                 {
-                    semantic2(cldec_ref.value.deferred, this.sc);
-                    semantic3(cldec_ref.value.deferred, this.sc);
+                    semantic2(cldec.deferred, this.sc);
+                    semantic3(cldec.deferred, this.sc);
                 }
-                if ((cldec_ref.value.storage_class & 524288L) != 0)
-                    deprecation(cldec_ref.value.loc, new BytePtr("`scope` as a type constraint is deprecated.  Use `scope` at the usage site."));
+                if ((cldec.storage_class & 524288L) != 0)
+                    deprecation(cldec.loc.value, new BytePtr("`scope` as a type constraint is deprecated.  Use `scope` at the usage site."));
             }
             finally {
             }
@@ -4470,54 +4466,53 @@ public class dsymbolsem {
         public  void visit(InterfaceDeclaration idec) {
             Function1<InterfaceDeclaration,Boolean> isAnonymousMetaclass = new Function1<InterfaceDeclaration,Boolean>(){
                 public Boolean invoke(InterfaceDeclaration idec) {
-                    Ref<InterfaceDeclaration> idec_ref = ref(idec);
-                    return (idec_ref.value.classKind == ClassKind.objc) && idec_ref.value.objc.isMeta && idec_ref.value.isAnonymous();
+                    return (idec.classKind.value == ClassKind.objc) && idec.objc.isMeta.value && idec.isAnonymous();
                 }
             };
-            if ((idec.semanticRun >= PASS.semanticdone))
+            if ((idec.semanticRun.value >= PASS.semanticdone))
                 return ;
-            int errors = global.value.errors;
+            int errors = global.errors.value;
             Ptr<Scope> scx = null;
-            if (idec._scope != null)
+            if (idec._scope.value != null)
             {
-                this.sc = idec._scope;
-                scx = idec._scope;
-                idec._scope = null;
+                this.sc = idec._scope.value;
+                scx = idec._scope.value;
+                idec._scope.value = null;
             }
             if (idec.parent.value == null)
             {
-                assert(((this.sc.get()).parent.value != null) && ((this.sc.get()).func != null));
+                assert(((this.sc.get()).parent.value != null) && ((this.sc.get()).func.value != null));
                 idec.parent.value = (this.sc.get()).parent.value;
             }
             assert((idec.parent.value != null) && !idec.isAnonymous() || isAnonymousMetaclass.invoke(idec));
-            if (idec.errors)
-                idec.type = Type.terror.value;
-            idec.type = typeSemantic(idec.type, idec.loc, this.sc);
-            if (((idec.type.ty & 0xFF) == ENUMTY.Tclass) && (!pequals(((TypeClass)idec.type).sym, idec)))
+            if (idec.errors.value)
+                idec.type.value = Type.terror.value;
+            idec.type.value = typeSemantic(idec.type.value, idec.loc.value, this.sc);
+            if (((idec.type.value.ty.value & 0xFF) == ENUMTY.Tclass) && (!pequals(((TypeClass)idec.type.value).sym.value, idec)))
             {
-                TemplateInstance ti = ((TypeClass)idec.type).sym.isInstantiated();
+                TemplateInstance ti = ((TypeClass)idec.type.value).sym.value.isInstantiated();
                 if ((ti != null) && isError(ti))
-                    ((TypeClass)idec.type).sym = idec;
+                    ((TypeClass)idec.type.value).sym.value = idec;
             }
             Ungag ungag = idec.ungagSpeculative().copy();
             try {
-                if ((idec.semanticRun == PASS.init))
+                if ((idec.semanticRun.value == PASS.init))
                 {
-                    idec.protection = (this.sc.get()).protection.copy();
-                    idec.storage_class |= (this.sc.get()).stc;
+                    idec.protection = (this.sc.get()).protection.value.copy();
+                    idec.storage_class |= (this.sc.get()).stc.value;
                     if ((idec.storage_class & 1024L) != 0)
                         idec.isdeprecated = true;
                     idec.userAttribDecl = (this.sc.get()).userAttribDecl;
                 }
                 else if (idec.symtab != null)
                 {
-                    if ((idec.sizeok == Sizeok.done) || (scx == null))
+                    if ((idec.sizeok.value == Sizeok.done) || (scx == null))
                     {
-                        idec.semanticRun = PASS.semanticdone;
+                        idec.semanticRun.value = PASS.semanticdone;
                         return ;
                     }
                 }
-                idec.semanticRun = PASS.semantic;
+                idec.semanticRun.value = PASS.semantic;
                 try {
                     if ((idec.baseok < Baseok.done))
                     {
@@ -4529,9 +4524,9 @@ public class dsymbolsem {
                                     scx = (sc.get()).copy();
                                     (scx.get()).setNoFree();
                                 }
-                                idec._scope = scx;
+                                idec._scope.value = scx;
                                 Type r = exp.invoke();
-                                idec._scope = null;
+                                idec._scope.value = null;
                                 return r;
                             }
                         };
@@ -4544,35 +4539,35 @@ public class dsymbolsem {
                                     scx = (sc.get()).copy();
                                     (scx.get()).setNoFree();
                                 }
-                                idec._scope = scx;
+                                idec._scope.value = scx;
                                 exp.invoke();
-                                idec._scope = null;
+                                idec._scope.value = null;
                             }
                         };
 
                         idec.baseok = Baseok.start;
                         {
                             int i = 0;
-                            for (; (i < (idec.baseclasses.get()).length);){
+                            for (; (i < (idec.baseclasses.get()).length.value);){
                                 Ptr<BaseClass> b = (idec.baseclasses.get()).get(i);
                                 Function0<Type> __dgliteral3 = new Function0<Type>(){
                                     public Type invoke() {
-                                        return typeSemantic((b.get()).type, idec.loc, sc);
+                                        return typeSemantic((b.get()).type.value, idec.loc.value, sc);
                                     }
                                 };
-                                (b.get()).type = resolveBaseType.invoke(__dgliteral3);
-                                Type tb = (b.get()).type.toBasetype();
+                                (b.get()).type.value = resolveBaseType.invoke(__dgliteral3);
+                                Type tb = (b.get()).type.value.toBasetype();
                                 {
                                     TypeTuple tup = tb.isTypeTuple();
                                     if ((tup) != null)
                                     {
                                         (idec.baseclasses.get()).remove(i);
-                                        int dim = Parameter.dim(tup.arguments);
+                                        int dim = Parameter.dim(tup.arguments.value);
                                         {
                                             int j = 0;
                                             for (; (j < dim);j++){
-                                                Parameter arg = Parameter.getNth(tup.arguments, j, null);
-                                                b = new BaseClass(arg.type);
+                                                Parameter arg = Parameter.getNth(tup.arguments.value, j, null);
+                                                b = refPtr(new BaseClass(arg.type.value));
                                                 (idec.baseclasses.get()).insert(i + j, b);
                                             }
                                         }
@@ -4584,28 +4579,28 @@ public class dsymbolsem {
                         }
                         if ((idec.baseok >= Baseok.done))
                         {
-                            if ((idec.semanticRun >= PASS.semanticdone))
+                            if ((idec.semanticRun.value >= PASS.semanticdone))
                                 return ;
                             /*goto Lancestorsdone*/throw Dispatch0.INSTANCE;
                         }
-                        if (((idec.baseclasses.get()).length == 0) && ((this.sc.get()).linkage == LINK.cpp))
-                            idec.classKind = ClassKind.cpp;
+                        if (((idec.baseclasses.get()).length.value == 0) && ((this.sc.get()).linkage.value == LINK.cpp))
+                            idec.classKind.value = ClassKind.cpp;
                         idec.namespace = (this.sc.get()).namespace;
-                        if (((this.sc.get()).linkage == LINK.objc))
+                        if (((this.sc.get()).linkage.value == LINK.objc))
                         {
                             objc().setObjc(idec);
                             objc().deprecate(idec);
                         }
                         {
                             int i = 0;
-                            for (; (i < (idec.baseclasses.get()).length);){
+                            for (; (i < (idec.baseclasses.get()).length.value);){
                                 Ptr<BaseClass> b = (idec.baseclasses.get()).get(i);
-                                Type tb = (b.get()).type.toBasetype();
-                                TypeClass tc = ((tb.ty & 0xFF) == ENUMTY.Tclass) ? (TypeClass)tb : null;
-                                if ((tc == null) || (tc.sym.isInterfaceDeclaration() == null))
+                                Type tb = (b.get()).type.value.toBasetype();
+                                TypeClass tc = ((tb.ty.value & 0xFF) == ENUMTY.Tclass) ? (TypeClass)tb : null;
+                                if ((tc == null) || (tc.sym.value.isInterfaceDeclaration() == null))
                                 {
-                                    if ((!pequals((b.get()).type, Type.terror.value)))
-                                        idec.error(new BytePtr("base type must be `interface`, not `%s`"), (b.get()).type.toChars());
+                                    if ((!pequals((b.get()).type.value, Type.terror.value)))
+                                        idec.error(new BytePtr("base type must be `interface`, not `%s`"), (b.get()).type.value.toChars());
                                     (idec.baseclasses.get()).remove(i);
                                     continue;
                                 }
@@ -4613,40 +4608,40 @@ public class dsymbolsem {
                                     int j = 0;
                                     for (; (j < i);j++){
                                         Ptr<BaseClass> b2 = (idec.baseclasses.get()).get(j);
-                                        if ((pequals((b2.get()).sym, tc.sym)))
+                                        if ((pequals((b2.get()).sym.value, tc.sym.value)))
                                         {
-                                            idec.error(new BytePtr("inherits from duplicate interface `%s`"), (b2.get()).sym.toChars());
+                                            idec.error(new BytePtr("inherits from duplicate interface `%s`"), (b2.get()).sym.value.toChars());
                                             (idec.baseclasses.get()).remove(i);
                                             continue;
                                         }
                                     }
                                 }
-                                if ((pequals(tc.sym, idec)) || idec.isBaseOf2(tc.sym))
+                                if ((pequals(tc.sym.value, idec)) || idec.isBaseOf2(tc.sym.value))
                                 {
                                     idec.error(new BytePtr("circular inheritance of interface"));
                                     (idec.baseclasses.get()).remove(i);
                                     continue;
                                 }
-                                if (tc.sym.isDeprecated())
+                                if (tc.sym.value.isDeprecated())
                                 {
                                     if (!idec.isDeprecated())
                                     {
                                         idec.isdeprecated = true;
-                                        tc.checkDeprecated(idec.loc, this.sc);
+                                        tc.checkDeprecated(idec.loc.value, this.sc);
                                     }
                                 }
-                                (b.get()).sym = tc.sym;
-                                if ((tc.sym.baseok < Baseok.done))
+                                (b.get()).sym.value = tc.sym.value;
+                                if ((tc.sym.value.baseok < Baseok.done))
                                     Function0<Void> __dgliteral4 = new Function0<Void>(){
                                         public Void invoke() {
-                                            dsymbolSemantic(tc.sym, null);
+                                            dsymbolSemantic(tc.sym.value, null);
                                         }
                                     };
                                     resolveBaseVoid.invoke(__dgliteral4);
-                                if ((tc.sym.baseok < Baseok.done))
+                                if ((tc.sym.value.baseok < Baseok.done))
                                 {
-                                    if (tc.sym._scope != null)
-                                        dmodule.Module.addDeferredSemantic(tc.sym);
+                                    if (tc.sym.value._scope.value != null)
+                                        dmodule.Module.addDeferredSemantic(tc.sym.value);
                                     idec.baseok = Baseok.none;
                                 }
                                 i++;
@@ -4654,22 +4649,22 @@ public class dsymbolsem {
                         }
                         if ((idec.baseok == Baseok.none))
                         {
-                            idec._scope = scx != null ? scx : (this.sc.get()).copy();
-                            (idec._scope.get()).setNoFree();
+                            idec._scope.value = scx != null ? scx : (this.sc.get()).copy();
+                            (idec._scope.value.get()).setNoFree();
                             dmodule.Module.addDeferredSemantic(idec);
                             return ;
                         }
                         idec.baseok = Baseok.done;
-                        idec.interfaces = (idec.baseclasses.get()).tdata().slice(0,(idec.baseclasses.get()).length).copy();
+                        idec.interfaces.value = (idec.baseclasses.get()).tdata().slice(0,(idec.baseclasses.get()).length.value).copy();
                         {
-                            Slice<Ptr<BaseClass>> __r1175 = idec.interfaces.copy();
+                            Slice<Ptr<BaseClass>> __r1175 = idec.interfaces.value.copy();
                             int __key1176 = 0;
                             for (; (__key1176 < __r1175.getLength());__key1176 += 1) {
                                 Ptr<BaseClass> b = __r1175.get(__key1176);
-                                if ((b.get()).sym.isCOMinterface())
+                                if ((b.get()).sym.value.isCOMinterface())
                                     idec.com = true;
-                                if ((b.get()).sym.isCPPinterface())
-                                    idec.classKind = ClassKind.cpp;
+                                if ((b.get()).sym.value.isCPPinterface())
+                                    idec.classKind.value = ClassKind.cpp;
                             }
                         }
                         this.interfaceSemantic(idec);
@@ -4677,25 +4672,25 @@ public class dsymbolsem {
                 }
                 catch(Dispatch0 __d){}
             /*Lancestorsdone:*/
-                if (idec.members == null)
+                if (idec.members.value == null)
                 {
-                    idec.semanticRun = PASS.semanticdone;
+                    idec.semanticRun.value = PASS.semanticdone;
                     return ;
                 }
                 if (idec.symtab == null)
                     idec.symtab = new DsymbolTable();
                 {
                     int i = 0;
-                    for (; (i < (idec.baseclasses.get()).length);i++){
+                    for (; (i < (idec.baseclasses.get()).length.value);i++){
                         Ptr<BaseClass> b = (idec.baseclasses.get()).get(i);
-                        Type tb = (b.get()).type.toBasetype();
+                        Type tb = (b.get()).type.value.toBasetype();
                         TypeClass tc = tb.isTypeClass();
-                        if ((tc.sym.semanticRun < PASS.semanticdone))
+                        if ((tc.sym.value.semanticRun.value < PASS.semanticdone))
                         {
-                            idec._scope = scx != null ? scx : (this.sc.get()).copy();
-                            (idec._scope.get()).setNoFree();
-                            if (tc.sym._scope != null)
-                                dmodule.Module.addDeferredSemantic(tc.sym);
+                            idec._scope.value = scx != null ? scx : (this.sc.get()).copy();
+                            (idec._scope.value.get()).setNoFree();
+                            if (tc.sym.value._scope.value != null)
+                                dmodule.Module.addDeferredSemantic(tc.sym.value);
                             dmodule.Module.addDeferredSemantic(idec);
                             return ;
                         }
@@ -4708,7 +4703,7 @@ public class dsymbolsem {
                     if (idec.vtblOffset() != 0)
                         idec.vtbl.value.push(idec);
                     {
-                        Slice<Ptr<BaseClass>> __r1178 = idec.interfaces.copy();
+                        Slice<Ptr<BaseClass>> __r1178 = idec.interfaces.value.copy();
                         int __key1177 = 0;
                     L_outer8:
                         for (; (__key1177 < __r1178.getLength());__key1177 += 1) {
@@ -4719,21 +4714,21 @@ public class dsymbolsem {
                                     int k = 0;
                                 L_outer9:
                                     for (; (k < i);k++){
-                                        if ((b == idec.interfaces.get(k)))
+                                        if ((b == idec.interfaces.value.get(k)))
                                             /*goto Lcontinue*/throw Dispatch0.INSTANCE;
                                     }
                                 }
-                                if ((b.get()).sym.vtblOffset() != 0)
+                                if ((b.get()).sym.value.vtblOffset() != 0)
                                 {
-                                    int d = (b.get()).sym.vtbl.value.length;
+                                    int d = (b.get()).sym.value.vtbl.value.length.value;
                                     if ((d > 1))
                                     {
-                                        idec.vtbl.value.pushSlice((b.get()).sym.vtbl.value.opSlice(1, d));
+                                        idec.vtbl.value.pushSlice((b.get()).sym.value.vtbl.value.opSlice(1, d));
                                     }
                                 }
                                 else
                                 {
-                                    idec.vtbl.value.append(ptr((b.get()).sym.vtbl.value));
+                                    idec.vtbl.value.append(ptr((b.get()).sym.value.vtbl));
                                 }
                             }
                             catch(Dispatch0 __d){}
@@ -4747,7 +4742,7 @@ public class dsymbolsem {
                         return null;
                     }
                 };
-                foreachDsymbol(idec.members, __lambda5);
+                foreachDsymbol(idec.members.value, __lambda5);
                 Ptr<Scope> sc2 = idec.newScope(this.sc);
                 Function1<Dsymbol,Void> __lambda6 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
@@ -4755,31 +4750,31 @@ public class dsymbolsem {
                         return null;
                     }
                 };
-                foreachDsymbol(idec.members, __lambda6);
+                foreachDsymbol(idec.members.value, __lambda6);
                 Function1<Dsymbol,Void> __lambda7 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
                         s.importAll(sc2);
                         return null;
                     }
                 };
-                foreachDsymbol(idec.members, __lambda7);
+                foreachDsymbol(idec.members.value, __lambda7);
                 Function1<Dsymbol,Void> __lambda8 = new Function1<Dsymbol,Void>(){
                     public Void invoke(Dsymbol s) {
                         dsymbolSemantic(s, sc2);
                         return null;
                     }
                 };
-                foreachDsymbol(idec.members, __lambda8);
+                foreachDsymbol(idec.members.value, __lambda8);
                 dmodule.Module.dprogress++;
-                idec.semanticRun = PASS.semanticdone;
+                idec.semanticRun.value = PASS.semanticdone;
                 (sc2.get()).pop();
-                if ((global.value.errors != errors))
+                if ((global.errors.value != errors))
                 {
-                    idec.type = Type.terror.value;
+                    idec.type.value = Type.terror.value;
                 }
-                assert(((idec.type.ty & 0xFF) != ENUMTY.Tclass) || (pequals(((TypeClass)idec.type).sym, idec)));
+                assert(((idec.type.value.ty.value & 0xFF) != ENUMTY.Tclass) || (pequals(((TypeClass)idec.type.value).sym.value, idec)));
                 if ((idec.storage_class & 524288L) != 0)
-                    deprecation(idec.loc, new BytePtr("`scope` as a type constraint is deprecated.  Use `scope` at the usage site."));
+                    deprecation(idec.loc.value, new BytePtr("`scope` as a type constraint is deprecated.  Use `scope` at the usage site."));
             }
             finally {
             }
@@ -4795,124 +4790,124 @@ public class dsymbolsem {
         }
     }
     public static void templateInstanceSemantic(TemplateInstance tempinst, Ptr<Scope> sc, Ptr<DArray<Expression>> fargs) {
-        if (tempinst.inst != null)
+        if (tempinst.inst.value != null)
         {
             return ;
         }
-        if ((tempinst.semanticRun != PASS.init))
+        if ((tempinst.semanticRun.value != PASS.init))
         {
-            Ungag ungag = ungag = new Ungag(global.value.gag);
+            Ungag ungag = ungag = new Ungag(global.gag.value);
             try {
                 if (!tempinst.gagged)
-                    global.value.gag = 0;
-                tempinst.error(tempinst.loc, new BytePtr("recursive template expansion"));
+                    global.gag.value = 0;
+                tempinst.error(tempinst.loc.value, new BytePtr("recursive template expansion"));
                 if (tempinst.gagged)
-                    tempinst.semanticRun = PASS.init;
+                    tempinst.semanticRun.value = PASS.init;
                 else
-                    tempinst.inst = tempinst;
-                tempinst.errors = true;
+                    tempinst.inst.value = tempinst;
+                tempinst.errors.value = true;
                 return ;
             }
             finally {
             }
         }
         tempinst.tinst = (sc.get()).tinst;
-        tempinst.minst = (sc.get()).minst;
-        if ((tempinst.tinst == null) && ((sc.get()).func != null) && (sc.get()).func.inNonRoot())
+        tempinst.minst.value = (sc.get()).minst.value;
+        if ((tempinst.tinst == null) && ((sc.get()).func.value != null) && (sc.get()).func.value.inNonRoot())
         {
-            tempinst.minst = null;
+            tempinst.minst.value = null;
         }
-        tempinst.gagged = global.value.gag > 0;
-        tempinst.semanticRun = PASS.semantic;
+        tempinst.gagged = global.gag.value > 0;
+        tempinst.semanticRun.value = PASS.semantic;
         if (!tempinst.findTempDecl(sc, null) || !tempinst.semanticTiargs(sc) || !tempinst.findBestMatch(sc, fargs))
         {
         /*Lerror:*/
             if (tempinst.gagged)
             {
-                tempinst.semanticRun = PASS.init;
+                tempinst.semanticRun.value = PASS.init;
             }
             else
-                tempinst.inst = tempinst;
-            tempinst.errors = true;
+                tempinst.inst.value = tempinst;
+            tempinst.errors.value = true;
             return ;
         }
-        TemplateDeclaration tempdecl = tempinst.tempdecl.isTemplateDeclaration();
+        TemplateDeclaration tempdecl = tempinst.tempdecl.value.isTemplateDeclaration();
         assert(tempdecl != null);
         if (tempdecl.ismixin)
         {
             tempinst.error(new BytePtr("mixin templates are not regular templates"));
             /*goto Lerror*/throw Dispatch0.INSTANCE;
         }
-        tempinst.hasNestedArgs(tempinst.tiargs, tempdecl.isstatic);
-        if (tempinst.errors)
+        tempinst.hasNestedArgs(tempinst.tiargs.value, tempdecl.isstatic);
+        if (tempinst.errors.value)
             /*goto Lerror*/throw Dispatch0.INSTANCE;
         tempinst.namespace = tempdecl.namespace;
-        tempinst.inst = tempdecl.findExistingInstance(tempinst, fargs);
+        tempinst.inst.value = tempdecl.findExistingInstance(tempinst, fargs);
         TemplateInstance errinst = null;
-        if (tempinst.inst == null)
+        if (tempinst.inst.value == null)
         {
         }
-        else if (tempinst.inst.gagged && !tempinst.gagged && tempinst.inst.errors)
+        else if (tempinst.inst.value.gagged && !tempinst.gagged && tempinst.inst.value.errors.value)
         {
-            errinst = tempinst.inst;
+            errinst = tempinst.inst.value;
         }
         else
         {
-            tempinst.parent.value = tempinst.inst.parent.value;
-            tempinst.errors = tempinst.inst.errors;
-            global.value.errors += (tempinst.errors ? 1 : 0);
-            global.value.gaggedErrors += (tempinst.errors ? 1 : 0);
-            if (tempinst.inst.gagged)
+            tempinst.parent.value = tempinst.inst.value.parent.value;
+            tempinst.errors.value = tempinst.inst.value.errors.value;
+            global.errors.value += (tempinst.errors.value ? 1 : 0);
+            global.gaggedErrors += (tempinst.errors.value ? 1 : 0);
+            if (tempinst.inst.value.gagged)
             {
-                tempinst.inst.gagged = tempinst.gagged;
+                tempinst.inst.value.gagged = tempinst.gagged;
             }
-            tempinst.tnext = tempinst.inst.tnext;
-            tempinst.inst.tnext = tempinst;
-            if ((tempinst.minst != null) && tempinst.minst.isRoot() && !((tempinst.inst.minst != null) && tempinst.inst.minst.isRoot()))
+            tempinst.tnext = tempinst.inst.value.tnext;
+            tempinst.inst.value.tnext = tempinst;
+            if ((tempinst.minst.value != null) && tempinst.minst.value.isRoot() && !((tempinst.inst.value.minst.value != null) && tempinst.inst.value.minst.value.isRoot()))
             {
-                dmodule.Module mi = tempinst.minst;
+                dmodule.Module mi = tempinst.minst.value;
                 TemplateInstance ti = tempinst.tinst;
-                tempinst.minst = tempinst.inst.minst;
-                tempinst.tinst = tempinst.inst.tinst;
-                tempinst.inst.minst = mi;
-                tempinst.inst.tinst = ti;
-                if (tempinst.minst != null)
+                tempinst.minst.value = tempinst.inst.value.minst.value;
+                tempinst.tinst = tempinst.inst.value.tinst;
+                tempinst.inst.value.minst.value = mi;
+                tempinst.inst.value.tinst = ti;
+                if (tempinst.minst.value != null)
                 {
-                    tempinst.inst.appendToModuleMember();
+                    tempinst.inst.value.appendToModuleMember();
                 }
             }
-            if (tempinst.minst != null)
-                tempinst.minst.aimports.append(ptr(tempinst.inst.importedModules.value));
+            if (tempinst.minst.value != null)
+                tempinst.minst.value.aimports.append(ptr(tempinst.inst.value.importedModules));
             return ;
         }
-        int errorsave = global.value.errors;
-        tempinst.inst = tempinst;
-        tempinst.parent.value = tempinst.enclosing != null ? tempinst.enclosing : tempdecl.parent.value;
+        int errorsave = global.errors.value;
+        tempinst.inst.value = tempinst;
+        tempinst.parent.value = tempinst.enclosing.value != null ? tempinst.enclosing.value : tempdecl.parent.value;
         TemplateInstance tempdecl_instance_idx = tempdecl.addInstance(tempinst);
         Ptr<DArray<Dsymbol>> target_symbol_list = tempinst.appendToModuleMember();
-        int target_symbol_list_idx = target_symbol_list != null ? (target_symbol_list.get()).length - 1 : 0;
-        tempinst.members = Dsymbol.arraySyntaxCopy(tempdecl.members);
+        int target_symbol_list_idx = target_symbol_list != null ? (target_symbol_list.get()).length.value - 1 : 0;
+        tempinst.members.value = Dsymbol.arraySyntaxCopy(tempdecl.members.value);
         {
             int i = 0;
-            for (; (i < (tempdecl.parameters.get()).length);i++){
+            for (; (i < (tempdecl.parameters.get()).length.value);i++){
                 if (((tempdecl.parameters.get()).get(i).isTemplateThisParameter() == null))
                     continue;
-                Type t = isType((tempinst.tiargs.get()).get(i));
+                Type t = isType((tempinst.tiargs.value.get()).get(i));
                 assert(t != null);
                 {
-                    long stc = ModToStc((t.mod & 0xFF));
+                    long stc = ModToStc((t.mod.value & 0xFF));
                     if ((stc) != 0)
                     {
-                        Ptr<DArray<Dsymbol>> s = new DArray<Dsymbol>();
-                        (s.get()).push(new StorageClassDeclaration(stc, tempinst.members));
-                        tempinst.members = s;
+                        Ptr<DArray<Dsymbol>> s = refPtr(new DArray<Dsymbol>());
+                        (s.get()).push(new StorageClassDeclaration(stc, tempinst.members.value));
+                        tempinst.members.value = s;
                     }
                 }
                 break;
             }
         }
-        Ptr<Scope> _scope = tempdecl._scope;
-        if ((tempdecl.semanticRun == PASS.init))
+        Ptr<Scope> _scope = tempdecl._scope.value;
+        if ((tempdecl.semanticRun.value == PASS.init))
         {
             tempinst.error(new BytePtr("template instantiation `%s` forward references template declaration `%s`"), tempinst.toChars(), tempdecl.toChars());
             return ;
@@ -4921,10 +4916,10 @@ public class dsymbolsem {
         tempinst.argsym.parent.value = (_scope.get()).parent.value;
         _scope = (_scope.get()).push(tempinst.argsym);
         (_scope.get()).tinst = tempinst;
-        (_scope.get()).minst = tempinst.minst;
+        (_scope.get()).minst.value = tempinst.minst.value;
         Ptr<Scope> paramscope = (_scope.get()).push();
-        (paramscope.get()).stc = 0L;
-        (paramscope.get()).protection = new Prot(Prot.Kind.public_).copy();
+        (paramscope.get()).stc.value = 0L;
+        (paramscope.get()).protection.value = new Prot(Prot.Kind.public_).copy();
         tempinst.declareParameters(paramscope);
         (paramscope.get()).pop();
         tempinst.symtab = new DsymbolTable();
@@ -4933,26 +4928,26 @@ public class dsymbolsem {
                 s.addMember(_scope, tempinst);
             }
         };
-        foreachDsymbol(tempinst.members, __lambda4);
-        if ((tempinst.members.get()).length != 0)
+        foreachDsymbol(tempinst.members.value, __lambda4);
+        if ((tempinst.members.value.get()).length.value != 0)
         {
             Ref<Dsymbol> s = ref(null);
-            if (Dsymbol.oneMembers(tempinst.members, ptr(s), tempdecl.ident) && (s.value != null))
+            if (Dsymbol.oneMembers(tempinst.members.value, ptr(s), tempdecl.ident.value) && (s.value != null))
             {
-                tempinst.aliasdecl = s.value;
+                tempinst.aliasdecl.value = s.value;
             }
         }
-        if ((fargs != null) && (tempinst.aliasdecl != null))
+        if ((fargs != null) && (tempinst.aliasdecl.value != null))
         {
             {
-                FuncDeclaration fd = tempinst.aliasdecl.isFuncDeclaration();
+                FuncDeclaration fd = tempinst.aliasdecl.value.isFuncDeclaration();
                 if ((fd) != null)
                 {
-                    if (fd.type != null)
+                    if (fd.type.value != null)
                         {
-                            TypeFunction tf = fd.type.isTypeFunction();
+                            TypeFunction tf = fd.type.value.isTypeFunction();
                             if ((tf) != null)
-                                tf.fargs = fargs;
+                                tf.fargs.value = fargs;
                         }
                 }
             }
@@ -4961,28 +4956,28 @@ public class dsymbolsem {
         sc2 = (_scope.get()).push(tempinst);
         (sc2.get()).parent.value = tempinst;
         (sc2.get()).tinst = tempinst;
-        (sc2.get()).minst = tempinst.minst;
+        (sc2.get()).minst.value = tempinst.minst.value;
         tempinst.tryExpandMembers(sc2);
-        tempinst.semanticRun = PASS.semanticdone;
-        if ((tempinst.members.get()).length != 0)
+        tempinst.semanticRun.value = PASS.semanticdone;
+        if ((tempinst.members.value.get()).length.value != 0)
         {
             Ref<Dsymbol> s = ref(null);
-            if (Dsymbol.oneMembers(tempinst.members, ptr(s), tempdecl.ident) && (s.value != null))
+            if (Dsymbol.oneMembers(tempinst.members.value, ptr(s), tempdecl.ident.value) && (s.value != null))
             {
-                if ((tempinst.aliasdecl == null) || (!pequals(tempinst.aliasdecl, s.value)))
+                if ((tempinst.aliasdecl.value == null) || (!pequals(tempinst.aliasdecl.value, s.value)))
                 {
-                    tempinst.aliasdecl = s.value;
+                    tempinst.aliasdecl.value = s.value;
                 }
             }
         }
         try {
-            if ((global.value.errors != errorsave))
+            if ((global.errors.value != errorsave))
                 /*goto Laftersemantic*/throw Dispatch0.INSTANCE;
             {
                 boolean found_deferred_ad = false;
                 {
                     int i = 0;
-                    for (; (i < dmodule.Module.deferred.length);i++){
+                    for (; (i < dmodule.Module.deferred.length.value);i++){
                         Dsymbol sd = dmodule.Module.deferred.get(i);
                         AggregateDeclaration ad = sd.isAggregateDeclaration();
                         if ((ad != null) && (ad.parent.value != null) && (ad.parent.value.isTemplateInstance() != null))
@@ -4996,15 +4991,15 @@ public class dsymbolsem {
                         }
                     }
                 }
-                if (found_deferred_ad || (dmodule.Module.deferred.length != 0))
+                if (found_deferred_ad || (dmodule.Module.deferred.length.value != 0))
                     /*goto Laftersemantic*/throw Dispatch0.INSTANCE;
             }
             {
                 semantic2(tempinst, sc2);
             }
-            if ((global.value.errors != errorsave))
+            if ((global.errors.value != errorsave))
                 /*goto Laftersemantic*/throw Dispatch0.INSTANCE;
-            if (((sc.get()).func != null) || (((sc.get()).flags & 65536) != 0) && (tempinst.tinst == null))
+            if (((sc.get()).func.value != null) || (((sc.get()).flags.value & 65536) != 0) && (tempinst.tinst == null))
             {
                 Ref<DArray<TemplateInstance>> deferred = ref(new DArray<TemplateInstance>());
                 try {
@@ -5025,17 +5020,17 @@ public class dsymbolsem {
             {
                 boolean doSemantic3 = false;
                 FuncDeclaration fd = null;
-                if (tempinst.aliasdecl != null)
-                    fd = tempinst.aliasdecl.toAlias2().isFuncDeclaration();
+                if (tempinst.aliasdecl.value != null)
+                    fd = tempinst.aliasdecl.value.toAlias2().isFuncDeclaration();
                 if (fd != null)
                 {
                     FuncLiteralDeclaration fld = fd.isFuncLiteralDeclaration();
-                    if ((fld != null) && ((fld.tok & 0xFF) == 0))
+                    if ((fld != null) && ((fld.tok.value & 0xFF) == 0))
                         doSemantic3 = true;
-                    else if ((sc.get()).func != null)
+                    else if ((sc.get()).func.value != null)
                         doSemantic3 = true;
                 }
-                else if ((sc.get()).func != null)
+                else if ((sc.get()).func.value != null)
                 {
                     {
                         Slice<RootObject> __r1180 = tempinst.tdtypes.value.opSlice().copy();
@@ -5051,15 +5046,15 @@ public class dsymbolsem {
                                 {
                                     if (!td.literal)
                                         continue;
-                                    assert((td.members != null) && ((td.members.get()).length == 1));
-                                    s = (td.members.get()).get(0);
+                                    assert((td.members.value != null) && ((td.members.value.get()).length.value == 1));
+                                    s = (td.members.value.get()).get(0);
                                 }
                             }
                             {
                                 FuncLiteralDeclaration fld = s.isFuncLiteralDeclaration();
                                 if ((fld) != null)
                                 {
-                                    if (((fld.tok & 0xFF) == 0))
+                                    if (((fld.tok.value & 0xFF) == 0))
                                     {
                                         doSemantic3 = true;
                                         break;
@@ -5077,7 +5072,7 @@ public class dsymbolsem {
                     ti = ti.tinst;
                     if (((nest += 1) > 500))
                     {
-                        global.value.gag = 0;
+                        global.gag.value = 0;
                         tempinst.error(new BytePtr("recursive expansion"));
                         fatal();
                     }
@@ -5098,25 +5093,25 @@ public class dsymbolsem {
                     }
                 }
             }
-            if (tempinst.aliasdecl != null)
+            if (tempinst.aliasdecl.value != null)
             {
-                tempinst.aliasdecl = tempinst.aliasdecl.toAlias2();
+                tempinst.aliasdecl.value = tempinst.aliasdecl.value.toAlias2();
             }
         }
         catch(Dispatch0 __d){}
     /*Laftersemantic:*/
         (sc2.get()).pop();
         (_scope.get()).pop();
-        if ((global.value.errors != errorsave))
+        if ((global.errors.value != errorsave))
         {
-            if (!tempinst.errors)
+            if (!tempinst.errors.value)
             {
                 if (!tempdecl.literal)
-                    tempinst.error(tempinst.loc, new BytePtr("error instantiating"));
+                    tempinst.error(tempinst.loc.value, new BytePtr("error instantiating"));
                 if (tempinst.tinst != null)
                     tempinst.tinst.printInstantiationTrace();
             }
-            tempinst.errors = true;
+            tempinst.errors.value = true;
             if (tempinst.gagged)
             {
                 tempdecl.removeInstance(tempdecl_instance_idx);
@@ -5126,14 +5121,14 @@ public class dsymbolsem {
                     (target_symbol_list.get()).remove(target_symbol_list_idx);
                     tempinst.memberOf = null;
                 }
-                tempinst.semanticRun = PASS.init;
-                tempinst.inst = null;
+                tempinst.semanticRun.value = PASS.init;
+                tempinst.inst.value = null;
                 tempinst.symtab = null;
             }
         }
         else if (errinst != null)
         {
-            assert(errinst.errors);
+            assert(errinst.errors.value);
             TemplateInstanceBox ti1 = ti1 = new TemplateInstanceBox(errinst);
             tempdecl.instances.remove(ti1);
             TemplateInstanceBox ti2 = ti2 = new TemplateInstanceBox(tempinst);
@@ -5142,87 +5137,87 @@ public class dsymbolsem {
     }
 
     public static void aliasSemantic(AliasDeclaration ds, Ptr<Scope> sc) {
-        if ((ds.type != null) && ((ds.type.ty & 0xFF) == ENUMTY.TTraits))
+        if ((ds.type.value != null) && ((ds.type.value.ty.value & 0xFF) == ENUMTY.TTraits))
         {
-            TypeTraits tt = (TypeTraits)ds.type;
-            tt.inAliasDeclaration = true;
+            TypeTraits tt = (TypeTraits)ds.type.value;
+            tt.inAliasDeclaration.value = true;
             {
                 Type t = typeSemantic(tt, tt.loc, sc);
                 if ((t) != null)
-                    ds.type = t;
-                else if (tt.sym != null)
-                    ds.aliassym = tt.sym;
+                    ds.type.value = t;
+                else if (tt.sym.value != null)
+                    ds.aliassym.value = tt.sym.value;
             }
-            tt.inAliasDeclaration = false;
+            tt.inAliasDeclaration.value = false;
         }
-        if (ds.aliassym != null)
+        if (ds.aliassym.value != null)
         {
-            FuncLiteralDeclaration fd = ds.aliassym.isFuncLiteralDeclaration();
-            TemplateDeclaration td = ds.aliassym.isTemplateDeclaration();
+            FuncLiteralDeclaration fd = ds.aliassym.value.isFuncLiteralDeclaration();
+            TemplateDeclaration td = ds.aliassym.value.isTemplateDeclaration();
             if ((fd != null) || (td != null) && td.literal)
             {
-                if ((fd != null) && (fd.semanticRun >= PASS.semanticdone))
+                if ((fd != null) && (fd.semanticRun.value >= PASS.semanticdone))
                     return ;
-                Expression e = new FuncExp(ds.loc, ds.aliassym);
+                Expression e = new FuncExp(ds.loc.value, ds.aliassym.value);
                 e = expressionSemantic(e, sc);
-                if (((e.op & 0xFF) == 161))
+                if (((e.op.value & 0xFF) == 161))
                 {
                     FuncExp fe = (FuncExp)e;
-                    ds.aliassym = fe.td != null ? fe.td : fe.fd;
+                    ds.aliassym.value = fe.td.value != null ? fe.td.value : fe.fd.value;
                 }
                 else
                 {
-                    ds.aliassym = null;
-                    ds.type = Type.terror.value;
+                    ds.aliassym.value = null;
+                    ds.type.value = Type.terror.value;
                 }
                 return ;
             }
-            if (ds.aliassym.isTemplateInstance() != null)
-                dsymbolSemantic(ds.aliassym, sc);
+            if (ds.aliassym.value.isTemplateInstance() != null)
+                dsymbolSemantic(ds.aliassym.value, sc);
             return ;
         }
-        ds.inuse = 1;
-        int errors = global.value.errors;
-        Type oldtype = ds.type;
-        Ungag ungag = ungag = new Ungag(global.value.gag);
+        ds.inuse.value = 1;
+        int errors = global.errors.value;
+        Type oldtype = ds.type.value;
+        Ungag ungag = ungag = new Ungag(global.gag.value);
         try {
-            if ((ds.parent.value != null) && (global.value.gag != 0) && (ds.isInstantiated() == null) && (ds.toParent2().isFuncDeclaration() == null))
+            if ((ds.parent.value != null) && (global.gag.value != 0) && (ds.isInstantiated() == null) && (ds.toParent2().isFuncDeclaration() == null))
             {
-                global.value.gag = 0;
+                global.gag.value = 0;
             }
-            if (((ds.type.ty & 0xFF) == ENUMTY.Tident) && (ds._import == null))
+            if (((ds.type.value.ty.value & 0xFF) == ENUMTY.Tident) && (ds._import.value == null))
             {
-                TypeIdentifier tident = (TypeIdentifier)ds.type;
-                if ((tident.ident == ds.ident) && (tident.idents.length == 0))
+                TypeIdentifier tident = (TypeIdentifier)ds.type.value;
+                if ((tident.ident.value == ds.ident.value) && (tident.idents.length.value == 0))
                 {
-                    error(ds.loc, new BytePtr("`alias %s = %s;` cannot alias itself, use a qualified name to create an overload set"), ds.ident.toChars(), tident.ident.toChars());
-                    ds.type = Type.terror.value;
+                    error(ds.loc.value, new BytePtr("`alias %s = %s;` cannot alias itself, use a qualified name to create an overload set"), ds.ident.value.toChars(), tident.ident.value.toChars());
+                    ds.type.value = Type.terror.value;
                 }
             }
-            Ref<Dsymbol> s = ref(ds.type.toDsymbol(sc));
-            if ((errors != global.value.errors))
+            Ref<Dsymbol> s = ref(ds.type.value.toDsymbol(sc));
+            if ((errors != global.errors.value))
             {
                 s.value = null;
-                ds.type = Type.terror.value;
+                ds.type.value = Type.terror.value;
             }
             if ((s.value != null) && (pequals(s.value, ds)))
             {
                 ds.error(new BytePtr("cannot resolve"));
                 s.value = null;
-                ds.type = Type.terror.value;
+                ds.type.value = Type.terror.value;
             }
             if ((s.value == null) || (s.value.isEnumMember() == null))
             {
                 Ref<Type> t = ref(null);
                 Ref<Expression> e = ref(null);
                 Ptr<Scope> sc2 = sc;
-                if ((ds.storage_class & 4535588225024L) != 0)
+                if ((ds.storage_class.value & 4535588225024L) != 0)
                 {
                     sc2 = (sc.get()).push();
-                    (sc2.get()).stc |= ds.storage_class & 4536125095936L;
+                    (sc2.get()).stc.value |= ds.storage_class.value & 4536125095936L;
                 }
-                ds.type = ds.type.addSTC(ds.storage_class);
-                resolve(ds.type, ds.loc, sc2, ptr(e), ptr(t), ptr(s), false);
+                ds.type.value = ds.type.value.addSTC(ds.storage_class.value);
+                resolve(ds.type.value, ds.loc.value, sc2, ptr(e), ptr(t), ptr(s), false);
                 if ((sc2 != sc))
                     (sc2.get()).pop();
                 if (e.value != null)
@@ -5230,36 +5225,36 @@ public class dsymbolsem {
                     s.value = getDsymbol(e.value);
                     if (s.value == null)
                     {
-                        if (((e.value.op & 0xFF) != 127))
+                        if (((e.value.op.value & 0xFF) != 127))
                             ds.error(new BytePtr("cannot alias an expression `%s`"), e.value.toChars());
                         t.value = Type.terror.value;
                     }
                 }
-                ds.type = t.value;
+                ds.type.value = t.value;
             }
             if ((pequals(s.value, ds)))
             {
-                assert(global.value.errors != 0);
-                ds.type = Type.terror.value;
+                assert(global.errors.value != 0);
+                ds.type.value = Type.terror.value;
                 s.value = null;
             }
             if (s.value == null)
             {
-                ds.type = typeSemantic(ds.type, ds.loc, sc);
-                ds.aliassym = null;
+                ds.type.value = typeSemantic(ds.type.value, ds.loc.value, sc);
+                ds.aliassym.value = null;
             }
             else
             {
-                ds.type = null;
-                ds.aliassym = s.value;
+                ds.type.value = null;
+                ds.aliassym.value = s.value;
             }
-            if ((global.value.gag != 0) && (errors != global.value.errors))
+            if ((global.gag.value != 0) && (errors != global.errors.value))
             {
-                ds.type = oldtype;
-                ds.aliassym = null;
+                ds.type.value = oldtype;
+                ds.aliassym.value = null;
             }
-            ds.inuse = 0;
-            ds.semanticRun = PASS.semanticdone;
+            ds.inuse.value = 0;
+            ds.semanticRun.value = PASS.semanticdone;
             {
                 Dsymbol sx = ds.overnext;
                 if ((sx) != null)

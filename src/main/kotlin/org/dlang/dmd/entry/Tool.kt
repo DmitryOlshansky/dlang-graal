@@ -10,7 +10,7 @@ fun main(args: Array<String>) {
     timeit {
         val arr = args.toMutableList()
         arr.add(0, "dtool")
-        dtool.main(Slice<ByteSlice>(arr.map { ByteSlice(it) }.toTypedArray()))
+        dtool.main(RawSlice<ByteSlice>(arr.map { ByteSlice(it) }.toTypedArray()))
     }
 }
 

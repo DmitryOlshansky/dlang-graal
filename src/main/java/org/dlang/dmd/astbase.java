@@ -145,7 +145,7 @@ public class astbase {
             public static final long FUNCATTR = 4462573780992L;
         }
 
-        public static long STCStorageClass = 1148096276348831L;
+        public static long STCStorageClass = 22196369506207L;
 
         public static class ENUMTY 
         {
@@ -528,7 +528,7 @@ public class astbase {
                 {
                     this.ident = aliasId;
                 }
-                else if ((packages != null) && ((packages.get()).length != 0))
+                else if ((packages != null) && ((packages.get()).length.value != 0))
                 {
                     this.ident = (packages.get()).get(0);
                 }
@@ -1593,11 +1593,11 @@ public class astbase {
                 Ptr<DArray<RootObject>> a = null;
                 if (objs != null)
                 {
-                    a = new DArray<RootObject>();
-                    (a.get()).setDim((objs.get()).length);
+                    a = refPtr(new DArray<RootObject>());
+                    (a.get()).setDim((objs.get()).length.value);
                     {
                         int i = 0;
-                        for (; (i < (objs.get()).length);i++) {
+                        for (; (i < (objs.get()).length.value);i++) {
                             a.get().set(i, this.objectSyntaxCopy((objs.get()).get(i)));
                         }
                     }
@@ -1732,7 +1732,7 @@ public class astbase {
                     udas = udas1;
                 else
                 {
-                    udas = new DArray<Expression>(2);
+                    udas = refPtr(new DArray<Expression>(2));
                     udas.get().set(0, new TupleExp(Loc.initial.value, udas1));
                     udas.get().set(1, new TupleExp(Loc.initial.value, udas2));
                 }
@@ -2175,7 +2175,7 @@ public class astbase {
             public  Module(BytePtr filename, Identifier ident, int doDocComment, int doHdrGen) {
                 super(ident);
                 this.arg = pcopy(filename);
-                this.srcfile = new FileName(FileName.defaultExt(toDString(filename), toByteSlice(global.value.mars_ext)));
+                this.srcfile = new FileName(FileName.defaultExt(toDString(filename), toByteSlice(global.mars_ext)));
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -2290,7 +2290,7 @@ public class astbase {
                     this.baseclasses = baseclasses;
                 }
                 else
-                    this.baseclasses = new DArray<Ptr<BaseClass>>();
+                    this.baseclasses = refPtr(new DArray<Ptr<BaseClass>>());
                 this.members = members;
                 this.type = new TypeClass(this);
                 if (id != null)
@@ -2496,7 +2496,7 @@ public class astbase {
         {
             public TypeQualified tqual = null;
             public  TemplateMixin(Loc loc, Identifier ident, TypeQualified tqual, Ptr<DArray<RootObject>> tiargs) {
-                super(loc, tqual.idents.length != 0 ? (Identifier)tqual.idents.get(tqual.idents.length - 1) : ((TypeIdentifier)tqual).ident, tiargs != null ? tiargs : new DArray<RootObject>());
+                super(loc, tqual.idents.length.value != 0 ? (Identifier)tqual.idents.get(tqual.idents.length.value - 1) : ((TypeIdentifier)tqual).ident, tiargs != null ? tiargs : refPtr(new DArray<RootObject>()));
                 this.ident = ident;
                 this.tqual = tqual;
             }
@@ -2648,7 +2648,7 @@ public class astbase {
                 Ptr<DArray<Parameter>> params = null;
                 if (parameters != null)
                 {
-                    params = new DArray<Parameter>();
+                    params = refPtr(new DArray<Parameter>());
                     (params.get()).setDim((parameters.get()).length);
                     {
                         int i = 0;
@@ -3582,7 +3582,7 @@ public class astbase {
 
             public  CompoundStatement(Loc loc, Slice<Statement> sts) {
                 super(loc);
-                this.statements = new DArray<Statement>();
+                this.statements = refPtr(new DArray<Statement>());
                 (this.statements.get()).reserve(sts.getLength());
                 {
                     Slice<Statement> __r126 = sts.copy();
@@ -3806,7 +3806,7 @@ public class astbase {
                 twstring = twchar.immutableOf().arrayOf();
                 tdstring = tdchar.immutableOf().arrayOf();
                 tvalist = Target.va_listType();
-                boolean isLP64 = global.value.params.isLP64;
+                boolean isLP64 = global.params.isLP64;
                 tsize_t = basic.get(isLP64 ? 20 : 18);
                 tptrdiff_t = basic.get(isLP64 ? 19 : 17);
                 thash_t = tsize_t;
@@ -4653,7 +4653,7 @@ public class astbase {
 
             public  TypeTuple(Ptr<DArray<Expression>> exps) {
                 super((byte)37);
-                Ptr<DArray<Parameter>> arguments = new DArray<Parameter>();
+                Ptr<DArray<Parameter>> arguments = refPtr(new DArray<Parameter>());
                 if (exps != null)
                 {
                     (arguments.get()).setDim((exps.get()).length);
@@ -4787,7 +4787,7 @@ public class astbase {
                 return that;
             }
         }
-        public static class TypeReference extends TypeNext implements LinkedNode<Type>
+        public static class TypeReference extends TypeNext
         {
             public  TypeReference(Type t) {
                 super((byte)4, t);
@@ -4831,10 +4831,8 @@ public class astbase {
                 that.arrayof = this.arrayof;
                 return that;
             }
-            public void setNext(Type value) { next = value; }
-            public Type getNext() { return next; }
         }
-        public static abstract class TypeNext extends Type implements LinkedNode<Type>
+        public static abstract class TypeNext extends Type
         {
             public Type next = null;
             public  TypeNext(byte ty, Type next) {
@@ -4854,10 +4852,8 @@ public class astbase {
             public TypeNext() {}
 
             public abstract TypeNext copy();
-            public void setNext(Type value) { next = value; }
-            public Type getNext() { return next; }
         }
-        public static class TypeSlice extends TypeNext implements LinkedNode<Type>
+        public static class TypeSlice extends TypeNext
         {
             public Expression lwr = null;
             public Expression upr = null;
@@ -4901,10 +4897,8 @@ public class astbase {
                 that.arrayof = this.arrayof;
                 return that;
             }
-            public void setNext(Type value) { next = value; }
-            public Type getNext() { return next; }
         }
-        public static class TypeDelegate extends TypeNext implements LinkedNode<Type>
+        public static class TypeDelegate extends TypeNext
         {
             public  TypeDelegate(Type t) {
                 super((byte)5, t);
@@ -4949,10 +4943,8 @@ public class astbase {
                 that.arrayof = this.arrayof;
                 return that;
             }
-            public void setNext(Type value) { next = value; }
-            public Type getNext() { return next; }
         }
-        public static class TypePointer extends TypeNext implements LinkedNode<Type>
+        public static class TypePointer extends TypeNext
         {
             public  TypePointer(Type t) {
                 super((byte)3, t);
@@ -4996,10 +4988,8 @@ public class astbase {
                 that.arrayof = this.arrayof;
                 return that;
             }
-            public void setNext(Type value) { next = value; }
-            public Type getNext() { return next; }
         }
-        public static class TypeFunction extends TypeNext implements LinkedNode<Type>
+        public static class TypeFunction extends TypeNext
         {
             public ParameterList parameterList = new ParameterList();
             public boolean isnothrow = false;
@@ -5102,10 +5092,8 @@ public class astbase {
                 that.arrayof = this.arrayof;
                 return that;
             }
-            public void setNext(Type value) { next = value; }
-            public Type getNext() { return next; }
         }
-        public static class TypeArray extends TypeNext implements LinkedNode<Type>
+        public static class TypeArray extends TypeNext
         {
             public  TypeArray(byte ty, Type next) {
                 super(ty, next);
@@ -5137,10 +5125,8 @@ public class astbase {
                 that.arrayof = this.arrayof;
                 return that;
             }
-            public void setNext(Type value) { next = value; }
-            public Type getNext() { return next; }
         }
-        public static class TypeDArray extends TypeArray implements LinkedNode<Type>
+        public static class TypeDArray extends TypeArray
         {
             public  TypeDArray(Type t) {
                 super((byte)0, t);
@@ -5184,10 +5170,8 @@ public class astbase {
                 that.arrayof = this.arrayof;
                 return that;
             }
-            public void setNext(Type value) { next = value; }
-            public Type getNext() { return next; }
         }
-        public static class TypeAArray extends TypeArray implements LinkedNode<Type>
+        public static class TypeAArray extends TypeArray
         {
             public Type index = null;
             public Loc loc = new Loc();
@@ -5248,10 +5232,8 @@ public class astbase {
                 that.arrayof = this.arrayof;
                 return that;
             }
-            public void setNext(Type value) { next = value; }
-            public Type getNext() { return next; }
         }
-        public static class TypeSArray extends TypeArray implements LinkedNode<Type>
+        public static class TypeSArray extends TypeArray
         {
             public Expression dim = null;
             public  TypeSArray(Type t, Expression dim) {
@@ -5301,8 +5283,6 @@ public class astbase {
                 that.arrayof = this.arrayof;
                 return that;
             }
-            public void setNext(Type value) { next = value; }
-            public Type getNext() { return next; }
         }
         public static abstract class TypeQualified extends Type
         {
@@ -5326,10 +5306,10 @@ public class astbase {
             }
 
             public  void syntaxCopyHelper(TypeQualified t) {
-                this.idents.setDim(t.idents.length);
+                this.idents.setDim(t.idents.length.value);
                 {
                     int i = 0;
-                    for (; (i < this.idents.length);i++){
+                    for (; (i < this.idents.length.value);i++){
                         RootObject id = t.idents.get(i);
                         if ((id.dyncast() == DYNCAST.dsymbol))
                         {
@@ -5355,7 +5335,7 @@ public class astbase {
             }
 
             public  Expression toExpressionHelper(Expression e, int i) {
-                for (; (i < this.idents.length);i++){
+                for (; (i < this.idents.length.value);i++){
                     RootObject id = this.idents.get(i);
                     switch (id.dyncast())
                     {
@@ -5858,7 +5838,7 @@ public class astbase {
         }
         public static class RealExp extends Expression
         {
-            public double value = ;
+            public double value = 0;
             public  RealExp(Loc loc, double value, Type type) {
                 super(loc, TOK.float64, 40);
                 this.value = value;
@@ -6137,7 +6117,7 @@ public class astbase {
 
             public  ArrayLiteralExp(Loc loc, Expression e) {
                 super(loc, TOK.arrayLiteral, 32);
-                this.elements = new DArray<Expression>();
+                this.elements = refPtr(new DArray<Expression>());
                 (this.elements.get()).push(e);
             }
 
@@ -6528,11 +6508,11 @@ public class astbase {
 
             public  TupleExp(Loc loc, TupleDeclaration tup) {
                 super(loc, TOK.tuple, 32);
-                this.exps = new DArray<Expression>();
-                (this.exps.get()).reserve((tup.objects.get()).length);
+                this.exps = refPtr(new DArray<Expression>());
+                (this.exps.get()).reserve((tup.objects.get()).length.value);
                 {
                     int i = 0;
-                    for (; (i < (tup.objects.get()).length);i++){
+                    for (; (i < (tup.objects.get()).length.value);i++){
                         RootObject o = (tup.objects.get()).get(i);
                         {
                             Dsymbol s = this.getDsymbol(o);
@@ -6936,7 +6916,7 @@ public class astbase {
 
             public  CallExp(Loc loc, Expression e, Expression earg1) {
                 super(loc, TOK.call, 32, e);
-                Ptr<DArray<Expression>> arguments = new DArray<Expression>();
+                Ptr<DArray<Expression>> arguments = refPtr(new DArray<Expression>());
                 if (earg1 != null)
                 {
                     (arguments.get()).setDim(1);
@@ -6947,7 +6927,7 @@ public class astbase {
 
             public  CallExp(Loc loc, Expression e, Expression earg1, Expression earg2) {
                 super(loc, TOK.call, 32, e);
-                Ptr<DArray<Expression>> arguments = new DArray<Expression>();
+                Ptr<DArray<Expression>> arguments = refPtr(new DArray<Expression>());
                 (arguments.get()).setDim(2);
                 arguments.get().set(0, earg1);
                 arguments.get().set(1, earg2);
@@ -7119,7 +7099,7 @@ public class astbase {
             public Ptr<DArray<Expression>> arguments = null;
             public  ArrayExp(Loc loc, Expression e1, Expression index) {
                 super(loc, TOK.array, 32, e1);
-                this.arguments = new DArray<Expression>();
+                this.arguments = refPtr(new DArray<Expression>());
                 if (index != null)
                     (this.arguments.get()).push(index);
             }
@@ -8696,11 +8676,11 @@ public class astbase {
             public  BytePtr toChars() {
                 OutBuffer buf = new OutBuffer();
                 try {
-                    if ((this.packages != null) && ((this.packages.get()).length != 0))
+                    if ((this.packages != null) && ((this.packages.get()).length.value != 0))
                     {
                         {
                             int i = 0;
-                            for (; (i < (this.packages.get()).length);i++){
+                            for (; (i < (this.packages.get()).length.value);i++){
                                 Identifier pid = (this.packages.get()).get(i);
                                 buf.writestring(pid.asString());
                                 buf.writeByte(46);
@@ -8855,7 +8835,7 @@ public class astbase {
                 int i = 0;
                 for (; astbase.stcToCharstable.get(i).stc != 0;i++){
                     long tbl = astbase.stcToCharstable.get(i).stc;
-                    assert((tbl & 1148096276348831L) != 0);
+                    assert((tbl & 22196369506207L) != 0);
                     if ((stc.value & tbl) != 0)
                     {
                         stc.value &= ~tbl;
@@ -8899,13 +8879,13 @@ public class astbase {
         {
             public static int ptrsize = 0;
             public static Type va_listType() {
-                if (global.value.params.isWindows)
+                if (global.params.isWindows)
                 {
                     return Type.tchar.pointerTo();
                 }
-                else if (global.value.params.isLinux || global.value.params.isFreeBSD || global.value.params.isOpenBSD || global.value.params.isDragonFlyBSD || global.value.params.isSolaris || global.value.params.isOSX)
+                else if (global.params.isLinux || global.params.isFreeBSD || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris || global.params.isOSX)
                 {
-                    if (global.value.params.is64bit)
+                    if (global.params.is64bit)
                     {
                         return (new TypeIdentifier(Loc.initial.value, Identifier.idPool(new ByteSlice("__va_list_tag")))).pointerTo();
                     }

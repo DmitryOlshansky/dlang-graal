@@ -33,24 +33,24 @@ public class denum {
     public static class EnumDeclaration extends ScopeDsymbol
     {
         public Type type = null;
-        public Type memtype = null;
+        public Ref<Type> memtype = ref(null);
         public Prot protection = new Prot();
         public Ref<Expression> maxval = ref(null);
         public Ref<Expression> minval = ref(null);
-        public Expression defaultval = null;
+        public Ref<Expression> defaultval = ref(null);
         public boolean isdeprecated = false;
         public boolean added = false;
         public int inuse = 0;
         public  EnumDeclaration(Loc loc, Identifier ident, Type memtype) {
             super(loc, ident);
             this.type = new TypeEnum(this);
-            this.memtype = memtype;
+            this.memtype.value = memtype;
             this.protection = new Prot(Prot.Kind.undefined);
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            EnumDeclaration ed = new EnumDeclaration(this.loc, this.ident, this.memtype != null ? this.memtype.syntaxCopy() : null);
+            EnumDeclaration ed = new EnumDeclaration(this.loc.value, this.ident.value, this.memtype.value != null ? this.memtype.value.syntaxCopy() : null);
             return this.syntaxCopy(ed);
         }
 
@@ -62,12 +62,12 @@ public class denum {
                 if (this.symtab == null)
                     this.symtab = new DsymbolTable();
             }
-            if (this.members != null)
+            if (this.members.value != null)
             {
                 {
                     int i = 0;
-                    for (; (i < (this.members.get()).length);i++){
-                        EnumMember em = (this.members.get()).get(i).isEnumMember();
+                    for (; (i < (this.members.value.get()).length.value);i++){
+                        EnumMember em = (this.members.value.get()).get(i).isEnumMember();
                         em.ed = this;
                         em.addMember(sc, this.isAnonymous() ? scopesym : this);
                     }
@@ -77,14 +77,14 @@ public class denum {
         }
 
         public  void setScope(Ptr<Scope> sc) {
-            if ((this.semanticRun > PASS.init))
+            if ((this.semanticRun.value > PASS.init))
                 return ;
             this.setScope(sc);
         }
 
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             if (this.isAnonymous())
-                return Dsymbol.oneMembers(this.members, ps, ident);
+                return Dsymbol.oneMembers(this.members.value, ps, ident);
             return this.oneMember(ps, ident);
         }
 
@@ -97,11 +97,11 @@ public class denum {
         }
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
-            if (this._scope != null)
+            if (this._scope.value != null)
             {
-                dsymbolSemantic(this, this._scope);
+                dsymbolSemantic(this, this._scope.value);
             }
-            if ((this.members == null) || (this.symtab == null) || (this._scope != null))
+            if ((this.members.value == null) || (this.symtab == null) || (this._scope.value != null))
             {
                 this.error(new BytePtr("is forward referenced when looking for `%s`"), ident.toChars());
                 return null;
@@ -128,15 +128,15 @@ public class denum {
                 public Expression invoke(Expression e, Loc loc) {
                     Ref<Expression> e_ref = ref(e);
                     Ref<Loc> loc_ref = ref(loc);
-                    if (((e_ref.value.op & 0xFF) != 127))
+                    if (((e_ref.value.op.value & 0xFF) != 127))
                     {
                         e_ref.value = e_ref.value.copy();
-                        e_ref.value.loc = loc_ref.value.copy();
+                        e_ref.value.loc.value = loc_ref.value.copy();
                     }
                     return e_ref.value;
                 }
             };
-            Ref<Ptr<Expression>> pval = ref(pcopy((pequals(id, Id.max.value)) ? ptr(this.maxval.value) : ptr(this.minval.value)));
+            Ref<Ptr<Expression>> pval = ref(pcopy((pequals(id, Id.max.value)) ? ptr(this.maxval) : ptr(this.minval)));
             Function0<Expression> errorReturn = new Function0<Expression>(){
                 public Expression invoke() {
                     pval.value.set(0, (new ErrorExp()));
@@ -150,34 +150,34 @@ public class denum {
             }
             if (pval.value.get() != null)
                 return pvalToResult.invoke(pval.value.get(), loc);
-            if (this._scope != null)
-                dsymbolSemantic(this, this._scope);
-            if (this.errors)
+            if (this._scope.value != null)
+                dsymbolSemantic(this, this._scope.value);
+            if (this.errors.value)
                 return errorReturn.invoke();
-            if ((this.semanticRun == PASS.init) || (this.members == null))
+            if ((this.semanticRun.value == PASS.init) || (this.members.value == null))
             {
                 if (this.isSpecial())
                 {
-                    return getProperty(this.memtype, loc, id, 0);
+                    return getProperty(this.memtype.value, loc, id, 0);
                 }
                 this.error(new BytePtr("is forward referenced looking for `.%s`"), id.toChars());
                 return errorReturn.invoke();
             }
-            if (!((this.memtype != null) && this.memtype.isintegral()))
+            if (!((this.memtype.value != null) && this.memtype.value.isintegral()))
             {
-                this.error(loc, new BytePtr("has no `.%s` property because base type `%s` is not an integral type"), id.toChars(), this.memtype != null ? this.memtype.toChars() : new BytePtr(""));
+                this.error(loc, new BytePtr("has no `.%s` property because base type `%s` is not an integral type"), id.toChars(), this.memtype.value != null ? this.memtype.value.toChars() : new BytePtr(""));
                 return errorReturn.invoke();
             }
             boolean first = true;
             {
                 int i = 0;
-                for (; (i < (this.members.get()).length);i++){
-                    EnumMember em = (this.members.get()).get(i).isEnumMember();
+                for (; (i < (this.members.value.get()).length.value);i++){
+                    EnumMember em = (this.members.value.get()).get(i).isEnumMember();
                     if (em == null)
                         continue;
-                    if (em.errors)
+                    if (em.errors.value)
                     {
-                        this.errors = true;
+                        this.errors.value = true;
                         continue;
                     }
                     if (first)
@@ -188,14 +188,14 @@ public class denum {
                     else
                     {
                         Expression e = em.value();
-                        Expression ec = new CmpExp((pequals(id, Id.max.value)) ? TOK.greaterThan : TOK.lessThan, em.loc, e, pval.value.get());
+                        Expression ec = new CmpExp((pequals(id, Id.max.value)) ? TOK.greaterThan : TOK.lessThan, em.loc.value, e, pval.value.get());
                         this.inuse++;
-                        ec = expressionSemantic(ec, em._scope);
+                        ec = expressionSemantic(ec, em._scope.value);
                         this.inuse--;
                         ec = ec.ctfeInterpret();
-                        if (((ec.op & 0xFF) == 127))
+                        if (((ec.op.value & 0xFF) == 127))
                         {
-                            this.errors = true;
+                            this.errors.value = true;
                             continue;
                         }
                         if (ec.toInteger() != 0)
@@ -203,45 +203,45 @@ public class denum {
                     }
                 }
             }
-            return this.errors ? errorReturn.invoke() : pvalToResult.invoke(pval.value.get(), loc);
+            return this.errors.value ? errorReturn.invoke() : pvalToResult.invoke(pval.value.get(), loc);
         }
 
         public  boolean isSpecial() {
-            return isSpecialEnumIdent(this.ident) && (this.memtype != null);
+            return isSpecialEnumIdent(this.ident.value) && (this.memtype.value != null);
         }
 
         public  Expression getDefaultValue(Loc loc) {
             Function0<Expression> handleErrors = new Function0<Expression>(){
                 public Expression invoke() {
-                    defaultval = new ErrorExp();
-                    return defaultval;
+                    defaultval.value = new ErrorExp();
+                    return defaultval.value;
                 }
             };
-            if (this.defaultval != null)
-                return this.defaultval;
-            if (this._scope != null)
-                dsymbolSemantic(this, this._scope);
-            if (this.errors)
+            if (this.defaultval.value != null)
+                return this.defaultval.value;
+            if (this._scope.value != null)
+                dsymbolSemantic(this, this._scope.value);
+            if (this.errors.value)
                 return handleErrors.invoke();
-            if ((this.semanticRun == PASS.init) || (this.members == null))
+            if ((this.semanticRun.value == PASS.init) || (this.members.value == null))
             {
                 if (this.isSpecial())
                 {
-                    return defaultInit(this.memtype, loc);
+                    return defaultInit(this.memtype.value, loc);
                 }
                 this.error(loc, new BytePtr("forward reference of `%s.init`"), this.toChars());
                 return handleErrors.invoke();
             }
             {
                 int __key925 = 0;
-                int __limit926 = (this.members.get()).length;
+                int __limit926 = (this.members.value.get()).length.value;
                 for (; (__key925 < __limit926);__key925 += 1) {
                     int i = __key925;
-                    EnumMember em = (this.members.get()).get(i).isEnumMember();
+                    EnumMember em = (this.members.value.get()).get(i).isEnumMember();
                     if (em != null)
                     {
-                        this.defaultval = em.value();
-                        return this.defaultval;
+                        this.defaultval.value = em.value();
+                        return this.defaultval.value;
                     }
                 }
             }
@@ -249,31 +249,31 @@ public class denum {
         }
 
         public  Type getMemtype(Loc loc) {
-            if (this._scope != null)
+            if (this._scope.value != null)
             {
-                if (this.memtype != null)
+                if (this.memtype.value != null)
                 {
-                    Loc locx = loc.isValid() ? loc : this.loc.copy();
-                    this.memtype = typeSemantic(this.memtype, locx, this._scope);
+                    Loc locx = loc.isValid() ? loc : this.loc.value.copy();
+                    this.memtype.value = typeSemantic(this.memtype.value, locx, this._scope.value);
                 }
                 else
                 {
-                    if (!this.isAnonymous() && (this.members != null))
-                        this.memtype = Type.tint32.value;
+                    if (!this.isAnonymous() && (this.members.value != null))
+                        this.memtype.value = Type.tint32.value;
                 }
             }
-            if (this.memtype == null)
+            if (this.memtype.value == null)
             {
-                if (!this.isAnonymous() && (this.members != null))
-                    this.memtype = Type.tint32.value;
+                if (!this.isAnonymous() && (this.members.value != null))
+                    this.memtype.value = Type.tint32.value;
                 else
                 {
-                    Loc locx = loc.isValid() ? loc : this.loc.copy();
+                    Loc locx = loc.isValid() ? loc : this.loc.value.copy();
                     this.error(locx, new BytePtr("is forward referenced looking for base type"));
                     return Type.terror.value;
                 }
             }
-            return this.memtype;
+            return this.memtype.value;
         }
 
         public  EnumDeclaration isEnumDeclaration() {
@@ -327,7 +327,7 @@ public class denum {
     public static class EnumMember extends VarDeclaration
     {
         public  Expression value() {
-            return ((ExpInitializer)this._init).exp;
+            return ((ExpInitializer)this._init.value).exp.value;
         }
 
         public Expression origValue = null;
@@ -341,14 +341,14 @@ public class denum {
 
         public  EnumMember(Loc loc, Identifier id, Expression value, Type memtype, long stc, UserAttributeDeclaration uad, DeprecatedDeclaration dd) {
             this(loc, id, value, memtype);
-            this.storage_class = stc;
+            this.storage_class.value = stc;
             this.userAttribDecl = uad;
             this.depdecl = dd;
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            return new EnumMember(this.loc, this.ident, this.value() != null ? this.value().syntaxCopy() : null, this.origType != null ? this.origType.syntaxCopy() : null, this.storage_class, this.userAttribDecl != null ? (UserAttributeDeclaration)this.userAttribDecl.syntaxCopy(s) : null, this.depdecl != null ? (DeprecatedDeclaration)this.depdecl.syntaxCopy(s) : null);
+            return new EnumMember(this.loc.value, this.ident.value, this.value() != null ? this.value().syntaxCopy() : null, this.origType != null ? this.origType.syntaxCopy() : null, this.storage_class.value, this.userAttribDecl != null ? (UserAttributeDeclaration)this.userAttribDecl.syntaxCopy(s) : null, this.depdecl != null ? (DeprecatedDeclaration)this.depdecl.syntaxCopy(s) : null);
         }
 
         public  BytePtr kind() {
@@ -357,13 +357,13 @@ public class denum {
 
         public  Expression getVarExp(Loc loc, Ptr<Scope> sc) {
             dsymbolSemantic(this, sc);
-            if (this.errors)
+            if (this.errors.value)
                 return new ErrorExp();
             this.checkDisabled(loc, sc, false);
-            if ((this.depdecl != null) && (this.depdecl._scope == null))
-                this.depdecl._scope = sc;
+            if ((this.depdecl != null) && (this.depdecl._scope.value == null))
+                this.depdecl._scope.value = sc;
             this.checkDeprecated(loc, sc);
-            if (this.errors)
+            if (this.errors.value)
                 return new ErrorExp();
             Expression e = new VarExp(loc, this, true);
             return expressionSemantic(e, sc);

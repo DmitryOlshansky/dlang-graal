@@ -26,9 +26,9 @@ import static org.dlang.dmd.visitor.*;
 public class typinf {
 
     public static void genTypeInfo(Loc loc, Type torig, Ptr<Scope> sc) {
-        if ((sc == null) || (((sc.get()).flags & 128) == 0))
+        if ((sc == null) || (((sc.get()).flags.value & 128) == 0))
         {
-            if (!global.value.params.useTypeInfo)
+            if (!global.params.useTypeInfo.value)
             {
                 error(loc, new BytePtr("`TypeInfo` cannot be used with -betterC"));
                 fatal();
@@ -57,12 +57,12 @@ public class typinf {
             {
                 if (sc != null)
                 {
-                    dmodule.Module m = (sc.get())._module.importedFrom;
-                    (m.members.get()).push(t.vtinfo);
+                    dmodule.Module m = (sc.get())._module.value.importedFrom;
+                    (m.members.value.get()).push(t.vtinfo);
                 }
                 else
                 {
-                    toObjFile(t.vtinfo, global.value.params.multiobj);
+                    toObjFile(t.vtinfo, global.params.multiobj);
                 }
             }
         }
@@ -72,13 +72,13 @@ public class typinf {
     }
 
     public static Type getTypeInfoType(Loc loc, Type t, Ptr<Scope> sc) {
-        assert(((t.ty & 0xFF) != ENUMTY.Terror));
+        assert(((t.ty.value & 0xFF) != ENUMTY.Terror));
         genTypeInfo(loc, t, sc);
-        return t.vtinfo.type;
+        return t.vtinfo.type.value;
     }
 
     public static TypeInfoDeclaration getTypeInfoDeclaration(Type t) {
-        switch ((t.ty & 0xFF))
+        switch ((t.ty.value & 0xFF))
         {
             case 3:
                 return TypeInfoPointerDeclaration.create(t);
@@ -101,7 +101,7 @@ public class typinf {
             case 37:
                 return TypeInfoTupleDeclaration.create(t);
             case 7:
-                if (((TypeClass)t).sym.isInterfaceDeclaration() != null)
+                if (((TypeClass)t).sym.value.isInterfaceDeclaration() != null)
                     return TypeInfoInterfaceDeclaration.create(t);
                 else
                     return TypeInfoClassDeclaration.create(t);
@@ -113,27 +113,24 @@ public class typinf {
     public static boolean isSpeculativeType(Type t) {
         Function1<TypeVector,Boolean> visitVector = new Function1<TypeVector,Boolean>(){
             public Boolean invoke(TypeVector t) {
-                Ref<TypeVector> t_ref = ref(t);
-                return isSpeculativeType(t_ref.value.basetype);
+                return isSpeculativeType(t.basetype.value);
             }
         };
         Function1<TypeAArray,Boolean> visitAArray = new Function1<TypeAArray,Boolean>(){
             public Boolean invoke(TypeAArray t) {
-                Ref<TypeAArray> t_ref = ref(t);
-                return isSpeculativeType(t_ref.value.index) || isSpeculativeType(t_ref.value.next);
+                return isSpeculativeType(t.index.value) || isSpeculativeType(t.next.value);
             }
         };
         Function1<TypeStruct,Boolean> visitStruct = new Function1<TypeStruct,Boolean>(){
             public Boolean invoke(TypeStruct t) {
-                Ref<TypeStruct> t_ref = ref(t);
-                Ref<StructDeclaration> sd = ref(t_ref.value.sym);
+                StructDeclaration sd = t.sym.value;
                 {
-                    Ref<TemplateInstance> ti = ref(sd.value.isInstantiated());
+                    Ref<TemplateInstance> ti = ref(sd.isInstantiated());
                     if ((ti.value) != null)
                     {
                         if (!ti.value.needsCodegen())
                         {
-                            if ((ti.value.minst != null) || sd.value.requestTypeInfo)
+                            if ((ti.value.minst.value != null) || sd.requestTypeInfo.value)
                                 return false;
                             return true;
                         }
@@ -147,13 +144,12 @@ public class typinf {
         };
         Function1<TypeClass,Boolean> visitClass = new Function1<TypeClass,Boolean>(){
             public Boolean invoke(TypeClass t) {
-                Ref<TypeClass> t_ref = ref(t);
-                Ref<ClassDeclaration> sd = ref(t_ref.value.sym);
+                ClassDeclaration sd = t.sym.value;
                 {
-                    Ref<TemplateInstance> ti = ref(sd.value.isInstantiated());
+                    Ref<TemplateInstance> ti = ref(sd.isInstantiated());
                     if ((ti.value) != null)
                     {
-                        if (!ti.value.needsCodegen() && (ti.value.minst == null))
+                        if (!ti.value.needsCodegen() && (ti.value.minst.value == null))
                         {
                             return true;
                         }
@@ -164,15 +160,14 @@ public class typinf {
         };
         Function1<TypeTuple,Boolean> visitTuple = new Function1<TypeTuple,Boolean>(){
             public Boolean invoke(TypeTuple t) {
-                Ref<TypeTuple> t_ref = ref(t);
-                if (t_ref.value.arguments != null)
+                if (t.arguments.value != null)
                 {
                     {
-                        Ref<Slice<Parameter>> __r1653 = ref((t_ref.value.arguments.get()).opSlice().copy());
+                        Ref<Slice<Parameter>> __r1653 = ref((t.arguments.value.get()).opSlice().copy());
                         IntRef __key1654 = ref(0);
                         for (; (__key1654.value < __r1653.value.getLength());__key1654.value += 1) {
-                            Ref<Parameter> arg = ref(__r1653.value.get(__key1654.value));
-                            if (isSpeculativeType(arg.value.type))
+                            Parameter arg = __r1653.value.get(__key1654.value);
+                            if (isSpeculativeType(arg.type.value))
                                 return true;
                         }
                     }
@@ -183,7 +178,7 @@ public class typinf {
         if (t == null)
             return false;
         Type tb = t.toBasetype();
-        switch ((tb.ty & 0xFF))
+        switch ((tb.ty.value & 0xFF))
         {
             case 41:
                 return visitVector.invoke(tb.isTypeVector());
@@ -203,12 +198,12 @@ public class typinf {
     }
 
     public static boolean builtinTypeInfo(Type t) {
-        if ((t.isTypeBasic() != null) || ((t.ty & 0xFF) == ENUMTY.Tclass) || ((t.ty & 0xFF) == ENUMTY.Tnull))
-            return t.mod == 0;
-        if (((t.ty & 0xFF) == ENUMTY.Tarray))
+        if ((t.isTypeBasic() != null) || ((t.ty.value & 0xFF) == ENUMTY.Tclass) || ((t.ty.value & 0xFF) == ENUMTY.Tnull))
+            return t.mod.value == 0;
+        if (((t.ty.value & 0xFF) == ENUMTY.Tarray))
         {
             Type next = t.nextOf();
-            return (t.mod == 0) && (next.isTypeBasic() != null) && (next.mod == 0) || ((next.ty & 0xFF) == ENUMTY.Tchar) && ((next.mod & 0xFF) == MODFlags.immutable_) || ((next.ty & 0xFF) == ENUMTY.Tchar) && ((next.mod & 0xFF) == MODFlags.const_);
+            return (t.mod.value == 0) && (next.isTypeBasic() != null) && (next.mod.value == 0) || ((next.ty.value & 0xFF) == ENUMTY.Tchar) && ((next.mod.value & 0xFF) == MODFlags.immutable_) || ((next.ty.value & 0xFF) == ENUMTY.Tchar) && ((next.mod.value & 0xFF) == MODFlags.const_);
         }
         return false;
     }

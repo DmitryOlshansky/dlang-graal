@@ -3,45 +3,72 @@ package org.dlang.dmd.root
 import com.google.common.hash.Hashing
 import java.lang.StringBuilder
 
-class Slice<T> (var data: Array<T?>, var beg: Int, var end: Int) : RootObject() {
+interface Slice<T> {
+    fun copy(): Slice<T>
+
+    operator fun set(idx: Int, value: T?)
+
+    operator fun get(idx: Int): T?
+
+    fun ptr(): Ptr<T>
+
+    fun slice(from:Int, to:Int): Slice<T>
+
+    fun slice(from:Int): Slice<T>
+
+    fun slice(): Slice<T>
+
+    fun copyTo(dest: Slice<T>)
+
+    fun append(next: T): Slice<T>
+
+    var beg: Int
+
+    var end: Int
+
+    val length: Int
+}
+
+class RawSlice<T> (var data: Array<T?>, override var beg: Int, override var end: Int) : RootObject(), Slice<T> {
 
     constructor(arr: Array<T?>) : this(arr, 0, arr.size)
 
     constructor() : this(emptyArray<Any>() as Array<T?>, 0, 0)
 
-    fun copy() = Slice<T>(data, beg, end)
+    override fun copy() = RawSlice<T>(data, beg, end)
 
-    operator fun set(idx: Int, value: T?) {
+    override  operator fun set(idx: Int, value: T?) {
         data[beg+idx] = value
     }
 
-    operator fun get(idx: Int): T? = data[beg+idx]
+    override operator fun get(idx: Int): T? = data[beg+idx]
 
-    fun ptr() = RawPtr(data, beg)
+    override fun ptr():Ptr<T> = RawPtr(data, beg)
 
-    fun slice(from:Int, to:Int): Slice<T> {
-        return Slice(data, from+beg, to+beg)
+    override fun slice(from:Int, to:Int): Slice<T> {
+        return RawSlice(data, from+beg, to+beg)
     }
 
-    fun slice(from:Int): Slice<T> {
-        return Slice(data, from+beg, end)
+    override fun slice(from:Int): Slice<T> {
+        return RawSlice(data, from+beg, end)
     }
 
-    fun slice(): Slice<T>  = Slice(data, beg, end)
+    override fun slice(): Slice<T>  = RawSlice(data, beg, end)
 
-    fun copyTo(dest: Slice<T>) {
+    override fun copyTo(dest: Slice<T>) {
         require(dest.length == length)
+        require(dest is RawSlice)
         data.copyInto(dest.data, dest.beg, beg, end)
     }
 
-    fun append(next: T): Slice<T> {
+    override fun append(next: T): Slice<T> {
         // TODO: assumes full slice and realloc on every append
         data = data.copyOf(data.size + 1)
         data[data.size - 1] = next
         return this
     }
 
-    val length: Int
+    override val length: Int
         get() = end - beg
 
     private fun isEqualTo(other: Slice<*>): Boolean {
@@ -75,6 +102,59 @@ class Slice<T> (var data: Array<T?>, var beg: Int, var end: Int) : RootObject() 
         s.append("]")
         return BytePtr(s.toString())
     }
+}
+
+class RefSlice<T>(val ref: Ref<T>) : Slice<T> {
+
+    override fun copy(): Slice<T> = RefSlice(ref)
+
+    override fun set(idx: Int, value: T?) {
+        require(idx == 0)
+        ref.value = value
+    }
+
+    override fun get(idx: Int): T? {
+        require(idx == 0)
+        return ref.value
+    }
+
+    override fun ptr(): Ptr<T> = RefPtr(ref)
+
+    override fun slice(from: Int, to: Int): Slice<T> {
+        require(from == 0 && to == 1)
+        return RefSlice(ref)
+    }
+
+    override fun slice(from: Int): Slice<T> {
+        require(from == 0)
+        return RefSlice(ref)
+    }
+
+    override fun slice(): Slice<T> {
+        return RefSlice(ref)
+    }
+
+    override fun copyTo(dest: Slice<T>) {
+        dest[0] = ref.value
+    }
+
+    override fun append(next: T): Slice<T> {
+        val arr = Array<Any?>(2) { null}
+        arr[0] = ref.value as Any
+        arr[1] = next as Any
+        return RawSlice(arr as Array<T?>)
+    }
+
+    override val length: Int
+        get() = 1
+
+    override var beg: Int
+        get() = 0
+        set(v: Int) = throw Exception("Unsupported beg property for RefSlice")
+
+    override var end: Int
+        get() = 0
+        set(v: Int) = throw Exception("Unsupported end property for RefSlice")
 }
 
 class ByteSlice(var data: ByteArray, var beg: Int, var end: Int): RootObject() {
@@ -129,13 +209,6 @@ class ByteSlice(var data: ByteArray, var beg: Int, var end: Int): RootObject() {
         beg = beg
         end = end + 1
         return this
-    }
-
-    fun concat(next: ByteSlice): ByteSlice {
-        val arr = ByteArray(length + next.length)
-        data.copyInto(arr, 0, beg, end)
-        next.data.copyInto(arr, length, next.beg, next.end)
-        return ByteSlice(arr)
     }
 
     val length: Int

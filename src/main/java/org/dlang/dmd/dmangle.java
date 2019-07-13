@@ -105,10 +105,10 @@ public class dmangle {
                 IntPtr p = pcopy(this.types.getLvalue(t));
                 if (p.get() != 0)
                 {
-                    this.writeBackRef((this.buf.get()).offset - p.get());
+                    this.writeBackRef((this.buf.get()).offset.value - p.get());
                     return true;
                 }
-                p.set(0, (this.buf.get()).offset);
+                p.set(0, (this.buf.get()).offset.value);
             }
             return false;
         }
@@ -117,10 +117,10 @@ public class dmangle {
             IntPtr p = pcopy(this.idents.getLvalue(id));
             if (p.get() != 0)
             {
-                this.writeBackRef((this.buf.get()).offset - p.get());
+                this.writeBackRef((this.buf.get()).offset.value - p.get());
                 return true;
             }
-            p.set(0, (this.buf.get()).offset);
+            p.set(0, (this.buf.get()).offset.value);
             return false;
         }
 
@@ -139,62 +139,62 @@ public class dmangle {
         }
 
         public  void visitWithMask(Type t, byte modMask) {
-            if (((modMask & 0xFF) != (t.mod & 0xFF)))
+            if (((modMask & 0xFF) != (t.mod.value & 0xFF)))
             {
-                MODtoDecoBuffer(this.buf, t.mod);
+                MODtoDecoBuffer(this.buf, t.mod.value);
             }
             this.mangleType(t);
         }
 
         public  void visit(Type t) {
-            tyToDecoBuffer(this.buf, (t.ty & 0xFF));
+            tyToDecoBuffer(this.buf, (t.ty.value & 0xFF));
         }
 
         public  void visit(TypeNext t) {
             this.visit((Type)t);
-            this.visitWithMask(t.next, t.mod);
+            this.visitWithMask(t.next.value, t.mod.value);
         }
 
         public  void visit(TypeVector t) {
             (this.buf.get()).writestring(new ByteSlice("Nh"));
-            this.visitWithMask(t.basetype, t.mod);
+            this.visitWithMask(t.basetype.value, t.mod.value);
         }
 
         public  void visit(TypeSArray t) {
             this.visit((Type)t);
-            if (t.dim != null)
-                (this.buf.get()).print(t.dim.toInteger());
-            if (t.next != null)
-                this.visitWithMask(t.next, t.mod);
+            if (t.dim.value != null)
+                (this.buf.get()).print(t.dim.value.toInteger());
+            if (t.next.value != null)
+                this.visitWithMask(t.next.value, t.mod.value);
         }
 
         public  void visit(TypeDArray t) {
             this.visit((Type)t);
-            if (t.next != null)
-                this.visitWithMask(t.next, t.mod);
+            if (t.next.value != null)
+                this.visitWithMask(t.next.value, t.mod.value);
         }
 
         public  void visit(TypeAArray t) {
             this.visit((Type)t);
-            this.visitWithMask(t.index, (byte)0);
-            this.visitWithMask(t.next, t.mod);
+            this.visitWithMask(t.index.value, (byte)0);
+            this.visitWithMask(t.next.value, t.mod.value);
         }
 
         public  void visit(TypeFunction t) {
-            this.mangleFuncType(t, t, t.mod, t.next);
+            this.mangleFuncType(t, t, t.mod.value, t.next.value);
         }
 
         public  void mangleFuncType(TypeFunction t, TypeFunction ta, byte modMask, Type tret) {
-            if ((t.inuse != 0) && (tret != null))
+            if ((t.inuse.value != 0) && (tret != null))
             {
-                t.inuse = 2;
+                t.inuse.value = 2;
                 return ;
             }
-            t.inuse++;
-            if (((modMask & 0xFF) != (t.mod & 0xFF)))
-                MODtoDecoBuffer(this.buf, t.mod);
+            t.inuse.value++;
+            if (((modMask & 0xFF) != (t.mod.value & 0xFF)))
+                MODtoDecoBuffer(this.buf, t.mod.value);
             byte mc = (byte)255;
-            switch (t.linkage)
+            switch (t.linkage.value)
             {
                 case LINK.default_:
                 case LINK.system:
@@ -220,21 +220,21 @@ public class dmangle {
                 throw SwitchError.INSTANCE;
             }
             (this.buf.get()).writeByte((mc & 0xFF));
-            if (ta.purity != 0)
+            if (ta.purity.value != 0)
                 (this.buf.get()).writestring(new ByteSlice("Na"));
-            if (ta.isnothrow)
+            if (ta.isnothrow.value)
                 (this.buf.get()).writestring(new ByteSlice("Nb"));
-            if (ta.isref)
+            if (ta.isref.value)
                 (this.buf.get()).writestring(new ByteSlice("Nc"));
-            if (ta.isproperty)
+            if (ta.isproperty.value)
                 (this.buf.get()).writestring(new ByteSlice("Nd"));
-            if (ta.isnogc)
+            if (ta.isnogc.value)
                 (this.buf.get()).writestring(new ByteSlice("Ni"));
-            if (ta.isreturn && !ta.isreturninferred)
+            if (ta.isreturn.value && !ta.isreturninferred.value)
                 (this.buf.get()).writestring(new ByteSlice("Nj"));
-            else if (ta.isscope && !ta.isscopeinferred)
+            else if (ta.isscope.value && !ta.isscopeinferred.value)
                 (this.buf.get()).writestring(new ByteSlice("Nl"));
-            switch (ta.trust)
+            switch (ta.trust.value)
             {
                 case TRUST.trusted:
                     (this.buf.get()).writestring(new ByteSlice("Ne"));
@@ -245,38 +245,38 @@ public class dmangle {
                 default:
                 break;
             }
-            this.paramsToDecoBuffer(t.parameterList.parameters);
-            (this.buf.get()).writeByte((90 - t.parameterList.varargs));
+            this.paramsToDecoBuffer(t.parameterList.parameters.value);
+            (this.buf.get()).writeByte((90 - t.parameterList.varargs.value));
             if ((tret != null))
                 this.visitWithMask(tret, (byte)0);
-            t.inuse--;
+            t.inuse.value--;
         }
 
         public  void visit(TypeIdentifier t) {
             this.visit((Type)t);
-            ByteSlice name = t.ident.asString().copy();
+            ByteSlice name = t.ident.value.asString().copy();
             (this.buf.get()).print((long)name.getLength());
             (this.buf.get()).writestring(name);
         }
 
         public  void visit(TypeEnum t) {
             this.visit((Type)t);
-            this.mangleSymbol(t.sym);
+            this.mangleSymbol(t.sym.value);
         }
 
         public  void visit(TypeStruct t) {
             this.visit((Type)t);
-            this.mangleSymbol(t.sym);
+            this.mangleSymbol(t.sym.value);
         }
 
         public  void visit(TypeClass t) {
             this.visit((Type)t);
-            this.mangleSymbol(t.sym);
+            this.mangleSymbol(t.sym.value);
         }
 
         public  void visit(TypeTuple t) {
             this.visit((Type)t);
-            this.paramsToDecoBuffer(t.arguments);
+            this.paramsToDecoBuffer(t.arguments.value);
             (this.buf.get()).writeByte(90);
         }
 
@@ -286,17 +286,17 @@ public class dmangle {
 
         public  void mangleDecl(Declaration sthis) {
             this.mangleParent(sthis);
-            assert(sthis.ident != null);
-            this.mangleIdentifier(sthis.ident, sthis);
+            assert(sthis.ident.value != null);
+            this.mangleIdentifier(sthis.ident.value, sthis);
             {
                 FuncDeclaration fd = sthis.isFuncDeclaration();
                 if ((fd) != null)
                 {
                     this.mangleFunc(fd, false);
                 }
-                else if (sthis.type != null)
+                else if (sthis.type.value != null)
                 {
-                    this.visitWithMask(sthis.type, (byte)0);
+                    this.visitWithMask(sthis.type.value, (byte)0);
                 }
                 else
                     throw new AssertionError("Unreachable code!");
@@ -308,7 +308,7 @@ public class dmangle {
             {
                 TemplateInstance ti = s.isTemplateInstance();
                 if ((ti) != null)
-                    p = ti.isTemplateMixin() != null ? ti.parent.value : ti.tempdecl.parent.value;
+                    p = ti.isTemplateMixin() != null ? ti.parent.value : ti.tempdecl.value.parent.value;
                 else
                     p = s.parent.value;
             }
@@ -322,7 +322,7 @@ public class dmangle {
                 }
                 else if (p.getIdent() != null)
                 {
-                    this.mangleIdentifier(p.ident, s);
+                    this.mangleIdentifier(p.ident.value, s);
                     {
                         FuncDeclaration f = p.isFuncDeclaration();
                         if ((f) != null)
@@ -337,26 +337,26 @@ public class dmangle {
         public  void mangleFunc(FuncDeclaration fd, boolean inParent) {
             if (fd.needThis() || fd.isNested())
                 (this.buf.get()).writeByte(77);
-            if ((fd.type == null) || ((fd.type.ty & 0xFF) == ENUMTY.Terror))
+            if ((fd.type.value == null) || ((fd.type.value.ty.value & 0xFF) == ENUMTY.Terror))
             {
                 (this.buf.get()).writestring(new ByteSlice("9__error__FZ"));
             }
             else if (inParent)
             {
-                TypeFunction tf = fd.type.isTypeFunction();
-                TypeFunction tfo = fd.originalType.isTypeFunction();
+                TypeFunction tf = fd.type.value.isTypeFunction();
+                TypeFunction tfo = fd.originalType.value.isTypeFunction();
                 this.mangleFuncType(tf, tfo, (byte)0, null);
             }
             else
             {
-                this.visitWithMask(fd.type, (byte)0);
+                this.visitWithMask(fd.type.value, (byte)0);
             }
         }
 
         public  void toBuffer(ByteSlice id, Dsymbol s) {
             int len = id.getLength();
-            if (((this.buf.get()).offset + len >= 8388608))
-                s.error(new BytePtr("excessive length %llu for symbol, possible recursive expansion?"), (long)((this.buf.get()).offset + len));
+            if (((this.buf.get()).offset.value + len >= 8388608))
+                s.error(new BytePtr("excessive length %llu for symbol, possible recursive expansion?"), (long)((this.buf.get()).offset.value + len));
             else
             {
                 (this.buf.get()).print((long)len);
@@ -365,9 +365,9 @@ public class dmangle {
         }
 
         public static ByteSlice externallyMangledIdentifier(Declaration d) {
-            if ((d.parent.value == null) || (d.parent.value.isModule() != null) || (d.linkage == LINK.cpp))
+            if ((d.parent.value == null) || (d.parent.value.isModule() != null) || (d.linkage.value == LINK.cpp))
             {
-                switch (d.linkage)
+                switch (d.linkage.value)
                 {
                     case LINK.d:
                         break;
@@ -375,14 +375,14 @@ public class dmangle {
                     case LINK.windows:
                     case LINK.pascal:
                     case LINK.objc:
-                        return d.ident.asString();
+                        return d.ident.value.asString();
                     case LINK.cpp:
-                        BytePtr p = pcopy(target.value.toCppMangle(d));
+                        BytePtr p = pcopy(target.toCppMangle(d));
                         return p.slice(0,strlen(p));
                     case LINK.default_:
                     case LINK.system:
                         d.error(new BytePtr("forward declaration"));
-                        return d.ident.asString();
+                        return d.ident.value.asString();
                     default:
                     throw SwitchError.INSTANCE;
                 }
@@ -469,9 +469,9 @@ public class dmangle {
                 (this.buf.get()).writestring(new ByteSlice("_Dmain"));
                 return ;
             }
-            if (fd.isWinMain() || fd.isDllMain() || (pequals(fd.ident, Id.tls_get_addr)))
+            if (fd.isWinMain() || fd.isDllMain() || (pequals(fd.ident.value, Id.tls_get_addr)))
             {
-                (this.buf.get()).writestring(fd.ident.asString());
+                (this.buf.get()).writestring(fd.ident.value.asString());
                 return ;
             }
             this.visit((Declaration)fd);
@@ -491,7 +491,7 @@ public class dmangle {
             Dsymbol parentsave = ad.parent.value;
             if (cd != null)
             {
-                if ((pequals(cd.ident, Id.Exception.value)) && (pequals(cd.parent.value.ident, Id.object.value)) || (pequals(cd.ident, Id.TypeInfo)) || (pequals(cd.ident, Id.TypeInfo_Struct)) || (pequals(cd.ident, Id.TypeInfo_Class)) || (pequals(cd.ident, Id.TypeInfo_Tuple)) || (pequals(cd, ClassDeclaration.object.value)) || (pequals(cd, Type.typeinfoclass.value)) || (pequals(cd, dmodule.Module.moduleinfo)) || (strncmp(cd.ident.toChars(), new BytePtr("TypeInfo_"), 9) == 0))
+                if ((pequals(cd.ident.value, Id.Exception.value)) && (pequals(cd.parent.value.ident.value, Id.object.value)) || (pequals(cd.ident.value, Id.TypeInfo)) || (pequals(cd.ident.value, Id.TypeInfo_Struct)) || (pequals(cd.ident.value, Id.TypeInfo_Class)) || (pequals(cd.ident.value, Id.TypeInfo_Tuple)) || (pequals(cd, ClassDeclaration.object.value)) || (pequals(cd, Type.typeinfoclass.value)) || (pequals(cd, dmodule.Module.moduleinfo)) || (strncmp(cd.ident.value.toChars(), new BytePtr("TypeInfo_"), 9) == 0))
                 {
                     ad.parent.value = null;
                 }
@@ -501,28 +501,28 @@ public class dmangle {
         }
 
         public  void visit(TemplateInstance ti) {
-            if (ti.tempdecl == null)
+            if (ti.tempdecl.value == null)
                 ti.error(new BytePtr("is not defined"));
             else
                 this.mangleParent(ti);
-            if ((ti.isTemplateMixin() != null) && (ti.ident != null))
-                this.mangleIdentifier(ti.ident, ti);
+            if ((ti.isTemplateMixin() != null) && (ti.ident.value != null))
+                this.mangleIdentifier(ti.ident.value, ti);
             else
                 this.mangleTemplateInstance(ti);
         }
 
         public  void mangleTemplateInstance(TemplateInstance ti) {
-            TemplateDeclaration tempdecl = ti.tempdecl.isTemplateDeclaration();
+            TemplateDeclaration tempdecl = ti.tempdecl.value.isTemplateDeclaration();
             assert(tempdecl != null);
-            byte T = ti.members != null ? (byte)84 : (byte)85;
+            byte T = ti.members.value != null ? (byte)84 : (byte)85;
             (this.buf.get()).printf(new BytePtr("__%c"), (T & 0xFF));
-            this.mangleIdentifier(tempdecl.ident, tempdecl);
-            Ptr<DArray<RootObject>> args = ti.tiargs;
-            int nparams = (tempdecl.parameters.get()).length - (tempdecl.isVariadic() != null ? 1 : 0);
+            this.mangleIdentifier(tempdecl.ident.value, tempdecl);
+            Ptr<DArray<RootObject>> args = ti.tiargs.value;
+            int nparams = (tempdecl.parameters.get()).length.value - (tempdecl.isVariadic() != null ? 1 : 0);
             {
                 int i = 0;
             L_outer1:
-                for (; (i < (args.get()).length);i++){
+                for (; (i < (args.get()).length.value);i++){
                     RootObject o = (args.get()).get(i);
                     Type ta = isType(o);
                     Expression ea = isExpression(o);
@@ -543,7 +543,7 @@ public class dmangle {
                             VarExp ev = ea.isVarExp();
                             if ((ev) != null)
                             {
-                                sa = ev.var;
+                                sa = ev.var.value;
                                 ea = null;
                                 /*goto Lsa*//*unrolled goto*/
                             /*Lsa:*/
@@ -572,7 +572,7 @@ public class dmangle {
                                                 continue L_outer1;
                                             }
                                         }
-                                        if ((d.type == null) || (d.type.deco == null))
+                                        if ((d.type.value == null) || (d.type.value.deco.value == null))
                                         {
                                             ti.error(new BytePtr("forward reference of %s `%s`"), d.kind(), d.toChars());
                                             continue L_outer1;
@@ -587,7 +587,7 @@ public class dmangle {
                             ThisExp et = ea.isThisExp();
                             if ((et) != null)
                             {
-                                sa = et.var;
+                                sa = et.var.value;
                                 ea = null;
                                 /*goto Lsa*//*unrolled goto*/
                             /*Lsa:*/
@@ -616,7 +616,7 @@ public class dmangle {
                                                 continue L_outer1;
                                             }
                                         }
-                                        if ((d.type == null) || (d.type.deco == null))
+                                        if ((d.type.value == null) || (d.type.value.deco.value == null))
                                         {
                                             ti.error(new BytePtr("forward reference of %s `%s`"), d.kind(), d.toChars());
                                             continue L_outer1;
@@ -631,10 +631,10 @@ public class dmangle {
                             FuncExp ef = ea.isFuncExp();
                             if ((ef) != null)
                             {
-                                if (ef.td != null)
-                                    sa = ef.td;
+                                if (ef.td.value != null)
+                                    sa = ef.td.value;
                                 else
-                                    sa = ef.fd;
+                                    sa = ef.fd.value;
                                 ea = null;
                                 /*goto Lsa*//*unrolled goto*/
                             /*Lsa:*/
@@ -663,7 +663,7 @@ public class dmangle {
                                                 continue L_outer1;
                                             }
                                         }
-                                        if ((d.type == null) || (d.type.deco == null))
+                                        if ((d.type.value == null) || (d.type.value.deco.value == null))
                                         {
                                             ti.error(new BytePtr("forward reference of %s `%s`"), d.kind(), d.toChars());
                                             continue L_outer1;
@@ -675,14 +675,14 @@ public class dmangle {
                             }
                         }
                         (this.buf.get()).writeByte(86);
-                        if (((ea.op & 0xFF) == 126))
+                        if (((ea.op.value & 0xFF) == 126))
                         {
                             ea.error(new BytePtr("tuple is not a valid template value argument"));
                             continue L_outer1;
                         }
-                        int olderr = global.value.errors;
+                        int olderr = global.errors.value;
                         ea = ea.ctfeInterpret();
-                        if (((ea.op & 0xFF) == 127) || (olderr != global.value.errors))
+                        if (((ea.op.value & 0xFF) == 127) || (olderr != global.errors.value))
                             continue L_outer1;
                         this.visitWithMask(ea.type.value, (byte)0);
                         ea.accept(this);
@@ -715,7 +715,7 @@ public class dmangle {
                                         continue L_outer1;
                                     }
                                 }
-                                if ((d.type == null) || (d.type.deco == null))
+                                if ((d.type.value == null) || (d.type.value.deco.value == null))
                                 {
                                     ti.error(new BytePtr("forward reference of %s `%s`"), d.kind(), d.toChars());
                                     continue L_outer1;
@@ -727,8 +727,8 @@ public class dmangle {
                     }
                     else if (va != null)
                     {
-                        assert((i + 1 == (args.get()).length));
-                        args = ptr(va.objects.value);
+                        assert((i + 1 == (args.get()).length.value));
+                        args = ptr(va.objects);
                         i = -1;
                     }
                     else
@@ -740,8 +740,8 @@ public class dmangle {
 
         public  void visit(Dsymbol s) {
             this.mangleParent(s);
-            if (s.ident != null)
-                this.mangleIdentifier(s.ident, s);
+            if (s.ident.value != null)
+                this.mangleIdentifier(s.ident.value, s);
             else
                 this.toBuffer(s.asString(), s);
         }
@@ -825,19 +825,19 @@ public class dmangle {
             OutBuffer tmp = new OutBuffer();
             try {
                 ByteSlice q = new ByteSlice().copy();
-                switch ((e.sz & 0xFF))
+                switch ((e.sz.value & 0xFF))
                 {
                     case 1:
                         m = (byte)97;
-                        q = e.string.slice(0,e.len).copy();
+                        q = e.string.value.slice(0,e.len.value).copy();
                         break;
                     case 2:
                         m = (byte)119;
                         {
                             IntRef u = ref(0);
-                            for (; (u.value < e.len);){
+                            for (; (u.value < e.len.value);){
                                 int c = 0x0ffff;
-                                BytePtr p = pcopy(utf_decodeWchar(e.wstring, e.len, u, c));
+                                BytePtr p = pcopy(utf_decodeWchar(e.wstring.value, e.len.value, u, c));
                                 if (p != null)
                                     e.error(new BytePtr("%s"), p);
                                 else
@@ -850,7 +850,7 @@ public class dmangle {
                         m = (byte)100;
                         {
                             int __key1008 = 0;
-                            int __limit1009 = e.len;
+                            int __limit1009 = e.len.value;
                             for (; (__key1008 < __limit1009);__key1008 += 1) {
                                 int u_1 = __key1008;
                                 int c_1 = (toIntPtr(e.string)).get(u_1);
@@ -871,7 +871,7 @@ public class dmangle {
                 (this.buf.get()).writeByte(95);
                 int qi = 0;
                 {
-                    BytePtr p = pcopy(toBytePtr((this.buf.get()).data).plus((this.buf.get()).offset));
+                    BytePtr p = pcopy(toBytePtr(this.buf.get().data).plus((this.buf.get()).offset.value));
                     BytePtr pend = pcopy(p.plus((2 * q.getLength())));
                     for (; (p.lessThan(pend));comma(p.plusAssign(2), qi += 1)){
                         byte hi = (byte)((q.get(qi) & 0xFF) >> 4 & 15);
@@ -880,14 +880,14 @@ public class dmangle {
                         p.set(1, ((lo & 0xFF) < 10) ? (byte)((lo & 0xFF) + 48) : (byte)((lo & 0xFF) - 10 + 97));
                     }
                 }
-                (this.buf.get()).offset += 2 * q.getLength();
+                (this.buf.get()).offset.value += 2 * q.getLength();
             }
             finally {
             }
         }
 
         public  void visit(ArrayLiteralExp e) {
-            int dim = e.elements != null ? (e.elements.get()).length : 0;
+            int dim = e.elements.value != null ? (e.elements.value.get()).length.value : 0;
             (this.buf.get()).writeByte(65);
             (this.buf.get()).print((long)dim);
             {
@@ -901,7 +901,7 @@ public class dmangle {
         }
 
         public  void visit(AssocArrayLiteralExp e) {
-            int dim = (e.keys.get()).length;
+            int dim = (e.keys.value.get()).length.value;
             (this.buf.get()).writeByte(65);
             (this.buf.get()).print((long)dim);
             {
@@ -909,14 +909,14 @@ public class dmangle {
                 int __limit1013 = dim;
                 for (; (__key1012 < __limit1013);__key1012 += 1) {
                     int i = __key1012;
-                    (e.keys.get()).get(i).accept(this);
-                    (e.values.get()).get(i).accept(this);
+                    (e.keys.value.get()).get(i).accept(this);
+                    (e.values.value.get()).get(i).accept(this);
                 }
             }
         }
 
         public  void visit(StructLiteralExp e) {
-            int dim = e.elements != null ? (e.elements.get()).length : 0;
+            int dim = e.elements.value != null ? (e.elements.value.get()).length.value : 0;
             (this.buf.get()).writeByte(83);
             (this.buf.get()).print((long)dim);
             {
@@ -924,7 +924,7 @@ public class dmangle {
                 int __limit1015 = dim;
                 for (; (__key1014 < __limit1015);__key1014 += 1) {
                     int i = __key1014;
-                    Expression ex = (e.elements.get()).get(i);
+                    Expression ex = (e.elements.value.get()).get(i);
                     if (ex != null)
                         ex.accept(this);
                     else
@@ -936,8 +936,7 @@ public class dmangle {
         public  void paramsToDecoBuffer(Ptr<DArray<Parameter>> parameters) {
             Function2<Integer,Parameter,Integer> paramsToDecoBufferDg = new Function2<Integer,Parameter,Integer>(){
                 public Integer invoke(Integer n, Parameter p) {
-                    Ref<Parameter> p_ref = ref(p);
-                    p_ref.value.accept(this);
+                    p.accept(this);
                     return 0;
                 }
             };
@@ -945,11 +944,11 @@ public class dmangle {
         }
 
         public  void visit(Parameter p) {
-            if (((p.storageClass & 524288L) != 0) && ((p.storageClass & 562949953421312L) == 0))
+            if (((p.storageClass.value & 524288L) != 0) && ((p.storageClass.value & 562949953421312L) == 0))
                 (this.buf.get()).writeByte(77);
-            if (((p.storageClass & 17594333528064L) == 17592186044416L) && ((p.storageClass & 4503599627370496L) == 0))
+            if (((p.storageClass.value & 17594333528064L) == 17592186044416L) && ((p.storageClass.value & 4503599627370496L) == 0))
                 (this.buf.get()).writestring(new ByteSlice("Nk"));
-            switch (p.storageClass & 2111488L)
+            switch (p.storageClass.value & 2111488L)
             {
                 case 0L:
                 case 2048L:
@@ -966,7 +965,7 @@ public class dmangle {
                 default:
                 throw new AssertionError("Unreachable code!");
             }
-            this.visitWithMask(p.type, (byte)0);
+            this.visitWithMask(p.type.value, (byte)0);
         }
 
 
@@ -1000,8 +999,8 @@ public class dmangle {
     }
 
     public static void mangleToBuffer(Type t, Ptr<OutBuffer> buf) {
-        if (t.deco != null)
-            (buf.get()).writestring(t.deco);
+        if (t.deco.value != null)
+            (buf.get()).writestring(t.deco.value);
         else
         {
             Mangler v = new Mangler(buf);
@@ -1026,11 +1025,11 @@ public class dmangle {
 
     public static void mangleToFuncSignature(OutBuffer buf, FuncDeclaration fd) {
         Ref<OutBuffer> buf_ref = ref(buf);
-        TypeFunction tf = fd.type.isTypeFunction();
-        Mangler v = new Mangler(ptr(buf_ref.value));
-        MODtoDecoBuffer(ptr(buf_ref.value), tf.mod);
-        v.paramsToDecoBuffer(tf.parameterList.parameters);
-        buf_ref.value.writeByte((90 - tf.parameterList.varargs));
+        TypeFunction tf = fd.type.value.isTypeFunction();
+        Mangler v = new Mangler(ptr(buf_ref));
+        MODtoDecoBuffer(ptr(buf_ref), tf.mod.value);
+        v.paramsToDecoBuffer(tf.parameterList.parameters.value);
+        buf_ref.value.writeByte((90 - tf.parameterList.varargs.value));
     }
 
 }

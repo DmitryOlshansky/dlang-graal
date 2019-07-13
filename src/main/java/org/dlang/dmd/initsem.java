@@ -38,9 +38,9 @@ public class initsem {
 
     public static Expression toAssocArrayLiteral(ArrayInitializer ai) {
         Expression e = null;
-        int dim = ai.value.length;
-        Ptr<DArray<Expression>> keys = new DArray<Expression>(dim);
-        Ptr<DArray<Expression>> values = new DArray<Expression>(dim);
+        int dim = ai.value.length.value;
+        Ptr<DArray<Expression>> keys = refPtr(new DArray<Expression>(dim));
+        Ptr<DArray<Expression>> values = refPtr(new DArray<Expression>(dim));
         try {
             {
                 int i = 0;
@@ -59,12 +59,12 @@ public class initsem {
                     values.get().set(i, e);
                 }
             }
-            e = new AssocArrayLiteralExp(ai.loc, keys, values);
+            e = new AssocArrayLiteralExp(ai.loc.value, keys, values);
             return e;
         }
         catch(Dispatch0 __d){}
     /*Lno:*/
-        error(ai.loc, new BytePtr("not an associative array initializer"));
+        error(ai.loc.value, new BytePtr("not an associative array initializer"));
         return new ErrorExp();
     }
 
@@ -75,7 +75,7 @@ public class initsem {
         Function1<VoidInitializer,Initializer> visitVoid = new Function1<VoidInitializer,Initializer>(){
             public Initializer invoke(VoidInitializer i) {
                 Ref<VoidInitializer> i_ref = ref(i);
-                i_ref.value.type = t_ref.value;
+                i_ref.value.type.value = t_ref.value;
                 return i_ref.value;
             }
         };
@@ -87,28 +87,27 @@ public class initsem {
         };
         Function1<StructInitializer,Initializer> visitStruct = new Function1<StructInitializer,Initializer>(){
             public Initializer invoke(StructInitializer i) {
-                Ref<StructInitializer> i_ref = ref(i);
                 t_ref.value = t_ref.value.toBasetype();
-                if (((t_ref.value.ty & 0xFF) == ENUMTY.Tsarray) && ((t_ref.value.nextOf().toBasetype().ty & 0xFF) == ENUMTY.Tstruct))
+                if (((t_ref.value.ty.value & 0xFF) == ENUMTY.Tsarray) && ((t_ref.value.nextOf().toBasetype().ty.value & 0xFF) == ENUMTY.Tstruct))
                     t_ref.value = t_ref.value.nextOf().toBasetype();
-                if (((t_ref.value.ty & 0xFF) == ENUMTY.Tstruct))
+                if (((t_ref.value.ty.value & 0xFF) == ENUMTY.Tstruct))
                 {
-                    Ref<StructDeclaration> sd = ref(((TypeStruct)t_ref.value).sym);
-                    if (sd.value.ctor != null)
+                    Ref<StructDeclaration> sd = ref(((TypeStruct)t_ref.value).sym.value);
+                    if (sd.value.ctor.value != null)
                     {
-                        error(i_ref.value.loc, new BytePtr("%s `%s` has constructors, cannot use `{ initializers }`, use `%s( initializers )` instead"), sd.value.kind(), sd.value.toChars(), sd.value.toChars());
+                        error(i.loc.value, new BytePtr("%s `%s` has constructors, cannot use `{ initializers }`, use `%s( initializers )` instead"), sd.value.kind(), sd.value.toChars(), sd.value.toChars());
                         return new ErrorInitializer();
                     }
-                    sd.value.size(i_ref.value.loc);
-                    if ((sd.value.sizeok != Sizeok.done))
+                    sd.value.size(i.loc.value);
+                    if ((sd.value.sizeok.value != Sizeok.done))
                     {
                         return new ErrorInitializer();
                     }
                     IntRef nfields = ref(sd.value.nonHiddenFields());
-                    Ref<Ptr<DArray<Expression>>> elements = ref(new DArray<Expression>(nfields.value));
+                    Ref<Ptr<DArray<Expression>>> elements = ref(refPtr(new DArray<Expression>(nfields.value)));
                     {
                         IntRef j = ref(0);
-                        for (; (j.value < (elements.value.get()).length);j.value++) {
+                        for (; (j.value < (elements.value.get()).length.value);j.value++) {
                             elements.value.get().set(j.value, null);
                         }
                     }
@@ -116,16 +115,16 @@ public class initsem {
                     {
                         IntRef fieldi = ref(0);
                         IntRef j = ref(0);
-                        for (; (j.value < i_ref.value.field.length);j.value++){
+                        for (; (j.value < i.field.length.value);j.value++){
                             {
-                                Ref<Identifier> id = ref(i_ref.value.field.get(j.value));
+                                Ref<Identifier> id = ref(i.field.get(j.value));
                                 if ((id.value) != null)
                                 {
-                                    Ref<Dsymbol> s = ref(sd.value.search(i_ref.value.loc, id.value, 8));
+                                    Ref<Dsymbol> s = ref(sd.value.search(i.loc.value, id.value, 8));
                                     if (s.value == null)
                                     {
                                         s.value = sd.value.search_correct(id.value);
-                                        Loc initLoc = i_ref.value.value.get(j.value).loc.copy();
+                                        Loc initLoc = i.value.get(j.value).loc.value.copy();
                                         if (s.value != null)
                                             error(initLoc, new BytePtr("`%s` is not a member of `%s`, did you mean %s `%s`?"), id.value.toChars(), sd.value.toChars(), s.value.kind(), s.value.toChars());
                                         else
@@ -138,7 +137,7 @@ public class initsem {
                                         for (; 1 != 0;fieldi.value++){
                                             if ((fieldi.value >= nfields.value))
                                             {
-                                                error(i_ref.value.loc, new BytePtr("`%s.%s` is not a per-instance initializable field"), sd.value.toChars(), s.value.toChars());
+                                                error(i.loc.value, new BytePtr("`%s.%s` is not a per-instance initializable field"), sd.value.toChars(), s.value.toChars());
                                                 return new ErrorInitializer();
                                             }
                                             if ((pequals(s.value, sd.value.fields.get(fieldi.value))))
@@ -148,22 +147,22 @@ public class initsem {
                                 }
                                 else if ((fieldi.value >= nfields.value))
                                 {
-                                    error(i_ref.value.loc, new BytePtr("too many initializers for `%s`"), sd.value.toChars());
+                                    error(i.loc.value, new BytePtr("too many initializers for `%s`"), sd.value.toChars());
                                     return new ErrorInitializer();
                                 }
                             }
-                            Ref<VarDeclaration> vd = ref(sd.value.fields.get(fieldi.value));
+                            VarDeclaration vd = sd.value.fields.get(fieldi.value);
                             if ((elements.value.get()).get(fieldi.value) != null)
                             {
-                                error(i_ref.value.loc, new BytePtr("duplicate initializer for field `%s`"), vd.value.toChars());
+                                error(i.loc.value, new BytePtr("duplicate initializer for field `%s`"), vd.toChars());
                                 errors.value = true;
                                 continue;
                             }
-                            if (vd.value.type.hasPointers())
+                            if (vd.type.value.hasPointers())
                             {
-                                if ((t_ref.value.alignment() < target.value.ptrsize) || ((vd.value.offset & target.value.ptrsize - 1) != 0) && ((sc_ref.value.get()).func != null) && (sc_ref.value.get()).func.setUnsafe())
+                                if ((t_ref.value.alignment() < target.ptrsize.value) || ((vd.offset.value & target.ptrsize.value - 1) != 0) && ((sc_ref.value.get()).func.value != null) && (sc_ref.value.get()).func.value.setUnsafe())
                                 {
-                                    error(i_ref.value.loc, new BytePtr("field `%s.%s` cannot assign to misaligned pointers in `@safe` code"), sd.value.toChars(), vd.value.toChars());
+                                    error(i.loc.value, new BytePtr("field `%s.%s` cannot assign to misaligned pointers in `@safe` code"), sd.value.toChars(), vd.toChars());
                                     errors.value = true;
                                 }
                             }
@@ -171,24 +170,24 @@ public class initsem {
                                 IntRef k = ref(0);
                                 for (; (k.value < nfields.value);k.value++){
                                     Ref<VarDeclaration> v2 = ref(sd.value.fields.get(k.value));
-                                    if (vd.value.isOverlappedWith(v2.value) && ((elements.value.get()).get(k.value) != null))
+                                    if (vd.isOverlappedWith(v2.value) && ((elements.value.get()).get(k.value) != null))
                                     {
-                                        error(i_ref.value.loc, new BytePtr("overlapping initialization for field `%s` and `%s`"), v2.value.toChars(), vd.value.toChars());
+                                        error(i.loc.value, new BytePtr("overlapping initialization for field `%s` and `%s`"), v2.value.toChars(), vd.toChars());
                                         errors.value = true;
                                         continue;
                                     }
                                 }
                             }
                             assert(sc_ref.value != null);
-                            Ref<Initializer> iz = ref(i_ref.value.value.get(j.value));
-                            iz.value = initializerSemantic(iz.value, sc_ref.value, vd.value.type.addMod(t_ref.value.mod), needInterpret_ref.value);
+                            Ref<Initializer> iz = ref(i.value.get(j.value));
+                            iz.value = initializerSemantic(iz.value, sc_ref.value, vd.type.value.addMod(t_ref.value.mod.value), needInterpret_ref.value);
                             Ref<Expression> ex = ref(initializerToExpression(iz.value, null));
-                            if (((ex.value.op & 0xFF) == 127))
+                            if (((ex.value.op.value & 0xFF) == 127))
                             {
                                 errors.value = true;
                                 continue;
                             }
-                            i_ref.value.value.set(j.value, iz.value);
+                            i.value.set(j.value, iz.value);
                             elements.value.get().set(fieldi.value, doCopyOrMove(sc_ref.value, ex.value, null));
                             fieldi.value += 1;
                         }
@@ -197,28 +196,28 @@ public class initsem {
                     {
                         return new ErrorInitializer();
                     }
-                    Ref<StructLiteralExp> sle = ref(new StructLiteralExp(i_ref.value.loc, sd.value, elements.value, t_ref.value));
-                    if (!sd.value.fill(i_ref.value.loc, elements.value, false))
+                    Ref<StructLiteralExp> sle = ref(new StructLiteralExp(i.loc.value, sd.value, elements.value, t_ref.value));
+                    if (!sd.value.fill(i.loc.value, elements.value, false))
                     {
                         return new ErrorInitializer();
                     }
                     sle.value.type.value = t_ref.value;
-                    Ref<ExpInitializer> ie = ref(new ExpInitializer(i_ref.value.loc, sle.value));
+                    Ref<ExpInitializer> ie = ref(new ExpInitializer(i.loc.value, sle.value));
                     return initializerSemantic(ie.value, sc_ref.value, t_ref.value, needInterpret_ref.value);
                 }
-                else if (((t_ref.value.ty & 0xFF) == ENUMTY.Tdelegate) || ((t_ref.value.ty & 0xFF) == ENUMTY.Tpointer) && ((t_ref.value.nextOf().ty & 0xFF) == ENUMTY.Tfunction) && (i_ref.value.value.length == 0))
+                else if (((t_ref.value.ty.value & 0xFF) == ENUMTY.Tdelegate) || ((t_ref.value.ty.value & 0xFF) == ENUMTY.Tpointer) && ((t_ref.value.nextOf().ty.value & 0xFF) == ENUMTY.Tfunction) && (i.value.length.value == 0))
                 {
-                    Ref<Byte> tok = ref(((t_ref.value.ty & 0xFF) == ENUMTY.Tdelegate) ? TOK.delegate_ : TOK.function_);
+                    Ref<Byte> tok = ref(((t_ref.value.ty.value & 0xFF) == ENUMTY.Tdelegate) ? TOK.delegate_ : TOK.function_);
                     Ref<Type> tf = ref(new TypeFunction(new ParameterList(null, VarArg.none), null, LINK.d, 0L));
-                    Ref<FuncLiteralDeclaration> fd = ref(new FuncLiteralDeclaration(i_ref.value.loc, Loc.initial.value, tf.value, tok.value, null, null));
-                    fd.value.fbody = new CompoundStatement(i_ref.value.loc, new DArray<Statement>());
-                    fd.value.endloc = i_ref.value.loc.copy();
-                    Ref<Expression> e = ref(new FuncExp(i_ref.value.loc, fd.value));
-                    Ref<ExpInitializer> ie = ref(new ExpInitializer(i_ref.value.loc, e.value));
+                    Ref<FuncLiteralDeclaration> fd = ref(new FuncLiteralDeclaration(i.loc.value, Loc.initial.value, tf.value, tok.value, null, null));
+                    fd.value.fbody.value = new CompoundStatement(i.loc.value, refPtr(new DArray<Statement>()));
+                    fd.value.endloc.value = i.loc.value.copy();
+                    Ref<Expression> e = ref(new FuncExp(i.loc.value, fd.value));
+                    Ref<ExpInitializer> ie = ref(new ExpInitializer(i.loc.value, e.value));
                     return initializerSemantic(ie.value, sc_ref.value, t_ref.value, needInterpret_ref.value);
                 }
-                if (((t_ref.value.ty & 0xFF) != ENUMTY.Terror))
-                    error(i_ref.value.loc, new BytePtr("a struct is not a valid initializer for a `%s`"), t_ref.value.toChars());
+                if (((t_ref.value.ty.value & 0xFF) != ENUMTY.Terror))
+                    error(i.loc.value, new BytePtr("a struct is not a valid initializer for a `%s`"), t_ref.value.toChars());
                 return new ErrorInitializer();
             }
         };
@@ -228,56 +227,56 @@ public class initsem {
                 IntRef length = ref(0);
                 int amax = -2147483648;
                 Ref<Boolean> errors = ref(false);
-                if (i_ref.value.sem)
+                if (i_ref.value.sem.value)
                 {
                     return i_ref.value;
                 }
-                i_ref.value.sem = true;
+                i_ref.value.sem.value = true;
                 t_ref.value = t_ref.value.toBasetype();
                 try {
                     {
                         int __dispatch0 = 0;
                         dispatched_0:
                         do {
-                            switch (__dispatch0 != 0 ? __dispatch0 : (t_ref.value.ty & 0xFF))
+                            switch (__dispatch0 != 0 ? __dispatch0 : (t_ref.value.ty.value & 0xFF))
                             {
                                 case 1:
                                 case 0:
                                     break;
                                 case 41:
-                                    t_ref.value = ((TypeVector)t_ref.value).basetype;
+                                    t_ref.value = ((TypeVector)t_ref.value).basetype.value;
                                     break;
                                 case 2:
                                 case 8:
                                     Ref<Expression> e = ref(null);
-                                    if (((t_ref.value.ty & 0xFF) == ENUMTY.Taarray) || i_ref.value.isAssociativeArray())
+                                    if (((t_ref.value.ty.value & 0xFF) == ENUMTY.Taarray) || i_ref.value.isAssociativeArray())
                                         e.value = toAssocArrayLiteral(i_ref.value);
                                     else
                                         e.value = initializerToExpression(i_ref.value, null);
                                     if (e.value == null)
                                     {
-                                        error(i_ref.value.loc, new BytePtr("cannot use array to initialize `%s`"), t_ref.value.toChars());
+                                        error(i_ref.value.loc.value, new BytePtr("cannot use array to initialize `%s`"), t_ref.value.toChars());
                                         /*goto Lerr*/throw Dispatch0.INSTANCE;
                                     }
-                                    Ref<ExpInitializer> ei = ref(new ExpInitializer(e.value.loc, e.value));
+                                    Ref<ExpInitializer> ei = ref(new ExpInitializer(e.value.loc.value, e.value));
                                     return initializerSemantic(ei.value, sc_ref.value, t_ref.value, needInterpret_ref.value);
                                 case 3:
-                                    if (((t_ref.value.nextOf().ty & 0xFF) != ENUMTY.Tfunction))
+                                    if (((t_ref.value.nextOf().ty.value & 0xFF) != ENUMTY.Tfunction))
                                         break;
                                     /*goto default*/ { __dispatch0 = -2; continue dispatched_0; }
                                 default:
                                 __dispatch0 = 0;
-                                error(i_ref.value.loc, new BytePtr("cannot use array to initialize `%s`"), t_ref.value.toChars());
+                                error(i_ref.value.loc.value, new BytePtr("cannot use array to initialize `%s`"), t_ref.value.toChars());
                                 /*goto Lerr*/throw Dispatch0.INSTANCE;
                             }
                         } while(__dispatch0 != 0);
                     }
-                    i_ref.value.type = t_ref.value;
+                    i_ref.value.type.value = t_ref.value;
                     length.value = 0;
                     {
                         IntRef j = ref(0);
                     L_outer2:
-                        for (; (j.value < i_ref.value.index.length);j.value++){
+                        for (; (j.value < i_ref.value.index.length.value);j.value++){
                             Ref<Expression> idx = ref(i_ref.value.index.get(j.value));
                             if (idx.value != null)
                             {
@@ -289,32 +288,32 @@ public class initsem {
                                 Ref<Long> idxvalue = ref(idx.value.toInteger());
                                 if ((idxvalue.value >= 2147483648L))
                                 {
-                                    error(i_ref.value.loc, new BytePtr("array index %llu overflow"), idxvalue.value);
+                                    error(i_ref.value.loc.value, new BytePtr("array index %llu overflow"), idxvalue.value);
                                     errors.value = true;
                                 }
                                 length.value = (int)idxvalue.value;
-                                if (((idx.value.op & 0xFF) == 127))
+                                if (((idx.value.op.value & 0xFF) == 127))
                                     errors.value = true;
                             }
                             Ref<Initializer> val = ref(i_ref.value.value.get(j.value));
                             Ref<ExpInitializer> ei = ref(val.value.isExpInitializer());
                             if ((ei.value != null) && (idx.value == null))
-                                ei.value.expandTuples = true;
+                                ei.value.expandTuples.value = true;
                             val.value = initializerSemantic(val.value, sc_ref.value, t_ref.value.nextOf(), needInterpret_ref.value);
                             if (val.value.isErrorInitializer() != null)
                                 errors.value = true;
                             ei.value = val.value.isExpInitializer();
-                            if ((ei.value != null) && ((ei.value.exp.op & 0xFF) == 126))
+                            if ((ei.value != null) && ((ei.value.exp.value.op.value & 0xFF) == 126))
                             {
-                                Ref<TupleExp> te = ref((TupleExp)ei.value.exp);
+                                TupleExp te = (TupleExp)ei.value.exp.value;
                                 i_ref.value.index.remove(j.value);
                                 i_ref.value.value.remove(j.value);
                                 {
                                     IntRef k = ref(0);
-                                    for (; (k.value < (te.value.exps.get()).length);k.value += 1){
-                                        Ref<Expression> e = ref((te.value.exps.get()).get(k.value));
+                                    for (; (k.value < (te.exps.value.get()).length.value);k.value += 1){
+                                        Ref<Expression> e = ref((te.exps.value.get()).get(k.value));
                                         i_ref.value.index.insert(j.value + k.value, null);
-                                        i_ref.value.value.insert(j.value + k.value, new ExpInitializer(e.value.loc, e.value));
+                                        i_ref.value.value.insert(j.value + k.value, new ExpInitializer(e.value.loc.value, e.value));
                                     }
                                 }
                                 j.value--;
@@ -327,19 +326,19 @@ public class initsem {
                             length.value++;
                             if ((length.value == 0))
                             {
-                                error(i_ref.value.loc, new BytePtr("array dimension overflow"));
+                                error(i_ref.value.loc.value, new BytePtr("array dimension overflow"));
                                 /*goto Lerr*/throw Dispatch0.INSTANCE;
                             }
-                            if ((length.value > i_ref.value.dim))
-                                i_ref.value.dim = length.value;
+                            if ((length.value > i_ref.value.dim.value))
+                                i_ref.value.dim.value = length.value;
                         }
                     }
-                    if (((t_ref.value.ty & 0xFF) == ENUMTY.Tsarray))
+                    if (((t_ref.value.ty.value & 0xFF) == ENUMTY.Tsarray))
                     {
-                        Ref<Long> edim = ref(((TypeSArray)t_ref.value).dim.toInteger());
-                        if (((long)i_ref.value.dim > edim.value))
+                        Ref<Long> edim = ref(((TypeSArray)t_ref.value).dim.value.toInteger());
+                        if (((long)i_ref.value.dim.value > edim.value))
                         {
-                            error(i_ref.value.loc, new BytePtr("array initializer has %u elements, but array length is %llu"), i_ref.value.dim, edim.value);
+                            error(i_ref.value.loc.value, new BytePtr("array initializer has %u elements, but array length is %llu"), i_ref.value.dim.value, edim.value);
                             /*goto Lerr*/throw Dispatch0.INSTANCE;
                         }
                     }
@@ -348,10 +347,10 @@ public class initsem {
                     {
                         Ref<Long> sz = ref(t_ref.value.nextOf().size());
                         Ref<Boolean> overflow = ref(false);
-                        Ref<Long> max = ref(mulu((long)i_ref.value.dim, sz.value, overflow));
+                        Ref<Long> max = ref(mulu((long)i_ref.value.dim.value, sz.value, overflow));
                         if (overflow.value || (max.value >= 2147483648L))
                         {
-                            error(i_ref.value.loc, new BytePtr("array dimension %llu exceeds max of %llu"), (long)i_ref.value.dim, 2147483648L / sz.value);
+                            error(i_ref.value.loc.value, new BytePtr("array dimension %llu exceeds max of %llu"), (long)i_ref.value.dim.value, 2147483648L / sz.value);
                             /*goto Lerr*/throw Dispatch0.INSTANCE;
                         }
                         return i_ref.value;
@@ -367,131 +366,131 @@ public class initsem {
                 Ref<ExpInitializer> i_ref = ref(i);
                 if (needInterpret_ref.value != 0)
                     sc_ref.value = (sc_ref.value.get()).startCTFE();
-                i_ref.value.exp = expressionSemantic(i_ref.value.exp, sc_ref.value);
-                i_ref.value.exp = resolveProperties(sc_ref.value, i_ref.value.exp);
+                i_ref.value.exp.value = expressionSemantic(i_ref.value.exp.value, sc_ref.value);
+                i_ref.value.exp.value = resolveProperties(sc_ref.value, i_ref.value.exp.value);
                 if (needInterpret_ref.value != 0)
                     sc_ref.value = (sc_ref.value.get()).endCTFE();
-                if (((i_ref.value.exp.op & 0xFF) == 127))
+                if (((i_ref.value.exp.value.op.value & 0xFF) == 127))
                 {
                     return new ErrorInitializer();
                 }
-                IntRef olderrors = ref(global.value.errors);
+                IntRef olderrors = ref(global.errors.value);
                 if (needInterpret_ref.value != 0)
                 {
-                    if (i_ref.value.exp.implicitConvTo(t_ref.value) != 0)
+                    if (i_ref.value.exp.value.implicitConvTo(t_ref.value) != 0)
                     {
-                        i_ref.value.exp = i_ref.value.exp.implicitCastTo(sc_ref.value, t_ref.value);
+                        i_ref.value.exp.value = i_ref.value.exp.value.implicitCastTo(sc_ref.value, t_ref.value);
                     }
-                    if ((global.value.gag == 0) && (olderrors.value != global.value.errors))
+                    if ((global.gag.value == 0) && (olderrors.value != global.errors.value))
                     {
                         return i_ref.value;
                     }
-                    i_ref.value.exp = i_ref.value.exp.ctfeInterpret();
-                    if (((i_ref.value.exp.op & 0xFF) == 232))
-                        error(i_ref.value.loc, new BytePtr("variables cannot be initialized with an expression of type `void`. Use `void` initialization instead."));
+                    i_ref.value.exp.value = i_ref.value.exp.value.ctfeInterpret();
+                    if (((i_ref.value.exp.value.op.value & 0xFF) == 232))
+                        error(i_ref.value.loc.value, new BytePtr("variables cannot be initialized with an expression of type `void`. Use `void` initialization instead."));
                 }
                 else
                 {
-                    i_ref.value.exp = i_ref.value.exp.optimize(0, false);
+                    i_ref.value.exp.value = i_ref.value.exp.value.optimize(0, false);
                 }
-                if ((global.value.gag == 0) && (olderrors.value != global.value.errors))
+                if ((global.gag.value == 0) && (olderrors.value != global.errors.value))
                 {
                     return i_ref.value;
                 }
-                if (((i_ref.value.exp.type.value.ty & 0xFF) == ENUMTY.Ttuple) && ((((TypeTuple)i_ref.value.exp.type.value).arguments.get()).length == 0))
+                if (((i_ref.value.exp.value.type.value.ty.value & 0xFF) == ENUMTY.Ttuple) && ((((TypeTuple)i_ref.value.exp.value.type.value).arguments.value.get()).length.value == 0))
                 {
-                    Ref<Type> et = ref(i_ref.value.exp.type.value);
-                    i_ref.value.exp = new TupleExp(i_ref.value.exp.loc, new DArray<Expression>());
-                    i_ref.value.exp.type.value = et.value;
+                    Ref<Type> et = ref(i_ref.value.exp.value.type.value);
+                    i_ref.value.exp.value = new TupleExp(i_ref.value.exp.value.loc.value, refPtr(new DArray<Expression>()));
+                    i_ref.value.exp.value.type.value = et.value;
                 }
-                if (((i_ref.value.exp.op & 0xFF) == 20))
+                if (((i_ref.value.exp.value.op.value & 0xFF) == 20))
                 {
-                    i_ref.value.exp.error(new BytePtr("initializer must be an expression, not `%s`"), i_ref.value.exp.toChars());
+                    i_ref.value.exp.value.error(new BytePtr("initializer must be an expression, not `%s`"), i_ref.value.exp.value.toChars());
                     return new ErrorInitializer();
                 }
-                if ((needInterpret_ref.value != 0) && hasNonConstPointers(i_ref.value.exp))
+                if ((needInterpret_ref.value != 0) && hasNonConstPointers(i_ref.value.exp.value))
                 {
-                    i_ref.value.exp.error(new BytePtr("cannot use non-constant CTFE pointer in an initializer `%s`"), i_ref.value.exp.toChars());
+                    i_ref.value.exp.value.error(new BytePtr("cannot use non-constant CTFE pointer in an initializer `%s`"), i_ref.value.exp.value.toChars());
                     return new ErrorInitializer();
                 }
-                Ref<Type> tb = ref(t_ref.value.toBasetype());
-                Ref<Type> ti = ref(i_ref.value.exp.type.value.toBasetype());
-                if (((i_ref.value.exp.op & 0xFF) == 126) && i_ref.value.expandTuples && (i_ref.value.exp.implicitConvTo(t_ref.value) == 0))
+                Type tb = t_ref.value.toBasetype();
+                Type ti = i_ref.value.exp.value.type.value.toBasetype();
+                if (((i_ref.value.exp.value.op.value & 0xFF) == 126) && i_ref.value.expandTuples.value && (i_ref.value.exp.value.implicitConvTo(t_ref.value) == 0))
                 {
-                    return new ExpInitializer(i_ref.value.loc, i_ref.value.exp);
+                    return new ExpInitializer(i_ref.value.loc.value, i_ref.value.exp.value);
                 }
                 try {
-                    if (((i_ref.value.exp.op & 0xFF) == 121) && ((tb.value.ty & 0xFF) == ENUMTY.Tsarray))
+                    if (((i_ref.value.exp.value.op.value & 0xFF) == 121) && ((tb.ty.value & 0xFF) == ENUMTY.Tsarray))
                     {
-                        Ref<StringExp> se = ref((StringExp)i_ref.value.exp);
-                        Ref<Type> typeb = ref(se.value.type.value.toBasetype());
-                        Ref<Byte> tynto = ref(tb.value.nextOf().ty);
-                        if ((se.value.committed == 0) && ((typeb.value.ty & 0xFF) == ENUMTY.Tarray) || ((typeb.value.ty & 0xFF) == ENUMTY.Tsarray) && ((tynto.value & 0xFF) == ENUMTY.Tchar) || ((tynto.value & 0xFF) == ENUMTY.Twchar) || ((tynto.value & 0xFF) == ENUMTY.Tdchar) && ((long)se.value.numberOfCodeUnits((tynto.value & 0xFF)) < ((TypeSArray)tb.value).dim.toInteger()))
+                        StringExp se = (StringExp)i_ref.value.exp.value;
+                        Type typeb = se.type.value.toBasetype();
+                        Ref<Byte> tynto = ref(tb.nextOf().ty.value);
+                        if ((se.committed.value == 0) && ((typeb.ty.value & 0xFF) == ENUMTY.Tarray) || ((typeb.ty.value & 0xFF) == ENUMTY.Tsarray) && ((tynto.value & 0xFF) == ENUMTY.Tchar) || ((tynto.value & 0xFF) == ENUMTY.Twchar) || ((tynto.value & 0xFF) == ENUMTY.Tdchar) && ((long)se.numberOfCodeUnits((tynto.value & 0xFF)) < ((TypeSArray)tb).dim.value.toInteger()))
                         {
-                            i_ref.value.exp = se.value.castTo(sc_ref.value, t_ref.value);
+                            i_ref.value.exp.value = se.castTo(sc_ref.value, t_ref.value);
                             /*goto L1*/throw Dispatch0.INSTANCE;
                         }
                     }
-                    if (((tb.value.ty & 0xFF) == ENUMTY.Tstruct) && !(((ti.value.ty & 0xFF) == ENUMTY.Tstruct) && (pequals(tb.value.toDsymbol(sc_ref.value), ti.value.toDsymbol(sc_ref.value)))) && (i_ref.value.exp.implicitConvTo(t_ref.value) == 0))
+                    if (((tb.ty.value & 0xFF) == ENUMTY.Tstruct) && !(((ti.ty.value & 0xFF) == ENUMTY.Tstruct) && (pequals(tb.toDsymbol(sc_ref.value), ti.toDsymbol(sc_ref.value)))) && (i_ref.value.exp.value.implicitConvTo(t_ref.value) == 0))
                     {
-                        Ref<StructDeclaration> sd = ref(((TypeStruct)tb.value).sym);
-                        if (sd.value.ctor != null)
+                        Ref<StructDeclaration> sd = ref(((TypeStruct)tb).sym.value);
+                        if (sd.value.ctor.value != null)
                         {
                             Ref<Expression> e = ref(null);
-                            e.value = new StructLiteralExp(i_ref.value.loc, sd.value, null, null);
-                            e.value = new DotIdExp(i_ref.value.loc, e.value, Id.ctor.value);
-                            e.value = new CallExp(i_ref.value.loc, e.value, i_ref.value.exp);
+                            e.value = new StructLiteralExp(i_ref.value.loc.value, sd.value, null, null);
+                            e.value = new DotIdExp(i_ref.value.loc.value, e.value, Id.ctor.value);
+                            e.value = new CallExp(i_ref.value.loc.value, e.value, i_ref.value.exp.value);
                             e.value = expressionSemantic(e.value, sc_ref.value);
                             if (needInterpret_ref.value != 0)
-                                i_ref.value.exp = e.value.ctfeInterpret();
+                                i_ref.value.exp.value = e.value.ctfeInterpret();
                             else
-                                i_ref.value.exp = e.value.optimize(0, false);
+                                i_ref.value.exp.value = e.value.optimize(0, false);
                         }
                     }
-                    if (((tb.value.ty & 0xFF) == ENUMTY.Tsarray) && !tb.value.nextOf().equals(ti.value.toBasetype().nextOf()) && (i_ref.value.exp.implicitConvTo(tb.value.nextOf()) != 0))
+                    if (((tb.ty.value & 0xFF) == ENUMTY.Tsarray) && !tb.nextOf().equals(ti.toBasetype().nextOf()) && (i_ref.value.exp.value.implicitConvTo(tb.nextOf()) != 0))
                     {
-                        t_ref.value = tb.value.nextOf();
+                        t_ref.value = tb.nextOf();
                     }
-                    if (i_ref.value.exp.implicitConvTo(t_ref.value) != 0)
+                    if (i_ref.value.exp.value.implicitConvTo(t_ref.value) != 0)
                     {
-                        i_ref.value.exp = i_ref.value.exp.implicitCastTo(sc_ref.value, t_ref.value);
+                        i_ref.value.exp.value = i_ref.value.exp.value.implicitCastTo(sc_ref.value, t_ref.value);
                     }
                     else
                     {
-                        if (((tb.value.ty & 0xFF) == ENUMTY.Tsarray) && (i_ref.value.exp.implicitConvTo(tb.value.nextOf().arrayOf()) > MATCH.nomatch))
+                        if (((tb.ty.value & 0xFF) == ENUMTY.Tsarray) && (i_ref.value.exp.value.implicitConvTo(tb.nextOf().arrayOf()) > MATCH.nomatch))
                         {
-                            Ref<Long> dim1 = ref(((TypeSArray)tb.value).dim.toInteger());
+                            Ref<Long> dim1 = ref(((TypeSArray)tb).dim.value.toInteger());
                             Ref<Long> dim2 = ref(dim1.value);
-                            if (((i_ref.value.exp.op & 0xFF) == 47))
+                            if (((i_ref.value.exp.value.op.value & 0xFF) == 47))
                             {
-                                Ref<ArrayLiteralExp> ale = ref((ArrayLiteralExp)i_ref.value.exp);
-                                dim2.value = ale.value.elements != null ? (long)(ale.value.elements.get()).length : 0L;
+                                ArrayLiteralExp ale = (ArrayLiteralExp)i_ref.value.exp.value;
+                                dim2.value = ale.elements.value != null ? (long)(ale.elements.value.get()).length.value : 0L;
                             }
-                            else if (((i_ref.value.exp.op & 0xFF) == 31))
+                            else if (((i_ref.value.exp.value.op.value & 0xFF) == 31))
                             {
-                                Ref<Type> tx = ref(toStaticArrayType((SliceExp)i_ref.value.exp));
+                                Ref<Type> tx = ref(toStaticArrayType((SliceExp)i_ref.value.exp.value));
                                 if (tx.value != null)
-                                    dim2.value = ((TypeSArray)tx.value).dim.toInteger();
+                                    dim2.value = ((TypeSArray)tx.value).dim.value.toInteger();
                             }
                             if ((dim1.value != dim2.value))
                             {
-                                i_ref.value.exp.error(new BytePtr("mismatched array lengths, %d and %d"), (int)dim1.value, (int)dim2.value);
-                                i_ref.value.exp = new ErrorExp();
+                                i_ref.value.exp.value.error(new BytePtr("mismatched array lengths, %d and %d"), (int)dim1.value, (int)dim2.value);
+                                i_ref.value.exp.value = new ErrorExp();
                             }
                         }
-                        i_ref.value.exp = i_ref.value.exp.implicitCastTo(sc_ref.value, t_ref.value);
+                        i_ref.value.exp.value = i_ref.value.exp.value.implicitCastTo(sc_ref.value, t_ref.value);
                     }
                 }
                 catch(Dispatch0 __d){}
             /*L1:*/
-                if (((i_ref.value.exp.op & 0xFF) == 127))
+                if (((i_ref.value.exp.value.op.value & 0xFF) == 127))
                 {
                     return i_ref.value;
                 }
                 if (needInterpret_ref.value != 0)
-                    i_ref.value.exp = i_ref.value.exp.ctfeInterpret();
+                    i_ref.value.exp.value = i_ref.value.exp.value.ctfeInterpret();
                 else
-                    i_ref.value.exp = i_ref.value.exp.optimize(0, false);
+                    i_ref.value.exp.value = i_ref.value.exp.value.optimize(0, false);
                 return i_ref.value;
             }
         };
@@ -516,8 +515,7 @@ public class initsem {
         Ref<Ptr<Scope>> sc_ref = ref(sc);
         Function1<VoidInitializer,Initializer> visitVoid = new Function1<VoidInitializer,Initializer>(){
             public Initializer invoke(VoidInitializer i) {
-                Ref<VoidInitializer> i_ref = ref(i);
-                error(i_ref.value.loc, new BytePtr("cannot infer type from void initializer"));
+                error(i.loc.value, new BytePtr("cannot infer type from void initializer"));
                 return new ErrorInitializer();
             }
         };
@@ -529,30 +527,28 @@ public class initsem {
         };
         Function1<StructInitializer,Initializer> visitStruct = new Function1<StructInitializer,Initializer>(){
             public Initializer invoke(StructInitializer i) {
-                Ref<StructInitializer> i_ref = ref(i);
-                error(i_ref.value.loc, new BytePtr("cannot infer type from struct initializer"));
+                error(i.loc.value, new BytePtr("cannot infer type from struct initializer"));
                 return new ErrorInitializer();
             }
         };
         Function1<ArrayInitializer,Initializer> visitArray = new Function1<ArrayInitializer,Initializer>(){
             public Initializer invoke(ArrayInitializer init) {
-                Ref<ArrayInitializer> init_ref = ref(init);
                 Ref<Ptr<DArray<Expression>>> keys = ref(null);
                 Ref<Ptr<DArray<Expression>>> values = ref(null);
                 try {
-                    if (init_ref.value.isAssociativeArray())
+                    if (init.isAssociativeArray())
                     {
-                        keys.value = new DArray<Expression>(init_ref.value.value.length);
-                        values.value = new DArray<Expression>(init_ref.value.value.length);
+                        keys.value = refPtr(new DArray<Expression>(init.value.length.value));
+                        values.value = refPtr(new DArray<Expression>(init.value.length.value));
                         {
                             IntRef i = ref(0);
                         L_outer3:
-                            for (; (i.value < init_ref.value.value.length);i.value++){
-                                Ref<Expression> e = ref(init_ref.value.index.get(i.value));
+                            for (; (i.value < init.value.length.value);i.value++){
+                                Ref<Expression> e = ref(init.index.get(i.value));
                                 if (e.value == null)
                                     /*goto Lno*/throw Dispatch0.INSTANCE;
                                 keys.value.get().set(i.value, e.value);
-                                Ref<Initializer> iz = ref(init_ref.value.value.get(i.value));
+                                Ref<Initializer> iz = ref(init.value.get(i.value));
                                 if (iz.value == null)
                                     /*goto Lno*/throw Dispatch0.INSTANCE;
                                 iz.value = inferType(iz.value, sc_ref.value);
@@ -561,24 +557,24 @@ public class initsem {
                                     return iz.value;
                                 }
                                 assert(iz.value.isExpInitializer() != null);
-                                values.value.get().set(i.value, ((ExpInitializer)iz.value).exp);
-                                assert((((values.value.get()).get(i.value).op & 0xFF) != 127));
+                                values.value.get().set(i.value, ((ExpInitializer)iz.value).exp.value);
+                                assert((((values.value.get()).get(i.value).op.value & 0xFF) != 127));
                             }
                         }
-                        Ref<Expression> e = ref(new AssocArrayLiteralExp(init_ref.value.loc, keys.value, values.value));
-                        Ref<ExpInitializer> ei = ref(new ExpInitializer(init_ref.value.loc, e.value));
+                        Ref<Expression> e = ref(new AssocArrayLiteralExp(init.loc.value, keys.value, values.value));
+                        Ref<ExpInitializer> ei = ref(new ExpInitializer(init.loc.value, e.value));
                         return inferType(ei.value, sc_ref.value);
                     }
                     else
                     {
-                        Ref<Ptr<DArray<Expression>>> elements = ref(new DArray<Expression>(init_ref.value.value.length));
+                        Ref<Ptr<DArray<Expression>>> elements = ref(refPtr(new DArray<Expression>(init.value.length.value)));
                         (elements.value.get()).zero();
                         {
                             IntRef i = ref(0);
                         L_outer4:
-                            for (; (i.value < init_ref.value.value.length);i.value++){
-                                assert(init_ref.value.index.get(i.value) == null);
-                                Ref<Initializer> iz = ref(init_ref.value.value.get(i.value));
+                            for (; (i.value < init.value.length.value);i.value++){
+                                assert(init.index.get(i.value) == null);
+                                Ref<Initializer> iz = ref(init.value.get(i.value));
                                 if (iz.value == null)
                                     /*goto Lno*/throw Dispatch0.INSTANCE;
                                 iz.value = inferType(iz.value, sc_ref.value);
@@ -587,12 +583,12 @@ public class initsem {
                                     return iz.value;
                                 }
                                 assert(iz.value.isExpInitializer() != null);
-                                elements.value.get().set(i.value, ((ExpInitializer)iz.value).exp);
-                                assert((((elements.value.get()).get(i.value).op & 0xFF) != 127));
+                                elements.value.get().set(i.value, ((ExpInitializer)iz.value).exp.value);
+                                assert((((elements.value.get()).get(i.value).op.value & 0xFF) != 127));
                             }
                         }
-                        Ref<Expression> e = ref(new ArrayLiteralExp(init_ref.value.loc, null, elements.value));
-                        Ref<ExpInitializer> ei = ref(new ExpInitializer(init_ref.value.loc, e.value));
+                        Ref<Expression> e = ref(new ArrayLiteralExp(init.loc.value, null, elements.value));
+                        Ref<ExpInitializer> ei = ref(new ExpInitializer(init.loc.value, e.value));
                         return inferType(ei.value, sc_ref.value);
                     }
                 }
@@ -600,11 +596,11 @@ public class initsem {
             /*Lno:*/
                 if (keys.value != null)
                 {
-                    error(init_ref.value.loc, new BytePtr("not an associative array initializer"));
+                    error(init.loc.value, new BytePtr("not an associative array initializer"));
                 }
                 else
                 {
-                    error(init_ref.value.loc, new BytePtr("cannot infer type from array initializer"));
+                    error(init.loc.value, new BytePtr("cannot infer type from array initializer"));
                 }
                 return new ErrorInitializer();
             }
@@ -612,50 +608,50 @@ public class initsem {
         Function1<ExpInitializer,Initializer> visitExp = new Function1<ExpInitializer,Initializer>(){
             public Initializer invoke(ExpInitializer init) {
                 Ref<ExpInitializer> init_ref = ref(init);
-                init_ref.value.exp = expressionSemantic(init_ref.value.exp, sc_ref.value);
-                if (((init_ref.value.exp.op & 0xFF) == 20))
-                    init_ref.value.exp = resolveAliasThis(sc_ref.value, init_ref.value.exp, false);
-                init_ref.value.exp = resolveProperties(sc_ref.value, init_ref.value.exp);
-                if (((init_ref.value.exp.op & 0xFF) == 203))
+                init_ref.value.exp.value = expressionSemantic(init_ref.value.exp.value, sc_ref.value);
+                if (((init_ref.value.exp.value.op.value & 0xFF) == 20))
+                    init_ref.value.exp.value = resolveAliasThis(sc_ref.value, init_ref.value.exp.value, false);
+                init_ref.value.exp.value = resolveProperties(sc_ref.value, init_ref.value.exp.value);
+                if (((init_ref.value.exp.value.op.value & 0xFF) == 203))
                 {
-                    Ref<ScopeExp> se = ref((ScopeExp)init_ref.value.exp);
-                    Ref<TemplateInstance> ti = ref(se.value.sds.isTemplateInstance());
-                    if ((ti.value != null) && (ti.value.semanticRun == PASS.semantic) && (ti.value.aliasdecl == null))
-                        se.value.error(new BytePtr("cannot infer type from %s `%s`, possible circular dependency"), se.value.sds.kind(), se.value.toChars());
+                    ScopeExp se = (ScopeExp)init_ref.value.exp.value;
+                    Ref<TemplateInstance> ti = ref(se.sds.value.isTemplateInstance());
+                    if ((ti.value != null) && (ti.value.semanticRun.value == PASS.semantic) && (ti.value.aliasdecl.value == null))
+                        se.error(new BytePtr("cannot infer type from %s `%s`, possible circular dependency"), se.sds.value.kind(), se.toChars());
                     else
-                        se.value.error(new BytePtr("cannot infer type from %s `%s`"), se.value.sds.kind(), se.value.toChars());
+                        se.error(new BytePtr("cannot infer type from %s `%s`"), se.sds.value.kind(), se.toChars());
                     return new ErrorInitializer();
                 }
                 Ref<Boolean> hasOverloads = ref(false);
                 {
-                    Ref<FuncDeclaration> f = ref(isFuncAddress(init_ref.value.exp, ptr(hasOverloads)));
+                    Ref<FuncDeclaration> f = ref(isFuncAddress(init_ref.value.exp.value, ptr(hasOverloads)));
                     if ((f.value) != null)
                     {
-                        if (f.value.checkForwardRef(init_ref.value.loc))
+                        if (f.value.checkForwardRef(init_ref.value.loc.value))
                         {
                             return new ErrorInitializer();
                         }
                         if (hasOverloads.value && !f.value.isUnique())
                         {
-                            init_ref.value.exp.error(new BytePtr("cannot infer type from overloaded function symbol `%s`"), init_ref.value.exp.toChars());
+                            init_ref.value.exp.value.error(new BytePtr("cannot infer type from overloaded function symbol `%s`"), init_ref.value.exp.value.toChars());
                             return new ErrorInitializer();
                         }
                     }
                 }
-                if (((init_ref.value.exp.op & 0xFF) == 19))
+                if (((init_ref.value.exp.value.op.value & 0xFF) == 19))
                 {
-                    Ref<AddrExp> ae = ref((AddrExp)init_ref.value.exp);
-                    if (((ae.value.e1.op & 0xFF) == 214))
+                    AddrExp ae = (AddrExp)init_ref.value.exp.value;
+                    if (((ae.e1.value.op.value & 0xFF) == 214))
                     {
-                        init_ref.value.exp.error(new BytePtr("cannot infer type from overloaded function symbol `%s`"), init_ref.value.exp.toChars());
+                        init_ref.value.exp.value.error(new BytePtr("cannot infer type from overloaded function symbol `%s`"), init_ref.value.exp.value.toChars());
                         return new ErrorInitializer();
                     }
                 }
-                if (((init_ref.value.exp.op & 0xFF) == 127))
+                if (((init_ref.value.exp.value.op.value & 0xFF) == 127))
                 {
                     return new ErrorInitializer();
                 }
-                if (init_ref.value.exp.type.value == null)
+                if (init_ref.value.exp.value.type.value == null)
                 {
                     return new ErrorInitializer();
                 }
@@ -698,38 +694,37 @@ public class initsem {
         };
         Function1<ArrayInitializer,Expression> visitArray = new Function1<ArrayInitializer,Expression>(){
             public Expression invoke(ArrayInitializer init) {
-                Ref<ArrayInitializer> init_ref = ref(init);
                 Ref<Ptr<DArray<Expression>>> elements = ref(null);
                 IntRef edim = ref(0);
                 int amax = -2147483648;
                 Ref<Type> t = ref(null);
                 try {
-                    if (init_ref.value.type != null)
+                    if (init.type.value != null)
                     {
-                        if ((pequals(init_ref.value.type, Type.terror.value)))
+                        if ((pequals(init.type.value, Type.terror.value)))
                         {
                             return new ErrorExp();
                         }
-                        t.value = init_ref.value.type.toBasetype();
+                        t.value = init.type.value.toBasetype();
                         {
                             int __dispatch3 = 0;
                             dispatched_3:
                             do {
-                                switch (__dispatch3 != 0 ? __dispatch3 : (t.value.ty & 0xFF))
+                                switch (__dispatch3 != 0 ? __dispatch3 : (t.value.ty.value & 0xFF))
                                 {
                                     case 41:
-                                        t.value = ((TypeVector)t.value).basetype;
+                                        t.value = ((TypeVector)t.value).basetype.value;
                                         /*goto case*/{ __dispatch3 = 1; continue dispatched_3; }
                                     case 1:
                                         __dispatch3 = 0;
-                                        Ref<Long> adim = ref(((TypeSArray)t.value).dim.toInteger());
+                                        Ref<Long> adim = ref(((TypeSArray)t.value).dim.value.toInteger());
                                         if ((adim.value >= 2147483648L))
                                             /*goto Lno*/throw Dispatch0.INSTANCE;
                                         edim.value = (int)adim.value;
                                         break;
                                     case 3:
                                     case 0:
-                                        edim.value = init_ref.value.dim;
+                                        edim.value = init.dim.value;
                                         break;
                                     default:
                                     throw new AssertionError("Unreachable code!");
@@ -739,17 +734,17 @@ public class initsem {
                     }
                     else
                     {
-                        edim.value = init_ref.value.value.length;
+                        edim.value = init.value.length.value;
                         {
                             IntRef i = ref(0);
                             IntRef j = ref(0);
                         L_outer5:
-                            for (; (i.value < init_ref.value.value.length);comma(i.value++, j.value++)){
-                                if (init_ref.value.index.get(i.value) != null)
+                            for (; (i.value < init.value.length.value);comma(i.value++, j.value++)){
+                                if (init.index.get(i.value) != null)
                                 {
-                                    if (((init_ref.value.index.get(i.value).op & 0xFF) == 135))
+                                    if (((init.index.get(i.value).op.value & 0xFF) == 135))
                                     {
-                                        Ref<Long> idxval = ref(init_ref.value.index.get(i.value).toInteger());
+                                        Ref<Long> idxval = ref(init.index.get(i.value).toInteger());
                                         if ((idxval.value >= 2147483648L))
                                             /*goto Lno*/throw Dispatch0.INSTANCE;
                                         j.value = (int)idxval.value;
@@ -762,17 +757,17 @@ public class initsem {
                             }
                         }
                     }
-                    elements.value = new DArray<Expression>(edim.value);
+                    elements.value = refPtr(new DArray<Expression>(edim.value));
                     (elements.value.get()).zero();
                     {
                         IntRef i = ref(0);
                         IntRef j = ref(0);
                     L_outer6:
-                        for (; (i.value < init_ref.value.value.length);comma(i.value++, j.value++)){
-                            if (init_ref.value.index.get(i.value) != null)
-                                j.value = (int)init_ref.value.index.get(i.value).toInteger();
+                        for (; (i.value < init.value.length.value);comma(i.value++, j.value++)){
+                            if (init.index.get(i.value) != null)
+                                j.value = (int)init.index.get(i.value).toInteger();
                             assert((j.value < edim.value));
-                            Ref<Initializer> iz = ref(init_ref.value.value.get(i.value));
+                            Ref<Initializer> iz = ref(init.value.get(i.value));
                             if (iz.value == null)
                                 /*goto Lno*/throw Dispatch0.INSTANCE;
                             Ref<Expression> ex = ref(initializerToExpression(iz.value, null));
@@ -791,10 +786,10 @@ public class initsem {
                             for (; (i.value < edim.value);i.value++){
                                 if ((elements.value.get()).get(i.value) == null)
                                 {
-                                    if (init_ref.value.type == null)
+                                    if (init.type.value == null)
                                         /*goto Lno*/throw Dispatch0.INSTANCE;
                                     if (_init.value == null)
-                                        _init.value = defaultInit(((TypeNext)t.value).next, Loc.initial.value);
+                                        _init.value = defaultInit(((TypeNext)t.value).next.value, Loc.initial.value);
                                     elements.value.get().set(i.value, _init.value);
                                 }
                             }
@@ -802,18 +797,18 @@ public class initsem {
                         if (t.value != null)
                         {
                             Ref<Type> tn = ref(t.value.nextOf().toBasetype());
-                            if (((tn.value.ty & 0xFF) == ENUMTY.Tsarray))
+                            if (((tn.value.ty.value & 0xFF) == ENUMTY.Tsarray))
                             {
-                                IntRef dim = ref((int)((TypeSArray)tn.value).dim.toInteger());
-                                Ref<Type> te = ref(tn.value.nextOf().toBasetype());
+                                IntRef dim = ref((int)((TypeSArray)tn.value).dim.value.toInteger());
+                                Type te = tn.value.nextOf().toBasetype();
                                 {
                                     Ref<Slice<Expression>> __r1501 = ref((elements.value.get()).opSlice().copy());
                                     IntRef __key1502 = ref(0);
                                     for (; (__key1502.value < __r1501.value.getLength());__key1502.value += 1) {
                                         Ref<Expression> e = ref(__r1501.value.get(__key1502.value));
-                                        if (te.value.equals(e.value.type.value))
+                                        if (te.equals(e.value.type.value))
                                         {
-                                            Ref<Ptr<DArray<Expression>>> elements2 = ref(new DArray<Expression>(dim.value));
+                                            Ref<Ptr<DArray<Expression>>> elements2 = ref(refPtr(new DArray<Expression>(dim.value)));
                                             {
                                                 Ref<Slice<Expression>> __r1503 = ref((elements2.value.get()).opSlice().copy());
                                                 IntRef __key1504 = ref(0);
@@ -822,7 +817,7 @@ public class initsem {
                                                     e2.value = e.value;
                                                 }
                                             }
-                                            e.value = new ArrayLiteralExp(e.value.loc, tn.value, elements2.value);
+                                            e.value = new ArrayLiteralExp(e.value.loc.value, tn.value, elements2.value);
                                         }
                                     }
                                 }
@@ -832,13 +827,13 @@ public class initsem {
                             IntRef i = ref(0);
                             for (; (i.value < edim.value);i.value++){
                                 Ref<Expression> e = ref((elements.value.get()).get(i.value));
-                                if (((e.value.op & 0xFF) == 127))
+                                if (((e.value.op.value & 0xFF) == 127))
                                 {
                                     return e.value;
                                 }
                             }
                         }
-                        Ref<Expression> e = ref(new ArrayLiteralExp(init_ref.value.loc, init_ref.value.type, elements.value));
+                        Ref<Expression> e = ref(new ArrayLiteralExp(init.loc.value, init.type.value, elements.value));
                         return e.value;
                     }
                 }
@@ -849,27 +844,26 @@ public class initsem {
         };
         Function1<ExpInitializer,Expression> visitExp = new Function1<ExpInitializer,Expression>(){
             public Expression invoke(ExpInitializer i) {
-                Ref<ExpInitializer> i_ref = ref(i);
                 if (itype_ref.value != null)
                 {
                     Ref<Type> tb = ref(itype_ref.value.toBasetype());
-                    Ref<Expression> e = ref(((i_ref.value.exp.op & 0xFF) == 95) || ((i_ref.value.exp.op & 0xFF) == 96) ? ((AssignExp)i_ref.value.exp).e2.value : i_ref.value.exp);
-                    if (((tb.value.ty & 0xFF) == ENUMTY.Tsarray) && (e.value.implicitConvTo(tb.value.nextOf()) != 0))
+                    Ref<Expression> e = ref(((i.exp.value.op.value & 0xFF) == 95) || ((i.exp.value.op.value & 0xFF) == 96) ? ((AssignExp)i.exp.value).e2.value : i.exp.value);
+                    if (((tb.value.ty.value & 0xFF) == ENUMTY.Tsarray) && (e.value.implicitConvTo(tb.value.nextOf()) != 0))
                     {
-                        Ref<TypeSArray> tsa = ref((TypeSArray)tb.value);
-                        IntRef d = ref((int)tsa.value.dim.toInteger());
-                        Ref<Ptr<DArray<Expression>>> elements = ref(new DArray<Expression>(d.value));
+                        TypeSArray tsa = (TypeSArray)tb.value;
+                        IntRef d = ref((int)tsa.dim.value.toInteger());
+                        Ref<Ptr<DArray<Expression>>> elements = ref(refPtr(new DArray<Expression>(d.value)));
                         {
                             IntRef j = ref(0);
                             for (; (j.value < d.value);j.value++) {
                                 elements.value.get().set(j.value, e.value);
                             }
                         }
-                        Ref<ArrayLiteralExp> ae = ref(new ArrayLiteralExp(e.value.loc, itype_ref.value, elements.value));
+                        Ref<ArrayLiteralExp> ae = ref(new ArrayLiteralExp(e.value.loc.value, itype_ref.value, elements.value));
                         return ae.value;
                     }
                 }
-                return i_ref.value.exp;
+                return i.exp.value;
             }
         };
         switch ((init.kind & 0xFF))

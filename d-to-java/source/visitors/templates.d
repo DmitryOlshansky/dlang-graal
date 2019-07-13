@@ -147,6 +147,7 @@ extern(C++) class RegisterTemplates : SemanticTimeTransitiveVisitor {
         if (!v.empty) templates[var] = v;
         super.visit(var);
     }
+
 }
 
 IdentityMap!Template registerTemplates(Dsymbol sym) {

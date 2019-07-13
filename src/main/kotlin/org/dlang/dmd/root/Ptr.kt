@@ -10,29 +10,9 @@ abstract class Ptr<T> : RootObject() {
 
     abstract operator fun get(idx: Int): T?
 
+    abstract fun slice(start: Int, end: Int): Slice<T>
+
     abstract fun get(): T?
-}
-
-interface LinkedNode<T> {
-    fun getNext(): T
-    fun setNext(value: T)
-}
-
-// pointer to `next` field of object, used to manipualte linked lists
-class PtrToNext<T : LinkedNode<U>, U>(val node: T) : Ptr<U>() {
-    override fun copy(): Ptr<U> = PtrToNext<T, U>(node)
-
-    override operator fun set(idx: Int, value: U) {
-        require(idx == 0)
-        node.setNext(value)
-    }
-
-    override operator fun get(idx: Int): U? {
-        require(idx == 0)
-        return node.getNext()
-    }
-
-    override fun get(): U? = get(0)
 }
 
 class RawPtr<T>(val data: Array<T?>, var offset: Int) : Ptr<T>() {
@@ -88,7 +68,7 @@ class RawPtr<T>(val data: Array<T?>, var offset: Int) : Ptr<T>() {
 
     override fun get(): T? = data[offset]
 
-    fun slice(start: Int, end: Int) = Slice<T>(data, start + offset, end + offset)
+    override fun slice(start: Int, end: Int) = RawSlice<T>(data, start + offset, end + offset)
 
     override fun equals(other: Any?): Boolean =
         when (other) {
@@ -129,39 +109,13 @@ class RefPtr<T>(val ref: Ref<T>) : Ptr<T>() {
         ref.value = value
     }
 
+    override fun slice(start: Int, end: Int): Slice<T> {
+        assert(start == 0 && end == 1)
+        return RefSlice(ref)
+    }
+
     override fun toChars(): BytePtr = BytePtr(ref.value.toString())
 }
-
-class BytePtrPtr(val ref: BytePtr) : Ptr<BytePtr>() {
-
-    override fun copy() = BytePtrPtr(ref)
-
-    override operator fun get(idx: Int): BytePtr {
-        require(idx == 0)
-        return ref
-    }
-
-    override fun get() = ref.copy()
-
-    override fun set(idx: Int, value: BytePtr) {
-        require(idx == 0)
-        ref.data = value.data
-        ref.offset = value.offset
-    }
-
-    override fun toChars(): BytePtr = ref.toChars()
-
-    override fun equals(other: Any?): Boolean =
-        when (other) {
-            is BytePtrPtr -> ref === other.ref
-            else -> false
-        }
-
-    override fun hashCode(): Int {
-        return ref.hashCode()
-    }
-}
-
 
 // ~C-string
 class BytePtr(var data: ByteArray, var offset: Int) : RootObject() {

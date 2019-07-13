@@ -191,8 +191,8 @@ public class errors {
     }
 
     public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Ptr<Slice<Object>> ap, BytePtr p1, BytePtr p2) {
-        Ptr<Console> con = ((Ptr<Console>)global.value.console);
-        BytePtr p = pcopy(loc.toChars(global.value.params.showColumns));
+        Ptr<Console> con = ((Ptr<Console>)global.console);
+        BytePtr p = pcopy(loc.toChars(global.params.showColumns.value));
         if (con != null)
             (con.get()).setColorBright(true);
         if (p.get() != 0)
@@ -219,12 +219,12 @@ public class errors {
         else
             fputs(tmp.value.peekChars(), stderr);
         fputc(10, stderr);
-        if (global.value.params.printErrorContext && !loc.opEquals(Loc.initial.value) && (strstr(loc.filename, new BytePtr(".d-mixin-")) == null) && (global.value.params.mixinOut == null))
+        if (global.params.printErrorContext && !loc.opEquals(Loc.initial.value) && (strstr(loc.filename, new BytePtr(".d-mixin-")) == null) && (global.params.mixinOut == null))
         {
             FileAndLines fllines = FileCache.fileCache.addOrGetFile(loc.filename.slice(0,strlen(loc.filename)));
-            if ((loc.linnum - 1 < fllines.lines.getLength()))
+            if ((loc.linnum - 1 < fllines.lines.value.getLength()))
             {
-                ByteSlice line = fllines.lines.get(loc.linnum - 1).copy();
+                ByteSlice line = fllines.lines.value.get(loc.linnum - 1).copy();
                 if ((loc.charnum < line.getLength()))
                 {
                     fprintf(stderr, new BytePtr("%.*s\n"), line.getLength(), toBytePtr(line));
@@ -255,21 +255,21 @@ public class errors {
     }
 
     public static void verror(Loc loc, BytePtr format, Ptr<Slice<Object>> ap, BytePtr p1, BytePtr p2, BytePtr header) {
-        global.value.errors++;
-        if (global.value.gag == 0)
+        global.errors.value++;
+        if (global.gag.value == 0)
         {
             verrorPrint(loc, Color.brightRed, header, format, ap, p1, p2);
-            if ((global.value.params.errorLimit != 0) && (global.value.errors >= global.value.params.errorLimit))
+            if ((global.params.errorLimit != 0) && (global.errors.value >= global.params.errorLimit))
                 fatal();
         }
         else
         {
-            if (global.value.params.showGaggedErrors)
+            if (global.params.showGaggedErrors)
             {
-                fprintf(stderr, new BytePtr("(spec:%d) "), global.value.gag);
+                fprintf(stderr, new BytePtr("(spec:%d) "), global.gag.value);
                 verrorPrint(loc, Color.brightBlue, header, format, ap, p1, p2);
             }
-            global.value.gaggedErrors++;
+            global.gaggedErrors++;
         }
     }
 
@@ -290,9 +290,9 @@ public class errors {
 
     public static void verrorSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> ap) {
         int color = Color.black;
-        if (global.value.gag != 0)
+        if (global.gag.value != 0)
         {
-            if (!global.value.params.showGaggedErrors)
+            if (!global.params.showGaggedErrors)
                 return ;
             color = Color.brightBlue;
         }
@@ -302,38 +302,38 @@ public class errors {
     }
 
     public static void vwarning(Loc loc, BytePtr format, Ptr<Slice<Object>> ap) {
-        if (((global.value.params.warnings & 0xFF) != 2))
+        if (((global.params.warnings & 0xFF) != 2))
         {
-            if (global.value.gag == 0)
+            if (global.gag.value == 0)
             {
                 verrorPrint(loc, Color.brightYellow, new BytePtr("Warning: "), format, ap, null, null);
-                if (((global.value.params.warnings & 0xFF) == 0))
-                    global.value.warnings++;
+                if (((global.params.warnings & 0xFF) == 0))
+                    global.warnings++;
             }
             else
             {
-                global.value.gaggedWarnings++;
+                global.gaggedWarnings++;
             }
         }
     }
 
     public static void vwarningSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> ap) {
-        if (((global.value.params.warnings & 0xFF) != 2) && (global.value.gag == 0))
+        if (((global.params.warnings & 0xFF) != 2) && (global.gag.value == 0))
             verrorPrint(loc, Color.brightYellow, new BytePtr("       "), format, ap, null, null);
     }
 
     public static void vdeprecation(Loc loc, BytePtr format, Ptr<Slice<Object>> ap, BytePtr p1, BytePtr p2) {
-        if (((global.value.params.useDeprecated & 0xFF) == 0))
+        if (((global.params.useDeprecated & 0xFF) == 0))
             verror(loc, format, ap, p1, p2, errors.vdeprecationheader);
-        else if (((global.value.params.useDeprecated & 0xFF) == 1))
+        else if (((global.params.useDeprecated & 0xFF) == 1))
         {
-            if (global.value.gag == 0)
+            if (global.gag.value == 0)
             {
                 verrorPrint(loc, Color.brightCyan, errors.vdeprecationheader, format, ap, p1, p2);
             }
             else
             {
-                global.value.gaggedWarnings++;
+                global.gaggedWarnings++;
             }
         }
     }
@@ -349,7 +349,7 @@ public class errors {
     }
 
     public static void vmessage(Loc loc, BytePtr format, Ptr<Slice<Object>> ap) {
-        BytePtr p = pcopy(loc.toChars(global.value.params.showColumns));
+        BytePtr p = pcopy(loc.toChars(global.params.showColumns.value));
         if (p.get() != 0)
         {
             fprintf(stdout, new BytePtr("%s: "), p);
@@ -363,9 +363,9 @@ public class errors {
     }
 
     public static void vdeprecationSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> ap) {
-        if (((global.value.params.useDeprecated & 0xFF) == 0))
+        if (((global.params.useDeprecated & 0xFF) == 0))
             verrorSupplemental(loc, format, ap);
-        else if (((global.value.params.useDeprecated & 0xFF) == 1) && (global.value.gag == 0))
+        else if (((global.params.useDeprecated & 0xFF) == 1) && (global.gag.value == 0))
             verrorPrint(loc, Color.brightCyan, new BytePtr("       "), format, ap, null, null);
     }
 
@@ -383,8 +383,8 @@ public class errors {
         int offset = 0;
         {
             int i = offset;
-            for (; (i < (buf.get()).offset);i += 1){
-                byte c = (byte)(buf.get()).data.get(i);
+            for (; (i < (buf.get()).offset.value);i += 1){
+                byte c = (byte)(buf.get()).data.value.get(i);
                 switch ((c & 0xFF))
                 {
                     case 96:
@@ -435,12 +435,12 @@ public class errors {
             return ;
         }
         errors.colorHighlightCodenested += 1;
-        int gaggedErrorsSave = global.value.startGagging();
-        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.value.params.useDeprecated);
-        Lexer lex = new Lexer(null, toBytePtr((buf.get()).data), 0, (buf.get()).offset - 1, false, true, diagnosticReporter);
+        int gaggedErrorsSave = global.startGagging();
+        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
+        Lexer lex = new Lexer(null, toBytePtr(buf.get().data), 0, (buf.get()).offset.value - 1, false, true, diagnosticReporter);
         Ref<OutBuffer> res = ref(new OutBuffer());
-        BytePtr lastp = pcopy(toBytePtr((buf.get()).data));
-        res.value.reserve((buf.get()).offset);
+        BytePtr lastp = pcopy(toBytePtr(buf.get().data));
+        res.value.reserve((buf.get()).offset.value);
         res.value.writeByte(255);
         res.value.writeByte(6);
         for (; 1 != 0;){
@@ -483,21 +483,21 @@ public class errors {
             {
                 res.value.writeByte(255);
                 res.value.writeByte((highlight & 0xFF));
-                res.value.writestring(tok.value.ptr.slice(0,((lex.p.minus(tok.value.ptr)))));
+                res.value.writestring(tok.value.ptr.slice(0,((lex.p.value.minus(tok.value.ptr)))));
                 res.value.writeByte(255);
                 res.value.writeByte(6);
             }
             else
-                res.value.writestring(tok.value.ptr.slice(0,((lex.p.minus(tok.value.ptr)))));
+                res.value.writestring(tok.value.ptr.slice(0,((lex.p.value.minus(tok.value.ptr)))));
             if (((tok.value.value & 0xFF) == 11))
                 break;
-            lastp = pcopy(lex.p);
+            lastp = pcopy(lex.p.value);
         }
         res.value.writeByte(255);
         res.value.writeByte(0);
         (buf.get()).setsize(0);
         (buf.get()).write(ptr(res));
-        global.value.endGagging(gaggedErrorsSave);
+        global.endGagging(gaggedErrorsSave);
         errors.colorHighlightCodenested -= 1;
     }
 
@@ -505,11 +505,11 @@ public class errors {
         boolean colors = false;
         {
             int i = 0;
-            for (; (i < (buf.get()).offset);i += 1){
-                byte c = (buf.get()).data.get(i);
+            for (; (i < (buf.get()).offset.value);i += 1){
+                byte c = (buf.get()).data.value.get(i);
                 if (((c & 0xFF) == 255))
                 {
-                    byte color = (buf.get()).data.get(i += 1);
+                    byte color = (buf.get()).data.value.get(i += 1);
                     if (((color & 0xFF) == 0))
                     {
                         (con.get()).resetColor();

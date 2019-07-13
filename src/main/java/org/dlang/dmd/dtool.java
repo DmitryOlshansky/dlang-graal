@@ -1652,9 +1652,9 @@ public class dtool {
             defaultGetoptPrinter(new ByteSlice("Trivial D lexer based on DMD."), res.options);
             exit(1);
         }
-        global.value.params.isLinux = true;
-        global.value.params.useUnitTests = true;
-        global.value._init();
+        global.params.isLinux = true;
+        global.params.useUnitTests = true;
+        global._init();
         ASTBase.Type._init();
         Id.initialize();
         {
@@ -1668,7 +1668,7 @@ public class dtool {
                     processFile_24239CC9FAA32FB7(arg, outdir.value, new BytePtr("ast"));
                 else
                 {
-                    fprintf(stderr, new BytePtr("Unsupported tool name: %.*s"), tool.value.getLength(), toBytePtr(tool.value));
+                    fprintf(stderr, new BytePtr("Unsupported tool name: %.*s"), tool.value.getLength(), toBytePtr(tool));
                     exit(2);
                 }
             }
@@ -1678,7 +1678,7 @@ public class dtool {
 
     public static ByteSlice lex(BytePtr argz, ByteSlice buf) {
         Lexer lexer = new Lexer(argz, toBytePtr(buf), 0, buf.getLength(), true, true, new StderrDiagnosticReporter(DiagnosticReporting.error));
-        Ptr<OutBuffer> output = new OutBuffer(null, 0, 0, 0, false, false);
+        Ptr<OutBuffer> output = refPtr(new OutBuffer(null, 0, 0, 0, false, false));
         int i = 0;
         for (; ((lexer.nextToken() & 0xFF) != 11);){
             (output.get()).printf(new BytePtr("%4d"), (lexer.token.value.value & 0xFF));
@@ -1694,7 +1694,7 @@ public class dtool {
     }
 
     public static ByteSlice lispy(BytePtr argz, ByteSlice buf) {
-        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.value.params.useDeprecated);
+        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
         try {
             ASTBase.Module mod = new ASTBase.Module(argz, Identifier.idPool(argz.slice(0,strlen(argz) - 2)), 1, 0);
             ParserASTBase p = new ParserASTBase(mod, buf, true, diagnosticReporter);
@@ -1702,7 +1702,7 @@ public class dtool {
                 p.nextToken();
                 Ptr<DArray<ASTBase.Dsymbol>> decls = p.parseModule();
                 LispyPrint lispPrint = new LispyPrint();
-                lispPrint.buf = new OutBuffer(null, 0, 0, 0, false, false);
+                lispPrint.buf = refPtr(new OutBuffer(null, 0, 0, 0, false, false));
                 (lispPrint.buf.get()).doindent = true;
                 {
                     Slice<ASTBase.Dsymbol> __r491 = (decls.get()).opSlice().copy();
@@ -1733,7 +1733,7 @@ public class dtool {
             }
             ByteSlice buf = buffer.extractData().copy();
             BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), suffix));
-            ByteSlice filePath = toByteSlice((outdir.concat(new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
+            ByteSlice filePath = concat(toByteSlice((concat(outdir, new ByteSlice("/")))), dest.slice(0,strlen(dest))).copy();
             ByteSlice output = lispy(toBytePtr(argz), toByteSlice(buf)).copy();
             if (!File.write(toStringz(filePath), toByteSlice(output)))
                 fprintf(stderr, new BytePtr("Failed to write file: %s\n"), toStringz(filePath));
@@ -1755,7 +1755,7 @@ public class dtool {
             }
             ByteSlice buf = buffer.extractData().copy();
             BytePtr dest = pcopy(FileName.forceExt(FileName.name(toBytePtr(argz)), suffix));
-            ByteSlice filePath = toByteSlice((outdir.concat(new ByteSlice("/")))).concat(dest.slice(0,strlen(dest))).copy();
+            ByteSlice filePath = concat(toByteSlice((concat(outdir, new ByteSlice("/")))), dest.slice(0,strlen(dest))).copy();
             ByteSlice output = lex(toBytePtr(argz), toByteSlice(buf)).copy();
             if (!File.write(toStringz(filePath), toByteSlice(output)))
                 fprintf(stderr, new BytePtr("Failed to write file: %s\n"), toStringz(filePath));

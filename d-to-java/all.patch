@@ -67,40 +67,7 @@ index a5abe6a..b5ce756 100644
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
 index ba0e307..202cd9a 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java
-+++ b/src/main/java/org/dlang/dmd/lexer.java
-@@ -970,13 +961,13 @@ public class lexer {
-             return escapeSequence(this.token.loc, this.diagnosticReporter, this.p);
-         }
- 
--        public int escapeSequence(Loc loc, DiagnosticReporter handler, BytePtr sequence) {
-+        public static int escapeSequence(Loc loc, DiagnosticReporter handler, Ref<BytePtr> sequence) {
-             {
-                 {
-                     assert(handler != null);
-                 }
-             }
--            p = pcopy(sequence);
-+            BytePtr p = pcopy(sequence.value);
-             try {
-                 int c = (p.get() & 0xFF);
-                 int ndigits = 0;
-@@ -1059,7 +1050,7 @@ public class lexer {
-                                 }
-                                 else
-                                 {
--                                    handler.error(loc, new BytePtr("undefined escape hex sequence \\%c%c"), sequence.get(0), c);
-+                                    handler.error(loc, new BytePtr("undefined escape hex sequence \\%c%c"), sequence.value.get(0), c);
-                                     p.postInc();
-                                 }
-                                 break;
-@@ -1120,6 +1111,7 @@ public class lexer {
-                 return c;
-             }
-             finally {
-+                sequence.value = pcopy(p);
-             }
-         }
- 
++++ b/src/main/java/org/dlang/dmd/lexer.java 
 @@ -1247,6 +1239,7 @@ public class lexer {
                      } while(__dispatch10 != 0);
                  }
@@ -139,26 +106,6 @@ index ba0e307..202cd9a 100644
                                      break;
                                  default:
                                  break;
-@@ -2291,14 +2277,11 @@ public class lexer {
-                 ByteSlice s = buf.peekSlice().copy();
-                 if ((s.getLength() == 0 || (s.get(s.getLength() - 1) & 0xFF) != 10))
-                     buf.writeByte(10);
--                if (((lineComment) != 0 && this.anyToken)) {
--                    if ((t).lineComment != null) t.lineComment = combineComments(t.lineComment, buf.peekChars(), newParagraph);
--                    else t.lineComment =  buf.extractChars();
--                }
--                else {
--                    if ((t).blockComment != null) t.blockComment = combineComments(t.blockComment, buf.peekChars(), newParagraph);
--                    else t.blockComment =  buf.extractChars();
--                }
-+                Ptr<BytePtr> dc = pcopy(((lineComment) != 0 && this.anyToken) ? ptr((t).lineComment) : ptr((t).blockComment));
-+                if (dc.get() != null)
-+                    dc.set(0, combineComments(dc.get(), buf.peekChars(), newParagraph));
-+                else
-+                    dc.set(0, buf.extractChars());
-             }
-             finally {
-             }
 diff --git a/src/main/java/org/dlang/dmd/parse.java b/src/main/java/org/dlang/dmd/parse.java
 index 45a19b9..3fabb79 100644
 --- a/src/main/java/org/dlang/dmd/parse.java

@@ -59,7 +59,7 @@ class DArray<T>(storage: Array<Any?>, len: Int) {
     fun pushSlice(a: Slice<T>): DArray<T> {
         val oldLength = length
         setDim(oldLength + a.length)
-        a.data.copyInto(data, oldLength, a.beg, a.length)
+        (a as Slice<Any>).copyTo(slice(data).slice(oldLength))
         return this
     }
 
@@ -116,13 +116,13 @@ class DArray<T>(storage: Array<Any?>, len: Int) {
 
     fun pop(): T? = data[--length] as T?
 
-    fun slice(): Slice<T> =  Slice(data as Array<T?>, 0, length)
+    fun slice(): Slice<T> =  RawSlice(data as Array<T?>, 0, length)
 
     fun opSlice() = slice()
 
     fun slice(a: Int, b: Int): Slice<T?> {
         assert(b in a..length)
-        return Slice(data as Array<T?>, a, b)
+        return RawSlice(data as Array<T?>, a, b)
     }
 
     fun opSlice(a: Int, b: Int) = slice(a, b)
@@ -197,7 +197,11 @@ fun<T> reverse(a: Slice<T>):Slice<T> {
     return a
 }
 
-fun<T> arraydup(a: Slice<T>):Slice<T> = Slice(a.data.copyOfRange(a.beg, a.end))
+fun<T> arraydup(a: Slice<T>):Slice<T> {
+    val slice = RawSlice<Any>(Array<Any?>(a.length){ null })
+    a.copyTo(slice as Slice<T>)
+    return slice as Slice<T>
+}
 
 /**
  * Splits the array at $(D index) and expands it to make room for $(D length)

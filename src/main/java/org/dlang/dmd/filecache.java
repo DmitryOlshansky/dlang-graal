@@ -16,18 +16,18 @@ public class filecache {
 
     public static class FileAndLines extends Object
     {
-        public Ptr<FileName> file = null;
-        public Ptr<FileBuffer> buffer = null;
-        public Slice<ByteSlice> lines = new Slice<ByteSlice>();
+        public Ref<Ptr<FileName>> file = ref(null);
+        public Ref<Ptr<FileBuffer>> buffer = ref(null);
+        public Ref<Slice<ByteSlice>> lines = ref(new Slice<ByteSlice>());
         public  FileAndLines(ByteSlice filename) {
-            this.file = new FileName(filename);
+            this.file.value = refPtr(new FileName(filename));
             this.readAndSplit();
         }
 
         public  void readAndSplit() {
-            File.ReadResult readResult = File.read((this.file.get()).toChars()).copy();
-            this.buffer = new FileBuffer(readResult.extractData());
-            BytePtr buf = pcopy(toBytePtr((this.buffer.get()).data));
+            File.ReadResult readResult = File.read((this.file.value.get()).toChars()).copy();
+            this.buffer.value = refPtr(new FileBuffer(readResult.extractData()));
+            BytePtr buf = pcopy(toBytePtr(this.buffer.value.get().data));
             for (; buf.get() != 0;){
                 BytePtr prevBuf = pcopy(buf);
                 for (; ((buf.get() & 0xFF) != 10) && ((buf.get() & 0xFF) != 13);buf.postInc()){
@@ -36,7 +36,7 @@ public class filecache {
                 }
                 if (((buf.get() & 0xFF) == 13) && (((buf.plus(1)).get() & 0xFF) == 10))
                     buf.postInc();
-                this.lines.append(toByteSlice(prevBuf.slice(0,((buf.minus(prevBuf))))));
+                this.lines.value.append(toByteSlice(prevBuf.slice(0,((buf.minus(prevBuf))))));
                 buf.postInc();
             }
         }

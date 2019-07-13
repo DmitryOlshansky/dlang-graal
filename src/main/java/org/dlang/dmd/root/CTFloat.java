@@ -1,5 +1,7 @@
 package org.dlang.dmd.root;
 
+import static org.dlang.dmd.root.ShimsKt.ref;
+
 public class CTFloat {
 
     public static void sprint(BytePtr s, byte k, double value) {
@@ -30,5 +32,5 @@ public class CTFloat {
 
     }
 
-    public static final double zero = 0.0;
+    public static final Ref<Double> zero = ref(0.0);
 }

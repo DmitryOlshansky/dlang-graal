@@ -32,8 +32,8 @@ public class compiler {
     {
         private int int32value = 0;
         private long int64value = 0;
-        private float float32value = ;
-        private double float64value = ;
+        private float float32value = 0;
+        private double float64value = 0;
         public U(){
         }
         public U copy(){
@@ -66,25 +66,25 @@ public class compiler {
             ByteSlice cmaincode = new ByteSlice("\n            extern(C)\n            {\n                int _d_run_main(int argc, char **argv, void* mainFunc);\n                int _Dmain(char[][] args);\n                int main(int argc, char **argv)\n                {\n                    return _d_run_main(argc, argv, &_Dmain);\n                }\n                version (Solaris) int _main(int argc, char** argv) { return main(argc, argv); }\n            }\n        ").copy();
             Identifier id = Id.entrypoint;
             dmodule.Module m = new dmodule.Module(new ByteSlice("__entrypoint.d"), id, 0, 0);
-            StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.value.params.useDeprecated);
+            StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
             try {
                 ParserASTCodegen p = new ParserASTCodegen(m, toByteSlice(cmaincode), false, diagnosticReporter);
                 try {
                     p.scanloc = Loc.initial.value.copy();
                     p.nextToken();
-                    m.members = p.parseModule();
+                    m.members.value = p.parseModule();
                     assert(((p.token.value.value & 0xFF) == 11));
                     assert(!p.errors());
-                    boolean v = global.value.params.verbose;
-                    global.value.params.verbose = false;
+                    boolean v = global.params.verbose;
+                    global.params.verbose = false;
                     m.importedFrom = m;
                     m.importAll(null);
                     dsymbolSemantic(m, null);
                     semantic2(m, null);
                     semantic3(m, null);
-                    global.value.params.verbose = v;
+                    global.params.verbose = v;
                     entrypoint = m;
-                    rootHasMain = (sc.get())._module;
+                    rootHasMain = (sc.get())._module.value;
                 }
                 finally {
                 }
@@ -100,7 +100,7 @@ public class compiler {
                 int __dispatch0 = 0;
                 dispatched_0:
                 do {
-                    switch (__dispatch0 != 0 ? __dispatch0 : (e.type.value.ty & 0xFF))
+                    switch (__dispatch0 != 0 ? __dispatch0 : (e.type.value.ty.value & 0xFF))
                     {
                         case 17:
                         case 18:
@@ -130,24 +130,24 @@ public class compiler {
                 int __dispatch1 = 0;
                 dispatched_1:
                 do {
-                    switch (__dispatch1 != 0 ? __dispatch1 : (type.ty & 0xFF))
+                    switch (__dispatch1 != 0 ? __dispatch1 : (type.ty.value & 0xFF))
                     {
                         case 17:
                         case 18:
-                            (pue) = new UnionExp(new IntegerExp(e.loc, u.int32value, type));
+                            (pue) = new UnionExp(new IntegerExp(e.loc.value, u.int32value, type));
                             break;
                         case 19:
                         case 20:
-                            (pue) = new UnionExp(new IntegerExp(e.loc, u.int64value, type));
+                            (pue) = new UnionExp(new IntegerExp(e.loc.value, u.int64value, type));
                             break;
                         case 21:
                             r = (double)u.float32value;
-                            (pue) = new UnionExp(new RealExp(e.loc, r, type));
+                            (pue) = new UnionExp(new RealExp(e.loc.value, r, type));
                             break;
                         case 22:
                             __dispatch1 = 0;
                             r = (double)u.float64value;
-                            (pue) = new UnionExp(new RealExp(e.loc, r, type));
+                            (pue) = new UnionExp(new RealExp(e.loc.value, r, type));
                             break;
                         case 23:
                             assert((type.size() == 8L));
@@ -168,9 +168,9 @@ public class compiler {
             {
                 Ref<DArray<Identifier>> empty = ref(new DArray<Identifier>());
                 try {
-                    if (includeImportedModuleCheck(new ModuleComponentRange((m.md != null) && ((m.md.get()).packages != null) ? (m.md.get()).packages : ptr(empty), m.ident, m.isPackageFile, 0)))
+                    if (includeImportedModuleCheck(new ModuleComponentRange((m.md != null) && ((m.md.get()).packages != null) ? (m.md.get()).packages : ptr(empty), m.ident.value, m.isPackageFile, 0)))
                     {
-                        if (global.value.params.verbose)
+                        if (global.params.verbose)
                             message(new BytePtr("compileimport (%s)"), m.srcfile.toChars());
                         compiledImports.push(m);
                         return true;
@@ -199,7 +199,7 @@ public class compiler {
         public boolean isPackageFile = false;
         public int index = 0;
         public  int totalLength() {
-            return (this.packages.get()).length + 1 + (this.isPackageFile ? 1 : 0);
+            return (this.packages.get()).length.value + 1 + (this.isPackageFile ? 1 : 0);
         }
 
         public  boolean empty() {
@@ -207,9 +207,9 @@ public class compiler {
         }
 
         public  Identifier front() {
-            if ((this.index < (this.packages.get()).length))
+            if ((this.index < (this.packages.get()).length.value))
                 return (this.packages.get()).get(this.index);
-            if ((this.index == (this.packages.get()).length))
+            if ((this.index == (this.packages.get()).length.value))
                 return this.name;
             else
                 return Identifier.idPool(new ByteSlice("package"));
@@ -252,15 +252,15 @@ public class compiler {
         }
         createMatchNodes();
         int nodeIndex = 0;
-        for (; (nodeIndex < matchNodes.value.length);){
+        for (; (nodeIndex < matchNodes.value.length.value);){
             MatcherNode info = matchNodes.value.get(nodeIndex++).copy();
-            if (((int)info.depth <= components.totalLength()))
+            if (((int)info.depth.value <= components.totalLength()))
             {
                 int nodeOffset = 0;
                 {
                     ModuleComponentRange range = components.copy();
                     for (; ;range.popFront()){
-                        if (range.empty() || (nodeOffset >= (int)info.depth))
+                        if (range.empty() || (nodeOffset >= (int)info.depth.value))
                         {
                             return !info.isExclude;
                         }
@@ -272,15 +272,15 @@ public class compiler {
                     }
                 }
             }
-            nodeIndex += (int)info.depth;
+            nodeIndex += (int)info.depth.value;
         }
-        assertMsg((nodeIndex == matchNodes.value.length), new ByteSlice("code bug"));
+        assertMsg((nodeIndex == matchNodes.value.length.value), new ByteSlice("code bug"));
         return includeByDefault;
     }
 
     public static class MatcherNode
     {
-        public int depth = 0;
+        public Ref<Integer> depth = ref(0);
         public boolean isExclude = false;
         public Identifier id = null;
         public  MatcherNode(Identifier id) {
@@ -288,7 +288,7 @@ public class compiler {
         }
 
         public  MatcherNode(boolean isExclude, int depth) {
-            this.depth = depth;
+            this.depth.value = depth;
             this.isExclude = isExclude;
         }
 
@@ -315,16 +315,16 @@ public class compiler {
             public Integer invoke(Integer depth) {
                 IntRef depth_ref = ref(depth);
                 IntRef index = ref(0);
-                for (; (index.value < matchNodes.value.length);){
-                    Ref<MatcherNode> info = ref(matchNodes.value.get(index.value).copy());
-                    if ((depth_ref.value > (int)info.value.depth))
+                for (; (index.value < matchNodes.value.length.value);){
+                    MatcherNode info = matchNodes.value.get(index.value).copy();
+                    if ((depth_ref.value > (int)info.depth.value))
                         break;
-                    index.value += (1 + (int)info.value.depth);
+                    index.value += (1 + (int)info.depth.value);
                 }
                 return index.value;
             }
         };
-        if ((matchNodes.value.length == 0))
+        if ((matchNodes.value.length.value == 0))
         {
             {
                 Slice<BytePtr> __r835 = includeModulePatterns.opSlice().copy();
@@ -372,7 +372,7 @@ public class compiler {
             isExclude = true;
             modulePattern.postInc();
         }
-        dst.opAssign(new MatcherNode(isExclude, depth));
+        dst.set(0, new MatcherNode(isExclude, depth));
         dst.postInc();
         if (((int)depth > 0))
         {
@@ -383,7 +383,7 @@ public class compiler {
                     if (((modulePattern.get() & 0xFF) == 46))
                     {
                         assertMsg((modulePattern.greaterThan(idStart)), new ByteSlice("empty module pattern"));
-                        dst.opAssign(new MatcherNode(Identifier.idPool(idStart, ((modulePattern.minus(idStart))))));
+                        dst.set(0, new MatcherNode(Identifier.idPool(idStart, ((modulePattern.minus(idStart))))));
                         modulePattern.postInc();
                         idStart = pcopy(modulePattern);
                         break;
@@ -394,7 +394,7 @@ public class compiler {
                 if (((modulePattern.get() & 0xFF) == 0))
                 {
                     assertMsg((modulePattern.greaterThan(idStart)), new ByteSlice("empty module pattern"));
-                    lastNode.opAssign(new MatcherNode(Identifier.idPool(idStart, ((modulePattern.minus(idStart))))));
+                    lastNode.set(0, new MatcherNode(Identifier.idPool(idStart, ((modulePattern.minus(idStart))))));
                     break;
                 }
             }

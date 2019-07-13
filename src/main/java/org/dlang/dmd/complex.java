@@ -16,8 +16,8 @@ public class complex {
 
     public static class complex_t
     {
-        public double re = ;
-        public double im = ;
+        public double re = 0;
+        public double im = 0;
         public  complex_t(double re) {
             this(re, CTFloat.zero.value);
         }

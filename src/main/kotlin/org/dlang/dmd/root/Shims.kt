@@ -214,25 +214,39 @@ fun assertMsg(cond: Boolean, msg: ByteSlice) {
     require(cond){ msg }
 }
 
-fun<T> slice(arr: Array<T?>): Slice<T>  = Slice(arr)
+fun<T> slice(arr: Array<T?>): Slice<T>  = RawSlice(arr)
 
 fun slice(bytes: ByteArray) = ByteSlice(bytes)
 
 fun<T> slice(arr: Array<Array<T?>>): Slice<Slice<T>> {
-    return Slice<Slice<T>>(arr.map { Slice<T>(it) }.toTypedArray())
+    return RawSlice<Slice<T>>(arr.map { RawSlice<T>(it) }.toTypedArray())
 }
 
 fun slice(arr: Array<CharArray>): Slice<CharSlice> {
-    return Slice<CharSlice>(arr.map { CharSlice(it) }.toTypedArray())
+    return RawSlice<CharSlice>(arr.map { CharSlice(it) }.toTypedArray())
 }
 
 fun slice(arr: Array<ByteArray>): Slice<ByteSlice> {
-    return Slice<ByteSlice>(arr.map { ByteSlice(it) }.toTypedArray())
+    return RawSlice<ByteSlice>(arr.map { ByteSlice(it) }.toTypedArray())
 }
 
 fun slice(arr: CharArray) = CharSlice(arr)
 
 fun slice(arr: IntArray) = IntSlice(arr)
+
+fun concat(first: Byte, next: ByteSlice): ByteSlice {
+    val arr = ByteArray(next.length + 1)
+    arr[0] = first
+    next.copyTo(slice(arr).slice(1))
+    return slice(arr)
+}
+
+fun concat(first: ByteSlice, next: ByteSlice): ByteSlice {
+    val arr = ByteArray(first.length + next.length)
+    first.copyTo(slice(arr))
+    next.copyTo(slice(arr).slice(first.length))
+    return ByteSlice(arr)
+}
 
 fun<T> pcopy(ptr: Ptr<T>?): Ptr<T>? = ptr?.copy()
 
@@ -271,9 +285,9 @@ fun ref(v: Int) = IntRef(v)
 
 fun<T> ref(v: T?) = Ref(v)
 
-fun<T> ptr(v: Ref<T>) = RefPtr(v)
+fun<T> refPtr(v: T) = RefPtr(Ref(v))
 
-fun ptr(v: BytePtr) = BytePtrPtr(v)
+fun<T> ptr(v: Ref<T>) = RefPtr(v)
 
 fun ptr(v: IntRef) = IntRefPtr(v)
 

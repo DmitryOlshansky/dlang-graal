@@ -62,15 +62,27 @@ private extern(C++) class PassedByRef : SemanticTimeTransitiveVisitor {
         }
     }
 
+    override void visit(DotVarExp var) {
+        if (allowed(var.type) && depth > 1) {
+            //stderr.writefln("Deep reference %s\n", var.var.ident.toString);
+            passed[var.var] = true;
+        }
+    }
+
     override void visit(CallExp call) {
         super.visit(call);
         if (call.f && call.f.parameters) {
             foreach (i, param; (*call.f.parameters)[]) {
                 bool refParam = param.isRef() || param.isOut();
-                auto  var = (*call.arguments)[i].isVarExp();
+                auto var = (*call.arguments)[i].isVarExp();
+                auto dotVar = (*call.arguments)[i].isDotVarExp();
                 if(var && allowed(var.type) && var.var && refParam){
                     //stderr.writefln( "IsRef = %s param #%d (%s) in %s func call for %s\n", refParam, i, var.type.toString, call.f.ident.toString, decl.ident.toString);
                     passed[var.var] = true;
+                    return;
+                }
+                else if(dotVar && allowed(dotVar.type) && dotVar.var && refParam) {
+                    passed[dotVar.var] = true;
                     return;
                 }
             }

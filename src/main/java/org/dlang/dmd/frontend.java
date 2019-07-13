@@ -117,7 +117,7 @@ public class frontend {
         }
     }
     public static void initDMD(Slice<ByteSlice> versionIdentifiers, ContractChecks contractChecks) {
-        global.value._init();
+        global._init();
         {
             (__withSym.get()).useIn = contractChecks.precondition;
             (__withSym.get()).useInvariants = contractChecks.invariant_;
@@ -127,12 +127,12 @@ public class frontend {
             (__withSym.get()).useSwitchError = contractChecks.switchError;
         }
         each(versionIdentifiers);
-        setTarget(global.value.params);
-        addDefaultVersionIdentifiers(global.value.params);
+        setTarget(global.params);
+        addDefaultVersionIdentifiers(global.params);
         Type._init();
         Id.initialize();
         dmodule.Module._init();
-        target.value._init(global.value.params);
+        target._init(global.params);
         Expression._init();
         Objc._init();
         builtin_init();
@@ -151,26 +151,26 @@ public class frontend {
     }
 
     public static void deinitializeDMD() {
-        global.value.deinitialize();
+        global.deinitialize();
         Type.deinitialize();
         Id.deinitialize();
         dmodule.Module.deinitialize();
-        target.value.deinitialize();
+        target.deinitialize();
         Expression.deinitialize();
         Objc.deinitialize();
         builtinDeinitialize();
     }
 
     public static void addImport(ByteSlice path) {
-        if ((global.value.path == null))
-            global.value.path = new DArray<BytePtr>();
-        (global.value.path.get()).push(toStringz(path));
+        if ((global.path == null))
+            global.path = refPtr(new DArray<BytePtr>());
+        (global.path.get()).push(toStringz(path));
     }
 
     public static void addStringImport(ByteSlice path) {
-        if ((global.value.filePath == null))
-            global.value.filePath = new DArray<BytePtr>();
-        (global.value.filePath.get()).push(toStringz(path));
+        if ((global.filePath == null))
+            global.filePath = refPtr(new DArray<BytePtr>());
+        (global.filePath.get()).push(toStringz(path));
     }
 
     public static ByteSlice findDMDConfig(ByteSlice dmdFilePath) {
@@ -190,7 +190,7 @@ public class frontend {
     public static ByteSlice determineDefaultCompiler() {
         Slice<ByteSlice> compilers = slice(new ByteSlice[]{new ByteSlice("dmd"), new ByteSlice("gdc"), new ByteSlice("gdmd"), new ByteSlice("ldc2"), new ByteSlice("ldmd2")}).copy();
         if (opBinaryRight(new ByteSlice("DMD")))
-            compilers = (slice(new ByteSlice[]{environment.get(new ByteSlice("DMD"), new ByteSlice())}).concat(compilers)).copy();
+            compilers = (concat(slice(new ByteSlice[]{environment.get(new ByteSlice("DMD"), new ByteSlice())}), compilers)).copy();
         Result paths = splitter(environment.get(new ByteSlice("PATH"), new ByteSlice("")), new ByteSlice(":")).copy();
         FilterResultnothingResult res = filter(joiner(map.invoke(compilers))).copy();
         return !res.empty() ? res.front() : new ByteSlice();
@@ -238,7 +238,7 @@ public class frontend {
     }
 
     public static DiagnosticReporter defaultDiagnosticReporter() {
-        return new StderrDiagnosticReporter(global.value.params.useDeprecated);
+        return new StderrDiagnosticReporter(global.params.useDeprecated);
     }
 
 }

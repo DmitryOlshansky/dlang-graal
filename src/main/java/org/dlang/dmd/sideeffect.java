@@ -33,12 +33,12 @@ public class sideeffect {
 
         public  void visit(Expression e) {
             Ref<Expression> e_ref = ref(e);
-            if (((e_ref.value.op & 0xFF) == 18))
+            if (((e_ref.value.op.value & 0xFF) == 18))
             {
-                this.stop = true;
+                this.stop.value = true;
                 return ;
             }
-            this.stop = lambdaHasSideEffect(e_ref.value);
+            this.stop.value = lambdaHasSideEffect(e_ref.value);
         }
 
     }
@@ -50,7 +50,7 @@ public class sideeffect {
 
         public  void visit(Expression e) {
             Ref<Expression> e_ref = ref(e);
-            this.stop = lambdaHasSideEffect(e_ref.value);
+            this.stop.value = lambdaHasSideEffect(e_ref.value);
         }
 
     }
@@ -68,9 +68,9 @@ public class sideeffect {
     public static int callSideEffectLevel(FuncDeclaration f) {
         if (f.isCtorDeclaration() != null)
             return 0;
-        assert(((f.type.ty & 0xFF) == ENUMTY.Tfunction));
-        TypeFunction tf = (TypeFunction)f.type;
-        if (tf.isnothrow)
+        assert(((f.type.value.ty.value & 0xFF) == ENUMTY.Tfunction));
+        TypeFunction tf = (TypeFunction)f.type.value;
+        if (tf.isnothrow.value)
         {
             int purity = f.isPure();
             if ((purity == PURE.strong))
@@ -84,18 +84,18 @@ public class sideeffect {
     public static int callSideEffectLevel(Type t) {
         t = t.toBasetype();
         TypeFunction tf = null;
-        if (((t.ty & 0xFF) == ENUMTY.Tdelegate))
-            tf = (TypeFunction)((TypeDelegate)t).next;
+        if (((t.ty.value & 0xFF) == ENUMTY.Tdelegate))
+            tf = (TypeFunction)((TypeDelegate)t).next.value;
         else
         {
-            assert(((t.ty & 0xFF) == ENUMTY.Tfunction));
+            assert(((t.ty.value & 0xFF) == ENUMTY.Tfunction));
             tf = (TypeFunction)t;
         }
-        if (!tf.isnothrow)
+        if (!tf.isnothrow.value)
             return 0;
         tf.purityLevel();
-        int purity = tf.purity;
-        if (((t.ty & 0xFF) == ENUMTY.Tdelegate) && (purity > PURE.weak))
+        int purity = tf.purity.value;
+        if (((t.ty.value & 0xFF) == ENUMTY.Tdelegate) && (purity > PURE.weak))
         {
             if (tf.isMutable())
                 purity = PURE.weak;
@@ -110,7 +110,7 @@ public class sideeffect {
     }
 
     public static boolean lambdaHasSideEffect(Expression e) {
-        switch ((e.op & 0xFF))
+        switch ((e.op.value & 0xFF))
         {
             case 90:
             case 93:
@@ -143,12 +143,12 @@ public class sideeffect {
                 return true;
             case 18:
                 CallExp ce = (CallExp)e;
-                if (ce.e1.type.value != null)
+                if (ce.e1.value.type.value != null)
                 {
-                    Type t = ce.e1.type.value.toBasetype();
-                    if (((t.ty & 0xFF) == ENUMTY.Tdelegate))
-                        t = ((TypeDelegate)t).next;
-                    if (((t.ty & 0xFF) == ENUMTY.Tfunction) && ((ce.f != null ? callSideEffectLevel(ce.f) : callSideEffectLevel(ce.e1.type.value)) > 0))
+                    Type t = ce.e1.value.type.value.toBasetype();
+                    if (((t.ty.value & 0xFF) == ENUMTY.Tdelegate))
+                        t = ((TypeDelegate)t).next.value;
+                    if (((t.ty.value & 0xFF) == ENUMTY.Tfunction) && ((ce.f.value != null ? callSideEffectLevel(ce.f.value) : callSideEffectLevel(ce.e1.value.type.value)) > 0))
                     {
                     }
                     else
@@ -157,7 +157,7 @@ public class sideeffect {
                 break;
             case 12:
                 CastExp ce_1 = (CastExp)e;
-                if (((ce_1.to.ty & 0xFF) == ENUMTY.Tclass) && ((ce_1.e1.op & 0xFF) == 18) && ((ce_1.e1.type.value.ty & 0xFF) == ENUMTY.Tclass))
+                if (((ce_1.to.value.ty.value & 0xFF) == ENUMTY.Tclass) && ((ce_1.e1.value.op.value & 0xFF) == 18) && ((ce_1.e1.value.type.value.ty.value & 0xFF) == ENUMTY.Tclass))
                     return true;
                 break;
             default:
@@ -169,11 +169,11 @@ public class sideeffect {
     public static boolean discardValue(Expression e) {
         if (lambdaHasSideEffect(e))
             return false;
-        switch ((e.op & 0xFF))
+        switch ((e.op.value & 0xFF))
         {
             case 12:
                 CastExp ce = (CastExp)e;
-                if (ce.to.equals(Type.tvoid.value))
+                if (ce.to.value.equals(Type.tvoid.value))
                 {
                     return false;
                 }
@@ -181,35 +181,35 @@ public class sideeffect {
             case 127:
                 return false;
             case 26:
-                VarDeclaration v = ((VarExp)e).var.isVarDeclaration();
-                if ((v != null) && ((v.storage_class & 1099511627776L) != 0))
+                VarDeclaration v = ((VarExp)e).var.value.isVarDeclaration();
+                if ((v != null) && ((v.storage_class.value & 1099511627776L) != 0))
                 {
                     return false;
                 }
                 break;
             case 18:
-                if (((global.value.params.warnings & 0xFF) != 2) && (global.value.gag == 0))
+                if (((global.params.warnings & 0xFF) != 2) && (global.gag.value == 0))
                 {
                     CallExp ce_1 = (CallExp)e;
-                    if (((e.type.value.ty & 0xFF) == ENUMTY.Tvoid))
+                    if (((e.type.value.ty.value & 0xFF) == ENUMTY.Tvoid))
                     {
                     }
-                    else if (ce_1.e1.type.value != null)
+                    else if (ce_1.e1.value.type.value != null)
                     {
-                        Type t = ce_1.e1.type.value.toBasetype();
-                        if (((t.ty & 0xFF) == ENUMTY.Tdelegate))
-                            t = ((TypeDelegate)t).next;
-                        if (((t.ty & 0xFF) == ENUMTY.Tfunction) && ((ce_1.f != null ? callSideEffectLevel(ce_1.f) : callSideEffectLevel(ce_1.e1.type.value)) > 0))
+                        Type t = ce_1.e1.value.type.value.toBasetype();
+                        if (((t.ty.value & 0xFF) == ENUMTY.Tdelegate))
+                            t = ((TypeDelegate)t).next.value;
+                        if (((t.ty.value & 0xFF) == ENUMTY.Tfunction) && ((ce_1.f.value != null ? callSideEffectLevel(ce_1.f.value) : callSideEffectLevel(ce_1.e1.value.type.value)) > 0))
                         {
                             BytePtr s = null;
-                            if (ce_1.f != null)
-                                s = pcopy(ce_1.f.toPrettyChars(false));
-                            else if (((ce_1.e1.op & 0xFF) == 24))
+                            if (ce_1.f.value != null)
+                                s = pcopy(ce_1.f.value.toPrettyChars(false));
+                            else if (((ce_1.e1.value.op.value & 0xFF) == 24))
                             {
-                                s = pcopy(((PtrExp)ce_1.e1).e1.toChars());
+                                s = pcopy(((PtrExp)ce_1.e1.value).e1.value.toChars());
                             }
                             else
-                                s = pcopy(ce_1.e1.toChars());
+                                s = pcopy(ce_1.e1.value.toChars());
                             e.warning(new BytePtr("calling %s without side effects discards return value of type %s, prepend a cast(void) if intentional"), s, e.type.value.toChars());
                         }
                     }
@@ -229,7 +229,7 @@ public class sideeffect {
             case 99:
                 CommaExp ce_3 = (CommaExp)e;
                 Expression fc = firstComma(ce_3);
-                if (((fc.op & 0xFF) == 38) && ((ce_3.e2.value.op & 0xFF) == 26) && (pequals(((DeclarationExp)fc).declaration, ((VarExp)ce_3.e2.value).var)))
+                if (((fc.op.value & 0xFF) == 38) && ((ce_3.e2.value.op.value & 0xFF) == 26) && (pequals(((DeclarationExp)fc).declaration.value, ((VarExp)ce_3.e2.value).var.value)))
                 {
                     return false;
                 }
@@ -247,8 +247,8 @@ public class sideeffect {
 
     public static VarDeclaration copyToTemp(long stc, BytePtr name, Expression e) {
         assert(((name.get(0) & 0xFF) == 95) && ((name.get(1) & 0xFF) == 95));
-        VarDeclaration vd = new VarDeclaration(e.loc, e.type.value, Identifier.generateId(name), new ExpInitializer(e.loc, e), 0L);
-        vd.storage_class = stc | 1099511627776L | 68719476736L;
+        VarDeclaration vd = new VarDeclaration(e.loc.value, e.type.value, Identifier.generateId(name), new ExpInitializer(e.loc.value, e), 0L);
+        vd.storage_class.value = stc | 1099511627776L | 68719476736L;
         return vd;
     }
 
@@ -256,9 +256,9 @@ public class sideeffect {
         if (!alwaysCopy && isTrivialExp(e))
             return e;
         VarDeclaration vd = copyToTemp(0L, name, e);
-        vd.storage_class |= e.isLvalue() ? 2097152L : 2199023255552L;
-        e0.value = Expression.combine(e0.value, expressionSemantic(new DeclarationExp(vd.loc, vd), sc));
-        return expressionSemantic(new VarExp(vd.loc, vd, true), sc);
+        vd.storage_class.value |= e.isLvalue() ? 2097152L : 2199023255552L;
+        e0.value = Expression.combine(e0.value, expressionSemantic(new DeclarationExp(vd.loc.value, vd), sc));
+        return expressionSemantic(new VarExp(vd.loc.value, vd, true), sc);
     }
 
     // defaulted all parameters starting with #5

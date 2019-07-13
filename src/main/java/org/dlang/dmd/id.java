@@ -608,7 +608,7 @@ public class id {
             startaddress = Identifier.idPool(new ByteSlice("startaddress"));
             crt_constructor = Identifier.idPool(new ByteSlice("crt_constructor"));
             crt_destructor = Identifier.idPool(new ByteSlice("crt_destructor"));
-            tohash.value = Identifier.idPool(new ByteSlice("toHash"));
+            tohash = Identifier.idPool(new ByteSlice("toHash"));
             tostring = Identifier.idPool(new ByteSlice("toString"));
             getmembers = Identifier.idPool(new ByteSlice("getMembers"));
             __alloca = Identifier.idPool(new ByteSlice("alloca"));
@@ -956,7 +956,7 @@ public class id {
             startaddress = null;
             crt_constructor = null;
             crt_destructor = null;
-            tohash.value = null;
+            tohash = null;
             tostring = null;
             getmembers = null;
             __alloca = null;
@@ -1115,15 +1115,15 @@ public class id {
     }
 
     public static ByteSlice identifier(Msgtable m) {
-        return new ByteSlice("Identifier ").concat(m.ident).concat(new ByteSlice(";"));
+        return concat(concat(new ByteSlice("Identifier "), m.ident), new ByteSlice(";"));
     }
 
     public static ByteSlice initializer(Msgtable m) {
-        return m.ident.concat(new ByteSlice(" = Identifier.idPool(\"")).concat(m.name()).concat(new ByteSlice("\");"));
+        return concat(concat(concat(m.ident, new ByteSlice(" = Identifier.idPool(\"")), m.name()), new ByteSlice("\");"));
     }
 
     public static ByteSlice deinitializer(Msgtable m) {
-        return m.ident.concat(new ByteSlice(" = Identifier.init;"));
+        return concat(m.ident, new ByteSlice(" = Identifier.init;"));
     }
 
 }

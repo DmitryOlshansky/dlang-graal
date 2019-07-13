@@ -45,13 +45,13 @@ public class doc {
     static int gendocfilembuf_done = 0;
     private static class EmitComment extends Visitor
     {
-        private Ptr<OutBuffer> buf = null;
-        private Ptr<Scope> sc = null;
+        private Ref<Ptr<OutBuffer>> buf = ref(null);
+        private Ref<Ptr<Scope>> sc = ref(null);
         public  EmitComment(Ptr<OutBuffer> buf, Ptr<Scope> sc) {
             Ref<Ptr<OutBuffer>> buf_ref = ref(buf);
             Ref<Ptr<Scope>> sc_ref = ref(sc);
-            this.buf = buf_ref.value;
-            this.sc = sc_ref.value;
+            this.buf.value = buf_ref.value;
+            this.sc.value = sc_ref.value;
         }
 
         public  void visit(Dsymbol _param_0) {
@@ -82,135 +82,135 @@ public class doc {
             Ref<Ptr<Scope>> sc_ref = ref(sc);
             Ref<Dsymbol> s_ref = ref(s);
             Ref<BytePtr> com_ref = ref(com);
-            if ((s_ref.value != null) && ((sc_ref.value.get()).lastdc != null) && isDitto(com_ref.value))
+            if ((s_ref.value != null) && ((sc_ref.value.get()).lastdc.value != null) && isDitto(com_ref.value))
             {
-                ((sc_ref.value.get()).lastdc.get()).a.value.push(s_ref.value);
+                ((sc_ref.value.get()).lastdc.value.get()).a.value.push(s_ref.value);
                 return ;
             }
             {
-                Ref<Ptr<DocComment>> dc = ref((sc_ref.value.get()).lastdc);
+                Ref<Ptr<DocComment>> dc = ref((sc_ref.value.get()).lastdc.value);
                 if ((dc.value) != null)
                 {
-                    assertMsg(((dc.value.get()).a.value.length > 0), new ByteSlice("Expects at least one declaration for adocumentation comment"));
+                    assertMsg(((dc.value.get()).a.value.length.value > 0), new ByteSlice("Expects at least one declaration for adocumentation comment"));
                     Ref<Dsymbol> symbol = ref((dc.value.get()).a.value.get(0));
-                    (this.buf.get()).writestring(new ByteSlice("$(DDOC_MEMBER"));
-                    (this.buf.get()).writestring(new ByteSlice("$(DDOC_MEMBER_HEADER"));
-                    emitAnchor(this.buf, symbol.value, sc_ref.value, true);
-                    (this.buf.get()).writeByte(41);
-                    (this.buf.get()).writestring(ddoc_decl_s.value);
+                    (this.buf.value.get()).writestring(new ByteSlice("$(DDOC_MEMBER"));
+                    (this.buf.value.get()).writestring(new ByteSlice("$(DDOC_MEMBER_HEADER"));
+                    emitAnchor(this.buf.value, symbol.value, sc_ref.value, true);
+                    (this.buf.value.get()).writeByte(41);
+                    (this.buf.value.get()).writestring(ddoc_decl_s.value);
                     {
                         IntRef i = ref(0);
-                        for (; (i.value < (dc.value.get()).a.value.length);i.value++){
+                        for (; (i.value < (dc.value.get()).a.value.length.value);i.value++){
                             Ref<Dsymbol> sx = ref((dc.value.get()).a.value.get(i.value));
                             if ((i.value == 0))
                             {
-                                IntRef o = ref((this.buf.get()).offset);
-                                toDocBuffer(sx.value, this.buf, sc_ref.value);
-                                highlightCode(sc_ref.value, sx.value, this.buf, o.value);
-                                (this.buf.get()).writestring(new ByteSlice("$(DDOC_OVERLOAD_SEPARATOR)"));
+                                IntRef o = ref((this.buf.value.get()).offset.value);
+                                toDocBuffer(sx.value, this.buf.value, sc_ref.value);
+                                highlightCode(sc_ref.value, sx.value, this.buf.value, o.value);
+                                (this.buf.value.get()).writestring(new ByteSlice("$(DDOC_OVERLOAD_SEPARATOR)"));
                                 continue;
                             }
-                            (this.buf.get()).writestring(new ByteSlice("$(DDOC_DITTO "));
+                            (this.buf.value.get()).writestring(new ByteSlice("$(DDOC_DITTO "));
                             {
-                                IntRef o = ref((this.buf.get()).offset);
-                                toDocBuffer(sx.value, this.buf, sc_ref.value);
-                                highlightCode(sc_ref.value, sx.value, this.buf, o.value);
+                                IntRef o = ref((this.buf.value.get()).offset.value);
+                                toDocBuffer(sx.value, this.buf.value, sc_ref.value);
+                                highlightCode(sc_ref.value, sx.value, this.buf.value, o.value);
                             }
-                            (this.buf.get()).writestring(new ByteSlice("$(DDOC_OVERLOAD_SEPARATOR)"));
-                            (this.buf.get()).writeByte(41);
+                            (this.buf.value.get()).writestring(new ByteSlice("$(DDOC_OVERLOAD_SEPARATOR)"));
+                            (this.buf.value.get()).writeByte(41);
                         }
                     }
-                    (this.buf.get()).writestring(ddoc_decl_e.value);
-                    (this.buf.get()).writestring(ddoc_decl_dd_s.value);
+                    (this.buf.value.get()).writestring(ddoc_decl_e.value);
+                    (this.buf.value.get()).writestring(ddoc_decl_dd_s.value);
                     {
-                        (dc.value.get()).writeSections(sc_ref.value, ptr((dc.value.get()).a.value), this.buf);
+                        (dc.value.get()).writeSections(sc_ref.value, ptr(dc.value.get().a), this.buf.value);
                         {
                             Ref<ScopeDsymbol> sds = ref((dc.value.get()).a.value.get(0).isScopeDsymbol());
                             if ((sds.value) != null)
-                                emitMemberComments(sds.value, this.buf, sc_ref.value);
+                                emitMemberComments(sds.value, this.buf.value, sc_ref.value);
                         }
                     }
-                    (this.buf.get()).writestring(ddoc_decl_dd_e.value);
-                    (this.buf.get()).writeByte(41);
+                    (this.buf.value.get()).writestring(ddoc_decl_dd_e.value);
+                    (this.buf.value.get()).writeByte(41);
                 }
             }
             if (s_ref.value != null)
             {
                 Ref<Ptr<DocComment>> dc = ref(DocComment.parse(s_ref.value, com_ref.value));
-                (dc.value.get()).pmacrotable = pcopy((ptr((sc_ref.value.get())._module.macrotable.value)));
-                (sc_ref.value.get()).lastdc = dc.value;
+                (dc.value.get()).pmacrotable.value = pcopy((ptr((sc_ref.value.get())._module.value.macrotable)));
+                (sc_ref.value.get()).lastdc.value = dc.value;
             }
         }
 
         public  void visit(Import imp) {
             Ref<Import> imp_ref = ref(imp);
-            if ((imp_ref.value.prot().kind != Prot.Kind.public_) && ((this.sc.get()).protection.kind != Prot.Kind.export_))
+            if ((imp_ref.value.prot().kind.value != Prot.Kind.public_) && ((this.sc.value.get()).protection.value.kind.value != Prot.Kind.export_))
                 return ;
-            this.emit(this.sc, imp_ref.value, imp_ref.value.comment);
+            this.emit(this.sc.value, imp_ref.value, imp_ref.value.comment.value);
         }
 
         public  void visit(Declaration d) {
             Ref<Declaration> d_ref = ref(d);
-            Ref<BytePtr> com = ref(pcopy(d_ref.value.comment));
+            Ref<BytePtr> com = ref(pcopy(d_ref.value.comment.value));
             {
                 Ref<TemplateDeclaration> td = ref(getEponymousParent(d_ref.value));
                 if ((td.value) != null)
                 {
-                    if (isDitto(td.value.comment))
-                        com.value = pcopy(td.value.comment);
+                    if (isDitto(td.value.comment.value))
+                        com.value = pcopy(td.value.comment.value);
                     else
-                        com.value = pcopy(Lexer.combineComments(td.value.comment, com.value, true));
+                        com.value = pcopy(Lexer.combineComments(td.value.comment.value, com.value, true));
                 }
                 else
                 {
-                    if (d_ref.value.ident == null)
+                    if (d_ref.value.ident.value == null)
                         return ;
-                    if (d_ref.value.type == null)
+                    if (d_ref.value.type.value == null)
                     {
                         if ((d_ref.value.isCtorDeclaration() == null) && (d_ref.value.isAliasDeclaration() == null) && (d_ref.value.isVarDeclaration() == null))
                         {
                             return ;
                         }
                     }
-                    if ((d_ref.value.protection.kind == Prot.Kind.private_) || ((this.sc.get()).protection.kind == Prot.Kind.private_))
+                    if ((d_ref.value.protection.kind.value == Prot.Kind.private_) || ((this.sc.value.get()).protection.value.kind.value == Prot.Kind.private_))
                         return ;
                 }
             }
             if (com.value == null)
                 return ;
-            this.emit(this.sc, d_ref.value, com.value);
+            this.emit(this.sc.value, d_ref.value, com.value);
         }
 
         public  void visit(AggregateDeclaration ad) {
             Ref<AggregateDeclaration> ad_ref = ref(ad);
-            Ref<BytePtr> com = ref(pcopy(ad_ref.value.comment));
+            Ref<BytePtr> com = ref(pcopy(ad_ref.value.comment.value));
             {
                 Ref<TemplateDeclaration> td = ref(getEponymousParent(ad_ref.value));
                 if ((td.value) != null)
                 {
-                    if (isDitto(td.value.comment))
-                        com.value = pcopy(td.value.comment);
+                    if (isDitto(td.value.comment.value))
+                        com.value = pcopy(td.value.comment.value);
                     else
-                        com.value = pcopy(Lexer.combineComments(td.value.comment, com.value, true));
+                        com.value = pcopy(Lexer.combineComments(td.value.comment.value, com.value, true));
                 }
                 else
                 {
-                    if ((ad_ref.value.prot().kind == Prot.Kind.private_) || ((this.sc.get()).protection.kind == Prot.Kind.private_))
+                    if ((ad_ref.value.prot().kind.value == Prot.Kind.private_) || ((this.sc.value.get()).protection.value.kind.value == Prot.Kind.private_))
                         return ;
-                    if (ad_ref.value.comment == null)
+                    if (ad_ref.value.comment.value == null)
                         return ;
                 }
             }
             if (com.value == null)
                 return ;
-            this.emit(this.sc, ad_ref.value, com.value);
+            this.emit(this.sc.value, ad_ref.value, com.value);
         }
 
         public  void visit(TemplateDeclaration td) {
             Ref<TemplateDeclaration> td_ref = ref(td);
-            if ((td_ref.value.prot().kind == Prot.Kind.private_) || ((this.sc.get()).protection.kind == Prot.Kind.private_))
+            if ((td_ref.value.prot().kind.value == Prot.Kind.private_) || ((this.sc.value.get()).protection.value.kind.value == Prot.Kind.private_))
                 return ;
-            if (td_ref.value.comment == null)
+            if (td_ref.value.comment.value == null)
                 return ;
             {
                 Ref<Dsymbol> ss = ref(getEponymousMember(td_ref.value));
@@ -220,50 +220,49 @@ public class doc {
                     return ;
                 }
             }
-            this.emit(this.sc, td_ref.value, td_ref.value.comment);
+            this.emit(this.sc.value, td_ref.value, td_ref.value.comment.value);
         }
 
         public  void visit(EnumDeclaration ed) {
             Ref<EnumDeclaration> ed_ref = ref(ed);
-            if ((ed_ref.value.prot().kind == Prot.Kind.private_) || ((this.sc.get()).protection.kind == Prot.Kind.private_))
+            if ((ed_ref.value.prot().kind.value == Prot.Kind.private_) || ((this.sc.value.get()).protection.value.kind.value == Prot.Kind.private_))
                 return ;
-            if (ed_ref.value.isAnonymous() && (ed_ref.value.members != null))
+            if (ed_ref.value.isAnonymous() && (ed_ref.value.members.value != null))
             {
                 {
                     IntRef i = ref(0);
-                    for (; (i.value < (ed_ref.value.members.get()).length);i.value++){
-                        Ref<Dsymbol> s = ref((ed_ref.value.members.get()).get(i.value));
-                        emitComment(s.value, this.buf, this.sc);
+                    for (; (i.value < (ed_ref.value.members.value.get()).length.value);i.value++){
+                        Ref<Dsymbol> s = ref((ed_ref.value.members.value.get()).get(i.value));
+                        emitComment(s.value, this.buf.value, this.sc.value);
                     }
                 }
                 return ;
             }
-            if (ed_ref.value.comment == null)
+            if (ed_ref.value.comment.value == null)
                 return ;
             if (ed_ref.value.isAnonymous())
                 return ;
-            this.emit(this.sc, ed_ref.value, ed_ref.value.comment);
+            this.emit(this.sc.value, ed_ref.value, ed_ref.value.comment.value);
         }
 
         public  void visit(EnumMember em) {
             Ref<EnumMember> em_ref = ref(em);
-            if ((em_ref.value.prot().kind == Prot.Kind.private_) || ((this.sc.get()).protection.kind == Prot.Kind.private_))
+            if ((em_ref.value.prot().kind.value == Prot.Kind.private_) || ((this.sc.value.get()).protection.value.kind.value == Prot.Kind.private_))
                 return ;
-            if (em_ref.value.comment == null)
+            if (em_ref.value.comment.value == null)
                 return ;
-            this.emit(this.sc, em_ref.value, em_ref.value.comment);
+            this.emit(this.sc.value, em_ref.value, em_ref.value.comment.value);
         }
 
         public  void visit(AttribDeclaration ad) {
-            Ref<AttribDeclaration> ad_ref = ref(ad);
-            Ref<Ptr<DArray<Dsymbol>>> d = ref(ad_ref.value.include(null));
+            Ref<Ptr<DArray<Dsymbol>>> d = ref(ad.include(null));
             if (d.value != null)
             {
                 {
                     IntRef i = ref(0);
-                    for (; (i.value < (d.value.get()).length);i.value++){
+                    for (; (i.value < (d.value.get()).length.value);i.value++){
                         Ref<Dsymbol> s = ref((d.value.get()).get(i.value));
-                        emitComment(s.value, this.buf, this.sc);
+                        emitComment(s.value, this.buf.value, this.sc.value);
                     }
                 }
             }
@@ -271,30 +270,30 @@ public class doc {
 
         public  void visit(ProtDeclaration pd) {
             Ref<ProtDeclaration> pd_ref = ref(pd);
-            if (pd_ref.value.decl != null)
+            if (pd_ref.value.decl.value != null)
             {
-                Ref<Ptr<Scope>> scx = ref(this.sc);
-                this.sc = (this.sc.get()).copy();
-                (this.sc.get()).protection = pd_ref.value.protection.copy();
+                Ptr<Scope> scx = this.sc.value;
+                this.sc.value = (this.sc.value.get()).copy();
+                (this.sc.value.get()).protection.value = pd_ref.value.protection.value.copy();
                 this.visit((AttribDeclaration)pd_ref);
-                (scx.value.get()).lastdc = (this.sc.get()).lastdc;
-                this.sc = (this.sc.get()).pop();
+                (scx.get()).lastdc.value = (this.sc.value.get()).lastdc.value;
+                this.sc.value = (this.sc.value.get()).pop();
             }
         }
 
         public  void visit(ConditionalDeclaration cd) {
             Ref<ConditionalDeclaration> cd_ref = ref(cd);
-            if ((cd_ref.value.condition.inc != Include.notComputed))
+            if ((cd_ref.value.condition.inc.value != Include.notComputed))
             {
                 this.visit((AttribDeclaration)cd_ref);
                 return ;
             }
-            Ref<Ptr<DArray<Dsymbol>>> d = ref(cd_ref.value.decl != null ? cd_ref.value.decl : cd_ref.value.elsedecl);
+            Ptr<DArray<Dsymbol>> d = cd_ref.value.decl.value != null ? cd_ref.value.decl.value : cd_ref.value.elsedecl.value;
             {
                 IntRef i = ref(0);
-                for (; (i.value < (d.value.get()).length);i.value++){
-                    Ref<Dsymbol> s = ref((d.value.get()).get(i.value));
-                    emitComment(s.value, this.buf, this.sc);
+                for (; (i.value < (d.get()).length.value);i.value++){
+                    Ref<Dsymbol> s = ref((d.get()).get(i.value));
+                    emitComment(s.value, this.buf.value, this.sc.value);
                 }
             }
         }
@@ -304,54 +303,53 @@ public class doc {
     }
     private static class ToDocBuffer extends Visitor
     {
-        private Ptr<OutBuffer> buf = null;
-        private Ptr<Scope> sc = null;
+        private Ref<Ptr<OutBuffer>> buf = ref(null);
+        private Ref<Ptr<Scope>> sc = ref(null);
         public  ToDocBuffer(Ptr<OutBuffer> buf, Ptr<Scope> sc) {
             Ref<Ptr<OutBuffer>> buf_ref = ref(buf);
             Ref<Ptr<Scope>> sc_ref = ref(sc);
-            this.buf = buf_ref.value;
-            this.sc = sc_ref.value;
+            this.buf.value = buf_ref.value;
+            this.sc.value = sc_ref.value;
         }
 
         public  void visit(Dsymbol s) {
             Ref<Dsymbol> s_ref = ref(s);
             Ref<HdrGenState> hgs = ref(new HdrGenState());
-            hgs.value.ddoc = true;
-            toCBuffer(s_ref.value, this.buf, ptr(hgs));
+            hgs.value.ddoc.value = true;
+            toCBuffer(s_ref.value, this.buf.value, ptr(hgs));
         }
 
         public  void prefix(Dsymbol s) {
-            Ref<Dsymbol> s_ref = ref(s);
-            if (s_ref.value.isDeprecated())
-                (this.buf.get()).writestring(new ByteSlice("deprecated "));
+            if (s.isDeprecated())
+                (this.buf.value.get()).writestring(new ByteSlice("deprecated "));
             {
-                Ref<Declaration> d = ref(s_ref.value.isDeclaration());
+                Ref<Declaration> d = ref(s.isDeclaration());
                 if ((d.value) != null)
                 {
-                    emitProtection(this.buf, d.value);
+                    emitProtection(this.buf.value, d.value);
                     if (d.value.isStatic())
-                        (this.buf.get()).writestring(new ByteSlice("static "));
+                        (this.buf.value.get()).writestring(new ByteSlice("static "));
                     else if (d.value.isFinal())
-                        (this.buf.get()).writestring(new ByteSlice("final "));
+                        (this.buf.value.get()).writestring(new ByteSlice("final "));
                     else if (d.value.isAbstract())
-                        (this.buf.get()).writestring(new ByteSlice("abstract "));
+                        (this.buf.value.get()).writestring(new ByteSlice("abstract "));
                     if (d.value.isFuncDeclaration() != null)
                         return ;
                     if (d.value.isImmutable())
-                        (this.buf.get()).writestring(new ByteSlice("immutable "));
-                    if ((d.value.storage_class & 536870912L) != 0)
-                        (this.buf.get()).writestring(new ByteSlice("shared "));
+                        (this.buf.value.get()).writestring(new ByteSlice("immutable "));
+                    if ((d.value.storage_class.value & 536870912L) != 0)
+                        (this.buf.value.get()).writestring(new ByteSlice("shared "));
                     if (d.value.isWild())
-                        (this.buf.get()).writestring(new ByteSlice("inout "));
+                        (this.buf.value.get()).writestring(new ByteSlice("inout "));
                     if (d.value.isConst())
-                        (this.buf.get()).writestring(new ByteSlice("const "));
+                        (this.buf.value.get()).writestring(new ByteSlice("const "));
                     if (d.value.isSynchronized())
-                        (this.buf.get()).writestring(new ByteSlice("synchronized "));
-                    if ((d.value.storage_class & 8388608L) != 0)
-                        (this.buf.get()).writestring(new ByteSlice("enum "));
-                    if ((d.value.type == null) && (d.value.isVarDeclaration() != null) && !d.value.isImmutable() && ((d.value.storage_class & 536870912L) == 0) && !d.value.isWild() && !d.value.isConst() && !d.value.isSynchronized())
+                        (this.buf.value.get()).writestring(new ByteSlice("synchronized "));
+                    if ((d.value.storage_class.value & 8388608L) != 0)
+                        (this.buf.value.get()).writestring(new ByteSlice("enum "));
+                    if ((d.value.type.value == null) && (d.value.isVarDeclaration() != null) && !d.value.isImmutable() && ((d.value.storage_class.value & 536870912L) == 0) && !d.value.isWild() && !d.value.isConst() && !d.value.isSynchronized())
                     {
-                        (this.buf.get()).writestring(new ByteSlice("auto "));
+                        (this.buf.value.get()).writestring(new ByteSlice("auto "));
                     }
                 }
             }
@@ -360,77 +358,77 @@ public class doc {
         public  void visit(Import i) {
             Ref<Import> i_ref = ref(i);
             Ref<HdrGenState> hgs = ref(new HdrGenState());
-            hgs.value.ddoc = true;
-            emitProtection(this.buf, i_ref.value);
-            toCBuffer((Dsymbol)i_ref, this.buf, ptr(hgs));
+            hgs.value.ddoc.value = true;
+            emitProtection(this.buf.value, i_ref.value);
+            toCBuffer((Dsymbol)i_ref, this.buf.value, ptr(hgs));
         }
 
         public  void visit(Declaration d) {
             Ref<Declaration> d_ref = ref(d);
-            if (d_ref.value.ident == null)
+            if (d_ref.value.ident.value == null)
                 return ;
             Ref<TemplateDeclaration> td = ref(getEponymousParent(d_ref.value));
             Ref<HdrGenState> hgs = ref(new HdrGenState());
-            hgs.value.ddoc = true;
+            hgs.value.ddoc.value = true;
             if (d_ref.value.isDeprecated())
-                (this.buf.get()).writestring(new ByteSlice("$(DEPRECATED "));
+                (this.buf.value.get()).writestring(new ByteSlice("$(DEPRECATED "));
             this.prefix(d_ref.value);
-            if (d_ref.value.type != null)
+            if (d_ref.value.type.value != null)
             {
-                Ref<Type> origType = ref(d_ref.value.originalType != null ? d_ref.value.originalType : d_ref.value.type);
-                if (((origType.value.ty & 0xFF) == ENUMTY.Tfunction))
+                Ref<Type> origType = ref(d_ref.value.originalType.value != null ? d_ref.value.originalType.value : d_ref.value.type.value);
+                if (((origType.value.ty.value & 0xFF) == ENUMTY.Tfunction))
                 {
-                    functionToBufferFull((TypeFunction)origType.value, this.buf, d_ref.value.ident, ptr(hgs), td.value);
+                    functionToBufferFull((TypeFunction)origType.value, this.buf.value, d_ref.value.ident.value, ptr(hgs), td.value);
                 }
                 else
-                    toCBuffer(origType.value, this.buf, d_ref.value.ident, ptr(hgs));
+                    toCBuffer(origType.value, this.buf.value, d_ref.value.ident.value, ptr(hgs));
             }
             else
-                (this.buf.get()).writestring(d_ref.value.ident.asString());
+                (this.buf.value.get()).writestring(d_ref.value.ident.value.asString());
             if ((d_ref.value.isVarDeclaration() != null) && (td.value != null))
             {
-                (this.buf.get()).writeByte(40);
-                if ((td.value.origParameters != null) && ((td.value.origParameters.get()).length != 0))
+                (this.buf.value.get()).writeByte(40);
+                if ((td.value.origParameters.value != null) && ((td.value.origParameters.value.get()).length.value != 0))
                 {
                     {
                         IntRef i = ref(0);
-                        for (; (i.value < (td.value.origParameters.get()).length);i.value++){
+                        for (; (i.value < (td.value.origParameters.value.get()).length.value);i.value++){
                             if (i.value != 0)
-                                (this.buf.get()).writestring(new ByteSlice(", "));
-                            toCBuffer((td.value.origParameters.get()).get(i.value), this.buf, ptr(hgs));
+                                (this.buf.value.get()).writestring(new ByteSlice(", "));
+                            toCBuffer((td.value.origParameters.value.get()).get(i.value), this.buf.value, ptr(hgs));
                         }
                     }
                 }
-                (this.buf.get()).writeByte(41);
+                (this.buf.value.get()).writeByte(41);
             }
-            if ((td.value != null) && (td.value.constraint != null))
+            if ((td.value != null) && (td.value.constraint.value != null))
             {
                 Ref<Boolean> noFuncDecl = ref(td.value.isFuncDeclaration() == null);
                 if (noFuncDecl.value)
                 {
-                    (this.buf.get()).writestring(new ByteSlice("$(DDOC_CONSTRAINT "));
+                    (this.buf.value.get()).writestring(new ByteSlice("$(DDOC_CONSTRAINT "));
                 }
-                toCBuffer(td.value.constraint, this.buf, ptr(hgs));
+                toCBuffer(td.value.constraint.value, this.buf.value, ptr(hgs));
                 if (noFuncDecl.value)
                 {
-                    (this.buf.get()).writestring(new ByteSlice(")"));
+                    (this.buf.value.get()).writestring(new ByteSlice(")"));
                 }
             }
             if (d_ref.value.isDeprecated())
-                (this.buf.get()).writestring(new ByteSlice(")"));
-            (this.buf.get()).writestring(new ByteSlice(";\n"));
+                (this.buf.value.get()).writestring(new ByteSlice(")"));
+            (this.buf.value.get()).writestring(new ByteSlice(";\n"));
         }
 
         public  void visit(AliasDeclaration ad) {
             Ref<AliasDeclaration> ad_ref = ref(ad);
-            if (ad_ref.value.ident == null)
+            if (ad_ref.value.ident.value == null)
                 return ;
             if (ad_ref.value.isDeprecated())
-                (this.buf.get()).writestring(new ByteSlice("deprecated "));
-            emitProtection(this.buf, (Declaration)ad_ref);
-            (this.buf.get()).printf(new BytePtr("alias %s = "), ad_ref.value.toChars());
+                (this.buf.value.get()).writestring(new ByteSlice("deprecated "));
+            emitProtection(this.buf.value, (Declaration)ad_ref);
+            (this.buf.value.get()).printf(new BytePtr("alias %s = "), ad_ref.value.toChars());
             {
-                Ref<Dsymbol> s = ref(ad_ref.value.aliassym);
+                Ref<Dsymbol> s = ref(ad_ref.value.aliassym.value);
                 if ((s.value) != null)
                 {
                     this.prettyPrintDsymbol(s.value, ad_ref.value.parent.value);
@@ -439,24 +437,24 @@ public class doc {
                     Ref<Type> type = ref(ad_ref.value.getType());
                     if ((type.value) != null)
                     {
-                        if (((type.value.ty & 0xFF) == ENUMTY.Tclass) || ((type.value.ty & 0xFF) == ENUMTY.Tstruct) || ((type.value.ty & 0xFF) == ENUMTY.Tenum))
+                        if (((type.value.ty.value & 0xFF) == ENUMTY.Tclass) || ((type.value.ty.value & 0xFF) == ENUMTY.Tstruct) || ((type.value.ty.value & 0xFF) == ENUMTY.Tenum))
                         {
                             {
                                 Ref<Dsymbol> s = ref(type.value.toDsymbol(null));
                                 if ((s.value) != null)
                                     this.prettyPrintDsymbol(s.value, ad_ref.value.parent.value);
                                 else
-                                    (this.buf.get()).writestring(type.value.toChars());
+                                    (this.buf.value.get()).writestring(type.value.toChars());
                             }
                         }
                         else
                         {
-                            (this.buf.get()).writestring(type.value.toChars());
+                            (this.buf.value.get()).writestring(type.value.toChars());
                         }
                     }
                 }
             }
-            (this.buf.get()).writestring(new ByteSlice(";\n"));
+            (this.buf.value.get()).writestring(new ByteSlice(";\n"));
         }
 
         public  void parentToBuffer(Dsymbol s) {
@@ -464,8 +462,8 @@ public class doc {
             if ((s_ref.value != null) && (s_ref.value.isPackage() == null) && (s_ref.value.isModule() == null))
             {
                 this.parentToBuffer(s_ref.value.parent.value);
-                (this.buf.get()).writestring(s_ref.value.toChars());
-                (this.buf.get()).writestring(new ByteSlice("."));
+                (this.buf.value.get()).writestring(s_ref.value.toChars());
+                (this.buf.value.get()).writestring(new ByteSlice("."));
             }
         }
 
@@ -488,112 +486,109 @@ public class doc {
             Ref<Dsymbol> parent_ref = ref(parent);
             if ((s_ref.value.parent.value != null) && (pequals(s_ref.value.parent.value, parent_ref.value)))
             {
-                (this.buf.get()).writestring(s_ref.value.toChars());
+                (this.buf.value.get()).writestring(s_ref.value.toChars());
             }
             else if (!inSameModule(s_ref.value, parent_ref.value))
             {
-                (this.buf.get()).writestring(s_ref.value.toPrettyChars(false));
+                (this.buf.value.get()).writestring(s_ref.value.toPrettyChars(false));
             }
             else
             {
                 if ((parent_ref.value.isModule() == null) && (parent_ref.value.isPackage() == null))
-                    (this.buf.get()).writestring(new ByteSlice("."));
+                    (this.buf.value.get()).writestring(new ByteSlice("."));
                 this.parentToBuffer(s_ref.value.parent.value);
-                (this.buf.get()).writestring(s_ref.value.toChars());
+                (this.buf.value.get()).writestring(s_ref.value.toChars());
             }
         }
 
         public  void visit(AggregateDeclaration ad) {
-            Ref<AggregateDeclaration> ad_ref = ref(ad);
-            if (ad_ref.value.ident == null)
+            if (ad.ident.value == null)
                 return ;
-            (this.buf.get()).printf(new BytePtr("%s %s"), ad_ref.value.kind(), ad_ref.value.toChars());
-            (this.buf.get()).writestring(new ByteSlice(";\n"));
+            (this.buf.value.get()).printf(new BytePtr("%s %s"), ad.kind(), ad.toChars());
+            (this.buf.value.get()).writestring(new ByteSlice(";\n"));
         }
 
         public  void visit(StructDeclaration sd) {
             Ref<StructDeclaration> sd_ref = ref(sd);
-            if (sd_ref.value.ident == null)
+            if (sd_ref.value.ident.value == null)
                 return ;
             {
                 Ref<TemplateDeclaration> td = ref(getEponymousParent(sd_ref.value));
                 if ((td.value) != null)
                 {
-                    toDocBuffer(td.value, this.buf, this.sc);
+                    toDocBuffer(td.value, this.buf.value, this.sc.value);
                 }
                 else
                 {
-                    (this.buf.get()).printf(new BytePtr("%s %s"), sd_ref.value.kind(), sd_ref.value.toChars());
+                    (this.buf.value.get()).printf(new BytePtr("%s %s"), sd_ref.value.kind(), sd_ref.value.toChars());
                 }
             }
-            (this.buf.get()).writestring(new ByteSlice(";\n"));
+            (this.buf.value.get()).writestring(new ByteSlice(";\n"));
         }
 
         public  void visit(ClassDeclaration cd) {
             Ref<ClassDeclaration> cd_ref = ref(cd);
-            if (cd_ref.value.ident == null)
+            if (cd_ref.value.ident.value == null)
                 return ;
             {
                 Ref<TemplateDeclaration> td = ref(getEponymousParent(cd_ref.value));
                 if ((td.value) != null)
                 {
-                    toDocBuffer(td.value, this.buf, this.sc);
+                    toDocBuffer(td.value, this.buf.value, this.sc.value);
                 }
                 else
                 {
                     if ((cd_ref.value.isInterfaceDeclaration() == null) && cd_ref.value.isAbstract())
-                        (this.buf.get()).writestring(new ByteSlice("abstract "));
-                    (this.buf.get()).printf(new BytePtr("%s %s"), cd_ref.value.kind(), cd_ref.value.toChars());
+                        (this.buf.value.get()).writestring(new ByteSlice("abstract "));
+                    (this.buf.value.get()).printf(new BytePtr("%s %s"), cd_ref.value.kind(), cd_ref.value.toChars());
                 }
             }
             IntRef any = ref(0);
             {
                 IntRef i = ref(0);
-                for (; (i.value < (cd_ref.value.baseclasses.get()).length);i.value++){
-                    Ref<Ptr<BaseClass>> bc = ref((cd_ref.value.baseclasses.get()).get(i.value));
-                    if (((bc.value.get()).sym != null) && (pequals((bc.value.get()).sym.ident, Id.Object.value)))
+                for (; (i.value < (cd_ref.value.baseclasses.get()).length.value);i.value++){
+                    Ptr<BaseClass> bc = (cd_ref.value.baseclasses.get()).get(i.value);
+                    if (((bc.get()).sym.value != null) && (pequals((bc.get()).sym.value.ident.value, Id.Object.value)))
                         continue;
                     if (any.value != 0)
-                        (this.buf.get()).writestring(new ByteSlice(", "));
+                        (this.buf.value.get()).writestring(new ByteSlice(", "));
                     else
                     {
-                        (this.buf.get()).writestring(new ByteSlice(": "));
+                        (this.buf.value.get()).writestring(new ByteSlice(": "));
                         any.value = 1;
                     }
-                    if ((bc.value.get()).sym != null)
+                    if ((bc.get()).sym.value != null)
                     {
-                        (this.buf.get()).printf(new BytePtr("$(DDOC_PSUPER_SYMBOL %s)"), (bc.value.get()).sym.toPrettyChars(false));
+                        (this.buf.value.get()).printf(new BytePtr("$(DDOC_PSUPER_SYMBOL %s)"), (bc.get()).sym.value.toPrettyChars(false));
                     }
                     else
                     {
                         Ref<HdrGenState> hgs = ref(new HdrGenState());
-                        toCBuffer((bc.value.get()).type, this.buf, null, ptr(hgs));
+                        toCBuffer((bc.get()).type.value, this.buf.value, null, ptr(hgs));
                     }
                 }
             }
-            (this.buf.get()).writestring(new ByteSlice(";\n"));
+            (this.buf.value.get()).writestring(new ByteSlice(";\n"));
         }
 
         public  void visit(EnumDeclaration ed) {
-            Ref<EnumDeclaration> ed_ref = ref(ed);
-            if (ed_ref.value.ident == null)
+            if (ed.ident.value == null)
                 return ;
-            (this.buf.get()).printf(new BytePtr("%s %s"), ed_ref.value.kind(), ed_ref.value.toChars());
-            if (ed_ref.value.memtype != null)
+            (this.buf.value.get()).printf(new BytePtr("%s %s"), ed.kind(), ed.toChars());
+            if (ed.memtype.value != null)
             {
-                (this.buf.get()).writestring(new ByteSlice(": $(DDOC_ENUM_BASETYPE "));
+                (this.buf.value.get()).writestring(new ByteSlice(": $(DDOC_ENUM_BASETYPE "));
                 Ref<HdrGenState> hgs = ref(new HdrGenState());
-                toCBuffer(ed_ref.value.memtype, this.buf, null, ptr(hgs));
-                (this.buf.get()).writestring(new ByteSlice(")"));
+                toCBuffer(ed.memtype.value, this.buf.value, null, ptr(hgs));
+                (this.buf.value.get()).writestring(new ByteSlice(")"));
             }
-            (this.buf.get()).writestring(new ByteSlice(";\n"));
+            (this.buf.value.get()).writestring(new ByteSlice(";\n"));
         }
 
         public  void visit(EnumMember em) {
-            Ref<EnumMember> em_ref = ref(em);
-            if (em_ref.value.ident == null)
+            if (em.ident.value == null)
                 return ;
-            (this.buf.get()).writestring(em_ref.value.toChars());
+            (this.buf.value.get()).writestring(em.toChars());
         }
 
 
@@ -632,7 +627,7 @@ public class doc {
         public int bodylen = 0;
         public int nooutput = 0;
         public  void write(Loc loc, Ptr<DocComment> dc, Ptr<Scope> sc, Ptr<DArray<Dsymbol>> a, Ptr<OutBuffer> buf) {
-            assert((a.get()).length != 0);
+            assert((a.get()).length.value != 0);
             try {
                 if (this.namelen != 0)
                 {
@@ -651,7 +646,7 @@ public class doc {
                     }
                     (buf.get()).writestring(new ByteSlice("$(DDOC_SECTION "));
                     (buf.get()).writestring(new ByteSlice("$(DDOC_SECTION_H "));
-                    int o = (buf.get()).offset;
+                    int o = (buf.get()).offset.value;
                     {
                         int u = 0;
                         for (; (u < this.namelen);u++){
@@ -669,7 +664,7 @@ public class doc {
             }
             catch(Dispatch0 __d){}
         /*L1:*/
-            int o = (buf.get()).offset;
+            int o = (buf.get()).offset.value;
             (buf.get()).write(this._body, this.bodylen);
             escapeStrayParenthesis(loc, buf, o, true);
             highlightText(sc, a, loc, buf, o);
@@ -692,7 +687,7 @@ public class doc {
     public static class ParamSection extends Section
     {
         public  void write(Loc loc, Ptr<DocComment> dc, Ptr<Scope> sc, Ptr<DArray<Dsymbol>> a, Ptr<OutBuffer> buf) {
-            assert((a.get()).length != 0);
+            assert((a.get()).length.value != 0);
             Dsymbol s = (a.get()).get(0);
             BytePtr p = pcopy(this._body);
             int len = this.bodylen;
@@ -762,7 +757,7 @@ public class doc {
                                 {
                                     (buf.get()).writestring(new ByteSlice("$(DDOC_PARAM_ID "));
                                     {
-                                        int o = (buf.get()).offset;
+                                        int o = (buf.get()).offset.value;
                                         Parameter fparam = isFunctionParameter(a, namestart, namelen);
                                         if (fparam == null)
                                         {
@@ -773,9 +768,9 @@ public class doc {
                                         {
                                             (buf.get()).writestring(new ByteSlice("..."));
                                         }
-                                        else if ((fparam != null) && (fparam.type != null) && (fparam.ident != null))
+                                        else if ((fparam != null) && (fparam.type.value != null) && (fparam.ident.value != null))
                                         {
-                                            toCBuffer(fparam.type, buf, fparam.ident, ptr(hgs));
+                                            toCBuffer(fparam.type.value, buf, fparam.ident.value, ptr(hgs));
                                         }
                                         else
                                         {
@@ -785,7 +780,7 @@ public class doc {
                                             }
                                             else if (fparam == null)
                                             {
-                                                warning(s.loc, new BytePtr("Ddoc: function declaration has no parameter '%.*s'"), namelen, namestart);
+                                                warning(s.loc.value, new BytePtr("Ddoc: function declaration has no parameter '%.*s'"), namelen, namestart);
                                             }
                                             (buf.get()).write(namestart, namelen);
                                         }
@@ -795,7 +790,7 @@ public class doc {
                                     (buf.get()).writestring(new ByteSlice(")"));
                                     (buf.get()).writestring(new ByteSlice("$(DDOC_PARAM_DESC "));
                                     {
-                                        int o = (buf.get()).offset;
+                                        int o = (buf.get()).offset.value;
                                         (buf.get()).write(textstart, textlen);
                                         escapeStrayParenthesis(loc, buf, o, true);
                                         highlightText(sc, a, loc, buf, o);
@@ -834,16 +829,16 @@ public class doc {
             if (namelen != 0)
                 /*goto L1*/throw Dispatch0.INSTANCE;
             (buf.get()).writestring(new ByteSlice(")"));
-            TypeFunction tf = ((a.get()).length == 1) ? isTypeFunction(s) : null;
+            TypeFunction tf = ((a.get()).length.value == 1) ? isTypeFunction(s) : null;
             if (tf != null)
             {
-                int pcount = (tf.parameterList.parameters != null ? (tf.parameterList.parameters.get()).length : 0) + ((tf.parameterList.varargs == VarArg.variadic) ? 1 : 0);
+                int pcount = (tf.parameterList.parameters.value != null ? (tf.parameterList.parameters.value.get()).length.value : 0) + ((tf.parameterList.varargs.value == VarArg.variadic) ? 1 : 0);
                 if ((pcount != paramcount))
                 {
-                    warning(s.loc, new BytePtr("Ddoc: parameter count mismatch, expected %d, got %d"), pcount, paramcount);
+                    warning(s.loc.value, new BytePtr("Ddoc: parameter count mismatch, expected %d, got %d"), pcount, paramcount);
                     if ((paramcount == 0))
                     {
-                        warningSupplemental(s.loc, new BytePtr("Note that the format is `param = description`"));
+                        warningSupplemental(s.loc.value, new BytePtr("Note that the format is `param = description`"));
                     }
                 }
             }
@@ -865,7 +860,7 @@ public class doc {
     public static class MacroSection extends Section
     {
         public  void write(Loc loc, Ptr<DocComment> dc, Ptr<Scope> sc, Ptr<DArray<Dsymbol>> a, Ptr<OutBuffer> buf) {
-            DocComment.parseMacros((dc.get()).escapetable, (dc.get()).pmacrotable, this._body, this.bodylen);
+            DocComment.parseMacros((dc.get()).escapetable, (dc.get()).pmacrotable.value, this._body, this.bodylen);
         }
 
 
@@ -888,7 +883,7 @@ public class doc {
             for (; (__key1045 < __r1044.getLength());__key1045 += 1) {
                 Dsymbol member = __r1044.get(__key1045);
                 TypeFunction tf = isTypeFunction(member);
-                if ((tf != null) && (tf.parameterList.varargs == VarArg.variadic) && __equals(p, new ByteSlice("...")))
+                if ((tf != null) && (tf.parameterList.varargs.value == VarArg.variadic) && __equals(p, new ByteSlice("...")))
                     return true;
             }
         }
@@ -896,27 +891,27 @@ public class doc {
     }
 
     public static Dsymbol getEponymousMember(TemplateDeclaration td) {
-        if (td.onemember == null)
+        if (td.onemember.value == null)
             return null;
         {
-            AggregateDeclaration ad = td.onemember.isAggregateDeclaration();
+            AggregateDeclaration ad = td.onemember.value.isAggregateDeclaration();
             if ((ad) != null)
                 return ad;
         }
         {
-            FuncDeclaration fd = td.onemember.isFuncDeclaration();
+            FuncDeclaration fd = td.onemember.value.isFuncDeclaration();
             if ((fd) != null)
                 return fd;
         }
         {
-            EnumMember em = td.onemember.isEnumMember();
+            EnumMember em = td.onemember.value.isEnumMember();
             if ((em) != null)
                 return null;
         }
         {
-            VarDeclaration vd = td.onemember.isVarDeclaration();
+            VarDeclaration vd = td.onemember.value.isVarDeclaration();
             if ((vd) != null)
-                return td.constraint != null ? null : vd;
+                return td.constraint.value != null ? null : vd;
         }
         return null;
     }
@@ -942,56 +937,56 @@ public class doc {
                 doc.gendocfilembuf.writestring(ddoc_default);
                 BytePtr p = pcopy(getenv(new BytePtr("DDOCFILE")));
                 if (p != null)
-                    global.value.params.ddocfiles.shift(p);
+                    global.params.ddocfiles.shift(p);
                 {
                     int i = 0;
-                    for (; (i < global.value.params.ddocfiles.length);i++){
-                        FileBuffer buffer = readFile(m.loc, global.value.params.ddocfiles.get(i)).copy();
+                    for (; (i < global.params.ddocfiles.length);i++){
+                        FileBuffer buffer = readFile(m.loc.value, global.params.ddocfiles.get(i)).copy();
                         ByteSlice data = buffer.data.copy();
                         doc.gendocfilembuf.write(toBytePtr(data), data.getLength());
                     }
                 }
             }
-            DocComment.parseMacros(m.escapetable, ptr(m.macrotable.value), toBytePtr(doc.gendocfilembuf.peekSlice()), doc.gendocfilembuf.peekSlice().getLength());
+            DocComment.parseMacros(m.escapetable, ptr(m.macrotable), toBytePtr(doc.gendocfilembuf.peekSlice()), doc.gendocfilembuf.peekSlice().getLength());
             Ptr<Scope> sc = Scope.createGlobal(m);
-            Ptr<DocComment> dc = DocComment.parse(m, m.comment);
-            (dc.get()).pmacrotable = pcopy((ptr(m.macrotable.value)));
+            Ptr<DocComment> dc = DocComment.parse(m, m.comment.value);
+            (dc.get()).pmacrotable.value = pcopy((ptr(m.macrotable)));
             (dc.get()).escapetable = m.escapetable;
-            (sc.get()).lastdc = dc;
+            (sc.get()).lastdc.value = dc;
             {
                 ByteSlice p = toDString(m.toPrettyChars(false)).copy();
-                Macro.define(ptr(m.macrotable.value), new ByteSlice("TITLE"), p);
+                Macro.define(ptr(m.macrotable), new ByteSlice("TITLE"), p);
             }
             {
                 IntRef t = ref(0);
                 time(ptr(t));
                 BytePtr p = pcopy(ctime(ptr(t)));
                 p = pcopy(Mem.xstrdup(p));
-                Macro.define(ptr(m.macrotable.value), new ByteSlice("DATETIME"), p.slice(0,strlen(p)));
-                Macro.define(ptr(m.macrotable.value), new ByteSlice("YEAR"), p.slice(20,24));
+                Macro.define(ptr(m.macrotable), new ByteSlice("DATETIME"), p.slice(0,strlen(p)));
+                Macro.define(ptr(m.macrotable), new ByteSlice("YEAR"), p.slice(20,24));
             }
             ByteSlice srcfilename = m.srcfile.asString().copy();
-            Macro.define(ptr(m.macrotable.value), new ByteSlice("SRCFILENAME"), srcfilename);
+            Macro.define(ptr(m.macrotable), new ByteSlice("SRCFILENAME"), srcfilename);
             ByteSlice docfilename = m.docfile.asString().copy();
-            Macro.define(ptr(m.macrotable.value), new ByteSlice("DOCFILENAME"), docfilename);
+            Macro.define(ptr(m.macrotable), new ByteSlice("DOCFILENAME"), docfilename);
             if ((dc.get()).copyright != null)
             {
                 (dc.get()).copyright.nooutput = 1;
-                Macro.define(ptr(m.macrotable.value), new ByteSlice("COPYRIGHT"), (dc.get()).copyright._body.slice(0,(dc.get()).copyright.bodylen));
+                Macro.define(ptr(m.macrotable), new ByteSlice("COPYRIGHT"), (dc.get()).copyright._body.slice(0,(dc.get()).copyright.bodylen));
             }
             if (m.isDocFile)
             {
-                Ptr<Loc> ploc = m.md != null ? ptr((m.md.get()).loc.value) : ptr(m.loc);
+                Ptr<Loc> ploc = m.md != null ? ptr(m.md.get().loc) : ptr(m.loc);
                 Loc loc = loc = new Loc((ploc.get()).filename != null ? (ploc.get()).filename : toBytePtr(srcfilename), (ploc.get()).linnum, (ploc.get()).charnum);
-                int commentlen = strlen(m.comment);
+                int commentlen = strlen(m.comment.value);
                 Ref<DArray<Dsymbol>> a = ref(new DArray<Dsymbol>());
                 try {
                     if ((dc.get()).macros != null)
                     {
-                        commentlen = (((dc.get()).macros.name.minus(m.comment)));
+                        commentlen = (((dc.get()).macros.name.minus(m.comment.value)));
                         (dc.get()).macros.write(loc, dc, sc, ptr(a), ptr(buf));
                     }
-                    buf.value.write(m.comment, commentlen);
+                    buf.value.write(m.comment.value, commentlen);
                     highlightText(sc, ptr(a), loc, ptr(buf), 0);
                 }
                 finally {
@@ -1008,11 +1003,11 @@ public class doc {
                 finally {
                 }
             }
-            Macro.define(ptr(m.macrotable.value), new ByteSlice("BODY"), buf.value.peekSlice());
+            Macro.define(ptr(m.macrotable), new ByteSlice("BODY"), buf.value.peekSlice());
             Ref<OutBuffer> buf2 = ref(new OutBuffer());
             try {
                 buf2.value.writestring(new ByteSlice("$(DDOC)"));
-                IntRef end = ref(buf2.value.offset);
+                IntRef end = ref(buf2.value.offset.value);
                 (m.macrotable.value.get()).expand(ptr(buf2), 0, ptr(end), new ByteSlice());
                 {
                     ByteSlice slice = buf2.value.peekSlice().copy();
@@ -1043,7 +1038,7 @@ public class doc {
                         }
                     }
                 }
-                writeFile(m.loc, m.docfile.asString(), toByteSlice(buf.value.peekSlice()));
+                writeFile(m.loc.value, m.docfile.asString(), toByteSlice(buf.value.peekSlice()));
             }
             finally {
             }
@@ -1055,8 +1050,8 @@ public class doc {
     public static void escapeDdocString(Ptr<OutBuffer> buf, int start) {
         {
             int u = start;
-            for (; (u < (buf.get()).offset);u++){
-                byte c = (byte)(buf.get()).data.get(u);
+            for (; (u < (buf.get()).offset.value);u++){
+                byte c = (byte)(buf.get()).data.value.get(u);
                 switch ((c & 0xFF))
                 {
                     case 36:
@@ -1087,8 +1082,8 @@ public class doc {
         boolean atLineStart = true;
         {
             int u = start;
-            for (; (u < (buf.get()).offset);u++){
-                byte c = (byte)(buf.get()).data.get(u);
+            for (; (u < (buf.get()).offset.value);u++){
+                byte c = (byte)(buf.get()).data.value.get(u);
                 switch ((c & 0xFF))
                 {
                     case 40:
@@ -1124,7 +1119,7 @@ public class doc {
                         int numdash = 1;
                         {
                             u += 1;
-                            for (; (u < (buf.get()).offset) && (((buf.get()).data.get(u) & 0xFF) == (c & 0xFF));u += 1) {
+                            for (; (u < (buf.get()).offset.value) && (((buf.get()).data.value.get(u) & 0xFF) == (c & 0xFF));u += 1) {
                                 numdash += 1;
                             }
                         }
@@ -1139,16 +1134,16 @@ public class doc {
                         atLineStart = false;
                         break;
                     case 92:
-                        if ((inCode == 0) && respectBackslashEscapes && (u + 1 < (buf.get()).offset) && global.value.params.markdown)
+                        if ((inCode == 0) && respectBackslashEscapes && (u + 1 < (buf.get()).offset.value) && global.params.markdown)
                         {
-                            if ((((buf.get()).data.get(u + 1) & 0xFF) == 40) || (((buf.get()).data.get(u + 1) & 0xFF) == 41))
+                            if ((((buf.get()).data.value.get(u + 1) & 0xFF) == 40) || (((buf.get()).data.value.get(u + 1) & 0xFF) == 41))
                             {
-                                ByteSlice paren = (((buf.get()).data.get(u + 1) & 0xFF) == 40) ? new ByteSlice("$(LPAREN)") : new ByteSlice("$(RPAREN)").copy();
+                                ByteSlice paren = (((buf.get()).data.value.get(u + 1) & 0xFF) == 40) ? new ByteSlice("$(LPAREN)") : new ByteSlice("$(RPAREN)").copy();
                                 (buf.get()).remove(u, 2);
                                 (buf.get()).insert(u, toByteSlice(paren));
                                 u += 8;
                             }
-                            else if ((((buf.get()).data.get(u + 1) & 0xFF) == 92))
+                            else if ((((buf.get()).data.value.get(u + 1) & 0xFF) == 92))
                                 u += 1;
                         }
                         break;
@@ -1162,10 +1157,10 @@ public class doc {
         {
             par_open = 0;
             {
-                int u = (buf.get()).offset;
+                int u = (buf.get()).offset.value;
                 for (; (u > start);){
                     u--;
-                    byte c = (byte)(buf.get()).data.get(u);
+                    byte c = (byte)(buf.get()).data.value.get(u);
                     switch ((c & 0xFF))
                     {
                         case 41:
@@ -1190,8 +1185,8 @@ public class doc {
     }
 
     public static Ptr<Scope> skipNonQualScopes(Ptr<Scope> sc) {
-        for (; (sc != null) && ((sc.get()).scopesym == null);) {
-            sc = (sc.get()).enclosing;
+        for (; (sc != null) && ((sc.get()).scopesym.value == null);) {
+            sc = (sc.get()).enclosing.value;
         }
         return sc;
     }
@@ -1204,13 +1199,13 @@ public class doc {
         if (includeParent && (s.parent.value != null) || (eponymousParent != null))
             dot = emitAnchorName(buf, s.parent.value, sc, includeParent);
         else if (includeParent && (sc != null))
-            dot = emitAnchorName(buf, (sc.get()).scopesym, skipNonQualScopes((sc.get()).enclosing), includeParent);
+            dot = emitAnchorName(buf, (sc.get()).scopesym.value, skipNonQualScopes((sc.get()).enclosing.value), includeParent);
         if (eponymousParent != null)
             return dot;
         if (dot)
             (buf.get()).writeByte(46);
         TemplateDeclaration td = null;
-        if ((s.isCtorDeclaration() != null) || ((td = s.isTemplateDeclaration()) != null) && (td.onemember != null) && (td.onemember.isCtorDeclaration() != null))
+        if ((s.isCtorDeclaration() != null) || ((td = s.isTemplateDeclaration()) != null) && (td.onemember.value != null) && (td.onemember.value.isCtorDeclaration() != null))
         {
             (buf.get()).writestring(new ByteSlice("this"));
         }
@@ -1222,7 +1217,6 @@ public class doc {
     }
 
     public static void emitAnchor(Ptr<OutBuffer> buf, Dsymbol s, Ptr<Scope> sc, boolean forHeader) {
-        Ref<Ptr<OutBuffer>> buf_ref = ref(buf);
         Identifier ident = null;
         {
             Ref<OutBuffer> anc = ref(new OutBuffer());
@@ -1240,7 +1234,7 @@ public class doc {
             if (pcount != null)
             {
                 TemplateDeclaration td = getEponymousParent(s);
-                if ((pequals((sc.get()).prevAnchor, ident)) && ((sc.get()).lastdc != null) && isDitto(s.comment) || (td != null) && isDitto(td.comment))
+                if ((pequals((sc.get()).prevAnchor, ident)) && ((sc.get()).lastdc.value != null) && isDitto(s.comment.value) || (td != null) && isDitto(td.comment.value))
                     return ;
                 count = (pcount.get() += 1);
             }
@@ -1253,22 +1247,22 @@ public class doc {
         (sc.get()).prevAnchor = ident;
         ByteSlice macroName = forHeader ? new ByteSlice("DDOC_HEADER_ANCHOR") : new ByteSlice("DDOC_ANCHOR").copy();
         {
-            Ref<Import> imp = ref(s.isImport());
-            if ((imp.value) != null)
+            Import imp = s.isImport();
+            if ((imp) != null)
             {
-                if ((imp.value.aliases.length > 0))
+                if ((imp.aliases.length.value > 0))
                 {
                     {
                         int i = 0;
-                        for (; (i < imp.value.aliases.length);i++){
-                            Identifier a = imp.value.aliases.get(i);
-                            Identifier id = a != null ? a : imp.value.names.get(i);
+                        for (; (i < imp.aliases.length.value);i++){
+                            Identifier a = imp.aliases.get(i);
+                            Identifier id = a != null ? a : imp.names.get(i);
                             Loc loc = new Loc(null, 0, 0).copy();
                             {
                                 Dsymbol symFromId = (sc.get()).search(loc, id, null, 0);
                                 if ((symFromId) != null)
                                 {
-                                    emitAnchor(buf_ref.value, symFromId, sc, forHeader);
+                                    emitAnchor(buf, symFromId, sc, forHeader);
                                 }
                             }
                         }
@@ -1276,50 +1270,50 @@ public class doc {
                 }
                 else
                 {
-                    if (imp.value.aliasId != null)
+                    if (imp.aliasId != null)
                     {
-                        ByteSlice symbolName = imp.value.aliasId.asString().copy();
-                        (buf_ref.value.get()).printf(new BytePtr("$(%.*s %.*s"), macroName.getLength(), toBytePtr(macroName), symbolName.getLength(), toBytePtr(symbolName));
+                        ByteSlice symbolName = imp.aliasId.asString().copy();
+                        (buf.get()).printf(new BytePtr("$(%.*s %.*s"), macroName.getLength(), toBytePtr(macroName), symbolName.getLength(), toBytePtr(symbolName));
                         if (forHeader)
                         {
-                            (buf_ref.value.get()).printf(new BytePtr(", %.*s"), symbolName.getLength(), toBytePtr(symbolName));
+                            (buf.get()).printf(new BytePtr(", %.*s"), symbolName.getLength(), toBytePtr(symbolName));
                         }
                     }
                     else
                     {
                         Function0<Void> printFullyQualifiedImport = new Function0<Void>(){
                             public Void invoke() {
-                                if ((imp.value.packages != null) && ((imp.value.packages.get()).length != 0))
+                                if ((imp.packages.value != null) && ((imp.packages.value.get()).length.value != 0))
                                 {
                                     {
-                                        Ref<Slice<Identifier>> __r1047 = ref((imp.value.packages.get()).opSlice().copy());
+                                        Ref<Slice<Identifier>> __r1047 = ref((imp.packages.value.get()).opSlice().copy());
                                         IntRef __key1048 = ref(0);
                                         for (; (__key1048.value < __r1047.value.getLength());__key1048.value += 1) {
                                             Identifier pid = __r1047.value.get(__key1048.value);
-                                            (buf_ref.value.get()).printf(new BytePtr("%s."), pid.toChars());
+                                            (buf.get()).printf(new BytePtr("%s."), pid.toChars());
                                         }
                                     }
                                 }
-                                (buf_ref.value.get()).writestring(imp.value.id.asString());
+                                (buf.get()).writestring(imp.id.asString());
                             }
                         };
-                        (buf_ref.value.get()).printf(new BytePtr("$(%.*s "), macroName.getLength(), toBytePtr(macroName));
+                        (buf.get()).printf(new BytePtr("$(%.*s "), macroName.getLength(), toBytePtr(macroName));
                         printFullyQualifiedImport.invoke();
                         if (forHeader)
                         {
-                            (buf_ref.value.get()).printf(new BytePtr(", "));
+                            (buf.get()).printf(new BytePtr(", "));
                             printFullyQualifiedImport.invoke();
                         }
                     }
-                    (buf_ref.value.get()).writeByte(41);
+                    (buf.get()).writeByte(41);
                 }
             }
             else
             {
                 ByteSlice symbolName = ident.asString().copy();
-                (buf_ref.value.get()).printf(new BytePtr("$(%.*s %.*s"), macroName.getLength(), toBytePtr(macroName), symbolName.getLength(), toBytePtr(symbolName));
+                (buf.get()).printf(new BytePtr("$(%.*s %.*s"), macroName.getLength(), toBytePtr(macroName), symbolName.getLength(), toBytePtr(symbolName));
                 if ((count > 1))
-                    (buf_ref.value.get()).printf(new BytePtr(".%u"), count);
+                    (buf.get()).printf(new BytePtr(".%u"), count);
                 if (forHeader)
                 {
                     Identifier shortIdent = null;
@@ -1333,9 +1327,9 @@ public class doc {
                         }
                     }
                     ByteSlice shortName = shortIdent.asString().copy();
-                    (buf_ref.value.get()).printf(new BytePtr(", %.*s"), shortName.getLength(), toBytePtr(shortName));
+                    (buf.get()).printf(new BytePtr(", %.*s"), shortName.getLength(), toBytePtr(shortName));
                 }
-                (buf_ref.value.get()).writeByte(41);
+                (buf.get()).writeByte(41);
             }
         }
     }
@@ -1358,17 +1352,17 @@ public class doc {
     }
 
     public static void expandTemplateMixinComments(TemplateMixin tm, Ptr<OutBuffer> buf, Ptr<Scope> sc) {
-        if (tm.semanticRun == 0)
+        if (tm.semanticRun.value == 0)
             dsymbolSemantic(tm, sc);
-        TemplateDeclaration td = (tm != null) && (tm.tempdecl != null) ? tm.tempdecl.isTemplateDeclaration() : null;
-        if ((td != null) && (td.members != null))
+        TemplateDeclaration td = (tm != null) && (tm.tempdecl.value != null) ? tm.tempdecl.value.isTemplateDeclaration() : null;
+        if ((td != null) && (td.members.value != null))
         {
             {
                 int i = 0;
-                for (; (i < (td.members.get()).length);i++){
-                    Dsymbol sm = (td.members.get()).get(i);
+                for (; (i < (td.members.value.get()).length.value);i++){
+                    Dsymbol sm = (td.members.value.get()).get(i);
                     TemplateMixin tmc = sm.isTemplateMixin();
-                    if ((tmc != null) && (tmc.comment != null))
+                    if ((tmc != null) && (tmc.comment.value != null))
                         expandTemplateMixinComments(tmc, buf, sc);
                     else
                         emitComment(sm, buf, sc);
@@ -1378,7 +1372,7 @@ public class doc {
     }
 
     public static void emitMemberComments(ScopeDsymbol sds, Ptr<OutBuffer> buf, Ptr<Scope> sc) {
-        if (sds.members == null)
+        if (sds.members.value == null)
             return ;
         ByteSlice m = new ByteSlice("$(DDOC_MEMBERS ").copy();
         if (sds.isTemplateDeclaration() != null)
@@ -1391,24 +1385,24 @@ public class doc {
             m = new ByteSlice("$(DDOC_ENUM_MEMBERS ").copy();
         else if (sds.isModule() != null)
             m = new ByteSlice("$(DDOC_MODULE_MEMBERS ").copy();
-        int offset1 = (buf.get()).offset;
+        int offset1 = (buf.get()).offset.value;
         (buf.get()).writestring(m);
-        int offset2 = (buf.get()).offset;
+        int offset2 = (buf.get()).offset.value;
         sc = (sc.get()).push(sds);
         {
             int i = 0;
-            for (; (i < (sds.members.get()).length);i++){
-                Dsymbol s = (sds.members.get()).get(i);
-                if ((s.comment != null) && (s.isTemplateMixin() != null) && (s.parent.value != null) && (s.parent.value.isTemplateDeclaration() == null))
+            for (; (i < (sds.members.value.get()).length.value);i++){
+                Dsymbol s = (sds.members.value.get()).get(i);
+                if ((s.comment.value != null) && (s.isTemplateMixin() != null) && (s.parent.value != null) && (s.parent.value.isTemplateDeclaration() == null))
                     expandTemplateMixinComments((TemplateMixin)s, buf, sc);
                 emitComment(s, buf, sc);
             }
         }
         emitComment(null, buf, sc);
         (sc.get()).pop();
-        if (((buf.get()).offset == offset2))
+        if (((buf.get()).offset.value == offset2))
         {
-            (buf.get()).offset = offset1;
+            (buf.get()).offset.value = offset1;
         }
         else
             (buf.get()).writestring(new ByteSlice(")"));
@@ -1420,7 +1414,7 @@ public class doc {
 
     public static void emitProtection(Ptr<OutBuffer> buf, Declaration d) {
         Prot prot = d.protection.copy();
-        if ((prot.kind != Prot.Kind.undefined) && (prot.kind != Prot.Kind.public_))
+        if ((prot.kind.value != Prot.Kind.undefined) && (prot.kind.value != Prot.Kind.public_))
         {
             emitProtection(buf, prot);
         }
@@ -1450,11 +1444,11 @@ public class doc {
         public Section summary = null;
         public Section copyright = null;
         public Section macros = null;
-        public Ptr<Ptr<Macro>> pmacrotable = null;
+        public Ref<Ptr<Ptr<Macro>>> pmacrotable = ref(null);
         public Ptr<Escape> escapetable = null;
         public Ref<DArray<Dsymbol>> a = ref(new DArray<Dsymbol>());
         public static Ptr<DocComment> parse(Dsymbol s, BytePtr comment) {
-            Ptr<DocComment> dc = new DocComment(new DArray<Section>(), null, null, null, null, null, new DArray<Dsymbol>());
+            Ptr<DocComment> dc = refPtr(new DocComment(new DArray<Section>(), null, null, null, null, null, new DArray<Dsymbol>()));
             (dc.get()).a.value.push(s);
             if (comment == null)
                 return dc;
@@ -1594,7 +1588,7 @@ public class doc {
         public static void parseEscapes(Ptr<Escape> escapetable, BytePtr textstart, int textlen) {
             if (escapetable == null)
             {
-                escapetable = new Escape(new ByteSlice());
+                escapetable = refPtr(new Escape(new ByteSlice()));
                 memset(escapetable, 0, 2040);
             }
             BytePtr p = pcopy(textstart);
@@ -1756,8 +1750,8 @@ public class doc {
         }
 
         public  void writeSections(Ptr<Scope> sc, Ptr<DArray<Dsymbol>> a, Ptr<OutBuffer> buf) {
-            assert((a.get()).length != 0);
-            Loc loc = (a.get()).get(0).loc.copy();
+            assert((a.get()).length.value != 0);
+            Loc loc = (a.get()).get(0).loc.value.copy();
             {
                 dmodule.Module m = (a.get()).get(0).isModule();
                 if ((m) != null)
@@ -1766,9 +1760,9 @@ public class doc {
                         loc = (m.md.get()).loc.value.copy();
                 }
             }
-            int offset1 = (buf.get()).offset;
+            int offset1 = (buf.get()).offset.value;
             (buf.get()).writestring(new ByteSlice("$(DDOC_SECTIONS "));
-            int offset2 = (buf.get()).offset;
+            int offset2 = (buf.get()).offset.value;
             {
                 int i = 0;
                 for (; (i < this.sections.length);i++){
@@ -1778,7 +1772,7 @@ public class doc {
                     if ((sec.namelen == 0) && (i == 0))
                     {
                         (buf.get()).writestring(new ByteSlice("$(DDOC_SUMMARY "));
-                        int o = (buf.get()).offset;
+                        int o = (buf.get()).offset.value;
                         (buf.get()).write(sec._body, sec.bodylen);
                         escapeStrayParenthesis(loc, buf, o, true);
                         highlightText(sc, a, loc, buf, o);
@@ -1790,7 +1784,7 @@ public class doc {
             }
             {
                 int i = 0;
-                for (; (i < (a.get()).length);i++){
+                for (; (i < (a.get()).length.value);i++){
                     Dsymbol s = (a.get()).get(i);
                     {
                         Dsymbol td = getEponymousParent(s);
@@ -1800,14 +1794,14 @@ public class doc {
                     {
                         UnitTestDeclaration utd = s.ddocUnittest;
                         for (; utd != null;utd = utd.ddocUnittest){
-                            if ((utd.protection.kind == Prot.Kind.private_) || (utd.comment == null) || (utd.fbody == null))
+                            if ((utd.protection.kind.value == Prot.Kind.private_) || (utd.comment.value == null) || (utd.fbody.value == null))
                                 continue;
-                            BytePtr c = pcopy(utd.comment);
+                            BytePtr c = pcopy(utd.comment.value);
                             for (; ((c.get() & 0xFF) == 32) || ((c.get() & 0xFF) == 9) || ((c.get() & 0xFF) == 10) || ((c.get() & 0xFF) == 13);) {
                                 c.plusAssign(1);
                             }
                             (buf.get()).writestring(new ByteSlice("$(DDOC_EXAMPLES "));
-                            int o = (buf.get()).offset;
+                            int o = (buf.get()).offset.value;
                             (buf.get()).writestring(c);
                             if (utd.codedoc != null)
                             {
@@ -1826,9 +1820,9 @@ public class doc {
                     }
                 }
             }
-            if (((buf.get()).offset == offset2))
+            if (((buf.get()).offset.value == offset2))
             {
-                (buf.get()).offset = offset1;
+                (buf.get()).offset.value = offset1;
                 (buf.get()).writestring(new ByteSlice("\n"));
             }
             else
@@ -1926,7 +1920,7 @@ public class doc {
                 return i + j;
             }
         }
-        return (buf.get()).offset;
+        return (buf.get()).offset.value;
     }
 
     public static ByteSlice replaceChar(ByteSlice s, byte c, ByteSlice r) {
@@ -1960,7 +1954,7 @@ public class doc {
             }
         }
         result.value.append(s.slice(start,s.getLength()));
-        return toByteSlice(result.value);
+        return toByteSlice(result);
     }
 
     public static ByteSlice toLowercase(ByteSlice s) {
@@ -2144,23 +2138,23 @@ public class doc {
     }
 
     public static boolean replaceMarkdownThematicBreak(Ptr<OutBuffer> buf, IntRef i, int iLineStart, Loc loc) {
-        if (!global.value.params.markdown)
+        if (!global.params.markdown)
             return false;
         ByteSlice slice = (buf.get()).peekSlice().copy();
-        byte c = (buf.get()).data.get(i.value);
+        byte c = (buf.get()).data.value.get(i.value);
         int j = i.value + 1;
         int repeat = 1;
         for (; (j < slice.getLength());j++){
-            if ((((buf.get()).data.get(j) & 0xFF) == (c & 0xFF)))
+            if ((((buf.get()).data.value.get(j) & 0xFF) == (c & 0xFF)))
                 repeat += 1;
-            else if ((((buf.get()).data.get(j) & 0xFF) != 32) && (((buf.get()).data.get(j) & 0xFF) != 9))
+            else if ((((buf.get()).data.value.get(j) & 0xFF) != 32) && (((buf.get()).data.value.get(j) & 0xFF) != 9))
                 break;
         }
         if ((repeat >= 3))
         {
-            if ((j >= (buf.get()).offset) || (((buf.get()).data.get(j) & 0xFF) == 10) || (((buf.get()).data.get(j) & 0xFF) == 13))
+            if ((j >= (buf.get()).offset.value) || (((buf.get()).data.value.get(j) & 0xFF) == 10) || (((buf.get()).data.value.get(j) & 0xFF) == 13))
             {
-                if (global.value.params.vmarkdown)
+                if (global.params.vmarkdown.value)
                 {
                     ByteSlice s = (buf.get()).peekSlice().slice(i.value,j).copy();
                     message(loc, new BytePtr("Ddoc: converted '%.*s' to a thematic break"), s.getLength(), toBytePtr(s));
@@ -2174,7 +2168,7 @@ public class doc {
     }
 
     public static int detectAtxHeadingLevel(Ptr<OutBuffer> buf, int i) {
-        if (!global.value.params.markdown)
+        if (!global.params.markdown)
             return 0;
         int iHeadingStart = i;
         int iAfterHashes = skipChars(buf, i, new ByteSlice("#"));
@@ -2182,7 +2176,7 @@ public class doc {
         if ((headingLevel > 6))
             return 0;
         int iTextStart = skipChars(buf, iAfterHashes, new ByteSlice(" \u0009"));
-        boolean emptyHeading = (((buf.get()).data.get(iTextStart) & 0xFF) == 13) || (((buf.get()).data.get(iTextStart) & 0xFF) == 10);
+        boolean emptyHeading = (((buf.get()).data.value.get(iTextStart) & 0xFF) == 13) || (((buf.get()).data.value.get(iTextStart) & 0xFF) == 10);
         if (!emptyHeading && (iTextStart == iAfterHashes))
             return 0;
         return headingLevel;
@@ -2220,9 +2214,9 @@ public class doc {
     }
 
     public static void endMarkdownHeading(Ptr<OutBuffer> buf, int iStart, IntRef iEnd, Loc loc, IntRef headingLevel) {
-        if (!global.value.params.markdown)
+        if (!global.params.markdown)
             return ;
-        if (global.value.params.vmarkdown)
+        if (global.params.vmarkdown.value)
         {
             ByteSlice s = (buf.get()).peekSlice().slice(iStart,iEnd.value).copy();
             message(loc, new BytePtr("Ddoc: added heading '%.*s'"), s.getLength(), toBytePtr(s));
@@ -2232,7 +2226,7 @@ public class doc {
         (buf.get()).insert(iStart, toByteSlice(heading));
         iEnd.value += 5;
         int iBeforeNewline = iEnd.value;
-        for (; (((buf.get()).data.get(iBeforeNewline - 1) & 0xFF) == 13) || (((buf.get()).data.get(iBeforeNewline - 1) & 0xFF) == 10);) {
+        for (; (((buf.get()).data.value.get(iBeforeNewline - 1) & 0xFF) == 13) || (((buf.get()).data.value.get(iBeforeNewline - 1) & 0xFF) == 10);) {
             iBeforeNewline -= 1;
         }
         (buf.get()).insert(iBeforeNewline, new ByteSlice(")"));
@@ -2258,66 +2252,63 @@ public class doc {
     }
 
     public static int replaceMarkdownEmphasis(Ptr<OutBuffer> buf, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters, int downToLevel) {
-        Ref<Ptr<OutBuffer>> buf_ref = ref(buf);
-        if (!global.value.params.markdown)
+        if (!global.params.markdown)
             return 0;
         Function2<MarkdownDelimiter,MarkdownDelimiter,Integer> replaceEmphasisPair = new Function2<MarkdownDelimiter,MarkdownDelimiter,Integer>(){
             public Integer invoke(MarkdownDelimiter start, MarkdownDelimiter end) {
-                Ref<MarkdownDelimiter> start_ref = ref(start);
-                Ref<MarkdownDelimiter> end_ref = ref(end);
-                IntRef count = ref((start_ref.value.count == 1) || (end_ref.value.count == 1) ? 1 : 2);
-                IntRef iStart = ref(start_ref.value.iStart);
-                IntRef iEnd = ref(end_ref.value.iStart);
-                end_ref.value.count -= count.value;
-                start_ref.value.count -= count.value;
-                iStart.value += start_ref.value.count;
-                if (start_ref.value.count == 0)
-                    start_ref.value.type = (byte)0;
-                if (end_ref.value.count == 0)
-                    end_ref.value.type = (byte)0;
-                if (global.value.params.vmarkdown)
+                IntRef count = ref((start.count.value == 1) || (end.count.value == 1) ? 1 : 2);
+                IntRef iStart = ref(start.iStart.value);
+                IntRef iEnd = ref(end.iStart.value);
+                end.count.value -= count.value;
+                start.count.value -= count.value;
+                iStart.value += start.count.value;
+                if (start.count.value == 0)
+                    start.type.value = (byte)0;
+                if (end.count.value == 0)
+                    end.type.value = (byte)0;
+                if (global.params.vmarkdown.value)
                 {
-                    ByteSlice s = (buf_ref.value.get()).peekSlice().slice(iStart.value + count.value,iEnd.value).copy();
+                    ByteSlice s = (buf.get()).peekSlice().slice(iStart.value + count.value,iEnd.value).copy();
                     message(loc, new BytePtr("Ddoc: emphasized text '%.*s'"), s.getLength(), toBytePtr(s));
                 }
-                (buf_ref.value.get()).remove(iStart.value, count.value);
+                (buf.get()).remove(iStart.value, count.value);
                 iEnd.value -= count.value;
-                (buf_ref.value.get()).remove(iEnd.value, count.value);
+                (buf.get()).remove(iEnd.value, count.value);
                 Ref<ByteSlice> macroName = ref((count.value >= 2) ? new ByteSlice("$(STRONG ") : new ByteSlice("$(EM ").copy());
-                (buf_ref.value.get()).insert(iEnd.value, new ByteSlice(")"));
-                (buf_ref.value.get()).insert(iStart.value, toByteSlice(macroName.value));
+                (buf.get()).insert(iEnd.value, new ByteSlice(")"));
+                (buf.get()).insert(iStart.value, toByteSlice(macroName));
                 IntRef delta = ref(1 + macroName.value.getLength() - (count.value + count.value));
-                end_ref.value.iStart += count.value;
+                end.iStart.value += count.value;
                 return delta.value;
             }
         };
         int delta = 0;
         int start = inlineDelimiters.getLength() - 1;
         for (; (start >= downToLevel);){
-            for (; (start >= downToLevel) && ((inlineDelimiters.get(start).type & 0xFF) != 42) || !inlineDelimiters.get(start).leftFlanking;) {
+            for (; (start >= downToLevel) && ((inlineDelimiters.get(start).type.value & 0xFF) != 42) || !inlineDelimiters.get(start).leftFlanking;) {
                 start -= 1;
             }
             if ((start < downToLevel))
                 break;
             int end = start + 1;
-            for (; (end < inlineDelimiters.getLength()) && ((inlineDelimiters.get(end).type & 0xFF) != (inlineDelimiters.get(start).type & 0xFF)) || (inlineDelimiters.get(end).macroLevel != inlineDelimiters.get(start).macroLevel) || !inlineDelimiters.get(end).rightFlanking;) {
+            for (; (end < inlineDelimiters.getLength()) && ((inlineDelimiters.get(end).type.value & 0xFF) != (inlineDelimiters.get(start).type.value & 0xFF)) || (inlineDelimiters.get(end).macroLevel != inlineDelimiters.get(start).macroLevel) || !inlineDelimiters.get(end).rightFlanking;) {
                 end += 1;
             }
             if ((end == inlineDelimiters.getLength()))
             {
                 if (!inlineDelimiters.get(start).rightFlanking)
-                    inlineDelimiters.get(start).type = (byte)0;
+                    inlineDelimiters.get(start).type.value = (byte)0;
                 start -= 1;
                 continue;
             }
-            if (inlineDelimiters.get(start).leftFlanking && inlineDelimiters.get(start).rightFlanking || inlineDelimiters.get(end).leftFlanking && inlineDelimiters.get(end).rightFlanking && ((inlineDelimiters.get(start).count + inlineDelimiters.get(end).count) % 3 == 0))
+            if (inlineDelimiters.get(start).leftFlanking && inlineDelimiters.get(start).rightFlanking || inlineDelimiters.get(end).leftFlanking && inlineDelimiters.get(end).rightFlanking && ((inlineDelimiters.get(start).count.value + inlineDelimiters.get(end).count.value) % 3 == 0))
             {
                 start -= 1;
                 continue;
             }
             int delta0 = replaceEmphasisPair.invoke(inlineDelimiters.get(start), inlineDelimiters.get(end));
             for (; (end < inlineDelimiters.getLength());end += 1) {
-                inlineDelimiters.get(end).iStart += delta0;
+                inlineDelimiters.get(end).iStart.value += delta0;
             }
             delta += delta0;
         }
@@ -2348,14 +2339,14 @@ public class doc {
                         else
                         {
                             ByteSlice fullyQualifiedImport = new ByteSlice().copy();
-                            if ((imp.packages != null) && ((imp.packages.get()).length != 0))
+                            if ((imp.packages.value != null) && ((imp.packages.value.get()).length.value != 0))
                             {
                                 {
-                                    Slice<Identifier> __r1065 = (imp.packages.get()).opSlice().copy();
+                                    Slice<Identifier> __r1065 = (imp.packages.value.get()).opSlice().copy();
                                     int __key1066 = 0;
                                     for (; (__key1066 < __r1065.getLength());__key1066 += 1) {
                                         Identifier pid = __r1065.get(__key1066);
-                                        fullyQualifiedImport.append(toByteSlice((pid.asString().concat(new ByteSlice(".")))));
+                                        fullyQualifiedImport.append(toByteSlice((concat(pid.asString(), new ByteSlice(".")))));
                                     }
                                 }
                             }
@@ -2364,9 +2355,9 @@ public class doc {
                                 return true;
                         }
                     }
-                    else if (member.ident != null)
+                    else if (member.ident.value != null)
                     {
-                        if (__equals(p.slice(0,len), member.ident.asString()))
+                        if (__equals(p.slice(0,len), member.ident.value.asString()))
                             return true;
                     }
                 }
@@ -2391,10 +2382,10 @@ public class doc {
 
     public static TypeFunction isTypeFunction(Dsymbol s) {
         FuncDeclaration f = s.isFuncDeclaration();
-        if ((f != null) && (f.type != null))
+        if ((f != null) && (f.type.value != null))
         {
-            Type t = f.originalType != null ? f.originalType : f.type;
-            if (((t.ty & 0xFF) == ENUMTY.Tfunction))
+            Type t = f.originalType.value != null ? f.originalType.value : f.type.value;
+            if (((t.ty.value & 0xFF) == ENUMTY.Tfunction))
                 return (TypeFunction)t;
         }
         return null;
@@ -2402,14 +2393,14 @@ public class doc {
 
     public static Parameter isFunctionParameter(Dsymbol s, BytePtr p, int len) {
         TypeFunction tf = isTypeFunction(s);
-        if ((tf != null) && (tf.parameterList.parameters != null))
+        if ((tf != null) && (tf.parameterList.parameters.value != null))
         {
             {
-                Slice<Parameter> __r1069 = (tf.parameterList.parameters.get()).opSlice().copy();
+                Slice<Parameter> __r1069 = (tf.parameterList.parameters.value.get()).opSlice().copy();
                 int __key1070 = 0;
                 for (; (__key1070 < __r1069.getLength());__key1070 += 1) {
                     Parameter fparam = __r1069.get(__key1070);
-                    if ((fparam.ident != null) && __equals(p.slice(0,len), fparam.ident.asString()))
+                    if ((fparam.ident.value != null) && __equals(p.slice(0,len), fparam.ident.value.asString()))
                     {
                         return fparam;
                     }
@@ -2422,7 +2413,7 @@ public class doc {
     public static Parameter isFunctionParameter(Ptr<DArray<Dsymbol>> a, BytePtr p, int len) {
         {
             int i = 0;
-            for (; (i < (a.get()).length);i++){
+            for (; (i < (a.get()).length.value);i++){
                 Parameter fparam = isFunctionParameter((a.get()).get(i), p, len);
                 if (fparam != null)
                 {
@@ -2436,18 +2427,18 @@ public class doc {
     public static Parameter isEponymousFunctionParameter(Ptr<DArray<Dsymbol>> a, BytePtr p, int len) {
         {
             int i = 0;
-            for (; (i < (a.get()).length);i++){
+            for (; (i < (a.get()).length.value);i++){
                 TemplateDeclaration td = (a.get()).get(i).isTemplateDeclaration();
-                if ((td != null) && (td.onemember != null))
+                if ((td != null) && (td.onemember.value != null))
                 {
-                    td = td.onemember.isTemplateDeclaration();
+                    td = td.onemember.value.isTemplateDeclaration();
                 }
                 if (td == null)
                 {
                     AliasDeclaration ad = (a.get()).get(i).isAliasDeclaration();
-                    if ((ad != null) && (ad.aliassym != null))
+                    if ((ad != null) && (ad.aliassym.value != null))
                     {
-                        td = ad.aliassym.isTemplateDeclaration();
+                        td = ad.aliassym.value.isTemplateDeclaration();
                     }
                 }
                 for (; td != null;){
@@ -2470,18 +2461,18 @@ public class doc {
     public static TemplateParameter isTemplateParameter(Ptr<DArray<Dsymbol>> a, BytePtr p, int len) {
         {
             int i = 0;
-            for (; (i < (a.get()).length);i++){
+            for (; (i < (a.get()).length.value);i++){
                 TemplateDeclaration td = (a.get()).get(i).isTemplateDeclaration();
                 if (td == null)
                     td = getEponymousParent((a.get()).get(i));
-                if ((td != null) && (td.origParameters != null))
+                if ((td != null) && (td.origParameters.value != null))
                 {
                     {
-                        Slice<TemplateParameter> __r1071 = (td.origParameters.get()).opSlice().copy();
+                        Slice<TemplateParameter> __r1071 = (td.origParameters.value.get()).opSlice().copy();
                         int __key1072 = 0;
                         for (; (__key1072 < __r1071.getLength());__key1072 += 1) {
                             TemplateParameter tp = __r1071.get(__key1072);
-                            if ((tp.ident != null) && __equals(p.slice(0,len), tp.ident.asString()))
+                            if ((tp.ident.value != null) && __equals(p.slice(0,len), tp.ident.value.asString()))
                             {
                                 return tp;
                             }
@@ -2509,19 +2500,19 @@ public class doc {
 
     public static class MarkdownDelimiter
     {
-        public int iStart = 0;
-        public int count = 0;
+        public IntRef iStart = ref(0);
+        public IntRef count = ref(0);
         public int macroLevel = 0;
         public boolean leftFlanking = false;
         public boolean rightFlanking = false;
         public boolean atParagraphStart = false;
-        public byte type = 0;
+        public Ref<Byte> type = ref(0);
         public  boolean isValid() {
-            return this.count != 0;
+            return this.count.value != 0;
         }
 
         public  void invalidate() {
-            this.count = 0;
+            this.count.value = 0;
         }
 
         public MarkdownDelimiter(){
@@ -2572,9 +2563,9 @@ public class doc {
         }
 
         public static MarkdownList parseItem(Ptr<OutBuffer> buf, int iLineStart, int i) {
-            if (!global.value.params.markdown)
+            if (!global.params.markdown)
                 return new MarkdownList(new ByteSlice(), 0, 0, 0, 0, 0, (byte)255);
-            if ((((buf.get()).data.get(i) & 0xFF) == 43) || (((buf.get()).data.get(i) & 0xFF) == 45) || (((buf.get()).data.get(i) & 0xFF) == 42))
+            if ((((buf.get()).data.value.get(i) & 0xFF) == 43) || (((buf.get()).data.value.get(i) & 0xFF) == 45) || (((buf.get()).data.value.get(i) & 0xFF) == 42))
                 return parseUnorderedListItem(buf, iLineStart, i);
             else
                 return parseOrderedListItem(buf, iLineStart, i);
@@ -2589,7 +2580,7 @@ public class doc {
 
         public  boolean startItem(Ptr<OutBuffer> buf, IntRef iLineStart, IntRef i, IntRef iPrecedingBlankLine, Slice<MarkdownList> nestedLists, Loc loc) {
             (buf.get()).remove(this.iStart, this.iContentStart - this.iStart);
-            if ((nestedLists.getLength() == 0) || (this.delimiterIndent >= nestedLists.get(nestedLists.getLength() - 1).contentIndent) || __equals((buf.get()).data.slice(iLineStart.value - 4,iLineStart.value), new ByteSlice("$(LI")))
+            if ((nestedLists.getLength() == 0) || (this.delimiterIndent >= nestedLists.get(nestedLists.getLength() - 1).contentIndent) || __equals((buf.get()).data.value.slice(iLineStart.value - 4,iLineStart.value), new ByteSlice("$(LI")))
             {
                 nestedLists.append(this);
                 if (((this.type & 0xFF) == 46))
@@ -2615,10 +2606,10 @@ public class doc {
             this.iStart = (buf.get()).insert(this.iStart, new ByteSlice("$(LI\n"));
             i.value = this.iStart - 1;
             iLineStart.value = i.value;
-            if (global.value.params.vmarkdown)
+            if (global.params.vmarkdown.value)
             {
                 int iEnd = this.iStart;
-                for (; (iEnd < (buf.get()).offset) && (((buf.get()).data.get(iEnd) & 0xFF) != 13) && (((buf.get()).data.get(iEnd) & 0xFF) != 10);) {
+                for (; (iEnd < (buf.get()).offset.value) && (((buf.get()).data.value.get(iEnd) & 0xFF) != 13) && (((buf.get()).data.value.get(iEnd) & 0xFF) != 10);) {
                     iEnd += 1;
                 }
                 ByteSlice s = (buf.get()).peekSlice().slice(this.iStart,iEnd).copy();
@@ -2642,7 +2633,7 @@ public class doc {
                 i.value = (buf.get()).insert(i.value, new ByteSlice(")"));
                 iParagraphStart.value = skipChars(buf, i.value, new ByteSlice(" \u0009\r\n"));
             }
-            else if ((iAfterSpaces >= (buf.get()).offset) || (((buf.get()).data.get(iAfterSpaces) & 0xFF) != 13) && (((buf.get()).data.get(iAfterSpaces) & 0xFF) != 10))
+            else if ((iAfterSpaces >= (buf.get()).offset.value) || (((buf.get()).data.value.get(iAfterSpaces) & 0xFF) != 13) && (((buf.get()).data.value.get(iAfterSpaces) & 0xFF) != 10))
             {
                 int indent = getMarkdownIndent(buf, i.value + 1, iAfterSpaces);
                 for (; (nestedLists.getLength() != 0) && (nestedLists.get(nestedLists.getLength() - 1).contentIndent > indent);){
@@ -2660,12 +2651,12 @@ public class doc {
         }
 
         public static MarkdownList parseUnorderedListItem(Ptr<OutBuffer> buf, int iLineStart, int i) {
-            if ((i + 1 < (buf.get()).offset) && (((buf.get()).data.get(i) & 0xFF) == 45) || (((buf.get()).data.get(i) & 0xFF) == 42) || (((buf.get()).data.get(i) & 0xFF) == 43) && (((buf.get()).data.get(i + 1) & 0xFF) == 32) || (((buf.get()).data.get(i + 1) & 0xFF) == 9) || (((buf.get()).data.get(i + 1) & 0xFF) == 13) || (((buf.get()).data.get(i + 1) & 0xFF) == 10))
+            if ((i + 1 < (buf.get()).offset.value) && (((buf.get()).data.value.get(i) & 0xFF) == 45) || (((buf.get()).data.value.get(i) & 0xFF) == 42) || (((buf.get()).data.value.get(i) & 0xFF) == 43) && (((buf.get()).data.value.get(i + 1) & 0xFF) == 32) || (((buf.get()).data.value.get(i + 1) & 0xFF) == 9) || (((buf.get()).data.value.get(i + 1) & 0xFF) == 13) || (((buf.get()).data.value.get(i + 1) & 0xFF) == 10))
             {
                 int iContentStart = skipChars(buf, i + 1, new ByteSlice(" \u0009"));
                 int delimiterIndent = getMarkdownIndent(buf, iLineStart, i);
                 int contentIndent = getMarkdownIndent(buf, iLineStart, iContentStart);
-                MarkdownList list = new MarkdownList(new ByteSlice(), iLineStart, iContentStart, delimiterIndent, contentIndent, 0, (byte)(buf.get()).data.get(i)).copy();
+                MarkdownList list = new MarkdownList(new ByteSlice(), iLineStart, iContentStart, delimiterIndent, contentIndent, 0, (byte)(buf.get()).data.value.get(i)).copy();
                 return list;
             }
             return new MarkdownList(new ByteSlice(), 0, 0, 0, 0, 0, (byte)255);
@@ -2673,7 +2664,7 @@ public class doc {
 
         public static MarkdownList parseOrderedListItem(Ptr<OutBuffer> buf, int iLineStart, int i) {
             int iAfterNumbers = skipChars(buf, i, new ByteSlice("0123456789"));
-            if ((iAfterNumbers - i > 0) && (iAfterNumbers - i <= 9) && (iAfterNumbers + 1 < (buf.get()).offset) && (((buf.get()).data.get(iAfterNumbers) & 0xFF) == 46) && (((buf.get()).data.get(iAfterNumbers + 1) & 0xFF) == 32) || (((buf.get()).data.get(iAfterNumbers + 1) & 0xFF) == 9) || (((buf.get()).data.get(iAfterNumbers + 1) & 0xFF) == 13) || (((buf.get()).data.get(iAfterNumbers + 1) & 0xFF) == 10))
+            if ((iAfterNumbers - i > 0) && (iAfterNumbers - i <= 9) && (iAfterNumbers + 1 < (buf.get()).offset.value) && (((buf.get()).data.value.get(iAfterNumbers) & 0xFF) == 46) && (((buf.get()).data.value.get(iAfterNumbers + 1) & 0xFF) == 32) || (((buf.get()).data.value.get(iAfterNumbers + 1) & 0xFF) == 9) || (((buf.get()).data.value.get(iAfterNumbers + 1) & 0xFF) == 13) || (((buf.get()).data.value.get(iAfterNumbers + 1) & 0xFF) == 10))
             {
                 int iContentStart = skipChars(buf, iAfterNumbers + 1, new ByteSlice(" \u0009"));
                 int delimiterIndent = getMarkdownIndent(buf, iLineStart, i);
@@ -2684,7 +2675,7 @@ public class doc {
                 ByteSlice orderedStart = (buf.get()).peekSlice().slice(iNumberStart,iAfterNumbers).copy();
                 if (__equals(orderedStart, new ByteSlice("1")))
                     orderedStart = new ByteSlice().copy();
-                return new MarkdownList(idup(orderedStart), iLineStart, iContentStart, delimiterIndent, contentIndent, 0, (byte)(buf.get()).data.get(iAfterNumbers));
+                return new MarkdownList(idup(orderedStart), iLineStart, iContentStart, delimiterIndent, contentIndent, 0, (byte)(buf.get()).data.value.get(iAfterNumbers));
             }
             return new MarkdownList(new ByteSlice(), 0, 0, 0, 0, 0, (byte)255);
         }
@@ -2736,7 +2727,7 @@ public class doc {
             int iEnd = link.parseReferenceDefinition(buf, i.value, delimiter);
             if ((iEnd > i.value))
             {
-                i.value = delimiter.iStart;
+                i.value = delimiter.iStart.value;
                 link.storeAndReplaceDefinition(buf, i, iEnd, linkReferences, loc);
                 inlineDelimiters_ref.value.getLength() = delimiterIndex;
                 return true;
@@ -2760,9 +2751,9 @@ public class doc {
             int delta = replaceMarkdownEmphasis(buf, loc, inlineDelimiters_ref, delimiterIndex);
             iEnd += delta;
             i.value += delta;
-            if (global.value.params.vmarkdown)
+            if (global.params.vmarkdown.value)
             {
-                ByteSlice s = (buf.get()).peekSlice().slice(delimiter.iStart,iEnd).copy();
+                ByteSlice s = (buf.get()).peekSlice().slice(delimiter.iStart.value,iEnd).copy();
                 message(loc, new BytePtr("Ddoc: linking '%.*s' to '%.*s'"), s.getLength(), toBytePtr(s), link.href.getLength(), toBytePtr(link.href));
             }
             link.replaceLink(buf, i, iEnd, delimiter);
@@ -2775,7 +2766,7 @@ public class doc {
             int iEnd = link.parseReferenceDefinition(buf, i.value, delimiter);
             if ((iEnd == i.value))
                 return false;
-            i.value = delimiter.iStart;
+            i.value = delimiter.iStart.value;
             link.storeAndReplaceDefinition(buf, i, iEnd, linkReferences, loc);
             inlineDelimiters.getLength() = delimiterIndex;
             return true;
@@ -2783,18 +2774,18 @@ public class doc {
 
         public  int parseInlineLink(Ptr<OutBuffer> buf, int i) {
             IntRef iEnd = ref(i + 1);
-            if ((iEnd.value >= (buf.get()).offset) || (((buf.get()).data.get(iEnd.value) & 0xFF) != 40))
+            if ((iEnd.value >= (buf.get()).offset.value) || (((buf.get()).data.value.get(iEnd.value) & 0xFF) != 40))
                 return i;
             iEnd.value += 1;
             if (!this.parseHref(buf, iEnd))
                 return i;
             iEnd.value = skipChars(buf, iEnd.value, new ByteSlice(" \u0009\r\n"));
-            if ((((buf.get()).data.get(iEnd.value) & 0xFF) != 41))
+            if ((((buf.get()).data.value.get(iEnd.value) & 0xFF) != 41))
             {
                 if (this.parseTitle(buf, iEnd))
                     iEnd.value = skipChars(buf, iEnd.value, new ByteSlice(" \u0009\r\n"));
             }
-            if ((((buf.get()).data.get(iEnd.value) & 0xFF) != 41))
+            if ((((buf.get()).data.value.get(iEnd.value) & 0xFF) != 41))
                 return i;
             return iEnd.value + 1;
         }
@@ -2802,10 +2793,10 @@ public class doc {
         public  int parseReferenceLink(Ptr<OutBuffer> buf, int i, MarkdownDelimiter delimiter) {
             IntRef iStart = ref(i + 1);
             int iEnd = iStart.value;
-            if ((iEnd >= (buf.get()).offset) || (((buf.get()).data.get(iEnd) & 0xFF) != 91) || (iEnd + 1 < (buf.get()).offset) && (((buf.get()).data.get(iEnd + 1) & 0xFF) == 93))
+            if ((iEnd >= (buf.get()).offset.value) || (((buf.get()).data.value.get(iEnd) & 0xFF) != 91) || (iEnd + 1 < (buf.get()).offset.value) && (((buf.get()).data.value.get(iEnd + 1) & 0xFF) == 93))
             {
-                iStart.value = delimiter.iStart + delimiter.count - 1;
-                if ((((buf.get()).data.get(iEnd) & 0xFF) == 91))
+                iStart.value = delimiter.iStart.value + delimiter.count.value - 1;
+                if ((((buf.get()).data.value.get(iEnd) & 0xFF) == 91))
                     iEnd += 2;
             }
             this.parseLabel(buf, iStart);
@@ -2817,9 +2808,9 @@ public class doc {
         }
 
         public  int parseReferenceDefinition(Ptr<OutBuffer> buf, int i, MarkdownDelimiter delimiter) {
-            if (!delimiter.atParagraphStart || ((delimiter.type & 0xFF) != 91) || (i + 1 >= (buf.get()).offset) || (((buf.get()).data.get(i + 1) & 0xFF) != 58))
+            if (!delimiter.atParagraphStart || ((delimiter.type.value & 0xFF) != 91) || (i + 1 >= (buf.get()).offset.value) || (((buf.get()).data.value.get(i + 1) & 0xFF) != 58))
                 return i;
-            IntRef iEnd = ref(delimiter.iStart);
+            IntRef iEnd = ref(delimiter.iStart.value);
             this.parseLabel(buf, iEnd);
             if ((this.label.value.getLength() == 0) || (iEnd.value != i + 1))
                 return i;
@@ -2834,20 +2825,20 @@ public class doc {
             if (this.parseTitle(buf, iEnd))
             {
                 iEnd.value = skipChars(buf, iEnd.value, new ByteSlice(" \u0009"));
-                if ((iEnd.value < (buf.get()).offset) && (((buf.get()).data.get(iEnd.value) & 0xFF) != 13) && (((buf.get()).data.get(iEnd.value) & 0xFF) != 10))
+                if ((iEnd.value < (buf.get()).offset.value) && (((buf.get()).data.value.get(iEnd.value) & 0xFF) != 13) && (((buf.get()).data.value.get(iEnd.value) & 0xFF) != 10))
                 {
                     this.title.getLength() = 0;
                     iEnd.value = iBeforeTitle;
                 }
             }
             iEnd.value = skipChars(buf, iEnd.value, new ByteSlice(" \u0009"));
-            if (requireNewline && (iEnd.value < (buf.get()).offset - 1) && (((buf.get()).data.get(iEnd.value) & 0xFF) != 13) && (((buf.get()).data.get(iEnd.value) & 0xFF) != 10))
+            if (requireNewline && (iEnd.value < (buf.get()).offset.value - 1) && (((buf.get()).data.value.get(iEnd.value) & 0xFF) != 13) && (((buf.get()).data.value.get(iEnd.value) & 0xFF) != 10))
                 return i;
             return iEnd.value;
         }
 
         public  boolean parseLabel(Ptr<OutBuffer> buf, IntRef i) {
-            if ((((buf.get()).data.get(i.value) & 0xFF) != 91))
+            if ((((buf.get()).data.value.get(i.value) & 0xFF) != 91))
                 return false;
             ByteSlice slice = (buf.get()).peekSlice().copy();
             int j = i.value + 1;
@@ -2974,9 +2965,9 @@ public class doc {
 
         public  boolean parseTitle(Ptr<OutBuffer> buf, IntRef i) {
             int j = skipChars(buf, i.value, new ByteSlice(" \u0009"));
-            if ((j >= (buf.get()).offset))
+            if ((j >= (buf.get()).offset.value))
                 return false;
-            byte type = (byte)(buf.get()).data.get(j);
+            byte type = (byte)(buf.get()).data.value.get(j);
             if (((type & 0xFF) != 34) && ((type & 0xFF) != 39) && ((type & 0xFF) != 40))
                 return false;
             if (((type & 0xFF) == 40))
@@ -3033,7 +3024,7 @@ public class doc {
         }
 
         public  void replaceLink(Ptr<OutBuffer> buf, IntRef i, int iLinkEnd, MarkdownDelimiter delimiter) {
-            int iAfterLink = i.value - delimiter.count;
+            int iAfterLink = i.value - delimiter.count.value;
             ByteSlice macroName = new ByteSlice().copy();
             if (this.symbol != null)
             {
@@ -3041,21 +3032,21 @@ public class doc {
             }
             else if (this.title.getLength() != 0)
             {
-                if (((delimiter.type & 0xFF) == 91))
+                if (((delimiter.type.value & 0xFF) == 91))
                     macroName = new ByteSlice("$(LINK_TITLE ").copy();
                 else
                     macroName = new ByteSlice("$(IMAGE_TITLE ").copy();
             }
             else
             {
-                if (((delimiter.type & 0xFF) == 91))
+                if (((delimiter.type.value & 0xFF) == 91))
                     macroName = new ByteSlice("$(LINK2 ").copy();
                 else
                     macroName = new ByteSlice("$(IMAGE ").copy();
             }
-            (buf.get()).remove(delimiter.iStart, delimiter.count);
-            (buf.get()).remove(i.value - delimiter.count, iLinkEnd - i.value);
-            iLinkEnd = (buf.get()).insert(delimiter.iStart, toByteSlice(macroName));
+            (buf.get()).remove(delimiter.iStart.value, delimiter.count.value);
+            (buf.get()).remove(i.value - delimiter.count.value, iLinkEnd - i.value);
+            iLinkEnd = (buf.get()).insert(delimiter.iStart.value, toByteSlice(macroName));
             iLinkEnd = (buf.get()).insert(iLinkEnd, toByteSlice(this.href));
             iLinkEnd = (buf.get()).insert(iLinkEnd, new ByteSlice(", "));
             iAfterLink += macroName.getLength() + this.href.getLength() + 2;
@@ -3067,7 +3058,7 @@ public class doc {
                 {
                     int j = iLinkEnd;
                     for (; (j < iAfterLink);j += 1) {
-                        if ((((buf.get()).data.get(j) & 0xFF) == 44))
+                        if ((((buf.get()).data.value.get(j) & 0xFF) == 44))
                         {
                             (buf.get()).remove(j, 1);
                             j = (buf.get()).insert(j, new ByteSlice("$(COMMA)")) - 1;
@@ -3081,8 +3072,8 @@ public class doc {
         }
 
         public  void storeAndReplaceDefinition(Ptr<OutBuffer> buf, IntRef i, int iEnd, MarkdownLinkReferences linkReferences, Loc loc) {
-            if (global.value.params.vmarkdown)
-                message(loc, new BytePtr("Ddoc: found link reference '%.*s' to '%.*s'"), this.label.value.getLength(), toBytePtr(this.label.value), this.href.getLength(), toBytePtr(this.href));
+            if (global.params.vmarkdown.value)
+                message(loc, new BytePtr("Ddoc: found link reference '%.*s' to '%.*s'"), this.label.value.getLength(), toBytePtr(this.label), this.href.getLength(), toBytePtr(this.href));
             iEnd = skipChars(buf, iEnd, new ByteSlice(" \u0009\r\n"));
             (buf.get()).remove(i.value, iEnd - i.value);
             i.value -= 2;
@@ -3132,7 +3123,7 @@ public class doc {
                     {
                         byte encoded1 = doc.percentEncodehexDigits.get(((s.get(i) & 0xFF) >> 4));
                         byte encoded2 = doc.percentEncodehexDigits.get(((s.get(i) & 0xFF) & 15));
-                        s = (s.slice(0,i).concat((byte)37).concat(encoded1).concat(encoded2).concat(s.slice(i + 1,s.getLength()))).copy();
+                        s = (concat(concat(concat(concat(s.slice(0,i), (byte)37), encoded1), encoded2), s.slice(i + 1,s.getLength()))).copy();
                         i += 2;
                     }
                 }
@@ -3141,9 +3132,9 @@ public class doc {
         }
 
         public static boolean skipOneNewline(Ptr<OutBuffer> buf, IntRef i) {
-            if ((i.value < (buf.get()).offset) && (((buf.get()).data.get(i.value) & 0xFF) == 13))
+            if ((i.value < (buf.get()).offset.value) && (((buf.get()).data.value.get(i.value) & 0xFF) == 13))
                 i.value += 1;
-            if ((i.value < (buf.get()).offset) && (((buf.get()).data.get(i.value) & 0xFF) == 10))
+            if ((i.value < (buf.get()).offset.value) && (((buf.get()).data.value.get(i.value) & 0xFF) == 10))
             {
                 i.value += 1;
                 return true;
@@ -3219,9 +3210,8 @@ public class doc {
             IntRef i_ref = ref(i);
             Function2<Ptr<OutBuffer>,Integer,Boolean> isFollowedBySpace = new Function2<Ptr<OutBuffer>,Integer,Boolean>(){
                 public Boolean invoke(Ptr<OutBuffer> buf, Integer i) {
-                    Ref<Ptr<OutBuffer>> buf_ref = ref(buf);
                     IntRef i_ref = ref(i);
-                    return (i_ref.value + 1 < (buf_ref.value.get()).offset) && (((buf_ref.value.get()).data.get(i_ref.value + 1) & 0xFF) == 32) || (((buf_ref.value.get()).data.get(i_ref.value + 1) & 0xFF) == 9);
+                    return (i_ref.value + 1 < (buf.get()).offset.value) && (((buf.get()).data.value.get(i_ref.value + 1) & 0xFF) == 32) || (((buf.get()).data.value.get(i_ref.value + 1) & 0xFF) == 9);
                 }
             };
             if (this.extractedAll)
@@ -3231,8 +3221,8 @@ public class doc {
             boolean newParagraph = true;
             Slice<MarkdownDelimiter> delimiters = new Slice<MarkdownDelimiter>().copy();
         L_outer14:
-            for (; (i_ref.value < (buf.get()).offset);i_ref.value += 1){
-                byte c = (buf.get()).data.get(i_ref.value);
+            for (; (i_ref.value < (buf.get()).offset.value);i_ref.value += 1){
+                byte c = (buf.get()).data.value.get(i_ref.value);
                 {
                     int __dispatch10 = 0;
                     dispatched_10:
@@ -3279,7 +3269,7 @@ public class doc {
                                 if (leadingBlank && (inCode == 0))
                                 {
                                     i_ref.value = skipChars(buf, i_ref.value, new ByteSlice("0123456789"));
-                                    if ((i_ref.value < (buf.get()).offset) && (((buf.get()).data.get(i_ref.value) & 0xFF) == 46) || (((buf.get()).data.get(i_ref.value) & 0xFF) == 41) && isFollowedBySpace.invoke(buf, i_ref.value))
+                                    if ((i_ref.value < (buf.get()).offset.value) && (((buf.get()).data.value.get(i_ref.value) & 0xFF) == 46) || (((buf.get()).data.value.get(i_ref.value) & 0xFF) == 41) && isFollowedBySpace.invoke(buf, i_ref.value))
                                         newParagraph = true;
                                     else
                                         leadingBlank = false;
@@ -3296,7 +3286,7 @@ public class doc {
                             case 96:
                                 __dispatch10 = 0;
                             case 126:
-                                if (leadingBlank && (i_ref.value + 2 < (buf.get()).offset) && (((buf.get()).data.get(i_ref.value + 1) & 0xFF) == (c & 0xFF)) && (((buf.get()).data.get(i_ref.value + 2) & 0xFF) == (c & 0xFF)))
+                                if (leadingBlank && (i_ref.value + 2 < (buf.get()).offset.value) && (((buf.get()).data.value.get(i_ref.value + 1) & 0xFF) == (c & 0xFF)) && (((buf.get()).data.value.get(i_ref.value + 2) & 0xFF) == (c & 0xFF)))
                                 {
                                     inCode = (inCode == (c & 0xFF)) ? 0 : (c & 0xFF);
                                     i_ref.value = skipChars(buf, i_ref.value, slice(new byte[]{(byte)c})) - 1;
@@ -3351,14 +3341,14 @@ public class doc {
         public  ByteSlice createHref(Dsymbol symbol) {
             Dsymbol root = symbol;
             ByteSlice lref = new ByteSlice().copy();
-            for (; (symbol != null) && (symbol.ident != null) && (symbol.isModule() == null);){
+            for (; (symbol != null) && (symbol.ident.value != null) && (symbol.isModule() == null);){
                 if (lref.getLength() != 0)
-                    lref = ((byte)46.concat(lref)).copy();
-                lref = (symbol.ident.asString().concat(lref)).copy();
+                    lref = (concat((byte)46, lref)).copy();
+                lref = (concat(symbol.ident.value.asString(), lref)).copy();
                 symbol = symbol.parent.value;
             }
             ByteSlice path = new ByteSlice().copy();
-            if ((symbol != null) && (symbol.ident != null) && (!pequals(symbol.isModule(), (this._scope.get())._module)))
+            if ((symbol != null) && (symbol.ident.value != null) && (!pequals(symbol.isModule(), (this._scope.get())._module.value)))
             {
                 do {
                     {
@@ -3373,27 +3363,27 @@ public class doc {
                                 }
                         }
                         if (path.getLength() != 0)
-                            path = ((byte)95.concat(path)).copy();
-                        path = (symbol.ident.asString().concat(path)).copy();
+                            path = (concat((byte)95, path)).copy();
+                        path = (concat(symbol.ident.value.asString(), path)).copy();
                         symbol = symbol.parent.value;
                     }
-                } while ((symbol != null) && (symbol.ident != null));
+                } while ((symbol != null) && (symbol.ident.value != null));
                 if ((symbol == null) && (path.getLength() != 0))
                     path.append(new ByteSlice("$(DOC_EXTENSION)"));
             }
             for (; root.parent.value != null;) {
                 root = root.parent.value;
             }
-            Dsymbol scopeRoot = (this._scope.get())._module;
+            Dsymbol scopeRoot = (this._scope.get())._module.value;
             for (; scopeRoot.parent.value != null;) {
                 scopeRoot = scopeRoot.parent.value;
             }
             if ((!pequals(scopeRoot, root)))
             {
-                path = (new ByteSlice("$(DOC_ROOT_").concat(root.ident.asString()).concat((byte)41).concat(path)).copy();
-                lref = ((byte)46.concat(lref)).copy();
+                path = (concat(concat(concat(new ByteSlice("$(DOC_ROOT_"), root.ident.value.asString()), (byte)41), path)).copy();
+                lref = (concat((byte)46, lref)).copy();
             }
-            return toByteSlice((path.concat((byte)35).concat(lref)));
+            return toByteSlice((concat(concat(path, (byte)35), lref)));
         }
 
         public MarkdownLinkReferences(){
@@ -3432,28 +3422,28 @@ public class doc {
 
     public static int parseTableDelimiterRow(Ptr<OutBuffer> buf, int iStart, boolean inQuote, IntSlice columnAlignments) {
         int i = skipChars(buf, iStart, inQuote ? new ByteSlice(">| \u0009") : new ByteSlice("| \u0009"));
-        for (; (i < (buf.get()).offset) && (((buf.get()).data.get(i) & 0xFF) != 13) && (((buf.get()).data.get(i) & 0xFF) != 10);){
-            boolean leftColon = ((buf.get()).data.get(i) & 0xFF) == 58;
+        for (; (i < (buf.get()).offset.value) && (((buf.get()).data.value.get(i) & 0xFF) != 13) && (((buf.get()).data.value.get(i) & 0xFF) != 10);){
+            boolean leftColon = ((buf.get()).data.value.get(i) & 0xFF) == 58;
             if (leftColon)
                 i += 1;
-            if ((i >= (buf.get()).offset) || (((buf.get()).data.get(i) & 0xFF) != 45))
+            if ((i >= (buf.get()).offset.value) || (((buf.get()).data.value.get(i) & 0xFF) != 45))
                 break;
             i = skipChars(buf, i, new ByteSlice("-"));
-            boolean rightColon = (i < (buf.get()).offset) && (((buf.get()).data.get(i) & 0xFF) == 58);
+            boolean rightColon = (i < (buf.get()).offset.value) && (((buf.get()).data.value.get(i) & 0xFF) == 58);
             i = skipChars(buf, i, new ByteSlice(": \u0009"));
-            if ((i >= (buf.get()).offset) || (((buf.get()).data.get(i) & 0xFF) != 124) && (((buf.get()).data.get(i) & 0xFF) != 13) && (((buf.get()).data.get(i) & 0xFF) != 10))
+            if ((i >= (buf.get()).offset.value) || (((buf.get()).data.value.get(i) & 0xFF) != 124) && (((buf.get()).data.value.get(i) & 0xFF) != 13) && (((buf.get()).data.value.get(i) & 0xFF) != 10))
                 break;
             i = skipChars(buf, i, new ByteSlice("| \u0009"));
             columnAlignments.append(leftColon && rightColon ? TableColumnAlignment.center : leftColon ? TableColumnAlignment.left : rightColon ? TableColumnAlignment.right : TableColumnAlignment.none);
         }
-        if ((i < (buf.get()).offset) && (((buf.get()).data.get(i) & 0xFF) != 13) && (((buf.get()).data.get(i) & 0xFF) != 10) && (((buf.get()).data.get(i) & 0xFF) != 41))
+        if ((i < (buf.get()).offset.value) && (((buf.get()).data.value.get(i) & 0xFF) != 13) && (((buf.get()).data.value.get(i) & 0xFF) != 10) && (((buf.get()).data.value.get(i) & 0xFF) != 41))
         {
             columnAlignments.getLength() = 0;
             return 0;
         }
-        if ((i < (buf.get()).offset) && (((buf.get()).data.get(i) & 0xFF) == 13))
+        if ((i < (buf.get()).offset.value) && (((buf.get()).data.value.get(i) & 0xFF) == 13))
             i += 1;
-        if ((i < (buf.get()).offset) && (((buf.get()).data.get(i) & 0xFF) == 10))
+        if ((i < (buf.get()).offset.value) && (((buf.get()).data.value.get(i) & 0xFF) == 10))
             i += 1;
         return i;
     }
@@ -3492,21 +3482,21 @@ public class doc {
             int __key1083 = 0;
             for (; (__key1083 < __r1082.getLength());__key1083 += 1) {
                 MarkdownDelimiter delimiter = __r1082.get(__key1083).copy();
-                if (((delimiter.type & 0xFF) == 124) && !delimiter.leftFlanking)
+                if (((delimiter.type.value & 0xFF) == 124) && !delimiter.leftFlanking)
                     cellCount += 1;
             }
         }
-        boolean ignoreLast = (inlineDelimiters_ref.value.getLength() > 0) && ((inlineDelimiters_ref.value.get(inlineDelimiters_ref.value.getLength() - 1).type & 0xFF) == 124);
+        boolean ignoreLast = (inlineDelimiters_ref.value.getLength() > 0) && ((inlineDelimiters_ref.value.get(inlineDelimiters_ref.value.getLength() - 1).type.value & 0xFF) == 124);
         if (ignoreLast)
         {
-            int iLast = skipChars(buf_ref.value, inlineDelimiters_ref.value.get(inlineDelimiters_ref.value.getLength() - 1).iStart + inlineDelimiters_ref.value.get(inlineDelimiters_ref.value.getLength() - 1).count, new ByteSlice(" \u0009"));
+            int iLast = skipChars(buf_ref.value, inlineDelimiters_ref.value.get(inlineDelimiters_ref.value.getLength() - 1).iStart.value + inlineDelimiters_ref.value.get(inlineDelimiters_ref.value.getLength() - 1).count.value, new ByteSlice(" \u0009"));
             ignoreLast = iLast >= iEnd;
         }
         if (!ignoreLast)
             cellCount += 1;
         if (headerRow_ref.value && (cellCount != columnAlignments_ref.value.getLength()))
             return 0;
-        if (headerRow_ref.value && global.value.params.vmarkdown)
+        if (headerRow_ref.value && global.params.vmarkdown.value)
         {
             ByteSlice s = (buf_ref.value.get()).peekSlice().slice(iStart,iEnd).copy();
             message(loc, new BytePtr("Ddoc: formatting table '%.*s'"), s.getLength(), toBytePtr(s));
@@ -3522,7 +3512,7 @@ public class doc {
                 delta.value += eDelta.value;
                 iCellEnd_ref.value += eDelta.value;
                 IntRef i = ref(iCellEnd_ref.value - 1);
-                for (; (i.value > iCellStart_ref.value) && (((buf_ref.value.get()).data.get(i.value) & 0xFF) == 124) || (((buf_ref.value.get()).data.get(i.value) & 0xFF) == 32) || (((buf_ref.value.get()).data.get(i.value) & 0xFF) == 9);) {
+                for (; (i.value > iCellStart_ref.value) && (((buf_ref.value.get()).data.value.get(i.value) & 0xFF) == 124) || (((buf_ref.value.get()).data.value.get(i.value) & 0xFF) == 32) || (((buf_ref.value.get()).data.value.get(i.value) & 0xFF) == 9);) {
                     i.value -= 1;
                 }
                 i.value += 1;
@@ -3574,7 +3564,7 @@ public class doc {
             for (; __key1084-- != 0;) {
                 MarkdownDelimiter delimiter = __r1085.get(__key1084).copy();
                 int di = __key1084;
-                if (((delimiter.type & 0xFF) == 124))
+                if (((delimiter.type.value & 0xFF) == 124))
                 {
                     if (ignoreLast && (di == inlineDelimiters_ref.value.getLength() - 1))
                     {
@@ -3583,14 +3573,14 @@ public class doc {
                     }
                     if ((cellIndex >= columnAlignments_ref.value.getLength()))
                     {
-                        (buf_ref.value.get()).remove(delimiter.iStart, iEnd + delta.value - delimiter.iStart);
-                        delta.value -= iEnd + delta.value - delimiter.iStart;
+                        (buf_ref.value.get()).remove(delimiter.iStart.value, iEnd + delta.value - delimiter.iStart.value);
+                        delta.value -= iEnd + delta.value - delimiter.iStart.value;
                         iCellEnd = iEnd + delta.value;
                         cellIndex -= 1;
                         continue;
                     }
-                    replaceTableCell.invoke(delimiter.iStart, iCellEnd, cellIndex, di);
-                    iCellEnd = delimiter.iStart;
+                    replaceTableCell.invoke(delimiter.iStart.value, iCellEnd, cellIndex, di);
+                    iCellEnd = delimiter.iStart.value;
                     cellIndex -= 1;
                 }
             }
@@ -3656,8 +3646,8 @@ public class doc {
         {
             IntRef i = ref(offset);
         L_outer15:
-            for (; (i.value < (buf.get()).offset);i.value++){
-                byte c = (byte)(buf.get()).data.get(i.value);
+            for (; (i.value < (buf.get()).offset.value);i.value++){
+                byte c = (byte)(buf.get()).data.value.get(i.value);
             /*Lcont:*/
                 {
                     int __dispatch12 = 0;
@@ -3695,7 +3685,7 @@ public class doc {
                                 if ((inCode == 0) && (nestedLists.value.getLength() != 0) && (quoteLevel.value == 0))
                                     MarkdownList.handleSiblingOrEndingList(buf, i, iParagraphStart, nestedLists);
                                 iPrecedingBlankLine.value = 0;
-                                if ((inCode == 0) && (i.value == iLineStart.value) && (i.value + 1 < (buf.get()).offset))
+                                if ((inCode == 0) && (i.value == iLineStart.value) && (i.value + 1 < (buf.get()).offset.value))
                                 {
                                     i.value += endTable(buf, i.value, columnAlignments);
                                     if (!lineQuoted && (quoteLevel.value != 0))
@@ -3708,7 +3698,7 @@ public class doc {
                                         iParagraphStart = i.value + 1;
                                     }
                                 }
-                                else if ((inCode != 0) && (i.value == iLineStart.value) && (i.value + 1 < (buf.get()).offset) && !lineQuoted && (quoteLevel.value != 0))
+                                else if ((inCode != 0) && (i.value == iLineStart.value) && (i.value + 1 < (buf.get()).offset.value) && !lineQuoted && (quoteLevel.value != 0))
                                 {
                                     inCode = 0;
                                     i.value = (buf.get()).insert(i.value, new ByteSlice(")"));
@@ -3730,7 +3720,7 @@ public class doc {
                                     break;
                                 ByteSlice slice = (buf.get()).peekSlice().copy();
                                 BytePtr p = pcopy(ptr(slice.get(i.value)));
-                                ByteSlice se = ((sc.get())._module.escapetable.get()).escapeChar((byte)60).copy();
+                                ByteSlice se = ((sc.get())._module.value.escapetable.get()).escapeChar((byte)60).copy();
                                 if (__equals(se, new ByteSlice("&lt;")))
                                 {
                                     if (((p.get(1) & 0xFF) == 33) && ((p.get(2) & 0xFF) == 45) && ((p.get(3) & 0xFF) == 45))
@@ -3780,12 +3770,12 @@ public class doc {
                                 }
                                 break;
                             case 62:
-                                if (leadingBlank && (inCode == 0) || (quoteLevel.value != 0) && global.value.params.markdown)
+                                if (leadingBlank && (inCode == 0) || (quoteLevel.value != 0) && global.params.markdown)
                                 {
-                                    if ((quoteLevel.value == 0) && global.value.params.vmarkdown)
+                                    if ((quoteLevel.value == 0) && global.params.vmarkdown.value)
                                     {
                                         int iEnd = i.value + 1;
-                                        for (; (iEnd < (buf.get()).offset) && (((buf.get()).data.get(iEnd) & 0xFF) != 10);) {
+                                        for (; (iEnd < (buf.get()).offset.value) && (((buf.get()).data.value.get(iEnd) & 0xFF) != 10);) {
                                             iEnd += 1;
                                         }
                                         ByteSlice s = (buf.get()).peekSlice().slice(i.value,iEnd).copy();
@@ -3794,8 +3784,8 @@ public class doc {
                                     lineQuoted = true;
                                     int lineQuoteLevel = 1;
                                     int iAfterDelimiters = i.value + 1;
-                                    for (; (iAfterDelimiters < (buf.get()).offset);iAfterDelimiters += 1){
-                                        byte c0 = (buf.get()).data.get(iAfterDelimiters);
+                                    for (; (iAfterDelimiters < (buf.get()).offset.value);iAfterDelimiters += 1){
+                                        byte c0 = (buf.get()).data.value.get(iAfterDelimiters);
                                         if (((c0 & 0xFF) == 62))
                                             lineQuoteLevel += 1;
                                         else if (((c0 & 0xFF) != 32) && ((c0 & 0xFF) != 9))
@@ -3830,7 +3820,7 @@ public class doc {
                                 leadingBlank = false;
                                 if (inCode != 0)
                                     break;
-                                ByteSlice se_1 = ((sc.get())._module.escapetable.get()).escapeChar((byte)62).copy();
+                                ByteSlice se_1 = ((sc.get())._module.value.escapetable.get()).escapeChar((byte)62).copy();
                                 if (se_1.getLength() != 0)
                                 {
                                     (buf.get()).remove(i.value, 1);
@@ -3842,10 +3832,10 @@ public class doc {
                                 leadingBlank = false;
                                 if (inCode != 0)
                                     break;
-                                BytePtr p_1 = pcopy(toBytePtr(ptr((buf.get()).data.get(i.value))));
+                                BytePtr p_1 = pcopy(toBytePtr(ptr((buf.get()).data.value.get(i.value))));
                                 if (((p_1.get(1) & 0xFF) == 35) || (isalpha((p_1.get(1) & 0xFF)) != 0))
                                     break;
-                                ByteSlice se_2 = ((sc.get())._module.escapetable.get()).escapeChar((byte)38).copy();
+                                ByteSlice se_2 = ((sc.get())._module.value.escapetable.get()).escapeChar((byte)38).copy();
                                 if (se_2.getLength() != 0)
                                 {
                                     (buf.get()).remove(i.value, 1);
@@ -3876,15 +3866,15 @@ public class doc {
                                     finally {
                                     }
                                 }
-                                if (leadingBlank && global.value.params.markdown && (count >= 3))
+                                if (leadingBlank && global.params.markdown && (count >= 3))
                                 {
                                     boolean moreBackticks = false;
                                     {
                                         int j_2 = iAfterDelimiter;
-                                        for (; !moreBackticks && (j_2 < (buf.get()).offset);j_2 += 1) {
-                                            if ((((buf.get()).data.get(j_2) & 0xFF) == 96))
+                                        for (; !moreBackticks && (j_2 < (buf.get()).offset.value);j_2 += 1) {
+                                            if ((((buf.get()).data.value.get(j_2) & 0xFF) == 96))
                                                 moreBackticks = true;
-                                            else if ((((buf.get()).data.get(j_2) & 0xFF) == 13) || (((buf.get()).data.get(j_2) & 0xFF) == 10))
+                                            else if ((((buf.get()).data.value.get(j_2) & 0xFF) == 13) || (((buf.get()).data.value.get(j_2) & 0xFF) == 10))
                                                 break;
                                         }
                                     }
@@ -3922,7 +3912,7 @@ public class doc {
                                 }
                                 break;
                             case 126:
-                                if (leadingBlank && global.value.params.markdown)
+                                if (leadingBlank && global.params.markdown)
                                 {
                                     int iAfterDelimiter_1 = skipChars(buf, i.value, new ByteSlice("~"));
                                     if ((iAfterDelimiter_1 - i.value >= 3))
@@ -3959,9 +3949,9 @@ public class doc {
                                 L_outer17:
                                     for (; 1 != 0;){
                                         i.value += 1;
-                                        if ((i.value >= (buf.get()).offset))
+                                        if ((i.value >= (buf.get()).offset.value))
                                             break;
-                                        c = (byte)(buf.get()).data.get(i.value);
+                                        c = (byte)(buf.get()).data.value.get(i.value);
                                         if (((c & 0xFF) == 10))
                                         {
                                             eollen = 1;
@@ -3970,9 +3960,9 @@ public class doc {
                                         if (((c & 0xFF) == 13))
                                         {
                                             eollen = 1;
-                                            if ((i.value + 1 >= (buf.get()).offset))
+                                            if ((i.value + 1 >= (buf.get()).offset.value))
                                                 break;
-                                            if ((((buf.get()).data.get(i.value + 1) & 0xFF) == 10))
+                                            if ((((buf.get()).data.value.get(i.value + 1) & 0xFF) == 10))
                                             {
                                                 eollen = 2;
                                                 break;
@@ -3980,7 +3970,7 @@ public class doc {
                                         }
                                         if (((c & 0xFF) != (c0_1 & 0xFF)) || (iInfoString != 0))
                                         {
-                                            if (global.value.params.markdown && (iInfoString == 0) && (inCode == 0) && (i.value - istart >= 3))
+                                            if (global.params.markdown && (iInfoString == 0) && (inCode == 0) && (i.value - istart >= 3))
                                             {
                                                 codeFenceLength = i.value - istart;
                                                 i.value = (iInfoString = skipChars(buf, i.value, new ByteSlice(" \u0009")));
@@ -3988,7 +3978,7 @@ public class doc {
                                             else if ((iInfoString != 0) && ((c & 0xFF) != 96))
                                             {
                                                 if ((codeLanguage.getLength() == 0) && ((c & 0xFF) == 32) || ((c & 0xFF) == 9))
-                                                    codeLanguage = (toByteSlice(idup((buf.get()).data.slice(iInfoString,i.value)))).copy();
+                                                    codeLanguage = (toByteSlice(idup((buf.get()).data.value.slice(iInfoString,i.value)))).copy();
                                             }
                                             else
                                             {
@@ -4002,7 +3992,7 @@ public class doc {
                                     if (iInfoString != 0)
                                     {
                                         if (codeLanguage.getLength() == 0)
-                                            codeLanguage = (toByteSlice(idup((buf.get()).data.slice(iInfoString,i.value)))).copy();
+                                            codeLanguage = (toByteSlice(idup((buf.get()).data.value.slice(iInfoString,i.value)))).copy();
                                     }
                                     else
                                         codeFenceLength = i.value - istart;
@@ -4020,10 +4010,10 @@ public class doc {
                                         inCode = 0;
                                         Ref<OutBuffer> codebuf_1 = ref(new OutBuffer());
                                         try {
-                                            codebuf_1.value.write(((buf.get()).data.plus(iCodeStart)), i.value - iCodeStart);
+                                            codebuf_1.value.write(((buf.get()).data.value.plus(iCodeStart)), i.value - iCodeStart);
                                             codebuf_1.value.writeByte(0);
                                             boolean lineStart = true;
-                                            BytePtr endp = pcopy(toBytePtr(codebuf_1.value.data).plus(codebuf_1.value.offset));
+                                            BytePtr endp = pcopy(toBytePtr(codebuf_1.value.data).plus(codebuf_1.value.offset.value));
                                             {
                                                 BytePtr p_2 = pcopy(toBytePtr(codebuf_1.value.data));
                                                 for (; (p_2.lessThan(endp));){
@@ -4036,9 +4026,9 @@ public class doc {
                                                         }
                                                         codebuf_1.value.remove(((p_2.minus(toBytePtr(codebuf_1.value.data)))), ((q.minus(p_2))));
                                                         assert((toBytePtr(codebuf_1.value.data).lessOrEqual(p_2)));
-                                                        assert((p_2.lessThan(toBytePtr(codebuf_1.value.data).plus(codebuf_1.value.offset))));
+                                                        assert((p_2.lessThan(toBytePtr(codebuf_1.value.data).plus(codebuf_1.value.offset.value))));
                                                         lineStart = false;
-                                                        endp = pcopy((toBytePtr(codebuf_1.value.data).plus(codebuf_1.value.offset)));
+                                                        endp = pcopy((toBytePtr(codebuf_1.value.data).plus(codebuf_1.value.offset.value)));
                                                         continue;
                                                     }
                                                     if (((p_2.get() & 0xFF) == 10))
@@ -4049,7 +4039,7 @@ public class doc {
                                             if ((codeLanguage.getLength() == 0) || __equals(codeLanguage, new ByteSlice("dlang")) || __equals(codeLanguage, new ByteSlice("d")))
                                                 highlightCode2(sc, a, ptr(codebuf_1), 0);
                                             else
-                                                codebuf_1.value.remove(codebuf_1.value.offset - 1, 1);
+                                                codebuf_1.value.remove(codebuf_1.value.offset.value - 1, 1);
                                             escapeStrayParenthesis(loc, ptr(codebuf_1), 0, false);
                                             (buf.get()).remove(iCodeStart, i.value - iCodeStart);
                                             i.value = (buf.get()).insert(iCodeStart, codebuf_1.value.peekSlice());
@@ -4076,10 +4066,10 @@ public class doc {
                                                 int j_4 = 0;
                                                 for (; (j_4 < codeLanguage.getLength() - 1);j_4 += 1) {
                                                     if (((codeLanguage.get(j_4) & 0xFF) == 92) && (ispunct((codeLanguage.get(j_4 + 1) & 0xFF)) != 0))
-                                                        codeLanguage = (codeLanguage.slice(0,j_4).concat(codeLanguage.slice(j_4 + 1,codeLanguage.getLength()))).copy();
+                                                        codeLanguage = (concat(codeLanguage.slice(0,j_4), codeLanguage.slice(j_4 + 1,codeLanguage.getLength()))).copy();
                                                 }
                                             }
-                                            if (global.value.params.vmarkdown)
+                                            if (global.params.vmarkdown.value)
                                                 message(loc, new BytePtr("Ddoc: adding code block for language '%.*s'"), codeLanguage.getLength(), toBytePtr(codeLanguage));
                                             i.value = (buf.get()).insert(i.value, new ByteSlice("$(OTHER_CODE "));
                                             i.value = (buf.get()).insert(i.value, toByteSlice(codeLanguage));
@@ -4142,7 +4132,7 @@ public class doc {
                                 leadingBlank = false;
                                 break;
                             case 42:
-                                if ((inCode != 0) || (inBacktick != 0) || !global.value.params.markdown)
+                                if ((inCode != 0) || (inBacktick != 0) || !global.params.markdown)
                                 {
                                     leadingBlank = false;
                                     break;
@@ -4162,9 +4152,9 @@ public class doc {
                                     if (list_2.isValid())
                                         /*goto case*/{ __dispatch12 = 43; continue dispatched_12; }
                                 }
-                                int leftC = (i.value > offset) ? ((buf.get()).data.get(i.value - 1) & 0xFF) : 0;
+                                int leftC = (i.value > offset) ? ((buf.get()).data.value.get(i.value - 1) & 0xFF) : 0;
                                 int iAfterEmphasis = skipChars(buf, i.value + 1, new ByteSlice("*"));
-                                int rightC = (iAfterEmphasis < (buf.get()).offset) ? ((buf.get()).data.get(iAfterEmphasis) & 0xFF) : 0;
+                                int rightC = (iAfterEmphasis < (buf.get()).offset.value) ? ((buf.get()).data.value.get(iAfterEmphasis) & 0xFF) : 0;
                                 int count_1 = (iAfterEmphasis - i.value);
                                 boolean leftFlanking = (rightC != 0) && (isspace(rightC) == 0) && (ispunct(rightC) == 0) || (leftC == 0) || (isspace(leftC) != 0) || (ispunct(leftC) != 0);
                                 boolean rightFlanking = (leftC != 0) && (isspace(leftC) == 0) && (ispunct(leftC) == 0) || (rightC == 0) || (isspace(rightC) != 0) || (ispunct(rightC) != 0);
@@ -4175,14 +4165,14 @@ public class doc {
                                     break;
                                 }
                                 inlineDelimiters.value.append(emphasis);
-                                i.value += emphasis.count;
+                                i.value += emphasis.count.value;
                                 i.value -= 1;
                                 break;
                             case 33:
                                 leadingBlank = false;
-                                if ((inCode != 0) || !global.value.params.markdown)
+                                if ((inCode != 0) || !global.params.markdown)
                                     break;
-                                if ((i.value < (buf.get()).offset - 1) && (((buf.get()).data.get(i.value + 1) & 0xFF) == 91))
+                                if ((i.value < (buf.get()).offset.value - 1) && (((buf.get()).data.value.get(i.value + 1) & 0xFF) == 91))
                                 {
                                     MarkdownDelimiter imageStart = new MarkdownDelimiter(i.value, 2, macroLevel, false, false, false, c).copy();
                                     inlineDelimiters.value.append(imageStart);
@@ -4190,12 +4180,12 @@ public class doc {
                                 }
                                 break;
                             case 91:
-                                if ((inCode != 0) || !global.value.params.markdown)
+                                if ((inCode != 0) || !global.params.markdown)
                                 {
                                     leadingBlank = false;
                                     break;
                                 }
-                                int leftC_1 = (i.value > offset) ? ((buf.get()).data.get(i.value - 1) & 0xFF) : 0;
+                                int leftC_1 = (i.value > offset) ? ((buf.get()).data.value.get(i.value - 1) & 0xFF) : 0;
                                 boolean rightFlanking_1 = (leftC_1 != 0) && (isspace(leftC_1) == 0) && (ispunct(leftC_1) == 0);
                                 boolean atParagraphStart = leadingBlank && (iParagraphStart >= iLineStart.value);
                                 MarkdownDelimiter linkStart = new MarkdownDelimiter(i.value, 1, macroLevel, false, rightFlanking_1, atParagraphStart, c).copy();
@@ -4204,30 +4194,30 @@ public class doc {
                                 break;
                             case 93:
                                 leadingBlank = false;
-                                if ((inCode != 0) || !global.value.params.markdown)
+                                if ((inCode != 0) || !global.params.markdown)
                                     break;
                                 {
                                     int d = inlineDelimiters.value.getLength() - 1;
                                     for (; (d >= 0);d -= 1){
                                         MarkdownDelimiter delimiter = inlineDelimiters.value.get(d).copy();
-                                        if (((delimiter.type & 0xFF) == 91) || ((delimiter.type & 0xFF) == 33))
+                                        if (((delimiter.type.value & 0xFF) == 91) || ((delimiter.type.value & 0xFF) == 33))
                                         {
                                             if (delimiter.isValid() && MarkdownLink.replaceLink(buf, i, loc, inlineDelimiters, d, linkReferences))
                                             {
-                                                if ((i.value <= delimiter.iStart))
+                                                if ((i.value <= delimiter.iStart.value))
                                                     leadingBlank = true;
-                                                if (((delimiter.type & 0xFF) == 91))
+                                                if (((delimiter.type.value & 0xFF) == 91))
                                                 {
                                                     d -= 1;
                                                     for (; (d >= 0);d -= 1) {
-                                                        if (((inlineDelimiters.value.get(d).type & 0xFF) == 91))
+                                                        if (((inlineDelimiters.value.get(d).type.value & 0xFF) == 91))
                                                             inlineDelimiters.value.get(d).invalidate();
                                                     }
                                                 }
                                             }
                                             else
                                             {
-                                                inlineDelimiters.value = (inlineDelimiters.value.slice(0,d).concat(inlineDelimiters.value.slice((d + 1),inlineDelimiters.value.getLength()))).copy();
+                                                inlineDelimiters.value = (concat(inlineDelimiters.value.slice(0,d), inlineDelimiters.value.slice((d + 1),inlineDelimiters.value.getLength()))).copy();
                                             }
                                             break;
                                         }
@@ -4235,7 +4225,7 @@ public class doc {
                                 }
                                 break;
                             case 124:
-                                if ((inCode != 0) || !global.value.params.markdown)
+                                if ((inCode != 0) || !global.params.markdown)
                                 {
                                     leadingBlank = false;
                                     break;
@@ -4246,15 +4236,15 @@ public class doc {
                                 break;
                             case 92:
                                 leadingBlank = false;
-                                if ((inCode != 0) || (i.value + 1 >= (buf.get()).offset) || !global.value.params.markdown)
+                                if ((inCode != 0) || (i.value + 1 >= (buf.get()).offset.value) || !global.params.markdown)
                                     break;
-                                byte c1 = (byte)(buf.get()).data.get(i.value + 1);
+                                byte c1 = (byte)(buf.get()).data.value.get(i.value + 1);
                                 if (ispunct((c1 & 0xFF)) != 0)
                                 {
-                                    if (global.value.params.vmarkdown)
+                                    if (global.params.vmarkdown.value)
                                         message(loc, new BytePtr("Ddoc: backslash-escaped %c"), (c1 & 0xFF));
                                     (buf.get()).remove(i.value, 1);
-                                    ByteSlice se_3 = ((sc.get())._module.escapetable.get()).escapeChar(c1).copy();
+                                    ByteSlice se_3 = ((sc.get())._module.value.escapetable.get()).escapeChar(c1).copy();
                                     if (se_3.getLength() == 0)
                                         se_3 = (((c1 & 0xFF) == 36) ? new ByteSlice("$(DOLLAR)") : ((c1 & 0xFF) == 44) ? new ByteSlice("$(COMMA)") : new ByteSlice()).copy();
                                     if (se_3.getLength() != 0)
@@ -4275,7 +4265,7 @@ public class doc {
                                     macroLevel += 1;
                                 break;
                             case 40:
-                                if ((inCode == 0) && (i.value > offset) && (((buf.get()).data.get(i.value - 1) & 0xFF) != 36))
+                                if ((inCode == 0) && (i.value > offset) && (((buf.get()).data.value.get(i.value - 1) & 0xFF) != 36))
                                     parenLevel += 1;
                                 break;
                             case 41:
@@ -4310,9 +4300,9 @@ public class doc {
                             default:
                             __dispatch12 = 0;
                             leadingBlank = false;
-                            if ((sc.get())._module.isDocFile || (inCode != 0))
+                            if ((sc.get())._module.value.isDocFile || (inCode != 0))
                                 break;
-                            BytePtr start = pcopy(toBytePtr((buf.get()).data).plus(i.value));
+                            BytePtr start = pcopy(toBytePtr(buf.get().data).plus(i.value));
                             if (isIdStart(start))
                             {
                                 int j_5 = skippastident(buf, i.value);
@@ -4333,7 +4323,7 @@ public class doc {
                                 else
                                     break;
                                 int len = j_5 - i.value;
-                                if (((c & 0xFF) == 95) && (i.value == 0) || (isdigit(((start.minus(1)).get() & 0xFF)) == 0) && (i.value == (buf.get()).offset - 1) || !isReservedName(start.slice(0,len)))
+                                if (((c & 0xFF) == 95) && (i.value == 0) || (isdigit(((start.minus(1)).get() & 0xFF)) == 0) && (i.value == (buf.get()).offset.value - 1) || !isReservedName(start.slice(0,len)))
                                 {
                                     (buf.get()).remove(i.value, 1);
                                     i.value = (buf.get()).bracket(i.value, new BytePtr("$(DDOC_AUTO_PSYMBOL_SUPPRESS "), j_5 - 1, new BytePtr(")")) - 1;
@@ -4365,8 +4355,8 @@ public class doc {
         if ((inCode == 45))
             error(loc, new BytePtr("unmatched `---` in DDoc comment"));
         else if (inCode != 0)
-            (buf.get()).insert((buf.get()).offset, new ByteSlice(")"));
-        IntRef i = ref((buf.get()).offset);
+            (buf.get()).insert((buf.get()).offset.value, new ByteSlice(")"));
+        IntRef i = ref((buf.get()).offset.value);
         if (headingLevel != 0)
         {
             endMarkdownHeading(buf, iParagraphStart, i, loc, headingLevel);
@@ -4379,11 +4369,11 @@ public class doc {
 
     public static void highlightCode(Ptr<Scope> sc, Dsymbol s, Ptr<OutBuffer> buf, int offset) {
         Import imp = s.isImport();
-        if ((imp != null) && (imp.aliases.length > 0))
+        if ((imp != null) && (imp.aliases.length.value > 0))
         {
             {
                 int i = 0;
-                for (; (i < imp.aliases.length);i++){
+                for (; (i < imp.aliases.length.value);i++){
                     Identifier a = imp.aliases.get(i);
                     Identifier id = a != null ? a : imp.names.get(i);
                     Loc loc = new Loc(null, 0, 0).copy();
@@ -4403,7 +4393,7 @@ public class doc {
             try {
                 emitAnchor(ptr(ancbuf), s, sc, false);
                 (buf.get()).insert(offset, ancbuf.value.peekSlice());
-                offset += ancbuf.value.offset;
+                offset += ancbuf.value.offset.value;
                 Ref<DArray<Dsymbol>> a = ref(new DArray<Dsymbol>());
                 try {
                     a.value.push(s);
@@ -4421,9 +4411,9 @@ public class doc {
         boolean resolvedTemplateParameters = false;
         {
             int i = offset;
-            for (; (i < (buf.get()).offset);i++){
-                byte c = (byte)(buf.get()).data.get(i);
-                ByteSlice se = ((sc.get())._module.escapetable.get()).escapeChar(c).copy();
+            for (; (i < (buf.get()).offset.value);i++){
+                byte c = (byte)(buf.get()).data.value.get(i);
+                ByteSlice se = ((sc.get())._module.value.escapetable.get()).escapeChar(c).copy();
                 if (se.getLength() != 0)
                 {
                     (buf.get()).remove(i, 1);
@@ -4431,7 +4421,7 @@ public class doc {
                     i--;
                     continue;
                 }
-                BytePtr start = pcopy(toBytePtr((buf.get()).data).plus(i));
+                BytePtr start = pcopy(toBytePtr(buf.get().data).plus(i));
                 if (isIdStart(start))
                 {
                     int j = skipPastIdentWithDots(buf, i);
@@ -4466,7 +4456,7 @@ public class doc {
                     int previ = i;
                     {
                         int __key1090 = 0;
-                        int __limit1091 = (a.get()).length;
+                        int __limit1091 = (a.get()).length.value;
                         for (; (__key1090 < __limit1091);__key1090 += 1) {
                             int symi = __key1090;
                             FuncDeclaration fd = (a.get()).get(symi).isFuncDeclaration();
@@ -4477,22 +4467,22 @@ public class doc {
                             TemplateDeclaration td = fd.parent.value.isTemplateDeclaration();
                             DArray<int> paramLens = new DArray<int>();
                             try {
-                                paramLens.reserve((td.parameters.get()).length);
+                                paramLens.reserve((td.parameters.get()).length.value);
                                 Ref<OutBuffer> parametersBuf = ref(new OutBuffer());
                                 try {
                                     Ref<HdrGenState> hgs = ref(new HdrGenState());
                                     parametersBuf.value.writeByte(40);
                                     {
                                         int __key1093 = 0;
-                                        int __limit1094 = (td.parameters.get()).length;
+                                        int __limit1094 = (td.parameters.get()).length.value;
                                         for (; (__key1093 < __limit1094);__key1093 += 1) {
                                             int parami = __key1093;
                                             TemplateParameter tp = (td.parameters.get()).get(parami);
                                             if (parami != 0)
                                                 parametersBuf.value.writestring(new ByteSlice(", "));
-                                            int lastOffset = parametersBuf.value.offset;
+                                            int lastOffset = parametersBuf.value.offset.value;
                                             toCBuffer(tp, ptr(parametersBuf), ptr(hgs));
-                                            paramLens.set(parami, parametersBuf.value.offset - lastOffset);
+                                            paramLens.set(parami, parametersBuf.value.offset.value - lastOffset);
                                         }
                                     }
                                     parametersBuf.value.writeByte(41);
@@ -4530,7 +4520,7 @@ public class doc {
 
     public static void highlightCode3(Ptr<Scope> sc, Ptr<OutBuffer> buf, BytePtr p, BytePtr pend) {
         for (; (p.lessThan(pend));p.postInc()){
-            ByteSlice se = ((sc.get())._module.escapetable.get()).escapeChar(p.get()).copy();
+            ByteSlice se = ((sc.get())._module.value.escapetable.get()).escapeChar(p.get()).copy();
             if (se.getLength() != 0)
                 (buf.get()).writestring(se);
             else
@@ -4539,15 +4529,15 @@ public class doc {
     }
 
     public static void highlightCode2(Ptr<Scope> sc, Ptr<DArray<Dsymbol>> a, Ptr<OutBuffer> buf, int offset) {
-        int errorsave = global.value.startGagging();
-        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.value.params.useDeprecated);
+        int errorsave = global.startGagging();
+        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
         try {
-            Lexer lex = new Lexer(null, toBytePtr((buf.get()).data), 0, (buf.get()).offset - 1, false, true, diagnosticReporter);
+            Lexer lex = new Lexer(null, toBytePtr(buf.get().data), 0, (buf.get()).offset.value - 1, false, true, diagnosticReporter);
             try {
                 Ref<OutBuffer> res = ref(new OutBuffer());
                 try {
-                    BytePtr lastp = pcopy(toBytePtr((buf.get()).data));
-                    res.value.reserve((buf.get()).offset);
+                    BytePtr lastp = pcopy(toBytePtr(buf.get().data));
+                    res.value.reserve((buf.get()).offset.value);
                     for (; 1 != 0;){
                         Ref<Token> tok = ref(new Token().copy());
                         lex.scan(ptr(tok));
@@ -4558,7 +4548,7 @@ public class doc {
                             case 120:
                                 if (sc == null)
                                     break;
-                                int len = ((lex.p.minus(tok.value.ptr)));
+                                int len = ((lex.p.value.minus(tok.value.ptr)));
                                 if (isIdentifier(a, tok.value.ptr, len))
                                 {
                                     highlight = new ByteSlice("$(D_PSYMBOL ").copy();
@@ -4584,21 +4574,21 @@ public class doc {
                         if (highlight.getLength() != 0)
                         {
                             res.value.writestring(highlight);
-                            int o = res.value.offset;
-                            highlightCode3(sc, ptr(res), tok.value.ptr, lex.p);
+                            int o = res.value.offset.value;
+                            highlightCode3(sc, ptr(res), tok.value.ptr, lex.p.value);
                             if (((tok.value.value & 0xFF) == 46) || ((tok.value.value & 0xFF) == 121))
                                 escapeDdocString(ptr(res), o);
                             res.value.writeByte(41);
                         }
                         else
-                            highlightCode3(sc, ptr(res), tok.value.ptr, lex.p);
+                            highlightCode3(sc, ptr(res), tok.value.ptr, lex.p.value);
                         if (((tok.value.value & 0xFF) == 11))
                             break;
-                        lastp = pcopy(lex.p);
+                        lastp = pcopy(lex.p.value);
                     }
                     (buf.get()).setsize(offset);
                     (buf.get()).write(ptr(res));
-                    global.value.endGagging(errorsave);
+                    global.endGagging(errorsave);
                 }
                 finally {
                 }
