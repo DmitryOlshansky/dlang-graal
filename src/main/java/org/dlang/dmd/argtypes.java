@@ -138,7 +138,7 @@ public class argtypes {
             {
                 case 21:
                 case 24:
-                    t = Type.tint32.value;
+                    t = Type.tint32;
                     break;
                 case 22:
                 case 25:
@@ -197,14 +197,14 @@ public class argtypes {
             assert(!overflow.value);
             if ((offset2 != 0) && (sz1 < offset3))
             {
-                switch (offset3)
+                switch ((int)offset3)
                 {
-                    case 2L:
+                    case (int)2L:
                         t = Type.tint16;
                         break;
-                    case 3L:
-                    case 4L:
-                        t = Type.tint32.value;
+                    case (int)3L:
+                    case (int)4L:
+                        t = Type.tint32;
                         break;
                     default:
                     t = Type.tint64;
@@ -215,7 +215,7 @@ public class argtypes {
         }
 
         public  void visit(TypeDArray _param_0) {
-            if (isDMDx64Target() && !global.value.params.isLP64)
+            if (isDMDx64Target() && !global.params.isLP64)
             {
                 int offset = (int)Type.tsize_t.size(Loc.initial);
                 Type t = argtypemerge(Type.tsize_t, Type.tvoidptr, offset);
@@ -230,7 +230,7 @@ public class argtypes {
         }
 
         public  void visit(TypeDelegate _param_0) {
-            if (isDMDx64Target() && !global.value.params.isLP64)
+            if (isDMDx64Target() && !global.params.isLP64)
             {
                 int offset = (int)Type.tsize_t.size(Loc.initial);
                 Type t = argtypemerge(Type.tvoidptr, Type.tvoidptr, offset);
@@ -252,44 +252,41 @@ public class argtypes {
                 return ;
             }
             long dim = t.dim.toInteger();
-            Ref<Type> tn = ref(t.next.value);
-            Ref<Long> tnsize = ref(tn.value.size());
-            IntRef tnalignsize = ref(tn.value.alignsize());
-            Function3<Integer,Integer,Integer,Type> getNthElement = new Function3<Integer,Integer,Integer,Type>(){
-                public Type invoke(Integer n, IntRef offset, IntRef alignsize) {
-                    IntRef n_ref = ref(n);
-                    offset.value = 0;
-                    alignsize.value = 0;
-                    offset.value = (int)((long)n_ref.value * tnsize.value);
-                    alignsize.value = tnalignsize.value;
-                    return tn.value;
-                }
+            Type tn = t.next.value;
+            long tnsize = tn.size();
+            int tnalignsize = tn.alignsize();
+            Function3<Integer,Ref<Integer>,Ref<Integer>,Type> getNthElement = (n, offset, alignsize) -> {
+             {
+                offset.value = 0;
+                alignsize.value = 0;
+                offset.value = (int)((long)n * tnsize);
+                alignsize.value = tnalignsize;
+                return tn;
+            }
             };
             this.aggregate(sz, (int)dim, getNthElement);
         }
 
         public  void visit(TypeStruct t) {
-            Ref<TypeStruct> t_ref = ref(t);
-            if (!t_ref.value.sym.isPOD())
+            if (!t.sym.isPOD())
             {
                 this.memory();
                 return ;
             }
-            Function3<Integer,Integer,Integer,Type> getNthField = new Function3<Integer,Integer,Integer,Type>(){
-                public Type invoke(Integer n, IntRef offset, IntRef alignsize) {
-                    IntRef n_ref = ref(n);
-                    offset.value = 0;
-                    alignsize.value = 0;
-                    Ref<VarDeclaration> field = ref(t_ref.value.sym.fields.get(n_ref.value));
-                    offset.value = field.value.offset;
-                    alignsize.value = field.value.type.alignsize();
-                    return field.value.type;
-                }
+            Function3<Integer,Ref<Integer>,Ref<Integer>,Type> getNthField = (n, offset, alignsize) -> {
+             {
+                offset.value = 0;
+                alignsize.value = 0;
+                VarDeclaration field = t.sym.fields.get(n);
+                offset.value = field.offset;
+                alignsize.value = field.type.alignsize();
+                return field.type;
+            }
             };
-            this.aggregate(t_ref.value.size(Loc.initial), t_ref.value.sym.fields.length, getNthField);
+            this.aggregate(t.size(Loc.initial), t.sym.fields.length, getNthField);
         }
 
-        public  void aggregate(long sz, int nfields, Function3<Integer,Integer,Integer,Type> getFieldInfo) {
+        public  void aggregate(long sz, int nfields, Function3<Integer,Ref<Integer>,Ref<Integer>,Type> getFieldInfo) {
             if ((nfields == 0))
             {
                 this.memory();
@@ -309,8 +306,8 @@ public class argtypes {
                     int __limit710 = nfields;
                     for (; (__key709 < __limit710);__key709 += 1) {
                         int n = __key709;
-                        int foffset = 0;
-                        int falignsize = 0;
+                        Ref<Integer> foffset = ref(0);
+                        Ref<Integer> falignsize = ref(0);
                         Type ftype = getFieldInfo.invoke(n, foffset, falignsize);
                         TypeTuple tup = toArgTypes(ftype);
                         if (tup == null)
@@ -328,7 +325,7 @@ public class argtypes {
                                 ft2 = (tup.arguments.get()).get(1).type;
                                 break;
                             case 1:
-                                if ((foffset < 8))
+                                if ((foffset.value < 8))
                                 {
                                     ft1 = (tup.arguments.get()).get(0).type;
                                 }
@@ -341,27 +338,27 @@ public class argtypes {
                             this.memory();
                             return ;
                         }
-                        if ((foffset & 7) != 0)
+                        if ((foffset.value & 7) != 0)
                         {
-                            if ((foffset & falignsize - 1) != 0)
+                            if ((foffset.value & falignsize.value - 1) != 0)
                             {
                                 this.memory();
                                 return ;
                             }
                             long fieldsz = ftype.size(Loc.initial);
                             Ref<Boolean> overflow = ref(false);
-                            long nextOffset = addu((long)foffset, fieldsz, overflow);
+                            long nextOffset = addu((long)foffset.value, fieldsz, overflow);
                             assert(!overflow.value);
-                            if ((foffset < 8) && (nextOffset > 8L))
+                            if ((foffset.value < 8) && (nextOffset > 8L))
                             {
                                 this.memory();
                                 return ;
                             }
                         }
-                        assert((t1 != null) || (foffset == 0));
+                        assert((t1 != null) || (foffset.value == 0));
                         if (ft1 != null)
                         {
-                            t1 = argtypemerge(t1, ft1, foffset);
+                            t1 = argtypemerge(t1, ft1, foffset.value);
                             if (t1 == null)
                             {
                                 this.memory();
@@ -370,7 +367,7 @@ public class argtypes {
                         }
                         if (ft2 != null)
                         {
-                            int off2 = ft1 != null ? 8 : foffset;
+                            int off2 = ft1 != null ? 8 : foffset.value;
                             if ((t2 == null) && (off2 != 8))
                             {
                                 this.memory();
@@ -430,7 +427,7 @@ public class argtypes {
                         t1 = Type.tint16;
                         break;
                     case 4:
-                        t1 = Type.tint32.value;
+                        t1 = Type.tint32;
                         break;
                     case 8:
                         t1 = Type.tint64;
@@ -442,10 +439,10 @@ public class argtypes {
                     this.memory();
                     return ;
                 }
-                if (global.value.params.isFreeBSD && (nfields == 1) && (sz == 4L) || (sz == 8L))
+                if (global.params.isFreeBSD && (nfields == 1) && (sz == 4L) || (sz == 8L))
                 {
-                    int foffset = 0;
-                    int falignsize = 0;
+                    Ref<Integer> foffset = ref(0);
+                    Ref<Integer> falignsize = ref(0);
                     Type ftype = getFieldInfo.invoke(0, foffset, falignsize);
                     TypeTuple tup = toArgTypes(ftype);
                     if ((tup != null) && ((tup.arguments.get()).length == 1))
@@ -484,7 +481,7 @@ public class argtypes {
     }
 
     public static boolean isDMDx64Target() {
-        return global.value.params.is64bit;
+        return global.params.is64bit;
     }
 
     public static TypeTuple toArgTypes(Type t) {

@@ -210,7 +210,7 @@ public class sideeffect {
                 }
                 break;
             case 18:
-                if (((global.value.params.warnings & 0xFF) != 2) && (global.value.gag == 0))
+                if (((global.params.warnings & 0xFF) != 2) && (global.gag == 0))
                 {
                     CallExp ce_1 = (CallExp)e;
                     if (((e.type.value.ty & 0xFF) == ENUMTY.Tvoid))

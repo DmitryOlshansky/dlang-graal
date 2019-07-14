@@ -153,11 +153,11 @@ public class utf {
         else
         {
             assert((sz == 4));
-            (((IntPtr)s)).set(0, c);
+            (((Ptr<Integer>)s)).set(0, c);
         }
     }
 
-    public static BytePtr utf_decodeChar(BytePtr s, int len, IntRef ridx, IntRef rresult) {
+    public static BytePtr utf_decodeChar(BytePtr s, int len, Ref<Integer> ridx, Ref<Integer> rresult) {
         rresult.value = 0x0ffff;
         assert((s != null));
         int i = ridx.value++;
@@ -206,7 +206,7 @@ public class utf {
         return utf.utf_decodeCharUTF8_DECODE_OK;
     }
 
-    public static BytePtr utf_decodeWchar(CharPtr s, int len, IntRef ridx, IntRef rresult) {
+    public static BytePtr utf_decodeWchar(CharPtr s, int len, Ref<Integer> ridx, Ref<Integer> rresult) {
         rresult.value = 0x0ffff;
         assert((s != null));
         int i = ridx.value++;

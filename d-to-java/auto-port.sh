@@ -3,7 +3,7 @@
 LIST=`grep -v -P '^#' list.txt`
 
 
-dub build -b debug && cd .. && d-to-java/d-to-java -I ~/dmd2/src/druntime/import \
+dub build -b debug && cd .. && gdb --args d-to-java/d-to-java -I ~/dmd2/src/druntime/import \
     -I vendor/dmd/src -J vendor/dmd -J vendor/dmd/res --out src/main/java/org/dlang/dmd/ \
     $LIST
 

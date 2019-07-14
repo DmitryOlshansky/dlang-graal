@@ -372,16 +372,16 @@ public class tokens {
                                 try {
                                     buf_1.writeByte(34);
                                     {
-                                        IntRef i = ref(0);
+                                        Ref<Integer> i = ref(0);
                                     L_outer1:
                                         for (; (i.value < this.len);){
-                                            int c = 0x0ffff;
+                                            Ref<Integer> c = ref(0x0ffff);
                                             utf_decodeChar(this.ustring, this.len, i, c);
                                             {
                                                 int __dispatch1 = 0;
                                                 dispatched_1:
                                                 do {
-                                                    switch (__dispatch1 != 0 ? __dispatch1 : c)
+                                                    switch (__dispatch1 != 0 ? __dispatch1 : c.value)
                                                     {
                                                         case 0:
                                                             break;
@@ -391,24 +391,24 @@ public class tokens {
                                                             /*goto default*/ { __dispatch1 = -1; continue dispatched_1; }
                                                         default:
                                                         __dispatch1 = 0;
-                                                        if ((c <= 127))
+                                                        if ((c.value <= 127))
                                                         {
-                                                            if (isprint(c) != 0)
+                                                            if (isprint(c.value) != 0)
                                                             {
-                                                                buf_1.writeByte(c);
+                                                                buf_1.writeByte(c.value);
                                                             }
                                                             else
                                                             {
-                                                                buf_1.printf(new BytePtr("\\x%02x"), c);
+                                                                buf_1.printf(new BytePtr("\\x%02x"), c.value);
                                                             }
                                                         }
-                                                        else if ((c <= 65535))
+                                                        else if ((c.value <= 65535))
                                                         {
-                                                            buf_1.printf(new BytePtr("\\u%04x"), c);
+                                                            buf_1.printf(new BytePtr("\\u%04x"), c.value);
                                                         }
                                                         else
                                                         {
-                                                            buf_1.printf(new BytePtr("\\U%08x"), c);
+                                                            buf_1.printf(new BytePtr("\\U%08x"), c.value);
                                                         }
                                                         continue L_outer1;
                                                     }

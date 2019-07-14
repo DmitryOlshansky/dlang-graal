@@ -98,7 +98,7 @@ public class nogc {
             {
                 return ;
             }
-            if (global.value.params.ehnogc && e.thrownew)
+            if (global.params.ehnogc && e.thrownew)
             {
                 return ;
             }
@@ -210,7 +210,7 @@ public class nogc {
     }
     public static Expression checkGC(Ptr<Scope> sc, Expression e) {
         FuncDeclaration f = (sc.get()).func;
-        if ((e != null) && ((e.op & 0xFF) != 127) && (f != null) && ((sc.get()).intypeof != 1) && (((sc.get()).flags & 128) == 0) && ((f.type.ty & 0xFF) == ENUMTY.Tfunction) && ((TypeFunction)f.type).isnogc || ((f.flags & FUNCFLAG.nogcInprocess) != 0) || global.value.params.vgc && (((sc.get()).flags & 8) == 0))
+        if ((e != null) && ((e.op & 0xFF) != 127) && (f != null) && ((sc.get()).intypeof != 1) && (((sc.get()).flags & 128) == 0) && ((f.type.ty & 0xFF) == ENUMTY.Tfunction) && ((TypeFunction)f.type).isnogc || ((f.flags & FUNCFLAG.nogcInprocess) != 0) || global.params.vgc && (((sc.get()).flags & 8) == 0))
         {
             NOGCVisitor gcv = new NOGCVisitor(f);
             walkPostorder(e, gcv);

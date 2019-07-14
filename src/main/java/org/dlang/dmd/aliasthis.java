@@ -78,7 +78,7 @@ public class aliasthis {
             for (; ad != null;){
                 if (ad.aliasthis != null)
                 {
-                    int olderrors = gag ? global.value.startGagging() : 0;
+                    int olderrors = gag ? global.startGagging() : 0;
                     Loc loc = e.loc.copy();
                     Type tthis = ((e.op & 0xFF) == 20) ? e.type.value : null;
                     e = new DotIdExp(loc, e, ad.aliasthis.ident);
@@ -92,16 +92,16 @@ public class aliasthis {
                                     FuncDeclaration fd = ((VarExp)e).var.isFuncDeclaration();
                                     if ((fd) != null)
                                     {
-                                        Ref<Boolean> hasOverloads = ref(false);
+                                        boolean hasOverloads = false;
                                         {
                                             FuncDeclaration f = fd.overloadModMatch(loc, tthis, hasOverloads);
                                             if ((f) != null)
                                             {
-                                                if (!hasOverloads.value)
+                                                if (!hasOverloads)
                                                 {
                                                     fd = f;
                                                 }
-                                                e = new VarExp(loc, fd, hasOverloads.value);
+                                                e = new VarExp(loc, fd, hasOverloads);
                                                 e.type.value = f.type;
                                                 e = new CallExp(loc, e);
                                                 /*goto L1*/throw Dispatch0.INSTANCE;
@@ -123,7 +123,7 @@ public class aliasthis {
                         e = expressionSemantic(e, sc);
                     }
                     e = resolveProperties(sc, e);
-                    if (gag && global.value.endGagging(olderrors))
+                    if (gag && global.endGagging(olderrors))
                     {
                         e = null;
                     }

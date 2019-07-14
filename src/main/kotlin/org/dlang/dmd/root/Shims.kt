@@ -285,15 +285,12 @@ fun toIntPtr(any: Any): IntPtr =
 
 
 
-fun ref(v: Integer) = IntRef(v)
 
 fun<T> ref(v: T?) = Ref(v)
 
 fun<T> refPtr(v: T) = RefPtr(Ref(v))
 
 fun<T> ptr(v: Ref<T>) = RefPtr(v)
-
-fun ptr(v: IntRef) = IntRefPtr(v)
 
 fun ptr(v: ByteSlice) = v.ptr()
 
@@ -305,7 +302,7 @@ fun exit(code: Int): Nothing = exitProcess(code)
 
 // stub out speller
 @Suppress("UNUSED_PARAMETER")
-fun<T> speller(fn: (ByteSlice, IntRef) -> T) = null
+fun<T> speller(fn: (ByteSlice, Ref<Int>) -> T) = null
 
 // ======== STDIO ===========
 
@@ -336,35 +333,35 @@ fun vsprintf(dest: BytePtr, fmt: BytePtr, args: Slice<Any>): Int {
     return result.length
 }
 
-fun fprintf(io: StdIo, fmt: BytePtr, vararg args: Any?) = fprintf(io, fmt.slice(0, strlen(fmt)), *args)
+fun fprintf(io: Ptr<StdIo>, fmt: BytePtr, vararg args: Any?) = fprintf(io, fmt.slice(0, strlen(fmt)), *args)
 
-fun fprintf(io: StdIo, fmt: ByteSlice, vararg args: Any?) {
+fun fprintf(io: Ptr<StdIo>, fmt: ByteSlice, vararg args: Any?) {
     val outbuf = OutBuffer()
     val arr = arrayOfNulls<Any?>(args.size)
     args.copyInto(arr)
     outbuf.vprintf(fmt, slice(arr))
-    io.handle.print(outbuf.extractSlice().toString())
+    io.get()?.handle?.print(outbuf.extractSlice().toString())
 }
 
-fun fputs(s: ByteSlice, io: StdIo) {
-    io.handle.print(s.toString())
+fun fputs(s: ByteSlice, io: Ptr<StdIo>) {
+    io.get()?.handle?.print(s.toString())
 }
 
-fun fputs(s: BytePtr, io: StdIo) {
-    io.handle.print(s.toString())
+fun fputs(s: BytePtr, io: Ptr<StdIo>) {
+    io.get()?.handle?.print(s.toString())
 }
 
-fun fputc(c: Int, io: StdIo) {
-    io.handle.print(c.toChar())
+fun fputc(c: Int, io: Ptr<StdIo>) {
+    io.get()?.handle?.print(c.toChar())
 }
 
-fun fflush(io: StdIo) = io.handle.flush()
+fun fflush(io: Ptr<StdIo>) = io.get()?.handle?.flush()
 
 @JvmField
-val stdout = _IO_FILE(System.out)
+val stdout = refPtr(_IO_FILE(System.out))
 
 @JvmField
-val stderr = _IO_FILE(System.err)
+val stderr = refPtr(_IO_FILE(System.err))
 
 // ======= std.getopt =======
 

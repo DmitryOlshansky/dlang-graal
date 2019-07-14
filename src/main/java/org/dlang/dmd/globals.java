@@ -919,11 +919,11 @@ public class globals {
 
         // defaulted all parameters starting with #1
         public  BytePtr toChars() {
-            return toChars(global.value.params.showColumns);
+            return toChars(global.params.showColumns);
         }
 
         public  boolean equals(Loc loc) {
-            return !global.value.params.showColumns || (this.charnum == loc.charnum) && (this.linnum == loc.linnum) && FileName.equals(this.filename, loc.filename);
+            return !global.params.showColumns || (this.charnum == loc.charnum) && (this.linnum == loc.linnum) && FileName.equals(this.filename, loc.filename);
         }
 
         public  boolean opEquals(Loc loc) {
@@ -995,5 +995,5 @@ public class globals {
         public static final int always = 2;
     }
 
-    static Ref<Global> global = ref(new Global());
+    static Global global = new Global();
 }

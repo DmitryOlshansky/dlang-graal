@@ -205,7 +205,7 @@ public class builtin {
         {
             error(loc, new BytePtr("`bsf(0)` is undefined"));
         }
-        return new IntegerExp(loc, (long)bsf(n), Type.tint32.value);
+        return new IntegerExp(loc, (long)bsf(n), Type.tint32);
     }
 
     public static Expression eval_bsr(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
@@ -216,7 +216,7 @@ public class builtin {
         {
             error(loc, new BytePtr("`bsr(0)` is undefined"));
         }
-        return new IntegerExp(loc, (long)bsr(n), Type.tint32.value);
+        return new IntegerExp(loc, (long)bsr(n), Type.tint32);
     }
 
     public static Expression eval_bswap(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
@@ -238,7 +238,7 @@ public class builtin {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 135));
         long n = arg0.toInteger();
-        return new IntegerExp(loc, (long)popcnt(n), Type.tint32.value);
+        return new IntegerExp(loc, (long)popcnt(n), Type.tint32);
     }
 
     public static Expression eval_yl2x(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
@@ -345,7 +345,7 @@ public class builtin {
         add_builtin(new BytePtr("_D4core5bitop5bswapFNaNbNiNfkZk"), builtin::eval_bswap);
         add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNfkZi"), builtin::eval_popcnt);
         add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNftZt"), builtin::eval_popcnt);
-        if (global.value.params.is64bit)
+        if (global.params.is64bit)
         {
             add_builtin(new BytePtr("_D4core5bitop7_popcntFNaNbNiNfmZi"), builtin::eval_popcnt);
         }

@@ -189,7 +189,7 @@ public class objc {
     public static abstract class Objc
     {
         public static void _init() {
-            if (global.value.params.isOSX && global.value.params.is64bit)
+            if (global.params.isOSX && global.params.is64bit)
             {
                 _objc = new Supported();
             }
@@ -439,32 +439,33 @@ public class objc {
         public  ClassDeclaration getParent(FuncDeclaration fd, ClassDeclaration cd) {
             ClassDeclaration __result = null;
             Ref<FuncDeclaration> fd_ref = ref(fd);
+            Ref<ClassDeclaration> cd_ref = ref(cd);
             try {
-                if ((cd.classKind == ClassKind.objc) && fd_ref.value.isStatic() && !cd.objc.isMeta)
+                if ((cd_ref.value.classKind == ClassKind.objc) && fd_ref.value.isStatic() && !cd_ref.value.objc.isMeta)
                 {
-                    __result = cd.objc.metaclass;
+                    __result = cd_ref.value.objc.metaclass;
                     /*goto __returnLabel*/throw Dispatch0.INSTANCE;
                 }
                 else
                 {
-                    __result = cd;
+                    __result = cd_ref.value;
                     /*goto __returnLabel*/throw Dispatch0.INSTANCE;
                 }
             }
             catch(Dispatch0 __d){}
         /*__returnLabel:*/
-            Function3<ClassDeclaration,FuncDeclaration,ClassDeclaration,Void> __ensure = new Function3<ClassDeclaration,FuncDeclaration,ClassDeclaration,Void>(){
-                public Void invoke(ClassDeclaration __result, Ref<FuncDeclaration> fd, Ref<ClassDeclaration> cd) {
+            Function3<Ref<ClassDeclaration>,Ref<FuncDeclaration>,Ref<ClassDeclaration>,Void> __ensure = (__result, fd, cd) -> {
+             {
+                {
+                    ClassDeclaration metaclass = __result;
                     {
-                        ClassDeclaration metaclass = __result;
-                        {
-                            assert(metaclass != null);
-                        }
+                        assert(metaclass != null);
                     }
-                    return null;
                 }
+                return null;
+            }
             };
-            __ensure.invoke(__result, fd_ref, cd);
+            __ensure.invoke(__result, fd_ref, cd_ref);
             return __result;
         }
 
@@ -516,19 +517,19 @@ public class objc {
         }
 
         public  void setMetaclass(InterfaceDeclaration interfaceDeclaration, Ptr<Scope> sc) {
-            Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,InterfaceDeclaration> newMetaclass = new Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,InterfaceDeclaration>(){
-                public InterfaceDeclaration invoke(Loc loc, Ptr<DArray<Ptr<BaseClass>>> metaBases) {
-                    return new InterfaceDeclaration(loc, null, metaBases);
-                }
+            Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,InterfaceDeclaration> newMetaclass = (loc, metaBases) -> {
+             {
+                return new InterfaceDeclaration(loc, null, metaBases);
+            }
             };
             setMetaclass_98AC5D09E954A8ECInterfaceDeclaration(interfaceDeclaration, sc);
         }
 
         public  void setMetaclass(ClassDeclaration classDeclaration, Ptr<Scope> sc) {
-            Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,ClassDeclaration> newMetaclass = new Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,ClassDeclaration>(){
-                public ClassDeclaration invoke(Loc loc, Ptr<DArray<Ptr<BaseClass>>> metaBases) {
-                    return new ClassDeclaration(loc, null, metaBases, refPtr(new DArray<Dsymbol>()), false);
-                }
+            Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,ClassDeclaration> newMetaclass = (loc, metaBases) -> {
+             {
+                return new ClassDeclaration(loc, null, metaBases, refPtr(new DArray<Dsymbol>()), false);
+            }
             };
             setMetaclass_98AC5D09E954A8ECClassDeclaration.invoke(classDeclaration, sc);
         }

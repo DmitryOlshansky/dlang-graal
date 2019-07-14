@@ -81,8 +81,8 @@ public class aggregate {
         public Type type = null;
         public long storage_class = 0L;
         public Prot protection = new Prot();
-        public IntRef structsize = ref(0);
-        public IntRef alignsize = ref(0);
+        public Ref<Integer> structsize = ref(0);
+        public Ref<Integer> alignsize = ref(0);
         public DArray<VarDeclaration> fields = new DArray<VarDeclaration>();
         public int sizeok = Sizeok.none;
         public Dsymbol deferred = null;
@@ -140,58 +140,58 @@ public class aggregate {
                 return true;
             }
             this.fields.setDim(0);
-            Function2<Dsymbol,Object,Integer> func = new Function2<Dsymbol,Object,Integer>(){
-                public Integer invoke(Dsymbol s, Object param) {
-                    VarDeclaration v = s.isVarDeclaration();
-                    if (v == null)
-                    {
-                        return 0;
-                    }
-                    if ((v.storage_class & 8388608L) != 0)
-                    {
-                        return 0;
-                    }
-                    AggregateDeclaration ad = ((AggregateDeclaration)param);
-                    if ((v.semanticRun < PASS.semanticdone))
-                    {
-                        dsymbolSemantic(v, null);
-                    }
-                    if ((ad.sizeok != Sizeok.none))
-                    {
-                        return 1;
-                    }
-                    if (v.aliassym != null)
-                    {
-                        return 0;
-                    }
-                    if ((v.storage_class & 69936087043L) != 0)
-                    {
-                        return 0;
-                    }
-                    if (!v.isField() || (v.semanticRun < PASS.semanticdone))
-                    {
-                        return 1;
-                    }
-                    ad.fields.push(v);
-                    if ((v.storage_class & 2097152L) != 0)
-                    {
-                        return 0;
-                    }
-                    Type tv = v.type.baseElemOf();
-                    if (((tv.ty & 0xFF) != ENUMTY.Tstruct))
-                    {
-                        return 0;
-                    }
-                    if ((pequals(ad, ((TypeStruct)tv).sym)))
-                    {
-                        BytePtr psz = pcopy(((v.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) ? new BytePtr("static array of ") : new BytePtr(""));
-                        ad.error(new BytePtr("cannot have field `%s` with %ssame struct type"), v.toChars(), psz);
-                        ad.type = Type.terror;
-                        ad.errors = true;
-                        return 1;
-                    }
+            Function2<Dsymbol,Object,Integer> func = (s, param) -> {
+             {
+                VarDeclaration v = s.isVarDeclaration();
+                if (v == null)
+                {
                     return 0;
                 }
+                if ((v.storage_class & 8388608L) != 0)
+                {
+                    return 0;
+                }
+                AggregateDeclaration ad = ((AggregateDeclaration)param);
+                if ((v.semanticRun < PASS.semanticdone))
+                {
+                    dsymbolSemantic(v, null);
+                }
+                if ((ad.sizeok != Sizeok.none))
+                {
+                    return 1;
+                }
+                if (v.aliassym != null)
+                {
+                    return 0;
+                }
+                if ((v.storage_class & 69936087043L) != 0)
+                {
+                    return 0;
+                }
+                if (!v.isField() || (v.semanticRun < PASS.semanticdone))
+                {
+                    return 1;
+                }
+                ad.fields.push(v);
+                if ((v.storage_class & 2097152L) != 0)
+                {
+                    return 0;
+                }
+                Type tv = v.type.baseElemOf();
+                if (((tv.ty & 0xFF) != ENUMTY.Tstruct))
+                {
+                    return 0;
+                }
+                if ((pequals(ad, ((TypeStruct)tv).sym)))
+                {
+                    BytePtr psz = pcopy(((v.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) ? new BytePtr("static array of ") : new BytePtr(""));
+                    ad.error(new BytePtr("cannot have field `%s` with %ssame struct type"), v.toChars(), psz);
+                    ad.type = Type.terror;
+                    ad.errors = true;
+                    return 1;
+                }
+                return 0;
+            }
             };
             {
                 int i = 0;
@@ -271,7 +271,7 @@ public class aggregate {
             {
                 this.error(loc, new BytePtr("no size because of forward reference"));
             }
-            if (global.value.gag == 0)
+            if (global.gag == 0)
             {
                 this.type = Type.terror;
                 this.errors = true;
@@ -499,7 +499,7 @@ public class aggregate {
             return !errors;
         }
 
-        public static void alignmember(int alignment, int size, IntPtr poffset) {
+        public static void alignmember(int alignment, int size, Ptr<Integer> poffset) {
             switch (alignment)
             {
                 case 1:
@@ -515,8 +515,8 @@ public class aggregate {
             }
         }
 
-        public static int placeField(IntPtr nextoffset, int memsize, int memalignsize, int alignment, IntPtr paggsize, IntPtr paggalignsize, boolean isunion) {
-            IntRef ofs = ref(nextoffset.get());
+        public static int placeField(Ptr<Integer> nextoffset, int memsize, int memalignsize, int alignment, Ptr<Integer> paggsize, Ptr<Integer> paggalignsize, boolean isunion) {
+            Ref<Integer> ofs = ref(nextoffset.get());
             int actualAlignment = (alignment == -1) ? memalignsize : alignment;
             Ref<Boolean> overflow = ref(false);
             int sz = addu(memsize, actualAlignment, overflow);

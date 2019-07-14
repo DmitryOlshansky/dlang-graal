@@ -370,7 +370,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             if (var is opts.vararg) return;
         }
         bool staticInit = var.isStatic() || (var.storage_class & STC.gshared) || (opts.funcs.empty && opts.aggregates.empty);
-        bool refVar = (var in opts.refParams) != null;
+        bool refVar = (var in opts.refParams.top) != null;
         Type t = var.type;
         if(var._init && var._init.kind == InitKind.array && var.type.ty == Tpointer)
             t = var.type.nextOf.arrayOf;
@@ -895,8 +895,11 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             buf.fmt("__dispatch%d != 0 ? __dispatch%d : %s", 
                 dispatch.top, dispatch.top, cond);
         }
-        else
+        else {
+            if (s.condition.type.ty == Tint64 || s.condition.type.ty == Tuns64)
+                buf.put("(int)");
             buf.put(cond);
+        }
         buf.put(')');
         buf.put('\n');
         if (s._body)
@@ -945,6 +948,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     override void visit(CaseStatement s)
     {
         buf.put("case ");
+        if (s.exp.type.ty == Tuns64 || s.exp.type.ty == Tint64)
+        buf.put("(int)");
         buf.put(s.exp.toJava(opts));
         buf.put(':');
         buf.put('\n');
@@ -1422,12 +1427,12 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 if (i != 0) buf.fmt(", ");
                 auto box = p.isRef || p.isOut;
                 if (box && !isLambda && !p.type.isTypeStruct && p.type.ty != Tarray && !p.type.isConst) {
-                    opts.refParams[p] = true;
+                    opts.refParams.top[p] = true;
                     buf.fmt("%s %s", refTypeOf(p.type), p.ident.symbol);
                 }
                 else {
                     buf.fmt("%s %s", typeOf(p.type, boxing), p.ident.symbol);
-                    if (p in opts.refParams) {
+                    if (p in opts.refParams.top) {
                         renamedVars ~= p;
                         opts.renamed[p] = (p.ident.symbol ~ "_ref").dup;
                     }
@@ -1445,7 +1450,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     auto box = p.storageClass & (STC.ref_ | STC.out_);
                     auto name = p.ident ? p.ident.toString : format("arg%d",i);
                     if (box && !p.type.isTypeStruct && p.type.ty != Tarray && !p.type.isConst) {
-                        opts.refParams[p] = true;
+                        opts.refParams.top[p] = true;
                         buf.fmt("%s %s", refTypeOf(p.type), name);
                     }
                     else buf.fmt("%s %s", typeOf(p.type), name);
@@ -1463,7 +1468,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             buf.fmt("public %s void %s%s(", storage, func.funcName, tiArgs.str);
         }
         else
-            buf.fmt("public %s %s %s%s(", storage, typeOf(func.type.nextOf()), func.funcName, tiArgs.str);
+            buf.fmt("public %s %s %s%s(", storage, typeOf(func.type.nextOf()), 
+                func.funcName == "opIndex" ? "get" : func.funcName, tiArgs.str);
         VarDeclaration[] renamedVars = printParameters(func, Boxing.no, false, numArgs);
         buf.put(")");
         return renamedVars;
@@ -1472,13 +1478,14 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     void printLocalFunction(FuncDeclaration func, bool isLambda = false) {
         auto t = func.type.isTypeFunction();
         //stderr.writefln("\tLocal function %s", func.ident.toString);
-        buf.fmt("%s %s%s = new %s(){\n", t.toJavaFunc(opts), func.funcName, tiArgs.str, t.toJavaFunc(opts));
-        buf.indent;
-        buf.fmt("public %s invoke(", typeOf(t.nextOf, Boxing.yes));
-        VarDeclaration[] renamedVars = printParameters(func, Boxing.yes, isLambda);
-        buf.put(")");
-        printFunctionBody(func, renamedVars);
-        buf.outdent;
+        buf.fmt("%s %s%s = (", t.toJavaFunc(opts), func.funcName, tiArgs.str);
+        if (func.parameters)
+            foreach (i, p; *func.parameters) {
+                if(i) buf.put(", ");
+                buf.fmt("%s", p.ident.symbol);
+            }
+        buf.put(") -> {\n");
+        printFunctionBody(func, []);
         buf.put("\n};\n");
     }
 
@@ -1512,7 +1519,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                         buf.fmt(");\n");
                     }
                     else {
-                        buf.fmt("return %s(", func.funcName);
+                        if (func.type.nextOf.ty != Tvoid) buf.put("return ");
+                        buf.fmt("%s(", func.funcName);
                         printDefaulted(i, params);
                         buf.fmt(");\n");
                     }
@@ -1582,8 +1590,11 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
         auto _ = pushed(opts.funcs, func);
 
-        auto oldRefParams = opts.refParams.dup;
-        scope(exit) opts.refParams = oldRefParams;
+        auto local = passedByRef(func);
+        foreach (k; opts.refParams.top.keys)
+            local[k] = opts.refParams.top[k];
+
+        auto refs = pushed(opts.refParams, local);
 
         if (opts.funcs.length > 1)
             printLocalFunction(func);

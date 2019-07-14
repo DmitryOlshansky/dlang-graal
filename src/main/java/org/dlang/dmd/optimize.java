@@ -441,8 +441,8 @@ public class optimize {
                 cdfrom.size(e.loc);
                 assert((cdfrom.sizeok == Sizeok.done));
                 assert((cdto.sizeok == Sizeok.done) || !cdto.isBaseOf(cdfrom, null));
-                IntRef offset = ref(0);
-                if (cdto.isBaseOf(cdfrom, ptr(offset)) && (offset.value == 0))
+                int offset = 0;
+                if (cdto.isBaseOf(cdfrom, ptr(offset)) && (offset == 0))
                 {
                     /*goto L1*/throw Dispatch0.INSTANCE;
                 }
@@ -572,7 +572,7 @@ public class optimize {
             }
         }
 
-        public  void shift_optimize(BinExp e, Function4<Loc,Type,Expression,Expression,UnionExp> shift) {
+        public  void shift_optimize(BinExp e, Function4<Ref<Loc>,Type,Expression,Expression,UnionExp> shift) {
             if (this.binOptimize(e, this.result))
             {
                 return ;
@@ -994,27 +994,27 @@ public class optimize {
     }
 
     public static Expression expandVar(int result, VarDeclaration v) {
-        Function1<Expression,Expression> initializerReturn = new Function1<Expression,Expression>(){
-            public Expression invoke(Expression e) {
-                if ((!pequals(e.type.value, v.type)))
-                {
-                    e = e.castTo(null, v.type);
-                }
-                v.inuse++;
-                e = e.optimize(result, false);
-                v.inuse--;
-                return e;
+        Function1<Expression,Expression> initializerReturn = (e) -> {
+         {
+            if ((!pequals(e.value.type.value, v.type)))
+            {
+                e.value = e.value.castTo(null, v.type);
             }
+            v.inuse++;
+            e.value = e.value.optimize(result, false);
+            v.inuse--;
+            return e.value;
+        }
         };
-        Function0<Expression> nullReturn = new Function0<Expression>(){
-            public Expression invoke() {
-                return null;
-            }
+        Function0<Expression> nullReturn = () -> {
+         {
+            return null;
+        }
         };
-        Function0<Expression> errorReturn = new Function0<Expression>(){
-            public Expression invoke() {
-                return new ErrorExp();
-            }
+        Function0<Expression> errorReturn = () -> {
+         {
+            return new ErrorExp();
+        }
         };
         if (v == null)
         {

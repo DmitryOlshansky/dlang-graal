@@ -42,7 +42,7 @@ public class canthrow {
         }
 
         public  void visit(CallExp ce) {
-            if ((global.value.errors != 0) && (ce.e1.value.type.value == null))
+            if ((global.errors != 0) && (ce.e1.value.type.value == null))
             {
                 return ;
             }
@@ -223,10 +223,10 @@ public class canthrow {
     }
 
     public static boolean Dsymbol_canThrow(Dsymbol s, FuncDeclaration func, boolean mustNotThrow) {
-        Function1<Dsymbol,Integer> symbolDg = new Function1<Dsymbol,Integer>(){
-            public Integer invoke(Dsymbol s) {
-                return (Dsymbol_canThrow(s, func, mustNotThrow) ? 1 : 0);
-            }
+        Function1<Dsymbol,Integer> symbolDg = (s) -> {
+         {
+            return (Dsymbol_canThrow(s, func, mustNotThrow) ? 1 : 0);
+        }
         };
         {
             VarDeclaration vd = s.isVarDeclaration();

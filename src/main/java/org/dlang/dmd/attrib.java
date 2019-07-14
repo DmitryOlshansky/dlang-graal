@@ -54,10 +54,10 @@ public class attrib {
         }
 
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
-            Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
-                public Integer invoke(Dsymbol s) {
-                    return (((s != null) && (s.apply(fp, param) != 0)) ? 1 : 0);
-                }
+            Function1<Dsymbol,Integer> __lambda3 = (s) -> {
+             {
+                return (((s != null) && (s.apply(fp, param) != 0)) ? 1 : 0);
+            }
             };
             return foreachDsymbol(this.include(this._scope), __lambda3);
         }
@@ -87,11 +87,11 @@ public class attrib {
             if (d != null)
             {
                 Ptr<Scope> sc2 = this.newScope(sc);
-                Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
-                    public Void invoke(Dsymbol s) {
-                        s.addMember(sc2, sds);
-                        return null;
-                    }
+                Function1<Dsymbol,Void> __lambda3 = (s) -> {
+                 {
+                    s.addMember(sc2, sds);
+                    return null;
+                }
                 };
                 foreachDsymbol(d, __lambda3);
                 if ((sc2 != sc))
@@ -106,11 +106,11 @@ public class attrib {
             if (d != null)
             {
                 Ptr<Scope> sc2 = this.newScope(sc);
-                Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
-                    public Void invoke(Dsymbol s) {
-                        s.setScope(sc2);
-                        return null;
-                    }
+                Function1<Dsymbol,Void> __lambda2 = (s) -> {
+                 {
+                    s.setScope(sc2);
+                    return null;
+                }
                 };
                 foreachDsymbol(d, __lambda2);
                 if ((sc2 != sc))
@@ -125,11 +125,11 @@ public class attrib {
             if (d != null)
             {
                 Ptr<Scope> sc2 = this.newScope(sc);
-                Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
-                    public Void invoke(Dsymbol s) {
-                        s.importAll(sc2);
-                        return null;
-                    }
+                Function1<Dsymbol,Void> __lambda2 = (s) -> {
+                 {
+                    s.importAll(sc2);
+                    return null;
+                }
                 };
                 foreachDsymbol(d, __lambda2);
                 if ((sc2 != sc))
@@ -142,11 +142,11 @@ public class attrib {
         public  void addComment(BytePtr comment) {
             if (comment != null)
             {
-                Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
-                    public Void invoke(Dsymbol s) {
-                        s.addComment(comment);
-                        return null;
-                    }
+                Function1<Dsymbol,Void> __lambda2 = (s) -> {
+                 {
+                    s.addComment(comment);
+                    return null;
+                }
                 };
                 foreachDsymbol(this.include(null), __lambda2);
             }
@@ -161,50 +161,50 @@ public class attrib {
             return Dsymbol.oneMembers(d, ps, ident);
         }
 
-        public  void setFieldOffset(AggregateDeclaration ad, IntPtr poffset, boolean isunion) {
-            Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s) {
-                    s.setFieldOffset(ad, poffset, isunion);
-                    return null;
-                }
+        public  void setFieldOffset(AggregateDeclaration ad, Ptr<Integer> poffset, boolean isunion) {
+            Function1<Dsymbol,Void> __lambda4 = (s) -> {
+             {
+                s.setFieldOffset(ad, poffset, isunion);
+                return null;
+            }
             };
             foreachDsymbol(this.include(null), __lambda4);
         }
 
         public  boolean hasPointers() {
-            Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>(){
-                public Integer invoke(Dsymbol s) {
-                    return (s.hasPointers() ? 1 : 0);
-                }
+            Function1<Dsymbol,Integer> __lambda1 = (s) -> {
+             {
+                return (s.hasPointers() ? 1 : 0);
+            }
             };
             return foreachDsymbol(this.include(null), __lambda1) != 0;
         }
 
         public  boolean hasStaticCtorOrDtor() {
-            Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>(){
-                public Integer invoke(Dsymbol s) {
-                    return (s.hasStaticCtorOrDtor() ? 1 : 0);
-                }
+            Function1<Dsymbol,Integer> __lambda1 = (s) -> {
+             {
+                return (s.hasStaticCtorOrDtor() ? 1 : 0);
+            }
             };
             return foreachDsymbol(this.include(null), __lambda1) != 0;
         }
 
         public  void checkCtorConstInit() {
-            Function1<Dsymbol,Void> __lambda1 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s) {
-                    s.checkCtorConstInit();
-                    return null;
-                }
+            Function1<Dsymbol,Void> __lambda1 = (s) -> {
+             {
+                s.checkCtorConstInit();
+                return null;
+            }
             };
             foreachDsymbol(this.include(null), __lambda1);
         }
 
         public  void addLocalClass(Ptr<DArray<ClassDeclaration>> aclasses) {
-            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s) {
-                    s.addLocalClass(aclasses);
-                    return null;
-                }
+            Function1<Dsymbol,Void> __lambda2 = (s) -> {
+             {
+                s.addLocalClass(aclasses);
+                return null;
+            }
             };
             foreachDsymbol(this.include(null), __lambda2);
         }
@@ -283,25 +283,25 @@ public class attrib {
             if (d != null)
             {
                 Ptr<Scope> sc2 = this.newScope(sc);
-                Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
-                    public Void invoke(Dsymbol s) {
+                Function1<Dsymbol,Void> __lambda3 = (s) -> {
+                 {
+                    {
+                        Declaration decl = s.isDeclaration();
+                        if ((decl) != null)
                         {
-                            Declaration decl = s.isDeclaration();
-                            if ((decl) != null)
+                            decl.storage_class |= stc & 2251799813685248L;
                             {
-                                decl.storage_class |= stc & 2251799813685248L;
+                                StorageClassDeclaration sdecl = s.isStorageClassDeclaration();
+                                if ((sdecl) != null)
                                 {
-                                    StorageClassDeclaration sdecl = s.isStorageClassDeclaration();
-                                    if ((sdecl) != null)
-                                    {
-                                        sdecl.stc |= stc & 2251799813685248L;
-                                    }
+                                    sdecl.stc |= stc & 2251799813685248L;
                                 }
                             }
                         }
-                        s.addMember(sc2, sds);
-                        return null;
                     }
+                    s.addMember(sc2, sds);
+                    return null;
+                }
                 };
                 foreachDsymbol(d, __lambda3);
                 if ((sc2 != sc))
@@ -411,7 +411,7 @@ public class attrib {
         public int linkage = 0;
         public  LinkDeclaration(int linkage, Ptr<DArray<Dsymbol>> decl) {
             super(decl);
-            this.linkage = (linkage == LINK.system) ? target.value.systemLinkage() : linkage;
+            this.linkage = (linkage == LINK.system) ? target.systemLinkage() : linkage;
         }
 
         public static LinkDeclaration create(int p, Ptr<DArray<Dsymbol>> decl) {
@@ -773,7 +773,7 @@ public class attrib {
             return ;
         }
 
-        public  void setFieldOffset(AggregateDeclaration ad, IntPtr poffset, boolean isunion) {
+        public  void setFieldOffset(AggregateDeclaration ad, Ptr<Integer> poffset, boolean isunion) {
             if (this.decl != null)
             {
                 int fieldstart = ad.fields.length;
@@ -781,16 +781,16 @@ public class attrib {
                 int savealignsize = ad.alignsize.value;
                 ad.structsize.value = 0;
                 ad.alignsize.value = 0;
-                IntRef offset = ref(0);
-                Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>(){
-                    public Void invoke(Dsymbol s) {
-                        s.setFieldOffset(ad, ptr(offset), isunion);
-                        if (isunion)
-                        {
-                            offset.value = 0;
-                        }
-                        return null;
+                Ref<Integer> offset = ref(0);
+                Function1<Dsymbol,Void> __lambda4 = (s) -> {
+                 {
+                    s.setFieldOffset(ad, ptr(offset), isunion);
+                    if (isunion)
+                    {
+                        offset.value = 0;
                     }
+                    return null;
+                }
                 };
                 foreachDsymbol(this.decl, __lambda4);
                 if ((fieldstart == ad.fields.length))
@@ -989,29 +989,29 @@ public class attrib {
         public  void addComment(BytePtr comment) {
             if (comment != null)
             {
-                Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
-                    public Void invoke(Dsymbol s) {
-                        s.addComment(comment);
-                        return null;
-                    }
+                Function1<Dsymbol,Void> __lambda2 = (s) -> {
+                 {
+                    s.addComment(comment);
+                    return null;
+                }
                 };
                 foreachDsymbol(this.decl, __lambda2);
-                Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
-                    public Void invoke(Dsymbol s) {
-                        s.addComment(comment);
-                        return null;
-                    }
+                Function1<Dsymbol,Void> __lambda3 = (s) -> {
+                 {
+                    s.addComment(comment);
+                    return null;
+                }
                 };
                 foreachDsymbol(this.elsedecl, __lambda3);
             }
         }
 
         public  void setScope(Ptr<Scope> sc) {
-            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s) {
-                    s.setScope(sc);
-                    return null;
-                }
+            Function1<Dsymbol,Void> __lambda2 = (s) -> {
+             {
+                s.setScope(sc);
+                return null;
+            }
             };
             foreachDsymbol(this.include(sc), __lambda2);
         }
@@ -1073,18 +1073,18 @@ public class attrib {
                     Ptr<DArray<Dsymbol>> d = this.include(this._scope);
                     if ((d != null) && !this.addisdone)
                     {
-                        Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
-                            public Void invoke(Dsymbol s) {
-                                s.addMember(_scope, scopesym);
-                                return null;
-                            }
+                        Function1<Dsymbol,Void> __lambda2 = (s) -> {
+                         {
+                            s.addMember(_scope, scopesym);
+                            return null;
+                        }
                         };
                         foreachDsymbol(d, __lambda2);
-                        Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
-                            public Void invoke(Dsymbol s) {
-                                s.setScope(_scope);
-                                return null;
-                            }
+                        Function1<Dsymbol,Void> __lambda3 = (s) -> {
+                         {
+                            s.setScope(_scope);
+                            return null;
+                        }
                         };
                         foreachDsymbol(d, __lambda3);
                         this.addisdone = true;
@@ -1197,18 +1197,18 @@ public class attrib {
                 Ptr<DArray<Dsymbol>> d = makeTupleForeach11(this._scope, this.sfe.aggrfe, this.decl, this.sfe.needExpansion);
                 if (d != null)
                 {
-                    Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
-                        public Void invoke(Dsymbol s) {
-                            s.addMember(_scope, scopesym);
-                            return null;
-                        }
+                    Function1<Dsymbol,Void> __lambda2 = (s) -> {
+                     {
+                        s.addMember(_scope, scopesym);
+                        return null;
+                    }
                     };
                     foreachDsymbol(d, __lambda2);
-                    Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
-                        public Void invoke(Dsymbol s) {
-                            s.setScope(_scope);
-                            return null;
-                        }
+                    Function1<Dsymbol,Void> __lambda3 = (s) -> {
+                     {
+                        s.setScope(_scope);
+                        return null;
+                    }
                     };
                     foreachDsymbol(d, __lambda3);
                 }

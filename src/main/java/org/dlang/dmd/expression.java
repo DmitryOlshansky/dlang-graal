@@ -722,31 +722,35 @@ public class expression {
         }
 
         public  void error(BytePtr format, Object... ap) {
+            Ref<BytePtr> format_ref = ref(format);
             if ((!pequals(this.type.value, Type.terror)))
             {
-                verror(this.loc, format, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
+                verror(this.loc, format_ref.value, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
             }
         }
 
         public  void errorSupplemental(BytePtr format, Object... ap) {
+            Ref<BytePtr> format_ref = ref(format);
             if ((pequals(this.type.value, Type.terror)))
             {
                 return ;
             }
-            verrorSupplemental(this.loc, format, new RawSlice<>(ap));
+            verrorSupplemental(this.loc, format_ref.value, new RawSlice<>(ap));
         }
 
         public  void warning(BytePtr format, Object... ap) {
+            Ref<BytePtr> format_ref = ref(format);
             if ((!pequals(this.type.value, Type.terror)))
             {
-                vwarning(this.loc, format, new RawSlice<>(ap));
+                vwarning(this.loc, format_ref.value, new RawSlice<>(ap));
             }
         }
 
         public  void deprecation(BytePtr format, Object... ap) {
+            Ref<BytePtr> format_ref = ref(format);
             if ((!pequals(this.type.value, Type.terror)))
             {
-                vdeprecation(this.loc, format, new RawSlice<>(ap), null, null);
+                vdeprecation(this.loc, format_ref.value, new RawSlice<>(ap), null, null);
             }
         }
 
@@ -939,7 +943,7 @@ public class expression {
             if ((this.type.value != null) && ((this.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
             {
                 this.error(new BytePtr("expression `%s` is `void` and has no value"), this.toChars());
-                if (global.value.gag == 0)
+                if (global.gag == 0)
                 {
                     this.type.value = Type.terror;
                 }
@@ -1291,7 +1295,7 @@ public class expression {
                 TypeStruct ts = t.baseElemOf().isTypeStruct();
                 if ((ts) != null)
                 {
-                    if (global.value.params.useTypeInfo)
+                    if (global.params.useTypeInfo)
                     {
                         semanticTypeInfo(sc, t);
                     }
@@ -1909,7 +1913,7 @@ public class expression {
 
         public  IntegerExp(long value) {
             super(Loc.initial, TOK.int64, 32);
-            this.type.value = Type.tint32.value;
+            this.type.value = Type.tint32;
             this.value = (long)(int)value;
         }
 
@@ -2030,15 +2034,15 @@ public class expression {
                             result = value;
                             break;
                         case 3:
-                            if ((target.value.ptrsize == 8))
+                            if ((target.ptrsize == 8))
                             {
                                 /*goto case*/{ __dispatch2 = 20; continue dispatched_2; }
                             }
-                            if ((target.value.ptrsize == 4))
+                            if ((target.ptrsize == 4))
                             {
                                 /*goto case*/{ __dispatch2 = 18; continue dispatched_2; }
                             }
-                            if ((target.value.ptrsize == 2))
+                            if ((target.ptrsize == 2))
                             {
                                 /*goto case*/{ __dispatch2 = 16; continue dispatched_2; }
                             }
@@ -2102,7 +2106,7 @@ public class expression {
     public static class ErrorExp extends Expression
     {
         public  ErrorExp() {
-            if ((global.value.errors == 0) && (global.value.gaggedErrors == 0))
+            if ((global.errors == 0) && (global.gaggedErrors == 0))
             {
                 this.error(new BytePtr("unknown, please file report on issues.dlang.org"));
             }
@@ -2565,7 +2569,7 @@ public class expression {
     {
         public BytePtr string = null;
         public CharPtr wstring = null;
-        public IntPtr dstring = null;
+        public Ptr<Integer> dstring = null;
         public int len = 0;
         public byte sz = (byte)1;
         public byte committed = 0;
@@ -2654,8 +2658,8 @@ public class expression {
             {
                 case 1:
                     {
-                        IntRef u = ref(0);
-                        for (; (u.value < this.len);){
+                        int u = 0;
+                        for (; (u < this.len);){
                             {
                                 BytePtr p = pcopy(utf_decodeChar(this.string, this.len, u, c));
                                 if ((p) != null)
@@ -2670,8 +2674,8 @@ public class expression {
                     break;
                 case 2:
                     {
-                        IntRef u_1 = ref(0);
-                        for (; (u_1.value < this.len);){
+                        int u_1 = 0;
+                        for (; (u_1 < this.len);){
                             {
                                 BytePtr p = pcopy(utf_decodeWchar(this.wstring, this.len, u_1, c));
                                 if ((p) != null)
@@ -2740,7 +2744,7 @@ public class expression {
 
         // defaulted all parameters starting with #3
         public  void writeTo(Object dest, boolean zero) {
-            return writeTo(dest, zero, 0);
+            writeTo(dest, zero, 0);
         }
 
         public  int getCodeUnit(int i) {
@@ -2825,8 +2829,8 @@ public class expression {
                         break;
                     case 4:
                         {
-                            IntPtr s1_1 = pcopy(toIntPtr(this.string));
-                            IntPtr s2 = pcopy(toIntPtr(se2.string));
+                            Ptr<Integer> s1_1 = pcopy(toPtr<Integer>(this.string));
+                            Ptr<Integer> s2 = pcopy(toPtr<Integer>(se2.string));
                             {
                                 int __key1322 = 0;
                                 int __limit1323 = this.len;
@@ -2875,7 +2879,7 @@ public class expression {
                     value = (int)(toPtr<Integer>(this.string)).get((int)i);
                     break;
                 case 4:
-                    value = (toIntPtr(this.string)).get((int)i);
+                    value = (toPtr<Integer>(this.string)).get((int)i);
                     break;
                 default:
                 throw new AssertionError("Unreachable code!");
@@ -4119,14 +4123,14 @@ public class expression {
         }
 
         public  int matchType(Type to, Ptr<Scope> sc, Ptr<FuncExp> presult, int flag) {
-            Function3<Expression,Type,Integer,Integer> cannotInfer = new Function3<Expression,Type,Integer,Integer>(){
-                public Integer invoke(Expression e, Type to, Integer flag) {
-                    if (flag == 0)
-                    {
-                        e.error(new BytePtr("cannot infer parameter types from `%s`"), to.toChars());
-                    }
-                    return MATCH.nomatch;
+            Function3<Expression,Type,Integer,Integer> cannotInfer = (e, to, flag) -> {
+             {
+                if (flag == 0)
+                {
+                    e.error(new BytePtr("cannot infer parameter types from `%s`"), to.toChars());
                 }
+                return MATCH.nomatch;
+            }
             };
             if (presult != null)
             {
@@ -4651,7 +4655,7 @@ public class expression {
                 }
                 if (this.type.value.isreal() || this.type.value.isimaginary())
                 {
-                    assert((global.value.errors != 0) || t2.isfloating());
+                    assert((global.errors != 0) || t2.isfloating());
                     this.e2.value = this.e2.value.castTo(sc, t1);
                 }
             }
@@ -4776,11 +4780,11 @@ public class expression {
             {
                 return be;
             }
-            Ref<Expression> e0 = ref(null);
+            Expression e0 = null;
             for (; 1 != 0;){
-                Ref<Expression> de = ref(null);
+                Expression de = null;
                 ie.e2.value = extractSideEffect(sc, new BytePtr("__aakey"), de, ie.e2.value, false);
-                e0.value = Expression.combine(de.value, e0.value);
+                e0 = Expression.combine(de, e0);
                 IndexExp ie1 = ie.e1.value.isIndexExp();
                 if ((ie1 == null) || ((ie1.e1.value.type.value.toBasetype().ty & 0xFF) != ENUMTY.Taarray))
                 {
@@ -4789,11 +4793,11 @@ public class expression {
                 ie = ie1;
             }
             assert(((ie.e1.value.type.value.toBasetype().ty & 0xFF) == ENUMTY.Taarray));
-            Ref<Expression> de = ref(null);
+            Expression de = null;
             ie.e1.value = extractSideEffect(sc, new BytePtr("__aatmp"), de, ie.e1.value, false);
-            e0.value = Expression.combine(de.value, e0.value);
+            e0 = Expression.combine(de, e0);
             be.e2.value = extractSideEffect(sc, new BytePtr("__aaval"), e0, be.e2.value, true);
-            return Expression.combine(e0.value, (Expression)be);
+            return Expression.combine(e0, (Expression)be);
         }
 
         public  void accept(Visitor v) {
@@ -6369,7 +6373,7 @@ public class expression {
     public static class PostExp extends BinExp
     {
         public  PostExp(byte op, Loc loc, Expression e) {
-            super(loc, op, 40, e, new IntegerExp(loc, 1L, Type.tint32.value));
+            super(loc, op, 40, e, new IntegerExp(loc, 1L, Type.tint32));
             assert(((op & 0xFF) == 94) || ((op & 0xFF) == 93));
         }
 
@@ -7660,7 +7664,7 @@ public class expression {
         }
 
         public  Expression resolveLoc(Loc loc, Ptr<Scope> sc) {
-            Expression e = new IntegerExp(loc, (long)loc.linnum, Type.tint32.value);
+            Expression e = new IntegerExp(loc, (long)loc.linnum, Type.tint32);
             e = e.castTo(sc, this.type.value);
             return e;
         }

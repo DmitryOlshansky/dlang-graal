@@ -49,10 +49,10 @@ public class mtype {
             return true;
         }
         // from template X!(IntegerInteger)
-        Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
-            public Integer invoke(Integer m, Integer n) {
-                return m << 4 | n;
-            }
+        Function2<Integer,Integer,Integer> XIntegerInteger = (m, n) -> {
+         {
+            return m << 4 | n;
+        }
         };
 
         // from template X!(IntegerInteger)
@@ -86,17 +86,17 @@ public class mtype {
             return MATCH.constant;
         }
         // from template X!(ByteByte)
-        Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>(){
-            public Integer invoke(Byte m, Byte n) {
-                return (m & 0xFF) << 4 | (n & 0xFF);
-            }
+        Function2<Byte,Byte,Integer> XByteByte = (m, n) -> {
+         {
+            return (m & 0xFF) << 4 | (n & 0xFF);
+        }
         };
 
         // from template X!(IntegerInteger)
-        Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>(){
-            public Integer invoke(Integer m, Integer n) {
-                return m << 4 | n;
-            }
+        Function2<Integer,Integer,Integer> XIntegerInteger = (m, n) -> {
+         {
+            return m << 4 | n;
+        }
         };
 
         // from template X!(IntegerInteger)
@@ -309,7 +309,7 @@ public class mtype {
         public static Type tuns8 = null;
         public static Type tint16 = null;
         public static Type tuns16 = null;
-        public static Ref<Type> tint32 = ref(null);
+        public static Type tint32 = null;
         public static Type tuns32 = null;
         public static Type tint64 = null;
         public static Type tuns64 = null;
@@ -339,7 +339,7 @@ public class mtype {
         public static Type tsize_t = null;
         public static Type tptrdiff_t = null;
         public static Type thash_t = null;
-        public static Ref<ClassDeclaration> dtypeinfo = ref(null);
+        public static ClassDeclaration dtypeinfo = null;
         public static ClassDeclaration typeinfoclass = null;
         public static ClassDeclaration typeinfointerface = null;
         public static ClassDeclaration typeinfostruct = null;
@@ -685,7 +685,7 @@ public class mtype {
             tuns8 = basic.get(14);
             tint16 = basic.get(15);
             tuns16 = basic.get(16);
-            tint32.value = basic.get(17);
+            tint32 = basic.get(17);
             tuns32 = basic.get(18);
             tint64 = basic.get(19);
             tuns64 = basic.get(20);
@@ -704,7 +704,7 @@ public class mtype {
             tchar = basic.get(31);
             twchar = basic.get(32);
             tdchar = basic.get(33);
-            tshiftcnt = tint32.value;
+            tshiftcnt = tint32;
             terror = basic.get(34);
             tnull = basic.get(40);
             tnull = new TypeNull();
@@ -713,8 +713,8 @@ public class mtype {
             tstring = tchar.immutableOf().arrayOf();
             twstring = twchar.immutableOf().arrayOf();
             tdstring = tdchar.immutableOf().arrayOf();
-            tvalist = target.value.va_listType();
-            boolean isLP64 = global.value.params.isLP64;
+            tvalist = target.va_listType();
+            boolean isLP64 = global.params.isLP64;
             tsize_t = basic.get(isLP64 ? 20 : 18);
             tptrdiff_t = basic.get(isLP64 ? 19 : 17);
             thash_t = tsize_t;
@@ -739,15 +739,15 @@ public class mtype {
 
         public  Type trySemantic(Loc loc, Ptr<Scope> sc) {
             Type tcopy = this.syntaxCopy();
-            int errors = global.value.startGagging();
+            int errors = global.startGagging();
             Type t = typeSemantic(this, loc, sc);
-            if (global.value.endGagging(errors) || ((t.ty & 0xFF) == ENUMTY.Terror))
+            if (global.endGagging(errors) || ((t.ty & 0xFF) == ENUMTY.Terror))
             {
                 t = null;
             }
             else
             {
-                if ((global.value.gaggedWarnings > 0))
+                if ((global.gaggedWarnings > 0))
                 {
                     typeSemantic(tcopy, loc, sc);
                 }
@@ -1957,7 +1957,7 @@ public class mtype {
 
         public  boolean checkAliasThisRec() {
             Type tb = this.toBasetype();
-            IntPtr pflag = null;
+            Ptr<Integer> pflag = null;
             if (((tb.ty & 0xFF) == ENUMTY.Tstruct))
             {
                 pflag = pcopy((ptr((TypeStruct)tb.att)));
@@ -2074,7 +2074,7 @@ public class mtype {
             return this;
         }
 
-        public  boolean isBaseOf(Type t, IntPtr poffset) {
+        public  boolean isBaseOf(Type t, Ptr<Integer> poffset) {
             return false;
         }
 
@@ -2351,9 +2351,9 @@ public class mtype {
             long n = 1L;
             Type tb = this;
             for (; (((tb = tb.toBasetype()).ty & 0xFF) == ENUMTY.Tsarray);){
-                Ref<Boolean> overflow = ref(false);
+                boolean overflow = false;
                 n = mulu(n, ((TypeSArray)tb).dim.toUInteger(), overflow);
-                if (overflow.value || (n >= 4294967295L))
+                if (overflow || (n >= 4294967295L))
                 {
                     error(loc, new BytePtr("static array `%s` size overflowed to %llu"), this.toChars(), n);
                     return -1;
@@ -3044,7 +3044,7 @@ public class mtype {
                     break;
                 case 23:
                 case 26:
-                    size = target.value.realsize;
+                    size = target.realsize;
                     break;
                 case 27:
                     size = 8;
@@ -3055,7 +3055,7 @@ public class mtype {
                     size = 16;
                     break;
                 case 29:
-                    size = target.value.realsize * 2;
+                    size = target.realsize * 2;
                     break;
                 case 12:
                     size = 1;
@@ -3079,7 +3079,7 @@ public class mtype {
         }
 
         public  int alignsize() {
-            return target.value.alignsize(this);
+            return target.alignsize(this);
         }
 
         public  boolean isintegral() {
@@ -3605,11 +3605,11 @@ public class mtype {
         }
 
         public  long size(Loc loc) {
-            return (long)(target.value.ptrsize * 2);
+            return (long)(target.ptrsize * 2);
         }
 
         public  int alignsize() {
-            return target.value.ptrsize;
+            return target.ptrsize;
         }
 
         public  boolean isString() {
@@ -3723,7 +3723,7 @@ public class mtype {
         }
 
         public  long size(Loc loc) {
-            return (long)target.value.ptrsize;
+            return (long)target.ptrsize;
         }
 
         public  boolean isZeroInit(Loc loc) {
@@ -3840,7 +3840,7 @@ public class mtype {
         }
 
         public  long size(Loc loc) {
-            return (long)target.value.ptrsize;
+            return (long)target.ptrsize;
         }
 
         public  int implicitConvTo(Type to) {
@@ -3866,8 +3866,8 @@ public class mtype {
                                 Type toret = tp.next.value.nextOf();
                                 if (((tret.ty & 0xFF) == ENUMTY.Tclass) && ((toret.ty & 0xFF) == ENUMTY.Tclass))
                                 {
-                                    IntRef offset = ref(0);
-                                    if (toret.isBaseOf(tret, ptr(offset)) && (offset.value != 0))
+                                    int offset = 0;
+                                    if (toret.isBaseOf(tret, ptr(offset)) && (offset != 0))
                                     {
                                         return MATCH.nomatch;
                                     }
@@ -3991,7 +3991,7 @@ public class mtype {
         }
 
         public  long size(Loc loc) {
-            return (long)target.value.ptrsize;
+            return (long)target.ptrsize;
         }
 
         public  boolean isZeroInit(Loc loc) {
@@ -4178,43 +4178,43 @@ public class mtype {
             {
                 return ;
             }
-            Function2<Boolean,Type,Integer> purityOfType = new Function2<Boolean,Type,Integer>(){
-                public Integer invoke(Boolean isref, Type t) {
-                    if (isref)
-                    {
-                        if (((t.mod & 0xFF) & MODFlags.immutable_) != 0)
-                        {
-                            return PURE.strong;
-                        }
-                        if (((t.mod & 0xFF) & MODFlags.wildconst) != 0)
-                        {
-                            return PURE.const_;
-                        }
-                        return PURE.weak;
-                    }
-                    t = t.baseElemOf();
-                    if (!t.hasPointers() || (((t.mod & 0xFF) & MODFlags.immutable_) != 0))
+            Function2<Boolean,Type,Integer> purityOfType = (isref, t) -> {
+             {
+                if (isref)
+                {
+                    if (((t.value.mod & 0xFF) & MODFlags.immutable_) != 0)
                     {
                         return PURE.strong;
                     }
-                    if (((t.ty & 0xFF) == ENUMTY.Tarray) || ((t.ty & 0xFF) == ENUMTY.Tpointer))
-                    {
-                        Type tn = t.nextOf().toBasetype();
-                        if (((tn.mod & 0xFF) & MODFlags.immutable_) != 0)
-                        {
-                            return PURE.strong;
-                        }
-                        if (((tn.mod & 0xFF) & MODFlags.wildconst) != 0)
-                        {
-                            return PURE.const_;
-                        }
-                    }
-                    if (((t.mod & 0xFF) & MODFlags.wildconst) != 0)
+                    if (((t.value.mod & 0xFF) & MODFlags.wildconst) != 0)
                     {
                         return PURE.const_;
                     }
                     return PURE.weak;
                 }
+                t.value = t.value.baseElemOf();
+                if (!t.value.hasPointers() || (((t.value.mod & 0xFF) & MODFlags.immutable_) != 0))
+                {
+                    return PURE.strong;
+                }
+                if (((t.value.ty & 0xFF) == ENUMTY.Tarray) || ((t.value.ty & 0xFF) == ENUMTY.Tpointer))
+                {
+                    Type tn = t.value.nextOf().toBasetype();
+                    if (((tn.mod & 0xFF) & MODFlags.immutable_) != 0)
+                    {
+                        return PURE.strong;
+                    }
+                    if (((tn.mod & 0xFF) & MODFlags.wildconst) != 0)
+                    {
+                        return PURE.const_;
+                    }
+                }
+                if (((t.value.mod & 0xFF) & MODFlags.wildconst) != 0)
+                {
+                    return PURE.const_;
+                }
+                return PURE.weak;
+            }
             };
             this.purity = PURE.strong;
             int dim = tf.parameterList.length();
@@ -4286,7 +4286,7 @@ public class mtype {
 
         public  long parameterStorageClass(Type tthis, Parameter p) {
             long stc = p.storageClass;
-            if (!global.value.params.vsafe)
+            if (!global.params.vsafe)
             {
                 return stc;
             }
@@ -4473,7 +4473,7 @@ public class mtype {
         }
 
         public  BytePtr getParamError(Expression arg, Parameter par) {
-            if ((global.value.gag != 0) && !global.value.params.showGaggedErrors)
+            if ((global.gag != 0) && !global.params.showGaggedErrors)
             {
                 return null;
             }
@@ -4495,7 +4495,7 @@ public class mtype {
 
         // from template getMatchError!(IntegerBytePtr)
         public  BytePtr getMatchErrorIntegerBytePtr(BytePtr format, int _param_1, BytePtr _param_2) {
-            if ((global.value.gag != 0) && !global.value.params.showGaggedErrors)
+            if ((global.gag != 0) && !global.params.showGaggedErrors)
             {
                 return null;
             }
@@ -4511,7 +4511,7 @@ public class mtype {
 
         // from template getMatchError!(IntegerInteger)
         public  BytePtr getMatchErrorIntegerInteger(BytePtr format, int _param_1, int _param_2) {
-            if ((global.value.gag != 0) && !global.value.params.showGaggedErrors)
+            if ((global.gag != 0) && !global.params.showGaggedErrors)
             {
                 return null;
             }
@@ -4657,7 +4657,7 @@ public class mtype {
                                                     {
                                                         if (pMessage != null)
                                                         {
-                                                            if ((global.value.gag == 0) || global.value.params.showGaggedErrors)
+                                                            if ((global.gag == 0) || global.params.showGaggedErrors)
                                                             {
                                                                 OutBuffer buf = new OutBuffer();
                                                                 buf.printf(new BytePtr("expected %d variadic argument(s)"), sz);
@@ -4825,7 +4825,7 @@ public class mtype {
                                                 ta = tn.sarrayOf(dim);
                                             }
                                         }
-                                        else if (!global.value.params.rvalueRefParam || ((p.storageClass & 4096L) != 0) || !isCopyable(arg.type.value))
+                                        else if (!global.params.rvalueRefParam || ((p.storageClass & 4096L) != 0) || !isCopyable(arg.type.value))
                                         {
                                             if (pMessage != null)
                                             {
@@ -4883,7 +4883,7 @@ public class mtype {
                                                     {
                                                         if (pMessage != null)
                                                         {
-                                                            if ((global.value.gag == 0) || global.value.params.showGaggedErrors)
+                                                            if ((global.gag == 0) || global.params.showGaggedErrors)
                                                             {
                                                                 OutBuffer buf = new OutBuffer();
                                                                 buf.printf(new BytePtr("expected %d variadic argument(s)"), sz);
@@ -4982,7 +4982,7 @@ public class mtype {
                                                     {
                                                         if (pMessage != null)
                                                         {
-                                                            if ((global.value.gag == 0) || global.value.params.showGaggedErrors)
+                                                            if ((global.gag == 0) || global.params.showGaggedErrors)
                                                             {
                                                                 OutBuffer buf = new OutBuffer();
                                                                 buf.printf(new BytePtr("expected %d variadic argument(s)"), sz);
@@ -5205,7 +5205,7 @@ public class mtype {
 
         public  Type addStorageClass(long stc) {
             TypeDelegate t = (TypeDelegate)this.addStorageClass(stc);
-            if (!global.value.params.vsafe)
+            if (!global.params.vsafe)
             {
                 return t;
             }
@@ -5222,11 +5222,11 @@ public class mtype {
         }
 
         public  long size(Loc loc) {
-            return (long)(target.value.ptrsize * 2);
+            return (long)(target.ptrsize * 2);
         }
 
         public  int alignsize() {
-            return target.value.ptrsize;
+            return target.ptrsize;
         }
 
         public  int implicitConvTo(Type to) {
@@ -5240,8 +5240,8 @@ public class mtype {
                 Type toret = ((TypeDelegate)to).next.value.nextOf();
                 if (((tret.ty & 0xFF) == ENUMTY.Tclass) && ((toret.ty & 0xFF) == ENUMTY.Tclass))
                 {
-                    IntRef offset = ref(0);
-                    if (toret.isBaseOf(tret, ptr(offset)) && (offset.value != 0))
+                    int offset = 0;
+                    if (toret.isBaseOf(tret, ptr(offset)) && (offset != 0))
                     {
                         return MATCH.nomatch;
                     }
@@ -5685,7 +5685,7 @@ public class mtype {
     public static class TypeStruct extends Type
     {
         public StructDeclaration sym = null;
-        public IntRef att = ref(AliasThisRec.fwdref);
+        public Ref<Integer> att = ref(AliasThisRec.fwdref);
         public int cppmangle = CPPMANGLE.def;
         public  TypeStruct(StructDeclaration sym) {
             super((byte)8);
@@ -5776,7 +5776,7 @@ public class mtype {
                 }
             }
             StructLiteralExp structinit = new StructLiteralExp(loc, this.sym, structelems, null);
-            if ((this.size(loc) > (long)(target.value.ptrsize * 4)) && !this.needsNested())
+            if ((this.size(loc) > (long)(target.ptrsize * 4)) && !this.needsNested())
             {
                 structinit.useStaticInit = true;
             }
@@ -6216,7 +6216,7 @@ public class mtype {
     public static class TypeClass extends Type
     {
         public ClassDeclaration sym = null;
-        public IntRef att = ref(AliasThisRec.fwdref);
+        public Ref<Integer> att = ref(AliasThisRec.fwdref);
         public int cppmangle = CPPMANGLE.def;
         public  TypeClass(ClassDeclaration sym) {
             super((byte)7);
@@ -6228,7 +6228,7 @@ public class mtype {
         }
 
         public  long size(Loc loc) {
-            return (long)target.value.ptrsize;
+            return (long)target.ptrsize;
         }
 
         public  Type syntaxCopy() {
@@ -6243,7 +6243,7 @@ public class mtype {
             return this.sym;
         }
 
-        public  boolean isBaseOf(Type t, IntPtr poffset) {
+        public  boolean isBaseOf(Type t, Ptr<Integer> poffset) {
             if ((t != null) && ((t.ty & 0xFF) == ENUMTY.Tclass))
             {
                 ClassDeclaration cd = ((TypeClass)t).sym;
@@ -6311,8 +6311,8 @@ public class mtype {
             {
                 return MATCH.constant;
             }
-            IntRef offset = ref(0);
-            if (to.isBaseOf(this, ptr(offset)) && (offset.value == 0) && MODimplicitConv(this.mod, to.mod))
+            int offset = 0;
+            if (to.isBaseOf(this, ptr(offset)) && (offset == 0) && MODimplicitConv(this.mod, to.mod))
             {
                 if (!to.isMutable() && !to.isWild())
                 {
@@ -6642,7 +6642,7 @@ public class mtype {
             return Parameter.dim(this.parameters);
         }
 
-        public  Parameter opIndex(int i) {
+        public  Parameter get(int i) {
             return Parameter.getNth(this.parameters, i, null);
         }
 
@@ -6733,31 +6733,31 @@ public class mtype {
         }
 
         public static int dim(Ptr<DArray<Parameter>> parameters) {
-            int nargs = 0;
-            Function2<Integer,Parameter,Integer> dimDg = new Function2<Integer,Parameter,Integer>(){
-                public Integer invoke(Integer n, Parameter p) {
-                    nargs += 1;
-                    return 0;
-                }
+            Ref<Integer> nargs = ref(0);
+            Function2<Integer,Parameter,Integer> dimDg = (n, p) -> {
+             {
+                nargs.value += 1;
+                return 0;
+            }
             };
             _foreach(parameters, dimDg, null);
-            return nargs;
+            return nargs.value;
         }
 
-        public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth, IntPtr pn) {
-            Parameter param = null;
-            Function2<Integer,Parameter,Integer> getNthParamDg = new Function2<Integer,Parameter,Integer>(){
-                public Integer invoke(Integer n, Parameter p) {
-                    if ((n == nth))
-                    {
-                        param = p;
-                        return 1;
-                    }
-                    return 0;
+        public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth, Ptr<Integer> pn) {
+            Ref<Parameter> param = ref(null);
+            Function2<Integer,Parameter,Integer> getNthParamDg = (n, p) -> {
+             {
+                if ((n == nth))
+                {
+                    param.value = p;
+                    return 1;
                 }
+                return 0;
+            }
             };
             int res = _foreach(parameters, getNthParamDg, null);
-            return res != 0 ? param : null;
+            return res != 0 ? param.value : null;
         }
 
         // defaulted all parameters starting with #3
@@ -6765,13 +6765,13 @@ public class mtype {
             return getNth(parameters, nth, null);
         }
 
-        public static int _foreach(Ptr<DArray<Parameter>> parameters, Function2<Integer,Parameter,Integer> dg, IntPtr pn) {
+        public static int _foreach(Ptr<DArray<Parameter>> parameters, Function2<Integer,Parameter,Integer> dg, Ptr<Integer> pn) {
             assert(dg != null);
             if (parameters == null)
             {
                 return 0;
             }
-            IntRef n = ref(pn != null ? pn.get() : 0);
+            int n = pn != null ? pn.get() : 0;
             int result = 0;
             {
                 int __key1519 = 0;
@@ -6788,7 +6788,7 @@ public class mtype {
                         }
                         else
                         {
-                            result = dg.invoke(n.value++, p);
+                            result = dg.invoke(n++, p);
                         }
                     }
                     if (result != 0)
@@ -6799,7 +6799,7 @@ public class mtype {
             }
             if (pn != null)
             {
-                pn.set(0, n.value);
+                pn.set(0, n);
             }
             return result;
         }
@@ -6827,37 +6827,37 @@ public class mtype {
             {
                 return true;
             }
-            Function2<Boolean,Long,Integer> buildSR = new Function2<Boolean,Long,Integer>(){
-                public Integer invoke(Boolean returnByRef, Long stc) {
-                    int result = 0;
-                    switch (stc & 17592188665856L)
-                    {
-                        case 0L:
-                            result = 0;
-                            break;
-                        case 2097152L:
-                            result = 3;
-                            break;
-                        case 524288L:
-                            result = 1;
-                            break;
-                        case 17592188141568L:
-                            result = 4;
-                            break;
-                        case 17592186568704L:
-                            result = 2;
-                            break;
-                        case 2621440L:
-                            result = 5;
-                            break;
-                        case 17592188665856L:
-                            result = returnByRef ? 6 : 7;
-                            break;
-                        default:
-                        throw SwitchError.INSTANCE;
-                    }
-                    return result;
+            Function2<Boolean,Long,Integer> buildSR = (returnByRef, stc) -> {
+             {
+                Ref<Integer> result = ref(0);
+                switch ((int)stc & 17592188665856L)
+                {
+                    case (int)0L:
+                        result.value = 0;
+                        break;
+                    case (int)2097152L:
+                        result.value = 3;
+                        break;
+                    case (int)524288L:
+                        result.value = 1;
+                        break;
+                    case (int)17592188141568L:
+                        result.value = 4;
+                        break;
+                    case (int)17592186568704L:
+                        result.value = 2;
+                        break;
+                    case (int)2621440L:
+                        result.value = 5;
+                        break;
+                    case (int)17592188665856L:
+                        result.value = returnByRef ? 6 : 7;
+                        break;
+                    default:
+                    throw SwitchError.INSTANCE;
                 }
+                return result.value;
+            }
             };
             if (((from ^ to) & 2097152L) != 0)
             {
@@ -6986,7 +6986,7 @@ public class mtype {
 
     // defaulted all parameters starting with #3
     public static void attributesApply(TypeFunction tf, Function1<ByteSlice,Void> dg) {
-        return attributesApply(tf, dg, TRUSTformat.TRUSTformatDefault);
+        attributesApply(tf, dg, TRUSTformat.TRUSTformatDefault);
     }
 
     public static AggregateDeclaration isAggregate(Type t) {

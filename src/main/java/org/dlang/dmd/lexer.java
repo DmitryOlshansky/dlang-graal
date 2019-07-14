@@ -373,7 +373,7 @@ public class lexer {
                                         if (!lexer.scaninitdone)
                                         {
                                             lexer.scaninitdone = true;
-                                            IntRef ct = ref(0);
+                                            Ref<Integer> ct = ref(0);
                                             time(ptr(ct));
                                             BytePtr p = pcopy(ctime(ptr(ct)));
                                             assert(p != null);
@@ -401,7 +401,7 @@ public class lexer {
                                         }
                                         else if ((pequals(id, Id.VENDOR)))
                                         {
-                                            (t.get()).ustring = pcopy((toBytePtr(xarraydup(global.value.vendor))));
+                                            (t.get()).ustring = pcopy((toBytePtr(xarraydup(global.vendor))));
                                             /*goto Lstr*//*unrolled goto*/
                                         /*Lstr:*/
                                             (t.get()).value = TOK.string_;
@@ -419,7 +419,7 @@ public class lexer {
                                         else if ((pequals(id, Id.VERSIONX)))
                                         {
                                             (t.get()).value = TOK.int64Literal;
-                                            (t.get()).intvalue = (long)global.value.versionNumber();
+                                            (t.get()).intvalue = (long)global.versionNumber();
                                         }
                                         else if ((pequals(id, Id.EOFX)))
                                         {
@@ -1237,7 +1237,7 @@ public class lexer {
                         break;
                     case 0:
                     case 26:
-                        this.error(new BytePtr("unterminated string constant starting at %s"), start.toChars(global.value.params.showColumns));
+                        this.error(new BytePtr("unterminated string constant starting at %s"), start.toChars(global.params.showColumns));
                         (result.get()).setString();
                         this.p.value.postDec();
                         return ;
@@ -1298,7 +1298,7 @@ public class lexer {
                                 continue L_outer2;
                             case 0:
                             case 26:
-                                this.error(new BytePtr("unterminated string constant starting at %s"), start.toChars(global.value.params.showColumns));
+                                this.error(new BytePtr("unterminated string constant starting at %s"), start.toChars(global.params.showColumns));
                                 (t.get()).setString();
                                 this.p.value.postDec();
                                 return TOK.hexadecimalString;
@@ -1408,7 +1408,7 @@ public class lexer {
                                     /*goto Lnextline*/{ __dispatch11 = -1; continue dispatched_11; }
                                 case 0:
                                 case 26:
-                                    this.error(new BytePtr("unterminated delimited string constant starting at %s"), start.toChars(global.value.params.showColumns));
+                                    this.error(new BytePtr("unterminated delimited string constant starting at %s"), start.toChars(global.params.showColumns));
                                     (result.get()).setString();
                                     this.p.value.postDec();
                                     return ;
@@ -1561,7 +1561,7 @@ public class lexer {
                             }
                             continue;
                         case 11:
-                            this.error(new BytePtr("unterminated token string constant starting at %s"), start.toChars(global.value.params.showColumns));
+                            this.error(new BytePtr("unterminated token string constant starting at %s"), start.toChars(global.params.showColumns));
                             (result.get()).setString();
                             return ;
                         default:
@@ -1615,7 +1615,7 @@ public class lexer {
                     case 0:
                     case 26:
                         this.p.value.postDec();
-                        this.error(new BytePtr("unterminated string constant starting at %s"), start.toChars(global.value.params.showColumns));
+                        this.error(new BytePtr("unterminated string constant starting at %s"), start.toChars(global.params.showColumns));
                         (t.get()).setString();
                         return ;
                     default:
@@ -1735,7 +1735,7 @@ public class lexer {
             long n = 0L;
             int d = 0;
             boolean err = false;
-            Ref<Boolean> overflow = ref(false);
+            boolean overflow = false;
             boolean anyBinaryDigitsNoSingleUS = false;
             boolean anyHexDigitsNoSingleUS = false;
             int c = (this.p.value.get() & 0xFF);
@@ -1913,7 +1913,7 @@ public class lexer {
             }
             catch(Dispatch0 __d){}
         /*Ldone:*/
-            if (overflow.value && !err)
+            if (overflow && !err)
             {
                 this.error(new BytePtr("integer overflow"));
                 err = true;
@@ -2139,7 +2139,7 @@ public class lexer {
             stringbuffer.writeByte(0);
             BytePtr sbufptr = pcopy(toBytePtr(stringbuffer.data));
             byte result = TOK.reserved;
-            Ref<Boolean> isOutOfRange = ref(false);
+            boolean isOutOfRange = false;
             (t.get()).floatvalue = isWellformedString ? CTFloat.parse(sbufptr, ptr(isOutOfRange)) : CTFloat.zero;
             {
                 int __dispatch22 = 0;
@@ -2149,17 +2149,17 @@ public class lexer {
                     {
                         case 70:
                         case 102:
-                            if (isWellformedString && !isOutOfRange.value)
+                            if (isWellformedString && !isOutOfRange)
                             {
-                                isOutOfRange.value = Port.isFloat32LiteralOutOfRange(sbufptr);
+                                isOutOfRange = Port.isFloat32LiteralOutOfRange(sbufptr);
                             }
                             result = TOK.float32Literal;
                             this.p.value.postInc();
                             break;
                         default:
-                        if (isWellformedString && !isOutOfRange.value)
+                        if (isWellformedString && !isOutOfRange)
                         {
-                            isOutOfRange.value = Port.isFloat64LiteralOutOfRange(sbufptr);
+                            isOutOfRange = Port.isFloat64LiteralOutOfRange(sbufptr);
                         }
                         result = TOK.float64Literal;
                         break;
@@ -2197,7 +2197,7 @@ public class lexer {
                 }
             }
             boolean isLong = ((result & 0xFF) == 113) || ((result & 0xFF) == 116);
-            if (isOutOfRange.value && !isLong)
+            if (isOutOfRange && !isLong)
             {
                 BytePtr suffix = pcopy(((result & 0xFF) == 111) || ((result & 0xFF) == 114) ? new BytePtr("f") : new BytePtr(""));
                 this.error(this.scanloc.value, new BytePtr("number `%s%s` is not representable"), sbufptr, suffix);
@@ -2211,35 +2211,43 @@ public class lexer {
         }
 
         public  void error(BytePtr format, Object... args) {
-            this.diagnosticReporter.error(this.token.value.loc, format, new RawSlice<>(args));
+            Ref<BytePtr> format_ref = ref(format);
+            this.diagnosticReporter.error(this.token.value.loc, format_ref.value, new RawSlice<>(args));
         }
 
         public  void error(Loc loc, BytePtr format, Object... args) {
-            this.diagnosticReporter.error(loc, format, new RawSlice<>(args));
+            Ref<BytePtr> format_ref = ref(format);
+            this.diagnosticReporter.error(loc, format_ref.value, new RawSlice<>(args));
         }
 
         public  void errorSupplemental(Loc loc, BytePtr format, Object... args) {
-            this.diagnosticReporter.errorSupplemental(loc, format, new RawSlice<>(args));
+            Ref<BytePtr> format_ref = ref(format);
+            this.diagnosticReporter.errorSupplemental(loc, format_ref.value, new RawSlice<>(args));
         }
 
         public  void warning(Loc loc, BytePtr format, Object... args) {
-            this.diagnosticReporter.warning(loc, format, new RawSlice<>(args));
+            Ref<BytePtr> format_ref = ref(format);
+            this.diagnosticReporter.warning(loc, format_ref.value, new RawSlice<>(args));
         }
 
         public  void warningSupplemental(Loc loc, BytePtr format, Object... args) {
-            this.diagnosticReporter.warningSupplemental(loc, format, new RawSlice<>(args));
+            Ref<BytePtr> format_ref = ref(format);
+            this.diagnosticReporter.warningSupplemental(loc, format_ref.value, new RawSlice<>(args));
         }
 
         public  void deprecation(BytePtr format, Object... args) {
-            this.diagnosticReporter.deprecation(this.token.value.loc, format, new RawSlice<>(args));
+            Ref<BytePtr> format_ref = ref(format);
+            this.diagnosticReporter.deprecation(this.token.value.loc, format_ref.value, new RawSlice<>(args));
         }
 
         public  void deprecation(Loc loc, BytePtr format, Object... args) {
-            this.diagnosticReporter.deprecation(loc, format, new RawSlice<>(args));
+            Ref<BytePtr> format_ref = ref(format);
+            this.diagnosticReporter.deprecation(loc, format_ref.value, new RawSlice<>(args));
         }
 
         public  void deprecationSupplemental(Loc loc, BytePtr format, Object... args) {
-            this.diagnosticReporter.deprecationSupplemental(loc, format, new RawSlice<>(args));
+            Ref<BytePtr> format_ref = ref(format);
+            this.diagnosticReporter.deprecationSupplemental(loc, format_ref.value, new RawSlice<>(args));
         }
 
         public  void poundLine() {
@@ -2387,15 +2395,15 @@ public class lexer {
                 for (; (len < 4) && (s.get(len) != 0);len++){
                 }
             }
-            IntRef idx = ref(0);
-            int u = 0x0ffff;
+            Ref<Integer> idx = ref(0);
+            Ref<Integer> u = ref(0x0ffff);
             BytePtr msg = pcopy(utf_decodeChar(s, len, idx, u));
             this.p.value.plusAssign((idx.value - 1));
             if (msg != null)
             {
                 this.error(new BytePtr("%s"), msg);
             }
-            return u;
+            return u.value;
         }
 
         public  void getDocComment(Ptr<Token> t, int lineComment, boolean newParagraph) {
@@ -2447,16 +2455,16 @@ public class lexer {
             }
             OutBuffer buf = new OutBuffer();
             try {
-                Function0<Void> trimTrailingWhitespace = new Function0<Void>(){
-                    public Void invoke() {
-                        ByteSlice s = buf.peekSlice().copy();
-                        int len = s.getLength();
-                        for (; (len != 0) && ((s.get(len - 1) & 0xFF) == 32) || ((s.get(len - 1) & 0xFF) == 9);) {
-                            len -= 1;
-                        }
-                        buf.setsize(len);
-                        return null;
+                Function0<Void> trimTrailingWhitespace = () -> {
+                 {
+                    ByteSlice s = buf.peekSlice().copy();
+                    Ref<Integer> len = ref(s.getLength());
+                    for (; (len.value != 0) && ((s.get(len.value - 1) & 0xFF) == 32) || ((s.get(len.value - 1) & 0xFF) == 9);) {
+                        len.value -= 1;
                     }
+                    buf.setsize(len.value);
+                    return null;
+                }
                 };
             L_outer8:
                 for (; (q.lessThan(qend));q.postInc()){

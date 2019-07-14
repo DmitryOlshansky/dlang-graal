@@ -304,15 +304,18 @@ public class statement {
         }
 
         public  void error(BytePtr format, Object... ap) {
-            verror(this.loc, format, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
+            Ref<BytePtr> format_ref = ref(format);
+            verror(this.loc, format_ref.value, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
         }
 
         public  void warning(BytePtr format, Object... ap) {
-            vwarning(this.loc, format, new RawSlice<>(ap));
+            Ref<BytePtr> format_ref = ref(format);
+            vwarning(this.loc, format_ref.value, new RawSlice<>(ap));
         }
 
         public  void deprecation(BytePtr format, Object... ap) {
-            vdeprecation(this.loc, format, new RawSlice<>(ap), null, null);
+            Ref<BytePtr> format_ref = ref(format);
+            vdeprecation(this.loc, format_ref.value, new RawSlice<>(ap), null, null);
         }
 
         public  Statement getRelatedLabeled() {
@@ -429,7 +432,7 @@ public class statement {
     {
         public  ErrorStatement() {
             super(Loc.initial);
-            assert((global.value.gaggedErrors != 0) || (global.value.errors != 0));
+            assert((global.gaggedErrors != 0) || (global.errors != 0));
         }
 
         public  Statement syntaxCopy() {
@@ -619,12 +622,12 @@ public class statement {
         }
 
         public  Ptr<DArray<Statement>> compileIt(Ptr<Scope> sc) {
-            Function0<Ptr<DArray<Statement>>> errorStatements = new Function0<Ptr<DArray<Statement>>>(){
-                public Ptr<DArray<Statement>> invoke() {
-                    Ptr<DArray<Statement>> a = refPtr(new DArray<Statement>());
-                    (a.get()).push(new ErrorStatement());
-                    return a;
-                }
+            Function0<Ptr<DArray<Statement>>> errorStatements = () -> {
+             {
+                Ptr<DArray<Statement>> a = refPtr(new DArray<Statement>());
+                (a.get()).push(new ErrorStatement());
+                return a;
+            }
             };
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
@@ -632,10 +635,10 @@ public class statement {
                 {
                     return errorStatements.invoke();
                 }
-                int errors = global.value.errors;
+                int errors = global.errors;
                 int len = buf.value.offset;
                 ByteSlice str = buf.value.extractChars().slice(0,len).copy();
-                StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.value.params.useDeprecated);
+                StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
                 try {
                     ParserASTCodegen p = new ParserASTCodegen(this.loc, (sc.get())._module, str, false, diagnosticReporter);
                     try {
@@ -645,7 +648,7 @@ public class statement {
                             Statement s = p.parseStatement(9, null, null);
                             if ((s == null) || p.errors())
                             {
-                                assert(!p.errors() || (global.value.errors != errors));
+                                assert(!p.errors() || (global.errors != errors));
                                 return errorStatements.invoke();
                             }
                             (a.get()).push(s);
@@ -1440,28 +1443,28 @@ public class statement {
         }
 
         public  boolean checkLabel() {
-            Function1<VarDeclaration,Boolean> checkVar = new Function1<VarDeclaration,Boolean>(){
-                public Boolean invoke(VarDeclaration vd) {
-                    {
-                        VarDeclaration v = vd;
-                        for (; (v != null) && (!pequals(v, lastVar));v = v.lastVar){
-                            if (v.isDataseg() || ((v.storage_class & 1099520016384L) != 0) || (v._init.isVoidInitializer() != null))
-                            {
-                                continue;
-                            }
-                            if ((pequals(vd.ident, Id.withSym)))
-                            {
-                                error(new BytePtr("`switch` skips declaration of `with` temporary at %s"), v.loc.toChars(global.value.params.showColumns));
-                            }
-                            else
-                            {
-                                error(new BytePtr("`switch` skips declaration of variable `%s` at %s"), v.toPrettyChars(false), v.loc.toChars(global.value.params.showColumns));
-                            }
-                            return true;
+            Function1<VarDeclaration,Boolean> checkVar = (vd) -> {
+             {
+                {
+                    Ref<VarDeclaration> v = ref(vd);
+                    for (; (v.value != null) && (!pequals(v.value, lastVar));v.value = v.value.lastVar){
+                        if (v.value.isDataseg() || ((v.value.storage_class & 1099520016384L) != 0) || (v.value._init.isVoidInitializer() != null))
+                        {
+                            continue;
                         }
+                        if ((pequals(vd.ident, Id.withSym)))
+                        {
+                            error(new BytePtr("`switch` skips declaration of `with` temporary at %s"), v.value.loc.toChars(global.params.showColumns));
+                        }
+                        else
+                        {
+                            error(new BytePtr("`switch` skips declaration of variable `%s` at %s"), v.value.toPrettyChars(false), v.value.loc.toChars(global.params.showColumns));
+                        }
+                        return true;
                     }
-                    return false;
                 }
+                return false;
+            }
             };
             boolean error = true;
             if ((this.sdefault != null) && checkVar.invoke(this.sdefault.lastVar))
@@ -2170,12 +2173,12 @@ public class statement {
             }
             else if ((pequals(vd.ident, Id.withSym)))
             {
-                this.error(new BytePtr("`goto` skips declaration of `with` temporary at %s"), vd.loc.toChars(global.value.params.showColumns));
+                this.error(new BytePtr("`goto` skips declaration of `with` temporary at %s"), vd.loc.toChars(global.params.showColumns));
                 return true;
             }
             else
             {
-                this.error(new BytePtr("`goto` skips declaration of variable `%s` at %s"), vd.toPrettyChars(false), vd.loc.toChars(global.value.params.showColumns));
+                this.error(new BytePtr("`goto` skips declaration of variable `%s` at %s"), vd.toPrettyChars(false), vd.loc.toChars(global.params.showColumns));
                 return true;
             }
             return false;

@@ -366,7 +366,8 @@ public class astbase {
             }
 
             public  void error(BytePtr format, Object... ap) {
-                verror(this.loc, format, new RawSlice<>(ap), this.kind(), new BytePtr(""), new BytePtr("Error: "));
+                Ref<BytePtr> format_ref = ref(format);
+                verror(this.loc, format_ref.value, new RawSlice<>(ap), this.kind(), new BytePtr(""), new BytePtr("Error: "));
             }
 
             public  AttribDeclaration isAttribDeclaration() {
@@ -1515,11 +1516,11 @@ public class astbase {
                 this.protection = new Prot(Prot.Kind.undefined, null).copy();
                 if ((this.members != null) && (this.ident != null))
                 {
-                    Ref<Dsymbol> s = ref(null);
-                    if (Dsymbol.oneMembers(this.members.get(), ptr(s), this.ident) && (s.value != null))
+                    Dsymbol s = null;
+                    if (Dsymbol.oneMembers(this.members.get(), ptr(s), this.ident) && (s != null))
                     {
-                        this.onemember = s.value;
-                        s.value.parent = this;
+                        this.onemember = s;
+                        s.parent = this;
                     }
                 }
             }
@@ -2197,7 +2198,7 @@ public class astbase {
             public  Module(BytePtr filename, Identifier ident, int doDocComment, int doHdrGen) {
                 super(ident);
                 this.arg = pcopy(filename);
-                this.srcfile = new FileName(FileName.defaultExt(toDString(filename), toByteSlice(global.value.mars_ext)));
+                this.srcfile = new FileName(FileName.defaultExt(toDString(filename), toByteSlice(global.mars_ext)));
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -2639,31 +2640,31 @@ public class astbase {
             }
 
             public static int dim(Ptr<DArray<Parameter>> parameters) {
-                int nargs = 0;
-                Function2<Integer,Parameter,Integer> dimDg = new Function2<Integer,Parameter,Integer>(){
-                    public Integer invoke(Integer n, Parameter p) {
-                        nargs += 1;
-                        return 0;
-                    }
+                Ref<Integer> nargs = ref(0);
+                Function2<Integer,Parameter,Integer> dimDg = (n, p) -> {
+                 {
+                    nargs.value += 1;
+                    return 0;
+                }
                 };
                 _foreach(parameters, dimDg, null);
-                return nargs;
+                return nargs.value;
             }
 
-            public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth, IntPtr pn) {
-                Parameter param = null;
-                Function2<Integer,Parameter,Integer> getNthParamDg = new Function2<Integer,Parameter,Integer>(){
-                    public Integer invoke(Integer n, Parameter p) {
-                        if ((n == nth))
-                        {
-                            param = p;
-                            return 1;
-                        }
-                        return 0;
+            public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth, Ptr<Integer> pn) {
+                Ref<Parameter> param = ref(null);
+                Function2<Integer,Parameter,Integer> getNthParamDg = (n, p) -> {
+                 {
+                    if ((n == nth))
+                    {
+                        param.value = p;
+                        return 1;
                     }
+                    return 0;
+                }
                 };
                 int res = _foreach(parameters, getNthParamDg, null);
-                return res != 0 ? param : null;
+                return res != 0 ? param.value : null;
             }
 
             // defaulted all parameters starting with #3
@@ -2671,13 +2672,13 @@ public class astbase {
                 return getNth(parameters, nth, null);
             }
 
-            public static int _foreach(Ptr<DArray<Parameter>> parameters, Function2<Integer,Parameter,Integer> dg, IntPtr pn) {
+            public static int _foreach(Ptr<DArray<Parameter>> parameters, Function2<Integer,Parameter,Integer> dg, Ptr<Integer> pn) {
                 assert(dg != null);
                 if (parameters == null)
                 {
                     return 0;
                 }
-                IntRef n = ref(pn != null ? pn.get() : 0);
+                int n = pn != null ? pn.get() : 0;
                 int result = 0;
                 {
                     int __key120 = 0;
@@ -2693,7 +2694,7 @@ public class astbase {
                         }
                         else
                         {
-                            result = dg.invoke(n.value++, p);
+                            result = dg.invoke(n++, p);
                         }
                         if (result != 0)
                         {
@@ -2703,7 +2704,7 @@ public class astbase {
                 }
                 if (pn != null)
                 {
-                    pn.set(0, n.value);
+                    pn.set(0, n);
                 }
                 return result;
             }
@@ -3883,7 +3884,7 @@ public class astbase {
                 twstring = twchar.immutableOf().arrayOf();
                 tdstring = tdchar.immutableOf().arrayOf();
                 tvalist = Target.va_listType();
-                boolean isLP64 = global.value.params.isLP64;
+                boolean isLP64 = global.params.isLP64;
                 tsize_t = basic.get(isLP64 ? 20 : 18);
                 tptrdiff_t = basic.get(isLP64 ? 19 : 17);
                 thash_t = tsize_t;
@@ -5862,9 +5863,10 @@ public class astbase {
             }
 
             public  void error(BytePtr format, Object... ap) {
+                Ref<BytePtr> format_ref = ref(format);
                 if ((!pequals(this.type, Type.terror)))
                 {
-                    verror(this.loc, format, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
+                    verror(this.loc, format_ref.value, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
                 }
             }
 
@@ -6200,7 +6202,7 @@ public class astbase {
         {
             public BytePtr string = null;
             public CharPtr wstring = null;
-            public IntPtr dstring = null;
+            public Ptr<Integer> dstring = null;
             public int len = 0;
             public byte sz = (byte)1;
             public byte postfix = (byte)0;
@@ -6261,7 +6263,7 @@ public class astbase {
 
             // defaulted all parameters starting with #3
             public  void writeTo(Object dest, boolean zero) {
-                return writeTo(dest, zero, 0);
+                writeTo(dest, zero, 0);
             }
 
             public  ByteSlice toStringz() {
@@ -9176,13 +9178,13 @@ public class astbase {
         {
             public static int ptrsize = 0;
             public static Type va_listType() {
-                if (global.value.params.isWindows)
+                if (global.params.isWindows)
                 {
                     return Type.tchar.pointerTo();
                 }
-                else if (global.value.params.isLinux || global.value.params.isFreeBSD || global.value.params.isOpenBSD || global.value.params.isDragonFlyBSD || global.value.params.isSolaris || global.value.params.isOSX)
+                else if (global.params.isLinux || global.params.isFreeBSD || global.params.isOpenBSD || global.params.isDragonFlyBSD || global.params.isSolaris || global.params.isOSX)
                 {
-                    if (global.value.params.is64bit)
+                    if (global.params.is64bit)
                     {
                         return (new TypeIdentifier(Loc.initial, Identifier.idPool(new ByteSlice("__va_list_tag")))).pointerTo();
                     }

@@ -1036,12 +1036,12 @@ public class doc {
                 BytePtr p = pcopy(getenv(new BytePtr("DDOCFILE")));
                 if (p != null)
                 {
-                    global.value.params.ddocfiles.shift(p);
+                    global.params.ddocfiles.shift(p);
                 }
                 {
                     int i = 0;
-                    for (; (i < global.value.params.ddocfiles.length);i++){
-                        FileBuffer buffer = readFile(m.loc, global.value.params.ddocfiles.get(i)).copy();
+                    for (; (i < global.params.ddocfiles.length);i++){
+                        FileBuffer buffer = readFile(m.loc, global.params.ddocfiles.get(i)).copy();
                         ByteSlice data = buffer.data.copy();
                         doc.gendocfilembuf.write(toBytePtr(data), data.getLength());
                     }
@@ -1058,7 +1058,7 @@ public class doc {
                 Macro.define(ptr(m.macrotable), new ByteSlice("TITLE"), p);
             }
             {
-                IntRef t = ref(0);
+                Ref<Integer> t = ref(0);
                 time(ptr(t));
                 BytePtr p = pcopy(ctime(ptr(t)));
                 p = pcopy(Mem.xstrdup(p));
@@ -1107,7 +1107,7 @@ public class doc {
             Ref<OutBuffer> buf2 = ref(new OutBuffer());
             try {
                 buf2.value.writestring(new ByteSlice("$(DDOC)"));
-                IntRef end = ref(buf2.value.offset);
+                Ref<Integer> end = ref(buf2.value.offset);
                 (m.macrotable.value.get()).expand(ptr(buf2), 0, ptr(end), new ByteSlice());
                 {
                     ByteSlice slice = buf2.value.peekSlice().copy();
@@ -1244,7 +1244,7 @@ public class doc {
                         atLineStart = false;
                         break;
                     case 92:
-                        if ((inCode == 0) && respectBackslashEscapes && (u + 1 < (buf.get()).offset) && global.value.params.markdown)
+                        if ((inCode == 0) && respectBackslashEscapes && (u + 1 < (buf.get()).offset) && global.params.markdown)
                         {
                             if ((((buf.get()).data.get(u + 1) & 0xFF) == 40) || (((buf.get()).data.get(u + 1) & 0xFF) == 41))
                             {
@@ -1351,7 +1351,7 @@ public class doc {
             finally {
             }
         }
-        IntPtr pcount = pcopy((sc.get()).anchorCounts.getLvalue((ident)));
+        Ptr<Integer> pcount = pcopy((sc.get()).anchorCounts.getLvalue((ident)));
         int count = 0;
         if (!forHeader)
         {
@@ -1407,22 +1407,22 @@ public class doc {
                     }
                     else
                     {
-                        Function0<Void> printFullyQualifiedImport = new Function0<Void>(){
-                            public Void invoke() {
-                                if ((imp.packages != null) && ((imp.packages.get()).length != 0))
+                        Function0<Void> printFullyQualifiedImport = () -> {
+                         {
+                            if ((imp.packages != null) && ((imp.packages.get()).length != 0))
+                            {
                                 {
-                                    {
-                                        Slice<Identifier> __r1045 = (imp.packages.get()).opSlice().copy();
-                                        int __key1046 = 0;
-                                        for (; (__key1046 < __r1045.getLength());__key1046 += 1) {
-                                            Identifier pid = __r1045.get(__key1046);
-                                            (buf.get()).printf(new BytePtr("%s."), pid.toChars());
-                                        }
+                                    Slice<Identifier> __r1045 = (imp.packages.get()).opSlice().copy();
+                                    Ref<Integer> __key1046 = ref(0);
+                                    for (; (__key1046.value < __r1045.getLength());__key1046.value += 1) {
+                                        Identifier pid = __r1045.get(__key1046.value);
+                                        (buf.get()).printf(new BytePtr("%s."), pid.toChars());
                                     }
                                 }
-                                (buf.get()).writestring(imp.id.asString());
-                                return null;
                             }
+                            (buf.get()).writestring(imp.id.asString());
+                            return null;
+                        }
                         };
                         (buf.get()).printf(new BytePtr("$(%.*s "), macroName.getLength(), toBytePtr(macroName));
                         printFullyQualifiedImport.invoke();
@@ -1465,7 +1465,7 @@ public class doc {
 
     // defaulted all parameters starting with #4
     public static void emitAnchor(Ptr<OutBuffer> buf, Dsymbol s, Ptr<Scope> sc) {
-        return emitAnchor(buf, s, sc, false);
+        emitAnchor(buf, s, sc, false);
     }
 
     public static int getCodeIndent(BytePtr src) {
@@ -2240,23 +2240,23 @@ public class doc {
     }
 
     public static int skiptoident(Ptr<OutBuffer> buf, int i) {
-        IntRef i_ref = ref(i);
+        Ref<Integer> i_ref = ref(i);
         ByteSlice slice = (buf.get()).peekSlice().copy();
         for (; (i_ref.value < slice.getLength());){
-            int c = 0x0ffff;
+            Ref<Integer> c = ref(0x0ffff);
             int oi = i_ref.value;
             if (utf_decodeChar(toBytePtr(slice), slice.getLength(), i_ref, c) != null)
             {
                 break;
             }
-            if ((c >= 128))
+            if ((c.value >= 128))
             {
-                if (!isUniAlpha(c))
+                if (!isUniAlpha(c.value))
                 {
                     continue;
                 }
             }
-            else if (!((isalpha(c) != 0) || (c == 95) || (c == 10)))
+            else if (!((isalpha(c.value) != 0) || (c.value == 95) || (c.value == 10)))
             {
                 continue;
             }
@@ -2267,23 +2267,23 @@ public class doc {
     }
 
     public static int skippastident(Ptr<OutBuffer> buf, int i) {
-        IntRef i_ref = ref(i);
+        Ref<Integer> i_ref = ref(i);
         ByteSlice slice = (buf.get()).peekSlice().copy();
         for (; (i_ref.value < slice.getLength());){
-            int c = 0x0ffff;
+            Ref<Integer> c = ref(0x0ffff);
             int oi = i_ref.value;
             if (utf_decodeChar(toBytePtr(slice), slice.getLength(), i_ref, c) != null)
             {
                 break;
             }
-            if ((c >= 128))
+            if ((c.value >= 128))
             {
-                if (isUniAlpha(c))
+                if (isUniAlpha(c.value))
                 {
                     continue;
                 }
             }
-            else if ((isalnum(c) != 0) || (c == 95))
+            else if ((isalnum(c.value) != 0) || (c.value == 95))
             {
                 continue;
             }
@@ -2294,17 +2294,17 @@ public class doc {
     }
 
     public static int skipPastIdentWithDots(Ptr<OutBuffer> buf, int i) {
-        IntRef i_ref = ref(i);
+        Ref<Integer> i_ref = ref(i);
         ByteSlice slice = (buf.get()).peekSlice().copy();
         boolean lastCharWasDot = false;
         for (; (i_ref.value < slice.getLength());){
-            int c = 0x0ffff;
+            Ref<Integer> c = ref(0x0ffff);
             int oi = i_ref.value;
             if (utf_decodeChar(toBytePtr(slice), slice.getLength(), i_ref, c) != null)
             {
                 break;
             }
-            if ((c == 46))
+            if ((c.value == 46))
             {
                 if (lastCharWasDot)
                 {
@@ -2316,15 +2316,15 @@ public class doc {
             }
             else
             {
-                if ((c >= 128))
+                if ((c.value >= 128))
                 {
-                    if (isUniAlpha(c))
+                    if (isUniAlpha(c.value))
                     {
                         lastCharWasDot = false;
                         continue;
                     }
                 }
-                else if ((isalnum(c) != 0) || (c == 95))
+                else if ((isalnum(c.value) != 0) || (c.value == 95))
                 {
                     lastCharWasDot = false;
                     continue;
@@ -2384,7 +2384,7 @@ public class doc {
         return i;
     }
 
-    public static void removeBlankLineMacro(Ptr<OutBuffer> buf, IntRef iAt, IntRef i) {
+    public static void removeBlankLineMacro(Ptr<OutBuffer> buf, Ref<Integer> iAt, Ref<Integer> i) {
         if (iAt.value == 0)
         {
             return ;
@@ -2398,8 +2398,8 @@ public class doc {
         iAt.value = 0;
     }
 
-    public static boolean replaceMarkdownThematicBreak(Ptr<OutBuffer> buf, IntRef i, int iLineStart, Loc loc) {
-        if (!global.value.params.markdown)
+    public static boolean replaceMarkdownThematicBreak(Ptr<OutBuffer> buf, Ref<Integer> i, int iLineStart, Loc loc) {
+        if (!global.params.markdown)
         {
             return false;
         }
@@ -2421,7 +2421,7 @@ public class doc {
         {
             if ((j >= (buf.get()).offset) || (((buf.get()).data.get(j) & 0xFF) == 10) || (((buf.get()).data.get(j) & 0xFF) == 13))
             {
-                if (global.value.params.vmarkdown)
+                if (global.params.vmarkdown)
                 {
                     ByteSlice s = (buf.get()).peekSlice().slice(i.value,j).copy();
                     message(loc, new BytePtr("Ddoc: converted '%.*s' to a thematic break"), s.getLength(), toBytePtr(s));
@@ -2435,7 +2435,7 @@ public class doc {
     }
 
     public static int detectAtxHeadingLevel(Ptr<OutBuffer> buf, int i) {
-        if (!global.value.params.markdown)
+        if (!global.params.markdown)
         {
             return 0;
         }
@@ -2492,12 +2492,12 @@ public class doc {
         }
     }
 
-    public static void endMarkdownHeading(Ptr<OutBuffer> buf, int iStart, IntRef iEnd, Loc loc, IntRef headingLevel) {
-        if (!global.value.params.markdown)
+    public static void endMarkdownHeading(Ptr<OutBuffer> buf, int iStart, Ref<Integer> iEnd, Loc loc, Ref<Integer> headingLevel) {
+        if (!global.params.markdown)
         {
             return ;
         }
-        if (global.value.params.vmarkdown)
+        if (global.params.vmarkdown)
         {
             ByteSlice s = (buf.get()).peekSlice().slice(iStart,iEnd.value).copy();
             message(loc, new BytePtr("Ddoc: added heading '%.*s'"), s.getLength(), toBytePtr(s));
@@ -2514,7 +2514,7 @@ public class doc {
         headingLevel.value = 0;
     }
 
-    public static int endAllMarkdownQuotes(Ptr<OutBuffer> buf, int i, IntRef quoteLevel) {
+    public static int endAllMarkdownQuotes(Ptr<OutBuffer> buf, int i, Ref<Integer> quoteLevel) {
         int length = quoteLevel.value;
         for (; (quoteLevel.value > 0);quoteLevel.value -= 1) {
             i = (buf.get()).insert(i, new ByteSlice(")"));
@@ -2522,52 +2522,51 @@ public class doc {
         return length;
     }
 
-    public static int endAllListsAndQuotes(Ptr<OutBuffer> buf, IntRef i, Slice<MarkdownList> nestedLists, IntRef quoteLevel, IntRef quoteMacroLevel) {
-        Ref<Slice<MarkdownList>> nestedLists_ref = ref(nestedLists);
+    public static int endAllListsAndQuotes(Ptr<OutBuffer> buf, Ref<Integer> i, Slice<MarkdownList> nestedLists, Ref<Integer> quoteLevel, Ref<Integer> quoteMacroLevel) {
         quoteMacroLevel.value = 0;
         quoteMacroLevel.value = 0;
         int i0 = i.value;
-        i.value += MarkdownList.endAllNestedLists(buf, i.value, nestedLists_ref);
+        i.value += MarkdownList.endAllNestedLists(buf, i.value, nestedLists);
         i.value += endAllMarkdownQuotes(buf, i.value, quoteLevel);
         return i.value - i0;
     }
 
     public static int replaceMarkdownEmphasis(Ptr<OutBuffer> buf, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters, int downToLevel) {
-        if (!global.value.params.markdown)
+        if (!global.params.markdown)
         {
             return 0;
         }
-        Function2<MarkdownDelimiter,MarkdownDelimiter,Integer> replaceEmphasisPair = new Function2<MarkdownDelimiter,MarkdownDelimiter,Integer>(){
-            public Integer invoke(MarkdownDelimiter start, MarkdownDelimiter end) {
-                int count = (start.count == 1) || (end.count == 1) ? 1 : 2;
-                int iStart = start.iStart;
-                int iEnd = end.iStart;
-                end.count -= count;
-                start.count -= count;
-                iStart += start.count;
-                if (start.count == 0)
-                {
-                    start.type = (byte)0;
-                }
-                if (end.count == 0)
-                {
-                    end.type = (byte)0;
-                }
-                if (global.value.params.vmarkdown)
-                {
-                    ByteSlice s = (buf.get()).peekSlice().slice(iStart + count,iEnd).copy();
-                    message(loc, new BytePtr("Ddoc: emphasized text '%.*s'"), s.getLength(), toBytePtr(s));
-                }
-                (buf.get()).remove(iStart, count);
-                iEnd -= count;
-                (buf.get()).remove(iEnd, count);
-                ByteSlice macroName = (count >= 2) ? new ByteSlice("$(STRONG ") : new ByteSlice("$(EM ").copy();
-                (buf.get()).insert(iEnd, new ByteSlice(")"));
-                (buf.get()).insert(iStart, toByteSlice(macroName));
-                int delta = 1 + macroName.getLength() - (count + count);
-                end.iStart += count;
-                return delta;
+        Function2<Ref<MarkdownDelimiter>,Ref<MarkdownDelimiter>,Integer> replaceEmphasisPair = (start, end) -> {
+         {
+            int count = (start.count == 1) || (end.count == 1) ? 1 : 2;
+            Ref<Integer> iStart = ref(start.iStart);
+            Ref<Integer> iEnd = ref(end.iStart);
+            end.count -= count;
+            start.count -= count;
+            iStart.value += start.count;
+            if (start.count == 0)
+            {
+                start.type = (byte)0;
             }
+            if (end.count == 0)
+            {
+                end.type = (byte)0;
+            }
+            if (global.params.vmarkdown)
+            {
+                ByteSlice s = (buf.get()).peekSlice().slice(iStart.value + count,iEnd.value).copy();
+                message(loc, new BytePtr("Ddoc: emphasized text '%.*s'"), s.getLength(), toBytePtr(s));
+            }
+            (buf.get()).remove(iStart.value, count);
+            iEnd.value -= count;
+            (buf.get()).remove(iEnd.value, count);
+            ByteSlice macroName = (count >= 2) ? new ByteSlice("$(STRONG ") : new ByteSlice("$(EM ").copy();
+            (buf.get()).insert(iEnd.value, new ByteSlice(")"));
+            (buf.get()).insert(iStart.value, toByteSlice(macroName));
+            int delta = 1 + macroName.getLength() - (count + count);
+            end.iStart += count;
+            return delta;
+        }
         };
         int delta = 0;
         int start = inlineDelimiters.getLength() - 1;
@@ -2857,7 +2856,7 @@ public class doc {
     public static class MarkdownList
     {
         public ByteSlice orderedStart = new ByteSlice();
-        public int iStart = 0;
+        public Ref<Integer> iStart = ref(0);
         public int iContentStart = 0;
         public int delimiterIndent = 0;
         public int contentIndent = 0;
@@ -2868,7 +2867,7 @@ public class doc {
         }
 
         public static MarkdownList parseItem(Ptr<OutBuffer> buf, int iLineStart, int i) {
-            if (!global.value.params.markdown)
+            if (!global.params.markdown)
             {
                 return new MarkdownList(new ByteSlice(), 0, 0, 0, 0, 0, (byte)255);
             }
@@ -2891,8 +2890,8 @@ public class doc {
             return false;
         }
 
-        public  boolean startItem(Ptr<OutBuffer> buf, IntRef iLineStart, IntRef i, IntRef iPrecedingBlankLine, Slice<MarkdownList> nestedLists, Loc loc) {
-            (buf.get()).remove(this.iStart, this.iContentStart - this.iStart);
+        public  boolean startItem(Ptr<OutBuffer> buf, Ref<Integer> iLineStart, Ref<Integer> i, Ref<Integer> iPrecedingBlankLine, Slice<MarkdownList> nestedLists, Loc loc) {
+            (buf.get()).remove(this.iStart.value, this.iContentStart - this.iStart.value);
             if ((nestedLists.getLength() == 0) || (this.delimiterIndent >= nestedLists.get(nestedLists.getLength() - 1).contentIndent) || __equals((buf.get()).data.slice(iLineStart.value - 4,iLineStart.value), new ByteSlice("$(LI")))
             {
                 nestedLists.append(this);
@@ -2900,36 +2899,36 @@ public class doc {
                 {
                     if (this.orderedStart.getLength() != 0)
                     {
-                        this.iStart = (buf.get()).insert(this.iStart, new ByteSlice("$(OL_START "));
-                        this.iStart = (buf.get()).insert(this.iStart, toByteSlice(this.orderedStart));
-                        this.iStart = (buf.get()).insert(this.iStart, new ByteSlice(",\n"));
+                        this.iStart.value = (buf.get()).insert(this.iStart.value, new ByteSlice("$(OL_START "));
+                        this.iStart.value = (buf.get()).insert(this.iStart.value, toByteSlice(this.orderedStart));
+                        this.iStart.value = (buf.get()).insert(this.iStart.value, new ByteSlice(",\n"));
                     }
                     else
                     {
-                        this.iStart = (buf.get()).insert(this.iStart, new ByteSlice("$(OL\n"));
+                        this.iStart.value = (buf.get()).insert(this.iStart.value, new ByteSlice("$(OL\n"));
                     }
                 }
                 else
                 {
-                    this.iStart = (buf.get()).insert(this.iStart, new ByteSlice("$(UL\n"));
+                    this.iStart.value = (buf.get()).insert(this.iStart.value, new ByteSlice("$(UL\n"));
                 }
-                removeBlankLineMacro(buf, iPrecedingBlankLine, this.iStart);
+                removeBlankLineMacro(buf, iPrecedingBlankLine, iStart);
             }
             else if (nestedLists.getLength() != 0)
             {
                 nestedLists.get(nestedLists.getLength() - 1).delimiterIndent = this.delimiterIndent;
                 nestedLists.get(nestedLists.getLength() - 1).contentIndent = this.contentIndent;
             }
-            this.iStart = (buf.get()).insert(this.iStart, new ByteSlice("$(LI\n"));
-            i.value = this.iStart - 1;
+            this.iStart.value = (buf.get()).insert(this.iStart.value, new ByteSlice("$(LI\n"));
+            i.value = this.iStart.value - 1;
             iLineStart.value = i.value;
-            if (global.value.params.vmarkdown)
+            if (global.params.vmarkdown)
             {
-                int iEnd = this.iStart;
+                int iEnd = this.iStart.value;
                 for (; (iEnd < (buf.get()).offset) && (((buf.get()).data.get(iEnd) & 0xFF) != 13) && (((buf.get()).data.get(iEnd) & 0xFF) != 10);) {
                     iEnd += 1;
                 }
-                ByteSlice s = (buf.get()).peekSlice().slice(this.iStart,iEnd).copy();
+                ByteSlice s = (buf.get()).peekSlice().slice(this.iStart.value,iEnd).copy();
                 message(loc, new BytePtr("Ddoc: starting list item '%.*s'"), s.getLength(), toBytePtr(s));
             }
             return true;
@@ -2943,7 +2942,7 @@ public class doc {
             return i - iStart;
         }
 
-        public static void handleSiblingOrEndingList(Ptr<OutBuffer> buf, IntRef i, IntRef iParagraphStart, Slice<MarkdownList> nestedLists) {
+        public static void handleSiblingOrEndingList(Ptr<OutBuffer> buf, Ref<Integer> i, Ref<Integer> iParagraphStart, Slice<MarkdownList> nestedLists) {
             int iAfterSpaces = skipChars(buf, i.value + 1, new ByteSlice(" \u0009"));
             if (nestedLists.get(nestedLists.getLength() - 1).isAtItemInThisList(buf, i.value + 1, iAfterSpaces))
             {
@@ -3041,15 +3040,16 @@ public class doc {
         public ByteSlice title = new ByteSlice();
         public Ref<ByteSlice> label = ref(new ByteSlice());
         public Dsymbol symbol = null;
-        public static boolean replaceLink(Ptr<OutBuffer> buf, IntRef i, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters, int delimiterIndex, MarkdownLinkReferences linkReferences) {
+        public static boolean replaceLink(Ptr<OutBuffer> buf, Ref<Integer> i, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters, int delimiterIndex, MarkdownLinkReferences linkReferences) {
             Ref<Slice<MarkdownDelimiter>> inlineDelimiters_ref = ref(inlineDelimiters);
+            Ref<MarkdownLinkReferences> linkReferences_ref = ref(linkReferences);
             MarkdownDelimiter delimiter = inlineDelimiters_ref.value.get(delimiterIndex).copy();
             MarkdownLink link = new MarkdownLink();
             int iEnd = link.parseReferenceDefinition(buf, i.value, delimiter);
             if ((iEnd > i.value))
             {
                 i.value = delimiter.iStart;
-                link.storeAndReplaceDefinition(buf, i, iEnd, linkReferences, loc);
+                link.storeAndReplaceDefinition(buf, i, iEnd, linkReferences_ref, loc);
                 inlineDelimiters_ref.value.getLength() = delimiterIndex;
                 return true;
             }
@@ -3060,10 +3060,10 @@ public class doc {
                 if ((iEnd > i.value))
                 {
                     ByteSlice label = link.label.value.copy();
-                    link = linkReferences.lookupReference(label, buf, i.value, loc).copy();
+                    link = linkReferences_ref.value.lookupReference(label, buf, i.value, loc).copy();
                     if ((link.href.getLength() == 0) && !delimiter.rightFlanking)
                     {
-                        link = linkReferences.lookupSymbol(label).copy();
+                        link = linkReferences_ref.value.lookupSymbol(label).copy();
                     }
                     if (link.href.getLength() == 0)
                     {
@@ -3078,7 +3078,7 @@ public class doc {
             int delta = replaceMarkdownEmphasis(buf, loc, inlineDelimiters_ref, delimiterIndex);
             iEnd += delta;
             i.value += delta;
-            if (global.value.params.vmarkdown)
+            if (global.params.vmarkdown)
             {
                 ByteSlice s = (buf.get()).peekSlice().slice(delimiter.iStart,iEnd).copy();
                 message(loc, new BytePtr("Ddoc: linking '%.*s' to '%.*s'"), s.getLength(), toBytePtr(s), link.href.getLength(), toBytePtr(link.href));
@@ -3087,7 +3087,8 @@ public class doc {
             return true;
         }
 
-        public static boolean replaceReferenceDefinition(Ptr<OutBuffer> buf, IntRef i, Slice<MarkdownDelimiter> inlineDelimiters, int delimiterIndex, MarkdownLinkReferences linkReferences, Loc loc) {
+        public static boolean replaceReferenceDefinition(Ptr<OutBuffer> buf, Ref<Integer> i, Slice<MarkdownDelimiter> inlineDelimiters, int delimiterIndex, MarkdownLinkReferences linkReferences, Loc loc) {
+            Ref<MarkdownLinkReferences> linkReferences_ref = ref(linkReferences);
             MarkdownDelimiter delimiter = inlineDelimiters.get(delimiterIndex).copy();
             MarkdownLink link = new MarkdownLink();
             int iEnd = link.parseReferenceDefinition(buf, i.value, delimiter);
@@ -3096,13 +3097,13 @@ public class doc {
                 return false;
             }
             i.value = delimiter.iStart;
-            link.storeAndReplaceDefinition(buf, i, iEnd, linkReferences, loc);
+            link.storeAndReplaceDefinition(buf, i, iEnd, linkReferences_ref, loc);
             inlineDelimiters.getLength() = delimiterIndex;
             return true;
         }
 
         public  int parseInlineLink(Ptr<OutBuffer> buf, int i) {
-            IntRef iEnd = ref(i + 1);
+            Ref<Integer> iEnd = ref(i + 1);
             if ((iEnd.value >= (buf.get()).offset) || (((buf.get()).data.get(iEnd.value) & 0xFF) != 40))
             {
                 return i;
@@ -3128,7 +3129,7 @@ public class doc {
         }
 
         public  int parseReferenceLink(Ptr<OutBuffer> buf, int i, MarkdownDelimiter delimiter) {
-            IntRef iStart = ref(i + 1);
+            Ref<Integer> iStart = ref(i + 1);
             int iEnd = iStart.value;
             if ((iEnd >= (buf.get()).offset) || (((buf.get()).data.get(iEnd) & 0xFF) != 91) || (iEnd + 1 < (buf.get()).offset) && (((buf.get()).data.get(iEnd + 1) & 0xFF) == 93))
             {
@@ -3155,7 +3156,7 @@ public class doc {
             {
                 return i;
             }
-            IntRef iEnd = ref(delimiter.iStart);
+            Ref<Integer> iEnd = ref(delimiter.iStart);
             this.parseLabel(buf, iEnd);
             if ((this.label.value.getLength() == 0) || (iEnd.value != i + 1))
             {
@@ -3188,7 +3189,7 @@ public class doc {
             return iEnd.value;
         }
 
-        public  boolean parseLabel(Ptr<OutBuffer> buf, IntRef i) {
+        public  boolean parseLabel(Ptr<OutBuffer> buf, Ref<Integer> i) {
             if ((((buf.get()).data.get(i.value) & 0xFF) != 91))
             {
                 return false;
@@ -3256,7 +3257,7 @@ public class doc {
             return false;
         }
 
-        public  boolean parseHref(Ptr<OutBuffer> buf, IntRef i) {
+        public  boolean parseHref(Ptr<OutBuffer> buf, Ref<Integer> i) {
             int j = skipChars(buf, i.value, new ByteSlice(" \u0009"));
             int iHrefStart = j;
             int parenDepth = 1;
@@ -3332,7 +3333,7 @@ public class doc {
             return true;
         }
 
-        public  boolean parseTitle(Ptr<OutBuffer> buf, IntRef i) {
+        public  boolean parseTitle(Ptr<OutBuffer> buf, Ref<Integer> i) {
             int j = skipChars(buf, i.value, new ByteSlice(" \u0009"));
             if ((j >= (buf.get()).offset))
             {
@@ -3400,7 +3401,7 @@ public class doc {
             return true;
         }
 
-        public  void replaceLink(Ptr<OutBuffer> buf, IntRef i, int iLinkEnd, MarkdownDelimiter delimiter) {
+        public  void replaceLink(Ptr<OutBuffer> buf, Ref<Integer> i, int iLinkEnd, MarkdownDelimiter delimiter) {
             int iAfterLink = i.value - delimiter.count;
             ByteSlice macroName = new ByteSlice().copy();
             if (this.symbol != null)
@@ -3456,8 +3457,8 @@ public class doc {
             i.value = iAfterLink;
         }
 
-        public  void storeAndReplaceDefinition(Ptr<OutBuffer> buf, IntRef i, int iEnd, MarkdownLinkReferences linkReferences, Loc loc) {
-            if (global.value.params.vmarkdown)
+        public  void storeAndReplaceDefinition(Ptr<OutBuffer> buf, Ref<Integer> i, int iEnd, MarkdownLinkReferences linkReferences, Loc loc) {
+            if (global.params.vmarkdown)
             {
                 message(loc, new BytePtr("Ddoc: found link reference '%.*s' to '%.*s'"), this.label.value.getLength(), toBytePtr(this.label), this.href.getLength(), toBytePtr(this.href));
             }
@@ -3507,10 +3508,10 @@ public class doc {
         }
 
         public static ByteSlice percentEncode(ByteSlice s) {
-            Function1<Byte,Boolean> shouldEncode = new Function1<Byte,Boolean>(){
-                public Boolean invoke(Byte c) {
-                    return ((c & 0xFF) < 48) && ((c & 0xFF) != 33) && ((c & 0xFF) != 35) && ((c & 0xFF) != 36) && ((c & 0xFF) != 37) && ((c & 0xFF) != 38) && ((c & 0xFF) != 39) && ((c & 0xFF) != 40) && ((c & 0xFF) != 41) && ((c & 0xFF) != 42) && ((c & 0xFF) != 43) && ((c & 0xFF) != 44) && ((c & 0xFF) != 45) && ((c & 0xFF) != 46) && ((c & 0xFF) != 47) || ((c & 0xFF) > 57) && ((c & 0xFF) < 65) && ((c & 0xFF) != 58) && ((c & 0xFF) != 59) && ((c & 0xFF) != 61) && ((c & 0xFF) != 63) && ((c & 0xFF) != 64) || ((c & 0xFF) > 90) && ((c & 0xFF) < 97) && ((c & 0xFF) != 91) && ((c & 0xFF) != 93) && ((c & 0xFF) != 95) || ((c & 0xFF) > 122) && ((c & 0xFF) != 126);
-                }
+            Function1<Byte,Boolean> shouldEncode = (c) -> {
+             {
+                return ((c & 0xFF) < 48) && ((c & 0xFF) != 33) && ((c & 0xFF) != 35) && ((c & 0xFF) != 36) && ((c & 0xFF) != 37) && ((c & 0xFF) != 38) && ((c & 0xFF) != 39) && ((c & 0xFF) != 40) && ((c & 0xFF) != 41) && ((c & 0xFF) != 42) && ((c & 0xFF) != 43) && ((c & 0xFF) != 44) && ((c & 0xFF) != 45) && ((c & 0xFF) != 46) && ((c & 0xFF) != 47) || ((c & 0xFF) > 57) && ((c & 0xFF) < 65) && ((c & 0xFF) != 58) && ((c & 0xFF) != 59) && ((c & 0xFF) != 61) && ((c & 0xFF) != 63) && ((c & 0xFF) != 64) || ((c & 0xFF) > 90) && ((c & 0xFF) < 97) && ((c & 0xFF) != 91) && ((c & 0xFF) != 93) && ((c & 0xFF) != 95) || ((c & 0xFF) > 122) && ((c & 0xFF) != 126);
+            }
             };
             {
                 int i = 0;
@@ -3527,7 +3528,7 @@ public class doc {
             return s;
         }
 
-        public static boolean skipOneNewline(Ptr<OutBuffer> buf, IntRef i) {
+        public static boolean skipOneNewline(Ptr<OutBuffer> buf, Ref<Integer> i) {
             if ((i.value < (buf.get()).offset) && (((buf.get()).data.get(i.value) & 0xFF) == 13))
             {
                 i.value += 1;
@@ -3613,11 +3614,10 @@ public class doc {
         }
 
         public  void extractReferences(Ptr<OutBuffer> buf, int i, Loc loc) {
-            IntRef i_ref = ref(i);
-            Function2<Ptr<OutBuffer>,Integer,Boolean> isFollowedBySpace = new Function2<Ptr<OutBuffer>,Integer,Boolean>(){
-                public Boolean invoke(Ptr<OutBuffer> buf, Integer i) {
-                    return (i + 1 < (buf.get()).offset) && (((buf.get()).data.get(i + 1) & 0xFF) == 32) || (((buf.get()).data.get(i + 1) & 0xFF) == 9);
-                }
+            Function2<Ptr<OutBuffer>,Integer,Boolean> isFollowedBySpace = (buf, i) -> {
+             {
+                return (i + 1 < (buf.get()).offset) && (((buf.get()).data.get(i + 1) & 0xFF) == 32) || (((buf.get()).data.get(i + 1) & 0xFF) == 9);
+            }
             };
             if (this.extractedAll)
             {
@@ -3628,8 +3628,8 @@ public class doc {
             boolean newParagraph = true;
             Slice<MarkdownDelimiter> delimiters = new Slice<MarkdownDelimiter>().copy();
         L_outer14:
-            for (; (i_ref.value < (buf.get()).offset);i_ref.value += 1){
-                byte c = (buf.get()).data.get(i_ref.value);
+            for (; (i < (buf.get()).offset);i += 1){
+                byte c = (buf.get()).data.get(i);
                 {
                     int __dispatch10 = 0;
                     dispatched_10:
@@ -3647,7 +3647,7 @@ public class doc {
                                 leadingBlank = true;
                                 break;
                             case 92:
-                                i_ref.value += 1;
+                                i += 1;
                                 break;
                             case 35:
                                 if (leadingBlank && (inCode == 0))
@@ -3664,7 +3664,7 @@ public class doc {
                                 break;
                             case 43:
                                 __dispatch10 = 0;
-                                if (leadingBlank && (inCode == 0) && isFollowedBySpace.invoke(buf, i_ref.value))
+                                if (leadingBlank && (inCode == 0) && isFollowedBySpace.invoke(buf, i))
                                 {
                                     newParagraph = true;
                                 }
@@ -3685,8 +3685,8 @@ public class doc {
                             case 57:
                                 if (leadingBlank && (inCode == 0))
                                 {
-                                    i_ref.value = skipChars(buf, i_ref.value, new ByteSlice("0123456789"));
-                                    if ((i_ref.value < (buf.get()).offset) && (((buf.get()).data.get(i_ref.value) & 0xFF) == 46) || (((buf.get()).data.get(i_ref.value) & 0xFF) == 41) && isFollowedBySpace.invoke(buf, i_ref.value))
+                                    i = skipChars(buf, i, new ByteSlice("0123456789"));
+                                    if ((i < (buf.get()).offset) && (((buf.get()).data.get(i) & 0xFF) == 46) || (((buf.get()).data.get(i) & 0xFF) == 41) && isFollowedBySpace.invoke(buf, i))
                                     {
                                         newParagraph = true;
                                     }
@@ -3700,7 +3700,7 @@ public class doc {
                                 if (leadingBlank && (inCode == 0))
                                 {
                                     newParagraph = true;
-                                    if (!isFollowedBySpace.invoke(buf, i_ref.value))
+                                    if (!isFollowedBySpace.invoke(buf, i))
                                     {
                                         leadingBlank = false;
                                     }
@@ -3709,16 +3709,16 @@ public class doc {
                             case 96:
                                 __dispatch10 = 0;
                             case 126:
-                                if (leadingBlank && (i_ref.value + 2 < (buf.get()).offset) && (((buf.get()).data.get(i_ref.value + 1) & 0xFF) == (c & 0xFF)) && (((buf.get()).data.get(i_ref.value + 2) & 0xFF) == (c & 0xFF)))
+                                if (leadingBlank && (i + 2 < (buf.get()).offset) && (((buf.get()).data.get(i + 1) & 0xFF) == (c & 0xFF)) && (((buf.get()).data.get(i + 2) & 0xFF) == (c & 0xFF)))
                                 {
                                     inCode = (inCode == (c & 0xFF)) ? 0 : (c & 0xFF);
-                                    i_ref.value = skipChars(buf, i_ref.value, slice(new byte[]{(byte)c})) - 1;
+                                    i = skipChars(buf, i, slice(new byte[]{(byte)c})) - 1;
                                     newParagraph = true;
                                 }
                                 leadingBlank = false;
                                 break;
                             case 45:
-                                if (leadingBlank && (inCode == 0) && isFollowedBySpace.invoke(buf, i_ref.value))
+                                if (leadingBlank && (inCode == 0) && isFollowedBySpace.invoke(buf, i))
                                 {
                                     /*goto case*/{ __dispatch10 = 43; continue dispatched_10; }
                                 }
@@ -3729,13 +3729,13 @@ public class doc {
                             case 91:
                                 if (leadingBlank && (inCode == 0) && newParagraph)
                                 {
-                                    delimiters.append(new MarkdownDelimiter(i_ref.value, 1, 0, false, false, true, (byte)c));
+                                    delimiters.append(new MarkdownDelimiter(i, 1, 0, false, false, true, (byte)c));
                                 }
                                 break;
                             case 93:
-                                if ((delimiters.getLength() != 0) && (inCode == 0) && MarkdownLink.replaceReferenceDefinition(buf, i_ref, delimiters, delimiters.getLength() - 1, this, loc))
+                                if ((delimiters.getLength() != 0) && (inCode == 0) && MarkdownLink.replaceReferenceDefinition(buf, i, delimiters, delimiters.getLength() - 1, this, loc))
                                 {
-                                    i_ref.value -= 1;
+                                    i -= 1;
                                 }
                                 break;
                             default:
@@ -3952,62 +3952,62 @@ public class doc {
         {
             return 0;
         }
-        if (headerRow && global.value.params.vmarkdown)
+        if (headerRow && global.params.vmarkdown)
         {
             ByteSlice s = (buf.get()).peekSlice().slice(iStart,iEnd).copy();
             message(loc, new BytePtr("Ddoc: formatting table '%.*s'"), s.getLength(), toBytePtr(s));
         }
-        int delta = 0;
-        Function4<Integer,Integer,Integer,Integer,Void> replaceTableCell = new Function4<Integer,Integer,Integer,Integer,Void>(){
-            public Void invoke(Integer iCellStart, Integer iCellEnd, Integer cellIndex, Integer di) {
-                int eDelta = replaceMarkdownEmphasis(buf, loc, inlineDelimiters_ref, di);
-                delta += eDelta;
-                iCellEnd += eDelta;
-                int i = iCellEnd - 1;
-                for (; (i > iCellStart) && (((buf.get()).data.get(i) & 0xFF) == 124) || (((buf.get()).data.get(i) & 0xFF) == 32) || (((buf.get()).data.get(i) & 0xFF) == 9);) {
-                    i -= 1;
-                }
-                i += 1;
-                (buf.get()).remove(i, iCellEnd - i);
-                delta -= iCellEnd - i;
-                iCellEnd = i;
-                (buf.get()).insert(iCellEnd, new ByteSlice(")"));
-                delta += 1;
-                i = skipChars(buf, iCellStart, new ByteSlice("| \u0009"));
-                (buf.get()).remove(iCellStart, i - iCellStart);
-                delta -= i - iCellStart;
-                {
-                    int __dispatch11 = 0;
-                    dispatched_11:
-                    do {
-                        switch (__dispatch11 != 0 ? __dispatch11 : columnAlignments.get(cellIndex))
-                        {
-                            case TableColumnAlignment.none:
-                                (buf.get()).insert(iCellStart, headerRow ? new ByteSlice("$(TH ") : new ByteSlice("$(TD "));
-                                delta += 5;
-                                break;
-                            case TableColumnAlignment.left:
-                                (buf.get()).insert(iCellStart, new ByteSlice("left, "));
-                                delta += 6;
-                                /*goto default*/ { __dispatch11 = -1; continue dispatched_11; }
-                            case TableColumnAlignment.center:
-                                (buf.get()).insert(iCellStart, new ByteSlice("center, "));
-                                delta += 8;
-                                /*goto default*/ { __dispatch11 = -1; continue dispatched_11; }
-                            case TableColumnAlignment.right:
-                                (buf.get()).insert(iCellStart, new ByteSlice("right, "));
-                                delta += 7;
-                                /*goto default*/ { __dispatch11 = -1; continue dispatched_11; }
-                            default:
-                            __dispatch11 = 0;
-                            (buf.get()).insert(iCellStart, headerRow ? new ByteSlice("$(TH_ALIGN ") : new ByteSlice("$(TD_ALIGN "));
-                            delta += 11;
-                            break;
-                        }
-                    } while(__dispatch11 != 0);
-                }
-                return null;
+        Ref<Integer> delta = ref(0);
+        Function4<Integer,Integer,Integer,Integer,Void> replaceTableCell = (iCellStart, iCellEnd, cellIndex, di) -> {
+         {
+            int eDelta = replaceMarkdownEmphasis(buf, loc, inlineDelimiters_ref, di);
+            delta.value += eDelta;
+            iCellEnd.value += eDelta;
+            Ref<Integer> i = ref(iCellEnd.value - 1);
+            for (; (i.value > iCellStart) && (((buf.get()).data.get(i.value) & 0xFF) == 124) || (((buf.get()).data.get(i.value) & 0xFF) == 32) || (((buf.get()).data.get(i.value) & 0xFF) == 9);) {
+                i.value -= 1;
             }
+            i.value += 1;
+            (buf.get()).remove(i.value, iCellEnd.value - i.value);
+            delta.value -= iCellEnd.value - i.value;
+            iCellEnd.value = i.value;
+            (buf.get()).insert(iCellEnd.value, new ByteSlice(")"));
+            delta.value += 1;
+            i.value = skipChars(buf, iCellStart, new ByteSlice("| \u0009"));
+            (buf.get()).remove(iCellStart, i.value - iCellStart);
+            delta.value -= i.value - iCellStart;
+            {
+                int __dispatch11 = 0;
+                dispatched_11:
+                do {
+                    switch (__dispatch11 != 0 ? __dispatch11 : columnAlignments.get(cellIndex))
+                    {
+                        case TableColumnAlignment.none:
+                            (buf.get()).insert(iCellStart, headerRow ? new ByteSlice("$(TH ") : new ByteSlice("$(TD "));
+                            delta.value += 5;
+                            break;
+                        case TableColumnAlignment.left:
+                            (buf.get()).insert(iCellStart, new ByteSlice("left, "));
+                            delta.value += 6;
+                            /*goto default*/ { __dispatch11 = -1; continue dispatched_11; }
+                        case TableColumnAlignment.center:
+                            (buf.get()).insert(iCellStart, new ByteSlice("center, "));
+                            delta.value += 8;
+                            /*goto default*/ { __dispatch11 = -1; continue dispatched_11; }
+                        case TableColumnAlignment.right:
+                            (buf.get()).insert(iCellStart, new ByteSlice("right, "));
+                            delta.value += 7;
+                            /*goto default*/ { __dispatch11 = -1; continue dispatched_11; }
+                        default:
+                        __dispatch11 = 0;
+                        (buf.get()).insert(iCellStart, headerRow ? new ByteSlice("$(TH_ALIGN ") : new ByteSlice("$(TD_ALIGN "));
+                        delta.value += 11;
+                        break;
+                    }
+                } while(__dispatch11 != 0);
+            }
+            return null;
+        }
         };
         int cellIndex = cellCount - 1;
         int iCellEnd = iEnd;
@@ -4026,9 +4026,9 @@ public class doc {
                     }
                     if ((cellIndex >= columnAlignments.getLength()))
                     {
-                        (buf.get()).remove(delimiter.iStart, iEnd + delta - delimiter.iStart);
-                        delta -= iEnd + delta - delimiter.iStart;
-                        iCellEnd = iEnd + delta;
+                        (buf.get()).remove(delimiter.iStart, iEnd + delta.value - delimiter.iStart);
+                        delta.value -= iEnd + delta.value - delimiter.iStart;
+                        iCellEnd = iEnd + delta.value;
                         cellIndex -= 1;
                         continue;
                     }
@@ -4042,16 +4042,16 @@ public class doc {
         {
             replaceTableCell.invoke(iStart, iCellEnd, cellIndex, 0);
         }
-        (buf.get()).insert(iEnd + delta, new ByteSlice(")"));
+        (buf.get()).insert(iEnd + delta.value, new ByteSlice(")"));
         (buf.get()).insert(iStart, new ByteSlice("$(TR "));
-        delta += 6;
+        delta.value += 6;
         if (headerRow)
         {
-            (buf.get()).insert(iEnd + delta, new ByteSlice(")"));
+            (buf.get()).insert(iEnd + delta.value, new ByteSlice(")"));
             (buf.get()).insert(iStart, new ByteSlice("$(THEAD "));
-            delta += 9;
+            delta.value += 9;
         }
-        return delta;
+        return delta.value;
     }
 
     public static int endTable(Ptr<OutBuffer> buf, int i, IntSlice columnAlignments) {
@@ -4066,9 +4066,8 @@ public class doc {
 
     public static int endRowAndTable(Ptr<OutBuffer> buf, int iStart, int iEnd, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters, IntSlice columnAlignments) {
         Ref<Slice<MarkdownDelimiter>> inlineDelimiters_ref = ref(inlineDelimiters);
-        Ref<IntSlice> columnAlignments_ref = ref(columnAlignments);
-        int delta = replaceTableRow(buf, iStart, iEnd, loc, inlineDelimiters_ref, columnAlignments_ref.value, false);
-        delta += endTable(buf, iEnd + delta, columnAlignments_ref);
+        int delta = replaceTableRow(buf, iStart, iEnd, loc, inlineDelimiters_ref, columnAlignments, false);
+        delta += endTable(buf, iEnd + delta, columnAlignments);
         return delta;
     }
 
@@ -4077,17 +4076,17 @@ public class doc {
         loc.linnum += incrementLoc;
         loc.charnum = 0;
         boolean leadingBlank = true;
-        int iParagraphStart = offset;
-        IntRef iPrecedingBlankLine = ref(0);
-        int headingLevel = 0;
+        Ref<Integer> iParagraphStart = ref(offset);
+        Ref<Integer> iPrecedingBlankLine = ref(0);
+        Ref<Integer> headingLevel = ref(0);
         int headingMacroLevel = 0;
-        IntRef quoteLevel = ref(0);
+        Ref<Integer> quoteLevel = ref(0);
         boolean lineQuoted = false;
-        int quoteMacroLevel = 0;
+        Ref<Integer> quoteMacroLevel = ref(0);
         Ref<Slice<MarkdownList>> nestedLists = ref(new Slice<MarkdownList>().copy());
         Ref<Slice<MarkdownDelimiter>> inlineDelimiters = ref(new Slice<MarkdownDelimiter>().copy());
         MarkdownLinkReferences linkReferences = new MarkdownLinkReferences();
-        Ref<IntSlice> columnAlignments = ref(new IntSlice().copy());
+        IntSlice columnAlignments = new IntSlice().copy();
         boolean tableRowDetected = false;
         int inCode = 0;
         int inBacktick = 0;
@@ -4098,10 +4097,10 @@ public class doc {
         int codeFenceLength = 0;
         int codeIndent = 0;
         ByteSlice codeLanguage = new ByteSlice().copy();
-        IntRef iLineStart = ref(offset);
+        Ref<Integer> iLineStart = ref(offset);
         linkReferences._scope = sc;
         {
-            IntRef i = ref(offset);
+            Ref<Integer> i = ref(offset);
         L_outer15:
             for (; (i.value < (buf.get()).offset);i.value++){
                 byte c = (byte)(buf.get()).data.get(i.value);
@@ -4121,21 +4120,21 @@ public class doc {
                                     inBacktick = 0;
                                     inCode = 0;
                                 }
-                                if (headingLevel != 0)
+                                if (headingLevel.value != 0)
                                 {
                                     i.value += replaceMarkdownEmphasis(buf, loc, inlineDelimiters, 0);
-                                    endMarkdownHeading(buf, iParagraphStart, i, loc, headingLevel);
+                                    endMarkdownHeading(buf, iParagraphStart.value, i, loc, headingLevel);
                                     removeBlankLineMacro(buf, iPrecedingBlankLine, i);
                                     i.value += 1;
-                                    iParagraphStart = skipChars(buf, i.value, new ByteSlice(" \u0009\r\n"));
+                                    iParagraphStart.value = skipChars(buf, i.value, new ByteSlice(" \u0009\r\n"));
                                 }
-                                if (tableRowDetected && (columnAlignments.value.getLength() == 0))
+                                if (tableRowDetected && (columnAlignments.getLength() == 0))
                                 {
                                     i.value += startTable(buf, iLineStart.value, i.value, loc, lineQuoted, inlineDelimiters, columnAlignments);
                                 }
-                                else if (columnAlignments.value.getLength() != 0)
+                                else if (columnAlignments.getLength() != 0)
                                 {
-                                    int delta = replaceTableRow(buf, iLineStart.value, i.value, loc, inlineDelimiters, columnAlignments.value, false);
+                                    int delta = replaceTableRow(buf, iLineStart.value, i.value, loc, inlineDelimiters, columnAlignments, false);
                                     if (delta != 0)
                                     {
                                         i.value += delta;
@@ -4158,11 +4157,11 @@ public class doc {
                                         endAllListsAndQuotes(buf, i, nestedLists, quoteLevel, quoteMacroLevel);
                                     }
                                     i.value += replaceMarkdownEmphasis(buf, loc, inlineDelimiters, 0);
-                                    if ((iParagraphStart <= i.value))
+                                    if ((iParagraphStart.value <= i.value))
                                     {
                                         iPrecedingBlankLine.value = i.value;
                                         i.value = (buf.get()).insert(i.value, new ByteSlice("$(DDOC_BLANKLINE)"));
-                                        iParagraphStart = i.value + 1;
+                                        iParagraphStart.value = i.value + 1;
                                     }
                                 }
                                 else if ((inCode != 0) && (i.value == iLineStart.value) && (i.value + 1 < (buf.get()).offset) && !lineQuoted && (quoteLevel.value != 0))
@@ -4170,16 +4169,16 @@ public class doc {
                                     inCode = 0;
                                     i.value = (buf.get()).insert(i.value, new ByteSlice(")"));
                                     i.value += endAllMarkdownQuotes(buf, i.value, quoteLevel);
-                                    quoteMacroLevel = 0;
+                                    quoteMacroLevel.value = 0;
                                 }
                                 leadingBlank = true;
                                 lineQuoted = false;
                                 tableRowDetected = false;
                                 iLineStart.value = i.value + 1;
                                 loc.linnum += incrementLoc;
-                                if ((previousMacroLevel < macroLevel) && (iParagraphStart < iLineStart.value))
+                                if ((previousMacroLevel < macroLevel) && (iParagraphStart.value < iLineStart.value))
                                 {
-                                    iParagraphStart = iLineStart.value;
+                                    iParagraphStart.value = iLineStart.value;
                                 }
                                 previousMacroLevel = macroLevel;
                                 break;
@@ -4245,9 +4244,9 @@ public class doc {
                                 }
                                 break;
                             case 62:
-                                if (leadingBlank && (inCode == 0) || (quoteLevel.value != 0) && global.value.params.markdown)
+                                if (leadingBlank && (inCode == 0) || (quoteLevel.value != 0) && global.params.markdown)
                                 {
-                                    if ((quoteLevel.value == 0) && global.value.params.vmarkdown)
+                                    if ((quoteLevel.value == 0) && global.params.vmarkdown)
                                     {
                                         int iEnd = i.value + 1;
                                         for (; (iEnd < (buf.get()).offset) && (((buf.get()).data.get(iEnd) & 0xFF) != 10);) {
@@ -4270,9 +4269,9 @@ public class doc {
                                             break;
                                         }
                                     }
-                                    if (quoteMacroLevel == 0)
+                                    if (quoteMacroLevel.value == 0)
                                     {
-                                        quoteMacroLevel = macroLevel;
+                                        quoteMacroLevel.value = macroLevel;
                                     }
                                     (buf.get()).remove(i.value, iAfterDelimiters - i.value);
                                     if ((quoteLevel.value < lineQuoteLevel))
@@ -4288,7 +4287,7 @@ public class doc {
                                         }
                                         for (; (quoteLevel.value < lineQuoteLevel);quoteLevel.value += 1){
                                             i.value = (buf.get()).insert(i.value, new ByteSlice("$(BLOCKQUOTE\n"));
-                                            iLineStart.value = (iParagraphStart = i.value);
+                                            iLineStart.value = (iParagraphStart.value = i.value);
                                         }
                                         i.value -= 1;
                                     }
@@ -4357,7 +4356,7 @@ public class doc {
                                     finally {
                                     }
                                 }
-                                if (leadingBlank && global.value.params.markdown && (count >= 3))
+                                if (leadingBlank && global.params.markdown && (count >= 3))
                                 {
                                     boolean moreBackticks = false;
                                     {
@@ -4396,8 +4395,8 @@ public class doc {
                                 if (leadingBlank && (inCode == 0))
                                 {
                                     leadingBlank = false;
-                                    headingLevel = detectAtxHeadingLevel(buf, i.value);
-                                    if (headingLevel == 0)
+                                    headingLevel.value = detectAtxHeadingLevel(buf, i.value);
+                                    if (headingLevel.value == 0)
                                     {
                                         break;
                                     }
@@ -4406,16 +4405,16 @@ public class doc {
                                     {
                                         i.value += endAllListsAndQuotes(buf, iLineStart, nestedLists, quoteLevel, quoteMacroLevel);
                                     }
-                                    i.value = skipChars(buf, i.value + headingLevel, new ByteSlice(" \u0009"));
+                                    i.value = skipChars(buf, i.value + headingLevel.value, new ByteSlice(" \u0009"));
                                     (buf.get()).remove(iLineStart.value, i.value - iLineStart.value);
-                                    i.value = (iParagraphStart = iLineStart.value);
+                                    i.value = (iParagraphStart.value = iLineStart.value);
                                     removeAnyAtxHeadingSuffix(buf, i.value);
                                     i.value -= 1;
                                     headingMacroLevel = macroLevel;
                                 }
                                 break;
                             case 126:
-                                if (leadingBlank && global.value.params.markdown)
+                                if (leadingBlank && global.params.markdown)
                                 {
                                     int iAfterDelimiter_1 = skipChars(buf, i.value, new ByteSlice("~"));
                                     if ((iAfterDelimiter_1 - i.value >= 3))
@@ -4437,7 +4436,7 @@ public class doc {
                                             if (replaceMarkdownThematicBreak(buf, i, iLineStart.value, loc))
                                             {
                                                 removeBlankLineMacro(buf, iPrecedingBlankLine, i);
-                                                iParagraphStart = skipChars(buf, i.value + 1, new ByteSlice(" \u0009\r\n"));
+                                                iParagraphStart.value = skipChars(buf, i.value + 1, new ByteSlice(" \u0009\r\n"));
                                                 break;
                                             }
                                             else
@@ -4483,7 +4482,7 @@ public class doc {
                                         }
                                         if (((c & 0xFF) != (c0_1 & 0xFF)) || (iInfoString != 0))
                                         {
-                                            if (global.value.params.markdown && (iInfoString == 0) && (inCode == 0) && (i.value - istart >= 3))
+                                            if (global.params.markdown && (iInfoString == 0) && (inCode == 0) && (i.value - istart >= 3))
                                             {
                                                 codeFenceLength = i.value - istart;
                                                 i.value = (iInfoString = skipChars(buf, i.value, new ByteSlice(" \u0009")));
@@ -4600,7 +4599,7 @@ public class doc {
                                                     }
                                                 }
                                             }
-                                            if (global.value.params.vmarkdown)
+                                            if (global.params.vmarkdown)
                                             {
                                                 message(loc, new BytePtr("Ddoc: adding code block for language '%.*s'"), codeLanguage.getLength(), toBytePtr(codeLanguage));
                                             }
@@ -4627,7 +4626,7 @@ public class doc {
                                         i.value += endAllListsAndQuotes(buf, iLineStart, nestedLists, quoteLevel, quoteMacroLevel);
                                     }
                                     removeBlankLineMacro(buf, iPrecedingBlankLine, i);
-                                    iParagraphStart = skipChars(buf, i.value + 1, new ByteSlice(" \u0009\r\n"));
+                                    iParagraphStart.value = skipChars(buf, i.value + 1, new ByteSlice(" \u0009\r\n"));
                                     break;
                                 }
                                 /*goto default*/ { __dispatch12 = -6; continue dispatched_12; }
@@ -4648,7 +4647,7 @@ public class doc {
                                     MarkdownList list_1 = MarkdownList.parseItem(buf, iLineStart.value, i.value).copy();
                                     if (list_1.isValid())
                                     {
-                                        if ((nestedLists.value.getLength() == 0) && (list_1.orderedStart.getLength() != 0) && (iParagraphStart < iLineStart.value))
+                                        if ((nestedLists.value.getLength() == 0) && (list_1.orderedStart.getLength() != 0) && (iParagraphStart.value < iLineStart.value))
                                         {
                                             i.value += list_1.orderedStart.getLength() - 1;
                                             break;
@@ -4658,7 +4657,7 @@ public class doc {
                                         {
                                             int delta_2 = endAllListsAndQuotes(buf, iLineStart, nestedLists, quoteLevel, quoteMacroLevel);
                                             i.value += delta_2;
-                                            list_1.iStart += delta_2;
+                                            list_1.iStart.value += delta_2;
                                             list_1.iContentStart += delta_2;
                                         }
                                         list_1.macroLevel = macroLevel;
@@ -4669,7 +4668,7 @@ public class doc {
                                 leadingBlank = false;
                                 break;
                             case 42:
-                                if ((inCode != 0) || (inBacktick != 0) || !global.value.params.markdown)
+                                if ((inCode != 0) || (inBacktick != 0) || !global.params.markdown)
                                 {
                                     leadingBlank = false;
                                     break;
@@ -4684,7 +4683,7 @@ public class doc {
                                             i.value += endAllListsAndQuotes(buf, iLineStart, nestedLists, quoteLevel, quoteMacroLevel);
                                         }
                                         removeBlankLineMacro(buf, iPrecedingBlankLine, i);
-                                        iParagraphStart = skipChars(buf, i.value + 1, new ByteSlice(" \u0009\r\n"));
+                                        iParagraphStart.value = skipChars(buf, i.value + 1, new ByteSlice(" \u0009\r\n"));
                                         break;
                                     }
                                     MarkdownList list_2 = MarkdownList.parseItem(buf, iLineStart.value, i.value).copy();
@@ -4711,7 +4710,7 @@ public class doc {
                                 break;
                             case 33:
                                 leadingBlank = false;
-                                if ((inCode != 0) || !global.value.params.markdown)
+                                if ((inCode != 0) || !global.params.markdown)
                                 {
                                     break;
                                 }
@@ -4723,21 +4722,21 @@ public class doc {
                                 }
                                 break;
                             case 91:
-                                if ((inCode != 0) || !global.value.params.markdown)
+                                if ((inCode != 0) || !global.params.markdown)
                                 {
                                     leadingBlank = false;
                                     break;
                                 }
                                 int leftC_1 = (i.value > offset) ? ((buf.get()).data.get(i.value - 1) & 0xFF) : 0;
                                 boolean rightFlanking_1 = (leftC_1 != 0) && (isspace(leftC_1) == 0) && (ispunct(leftC_1) == 0);
-                                boolean atParagraphStart = leadingBlank && (iParagraphStart >= iLineStart.value);
+                                boolean atParagraphStart = leadingBlank && (iParagraphStart.value >= iLineStart.value);
                                 MarkdownDelimiter linkStart = new MarkdownDelimiter(i.value, 1, macroLevel, false, rightFlanking_1, atParagraphStart, c).copy();
                                 inlineDelimiters.value.append(linkStart);
                                 leadingBlank = false;
                                 break;
                             case 93:
                                 leadingBlank = false;
-                                if ((inCode != 0) || !global.value.params.markdown)
+                                if ((inCode != 0) || !global.params.markdown)
                                 {
                                     break;
                                 }
@@ -4774,7 +4773,7 @@ public class doc {
                                 }
                                 break;
                             case 124:
-                                if ((inCode != 0) || !global.value.params.markdown)
+                                if ((inCode != 0) || !global.params.markdown)
                                 {
                                     leadingBlank = false;
                                     break;
@@ -4785,14 +4784,14 @@ public class doc {
                                 break;
                             case 92:
                                 leadingBlank = false;
-                                if ((inCode != 0) || (i.value + 1 >= (buf.get()).offset) || !global.value.params.markdown)
+                                if ((inCode != 0) || (i.value + 1 >= (buf.get()).offset) || !global.params.markdown)
                                 {
                                     break;
                                 }
                                 byte c1 = (byte)(buf.get()).data.get(i.value + 1);
                                 if (ispunct((c1 & 0xFF)) != 0)
                                 {
-                                    if (global.value.params.vmarkdown)
+                                    if (global.params.vmarkdown)
                                     {
                                         message(loc, new BytePtr("Ddoc: backslash-escaped %c"), (c1 & 0xFF));
                                     }
@@ -4845,9 +4844,9 @@ public class doc {
                                     for (; (downToLevel > 0) && (inlineDelimiters.value.get((downToLevel - 1)).macroLevel >= macroLevel);) {
                                         downToLevel -= 1;
                                     }
-                                    if ((headingLevel != 0) && (headingMacroLevel >= macroLevel))
+                                    if ((headingLevel.value != 0) && (headingMacroLevel >= macroLevel))
                                     {
-                                        endMarkdownHeading(buf, iParagraphStart, i, loc, headingLevel);
+                                        endMarkdownHeading(buf, iParagraphStart.value, i, loc, headingLevel);
                                         removeBlankLineMacro(buf, iPrecedingBlankLine, i);
                                     }
                                     i.value += endRowAndTable(buf, iLineStart.value, i.value, loc, inlineDelimiters, columnAlignments);
@@ -4855,13 +4854,13 @@ public class doc {
                                         i.value = (buf.get()).insert(i.value, new ByteSlice(")\n)"));
                                         nestedLists.value.getLength() = nestedLists.value.getLength() - 1;
                                     }
-                                    if ((quoteLevel.value != 0) && (quoteMacroLevel >= macroLevel))
+                                    if ((quoteLevel.value != 0) && (quoteMacroLevel.value >= macroLevel))
                                     {
                                         i.value += endAllMarkdownQuotes(buf, i.value, quoteLevel);
                                     }
                                     i.value += replaceMarkdownEmphasis(buf, loc, inlineDelimiters, downToLevel);
                                     macroLevel -= 1;
-                                    quoteMacroLevel = 0;
+                                    quoteMacroLevel.value = 0;
                                 }
                                 break;
                             default:
@@ -4933,10 +4932,10 @@ public class doc {
         {
             (buf.get()).insert((buf.get()).offset, new ByteSlice(")"));
         }
-        IntRef i = ref((buf.get()).offset);
-        if (headingLevel != 0)
+        Ref<Integer> i = ref((buf.get()).offset);
+        if (headingLevel.value != 0)
         {
-            endMarkdownHeading(buf, iParagraphStart, i, loc, headingLevel);
+            endMarkdownHeading(buf, iParagraphStart.value, i, loc, headingLevel);
             removeBlankLineMacro(buf, iPrecedingBlankLine, i);
         }
         i.value += endRowAndTable(buf, iLineStart.value, i.value, loc, inlineDelimiters, columnAlignments);
@@ -5112,8 +5111,8 @@ public class doc {
     }
 
     public static void highlightCode2(Ptr<Scope> sc, Ptr<DArray<Dsymbol>> a, Ptr<OutBuffer> buf, int offset) {
-        int errorsave = global.value.startGagging();
-        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.value.params.useDeprecated);
+        int errorsave = global.startGagging();
+        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
         try {
             Lexer lex = new Lexer(null, toBytePtr(buf.get().data), 0, (buf.get()).offset - 1, false, true, diagnosticReporter);
             try {
@@ -5181,7 +5180,7 @@ public class doc {
                     }
                     (buf.get()).setsize(offset);
                     (buf.get()).write(ptr(res));
-                    global.value.endGagging(errorsave);
+                    global.endGagging(errorsave);
                 }
                 finally {
                 }
@@ -5198,19 +5197,19 @@ public class doc {
     }
 
     public static boolean isIdStart(BytePtr p) {
-        int c = (p.get() & 0xFF);
-        if ((isalpha(c) != 0) || (c == 95))
+        Ref<Integer> c = ref((p.get() & 0xFF));
+        if ((isalpha(c.value) != 0) || (c.value == 95))
         {
             return true;
         }
-        if ((c >= 128))
+        if ((c.value >= 128))
         {
-            IntRef i = ref(0);
+            Ref<Integer> i = ref(0);
             if (utf_decodeChar(p, 4, i, c) != null)
             {
                 return false;
             }
-            if (isUniAlpha(c))
+            if (isUniAlpha(c.value))
             {
                 return true;
             }
@@ -5219,19 +5218,19 @@ public class doc {
     }
 
     public static boolean isIdTail(BytePtr p) {
-        int c = (p.get() & 0xFF);
-        if ((isalnum(c) != 0) || (c == 95))
+        Ref<Integer> c = ref((p.get() & 0xFF));
+        if ((isalnum(c.value) != 0) || (c.value == 95))
         {
             return true;
         }
-        if ((c >= 128))
+        if ((c.value >= 128))
         {
-            IntRef i = ref(0);
+            Ref<Integer> i = ref(0);
             if (utf_decodeChar(p, 4, i, c) != null)
             {
                 return false;
             }
-            if (isUniAlpha(c))
+            if (isUniAlpha(c.value))
             {
                 return true;
             }
@@ -5244,12 +5243,12 @@ public class doc {
     }
 
     public static int utfStride(BytePtr p) {
-        int c = (p.get() & 0xFF);
-        if ((c < 128))
+        Ref<Integer> c = ref((p.get() & 0xFF));
+        if ((c.value < 128))
         {
             return 1;
         }
-        IntRef i = ref(0);
+        Ref<Integer> i = ref(0);
         utf_decodeChar(p, 4, i, c);
         return i.value;
     }

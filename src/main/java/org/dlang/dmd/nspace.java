@@ -57,11 +57,11 @@ public class nspace {
                 sc = (sc.get()).push(this);
                 (sc.get()).linkage = LINK.cpp;
                 (sc.get()).parent.value = this;
-                Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>(){
-                    public Void invoke(Dsymbol s) {
-                        s.addMember(sc, this);
-                        return null;
-                    }
+                Function1<Dsymbol,Void> __lambda3 = (s) -> {
+                 {
+                    s.addMember(sc, this);
+                    return null;
+                }
                 };
                 foreachDsymbol(this.members, __lambda3);
                 (sc.get()).pop();
@@ -76,11 +76,11 @@ public class nspace {
                 sc = (sc.get()).push(this);
                 (sc.get()).linkage = LINK.cpp;
                 (sc.get()).parent.value = this;
-                Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>(){
-                    public Void invoke(Dsymbol s) {
-                        s.setScope(sc);
-                        return null;
-                    }
+                Function1<Dsymbol,Void> __lambda2 = (s) -> {
+                 {
+                    s.setScope(sc);
+                    return null;
+                }
                 };
                 foreachDsymbol(this.members, __lambda2);
                 (sc.get()).pop();
@@ -110,33 +110,33 @@ public class nspace {
         }
 
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
-            Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>(){
-                public Integer invoke(Dsymbol s) {
-                    return (((s != null) && (s.apply(fp, param) != 0)) ? 1 : 0);
-                }
+            Function1<Dsymbol,Integer> __lambda3 = (s) -> {
+             {
+                return (((s != null) && (s.apply(fp, param) != 0)) ? 1 : 0);
+            }
             };
             return foreachDsymbol(this.members, __lambda3);
         }
 
         public  boolean hasPointers() {
-            Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>(){
-                public Integer invoke(Dsymbol s) {
-                    return (s.hasPointers() ? 1 : 0);
-                }
+            Function1<Dsymbol,Integer> __lambda1 = (s) -> {
+             {
+                return (s.hasPointers() ? 1 : 0);
+            }
             };
             return foreachDsymbol(this.members, __lambda1) != 0;
         }
 
-        public  void setFieldOffset(AggregateDeclaration ad, IntPtr poffset, boolean isunion) {
+        public  void setFieldOffset(AggregateDeclaration ad, Ptr<Integer> poffset, boolean isunion) {
             if (this._scope != null)
             {
                 dsymbolSemantic(this, null);
             }
-            Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>(){
-                public Void invoke(Dsymbol s) {
-                    s.setFieldOffset(ad, poffset, isunion);
-                    return null;
-                }
+            Function1<Dsymbol,Void> __lambda4 = (s) -> {
+             {
+                s.setFieldOffset(ad, poffset, isunion);
+                return null;
+            }
             };
             foreachDsymbol(this.members, __lambda4);
         }

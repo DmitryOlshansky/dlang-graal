@@ -586,7 +586,7 @@ public class constfold {
         {
             if ((e1.toReal() < CTFloat.zero))
             {
-                ptr(ue) = new UnionExp(new RealExp(loc, target.value.RealProperties.nan, type));
+                ptr(ue) = new UnionExp(new RealExp(loc, target.RealProperties.nan, type));
             }
             else
             {
@@ -758,7 +758,7 @@ public class constfold {
             StringExp es2 = (StringExp)e2;
             if (((es1.sz & 0xFF) != (es2.sz & 0xFF)))
             {
-                assert(global.value.errors != 0);
+                assert(global.errors != 0);
                 cantExp(ue);
                 return ue.value;
             }
@@ -794,7 +794,7 @@ public class constfold {
                     for (; (i < (es1.elements.get()).length);i++){
                         Expression ee1 = es1.getElement(i);
                         Expression ee2 = es2.getElement(i);
-                        ue.value = Equal(TOK.equal, loc, Type.tint32.value, ee1, ee2).copy();
+                        ue.value = Equal(TOK.equal, loc, Type.tint32, ee1, ee2).copy();
                         if (CTFEExp.isCantExp(ue.value.exp()))
                         {
                             return ue.value;
@@ -915,7 +915,7 @@ public class constfold {
                             cmp = 0;
                             break;
                         }
-                        ue.value = Equal(TOK.equal, loc, Type.tint32.value, ee1, ee2).copy();
+                        ue.value = Equal(TOK.equal, loc, Type.tint32, ee1, ee2).copy();
                         if (((ue.value.exp().op & 0xFF) == 233))
                         {
                             return ue.value;
@@ -1412,11 +1412,11 @@ public class constfold {
     public static UnionExp Slice(Type type, Expression e1, Expression lwr, Expression upr) {
         Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
-        Function4<Long,Long,Long,Long,Boolean> sliceBoundsCheck = new Function4<Long,Long,Long,Long,Boolean>(){
-            public Boolean invoke(Long lwr, Long upr, Long newlwr, Long newupr) {
-                assert((lwr <= upr));
-                return !((newlwr <= newupr) && (lwr <= newlwr) && (newupr <= upr));
-            }
+        Function4<Long,Long,Long,Long,Boolean> sliceBoundsCheck = (lwr, upr, newlwr, newupr) -> {
+         {
+            assert((lwr <= upr));
+            return !((newlwr <= newupr) && (lwr <= newlwr) && (newupr <= upr));
+        }
         };
         if (((e1.op & 0xFF) == 121) && ((lwr.op & 0xFF) == 135) && ((upr.op & 0xFF) == 135))
         {
@@ -1522,27 +1522,27 @@ public class constfold {
 
     public static Ptr<DArray<Expression>> copyElements(Expression e1, Expression e2) {
         Ptr<DArray<Expression>> elems = refPtr(new DArray<Expression>());
-        Function1<ArrayLiteralExp,Void> append = new Function1<ArrayLiteralExp,Void>(){
-            public Void invoke(ArrayLiteralExp ale) {
-                if (ale.elements == null)
-                {
-                    return null;
-                }
-                int d = (elems.get()).length;
-                (elems.get()).append(ale.elements);
-                {
-                    Slice<Expression> __r846 = (elems.get()).opSlice(d, (elems.get()).length).copy();
-                    int __key847 = 0;
-                    for (; (__key847 < __r846.getLength());__key847 += 1) {
-                        Expression el = __r846.get(__key847);
-                        if (el == null)
-                        {
-                            el = ale.basis.value;
-                        }
-                    }
-                }
+        Function1<ArrayLiteralExp,Void> append = (ale) -> {
+         {
+            if (ale.elements == null)
+            {
                 return null;
             }
+            int d = (elems.get()).length;
+            (elems.get()).append(ale.elements);
+            {
+                Slice<Expression> __r846 = (elems.get()).opSlice(d, (elems.get()).length).copy();
+                Ref<Integer> __key847 = ref(0);
+                for (; (__key847.value < __r846.getLength());__key847.value += 1) {
+                    Ref<Expression> el = ref(__r846.get(__key847.value));
+                    if (el.value == null)
+                    {
+                        el.value = ale.basis.value;
+                    }
+                }
+            }
+            return null;
+        }
         };
         if (((e1.op & 0xFF) == 47))
         {
@@ -1692,7 +1692,7 @@ public class constfold {
             byte sz = es1.sz;
             if (((sz & 0xFF) != (es2.sz & 0xFF)))
             {
-                assert(global.value.errors != 0);
+                assert(global.errors != 0);
                 cantExp(ue);
                 assert(ue.value.exp().type.value != null);
                 return ue.value;

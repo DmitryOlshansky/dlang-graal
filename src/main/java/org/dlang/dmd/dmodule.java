@@ -49,13 +49,13 @@ public class dmodule {
     static int runDeferredSemanticnested = 0;
 
     public static ByteSlice lookForSourceFile(ByteSlice filename) {
-        ByteSlice sdi = FileName.forceExt(filename, toByteSlice(global.value.hdr_ext)).copy();
+        ByteSlice sdi = FileName.forceExt(filename, toByteSlice(global.hdr_ext)).copy();
         if ((FileName.exists(sdi) == 1))
         {
             return sdi;
         }
         try {
-            ByteSlice sd = FileName.forceExt(filename, toByteSlice(global.value.mars_ext)).copy();
+            ByteSlice sd = FileName.forceExt(filename, toByteSlice(global.mars_ext)).copy();
             if ((FileName.exists(sd) == 1))
             {
                 return sd;
@@ -80,14 +80,14 @@ public class dmodule {
                 {
                     return new ByteSlice();
                 }
-                if (global.value.path == null)
+                if (global.path == null)
                 {
                     return new ByteSlice();
                 }
                 {
                     int i = 0;
-                    for (; (i < (global.value.path.get()).length);i++){
-                        ByteSlice p = toDString((global.value.path.get()).get(i)).copy();
+                    for (; (i < (global.path.get()).length);i++){
+                        ByteSlice p = toDString((global.path.get()).get(i)).copy();
                         ByteSlice n = FileName.combine(p, sdi).copy();
                         if ((FileName.exists(n) == 1))
                         {
@@ -162,33 +162,33 @@ public class dmodule {
         try {
             OutBuffer dotmods = new OutBuffer();
             try {
-                Ptr<DArray<BytePtr>> modAliases = ptr(global.value.params.modFileAliasStrings);
-                Function1<ByteSlice,Void> checkModFileAlias = new Function1<ByteSlice,Void>(){
-                    public Void invoke(ByteSlice p) {
-                        dotmods.writestring(p);
-                        {
-                            Slice<BytePtr> __r1016 = (modAliases.get()).opSlice().copy();
-                            int __key1017 = __r1016.getLength();
-                            for (; __key1017-- != 0;) {
-                                BytePtr m = pcopy(__r1016.get(__key1017));
-                                BytePtr q = pcopy(strchr(m, 61));
-                                assert(q != null);
-                                if ((dotmods.offset == ((q.minus(m)))) && (memcmp(dotmods.peekChars(), m, ((q.minus(m)))) == 0))
+                Ptr<DArray<BytePtr>> modAliases = ptr(global.params.modFileAliasStrings);
+                Function1<ByteSlice,Void> checkModFileAlias = (p) -> {
+                 {
+                    dotmods.writestring(p);
+                    {
+                        Slice<BytePtr> __r1016 = (modAliases.get()).opSlice().copy();
+                        int __key1017 = __r1016.getLength();
+                        for (; __key1017-- != 0;) {
+                            BytePtr m = pcopy(__r1016.get(__key1017));
+                            BytePtr q = pcopy(strchr(m, 61));
+                            assert(q != null);
+                            if ((dotmods.offset == ((q.minus(m)))) && (memcmp(dotmods.peekChars(), m, ((q.minus(m)))) == 0))
+                            {
+                                buf.reset();
+                                Ref<ByteSlice> rhs = ref(q.slice(1,strlen(q)).copy());
+                                if ((rhs.value.getLength() > 0) && ((rhs.value.get(rhs.value.getLength() - 1) & 0xFF) == 47) || ((rhs.value.get(rhs.value.getLength() - 1) & 0xFF) == 92))
                                 {
-                                    buf.reset();
-                                    ByteSlice rhs = q.slice(1,strlen(q)).copy();
-                                    if ((rhs.getLength() > 0) && ((rhs.get(rhs.getLength() - 1) & 0xFF) == 47) || ((rhs.get(rhs.getLength() - 1) & 0xFF) == 92))
-                                    {
-                                        rhs = rhs.slice(0,rhs.getLength() - 1).copy();
-                                    }
-                                    buf.writestring(rhs);
-                                    break;
+                                    rhs.value = rhs.value.slice(0,rhs.value.getLength() - 1).copy();
                                 }
+                                buf.writestring(rhs.value);
+                                break;
                             }
                         }
-                        dotmods.writeByte(46);
-                        return null;
                     }
+                    dotmods.writeByte(46);
+                    return null;
+                }
                 };
                 {
                     Slice<Identifier> __r1018 = (packages.get()).opSlice().copy();
@@ -413,8 +413,8 @@ public class dmodule {
         public static DsymbolTable modules = null;
         public static DArray<Module> amodules = new DArray<Module>();
         public static DArray<Dsymbol> deferred = new DArray<Dsymbol>();
-        public static Ref<DArray<Dsymbol>> deferred2 = ref(new DArray<Dsymbol>());
-        public static Ref<DArray<Dsymbol>> deferred3 = ref(new DArray<Dsymbol>());
+        public static DArray<Dsymbol> deferred2 = new DArray<Dsymbol>();
+        public static DArray<Dsymbol> deferred3 = new DArray<Dsymbol>();
         public static int dprogress = 0;
         public static void _init() {
             modules = new DsymbolTable();
@@ -513,26 +513,26 @@ public class dmodule {
             super(loc, ident);
             ByteSlice srcfilename = new ByteSlice().copy();
             this.arg = filename.copy();
-            srcfilename = FileName.defaultExt(filename, toByteSlice(global.value.mars_ext)).copy();
-            if (global.value.run_noext && global.value.params.run && (FileName.ext(filename).getLength() == 0) && (FileName.exists(srcfilename) == 0) && (FileName.exists(filename) == 1))
+            srcfilename = FileName.defaultExt(filename, toByteSlice(global.mars_ext)).copy();
+            if (global.run_noext && global.params.run && (FileName.ext(filename).getLength() == 0) && (FileName.exists(srcfilename) == 0) && (FileName.exists(filename) == 1))
             {
                 FileName.free(toBytePtr(srcfilename));
                 srcfilename = FileName.removeExt(filename).copy();
             }
-            else if (!FileName.equalsExt(srcfilename, toByteSlice(global.value.mars_ext)) && !FileName.equalsExt(srcfilename, toByteSlice(global.value.hdr_ext)) && !FileName.equalsExt(srcfilename, new ByteSlice("dd")))
+            else if (!FileName.equalsExt(srcfilename, toByteSlice(global.mars_ext)) && !FileName.equalsExt(srcfilename, toByteSlice(global.hdr_ext)) && !FileName.equalsExt(srcfilename, new ByteSlice("dd")))
             {
-                this.error(new BytePtr("source file name '%.*s' must have .%.*s extension"), srcfilename.getLength(), toBytePtr(srcfilename), global.value.mars_ext.getLength(), toBytePtr(global.value.mars_ext));
+                this.error(new BytePtr("source file name '%.*s' must have .%.*s extension"), srcfilename.getLength(), toBytePtr(srcfilename), global.mars_ext.getLength(), toBytePtr(global.mars_ext));
                 fatal();
             }
             this.srcfile = new FileName(srcfilename);
-            this.objfile = this.setOutfilename(global.value.params.objname, global.value.params.objdir, filename, global.value.obj_ext).copy();
+            this.objfile = this.setOutfilename(global.params.objname, global.params.objdir, filename, global.obj_ext).copy();
             if (doDocComment != 0)
             {
                 this.setDocfile();
             }
             if (doHdrGen != 0)
             {
-                this.hdrfile = this.setOutfilename(global.value.params.hdrname, global.value.params.hdrdir, this.arg, toByteSlice(global.value.hdr_ext)).copy();
+                this.hdrfile = this.setOutfilename(global.params.hdrname, global.params.hdrdir, this.arg, toByteSlice(global.hdr_ext)).copy();
             }
             this.escapetable = refPtr(new Escape(new ByteSlice()));
         }
@@ -563,7 +563,7 @@ public class dmodule {
             {
                 return null;
             }
-            if (global.value.params.verbose)
+            if (global.params.verbose)
             {
                 OutBuffer buf = new OutBuffer();
                 if (packages != null)
@@ -614,7 +614,7 @@ public class dmodule {
                     buf.printf(new BytePtr("__stdin_%d.d"), getpid());
                     arg = buf.peekSlice().copy();
                 }
-                if (global.value.params.preservePaths)
+                if (global.params.preservePaths)
                 {
                     argdoc = arg.copy();
                 }
@@ -637,7 +637,7 @@ public class dmodule {
         }
 
         public  void setDocfile() {
-            this.docfile = this.setOutfilename(toDString(global.value.params.docname), toDString(global.value.params.docdir), this.arg, toByteSlice(global.value.doc_ext)).copy();
+            this.docfile = this.setOutfilename(toDString(global.params.docname), toDString(global.params.docdir), this.arg, toByteSlice(global.doc_ext)).copy();
         }
 
         public  boolean loadSourceBuffer(Loc loc, File.ReadResult readResult) {
@@ -650,7 +650,7 @@ public class dmodule {
             {
                 error(loc, new BytePtr("cannot find source code for runtime library file 'object.d'"));
                 errorSupplemental(loc, new BytePtr("dmd might not be correctly installed. Run 'dmd -man' for installation instructions."));
-                ByteSlice dmdConfFile = global.value.inifilename.getLength() != 0 ? FileName.canonicalName(global.value.inifilename) : new ByteSlice("not found").copy();
+                ByteSlice dmdConfFile = global.inifilename.getLength() != 0 ? FileName.canonicalName(global.inifilename) : new ByteSlice("not found").copy();
                 errorSupplemental(loc, new BytePtr("config file: %.*s"), dmdConfFile.getLength(), toBytePtr(dmdConfFile));
             }
             else
@@ -665,12 +665,12 @@ public class dmodule {
                     this.error(loc, new BytePtr("is in file '%s' which cannot be read"), this.srcfile.toChars());
                 }
             }
-            if (global.value.gag == 0)
+            if (global.gag == 0)
             {
-                if (global.value.path != null)
+                if (global.path != null)
                 {
                     {
-                        Slice<BytePtr> __r1023 = (global.value.path.get()).opSlice().copy();
+                        Slice<BytePtr> __r1023 = (global.path.get()).opSlice().copy();
                         int __key1022 = 0;
                         for (; (__key1022 < __r1023.getLength());__key1022 += 1) {
                             BytePtr p = pcopy(__r1023.get(__key1022));
@@ -702,7 +702,7 @@ public class dmodule {
         }
 
         public  Module parse() {
-            StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.value.params.useDeprecated);
+            StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
             try {
                 return this.parseASTCodegen(diagnosticReporter);
             }
@@ -713,209 +713,209 @@ public class dmodule {
         // from template parse!(ASTCodegen)
         public  Module parseASTCodegen(DiagnosticReporter diagnosticReporter) {
             // from template UTF32ToUTF8!(0)
-            Function1<ByteSlice,ByteSlice> UTF32ToUTF80 = new Function1<ByteSlice,ByteSlice>(){
-                public ByteSlice invoke(ByteSlice buf) {
-                    if ((buf.getLength() & 3) != 0)
+            Function1<ByteSlice,ByteSlice> UTF32ToUTF80 = (buf) -> {
+             {
+                if ((buf.getLength() & 3) != 0)
+                {
+                    error(new BytePtr("odd length of UTF-32 char source %u"), buf.getLength());
+                    fatal();
+                }
+                IntSlice eBuf = __ArrayCast(buf).copy();
+                OutBuffer dbuf = new OutBuffer();
+                try {
+                    dbuf.reserve(eBuf.getLength());
                     {
-                        error(new BytePtr("odd length of UTF-32 char source %u"), buf.getLength());
-                        fatal();
-                    }
-                    IntSlice eBuf = __ArrayCast(buf).copy();
-                    OutBuffer dbuf = new OutBuffer();
-                    try {
-                        dbuf.reserve(eBuf.getLength());
-                        {
-                            int __key1034 = 0;
-                            int __limit1035 = eBuf.getLength();
-                            for (; (__key1034 < __limit1035);__key1034 += 1) {
-                                int i = __key1034;
-                                int u = Port.readlongLE0(ptr(eBuf.get(i)));
-                                if ((u & -128) != 0)
+                        int __key1034 = 0;
+                        int __limit1035 = eBuf.getLength();
+                        for (; (__key1034 < __limit1035);__key1034 += 1) {
+                            int i = __key1034;
+                            int u = Port.readlongLE0(ptr(eBuf.get(i)));
+                            if ((u & -128) != 0)
+                            {
+                                if ((u > 1114111))
                                 {
-                                    if ((u > 1114111))
-                                    {
-                                        error(new BytePtr("UTF-32 value %08x greater than 0x10FFFF"), u);
-                                        fatal();
-                                    }
-                                    dbuf.writeUTF8(u);
+                                    error(new BytePtr("UTF-32 value %08x greater than 0x10FFFF"), u);
+                                    fatal();
                                 }
-                                else
-                                {
-                                    dbuf.writeByte(u);
-                                }
+                                dbuf.writeUTF8(u);
+                            }
+                            else
+                            {
+                                dbuf.writeByte(u);
                             }
                         }
-                        dbuf.writeByte(0);
-                        return dbuf.extractSlice();
                     }
-                    finally {
-                    }
+                    dbuf.writeByte(0);
+                    return dbuf.extractSlice();
                 }
+                finally {
+                }
+            }
             };
 
             // from template UTF32ToUTF8!(1)
-            Function1<ByteSlice,ByteSlice> UTF32ToUTF81 = new Function1<ByteSlice,ByteSlice>(){
-                public ByteSlice invoke(ByteSlice buf) {
-                    if ((buf.getLength() & 3) != 0)
+            Function1<ByteSlice,ByteSlice> UTF32ToUTF81 = (buf) -> {
+             {
+                if ((buf.getLength() & 3) != 0)
+                {
+                    error(new BytePtr("odd length of UTF-32 char source %u"), buf.getLength());
+                    fatal();
+                }
+                IntSlice eBuf = __ArrayCast(buf).copy();
+                OutBuffer dbuf = new OutBuffer();
+                try {
+                    dbuf.reserve(eBuf.getLength());
                     {
-                        error(new BytePtr("odd length of UTF-32 char source %u"), buf.getLength());
-                        fatal();
-                    }
-                    IntSlice eBuf = __ArrayCast(buf).copy();
-                    OutBuffer dbuf = new OutBuffer();
-                    try {
-                        dbuf.reserve(eBuf.getLength());
-                        {
-                            int __key1036 = 0;
-                            int __limit1037 = eBuf.getLength();
-                            for (; (__key1036 < __limit1037);__key1036 += 1) {
-                                int i = __key1036;
-                                int u = Port.readlongBE1(ptr(eBuf.get(i)));
-                                if ((u & -128) != 0)
+                        int __key1036 = 0;
+                        int __limit1037 = eBuf.getLength();
+                        for (; (__key1036 < __limit1037);__key1036 += 1) {
+                            int i = __key1036;
+                            int u = Port.readlongBE1(ptr(eBuf.get(i)));
+                            if ((u & -128) != 0)
+                            {
+                                if ((u > 1114111))
                                 {
-                                    if ((u > 1114111))
-                                    {
-                                        error(new BytePtr("UTF-32 value %08x greater than 0x10FFFF"), u);
-                                        fatal();
-                                    }
-                                    dbuf.writeUTF8(u);
+                                    error(new BytePtr("UTF-32 value %08x greater than 0x10FFFF"), u);
+                                    fatal();
                                 }
-                                else
-                                {
-                                    dbuf.writeByte(u);
-                                }
+                                dbuf.writeUTF8(u);
+                            }
+                            else
+                            {
+                                dbuf.writeByte(u);
                             }
                         }
-                        dbuf.writeByte(0);
-                        return dbuf.extractSlice();
                     }
-                    finally {
-                    }
+                    dbuf.writeByte(0);
+                    return dbuf.extractSlice();
                 }
+                finally {
+                }
+            }
             };
 
             // from template UTF16ToUTF8!(0)
-            Function1<ByteSlice,ByteSlice> UTF16ToUTF80 = new Function1<ByteSlice,ByteSlice>(){
-                public ByteSlice invoke(ByteSlice buf) {
-                    if ((buf.getLength() & 1) != 0)
+            Function1<ByteSlice,ByteSlice> UTF16ToUTF80 = (buf) -> {
+             {
+                if ((buf.getLength() & 1) != 0)
+                {
+                    error(new BytePtr("odd length of UTF-16 char source %u"), buf.getLength());
+                    fatal();
+                }
+                Slice<Integer> eBuf = __ArrayCast(buf).copy();
+                OutBuffer dbuf = new OutBuffer();
+                try {
+                    dbuf.reserve(eBuf.getLength());
                     {
-                        error(new BytePtr("odd length of UTF-16 char source %u"), buf.getLength());
-                        fatal();
-                    }
-                    Slice<Integer> eBuf = __ArrayCast(buf).copy();
-                    OutBuffer dbuf = new OutBuffer();
-                    try {
-                        dbuf.reserve(eBuf.getLength());
-                        {
-                            int __key1030 = 0;
-                            int __limit1031 = eBuf.getLength();
-                            for (; (__key1030 < __limit1031);__key1030 += 1) {
-                                int u = Port.readwordLE0(ptr(eBuf.get(__key1030)));
-                                if ((u & -128) != 0)
+                        int __key1030 = 0;
+                        int __limit1031 = eBuf.getLength();
+                        for (; (__key1030 < __limit1031);__key1030 += 1) {
+                            int u = Port.readwordLE0(ptr(eBuf.get(__key1030)));
+                            if ((u & -128) != 0)
+                            {
+                                if ((55296 <= u) && (u < 56320))
                                 {
-                                    if ((55296 <= u) && (u < 56320))
+                                    __key1030++;
+                                    if ((__key1030 >= eBuf.getLength()))
                                     {
-                                        __key1030++;
-                                        if ((__key1030 >= eBuf.getLength()))
-                                        {
-                                            error(new BytePtr("surrogate UTF-16 high value %04x at end of file"), u);
-                                            fatal();
-                                        }
-                                        int u2 = Port.readwordLE0(ptr(eBuf.get(__key1030)));
-                                        if ((u2 < 56320) || (57344 <= u2))
-                                        {
-                                            error(new BytePtr("surrogate UTF-16 low value %04x out of range"), u2);
-                                            fatal();
-                                        }
-                                        u = u - 55232 << 10;
-                                        u |= u2 - 56320;
-                                    }
-                                    else if ((u >= 56320) && (u <= 57343))
-                                    {
-                                        error(new BytePtr("unpaired surrogate UTF-16 value %04x"), u);
+                                        error(new BytePtr("surrogate UTF-16 high value %04x at end of file"), u);
                                         fatal();
                                     }
-                                    else if ((u == 65534) || (u == 65535))
+                                    int u2 = Port.readwordLE0(ptr(eBuf.get(__key1030)));
+                                    if ((u2 < 56320) || (57344 <= u2))
                                     {
-                                        error(new BytePtr("illegal UTF-16 value %04x"), u);
+                                        error(new BytePtr("surrogate UTF-16 low value %04x out of range"), u2);
                                         fatal();
                                     }
-                                    dbuf.writeUTF8(u);
+                                    u = u - 55232 << 10;
+                                    u |= u2 - 56320;
                                 }
-                                else
+                                else if ((u >= 56320) && (u <= 57343))
                                 {
-                                    dbuf.writeByte(u);
+                                    error(new BytePtr("unpaired surrogate UTF-16 value %04x"), u);
+                                    fatal();
                                 }
+                                else if ((u == 65534) || (u == 65535))
+                                {
+                                    error(new BytePtr("illegal UTF-16 value %04x"), u);
+                                    fatal();
+                                }
+                                dbuf.writeUTF8(u);
+                            }
+                            else
+                            {
+                                dbuf.writeByte(u);
                             }
                         }
-                        dbuf.writeByte(0);
-                        return dbuf.extractSlice();
                     }
-                    finally {
-                    }
+                    dbuf.writeByte(0);
+                    return dbuf.extractSlice();
                 }
+                finally {
+                }
+            }
             };
 
             // from template UTF16ToUTF8!(1)
-            Function1<ByteSlice,ByteSlice> UTF16ToUTF81 = new Function1<ByteSlice,ByteSlice>(){
-                public ByteSlice invoke(ByteSlice buf) {
-                    if ((buf.getLength() & 1) != 0)
+            Function1<ByteSlice,ByteSlice> UTF16ToUTF81 = (buf) -> {
+             {
+                if ((buf.getLength() & 1) != 0)
+                {
+                    error(new BytePtr("odd length of UTF-16 char source %u"), buf.getLength());
+                    fatal();
+                }
+                Slice<Integer> eBuf = __ArrayCast(buf).copy();
+                OutBuffer dbuf = new OutBuffer();
+                try {
+                    dbuf.reserve(eBuf.getLength());
                     {
-                        error(new BytePtr("odd length of UTF-16 char source %u"), buf.getLength());
-                        fatal();
-                    }
-                    Slice<Integer> eBuf = __ArrayCast(buf).copy();
-                    OutBuffer dbuf = new OutBuffer();
-                    try {
-                        dbuf.reserve(eBuf.getLength());
-                        {
-                            int __key1032 = 0;
-                            int __limit1033 = eBuf.getLength();
-                            for (; (__key1032 < __limit1033);__key1032 += 1) {
-                                int u = Port.readwordBE1(ptr(eBuf.get(__key1032)));
-                                if ((u & -128) != 0)
+                        int __key1032 = 0;
+                        int __limit1033 = eBuf.getLength();
+                        for (; (__key1032 < __limit1033);__key1032 += 1) {
+                            int u = Port.readwordBE1(ptr(eBuf.get(__key1032)));
+                            if ((u & -128) != 0)
+                            {
+                                if ((55296 <= u) && (u < 56320))
                                 {
-                                    if ((55296 <= u) && (u < 56320))
+                                    __key1032++;
+                                    if ((__key1032 >= eBuf.getLength()))
                                     {
-                                        __key1032++;
-                                        if ((__key1032 >= eBuf.getLength()))
-                                        {
-                                            error(new BytePtr("surrogate UTF-16 high value %04x at end of file"), u);
-                                            fatal();
-                                        }
-                                        int u2 = Port.readwordBE1(ptr(eBuf.get(__key1032)));
-                                        if ((u2 < 56320) || (57344 <= u2))
-                                        {
-                                            error(new BytePtr("surrogate UTF-16 low value %04x out of range"), u2);
-                                            fatal();
-                                        }
-                                        u = u - 55232 << 10;
-                                        u |= u2 - 56320;
-                                    }
-                                    else if ((u >= 56320) && (u <= 57343))
-                                    {
-                                        error(new BytePtr("unpaired surrogate UTF-16 value %04x"), u);
+                                        error(new BytePtr("surrogate UTF-16 high value %04x at end of file"), u);
                                         fatal();
                                     }
-                                    else if ((u == 65534) || (u == 65535))
+                                    int u2 = Port.readwordBE1(ptr(eBuf.get(__key1032)));
+                                    if ((u2 < 56320) || (57344 <= u2))
                                     {
-                                        error(new BytePtr("illegal UTF-16 value %04x"), u);
+                                        error(new BytePtr("surrogate UTF-16 low value %04x out of range"), u2);
                                         fatal();
                                     }
-                                    dbuf.writeUTF8(u);
+                                    u = u - 55232 << 10;
+                                    u |= u2 - 56320;
                                 }
-                                else
+                                else if ((u >= 56320) && (u <= 57343))
                                 {
-                                    dbuf.writeByte(u);
+                                    error(new BytePtr("unpaired surrogate UTF-16 value %04x"), u);
+                                    fatal();
                                 }
+                                else if ((u == 65534) || (u == 65535))
+                                {
+                                    error(new BytePtr("illegal UTF-16 value %04x"), u);
+                                    fatal();
+                                }
+                                dbuf.writeUTF8(u);
+                            }
+                            else
+                            {
+                                dbuf.writeByte(u);
                             }
                         }
-                        dbuf.writeByte(0);
-                        return dbuf.extractSlice();
                     }
-                    finally {
-                    }
+                    dbuf.writeByte(0);
+                    return dbuf.extractSlice();
                 }
+                finally {
+                }
+            }
             };
 
             BytePtr srcname = pcopy(this.srcfile.toChars());
@@ -1043,7 +1043,7 @@ public class dmodule {
                     this.numlines = p.scanloc.value.linnum;
                     if (p.errors())
                     {
-                        global.value.errors += 1;
+                        global.errors += 1;
                     }
                 }
                 finally {
@@ -1055,13 +1055,13 @@ public class dmodule {
             if (this.md != null)
             {
                 this.ident = (this.md.get()).id;
-                Ref<Package> ppack = ref(null);
+                Package ppack = null;
                 dst = Package.resolve((this.md.get()).packages, ptr(this.parent), ptr(ppack));
                 assert(dst != null);
-                Module m = ppack.value != null ? ppack.value.isModule() : null;
+                Module m = ppack != null ? ppack.isModule() : null;
                 if ((m != null) && (strcmp(m.srcfile.name(), new BytePtr("package.d")) != 0) && (strcmp(m.srcfile.name(), new BytePtr("package.di")) != 0))
                 {
-                    error((this.md.get()).loc.value, new BytePtr("package name '%s' conflicts with usage as a module name in file %s"), ppack.value.toPrettyChars(false), m.srcfile.toChars());
+                    error((this.md.get()).loc.value, new BytePtr("package name '%s' conflicts with usage as a module name in file %s"), ppack.toPrettyChars(false), m.srcfile.toChars());
                 }
             }
             else
@@ -1123,7 +1123,7 @@ public class dmodule {
                         }
                         else
                         {
-                            assert(global.value.errors != 0);
+                            assert(global.errors != 0);
                         }
                     }
                 }
@@ -1187,7 +1187,7 @@ public class dmodule {
         }
 
         public  int needModuleInfo() {
-            return (((this.needmoduleinfo != 0) || global.value.params.cov) ? 1 : 0);
+            return (((this.needmoduleinfo != 0) || global.params.cov) ? 1 : 0);
         }
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
@@ -1203,11 +1203,11 @@ public class dmodule {
             {
                 return this.searchCacheSymbol;
             }
-            int errors = global.value.errors;
+            int errors = global.errors;
             this.insearch = 1;
             Dsymbol s = this.search(loc, ident, flags);
             this.insearch = 0;
-            if ((errors == global.value.errors))
+            if ((errors == global.errors))
             {
                 this.searchCacheIdent = ident;
                 this.searchCacheSymbol = s;
@@ -1250,7 +1250,7 @@ public class dmodule {
         }
 
         public  void deleteObjFile() {
-            if (global.value.params.obj)
+            if (global.params.obj)
             {
                 File.remove(this.objfile.toChars());
             }
@@ -1265,11 +1265,11 @@ public class dmodule {
         }
 
         public static void addDeferredSemantic2(Dsymbol s) {
-            deferred2.value.push(s);
+            deferred2.push(s);
         }
 
         public static void addDeferredSemantic3(Dsymbol s) {
-            deferred3.value.push(s);
+            deferred3.push(s);
         }
 
         public static void runDeferredSemantic() {
@@ -1293,7 +1293,7 @@ public class dmodule {
                     }
                     Ptr<Dsymbol> todo = null;
                     Ptr<Dsymbol> todoalloc = null;
-                    Ref<Dsymbol> tmp = ref(null);
+                    Dsymbol tmp = null;
                     if ((len == 1))
                     {
                         todo = pcopy(ptr(tmp));
@@ -1330,7 +1330,7 @@ public class dmodule {
                 for (; (i < (a.get()).length);i++){
                     Dsymbol s = (a.get()).get(i);
                     semantic2(s, null);
-                    if (global.value.errors != 0)
+                    if (global.errors != 0)
                     {
                         break;
                     }
@@ -1347,7 +1347,7 @@ public class dmodule {
                 for (; (i < (a.get()).length);i++){
                     Dsymbol s = (a.get()).get(i);
                     semantic3(s, null);
-                    if (global.value.errors != 0)
+                    if (global.errors != 0)
                     {
                         break;
                     }
@@ -1399,7 +1399,7 @@ public class dmodule {
 
         public int doppelganger = 0;
         public Ptr<Symbol> cov = null;
-        public IntPtr covb = null;
+        public Ptr<Integer> covb = null;
         public Ptr<Symbol> sictor = null;
         public Ptr<Symbol> sctor = null;
         public Ptr<Symbol> sdtor = null;

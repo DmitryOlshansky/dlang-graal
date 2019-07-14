@@ -250,7 +250,7 @@ public class dsymbol {
         }
 
         public  BytePtr locToChars() {
-            return this.getLoc().toChars(global.value.params.showColumns);
+            return this.getLoc().toChars(global.params.showColumns);
         }
 
         public  boolean equals(RootObject o) {
@@ -275,33 +275,37 @@ public class dsymbol {
         }
 
         public  void error(Loc loc, BytePtr format, Object... ap) {
+            Ref<BytePtr> format_ref = ref(format);
             BytePtr cstr = pcopy(this.toPrettyChars(false));
             ByteSlice pretty = concat(concat((byte)96, cstr.slice(0,strlen(cstr))), new ByteSlice("`\u0000")).copy();
-            verror(loc, format, new RawSlice<>(ap), this.kind(), toBytePtr(pretty), new BytePtr("Error: "));
+            verror(loc, format_ref.value, new RawSlice<>(ap), this.kind(), toBytePtr(pretty), new BytePtr("Error: "));
         }
 
         public  void error(BytePtr format, Object... ap) {
+            Ref<BytePtr> format_ref = ref(format);
             BytePtr cstr = pcopy(this.toPrettyChars(false));
             ByteSlice pretty = concat(concat((byte)96, cstr.slice(0,strlen(cstr))), new ByteSlice("`\u0000")).copy();
             Loc loc = this.getLoc().copy();
-            verror(loc, format, new RawSlice<>(ap), this.kind(), toBytePtr(pretty), new BytePtr("Error: "));
+            verror(loc, format_ref.value, new RawSlice<>(ap), this.kind(), toBytePtr(pretty), new BytePtr("Error: "));
         }
 
         public  void deprecation(Loc loc, BytePtr format, Object... ap) {
+            Ref<BytePtr> format_ref = ref(format);
             BytePtr cstr = pcopy(this.toPrettyChars(false));
             ByteSlice pretty = concat(concat((byte)96, cstr.slice(0,strlen(cstr))), new ByteSlice("`\u0000")).copy();
-            vdeprecation(loc, format, new RawSlice<>(ap), this.kind(), toBytePtr(pretty));
+            vdeprecation(loc, format_ref.value, new RawSlice<>(ap), this.kind(), toBytePtr(pretty));
         }
 
         public  void deprecation(BytePtr format, Object... ap) {
+            Ref<BytePtr> format_ref = ref(format);
             BytePtr cstr = pcopy(this.toPrettyChars(false));
             ByteSlice pretty = concat(concat((byte)96, cstr.slice(0,strlen(cstr))), new ByteSlice("`\u0000")).copy();
             Loc loc = this.getLoc().copy();
-            vdeprecation(loc, format, new RawSlice<>(ap), this.kind(), toBytePtr(pretty));
+            vdeprecation(loc, format_ref.value, new RawSlice<>(ap), this.kind(), toBytePtr(pretty));
         }
 
         public  boolean checkDeprecated(Loc loc, Ptr<Scope> sc) {
-            if (((global.value.params.useDeprecated & 0xFF) != 2) && this.isDeprecated())
+            if (((global.params.useDeprecated & 0xFF) != 2) && this.isDeprecated())
             {
                 if ((sc.get()).isDeprecated())
                 {
@@ -456,10 +460,10 @@ public class dsymbol {
         }
 
         public  Ungag ungagSpeculative() {
-            int oldgag = global.value.gag;
-            if ((global.value.gag != 0) && (this.isSpeculative() == null) && (this.toParent2().isFuncDeclaration() == null))
+            int oldgag = global.gag;
+            if ((global.gag != 0) && (this.isSpeculative() == null) && (this.toParent2().isFuncDeclaration() == null))
             {
-                global.value.gag = 0;
+                global.gag = 0;
             }
             return new Ungag(oldgag);
         }
@@ -627,24 +631,24 @@ public class dsymbol {
         }
 
         public  Dsymbol search_correct(Identifier ident) {
-            Function2<ByteSlice,Integer,Dsymbol> symbol_search_fp = new Function2<ByteSlice,Integer,Dsymbol>(){
-                public Dsymbol invoke(ByteSlice seed, IntRef cost) {
-                    if (seed.getLength() == 0)
-                    {
-                        return null;
-                    }
-                    Identifier id = Identifier.lookup(seed);
-                    if (id == null)
-                    {
-                        return null;
-                    }
-                    cost.value = 0;
-                    Dsymbol s = this;
-                    dmodule.Module.clearCache();
-                    return s.search(Loc.initial, id, 2);
+            Function2<ByteSlice,Ref<Integer>,Dsymbol> symbol_search_fp = (seed, cost) -> {
+             {
+                if (seed.getLength() == 0)
+                {
+                    return null;
                 }
+                Identifier id = Identifier.lookup(seed);
+                if (id == null)
+                {
+                    return null;
+                }
+                cost.value = 0;
+                Dsymbol s = this;
+                dmodule.Module.clearCache();
+                return s.search(Loc.initial, id, 2);
+            }
             };
-            if (global.value.gag != 0)
+            if (global.gag != 0)
             {
                 return null;
             }
@@ -855,7 +859,7 @@ public class dsymbol {
             return true;
         }
 
-        public  void setFieldOffset(AggregateDeclaration ad, IntPtr poffset, boolean isunion) {
+        public  void setFieldOffset(AggregateDeclaration ad, Ptr<Integer> poffset, boolean isunion) {
         }
 
         public  boolean hasPointers() {
@@ -1137,7 +1141,7 @@ public class dsymbol {
         public DsymbolTable symtab = null;
         public int endlinnum = 0;
         public Ptr<DArray<Dsymbol>> importedScopes = null;
-        public IntPtr prots = null;
+        public Ptr<Integer> prots = null;
         public Ref<BitArray> accessiblePackages = ref(new BitArray());
         public Ref<BitArray> privateAccessiblePackages = ref(new BitArray());
         public  ScopeDsymbol() {
@@ -1352,7 +1356,7 @@ public class dsymbol {
                     }
                 }
                 (this.importedScopes.get()).push(s);
-                this.prots = pcopy((((IntPtr)Mem.xrealloc(this.prots, (this.importedScopes.get()).length * 4))));
+                this.prots = pcopy((((Ptr<Integer>)Mem.xrealloc(this.prots, (this.importedScopes.get()).length * 4))));
                 this.prots.set(((this.importedScopes.get()).length - 1), protection.kind);
             }
         }
@@ -1449,13 +1453,13 @@ public class dsymbol {
             return false;
         }
 
-        public static int _foreach(Ptr<Scope> sc, Ptr<DArray<Dsymbol>> members, Function2<Integer,Dsymbol,Integer> dg, IntPtr pn) {
+        public static int _foreach(Ptr<Scope> sc, Ptr<DArray<Dsymbol>> members, Function2<Integer,Dsymbol,Integer> dg, Ptr<Integer> pn) {
             assert(dg != null);
             if (members == null)
             {
                 return 0;
             }
-            IntRef n = ref(pn != null ? pn.get() : 0);
+            int n = pn != null ? pn.get() : 0;
             int result = 0;
             {
                 int __key1132 = 0;
@@ -1483,7 +1487,7 @@ public class dsymbol {
                             }
                             else
                             {
-                                result = dg.invoke(n.value++, s);
+                                result = dg.invoke(n++, s);
                             }
                         }
                     }
@@ -1495,7 +1499,7 @@ public class dsymbol {
             }
             if (pn != null)
             {
-                pn.set(0, n.value);
+                pn.set(0, n);
             }
             return result;
         }

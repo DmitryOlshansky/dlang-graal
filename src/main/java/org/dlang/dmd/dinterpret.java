@@ -47,12 +47,12 @@ public class dinterpret {
         }
 
         public  void visit(ErrorExp e) {
-            if ((global.value.gag != 0) && ((this.ccf.get()).func != null))
+            if ((global.gag != 0) && ((this.ccf.get()).func != null))
             {
                 this.stop = true;
                 return ;
             }
-            error(e.loc, new BytePtr("CTFE internal error: ErrorExp in `%s`\n"), (this.ccf.get()).func != null ? (this.ccf.get()).func.loc.toChars(global.value.params.showColumns) : (this.ccf.get()).callingloc.toChars(global.value.params.showColumns));
+            error(e.loc, new BytePtr("CTFE internal error: ErrorExp in `%s`\n"), (this.ccf.get()).func != null ? (this.ccf.get()).func.loc.toChars(global.params.showColumns) : (this.ccf.get()).callingloc.toChars(global.params.showColumns));
             throw new AssertionError("Unreachable code!");
         }
 
@@ -872,9 +872,9 @@ public class dinterpret {
                     eargs.set(i, earg);
                 }
             }
-            Ref<InterState> istatex = ref(new InterState());
-            istatex.value.caller = istate;
-            istatex.value.fd = fd;
+            InterState istatex = new InterState();
+            istatex.caller = istate;
+            istatex.fd = fd;
             if (fd.isThis2)
             {
                 Expression arg0 = thisarg;
@@ -939,22 +939,22 @@ public class dinterpret {
             for (; 1 != 0;){
                 if ((CtfeStatus.callDepth > 1000))
                 {
-                    global.value.gag = 0;
+                    global.gag = 0;
                     fd.error(new BytePtr("CTFE recursion limit exceeded"));
                     e = CTFEExp.cantexp;
                     break;
                 }
                 e = interpret(pue, fd.fbody, ptr(istatex));
                 if (CTFEExp.isCantExp(e))
-                if (istatex.value.start != null)
+                if (istatex.start != null)
                 {
-                    fd.error(new BytePtr("CTFE internal error: failed to resume at statement `%s`"), istatex.value.start.toChars());
+                    fd.error(new BytePtr("CTFE internal error: failed to resume at statement `%s`"), istatex.start.toChars());
                     return CTFEExp.cantexp;
                 }
                 if (CTFEExp.isGotoExp(e))
                 {
-                    istatex.value.start = istatex.value.gotoTarget;
-                    istatex.value.gotoTarget = null;
+                    istatex.start = istatex.gotoTarget;
+                    istatex.gotoTarget = null;
                 }
                 else
                 {
@@ -1396,7 +1396,7 @@ public class dinterpret {
                     this.result = e;
                     return ;
                 }
-                Ref<UnionExp> ue = ref(null);
+                UnionExp ue = null;
                 e = interpret(ptr(ue), s.condition, this.istate, CtfeGoal.ctfeNeedRvalue);
                 if (this.exceptionOrCant(e))
                 {
@@ -1478,7 +1478,7 @@ public class dinterpret {
                     this.result = e;
                     return ;
                 }
-                Ref<UnionExp> uei = ref(null);
+                UnionExp uei = null;
                 e = interpret(ptr(uei), s.increment, this.istate, CtfeGoal.ctfeNeedNothing);
                 if (this.exceptionOrCant(e))
                 {
@@ -2187,7 +2187,7 @@ public class dinterpret {
                             v.inuse++;
                             e = interpret(e, istate, CtfeGoal.ctfeNeedRvalue);
                             v.inuse--;
-                            if (CTFEExp.isCantExp(e) && (global.value.gag == 0) && (CtfeStatus.stackTraceCallsToSuppress == 0))
+                            if (CTFEExp.isCantExp(e) && (global.gag == 0) && (CtfeStatus.stackTraceCallsToSuppress == 0))
                             {
                                 errorSupplemental(loc, new BytePtr("while evaluating %s.init"), v.toChars());
                             }
@@ -2742,11 +2742,11 @@ public class dinterpret {
                         {
                             TypeSArray tsa = (TypeSArray)v.type;
                             int len = (int)tsa.dim.toInteger();
-                            Ref<UnionExp> ue = ref(null);
+                            UnionExp ue = null;
                             ex = createBlockDuplicatedArrayLiteral(ptr(ue), ex.loc, v.type, ex, len);
-                            if ((pequals(ex, ue.value.exp())))
+                            if ((pequals(ex, ue.exp())))
                             {
-                                ex = ue.value.copy();
+                                ex = ue.copy();
                             }
                         }
                     }
@@ -3056,7 +3056,7 @@ public class dinterpret {
             }
         }
 
-        public  void interpretCommon(BinExp e, Function4<Loc,Type,Expression,Expression,UnionExp> fp) {
+        public  void interpretCommon(BinExp e, Function4<Ref<Loc>,Type,Expression,Expression,UnionExp> fp) {
             if (((e.e1.value.type.value.ty & 0xFF) == ENUMTY.Tpointer) && ((e.e2.value.type.value.ty & 0xFF) == ENUMTY.Tpointer) && ((e.op & 0xFF) == 75))
             {
                 Ref<UnionExp> ue1 = ref(null);
@@ -3117,29 +3117,29 @@ public class dinterpret {
                 this.result = CTFEExp.cantexp;
                 return ;
             }
-            Function3<Ptr<UnionExp>,Expression,Expression,Boolean> evalOperand = new Function3<Ptr<UnionExp>,Expression,Expression,Boolean>(){
-                public Boolean invoke(Ptr<UnionExp> pue, Expression ex, Ref<Expression> er) {
-                    er.value = null;
-                    er.value = interpret(pue, ex, istate, CtfeGoal.ctfeNeedRvalue);
-                    if (exceptionOrCant(er.value))
-                    {
-                        return false;
-                    }
-                    if ((er.value.isConst() != 1))
-                    {
-                        if (((er.value.op & 0xFF) == 47))
-                        {
-                            e.error(new BytePtr("cannot interpret array literal expression `%s` at compile time"), e.toChars());
-                        }
-                        else
-                        {
-                            e.error(new BytePtr("CTFE internal error: non-constant value `%s`"), ex.toChars());
-                        }
-                        result = CTFEExp.cantexp;
-                        return false;
-                    }
-                    return true;
+            Function3<Ptr<UnionExp>,Expression,Ref<Expression>,Boolean> evalOperand = (pue, ex, er) -> {
+             {
+                er.value = null;
+                er.value = interpret(pue, ex, istate, CtfeGoal.ctfeNeedRvalue);
+                if (exceptionOrCant(er.value))
+                {
+                    return false;
                 }
+                if ((er.value.isConst() != 1))
+                {
+                    if (((er.value.op & 0xFF) == 47))
+                    {
+                        e.error(new BytePtr("cannot interpret array literal expression `%s` at compile time"), e.toChars());
+                    }
+                    else
+                    {
+                        e.error(new BytePtr("CTFE internal error: non-constant value `%s`"), ex.toChars());
+                    }
+                    result = CTFEExp.cantexp;
+                    return false;
+                }
+                return true;
+            }
             };
             Ref<UnionExp> ue1 = ref(null);
             Ref<Expression> e1 = ref(null);
@@ -3172,7 +3172,7 @@ public class dinterpret {
             }
         }
 
-        public  void interpretCompareCommon(BinExp e, Function4<Loc,Byte,Expression,Expression,Integer> fp) {
+        public  void interpretCompareCommon(BinExp e, Function4<Ref<Loc>,Byte,Expression,Expression,Integer> fp) {
             Ref<UnionExp> ue1 = ref(null);
             Ref<UnionExp> ue2 = ref(null);
             if (((e.e1.value.type.value.ty & 0xFF) == ENUMTY.Tpointer) && ((e.e2.value.type.value.ty & 0xFF) == ENUMTY.Tpointer))
@@ -3284,7 +3284,7 @@ public class dinterpret {
                     this.interpretCompareCommon(e, dinterpret::ctfeCmp);
                     return ;
                 default:
-                printf(new BytePtr("be = '%s' %s at [%s]\n"), Token.toChars(e.op), e.toChars(), e.loc.toChars(global.value.params.showColumns));
+                printf(new BytePtr("be = '%s' %s at [%s]\n"), Token.toChars(e.op), e.toChars(), e.loc.toChars(global.params.showColumns));
                 throw new AssertionError("Unreachable code!");
             }
         }
@@ -3335,7 +3335,7 @@ public class dinterpret {
             }
         }
 
-        public  void interpretAssignCommon(BinExp e, Function4<Loc,Type,Expression,Expression,UnionExp> fp, int post) {
+        public  void interpretAssignCommon(BinExp e, Function4<Ref<Loc>,Type,Expression,Expression,UnionExp> fp, int post) {
             this.result = CTFEExp.cantexp;
             Expression e1 = e.e1.value;
             if (this.istate == null)
@@ -3425,7 +3425,7 @@ public class dinterpret {
                         {
                             return ;
                         }
-                        Ref<UnionExp> ekeyTmp = ref(null);
+                        UnionExp ekeyTmp = null;
                         ekey = resolveSlice(ekey, ptr(ekeyTmp));
                         AssocArrayLiteralExp newAA = (AssocArrayLiteralExp)findKeyInAA(e.loc, existingAA, ekey);
                         if (this.exceptionOrCant(newAA))
@@ -3747,8 +3747,8 @@ public class dinterpret {
         }
 
         // defaulted all parameters starting with #3
-        public  void interpretAssignCommon(BinExp e, Function4<Loc,Type,Expression,Expression,UnionExp> fp) {
-            return interpretAssignCommon(e, fp, 0);
+        public  void interpretAssignCommon(BinExp e, Function4<Ref<Loc>,Type,Expression,Expression,UnionExp> fp) {
+            interpretAssignCommon(e, fp, 0);
         }
 
         public  void stompOverlappedFields(StructLiteralExp sle, VarDeclaration v) {
@@ -4381,10 +4381,10 @@ public class dinterpret {
                 this.result = null;
                 return ;
             }
-            Ref<UnionExp> ue1 = ref(null);
-            Ref<UnionExp> ue2 = ref(null);
-            Ref<UnionExp> ue3 = ref(null);
-            Ref<UnionExp> ue4 = ref(null);
+            UnionExp ue1 = null;
+            UnionExp ue2 = null;
+            UnionExp ue3 = null;
+            UnionExp ue4 = null;
             p1.value = interpret(ptr(ue1), p1.value, this.istate, CtfeGoal.ctfeNeedRvalue);
             if (this.exceptionOrCant(p1.value))
             {
@@ -4460,27 +4460,27 @@ public class dinterpret {
                     }
                 }
             }
-            Function1<Byte,Byte> negateRelation = new Function1<Byte,Byte>(){
-                public Byte invoke(Byte op) {
-                    switch ((op & 0xFF))
-                    {
-                        case 57:
-                            op = TOK.lessThan;
-                            break;
-                        case 55:
-                            op = TOK.lessOrEqual;
-                            break;
-                        case 56:
-                            op = TOK.greaterThan;
-                            break;
-                        case 54:
-                            op = TOK.greaterOrEqual;
-                            break;
-                        default:
-                        throw new AssertionError("Unreachable code!");
-                    }
-                    return op;
+            Function1<Byte,Byte> negateRelation = (op) -> {
+             {
+                switch ((op.value & 0xFF))
+                {
+                    case 57:
+                        op.value = TOK.lessThan;
+                        break;
+                    case 55:
+                        op.value = TOK.lessOrEqual;
+                        break;
+                    case 56:
+                        op.value = TOK.greaterThan;
+                        break;
+                    case 54:
+                        op.value = TOK.greaterOrEqual;
+                        break;
+                    default:
+                    throw new AssertionError("Unreachable code!");
                 }
+                return op.value;
+            }
             };
             byte cmpop = nott ? (byte)(negateRelation.invoke(ex.op) & 0xFF) : (byte)(ex.op & 0xFF);
             int cmp = comparePointers(cmpop, agg1, ofs1.value, agg2, ofs2.value);
@@ -4513,7 +4513,7 @@ public class dinterpret {
             }
             else if (andand ? isTrueBool(this.result) : this.result.isBool(false))
             {
-                Ref<UnionExp> ue2 = ref(new UnionExp().copy());
+                UnionExp ue2 = new UnionExp().copy();
                 this.result = interpret(ptr(ue2), e.e2.value, this.istate, CtfeGoal.ctfeNeedRvalue);
                 if (this.exceptionOrCant(this.result))
                 {
@@ -4560,7 +4560,7 @@ public class dinterpret {
                 return ;
             }
             errorSupplemental(callingExp.loc, new BytePtr("called from here: `%s`"), callingExp.toChars());
-            if ((CtfeStatus.callDepth < 6) || global.value.params.verbose)
+            if ((CtfeStatus.callDepth < 6) || global.params.verbose)
             {
                 return ;
             }
@@ -4799,27 +4799,27 @@ public class dinterpret {
                 this.result = paintTypeOntoLiteral(e.type.value, this.result);
                 this.result.loc = e.loc.copy();
             }
-            else if (CTFEExp.isCantExp(this.result) && (global.value.gag == 0))
+            else if (CTFEExp.isCantExp(this.result) && (global.gag == 0))
             {
                 this.showCtfeBackTrace(e, fd);
             }
         }
 
         public  void visit(CommaExp e) {
-            Ref<InterState> istateComma = ref(new InterState());
+            InterState istateComma = new InterState();
             if ((this.istate == null) && ((firstComma(e.e1.value).op & 0xFF) == 38))
             {
                 ctfeStack.startFrame(null);
                 this.istate = ptr(istateComma);
             }
-            Function0<Void> endTempStackFrame = new Function0<Void>(){
-                public Void invoke() {
-                    if ((istate == ptr(istateComma)))
-                    {
-                        ctfeStack.endFrame();
-                    }
-                    return null;
+            Function0<Void> endTempStackFrame = () -> {
+             {
+                if ((istate == ptr(istateComma)))
+                {
+                    ctfeStack.endFrame();
                 }
+                return null;
+            }
             };
             this.result = CTFEExp.cantexp;
             if (((e.e1.value.op & 0xFF) == 38) && ((e.e2.value.op & 0xFF) == 26) && (pequals(((DeclarationExp)e.e1.value).declaration, ((VarExp)e.e2.value).var)) && ((((VarExp)e.e2.value).var.storage_class & 68719476736L) != 0))
@@ -5080,9 +5080,9 @@ public class dinterpret {
                 VectorExp ve = e1.isVectorExp();
                 if ((ve) != null)
                 {
-                    Ref<UnionExp> ue = ref(null);
+                    UnionExp ue = null;
                     e1 = interpretVectorToArray(ptr(ue), ve);
-                    e1 = (pequals(e1, ue.value.exp())) ? ue.value.copy() : e1;
+                    e1 = (pequals(e1, ue.exp())) ? ue.copy() : e1;
                 }
             }
             long len = 0L;
@@ -5219,7 +5219,7 @@ public class dinterpret {
                     return ;
                 }
                 assert(((e1.op & 0xFF) == 48));
-                Ref<UnionExp> e2tmp = ref(null);
+                UnionExp e2tmp = null;
                 e2 = resolveSlice(e2, ptr(e2tmp));
                 this.result = findKeyInAA(e.loc, (AssocArrayLiteralExp)e1, e2);
                 if (this.result == null)
@@ -5518,9 +5518,9 @@ public class dinterpret {
             {
                 return ;
             }
-            Ref<UnionExp> e1tmp = ref(null);
+            UnionExp e1tmp = null;
             e1 = resolveSlice(e1, ptr(e1tmp));
-            Ref<UnionExp> e2tmp = ref(null);
+            UnionExp e2tmp = null;
             e2 = resolveSlice(e2, ptr(e2tmp));
             if (!(((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 121)))
             {
@@ -5917,7 +5917,7 @@ public class dinterpret {
             {
                 if (e.msg != null)
                 {
-                    Ref<UnionExp> ue = ref(null);
+                    UnionExp ue = null;
                     this.result = interpret(ptr(ue), e.msg, this.istate, CtfeGoal.ctfeNeedRvalue);
                     if (this.exceptionOrCant(this.result))
                     {
@@ -6166,11 +6166,11 @@ public class dinterpret {
             {
                 TypeSArray tsa = (TypeSArray)v.type;
                 int len = (int)tsa.dim.toInteger();
-                Ref<UnionExp> ue = ref(null);
+                UnionExp ue = null;
                 this.result = createBlockDuplicatedArrayLiteral(ptr(ue), ex.loc, v.type, ex, len);
-                if ((pequals(this.result, ue.value.exp())))
+                if ((pequals(this.result, ue.exp())))
                 {
-                    this.result = ue.value.copy();
+                    this.result = ue.copy();
                 }
                 se.elements.get().set(i, this.result);
             }
@@ -6299,95 +6299,95 @@ public class dinterpret {
     }
 
     public static Expression scrubReturnValue(Loc loc, Expression e) {
-        Function2<Expression,Boolean,Boolean> isVoid = new Function2<Expression,Boolean,Boolean>(){
-            public Boolean invoke(Expression e, Boolean checkArrayType) {
-                if (((e.op & 0xFF) == 128))
+        Function2<Expression,Boolean,Boolean> isVoid = (e, checkArrayType) -> {
+         {
+            if (((e.op & 0xFF) == 128))
+            {
+                return true;
+            }
+            Function1<Ptr<DArray<Expression>>,Boolean> isEntirelyVoid = (elems) -> {
+             {
                 {
-                    return true;
-                }
-                Function1<Ptr<DArray<Expression>>,Boolean> isEntirelyVoid = new Function1<Ptr<DArray<Expression>>,Boolean>(){
-                    public Boolean invoke(Ptr<DArray<Expression>> elems) {
+                    Slice<Expression> __r984 = (elems.get()).opSlice().copy();
+                    Ref<Integer> __key985 = ref(0);
+                    for (; (__key985.value < __r984.getLength());__key985.value += 1) {
+                        Expression e = __r984.get(__key985.value);
+                        if ((e != null) && !isVoid.invoke(e, false))
                         {
-                            Ref<Slice<Expression>> __r984 = ref((elems.get()).opSlice().copy());
-                            IntRef __key985 = ref(0);
-                            for (; (__key985.value < __r984.value.getLength());__key985.value += 1) {
-                                Expression e = __r984.value.get(__key985.value);
-                                if ((e != null) && !isVoid.invoke(e, false))
-                                {
-                                    return false;
-                                }
-                            }
+                            return false;
                         }
-                        return true;
-                    }
-                };
-                {
-                    StructLiteralExp sle = e.isStructLiteralExp();
-                    if ((sle) != null)
-                    {
-                        return isEntirelyVoid.invoke(sle.elements);
                     }
                 }
-                if (checkArrayType && ((e.type.value.ty & 0xFF) != ENUMTY.Tsarray))
+                return true;
+            }
+            };
+            {
+                StructLiteralExp sle = e.isStructLiteralExp();
+                if ((sle) != null)
                 {
-                    return false;
+                    return isEntirelyVoid.invoke(sle.elements);
                 }
-                {
-                    ArrayLiteralExp ale = e.isArrayLiteralExp();
-                    if ((ale) != null)
-                    {
-                        return isEntirelyVoid.invoke(ale.elements);
-                    }
-                }
+            }
+            if (checkArrayType && ((e.type.value.ty & 0xFF) != ENUMTY.Tsarray))
+            {
                 return false;
             }
-        };
-        Function2<Ptr<DArray<Expression>>,Boolean,Expression> scrubArray = new Function2<Ptr<DArray<Expression>>,Boolean,Expression>(){
-            public Expression invoke(Ptr<DArray<Expression>> elems, Boolean structlit) {
+            {
+                ArrayLiteralExp ale = e.isArrayLiteralExp();
+                if ((ale) != null)
                 {
-                    Slice<Expression> __r986 = (elems.get()).opSlice().copy();
-                    int __key987 = 0;
-                    for (; (__key987 < __r986.getLength());__key987 += 1) {
-                        Expression e = __r986.get(__key987);
-                        if (e == null)
-                        {
-                            continue;
-                        }
-                        if (structlit && isVoid.invoke(e, true))
-                        {
-                            e = null;
-                        }
-                        else
-                        {
-                            e = scrubReturnValue(loc, e);
-                            if (CTFEExp.isCantExp(e) || ((e.op & 0xFF) == 127))
-                            {
-                                return e;
-                            }
-                        }
-                    }
+                    return isEntirelyVoid.invoke(ale.elements);
                 }
-                return null;
             }
+            return false;
+        }
         };
-        Function1<StructLiteralExp,Expression> scrubSE = new Function1<StructLiteralExp,Expression>(){
-            public Expression invoke(StructLiteralExp sle) {
-                sle.ownedByCtfe = OwnedBy.code;
-                if ((sle.stageflags & 1) == 0)
-                {
-                    int old = sle.stageflags;
-                    sle.stageflags |= 1;
+        Function2<Ptr<DArray<Expression>>,Boolean,Expression> scrubArray = (elems, structlit) -> {
+         {
+            {
+                Slice<Expression> __r986 = (elems.get()).opSlice().copy();
+                Ref<Integer> __key987 = ref(0);
+                for (; (__key987.value < __r986.getLength());__key987.value += 1) {
+                    Ref<Expression> e = ref(__r986.get(__key987.value));
+                    if (e.value == null)
                     {
-                        Expression ex = scrubArray.invoke(sle.elements, true);
-                        if ((ex) != null)
+                        continue;
+                    }
+                    if (structlit && isVoid.invoke(e.value, true))
+                    {
+                        e.value = null;
+                    }
+                    else
+                    {
+                        e.value = scrubReturnValue(loc, e.value);
+                        if (CTFEExp.isCantExp(e.value) || ((e.value.op & 0xFF) == 127))
                         {
-                            return ex;
+                            return e.value;
                         }
                     }
-                    sle.stageflags = old;
                 }
-                return null;
             }
+            return null;
+        }
+        };
+        Function1<StructLiteralExp,Expression> scrubSE = (sle) -> {
+         {
+            sle.ownedByCtfe = OwnedBy.code;
+            if ((sle.stageflags & 1) == 0)
+            {
+                int old = sle.stageflags;
+                sle.stageflags |= 1;
+                {
+                    Expression ex = scrubArray.invoke(sle.elements, true);
+                    if ((ex) != null)
+                    {
+                        return ex;
+                    }
+                }
+                sle.stageflags = old;
+            }
+            return null;
+        }
         };
         if (((e.op & 0xFF) == 50))
         {
@@ -6494,37 +6494,37 @@ public class dinterpret {
         {
             return e;
         }
-        Function1<Ptr<DArray<Expression>>,Expression> scrubArrayCache = new Function1<Ptr<DArray<Expression>>,Expression>(){
-            public Expression invoke(Ptr<DArray<Expression>> elems) {
-                {
-                    Slice<Expression> __r988 = (elems.get()).opSlice().copy();
-                    int __key989 = 0;
-                    for (; (__key989 < __r988.getLength());__key989 += 1) {
-                        Expression e = __r988.get(__key989);
-                        e = scrubCacheValue(e);
-                    }
+        Function1<Ptr<DArray<Expression>>,Expression> scrubArrayCache = (elems) -> {
+         {
+            {
+                Slice<Expression> __r988 = (elems.get()).opSlice().copy();
+                Ref<Integer> __key989 = ref(0);
+                for (; (__key989.value < __r988.getLength());__key989.value += 1) {
+                    Ref<Expression> e = ref(__r988.get(__key989.value));
+                    e.value = scrubCacheValue(e.value);
                 }
-                return null;
             }
+            return null;
+        }
         };
-        Function1<StructLiteralExp,Expression> scrubSE = new Function1<StructLiteralExp,Expression>(){
-            public Expression invoke(StructLiteralExp sle) {
-                sle.ownedByCtfe = OwnedBy.cache;
-                if ((sle.stageflags & 1) == 0)
+        Function1<StructLiteralExp,Expression> scrubSE = (sle) -> {
+         {
+            sle.ownedByCtfe = OwnedBy.cache;
+            if ((sle.stageflags & 1) == 0)
+            {
+                int old = sle.stageflags;
+                sle.stageflags |= 1;
                 {
-                    int old = sle.stageflags;
-                    sle.stageflags |= 1;
+                    Expression ex = scrubArrayCache.invoke(sle.elements);
+                    if ((ex) != null)
                     {
-                        Expression ex = scrubArrayCache.invoke(sle.elements);
-                        if ((ex) != null)
-                        {
-                            return ex;
-                        }
+                        return ex;
                     }
-                    sle.stageflags = old;
                 }
-                return null;
+                sle.stageflags = old;
             }
+            return null;
+        }
         };
         if (((e.op & 0xFF) == 50))
         {
@@ -6754,7 +6754,7 @@ public class dinterpret {
         assert((numParams == 1) || (numParams == 2));
         Parameter fparam = __dop990.get(numParams - 1);
         boolean wantRefValue = 0L != (fparam.storageClass & 2101248L);
-        Ref<DArray<Expression>> args = ref(args.value = new DArray<Expression>(numParams));
+        DArray<Expression> args = args = new DArray<Expression>(numParams);
         try {
             AssocArrayLiteralExp ae = (AssocArrayLiteralExp)aa;
             if ((ae.keys == null) || ((ae.keys.get()).length == 0))
@@ -6773,16 +6773,16 @@ public class dinterpret {
                         evalue = new IndexExp(deleg.loc, ae, ekey);
                         evalue.type.value = t;
                     }
-                    args.value.set(numParams - 1, evalue);
+                    args.set(numParams - 1, evalue);
                     if ((numParams == 2))
                     {
-                        args.value.set(0, ekey);
+                        args.set(0, ekey);
                     }
-                    Ref<UnionExp> ue = ref(null);
+                    UnionExp ue = null;
                     eresult = interpretFunction(ptr(ue), fd, istate, ptr(args), pthis);
-                    if ((pequals(eresult, ue.value.exp())))
+                    if ((pequals(eresult, ue.exp())))
                     {
-                        eresult = ue.value.copy();
+                        eresult = ue.copy();
                     }
                     if (exceptionOrCantInterpret(eresult))
                     {
@@ -6838,7 +6838,7 @@ public class dinterpret {
             str.error(new BytePtr("CTFE internal error: cannot foreach `%s`"), str.toChars());
             return CTFEExp.cantexp;
         }
-        Ref<DArray<Expression>> args = ref(args.value = new DArray<Expression>(numParams));
+        DArray<Expression> args = args = new DArray<Expression>(numParams);
         try {
             Expression eresult = null;
             Ref<ByteSlice> utf8buf = ref(new ByteSlice(new byte[4]));
@@ -6846,25 +6846,25 @@ public class dinterpret {
             int start = rvs ? len : 0;
             int end = rvs ? 0 : len;
             {
-                IntRef indx = ref(start);
-                for (; (indx.value != end);){
+                int indx = start;
+                for (; (indx != end);){
                     BytePtr errmsg = null;
                     int rawvalue = 0x0ffff;
-                    int currentIndex = indx.value;
+                    int currentIndex = indx;
                     if (ale != null)
                     {
                         int buflen = 1;
-                        IntRef n = ref(1);
+                        int n = 1;
                         int sz = (int)ale.type.value.nextOf().size();
                         switch (sz)
                         {
                             case 1:
                                 if (rvs)
                                 {
-                                    indx.value -= 1;
+                                    indx -= 1;
                                     buflen = 1;
-                                    for (; (indx.value > 0) && (buflen < 4);){
-                                        Expression r = (ale.elements.get()).get(indx.value);
+                                    for (; (indx > 0) && (buflen < 4);){
+                                        Expression r = (ale.elements.get()).get(indx);
                                         byte x = (byte)r.isIntegerExp().getInteger();
                                         if ((((x & 0xFF) & 192) != 128))
                                         {
@@ -6875,54 +6875,54 @@ public class dinterpret {
                                 }
                                 else
                                 {
-                                    buflen = (indx.value + 4 > len) ? len - indx.value : 4;
+                                    buflen = (indx + 4 > len) ? len - indx : 4;
                                 }
                                 {
                                     int i = 0;
                                     for (; (i < buflen);i += 1){
-                                        Expression r_1 = (ale.elements.get()).get(indx.value + i);
+                                        Expression r_1 = (ale.elements.get()).get(indx + i);
                                         utf8buf.value.set(i, (byte)r_1.isIntegerExp().getInteger());
                                     }
                                 }
-                                n.value = 0;
+                                n = 0;
                                 errmsg = pcopy(utf_decodeChar(ptr(utf8buf), buflen, n, rawvalue));
                                 break;
                             case 2:
                                 if (rvs)
                                 {
-                                    indx.value -= 1;
+                                    indx -= 1;
                                     buflen = 1;
-                                    Expression r_3 = (ale.elements.get()).get(indx.value);
+                                    Expression r_3 = (ale.elements.get()).get(indx);
                                     int x_1 = (int)r_3.isIntegerExp().getInteger();
-                                    if ((indx.value > 0) && ((int)x_1 >= 56320) && ((int)x_1 <= 57343))
+                                    if ((indx > 0) && ((int)x_1 >= 56320) && ((int)x_1 <= 57343))
                                     {
-                                        indx.value -= 1;
+                                        indx -= 1;
                                         buflen += 1;
                                     }
                                 }
                                 else
                                 {
-                                    buflen = (indx.value + 2 > len) ? len - indx.value : 2;
+                                    buflen = (indx + 2 > len) ? len - indx : 2;
                                 }
                                 {
                                     int i_1 = 0;
                                     for (; (i_1 < buflen);i_1 += 1){
-                                        Expression r_2 = (ale.elements.get()).get(indx.value + i_1);
+                                        Expression r_2 = (ale.elements.get()).get(indx + i_1);
                                         utf16buf.value.set(i_1, (char)(int)r_2.isIntegerExp().getInteger());
                                     }
                                 }
-                                n.value = 0;
+                                n = 0;
                                 errmsg = pcopy(utf_decodeWchar(ptr(utf16buf), buflen, n, rawvalue));
                                 break;
                             case 4:
                                 {
                                     if (rvs)
                                     {
-                                        indx.value -= 1;
+                                        indx -= 1;
                                     }
-                                    Expression r_4 = (ale.elements.get()).get(indx.value);
+                                    Expression r_4 = (ale.elements.get()).get(indx);
                                     rawvalue = (int)r_4.isIntegerExp().getInteger();
-                                    n.value = 1;
+                                    n = 1;
                                 }
                                 break;
                             default:
@@ -6930,7 +6930,7 @@ public class dinterpret {
                         }
                         if (!rvs)
                         {
-                            indx.value += n.value;
+                            indx += n;
                         }
                     }
                     else
@@ -6941,44 +6941,44 @@ public class dinterpret {
                             case 1:
                                 if (rvs)
                                 {
-                                    indx.value -= 1;
-                                    for (; (indx.value > 0) && ((se.getCodeUnit(indx.value) & 192) == 128);) {
-                                        indx.value -= 1;
+                                    indx -= 1;
+                                    for (; (indx > 0) && ((se.getCodeUnit(indx) & 192) == 128);) {
+                                        indx -= 1;
                                     }
-                                    saveindx = indx.value;
+                                    saveindx = indx;
                                 }
                                 errmsg = pcopy(utf_decodeChar(se.string, se.len, indx, rawvalue));
                                 if (rvs)
                                 {
-                                    indx.value = saveindx;
+                                    indx = saveindx;
                                 }
                                 break;
                             case 2:
                                 if (rvs)
                                 {
-                                    indx.value -= 1;
-                                    int wc = se.getCodeUnit(indx.value);
+                                    indx -= 1;
+                                    int wc = se.getCodeUnit(indx);
                                     if ((wc >= 56320) && (wc <= 57343))
                                     {
-                                        indx.value -= 1;
+                                        indx -= 1;
                                     }
-                                    saveindx = indx.value;
+                                    saveindx = indx;
                                 }
                                 errmsg = pcopy(utf_decodeWchar(se.wstring, se.len, indx, rawvalue));
                                 if (rvs)
                                 {
-                                    indx.value = saveindx;
+                                    indx = saveindx;
                                 }
                                 break;
                             case 4:
                                 if (rvs)
                                 {
-                                    indx.value -= 1;
+                                    indx -= 1;
                                 }
-                                rawvalue = se.getCodeUnit(indx.value);
+                                rawvalue = se.getCodeUnit(indx);
                                 if (!rvs)
                                 {
-                                    indx.value += 1;
+                                    indx += 1;
                                 }
                                 break;
                             default:
@@ -6991,28 +6991,28 @@ public class dinterpret {
                         return CTFEExp.cantexp;
                     }
                     int charlen = 1;
-                    switch (charType.size())
+                    switch ((int)charType.size())
                     {
-                        case 1L:
+                        case (int)1L:
                             charlen = utf_codeLengthChar(rawvalue);
                             utf_encodeChar(ptr(utf8buf), rawvalue);
                             break;
-                        case 2L:
+                        case (int)2L:
                             charlen = utf_codeLengthWchar(rawvalue);
                             utf_encodeWchar(ptr(utf16buf), rawvalue);
                             break;
-                        case 4L:
+                        case (int)4L:
                             break;
                         default:
                         throw new AssertionError("Unreachable code!");
                     }
                     if (rvs)
                     {
-                        currentIndex = indx.value;
+                        currentIndex = indx;
                     }
                     if ((numParams == 2))
                     {
-                        args.value.set(0, new IntegerExp(deleg.loc, (long)currentIndex, indexType));
+                        args.set(0, new IntegerExp(deleg.loc, (long)currentIndex, indexType));
                     }
                     Expression val = null;
                     {
@@ -7021,27 +7021,27 @@ public class dinterpret {
                         for (; (__key993 < __limit994);__key993 += 1) {
                             int k = __key993;
                             int codepoint = 0x0ffff;
-                            switch (charType.size())
+                            switch ((int)charType.size())
                             {
-                                case 1L:
+                                case (int)1L:
                                     codepoint = (utf8buf.value.get(k) & 0xFF);
                                     break;
-                                case 2L:
+                                case (int)2L:
                                     codepoint = (int)utf16buf.value.get(k);
                                     break;
-                                case 4L:
+                                case (int)4L:
                                     codepoint = rawvalue;
                                     break;
                                 default:
                                 throw new AssertionError("Unreachable code!");
                             }
                             val = new IntegerExp(str.loc, (long)codepoint, charType);
-                            args.value.set(numParams - 1, val);
-                            Ref<UnionExp> ue = ref(null);
+                            args.set(numParams - 1, val);
+                            UnionExp ue = null;
                             eresult = interpretFunction(ptr(ue), fd, istate, ptr(args), pthis);
-                            if ((pequals(eresult, ue.value.exp())))
+                            if ((pequals(eresult, ue.exp())))
                             {
-                                eresult = ue.value.copy();
+                                eresult = ue.copy();
                             }
                             if (exceptionOrCantInterpret(eresult))
                             {
@@ -7068,10 +7068,10 @@ public class dinterpret {
         {
             if ((isBuiltin(fd) == BUILTIN.yes))
             {
-                Ref<DArray<Expression>> args = ref(args.value = new DArray<Expression>(nargs));
+                DArray<Expression> args = args = new DArray<Expression>(nargs);
                 try {
                     {
-                        Slice<Expression> __r997 = args.value.opSlice().copy();
+                        Slice<Expression> __r997 = args.opSlice().copy();
                         int __key996 = 0;
                         for (; (__key996 < __r997.getLength());__key996 += 1) {
                             Expression arg = __r997.get(__key996);
@@ -7233,11 +7233,11 @@ public class dinterpret {
         }
         if (((e.op & 0xFF) == 49))
         {
-            Ref<UnionExp> ue = ref(null);
+            UnionExp ue = null;
             e = interpretFunction(ptr(ue), sd.postblit, istate, null, e);
-            if ((pequals(e, ue.value.exp())))
+            if ((pequals(e, ue.exp())))
             {
-                e = ue.value.copy();
+                e = ue.copy();
             }
             if (exceptionOrCantInterpret(e))
             {
@@ -7259,7 +7259,7 @@ public class dinterpret {
         {
             return null;
         }
-        Ref<UnionExp> ue = ref(null);
+        UnionExp ue = null;
         {
             ArrayLiteralExp ale = e.isArrayLiteralExp();
             if ((ale) != null)
@@ -7284,9 +7284,9 @@ public class dinterpret {
         }
         if (exceptionOrCantInterpret(e))
         {
-            if ((pequals(e, ue.value.exp())))
+            if ((pequals(e, ue.exp())))
             {
-                e = ue.value.copy();
+                e = ue.copy();
             }
             return e;
         }

@@ -1192,61 +1192,61 @@ public class hdrgen {
         }
 
         public  void visit(StaticForeachDeclaration s) {
-            Function1<ForeachStatement,Void> foreachWithoutBody = new Function1<ForeachStatement,Void>(){
-                public Void invoke(ForeachStatement s) {
-                    (buf.get()).writestring(Token.asString(s.op));
-                    (buf.get()).writestring(new ByteSlice(" ("));
-                    {
-                        Slice<Parameter> __r1442 = (s.parameters.get()).opSlice().copy();
-                        int __key1441 = 0;
-                        for (; (__key1441 < __r1442.getLength());__key1441 += 1) {
-                            Parameter p = __r1442.get(__key1441);
-                            int i = __key1441;
-                            if (i != 0)
-                            {
-                                (buf.get()).writestring(new ByteSlice(", "));
-                            }
-                            if (stcToBuffer(buf, p.storageClass))
-                            {
-                                (buf.get()).writeByte(32);
-                            }
-                            if (p.type != null)
-                            {
-                                typeToBuffer(p.type, p.ident, buf, hgs);
-                            }
-                            else
-                            {
-                                (buf.get()).writestring(p.ident.asString());
-                            }
+            Function1<ForeachStatement,Void> foreachWithoutBody = (s) -> {
+             {
+                (buf.get()).writestring(Token.asString(s.op));
+                (buf.get()).writestring(new ByteSlice(" ("));
+                {
+                    Slice<Parameter> __r1442 = (s.parameters.get()).opSlice().copy();
+                    Ref<Integer> __key1441 = ref(0);
+                    for (; (__key1441.value < __r1442.getLength());__key1441.value += 1) {
+                        Parameter p = __r1442.get(__key1441.value);
+                        int i = __key1441.value;
+                        if (i != 0)
+                        {
+                            (buf.get()).writestring(new ByteSlice(", "));
+                        }
+                        if (stcToBuffer(buf, p.storageClass))
+                        {
+                            (buf.get()).writeByte(32);
+                        }
+                        if (p.type != null)
+                        {
+                            typeToBuffer(p.type, p.ident, buf, hgs);
+                        }
+                        else
+                        {
+                            (buf.get()).writestring(p.ident.asString());
                         }
                     }
-                    (buf.get()).writestring(new ByteSlice("; "));
-                    expressionToBuffer(s.aggr.value, buf, hgs);
-                    (buf.get()).writeByte(41);
-                    (buf.get()).writenl();
-                    return null;
                 }
+                (buf.get()).writestring(new ByteSlice("; "));
+                expressionToBuffer(s.aggr.value, buf, hgs);
+                (buf.get()).writeByte(41);
+                (buf.get()).writenl();
+                return null;
+            }
             };
-            Function1<ForeachRangeStatement,Void> foreachRangeWithoutBody = new Function1<ForeachRangeStatement,Void>(){
-                public Void invoke(ForeachRangeStatement s) {
-                    (buf.get()).writestring(Token.asString(s.op));
-                    (buf.get()).writestring(new ByteSlice(" ("));
-                    if (s.prm.type != null)
-                    {
-                        typeToBuffer(s.prm.type, s.prm.ident, buf, hgs);
-                    }
-                    else
-                    {
-                        (buf.get()).writestring(s.prm.ident.asString());
-                    }
-                    (buf.get()).writestring(new ByteSlice("; "));
-                    expressionToBuffer(s.lwr, buf, hgs);
-                    (buf.get()).writestring(new ByteSlice(" .. "));
-                    expressionToBuffer(s.upr, buf, hgs);
-                    (buf.get()).writeByte(41);
-                    (buf.get()).writenl();
-                    return null;
+            Function1<ForeachRangeStatement,Void> foreachRangeWithoutBody = (s) -> {
+             {
+                (buf.get()).writestring(Token.asString(s.op));
+                (buf.get()).writestring(new ByteSlice(" ("));
+                if (s.prm.type != null)
+                {
+                    typeToBuffer(s.prm.type, s.prm.ident, buf, hgs);
                 }
+                else
+                {
+                    (buf.get()).writestring(s.prm.ident.asString());
+                }
+                (buf.get()).writestring(new ByteSlice("; "));
+                expressionToBuffer(s.lwr, buf, hgs);
+                (buf.get()).writestring(new ByteSlice(" .. "));
+                expressionToBuffer(s.upr, buf, hgs);
+                (buf.get()).writeByte(41);
+                (buf.get()).writenl();
+                return null;
+            }
             };
             (this.buf.get()).writestring(new ByteSlice("static "));
             if (s.sfe.aggrfe != null)
@@ -1745,7 +1745,7 @@ public class hdrgen {
                     this.bodyToBuffer(f);
                     (this.hgs.get()).autoMember--;
                 }
-                else if (((this.hgs.get()).tpltMember == 0) && global.value.params.hdrStripPlainFunctions)
+                else if (((this.hgs.get()).tpltMember == 0) && global.params.hdrStripPlainFunctions)
                 {
                     (this.buf.get()).writeByte(59);
                     (this.buf.get()).writenl();
@@ -1762,7 +1762,7 @@ public class hdrgen {
         }
 
         public  void bodyToBuffer(FuncDeclaration f) {
-            if ((f.fbody == null) || (this.hgs.get()).hdrgen && global.value.params.hdrStripPlainFunctions && ((this.hgs.get()).autoMember == 0) && ((this.hgs.get()).tpltMember == 0))
+            if ((f.fbody == null) || (this.hgs.get()).hdrgen && global.params.hdrStripPlainFunctions && ((this.hgs.get()).autoMember == 0) && ((this.hgs.get()).tpltMember == 0))
             {
                 (this.buf.get()).writeByte(59);
                 (this.buf.get()).writenl();
@@ -2156,7 +2156,7 @@ public class hdrgen {
                                 (this.buf.get()).writestring(new ByteSlice("cast("));
                                 (this.buf.get()).writestring(t.toChars());
                                 (this.buf.get()).writeByte(41);
-                                if ((target.value.ptrsize == 8))
+                                if ((target.ptrsize == 8))
                                 {
                                     /*goto case*/{ __dispatch1 = 20; continue dispatched_1; }
                                 }
@@ -2165,7 +2165,7 @@ public class hdrgen {
                                     /*goto case*/{ __dispatch1 = 18; continue dispatched_1; }
                                 }
                             default:
-                            if (global.value.errors == 0)
+                            if (global.errors == 0)
                             {
                                 throw new AssertionError("Unreachable code!");
                             }
@@ -2976,7 +2976,7 @@ public class hdrgen {
 
     // defaulted all parameters starting with #3
     public static void toCBufferInstance(TemplateInstance ti, Ptr<OutBuffer> buf) {
-        return toCBufferInstance(ti, buf, false);
+        toCBufferInstance(ti, buf, false);
     }
 
     public static void toCBuffer(Initializer iz, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
@@ -3371,7 +3371,7 @@ public class hdrgen {
 
     // defaulted all parameters starting with #4
     public static void argsToBuffer(Ptr<DArray<Expression>> expressions, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
-        return argsToBuffer(expressions, buf, hgs, null);
+        argsToBuffer(expressions, buf, hgs, null);
     }
 
     public static void sizeToBuffer(Expression e, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
@@ -3383,15 +3383,15 @@ public class hdrgen {
             if (((long)uval >= 0L))
             {
                 long sizemax = null;
-                if ((target.value.ptrsize == 8))
+                if ((target.ptrsize == 8))
                 {
                     sizemax = -1L;
                 }
-                else if ((target.value.ptrsize == 4))
+                else if ((target.ptrsize == 4))
                 {
                     sizemax = 4294967295L;
                 }
-                else if ((target.value.ptrsize == 2))
+                else if ((target.ptrsize == 2))
                 {
                     sizemax = 65535L;
                 }
@@ -3658,12 +3658,12 @@ public class hdrgen {
             (buf.get()).writeByte(32);
             MODtoBuffer(buf, t.mod);
         }
-        Function1<ByteSlice,Void> dg = new Function1<ByteSlice,Void>(){
-            public Void invoke(ByteSlice str) {
-                (buf.get()).writeByte(32);
-                (buf.get()).writestring(str);
-                return null;
-            }
+        Function1<ByteSlice,Void> dg = (str) -> {
+         {
+            (buf.get()).writeByte(32);
+            (buf.get()).writestring(str);
+            return null;
+        }
         };
         attributesApply(t, dg, TRUSTformat.TRUSTformatDefault);
         t.inuse--;
@@ -3681,19 +3681,19 @@ public class hdrgen {
             MODtoBuffer(buf, t.mod);
             (buf.get()).writeByte(32);
         }
-        Function1<ByteSlice,Void> ignoreReturn = new Function1<ByteSlice,Void>(){
-            public Void invoke(ByteSlice str) {
-                if (!__equals(str, new ByteSlice("return")))
+        Function1<ByteSlice,Void> ignoreReturn = (str) -> {
+         {
+            if (!__equals(str, new ByteSlice("return")))
+            {
+                if ((pequals(ident, Id.ctor)) && __equals(str, new ByteSlice("ref")))
                 {
-                    if ((pequals(ident, Id.ctor)) && __equals(str, new ByteSlice("ref")))
-                    {
-                        return null;
-                    }
-                    (buf.get()).writestring(str);
-                    (buf.get()).writeByte(32);
+                    return null;
                 }
-                return null;
+                (buf.get()).writestring(str);
+                (buf.get()).writeByte(32);
             }
+            return null;
+        }
         };
         attributesApply(t, ignoreReturn, TRUSTformat.TRUSTformatDefault);
         if ((t.linkage > LINK.d) && (((hgs.get()).ddoc ? 1 : 0) != 1) && !(hgs.get()).hdrgen)
@@ -3747,85 +3747,85 @@ public class hdrgen {
     }
 
     public static void initializerToBuffer(Initializer inx, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
-        Function1<ErrorInitializer,Void> visitError = new Function1<ErrorInitializer,Void>(){
-            public Void invoke(ErrorInitializer iz) {
-                (buf.get()).writestring(new ByteSlice("__error__"));
-                return null;
-            }
+        Function1<ErrorInitializer,Void> visitError = (iz) -> {
+         {
+            (buf.get()).writestring(new ByteSlice("__error__"));
+            return null;
+        }
         };
-        Function1<VoidInitializer,Void> visitVoid = new Function1<VoidInitializer,Void>(){
-            public Void invoke(VoidInitializer iz) {
-                (buf.get()).writestring(new ByteSlice("void"));
-                return null;
-            }
+        Function1<VoidInitializer,Void> visitVoid = (iz) -> {
+         {
+            (buf.get()).writestring(new ByteSlice("void"));
+            return null;
+        }
         };
-        Function1<StructInitializer,Void> visitStruct = new Function1<StructInitializer,Void>(){
-            public Void invoke(StructInitializer si) {
-                (buf.get()).writeByte(123);
-                {
-                    Slice<Identifier> __r1486 = si.field.opSlice().copy();
-                    int __key1485 = 0;
-                    for (; (__key1485 < __r1486.getLength());__key1485 += 1) {
-                        Identifier id = __r1486.get(__key1485);
-                        int i = __key1485;
-                        if (i != 0)
+        Function1<StructInitializer,Void> visitStruct = (si) -> {
+         {
+            (buf.get()).writeByte(123);
+            {
+                Slice<Identifier> __r1486 = si.field.opSlice().copy();
+                Ref<Integer> __key1485 = ref(0);
+                for (; (__key1485.value < __r1486.getLength());__key1485.value += 1) {
+                    Identifier id = __r1486.get(__key1485.value);
+                    int i = __key1485.value;
+                    if (i != 0)
+                    {
+                        (buf.get()).writestring(new ByteSlice(", "));
+                    }
+                    if (id != null)
+                    {
+                        (buf.get()).writestring(id.asString());
+                        (buf.get()).writeByte(58);
+                    }
+                    {
+                        Initializer iz = si.value.get(i);
+                        if ((iz) != null)
                         {
-                            (buf.get()).writestring(new ByteSlice(", "));
-                        }
-                        if (id != null)
-                        {
-                            (buf.get()).writestring(id.asString());
-                            (buf.get()).writeByte(58);
-                        }
-                        {
-                            Initializer iz = si.value.get(i);
-                            if ((iz) != null)
-                            {
-                                initializerToBuffer(iz, buf, hgs);
-                            }
+                            initializerToBuffer(iz, buf, hgs);
                         }
                     }
                 }
-                (buf.get()).writeByte(125);
-                return null;
             }
+            (buf.get()).writeByte(125);
+            return null;
+        }
         };
-        Function1<ArrayInitializer,Void> visitArray = new Function1<ArrayInitializer,Void>(){
-            public Void invoke(ArrayInitializer ai) {
-                (buf.get()).writeByte(91);
-                {
-                    Slice<Expression> __r1488 = ai.index.opSlice().copy();
-                    int __key1487 = 0;
-                    for (; (__key1487 < __r1488.getLength());__key1487 += 1) {
-                        Expression ex = __r1488.get(__key1487);
-                        int i = __key1487;
-                        if (i != 0)
+        Function1<ArrayInitializer,Void> visitArray = (ai) -> {
+         {
+            (buf.get()).writeByte(91);
+            {
+                Slice<Expression> __r1488 = ai.index.opSlice().copy();
+                Ref<Integer> __key1487 = ref(0);
+                for (; (__key1487.value < __r1488.getLength());__key1487.value += 1) {
+                    Expression ex = __r1488.get(__key1487.value);
+                    int i = __key1487.value;
+                    if (i != 0)
+                    {
+                        (buf.get()).writestring(new ByteSlice(", "));
+                    }
+                    if (ex != null)
+                    {
+                        expressionToBuffer(ex, buf, hgs);
+                        (buf.get()).writeByte(58);
+                    }
+                    {
+                        Initializer iz = ai.value.get(i);
+                        if ((iz) != null)
                         {
-                            (buf.get()).writestring(new ByteSlice(", "));
-                        }
-                        if (ex != null)
-                        {
-                            expressionToBuffer(ex, buf, hgs);
-                            (buf.get()).writeByte(58);
-                        }
-                        {
-                            Initializer iz = ai.value.get(i);
-                            if ((iz) != null)
-                            {
-                                initializerToBuffer(iz, buf, hgs);
-                            }
+                            initializerToBuffer(iz, buf, hgs);
                         }
                     }
                 }
-                (buf.get()).writeByte(93);
-                return null;
             }
+            (buf.get()).writeByte(93);
+            return null;
+        }
         };
-        Function1<ExpInitializer,Void> visitExp = new Function1<ExpInitializer,Void>(){
-            public Void invoke(ExpInitializer ei) {
-                expressionToBuffer(ei.exp, buf, hgs);
-                return null;
-            }
+        Function1<ExpInitializer,Void> visitExp = (ei) -> {
+         {
+            expressionToBuffer(ei.exp, buf, hgs);
+            return null;
+        }
         };
         switch ((inx.kind & 0xFF))
         {
@@ -3850,239 +3850,239 @@ public class hdrgen {
     }
 
     public static void typeToBufferx(Type t, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
-        Function1<Type,Void> visitType = new Function1<Type,Void>(){
-            public Void invoke(Type t) {
-                printf(new BytePtr("t = %p, ty = %d\n"), t, (t.ty & 0xFF));
-                throw new AssertionError("Unreachable code!");
-            }
+        Function1<Type,Void> visitType = (t) -> {
+         {
+            printf(new BytePtr("t = %p, ty = %d\n"), t, (t.ty & 0xFF));
+            throw new AssertionError("Unreachable code!");
+        }
         };
-        Function1<TypeError,Void> visitError = new Function1<TypeError,Void>(){
-            public Void invoke(TypeError t) {
-                (buf.get()).writestring(new ByteSlice("_error_"));
-                return null;
-            }
+        Function1<TypeError,Void> visitError = (t) -> {
+         {
+            (buf.get()).writestring(new ByteSlice("_error_"));
+            return null;
+        }
         };
-        Function1<TypeBasic,Void> visitBasic = new Function1<TypeBasic,Void>(){
-            public Void invoke(TypeBasic t) {
-                (buf.get()).writestring(t.dstring);
-                return null;
-            }
+        Function1<TypeBasic,Void> visitBasic = (t) -> {
+         {
+            (buf.get()).writestring(t.dstring);
+            return null;
+        }
         };
-        Function1<TypeTraits,Void> visitTraits = new Function1<TypeTraits,Void>(){
-            public Void invoke(TypeTraits t) {
-                expressionToBuffer(t.exp, buf, hgs);
-                return null;
-            }
+        Function1<TypeTraits,Void> visitTraits = (t) -> {
+         {
+            expressionToBuffer(t.exp, buf, hgs);
+            return null;
+        }
         };
-        Function1<TypeVector,Void> visitVector = new Function1<TypeVector,Void>(){
-            public Void invoke(TypeVector t) {
-                (buf.get()).writestring(new ByteSlice("__vector("));
-                visitWithMask(t.basetype, t.mod, buf, hgs);
-                (buf.get()).writestring(new ByteSlice(")"));
-                return null;
-            }
+        Function1<TypeVector,Void> visitVector = (t) -> {
+         {
+            (buf.get()).writestring(new ByteSlice("__vector("));
+            visitWithMask(t.basetype, t.mod, buf, hgs);
+            (buf.get()).writestring(new ByteSlice(")"));
+            return null;
+        }
         };
-        Function1<TypeSArray,Void> visitSArray = new Function1<TypeSArray,Void>(){
-            public Void invoke(TypeSArray t) {
+        Function1<TypeSArray,Void> visitSArray = (t) -> {
+         {
+            visitWithMask(t.next.value, t.mod, buf, hgs);
+            (buf.get()).writeByte(91);
+            sizeToBuffer(t.dim, buf, hgs);
+            (buf.get()).writeByte(93);
+            return null;
+        }
+        };
+        Function1<TypeDArray,Void> visitDArray = (t) -> {
+         {
+            Type ut = t.castMod((byte)0);
+            if ((hgs.get()).declstring)
+            {
+                /*goto L1*//*unrolled goto*/
+                (buf.get()).writestring(new ByteSlice("dstring"));
+            }
+            if (ut.equals(Type.tstring))
+            {
+                (buf.get()).writestring(new ByteSlice("string"));
+            }
+            else if (ut.equals(Type.twstring))
+            {
+                (buf.get()).writestring(new ByteSlice("wstring"));
+            }
+            else if (ut.equals(Type.tdstring))
+            {
+                (buf.get()).writestring(new ByteSlice("dstring"));
+            }
+            else
+            {
+            /*L1:*/
                 visitWithMask(t.next.value, t.mod, buf, hgs);
-                (buf.get()).writeByte(91);
-                sizeToBuffer(t.dim, buf, hgs);
-                (buf.get()).writeByte(93);
-                return null;
+                (buf.get()).writestring(new ByteSlice("[]"));
             }
+            return null;
+        }
         };
-        Function1<TypeDArray,Void> visitDArray = new Function1<TypeDArray,Void>(){
-            public Void invoke(TypeDArray t) {
-                Type ut = t.castMod((byte)0);
-                if ((hgs.get()).declstring)
-                {
-                    /*goto L1*//*unrolled goto*/
-                    (buf.get()).writestring(new ByteSlice("dstring"));
-                }
-                if (ut.equals(Type.tstring))
-                {
-                    (buf.get()).writestring(new ByteSlice("string"));
-                }
-                else if (ut.equals(Type.twstring))
-                {
-                    (buf.get()).writestring(new ByteSlice("wstring"));
-                }
-                else if (ut.equals(Type.tdstring))
-                {
-                    (buf.get()).writestring(new ByteSlice("dstring"));
-                }
-                else
-                {
-                /*L1:*/
-                    visitWithMask(t.next.value, t.mod, buf, hgs);
-                    (buf.get()).writestring(new ByteSlice("[]"));
-                }
-                return null;
+        Function1<TypeAArray,Void> visitAArray = (t) -> {
+         {
+            visitWithMask(t.next.value, t.mod, buf, hgs);
+            (buf.get()).writeByte(91);
+            visitWithMask(t.index, (byte)0, buf, hgs);
+            (buf.get()).writeByte(93);
+            return null;
+        }
+        };
+        Function1<TypePointer,Void> visitPointer = (t) -> {
+         {
+            if (((t.next.value.ty & 0xFF) == ENUMTY.Tfunction))
+            {
+                visitFuncIdentWithPostfix((TypeFunction)t.next.value, new ByteSlice("function"), buf, hgs);
             }
-        };
-        Function1<TypeAArray,Void> visitAArray = new Function1<TypeAArray,Void>(){
-            public Void invoke(TypeAArray t) {
+            else
+            {
                 visitWithMask(t.next.value, t.mod, buf, hgs);
-                (buf.get()).writeByte(91);
-                visitWithMask(t.index, (byte)0, buf, hgs);
-                (buf.get()).writeByte(93);
-                return null;
+                (buf.get()).writeByte(42);
             }
+            return null;
+        }
         };
-        Function1<TypePointer,Void> visitPointer = new Function1<TypePointer,Void>(){
-            public Void invoke(TypePointer t) {
-                if (((t.next.value.ty & 0xFF) == ENUMTY.Tfunction))
-                {
-                    visitFuncIdentWithPostfix((TypeFunction)t.next.value, new ByteSlice("function"), buf, hgs);
-                }
-                else
-                {
-                    visitWithMask(t.next.value, t.mod, buf, hgs);
-                    (buf.get()).writeByte(42);
-                }
-                return null;
-            }
+        Function1<TypeReference,Void> visitReference = (t) -> {
+         {
+            visitWithMask(t.next.value, t.mod, buf, hgs);
+            (buf.get()).writeByte(38);
+            return null;
+        }
         };
-        Function1<TypeReference,Void> visitReference = new Function1<TypeReference,Void>(){
-            public Void invoke(TypeReference t) {
-                visitWithMask(t.next.value, t.mod, buf, hgs);
-                (buf.get()).writeByte(38);
-                return null;
-            }
+        Function1<TypeFunction,Void> visitFunction = (t) -> {
+         {
+            visitFuncIdentWithPostfix(t, new ByteSlice(), buf, hgs);
+            return null;
+        }
         };
-        Function1<TypeFunction,Void> visitFunction = new Function1<TypeFunction,Void>(){
-            public Void invoke(TypeFunction t) {
-                visitFuncIdentWithPostfix(t, new ByteSlice(), buf, hgs);
-                return null;
-            }
+        Function1<TypeDelegate,Void> visitDelegate = (t) -> {
+         {
+            visitFuncIdentWithPostfix((TypeFunction)t.next.value, new ByteSlice("delegate"), buf, hgs);
+            return null;
+        }
         };
-        Function1<TypeDelegate,Void> visitDelegate = new Function1<TypeDelegate,Void>(){
-            public Void invoke(TypeDelegate t) {
-                visitFuncIdentWithPostfix((TypeFunction)t.next.value, new ByteSlice("delegate"), buf, hgs);
-                return null;
-            }
-        };
-        Function1<TypeQualified,Void> visitTypeQualifiedHelper = new Function1<TypeQualified,Void>(){
-            public Void invoke(TypeQualified t) {
-                {
-                    Slice<RootObject> __r1489 = t.idents.opSlice().copy();
-                    int __key1490 = 0;
-                    for (; (__key1490 < __r1489.getLength());__key1490 += 1) {
-                        RootObject id = __r1489.get(__key1490);
-                        if ((id.dyncast() == DYNCAST.dsymbol))
-                        {
-                            (buf.get()).writeByte(46);
-                            TemplateInstance ti = (TemplateInstance)id;
-                            dsymbolToBuffer(ti, buf, hgs);
-                        }
-                        else if ((id.dyncast() == DYNCAST.expression))
-                        {
-                            (buf.get()).writeByte(91);
-                            expressionToBuffer((Expression)id, buf, hgs);
-                            (buf.get()).writeByte(93);
-                        }
-                        else if ((id.dyncast() == DYNCAST.type))
-                        {
-                            (buf.get()).writeByte(91);
-                            typeToBufferx((Type)id, buf, hgs);
-                            (buf.get()).writeByte(93);
-                        }
-                        else
-                        {
-                            (buf.get()).writeByte(46);
-                            (buf.get()).writestring(id.asString());
-                        }
+        Function1<TypeQualified,Void> visitTypeQualifiedHelper = (t) -> {
+         {
+            {
+                Slice<RootObject> __r1489 = t.idents.opSlice().copy();
+                Ref<Integer> __key1490 = ref(0);
+                for (; (__key1490.value < __r1489.getLength());__key1490.value += 1) {
+                    RootObject id = __r1489.get(__key1490.value);
+                    if ((id.dyncast() == DYNCAST.dsymbol))
+                    {
+                        (buf.get()).writeByte(46);
+                        TemplateInstance ti = (TemplateInstance)id;
+                        dsymbolToBuffer(ti, buf, hgs);
+                    }
+                    else if ((id.dyncast() == DYNCAST.expression))
+                    {
+                        (buf.get()).writeByte(91);
+                        expressionToBuffer((Expression)id, buf, hgs);
+                        (buf.get()).writeByte(93);
+                    }
+                    else if ((id.dyncast() == DYNCAST.type))
+                    {
+                        (buf.get()).writeByte(91);
+                        typeToBufferx((Type)id, buf, hgs);
+                        (buf.get()).writeByte(93);
+                    }
+                    else
+                    {
+                        (buf.get()).writeByte(46);
+                        (buf.get()).writestring(id.asString());
                     }
                 }
-                return null;
             }
+            return null;
+        }
         };
-        Function1<TypeIdentifier,Void> visitIdentifier = new Function1<TypeIdentifier,Void>(){
-            public Void invoke(TypeIdentifier t) {
-                (buf.get()).writestring(t.ident.asString());
-                visitTypeQualifiedHelper.invoke(t);
-                return null;
+        Function1<TypeIdentifier,Void> visitIdentifier = (t) -> {
+         {
+            (buf.get()).writestring(t.ident.asString());
+            visitTypeQualifiedHelper.invoke(t);
+            return null;
+        }
+        };
+        Function1<TypeInstance,Void> visitInstance = (t) -> {
+         {
+            dsymbolToBuffer(t.tempinst, buf, hgs);
+            visitTypeQualifiedHelper.invoke(t);
+            return null;
+        }
+        };
+        Function1<TypeTypeof,Void> visitTypeof = (t) -> {
+         {
+            (buf.get()).writestring(new ByteSlice("typeof("));
+            expressionToBuffer(t.exp, buf, hgs);
+            (buf.get()).writeByte(41);
+            visitTypeQualifiedHelper.invoke(t);
+            return null;
+        }
+        };
+        Function1<TypeReturn,Void> visitReturn = (t) -> {
+         {
+            (buf.get()).writestring(new ByteSlice("typeof(return)"));
+            visitTypeQualifiedHelper.invoke(t);
+            return null;
+        }
+        };
+        Function1<TypeEnum,Void> visitEnum = (t) -> {
+         {
+            (buf.get()).writestring((hgs.get()).fullQual ? t.sym.toPrettyChars(false) : t.sym.toChars());
+            return null;
+        }
+        };
+        Function1<TypeStruct,Void> visitStruct = (t) -> {
+         {
+            TemplateInstance ti = t.sym.parent.value != null ? t.sym.parent.value.isTemplateInstance() : null;
+            if ((ti != null) && (pequals(ti.aliasdecl, t.sym)))
+            {
+                (buf.get()).writestring((hgs.get()).fullQual ? ti.toPrettyChars(false) : ti.toChars());
             }
-        };
-        Function1<TypeInstance,Void> visitInstance = new Function1<TypeInstance,Void>(){
-            public Void invoke(TypeInstance t) {
-                dsymbolToBuffer(t.tempinst, buf, hgs);
-                visitTypeQualifiedHelper.invoke(t);
-                return null;
-            }
-        };
-        Function1<TypeTypeof,Void> visitTypeof = new Function1<TypeTypeof,Void>(){
-            public Void invoke(TypeTypeof t) {
-                (buf.get()).writestring(new ByteSlice("typeof("));
-                expressionToBuffer(t.exp, buf, hgs);
-                (buf.get()).writeByte(41);
-                visitTypeQualifiedHelper.invoke(t);
-                return null;
-            }
-        };
-        Function1<TypeReturn,Void> visitReturn = new Function1<TypeReturn,Void>(){
-            public Void invoke(TypeReturn t) {
-                (buf.get()).writestring(new ByteSlice("typeof(return)"));
-                visitTypeQualifiedHelper.invoke(t);
-                return null;
-            }
-        };
-        Function1<TypeEnum,Void> visitEnum = new Function1<TypeEnum,Void>(){
-            public Void invoke(TypeEnum t) {
+            else
+            {
                 (buf.get()).writestring((hgs.get()).fullQual ? t.sym.toPrettyChars(false) : t.sym.toChars());
-                return null;
             }
+            return null;
+        }
         };
-        Function1<TypeStruct,Void> visitStruct = new Function1<TypeStruct,Void>(){
-            public Void invoke(TypeStruct t) {
-                TemplateInstance ti = t.sym.parent.value != null ? t.sym.parent.value.isTemplateInstance() : null;
-                if ((ti != null) && (pequals(ti.aliasdecl, t.sym)))
-                {
-                    (buf.get()).writestring((hgs.get()).fullQual ? ti.toPrettyChars(false) : ti.toChars());
-                }
-                else
-                {
-                    (buf.get()).writestring((hgs.get()).fullQual ? t.sym.toPrettyChars(false) : t.sym.toChars());
-                }
-                return null;
+        Function1<TypeClass,Void> visitClass = (t) -> {
+         {
+            TemplateInstance ti = t.sym.parent.value.isTemplateInstance();
+            if ((ti != null) && (pequals(ti.aliasdecl, t.sym)))
+            {
+                (buf.get()).writestring((hgs.get()).fullQual ? ti.toPrettyChars(false) : ti.toChars());
             }
+            else
+            {
+                (buf.get()).writestring((hgs.get()).fullQual ? t.sym.toPrettyChars(false) : t.sym.toChars());
+            }
+            return null;
+        }
         };
-        Function1<TypeClass,Void> visitClass = new Function1<TypeClass,Void>(){
-            public Void invoke(TypeClass t) {
-                TemplateInstance ti = t.sym.parent.value.isTemplateInstance();
-                if ((ti != null) && (pequals(ti.aliasdecl, t.sym)))
-                {
-                    (buf.get()).writestring((hgs.get()).fullQual ? ti.toPrettyChars(false) : ti.toChars());
-                }
-                else
-                {
-                    (buf.get()).writestring((hgs.get()).fullQual ? t.sym.toPrettyChars(false) : t.sym.toChars());
-                }
-                return null;
-            }
+        Function1<TypeTuple,Void> visitTuple = (t) -> {
+         {
+            parametersToBuffer(new ParameterList(t.arguments, VarArg.none), buf, hgs);
+            return null;
+        }
         };
-        Function1<TypeTuple,Void> visitTuple = new Function1<TypeTuple,Void>(){
-            public Void invoke(TypeTuple t) {
-                parametersToBuffer(new ParameterList(t.arguments, VarArg.none), buf, hgs);
-                return null;
-            }
+        Function1<TypeSlice,Void> visitSlice = (t) -> {
+         {
+            visitWithMask(t.next.value, t.mod, buf, hgs);
+            (buf.get()).writeByte(91);
+            sizeToBuffer(t.lwr, buf, hgs);
+            (buf.get()).writestring(new ByteSlice(" .. "));
+            sizeToBuffer(t.upr, buf, hgs);
+            (buf.get()).writeByte(93);
+            return null;
+        }
         };
-        Function1<TypeSlice,Void> visitSlice = new Function1<TypeSlice,Void>(){
-            public Void invoke(TypeSlice t) {
-                visitWithMask(t.next.value, t.mod, buf, hgs);
-                (buf.get()).writeByte(91);
-                sizeToBuffer(t.lwr, buf, hgs);
-                (buf.get()).writestring(new ByteSlice(" .. "));
-                sizeToBuffer(t.upr, buf, hgs);
-                (buf.get()).writeByte(93);
-                return null;
-            }
-        };
-        Function1<TypeNull,Void> visitNull = new Function1<TypeNull,Void>(){
-            public Void invoke(TypeNull t) {
-                (buf.get()).writestring(new ByteSlice("typeof(null)"));
-                return null;
-            }
+        Function1<TypeNull,Void> visitNull = (t) -> {
+         {
+            (buf.get()).writestring(new ByteSlice("typeof(null)"));
+            return null;
+        }
         };
         switch ((t.ty & 0xFF))
         {

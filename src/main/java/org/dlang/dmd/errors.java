@@ -29,45 +29,51 @@ public class errors {
 
 
         public  void error(Loc loc, BytePtr format, Object... args) {
-            this.error(loc, format, new RawSlice<>(args));
+            Ref<BytePtr> format_ref = ref(format);
+            this.error(loc, format_ref.value, new RawSlice<>(args));
         }
 
-        public abstract void error(Loc loc, BytePtr format, Ptr<Slice<Object>> args);
+        public abstract void error(Loc loc, BytePtr format, Slice<Object> args);
 
 
         public  void errorSupplemental(Loc loc, BytePtr format, Object... args) {
-            this.errorSupplemental(loc, format, new RawSlice<>(args));
+            Ref<BytePtr> format_ref = ref(format);
+            this.errorSupplemental(loc, format_ref.value, new RawSlice<>(args));
         }
 
-        public abstract void errorSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> arg2);
+        public abstract void errorSupplemental(Loc loc, BytePtr format, Slice<Object> arg2);
 
 
         public  void warning(Loc loc, BytePtr format, Object... args) {
-            this.warning(loc, format, new RawSlice<>(args));
+            Ref<BytePtr> format_ref = ref(format);
+            this.warning(loc, format_ref.value, new RawSlice<>(args));
         }
 
-        public abstract void warning(Loc loc, BytePtr format, Ptr<Slice<Object>> args);
+        public abstract void warning(Loc loc, BytePtr format, Slice<Object> args);
 
 
         public  void warningSupplemental(Loc loc, BytePtr format, Object... args) {
-            this.warningSupplemental(loc, format, new RawSlice<>(args));
+            Ref<BytePtr> format_ref = ref(format);
+            this.warningSupplemental(loc, format_ref.value, new RawSlice<>(args));
         }
 
-        public abstract void warningSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> arg2);
+        public abstract void warningSupplemental(Loc loc, BytePtr format, Slice<Object> arg2);
 
 
         public  void deprecation(Loc loc, BytePtr format, Object... args) {
-            this.deprecation(loc, format, new RawSlice<>(args));
+            Ref<BytePtr> format_ref = ref(format);
+            this.deprecation(loc, format_ref.value, new RawSlice<>(args));
         }
 
-        public abstract void deprecation(Loc loc, BytePtr format, Ptr<Slice<Object>> args);
+        public abstract void deprecation(Loc loc, BytePtr format, Slice<Object> args);
 
 
         public  void deprecationSupplemental(Loc loc, BytePtr format, Object... args) {
-            this.deprecationSupplemental(loc, format, new RawSlice<>(args));
+            Ref<BytePtr> format_ref = ref(format);
+            this.deprecationSupplemental(loc, format_ref.value, new RawSlice<>(args));
         }
 
-        public abstract void deprecationSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> arg2);
+        public abstract void deprecationSupplemental(Loc loc, BytePtr format, Slice<Object> arg2);
 
 
 
@@ -97,25 +103,25 @@ public class errors {
             return this.deprecationCount_;
         }
 
-        public  void error(Loc loc, BytePtr format, Ptr<Slice<Object>> args) {
+        public  void error(Loc loc, BytePtr format, Slice<Object> args) {
             verror(loc, format, args, null, null, new BytePtr("Error: "));
             this.errorCount_++;
         }
 
-        public  void errorSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> args) {
+        public  void errorSupplemental(Loc loc, BytePtr format, Slice<Object> args) {
             verrorSupplemental(loc, format, args);
         }
 
-        public  void warning(Loc loc, BytePtr format, Ptr<Slice<Object>> args) {
+        public  void warning(Loc loc, BytePtr format, Slice<Object> args) {
             vwarning(loc, format, args);
             this.warningCount_++;
         }
 
-        public  void warningSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> args) {
+        public  void warningSupplemental(Loc loc, BytePtr format, Slice<Object> args) {
             vwarningSupplemental(loc, format, args);
         }
 
-        public  void deprecation(Loc loc, BytePtr format, Ptr<Slice<Object>> args) {
+        public  void deprecation(Loc loc, BytePtr format, Slice<Object> args) {
             vdeprecation(loc, format, args, null, null);
             if (((this.useDeprecated & 0xFF) == 0))
             {
@@ -127,7 +133,7 @@ public class errors {
             }
         }
 
-        public  void deprecationSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> args) {
+        public  void deprecationSupplemental(Loc loc, BytePtr format, Slice<Object> args) {
             vdeprecationSupplemental(loc, format, args);
         }
 
@@ -153,46 +159,55 @@ public class errors {
     }
 
     public static void error(Loc loc, BytePtr format, Object... ap) {
-        verror(loc, format, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
+        Ref<BytePtr> format_ref = ref(format);
+        verror(loc, format_ref.value, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
     }
 
     // removed duplicate function, [["void errorLoc, BytePtr", "int isattyint"]] signature: void errorLoc, BytePtr
     public static void error(BytePtr filename, int linnum, int charnum, BytePtr format, Object... ap) {
+        Ref<BytePtr> format_ref = ref(format);
         Loc loc = loc = new Loc(filename, linnum, charnum);
-        verror(loc, format, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
+        verror(loc, format_ref.value, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
     }
 
     public static void errorSupplemental(Loc loc, BytePtr format, Object... ap) {
-        verrorSupplemental(loc, format, new RawSlice<>(ap));
+        Ref<BytePtr> format_ref = ref(format);
+        verrorSupplemental(loc, format_ref.value, new RawSlice<>(ap));
     }
 
     public static void warning(Loc loc, BytePtr format, Object... ap) {
-        vwarning(loc, format, new RawSlice<>(ap));
+        Ref<BytePtr> format_ref = ref(format);
+        vwarning(loc, format_ref.value, new RawSlice<>(ap));
     }
 
     public static void warningSupplemental(Loc loc, BytePtr format, Object... ap) {
-        vwarningSupplemental(loc, format, new RawSlice<>(ap));
+        Ref<BytePtr> format_ref = ref(format);
+        vwarningSupplemental(loc, format_ref.value, new RawSlice<>(ap));
     }
 
     public static void deprecation(Loc loc, BytePtr format, Object... ap) {
-        vdeprecation(loc, format, new RawSlice<>(ap), null, null);
+        Ref<BytePtr> format_ref = ref(format);
+        vdeprecation(loc, format_ref.value, new RawSlice<>(ap), null, null);
     }
 
     public static void deprecationSupplemental(Loc loc, BytePtr format, Object... ap) {
-        vdeprecationSupplemental(loc, format, new RawSlice<>(ap));
+        Ref<BytePtr> format_ref = ref(format);
+        vdeprecationSupplemental(loc, format_ref.value, new RawSlice<>(ap));
     }
 
     public static void message(Loc loc, BytePtr format, Object... ap) {
-        vmessage(loc, format, new RawSlice<>(ap));
+        Ref<BytePtr> format_ref = ref(format);
+        vmessage(loc, format_ref.value, new RawSlice<>(ap));
     }
 
     public static void message(BytePtr format, Object... ap) {
-        vmessage(Loc.initial, format, new RawSlice<>(ap));
+        Ref<BytePtr> format_ref = ref(format);
+        vmessage(Loc.initial, format_ref.value, new RawSlice<>(ap));
     }
 
-    public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Ptr<Slice<Object>> ap, BytePtr p1, BytePtr p2) {
-        Ptr<Console> con = ((Ptr<Console>)global.value.console);
-        BytePtr p = pcopy(loc.toChars(global.value.params.showColumns));
+    public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2) {
+        Ptr<Console> con = ((Ptr<Console>)global.console);
+        BytePtr p = pcopy(loc.toChars(global.params.showColumns));
         if (con != null)
         {
             (con.get()).setColorBright(true);
@@ -231,7 +246,7 @@ public class errors {
             fputs(tmp.value.peekChars(), stderr);
         }
         fputc(10, stderr);
-        if (global.value.params.printErrorContext && !loc.opEquals(Loc.initial) && (strstr(loc.filename, new BytePtr(".d-mixin-")) == null) && (global.value.params.mixinOut == null))
+        if (global.params.printErrorContext && !loc.opEquals(Loc.initial) && (strstr(loc.filename, new BytePtr(".d-mixin-")) == null) && (global.params.mixinOut == null))
         {
             FileAndLines fllines = FileCache.fileCache.addOrGetFile(loc.filename.slice(0,strlen(loc.filename)));
             if ((loc.linnum - 1 < fllines.lines.value.getLength()))
@@ -257,56 +272,56 @@ public class errors {
     }
 
     // defaulted all parameters starting with #7
-    public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Ptr<Slice<Object>> ap, BytePtr p1) {
-        return verrorPrint(loc, headerColor, header, format, ap, p1, null);
+    public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Slice<Object> ap, BytePtr p1) {
+        verrorPrint(loc, headerColor, header, format, ap, p1, null);
     }
 
     // defaulted all parameters starting with #6
-    public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Ptr<Slice<Object>> ap) {
-        return verrorPrint(loc, headerColor, header, format, ap, null, null);
+    public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Slice<Object> ap) {
+        verrorPrint(loc, headerColor, header, format, ap, null, null);
     }
 
-    public static void verror(Loc loc, BytePtr format, Ptr<Slice<Object>> ap, BytePtr p1, BytePtr p2, BytePtr header) {
-        global.value.errors++;
-        if (global.value.gag == 0)
+    public static void verror(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2, BytePtr header) {
+        global.errors++;
+        if (global.gag == 0)
         {
             verrorPrint(loc, Color.brightRed, header, format, ap, p1, p2);
-            if ((global.value.params.errorLimit != 0) && (global.value.errors >= global.value.params.errorLimit))
+            if ((global.params.errorLimit != 0) && (global.errors >= global.params.errorLimit))
             {
                 fatal();
             }
         }
         else
         {
-            if (global.value.params.showGaggedErrors)
+            if (global.params.showGaggedErrors)
             {
-                fprintf(stderr, new BytePtr("(spec:%d) "), global.value.gag);
+                fprintf(stderr, new BytePtr("(spec:%d) "), global.gag);
                 verrorPrint(loc, Color.brightBlue, header, format, ap, p1, p2);
             }
-            global.value.gaggedErrors++;
+            global.gaggedErrors++;
         }
     }
 
     // defaulted all parameters starting with #6
-    public static void verror(Loc loc, BytePtr format, Ptr<Slice<Object>> ap, BytePtr p1, BytePtr p2) {
-        return verror(loc, format, ap, p1, p2, new BytePtr("Error: "));
+    public static void verror(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2) {
+        verror(loc, format, ap, p1, p2, new BytePtr("Error: "));
     }
 
     // defaulted all parameters starting with #5
-    public static void verror(Loc loc, BytePtr format, Ptr<Slice<Object>> ap, BytePtr p1) {
-        return verror(loc, format, ap, p1, null, new BytePtr("Error: "));
+    public static void verror(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1) {
+        verror(loc, format, ap, p1, null, new BytePtr("Error: "));
     }
 
     // defaulted all parameters starting with #4
-    public static void verror(Loc loc, BytePtr format, Ptr<Slice<Object>> ap) {
-        return verror(loc, format, ap, null, null, new BytePtr("Error: "));
+    public static void verror(Loc loc, BytePtr format, Slice<Object> ap) {
+        verror(loc, format, ap, null, null, new BytePtr("Error: "));
     }
 
-    public static void verrorSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> ap) {
+    public static void verrorSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
         int color = Color.black;
-        if (global.value.gag != 0)
+        if (global.gag != 0)
         {
-            if (!global.value.params.showGaggedErrors)
+            if (!global.params.showGaggedErrors)
             {
                 return ;
             }
@@ -319,61 +334,61 @@ public class errors {
         verrorPrint(loc, color, new BytePtr("       "), format, ap, null, null);
     }
 
-    public static void vwarning(Loc loc, BytePtr format, Ptr<Slice<Object>> ap) {
-        if (((global.value.params.warnings & 0xFF) != 2))
+    public static void vwarning(Loc loc, BytePtr format, Slice<Object> ap) {
+        if (((global.params.warnings & 0xFF) != 2))
         {
-            if (global.value.gag == 0)
+            if (global.gag == 0)
             {
                 verrorPrint(loc, Color.brightYellow, new BytePtr("Warning: "), format, ap, null, null);
-                if (((global.value.params.warnings & 0xFF) == 0))
+                if (((global.params.warnings & 0xFF) == 0))
                 {
-                    global.value.warnings++;
+                    global.warnings++;
                 }
             }
             else
             {
-                global.value.gaggedWarnings++;
+                global.gaggedWarnings++;
             }
         }
     }
 
-    public static void vwarningSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> ap) {
-        if (((global.value.params.warnings & 0xFF) != 2) && (global.value.gag == 0))
+    public static void vwarningSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
+        if (((global.params.warnings & 0xFF) != 2) && (global.gag == 0))
         {
             verrorPrint(loc, Color.brightYellow, new BytePtr("       "), format, ap, null, null);
         }
     }
 
-    public static void vdeprecation(Loc loc, BytePtr format, Ptr<Slice<Object>> ap, BytePtr p1, BytePtr p2) {
-        if (((global.value.params.useDeprecated & 0xFF) == 0))
+    public static void vdeprecation(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2) {
+        if (((global.params.useDeprecated & 0xFF) == 0))
         {
             verror(loc, format, ap, p1, p2, errors.vdeprecationheader);
         }
-        else if (((global.value.params.useDeprecated & 0xFF) == 1))
+        else if (((global.params.useDeprecated & 0xFF) == 1))
         {
-            if (global.value.gag == 0)
+            if (global.gag == 0)
             {
                 verrorPrint(loc, Color.brightCyan, errors.vdeprecationheader, format, ap, p1, p2);
             }
             else
             {
-                global.value.gaggedWarnings++;
+                global.gaggedWarnings++;
             }
         }
     }
 
     // defaulted all parameters starting with #5
-    public static void vdeprecation(Loc loc, BytePtr format, Ptr<Slice<Object>> ap, BytePtr p1) {
-        return vdeprecation(loc, format, ap, p1, null);
+    public static void vdeprecation(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1) {
+        vdeprecation(loc, format, ap, p1, null);
     }
 
     // defaulted all parameters starting with #4
-    public static void vdeprecation(Loc loc, BytePtr format, Ptr<Slice<Object>> ap) {
-        return vdeprecation(loc, format, ap, null, null);
+    public static void vdeprecation(Loc loc, BytePtr format, Slice<Object> ap) {
+        vdeprecation(loc, format, ap, null, null);
     }
 
-    public static void vmessage(Loc loc, BytePtr format, Ptr<Slice<Object>> ap) {
-        BytePtr p = pcopy(loc.toChars(global.value.params.showColumns));
+    public static void vmessage(Loc loc, BytePtr format, Slice<Object> ap) {
+        BytePtr p = pcopy(loc.toChars(global.params.showColumns));
         if (p.get() != 0)
         {
             fprintf(stdout, new BytePtr("%s: "), p);
@@ -386,12 +401,12 @@ public class errors {
         fflush(stdout);
     }
 
-    public static void vdeprecationSupplemental(Loc loc, BytePtr format, Ptr<Slice<Object>> ap) {
-        if (((global.value.params.useDeprecated & 0xFF) == 0))
+    public static void vdeprecationSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
+        if (((global.params.useDeprecated & 0xFF) == 0))
         {
             verrorSupplemental(loc, format, ap);
         }
-        else if (((global.value.params.useDeprecated & 0xFF) == 1) && (global.value.gag == 0))
+        else if (((global.params.useDeprecated & 0xFF) == 1) && (global.gag == 0))
         {
             verrorPrint(loc, Color.brightCyan, new BytePtr("       "), format, ap, null, null);
         }
@@ -463,8 +478,8 @@ public class errors {
             return ;
         }
         errors.colorHighlightCodenested += 1;
-        int gaggedErrorsSave = global.value.startGagging();
-        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.value.params.useDeprecated);
+        int gaggedErrorsSave = global.startGagging();
+        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
         Lexer lex = new Lexer(null, toBytePtr(buf.get().data), 0, (buf.get()).offset - 1, false, true, diagnosticReporter);
         OutBuffer res = new OutBuffer();
         BytePtr lastp = pcopy(toBytePtr(buf.get().data));
@@ -531,7 +546,7 @@ public class errors {
         res.writeByte(0);
         (buf.get()).setsize(0);
         (buf.get()).write(ptr(res));
-        global.value.endGagging(gaggedErrorsSave);
+        global.endGagging(gaggedErrorsSave);
         errors.colorHighlightCodenested -= 1;
     }
 

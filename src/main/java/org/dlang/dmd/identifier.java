@@ -166,17 +166,17 @@ public class identifier {
                 idBuf.print((long)loc.linnum);
                 idBuf.writestring(new ByteSlice("_C"));
                 idBuf.print((long)loc.charnum);
-                Function0<Integer> __lambda7 = new Function0<Integer>(){
-                    public Integer invoke() {
-                        return 1;
-                    }
+                Function0<Integer> __lambda7 = () -> {
+                 {
+                    return 1;
+                }
                 };
-                Function1<Integer,Integer> __lambda8 = new Function1<Integer,Integer>(){
-                    public Integer invoke(Integer counter) {
-                        idBuf.writestring(new ByteSlice("_"));
-                        idBuf.print((long)counter);
-                        return counter + 1;
-                    }
+                Function1<Ref<Integer>,Integer> __lambda8 = (counter) -> {
+                 {
+                    idBuf.writestring(new ByteSlice("_"));
+                    idBuf.print((long)counter);
+                    return counter + 1;
+                }
                 };
                 update(identifier.generateIdWithLoccounters, new Key(loc, prefix), __lambda7, __lambda8);
                 return idPool(idBuf.peekSlice());
@@ -221,11 +221,11 @@ public class identifier {
             {
                 return false;
             }
-            IntRef idx = ref(0);
+            Ref<Integer> idx = ref(0);
             for (; (idx.value < str.getLength());){
-                int dc = 0x0ffff;
+                Ref<Integer> dc = ref(0x0ffff);
                 BytePtr q = pcopy(utf_decodeChar(toBytePtr(str), str.getLength(), idx, dc));
-                if ((q != null) || !((dc >= 128) && isUniAlpha(dc) || (isalnum(dc) != 0) || (dc == 95)))
+                if ((q != null) || !((dc.value >= 128) && isUniAlpha(dc.value) || (isalnum(dc.value) != 0) || (dc.value == 95)))
                 {
                     return false;
                 }

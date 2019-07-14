@@ -59,7 +59,7 @@ public class safe {
                 }
                 if (hasPointers && ((v.type.toBasetype().ty & 0xFF) != ENUMTY.Tstruct))
                 {
-                    if ((ad.type.alignment() < target.value.ptrsize) || ((v.offset & target.value.ptrsize - 1) != 0) && (sc.get()).func.setUnsafe())
+                    if ((ad.type.alignment() < target.ptrsize) || ((v.offset & target.ptrsize - 1) != 0) && (sc.get()).func.setUnsafe())
                     {
                         if (printmsg)
                         {
@@ -96,7 +96,7 @@ public class safe {
         {
             ClassDeclaration cdfrom = tfromb.isClassHandle();
             ClassDeclaration cdto = ttob.isClassHandle();
-            IntRef offset = ref(0);
+            int offset = 0;
             if (!cdfrom.isBaseOf(cdto, ptr(offset)) && !((cdfrom.isInterfaceDeclaration() != null) || (cdto.isInterfaceDeclaration() != null) && (cdfrom.classKind == ClassKind.d) && (cdto.classKind == ClassKind.d)))
             {
                 return false;

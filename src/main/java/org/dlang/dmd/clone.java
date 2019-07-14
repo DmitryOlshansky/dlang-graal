@@ -97,7 +97,7 @@ public class clone {
             Ref<DArray<Expression>> a = ref(new DArray<Expression>());
             try {
                 a.value.setDim(1);
-                int errors = global.value.startGagging();
+                int errors = global.startGagging();
                 sc = (sc.get()).push();
                 (sc.get()).tinst = null;
                 (sc.get()).minst = null;
@@ -109,7 +109,7 @@ public class clone {
                     f = resolveFuncCall(ad.loc, sc, assign, null, ad.type, ptr(a), FuncResolveFlag.quiet);
                 }
                 sc = (sc.get()).pop();
-                global.value.endGagging(errors);
+                global.endGagging(errors);
                 if (f != null)
                 {
                     if (f.errors)
@@ -135,10 +135,10 @@ public class clone {
     }
 
     public static boolean needOpAssign(StructDeclaration sd) {
-        Function0<Boolean> isNeeded = new Function0<Boolean>(){
-            public Boolean invoke() {
-                return true;
-            }
+        Function0<Boolean> isNeeded = () -> {
+         {
+            return true;
+        }
         };
         if (sd.isUnionDeclaration() != null)
         {
@@ -285,14 +285,14 @@ public class clone {
         (sd.members.get()).push(fop);
         fop.addMember(sc, sd);
         sd.hasIdentityAssign = true;
-        int errors = global.value.startGagging();
+        int errors = global.startGagging();
         Ptr<Scope> sc2 = (sc.get()).push();
         (sc2.get()).stc = 0L;
         (sc2.get()).linkage = LINK.d;
         dsymbolSemantic(fop, sc2);
         semantic2(fop, sc2);
         (sc2.get()).pop();
-        if (global.value.endGagging(errors))
+        if (global.endGagging(errors))
         {
             fop.storage_class |= 137438953472L;
             fop.fbody = null;
@@ -376,9 +376,9 @@ public class clone {
         {
             NullExp er = new NullExp(ad.loc, null);
             IdentifierExp el = new IdentifierExp(ad.loc, Id.p);
-            Ref<DArray<Expression>> a = ref(new DArray<Expression>());
+            DArray<Expression> a = new DArray<Expression>();
             try {
-                a.value.setDim(1);
+                a.setDim(1);
                 {
                     int __key809 = 0;
                     int __limit810 = 5;
@@ -406,7 +406,7 @@ public class clone {
                             throw SwitchError.INSTANCE;
                         }
                         FuncDeclaration f = null;
-                        int errors = global.value.startGagging();
+                        int errors = global.startGagging();
                         sc = (sc.get()).push();
                         (sc.get()).tinst = null;
                         (sc.get()).minst = null;
@@ -415,8 +415,8 @@ public class clone {
                             int __limit812 = 2;
                             for (; (__key811 < __limit812);__key811 += 1) {
                                 int j = __key811;
-                                a.value.set(0, (j == 0) ? er : el);
-                                a.value.get(0).type.value = tthis;
+                                a.set(0, (j == 0) ? er : el);
+                                a.get(0).type.value = tthis;
                                 f = resolveFuncCall(ad.loc, sc, eq, null, tthis, ptr(a), FuncResolveFlag.quiet);
                                 if (f != null)
                                 {
@@ -425,7 +425,7 @@ public class clone {
                             }
                         }
                         sc = (sc.get()).pop();
-                        global.value.endGagging(errors);
+                        global.endGagging(errors);
                         if (f != null)
                         {
                             if (f.errors)
@@ -466,7 +466,7 @@ public class clone {
                     {
                         TypeFunction tfeqptr = null;
                         {
-                            Ref<Scope> scx = ref(new Scope().copy());
+                            Scope scx = new Scope().copy();
                             Ptr<DArray<Parameter>> parameters = refPtr(new DArray<Parameter>());
                             (parameters.get()).push(new Parameter(2097156L, sd.type, null, null, null));
                             tfeqptr = new TypeFunction(new ParameterList(parameters, VarArg.none), Type.tbool, LINK.d, 0L);
@@ -505,14 +505,14 @@ public class clone {
         Expression e2 = new IdentifierExp(loc, Id.q);
         Expression e = new EqualExp(TOK.equal, loc, e1, e2);
         fop.fbody = new ReturnStatement(loc, e);
-        int errors = global.value.startGagging();
+        int errors = global.startGagging();
         Ptr<Scope> sc2 = (sc.get()).push();
         (sc2.get()).stc = 0L;
         (sc2.get()).linkage = LINK.d;
         dsymbolSemantic(fop, sc2);
         semantic2(fop, sc2);
         (sc2.get()).pop();
-        if (global.value.endGagging(errors))
+        if (global.endGagging(errors))
         {
             fop = StructDeclaration.xerreq;
         }
@@ -530,10 +530,10 @@ public class clone {
                     {
                         TypeFunction tfcmpptr = null;
                         {
-                            Ref<Scope> scx = ref(new Scope().copy());
+                            Scope scx = new Scope().copy();
                             Ptr<DArray<Parameter>> parameters = refPtr(new DArray<Parameter>());
                             (parameters.get()).push(new Parameter(2097156L, sd.type, null, null, null));
-                            tfcmpptr = new TypeFunction(new ParameterList(parameters, VarArg.none), Type.tint32.value, LINK.d, 0L);
+                            tfcmpptr = new TypeFunction(new ParameterList(parameters, VarArg.none), Type.tint32, LINK.d, 0L);
                             tfcmpptr.mod = (byte)1;
                             tfcmpptr = (TypeFunction)typeSemantic(tfcmpptr, Loc.initial, ptr(scx));
                         }
@@ -566,7 +566,7 @@ public class clone {
         Ptr<DArray<Parameter>> parameters = refPtr(new DArray<Parameter>());
         (parameters.get()).push(new Parameter(2097156L, sd.type, Id.p, null, null));
         (parameters.get()).push(new Parameter(2097156L, sd.type, Id.q, null, null));
-        TypeFunction tf = new TypeFunction(new ParameterList(parameters, VarArg.none), Type.tint32.value, LINK.d, 0L);
+        TypeFunction tf = new TypeFunction(new ParameterList(parameters, VarArg.none), Type.tint32, LINK.d, 0L);
         Identifier id = Id.xopCmp;
         FuncDeclaration fop = new FuncDeclaration(declLoc, Loc.initial, id, 1L, tf);
         fop.generated = true;
@@ -574,14 +574,14 @@ public class clone {
         Expression e2 = new IdentifierExp(loc, Id.q);
         Expression e = new CallExp(loc, new DotIdExp(loc, e2, Id.cmp), e1);
         fop.fbody = new ReturnStatement(loc, e);
-        int errors = global.value.startGagging();
+        int errors = global.startGagging();
         Ptr<Scope> sc2 = (sc.get()).push();
         (sc2.get()).stc = 0L;
         (sc2.get()).linkage = LINK.d;
         dsymbolSemantic(fop, sc2);
         semantic2(fop, sc2);
         (sc2.get()).pop();
-        if (global.value.endGagging(errors))
+        if (global.endGagging(errors))
         {
             fop = StructDeclaration.xerrcmp;
         }
@@ -852,7 +852,7 @@ public class clone {
             break;
         }
         ad.primaryDtor = xdtor;
-        if ((xdtor != null) && (xdtor.linkage == LINK.cpp) && !target.value.twoDtorInVtable)
+        if ((xdtor != null) && (xdtor.linkage == LINK.cpp) && !target.twoDtorInVtable)
         {
             xdtor = buildWindowsCppDtor(ad, xdtor, sc);
         }
@@ -905,7 +905,7 @@ public class clone {
         {
             return null;
         }
-        if ((ad.classKind != ClassKind.cpp) || global.value.params.is64bit)
+        if ((ad.classKind != ClassKind.cpp) || global.params.is64bit)
         {
             return dtor;
         }

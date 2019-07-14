@@ -69,7 +69,7 @@ public class blockexit {
         }
 
         public  void visit(CompileStatement s) {
-            assert(global.value.errors != 0);
+            assert(global.errors != 0);
             this.result = 1;
         }
 
@@ -146,7 +146,7 @@ public class blockexit {
         }
 
         public  void visit(WhileStatement s) {
-            assert(global.value.errors != 0);
+            assert(global.errors != 0);
             this.result = 1;
         }
 
@@ -239,7 +239,7 @@ public class blockexit {
         }
 
         public  void visit(ForeachRangeStatement s) {
-            assert(global.value.errors != 0);
+            assert(global.errors != 0);
             this.result = 1;
         }
 

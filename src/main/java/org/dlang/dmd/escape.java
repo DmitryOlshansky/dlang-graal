@@ -277,7 +277,7 @@ public class escape {
                 DotVarExp dve = (DotVarExp)e.e1.value;
                 FuncDeclaration fd = dve.var.isFuncDeclaration();
                 AggregateDeclaration ad = null;
-                if (global.value.params.vsafe && tf.isreturn && (fd != null) && ((ad = fd.isThis()) != null))
+                if (global.params.vsafe && tf.isreturn && (fd != null) && ((ad = fd.isThis()) != null))
                 {
                     if ((ad.isClassDeclaration() != null) || tf.isscope)
                     {
@@ -616,19 +616,19 @@ public class escape {
             {
                 return false;
             }
-            boolean result = false;
-            Function2<VarDeclaration,BytePtr,Void> unsafeAssign = new Function2<VarDeclaration,BytePtr,Void>(){
-                public Void invoke(VarDeclaration v, BytePtr desc) {
-                    if (global.value.params.vsafe && (sc.get()).func.setUnsafe())
+            Ref<Boolean> result = ref(false);
+            Function2<VarDeclaration,BytePtr,Void> unsafeAssign = (v, desc) -> {
+             {
+                if (global.params.vsafe && (sc.get()).func.setUnsafe())
+                {
+                    if (!gag)
                     {
-                        if (!gag)
-                        {
-                            error(arg.loc, new BytePtr("%s `%s` assigned to non-scope parameter `%s` calling %s"), desc, v.toChars(), par != null ? par.toChars() : new BytePtr("this"), fdc != null ? fdc.toPrettyChars(false) : new BytePtr("indirectly"));
-                        }
-                        result = true;
+                        error(arg.loc, new BytePtr("%s `%s` assigned to non-scope parameter `%s` calling %s"), desc, v.toChars(), par != null ? par.toChars() : new BytePtr("this"), fdc != null ? fdc.toPrettyChars(false) : new BytePtr("indirectly"));
                     }
-                    return null;
+                    result.value = true;
                 }
+                return null;
+            }
             };
             {
                 Slice<VarDeclaration> __r1260 = er.value.byvalue.opSlice().copy();
@@ -661,7 +661,7 @@ public class escape {
                     {
                         if (false)
                         {
-                            printf(new BytePtr("no infer for %s in %s loc %s, fdc %s, %d\n"), v.toChars(), (sc.get()).func.ident.toChars(), (sc.get()).func.loc.toChars(global.value.params.showColumns), fdc.ident.toChars(), 162);
+                            printf(new BytePtr("no infer for %s in %s loc %s, fdc %s, %d\n"), v.toChars(), (sc.get()).func.ident.toChars(), (sc.get()).func.loc.toChars(global.params.showColumns), fdc.ident.toChars(), 162);
                         }
                         v.doNotInferScope = true;
                     }
@@ -732,11 +732,11 @@ public class escape {
                         {
                             error(ee.loc, new BytePtr("reference to stack allocated value returned by `%s` assigned to non-scope parameter `%s`"), ee.toChars(), par != null ? par.toChars() : new BytePtr("this"));
                         }
-                        result = true;
+                        result.value = true;
                     }
                 }
             }
-            return result;
+            return result.value;
         }
         finally {
         }
@@ -863,32 +863,32 @@ public class escape {
             {
                 printf(new BytePtr("va is ref `%s`\n"), va.toChars());
             }
-            Function0<Boolean> isFirstRef = new Function0<Boolean>(){
-                public Boolean invoke() {
-                    if (!vaIsRef)
+            Function0<Boolean> isFirstRef = () -> {
+             {
+                if (!vaIsRef)
+                {
+                    return false;
+                }
+                Dsymbol p = va.toParent2();
+                FuncDeclaration fd = (sc.get()).func;
+                if ((pequals(p, fd)) && (fd.type != null) && ((fd.type.ty & 0xFF) == ENUMTY.Tfunction))
+                {
+                    TypeFunction tf = (TypeFunction)fd.type;
+                    if ((tf.nextOf() == null) || ((tf.nextOf().ty & 0xFF) != ENUMTY.Tvoid) && (fd.isCtorDeclaration() == null))
                     {
                         return false;
                     }
-                    Dsymbol p = va.toParent2();
-                    FuncDeclaration fd = (sc.get()).func;
-                    if ((pequals(p, fd)) && (fd.type != null) && ((fd.type.ty & 0xFF) == ENUMTY.Tfunction))
+                    if ((pequals(va, fd.vthis)))
                     {
-                        TypeFunction tf = (TypeFunction)fd.type;
-                        if ((tf.nextOf() == null) || ((tf.nextOf().ty & 0xFF) != ENUMTY.Tvoid) && (fd.isCtorDeclaration() == null))
-                        {
-                            return false;
-                        }
-                        if ((pequals(va, fd.vthis)))
-                        {
-                            return true;
-                        }
-                        if ((fd.parameters != null) && ((fd.parameters.get()).length != 0) && (pequals((fd.parameters.get()).get(0), va)))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
-                    return false;
+                    if ((fd.parameters != null) && ((fd.parameters.get()).length != 0) && (pequals((fd.parameters.get()).get(0), va)))
+                    {
+                        return true;
+                    }
                 }
+                return false;
+            }
             };
             boolean vaIsFirstRef = isFirstRef.invoke();
             if (false)
@@ -1031,7 +1031,7 @@ public class escape {
                     {
                         continue;
                     }
-                    if (global.value.params.vsafe)
+                    if (global.params.vsafe)
                     {
                         if ((va != null) && va.isScope() && ((va.storage_class & 17592186044416L) != 0) && ((v.storage_class & 2101248L) == 0L) && (sc.get()).func.setUnsafe())
                         {
@@ -1118,7 +1118,7 @@ public class escape {
                     Ref<DArray<VarDeclaration>> vars = ref(new DArray<VarDeclaration>());
                     try {
                         findAllOuterAccessedVariables(fd, ptr(vars));
-                        if ((va != null) && va.isScope() && (fd.tookAddressOf != 0) && global.value.params.vsafe)
+                        if ((va != null) && va.isScope() && (fd.tookAddressOf != 0) && global.params.vsafe)
                         {
                             fd.tookAddressOf -= 1;
                         }
@@ -1219,7 +1219,7 @@ public class escape {
                     {
                         if (((sc.get())._module != null) && (sc.get())._module.isRoot())
                         {
-                            if (global.value.params.vsafe)
+                            if (global.params.vsafe)
                             {
                                 if (!gag)
                                 {
@@ -1246,7 +1246,7 @@ public class escape {
         boolean log = false;
         if (false)
         {
-            printf(new BytePtr("[%s] checkNewEscape, e: `%s`\n"), e.loc.toChars(global.value.params.showColumns), e.toChars());
+            printf(new BytePtr("[%s] checkNewEscape, e: `%s`\n"), e.loc.toChars(global.params.showColumns), e.toChars());
         }
         Ref<EscapeByResults> er = ref(new EscapeByResults());
         try {
@@ -1255,7 +1255,7 @@ public class escape {
             {
                 return false;
             }
-            boolean result = false;
+            Ref<Boolean> result = ref(false);
             {
                 Slice<VarDeclaration> __r1284 = er.value.byvalue.opSlice().copy();
                 int __key1285 = 0;
@@ -1274,13 +1274,13 @@ public class escape {
                     {
                         if (((sc.get())._module != null) && (sc.get())._module.isRoot() && !(pequals(p.parent.value, (sc.get()).func)))
                         {
-                            if (global.value.params.vsafe)
+                            if (global.params.vsafe)
                             {
                                 if (!gag)
                                 {
                                     error(e.loc, new BytePtr("scope variable `%s` may not be copied into allocated memory"), v.toChars());
                                 }
-                                result = true;
+                                result.value = true;
                             }
                             continue;
                         }
@@ -1294,7 +1294,7 @@ public class escape {
                             {
                                 error(e.loc, new BytePtr("copying `%s` into allocated memory escapes a reference to variadic parameter `%s`"), e.toChars(), v.toChars());
                             }
-                            result = false;
+                            result.value = false;
                         }
                     }
                     else
@@ -1312,16 +1312,16 @@ public class escape {
                     {
                         printf(new BytePtr("byref `%s`\n"), v.toChars());
                     }
-                    Function1<VarDeclaration,Void> escapingRef = new Function1<VarDeclaration,Void>(){
-                        public Void invoke(VarDeclaration v) {
-                            if (!gag)
-                            {
-                                BytePtr kind = pcopy((v.storage_class & 32L) != 0 ? new BytePtr("parameter") : new BytePtr("local"));
-                                error(e.loc, new BytePtr("copying `%s` into allocated memory escapes a reference to %s variable `%s`"), e.toChars(), kind, v.toChars());
-                            }
-                            result = true;
-                            return null;
+                    Function1<VarDeclaration,Void> escapingRef = (v) -> {
+                     {
+                        if (!gag)
+                        {
+                            BytePtr kind = pcopy((v.storage_class & 32L) != 0 ? new BytePtr("parameter") : new BytePtr("local"));
+                            error(e.loc, new BytePtr("copying `%s` into allocated memory escapes a reference to %s variable `%s`"), e.toChars(), kind, v.toChars());
                         }
+                        result.value = true;
+                        return null;
+                    }
                     };
                     if (v.isDataseg())
                     {
@@ -1338,7 +1338,7 @@ public class escape {
                     }
                     if ((v.storage_class & 2101248L) != 0)
                     {
-                        if (global.value.params.useDIP25 && ((sc.get())._module != null) && (sc.get())._module.isRoot())
+                        if (global.params.useDIP25 && ((sc.get())._module != null) && (sc.get())._module.isRoot())
                         {
                             if ((pequals(p, (sc.get()).func)))
                             {
@@ -1355,7 +1355,7 @@ public class escape {
                                     {
                                         error(e.loc, new BytePtr("storing reference to outer local variable `%s` into allocated memory causes it to escape"), v.toChars());
                                     }
-                                    result = true;
+                                    result.value = true;
                                     continue;
                                 }
                             }
@@ -1376,10 +1376,10 @@ public class escape {
                     {
                         error(ee.loc, new BytePtr("storing reference to stack allocated value returned by `%s` into allocated memory causes it to escape"), ee.toChars());
                     }
-                    result = true;
+                    result.value = true;
                 }
             }
-            return result;
+            return result.value;
         }
         finally {
         }
@@ -1397,7 +1397,7 @@ public class escape {
         boolean log = false;
         if (false)
         {
-            printf(new BytePtr("[%s] checkReturnEscapeImpl, refs: %d e: `%s`\n"), e.loc.toChars(global.value.params.showColumns), (refs ? 1 : 0), e.toChars());
+            printf(new BytePtr("[%s] checkReturnEscapeImpl, refs: %d e: `%s`\n"), e.loc.toChars(global.params.showColumns), (refs ? 1 : 0), e.toChars());
         }
         Ref<EscapeByResults> er = ref(new EscapeByResults());
         try {
@@ -1413,7 +1413,7 @@ public class escape {
             {
                 return false;
             }
-            boolean result = false;
+            Ref<Boolean> result = ref(false);
             {
                 Slice<VarDeclaration> __r1290 = er.value.byvalue.opSlice().copy();
                 int __key1291 = 0;
@@ -1441,13 +1441,13 @@ public class escape {
                         }
                         if (((sc.get())._module != null) && (sc.get())._module.isRoot() && !(!refs && (pequals(p.parent.value, (sc.get()).func)) && (p.isFuncDeclaration() != null) && (p.isFuncDeclaration().fes != null)) && !(!refs && (p.isFuncDeclaration() != null) && ((sc.get()).func.isFuncDeclaration().getLevel(p.isFuncDeclaration(), (sc.get()).intypeof) > 0)))
                         {
-                            if (global.value.params.vsafe)
+                            if (global.params.vsafe)
                             {
                                 if (!gag)
                                 {
                                     error(e.loc, new BytePtr("scope variable `%s` may not be returned"), v.toChars());
                                 }
-                                result = true;
+                                result.value = true;
                             }
                             continue;
                         }
@@ -1461,7 +1461,7 @@ public class escape {
                             {
                                 error(e.loc, new BytePtr("returning `%s` escapes a reference to variadic parameter `%s`"), e.toChars(), v.toChars());
                             }
-                            result = false;
+                            result.value = false;
                         }
                     }
                     else
@@ -1479,24 +1479,24 @@ public class escape {
                     {
                         printf(new BytePtr("byref `%s`\n"), v.toChars());
                     }
-                    Function1<VarDeclaration,Void> escapingRef = new Function1<VarDeclaration,Void>(){
-                        public Void invoke(VarDeclaration v) {
-                            if (!gag)
+                    Function1<VarDeclaration,Void> escapingRef = (v) -> {
+                     {
+                        if (!gag)
+                        {
+                            Ref<BytePtr> msg = ref(null);
+                            if ((v.storage_class & 32L) != 0)
                             {
-                                BytePtr msg = null;
-                                if ((v.storage_class & 32L) != 0)
-                                {
-                                    msg = pcopy(new BytePtr("returning `%s` escapes a reference to parameter `%s`, perhaps annotate with `return`"));
-                                }
-                                else
-                                {
-                                    msg = pcopy(new BytePtr("returning `%s` escapes a reference to local variable `%s`"));
-                                }
-                                error(e.loc, msg, e.toChars(), v.toChars());
+                                msg.value = pcopy(new BytePtr("returning `%s` escapes a reference to parameter `%s`, perhaps annotate with `return`"));
                             }
-                            result = true;
-                            return null;
+                            else
+                            {
+                                msg.value = pcopy(new BytePtr("returning `%s` escapes a reference to local variable `%s`"));
+                            }
+                            error(e.loc, msg.value, e.toChars(), v.toChars());
                         }
+                        result.value = true;
+                        return null;
+                    }
                     };
                     if (v.isDataseg())
                     {
@@ -1513,7 +1513,7 @@ public class escape {
                         FuncDeclaration fd = p.isFuncDeclaration();
                         if ((fd != null) && (((sc.get()).func.flags & FUNCFLAG.returnInprocess) != 0))
                         {
-                            if (global.value.params.vsafe)
+                            if (global.params.vsafe)
                             {
                                 (sc.get()).func.storage_class |= 4521191813414912L;
                             }
@@ -1525,7 +1525,7 @@ public class escape {
                         {
                             inferReturn((sc.get()).func, v);
                         }
-                        else if (global.value.params.useDIP25 && ((sc.get())._module != null) && (sc.get())._module.isRoot())
+                        else if (global.params.useDIP25 && ((sc.get())._module != null) && (sc.get())._module.isRoot())
                         {
                             if ((pequals(p, (sc.get()).func)))
                             {
@@ -1542,7 +1542,7 @@ public class escape {
                                     {
                                         error(e.loc, new BytePtr("escaping reference to outer local variable `%s`"), v.toChars());
                                     }
-                                    result = true;
+                                    result.value = true;
                                     continue;
                                 }
                             }
@@ -1563,10 +1563,10 @@ public class escape {
                     {
                         error(ee.loc, new BytePtr("escaping reference to stack allocated value returned by `%s`"), ee.toChars());
                     }
-                    result = true;
+                    result.value = true;
                 }
             }
-            return result;
+            return result.value;
         }
         finally {
         }

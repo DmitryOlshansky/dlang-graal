@@ -287,15 +287,15 @@ public class access {
                     }
                 }
             }
-            Function2<Dsymbol,dmodule.Module,Prot> protectionSeenFromModule = new Function2<Dsymbol,dmodule.Module,Prot>(){
-                public Prot invoke(Dsymbol d, dmodule.Module mod) {
-                    Prot prot = d.prot().copy();
-                    if ((mod != null) && (prot.kind == Prot.Kind.package_))
-                    {
-                        return hasPackageAccess(mod, d) ? new Prot(Prot.Kind.public_) : new Prot(Prot.Kind.private_);
-                    }
-                    return prot;
+            Function2<Dsymbol,dmodule.Module,Prot> protectionSeenFromModule = (d, mod) -> {
+             {
+                Prot prot = d.prot().copy();
+                if ((mod != null) && (prot.kind == Prot.Kind.package_))
+                {
+                    return hasPackageAccess(mod, d) ? new Prot(Prot.Kind.public_) : new Prot(Prot.Kind.private_);
                 }
+                return prot;
+            }
             };
             if ((next != null) && protectionSeenFromModule.invoke(mostVisible, mod).isMoreRestrictiveThan(protectionSeenFromModule.invoke(next, mod)))
             {

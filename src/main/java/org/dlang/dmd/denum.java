@@ -126,22 +126,22 @@ public class denum {
         }
 
         public  Expression getMaxMinValue(Loc loc, Identifier id) {
-            Function2<Expression,Loc,Expression> pvalToResult = new Function2<Expression,Loc,Expression>(){
-                public Expression invoke(Expression e, Loc loc) {
-                    if (((e.op & 0xFF) != 127))
-                    {
-                        e = e.copy();
-                        e.loc = loc.copy();
-                    }
-                    return e;
+            Function2<Expression,Ref<Loc>,Expression> pvalToResult = (e, loc) -> {
+             {
+                if (((e.value.op & 0xFF) != 127))
+                {
+                    e.value = e.value.copy();
+                    e.value.loc = loc.copy();
                 }
+                return e.value;
+            }
             };
             Ptr<Expression> pval = pcopy((pequals(id, Id.max)) ? ptr(this.maxval) : ptr(this.minval));
-            Function0<Expression> errorReturn = new Function0<Expression>(){
-                public Expression invoke() {
-                    pval.set(0, (new ErrorExp()));
-                    return pval.get();
-                }
+            Function0<Expression> errorReturn = () -> {
+             {
+                pval.set(0, (new ErrorExp()));
+                return pval.get();
+            }
             };
             if (this.inuse != 0)
             {
@@ -221,11 +221,11 @@ public class denum {
         }
 
         public  Expression getDefaultValue(Loc loc) {
-            Function0<Expression> handleErrors = new Function0<Expression>(){
-                public Expression invoke() {
-                    defaultval = new ErrorExp();
-                    return defaultval;
-                }
+            Function0<Expression> handleErrors = () -> {
+             {
+                defaultval = new ErrorExp();
+                return defaultval;
+            }
             };
             if (this.defaultval != null)
             {
@@ -276,7 +276,7 @@ public class denum {
                 {
                     if (!this.isAnonymous() && (this.members != null))
                     {
-                        this.memtype = Type.tint32.value;
+                        this.memtype = Type.tint32;
                     }
                 }
             }
@@ -284,7 +284,7 @@ public class denum {
             {
                 if (!this.isAnonymous() && (this.members != null))
                 {
-                    this.memtype = Type.tint32.value;
+                    this.memtype = Type.tint32;
                 }
                 else
                 {

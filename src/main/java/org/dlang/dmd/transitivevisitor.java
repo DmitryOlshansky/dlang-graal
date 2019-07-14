@@ -244,7 +244,7 @@ public class transitivevisitor {
 
         // defaulted all parameters starting with #2
         public  void visitArgs(Ptr<DArray<ASTBase.Expression>> expressions) {
-            return visitArgs(expressions, null);
+            visitArgs(expressions, null);
         }
 
 

@@ -290,7 +290,7 @@ public class opover {
                         this.result = ae.e1.value;
                         return ;
                     }
-                    Ref<Expression> e0 = ref(null);
+                    Expression e0 = null;
                     Expression ae1save = ae.e1.value;
                     ae.lengthVar.value = null;
                     Type t1b = ae.e1.value.type.value.toBasetype();
@@ -325,7 +325,7 @@ public class opover {
                             }
                             if (this.result != null)
                             {
-                                this.result = Expression.combine(e0.value, this.result);
+                                this.result = Expression.combine(e0, this.result);
                                 return ;
                             }
                         }
@@ -349,7 +349,7 @@ public class opover {
                         this.result = new DotTemplateInstanceExp(e.loc, ae.e1.value, Id.opSliceUnary, tiargs);
                         this.result = new CallExp(e.loc, this.result, a);
                         this.result = expressionSemantic(this.result, this.sc);
-                        this.result = Expression.combine(e0.value, this.result);
+                        this.result = Expression.combine(e0, this.result);
                         return ;
                     }
                     if ((ad.aliasthis != null) && (!pequals(t1b, ae.att1)))
@@ -431,7 +431,7 @@ public class opover {
                     this.result = ae.e1.value;
                     return ;
                 }
-                Ref<Expression> e0 = ref(null);
+                Expression e0 = null;
                 Expression ae1save = ae.e1.value;
                 ae.lengthVar.value = null;
                 Type t1b = ae.e1.value.type.value.toBasetype();
@@ -480,7 +480,7 @@ public class opover {
                         }
                         if (this.result != null)
                         {
-                            this.result = Expression.combine(e0.value, this.result);
+                            this.result = Expression.combine(e0, this.result);
                             return ;
                         }
                     }
@@ -491,7 +491,7 @@ public class opover {
                 {
                     this.result = new SliceExp(ae.loc, ae.e1.value, ie);
                     this.result = expressionSemantic(this.result, this.sc);
-                    this.result = Expression.combine(e0.value, this.result);
+                    this.result = Expression.combine(e0, this.result);
                     return ;
                 }
                 if (maybeSlice && (search_function(ad, Id.slice) != null))
@@ -510,7 +510,7 @@ public class opover {
                     this.result = new DotIdExp(ae.loc, ae.e1.value, Id.slice);
                     this.result = new CallExp(ae.loc, this.result, a);
                     this.result = expressionSemantic(this.result, this.sc);
-                    this.result = Expression.combine(e0.value, this.result);
+                    this.result = Expression.combine(e0, this.result);
                     return ;
                 }
                 if ((ad.aliasthis != null) && (!pequals(t1b, ae.att1)))
@@ -813,38 +813,38 @@ public class opover {
         }
 
         public  void visit(EqualExp e) {
-            Ref<Type> t1 = ref(e.e1.value.type.value.toBasetype());
-            Ref<Type> t2 = ref(e.e2.value.type.value.toBasetype());
-            if (((t1.value.ty & 0xFF) == ENUMTY.Tarray) || ((t1.value.ty & 0xFF) == ENUMTY.Tsarray) && ((t2.value.ty & 0xFF) == ENUMTY.Tarray) || ((t2.value.ty & 0xFF) == ENUMTY.Tsarray))
+            Type t1 = e.e1.value.type.value.toBasetype();
+            Type t2 = e.e2.value.type.value.toBasetype();
+            if (((t1.ty & 0xFF) == ENUMTY.Tarray) || ((t1.ty & 0xFF) == ENUMTY.Tsarray) && ((t2.ty & 0xFF) == ENUMTY.Tarray) || ((t2.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                Function0<Boolean> needsDirectEq = new Function0<Boolean>(){
-                    public Boolean invoke() {
-                        Ref<Type> t1n = ref(t1.value.nextOf().toBasetype());
-                        Ref<Type> t2n = ref(t2.value.nextOf().toBasetype());
-                        if (((t1n.value.ty & 0xFF) == ENUMTY.Tchar) || ((t1n.value.ty & 0xFF) == ENUMTY.Twchar) || ((t1n.value.ty & 0xFF) == ENUMTY.Tdchar) && ((t2n.value.ty & 0xFF) == ENUMTY.Tchar) || ((t2n.value.ty & 0xFF) == ENUMTY.Twchar) || ((t2n.value.ty & 0xFF) == ENUMTY.Tdchar) || ((t1n.value.ty & 0xFF) == ENUMTY.Tvoid) || ((t2n.value.ty & 0xFF) == ENUMTY.Tvoid))
-                        {
-                            return false;
-                        }
-                        if ((!pequals(t1n.value.constOf(), t2n.value.constOf())))
-                        {
-                            return true;
-                        }
-                        Ref<Type> t = ref(t1n.value);
-                        for (; t.value.toBasetype().nextOf() != null;) {
-                            t.value = t.value.nextOf().toBasetype();
-                        }
-                        if (((t.value.ty & 0xFF) != ENUMTY.Tstruct))
-                        {
-                            return false;
-                        }
-                        if (global.value.params.useTypeInfo && (Type.dtypeinfo.value != null))
-                        {
-                            semanticTypeInfo(sc, t.value);
-                        }
-                        return ((TypeStruct)t.value).sym.hasIdentityEquals;
+                Function0<Boolean> needsDirectEq = () -> {
+                 {
+                    Type t1n = t1.nextOf().toBasetype();
+                    Type t2n = t2.nextOf().toBasetype();
+                    if (((t1n.ty & 0xFF) == ENUMTY.Tchar) || ((t1n.ty & 0xFF) == ENUMTY.Twchar) || ((t1n.ty & 0xFF) == ENUMTY.Tdchar) && ((t2n.ty & 0xFF) == ENUMTY.Tchar) || ((t2n.ty & 0xFF) == ENUMTY.Twchar) || ((t2n.ty & 0xFF) == ENUMTY.Tdchar) || ((t1n.ty & 0xFF) == ENUMTY.Tvoid) || ((t2n.ty & 0xFF) == ENUMTY.Tvoid))
+                    {
+                        return false;
                     }
+                    if ((!pequals(t1n.constOf(), t2n.constOf())))
+                    {
+                        return true;
+                    }
+                    Ref<Type> t = ref(t1n);
+                    for (; t.value.toBasetype().nextOf() != null;) {
+                        t.value = t.value.nextOf().toBasetype();
+                    }
+                    if (((t.value.ty & 0xFF) != ENUMTY.Tstruct))
+                    {
+                        return false;
+                    }
+                    if (global.params.useTypeInfo && (Type.dtypeinfo != null))
+                    {
+                        semanticTypeInfo(sc, t.value);
+                    }
+                    return ((TypeStruct)t.value).sym.hasIdentityEquals;
+                }
                 };
-                if (needsDirectEq.invoke() && !(((t1.value.ty & 0xFF) == ENUMTY.Tarray) && ((t2.value.ty & 0xFF) == ENUMTY.Tarray)))
+                if (needsDirectEq.invoke() && !(((t1.ty & 0xFF) == ENUMTY.Tarray) && ((t2.ty & 0xFF) == ENUMTY.Tarray)))
                 {
                     Expression eeq = new IdentifierExp(e.loc, Id.__ArrayEq);
                     this.result = new CallExp(e.loc, eeq, e.e1.value, e.e2.value);
@@ -855,26 +855,26 @@ public class opover {
                     this.result = trySemantic(this.result, this.sc);
                     if (this.result == null)
                     {
-                        e.error(new BytePtr("cannot compare `%s` and `%s`"), t1.value.toChars(), t2.value.toChars());
+                        e.error(new BytePtr("cannot compare `%s` and `%s`"), t1.toChars(), t2.toChars());
                         this.result = new ErrorExp();
                     }
                     return ;
                 }
             }
-            if (((t1.value.ty & 0xFF) == ENUMTY.Tclass) && ((e.e2.value.op & 0xFF) == 13) || ((t2.value.ty & 0xFF) == ENUMTY.Tclass) && ((e.e1.value.op & 0xFF) == 13))
+            if (((t1.ty & 0xFF) == ENUMTY.Tclass) && ((e.e2.value.op & 0xFF) == 13) || ((t2.ty & 0xFF) == ENUMTY.Tclass) && ((e.e1.value.op & 0xFF) == 13))
             {
                 e.error(new BytePtr("use `%s` instead of `%s` when comparing with `null`"), Token.toChars(((e.op & 0xFF) == 58) ? TOK.identity : TOK.notIdentity), Token.toChars(e.op));
                 this.result = new ErrorExp();
                 return ;
             }
-            if (((t1.value.ty & 0xFF) == ENUMTY.Tclass) && ((t2.value.ty & 0xFF) == ENUMTY.Tnull) || ((t1.value.ty & 0xFF) == ENUMTY.Tnull) && ((t2.value.ty & 0xFF) == ENUMTY.Tclass))
+            if (((t1.ty & 0xFF) == ENUMTY.Tclass) && ((t2.ty & 0xFF) == ENUMTY.Tnull) || ((t1.ty & 0xFF) == ENUMTY.Tnull) && ((t2.ty & 0xFF) == ENUMTY.Tclass))
             {
                 return ;
             }
-            if (((t1.value.ty & 0xFF) == ENUMTY.Tclass) && ((t2.value.ty & 0xFF) == ENUMTY.Tclass))
+            if (((t1.ty & 0xFF) == ENUMTY.Tclass) && ((t2.ty & 0xFF) == ENUMTY.Tclass))
             {
-                ClassDeclaration cd1 = t1.value.isClassHandle();
-                ClassDeclaration cd2 = t2.value.isClassHandle();
+                ClassDeclaration cd1 = t1.isClassHandle();
+                ClassDeclaration cd2 = t2.isClassHandle();
                 if (!((cd1.classKind == ClassKind.cpp) || (cd2.classKind == ClassKind.cpp)))
                 {
                     Expression e1x = e.e1.value;
@@ -882,11 +882,11 @@ public class opover {
                     Type to = ClassDeclaration.object.getType();
                     if (cd1.isInterfaceDeclaration() != null)
                     {
-                        e1x = new CastExp(e.loc, e.e1.value, t1.value.isMutable() ? to : to.constOf());
+                        e1x = new CastExp(e.loc, e.e1.value, t1.isMutable() ? to : to.constOf());
                     }
                     if (cd2.isInterfaceDeclaration() != null)
                     {
-                        e2x = new CastExp(e.loc, e.e2.value, t2.value.isMutable() ? to : to.constOf());
+                        e2x = new CastExp(e.loc, e.e2.value, t2.isMutable() ? to : to.constOf());
                     }
                     this.result = new IdentifierExp(e.loc, Id.empty);
                     this.result = new DotIdExp(e.loc, this.result, Id.object);
@@ -910,47 +910,47 @@ public class opover {
                 }
                 return ;
             }
-            if (((t1.value.ty & 0xFF) == ENUMTY.Tarray) && ((t2.value.ty & 0xFF) == ENUMTY.Tarray))
+            if (((t1.ty & 0xFF) == ENUMTY.Tarray) && ((t2.ty & 0xFF) == ENUMTY.Tarray))
             {
                 return ;
             }
-            if (((t1.value.ty & 0xFF) == ENUMTY.Tpointer) || ((t2.value.ty & 0xFF) == ENUMTY.Tpointer))
+            if (((t1.ty & 0xFF) == ENUMTY.Tpointer) || ((t2.ty & 0xFF) == ENUMTY.Tpointer))
             {
                 byte op2 = ((e.op & 0xFF) == 58) ? TOK.identity : TOK.notIdentity;
                 this.result = new IdentityExp(op2, e.loc, e.e1.value, e.e2.value);
                 this.result = expressionSemantic(this.result, this.sc);
                 return ;
             }
-            if (((t1.value.ty & 0xFF) == ENUMTY.Tstruct) && ((t2.value.ty & 0xFF) == ENUMTY.Tstruct))
+            if (((t1.ty & 0xFF) == ENUMTY.Tstruct) && ((t2.ty & 0xFF) == ENUMTY.Tstruct))
             {
-                StructDeclaration sd = ((TypeStruct)t1.value).sym;
-                if ((!pequals(sd, ((TypeStruct)t2.value).sym)))
+                StructDeclaration sd = ((TypeStruct)t1).sym;
+                if ((!pequals(sd, ((TypeStruct)t2).sym)))
                 {
                     return ;
                 }
-                if (!global.value.params.fieldwise && !needOpEquals(sd))
+                if (!global.params.fieldwise && !needOpEquals(sd))
                 {
                     byte op2 = ((e.op & 0xFF) == 58) ? TOK.identity : TOK.notIdentity;
                     this.result = new IdentityExp(op2, e.loc, e.e1.value, e.e2.value);
                     this.result = expressionSemantic(this.result, this.sc);
                     return ;
                 }
-                if ((e.att1 != null) && (pequals(t1.value, e.att1)))
+                if ((e.att1 != null) && (pequals(t1, e.att1)))
                 {
                     return ;
                 }
-                if ((e.att2 != null) && (pequals(t2.value, e.att2)))
+                if ((e.att2 != null) && (pequals(t2, e.att2)))
                 {
                     return ;
                 }
                 e = (EqualExp)e.copy();
                 if (e.att1 == null)
                 {
-                    e.att1 = t1.value;
+                    e.att1 = t1;
                 }
                 if (e.att2 == null)
                 {
-                    e.att2 = t2.value;
+                    e.att2 = t2;
                 }
                 e.e1.value = new DotIdExp(e.loc, e.e1.value, Id._tupleof);
                 e.e2.value = new DotIdExp(e.loc, e.e2.value, Id._tupleof);
@@ -958,9 +958,9 @@ public class opover {
                 (sc2.get()).flags = (sc2.get()).flags & -1025 | 2;
                 this.result = expressionSemantic(e, sc2);
                 (sc2.get()).pop();
-                if (((this.result.op & 0xFF) == (e.op & 0xFF)) && (pequals(((EqualExp)this.result).e1.value.type.value.toBasetype(), t1.value)))
+                if (((this.result.op & 0xFF) == (e.op & 0xFF)) && (pequals(((EqualExp)this.result).e1.value.type.value.toBasetype(), t1)))
                 {
-                    e.error(new BytePtr("cannot compare `%s` because its auto generated member-wise equality has recursive definition"), t1.value.toChars());
+                    e.error(new BytePtr("cannot compare `%s` because its auto generated member-wise equality has recursive definition"), t1.toChars());
                     this.result = new ErrorExp();
                 }
                 return ;
@@ -1037,7 +1037,7 @@ public class opover {
                         this.result = ae.e1.value;
                         return ;
                     }
-                    Ref<Expression> e0 = ref(null);
+                    Expression e0 = null;
                     Expression ae1save = ae.e1.value;
                     ae.lengthVar.value = null;
                     Type t1b = ae.e1.value.type.value.toBasetype();
@@ -1079,7 +1079,7 @@ public class opover {
                             }
                             if (this.result != null)
                             {
-                                this.result = Expression.combine(e0.value, this.result);
+                                this.result = Expression.combine(e0, this.result);
                                 return ;
                             }
                         }
@@ -1110,7 +1110,7 @@ public class opover {
                         this.result = new DotTemplateInstanceExp(e.loc, ae.e1.value, Id.opSliceOpAssign, tiargs);
                         this.result = new CallExp(e.loc, this.result, a);
                         this.result = expressionSemantic(this.result, this.sc);
-                        this.result = Expression.combine(e0.value, this.result);
+                        this.result = Expression.combine(e0, this.result);
                         return ;
                     }
                     if ((ad.aliasthis != null) && (!pequals(t1b, ae.att1)))
@@ -1724,51 +1724,51 @@ public class opover {
         int match = MATCH.nomatch;
         FuncDeclaration fd_best = null;
         FuncDeclaration fd_ambig = null;
-        Function1<Dsymbol,Integer> __lambda4 = new Function1<Dsymbol,Integer>(){
-            public Integer invoke(Dsymbol s) {
-                FuncDeclaration f = s.isFuncDeclaration();
-                if (f == null)
-                {
-                    return 0;
-                }
-                TypeFunction tf = (TypeFunction)f.type;
-                int m = MATCH.exact;
-                if (f.isThis() != null)
-                {
-                    if (!MODimplicitConv(mod, tf.mod))
-                    {
-                        m = MATCH.nomatch;
-                    }
-                    else if (((mod & 0xFF) != (tf.mod & 0xFF)))
-                    {
-                        m = MATCH.constant;
-                    }
-                }
-                if (!matchParamsToOpApply(tf, parameters, false))
+        Function1<Dsymbol,Integer> __lambda4 = (s) -> {
+         {
+            FuncDeclaration f = s.isFuncDeclaration();
+            if (f == null)
+            {
+                return 0;
+            }
+            TypeFunction tf = (TypeFunction)f.type;
+            int m = MATCH.exact;
+            if (f.isThis() != null)
+            {
+                if (!MODimplicitConv(mod, tf.mod))
                 {
                     m = MATCH.nomatch;
                 }
-                if ((m > match))
+                else if (((mod & 0xFF) != (tf.mod & 0xFF)))
                 {
-                    fd_best = f;
-                    fd_ambig = null;
-                    match = m;
+                    m = MATCH.constant;
                 }
-                else if ((m == match) && (m > MATCH.nomatch))
-                {
-                    assert(fd_best != null);
-                    if ((tf.covariant(fd_best.type, null, true) != 1) && (fd_best.type.covariant(tf, null, true) != 1))
-                    {
-                        fd_ambig = f;
-                    }
-                }
-                return 0;
             }
+            if (!matchParamsToOpApply(tf, parameters, false))
+            {
+                m = MATCH.nomatch;
+            }
+            if ((m > match))
+            {
+                fd_best = f;
+                fd_ambig = null;
+                match = m;
+            }
+            else if ((m == match) && (m > MATCH.nomatch))
+            {
+                assert(fd_best != null);
+                if ((tf.covariant(fd_best.type, null, true) != 1) && (fd_best.type.covariant(tf, null, true) != 1))
+                {
+                    fd_ambig = f;
+                }
+            }
+            return 0;
+        }
         };
         overloadApply(fstart, __lambda4, null);
         if (fd_ambig != null)
         {
-            error(ethis.loc, new BytePtr("`%s.%s` matches more than one declaration:\n`%s`:     `%s`\nand:\n`%s`:     `%s`"), ethis.toChars(), fstart.ident.toChars(), fd_best.loc.toChars(global.value.params.showColumns), fd_best.type.toChars(), fd_ambig.loc.toChars(global.value.params.showColumns), fd_ambig.type.toChars());
+            error(ethis.loc, new BytePtr("`%s.%s` matches more than one declaration:\n`%s`:     `%s`\nand:\n`%s`:     `%s`"), ethis.toChars(), fstart.ident.toChars(), fd_best.loc.toChars(global.params.showColumns), fd_best.type.toChars(), fd_ambig.loc.toChars(global.params.showColumns), fd_ambig.type.toChars());
             return null;
         }
         return fd_best;

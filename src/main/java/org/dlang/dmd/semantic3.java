@@ -91,25 +91,25 @@ public class semantic3 {
                 this.sc = (this.sc.get()).push(tempinst);
                 (this.sc.get()).tinst = tempinst;
                 (this.sc.get()).minst = tempinst.minst;
-                int needGagging = ((tempinst.gagged && (global.value.gag == 0)) ? 1 : 0);
-                int olderrors = global.value.errors;
+                int needGagging = ((tempinst.gagged && (global.gag == 0)) ? 1 : 0);
+                int olderrors = global.errors;
                 int oldGaggedErrors = -1;
                 if (needGagging != 0)
                 {
-                    oldGaggedErrors = global.value.startGagging();
+                    oldGaggedErrors = global.startGagging();
                 }
                 {
                     int i = 0;
                     for (; (i < (tempinst.members.get()).length);i++){
                         Dsymbol s = (tempinst.members.get()).get(i);
                         semantic3(s, this.sc);
-                        if (tempinst.gagged && (global.value.errors != olderrors))
+                        if (tempinst.gagged && (global.errors != olderrors))
                         {
                             break;
                         }
                     }
                 }
-                if ((global.value.errors != olderrors))
+                if ((global.errors != olderrors))
                 {
                     if (!tempinst.errors)
                     {
@@ -126,7 +126,7 @@ public class semantic3 {
                 }
                 if (needGagging != 0)
                 {
-                    global.value.endGagging(oldGaggedErrors);
+                    global.endGagging(oldGaggedErrors);
                 }
                 this.sc = (this.sc.get()).pop();
                 (this.sc.get()).pop();
@@ -180,16 +180,16 @@ public class semantic3 {
         }
 
         public  void visit(FuncDeclaration funcdecl) {
-            Function0<Boolean> addReturn0 = new Function0<Boolean>(){
-                public Boolean invoke() {
-                    TypeFunction f = (TypeFunction)funcdecl.type;
-                    return ((f.next.value.ty & 0xFF) == ENUMTY.Tvoid) && funcdecl.isMain() || global.value.params.betterC && funcdecl.isCMain();
-                }
+            Function0<Boolean> addReturn0 = () -> {
+             {
+                TypeFunction f = (TypeFunction)funcdecl.type;
+                return ((f.next.value.ty & 0xFF) == ENUMTY.Tvoid) && funcdecl.isMain() || global.params.betterC && funcdecl.isCMain();
+            }
             };
             VarDeclaration _arguments = null;
             if (funcdecl.parent.value == null)
             {
-                if (global.value.errors != 0)
+                if (global.errors != 0)
                 {
                     return ;
                 }
@@ -204,11 +204,11 @@ public class semantic3 {
             {
                 if ((funcdecl.storage_class & 70368744177664L) != 0)
                 {
-                    int oldErrors = global.value.startGagging();
+                    int oldErrors = global.startGagging();
                     funcdecl.inuse += 1;
                     semantic3(funcdecl, this.sc);
                     funcdecl.inuse -= 1;
-                    if (global.value.endGagging(oldErrors))
+                    if (global.endGagging(oldErrors))
                     {
                         funcdecl.storage_class |= 137438953472L;
                         funcdecl.fbody = null;
@@ -237,7 +237,7 @@ public class semantic3 {
                 funcdecl.error(new BytePtr("has no function body with return type inference"));
                 return ;
             }
-            int oldErrors = global.value.errors;
+            int oldErrors = global.errors;
             FuncDeclSem3 fds = fds = new FuncDeclSem3(funcdecl, this.sc);
             fds.checkInContractOverrides();
             boolean needEnsure = FuncDeclaration.needsFensure(funcdecl);
@@ -322,9 +322,9 @@ public class semantic3 {
                 {
                     if ((f.linkage == LINK.d))
                     {
-                        if (!global.value.params.useTypeInfo || (Type.dtypeinfo.value == null) || (Type.typeinfotypelist == null))
+                        if (!global.params.useTypeInfo || (Type.dtypeinfo == null) || (Type.typeinfotypelist == null))
                         {
-                            if (!global.value.params.useTypeInfo)
+                            if (!global.params.useTypeInfo)
                             {
                                 funcdecl.error(new BytePtr("D-style variadic functions cannot be used with -betterC"));
                             }
@@ -343,7 +343,7 @@ public class semantic3 {
                         dsymbolSemantic(funcdecl.v_arguments, sc2);
                         (sc2.get()).insert(funcdecl.v_arguments);
                         funcdecl.v_arguments.parent.value = funcdecl;
-                        Type t = Type.dtypeinfo.value.type.arrayOf();
+                        Type t = Type.dtypeinfo.type.arrayOf();
                         _arguments = new VarDeclaration(funcdecl.loc, t, Id._arguments, null, 0L);
                         _arguments.storage_class |= 1099511627776L;
                         dsymbolSemantic(_arguments, sc2);
@@ -488,7 +488,7 @@ public class semantic3 {
                             }
                         }
                     }
-                    if (needEnsure && ((global.value.params.useOut & 0xFF) == 2) || (fpostinv != null))
+                    if (needEnsure && ((global.params.useOut & 0xFF) == 2) || (fpostinv != null))
                     {
                         funcdecl.returnLabel = new LabelDsymbol(Id.returnLabel);
                     }
@@ -516,7 +516,7 @@ public class semantic3 {
                             }
                         }
                     }
-                    if (!funcdecl.inferRetType && !target.value.isReturnOnStack(f, funcdecl.needThis()))
+                    if (!funcdecl.inferRetType && !target.isReturnOnStack(f, funcdecl.needThis()))
                     {
                         funcdecl.nrvo_can = false;
                     }
@@ -544,7 +544,7 @@ public class semantic3 {
                             funcdecl.fbody = new ErrorStatement();
                         }
                     }
-                    if (global.value.params.vcomplex && (f.next.value != null))
+                    if (global.params.vcomplex && (f.next.value != null))
                     {
                         f.next.value.checkComplexTransition(funcdecl.loc, this.sc);
                     }
@@ -558,7 +558,7 @@ public class semantic3 {
                                 {
                                     if (addReturn0.invoke())
                                     {
-                                        exp.type.value = Type.tint32.value;
+                                        exp.type.value = Type.tint32;
                                     }
                                     else
                                     {
@@ -582,7 +582,7 @@ public class semantic3 {
                             funcdecl.storage_class &= -257L;
                         }
                     }
-                    if (!target.value.isReturnOnStack(f, funcdecl.needThis()))
+                    if (!target.isReturnOnStack(f, funcdecl.needThis()))
                     {
                         funcdecl.nrvo_can = false;
                     }
@@ -721,7 +721,7 @@ public class semantic3 {
                             {
                                 funcdecl.error(new BytePtr("no `return exp;` or `assert(0);` at end of function"));
                             }
-                            if (((global.value.params.useAssert & 0xFF) == 2) && !global.value.params.useInline)
+                            if (((global.params.useAssert & 0xFF) == 2) && !global.params.useInline)
                             {
                                 e = new AssertExp(funcdecl.endloc, literal_B6589FC6AB0DC82C(), new StringExp(funcdecl.loc, new BytePtr("missing return expression")));
                             }
@@ -738,7 +738,7 @@ public class semantic3 {
                     if (funcdecl.returns != null)
                     {
                         boolean implicit0 = addReturn0.invoke();
-                        Type tret = implicit0 ? Type.tint32.value : f.next.value;
+                        Type tret = implicit0 ? Type.tint32 : f.next.value;
                         assert(((tret.ty & 0xFF) != ENUMTY.Tvoid));
                         if ((funcdecl.vresult != null) || (funcdecl.returnLabel != null))
                         {
@@ -840,7 +840,7 @@ public class semantic3 {
                     blockExit(freq, funcdecl, false);
                     funcdecl.eh_none = false;
                     sc2 = (sc2.get()).pop();
-                    if (((global.value.params.useIn & 0xFF) == 1))
+                    if (((global.params.useIn & 0xFF) == 1))
                     {
                         freq = null;
                     }
@@ -871,7 +871,7 @@ public class semantic3 {
                     blockExit(fens, funcdecl, false);
                     funcdecl.eh_none = false;
                     sc2 = (sc2.get()).pop();
-                    if (((global.value.params.useOut & 0xFF) == 1))
+                    if (((global.params.useOut & 0xFF) == 1))
                     {
                         fens = null;
                     }
@@ -1016,7 +1016,7 @@ public class semantic3 {
                         ClassDeclaration cd = funcdecl.toParentDecl().isClassDeclaration();
                         if (cd != null)
                         {
-                            if (!global.value.params.is64bit && global.value.params.isWindows && !funcdecl.isStatic() && !sbody.usesEH() && !global.value.params.trace)
+                            if (!global.params.is64bit && global.params.isWindows && !funcdecl.isStatic() && !sbody.usesEH() && !global.params.trace)
                             {
                             }
                             else
@@ -1193,7 +1193,7 @@ public class semantic3 {
                 this.sc = (this.sc.get()).pop();
             }
             funcdecl.semanticRun = PASS.semantic3done;
-            funcdecl.semantic3Errors = (global.value.errors != oldErrors) || (funcdecl.fbody != null) && (funcdecl.fbody.isErrorStatement() != null);
+            funcdecl.semantic3Errors = (global.errors != oldErrors) || (funcdecl.fbody != null) && (funcdecl.fbody.isErrorStatement() != null);
             if (((funcdecl.type.ty & 0xFF) == ENUMTY.Terror))
             {
                 funcdecl.errors = true;
@@ -1206,7 +1206,7 @@ public class semantic3 {
                 return ;
             }
             AggregateDeclaration ad = ctor.isMemberDecl();
-            if ((ad != null) && (ad.fieldDtor != null) && global.value.params.dtorFields)
+            if ((ad != null) && (ad.fieldDtor != null) && global.params.dtorFields)
             {
                 Expression e = new ThisExp(ctor.loc);
                 e.type.value = ad.type.mutableOf();
@@ -1287,7 +1287,7 @@ public class semantic3 {
                 }
             }
             (sc2.get()).pop();
-            if ((ad.getRTInfo == null) && (Type.rtinfo != null) && !ad.isDeprecated() || ((global.value.params.useDeprecated & 0xFF) != 0) && (ad.type != null) && ((ad.type.ty & 0xFF) != ENUMTY.Terror))
+            if ((ad.getRTInfo == null) && (Type.rtinfo != null) && !ad.isDeprecated() || ((global.params.useDeprecated & 0xFF) != 0) && (ad.type != null) && ((ad.type.ty & 0xFF) != ENUMTY.Terror))
             {
                 Ptr<DArray<RootObject>> tiargs = refPtr(new DArray<RootObject>());
                 (tiargs.get()).push(ad.type);

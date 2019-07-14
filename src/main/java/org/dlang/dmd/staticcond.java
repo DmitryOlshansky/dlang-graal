@@ -61,14 +61,14 @@ public class staticcond {
             result = evalStaticCondition(sc, exp, leg, errors);
             return !errors.value && result;
         }
-        int nerrors = global.value.errors;
+        int nerrors = global.errors;
         sc = (sc.get()).startCTFE();
         (sc.get()).flags |= 4;
         e = expressionSemantic(e, sc);
         e = resolveProperties(sc, e);
         sc = (sc.get()).endCTFE();
         e = e.optimize(0, false);
-        if ((nerrors != global.value.errors) || ((e.op & 0xFF) == 127) || (pequals(e.type.value.toBasetype(), Type.terror)))
+        if ((nerrors != global.errors) || ((e.op & 0xFF) == 127) || (pequals(e.type.value.toBasetype(), Type.terror)))
         {
             errors.value = true;
             return false;

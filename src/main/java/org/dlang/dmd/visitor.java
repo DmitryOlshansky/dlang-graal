@@ -538,7 +538,7 @@ public class visitor {
 
         // defaulted all parameters starting with #2
         public  void visitArgs(Ptr<DArray<Expression>> expressions) {
-            return visitArgs(expressions, null);
+            visitArgs(expressions, null);
         }
 
 

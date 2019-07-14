@@ -120,7 +120,8 @@ void main(string[] args) {
         foreach(k; map.keys)
             v.opts.templates[k] = map[k];
     }
-    v.opts.refParams = passedByRef(mods);
+    // calculate refs for fields
+    v.opts.refParams.push(passedByRef(mods));
     foreach(i, source; args[1..$]) {
         const modName = baseName(source);
         const java = modName[0..$-2] ~ ".java";

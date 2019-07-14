@@ -67,8 +67,9 @@ public class dtool {
     {
         public Ptr<OutBuffer> buf = null;
         public  void open(BytePtr format, Object... ap) {
+            Ref<BytePtr> format_ref = ref(format);
             (this.buf.get()).writestring(new ByteSlice("( "));
-            (this.buf.get()).vprintf(format, new RawSlice<>(ap));
+            (this.buf.get()).vprintf(format_ref.value, new RawSlice<>(ap));
             (this.buf.get()).level++;
             (this.buf.get()).writenl();
         }
@@ -1820,9 +1821,9 @@ public class dtool {
             defaultGetoptPrinter(new ByteSlice("Trivial D lexer based on DMD."), res.options);
             exit(1);
         }
-        global.value.params.isLinux = true;
-        global.value.params.useUnitTests = true;
-        global.value._init();
+        global.params.isLinux = true;
+        global.params.useUnitTests = true;
+        global._init();
         ASTBase.Type._init();
         Id.initialize();
         {
@@ -1868,7 +1869,7 @@ public class dtool {
     }
 
     public static ByteSlice lispy(BytePtr argz, ByteSlice buf) {
-        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.value.params.useDeprecated);
+        StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
         try {
             ASTBase.Module mod = new ASTBase.Module(argz, Identifier.idPool(argz.slice(0,strlen(argz) - 2)), 1, 0);
             ParserASTBase p = new ParserASTBase(mod, buf, true, diagnosticReporter);

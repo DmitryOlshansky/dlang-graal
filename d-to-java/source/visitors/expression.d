@@ -48,7 +48,7 @@ struct ExprOpts {
     Stack!AggregateDeclaration aggregates; // chain of aggregates for current scope
     Expression dollarValue = null; // expression that is referenced by dollar
     VarDeclaration vararg = null; // var decl of vararg parameter
-    IdentityMap!bool refParams; //out and ref params, they must be boxed
+    Stack!(IdentityMap!bool) refParams; //out and ref params, they must be boxed
     IdentityMap!VarDeclaration aliasedUnion; //  = alias of symbol if same type in union
     IdentityMap!string renamed; // renamed or static vars pushed to global scope
     IdentityMap!bool localFuncs; // functions that are local to current scope
@@ -159,12 +159,7 @@ string refType(Type at, ExprOpts opts) {
     if (auto et = at.isTypeEnum) {
         t = et.memType;
     }
-    if(t.ty == Tint32 || t.ty == Tuns32 || t.ty == Tdchar) {
-        return "IntRef";
-    }
-    else {
-        return "Ref<" ~ toJava(t, opts, Boxing.yes) ~ ">";
-    }
+    return "Ref<" ~ toJava(t, opts, Boxing.yes) ~ ">";
 }
 
 private bool isJavaByte(Type t) {
@@ -413,7 +408,7 @@ public:
         auto type = e.type.nextOf.toJava(opts);
         if (!opts.rawArrayLiterals) buf.put("slice(");
         buf.fmt("new %s[]{", type);
-        argsToBuffer(e.elements, buf, opts, null, e.basis);
+        argsToBuffer(e.elements, buf, opts, cast(FuncDeclaration)null, e.basis);
         buf.put("}");
         if (!opts.rawArrayLiterals) buf.put(")");
     }
@@ -497,11 +492,11 @@ public:
         if (e.type.toString.indexOf("Array!") < 0 && (!struc || !collectMembers(struc.sym).hasUnion)) { 
             if (e.arguments && e.arguments.dim)
             {
-                argsToBuffer(e.arguments, buf, opts, null);
+                argsToBuffer(e.arguments, buf, opts);
             }
         }
         else if (e.type.toString.indexOf("Array") >= 0 && e.arguments && e.arguments.dim == 1) {
-            argsToBuffer(e.arguments, buf, opts, null);
+            argsToBuffer(e.arguments, buf, opts);
         }
         buf.put(')');
         if (e.type.isTypePointer) buf.put(")");
@@ -518,14 +513,14 @@ public:
         if (e.newargs && e.newargs.dim)
         {
             buf.put('(');
-            argsToBuffer(e.newargs, buf, opts, null);
+            argsToBuffer(e.newargs, buf, opts);
             buf.put(')');
         }
         buf.put(" class ");
         if (e.arguments && e.arguments.dim)
         {
             buf.put('(');
-            argsToBuffer(e.arguments, buf, opts, null);
+            argsToBuffer(e.arguments, buf, opts, cast(FuncDeclaration)null);
             buf.put(')');
         }
         if (e.cd)
@@ -569,7 +564,7 @@ public:
         else {
             buf.put(printParent(e.var, opts));
             buf.put(e.var.varName(opts));
-            if (e.var in opts.refParams)
+            if (e.var in opts.refParams.top)
                 buf.put(".value");
         }
     }
@@ -586,13 +581,13 @@ public:
             buf.put('(');
             e.e0.accept(this);
             buf.put(", tuple(");
-            argsToBuffer(e.exps, buf, opts, null);
+            argsToBuffer(e.exps, buf, opts);
             buf.put("))");
         }
         else
         {
             buf.put("tuple(");
-            argsToBuffer(e.exps, buf, opts, null);
+            argsToBuffer(e.exps, buf, opts);
             buf.put(')');
         }
     }
@@ -855,7 +850,7 @@ public:
                     case TOK.orAssign:
                     case TOK.andAssign:
                         buf.put(var.var.varName(opts));
-                        if (var.var in opts.refParams)
+                        if (var.var in opts.refParams.top)
                             buf.put(".value");
                         buf.fmt(" %s ", Token.toString(e.op));
                         expToBuffer(e.e2, precedence[e.e2.op], buf, opts);
@@ -876,7 +871,7 @@ public:
     override void visit(CompileExp e)
     {
         buf.put("mixin(");
-        argsToBuffer(e.exps, buf, opts, null);
+        argsToBuffer(e.exps, buf, opts);
         buf.put(')');
     }
 
@@ -932,7 +927,7 @@ public:
             buf.put(un.ident.symbol);
         else
             buf.put(e.var.ident.symbol);
-        if (e.var in opts.refParams)
+        if (e.var in opts.refParams.top)
             buf.put(".value");
     }
 
@@ -1057,6 +1052,15 @@ public:
                 if (auto tmpl = e.f in opts.templates) {
                     buf.put(tmpl.str);
                 }
+            }
+            else if(e.e1.type.isTypeFunction || e.e1.type.isTypeDelegate) {
+                auto params = e.e1.type.isTypeFunction ? e.e1.type.isTypeFunction.parameterList :
+                    e.e1.type.isTypeDelegate.next.isTypeFunction.parameterList;
+                expToBuffer(e.e1, PREC.primary, buf, opts);
+                buf.put(".invoke(");
+                argsToBuffer(e.arguments, buf, opts, params);
+                buf.put(")");
+                return;
             }
             else
                 expToBuffer(e.e1, precedence[e.op], buf, opts);
@@ -1297,7 +1301,7 @@ public:
         typeToBuffer(e.type, buf, opts);
         expToBuffer(e.e1, PREC.primary, buf, opts);
         buf.put('{');
-        argsToBuffer(e.arguments, buf, opts, null);
+        argsToBuffer(e.arguments, buf, opts);
         buf.put('}');
     }
 
@@ -1535,11 +1539,11 @@ private void argsToBuffer(Expressions* expressions, TextBuffer buf, ExprOpts opt
                 tmp.put(printParent(var.var, opts));
                 tmp.put(var.var.varName(opts));
             }
-            else if (var && var.var in opts.refParams && refParam) {
+            else if (var && var.var in opts.refParams.top && refParam) {
                 tmp.put(printParent(var.var, opts));
                 tmp.put(var.var.varName(opts));
             }
-            else if (dotVar && dotVar.var in opts.refParams && refParam) {
+            else if (dotVar && dotVar.var in opts.refParams.top && refParam) {
                 tmp.put(printParent(dotVar.var, opts));
                 tmp.put(dotVar.var.varName(opts));
             }
@@ -1559,6 +1563,55 @@ private void argsToBuffer(Expressions* expressions, TextBuffer buf, ExprOpts opt
         }
     }
 }
+
+private void argsToBuffer(Expressions* expressions, TextBuffer buf, ExprOpts opts)
+{
+    argsToBuffer(expressions, buf, opts, cast(FuncDeclaration)null);
+}
+
+private void argsToBuffer(Expressions* expressions, TextBuffer buf, ExprOpts opts, Parameters* parameters, Expression basis = null)
+{
+    if (!expressions || !expressions.dim)
+        return;
+    bool first = true;
+    foreach (i, el; *expressions)
+    {
+        scope tmp = new TextBuffer();
+        if (!el)
+            el = basis;
+        if (el) {
+            auto var = el.isVarExp();
+            auto dotVar = el.isDotVarExp();
+            auto n = el.isNullExp();
+
+            auto refParam = parameters && i < parameters.length && !(*parameters)[i].type.isConst
+                && ((*parameters)[i].storageClass & (STC.ref_ | STC.out_));
+
+            if (var && var.var in opts.refParams.top && refParam) {
+                tmp.put(printParent(var.var, opts));
+                tmp.put(var.var.varName(opts));
+            }
+            else if (dotVar && dotVar.var in opts.refParams.top && refParam) {
+                tmp.put(printParent(dotVar.var, opts));
+                tmp.put(dotVar.var.varName(opts));
+            }
+            else if(n && n.type.ty == Tarray) {
+                tmp.put("new ");
+                tmp.put(n.type.toJava(opts));
+                tmp.put("()");
+            }
+            else {
+                expToBuffer(el, PREC.assign, tmp, opts);
+            }
+        }
+        if (tmp.data.length > 0) {
+            if (!first) buf.fmt(", ");
+            else first = false;
+            buf.fmt("%s", tmp.data);
+        }
+    }
+}
+
 
 private void sizeToBuffer(Expression e, TextBuffer buf, ExprOpts opts)
 {
@@ -1769,20 +1822,18 @@ private void typeToBufferx(Type t, TextBuffer buf, ExprOpts opts, Boxing boxing 
             if (auto et = t.isTypeEnum)
                 t = et.memType;
             if (t.ty == Tvoid) 
-                buf.put("Object");
+                return buf.put("Object");
             else if (t.ty == Tchar || t.ty == Tuns8 || t.ty == Tint8)
-                buf.put("BytePtr");
+                return buf.put("BytePtr");
             else if (t.ty == Twchar)
-                buf.put("CharPtr");
-            else if (t.ty == Tdchar) 
-                buf.put("IntPtr");
-            else if (t.ty == Tint32 || t.ty == Tuns32)
-                buf.put("IntPtr");
-            else {
-                buf.put("Ptr<");
-                typeToBufferx(t, buf, opts, Boxing.yes);
-                buf.put(">");
+                return buf.put("CharPtr");
+            else if(auto struc = t.isTypeStruct) {
+                if (struc.sym.ident.symbol == "__va_list_tag")
+                    return buf.put("Slice<Object>");
             }
+            buf.put("Ptr<");
+            typeToBufferx(t, buf, opts, Boxing.yes);
+            buf.put(">");
         }
     }
 
@@ -1886,8 +1937,6 @@ private void typeToBufferx(Type t, TextBuffer buf, ExprOpts opts, Boxing boxing 
             }
             buf.put(">");
         }
-        else if(t.sym.ident.symbol == "__va_list_tag")
-            buf.put("Slice<Object>");
         else {
             if (ti && ti.aliasdecl == t.sym) {
                 buf.put(t.sym.ident.symbol);
@@ -2012,7 +2061,9 @@ private void visitFuncIdentWithPostfix(TypeFunction t, TextBuffer buf, ExprOpts 
     if (t.parameterList){
         foreach(i, p; *t.parameterList) {
             if (i) buf.put(",");
+            if (p.storageClass & (STC.ref_ | STC.out_)) buf.put("Ref<");
             typeToBuffer(p.type, buf, opts, Boxing.yes);
+            if (p.storageClass & (STC.ref_ | STC.out_)) buf.put(">");
         }
     }
     if (t.parameterList && t.parameterList.length > 0) buf.put(",");

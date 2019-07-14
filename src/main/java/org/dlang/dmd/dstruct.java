@@ -69,83 +69,83 @@ public class dstruct {
         {
             return ;
         }
-        Function1<TypeVector,Void> visitVector = new Function1<TypeVector,Void>(){
-            public Void invoke(TypeVector t) {
-                semanticTypeInfo(sc, t.basetype);
+        Function1<TypeVector,Void> visitVector = (t) -> {
+         {
+            semanticTypeInfo(sc, t.basetype);
+            return null;
+        }
+        };
+        Function1<TypeAArray,Void> visitAArray = (t) -> {
+         {
+            semanticTypeInfo(sc, t.index);
+            semanticTypeInfo(sc, t.next.value);
+            return null;
+        }
+        };
+        Function1<TypeStruct,Void> visitStruct = (t) -> {
+         {
+            StructDeclaration sd = t.sym;
+            if (sc == null)
+            {
+                Ref<Scope> scx = ref(new Scope().copy());
+                scx.value._module = sd.getModule();
+                getTypeInfoType(sd.loc, t, ptr(scx));
+                sd.requestTypeInfo = true;
+            }
+            else if ((sc.get()).minst == null)
+            {
+            }
+            else
+            {
+                getTypeInfoType(sd.loc, t, sc);
+                sd.requestTypeInfo = true;
+            }
+            if (sd.members == null)
+            {
                 return null;
             }
-        };
-        Function1<TypeAArray,Void> visitAArray = new Function1<TypeAArray,Void>(){
-            public Void invoke(TypeAArray t) {
-                semanticTypeInfo(sc, t.index);
-                semanticTypeInfo(sc, t.next.value);
+            if ((sd.xeq == null) && (sd.xcmp == null) && (sd.postblit == null) && (sd.dtor == null) && (sd.xhash == null) && (search_toString(sd) == null))
+            {
                 return null;
             }
-        };
-        Function1<TypeStruct,Void> visitStruct = new Function1<TypeStruct,Void>(){
-            public Void invoke(TypeStruct t) {
-                StructDeclaration sd = t.sym;
-                if (sc == null)
+            if ((sd.semanticRun >= PASS.semantic3))
+            {
+            }
+            else {
+                TemplateInstance ti = sd.isInstantiated();
+                if ((ti) != null)
                 {
-                    Ref<Scope> scx = ref(new Scope().copy());
-                    scx.value._module = sd.getModule();
-                    getTypeInfoType(sd.loc, t, ptr(scx));
-                    sd.requestTypeInfo = true;
-                }
-                else if ((sc.get()).minst == null)
-                {
+                    if ((ti.minst != null) && !ti.minst.isRoot())
+                    {
+                        dmodule.Module.addDeferredSemantic3(sd);
+                    }
                 }
                 else
                 {
-                    getTypeInfoType(sd.loc, t, sc);
-                    sd.requestTypeInfo = true;
-                }
-                if (sd.members == null)
-                {
-                    return null;
-                }
-                if ((sd.xeq == null) && (sd.xcmp == null) && (sd.postblit == null) && (sd.dtor == null) && (sd.xhash == null) && (search_toString(sd) == null))
-                {
-                    return null;
-                }
-                if ((sd.semanticRun >= PASS.semantic3))
-                {
-                }
-                else {
-                    TemplateInstance ti = sd.isInstantiated();
-                    if ((ti) != null)
+                    if (sd.inNonRoot())
                     {
-                        if ((ti.minst != null) && !ti.minst.isRoot())
-                        {
-                            dmodule.Module.addDeferredSemantic3(sd);
-                        }
-                    }
-                    else
-                    {
-                        if (sd.inNonRoot())
-                        {
-                            dmodule.Module.addDeferredSemantic3(sd);
-                        }
+                        dmodule.Module.addDeferredSemantic3(sd);
                     }
                 }
-                return null;
             }
+            return null;
+        }
         };
-        Function1<TypeTuple,Void> visitTuple = new Function1<TypeTuple,Void>(){
-            public Void invoke(TypeTuple t) {
-                if (t.arguments != null)
+        Function1<TypeTuple,Void> visitTuple = (t) -> {
+         {
+            if (t.arguments != null)
+            {
                 {
-                    {
-                        Slice<Parameter> __r1109 = (t.arguments.get()).opSlice().copy();
-                        int __key1110 = 0;
-                        for (; (__key1110 < __r1109.getLength());__key1110 += 1) {
-                            Parameter arg = __r1109.get(__key1110);
-                            semanticTypeInfo(sc, arg.type);
-                        }
+                    Slice<Parameter> __r1109 = (t.arguments.get()).opSlice().copy();
+                    Ref<Integer> __key1110 = ref(0);
+                    for (; (__key1110.value < __r1109.getLength());__key1110.value += 1) {
+                        Parameter arg = __r1109.get(__key1110.value);
+                        semanticTypeInfo(sc, arg.type);
                     }
                 }
-                return null;
             }
+            return null;
+        }
         };
         Type tb = t.toBasetype();
         switch ((tb.ty & 0xFF))
@@ -231,18 +231,18 @@ public class dstruct {
         public  void semanticTypeInfoMembers() {
             if ((this.xeq != null) && (this.xeq._scope != null) && (this.xeq.semanticRun < PASS.semantic3done))
             {
-                int errors = global.value.startGagging();
+                int errors = global.startGagging();
                 semantic3(this.xeq, this.xeq._scope);
-                if (global.value.endGagging(errors))
+                if (global.endGagging(errors))
                 {
                     this.xeq = xerreq;
                 }
             }
             if ((this.xcmp != null) && (this.xcmp._scope != null) && (this.xcmp.semanticRun < PASS.semantic3done))
             {
-                int errors = global.value.startGagging();
+                int errors = global.startGagging();
                 semantic3(this.xcmp, this.xcmp._scope);
-                if (global.value.endGagging(errors))
+                if (global.endGagging(errors))
                 {
                     this.xcmp = xerrcmp;
                 }
@@ -296,7 +296,7 @@ public class dstruct {
             }
             this.sizeok = Sizeok.inProcess;
             this.fields.setDim(0);
-            IntRef offset = ref(0);
+            Ref<Integer> offset = ref(0);
             boolean isunion = this.isUnionDeclaration() != null;
             {
                 int i = 0;
@@ -364,7 +364,7 @@ public class dstruct {
                     }
                 }
             }
-            TypeTuple tt = target.value.toArgTypes(this.type);
+            TypeTuple tt = target.toArgTypes(this.type);
             int dim = tt != null ? (tt.arguments.get()).length : 0;
             if ((dim >= 1))
             {
@@ -425,7 +425,7 @@ public class dstruct {
                     boolean hasPointers = tb.hasPointers();
                     if (hasPointers)
                     {
-                        if ((stype.alignment() < target.value.ptrsize) || ((v.offset & target.value.ptrsize - 1) != 0) && ((sc.get()).func != null) && (sc.get()).func.setUnsafe())
+                        if ((stype.alignment() < target.ptrsize) || ((v.offset & target.ptrsize - 1) != 0) && ((sc.get()).func != null) && (sc.get()).func.setUnsafe())
                         {
                             error(loc, new BytePtr("field `%s.%s` cannot assign to misaligned pointers in `@safe` code"), this.toChars(), v.toChars());
                             return false;

@@ -64,7 +64,7 @@ public class compiler {
             ByteSlice cmaincode = new ByteSlice("\n            extern(C)\n            {\n                int _d_run_main(int argc, char **argv, void* mainFunc);\n                int _Dmain(char[][] args);\n                int main(int argc, char **argv)\n                {\n                    return _d_run_main(argc, argv, &_Dmain);\n                }\n                version (Solaris) int _main(int argc, char** argv) { return main(argc, argv); }\n            }\n        ").copy();
             Identifier id = Id.entrypoint;
             dmodule.Module m = new dmodule.Module(new ByteSlice("__entrypoint.d"), id, 0, 0);
-            StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.value.params.useDeprecated);
+            StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
             try {
                 ParserASTCodegen p = new ParserASTCodegen(m, toByteSlice(cmaincode), false, diagnosticReporter);
                 try {
@@ -73,14 +73,14 @@ public class compiler {
                     m.members = p.parseModule();
                     assert(((p.token.value.value & 0xFF) == 11));
                     assert(!p.errors());
-                    boolean v = global.value.params.verbose;
-                    global.value.params.verbose = false;
+                    boolean v = global.params.verbose;
+                    global.params.verbose = false;
                     m.importedFrom = m;
                     m.importAll(null);
                     dsymbolSemantic(m, null);
                     semantic2(m, null);
                     semantic3(m, null);
-                    global.value.params.verbose = v;
+                    global.params.verbose = v;
                     entrypoint = m;
                     rootHasMain = (sc.get())._module;
                 }
@@ -168,7 +168,7 @@ public class compiler {
                 try {
                     if (includeImportedModuleCheck(new ModuleComponentRange((m.md != null) && ((m.md.get()).packages != null) ? (m.md.get()).packages : ptr(empty), m.ident, m.isPackageFile, 0)))
                     {
-                        if (global.value.params.verbose)
+                        if (global.params.verbose)
                         {
                             message(new BytePtr("compileimport (%s)"), m.srcfile.toChars());
                         }
@@ -258,8 +258,8 @@ public class compiler {
         }
         createMatchNodes();
         int nodeIndex = 0;
-        for (; (nodeIndex < matchNodes.value.length);){
-            MatcherNode info = matchNodes.value.get(nodeIndex++).copy();
+        for (; (nodeIndex < matchNodes.length);){
+            MatcherNode info = matchNodes.get(nodeIndex++).copy();
             if (((int)info.depth <= components.totalLength()))
             {
                 int nodeOffset = 0;
@@ -270,7 +270,7 @@ public class compiler {
                         {
                             return !info.isExclude;
                         }
-                        if (!(range.front() == matchNodes.value.get(nodeIndex + nodeOffset).id))
+                        if (!(range.front() == matchNodes.get(nodeIndex + nodeOffset).id))
                         {
                             break;
                         }
@@ -280,7 +280,7 @@ public class compiler {
             }
             nodeIndex += (int)info.depth;
         }
-        assertMsg((nodeIndex == matchNodes.value.length), new ByteSlice("code bug"));
+        assertMsg((nodeIndex == matchNodes.length), new ByteSlice("code bug"));
         return includeByDefault;
     }
 
@@ -315,21 +315,21 @@ public class compiler {
         }
     }
     static boolean includeByDefault = true;
-    static Ref<DArray<MatcherNode>> matchNodes = ref(new DArray<MatcherNode>());
+    static DArray<MatcherNode> matchNodes = new DArray<MatcherNode>();
     public static void createMatchNodes() {
-        Function1<Integer,Integer> findSortedIndexToAddForDepth = new Function1<Integer,Integer>(){
-            public Integer invoke(Integer depth) {
-                int index = 0;
-                for (; (index < matchNodes.value.length);){
-                    MatcherNode info = matchNodes.value.get(index).copy();
-                    if ((depth > (int)info.depth))
-                    {
-                        break;
-                    }
-                    index += (1 + (int)info.depth);
+        Function1<Integer,Integer> findSortedIndexToAddForDepth = (depth) -> {
+         {
+            Ref<Integer> index = ref(0);
+            for (; (index.value < matchNodes.value.length);){
+                MatcherNode info = matchNodes.value.get(index.value).copy();
+                if ((depth > (int)info.depth))
+                {
+                    break;
                 }
-                return index;
+                index.value += (1 + (int)info.depth);
             }
+            return index.value;
+        }
         };
         if ((matchNodes.value.length == 0))
         {

@@ -559,15 +559,15 @@ public class intrange {
                 return new IntRange(minAnd(this, rhs), maxAnd(this, rhs));
             }
             Ref<IntRange> l = ref(l.value = new IntRange(this));
-            IntRange r = r = new IntRange(rhs);
+            Ref<IntRange> r = ref(r.value = new IntRange(rhs));
             if ((((this.imin.negative ^ this.imax.negative) ? 1 : 0) == 1) && (((rhs.imin.negative ^ rhs.imax.negative) ? 1 : 0) == 1))
             {
-                SignExtendedNumber max = (l.value.imax.value > r.imax.value) ? l.value.imax : r.imax.copy();
+                SignExtendedNumber max = (l.value.imax.value > r.value.imax.value) ? l.value.imax : r.value.imax.copy();
                 l.value.imax.value = -1L;
                 l.value.imax.negative = true;
-                r.imax.value = -1L;
-                r.imax.negative = true;
-                return new IntRange(minAnd(l.value, r), max);
+                r.value.imax.value = -1L;
+                r.value.imax.negative = true;
+                return new IntRange(minAnd(l.value, r.value), max);
             }
             else
             {
@@ -575,10 +575,10 @@ public class intrange {
                 {
                     swap(l, r);
                 }
-                SignExtendedNumber minAndNeg = minAnd(l.value, new IntRange(r.imin, new SignExtendedNumber(-1L, false))).copy();
-                SignExtendedNumber minAndPos = minAnd(l.value, new IntRange(new SignExtendedNumber(0L, false), r.imax)).copy();
-                SignExtendedNumber maxAndNeg = maxAnd(l.value, new IntRange(r.imin, new SignExtendedNumber(-1L, false))).copy();
-                SignExtendedNumber maxAndPos = maxAnd(l.value, new IntRange(new SignExtendedNumber(0L, false), r.imax)).copy();
+                SignExtendedNumber minAndNeg = minAnd(l.value, new IntRange(r.value.imin, new SignExtendedNumber(-1L, false))).copy();
+                SignExtendedNumber minAndPos = minAnd(l.value, new IntRange(new SignExtendedNumber(0L, false), r.value.imax)).copy();
+                SignExtendedNumber maxAndNeg = maxAnd(l.value, new IntRange(r.value.imin, new SignExtendedNumber(-1L, false))).copy();
+                SignExtendedNumber maxAndPos = maxAnd(l.value, new IntRange(new SignExtendedNumber(0L, false), r.value.imax)).copy();
                 SignExtendedNumber min = (minAndNeg.opCmp(minAndPos) < 0) ? minAndNeg : minAndPos.copy();
                 SignExtendedNumber max = (maxAndNeg.opCmp(maxAndPos) > 0) ? maxAndNeg : maxAndPos.copy();
                 IntRange range = range = new IntRange(min, max);

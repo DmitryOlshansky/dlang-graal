@@ -793,13 +793,13 @@ public class declaration {
             if ((this.inuse == 1) && (this.type != null) && (this._scope != null))
             {
                 this.inuse = 2;
-                int olderrors = global.value.errors;
+                int olderrors = global.errors;
                 Dsymbol s = this.type.toDsymbol(this._scope);
-                if ((global.value.errors != olderrors))
+                if ((global.errors != olderrors))
                 {
                     /*goto Lerr*//*unrolled goto*/
                 /*Lerr:*/
-                    if (global.value.gag != 0)
+                    if (global.gag != 0)
                     {
                         return this;
                     }
@@ -810,11 +810,11 @@ public class declaration {
                 if (s != null)
                 {
                     s = s.toAlias();
-                    if ((global.value.errors != olderrors))
+                    if ((global.errors != olderrors))
                     {
                         /*goto Lerr*//*unrolled goto*/
                     /*Lerr:*/
-                        if (global.value.gag != 0)
+                        if (global.gag != 0)
                         {
                             return this;
                         }
@@ -832,7 +832,7 @@ public class declaration {
                     {
                         /*goto Lerr*//*unrolled goto*/
                     /*Lerr:*/
-                        if (global.value.gag != 0)
+                        if (global.gag != 0)
                         {
                             return this;
                         }
@@ -840,11 +840,11 @@ public class declaration {
                         this.type = Type.terror;
                         return this.aliassym;
                     }
-                    if ((global.value.errors != olderrors))
+                    if ((global.errors != olderrors))
                     {
                         /*goto Lerr*//*unrolled goto*/
                     /*Lerr:*/
-                        if (global.value.gag != 0)
+                        if (global.gag != 0)
                         {
                             return this;
                         }
@@ -859,7 +859,7 @@ public class declaration {
             {
                 this.error(new BytePtr("recursive alias declaration"));
             /*Lerr:*/
-                if (global.value.gag != 0)
+                if (global.gag != 0)
                 {
                     return this;
                 }
@@ -1045,19 +1045,19 @@ public class declaration {
                 }
             }
             Dsymbol result = null;
-            Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>(){
-                public Integer invoke(Dsymbol s) {
-                    if (result != null)
-                    {
-                        result = null;
-                        return 1;
-                    }
-                    else
-                    {
-                        result = s;
-                        return 0;
-                    }
+            Function1<Dsymbol,Integer> __lambda1 = (s) -> {
+             {
+                if (result != null)
+                {
+                    result = null;
+                    return 1;
                 }
+                else
+                {
+                    result = s;
+                    return 0;
+                }
+            }
             };
             overloadApply(this.aliassym, __lambda1, null);
             return result;
@@ -1165,7 +1165,7 @@ public class declaration {
             return v;
         }
 
-        public  void setFieldOffset(AggregateDeclaration ad, IntPtr poffset, boolean isunion) {
+        public  void setFieldOffset(AggregateDeclaration ad, Ptr<Integer> poffset, boolean isunion) {
             if (this.aliassym != null)
             {
                 TupleDeclaration v2 = this.aliassym.isTupleDeclaration();
@@ -1228,7 +1228,7 @@ public class declaration {
             long sz = t.size(this.loc);
             assert((sz != -1L) && (sz < 4294967295L));
             int memsize = (int)sz;
-            int memalignsize = target.value.fieldalign(t);
+            int memalignsize = target.fieldalign(t);
             this.offset = AggregateDeclaration.placeField(poffset, memsize, memalignsize, this.alignment, ptr(ad.structsize), ptr(ad.alignsize), isunion);
         }
 
@@ -1399,13 +1399,13 @@ public class declaration {
 
         public  Expression getConstInitializer(boolean needFullType) {
             assert((this.type != null) && (this._init != null));
-            int oldgag = global.value.gag;
-            if (global.value.gag != 0)
+            int oldgag = global.gag;
+            if (global.gag != 0)
             {
                 Dsymbol sym = this.toParent().isAggregateDeclaration();
                 if ((sym != null) && (sym.isSpeculative() == null))
                 {
-                    global.value.gag = 0;
+                    global.gag = 0;
                 }
             }
             if (this._scope != null)
@@ -1416,7 +1416,7 @@ public class declaration {
                 this.inuse--;
             }
             Expression e = initializerToExpression(this._init, needFullType ? this.type : null);
-            global.value.gag = oldgag;
+            global.gag = oldgag;
             return e;
         }
 
@@ -1660,12 +1660,12 @@ public class declaration {
     {
         public Type tinfo = null;
         public  TypeInfoDeclaration(Type tinfo) {
-            super(Loc.initial, Type.dtypeinfo.value.type, tinfo.getTypeInfoIdent(), null, 0L);
+            super(Loc.initial, Type.dtypeinfo.type, tinfo.getTypeInfoIdent(), null, 0L);
             this.tinfo = tinfo;
             this.storage_class = 1073741825L;
             this.protection = new Prot(Prot.Kind.public_).copy();
             this.linkage = LINK.c;
-            this.alignment = target.value.ptrsize;
+            this.alignment = target.ptrsize;
         }
 
         public static TypeInfoDeclaration create(Type tinfo) {

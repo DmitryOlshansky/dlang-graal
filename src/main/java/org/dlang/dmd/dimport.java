@@ -35,21 +35,21 @@ public class dimport {
         public Ref<dmodule.Package> pkg = ref(null);
         public DArray<AliasDeclaration> aliasdecls = new DArray<AliasDeclaration>();
         public  Import(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Identifier aliasId, int isstatic) {
-            Function0<Identifier> selectIdent = new Function0<Identifier>(){
-                public Identifier invoke() {
-                    if (aliasId != null)
-                    {
-                        return aliasId;
-                    }
-                    else if ((packages != null) && ((packages.get()).length != 0))
-                    {
-                        return (packages.get()).get(0);
-                    }
-                    else
-                    {
-                        return id;
-                    }
+            Function0<Identifier> selectIdent = () -> {
+             {
+                if (aliasId != null)
+                {
+                    return aliasId;
                 }
+                else if ((packages != null) && ((packages.get()).length != 0))
+                {
+                    return (packages.get()).get(0);
+                }
+                else
+                {
+                    return id;
+                }
+            }
             };
             super(loc, selectIdent.invoke());
             assert(id != null);
@@ -94,7 +94,7 @@ public class dimport {
         }
 
         public  boolean load(Ptr<Scope> sc) {
-            int errors = global.value.errors;
+            int errors = global.errors;
             DsymbolTable dst = dmodule.Package.resolve(this.packages, null, ptr(this.pkg));
             Dsymbol s = dst.lookup(this.id);
             if (s != null)
@@ -165,7 +165,7 @@ public class dimport {
             {
                 this.pkg.value = this.mod;
             }
-            return global.value.errors != errors;
+            return global.errors != errors;
         }
 
         public  void importAll(Ptr<Scope> sc) {

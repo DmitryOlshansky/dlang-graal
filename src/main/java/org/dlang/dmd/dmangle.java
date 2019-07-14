@@ -100,7 +100,7 @@ public class dmangle {
         public  boolean backrefType(Type t) {
             if (t.isTypeBasic() == null)
             {
-                IntPtr p = pcopy(this.types.getLvalue(t));
+                Ptr<Integer> p = pcopy(this.types.getLvalue(t));
                 if (p.get() != 0)
                 {
                     this.writeBackRef((this.buf.get()).offset - p.get());
@@ -112,7 +112,7 @@ public class dmangle {
         }
 
         public  boolean backrefIdentifier(Identifier id) {
-            IntPtr p = pcopy(this.idents.getLvalue(id));
+            Ptr<Integer> p = pcopy(this.idents.getLvalue(id));
             if (p.get() != 0)
             {
                 this.writeBackRef((this.buf.get()).offset - p.get());
@@ -417,7 +417,7 @@ public class dmangle {
                     case LINK.objc:
                         return d.ident.asString();
                     case LINK.cpp:
-                        BytePtr p = pcopy(target.value.toCppMangle(d));
+                        BytePtr p = pcopy(target.toCppMangle(d));
                         return p.slice(0,strlen(p));
                     case LINK.default_:
                     case LINK.system:
@@ -744,9 +744,9 @@ public class dmangle {
                             ea.error(new BytePtr("tuple is not a valid template value argument"));
                             continue L_outer1;
                         }
-                        int olderr = global.value.errors;
+                        int olderr = global.errors;
                         ea = ea.ctfeInterpret();
-                        if (((ea.op & 0xFF) == 127) || (olderr != global.value.errors))
+                        if (((ea.op & 0xFF) == 127) || (olderr != global.errors))
                         {
                             continue L_outer1;
                         }
@@ -908,9 +908,9 @@ public class dmangle {
                     case 2:
                         m = (byte)119;
                         {
-                            IntRef u = ref(0);
+                            Ref<Integer> u = ref(0);
                             for (; (u.value < e.len);){
-                                int c = 0x0ffff;
+                                Ref<Integer> c = ref(0x0ffff);
                                 BytePtr p = pcopy(utf_decodeWchar(e.wstring, e.len, u, c));
                                 if (p != null)
                                 {
@@ -918,7 +918,7 @@ public class dmangle {
                                 }
                                 else
                                 {
-                                    tmp.writeUTF8(c);
+                                    tmp.writeUTF8(c.value);
                                 }
                             }
                         }
@@ -931,7 +931,7 @@ public class dmangle {
                             int __limit1007 = e.len;
                             for (; (__key1006 < __limit1007);__key1006 += 1) {
                                 int u_1 = __key1006;
-                                int c_1 = (toIntPtr(e.string)).get(u_1);
+                                int c_1 = (toPtr<Integer>(e.string)).get(u_1);
                                 if (!utf_isValidDchar(c_1))
                                 {
                                     e.error(new BytePtr("invalid UCS-32 char \\U%08x"), c_1);
@@ -1020,11 +1020,11 @@ public class dmangle {
         }
 
         public  void paramsToDecoBuffer(Ptr<DArray<Parameter>> parameters) {
-            Function2<Integer,Parameter,Integer> paramsToDecoBufferDg = new Function2<Integer,Parameter,Integer>(){
-                public Integer invoke(Integer n, Parameter p) {
-                    p.accept(this);
-                    return 0;
-                }
+            Function2<Integer,Parameter,Integer> paramsToDecoBufferDg = (n, p) -> {
+             {
+                p.accept(this);
+                return 0;
+            }
             };
             Parameter._foreach(parameters, paramsToDecoBufferDg, null);
         }
@@ -1038,18 +1038,18 @@ public class dmangle {
             {
                 (this.buf.get()).writestring(new ByteSlice("Nk"));
             }
-            switch (p.storageClass & 2111488L)
+            switch ((int)p.storageClass & 2111488L)
             {
-                case 0L:
-                case 2048L:
+                case (int)0L:
+                case (int)2048L:
                     break;
-                case 4096L:
+                case (int)4096L:
                     (this.buf.get()).writeByte(74);
                     break;
-                case 2097152L:
+                case (int)2097152L:
                     (this.buf.get()).writeByte(75);
                     break;
-                case 8192L:
+                case (int)8192L:
                     (this.buf.get()).writeByte(76);
                     break;
                 default:

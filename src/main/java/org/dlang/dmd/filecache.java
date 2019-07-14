@@ -81,12 +81,11 @@ public class filecache {
         }
 
         public  void deinitialize() {
-            Function1<Ptr<StringValue>,Integer> __foreachbody1 = new Function1<Ptr<StringValue>,Integer>(){
-                public Integer invoke(Ptr<StringValue> sv) {
-                    Ref<Ptr<StringValue>> sv_ref = ref(sv);
-                    destroy(sv_ref);
-                    return 0;
-                }
+            Function1<Ptr<StringValue>,Integer> __foreachbody1 = (sv) -> {
+             {
+                destroy(sv);
+                return 0;
+            }
             };
             this.files.opApply(__foreachbody1);
             this.files.reset(0);

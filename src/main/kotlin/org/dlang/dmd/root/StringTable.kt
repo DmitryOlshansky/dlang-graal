@@ -32,7 +32,7 @@ class StringTable(private val table : HashMap<ByteSlice, StringValue?>) {
         Returns: the string's associated value, or `null` if the string doesn't
         exist in the string table
      */
-    fun lookup(str: ByteSlice): StringValue? = table[str]
+    fun lookup(str: ByteSlice): Ptr<StringValue?> = refPtr(table[str])
 
     /// ditto
     fun lookup(s: BytePtr, length: Int) = lookup(s.slice(0, length))
@@ -63,14 +63,14 @@ class StringTable(private val table : HashMap<ByteSlice, StringValue?>) {
     /// ditto
     fun insert(s: BytePtr, length: Int, value: Any?) = insert(s.slice(0, length), value)
 
-    fun update(str: ByteSlice): StringValue {
+    fun update(str: ByteSlice): Ptr<StringValue> {
         val v = table[str]
-        if (v !== null) return v
+        if (v !== null) return refPtr(v)
         else {
             val value = StringValue(str, str.hashCode(), null)
             table[str] = value
             // printf("update %.*s %p\n", cast(int)str.length, str.ptr, table[i].value ?: NULL);
-            return value
+            return refPtr(value)
         }
     }
 

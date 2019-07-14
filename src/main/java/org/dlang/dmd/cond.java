@@ -244,7 +244,7 @@ public class cond {
             }
             (sfe.get()).push(new ReturnStatement(aloc, res.get(0)));
             (s1.get()).push(this.createForeach(aloc, pparams.get(0), new CompoundStatement(aloc, sfe)));
-            (s1.get()).push(new ExpStatement(aloc, new AssertExp(aloc, new IntegerExp(aloc, 0L, Type.tint32.value), null)));
+            (s1.get()).push(new ExpStatement(aloc, new AssertExp(aloc, new IntegerExp(aloc, 0L, Type.tint32), null)));
             TypeTypeof ety = new TypeTypeof(aloc, this.wrapAndCall(aloc, new CompoundStatement(aloc, s1)));
             Type aty = ety.arrayOf();
             Identifier idres = Identifier.generateId(new BytePtr("__res"));
@@ -366,7 +366,7 @@ public class cond {
                         this.inc = Include.yes;
                         definedInModule = true;
                     }
-                    else if (findCondition(global.value.debugids, this.ident))
+                    else if (findCondition(global.debugids, this.ident))
                     {
                         this.inc = Include.yes;
                     }
@@ -379,7 +379,7 @@ public class cond {
                         (this.mod.debugidsNot.get()).push(this.ident);
                     }
                 }
-                else if ((this.level <= global.value.params.debuglevel) || (this.level <= this.mod.debuglevel))
+                else if ((this.level <= global.params.debuglevel) || (this.level <= this.mod.debuglevel))
                 {
                     this.inc = Include.yes;
                 }
@@ -563,7 +563,7 @@ public class cond {
                         this.inc = Include.yes;
                         definedInModule = true;
                     }
-                    else if (findCondition(global.value.versionids, this.ident))
+                    else if (findCondition(global.versionids, this.ident))
                     {
                         this.inc = Include.yes;
                     }
@@ -576,7 +576,7 @@ public class cond {
                         (this.mod.versionidsNot.get()).push(this.ident);
                     }
                 }
-                else if ((this.level <= global.value.params.versionlevel) || (this.level <= this.mod.versionlevel))
+                else if ((this.level <= global.params.versionlevel) || (this.level <= this.mod.versionlevel))
                 {
                     this.inc = Include.yes;
                 }
@@ -626,14 +626,14 @@ public class cond {
         }
 
         public  int include(Ptr<Scope> sc) {
-            Function0<Integer> errorReturn = new Function0<Integer>(){
-                public Integer invoke() {
-                    if (global.value.gag == 0)
-                    {
-                        inc = Include.no;
-                    }
-                    return 0;
+            Function0<Integer> errorReturn = () -> {
+             {
+                if (global.gag == 0)
+                {
+                    inc = Include.no;
                 }
+                return 0;
+            }
             };
             if ((this.inc == Include.notComputed))
             {
@@ -703,11 +703,11 @@ public class cond {
     }
 
     public static void printDepsConditional(Ptr<Scope> sc, DVCondition condition, ByteSlice depType) {
-        if ((global.value.params.moduleDeps == null) || (global.value.params.moduleDepsFile.getLength() != 0))
+        if ((global.params.moduleDeps == null) || (global.params.moduleDepsFile.getLength() != 0))
         {
             return ;
         }
-        Ptr<OutBuffer> ob = global.value.params.moduleDeps;
+        Ptr<OutBuffer> ob = global.params.moduleDeps;
         dmodule.Module imod = sc != null ? (sc.get()).instantiatingModule() : condition.mod;
         if (imod == null)
         {
