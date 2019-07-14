@@ -133,7 +133,7 @@ public class dmacro {
                     {
                         BytePtr name = pcopy(p.plus(u).plus(2));
                         int namelen = 0;
-                        ByteSlice marg = new ByteSlice().copy();
+                        Ref<ByteSlice> marg = ref(new ByteSlice().copy());
                         int v = 0;
                         {
                             v = u + 2;
@@ -163,34 +163,34 @@ public class dmacro {
                                 m = pcopy(this.search(toByteSlice(undef)));
                                 if (m != null)
                                 {
-                                    if (marg.getLength() != 0)
+                                    if (marg.value.getLength() != 0)
                                     {
-                                        BytePtr q = pcopy(((BytePtr)Mem.xmalloc(namelen + 1 + marg.getLength())));
+                                        BytePtr q = pcopy(((BytePtr)Mem.xmalloc(namelen + 1 + marg.value.getLength())));
                                         assert(q != null);
                                         memcpy((BytePtr)(q), (name), namelen);
                                         q.set(namelen, (byte)44);
-                                        memcpy((BytePtr)((q.plus(namelen).plus(1))), (toBytePtr(marg)), marg.getLength());
-                                        marg = q.slice(0,marg.getLength() + namelen + 1).copy();
+                                        memcpy((BytePtr)((q.plus(namelen).plus(1))), (toBytePtr(marg)), marg.value.getLength());
+                                        marg.value = q.slice(0,marg.value.getLength() + namelen + 1).copy();
                                     }
                                     else
                                     {
-                                        marg = name.slice(0,namelen).copy();
+                                        marg.value = name.slice(0,namelen).copy();
                                     }
                                 }
                             }
                             if (m != null)
                             {
-                                if (((m.get()).inuse != 0) && (marg.getLength() == 0))
+                                if (((m.get()).inuse != 0) && (marg.value.getLength() == 0))
                                 {
                                     (buf.get()).remove(u, v + 1 - u);
                                     end -= v + 1 - u;
                                 }
-                                else if (((m.get()).inuse != 0) && (arg.getLength() == marg.getLength()) && (memcmp(toBytePtr(arg), toBytePtr(marg), arg.getLength()) == 0) || (arg.getLength() + 4 == marg.getLength()) && ((marg.get(0) & 0xFF) == 255) && ((marg.get(1) & 0xFF) == 123) && (memcmp(toBytePtr(arg), (toBytePtr(marg).plus(2)), arg.getLength()) == 0) && ((marg.get(marg.getLength() - 2) & 0xFF) == 255) && ((marg.get(marg.getLength() - 1) & 0xFF) == 125))
+                                else if (((m.get()).inuse != 0) && (arg.getLength() == marg.value.getLength()) && (memcmp(toBytePtr(arg), toBytePtr(marg), arg.getLength()) == 0) || (arg.getLength() + 4 == marg.value.getLength()) && ((marg.value.get(0) & 0xFF) == 255) && ((marg.value.get(1) & 0xFF) == 123) && (memcmp(toBytePtr(arg), (toBytePtr(marg).plus(2)), arg.getLength()) == 0) && ((marg.value.get(marg.value.getLength() - 2) & 0xFF) == 255) && ((marg.value.get(marg.value.getLength() - 1) & 0xFF) == 125))
                                 {
                                 }
                                 else
                                 {
-                                    marg = memdup(marg).copy();
+                                    marg.value = memdup(marg.value).copy();
                                     (buf.get()).spread(v + 1, 2 + (m.get()).text.getLength() + 2);
                                     (buf.get()).data.set((v + 1), (byte)255);
                                     (buf.get()).data.set((v + 2), (byte)123);
@@ -200,7 +200,7 @@ public class dmacro {
                                     end += 2 + (m.get()).text.getLength() + 2;
                                     (m.get()).inuse++;
                                     Ref<Integer> mend = ref(v + 1 + 2 + (m.get()).text.getLength() + 2);
-                                    this.expand(buf, v + 1, ptr(mend), marg);
+                                    this.expand(buf, v + 1, ptr(mend), marg.value);
                                     end += mend.value - (v + 1 + 2 + (m.get()).text.getLength() + 2);
                                     (m.get()).inuse--;
                                     (buf.get()).remove(u, v + 1 - u);

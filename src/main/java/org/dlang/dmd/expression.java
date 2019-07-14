@@ -2653,13 +2653,13 @@ public class expression {
                 return this.len;
             }
             int result = 0;
-            int c = 0x0ffff;
+            Ref<Integer> c = ref(0x0ffff);
             switch ((this.sz & 0xFF))
             {
                 case 1:
                     {
-                        int u = 0;
-                        for (; (u < this.len);){
+                        Ref<Integer> u = ref(0);
+                        for (; (u.value < this.len);){
                             {
                                 BytePtr p = pcopy(utf_decodeChar(this.string, this.len, u, c));
                                 if ((p) != null)
@@ -2668,14 +2668,14 @@ public class expression {
                                     return 0;
                                 }
                             }
-                            result += utf_codeLength(encSize, c);
+                            result += utf_codeLength(encSize, c.value);
                         }
                     }
                     break;
                 case 2:
                     {
-                        int u_1 = 0;
-                        for (; (u_1 < this.len);){
+                        Ref<Integer> u_1 = ref(0);
+                        for (; (u_1.value < this.len);){
                             {
                                 BytePtr p = pcopy(utf_decodeWchar(this.wstring, this.len, u_1, c));
                                 if ((p) != null)
@@ -2684,7 +2684,7 @@ public class expression {
                                     return 0;
                                 }
                             }
-                            result += utf_codeLength(encSize, c);
+                            result += utf_codeLength(encSize, c.value);
                         }
                     }
                     break;
@@ -4782,11 +4782,11 @@ public class expression {
             {
                 return be;
             }
-            Expression e0 = null;
+            Ref<Expression> e0 = ref(null);
             for (; 1 != 0;){
-                Expression de = null;
+                Ref<Expression> de = ref(null);
                 ie.e2.value = extractSideEffect(sc, new BytePtr("__aakey"), de, ie.e2.value, false);
-                e0 = Expression.combine(de, e0);
+                e0.value = Expression.combine(de.value, e0.value);
                 IndexExp ie1 = ie.e1.value.isIndexExp();
                 if ((ie1 == null) || ((ie1.e1.value.type.value.toBasetype().ty & 0xFF) != ENUMTY.Taarray))
                 {
@@ -4795,11 +4795,11 @@ public class expression {
                 ie = ie1;
             }
             assert(((ie.e1.value.type.value.toBasetype().ty & 0xFF) == ENUMTY.Taarray));
-            Expression de = null;
+            Ref<Expression> de = ref(null);
             ie.e1.value = extractSideEffect(sc, new BytePtr("__aatmp"), de, ie.e1.value, false);
-            e0 = Expression.combine(de, e0);
+            e0.value = Expression.combine(de.value, e0.value);
             be.e2.value = extractSideEffect(sc, new BytePtr("__aaval"), e0, be.e2.value, true);
-            return Expression.combine(e0, (Expression)be);
+            return Expression.combine(e0.value, (Expression)be);
         }
 
         public  void accept(Visitor v) {

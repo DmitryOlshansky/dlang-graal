@@ -441,8 +441,8 @@ public class optimize {
                 cdfrom.size(e.loc);
                 assert((cdfrom.sizeok == Sizeok.done));
                 assert((cdto.sizeok == Sizeok.done) || !cdto.isBaseOf(cdfrom, null));
-                int offset = 0;
-                if (cdto.isBaseOf(cdfrom, ptr(offset)) && (offset == 0))
+                Ref<Integer> offset = ref(0);
+                if (cdto.isBaseOf(cdfrom, ptr(offset)) && (offset.value == 0))
                 {
                     /*goto L1*/throw Dispatch0.INSTANCE;
                 }

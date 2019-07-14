@@ -1065,13 +1065,13 @@ public class dmodule {
             if (this.md != null)
             {
                 this.ident = (this.md.get()).id;
-                Package ppack = null;
+                Ref<Package> ppack = ref(null);
                 dst = Package.resolve((this.md.get()).packages, ptr(this.parent), ptr(ppack));
                 assert(dst != null);
-                Module m = ppack != null ? ppack.isModule() : null;
+                Module m = ppack.value != null ? ppack.value.isModule() : null;
                 if ((m != null) && (strcmp(m.srcfile.name(), new BytePtr("package.d")) != 0) && (strcmp(m.srcfile.name(), new BytePtr("package.di")) != 0))
                 {
-                    error((this.md.get()).loc.value, new BytePtr("package name '%s' conflicts with usage as a module name in file %s"), ppack.toPrettyChars(false), m.srcfile.toChars());
+                    error((this.md.get()).loc.value, new BytePtr("package name '%s' conflicts with usage as a module name in file %s"), ppack.value.toPrettyChars(false), m.srcfile.toChars());
                 }
             }
             else
@@ -1303,7 +1303,7 @@ public class dmodule {
                     }
                     Ptr<Dsymbol> todo = null;
                     Ptr<Dsymbol> todoalloc = null;
-                    Dsymbol tmp = null;
+                    Ref<Dsymbol> tmp = ref(null);
                     if ((len == 1))
                     {
                         todo = pcopy(ptr(tmp));

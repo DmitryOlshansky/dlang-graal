@@ -378,9 +378,9 @@ public class clone {
         {
             NullExp er = new NullExp(ad.loc, null);
             IdentifierExp el = new IdentifierExp(ad.loc, Id.p);
-            DArray<Expression> a = new DArray<Expression>();
+            Ref<DArray<Expression>> a = ref(new DArray<Expression>());
             try {
-                a.setDim(1);
+                a.value.setDim(1);
                 {
                     int __key809 = 0;
                     int __limit810 = 5;
@@ -417,8 +417,8 @@ public class clone {
                             int __limit812 = 2;
                             for (; (__key811 < __limit812);__key811 += 1) {
                                 int j = __key811;
-                                a.set(0, (j == 0) ? er : el);
-                                a.get(0).type.value = tthis;
+                                a.value.set(0, (j == 0) ? er : el);
+                                a.value.get(0).type.value = tthis;
                                 f = resolveFuncCall(ad.loc, sc, eq, null, tthis, ptr(a), FuncResolveFlag.quiet);
                                 if (f != null)
                                 {
@@ -468,7 +468,7 @@ public class clone {
                     {
                         TypeFunction tfeqptr = null;
                         {
-                            Scope scx = new Scope().copy();
+                            Ref<Scope> scx = ref(new Scope().copy());
                             Ptr<DArray<Parameter>> parameters = refPtr(new DArray<Parameter>());
                             (parameters.get()).push(new Parameter(2097156L, sd.type, null, null, null));
                             tfeqptr = new TypeFunction(new ParameterList(parameters, VarArg.none), Type.tbool, LINK.d, 0L);
@@ -532,7 +532,7 @@ public class clone {
                     {
                         TypeFunction tfcmpptr = null;
                         {
-                            Scope scx = new Scope().copy();
+                            Ref<Scope> scx = ref(new Scope().copy());
                             Ptr<DArray<Parameter>> parameters = refPtr(new DArray<Parameter>());
                             (parameters.get()).push(new Parameter(2097156L, sd.type, null, null, null));
                             tfcmpptr = new TypeFunction(new ParameterList(parameters, VarArg.none), Type.tint32, LINK.d, 0L);

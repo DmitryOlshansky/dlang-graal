@@ -1828,20 +1828,20 @@ public class dsymbolsem {
                             /*goto Ldecl*/throw Dispatch0.INSTANCE;
                         }
                         {
-                            int i = 0;
-                            for (; (i < se.len);){
+                            Ref<Integer> i = ref(0);
+                            for (; (i.value < se.len);){
                                 BytePtr p = pcopy(se.string);
-                                int c = (p.get(i) & 0xFF);
-                                if ((c < 128))
+                                Ref<Integer> c = ref((p.get(i.value) & 0xFF));
+                                if ((c.value < 128))
                                 {
-                                    if (isValidMangling(c))
+                                    if (isValidMangling(c.value))
                                     {
-                                        i += 1;
+                                        i.value += 1;
                                         continue;
                                     }
                                     else
                                     {
-                                        pd.error(new BytePtr("char 0x%02x not allowed in mangled name"), c);
+                                        pd.error(new BytePtr("char 0x%02x not allowed in mangled name"), c.value);
                                         break;
                                     }
                                 }
@@ -1853,9 +1853,9 @@ public class dsymbolsem {
                                         break;
                                     }
                                 }
-                                if (!isUniAlpha(c))
+                                if (!isUniAlpha(c.value))
                                 {
-                                    pd.error(new BytePtr("char `0x%04x` not allowed in mangled name"), c);
+                                    pd.error(new BytePtr("char `0x%04x` not allowed in mangled name"), c.value);
                                     break;
                                 }
                             }
@@ -2708,11 +2708,11 @@ public class dsymbolsem {
                 tempdecl.onemember = null;
                 if (tempdecl.members != null)
                 {
-                    Dsymbol s = null;
-                    if (Dsymbol.oneMembers(tempdecl.members, ptr(s), tempdecl.ident) && (s != null))
+                    Ref<Dsymbol> s = ref(null);
+                    if (Dsymbol.oneMembers(tempdecl.members, ptr(s), tempdecl.ident) && (s.value != null))
                     {
-                        tempdecl.onemember = s;
-                        s.parent.value = tempdecl;
+                        tempdecl.onemember = s.value;
+                        s.value.parent.value = tempdecl;
                     }
                 }
                 tempdecl.semanticRun = PASS.semanticdone;
@@ -5747,10 +5747,10 @@ public class dsymbolsem {
         foreachDsymbol(tempinst.members, __lambda4);
         if ((tempinst.members.get()).length != 0)
         {
-            Dsymbol s = null;
-            if (Dsymbol.oneMembers(tempinst.members, ptr(s), tempdecl.ident) && (s != null))
+            Ref<Dsymbol> s = ref(null);
+            if (Dsymbol.oneMembers(tempinst.members, ptr(s), tempdecl.ident) && (s.value != null))
             {
-                tempinst.aliasdecl = s;
+                tempinst.aliasdecl = s.value;
             }
         }
         if ((fargs != null) && (tempinst.aliasdecl != null))
@@ -5781,12 +5781,12 @@ public class dsymbolsem {
         tempinst.semanticRun = PASS.semanticdone;
         if ((tempinst.members.get()).length != 0)
         {
-            Dsymbol s = null;
-            if (Dsymbol.oneMembers(tempinst.members, ptr(s), tempdecl.ident) && (s != null))
+            Ref<Dsymbol> s = ref(null);
+            if (Dsymbol.oneMembers(tempinst.members, ptr(s), tempdecl.ident) && (s.value != null))
             {
-                if ((tempinst.aliasdecl == null) || (!pequals(tempinst.aliasdecl, s)))
+                if ((tempinst.aliasdecl == null) || (!pequals(tempinst.aliasdecl, s.value)))
                 {
-                    tempinst.aliasdecl = s;
+                    tempinst.aliasdecl = s.value;
                 }
             }
         }
@@ -5827,14 +5827,14 @@ public class dsymbolsem {
             }
             if (((sc.get()).func != null) || (((sc.get()).flags & 65536) != 0) && (tempinst.tinst == null))
             {
-                DArray<TemplateInstance> deferred = new DArray<TemplateInstance>();
+                Ref<DArray<TemplateInstance>> deferred = ref(new DArray<TemplateInstance>());
                 try {
                     tempinst.deferred = pcopy(ptr(deferred));
                     tempinst.trySemantic3(sc2);
                     {
                         int i = 0;
-                        for (; (i < deferred.length);i++){
-                            semantic3(deferred.get(i), null);
+                        for (; (i < deferred.value.length);i++){
+                            semantic3(deferred.value.get(i), null);
                         }
                     }
                     tempinst.deferred = null;

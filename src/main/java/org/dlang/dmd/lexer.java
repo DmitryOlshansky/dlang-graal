@@ -151,7 +151,7 @@ public class lexer {
             if (this.token.value.next.value != null)
             {
                 Ptr<Token> t = this.token.value.next.value;
-                (ptr(this.token)).set(0, (t));
+                (ptr(this.token)).set(0, (t).get());
                 this.releaseToken(t);
             }
             else
@@ -1734,7 +1734,7 @@ public class lexer {
             long n = 0L;
             int d = 0;
             boolean err = false;
-            boolean overflow = false;
+            Ref<Boolean> overflow = ref(false);
             boolean anyBinaryDigitsNoSingleUS = false;
             boolean anyHexDigitsNoSingleUS = false;
             int c = (this.p.value.get() & 0xFF);
@@ -1918,7 +1918,7 @@ public class lexer {
             }
             catch(Dispatch0 __d){}
         /*Ldone:*/
-            if (overflow && !err)
+            if (overflow.value && !err)
             {
                 this.error(new BytePtr("integer overflow"));
                 err = true;
@@ -2144,7 +2144,7 @@ public class lexer {
             stringbuffer.writeByte(0);
             BytePtr sbufptr = pcopy(toBytePtr(stringbuffer.data));
             byte result = TOK.reserved;
-            boolean isOutOfRange = false;
+            Ref<Boolean> isOutOfRange = ref(false);
             (t.get()).floatvalue = isWellformedString ? CTFloat.parse(sbufptr, ptr(isOutOfRange)) : CTFloat.zero;
             {
                 int __dispatch22 = 0;
@@ -2154,17 +2154,17 @@ public class lexer {
                     {
                         case 70:
                         case 102:
-                            if (isWellformedString && !isOutOfRange)
+                            if (isWellformedString && !isOutOfRange.value)
                             {
-                                isOutOfRange = Port.isFloat32LiteralOutOfRange(sbufptr);
+                                isOutOfRange.value = Port.isFloat32LiteralOutOfRange(sbufptr);
                             }
                             result = TOK.float32Literal;
                             this.p.value.postInc();
                             break;
                         default:
-                        if (isWellformedString && !isOutOfRange)
+                        if (isWellformedString && !isOutOfRange.value)
                         {
-                            isOutOfRange = Port.isFloat64LiteralOutOfRange(sbufptr);
+                            isOutOfRange.value = Port.isFloat64LiteralOutOfRange(sbufptr);
                         }
                         result = TOK.float64Literal;
                         break;
@@ -2202,7 +2202,7 @@ public class lexer {
                 }
             }
             boolean isLong = ((result & 0xFF) == 113) || ((result & 0xFF) == 116);
-            if (isOutOfRange && !isLong)
+            if (isOutOfRange.value && !isLong)
             {
                 BytePtr suffix = pcopy(((result & 0xFF) == 111) || ((result & 0xFF) == 114) ? new BytePtr("f") : new BytePtr(""));
                 this.error(this.scanloc.value, new BytePtr("number `%s%s` is not representable"), sbufptr, suffix);

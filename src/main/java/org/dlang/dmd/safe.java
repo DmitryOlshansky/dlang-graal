@@ -96,7 +96,7 @@ public class safe {
         {
             ClassDeclaration cdfrom = tfromb.isClassHandle();
             ClassDeclaration cdto = ttob.isClassHandle();
-            int offset = 0;
+            Ref<Integer> offset = ref(0);
             if (!cdfrom.isBaseOf(cdto, ptr(offset)) && !((cdfrom.isInterfaceDeclaration() != null) || (cdto.isInterfaceDeclaration() != null) && (cdfrom.classKind == ClassKind.d) && (cdto.classKind == ClassKind.d)))
             {
                 return false;

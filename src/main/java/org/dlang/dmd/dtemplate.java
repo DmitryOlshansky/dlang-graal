@@ -175,14 +175,14 @@ public class dtemplate {
                                 /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                             }
                             Type at = (Type)(this.dedtypes.get()).get(i);
-                            Type tt = null;
+                            Ref<Type> tt = ref(null);
                             {
                                 byte wx = this.wm != null ? (byte)(deduceWildHelper(t, ptr(tt), this.tparam) & 0xFF) : (byte)0;
                                 if ((wx) != 0)
                                 {
                                     if (at == null)
                                     {
-                                        this.dedtypes.get().set(i, tt);
+                                        this.dedtypes.get().set(i, tt.value);
                                         this.wm.set(0, this.wm.get() | (wx & 0xFF));
                                         this.result = MATCH.constant;
                                         return ;
@@ -190,10 +190,10 @@ public class dtemplate {
                                     if (((at.ty & 0xFF) == ENUMTY.Tnone))
                                     {
                                         TypeDeduced xt = (TypeDeduced)at;
-                                        this.result = xt.matchAll(tt);
+                                        this.result = xt.matchAll(tt.value);
                                         if ((this.result > MATCH.nomatch))
                                         {
-                                            this.dedtypes.get().set(i, tt);
+                                            this.dedtypes.get().set(i, tt.value);
                                             if ((this.result > MATCH.constant))
                                             {
                                                 this.result = MATCH.constant;
@@ -201,20 +201,20 @@ public class dtemplate {
                                         }
                                         return ;
                                     }
-                                    if (tt.equals(at))
+                                    if (tt.value.equals(at))
                                     {
-                                        this.dedtypes.get().set(i, tt);
+                                        this.dedtypes.get().set(i, tt.value);
                                         /*goto Lconst*/throw Dispatch2.INSTANCE;
                                     }
-                                    if (tt.implicitConvTo(at.constOf()) != 0)
+                                    if (tt.value.implicitConvTo(at.constOf()) != 0)
                                     {
                                         this.dedtypes.get().set(i, at.constOf().mutableOf());
                                         this.wm.set(0, this.wm.get() | 1);
                                         /*goto Lconst*/throw Dispatch2.INSTANCE;
                                     }
-                                    if (at.implicitConvTo(tt.constOf()) != 0)
+                                    if (at.implicitConvTo(tt.value.constOf()) != 0)
                                     {
-                                        this.dedtypes.get().set(i, tt.constOf().mutableOf());
+                                        this.dedtypes.get().set(i, tt.value.constOf().mutableOf());
                                         this.wm.set(0, this.wm.get() | 1);
                                         /*goto Lconst*/throw Dispatch2.INSTANCE;
                                     }
@@ -226,30 +226,30 @@ public class dtemplate {
                                     {
                                         if (at == null)
                                         {
-                                            this.dedtypes.get().set(i, tt);
+                                            this.dedtypes.get().set(i, tt.value);
                                             this.result = m;
                                             return ;
                                         }
                                         if (((at.ty & 0xFF) == ENUMTY.Tnone))
                                         {
                                             TypeDeduced xt = (TypeDeduced)at;
-                                            this.result = xt.matchAll(tt);
+                                            this.result = xt.matchAll(tt.value);
                                             if ((this.result > MATCH.nomatch))
                                             {
-                                                this.dedtypes.get().set(i, tt);
+                                                this.dedtypes.get().set(i, tt.value);
                                             }
                                             return ;
                                         }
-                                        if (tt.equals(at))
+                                        if (tt.value.equals(at))
                                         {
                                             /*goto Lexact*/throw Dispatch0.INSTANCE;
                                         }
-                                        if (((tt.ty & 0xFF) == ENUMTY.Tclass) && ((at.ty & 0xFF) == ENUMTY.Tclass))
+                                        if (((tt.value.ty & 0xFF) == ENUMTY.Tclass) && ((at.ty & 0xFF) == ENUMTY.Tclass))
                                         {
-                                            this.result = tt.implicitConvTo(at);
+                                            this.result = tt.value.implicitConvTo(at);
                                             return ;
                                         }
-                                        if (((tt.ty & 0xFF) == ENUMTY.Tsarray) && ((at.ty & 0xFF) == ENUMTY.Tarray) && (tt.nextOf().implicitConvTo(at.nextOf()) >= MATCH.constant))
+                                        if (((tt.value.ty & 0xFF) == ENUMTY.Tsarray) && ((at.ty & 0xFF) == ENUMTY.Tarray) && (tt.value.nextOf().implicitConvTo(at.nextOf()) >= MATCH.constant))
                                         {
                                             /*goto Lexact*/throw Dispatch0.INSTANCE;
                                         }
@@ -1044,7 +1044,7 @@ public class dtemplate {
 
             };
             Type at = (Type)(this.dedtypes.get()).get(i);
-            Type tt = null;
+            Ref<Type> tt = ref(null);
             {
                 byte wx = deduceWildHelper(e.type.value, ptr(tt), this.tparam);
                 if ((wx) != 0)
@@ -1060,7 +1060,7 @@ public class dtemplate {
                     }
                     else if (!isTopRef.invoke(e.type.value))
                     {
-                        tt = e.type.value.mutableOf();
+                        tt.value = e.type.value.mutableOf();
                         this.result = MATCH.convert;
                     }
                     else
@@ -1071,7 +1071,7 @@ public class dtemplate {
             }
             if (at == null)
             {
-                this.dedtypes.get().set(i, new TypeDeduced(tt, e, this.tparam));
+                this.dedtypes.get().set(i, new TypeDeduced(tt.value, e, this.tparam));
                 return ;
             }
             TypeDeduced xt = null;
@@ -1080,7 +1080,7 @@ public class dtemplate {
                 xt = (TypeDeduced)at;
                 at = xt.tded;
             }
-            int match1 = xt != null ? xt.matchAll(tt) : MATCH.nomatch;
+            int match1 = xt != null ? xt.matchAll(tt.value) : MATCH.nomatch;
             Type pt = at.addMod(this.tparam.mod);
             if (this.wm.get() != 0)
             {
@@ -1089,21 +1089,21 @@ public class dtemplate {
             int match2 = e.implicitConvTo(pt);
             if ((match1 > MATCH.nomatch) && (match2 > MATCH.nomatch))
             {
-                if ((at.implicitConvTo(tt) <= MATCH.nomatch))
+                if ((at.implicitConvTo(tt.value) <= MATCH.nomatch))
                 {
                     match1 = MATCH.nomatch;
                 }
-                else if ((tt.implicitConvTo(at) <= MATCH.nomatch))
+                else if ((tt.value.implicitConvTo(at) <= MATCH.nomatch))
                 {
                     match2 = MATCH.nomatch;
                 }
-                else if ((tt.isTypeBasic() != null) && ((tt.ty & 0xFF) == (at.ty & 0xFF)) && ((tt.mod & 0xFF) != (at.mod & 0xFF)))
+                else if ((tt.value.isTypeBasic() != null) && ((tt.value.ty & 0xFF) == (at.ty & 0xFF)) && ((tt.value.mod & 0xFF) != (at.mod & 0xFF)))
                 {
-                    if (!tt.isMutable() && !at.isMutable())
+                    if (!tt.value.isMutable() && !at.isMutable())
                     {
-                        tt = tt.mutableOf().addMod(MODmerge(tt.mod, at.mod));
+                        tt.value = tt.value.mutableOf().addMod(MODmerge(tt.value.mod, at.mod));
                     }
-                    else if (tt.isMutable())
+                    else if (tt.value.isMutable())
                     {
                         if (((at.mod & 0xFF) == 0))
                         {
@@ -1116,7 +1116,7 @@ public class dtemplate {
                     }
                     else if (at.isMutable())
                     {
-                        if (((tt.mod & 0xFF) == 0))
+                        if (((tt.value.mod & 0xFF) == 0))
                         {
                             match2 = MATCH.nomatch;
                         }
@@ -1136,11 +1136,11 @@ public class dtemplate {
             {
                 if (xt != null)
                 {
-                    xt.update(tt, e, this.tparam);
+                    xt.update(tt.value, e, this.tparam);
                 }
                 else
                 {
-                    this.dedtypes.get().set(i, tt);
+                    this.dedtypes.get().set(i, tt.value);
                 }
                 this.result = match1;
                 return ;
@@ -1155,7 +1155,7 @@ public class dtemplate {
                 return ;
             }
             {
-                Type t = rawTypeMerge(at, tt);
+                Type t = rawTypeMerge(at, tt.value);
                 if ((t) != null)
                 {
                     if (xt != null)
@@ -1166,7 +1166,7 @@ public class dtemplate {
                     {
                         this.dedtypes.get().set(i, t);
                     }
-                    pt = tt.addMod(this.tparam.mod);
+                    pt = tt.value.addMod(this.tparam.mod);
                     if (this.wm.get() != 0)
                     {
                         pt = pt.substWildTo(this.wm.get());
@@ -2249,11 +2249,11 @@ public class dtemplate {
             this.protection = new Prot(Prot.Kind.undefined);
             if ((this.members != null) && (ident != null))
             {
-                Dsymbol s = null;
-                if (Dsymbol.oneMembers(this.members, ptr(s), ident) && (s != null))
+                Ref<Dsymbol> s = ref(null);
+                if (Dsymbol.oneMembers(this.members, ptr(s), ident) && (s.value != null))
                 {
-                    this.onemember = s;
-                    s.parent.value = this;
+                    this.onemember = s.value;
+                    s.value.parent.value = this;
                 }
             }
         }
@@ -2299,7 +2299,7 @@ public class dtemplate {
             {
                 return false;
             }
-            TemplateDeclaration pthis = this;
+            Ref<TemplateDeclaration> pthis = ref(this);
             Ptr<TemplateDeclaration> ptd = null;
             {
                 ptd = pcopy(ptr(pthis));
@@ -2384,10 +2384,10 @@ public class dtemplate {
                     }
                 }
             }
-            TemplatePrevious pr = new TemplatePrevious();
-            pr.prev = pcopy(this.previous);
-            pr.sc = pcopy(paramscope);
-            pr.dedargs = pcopy(dedargs);
+            Ref<TemplatePrevious> pr = ref(new TemplatePrevious());
+            pr.value.prev = pcopy(this.previous);
+            pr.value.sc = pcopy(paramscope);
+            pr.value.dedargs = pcopy(dedargs);
             this.previous = pcopy(ptr(pr));
             Ptr<Scope> scx = (paramscope.get()).push(ti);
             (scx.get()).parent.value = ti;
@@ -2456,7 +2456,7 @@ public class dtemplate {
             ti.inst = null;
             ti.symtab = null;
             scx = pcopy((scx.get()).pop());
-            this.previous = pcopy(pr.prev);
+            this.previous = pcopy(pr.value.prev);
             if (errors.value)
             {
                 return false;
@@ -2503,7 +2503,7 @@ public class dtemplate {
                         for (; (i < dedtypes_dim);i++){
                             int m2 = MATCH.nomatch;
                             TemplateParameter tp = (this.parameters.get()).get(i);
-                            Declaration sparam = null;
+                            Ref<Declaration> sparam = ref(null);
                             this.inuse++;
                             m2 = tp.matchArg(ti.loc, paramscope, ti.tiargs, i, this.parameters, dedtypes, ptr(sparam));
                             this.inuse--;
@@ -2517,9 +2517,9 @@ public class dtemplate {
                             }
                             if (flag == 0)
                             {
-                                dsymbolSemantic(sparam, paramscope);
+                                dsymbolSemantic(sparam.value, paramscope);
                             }
-                            if ((paramscope.get()).insert(sparam) == null)
+                            if ((paramscope.get()).insert(sparam.value) == null)
                             {
                                 /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                             }
@@ -2906,7 +2906,7 @@ public class dtemplate {
                                                     {
                                                         /*goto Lnomatch*/throw Dispatch1.INSTANCE;
                                                     }
-                                                    Type tt = null;
+                                                    Ref<Type> tt = ref(null);
                                                     int m = MATCH.nomatch;
                                                     {
                                                         byte wm = deduceWildHelper(farg.type.value, ptr(tt), tid);
@@ -2928,11 +2928,11 @@ public class dtemplate {
                                                     {
                                                         match = m;
                                                     }
-                                                    if (((tt.ty & 0xFF) == ENUMTY.Tarray) || ((tt.ty & 0xFF) == ENUMTY.Tpointer) && !tt.isMutable() && ((fparam.storageClass & 2097152L) == 0) || ((fparam.storageClass & 256L) != 0) && !farg.isLvalue())
+                                                    if (((tt.value.ty & 0xFF) == ENUMTY.Tarray) || ((tt.value.ty & 0xFF) == ENUMTY.Tpointer) && !tt.value.isMutable() && ((fparam.storageClass & 2097152L) == 0) || ((fparam.storageClass & 256L) != 0) && !farg.isLvalue())
                                                     {
-                                                        tt = tt.mutableOf();
+                                                        tt.value = tt.value.mutableOf();
                                                     }
-                                                    declaredTuple.objects.value.set(i, tt);
+                                                    declaredTuple.objects.value.set(i, tt.value);
                                                 }
                                             }
                                             this.declareParameter(paramscope, tp, declaredTuple);
@@ -3317,9 +3317,9 @@ public class dtemplate {
                                                         }
                                                         else
                                                         {
-                                                            int wm = 0;
+                                                            Ref<Integer> wm = ref(0);
                                                             m_1 = deduceType(arg, paramscope, ta.next.value, this.parameters, dedtypes, ptr(wm), inferStart, false);
-                                                            wildmatch |= wm;
+                                                            wildmatch |= wm.value;
                                                         }
                                                         if ((m_1 == MATCH.nomatch))
                                                         {
@@ -4037,8 +4037,8 @@ public class dtemplate {
                     m.last = MATCH.nomatch;
                     return 1;
                 }
-                FuncDeclaration f = td.onemember != null ? td.onemember.isFuncDeclaration() : null;
-                if (f == null)
+                Ref<FuncDeclaration> f = ref(td.onemember != null ? td.onemember.isFuncDeclaration() : null);
+                if (f.value == null)
                 {
                     if (tiargs_ref.value == null)
                     {
@@ -4086,13 +4086,13 @@ public class dtemplate {
                                             }
                                         }
                                     }
-                                    TemplatePrevious pr = new TemplatePrevious();
-                                    pr.prev = pcopy(tdx.previous);
-                                    pr.sc = pcopy(sc_ref.value);
-                                    pr.dedargs = pcopy(ptr(dedtypesX));
+                                    Ref<TemplatePrevious> pr = ref(new TemplatePrevious());
+                                    pr.value.prev = pcopy(tdx.previous);
+                                    pr.value.sc = pcopy(sc_ref.value);
+                                    pr.value.dedargs = pcopy(ptr(dedtypesX));
                                     tdx.previous = pcopy(ptr(pr));
                                     fd.value = resolveFuncCall(loc, sc_ref.value, s, null, tthis, fargs, FuncResolveFlag.quiet);
-                                    tdx.previous = pcopy(pr.prev);
+                                    tdx.previous = pcopy(pr.value.prev);
                                 }
                                 finally {
                                 }
@@ -4171,14 +4171,14 @@ public class dtemplate {
                 {
                     int ovi = 0;
                 L_outer14:
-                    for (; f != null;comma(f = f.overnext0, ovi++)){
-                        if (((f.type.ty & 0xFF) != ENUMTY.Tfunction) || f.errors)
+                    for (; f.value != null;comma(f.value = f.value.overnext0, ovi++)){
+                        if (((f.value.type.ty & 0xFF) != ENUMTY.Tfunction) || f.value.errors)
                         {
                             /*goto Lerror*/throw Dispatch0.INSTANCE;
                         }
                         TemplateInstance ti = new TemplateInstance(loc, td, tiargs_ref.value);
                         ti.parent.value = td.parent.value;
-                        Ref<FuncDeclaration> fd = ref(f);
+                        Ref<FuncDeclaration> fd = ref(f.value);
                         int x = td.deduceFunctionTemplateMatch(ti, sc_ref.value, fd, tthis, fargs);
                         int mta = x >> 4;
                         int mfa = x & 15;

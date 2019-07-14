@@ -2357,9 +2357,9 @@ public class mtype {
             long n = 1L;
             Type tb = this;
             for (; (((tb = tb.toBasetype()).ty & 0xFF) == ENUMTY.Tsarray);){
-                boolean overflow = false;
+                Ref<Boolean> overflow = ref(false);
                 n = mulu(n, ((TypeSArray)tb).dim.toUInteger(), overflow);
-                if (overflow || (n >= 4294967295L))
+                if (overflow.value || (n >= 4294967295L))
                 {
                     error(loc, new BytePtr("static array `%s` size overflowed to %llu"), this.toChars(), n);
                     return -1;
@@ -3872,8 +3872,8 @@ public class mtype {
                                 Type toret = tp.next.value.nextOf();
                                 if (((tret.ty & 0xFF) == ENUMTY.Tclass) && ((toret.ty & 0xFF) == ENUMTY.Tclass))
                                 {
-                                    int offset = 0;
-                                    if (toret.isBaseOf(tret, ptr(offset)) && (offset != 0))
+                                    Ref<Integer> offset = ref(0);
+                                    if (toret.isBaseOf(tret, ptr(offset)) && (offset.value != 0))
                                     {
                                         return MATCH.nomatch;
                                     }
@@ -5249,8 +5249,8 @@ public class mtype {
                 Type toret = ((TypeDelegate)to).next.value.nextOf();
                 if (((tret.ty & 0xFF) == ENUMTY.Tclass) && ((toret.ty & 0xFF) == ENUMTY.Tclass))
                 {
-                    int offset = 0;
-                    if (toret.isBaseOf(tret, ptr(offset)) && (offset != 0))
+                    Ref<Integer> offset = ref(0);
+                    if (toret.isBaseOf(tret, ptr(offset)) && (offset.value != 0))
                     {
                         return MATCH.nomatch;
                     }
@@ -6320,8 +6320,8 @@ public class mtype {
             {
                 return MATCH.constant;
             }
-            int offset = 0;
-            if (to.isBaseOf(this, ptr(offset)) && (offset == 0) && MODimplicitConv(this.mod, to.mod))
+            Ref<Integer> offset = ref(0);
+            if (to.isBaseOf(this, ptr(offset)) && (offset.value == 0) && MODimplicitConv(this.mod, to.mod))
             {
                 if (!to.isMutable() && !to.isWild())
                 {
@@ -6784,7 +6784,7 @@ public class mtype {
             {
                 return 0;
             }
-            int n = pn != null ? pn.get() : 0;
+            Ref<Integer> n = ref(pn != null ? pn.get() : 0);
             int result = 0;
             {
                 int __key1537 = 0;
@@ -6801,7 +6801,7 @@ public class mtype {
                         }
                         else
                         {
-                            result = dg.invoke(n++, p);
+                            result = dg.invoke(n.value++, p);
                         }
                     }
                     if (result != 0)
@@ -6812,7 +6812,7 @@ public class mtype {
             }
             if (pn != null)
             {
-                pn.set(0, n);
+                pn.set(0, n.value);
             }
             return result;
         }

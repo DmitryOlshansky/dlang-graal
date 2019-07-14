@@ -1461,7 +1461,7 @@ public class dsymbol {
             {
                 return 0;
             }
-            int n = pn != null ? pn.get() : 0;
+            Ref<Integer> n = ref(pn != null ? pn.get() : 0);
             int result = 0;
             {
                 int __key1150 = 0;
@@ -1489,7 +1489,7 @@ public class dsymbol {
                             }
                             else
                             {
-                                result = dg.invoke(n++, s);
+                                result = dg.invoke(n.value++, s);
                             }
                         }
                     }
@@ -1501,7 +1501,7 @@ public class dsymbol {
             }
             if (pn != null)
             {
-                pn.set(0, n);
+                pn.set(0, n.value);
             }
             return result;
         }

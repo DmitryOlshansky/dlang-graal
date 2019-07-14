@@ -182,21 +182,21 @@ public class statementsem {
                         cs.statements.get().set(i, s);
                         if (s != null)
                         {
-                            Statement sentry = null;
-                            Statement sexception = null;
-                            Statement sfinally = null;
+                            Ref<Statement> sentry = ref(null);
+                            Ref<Statement> sexception = ref(null);
+                            Ref<Statement> sfinally = ref(null);
                             cs.statements.get().set(i, s.scopeCode(this.sc, ptr(sentry), ptr(sexception), ptr(sfinally)));
-                            if (sentry != null)
+                            if (sentry.value != null)
                             {
-                                sentry = statementSemantic(sentry, this.sc);
-                                (cs.statements.get()).insert(i, sentry);
+                                sentry.value = statementSemantic(sentry.value, this.sc);
+                                (cs.statements.get()).insert(i, sentry.value);
                                 i++;
                             }
-                            if (sexception != null)
+                            if (sexception.value != null)
                             {
-                                sexception = statementSemantic(sexception, this.sc);
+                                sexception.value = statementSemantic(sexception.value, this.sc);
                             }
-                            if (sexception != null)
+                            if (sexception.value != null)
                             {
                                 Function1<Slice<Statement>,Boolean> isEmpty = new Function1<Slice<Statement>,Boolean>() {
                                     public Boolean invoke(Slice<Statement> statements) {
@@ -226,7 +226,7 @@ public class statementsem {
                                     }}
 
                                 };
-                                if ((sfinally == null) && isEmpty.invoke((cs.statements.get()).opSlice(i + 1, (cs.statements.get()).length)))
+                                if ((sfinally.value == null) && isEmpty.invoke((cs.statements.get()).opSlice(i + 1, (cs.statements.get()).length)))
                                 {
                                 }
                                 else
@@ -237,8 +237,8 @@ public class statementsem {
                                     Statement _body = new CompoundStatement(Loc.initial, a);
                                     _body = new ScopeStatement(Loc.initial, _body, Loc.initial);
                                     Identifier id = Identifier.generateId(new BytePtr("__o"));
-                                    Statement handler = new PeelStatement(sexception);
-                                    if ((blockExit(sexception, (this.sc.get()).func, false) & BE.fallthru) != 0)
+                                    Statement handler = new PeelStatement(sexception.value);
+                                    if ((blockExit(sexception.value, (this.sc.get()).func, false) & BE.fallthru) != 0)
                                     {
                                         ThrowStatement ts = new ThrowStatement(Loc.initial, new IdentifierExp(Loc.initial, id));
                                         ts.internalThrow = true;
@@ -249,20 +249,20 @@ public class statementsem {
                                     ctch.internalCatch = true;
                                     (catches.get()).push(ctch);
                                     Statement st = new TryCatchStatement(Loc.initial, _body, catches);
-                                    if (sfinally != null)
+                                    if (sfinally.value != null)
                                     {
-                                        st = new TryFinallyStatement(Loc.initial, st, sfinally);
+                                        st = new TryFinallyStatement(Loc.initial, st, sfinally.value);
                                     }
                                     st = statementSemantic(st, this.sc);
                                     (cs.statements.get()).push(st);
                                     break;
                                 }
                             }
-                            else if (sfinally != null)
+                            else if (sfinally.value != null)
                             {
                                 if (false)
                                 {
-                                    (cs.statements.get()).push(sfinally);
+                                    (cs.statements.get()).push(sfinally.value);
                                 }
                                 else
                                 {
@@ -270,7 +270,7 @@ public class statementsem {
                                     (a.get()).pushSlice((cs.statements.get()).opSlice(i + 1, (cs.statements.get()).length));
                                     (cs.statements.get()).setDim(i + 1);
                                     CompoundStatement _body = new CompoundStatement(Loc.initial, a);
-                                    Statement stf = new TryFinallyStatement(Loc.initial, _body, sfinally);
+                                    Statement stf = new TryFinallyStatement(Loc.initial, _body, sfinally.value);
                                     stf = statementSemantic(stf, this.sc);
                                     (cs.statements.get()).push(stf);
                                     break;
@@ -386,16 +386,16 @@ public class statementsem {
                         this.result = ss.statement;
                         return ;
                     }
-                    Statement sentry = null;
-                    Statement sexception = null;
-                    Statement sfinally = null;
+                    Ref<Statement> sentry = ref(null);
+                    Ref<Statement> sexception = ref(null);
+                    Ref<Statement> sfinally = ref(null);
                     ss.statement = ss.statement.scopeCode(this.sc, ptr(sentry), ptr(sexception), ptr(sfinally));
-                    assert(sentry == null);
-                    assert(sexception == null);
-                    if (sfinally != null)
+                    assert(sentry.value == null);
+                    assert(sexception.value == null);
+                    if (sfinally.value != null)
                     {
-                        sfinally = statementSemantic(sfinally, this.sc);
-                        ss.statement = new CompoundStatement(ss.loc, slice(new Statement[]{ss.statement, sfinally}));
+                        sfinally.value = statementSemantic(sfinally.value, this.sc);
+                        ss.statement = new CompoundStatement(ss.loc, slice(new Statement[]{ss.statement, sfinally.value}));
                     }
                 }
                 (this.sc.get()).pop();
@@ -1797,7 +1797,7 @@ public class statementsem {
                                         TemplateDeclaration td = sfront.isTemplateDeclaration();
                                         if ((td) != null)
                                         {
-                                            DArray<Expression> a = new DArray<Expression>();
+                                            Ref<DArray<Expression>> a = ref(new DArray<Expression>());
                                             try {
                                                 {
                                                     FuncDeclaration f = resolveFuncCall(loc, this.sc, td, null, tab, ptr(a), FuncResolveFlag.quiet);
@@ -3269,7 +3269,7 @@ public class statementsem {
             Type tret = tf.next.value;
             Type tbret = tret != null ? tret.toBasetype() : null;
             boolean inferRef = tf.isref && ((fd.storage_class & 256L) != 0);
-            Expression e0 = null;
+            Ref<Expression> e0 = ref(null);
             boolean errors = false;
             if (((this.sc.get()).flags & 96) != 0)
             {
@@ -3337,9 +3337,9 @@ public class statementsem {
                 {
                     rs.exp = valueNoDtor(rs.exp);
                 }
-                if (e0 != null)
+                if (e0.value != null)
                 {
-                    e0 = e0.optimize(0, false);
+                    e0.value = e0.value.optimize(0, false);
                 }
                 if ((tbret != null) && ((tbret.ty & 0xFF) == ENUMTY.Tvoid) || ((rs.exp.type.value.ty & 0xFF) == ENUMTY.Tvoid))
                 {
@@ -3350,12 +3350,12 @@ public class statementsem {
                         rs.exp = new CastExp(rs.loc, rs.exp, Type.tvoid);
                         rs.exp = expressionSemantic(rs.exp, this.sc);
                     }
-                    e0 = Expression.combine(e0, rs.exp);
+                    e0.value = Expression.combine(e0.value, rs.exp);
                     rs.exp = null;
                 }
-                if (e0 != null)
+                if (e0.value != null)
                 {
-                    e0 = checkGC(this.sc, e0);
+                    e0.value = checkGC(this.sc, e0.value);
                 }
             }
             if (rs.exp != null)
@@ -3529,9 +3529,9 @@ public class statementsem {
                     Statement s = new ReturnStatement(Loc.initial, rs.exp);
                     ((this.sc.get()).fes.cases.get()).push(s);
                     rs.exp = new IntegerExp((long)(((this.sc.get()).fes.cases.get()).length + 1));
-                    if (e0 != null)
+                    if (e0.value != null)
                     {
-                        this.result = new CompoundStatement(rs.loc, slice(new Statement[]{new ExpStatement(rs.loc, e0), rs}));
+                        this.result = new CompoundStatement(rs.loc, slice(new Statement[]{new ExpStatement(rs.loc, e0.value), rs}));
                         return ;
                     }
                     this.result = rs;
@@ -3555,15 +3555,15 @@ public class statementsem {
                 }
                 (fd.returns.get()).push(rs);
             }
-            if (e0 != null)
+            if (e0.value != null)
             {
-                if (((e0.op & 0xFF) == 38) || ((e0.op & 0xFF) == 99))
+                if (((e0.value.op & 0xFF) == 38) || ((e0.value.op & 0xFF) == 99))
                 {
-                    rs.exp = Expression.combine(e0, rs.exp);
+                    rs.exp = Expression.combine(e0.value, rs.exp);
                 }
                 else
                 {
-                    this.result = new CompoundStatement(rs.loc, slice(new Statement[]{new ExpStatement(rs.loc, e0), rs}));
+                    this.result = new CompoundStatement(rs.loc, slice(new Statement[]{new ExpStatement(rs.loc, e0.value), rs}));
                     return ;
                 }
             }

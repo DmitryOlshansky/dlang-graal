@@ -290,7 +290,7 @@ public class opover {
                         this.result = ae.e1.value;
                         return ;
                     }
-                    Expression e0 = null;
+                    Ref<Expression> e0 = ref(null);
                     Expression ae1save = ae.e1.value;
                     ae.lengthVar.value = null;
                     Type t1b = ae.e1.value.type.value.toBasetype();
@@ -325,7 +325,7 @@ public class opover {
                             }
                             if (this.result != null)
                             {
-                                this.result = Expression.combine(e0, this.result);
+                                this.result = Expression.combine(e0.value, this.result);
                                 return ;
                             }
                         }
@@ -349,7 +349,7 @@ public class opover {
                         this.result = new DotTemplateInstanceExp(e.loc, ae.e1.value, Id.opSliceUnary, tiargs);
                         this.result = new CallExp(e.loc, this.result, a);
                         this.result = expressionSemantic(this.result, this.sc);
-                        this.result = Expression.combine(e0, this.result);
+                        this.result = Expression.combine(e0.value, this.result);
                         return ;
                     }
                     if ((ad.aliasthis != null) && (!pequals(t1b, ae.att1)))
@@ -431,7 +431,7 @@ public class opover {
                     this.result = ae.e1.value;
                     return ;
                 }
-                Expression e0 = null;
+                Ref<Expression> e0 = ref(null);
                 Expression ae1save = ae.e1.value;
                 ae.lengthVar.value = null;
                 Type t1b = ae.e1.value.type.value.toBasetype();
@@ -480,7 +480,7 @@ public class opover {
                         }
                         if (this.result != null)
                         {
-                            this.result = Expression.combine(e0, this.result);
+                            this.result = Expression.combine(e0.value, this.result);
                             return ;
                         }
                     }
@@ -491,7 +491,7 @@ public class opover {
                 {
                     this.result = new SliceExp(ae.loc, ae.e1.value, ie);
                     this.result = expressionSemantic(this.result, this.sc);
-                    this.result = Expression.combine(e0, this.result);
+                    this.result = Expression.combine(e0.value, this.result);
                     return ;
                 }
                 if (maybeSlice && (search_function(ad, Id.slice) != null))
@@ -510,7 +510,7 @@ public class opover {
                     this.result = new DotIdExp(ae.loc, ae.e1.value, Id.slice);
                     this.result = new CallExp(ae.loc, this.result, a);
                     this.result = expressionSemantic(this.result, this.sc);
-                    this.result = Expression.combine(e0, this.result);
+                    this.result = Expression.combine(e0.value, this.result);
                     return ;
                 }
                 if ((ad.aliasthis != null) && (!pequals(t1b, ae.att1)))
@@ -1039,7 +1039,7 @@ public class opover {
                         this.result = ae.e1.value;
                         return ;
                     }
-                    Expression e0 = null;
+                    Ref<Expression> e0 = ref(null);
                     Expression ae1save = ae.e1.value;
                     ae.lengthVar.value = null;
                     Type t1b = ae.e1.value.type.value.toBasetype();
@@ -1081,7 +1081,7 @@ public class opover {
                             }
                             if (this.result != null)
                             {
-                                this.result = Expression.combine(e0, this.result);
+                                this.result = Expression.combine(e0.value, this.result);
                                 return ;
                             }
                         }
@@ -1112,7 +1112,7 @@ public class opover {
                         this.result = new DotTemplateInstanceExp(e.loc, ae.e1.value, Id.opSliceOpAssign, tiargs);
                         this.result = new CallExp(e.loc, this.result, a);
                         this.result = expressionSemantic(this.result, this.sc);
-                        this.result = Expression.combine(e0, this.result);
+                        this.result = Expression.combine(e0.value, this.result);
                         return ;
                     }
                     if ((ad.aliasthis != null) && (!pequals(t1b, ae.att1)))

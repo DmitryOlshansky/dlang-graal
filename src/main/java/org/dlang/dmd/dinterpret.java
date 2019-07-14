@@ -872,9 +872,9 @@ public class dinterpret {
                     eargs.set(i, earg);
                 }
             }
-            InterState istatex = new InterState();
-            istatex.caller = pcopy(istate);
-            istatex.fd = fd;
+            Ref<InterState> istatex = ref(new InterState());
+            istatex.value.caller = pcopy(istate);
+            istatex.value.fd = fd;
             if (fd.isThis2)
             {
                 Expression arg0 = thisarg;
@@ -946,15 +946,15 @@ public class dinterpret {
                 }
                 e = interpret(pue, fd.fbody, ptr(istatex));
                 if (CTFEExp.isCantExp(e))
-                if (istatex.start != null)
+                if (istatex.value.start != null)
                 {
-                    fd.error(new BytePtr("CTFE internal error: failed to resume at statement `%s`"), istatex.start.toChars());
+                    fd.error(new BytePtr("CTFE internal error: failed to resume at statement `%s`"), istatex.value.start.toChars());
                     return CTFEExp.cantexp;
                 }
                 if (CTFEExp.isGotoExp(e))
                 {
-                    istatex.start = istatex.gotoTarget;
-                    istatex.gotoTarget = null;
+                    istatex.value.start = istatex.value.gotoTarget;
+                    istatex.value.gotoTarget = null;
                 }
                 else
                 {
@@ -1396,7 +1396,7 @@ public class dinterpret {
                     this.result = e;
                     return ;
                 }
-                UnionExp ue = null;
+                Ref<UnionExp> ue = ref(null);
                 e = interpret(ptr(ue), s.condition, this.istate, CtfeGoal.ctfeNeedRvalue);
                 if (this.exceptionOrCant(e))
                 {
@@ -1478,7 +1478,7 @@ public class dinterpret {
                     this.result = e;
                     return ;
                 }
-                UnionExp uei = null;
+                Ref<UnionExp> uei = ref(null);
                 e = interpret(ptr(uei), s.increment, this.istate, CtfeGoal.ctfeNeedNothing);
                 if (this.exceptionOrCant(e))
                 {
@@ -2742,11 +2742,11 @@ public class dinterpret {
                         {
                             TypeSArray tsa = (TypeSArray)v.type;
                             int len = (int)tsa.dim.toInteger();
-                            UnionExp ue = null;
+                            Ref<UnionExp> ue = ref(null);
                             ex = createBlockDuplicatedArrayLiteral(ptr(ue), ex.loc, v.type, ex, len);
-                            if ((pequals(ex, ue.exp())))
+                            if ((pequals(ex, ue.value.exp())))
                             {
-                                ex = ue.copy();
+                                ex = ue.value.copy();
                             }
                         }
                     }
@@ -3427,7 +3427,7 @@ public class dinterpret {
                         {
                             return ;
                         }
-                        UnionExp ekeyTmp = null;
+                        Ref<UnionExp> ekeyTmp = ref(null);
                         ekey = resolveSlice(ekey, ptr(ekeyTmp));
                         AssocArrayLiteralExp newAA = (AssocArrayLiteralExp)findKeyInAA(e.loc, existingAA, ekey);
                         if (this.exceptionOrCant(newAA))
@@ -4383,10 +4383,10 @@ public class dinterpret {
                 this.result = null;
                 return ;
             }
-            UnionExp ue1 = null;
-            UnionExp ue2 = null;
-            UnionExp ue3 = null;
-            UnionExp ue4 = null;
+            Ref<UnionExp> ue1 = ref(null);
+            Ref<UnionExp> ue2 = ref(null);
+            Ref<UnionExp> ue3 = ref(null);
+            Ref<UnionExp> ue4 = ref(null);
             p1.value = interpret(ptr(ue1), p1.value, this.istate, CtfeGoal.ctfeNeedRvalue);
             if (this.exceptionOrCant(p1.value))
             {
@@ -4518,7 +4518,7 @@ public class dinterpret {
             }
             else if (andand ? isTrueBool(this.result) : this.result.isBool(false))
             {
-                UnionExp ue2 = new UnionExp().copy();
+                Ref<UnionExp> ue2 = ref(new UnionExp().copy());
                 this.result = interpret(ptr(ue2), e.e2.value, this.istate, CtfeGoal.ctfeNeedRvalue);
                 if (this.exceptionOrCant(this.result))
                 {
@@ -4811,7 +4811,7 @@ public class dinterpret {
         }
 
         public  void visit(CommaExp e) {
-            InterState istateComma = new InterState();
+            Ref<InterState> istateComma = ref(new InterState());
             if ((this.istate == null) && ((firstComma(e.e1.value).op & 0xFF) == 38))
             {
                 ctfeStack.startFrame(null);
@@ -5087,9 +5087,9 @@ public class dinterpret {
                 VectorExp ve = e1.isVectorExp();
                 if ((ve) != null)
                 {
-                    UnionExp ue = null;
+                    Ref<UnionExp> ue = ref(null);
                     e1 = interpretVectorToArray(ptr(ue), ve);
-                    e1 = (pequals(e1, ue.exp())) ? ue.copy() : e1;
+                    e1 = (pequals(e1, ue.value.exp())) ? ue.value.copy() : e1;
                 }
             }
             long len = 0L;
@@ -5226,7 +5226,7 @@ public class dinterpret {
                     return ;
                 }
                 assert(((e1.op & 0xFF) == 48));
-                UnionExp e2tmp = null;
+                Ref<UnionExp> e2tmp = ref(null);
                 e2 = resolveSlice(e2, ptr(e2tmp));
                 this.result = findKeyInAA(e.loc, (AssocArrayLiteralExp)e1, e2);
                 if (this.result == null)
@@ -5525,9 +5525,9 @@ public class dinterpret {
             {
                 return ;
             }
-            UnionExp e1tmp = null;
+            Ref<UnionExp> e1tmp = ref(null);
             e1 = resolveSlice(e1, ptr(e1tmp));
-            UnionExp e2tmp = null;
+            Ref<UnionExp> e2tmp = ref(null);
             e2 = resolveSlice(e2, ptr(e2tmp));
             if (!(((e1.op & 0xFF) == 121) && ((e2.op & 0xFF) == 121)))
             {
@@ -5924,7 +5924,7 @@ public class dinterpret {
             {
                 if (e.msg != null)
                 {
-                    UnionExp ue = null;
+                    Ref<UnionExp> ue = ref(null);
                     this.result = interpret(ptr(ue), e.msg, this.istate, CtfeGoal.ctfeNeedRvalue);
                     if (this.exceptionOrCant(this.result))
                     {
@@ -6173,11 +6173,11 @@ public class dinterpret {
             {
                 TypeSArray tsa = (TypeSArray)v.type;
                 int len = (int)tsa.dim.toInteger();
-                UnionExp ue = null;
+                Ref<UnionExp> ue = ref(null);
                 this.result = createBlockDuplicatedArrayLiteral(ptr(ue), ex.loc, v.type, ex, len);
-                if ((pequals(this.result, ue.exp())))
+                if ((pequals(this.result, ue.value.exp())))
                 {
-                    this.result = ue.copy();
+                    this.result = ue.value.copy();
                 }
                 se.elements.get().set(i, this.result);
             }
@@ -6773,7 +6773,7 @@ public class dinterpret {
         assert((numParams == 1) || (numParams == 2));
         Parameter fparam = __dop1008.get(numParams - 1);
         boolean wantRefValue = 0L != (fparam.storageClass & 2101248L);
-        DArray<Expression> args = args = new DArray<Expression>(numParams);
+        Ref<DArray<Expression>> args = ref(args.value = new DArray<Expression>(numParams));
         try {
             AssocArrayLiteralExp ae = (AssocArrayLiteralExp)aa;
             if ((ae.keys == null) || ((ae.keys.get()).length == 0))
@@ -6792,16 +6792,16 @@ public class dinterpret {
                         evalue = new IndexExp(deleg.loc, ae, ekey);
                         evalue.type.value = t;
                     }
-                    args.set(numParams - 1, evalue);
+                    args.value.set(numParams - 1, evalue);
                     if ((numParams == 2))
                     {
-                        args.set(0, ekey);
+                        args.value.set(0, ekey);
                     }
-                    UnionExp ue = null;
+                    Ref<UnionExp> ue = ref(null);
                     eresult = interpretFunction(ptr(ue), fd, istate, ptr(args), pthis);
-                    if ((pequals(eresult, ue.exp())))
+                    if ((pequals(eresult, ue.value.exp())))
                     {
-                        eresult = ue.copy();
+                        eresult = ue.value.copy();
                     }
                     if (exceptionOrCantInterpret(eresult))
                     {
@@ -6857,7 +6857,7 @@ public class dinterpret {
             str.error(new BytePtr("CTFE internal error: cannot foreach `%s`"), str.toChars());
             return CTFEExp.cantexp;
         }
-        DArray<Expression> args = args = new DArray<Expression>(numParams);
+        Ref<DArray<Expression>> args = ref(args.value = new DArray<Expression>(numParams));
         try {
             Expression eresult = null;
             ByteSlice utf8buf = new ByteSlice(new byte[4]);
@@ -6865,25 +6865,25 @@ public class dinterpret {
             int start = rvs ? len : 0;
             int end = rvs ? 0 : len;
             {
-                int indx = start;
-                for (; (indx != end);){
+                Ref<Integer> indx = ref(start);
+                for (; (indx.value != end);){
                     BytePtr errmsg = null;
-                    int rawvalue = 0x0ffff;
-                    int currentIndex = indx;
+                    Ref<Integer> rawvalue = ref(0x0ffff);
+                    int currentIndex = indx.value;
                     if (ale != null)
                     {
                         int buflen = 1;
-                        int n = 1;
+                        Ref<Integer> n = ref(1);
                         int sz = (int)ale.type.value.nextOf().size();
                         switch (sz)
                         {
                             case 1:
                                 if (rvs)
                                 {
-                                    indx -= 1;
+                                    indx.value -= 1;
                                     buflen = 1;
-                                    for (; (indx > 0) && (buflen < 4);){
-                                        Expression r = (ale.elements.get()).get(indx);
+                                    for (; (indx.value > 0) && (buflen < 4);){
+                                        Expression r = (ale.elements.get()).get(indx.value);
                                         byte x = (byte)r.isIntegerExp().getInteger();
                                         if ((((x & 0xFF) & 192) != 128))
                                         {
@@ -6894,54 +6894,54 @@ public class dinterpret {
                                 }
                                 else
                                 {
-                                    buflen = (indx + 4 > len) ? len - indx : 4;
+                                    buflen = (indx.value + 4 > len) ? len - indx.value : 4;
                                 }
                                 {
                                     int i = 0;
                                     for (; (i < buflen);i += 1){
-                                        Expression r_1 = (ale.elements.get()).get(indx + i);
+                                        Expression r_1 = (ale.elements.get()).get(indx.value + i);
                                         utf8buf.set(i, (byte)r_1.isIntegerExp().getInteger());
                                     }
                                 }
-                                n = 0;
+                                n.value = 0;
                                 errmsg = pcopy(utf_decodeChar(utf8buf.ptr(), buflen, n, rawvalue));
                                 break;
                             case 2:
                                 if (rvs)
                                 {
-                                    indx -= 1;
+                                    indx.value -= 1;
                                     buflen = 1;
-                                    Expression r_3 = (ale.elements.get()).get(indx);
+                                    Expression r_3 = (ale.elements.get()).get(indx.value);
                                     int x_1 = (int)r_3.isIntegerExp().getInteger();
-                                    if ((indx > 0) && ((int)x_1 >= 56320) && ((int)x_1 <= 57343))
+                                    if ((indx.value > 0) && ((int)x_1 >= 56320) && ((int)x_1 <= 57343))
                                     {
-                                        indx -= 1;
+                                        indx.value -= 1;
                                         buflen += 1;
                                     }
                                 }
                                 else
                                 {
-                                    buflen = (indx + 2 > len) ? len - indx : 2;
+                                    buflen = (indx.value + 2 > len) ? len - indx.value : 2;
                                 }
                                 {
                                     int i_1 = 0;
                                     for (; (i_1 < buflen);i_1 += 1){
-                                        Expression r_2 = (ale.elements.get()).get(indx + i_1);
+                                        Expression r_2 = (ale.elements.get()).get(indx.value + i_1);
                                         utf16buf.set(i_1, (char)(int)r_2.isIntegerExp().getInteger());
                                     }
                                 }
-                                n = 0;
+                                n.value = 0;
                                 errmsg = pcopy(utf_decodeWchar(utf16buf.ptr(), buflen, n, rawvalue));
                                 break;
                             case 4:
                                 {
                                     if (rvs)
                                     {
-                                        indx -= 1;
+                                        indx.value -= 1;
                                     }
-                                    Expression r_4 = (ale.elements.get()).get(indx);
-                                    rawvalue = (int)r_4.isIntegerExp().getInteger();
-                                    n = 1;
+                                    Expression r_4 = (ale.elements.get()).get(indx.value);
+                                    rawvalue.value = (int)r_4.isIntegerExp().getInteger();
+                                    n.value = 1;
                                 }
                                 break;
                             default:
@@ -6949,7 +6949,7 @@ public class dinterpret {
                         }
                         if (!rvs)
                         {
-                            indx += n;
+                            indx.value += n.value;
                         }
                     }
                     else
@@ -6960,44 +6960,44 @@ public class dinterpret {
                             case 1:
                                 if (rvs)
                                 {
-                                    indx -= 1;
-                                    for (; (indx > 0) && ((se.getCodeUnit(indx) & 192) == 128);) {
-                                        indx -= 1;
+                                    indx.value -= 1;
+                                    for (; (indx.value > 0) && ((se.getCodeUnit(indx.value) & 192) == 128);) {
+                                        indx.value -= 1;
                                     }
-                                    saveindx = indx;
+                                    saveindx = indx.value;
                                 }
                                 errmsg = pcopy(utf_decodeChar(se.string, se.len, indx, rawvalue));
                                 if (rvs)
                                 {
-                                    indx = saveindx;
+                                    indx.value = saveindx;
                                 }
                                 break;
                             case 2:
                                 if (rvs)
                                 {
-                                    indx -= 1;
-                                    int wc = se.getCodeUnit(indx);
+                                    indx.value -= 1;
+                                    int wc = se.getCodeUnit(indx.value);
                                     if ((wc >= 56320) && (wc <= 57343))
                                     {
-                                        indx -= 1;
+                                        indx.value -= 1;
                                     }
-                                    saveindx = indx;
+                                    saveindx = indx.value;
                                 }
                                 errmsg = pcopy(utf_decodeWchar(se.wstring, se.len, indx, rawvalue));
                                 if (rvs)
                                 {
-                                    indx = saveindx;
+                                    indx.value = saveindx;
                                 }
                                 break;
                             case 4:
                                 if (rvs)
                                 {
-                                    indx -= 1;
+                                    indx.value -= 1;
                                 }
-                                rawvalue = se.getCodeUnit(indx);
+                                rawvalue.value = se.getCodeUnit(indx.value);
                                 if (!rvs)
                                 {
-                                    indx += 1;
+                                    indx.value += 1;
                                 }
                                 break;
                             default:
@@ -7013,12 +7013,12 @@ public class dinterpret {
                     switch ((int)charType.size())
                     {
                         case (int)1L:
-                            charlen = utf_codeLengthChar(rawvalue);
-                            utf_encodeChar(utf8buf.ptr(), rawvalue);
+                            charlen = utf_codeLengthChar(rawvalue.value);
+                            utf_encodeChar(utf8buf.ptr(), rawvalue.value);
                             break;
                         case (int)2L:
-                            charlen = utf_codeLengthWchar(rawvalue);
-                            utf_encodeWchar(utf16buf.ptr(), rawvalue);
+                            charlen = utf_codeLengthWchar(rawvalue.value);
+                            utf_encodeWchar(utf16buf.ptr(), rawvalue.value);
                             break;
                         case (int)4L:
                             break;
@@ -7027,11 +7027,11 @@ public class dinterpret {
                     }
                     if (rvs)
                     {
-                        currentIndex = indx;
+                        currentIndex = indx.value;
                     }
                     if ((numParams == 2))
                     {
-                        args.set(0, new IntegerExp(deleg.loc, (long)currentIndex, indexType));
+                        args.value.set(0, new IntegerExp(deleg.loc, (long)currentIndex, indexType));
                     }
                     Expression val = null;
                     {
@@ -7049,18 +7049,18 @@ public class dinterpret {
                                     codepoint = (int)utf16buf.get(k);
                                     break;
                                 case (int)4L:
-                                    codepoint = rawvalue;
+                                    codepoint = rawvalue.value;
                                     break;
                                 default:
                                 throw new AssertionError("Unreachable code!");
                             }
                             val = new IntegerExp(str.loc, (long)codepoint, charType);
-                            args.set(numParams - 1, val);
-                            UnionExp ue = null;
+                            args.value.set(numParams - 1, val);
+                            Ref<UnionExp> ue = ref(null);
                             eresult = interpretFunction(ptr(ue), fd, istate, ptr(args), pthis);
-                            if ((pequals(eresult, ue.exp())))
+                            if ((pequals(eresult, ue.value.exp())))
                             {
-                                eresult = ue.copy();
+                                eresult = ue.value.copy();
                             }
                             if (exceptionOrCantInterpret(eresult))
                             {
@@ -7087,10 +7087,10 @@ public class dinterpret {
         {
             if ((isBuiltin(fd) == BUILTIN.yes))
             {
-                DArray<Expression> args = args = new DArray<Expression>(nargs);
+                Ref<DArray<Expression>> args = ref(args.value = new DArray<Expression>(nargs));
                 try {
                     {
-                        Slice<Expression> __r1015 = args.opSlice().copy();
+                        Slice<Expression> __r1015 = args.value.opSlice().copy();
                         int __key1014 = 0;
                         for (; (__key1014 < __r1015.getLength());__key1014 += 1) {
                             Expression arg = __r1015.get(__key1014);
@@ -7252,11 +7252,11 @@ public class dinterpret {
         }
         if (((e.op & 0xFF) == 49))
         {
-            UnionExp ue = null;
+            Ref<UnionExp> ue = ref(null);
             e = interpretFunction(ptr(ue), sd.postblit, istate, null, e);
-            if ((pequals(e, ue.exp())))
+            if ((pequals(e, ue.value.exp())))
             {
-                e = ue.copy();
+                e = ue.value.copy();
             }
             if (exceptionOrCantInterpret(e))
             {
@@ -7278,7 +7278,7 @@ public class dinterpret {
         {
             return null;
         }
-        UnionExp ue = null;
+        Ref<UnionExp> ue = ref(null);
         {
             ArrayLiteralExp ale = e.isArrayLiteralExp();
             if ((ale) != null)
@@ -7303,9 +7303,9 @@ public class dinterpret {
         }
         if (exceptionOrCantInterpret(e))
         {
-            if ((pequals(e, ue.exp())))
+            if ((pequals(e, ue.value.exp())))
             {
-                e = ue.copy();
+                e = ue.value.copy();
             }
             return e;
         }

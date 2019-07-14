@@ -119,6 +119,7 @@ private extern(C++) class PassedByRef : SemanticTimeTransitiveVisitor {
                 }
             default:
         }
+        super.visit(bin);
     }
 
     override void visit(SymOffExp symoff) {

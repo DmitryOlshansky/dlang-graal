@@ -1127,9 +1127,9 @@ public class expressionsem {
                                 return new ErrorExp();
                             }
                             e2 = resolveProperties(sc, e2);
-                            DArray<Expression> a = new DArray<Expression>();
+                            Ref<DArray<Expression>> a = ref(new DArray<Expression>());
                             try {
-                                a.push(e2);
+                                a.value.push(e2);
                                 {
                                     int i = 0;
                                     for (; (i < os.a.length);i++){
@@ -1212,9 +1212,9 @@ public class expressionsem {
                             return new ErrorExp();
                         }
                         e2 = resolveProperties(sc, e2);
-                        DArray<Expression> a = new DArray<Expression>();
+                        Ref<DArray<Expression>> a = ref(new DArray<Expression>());
                         try {
-                            a.push(e2);
+                            a.value.push(e2);
                             {
                                 int i = 0;
                                 for (; (i < os.a.length);i++){
@@ -2627,8 +2627,8 @@ public class expressionsem {
                 {
                     tret = tret.substWildTo((wildmatch & 0xFF));
                 }
-                int offset = 0;
-                if ((tret.implicitConvTo(tthis) == 0) && !(MODimplicitConv(tret.mod, tthis.mod) && tret.isBaseOf(tthis, ptr(offset)) && (offset == 0)))
+                Ref<Integer> offset = ref(0);
+                if ((tret.implicitConvTo(tthis) == 0) && !(MODimplicitConv(tret.mod, tthis.mod) && tret.isBaseOf(tthis, ptr(offset)) && (offset.value == 0)))
                 {
                     BytePtr s1 = pcopy(tret.isNaked() ? new BytePtr(" mutable") : tret.modToChars());
                     BytePtr s2 = pcopy(tthis.isNaked() ? new BytePtr(" mutable") : tthis.modToChars());
@@ -3121,8 +3121,8 @@ public class expressionsem {
             try {
                 int newlen = 0;
                 BytePtr p = null;
-                int u = 0;
-                int c = 0x0ffff;
+                Ref<Integer> u = ref(0);
+                Ref<Integer> c = ref(0x0ffff);
                 {
                     int __dispatch4 = 0;
                     dispatched_4:
@@ -3131,8 +3131,8 @@ public class expressionsem {
                         {
                             case 100:
                                 {
-                                    u = 0;
-                                    for (; (u < e.len);){
+                                    u.value = 0;
+                                    for (; (u.value < e.len);){
                                         p = pcopy(utf_decodeChar(e.string, e.len, u, c));
                                         if (p != null)
                                         {
@@ -3142,7 +3142,7 @@ public class expressionsem {
                                         }
                                         else
                                         {
-                                            buffer.write4(c);
+                                            buffer.write4(c.value);
                                             newlen++;
                                         }
                                     }
@@ -3156,8 +3156,8 @@ public class expressionsem {
                                 break;
                             case 119:
                                 {
-                                    u = 0;
-                                    for (; (u < e.len);){
+                                    u.value = 0;
+                                    for (; (u.value < e.len);){
                                         p = pcopy(utf_decodeChar(e.string, e.len, u, c));
                                         if (p != null)
                                         {
@@ -3167,9 +3167,9 @@ public class expressionsem {
                                         }
                                         else
                                         {
-                                            buffer.writeUTF16(c);
+                                            buffer.writeUTF16(c.value);
                                             newlen++;
-                                            if ((c >= 65536))
+                                            if ((c.value >= 65536))
                                             {
                                                 newlen++;
                                             }
@@ -3309,8 +3309,8 @@ public class expressionsem {
                 this.setError();
                 return ;
             }
-            Type tkey = null;
-            Type tvalue = null;
+            Ref<Type> tkey = ref(null);
+            Ref<Type> tvalue = ref(null);
             err_keys = arrayExpressionToCommonType(this.sc, e.keys, ptr(tkey));
             err_vals = arrayExpressionToCommonType(this.sc, e.values, ptr(tvalue));
             if (err_keys || err_vals)
@@ -3318,12 +3318,12 @@ public class expressionsem {
                 this.setError();
                 return ;
             }
-            if ((pequals(tkey, Type.terror)) || (pequals(tvalue, Type.terror)))
+            if ((pequals(tkey.value, Type.terror)) || (pequals(tvalue.value, Type.terror)))
             {
                 this.setError();
                 return ;
             }
-            e.type.value = new TypeAArray(tvalue, tkey);
+            e.type.value = new TypeAArray(tvalue.value, tkey.value);
             e.type.value = typeSemantic(e.type.value, e.loc, this.sc);
             semanticTypeInfo(this.sc, e.type.value);
             if (global.params.vsafe)
@@ -3418,15 +3418,15 @@ public class expressionsem {
             ScopeDsymbol sds2 = exp.sds;
             TemplateInstance ti = sds2.isTemplateInstance();
             for (; ti != null;){
-                WithScopeSymbol withsym = null;
+                Ref<WithScopeSymbol> withsym = ref(null);
                 if (!ti.findTempDecl(this.sc, ptr(withsym)) || !ti.semanticTiargs(this.sc))
                 {
                     this.setError();
                     return ;
                 }
-                if ((withsym != null) && (withsym.withstate.wthis != null))
+                if ((withsym.value != null) && (withsym.value.withstate.wthis != null))
                 {
-                    Expression e = new VarExp(exp.loc, withsym.withstate.wthis, true);
+                    Expression e = new VarExp(exp.loc, withsym.value.withstate.wthis, true);
                     e = new DotTemplateInstanceExp(exp.loc, e, ti);
                     this.result = expressionSemantic(e, this.sc);
                     return ;
@@ -4183,10 +4183,10 @@ public class expressionsem {
                     exp.type.value = Type.tvoid;
                     if (exp.fd.treq != null)
                     {
-                        FuncExp fe = null;
+                        Ref<FuncExp> fe = ref(null);
                         if ((exp.matchType(exp.fd.treq, this.sc, ptr(fe), 0) > MATCH.nomatch))
                         {
-                            e = fe;
+                            e = fe.value;
                         }
                         else
                         {
@@ -4351,15 +4351,15 @@ public class expressionsem {
                     TemplateInstance ti = se.sds.isTemplateInstance();
                     if (ti != null)
                     {
-                        WithScopeSymbol withsym = null;
+                        Ref<WithScopeSymbol> withsym = ref(null);
                         if (!ti.findTempDecl(this.sc, ptr(withsym)) || !ti.semanticTiargs(this.sc))
                         {
                             this.setError();
                             return ;
                         }
-                        if ((withsym != null) && (withsym.withstate.wthis != null))
+                        if ((withsym.value != null) && (withsym.value.withstate.wthis != null))
                         {
-                            exp.e1.value = new VarExp(exp.e1.value.loc, withsym.withstate.wthis, true);
+                            exp.e1.value = new VarExp(exp.e1.value.loc, withsym.value.withstate.wthis, true);
                             exp.e1.value = new DotTemplateInstanceExp(exp.e1.value.loc, exp.e1.value, ti);
                             /*goto Ldotti*/throw Dispatch0.INSTANCE;
                         }
@@ -5228,9 +5228,9 @@ public class expressionsem {
                 if ((exp.f != null) && (exp.f.tintro != null))
                 {
                     Type t = exp.type.value;
-                    int offset = 0;
+                    Ref<Integer> offset = ref(0);
                     TypeFunction tf = (TypeFunction)exp.f.tintro;
-                    if (tf.next.value.isBaseOf(t, ptr(offset)) && (offset != 0))
+                    if (tf.next.value.isBaseOf(t, ptr(offset)) && (offset.value != 0))
                     {
                         exp.type.value = tf.next.value;
                         this.result = Expression.combine(argprefix.value, exp.castTo(this.sc, t));
@@ -5761,26 +5761,26 @@ public class expressionsem {
                                 {
                                     tded = e.targ;
                                 }
-                                DArray<RootObject> tiargs = tiargs = new DArray<RootObject>(1);
+                                Ref<DArray<RootObject>> tiargs = ref(tiargs.value = new DArray<RootObject>(1));
                                 try {
-                                    tiargs.set(0, e.targ);
+                                    tiargs.value.set(0, e.targ);
                                     {
                                         int i = 1;
                                     L_outer7:
                                         for (; (i < (e.parameters.get()).length);i++){
                                             TemplateParameter tp = (e.parameters.get()).get(i);
-                                            Declaration s = null;
+                                            Ref<Declaration> s = ref(null);
                                             m = tp.matchArg(e.loc, this.sc, ptr(tiargs), i, e.parameters, ptr(dedtypes), ptr(s));
                                             if ((m <= MATCH.nomatch))
                                             {
                                                 /*goto Lno*/throw Dispatch1.INSTANCE;
                                             }
-                                            dsymbolSemantic(s, this.sc);
-                                            if ((this.sc.get()).insert(s) == null)
+                                            dsymbolSemantic(s.value, this.sc);
+                                            if ((this.sc.get()).insert(s.value) == null)
                                             {
-                                                e.error(new BytePtr("declaration `%s` is already defined"), s.toChars());
+                                                e.error(new BytePtr("declaration `%s` is already defined"), s.value.toChars());
                                             }
-                                            unSpeculative(this.sc, s);
+                                            unSpeculative(this.sc, s.value);
                                         }
                                     }
                                     /*goto Lyes*/throw Dispatch0.INSTANCE;
@@ -6547,12 +6547,12 @@ public class expressionsem {
                 this.setError();
                 return ;
             }
-            boolean hasOverloads = false;
+            Ref<Boolean> hasOverloads = ref(false);
             {
                 FuncDeclaration f = isFuncAddress(exp, ptr(hasOverloads));
                 if ((f) != null)
                 {
-                    if (!hasOverloads && f.checkForwardRef(exp.loc))
+                    if (!hasOverloads.value && f.checkForwardRef(exp.loc))
                     {
                         this.setError();
                         return ;
@@ -8139,9 +8139,9 @@ public class expressionsem {
                     {
                         exp.error(new BytePtr("Using the result of a comma expression is not allowed"));
                     }
-                    Expression e0 = null;
+                    Ref<Expression> e0 = ref(null);
                     exp.e2.value = Expression.extractLast(e2comma, e0);
-                    Expression e = Expression.combine(e0, (Expression)exp);
+                    Expression e = Expression.combine(e0.value, (Expression)exp);
                     setResult.invoke(expressionSemantic(e, this.sc), 7934);
                     return ;
                 }
@@ -8168,7 +8168,7 @@ public class expressionsem {
                             setResult.invoke(ae.e1.value, 7962);
                             return ;
                         }
-                        Expression e0 = null;
+                        Ref<Expression> e0 = ref(null);
                         Expression ae1save = ae.e1.value;
                         ae.lengthVar.value = null;
                         Type t1b = ae.e1.value.type.value.toBasetype();
@@ -8211,7 +8211,7 @@ public class expressionsem {
                                 }
                                 if (res != null)
                                 {
-                                    setResult.invoke(Expression.combine(e0, res), 7998);
+                                    setResult.invoke(Expression.combine(e0.value, res), 7998);
                                     return ;
                                 }
                             }
@@ -8243,7 +8243,7 @@ public class expressionsem {
                             res = new DotIdExp(exp.loc, ae.e1.value, Id.sliceass);
                             res = new CallExp(exp.loc, res, a);
                             res = expressionSemantic(res, this.sc);
-                            setResult.invoke(Expression.combine(e0, res), 8028);
+                            setResult.invoke(Expression.combine(e0.value, res), 8028);
                             return ;
                         }
                         if ((ad.aliasthis != null) && (!pequals(t1b, ae.att1)))
@@ -8967,8 +8967,8 @@ public class expressionsem {
                 }
                 Type t2n = t2.nextOf();
                 Type t1n = t1.nextOf();
-                int offset = 0;
-                if (t2n.equivalent(t1n) || t1n.isBaseOf(t2n, ptr(offset)) && (offset == 0))
+                Ref<Integer> offset = ref(0);
+                if (t2n.equivalent(t1n) || t1n.isBaseOf(t2n, ptr(offset)) && (offset.value == 0))
                 {
                     if (isArrayOpValid(e2x))
                     {
@@ -9132,7 +9132,7 @@ public class expressionsem {
             }
             if (exp.e1.value.type.value.isintegral() || exp.e1.value.type.value.isfloating() && exp.e2.value.type.value.isintegral() || exp.e2.value.type.value.isfloating())
             {
-                Expression e0 = null;
+                Ref<Expression> e0 = ref(null);
                 e = exp.reorderSettingAAElem(this.sc);
                 e = Expression.extractLast(e, e0);
                 assert((pequals(e, exp)));
@@ -9150,7 +9150,7 @@ public class expressionsem {
                     e = new AssignExp(exp.loc, new VarExp(exp.e1.value.loc, v, true), e);
                     e = new CommaExp(exp.loc, de, e, true);
                 }
-                e = Expression.combine(e0, e);
+                e = Expression.combine(e0.value, e);
                 e = expressionSemantic(e, this.sc);
                 this.result = e;
                 return ;
@@ -10503,7 +10503,7 @@ public class expressionsem {
                 this.setError();
                 return ;
             }
-            byte cmpop = TOK.reserved;
+            Ref<Byte> cmpop = ref(TOK.reserved);
             {
                 Expression e = op_overload(exp, this.sc, ptr(cmpop));
                 if ((e) != null)
@@ -10516,7 +10516,7 @@ public class expressionsem {
                     }
                     if (((e.op & 0xFF) == 18))
                     {
-                        e = new CmpExp(cmpop, exp.loc, e, new IntegerExp(exp.loc, 0L, Type.tint32));
+                        e = new CmpExp(cmpop.value, exp.loc, e, new IntegerExp(exp.loc, 0L, Type.tint32));
                         e = expressionSemantic(e, this.sc);
                     }
                     this.result = e;

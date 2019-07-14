@@ -827,8 +827,8 @@ public class typesem {
                     }
                     else if ((tbn.isTypeBasic() != null) || ((tbn.ty & 0xFF) == ENUMTY.Tpointer) || ((tbn.ty & 0xFF) == ENUMTY.Tarray) || ((tbn.ty & 0xFF) == ENUMTY.Tsarray) || ((tbn.ty & 0xFF) == ENUMTY.Taarray) || ((tbn.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)tbn).sym.sizeok == Sizeok.done) || ((tbn.ty & 0xFF) == ENUMTY.Tclass))
                     {
-                        boolean overflow = false;
-                        if ((mulu(tbn.size(loc), d2, overflow) >= target.maxStaticDataSize) || overflow)
+                        Ref<Boolean> overflow = ref(false);
+                        if ((mulu(tbn.size(loc), d2, overflow) >= target.maxStaticDataSize) || overflow.value)
                         {
                             return overflowError.invoke();
                         }
@@ -1969,7 +1969,7 @@ public class typesem {
                     else
                     {
                         e.value = new StringExp(loc, mt.deco);
-                        Scope sc = new Scope().copy();
+                        Ref<Scope> sc = ref(new Scope().copy());
                         e.value = expressionSemantic(e.value, ptr(sc));
                     }
                 }
@@ -1977,7 +1977,7 @@ public class typesem {
                 {
                     BytePtr s = pcopy(mt.toChars());
                     e.value = new StringExp(loc, s);
-                    Scope sc = new Scope().copy();
+                    Ref<Scope> sc = ref(new Scope().copy());
                     e.value = expressionSemantic(e.value, ptr(sc));
                 }
                 else if ((flag != 0) && (!pequals(mt, Type.terror)))
@@ -2349,7 +2349,7 @@ public class typesem {
                 {
                     BytePtr s = pcopy(mt.toChars());
                     e.value = new StringExp(loc, s);
-                    Scope sc = new Scope().copy();
+                    Ref<Scope> sc = ref(new Scope().copy());
                     e.value = expressionSemantic(e.value, ptr(sc));
                 }
                 else if ((pequals(ident, Id._mangleof)))
@@ -3508,7 +3508,7 @@ public class typesem {
                     {
                         error(e_ref.value.loc, new BytePtr("unable to determine fields of `%s` because of forward references"), mt.toChars());
                     }
-                    Expression e0 = null;
+                    Ref<Expression> e0 = ref(null);
                     Ref<Expression> ev = ref(((e_ref.value.op & 0xFF) == 20) ? null : e_ref.value);
                     if (ev.value != null)
                     {
@@ -3533,7 +3533,7 @@ public class typesem {
                             (exps.get()).push(ex.value);
                         }
                     }
-                    e_ref.value = new TupleExp(e_ref.value.loc, e0, exps);
+                    e_ref.value = new TupleExp(e_ref.value.loc, e0.value, exps);
                     Ptr<Scope> sc2 = (sc.get()).push();
                     (sc2.get()).flags |= global.params.vsafe ? 1024 : 2;
                     e_ref.value = expressionSemantic(e_ref.value, sc2);
@@ -3798,7 +3798,7 @@ public class typesem {
                     objc().checkTupleof(e_ref.value, mt);
                     e_ref.value = expressionSemantic(e_ref.value, sc);
                     mt.sym.size(e_ref.value.loc);
-                    Expression e0 = null;
+                    Ref<Expression> e0 = ref(null);
                     Ref<Expression> ev = ref(((e_ref.value.op & 0xFF) == 20) ? null : e_ref.value);
                     if (ev.value != null)
                     {
@@ -3827,7 +3827,7 @@ public class typesem {
                             (exps.get()).push(ex.value);
                         }
                     }
-                    e_ref.value = new TupleExp(e_ref.value.loc, e0, exps);
+                    e_ref.value = new TupleExp(e_ref.value.loc, e0.value, exps);
                     Ptr<Scope> sc2 = (sc.get()).push();
                     (sc2.get()).flags |= global.params.vsafe ? 1024 : 2;
                     e_ref.value = expressionSemantic(e_ref.value, sc2);

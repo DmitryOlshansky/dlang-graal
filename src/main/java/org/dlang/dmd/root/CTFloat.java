@@ -32,7 +32,7 @@ public class CTFloat {
 
     }
 
-    public static final Ref<Double> zero = ref(0.0);
+    public static final Double zero = 0.0;
 
     public static void initialize(){ }
 }

@@ -102,7 +102,7 @@ public class dclass {
                     Ptr<BaseClass> b = ptr(this.baseInterfaces.get(i));
                     Ptr<BaseClass> b2 = this.sym.interfaces.get(i);
                     assert(((b2.get()).vtbl.length == 0));
-                    (b).set(0, (b2));
+                    (b).set(0, (b2).get());
                     if (i != 0)
                     {
                         (vtblInterfaces.get()).push(b);

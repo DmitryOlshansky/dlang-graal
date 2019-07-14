@@ -2895,9 +2895,9 @@ public class func {
     }
 
     public static boolean checkEscapingSiblings(FuncDeclaration f, FuncDeclaration outerFunc, Object p) {
-        PrevSibling ps = new PrevSibling();
-        ps.p = pcopy((((Ptr<PrevSibling>)p)));
-        ps.f = f;
+        Ref<PrevSibling> ps = ref(new PrevSibling());
+        ps.value.p = pcopy((((Ptr<PrevSibling>)p)));
+        ps.value.f = f;
         boolean bAnyClosures = false;
         {
             int i = 0;

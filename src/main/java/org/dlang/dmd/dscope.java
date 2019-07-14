@@ -396,16 +396,16 @@ public class dscope {
                     {
                         return null;
                     }
-                    Ptr<Scope> sc = ptr(this);
+                    Ref<Ptr<Scope>> sc = ref(ptr(this));
                     dmodule.Module.clearCache();
                     Ref<Dsymbol> scopesym = ref(null);
-                    Dsymbol s = (sc.get()).search(Loc.initial, id, ptr(scopesym), 2);
+                    Dsymbol s = (sc.value.get()).search(Loc.initial, id, ptr(scopesym), 2);
                     if (s != null)
                     {
                         {
                             cost.value = 0;
-                            for (; sc != null;comma(sc = pcopy((sc.get()).enclosing), cost.value += 1)) {
-                                if ((pequals((sc.get()).scopesym, scopesym.value)))
+                            for (; sc.value != null;comma(sc.value = pcopy((sc.value.get()).enclosing), cost.value += 1)) {
+                                if ((pequals((sc.value.get()).scopesym, scopesym.value)))
                                 {
                                     break;
                                 }
@@ -424,7 +424,7 @@ public class dscope {
                 }}
 
             };
-            Dsymbol scopesym = null;
+            Ref<Dsymbol> scopesym = ref(null);
             {
                 Dsymbol s = this.search(Loc.initial, ident, ptr(scopesym), 2);
                 if ((s) != null)

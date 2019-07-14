@@ -689,7 +689,7 @@ public class initsem {
                     }
                     return new ErrorInitializer();
                 }
-                boolean hasOverloads = false;
+                Ref<Boolean> hasOverloads = ref(false);
                 {
                     FuncDeclaration f = isFuncAddress(init.exp, ptr(hasOverloads));
                     if ((f) != null)
@@ -698,7 +698,7 @@ public class initsem {
                         {
                             return new ErrorInitializer();
                         }
-                        if (hasOverloads && !f.isUnique())
+                        if (hasOverloads.value && !f.isUnique())
                         {
                             init.exp.error(new BytePtr("cannot infer type from overloaded function symbol `%s`"), init.exp.toChars());
                             return new ErrorInitializer();

@@ -92,16 +92,16 @@ public class aliasthis {
                                     FuncDeclaration fd = ((VarExp)e).var.isFuncDeclaration();
                                     if ((fd) != null)
                                     {
-                                        boolean hasOverloads = false;
+                                        Ref<Boolean> hasOverloads = ref(false);
                                         {
                                             FuncDeclaration f = fd.overloadModMatch(loc, tthis, hasOverloads);
                                             if ((f) != null)
                                             {
-                                                if (!hasOverloads)
+                                                if (!hasOverloads.value)
                                                 {
                                                     fd = f;
                                                 }
-                                                e = new VarExp(loc, fd, hasOverloads);
+                                                e = new VarExp(loc, fd, hasOverloads.value);
                                                 e.type.value = f.type;
                                                 e = new CallExp(loc, e);
                                                 /*goto L1*/throw Dispatch0.INSTANCE;

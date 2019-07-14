@@ -1516,11 +1516,11 @@ public class astbase {
                 this.protection.opAssign(new Prot(Prot.Kind.undefined, null));
                 if ((this.members != null) && (this.ident != null))
                 {
-                    Dsymbol s = null;
-                    if (Dsymbol.oneMembers(this.members.get(), ptr(s), this.ident) && (s != null))
+                    Ref<Dsymbol> s = ref(null);
+                    if (Dsymbol.oneMembers(this.members.get(), ptr(s), this.ident) && (s.value != null))
                     {
-                        this.onemember = s;
-                        s.parent = this;
+                        this.onemember = s.value;
+                        s.value.parent = this;
                     }
                 }
             }
@@ -2682,7 +2682,7 @@ public class astbase {
                 {
                     return 0;
                 }
-                int n = pn != null ? pn.get() : 0;
+                Ref<Integer> n = ref(pn != null ? pn.get() : 0);
                 int result = 0;
                 {
                     int __key120 = 0;
@@ -2698,7 +2698,7 @@ public class astbase {
                         }
                         else
                         {
-                            result = dg.invoke(n++, p);
+                            result = dg.invoke(n.value++, p);
                         }
                         if (result != 0)
                         {
@@ -2708,7 +2708,7 @@ public class astbase {
                 }
                 if (pn != null)
                 {
-                    pn.set(0, n);
+                    pn.set(0, n.value);
                 }
                 return result;
             }

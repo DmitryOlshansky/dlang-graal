@@ -2525,10 +2525,11 @@ public class doc {
     }
 
     public static int endAllListsAndQuotes(Ptr<OutBuffer> buf, Ref<Integer> i, Slice<MarkdownList> nestedLists, Ref<Integer> quoteLevel, Ref<Integer> quoteMacroLevel) {
+        Ref<Slice<MarkdownList>> nestedLists_ref = ref(nestedLists);
         quoteMacroLevel.value = 0;
         quoteMacroLevel.value = 0;
         int i0 = i.value;
-        i.value += MarkdownList.endAllNestedLists(buf, i.value, nestedLists);
+        i.value += MarkdownList.endAllNestedLists(buf, i.value, nestedLists_ref);
         i.value += endAllMarkdownQuotes(buf, i.value, quoteLevel);
         return i.value - i0;
     }
@@ -3620,6 +3621,7 @@ public class doc {
         }
 
         public  void extractReferences(Ptr<OutBuffer> buf, int i, Loc loc) {
+            Ref<Integer> i_ref = ref(i);
             Function2<Ptr<OutBuffer>,Integer,Boolean> isFollowedBySpace = new Function2<Ptr<OutBuffer>,Integer,Boolean>() {
                 public Boolean invoke(Ptr<OutBuffer> buf, Integer i) {
                  {
@@ -3634,10 +3636,10 @@ public class doc {
             boolean leadingBlank = false;
             int inCode = 0;
             boolean newParagraph = true;
-            Slice<MarkdownDelimiter> delimiters = new Slice<MarkdownDelimiter>().copy();
+            Ref<Slice<MarkdownDelimiter>> delimiters = ref(new Slice<MarkdownDelimiter>().copy());
         L_outer14:
-            for (; (i < (buf.get()).offset);i += 1){
-                byte c = (buf.get()).data.get(i);
+            for (; (i_ref.value < (buf.get()).offset);i_ref.value += 1){
+                byte c = (buf.get()).data.get(i_ref.value);
                 {
                     int __dispatch10 = 0;
                     dispatched_10:
@@ -3655,7 +3657,7 @@ public class doc {
                                 leadingBlank = true;
                                 break;
                             case 92:
-                                i += 1;
+                                i_ref.value += 1;
                                 break;
                             case 35:
                                 if (leadingBlank && (inCode == 0))
@@ -3672,7 +3674,7 @@ public class doc {
                                 break;
                             case 43:
                                 __dispatch10 = 0;
-                                if (leadingBlank && (inCode == 0) && isFollowedBySpace.invoke(buf, i))
+                                if (leadingBlank && (inCode == 0) && isFollowedBySpace.invoke(buf, i_ref.value))
                                 {
                                     newParagraph = true;
                                 }
@@ -3693,8 +3695,8 @@ public class doc {
                             case 57:
                                 if (leadingBlank && (inCode == 0))
                                 {
-                                    i = skipChars(buf, i, new ByteSlice("0123456789"));
-                                    if ((i < (buf.get()).offset) && (((buf.get()).data.get(i) & 0xFF) == 46) || (((buf.get()).data.get(i) & 0xFF) == 41) && isFollowedBySpace.invoke(buf, i))
+                                    i_ref.value = skipChars(buf, i_ref.value, new ByteSlice("0123456789"));
+                                    if ((i_ref.value < (buf.get()).offset) && (((buf.get()).data.get(i_ref.value) & 0xFF) == 46) || (((buf.get()).data.get(i_ref.value) & 0xFF) == 41) && isFollowedBySpace.invoke(buf, i_ref.value))
                                     {
                                         newParagraph = true;
                                     }
@@ -3708,7 +3710,7 @@ public class doc {
                                 if (leadingBlank && (inCode == 0))
                                 {
                                     newParagraph = true;
-                                    if (!isFollowedBySpace.invoke(buf, i))
+                                    if (!isFollowedBySpace.invoke(buf, i_ref.value))
                                     {
                                         leadingBlank = false;
                                     }
@@ -3717,16 +3719,16 @@ public class doc {
                             case 96:
                                 __dispatch10 = 0;
                             case 126:
-                                if (leadingBlank && (i + 2 < (buf.get()).offset) && (((buf.get()).data.get(i + 1) & 0xFF) == (c & 0xFF)) && (((buf.get()).data.get(i + 2) & 0xFF) == (c & 0xFF)))
+                                if (leadingBlank && (i_ref.value + 2 < (buf.get()).offset) && (((buf.get()).data.get(i_ref.value + 1) & 0xFF) == (c & 0xFF)) && (((buf.get()).data.get(i_ref.value + 2) & 0xFF) == (c & 0xFF)))
                                 {
                                     inCode = (inCode == (c & 0xFF)) ? 0 : (c & 0xFF);
-                                    i = skipChars(buf, i, slice(new byte[]{(byte)c})) - 1;
+                                    i_ref.value = skipChars(buf, i_ref.value, slice(new byte[]{(byte)c})) - 1;
                                     newParagraph = true;
                                 }
                                 leadingBlank = false;
                                 break;
                             case 45:
-                                if (leadingBlank && (inCode == 0) && isFollowedBySpace.invoke(buf, i))
+                                if (leadingBlank && (inCode == 0) && isFollowedBySpace.invoke(buf, i_ref.value))
                                 {
                                     /*goto case*/{ __dispatch10 = 43; continue dispatched_10; }
                                 }
@@ -3737,13 +3739,13 @@ public class doc {
                             case 91:
                                 if (leadingBlank && (inCode == 0) && newParagraph)
                                 {
-                                    delimiters.append(new MarkdownDelimiter(i, 1, 0, false, false, true, (byte)c));
+                                    delimiters.value.append(new MarkdownDelimiter(i_ref.value, 1, 0, false, false, true, (byte)c));
                                 }
                                 break;
                             case 93:
-                                if ((delimiters.getLength() != 0) && (inCode == 0) && MarkdownLink.replaceReferenceDefinition(buf, i, delimiters, delimiters.getLength() - 1, this, loc))
+                                if ((delimiters.value.getLength() != 0) && (inCode == 0) && MarkdownLink.replaceReferenceDefinition(buf, i_ref, delimiters, delimiters.value.getLength() - 1, this, loc))
                                 {
-                                    i -= 1;
+                                    i_ref.value -= 1;
                                 }
                                 break;
                             default:
@@ -4077,8 +4079,9 @@ public class doc {
 
     public static int endRowAndTable(Ptr<OutBuffer> buf, int iStart, int iEnd, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters, IntSlice columnAlignments) {
         Ref<Slice<MarkdownDelimiter>> inlineDelimiters_ref = ref(inlineDelimiters);
-        int delta = replaceTableRow(buf, iStart, iEnd, loc, inlineDelimiters_ref, columnAlignments, false);
-        delta += endTable(buf, iEnd + delta, columnAlignments);
+        Ref<IntSlice> columnAlignments_ref = ref(columnAlignments);
+        int delta = replaceTableRow(buf, iStart, iEnd, loc, inlineDelimiters_ref, columnAlignments_ref.value, false);
+        delta += endTable(buf, iEnd + delta, columnAlignments_ref);
         return delta;
     }
 
@@ -4096,8 +4099,8 @@ public class doc {
         Ref<Integer> quoteMacroLevel = ref(0);
         Ref<Slice<MarkdownList>> nestedLists = ref(new Slice<MarkdownList>().copy());
         Ref<Slice<MarkdownDelimiter>> inlineDelimiters = ref(new Slice<MarkdownDelimiter>().copy());
-        MarkdownLinkReferences linkReferences = new MarkdownLinkReferences();
-        IntSlice columnAlignments = new IntSlice().copy();
+        Ref<MarkdownLinkReferences> linkReferences = ref(new MarkdownLinkReferences());
+        Ref<IntSlice> columnAlignments = ref(new IntSlice().copy());
         boolean tableRowDetected = false;
         int inCode = 0;
         int inBacktick = 0;
@@ -4109,7 +4112,7 @@ public class doc {
         int codeIndent = 0;
         ByteSlice codeLanguage = new ByteSlice().copy();
         Ref<Integer> iLineStart = ref(offset);
-        linkReferences._scope = pcopy(sc);
+        linkReferences.value._scope = pcopy(sc);
         {
             Ref<Integer> i = ref(offset);
         L_outer15:
@@ -4139,13 +4142,13 @@ public class doc {
                                     i.value += 1;
                                     iParagraphStart.value = skipChars(buf, i.value, new ByteSlice(" \u0009\r\n"));
                                 }
-                                if (tableRowDetected && (columnAlignments.getLength() == 0))
+                                if (tableRowDetected && (columnAlignments.value.getLength() == 0))
                                 {
                                     i.value += startTable(buf, iLineStart.value, i.value, loc, lineQuoted, inlineDelimiters, columnAlignments);
                                 }
-                                else if (columnAlignments.getLength() != 0)
+                                else if (columnAlignments.value.getLength() != 0)
                                 {
-                                    int delta = replaceTableRow(buf, iLineStart.value, i.value, loc, inlineDelimiters, columnAlignments, false);
+                                    int delta = replaceTableRow(buf, iLineStart.value, i.value, loc, inlineDelimiters, columnAlignments.value, false);
                                     if (delta != 0)
                                     {
                                         i.value += delta;

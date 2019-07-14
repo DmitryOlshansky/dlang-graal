@@ -352,11 +352,11 @@ public class ctfeexpr {
                         {
                             TypeSArray tsa = (TypeSArray)v.type;
                             int len = (int)tsa.dim.toInteger();
-                            UnionExp uex = null;
+                            Ref<UnionExp> uex = ref(null);
                             m = createBlockDuplicatedArrayLiteral(ptr(uex), e.loc, v.type, m, len);
-                            if ((pequals(m, uex.exp())))
+                            if ((pequals(m, uex.value.exp())))
                             {
-                                m = uex.copy();
+                                m = uex.value.copy();
                             }
                         }
                     }
@@ -561,11 +561,11 @@ public class ctfeexpr {
         {
             TypeSArray tsa = (TypeSArray)type.nextOf();
             int len = (int)tsa.dim.toInteger();
-            UnionExp ue = null;
+            Ref<UnionExp> ue = ref(null);
             elem = createBlockDuplicatedArrayLiteral(ptr(ue), loc, type.nextOf(), elem, len);
-            if ((pequals(elem, ue.exp())))
+            if ((pequals(elem, ue.value.exp())))
             {
-                elem = ue.copy();
+                elem = ue.value.copy();
             }
         }
         Type tb = elem.type.value.toBasetype();

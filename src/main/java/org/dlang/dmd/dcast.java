@@ -128,10 +128,10 @@ public class dcast {
         }
 
         public  void visit(FuncExp e) {
-            FuncExp fe = null;
+            Ref<FuncExp> fe = ref(null);
             if ((e.matchType(this.t, this.sc, ptr(fe), 0) > MATCH.nomatch))
             {
-                this.result = fe;
+                this.result = fe.value;
                 return ;
             }
             this.visit((Expression)e);
@@ -2215,9 +2215,9 @@ public class dcast {
             Type typeb = e.type.value.toBasetype();
             if (tb.equals(typeb) && !e.hasOverloads)
             {
-                int offset = 0;
+                Ref<Integer> offset = ref(0);
                 e.func.tookAddressOf++;
-                if ((e.func.tintro != null) && e.func.tintro.nextOf().isBaseOf(e.func.type.nextOf(), ptr(offset)) && (offset != 0))
+                if ((e.func.tintro != null) && e.func.tintro.nextOf().isBaseOf(e.func.type.nextOf(), ptr(offset)) && (offset.value != 0))
                 {
                     e.error(new BytePtr("%s"), dcast.visitmsg);
                 }
@@ -2232,8 +2232,8 @@ public class dcast {
                     FuncDeclaration f = e.func.overloadExactMatch(tb.nextOf());
                     if (f != null)
                     {
-                        int offset = 0;
-                        if ((f.tintro != null) && f.tintro.nextOf().isBaseOf(f.type.nextOf(), ptr(offset)) && (offset != 0))
+                        Ref<Integer> offset = ref(0);
+                        if ((f.tintro != null) && f.tintro.nextOf().isBaseOf(f.type.nextOf(), ptr(offset)) && (offset.value != 0))
                         {
                             e.error(new BytePtr("%s"), dcast.visitmsg);
                         }
@@ -2266,10 +2266,10 @@ public class dcast {
         }
 
         public  void visit(FuncExp e) {
-            FuncExp fe = null;
+            Ref<FuncExp> fe = ref(null);
             if ((e.matchType(this.t, this.sc, ptr(fe), 1) > MATCH.nomatch))
             {
-                this.result = fe;
+                this.result = fe.value;
                 return ;
             }
             this.visit((Expression)e);

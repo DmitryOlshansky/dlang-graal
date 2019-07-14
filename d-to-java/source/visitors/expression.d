@@ -998,7 +998,7 @@ public:
                     expToBuffer(e.arguments[0][0], precedence[e.op], buf, opts);
                     buf.put(".set(0, ");
                     expToBuffer(e.arguments[0][1], precedence[e.op], buf, opts);
-                    buf.put(")");
+                    buf.put(".get())");
                     return;
                 }
                 else if (c1 && c2 && c1.e1.type.ty == Tclass && c2.e1.type.ty == Tclass) {
